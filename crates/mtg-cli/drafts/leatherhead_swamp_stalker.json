@@ -1,0 +1,26 @@
+{
+  "oracle_id": "ee9b606a-a1fe-43c8-84d0-9bf7b012cc75",
+  "name": "Leatherhead, Swamp Stalker",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Leatherhead, Swamp Stalker",
+      "oracle_fingerprint": "b6fca82235a3e7f8d62dbc29bd93f5ce",
+      "abilities": [
+        { "Keyword": "Trample" },
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "WithCounters": { "counter": { "Other": "hexproof" }, "count": 1 } }
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 59, "end": 221 }
+          }
+        }
+      ]
+    }
+  ]
+}

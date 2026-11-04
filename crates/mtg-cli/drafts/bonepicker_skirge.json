@@ -1,0 +1,27 @@
+{
+  "oracle_id": "c42833e6-3e42-4bd6-acbc-d8e284e9833e",
+  "name": "Bonepicker Skirge",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Bonepicker Skirge",
+      "oracle_fingerprint": "1498201bf7b29ad2a074995eaa1e75cd",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "AddKeyword": "Deathtouch" }, { "AddKeyword": "Lifelink" }],
+            "condition": {
+              "Compare": {
+                "left": { "HighestCounters": { "who": "Opponents", "counter": "poison" } },
+                "op": "Ge",
+                "right": 3
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

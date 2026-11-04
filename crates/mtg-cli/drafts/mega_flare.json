@@ -1,0 +1,60 @@
+{
+  "oracle_id": "891c6ca5-d238-4ac2-8df4-c6dc9a807562",
+  "name": "Mega Flare",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mega Flare",
+      "oracle_fingerprint": "cde95628ba1b99c91e7c8573f2b524e2",
+      "abilities": [
+        { "Keyword": { "Kicker": "{3}{R}{R}" } },
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "PerPlayer": { "players": "Opponents", "what": [{ "Type": "Creature" }] }
+                }
+              }
+            ],
+            "effects": [
+              {
+                "If": {
+                  "condition": "Kicked",
+                  "then": [
+                    {
+                      "CreateToken": {
+                        "token": {
+                          "Custom": {
+                            "name": "Dragon",
+                            "colors": ["Red"],
+                            "types": ["Creature"],
+                            "subtypes": ["Dragon"],
+                            "power": 6,
+                            "toughness": 6,
+                            "abilities": [{ "Keyword": "Flying" }]
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "DealDamage": {
+                  "to": { "Target": 0 },
+                  "amount": {
+                    "Greatest": {
+                      "of": [{ "Type": "Creature" }, { "ControlledBy": "You" }],
+                      "stat": "Power"
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

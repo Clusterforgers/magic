@@ -1,0 +1,58 @@
+{
+  "oracle_id": "0c0eeb01-62e7-4a7f-923d-a7b830e4c83b",
+  "name": "Urborg Repossession",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Urborg Repossession",
+      "oracle_fingerprint": "c9c0907fb1f002f521455e5abc28692c",
+      "abilities": [
+        { "Keyword": { "Kicker": "{1}{G}" } },
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "Type": "Creature" }, { "OwnedBy": "You" }, { "In": "Graveyard" }]
+                }
+              },
+              {
+                "what": {
+                  "Object": [
+                    { "OwnedBy": "You" },
+                    { "Not": { "Is": { "Target": 0 } } },
+                    {
+                      "AnyOf": [
+                        { "Type": "Artifact" },
+                        { "Type": "Battle" },
+                        { "Type": "Creature" },
+                        { "Type": "Enchantment" },
+                        { "Type": "Land" },
+                        { "Type": "Planeswalker" }
+                      ]
+                    },
+                    { "In": "Graveyard" }
+                  ]
+                },
+                "bounds": {
+                  "min": { "When": { "condition": "Kicked", "then": 1, "otherwise": 0 } },
+                  "max": { "When": { "condition": "Kicked", "then": 1, "otherwise": 0 } }
+                }
+              }
+            ],
+            "effects": [
+              { "Move": { "what": { "Target": 0 }, "to": "Hand" } },
+              { "GainLife": { "amount": 2 } },
+              {
+                "If": {
+                  "condition": "Kicked",
+                  "then": [{ "Move": { "what": { "Target": 1 }, "to": "Hand" } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

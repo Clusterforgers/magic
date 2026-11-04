@@ -1,0 +1,25 @@
+{
+  "oracle_id": "3bb32408-81d3-4d0c-8674-1a1c5e3feb3b",
+  "name": "Elminster's Simulacrum",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Elminster's Simulacrum",
+      "oracle_fingerprint": "b74c84c9bf161c793ad3378eda01ab9c",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "PerPlayer": { "players": "Opponents", "what": [{ "Type": "Creature" }] }
+                }
+              }
+            ],
+            "effects": [{ "CreateToken": { "token": { "CopyOf": { "of": { "Target": 0 } } } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

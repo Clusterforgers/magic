@@ -1,0 +1,52 @@
+{
+  "oracle_id": "7d347d59-0cd5-4207-86cb-5d6244c7c70a",
+  "name": "Spire Mechcycle",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Spire Mechcycle",
+      "oracle_fingerprint": "053599430a54afad9261630bde53473e",
+      "abilities": [
+        { "Keyword": "Haste" },
+        {
+          "Activated": {
+            "cost": [
+              {
+                "TapPermanents": {
+                  "filter": [
+                    { "AnyOf": [{ "Subtype": "Mount" }, { "Subtype": "Vehicle" }] },
+                    "Other"
+                  ]
+                }
+              }
+            ],
+            "limit": "OncePerGame",
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "AddType": "Artifact" }, { "AddType": "Creature" }],
+                  "duration": "Forever"
+                }
+              },
+              {
+                "PutCounters": {
+                  "on": "This",
+                  "counter": "+1/+1",
+                  "count": {
+                    "Count": [
+                      { "AnyOf": [{ "Subtype": "Mount" }, { "Subtype": "Vehicle" }] },
+                      "Other",
+                      { "ControlledBy": "You" }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Crew": 2 } }
+      ]
+    }
+  ]
+}

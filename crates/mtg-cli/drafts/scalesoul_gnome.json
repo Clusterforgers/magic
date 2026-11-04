@@ -1,0 +1,51 @@
+{
+  "oracle_id": "a1b05d3c-db3d-426f-ac00-c614d4e27c78",
+  "name": "Scalesoul Gnome",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Scalesoul Gnome",
+      "oracle_fingerprint": "a266b3f30b1f5c04dc89e22b2b763f4f",
+      "abilities": [
+        { "Keyword": "Trample" },
+        { "Keyword": "Haste" },
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": ["This"], "to": "EachPlayer", "combat": true } },
+            "effects": [
+              {
+                "ExileUntil": {
+                  "filter": [
+                    { "Not": { "Type": "Land" } },
+                    { "Compare": { "stat": "ManaValue", "op": "Le", "to": "Triggering" } }
+                  ],
+                  "as": "found",
+                  "exiled_as": "exiled"
+                }
+              },
+              {
+                "CastFromZone": {
+                  "what": { "Bound": "found" },
+                  "free": true,
+                  "otherwise": [{ "Move": { "what": { "Bound": "found" }, "to": "Hand" } }]
+                }
+              },
+              {
+                "Move": {
+                  "what": { "Bound": "exiled" },
+                  "to": { "Library": { "place": "Bottom", "order": "Random" } }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 109, "end": 187 }
+          }
+        }
+      ]
+    }
+  ]
+}

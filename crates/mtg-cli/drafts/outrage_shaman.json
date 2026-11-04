@@ -1,0 +1,22 @@
+{
+  "oracle_id": "08d77e5b-7de1-4b0a-a5a7-75e60d452d27",
+  "name": "Outrage Shaman",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Outrage Shaman",
+      "oracle_fingerprint": "3dcd721f970cb650c80146f6b3fba24b",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              { "DealDamage": { "to": { "Target": 0 }, "amount": { "Devotion": ["Red"] } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,51 @@
+{
+  "oracle_id": "ec73863f-417b-45d7-a6b7-97a69ce0196a",
+  "name": "Might Makes Right",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Might Makes Right",
+      "oracle_fingerprint": "51af8a60cca89dec8f9b2610a3baa1b1",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "BeginCombat", "whose": "You" } },
+            "if": {
+              "Compare": {
+                "left": {
+                  "Count": [
+                    { "Type": "Creature" },
+                    { "GreatestAmong": { "stat": "Power", "group": [{ "Type": "Creature" }] } },
+                    { "Not": { "ControlledBy": "You" } }
+                  ]
+                },
+                "op": "Eq",
+                "right": 0
+              }
+            },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }] } }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "SetController": "You" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              { "Untap": { "what": { "Target": 0 } } },
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "AddKeyword": "Haste" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

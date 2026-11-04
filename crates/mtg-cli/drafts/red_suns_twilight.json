@@ -1,0 +1,47 @@
+{
+  "oracle_id": "21c77cdb-9ba1-4621-b096-7eb94c076cef",
+  "name": "Red Sun's Twilight",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Red Sun's Twilight",
+      "oracle_fingerprint": "f263e068999dab83b777e305c7eb8386",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "Type": "Artifact" }] }, "bounds": { "min": 0, "max": "X" } }
+            ],
+            "effects": [
+              { "Destroy": { "what": { "Target": 0 }, "as": "destroyed" } },
+              {
+                "If": {
+                  "condition": { "Compare": { "left": "X", "op": "Ge", "right": 5 } },
+                  "then": [
+                    {
+                      "CreateToken": {
+                        "token": {
+                          "CopyOf": {
+                            "of": { "Bound": "destroyed" },
+                            "except": [{ "AddKeyword": "Haste" }]
+                          }
+                        },
+                        "as": "copy2"
+                      }
+                    },
+                    {
+                      "DelayedTrigger": {
+                        "when": { "StepBegins": { "step": "End" } },
+                        "effects": [{ "Exile": { "what": { "Bound": "copy2" } } }]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

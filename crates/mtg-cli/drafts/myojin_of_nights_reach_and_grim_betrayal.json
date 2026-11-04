@@ -1,0 +1,35 @@
+{
+  "oracle_id": "46376bc5-a18c-4986-99d7-b3707c516c23",
+  "name": "Myojin of Night's Reach and Grim Betrayal",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Myojin of Night's Reach and Grim Betrayal",
+      "oracle_fingerprint": "bce64aeae05eb6981e047bcdd73805cd",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "WithCounters": { "counter": { "Other": "indestructible" }, "count": 1 } },
+            "condition": {
+              "Matches": {
+                "subject": "This",
+                "selector": [
+                  "This",
+                  { "WasCast": { "by": "You", "from": "Hand" } },
+                  { "OwnedBy": "You" }
+                ]
+              }
+            }
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 133, "end": 374 }
+          }
+        }
+      ]
+    }
+  ]
+}

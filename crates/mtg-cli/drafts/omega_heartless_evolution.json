@@ -1,0 +1,52 @@
+{
+  "oracle_id": "3173ca98-d46a-4de3-a95e-3eaad28d4017",
+  "name": "Omega, Heartless Evolution",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Omega, Heartless Evolution",
+      "oracle_fingerprint": "ce76a6727eed5353fed47db7a5de3b7b",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              {
+                "what": {
+                  "PerPlayer": { "players": "Opponents", "what": [{ "Not": { "Type": "Land" } }] }
+                }
+              }
+            ],
+            "effects": [
+              { "Tap": { "what": { "Target": 0 } } },
+              {
+                "PutCounters": {
+                  "on": { "Target": 0 },
+                  "counter": { "Other": "stun" },
+                  "count": {
+                    "Count": [
+                      { "Type": "Land" },
+                      { "Not": { "Supertype": "Basic" } },
+                      { "ControlledBy": "You" }
+                    ]
+                  }
+                }
+              },
+              {
+                "GainLife": {
+                  "amount": {
+                    "Count": [
+                      { "Type": "Land" },
+                      { "Not": { "Supertype": "Basic" } },
+                      { "ControlledBy": "You" }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

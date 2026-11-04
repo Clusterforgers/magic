@@ -1,0 +1,61 @@
+{
+  "oracle_id": "e8d0accc-b320-4c07-8a71-a09db860351e",
+  "name": "Vaultborn Tyrant",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Vaultborn Tyrant",
+      "oracle_fingerprint": "d984e79a6b90b844f86bb923de0e23f2",
+      "abilities": [
+        { "Keyword": "Trample" },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [
+                  {
+                    "AnyOf": [
+                      "This",
+                      {
+                        "Not": {
+                          "AnyOf": [
+                            { "Not": { "Type": "Creature" } },
+                            { "Not": { "Compare": { "stat": "Power", "op": "Ge", "to": 4 } } },
+                            { "Not": "Other" },
+                            { "Not": { "ControlledBy": "You" } }
+                          ]
+                        }
+                      }
+                    ]
+                  }
+                ],
+                "to": "Battlefield"
+              }
+            },
+            "effects": [{ "GainLife": { "amount": 3 } }, { "Draw": {} }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": ["This", { "Not": "Token" }],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "CopyOf": { "of": "Triggering", "except": [{ "AddType": "Artifact" }] }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

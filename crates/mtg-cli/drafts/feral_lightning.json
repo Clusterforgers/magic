@@ -1,0 +1,42 @@
+{
+  "oracle_id": "acd17fbf-645b-4c4d-b2c6-44127e3b743d",
+  "name": "Feral Lightning",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Feral Lightning",
+      "oracle_fingerprint": "a2ad96e29f5b030394cb4afd07b53838",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Elemental",
+                      "colors": ["Red"],
+                      "types": ["Creature"],
+                      "subtypes": ["Elemental"],
+                      "power": 3,
+                      "toughness": 1,
+                      "abilities": [{ "Keyword": "Haste" }]
+                    }
+                  },
+                  "count": 3,
+                  "as": "token"
+                }
+              },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "End" } },
+                  "effects": [{ "Exile": { "what": { "Bound": "token" } } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

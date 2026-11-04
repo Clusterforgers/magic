@@ -1,0 +1,61 @@
+{
+  "oracle_id": "7514e401-7aa1-405d-9f7a-312b4e630cc2",
+  "name": "Etali, Primal Conqueror // Etali, Primal Sickness",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Etali, Primal Conqueror",
+      "oracle_fingerprint": "0d89f8cc870c6041a795686afca1003e",
+      "abilities": [
+        { "Keyword": "Trample" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "RevealUntil": {
+                  "who": "EachPlayer",
+                  "filter": [{ "Not": { "Type": "Land" } }],
+                  "as": "found",
+                  "revealed_as": "revealed2"
+                }
+              },
+              { "Exile": { "what": { "Bound": "found" } } },
+              { "Exile": { "what": { "Bound": "revealed2" } } },
+              {
+                "RepeatEach": {
+                  "over": { "Bound": "found" },
+                  "as": "card3",
+                  "effects": [{ "CastFromZone": { "what": { "Bound": "card3" }, "free": true } }]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{9}{G/P}",
+            "timing": "Sorcery",
+            "effects": [{ "Transform": { "what": "This" } }]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Etali, Primal Sickness",
+      "oracle_fingerprint": "5a76080f23bc4df0ff46c817f1066202",
+      "abilities": [
+        { "Keyword": "Trample" },
+        { "Keyword": "Indestructible" },
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": ["This"], "to": "EachPlayer", "combat": true } },
+            "effects": [
+              { "PutCounters": { "on": "Triggering", "counter": "poison", "count": "Triggering" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

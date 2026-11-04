@@ -1,0 +1,52 @@
+{
+  "oracle_id": "18d6b89a-3588-43d9-a247-4747a7d784fc",
+  "name": "Balduvian Dead",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Balduvian Dead",
+      "oracle_fingerprint": "0ce8a78117653ffd731b5132a4e2833d",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [
+              { "Mana": "{2}{R}" },
+              { "ExileFromGraveyard": { "filter": [{ "Type": "Creature" }] } }
+            ],
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Graveborn",
+                      "colors": ["Black", "Red"],
+                      "types": ["Creature"],
+                      "subtypes": ["Graveborn"],
+                      "power": 3,
+                      "toughness": 1,
+                      "abilities": [{ "Keyword": "Haste" }]
+                    }
+                  },
+                  "as": "token"
+                }
+              },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "End" } },
+                  "effects": [
+                    {
+                      "Sacrifice": {
+                        "who": { "ControllerOf": { "Bound": "token" } },
+                        "filter": [{ "Is": { "Bound": "token" } }]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

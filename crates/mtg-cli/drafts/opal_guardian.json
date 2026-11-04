@@ -1,0 +1,40 @@
+{
+  "oracle_id": "b7c2c174-668d-4094-9aef-8b60c504b9b4",
+  "name": "Opal Guardian",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Opal Guardian",
+      "oracle_fingerprint": "3c3e9c7d8951752ac67fc4b60d718d20",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "what": [{ "Type": "Creature" }], "by": "Opponents" } },
+            "if": {
+              "Compare": {
+                "left": { "Count": ["This", { "Type": "Enchantment" }] },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [
+                    { "SetPT": { "power": 3, "toughness": 4 } },
+                    { "SetCreatureTypes": ["Gargoyle"] },
+                    { "SetTypes": ["Creature"] },
+                    { "AddKeyword": "Flying" },
+                    { "AddKeyword": { "Protection": [{ "Color": "Red" }] } }
+                  ],
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

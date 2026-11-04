@@ -1,0 +1,46 @@
+{
+  "oracle_id": "60f20f32-b6db-4ee7-a0aa-535647e6fcd5",
+  "name": "Marshals' Pathcruiser",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Marshals' Pathcruiser",
+      "oracle_fingerprint": "317640a336aeaf78387dfe780a246f71",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Search": {
+                  "filter": [{ "Type": "Land" }, { "Supertype": "Basic" }],
+                  "reveal": true,
+                  "as": "found"
+                }
+              },
+              { "Move": { "what": { "Bound": "found" }, "to": "Hand" } },
+              { "Shuffle": {} }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{W}{U}{B}{R}{G}",
+            "limit": "OncePerGame",
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "AddType": "Artifact" }, { "AddType": "Creature" }],
+                  "duration": "Forever"
+                }
+              },
+              { "PutCounters": { "on": "This", "counter": "+1/+1", "count": 2 } }
+            ]
+          }
+        },
+        { "Keyword": { "Crew": 5 } }
+      ]
+    }
+  ]
+}

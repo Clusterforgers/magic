@@ -1,0 +1,40 @@
+{
+  "oracle_id": "4fc0f58c-5f7f-4a32-8f14-cae696672beb",
+  "name": "Parasitic Implant",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Parasitic Implant",
+      "oracle_fingerprint": "32afbb0e66e0fe0d16f78bb9cd503da5",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [
+              {
+                "Sacrifice": {
+                  "who": { "ControllerOf": "Attached" },
+                  "filter": [{ "Is": "Attached" }]
+                }
+              },
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Phyrexian Myr",
+                      "types": ["Artifact", "Creature"],
+                      "subtypes": ["Phyrexian", "Myr"],
+                      "power": 1,
+                      "toughness": 1
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

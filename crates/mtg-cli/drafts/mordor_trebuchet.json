@@ -1,0 +1,58 @@
+{
+  "oracle_id": "8a8e0d0a-1101-45b6-8f70-1de2c07bc369",
+  "name": "Mordor Trebuchet",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mordor Trebuchet",
+      "oracle_fingerprint": "f4258cd050bee588be872f7274df6481",
+      "abilities": [
+        { "Keyword": "Defender" },
+        {
+          "Triggered": {
+            "when": {
+              "GroupAttacks": {
+                "what": [
+                  { "AnyOf": [{ "Subtype": "Goblin" }, { "Subtype": "Orc" }] },
+                  { "ControlledBy": "You" }
+                ]
+              }
+            },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Ballistic Boulder",
+                      "types": ["Artifact", "Creature"],
+                      "subtypes": ["Construct"],
+                      "power": 2,
+                      "toughness": 1,
+                      "abilities": [{ "Keyword": "Flying" }]
+                    }
+                  },
+                  "tapped": true,
+                  "attacking": true,
+                  "as": "token"
+                }
+              },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "EndCombat" } },
+                  "effects": [
+                    {
+                      "Sacrifice": {
+                        "who": { "ControllerOf": { "Bound": "token" } },
+                        "filter": [{ "Is": { "Bound": "token" } }]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,36 @@
+{
+  "oracle_id": "826f9f42-f2ff-4b9e-be79-a9de6b5b7b38",
+  "name": "Bond of Passion",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Bond of Passion",
+      "oracle_fingerprint": "54e8ac22112866004c82b08ab98e4cc1",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }, { "what": "AnyTarget" }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "SetController": "You" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              { "Untap": { "what": { "Target": 0 } } },
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "AddKeyword": "Haste" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              { "DealDamage": { "to": { "Target": 1 }, "amount": 2 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

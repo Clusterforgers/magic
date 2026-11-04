@@ -1,0 +1,28 @@
+{
+  "oracle_id": "04560bc2-df00-4f75-95a0-a63e2ce760b0",
+  "name": "Heartlash Cinder",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Heartlash Cinder",
+      "oracle_fingerprint": "0cb82908aa09e483d4d7901141faab62",
+      "abilities": [
+        { "Keyword": "Haste" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "ModifyPT": { "power": { "Devotion": ["Red"] }, "toughness": 0 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

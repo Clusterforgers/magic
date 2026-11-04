@@ -1,0 +1,49 @@
+{
+  "oracle_id": "60fa9f5f-2360-4d5e-b291-1318803e3c9f",
+  "name": "Mordor on the March",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mordor on the March",
+      "oracle_fingerprint": "27597f9c17038f93b377a79df6b65e6d",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [{ "Type": "Creature" }, { "OwnedBy": "You" }, { "In": "Graveyard" }]
+                  },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "picked"
+                }
+              },
+              { "Exile": { "what": { "Bound": "picked" }, "as": "exiled2" } },
+              {
+                "CreateToken": {
+                  "token": { "CopyOf": { "of": { "Bound": "exiled2" } } },
+                  "as": "copy3"
+                }
+              },
+              {
+                "Continuous": {
+                  "affected": { "Bound": "copy3" },
+                  "mods": [{ "AddKeyword": "Haste" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "End" } },
+                  "effects": [{ "Exile": { "what": { "Bound": "copy3" } } }]
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": "Storm" }
+      ]
+    }
+  ]
+}

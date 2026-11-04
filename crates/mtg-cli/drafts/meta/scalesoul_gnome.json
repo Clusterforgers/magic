@@ -1,0 +1,83 @@
+{
+  "source": "forge",
+  "oracle_matches": true,
+  "lines": [
+    {
+      "face": 0,
+      "tag": "K",
+      "text": "Trample",
+      "abilities": [
+        0
+      ],
+      "gap": null
+    },
+    {
+      "face": 0,
+      "tag": "K",
+      "text": "Haste",
+      "abilities": [
+        1
+      ],
+      "gap": null
+    },
+    {
+      "face": 0,
+      "tag": "T",
+      "text": "Whenever CARDNAME deals combat damage to a player, discover X, where X is that damage.",
+      "abilities": [
+        2
+      ],
+      "gap": null
+    },
+    {
+      "face": 0,
+      "tag": "T",
+      "text": "Whenever you play a card from exile, conjure a duplicate of it into your hand.",
+      "abilities": [],
+      "gap": "key:MakeCard.DefinedName"
+    },
+    {
+      "face": 0,
+      "tag": "T",
+      "text": "Whenever you play a card from exile, conjure a duplicate of it into your hand.",
+      "abilities": [],
+      "gap": "key:MakeCard.DefinedName"
+    }
+  ],
+  "proof": {
+    "marks": [
+      {
+        "face": 0,
+        "span": {
+          "start": 0,
+          "end": 7
+        },
+        "mark": "Auto"
+      },
+      {
+        "face": 0,
+        "span": {
+          "start": 9,
+          "end": 14
+        },
+        "mark": "Auto"
+      },
+      {
+        "face": 0,
+        "span": {
+          "start": 15,
+          "end": 108
+        },
+        "mark": "Auto"
+      },
+      {
+        "face": 0,
+        "span": {
+          "start": 109,
+          "end": 187
+        },
+        "mark": "ByHand"
+      }
+    ]
+  }
+}

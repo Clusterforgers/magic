@@ -1,0 +1,27 @@
+{
+  "oracle_id": "7b62c53a-46a2-4c57-9eab-0c6706795b4e",
+  "name": "Defiant Survivor",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Defiant Survivor",
+      "oracle_fingerprint": "5516efe0c6674bbb5268736e815512e6",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Main2", "whose": "You" } },
+            "if": {
+              "CountOf": { "subject": "This", "selector": ["Tapped"], "op": "Ge", "right": 1 }
+            },
+            "effects": [
+              { "LookAtTop": { "count": 2, "as": "looked" } },
+              { "Choose": { "from": { "Bound": "looked" }, "as": "kept2", "rest_as": "rest3" } },
+              { "Move": { "what": { "Bound": "rest3" }, "to": "Graveyard" } },
+              { "Manifest": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

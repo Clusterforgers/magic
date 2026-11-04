@@ -1,0 +1,39 @@
+{
+  "oracle_id": "383e9005-5869-4d1d-917d-30e5f214fbd9",
+  "name": "Drop of Honey",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Drop of Honey",
+      "oracle_fingerprint": "38d98fe90cbfcb98fdf338709bf93cc4",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "Type": "Creature" },
+                      { "LeastAmong": { "stat": "Power", "group": [{ "Type": "Creature" }] } },
+                      { "Not": { "HasKeyword": "Indestructible" } }
+                    ]
+                  },
+                  "as": "card"
+                }
+              },
+              { "Destroy": { "what": { "Bound": "card" }, "regenerate": false } }
+            ]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 176, "end": 251 }
+          }
+        }
+      ]
+    }
+  ]
+}

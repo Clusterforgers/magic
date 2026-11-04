@@ -1,0 +1,33 @@
+{
+  "oracle_id": "7e8f5b34-fd16-4307-9104-17b584b25b14",
+  "name": "Awakener Druid",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Awakener Druid",
+      "oracle_fingerprint": "dc1434af8b696d0202b903bf93f744d4",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [{ "what": { "Object": [{ "Subtype": "Forest" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    { "SetPT": { "power": 4, "toughness": 5 } },
+                    { "SetColors": ["Green"] },
+                    { "AddSubtype": "Treefolk" },
+                    { "AddType": "Creature" }
+                  ],
+                  "duration": "WhileSourceOnBattlefield"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

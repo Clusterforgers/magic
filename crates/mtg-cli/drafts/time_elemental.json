@@ -1,0 +1,40 @@
+{
+  "oracle_id": "d89075a3-4413-4796-a055-eef51fddb7f3",
+  "name": "Time Elemental",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Time Elemental",
+      "oracle_fingerprint": "7fac9d089db6c44e7320a458dbb6fc7d",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [{ "Attacks": { "what": ["This"] } }, { "Blocks": { "what": ["This"] } }]
+            },
+            "effects": [
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "EndCombat" } },
+                  "effects": [
+                    { "Sacrifice": { "filter": [{ "Is": "This" }] } },
+                    { "DealDamage": { "to": "You", "amount": 5 } }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{2}{U}{U}" }, "Tap"],
+            "targets": [
+              { "what": { "Object": [{ "Not": { "HasAttached": [{ "Subtype": "Aura" }] } }] } }
+            ],
+            "effects": [{ "Move": { "what": { "Target": 0 }, "to": "Hand" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

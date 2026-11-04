@@ -1,0 +1,44 @@
+{
+  "oracle_id": "5da8b86a-a7be-4fb5-9a45-a47d5cb4b372",
+  "name": "Skyserpent Seeker",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Skyserpent Seeker",
+      "oracle_fingerprint": "f8f1163274a8da49c7c2f7800dce051b",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": "Deathtouch" },
+        {
+          "Activated": {
+            "cost": "{4}",
+            "limit": "OncePerGame",
+            "effects": [
+              {
+                "RevealUntil": {
+                  "filter": [{ "Type": "Land" }],
+                  "count": 2,
+                  "as": "found",
+                  "revealed_as": "revealed2"
+                }
+              },
+              {
+                "Move": {
+                  "what": { "Bound": "found" },
+                  "to": { "Battlefield": { "tapped": true } }
+                }
+              },
+              {
+                "Move": {
+                  "what": { "Bound": "revealed2" },
+                  "to": { "Library": { "place": "Bottom", "order": "Random" } }
+                }
+              },
+              { "PutCounters": { "on": "This", "counter": "+1/+1" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

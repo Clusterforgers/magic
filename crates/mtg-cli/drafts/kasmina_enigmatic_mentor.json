@@ -1,0 +1,53 @@
+{
+  "oracle_id": "df561b38-fe2a-4db9-a9d4-ec25b1c7572a",
+  "name": "Kasmina, Enigmatic Mentor",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Kasmina, Enigmatic Mentor",
+      "oracle_fingerprint": "9339ea7af3871b05a00b1e949df10136",
+      "abilities": [
+        {
+          "CostModifier": {
+            "applies_to": [
+              "Spell",
+              { "ControlledBy": "Opponents" },
+              {
+                "Targeting": [
+                  { "AnyOf": [{ "Type": "Creature" }, { "Type": "Planeswalker" }] },
+                  { "ControlledBy": "You" },
+                  { "In": "Battlefield" }
+                ]
+              }
+            ],
+            "change": "Increase",
+            "mana": "{2}"
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Minus": 2 },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Wizard",
+                      "colors": ["Blue"],
+                      "types": ["Creature"],
+                      "subtypes": ["Wizard"],
+                      "power": 2,
+                      "toughness": 2
+                    }
+                  }
+                }
+              },
+              { "Draw": {} },
+              { "Discard": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,60 @@
+{
+  "oracle_id": "945e56b9-709f-4bb3-8a6b-0a04d9202a03",
+  "name": "Sorceress's Schemes",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sorceress's Schemes",
+      "oracle_fingerprint": "5c256659937419e7bdd2419695a9527a",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    {
+                      "AnyOf": [
+                        {
+                          "Not": {
+                            "AnyOf": [
+                              { "Not": { "Type": "Instant" } },
+                              { "Not": { "In": "Graveyard" } }
+                            ]
+                          }
+                        },
+                        {
+                          "Not": {
+                            "AnyOf": [
+                              { "Not": { "Type": "Sorcery" } },
+                              { "Not": { "In": "Graveyard" } }
+                            ]
+                          }
+                        },
+                        {
+                          "Not": {
+                            "AnyOf": [
+                              { "Not": { "HasKeywordNamed": "Flashback" } },
+                              { "Not": { "In": "Exile" } }
+                            ]
+                          }
+                        }
+                      ]
+                    },
+                    { "OwnedBy": "You" },
+                    { "AnyOf": [{ "In": "Graveyard" }, { "In": "Exile" }] }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              { "Move": { "what": { "Target": 0 }, "to": "Hand" } },
+              { "AddMana": { "mana": { "Fixed": ["Red"] } } }
+            ]
+          }
+        },
+        { "Keyword": { "Flashback": "{4}{R}" } }
+      ]
+    }
+  ]
+}

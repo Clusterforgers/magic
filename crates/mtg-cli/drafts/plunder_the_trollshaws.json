@@ -1,0 +1,36 @@
+{
+  "oracle_id": "526f520e-b4bb-4215-9c6b-afc298744f06",
+  "name": "Plunder the Trollshaws",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Plunder the Trollshaws",
+      "oracle_fingerprint": "d6ef1e03c2f07d872f057f0db42ca4f5",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Draw": {
+                  "count": {
+                    "When": {
+                      "condition": {
+                        "Matches": {
+                          "subject": "This",
+                          "selector": [{ "WasCast": { "from": "Graveyard" } }]
+                        }
+                      },
+                      "then": 2,
+                      "otherwise": 1
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Flashback": "{3}{U}" } }
+      ]
+    }
+  ]
+}

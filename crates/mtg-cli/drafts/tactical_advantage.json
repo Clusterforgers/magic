@@ -1,0 +1,46 @@
+{
+  "oracle_id": "1e3f31cc-a295-4688-abd1-c7d543fe6f7a",
+  "name": "Tactical Advantage",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Tactical Advantage",
+      "oracle_fingerprint": "0ccfa765be863ff207abf906f0a3b3a2",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Type": "Creature" },
+                    {
+                      "AnyOf": [
+                        "Blocking",
+                        {
+                          "Not": {
+                            "AnyOf": [{ "Not": "Attacking" }, { "Not": { "Not": "Unblocked" } }]
+                          }
+                        }
+                      ]
+                    },
+                    { "ControlledBy": "You" }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "ModifyPT": { "power": 2, "toughness": 2 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

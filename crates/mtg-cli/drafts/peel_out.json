@@ -1,0 +1,47 @@
+{
+  "oracle_id": "39b29539-ea4a-4a16-ac83-adf648918366",
+  "name": "Peel Out",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Peel Out",
+      "oracle_fingerprint": "b629bb3c584a12cd912a2a3cdc97e3bb",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Shield": {
+                  "when": { "Damage": { "combat": true } },
+                  "by": "Prevent",
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Banana",
+                      "types": ["Artifact"],
+                      "abilities": [
+                        {
+                          "Activated": {
+                            "cost": ["Tap", "SacrificeSelf"],
+                            "effects": [
+                              { "AddMana": { "mana": { "OneOf": ["Red", "Green"] } } },
+                              { "GainLife": { "amount": 2 } }
+                            ]
+                          }
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

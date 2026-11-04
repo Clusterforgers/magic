@@ -1,0 +1,143 @@
+{
+  "object": "card",
+  "id": "8a973487-5def-4771-bb77-5748cbd2f469",
+  "oracle_id": "d56f1543-2b2d-4ce3-bcfe-41224a0cece4",
+  "multiverse_ids": [
+    602533
+  ],
+  "mtgo_id": 106221,
+  "arena_id": 83703,
+  "tcgplayer_id": 478629,
+  "cardmarket_id": 692860,
+  "name": "Apostle of Invasion",
+  "lang": "en",
+  "released_at": "2023-02-10",
+  "uri": "https://api.scryfall.com/cards/8a973487-5def-4771-bb77-5748cbd2f469",
+  "scryfall_uri": "https://scryfall.com/card/one/3/apostle-of-invasion?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T04:48:05Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/8/a/8a973487-5def-4771-bb77-5748cbd2f469.jpg?1783918085",
+    "normal": "https://cards.scryfall.io/normal/front/8/a/8a973487-5def-4771-bb77-5748cbd2f469.jpg?1783918085",
+    "large": "https://cards.scryfall.io/large/front/8/a/8a973487-5def-4771-bb77-5748cbd2f469.jpg?1783918085",
+    "png": "https://cards.scryfall.io/png/front/8/a/8a973487-5def-4771-bb77-5748cbd2f469.png?1783918085",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/8/a/8a973487-5def-4771-bb77-5748cbd2f469.jpg?1783918085",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/8/a/8a973487-5def-4771-bb77-5748cbd2f469.jpg?1783918085",
+    "thumb": "https://cards.scryfall.io/thumb/front/8/a/8a973487-5def-4771-bb77-5748cbd2f469.webp?1783918085",
+    "grid": "https://cards.scryfall.io/grid/front/8/a/8a973487-5def-4771-bb77-5748cbd2f469.webp?1783918085",
+    "display": "https://cards.scryfall.io/display/front/8/a/8a973487-5def-4771-bb77-5748cbd2f469.webp?1783918085",
+    "art": "https://cards.scryfall.io/art/front/8/a/8a973487-5def-4771-bb77-5748cbd2f469.webp?1783918085",
+    "crop": "https://cards.scryfall.io/crop/front/8/a/8a973487-5def-4771-bb77-5748cbd2f469.webp?1783918085",
+    "jpeg": "https://cards.scryfall.io/normal/front/8/a/8a973487-5def-4771-bb77-5748cbd2f469.jpg?1783918085"
+  },
+  "mana_cost": "{4}{W}{W}",
+  "cmc": 6.0,
+  "type_line": "Creature — Phyrexian Angel",
+  "oracle_text": "Flying\nCorrupted — As long as an opponent has three or more poison counters, this creature has double strike.",
+  "power": "4",
+  "toughness": "4",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": [
+    "Flying",
+    "Corrupted"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "mtgo",
+    "arena"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "04bef644-343f-4230-95ee-255f29aa67a2",
+  "set": "one",
+  "set_name": "Phyrexia: All Will Be One",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/04bef644-343f-4230-95ee-255f29aa67a2",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Aone&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/one?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/8a973487-5def-4771-bb77-5748cbd2f469/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Ad56f1543-2b2d-4ce3-bcfe-41224a0cece4&unique=prints",
+  "collector_number": "3",
+  "digital": false,
+  "rarity": "uncommon",
+  "flavor_text": "\"Be not afraid of the holy chorus. Join in rapturous harmony.\"",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Marcela Bolívar",
+  "artist_ids": [
+    "67731ea1-cd04-455a-aae7-04ca8fd2f873"
+  ],
+  "illustration_id": "3c14e53b-b37b-4230-b04f-53b7027af5d0",
+  "border_color": "black",
+  "frame": "2015",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 18690,
+  "preview": {
+    "source": "Lords of Limited",
+    "source_uri": "https://twitter.com/LordsofLimited/status/1615804809260720129",
+    "previewed_at": "2023-01-18"
+  },
+  "prices": {
+    "usd": "0.24",
+    "usd_foil": "0.23",
+    "usd_etched": null,
+    "eur": "0.04",
+    "eur_foil": "0.17",
+    "tix": "0.03"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=602533&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DApostle%2Bof%2BInvasion",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DApostle%2Bof%2BInvasion",
+    "edhrec": "https://edhrec.com/route/?cc=Apostle+of+Invasion"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F478629%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=692860&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/106221?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

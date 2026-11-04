@@ -1,0 +1,23 @@
+{
+  "oracle_id": "6a951d2d-fc5a-4f41-bd77-3e301b76cf47",
+  "name": "Watchdog",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Watchdog",
+      "oracle_fingerprint": "d02b6a301315918677913157075b43b6",
+      "abilities": [
+        { "Rule": { "rule": { "MustBlock": "This" } } },
+        {
+          "Static": {
+            "affected": { "Each": [{ "Type": "Creature" }, { "AttackingPlayer": "You" }] },
+            "mods": [{ "ModifyPT": { "power": -1, "toughness": 0 } }],
+            "condition": {
+              "Compare": { "left": { "Count": ["This", "Untapped"] }, "op": "Ge", "right": 1 }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

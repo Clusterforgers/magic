@@ -1,0 +1,20 @@
+{
+  "oracle_id": "4bb4844c-2678-45c7-8f5e-9cf185fd484b",
+  "name": "Swamp Mosquito",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Swamp Mosquito",
+      "oracle_fingerprint": "2a0305f914e5577de6325c73c8e13b5a",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "Unblocked": { "what": ["This"] } },
+            "effects": [{ "PutCounters": { "on": "Defending", "counter": "poison" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

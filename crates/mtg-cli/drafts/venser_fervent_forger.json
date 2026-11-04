@@ -1,0 +1,75 @@
+{
+  "oracle_id": "9b1ae6d8-0cf3-4a67-9241-37f4bc5ddbdd",
+  "name": "Venser, Fervent Forger",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Venser, Fervent Forger",
+      "oracle_fingerprint": "9d631458807ea71b47fb8c0a75a3f07a",
+      "abilities": [
+        { "Keyword": "Flash" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Modal": {
+                  "modes": [
+                    {
+                      "targets": [
+                        {
+                          "what": {
+                            "Object": [
+                              "Spell",
+                              { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] },
+                              { "ControlledBy": "Opponents" }
+                            ]
+                          }
+                        }
+                      ],
+                      "effects": [
+                        {
+                          "CopySpell": { "what": { "Target": 0 }, "count": 2, "new_targets": true }
+                        }
+                      ]
+                    },
+                    {
+                      "targets": [{ "what": { "Object": [{ "ControlledBy": "Opponents" }] } }],
+                      "effects": [
+                        {
+                          "CreateToken": {
+                            "token": {
+                              "CopyOf": {
+                                "of": { "Target": 0 },
+                                "except": [{ "AddKeyword": "Haste" }]
+                              }
+                            },
+                            "count": 2,
+                            "as": "copy"
+                          }
+                        },
+                        {
+                          "DelayedTrigger": {
+                            "when": { "StepBegins": { "step": "End" } },
+                            "effects": [
+                              {
+                                "Sacrifice": {
+                                  "who": { "ControllerOf": { "Bound": "copy" } },
+                                  "filter": [{ "Is": { "Bound": "copy" } }]
+                                }
+                              }
+                            ]
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

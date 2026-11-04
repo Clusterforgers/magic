@@ -1,0 +1,43 @@
+{
+  "oracle_id": "c9f2f0ae-5869-43dc-a225-4dfe3d37c166",
+  "name": "Urge to Feed",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Urge to Feed",
+      "oracle_fingerprint": "b0d11920ced6c8db3780a8dccfec075a",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "ModifyPT": { "power": -3, "toughness": -3 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [{ "Subtype": "Vampire" }, { "ControlledBy": "You" }, "Untapped"]
+                  },
+                  "count": {
+                    "min": 0,
+                    "max": {
+                      "Count": [{ "Subtype": "Vampire" }, { "ControlledBy": "You" }, "Untapped"]
+                    }
+                  },
+                  "as": "tap"
+                }
+              },
+              { "Tap": { "what": { "Bound": "tap" }, "as": "tapped2" } },
+              { "PutCounters": { "on": { "Bound": "tapped2" }, "counter": "+1/+1" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

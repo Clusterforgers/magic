@@ -1,0 +1,44 @@
+{
+  "oracle_id": "b0709570-a145-4c3c-ba56-f06d25753855",
+  "name": "Hidden Spider",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Hidden Spider",
+      "oracle_fingerprint": "17345fd388a00f30246afb792a67ebf3",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "SpellCast": {
+                "what": [{ "Type": "Creature" }, { "HasKeyword": "Flying" }],
+                "by": "Opponents"
+              }
+            },
+            "if": {
+              "Compare": {
+                "left": { "Count": ["This", { "Type": "Enchantment" }] },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [
+                    { "SetPT": { "power": 3, "toughness": 5 } },
+                    { "SetCreatureTypes": ["Spider"] },
+                    { "SetTypes": ["Creature"] },
+                    { "AddKeyword": "Reach" }
+                  ],
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

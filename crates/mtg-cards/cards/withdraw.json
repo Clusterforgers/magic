@@ -1,0 +1,33 @@
+{
+  "oracle_id": "626882c5-15a8-43ea-ab08-33a7e949c88c",
+  "name": "Withdraw",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Withdraw",
+      "oracle_fingerprint": "0ede4e4604ef11eb8133bf5599d714f5",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }] } },
+              {
+                "what": { "Object": [{ "Type": "Creature" }, { "Not": { "Is": { "Target": 0 } } }] }
+              }
+            ],
+            "effects": [
+              { "Move": { "what": { "Target": 0 }, "to": "Hand" } },
+              {
+                "Pay": {
+                  "who": { "ControllerOf": { "Target": 1 } },
+                  "cost": "{1}",
+                  "unpaid": [{ "Move": { "what": { "Target": 1 }, "to": "Hand" } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

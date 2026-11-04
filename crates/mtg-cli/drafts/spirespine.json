@@ -1,0 +1,25 @@
+{
+  "oracle_id": "de0edcc8-1595-4dbb-ac8a-46dcd96299cb",
+  "name": "Spirespine",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Spirespine",
+      "oracle_fingerprint": "dd281d6a024143fd089efd83df41fc8d",
+      "abilities": [
+        { "Keyword": { "Bestow": "{4}{G}" } },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "ModifyPT": { "power": 4, "toughness": 1 } }]
+          }
+        },
+        {
+          "Rule": {
+            "rule": { "MustBlock": { "Each": [{ "AnyOf": ["This", { "Is": "Attached" }] }] } }
+          }
+        }
+      ]
+    }
+  ]
+}

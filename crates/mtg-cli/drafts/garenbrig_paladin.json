@@ -1,0 +1,35 @@
+{
+  "oracle_id": "33fdbff6-0e89-4f02-b429-9b17869134cd",
+  "name": "Garenbrig Paladin",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Garenbrig Paladin",
+      "oracle_fingerprint": "77aa78755c8d1093b7d530c43ecfaff2",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "WithCounters": { "counter": "+1/+1", "count": 1 } },
+            "condition": {
+              "Compare": { "left": { "ManaSpent": { "of": "Green" } }, "op": "Ge", "right": 3 }
+            }
+          }
+        },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              {
+                "CantBeBlockedBy": [
+                  { "Type": "Creature" },
+                  { "Compare": { "stat": "Power", "op": "Le", "to": 2 } }
+                ]
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

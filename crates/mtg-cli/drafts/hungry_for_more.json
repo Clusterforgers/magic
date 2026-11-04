@@ -1,0 +1,53 @@
+{
+  "oracle_id": "3eaf1e6b-bf4c-4ea8-83ea-6827470fd802",
+  "name": "Hungry for More",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Hungry for More",
+      "oracle_fingerprint": "1872e38470156c78f5327ea601551aff",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Vampire",
+                      "colors": ["Black", "Red"],
+                      "types": ["Creature"],
+                      "subtypes": ["Vampire"],
+                      "power": 3,
+                      "toughness": 1,
+                      "abilities": [
+                        { "Keyword": "Trample" },
+                        { "Keyword": "Lifelink" },
+                        { "Keyword": "Haste" }
+                      ]
+                    }
+                  },
+                  "as": "token"
+                }
+              },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "End" } },
+                  "effects": [
+                    {
+                      "Sacrifice": {
+                        "who": { "ControllerOf": { "Bound": "token" } },
+                        "filter": [{ "Is": { "Bound": "token" } }]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Flashback": "{1}{B}{R}" } }
+      ]
+    }
+  ]
+}

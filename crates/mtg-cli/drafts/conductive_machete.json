@@ -1,0 +1,32 @@
+{
+  "oracle_id": "513dbf8a-a250-4fd9-a5ae-2fb9c4810ecc",
+  "name": "Conductive Machete",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Conductive Machete",
+      "oracle_fingerprint": "16c4effd9bd87c12c65488d753846d7c",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              { "LookAtTop": { "count": 2, "as": "looked" } },
+              { "Choose": { "from": { "Bound": "looked" }, "as": "kept2", "rest_as": "rest3" } },
+              { "Move": { "what": { "Bound": "rest3" }, "to": "Graveyard" } },
+              { "Manifest": { "as": "manifested4" } },
+              { "Attach": { "what": "This", "to": { "Bound": "manifested4" } } }
+            ]
+          }
+        },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "ModifyPT": { "power": 2, "toughness": 1 } }]
+          }
+        },
+        { "Keyword": { "Equip": "{4}" } }
+      ]
+    }
+  ]
+}

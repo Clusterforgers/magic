@@ -1,0 +1,71 @@
+{
+  "oracle_id": "89a6e876-0b00-4671-9652-766fd7ef9bf2",
+  "name": "The Theorist, Jace Beleren",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "The Theorist, Jace Beleren",
+      "oracle_fingerprint": "bbea6e823f281ee5c787c7da929d044f",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Draw", "whose": "Opponents" } },
+            "effects": [{ "Draw": {} }]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Plus": 1 },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Illusion",
+                      "colors": ["Blue"],
+                      "types": ["Creature"],
+                      "subtypes": ["Illusion"],
+                      "power": 1,
+                      "toughness": 1
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Minus": 2 },
+            "targets": [
+              {
+                "what": {
+                  "PerPlayer": {
+                    "players": "Opponents",
+                    "what": [{ "AnyOf": [{ "Type": "Artifact" }, { "Type": "Creature" }] }]
+                  }
+                }
+              }
+            ],
+            "effects": [{ "Move": { "what": { "Target": 0 }, "to": "Hand" } }]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Minus": 6 },
+            "effects": [
+              { "Draw": { "count": 3 } },
+              {
+                "PutCounters": {
+                  "on": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                  "counter": "+1/+1",
+                  "count": { "Count": [{ "OwnedBy": "You" }, { "In": "Hand" }] }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

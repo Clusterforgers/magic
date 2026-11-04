@@ -1,0 +1,26 @@
+{
+  "oracle_id": "eafd7ba5-691d-4f8d-94bb-70a5612245a1",
+  "name": "Venerated Rotpriest",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Venerated Rotpriest",
+      "oracle_fingerprint": "aa9fa2bf1e1a85a55fde56b2fc6c1a4b",
+      "abilities": [
+        { "Keyword": { "Toxic": 1 } },
+        {
+          "Triggered": {
+            "when": {
+              "BecomesTarget": {
+                "what": [{ "Type": "Creature" }, { "ControlledBy": "You" }, { "In": "Battlefield" }],
+                "by": ["Spell"]
+              }
+            },
+            "targets": [{ "what": "Opponent" }],
+            "effects": [{ "PutCounters": { "on": { "Target": 0 }, "counter": "poison" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

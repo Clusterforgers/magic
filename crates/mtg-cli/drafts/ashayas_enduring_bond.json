@@ -1,0 +1,48 @@
+{
+  "oracle_id": "0339d25b-9591-49c0-bf31-4ba749ebd0b0",
+  "name": "Ashaya's Enduring Bond",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ashaya's Enduring Bond",
+      "oracle_fingerprint": "421a9f2fa99d43c303bf10787380bb76",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "ExileUntil": {
+                  "filter": [
+                    { "Not": { "Type": "Land" } },
+                    {
+                      "Compare": {
+                        "stat": "ManaValue",
+                        "op": "Le",
+                        "to": { "ManaSpent": { "of": null } }
+                      }
+                    }
+                  ],
+                  "as": "found",
+                  "exiled_as": "exiled"
+                }
+              },
+              {
+                "CastFromZone": {
+                  "what": { "Bound": "found" },
+                  "free": true,
+                  "otherwise": [{ "Move": { "what": { "Bound": "found" }, "to": "Hand" } }]
+                }
+              },
+              {
+                "Move": {
+                  "what": { "Bound": "exiled" },
+                  "to": { "Library": { "place": "Bottom", "order": "Random" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

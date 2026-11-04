@@ -1,0 +1,21 @@
+{
+  "oracle_id": "1ef73cc0-fe72-4040-a932-bcd4b1a704a3",
+  "name": "Gnarled Scarhide",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Gnarled Scarhide",
+      "oracle_fingerprint": "161f17cf9257ddd2626310c691a11396",
+      "abilities": [
+        { "Keyword": { "Bestow": "{3}{B}" } },
+        { "Static": { "affected": "This", "mods": ["CantBlock"] } },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "ModifyPT": { "power": 2, "toughness": 1 } }, "CantBlock"]
+          }
+        }
+      ]
+    }
+  ]
+}

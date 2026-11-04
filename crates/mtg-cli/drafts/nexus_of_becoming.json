@@ -1,0 +1,50 @@
+{
+  "oracle_id": "07142ee9-dc2c-4b33-ad20-2f5285225e86",
+  "name": "Nexus of Becoming",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Nexus of Becoming",
+      "oracle_fingerprint": "98e4a841fa983b9265ee7f741eaa930d",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "BeginCombat", "whose": "You" } },
+            "effects": [
+              { "Draw": {} },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "AnyOf": [{ "Type": "Creature" }, { "Type": "Artifact" }] },
+                      { "OwnedBy": "You" },
+                      { "In": "Hand" }
+                    ]
+                  },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "picked"
+                }
+              },
+              { "Exile": { "what": { "Bound": "picked" }, "as": "exiled2" } },
+              {
+                "CreateToken": {
+                  "token": {
+                    "CopyOf": {
+                      "of": { "Bound": "exiled2" },
+                      "except": [
+                        { "SetPT": { "power": 3, "toughness": 3 } },
+                        { "AddSubtype": "Golem" },
+                        { "AddType": "Artifact" },
+                        { "AddType": "Creature" }
+                      ]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

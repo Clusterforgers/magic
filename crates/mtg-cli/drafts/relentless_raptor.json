@@ -1,0 +1,16 @@
+{
+  "oracle_id": "4727db28-98e9-453d-90c3-2d51365d32fc",
+  "name": "Relentless Raptor",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Relentless Raptor",
+      "oracle_fingerprint": "a0e2477be8b88aa941b4e7a75bc9a356",
+      "abilities": [
+        { "Keyword": "Vigilance" },
+        { "Rule": { "rule": { "MustAttack": "This" } } },
+        { "Rule": { "rule": { "MustBlock": "This" } } }
+      ]
+    }
+  ]
+}

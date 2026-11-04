@@ -1,0 +1,41 @@
+{
+  "oracle_id": "19f5a25a-97fc-41e6-bb26-7c35f4b4e37c",
+  "name": "Lobelia Sackville-Baggins",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Lobelia Sackville-Baggins",
+      "oracle_fingerprint": "65964250c837bfa92b7635415f9585ed",
+      "abilities": [
+        { "Keyword": "Flash" },
+        { "Keyword": "Menace" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Type": "Creature" },
+                    { "ArrivedFrom": "Battlefield" },
+                    { "OwnedBy": "Opponents" },
+                    { "In": "Graveyard" }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              { "Exile": { "what": { "Target": 0 }, "as": "exiled" } },
+              {
+                "CreateToken": {
+                  "token": { "Named": "treasure" },
+                  "count": { "Stat": { "of": { "Bound": "exiled" }, "stat": "Power" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

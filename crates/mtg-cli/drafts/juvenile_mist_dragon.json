@@ -1,0 +1,36 @@
+{
+  "oracle_id": "c6867301-296c-4840-aad4-1ad8345c091c",
+  "name": "Juvenile Mist Dragon",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Juvenile Mist Dragon",
+      "oracle_fingerprint": "e1399a3251a2a1c16f765194cfdc5cad",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              {
+                "what": {
+                  "PerPlayer": { "players": "Opponents", "what": [{ "Type": "Creature" }] }
+                }
+              }
+            ],
+            "effects": [
+              { "Tap": { "what": { "Target": 0 } } },
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": ["DoesntUntap"],
+                  "duration": "NextUntapStep"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

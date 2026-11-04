@@ -1,0 +1,42 @@
+{
+  "source": "forge",
+  "oracle_matches": true,
+  "lines": [
+    {
+      "face": 0,
+      "tag": "T",
+      "text": "When CARDNAME enters, you may search your library for a creature card with eternalize or embalm, put that card into your graveyard, then shuffle.",
+      "abilities": [
+        0
+      ],
+      "gap": null
+    },
+    {
+      "face": 0,
+      "tag": "T",
+      "text": "Whenever you activate an eternalize or embalm ability, draw a card.",
+      "abilities": [],
+      "gap": "trigger:AbilityCast"
+    }
+  ],
+  "proof": {
+    "marks": [
+      {
+        "face": 0,
+        "span": {
+          "start": 0,
+          "end": 150
+        },
+        "mark": "Auto"
+      },
+      {
+        "face": 0,
+        "span": {
+          "start": 151,
+          "end": 218
+        },
+        "mark": "ByHand"
+      }
+    ]
+  }
+}

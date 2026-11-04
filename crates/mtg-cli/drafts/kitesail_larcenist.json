@@ -1,0 +1,51 @@
+{
+  "oracle_id": "2452be47-cc23-47f7-a3a1-fec900bb0119",
+  "name": "Kitesail Larcenist",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Kitesail Larcenist",
+      "oracle_fingerprint": "50d9a430e7e7ea0167ee03bf22139404",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": { "Ward": "{1}" } },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              {
+                "what": {
+                  "PerPlayer": {
+                    "players": "EachPlayer",
+                    "what": [{ "AnyOf": [{ "Type": "Artifact" }, { "Type": "Creature" }] }, "Other"]
+                  }
+                }
+              }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    { "AddSubtype": "Treasure" },
+                    { "SetTypes": ["Artifact"] },
+                    "LoseAbilities",
+                    {
+                      "GrantAbility": {
+                        "Activated": {
+                          "cost": ["Tap", "SacrificeSelf"],
+                          "effects": [{ "AddMana": { "mana": { "AnyColor": 1 } } }]
+                        }
+                      }
+                    }
+                  ],
+                  "duration": "WhileSourceOnBattlefield"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

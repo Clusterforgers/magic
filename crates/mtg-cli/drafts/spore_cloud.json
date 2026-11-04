@@ -1,0 +1,36 @@
+{
+  "oracle_id": "36d55084-4696-4d16-ab3a-b00f1456603f",
+  "name": "Spore Cloud",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Spore Cloud",
+      "oracle_fingerprint": "6151d2f5770f17420c67defeb5879f54",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Shield": {
+                  "when": { "Damage": { "combat": true } },
+                  "by": "Prevent",
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              { "Tap": { "what": { "Each": [{ "Type": "Creature" }, "Blocking"] } } },
+              {
+                "Continuous": {
+                  "affected": {
+                    "Each": [{ "Type": "Creature" }, { "AnyOf": ["Attacking", "Blocking"] }]
+                  },
+                  "mods": ["DoesntUntap"],
+                  "duration": "NextUntapStep"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

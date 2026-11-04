@@ -1,0 +1,49 @@
+{
+  "oracle_id": "3ae3b901-4d36-40e2-b861-26209fa1e823",
+  "name": "Drana, the Last Bloodchief",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Drana, the Last Bloodchief",
+      "oracle_fingerprint": "aaf60c9b822463b593c38f74511ffba5",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [
+              {
+                "Choose": {
+                  "who": "Defending",
+                  "from": {
+                    "Each": [
+                      { "Type": "Creature" },
+                      { "OwnedBy": "You" },
+                      { "Not": { "Supertype": "Legendary" } },
+                      { "In": "Graveyard" }
+                    ]
+                  },
+                  "as": "card"
+                }
+              },
+              {
+                "Move": {
+                  "what": { "Bound": "card" },
+                  "to": { "Battlefield": { "counters": [["+1/+1", 1]] } },
+                  "as": "moved2"
+                }
+              },
+              {
+                "Continuous": {
+                  "affected": { "Bound": "moved2" },
+                  "mods": [{ "AddSubtype": "Vampire" }],
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

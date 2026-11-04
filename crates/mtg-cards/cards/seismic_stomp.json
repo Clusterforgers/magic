@@ -1,0 +1,28 @@
+{
+  "oracle_id": "a1d02a70-2543-45c6-a9a1-c1941f2f68f3",
+  "name": "Seismic Stomp",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Seismic Stomp",
+      "oracle_fingerprint": "31bd5d5c5bb69be1400ecc3ae2e9bffe",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": {
+                    "Each": [{ "Type": "Creature" }, { "Not": { "HasKeyword": "Flying" } }]
+                  },
+                  "mods": ["CantBlock"],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

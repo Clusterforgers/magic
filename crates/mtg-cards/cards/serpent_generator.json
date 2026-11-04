@@ -1,0 +1,43 @@
+{
+  "oracle_id": "0e3a11f4-c880-4932-bc7e-7aea8a9472bc",
+  "name": "Serpent Generator",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Serpent Generator",
+      "oracle_fingerprint": "1de55fac2aa92db8982f1f4c91ca00ce",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{4}" }, "Tap"],
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Snake",
+                      "types": ["Artifact", "Creature"],
+                      "subtypes": ["Snake"],
+                      "power": 1,
+                      "toughness": 1,
+                      "abilities": [
+                        {
+                          "Triggered": {
+                            "when": { "DealsDamage": { "source": ["This"], "to": "EachPlayer" } },
+                            "effects": [
+                              { "PutCounters": { "on": "Triggering", "counter": "poison" } }
+                            ]
+                          }
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

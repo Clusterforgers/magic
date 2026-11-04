@@ -1,0 +1,33 @@
+{
+  "oracle_id": "711c10cb-7a85-417d-be24-79d4e4a89993",
+  "name": "Deadshot",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Deadshot",
+      "oracle_fingerprint": "e121351ff425a5b41028e18b59aef9dc",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }] } },
+              {
+                "what": { "Object": [{ "Type": "Creature" }, { "Not": { "Is": { "Target": 0 } } }] }
+              }
+            ],
+            "effects": [
+              { "Tap": { "what": { "Target": 0 } } },
+              {
+                "DealDamage": {
+                  "source": { "Target": 0 },
+                  "to": { "Target": 1 },
+                  "amount": { "Stat": { "of": { "Target": 0 }, "stat": "Power" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

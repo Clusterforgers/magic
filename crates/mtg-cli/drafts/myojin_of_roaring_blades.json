@@ -1,0 +1,36 @@
+{
+  "oracle_id": "20d20254-0f77-429a-a74e-0aec08d18f2d",
+  "name": "Myojin of Roaring Blades",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Myojin of Roaring Blades",
+      "oracle_fingerprint": "ceadc3aa35dd4b769b31f42cd98b4382",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "WithCounters": { "counter": { "Other": "indestructible" }, "count": 1 } },
+            "condition": {
+              "Matches": {
+                "subject": "This",
+                "selector": [
+                  "This",
+                  { "WasCast": { "by": "You", "from": "Hand" } },
+                  { "OwnedBy": "You" }
+                ]
+              }
+            }
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "RemoveCounters": { "counter": { "Other": "indestructible" } } }],
+            "targets": [{ "what": "AnyTarget", "bounds": { "min": 0, "max": 3 } }],
+            "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 7 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

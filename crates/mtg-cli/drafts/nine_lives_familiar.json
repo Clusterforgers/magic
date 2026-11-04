@@ -1,0 +1,28 @@
+{
+  "oracle_id": "5049da27-f38b-4fe6-a387-51510bd1f44e",
+  "name": "Nine-Lives Familiar",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Nine-Lives Familiar",
+      "oracle_fingerprint": "bcc0a65e182dba1789e601e72f38d127",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "WithCounters": { "counter": { "Other": "revival" }, "count": 8 } },
+            "condition": {
+              "Matches": { "subject": "This", "selector": ["This", { "WasCast": { "by": "You" } }] }
+            }
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 71, "end": 235 }
+          }
+        }
+      ]
+    }
+  ]
+}

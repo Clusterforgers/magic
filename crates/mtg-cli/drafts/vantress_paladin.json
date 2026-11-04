@@ -1,0 +1,23 @@
+{
+  "oracle_id": "1965ca0e-1357-4437-82d3-1a78353ab5f1",
+  "name": "Vantress Paladin",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Vantress Paladin",
+      "oracle_fingerprint": "b2da2336414f24e8c6af14937e154aac",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "WithCounters": { "counter": "+1/+1", "count": 1 } },
+            "condition": {
+              "Compare": { "left": { "ManaSpent": { "of": "Blue" } }, "op": "Ge", "right": 3 }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

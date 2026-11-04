@@ -1,0 +1,21 @@
+{
+  "oracle_id": "d95a2bc0-011a-4506-88ce-d950585f44e2",
+  "name": "Gate to Tumbledown",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Gate to Tumbledown",
+      "oracle_fingerprint": "55293b1f998ea2b364be0961091d914f",
+      "abilities": [
+        { "Replacement": { "when": { "Enters": { "what": ["This"] } }, "by": "Tapped" } },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{3}{R}" }, "Tap"],
+            "limit": "OncePerGame",
+            "effects": [{ "Seek": { "filter": [{ "Not": { "Type": "Land" } }] } }]
+          }
+        }
+      ]
+    }
+  ]
+}

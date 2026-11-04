@@ -1,0 +1,44 @@
+{
+  "oracle_id": "151c867f-cc77-42de-9ae5-5fd2233ccdab",
+  "name": "Afterlife from the Loam",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Afterlife from the Loam",
+      "oracle_fingerprint": "6cb6cc89eda79a2ade7dad599783c3a1",
+      "abilities": [
+        { "Keyword": "Delve" },
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "PerPlayer": {
+                    "players": "EachPlayer",
+                    "what": [{ "Type": "Creature" }, { "In": "Graveyard" }]
+                  }
+                }
+              }
+            ],
+            "effects": [
+              {
+                "Move": {
+                  "what": { "Target": 0 },
+                  "to": { "Battlefield": { "under": "You" } },
+                  "as": "moved"
+                }
+              },
+              {
+                "Continuous": {
+                  "affected": { "Bound": "moved" },
+                  "mods": [{ "AddSubtype": "Zombie" }],
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

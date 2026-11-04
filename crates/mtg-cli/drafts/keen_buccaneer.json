@@ -1,0 +1,25 @@
+{
+  "oracle_id": "8cadf9c0-9a63-4cde-a6be-0ae86890c831",
+  "name": "Keen Buccaneer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Keen Buccaneer",
+      "oracle_fingerprint": "5709c026dfc67f96ff2d88cb19a745ca",
+      "abilities": [
+        { "Keyword": "Vigilance" },
+        {
+          "Activated": {
+            "cost": "{1}{U}",
+            "limit": "OncePerGame",
+            "effects": [
+              { "Draw": {} },
+              { "Discard": {} },
+              { "PutCounters": { "on": "This", "counter": "+1/+1" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

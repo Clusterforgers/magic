@@ -1,0 +1,40 @@
+{
+  "oracle_id": "c2a6cfb7-e5bd-49c8-aa51-fd5203eca8b8",
+  "name": "Compleat Devotion",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Compleat Devotion",
+      "oracle_fingerprint": "3b6c86afcca8708d5d15ce175eabe7f8",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "ModifyPT": { "power": 2, "toughness": 2 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Target": 0 },
+                      "selector": [{ "HasKeywordNamed": "Toxic" }],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [{ "Draw": {} }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

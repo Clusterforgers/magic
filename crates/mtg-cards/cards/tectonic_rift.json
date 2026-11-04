@@ -1,0 +1,30 @@
+{
+  "oracle_id": "b94fcdd2-7e50-439c-b5eb-aaa9ec7dee08",
+  "name": "Tectonic Rift",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Tectonic Rift",
+      "oracle_fingerprint": "f50168f495f079b487ffb6aef9415fcf",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Land" }] } }],
+            "effects": [
+              { "Destroy": { "what": { "Target": 0 } } },
+              {
+                "Continuous": {
+                  "affected": {
+                    "Each": [{ "Type": "Creature" }, { "Not": { "HasKeyword": "Flying" } }]
+                  },
+                  "mods": ["CantBlock"],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

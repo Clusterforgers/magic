@@ -1,0 +1,34 @@
+{
+  "oracle_id": "a605864a-f46f-4ebc-8e56-ce7322c918b0",
+  "name": "Sinew Dancer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sinew Dancer",
+      "oracle_fingerprint": "081f73fb06eb9285f60b92434e3366e9",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{3}{W}" }, "Tap"],
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [{ "Tap": { "what": { "Target": 0 } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{W}" }, "Tap"],
+            "condition": {
+              "Compare": {
+                "left": { "HighestCounters": { "who": "Opponents", "counter": "poison" } },
+                "op": "Ge",
+                "right": 3
+              }
+            },
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [{ "Tap": { "what": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,30 @@
+{
+  "oracle_id": "8e33d6e5-30a2-48b4-826c-09aa75bbba27",
+  "name": "Fleshless Gladiator",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Fleshless Gladiator",
+      "oracle_fingerprint": "7e680458f6a7c9e79fa29b2f45f6cd38",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{2}{B}",
+            "condition": {
+              "Compare": {
+                "left": { "HighestCounters": { "who": "Opponents", "counter": "poison" } },
+                "op": "Ge",
+                "right": 3
+              }
+            },
+            "from": "Graveyard",
+            "effects": [
+              { "Move": { "what": "This", "to": { "Battlefield": { "tapped": true } } } },
+              { "LoseLife": { "amount": 1 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

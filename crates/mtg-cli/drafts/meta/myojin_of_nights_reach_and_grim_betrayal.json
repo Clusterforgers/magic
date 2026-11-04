@@ -1,0 +1,42 @@
+{
+  "source": "forge",
+  "oracle_matches": true,
+  "lines": [
+    {
+      "face": 0,
+      "tag": "K",
+      "text": "etbCounter:Indestructible:1:CheckSVar$ FromHand:CARDNAME enters the battlefield with an indestructible counter on it if you cast it from your hand.",
+      "abilities": [
+        0
+      ],
+      "gap": null
+    },
+    {
+      "face": 0,
+      "tag": "A",
+      "text": "Each opponent discards their hand. Put onto the battlefield under your control all creature cards in all graveyards that were put there from anywhere this turn.",
+      "abilities": [],
+      "gap": "key:Discard.Mode=Hand"
+    }
+  ],
+  "proof": {
+    "marks": [
+      {
+        "face": 0,
+        "span": {
+          "start": 0,
+          "end": 132
+        },
+        "mark": "Auto"
+      },
+      {
+        "face": 0,
+        "span": {
+          "start": 133,
+          "end": 374
+        },
+        "mark": "ByHand"
+      }
+    ]
+  }
+}

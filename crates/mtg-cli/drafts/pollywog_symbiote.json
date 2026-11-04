@@ -1,0 +1,36 @@
+{
+  "oracle_id": "0a766368-c982-4cba-9638-c7a56978c240",
+  "name": "Pollywog Symbiote",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Pollywog Symbiote",
+      "oracle_fingerprint": "5ecf4e024cfc1aa4b1241c9347b64aea",
+      "abilities": [
+        {
+          "CostModifier": {
+            "applies_to": [
+              "Spell",
+              { "Type": "Creature" },
+              { "HasKeywordNamed": "Mutate" },
+              { "ControlledBy": "You" }
+            ],
+            "change": "Reduce",
+            "mana": "{1}"
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "SpellCast": {
+                "what": [{ "Type": "Creature" }, { "HasKeywordNamed": "Mutate" }],
+                "by": "You"
+              }
+            },
+            "effects": [{ "Draw": {} }, { "Discard": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

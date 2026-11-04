@@ -1,0 +1,39 @@
+{
+  "oracle_id": "53fd9fb1-c28f-4d73-bf98-94cdab418f21",
+  "name": "Consume Strength",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Consume Strength",
+      "oracle_fingerprint": "e70a2ca40e0d2a5028e9c50e8390a6ff",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }] } },
+              {
+                "what": { "Object": [{ "Type": "Creature" }, { "Not": { "Is": { "Target": 0 } } }] }
+              }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "ModifyPT": { "power": 2, "toughness": 2 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "Continuous": {
+                  "affected": { "Target": 1 },
+                  "mods": [{ "ModifyPT": { "power": -2, "toughness": -2 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

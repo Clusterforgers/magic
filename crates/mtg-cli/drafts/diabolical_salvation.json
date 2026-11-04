@@ -1,0 +1,64 @@
+{
+  "oracle_id": "255bd94e-119e-4fc2-ad3b-8b74762ed3f6",
+  "name": "Diabolical Salvation",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Diabolical Salvation",
+      "oracle_fingerprint": "a715364105efe1d0b9b643b3bd570c6b",
+      "abilities": [
+        { "Keyword": "SplitSecond" },
+        {
+          "Spell": {
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Devil",
+                      "colors": ["Red"],
+                      "types": ["Creature"],
+                      "subtypes": ["Devil"],
+                      "power": 4,
+                      "toughness": 4,
+                      "abilities": [
+                        { "Keyword": "Haste" },
+                        {
+                          "Triggered": {
+                            "when": {
+                              "ZoneChange": {
+                                "what": ["This"],
+                                "from": "Battlefield",
+                                "to": "Graveyard"
+                              }
+                            },
+                            "effects": [{ "CreateToken": { "token": { "Named": "treasure" } } }]
+                          }
+                        }
+                      ]
+                    }
+                  },
+                  "count": 4,
+                  "as": "token"
+                }
+              },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "End" } },
+                  "effects": [
+                    {
+                      "Sacrifice": {
+                        "who": { "ControllerOf": { "Bound": "token" } },
+                        "filter": [{ "Is": { "Bound": "token" } }]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

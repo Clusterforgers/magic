@@ -1,0 +1,38 @@
+{
+  "oracle_id": "dc430e1b-d57f-4035-b518-9bc2e26a6c04",
+  "name": "Hidden Ancients",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Hidden Ancients",
+      "oracle_fingerprint": "520d666d02f702b5037392eb31df6554",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "what": [{ "Type": "Enchantment" }], "by": "Opponents" } },
+            "if": {
+              "Compare": {
+                "left": { "Count": ["This", { "Type": "Enchantment" }] },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [
+                    { "SetPT": { "power": 5, "toughness": 5 } },
+                    { "SetCreatureTypes": ["Treefolk"] },
+                    { "SetTypes": ["Creature"] }
+                  ],
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

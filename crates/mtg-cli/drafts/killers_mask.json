@@ -1,0 +1,27 @@
+{
+  "oracle_id": "93a04ce0-9b8e-4d69-82bf-d4c89a9856a9",
+  "name": "Killer's Mask",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Killer's Mask",
+      "oracle_fingerprint": "d2d5c828e56cc6c215cf6932dec43e6c",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              { "LookAtTop": { "count": 2, "as": "looked" } },
+              { "Choose": { "from": { "Bound": "looked" }, "as": "kept2", "rest_as": "rest3" } },
+              { "Move": { "what": { "Bound": "rest3" }, "to": "Graveyard" } },
+              { "Manifest": { "as": "manifested4" } },
+              { "Attach": { "what": "This", "to": { "Bound": "manifested4" } } }
+            ]
+          }
+        },
+        { "Static": { "affected": "Attached", "mods": [{ "AddKeyword": "Menace" }] } },
+        { "Keyword": { "Equip": "{2}" } }
+      ]
+    }
+  ]
+}

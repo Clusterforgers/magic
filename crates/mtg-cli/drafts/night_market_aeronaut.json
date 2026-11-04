@@ -1,0 +1,27 @@
+{
+  "oracle_id": "e08157e6-a5a3-4b1e-80e0-32702288d8ed",
+  "name": "Night Market Aeronaut",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Night Market Aeronaut",
+      "oracle_fingerprint": "ce0301297a0948693ef4b341194e2b12",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "WithCounters": { "counter": "+1/+1", "count": 1 } },
+            "condition": {
+              "Compare": {
+                "left": { "Tallied": { "who": "You", "what": "PermanentsLeftUnder" } },
+                "op": "Ge",
+                "right": 1
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

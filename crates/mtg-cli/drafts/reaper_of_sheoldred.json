@@ -1,0 +1,22 @@
+{
+  "oracle_id": "251cee41-30f5-4bba-93cd-31493a5ea051",
+  "name": "Reaper of Sheoldred",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Reaper of Sheoldred",
+      "oracle_fingerprint": "7bf4b0e0f8dfcd53ea65142f1a694995",
+      "abilities": [
+        { "Keyword": "Infect" },
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": [], "to": "This" } },
+            "effects": [
+              { "PutCounters": { "on": { "ControllerOf": "Dealer" }, "counter": "poison" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,22 @@
+{
+  "oracle_id": "3bdd3090-4503-4382-9a11-3e1cfcdffd71",
+  "name": "Sphinx of New Prahv",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sphinx of New Prahv",
+      "oracle_fingerprint": "afcdeb64a4cd59ec0c46a69276edb772",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": "Vigilance" },
+        {
+          "CostModifier": {
+            "applies_to": ["Spell", { "ControlledBy": "Opponents" }, { "Targeting": ["This"] }],
+            "change": "Increase",
+            "mana": "{2}"
+          }
+        }
+      ]
+    }
+  ]
+}

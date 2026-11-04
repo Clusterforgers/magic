@@ -1,0 +1,42 @@
+{
+  "source": "forge",
+  "oracle_matches": true,
+  "lines": [
+    {
+      "face": 0,
+      "tag": "K",
+      "text": "etbCounter:REVIVAL:8:ValidCard$ Card.Self+wasCastByYou:This creature enters with eight revival counters on it if you cast it.",
+      "abilities": [
+        0
+      ],
+      "gap": null
+    },
+    {
+      "face": 0,
+      "tag": "T",
+      "text": "When this creature dies, if it had a revival counter on it, return it to the battlefield with one fewer revival counter on it at the beginning of the next end step.",
+      "abilities": [],
+      "gap": "key:DelayedTrigger.RememberObjects=TriggeredNewCardLKICopy"
+    }
+  ],
+  "proof": {
+    "marks": [
+      {
+        "face": 0,
+        "span": {
+          "start": 0,
+          "end": 70
+        },
+        "mark": "Auto"
+      },
+      {
+        "face": 0,
+        "span": {
+          "start": 71,
+          "end": 235
+        },
+        "mark": "ByHand"
+      }
+    ]
+  }
+}

@@ -1,0 +1,41 @@
+{
+  "oracle_id": "151388a4-a24b-4089-a323-e7c1d5e6490a",
+  "name": "Slow Motion",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Slow Motion",
+      "oracle_fingerprint": "8bb2d55124d583534c1cdd34e9677cea",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": { "ControllerOf": "Attached" } } },
+            "effects": [
+              {
+                "Pay": {
+                  "who": { "ControllerOf": "Attached" },
+                  "cost": "{2}",
+                  "unpaid": [
+                    {
+                      "Sacrifice": {
+                        "who": { "ControllerOf": "Attached" },
+                        "filter": [{ "Is": "Attached" }]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } },
+            "effects": [{ "Move": { "what": "This", "to": "Hand" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

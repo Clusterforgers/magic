@@ -1,0 +1,69 @@
+{
+  "oracle_id": "a0e85762-e433-4a23-bbee-69daeebb5898",
+  "name": "Plargg, Dean of Chaos // Augusta, Dean of Order",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Plargg, Dean of Chaos",
+      "oracle_fingerprint": "6f601ae816121b0a42960c6e1782bca7",
+      "abilities": [
+        { "Activated": { "cost": ["Tap", { "Discard": {} }], "effects": [{ "Draw": {} }] } },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 34, "end": 304 }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Augusta, Dean of Order",
+      "oracle_fingerprint": "3348574112d5dd56be4d5dd259a14daa",
+      "abilities": [
+        {
+          "Static": {
+            "affected": {
+              "Each": [{ "Type": "Creature" }, "Tapped", { "ControlledBy": "You" }, "Other"]
+            },
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 0 } }]
+          }
+        },
+        {
+          "Static": {
+            "affected": {
+              "Each": [{ "Type": "Creature" }, "Untapped", { "ControlledBy": "You" }, "Other"]
+            },
+            "mods": [{ "ModifyPT": { "power": 0, "toughness": 1 } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "GroupAttacks": { "what": [{ "Type": "Creature" }, { "ControlledBy": "You" }] }
+            },
+            "effects": [
+              {
+                "Untap": { "what": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } }
+              },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }, "Untapped"]
+                  },
+                  "count": {
+                    "min": 0,
+                    "max": {
+                      "Count": [{ "Type": "Creature" }, { "ControlledBy": "You" }, "Untapped"]
+                    }
+                  },
+                  "as": "tap"
+                }
+              },
+              { "Tap": { "what": { "Bound": "tap" } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

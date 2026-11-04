@@ -1,0 +1,23 @@
+{
+  "oracle_id": "6fea3c95-9663-4857-983e-eaf522efa1a8",
+  "name": "Locthwain Paladin",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Locthwain Paladin",
+      "oracle_fingerprint": "7564e639d6c92db793a2946101abe4a1",
+      "abilities": [
+        { "Keyword": "Menace" },
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "WithCounters": { "counter": "+1/+1", "count": 1 } },
+            "condition": {
+              "Compare": { "left": { "ManaSpent": { "of": "Black" } }, "op": "Ge", "right": 3 }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

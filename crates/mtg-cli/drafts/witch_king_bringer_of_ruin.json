@@ -1,0 +1,35 @@
+{
+  "oracle_id": "afcb21bb-aeb3-4024-9ce1-68ba7fb64b2d",
+  "name": "Witch-king, Bringer of Ruin",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Witch-king, Bringer of Ruin",
+      "oracle_fingerprint": "45d2416e7e08dc9f6f1d574426592994",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [
+              {
+                "Sacrifice": {
+                  "who": "Defending",
+                  "filter": [
+                    { "Type": "Creature" },
+                    {
+                      "LeastAmong": {
+                        "stat": "Power",
+                        "group": [{ "Type": "Creature" }, { "ControlledBy": "Defending" }]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,54 @@
+{
+  "oracle_id": "4187fd6d-5660-4ea7-a9dd-402487ec8721",
+  "name": "Veiled Apparition",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Veiled Apparition",
+      "oracle_fingerprint": "2fd984fe0a9bf1127825be3cf5527cc2",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "by": "Opponents" } },
+            "if": {
+              "Compare": {
+                "left": { "Count": ["This", { "Type": "Enchantment" }] },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [
+                    { "SetPT": { "power": 3, "toughness": 3 } },
+                    { "SetCreatureTypes": ["Illusion"] },
+                    { "SetTypes": ["Creature"] },
+                    { "AddKeyword": "Flying" },
+                    {
+                      "GrantAbility": {
+                        "Triggered": {
+                          "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+                          "effects": [
+                            {
+                              "Pay": {
+                                "cost": "{1}{U}",
+                                "unpaid": [{ "Sacrifice": { "filter": ["This"] } }]
+                              }
+                            }
+                          ]
+                        }
+                      }
+                    }
+                  ],
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

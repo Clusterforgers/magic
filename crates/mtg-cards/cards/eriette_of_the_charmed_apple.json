@@ -1,0 +1,42 @@
+{
+  "oracle_id": "f43f5855-f297-4433-984b-18263b734cfc",
+  "name": "Eriette of the Charmed Apple",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Eriette of the Charmed Apple",
+      "oracle_fingerprint": "4955d763988b4398f3e98459872e6ef6",
+      "abilities": [
+        {
+          "Static": {
+            "affected": {
+              "Each": [
+                { "Type": "Creature" },
+                { "HasAttached": [{ "Subtype": "Aura" }, { "ControlledBy": "You" }] }
+              ]
+            },
+            "mods": [{ "CantAttackYou": "Both" }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "effects": [
+              {
+                "LoseLife": {
+                  "who": "Opponents",
+                  "amount": { "Count": [{ "Subtype": "Aura" }, { "ControlledBy": "You" }] }
+                }
+              },
+              {
+                "GainLife": {
+                  "amount": { "Count": [{ "Subtype": "Aura" }, { "ControlledBy": "You" }] }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,59 @@
+{
+  "oracle_id": "c7efe6c6-3da1-47a6-a8ad-30c36502a7ab",
+  "name": "Mercurial Transformation",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mercurial Transformation",
+      "oracle_fingerprint": "7b321bb4f7980bc115bc9749c68fa144",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Not": { "Type": "Land" } }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": ["LoseAbilities"],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "Either": {
+                  "first": [
+                    {
+                      "Continuous": {
+                        "affected": { "Target": 0 },
+                        "mods": [
+                          { "SetPT": { "power": 1, "toughness": 1 } },
+                          { "SetColors": ["Blue"] },
+                          { "SetCreatureTypes": ["Frog"] },
+                          { "SetTypes": ["Creature"] }
+                        ],
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ],
+                  "second": [
+                    {
+                      "Continuous": {
+                        "affected": { "Target": 0 },
+                        "mods": [
+                          { "SetPT": { "power": 4, "toughness": 4 } },
+                          { "SetColors": ["Blue"] },
+                          { "SetCreatureTypes": ["Octopus"] },
+                          { "SetTypes": ["Creature"] }
+                        ],
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

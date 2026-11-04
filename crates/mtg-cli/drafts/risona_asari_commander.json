@@ -1,0 +1,54 @@
+{
+  "oracle_id": "44c4839f-c92a-4535-817b-1838c47fcb5e",
+  "name": "Risona, Asari Commander",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Risona, Asari Commander",
+      "oracle_fingerprint": "c7b3ded33f96d34604143ceba8a651f8",
+      "abilities": [
+        { "Keyword": "Haste" },
+        {
+          "Triggered": {
+            "when": {
+              "DealsDamage": {
+                "source": ["This", { "Not": { "HasCounter": { "Other": "indestructible" } } }],
+                "to": "EachPlayer",
+                "combat": true
+              }
+            },
+            "effects": [
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": {
+                        "Count": [
+                          "This",
+                          { "Not": { "HasCounter": { "Other": "indestructible" } } }
+                        ]
+                      },
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [
+                    { "PutCounters": { "on": "This", "counter": { "Other": "indestructible" } } }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Batch": { "DealsDamage": { "source": [], "to": "You", "combat": true } } },
+            "effects": [
+              { "RemoveCounters": { "from": "This", "counter": { "Other": "indestructible" } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

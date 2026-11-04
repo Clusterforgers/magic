@@ -1,0 +1,43 @@
+{
+  "oracle_id": "09027657-bc9a-4702-88c1-e5b3534ad188",
+  "name": "Increasing Ambition",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Increasing Ambition",
+      "oracle_fingerprint": "7d700819d28e2621858bb5a9facf78f1",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Search": {
+                  "filter": [],
+                  "count": {
+                    "min": 0,
+                    "max": {
+                      "When": {
+                        "condition": {
+                          "Matches": {
+                            "subject": "This",
+                            "selector": [{ "WasCast": { "from": "Graveyard" } }]
+                          }
+                        },
+                        "then": 2,
+                        "otherwise": 1
+                      }
+                    }
+                  },
+                  "as": "found"
+                }
+              },
+              { "Move": { "what": { "Bound": "found" }, "to": "Hand" } },
+              { "Shuffle": {} }
+            ]
+          }
+        },
+        { "Keyword": { "Flashback": "{7}{B}" } }
+      ]
+    }
+  ]
+}

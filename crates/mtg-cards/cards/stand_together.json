@@ -1,0 +1,27 @@
+{
+  "oracle_id": "54bfd255-cce6-4c67-8a18-2bc01400f4b6",
+  "name": "Stand Together",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Stand Together",
+      "oracle_fingerprint": "9059f637c2215bd2444c7d0c14fcaabc",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }] } },
+              {
+                "what": { "Object": [{ "Type": "Creature" }, { "Not": { "Is": { "Target": 0 } } }] }
+              }
+            ],
+            "effects": [
+              { "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1", "count": 2 } },
+              { "PutCounters": { "on": { "Target": 1 }, "counter": "+1/+1", "count": 2 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,54 @@
+{
+  "oracle_id": "6de2d53c-06e3-4c56-a5cf-c9cb2db42527",
+  "name": "Pursued Whale",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Pursued Whale",
+      "oracle_fingerprint": "92e0d167f36e551ec3dbad8f30572cf5",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "who": "Opponents",
+                  "token": {
+                    "Custom": {
+                      "name": "Pirate",
+                      "colors": ["Red"],
+                      "types": ["Creature"],
+                      "subtypes": ["Pirate"],
+                      "power": 1,
+                      "toughness": 1,
+                      "abilities": [
+                        { "Static": { "affected": "This", "mods": ["CantBlock"] } },
+                        {
+                          "Rule": {
+                            "rule": {
+                              "MustAttack": {
+                                "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }]
+                              }
+                            }
+                          }
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "CostModifier": {
+            "applies_to": ["Spell", { "ControlledBy": "Opponents" }, { "Targeting": ["This"] }],
+            "change": "Increase",
+            "mana": "{3}"
+          }
+        }
+      ]
+    }
+  ]
+}

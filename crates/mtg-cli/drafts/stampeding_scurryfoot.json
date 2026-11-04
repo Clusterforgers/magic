@@ -1,0 +1,36 @@
+{
+  "oracle_id": "7b860806-0118-40f8-861b-225a7c1cf151",
+  "name": "Stampeding Scurryfoot",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Stampeding Scurryfoot",
+      "oracle_fingerprint": "4cd22e9c432b9958dba7737b45bbe667",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{3}{G}",
+            "limit": "OncePerGame",
+            "effects": [
+              { "PutCounters": { "on": "This", "counter": "+1/+1" } },
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Elephant",
+                      "colors": ["Green"],
+                      "types": ["Creature"],
+                      "subtypes": ["Elephant"],
+                      "power": 3,
+                      "toughness": 3
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

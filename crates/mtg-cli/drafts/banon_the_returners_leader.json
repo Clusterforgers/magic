@@ -1,0 +1,42 @@
+{
+  "oracle_id": "1b62e88f-d544-4c01-a5a2-1c185a3c9c1e",
+  "name": "Banon, the Returners' Leader",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Banon, the Returners' Leader",
+      "oracle_fingerprint": "acba6bce80cb8795bef883a0b856fd57",
+      "abilities": [
+        {
+          "Rule": {
+            "rule": {
+              "MayCast": {
+                "what": [
+                  { "Type": "Creature" },
+                  { "Not": { "Type": "Land" } },
+                  "EnteredThisTurn",
+                  { "Not": { "ArrivedFrom": "Battlefield" } }
+                ],
+                "from": "Graveyard",
+                "once": true
+              }
+            },
+            "condition": "YourTurn"
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "GroupAttacks": { "what": [{ "Type": "Creature" }, { "ControlledBy": "You" }] }
+            },
+            "effects": [
+              {
+                "Pay": { "cost": [{ "Mana": "{1}" }, { "Discard": {} }], "paid": [{ "Draw": {} }] }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

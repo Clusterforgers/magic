@@ -1,0 +1,26 @@
+{
+  "oracle_id": "ddf38a32-302a-4658-9eaf-b813ebe275c9",
+  "name": "Esior, Wardwing Familiar",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Esior, Wardwing Familiar",
+      "oracle_fingerprint": "31f8dbbb14fe09f54aa87bf2db63c06d",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "CostModifier": {
+            "applies_to": [
+              "Spell",
+              { "ControlledBy": "Opponents" },
+              { "Targeting": ["Commander", { "ControlledBy": "You" }, { "In": "Battlefield" }] }
+            ],
+            "change": "Increase",
+            "mana": "{3}"
+          }
+        },
+        { "Keyword": "Partner" }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,63 @@
+{
+  "oracle_id": "51c511c0-783a-456d-a7e2-959f6e8ddfc8",
+  "name": "Coram, the Undertaker",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Coram, the Undertaker",
+      "oracle_fingerprint": "b987ffbe97873f9babe0ad6d3add9e88",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              {
+                "ModifyPT": {
+                  "power": {
+                    "Greatest": {
+                      "of": [{ "Type": "Creature" }, { "In": "Graveyard" }],
+                      "stat": "Power"
+                    }
+                  },
+                  "toughness": 0
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [{ "Mill": { "who": "EachPlayer" } }]
+          }
+        },
+        {
+          "Rule": {
+            "rule": {
+              "MayCast": {
+                "what": [{ "Type": "Land" }, { "ArrivedFrom": "Library" }],
+                "from": "Graveyard",
+                "play": true,
+                "once": true
+              }
+            },
+            "condition": "YourTurn"
+          }
+        },
+        {
+          "Rule": {
+            "rule": {
+              "MayCast": {
+                "what": [{ "Not": { "Type": "Land" } }, { "ArrivedFrom": "Library" }],
+                "from": "Graveyard",
+                "play": true,
+                "once": true
+              }
+            },
+            "condition": "YourTurn"
+          }
+        }
+      ]
+    }
+  ]
+}

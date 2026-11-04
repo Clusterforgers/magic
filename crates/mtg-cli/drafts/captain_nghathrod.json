@@ -1,0 +1,51 @@
+{
+  "oracle_id": "cfb23c6b-6e4a-4fc9-b3bb-a3ddc2ba06b8",
+  "name": "Captain N'ghathrod",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Captain N'ghathrod",
+      "oracle_fingerprint": "7e2cb1cc2efe6cd2921c73cb33d5475e",
+      "abilities": [
+        {
+          "Static": {
+            "affected": { "Each": [{ "Subtype": "Horror" }, { "ControlledBy": "You" }] },
+            "mods": [{ "AddKeyword": "Menace" }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "DealsDamage": {
+                "source": [{ "Subtype": "Horror" }, { "ControlledBy": "You" }],
+                "to": "EachPlayer",
+                "combat": true
+              }
+            },
+            "effects": [{ "Mill": { "who": "Triggering", "count": "Triggering" } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "AnyOf": [{ "Type": "Artifact" }, { "Type": "Creature" }] },
+                    { "OwnedBy": "Opponents" },
+                    { "ArrivedFrom": "Library" },
+                    { "In": "Graveyard" }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              { "Move": { "what": { "Target": 0 }, "to": { "Battlefield": { "under": "You" } } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

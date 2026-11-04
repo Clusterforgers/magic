@@ -1,0 +1,92 @@
+{
+  "oracle_id": "96e6d220-87db-4dab-abaa-e80c9577d89a",
+  "name": "Gossip's Talent",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Gossip's Talent",
+      "oracle_fingerprint": "8688b40deb49c0a66478dfa99c54385f",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Creature" }, { "ControlledBy": "You" }],
+                "to": "Battlefield"
+              }
+            },
+            "effects": [{ "Surveil": {} }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{1}{U}",
+            "timing": "Sorcery",
+            "condition": { "Level": { "of": "This", "op": "Eq", "level": 1 } },
+            "effects": [{ "BecomeLevel": { "level": 2 } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "GroupAttacks": { "what": [{ "Type": "Creature" }, { "ControlledBy": "You" }] }
+            },
+            "if": { "Level": { "of": "This", "op": "Ge", "level": 2 } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Type": "Creature" },
+                    "Attacking",
+                    { "Compare": { "stat": "Power", "op": "Le", "to": 3 } }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": ["CantBeBlocked"],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{3}{U}",
+            "timing": "Sorcery",
+            "condition": { "Level": { "of": "This", "op": "Eq", "level": 2 } },
+            "effects": [{ "BecomeLevel": { "level": 3 } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "DealsDamage": {
+                "source": [{ "Type": "Creature" }, { "ControlledBy": "You" }],
+                "to": "EachPlayer",
+                "combat": true
+              }
+            },
+            "if": { "Level": { "of": "This", "op": "Ge", "level": 3 } },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    { "Exile": { "what": "Dealer", "as": "exiled" } },
+                    { "Remember": { "what": { "Bound": "exiled" }, "slot": "remembered" } },
+                    { "Move": { "what": { "Bound": "exiled" }, "to": { "Battlefield": {} } } },
+                    { "Forget": { "slot": "remembered" } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,65 @@
+{
+  "oracle_id": "c3da0550-b816-4aed-8174-ddde199b6589",
+  "name": "Syr Carah, the Bold",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Syr Carah, the Bold",
+      "oracle_fingerprint": "ba890b8ff08bc0c7af2ff105814fb77e",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "DealsDamage": {
+                "source": [
+                  {
+                    "AnyOf": [
+                      {
+                        "Not": {
+                          "AnyOf": [
+                            { "Not": "Spell" },
+                            { "Not": { "Type": "Instant" } },
+                            { "Not": { "ControlledBy": "You" } }
+                          ]
+                        }
+                      },
+                      {
+                        "Not": {
+                          "AnyOf": [
+                            { "Not": "Spell" },
+                            { "Not": { "Type": "Sorcery" } },
+                            { "Not": { "ControlledBy": "You" } }
+                          ]
+                        }
+                      },
+                      "This"
+                    ]
+                  }
+                ],
+                "to": "EachPlayer"
+              }
+            },
+            "effects": [
+              { "ExileTop": { "as": "exiled" } },
+              {
+                "Rule": {
+                  "rule": {
+                    "MayCast": { "from": "Exile", "only": { "Bound": "exiled" }, "play": true }
+                  },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 1 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

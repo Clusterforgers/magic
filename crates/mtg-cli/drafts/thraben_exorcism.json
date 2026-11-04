@@ -1,0 +1,40 @@
+{
+  "oracle_id": "b43e25d8-1c8b-4316-84f3-c4ec6f77092e",
+  "name": "Thraben Exorcism",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Thraben Exorcism",
+      "oracle_fingerprint": "b0b14c6f5315c22cbab72d19e5af27b9",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    {
+                      "AnyOf": [
+                        { "Subtype": "Spirit" },
+                        {
+                          "Not": {
+                            "AnyOf": [
+                              { "Not": { "Type": "Creature" } },
+                              { "Not": { "HasKeywordNamed": "Disturb" } }
+                            ]
+                          }
+                        },
+                        { "Type": "Enchantment" }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ],
+            "effects": [{ "Exile": { "what": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

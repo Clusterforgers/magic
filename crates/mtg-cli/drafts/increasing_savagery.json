@@ -1,0 +1,39 @@
+{
+  "oracle_id": "616c7f45-5295-4b8c-a828-ff3a5ba4d917",
+  "name": "Increasing Savagery",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Increasing Savagery",
+      "oracle_fingerprint": "4c7de535d287267c13f4bb5cb6714dea",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "PutCounters": {
+                  "on": { "Target": 0 },
+                  "counter": "+1/+1",
+                  "count": {
+                    "When": {
+                      "condition": {
+                        "Matches": {
+                          "subject": "This",
+                          "selector": [{ "WasCast": { "from": "Graveyard" } }]
+                        }
+                      },
+                      "then": 10,
+                      "otherwise": 5
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Flashback": "{5}{G}{G}" } }
+      ]
+    }
+  ]
+}

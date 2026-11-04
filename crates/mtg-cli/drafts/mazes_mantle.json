@@ -1,0 +1,48 @@
+{
+  "oracle_id": "b4e85b7c-3047-46d1-a6e6-2ec5eac0268a",
+  "name": "Maze's Mantle",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Maze's Mantle",
+      "oracle_fingerprint": "eb1c2182a268a6e74ca5a55080623c07",
+      "abilities": [
+        { "Keyword": "Flash" },
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "if": {
+              "Compare": {
+                "left": {
+                  "Count": [
+                    { "Type": "Creature" },
+                    { "Is": "Attached" },
+                    { "HasKeywordNamed": "Toxic" }
+                  ]
+                },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "Attached",
+                  "mods": [{ "AddKeyword": "Hexproof" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "ModifyPT": { "power": 2, "toughness": 2 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

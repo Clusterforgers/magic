@@ -1,0 +1,28 @@
+{
+  "oracle_id": "fa70903d-3c8b-49f7-8817-f708b5ba250f",
+  "name": "Pyrophobia",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Pyrophobia",
+      "oracle_fingerprint": "974cf2dd15d1e9d450e0025d258170cb",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              { "DealDamage": { "to": { "Target": 0 }, "amount": 3 } },
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Subtype": "Coward" }] },
+                  "mods": ["CantBlock"],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

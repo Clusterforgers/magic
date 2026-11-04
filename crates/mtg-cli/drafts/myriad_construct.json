@@ -1,0 +1,38 @@
+{
+  "oracle_id": "f54111c8-9c20-4a73-a7c4-24d216e7de07",
+  "name": "Myriad Construct",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Myriad Construct",
+      "oracle_fingerprint": "6f1373fa06b217da5e7ce740a6da50f9",
+      "abilities": [
+        { "Keyword": { "Kicker": "{3}" } },
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": {
+              "WithCounters": {
+                "counter": "+1/+1",
+                "count": {
+                  "Count": [
+                    { "Type": "Land" },
+                    { "Not": { "Supertype": "Basic" } },
+                    { "ControlledBy": "Opponents" }
+                  ]
+                }
+              }
+            },
+            "condition": "Kicked"
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 124, "end": 278 }
+          }
+        }
+      ]
+    }
+  ]
+}

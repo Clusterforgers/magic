@@ -1,0 +1,61 @@
+{
+  "oracle_id": "a728685f-8670-4db2-ae02-3cf74eb3c402",
+  "name": "Ran and Shaw",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ran and Shaw",
+      "oracle_fingerprint": "af9a1f164448b44e08ddc18cf81cb96a",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": { "Macro": { "name": "firebending", "amount": 2 } } },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": ["This", { "WasCast": { "by": "You" } }],
+                "to": "Battlefield"
+              }
+            },
+            "if": {
+              "Compare": {
+                "left": {
+                  "Count": [
+                    { "AnyOf": [{ "Subtype": "Dragon" }, { "Subtype": "Lesson" }] },
+                    { "OwnedBy": "You" },
+                    { "In": "Graveyard" }
+                  ]
+                },
+                "op": "Ge",
+                "right": 3
+              }
+            },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "CopyOf": { "of": "This", "except": [{ "RemoveSupertype": "Legendary" }] }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{3}{R}",
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Subtype": "Dragon" }, { "ControlledBy": "You" }] },
+                  "mods": [{ "ModifyPT": { "power": 2, "toughness": 0 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

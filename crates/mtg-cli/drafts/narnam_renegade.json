@@ -1,0 +1,27 @@
+{
+  "oracle_id": "a4f99939-4b70-41ee-ad38-2dda56dbc9ce",
+  "name": "Narnam Renegade",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Narnam Renegade",
+      "oracle_fingerprint": "bfba5e5ea2587237a1f4fc8ee804469e",
+      "abilities": [
+        { "Keyword": "Deathtouch" },
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "WithCounters": { "counter": "+1/+1", "count": 1 } },
+            "condition": {
+              "Compare": {
+                "left": { "Tallied": { "who": "You", "what": "PermanentsLeftUnder" } },
+                "op": "Ge",
+                "right": 1
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

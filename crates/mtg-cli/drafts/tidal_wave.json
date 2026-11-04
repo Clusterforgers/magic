@@ -1,0 +1,48 @@
+{
+  "oracle_id": "c5f5b7e5-af1e-4c8a-8d44-3e2152955d4e",
+  "name": "Tidal Wave",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Tidal Wave",
+      "oracle_fingerprint": "8582e5ea0d43b5af6b05dfda05f34bd2",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Wall",
+                      "colors": ["Blue"],
+                      "types": ["Creature"],
+                      "subtypes": ["Wall"],
+                      "power": 5,
+                      "toughness": 5,
+                      "abilities": [{ "Keyword": "Defender" }]
+                    }
+                  },
+                  "as": "token"
+                }
+              },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "End" } },
+                  "effects": [
+                    {
+                      "Sacrifice": {
+                        "who": { "ControllerOf": { "Bound": "token" } },
+                        "filter": [{ "Is": { "Bound": "token" } }]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

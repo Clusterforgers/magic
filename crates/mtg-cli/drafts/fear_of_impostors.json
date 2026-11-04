@@ -1,0 +1,40 @@
+{
+  "oracle_id": "628ae0e4-5d54-48a1-a24c-b9c1d862df9d",
+  "name": "Fear of Impostors",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Fear of Impostors",
+      "oracle_fingerprint": "94ed660d05e2557d79103247d0415b23",
+      "abilities": [
+        { "Keyword": "Flash" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [{ "what": { "Object": ["Spell"] } }],
+            "effects": [
+              { "Counter": { "what": { "Target": 0 } } },
+              {
+                "LookAtTop": {
+                  "who": { "ControllerOf": { "Target": 0 } },
+                  "count": 2,
+                  "as": "looked"
+                }
+              },
+              {
+                "Choose": {
+                  "who": { "ControllerOf": { "Target": 0 } },
+                  "from": { "Bound": "looked" },
+                  "as": "kept2",
+                  "rest_as": "rest3"
+                }
+              },
+              { "Move": { "what": { "Bound": "rest3" }, "to": "Graveyard" } },
+              { "Manifest": { "who": { "ControllerOf": { "Target": 0 } } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

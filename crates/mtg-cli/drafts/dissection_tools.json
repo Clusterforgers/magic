@@ -1,0 +1,36 @@
+{
+  "oracle_id": "50de5faa-d22e-4909-a1ff-3810cfcfcb1a",
+  "name": "Dissection Tools",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dissection Tools",
+      "oracle_fingerprint": "c836288b453488642d9c41aafd4b9f06",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              { "LookAtTop": { "count": 2, "as": "looked" } },
+              { "Choose": { "from": { "Bound": "looked" }, "as": "kept2", "rest_as": "rest3" } },
+              { "Move": { "what": { "Bound": "rest3" }, "to": "Graveyard" } },
+              { "Manifest": { "as": "manifested4" } },
+              { "Attach": { "what": "This", "to": { "Bound": "manifested4" } } }
+            ]
+          }
+        },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [
+              { "ModifyPT": { "power": 2, "toughness": 2 } },
+              { "AddKeyword": "Deathtouch" },
+              { "AddKeyword": "Lifelink" }
+            ]
+          }
+        },
+        { "Keyword": { "Equip": [{ "Sacrifice": { "filter": [{ "Type": "Creature" }] } }] } }
+      ]
+    }
+  ]
+}

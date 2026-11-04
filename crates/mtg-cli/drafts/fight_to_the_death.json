@@ -1,0 +1,38 @@
+{
+  "oracle_id": "7f885ffc-7245-4f00-a903-6e088007c635",
+  "name": "Fight to the Death",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Fight to the Death",
+      "oracle_fingerprint": "1d71bcfd53153a69cd2847592b517464",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Destroy": {
+                  "what": {
+                    "Each": [
+                      { "Type": "Creature" },
+                      {
+                        "AnyOf": [
+                          {
+                            "Not": {
+                              "AnyOf": [{ "Not": "Attacking" }, { "Not": { "Not": "Unblocked" } }]
+                            }
+                          },
+                          "Blocking"
+                        ]
+                      }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,29 @@
+{
+  "oracle_id": "1acb289f-fb7f-4d83-aaef-4e7b9462c593",
+  "name": "Pacesetter Paragon",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Pacesetter Paragon",
+      "oracle_fingerprint": "037d36ac3f9e383589b28a0e97e347df",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{2}{R}",
+            "limit": "OncePerGame",
+            "effects": [
+              { "PutCounters": { "on": "This", "counter": "+1/+1" } },
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "AddKeyword": "DoubleStrike" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

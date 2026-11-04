@@ -1,0 +1,40 @@
+{
+  "oracle_id": "888d12d4-aaa5-406f-9dc8-8c4e856eb2fe",
+  "name": "Opal Archangel",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Opal Archangel",
+      "oracle_fingerprint": "e262f6f68f7156b4407780235dfdda5d",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "what": [{ "Type": "Creature" }], "by": "Opponents" } },
+            "if": {
+              "Compare": {
+                "left": { "Count": ["This", { "Type": "Enchantment" }] },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [
+                    { "SetPT": { "power": 5, "toughness": 5 } },
+                    { "SetCreatureTypes": ["Angel"] },
+                    { "SetTypes": ["Creature"] },
+                    { "AddKeyword": "Flying" },
+                    { "AddKeyword": "Vigilance" }
+                  ],
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

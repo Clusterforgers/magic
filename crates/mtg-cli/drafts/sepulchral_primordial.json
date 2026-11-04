@@ -1,0 +1,43 @@
+{
+  "oracle_id": "480454a0-fb10-432b-a963-8b0c0ffc6680",
+  "name": "Sepulchral Primordial",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sepulchral Primordial",
+      "oracle_fingerprint": "9b2570cb6ffbd5bc57d56bd76f8e1e20",
+      "abilities": [
+        { "Keyword": "Intimidate" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              {
+                "what": {
+                  "PerPlayer": {
+                    "players": "Opponents",
+                    "what": [{ "Type": "Creature" }, { "In": "Graveyard" }]
+                  }
+                }
+              }
+            ],
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "Move": {
+                        "what": { "Target": 0 },
+                        "to": { "Battlefield": { "under": "You" } }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

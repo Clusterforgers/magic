@@ -1,0 +1,42 @@
+{
+  "oracle_id": "894a220b-1372-4a76-b38f-bf0d7001af41",
+  "name": "Giantbaiting",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Giantbaiting",
+      "oracle_fingerprint": "d5d81c8600a18eef4fec31402eed3c16",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Giant Warrior",
+                      "colors": ["Red", "Green"],
+                      "types": ["Creature"],
+                      "subtypes": ["Giant", "Warrior"],
+                      "power": 4,
+                      "toughness": 4,
+                      "abilities": [{ "Keyword": "Haste" }]
+                    }
+                  },
+                  "as": "token"
+                }
+              },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "End" } },
+                  "effects": [{ "Exile": { "what": { "Bound": "token" } } }]
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": "Conspire" }
+      ]
+    }
+  ]
+}

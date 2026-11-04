@@ -1,0 +1,33 @@
+{
+  "oracle_id": "f627e125-15af-4e53-b34e-82b60e4ec87b",
+  "name": "Tangle",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Tangle",
+      "oracle_fingerprint": "4099d7ea947ae95438eac9293171d379",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Shield": {
+                  "when": { "Damage": { "combat": true } },
+                  "by": "Prevent",
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Type": "Creature" }, "Attacking"] },
+                  "mods": ["DoesntUntap"],
+                  "duration": "NextUntapStep"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

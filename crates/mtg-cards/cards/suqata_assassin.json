@@ -1,0 +1,20 @@
+{
+  "oracle_id": "db43b866-13e0-4336-a580-b64fe1ee5954",
+  "name": "Suq'Ata Assassin",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Suq'Ata Assassin",
+      "oracle_fingerprint": "eabdfad134e1ada9953dca8a705f21ac",
+      "abilities": [
+        { "Keyword": "Fear" },
+        {
+          "Triggered": {
+            "when": { "Unblocked": { "what": ["This"] } },
+            "effects": [{ "PutCounters": { "on": "Defending", "counter": "poison" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

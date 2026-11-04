@@ -1,0 +1,45 @@
+{
+  "oracle_id": "301d1d8e-d3fc-4010-8b29-4724fa0b31cd",
+  "name": "Portal to Phyrexia",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Portal to Phyrexia",
+      "oracle_fingerprint": "7f28110f3c1d502c159210171f5720ad",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Sacrifice": { "who": "Opponents", "filter": [{ "Type": "Creature" }], "count": 3 }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }, { "In": "Graveyard" }] } }],
+            "effects": [
+              {
+                "Move": {
+                  "what": { "Target": 0 },
+                  "to": { "Battlefield": { "under": "You" } },
+                  "as": "moved"
+                }
+              },
+              {
+                "Continuous": {
+                  "affected": { "Bound": "moved" },
+                  "mods": [{ "AddSubtype": "Phyrexian" }],
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

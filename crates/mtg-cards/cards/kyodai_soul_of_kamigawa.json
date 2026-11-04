@@ -1,0 +1,44 @@
+{
+  "oracle_id": "d89bd776-8489-4c34-94ea-db1b088d9379",
+  "name": "Kyodai, Soul of Kamigawa",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Kyodai, Soul of Kamigawa",
+      "oracle_fingerprint": "ce97f52235b3c6546b463cce8b7a42b5",
+      "abilities": [
+        { "Keyword": "Flash" },
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [{ "what": { "Object": ["Other"] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "AddKeyword": "Indestructible" }],
+                  "duration": "WhileYouControlSource"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{W}{U}{B}{R}{G}",
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "ModifyPT": { "power": 5, "toughness": 5 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

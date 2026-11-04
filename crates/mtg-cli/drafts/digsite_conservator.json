@@ -1,0 +1,56 @@
+{
+  "oracle_id": "ced2ae56-988a-4c60-93d0-85a2261be72c",
+  "name": "Digsite Conservator",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Digsite Conservator",
+      "oracle_fingerprint": "15d728d0bd4e5f61d31b1095997d59ae",
+      "abilities": [
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 0, "end": 107 }
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": "{4}",
+                  "paid": [
+                    {
+                      "ExileUntil": {
+                        "filter": [
+                          { "Not": { "Type": "Land" } },
+                          { "Compare": { "stat": "ManaValue", "op": "Le", "to": 4 } }
+                        ],
+                        "as": "found",
+                        "exiled_as": "exiled"
+                      }
+                    },
+                    {
+                      "CastFromZone": {
+                        "what": { "Bound": "found" },
+                        "free": true,
+                        "otherwise": [{ "Move": { "what": { "Bound": "found" }, "to": "Hand" } }]
+                      }
+                    },
+                    {
+                      "Move": {
+                        "what": { "Bound": "exiled" },
+                        "to": { "Library": { "place": "Bottom", "order": "Random" } }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

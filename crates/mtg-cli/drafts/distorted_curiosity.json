@@ -1,0 +1,28 @@
+{
+  "oracle_id": "6ebbf025-2996-46f2-ac23-992909251525",
+  "name": "Distorted Curiosity",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Distorted Curiosity",
+      "oracle_fingerprint": "542d2db254b70ef53d26d2cb986a2601",
+      "abilities": [
+        {
+          "CostModifier": {
+            "applies_to": ["This"],
+            "change": "Reduce",
+            "mana": "{2}",
+            "condition": {
+              "Compare": {
+                "left": { "HighestCounters": { "who": "Opponents", "counter": "poison" } },
+                "op": "Ge",
+                "right": 3
+              }
+            }
+          }
+        },
+        { "Spell": { "effects": [{ "Draw": { "count": 2 } }] } }
+      ]
+    }
+  ]
+}

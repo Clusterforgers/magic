@@ -1,0 +1,46 @@
+{
+  "oracle_id": "c38cc5fe-936a-4d61-a816-9be773ae1d02",
+  "name": "Charix, the Raging Isle",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Charix, the Raging Isle",
+      "oracle_fingerprint": "d2cd8a1713643c0c2f993ca32266fa38",
+      "abilities": [
+        {
+          "CostModifier": {
+            "applies_to": ["Spell", { "ControlledBy": "Opponents" }, { "Targeting": ["This"] }],
+            "change": "Increase",
+            "mana": "{2}"
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{3}",
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [
+                    {
+                      "ModifyPT": {
+                        "power": { "Count": [{ "Subtype": "Island" }, { "ControlledBy": "You" }] },
+                        "toughness": {
+                          "Times": {
+                            "by": -1,
+                            "of": { "Count": [{ "Subtype": "Island" }, { "ControlledBy": "You" }] }
+                          }
+                        }
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,34 @@
+{
+  "oracle_id": "f18799c4-ec54-4435-be51-03ea25809289",
+  "name": "Hero of Oxid Ridge",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Hero of Oxid Ridge",
+      "oracle_fingerprint": "a9cbb4109ad3844aec4abcabf00b24a6",
+      "abilities": [
+        { "Keyword": "Haste" },
+        { "Keyword": "BattleCry" },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": {
+                    "Each": [
+                      { "Type": "Creature" },
+                      { "Compare": { "stat": "Power", "op": "Le", "to": 1 } }
+                    ]
+                  },
+                  "mods": ["CantBlock"],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

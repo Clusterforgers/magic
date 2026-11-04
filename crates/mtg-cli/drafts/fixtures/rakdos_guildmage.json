@@ -1,0 +1,154 @@
+{
+  "object": "card",
+  "id": "fb3271d0-4788-4ecc-abf7-95a1e8106d0c",
+  "oracle_id": "650949ca-609b-46c5-bc6b-6f782cdcb6d2",
+  "multiverse_ids": [
+    643221
+  ],
+  "mtgo_id": 120955,
+  "tcgplayer_id": 531124,
+  "cardmarket_id": 748567,
+  "name": "Rakdos Guildmage",
+  "lang": "en",
+  "released_at": "2024-01-12",
+  "uri": "https://api.scryfall.com/cards/fb3271d0-4788-4ecc-abf7-95a1e8106d0c",
+  "scryfall_uri": "https://scryfall.com/card/rvr/214/rakdos-guildmage?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T03:27:57Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/f/b/fb3271d0-4788-4ecc-abf7-95a1e8106d0c.jpg?1783913277",
+    "normal": "https://cards.scryfall.io/normal/front/f/b/fb3271d0-4788-4ecc-abf7-95a1e8106d0c.jpg?1783913277",
+    "large": "https://cards.scryfall.io/large/front/f/b/fb3271d0-4788-4ecc-abf7-95a1e8106d0c.jpg?1783913277",
+    "png": "https://cards.scryfall.io/png/front/f/b/fb3271d0-4788-4ecc-abf7-95a1e8106d0c.png?1783913277",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/f/b/fb3271d0-4788-4ecc-abf7-95a1e8106d0c.jpg?1783913277",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/f/b/fb3271d0-4788-4ecc-abf7-95a1e8106d0c.jpg?1783913277",
+    "thumb": "https://cards.scryfall.io/thumb/front/f/b/fb3271d0-4788-4ecc-abf7-95a1e8106d0c.webp?1783913277",
+    "grid": "https://cards.scryfall.io/grid/front/f/b/fb3271d0-4788-4ecc-abf7-95a1e8106d0c.webp?1783913277",
+    "display": "https://cards.scryfall.io/display/front/f/b/fb3271d0-4788-4ecc-abf7-95a1e8106d0c.webp?1783913277",
+    "art": "https://cards.scryfall.io/art/front/f/b/fb3271d0-4788-4ecc-abf7-95a1e8106d0c.webp?1783913277",
+    "crop": "https://cards.scryfall.io/crop/front/f/b/fb3271d0-4788-4ecc-abf7-95a1e8106d0c.webp?1783913277",
+    "jpeg": "https://cards.scryfall.io/normal/front/f/b/fb3271d0-4788-4ecc-abf7-95a1e8106d0c.jpg?1783913277"
+  },
+  "mana_cost": "{B/R}{B/R}",
+  "cmc": 2.0,
+  "type_line": "Creature — Zombie Shaman",
+  "oracle_text": "({B/R} can be paid with either {B} or {R}.)\n{3}{B}, Discard a card: Target creature gets -2/-2 until end of turn.\n{3}{R}: Create a 2/1 red Goblin creature token with haste. Exile it at the beginning of the next end step.",
+  "power": "2",
+  "toughness": "2",
+  "colors": [
+    "B",
+    "R"
+  ],
+  "color_identity": [
+    "B",
+    "R"
+  ],
+  "keywords": [],
+  "all_parts": [
+    {
+      "object": "related_card",
+      "id": "fb3271d0-4788-4ecc-abf7-95a1e8106d0c",
+      "component": "combo_piece",
+      "name": "Rakdos Guildmage",
+      "type_line": "Creature — Zombie Shaman",
+      "uri": "https://api.scryfall.com/cards/fb3271d0-4788-4ecc-abf7-95a1e8106d0c"
+    },
+    {
+      "object": "related_card",
+      "id": "79707ef3-9ac8-4774-b34b-f227546ff4bd",
+      "component": "token",
+      "name": "Goblin",
+      "type_line": "Token Creature — Goblin",
+      "uri": "https://api.scryfall.com/cards/79707ef3-9ac8-4774-b34b-f227546ff4bd"
+    }
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": true,
+  "variation": false,
+  "set_id": "fed2c8cd-ab92-44f6-808a-41e7809bcfe2",
+  "set": "rvr",
+  "set_name": "Ravnica Remastered",
+  "set_type": "masters",
+  "set_uri": "https://api.scryfall.com/sets/fed2c8cd-ab92-44f6-808a-41e7809bcfe2",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Arvr&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/rvr?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/fb3271d0-4788-4ecc-abf7-95a1e8106d0c/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A650949ca-609b-46c5-bc6b-6f782cdcb6d2&unique=prints",
+  "collector_number": "214",
+  "digital": false,
+  "rarity": "uncommon",
+  "watermark": "rakdos",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Jeremy Jarvis",
+  "artist_ids": [
+    "b40ac320-89b4-4c51-a85f-4a4b63ae614e"
+  ],
+  "illustration_id": "72746a7f-0854-4f71-a9c2-9d5dcc5e212c",
+  "border_color": "black",
+  "frame": "2015",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 24135,
+  "penny_rank": 9754,
+  "prices": {
+    "usd": "0.17",
+    "usd_foil": "0.27",
+    "usd_etched": null,
+    "eur": "0.09",
+    "eur_foil": "0.10",
+    "tix": "0.04"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=643221&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DRakdos%2BGuildmage",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DRakdos%2BGuildmage",
+    "edhrec": "https://edhrec.com/route/?cc=Rakdos+Guildmage"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F531124%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=748567&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/120955?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

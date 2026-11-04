@@ -1,0 +1,29 @@
+{
+  "oracle_id": "df344469-1177-4168-91af-3621b2a65182",
+  "name": "Tresserhorn Skyknight",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Tresserhorn Skyknight",
+      "oracle_fingerprint": "711d09b58d9c62067b2a7d4ccf6be084",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Replacement": {
+            "when": {
+              "Damage": {
+                "to": "This",
+                "source": [
+                  { "Type": "Creature" },
+                  { "In": "Battlefield" },
+                  { "HasKeyword": "FirstStrike" }
+                ]
+              }
+            },
+            "by": "Prevent"
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,23 @@
+{
+  "oracle_id": "eec31fe0-a633-4424-84d2-90fe88016310",
+  "name": "Embereth Paladin",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Embereth Paladin",
+      "oracle_fingerprint": "f7c9be54983abf95fd0e37f41abc12b8",
+      "abilities": [
+        { "Keyword": "Haste" },
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "WithCounters": { "counter": "+1/+1", "count": 1 } },
+            "condition": {
+              "Compare": { "left": { "ManaSpent": { "of": "Red" } }, "op": "Ge", "right": 3 }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

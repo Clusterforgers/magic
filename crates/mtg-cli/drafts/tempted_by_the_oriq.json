@@ -1,0 +1,39 @@
+{
+  "oracle_id": "304450b0-bde6-4d69-bcaf-fb9b9bae2e4b",
+  "name": "Tempted by the Oriq",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Tempted by the Oriq",
+      "oracle_fingerprint": "315e51484af3f22175073410595126f9",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "PerPlayer": {
+                    "players": "Opponents",
+                    "what": [
+                      { "AnyOf": [{ "Type": "Creature" }, { "Type": "Planeswalker" }] },
+                      { "Compare": { "stat": "ManaValue", "op": "Le", "to": 3 } }
+                    ]
+                  }
+                }
+              }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "SetController": "You" }],
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

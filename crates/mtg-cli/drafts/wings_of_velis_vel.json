@@ -1,0 +1,32 @@
+{
+  "oracle_id": "0bb2b3cc-d3e6-40e9-a5da-d589e8e8f0bd",
+  "name": "Wings of Velis Vel",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Wings of Velis Vel",
+      "oracle_fingerprint": "bbaab670bdabf2fc0e27089c5a741ec2",
+      "abilities": [
+        { "Keyword": "Changeling" },
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    { "SetPT": { "power": 4, "toughness": 4 } },
+                    "AddAllCreatureTypes",
+                    { "AddKeyword": "Flying" }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

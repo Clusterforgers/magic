@@ -1,0 +1,36 @@
+{
+  "oracle_id": "ac0f161a-e5ec-4a95-9f37-305bdf1ac900",
+  "name": "Hapatra, the Desert Frost",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Hapatra, the Desert Frost",
+      "oracle_fingerprint": "69b836fc8d58b774aeba7310a0fe86e0",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              {
+                "what": {
+                  "PerPlayer": { "players": "Opponents", "what": [{ "Type": "Creature" }] }
+                }
+              }
+            ],
+            "effects": [
+              { "Tap": { "what": { "Target": 0 } } },
+              { "PutCounters": { "on": { "Target": 0 }, "counter": { "Other": "stun" } } }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{2}{U}",
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [{ "Untap": { "what": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,85 @@
+{
+  "oracle_id": "9fdad42a-9db5-4d91-9e80-9d5ce19038b8",
+  "name": "Blacksmith's Talent",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Blacksmith's Talent",
+      "oracle_fingerprint": "cf4b66671876eda431f3242dd785414a",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Sword",
+                      "types": ["Artifact"],
+                      "subtypes": ["Equipment"],
+                      "abilities": [
+                        { "Keyword": { "Equip": "{2}" } },
+                        {
+                          "Static": {
+                            "affected": "Attached",
+                            "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }]
+                          }
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{2}{R}",
+            "timing": "Sorcery",
+            "condition": { "Level": { "of": "This", "op": "Eq", "level": 1 } },
+            "effects": [{ "BecomeLevel": { "level": 2 } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "BeginCombat", "whose": "You" } },
+            "if": { "Level": { "of": "This", "op": "Ge", "level": 2 } },
+            "targets": [
+              { "what": { "Object": [{ "Subtype": "Equipment" }, { "ControlledBy": "You" }] } },
+              {
+                "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                "bounds": { "min": 0, "max": 1 }
+              }
+            ],
+            "effects": [{ "Attach": { "what": { "Target": 0 }, "to": { "Target": 1 } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{3}{R}",
+            "timing": "Sorcery",
+            "condition": { "Level": { "of": "This", "op": "Eq", "level": 2 } },
+            "effects": [{ "BecomeLevel": { "level": 3 } }]
+          }
+        },
+        {
+          "Static": {
+            "affected": {
+              "Each": [
+                { "Type": "Creature" },
+                { "ControlledBy": "You" },
+                { "HasAttached": [{ "Subtype": "Equipment" }] }
+              ]
+            },
+            "mods": [{ "AddKeyword": "DoubleStrike" }, { "AddKeyword": "Haste" }],
+            "condition": {
+              "All": [{ "Level": { "of": "This", "op": "Ge", "level": 3 } }, "YourTurn"]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

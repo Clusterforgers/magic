@@ -1,0 +1,46 @@
+{
+  "oracle_id": "6bbdf771-75d5-4910-bd16-6232e254f7f6",
+  "name": "Rally Maneuver",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Rally Maneuver",
+      "oracle_fingerprint": "4d5a3ef446d7b82f1a206ae2945b0bce",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }] } },
+              {
+                "what": { "Object": [{ "Type": "Creature" }, { "Not": { "Is": { "Target": 0 } } }] },
+                "bounds": { "min": 0, "max": 1 }
+              }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    { "ModifyPT": { "power": 2, "toughness": 0 } },
+                    { "AddKeyword": "FirstStrike" }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "Continuous": {
+                  "affected": { "Target": 1 },
+                  "mods": [
+                    { "ModifyPT": { "power": 0, "toughness": 2 } },
+                    { "AddKeyword": "Lifelink" }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

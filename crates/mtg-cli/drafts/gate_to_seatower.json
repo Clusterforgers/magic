@@ -1,0 +1,21 @@
+{
+  "oracle_id": "357132e0-1d8d-4d2d-a73d-b3e0f4196310",
+  "name": "Gate to Seatower",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Gate to Seatower",
+      "oracle_fingerprint": "777e1ea6a62040e791fa79a9acf490b1",
+      "abilities": [
+        { "Replacement": { "when": { "Enters": { "what": ["This"] } }, "by": "Tapped" } },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{3}{U}" }, "Tap"],
+            "limit": "OncePerGame",
+            "effects": [{ "Seek": { "filter": [{ "Not": { "Type": "Land" } }] } }]
+          }
+        }
+      ]
+    }
+  ]
+}

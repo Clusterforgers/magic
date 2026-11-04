@@ -1,0 +1,59 @@
+{
+  "source": "forge",
+  "oracle_matches": true,
+  "lines": [
+    {
+      "face": 0,
+      "tag": "K",
+      "text": "Kicker:3",
+      "abilities": [
+        0
+      ],
+      "gap": null
+    },
+    {
+      "face": 0,
+      "tag": "T",
+      "text": "When CARDNAME becomes the target of a spell, sacrifice it and create a number of 1/1 colorless Construct artifact creature tokens equal to its power.",
+      "abilities": [],
+      "gap": "key:SacrificeAll.RememberSacrificed"
+    },
+    {
+      "face": 0,
+      "tag": "R",
+      "text": "If CARDNAME was kicked, it enters with a +1/+1 counter on it for each nonbasic land your opponents control.",
+      "abilities": [
+        1
+      ],
+      "gap": null
+    }
+  ],
+  "proof": {
+    "marks": [
+      {
+        "face": 0,
+        "span": {
+          "start": 0,
+          "end": 10
+        },
+        "mark": "Auto"
+      },
+      {
+        "face": 0,
+        "span": {
+          "start": 11,
+          "end": 123
+        },
+        "mark": "Auto"
+      },
+      {
+        "face": 0,
+        "span": {
+          "start": 124,
+          "end": 278
+        },
+        "mark": "ByHand"
+      }
+    ]
+  }
+}

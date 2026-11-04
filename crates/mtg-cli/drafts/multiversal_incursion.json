@@ -1,0 +1,35 @@
+{
+  "oracle_id": "d3678fce-6897-4f2c-bf50-243facb6581b",
+  "name": "Multiversal Incursion",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Multiversal Incursion",
+      "oracle_fingerprint": "cf681c5e757d17a725fa08d1f4dec3ea",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "CopyOf": {
+                      "of": {
+                        "Each": [
+                          { "Type": "Creature" },
+                          { "ControlledBy": "You" },
+                          { "Not": "Token" }
+                        ]
+                      },
+                      "except": [{ "RemoveSupertype": "Legendary" }]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,73 @@
+{
+  "oracle_id": "0b786547-67ed-49fa-9981-35c4c2175f62",
+  "name": "Ember Island Production",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ember Island Production",
+      "oracle_fingerprint": "75d487fd9102025e2a37749a51f6c674",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Modal": {
+                  "modes": [
+                    {
+                      "targets": [
+                        {
+                          "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] }
+                        }
+                      ],
+                      "effects": [
+                        {
+                          "CreateToken": {
+                            "token": {
+                              "CopyOf": {
+                                "of": { "Target": 0 },
+                                "except": [
+                                  { "SetPT": { "power": 4, "toughness": 4 } },
+                                  { "AddSubtype": "Hero" },
+                                  { "RemoveSupertype": "Legendary" }
+                                ]
+                              }
+                            }
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "targets": [
+                        {
+                          "what": {
+                            "Object": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }]
+                          }
+                        }
+                      ],
+                      "effects": [
+                        {
+                          "CreateToken": {
+                            "token": {
+                              "CopyOf": {
+                                "of": { "Target": 0 },
+                                "except": [
+                                  { "SetPT": { "power": 2, "toughness": 2 } },
+                                  { "AddSubtype": "Coward" },
+                                  { "RemoveSupertype": "Legendary" }
+                                ]
+                              }
+                            }
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

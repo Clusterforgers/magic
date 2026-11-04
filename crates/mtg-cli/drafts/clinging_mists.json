@@ -1,0 +1,46 @@
+{
+  "oracle_id": "9be48462-2ec0-4d28-9977-f0232e8a1333",
+  "name": "Clinging Mists",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Clinging Mists",
+      "oracle_fingerprint": "a7f517d9ff950d4fd01b44d26785ba01",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Shield": {
+                  "when": { "Damage": { "combat": true } },
+                  "by": "Prevent",
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "If": {
+                  "condition": { "Compare": { "left": { "Life": "You" }, "op": "Le", "right": 5 } },
+                  "then": [{ "Tap": { "what": { "Each": [{ "Type": "Creature" }, "Attacking"] } } }]
+                }
+              },
+              {
+                "If": {
+                  "condition": { "Compare": { "left": { "Life": "You" }, "op": "Le", "right": 5 } },
+                  "then": [
+                    {
+                      "Continuous": {
+                        "affected": { "Each": [{ "Type": "Creature" }, "Attacking"] },
+                        "mods": ["DoesntUntap"],
+                        "duration": "NextUntapStep"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,30 @@
+{
+  "oracle_id": "7a335332-87ff-42dc-a547-c84295dd8138",
+  "name": "Unnerving Grasp",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Unnerving Grasp",
+      "oracle_fingerprint": "9e393fe6d10baf309c46cf869b0537c4",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": { "Object": [{ "Not": { "Type": "Land" } }] },
+                "bounds": { "min": 0, "max": 1 }
+              }
+            ],
+            "effects": [
+              { "Move": { "what": { "Target": 0 }, "to": "Hand" } },
+              { "LookAtTop": { "count": 2, "as": "looked" } },
+              { "Choose": { "from": { "Bound": "looked" }, "as": "kept2", "rest_as": "rest3" } },
+              { "Move": { "what": { "Bound": "rest3" }, "to": "Graveyard" } },
+              { "Manifest": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

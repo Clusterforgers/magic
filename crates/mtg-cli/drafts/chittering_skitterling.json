@@ -1,0 +1,33 @@
+{
+  "oracle_id": "864fc52a-e9f4-4254-901e-b949d96b34eb",
+  "name": "Chittering Skitterling",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Chittering Skitterling",
+      "oracle_fingerprint": "55fcc7135d4f1f2be271fccf460034db",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [
+              {
+                "Sacrifice": {
+                  "filter": [{ "AnyOf": [{ "Type": "Artifact" }, { "Type": "Creature" }] }]
+                }
+              }
+            ],
+            "condition": {
+              "Compare": {
+                "left": { "HighestCounters": { "who": "Opponents", "counter": "poison" } },
+                "op": "Ge",
+                "right": 3
+              }
+            },
+            "limit": "OncePerTurn",
+            "effects": [{ "Draw": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

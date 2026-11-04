@@ -1,0 +1,149 @@
+{
+  "object": "card",
+  "id": "871ad2f3-1dd2-45ea-881d-529aad3b76ec",
+  "oracle_id": "37162c6e-ac31-4386-9d1e-76aa66070b35",
+  "multiverse_ids": [
+    21258
+  ],
+  "mtgo_id": 13927,
+  "mtgo_foil_id": 13928,
+  "tcgplayer_id": 7124,
+  "cardmarket_id": 11724,
+  "name": "Angelic Favor",
+  "lang": "en",
+  "released_at": "2000-02-14",
+  "uri": "https://api.scryfall.com/cards/871ad2f3-1dd2-45ea-881d-529aad3b76ec",
+  "scryfall_uri": "https://scryfall.com/card/nem/1/angelic-favor?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T12:30:45Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/8/7/871ad2f3-1dd2-45ea-881d-529aad3b76ec.jpg?1783945845",
+    "normal": "https://cards.scryfall.io/normal/front/8/7/871ad2f3-1dd2-45ea-881d-529aad3b76ec.jpg?1783945845",
+    "large": "https://cards.scryfall.io/large/front/8/7/871ad2f3-1dd2-45ea-881d-529aad3b76ec.jpg?1783945845",
+    "png": "https://cards.scryfall.io/png/front/8/7/871ad2f3-1dd2-45ea-881d-529aad3b76ec.png?1783945845",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/8/7/871ad2f3-1dd2-45ea-881d-529aad3b76ec.jpg?1783945845",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/8/7/871ad2f3-1dd2-45ea-881d-529aad3b76ec.jpg?1783945845",
+    "thumb": "https://cards.scryfall.io/thumb/front/8/7/871ad2f3-1dd2-45ea-881d-529aad3b76ec.webp?1783945845",
+    "grid": "https://cards.scryfall.io/grid/front/8/7/871ad2f3-1dd2-45ea-881d-529aad3b76ec.webp?1783945845",
+    "display": "https://cards.scryfall.io/display/front/8/7/871ad2f3-1dd2-45ea-881d-529aad3b76ec.webp?1783945845",
+    "art": "https://cards.scryfall.io/art/front/8/7/871ad2f3-1dd2-45ea-881d-529aad3b76ec.webp?1783945845",
+    "crop": "https://cards.scryfall.io/crop/front/8/7/871ad2f3-1dd2-45ea-881d-529aad3b76ec.webp?1783945845",
+    "jpeg": "https://cards.scryfall.io/normal/front/8/7/871ad2f3-1dd2-45ea-881d-529aad3b76ec.jpg?1783945845"
+  },
+  "mana_cost": "{3}{W}",
+  "cmc": 4.0,
+  "type_line": "Instant",
+  "oracle_text": "If you control a Plains, you may tap an untapped creature you control rather than pay this spell's mana cost.\nCast this spell only during combat.\nCreate a 4/4 white Angel creature token with flying. Exile it at the beginning of the next end step.",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": [],
+  "all_parts": [
+    {
+      "object": "related_card",
+      "id": "871ad2f3-1dd2-45ea-881d-529aad3b76ec",
+      "component": "combo_piece",
+      "name": "Angelic Favor",
+      "type_line": "Instant",
+      "uri": "https://api.scryfall.com/cards/871ad2f3-1dd2-45ea-881d-529aad3b76ec"
+    },
+    {
+      "object": "related_card",
+      "id": "1159d02c-0291-42de-91e6-e9a49d5ed968",
+      "component": "token",
+      "name": "Angel",
+      "type_line": "Token Creature — Angel",
+      "uri": "https://api.scryfall.com/cards/1159d02c-0291-42de-91e6-e9a49d5ed968"
+    }
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "legal",
+    "predh": "legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "fa5d1fdb-f781-473d-b14d-50396d40d43f",
+  "set": "nem",
+  "set_name": "Nemesis",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/fa5d1fdb-f781-473d-b14d-50396d40d43f",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Anem&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/nem?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/871ad2f3-1dd2-45ea-881d-529aad3b76ec/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A37162c6e-ac31-4386-9d1e-76aa66070b35&unique=prints",
+  "collector_number": "1",
+  "digital": false,
+  "rarity": "uncommon",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Paolo Parente",
+  "artist_ids": [
+    "d48dd097-720d-476a-8722-6a02854ae28b"
+  ],
+  "illustration_id": "d3773254-420c-4b19-a854-f62b1a8660d5",
+  "border_color": "black",
+  "frame": "1997",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 24204,
+  "prices": {
+    "usd": "0.16",
+    "usd_foil": "4.00",
+    "usd_etched": null,
+    "eur": "0.15",
+    "eur_foil": "2.94",
+    "tix": "0.12"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=21258&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DAngelic%2BFavor",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DAngelic%2BFavor",
+    "edhrec": "https://edhrec.com/route/?cc=Angelic+Favor"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F7124%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=11724&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/13927?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

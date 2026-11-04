@@ -1,0 +1,39 @@
+{
+  "oracle_id": "413520c7-5227-406f-8861-e844c153e5b0",
+  "name": "Warpath",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Warpath",
+      "oracle_fingerprint": "9233d64320578bfe7ca917235d3b5a7a",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "DealDamage": {
+                  "to": {
+                    "Each": [
+                      { "Type": "Creature" },
+                      {
+                        "AnyOf": [
+                          {
+                            "Not": {
+                              "AnyOf": [{ "Not": "Attacking" }, { "Not": { "Not": "Unblocked" } }]
+                            }
+                          },
+                          "Blocking"
+                        ]
+                      }
+                    ]
+                  },
+                  "amount": 3
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

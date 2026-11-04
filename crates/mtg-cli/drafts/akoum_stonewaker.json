@@ -1,0 +1,54 @@
+{
+  "oracle_id": "36d1a46e-44ac-4a65-a93c-8d6ab5c31cbf",
+  "name": "Akoum Stonewaker",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Akoum Stonewaker",
+      "oracle_fingerprint": "df4ae2e160d6341fbf6965e050c9e671",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Land" }, { "ControlledBy": "You" }],
+                "to": "Battlefield"
+              }
+            },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": "{2}{R}",
+                  "paid": [
+                    {
+                      "CreateToken": {
+                        "token": {
+                          "Custom": {
+                            "name": "Elemental",
+                            "colors": ["Red"],
+                            "types": ["Creature"],
+                            "subtypes": ["Elemental"],
+                            "power": 3,
+                            "toughness": 1,
+                            "abilities": [{ "Keyword": "Trample" }, { "Keyword": "Haste" }]
+                          }
+                        },
+                        "as": "token"
+                      }
+                    },
+                    {
+                      "DelayedTrigger": {
+                        "when": { "StepBegins": { "step": "End" } },
+                        "effects": [{ "Exile": { "what": { "Bound": "token" } } }]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,29 @@
+{
+  "oracle_id": "d02427fa-3ef0-484f-acad-63a1d5218727",
+  "name": "Cyclopean Giant",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Cyclopean Giant",
+      "oracle_fingerprint": "01baf20ac239b8795d4e7095fc66be13",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } },
+            "targets": [{ "what": { "Object": [{ "Type": "Land" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "SetLandTypes": ["Swamp"] }],
+                  "duration": "Forever"
+                }
+              },
+              { "Exile": { "what": "This" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,135 @@
+{
+  "object": "card",
+  "id": "230e997e-3736-4afd-8571-1cc1b1d6ed96",
+  "oracle_id": "bbc990e4-1601-498f-9031-0cd663139367",
+  "multiverse_ids": [],
+  "resource_id": "2F4D16600498863976A87EBC1C04D3B70A6885C4DA7E3D31842F5B204CBE378D",
+  "tcgplayer_id": 656806,
+  "cardmarket_id": 851627,
+  "name": "Duelist's Flame",
+  "lang": "en",
+  "released_at": "2025-12-05",
+  "uri": "https://api.scryfall.com/cards/230e997e-3736-4afd-8571-1cc1b1d6ed96",
+  "scryfall_uri": "https://scryfall.com/card/fic/452/duelists-flame?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T01:04:13Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/2/3/230e997e-3736-4afd-8571-1cc1b1d6ed96.jpg?1783904653",
+    "normal": "https://cards.scryfall.io/normal/front/2/3/230e997e-3736-4afd-8571-1cc1b1d6ed96.jpg?1783904653",
+    "large": "https://cards.scryfall.io/large/front/2/3/230e997e-3736-4afd-8571-1cc1b1d6ed96.jpg?1783904653",
+    "png": "https://cards.scryfall.io/png/front/2/3/230e997e-3736-4afd-8571-1cc1b1d6ed96.png?1783904653",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/2/3/230e997e-3736-4afd-8571-1cc1b1d6ed96.jpg?1783904653",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/2/3/230e997e-3736-4afd-8571-1cc1b1d6ed96.jpg?1783904653",
+    "thumb": "https://cards.scryfall.io/thumb/front/2/3/230e997e-3736-4afd-8571-1cc1b1d6ed96.webp?1783904653",
+    "grid": "https://cards.scryfall.io/grid/front/2/3/230e997e-3736-4afd-8571-1cc1b1d6ed96.webp?1783904653",
+    "display": "https://cards.scryfall.io/display/front/2/3/230e997e-3736-4afd-8571-1cc1b1d6ed96.webp?1783904653",
+    "art": "https://cards.scryfall.io/art/front/2/3/230e997e-3736-4afd-8571-1cc1b1d6ed96.webp?1783904653",
+    "crop": "https://cards.scryfall.io/crop/front/2/3/230e997e-3736-4afd-8571-1cc1b1d6ed96.webp?1783904653",
+    "jpeg": "https://cards.scryfall.io/normal/front/2/3/230e997e-3736-4afd-8571-1cc1b1d6ed96.jpg?1783904653"
+  },
+  "mana_cost": "{X}{R}{R}",
+  "cmc": 2.0,
+  "type_line": "Instant",
+  "oracle_text": "Until end of turn, target blocked creature you control gets +X/+0 and gains trample and \"Whenever this creature deals combat damage to a player, look at that many cards from the top of your library. Exile up to one nonland card from among them and put the rest on the bottom of your library in a random order. You may cast the exiled card without paying its mana cost.\"",
+  "colors": [
+    "R"
+  ],
+  "color_identity": [
+    "R"
+  ],
+  "keywords": [],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "mtgo",
+    "paper"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "30659956-4558-4cbf-a65f-34cd00c89579",
+  "set": "fic",
+  "set_name": "Final Fantasy Commander",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/30659956-4558-4cbf-a65f-34cd00c89579",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Afic&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/fic?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/230e997e-3736-4afd-8571-1cc1b1d6ed96/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Abbc990e4-1601-498f-9031-0cd663139367&unique=prints",
+  "collector_number": "452",
+  "digital": false,
+  "rarity": "rare",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Lius Lasahido",
+  "artist_ids": [
+    "0a0e9093-ce44-4a69-93a7-09b63e7c330d"
+  ],
+  "illustration_id": "65177ebd-0b9a-450d-b015-5bd3865689b4",
+  "border_color": "borderless",
+  "frame": "2015",
+  "frame_effects": [
+    "inverted"
+  ],
+  "security_stamp": "triangle",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "promo_types": [
+    "universesbeyond",
+    "ffviii"
+  ],
+  "edhrec_rank": 12621,
+  "prices": {
+    "usd": "5.07",
+    "usd_foil": "4.21",
+    "usd_etched": null,
+    "eur": "4.17",
+    "eur_foil": "4.06",
+    "tix": null
+  },
+  "related_uris": {
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DDuelist%2527s%2BFlame",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DDuelist%2527s%2BFlame",
+    "edhrec": "https://edhrec.com/route/?cc=Duelist%27s+Flame"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F656806%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=851627&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards?affiliate_id=scryfall&data%5Bsearch%5D=Duelist%27s+Flame&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

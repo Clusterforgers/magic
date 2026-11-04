@@ -1,0 +1,31 @@
+{
+  "oracle_id": "175c76c8-f36c-4948-aaa8-0208eac5f0d3",
+  "name": "Continue?",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Continue?",
+      "oracle_fingerprint": "1f855c3e00c71cc488fe206f0845fca6",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Type": "Creature" },
+                    { "OwnedBy": "You" },
+                    { "ArrivedFrom": "Battlefield" },
+                    { "In": "Graveyard" }
+                  ]
+                },
+                "bounds": { "min": 0, "max": 4 }
+              }
+            ],
+            "effects": [{ "Move": { "what": { "Target": 0 }, "to": { "Battlefield": {} } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

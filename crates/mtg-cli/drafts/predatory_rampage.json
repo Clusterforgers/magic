@@ -1,0 +1,36 @@
+{
+  "oracle_id": "ee6d271c-0728-4080-85bb-a6af05f8b213",
+  "name": "Predatory Rampage",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Predatory Rampage",
+      "oracle_fingerprint": "67a10efb8df87bd18a5f286d8b8df5d0",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                  "mods": [{ "ModifyPT": { "power": 3, "toughness": 3 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "Rule": {
+                  "rule": {
+                    "MustBlock": {
+                      "Each": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }]
+                    }
+                  },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

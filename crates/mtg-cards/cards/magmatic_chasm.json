@@ -1,0 +1,28 @@
+{
+  "oracle_id": "6cfd2cd8-a86e-48fe-a85a-9a3444b5030c",
+  "name": "Magmatic Chasm",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Magmatic Chasm",
+      "oracle_fingerprint": "31bd5d5c5bb69be1400ecc3ae2e9bffe",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": {
+                    "Each": [{ "Type": "Creature" }, { "Not": { "HasKeyword": "Flying" } }]
+                  },
+                  "mods": ["CantBlock"],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

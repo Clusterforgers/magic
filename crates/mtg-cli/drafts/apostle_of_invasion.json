@@ -1,0 +1,27 @@
+{
+  "oracle_id": "d56f1543-2b2d-4ce3-bcfe-41224a0cece4",
+  "name": "Apostle of Invasion",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Apostle of Invasion",
+      "oracle_fingerprint": "6155387c6e95ba613c1cd54d9ef2866b",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "AddKeyword": "DoubleStrike" }],
+            "condition": {
+              "Compare": {
+                "left": { "HighestCounters": { "who": "Opponents", "counter": "poison" } },
+                "op": "Ge",
+                "right": 3
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

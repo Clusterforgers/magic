@@ -1,0 +1,30 @@
+{
+  "oracle_id": "09c275bd-8323-485e-81f6-aff1f99d0d03",
+  "name": "Hauntwoods Shrieker",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Hauntwoods Shrieker",
+      "oracle_fingerprint": "812ca17698ebcc60a88bbc12063ee187",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [
+              { "LookAtTop": { "count": 2, "as": "looked" } },
+              { "Choose": { "from": { "Bound": "looked" }, "as": "kept2", "rest_as": "rest3" } },
+              { "Move": { "what": { "Bound": "rest3" }, "to": "Graveyard" } },
+              { "Manifest": {} }
+            ]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 253, "end": 345 }
+          }
+        }
+      ]
+    }
+  ]
+}

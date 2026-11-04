@@ -1,0 +1,39 @@
+{
+  "oracle_id": "e51680d1-3e6c-4d1b-9705-36f73d7328cf",
+  "name": "Rookie Mistake",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Rookie Mistake",
+      "oracle_fingerprint": "f2eb75fc26d0f49633d1f67dea4c8c0e",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }] } },
+              {
+                "what": { "Object": [{ "Type": "Creature" }, { "Not": { "Is": { "Target": 0 } } }] }
+              }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "ModifyPT": { "power": 0, "toughness": 2 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "Continuous": {
+                  "affected": { "Target": 1 },
+                  "mods": [{ "ModifyPT": { "power": -2, "toughness": 0 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

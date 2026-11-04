@@ -1,0 +1,31 @@
+{
+  "oracle_id": "aa1d8bfa-729a-4e10-8069-57a1d4f4392b",
+  "name": "Growing Dread",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Growing Dread",
+      "oracle_fingerprint": "56370d14bafceae9ff5343de05693c34",
+      "abilities": [
+        { "Keyword": "Flash" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              { "LookAtTop": { "count": 2, "as": "looked" } },
+              { "Choose": { "from": { "Bound": "looked" }, "as": "kept2", "rest_as": "rest3" } },
+              { "Move": { "what": { "Bound": "rest3" }, "to": "Graveyard" } },
+              { "Manifest": {} }
+            ]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 257, "end": 322 }
+          }
+        }
+      ]
+    }
+  ]
+}

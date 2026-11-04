@@ -1,0 +1,21 @@
+{
+  "oracle_id": "ee6fe023-5917-4055-b379-0d3958b40ce7",
+  "name": "Gate to the Citadel",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Gate to the Citadel",
+      "oracle_fingerprint": "865104ec816a51d1c36eeffb94d68ae5",
+      "abilities": [
+        { "Replacement": { "when": { "Enters": { "what": ["This"] } }, "by": "Tapped" } },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{3}{W}" }, "Tap"],
+            "limit": "OncePerGame",
+            "effects": [{ "Seek": { "filter": [{ "Not": { "Type": "Land" } }] } }]
+          }
+        }
+      ]
+    }
+  ]
+}

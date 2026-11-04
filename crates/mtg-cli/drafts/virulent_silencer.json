@@ -1,0 +1,30 @@
+{
+  "oracle_id": "7d70a2f4-92cb-40c3-9e5a-f6c57d4a64c2",
+  "name": "Virulent Silencer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Virulent Silencer",
+      "oracle_fingerprint": "9127b14955b9dbb1e3943a77f28c52a6",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "DealsDamage": {
+                "source": [
+                  { "Type": "Creature" },
+                  { "Not": "Token" },
+                  { "Type": "Artifact" },
+                  { "ControlledBy": "You" }
+                ],
+                "to": "EachPlayer",
+                "combat": true
+              }
+            },
+            "effects": [{ "PutCounters": { "on": "Triggering", "counter": "poison", "count": 2 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

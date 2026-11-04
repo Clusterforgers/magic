@@ -1,0 +1,28 @@
+{
+  "oracle_id": "75eb30cc-688d-400a-abe3-5319b79fcbae",
+  "name": "Topple",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Topple",
+      "oracle_fingerprint": "b5b342651c8457bfdda752a5634587ed",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Type": "Creature" },
+                    { "GreatestAmong": { "stat": "Power", "group": [{ "Type": "Creature" }] } }
+                  ]
+                }
+              }
+            ],
+            "effects": [{ "Exile": { "what": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,92 @@
+{
+  "oracle_id": "aefea339-8a0d-4531-8a62-afaecc88d078",
+  "name": "Scavenger's Talent",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Scavenger's Talent",
+      "oracle_fingerprint": "5d64432e2760f61810686641c43c28f2",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "Batch": {
+                "ZoneChange": {
+                  "what": [{ "Type": "Creature" }, { "ControlledBy": "You" }],
+                  "from": "Battlefield",
+                  "to": "Graveyard"
+                }
+              }
+            },
+            "limit": "OncePerTurn",
+            "effects": [{ "CreateToken": { "token": { "Named": "food" } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{1}{B}",
+            "timing": "Sorcery",
+            "condition": { "Level": { "of": "This", "op": "Eq", "level": 1 } },
+            "effects": [{ "BecomeLevel": { "level": 2 } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Sacrificed": { "what": [], "by": "You" } },
+            "if": { "Level": { "of": "This", "op": "Ge", "level": 2 } },
+            "targets": [{ "what": "Player" }],
+            "effects": [{ "Mill": { "who": { "Target": 0 }, "count": 2 } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{2}{B}",
+            "timing": "Sorcery",
+            "condition": { "Level": { "of": "This", "op": "Eq", "level": 2 } },
+            "effects": [{ "BecomeLevel": { "level": 3 } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "if": { "Level": { "of": "This", "op": "Ge", "level": 3 } },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": [
+                    {
+                      "Sacrifice": {
+                        "filter": ["Other", { "Not": { "Type": "Land" } }],
+                        "count": 3
+                      }
+                    }
+                  ],
+                  "paid": [
+                    {
+                      "Choose": {
+                        "from": {
+                          "Each": [
+                            { "Type": "Creature" },
+                            { "OwnedBy": "You" },
+                            { "In": "Graveyard" }
+                          ]
+                        },
+                        "as": "picked"
+                      }
+                    },
+                    {
+                      "Move": {
+                        "what": { "Bound": "picked" },
+                        "to": { "Battlefield": { "counters": [[{ "Other": "finality" }, 1]] } }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

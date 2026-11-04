@@ -1,0 +1,19 @@
+{
+  "oracle_id": "5249df56-7571-46c0-882e-cf88e452fb4d",
+  "name": "Marsh Viper",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Marsh Viper",
+      "oracle_fingerprint": "cee3e767f891f2b6a59a25fba8838c10",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": ["This"], "to": "EachPlayer" } },
+            "effects": [{ "PutCounters": { "on": "Triggering", "counter": "poison", "count": 2 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

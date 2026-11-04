@@ -1,0 +1,32 @@
+{
+  "oracle_id": "197809b7-1ddb-4329-8d82-7651696538a8",
+  "name": "Frenzied Gorespawn",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Frenzied Gorespawn",
+      "oracle_fingerprint": "61f5e62da19bac60803476a123608a46",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              {
+                "what": {
+                  "PerPlayer": { "players": "Opponents", "what": [{ "Type": "Creature" }] }
+                }
+              }
+            ],
+            "effects": [{ "Goad": { "what": { "Target": 0 } } }]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 200, "end": 307 }
+          }
+        }
+      ]
+    }
+  ]
+}

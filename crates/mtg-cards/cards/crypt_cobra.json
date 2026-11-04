@@ -1,0 +1,19 @@
+{
+  "oracle_id": "456bbc0e-a648-481f-b37e-9996029556bd",
+  "name": "Crypt Cobra",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Crypt Cobra",
+      "oracle_fingerprint": "5197f17f96a4cba7dfbad2c5b40c028a",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Unblocked": { "what": ["This"] } },
+            "effects": [{ "PutCounters": { "on": "Defending", "counter": "poison" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

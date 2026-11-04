@@ -1,0 +1,33 @@
+{
+  "oracle_id": "f1dce3f0-30c8-488f-bbeb-b0533886c655",
+  "name": "Betrayal at the Vault",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Betrayal at the Vault",
+      "oracle_fingerprint": "2a6b2e39b98c3322e9ce1e145f30dda2",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } },
+              {
+                "what": { "Object": [{ "Type": "Creature" }, { "Not": { "Is": { "Target": 0 } } }] },
+                "bounds": { "min": 2, "max": 2 }
+              }
+            ],
+            "effects": [
+              {
+                "DealDamage": {
+                  "source": { "Target": 0 },
+                  "to": { "Target": 1 },
+                  "amount": { "Stat": { "of": { "Target": 0 }, "stat": "Power" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

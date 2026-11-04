@@ -1,0 +1,39 @@
+{
+  "oracle_id": "7cfeb732-8a35-4a1f-a417-11db4c1499fd",
+  "name": "Porphyry Nodes",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Porphyry Nodes",
+      "oracle_fingerprint": "38d98fe90cbfcb98fdf338709bf93cc4",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "Type": "Creature" },
+                      { "LeastAmong": { "stat": "Power", "group": [{ "Type": "Creature" }] } },
+                      { "Not": { "HasKeyword": "Indestructible" } }
+                    ]
+                  },
+                  "as": "card"
+                }
+              },
+              { "Destroy": { "what": { "Bound": "card" }, "regenerate": false } }
+            ]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 176, "end": 251 }
+          }
+        }
+      ]
+    }
+  ]
+}

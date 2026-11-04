@@ -1,0 +1,39 @@
+{
+  "oracle_id": "4337f35b-baab-4640-9e1c-05f61c49bbdd",
+  "name": "Hidden Guerrillas",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Hidden Guerrillas",
+      "oracle_fingerprint": "e33170784dd6dcfbb59e70f51cd30011",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "what": [{ "Type": "Artifact" }], "by": "Opponents" } },
+            "if": {
+              "Compare": {
+                "left": { "Count": ["This", { "Type": "Enchantment" }] },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [
+                    { "SetPT": { "power": 5, "toughness": 3 } },
+                    { "SetCreatureTypes": ["Soldier"] },
+                    { "SetTypes": ["Creature"] },
+                    { "AddKeyword": "Trample" }
+                  ],
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

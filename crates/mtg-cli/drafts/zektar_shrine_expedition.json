@@ -1,0 +1,62 @@
+{
+  "oracle_id": "45bd5e97-f34e-47bc-ad21-da42d3444431",
+  "name": "Zektar Shrine Expedition",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Zektar Shrine Expedition",
+      "oracle_fingerprint": "8d6cc155b2f40fb05b9a54ad5006cbd0",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Land" }, { "ControlledBy": "You" }],
+                "to": "Battlefield"
+              }
+            },
+            "effects": [
+              {
+                "May": {
+                  "effects": [{ "PutCounters": { "on": "This", "counter": { "Other": "quest" } } }]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [
+              { "RemoveCounters": { "counter": { "Other": "quest" }, "count": 3 } },
+              "SacrificeSelf"
+            ],
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Elemental",
+                      "colors": ["Red"],
+                      "types": ["Creature"],
+                      "subtypes": ["Elemental"],
+                      "power": 7,
+                      "toughness": 1,
+                      "abilities": [{ "Keyword": "Trample" }, { "Keyword": "Haste" }]
+                    }
+                  },
+                  "as": "token"
+                }
+              },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "End" } },
+                  "effects": [{ "Exile": { "what": { "Bound": "token" } } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

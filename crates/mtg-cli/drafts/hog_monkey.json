@@ -1,0 +1,45 @@
+{
+  "oracle_id": "e11591ee-7074-488e-8d2f-f8c89e385a55",
+  "name": "Hog-Monkey",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Hog-Monkey",
+      "oracle_fingerprint": "e5ae581bfd6a4cff0ad5a152013a60ad",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "BeginCombat", "whose": "You" } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Type": "Creature" },
+                    { "ControlledBy": "You" },
+                    { "HasCounter": "+1/+1" }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "AddKeyword": "Menace" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{5}",
+            "limit": "OncePerGame",
+            "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1", "count": 2 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

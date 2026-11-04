@@ -1,0 +1,136 @@
+{
+  "object": "card",
+  "id": "ec5ec61b-5393-422b-b021-46b80bb42ac4",
+  "oracle_id": "58d5d563-cb60-4977-86cd-f32cd811aa77",
+  "multiverse_ids": [
+    667619
+  ],
+  "mtgo_id": 128024,
+  "tcgplayer_id": 556328,
+  "cardmarket_id": 775462,
+  "name": "Phantom Blade",
+  "lang": "en",
+  "released_at": "2024-07-05",
+  "uri": "https://api.scryfall.com/cards/ec5ec61b-5393-422b-b021-46b80bb42ac4",
+  "scryfall_uri": "https://scryfall.com/card/acr/29/phantom-blade?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T02:49:40Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/e/c/ec5ec61b-5393-422b-b021-46b80bb42ac4.jpg?1783910980",
+    "normal": "https://cards.scryfall.io/normal/front/e/c/ec5ec61b-5393-422b-b021-46b80bb42ac4.jpg?1783910980",
+    "large": "https://cards.scryfall.io/large/front/e/c/ec5ec61b-5393-422b-b021-46b80bb42ac4.jpg?1783910980",
+    "png": "https://cards.scryfall.io/png/front/e/c/ec5ec61b-5393-422b-b021-46b80bb42ac4.png?1783910980",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/e/c/ec5ec61b-5393-422b-b021-46b80bb42ac4.jpg?1783910980",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/e/c/ec5ec61b-5393-422b-b021-46b80bb42ac4.jpg?1783910980",
+    "thumb": "https://cards.scryfall.io/thumb/front/e/c/ec5ec61b-5393-422b-b021-46b80bb42ac4.webp?1783910980",
+    "grid": "https://cards.scryfall.io/grid/front/e/c/ec5ec61b-5393-422b-b021-46b80bb42ac4.webp?1783910980",
+    "display": "https://cards.scryfall.io/display/front/e/c/ec5ec61b-5393-422b-b021-46b80bb42ac4.webp?1783910980",
+    "art": "https://cards.scryfall.io/art/front/e/c/ec5ec61b-5393-422b-b021-46b80bb42ac4.webp?1783910980",
+    "crop": "https://cards.scryfall.io/crop/front/e/c/ec5ec61b-5393-422b-b021-46b80bb42ac4.webp?1783910980",
+    "jpeg": "https://cards.scryfall.io/normal/front/e/c/ec5ec61b-5393-422b-b021-46b80bb42ac4.jpg?1783910980"
+  },
+  "mana_cost": "{4}{B}",
+  "cmc": 5.0,
+  "type_line": "Artifact — Equipment",
+  "oracle_text": "When this Equipment enters, attach it to up to one target creature you control. Destroy up to one other target creature.\nEquipped creature gets +1/+1 and has menace. (It can't be blocked except by two or more creatures.)\nEquip {2}",
+  "colors": [
+    "B"
+  ],
+  "color_identity": [
+    "B"
+  ],
+  "keywords": [
+    "Equip"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "54b67b0b-cd3f-4e0d-ac25-fef5d966409b",
+  "set": "acr",
+  "set_name": "Assassin's Creed",
+  "set_type": "draft_innovation",
+  "set_uri": "https://api.scryfall.com/sets/54b67b0b-cd3f-4e0d-ac25-fef5d966409b",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Aacr&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/acr?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/ec5ec61b-5393-422b-b021-46b80bb42ac4/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A58d5d563-cb60-4977-86cd-f32cd811aa77&unique=prints",
+  "collector_number": "29",
+  "digital": false,
+  "rarity": "uncommon",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Craig J Spearing",
+  "artist_ids": [
+    "b0f15e74-0dd6-4156-959e-c5e30c5cdc52"
+  ],
+  "illustration_id": "99e3a4e3-b469-4667-a5d8-77cf3b8aae76",
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "triangle",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "promo_types": [
+    "universesbeyond"
+  ],
+  "edhrec_rank": 10511,
+  "prices": {
+    "usd": "0.31",
+    "usd_foil": "0.31",
+    "usd_etched": null,
+    "eur": "0.10",
+    "eur_foil": "0.16",
+    "tix": "1.01"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=667619&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DPhantom%2BBlade",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DPhantom%2BBlade",
+    "edhrec": "https://edhrec.com/route/?cc=Phantom+Blade"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F556328%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=775462&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/128024?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

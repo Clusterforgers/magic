@@ -1,0 +1,55 @@
+{
+  "oracle_id": "c3b6e114-7bc8-4890-97d9-edbeea1f425f",
+  "name": "Assault Suit",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Assault Suit",
+      "oracle_fingerprint": "fa029a8955d7963caa3003ccb26642ee",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "ModifyPT": { "power": 2, "toughness": 2 } }, { "AddKeyword": "Haste" }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "Opponents" } },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "Continuous": {
+                        "affected": "Attached",
+                        "mods": [{ "SetController": "Triggering" }],
+                        "duration": "UntilEndOfTurn"
+                      }
+                    },
+                    {
+                      "If": {
+                        "condition": {
+                          "CountOf": {
+                            "subject": "Attached",
+                            "selector": [{ "Type": "Creature" }],
+                            "op": "Ge",
+                            "right": 1
+                          }
+                        },
+                        "then": [{ "Untap": { "what": "Attached" } }]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Equip": "{3}" } },
+        { "Rule": { "rule": { "Cant": { "who": "Attached", "action": "Sacrifice" } } } },
+        { "Static": { "affected": "Attached", "mods": [{ "CantAttackYou": "Both" }] } }
+      ]
+    }
+  ]
+}

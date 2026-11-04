@@ -1,0 +1,27 @@
+{
+  "oracle_id": "3aa3b908-e8d3-4944-8ced-5219d4129594",
+  "name": "Putrid Pals",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Putrid Pals",
+      "oracle_fingerprint": "5890ca42af97e7d250a295a21ecc9616",
+      "abilities": [
+        { "Keyword": "Deathtouch" },
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "WithCounters": { "counter": "+1/+1", "count": 2 } },
+            "condition": {
+              "Compare": {
+                "left": { "Tallied": { "who": "You", "what": "PermanentsLeftUnder" } },
+                "op": "Ge",
+                "right": 1
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

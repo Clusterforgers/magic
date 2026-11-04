@@ -1,0 +1,30 @@
+{
+  "oracle_id": "3c41c666-5cf4-4f35-9cb8-c41f1f78f31e",
+  "name": "Ornate Kanzashi",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ornate Kanzashi",
+      "oracle_fingerprint": "acc622dba465391a4f1a45f6ec1fc144",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{2}" }, "Tap"],
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              { "ExileTop": { "who": { "Target": 0 }, "as": "exiled" } },
+              {
+                "Rule": {
+                  "rule": {
+                    "MayCast": { "from": "Exile", "only": { "Bound": "exiled" }, "play": true }
+                  },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

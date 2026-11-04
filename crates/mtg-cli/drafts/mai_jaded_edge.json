@@ -1,0 +1,23 @@
+{
+  "oracle_id": "b5029f21-e0d6-4f22-9afd-79452de26490",
+  "name": "Mai, Jaded Edge",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mai, Jaded Edge",
+      "oracle_fingerprint": "97b7795ebf400285870bbe82cbfc0a94",
+      "abilities": [
+        { "Keyword": "Prowess" },
+        {
+          "Activated": {
+            "cost": "{3}",
+            "limit": "OncePerGame",
+            "effects": [
+              { "PutCounters": { "on": "This", "counter": { "Other": "double strike" } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

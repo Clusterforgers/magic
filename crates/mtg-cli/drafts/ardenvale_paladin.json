@@ -1,0 +1,22 @@
+{
+  "oracle_id": "30393cb0-f461-4899-8aae-609bc8378f36",
+  "name": "Ardenvale Paladin",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ardenvale Paladin",
+      "oracle_fingerprint": "5444bfd42187cb107e0548a3536b4c08",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "WithCounters": { "counter": "+1/+1", "count": 1 } },
+            "condition": {
+              "Compare": { "left": { "ManaSpent": { "of": "White" } }, "op": "Ge", "right": 3 }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

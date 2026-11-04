@@ -1,0 +1,36 @@
+{
+  "oracle_id": "54250029-1bd7-4caf-a839-9497607ce725",
+  "name": "Quicksmith Spy",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Quicksmith Spy",
+      "oracle_fingerprint": "c359b2c0f8cc6697805eb4511a994a1b",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Artifact" }, { "ControlledBy": "You" }] } }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    {
+                      "GrantAbility": {
+                        "Activated": { "cost": ["Tap"], "effects": [{ "Draw": {} }] }
+                      }
+                    }
+                  ],
+                  "duration": "WhileYouControlSource"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

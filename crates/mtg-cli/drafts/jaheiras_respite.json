@@ -1,0 +1,43 @@
+{
+  "oracle_id": "1c19b04d-b307-4f70-b89e-af306374b9db",
+  "name": "Jaheira's Respite",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Jaheira's Respite",
+      "oracle_fingerprint": "478e1f6fdb5178bf775d13eaf6659325",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Search": {
+                  "filter": [{ "Type": "Land" }, { "Supertype": "Basic" }],
+                  "count": {
+                    "min": 0,
+                    "max": { "Count": [{ "Type": "Creature" }, { "AttackingPlayer": "You" }] }
+                  },
+                  "as": "found"
+                }
+              },
+              {
+                "Move": {
+                  "what": { "Bound": "found" },
+                  "to": { "Battlefield": { "tapped": true } }
+                }
+              },
+              { "Shuffle": {} },
+              {
+                "Shield": {
+                  "when": { "Damage": { "combat": true } },
+                  "by": "Prevent",
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

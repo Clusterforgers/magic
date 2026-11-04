@@ -1,0 +1,42 @@
+{
+  "oracle_id": "f6ed46e2-08f9-4e89-aae3-e5dd7f30f007",
+  "name": "Brought Back",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Brought Back",
+      "oracle_fingerprint": "f5fea7294bbd1e153dc5aa467bbfe2cd",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "OwnedBy": "You" },
+                    { "ArrivedFrom": "Battlefield" },
+                    {
+                      "AnyOf": [
+                        { "Type": "Artifact" },
+                        { "Type": "Battle" },
+                        { "Type": "Creature" },
+                        { "Type": "Enchantment" },
+                        { "Type": "Land" },
+                        { "Type": "Planeswalker" }
+                      ]
+                    },
+                    { "In": "Graveyard" }
+                  ]
+                },
+                "bounds": { "min": 0, "max": 2 }
+              }
+            ],
+            "effects": [
+              { "Move": { "what": { "Target": 0 }, "to": { "Battlefield": { "tapped": true } } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,40 @@
+{
+  "oracle_id": "742f6478-7c9e-43a4-81c1-09383fe65dad",
+  "name": "Mournwillow",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mournwillow",
+      "oracle_fingerprint": "3d1f03ac56ca527fbd064346b84166c0",
+      "abilities": [
+        { "Keyword": "Haste" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "if": {
+              "Compare": {
+                "left": { "CardTypes": [{ "In": "Graveyard" }, { "OwnedBy": "You" }] },
+                "op": "Ge",
+                "right": 4
+              }
+            },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": {
+                    "Each": [
+                      { "Type": "Creature" },
+                      { "Compare": { "stat": "Power", "op": "Le", "to": 2 } }
+                    ]
+                  },
+                  "mods": ["CantBlock"],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

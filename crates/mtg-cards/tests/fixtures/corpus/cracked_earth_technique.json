@@ -1,0 +1,140 @@
+{
+  "object": "card",
+  "id": "cfcd77b0-0081-4146-880f-71c51e78bfad",
+  "oracle_id": "d5314006-afe0-4cdc-88f0-ff1f7d85fba9",
+  "multiverse_ids": [],
+  "resource_id": "44EC58EDFFC476F6FAB8761C303E9610ECBC52F0E4A368ADF2B47F05F29EC49E",
+  "mtgo_id": 145668,
+  "arena_id": 98280,
+  "tcgplayer_id": 662390,
+  "cardmarket_id": 857954,
+  "name": "Cracked Earth Technique",
+  "lang": "en",
+  "released_at": "2025-11-21",
+  "uri": "https://api.scryfall.com/cards/cfcd77b0-0081-4146-880f-71c51e78bfad",
+  "scryfall_uri": "https://scryfall.com/card/tle/135/cracked-earth-technique?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T01:06:55Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/c/f/cfcd77b0-0081-4146-880f-71c51e78bfad.jpg?1783904815",
+    "normal": "https://cards.scryfall.io/normal/front/c/f/cfcd77b0-0081-4146-880f-71c51e78bfad.jpg?1783904815",
+    "large": "https://cards.scryfall.io/large/front/c/f/cfcd77b0-0081-4146-880f-71c51e78bfad.jpg?1783904815",
+    "png": "https://cards.scryfall.io/png/front/c/f/cfcd77b0-0081-4146-880f-71c51e78bfad.png?1783904815",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/c/f/cfcd77b0-0081-4146-880f-71c51e78bfad.jpg?1783904815",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/c/f/cfcd77b0-0081-4146-880f-71c51e78bfad.jpg?1783904815",
+    "thumb": "https://cards.scryfall.io/thumb/front/c/f/cfcd77b0-0081-4146-880f-71c51e78bfad.webp?1783904815",
+    "grid": "https://cards.scryfall.io/grid/front/c/f/cfcd77b0-0081-4146-880f-71c51e78bfad.webp?1783904815",
+    "display": "https://cards.scryfall.io/display/front/c/f/cfcd77b0-0081-4146-880f-71c51e78bfad.webp?1783904815",
+    "art": "https://cards.scryfall.io/art/front/c/f/cfcd77b0-0081-4146-880f-71c51e78bfad.webp?1783904815",
+    "crop": "https://cards.scryfall.io/crop/front/c/f/cfcd77b0-0081-4146-880f-71c51e78bfad.webp?1783904815",
+    "jpeg": "https://cards.scryfall.io/normal/front/c/f/cfcd77b0-0081-4146-880f-71c51e78bfad.jpg?1783904815"
+  },
+  "mana_cost": "{4}{G}",
+  "cmc": 5.0,
+  "type_line": "Sorcery — Lesson",
+  "oracle_text": "Earthbend 3, then earthbend 3. You gain 3 life. (To earthbend 3, target land you control becomes a 0/0 creature with haste that's still a land. Put three +1/+1 counters on it. When it dies or is exiled, return it to the battlefield tapped.)",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [
+    "Earthbend"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "arena",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "a75e6ceb-d62c-4063-8e96-f269e3a0b025",
+  "set": "tle",
+  "set_name": "Avatar: The Last Airbender Eternal",
+  "set_type": "eternal",
+  "set_uri": "https://api.scryfall.com/sets/a75e6ceb-d62c-4063-8e96-f269e3a0b025",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Atle&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/tle?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/cfcd77b0-0081-4146-880f-71c51e78bfad/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Ad5314006-afe0-4cdc-88f0-ff1f7d85fba9&unique=prints",
+  "collector_number": "135",
+  "digital": false,
+  "rarity": "uncommon",
+  "watermark": "earthkingdom",
+  "flavor_text": "Against Toph, an army's greatest mistake is touching the ground.",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Ichiko Milk Tei",
+  "artist_ids": [
+    "218063fc-7966-49d5-a63f-1513a9e04c19"
+  ],
+  "illustration_id": "1738ae01-a19a-41b8-88a8-1e72395a8b3f",
+  "border_color": "black",
+  "frame": "2015",
+  "frame_effects": [
+    "lesson"
+  ],
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "promo_types": [
+    "universesbeyond"
+  ],
+  "edhrec_rank": 6459,
+  "prices": {
+    "usd": "0.47",
+    "usd_foil": "6.09",
+    "usd_etched": null,
+    "eur": "0.79",
+    "eur_foil": "2.27",
+    "tix": "0.04"
+  },
+  "related_uris": {
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DCracked%2BEarth%2BTechnique",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DCracked%2BEarth%2BTechnique",
+    "edhrec": "https://edhrec.com/route/?cc=Cracked+Earth+Technique"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F662390%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=857954&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/145668?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

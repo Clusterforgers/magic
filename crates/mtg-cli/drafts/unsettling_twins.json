@@ -1,0 +1,24 @@
+{
+  "oracle_id": "b0b2ca8c-cb5a-45f8-ae7c-63ad9ebb4afd",
+  "name": "Unsettling Twins",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Unsettling Twins",
+      "oracle_fingerprint": "9c4125f7b5fb8aff6abfb143bb848a78",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              { "LookAtTop": { "count": 2, "as": "looked" } },
+              { "Choose": { "from": { "Bound": "looked" }, "as": "kept2", "rest_as": "rest3" } },
+              { "Move": { "what": { "Bound": "rest3" }, "to": "Graveyard" } },
+              { "Manifest": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

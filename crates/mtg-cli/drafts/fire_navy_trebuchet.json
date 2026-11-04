@@ -1,0 +1,54 @@
+{
+  "oracle_id": "1f018a8c-6ceb-4d03-94a7-8713467c9cf5",
+  "name": "Fire Navy Trebuchet",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Fire Navy Trebuchet",
+      "oracle_fingerprint": "5060e2af02800b5fcb5d6a0c86b374c9",
+      "abilities": [
+        { "Keyword": "Defender" },
+        { "Keyword": "Reach" },
+        {
+          "Triggered": {
+            "when": {
+              "GroupAttacks": { "what": [{ "Type": "Creature" }, { "ControlledBy": "You" }] }
+            },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Ballistic Boulder",
+                      "types": ["Artifact", "Creature"],
+                      "subtypes": ["Construct"],
+                      "power": 2,
+                      "toughness": 1,
+                      "abilities": [{ "Keyword": "Flying" }]
+                    }
+                  },
+                  "tapped": true,
+                  "attacking": true,
+                  "as": "token"
+                }
+              },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "End" } },
+                  "effects": [
+                    {
+                      "Sacrifice": {
+                        "who": { "ControllerOf": { "Bound": "token" } },
+                        "filter": [{ "Is": { "Bound": "token" } }]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

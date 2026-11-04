@@ -1,0 +1,35 @@
+{
+  "oracle_id": "896fc91a-1f57-45e2-b135-37bc9c2c80a7",
+  "name": "Myojin of Grim Betrayal",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Myojin of Grim Betrayal",
+      "oracle_fingerprint": "c6de8a6a661fd5b2f83cfe4db896daec",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "WithCounters": { "counter": { "Other": "indestructible" }, "count": 1 } },
+            "condition": {
+              "Matches": {
+                "subject": "This",
+                "selector": [
+                  "This",
+                  { "WasCast": { "by": "You", "from": "Hand" } },
+                  { "OwnedBy": "You" }
+                ]
+              }
+            }
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 99, "end": 287 }
+          }
+        }
+      ]
+    }
+  ]
+}

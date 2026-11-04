@@ -1,0 +1,29 @@
+{
+  "oracle_id": "88e0551a-ada0-41d9-b5c3-39257ce56c3e",
+  "name": "Glacial Crevasses",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Glacial Crevasses",
+      "oracle_fingerprint": "febf8b4b121269fcabc698070f601638",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [
+              { "Sacrifice": { "filter": [{ "Subtype": "Mountain" }, { "Supertype": "Snow" }] } }
+            ],
+            "effects": [
+              {
+                "Shield": {
+                  "when": { "Damage": { "combat": true } },
+                  "by": "Prevent",
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

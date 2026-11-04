@@ -1,0 +1,39 @@
+{
+  "oracle_id": "6894345f-52a6-46e4-b278-0783087daee1",
+  "name": "Hapatra, the Desert Fang",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Hapatra, the Desert Fang",
+      "oracle_fingerprint": "150bc9e757eafd9d95c3ae41755a09d3",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              {
+                "what": {
+                  "PerPlayer": { "players": "Opponents", "what": [{ "Type": "Creature" }] }
+                }
+              }
+            ],
+            "effects": [
+              {
+                "PutCounters": {
+                  "on": { "Target": 0 },
+                  "counter": "-1/-1",
+                  "count": {
+                    "Greatest": {
+                      "of": [{ "OwnedBy": "You" }, { "In": "Graveyard" }],
+                      "stat": "ManaValue"
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

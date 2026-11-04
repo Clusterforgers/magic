@@ -1,0 +1,141 @@
+{
+  "object": "card",
+  "id": "31142a36-3676-4ce4-9f5b-d9252fc30739",
+  "oracle_id": "34da0b06-565f-4964-b8bc-dd106278e086",
+  "multiverse_ids": [
+    553582
+  ],
+  "mtgo_id": 97746,
+  "tcgplayer_id": 262834,
+  "cardmarket_id": 608802,
+  "name": "Myojin of Cryptic Dreams",
+  "lang": "en",
+  "released_at": "2022-02-18",
+  "uri": "https://api.scryfall.com/cards/31142a36-3676-4ce4-9f5b-d9252fc30739",
+  "scryfall_uri": "https://scryfall.com/card/nec/33/myojin-of-cryptic-dreams?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T06:26:26Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/3/1/31142a36-3676-4ce4-9f5b-d9252fc30739.jpg?1783923986",
+    "normal": "https://cards.scryfall.io/normal/front/3/1/31142a36-3676-4ce4-9f5b-d9252fc30739.jpg?1783923986",
+    "large": "https://cards.scryfall.io/large/front/3/1/31142a36-3676-4ce4-9f5b-d9252fc30739.jpg?1783923986",
+    "png": "https://cards.scryfall.io/png/front/3/1/31142a36-3676-4ce4-9f5b-d9252fc30739.png?1783923986",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/3/1/31142a36-3676-4ce4-9f5b-d9252fc30739.jpg?1783923986",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/3/1/31142a36-3676-4ce4-9f5b-d9252fc30739.jpg?1783923986",
+    "thumb": "https://cards.scryfall.io/thumb/front/3/1/31142a36-3676-4ce4-9f5b-d9252fc30739.webp?1783923986",
+    "grid": "https://cards.scryfall.io/grid/front/3/1/31142a36-3676-4ce4-9f5b-d9252fc30739.webp?1783923986",
+    "display": "https://cards.scryfall.io/display/front/3/1/31142a36-3676-4ce4-9f5b-d9252fc30739.webp?1783923986",
+    "art": "https://cards.scryfall.io/art/front/3/1/31142a36-3676-4ce4-9f5b-d9252fc30739.webp?1783923986",
+    "crop": "https://cards.scryfall.io/crop/front/3/1/31142a36-3676-4ce4-9f5b-d9252fc30739.webp?1783923986",
+    "jpeg": "https://cards.scryfall.io/normal/front/3/1/31142a36-3676-4ce4-9f5b-d9252fc30739.jpg?1783923986"
+  },
+  "mana_cost": "{5}{U}{U}{U}",
+  "cmc": 8.0,
+  "type_line": "Legendary Creature — Spirit",
+  "oracle_text": "Myojin of Cryptic Dreams enters with an indestructible counter on it if you cast it from your hand.\nRemove an indestructible counter from Myojin of Cryptic Dreams: Copy target permanent spell you control three times. (The copies become tokens.)",
+  "power": "3",
+  "toughness": "3",
+  "colors": [
+    "U"
+  ],
+  "color_identity": [
+    "U"
+  ],
+  "keywords": [],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "5b4d929d-bdf9-4bbf-858e-e248f53325ad",
+  "set": "nec",
+  "set_name": "Neon Dynasty Commander",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/5b4d929d-bdf9-4bbf-858e-e248f53325ad",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Anec&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/nec?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/31142a36-3676-4ce4-9f5b-d9252fc30739/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A34da0b06-565f-4964-b8bc-dd106278e086&unique=prints",
+  "collector_number": "33",
+  "digital": false,
+  "rarity": "rare",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Yigit Koroglu",
+  "artist_ids": [
+    "a24479f8-6d9e-40f9-bede-f29899922b97"
+  ],
+  "illustration_id": "7a542780-dc00-4b76-b7c7-4fe8ba888188",
+  "border_color": "black",
+  "frame": "2015",
+  "frame_effects": [
+    "legendary"
+  ],
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "edhrec_rank": 7794,
+  "preview": {
+    "source": "Wizards of the Coast",
+    "source_uri": "https://www.twitch.tv/videos/1285955562",
+    "previewed_at": "2022-02-03"
+  },
+  "prices": {
+    "usd": "0.40",
+    "usd_foil": "2.50",
+    "usd_etched": null,
+    "eur": "0.25",
+    "eur_foil": "0.69",
+    "tix": "1.84"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=553582&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DMyojin%2Bof%2BCryptic%2BDreams",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DMyojin%2Bof%2BCryptic%2BDreams",
+    "edhrec": "https://edhrec.com/route/?cc=Myojin+of+Cryptic+Dreams"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F262834%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=608802&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/97746?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

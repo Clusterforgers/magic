@@ -1,0 +1,32 @@
+{
+  "oracle_id": "407021e2-4072-4961-95be-f9309c341677",
+  "name": "Fire of Orthanc",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Fire of Orthanc",
+      "oracle_fingerprint": "670648e66d05802cd6c06735c207d2da",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "AnyOf": [{ "Type": "Artifact" }, { "Type": "Land" }] }] } }
+            ],
+            "effects": [
+              { "Destroy": { "what": { "Target": 0 } } },
+              {
+                "Continuous": {
+                  "affected": {
+                    "Each": [{ "Type": "Creature" }, { "Not": { "HasKeyword": "Flying" } }]
+                  },
+                  "mods": ["CantBlock"],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

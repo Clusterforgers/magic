@@ -1,0 +1,21 @@
+{
+  "oracle_id": "2f920bf2-6a49-47c2-be3c-9787c377673b",
+  "name": "Skystreak Engineer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Skystreak Engineer",
+      "oracle_fingerprint": "35a8208cc313e3e6b9d43790946d390d",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Activated": {
+            "cost": "{4}{U}",
+            "limit": "OncePerGame",
+            "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1", "count": 2 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

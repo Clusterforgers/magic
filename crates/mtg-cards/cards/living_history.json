@@ -1,0 +1,58 @@
+{
+  "oracle_id": "a76adc88-e7db-43e2-8fbf-bae95c0838ef",
+  "name": "Living History",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Living History",
+      "oracle_fingerprint": "ef7a3d0782a78376e66f952bfa099517",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Spirit",
+                      "colors": ["Red", "White"],
+                      "types": ["Creature"],
+                      "subtypes": ["Spirit"],
+                      "power": 2,
+                      "toughness": 2
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "GroupAttacks": { "what": [{ "Type": "Creature" }, { "ControlledBy": "You" }] }
+            },
+            "if": {
+              "Compare": {
+                "left": { "Tallied": { "who": "You", "what": "CardsLeftGraveyard" } },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }, "Attacking"] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "ModifyPT": { "power": 2, "toughness": 0 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

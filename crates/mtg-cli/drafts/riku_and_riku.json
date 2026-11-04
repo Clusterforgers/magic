@@ -1,0 +1,42 @@
+{
+  "oracle_id": "d5f626b2-162f-4388-8f0c-93aa33ce390c",
+  "name": "Riku and Riku",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Riku and Riku",
+      "oracle_fingerprint": "6fd93611986d41128e2126ec5c935e5f",
+      "abilities": [
+        { "Keyword": "DoubleStrike" },
+        {
+          "Activated": {
+            "cost": "{U}{R}",
+            "limit": "OncePerGame",
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    "Spell",
+                    { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] },
+                    { "ControlledBy": "You" }
+                  ]
+                }
+              }
+            ],
+            "effects": [{ "CopySpell": { "what": { "Target": 0 } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{U}{G}",
+            "limit": "OncePerGame",
+            "targets": [
+              { "what": { "Object": ["Spell", { "Type": "Creature" }, { "ControlledBy": "You" }] } }
+            ],
+            "effects": [{ "CopySpell": { "what": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

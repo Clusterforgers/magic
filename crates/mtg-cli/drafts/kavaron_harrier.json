@@ -1,0 +1,56 @@
+{
+  "oracle_id": "1972e0db-e595-4ec2-b97c-902561bb275b",
+  "name": "Kavaron Harrier",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Kavaron Harrier",
+      "oracle_fingerprint": "072284afb1d6887d64f6a650855e9867",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": "{2}",
+                  "paid": [
+                    {
+                      "CreateToken": {
+                        "token": {
+                          "Custom": {
+                            "name": "Robot",
+                            "types": ["Artifact", "Creature"],
+                            "subtypes": ["Robot"],
+                            "power": 2,
+                            "toughness": 2
+                          }
+                        },
+                        "tapped": true,
+                        "attacking": true,
+                        "as": "token"
+                      }
+                    },
+                    {
+                      "DelayedTrigger": {
+                        "when": { "StepBegins": { "step": "EndCombat" } },
+                        "effects": [
+                          {
+                            "Sacrifice": {
+                              "who": { "ControllerOf": { "Bound": "token" } },
+                              "filter": [{ "Is": { "Bound": "token" } }]
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

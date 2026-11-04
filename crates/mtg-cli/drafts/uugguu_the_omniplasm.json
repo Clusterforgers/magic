@@ -1,0 +1,45 @@
+{
+  "oracle_id": "df9bb1fc-135d-4efb-b143-81950fc95a27",
+  "name": "Uugguu, the Omniplasm",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Uugguu, the Omniplasm",
+      "oracle_fingerprint": "b18432b41352cc92b59e3de0191107e5",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [
+                  { "Subtype": "Ooze" },
+                  "Other",
+                  { "Not": "Token" },
+                  { "ControlledBy": "You" }
+                ],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "CopyOf": {
+                      "of": "Triggering",
+                      "except": [
+                        { "SetPT": { "power": 2, "toughness": 2 } },
+                        { "RemoveSupertype": "Legendary" }
+                      ]
+                    }
+                  },
+                  "count": 2
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

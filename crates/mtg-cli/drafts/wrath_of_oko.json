@@ -1,0 +1,32 @@
+{
+  "oracle_id": "71372308-5fe1-4e45-a683-f3fae64d9e0a",
+  "name": "Wrath of Oko",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Wrath of Oko",
+      "oracle_fingerprint": "204b1c64ac93d401d73c68ca4a4a1e0e",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Type": "Creature" }] },
+                  "mods": [
+                    { "SetPT": { "power": 3, "toughness": 3 } },
+                    { "SetColors": ["Green"] },
+                    { "SetCreatureTypes": ["Elk"] },
+                    { "SetTypes": ["Creature"] },
+                    "LoseAbilities"
+                  ],
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

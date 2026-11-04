@@ -1,0 +1,55 @@
+{
+  "oracle_id": "0fbe3805-b59b-47fc-ab21-f05a4aa4cfe0",
+  "name": "Duggan, Private Detective",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Duggan, Private Detective",
+      "oracle_fingerprint": "2b29c23ae43a643edadc7f2236ee5c6f",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              {
+                "SetPT": {
+                  "power": { "Count": [{ "OwnedBy": "You" }, { "In": "Hand" }] },
+                  "toughness": { "Count": [{ "OwnedBy": "You" }, { "In": "Hand" }] }
+                }
+              }
+            ],
+            "defining": true
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+                { "Attacks": { "what": ["This"] } }
+              ]
+            },
+            "effects": [{ "CreateToken": { "token": { "Named": "clue" } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{1}{G}" }, "Tap"],
+            "limit": "OncePerGame",
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }, "Other"] } }],
+            "effects": [
+              {
+                "DealDamage": {
+                  "to": { "Target": 0 },
+                  "amount": {
+                    "Times": { "by": 2, "of": { "Stat": { "of": "This", "stat": "Power" } } }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
