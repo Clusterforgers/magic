@@ -36,7 +36,14 @@
               {
                 "DelayedTrigger": {
                   "when": { "StepBegins": { "step": "End" } },
-                  "effects": [{ "Sacrifice": { "filter": [{ "Is": { "Bound": "copy" } }], "count": { "Count": [{ "Is": { "Bound": "copy" } }] } } }]
+                  "effects": [
+                    {
+                      "Sacrifice": {
+                        "filter": [{ "Is": { "Bound": "copy" } }],
+                        "count": { "Count": [{ "Is": { "Bound": "copy" } }] }
+                      }
+                    }
+                  ]
                 }
               }
             ]
