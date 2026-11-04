@@ -25,6 +25,7 @@ pub mod effects_loop;
 pub mod effects_obj;
 mod effects_verbs;
 mod effects_verbs2;
+mod effects_verbs3;
 pub mod effects_zone;
 pub mod keyword;
 pub mod keyword_alt;
