@@ -78,6 +78,9 @@ fn property(ctx: &Ctx, prop: &str) -> Tr<Vec<Value>> {
         "inZoneExile" => return one(json!({"In": "Exile"})),
         _ => {}
     }
+    if let Some(preds) = super::valid_atoms::atom(prop) {
+        return Ok(preds);
+    }
     if let Some(preds) = typed_property(prop) {
         return Ok(preds);
     }

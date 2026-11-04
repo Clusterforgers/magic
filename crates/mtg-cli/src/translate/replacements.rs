@@ -17,6 +17,12 @@ pub fn replacement_line(ctx: &mut Ctx, body: &str) -> Tr<Value> {
     if event == "Untap" {
         return doesnt_untap(&p);
     }
+    if event == "DamageDone" {
+        if line_condition.is_some() {
+            return unmapped("key:Replacement.DamageDone.condition");
+        }
+        return super::replacements_damage::static_prevention(ctx, &p);
+    }
     if event != "Moved" {
         return unmapped(format!("replacement:{event}"));
     }

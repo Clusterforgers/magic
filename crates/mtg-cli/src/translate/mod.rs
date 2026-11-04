@@ -21,6 +21,7 @@ pub mod mayplay;
 pub mod needs;
 pub mod oracle;
 pub mod replacements;
+pub mod replacements_damage;
 pub mod report;
 pub mod statics;
 pub mod stored;
@@ -28,6 +29,7 @@ pub mod tokens;
 pub mod triggers;
 pub mod triggers_more;
 pub mod valid;
+pub mod valid_atoms;
 
 #[cfg(test)]
 mod tests;

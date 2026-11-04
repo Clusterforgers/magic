@@ -27,8 +27,16 @@ pub fn effects(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
             "Name",
             "Stackable",
             "Defined",
+            "ReplacementEffects",
         ],
     )?;
+    if p.has("ReplacementEffects") {
+        if p.has("StaticAbilities") {
+            return unmapped("key:Effect.static-and-replacement");
+        }
+        let remembered = super::replacements_damage::remembered_of(ctx, p)?;
+        return super::replacements_damage::shield(ctx, p, remembered);
+    }
     let Some(name) = p.get("StaticAbilities") else {
         return unmapped("key:Effect.no-StaticAbilities");
     };
