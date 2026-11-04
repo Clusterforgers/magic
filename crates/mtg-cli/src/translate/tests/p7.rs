@@ -366,3 +366,33 @@ fn static_ability(line: &str) -> Value {
 fn a_must_rule_reads_who_it_binds(#[case] line: &str, #[case] expected: Value) {
     assert_eq!(static_ability(line), expected);
 }
+
+#[rstest]
+#[case::you(
+    "Mode$ CantAttack | ValidCard$ Creature | Target$ You",
+    json!({"Static": {"affected": {"Each": [{"Type": "Creature"}]}, "mods": [{"CantAttackYou": "Player"}]}})
+)]
+#[case::you_and_walkers(
+    "Mode$ CantAttack | ValidCard$ Creature.EnchantedBy | Target$ You,Planeswalker.YouCtrl",
+    json!({"Static": {"affected": "Attached", "mods": [{"CantAttackYou": "Both"}]}})
+)]
+#[case::walkers_only(
+    "Mode$ CantAttack | ValidCard$ Creature | Target$ Planeswalker.YouCtrl",
+    json!({"Static": {"affected": {"Each": [{"Type": "Creature"}]}, "mods": [{"CantAttackYou": "Planeswalkers"}]}})
+)]
+fn a_creature_that_cant_attack_you_keeps_what_it_protects(
+    #[case] line: &str,
+    #[case] expected: Value,
+) {
+    assert_eq!(static_ability(line), expected);
+}
+
+#[test]
+fn an_attack_target_that_is_not_known_stays_a_named_gap() {
+    assert_eq!(
+        static_gaps(
+            "Mode$ CantAttack | ValidCard$ Card.Self | Target$ Player.attackedBySourceThisTurn"
+        ),
+        ["key:Static.CantAttack.Target=Player.attackedBySourceThisTurn"]
+    );
+}

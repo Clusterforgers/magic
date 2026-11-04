@@ -264,8 +264,23 @@ fn granted(ctx: &mut Ctx, names: &str, trigger: bool) -> Tr<Vec<Value>> {
 
 /// `CantAttack`, `CantBlock` of the cards named by `ValidCard$`.
 fn restriction(ctx: &Ctx, p: &Params, modifications: &[&str]) -> Tr<Value> {
-    keys(p, modifications[0], &["ValidCard"])?;
+    keys(p, modifications[0], &["ValidCard", "Target"])?;
     let affected = affected_valid(ctx, p.get("ValidCard").unwrap_or_default())?;
+    if let Some(target) = p.get("Target") {
+        // "Can't attack you" keeps the players and planeswalkers it protects apart.
+        let attacked = match target {
+            "You" => "Player",
+            "Planeswalker.YouCtrl" => "Planeswalkers",
+            "You,Planeswalker.YouCtrl" => "Both",
+            _ => return unmapped(format!("key:Static.CantAttack.Target={target}")),
+        };
+        if modifications != ["CantAttack"] {
+            return unmapped("key:Static.CantBlock.Target");
+        }
+        return Ok(
+            json!({"Static": {"affected": affected, "mods": [{"CantAttackYou": attacked}]}}),
+        );
+    }
     Ok(json!({"Static": {"affected": affected, "mods": modifications}}))
 }
 
