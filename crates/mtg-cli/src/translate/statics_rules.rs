@@ -37,6 +37,7 @@ pub fn rule(ctx: &Ctx, p: &Params) -> Option<Tr<Value>> {
         "IgnoreLegendRule" => keys(p, mode, &[]).map(|()| json!({"NoLegendRule": "EachPlayer"})),
         "UntapOtherPlayer" => untap_other_players(ctx, p),
         "Continuous" if p.has("SetMaxHandSize") => hand_size(ctx, p),
+        "Continuous" if p.has("MayLookAt") && !p.has("MayPlay") => super::statics_look::look(p),
         _ => return None,
     };
     Some(found.map(|rule| json!({"Rule": {"rule": rule}})))
