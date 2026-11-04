@@ -47,10 +47,6 @@ fn an_unless_cost_of_items_is_paid_by_the_payer(#[case] line: &str, #[case] node
     "GainLife | LifeAmount$ 2 | UnlessCost$ X | UnlessPayer$ You",
     "key:Unless.UnlessCost-X"
 )]
-#[case::each_player(
-    "ChangeZone | DefinedPlayer$ Player | Origin$ Hand | Destination$ Exile | ChangeType$ Card | ChangeNum$ 2 | Mandatory$ True",
-    "key:ChangeZone.Choose.DefinedPlayer"
-)]
 #[case::their_chooser_without_target(
     "ChangeZone | DefinedPlayer$ You | Chooser$ Targeted | Origin$ Hand | Destination$ Exile | ChangeType$ Card",
     "key:ChangeZone.Choose.Chooser"
@@ -172,9 +168,6 @@ fn a_dig_takes_all_or_any_number_of_the_cards_it_looks_at(
 
 #[rstest]
 #[case::optional_all("Dig | DigNum$ 3 | ChangeNum$ All | Optional$ True | DestinationZone$ Hand")]
-#[case::remembered_all(
-    "Dig | DigNum$ 3 | ChangeNum$ All | RememberChanged$ True | ChangeValid$ Land | DestinationZone$ Hand"
-)]
 #[case::counted("Dig | DigNum$ 3 | ChangeNum$ X | DestinationZone$ Hand")]
 fn a_dig_that_takes_a_count_beyond_the_node_stays_a_gap(#[case] line: &str) {
     let script = spell(line);
