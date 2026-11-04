@@ -38,6 +38,40 @@ impl KeywordRules for Hexproof {
     }
 }
 
+/// The rules of hexproof from a quality.
+#[derive(Debug)]
+pub(super) struct HexproofFrom;
+
+impl KeywordRules for HexproofFrom {
+    /// Hexproof for the sources the quality matches, judged for the holder's controller as protection is.
+    fn restricts_targeting(
+        &self,
+        state: &GameState,
+        keyword: &Keyword,
+        holder: ObjectId,
+        source: ObjectId,
+        controller: PlayerId,
+    ) -> bool {
+        let Keyword::HexproofFrom(quality) = keyword else {
+            return false;
+        };
+        let Some(object) = state
+            .object(holder)
+            .filter(|object| object.zone() == Zone::Battlefield)
+        else {
+            return false;
+        };
+        let owner = crate::characteristics::controller_of_object(state, object);
+        if owner == controller {
+            return false;
+        }
+        let scope = crate::resolve::Scope::announcing(state, owner, object.reference());
+        state
+            .object(source)
+            .is_some_and(|from| scope.selects(quality, from.reference()).unwrap_or(false))
+    }
+}
+
 #[cfg(test)]
 mod tests {
     //! Goal: hexproof keeps the spells and abilities of the holder's opponents from targeting it and no one else's, for a permanent and for a player, at tables of two to four seats and on the battlefield only, and the recheck on resolution (CR 608.2b) drops a target that has become protected.

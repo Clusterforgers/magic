@@ -411,6 +411,7 @@ pub fn rules(keyword: &Keyword) -> &'static dyn KeywordRules {
         Keyword::Defender => &defender::Defender,
         Keyword::Indestructible => &indestructible::Indestructible,
         Keyword::Hexproof => &hexproof::Hexproof,
+        Keyword::HexproofFrom(_) => &hexproof::HexproofFrom,
         Keyword::Shroud => &shroud::Shroud,
         Keyword::Protection(_) => &protection::Protection,
         Keyword::Prowess => &prowess::Prowess,
