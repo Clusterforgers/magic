@@ -4,7 +4,7 @@ use serde_json::{Value, json};
 
 use super::amount::amount;
 use super::ctx::{Ctx, Tr, unmapped};
-use super::valid::{cmp, defined, selector_in};
+use super::valid::{cmp, defined, selector_any, selector_in};
 use crate::forge::script::Params;
 
 /// The keys this module reads.
@@ -151,6 +151,17 @@ pub fn named(name: &str) -> Tr<Value> {
         }
         other => return unmapped(format!("condition:{other}")),
     })
+}
+
+/// Revolt: a permanent left the battlefield under your control this turn.
+pub fn revolt() -> Value {
+    json!({"Compare": {"left": {"Tallied": {"who": "You", "what": "PermanentsLeftUnder"}}, "op": "Ge", "right": 1}})
+}
+
+/// The permanent itself has the way it was cast (`Card.Self+wasCastFromYourHandByYou`): a `Matches` on `This`.
+pub fn self_was_cast(ctx: &Ctx, spec: &str) -> Tr<Value> {
+    let selector = selector_any(ctx, spec)?;
+    Ok(json!({"Matches": {"subject": "This", "selector": selector}}))
 }
 
 /// The line without the keys of its condition.

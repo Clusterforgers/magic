@@ -322,8 +322,10 @@ impl<'a> Scope<'a> {
             | TurnTally::CreaturesDiedUnder
             | TurnTally::NontokenCreaturesDiedUnder
             | TurnTally::PhyrexiansDiedUnder
+            | TurnTally::PermanentsLeftUnder
             | TurnTally::CardsLeftGraveyard => {
                 let kind = match what {
+                    TurnTally::PermanentsLeftUnder => Tally::PermanentsLeftUnder,
                     TurnTally::CardsLeftGraveyard => Tally::W21aLeftGraveyard,
                     TurnTally::LifeGainedTotal => Tally::GainedTotal,
                     TurnTally::CreaturesAttacked => Tally::Attackers,

@@ -307,6 +307,9 @@ pub enum TurnTally {
     /// The cards that left the graveyards of the players read this turn, to any zone ("if a card left your graveyard this
     /// turn"). Added up over the players.
     CardsLeftGraveyard,
+    /// The permanents that left the battlefield for any zone while the players read controlled them (revolt: "if a
+    /// permanent left the battlefield under your control this turn"). Added up over the players.
+    PermanentsLeftUnder,
 }
 
 /// A kind of event the game logs for the turn with the object it was about, which `Amount::Tally` filters and counts.

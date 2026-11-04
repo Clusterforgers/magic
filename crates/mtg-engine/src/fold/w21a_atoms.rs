@@ -212,3 +212,27 @@ fn a_spell_targets_the_player_it_names(
     assert_eq!(holds(&game, Pred::TargetsPlayer(who), "Bolt"), expected);
     assert!(!holds(&game, Pred::TargetsPlayer(Ref::You), "Bear"));
 }
+
+#[rstest]
+fn a_permanent_leaving_the_battlefield_counts_for_its_controller_wherever_it_goes(
+    #[values(2, 3, 4)] seats: usize,
+    #[values(Zone::Hand(ME), Zone::Exile, Zone::Graveyard(ME))] to: Zone,
+) {
+    let mut game = table(seats);
+    let leave = |game: &GameState, name: &str, from: Zone| Event::ZoneChanged {
+        object: id(game, name),
+        from,
+        to,
+        cause: ZoneCause::Moved,
+    };
+    let hand_card = leave(&game, "Rat", Zone::Hand(ME));
+    fold(&mut game, &[hand_card]);
+    assert_eq!(game.tallied(ME, Tally::PermanentsLeftUnder), 0);
+    let bear = leave(&game, "Bear", Zone::Battlefield);
+    fold(&mut game, &[bear]);
+    assert_eq!(game.tallied(ME, Tally::PermanentsLeftUnder), 1);
+    for seat in 1..seats {
+        let player = PlayerId(u64::try_from(seat).unwrap());
+        assert_eq!(game.tallied(player, Tally::PermanentsLeftUnder), 0);
+    }
+}

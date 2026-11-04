@@ -367,9 +367,27 @@ fn etb_condition(ctx: &Ctx, field: Option<&str>) -> Tr<Option<Value>> {
         "no Condition" => return Ok(None),
         "CheckSVar$ WasKicked" => return Ok(Some(json!("Kicked"))),
         "ValidCard$ Card.Self+escaped" => return Ok(Some(json!({"CastWith": "Escape"}))),
+        "Revolt$ True" => return Ok(Some(super::condition::revolt())),
         _ => {}
     }
+    if let Some(spec) = field.strip_prefix("ValidCard$ Card.Self+") {
+        if spec.starts_with("wasCast") {
+            let cast = super::condition::self_was_cast(ctx, &format!("Card.Self+{spec}"))?;
+            return Ok(Some(cast));
+        }
+        return unmapped("keyword:etbCounter-condition");
+    }
     let params = Params::parse(field);
+    if !params.has("SVarCompare")
+        && let Some(prop) = params
+            .get("CheckSVar")
+            .and_then(|name| ctx.svar(name))
+            .and_then(|text| text.strip_prefix("Count$wasCast"))
+            .and_then(|text| text.strip_suffix(".1.0"))
+    {
+        let cast = super::condition::self_was_cast(ctx, &format!("Card.Self+wasCast{prop}"))?;
+        return Ok(Some(cast));
+    }
     if !params.has("CheckSVar") {
         return unmapped("keyword:etbCounter-condition");
     }
