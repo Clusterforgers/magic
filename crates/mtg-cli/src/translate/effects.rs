@@ -98,20 +98,10 @@ fn api_of(params: &Params) -> Tr<&str> {
         .map_or_else(|| unmapped("line:no-api"), Ok)
 }
 
-/// The effects of one line, without its sub-abilities.
-/// One line: its effects, and the latest target it declared as what `RememberTargets` leaves to remember when the API does not
-/// move it (a move names what it moved).
+/// One line: its effects, with the objects it remembers or imprints bound (`memory::line`).
 fn line(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
     let api = api_of(p)?;
-    if p.get("RememberTargets") != Some("True") || matches!(api, "ChangeZone" | "Destroy") {
-        return api_line(ctx, p, api);
-    }
-    if !p.has("ValidTgts") {
-        return unmapped("key:RememberTargets-without-targets");
-    }
-    let effects = api_line(ctx, &p.without(&["RememberTargets"]), api)?;
-    ctx.remembered = Some(ctx.last_target()?);
-    Ok(effects)
+    super::memory::line(ctx, p, api, api_line)
 }
 
 fn api_line(ctx: &mut Ctx, p: &Params, api: &str) -> Tr<Vec<Value>> {

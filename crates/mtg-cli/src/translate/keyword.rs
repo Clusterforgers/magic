@@ -354,6 +354,7 @@ fn choice(ctx: &Ctx, name: &str) -> Tr<Value> {
                 other => unmapped(format!("key:ETBReplacement.Choices={other}")),
             }
         }
+        (Some("NameCard"), _, None) => super::memory::name_choice(&part),
         (api, _, _) => unmapped(format!("keyword:ETBReplacement-{}", api.unwrap_or("?"))),
     }
 }
