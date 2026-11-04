@@ -450,6 +450,7 @@ fn c10_pa_attacked_players(
         .collect()
 }
 
+#[allow(clippy::too_many_lines)]
 fn happenings(pre: &GameState, events: &[Event], post: &GameState) -> Vec<Happened> {
     let mut found = Vec::new();
     // Permanents tapped in this batch whose mana has not been added yet: tapping for mana is the tap that adds it.

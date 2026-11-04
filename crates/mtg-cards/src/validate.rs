@@ -1577,6 +1577,9 @@ impl<'a> Walker<'a> {
             | Modification::RemoveType(_)
             | Modification::SetTypes(_)
             | Modification::RemoveSupertype(_)
+            | Modification::AddSupertype(_)
+            | Modification::SetName(_)
+            | Modification::ThisAbility
             | Modification::AddSubtype(_)
             | Modification::SetCreatureTypes(_)
             | Modification::SetLandTypes(_)
@@ -1677,8 +1680,14 @@ impl<'a> Walker<'a> {
         for (i, modification) in mods.iter().enumerate() {
             self.at(format!("[{i}]"), |w| {
                 w.modification(modification);
-                if matches!(modification, Modification::RemoveSupertype(_)) {
-                    w.problem("a supertype is taken away only from the copiable values of a copy (`except`)");
+                if matches!(
+                    modification,
+                    Modification::RemoveSupertype(_)
+                        | Modification::AddSupertype(_)
+                        | Modification::SetName(_)
+                        | Modification::ThisAbility
+                ) {
+                    w.problem("a supertype, a name or this ability changes only the copiable values of a copy (`except`)");
                 }
             });
         }

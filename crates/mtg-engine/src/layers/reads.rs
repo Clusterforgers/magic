@@ -98,6 +98,9 @@ pub(crate) fn writes_of_wanted(wanted: &Wanted) -> Traits {
         }
         Wanted::GrantAbility(_)
         | Wanted::RemoveSupertype(_)
+        | Wanted::AddSupertype(_)
+        | Wanted::SetName(_)
+        | Wanted::ThisAbility
         | Wanted::CantAttack
         | Wanted::CantAttackYou(_)
         | Wanted::CantBlock
@@ -128,6 +131,9 @@ pub(crate) fn reads_of_modification(wanted: &Wanted) -> Traits {
         | Wanted::RemoveType(_)
         | Wanted::SetTypes(_)
         | Wanted::RemoveSupertype(_)
+        | Wanted::AddSupertype(_)
+        | Wanted::SetName(_)
+        | Wanted::ThisAbility
         | Wanted::AddSubtype(_)
         | Wanted::SetCreatureTypes(_)
         | Wanted::SetLandTypes(_)

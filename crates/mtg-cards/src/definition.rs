@@ -452,6 +452,10 @@ impl CardDefinition {
             Modification::RemoveSupertype(supertype) => {
                 self.supertypes.retain(|kept| kept != supertype);
             }
+            Modification::AddSupertype(supertype) => {
+                self.supertypes.insert(*supertype);
+            }
+            Modification::SetName(name) => self.name.clone_from(name),
             Modification::AddKeyword(keyword) => {
                 self.rules.push(Arc::new(Ability::Keyword(keyword.clone())));
             }
@@ -552,6 +556,7 @@ mod tests {
     #[rstest]
     #[case::legendary(Modification::RemoveSupertype(Supertype::Legendary), &[Supertype::Snow], &[CardType::Creature], true)]
     #[case::a_supertype_it_lacks(Modification::RemoveSupertype(Supertype::Basic), &[Supertype::Legendary, Supertype::Snow], &[CardType::Creature], true)]
+    #[case::legendary_added(Modification::AddSupertype(Supertype::Basic), &[Supertype::Basic, Supertype::Legendary, Supertype::Snow], &[CardType::Creature], true)]
     #[case::only_an_artifact(Modification::SetTypes(vec![CardType::Artifact]), &[Supertype::Legendary, Supertype::Snow], &[CardType::Artifact], false)]
     #[case::an_artifact_creature(Modification::SetTypes(vec![CardType::Artifact, CardType::Creature]), &[Supertype::Legendary, Supertype::Snow], &[CardType::Artifact, CardType::Creature], true)]
     fn the_exceptions_of_a_copy_take_a_supertype_away_and_set_the_types(

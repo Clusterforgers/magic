@@ -256,6 +256,9 @@ pub fn keyword_ability(ctx: &mut Ctx, body: &str) -> Tr<Value> {
             json!({"WithCounters": {"counter": kind, "count": amount(ctx, count)?}})
         }
         ["ETBReplacement", "Other", name] => choice(ctx, name)?,
+        ["ETBReplacement", "Copy", name, "Optional"] => {
+            super::effects_copy::enters_as_copy(ctx, name)?
+        }
         [name, ..] if matches!(*name, "etbCounter" | "ETBReplacement") => {
             return unmapped(format!("keyword:{name}-shape"));
         }

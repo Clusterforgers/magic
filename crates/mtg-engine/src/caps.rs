@@ -275,6 +275,7 @@ const RUNS: &[&str] = &[
     "Effect.ChangeTargets",
     "Effect.BecomeCopy",
     "Copy.Duration.UntilYourNextTurn",
+    "Copy.Except.ThisAbility",
     "Effect.Continuous",
     "Effect.ExchangeControl",
     "Duration.WhileYouControlSource",
@@ -344,6 +345,8 @@ const RUNS: &[&str] = &[
     "Mod.RemoveType",
     "Mod.SetTypes",
     "Mod.RemoveSupertype",
+    "Mod.AddSupertype",
+    "Mod.SetName",
     "Mod.AddSubtype",
     "Mod.SetCreatureTypes",
     "Mod.SetLandTypes",
@@ -787,6 +790,9 @@ mod tests {
     #[case::removed_types("Mod.RemoveType", true)]
     #[case::set_types("Mod.SetTypes", true)]
     #[case::removed_supertypes("Mod.RemoveSupertype", true)]
+    #[case::added_supertypes("Mod.AddSupertype", true)]
+    #[case::copy_names("Mod.SetName", true)]
+    #[case::copy_keeps_this_ability("Copy.Except.ThisAbility", true)]
     #[case::subtypes("Mod.AddSubtype", true)]
     #[case::colours("Mod.SetColors", true)]
     #[case::granted_abilities("Mod.GrantAbility", true)]

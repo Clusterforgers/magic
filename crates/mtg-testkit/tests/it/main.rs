@@ -126,6 +126,7 @@ mod copy_cards;
 mod copy_counts;
 mod copy_dies;
 mod copy_effects;
+mod copy_exceptions;
 mod copy_exiles_itself;
 mod copy_groups;
 mod copy_keywords;

@@ -92,6 +92,9 @@ fn line(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
     if let Some(found) = super::effects_game::effects(ctx, p, api) {
         return found;
     }
+    if let Some(found) = super::effects_copy::effects(ctx, p, api) {
+        return found;
+    }
     match api {
         "DealDamage" => one(deal_damage(ctx, p)),
         "Draw" => one(draw(ctx, p)),

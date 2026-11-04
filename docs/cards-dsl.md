@@ -144,7 +144,7 @@ Effect (one variant per engine primitive)
   RepeatEach{over,as,effects} RollDice{who,sides,plus?,results: [{from,to?,effects}]} FlipCoin{who,win,lose} Clash{who,win,lose,until?} Vote{options: Named([name]) | Of(ref),secret?,as?} VillainousChoice{who,first,second,they?} Either{first,second} Planechase{act: Planeswalk | ChaosEnsues}
   ExtraTurn{who,count,skip_untap} EndTurn AddPhase{phases: [Beginning|Combat|Main]} ExileUntil{who,filter,as,exiled_as} RevealUntil{who,filter,count,as,revealed_as} ExileTop{who,count,as} CastFromZone{who,what,free,way?,transformed?,as?,otherwise}
   CreateToken{who,token: Named(id) | Custom(TokenSpec) | CopyOf{of,except,no_mana_cost?},count,tapped,attacking,as?}
-  CopySpell{who,what,count,new_targets,except} CopyAbility{what,count,new_targets} CopyCard{who,what,as} Encode{what,on} BecomeCopy{what,of,except,duration}
+  ChangeTargets{what,to: Another|Choose} CopySpell{who,what,count,new_targets,except} CopyAbility{what,count,new_targets} CopyCard{who,what,as} Encode{what,on} BecomeCopy{what,of,except,duration}
   Continuous{affected,mods,duration} Rule{rule: GameRule,duration} Shield{when: ReplaceWhen,by: ReplaceBy,duration}
   DelayedTrigger{when,once,effects} Reflexive{targets,effects}
   If{condition,then,otherwise} May{who,effects} Pay{who,cost,times,paid,unpaid}
