@@ -39,6 +39,12 @@ fn single(ctx: &mut Ctx, body: &str) -> Tr<Value> {
     if event == "Untap" {
         return doesnt_untap(&p);
     }
+    if event == "CreateToken" {
+        if line_condition.is_some() {
+            return unmapped("key:Replacement.CreateToken.condition");
+        }
+        return super::replacements_token::create_token(ctx, &p);
+    }
     if event != "Moved" {
         return unmapped(format!("replacement:{event}"));
     }
