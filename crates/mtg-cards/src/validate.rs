@@ -1548,6 +1548,7 @@ impl<'a> Walker<'a> {
                 }
             }
             Keyword::Protection(quality)
+            | Keyword::HexproofFrom(quality)
             | Keyword::Landwalk(quality)
             | Keyword::Affinity(quality) => {
                 self.selector(quality);

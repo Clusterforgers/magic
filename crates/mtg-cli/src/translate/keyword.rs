@@ -214,6 +214,17 @@ fn costed(ctx: &Ctx, name: &str, variant: &str, cost_text: &str, rest: Option<&s
 fn other_keyword(ctx: &Ctx, name: &str, first: Option<&str>, second: Option<&str>) -> Tr<Value> {
     match (name, first) {
         ("Protection", Some(valid)) => Ok(json!({"Protection": selector_any(ctx, valid)?})),
+        // "Hexproof from triggered abilities" is not a quality of the source.
+        ("Hexproof", Some("Activated" | "Triggered")) => unmapped("keyword:Hexproof"),
+        ("Hexproof", Some(valid)) => {
+            let colored = ["White", "Blue", "Black", "Red", "Green"].contains(&valid);
+            let spec = if colored {
+                format!("Card.{valid}")
+            } else {
+                valid.to_owned()
+            };
+            Ok(json!({"HexproofFrom": selector_any(ctx, &spec)?}))
+        }
         ("Enchant", Some(valid)) if !matches!(valid, "Player" | "Opponent") => {
             Ok(json!({"Enchant": selector_any(ctx, valid)?}))
         }
@@ -262,6 +273,9 @@ pub fn keyword_abilities(ctx: &mut Ctx, body: &str) -> Vec<Tr<Value>> {
     }
     if let Some(rules) = super::keyword_prevent::prevent_keyword(body) {
         return rules.into_iter().map(Ok).collect();
+    }
+    if let Some(levels) = super::keyword_class::class_level(ctx, body) {
+        return levels;
     }
     match body.strip_prefix("Chapter:") {
         Some(rest) => chapters(ctx, rest),
@@ -423,9 +437,30 @@ fn etb_condition(ctx: &Ctx, field: Option<&str>) -> Tr<Option<Value>> {
         "no Condition" => return Ok(None),
         "CheckSVar$ WasKicked" => return Ok(Some(json!("Kicked"))),
         "ValidCard$ Card.Self+escaped" => return Ok(Some(json!({"CastWith": "Escape"}))),
+        "Revolt$ True" => return Ok(Some(super::condition::revolt())),
         _ => {}
     }
+    if let Some(color) = field.strip_prefix("Adamant$ ") {
+        return super::condition::adamant(color).map(Some);
+    }
+    if let Some(spec) = field.strip_prefix("ValidCard$ Card.Self+") {
+        if spec.starts_with("wasCast") {
+            let cast = super::condition::self_was_cast(ctx, &format!("Card.Self+{spec}"))?;
+            return Ok(Some(cast));
+        }
+        return unmapped("keyword:etbCounter-condition");
+    }
     let params = Params::parse(field);
+    if !params.has("SVarCompare")
+        && let Some(prop) = params
+            .get("CheckSVar")
+            .and_then(|name| ctx.svar(name))
+            .and_then(|text| text.strip_prefix("Count$wasCast"))
+            .and_then(|text| text.strip_suffix(".1.0"))
+    {
+        let cast = super::condition::self_was_cast(ctx, &format!("Card.Self+wasCast{prop}"))?;
+        return Ok(Some(cast));
+    }
     if !params.has("CheckSVar") {
         return unmapped("keyword:etbCounter-condition");
     }

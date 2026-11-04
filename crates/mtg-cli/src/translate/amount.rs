@@ -8,6 +8,9 @@ use super::valid::{defined, selector_in};
 /// The DSL name of a counter kind (`P1P1` is `+1/+1`).
 pub fn counter_kind(word: &str) -> Option<Value> {
     let word = word.trim();
+    if let Some(keyword) = keyword_counter(word) {
+        return Some(json!({"Other": keyword}));
+    }
     if word.is_empty()
         || !word
             .chars()
@@ -28,6 +31,28 @@ pub fn counter_kind(word: &str) -> Option<Value> {
         other if is_power_toughness(other) => json!({"Other": power_toughness_name(other)}),
         other => json!({"Other": other.to_lowercase().replace('_', " ")}),
     })
+}
+
+/// A counter named for a keyword (`Flying`, `First Strike`), as the engine names it: the keyword in lower case.
+fn keyword_counter(word: &str) -> Option<&'static str> {
+    [
+        "flying",
+        "first strike",
+        "double strike",
+        "deathtouch",
+        "haste",
+        "hexproof",
+        "indestructible",
+        "lifelink",
+        "menace",
+        "reach",
+        "shadow",
+        "skulk",
+        "trample",
+        "vigilance",
+    ]
+    .into_iter()
+    .find(|keyword| keyword.eq_ignore_ascii_case(word))
 }
 
 /// The name of a power/toughness counter as the engine reads it in layer 7c: `P2P2` is `+2/+2`, `M0M1` is `-0/-1`.
@@ -374,6 +399,9 @@ mod tests {
     #[case("P1P0", Some(json!({"Other": "+1/+0"})))]
     #[case("P12M3", Some(json!({"Other": "+12/-3"})))]
     #[case("ALL", None)]
+    #[case("Indestructible", Some(json!({"Other": "indestructible"})))]
+    #[case("First Strike", Some(json!({"Other": "first strike"})))]
+    #[case("Quest", None)]
     fn counter_kinds(#[case] word: &str, #[case] kind: Option<serde_json::Value>) {
         assert_eq!(counter_kind(word), kind);
     }

@@ -117,7 +117,7 @@ pub(super) fn move_object(
     if to == Zone::Battlefield {
         state.tally_object(entered, None, Tally::Entered);
     }
-    w21a_tally_graveyards(state, (from, to), owner, entered);
+    w21a_tally_graveyards(state, (from, to), (owner, controlled_by), entered);
     if from == Zone::Battlefield && matches!(to, Zone::Graveyard(_)) {
         state.tally(owner, Tally::Graved);
         if was_creature {
@@ -141,9 +141,12 @@ pub(super) fn move_object(
 fn w21a_tally_graveyards(
     state: &mut GameState,
     (from, to): (Zone, Zone),
-    owner: PlayerId,
+    (owner, controller_before): (PlayerId, PlayerId),
     card: ObjectRef,
 ) {
+    if from == Zone::Battlefield && to != Zone::Battlefield {
+        state.tally(controller_before, Tally::PermanentsLeftUnder);
+    }
     if matches!(from, Zone::Graveyard(_)) && !matches!(to, Zone::Graveyard(_)) {
         state.tally(owner, Tally::W21aLeftGraveyard);
     }

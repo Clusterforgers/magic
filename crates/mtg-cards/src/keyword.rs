@@ -44,6 +44,9 @@ pub enum Keyword {
     Hexproof,
     /// Shroud: can't be the target of any spell or ability.
     Shroud,
+    /// Hexproof from a quality (CR 702.11d): the opponents' spells and abilities whose source the selector matches can't
+    /// target the holder.
+    HexproofFrom(Selector),
     /// Protection from a quality (CR 702.16): the sources the selector matches can't damage, enchant, equip, block or
     /// target the holder. The empty selector is protection from everything.
     Protection(Selector),
@@ -394,6 +397,7 @@ impl Keyword {
         "Indestructible",
         "Hexproof",
         "Shroud",
+        "Hexproof from",
         "Protection",
         "Prowess",
         "Convoke",
@@ -558,6 +562,7 @@ impl Keyword {
             Keyword::Indestructible => "Indestructible",
             Keyword::Hexproof => "Hexproof",
             Keyword::Shroud => "Shroud",
+            Keyword::HexproofFrom(_) => "Hexproof from",
             Keyword::Protection(_) => "Protection",
             Keyword::Prowess => "Prowess",
             Keyword::Convoke => "Convoke",
@@ -763,6 +768,7 @@ mod tests {
             Keyword::Indestructible,
             Keyword::Hexproof,
             Keyword::Shroud,
+            Keyword::HexproofFrom(Selector::default()),
             Keyword::Protection(Selector::default()),
             Keyword::Prowess,
             Keyword::Convoke,

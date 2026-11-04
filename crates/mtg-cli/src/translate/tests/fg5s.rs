@@ -23,6 +23,8 @@ fn script(line: &str, svars: &str) -> String {
 #[case::plain("K:etbCounter:P1P1:2", "")]
 #[case::no_condition("K:etbCounter:P1P1:X:no Condition:Converge", "SVar:X:Count$Converge\n")]
 #[case::escaped("K:etbCounter:P1P1:2:ValidCard$ Card.Self+escaped:It escapes.", "")]
+#[case::revolt("K:etbCounter:P1P1:1:Revolt$ True:Revolt.", "")]
+#[case::adamant("K:etbCounter:P1P1:1:Adamant$ White:Adamant.", "")]
 #[case::morbid(
     "K:etbCounter:P1P1:1:CheckSVar$ Morbid:Morbid.",
     "SVar:Morbid:Count$Morbid.1.0\n"
@@ -37,8 +39,7 @@ fn an_enters_counter_line_reads_its_condition(#[case] line: &str, #[case] svars:
 }
 
 #[rstest]
-#[case::revolt("K:etbCounter:P1P1:1:Revolt$ True:Revolt.")]
-#[case::adamant("K:etbCounter:P1P1:1:Adamant$ White:Adamant.")]
+#[case::adamant_unknown("K:etbCounter:P1P1:1:Adamant$ Purple:Adamant.")]
 #[case::present("K:etbCounter:P1P1:1:IsPresent$ Permanent.YouCtrl+cmcGE4:Big.")]
 #[case::three_fields("K:etbCounter:P1P1:1:CheckSVar$ X:Desc:Extra")]
 fn an_enters_counter_condition_it_cannot_read_stays_a_gap(#[case] line: &str) {

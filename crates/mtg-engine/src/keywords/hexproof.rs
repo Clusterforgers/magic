@@ -38,6 +38,40 @@ impl KeywordRules for Hexproof {
     }
 }
 
+/// The rules of hexproof from a quality.
+#[derive(Debug)]
+pub(super) struct HexproofFrom;
+
+impl KeywordRules for HexproofFrom {
+    /// Hexproof for the sources the quality matches, judged for the holder's controller as protection is.
+    fn restricts_targeting(
+        &self,
+        state: &GameState,
+        keyword: &Keyword,
+        holder: ObjectId,
+        source: ObjectId,
+        controller: PlayerId,
+    ) -> bool {
+        let Keyword::HexproofFrom(quality) = keyword else {
+            return false;
+        };
+        let Some(object) = state
+            .object(holder)
+            .filter(|object| object.zone() == Zone::Battlefield)
+        else {
+            return false;
+        };
+        let owner = crate::characteristics::controller_of_object(state, object);
+        if owner == controller {
+            return false;
+        }
+        let scope = crate::resolve::Scope::announcing(state, owner, object.reference());
+        state
+            .object(source)
+            .is_some_and(|from| scope.selects(quality, from.reference()).unwrap_or(false))
+    }
+}
+
 #[cfg(test)]
 mod tests {
     //! Goal: hexproof keeps the spells and abilities of the holder's opponents from targeting it and no one else's, for a permanent and for a player, at tables of two to four seats and on the battlefield only, and the recheck on resolution (CR 608.2b) drops a target that has become protected.
@@ -45,7 +79,7 @@ mod tests {
 
     use mtg_cards::CardDefinition;
     use mtg_cards::ability::Ability;
-    use mtg_cards::refs::{Ref, TargetSpec};
+    use mtg_cards::refs::{Pred, Ref, TargetSpec};
     use mtg_core::card::CardType;
     use rstest::rstest;
 
@@ -97,6 +131,34 @@ mod tests {
                 Target::Object(object) => game.object(object.id).unwrap().card().name.clone(),
             })
             .collect()
+    }
+
+    #[rstest]
+    #[case::creature_source_from_an_opponent(Pred::Type(CardType::Creature), 0, false)]
+    #[case::creature_source_from_the_controller(Pred::Type(CardType::Creature), 1, true)]
+    #[case::other_quality_from_an_opponent(Pred::Type(CardType::Artifact), 0, true)]
+    fn hexproof_from_a_quality_stops_only_opponents_sources_with_it(
+        #[case] quality: Pred,
+        #[case] caster: usize,
+        #[case] legal: bool,
+    ) {
+        let mut setup = table(2);
+        let from = Keyword::HexproofFrom(mtg_cards::refs::Selector(vec![quality]));
+        setup.players[1].battlefield[0] = crate::setup::PresetPermanent::new(Arc::new(
+            CardDefinition::new("Shade")
+                .with_type(CardType::Creature)
+                .with_power_toughness(2, 2)
+                .with_rules(Ability::Keyword(from)),
+        ));
+        let game = game(&setup);
+        let source = spell_of(&game, caster);
+        let found = legal_targets(
+            &game,
+            &spec(r#"{"what":{"Object":[{"Type":"Creature"}]}}"#),
+            source,
+            PlayerId::from_index(caster),
+        );
+        assert_eq!(names(&game, &found).contains(&"Shade".to_owned()), legal);
     }
 
     #[rstest]

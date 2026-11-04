@@ -33,6 +33,7 @@ pub mod effects_zone;
 mod header;
 pub mod keyword;
 pub mod keyword_alt;
+pub mod keyword_class;
 pub mod keyword_prevent;
 mod ledger;
 pub mod mayplay;

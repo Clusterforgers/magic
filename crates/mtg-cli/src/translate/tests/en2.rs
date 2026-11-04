@@ -93,8 +93,8 @@ fn a_card_entering_the_battlefield_comes_with_its_counters_and_under_control(
     "ChangeZone | Origin$ Graveyard | Destination$ Battlefield | ValidTgts$ Creature.YouOwn | WithCountersType$ P1P1 | WithCountersAmount$ X",
     "key:ChangeZone.WithCountersAmount"
 )]
-#[case::keyword_counter(
-    "ChangeZone | Origin$ Graveyard | Destination$ Battlefield | ValidTgts$ Creature.YouOwn | WithCountersType$ Flying",
+#[case::all_is_not_a_kind(
+    "ChangeZone | Origin$ Graveyard | Destination$ Battlefield | ValidTgts$ Creature.YouOwn | WithCountersType$ ALL",
     "key:ChangeZone.WithCountersType"
 )]
 #[case::counters_to_the_hand(

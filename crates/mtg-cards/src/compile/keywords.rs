@@ -1557,7 +1557,7 @@ mod tests {
 
     /// The keywords a sentence names, read by the static templates and not by the keyword table ("You may exert ~ as it
     /// attacks.").
-    const W9D_SENTENCES: [&str; 2] = ["Exert", "Macro"];
+    const W9D_SENTENCES: [&str; 3] = ["Exert", "Macro", "Hexproof from"];
 
     #[test]
     fn every_keyword_the_dsl_declares_is_recognised_by_name() {
