@@ -144,7 +144,7 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
     Ok(done::report(cx, effect, run))
 }
 
-/// The game, life, damage, repeat, pile and kept-number effects.
+/// The game, life, damage, repeat, pile, kept-number and copy effects.
 fn fe1n(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
     match effect {
         Effect::LoseGame { .. } => fe1n_game::lose(cx, effect),
@@ -155,12 +155,16 @@ fn fe1n(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         Effect::RepeatWhile { .. } => fe1n_repeat_while::run(cx, effect),
         Effect::SeparatePiles { .. } => fe1n_piles::run(cx, effect),
         Effect::Let { .. } => let_amount::run(cx, effect),
+        Effect::CopySpell { .. } => copy_spell::run(cx, effect),
+        Effect::ChangeTargets { .. } => change_targets::run(cx, effect),
+        Effect::CopyAbility { .. } => copy_ability::run(cx, effect),
+        Effect::CopyCard { .. } => copy_card::run(cx, effect),
+        Effect::BecomeCopy { .. } => become_copy::run(cx, effect),
         _ => Err(wrong_effect("dispatch")),
     }
 }
 
 /// Hands the effect to the primitive of its variant.
-#[allow(clippy::too_many_lines)]
 fn dispatch(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
     match effect {
         Effect::Draw { .. } => draw::run(cx, effect),
@@ -235,11 +239,6 @@ fn dispatch(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         Effect::EndTurn => Ok(end_turn::run(cx)),
         Effect::AddPhase { .. } => add_phase::run(cx, effect),
         Effect::WinGame { .. } => win_game::run(cx, effect),
-        Effect::CopySpell { .. } => copy_spell::run(cx, effect),
-        Effect::ChangeTargets { .. } => change_targets::run(cx, effect),
-        Effect::CopyAbility { .. } => copy_ability::run(cx, effect),
-        Effect::CopyCard { .. } => copy_card::run(cx, effect),
-        Effect::BecomeCopy { .. } => become_copy::run(cx, effect),
         Effect::CreateToken { .. } => create_token::run(cx, effect),
         Effect::Continuous { .. } => continuous::run(cx, effect),
         Effect::ExchangeControl { .. } => w6e_exchange::run(cx, effect),

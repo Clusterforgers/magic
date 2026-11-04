@@ -27,7 +27,6 @@ pub fn rule(ctx: &Ctx, p: &Params) -> Option<Tr<Value>> {
         }
         "CantTarget" => cant_target(ctx, p),
         "CastWithFlash" => super::statics_cast::cast_with_flash(ctx, p),
-        "CantBeCast" => super::statics_cast::cant_be_cast(p),
         "IgnoreLegendRule" => keys(p, mode, &[]).map(|()| json!({"NoLegendRule": "EachPlayer"})),
         "UntapOtherPlayer" => untap_other_players(ctx, p),
         "Continuous" if p.has("SetMaxHandSize") => hand_size(ctx, p),

@@ -43,6 +43,10 @@ const COUNTER_DURATION_ONLY: &str =
 const W6E_EXCHANGE_PAIR: &str =
     "an exchange of control names its two permanents with one reference or two";
 
+/// A copy of a spell or a token copy has no ability of its own to keep.
+const THIS_ABILITY_BECOMES_ONLY: &str =
+    "only a permanent that becomes a copy keeps its own ability as an exception";
+
 /// Only the rule that a permanent doesn't untap lasts through the next untap step of its controller.
 const C7_UNTAP_ONLY: &str =
     "only a permanent that doesn't untap waits for its controller's next untap step";
@@ -2040,12 +2044,20 @@ impl Walker<'_> {
             }
             TokenRef::CopyOf { of, except, .. } => {
                 self.at("of", |w| w.reference(of, Kind::Object));
-                self.copy_exceptions(except);
+                self.copy_exceptions_new_object(except);
             }
         }
     }
 
     /// The exceptions of a copy effect are changes to its copiable values; a modification that is not one waits.
+    /// The exceptions of a copy that is not a permanent becoming a copy: keeping its own ability is not played there.
+    fn copy_exceptions_new_object(&mut self, except: &[Modification]) {
+        if except.contains(&Modification::ThisAbility) {
+            self.problem(THIS_ABILITY_BECOMES_ONLY);
+        }
+        self.copy_exceptions(except);
+    }
+
     fn copy_exceptions(&mut self, except: &[Modification]) {
         for (i, modification) in except.iter().enumerate() {
             self.at(format!("except[{i}]"), |w| {
@@ -2855,7 +2867,7 @@ impl Walker<'_> {
             } => {
                 w.at("what", |w| w.reference(what, Kind::Object));
                 w.at("count", |w| w.amount(count));
-                w.copy_exceptions(except);
+                w.copy_exceptions_new_object(except);
             }
             Effect::ChangeTargets { what, .. } => {
                 w.at("what", |w| w.reference(what, Kind::Object));
@@ -4396,6 +4408,26 @@ mod tests {
             r#"{{"Spell":{{"effects":[{{"RollDice":{{"sides":6,{fields}}}}},{{"Draw":{{"count":{{"DieResult":"Chosen"}}}}}}]}}}}"#
         );
         assert_eq!(problems(&json).len(), expected, "{json}");
+    }
+
+    #[rstest]
+    #[case::a_copy_of_a_spell(r#"{"CopySpell":{"what":"This","except":["ThisAbility"]}}"#, true)]
+    #[case::a_token_copy(
+        r#"{"CreateToken":{"token":{"CopyOf":{"of":"This","except":["ThisAbility"]}}}}"#,
+        true
+    )]
+    #[case::a_permanent_becoming_a_copy(r#"{"BecomeCopy":{"what":"This","of":"This","duration":"Forever","except":["ThisAbility"]}}"#, false)]
+    fn keeping_its_own_ability_is_refused_where_the_engine_does_not_play_it(
+        #[case] effect: &str,
+        #[case] refused: bool,
+    ) {
+        let json = format!(r#"{{"Spell":{{"effects":[{effect}]}}}}"#);
+        let found = problems(&json);
+        assert_eq!(
+            found.iter().any(|p| p.contains(THIS_ABILITY_BECOMES_ONLY)),
+            refused,
+            "{found:?}"
+        );
     }
 
     #[test]

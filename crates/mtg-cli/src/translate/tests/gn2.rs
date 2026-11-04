@@ -128,11 +128,11 @@ fn damage_replacements_beyond_the_nodes_stay_gaps(#[case] line: &str) {
 )]
 #[case::opponents_cast_nothing_on_your_turn(
     "Name:T\nTypes:Enchantment\nS:Mode$ CantBeCast | ValidCard$ Card | Condition$ PlayerTurn | Caster$ Opponent | Description$ x\n",
-    &["CantCastSpells", "Opponents", "YourTurn"]
+    &["Cant", "\"Cast\"", "Opponents", "YourTurn"]
 )]
 #[case::an_effect_stops_all_casting(
     "Name:T\nTypes:Sorcery\nA:SP$ Effect | StaticAbilities$ S\nSVar:S:Mode$ CantBeCast | ValidCard$ Card | Caster$ Player | Description$ x\n",
-    &["CantCastSpells", "EachPlayer", "UntilEndOfTurn"]
+    &["Cant", "\"Cast\"", "EachPlayer", "UntilEndOfTurn"]
 )]
 fn animate_and_casting_statics_map(#[case] script: &str, #[case] holds: &[&str]) {
     let text = shown(script);
@@ -142,10 +142,6 @@ fn animate_and_casting_statics_map(#[case] script: &str, #[case] holds: &[&str])
 }
 
 #[rstest]
-#[case::only_some_cards("Mode$ CantBeCast | ValidCard$ Card.nonCreature | Caster$ You")]
-#[case::a_limit_each_turn(
-    "Mode$ CantBeCast | ValidCard$ Card | Caster$ Player | NumLimitEachTurn$ 1"
-)]
 #[case::loyalty_abilities(
     "Mode$ CastWithFlash | ValidCard$ Card.Self | ValidSA$ Activated.Loyalty | Caster$ You"
 )]

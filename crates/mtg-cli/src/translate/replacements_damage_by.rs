@@ -5,7 +5,7 @@
 use serde_json::{Value, json};
 
 use super::amount::counter_kind;
-use super::ctx::{Ctx, Tr, is_hint, unmapped};
+use super::ctx::{Ctx, Tr, check_keys, unmapped};
 use crate::forge::script::Params;
 
 /// The amount of an effect that reads the damage: the number of damage in the event, or a plain number.
@@ -36,15 +36,11 @@ fn defined(word: Option<&str>, shield: bool) -> Tr<Value> {
 
 /// Refuses a key the part does not read.
 fn keys(part: &Params, read: &[&str]) -> Tr<()> {
-    for (key, _) in part.iter() {
-        if key != "DB" && !read.contains(&key) && !is_hint(key) {
-            return unmapped(format!(
-                "key:Replacement.DamageDone.{}.{key}",
-                part.get("DB").unwrap_or_default()
-            ));
-        }
-    }
-    Ok(())
+    let label = format!(
+        "Replacement.DamageDone.{}",
+        part.get("DB").unwrap_or_default()
+    );
+    check_keys(part, &label, read, |key, _| key == "DB")
 }
 
 /// The effect a part runs with the damage in the event.
@@ -122,6 +118,9 @@ pub fn by(ctx: &Ctx, p: &Params, name: &str, recipient_is_you: bool, shield: boo
 
 /// The damage is dealt to the card with the ability or to what it is attached to, by the same source.
 fn redirect(p: &Params, part: &Params) -> Tr<Value> {
+    if part.get("VarType") != Some("Card") {
+        return unmapped("replacement:DamageDone-redirect-VarType");
+    }
     let to = match (p.get("DamageTarget"), part.get("VarValue")) {
         (Some("Self"), Some("Self")) => json!("This"),
         (Some("Enchanted"), Some("Enchanted")) | (Some("Equipped"), Some("Equipped")) => {

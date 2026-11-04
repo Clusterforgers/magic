@@ -4,24 +4,20 @@
 use serde_json::{Value, json};
 
 use super::cost::cost;
-use super::ctx::{Ctx, Tr, is_hint, unmapped};
+use super::ctx::{Ctx, Tr, check_keys, unmapped};
 use crate::forge::script::Params;
 
 /// The ability of an `AlternativeCost` line; the condition keys are already stripped from `p`.
 pub fn alternative_cost(ctx: &Ctx, p: &Params) -> Tr<Value> {
-    for (key, _) in p.iter() {
-        let read = [
-            "Mode",
-            "ValidSA",
-            "ValidCard",
-            "ValidPlayer",
-            "Cost",
-            "EffectZone",
-        ];
-        if !read.contains(&key) && !is_hint(key) {
-            return unmapped(format!("key:Static.AlternativeCost.{key}"));
-        }
-    }
+    let read = [
+        "Mode",
+        "ValidSA",
+        "ValidCard",
+        "ValidPlayer",
+        "Cost",
+        "EffectZone",
+    ];
+    check_keys(p, "Static.AlternativeCost", &read, |key, _| key == "Mode")?;
     let on_self = matches!(
         (p.get("ValidSA"), p.get("ValidCard")),
         (Some("Spell.Self"), None) | (Some("Spell"), Some("Card.Self"))
