@@ -102,6 +102,7 @@ async fn draft(db: &Database, source: &str, matches: bool, faulty: bool) -> Draf
             rules: serde_json::to_value(&card).unwrap(),
             source: source.to_owned(),
             oracle_matches: matches,
+            proof: None,
         }])
         .await
         .unwrap();

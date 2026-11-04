@@ -252,6 +252,7 @@ pub async fn store_draft(db: &mtg_db::Database, name: &str) -> mtg_db::DraftKey 
         rules: serde_json::to_value(&card).unwrap_or_else(|e| panic!("{e}")),
         source: "sweep".to_owned(),
         oracle_matches: false,
+        proof: None,
     };
     db.drafts()
         .insert(&[draft])

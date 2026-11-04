@@ -10,6 +10,7 @@ use std::path::{Path, PathBuf};
 
 use mtg_cards::compile::compile;
 use mtg_cards::load::{Library, canonical, slug, unwhole};
+use mtg_cards::proposal::partial::{LedgerLine, PartialProof};
 use mtg_cards::proposal::{Report, Verdict, check, check_exact, merge};
 use mtg_cards::support::{Caps, PrintedCard, Support, support};
 use mtg_cards::{builtin, card::Card};
@@ -49,8 +50,11 @@ pub enum W2aSkip {
     NotWhole,
     /// The engine would not run the draft as a `Read` card (the loader refuses it or a primitive is missing).
     NotRead,
-    /// The translator left a gap: part of the card is missing, so it is never a draft.
+    /// The translator left a gap and the card is not a Forge translation, so it is never a draft.
     Gapped,
+    /// A Forge translation with a gap whose proof is refused, by the name of the first refusal (`OracleDiffers`,
+    /// `NoGain` or a `Refusal` of the proof).
+    Unproved(&'static str),
     /// The draft fails the smoke gate.
     Smoke(SmokeKind),
 }
@@ -69,6 +73,7 @@ impl W2aSkip {
             W2aSkip::NoRecord => "no record in the cached Oracle Cards file".into(),
             W2aSkip::NotWhole => "unchecked, and not a whole card".into(),
             W2aSkip::Gapped => "the translation has a gap".into(),
+            W2aSkip::Unproved(name) => format!("not proved: {name}"),
             W2aSkip::NotRead => "the engine does not run it as a Read card".into(),
             W2aSkip::Smoke(kind) => format!("fails the smoke gate: {}", kind.word()),
         }
@@ -92,6 +97,10 @@ pub struct W2aPromotion {
     pub source: String,
     /// The source's Oracle text equals the printed text; with source `forge` the draft runs without a human read.
     pub oracle_matches: bool,
+    /// For a partial draft, the proof of its by-hand lines; none for a whole card.
+    pub proof: Option<PartialProof>,
+    /// For a partial draft, the script lines the proof was made from.
+    pub lines: Vec<LedgerLine>,
 }
 
 /// What becomes of one proposal file.
@@ -148,6 +157,7 @@ impl W2aBasis<'_> {
         printed: &PrintedCard,
         text: &str,
         meta: &DraftMeta,
+        detail: &mut Option<String>,
     ) -> Result<W2aPromotion, W2aSkip> {
         let slug = slug(&printed.name);
         if self.has_corpus_file(printed, &slug) {
@@ -164,6 +174,9 @@ impl W2aBasis<'_> {
             check(text, printed, self.library, self.names, self.caps)
         };
         let verdict = report.verdict();
+        if self.draft && source == SOURCE_FORGE && !meta.gaps.is_empty() {
+            return draft::decide_partial(printed, slug, &report, meta, compiled.as_ref(), detail);
+        }
         if self.draft {
             let source = meta.source_or(self.source);
             let trusted = source == SOURCE_FORGE && meta.oracle_matches;
@@ -221,6 +234,8 @@ impl W2aBasis<'_> {
             draft: false,
             source: SOURCE_SWEEP.into(),
             oracle_matches: false,
+            proof: None,
+            lines: Vec::new(),
         })
     }
 }
@@ -277,10 +292,11 @@ pub fn w2a_decide(basis: &W2aBasis, files: &[(PathBuf, String)]) -> Vec<W2aDecis
             });
             continue;
         };
+        let mut detail = None;
         let outcome = if promoted.contains(&printed.oracle_id) {
             Err(W2aSkip::Repeated)
         } else {
-            basis.decide_one(printed, text, &proposal_meta(file, stem))
+            basis.decide_one(printed, text, &proposal_meta(file, stem), &mut detail)
         };
         // Drafts are sorted out after the smoke gate: the first one that passes wins.
         if matches!(&outcome, Ok(promotion) if !promotion.draft) {
@@ -290,7 +306,7 @@ pub fn w2a_decide(basis: &W2aBasis, files: &[(PathBuf, String)]) -> Vec<W2aDecis
             file: file.clone(),
             card: printed.name.clone(),
             outcome,
-            detail: None,
+            detail,
         });
     }
     decisions

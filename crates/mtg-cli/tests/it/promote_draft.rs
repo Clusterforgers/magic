@@ -411,7 +411,26 @@ async fn only_a_forge_translation_with_a_matching_text_is_drafted_when_it_mismat
 }
 
 #[sqlx::test]
-async fn a_translation_with_a_gap_is_skipped_as_gapped_and_never_drafted(pool: PgPool) {
+async fn a_sweep_proposal_with_a_gap_is_skipped_as_gapped_and_never_drafted(pool: PgPool) {
+    let dir = tempfile::tempdir().unwrap();
+    let stored = loaded(pool, dir.path()).await;
+    let places = dirs(dir.path());
+    let file = proposal(dir.path(), "forge", PYRE, &stored_proposal(PYRE));
+    meta(&file, r#"{"source":"sweep","gaps":["effect:MakeCard"]}"#);
+
+    let promoted = promote(&stored, &places, drafting(vec![file])).await;
+
+    assert_eq!(
+        outcomes(&promoted),
+        [("Cathartic Pyre".to_owned(), Some(W2aSkip::Gapped))]
+    );
+    assert_eq!(promoted.written.len(), 0);
+}
+
+#[sqlx::test]
+async fn a_forge_translation_with_a_gap_is_drafted_only_through_the_proof_and_refused_by_name(
+    pool: PgPool,
+) {
     let dir = tempfile::tempdir().unwrap();
     let stored = loaded(pool, dir.path()).await;
     let places = dirs(dir.path());
@@ -422,7 +441,16 @@ async fn a_translation_with_a_gap_is_skipped_as_gapped_and_never_drafted(pool: P
 
     assert_eq!(
         outcomes(&promoted),
-        [("Cathartic Pyre".to_owned(), Some(W2aSkip::Gapped))]
+        [(
+            "Cathartic Pyre".to_owned(),
+            Some(W2aSkip::Unproved("OracleDiffers"))
+        )]
+    );
+    assert!(
+        promoted.render().contains("(OracleDiffers; UncoveredLine")
+            && promoted.render().contains("1 not proved: OracleDiffers"),
+        "{}",
+        promoted.render()
     );
     assert_eq!(promoted.written.len(), 0);
 }

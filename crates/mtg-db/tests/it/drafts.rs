@@ -63,6 +63,7 @@ async fn a_draft_reads_back_exactly_as_it_was_written(pool: PgPool) {
         retired: false,
         source: "sweep".into(),
         oracle_matches: false,
+        proof: None,
     };
     assert_eq!(
         database.drafts().current().await.unwrap(),
@@ -434,4 +435,30 @@ async fn inserting_a_stored_draft_again_takes_its_new_source_and_keeps_its_verdi
     }
     let verdicts = database.reads().state().await.unwrap();
     assert_eq!(verdicts.len(), 1, "the verdict survives the updates");
+}
+
+#[sqlx::test]
+async fn the_proof_of_a_partial_draft_is_stored_replaced_and_read_back(pool: PgPool) {
+    let database = seeded(pool).await;
+    let bolt = oracle_of("Lightning Bolt");
+    let proof = json!({"marks": [{"face": 0, "span": {"start": 0, "end": 5}, "mark": "ByHand"}]});
+    let row = NewDraft {
+        proof: Some(proof.clone()),
+        ..draft(&bolt, 1)
+    };
+
+    database
+        .drafts()
+        .insert(std::slice::from_ref(&row))
+        .await
+        .unwrap();
+    let before = database.drafts().version().await.unwrap();
+    let stored = database.drafts().current().await.unwrap();
+    assert_eq!(stored[0].proof, Some(proof));
+
+    let whole = NewDraft { proof: None, ..row };
+    database.drafts().insert(&[whole]).await.unwrap();
+    let after = database.drafts().current().await.unwrap();
+    assert_eq!(after[0].proof, None, "a new write replaces the proof");
+    assert_ne!(before, database.drafts().version().await.unwrap());
 }
