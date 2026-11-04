@@ -43,7 +43,7 @@ fn abilities(
         let Some(text) = ctx.svar(name) else {
             return unmapped("svar:missing");
         };
-        out.push(read(ctx, &rebuilt(text))?);
+        out.push(ctx.nested(|ctx| read(ctx, &rebuilt(text)))?);
     }
     Ok(out)
 }
@@ -54,9 +54,6 @@ pub fn emblem(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
         if p.has(key) {
             return unmapped(format!("key:Effect.emblem.{key}"));
         }
-    }
-    if !ctx.targets.is_empty() {
-        return unmapped("key:Effect.emblem-with-targets");
     }
     let mut all = abilities(ctx, p, "StaticAbilities", static_line)?;
     all.extend(abilities(ctx, p, "Triggers", triggered)?);

@@ -44,6 +44,9 @@ pub fn effects(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
         let remembered = super::replacements_damage::remembered_of(ctx, p)?;
         return super::replacements_damage::shield(ctx, p, remembered);
     }
+    if !p.has("RememberObjects") && !p.has("ValidTgts") {
+        return super::effects_ambient::continuous_statics(ctx, p);
+    }
     let Some(name) = p.get("StaticAbilities") else {
         return unmapped("key:Effect.no-StaticAbilities");
     };
@@ -110,7 +113,9 @@ fn remembered(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
     let who = match word {
         "Targeted" if p.has("ValidTgts") => subject(ctx, p, "", None)?,
         "Self" => json!("This"),
-        "Remembered" => defined(ctx, "Remembered")?,
+        "Remembered" | "RememberedCard" => defined(ctx, "Remembered")?,
+        "TriggeredCard" => json!("Triggering"),
+        "ParentTarget" => ctx.parent()?,
         other => return unmapped(format!("key:Effect.RememberObjects={other}")),
     };
     objects(who)

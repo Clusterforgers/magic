@@ -12,6 +12,7 @@ pub mod condition;
 pub mod cost;
 pub mod ctx;
 pub mod effects;
+pub mod effects_ambient;
 pub mod effects_effect;
 pub mod effects_emblem;
 pub mod effects_loop;

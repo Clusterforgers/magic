@@ -129,6 +129,30 @@ impl<'a> Ctx<'a> {
         self.depth = 0;
     }
 
+    /// Runs a translation of a line of its own (a static, a trigger) and restores the state of the ability around it.
+    pub fn nested<T>(&mut self, run: impl FnOnce(&mut Ctx<'a>) -> T) -> T {
+        let targets = std::mem::take(&mut self.targets);
+        let saved = (
+            self.remembered.take(),
+            self.parent_target,
+            self.chosen.take(),
+            self.chosen_card.take(),
+            self.binds,
+            self.depth,
+        );
+        let out = run(self);
+        self.targets = targets;
+        (
+            self.remembered,
+            self.parent_target,
+            self.chosen,
+            self.chosen_card,
+            self.binds,
+            self.depth,
+        ) = saved;
+        out
+    }
+
     /// The text of a named part.
     pub fn svar(&self, name: &str) -> Option<&'a str> {
         self.svars.get(name.trim()).map(String::as_str)
