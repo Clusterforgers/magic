@@ -82,6 +82,7 @@ mod cascade_fuzz;
 mod cast_kind_fuzz;
 mod cast_kinds;
 mod cast_permissions;
+mod cast_prohibitions;
 mod cast_self;
 mod cast_way_fuzz;
 mod chance_fuzz;

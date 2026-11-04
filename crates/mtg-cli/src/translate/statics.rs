@@ -38,8 +38,11 @@ fn by_mode(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
             json!({"Rule": {"rule": super::mayplay::may_cast(ctx, p, None)?}})
         }
         "Continuous" => continuous(ctx, p)?,
-        "CantAttack" => restriction(ctx, p, "CantAttack")?,
-        "CantBlock" => restriction(ctx, p, "CantBlock")?,
+        "CantAttack" => restriction(ctx, p, &["CantAttack"])?,
+        "CantBlock" => restriction(ctx, p, &["CantBlock"])?,
+        "CantAttack,CantBlock" | "CantBlock,CantAttack" => {
+            restriction(ctx, p, &["CantAttack", "CantBlock"])?
+        }
         "CantBlockBy" => cant_block_by(ctx, p)?,
         "MustAttack" => must_attack(ctx, p)?,
         "ReduceCost" => cost_modifier(ctx, p, "Reduce")?,
@@ -227,10 +230,10 @@ fn granted(ctx: &mut Ctx, names: &str, trigger: bool) -> Tr<Vec<Value>> {
 }
 
 /// `CantAttack`, `CantBlock` of the cards named by `ValidCard$`.
-fn restriction(ctx: &Ctx, p: &Params, modification: &str) -> Tr<Value> {
-    keys(p, modification, &["ValidCard"])?;
+fn restriction(ctx: &Ctx, p: &Params, modifications: &[&str]) -> Tr<Value> {
+    keys(p, modifications[0], &["ValidCard"])?;
     let affected = affected_valid(ctx, p.get("ValidCard").unwrap_or_default())?;
-    Ok(json!({"Static": {"affected": affected, "mods": [modification]}}))
+    Ok(json!({"Static": {"affected": affected, "mods": modifications}}))
 }
 
 /// `CantBlockBy`: the attacker named by `ValidAttacker$` is not blocked by the blockers of `ValidBlocker$`, or a blocker

@@ -10,6 +10,9 @@ use crate::forge::script::Params;
 
 /// The rule of a static line this module reads; `None` for any other mode.
 pub fn rule(ctx: &Ctx, p: &Params) -> Option<Tr<Value>> {
+    if let Some(found) = super::statics_cant::rule(ctx, p) {
+        return Some(found);
+    }
     let mode = p.get("Mode").unwrap_or_default();
     let found = match mode {
         "CantGainLife" => players(p, mode, "ValidPlayer").map(|who| json!({"CantGainLife": who})),
@@ -91,7 +94,7 @@ fn put_counter(ctx: &Ctx, p: &Params) -> Tr<Value> {
 
 /// `CantTarget`: the objects can't be the target of spells and abilities from the sources `ValidSource$` names.
 fn cant_target(ctx: &Ctx, p: &Params) -> Tr<Value> {
-    keys(p, "CantTarget", &["ValidTarget", "ValidSource"])?;
+    keys(p, "CantTarget", &["ValidTarget", "ValidSource", "ValidSA"])?;
     let Some(target) = p.get("ValidTarget") else {
         return unmapped("key:Static.CantTarget.no-ValidTarget");
     };
@@ -99,10 +102,15 @@ fn cant_target(ctx: &Ctx, p: &Params) -> Tr<Value> {
         "You" | "Player" | "Opponent" | "Player.Opponent" => player_word(Some(target))?,
         word => object_word(ctx, word)?,
     };
-    let sources = match p.get("ValidSource") {
+    let mut sources = match p.get("ValidSource") {
         Some(valid) => selector_any(ctx, valid)?,
         None => Vec::new(),
     };
+    match p.get("ValidSA") {
+        None => {}
+        Some("Spell") => sources.push(json!("Spell")),
+        Some(_) => return unmapped("key:Static.CantTarget.ValidSA"),
+    }
     Ok(cant(&who, &json!({"BeTargeted": sources})))
 }
 

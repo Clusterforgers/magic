@@ -866,6 +866,9 @@ pub(crate) fn grantable_as_is(
     let Some(seat) = state.player(player) else {
         return false;
     };
+    if crate::prohibit::forbidden(state, crate::prohibit::Doing::Cast { player, card: id }) {
+        return false;
+    }
     let all = mana_options(state, player);
     let sources = for_card(state, &all, id);
     let spend = Spend::for_spell(state, id, player, card.card().x_in_cost > 0);
@@ -986,6 +989,9 @@ pub(crate) fn hindrance_as_is(
     let Some(card) = state.object(id) else {
         return Some(Unplayable::Cost);
     };
+    if crate::prohibit::forbidden(state, crate::prohibit::Doing::Cast { player, card: id }) {
+        return Some(Unplayable::Restricted);
+    }
     let printed_spend = Spend::for_spell(state, id, player, card.card().x_in_cost > 0);
     let sources = &for_card(state, sources, id);
     let base = help::offered(state, player, id, &[]);

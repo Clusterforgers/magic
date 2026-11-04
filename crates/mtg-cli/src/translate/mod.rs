@@ -32,6 +32,7 @@ pub mod replacements_damage;
 pub mod replacements_damage_by;
 pub mod report;
 pub mod statics;
+pub mod statics_cant;
 pub mod statics_cast;
 pub mod statics_rules;
 pub mod stored;

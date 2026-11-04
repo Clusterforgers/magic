@@ -9,6 +9,8 @@
 use crate::triggers::step_matches;
 use crate::turn::Step;
 use mtg_cards::modify::Prohibited;
+use mtg_cards::refs::Selector;
+use mtg_cards::value::{Condition, TallyEvent};
 use mtg_core::ids::{ObjectId, PlayerId};
 
 use crate::characteristics::controller_of;
@@ -74,6 +76,8 @@ pub(crate) enum Doing {
     SkipStep { player: PlayerId, step: Step },
     /// The turn of `player` is skipped.
     SkipTurn { player: PlayerId },
+    /// `player` casts the card `card`.
+    Cast { player: PlayerId, card: ObjectId },
 }
 
 /// Whether a prohibition's subjects cover the player or the object an action is about.
@@ -147,8 +151,63 @@ fn applies(state: &GameState, ban: &Banned, doing: Doing) -> bool {
         (Prohibited::SkipStep(skipped), Doing::SkipStep { player, step }) => {
             step_matches(*skipped, step) && covers(who, Some(player), None)
         }
+        (
+            Prohibited::Cast {
+                filter,
+                more_than,
+                unless,
+            },
+            Doing::Cast { player, card },
+        ) => {
+            covers(who, Some(player), None)
+                && casting_forbidden(
+                    state,
+                    ban,
+                    (filter, *more_than, unless.as_ref()),
+                    player,
+                    card,
+                )
+        }
         _ => false,
     }
+}
+
+/// The parts of a cast prohibition: the filter, the spells a player may cast each turn and the exception.
+type CastBan<'a> = (&'a Selector, Option<u32>, Option<&'a Condition>);
+
+/// Whether a cast prohibition forbids `player` to cast `card`: the card matches the filter, the caster has cast as many
+/// such spells this turn as the limit allows (any number when there is none) and the exception does not hold for them.
+fn casting_forbidden(
+    state: &GameState,
+    ban: &Banned,
+    (filter, limit, unless): CastBan<'_>,
+    player: PlayerId,
+    card: ObjectId,
+) -> bool {
+    let Some(object) = state.object(card) else {
+        return false;
+    };
+    if !picks(state, ban, filter, object.reference()) {
+        return false;
+    }
+    if let Some(limit) = limit {
+        let scope = Scope::announcing(
+            state,
+            ban.controller,
+            ban.source.unwrap_or(object.reference()),
+        );
+        let cast = scope
+            .logged_for(TallyEvent::SpellCast, &[player], filter)
+            .unwrap_or(0);
+        if cast < i64::from(limit) {
+            return false;
+        }
+    }
+    !unless.is_some_and(|condition| {
+        Scope::announcing(state, player, object.reference())
+            .holds(condition)
+            .unwrap_or(false)
+    })
 }
 
 /// Whether a rule in force forbids `doing`: the one place every prohibition is read.

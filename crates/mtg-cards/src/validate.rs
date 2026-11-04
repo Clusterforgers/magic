@@ -3582,6 +3582,12 @@ impl Walker<'_> {
                 self.at("action", |w| w.trigger_pattern(cause));
                 self.scope = saved;
             }
+            Prohibited::Cast { filter, unless, .. } => {
+                self.at("filter", |w| w.selector(filter));
+                if let Some(unless) = unless {
+                    self.at("unless", |w| w.condition(unless));
+                }
+            }
             Prohibited::SkipStep(Step::Cleanup) => {
                 self.at("action", |w| w.problem("the cleanup step can't be skipped"));
             }

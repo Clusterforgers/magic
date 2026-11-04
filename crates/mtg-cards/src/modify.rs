@@ -12,7 +12,7 @@ use crate::keyword::Keyword;
 use crate::mana::ManaCostX;
 use crate::refs::{Ref, Selector, ZoneKind};
 use crate::trigger::{Step, TriggerPattern};
-use crate::value::{Amount, CounterKind};
+use crate::value::{Amount, Condition, CounterKind};
 
 /// A change to an object. Static abilities apply them continuously; `Effect::Continuous` applies
 /// them for a duration. The layer (CR 613) follows from the kind.
@@ -264,6 +264,19 @@ pub enum Prohibited {
     SkipStep(Step),
     /// Skip their turns (CR 614.10).
     SkipTurn,
+    /// Cast spells (CR 601): those whose card the filter selects (any when empty), and with `more_than` only once they have
+    /// cast that many such spells this turn; with `unless` only while the condition does not hold for the caster.
+    Cast {
+        /// The cards that can't be cast, described by their characteristics, not their zone.
+        #[serde(default, skip_serializing_if = "Selector::is_empty")]
+        filter: Selector,
+        /// The spells of the filter a player may cast each turn; none are allowed when absent.
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        more_than: Option<u32>,
+        /// The cast is open while this holds for the caster.
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        unless: Option<Condition>,
+    },
 }
 
 /// A change to the rules of the game rather than to an object. `Effect::Rule` makes it for a duration and
