@@ -220,3 +220,67 @@ fn the_sacrifice_prompt_is_text_only() {
     let line = "Sacrifice | SacValid$ Creature | SacMessage$ Creature";
     assert_eq!(gaps(&plain(line)), Vec::<String>::new());
 }
+
+#[rstest]
+#[case::you("Poison | Defined$ You | Num$ 2", json!({"PutCounters": {"on": "You", "counter": "poison", "count": 2}}))]
+#[case::target(
+    "Poison | ValidTgts$ Opponent | Num$ 1",
+    json!({"PutCounters": {"on": {"Target": 0}, "counter": "poison"}})
+)]
+fn poison_counters(#[case] line: &str, #[case] node: Value) {
+    let found = abilities(&plain(line));
+    assert_eq!(found[0]["Spell"]["effects"][0], node);
+}
+
+#[test]
+fn poison_without_a_number_is_a_gap() {
+    assert_eq!(gaps(&plain("Poison | Defined$ You")), ["key:Poison.no-Num"]);
+}
+
+#[test]
+fn fog_prevents_combat_damage_this_turn() {
+    let found = abilities(&plain("Fog"));
+    assert_eq!(
+        found[0]["Spell"]["effects"][0],
+        json!({"Shield": {"when": {"Damage": {"combat": true}}, "by": "Prevent",
+            "duration": "UntilEndOfTurn"}})
+    );
+}
+
+#[rstest]
+#[case::draw_this_turn("SkipPhase | Defined$ You | Step$ Draw | Duration$ EndOfTurn", &[])]
+#[case::next_draw("SkipPhase | ValidTgts$ Player | Step$ Draw", &["key:SkipPhase.next-occurrence"])]
+#[case::combat("SkipPhase | Defined$ You | Phase$ BeginCombat | Duration$ EndOfTurn", &["key:SkipPhase.Phase"])]
+fn skipped_steps(#[case] line: &str, #[case] expected: &[&str]) {
+    assert_eq!(gaps(&plain(line)), expected);
+}
+
+#[rstest]
+#[case::itself("SacrificeAll | Defined$ Self | Controller$ You", None)]
+#[case::its_controller("SacrificeAll | Defined$ Self", Some(json!({"ControllerOf": "This"})))]
+fn sacrifice_named_objects(#[case] line: &str, #[case] who: Option<Value>) {
+    let found = abilities(&plain(line));
+    let mut node = json!({"Sacrifice": {"filter": [{"Is": "This"}]}});
+    if let Some(who) = who {
+        node["Sacrifice"]["who"] = who;
+    }
+    assert_eq!(found[0]["Spell"]["effects"][0], node);
+}
+
+#[test]
+fn sacrifice_all_of_a_valid_string_is_a_gap() {
+    assert_eq!(
+        gaps(&plain("SacrificeAll | ValidCards$ Creature.YouCtrl")),
+        ["key:SacrificeAll.ValidCards"]
+    );
+}
+
+#[rstest]
+#[case::earthbend("Earthbend | Num$ 2")]
+#[case::discover("Discover | Num$ 4")]
+fn keyword_actions_expand(#[case] line: &str) {
+    assert_eq!(gaps(&plain(line)), Vec::<String>::new());
+    let found = abilities(&plain(line));
+    let effects = found[0]["Spell"]["effects"].as_array().map_or(0, Vec::len);
+    assert!(effects >= 3, "{effects}");
+}

@@ -231,6 +231,9 @@ fn api_line(ctx: &mut Ctx, p: &Params, api: &str) -> Tr<Vec<Value>> {
     if let Some(found) = super::effects_verbs4::effects(ctx, p, api) {
         return found;
     }
+    if let Some(found) = super::effects_verbs5::effects(ctx, p, api) {
+        return found;
+    }
     match api {
         "DealDamage" => one(deal_damage(ctx, p)),
         "Draw" => one(draw(ctx, p)),

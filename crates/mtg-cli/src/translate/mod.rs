@@ -27,6 +27,7 @@ mod effects_verbs;
 mod effects_verbs2;
 mod effects_verbs3;
 mod effects_verbs4;
+mod effects_verbs5;
 pub mod effects_zone;
 mod header;
 pub mod keyword;
