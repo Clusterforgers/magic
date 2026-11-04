@@ -5,10 +5,9 @@
 
 use crate::drafts::items;
 
+use mtg_cards::Caps;
 use mtg_cards::builtin;
-use mtg_cards::card::Card;
-use mtg_cards::{Caps, PrintedCard};
-use mtg_cli::drafts::{SmokeKind, read_definitions, smoke};
+use mtg_cli::drafts::{SmokeKind, smoke};
 use mtg_testkit::cards::creature;
 use rstest::rstest;
 
@@ -93,13 +92,27 @@ fn the_drafts_play_as_approved_read_cards_in_the_smoke_gate() {
         .iter()
         .filter(|item| chosen.contains(&item.slug))
         .collect();
-    let pairs: Vec<(&PrintedCard, &Card)> = played
+    let proofs: Vec<_> = played
         .iter()
-        .map(|item| (&item.printed, &item.card))
+        .map(|item| {
+            std::fs::read_to_string(
+                crate::drafts::dir()
+                    .join(mtg_cli::drafts::META_DIR)
+                    .join(format!("{}.json", item.slug)),
+            )
+            .ok()
+            .and_then(|text| mtg_cli::drafts::DraftMeta::parse(&text).proof)
+        })
+        .collect();
+    let pairs: Vec<mtg_cli::drafts::DraftItem> = played
+        .iter()
+        .zip(&proofs)
+        .map(|(item, proof)| (&item.printed, &item.card, proof.as_ref()))
         .collect();
     let caps: Caps = mtg_engine::caps();
 
-    let defined = read_definitions(builtin::library().unwrap(), &caps, &pairs);
+    let defined =
+        mtg_cli::drafts::read_definitions_proved(builtin::library().unwrap(), &caps, &pairs);
 
     let mut failures = Vec::new();
     for (item, definition) in played.iter().zip(defined) {
