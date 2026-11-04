@@ -1,6 +1,8 @@
 //! `Mode$ Panharmonicon`: a triggered ability of the permanents `ValidCard$` names triggers an additional time when the
 //! event `ValidMode$` names, caused by `ValidCause$`, makes it trigger (`Rule.TriggerAgain`).
 
+use std::fmt::Write;
+
 use serde_json::{Value, json};
 
 use super::ctx::{Ctx, Tr, unmapped};
@@ -72,7 +74,7 @@ fn cause(ctx: &Ctx, p: &Params, mode: &str) -> Tr<Vec<Value>> {
             );
             for key in ["Origin", "Destination"] {
                 if let Some(zone) = from(key) {
-                    text.push_str(&format!(" | {key}$ {zone}"));
+                    let _ = write!(text, " | {key}$ {zone}");
                 }
             }
             Ok(vec![pattern(mode, line(text))?])
@@ -87,10 +89,10 @@ fn cause(ctx: &Ctx, p: &Params, mode: &str) -> Tr<Vec<Value>> {
         "SpellCast" | "SpellCopy" | "SpellCastOrCopy" => {
             let mut text = "Mode$ SpellCastOrCopy".to_owned();
             if let Some(valid) = &valid {
-                text.push_str(&format!(" | ValidCard$ {valid}"));
+                let _ = write!(text, " | ValidCard$ {valid}");
             }
             if let Some(who) = from("ValidActivator") {
-                text.push_str(&format!(" | ValidActivatingPlayer$ {who}"));
+                let _ = write!(text, " | ValidActivatingPlayer$ {who}");
             }
             let both = pattern(mode, line(text))?;
             let wanted = match mode {

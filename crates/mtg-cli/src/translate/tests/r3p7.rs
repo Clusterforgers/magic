@@ -1,6 +1,13 @@
 //! Goal: static parameters of round 3 piece P7 translate to the modifications the engine has, one table per rule, and a
 //! translated rule changes a game the way the card prints.
-#![allow(clippy::unwrap_used, clippy::expect_used)]
+#![allow(
+    clippy::unwrap_used,
+    clippy::expect_used,
+    clippy::format_collect,
+    clippy::single_match_else,
+    clippy::manual_assert,
+    clippy::len_zero
+)]
 
 use std::sync::Arc;
 
@@ -75,7 +82,7 @@ fn a_panharmonicon_line_it_cannot_read_stays_a_gap_by_name(#[case] line: &str, #
         "{:?}",
         gaps(&text)
     );
-    assert!(abilities(&text).is_empty());
+    assert_eq!(abilities(&text), Vec::<Value>::new());
 }
 
 fn card_with(types: &[CardType], name: &str, script: &str) -> Arc<CardDefinition> {

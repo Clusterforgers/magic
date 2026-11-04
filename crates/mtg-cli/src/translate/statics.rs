@@ -170,6 +170,7 @@ const CONTINUOUS: [&str; 25] = [
     "SetColor",
 ];
 
+#[allow(clippy::too_many_lines)]
 fn continuous(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
     keys(p, "Continuous", &CONTINUOUS)?;
     let affected = affected(ctx, p)?;
@@ -557,7 +558,7 @@ fn granted_statics(ctx: &mut Ctx, names: &str) -> Tr<Vec<Value>> {
         {
             return unmapped("key:Static.Continuous.AddStaticAbility-shape");
         }
-        let ability = static_line(ctx, &text.to_owned())?;
+        let ability = static_line(ctx, text)?;
         let Some(inner) = ability.get("Static") else {
             return unmapped("key:Static.Continuous.AddStaticAbility-not-a-static");
         };
