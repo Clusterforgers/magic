@@ -112,6 +112,9 @@ fn pattern(ctx: &Ctx, p: &Params) -> Tr<Value> {
     if let Some(found) = super::triggers_did::pattern(ctx, p, mode) {
         return found;
     }
+    if let Some(found) = super::triggers_batch::pattern(ctx, p, mode) {
+        return found;
+    }
     match mode {
         "ChangesZone" => changes_zone(ctx, p),
         "Phase" => phase(p),
