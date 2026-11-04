@@ -21,6 +21,17 @@ use super::{abilities, gaps, normal};
         {"Continuous": {"affected": {"Each": [{"Type": "Creature"}, {"ControlledBy": "Opponents"}]},
             "mods": [{"ModifyPT": {"power": 0, "toughness": -1}}], "duration": "Forever"}}]}})
 )]
+#[case::whenever_you_draw_this_turn(
+    "Name:T\nTypes:Sorcery\nA:SP$ Effect | Triggers$ Draws\nSVar:Draws:Mode$ Drawn | ValidCard$ Card.YouCtrl | TriggerZones$ Command | Execute$ Gain\nSVar:Gain:DB$ GainLife | LifeAmount$ 1\n",
+    json!({"Spell": {"effects": [{"DelayedTrigger": {"when": {"Drew": {"who": "You"}}, "once": false,
+        "this_turn": true, "effects": [{"GainLife": {"amount": 1}}]}}]}})
+)]
+#[case::whenever_the_target_attacks_for_the_game(
+    "Name:T\nTypes:Sorcery\nA:SP$ Effect | ValidTgts$ Creature | RememberObjects$ Targeted | Duration$ Permanent | Triggers$ Hits\nSVar:Hits:Mode$ Attacks | ValidCard$ Card.IsRemembered | TriggerZones$ Command | Execute$ Gain\nSVar:Gain:DB$ GainLife | LifeAmount$ 1\n",
+    json!({"Spell": {"targets": [{"what": {"Object": [{"Type": "Creature"}]}}], "effects": [
+        {"DelayedTrigger": {"when": {"Attacks": {"what": [{"Is": {"Target": 0}}]}}, "once": false,
+            "effects": [{"GainLife": {"amount": 1}}]}}]}})
+)]
 fn ambient_statics_map(#[case] script: &str, #[case] expected: Value) {
     let mut found = abilities(script);
     assert_eq!(found.len(), 1, "{:?}", gaps(script));

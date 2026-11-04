@@ -66,6 +66,12 @@ fn property(ctx: &Ctx, prop: &str) -> Tr<Vec<Value>> {
                 None => unmapped(format!("valid:{prop}-without-a-choice")),
             };
         }
+        "IsRemembered" => {
+            return match &ctx.pinned {
+                Some(who) => one(json!({"Is": who})),
+                None => unmapped("valid:IsRemembered"),
+            };
+        }
         "ExiledWithSource" => return one(json!({"ExiledWith": "This"})),
         "enchanted" => return one(json!({"HasAttached": [{"Subtype": "Aura"}]})),
         "equipped" => return one(json!({"HasAttached": [{"Subtype": "Equipment"}]})),

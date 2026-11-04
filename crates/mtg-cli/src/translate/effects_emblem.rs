@@ -43,7 +43,7 @@ fn abilities(
         let Some(text) = ctx.svar(name) else {
             return unmapped("svar:missing");
         };
-        out.push(ctx.nested(|ctx| read(ctx, &rebuilt(text)))?);
+        out.push(ctx.nested(None, |ctx| read(ctx, &rebuilt(text)))?);
     }
     Ok(out)
 }

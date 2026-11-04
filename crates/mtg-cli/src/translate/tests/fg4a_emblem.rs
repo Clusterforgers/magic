@@ -27,7 +27,7 @@ fn emblems_map(#[case] script: &str, #[case] expected: Value) {
 #[case::named_but_remembering(
     "Name$ Emblem - T | RememberObjects$ Targeted | ValidTgts$ Creature | StaticAbilities$ Pump | Duration$ Permanent"
 )]
-#[case::unnamed_with_triggers("Name$ Boon | Triggers$ Draws | Duration$ Permanent")]
+#[case::one_time_boon("Name$ Boon | Boon$ True | Triggers$ Draws | Duration$ Permanent")]
 #[case::emblem_without_abilities("Name$ Emblem - T | Duration$ Permanent")]
 fn effects_that_are_no_emblem_stay_gaps(#[case] line: &str) {
     let script = format!(

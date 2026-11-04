@@ -86,6 +86,9 @@ pub struct Ctx<'a> {
     pub targets: Vec<Value>,
     /// The objects the latest zone change moved (`RememberChanged$`), which `Defined$ Remembered` names later.
     pub remembered: Option<Value>,
+    /// The objects an `Effect` object remembers, which a trigger or static it carries reads as `IsRemembered`; kept across
+    /// `reset` because the carried lines are translated as lines of their own.
+    pub pinned: Option<Value>,
     /// The latest target the ability had declared before the line being translated (`Defined$ ParentTarget`).
     pub parent_target: Option<u8>,
     /// The name the latest value chosen by the ability is bound to (`ChosenColor`, `ChosenType` after it).
@@ -110,6 +113,7 @@ impl<'a> Ctx<'a> {
             world,
             targets: Vec::new(),
             remembered: None,
+            pinned: None,
             parent_target: None,
             chosen: None,
             chosen_card: None,
@@ -130,7 +134,8 @@ impl<'a> Ctx<'a> {
     }
 
     /// Runs a translation of a line of its own (a static, a trigger) and restores the state of the ability around it.
-    pub fn nested<T>(&mut self, run: impl FnOnce(&mut Ctx<'a>) -> T) -> T {
+    pub fn nested<T>(&mut self, pinned: Option<Value>, run: impl FnOnce(&mut Ctx<'a>) -> T) -> T {
+        let before = std::mem::replace(&mut self.pinned, pinned);
         let targets = std::mem::take(&mut self.targets);
         let saved = (
             self.remembered.take(),
@@ -141,6 +146,7 @@ impl<'a> Ctx<'a> {
             self.depth,
         );
         let out = run(self);
+        self.pinned = before;
         self.targets = targets;
         (
             self.remembered,

@@ -35,7 +35,11 @@ pub fn effects(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
         return super::effects_emblem::emblem(ctx, p);
     }
     if p.has("Triggers") {
-        return unmapped("key:Effect.Triggers");
+        if p.has("ReplacementEffects") {
+            return unmapped("key:Effect.Triggers-and-ReplacementEffects");
+        }
+        let remembered = super::replacements_damage::remembered_of(ctx, p)?;
+        return super::effects_ambient::delayed_triggers(ctx, p, remembered);
     }
     if p.has("ReplacementEffects") {
         if p.has("StaticAbilities") {
