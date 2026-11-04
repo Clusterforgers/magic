@@ -733,6 +733,7 @@ mod r3p5;
 mod r3p6;
 mod r3p7;
 mod r3p8;
+mod r4f2;
 mod r4p1;
 mod r4p2;
 mod r4p3;
