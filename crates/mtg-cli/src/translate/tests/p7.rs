@@ -124,6 +124,39 @@ fn a_word_the_table_does_not_know_stays_a_named_gap(#[case] trigger: &str, #[cas
     assert_eq!(gap_of(trigger), [name]);
 }
 
+/// The gaps of a permanent whose only ability is the static line `line`.
+fn static_gaps(line: &str) -> Vec<String> {
+    gaps(&format!("Name:T\nTypes:Enchantment\nS:{line}\n"))
+}
+
+#[rstest]
+#[case::label_is_text_for_people(
+    "Mode$ Continuous | Affected$ Creature.YouOwn+nonLand | MayPlay$ True | MayPlayLimit$ 1 | MayPlayText$ Creature | EffectZone$ Battlefield | AffectedZone$ Graveyard",
+    &[]
+)]
+#[case::pay_zero_is_not_free(
+    "Mode$ Continuous | Affected$ Card.nonLand | MayPlay$ True | MayPlayAltManaCost$ 0 | MayPlayDontGrantZonePermissions$ True | AffectedZone$ Exile",
+    &["key:Static.MayPlay.MayPlayAltManaCost"]
+)]
+#[case::any_color_is_not_dropped(
+    "Mode$ Continuous | Affected$ Card.nonLand | MayPlay$ True | MayPlayIgnoreColor$ True | AffectedZone$ Exile",
+    &["key:Static.MayPlay.MayPlayIgnoreColor"]
+)]
+#[case::any_type_is_not_dropped(
+    "Mode$ Continuous | Affected$ Card.nonLand | MayPlay$ True | MayPlayIgnoreType$ True | AffectedZone$ Exile",
+    &["key:Static.MayPlay.MayPlayIgnoreType"]
+)]
+#[case::the_owner_is_not_you(
+    "Mode$ Continuous | Affected$ Card.nonLand | MayPlay$ True | MayPlayPlayer$ CardOwner | AffectedZone$ Exile",
+    &["key:Static.MayPlay.MayPlayPlayer=CardOwner"]
+)]
+fn a_may_play_word_that_changes_the_cast_is_read_or_refused(
+    #[case] line: &str,
+    #[case] expected: &[&str],
+) {
+    assert_eq!(static_gaps(line), expected);
+}
+
 /// What a `DelayedTrigger` line reads as its event, and whether it waits for this turn only.
 fn delayed(line: &str) -> Result<(Value, bool), String> {
     let world = super::world();
