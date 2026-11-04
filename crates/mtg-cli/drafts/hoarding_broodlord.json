@@ -1,0 +1,33 @@
+{
+  "oracle_id": "18e856b5-aab7-4802-8cec-1d44dd95d9f7",
+  "name": "Hoarding Broodlord",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Hoarding Broodlord",
+      "oracle_fingerprint": "b692da47554a79373e4c28df1590a30d",
+      "abilities": [
+        { "Keyword": "Convoke" },
+        { "Keyword": "Flying" },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 15, "end": 165 }
+          }
+        },
+        {
+          "Static": {
+            "affected": {
+              "Each": [
+                { "ControlledBy": "You" },
+                { "WasCast": { "from": "Exile" } },
+                { "In": "Stack" }
+              ]
+            },
+            "mods": [{ "AddKeyword": "Convoke" }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,34 @@
+{
+  "oracle_id": "eb7b024c-da9b-4544-8648-0ac0395cf7fc",
+  "name": "Capricious Hellraiser",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Capricious Hellraiser",
+      "oracle_fingerprint": "be295f9ec047bce9364c96dd37c419e1",
+      "abilities": [
+        {
+          "CostModifier": {
+            "applies_to": ["This"],
+            "change": "Reduce",
+            "mana": "{3}",
+            "condition": {
+              "Compare": {
+                "left": { "Count": [{ "OwnedBy": "You" }, { "In": "Graveyard" }] },
+                "op": "Ge",
+                "right": 9
+              }
+            }
+          }
+        },
+        { "Keyword": "Flying" },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 91, "end": 282 }
+          }
+        }
+      ]
+    }
+  ]
+}

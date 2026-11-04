@@ -1,0 +1,45 @@
+{
+  "oracle_id": "ebbf84f7-d142-4de5-bfc1-ea86f082d733",
+  "name": "Possibility Technician",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Possibility Technician",
+      "oracle_fingerprint": "2bec600fd2adb3d43c2ad86f35dc24ad",
+      "abilities": [
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 0, "end": 174 }
+          }
+        },
+        { "AltCast": { "way": "Warp", "cost": "{1}{R}" } },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "if": { "CastWith": "Warp" },
+            "effects": [
+              { "Choose": { "from": "This", "as": "warped" } },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "End" } },
+                  "effects": [
+                    { "Exile": { "what": { "Bound": "warped" }, "as": "warped_card" } },
+                    {
+                      "Rule": {
+                        "rule": {
+                          "MayCast": { "from": "Exile", "only": { "Bound": "warped_card" } }
+                        },
+                        "duration": "Forever"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,40 @@
+{
+  "oracle_id": "a93a8edf-2879-4cae-b3b9-b46298270823",
+  "name": "Hydro-Man, Fluid Felon",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Hydro-Man, Fluid Felon",
+      "oracle_fingerprint": "929d288f0ceef6c2dd6b008995baf5f3",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "what": [{ "Color": "Blue" }], "by": "You" } },
+            "if": {
+              "Compare": {
+                "left": { "Count": ["This", { "Type": "Creature" }] },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 93, "end": 250 }
+          }
+        }
+      ]
+    }
+  ]
+}

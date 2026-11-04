@@ -1,0 +1,29 @@
+{
+  "oracle_id": "fa81e7ff-0f2c-40df-9169-c0a22f00cd76",
+  "name": "Conspiracy Theorist",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Conspiracy Theorist",
+      "oracle_fingerprint": "459754d1cdd86bbe200ab1e9911f633a",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [
+              {
+                "Pay": { "cost": [{ "Mana": "{1}" }, { "Discard": {} }], "paid": [{ "Draw": {} }] }
+              }
+            ]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 92, "end": 224 }
+          }
+        }
+      ]
+    }
+  ]
+}

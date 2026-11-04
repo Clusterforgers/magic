@@ -1,0 +1,32 @@
+{
+  "oracle_id": "c4485bf9-e7ff-48b5-a983-02900939ee9d",
+  "name": "Spider-Sense",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Spider-Sense",
+      "oracle_fingerprint": "e968600420d9f33766b2ba3162fb1f0f",
+      "abilities": [
+        {
+          "AltCast": {
+            "way": "WebSlinging",
+            "cost": [
+              { "Mana": "{U}" },
+              {
+                "ReturnToHand": {
+                  "filter": [{ "Type": "Creature" }, { "ControlledBy": "You" }, "Tapped"]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 121, "end": 187 }
+          }
+        }
+      ]
+    }
+  ]
+}

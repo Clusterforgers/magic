@@ -1,0 +1,47 @@
+{
+  "oracle_id": "91b1db8c-4bce-43d1-94ab-14b1435686c7",
+  "name": "Grim Reaper's Scythe",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Grim Reaper's Scythe",
+      "oracle_fingerprint": "405897921c114d545d64387d34d2c840",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "Batch": {
+                "ZoneChange": {
+                  "what": [{ "Type": "Creature" }, { "OwnedBy": "You" }],
+                  "from": "Graveyard"
+                }
+              }
+            },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Zombie",
+                      "colors": ["Black"],
+                      "types": ["Creature"],
+                      "subtypes": ["Zombie"],
+                      "power": 2,
+                      "toughness": 2
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 100, "end": 338 }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,30 @@
+{
+  "oracle_id": "5facb256-b993-43f8-b971-b3a59a7434bf",
+  "name": "Last Laugh",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Last Laugh",
+      "oracle_fingerprint": "9e8d9b61f4761fed388c362bbadf4328",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": { "what": ["Other"], "from": "Battlefield", "to": "Graveyard" }
+            },
+            "effects": [
+              { "DealDamage": { "to": { "Each": [{ "Type": "Creature" }] }, "amount": 1 } },
+              { "DealDamage": { "to": "EachPlayer", "amount": 1 } }
+            ]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 161, "end": 230 }
+          }
+        }
+      ]
+    }
+  ]
+}

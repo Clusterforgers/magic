@@ -1,0 +1,42 @@
+{
+  "source": "forge",
+  "oracle_matches": true,
+  "lines": [
+    {
+      "face": 0,
+      "tag": "T",
+      "text": "Whenever a creature you control exploits a non-Human creature, draw a card. If the exploited creature had power 3 or greater, create a Treasure token.",
+      "abilities": [],
+      "gap": "trigger:Exploited"
+    },
+    {
+      "face": 0,
+      "tag": "S",
+      "text": "CARDNAME and other Human creatures you control have exploit. (When a creature with exploit enters, you may sacrifice a creature.)",
+      "abilities": [
+        0
+      ],
+      "gap": null
+    }
+  ],
+  "proof": {
+    "marks": [
+      {
+        "face": 0,
+        "span": {
+          "start": 0,
+          "end": 129
+        },
+        "mark": "Auto"
+      },
+      {
+        "face": 0,
+        "span": {
+          "start": 130,
+          "end": 280
+        },
+        "mark": "ByHand"
+      }
+    ]
+  }
+}

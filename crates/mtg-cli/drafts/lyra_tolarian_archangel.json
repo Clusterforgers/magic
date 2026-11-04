@@ -1,0 +1,49 @@
+{
+  "oracle_id": "d9060fff-0b65-4b3d-930d-6e36315b802c",
+  "name": "Lyra, Tolarian Archangel",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Lyra, Tolarian Archangel",
+      "oracle_fingerprint": "aebd7600b0bc144675c9b4985f9881be",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End" } },
+            "if": {
+              "Compare": {
+                "left": { "Tallied": { "who": "You", "what": "Drawn" } },
+                "op": "Ge",
+                "right": 3
+              }
+            },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Angel",
+                      "colors": ["Blue"],
+                      "types": ["Creature"],
+                      "subtypes": ["Angel"],
+                      "power": 3,
+                      "toughness": 3,
+                      "abilities": [{ "Keyword": "Flying" }]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 141, "end": 233 }
+          }
+        }
+      ]
+    }
+  ]
+}

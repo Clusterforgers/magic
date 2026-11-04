@@ -1,0 +1,30 @@
+{
+  "oracle_id": "debeb004-3157-43cf-95fd-220777417ff7",
+  "name": "Kros, Defense Contractor",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Kros, Defense Contractor",
+      "oracle_fingerprint": "d2fd111fb9d614224109c0c11917af88",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }] } }
+            ],
+            "effects": [
+              { "PutCounters": { "on": { "Target": 0 }, "counter": { "Other": "shield" } } }
+            ]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 95, "end": 346 }
+          }
+        }
+      ]
+    }
+  ]
+}

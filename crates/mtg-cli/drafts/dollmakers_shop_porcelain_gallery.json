@@ -1,0 +1,38 @@
+{
+  "oracle_id": "e633412b-e36b-4ec5-b0d0-7cb24c7503f4",
+  "name": "Dollmaker's Shop // Porcelain Gallery",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Dollmaker's Shop",
+      "oracle_fingerprint": "0ab69bb7c0003d3eba55af52b5b1d738",
+      "abilities": [
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 0, "end": 115 }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Porcelain Gallery",
+      "oracle_fingerprint": "41ff3c23b50ec5880c9a398edfb27e80",
+      "abilities": [
+        {
+          "Static": {
+            "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+            "mods": [
+              {
+                "SetPT": {
+                  "power": { "Count": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                  "toughness": { "Count": [{ "Type": "Creature" }, { "ControlledBy": "You" }] }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

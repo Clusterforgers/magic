@@ -1,0 +1,35 @@
+{
+  "oracle_id": "33747a34-79cc-446f-8718-b499bd497687",
+  "name": "Guardian of New Benalia",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Guardian of New Benalia",
+      "oracle_fingerprint": "3fb5ed62ccea88882077617851c2c7ac",
+      "abilities": [
+        { "Keyword": { "Macro": { "name": "enlist", "amount": 0 } } },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 176, "end": 226 }
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Discard": {} }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "AddKeyword": "Indestructible" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              { "Tap": { "what": "This" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

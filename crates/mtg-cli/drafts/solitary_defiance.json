@@ -1,0 +1,32 @@
+{
+  "oracle_id": "606f3a9f-148a-4cd5-b364-376857d4e195",
+  "name": "Solitary Defiance",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Solitary Defiance",
+      "oracle_fingerprint": "2a4ee2b91d41436ee00a3ccb0bf43dff",
+      "abilities": [
+        {
+          "Static": {
+            "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+            "mods": [{ "AddKeyword": "Vigilance" }, { "AddKeyword": { "Ward": "{2}" } }],
+            "condition": {
+              "Compare": {
+                "left": { "Count": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                "op": "Eq",
+                "right": 1
+              }
+            }
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 87, "end": 178 }
+          }
+        }
+      ]
+    }
+  ]
+}

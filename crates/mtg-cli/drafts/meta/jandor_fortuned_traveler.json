@@ -1,0 +1,42 @@
+{
+  "source": "forge",
+  "oracle_matches": true,
+  "lines": [
+    {
+      "face": 0,
+      "tag": "T",
+      "text": "Whenever a saddled creature you control attacks, it gets +2/+2 until end of turn. Draw a card. Create a Food token.",
+      "abilities": [],
+      "gap": "valid:IsSaddled"
+    },
+    {
+      "face": 0,
+      "tag": "S",
+      "text": "Each Beast, Camel, Horse, Elephant, and Wolf creature you control is a Mount in addition to its other types and has saddle 2. (Tap any number of other creatures you control with total power 2 or more: That Mount becomes saddled until end of turn. Saddle only as a sorcery.)",
+      "abilities": [
+        0
+      ],
+      "gap": null
+    }
+  ],
+  "proof": {
+    "marks": [
+      {
+        "face": 0,
+        "span": {
+          "start": 0,
+          "end": 273
+        },
+        "mark": "Auto"
+      },
+      {
+        "face": 0,
+        "span": {
+          "start": 274,
+          "end": 389
+        },
+        "mark": "ByHand"
+      }
+    ]
+  }
+}

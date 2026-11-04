@@ -1,0 +1,33 @@
+{
+  "oracle_id": "4b7a8c05-15cd-452e-b9fc-83800e81793d",
+  "name": "Heroic Return",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Heroic Return",
+      "oracle_fingerprint": "1b741530b813c0d4836d1fbd340b8b1b",
+      "abilities": [
+        {
+          "CostModifier": {
+            "applies_to": ["This"],
+            "change": "Reduce",
+            "mana": "{2}",
+            "condition": {
+              "Compare": {
+                "left": { "Count": [{ "Type": "Creature" }, { "AttackingPlayer": "You" }] },
+                "op": "Ge",
+                "right": 1
+              }
+            }
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 66, "end": 212 }
+          }
+        }
+      ]
+    }
+  ]
+}

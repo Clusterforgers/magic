@@ -1,0 +1,42 @@
+{
+  "source": "forge",
+  "oracle_matches": true,
+  "lines": [
+    {
+      "face": 0,
+      "tag": "T",
+      "text": "Whenever a white instant or sorcery spell causes you to gain life, CARDNAME deals 3 damage to target creature or player.",
+      "abilities": [],
+      "gap": "key:Trigger.LifeGained.ValidSource"
+    },
+    {
+      "face": 0,
+      "tag": "S",
+      "text": "Red instant and sorcery spells you control have lifelink.",
+      "abilities": [
+        0
+      ],
+      "gap": null
+    }
+  ],
+  "proof": {
+    "marks": [
+      {
+        "face": 0,
+        "span": {
+          "start": 0,
+          "end": 57
+        },
+        "mark": "Auto"
+      },
+      {
+        "face": 0,
+        "span": {
+          "start": 58,
+          "end": 193
+        },
+        "mark": "ByHand"
+      }
+    ]
+  }
+}

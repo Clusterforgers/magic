@@ -1,0 +1,48 @@
+{
+  "oracle_id": "cbf09050-39d0-463b-96db-9e22011ae0d8",
+  "name": "Aang, Swift Savior // Aang and La, Ocean's Fury",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Aang, Swift Savior",
+      "oracle_fingerprint": "673838628bc8da3d9b22157e2b6358a0",
+      "abilities": [
+        { "Keyword": "Flash" },
+        { "Keyword": "Flying" },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 13, "end": 168 }
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 169, "end": 199 }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Aang and La, Ocean's Fury",
+      "oracle_fingerprint": "85abb0af5f329bac92f3c53021b4ad4c",
+      "abilities": [
+        { "Keyword": "Reach" },
+        { "Keyword": "Trample" },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [
+              {
+                "PutCounters": {
+                  "on": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }, "Tapped"] },
+                  "counter": "+1/+1"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

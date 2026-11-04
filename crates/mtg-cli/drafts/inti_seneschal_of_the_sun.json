@@ -1,0 +1,50 @@
+{
+  "oracle_id": "176f5ba8-6e7b-4234-a298-b6164f51656f",
+  "name": "Inti, Seneschal of the Sun",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Inti, Seneschal of the Sun",
+      "oracle_fingerprint": "3632cc93b89102439c479e6d12d4b7c0",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "GroupAttacks": { "what": [{ "Type": "Creature" }, { "ControlledBy": "You" }] }
+            },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": [{ "Discard": {} }],
+                  "paid": [
+                    {
+                      "Reflexive": {
+                        "targets": [{ "what": { "Object": [{ "Type": "Creature" }, "Attacking"] } }],
+                        "effects": [
+                          { "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1" } },
+                          {
+                            "Continuous": {
+                              "affected": { "Target": 0 },
+                              "mods": [{ "AddKeyword": "Trample" }],
+                              "duration": "UntilEndOfTurn"
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 144, "end": 268 }
+          }
+        }
+      ]
+    }
+  ]
+}

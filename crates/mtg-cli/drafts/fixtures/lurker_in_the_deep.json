@@ -1,0 +1,128 @@
+{
+  "object": "card",
+  "id": "8eeb02d2-cf6d-4896-94e9-73fe93683aa0",
+  "oracle_id": "b3e101ee-ad39-4776-9721-0afdce2c5d5d",
+  "multiverse_ids": [],
+  "arena_id": 95340,
+  "name": "Lurker in the Deep",
+  "lang": "en",
+  "released_at": "2024-10-15",
+  "uri": "https://api.scryfall.com/cards/8eeb02d2-cf6d-4896-94e9-73fe93683aa0",
+  "scryfall_uri": "https://scryfall.com/card/ydsk/6/lurker-in-the-deep?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T02:19:59Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/8/e/8eeb02d2-cf6d-4896-94e9-73fe93683aa0.jpg?1783909199",
+    "normal": "https://cards.scryfall.io/normal/front/8/e/8eeb02d2-cf6d-4896-94e9-73fe93683aa0.jpg?1783909199",
+    "large": "https://cards.scryfall.io/large/front/8/e/8eeb02d2-cf6d-4896-94e9-73fe93683aa0.jpg?1783909199",
+    "png": "https://cards.scryfall.io/png/front/8/e/8eeb02d2-cf6d-4896-94e9-73fe93683aa0.png?1783909199",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/8/e/8eeb02d2-cf6d-4896-94e9-73fe93683aa0.jpg?1783909199",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/8/e/8eeb02d2-cf6d-4896-94e9-73fe93683aa0.jpg?1783909199",
+    "thumb": "https://cards.scryfall.io/thumb/front/8/e/8eeb02d2-cf6d-4896-94e9-73fe93683aa0.webp?1783909199",
+    "grid": "https://cards.scryfall.io/grid/front/8/e/8eeb02d2-cf6d-4896-94e9-73fe93683aa0.webp?1783909199",
+    "display": "https://cards.scryfall.io/display/front/8/e/8eeb02d2-cf6d-4896-94e9-73fe93683aa0.webp?1783909199",
+    "art": "https://cards.scryfall.io/art/front/8/e/8eeb02d2-cf6d-4896-94e9-73fe93683aa0.webp?1783909199",
+    "crop": "https://cards.scryfall.io/crop/front/8/e/8eeb02d2-cf6d-4896-94e9-73fe93683aa0.webp?1783909199",
+    "jpeg": "https://cards.scryfall.io/normal/front/8/e/8eeb02d2-cf6d-4896-94e9-73fe93683aa0.jpg?1783909199"
+  },
+  "mana_cost": "{3}{U}{U}{U}",
+  "cmc": 6.0,
+  "type_line": "Enchantment Creature — Fish Illusion",
+  "oracle_text": "Impending 3—{2}{U}{U}\nWhenever Lurker in the Deep enters or attacks, seek a nonland card.\nWhenever you seek one or more cards during your turn, conjure a duplicate of each of those cards into your hand, then manifest those duplicates.",
+  "power": "7",
+  "toughness": "7",
+  "colors": [
+    "U"
+  ],
+  "color_identity": [
+    "U"
+  ],
+  "keywords": [
+    "Impending",
+    "Seek",
+    "Manifest",
+    "Conjure"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "not_legal",
+    "pauper": "not_legal",
+    "vintage": "not_legal",
+    "penny": "not_legal",
+    "commander": "not_legal",
+    "oathbreaker": "not_legal",
+    "standardbrawl": "not_legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "legal",
+    "paupercommander": "not_legal",
+    "duel": "not_legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "arena"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "b451dcad-db03-4ebd-9155-6cafe0240f66",
+  "set": "ydsk",
+  "set_name": "Alchemy: Duskmourn",
+  "set_type": "alchemy",
+  "set_uri": "https://api.scryfall.com/sets/b451dcad-db03-4ebd-9155-6cafe0240f66",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Aydsk&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/ydsk?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/8eeb02d2-cf6d-4896-94e9-73fe93683aa0/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Ab3e101ee-ad39-4776-9721-0afdce2c5d5d&unique=prints",
+  "collector_number": "6",
+  "digital": true,
+  "rarity": "mythic",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Jana Heidersdorf",
+  "artist_ids": [
+    "5dcf6977-c9ad-4712-bfcf-22d29af88ea2"
+  ],
+  "illustration_id": "7b92ba3b-84ea-43bd-98ae-e72718800a24",
+  "border_color": "black",
+  "frame": "2015",
+  "frame_effects": [
+    "enchantment"
+  ],
+  "security_stamp": "arena",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "prices": {
+    "usd": null,
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": null,
+    "eur_foil": null,
+    "tix": null
+  },
+  "related_uris": {
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DLurker%2Bin%2Bthe%2BDeep",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DLurker%2Bin%2Bthe%2BDeep",
+    "edhrec": "https://edhrec.com/route/?cc=Lurker+in+the+Deep"
+  }
+}

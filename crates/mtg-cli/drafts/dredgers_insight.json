@@ -1,0 +1,35 @@
+{
+  "oracle_id": "3f21c1c6-7992-4036-ad3e-b599153e54fe",
+  "name": "Dredger's Insight",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Dredger's Insight",
+      "oracle_fingerprint": "4f97b4511259f7243a04fc4ae7f12ce1",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "Batch": {
+                "ZoneChange": {
+                  "what": [
+                    { "AnyOf": [{ "Type": "Artifact" }, { "Type": "Creature" }] },
+                    { "OwnedBy": "You" }
+                  ],
+                  "from": "Graveyard"
+                }
+              }
+            },
+            "effects": [{ "GainLife": { "amount": 1 } }]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 91, "end": 311 }
+          }
+        }
+      ]
+    }
+  ]
+}

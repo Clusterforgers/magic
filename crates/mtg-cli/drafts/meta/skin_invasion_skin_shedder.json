@@ -1,0 +1,59 @@
+{
+  "source": "forge",
+  "oracle_matches": true,
+  "lines": [
+    {
+      "face": 0,
+      "tag": "K",
+      "text": "Enchant:Creature",
+      "abilities": [
+        0
+      ],
+      "gap": null
+    },
+    {
+      "face": 0,
+      "tag": "T",
+      "text": "When enchanted creature dies, return CARDNAME to the battlefield transformed under your control.",
+      "abilities": [],
+      "gap": "key:ChangeZone.Transformed"
+    },
+    {
+      "face": 0,
+      "tag": "S",
+      "text": "Enchanted creature attacks each combat if able.",
+      "abilities": [
+        1
+      ],
+      "gap": null
+    }
+  ],
+  "proof": {
+    "marks": [
+      {
+        "face": 0,
+        "span": {
+          "start": 0,
+          "end": 16
+        },
+        "mark": "Auto"
+      },
+      {
+        "face": 0,
+        "span": {
+          "start": 17,
+          "end": 64
+        },
+        "mark": "Auto"
+      },
+      {
+        "face": 0,
+        "span": {
+          "start": 65,
+          "end": 162
+        },
+        "mark": "ByHand"
+      }
+    ]
+  }
+}

@@ -1,0 +1,38 @@
+{
+  "oracle_id": "99d42ae8-8cee-449b-812b-98a81a593077",
+  "name": "Startled Awake // Persistent Nightmare",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Startled Awake",
+      "oracle_fingerprint": "4ee64c369299981e24509b4dcdecd459",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Opponent" }],
+            "effects": [{ "Mill": { "who": { "Target": 0 }, "count": 13 } }]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 38, "end": 144 }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Persistent Nightmare",
+      "oracle_fingerprint": "95eb54b2e4a7880a1b6fb06f1814a85b",
+      "abilities": [
+        { "Keyword": "Skulk" },
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": ["This"], "to": "EachPlayer", "combat": true } },
+            "effects": [{ "Move": { "what": "This", "to": "Hand" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,33 @@
+{
+  "oracle_id": "ba621907-7aaa-448a-8acc-5d28521eb581",
+  "name": "Sagrada Familiar",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Sagrada Familiar",
+      "oracle_fingerprint": "7f9d7cb69ffc7aee9776d916e8e70d5d",
+      "abilities": [
+        { "Keyword": "Reach" },
+        { "Keyword": "Defender" },
+        {
+          "CostModifier": {
+            "applies_to": [
+              "Spell",
+              "Commander",
+              { "ControlledBy": "You" },
+              { "ControlledBy": "You" }
+            ],
+            "change": "Reduce",
+            "mana": "{1}"
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 65, "end": 225 }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,39 @@
+{
+  "oracle_id": "0e7405e3-e9e6-4213-a73f-e0c01a7d6721",
+  "name": "Callous Sell-Sword // Burn Together",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Callous Sell-Sword",
+      "oracle_fingerprint": "d0a3b51f1da3172fa96b757855e563cf",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": {
+              "WithCounters": {
+                "counter": "+1/+1",
+                "count": {
+                  "Tally": {
+                    "event": "Died",
+                    "who": "EachPlayer",
+                    "filter": [{ "Type": "Creature" }, { "ControlledBy": "You" }]
+                  }
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Burn Together",
+      "oracle_fingerprint": "99ef38b53bfa0824adf08798f42818c7",
+      "abilities": [
+        {
+          "Manual": { "reason": "you apply this clause by hand", "span": { "start": 0, "end": 99 } }
+        }
+      ]
+    }
+  ]
+}

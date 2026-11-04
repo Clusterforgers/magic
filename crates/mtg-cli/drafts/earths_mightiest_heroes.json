@@ -1,0 +1,20 @@
+{
+  "oracle_id": "2b87bcac-ec64-4012-9e75-f459d3640eb3",
+  "name": "Earth's Mightiest Heroes",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Earth's Mightiest Heroes",
+      "oracle_fingerprint": "97ae52f82400f2146db1640bcb876930",
+      "abilities": [
+        { "Keyword": { "Macro": { "name": "teamwork", "amount": 5 } } },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 131, "end": 392 }
+          }
+        }
+      ]
+    }
+  ]
+}

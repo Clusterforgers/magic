@@ -1,0 +1,42 @@
+{
+  "source": "forge",
+  "oracle_matches": true,
+  "lines": [
+    {
+      "face": 0,
+      "tag": "T",
+      "text": "Whenever you activate a ninjutsu ability, look at the top three cards of your library. Put one of them into your hand and the rest on the bottom of your library in any order. This ability triggers only once each turn.",
+      "abilities": [],
+      "gap": "trigger:AbilityCast"
+    },
+    {
+      "face": 0,
+      "tag": "S",
+      "text": "Each creature card in your hand has ninjutsu {2}{U}{B}.",
+      "abilities": [
+        0
+      ],
+      "gap": null
+    }
+  ],
+  "proof": {
+    "marks": [
+      {
+        "face": 0,
+        "span": {
+          "start": 0,
+          "end": 217
+        },
+        "mark": "ByHand"
+      },
+      {
+        "face": 0,
+        "span": {
+          "start": 218,
+          "end": 273
+        },
+        "mark": "Auto"
+      }
+    ]
+  }
+}

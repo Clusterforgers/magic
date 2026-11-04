@@ -1,0 +1,27 @@
+{
+  "oracle_id": "2deae472-3cfe-4d7b-b9cf-a045f07a002e",
+  "name": "Gyrus, Waker of Corpses",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Gyrus, Waker of Corpses",
+      "oracle_fingerprint": "1df60e92332f92391105fcb62d85c33c",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": {
+              "WithCounters": { "counter": "+1/+1", "count": { "ManaSpent": { "of": null } } }
+            }
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 97, "end": 314 }
+          }
+        }
+      ]
+    }
+  ]
+}

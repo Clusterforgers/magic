@@ -1,0 +1,38 @@
+{
+  "oracle_id": "c6dfc91f-bfac-40c2-99e5-0cec981f7f1f",
+  "name": "Scourge of the Skyclaves",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Scourge of the Skyclaves",
+      "oracle_fingerprint": "fb9d26e19876f483eca572d426c7f1f7",
+      "abilities": [
+        { "Keyword": { "Kicker": "{4}{B}" } },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 14, "end": 104 }
+          }
+        },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              {
+                "SetPT": {
+                  "power": {
+                    "Sum": [20, { "Times": { "by": -1, "of": { "HighestLife": "EachPlayer" } } }]
+                  },
+                  "toughness": {
+                    "Sum": [20, { "Times": { "by": -1, "of": { "HighestLife": "EachPlayer" } } }]
+                  }
+                }
+              }
+            ],
+            "defining": true
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,46 @@
+{
+  "oracle_id": "99a6d7fe-40a1-4f2f-a3f6-6777884d5d1a",
+  "name": "Grim Reaper's Sprint",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Grim Reaper's Sprint",
+      "oracle_fingerprint": "a82ecdf42febc78c4107cdb6f80b2cf9",
+      "abilities": [
+        {
+          "CostModifier": {
+            "applies_to": ["This"],
+            "change": "Reduce",
+            "mana": "{3}",
+            "condition": {
+              "Compare": {
+                "left": {
+                  "Tally": {
+                    "event": "Died",
+                    "who": "EachPlayer",
+                    "filter": [{ "Type": "Creature" }]
+                  }
+                },
+                "op": "Ge",
+                "right": 1
+              }
+            }
+          }
+        },
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 90, "end": 224 }
+          }
+        },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "ModifyPT": { "power": 2, "toughness": 2 } }, { "AddKeyword": "Haste" }]
+          }
+        }
+      ]
+    }
+  ]
+}

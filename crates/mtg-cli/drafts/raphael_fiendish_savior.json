@@ -1,0 +1,39 @@
+{
+  "oracle_id": "23bd166b-d766-4d03-8016-6708481d2195",
+  "name": "Raphael, Fiendish Savior",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Raphael, Fiendish Savior",
+      "oracle_fingerprint": "684af7317e6dcbf8264dfe742f447253",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Static": {
+            "affected": {
+              "Each": [
+                {
+                  "AnyOf": [
+                    { "Subtype": "Demon" },
+                    { "Subtype": "Devil" },
+                    { "Subtype": "Imp" },
+                    { "Subtype": "Tiefling" }
+                  ]
+                },
+                "Other",
+                { "ControlledBy": "You" }
+              ]
+            },
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }, { "AddKeyword": "Lifelink" }]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 90, "end": 296 }
+          }
+        }
+      ]
+    }
+  ]
+}

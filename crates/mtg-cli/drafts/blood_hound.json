@@ -1,0 +1,33 @@
+{
+  "oracle_id": "ace532a3-fa6e-479d-b169-1fb24c3d0f8c",
+  "name": "Blood Hound",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Blood Hound",
+      "oracle_fingerprint": "a81c252f0f75aeefdd440e665f6a5628",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Batch": { "DealsDamage": { "source": [], "to": "You" } } },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    { "PutCounters": { "on": "This", "counter": "+1/+1", "count": "Triggering" } }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 85, "end": 165 }
+          }
+        }
+      ]
+    }
+  ]
+}

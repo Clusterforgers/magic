@@ -1,0 +1,30 @@
+{
+  "oracle_id": "25143290-2dd5-4def-a857-a1db6d3ed2eb",
+  "name": "Captain's Hook",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Captain's Hook",
+      "oracle_fingerprint": "13b6d55b5817fbabf3141245d3798d89",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [
+              { "ModifyPT": { "power": 2, "toughness": 0 } },
+              { "AddKeyword": "Menace" },
+              { "AddSubtype": "Pirate" }
+            ]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 99, "end": 183 }
+          }
+        },
+        { "Keyword": { "Equip": "{1}" } }
+      ]
+    }
+  ]
+}

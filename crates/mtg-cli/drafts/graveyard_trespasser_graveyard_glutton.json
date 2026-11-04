@@ -1,0 +1,71 @@
+{
+  "oracle_id": "0bbd6cad-9b6f-45a6-9f2e-d7b4853586ae",
+  "name": "Graveyard Trespasser // Graveyard Glutton",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Graveyard Trespasser",
+      "oracle_fingerprint": "a7f5fa77d4aad6d4b47e5bf0daaf04a5",
+      "abilities": [
+        { "Keyword": { "Ward": [{ "Discard": {} }] } },
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+                { "Attacks": { "what": ["This"] } }
+              ]
+            },
+            "targets": [
+              { "what": { "Object": [{ "In": "Graveyard" }] }, "bounds": { "min": 0, "max": 1 } }
+            ],
+            "effects": [
+              { "Exile": { "what": { "Target": 0 }, "as": "exiled" } },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Bound": "exiled" },
+                      "selector": [{ "Type": "Creature" }],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [{ "LoseLife": { "who": "Opponents", "amount": 1 } }]
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Bound": "exiled" },
+                      "selector": [{ "Type": "Creature" }],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [{ "GainLife": { "amount": 1 } }]
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": "Daybound" }
+      ]
+    },
+    {
+      "name": "Graveyard Glutton",
+      "oracle_fingerprint": "8ba6c32b0fe0c21c66c1779b64e1f753",
+      "abilities": [
+        { "Keyword": { "Ward": [{ "Discard": {} }] } },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 21, "end": 196 }
+          }
+        },
+        { "Keyword": "Nightbound" }
+      ]
+    }
+  ]
+}

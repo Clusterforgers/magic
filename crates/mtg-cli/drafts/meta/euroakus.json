@@ -1,0 +1,42 @@
+{
+  "source": "forge",
+  "oracle_matches": true,
+  "lines": [
+    {
+      "face": 0,
+      "tag": "A",
+      "text": "Draw a card for each Wizard you control. They each get +1/+1 until end of turn for each card in your hand.",
+      "abilities": [],
+      "gap": "amount:Count$CardsInYourHand"
+    },
+    {
+      "face": 0,
+      "tag": "T",
+      "text": "When CARDNAME enters, create a number of 1/1 blue Human Wizard creature tokens equal to the number of differently named lands you control.",
+      "abilities": [
+        0
+      ],
+      "gap": null
+    }
+  ],
+  "proof": {
+    "marks": [
+      {
+        "face": 0,
+        "span": {
+          "start": 0,
+          "end": 138
+        },
+        "mark": "Auto"
+      },
+      {
+        "face": 0,
+        "span": {
+          "start": 139,
+          "end": 256
+        },
+        "mark": "ByHand"
+      }
+    ]
+  }
+}

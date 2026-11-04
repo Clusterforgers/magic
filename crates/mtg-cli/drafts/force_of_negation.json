@@ -1,0 +1,25 @@
+{
+  "oracle_id": "ac2173f9-f223-440a-9231-fd98762bdc6f",
+  "name": "Force of Negation",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Force of Negation",
+      "oracle_fingerprint": "0ba9d8a8d2bb2d46a3c43671e5beeef1",
+      "abilities": [
+        {
+          "FreeCast": {
+            "condition": { "Not": "YourTurn" },
+            "cost": [{ "ExileFromHand": { "filter": [{ "Color": "Blue" }, "Other"] } }]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 104, "end": 233 }
+          }
+        }
+      ]
+    }
+  ]
+}

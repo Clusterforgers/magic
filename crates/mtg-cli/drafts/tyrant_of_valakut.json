@@ -1,0 +1,33 @@
+{
+  "oracle_id": "a4ddd9e2-ea59-4bba-bb2f-a655cabbb65c",
+  "name": "Tyrant of Valakut",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Tyrant of Valakut",
+      "oracle_fingerprint": "15b4db45458ee3f45401c27e0d58382d",
+      "abilities": [
+        {
+          "AltCast": {
+            "way": "Surge",
+            "cost": "{3}{R}{R}",
+            "condition": {
+              "Compare": {
+                "left": { "Tallied": { "who": "You", "what": "SpellsCast" } },
+                "op": "Ge",
+                "right": 1
+              }
+            }
+          }
+        },
+        { "Keyword": "Flying" },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 123, "end": 210 }
+          }
+        }
+      ]
+    }
+  ]
+}

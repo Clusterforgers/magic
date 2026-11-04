@@ -1,0 +1,33 @@
+{
+  "oracle_id": "a090be5a-b0f2-4c17-8f7d-e742f9de8f6b",
+  "name": "Fecund Greenshell",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Fecund Greenshell",
+      "oracle_fingerprint": "cb0f41f24477ec56330120bb4a173cf9",
+      "abilities": [
+        { "Keyword": "Reach" },
+        {
+          "Static": {
+            "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+            "mods": [{ "ModifyPT": { "power": 2, "toughness": 2 } }],
+            "condition": {
+              "Compare": {
+                "left": { "Count": [{ "Type": "Land" }, { "ControlledBy": "You" }] },
+                "op": "Ge",
+                "right": 10
+              }
+            }
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 81, "end": 318 }
+          }
+        }
+      ]
+    }
+  ]
+}

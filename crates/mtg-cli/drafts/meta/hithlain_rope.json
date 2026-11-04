@@ -1,0 +1,57 @@
+{
+  "source": "forge",
+  "oracle_matches": true,
+  "lines": [
+    {
+      "face": 0,
+      "tag": "A",
+      "text": "Search your library for a basic land card, put it onto the battlefield tapped, then shuffle. The player to your right gains control of CARDNAME.",
+      "abilities": [],
+      "gap": "key:GainControl.NewController"
+    },
+    {
+      "face": 0,
+      "tag": "A",
+      "text": "Draw a card. The player to your right gains control of CARDNAME.",
+      "abilities": [],
+      "gap": "key:GainControl.NewController"
+    },
+    {
+      "face": 0,
+      "tag": "S",
+      "text": "CARDNAME can't be sacrificed.",
+      "abilities": [
+        0
+      ],
+      "gap": null
+    }
+  ],
+  "proof": {
+    "marks": [
+      {
+        "face": 0,
+        "span": {
+          "start": 0,
+          "end": 34
+        },
+        "mark": "Auto"
+      },
+      {
+        "face": 0,
+        "span": {
+          "start": 35,
+          "end": 194
+        },
+        "mark": "ByHand"
+      },
+      {
+        "face": 0,
+        "span": {
+          "start": 195,
+          "end": 274
+        },
+        "mark": "ByHand"
+      }
+    ]
+  }
+}

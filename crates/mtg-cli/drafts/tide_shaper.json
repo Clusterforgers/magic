@@ -1,0 +1,33 @@
+{
+  "oracle_id": "cf4be71e-0a9a-47a3-b0ec-43e04c3c07a0",
+  "name": "Tide Shaper",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Tide Shaper",
+      "oracle_fingerprint": "5294a79dc71f1893a7df79156d795266",
+      "abilities": [
+        { "Keyword": { "Kicker": "{1}" } },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 67, "end": 198 }
+          }
+        },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }],
+            "condition": {
+              "Compare": {
+                "left": { "Count": [{ "Subtype": "Island" }, { "ControlledBy": "Opponents" }] },
+                "op": "Ge",
+                "right": 1
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

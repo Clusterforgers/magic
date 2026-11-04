@@ -1,0 +1,38 @@
+{
+  "oracle_id": "12436f2f-eaed-4b46-8570-81316ce15962",
+  "name": "Torture Chamber",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Torture Chamber",
+      "oracle_fingerprint": "fca1f41839b65ef36d6bf0d822499160",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [{ "PutCounters": { "on": "This", "counter": { "Other": "pain" } } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "effects": [
+              {
+                "DealDamage": {
+                  "to": "You",
+                  "amount": { "Counters": { "on": "This", "counter": { "Other": "pain" } } }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 183, "end": 327 }
+          }
+        }
+      ]
+    }
+  ]
+}

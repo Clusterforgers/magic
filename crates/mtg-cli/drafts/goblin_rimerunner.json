@@ -1,0 +1,34 @@
+{
+  "oracle_id": "8505f9a6-a510-43f9-a96d-b840b353e144",
+  "name": "Goblin Rimerunner",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Goblin Rimerunner",
+      "oracle_fingerprint": "80f476c41427b0994dba7dd9bcdb6750",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": ["CantBlock"],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 44, "end": 145 }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,27 @@
+{
+  "oracle_id": "edf0e7c0-d9a1-4d29-9cee-5267d3a3978f",
+  "name": "Moss-Pit Skeleton",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Moss-Pit Skeleton",
+      "oracle_fingerprint": "bb789689cd17ce04110fbb232aeb76e2",
+      "abilities": [
+        { "Keyword": { "Kicker": "{3}" } },
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "WithCounters": { "counter": "+1/+1", "count": 3 } },
+            "condition": "Kicked"
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 139, "end": 290 }
+          }
+        }
+      ]
+    }
+  ]
+}

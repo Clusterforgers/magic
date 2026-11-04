@@ -1,0 +1,28 @@
+{
+  "oracle_id": "07db0374-3297-49c3-886d-a6bb42f7bb18",
+  "name": "Avatar of Growth",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Avatar of Growth",
+      "oracle_fingerprint": "1802e98b0b5bd661cd79f444421443b1",
+      "abilities": [
+        {
+          "CostModifier": {
+            "applies_to": ["This"],
+            "change": "Reduce",
+            "mana": "{1}",
+            "per": { "Players": "Opponents" }
+          }
+        },
+        { "Keyword": "Trample" },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 70, "end": 210 }
+          }
+        }
+      ]
+    }
+  ]
+}

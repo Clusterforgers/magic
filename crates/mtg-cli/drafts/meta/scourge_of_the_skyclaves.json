@@ -1,0 +1,59 @@
+{
+  "source": "forge",
+  "oracle_matches": true,
+  "lines": [
+    {
+      "face": 0,
+      "tag": "K",
+      "text": "Kicker:4 B",
+      "abilities": [
+        0
+      ],
+      "gap": null
+    },
+    {
+      "face": 0,
+      "tag": "T",
+      "text": "When you cast CARDNAME, if it was kicked, each player loses half their life, rounded up.",
+      "abilities": [],
+      "gap": "amount:PlayerCountRemembered"
+    },
+    {
+      "face": 0,
+      "tag": "S",
+      "text": "CARDNAME's power and toughness are each equal to 20 minus the highest life total among players.",
+      "abilities": [
+        1
+      ],
+      "gap": null
+    }
+  ],
+  "proof": {
+    "marks": [
+      {
+        "face": 0,
+        "span": {
+          "start": 0,
+          "end": 13
+        },
+        "mark": "Auto"
+      },
+      {
+        "face": 0,
+        "span": {
+          "start": 14,
+          "end": 104
+        },
+        "mark": "ByHand"
+      },
+      {
+        "face": 0,
+        "span": {
+          "start": 105,
+          "end": 216
+        },
+        "mark": "Auto"
+      }
+    ]
+  }
+}

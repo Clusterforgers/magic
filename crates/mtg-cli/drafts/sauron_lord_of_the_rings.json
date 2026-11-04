@@ -1,0 +1,38 @@
+{
+  "oracle_id": "69c674c7-48a5-49c8-b0be-3f2b5c6a548c",
+  "name": "Sauron, Lord of the Rings",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Sauron, Lord of the Rings",
+      "oracle_fingerprint": "7c318c08a51178df942c839c683609d7",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "what": ["This"] } },
+            "effects": [
+              { "Amass": { "subtype": "Orc", "count": 5 } },
+              { "Mill": { "count": 5 } },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [{ "Type": "Creature" }, { "OwnedBy": "You" }, { "In": "Graveyard" }]
+                  },
+                  "as": "picked"
+                }
+              },
+              { "Move": { "what": { "Bound": "picked" }, "to": { "Battlefield": {} } } }
+            ]
+          }
+        },
+        { "Keyword": "Trample" },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 133, "end": 201 }
+          }
+        }
+      ]
+    }
+  ]
+}

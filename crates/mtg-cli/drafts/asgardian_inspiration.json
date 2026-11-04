@@ -1,0 +1,34 @@
+{
+  "oracle_id": "1be4bb28-6ad7-4df9-98b7-fa32061e7a95",
+  "name": "Asgardian Inspiration",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Asgardian Inspiration",
+      "oracle_fingerprint": "087a22979d86591ed36f8c5ce4cbe594",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "ExileTop": { "as": "exiled" } },
+              {
+                "Rule": {
+                  "rule": {
+                    "MayCast": { "from": "Exile", "only": { "Bound": "exiled" }, "play": true }
+                  },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 63, "end": 210 }
+          }
+        }
+      ]
+    }
+  ]
+}

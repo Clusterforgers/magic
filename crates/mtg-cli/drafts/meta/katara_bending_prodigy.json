@@ -1,0 +1,42 @@
+{
+  "source": "forge",
+  "oracle_matches": true,
+  "lines": [
+    {
+      "face": 0,
+      "tag": "A",
+      "text": "Draw a card. (While paying a waterbend cost, you can tap your artifacts and creatures to help. Each one pays for {1}.)",
+      "abilities": [],
+      "gap": "cost:Waterbend"
+    },
+    {
+      "face": 0,
+      "tag": "T",
+      "text": "At the beginning of your end step, if NICKNAME is tapped, put a +1/+1 counter on her.",
+      "abilities": [
+        0
+      ],
+      "gap": null
+    }
+  ],
+  "proof": {
+    "marks": [
+      {
+        "face": 0,
+        "span": {
+          "start": 0,
+          "end": 83
+        },
+        "mark": "Auto"
+      },
+      {
+        "face": 0,
+        "span": {
+          "start": 84,
+          "end": 217
+        },
+        "mark": "ByHand"
+      }
+    ]
+  }
+}

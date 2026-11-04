@@ -1,0 +1,37 @@
+{
+  "oracle_id": "e2c141af-925e-42bd-8d83-e1a71f4c9794",
+  "name": "Rakdos, the Muscle",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Rakdos, the Muscle",
+      "oracle_fingerprint": "c0f8334ad07b880de29f2d1510c6e616",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": "Trample" },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 16, "end": 241 }
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Sacrifice": { "filter": [{ "Type": "Creature" }, "Other"] } }],
+            "limit": "OncePerTurn",
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "AddKeyword": "Indestructible" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              { "Tap": { "what": "This" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

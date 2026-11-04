@@ -1,0 +1,89 @@
+{
+  "oracle_id": "20d0df30-013c-47c0-b70b-d628d427d30b",
+  "name": "Jerren, Corrupted Bishop // Ormendahl, the Corrupter",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Jerren, Corrupted Bishop",
+      "oracle_fingerprint": "718ba47763cbc2b88409f7fc8a23e06e",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+                {
+                  "ZoneChange": {
+                    "what": [
+                      { "Subtype": "Human" },
+                      "Other",
+                      { "Not": "Token" },
+                      { "ControlledBy": "You" }
+                    ],
+                    "from": "Battlefield",
+                    "to": "Graveyard"
+                  }
+                }
+              ]
+            },
+            "effects": [
+              { "LoseLife": { "amount": 1 } },
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Human",
+                      "colors": ["White"],
+                      "types": ["Creature"],
+                      "subtypes": ["Human"],
+                      "power": 1,
+                      "toughness": 1
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{2}",
+            "targets": [
+              { "what": { "Object": [{ "Subtype": "Human" }, { "ControlledBy": "You" }] } }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "AddKeyword": "Lifelink" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 192, "end": 307 }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Ormendahl, the Corrupter",
+      "oracle_fingerprint": "3708add5b7c5bb4f6d23b4daa9785cca",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": "Trample" },
+        { "Keyword": "Lifelink" },
+        {
+          "Activated": {
+            "cost": [{ "Sacrifice": { "filter": [{ "Type": "Creature" }, "Other"] } }],
+            "effects": [{ "Draw": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

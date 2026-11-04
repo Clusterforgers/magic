@@ -1,0 +1,57 @@
+{
+  "oracle_id": "11765eaf-87a1-48bd-90c1-7a5f21be5918",
+  "name": "Roxanne, Starfall Savant",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Roxanne, Starfall Savant",
+      "oracle_fingerprint": "3603baa6681d4da8c2bdc33e8f7e7ae1",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+                { "Attacks": { "what": ["This"] } }
+              ]
+            },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Meteorite",
+                      "types": ["Artifact"],
+                      "abilities": [
+                        {
+                          "Activated": {
+                            "cost": ["Tap"],
+                            "effects": [{ "AddMana": { "mana": { "AnyColor": 1 } } }]
+                          }
+                        },
+                        {
+                          "Triggered": {
+                            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+                            "targets": [{ "what": "AnyTarget" }],
+                            "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 2 } }]
+                          }
+                        }
+                      ]
+                    }
+                  },
+                  "tapped": true
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 194, "end": 293 }
+          }
+        }
+      ]
+    }
+  ]
+}

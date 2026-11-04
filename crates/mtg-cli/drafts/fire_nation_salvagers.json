@@ -1,0 +1,36 @@
+{
+  "oracle_id": "9e76d56a-67b6-4bd9-8f2d-3328d18a2880",
+  "name": "Fire Nation Salvagers",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Fire Nation Salvagers",
+      "oracle_fingerprint": "2009030c9add33e900f3e71b15c2b39d",
+      "abilities": [
+        { "Keyword": "Menace" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "AnyOf": [{ "Type": "Creature" }, { "Subtype": "Vehicle" }] },
+                    { "ControlledBy": "You" }
+                  ]
+                }
+              }
+            ],
+            "effects": [{ "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1" } }]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 97, "end": 299 }
+          }
+        }
+      ]
+    }
+  ]
+}

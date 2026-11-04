@@ -1,0 +1,43 @@
+{
+  "oracle_id": "6a47865c-8fa2-4cb2-aebf-8009c065395f",
+  "name": "Rakdos Joins Up",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Rakdos Joins Up",
+      "oracle_fingerprint": "4f2eab1e54ab3935c725f1069698e751",
+      "abilities": [
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 0, "end": 137 }
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [
+                  { "Type": "Creature" },
+                  { "Supertype": "Legendary" },
+                  { "ControlledBy": "You" }
+                ],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              {
+                "DealDamage": {
+                  "to": { "Target": 0 },
+                  "amount": { "Stat": { "of": "Triggering", "stat": "Power" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

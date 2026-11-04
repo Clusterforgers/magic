@@ -1,0 +1,35 @@
+{
+  "oracle_id": "ba922414-878f-4261-9bce-500c5c9e9506",
+  "name": "Contaminant Grafter",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Contaminant Grafter",
+      "oracle_fingerprint": "6b9f667da6c4ff6e501f00844086daa7",
+      "abilities": [
+        { "Keyword": "Trample" },
+        { "Keyword": { "Toxic": 1 } },
+        {
+          "Triggered": {
+            "when": {
+              "Batch": {
+                "DealsDamage": {
+                  "source": [{ "Type": "Creature" }, { "ControlledBy": "You" }],
+                  "to": "EachPlayer",
+                  "combat": true
+                }
+              }
+            },
+            "effects": [{ "Proliferate": {} }]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 116, "end": 291 }
+          }
+        }
+      ]
+    }
+  ]
+}

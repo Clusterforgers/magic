@@ -1,0 +1,66 @@
+{
+  "source": "forge",
+  "oracle_matches": true,
+  "lines": [
+    {
+      "face": 0,
+      "tag": "K",
+      "text": "Impending:3:2 U U",
+      "abilities": [
+        0,
+        1,
+        2
+      ],
+      "gap": null
+    },
+    {
+      "face": 0,
+      "tag": "T",
+      "text": "Whenever CARDNAME enters or attacks, seek a nonland card.",
+      "abilities": [],
+      "gap": "effect:Seek"
+    },
+    {
+      "face": 0,
+      "tag": "T",
+      "text": "Whenever CARDNAME enters or attacks, seek a nonland card.",
+      "abilities": [],
+      "gap": "effect:Seek"
+    },
+    {
+      "face": 0,
+      "tag": "T",
+      "text": "Whenever you seek one or more cards during your turn, conjure a duplicate of each of those cards into your hand, then manifest those duplicates.",
+      "abilities": [],
+      "gap": "trigger:SeekAll"
+    }
+  ],
+  "proof": {
+    "marks": [
+      {
+        "face": 0,
+        "span": {
+          "start": 0,
+          "end": 21
+        },
+        "mark": "Auto"
+      },
+      {
+        "face": 0,
+        "span": {
+          "start": 22,
+          "end": 89
+        },
+        "mark": "ByHand"
+      },
+      {
+        "face": 0,
+        "span": {
+          "start": 90,
+          "end": 234
+        },
+        "mark": "ByHand"
+      }
+    ]
+  }
+}

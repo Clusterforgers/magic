@@ -1,0 +1,30 @@
+{
+  "oracle_id": "37df5ade-6a21-4b0c-89f8-e2e917589a8d",
+  "name": "Dawn of a New Age",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Dawn of a New Age",
+      "oracle_fingerprint": "fed19ffde6143bdcb91beb2fabc44073",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": {
+              "WithCounters": {
+                "counter": { "Other": "hope" },
+                "count": { "Count": [{ "Type": "Creature" }, { "ControlledBy": "You" }] }
+              }
+            }
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 81, "end": 271 }
+          }
+        }
+      ]
+    }
+  ]
+}

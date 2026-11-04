@@ -1,0 +1,20 @@
+{
+  "oracle_id": "d87f0e52-486e-49b4-9cf1-12e238857340",
+  "name": "Ambitious Augmenter",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Ambitious Augmenter",
+      "oracle_fingerprint": "02345e114292232a9ad622ff54899f2d",
+      "abilities": [
+        { "Keyword": { "Macro": { "name": "increment", "amount": 0 } } },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 161, "end": 324 }
+          }
+        }
+      ]
+    }
+  ]
+}

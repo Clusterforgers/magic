@@ -1,0 +1,50 @@
+{
+  "oracle_id": "e7d6ef32-616f-4c21-bcdd-467ce8296c31",
+  "name": "Lambholt Pacifist // Lambholt Butcher",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Lambholt Pacifist",
+      "oracle_fingerprint": "96750593a234f966b3fe90d9e51d8539",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "This",
+            "mods": ["CantAttack"],
+            "condition": {
+              "Compare": {
+                "left": {
+                  "Count": [
+                    { "Type": "Creature" },
+                    { "ControlledBy": "You" },
+                    { "Compare": { "stat": "Power", "op": "Ge", "to": 4 } }
+                  ]
+                },
+                "op": "Eq",
+                "right": 0
+              }
+            }
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 82, "end": 173 }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Lambholt Butcher",
+      "oracle_fingerprint": "ee899af71fe7787206931dcab99b26ee",
+      "abilities": [
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 0, "end": 104 }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,28 @@
+{
+  "oracle_id": "55adde23-c818-40fe-9bba-123de93568a5",
+  "name": "Katara, Bending Prodigy",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Katara, Bending Prodigy",
+      "oracle_fingerprint": "e489aedbf731db19e036e0520ec106be",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "if": {
+              "CountOf": { "subject": "This", "selector": ["Tapped"], "op": "Ge", "right": 1 }
+            },
+            "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 84, "end": 217 }
+          }
+        }
+      ]
+    }
+  ]
+}

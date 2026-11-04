@@ -1,0 +1,42 @@
+{
+  "source": "forge",
+  "oracle_matches": true,
+  "lines": [
+    {
+      "face": 0,
+      "tag": "A",
+      "text": "Choose another player. That player gains control of target Treasure you control. You draw a card.",
+      "abilities": [],
+      "gap": "effect:ChoosePlayer"
+    },
+    {
+      "face": 0,
+      "tag": "T",
+      "text": "At the beginning of your upkeep, if an opponent controls more lands than you, create a Treasure token. (It's an artifact with \"{T}, Sacrifice this token: Add one mana of any color.\")",
+      "abilities": [
+        0
+      ],
+      "gap": null
+    }
+  ],
+  "proof": {
+    "marks": [
+      {
+        "face": 0,
+        "span": {
+          "start": 0,
+          "end": 182
+        },
+        "mark": "Auto"
+      },
+      {
+        "face": 0,
+        "span": {
+          "start": 183,
+          "end": 288
+        },
+        "mark": "ByHand"
+      }
+    ]
+  }
+}

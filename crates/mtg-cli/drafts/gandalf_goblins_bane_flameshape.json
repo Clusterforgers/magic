@@ -1,0 +1,40 @@
+{
+  "oracle_id": "f48f2a9b-4ba5-4984-8180-3950889bba65",
+  "name": "Gandalf, Goblins' Bane // Flameshape",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Gandalf, Goblins' Bane",
+      "oracle_fingerprint": "be6ef5052ab37bf4d585f670182bf291",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "what": [{ "Not": { "Type": "Creature" } }], "by": "You" } },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              { "DealDamage": { "to": "Opponents", "amount": 1 } }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Flameshape",
+      "oracle_fingerprint": "e833500cc9dc2e45885ba3f3c1c5296b",
+      "abilities": [
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 0, "end": 145 }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,24 @@
+{
+  "oracle_id": "5b287dcc-f853-4df1-8ddf-5b8b2adc2873",
+  "name": "Limited Resources",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Limited Resources",
+      "oracle_fingerprint": "159be41e076c97cf33354942b66a2aca",
+      "abilities": [
+        {
+          "Manual": { "reason": "you apply this clause by hand", "span": { "start": 0, "end": 98 } }
+        },
+        {
+          "Rule": {
+            "rule": { "Cant": { "who": "EachPlayer", "action": "PlayLand" } },
+            "condition": {
+              "Compare": { "left": { "Count": [{ "Type": "Land" }] }, "op": "Ge", "right": 10 }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

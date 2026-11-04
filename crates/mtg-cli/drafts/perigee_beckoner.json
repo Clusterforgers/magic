@@ -1,0 +1,45 @@
+{
+  "oracle_id": "e0a35a44-e56d-434e-8043-43d5031b2e84",
+  "name": "Perigee Beckoner",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Perigee Beckoner",
+      "oracle_fingerprint": "c96487d5523ac336a768268c42adadbe",
+      "abilities": [
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 0, "end": 192 }
+          }
+        },
+        { "AltCast": { "way": "Warp", "cost": "{1}{B}" } },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "if": { "CastWith": "Warp" },
+            "effects": [
+              { "Choose": { "from": "This", "as": "warped" } },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "End" } },
+                  "effects": [
+                    { "Exile": { "what": { "Bound": "warped" }, "as": "warped_card" } },
+                    {
+                      "Rule": {
+                        "rule": {
+                          "MayCast": { "from": "Exile", "only": { "Bound": "warped_card" } }
+                        },
+                        "duration": "Forever"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

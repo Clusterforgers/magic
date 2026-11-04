@@ -1,0 +1,35 @@
+{
+  "oracle_id": "a1e71473-3eba-4d29-87e2-7f14acab2ccd",
+  "name": "Pyrewild Shaman",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Pyrewild Shaman",
+      "oracle_fingerprint": "6cabe93ecf4b7c9ad9ddf09f7d2017d2",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{1}{R}" }, "DiscardSelf"],
+            "from": "Hand",
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }, "Attacking"] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "ModifyPT": { "power": 3, "toughness": 1 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 95, "end": 263 }
+          }
+        }
+      ]
+    }
+  ]
+}

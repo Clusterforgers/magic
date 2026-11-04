@@ -1,0 +1,30 @@
+{
+  "oracle_id": "daca1d5e-349d-4e8a-abc7-427dab43fb0c",
+  "name": "Spinneret and Spiderling",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Spinneret and Spiderling",
+      "oracle_fingerprint": "9a02466bda750eea9a1e6c48535825e7",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "GroupAttacks": {
+                "what": [{ "Subtype": "Spider" }, { "ControlledBy": "You" }],
+                "at_least": 2
+              }
+            },
+            "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 95, "end": 245 }
+          }
+        }
+      ]
+    }
+  ]
+}

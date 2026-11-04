@@ -1,0 +1,42 @@
+{
+  "source": "forge",
+  "oracle_matches": true,
+  "lines": [
+    {
+      "face": 0,
+      "tag": "A",
+      "text": "Target attacking creature gets +3/+1 until end of turn.",
+      "abilities": [
+        0
+      ],
+      "gap": null
+    },
+    {
+      "face": 0,
+      "tag": "T",
+      "text": "Whenever one or more creatures you control deal combat damage to a player, if CARDNAME is in your graveyard, you may pay {3}. If you do, return CARDNAME to your hand.",
+      "abilities": [],
+      "gap": "key:Trigger.DamageDoneOnce.PresentPlayer"
+    }
+  ],
+  "proof": {
+    "marks": [
+      {
+        "face": 0,
+        "span": {
+          "start": 0,
+          "end": 94
+        },
+        "mark": "Auto"
+      },
+      {
+        "face": 0,
+        "span": {
+          "start": 95,
+          "end": 263
+        },
+        "mark": "ByHand"
+      }
+    ]
+  }
+}

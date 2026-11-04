@@ -1,0 +1,26 @@
+{
+  "oracle_id": "2fecfbef-e521-4025-94ea-451c9abde3de",
+  "name": "Doctor Octopus, Master Planner",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Doctor Octopus, Master Planner",
+      "oracle_fingerprint": "ecc58deabaeabea263c5fcaa899be99e",
+      "abilities": [
+        {
+          "Static": {
+            "affected": { "Each": [{ "Subtype": "Villain" }, "Other", { "ControlledBy": "You" }] },
+            "mods": [{ "ModifyPT": { "power": 2, "toughness": 2 } }]
+          }
+        },
+        { "Rule": { "rule": { "MaxHandSize": { "who": "You", "size": 8 } } } },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 71, "end": 185 }
+          }
+        }
+      ]
+    }
+  ]
+}

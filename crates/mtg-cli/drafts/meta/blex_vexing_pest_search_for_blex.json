@@ -1,0 +1,59 @@
+{
+  "source": "forge",
+  "oracle_matches": true,
+  "lines": [
+    {
+      "face": 0,
+      "tag": "T",
+      "text": "When CARDNAME dies, you gain 4 life.",
+      "abilities": [
+        0
+      ],
+      "gap": null
+    },
+    {
+      "face": 0,
+      "tag": "S",
+      "text": "Other Pests, Bats, Insects, Snakes, and Spiders you control get +1/+1.",
+      "abilities": [
+        1
+      ],
+      "gap": null
+    },
+    {
+      "face": 1,
+      "tag": "A",
+      "text": "Look at the top five cards of your library. You may put any number of them into your hand and the rest into your graveyard.",
+      "abilities": [],
+      "gap": "key:Dig.ChangeNum"
+    }
+  ],
+  "proof": {
+    "marks": [
+      {
+        "face": 0,
+        "span": {
+          "start": 0,
+          "end": 70
+        },
+        "mark": "Auto"
+      },
+      {
+        "face": 0,
+        "span": {
+          "start": 71,
+          "end": 103
+        },
+        "mark": "Auto"
+      },
+      {
+        "face": 1,
+        "span": {
+          "start": 0,
+          "end": 186
+        },
+        "mark": "ByHand"
+      }
+    ]
+  }
+}

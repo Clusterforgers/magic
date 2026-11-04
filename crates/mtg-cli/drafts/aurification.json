@@ -1,0 +1,36 @@
+{
+  "oracle_id": "3d98a656-1737-486f-9b25-449b7c871d1f",
+  "name": "Aurification",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Aurification",
+      "oracle_fingerprint": "c9a56ae15b97108fa0e65706e167116f",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "DealsDamage": {
+                "source": [{ "Type": "Creature" }, { "In": "Battlefield" }],
+                "to": "You"
+              }
+            },
+            "effects": [{ "PutCounters": { "on": "Dealer", "counter": { "Other": "gold" } } }]
+          }
+        },
+        {
+          "Static": {
+            "affected": { "Each": [{ "Type": "Creature" }, { "HasCounter": { "Other": "gold" } }] },
+            "mods": [{ "AddKeyword": "Defender" }, { "AddSubtype": "Wall" }]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 207, "end": 297 }
+          }
+        }
+      ]
+    }
+  ]
+}

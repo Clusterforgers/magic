@@ -1,0 +1,21 @@
+{
+  "oracle_id": "f4ae18b5-2cf1-4720-8237-40a0c7b040ae",
+  "name": "Soul Ransom",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Soul Ransom",
+      "oracle_fingerprint": "89ecaa26d70a688d461e471c85f2d472",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        { "Static": { "affected": "Attached", "mods": [{ "SetController": "You" }] } },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 49, "end": 174 }
+          }
+        }
+      ]
+    }
+  ]
+}

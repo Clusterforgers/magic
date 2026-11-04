@@ -1,0 +1,49 @@
+{
+  "source": "forge",
+  "oracle_matches": true,
+  "lines": [
+    {
+      "face": 0,
+      "tag": "T",
+      "text": "Whenever CARDNAME becomes tapped, target player mills cards equal to its power.",
+      "abilities": [
+        0
+      ],
+      "gap": null
+    },
+    {
+      "face": 0,
+      "tag": "T",
+      "text": "Whenever you cast a spell from your graveyard or activate an ability of a card in your graveyard, draw a card and put a +1/+1 counter on NICKNAME.",
+      "abilities": [],
+      "gap": "trigger:AbilityCast"
+    },
+    {
+      "face": 0,
+      "tag": "T",
+      "text": "Whenever you cast a spell from your graveyard or activate an ability of a card in your graveyard, draw a card and put a +1/+1 counter on NICKNAME.",
+      "abilities": [],
+      "gap": "trigger:AbilityCast"
+    }
+  ],
+  "proof": {
+    "marks": [
+      {
+        "face": 0,
+        "span": {
+          "start": 0,
+          "end": 78
+        },
+        "mark": "Auto"
+      },
+      {
+        "face": 0,
+        "span": {
+          "start": 79,
+          "end": 224
+        },
+        "mark": "ByHand"
+      }
+    ]
+  }
+}

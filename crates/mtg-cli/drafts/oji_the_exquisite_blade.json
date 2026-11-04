@@ -1,0 +1,25 @@
+{
+  "oracle_id": "7c4c556c-b5e3-493a-a7b0-38c55b7809ac",
+  "name": "Oji, the Exquisite Blade",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Oji, the Exquisite Blade",
+      "oracle_fingerprint": "6aca1b9794ee5b5dcb2ce3c71b383181",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "GainLife": { "amount": 2 } }, { "Scry": { "count": 2 } }]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 45, "end": 197 }
+          }
+        }
+      ]
+    }
+  ]
+}

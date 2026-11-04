@@ -1,0 +1,44 @@
+{
+  "oracle_id": "b2fe6d17-d045-45c6-9ca2-21e73d2e38d2",
+  "name": "Edward Kenway",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Edward Kenway",
+      "oracle_fingerprint": "23a83fd84d2c0971a02b1861f10f6b4d",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": { "Named": "treasure" },
+                  "count": {
+                    "Count": [
+                      {
+                        "AnyOf": [
+                          { "Subtype": "Assassin" },
+                          { "Subtype": "Pirate" },
+                          { "Subtype": "Vehicle" }
+                        ]
+                      },
+                      "Tapped",
+                      { "ControlledBy": "You" }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 121, "end": 313 }
+          }
+        }
+      ]
+    }
+  ]
+}

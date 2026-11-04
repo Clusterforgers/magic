@@ -1,0 +1,39 @@
+{
+  "oracle_id": "98a389f4-2905-47f3-b60e-3d4afb3e5cb0",
+  "name": "Enduring Innocence",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Enduring Innocence",
+      "oracle_fingerprint": "bead89726396d2a40849fa80e7189cd6",
+      "abilities": [
+        { "Keyword": "Lifelink" },
+        {
+          "Triggered": {
+            "when": {
+              "Batch": {
+                "ZoneChange": {
+                  "what": [
+                    { "Type": "Creature" },
+                    { "Compare": { "stat": "Power", "op": "Le", "to": 2 } },
+                    { "ControlledBy": "You" },
+                    "Other"
+                  ],
+                  "to": "Battlefield"
+                }
+              }
+            },
+            "limit": "OncePerTurn",
+            "effects": [{ "Draw": {} }]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 142, "end": 293 }
+          }
+        }
+      ]
+    }
+  ]
+}

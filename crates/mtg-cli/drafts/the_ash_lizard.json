@@ -1,0 +1,37 @@
+{
+  "oracle_id": "70565641-15db-49e8-91e7-d2772052a155",
+  "name": "The Ash Lizard",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "The Ash Lizard",
+      "oracle_fingerprint": "2cb1c78b28e037c9717d6ff7e69f5288",
+      "abilities": [
+        {
+          "Static": {
+            "affected": {
+              "Each": [
+                {
+                  "AnyOf": [
+                    { "Subtype": "Lizard" },
+                    { "Subtype": "Treefolk" },
+                    { "Subtype": "Warrior" }
+                  ]
+                },
+                "Other",
+                { "ControlledBy": "You" }
+              ]
+            },
+            "mods": [{ "ModifyPT": { "power": 2, "toughness": 2 } }]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 61, "end": 315 }
+          }
+        }
+      ]
+    }
+  ]
+}

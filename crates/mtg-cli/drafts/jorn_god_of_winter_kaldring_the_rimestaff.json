@@ -1,0 +1,37 @@
+{
+  "oracle_id": "bd43b485-e42e-4c20-adcb-799b0ce18a59",
+  "name": "Jorn, God of Winter // Kaldring, the Rimestaff",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Jorn, God of Winter",
+      "oracle_fingerprint": "87564eaa093086492f41adbeffae80f7",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [
+              {
+                "Untap": {
+                  "what": { "Each": [{ "Supertype": "Snow" }, { "ControlledBy": "You" }] }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Kaldring, the Rimestaff",
+      "oracle_fingerprint": "b93b036c94e8e2f614c0e4ba483e2ad8",
+      "abilities": [
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 0, "end": 104 }
+          }
+        }
+      ]
+    }
+  ]
+}

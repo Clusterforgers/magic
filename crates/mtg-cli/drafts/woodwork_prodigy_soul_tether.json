@@ -1,0 +1,51 @@
+{
+  "oracle_id": "f3ed157f-a09b-405f-aec4-0e7a81d80fc8",
+  "name": "Woodwork Prodigy // Soul Tether",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Woodwork Prodigy",
+      "oracle_fingerprint": "1af9f794134a3322e556e08718142f19",
+      "abilities": [
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 0, "end": 167 }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Soul Tether",
+      "oracle_fingerprint": "b591a091646e071b853c1fd461e4ae0d",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Heartwood",
+                      "colors": ["Red", "Green"],
+                      "types": ["Artifact"],
+                      "subtypes": ["Heartwood"],
+                      "abilities": [
+                        {
+                          "Activated": {
+                            "cost": ["Tap"],
+                            "effects": [{ "AddMana": { "mana": { "OneOf": ["Red", "Green"] } } }]
+                          }
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

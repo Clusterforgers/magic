@@ -1,0 +1,42 @@
+{
+  "source": "forge",
+  "oracle_matches": true,
+  "lines": [
+    {
+      "face": 0,
+      "tag": "A",
+      "text": "Mill a card. You may put an instant or sorcery card milled this way into your hand.",
+      "abilities": [],
+      "gap": "zone:Origin=Graveyard,Exile"
+    },
+    {
+      "face": 0,
+      "tag": "A",
+      "text": "Untap CARDNAME.",
+      "abilities": [
+        0
+      ],
+      "gap": null
+    }
+  ],
+  "proof": {
+    "marks": [
+      {
+        "face": 0,
+        "span": {
+          "start": 0,
+          "end": 93
+        },
+        "mark": "ByHand"
+      },
+      {
+        "face": 0,
+        "span": {
+          "start": 94,
+          "end": 162
+        },
+        "mark": "Auto"
+      }
+    ]
+  }
+}

@@ -1,0 +1,46 @@
+{
+  "oracle_id": "985f9dd7-e693-48ff-9dd6-a1a3cbaa236b",
+  "name": "Magma Opus",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Magma Opus",
+      "oracle_fingerprint": "9874f9fef03186e23fcc8423b96800d8",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": "AnyTarget", "bounds": { "min": 0, "max": 4 }, "divide": 4 },
+              { "what": { "Object": [] }, "bounds": { "min": 2, "max": 2 } }
+            ],
+            "effects": [
+              { "DealDamage": { "to": { "Target": 0 }, "amount": "Divided" } },
+              { "Tap": { "what": { "Target": 1 } } },
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Elemental",
+                      "colors": ["Blue", "Red"],
+                      "types": ["Creature"],
+                      "subtypes": ["Elemental"],
+                      "power": 4,
+                      "toughness": 4
+                    }
+                  }
+                }
+              },
+              { "Draw": { "count": 2 } }
+            ]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 172, "end": 227 }
+          }
+        }
+      ]
+    }
+  ]
+}

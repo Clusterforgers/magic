@@ -1,0 +1,40 @@
+{
+  "oracle_id": "52826984-44cb-48dc-a737-bb02983ffea8",
+  "name": "Glamdring",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Glamdring",
+      "oracle_fingerprint": "5e3870f16185e1cf44bd49983c98c510",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [
+              {
+                "ModifyPT": {
+                  "power": {
+                    "Count": [
+                      { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] },
+                      { "OwnedBy": "You" },
+                      { "In": "Graveyard" }
+                    ]
+                  },
+                  "toughness": 0
+                }
+              },
+              { "AddKeyword": "FirstStrike" }
+            ]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 103, "end": 298 }
+          }
+        },
+        { "Keyword": { "Equip": "{3}" } }
+      ]
+    }
+  ]
+}

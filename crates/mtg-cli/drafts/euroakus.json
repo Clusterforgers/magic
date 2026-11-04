@@ -1,0 +1,46 @@
+{
+  "oracle_id": "e11a022c-140d-4b7f-84b0-17885f76faa6",
+  "name": "Euroakus",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Euroakus",
+      "oracle_fingerprint": "e58297d0a17db589e479e9c7e689d1e3",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Human Wizard",
+                      "colors": ["Blue"],
+                      "types": ["Creature"],
+                      "subtypes": ["Human", "Wizard"],
+                      "power": 1,
+                      "toughness": 1
+                    }
+                  },
+                  "count": {
+                    "Distinct": {
+                      "of": [{ "Type": "Land" }, { "ControlledBy": "You" }],
+                      "stat": "Name"
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 139, "end": 256 }
+          }
+        }
+      ]
+    }
+  ]
+}

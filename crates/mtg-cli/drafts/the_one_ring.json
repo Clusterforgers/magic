@@ -1,0 +1,45 @@
+{
+  "oracle_id": "3aa83ed2-f48b-4ce6-a614-2c54ddf50538",
+  "name": "The One Ring",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "The One Ring",
+      "oracle_fingerprint": "0720f1748bad4a6b2b1e3f5e729296ed",
+      "abilities": [
+        { "Keyword": "Indestructible" },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 15, "end": 114 }
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [
+              {
+                "LoseLife": {
+                  "amount": { "Counters": { "on": "This", "counter": { "Other": "burden" } } }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [
+              { "PutCounters": { "on": "This", "counter": { "Other": "burden" } } },
+              {
+                "Draw": {
+                  "count": { "Counters": { "on": "This", "counter": { "Other": "burden" } } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

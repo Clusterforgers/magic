@@ -1,0 +1,59 @@
+{
+  "source": "forge",
+  "oracle_matches": true,
+  "lines": [
+    {
+      "face": 0,
+      "tag": "K",
+      "text": "Trample",
+      "abilities": [
+        0
+      ],
+      "gap": null
+    },
+    {
+      "face": 0,
+      "tag": "T",
+      "text": "When CARDNAME enters, each player searches their library for up to two basic land cards, puts them onto the battlefield, then shuffles.",
+      "abilities": [],
+      "gap": "key:ChangeZone.Search.DefinedPlayer"
+    },
+    {
+      "face": 0,
+      "tag": "S",
+      "text": "This spell costs {1} less to cast for each opponent you have.",
+      "abilities": [
+        1
+      ],
+      "gap": null
+    }
+  ],
+  "proof": {
+    "marks": [
+      {
+        "face": 0,
+        "span": {
+          "start": 0,
+          "end": 61
+        },
+        "mark": "Auto"
+      },
+      {
+        "face": 0,
+        "span": {
+          "start": 62,
+          "end": 69
+        },
+        "mark": "Auto"
+      },
+      {
+        "face": 0,
+        "span": {
+          "start": 70,
+          "end": 210
+        },
+        "mark": "ByHand"
+      }
+    ]
+  }
+}

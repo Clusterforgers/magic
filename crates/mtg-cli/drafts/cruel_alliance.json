@@ -1,0 +1,20 @@
+{
+  "oracle_id": "6897f9e0-f654-4c0a-9fda-2ad4e264bf9a",
+  "name": "Cruel Alliance",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Cruel Alliance",
+      "oracle_fingerprint": "f00de89bcd1a24472efc786a2efdc199",
+      "abilities": [
+        { "Keyword": { "Macro": { "name": "teamwork", "amount": 2 } } },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 131, "end": 269 }
+          }
+        }
+      ]
+    }
+  ]
+}

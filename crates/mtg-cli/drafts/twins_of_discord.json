@@ -1,0 +1,27 @@
+{
+  "oracle_id": "4a8f2104-57ec-4b23-9857-f26afa5cbcfe",
+  "name": "Twins of Discord",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Twins of Discord",
+      "oracle_fingerprint": "4da899f78d51f8a25ac8d3f1b3679a72",
+      "abilities": [
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 0, "end": 121 }
+          }
+        },
+        {
+          "Static": {
+            "affected": {
+              "Each": [{ "Type": "Creature" }, "Other", { "ControlledBy": "You" }, "Colorless"]
+            },
+            "mods": [{ "AddKeyword": { "Macro": { "name": "bloodthirst", "amount": 2 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

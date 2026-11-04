@@ -1,0 +1,42 @@
+{
+  "source": "forge",
+  "oracle_matches": true,
+  "lines": [
+    {
+      "face": 0,
+      "tag": "A",
+      "text": "All lands you control become 1/1 creatures until end of turn. They're still lands.",
+      "abilities": [
+        0
+      ],
+      "gap": null
+    },
+    {
+      "face": 1,
+      "tag": "A",
+      "text": "Return target creature card from your graveyard to the battlefield. You lose life equal to its mana value.",
+      "abilities": [],
+      "gap": "key:ChangeZone.GainControl"
+    }
+  ],
+  "proof": {
+    "marks": [
+      {
+        "face": 0,
+        "span": {
+          "start": 0,
+          "end": 82
+        },
+        "mark": "Auto"
+      },
+      {
+        "face": 1,
+        "span": {
+          "start": 0,
+          "end": 106
+        },
+        "mark": "ByHand"
+      }
+    ]
+  }
+}

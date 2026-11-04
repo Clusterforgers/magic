@@ -1,0 +1,38 @@
+{
+  "oracle_id": "8331d2ff-3729-4014-8dcb-278644d2632a",
+  "name": "Séance Board",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Séance Board",
+      "oracle_fingerprint": "d8b9675edded17fdc56ff44b7d7764a7",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End" } },
+            "if": {
+              "Compare": {
+                "left": {
+                  "Tally": {
+                    "event": "Died",
+                    "who": "EachPlayer",
+                    "filter": [{ "Type": "Creature" }]
+                  }
+                },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "effects": [{ "PutCounters": { "on": "This", "counter": { "Other": "soul" } } }]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 111, "end": 274 }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,59 @@
+{
+  "source": "forge",
+  "oracle_matches": true,
+  "lines": [
+    {
+      "face": 0,
+      "tag": "K",
+      "text": "etbCounter:OIL:1",
+      "abilities": [
+        0
+      ],
+      "gap": null
+    },
+    {
+      "face": 0,
+      "tag": "T",
+      "text": "Whenever another creature you control enters, if that creature has greater power or toughness than CARDNAME, put an oil counter on CARDNAME.",
+      "abilities": [],
+      "gap": "condition:Evolve"
+    },
+    {
+      "face": 0,
+      "tag": "S",
+      "text": "CARDNAME gets +1/+1 for each oil counter on it.",
+      "abilities": [
+        1
+      ],
+      "gap": null
+    }
+  ],
+  "proof": {
+    "marks": [
+      {
+        "face": 0,
+        "span": {
+          "start": 0,
+          "end": 47
+        },
+        "mark": "Auto"
+      },
+      {
+        "face": 0,
+        "span": {
+          "start": 48,
+          "end": 100
+        },
+        "mark": "Auto"
+      },
+      {
+        "face": 0,
+        "span": {
+          "start": 101,
+          "end": 251
+        },
+        "mark": "ByHand"
+      }
+    ]
+  }
+}

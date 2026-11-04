@@ -1,0 +1,25 @@
+{
+  "oracle_id": "c019ed4d-33a3-48be-a38e-93e5d6161b1f",
+  "name": "Force of Rage",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Force of Rage",
+      "oracle_fingerprint": "4a27f1b6017333be8a722d27acc4dcbf",
+      "abilities": [
+        {
+          "FreeCast": {
+            "condition": { "Not": "YourTurn" },
+            "cost": [{ "ExileFromHand": { "filter": [{ "Color": "Red" }, "Other"] } }]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 103, "end": 232 }
+          }
+        }
+      ]
+    }
+  ]
+}

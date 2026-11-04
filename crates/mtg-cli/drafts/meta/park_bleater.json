@@ -1,0 +1,42 @@
+{
+  "source": "forge",
+  "oracle_matches": true,
+  "lines": [
+    {
+      "face": 0,
+      "tag": "A",
+      "text": "You may put a sticker on a creature you own that entered this turn.",
+      "abilities": [],
+      "gap": "effect:PutSticker"
+    },
+    {
+      "face": 0,
+      "tag": "T",
+      "text": "Whenever another creature you own enters, you get {TK}.",
+      "abilities": [
+        0
+      ],
+      "gap": null
+    }
+  ],
+  "proof": {
+    "marks": [
+      {
+        "face": 0,
+        "span": {
+          "start": 0,
+          "end": 55
+        },
+        "mark": "Auto"
+      },
+      {
+        "face": 0,
+        "span": {
+          "start": 56,
+          "end": 133
+        },
+        "mark": "ByHand"
+      }
+    ]
+  }
+}

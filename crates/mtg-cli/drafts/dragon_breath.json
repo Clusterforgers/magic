@@ -1,0 +1,35 @@
+{
+  "oracle_id": "3535daf2-7dce-4fda-92ce-ad2a1ee95197",
+  "name": "Dragon Breath",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Dragon Breath",
+      "oracle_fingerprint": "4e6970676a0c7a39d8bf5c2c62c76a40",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        { "Static": { "affected": "Attached", "mods": [{ "AddKeyword": "Haste" }] } },
+        {
+          "Activated": {
+            "cost": "{R}",
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "Attached",
+                  "mods": [{ "ModifyPT": { "power": 1, "toughness": 0 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 101, "end": 244 }
+          }
+        }
+      ]
+    }
+  ]
+}

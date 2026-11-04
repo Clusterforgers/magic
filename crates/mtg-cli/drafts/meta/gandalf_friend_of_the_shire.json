@@ -1,0 +1,59 @@
+{
+  "source": "forge",
+  "oracle_matches": true,
+  "lines": [
+    {
+      "face": 0,
+      "tag": "K",
+      "text": "Flash",
+      "abilities": [
+        0
+      ],
+      "gap": null
+    },
+    {
+      "face": 0,
+      "tag": "T",
+      "text": "Whenever the Ring tempts you, if you chose a creature other than CARDNAME as your Ring-bearer, draw a card.",
+      "abilities": [],
+      "gap": "trigger:RingTemptsYou"
+    },
+    {
+      "face": 0,
+      "tag": "S",
+      "text": "You may cast sorcery spells as though they had flash.",
+      "abilities": [
+        1
+      ],
+      "gap": null
+    }
+  ],
+  "proof": {
+    "marks": [
+      {
+        "face": 0,
+        "span": {
+          "start": 0,
+          "end": 5
+        },
+        "mark": "Auto"
+      },
+      {
+        "face": 0,
+        "span": {
+          "start": 6,
+          "end": 59
+        },
+        "mark": "Auto"
+      },
+      {
+        "face": 0,
+        "span": {
+          "start": 60,
+          "end": 166
+        },
+        "mark": "ByHand"
+      }
+    ]
+  }
+}

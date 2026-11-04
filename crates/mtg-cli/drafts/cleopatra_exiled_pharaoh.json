@@ -1,0 +1,33 @@
+{
+  "oracle_id": "e7a80464-1522-48d7-bf82-f9894f5c3ae0",
+  "name": "Cleopatra, Exiled Pharaoh",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Cleopatra, Exiled Pharaoh",
+      "oracle_fingerprint": "cb69f7ccefc95c5da5af683fd64d1e0a",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "Type": "Creature" }, { "Supertype": "Legendary" }, "Other"]
+                },
+                "bounds": { "min": 0, "max": 2 }
+              }
+            ],
+            "effects": [{ "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1" } }]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 119, "end": 238 }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,31 @@
+{
+  "oracle_id": "9ad999fe-889a-426a-86b3-c0c311b82041",
+  "name": "Ragged Recluse // Odious Witch",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Ragged Recluse",
+      "oracle_fingerprint": "aa8e383fdb2c58a4311b94ffa9ebd04b",
+      "abilities": [
+        {
+          "Manual": { "reason": "you apply this clause by hand", "span": { "start": 0, "end": 94 } }
+        }
+      ]
+    },
+    {
+      "name": "Odious Witch",
+      "oracle_fingerprint": "e9bfc40cdbae087d78ef5b0f1fbe13be",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [
+              { "LoseLife": { "who": "Defending", "amount": 1 } },
+              { "GainLife": { "amount": 1 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

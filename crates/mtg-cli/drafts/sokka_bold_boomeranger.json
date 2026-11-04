@@ -1,0 +1,27 @@
+{
+  "oracle_id": "bdbec6d5-0f10-4114-b709-4402a44debdf",
+  "name": "Sokka, Bold Boomeranger",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Sokka, Bold Boomeranger",
+      "oracle_fingerprint": "a3afa01ff781f135b29f1bff0c62ab99",
+      "abilities": [
+        {
+          "Manual": { "reason": "you apply this clause by hand", "span": { "start": 0, "end": 70 } }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "SpellCast": {
+                "what": [{ "AnyOf": [{ "Type": "Artifact" }, { "Subtype": "Lesson" }] }],
+                "by": "You"
+              }
+            },
+            "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,42 @@
+{
+  "source": "forge",
+  "oracle_matches": true,
+  "lines": [
+    {
+      "face": 0,
+      "tag": "A",
+      "text": "It deals that much damage to target creature.",
+      "abilities": [],
+      "gap": "amount:CostCountersRemoved"
+    },
+    {
+      "face": 0,
+      "tag": "T",
+      "text": "Whenever you cast an instant, sorcery, or Wizard spell, put a charge counter on CARDNAME.",
+      "abilities": [
+        0
+      ],
+      "gap": null
+    }
+  ],
+  "proof": {
+    "marks": [
+      {
+        "face": 0,
+        "span": {
+          "start": 0,
+          "end": 94
+        },
+        "mark": "Auto"
+      },
+      {
+        "face": 0,
+        "span": {
+          "start": 95,
+          "end": 197
+        },
+        "mark": "ByHand"
+      }
+    ]
+  }
+}

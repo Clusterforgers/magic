@@ -1,0 +1,34 @@
+{
+  "oracle_id": "b92f6adb-64c6-4692-af9d-af4241203722",
+  "name": "Hallowed Healer",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Hallowed Healer",
+      "oracle_fingerprint": "4a47406f3c32e013ba91260159fef7f0",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [
+              {
+                "Shield": {
+                  "when": { "Damage": { "to": { "Target": 0 } } },
+                  "by": { "PreventUpTo": 2 },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 76, "end": 229 }
+          }
+        }
+      ]
+    }
+  ]
+}

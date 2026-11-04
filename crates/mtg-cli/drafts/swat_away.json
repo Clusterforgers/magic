@@ -1,0 +1,33 @@
+{
+  "oracle_id": "79090b00-d920-4134-a838-fb434cf3ee4d",
+  "name": "Swat Away",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Swat Away",
+      "oracle_fingerprint": "04708cbb39aacaa2c8b286b67bb7fc81",
+      "abilities": [
+        {
+          "CostModifier": {
+            "applies_to": ["This"],
+            "change": "Reduce",
+            "mana": "{2}",
+            "condition": {
+              "Compare": {
+                "left": { "Count": [{ "Type": "Creature" }, { "AttackingPlayer": "You" }] },
+                "op": "Ge",
+                "right": 1
+              }
+            }
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 66, "end": 166 }
+          }
+        }
+      ]
+    }
+  ]
+}

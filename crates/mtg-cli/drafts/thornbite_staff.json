@@ -1,0 +1,50 @@
+{
+  "oracle_id": "dae4815e-9025-4993-ab46-52a3f1a7219e",
+  "name": "Thornbite Staff",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Thornbite Staff",
+      "oracle_fingerprint": "00a18bf359265622865f3f1791dba43b",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [
+              {
+                "GrantAbility": {
+                  "Activated": {
+                    "cost": [{ "Mana": "{2}" }, "Tap"],
+                    "targets": [{ "what": "AnyTarget" }],
+                    "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 1 } }]
+                  }
+                }
+              },
+              {
+                "GrantAbility": {
+                  "Triggered": {
+                    "when": {
+                      "ZoneChange": {
+                        "what": [{ "Type": "Creature" }],
+                        "from": "Battlefield",
+                        "to": "Graveyard"
+                      }
+                    },
+                    "effects": [{ "Untap": { "what": "This" } }]
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 130, "end": 201 }
+          }
+        },
+        { "Keyword": { "Equip": "{4}" } }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,135 @@
+{
+  "object": "card",
+  "id": "908d9aa5-818c-4651-b135-cc6d1983ad99",
+  "oracle_id": "1f6056be-67c8-40a9-86ef-1606961644eb",
+  "multiverse_ids": [
+    625095
+  ],
+  "mtgo_id": 114491,
+  "tcgplayer_id": 505959,
+  "cardmarket_id": 723091,
+  "name": "Cacophony Unleashed",
+  "lang": "en",
+  "released_at": "2023-08-04",
+  "uri": "https://api.scryfall.com/cards/908d9aa5-818c-4651-b135-cc6d1983ad99",
+  "scryfall_uri": "https://scryfall.com/card/cmm/730/cacophony-unleashed?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T04:04:42Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/9/0/908d9aa5-818c-4651-b135-cc6d1983ad99.jpg?1783915482",
+    "normal": "https://cards.scryfall.io/normal/front/9/0/908d9aa5-818c-4651-b135-cc6d1983ad99.jpg?1783915482",
+    "large": "https://cards.scryfall.io/large/front/9/0/908d9aa5-818c-4651-b135-cc6d1983ad99.jpg?1783915482",
+    "png": "https://cards.scryfall.io/png/front/9/0/908d9aa5-818c-4651-b135-cc6d1983ad99.png?1783915482",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/9/0/908d9aa5-818c-4651-b135-cc6d1983ad99.jpg?1783915482",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/9/0/908d9aa5-818c-4651-b135-cc6d1983ad99.jpg?1783915482",
+    "thumb": "https://cards.scryfall.io/thumb/front/9/0/908d9aa5-818c-4651-b135-cc6d1983ad99.webp?1783915482",
+    "grid": "https://cards.scryfall.io/grid/front/9/0/908d9aa5-818c-4651-b135-cc6d1983ad99.webp?1783915482",
+    "display": "https://cards.scryfall.io/display/front/9/0/908d9aa5-818c-4651-b135-cc6d1983ad99.webp?1783915482",
+    "art": "https://cards.scryfall.io/art/front/9/0/908d9aa5-818c-4651-b135-cc6d1983ad99.webp?1783915482",
+    "crop": "https://cards.scryfall.io/crop/front/9/0/908d9aa5-818c-4651-b135-cc6d1983ad99.webp?1783915482",
+    "jpeg": "https://cards.scryfall.io/normal/front/9/0/908d9aa5-818c-4651-b135-cc6d1983ad99.jpg?1783915482"
+  },
+  "mana_cost": "{5}{B}{B}",
+  "cmc": 7.0,
+  "type_line": "Enchantment",
+  "oracle_text": "When this enchantment enters, if you cast it, destroy all nonenchantment creatures.\nWhenever this enchantment or another enchantment you control enters, until end of turn, this enchantment becomes a legendary 6/6 Nightmare God creature with menace and deathtouch. It's still an enchantment.",
+  "colors": [
+    "B"
+  ],
+  "color_identity": [
+    "B"
+  ],
+  "keywords": [],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "cd05036f-2698-43e6-a48e-5c8d82f0a551",
+  "set": "cmm",
+  "set_name": "Commander Masters",
+  "set_type": "masters",
+  "set_uri": "https://api.scryfall.com/sets/cd05036f-2698-43e6-a48e-5c8d82f0a551",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Acmm&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/cmm?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/908d9aa5-818c-4651-b135-cc6d1983ad99/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A1f6056be-67c8-40a9-86ef-1606961644eb&unique=prints",
+  "collector_number": "730",
+  "digital": false,
+  "rarity": "rare",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Deruchenko Alexander",
+  "artist_ids": [
+    "806f6ff9-6ed4-4e93-998a-a562c0b792e6"
+  ],
+  "illustration_id": "d885e573-fb21-4e1c-940b-5fd79dbee4d6",
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "edhrec_rank": 7241,
+  "preview": {
+    "source": "The Command Zone",
+    "source_uri": "https://www.youtube.com/watch?v=WARcYHfIbeg",
+    "previewed_at": "2023-07-19"
+  },
+  "prices": {
+    "usd": "1.09",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "1.16",
+    "eur_foil": null,
+    "tix": "3.55"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=625095&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DCacophony%2BUnleashed",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DCacophony%2BUnleashed",
+    "edhrec": "https://edhrec.com/route/?cc=Cacophony+Unleashed"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F505959%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=723091&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/114491?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

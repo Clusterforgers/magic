@@ -1,0 +1,42 @@
+{
+  "source": "forge",
+  "oracle_matches": true,
+  "lines": [
+    {
+      "face": 0,
+      "tag": "A",
+      "text": "Destroy up to one target artifact or enchantment. Shuffle CARDNAME into your library from your graveyard, then draw a card.",
+      "abilities": [],
+      "gap": "defined:DiscardedCards"
+    },
+    {
+      "face": 0,
+      "tag": "T",
+      "text": "When CARDNAME enters, ABILITY",
+      "abilities": [
+        0
+      ],
+      "gap": null
+    }
+  ],
+  "proof": {
+    "marks": [
+      {
+        "face": 0,
+        "span": {
+          "start": 0,
+          "end": 137
+        },
+        "mark": "Auto"
+      },
+      {
+        "face": 0,
+        "span": {
+          "start": 138,
+          "end": 292
+        },
+        "mark": "ByHand"
+      }
+    ]
+  }
+}

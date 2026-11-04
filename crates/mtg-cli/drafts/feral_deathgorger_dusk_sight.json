@@ -1,0 +1,38 @@
+{
+  "oracle_id": "1722f814-2d4e-4d59-9b74-10ef8e89def9",
+  "name": "Feral Deathgorger // Dusk Sight",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Feral Deathgorger",
+      "oracle_fingerprint": "86ea7ab16e9b56181739f6e1d7306fe6",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": "Deathtouch" },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 19, "end": 99 }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Dusk Sight",
+      "oracle_fingerprint": "a6e76ca77d79b01db72f67cf75d1d151",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }] }, "bounds": { "min": 0, "max": 1 } }
+            ],
+            "effects": [
+              { "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1" } },
+              { "Draw": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

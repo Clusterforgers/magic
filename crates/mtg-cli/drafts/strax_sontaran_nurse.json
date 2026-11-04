@@ -1,0 +1,29 @@
+{
+  "oracle_id": "ffde2558-2168-4b40-a31a-86d160bdb289",
+  "name": "Strax, Sontaran Nurse",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Strax, Sontaran Nurse",
+      "oracle_fingerprint": "6dfbe9378fc64768701ec65ee78c8265",
+      "abilities": [
+        { "Keyword": "Vigilance" },
+        { "Keyword": "Trample" },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 19, "end": 162 }
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "DealsDamage": { "source": ["This"], "to": { "Each": [{ "Type": "Creature" }] } }
+            },
+            "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

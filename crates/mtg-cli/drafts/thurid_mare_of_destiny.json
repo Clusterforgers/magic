@@ -1,0 +1,39 @@
+{
+  "oracle_id": "0b96cd7a-2132-4ff2-9666-6e2fbd0a2160",
+  "name": "Thurid, Mare of Destiny",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Thurid, Mare of Destiny",
+      "oracle_fingerprint": "aef39704b6575906dece93ae2171361b",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": "Lifelink" },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 17, "end": 116 }
+          }
+        },
+        {
+          "Static": {
+            "affected": {
+              "Each": [
+                {
+                  "AnyOf": [
+                    { "Subtype": "Pegasus" },
+                    { "Subtype": "Unicorn" },
+                    { "Subtype": "Horse" }
+                  ]
+                },
+                "Other",
+                { "ControlledBy": "You" }
+              ]
+            },
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

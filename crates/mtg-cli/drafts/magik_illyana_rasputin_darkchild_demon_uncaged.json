@@ -1,0 +1,62 @@
+{
+  "oracle_id": "72d85d61-6bc3-4028-97c0-d5c34204a1df",
+  "name": "Magik, Illyana Rasputin // Darkchild, Demon Uncaged",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Magik, Illyana Rasputin",
+      "oracle_fingerprint": "70701964529e3877705531ca8e56c14b",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [
+              { "ExileTop": { "as": "exiled" } },
+              {
+                "Rule": {
+                  "rule": {
+                    "MayCast": { "from": "Exile", "only": { "Bound": "exiled" }, "play": true }
+                  },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 103, "end": 217 }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Darkchild, Demon Uncaged",
+      "oracle_fingerprint": "05c7e55acb0bf7107be7697b592d90fe",
+      "abilities": [
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 0, "end": 141 }
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "PayLife": 4 }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "AddKeyword": "Indestructible" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              { "Tap": { "what": "This" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

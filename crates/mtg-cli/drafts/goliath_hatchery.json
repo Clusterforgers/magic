@@ -1,0 +1,42 @@
+{
+  "oracle_id": "c4d65bcd-f6c5-40c3-825d-06b5183e7dbe",
+  "name": "Goliath Hatchery",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Goliath Hatchery",
+      "oracle_fingerprint": "ea583bf27e6ac978e73dcd3c3f2c4f72",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Phyrexian Beast",
+                      "colors": ["Green"],
+                      "types": ["Creature"],
+                      "subtypes": ["Phyrexian", "Beast"],
+                      "power": 3,
+                      "toughness": 3,
+                      "abilities": [{ "Keyword": { "Toxic": 1 } }]
+                    }
+                  },
+                  "count": 2
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 162, "end": 335 }
+          }
+        }
+      ]
+    }
+  ]
+}

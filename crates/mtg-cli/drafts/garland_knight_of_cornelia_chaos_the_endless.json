@@ -1,0 +1,38 @@
+{
+  "oracle_id": "75e930dd-32e9-4c39-81a7-d833a3976b8d",
+  "name": "Garland, Knight of Cornelia // Chaos, the Endless",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Garland, Knight of Cornelia",
+      "oracle_fingerprint": "1993ddbf6b00f86514cf034daf9a5c86",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "what": [{ "Not": { "Type": "Creature" } }], "by": "You" } },
+            "effects": [{ "Surveil": {} }]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 126, "end": 239 }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Chaos, the Endless",
+      "oracle_fingerprint": "40c6b82b25a9894c0f4b230d16a17ef9",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } },
+            "effects": [{ "Move": { "what": "This", "to": { "Library": { "place": "Bottom" } } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

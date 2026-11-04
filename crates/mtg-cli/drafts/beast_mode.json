@@ -1,0 +1,20 @@
+{
+  "oracle_id": "a465f8a9-d5aa-4dfa-b674-7aa1798cb0bd",
+  "name": "Beast Mode",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Beast Mode",
+      "oracle_fingerprint": "2adb2d6a3fc620fce712ff8ae49c4937",
+      "abilities": [
+        { "Keyword": { "Macro": { "name": "teamwork", "amount": 1 } } },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 131, "end": 275 }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,25 @@
+{
+  "oracle_id": "3e159175-78e5-40df-8fe9-e694938e7222",
+  "name": "Boarded Window",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Boarded Window",
+      "oracle_fingerprint": "6ddb2ea7c2b97e9189caee38c25a06a8",
+      "abilities": [
+        {
+          "Static": {
+            "affected": { "Each": [{ "Type": "Creature" }, { "AttackingPlayer": "You" }] },
+            "mods": [{ "ModifyPT": { "power": -1, "toughness": 0 } }]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 35, "end": 136 }
+          }
+        }
+      ]
+    }
+  ]
+}

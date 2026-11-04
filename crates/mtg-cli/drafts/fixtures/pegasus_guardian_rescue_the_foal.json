@@ -1,0 +1,187 @@
+{
+  "object": "card",
+  "id": "1d958ec3-1ddc-4622-9089-cbe5b3b47c90",
+  "oracle_id": "e71863a7-0de1-4ab5-95e8-c39e6810d899",
+  "multiverse_ids": [
+    562919
+  ],
+  "mtgo_id": 100068,
+  "tcgplayer_id": 272980,
+  "cardmarket_id": 659839,
+  "name": "Pegasus Guardian // Rescue the Foal",
+  "lang": "en",
+  "released_at": "2022-06-10",
+  "uri": "https://api.scryfall.com/cards/1d958ec3-1ddc-4622-9089-cbe5b3b47c90",
+  "scryfall_uri": "https://scryfall.com/card/clb/36/pegasus-guardian-rescue-the-foal?utm_source=api",
+  "layout": "adventure",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T06:06:44Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/1/d/1d958ec3-1ddc-4622-9089-cbe5b3b47c90.jpg?1783922804",
+    "normal": "https://cards.scryfall.io/normal/front/1/d/1d958ec3-1ddc-4622-9089-cbe5b3b47c90.jpg?1783922804",
+    "large": "https://cards.scryfall.io/large/front/1/d/1d958ec3-1ddc-4622-9089-cbe5b3b47c90.jpg?1783922804",
+    "png": "https://cards.scryfall.io/png/front/1/d/1d958ec3-1ddc-4622-9089-cbe5b3b47c90.png?1783922804",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/1/d/1d958ec3-1ddc-4622-9089-cbe5b3b47c90.jpg?1783922804",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/1/d/1d958ec3-1ddc-4622-9089-cbe5b3b47c90.jpg?1783922804",
+    "thumb": "https://cards.scryfall.io/thumb/front/1/d/1d958ec3-1ddc-4622-9089-cbe5b3b47c90.webp?1783922804",
+    "grid": "https://cards.scryfall.io/grid/front/1/d/1d958ec3-1ddc-4622-9089-cbe5b3b47c90.webp?1783922804",
+    "display": "https://cards.scryfall.io/display/front/1/d/1d958ec3-1ddc-4622-9089-cbe5b3b47c90.webp?1783922804",
+    "art": "https://cards.scryfall.io/art/front/1/d/1d958ec3-1ddc-4622-9089-cbe5b3b47c90.webp?1783922804",
+    "crop": "https://cards.scryfall.io/crop/front/1/d/1d958ec3-1ddc-4622-9089-cbe5b3b47c90.webp?1783922804",
+    "jpeg": "https://cards.scryfall.io/normal/front/1/d/1d958ec3-1ddc-4622-9089-cbe5b3b47c90.jpg?1783922804"
+  },
+  "mana_cost": "{5}{W} // {1}{W}",
+  "cmc": 6.0,
+  "type_line": "Creature — Pegasus // Instant — Adventure",
+  "power": "3",
+  "toughness": "3",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": [
+    "Flying"
+  ],
+  "card_faces": [
+    {
+      "object": "card_face",
+      "name": "Pegasus Guardian",
+      "mana_cost": "{5}{W}",
+      "type_line": "Creature — Pegasus",
+      "oracle_text": "Flying\nAt the beginning of your end step, if a permanent you controlled left the battlefield this turn, create a 1/1 white Pegasus creature token with flying.",
+      "power": "3",
+      "toughness": "3",
+      "artist": "Leanna Crossan",
+      "artist_id": "976cfe82-042e-4c2a-b762-2bc3e86cb6d0",
+      "illustration_id": "5ec036b6-f9f9-4111-bd0e-580984f67f7e"
+    },
+    {
+      "object": "card_face",
+      "name": "Rescue the Foal",
+      "mana_cost": "{1}{W}",
+      "type_line": "Instant — Adventure",
+      "oracle_text": "Exile target creature you control, then return that card to the battlefield under its owner's control. (Then exile this card. You may cast the creature later from exile.)",
+      "artist": "Leanna Crossan",
+      "artist_id": "976cfe82-042e-4c2a-b762-2bc3e86cb6d0"
+    }
+  ],
+  "all_parts": [
+    {
+      "object": "related_card",
+      "id": "dd1b0ed9-a4c0-4c58-978a-918ca266c699",
+      "component": "token",
+      "name": "Pegasus",
+      "type_line": "Token Creature — Pegasus",
+      "uri": "https://api.scryfall.com/cards/dd1b0ed9-a4c0-4c58-978a-918ca266c699"
+    },
+    {
+      "object": "related_card",
+      "id": "5e289bb3-f6de-450d-9f7e-77e2e70cb7cc",
+      "component": "combo_piece",
+      "name": "On an Adventure",
+      "type_line": "Card",
+      "uri": "https://api.scryfall.com/cards/5e289bb3-f6de-450d-9f7e-77e2e70cb7cc"
+    },
+    {
+      "object": "related_card",
+      "id": "1d958ec3-1ddc-4622-9089-cbe5b3b47c90",
+      "component": "combo_piece",
+      "name": "Pegasus Guardian // Rescue the Foal",
+      "type_line": "Creature — Pegasus // Instant — Adventure",
+      "uri": "https://api.scryfall.com/cards/1d958ec3-1ddc-4622-9089-cbe5b3b47c90"
+    }
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "5e4c3fe8-fd57-4b20-ad56-c03790a16cea",
+  "set": "clb",
+  "set_name": "Commander Legends: Battle for Baldur's Gate",
+  "set_type": "draft_innovation",
+  "set_uri": "https://api.scryfall.com/sets/5e4c3fe8-fd57-4b20-ad56-c03790a16cea",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Aclb&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/clb?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/1d958ec3-1ddc-4622-9089-cbe5b3b47c90/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Ae71863a7-0de1-4ab5-95e8-c39e6810d899&unique=prints",
+  "collector_number": "36",
+  "digital": false,
+  "rarity": "common",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Leanna Crossan",
+  "artist_ids": [
+    "976cfe82-042e-4c2a-b762-2bc3e86cb6d0"
+  ],
+  "illustration_id": "5ec036b6-f9f9-4111-bd0e-580984f67f7e",
+  "border_color": "black",
+  "frame": "2015",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 10586,
+  "preview": {
+    "source": "Wizards of the Coast",
+    "source_uri": "https://www.youtube.com/watch?v=G3nRl3oH1fo",
+    "previewed_at": "2022-05-23"
+  },
+  "prices": {
+    "usd": "0.29",
+    "usd_foil": "0.34",
+    "usd_etched": null,
+    "eur": "0.21",
+    "eur_foil": "0.57",
+    "tix": "5.29"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=562919&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DPegasus%2BGuardian%2B%252F%252F%2BRescue%2Bthe%2BFoal",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DPegasus%2BGuardian%2B%252F%252F%2BRescue%2Bthe%2BFoal",
+    "edhrec": "https://edhrec.com/route/?cc=Pegasus+Guardian"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F272980%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=659839&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/100068?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

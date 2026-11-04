@@ -1,0 +1,26 @@
+{
+  "oracle_id": "713bcfb6-e5ea-411e-b4b3-52e5eed5cdf1",
+  "name": "Sanctuary Warden",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Sanctuary Warden",
+      "oracle_fingerprint": "452d97f112dc2ca7c460d7e8f3f3f523",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "WithCounters": { "counter": { "Other": "shield" }, "count": 2 } }
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 60, "end": 251 }
+          }
+        }
+      ]
+    }
+  ]
+}

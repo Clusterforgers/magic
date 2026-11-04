@@ -1,0 +1,53 @@
+{
+  "oracle_id": "20f92504-d03c-437e-9814-b25ee384b3ba",
+  "name": "Butch DeLoria, Tunnel Snake",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Butch DeLoria, Tunnel Snake",
+      "oracle_fingerprint": "23d5bf9c781f22274f9db5ee134fad04",
+      "abilities": [
+        { "Keyword": "Menace" },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [
+                    {
+                      "ModifyPT": {
+                        "power": {
+                          "Count": [
+                            { "AnyOf": [{ "Subtype": "Snake" }, { "Subtype": "Rogue" }] },
+                            "Other",
+                            { "ControlledBy": "You" }
+                          ]
+                        },
+                        "toughness": {
+                          "Count": [
+                            { "AnyOf": [{ "Subtype": "Snake" }, { "Subtype": "Rogue" }] },
+                            "Other",
+                            { "ControlledBy": "You" }
+                          ]
+                        }
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 206, "end": 313 }
+          }
+        }
+      ]
+    }
+  ]
+}

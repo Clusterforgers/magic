@@ -1,0 +1,38 @@
+{
+  "oracle_id": "2317a33f-665e-4cbc-bb5c-16b912ac2eef",
+  "name": "Angel of Condemnation",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Angel of Condemnation",
+      "oracle_fingerprint": "bc54a229029269eee6e69d4a608fbfff",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": "Vigilance" },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{2}{W}" }, "Tap"],
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }, "Other"] } }],
+            "effects": [
+              { "Exile": { "what": { "Target": 0 }, "as": "exiled" } },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "End" } },
+                  "effects": [
+                    { "Move": { "what": { "Bound": "exiled" }, "to": { "Battlefield": {} } } }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 163, "end": 333 }
+          }
+        }
+      ]
+    }
+  ]
+}

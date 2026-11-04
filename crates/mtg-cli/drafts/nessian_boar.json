@@ -1,0 +1,22 @@
+{
+  "oracle_id": "139a5f0b-6f76-4918-96e6-cdcf27253230",
+  "name": "Nessian Boar",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Nessian Boar",
+      "oracle_fingerprint": "971ee5eece8b2d747dff5b783e227b43",
+      "abilities": [
+        {
+          "Rule": { "rule": { "Combat": { "who": "This", "quirk": { "MustBeBlocked": "Every" } } } }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 49, "end": 143 }
+          }
+        }
+      ]
+    }
+  ]
+}

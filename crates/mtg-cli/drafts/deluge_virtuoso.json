@@ -1,0 +1,31 @@
+{
+  "oracle_id": "416c70ab-f136-43e0-b5d5-9af8d4211c01",
+  "name": "Deluge Virtuoso",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Deluge Virtuoso",
+      "oracle_fingerprint": "74f44aff679b439fcb9bbdec1f6e8855",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }] } }
+            ],
+            "effects": [
+              { "Tap": { "what": { "Target": 0 } } },
+              { "PutCounters": { "on": { "Target": 0 }, "counter": { "Other": "stun" } } }
+            ]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 186, "end": 386 }
+          }
+        }
+      ]
+    }
+  ]
+}

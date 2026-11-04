@@ -1,0 +1,39 @@
+{
+  "oracle_id": "f0616b31-6f05-4056-b96c-559ca4ca085a",
+  "name": "Gorilla Tactics",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Gorilla Tactics",
+      "oracle_fingerprint": "cd6385c4f91356c19e8d1baa0bf645cd",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Gorilla",
+                      "colors": ["Green"],
+                      "types": ["Creature"],
+                      "subtypes": ["Gorilla"],
+                      "power": 2,
+                      "toughness": 2
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 43, "end": 172 }
+          }
+        }
+      ]
+    }
+  ]
+}

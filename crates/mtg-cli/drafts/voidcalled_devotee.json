@@ -1,0 +1,46 @@
+{
+  "oracle_id": "95608c78-caa5-46e5-90a9-86fb2e14522b",
+  "name": "Voidcalled Devotee",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Voidcalled Devotee",
+      "oracle_fingerprint": "5bff356068c4f92149e26f512440429d",
+      "abilities": [
+        { "Keyword": "Haste" },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 6, "end": 101 }
+          }
+        },
+        { "AltCast": { "way": "Warp", "cost": "{1}{B}" } },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "if": { "CastWith": "Warp" },
+            "effects": [
+              { "Choose": { "from": "This", "as": "warped" } },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "End" } },
+                  "effects": [
+                    { "Exile": { "what": { "Bound": "warped" }, "as": "warped_card" } },
+                    {
+                      "Rule": {
+                        "rule": {
+                          "MayCast": { "from": "Exile", "only": { "Bound": "warped_card" } }
+                        },
+                        "duration": "Forever"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

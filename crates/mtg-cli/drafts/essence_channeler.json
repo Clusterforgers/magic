@@ -1,0 +1,38 @@
+{
+  "oracle_id": "1473580d-7cb2-48f5-a77d-08f49244c5e8",
+  "name": "Essence Channeler",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Essence Channeler",
+      "oracle_fingerprint": "c753a84be511bb98e270a29f935430ec",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "AddKeyword": "Flying" }, { "AddKeyword": "Vigilance" }],
+            "condition": {
+              "Compare": {
+                "left": { "Tallied": { "who": "You", "what": "LifeLost" } },
+                "op": "Ge",
+                "right": 1
+              }
+            }
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "LifeGained": { "who": "You" } },
+            "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 141, "end": 214 }
+          }
+        }
+      ]
+    }
+  ]
+}

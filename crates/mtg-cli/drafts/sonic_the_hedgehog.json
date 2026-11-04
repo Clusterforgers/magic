@@ -1,0 +1,39 @@
+{
+  "oracle_id": "b07a7b00-9394-48a9-a597-17f391495909",
+  "name": "Sonic the Hedgehog",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Sonic the Hedgehog",
+      "oracle_fingerprint": "78fe698f817f7fe87045490aeff96555",
+      "abilities": [
+        { "Keyword": "Haste" },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [
+              {
+                "PutCounters": {
+                  "on": {
+                    "Each": [
+                      { "Type": "Creature" },
+                      { "ControlledBy": "You" },
+                      { "AnyOf": [{ "HasKeyword": "Flash" }, { "HasKeyword": "Haste" }] }
+                    ]
+                  },
+                  "counter": "+1/+1"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 129, "end": 229 }
+          }
+        }
+      ]
+    }
+  ]
+}

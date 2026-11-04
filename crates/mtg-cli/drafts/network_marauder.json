@@ -1,0 +1,45 @@
+{
+  "oracle_id": "3ad79bf0-f3dd-4433-b727-a3b285ea2412",
+  "name": "Network Marauder",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Network Marauder",
+      "oracle_fingerprint": "a1cd830db0348afed1d01902e54038cb",
+      "abilities": [
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 0, "end": 184 }
+          }
+        },
+        { "AltCast": { "way": "Warp", "cost": "{1}{U}" } },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "if": { "CastWith": "Warp" },
+            "effects": [
+              { "Choose": { "from": "This", "as": "warped" } },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "End" } },
+                  "effects": [
+                    { "Exile": { "what": { "Bound": "warped" }, "as": "warped_card" } },
+                    {
+                      "Rule": {
+                        "rule": {
+                          "MayCast": { "from": "Exile", "only": { "Bound": "warped_card" } }
+                        },
+                        "duration": "Forever"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

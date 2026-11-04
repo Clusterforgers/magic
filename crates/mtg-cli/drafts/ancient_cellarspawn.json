@@ -1,0 +1,36 @@
+{
+  "oracle_id": "b8510b34-0e5f-4639-9db1-1ba40d84b800",
+  "name": "Ancient Cellarspawn",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Ancient Cellarspawn",
+      "oracle_fingerprint": "09754586808de60f93262c6ce0dc9e3a",
+      "abilities": [
+        {
+          "CostModifier": {
+            "applies_to": [
+              "Spell",
+              {
+                "AnyOf": [
+                  { "Subtype": "Demon" },
+                  { "Subtype": "Horror" },
+                  { "Subtype": "Nightmare" }
+                ]
+              },
+              { "ControlledBy": "You" }
+            ],
+            "change": "Reduce",
+            "mana": "{1}"
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 81, "end": 228 }
+          }
+        }
+      ]
+    }
+  ]
+}

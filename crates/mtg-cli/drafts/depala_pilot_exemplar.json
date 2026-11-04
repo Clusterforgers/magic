@@ -1,0 +1,33 @@
+{
+  "oracle_id": "cc913f28-18ef-485e-8d2b-ae0115523020",
+  "name": "Depala, Pilot Exemplar",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Depala, Pilot Exemplar",
+      "oracle_fingerprint": "b4fb8238a68cf95c33b0ebe07834278a",
+      "abilities": [
+        {
+          "Static": {
+            "affected": { "Each": [{ "Subtype": "Dwarf" }, "Other", { "ControlledBy": "You" }] },
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }]
+          }
+        },
+        {
+          "Static": {
+            "affected": {
+              "Each": [{ "Type": "Creature" }, { "Subtype": "Vehicle" }, { "ControlledBy": "You" }]
+            },
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 101, "end": 331 }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,22 @@
+{
+  "oracle_id": "b5a146e6-053f-43ce-8b01-24505a398976",
+  "name": "Skin Invasion // Skin Shedder",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Skin Invasion",
+      "oracle_fingerprint": "2b96f9ba743b529003a6f6da33223b57",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        { "Rule": { "rule": { "MustAttack": "Attached" } } },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 65, "end": 162 }
+          }
+        }
+      ]
+    },
+    { "name": "Skin Shedder", "oracle_fingerprint": "e3b0c44298fc1c149afbf4c8996fb924" }
+  ]
+}

@@ -1,0 +1,26 @@
+{
+  "oracle_id": "2fa739c6-c1c4-4e08-bbe3-43bfee94d0c3",
+  "name": "Fruitcake Elemental",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Fruitcake Elemental",
+      "oracle_fingerprint": "663e1d82bb3440452497de9cd04dc67c",
+      "abilities": [
+        { "Static": { "affected": "This", "mods": [{ "AddKeyword": "Indestructible" }] } },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "effects": [{ "DealDamage": { "to": "You", "amount": 7 } }]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 107, "end": 163 }
+          }
+        }
+      ]
+    }
+  ]
+}

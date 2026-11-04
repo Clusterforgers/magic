@@ -1,0 +1,42 @@
+{
+  "source": "forge",
+  "oracle_matches": true,
+  "lines": [
+    {
+      "face": 0,
+      "tag": "A",
+      "text": "Switch the power and toughness of each of up to two target creatures until end of turn.",
+      "abilities": [
+        0
+      ],
+      "gap": null
+    },
+    {
+      "face": 1,
+      "tag": "A",
+      "text": "Search your library for an instant card and/or a sorcery card, reveal them, put them into your hand, then shuffle.",
+      "abilities": [],
+      "gap": "valid-base:EACH Instant & Sorcery"
+    }
+  ],
+  "proof": {
+    "marks": [
+      {
+        "face": 0,
+        "span": {
+          "start": 0,
+          "end": 87
+        },
+        "mark": "Auto"
+      },
+      {
+        "face": 1,
+        "span": {
+          "start": 0,
+          "end": 114
+        },
+        "mark": "ByHand"
+      }
+    ]
+  }
+}

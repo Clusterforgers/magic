@@ -1,0 +1,20 @@
+{
+  "oracle_id": "89f87341-c18f-4dc7-ba2e-81305383231e",
+  "name": "Zombie Musher",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Zombie Musher",
+      "oracle_fingerprint": "96b5ae057084b6b999c4b3fb13d97d58",
+      "abilities": [
+        { "Keyword": { "Landwalk": [{ "Type": "Land" }, { "Supertype": "Snow" }] } },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 97, "end": 179 }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,48 @@
+{
+  "oracle_id": "2eb16535-718f-4b88-92bc-96429d796327",
+  "name": "Syr Ginger, the Meal Ender",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Syr Ginger, the Meal Ender",
+      "oracle_fingerprint": "3c173ba6fb06664b653ac67652540b1a",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              { "AddKeyword": "Trample" },
+              { "AddKeyword": "Hexproof" },
+              { "AddKeyword": "Haste" }
+            ],
+            "condition": {
+              "Compare": {
+                "left": { "Count": [{ "Type": "Planeswalker" }, { "ControlledBy": "Opponents" }] },
+                "op": "Ge",
+                "right": 1
+              }
+            }
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Artifact" }, "Other", { "ControlledBy": "You" }],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }, { "Scry": {} }]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 222, "end": 287 }
+          }
+        }
+      ]
+    }
+  ]
+}

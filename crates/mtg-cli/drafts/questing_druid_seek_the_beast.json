@@ -1,0 +1,42 @@
+{
+  "oracle_id": "555df32f-f8e9-49af-bc4a-1194ea325a97",
+  "name": "Questing Druid // Seek the Beast",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Questing Druid",
+      "oracle_fingerprint": "9ed8123d1b88d31f60387905ac33a195",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "SpellCast": {
+                "what": [
+                  {
+                    "AnyOf": [
+                      { "Color": "White" },
+                      { "Color": "Blue" },
+                      { "Color": "Black" },
+                      { "Color": "Red" }
+                    ]
+                  }
+                ],
+                "by": "You"
+              }
+            },
+            "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Seek the Beast",
+      "oracle_fingerprint": "fa39ae469c2f048e0b01cf815b716db4",
+      "abilities": [
+        {
+          "Manual": { "reason": "you apply this clause by hand", "span": { "start": 0, "end": 92 } }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,33 @@
+{
+  "oracle_id": "5c7f81ef-3c11-423c-a158-951275881f0b",
+  "name": "Spectacle of Destruction",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Spectacle of Destruction",
+      "oracle_fingerprint": "194db99b55e6cba0e51f02ab4d055728",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "Batch": {
+                "ZoneChange": {
+                  "what": [{ "Type": "Creature" }],
+                  "from": "Battlefield",
+                  "to": "Graveyard"
+                }
+              }
+            },
+            "effects": [{ "PutCounters": { "on": "This", "counter": { "Other": "wreck" } } }]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 77, "end": 223 }
+          }
+        }
+      ]
+    }
+  ]
+}

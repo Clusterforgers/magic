@@ -1,0 +1,31 @@
+{
+  "oracle_id": "cce643fb-cd88-457c-8f13-c203554df675",
+  "name": "Twenty-Toed Toad",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Twenty-Toed Toad",
+      "oracle_fingerprint": "8664f8490b3b8168edb25fe55cc7c21c",
+      "abilities": [
+        { "Rule": { "rule": { "MaxHandSize": { "who": "You", "size": 20 } } } },
+        {
+          "Triggered": {
+            "when": {
+              "GroupAttacks": {
+                "what": [{ "Type": "Creature" }, { "ControlledBy": "You" }],
+                "at_least": 2
+              }
+            },
+            "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }, { "Draw": {} }]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 136, "end": 269 }
+          }
+        }
+      ]
+    }
+  ]
+}

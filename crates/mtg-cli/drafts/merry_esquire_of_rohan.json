@@ -1,0 +1,32 @@
+{
+  "oracle_id": "4dce1f49-ddad-4748-893a-e10d831ee7d7",
+  "name": "Merry, Esquire of Rohan",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Merry, Esquire of Rohan",
+      "oracle_fingerprint": "87822b5173f34d0aaab03640f2384da6",
+      "abilities": [
+        { "Keyword": "Haste" },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "AddKeyword": "FirstStrike" }],
+            "condition": {
+              "Matches": {
+                "subject": "This",
+                "selector": [{ "HasAttached": [{ "Subtype": "Equipment" }] }]
+              }
+            }
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 55, "end": 130 }
+          }
+        }
+      ]
+    }
+  ]
+}

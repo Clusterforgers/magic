@@ -1,0 +1,35 @@
+{
+  "oracle_id": "cbd76b22-d04e-48e7-bcab-c7f5466d67d8",
+  "name": "Lux Artillery",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Lux Artillery",
+      "oracle_fingerprint": "69293ffcf5d90e1e6aab8209b455b2aa",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "SpellCast": { "what": [{ "Type": "Artifact" }, { "Type": "Creature" }], "by": "You" }
+            },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "Triggering",
+                  "mods": [{ "AddKeyword": "Sunburst" }],
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 145, "end": 307 }
+          }
+        }
+      ]
+    }
+  ]
+}

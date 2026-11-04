@@ -1,0 +1,31 @@
+{
+  "oracle_id": "3a726e40-829c-47ec-81a7-58a04164fc3f",
+  "name": "Myth Realized",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Myth Realized",
+      "oracle_fingerprint": "d16d8b3a5d52b3bf6bba59bccba0832b",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "what": [{ "Not": { "Type": "Creature" } }], "by": "You" } },
+            "effects": [{ "PutCounters": { "on": "This", "counter": { "Other": "lore" } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{2}{W}",
+            "effects": [{ "PutCounters": { "on": "This", "counter": { "Other": "lore" } } }]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 127, "end": 330 }
+          }
+        }
+      ]
+    }
+  ]
+}

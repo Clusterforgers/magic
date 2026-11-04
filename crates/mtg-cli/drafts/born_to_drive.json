@@ -1,0 +1,45 @@
+{
+  "oracle_id": "7ddd84d2-1a6d-43f5-a42d-3c66eee5f7e5",
+  "name": "Born to Drive",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Born to Drive",
+      "oracle_fingerprint": "caff6f019ea35623da3c9b24bf3fb654",
+      "abilities": [
+        {
+          "Keyword": { "Enchant": [{ "AnyOf": [{ "Type": "Creature" }, { "Type": "Artifact" }] }] }
+        },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [
+              {
+                "ModifyPT": {
+                  "power": {
+                    "Count": [
+                      { "AnyOf": [{ "Type": "Creature" }, { "Subtype": "Vehicle" }] },
+                      { "ControlledBy": "You" }
+                    ]
+                  },
+                  "toughness": {
+                    "Count": [
+                      { "AnyOf": [{ "Type": "Creature" }, { "Subtype": "Vehicle" }] },
+                      { "ControlledBy": "You" }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 135, "end": 287 }
+          }
+        }
+      ]
+    }
+  ]
+}

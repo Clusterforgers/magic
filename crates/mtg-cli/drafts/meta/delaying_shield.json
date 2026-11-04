@@ -1,0 +1,42 @@
+{
+  "source": "forge",
+  "oracle_matches": true,
+  "lines": [
+    {
+      "face": 0,
+      "tag": "T",
+      "text": "At the beginning of your upkeep, remove all delay counters from CARDNAME. For each delay counter removed this way, you lose 1 life unless you pay {1}{W}.",
+      "abilities": [],
+      "gap": "key:RemoveCounter.RememberRemoved"
+    },
+    {
+      "face": 0,
+      "tag": "R",
+      "text": "If damage would be dealt to you, put that many delay counters on CARDNAME instead.",
+      "abilities": [
+        0
+      ],
+      "gap": null
+    }
+  ],
+  "proof": {
+    "marks": [
+      {
+        "face": 0,
+        "span": {
+          "start": 0,
+          "end": 90
+        },
+        "mark": "Auto"
+      },
+      {
+        "face": 0,
+        "span": {
+          "start": 91,
+          "end": 252
+        },
+        "mark": "ByHand"
+      }
+    ]
+  }
+}

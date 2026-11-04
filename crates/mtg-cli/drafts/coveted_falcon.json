@@ -1,0 +1,38 @@
+{
+  "oracle_id": "4c495e94-3194-47c7-8129-dd0a0f915daa",
+  "name": "Coveted Falcon",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Coveted Falcon",
+      "oracle_fingerprint": "6f5dfa596837fab552d8da4845fd48c5",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "targets": [
+              { "what": { "Object": [{ "OwnedBy": "You" }, { "Not": { "ControlledBy": "You" } }] } }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "SetController": "You" }],
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Disguise": "{1}{U}" } },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 115, "end": 288 }
+          }
+        }
+      ]
+    }
+  ]
+}

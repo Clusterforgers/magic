@@ -1,0 +1,25 @@
+{
+  "oracle_id": "8658cd14-6826-4308-b6ce-fcfd8f2e17ed",
+  "name": "Shisato, Whispering Hunter",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Shisato, Whispering Hunter",
+      "oracle_fingerprint": "fc8b2500e39c80d38fa34779dd758d23",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [{ "Sacrifice": { "filter": [{ "Subtype": "Snake" }] } }]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 52, "end": 142 }
+          }
+        }
+      ]
+    }
+  ]
+}

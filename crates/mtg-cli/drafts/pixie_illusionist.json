@@ -1,0 +1,28 @@
+{
+  "oracle_id": "3bd066d3-5b07-4986-9e6c-39d1ae6212ff",
+  "name": "Pixie Illusionist",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Pixie Illusionist",
+      "oracle_fingerprint": "d2941bdbc85ec8bfdfc93af4f643e963",
+      "abilities": [
+        { "Keyword": { "Kicker": "{3}{G}" } },
+        { "Keyword": "Flying" },
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "WithCounters": { "counter": "+1/+1", "count": 2 } },
+            "condition": "Kicked"
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 150, "end": 240 }
+          }
+        }
+      ]
+    }
+  ]
+}

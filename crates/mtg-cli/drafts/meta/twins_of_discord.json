@@ -1,0 +1,42 @@
+{
+  "source": "forge",
+  "oracle_matches": true,
+  "lines": [
+    {
+      "face": 0,
+      "tag": "T",
+      "text": "Whenever you attack, choose odd or even. Creatures with mana value of that quality can't block this turn.",
+      "abilities": [],
+      "gap": "effect:GenericChoice"
+    },
+    {
+      "face": 0,
+      "tag": "S",
+      "text": "Each other colorless creature you control has bloodthirst 2.",
+      "abilities": [
+        0
+      ],
+      "gap": null
+    }
+  ],
+  "proof": {
+    "marks": [
+      {
+        "face": 0,
+        "span": {
+          "start": 0,
+          "end": 121
+        },
+        "mark": "ByHand"
+      },
+      {
+        "face": 0,
+        "span": {
+          "start": 122,
+          "end": 290
+        },
+        "mark": "Auto"
+      }
+    ]
+  }
+}

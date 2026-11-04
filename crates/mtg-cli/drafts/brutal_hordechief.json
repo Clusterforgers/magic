@@ -1,0 +1,28 @@
+{
+  "oracle_id": "e70cac5e-674e-4df7-94c7-77f8801e3941",
+  "name": "Brutal Hordechief",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Brutal Hordechief",
+      "oracle_fingerprint": "6b1251092264b81454783ab8bd3a9bd9",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } },
+            "effects": [
+              { "LoseLife": { "who": "Defending", "amount": 1 } },
+              { "GainLife": { "amount": 1 } }
+            ]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 92, "end": 206 }
+          }
+        }
+      ]
+    }
+  ]
+}

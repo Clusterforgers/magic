@@ -1,0 +1,42 @@
+{
+  "source": "forge",
+  "oracle_matches": true,
+  "lines": [
+    {
+      "face": 0,
+      "tag": "A",
+      "text": "Look at the top six cards of your library. You may cast a spell from among them without paying its mana cost. Put the rest on the bottom of your library in a random order.",
+      "abilities": [],
+      "gap": "key:Play.ValidZone"
+    },
+    {
+      "face": 0,
+      "tag": "T",
+      "text": "Whenever a permanent you control is put into a graveyard, you get {E} (an energy counter).",
+      "abilities": [
+        0
+      ],
+      "gap": null
+    }
+  ],
+  "proof": {
+    "marks": [
+      {
+        "face": 0,
+        "span": {
+          "start": 0,
+          "end": 90
+        },
+        "mark": "Auto"
+      },
+      {
+        "face": 0,
+        "span": {
+          "start": 91,
+          "end": 280
+        },
+        "mark": "ByHand"
+      }
+    ]
+  }
+}

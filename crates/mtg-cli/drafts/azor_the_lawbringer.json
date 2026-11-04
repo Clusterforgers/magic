@@ -1,0 +1,33 @@
+{
+  "oracle_id": "89812139-9fc1-4fc9-b1d0-d07067d62083",
+  "name": "Azor, the Lawbringer",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Azor, the Lawbringer",
+      "oracle_fingerprint": "5d2dcc96b0111199d8d9a30e603fb1fa",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 7, "end": 107 }
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": "{X}{W}{U}{U}",
+                  "paid": [{ "GainLife": { "amount": "X" } }, { "Draw": { "count": "X" } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

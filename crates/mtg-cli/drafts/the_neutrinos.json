@@ -1,0 +1,39 @@
+{
+  "oracle_id": "b1462c82-7702-451b-b612-990353a79ac4",
+  "name": "The Neutrinos",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "The Neutrinos",
+      "oracle_fingerprint": "6401b7355651bf6ef1037db1a633d38c",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Creature" }, "Other", { "ControlledBy": "You" }],
+                "to": "Battlefield"
+              }
+            },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "ModifyPT": { "power": 1, "toughness": 0 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 107, "end": 253 }
+          }
+        }
+      ]
+    }
+  ]
+}

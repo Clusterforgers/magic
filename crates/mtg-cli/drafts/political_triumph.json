@@ -1,0 +1,33 @@
+{
+  "oracle_id": "0bbceb51-1fb8-44d7-8afc-b4746d292262",
+  "name": "Political Triumph",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Political Triumph",
+      "oracle_fingerprint": "324f123817b0f02d2b0fc853f38565f0",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Creature" }, { "ControlledBy": "You" }],
+                "to": "Battlefield"
+              }
+            },
+            "effects": [
+              { "Scry": {} },
+              { "PutCounters": { "on": "This", "counter": { "Other": "plan" } } }
+            ]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 91, "end": 228 }
+          }
+        }
+      ]
+    }
+  ]
+}

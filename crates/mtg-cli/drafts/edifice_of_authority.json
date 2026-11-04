@@ -1,0 +1,35 @@
+{
+  "oracle_id": "7c16707e-24da-4a7e-9d24-d3731987f675",
+  "name": "Edifice of Authority",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Edifice of Authority",
+      "oracle_fingerprint": "8ea4d1a230e468a63911d59b859d773d",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{1}" }, "Tap"],
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": ["CantAttack"],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              { "PutCounters": { "on": "This", "counter": { "Other": "brick" } } }
+            ]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 88, "end": 279 }
+          }
+        }
+      ]
+    }
+  ]
+}

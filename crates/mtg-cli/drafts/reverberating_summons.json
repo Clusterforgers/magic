@@ -1,0 +1,51 @@
+{
+  "oracle_id": "1fd78bf7-43ba-4e09-834b-14bfc1fd9d0d",
+  "name": "Reverberating Summons",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Reverberating Summons",
+      "oracle_fingerprint": "c3a40ae09a1ebbb167df7cd5c7cc9dce",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "BeginCombat" } },
+            "if": {
+              "Compare": {
+                "left": {
+                  "Tally": {
+                    "event": "SpellCast",
+                    "who": "EachPlayer",
+                    "filter": [{ "ControlledBy": "You" }]
+                  }
+                },
+                "op": "Ge",
+                "right": 2
+              }
+            },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [
+                    { "SetPT": { "power": 3, "toughness": 3 } },
+                    { "AddSubtype": "Monk" },
+                    { "AddType": "Creature" },
+                    { "AddKeyword": "Haste" }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 184, "end": 254 }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,42 @@
+{
+  "source": "forge",
+  "oracle_matches": true,
+  "lines": [
+    {
+      "face": 0,
+      "tag": "A",
+      "text": "Return target creature card from a graveyard and target creature on the battlefield to their owners' hands.",
+      "abilities": [
+        0
+      ],
+      "gap": null
+    },
+    {
+      "face": 1,
+      "tag": "A",
+      "text": "Target player reveals two cards at random from their hand, then discards each nonland card revealed this way.",
+      "abilities": [],
+      "gap": "effect:Reveal"
+    }
+  ],
+  "proof": {
+    "marks": [
+      {
+        "face": 0,
+        "span": {
+          "start": 0,
+          "end": 107
+        },
+        "mark": "Auto"
+      },
+      {
+        "face": 1,
+        "span": {
+          "start": 0,
+          "end": 109
+        },
+        "mark": "ByHand"
+      }
+    ]
+  }
+}

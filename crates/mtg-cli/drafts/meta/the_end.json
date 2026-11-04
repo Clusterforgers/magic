@@ -1,0 +1,42 @@
+{
+  "source": "forge",
+  "oracle_matches": true,
+  "lines": [
+    {
+      "face": 0,
+      "tag": "A",
+      "text": "Exile target creature or planeswalker. Search its controller's graveyard, hand, and library for any number of cards with the same name as that permanent and exile them. That player shuffles, then draws a card for each card exiled from their hand this way.",
+      "abilities": [],
+      "gap": "key:ChangeZone.Choose.DefinedPlayer"
+    },
+    {
+      "face": 0,
+      "tag": "S",
+      "text": "This spell costs {2} less to cast if your life total is 5 or less.",
+      "abilities": [
+        0
+      ],
+      "gap": null
+    }
+  ],
+  "proof": {
+    "marks": [
+      {
+        "face": 0,
+        "span": {
+          "start": 0,
+          "end": 66
+        },
+        "mark": "Auto"
+      },
+      {
+        "face": 0,
+        "span": {
+          "start": 67,
+          "end": 322
+        },
+        "mark": "ByHand"
+      }
+    ]
+  }
+}

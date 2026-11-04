@@ -1,0 +1,26 @@
+{
+  "oracle_id": "626a979f-bed7-4cb1-9ab7-c3f2bbe37781",
+  "name": "Lost Monarch of Ifnir",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Lost Monarch of Ifnir",
+      "oracle_fingerprint": "3f6338493414209d1e6b9bfe3dc24aff",
+      "abilities": [
+        { "Keyword": { "Afflict": 3 } },
+        {
+          "Static": {
+            "affected": { "Each": [{ "Subtype": "Zombie" }, "Other", { "ControlledBy": "You" }] },
+            "mods": [{ "AddKeyword": { "Afflict": 3 } }]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 125, "end": 315 }
+          }
+        }
+      ]
+    }
+  ]
+}

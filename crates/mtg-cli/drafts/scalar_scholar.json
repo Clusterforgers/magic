@@ -1,0 +1,20 @@
+{
+  "oracle_id": "c87e6bee-5e27-45e5-b59e-72e0343f7e3d",
+  "name": "Scalar Scholar",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Scalar Scholar",
+      "oracle_fingerprint": "ea89778049c43351592c3fc46a4e347e",
+      "abilities": [
+        { "Keyword": { "Macro": { "name": "increment", "amount": 0 } } },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 10, "end": 135 }
+          }
+        }
+      ]
+    }
+  ]
+}

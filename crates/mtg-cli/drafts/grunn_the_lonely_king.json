@@ -1,0 +1,27 @@
+{
+  "oracle_id": "e3d6d146-47f4-46f9-9a15-2ea649093668",
+  "name": "Grunn, the Lonely King",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Grunn, the Lonely King",
+      "oracle_fingerprint": "45beb5b6034c4f4cfe536f61e33ac7b2",
+      "abilities": [
+        { "Keyword": { "Kicker": "{3}" } },
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "WithCounters": { "counter": "+1/+1", "count": 5 } },
+            "condition": "Kicked"
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 130, "end": 209 }
+          }
+        }
+      ]
+    }
+  ]
+}

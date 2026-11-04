@@ -1,0 +1,59 @@
+{
+  "source": "forge",
+  "oracle_matches": true,
+  "lines": [
+    {
+      "face": 0,
+      "tag": "T",
+      "text": "Whenever a Frog you control attacks, mill three cards.",
+      "abilities": [
+        0
+      ],
+      "gap": null
+    },
+    {
+      "face": 0,
+      "tag": "T",
+      "text": "Whenever a permanent card is put into your graveyard from your library, exile it with a croak counter on it.",
+      "abilities": [],
+      "gap": "key:ChangeZone.WithCountersType"
+    },
+    {
+      "face": 0,
+      "tag": "S",
+      "text": "You may play lands and cast spells from among cards you own in exile with croak counters on them.",
+      "abilities": [
+        1
+      ],
+      "gap": null
+    }
+  ],
+  "proof": {
+    "marks": [
+      {
+        "face": 0,
+        "span": {
+          "start": 0,
+          "end": 54
+        },
+        "mark": "Auto"
+      },
+      {
+        "face": 0,
+        "span": {
+          "start": 55,
+          "end": 163
+        },
+        "mark": "ByHand"
+      },
+      {
+        "face": 0,
+        "span": {
+          "start": 164,
+          "end": 261
+        },
+        "mark": "Auto"
+      }
+    ]
+  }
+}

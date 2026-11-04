@@ -1,0 +1,34 @@
+{
+  "oracle_id": "9c6bd752-e3c8-408c-96f4-16405a653161",
+  "name": "Kitsune Healer",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Kitsune Healer",
+      "oracle_fingerprint": "4e7e30bda210a5d1257d830bfe2e1023",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [
+              {
+                "Shield": {
+                  "when": { "Damage": { "to": { "Target": 0 } } },
+                  "by": { "PreventUpTo": 1 },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 76, "end": 159 }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,21 @@
+{
+  "oracle_id": "7f7c917b-f940-4f43-bafa-31f50a6d9d6f",
+  "name": "Gandalf, Friend of the Shire",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Gandalf, Friend of the Shire",
+      "oracle_fingerprint": "c3f2699564e3a320e2ee32216aa6165f",
+      "abilities": [
+        { "Keyword": "Flash" },
+        { "Rule": { "rule": { "MayCast": { "what": [{ "Type": "Sorcery" }], "flash": true } } } },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 60, "end": 166 }
+          }
+        }
+      ]
+    }
+  ]
+}

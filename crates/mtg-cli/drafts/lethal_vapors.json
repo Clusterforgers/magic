@@ -1,0 +1,25 @@
+{
+  "oracle_id": "9fe9650d-6c9b-4988-9ea4-79ba0d55a77b",
+  "name": "Lethal Vapors",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Lethal Vapors",
+      "oracle_fingerprint": "b5f5950cba03236ba3081761e9d5a096",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": [{ "Type": "Creature" }], "to": "Battlefield" } },
+            "effects": [{ "Destroy": { "what": "Triggering" } }]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 40, "end": 133 }
+          }
+        }
+      ]
+    }
+  ]
+}

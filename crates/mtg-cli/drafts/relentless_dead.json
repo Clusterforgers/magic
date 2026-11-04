@@ -1,0 +1,28 @@
+{
+  "oracle_id": "7404c078-228b-4296-bf1f-62f57bf832d9",
+  "name": "Relentless Dead",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Relentless Dead",
+      "oracle_fingerprint": "f5905560a67f7958dd12f6ba2c23d051",
+      "abilities": [
+        { "Keyword": "Menace" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } },
+            "effects": [
+              { "Pay": { "cost": "{B}", "paid": [{ "Move": { "what": "This", "to": "Hand" } }] } }
+            ]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 157, "end": 310 }
+          }
+        }
+      ]
+    }
+  ]
+}

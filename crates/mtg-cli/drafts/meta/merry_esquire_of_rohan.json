@@ -1,0 +1,59 @@
+{
+  "source": "forge",
+  "oracle_matches": true,
+  "lines": [
+    {
+      "face": 0,
+      "tag": "K",
+      "text": "Haste",
+      "abilities": [
+        0
+      ],
+      "gap": null
+    },
+    {
+      "face": 0,
+      "tag": "T",
+      "text": "Whenever you attack with NICKNAME and another legendary creature, draw a card.",
+      "abilities": [],
+      "gap": "key:Trigger.AttackersDeclared.AttackingPlayer"
+    },
+    {
+      "face": 0,
+      "tag": "S",
+      "text": "CARDNAME has first strike as long as it's equipped.",
+      "abilities": [
+        1
+      ],
+      "gap": null
+    }
+  ],
+  "proof": {
+    "marks": [
+      {
+        "face": 0,
+        "span": {
+          "start": 0,
+          "end": 5
+        },
+        "mark": "Auto"
+      },
+      {
+        "face": 0,
+        "span": {
+          "start": 6,
+          "end": 54
+        },
+        "mark": "Auto"
+      },
+      {
+        "face": 0,
+        "span": {
+          "start": 55,
+          "end": 130
+        },
+        "mark": "ByHand"
+      }
+    ]
+  }
+}

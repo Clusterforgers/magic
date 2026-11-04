@@ -1,0 +1,26 @@
+{
+  "oracle_id": "02c4abd0-9a68-4a85-954b-3f64666c1f8d",
+  "name": "Mistform Wall",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Mistform Wall",
+      "oracle_fingerprint": "dd947124adcdbe55433f9f017fd4a8bf",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "AddKeyword": "Defender" }],
+            "condition": { "Matches": { "subject": "This", "selector": [{ "Subtype": "Wall" }] } }
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 51, "end": 129 }
+          }
+        }
+      ]
+    }
+  ]
+}

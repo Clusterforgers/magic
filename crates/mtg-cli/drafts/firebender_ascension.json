@@ -1,0 +1,43 @@
+{
+  "oracle_id": "96cc63af-69d1-4493-b241-0cb244a9e48a",
+  "name": "Firebender Ascension",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Firebender Ascension",
+      "oracle_fingerprint": "6da675a6744624bf473d74db81c794f0",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Soldier",
+                      "colors": ["Red"],
+                      "types": ["Creature"],
+                      "subtypes": ["Soldier"],
+                      "power": 2,
+                      "toughness": 2,
+                      "abilities": [
+                        { "Keyword": { "Macro": { "name": "firebending", "amount": 1 } } }
+                      ]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 90, "end": 346 }
+          }
+        }
+      ]
+    }
+  ]
+}

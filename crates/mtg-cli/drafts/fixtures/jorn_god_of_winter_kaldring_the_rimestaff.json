@@ -1,0 +1,186 @@
+{
+  "object": "card",
+  "id": "c697548f-925b-405e-970a-4e78067d5c8e",
+  "oracle_id": "bd43b485-e42e-4c20-adcb-799b0ce18a59",
+  "multiverse_ids": [
+    503793,
+    503794
+  ],
+  "mtgo_id": 87697,
+  "arena_id": 75224,
+  "tcgplayer_id": 230218,
+  "cardmarket_id": 530702,
+  "name": "Jorn, God of Winter // Kaldring, the Rimestaff",
+  "lang": "en",
+  "released_at": "2021-02-05",
+  "uri": "https://api.scryfall.com/cards/c697548f-925b-405e-970a-4e78067d5c8e",
+  "scryfall_uri": "https://scryfall.com/card/khm/179/jorn-god-of-winter-kaldring-the-rimestaff?utm_source=api",
+  "layout": "modal_dfc",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T07:36:56Z",
+  "cmc": 3.0,
+  "type_line": "Legendary Snow Creature — God // Legendary Snow Artifact",
+  "color_identity": [
+    "B",
+    "G",
+    "U"
+  ],
+  "keywords": [],
+  "card_faces": [
+    {
+      "object": "card_face",
+      "name": "Jorn, God of Winter",
+      "mana_cost": "{2}{G}",
+      "type_line": "Legendary Snow Creature — God",
+      "oracle_text": "Whenever Jorn attacks, untap each snow permanent you control.",
+      "colors": [
+        "G"
+      ],
+      "power": "3",
+      "toughness": "3",
+      "flavor_text": "\"Wherever snow falls, I am home.\"",
+      "artist": "Magali Villeneuve",
+      "artist_id": "9e6a55ae-be4d-4c23-a2a5-135737ffd879",
+      "illustration_id": "8fba6022-6daf-487b-bdab-7bccd482609d",
+      "image_uris": {
+        "small": "https://cards.scryfall.io/small/front/c/6/c697548f-925b-405e-970a-4e78067d5c8e.jpg?1783928216",
+        "normal": "https://cards.scryfall.io/normal/front/c/6/c697548f-925b-405e-970a-4e78067d5c8e.jpg?1783928216",
+        "large": "https://cards.scryfall.io/large/front/c/6/c697548f-925b-405e-970a-4e78067d5c8e.jpg?1783928216",
+        "png": "https://cards.scryfall.io/png/front/c/6/c697548f-925b-405e-970a-4e78067d5c8e.png?1783928216",
+        "art_crop": "https://cards.scryfall.io/art_crop/front/c/6/c697548f-925b-405e-970a-4e78067d5c8e.jpg?1783928216",
+        "border_crop": "https://cards.scryfall.io/border_crop/front/c/6/c697548f-925b-405e-970a-4e78067d5c8e.jpg?1783928216",
+        "thumb": "https://cards.scryfall.io/thumb/front/c/6/c697548f-925b-405e-970a-4e78067d5c8e.webp?1783928216",
+        "grid": "https://cards.scryfall.io/grid/front/c/6/c697548f-925b-405e-970a-4e78067d5c8e.webp?1783928216",
+        "display": "https://cards.scryfall.io/display/front/c/6/c697548f-925b-405e-970a-4e78067d5c8e.webp?1783928216",
+        "art": "https://cards.scryfall.io/art/front/c/6/c697548f-925b-405e-970a-4e78067d5c8e.webp?1783928216",
+        "crop": "https://cards.scryfall.io/crop/front/c/6/c697548f-925b-405e-970a-4e78067d5c8e.webp?1783928216",
+        "jpeg": "https://cards.scryfall.io/normal/front/c/6/c697548f-925b-405e-970a-4e78067d5c8e.jpg?1783928216"
+      }
+    },
+    {
+      "object": "card_face",
+      "name": "Kaldring, the Rimestaff",
+      "mana_cost": "{1}{U}{B}",
+      "type_line": "Legendary Snow Artifact",
+      "oracle_text": "{T}: You may play target snow permanent card from your graveyard this turn. If you do, it enters tapped.",
+      "colors": [
+        "B",
+        "U"
+      ],
+      "flavor_text": "As the sagas tell it, Jorn collects a sliver of ice from every realm he visits.",
+      "artist": "Magali Villeneuve",
+      "artist_id": "9e6a55ae-be4d-4c23-a2a5-135737ffd879",
+      "illustration_id": "df10ea65-fffd-4d95-9e79-f9f653000e42",
+      "image_uris": {
+        "small": "https://cards.scryfall.io/small/back/c/6/c697548f-925b-405e-970a-4e78067d5c8e.jpg?1783928216",
+        "normal": "https://cards.scryfall.io/normal/back/c/6/c697548f-925b-405e-970a-4e78067d5c8e.jpg?1783928216",
+        "large": "https://cards.scryfall.io/large/back/c/6/c697548f-925b-405e-970a-4e78067d5c8e.jpg?1783928216",
+        "png": "https://cards.scryfall.io/png/back/c/6/c697548f-925b-405e-970a-4e78067d5c8e.png?1783928216",
+        "art_crop": "https://cards.scryfall.io/art_crop/back/c/6/c697548f-925b-405e-970a-4e78067d5c8e.jpg?1783928216",
+        "border_crop": "https://cards.scryfall.io/border_crop/back/c/6/c697548f-925b-405e-970a-4e78067d5c8e.jpg?1783928216",
+        "thumb": "https://cards.scryfall.io/thumb/back/c/6/c697548f-925b-405e-970a-4e78067d5c8e.webp?1783928216",
+        "grid": "https://cards.scryfall.io/grid/back/c/6/c697548f-925b-405e-970a-4e78067d5c8e.webp?1783928216",
+        "display": "https://cards.scryfall.io/display/back/c/6/c697548f-925b-405e-970a-4e78067d5c8e.webp?1783928216",
+        "art": "https://cards.scryfall.io/art/back/c/6/c697548f-925b-405e-970a-4e78067d5c8e.webp?1783928216",
+        "crop": "https://cards.scryfall.io/crop/back/c/6/c697548f-925b-405e-970a-4e78067d5c8e.webp?1783928216",
+        "jpeg": "https://cards.scryfall.io/normal/back/c/6/c697548f-925b-405e-970a-4e78067d5c8e.jpg?1783928216"
+      }
+    }
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "arena",
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "43057fad-b1c1-437f-bc48-0045bce6d8c9",
+  "set": "khm",
+  "set_name": "Kaldheim",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/43057fad-b1c1-437f-bc48-0045bce6d8c9",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Akhm&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/khm?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/c697548f-925b-405e-970a-4e78067d5c8e/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Abd43b485-e42e-4c20-adcb-799b0ce18a59&unique=prints",
+  "collector_number": "179",
+  "digital": false,
+  "rarity": "rare",
+  "artist": "Magali Villeneuve",
+  "artist_ids": [
+    "9e6a55ae-be4d-4c23-a2a5-135737ffd879"
+  ],
+  "border_color": "black",
+  "frame": "2015",
+  "frame_effects": [
+    "legendary",
+    "snow"
+  ],
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 13105,
+  "penny_rank": 10028,
+  "preview": {
+    "source": "Brian Kibler",
+    "source_uri": "https://mobile.twitter.com/bmkibler/status/1348693182087720962",
+    "previewed_at": "2021-01-11"
+  },
+  "prices": {
+    "usd": "0.32",
+    "usd_foil": "0.56",
+    "usd_etched": null,
+    "eur": "0.25",
+    "eur_foil": "0.52",
+    "tix": "0.02"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=503793&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DJorn%252C%2BGod%2Bof%2BWinter%2B%252F%252F%2BKaldring%252C%2Bthe%2BRimestaff",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DJorn%252C%2BGod%2Bof%2BWinter%2B%252F%252F%2BKaldring%252C%2Bthe%2BRimestaff",
+    "edhrec": "https://edhrec.com/route/?cc=Jorn%2C+God+of+Winter"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F230218%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=530702&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/87697?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

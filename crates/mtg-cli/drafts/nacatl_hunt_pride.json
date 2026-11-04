@@ -1,0 +1,35 @@
+{
+  "oracle_id": "094bc780-3c37-4863-b6ed-e2d16ed94544",
+  "name": "Nacatl Hunt-Pride",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Nacatl Hunt-Pride",
+      "oracle_fingerprint": "5c9434a457237c364bef52e43186507a",
+      "abilities": [
+        { "Keyword": "Vigilance" },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{R}" }, "Tap"],
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": ["CantBlock"],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 59, "end": 110 }
+          }
+        }
+      ]
+    }
+  ]
+}

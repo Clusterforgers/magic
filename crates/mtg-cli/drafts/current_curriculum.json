@@ -1,0 +1,40 @@
+{
+  "oracle_id": "2b204c47-1d9e-413d-b963-683918b45d2f",
+  "name": "Current Curriculum",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Current Curriculum",
+      "oracle_fingerprint": "6716a6b3d29115dd4bf0c89486f0dfa8",
+      "abilities": [
+        {
+          "Static": {
+            "affected": {
+              "Each": [{ "Subtype": "Merfolk" }, { "ControlledBy": "You" }, { "In": "Stack" }]
+            },
+            "mods": [{ "AddKeyword": "Convoke" }],
+            "condition": {
+              "Compare": {
+                "left": {
+                  "Tally": {
+                    "event": "SpellCast",
+                    "who": "EachPlayer",
+                    "filter": [{ "Subtype": "Merfolk" }, { "ControlledBy": "You" }]
+                  }
+                },
+                "op": "Eq",
+                "right": 0
+              }
+            }
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 56, "end": 209 }
+          }
+        }
+      ]
+    }
+  ]
+}

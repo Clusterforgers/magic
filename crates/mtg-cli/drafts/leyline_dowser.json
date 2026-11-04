@@ -1,0 +1,28 @@
+{
+  "oracle_id": "2ea2ac09-690d-4cd2-8e3a-fc01ecd7c132",
+  "name": "Leyline Dowser",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Leyline Dowser",
+      "oracle_fingerprint": "ec7b619bc58a8906f602179fa5b5ef07",
+      "abilities": [
+        {
+          "Manual": { "reason": "you apply this clause by hand", "span": { "start": 0, "end": 93 } }
+        },
+        {
+          "Activated": {
+            "cost": [
+              {
+                "TapPermanents": {
+                  "filter": [{ "Type": "Creature" }, { "Supertype": "Legendary" }]
+                }
+              }
+            ],
+            "effects": [{ "Untap": { "what": "This" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

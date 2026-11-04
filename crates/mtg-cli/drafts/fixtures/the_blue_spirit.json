@@ -1,0 +1,140 @@
+{
+  "object": "card",
+  "id": "d0d1f5b0-f842-40d5-ae51-015eefe68fa1",
+  "oracle_id": "497e9c7c-a16d-43e5-a7ec-04153aa2566a",
+  "multiverse_ids": [],
+  "resource_id": "E6A2F6A079F19E5CADD4242E606AD6756D30EE893CF0A5775BA9BB77E4D51027",
+  "mtgo_id": 145578,
+  "arena_id": 98235,
+  "tcgplayer_id": 662437,
+  "cardmarket_id": 857908,
+  "name": "The Blue Spirit",
+  "lang": "en",
+  "released_at": "2025-11-21",
+  "uri": "https://api.scryfall.com/cards/d0d1f5b0-f842-40d5-ae51-015eefe68fa1",
+  "scryfall_uri": "https://scryfall.com/card/tle/90/the-blue-spirit?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T01:07:12Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/d/0/d0d1f5b0-f842-40d5-ae51-015eefe68fa1.jpg?1783904832",
+    "normal": "https://cards.scryfall.io/normal/front/d/0/d0d1f5b0-f842-40d5-ae51-015eefe68fa1.jpg?1783904832",
+    "large": "https://cards.scryfall.io/large/front/d/0/d0d1f5b0-f842-40d5-ae51-015eefe68fa1.jpg?1783904832",
+    "png": "https://cards.scryfall.io/png/front/d/0/d0d1f5b0-f842-40d5-ae51-015eefe68fa1.png?1783904832",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/d/0/d0d1f5b0-f842-40d5-ae51-015eefe68fa1.jpg?1783904832",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/d/0/d0d1f5b0-f842-40d5-ae51-015eefe68fa1.jpg?1783904832",
+    "thumb": "https://cards.scryfall.io/thumb/front/d/0/d0d1f5b0-f842-40d5-ae51-015eefe68fa1.webp?1783904832",
+    "grid": "https://cards.scryfall.io/grid/front/d/0/d0d1f5b0-f842-40d5-ae51-015eefe68fa1.webp?1783904832",
+    "display": "https://cards.scryfall.io/display/front/d/0/d0d1f5b0-f842-40d5-ae51-015eefe68fa1.webp?1783904832",
+    "art": "https://cards.scryfall.io/art/front/d/0/d0d1f5b0-f842-40d5-ae51-015eefe68fa1.webp?1783904832",
+    "crop": "https://cards.scryfall.io/crop/front/d/0/d0d1f5b0-f842-40d5-ae51-015eefe68fa1.webp?1783904832",
+    "jpeg": "https://cards.scryfall.io/normal/front/d/0/d0d1f5b0-f842-40d5-ae51-015eefe68fa1.jpg?1783904832"
+  },
+  "mana_cost": "{3}{U}",
+  "cmc": 4.0,
+  "type_line": "Legendary Creature — Human Rogue Ally",
+  "oracle_text": "You may cast the first creature spell you cast each turn as though it had flash.\nWhenever a nontoken creature you control enters during combat, draw a card.",
+  "power": "2",
+  "toughness": "4",
+  "colors": [
+    "U"
+  ],
+  "color_identity": [
+    "U"
+  ],
+  "keywords": [],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "arena",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "a75e6ceb-d62c-4063-8e96-f269e3a0b025",
+  "set": "tle",
+  "set_name": "Avatar: The Last Airbender Eternal",
+  "set_type": "eternal",
+  "set_uri": "https://api.scryfall.com/sets/a75e6ceb-d62c-4063-8e96-f269e3a0b025",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Atle&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/tle?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/d0d1f5b0-f842-40d5-ae51-015eefe68fa1/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A497e9c7c-a16d-43e5-a7ec-04153aa2566a&unique=prints",
+  "collector_number": "90",
+  "digital": false,
+  "rarity": "rare",
+  "flavor_text": "To the Avatar, was the Blue Spirit a friend? A foe? Or something else entirely?",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Claudiu-Antoniu Magherusan",
+  "artist_ids": [
+    "8ccd6428-4503-4d7a-99db-c361b924165d"
+  ],
+  "illustration_id": "fc25883b-b331-4fe9-9371-4175948c1a3c",
+  "border_color": "black",
+  "frame": "2015",
+  "frame_effects": [
+    "legendary"
+  ],
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "promo_types": [
+    "universesbeyond"
+  ],
+  "edhrec_rank": 7311,
+  "prices": {
+    "usd": "1.20",
+    "usd_foil": "3.36",
+    "usd_etched": null,
+    "eur": "2.51",
+    "eur_foil": "2.66",
+    "tix": "0.36"
+  },
+  "related_uris": {
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DThe%2BBlue%2BSpirit",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DThe%2BBlue%2BSpirit",
+    "edhrec": "https://edhrec.com/route/?cc=The+Blue+Spirit"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F662437%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=857908&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/145578?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

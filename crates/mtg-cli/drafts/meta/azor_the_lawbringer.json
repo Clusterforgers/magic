@@ -1,0 +1,59 @@
+{
+  "source": "forge",
+  "oracle_matches": true,
+  "lines": [
+    {
+      "face": 0,
+      "tag": "K",
+      "text": "Flying",
+      "abilities": [
+        0
+      ],
+      "gap": null
+    },
+    {
+      "face": 0,
+      "tag": "T",
+      "text": "When CARDNAME enters, each opponent can't cast instant or sorcery spells during that player's next turn.",
+      "abilities": [],
+      "gap": "key:RepeatEach.NextTurnForEachPlayer"
+    },
+    {
+      "face": 0,
+      "tag": "T",
+      "text": "Whenever NICKNAME attacks, you may pay {X}{W}{U}{U}. If you do, you gain X life and draw X cards.",
+      "abilities": [
+        1
+      ],
+      "gap": null
+    }
+  ],
+  "proof": {
+    "marks": [
+      {
+        "face": 0,
+        "span": {
+          "start": 0,
+          "end": 6
+        },
+        "mark": "Auto"
+      },
+      {
+        "face": 0,
+        "span": {
+          "start": 7,
+          "end": 107
+        },
+        "mark": "ByHand"
+      },
+      {
+        "face": 0,
+        "span": {
+          "start": 108,
+          "end": 201
+        },
+        "mark": "Auto"
+      }
+    ]
+  }
+}

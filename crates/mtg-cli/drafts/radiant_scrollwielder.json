@@ -1,0 +1,31 @@
+{
+  "oracle_id": "8f5ef838-839a-4eb0-8d65-c8c8def0a233",
+  "name": "Radiant Scrollwielder",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Radiant Scrollwielder",
+      "oracle_fingerprint": "d318b9109e78778e052acded97c6dab7",
+      "abilities": [
+        {
+          "Static": {
+            "affected": {
+              "Each": [
+                { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] },
+                { "ControlledBy": "You" },
+                { "In": "Stack" }
+              ]
+            },
+            "mods": [{ "AddKeyword": "Lifelink" }]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 54, "end": 254 }
+          }
+        }
+      ]
+    }
+  ]
+}

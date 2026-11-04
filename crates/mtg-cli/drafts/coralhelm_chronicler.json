@@ -1,0 +1,25 @@
+{
+  "oracle_id": "621fc513-b16a-4c09-93f8-424e688471e2",
+  "name": "Coralhelm Chronicler",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Coralhelm Chronicler",
+      "oracle_fingerprint": "9c86db2d9a3e2c2310248780da1ddb3d",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "what": [{ "ControlledBy": "You" }, "Kicked"] } },
+            "effects": [{ "Draw": {} }, { "Discard": {} }]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 68, "end": 287 }
+          }
+        }
+      ]
+    }
+  ]
+}

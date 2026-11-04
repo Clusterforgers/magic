@@ -1,0 +1,36 @@
+{
+  "oracle_id": "53029460-50a0-4934-8fa9-0271517cd5d0",
+  "name": "Grolnok, the Omnivore",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Grolnok, the Omnivore",
+      "oracle_fingerprint": "2e1f36b1372c29a03af853f65c49e27a",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": [{ "Subtype": "Frog" }, { "ControlledBy": "You" }] } },
+            "effects": [{ "Mill": { "count": 3 } }]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 55, "end": 163 }
+          }
+        },
+        {
+          "Rule": {
+            "rule": {
+              "MayCast": {
+                "what": [{ "HasCounter": { "Other": "croak" } }],
+                "from": "Exile",
+                "play": true
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

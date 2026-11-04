@@ -1,0 +1,31 @@
+{
+  "oracle_id": "470ec98e-120c-446d-ade6-7d80aa836b55",
+  "name": "Aetherworks Marvel",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Aetherworks Marvel",
+      "oracle_fingerprint": "ed6097da2f58b11598df5b36bce954c7",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "ControlledBy": "You" }],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "effects": [{ "PutCounters": { "on": "You", "counter": { "Other": "energy" } } }]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 91, "end": 280 }
+          }
+        }
+      ]
+    }
+  ]
+}

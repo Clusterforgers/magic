@@ -1,0 +1,43 @@
+{
+  "oracle_id": "e79e67db-3f2e-4002-9e6c-8f06ca9d8af4",
+  "name": "Stalking Yeti",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Stalking Yeti",
+      "oracle_fingerprint": "fa14ba73a1818a586a57065e4e1dc371",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "if": { "Compare": { "left": { "Count": ["This"] }, "op": "Ge", "right": 1 } },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }] } }
+            ],
+            "effects": [
+              {
+                "DealDamage": {
+                  "to": { "Target": 0 },
+                  "amount": { "Stat": { "of": "This", "stat": "Power" } }
+                }
+              },
+              {
+                "DealDamage": {
+                  "source": { "Target": 0 },
+                  "to": "This",
+                  "amount": { "Stat": { "of": { "Target": 0 }, "stat": "Power" } }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 198, "end": 327 }
+          }
+        }
+      ]
+    }
+  ]
+}

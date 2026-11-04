@@ -1,0 +1,27 @@
+{
+  "oracle_id": "ba5a7ac0-b625-42e9-af05-2680a01a95ed",
+  "name": "Fblthp, the Lost",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Fblthp, the Lost",
+      "oracle_fingerprint": "8946c6431c41040801c210ca94b26552",
+      "abilities": [
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 0, "end": 119 }
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "BecomesTarget": { "what": ["This"], "by": ["Spell"] } },
+            "effects": [
+              { "Move": { "what": "This", "to": { "Library": { "place": "Shuffled" } } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,39 @@
+{
+  "oracle_id": "4d01b62b-b924-4da5-8ff5-b2f29d7f19b2",
+  "name": "Ticket Booth // Tunnel of Hate",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Ticket Booth",
+      "oracle_fingerprint": "6505eb42f9c3d47b630481de75bd1989",
+      "abilities": [
+        {
+          "Manual": { "reason": "you apply this clause by hand", "span": { "start": 0, "end": 42 } }
+        }
+      ]
+    },
+    {
+      "name": "Tunnel of Hate",
+      "oracle_fingerprint": "a45fcf15f6937b1fa90e83b78b6ae5f0",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "GroupAttacks": { "what": [{ "Type": "Creature" }, { "ControlledBy": "You" }] }
+            },
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }, "Attacking"] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "AddKeyword": "DoubleStrike" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

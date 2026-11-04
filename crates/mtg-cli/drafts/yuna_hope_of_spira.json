@@ -1,0 +1,47 @@
+{
+  "oracle_id": "3dee768a-612c-4960-bad2-2fe5b83a70c3",
+  "name": "Yuna, Hope of Spira",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Yuna, Hope of Spira",
+      "oracle_fingerprint": "ec1180c61db17048e0131097b5484bf2",
+      "abilities": [
+        {
+          "Static": {
+            "affected": {
+              "Each": [
+                {
+                  "AnyOf": [
+                    "This",
+                    {
+                      "Not": {
+                        "AnyOf": [
+                          { "Not": { "Type": "Creature" } },
+                          { "Not": { "Type": "Enchantment" } },
+                          { "Not": { "ControlledBy": "You" } }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              ]
+            },
+            "mods": [
+              { "AddKeyword": "Trample" },
+              { "AddKeyword": "Lifelink" },
+              { "AddKeyword": { "Ward": "{2}" } }
+            ],
+            "condition": "YourTurn"
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 99, "end": 361 }
+          }
+        }
+      ]
+    }
+  ]
+}

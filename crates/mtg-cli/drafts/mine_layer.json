@@ -1,0 +1,36 @@
+{
+  "oracle_id": "7cf29c48-ba07-4af3-b846-7f81046f4059",
+  "name": "Mine Layer",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Mine Layer",
+      "oracle_fingerprint": "7387d22b748685f89f43e58224423cdc",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{1}{R}" }, "Tap"],
+            "targets": [{ "what": { "Object": [{ "Type": "Land" }] } }],
+            "effects": [
+              { "PutCounters": { "on": { "Target": 0 }, "counter": { "Other": "mine" } } }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "Tapped": { "what": [{ "Type": "Land" }, { "HasCounter": { "Other": "mine" } }] }
+            },
+            "effects": [{ "Destroy": { "what": "Triggering" } }]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 118, "end": 201 }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,35 @@
+{
+  "oracle_id": "e03b553a-3d0d-453e-ad3e-f7d4b9fb2624",
+  "name": "Delaying Shield",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Delaying Shield",
+      "oracle_fingerprint": "9cb7ed3c4383f11e80f6593bac84538e",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Damage": { "to": "You" } },
+            "by": {
+              "Instead": [
+                {
+                  "PutCounters": {
+                    "on": "This",
+                    "counter": { "Other": "delay" },
+                    "count": "Triggering"
+                  }
+                }
+              ]
+            }
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 91, "end": 252 }
+          }
+        }
+      ]
+    }
+  ]
+}

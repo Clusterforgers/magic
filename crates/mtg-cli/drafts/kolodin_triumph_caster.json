@@ -1,0 +1,49 @@
+{
+  "oracle_id": "45682055-d02a-450c-a41d-aa67162ff015",
+  "name": "Kolodin, Triumph Caster",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Kolodin, Triumph Caster",
+      "oracle_fingerprint": "c6c583c1b342a634336c5b7b402b7540",
+      "abilities": [
+        {
+          "Static": {
+            "affected": {
+              "Each": [
+                { "AnyOf": [{ "Subtype": "Mount" }, { "Subtype": "Vehicle" }] },
+                { "ControlledBy": "You" }
+              ]
+            },
+            "mods": [{ "AddKeyword": "Haste" }]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 44, "end": 118 }
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Subtype": "Vehicle" }, { "ControlledBy": "You" }],
+                "to": "Battlefield"
+              }
+            },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "Triggering",
+                  "mods": [{ "AddType": "Artifact" }, { "AddType": "Creature" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

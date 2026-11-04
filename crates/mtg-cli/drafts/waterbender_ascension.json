@@ -1,0 +1,45 @@
+{
+  "oracle_id": "aeddfdc2-149b-4703-ba57-8d844b25ef08",
+  "name": "Waterbender Ascension",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Waterbender Ascension",
+      "oracle_fingerprint": "9eada72376ebf2a599ce97433e71dd1d",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "DealsDamage": {
+                "source": [{ "Type": "Creature" }, { "ControlledBy": "You" }],
+                "to": "EachPlayer",
+                "combat": true
+              }
+            },
+            "effects": [
+              { "PutCounters": { "on": "This", "counter": { "Other": "quest" } } },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "Counters": { "on": "This", "counter": { "Other": "quest" } } },
+                      "op": "Ge",
+                      "right": 4
+                    }
+                  },
+                  "then": [{ "Draw": {} }]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 169, "end": 333 }
+          }
+        }
+      ]
+    }
+  ]
+}

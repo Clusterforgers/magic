@@ -1,0 +1,46 @@
+{
+  "oracle_id": "690ae865-87bd-46b2-8e65-c53bd80c1a18",
+  "name": "Hungering Puppetbeast",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Hungering Puppetbeast",
+      "oracle_fingerprint": "909645cc3e4dfe63456ed810e24c06cb",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Heartwood",
+                      "colors": ["Red", "Green"],
+                      "types": ["Artifact"],
+                      "subtypes": ["Heartwood"],
+                      "abilities": [
+                        {
+                          "Activated": {
+                            "cost": ["Tap"],
+                            "effects": [{ "AddMana": { "mana": { "OneOf": ["Red", "Green"] } } }]
+                          }
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 113, "end": 254 }
+          }
+        }
+      ]
+    }
+  ]
+}

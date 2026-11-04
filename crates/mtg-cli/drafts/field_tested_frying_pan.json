@@ -1,0 +1,45 @@
+{
+  "oracle_id": "0c9e3e6a-0bab-4619-b135-d2dbe824b1f0",
+  "name": "Field-Tested Frying Pan",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Field-Tested Frying Pan",
+      "oracle_fingerprint": "4c1c50aca2d6bc156ca44f232aec5add",
+      "abilities": [
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 0, "end": 129 }
+          }
+        },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [
+              {
+                "GrantAbility": {
+                  "Triggered": {
+                    "when": { "LifeGained": { "who": "You" } },
+                    "effects": [
+                      {
+                        "Continuous": {
+                          "affected": "This",
+                          "mods": [
+                            { "ModifyPT": { "power": "Triggering", "toughness": "Triggering" } }
+                          ],
+                          "duration": "UntilEndOfTurn"
+                        }
+                      }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Equip": "{2}" } }
+      ]
+    }
+  ]
+}

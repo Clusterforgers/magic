@@ -1,0 +1,20 @@
+{
+  "oracle_id": "ae2804c6-fb38-4845-ae21-7f41a766cbba",
+  "name": "Dominating Licid",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Dominating Licid",
+      "oracle_fingerprint": "9ca207c9f5a6bd9c4bf00462a7547ede",
+      "abilities": [
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 0, "end": 169 }
+          }
+        },
+        { "Static": { "affected": "Attached", "mods": [{ "SetController": "You" }] } }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,41 @@
+{
+  "oracle_id": "c77ddcac-ce54-4348-bde2-5d9caf3d5b04",
+  "name": "Spiritcall Enthusiast // Scrollboost",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Spiritcall Enthusiast",
+      "oracle_fingerprint": "9f6b6687dffef3bec7c3593229ec464f",
+      "abilities": [
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 0, "end": 159 }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Scrollboost",
+      "oracle_fingerprint": "7d5419721225723072ce615d21aad066",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }] }, "bounds": { "min": 1, "max": 2 } }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "ModifyPT": { "power": 2, "toughness": 2 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

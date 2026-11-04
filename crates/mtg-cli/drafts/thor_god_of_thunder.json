@@ -1,0 +1,53 @@
+{
+  "oracle_id": "2842217a-173e-4879-8b25-fefe2fc1123f",
+  "name": "Thor, God of Thunder",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Thor, God of Thunder",
+      "oracle_fingerprint": "e863523b9844e1d8a0876ffeb5c635a7",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    {
+                      "AnyOf": [
+                        { "Subtype": "Equipment" },
+                        { "Type": "Instant" },
+                        { "Type": "Sorcery" }
+                      ]
+                    },
+                    { "OwnedBy": "You" },
+                    { "In": "Graveyard" }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              { "Exile": { "what": { "Target": 0 }, "as": "exiled" } },
+              {
+                "Rule": {
+                  "rule": {
+                    "MayCast": { "from": "Exile", "only": { "Bound": "exiled" }, "play": true }
+                  },
+                  "duration": "UntilEndOfYourNextTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 152, "end": 256 }
+          }
+        }
+      ]
+    }
+  ]
+}

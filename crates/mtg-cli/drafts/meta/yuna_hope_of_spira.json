@@ -1,0 +1,42 @@
+{
+  "source": "forge",
+  "oracle_matches": true,
+  "lines": [
+    {
+      "face": 0,
+      "tag": "T",
+      "text": "At the beginning of your end step, return up to one target enchantment card from your graveyard to the battlefield with a finality counter on it. (If a permanent with a finality counter on it would be put into a graveyard from the battlefield, exile it instead.)",
+      "abilities": [],
+      "gap": "key:ChangeZone.WithCountersType"
+    },
+    {
+      "face": 0,
+      "tag": "S",
+      "text": "During your turn, NICKNAME and enchantment creatures you control have trample, lifelink, and ward {2}.",
+      "abilities": [
+        0
+      ],
+      "gap": null
+    }
+  ],
+  "proof": {
+    "marks": [
+      {
+        "face": 0,
+        "span": {
+          "start": 0,
+          "end": 98
+        },
+        "mark": "Auto"
+      },
+      {
+        "face": 0,
+        "span": {
+          "start": 99,
+          "end": 361
+        },
+        "mark": "ByHand"
+      }
+    ]
+  }
+}

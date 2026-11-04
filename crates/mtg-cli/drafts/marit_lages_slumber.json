@@ -1,0 +1,45 @@
+{
+  "oracle_id": "a11d890e-38d4-467c-bc04-948979c142e0",
+  "name": "Marit Lage's Slumber",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Marit Lage's Slumber",
+      "oracle_fingerprint": "2344ac45cabe8c2ec549adcfd74fb7a5",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [
+                  {
+                    "AnyOf": [
+                      "This",
+                      {
+                        "Not": {
+                          "AnyOf": [
+                            { "Not": { "Supertype": "Snow" } },
+                            { "Not": "Other" },
+                            { "Not": { "ControlledBy": "You" } }
+                          ]
+                        }
+                      }
+                    ]
+                  }
+                ],
+                "to": "Battlefield"
+              }
+            },
+            "effects": [{ "Scry": {} }]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 84, "end": 300 }
+          }
+        }
+      ]
+    }
+  ]
+}

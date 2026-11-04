@@ -1,0 +1,26 @@
+{
+  "oracle_id": "f4350c4e-7e53-4401-b889-14bed27bee9c",
+  "name": "Grafted Exoskeleton",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Grafted Exoskeleton",
+      "oracle_fingerprint": "7a235cc568a875545ae6b6802e0943a3",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "ModifyPT": { "power": 2, "toughness": 2 } }, { "AddKeyword": "Infect" }]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 153, "end": 239 }
+          }
+        },
+        { "Keyword": { "Equip": "{2}" } }
+      ]
+    }
+  ]
+}

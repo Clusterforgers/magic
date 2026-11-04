@@ -1,0 +1,42 @@
+{
+  "source": "forge",
+  "oracle_matches": true,
+  "lines": [
+    {
+      "face": 0,
+      "tag": "T",
+      "text": "Whenever you cast a spell, if the amount of mana spent to cast it was less than its mana value, target opponent loses life equal to the difference.",
+      "abilities": [],
+      "gap": "key:Trigger.SpellCast.ValidSAonCard"
+    },
+    {
+      "face": 0,
+      "tag": "S",
+      "text": "Each spell you cast that's a Demon, Horror, or Nightmare costs {1} less to cast.",
+      "abilities": [
+        0
+      ],
+      "gap": null
+    }
+  ],
+  "proof": {
+    "marks": [
+      {
+        "face": 0,
+        "span": {
+          "start": 0,
+          "end": 80
+        },
+        "mark": "Auto"
+      },
+      {
+        "face": 0,
+        "span": {
+          "start": 81,
+          "end": 228
+        },
+        "mark": "ByHand"
+      }
+    ]
+  }
+}

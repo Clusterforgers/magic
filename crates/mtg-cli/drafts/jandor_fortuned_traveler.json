@@ -1,0 +1,38 @@
+{
+  "oracle_id": "8c05de43-6f9e-46c1-bc01-551a7fc570d0",
+  "name": "Jandor, Fortuned Traveler",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Jandor, Fortuned Traveler",
+      "oracle_fingerprint": "035dff777cfc0a68572093154f63f839",
+      "abilities": [
+        {
+          "Static": {
+            "affected": {
+              "Each": [
+                {
+                  "AnyOf": [
+                    { "Subtype": "Beast" },
+                    { "Subtype": "Camel" },
+                    { "Subtype": "Horse" },
+                    { "Subtype": "Elephant" },
+                    { "Subtype": "Wolf" }
+                  ]
+                },
+                { "ControlledBy": "You" }
+              ]
+            },
+            "mods": [{ "AddKeyword": { "Saddle": 2 } }, { "AddSubtype": "Mount" }]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 274, "end": 389 }
+          }
+        }
+      ]
+    }
+  ]
+}

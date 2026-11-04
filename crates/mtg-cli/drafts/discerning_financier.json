@@ -1,0 +1,37 @@
+{
+  "oracle_id": "734a5186-caa6-4811-b6d7-91b7b32fc403",
+  "name": "Discerning Financier",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Discerning Financier",
+      "oracle_fingerprint": "e9a4e3c07cb75dcbe77e9ebad4f3b2bd",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "if": {
+              "Compare": {
+                "left": {
+                  "Largest": {
+                    "who": "Opponents",
+                    "of": [{ "Type": "Land" }, { "ControlledBy": "You" }]
+                  }
+                },
+                "op": "Gt",
+                "right": { "Count": [{ "Type": "Land" }, { "ControlledBy": "You" }] }
+              }
+            },
+            "effects": [{ "CreateToken": { "token": { "Named": "treasure" } } }]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 183, "end": 288 }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,26 @@
+{
+  "oracle_id": "76dfa5c2-1ea6-4f89-9903-26998636845e",
+  "name": "Hithlain Rope",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Hithlain Rope",
+      "oracle_fingerprint": "4ca475652b0661f3951bfe9b54fe82de",
+      "abilities": [
+        { "Rule": { "rule": { "Cant": { "who": "This", "action": "Sacrifice" } } } },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 35, "end": 194 }
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 195, "end": 274 }
+          }
+        }
+      ]
+    }
+  ]
+}

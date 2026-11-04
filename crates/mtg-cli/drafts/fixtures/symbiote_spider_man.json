@@ -1,0 +1,144 @@
+{
+  "object": "card",
+  "id": "6a21c0ff-b51a-4946-9737-7872a7eef97b",
+  "oracle_id": "bc681ecf-2a52-4782-9a47-90f5a9f435d8",
+  "multiverse_ids": [],
+  "resource_id": "5702E1DA9692AAEC06A24B11FD2A61ABB5996B7D1BCFCB7E48E694D93928F27D",
+  "mtgo_id": 153555,
+  "arena_id": 97974,
+  "tcgplayer_id": 646629,
+  "cardmarket_id": 839578,
+  "name": "Symbiote Spider-Man",
+  "lang": "en",
+  "released_at": "2025-09-26",
+  "uri": "https://api.scryfall.com/cards/6a21c0ff-b51a-4946-9737-7872a7eef97b",
+  "scryfall_uri": "https://scryfall.com/card/spm/156/symbiote-spider-man?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T01:15:10Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/6/a/6a21c0ff-b51a-4946-9737-7872a7eef97b.jpg?1783905310",
+    "normal": "https://cards.scryfall.io/normal/front/6/a/6a21c0ff-b51a-4946-9737-7872a7eef97b.jpg?1783905310",
+    "large": "https://cards.scryfall.io/large/front/6/a/6a21c0ff-b51a-4946-9737-7872a7eef97b.jpg?1783905310",
+    "png": "https://cards.scryfall.io/png/front/6/a/6a21c0ff-b51a-4946-9737-7872a7eef97b.png?1783905310",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/6/a/6a21c0ff-b51a-4946-9737-7872a7eef97b.jpg?1783905310",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/6/a/6a21c0ff-b51a-4946-9737-7872a7eef97b.jpg?1783905310",
+    "thumb": "https://cards.scryfall.io/thumb/front/6/a/6a21c0ff-b51a-4946-9737-7872a7eef97b.webp?1783905310",
+    "grid": "https://cards.scryfall.io/grid/front/6/a/6a21c0ff-b51a-4946-9737-7872a7eef97b.webp?1783905310",
+    "display": "https://cards.scryfall.io/display/front/6/a/6a21c0ff-b51a-4946-9737-7872a7eef97b.webp?1783905310",
+    "art": "https://cards.scryfall.io/art/front/6/a/6a21c0ff-b51a-4946-9737-7872a7eef97b.webp?1783905310",
+    "crop": "https://cards.scryfall.io/crop/front/6/a/6a21c0ff-b51a-4946-9737-7872a7eef97b.webp?1783905310",
+    "jpeg": "https://cards.scryfall.io/normal/front/6/a/6a21c0ff-b51a-4946-9737-7872a7eef97b.jpg?1783905310"
+  },
+  "mana_cost": "{2}{U/B}",
+  "cmc": 3.0,
+  "type_line": "Legendary Creature — Symbiote Spider Hero",
+  "oracle_text": "Whenever this creature deals combat damage to a player, look at that many cards from the top of your library. Put one of them into your hand and the rest into your graveyard.\nFind New Host — {2}{U/B}, Exile this card from your graveyard: Put a +1/+1 counter on target creature you control. It gains this card's other abilities. Activate only as a sorcery.",
+  "power": "2",
+  "toughness": "4",
+  "colors": [
+    "B",
+    "U"
+  ],
+  "color_identity": [
+    "B",
+    "U"
+  ],
+  "keywords": [
+    "Find New Host"
+  ],
+  "legalities": {
+    "standard": "legal",
+    "future": "legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo",
+    "arena"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "a1c7b891-9e96-434c-9994-be58b62b27f1",
+  "set": "spm",
+  "set_name": "Marvel's Spider-Man",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/a1c7b891-9e96-434c-9994-be58b62b27f1",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Aspm&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/spm?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/6a21c0ff-b51a-4946-9737-7872a7eef97b/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Abc681ecf-2a52-4782-9a47-90f5a9f435d8&unique=prints",
+  "collector_number": "156",
+  "digital": false,
+  "rarity": "rare",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Paolo Rivera",
+  "artist_ids": [
+    "2ea03ab2-57c0-4106-b970-712abb35de31"
+  ],
+  "illustration_id": "57923e37-7f4a-407e-bc45-a03546adf4e3",
+  "border_color": "black",
+  "frame": "2015",
+  "frame_effects": [
+    "legendary"
+  ],
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "promo_types": [
+    "universesbeyond"
+  ],
+  "edhrec_rank": 9494,
+  "penny_rank": 9362,
+  "prices": {
+    "usd": "0.38",
+    "usd_foil": "0.68",
+    "usd_etched": null,
+    "eur": "0.39",
+    "eur_foil": "0.69",
+    "tix": "0.10"
+  },
+  "related_uris": {
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DSymbiote%2BSpider-Man",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DSymbiote%2BSpider-Man",
+    "edhrec": "https://edhrec.com/route/?cc=Symbiote+Spider-Man"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F646629%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=839578&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/153555?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

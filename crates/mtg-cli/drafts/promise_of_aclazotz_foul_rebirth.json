@@ -1,0 +1,66 @@
+{
+  "oracle_id": "4ef4b4f9-47cd-4862-8cbb-b6e624d6e6fc",
+  "name": "Promise of Aclazotz // Foul Rebirth",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Promise of Aclazotz",
+      "oracle_fingerprint": "acbb95c7cf38a044f731f1d3608a9266",
+      "abilities": [
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 0, "end": 159 }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Foul Rebirth",
+      "oracle_fingerprint": "20163cb20ff29d4998e3d425403e9779",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Sacrifice": {
+                  "filter": [{ "Type": "Creature" }, { "Not": { "Subtype": "Demon" } }],
+                  "as": "sacrificed"
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Bound": "sacrificed" },
+                      "selector": [],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [
+                    {
+                      "CreateToken": {
+                        "token": {
+                          "Custom": {
+                            "name": "Vampire Demon",
+                            "colors": ["White", "Black"],
+                            "types": ["Creature"],
+                            "subtypes": ["Vampire", "Demon"],
+                            "power": 4,
+                            "toughness": 3,
+                            "abilities": [{ "Keyword": "Flying" }]
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,30 @@
+{
+  "oracle_id": "02f31e00-646d-4971-8704-1583bbfcddd6",
+  "name": "Park Bleater",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Park Bleater",
+      "oracle_fingerprint": "2603becb597eb415056618fbe0e97633",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Creature" }, "Other", { "OwnedBy": "You" }],
+                "to": "Battlefield"
+              }
+            },
+            "effects": [{ "PutCounters": { "on": "You", "counter": { "Other": "ticket" } } }]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 56, "end": 133 }
+          }
+        }
+      ]
+    }
+  ]
+}

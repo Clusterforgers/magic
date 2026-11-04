@@ -1,0 +1,42 @@
+{
+  "source": "forge",
+  "oracle_matches": true,
+  "lines": [
+    {
+      "face": 0,
+      "tag": "T",
+      "text": "At the beginning of your end step, if you control two or more tapped creatures, conjure a card named Stonybrook Schoolmaster onto the battlefield tapped.",
+      "abilities": [],
+      "gap": "effect:MakeCard"
+    },
+    {
+      "face": 0,
+      "tag": "S",
+      "text": "The first Merfolk spell you cast each turn has convoke.",
+      "abilities": [
+        0
+      ],
+      "gap": null
+    }
+  ],
+  "proof": {
+    "marks": [
+      {
+        "face": 0,
+        "span": {
+          "start": 0,
+          "end": 55
+        },
+        "mark": "Auto"
+      },
+      {
+        "face": 0,
+        "span": {
+          "start": 56,
+          "end": 209
+        },
+        "mark": "ByHand"
+      }
+    ]
+  }
+}

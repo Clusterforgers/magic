@@ -1,0 +1,36 @@
+{
+  "oracle_id": "02718076-4c71-4bf5-988f-e6f94fbf0aef",
+  "name": "Spara's Adjudicators",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Spara's Adjudicators",
+      "oracle_fingerprint": "6c1e0bf2f64e6f13909ebfbe703400a9",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }] } }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": ["CantAttack", "CantBlock"],
+                  "duration": "UntilYourNextTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 108, "end": 283 }
+          }
+        }
+      ]
+    }
+  ]
+}

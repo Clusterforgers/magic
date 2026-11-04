@@ -1,0 +1,44 @@
+{
+  "oracle_id": "90aa8344-ffc7-4a1a-a02a-80eceb1babe5",
+  "name": "The Fifteenth Doctor",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "The Fifteenth Doctor",
+      "oracle_fingerprint": "62a135365241ee7a16674c3cbb522682",
+      "abilities": [
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 0, "end": 150 }
+          }
+        },
+        {
+          "Static": {
+            "affected": {
+              "Each": [
+                { "Not": { "Type": "Artifact" } },
+                { "ControlledBy": "You" },
+                { "In": "Stack" }
+              ]
+            },
+            "mods": [{ "AddKeyword": "Improvise" }],
+            "condition": {
+              "Compare": {
+                "left": {
+                  "Tally": {
+                    "event": "SpellCast",
+                    "who": "EachPlayer",
+                    "filter": [{ "Not": { "Type": "Artifact" } }, { "ControlledBy": "You" }]
+                  }
+                },
+                "op": "Eq",
+                "right": 0
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

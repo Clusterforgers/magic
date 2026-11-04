@@ -1,0 +1,33 @@
+{
+  "oracle_id": "43c69d19-c06c-470a-bdba-a0335ff2d655",
+  "name": "Floodpits Drowner",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Floodpits Drowner",
+      "oracle_fingerprint": "2726357de2c4e2c3812cef01073b6e53",
+      "abilities": [
+        { "Keyword": "Flash" },
+        { "Keyword": "Vigilance" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }] } }
+            ],
+            "effects": [
+              { "Tap": { "what": { "Target": 0 } } },
+              { "PutCounters": { "on": { "Target": 0 }, "counter": { "Other": "stun" } } }
+            ]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 114, "end": 224 }
+          }
+        }
+      ]
+    }
+  ]
+}

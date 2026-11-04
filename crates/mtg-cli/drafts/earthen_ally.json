@@ -1,0 +1,37 @@
+{
+  "oracle_id": "913bca28-faf9-42e6-a8c0-469cd9bc0208",
+  "name": "Earthen Ally",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Earthen Ally",
+      "oracle_fingerprint": "151bf9d3208daf7f1688c5a6cf77baf8",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              {
+                "ModifyPT": {
+                  "power": {
+                    "Distinct": {
+                      "of": [{ "Subtype": "Ally" }, { "ControlledBy": "You" }],
+                      "stat": "Colors"
+                    }
+                  },
+                  "toughness": 0
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 66, "end": 274 }
+          }
+        }
+      ]
+    }
+  ]
+}

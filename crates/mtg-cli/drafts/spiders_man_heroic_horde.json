@@ -1,0 +1,32 @@
+{
+  "oracle_id": "d21d7557-9702-46c1-8277-42a3442084c2",
+  "name": "Spiders-Man, Heroic Horde",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Spiders-Man, Heroic Horde",
+      "oracle_fingerprint": "d2457f208f06175b621704375fb374d9",
+      "abilities": [
+        {
+          "AltCast": {
+            "way": "WebSlinging",
+            "cost": [
+              { "Mana": "{4}{G}{G}" },
+              {
+                "ReturnToHand": {
+                  "filter": [{ "Type": "Creature" }, { "ControlledBy": "You" }, "Tapped"]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 133, "end": 271 }
+          }
+        }
+      ]
+    }
+  ]
+}

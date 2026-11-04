@@ -1,0 +1,34 @@
+{
+  "oracle_id": "7d079c78-b2a9-444f-ab54-c61c041baa6d",
+  "name": "Selfless Squire",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Selfless Squire",
+      "oracle_fingerprint": "12c1cbb225e3d17cfa2a9d1f9b038307",
+      "abilities": [
+        { "Keyword": "Flash" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Shield": {
+                  "when": { "Damage": { "to": "You" } },
+                  "by": "Prevent",
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 90, "end": 193 }
+          }
+        }
+      ]
+    }
+  ]
+}

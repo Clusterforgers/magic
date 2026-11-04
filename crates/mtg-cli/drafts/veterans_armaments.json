@@ -1,0 +1,73 @@
+{
+  "oracle_id": "a671f8ca-1177-4511-9d51-ca4ff12a5104",
+  "name": "Veteran's Armaments",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Veteran's Armaments",
+      "oracle_fingerprint": "03b832bf9b1ca3fb5ff1bd0126902ebe",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [
+              {
+                "GrantAbility": {
+                  "Triggered": {
+                    "when": { "Attacks": { "what": ["This"] } },
+                    "effects": [
+                      {
+                        "Continuous": {
+                          "affected": "This",
+                          "mods": [
+                            {
+                              "ModifyPT": {
+                                "power": { "Count": [{ "Type": "Creature" }, "Attacking"] },
+                                "toughness": { "Count": [{ "Type": "Creature" }, "Attacking"] }
+                              }
+                            }
+                          ],
+                          "duration": "UntilEndOfTurn"
+                        }
+                      }
+                    ]
+                  }
+                }
+              },
+              {
+                "GrantAbility": {
+                  "Triggered": {
+                    "when": { "Blocks": { "what": ["This"] } },
+                    "effects": [
+                      {
+                        "Continuous": {
+                          "affected": "This",
+                          "mods": [
+                            {
+                              "ModifyPT": {
+                                "power": { "Count": [{ "Type": "Creature" }, "Attacking"] },
+                                "toughness": { "Count": [{ "Type": "Creature" }, "Attacking"] }
+                              }
+                            }
+                          ],
+                          "duration": "UntilEndOfTurn"
+                        }
+                      }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 127, "end": 199 }
+          }
+        },
+        { "Keyword": { "Equip": "{2}" } }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,59 @@
+{
+  "source": "forge",
+  "oracle_matches": true,
+  "lines": [
+    {
+      "face": 0,
+      "tag": "A",
+      "text": "Damage can't be prevented this turn. If a source you control would deal damage this turn, it deals double that damage instead.",
+      "abilities": [],
+      "gap": "static:CantPreventDamage"
+    },
+    {
+      "face": 1,
+      "tag": "K",
+      "text": "Aftermath",
+      "abilities": [
+        0
+      ],
+      "gap": null
+    },
+    {
+      "face": 1,
+      "tag": "A",
+      "text": "CARDNAME deals 2 damage to target creature and 2 damage to target player or planeswalker.",
+      "abilities": [
+        1
+      ],
+      "gap": null
+    }
+  ],
+  "proof": {
+    "marks": [
+      {
+        "face": 0,
+        "span": {
+          "start": 0,
+          "end": 126
+        },
+        "mark": "ByHand"
+      },
+      {
+        "face": 1,
+        "span": {
+          "start": 0,
+          "end": 68
+        },
+        "mark": "Auto"
+      },
+      {
+        "face": 1,
+        "span": {
+          "start": 69,
+          "end": 156
+        },
+        "mark": "Auto"
+      }
+    ]
+  }
+}

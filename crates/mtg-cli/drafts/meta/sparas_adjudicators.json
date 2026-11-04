@@ -1,0 +1,42 @@
+{
+  "source": "forge",
+  "oracle_matches": true,
+  "lines": [
+    {
+      "face": 0,
+      "tag": "A",
+      "text": "Target land gains \"{T}: Add {G}, {W}, or {U}\" until CARDNAME is cast from exile. You may cast CARDNAME for as long as it remains exiled.",
+      "abilities": [],
+      "gap": "key:Effect.ImprintCards"
+    },
+    {
+      "face": 0,
+      "tag": "T",
+      "text": "When CARDNAME enters, target creature an opponent controls can't attack or block until your next turn.",
+      "abilities": [
+        0
+      ],
+      "gap": null
+    }
+  ],
+  "proof": {
+    "marks": [
+      {
+        "face": 0,
+        "span": {
+          "start": 0,
+          "end": 107
+        },
+        "mark": "Auto"
+      },
+      {
+        "face": 0,
+        "span": {
+          "start": 108,
+          "end": 283
+        },
+        "mark": "ByHand"
+      }
+    ]
+  }
+}

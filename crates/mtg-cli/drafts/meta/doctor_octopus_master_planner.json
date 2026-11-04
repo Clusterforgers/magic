@@ -1,0 +1,59 @@
+{
+  "source": "forge",
+  "oracle_matches": true,
+  "lines": [
+    {
+      "face": 0,
+      "tag": "T",
+      "text": "At the beginning of your end step, if you have fewer than eight cards in hand, draw cards equal to the difference.",
+      "abilities": [],
+      "gap": "amount:Number$"
+    },
+    {
+      "face": 0,
+      "tag": "S",
+      "text": "Other Villains you control get +2/+2.",
+      "abilities": [
+        0
+      ],
+      "gap": null
+    },
+    {
+      "face": 0,
+      "tag": "S",
+      "text": "Your maximum hand size is eight.",
+      "abilities": [
+        1
+      ],
+      "gap": null
+    }
+  ],
+  "proof": {
+    "marks": [
+      {
+        "face": 0,
+        "span": {
+          "start": 0,
+          "end": 37
+        },
+        "mark": "Auto"
+      },
+      {
+        "face": 0,
+        "span": {
+          "start": 38,
+          "end": 70
+        },
+        "mark": "Auto"
+      },
+      {
+        "face": 0,
+        "span": {
+          "start": 71,
+          "end": 185
+        },
+        "mark": "ByHand"
+      }
+    ]
+  }
+}

@@ -1,0 +1,42 @@
+{
+  "source": "forge",
+  "oracle_matches": true,
+  "lines": [
+    {
+      "face": 0,
+      "tag": "A",
+      "text": "Search your library for a card named Magitek Infantry, put it onto the battlefield tapped, then shuffle.",
+      "abilities": [],
+      "gap": "valid:namedMagitek Infantry"
+    },
+    {
+      "face": 0,
+      "tag": "S",
+      "text": "This creature gets +1/+0 as long as you control another artifact.",
+      "abilities": [
+        0
+      ],
+      "gap": null
+    }
+  ],
+  "proof": {
+    "marks": [
+      {
+        "face": 0,
+        "span": {
+          "start": 0,
+          "end": 65
+        },
+        "mark": "Auto"
+      },
+      {
+        "face": 0,
+        "span": {
+          "start": 66,
+          "end": 178
+        },
+        "mark": "ByHand"
+      }
+    ]
+  }
+}

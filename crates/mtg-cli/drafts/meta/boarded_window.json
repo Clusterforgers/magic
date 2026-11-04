@@ -1,0 +1,42 @@
+{
+  "source": "forge",
+  "oracle_matches": true,
+  "lines": [
+    {
+      "face": 0,
+      "tag": "T",
+      "text": "At the beginning of each end step, if you were dealt 4 or more damage this turn, exile CARDNAME.",
+      "abilities": [],
+      "gap": "amount:Count$LifeYouLostThisTurn"
+    },
+    {
+      "face": 0,
+      "tag": "S",
+      "text": "Creatures attacking you get -1/-0.",
+      "abilities": [
+        0
+      ],
+      "gap": null
+    }
+  ],
+  "proof": {
+    "marks": [
+      {
+        "face": 0,
+        "span": {
+          "start": 0,
+          "end": 34
+        },
+        "mark": "Auto"
+      },
+      {
+        "face": 0,
+        "span": {
+          "start": 35,
+          "end": 136
+        },
+        "mark": "ByHand"
+      }
+    ]
+  }
+}

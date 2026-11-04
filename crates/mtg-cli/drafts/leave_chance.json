@@ -1,0 +1,37 @@
+{
+  "oracle_id": "dff5d16f-3a41-4873-8188-076e77f18c75",
+  "name": "Leave // Chance",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Leave",
+      "oracle_fingerprint": "427579c3d5d304c79f40f0d1c59681dd",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": { "Object": [{ "OwnedBy": "You" }] },
+                "bounds": { "min": 0, "max": { "Count": [{ "OwnedBy": "You" }] } }
+              }
+            ],
+            "effects": [{ "Move": { "what": { "Target": 0 }, "to": "Hand" } }]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Chance",
+      "oracle_fingerprint": "e20bcd73cbfdd49caaaf2708146bc9f0",
+      "abilities": [
+        { "Keyword": "Aftermath" },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 69, "end": 124 }
+          }
+        }
+      ]
+    }
+  ]
+}

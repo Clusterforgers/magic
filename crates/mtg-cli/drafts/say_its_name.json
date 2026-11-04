@@ -1,0 +1,40 @@
+{
+  "oracle_id": "474f0675-4088-4f77-8081-f9ed7d492837",
+  "name": "Say Its Name",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Say Its Name",
+      "oracle_fingerprint": "5a3d81e158183fba28ae6df2c93d1470",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "Mill": { "count": 3 } },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "AnyOf": [{ "Type": "Creature" }, { "Type": "Land" }] },
+                      { "OwnedBy": "You" },
+                      { "In": "Graveyard" }
+                    ]
+                  },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "picked"
+                }
+              },
+              { "Move": { "what": { "Bound": "picked" }, "to": "Hand" } }
+            ]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 96, "end": 366 }
+          }
+        }
+      ]
+    }
+  ]
+}

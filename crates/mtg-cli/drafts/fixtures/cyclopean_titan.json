@@ -1,0 +1,128 @@
+{
+  "object": "card",
+  "id": "42940241-a173-4f0a-85ec-be589c9c048b",
+  "oracle_id": "31f59a3e-a040-451c-999e-1f60cb957c57",
+  "multiverse_ids": [],
+  "tcgplayer_id": 247011,
+  "cardmarket_id": 574481,
+  "name": "Cyclopean Titan",
+  "lang": "en",
+  "released_at": "2021-08-20",
+  "uri": "https://api.scryfall.com/cards/42940241-a173-4f0a-85ec-be589c9c048b",
+  "scryfall_uri": "https://scryfall.com/card/cmb2/40/cyclopean-titan?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T06:59:08Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/4/2/42940241-a173-4f0a-85ec-be589c9c048b.jpg?1783925948",
+    "normal": "https://cards.scryfall.io/normal/front/4/2/42940241-a173-4f0a-85ec-be589c9c048b.jpg?1783925948",
+    "large": "https://cards.scryfall.io/large/front/4/2/42940241-a173-4f0a-85ec-be589c9c048b.jpg?1783925948",
+    "png": "https://cards.scryfall.io/png/front/4/2/42940241-a173-4f0a-85ec-be589c9c048b.png?1783925948",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/4/2/42940241-a173-4f0a-85ec-be589c9c048b.jpg?1783925948",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/4/2/42940241-a173-4f0a-85ec-be589c9c048b.jpg?1783925948",
+    "thumb": "https://cards.scryfall.io/thumb/front/4/2/42940241-a173-4f0a-85ec-be589c9c048b.webp?1783925948",
+    "grid": "https://cards.scryfall.io/grid/front/4/2/42940241-a173-4f0a-85ec-be589c9c048b.webp?1783925948",
+    "display": "https://cards.scryfall.io/display/front/4/2/42940241-a173-4f0a-85ec-be589c9c048b.webp?1783925948",
+    "art": "https://cards.scryfall.io/art/front/4/2/42940241-a173-4f0a-85ec-be589c9c048b.webp?1783925948",
+    "crop": "https://cards.scryfall.io/crop/front/4/2/42940241-a173-4f0a-85ec-be589c9c048b.webp?1783925948",
+    "jpeg": "https://cards.scryfall.io/normal/front/4/2/42940241-a173-4f0a-85ec-be589c9c048b.jpg?1783925948"
+  },
+  "mana_cost": "{4}{B}{B}{B}{B}",
+  "cmc": 8.0,
+  "type_line": "Creature — Zombie Giant",
+  "oracle_text": "When Cyclopean Titan dies, two target lands become Swamps. Exile Cyclopean Titan.\n{3}, {T}: Tap target creature, then return Cyclopean Titan to its owner's hand.",
+  "power": "8",
+  "toughness": "4",
+  "colors": [
+    "B"
+  ],
+  "color_identity": [
+    "B"
+  ],
+  "keywords": [],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "not_legal",
+    "pauper": "not_legal",
+    "vintage": "not_legal",
+    "penny": "not_legal",
+    "commander": "not_legal",
+    "oathbreaker": "not_legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "not_legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": true,
+  "variation": false,
+  "set_id": "e18a60f0-bf18-487e-a7bb-a23ac6bd7a65",
+  "set": "cmb2",
+  "set_name": "Mystery Booster Playtest Cards 2021",
+  "set_type": "funny",
+  "set_uri": "https://api.scryfall.com/sets/e18a60f0-bf18-487e-a7bb-a23ac6bd7a65",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Acmb2&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/cmb2?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/42940241-a173-4f0a-85ec-be589c9c048b/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A31f59a3e-a040-451c-999e-1f60cb957c57&unique=prints",
+  "collector_number": "40",
+  "digital": false,
+  "rarity": "rare",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Matt Smith",
+  "artist_ids": [
+    "fd95dd9c-6136-4452-bdf1-6a50a3d15339"
+  ],
+  "illustration_id": "96f1da10-6fd2-4bfd-ab14-516987ed9717",
+  "border_color": "black",
+  "frame": "2015",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "promo_types": [
+    "playtest"
+  ],
+  "prices": {
+    "usd": "0.21",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "0.19",
+    "eur_foil": null,
+    "tix": null
+  },
+  "related_uris": {
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DCyclopean%2BTitan",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DCyclopean%2BTitan",
+    "edhrec": "https://edhrec.com/route/?cc=Cyclopean+Titan"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F247011%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=574481&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards?affiliate_id=scryfall&data%5Bsearch%5D=Cyclopean+Titan&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

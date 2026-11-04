@@ -1,0 +1,28 @@
+{
+  "oracle_id": "65fb0e20-61f8-4c61-bc08-7f6f718ee9ee",
+  "name": "Primo, the Unbounded",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Primo, the Unbounded",
+      "oracle_fingerprint": "6be60db7c9198f4c0e48ee4c6679c524",
+      "abilities": [
+        { "Keyword": "Trample" },
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": {
+              "WithCounters": { "counter": "+1/+1", "count": { "Times": { "by": 2, "of": "X" } } }
+            }
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 56, "end": 264 }
+          }
+        }
+      ]
+    }
+  ]
+}

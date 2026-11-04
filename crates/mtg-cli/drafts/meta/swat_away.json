@@ -1,0 +1,42 @@
+{
+  "source": "forge",
+  "oracle_matches": true,
+  "lines": [
+    {
+      "face": 0,
+      "tag": "A",
+      "text": "The owner of target spell or creature puts it on their choice of the top or bottom of their library.",
+      "abilities": [],
+      "gap": "zone:Origin=Battlefield,Stack"
+    },
+    {
+      "face": 0,
+      "tag": "S",
+      "text": "This spell costs {2} less to cast if a creature is attacking you.",
+      "abilities": [
+        0
+      ],
+      "gap": null
+    }
+  ],
+  "proof": {
+    "marks": [
+      {
+        "face": 0,
+        "span": {
+          "start": 0,
+          "end": 65
+        },
+        "mark": "Auto"
+      },
+      {
+        "face": 0,
+        "span": {
+          "start": 66,
+          "end": 166
+        },
+        "mark": "ByHand"
+      }
+    ]
+  }
+}

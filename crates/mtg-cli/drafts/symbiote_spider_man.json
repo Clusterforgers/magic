@@ -1,0 +1,36 @@
+{
+  "oracle_id": "bc681ecf-2a52-4782-9a47-90f5a9f435d8",
+  "name": "Symbiote Spider-Man",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Symbiote Spider-Man",
+      "oracle_fingerprint": "11d62b729dfd24b0d73abcd477493616",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": ["This"], "to": "EachPlayer", "combat": true } },
+            "effects": [
+              { "LookAtTop": { "count": "Triggering", "as": "top" } },
+              {
+                "Choose": {
+                  "from": { "Each": [{ "In": "Library" }, { "Is": { "Bound": "top" } }] },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "kept2"
+                }
+              },
+              { "Move": { "what": { "Bound": "kept2" }, "to": "Hand" } },
+              { "Move": { "what": { "Bound": "top" }, "to": "Graveyard" } }
+            ]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 175, "end": 355 }
+          }
+        }
+      ]
+    }
+  ]
+}

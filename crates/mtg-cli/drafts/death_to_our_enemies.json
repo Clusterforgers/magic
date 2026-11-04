@@ -1,0 +1,28 @@
+{
+  "oracle_id": "c2b2b743-dfc7-439e-8563-1ccce54422bd",
+  "name": "Death to Our Enemies",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Death to Our Enemies",
+      "oracle_fingerprint": "cd56b864287db6d788e5a1078c540163",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "what": [{ "Not": { "Type": "Creature" } }], "by": "You" } },
+            "effects": [
+              { "CreateToken": { "token": { "Named": "treasure" }, "tapped": true } },
+              { "PutCounters": { "on": "This", "counter": { "Other": "plan" } } }
+            ]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 114, "end": 263 }
+          }
+        }
+      ]
+    }
+  ]
+}

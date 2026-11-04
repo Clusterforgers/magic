@@ -1,0 +1,40 @@
+{
+  "oracle_id": "5ae50388-7e36-4a83-a618-0148944c5099",
+  "name": "The Motherlode, Excavator",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "The Motherlode, Excavator",
+      "oracle_fingerprint": "c70322c81e79a259279143947bd7cdc1",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              {
+                "PutCounters": {
+                  "on": "You",
+                  "counter": { "Other": "energy" },
+                  "count": {
+                    "Count": [
+                      { "Type": "Land" },
+                      { "Not": { "Supertype": "Basic" } },
+                      { "ControlledBy": { "Target": 0 } }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 155, "end": 355 }
+          }
+        }
+      ]
+    }
+  ]
+}

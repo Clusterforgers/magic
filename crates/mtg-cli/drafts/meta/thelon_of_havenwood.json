@@ -1,0 +1,42 @@
+{
+  "source": "forge",
+  "oracle_matches": true,
+  "lines": [
+    {
+      "face": 0,
+      "tag": "A",
+      "text": "Put a spore counter on each Fungus on the battlefield.",
+      "abilities": [],
+      "gap": "cost:ExileAnyGrave"
+    },
+    {
+      "face": 0,
+      "tag": "S",
+      "text": "Each Fungus creature gets +1/+1 for each spore counter on it.",
+      "abilities": [
+        0
+      ],
+      "gap": null
+    }
+  ],
+  "proof": {
+    "marks": [
+      {
+        "face": 0,
+        "span": {
+          "start": 0,
+          "end": 61
+        },
+        "mark": "Auto"
+      },
+      {
+        "face": 0,
+        "span": {
+          "start": 62,
+          "end": 162
+        },
+        "mark": "ByHand"
+      }
+    ]
+  }
+}

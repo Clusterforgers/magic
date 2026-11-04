@@ -1,0 +1,27 @@
+{
+  "oracle_id": "fbfef028-b10c-4ade-9503-d9af5b0c211b",
+  "name": "Toph, the First Metalbender",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Toph, the First Metalbender",
+      "oracle_fingerprint": "3ac28ba4fd460a6329c21389d76c48da",
+      "abilities": [
+        {
+          "Static": {
+            "affected": {
+              "Each": [{ "Type": "Artifact" }, { "Not": "Token" }, { "ControlledBy": "You" }]
+            },
+            "mods": [{ "AddType": "Land" }]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 122, "end": 344 }
+          }
+        }
+      ]
+    }
+  ]
+}

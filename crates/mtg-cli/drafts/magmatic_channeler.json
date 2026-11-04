@@ -1,0 +1,38 @@
+{
+  "oracle_id": "382267da-c63c-432e-8a11-f803cf0e3a3a",
+  "name": "Magmatic Channeler",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Magmatic Channeler",
+      "oracle_fingerprint": "97ddb4308bfd1833722ed1e8582efe2f",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "ModifyPT": { "power": 3, "toughness": 1 } }],
+            "condition": {
+              "Compare": {
+                "left": {
+                  "Count": [
+                    { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] },
+                    { "OwnedBy": "You" },
+                    { "In": "Graveyard" }
+                  ]
+                },
+                "op": "Ge",
+                "right": 4
+              }
+            }
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 108, "end": 228 }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,32 @@
+{
+  "oracle_id": "c6a67820-5066-462f-a621-1ecab8bf4f97",
+  "name": "Jaya's Phoenix",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Jaya's Phoenix",
+      "oracle_fingerprint": "e8045ad1173d878b681bcea2522ef7e9",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": "Haste" },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 14, "end": 201 }
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "what": [{ "Type": "Planeswalker" }], "by": "You" } },
+            "from": "Graveyard",
+            "effects": [
+              {
+                "May": { "effects": [{ "Move": { "what": "This", "to": { "Battlefield": {} } } }] }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

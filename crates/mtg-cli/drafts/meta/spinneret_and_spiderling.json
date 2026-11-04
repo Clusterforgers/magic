@@ -1,0 +1,42 @@
+{
+  "source": "forge",
+  "oracle_matches": true,
+  "lines": [
+    {
+      "face": 0,
+      "tag": "T",
+      "text": "Whenever you attack with two or more Spiders, put a +1/+1 counter on CARDNAME.",
+      "abilities": [
+        0
+      ],
+      "gap": null
+    },
+    {
+      "face": 0,
+      "tag": "T",
+      "text": "Whenever CARDNAME deals 4 or more damage, exile the top card of your library. Until the end of your next turn, you may play that card.",
+      "abilities": [],
+      "gap": "key:Trigger.DamageDoneOnce.DamageAmount"
+    }
+  ],
+  "proof": {
+    "marks": [
+      {
+        "face": 0,
+        "span": {
+          "start": 0,
+          "end": 94
+        },
+        "mark": "Auto"
+      },
+      {
+        "face": 0,
+        "span": {
+          "start": 95,
+          "end": 245
+        },
+        "mark": "ByHand"
+      }
+    ]
+  }
+}

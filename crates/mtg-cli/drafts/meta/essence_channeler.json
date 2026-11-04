@@ -1,0 +1,59 @@
+{
+  "source": "forge",
+  "oracle_matches": true,
+  "lines": [
+    {
+      "face": 0,
+      "tag": "T",
+      "text": "Whenever you gain life, put a +1/+1 counter on CARDNAME.",
+      "abilities": [
+        0
+      ],
+      "gap": null
+    },
+    {
+      "face": 0,
+      "tag": "T",
+      "text": "When CARDNAME dies, put its counters on target creature you control.",
+      "abilities": [],
+      "gap": "key:PutCounter.EachFromSource"
+    },
+    {
+      "face": 0,
+      "tag": "S",
+      "text": "As long as you've lost life this turn, CARDNAME has flying and vigilance.",
+      "abilities": [
+        1
+      ],
+      "gap": null
+    }
+  ],
+  "proof": {
+    "marks": [
+      {
+        "face": 0,
+        "span": {
+          "start": 0,
+          "end": 78
+        },
+        "mark": "Auto"
+      },
+      {
+        "face": 0,
+        "span": {
+          "start": 79,
+          "end": 140
+        },
+        "mark": "Auto"
+      },
+      {
+        "face": 0,
+        "span": {
+          "start": 141,
+          "end": 214
+        },
+        "mark": "ByHand"
+      }
+    ]
+  }
+}

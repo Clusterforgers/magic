@@ -1,0 +1,59 @@
+{
+  "oracle_id": "e5e8368d-43af-4f83-8565-25d03da64360",
+  "name": "The Archimandrite",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "The Archimandrite",
+      "oracle_fingerprint": "a856056b779fb7fcf0bf415a651d289d",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [
+              {
+                "GainLife": {
+                  "amount": { "Sum": [{ "Count": [{ "OwnedBy": "You" }, { "In": "Hand" }] }, -4] }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "LifeGained": { "who": "You" } },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": {
+                    "Each": [
+                      {
+                        "AnyOf": [
+                          { "Subtype": "Advisor" },
+                          { "Subtype": "Artificer" },
+                          { "Subtype": "Monk" }
+                        ]
+                      },
+                      { "ControlledBy": "You" }
+                    ]
+                  },
+                  "mods": [
+                    { "ModifyPT": { "power": "Triggering", "toughness": 0 } },
+                    { "AddKeyword": "Vigilance" }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 265, "end": 344 }
+          }
+        }
+      ]
+    }
+  ]
+}

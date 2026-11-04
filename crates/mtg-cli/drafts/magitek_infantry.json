@@ -1,0 +1,32 @@
+{
+  "oracle_id": "563992ff-6fdf-45a0-afc2-7c73c2ec6f74",
+  "name": "Magitek Infantry",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Magitek Infantry",
+      "oracle_fingerprint": "a19bff1972dbedeb3a46fadd0395379e",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 0 } }],
+            "condition": {
+              "Compare": {
+                "left": { "Count": [{ "Type": "Artifact" }, "Other", { "ControlledBy": "You" }] },
+                "op": "Ge",
+                "right": 1
+              }
+            }
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 66, "end": 178 }
+          }
+        }
+      ]
+    }
+  ]
+}

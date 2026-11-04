@@ -1,0 +1,59 @@
+{
+  "source": "forge",
+  "oracle_matches": true,
+  "lines": [
+    {
+      "face": 0,
+      "tag": "K",
+      "text": "Kicker:1",
+      "abilities": [
+        0
+      ],
+      "gap": null
+    },
+    {
+      "face": 0,
+      "tag": "T",
+      "text": "When CARDNAME enters, if it was kicked, target land becomes an Island for as long as CARDNAME remains on the battlefield.",
+      "abilities": [],
+      "gap": "key:Animate.RemoveLandTypes"
+    },
+    {
+      "face": 0,
+      "tag": "S",
+      "text": "CARDNAME gets +1/+1 as long as an opponent controls an Island.",
+      "abilities": [
+        1
+      ],
+      "gap": null
+    }
+  ],
+  "proof": {
+    "marks": [
+      {
+        "face": 0,
+        "span": {
+          "start": 0,
+          "end": 66
+        },
+        "mark": "Auto"
+      },
+      {
+        "face": 0,
+        "span": {
+          "start": 67,
+          "end": 198
+        },
+        "mark": "ByHand"
+      },
+      {
+        "face": 0,
+        "span": {
+          "start": 199,
+          "end": 266
+        },
+        "mark": "Auto"
+      }
+    ]
+  }
+}

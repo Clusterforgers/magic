@@ -1,0 +1,40 @@
+{
+  "oracle_id": "f343b6f9-41c3-419b-a57c-a7b08603ef5c",
+  "name": "Shadow of the Goblin",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Shadow of the Goblin",
+      "oracle_fingerprint": "8a9158751cb3ca7e34d42731d0225b80",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Main1", "whose": "You" } },
+            "effects": [
+              { "Discard": { "as": "discarded" } },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Bound": "discarded" },
+                      "selector": [],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [{ "Draw": {} }]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 104, "end": 250 }
+          }
+        }
+      ]
+    }
+  ]
+}

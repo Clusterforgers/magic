@@ -1,0 +1,42 @@
+{
+  "source": "forge",
+  "oracle_matches": true,
+  "lines": [
+    {
+      "face": 0,
+      "tag": "A",
+      "text": "Return target creature card from your graveyard to the battlefield. If a Hero enters this way, it enters with two additional +1/+1 counters on it.",
+      "abilities": [],
+      "gap": "key:Effect.RememberObjects=Targeted & Self"
+    },
+    {
+      "face": 0,
+      "tag": "S",
+      "text": "This spell costs {2} less to cast if a creature is attacking you.",
+      "abilities": [
+        0
+      ],
+      "gap": null
+    }
+  ],
+  "proof": {
+    "marks": [
+      {
+        "face": 0,
+        "span": {
+          "start": 0,
+          "end": 65
+        },
+        "mark": "Auto"
+      },
+      {
+        "face": 0,
+        "span": {
+          "start": 66,
+          "end": 212
+        },
+        "mark": "ByHand"
+      }
+    ]
+  }
+}

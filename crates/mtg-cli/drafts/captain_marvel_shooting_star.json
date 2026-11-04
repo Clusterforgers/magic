@@ -1,0 +1,42 @@
+{
+  "oracle_id": "73fdb375-9c71-421d-8027-8636e3ea8f35",
+  "name": "Captain Marvel, Shooting Star",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Captain Marvel, Shooting Star",
+      "oracle_fingerprint": "d71eecd95e17c7bb77c6ee8d170fbe1d",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+                { "Attacks": { "what": ["This"] } }
+              ]
+            },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }] }, "bounds": { "min": 0, "max": 1 } }
+            ],
+            "effects": [
+              { "Exile": { "what": { "Target": 0 } } },
+              {
+                "GainLife": {
+                  "who": { "ControllerOf": { "Target": 0 } },
+                  "amount": { "Stat": { "of": { "Target": 0 }, "stat": "Power" } }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 141, "end": 252 }
+          }
+        }
+      ]
+    }
+  ]
+}

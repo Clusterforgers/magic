@@ -1,0 +1,42 @@
+{
+  "source": "forge",
+  "oracle_matches": true,
+  "lines": [
+    {
+      "face": 0,
+      "tag": "A",
+      "text": "CARDNAME deals 1 damage to each creature and each player. Activate no more times each turn than the number of snow Swamps you control.",
+      "abilities": [],
+      "gap": "key:AB.ActivationLimit=X"
+    },
+    {
+      "face": 0,
+      "tag": "T",
+      "text": "At the beginning of the end step, if no creatures are on the battlefield, sacrifice CARDNAME.",
+      "abilities": [
+        0
+      ],
+      "gap": null
+    }
+  ],
+  "proof": {
+    "marks": [
+      {
+        "face": 0,
+        "span": {
+          "start": 0,
+          "end": 101
+        },
+        "mark": "Auto"
+      },
+      {
+        "face": 0,
+        "span": {
+          "start": 102,
+          "end": 249
+        },
+        "mark": "ByHand"
+      }
+    ]
+  }
+}

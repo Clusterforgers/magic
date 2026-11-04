@@ -1,0 +1,42 @@
+{
+  "source": "forge",
+  "oracle_matches": true,
+  "lines": [
+    {
+      "face": 0,
+      "tag": "T",
+      "text": "Enrage — Whenever CARDNAME is dealt damage, other Dinosaurs you control and Dinosaur cards in your hand and library perpetually get +1/+1.",
+      "abilities": [],
+      "gap": "key:PumpAll.PumpZone"
+    },
+    {
+      "face": 0,
+      "tag": "T",
+      "text": "Whenever CARDNAME attacks, CARDNAME deals 1 damage to each creature and each planeswalker.",
+      "abilities": [
+        0
+      ],
+      "gap": null
+    }
+  ],
+  "proof": {
+    "marks": [
+      {
+        "face": 0,
+        "span": {
+          "start": 0,
+          "end": 148
+        },
+        "mark": "ByHand"
+      },
+      {
+        "face": 0,
+        "span": {
+          "start": 149,
+          "end": 259
+        },
+        "mark": "Auto"
+      }
+    ]
+  }
+}

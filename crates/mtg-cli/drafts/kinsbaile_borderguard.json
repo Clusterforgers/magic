@@ -1,0 +1,30 @@
+{
+  "oracle_id": "b420d983-4edf-4cc1-b442-af2b67e49c76",
+  "name": "Kinsbaile Borderguard",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Kinsbaile Borderguard",
+      "oracle_fingerprint": "6cd759a7c3af55fa6429bcc09f302d60",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": {
+              "WithCounters": {
+                "counter": "+1/+1",
+                "count": { "Count": [{ "Subtype": "Kithkin" }, { "ControlledBy": "You" }, "Other"] }
+              }
+            }
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 84, "end": 182 }
+          }
+        }
+      ]
+    }
+  ]
+}

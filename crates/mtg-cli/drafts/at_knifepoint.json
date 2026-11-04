@@ -1,0 +1,40 @@
+{
+  "oracle_id": "bddb2064-afdb-4184-ae4a-633745e64a3c",
+  "name": "At Knifepoint",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "At Knifepoint",
+      "oracle_fingerprint": "f190d86dd45a4d43c6ad0c9dd14e7c75",
+      "abilities": [
+        {
+          "Static": {
+            "affected": {
+              "Each": [
+                { "Type": "Creature" },
+                {
+                  "AnyOf": [
+                    { "Subtype": "Assassin" },
+                    { "Subtype": "Mercenary" },
+                    { "Subtype": "Pirate" },
+                    { "Subtype": "Rogue" },
+                    { "Subtype": "Warlock" }
+                  ]
+                },
+                { "ControlledBy": "You" }
+              ]
+            },
+            "mods": [{ "AddKeyword": "FirstStrike" }],
+            "condition": "YourTurn"
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 126, "end": 337 }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,42 @@
+{
+  "source": "forge",
+  "oracle_matches": true,
+  "lines": [
+    {
+      "face": 0,
+      "tag": "A",
+      "text": "Destroy CARDNAME. It can't be regenerated. Any player may activate this ability.",
+      "abilities": [],
+      "gap": "key:Destroy.Activator"
+    },
+    {
+      "face": 0,
+      "tag": "S",
+      "text": "Creature spells can't be cast.",
+      "abilities": [
+        0
+      ],
+      "gap": null
+    }
+  ],
+  "proof": {
+    "marks": [
+      {
+        "face": 0,
+        "span": {
+          "start": 0,
+          "end": 30
+        },
+        "mark": "Auto"
+      },
+      {
+        "face": 0,
+        "span": {
+          "start": 31,
+          "end": 131
+        },
+        "mark": "ByHand"
+      }
+    ]
+  }
+}

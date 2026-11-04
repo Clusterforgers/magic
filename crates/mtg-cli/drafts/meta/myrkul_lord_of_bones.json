@@ -1,0 +1,42 @@
+{
+  "source": "forge",
+  "oracle_matches": true,
+  "lines": [
+    {
+      "face": 0,
+      "tag": "T",
+      "text": "Whenever another nontoken creature you control dies, you may exile it. If you do, create a token that's a copy of that card, except it's an enchantment and loses all other card types.",
+      "abilities": [],
+      "gap": "key:CopyPermanent.AddTypes"
+    },
+    {
+      "face": 0,
+      "tag": "S",
+      "text": "As long as your life total is less than or equal to half your starting life total, CARDNAME has indestructible.",
+      "abilities": [
+        0
+      ],
+      "gap": null
+    }
+  ],
+  "proof": {
+    "marks": [
+      {
+        "face": 0,
+        "span": {
+          "start": 0,
+          "end": 109
+        },
+        "mark": "Auto"
+      },
+      {
+        "face": 0,
+        "span": {
+          "start": 110,
+          "end": 293
+        },
+        "mark": "ByHand"
+      }
+    ]
+  }
+}

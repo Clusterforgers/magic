@@ -1,0 +1,31 @@
+{
+  "oracle_id": "4c0a8eed-f2e2-4821-8011-6e6ad2081936",
+  "name": "Solitary Sanctuary",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Solitary Sanctuary",
+      "oracle_fingerprint": "bdcf15d9a3760bf0f7c32e4ccf280f10",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }] } }
+            ],
+            "effects": [
+              { "Tap": { "what": { "Target": 0 } } },
+              { "PutCounters": { "on": { "Target": 0 }, "counter": { "Other": "stun" } } }
+            ]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 189, "end": 300 }
+          }
+        }
+      ]
+    }
+  ]
+}

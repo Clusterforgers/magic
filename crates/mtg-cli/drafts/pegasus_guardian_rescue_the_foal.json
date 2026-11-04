@@ -1,0 +1,37 @@
+{
+  "oracle_id": "e71863a7-0de1-4ab5-95e8-c39e6810d899",
+  "name": "Pegasus Guardian // Rescue the Foal",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Pegasus Guardian",
+      "oracle_fingerprint": "c19e30848d915f43b996fd197e2b4618",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 7, "end": 158 }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Rescue the Foal",
+      "oracle_fingerprint": "7da7d852f92312b66588409582a9dcb5",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } }
+            ],
+            "effects": [
+              { "Exile": { "what": { "Target": 0 }, "as": "exiled" } },
+              { "Move": { "what": { "Bound": "exiled" }, "to": { "Battlefield": {} } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

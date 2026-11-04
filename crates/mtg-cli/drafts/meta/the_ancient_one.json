@@ -1,0 +1,42 @@
+{
+  "source": "forge",
+  "oracle_matches": true,
+  "lines": [
+    {
+      "face": 0,
+      "tag": "A",
+      "text": "Draw a card, then discard a card. When you discard a card this way, target player mills cards equal to its mana value.",
+      "abilities": [],
+      "gap": "key:ImmediateTrigger.RememberObjects"
+    },
+    {
+      "face": 0,
+      "tag": "S",
+      "text": "Descend 8 — CARDNAME can't attack or block unless there are eight or more permanent cards in your graveyard.",
+      "abilities": [
+        0
+      ],
+      "gap": null
+    }
+  ],
+  "proof": {
+    "marks": [
+      {
+        "face": 0,
+        "span": {
+          "start": 0,
+          "end": 115
+        },
+        "mark": "Auto"
+      },
+      {
+        "face": 0,
+        "span": {
+          "start": 116,
+          "end": 245
+        },
+        "mark": "ByHand"
+      }
+    ]
+  }
+}

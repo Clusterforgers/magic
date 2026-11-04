@@ -1,0 +1,21 @@
+{
+  "oracle_id": "6e53a43e-5a23-4057-9bb5-281508da57af",
+  "name": "Wolverine, Best There Is",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Wolverine, Best There Is",
+      "oracle_fingerprint": "3355c34e717a119890424f539b845edb",
+      "abilities": [
+        { "Replacement": { "when": { "Damage": { "source": ["This"] } }, "by": { "Multiply": 2 } } },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 62, "end": 181 }
+          }
+        },
+        { "Activated": { "cost": "{1}{G}", "effects": [{ "Regenerate": { "what": "This" } }] } }
+      ]
+    }
+  ]
+}

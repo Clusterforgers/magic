@@ -1,0 +1,27 @@
+{
+  "oracle_id": "b981af39-4ee6-4fbc-9a89-618dcad9dfbf",
+  "name": "The Necrobloom",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "The Necrobloom",
+      "oracle_fingerprint": "1d25c2af5439699d977cab605396630d",
+      "abilities": [
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 0, "end": 194 }
+          }
+        },
+        {
+          "Static": {
+            "affected": {
+              "Each": [{ "Type": "Land" }, { "OwnedBy": "You" }, { "In": "Graveyard" }]
+            },
+            "mods": [{ "AddKeyword": { "Dredge": 2 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

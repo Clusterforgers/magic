@@ -1,0 +1,45 @@
+{
+  "oracle_id": "8e025cda-71c5-4d06-8436-decd408667af",
+  "name": "Mightform Harmonizer",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Mightform Harmonizer",
+      "oracle_fingerprint": "b85d54a4a5bcacfea1bbbb8f3b348459",
+      "abilities": [
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 0, "end": 113 }
+          }
+        },
+        { "AltCast": { "way": "Warp", "cost": "{2}{G}" } },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "if": { "CastWith": "Warp" },
+            "effects": [
+              { "Choose": { "from": "This", "as": "warped" } },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "End" } },
+                  "effects": [
+                    { "Exile": { "what": { "Bound": "warped" }, "as": "warped_card" } },
+                    {
+                      "Rule": {
+                        "rule": {
+                          "MayCast": { "from": "Exile", "only": { "Bound": "warped_card" } }
+                        },
+                        "duration": "Forever"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

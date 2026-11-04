@@ -1,0 +1,31 @@
+{
+  "oracle_id": "7afa530f-ea51-4bee-af3b-59b83ea5cb25",
+  "name": "Gideon the Oathless",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Gideon the Oathless",
+      "oracle_fingerprint": "4e9ca0217fbde2070bedef9920c56248",
+      "abilities": [
+        { "Keyword": { "Ward": [{ "Discard": {} }] } },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }],
+                "to": "Battlefield"
+              }
+            },
+            "effects": [{ "DealDamage": { "to": { "ControllerOf": "Triggering" }, "amount": 1 } }]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 108, "end": 195 }
+          }
+        }
+      ]
+    }
+  ]
+}

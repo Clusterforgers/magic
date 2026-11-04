@@ -1,0 +1,36 @@
+{
+  "oracle_id": "4f69d2f9-c16a-4752-9026-794a29d73af8",
+  "name": "Robot Domination",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Robot Domination",
+      "oracle_fingerprint": "f00be84e1fcb785db1eef5f01e2c790a",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "Batch": {
+                "ZoneChange": {
+                  "what": [{ "Type": "Creature" }, { "OwnedBy": "You" }, { "Not": "Token" }],
+                  "to": "Graveyard"
+                }
+              }
+            },
+            "effects": [
+              { "Draw": {} },
+              { "LoseLife": { "amount": 1 } },
+              { "PutCounters": { "on": "This", "counter": { "Other": "plan" } } }
+            ]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 153, "end": 292 }
+          }
+        }
+      ]
+    }
+  ]
+}

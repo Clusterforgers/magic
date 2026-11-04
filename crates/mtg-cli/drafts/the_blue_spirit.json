@@ -1,0 +1,37 @@
+{
+  "oracle_id": "497e9c7c-a16d-43e5-a7ec-04153aa2566a",
+  "name": "The Blue Spirit",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "The Blue Spirit",
+      "oracle_fingerprint": "aab1f2156b1c4b1c8521b60719b29a82",
+      "abilities": [
+        {
+          "Rule": {
+            "rule": { "MayCast": { "what": [{ "Type": "Creature" }], "flash": true } },
+            "condition": {
+              "Compare": {
+                "left": {
+                  "Tally": {
+                    "event": "SpellCast",
+                    "who": "EachPlayer",
+                    "filter": [{ "Type": "Creature" }, { "ControlledBy": "You" }]
+                  }
+                },
+                "op": "Eq",
+                "right": 0
+              }
+            }
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 81, "end": 156 }
+          }
+        }
+      ]
+    }
+  ]
+}

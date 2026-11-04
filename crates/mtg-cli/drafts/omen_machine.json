@@ -1,0 +1,20 @@
+{
+  "oracle_id": "dbf05c40-7274-4aaa-94d7-1f28cbe15e09",
+  "name": "Omen Machine",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Omen Machine",
+      "oracle_fingerprint": "5ca38e7d256e603b2b6f99e0db736c45",
+      "abilities": [
+        { "Rule": { "rule": { "CantDraw": "EachPlayer" } } },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 26, "end": 251 }
+          }
+        }
+      ]
+    }
+  ]
+}

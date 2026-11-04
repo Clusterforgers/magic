@@ -1,0 +1,76 @@
+{
+  "source": "forge",
+  "oracle_matches": true,
+  "lines": [
+    {
+      "face": 0,
+      "tag": "K",
+      "text": "Indestructible",
+      "abilities": [
+        0
+      ],
+      "gap": null
+    },
+    {
+      "face": 0,
+      "tag": "K",
+      "text": "etbCounter:OIL:X",
+      "abilities": [
+        1
+      ],
+      "gap": null
+    },
+    {
+      "face": 0,
+      "tag": "T",
+      "text": "When CARDNAME enters, conjure a card named Darksteel Ingot and a card named Darksteel Plate into your hand.",
+      "abilities": [],
+      "gap": "effect:MakeCard"
+    },
+    {
+      "face": 0,
+      "tag": "S",
+      "text": "CARDNAME's power and toughness are each equal to twice the number of oil counters on it.",
+      "abilities": [
+        2
+      ],
+      "gap": null
+    }
+  ],
+  "proof": {
+    "marks": [
+      {
+        "face": 0,
+        "span": {
+          "start": 0,
+          "end": 14
+        },
+        "mark": "Auto"
+      },
+      {
+        "face": 0,
+        "span": {
+          "start": 15,
+          "end": 64
+        },
+        "mark": "Auto"
+      },
+      {
+        "face": 0,
+        "span": {
+          "start": 65,
+          "end": 160
+        },
+        "mark": "Auto"
+      },
+      {
+        "face": 0,
+        "span": {
+          "start": 161,
+          "end": 275
+        },
+        "mark": "ByHand"
+      }
+    ]
+  }
+}

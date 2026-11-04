@@ -1,0 +1,42 @@
+{
+  "source": "forge",
+  "oracle_matches": true,
+  "lines": [
+    {
+      "face": 0,
+      "tag": "A",
+      "text": "CARDNAME becomes the creature type of your choice until end of turn.",
+      "abilities": [],
+      "gap": "defined:none-for-Animate"
+    },
+    {
+      "face": 0,
+      "tag": "S",
+      "text": "CARDNAME has defender as long as it's a Wall.",
+      "abilities": [
+        0
+      ],
+      "gap": null
+    }
+  ],
+  "proof": {
+    "marks": [
+      {
+        "face": 0,
+        "span": {
+          "start": 0,
+          "end": 50
+        },
+        "mark": "Auto"
+      },
+      {
+        "face": 0,
+        "span": {
+          "start": 51,
+          "end": 129
+        },
+        "mark": "ByHand"
+      }
+    ]
+  }
+}

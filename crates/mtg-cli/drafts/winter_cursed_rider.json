@@ -1,0 +1,26 @@
+{
+  "oracle_id": "343833c1-19fd-4e8f-b82e-0f20903caaff",
+  "name": "Winter, Cursed Rider",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Winter, Cursed Rider",
+      "oracle_fingerprint": "33e213aeadcef2e0c988b3e1412a86e7",
+      "abilities": [
+        { "Keyword": { "Ward": [{ "PayLife": 2 }] } },
+        {
+          "Static": {
+            "affected": { "Each": [{ "Type": "Artifact" }, { "ControlledBy": "You" }] },
+            "mods": [{ "AddKeyword": { "Ward": [{ "PayLife": 2 }] } }]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 63, "end": 237 }
+          }
+        }
+      ]
+    }
+  ]
+}

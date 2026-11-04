@@ -1,0 +1,44 @@
+{
+  "oracle_id": "d53ef172-8c26-4469-94c6-bf7fe4d48dbf",
+  "name": "Targ Nar, Demon-Fang Gnoll",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Targ Nar, Demon-Fang Gnoll",
+      "oracle_fingerprint": "a2e48915b4f218e183cb576e1eaca1c8",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "if": {
+              "AtTrigger": {
+                "Compare": {
+                  "left": {
+                    "Total": { "of": [{ "Type": "Creature" }, "Attacking"], "stat": "Power" }
+                  },
+                  "op": "Ge",
+                  "right": 6
+                }
+              }
+            },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Type": "Creature" }, "Attacking"] },
+                  "mods": [{ "ModifyPT": { "power": 1, "toughness": 0 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 165, "end": 232 }
+          }
+        }
+      ]
+    }
+  ]
+}

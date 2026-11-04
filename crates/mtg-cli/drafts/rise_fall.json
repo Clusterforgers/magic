@@ -1,0 +1,37 @@
+{
+  "oracle_id": "814f06aa-b48e-4c7f-b4cd-595d89176d0e",
+  "name": "Rise // Fall",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Rise",
+      "oracle_fingerprint": "73fe65e43dfabd4f7c416896eaa533f3",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "In": "Graveyard" }] } },
+              { "what": { "Object": [{ "Type": "Creature" }] } }
+            ],
+            "effects": [
+              { "Move": { "what": { "Target": 0 }, "to": "Hand" } },
+              { "Move": { "what": { "Target": 1 }, "to": "Hand" } }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Fall",
+      "oracle_fingerprint": "7a3b6bc95b840ac79f9e33a22a18e56e",
+      "abilities": [
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 0, "end": 109 }
+          }
+        }
+      ]
+    }
+  ]
+}

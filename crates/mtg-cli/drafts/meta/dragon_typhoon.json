@@ -1,0 +1,42 @@
+{
+  "source": "forge",
+  "oracle_matches": true,
+  "lines": [
+    {
+      "face": 0,
+      "tag": "A",
+      "text": "Create a 4/4 red Dragon creature token with flying.",
+      "abilities": [
+        0
+      ],
+      "gap": null
+    },
+    {
+      "face": 0,
+      "tag": "T",
+      "text": "Whenever you cast a Dragon or noncreature spell, draft a card from CARDNAME's spellbook and put it onto the battlefield.",
+      "abilities": [],
+      "gap": "effect:Draft"
+    }
+  ],
+  "proof": {
+    "marks": [
+      {
+        "face": 0,
+        "span": {
+          "start": 0,
+          "end": 126
+        },
+        "mark": "ByHand"
+      },
+      {
+        "face": 0,
+        "span": {
+          "start": 127,
+          "end": 218
+        },
+        "mark": "Auto"
+      }
+    ]
+  }
+}

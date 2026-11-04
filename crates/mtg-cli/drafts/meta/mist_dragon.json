@@ -1,0 +1,59 @@
+{
+  "source": "forge",
+  "oracle_matches": true,
+  "lines": [
+    {
+      "face": 0,
+      "tag": "A",
+      "text": "CARDNAME gains flying. (This effect lasts indefinitely.)",
+      "abilities": [
+        0
+      ],
+      "gap": null
+    },
+    {
+      "face": 0,
+      "tag": "A",
+      "text": "CARDNAME loses flying. (This effect lasts indefinitely.)",
+      "abilities": [],
+      "gap": "effect:Debuff"
+    },
+    {
+      "face": 0,
+      "tag": "A",
+      "text": "CARDNAME phases out.",
+      "abilities": [
+        1
+      ],
+      "gap": null
+    }
+  ],
+  "proof": {
+    "marks": [
+      {
+        "face": 0,
+        "span": {
+          "start": 0,
+          "end": 66
+        },
+        "mark": "Auto"
+      },
+      {
+        "face": 0,
+        "span": {
+          "start": 67,
+          "end": 133
+        },
+        "mark": "ByHand"
+      },
+      {
+        "face": 0,
+        "span": {
+          "start": 134,
+          "end": 295
+        },
+        "mark": "Auto"
+      }
+    ]
+  }
+}

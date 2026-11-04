@@ -1,0 +1,25 @@
+{
+  "oracle_id": "07326335-45dd-4ebd-8ae6-5191b6eb2928",
+  "name": "Aragorn, Hornburg Hero",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Aragorn, Hornburg Hero",
+      "oracle_fingerprint": "03fcea0a1cf21a1072387f7d20e01e7f",
+      "abilities": [
+        {
+          "Static": {
+            "affected": { "Each": [{ "Type": "Creature" }, "Attacking", { "ControlledBy": "You" }] },
+            "mods": [{ "AddKeyword": "FirstStrike" }, { "AddKeyword": { "Renown": 1 } }]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 202, "end": 318 }
+          }
+        }
+      ]
+    }
+  ]
+}

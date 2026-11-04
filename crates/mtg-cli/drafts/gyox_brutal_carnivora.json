@@ -1,0 +1,28 @@
+{
+  "oracle_id": "e08a4569-eb90-4a95-9420-ebb8b8c0c906",
+  "name": "Gyox, Brutal Carnivora",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Gyox, Brutal Carnivora",
+      "oracle_fingerprint": "465181dd78e153cf339bed839bb5f3dc",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }] }, "bounds": { "min": 0, "max": 1 } }
+            ],
+            "effects": [{ "PutCounters": { "on": { "Target": 0 }, "counter": { "Other": "oil" } } }]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 84, "end": 339 }
+          }
+        }
+      ]
+    }
+  ]
+}

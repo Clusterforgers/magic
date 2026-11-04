@@ -1,0 +1,82 @@
+{
+  "oracle_id": "a720f3d3-c2d7-4e50-8cc6-600120380e9c",
+  "name": "Voldaren Bloodcaster // Bloodbat Summoner",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Voldaren Bloodcaster",
+      "oracle_fingerprint": "0c1bb62e7243188336b79d19556b63ad",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [
+                  {
+                    "AnyOf": [
+                      "This",
+                      {
+                        "Not": {
+                          "AnyOf": [
+                            { "Not": { "Type": "Creature" } },
+                            { "Not": "Other" },
+                            { "Not": { "Not": "Token" } },
+                            { "Not": { "ControlledBy": "You" } }
+                          ]
+                        }
+                      }
+                    ]
+                  }
+                ],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "effects": [{ "CreateToken": { "token": { "Named": "blood" } } }]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 186, "end": 287 }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Bloodbat Summoner",
+      "oracle_fingerprint": "256caea9a5ce593501b80212b3bfc9c3",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "BeginCombat", "whose": "You" } },
+            "targets": [
+              {
+                "what": { "Object": [{ "Subtype": "Blood" }, "Token", { "ControlledBy": "You" }] },
+                "bounds": { "min": 0, "max": 1 }
+              }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    { "SetPT": { "power": 2, "toughness": 2 } },
+                    { "SetColors": ["Black"] },
+                    { "AddSubtype": "Bat" },
+                    { "AddType": "Creature" },
+                    { "AddKeyword": "Flying" },
+                    { "AddKeyword": "Haste" }
+                  ],
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

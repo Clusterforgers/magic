@@ -1,0 +1,41 @@
+{
+  "oracle_id": "683e7135-de54-49c8-a978-4f84628a6a91",
+  "name": "Serendib Djinn",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Serendib Djinn",
+      "oracle_fingerprint": "74e2019cc5dc4b8f82873b8bc45536bb",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [
+              { "Sacrifice": { "filter": [{ "Type": "Land" }], "as": "sacrificed" } },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Bound": "sacrificed" },
+                      "selector": [{ "Subtype": "Island" }],
+                      "op": "Eq",
+                      "right": 1
+                    }
+                  },
+                  "then": [{ "DealDamage": { "to": "You", "amount": 3 } }]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 132, "end": 183 }
+          }
+        }
+      ]
+    }
+  ]
+}

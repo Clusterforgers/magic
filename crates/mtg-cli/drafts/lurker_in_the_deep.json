@@ -1,0 +1,46 @@
+{
+  "oracle_id": "b3e101ee-ad39-4776-9721-0afdce2c5d5d",
+  "name": "Lurker in the Deep",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Lurker in the Deep",
+      "oracle_fingerprint": "edad9bd8e5b1349221edfe9c348c4df9",
+      "abilities": [
+        { "AltCast": { "way": "Impending", "cost": "{2}{U}{U}" } },
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "WithCounters": { "counter": { "Other": "time" }, "count": 3 } },
+            "condition": { "CastWith": "Impending" }
+          }
+        },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "RemoveType": "Creature" }],
+            "condition": {
+              "Compare": {
+                "left": { "Counters": { "on": "This", "counter": { "Other": "time" } } },
+                "op": "Gt",
+                "right": 0
+              }
+            }
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 22, "end": 89 }
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 90, "end": 234 }
+          }
+        }
+      ]
+    }
+  ]
+}

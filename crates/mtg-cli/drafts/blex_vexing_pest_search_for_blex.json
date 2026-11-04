@@ -1,0 +1,51 @@
+{
+  "oracle_id": "b2c53124-e422-4786-8135-67c350d71a36",
+  "name": "Blex, Vexing Pest // Search for Blex",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Blex, Vexing Pest",
+      "oracle_fingerprint": "722e82f157138e9c27d808a3f82f6bb9",
+      "abilities": [
+        {
+          "Static": {
+            "affected": {
+              "Each": [
+                {
+                  "AnyOf": [
+                    { "Subtype": "Pest" },
+                    { "Subtype": "Bat" },
+                    { "Subtype": "Insect" },
+                    { "Subtype": "Snake" },
+                    { "Subtype": "Spider" }
+                  ]
+                },
+                "Other",
+                { "ControlledBy": "You" }
+              ]
+            },
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } },
+            "effects": [{ "GainLife": { "amount": 4 } }]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Search for Blex",
+      "oracle_fingerprint": "c767723d5327cbda9c4c227aabab178e",
+      "abilities": [
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 0, "end": 186 }
+          }
+        }
+      ]
+    }
+  ]
+}

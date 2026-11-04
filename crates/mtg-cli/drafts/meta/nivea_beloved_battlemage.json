@@ -1,0 +1,42 @@
+{
+  "source": "forge",
+  "oracle_matches": true,
+  "lines": [
+    {
+      "face": 0,
+      "tag": "A",
+      "text": "Create an Akroma, Angel of Wrath token. (She's a {5}{W}{W}{W} legendary 6/6 Angel creature with flying, first strike, vigilance, trample, haste, and protection from black and from red.)",
+      "abilities": [],
+      "gap": "key:CopyPermanent.DefinedName"
+    },
+    {
+      "face": 0,
+      "tag": "T",
+      "text": "Whenever a creature you control becomes blocked, you may untap it and remove it from combat.",
+      "abilities": [
+        0
+      ],
+      "gap": null
+    }
+  ],
+  "proof": {
+    "marks": [
+      {
+        "face": 0,
+        "span": {
+          "start": 0,
+          "end": 92
+        },
+        "mark": "Auto"
+      },
+      {
+        "face": 0,
+        "span": {
+          "start": 93,
+          "end": 309
+        },
+        "mark": "ByHand"
+      }
+    ]
+  }
+}

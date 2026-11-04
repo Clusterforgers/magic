@@ -1,0 +1,32 @@
+{
+  "oracle_id": "18beb8eb-6f67-482f-9a7d-282f1e7ecbc1",
+  "name": "Narfi, Betrayer King",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Narfi, Betrayer King",
+      "oracle_fingerprint": "8cd6583b025265f60553844f8951d53d",
+      "abilities": [
+        {
+          "Static": {
+            "affected": {
+              "Each": [
+                { "Type": "Creature" },
+                { "AnyOf": [{ "Subtype": "Zombie" }, { "Supertype": "Snow" }] },
+                "Other",
+                { "ControlledBy": "You" }
+              ]
+            },
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 55, "end": 181 }
+          }
+        }
+      ]
+    }
+  ]
+}
