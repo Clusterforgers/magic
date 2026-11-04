@@ -410,3 +410,55 @@ fn an_aura_that_boosts_what_it_is_attached_to_boosts_that_creature_in_a_game() {
     let chars = mtg_engine::characteristics::characteristics(driver.state(), id).unwrap();
     assert_eq!((chars.power, chars.toughness), (Some(5), Some(5)));
 }
+
+#[rstest]
+#[case::cast_from_the_graveyard_for_life(
+    "S:Mode$ Continuous | Affected$ Artifact.YouCtrl | MayPlay$ True | EffectZone$ Battlefield | AffectedZone$ Graveyard | RaiseCost$ PayLife<3> | Description$ You may cast artifact spells from your graveyard by paying 3 life.",
+    json!({"Rule": {"rule": {"MayCast": {"what": [{"Type": "Artifact"}], "from": "Graveyard", "additional": [{"PayLife": 3}]}}}})
+)]
+#[case::discarding_a_card(
+    "S:Mode$ Continuous | Affected$ Creature.YouOwn | MayPlay$ True | EffectZone$ Battlefield | AffectedZone$ Graveyard | RaiseCost$ Discard<1/Card> | Description$ You may cast creature spells from your graveyard by discarding a card.",
+    json!({"Rule": {"rule": {"MayCast": {"what": [{"Type": "Creature"}], "from": "Graveyard", "additional": [{"Discard": {}}]}}}})
+)]
+fn a_permission_to_cast_with_an_extra_cost_keeps_the_cost(
+    #[case] line: &str,
+    #[case] expected: Value,
+) {
+    assert_eq!(static_of(line), vec![expected]);
+}
+
+#[test]
+fn an_extra_cost_that_is_not_read_stays_a_gap_by_name() {
+    let line = "S:Mode$ Continuous | Affected$ Artifact.YouCtrl | MayPlay$ True | EffectZone$ Battlefield | AffectedZone$ Graveyard | RaiseCost$ Frobnicate<1> | Description$ x";
+    let text = format!("Name:Subject\nTypes:Artifact\n{line}\n");
+    assert!(
+        gaps(&text).iter().any(|found| found.starts_with("cost:")),
+        "{:?}",
+        gaps(&text)
+    );
+}
+
+#[test]
+fn a_cast_from_the_graveyard_pays_the_extra_life_in_a_game() {
+    let line = "S:Mode$ Continuous | Affected$ Artifact.YouCtrl | MayPlay$ True | EffectZone$ Battlefield | AffectedZone$ Graveyard | RaiseCost$ PayLife<3> | Description$ x";
+    let tomb = card_with(
+        &[CardType::Enchantment],
+        "Tomb",
+        &format!("Name:Tomb\nTypes:Enchantment\n{line}\n"),
+    );
+    let idol = card_with(&[CardType::Artifact], "Idol", "Name:Idol\nTypes:Artifact\n");
+    let scenario = Scenario::new(2)
+        .at(1, 0, Step::Main1)
+        .battlefield(0, [ready(tomb)])
+        .graveyard(0, [idol]);
+    let mut driver = Driver::from_scenario(scenario).unwrap();
+    let start = life(&driver);
+    driver.cast("Idol").unwrap();
+    for _ in 0..20 {
+        if driver.state().stack().is_empty() && driver.state().resolving().is_none() {
+            break;
+        }
+        driver.answer_passively().unwrap();
+    }
+    assert_eq!(life(&driver), start - 3);
+}
