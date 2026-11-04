@@ -201,6 +201,9 @@ fn event_amount(ctx: &Ctx, expression: &str) -> Tr<Option<Value>> {
                 None => unmapped(format!("amount:{head}${what}")),
             };
         }
+        "PlayerCountRemembered" => {
+            return super::amount_more::remembered_player(ctx, what).map(Some);
+        }
         "TargetedPlayer" => {
             return match super::amount_more::player_amount(head, what, &ctx.player_target()?) {
                 Some(found) => found.map(Some),

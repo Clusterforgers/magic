@@ -237,3 +237,54 @@ fn the_player_of_a_trigger_that_names_no_target_stays_a_gap() {
     );
     assert_eq!(found, ["defined:TriggeredTarget-in-Attacks"]);
 }
+
+#[rstest]
+#[case::the_target(
+    "A:SP$ Pump | ValidTgts$ Creature.YouCtrl | RememberObjects$ ThisTargetedCard | SubAbility$ D\nSVar:D:DB$ DealDamage | ValidTgts$ Any | NumDmg$ X | DamageSource$ Remembered | SubAbility$ Z\nSVar:Z:DB$ Cleanup | ClearRemembered$ True\nSVar:X:Remembered$CardPower",
+    r#"{"DealDamage":{"amount":{"Stat":{"of":{"Target":0},"stat":"Power"}},"source":{"Target":0},"to":{"Target":1}}}"#
+)]
+#[case::its_controller(
+    "A:SP$ Pump | ValidTgts$ Creature | RememberObjects$ TargetedController | SubAbility$ D\nSVar:D:DB$ LoseLife | Defined$ Remembered | LifeAmount$ 3 | SubAbility$ Z\nSVar:Z:DB$ Cleanup | ClearRemembered$ True",
+    r#""who":{"ControllerOf":{"Target":0}}"#
+)]
+fn a_pump_that_remembers_names_its_object_to_the_lines_after_it(
+    #[case] lines: &str,
+    #[case] expected: &str,
+) {
+    let (json, found) = sorcery(lines);
+    assert!(found.is_empty(), "{found:?}");
+    assert!(json.contains(expected), "{json}");
+}
+
+#[test]
+fn a_pump_that_remembers_an_unknown_word_stays_a_gap() {
+    let (_, found) = sorcery("A:SP$ Pump | ValidTgts$ Creature | RememberObjects$ Nonsense");
+    assert_eq!(found, ["key:Pump.RememberObjects=Nonsense"]);
+}
+
+#[rstest]
+#[case::life("LifeTotal", r#""amount":{"Life":{"Bound":"each"}}"#)]
+#[case::life_lost(
+    "LifeLostThisTurn",
+    r#""amount":{"Tallied":{"what":"LifeLost","who":{"Bound":"each"}}}"#
+)]
+#[case::their_creatures(
+    "Valid Creature.YouCtrl+attacking",
+    r#""amount":{"Largest":{"of":[{"Type":"Creature"},{"ControlledBy":"You"},"Attacking"],"who":{"Bound":"each"}}}"#
+)]
+fn a_number_about_the_player_a_loop_is_on_is_read_for_that_player(
+    #[case] what: &str,
+    #[case] expected: &str,
+) {
+    let (json, found) = sorcery(&format!(
+        "A:SP$ RepeatEach | RepeatPlayers$ Player | RepeatSubAbility$ L\nSVar:L:DB$ LoseLife | Defined$ Remembered | LifeAmount$ X\nSVar:X:PlayerCountRemembered${what}"
+    ));
+    assert!(found.is_empty(), "{found:?}");
+    assert!(json.contains(expected), "{json}");
+}
+
+#[test]
+fn a_number_about_a_remembered_player_outside_a_loop_stays_a_gap() {
+    let (_, found) = sorcery("A:SP$ Draw | NumCards$ X\nSVar:X:PlayerCountRemembered$LifeTotal");
+    assert_eq!(found, ["amount:PlayerCountRemembered-without-a-player"]);
+}
