@@ -591,6 +591,42 @@ pub(super) fn bottom(
     Ok(())
 }
 
+/// Moves cards that are in a library to just beneath its top `below` cards, in the order given from the top down; a library
+/// of fewer other cards takes them on its bottom (CR 401.7).
+pub(super) fn insert(
+    state: &mut GameState,
+    player: PlayerId,
+    cards: &[ObjectId],
+    below: u32,
+) -> Result<(), EngineError> {
+    let zone = Zone::Library(player);
+    let library = state.zones.get(zone);
+    let distinct = cards
+        .iter()
+        .enumerate()
+        .all(|(at, card)| !cards[..at].contains(card));
+    if !distinct || !cards.iter().all(|card| library.contains(card)) {
+        return Err(invalid(
+            "inserted cards are not all in the library, once each",
+        ));
+    }
+    let rest: Vec<ObjectId> = library
+        .iter()
+        .filter(|card| !cards.contains(card))
+        .copied()
+        .collect();
+    let above = usize::try_from(below).unwrap_or(usize::MAX).min(rest.len());
+    let (deep, top) = rest.split_at(rest.len() - above);
+    let arranged = deep
+        .iter()
+        .chain(cards.iter().rev())
+        .chain(top)
+        .copied()
+        .collect();
+    state.zones.set(zone, arranged);
+    Ok(())
+}
+
 fn owner_of(state: &GameState, id: ObjectId) -> Result<PlayerId, EngineError> {
     state
         .object(id)

@@ -127,6 +127,10 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
             order: Some(Order::Random),
             place: Place::Top,
         } => return unsupported("Effect.Move.Random.Top"),
+        Destination::Library {
+            order: Some(Order::Random),
+            place: Place::Below(_),
+        } => return unsupported("Effect.Move.Random.Below"),
         Destination::Library { place, order } => {
             let mut owners: Vec<(PlayerId, Vec<&GameObject>)> = Vec::new();
             for object in objects {
@@ -428,7 +432,7 @@ fn into_libraries(
             shuffles += 1;
         } else if place != Place::Shuffled && ids.len() > 1 {
             let who = cx.controller();
-            ids = questions.order(who, ids, wording::library_order(place == Place::Bottom))?;
+            ids = questions.order(who, ids, wording::library_order(place))?;
         }
         let zone_of = |id: ObjectId| {
             group
@@ -453,11 +457,16 @@ fn into_libraries(
         }
         match place {
             Place::Top => {}
-            Place::Bottom if ids.is_empty() => {}
+            Place::Bottom | Place::Below(_) if ids.is_empty() => {}
             Place::Bottom => events.push(Event::LibraryBottomed {
                 player: *owner,
                 cards: ids,
                 random: drawn,
+            }),
+            Place::Below(below) => events.push(Event::LibraryInserted {
+                player: *owner,
+                cards: ids,
+                below,
             }),
             Place::Shuffled => {
                 let mut cards = state.zone(library).to_vec();
@@ -779,6 +788,72 @@ mod tests {
         );
         assert_eq!(low.len(), 7);
         assert_eq!(low[2..], library(&game, ME)[..]);
+    }
+
+    #[rstest]
+    #[case::second_from_the_top(1, 1)]
+    #[case::third_from_the_top(2, 2)]
+    #[case::the_whole_library_above(5, 5)]
+    #[case::more_than_the_library_holds_goes_to_the_bottom(9, 5)]
+    fn a_card_put_beneath_the_top_cards_lies_below_exactly_those(
+        #[case] below: u32,
+        #[case] above: usize,
+    ) {
+        let game = game();
+        let card = hand(&game, ME)[0];
+        let to = format!(r#"{{"Library":{{"place":{{"Below":{below}}}}}}}"#);
+        let (events, _) = done(run_with(&game, &[card], Vec::new(), &moving(&to)).unwrap());
+        assert_eq!(
+            events.last(),
+            Some(&Event::LibraryInserted {
+                player: ME,
+                cards: vec![card],
+                below
+            })
+        );
+        let before = library(&game, ME);
+        let now = library(&after(&game, &events), ME);
+        assert_eq!(now.len(), before.len() + 1);
+        let at = now.len() - 1 - above;
+        assert_eq!(now[at], card, "{above} cards stay above it");
+        assert_eq!(now[at + 1..], before[before.len() - above..]);
+        assert_eq!(now[..at], before[..before.len() - above]);
+    }
+
+    #[test]
+    fn a_card_of_the_library_moves_down_and_several_cards_are_ordered_by_their_owner() {
+        let game = game();
+        let top_card = *game.zone(Zone::Library(ME)).last().unwrap();
+        let to = r#"{"Library":{"place":{"Below":2}}}"#;
+        let (events, _) = done(run_with(&game, &[top_card], Vec::new(), &moving(to)).unwrap());
+        let now = library(&after(&game, &events), ME);
+        assert_eq!(now.len(), 5);
+        assert_eq!(now[now.len() - 3], top_card);
+        let cards = hand(&game, ME)[..2].to_vec();
+        let decision = asked(run_with(&game, &cards, Vec::new(), &moving(to)).unwrap());
+        let DecisionKind::OrderCards(options) = decision.kind else {
+            panic!("the cards are ordered");
+        };
+        assert_eq!(
+            options.text,
+            "Put the cards beneath the top 2 cards of your library in any order."
+        );
+        let chosen = vec![cards[1], cards[0]];
+        let journal = vec![(ME, Choice::Order(chosen.clone()))];
+        let (events, _) = done(run_with(&game, &cards, journal, &moving(to)).unwrap());
+        let now = library(&after(&game, &events), ME);
+        assert_eq!(now[now.len() - 4..now.len() - 2], [chosen[1], chosen[0]]);
+    }
+
+    #[test]
+    fn a_random_order_beneath_the_top_is_refused_by_name() {
+        let game = game();
+        let card = hand(&game, ME)[0];
+        let to = r#"{"Library":{"place":{"Below":1},"order":"Random"}}"#;
+        let refused = run_with(&game, &[card], Vec::new(), &moving(to));
+        assert!(
+            matches!(refused, Err(ResolveError::Unsupported(name)) if name == "Effect.Move.Random.Below"),
+        );
     }
 
     #[test]

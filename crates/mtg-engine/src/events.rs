@@ -586,6 +586,15 @@ pub enum Event {
         #[serde(default)]
         random: bool,
     },
+    /// Cards of a library were put beneath its top `below` cards (on the bottom when it has fewer).
+    LibraryInserted {
+        /// Whose library.
+        player: PlayerId,
+        /// The cards, top to bottom as they lie after the move.
+        cards: Vec<ObjectId>,
+        /// How many cards of the library stay above them.
+        below: u32,
+    },
     /// A card an effect put onto the battlefield entered tapped or under another player's control; it follows the
     /// `ZoneChanged` that moved it, in the same batch.
     Entered {
@@ -1123,6 +1132,7 @@ impl Event {
             | Event::HandDealt { cards, .. }
             | Event::CardsBottomed { cards, .. }
             | Event::OpeningCardsPlayed { cards, .. }
+            | Event::LibraryInserted { cards, .. }
             | Event::LibraryBottomed { cards, .. } => cards.clone(),
             Event::Scried(scried) => scried.top.iter().chain(&scried.bottom).copied().collect(),
             Event::Surveilled(surveilled) => surveilled

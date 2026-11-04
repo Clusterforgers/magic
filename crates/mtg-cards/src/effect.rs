@@ -71,6 +71,9 @@ pub enum Place {
     Top,
     /// On the bottom.
     Bottom,
+    /// Beneath the top `n` cards (`Below(1)` is second from the top); on the bottom of a library with fewer cards
+    /// (CR 401.7).
+    Below(u32),
     /// Into the library, which is then shuffled.
     Shuffled,
 }

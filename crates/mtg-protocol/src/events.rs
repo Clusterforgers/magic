@@ -65,6 +65,15 @@ pub enum HiddenEvent {
         /// Cards placed.
         count: u32,
     },
+    /// A player put cards beneath the top cards of their library.
+    CardsInserted {
+        /// Whose cards.
+        player: PlayerId,
+        /// Cards placed.
+        count: u32,
+        /// How many cards stay above them.
+        below: u32,
+    },
     /// A card the viewer could not see left the game with its owner.
     ObjectLeftGame,
     /// A source remembered objects the viewer cannot identify; how many is all that shows.
@@ -268,6 +277,15 @@ fn redact(before: &GameState, event: &Event, viewer: PlayerId) -> Option<HiddenE
         Event::LibraryBottomed { player, cards, .. } => Some(HiddenEvent::CardsBottomed {
             player: *player,
             count: count(cards.len()),
+        }),
+        Event::LibraryInserted {
+            player,
+            cards,
+            below,
+        } => Some(HiddenEvent::CardsInserted {
+            player: *player,
+            count: count(cards.len()),
+            below: *below,
         }),
         // What the effects of spells and abilities make known: some of it is private to a player or to cards.
         Event::LibraryLooked(_)

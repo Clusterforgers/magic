@@ -4,7 +4,7 @@
 //!
 //! They are hints for a person choosing, not rules: a predicate with no short phrase is left out.
 
-use mtg_cards::effect::Effect;
+use mtg_cards::effect::{Effect, Place};
 use mtg_cards::refs::{AbilityKind, Bounds, Pred, Ref, Selector, TargetSpec, Targetable, ZoneKind};
 use mtg_cards::trigger::{Step, TriggerPattern};
 use mtg_cards::value::{Amount, CastWay, Cmp, Condition, DayNight, StatKind};
@@ -983,9 +983,13 @@ pub(crate) fn proliferate_player(proliferating: PlayerId, holder: PlayerId) -> S
 pub(crate) const EXPLORE: &str = "You may put the revealed card into your graveyard.";
 
 /// What the order of cards put into a library asks: "Put the cards on top of your library in any order."
-pub(crate) fn library_order(bottom: bool) -> String {
-    let place = if bottom { "the bottom" } else { "top" };
-    format!("Put the cards on {place} of your library in any order.")
+pub(crate) fn library_order(place: Place) -> String {
+    let place = match place {
+        Place::Bottom => "on the bottom of".to_owned(),
+        Place::Below(below) => format!("beneath the top {below} cards of"),
+        Place::Top | Place::Shuffled => "on top of".to_owned(),
+    };
+    format!("Put the cards {place} your library in any order.")
 }
 
 /// "a card" or "3 cards".
@@ -1154,13 +1158,20 @@ mod tests {
     use super::*;
 
     #[rstest]
-    #[case::on_top(false, "Put the cards on top of your library in any order.")]
-    #[case::on_the_bottom(true, "Put the cards on the bottom of your library in any order.")]
+    #[case::on_top(Place::Top, "Put the cards on top of your library in any order.")]
+    #[case::on_the_bottom(
+        Place::Bottom,
+        "Put the cards on the bottom of your library in any order."
+    )]
+    #[case::beneath_the_top(
+        Place::Below(2),
+        "Put the cards beneath the top 2 cards of your library in any order."
+    )]
     fn the_order_of_cards_put_into_a_library_says_where(
-        #[case] bottom: bool,
+        #[case] place: Place,
         #[case] expected: &str,
     ) {
-        assert_eq!(library_order(bottom), expected);
+        assert_eq!(library_order(place), expected);
     }
 
     #[rstest]

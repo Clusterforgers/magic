@@ -2436,6 +2436,14 @@ impl Walker<'_> {
                     },
                 ..
             } => self.uses("Effect", "Move.Random.Top"),
+            Effect::Move {
+                to:
+                    Destination::Library {
+                        place: Place::Below(_),
+                        order: Some(Order::Random),
+                    },
+                ..
+            } => self.uses("Effect", "Move.Random.Below"),
             _ => {}
         }
         self.at(tag, |w| match effect {
@@ -4514,6 +4522,8 @@ mod tests {
     #[case::a_move_to_the_hand(r#"{"Spell":{"effects":[{"Move":{"what":"This","to":"Hand"}}]}}"#, &["Ability.Spell", "Effect.Move"])]
     #[case::a_move_to_the_top_of_a_library(r#"{"Spell":{"effects":[{"Move":{"what":"This","to":{"Library":{"place":"Top","order":"Chosen"}}}}]}}"#, &["Ability.Spell", "Effect.Move"])]
     #[case::a_move_shuffled_in(r#"{"Spell":{"effects":[{"Move":{"what":"This","to":{"Library":{"place":"Shuffled","order":"Random"}}}}]}}"#, &["Ability.Spell", "Effect.Move"])]
+    #[case::a_move_beneath_the_top_of_a_library(r#"{"Spell":{"effects":[{"Move":{"what":"This","to":{"Library":{"place":{"Below":2}}}}}]}}"#, &["Ability.Spell", "Effect.Move"])]
+    #[case::a_move_beneath_the_top_in_a_random_order(r#"{"Spell":{"effects":[{"Move":{"what":"This","to":{"Library":{"place":{"Below":2},"order":"Random"}}}}]}}"#, &["Ability.Spell", "Effect.Move", "Effect.Move.Random.Below"])]
     #[case::a_move_to_the_battlefield_attached(r#"{"Spell":{"targets":[{"what":{"Object":[{"Type":"Creature"}]}}],"effects":[{"Move":{"what":"This","to":{"BattlefieldAttached":{"to":{"Target":0}}}}}]}}"#, &["Ability.Spell", "Effect.Move", "Effect.Move.Battlefield", "Effect.Move.Attached"])]
     #[case::a_move_to_the_battlefield(r#"{"Spell":{"effects":[{"Move":{"what":"This","to":{"Battlefield":{}}}}]}}"#, &["Ability.Spell", "Effect.Move", "Effect.Move.Battlefield"])]
     #[case::a_cast_transformed(r#"{"Spell":{"effects":[{"Exile":{"what":"This","as":"card"}},{"CastFromZone":{"what":{"Bound":"card"},"free":true,"transformed":true}}]}}"#, &["Ability.Spell", "Effect.Exile", "Effect.CastFromZone", "Effect.CastFromZone.Transformed"])]

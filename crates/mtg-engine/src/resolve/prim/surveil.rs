@@ -54,7 +54,11 @@ fn surveils(cx: &Cx<'_>, players: &[PlayerId], wanted: usize) -> Result<Vec<Even
         let top = if stay.len() < 2 {
             stay
         } else {
-            questions.order(*player, stay, wording::library_order(false))?
+            questions.order(
+                *player,
+                stay,
+                wording::library_order(mtg_cards::effect::Place::Top),
+            )?
         };
         moves.extend(graveyard.iter().map(|object| Event::ZoneChanged {
             object: *object,
