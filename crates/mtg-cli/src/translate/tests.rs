@@ -586,3 +586,5 @@ fn keywords_map_to_the_keyword_set(#[case] line: &str, #[case] expected: Value) 
     let script = format!("Name:T\nTypes:Creature Elf\nK:{line}\n");
     assert_eq!(abilities(&script), vec![json!({ "Keyword": expected })]);
 }
+
+mod fg3;

@@ -244,18 +244,26 @@ pub fn selector_any(ctx: &Ctx, spec: &str) -> Tr<Vec<Value>> {
         match rest.as_slice() {
             [one] => different.push((*one).clone()),
             [] => return unmapped("valid:or-with-open-alternative"),
-            _ => return unmapped("valid:or-with-different-properties"),
+            // A conjunction as one alternative, by De Morgan: not any of the negations.
+            many => {
+                let negated: Vec<Value> = many.iter().map(|pred| json!({"Not": pred})).collect();
+                different.push(json!({"Not": {"AnyOf": negated}}));
+            }
         }
     }
     // The choice stands where the first alternative has its own predicate.
     let any = json!({"AnyOf": different});
+    let mut placed = false;
     Ok(lists[0]
         .iter()
-        .map(|pred| {
+        .filter_map(|pred| {
             if common.contains(pred) {
-                pred.clone()
+                Some(pred.clone())
+            } else if placed {
+                None
             } else {
-                any.clone()
+                placed = true;
+                Some(any.clone())
             }
         })
         .collect())
