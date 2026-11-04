@@ -142,3 +142,55 @@ fn a_player_that_is_not_one_player_stays_a_named_gap(#[case] lines: &str, #[case
     assert!(abilities(&script).is_empty(), "{:?}", abilities(&script));
     assert_eq!(gaps(&script), [gap]);
 }
+
+#[rstest]
+#[case::the_caster_chooses_from_a_targeted_hand(
+    "A:SP$ ChangeZone | Origin$ Hand | Destination$ Library | LibraryPosition$ 0 | ValidTgts$ Opponent | ChangeType$ Card | ChangeNum$ 1 | Mandatory$ True",
+    &[r#"{"OwnedBy":{"Target":0}}"#, r#""Choose":{"as":"picked""#]
+)]
+#[case::the_target_chooses_from_their_hand(
+    "A:SP$ ChangeZone | Origin$ Hand | Destination$ Library | LibraryPosition$ 0 | ValidTgts$ Opponent | Chooser$ Targeted | ChangeType$ Card | ChangeNum$ 1 | Mandatory$ True",
+    &[r#""who":{"Target":0}"#, r#"{"OwnedBy":{"Target":0}}"#]
+)]
+#[case::the_target_searches_their_own_library(
+    "A:SP$ ChangeZone | ValidTgts$ Player | Origin$ Library | Destination$ Battlefield | Tapped$ True | ChangeType$ Land.Basic | Chooser$ Targeted",
+    &[r#""who":{"Target":0}"#, r#""Shuffle":{"who":{"Target":0}}"#]
+)]
+#[case::the_player_a_parent_targeted_searches(
+    "A:SP$ LoseLife | ValidTgts$ Player | LifeAmount$ 1 | SubAbility$ S\nSVar:S:DB$ ChangeZone | Origin$ Library | Destination$ Battlefield | DefinedPlayer$ ParentTarget | ChangeType$ Land.Basic",
+    &[r#""who":{"Target":0}"#]
+)]
+fn the_targeted_player_is_the_owner_of_the_cards_and_may_be_the_chooser(
+    #[case] lines: &str,
+    #[case] parts: &[&str],
+) {
+    let script = card("Sorcery", lines);
+    let found = abilities(&script);
+    assert_eq!(found.len(), 1, "{:?}", gaps(&script));
+    for part in parts {
+        assert!(
+            found[0].to_string().contains(part),
+            "{part} in {}",
+            found[0]
+        );
+    }
+}
+
+#[rstest]
+#[case::you_search_their_library(
+    "A:SP$ ChangeZone | ValidTgts$ Opponent | Origin$ Library | Destination$ Battlefield | ChangeType$ Creature | GainControl$ True",
+    "key:ChangeZone.Search.ValidTgts"
+)]
+#[case::a_chooser_apart_from_the_target(
+    "A:SP$ ChangeZone | ValidTgts$ Player | Origin$ Library | Destination$ Exile | ChangeType$ Card | Chooser$ You",
+    "key:ChangeZone.Search.ValidTgts"
+)]
+#[case::several_targets_search(
+    "A:SP$ ChangeZone | ValidTgts$ Player | TargetMin$ 0 | TargetMax$ 2 | Chooser$ Targeted | Origin$ Library | Destination$ Hand | ChangeType$ Card",
+    "key:ChangeZone.Search.ValidTgts"
+)]
+fn a_search_of_a_targets_library_stays_a_named_gap(#[case] lines: &str, #[case] gap: &str) {
+    let script = card("Sorcery", lines);
+    assert!(abilities(&script).is_empty(), "{:?}", abilities(&script));
+    assert_eq!(gaps(&script), [gap]);
+}

@@ -139,3 +139,82 @@ fn a_choice_from_the_hand_of_the_targeted_player_takes_only_a_nonland_card_of_th
         ["Grizzly Bears"]
     );
 }
+
+const PAINFUL: &str = "Name:Painful\nManaCost:B\nTypes:Sorcery\nA:SP$ ChangeZone | Origin$ Hand | Destination$ Library | LibraryPosition$ 0 | ValidTgts$ Opponent | ChangeType$ Card | ChangeNum$ 1 | Mandatory$ True | SpellDescription$ Look at target opponent's hand and choose a card from it. Put that card on top of their library.\n";
+const IMP: &str = "Name:Imp Spell\nManaCost:B\nTypes:Sorcery\nA:SP$ ChangeZone | Origin$ Hand | Destination$ Library | LibraryPosition$ 0 | ValidTgts$ Opponent | Chooser$ Targeted | ChangeType$ Card | ChangeNum$ 1 | Mandatory$ True | SpellDescription$ Target opponent puts a card from their hand on top of their library.\n";
+const FAVOR: &str = "Name:Favor\nManaCost:G\nTypes:Sorcery\nA:SP$ ChangeZone | ValidTgts$ Player | Origin$ Library | Destination$ Battlefield | Tapped$ True | ChangeType$ Land.Basic | Chooser$ Targeted | SpellDescription$ Target player searches their library for a basic land card, puts it onto the battlefield tapped, then shuffles.\n";
+
+/// The seat that is asked to choose cards when `spell` is cast at the opponent (seat 1).
+fn who_chooses(script: &str, name: &str) -> (usize, Vec<String>) {
+    use mtg_testkit::cards::swamp;
+    let card = translated(script, name, "Sorcery", "{B}");
+    let scenario = Scenario::new(2)
+        .hand(0, [card])
+        .hand(1, [bear(), plains()])
+        .library(1, [forest(), forest()])
+        .battlefield(0, [ready(swamp()), ready(forest())]);
+    let mut driver = Driver::from_scenario(scenario).unwrap();
+    let target = driver.target_player(1);
+    driver.cast_at(name, &[target]).unwrap();
+    let mut chooser = 9;
+    for _ in 0..100 {
+        let decision = driver.decision().unwrap().clone();
+        let answer = match &decision.kind {
+            DecisionKind::Priority(_) if driver.state().stack().is_empty() => break,
+            DecisionKind::Priority(_) => Answer::Priority(PriorityAction::Pass),
+            DecisionKind::YesNo(_) => Answer::YesNo(mtg_engine::choose::YesNoChoice(true)),
+            DecisionKind::ChooseCards(o) => {
+                chooser = decision.player.index();
+                Answer::ChooseCards(mtg_engine::choose::CardsChoice(
+                    o.from.iter().copied().take(o.max as usize).collect(),
+                ))
+            }
+            _ => Driver::passive_answer(&decision),
+        };
+        driver.answer(answer).unwrap();
+    }
+    let state = driver.state();
+    let top = |zone: Zone| -> Vec<String> {
+        state
+            .zone(zone)
+            .iter()
+            .map(|id| state.object(*id).unwrap().card().name.clone())
+            .collect()
+    };
+    let mut seen = top(Zone::Hand(PlayerId::from_index(1)));
+    seen.extend(
+        top(Zone::Battlefield)
+            .into_iter()
+            .filter(|n| n == "Forest")
+            .map(|n| format!("battlefield {n}")),
+    );
+    (chooser, seen)
+}
+
+#[rstest]
+#[case::the_caster_chooses_a_card_of_the_opponents_hand(PAINFUL, "Painful", 0)]
+#[case::the_opponent_chooses_their_own_card(IMP, "Imp Spell", 1)]
+fn the_chooser_of_a_card_from_a_targeted_hand_is_the_one_the_card_names(
+    #[case] script: &str,
+    #[case] name: &str,
+    #[case] chooser: usize,
+) {
+    let (who, hand) = who_chooses(script, name);
+    assert_eq!(who, chooser);
+    let in_hand = hand
+        .iter()
+        .filter(|n| !n.starts_with("battlefield"))
+        .count();
+    assert_eq!(in_hand, 1, "one of the two cards left the hand: {hand:?}");
+}
+
+#[test]
+fn the_targeted_player_searches_their_own_library_and_the_caster_does_not() {
+    let (who, seen) = who_chooses(FAVOR, "Favor");
+    assert_eq!(who, 1, "the targeted player picks the land");
+    let lands = seen.iter().filter(|n| n.starts_with("battlefield")).count();
+    assert_eq!(
+        lands, 2,
+        "the caster's own Forest and the one found: {seen:?}"
+    );
+}

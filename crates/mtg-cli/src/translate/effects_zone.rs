@@ -459,7 +459,8 @@ fn choose_and_move(ctx: &mut Ctx, p: &Params, origin: &str, destination: &str) -
         filter.push(json!({"OwnedBy": owner}));
     }
     let max = amount(ctx, p.get("ChangeNum").unwrap_or("1"))?;
-    let min = if p.get("Mandatory") == Some("True") && p.get("Optional") != Some("True") {
+    let optional = p.get("Optional").is_some_and(|word| word != "False");
+    let min = if p.get("Mandatory") == Some("True") && !optional {
         max.clone()
     } else {
         json!(0)
@@ -467,7 +468,7 @@ fn choose_and_move(ctx: &mut Ctx, p: &Params, origin: &str, destination: &str) -
     let bind = ctx.fresh("picked");
     let chosen = json!({ "Bound": bind });
     let choose = if p.get("AtRandom") == Some("True") {
-        if p.get("Optional") == Some("True") {
+        if optional {
             return unmapped("key:ChangeZone.Choose.AtRandom-optional");
         }
         json!({"ChooseAtRandom": {"from": {"Each": filter}, "count": max, "as": bind}})
@@ -551,10 +552,13 @@ fn defined_player(ctx: &mut Ctx, p: &Params) -> Tr<Who> {
             (defined(ctx, word)?, false)
         }
         (Some(word), false) if PLAYER_WORDS.contains(&word) => (defined(ctx, word)?, false),
+        // Cards of the targeted player, chosen by the caster unless `Chooser$` says otherwise.
+        (None, true) if one_target => (subject(ctx, p, "You", None)?, true),
         (None, true) => return unmapped("key:ChangeZone.Choose.ValidTgts"),
         _ => return unmapped("key:ChangeZone.Choose.DefinedPlayer"),
     };
     let chooser = match p.get("Chooser") {
+        None if targets && !p.has("DefinedPlayer") => json!("You"),
         None => owner.clone(),
         Some(word) if Some(word) == p.get("DefinedPlayer") && each.is_none() => owner.clone(),
         Some("You") => json!("You"),
@@ -597,6 +601,9 @@ fn search(ctx: &mut Ctx, p: &Params, destination: &str) -> Tr<Vec<Value>> {
             "NoLooking",
             "DefinedPlayer",
             "Chooser",
+            "ValidTgts",
+            "TargetMin",
+            "TargetMax",
         ],
     )?;
     let seat = searcher(ctx, p)?;
@@ -716,6 +723,22 @@ struct Seat {
 /// (a `Chooser$` apart from the player) stays a gap.
 fn searcher(ctx: &mut Ctx, p: &Params) -> Tr<Seat> {
     let word = p.get("DefinedPlayer");
+    if p.has("ValidTgts") {
+        // "Target player searches their library": the one targeted player. Searching a target's library is another node.
+        let one_player = matches!(p.get("ValidTgts"), Some("Player" | "Opponent"))
+            && !p.has("TargetMin")
+            && !p.has("TargetMax");
+        if !one_player
+            || p.get("Chooser") != Some("Targeted")
+            || !matches!(word, None | Some("Targeted"))
+        {
+            return unmapped("key:ChangeZone.Search.ValidTgts");
+        }
+        return Ok(Seat {
+            who: subject(ctx, p, "You", None)?,
+            each: None,
+        });
+    }
     match (word, p.get("Chooser")) {
         (_, None) | (None, Some("You")) => {}
         (Some(w), Some(c)) if w == c => {}
@@ -734,12 +757,26 @@ fn searcher(ctx: &mut Ctx, p: &Params) -> Tr<Seat> {
                 each: Some((defined(ctx, w)?, name)),
             })
         }
+        Some("ParentTarget") if parent_is_player(ctx) => Ok(Seat {
+            who: ctx.parent()?,
+            each: None,
+        }),
         Some(w) if SEARCHERS.contains(&w) => Ok(Seat {
             who: defined(ctx, w)?,
             each: None,
         }),
         Some(_) => unmapped("key:ChangeZone.Search.DefinedPlayer"),
     }
+}
+
+/// Whether the target the parent line declared is one player.
+fn parent_is_player(ctx: &Ctx) -> bool {
+    ctx.parent_target
+        .and_then(|at| ctx.targets.get(usize::from(at)))
+        .is_some_and(|spec| {
+            matches!(spec["what"].as_str(), Some("Player" | "Opponent"))
+                && spec.get("bounds").is_none()
+        })
 }
 
 /// The player words that name one searcher.
