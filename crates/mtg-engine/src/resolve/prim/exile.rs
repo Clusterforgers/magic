@@ -60,7 +60,25 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
     let mut events = Vec::new();
     let mut snapshots = Vec::new();
     let mut exiled = Vec::new();
-    for object in cx.scope.live_objects(what)? {
+    let mut named = cx.scope.live_objects(what)?;
+    // "Exile that card" / "exile ~" after it died: the card it became in the graveyard, one zone change on (CR 400.7), as
+    // `Move` finds it.
+    if matches!(what, Ref::This) && cx.scope.cause.is_some() {
+        for reference in cx.scope.objects(what)? {
+            if let Some(card) = state.object(reference.id).filter(|card| {
+                card.counter() == reference.counter + 1 && matches!(card.zone(), Zone::Graveyard(_))
+            }) && !named.iter().any(|seen| seen.id() == card.id())
+            {
+                named.push(card);
+            }
+        }
+    }
+    for card in cx.scope.followed_cards(what) {
+        if !named.iter().any(|seen| seen.id() == card.id()) {
+            named.push(card);
+        }
+    }
+    for object in named {
         // A spell exiles itself only by name ("Exile ~."); a group that reaches it by its zone leaves it be.
         let resolving_spell = object.zone() == Zone::Stack
             && object.id() == cx.resolving.object()

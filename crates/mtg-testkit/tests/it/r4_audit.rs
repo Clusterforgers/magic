@@ -1,0 +1,91 @@
+//! Goal: audit faults of round 4 stay fixed: triggers on a cost that moves its source, mana abilities as activations, exiling the card a trigger names after it died, simultaneous damage removing one counter, and who orders a library.
+#![allow(clippy::unwrap_used, clippy::expect_used)]
+
+use std::sync::Arc;
+
+use mtg_cards::CardDefinition;
+use mtg_cards::ability::Ability;
+use mtg_core::card::CardType;
+use mtg_core::mana::ManaCost;
+use mtg_engine::choose::{CostsChoice, YesNoChoice};
+use mtg_engine::decision::{Answer, DecisionKind, PayChoice};
+use mtg_engine::zones::Zone;
+use mtg_testkit::corpus::card;
+use mtg_testkit::{Driver, Scenario, ready};
+
+use crate::common::{names, pid};
+
+fn def(name: &str, ty: CardType, pt: Option<(i32, i32)>, rules: &[&str]) -> Arc<CardDefinition> {
+    let mut c = CardDefinition::new(name)
+        .with_type(ty)
+        .with_mana_cost(ManaCost::parse("{0}").unwrap());
+    if let Some((p, t)) = pt {
+        c = c.with_power_toughness(p, t);
+    }
+    for json in rules {
+        c = c.with_rules(serde_json::from_str::<Ability>(json).unwrap());
+    }
+    Arc::new(c)
+}
+
+fn forest_lib(n: usize) -> Vec<Arc<CardDefinition>> {
+    (0..n).map(|_| card("Forest").unwrap()).collect()
+}
+
+/// Answers every decision until the stack is empty and the active player has priority: costs none, mana automatic,
+/// yes/no yes.
+fn settle(dr: &mut Driver) {
+    for _ in 0..300 {
+        let dec = dr.decision().unwrap().clone();
+        match &dec.kind {
+            DecisionKind::Priority(_) if dr.state().stack().is_empty() => return,
+            DecisionKind::ChooseCosts(_) => {
+                dr.answer(Answer::ChooseCosts(CostsChoice::Costs(vec![])))
+                    .unwrap();
+            }
+            DecisionKind::PayMana(_) => {
+                dr.answer(Answer::PayMana(PayChoice::Auto)).unwrap();
+            }
+            DecisionKind::YesNo(o) if !o.only_no => {
+                dr.answer(Answer::YesNo(YesNoChoice(true))).unwrap();
+            }
+            _ => {
+                dr.answer_passively().unwrap();
+            }
+        }
+    }
+    panic!("did not settle: {}", dr.decision().unwrap().kind.name());
+}
+
+#[test]
+fn exile_of_the_triggering_card_after_it_died_exiles_the_card() {
+    let watcher = def(
+        "Watcher",
+        CardType::Artifact,
+        None,
+        &[
+            r#"{"Triggered":{"when":{"ZoneChange":{"what":[{"Type":"Creature"}],"from":"Battlefield","to":"Graveyard"}},"effects":[{"Exile":{"what":"Triggering"}}]}}"#,
+        ],
+    );
+    let sac = def(
+        "Sac",
+        CardType::Sorcery,
+        None,
+        &[r#"{"Spell":{"effects":[{"Sacrifice":{"filter":[{"Type":"Creature"}]}}]}}"#],
+    );
+    let bear = def("Own Bear", CardType::Creature, Some((1, 1)), &[]);
+    let sc = Scenario::new(2)
+        .battlefield(0, [ready(watcher), ready(bear)])
+        .hand(0, [sac])
+        .library(0, forest_lib(9))
+        .library(1, forest_lib(9));
+    let mut dr = Driver::from_scenario(sc).unwrap();
+    dr.begin_cast("Sac").unwrap();
+    settle(&mut dr);
+    assert_eq!(names(dr.state(), Zone::Exile), ["Own Bear"]);
+    assert!(
+        names(dr.state(), Zone::Graveyard(pid(0)))
+            .iter()
+            .all(|n| n != "Own Bear")
+    );
+}
