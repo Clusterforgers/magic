@@ -25,10 +25,7 @@ export interface MarkerChange {
  * `changed` whatever the saved state was, so a marker never outlives the deck it was earned by; every other state is
  * the state of the check of the moment.
  */
-export function markerKind(
-  state: DeckState,
-  { dirty = false }: MarkerChange = {},
-): MarkerKind {
+export function markerKind(state: DeckState, { dirty = false }: MarkerChange = {}): MarkerKind {
   if (dirty) return 'changed'
   return state
 }

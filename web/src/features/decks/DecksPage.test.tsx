@@ -167,9 +167,7 @@ describe('the check state of a deck', () => {
   })
 
   it('gives every state its own icon, so colour never carries the meaning alone', async () => {
-    const decks = [
-      ...WORDS.map(([state]) => deckIn(state, { id: state, name: state })),
-    ]
+    const decks = [...WORDS.map(([state]) => deckIn(state, { id: state, name: state }))]
     await renderDecks({ decks })
     await screen.findByRole('list', { name: 'Your decks' })
     const icons = decks.map((deck) =>
