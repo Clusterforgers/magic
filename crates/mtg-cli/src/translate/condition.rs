@@ -89,8 +89,22 @@ const PREFIXED: [(&str, &str); 6] = [
     ("ConditionSVarCompare", "SVarCompare"),
 ];
 
+/// Whether the line is the `Effect` that holds a shield for the source a `ChooseSource` picked and states "if a source was
+/// chosen": a shield that names no object does nothing, so the condition adds nothing.
+fn holds_a_shield_for_the_choice(p: &Params) -> bool {
+    p.get("DB") == Some("Effect")
+        && p.has("ReplacementEffects")
+        && p.get("ConditionDefined") == Some("ChosenCard")
+        && matches!(p.get("ConditionPresent"), Some("Card" | "Card,Emblem"))
+        && matches!(p.get("ConditionCompare"), None | Some("GE1"))
+}
+
 /// The condition a line of a chain states with `ConditionPresent$` and the like, and the line without those keys.
 pub fn prefixed(ctx: &Ctx, p: &Params) -> Tr<(Option<Value>, Params)> {
+    if holds_a_shield_for_the_choice(p) {
+        let keys: Vec<&str> = PREFIXED.iter().map(|(from, _)| *from).collect();
+        return Ok((None, p.without(&keys)));
+    }
     let renamed: Vec<String> = PREFIXED
         .iter()
         .filter_map(|(from, to)| p.get(from).map(|value| format!("{to}$ {value}")))

@@ -268,6 +268,9 @@ pub struct DamageShield {
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     #[cfg_attr(feature = "ts", ts(type = "unknown", optional))]
     pub then: Vec<mtg_cards::effect::Effect>,
+    /// It prevents the next damage event it covers and ends ("the next time a source of your choice would deal damage").
+    #[serde(default)]
+    pub once: bool,
 }
 
 impl DamageShield {

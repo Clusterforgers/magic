@@ -300,6 +300,9 @@ pub enum Effect {
         /// Cards are chosen at random.
         #[serde(default, skip_serializing_if = "is_false")]
         random: bool,
+        /// Which cards of the hand may be chosen ("discard a creature card"); any card when absent.
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        filter: Option<Selector>,
         /// The name the discarded cards are bound to, as the objects they become in their graveyards (CR 400.7), for the
         /// steps that count them ("the greatest number of cards a player discarded this way").
         #[serde(rename = "as", default, skip_serializing_if = "Option::is_none")]

@@ -844,6 +844,7 @@ fn wheel_text(effects: &[Effect]) -> Option<(String, usize)> {
             who: Ref::EachPlayer,
             count: hand,
             random: false,
+            filter: None,
             bind,
         },
         Effect::Draw {
@@ -1245,10 +1246,11 @@ fn your_cards(effect: &Effect) -> Option<String> {
             who: Ref::You,
             count,
             random,
+            filter,
             bind: None,
         } => format!(
             "discard {}{}",
-            draws::discarded_text(&Ref::You, count)?,
+            draws::discarded_filtered_text(&Ref::You, count, filter.as_ref())?,
             at_random(*random)
         ),
         _ => return None,
@@ -2748,9 +2750,10 @@ impl Writer<'_> {
                 who,
                 count,
                 random,
+                filter,
                 bind: None,
             } => {
-                let cards = draws::discarded_text(who, count)?;
+                let cards = draws::discarded_filtered_text(who, count, filter.as_ref())?;
                 format!("discard{s} {cards}{}", at_random(*random))
             }
             Effect::GainLife { amount, .. } => format!("gain{s} {}", self.life(amount)?),

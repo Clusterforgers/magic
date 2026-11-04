@@ -91,6 +91,11 @@ pub fn by(ctx: &Ctx, p: &Params, name: &str, recipient_is_you: bool, shield: boo
     }
     let prevents = p.get("PreventionEffect") == Some("True");
     match (part.get("DB").unwrap_or_default(), prevents) {
+        // The effect object exiles itself: the shield serves one damage event.
+        ("ChangeZone", true) if shield && exiles_the_effect(&part) => {
+            keys(&part, &["Defined", "Origin", "Destination"])?;
+            Ok(json!("PreventNext"))
+        }
         ("ReplaceDamage", true) => {
             keys(&part, &["Amount"])?;
             match part.get("Amount").map(str::parse::<u32>) {
@@ -114,6 +119,13 @@ pub fn by(ctx: &Ctx, p: &Params, name: &str, recipient_is_you: bool, shield: boo
         (_, true) => Ok(json!({"PreventAnd": [effect(ctx, &part, recipient_is_you, shield)?]})),
         (_, false) => Ok(json!({"Instead": [effect(ctx, &part, recipient_is_you, shield)?]})),
     }
+}
+
+/// Whether a part moves the `Effect` object from the command zone to exile, which ends it.
+fn exiles_the_effect(part: &Params) -> bool {
+    part.get("Defined") == Some("Self")
+        && part.get("Origin") == Some("Command")
+        && part.get("Destination") == Some("Exile")
 }
 
 /// The damage is dealt to the card with the ability or to what it is attached to, by the same source.

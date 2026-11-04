@@ -775,6 +775,17 @@ pub(crate) fn discard(count: usize) -> String {
     }
 }
 
+/// What a discard of cards that match a filter asks: "Discard a creature card.", "Discard 2 land cards."
+pub(crate) fn discard_matching(filter: &Selector, count: usize) -> String {
+    let noun = noun(filter);
+    let noun = noun.strip_suffix(" card").unwrap_or(&noun);
+    if count == 1 {
+        format!("Discard {} {noun} card.", article(noun))
+    } else {
+        format!("Discard {count} {noun} cards.")
+    }
+}
+
 /// What a sacrifice asks of the player who chooses: "Sacrifice a creature or planeswalker.", "Sacrifice 2 creatures."
 pub(crate) fn sacrifice(filter: &Selector, count: usize) -> String {
     if count == 1 {
@@ -1013,6 +1024,7 @@ fn verb_phrase(effect: &Effect) -> Option<String> {
             who: Ref::You,
             count: Amount::Fixed(n),
             random: false,
+            filter: None,
             bind: None,
         } => format!("discard {}", cards(*n)),
         Effect::Mill {

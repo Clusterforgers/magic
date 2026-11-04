@@ -159,6 +159,7 @@ const RUNS: &[&str] = &[
     "Effect.Draw",
     "Effect.Discard",
     "Effect.Discard.Random",
+    "Effect.Discard.Filter",
     "Effect.Mill",
     "Effect.Scry",
     "Effect.LookAtTop",
@@ -506,6 +507,7 @@ const RUNS: &[&str] = &[
     "ReplaceBy.Multiply",
     "ReplaceBy.Add",
     "ReplaceBy.Prevent",
+    "ReplaceBy.PreventNext",
     "ReplaceBy.PreventUpTo",
     "ReplaceBy.PreventRemovingCounter",
     "ReplaceBy.MoveTo",
@@ -693,6 +695,7 @@ mod tests {
     #[case::drawing("Effect.Draw", true)]
     #[case::discarding("Effect.Discard", true)]
     #[case::discarding_at_random("Effect.Discard.Random", true)]
+    #[case::discarding_matching_cards("Effect.Discard.Filter", true)]
     #[case::milling("Effect.Mill", true)]
     #[case::scrying("Effect.Scry", true)]
     #[case::looking_at_the_top("Effect.LookAtTop", true)]
@@ -837,6 +840,7 @@ mod tests {
     #[case::shields("Effect.Shield", true)]
     #[case::preventing("ReplaceBy.Prevent", true)]
     #[case::preventing_in_part("ReplaceBy.PreventUpTo", true)]
+    #[case::preventing_the_next_damage("ReplaceBy.PreventNext", true)]
     #[case::removed_keywords("Mod.RemoveKeyword", true)]
     #[case::locked_keywords("Mod.LockKeyword", true)]
     #[case::conditions("Effect.If", true)]

@@ -758,12 +758,19 @@ fn leaf_effect() -> impl Strategy<Value = Effect> {
     let who = || reference();
     let part1 = prop_oneof![
         (who(), amount()).prop_map(|(who, count)| Effect::Draw { who, count }),
-        (who(), amount(), any::<bool>()).prop_map(|(who, count, random)| Effect::Discard {
-            who,
-            count,
-            random,
-            bind: None
-        }),
+        (
+            who(),
+            amount(),
+            any::<bool>(),
+            proptest::option::of(leaf_selector())
+        )
+            .prop_map(|(who, count, random, filter)| Effect::Discard {
+                who,
+                count,
+                random,
+                filter,
+                bind: None
+            }),
         (who(), amount()).prop_map(|(who, count)| Effect::Mill {
             who,
             count,
