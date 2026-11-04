@@ -216,3 +216,27 @@ fn a_trigger_condition_is_rechecked_unless_the_line_says_not(
     let shown = serde_json::to_string(&abilities(&trigger(&line, "Self"))).unwrap_or_default();
     assert_eq!(shown.contains("\"AtTrigger\""), at_trigger, "{shown}");
 }
+
+#[rstest]
+#[case::a_may_sacrifice_then_an_if_you_did(
+    "A:SP$ Sacrifice | SacValid$ Creature | Optional$ True | RememberSacrificed$ True | SubAbility$ Gain\nSVar:Gain:DB$ GainLife | LifeAmount$ 3 | ConditionDefined$ Remembered | ConditionPresent$ Card | ConditionCompare$ GE1\n",
+    &["\"May\"", "\"CountOf\""],
+    &[]
+)]
+#[case::any_number_stays_a_gap(
+    "A:SP$ Sacrifice | SacValid$ Creature | Amount$ 3 | Optional$ True\n",
+    &[],
+    &["key:Sacrifice.Optional-amount"]
+)]
+fn an_optional_sacrifice_is_a_may(
+    #[case] line: &str,
+    #[case] shown_has: &[&str],
+    #[case] expected: &[&str],
+) {
+    let text = format!("Name:T\nTypes:Sorcery\n{line}");
+    assert_eq!(gaps(&text), expected);
+    let shown = serde_json::to_string(&abilities(&text)).unwrap_or_default();
+    for word in shown_has {
+        assert!(shown.contains(word), "{shown}");
+    }
+}

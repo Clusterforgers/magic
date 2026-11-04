@@ -412,8 +412,13 @@ fn sacrifice(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
             "TargetMin",
             "TargetMax",
             "RememberSacrificed",
+            "Optional",
         ],
     )?;
+    let optional = p.get("Optional") == Some("True");
+    if optional && p.get("Amount").is_some_and(|n| n != "1") {
+        return unmapped("key:Sacrifice.Optional-amount");
+    }
     if let Some(valid) = p.get("ValidTgts")
         && !matches!(valid, "Player" | "Opponent" | "Player.Opponent")
     {
@@ -428,6 +433,9 @@ fn sacrifice(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
     let mut effect = json!({"Sacrifice": {"who": who, "filter": filter, "count": count}});
     if remember::wanted(p, &["RememberSacrificed"]) {
         remember::bind_moved(ctx, &mut effect, "Sacrifice", "sacrificed");
+    }
+    if optional {
+        effect = json!({"May": {"effects": [effect]}});
     }
     Ok(effect)
 }

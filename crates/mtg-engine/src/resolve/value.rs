@@ -1075,6 +1075,12 @@ impl<'a> Scope<'a> {
 
     /// How many of the objects the reference names satisfy the selector.
     fn count_of(&self, subject: &Ref, selector: &Selector) -> Result<i64, ResolveError> {
+        // A name no step bound (a declined "you may") stands for no objects.
+        if let Ref::Bound(name) = subject
+            && !self.bindings.contains_key(name)
+        {
+            return Ok(0);
+        }
         let mut count = 0;
         for object in self.objects(subject)? {
             if self.selects(selector, object)? {

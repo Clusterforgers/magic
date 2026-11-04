@@ -169,6 +169,11 @@ mod tests {
         ME,
         0
     )]
+    #[case::count_of_an_unbound_name_is_zero(
+        r#"{"CountOf":{"subject":{"Bound":"nothing"},"selector":[],"op":"Eq","right":0}}"#,
+        ME,
+        0
+    )]
     #[case::a_power_read(
         r#"{"Compare":{"left":{"Stat":{"of":"This","stat":"Power"}},"op":"Lt","right":2}}"#,
         ME,
