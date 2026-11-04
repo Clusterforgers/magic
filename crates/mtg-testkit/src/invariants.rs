@@ -952,7 +952,10 @@ impl InvariantChecker {
         }
         if matches!(
             event,
-            Event::TokenCreated(_) | Event::EmblemCreated(_) | Event::CompanionBrought { .. }
+            Event::TokenCreated(_)
+                | Event::CardConjured(_)
+                | Event::EmblemCreated(_)
+                | Event::CompanionBrought { .. }
         ) {
             self.expected_objects += 1;
         }

@@ -576,6 +576,16 @@ pub enum Event {
         /// The cards picked.
         cards: Vec<ObjectId>,
     },
+    /// A card was conjured into a zone (Alchemy).
+    CardConjured(crate::conjure::CardConjured),
+    /// A player seeks (Alchemy): `count` random cards of their library that match go to their hand, chosen with the
+    /// next substream of the generator; the `ZoneChanged` events that move them follow in the same batch.
+    Sought {
+        /// Who seeks.
+        player: PlayerId,
+        /// How many cards were picked.
+        count: u32,
+    },
     /// Cards of a library were put on its bottom.
     LibraryBottomed {
         /// Whose library.
@@ -1112,6 +1122,7 @@ impl Event {
             | Event::LibraryLooked(_)
             | Event::CardsFound(_)
             | Event::ChosenAtRandom { .. }
+            | Event::Sought { .. }
             | Event::Revealed(_) => Vec::new(),
             Event::CountersChanged(changed) => changed
                 .on
@@ -1132,6 +1143,7 @@ impl Event {
                 .copied()
                 .collect(),
             Event::TokenCreated(token) => vec![token.object],
+            Event::CardConjured(card) => vec![card.object],
             Event::EmblemCreated(emblem) => vec![emblem.object],
             Event::Ventured(ventured) => vec![ventured.object],
             Event::BecameCopy(copy) => vec![copy.object],

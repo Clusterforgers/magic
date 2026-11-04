@@ -330,6 +330,11 @@ const PUBLIC: Record<VariantName<Event>, [Event, string]> = {
     { TokenCreated: { object: 91, controller: 2, name: 'Treasure' } },
     'Cy creates a Treasure token',
   ],
+  CardConjured: [
+    { CardConjured: { object: 92, owner: 1, zone: { Hand: 1 }, name: 'Lightning Bolt' } },
+    "Bo conjures Lightning Bolt into Bo's hand",
+  ],
+  Sought: [{ Sought: { player: 1, count: 2 } }, 'Bo seeks 2 cards'],
   LibraryLooked: [
     { LibraryLooked: { player: 0, cards: [1, 2, 3] } },
     'Ana looks at 3 cards of their library',
@@ -451,6 +456,7 @@ function snapshotOf(id: number): Snapshot {
 
 const HIDDEN: Record<VariantName<HiddenEvent>, [HiddenEvent, string]> = {
   CardDrawn: [{ CardDrawn: { player: 1 } }, 'Bo draws a card'],
+  CardConjured: [{ CardConjured: { player: 1 } }, 'Bo conjures a card'],
   AnnouncementRewound: [{ AnnouncementRewound: { player: 1 } }, 'Bo could not finish a play'],
   HandDealt: [{ HandDealt: { player: 1, count: 7 } }, 'Bo is dealt 7 cards'],
   LibraryShuffled: [{ LibraryShuffled: { player: 1 } }, 'Bo shuffles their library'],

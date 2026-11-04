@@ -17,6 +17,10 @@ player: PlayerId, } } | { "CardDrawn": {
 /**
  * Who drew.
  */
+player: PlayerId, } } | { "CardConjured": { 
+/**
+ * Whose card.
+ */
 player: PlayerId, } } | { "HandDealt": { 
 /**
  * Who received it.

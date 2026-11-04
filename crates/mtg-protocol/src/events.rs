@@ -33,6 +33,11 @@ pub enum HiddenEvent {
         /// Who drew.
         player: PlayerId,
     },
+    /// A card was conjured for a player into a hand or a library.
+    CardConjured {
+        /// Whose card.
+        player: PlayerId,
+    },
     /// A player was dealt an opening hand.
     HandDealt {
         /// Who received it.
@@ -257,6 +262,9 @@ fn redact(before: &GameState, event: &Event, viewer: PlayerId) -> Option<HiddenE
         Event::CardDrawn { player, .. } if !own(player) => {
             Some(HiddenEvent::CardDrawn { player: *player })
         }
+        Event::CardConjured(card) if matches!(card.zone, Zone::Hand(_) | Zone::Library(_)) && !own(&card.owner) => {
+            Some(HiddenEvent::CardConjured { player: card.owner })
+        }
         Event::AnnouncementRewound { player, .. } if *player != viewer => {
             Some(HiddenEvent::AnnouncementRewound { player: *player })
         }
@@ -316,6 +324,8 @@ fn redact(before: &GameState, event: &Event, viewer: PlayerId) -> Option<HiddenE
         | Event::ManaPoolEmptied { .. }
         | Event::ManaBurned { .. }
         | Event::LifePaid { .. }
+        | Event::CardConjured(_)
+        | Event::Sought { .. }
         | Event::DrewFromEmptyLibrary { .. }
         | Event::CardDiscarded { .. }
         | Event::Cycled { .. }

@@ -204,6 +204,8 @@ pub struct GameState {
     /// What the table's creator set in place of the format's values.
     pub(crate) house_rules: HouseRules,
     pub(crate) seed: u64,
+    /// The cards an effect may conjure, by name.
+    pub(crate) conjurable: Arc<BTreeMap<String, Arc<mtg_cards::CardDefinition>>>,
     pub(crate) rng_index: u64,
     pub(crate) stage: Stage,
     pub(crate) first_player: PlayerId,
