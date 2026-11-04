@@ -25,6 +25,20 @@ fn action_modes_are_did(#[case] line: &str, #[case] node: Value) {
 }
 
 #[rstest]
+#[case::blocked_by_a_creature(
+    "Mode$ AttackerBlockedByCreature | ValidCard$ Card.Self | ValidBlocker$ Creature",
+    json!({"BecomesBlocked": {"what": ["This"], "by": [{"Type": "Creature"}]}})
+)]
+#[case::blocker_is_this(
+    "Mode$ AttackerBlockedByCreature | ValidCard$ Creature | ValidBlocker$ Card.Self",
+    json!({"BecomesBlocked": {"what": [{"Type": "Creature"}], "by": ["This"]}})
+)]
+fn blocked_by_patterns(#[case] line: &str, #[case] pattern: Value) {
+    let expected = normal(json!({"Triggered": {"when": pattern, "effects": [{"Draw": {}}]}}));
+    assert_eq!(abilities(&trigger(line)), vec![expected]);
+}
+
+#[rstest]
 #[case::cause(
     "Mode$ Countered | ValidCard$ Card | ValidCause$ Card.Self",
     "key:Trigger.Countered.ValidCause"

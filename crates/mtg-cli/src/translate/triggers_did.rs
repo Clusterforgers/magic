@@ -66,8 +66,26 @@ const MODES: [(&str, &str, Subject); 24] = [
 
 /// The pattern of a mode this module reads; `None` for any other mode.
 pub fn pattern(ctx: &Ctx, p: &Params, mode: &str) -> Option<Tr<Value>> {
+    if mode == "AttackerBlockedByCreature" {
+        return Some(blocked_by(ctx, p));
+    }
     let (_, action, subject) = MODES.iter().find(|(name, ..)| *name == mode)?;
     Some(did(ctx, p, mode, action, *subject))
+}
+
+/// `AttackerBlockedByCreature`: an attacker becomes blocked by a creature, once for each such blocker.
+fn blocked_by(ctx: &Ctx, p: &Params) -> Tr<Value> {
+    keys(
+        p,
+        "AttackerBlockedByCreature",
+        &["ValidCard", "ValidBlocker"],
+    )?;
+    let what = selector_any(ctx, p.get("ValidCard").unwrap_or("Card"))?;
+    let mut node = json!({ "what": what });
+    if let Some(valid) = p.get("ValidBlocker") {
+        node["by"] = json!(selector_any(ctx, valid)?);
+    }
+    Ok(json!({ "BecomesBlocked": node }))
 }
 
 fn did(ctx: &Ctx, p: &Params, mode: &str, action: &str, subject: Subject) -> Tr<Value> {
