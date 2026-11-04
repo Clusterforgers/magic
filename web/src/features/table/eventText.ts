@@ -157,7 +157,7 @@ function modificationWords(modification: Modification, group: boolean, n: EventN
     const word = keywordWords(modification.LockKeyword)
     return `${loses} ${word} and can't have or gain it`
   }
-  if ('GrantAbility' in modification) return `${gains} an ability`
+  if ('GrantAbility' in modification || 'GainAbilities' in modification) return `${gains} an ability`
   if ('SetController' in modification) return `${group ? 'change' : 'changes'} controller`
   if ('SetPowerToughness' in modification) {
     const { power, toughness } = modification.SetPowerToughness
