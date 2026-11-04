@@ -22,6 +22,18 @@ fn spell(line: &str) -> String {
     "RevealHand | Defined$ Player",
     json!({"Reveal": {"what": {"Each": [{"OwnedBy": "EachPlayer"}, {"In": "Hand"}]}}})
 )]
+#[case::name_any(
+    "NameCard | Defined$ You",
+    json!({"ChooseValue": {"kind": {"CardName": []}, "as": "name"}})
+)]
+#[case::name_nonland(
+    "NameCard | Defined$ You | ValidCards$ Card.nonLand | ValidDescription$ nonland",
+    json!({"ChooseValue": {"kind": {"CardName": [{"Not": {"Type": "Land"}}]}, "as": "name"}})
+)]
+#[case::name_creature(
+    "NameCard | ValidCards$ Creature",
+    json!({"ChooseValue": {"kind": {"CardName": [{"Type": "Creature"}]}, "as": "name"}})
+)]
 fn a_verb_maps_to_its_node(#[case] line: &str, #[case] node: Value) {
     let script = spell(line);
     let mut found = abilities(&script);
@@ -40,6 +52,11 @@ fn a_verb_maps_to_its_node(#[case] line: &str, #[case] node: Value) {
 #[case::reveal_remember(
     "RevealHand | ValidTgts$ Player | RememberRevealed$ True",
     "key:RevealHand.RememberRevealed"
+)]
+#[case::name_random("NameCard | Defined$ You | AtRandom$ True", "key:NameCard.AtRandom")]
+#[case::name_list(
+    "NameCard | Defined$ You | ChooseFromList$ Alpha,Beta",
+    "key:NameCard.ChooseFromList"
 )]
 fn a_form_beyond_the_node_stays_a_gap(#[case] line: &str, #[case] gap: &str) {
     let script = spell(line);
