@@ -111,6 +111,7 @@ pub mod priority;
 pub mod prohibit;
 pub mod replace;
 pub mod resolve;
+pub mod retargeted;
 pub mod rng;
 #[cfg(test)]
 mod rule_options;

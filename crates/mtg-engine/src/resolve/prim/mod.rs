@@ -17,6 +17,7 @@ mod become_monarch;
 mod bolster;
 mod c10_vp_planechase;
 mod cast_from_zone;
+mod change_targets;
 mod choose;
 mod choose_at_random;
 mod choose_value;
@@ -232,6 +233,7 @@ fn dispatch(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         Effect::AddPhase { .. } => add_phase::run(cx, effect),
         Effect::WinGame { .. } => win_game::run(cx, effect),
         Effect::CopySpell { .. } => copy_spell::run(cx, effect),
+        Effect::ChangeTargets { .. } => change_targets::run(cx, effect),
         Effect::CopyAbility { .. } => copy_ability::run(cx, effect),
         Effect::CopyCard { .. } => copy_card::run(cx, effect),
         Effect::BecomeCopy { .. } => become_copy::run(cx, effect),
@@ -286,6 +288,7 @@ mod tests {
         {"BecomeMonarch":{}}, {"CreateEmblem":{"abilities":[]}}, {"BecomeDayNight":{"to":"Night"}}, {"Amass":{"subtype":"Orc","count":1}}, {"Incubate":{"count":1}}, {"Venture":{}}, {"TakeInitiative":{}}, {"Monstrosity":{"count":1}}, {"Renown":{"count":1}}, {"Exploit":{}}, {"BecomeLevel":{"level":2}},
         {"Adapt":{"count":1}}, {"Bolster":{"count":1}}, {"Fabricate":{"count":1}}, {"Learn":{}}, {"Crewed":{}}, {"Explore":{"what":"This"}}, {"Connive":{"what":"This"}},
         {"ExileUntil":{"filter":[],"as":"found","exiled_as":"exiled"}}, {"RevealUntil":{"filter":[],"as":"found","revealed_as":"revealed"}}, {"ExileTop":{"as":"top"}}, {"ExileHidden":{"what":"This"}}, {"Encode":{"what":"This","on":"This"}}, {"Remember":{"what":"This","slot":"s"}}, {"Forget":{"slot":"s"}}, {"Manifest":{}}, {"Cloak":{}}, {"CastFromZone":{"what":"This"}}, {"TimeTravel":{}}, {"ExtraTurn":{}}, "EndTurn",
+        {"ChangeTargets":{"what":"This","to":"Another"}},
         {"CopySpell":{"what":"This"}}, {"CopyAbility":{"what":"This"}}, {"CopyCard":{"what":"This","as":"copy"}},
         {"BecomeCopy":{"what":"This","of":"This","duration":"UntilEndOfTurn"}},
         {"CreateToken":{"token":{"Named":"treasure"}}},
@@ -434,6 +437,7 @@ mod tests {
         "Effect.TimeTravel",
         "Effect.ExtraTurn",
         "Effect.EndTurn",
+        "Effect.ChangeTargets",
         "Effect.CopySpell",
         "Effect.CopyAbility",
         "Effect.CopyCard",

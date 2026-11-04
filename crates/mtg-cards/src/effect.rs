@@ -44,6 +44,15 @@ pub(crate) const fn yes() -> bool {
     true
 }
 
+/// How an effect changes the targets of a spell or ability (CR 115.7).
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
+pub enum NewTargets {
+    /// "Change the target": the only target of a spell or ability becomes another legal target, or stays when there is none.
+    Another,
+    /// "You may choose new targets": each target may become any legal target (CR 115.7b).
+    Choose,
+}
+
 /// A phase an effect adds to the turn (CR 500.8).
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
 pub enum PhaseKind {
@@ -1173,6 +1182,14 @@ pub enum Effect {
         /// The controller of the copy may choose new targets for it.
         #[serde(default, skip_serializing_if = "is_false")]
         new_targets: bool,
+    },
+    /// Changes the targets of spells and abilities on the stack (CR 115.7); the controller of the effect chooses the new
+    /// ones, each judged as a target of the spell or ability for its own controller.
+    ChangeTargets {
+        /// The spells and abilities whose targets change.
+        what: Ref,
+        /// How they change.
+        to: NewTargets,
     },
     /// The permanents become copies of an object for a while ("becomes a copy of target creature until end of turn",
     /// CR 707.2): the copy effect is the first layer, and the permanent is what it was again when it ends.

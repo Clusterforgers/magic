@@ -211,6 +211,7 @@ fn reads_of_pred(pred: &Pred) -> Traits {
         | Pred::CastFrom(_)
         | Pred::HasCounter(_)
         | Pred::XInCost
+        | Pred::SingleTarget
         | Pred::HasAnyCounter
         | Pred::Named(_)
         | Pred::ChosenName

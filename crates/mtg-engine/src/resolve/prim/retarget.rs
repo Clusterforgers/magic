@@ -55,25 +55,64 @@ pub(super) fn retarget(
 ) -> Result<Retargeted, ResolveError> {
     let mut copy = original.choices.clone();
     copy.forget_cost_picks();
+    let way = if may_choose {
+        Way::ChooseCopy
+    } else {
+        Way::Keep
+    };
+    ask(cx, (player, player), answers, original, copy, way)
+}
+
+/// How the targets of an object change.
+#[derive(Clone, Copy, PartialEq, Eq)]
+pub(super) enum Way {
+    /// The targets stay.
+    Keep,
+    /// The chooser may choose new targets, any legal ones (CR 115.7b).
+    Choose,
+    /// The controller of a copy may choose new targets for it (CR 707.10c).
+    ChooseCopy,
+    /// The only target becomes another legal target, if there is one (CR 115.7a).
+    Another,
+}
+
+/// The questions of `way` for `original`, whose new choices start as `copy`. The first player answers them and the second
+/// is the one the new targets must be legal for: the controller of the object.
+pub(super) fn ask(
+    cx: &Cx<'_>,
+    (player, judged): (PlayerId, PlayerId),
+    answers: &mut Iter<'_, (PlayerId, Choice)>,
+    original: Original<'_>,
+    mut copy: Choices,
+    way: Way,
+) -> Result<Retargeted, ResolveError> {
     let state = cx.state();
     let specs = announced_specs(original.ability, &original.choices.modes);
     let mut changeable = Vec::new();
+    let single = original.choices.targets.iter().flatten().count() == 1;
     for (at, spec) in specs.iter().enumerate() {
         let Some(kept) = original.choices.targets.get(at).filter(|t| !t.is_empty()) else {
             continue;
         };
-        if !may_choose {
+        if way == Way::Keep || (way == Way::Another && !single) {
             break;
         }
-        let legal = legal_from(
+        let mut legal = legal_from(
             state,
             spec,
             original.origin,
             &[],
-            player,
+            judged,
             original.cause,
             original.choices.x,
         );
+        if way == Way::Another {
+            legal.retain(|target| !kept.contains(target));
+            if !legal.is_empty() {
+                changeable.push((at, wording::spec(spec), legal));
+            }
+            continue;
+        }
         let another = legal.len() > kept.len()
             || (legal.len() == kept.len() && !kept.iter().all(|target| legal.contains(target)));
         if another {
@@ -83,21 +122,28 @@ pub(super) fn retarget(
     if changeable.is_empty() {
         return Ok(Retargeted::Done(copy));
     }
-    match answers.next() {
-        None => {
-            return Ok(Retargeted::Ask(Decision {
-                player,
-                kind: DecisionKind::YesNo(YesNoOptions::new(
-                    original.id,
-                    format!("Choose new targets for the copy of {}?", original.name),
-                )),
-            }));
+    if way != Way::Another {
+        match answers.next() {
+            None => {
+                let of = if way == Way::ChooseCopy {
+                    "the copy of "
+                } else {
+                    ""
+                };
+                return Ok(Retargeted::Ask(Decision {
+                    player,
+                    kind: DecisionKind::YesNo(YesNoOptions::new(
+                        original.id,
+                        format!("Choose new targets for {of}{}?", original.name),
+                    )),
+                }));
+            }
+            Some((who, Choice::YesNo(false))) if *who == player => {
+                return Ok(Retargeted::Done(copy));
+            }
+            Some((who, Choice::YesNo(true))) if *who == player => {}
+            Some(other) => return Err(unexpected(other)),
         }
-        Some((who, Choice::YesNo(false))) if *who == player => {
-            return Ok(Retargeted::Done(copy));
-        }
-        Some((who, Choice::YesNo(true))) if *who == player => {}
-        Some(other) => return Err(unexpected(other)),
     }
     for (at, wording, legal) in changeable {
         let count = original.choices.targets[at].len();

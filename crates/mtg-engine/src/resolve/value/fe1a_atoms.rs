@@ -62,6 +62,12 @@ impl Scope<'_> {
                 })
             }
             Pred::TargetedBy(named) => self.fe1a_targeted_by(named, reference)?,
+            Pred::SingleTarget => {
+                seen.zone == Zone::Stack
+                    && seen
+                        .card
+                        .is_some_and(|card| card.choices().targets.iter().flatten().count() == 1)
+            }
             Pred::GreatestAmong { stat, group } => self.fe1a_greatest(*stat, group, seen)?,
             Pred::Suspended => {
                 seen.zone == Zone::Exile

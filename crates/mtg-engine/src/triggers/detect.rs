@@ -541,6 +541,13 @@ fn happenings(pre: &GameState, events: &[Event], post: &GameState) -> Vec<Happen
                     (copy.object, copy.controller),
                 ));
             }
+            Event::TargetsChanged(change) => {
+                let new = Choices {
+                    targets: vec![change.added.clone()],
+                    ..Choices::default()
+                };
+                found.extend(targeted(look, &new, (change.object.id, change.controller)));
+            }
             Event::StepBegan { step } => found.push(Happened::Step {
                 step: *step,
                 active: post.turn().active(),
@@ -816,6 +823,9 @@ fn object_ordinal(look: Look<'_>, object: ObjectRef, by: Option<PlayerId>, kind:
         }
         (Tally::Targeted, Event::AbilityCopied(copy)) => {
             by_them(copy.controller) && copy.choices.targeted_objects().contains(&object)
+        }
+        (Tally::Targeted, Event::TargetsChanged(change)) => {
+            by_them(change.controller) && change.added.contains(&Target::Object(object))
         }
         _ => false,
     };

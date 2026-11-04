@@ -272,6 +272,7 @@ const RUNS: &[&str] = &[
     "Effect.CreateToken.Copy",
     "Effect.CopySpell",
     "Effect.CopyAbility",
+    "Effect.ChangeTargets",
     "Effect.BecomeCopy",
     "Copy.Duration.UntilYourNextTurn",
     "Effect.Continuous",
@@ -625,6 +626,7 @@ const RUNS: &[&str] = &[
     "Pred.BlockedBy",
     "Pred.Blocks",
     "Pred.TargetedBy",
+    "Pred.SingleTarget",
     "Pred.GreatestAmong",
     "Pred.Suspended",
 ];
@@ -878,6 +880,7 @@ mod tests {
     #[case::an_exception_the_copy_cannot_hold("Copy.Except.SwitchPT", false)]
     #[case::copying_spells("Effect.CopySpell", true)]
     #[case::copying_abilities("Effect.CopyAbility", true)]
+    #[case::changing_targets("Effect.ChangeTargets", true)]
     #[case::becoming_a_copy("Effect.BecomeCopy", true)]
     #[case::a_copy_until_your_next_turn("Copy.Duration.UntilYourNextTurn", true)]
     #[case::a_copy_that_ends_with_another_duration("Copy.Duration.UntilEndOfCombat", false)]

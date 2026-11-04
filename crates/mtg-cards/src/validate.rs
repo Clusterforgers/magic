@@ -501,6 +501,7 @@ impl<'a> Walker<'a> {
             }
             Pred::CastWith(_) => self.uses("Pred", "CastWith"),
             Pred::TopOfLibrary => self.uses("Pred", "TopOfLibrary"),
+            Pred::SingleTarget => self.uses("Pred", "SingleTarget"),
             Pred::BottomOfLibrary => self.uses("Pred", "BottomOfLibrary"),
             Pred::BlockedBy(who) => {
                 self.uses("Pred", "BlockedBy");
@@ -583,6 +584,7 @@ impl<'a> Walker<'a> {
             | Pred::BlockedBy(_)
             | Pred::Blocks(_)
             | Pred::TargetedBy(_)
+            | Pred::SingleTarget
             | Pred::GreatestAmong { .. }
             | Pred::Suspended => self.fe1a_pred(pred),
             Pred::Not(inner) => self.pred(inner),
@@ -2827,6 +2829,9 @@ impl Walker<'_> {
                 w.at("what", |w| w.reference(what, Kind::Object));
                 w.at("count", |w| w.amount(count));
                 w.copy_exceptions(except);
+            }
+            Effect::ChangeTargets { what, .. } => {
+                w.at("what", |w| w.reference(what, Kind::Object));
             }
             Effect::CopyAbility { what, count, .. } => {
                 w.at("what", |w| w.reference(what, Kind::Object));
