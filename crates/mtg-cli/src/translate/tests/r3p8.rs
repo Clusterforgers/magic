@@ -58,7 +58,7 @@ fn shapes_the_nodes_cannot_carry_stay_gaps(#[case] script: &str) {
 )]
 #[case::a_color_a_land_could_produce(
     "Name:T\nTypes:Land\nA:AB$ ManaReflected | Cost$ T | ColorOrType$ Color | Valid$ Land.OppCtrl | ReflectProperty$ Produce\n",
-    r#""colorless":false"#
+    r#""count":1}}}}"#
 )]
 fn mana_of_a_chosen_or_reflected_kind(#[case] script: &str, #[case] holds: &str) {
     let found = abilities(script);
