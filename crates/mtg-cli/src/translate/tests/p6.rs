@@ -98,6 +98,49 @@ fn zone_lists_with_the_library_search(#[case] line: &str, #[case] has: &[&str]) 
 }
 
 #[rstest]
+#[case::exile_one_rest_to_graveyard(
+    "A:SP$ Dig | DigNum$ 3 | ChangeNum$ 1 | DestinationZone$ Exile | DestinationZone2$ Graveyard",
+    &["{\"Exile\":", "\"to\":\"Graveyard\""]
+)]
+#[case::rest_to_hand(
+    "A:SP$ Dig | DigNum$ 4 | ChangeNum$ 1 | DestinationZone$ Graveyard | DestinationZone2$ Hand",
+    &["\"to\":\"Hand\""]
+)]
+#[case::rest_unordered(
+    "A:SP$ Dig | DigNum$ 3 | ChangeNum$ 1 | LibraryPosition2$ 0 | SkipReorder$ True",
+    &["\"place\":\"Top\""]
+)]
+#[case::all_matching_remembered(
+    "A:SP$ Dig | DigNum$ 5 | ChangeNum$ All | ChangeValid$ Land | DestinationZone$ Battlefield | RememberChanged$ True | SubAbility$ P\nSVar:P:DB$ Pump | Defined$ Remembered | NumAtt$ 1",
+    &["\"as\":\"moved"]
+)]
+fn dig_words(#[case] line: &str, #[case] has: &[&str]) {
+    let (json, gaps) = sorcery(line);
+    assert!(gaps.is_empty(), "{gaps:?} {json}");
+    for word in has {
+        assert!(json.contains(word), "{word} missing in {json}");
+    }
+}
+
+#[rstest]
+#[case::face_down(
+    "A:SP$ Dig | DigNum$ 2 | ChangeNum$ 1 | DestinationZone$ Exile | ExileFaceDown$ True",
+    "key:Dig.ExileFaceDown"
+)]
+#[case::random_and_skip(
+    "A:SP$ Dig | DigNum$ 3 | ChangeNum$ 1 | RestRandomOrder$ True | SkipReorder$ True",
+    "key:Dig.SkipReorder-with-RestRandomOrder"
+)]
+#[case::unknown_rest_zone(
+    "A:SP$ Dig | DigNum$ 3 | ChangeNum$ 1 | DestinationZone2$ PlanarDeck",
+    "key:Dig.DestinationZone2=PlanarDeck"
+)]
+fn dig_unknowns_stay_gaps(#[case] line: &str, #[case] gap: &str) {
+    let (_, found) = sorcery(line);
+    assert_eq!(found, [gap]);
+}
+
+#[rstest]
 #[case::stack("Stack", "zone:Origin=Stack")]
 #[case::stack_with_battlefield("Battlefield,Stack", "zone:Origin=Battlefield,Stack")]
 #[case::command("Command", "zone:Origin=Command")]

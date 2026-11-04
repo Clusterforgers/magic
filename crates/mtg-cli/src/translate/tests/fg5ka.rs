@@ -172,9 +172,6 @@ fn a_dig_takes_all_or_any_number_of_the_cards_it_looks_at(
 
 #[rstest]
 #[case::optional_all("Dig | DigNum$ 3 | ChangeNum$ All | Optional$ True | DestinationZone$ Hand")]
-#[case::remembered_all(
-    "Dig | DigNum$ 3 | ChangeNum$ All | RememberChanged$ True | ChangeValid$ Land | DestinationZone$ Hand"
-)]
 #[case::counted("Dig | DigNum$ 3 | ChangeNum$ X | DestinationZone$ Hand")]
 fn a_dig_that_takes_a_count_beyond_the_node_stays_a_gap(#[case] line: &str) {
     let script = spell(line);

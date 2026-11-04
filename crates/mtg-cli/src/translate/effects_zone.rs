@@ -379,33 +379,33 @@ fn search(ctx: &mut Ctx, p: &Params, destination: &str) -> Tr<Vec<Value>> {
     Ok(effects)
 }
 
+/// The keys of a `Dig` line that are read.
+const DIG_KEYS: [&str; 19] = [
+    "DigNum",
+    "ChangeNum",
+    "ChangeValid",
+    "Optional",
+    "Reveal",
+    "DestinationZone",
+    "DestinationZone2",
+    "LibraryPosition",
+    "LibraryPosition2",
+    "RestRandomOrder",
+    "SkipReorder",
+    "Defined",
+    "Tapped",
+    "NoReveal",
+    "ForceRevealToController",
+    "ValidTgts",
+    "TargetMin",
+    "TargetMax",
+    "RememberChanged",
+];
+
 /// `Dig`: look at the top cards, take some, put the rest somewhere ("look at the top four cards of your library; you may
 /// reveal a creature card from among them and put it into your hand; put the rest on the bottom in any order").
 pub fn dig(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
-    only(
-        p,
-        "Dig",
-        &[
-            "DigNum",
-            "ChangeNum",
-            "ChangeValid",
-            "Optional",
-            "Reveal",
-            "DestinationZone",
-            "DestinationZone2",
-            "LibraryPosition",
-            "LibraryPosition2",
-            "RestRandomOrder",
-            "Defined",
-            "Tapped",
-            "NoReveal",
-            "ForceRevealToController",
-            "ValidTgts",
-            "TargetMin",
-            "TargetMax",
-            "RememberChanged",
-        ],
-    )?;
+    only(p, "Dig", &DIG_KEYS)?;
     if p.get("NoReveal") == Some("True") && p.get("Reveal") == Some("True") {
         return unmapped("key:Dig.NoReveal-with-Reveal");
     }
@@ -424,10 +424,8 @@ pub fn dig(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
     let take = Take::of(p)?;
     let filter = p.get("ChangeValid");
     let may = p.get("Optional") == Some("True") || filter.is_some();
-    // "Put all of them" has no choice: what matches moves, and no name is left for `RememberChanged$`.
-    if matches!(take, Take::All)
-        && (p.get("Optional") == Some("True") || p.get("RememberChanged") == Some("True"))
-    {
+    // "Put all of them" has no choice: what matches moves, and a "may" would be all or nothing.
+    if matches!(take, Take::All) && p.get("Optional") == Some("True") {
         return unmapped("key:Dig.ChangeNum");
     }
     let matching = match filter {
@@ -456,7 +454,7 @@ pub fn dig(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
     } else {
         json!({ "Bound": rest })
     };
-    if p.get("RememberChanged") == Some("True") {
+    if p.get("RememberChanged") == Some("True") && !matches!(take, Take::All) {
         ctx.remembered = Some(json!({ "Bound": kept }));
     }
     let mut effects = vec![json!({"LookAtTop": {"who": who, "count": count, "as": top}})];
@@ -474,9 +472,18 @@ pub fn dig(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
         };
         effects.push(json!({"Reveal": {"what": shown}}));
     }
-    effects.push(json!({"Move": {"what": moved, "to": to}}));
+    let mut put = moves(&moved, to);
+    if matches!(take, Take::All) && p.get("RememberChanged") == Some("True") {
+        let (verb, stem) = if put.get("Exile").is_some() {
+            ("Exile", "exiled")
+        } else {
+            ("Move", "moved")
+        };
+        remember::bind_moved(ctx, &mut put, verb, stem);
+    }
+    effects.push(put);
     if !(matches!(take, Take::All) && filter.is_none()) {
-        effects.push(json!({"Move": {"what": rest_ref, "to": rest_to}}));
+        effects.push(moves(&rest_ref, rest_to));
     }
     Ok(effects)
 }
@@ -491,12 +498,13 @@ fn exile_top(ctx: &mut Ctx, p: &Params, who: &Value, count: &Value) -> Value {
 }
 
 /// Where a `Dig` puts the cards it takes and the rest.
-fn dig_places(p: &Params) -> Tr<(Value, Value)> {
+fn dig_places(p: &Params) -> Tr<(Goes, Goes)> {
     let to = match p.get("DestinationZone") {
-        None | Some("Hand") => json!("Hand"),
-        Some("Graveyard") => json!("Graveyard"),
+        None | Some("Hand") => Goes::To(json!("Hand")),
+        Some("Graveyard") => Goes::To(json!("Graveyard")),
+        Some("Exile") => Goes::Exile,
         Some("Battlefield") => {
-            json!({"Battlefield": {"tapped": p.get("Tapped") == Some("True")}})
+            Goes::To(json!({"Battlefield": {"tapped": p.get("Tapped") == Some("True")}}))
         }
         Some("Library") => {
             let place = match p.get("LibraryPosition") {
@@ -504,7 +512,7 @@ fn dig_places(p: &Params) -> Tr<(Value, Value)> {
                 Some("-1") => "Bottom",
                 _ => return unmapped("key:Dig.LibraryPosition"),
             };
-            json!({"Library": {"place": place}})
+            Goes::To(json!({"Library": {"place": place}}))
         }
         Some(other) => return unmapped(format!("key:Dig.DestinationZone={other}")),
     };
@@ -512,20 +520,29 @@ fn dig_places(p: &Params) -> Tr<(Value, Value)> {
     if p.has("LibraryPosition") && p.get("DestinationZone") != Some("Library") {
         return unmapped("key:Dig.LibraryPosition");
     }
-    let order = if p.get("RestRandomOrder") == Some("True") {
-        "Random"
-    } else {
-        "Chosen"
+    // The order of the rest is asked for, random, or (`SkipReorder$`) left as it lies.
+    let order = match (p.get("RestRandomOrder"), p.get("SkipReorder")) {
+        (Some("True"), Some("True")) => {
+            return unmapped("key:Dig.SkipReorder-with-RestRandomOrder");
+        }
+        (Some("True"), _) => json!("Random"),
+        (_, Some("True")) => Value::Null,
+        _ => json!("Chosen"),
+    };
+    let on_library = |place: &str| {
+        let mut library = json!({"place": place});
+        if !order.is_null() {
+            library["order"] = order.clone();
+        }
+        Goes::To(json!({ "Library": library }))
     };
     let rest_to = match (p.get("DestinationZone2"), p.get("LibraryPosition2")) {
-        (None | Some("Library"), None | Some("-1")) => {
-            json!({"Library": {"place": "Bottom", "order": order}})
-        }
-        (None | Some("Library"), Some("0")) => {
-            json!({"Library": {"place": "Top", "order": order}})
-        }
-        (Some("Graveyard"), None) => json!("Graveyard"),
-        (Some(other), _) if other != "Library" && other != "Graveyard" => {
+        (None | Some("Library"), None | Some("-1")) => on_library("Bottom"),
+        (None | Some("Library"), Some("0")) => on_library("Top"),
+        (Some("Graveyard"), None) => Goes::To(json!("Graveyard")),
+        (Some("Hand"), None) => Goes::To(json!("Hand")),
+        (Some("Exile"), None) => Goes::Exile,
+        (Some(other), _) if !matches!(other, "Library" | "Graveyard" | "Hand" | "Exile") => {
             return unmapped(format!("key:Dig.DestinationZone2={other}"));
         }
         _ => return unmapped("key:Dig.LibraryPosition2"),
