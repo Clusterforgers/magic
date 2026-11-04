@@ -251,7 +251,9 @@ fn unpack(
             },
             seat: Some(seat),
         },
-        RecipeError::UnknownDeck { .. } | RecipeError::UnknownCards { .. } => {
+        RecipeError::UnknownDeck { .. }
+        | RecipeError::UnknownCards { .. }
+        | RecipeError::ConjuredChanged { .. } => {
             Unloadable::new(format!("the recipe does not build: {error}"), Cause::Cards)
         }
         _ => Unloadable::new(format!("the recipe does not build: {error}"), Cause::Setup),

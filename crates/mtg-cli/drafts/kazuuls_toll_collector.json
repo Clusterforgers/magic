@@ -1,0 +1,23 @@
+{
+  "oracle_id": "3b0694ff-aa92-4a2e-a366-69fdf5a57c4b",
+  "name": "Kazuul's Toll Collector",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Kazuul's Toll Collector",
+      "oracle_fingerprint": "8cfde8bf97a397c7a3d8968cf611a9e9",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{0}",
+            "timing": "Sorcery",
+            "targets": [
+              { "what": { "Object": [{ "Subtype": "Equipment" }, { "ControlledBy": "You" }] } }
+            ],
+            "effects": [{ "Attach": { "what": { "Target": 0 }, "to": "This" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,49 @@
+{
+  "oracle_id": "696363c9-e8a7-4c65-b65c-4a94891ec43d",
+  "name": "Gisa, the Hellraiser",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Gisa, the Hellraiser",
+      "oracle_fingerprint": "3d57b0a2616e6e284db076471dce9143",
+      "abilities": [
+        { "Keyword": { "Ward": [{ "Mana": "{2}" }, { "PayLife": 2 }] } },
+        {
+          "Static": {
+            "affected": {
+              "Each": [
+                { "AnyOf": [{ "Subtype": "Zombie" }, { "Subtype": "Skeleton" }] },
+                { "ControlledBy": "You" }
+              ]
+            },
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }, { "AddKeyword": "Menace" }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "W11cCrime": { "who": "You" } },
+            "limit": "OncePerTurn",
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Zombie Rogue",
+                      "colors": ["Blue", "Black"],
+                      "types": ["Creature"],
+                      "subtypes": ["Zombie", "Rogue"],
+                      "power": 2,
+                      "toughness": 2
+                    }
+                  },
+                  "count": 2,
+                  "tapped": true
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

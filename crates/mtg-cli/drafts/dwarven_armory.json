@@ -1,0 +1,23 @@
+{
+  "oracle_id": "aba53a54-8666-430d-899e-45ad9f783a4a",
+  "name": "Dwarven Armory",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dwarven Armory",
+      "oracle_fingerprint": "f430bede5db4c85ffa467358776b371c",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{2}" }, { "Sacrifice": { "filter": [{ "Type": "Land" }] } }],
+            "condition": { "All": ["YourTurn", { "Step": "Upkeep" }] },
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              { "PutCounters": { "on": { "Target": 0 }, "counter": { "Other": "+2/+2" } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

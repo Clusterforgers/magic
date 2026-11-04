@@ -1,0 +1,59 @@
+{
+  "source": "forge",
+  "oracle_matches": true,
+  "lines": [
+    {
+      "face": 0,
+      "tag": "T",
+      "text": "At the beginning of your end step, if a permanent you controlled left the battlefield this turn, you get an experience counter.",
+      "abilities": [],
+      "gap": "key:Trigger.Phase.Revolt"
+    },
+    {
+      "face": 0,
+      "tag": "S",
+      "text": "NICKNAME has ward {X}, where X is the number of experience counters you have.",
+      "abilities": [
+        0
+      ],
+      "gap": null
+    },
+    {
+      "face": 0,
+      "tag": "S",
+      "text": "Creatures you control get +1/+0 for each experience counter you have.",
+      "abilities": [
+        1
+      ],
+      "gap": null
+    }
+  ],
+  "proof": {
+    "marks": [
+      {
+        "face": 0,
+        "span": {
+          "start": 0,
+          "end": 77
+        },
+        "mark": "Auto"
+      },
+      {
+        "face": 0,
+        "span": {
+          "start": 78,
+          "end": 205
+        },
+        "mark": "ByHand"
+      },
+      {
+        "face": 0,
+        "span": {
+          "start": 206,
+          "end": 275
+        },
+        "mark": "Auto"
+      }
+    ]
+  }
+}

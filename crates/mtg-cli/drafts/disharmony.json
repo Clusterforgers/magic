@@ -1,0 +1,34 @@
+{
+  "oracle_id": "fc4f1aa1-e252-4454-9ad9-d41682dff13b",
+  "name": "Disharmony",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Disharmony",
+      "oracle_fingerprint": "fe3e290ab3e8daaa767c1dbdbf933645",
+      "abilities": [
+        {
+          "CastOnly": {
+            "condition": { "Any": [{ "Step": "BeginCombat" }, { "Step": "DeclareAttackers" }] }
+          }
+        },
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }, "Attacking"] } }],
+            "effects": [
+              { "Untap": { "what": { "Target": 0 } } },
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "SetController": "You" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              { "RemoveFromCombat": { "what": { "Target": 0 } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,50 @@
+{
+  "oracle_id": "7c885698-69f2-44b5-abfe-9a2833822794",
+  "name": "Loot Dispute",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Loot Dispute",
+      "oracle_fingerprint": "a1cb4345d9da56d37900fc3aa73e05f3",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              { "TakeInitiative": {} },
+              { "CreateToken": { "token": { "Named": "treasure" } } }
+            ]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 83, "end": 162 }
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "CompletedDungeon": { "who": "You" } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Dragon",
+                      "colors": ["Red"],
+                      "types": ["Creature"],
+                      "subtypes": ["Dragon"],
+                      "power": 5,
+                      "toughness": 5,
+                      "abilities": [{ "Keyword": "Flying" }]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

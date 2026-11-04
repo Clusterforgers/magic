@@ -1,0 +1,38 @@
+{
+  "oracle_id": "25b30117-03ef-49a5-8743-2d1c167d4bc3",
+  "name": "Jack of Hearts, Volatile Hero",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Jack of Hearts, Volatile Hero",
+      "oracle_fingerprint": "803e89a26c7bc0b50123c16b701c5ae2",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": "Haste" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } },
+            "effects": [
+              {
+                "DealDamage": {
+                  "to": { "Each": [{ "Type": "Creature" }] },
+                  "amount": { "Stat": { "of": "This", "stat": "Power" } }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{4}{R}{R}",
+            "effects": [
+              { "Discard": { "count": { "Count": [{ "In": "Hand" }, { "OwnedBy": "You" }] } } },
+              { "Draw": { "count": 3 } },
+              { "PutCounters": { "on": "This", "counter": "+1/+1", "count": 2 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

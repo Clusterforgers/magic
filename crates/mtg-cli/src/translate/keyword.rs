@@ -9,6 +9,8 @@ use super::effects::chain_at;
 use super::valid::selector_any;
 use crate::forge::script::Params;
 
+mod more;
+
 /// The DSL name of a keyword that has no parameter.
 pub fn keyword_name(word: &str) -> Option<&'static str> {
     Some(match word.trim() {
@@ -35,7 +37,7 @@ pub fn keyword_name(word: &str) -> Option<&'static str> {
         "Partner" => "Partner",
         "Battle cry" => "BattleCry",
         "Fuse" => "Fuse",
-        "Living weapon" => "LivingWeapon",
+        "Living weapon" | "Living Weapon" => "LivingWeapon",
         "Changeling" => "Changeling",
         "Devoid" => "Devoid",
         "Infect" => "Infect",
@@ -76,12 +78,22 @@ pub fn keyword_name(word: &str) -> Option<&'static str> {
         "Demonstrate" => "Demonstrate",
         "Read ahead" => "ReadAhead",
         "Umbra armor" => "UmbraArmor",
+        "Bargain" => "Bargain",
+        "Conspire" => "Conspire",
+        "Choose a Background" => "ChooseABackground",
+        "Doctor's companion" => "DoctorsCompanion",
+        "For Mirrodin" | "For Mirrodin!" => "ForMirrodin",
+        "Job select" => "JobSelect",
         _ => return None,
     })
 }
 
 /// Keywords with one cost: the Forge word and the DSL variant.
-const COSTED: [(&str, &str); 36] = [
+const COSTED: [(&str, &str); 41] = [
+    ("Disturb", "Disturb"),
+    ("Harmonize", "Harmonize"),
+    ("Offspring", "Offspring"),
+    ("Escape", "Escape"),
     ("Equip", "Equip"),
     ("Ward", "Ward"),
     ("Reconfigure", "Reconfigure"),
@@ -109,6 +121,7 @@ const COSTED: [(&str, &str); 36] = [
     ("Prowl", "Prowl"),
     ("Ninjutsu", "Ninjutsu"),
     ("Echo", "Echo"),
+    ("Cumulative upkeep", "CumulativeUpkeep"),
     ("Level up", "LevelUp"),
     ("Outlast", "Outlast"),
     ("Scavenge", "Scavenge"),
@@ -143,6 +156,9 @@ pub fn keyword_value(ctx: &Ctx, text: &str) -> Tr<Value> {
     let text = text.trim();
     if let Some(name) = keyword_name(text) {
         return Ok(json!(name));
+    }
+    if let Some(found) = more::special(ctx, text) {
+        return found;
     }
     let mut fields = text.split(':');
     let name = fields.next().unwrap_or_default();
@@ -229,8 +245,18 @@ fn landwalk(word: &str) -> Tr<Value> {
     Ok(json!({"Landwalk": [{"Subtype": land}]}))
 }
 
+/// Rules about building a deck: they belong to deck validation and change nothing about play.
+const DECK_RULES: [&str; 3] = [
+    "A deck can have any number of cards named CARDNAME.",
+    "Your minimum deck size is reduced by five.",
+    "Your deck can't have basic land cards.",
+];
+
 /// The abilities a `K:` line stands for: those of `keyword_ability`, or the chapters of a Saga.
 pub fn keyword_abilities(ctx: &mut Ctx, body: &str) -> Vec<Tr<Value>> {
+    if DECK_RULES.contains(&body.trim()) {
+        return Vec::new();
+    }
     if let Some(quirks) = combat_quirks(body.trim()) {
         return quirks.iter().map(|quirk| Ok(combat_rule(quirk))).collect();
     }
@@ -301,6 +327,13 @@ fn chapter(ctx: &mut Ctx, number: usize, name: &str) -> Tr<Value> {
 pub fn keyword_ability(ctx: &mut Ctx, body: &str) -> Tr<Value> {
     ctx.reset();
     let fields: Vec<&str> = body.split(':').collect();
+    if let ["AlternateAdditionalCost", first, second] = fields.as_slice() {
+        let costs = [cost(ctx, first)?, cost(ctx, second)?];
+        return Ok(json!({"AdditionalCost": {"cost": [{"OneOf": costs}], "required": true}}));
+    }
+    if let ["MayEffectFromOpeningHand", "FromHand"] = fields.as_slice() {
+        return opening_hand(ctx);
+    }
     let mut condition = None;
     let by = match fields.as_slice() {
         ["etbCounter", kind, count, rest @ ..] if rest.len() <= 2 => {
@@ -324,6 +357,28 @@ pub fn keyword_ability(ctx: &mut Ctx, body: &str) -> Tr<Value> {
         replacement["condition"] = condition;
     }
     Ok(json!({ "Replacement": replacement }))
+}
+
+/// `MayEffectFromOpeningHand:FromHand`: the card may begin the game on the battlefield, when its part says exactly that.
+fn opening_hand(ctx: &Ctx) -> Tr<Value> {
+    let Some(text) = ctx.svar("FromHand") else {
+        return unmapped("svar:missing");
+    };
+    let part = Params::parse(text);
+    let exact = part.get("DB") == Some("ChangeZone")
+        && part.get("Defined") == Some("Self")
+        && part.get("Origin") == Some("Hand")
+        && part.get("Destination") == Some("Battlefield");
+    if !exact {
+        return unmapped("keyword:MayEffectFromOpeningHand-shape");
+    }
+    super::ctx::check_keys(
+        &part,
+        "MayEffectFromOpeningHand",
+        &["DB", "Defined", "Origin", "Destination"],
+        |_, _| false,
+    )?;
+    Ok(json!("OpeningHand"))
 }
 
 /// What the part named by an `ETBReplacement` makes the permanent's controller choose as it enters.
@@ -356,6 +411,7 @@ fn choice(ctx: &Ctx, name: &str) -> Tr<Value> {
                 other => unmapped(format!("key:ETBReplacement.Choices={other}")),
             }
         }
+        (Some("NameCard"), _, None) => super::memory::name_choice(&part),
         (api, _, _) => unmapped(format!("keyword:ETBReplacement-{}", api.unwrap_or("?"))),
     }
 }

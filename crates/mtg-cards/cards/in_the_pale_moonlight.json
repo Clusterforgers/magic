@@ -1,0 +1,67 @@
+{
+  "oracle_id": "90c78f79-982f-4acd-a8ba-0c6ce115a248",
+  "name": "In the Pale Moonlight",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "In the Pale Moonlight",
+      "oracle_fingerprint": "0d13e8ce35eaabd96a2270c2224b03a8",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 1 } },
+            "effects": [
+              {
+                "Sacrifice": {
+                  "who": "Opponents",
+                  "filter": [{ "Type": "Creature" }, { "Not": "Token" }]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 2 } },
+            "effects": [{ "CreateToken": { "token": { "Named": "clue" } } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 3 } },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": [
+                    {
+                      "Sacrifice": {
+                        "filter": [{ "AnyOf": [{ "Type": "Artifact" }, { "Type": "Creature" }] }]
+                      }
+                    }
+                  ],
+                  "paid": [
+                    {
+                      "CreateToken": {
+                        "token": {
+                          "Custom": {
+                            "name": "Romulan",
+                            "colors": ["Black"],
+                            "types": ["Creature"],
+                            "subtypes": ["Romulan"],
+                            "power": 2,
+                            "toughness": 2
+                          }
+                        },
+                        "count": 2
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

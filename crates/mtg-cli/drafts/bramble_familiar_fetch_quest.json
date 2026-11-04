@@ -1,0 +1,58 @@
+{
+  "oracle_id": "68f36dfa-bbd2-4860-b09b-37e35136be72",
+  "name": "Bramble Familiar // Fetch Quest",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Bramble Familiar",
+      "oracle_fingerprint": "88e2810d94322920385d3d835b41e898",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Green"] } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{1}{G}" }, "Tap", { "Discard": {} }],
+            "effects": [{ "Move": { "what": "This", "to": "Hand" } }]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Fetch Quest",
+      "oracle_fingerprint": "52369fde309e82754eabda082065ec11",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "Mill": { "count": 7, "as": "milled" } },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      {
+                        "AnyOf": [
+                          { "Type": "Creature" },
+                          { "Type": "Enchantment" },
+                          { "Type": "Land" }
+                        ]
+                      },
+                      { "Is": { "Bound": "milled" } },
+                      { "AnyOf": [{ "In": "Graveyard" }, { "In": "Exile" }] },
+                      { "OwnedBy": "You" }
+                    ]
+                  },
+                  "as": "picked2"
+                }
+              },
+              { "Move": { "what": { "Bound": "picked2" }, "to": { "Battlefield": {} } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

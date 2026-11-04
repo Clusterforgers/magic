@@ -1,0 +1,21 @@
+{
+  "oracle_id": "7b03910a-2ca7-40cb-9c71-1c2cc856a287",
+  "name": "Archpriest of Shadows",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Archpriest of Shadows",
+      "oracle_fingerprint": "b0e7da7c6e1d0e6a826896947b749fc5",
+      "abilities": [
+        { "Keyword": { "Backup": { "count": 1 } } },
+        { "Keyword": "Deathtouch" },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 169, "end": 302 }
+          }
+        }
+      ]
+    }
+  ]
+}

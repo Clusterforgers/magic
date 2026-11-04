@@ -1,0 +1,33 @@
+{
+  "oracle_id": "46ce3698-e4e6-44e9-8b99-2b12a703e91e",
+  "name": "Keen-Eyed Curator",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Keen-Eyed Curator",
+      "oracle_fingerprint": "efbf6f06acab8cbde8c842208547ff69",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "ModifyPT": { "power": 4, "toughness": 4 } }, { "AddKeyword": "Trample" }],
+            "condition": {
+              "Compare": {
+                "left": { "CardTypes": [{ "ExiledWith": "This" }, { "In": "Exile" }] },
+                "op": "Ge",
+                "right": 4
+              }
+            }
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{1}",
+            "targets": [{ "what": { "Object": [{ "In": "Graveyard" }] } }],
+            "effects": [{ "Exile": { "what": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

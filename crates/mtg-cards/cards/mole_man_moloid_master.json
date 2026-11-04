@@ -1,0 +1,54 @@
+{
+  "oracle_id": "34994475-b914-44f6-8ca1-c2747b6d5956",
+  "name": "Mole Man, Moloid Master",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mole Man, Moloid Master",
+      "oracle_fingerprint": "701639a87af019a5dd4c96c3677ce9b8",
+      "abilities": [
+        {
+          "Rule": {
+            "rule": {
+              "MayCast": { "what": [{ "Type": "Land" }], "from": "Graveyard", "play": true }
+            }
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Land" }, { "ControlledBy": "You" }],
+                "to": "Battlefield"
+              }
+            },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Moloid",
+                      "colors": ["Green"],
+                      "types": ["Creature"],
+                      "subtypes": ["Minion"],
+                      "power": 1,
+                      "toughness": 1,
+                      "abilities": [
+                        {
+                          "Triggered": {
+                            "when": { "Attacks": { "what": ["This"] } },
+                            "effects": [{ "May": { "effects": [{ "Mill": {} }] } }]
+                          }
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

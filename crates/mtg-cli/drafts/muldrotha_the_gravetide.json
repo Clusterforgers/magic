@@ -1,0 +1,86 @@
+{
+  "oracle_id": "e4625704-1d52-44e4-804f-2f45644d76ac",
+  "name": "Muldrotha, the Gravetide",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Muldrotha, the Gravetide",
+      "oracle_fingerprint": "5d773184de35c6eeb87b39fa99793c19",
+      "abilities": [
+        {
+          "Rule": {
+            "rule": {
+              "MayCast": {
+                "what": [{ "Type": "Land" }],
+                "from": "Graveyard",
+                "play": true,
+                "once": true
+              }
+            },
+            "condition": "YourTurn"
+          }
+        },
+        {
+          "Rule": {
+            "rule": {
+              "MayCast": {
+                "what": [{ "Type": "Creature" }, { "Not": { "Type": "Land" } }],
+                "from": "Graveyard",
+                "once": true
+              }
+            },
+            "condition": "YourTurn"
+          }
+        },
+        {
+          "Rule": {
+            "rule": {
+              "MayCast": {
+                "what": [{ "Type": "Planeswalker" }, { "Not": { "Type": "Land" } }],
+                "from": "Graveyard",
+                "once": true
+              }
+            },
+            "condition": "YourTurn"
+          }
+        },
+        {
+          "Rule": {
+            "rule": {
+              "MayCast": {
+                "what": [{ "Type": "Artifact" }, { "Not": { "Type": "Land" } }],
+                "from": "Graveyard",
+                "once": true
+              }
+            },
+            "condition": "YourTurn"
+          }
+        },
+        {
+          "Rule": {
+            "rule": {
+              "MayCast": {
+                "what": [{ "Type": "Enchantment" }, { "Not": { "Type": "Land" } }],
+                "from": "Graveyard",
+                "once": true
+              }
+            },
+            "condition": "YourTurn"
+          }
+        },
+        {
+          "Rule": {
+            "rule": {
+              "MayCast": {
+                "what": [{ "Type": "Battle" }, { "Not": { "Type": "Land" } }],
+                "from": "Graveyard",
+                "once": true
+              }
+            },
+            "condition": "YourTurn"
+          }
+        }
+      ]
+    }
+  ]
+}

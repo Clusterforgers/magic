@@ -1,0 +1,29 @@
+{
+  "oracle_id": "f8e8cdc6-5685-4986-a14b-20bb9e31d9cf",
+  "name": "Battershield Warrior",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Battershield Warrior",
+      "oracle_fingerprint": "2e2f32c83ed55b60a96486ea38d16b53",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{1}{W}",
+            "condition": { "Matches": { "subject": "This", "selector": ["AttackedThisTurn"] } },
+            "limit": "OncePerTurn",
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                  "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -17,6 +17,10 @@ player: PlayerId, } } | { "CardDrawn": {
 /**
  * Who drew.
  */
+player: PlayerId, } } | { "CardConjured": { 
+/**
+ * Whose card.
+ */
 player: PlayerId, } } | { "HandDealt": { 
 /**
  * Who received it.
@@ -49,7 +53,19 @@ player: PlayerId,
 /**
  * Cards placed.
  */
-count: number, } } | "ObjectLeftGame" | { "Remembered": { 
+count: number, } } | { "CardsInserted": { 
+/**
+ * Whose cards.
+ */
+player: PlayerId, 
+/**
+ * Cards placed.
+ */
+count: number, 
+/**
+ * How many cards stay above them.
+ */
+below: number, } } | "ObjectLeftGame" | { "Remembered": { 
 /**
  * Objects added to the slot.
  */

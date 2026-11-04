@@ -1,0 +1,38 @@
+{
+  "oracle_id": "5f46f86a-9779-4ed3-99cb-76a03d380598",
+  "name": "Circle of Protection: White",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Circle of Protection: White",
+      "oracle_fingerprint": "b6a7fd067636574ec97dd2c878cd42d5",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{1}",
+            "effects": [
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "AnyOf": [{ "In": "Battlefield" }, { "In": "Stack" }, { "In": "Command" }] },
+                      { "Color": "White" }
+                    ]
+                  },
+                  "as": "source"
+                }
+              },
+              {
+                "Shield": {
+                  "when": { "Damage": { "to": "You", "source": [{ "Is": { "Bound": "source" } }] } },
+                  "by": "PreventNext",
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

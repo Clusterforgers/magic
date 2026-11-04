@@ -14,7 +14,7 @@ pub mod partial;
 mod render;
 mod repair;
 
-pub use merge::merge;
+pub use merge::{MergeRefusal, merge, refusal};
 pub(crate) use pairing::pair_card;
 pub use repair::{Repair, RepairClass};
 

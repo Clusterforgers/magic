@@ -1,0 +1,26 @@
+{
+  "oracle_id": "96c2d71e-0fc9-42aa-bc6b-6d0ae3f66f8b",
+  "name": "Hexing Squelcher",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Hexing Squelcher",
+      "oracle_fingerprint": "5740fb631b40db863c407f822fa725a2",
+      "abilities": [
+        { "Rule": { "rule": { "CantBeCountered": "This" }, "from": "Stack" } },
+        { "Keyword": { "Ward": [{ "PayLife": 2 }] } },
+        {
+          "Rule": {
+            "rule": { "CantBeCountered": { "Each": ["Spell", { "ControlledBy": "You" }] } }
+          }
+        },
+        {
+          "Static": {
+            "affected": { "Each": [{ "Type": "Creature" }, "Other", { "ControlledBy": "You" }] },
+            "mods": [{ "AddKeyword": { "Ward": [{ "PayLife": 2 }] } }]
+          }
+        }
+      ]
+    }
+  ]
+}

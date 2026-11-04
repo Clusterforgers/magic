@@ -1,0 +1,33 @@
+{
+  "oracle_id": "df9fe645-6f7b-44a0-ab69-b68cb7e525cd",
+  "name": "Patient Rebuilding",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Patient Rebuilding",
+      "oracle_fingerprint": "9ecae4223f85cd02fb06816f038b9578",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              { "Mill": { "who": { "Target": 0 }, "count": 3, "as": "milled" } },
+              {
+                "Draw": {
+                  "count": {
+                    "Count": [
+                      { "Type": "Land" },
+                      { "Is": { "Bound": "milled" } },
+                      { "In": "Graveyard" }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

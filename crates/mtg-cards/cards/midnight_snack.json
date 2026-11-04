@@ -1,0 +1,40 @@
+{
+  "oracle_id": "3ddcaee9-a11e-477a-bd19-f5ee10512549",
+  "name": "Midnight Snack",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Midnight Snack",
+      "oracle_fingerprint": "3c7fd86317941bc387708b632a0a2c78",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "if": {
+              "Compare": {
+                "left": { "Tallied": { "who": "You", "what": "Attackers" } },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "effects": [{ "CreateToken": { "token": { "Named": "food" } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{2}{B}" }, "SacrificeSelf"],
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              {
+                "LoseLife": {
+                  "who": { "Target": 0 },
+                  "amount": { "Tallied": { "who": "You", "what": "LifeGained" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

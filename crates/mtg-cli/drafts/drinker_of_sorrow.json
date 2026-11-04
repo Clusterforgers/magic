@@ -1,0 +1,20 @@
+{
+  "oracle_id": "6208534d-e7c7-43ef-b8b2-fea1d82459e8",
+  "name": "Drinker of Sorrow",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Drinker of Sorrow",
+      "oracle_fingerprint": "bd62ccc529389edec5a19bf5d02339b8",
+      "abilities": [
+        { "Static": { "affected": "This", "mods": ["CantBlock"] } },
+        {
+          "Triggered": {
+            "when": { "Batch": { "DealsDamage": { "source": ["This"], "combat": true } } },
+            "effects": [{ "Sacrifice": { "filter": [] } }]
+          }
+        }
+      ]
+    }
+  ]
+}

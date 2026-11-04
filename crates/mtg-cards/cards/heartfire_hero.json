@@ -1,0 +1,39 @@
+{
+  "oracle_id": "49e1e202-37bf-46ed-93d1-1adb13726039",
+  "name": "Heartfire Hero",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Heartfire Hero",
+      "oracle_fingerprint": "2a0c27307caa1e556e1f0857cc9573f2",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "Nth": {
+                "event": {
+                  "BecomesTarget": { "what": ["This"], "by": [{ "ControlledBy": "You" }] }
+                },
+                "nth": 1
+              }
+            },
+            "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } },
+            "effects": [
+              {
+                "DealDamage": {
+                  "to": "Opponents",
+                  "amount": { "Stat": { "of": "This", "stat": "Power" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,30 @@
+{
+  "oracle_id": "ee4c29c3-f790-4e5e-a0d1-d47af7b62753",
+  "name": "Baloth Packhunter",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Baloth Packhunter",
+      "oracle_fingerprint": "168598157dbec8b4948eb1ba2c99d07c",
+      "abilities": [
+        { "Keyword": "Trample" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "PutCounters": {
+                  "on": {
+                    "Each": [{ "Type": "Creature" }, "Other", { "Named": "Baloth Packhunter" }]
+                  },
+                  "counter": "+1/+1",
+                  "count": 2
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

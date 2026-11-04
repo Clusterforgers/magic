@@ -1,0 +1,51 @@
+{
+  "oracle_id": "4af2e62f-150e-4fd0-98b0-c6e72f5f9a51",
+  "name": "Expel the Unworthy",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Expel the Unworthy",
+      "oracle_fingerprint": "ce0d0795687799fc1f9dafc1dba8d3a9",
+      "abilities": [
+        { "Keyword": { "Kicker": "{2}{W}" } },
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Type": "Creature" },
+                    { "Compare": { "stat": "ManaValue", "op": "Le", "to": 3 } }
+                  ]
+                },
+                "bounds": {
+                  "min": { "When": { "condition": "Kicked", "then": 0, "otherwise": 1 } },
+                  "max": { "When": { "condition": "Kicked", "then": 0, "otherwise": 1 } }
+                }
+              },
+              {
+                "what": { "Object": [{ "Type": "Creature" }] },
+                "bounds": {
+                  "min": { "When": { "condition": "Kicked", "then": 1, "otherwise": 0 } },
+                  "max": { "When": { "condition": "Kicked", "then": 1, "otherwise": 0 } }
+                }
+              }
+            ],
+            "effects": [
+              { "Exile": { "what": { "Target": 0 } } },
+              {
+                "If": { "condition": "Kicked", "then": [{ "Exile": { "what": { "Target": 1 } } }] }
+              },
+              {
+                "GainLife": {
+                  "who": { "ControllerOf": { "Target": 1 } },
+                  "amount": { "Stat": { "of": { "Target": 1 }, "stat": "ManaValue" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

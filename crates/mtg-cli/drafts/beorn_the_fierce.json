@@ -1,0 +1,53 @@
+{
+  "oracle_id": "30ca8e92-5955-46a1-86c1-094a873f518f",
+  "name": "Beorn the Fierce",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Beorn the Fierce",
+      "oracle_fingerprint": "755c98f54ab42fbb5ff93cf84cbf5487",
+      "abilities": [
+        { "Keyword": "Trample" },
+        {
+          "Static": {
+            "affected": { "Each": [{ "Subtype": "Bear" }, "Other", { "ControlledBy": "You" }] },
+            "mods": [{ "ModifyPT": { "power": 2, "toughness": 2 } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "BeginCombat", "whose": "You" } },
+            "targets": [
+              {
+                "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                "bounds": { "min": 0, "max": 1 }
+              }
+            ],
+            "effects": [
+              { "PutCounters": { "on": { "Target": 0 }, "counter": { "Other": "trample" } } },
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "AddSubtype": "Bear" }],
+                  "duration": "Forever"
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "Count": [{ "Subtype": "Bear" }, { "ControlledBy": "You" }] },
+                      "op": "Ge",
+                      "right": 3
+                    }
+                  },
+                  "then": [{ "Draw": { "count": 2 } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,41 @@
+{
+  "oracle_id": "17c5b5c9-5c58-46dc-b0a7-a635b9997bb8",
+  "name": "Forging the Anchor",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Forging the Anchor",
+      "oracle_fingerprint": "969e888e453e73a1946ed2f0d9661835",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "LookAtTop": { "count": 5, "as": "top" } },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "In": "Library" },
+                      { "Is": { "Bound": "top" } },
+                      { "Type": "Artifact" }
+                    ]
+                  },
+                  "count": { "min": 0, "max": null },
+                  "as": "kept2"
+                }
+              },
+              { "Reveal": { "what": { "Bound": "kept2" } } },
+              { "Move": { "what": { "Bound": "kept2" }, "to": "Hand" } },
+              {
+                "Move": {
+                  "what": { "Bound": "top" },
+                  "to": { "Library": { "place": "Bottom", "order": "Random" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

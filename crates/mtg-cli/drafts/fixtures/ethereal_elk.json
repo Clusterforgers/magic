@@ -1,0 +1,157 @@
+{
+  "object": "card",
+  "id": "3f4d0ed2-3fc5-4cb0-b886-e30b21e76872",
+  "oracle_id": "82d643ef-8380-4fdc-a88d-ed205324dbd9",
+  "multiverse_ids": [
+    469852
+  ],
+  "mtgo_id": 73515,
+  "arena_id": 70083,
+  "tcgplayer_id": 192771,
+  "cardmarket_id": 379224,
+  "name": "Ethereal Elk",
+  "lang": "en",
+  "released_at": "2019-07-12",
+  "uri": "https://api.scryfall.com/cards/3f4d0ed2-3fc5-4cb0-b886-e30b21e76872",
+  "scryfall_uri": "https://scryfall.com/card/m20/299/ethereal-elk?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T08:55:15Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/3/f/3f4d0ed2-3fc5-4cb0-b886-e30b21e76872.jpg?1783932915",
+    "normal": "https://cards.scryfall.io/normal/front/3/f/3f4d0ed2-3fc5-4cb0-b886-e30b21e76872.jpg?1783932915",
+    "large": "https://cards.scryfall.io/large/front/3/f/3f4d0ed2-3fc5-4cb0-b886-e30b21e76872.jpg?1783932915",
+    "png": "https://cards.scryfall.io/png/front/3/f/3f4d0ed2-3fc5-4cb0-b886-e30b21e76872.png?1783932915",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/3/f/3f4d0ed2-3fc5-4cb0-b886-e30b21e76872.jpg?1783932915",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/3/f/3f4d0ed2-3fc5-4cb0-b886-e30b21e76872.jpg?1783932915",
+    "thumb": "https://cards.scryfall.io/thumb/front/3/f/3f4d0ed2-3fc5-4cb0-b886-e30b21e76872.webp?1783932915",
+    "grid": "https://cards.scryfall.io/grid/front/3/f/3f4d0ed2-3fc5-4cb0-b886-e30b21e76872.webp?1783932915",
+    "display": "https://cards.scryfall.io/display/front/3/f/3f4d0ed2-3fc5-4cb0-b886-e30b21e76872.webp?1783932915",
+    "art": "https://cards.scryfall.io/art/front/3/f/3f4d0ed2-3fc5-4cb0-b886-e30b21e76872.webp?1783932915",
+    "crop": "https://cards.scryfall.io/crop/front/3/f/3f4d0ed2-3fc5-4cb0-b886-e30b21e76872.webp?1783932915",
+    "jpeg": "https://cards.scryfall.io/normal/front/3/f/3f4d0ed2-3fc5-4cb0-b886-e30b21e76872.jpg?1783932915"
+  },
+  "mana_cost": "{3}{G}{G}",
+  "cmc": 5.0,
+  "type_line": "Creature — Elk Spirit",
+  "oracle_text": "Trample\nWhen this creature enters, you may search your library and/or graveyard for a card named Vivien, Nature's Avenger, reveal it, and put it into your hand. If you search your library this way, shuffle.",
+  "power": "3",
+  "toughness": "3",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [
+    "Trample"
+  ],
+  "all_parts": [
+    {
+      "object": "related_card",
+      "id": "f7ead409-3bce-47c8-ace7-498c38522369",
+      "component": "combo_piece",
+      "name": "Vivien, Nature's Avenger",
+      "type_line": "Legendary Planeswalker — Vivien",
+      "uri": "https://api.scryfall.com/cards/f7ead409-3bce-47c8-ace7-498c38522369"
+    },
+    {
+      "object": "related_card",
+      "id": "3f4d0ed2-3fc5-4cb0-b886-e30b21e76872",
+      "component": "combo_piece",
+      "name": "Ethereal Elk",
+      "type_line": "Creature — Elk Spirit",
+      "uri": "https://api.scryfall.com/cards/3f4d0ed2-3fc5-4cb0-b886-e30b21e76872"
+    }
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "arena",
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "4a787360-9767-4f44-80b1-2405dc5e39c7",
+  "set": "m20",
+  "set_name": "Core Set 2020",
+  "set_type": "core",
+  "set_uri": "https://api.scryfall.com/sets/4a787360-9767-4f44-80b1-2405dc5e39c7",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Am20&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/m20?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/3f4d0ed2-3fc5-4cb0-b886-e30b21e76872/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A82d643ef-8380-4fdc-a88d-ed205324dbd9&unique=prints",
+  "collector_number": "299",
+  "digital": false,
+  "rarity": "rare",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Jason Felix",
+  "artist_ids": [
+    "af42a44c-8ec3-47a7-9047-5d29ddad186d"
+  ],
+  "illustration_id": "5ad5842d-5503-4e1e-a959-05f989787a8d",
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "promo_types": [
+    "planeswalkerdeck"
+  ],
+  "edhrec_rank": 28793,
+  "prices": {
+    "usd": "0.26",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "0.28",
+    "eur_foil": null,
+    "tix": "0.22"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=469852&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DEthereal%2BElk",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DEthereal%2BElk",
+    "edhrec": "https://edhrec.com/route/?cc=Ethereal+Elk"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F192771%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=379224&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/73515?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

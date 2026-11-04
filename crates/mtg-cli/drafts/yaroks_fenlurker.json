@@ -1,0 +1,50 @@
+{
+  "oracle_id": "6bb60f1f-9295-41ce-bdcd-3fe67f8e175c",
+  "name": "Yarok's Fenlurker",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Yarok's Fenlurker",
+      "oracle_fingerprint": "db398054d83eb7cf67e10031795ca1ff",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "RepeatEach": {
+                  "over": "Opponents",
+                  "as": "player",
+                  "effects": [
+                    {
+                      "Choose": {
+                        "who": { "Bound": "player" },
+                        "from": { "Each": [{ "In": "Hand" }, { "OwnedBy": { "Bound": "player" } }] },
+                        "as": "picked2"
+                      }
+                    },
+                    { "Exile": { "what": { "Bound": "picked2" } } }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{2}{B}",
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

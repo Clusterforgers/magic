@@ -1,0 +1,62 @@
+{
+  "oracle_id": "2a99c0d6-3200-44ff-8d4c-f7a38cecb05f",
+  "name": "Fire Nation Occupation",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Fire Nation Occupation",
+      "oracle_fingerprint": "7daa67102448b24d865c0a84e18d00d2",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Soldier",
+                      "colors": ["Red"],
+                      "types": ["Creature"],
+                      "subtypes": ["Soldier"],
+                      "power": 2,
+                      "toughness": 2,
+                      "abilities": [
+                        { "Keyword": { "Macro": { "name": "firebending", "amount": 1 } } }
+                      ]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "by": "You" } },
+            "if": { "AtTrigger": { "Not": "YourTurn" } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Soldier",
+                      "colors": ["Red"],
+                      "types": ["Creature"],
+                      "subtypes": ["Soldier"],
+                      "power": 2,
+                      "toughness": 2,
+                      "abilities": [
+                        { "Keyword": { "Macro": { "name": "firebending", "amount": 1 } } }
+                      ]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,55 @@
+{
+  "oracle_id": "1722d6d0-b435-4d4a-af33-21aab2199f6c",
+  "name": "Compound Fracture",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Compound Fracture",
+      "oracle_fingerprint": "10db7ee5b8a479fa264439312a51f855",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "ModifyPT": { "power": -1, "toughness": -1 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    {
+                      "ModifyPT": {
+                        "power": {
+                          "Times": {
+                            "by": -1,
+                            "of": {
+                              "Count": [{ "Named": "Compound Fracture" }, { "In": "Graveyard" }]
+                            }
+                          }
+                        },
+                        "toughness": {
+                          "Times": {
+                            "by": -1,
+                            "of": {
+                              "Count": [{ "Named": "Compound Fracture" }, { "In": "Graveyard" }]
+                            }
+                          }
+                        }
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

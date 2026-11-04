@@ -4,6 +4,7 @@
 use serde_json::{Value, json};
 
 use super::ctx::{Ctx, Tr, unmapped};
+use super::memory::{self, Slot};
 use super::valid::{defined, objects};
 
 /// The zones a property such as `inZoneHand` names.
@@ -34,6 +35,12 @@ pub fn property(ctx: &Ctx, prop: &str) -> Tr<Option<Vec<Value>>> {
         // Without an argument the property compares with the card the line belongs to.
         "sharesCreatureTypeWith" => return one(json!({"SharesSubtype": "This"})),
         "Outlaw" => return outlaw(ctx).map(Some),
+        "IsRemembered" => return memory::is_in(ctx, Slot::Remembered).map(Some),
+        "IsImprinted" => return memory::is_in(ctx, Slot::Imprinted).map(Some),
+        "NamedCard" => return one(memory::entered_with(ctx, prop)?),
+        "IsNotChosenType" => {
+            return one(json!({"Not": memory::entered_with(ctx, "ChosenType")?}));
+        }
         _ => {}
     }
     if let Some(zone) = prop.strip_prefix("inZone")
@@ -93,5 +100,13 @@ fn player_word(ctx: &Ctx, word: &str) -> Tr<Value> {
         "DefendingPlayer" | "TriggeredDefendingPlayer" => Ok(json!("Defending")),
         "TargetedPlayer" => ctx.player_target(),
         other => unmapped(format!("valid:ControlledBy {other}")),
+    }
+}
+
+/// The reference of a `Defined$` word the table does not know; every word is still a gap.
+pub fn defined_word(ctx: &Ctx, word: &str) -> Tr<Value> {
+    match word {
+        "Imprinted" | "Player.IsImprinted" => memory::imprinted(ctx),
+        _ => unmapped(format!("defined:{word}")),
     }
 }

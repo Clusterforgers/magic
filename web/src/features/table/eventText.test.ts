@@ -49,6 +49,10 @@ const PUBLIC: Record<VariantName<Event>, [Event, string]> = {
     { LibraryBottomed: { player: 0, cards: [1, 2], random: false } },
     'Ana puts 2 cards on the bottom of their library',
   ],
+  LibraryInserted: [
+    { LibraryInserted: { player: 0, cards: [1], below: 2 } },
+    'Ana puts 1 card beneath the top 2 cards of their library',
+  ],
   ChosenAtRandom: [{ ChosenAtRandom: { cards: [3] } }, 'Forest is picked at random'],
   Entered: [
     { Entered: { object: 3, tapped: true, controller: 1 } },
@@ -330,6 +334,11 @@ const PUBLIC: Record<VariantName<Event>, [Event, string]> = {
     { TokenCreated: { object: 91, controller: 2, name: 'Treasure' } },
     'Cy creates a Treasure token',
   ],
+  CardConjured: [
+    { CardConjured: { object: 92, owner: 1, zone: { Hand: 1 }, name: 'Lightning Bolt' } },
+    "Bo conjures Lightning Bolt into Bo's hand",
+  ],
+  Sought: [{ Sought: { player: 1, count: 2 } }, 'Bo seeks 2 cards'],
   LibraryLooked: [
     { LibraryLooked: { player: 0, cards: [1, 2, 3] } },
     'Ana looks at 3 cards of their library',
@@ -451,6 +460,7 @@ function snapshotOf(id: number): Snapshot {
 
 const HIDDEN: Record<VariantName<HiddenEvent>, [HiddenEvent, string]> = {
   CardDrawn: [{ CardDrawn: { player: 1 } }, 'Bo draws a card'],
+  CardConjured: [{ CardConjured: { player: 1 } }, 'Bo conjures a card'],
   AnnouncementRewound: [{ AnnouncementRewound: { player: 1 } }, 'Bo could not finish a play'],
   HandDealt: [{ HandDealt: { player: 1, count: 7 } }, 'Bo is dealt 7 cards'],
   LibraryShuffled: [{ LibraryShuffled: { player: 1 } }, 'Bo shuffles their library'],
@@ -462,6 +472,10 @@ const HIDDEN: Record<VariantName<HiddenEvent>, [HiddenEvent, string]> = {
   CardsBottomed: [
     { CardsBottomed: { player: 1, count: 1 } },
     'Bo puts 1 card on the bottom of their library',
+  ],
+  CardsInserted: [
+    { CardsInserted: { player: 1, count: 1, below: 1 } },
+    'Bo puts 1 card beneath the top 1 card of their library',
   ],
   ObjectLeftGame: ['ObjectLeftGame', 'A card leaves the game'],
   Remembered: [{ Remembered: { count: 1 } }, 'A source remembers objects'],

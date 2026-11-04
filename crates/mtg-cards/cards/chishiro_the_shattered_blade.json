@@ -1,0 +1,56 @@
+{
+  "oracle_id": "c98a4af3-3e58-4927-9a60-d2664cf0b139",
+  "name": "Chishiro, the Shattered Blade",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Chishiro, the Shattered Blade",
+      "oracle_fingerprint": "f274d8c738bde59206e0718ee21beeff",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [
+                  { "AnyOf": [{ "Subtype": "Aura" }, { "Subtype": "Equipment" }] },
+                  { "ControlledBy": "You" }
+                ],
+                "to": "Battlefield"
+              }
+            },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Spirit",
+                      "colors": ["Red"],
+                      "types": ["Creature"],
+                      "subtypes": ["Spirit"],
+                      "power": 2,
+                      "toughness": 2,
+                      "abilities": [{ "Keyword": "Menace" }]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "effects": [
+              {
+                "PutCounters": {
+                  "on": { "Each": [{ "Type": "Creature" }, "Modified", { "ControlledBy": "You" }] },
+                  "counter": "+1/+1"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,56 @@
+{
+  "oracle_id": "b8d66cd6-15db-41ff-bae3-60f1aad3ea23",
+  "name": "Seedling Charm",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Seedling Charm",
+      "oracle_fingerprint": "e451a991014260227dcd25cce30d7da0",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Modal": {
+                  "modes": [
+                    {
+                      "targets": [
+                        {
+                          "what": {
+                            "Object": [
+                              { "Subtype": "Aura" },
+                              { "AttachedTo": { "Each": [{ "Type": "Creature" }] } }
+                            ]
+                          }
+                        }
+                      ],
+                      "effects": [{ "Move": { "what": { "Target": 0 }, "to": "Hand" } }]
+                    },
+                    {
+                      "targets": [
+                        { "what": { "Object": [{ "Type": "Creature" }, { "Color": "Green" }] } }
+                      ],
+                      "effects": [{ "Regenerate": { "what": { "Target": 0 } } }]
+                    },
+                    {
+                      "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+                      "effects": [
+                        {
+                          "Continuous": {
+                            "affected": { "Target": 0 },
+                            "mods": [{ "AddKeyword": "Trample" }],
+                            "duration": "UntilEndOfTurn"
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -746,6 +746,19 @@ fn from_the_top(game: &GameState, numbers: &[usize]) -> Vec<ObjectId> {
         .collect()
 }
 
+#[test]
+fn a_scry_counts_once_for_the_player_this_turn() {
+    let mut game = game();
+    let event = Event::Scried(Scried {
+        player: PlayerId(0),
+        top: from_the_top(&game, &[0]),
+        bottom: Vec::new(),
+    });
+    fold(&mut game, &[event]);
+    assert_eq!(game.tallied(PlayerId(0), crate::state::Tally::Scried), 1);
+    assert_eq!(game.tallied(PlayerId(1), crate::state::Tally::Scried), 0);
+}
+
 #[rstest]
 #[case::all_stay_in_the_same_order(&[0, 1, 2], &[], &["Library 4", "Library 3", "Library 2", "Library 1", "Library 0"])]
 #[case::two_stay_reversed(&[1, 0], &[], &["Library 4", "Library 3", "Library 2", "Library 0", "Library 1"])]
@@ -888,6 +901,44 @@ fn cards_put_on_the_bottom_of_a_library_go_under_the_others_with_the_last_of_the
     };
     fold(&mut game, &[event]);
     assert_eq!(library_names(&game), expected);
+}
+
+#[rstest]
+#[case::second_from_the_top(&[0], 1, &["Library 4", "Library 3", "Library 2", "Library 0", "Library 1"])]
+#[case::third_from_the_top(&[0], 2, &["Library 4", "Library 3", "Library 0", "Library 2", "Library 1"])]
+#[case::two_cards_keep_their_order(&[0, 1], 1, &["Library 4", "Library 3", "Library 1", "Library 0", "Library 2"])]
+#[case::deeper_than_the_library_is_the_bottom(&[2], 9, &["Library 2", "Library 4", "Library 3", "Library 1", "Library 0"])]
+#[case::beneath_nothing_is_the_top(&[3], 0, &["Library 4", "Library 2", "Library 1", "Library 0", "Library 3"])]
+fn cards_put_beneath_the_top_of_a_library_lie_below_that_many_cards(
+    #[case] cards: &[usize],
+    #[case] below: u32,
+    #[case] expected: &[&str],
+) {
+    let mut game = game();
+    let event = Event::LibraryInserted {
+        player: PlayerId(0),
+        cards: from_the_top(&game, cards),
+        below,
+    };
+    fold(&mut game, &[event]);
+    assert_eq!(library_names(&game), expected);
+}
+
+#[test]
+fn cards_that_are_not_in_the_library_cannot_be_inserted_into_it() {
+    let mut game = game();
+    let before = game.state_hash();
+    let in_hand = game.zone(Zone::Hand(PlayerId(0)))[0];
+    let top = from_the_top(&game, &[0])[0];
+    for cards in [vec![in_hand], vec![top, top]] {
+        let event = Event::LibraryInserted {
+            player: PlayerId(0),
+            cards,
+            below: 1,
+        };
+        assert!(apply_event(&mut game, &event).is_err());
+        assert_eq!(game.state_hash(), before);
+    }
 }
 
 #[test]

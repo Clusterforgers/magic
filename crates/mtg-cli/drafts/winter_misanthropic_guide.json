@@ -1,0 +1,47 @@
+{
+  "oracle_id": "5a9baafb-bffd-4e28-bbe1-b4154cd86bf3",
+  "name": "Winter, Misanthropic Guide",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Winter, Misanthropic Guide",
+      "oracle_fingerprint": "291d7a42add8c0a7cdb1fa5ad5fc1ad6",
+      "abilities": [
+        { "Keyword": { "Ward": "{2}" } },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [{ "Draw": { "who": "EachPlayer", "count": 2 } }]
+          }
+        },
+        {
+          "Rule": {
+            "rule": {
+              "MaxHandSize": {
+                "who": "Opponents",
+                "size": {
+                  "Sum": [
+                    7,
+                    {
+                      "Times": {
+                        "by": -1,
+                        "of": { "CardTypes": [{ "OwnedBy": "You" }, { "In": "Graveyard" }] }
+                      }
+                    }
+                  ]
+                }
+              }
+            },
+            "condition": {
+              "Compare": {
+                "left": { "CardTypes": [{ "In": "Graveyard" }, { "OwnedBy": "You" }] },
+                "op": "Ge",
+                "right": 4
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

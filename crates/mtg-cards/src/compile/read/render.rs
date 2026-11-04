@@ -844,6 +844,7 @@ fn wheel_text(effects: &[Effect]) -> Option<(String, usize)> {
             who: Ref::EachPlayer,
             count: hand,
             random: false,
+            filter: None,
             bind,
         },
         Effect::Draw {
@@ -1245,10 +1246,11 @@ fn your_cards(effect: &Effect) -> Option<String> {
             who: Ref::You,
             count,
             random,
+            filter,
             bind: None,
         } => format!(
             "discard {}{}",
-            draws::discarded_text(&Ref::You, count)?,
+            draws::discarded_filtered_text(&Ref::You, count, filter.as_ref())?,
             at_random(*random)
         ),
         _ => return None,
@@ -1273,6 +1275,34 @@ fn sacrifice_text(filter: &Selector) -> Option<String> {
         return Some(text);
     }
     Some(format!("{} {text}", article(&text)))
+}
+
+/// "conjure a card named Ponder into your hand" and "seek a creature card": the digital verbs of the player themselves.
+fn digital_text(effect: &Effect) -> Option<String> {
+    match effect {
+        Effect::Conjure {
+            name, zone, count, ..
+        } => {
+            let place = match zone {
+                ZoneKind::Hand => "your hand",
+                ZoneKind::Library => "your library",
+                ZoneKind::Graveyard => "your graveyard",
+                ZoneKind::Exile => "exile",
+                _ => return None,
+            };
+            Some(format!(
+                "conjure {} named {name} into {place}",
+                cards_text(count)?
+            ))
+        }
+        Effect::Seek { filter, count, .. } if count.is_one() => {
+            let text = phrase_text(filter, Form::Subject)?;
+            // Only a plain card kind reads as "a creature card"; any other filter is not worded.
+            text.chars().all(|c| c.is_ascii_lowercase()).then_some(())?;
+            Some(format!("seek {} {text} card", article(&text)))
+        }
+        _ => None,
+    }
 }
 
 /// Whether the effect puts energy counters on you, which a card writes "you get {E}{E}".
@@ -1308,6 +1338,8 @@ fn is_imperative(effect: &Effect) -> bool {
                 | Effect::Proliferate { who: Ref::You }
                 | Effect::Venture { who: Ref::You, .. }
                 | Effect::Incubate { who: Ref::You, .. }
+                | Effect::Conjure { who: Ref::You, .. }
+                | Effect::Seek { who: Ref::You, .. }
                 | Effect::TimeTravel { who: Ref::You }
                 | Effect::Draw { who: Ref::You, .. }
                 | Effect::Mill { who: Ref::You, .. }
@@ -1816,6 +1848,28 @@ impl Writer<'_> {
                 count,
                 bind,
             } => library::look_text(count, bind)?,
+            Effect::Move {
+                what,
+                to:
+                    Destination::Library {
+                        place: Place::Below(below),
+                        order: None,
+                    },
+                ..
+            } => {
+                let whose = if self.in_your_graveyard(what) {
+                    "your"
+                } else if self.is_a_permanent(what) || self.in_another_graveyard(what) {
+                    "its owner's"
+                } else {
+                    return None;
+                };
+                format!(
+                    "put {} into {whose} library {}",
+                    self.object(what)?,
+                    library::below_text(*below)?
+                )
+            }
             Effect::Move {
                 what,
                 to: Destination::Library { place, order: None },
@@ -2396,6 +2450,9 @@ impl Writer<'_> {
                 Ref::You => format!("incubate {}", points_text(count)?),
                 _ => format!("{} {}", self.player(who)?, self.predicate(effect, true)?),
             },
+            Effect::Conjure { who: Ref::You, .. } | Effect::Seek { who: Ref::You, .. } => {
+                digital_text(effect)?
+            }
             Effect::TimeTravel { who: Ref::You } => "time travel".to_owned(),
             Effect::Learn { who: Ref::You } => "learn".to_owned(),
             Effect::Monstrosity { count } => format!("monstrosity {}", points_text(count)?),
@@ -2726,9 +2783,10 @@ impl Writer<'_> {
                 who,
                 count,
                 random,
+                filter,
                 bind: None,
             } => {
-                let cards = draws::discarded_text(who, count)?;
+                let cards = draws::discarded_filtered_text(who, count, filter.as_ref())?;
                 format!("discard{s} {cards}{}", at_random(*random))
             }
             Effect::GainLife { amount, .. } => format!("gain{s} {}", self.life(amount)?),

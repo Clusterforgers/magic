@@ -1,0 +1,30 @@
+{
+  "oracle_id": "cf43518b-bfec-443d-a6c0-f2d848dc5fa8",
+  "name": "Rapier Wit",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Rapier Wit",
+      "oracle_fingerprint": "e70555a1b1cb1130ede77d1f44ec790b",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              { "Tap": { "what": { "Target": 0 } } },
+              {
+                "If": {
+                  "condition": "YourTurn",
+                  "then": [
+                    { "PutCounters": { "on": { "Target": 0 }, "counter": { "Other": "stun" } } }
+                  ]
+                }
+              },
+              { "Draw": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

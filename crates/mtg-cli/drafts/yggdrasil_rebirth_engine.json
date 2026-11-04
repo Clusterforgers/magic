@@ -1,0 +1,68 @@
+{
+  "oracle_id": "7617a6f7-c83b-4ee5-a681-c7e164456526",
+  "name": "Yggdrasil, Rebirth Engine",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Yggdrasil, Rebirth Engine",
+      "oracle_fingerprint": "5b6bd91fb1006add7212757f98848b50",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Exile": {
+                  "what": {
+                    "Each": [{ "Type": "Creature" }, { "OwnedBy": "You" }, { "In": "Graveyard" }]
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "ExileTop": { "count": 3, "as": "exiled" } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{4}" }, "Tap"],
+            "timing": "Sorcery",
+            "effects": [
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "Type": "Creature" },
+                      { "ExiledWith": "This" },
+                      { "In": "Exile" },
+                      { "OwnedBy": "You" }
+                    ]
+                  },
+                  "as": "picked"
+                }
+              },
+              {
+                "Move": {
+                  "what": { "Bound": "picked" },
+                  "to": { "Battlefield": { "under": "You" } },
+                  "as": "moved2"
+                }
+              },
+              {
+                "Continuous": {
+                  "affected": { "Bound": "moved2" },
+                  "mods": [{ "AddKeyword": "Haste" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

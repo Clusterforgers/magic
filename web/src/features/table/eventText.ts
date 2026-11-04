@@ -560,6 +560,8 @@ const PIPELINE = [
   'LifeLost',
   'CountersChanged',
   'TokenCreated',
+  'CardConjured',
+  'Sought',
   'LibraryLooked',
   'CardsFound',
   'Scried',
@@ -683,6 +685,13 @@ function describePipeline(event: PipelineEvent, n: EventNames, context?: EventCo
   if ('TokenCreated' in event) {
     return line(`${n.seat(event.TokenCreated.controller)} creates a ${event.TokenCreated.name} token`)
   }
+  if ('CardConjured' in event) {
+    const { owner, name, zone } = event.CardConjured
+    return line(`${n.seat(owner)} conjures ${name} into ${zoneWord(zone, n)}`)
+  }
+  if ('Sought' in event) {
+    return line(`${n.seat(event.Sought.player)} seeks ${cards(event.Sought.count)}`)
+  }
   if ('LibraryLooked' in event) {
     const { player, cards: looked } = event.LibraryLooked
     return line(`${n.seat(player)} looks at ${cards(looked.length)} of their library`)
@@ -749,6 +758,12 @@ function describePublic(event: Event, n: EventNames, context?: EventContext): Lo
   if ('LibraryBottomed' in event) {
     const { player, cards: bottomed } = event.LibraryBottomed
     return line(`${n.seat(player)} puts ${cards(bottomed.length)} on the bottom of their library`)
+  }
+  if ('LibraryInserted' in event) {
+    const { player, cards: inserted, below } = event.LibraryInserted
+    return line(
+      `${n.seat(player)} puts ${cards(inserted.length)} beneath the top ${cards(below)} of their library`,
+    )
   }
   if ('ChosenAtRandom' in event) {
     return line(`${event.ChosenAtRandom.cards.map((id) => n.card(id)).join(', ')} is picked at random`)
@@ -1005,6 +1020,7 @@ function describeHidden(event: HiddenEvent, n: EventNames): LogLine {
   if (typeof event === 'string') return quiet('A card leaves the game')
   if ('Remembered' in event) return quiet('A source remembers objects')
   if ('CardDrawn' in event) return line(`${n.seat(event.CardDrawn.player)} draws a card`)
+  if ('CardConjured' in event) return line(`${n.seat(event.CardConjured.player)} conjures a card`)
   if ('HandDealt' in event)
     return line(`${n.seat(event.HandDealt.player)} is dealt ${cards(event.HandDealt.count)}`)
   if ('LibraryShuffled' in event)
@@ -1016,6 +1032,10 @@ function describeHidden(event: HiddenEvent, n: EventNames): LogLine {
   if ('CardsBottomed' in event) {
     const { player, count } = event.CardsBottomed
     return line(`${n.seat(player)} puts ${cards(count)} on the bottom of their library`)
+  }
+  if ('CardsInserted' in event) {
+    const { player, count, below } = event.CardsInserted
+    return line(`${n.seat(player)} puts ${cards(count)} beneath the top ${cards(below)} of their library`)
   }
   if ('LibraryLooked' in event) {
     const { player, count } = event.LibraryLooked

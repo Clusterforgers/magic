@@ -1,0 +1,56 @@
+{
+  "oracle_id": "04e575d1-f843-4330-972f-e77b264073e0",
+  "name": "Ozox, the Clattering King",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ozox, the Clattering King",
+      "oracle_fingerprint": "03f6b57769fb95ef6c009f98eacaf023",
+      "abilities": [
+        { "Static": { "affected": "This", "mods": ["CantBlock"] } },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Jumblebones",
+                      "colors": ["Black"],
+                      "supertypes": ["Legendary"],
+                      "types": ["Creature"],
+                      "subtypes": ["Skeleton"],
+                      "power": 2,
+                      "toughness": 1,
+                      "abilities": [
+                        {
+                          "Triggered": {
+                            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield" } },
+                            "targets": [
+                              {
+                                "what": {
+                                  "Object": [
+                                    { "OwnedBy": "You" },
+                                    { "Named": "Ozox, the Clattering King" },
+                                    { "In": "Graveyard" }
+                                  ]
+                                }
+                              }
+                            ],
+                            "effects": [{ "Move": { "what": { "Target": 0 }, "to": "Hand" } }]
+                          }
+                        },
+                        { "Static": { "affected": "This", "mods": ["CantBlock"] } }
+                      ]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

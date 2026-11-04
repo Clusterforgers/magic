@@ -1,0 +1,60 @@
+{
+  "oracle_id": "7ba580c9-f933-43d9-b03d-a349faa6c641",
+  "name": "Fertile Thicket",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Fertile Thicket",
+      "oracle_fingerprint": "6bd16934f33171ea4c90b1a9b829f4a7",
+      "abilities": [
+        { "Replacement": { "when": { "Enters": { "what": ["This"] } }, "by": "Tapped" } },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    { "LookAtTop": { "count": 5, "as": "top" } },
+                    {
+                      "Choose": {
+                        "from": {
+                          "Each": [
+                            { "In": "Library" },
+                            { "Is": { "Bound": "top" } },
+                            { "Type": "Land" },
+                            { "Supertype": "Basic" }
+                          ]
+                        },
+                        "count": { "min": 0, "max": 1 },
+                        "as": "kept2"
+                      }
+                    },
+                    {
+                      "Move": {
+                        "what": { "Bound": "kept2" },
+                        "to": { "Library": { "place": "Top" } }
+                      }
+                    },
+                    {
+                      "Move": {
+                        "what": { "Bound": "top" },
+                        "to": { "Library": { "place": "Bottom", "order": "Chosen" } }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Green"] } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

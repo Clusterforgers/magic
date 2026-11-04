@@ -1,0 +1,33 @@
+{
+  "oracle_id": "1a4c03ab-519a-4840-893a-769dfc5cf161",
+  "name": "Risky Move",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Risky Move",
+      "oracle_fingerprint": "c5947d830bbdafb276d99785e5fa1ef4",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep" } },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "SetController": "Triggering" }],
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 89, "end": 279 }
+          }
+        }
+      ]
+    }
+  ]
+}

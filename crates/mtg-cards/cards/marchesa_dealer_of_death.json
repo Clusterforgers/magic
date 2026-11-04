@@ -1,0 +1,31 @@
+{
+  "oracle_id": "37449c93-4d32-4f1a-982f-8f3416214368",
+  "name": "Marchesa, Dealer of Death",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Marchesa, Dealer of Death",
+      "oracle_fingerprint": "846b4dbd899a7324278f6cbe1f114bcc",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "W11cCrime": { "who": "You" } },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": "{1}",
+                  "paid": [
+                    { "LookAtTop": { "count": 2, "as": "top" } },
+                    { "Choose": { "from": { "Bound": "top" }, "as": "kept2", "rest_as": "rest3" } },
+                    { "Move": { "what": { "Bound": "kept2" }, "to": "Hand" } },
+                    { "Move": { "what": { "Bound": "rest3" }, "to": "Graveyard" } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

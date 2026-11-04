@@ -1,0 +1,41 @@
+{
+  "oracle_id": "862511a3-672f-44fe-8121-a9afe1d1404f",
+  "name": "Heroic Charge",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Heroic Charge",
+      "oracle_fingerprint": "9a2197b25af5eae80a9159d6528b70a1",
+      "abilities": [
+        { "Keyword": { "Kicker": "{1}{R}" } },
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                  "mods": [{ "ModifyPT": { "power": 2, "toughness": 1 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "If": {
+                  "condition": "Kicked",
+                  "then": [
+                    {
+                      "Continuous": {
+                        "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                        "mods": [{ "AddKeyword": "Trample" }],
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

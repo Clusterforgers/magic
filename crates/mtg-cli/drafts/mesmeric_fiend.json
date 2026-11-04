@@ -1,0 +1,50 @@
+{
+  "oracle_id": "fb46b300-8a39-40d2-8bc7-31b90c822e22",
+  "name": "Mesmeric Fiend",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mesmeric Fiend",
+      "oracle_fingerprint": "dd95b130c312d2ecc9d210b8f9128b8c",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "Not": { "Type": "Land" } },
+                      { "In": "Hand" },
+                      { "OwnedBy": { "Target": 0 } }
+                    ]
+                  },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "picked"
+                }
+              },
+              { "Exile": { "what": { "Bound": "picked" }, "as": "exiled2" } },
+              { "Remember": { "what": { "Bound": "exiled2" }, "slot": "remembered" } }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield" } },
+            "effects": [
+              {
+                "Move": {
+                  "what": { "Remembered": { "on": "This", "slot": "remembered" } },
+                  "to": "Hand"
+                }
+              },
+              { "Forget": { "slot": "remembered" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

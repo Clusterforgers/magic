@@ -1,0 +1,35 @@
+{
+  "oracle_id": "7e484372-a052-4df6-a6b2-2c6accccabef",
+  "name": "Wretched Throng",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Wretched Throng",
+      "oracle_fingerprint": "92934413f8ce7ba94fb017e08dcdfcb2",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "Search": {
+                        "filter": [{ "Named": "Wretched Throng" }],
+                        "reveal": true,
+                        "as": "found"
+                      }
+                    },
+                    { "Move": { "what": { "Bound": "found" }, "to": "Hand" } },
+                    { "Shuffle": {} }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

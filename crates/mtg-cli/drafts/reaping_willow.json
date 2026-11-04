@@ -1,0 +1,39 @@
+{
+  "oracle_id": "ce60402c-34cd-44fe-ae1d-4a5404298f5b",
+  "name": "Reaping Willow",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Reaping Willow",
+      "oracle_fingerprint": "023dfc6fb0757d602f958a60dc626f37",
+      "abilities": [
+        { "Keyword": "Lifelink" },
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "WithCounters": { "counter": "-1/-1", "count": 2 } }
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{1}{W/B}" }, { "RemoveCounters": { "count": 2 } }],
+            "timing": "Sorcery",
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Type": "Creature" },
+                    { "Compare": { "stat": "ManaValue", "op": "Le", "to": 3 } },
+                    { "OwnedBy": "You" },
+                    { "In": "Graveyard" }
+                  ]
+                }
+              }
+            ],
+            "effects": [{ "Move": { "what": { "Target": 0 }, "to": { "Battlefield": {} } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

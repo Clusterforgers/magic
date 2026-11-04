@@ -1,0 +1,30 @@
+{
+  "oracle_id": "c761af28-d7d8-46d3-9bc7-1e44fdf6d0a0",
+  "name": "Doom Cannon",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Doom Cannon",
+      "oracle_fingerprint": "2062199073fd92f71c7883244abda439",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "Choose": "CreatureType" }
+          }
+        },
+        {
+          "Activated": {
+            "cost": [
+              { "Mana": "{3}" },
+              "Tap",
+              { "Sacrifice": { "filter": [{ "Type": "Creature" }, "ChosenSubtype"] } }
+            ],
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 3 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

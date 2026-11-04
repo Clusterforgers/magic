@@ -1,0 +1,25 @@
+{
+  "oracle_id": "e298a2a4-0e04-4af9-8638-7c01668d97d0",
+  "name": "Ekthi, Contaminator Priest",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ekthi, Contaminator Priest",
+      "oracle_fingerprint": "9f9665a4856a750f4321763d5785afbc",
+      "abilities": [
+        {
+          "Static": {
+            "affected": { "Each": [{ "Subtype": "Phyrexian" }, "Other", { "ControlledBy": "You" }] },
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }]
+          }
+        },
+        {
+          "Static": {
+            "affected": { "Each": [{ "Subtype": "Equipment" }, { "ControlledBy": "You" }] },
+            "mods": [{ "AddKeyword": "LivingWeapon" }]
+          }
+        }
+      ]
+    }
+  ]
+}

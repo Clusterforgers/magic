@@ -1,0 +1,35 @@
+{
+  "oracle_id": "670cf656-5c72-4d28-b5e6-dc77781dc001",
+  "name": "Minion Missile",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Minion Missile",
+      "oracle_fingerprint": "4a08159d8ce716cfc81c0138d2a098a6",
+      "abilities": [
+        {
+          "AdditionalCost": {
+            "cost": [
+              {
+                "OneOf": [
+                  [{ "Sacrifice": { "filter": [{ "Type": "Creature" }] } }],
+                  [{ "Discard": {} }]
+                ]
+              }
+            ],
+            "required": true
+          }
+        },
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              { "Destroy": { "what": { "Target": 0 } } },
+              { "DealDamage": { "to": { "ControllerOf": { "Target": 0 } }, "amount": 2 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

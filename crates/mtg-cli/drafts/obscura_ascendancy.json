@@ -1,0 +1,69 @@
+{
+  "oracle_id": "34ec084d-2c16-452f-8dcc-06641c80f7d1",
+  "name": "Obscura Ascendancy",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Obscura Ascendancy",
+      "oracle_fingerprint": "c4909b94eaf04ac63eb875c69750af29",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "SpellCast": {
+                "what": [
+                  {
+                    "Compare": {
+                      "stat": "ManaValue",
+                      "op": "Eq",
+                      "to": {
+                        "Sum": [{ "Counters": { "on": "This", "counter": { "Other": "soul" } } }, 1]
+                      }
+                    }
+                  }
+                ],
+                "by": "You"
+              }
+            },
+            "effects": [
+              { "PutCounters": { "on": "This", "counter": { "Other": "soul" } } },
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Spirit",
+                      "colors": ["White"],
+                      "types": ["Creature"],
+                      "subtypes": ["Spirit"],
+                      "power": 2,
+                      "toughness": 2,
+                      "abilities": [{ "Keyword": "Flying" }]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Static": {
+            "affected": { "Each": [{ "Subtype": "Spirit" }, { "ControlledBy": "You" }] },
+            "mods": [{ "ModifyPT": { "power": 3, "toughness": 3 } }],
+            "condition": {
+              "Compare": {
+                "left": {
+                  "Count": [
+                    "This",
+                    { "CounterCount": { "kind": { "Other": "soul" }, "op": "Ge", "to": 5 } }
+                  ]
+                },
+                "op": "Ge",
+                "right": 1
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

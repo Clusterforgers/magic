@@ -1,0 +1,41 @@
+{
+  "oracle_id": "5d32dbf3-c157-4543-8813-da88f463de0e",
+  "name": "Mind Roots",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mind Roots",
+      "oracle_fingerprint": "f7470a3208016e47a875e94de8a15f81",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              { "Discard": { "who": { "Target": 0 }, "count": 2, "as": "discarded" } },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "Type": "Land" },
+                      { "Is": { "Bound": "discarded" } },
+                      { "AnyOf": [{ "In": "Graveyard" }, { "In": "Exile" }] },
+                      { "OwnedBy": "You" }
+                    ]
+                  },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "picked2"
+                }
+              },
+              {
+                "Move": {
+                  "what": { "Bound": "picked2" },
+                  "to": { "Battlefield": { "tapped": true, "under": "You" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

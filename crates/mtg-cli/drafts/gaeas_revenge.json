@@ -1,0 +1,25 @@
+{
+  "oracle_id": "26f6cc1e-d85e-45a3-a1ed-7f09d7cfc7df",
+  "name": "Gaea's Revenge",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Gaea's Revenge",
+      "oracle_fingerprint": "f7a547e07a3cc70d30843baecc023ca8",
+      "abilities": [
+        { "Rule": { "rule": { "CantBeCountered": "This" }, "from": "Stack" } },
+        { "Keyword": "Haste" },
+        {
+          "Rule": {
+            "rule": {
+              "Cant": {
+                "who": "This",
+                "action": { "BeTargeted": [{ "Not": { "Color": "Green" } }] }
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

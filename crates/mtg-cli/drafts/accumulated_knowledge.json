@@ -1,0 +1,27 @@
+{
+  "oracle_id": "1ca25379-d194-4670-a7bf-525ad11cf436",
+  "name": "Accumulated Knowledge",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Accumulated Knowledge",
+      "oracle_fingerprint": "70315ded80944e97e9e1ad563b245d16",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "Draw": {} },
+              {
+                "Draw": {
+                  "count": {
+                    "Count": [{ "Named": "Accumulated Knowledge" }, { "In": "Graveyard" }]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,21 @@
+{
+  "oracle_id": "808ad690-202a-4adf-b38a-499e144f8c06",
+  "name": "Song of Point Prime",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Song of Point Prime",
+      "oracle_fingerprint": "a1893978e0ccedf2ac828d9b46de9be2",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "Sacrifice": { "who": "Opponents", "filter": [{ "Type": "Creature" }] } },
+              { "Conjure": { "name": "Cantor of the Refrain", "zone": "Graveyard" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

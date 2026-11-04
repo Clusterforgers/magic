@@ -1,0 +1,39 @@
+{
+  "oracle_id": "9b3f6b29-675a-4153-9582-03318851b20e",
+  "name": "Rune of Protection: Red",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Rune of Protection: Red",
+      "oracle_fingerprint": "9b049e4be1daeaf929827d7d2aa53bb7",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{W}",
+            "effects": [
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "AnyOf": [{ "In": "Battlefield" }, { "In": "Stack" }, { "In": "Command" }] },
+                      { "Color": "Red" }
+                    ]
+                  },
+                  "as": "source"
+                }
+              },
+              {
+                "Shield": {
+                  "when": { "Damage": { "to": "You", "source": [{ "Is": { "Bound": "source" } }] } },
+                  "by": "PreventNext",
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Cycling": "{2}" } }
+      ]
+    }
+  ]
+}

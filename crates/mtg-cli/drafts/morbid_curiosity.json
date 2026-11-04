@@ -1,0 +1,30 @@
+{
+  "oracle_id": "59c620fb-a58d-4038-a7e2-0185324b5123",
+  "name": "Morbid Curiosity",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Morbid Curiosity",
+      "oracle_fingerprint": "246d0c841554bd5b388b1620bd3127b4",
+      "abilities": [
+        {
+          "AdditionalCost": {
+            "cost": [
+              {
+                "Sacrifice": {
+                  "filter": [{ "AnyOf": [{ "Type": "Artifact" }, { "Type": "Creature" }] }]
+                }
+              }
+            ],
+            "required": true
+          }
+        },
+        {
+          "Spell": {
+            "effects": [{ "Draw": { "count": { "Stat": { "of": "Paid", "stat": "ManaValue" } } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

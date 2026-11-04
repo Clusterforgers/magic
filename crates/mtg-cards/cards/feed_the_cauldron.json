@@ -1,0 +1,36 @@
+{
+  "oracle_id": "21153db6-552a-4956-a53a-a9dfb6968629",
+  "name": "Feed the Cauldron",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Feed the Cauldron",
+      "oracle_fingerprint": "a538c8b70364bc354f5d44168fbc9b1d",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Type": "Creature" },
+                    { "Compare": { "stat": "ManaValue", "op": "Le", "to": 3 } }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              { "Destroy": { "what": { "Target": 0 } } },
+              {
+                "If": {
+                  "condition": "YourTurn",
+                  "then": [{ "CreateToken": { "token": { "Named": "food" } } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,47 @@
+{
+  "oracle_id": "934b3918-2105-46a7-a8d8-5c4d880d67fd",
+  "name": "Oasis of Renewal",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Oasis of Renewal",
+      "oracle_fingerprint": "83cd85fb6fbdd51fc5deea8c4135f5af",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+                {
+                  "ZoneChange": {
+                    "what": [{ "Type": "Land" }, { "OwnedBy": "You" }],
+                    "from": "Graveyard"
+                  }
+                }
+              ]
+            },
+            "limit": "OncePerTurn",
+            "effects": [{ "Seek": { "filter": [{ "Type": "Land" }] } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+                {
+                  "ZoneChange": {
+                    "what": [{ "Not": { "Type": "Land" } }, { "OwnedBy": "You" }],
+                    "from": "Graveyard"
+                  }
+                }
+              ]
+            },
+            "limit": "OncePerTurn",
+            "effects": [{ "Seek": { "filter": [{ "Not": { "Type": "Land" } }] } }]
+          }
+        }
+      ]
+    }
+  ]
+}

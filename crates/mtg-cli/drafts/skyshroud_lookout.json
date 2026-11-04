@@ -1,0 +1,20 @@
+{
+  "oracle_id": "5ff34179-8697-4075-9f6f-4f97ff7781d0",
+  "name": "Skyshroud Lookout",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Skyshroud Lookout",
+      "oracle_fingerprint": "c215d79519e9f4d7e8f26ccab934bc76",
+      "abilities": [
+        { "Keyword": "Reach" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "Seek": { "filter": [{ "Subtype": "Elf" }] } }]
+          }
+        }
+      ]
+    }
+  ]
+}

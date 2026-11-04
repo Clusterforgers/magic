@@ -1,0 +1,143 @@
+{
+  "object": "card",
+  "id": "7882b42b-d88f-48fe-9b30-cfb338accadb",
+  "oracle_id": "25b30117-03ef-49a5-8743-2d1c167d4bc3",
+  "multiverse_ids": [],
+  "resource_id": "EE4AD0C2CC375B016D75A6046BE4B4C8504E0CDABF8110D6063BF282180EFA10",
+  "mtgo_id": 151835,
+  "arena_id": 105703,
+  "tcgplayer_id": 697318,
+  "cardmarket_id": 892132,
+  "name": "Jack of Hearts, Volatile Hero",
+  "lang": "en",
+  "released_at": "2026-06-26",
+  "uri": "https://api.scryfall.com/cards/7882b42b-d88f-48fe-9b30-cfb338accadb",
+  "scryfall_uri": "https://scryfall.com/card/msc/693/jack-of-hearts-volatile-hero?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T00:37:27Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/7/8/7882b42b-d88f-48fe-9b30-cfb338accadb.jpg?1783903047",
+    "normal": "https://cards.scryfall.io/normal/front/7/8/7882b42b-d88f-48fe-9b30-cfb338accadb.jpg?1783903047",
+    "large": "https://cards.scryfall.io/large/front/7/8/7882b42b-d88f-48fe-9b30-cfb338accadb.jpg?1783903047",
+    "png": "https://cards.scryfall.io/png/front/7/8/7882b42b-d88f-48fe-9b30-cfb338accadb.png?1783903047",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/7/8/7882b42b-d88f-48fe-9b30-cfb338accadb.jpg?1783903047",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/7/8/7882b42b-d88f-48fe-9b30-cfb338accadb.jpg?1783903047",
+    "thumb": "https://cards.scryfall.io/thumb/front/7/8/7882b42b-d88f-48fe-9b30-cfb338accadb.webp?1783903047",
+    "grid": "https://cards.scryfall.io/grid/front/7/8/7882b42b-d88f-48fe-9b30-cfb338accadb.webp?1783903047",
+    "display": "https://cards.scryfall.io/display/front/7/8/7882b42b-d88f-48fe-9b30-cfb338accadb.webp?1783903047",
+    "art": "https://cards.scryfall.io/art/front/7/8/7882b42b-d88f-48fe-9b30-cfb338accadb.webp?1783903047",
+    "crop": "https://cards.scryfall.io/crop/front/7/8/7882b42b-d88f-48fe-9b30-cfb338accadb.webp?1783903047",
+    "jpeg": "https://cards.scryfall.io/normal/front/7/8/7882b42b-d88f-48fe-9b30-cfb338accadb.jpg?1783903047"
+  },
+  "mana_cost": "{1}{R}{R}",
+  "cmc": 3.0,
+  "type_line": "Legendary Creature — Alien Human Hero",
+  "oracle_text": "Flying, haste\nWhen Jack of Hearts dies, he deals damage equal to his power to each creature.\nPower-up — {4}{R}{R}: Discard your hand, then draw three cards. Put two +1/+1 counters on Jack of Hearts. (Activate each power-up ability only once. Reduce the cost by his mana cost if he entered this turn.)",
+  "power": "2",
+  "toughness": "2",
+  "colors": [
+    "R"
+  ],
+  "color_identity": [
+    "R"
+  ],
+  "keywords": [
+    "Flying",
+    "Power-up",
+    "Haste"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo",
+    "arena"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "9d739461-c5ac-43a1-af41-3d5a585b5c8d",
+  "set": "msc",
+  "set_name": "Marvel Super Heroes Commander",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/9d739461-c5ac-43a1-af41-3d5a585b5c8d",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Amsc&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/msc?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/7882b42b-d88f-48fe-9b30-cfb338accadb/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A25b30117-03ef-49a5-8743-2d1c167d4bc3&unique=prints",
+  "collector_number": "693",
+  "digital": false,
+  "rarity": "rare",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Gaboleps",
+  "artist_ids": [
+    "0c37cdfe-5651-4ae6-a3c8-e7153509f970"
+  ],
+  "illustration_id": "d1ef5848-fea0-4e98-bd15-fdb99b8ae501",
+  "border_color": "black",
+  "frame": "2015",
+  "frame_effects": [
+    "legendary"
+  ],
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "promo_types": [
+    "universesbeyond"
+  ],
+  "edhrec_rank": 25572,
+  "prices": {
+    "usd": "0.23",
+    "usd_foil": "0.37",
+    "usd_etched": null,
+    "eur": "0.27",
+    "eur_foil": "0.34",
+    "tix": "1.35"
+  },
+  "related_uris": {
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DJack%2Bof%2BHearts%252C%2BVolatile%2BHero",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DJack%2Bof%2BHearts%252C%2BVolatile%2BHero",
+    "edhrec": "https://edhrec.com/route/?cc=Jack+of+Hearts%2C+Volatile+Hero"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F697318%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=892132&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/151835?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

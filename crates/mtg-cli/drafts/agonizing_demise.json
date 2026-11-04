@@ -1,0 +1,37 @@
+{
+  "oracle_id": "41681a1f-0777-4b96-8c7e-d6a5d1b1c8fc",
+  "name": "Agonizing Demise",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Agonizing Demise",
+      "oracle_fingerprint": "e018a2c18ed046f6145978c2135be27d",
+      "abilities": [
+        { "Keyword": { "Kicker": "{1}{R}" } },
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "Not": { "Color": "Black" } }] } }
+            ],
+            "effects": [
+              { "Destroy": { "what": { "Target": 0 }, "regenerate": false } },
+              {
+                "If": {
+                  "condition": "Kicked",
+                  "then": [
+                    {
+                      "DealDamage": {
+                        "to": { "ControllerOf": { "Target": 0 } },
+                        "amount": { "Stat": { "of": { "Target": 0 }, "stat": "Power" } }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

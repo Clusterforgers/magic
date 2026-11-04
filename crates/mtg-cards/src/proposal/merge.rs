@@ -18,6 +18,48 @@ fn covering(state: &ClauseState) -> Option<usize> {
     }
 }
 
+/// Why a merged card does not mean what it prints.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub enum MergeRefusal {
+    /// A clause the proposal covered is covered by no ability of the merge (the text of the clause).
+    LostClause(String),
+    /// An ability of the merge has no clause left: another ability already stands for it (the ability's variant).
+    DoubledClause(String),
+}
+
+impl MergeRefusal {
+    /// The kind of refusal in a few words.
+    pub fn word(&self) -> &'static str {
+        match self {
+            MergeRefusal::LostClause(_) => "merge drops a clause",
+            MergeRefusal::DoubledClause(_) => "merge doubles a clause",
+        }
+    }
+
+    /// The clause or ability the refusal names.
+    pub fn named(&self) -> &str {
+        match self {
+            MergeRefusal::LostClause(name) | MergeRefusal::DoubledClause(name) => name,
+        }
+    }
+}
+
+/// The first reason the merged report is not the proposal's card: a clause the proposal covered that the merge leaves
+/// open, or an ability without a clause of its own.
+pub fn refusal(proposal: &Report, merged: &Report) -> Option<MergeRefusal> {
+    if let Some(stray) = merged.strays.first() {
+        return Some(MergeRefusal::DoubledClause(stray.construct.clone()));
+    }
+    proposal
+        .clauses
+        .iter()
+        .zip(&merged.clauses)
+        .find(|(before, after)| {
+            covering(&before.state).is_some() && covering(&after.state).is_none()
+        })
+        .map(|(before, _)| MergeRefusal::LostClause(before.text.clone()))
+}
+
 /// For each ability of a face, the clauses (indices into the card's clauses) it stands for.
 fn clauses_of(paired: &Paired, face: usize, abilities: usize) -> Vec<Vec<usize>> {
     let mut of = vec![Vec::new(); abilities];

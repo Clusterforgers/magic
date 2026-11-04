@@ -1,0 +1,138 @@
+{
+  "object": "card",
+  "id": "0dfc8ebe-58f4-450f-abdc-8d558f6f5551",
+  "oracle_id": "6d890c2a-2ed7-429d-a2b2-d261397f838d",
+  "multiverse_ids": [
+    97114
+  ],
+  "mtgo_id": 24073,
+  "mtgo_foil_id": 24074,
+  "tcgplayer_id": 13974,
+  "cardmarket_id": 13110,
+  "name": "Twinstrike",
+  "lang": "en",
+  "released_at": "2006-05-05",
+  "uri": "https://api.scryfall.com/cards/0dfc8ebe-58f4-450f-abdc-8d558f6f5551",
+  "scryfall_uri": "https://scryfall.com/card/dis/134/twinstrike?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T11:49:53Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/0/d/0dfc8ebe-58f4-450f-abdc-8d558f6f5551.jpg?1783943393",
+    "normal": "https://cards.scryfall.io/normal/front/0/d/0dfc8ebe-58f4-450f-abdc-8d558f6f5551.jpg?1783943393",
+    "large": "https://cards.scryfall.io/large/front/0/d/0dfc8ebe-58f4-450f-abdc-8d558f6f5551.jpg?1783943393",
+    "png": "https://cards.scryfall.io/png/front/0/d/0dfc8ebe-58f4-450f-abdc-8d558f6f5551.png?1783943393",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/0/d/0dfc8ebe-58f4-450f-abdc-8d558f6f5551.jpg?1783943393",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/0/d/0dfc8ebe-58f4-450f-abdc-8d558f6f5551.jpg?1783943393",
+    "thumb": "https://cards.scryfall.io/thumb/front/0/d/0dfc8ebe-58f4-450f-abdc-8d558f6f5551.webp?1783943393",
+    "grid": "https://cards.scryfall.io/grid/front/0/d/0dfc8ebe-58f4-450f-abdc-8d558f6f5551.webp?1783943393",
+    "display": "https://cards.scryfall.io/display/front/0/d/0dfc8ebe-58f4-450f-abdc-8d558f6f5551.webp?1783943393",
+    "art": "https://cards.scryfall.io/art/front/0/d/0dfc8ebe-58f4-450f-abdc-8d558f6f5551.webp?1783943393",
+    "crop": "https://cards.scryfall.io/crop/front/0/d/0dfc8ebe-58f4-450f-abdc-8d558f6f5551.webp?1783943393",
+    "jpeg": "https://cards.scryfall.io/normal/front/0/d/0dfc8ebe-58f4-450f-abdc-8d558f6f5551.jpg?1783943393"
+  },
+  "mana_cost": "{3}{B}{R}",
+  "cmc": 5.0,
+  "type_line": "Instant",
+  "oracle_text": "Twinstrike deals 2 damage to each of two target creatures.\nHellbent — Destroy those creatures instead if you have no cards in hand.",
+  "colors": [
+    "B",
+    "R"
+  ],
+  "color_identity": [
+    "B",
+    "R"
+  ],
+  "keywords": [
+    "Hellbent"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "fdebeda1-b95f-4343-8a94-d125821e6b5c",
+  "set": "dis",
+  "set_name": "Dissension",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/fdebeda1-b95f-4343-8a94-d125821e6b5c",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Adis&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/dis?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/0dfc8ebe-58f4-450f-abdc-8d558f6f5551/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A6d890c2a-2ed7-429d-a2b2-d261397f838d&unique=prints",
+  "collector_number": "134",
+  "digital": false,
+  "rarity": "uncommon",
+  "watermark": "rakdos",
+  "flavor_text": "They're dying left and right.",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Christopher Rush",
+  "artist_ids": [
+    "c96773f0-346c-4f7d-9271-2d98cc5d86e1"
+  ],
+  "illustration_id": "713577f6-746e-4408-b8be-0f0119ad780d",
+  "border_color": "black",
+  "frame": "2003",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 30198,
+  "penny_rank": 18190,
+  "prices": {
+    "usd": "0.11",
+    "usd_foil": "0.43",
+    "usd_etched": null,
+    "eur": "0.12",
+    "eur_foil": "0.33",
+    "tix": "0.03"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=97114&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DTwinstrike",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DTwinstrike",
+    "edhrec": "https://edhrec.com/route/?cc=Twinstrike"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F13974%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=13110&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/24073?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

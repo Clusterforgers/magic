@@ -1,0 +1,20 @@
+{
+  "oracle_id": "53463d3d-fa97-46fb-a73b-35bb0e0dac72",
+  "name": "Lingering Death",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Lingering Death",
+      "oracle_fingerprint": "0e7dc32bbede46fce1877f2dd08a30ee",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": { "ControllerOf": "Attached" } } },
+            "effects": [{ "Sacrifice": { "who": "Triggering", "filter": [{ "Is": "Attached" }] } }]
+          }
+        }
+      ]
+    }
+  ]
+}

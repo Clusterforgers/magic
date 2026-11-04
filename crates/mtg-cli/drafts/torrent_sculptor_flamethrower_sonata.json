@@ -1,0 +1,58 @@
+{
+  "oracle_id": "8a9fe2dd-50a7-4010-96ba-df4dec265e16",
+  "name": "Torrent Sculptor // Flamethrower Sonata",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Torrent Sculptor",
+      "oracle_fingerprint": "9f71db9f6f33aa6cd32ccdfe373d9f24",
+      "abilities": [
+        { "Keyword": { "Ward": "{2}" } },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] },
+                      { "OwnedBy": "You" },
+                      { "In": "Graveyard" }
+                    ]
+                  },
+                  "as": "picked"
+                }
+              },
+              { "Exile": { "what": { "Bound": "picked" }, "as": "exiled2" } },
+              {
+                "PutCounters": {
+                  "on": "This",
+                  "counter": "+1/+1",
+                  "count": {
+                    "Half": {
+                      "of": { "Stat": { "of": { "Bound": "exiled2" }, "stat": "ManaValue" } },
+                      "up": true
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Flamethrower Sonata",
+      "oracle_fingerprint": "536a7532216c43adf97f63e7413f8367",
+      "abilities": [
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 0, "end": 206 }
+          }
+        }
+      ]
+    }
+  ]
+}

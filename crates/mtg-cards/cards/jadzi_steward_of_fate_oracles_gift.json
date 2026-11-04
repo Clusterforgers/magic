@@ -1,0 +1,54 @@
+{
+  "oracle_id": "c63b3511-d597-4c6e-9094-eabdeaa8a394",
+  "name": "Jadzi, Steward of Fate // Oracle's Gift",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Jadzi, Steward of Fate",
+      "oracle_fingerprint": "ada8f0c1050365a2b5604547258ef289",
+      "abilities": [
+        { "Replacement": { "when": { "Enters": { "what": ["This"] } }, "by": "EntersPrepared" } },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "Draw": { "count": 2 } }, { "Discard": { "count": 2 } }]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Oracle's Gift",
+      "oracle_fingerprint": "ec1b80cbdb2205a17d59dd34c9172a2c",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Fractal",
+                      "colors": ["Green", "Blue"],
+                      "types": ["Creature"],
+                      "subtypes": ["Fractal"],
+                      "power": 0,
+                      "toughness": 0
+                    }
+                  },
+                  "count": "X"
+                }
+              },
+              {
+                "PutCounters": {
+                  "on": { "Each": [{ "Subtype": "Fractal" }, { "ControlledBy": "You" }] },
+                  "counter": "+1/+1",
+                  "count": "X"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

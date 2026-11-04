@@ -1,0 +1,32 @@
+{
+  "oracle_id": "2aa03852-6c38-4e91-afed-0c4cd5964598",
+  "name": "Gibbering Fiend",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Gibbering Fiend",
+      "oracle_fingerprint": "af283bf285b09fe3f0a82d2224d92497",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "DealDamage": { "to": "Opponents", "amount": 1 } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "Opponents" } },
+            "if": {
+              "Compare": {
+                "left": { "CardTypes": [{ "In": "Graveyard" }, { "OwnedBy": "You" }] },
+                "op": "Ge",
+                "right": 4
+              }
+            },
+            "effects": [{ "DealDamage": { "to": "Triggering", "amount": 1 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

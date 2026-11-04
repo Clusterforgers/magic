@@ -1,0 +1,33 @@
+{
+  "oracle_id": "e78673c4-a969-443f-b1a4-0eb37b8111af",
+  "name": "Mist of Stagnation",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mist of Stagnation",
+      "oracle_fingerprint": "deffe834150a17112f76b15eaa6153c5",
+      "abilities": [
+        { "Static": { "affected": { "Each": [] }, "mods": ["DoesntUntap"] } },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep" } },
+            "effects": [
+              {
+                "Choose": {
+                  "who": "Triggering",
+                  "from": { "Each": [] },
+                  "count": {
+                    "min": { "Count": [{ "OwnedBy": "ActivePlayer" }, { "In": "Graveyard" }] },
+                    "max": { "Count": [{ "OwnedBy": "ActivePlayer" }, { "In": "Graveyard" }] }
+                  },
+                  "as": "card"
+                }
+              },
+              { "Untap": { "what": { "Each": [{ "Is": { "Bound": "card" } }] } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

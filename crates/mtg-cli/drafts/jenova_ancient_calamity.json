@@ -1,0 +1,55 @@
+{
+  "oracle_id": "9370f6bf-d6a0-4c5b-828f-7229f563cc07",
+  "name": "Jenova, Ancient Calamity",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Jenova, Ancient Calamity",
+      "oracle_fingerprint": "e0f1d2a878756f559d65e5ab78fb254b",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "BeginCombat", "whose": "You" } },
+            "targets": [
+              {
+                "what": { "Object": [{ "Type": "Creature" }, "Other"] },
+                "bounds": { "min": 0, "max": 1 }
+              }
+            ],
+            "effects": [
+              {
+                "PutCounters": {
+                  "on": { "Target": 0 },
+                  "counter": "+1/+1",
+                  "count": { "Stat": { "of": "This", "stat": "Power" } }
+                }
+              },
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "AddSubtype": "Mutant" }],
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Subtype": "Mutant" }, { "ControlledBy": "You" }],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "if": { "AtTrigger": "YourTurn" },
+            "effects": [
+              { "Draw": { "count": { "Stat": { "of": "Triggering", "stat": "Power" } } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

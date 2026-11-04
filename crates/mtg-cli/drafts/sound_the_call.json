@@ -1,0 +1,52 @@
+{
+  "oracle_id": "8f0ab2fb-297a-4824-8d2c-0120eec09e5e",
+  "name": "Sound the Call",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sound the Call",
+      "oracle_fingerprint": "48747a19dbc9519b6d998e05245c37c3",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Wolf",
+                      "colors": ["Green"],
+                      "types": ["Creature"],
+                      "subtypes": ["Wolf"],
+                      "power": 1,
+                      "toughness": 1,
+                      "abilities": [
+                        {
+                          "Static": {
+                            "affected": "This",
+                            "mods": [
+                              {
+                                "ModifyPT": {
+                                  "power": {
+                                    "Count": [{ "Named": "Sound the Call" }, { "In": "Graveyard" }]
+                                  },
+                                  "toughness": {
+                                    "Count": [{ "Named": "Sound the Call" }, { "In": "Graveyard" }]
+                                  }
+                                }
+                              }
+                            ]
+                          }
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,143 @@
+{
+  "object": "card",
+  "id": "4d79c221-e07a-41e1-b92f-dc057802449c",
+  "oracle_id": "9fa75b3c-a512-4318-9c03-e2d958acb6ef",
+  "multiverse_ids": [
+    563166
+  ],
+  "tcgplayer_id": 272637,
+  "cardmarket_id": 658496,
+  "name": "Mazzy, Truesword Paladin",
+  "lang": "en",
+  "released_at": "2022-06-10",
+  "uri": "https://api.scryfall.com/cards/4d79c221-e07a-41e1-b92f-dc057802449c",
+  "scryfall_uri": "https://scryfall.com/card/clb/283/mazzy-truesword-paladin?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T06:04:49Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/4/d/4d79c221-e07a-41e1-b92f-dc057802449c.jpg?1783922689",
+    "normal": "https://cards.scryfall.io/normal/front/4/d/4d79c221-e07a-41e1-b92f-dc057802449c.jpg?1783922689",
+    "large": "https://cards.scryfall.io/large/front/4/d/4d79c221-e07a-41e1-b92f-dc057802449c.jpg?1783922689",
+    "png": "https://cards.scryfall.io/png/front/4/d/4d79c221-e07a-41e1-b92f-dc057802449c.png?1783922689",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/4/d/4d79c221-e07a-41e1-b92f-dc057802449c.jpg?1783922689",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/4/d/4d79c221-e07a-41e1-b92f-dc057802449c.jpg?1783922689",
+    "thumb": "https://cards.scryfall.io/thumb/front/4/d/4d79c221-e07a-41e1-b92f-dc057802449c.webp?1783922689",
+    "grid": "https://cards.scryfall.io/grid/front/4/d/4d79c221-e07a-41e1-b92f-dc057802449c.webp?1783922689",
+    "display": "https://cards.scryfall.io/display/front/4/d/4d79c221-e07a-41e1-b92f-dc057802449c.webp?1783922689",
+    "art": "https://cards.scryfall.io/art/front/4/d/4d79c221-e07a-41e1-b92f-dc057802449c.webp?1783922689",
+    "crop": "https://cards.scryfall.io/crop/front/4/d/4d79c221-e07a-41e1-b92f-dc057802449c.webp?1783922689",
+    "jpeg": "https://cards.scryfall.io/normal/front/4/d/4d79c221-e07a-41e1-b92f-dc057802449c.jpg?1783922689"
+  },
+  "mana_cost": "{1}{R}{G}{W}",
+  "cmc": 4.0,
+  "type_line": "Legendary Creature — Halfling Knight",
+  "oracle_text": "Whenever an enchanted creature attacks one of your opponents, it gets +2/+0 and gains trample until end of turn.\nWhenever an Aura you control is put into your graveyard from the battlefield, exile it. Until the end of your next turn, you may cast that card.",
+  "power": "3",
+  "toughness": "4",
+  "colors": [
+    "G",
+    "R",
+    "W"
+  ],
+  "color_identity": [
+    "G",
+    "R",
+    "W"
+  ],
+  "keywords": [],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "5e4c3fe8-fd57-4b20-ad56-c03790a16cea",
+  "set": "clb",
+  "set_name": "Commander Legends: Battle for Baldur's Gate",
+  "set_type": "draft_innovation",
+  "set_uri": "https://api.scryfall.com/sets/5e4c3fe8-fd57-4b20-ad56-c03790a16cea",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Aclb&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/clb?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/4d79c221-e07a-41e1-b92f-dc057802449c/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A9fa75b3c-a512-4318-9c03-e2d958acb6ef&unique=prints",
+  "collector_number": "283",
+  "digital": false,
+  "rarity": "rare",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Justyna Dura",
+  "artist_ids": [
+    "d2340aef-8ca9-4e0d-864c-6a4e8d5e350a"
+  ],
+  "illustration_id": "a761ae01-9cc9-4b47-b53b-e31188b0862e",
+  "border_color": "black",
+  "frame": "2015",
+  "frame_effects": [
+    "legendary"
+  ],
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 15231,
+  "preview": {
+    "source": "Wizards of the Coast",
+    "source_uri": "https://www.twitch.tv/videos/1486418408",
+    "previewed_at": "2022-05-17"
+  },
+  "prices": {
+    "usd": "0.21",
+    "usd_foil": "0.39",
+    "usd_etched": null,
+    "eur": "0.17",
+    "eur_foil": "0.31",
+    "tix": null
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=563166&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DMazzy%252C%2BTruesword%2BPaladin",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DMazzy%252C%2BTruesword%2BPaladin",
+    "edhrec": "https://edhrec.com/route/?cc=Mazzy%2C+Truesword+Paladin"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F272637%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=658496&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards?affiliate_id=scryfall&data%5Bsearch%5D=Mazzy%2C+Truesword+Paladin&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

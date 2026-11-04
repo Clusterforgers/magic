@@ -1,0 +1,30 @@
+{
+  "oracle_id": "af3936ab-0156-438d-9fef-a924d2fcffc3",
+  "name": "Gossamer Chains",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Gossamer Chains",
+      "oracle_fingerprint": "596667e8b1efe36d1e173b568389535a",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "ReturnToHand": { "filter": ["This"] } }],
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, "Attacking", "Unblocked"] } }
+            ],
+            "effects": [
+              {
+                "Shield": {
+                  "when": { "Damage": { "source": [{ "Is": { "Target": 0 } }], "combat": true } },
+                  "by": "Prevent",
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

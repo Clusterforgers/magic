@@ -1,0 +1,25 @@
+{
+  "oracle_id": "fa5a9083-e6f7-4f61-9327-a6b96db220c7",
+  "name": "Crackdown",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Crackdown",
+      "oracle_fingerprint": "73b790277a47735a804afce17c790be7",
+      "abilities": [
+        {
+          "Static": {
+            "affected": {
+              "Each": [
+                { "Type": "Creature" },
+                { "Compare": { "stat": "Power", "op": "Ge", "to": 3 } },
+                { "Not": { "Color": "White" } }
+              ]
+            },
+            "mods": ["DoesntUntap"]
+          }
+        }
+      ]
+    }
+  ]
+}

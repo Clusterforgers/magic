@@ -1,0 +1,39 @@
+{
+  "oracle_id": "6f214a42-e38f-4923-8afc-832efdde7975",
+  "name": "Rune of Protection: White",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Rune of Protection: White",
+      "oracle_fingerprint": "6f654b4cb497020f3efd3bb914049725",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{W}",
+            "effects": [
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "AnyOf": [{ "In": "Battlefield" }, { "In": "Stack" }, { "In": "Command" }] },
+                      { "Color": "White" }
+                    ]
+                  },
+                  "as": "source"
+                }
+              },
+              {
+                "Shield": {
+                  "when": { "Damage": { "to": "You", "source": [{ "Is": { "Bound": "source" } }] } },
+                  "by": "PreventNext",
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Cycling": "{2}" } }
+      ]
+    }
+  ]
+}

@@ -184,6 +184,7 @@ mod dredge;
 mod dredge_fuzz;
 mod elimination;
 mod embalm;
+mod en3_source;
 mod enchant_player;
 mod encore;
 mod encore_fuzz;

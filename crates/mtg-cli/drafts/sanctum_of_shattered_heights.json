@@ -1,0 +1,40 @@
+{
+  "oracle_id": "5e39d311-efb5-4f51-82cd-e8079e32907a",
+  "name": "Sanctum of Shattered Heights",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sanctum of Shattered Heights",
+      "oracle_fingerprint": "ddebda53d7ce4dcc57865698977f6d32",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [
+              { "Mana": "{1}" },
+              {
+                "Discard": {
+                  "filter": [{ "AnyOf": [{ "Type": "Land" }, { "Subtype": "Shrine" }] }]
+                }
+              }
+            ],
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "AnyOf": [{ "Type": "Creature" }, { "Type": "Planeswalker" }] }]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "DealDamage": {
+                  "to": { "Target": 0 },
+                  "amount": { "Count": [{ "Subtype": "Shrine" }, { "ControlledBy": "You" }] }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

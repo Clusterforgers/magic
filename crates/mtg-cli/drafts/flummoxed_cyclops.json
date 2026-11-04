@@ -1,0 +1,33 @@
+{
+  "oracle_id": "789a94be-020e-4f65-8f0d-0a170d4cd2f5",
+  "name": "Flummoxed Cyclops",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Flummoxed Cyclops",
+      "oracle_fingerprint": "600c793224924fcd05bd275faf2761c2",
+      "abilities": [
+        { "Keyword": "Reach" },
+        {
+          "Triggered": {
+            "when": {
+              "GroupAttacks": {
+                "what": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }],
+                "at_least": 2
+              }
+            },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": ["CantBlock"],
+                  "duration": "UntilEndOfCombat"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

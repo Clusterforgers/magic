@@ -1,0 +1,29 @@
+{
+  "oracle_id": "784f0ca3-efe1-4e22-aedd-57cba7996fa5",
+  "name": "Briarbridge Patrol",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Briarbridge Patrol",
+      "oracle_fingerprint": "c86a6e18c596c62ce66a1da339c8f432",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "Batch": {
+                "DealsDamage": { "source": ["This"], "to": { "Each": [{ "Type": "Creature" }] } }
+              }
+            },
+            "effects": [{ "CreateToken": { "token": { "Named": "clue" } } }]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 162, "end": 310 }
+          }
+        }
+      ]
+    }
+  ]
+}

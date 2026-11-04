@@ -1,0 +1,47 @@
+{
+  "oracle_id": "dc1711cf-c62b-436b-ba35-56bef8ef14d0",
+  "name": "Baneful Omen",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Baneful Omen",
+      "oracle_fingerprint": "b28f5f80c4b8417398367a034ce8eb67",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    { "LookAtTop": { "as": "top" } },
+                    { "Reveal": { "what": { "Bound": "top" } } },
+                    {
+                      "Move": {
+                        "what": { "Each": [{ "In": "Library" }, { "Is": { "Bound": "top" } }] },
+                        "to": { "Library": { "place": "Top" } },
+                        "as": "moved4"
+                      }
+                    },
+                    {
+                      "Move": {
+                        "what": { "Bound": "top" },
+                        "to": { "Library": { "place": "Top", "order": "Chosen" } }
+                      }
+                    },
+                    {
+                      "LoseLife": {
+                        "who": "Opponents",
+                        "amount": { "Stat": { "of": { "Bound": "moved4" }, "stat": "ManaValue" } }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,25 @@
+{
+  "oracle_id": "14440669-ddf0-46ac-b140-13948a8113b8",
+  "name": "Tamanoa",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Tamanoa",
+      "oracle_fingerprint": "8185d856b4dc736fcce2d852546d39a9",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "Batch": {
+                "DealsDamage": {
+                  "source": [{ "Not": { "Type": "Creature" } }, { "ControlledBy": "You" }]
+                }
+              }
+            },
+            "effects": [{ "GainLife": { "amount": "Triggering" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -388,6 +388,7 @@ pub(super) fn apply(state: &mut GameState, event: &Event) -> Result<(), EngineEr
             {
                 tally_discard(state, player, *object);
             }
+            tally_sacrifice(state, (*cause, *from), before);
             if *cause == ZoneCause::Milled {
                 w13b_tally_milled(state, *object);
             }
@@ -458,6 +459,20 @@ fn card_drawn(
         state.tally(player, Tally::C6BlkDrawStepDrawn);
     }
     Ok(())
+}
+
+/// Counts a sacrificed permanent for the player who controlled it as it left.
+fn tally_sacrifice(
+    state: &mut GameState,
+    (cause, from): (ZoneCause, Zone),
+    controller: Option<PlayerId>,
+) {
+    if cause == ZoneCause::Sacrificed
+        && from == Zone::Battlefield
+        && let Some(controller) = controller
+    {
+        state.tally(controller, Tally::Sacrificed);
+    }
 }
 
 /// Counts the card `id` milled this turn while it lies in the graveyard it was milled into.
@@ -588,6 +603,42 @@ pub(super) fn bottom(
         .iter()
         .rev()
         .chain(library.iter().filter(|card| !cards.contains(card)))
+        .copied()
+        .collect();
+    state.zones.set(zone, arranged);
+    Ok(())
+}
+
+/// Moves cards that are in a library to just beneath its top `below` cards, in the order given from the top down; a library
+/// of fewer other cards takes them on its bottom (CR 401.7).
+pub(super) fn insert(
+    state: &mut GameState,
+    player: PlayerId,
+    cards: &[ObjectId],
+    below: u32,
+) -> Result<(), EngineError> {
+    let zone = Zone::Library(player);
+    let library = state.zones.get(zone);
+    let distinct = cards
+        .iter()
+        .enumerate()
+        .all(|(at, card)| !cards[..at].contains(card));
+    if !distinct || !cards.iter().all(|card| library.contains(card)) {
+        return Err(invalid(
+            "inserted cards are not all in the library, once each",
+        ));
+    }
+    let rest: Vec<ObjectId> = library
+        .iter()
+        .filter(|card| !cards.contains(card))
+        .copied()
+        .collect();
+    let above = usize::try_from(below).unwrap_or(usize::MAX).min(rest.len());
+    let (deep, top) = rest.split_at(rest.len() - above);
+    let arranged = deep
+        .iter()
+        .chain(cards.iter().rev())
+        .chain(top)
         .copied()
         .collect();
     state.zones.set(zone, arranged);

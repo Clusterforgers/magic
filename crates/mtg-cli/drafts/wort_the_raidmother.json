@@ -1,0 +1,71 @@
+{
+  "oracle_id": "d6b67c7e-3b24-4f60-8e3a-c6ca45229d7f",
+  "name": "Wort, the Raidmother",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Wort, the Raidmother",
+      "oracle_fingerprint": "484da0bf9e6bf82cdd1118be8d7173a8",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Goblin Warrior",
+                      "colors": ["Red", "Green"],
+                      "types": ["Creature"],
+                      "subtypes": ["Goblin", "Warrior"],
+                      "power": 1,
+                      "toughness": 1
+                    }
+                  },
+                  "count": 2
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Static": {
+            "affected": {
+              "Each": [
+                {
+                  "AnyOf": [
+                    {
+                      "Not": {
+                        "AnyOf": [{ "Not": { "Type": "Instant" } }, { "Not": { "Color": "Green" } }]
+                      }
+                    },
+                    {
+                      "Not": {
+                        "AnyOf": [{ "Not": { "Type": "Instant" } }, { "Not": { "Color": "Red" } }]
+                      }
+                    },
+                    {
+                      "Not": {
+                        "AnyOf": [{ "Not": { "Type": "Sorcery" } }, { "Not": { "Color": "Red" } }]
+                      }
+                    },
+                    {
+                      "Not": {
+                        "AnyOf": [{ "Not": { "Type": "Sorcery" } }, { "Not": { "Color": "Green" } }]
+                      }
+                    }
+                  ]
+                },
+                { "ControlledBy": "You" },
+                { "WasCast": {} },
+                { "In": "Stack" }
+              ]
+            },
+            "mods": [{ "AddKeyword": "Conspire" }]
+          }
+        }
+      ]
+    }
+  ]
+}

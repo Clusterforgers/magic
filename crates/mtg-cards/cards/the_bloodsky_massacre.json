@@ -1,0 +1,64 @@
+{
+  "oracle_id": "fd9cd2b0-3f43-41a6-b963-c781d0f285e8",
+  "name": "The Bloodsky Massacre",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "The Bloodsky Massacre",
+      "oracle_fingerprint": "3c4aa3951291a0a6319dd8e4910e0cb5",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 1 } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Demon Berserker",
+                      "colors": ["Red"],
+                      "types": ["Creature"],
+                      "subtypes": ["Demon", "Berserker"],
+                      "power": 2,
+                      "toughness": 3,
+                      "abilities": [{ "Keyword": "Menace" }]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 2 } },
+            "effects": [
+              {
+                "DelayedTrigger": {
+                  "when": { "Attacks": { "what": [{ "Subtype": "Berserker" }] } },
+                  "once": false,
+                  "this_turn": true,
+                  "effects": [{ "Draw": {} }, { "LoseLife": { "amount": 1 } }]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 3 } },
+            "effects": [
+              {
+                "AddMana": {
+                  "mana": { "Fixed": ["Red"] },
+                  "times": { "Count": [{ "Subtype": "Berserker" }, { "ControlledBy": "You" }] },
+                  "lasts": "Turn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

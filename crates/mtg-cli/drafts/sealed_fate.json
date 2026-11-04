@@ -1,0 +1,29 @@
+{
+  "oracle_id": "0b9b5856-9396-4a55-8675-58cd171df708",
+  "name": "Sealed Fate",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sealed Fate",
+      "oracle_fingerprint": "439f2bebe87a37d8aa266e7962b4d47f",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              { "LookAtTop": { "who": { "Target": 0 }, "count": "X", "as": "top" } },
+              { "Choose": { "from": { "Bound": "top" }, "as": "kept2", "rest_as": "rest3" } },
+              { "Exile": { "what": { "Bound": "kept2" } } },
+              {
+                "Move": {
+                  "what": { "Bound": "rest3" },
+                  "to": { "Library": { "place": "Top", "order": "Chosen" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

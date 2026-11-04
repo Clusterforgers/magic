@@ -1,0 +1,52 @@
+{
+  "oracle_id": "b2f3c27e-b646-4449-901a-8b809cdfa84e",
+  "name": "Get Out",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Get Out",
+      "oracle_fingerprint": "5397663433c03620dddc373b58e8fe0c",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Modal": {
+                  "modes": [
+                    {
+                      "targets": [
+                        {
+                          "what": {
+                            "Object": [
+                              "Spell",
+                              { "AnyOf": [{ "Type": "Creature" }, { "Type": "Enchantment" }] }
+                            ]
+                          }
+                        }
+                      ],
+                      "effects": [{ "Counter": { "what": { "Target": 0 } } }]
+                    },
+                    {
+                      "targets": [
+                        {
+                          "what": {
+                            "Object": [
+                              { "AnyOf": [{ "Type": "Creature" }, { "Type": "Enchantment" }] },
+                              { "OwnedBy": "You" }
+                            ]
+                          },
+                          "bounds": { "min": 1, "max": 2 }
+                        }
+                      ],
+                      "effects": [{ "Move": { "what": { "Target": 0 }, "to": "Hand" } }]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,52 @@
+{
+  "oracle_id": "d919d8e9-d1ba-42de-9884-12e38dca78ac",
+  "name": "Hellish Sideswipe",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Hellish Sideswipe",
+      "oracle_fingerprint": "427f931b614dffb829b1cdacf60716a3",
+      "abilities": [
+        {
+          "AdditionalCost": {
+            "cost": [
+              {
+                "Sacrifice": {
+                  "filter": [{ "AnyOf": [{ "Type": "Artifact" }, { "Type": "Creature" }] }]
+                }
+              }
+            ],
+            "required": true
+          }
+        },
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "AnyOf": [{ "Type": "Creature" }, { "Subtype": "Vehicle" }] }]
+                }
+              }
+            ],
+            "effects": [
+              { "Destroy": { "what": { "Target": 0 } } },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": "Paid",
+                      "selector": [{ "Subtype": "Vehicle" }],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [{ "Draw": {} }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

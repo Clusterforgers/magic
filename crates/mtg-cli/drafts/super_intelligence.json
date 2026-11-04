@@ -1,0 +1,20 @@
+{
+  "oracle_id": "d82929f2-57ad-45be-a834-984437046026",
+  "name": "Super Intelligence",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Super Intelligence",
+      "oracle_fingerprint": "ed88c1213d70230ac7a196e14ca0266a",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": { "ControllerOf": "Attached" } } },
+            "effects": [{ "Draw": { "who": "Triggering" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

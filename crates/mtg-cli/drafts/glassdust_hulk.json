@@ -1,0 +1,40 @@
+{
+  "oracle_id": "a1379c25-6daf-4efa-a517-6e6e25c31875",
+  "name": "Glassdust Hulk",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Glassdust Hulk",
+      "oracle_fingerprint": "3ad9fe03c56bdb6457ed60d7e605d1e7",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Artifact" }, "Other", { "ControlledBy": "You" }],
+                "to": "Battlefield"
+              }
+            },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": ["CantBeBlocked"],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Cycling": "{W/U}" } }
+      ]
+    }
+  ]
+}

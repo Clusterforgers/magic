@@ -1,0 +1,33 @@
+{
+  "oracle_id": "ec4a1a8d-4071-40e9-812e-42c746180d99",
+  "name": "Never Happened",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Never Happened",
+      "oracle_fingerprint": "45fd1efd65395d0f5e452b94ad4edcc0",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "Not": { "Type": "Land" } },
+                      { "AnyOf": [{ "In": "Hand" }, { "In": "Graveyard" }] },
+                      { "OwnedBy": { "Target": 0 } }
+                    ]
+                  },
+                  "as": "picked"
+                }
+              },
+              { "Exile": { "what": { "Bound": "picked" } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

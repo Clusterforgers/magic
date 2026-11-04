@@ -1,0 +1,80 @@
+{
+  "oracle_id": "acfc3e07-757f-4ccf-a65e-bee07ce87f40",
+  "name": "Halvar, God of Battle // Sword of the Realms",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Halvar, God of Battle",
+      "oracle_fingerprint": "10ff0168d969c2f0410b549febaa3d25",
+      "abilities": [
+        {
+          "Static": {
+            "affected": {
+              "Each": [
+                { "Type": "Creature" },
+                { "ControlledBy": "You" },
+                {
+                  "AnyOf": [
+                    { "HasAttached": [{ "Subtype": "Aura" }] },
+                    { "HasAttached": [{ "Subtype": "Equipment" }] }
+                  ]
+                }
+              ]
+            },
+            "mods": [{ "AddKeyword": "DoubleStrike" }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "BeginCombat" } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "AnyOf": [{ "Subtype": "Equipment" }, { "Subtype": "Aura" }] },
+                    {
+                      "AttachedTo": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] }
+                    }
+                  ]
+                }
+              },
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } }
+            ],
+            "effects": [
+              {
+                "May": {
+                  "effects": [{ "Attach": { "what": { "Target": 0 }, "to": { "Target": 1 } } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Sword of the Realms",
+      "oracle_fingerprint": "a22deaf381046c7d25d124fab0b76766",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "ModifyPT": { "power": 2, "toughness": 0 } }, { "AddKeyword": "Vigilance" }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Is": "Attached" }],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "effects": [{ "Move": { "what": "Triggering", "to": "Hand" } }]
+          }
+        },
+        { "Keyword": { "Equip": "{1}{W}" } }
+      ]
+    }
+  ]
+}

@@ -123,6 +123,7 @@ fn shield_for(
         combat,
         left,
         then: Vec::new(),
+        once: false,
     }))
 }
 

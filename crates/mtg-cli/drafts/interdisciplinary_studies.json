@@ -1,0 +1,21 @@
+{
+  "oracle_id": "1d84cdfc-7d7a-44e6-868e-2c3e73d2dc8f",
+  "name": "Interdisciplinary Studies",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Interdisciplinary Studies",
+      "oracle_fingerprint": "96643d9d7ec0009e5addb9eace93800f",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "Seek": { "filter": [{ "Compare": { "stat": "Colors", "op": "Ge", "to": 2 } }] } },
+              { "Learn": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

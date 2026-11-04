@@ -32,10 +32,7 @@ fn scryfall() -> String {
 }
 
 fn id_of(name: &str) -> String {
-    let record = cards(scryfall().as_bytes())
-        .map(Result::unwrap)
-        .find(|record| record.name == name);
-    record.unwrap().oracle_id.to_string()
+    crate::common::oracle_id_of(name)
 }
 
 /// The embedded rules without the file of [`CARD`].

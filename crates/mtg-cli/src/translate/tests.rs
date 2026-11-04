@@ -32,6 +32,11 @@ fn world() -> World {
     })
     .collect();
     let mut world = World::new(&[], tokens);
+    world.stored = Some(
+        ["lightning_bolt", "ponder", "mox_opal"]
+            .map(str::to_owned)
+            .into(),
+    );
     world.subtypes.extend(
         [
             "Elf",
@@ -632,6 +637,10 @@ fn keywords_map_to_the_keyword_set(#[case] line: &str, #[case] expected: Value) 
 }
 
 mod audit;
+mod en2;
+mod en3_discard;
+mod en3_reveal;
+mod en3_source;
 mod fg3;
 mod fg4a;
 mod fg4a_ambient;
@@ -654,6 +663,7 @@ mod fg5s_block;
 mod fg5s_hidden;
 mod fg5s_play;
 mod fg5s_prevent;
+mod fg_digital;
 mod gn2;
 mod gn2_cant;
 mod gn2_play;
@@ -686,4 +696,16 @@ fn the_end_step_without_your_is_every_players() {
         ]
     );
 }
+mod en4_counter;
+mod en4_cumulative;
+mod en4_look;
+mod en4_static_trigger;
+mod p1;
+mod p2;
+mod p3;
+mod p4;
+mod p5;
+mod p6;
+mod p7;
 mod p8;
+mod p8b;

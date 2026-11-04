@@ -1,0 +1,38 @@
+{
+  "oracle_id": "03008c7d-c738-473d-a968-1922b2899d1a",
+  "name": "Roadside Blowout",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Roadside Blowout",
+      "oracle_fingerprint": "f7c9db642daccde9b5715d97826f2ffd",
+      "abilities": [
+        {
+          "CostModifier": {
+            "applies_to": [
+              "This",
+              { "Targeting": [{ "Compare": { "stat": "ManaValue", "op": "Eq", "to": 1 } }] }
+            ],
+            "change": "Reduce",
+            "mana": "{2}"
+          }
+        },
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "AnyOf": [{ "Type": "Creature" }, { "Subtype": "Vehicle" }] },
+                    { "ControlledBy": "Opponents" }
+                  ]
+                }
+              }
+            ],
+            "effects": [{ "Move": { "what": { "Target": 0 }, "to": "Hand" } }, { "Draw": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

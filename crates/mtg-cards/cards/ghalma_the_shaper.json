@@ -1,0 +1,35 @@
+{
+  "oracle_id": "bac5a457-22f7-457b-a3b6-300092472ff2",
+  "name": "Ghalma the Shaper",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ghalma the Shaper",
+      "oracle_fingerprint": "709859042b8a183a02710fde1c58dd6b",
+      "abilities": [
+        { "Keyword": "Vigilance" },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [
+              { "Conjure": { "name": "Tempered Steel", "zone": "Hand" } },
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Myr",
+                      "types": ["Artifact", "Creature"],
+                      "subtypes": ["Myr"],
+                      "power": 1,
+                      "toughness": 1
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

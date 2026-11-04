@@ -586,7 +586,10 @@ fn applies_to(by: &ReplaceBy, unit: &Unit) -> bool {
                 ..
             }
         ),
-        ReplaceBy::Multiply(_) | ReplaceBy::Add(_) | ReplaceBy::Prevent => matches!(
+        ReplaceBy::Multiply(_)
+        | ReplaceBy::Add(_)
+        | ReplaceBy::Prevent
+        | ReplaceBy::PreventNext => matches!(
             unit,
             Unit::Tokens { .. }
                 | Unit::Damage { .. }
@@ -1222,7 +1225,9 @@ impl Pass<'_> {
     fn out_of_library_batches(&mut self, gone: &[ObjectId]) {
         for slot in &mut self.slots {
             match &mut slot.item {
-                Item::One(Event::LibraryBottomed { cards, .. }) => {
+                Item::One(
+                    Event::LibraryBottomed { cards, .. } | Event::LibraryInserted { cards, .. },
+                ) => {
                     cards.retain(|id| !gone.contains(id));
                 }
                 Item::One(Event::LibraryShuffled { order, .. }) => {
@@ -1288,6 +1293,7 @@ impl Pass<'_> {
                 continue;
             };
             if slot.applied.contains(&origin)
+                || (shield.once && self.spent.contains(&effect.id))
                 || !self.shield_covers(effect, shield, *source, *target)?
             {
                 continue;
@@ -1977,6 +1983,18 @@ impl Pass<'_> {
             && let Some(left) = self.left.get_mut(&id)
         {
             *left = left.saturating_sub(taken);
+            if !self.touched.contains(&id) {
+                self.touched.push(id);
+            }
+        }
+        // A shield for the next damage ends with the first event it prevents.
+        if let Origin::Shield(id) = candidate.origin
+            && self.shields.iter().any(|effect| {
+                effect.id == id
+                    && matches!(&effect.rule, Rule::PreventDamage(shield) if shield.once)
+            })
+        {
+            self.spent.insert(id);
             if !self.touched.contains(&id) {
                 self.touched.push(id);
             }

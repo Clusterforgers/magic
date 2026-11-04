@@ -1,0 +1,39 @@
+{
+  "oracle_id": "e2f73743-95e7-4f03-9b98-5ab5ebc4b724",
+  "name": "Pilgrim of Virtue",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Pilgrim of Virtue",
+      "oracle_fingerprint": "62c1427103fbce092e6c5256ab060621",
+      "abilities": [
+        { "Keyword": { "Protection": [{ "Color": "Black" }] } },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{W}" }, "SacrificeSelf"],
+            "effects": [
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "AnyOf": [{ "In": "Battlefield" }, { "In": "Stack" }, { "In": "Command" }] },
+                      { "Color": "Black" }
+                    ]
+                  },
+                  "as": "source"
+                }
+              },
+              {
+                "Shield": {
+                  "when": { "Damage": { "source": [{ "Is": { "Bound": "source" } }] } },
+                  "by": "PreventNext",
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

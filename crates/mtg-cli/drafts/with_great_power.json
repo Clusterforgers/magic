@@ -1,0 +1,61 @@
+{
+  "oracle_id": "dfedb968-f27c-4117-aff6-da707dd43e82",
+  "name": "With Great Power . . .",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "With Great Power . . .",
+      "oracle_fingerprint": "e2785bc2a645a50ac42d835707b78d84",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [
+              {
+                "ModifyPT": {
+                  "power": {
+                    "Times": {
+                      "by": 2,
+                      "of": {
+                        "Count": [
+                          { "AnyOf": [{ "Subtype": "Aura" }, { "Subtype": "Equipment" }] },
+                          {
+                            "AttachedTo": { "Each": [{ "Type": "Creature" }, { "Is": "Attached" }] }
+                          }
+                        ]
+                      }
+                    }
+                  },
+                  "toughness": {
+                    "Times": {
+                      "by": 2,
+                      "of": {
+                        "Count": [
+                          { "AnyOf": [{ "Subtype": "Aura" }, { "Subtype": "Equipment" }] },
+                          {
+                            "AttachedTo": { "Each": [{ "Type": "Creature" }, { "Is": "Attached" }] }
+                          }
+                        ]
+                      }
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Replacement": {
+            "when": { "Damage": { "to": "You" } },
+            "by": {
+              "Instead": [
+                { "DealDamage": { "source": "Dealer", "to": "Attached", "amount": "Triggering" } }
+              ]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

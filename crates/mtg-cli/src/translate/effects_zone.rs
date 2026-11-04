@@ -2,22 +2,29 @@
 
 use serde_json::{Value, json};
 
-use super::amount::amount;
+use super::amount::{amount, counter_kind};
 use super::ctx::{Ctx, Tr, only, unmapped};
 use super::remember;
-use super::valid::{selector_any, selector_in, subject};
+use super::valid::{defined, selector_any, selector_in, subject};
 use crate::forge::script::Params;
 
 /// The effects of `ChangeZone` and `ChangeZoneAll`.
 pub fn effects(ctx: &mut Ctx, p: &Params, api: &str) -> Tr<Vec<Value>> {
-    let origin = zone_word(p.get("Origin"), "Origin")?;
-    let destination = zone_word(p.get("Destination"), "Destination")?;
+    let origin = zone_word(p.get("Origin"), "Origin", true)?;
+    let destination = zone_word(p.get("Destination"), "Destination", false)?;
     match (api, origin) {
         ("ChangeZone", "Library") if p.has("Defined") && !p.has("ChangeType") => {
             change_zone(ctx, p, origin, destination)
         }
         ("ChangeZone", "Library") => search(ctx, p, destination),
-        ("ChangeZone", "Hand" | "Graveyard" | "Exile") if p.has("ChangeType") => {
+        ("ChangeZone", from) if searches_library(from) && p.has("ChangeType") => {
+            search(ctx, p, destination)
+        }
+        ("ChangeZone", from)
+            if (hidden_origin(from)
+                || (from == "Battlefield" && p.get("Hidden") == Some("True")))
+                && p.has("ChangeType") =>
+        {
             choose_and_move(ctx, p, origin, destination)
         }
         ("ChangeZone", _) => change_zone(ctx, p, origin, destination),
@@ -25,10 +32,45 @@ pub fn effects(ctx: &mut Ctx, p: &Params, api: &str) -> Tr<Vec<Value>> {
     }
 }
 
-/// A zone word of one zone.
-fn zone_word<'a>(word: Option<&'a str>, key: &str) -> Tr<&'a str> {
+/// Whether the word is one of the hand, graveyard and exile, or a list of them (`Graveyard,Exile`).
+fn hidden_origin(word: &str) -> bool {
+    zone_list(word).is_some_and(|zones| {
+        zones
+            .iter()
+            .all(|zone| matches!(*zone, "Hand" | "Graveyard" | "Exile"))
+    })
+}
+
+/// The zones of a list word (`Graveyard,Hand`), each a known zone once; `None` for any other word (`Stack`, `Command`,
+/// `All` have no zone here).
+fn zone_list(word: &str) -> Option<Vec<&str>> {
+    let zones: Vec<&str> = word.split(',').collect();
+    let known = zones.iter().all(|zone| {
+        matches!(
+            *zone,
+            "Battlefield" | "Graveyard" | "Hand" | "Library" | "Exile"
+        )
+    });
+    let distinct = (1..zones.len()).all(|at| !zones[..at].contains(&zones[at]));
+    (known && distinct).then_some(zones)
+}
+
+/// Whether the word lists the library with the hand and graveyard: a search that may also look there.
+fn searches_library(word: &str) -> bool {
+    zone_list(word).is_some_and(|zones| {
+        zones.len() > 1
+            && zones.contains(&"Library")
+            && zones
+                .iter()
+                .all(|zone| matches!(*zone, "Library" | "Graveyard" | "Hand"))
+    })
+}
+
+/// A zone word of one zone, or of a list of zones when `many` (the origin of a move from either of them).
+fn zone_word<'a>(word: Option<&'a str>, key: &str, many: bool) -> Tr<&'a str> {
     match word {
         Some(zone @ ("Battlefield" | "Graveyard" | "Hand" | "Library" | "Exile")) => Ok(zone),
+        Some(list) if many && zone_list(list).is_some() => Ok(list),
         Some(other) => unmapped(format!("zone:{key}={other}")),
         None => unmapped(format!("key:ChangeZone.no-{key}")),
     }
@@ -42,33 +84,89 @@ enum Goes {
 
 /// Where the moved objects go; a library placement follows `LibraryPosition$` (the top without one, as Forge) and a
 /// `Shuffle$ True` puts them in shuffled.
-fn goes(p: &Params, destination: &str) -> Tr<Goes> {
-    goes_in(p, destination, false)
+fn goes(ctx: &Ctx, p: &Params, destination: &str) -> Tr<Goes> {
+    goes_in(ctx, p, destination, false)
 }
 
 /// Where what a search found goes: a library placement there is the search's own shuffle and position, never a default.
-fn goes_found(p: &Params, destination: &str) -> Tr<Goes> {
-    goes_in(p, destination, true)
+fn goes_found(ctx: &Ctx, p: &Params, destination: &str) -> Tr<Goes> {
+    goes_in(ctx, p, destination, true)
 }
 
-fn goes_in(p: &Params, destination: &str, searched: bool) -> Tr<Goes> {
+fn goes_in(ctx: &Ctx, p: &Params, destination: &str, searched: bool) -> Tr<Goes> {
     let tapped = p.get("Tapped") == Some("True");
+    if destination != "Battlefield" {
+        for key in [
+            "GainControl",
+            "WithCountersType",
+            "Transformed",
+            "AttachedTo",
+        ] {
+            if p.has(key) {
+                return unmapped(format!("key:ChangeZone.{key}"));
+            }
+        }
+    }
     Ok(match destination {
         "Exile" => Goes::Exile,
         "Hand" => Goes::To(json!("Hand")),
         "Graveyard" => Goes::To(json!("Graveyard")),
-        "Battlefield" => Goes::To(json!({"Battlefield": {"tapped": tapped}})),
+        "Battlefield" if p.has("AttachedTo") => {
+            // The attached placement carries only the host: any other way of entering is a gap, not a drop.
+            for key in ["Tapped", "GainControl", "WithCountersType", "Transformed"] {
+                if p.has(key) {
+                    return unmapped(format!("key:ChangeZone.AttachedTo-with-{key}"));
+                }
+            }
+            let host = defined(ctx, p.get("AttachedTo").unwrap_or_default())?;
+            Goes::To(json!({"BattlefieldAttached": {"to": host}}))
+        }
+        "Battlefield" => {
+            let mut enters = json!({"tapped": tapped});
+            match p.get("Transformed") {
+                None | Some("False") => {}
+                Some("True") => enters["transformed"] = json!(true),
+                Some(_) => return unmapped("key:ChangeZone.Transformed"),
+            }
+            if p.get("GainControl") == Some("True") {
+                enters["under"] = json!("You");
+            }
+            if p.has("WithCountersType") {
+                enters["counters"] = with_counters(p)?;
+            }
+            Goes::To(json!({ "Battlefield": enters }))
+        }
         "Library" => {
             let place = match (p.get("LibraryPosition"), p.get("Shuffle"), searched) {
-                (_, Some("True"), false) | (None, Some("True"), _) => "Shuffled",
-                (Some("0"), ..) | (None, Some("False") | None, false) => "Top",
-                (Some("-1"), ..) => "Bottom",
+                (_, Some("True"), false) | (None, Some("True"), _) => json!("Shuffled"),
+                (Some("0"), ..) | (None, Some("False") | None, false) => json!("Top"),
+                (Some("-1"), ..) => json!("Bottom"),
+                (Some(n), ..) => match n.parse::<u32>() {
+                    Ok(below) if below >= 1 => json!({ "Below": below }),
+                    _ => return unmapped("key:ChangeZone.LibraryPosition"),
+                },
                 _ => return unmapped("key:ChangeZone.LibraryPosition"),
             };
             Goes::To(json!({"Library": {"place": place}}))
         }
         other => return unmapped(format!("zone:Destination={other}")),
     })
+}
+
+/// The counters a card enters with (`WithCountersType$ P1P1 | WithCountersAmount$ 2`): one kind with a fixed number, one
+/// counter without an amount; a keyword counter, a list or a number that is not fixed stays a gap.
+fn with_counters(p: &Params) -> Tr<Value> {
+    let Some(kind) = p.get("WithCountersType").and_then(counter_kind) else {
+        return unmapped("key:ChangeZone.WithCountersType");
+    };
+    let number = match p.get("WithCountersAmount") {
+        None => Some(1),
+        Some(text) => text.parse::<u32>().ok().filter(|n| *n >= 1),
+    };
+    match number {
+        Some(n) => Ok(json!([[kind, n]])),
+        None => unmapped("key:ChangeZone.WithCountersAmount"),
+    }
 }
 
 fn moves(what: &Value, goes: Goes) -> Value {
@@ -94,11 +192,16 @@ fn change_zone(ctx: &mut Ctx, p: &Params, origin: &str, destination: &str) -> Tr
             "Tapped",
             "RememberChanged",
             "RememberLKI",
+            "GainControl",
+            "WithCountersType",
+            "WithCountersAmount",
             "RememberTargets",
+            "Transformed",
+            "AttachedTo",
         ],
     )?;
     let what = subject(ctx, p, "Self", Some(origin))?;
-    let mut effect = moves(&what, goes(p, destination)?);
+    let mut effect = moves(&what, goes(ctx, p, destination)?);
     if remember::wanted(p, &["RememberChanged", "RememberLKI", "RememberTargets"]) {
         let (verb, stem) = if effect.get("Exile").is_some() {
             ("Exile", "exiled")
@@ -131,11 +234,26 @@ fn choose_and_move(ctx: &mut Ctx, p: &Params, origin: &str, destination: &str) -
             "DefinedPlayer",
             "Chooser",
             "ValidTgts",
+            "RememberChanged",
+            "GainControl",
+            "WithCountersType",
+            "WithCountersAmount",
+            "Transformed",
+            "AttachedTo",
         ],
     )?;
-    let (owner, chooser) = defined_player(ctx, p)?;
+    let who = defined_player(ctx, p)?;
+    let (owner, chooser) = (who.owner.clone(), who.chooser.clone());
     let mut filter = selector_in(ctx, p.get("ChangeType").unwrap_or("Card"), Some(origin))?;
-    if filter.iter().any(|pred| pred.get("OwnedBy").is_some()) {
+    if origin == "Battlefield" {
+        // On the battlefield the line's own words say whose permanents: an unstated owner is not assumed.
+        let says_whose = filter
+            .iter()
+            .any(|pred| pred.get("ControlledBy").is_some() || pred.get("OwnedBy").is_some());
+        if !says_whose || owner != json!("You") {
+            return unmapped("key:ChangeZone.Choose.Battlefield-owner");
+        }
+    } else if filter.iter().any(|pred| pred.get("OwnedBy").is_some()) {
         if owner != json!("You") {
             return unmapped("key:ChangeZone.Choose.DefinedPlayer");
         }
@@ -158,38 +276,84 @@ fn choose_and_move(ctx: &mut Ctx, p: &Params, origin: &str, destination: &str) -
     } else {
         json!({"Choose": {"who": chooser, "from": {"Each": filter}, "count": {"min": min, "max": max}, "as": bind}})
     };
-    Ok(vec![choose, moves(&chosen, goes(p, destination)?)])
+    let mut moved = moves(&chosen, goes(ctx, p, destination)?);
+    if remember::wanted(p, &["RememberChanged"]) {
+        let (verb, stem) = if moved.get("Exile").is_some() {
+            ("Exile", "exiled")
+        } else {
+            ("Move", "moved")
+        };
+        remember::bind_moved(ctx, &mut moved, verb, stem);
+    }
+    match who.each {
+        Some((over, name)) => {
+            if remember::wanted(p, &["RememberChanged"]) {
+                return unmapped("key:ChangeZone.Choose.RememberChanged-for-each-player");
+            }
+            Ok(vec![
+                json!({"RepeatEach": {"over": over, "as": name, "effects": [choose, moved]}}),
+            ])
+        }
+        None => Ok(vec![choose, moved]),
+    }
 }
 
-/// `DefinedPlayer$` and `Chooser$` of a choice from a hidden zone: whose cards are chosen from (you, or the one player the
-/// line targets with `ValidTgts$ Player` or `Opponent`) and who chooses (the same player unless `Chooser$ You`).
-fn defined_player(ctx: &mut Ctx, p: &Params) -> Tr<(Value, Value)> {
-    let targeted = match (p.get("DefinedPlayer"), p.has("ValidTgts")) {
-        (None, false) if !p.has("Chooser") => return Ok((json!("You"), json!("You"))),
-        (Some("You"), false) => false,
-        (Some("Targeted"), true)
-            if matches!(p.get("ValidTgts"), Some("Player" | "Opponent"))
-                && !p.has("TargetMin")
-                && !p.has("TargetMax") =>
-        {
-            true
+/// Whose cards a choice from a hidden zone is among and who chooses.
+struct Who {
+    owner: Value,
+    chooser: Value,
+    /// The players the choice is made for in turn, and the name the player of each pass is bound to.
+    each: Option<(Value, String)>,
+}
+
+/// The player words a `DefinedPlayer$` or `Chooser$` may be when the line has no target.
+const PLAYER_WORDS: [&str; 6] = [
+    "TriggeredPlayer",
+    "TriggeredTarget",
+    "TriggeredCardController",
+    "RememberedController",
+    "ChosenPlayer",
+    "Remembered",
+];
+
+/// `DefinedPlayer$` and `Chooser$` of a choice from a hidden zone: whose cards are chosen from (you, the one player the
+/// line targets with `ValidTgts$ Player` or `Opponent`, a player a word names, or each of them in turn) and who chooses
+/// (the same player unless `Chooser$` says otherwise).
+fn defined_player(ctx: &mut Ctx, p: &Params) -> Tr<Who> {
+    let targets = p.has("ValidTgts");
+    let one_target = matches!(p.get("ValidTgts"), Some("Player" | "Opponent"))
+        && !p.has("TargetMin")
+        && !p.has("TargetMax");
+    let mut each = None;
+    let (owner, targeted) = match (p.get("DefinedPlayer"), targets) {
+        (None | Some("You"), false) => (json!("You"), false),
+        (Some("Targeted" | "TargetedPlayer"), true) if one_target => {
+            (subject(ctx, p, "You", None)?, true)
         }
+        (Some(word @ ("Player" | "Player.Opponent")), false) => {
+            let name = ctx.fresh("player");
+            let owner = json!({ "Bound": name });
+            each = Some((defined(ctx, word)?, name));
+            (owner, false)
+        }
+        (Some(word), false) if PLAYER_WORDS.contains(&word) => (defined(ctx, word)?, false),
         (None, true) => return unmapped("key:ChangeZone.Choose.ValidTgts"),
-        (None, false) => return unmapped("key:ChangeZone.Choose.Chooser"),
         _ => return unmapped("key:ChangeZone.Choose.DefinedPlayer"),
-    };
-    let owner = if targeted {
-        subject(ctx, p, "You", None)?
-    } else {
-        json!("You")
     };
     let chooser = match p.get("Chooser") {
         None => owner.clone(),
         Some("You") => json!("You"),
         Some("Targeted") if targeted => owner.clone(),
+        Some(word) if PLAYER_WORDS.contains(&word) && !targets && each.is_none() => {
+            defined(ctx, word)?
+        }
         Some(_) => return unmapped("key:ChangeZone.Choose.Chooser"),
     };
-    Ok((owner, chooser))
+    Ok(Who {
+        owner,
+        chooser,
+        each,
+    })
 }
 
 /// The library search: the search, the move of what was found, then the shuffle.
@@ -211,12 +375,44 @@ fn search(ctx: &mut Ctx, p: &Params, destination: &str) -> Tr<Vec<Value>> {
             "LibraryPosition",
             "Shuffle",
             "Optional",
+            "OriginAlternative",
+            "GainControl",
+            "WithCountersType",
+            "WithCountersAmount",
         ],
     )?;
     let filter = selector_any(ctx, p.get("ChangeType").unwrap_or("Card"))?;
     let filter_is_open = filter.is_empty();
     let bind = ctx.fresh("found");
     let mut find = json!({"filter": filter, "as": bind});
+    // `Origin$ Library,Graveyard` searches the same zones as `OriginAlternative$ Graveyard`; both together are two lists.
+    let listed: String = p
+        .get("Origin")
+        .filter(|word| word.contains(','))
+        .map(|word| {
+            word.split(',')
+                .filter(|zone| *zone != "Library")
+                .collect::<Vec<_>>()
+                .join(",")
+        })
+        .unwrap_or_default();
+    if !listed.is_empty() && p.has("OriginAlternative") {
+        return unmapped("key:ChangeZone.Search.OriginAlternative");
+    }
+    let alternative = p
+        .get("OriginAlternative")
+        .or((!listed.is_empty()).then_some(listed.as_str()));
+    if let Some(list) = alternative {
+        let also: Vec<&str> = list.split(',').collect();
+        if !also
+            .iter()
+            .all(|zone| matches!(*zone, "Graveyard" | "Hand"))
+            || (1..also.len()).any(|at| also[..at].contains(&also[at]))
+        {
+            return unmapped("key:ChangeZone.Search.OriginAlternative");
+        }
+        find["also"] = json!(also);
+    }
     match p.get("ChangeNum") {
         None | Some("1") => {}
         Some(n) => find["count"] = json!({"min": 0, "max": amount(ctx, n)?}),
@@ -229,8 +425,13 @@ fn search(ctx: &mut Ctx, p: &Params, destination: &str) -> Tr<Vec<Value>> {
         ctx.remembered = Some(found.clone());
     }
     let search = json!({ "Search": find });
-    let put = moves(&found, goes_found(p, destination)?);
-    let shuffle = json!({"Shuffle": {}});
+    let put = moves(&found, goes_found(ctx, p, destination)?);
+    // Searching only another zone leaves the library as it was: "if you search your library this way, shuffle".
+    let shuffle = if alternative.is_some() {
+        json!({"If": {"condition": {"Searched": {"zone": "Library"}}, "then": [{"Shuffle": {}}]}})
+    } else {
+        json!({"Shuffle": {}})
+    };
     let mut effects = match (destination, p.get("Shuffle")) {
         // The shuffle comes first when the card goes back on top: "then shuffle and put that card on top".
         ("Library", _) => vec![search, shuffle, put],
@@ -252,31 +453,33 @@ fn search(ctx: &mut Ctx, p: &Params, destination: &str) -> Tr<Vec<Value>> {
     Ok(effects)
 }
 
+/// The keys of a `Dig` line that are read.
+const DIG_KEYS: [&str; 19] = [
+    "DigNum",
+    "ChangeNum",
+    "ChangeValid",
+    "Optional",
+    "Reveal",
+    "DestinationZone",
+    "DestinationZone2",
+    "LibraryPosition",
+    "LibraryPosition2",
+    "RestRandomOrder",
+    "SkipReorder",
+    "Defined",
+    "Tapped",
+    "NoReveal",
+    "ForceRevealToController",
+    "ValidTgts",
+    "TargetMin",
+    "TargetMax",
+    "RememberChanged",
+];
+
 /// `Dig`: look at the top cards, take some, put the rest somewhere ("look at the top four cards of your library; you may
 /// reveal a creature card from among them and put it into your hand; put the rest on the bottom in any order").
 pub fn dig(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
-    only(
-        p,
-        "Dig",
-        &[
-            "DigNum",
-            "ChangeNum",
-            "ChangeValid",
-            "Optional",
-            "Reveal",
-            "DestinationZone",
-            "DestinationZone2",
-            "RestRandomOrder",
-            "Defined",
-            "Tapped",
-            "NoReveal",
-            "ForceRevealToController",
-            "ValidTgts",
-            "TargetMin",
-            "TargetMax",
-            "RememberChanged",
-        ],
-    )?;
+    only(p, "Dig", &DIG_KEYS)?;
     if p.get("NoReveal") == Some("True") && p.get("Reveal") == Some("True") {
         return unmapped("key:Dig.NoReveal-with-Reveal");
     }
@@ -295,10 +498,8 @@ pub fn dig(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
     let take = Take::of(p)?;
     let filter = p.get("ChangeValid");
     let may = p.get("Optional") == Some("True") || filter.is_some();
-    // "Put all of them" has no choice: what matches moves, and no name is left for `RememberChanged$`.
-    if matches!(take, Take::All)
-        && (p.get("Optional") == Some("True") || p.get("RememberChanged") == Some("True"))
-    {
+    // "Put all of them" has no choice: what matches moves, and a "may" would be all or nothing.
+    if matches!(take, Take::All) && p.get("Optional") == Some("True") {
         return unmapped("key:Dig.ChangeNum");
     }
     let matching = match filter {
@@ -327,7 +528,7 @@ pub fn dig(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
     } else {
         json!({ "Bound": rest })
     };
-    if p.get("RememberChanged") == Some("True") {
+    if p.get("RememberChanged") == Some("True") && !matches!(take, Take::All) {
         ctx.remembered = Some(json!({ "Bound": kept }));
     }
     let mut effects = vec![json!({"LookAtTop": {"who": who, "count": count, "as": top}})];
@@ -345,9 +546,18 @@ pub fn dig(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
         };
         effects.push(json!({"Reveal": {"what": shown}}));
     }
-    effects.push(json!({"Move": {"what": moved, "to": to}}));
+    let mut put = moves(&moved, to);
+    if matches!(take, Take::All) && p.get("RememberChanged") == Some("True") {
+        let (verb, stem) = if put.get("Exile").is_some() {
+            ("Exile", "exiled")
+        } else {
+            ("Move", "moved")
+        };
+        remember::bind_moved(ctx, &mut put, verb, stem);
+    }
+    effects.push(put);
     if !(matches!(take, Take::All) && filter.is_none()) {
-        effects.push(json!({"Move": {"what": rest_ref, "to": rest_to}}));
+        effects.push(moves(&rest_ref, rest_to));
     }
     Ok(effects)
 }
@@ -362,24 +572,54 @@ fn exile_top(ctx: &mut Ctx, p: &Params, who: &Value, count: &Value) -> Value {
 }
 
 /// Where a `Dig` puts the cards it takes and the rest.
-fn dig_places(p: &Params) -> Tr<(Value, Value)> {
+fn dig_places(p: &Params) -> Tr<(Goes, Goes)> {
     let to = match p.get("DestinationZone") {
-        None | Some("Hand") => json!("Hand"),
-        Some("Graveyard") => json!("Graveyard"),
+        None | Some("Hand") => Goes::To(json!("Hand")),
+        Some("Graveyard") => Goes::To(json!("Graveyard")),
+        Some("Exile") => Goes::Exile,
         Some("Battlefield") => {
-            json!({"Battlefield": {"tapped": p.get("Tapped") == Some("True")}})
+            Goes::To(json!({"Battlefield": {"tapped": p.get("Tapped") == Some("True")}}))
+        }
+        Some("Library") => {
+            let place = match p.get("LibraryPosition") {
+                Some("0") => "Top",
+                Some("-1") => "Bottom",
+                _ => return unmapped("key:Dig.LibraryPosition"),
+            };
+            Goes::To(json!({"Library": {"place": place}}))
         }
         Some(other) => return unmapped(format!("key:Dig.DestinationZone={other}")),
     };
-    let order = if p.get("RestRandomOrder") == Some("True") {
-        "Random"
-    } else {
-        "Chosen"
+    // The position names where the cards taken go, so it is read only for a library destination.
+    if p.has("LibraryPosition") && p.get("DestinationZone") != Some("Library") {
+        return unmapped("key:Dig.LibraryPosition");
+    }
+    // The order of the rest is asked for, random, or (`SkipReorder$`) left as it lies.
+    let order = match (p.get("RestRandomOrder"), p.get("SkipReorder")) {
+        (Some("True"), Some("True")) => {
+            return unmapped("key:Dig.SkipReorder-with-RestRandomOrder");
+        }
+        (Some("True"), _) => json!("Random"),
+        (_, Some("True")) => Value::Null,
+        _ => json!("Chosen"),
     };
-    let rest_to = match p.get("DestinationZone2") {
-        None => json!({"Library": {"place": "Bottom", "order": order}}),
-        Some("Graveyard") => json!("Graveyard"),
-        Some(other) => return unmapped(format!("key:Dig.DestinationZone2={other}")),
+    let on_library = |place: &str| {
+        let mut library = json!({"place": place});
+        if !order.is_null() {
+            library["order"] = order.clone();
+        }
+        Goes::To(json!({ "Library": library }))
+    };
+    let rest_to = match (p.get("DestinationZone2"), p.get("LibraryPosition2")) {
+        (None | Some("Library"), None | Some("-1")) => on_library("Bottom"),
+        (None | Some("Library"), Some("0")) => on_library("Top"),
+        (Some("Graveyard"), None) => Goes::To(json!("Graveyard")),
+        (Some("Hand"), None) => Goes::To(json!("Hand")),
+        (Some("Exile"), None) => Goes::Exile,
+        (Some(other), _) if !matches!(other, "Library" | "Graveyard" | "Hand" | "Exile") => {
+            return unmapped(format!("key:Dig.DestinationZone2={other}"));
+        }
+        _ => return unmapped("key:Dig.LibraryPosition2"),
     };
     Ok((to, rest_to))
 }
@@ -499,7 +739,7 @@ fn change_zone_all(ctx: &mut Ctx, p: &Params, origin: &str, destination: &str) -
     }
     let zone = (origin != "Battlefield").then_some(origin);
     let filter = selector_in(ctx, p.get("ChangeType").unwrap_or("Card"), zone)?;
-    let mut effect = moves(&json!({ "Each": filter }), goes(p, destination)?);
+    let mut effect = moves(&json!({ "Each": filter }), goes(ctx, p, destination)?);
     if remember::wanted(p, &["RememberChanged"]) {
         let (verb, stem) = if effect.get("Exile").is_some() {
             ("Exile", "exiled")

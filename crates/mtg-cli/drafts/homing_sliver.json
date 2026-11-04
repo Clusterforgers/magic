@@ -1,0 +1,26 @@
+{
+  "oracle_id": "34b4d137-780b-446c-8cdd-fd1673180971",
+  "name": "Homing Sliver",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Homing Sliver",
+      "oracle_fingerprint": "ccc6c5d11f3312ba2f9414ee370ef5d9",
+      "abilities": [
+        {
+          "Static": {
+            "affected": { "Each": [{ "Subtype": "Sliver" }, { "In": "Hand" }] },
+            "mods": [
+              {
+                "AddKeyword": {
+                  "Typecycling": { "find": [{ "Subtype": "Sliver" }], "cost": "{3}" }
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Typecycling": { "find": [{ "Subtype": "Sliver" }], "cost": "{3}" } } }
+      ]
+    }
+  ]
+}

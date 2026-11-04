@@ -1,0 +1,39 @@
+{
+  "oracle_id": "5e3fd5da-6724-4134-ab15-4616cb659f88",
+  "name": "Exclusion Ritual",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Exclusion Ritual",
+      "oracle_fingerprint": "61fab845d8bd651f2335e63498306be8",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [{ "what": { "Object": [{ "Not": { "Type": "Land" } }] } }],
+            "effects": [
+              { "Exile": { "what": { "Target": 0 }, "as": "exiled" } },
+              { "Remember": { "what": { "Bound": "exiled" }, "slot": "imprinted" } }
+            ]
+          }
+        },
+        {
+          "Rule": {
+            "rule": {
+              "Cant": {
+                "who": "EachPlayer",
+                "action": {
+                  "Cast": {
+                    "filter": [
+                      { "SharesName": { "Remembered": { "on": "This", "slot": "imprinted" } } }
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

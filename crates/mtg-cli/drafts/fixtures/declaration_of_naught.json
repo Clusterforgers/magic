@@ -1,0 +1,133 @@
+{
+  "object": "card",
+  "id": "2e67d62f-9629-463b-a445-4181f6fafd0f",
+  "oracle_id": "55c71732-6ba1-401d-8759-4d64dae22133",
+  "multiverse_ids": [
+    153169
+  ],
+  "mtgo_id": 29192,
+  "mtgo_foil_id": 29193,
+  "tcgplayer_id": 17968,
+  "cardmarket_id": 18858,
+  "name": "Declaration of Naught",
+  "lang": "en",
+  "released_at": "2008-02-01",
+  "uri": "https://api.scryfall.com/cards/2e67d62f-9629-463b-a445-4181f6fafd0f",
+  "scryfall_uri": "https://scryfall.com/card/mor/29/declaration-of-naught?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T11:40:00Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/2/e/2e67d62f-9629-463b-a445-4181f6fafd0f.jpg?1783942800",
+    "normal": "https://cards.scryfall.io/normal/front/2/e/2e67d62f-9629-463b-a445-4181f6fafd0f.jpg?1783942800",
+    "large": "https://cards.scryfall.io/large/front/2/e/2e67d62f-9629-463b-a445-4181f6fafd0f.jpg?1783942800",
+    "png": "https://cards.scryfall.io/png/front/2/e/2e67d62f-9629-463b-a445-4181f6fafd0f.png?1783942800",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/2/e/2e67d62f-9629-463b-a445-4181f6fafd0f.jpg?1783942800",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/2/e/2e67d62f-9629-463b-a445-4181f6fafd0f.jpg?1783942800",
+    "thumb": "https://cards.scryfall.io/thumb/front/2/e/2e67d62f-9629-463b-a445-4181f6fafd0f.webp?1783942800",
+    "grid": "https://cards.scryfall.io/grid/front/2/e/2e67d62f-9629-463b-a445-4181f6fafd0f.webp?1783942800",
+    "display": "https://cards.scryfall.io/display/front/2/e/2e67d62f-9629-463b-a445-4181f6fafd0f.webp?1783942800",
+    "art": "https://cards.scryfall.io/art/front/2/e/2e67d62f-9629-463b-a445-4181f6fafd0f.webp?1783942800",
+    "crop": "https://cards.scryfall.io/crop/front/2/e/2e67d62f-9629-463b-a445-4181f6fafd0f.webp?1783942800",
+    "jpeg": "https://cards.scryfall.io/normal/front/2/e/2e67d62f-9629-463b-a445-4181f6fafd0f.jpg?1783942800"
+  },
+  "mana_cost": "{U}{U}",
+  "cmc": 2.0,
+  "type_line": "Enchantment",
+  "oracle_text": "As this enchantment enters, choose a card name.\n{U}: Counter target spell with the chosen name.",
+  "colors": [
+    "U"
+  ],
+  "color_identity": [
+    "U"
+  ],
+  "keywords": [],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "c41550df-7b41-41a3-85ab-8612eb2f168f",
+  "set": "mor",
+  "set_name": "Morningtide",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/c41550df-7b41-41a3-85ab-8612eb2f168f",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Amor&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/mor?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/2e67d62f-9629-463b-a445-4181f6fafd0f/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A55c71732-6ba1-401d-8759-4d64dae22133&unique=prints",
+  "collector_number": "29",
+  "digital": false,
+  "rarity": "rare",
+  "flavor_text": "Every story, even a faerie tale, comes to an end.",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Rob Alexander",
+  "artist_ids": [
+    "35906871-6c78-4ab2-9ed1-e6792c8efb74"
+  ],
+  "illustration_id": "a7edf587-253d-403f-8dd4-ed682f4685d7",
+  "border_color": "black",
+  "frame": "2003",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 18326,
+  "penny_rank": 7038,
+  "prices": {
+    "usd": "15.06",
+    "usd_foil": "50.00",
+    "usd_etched": null,
+    "eur": "4.55",
+    "eur_foil": "15.23",
+    "tix": "0.03"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=153169&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DDeclaration%2Bof%2BNaught",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DDeclaration%2Bof%2BNaught",
+    "edhrec": "https://edhrec.com/route/?cc=Declaration+of+Naught"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F17968%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=18858&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/29192?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

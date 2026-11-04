@@ -576,6 +576,16 @@ pub enum Event {
         /// The cards picked.
         cards: Vec<ObjectId>,
     },
+    /// A card was conjured into a zone (Alchemy).
+    CardConjured(crate::conjure::CardConjured),
+    /// A player seeks (Alchemy): `count` random cards of their library that match go to their hand, chosen with the
+    /// next substream of the generator; the `ZoneChanged` events that move them follow in the same batch.
+    Sought {
+        /// Who seeks.
+        player: PlayerId,
+        /// How many cards were picked.
+        count: u32,
+    },
     /// Cards of a library were put on its bottom.
     LibraryBottomed {
         /// Whose library.
@@ -585,6 +595,15 @@ pub enum Event {
         /// The order was drawn at random, with the next substream of the generator (CR 702.85a).
         #[serde(default)]
         random: bool,
+    },
+    /// Cards of a library were put beneath its top `below` cards (on the bottom when it has fewer).
+    LibraryInserted {
+        /// Whose library.
+        player: PlayerId,
+        /// The cards, top to bottom as they lie after the move.
+        cards: Vec<ObjectId>,
+        /// How many cards of the library stay above them.
+        below: u32,
     },
     /// A card an effect put onto the battlefield entered tapped or under another player's control; it follows the
     /// `ZoneChanged` that moved it, in the same batch.
@@ -1112,6 +1131,7 @@ impl Event {
             | Event::LibraryLooked(_)
             | Event::CardsFound(_)
             | Event::ChosenAtRandom { .. }
+            | Event::Sought { .. }
             | Event::Revealed(_) => Vec::new(),
             Event::CountersChanged(changed) => changed
                 .on
@@ -1123,6 +1143,7 @@ impl Event {
             | Event::HandDealt { cards, .. }
             | Event::CardsBottomed { cards, .. }
             | Event::OpeningCardsPlayed { cards, .. }
+            | Event::LibraryInserted { cards, .. }
             | Event::LibraryBottomed { cards, .. } => cards.clone(),
             Event::Scried(scried) => scried.top.iter().chain(&scried.bottom).copied().collect(),
             Event::Surveilled(surveilled) => surveilled
@@ -1132,6 +1153,7 @@ impl Event {
                 .copied()
                 .collect(),
             Event::TokenCreated(token) => vec![token.object],
+            Event::CardConjured(card) => vec![card.object],
             Event::EmblemCreated(emblem) => vec![emblem.object],
             Event::Ventured(ventured) => vec![ventured.object],
             Event::BecameCopy(copy) => vec![copy.object],

@@ -1,0 +1,38 @@
+{
+  "oracle_id": "8d0bf685-e521-4d72-acc6-86794f685ce2",
+  "name": "Tunnel Tipster",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Tunnel Tipster",
+      "oracle_fingerprint": "467e1d15390694949d4712fb9d8dad1c",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "if": {
+              "Compare": {
+                "left": {
+                  "Tally": {
+                    "event": "Entered",
+                    "who": "EachPlayer",
+                    "filter": [{ "Type": "Creature" }, "FaceDown", { "ControlledBy": "You" }]
+                  }
+                },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Green"] } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

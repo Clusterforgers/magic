@@ -1,0 +1,70 @@
+{
+  "oracle_id": "a38f7ce1-6ccc-4fd3-9e02-631e8933c1f8",
+  "name": "Return of the Mole Man",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Return of the Mole Man",
+      "oracle_fingerprint": "e1eb1cf7d9605f83b443c8f0c4fb7df7",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Land" }, { "ControlledBy": "You" }],
+                "to": "Battlefield"
+              }
+            },
+            "effects": [{ "May": { "effects": [{ "Mill": { "count": 2 } }] } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{5}{G}" }, "SacrificeSelf"],
+            "timing": "Sorcery",
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Moloid",
+                      "colors": ["Green"],
+                      "types": ["Creature"],
+                      "subtypes": ["Minion"],
+                      "power": 1,
+                      "toughness": 1,
+                      "abilities": [
+                        {
+                          "Triggered": {
+                            "when": { "Attacks": { "what": ["This"] } },
+                            "effects": [{ "May": { "effects": [{ "Mill": {} }] } }]
+                          }
+                        }
+                      ]
+                    }
+                  },
+                  "count": {
+                    "Count": [
+                      { "OwnedBy": "You" },
+                      {
+                        "AnyOf": [
+                          { "Type": "Artifact" },
+                          { "Type": "Battle" },
+                          { "Type": "Creature" },
+                          { "Type": "Enchantment" },
+                          { "Type": "Land" },
+                          { "Type": "Planeswalker" }
+                        ]
+                      },
+                      { "In": "Graveyard" }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

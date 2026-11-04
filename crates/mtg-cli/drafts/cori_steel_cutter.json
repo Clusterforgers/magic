@@ -1,0 +1,55 @@
+{
+  "oracle_id": "46b1a169-bc32-47bf-b379-fa0c3d13878f",
+  "name": "Cori-Steel Cutter",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Cori-Steel Cutter",
+      "oracle_fingerprint": "bf166497113774482094c1656f53d181",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [
+              { "ModifyPT": { "power": 1, "toughness": 1 } },
+              { "AddKeyword": "Trample" },
+              { "AddKeyword": "Haste" }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "Nth": {
+                "event": { "SpellCast": { "what": [{ "ControlledBy": "You" }], "by": "You" } },
+                "nth": 2
+              }
+            },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Monk",
+                      "colors": ["White"],
+                      "types": ["Creature"],
+                      "subtypes": ["Monk"],
+                      "power": 1,
+                      "toughness": 1,
+                      "abilities": [{ "Keyword": "Prowess" }]
+                    }
+                  },
+                  "as": "token"
+                }
+              },
+              {
+                "May": { "effects": [{ "Attach": { "what": "This", "to": { "Bound": "token" } } }] }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Equip": "{1}{R}" } }
+      ]
+    }
+  ]
+}

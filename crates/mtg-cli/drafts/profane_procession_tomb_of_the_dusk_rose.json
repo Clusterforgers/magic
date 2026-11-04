@@ -1,0 +1,72 @@
+{
+  "oracle_id": "a656ad7f-133f-4d93-919a-43bcf1f815f3",
+  "name": "Profane Procession // Tomb of the Dusk Rose",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Profane Procession",
+      "oracle_fingerprint": "330a461ec1444529d899cbab57030399",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{3}{W}{B}",
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              { "Exile": { "what": { "Target": 0 } } },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "Count": [{ "ExiledWith": "This" }, { "In": "Exile" }] },
+                      "op": "Ge",
+                      "right": 3
+                    }
+                  },
+                  "then": [{ "Transform": { "what": "This" } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Tomb of the Dusk Rose",
+      "oracle_fingerprint": "7c5a660047dae260e528df5999065b57",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "AnyColor": 1 } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{2}{W}{B}" }, "Tap"],
+            "effects": [
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "Type": "Creature" },
+                      { "ExiledWith": "This" },
+                      { "In": "Exile" },
+                      { "OwnedBy": "You" }
+                    ]
+                  },
+                  "as": "picked"
+                }
+              },
+              {
+                "Move": {
+                  "what": { "Bound": "picked" },
+                  "to": { "Battlefield": { "under": "You" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

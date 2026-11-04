@@ -1,0 +1,51 @@
+{
+  "oracle_id": "ff3936bb-3281-4260-84de-1f65dbfbe993",
+  "name": "Ayara's Oathsworn",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ayara's Oathsworn",
+      "oracle_fingerprint": "a247b5918667aaf5f7066a36b87df57e",
+      "abilities": [
+        { "Keyword": "Menace" },
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": ["This"], "to": "EachPlayer", "combat": true } },
+            "if": {
+              "Compare": {
+                "left": {
+                  "Count": ["This", { "CounterCount": { "kind": "+1/+1", "op": "Lt", "to": 4 } }]
+                },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "effects": [
+              { "PutCounters": { "on": "This", "counter": "+1/+1" } },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": "This",
+                      "selector": [
+                        "This",
+                        { "CounterCount": { "kind": "+1/+1", "op": "Eq", "to": 4 } }
+                      ],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [
+                    { "Search": { "filter": [], "as": "found" } },
+                    { "Move": { "what": { "Bound": "found" }, "to": "Hand" } },
+                    { "Shuffle": {} }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

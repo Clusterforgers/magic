@@ -1,0 +1,53 @@
+{
+  "oracle_id": "6f9390ec-08b5-4761-8cb1-5d60190b9661",
+  "name": "Robobrain War Mind",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Robobrain War Mind",
+      "oracle_fingerprint": "146872ac122390bb16570aef01d60b9a",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              {
+                "SetPT": {
+                  "power": { "Count": [{ "In": "Hand" }, { "OwnedBy": "You" }] },
+                  "toughness": 5
+                }
+              }
+            ],
+            "defining": true
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "PutCounters": {
+                  "on": "You",
+                  "counter": { "Other": "energy" },
+                  "count": {
+                    "Count": [
+                      { "Type": "Artifact" },
+                      { "Type": "Creature" },
+                      { "ControlledBy": "You" }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [{ "Pay": { "cost": [{ "PayEnergy": 3 }], "paid": [{ "Draw": {} }] } }]
+          }
+        }
+      ]
+    }
+  ]
+}

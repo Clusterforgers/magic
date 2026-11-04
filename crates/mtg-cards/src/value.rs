@@ -310,6 +310,12 @@ pub enum TurnTally {
     /// The permanents that left the battlefield for any zone while the players read controlled them (revolt: "if a
     /// permanent left the battlefield under your control this turn"). Added up over the players.
     PermanentsLeftUnder,
+    /// The times the player scried this turn, once for each scry that looked at a card.
+    Scried,
+    /// The times the player surveilled this turn, once for each surveil that looked at a card.
+    Surveilled,
+    /// The permanents the player sacrificed this turn, each once, as the player who controlled it.
+    Sacrificed,
 }
 
 /// A kind of event the game logs for the turn with the object it was about, which `Amount::Tally` filters and counts.

@@ -1,0 +1,46 @@
+{
+  "oracle_id": "55b8c81b-f26b-4ae1-94ba-30b19e6a944e",
+  "name": "Evereth, Viceroy of Plunder",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Evereth, Viceroy of Plunder",
+      "oracle_fingerprint": "e76a4ac6af120cd2f4d1088d947125c4",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 7, "end": 192 }
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": "{1}{B/R}",
+                  "paid": [
+                    {
+                      "Reflexive": {
+                        "effects": [
+                          {
+                            "DealDamage": {
+                              "to": "Opponents",
+                              "amount": { "Stat": { "of": "This", "stat": "Power" } }
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

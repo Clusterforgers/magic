@@ -1,0 +1,19 @@
+{
+  "oracle_id": "d05db2c1-a19a-4803-8e8a-fa2f9b798181",
+  "name": "Bard, King of Dale",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Bard, King of Dale",
+      "oracle_fingerprint": "569c1fd6c02a9b85372cca9bffaebe8b",
+      "abilities": [
+        { "Keyword": "Reach" },
+        { "Keyword": "Vigilance" },
+        {
+          "Replacement": { "when": { "Draw": { "except_draw_step": 1 } }, "by": { "Multiply": 2 } }
+        },
+        { "Replacement": { "when": { "TokenCreation": {} }, "by": { "Multiply": 2 } } }
+      ]
+    }
+  ]
+}

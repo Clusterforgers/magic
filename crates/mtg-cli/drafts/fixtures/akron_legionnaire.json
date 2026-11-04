@@ -1,0 +1,131 @@
+{
+  "object": "card",
+  "id": "b3e10240-8a4f-410f-a9b2-5df89d7038df",
+  "oracle_id": "c5f50a78-9dc4-4f3c-aa11-b41c8278bc16",
+  "multiverse_ids": [
+    201117
+  ],
+  "mtgo_id": 33478,
+  "mtgo_foil_id": 33479,
+  "name": "Akron Legionnaire",
+  "lang": "en",
+  "released_at": "2009-09-07",
+  "uri": "https://api.scryfall.com/cards/b3e10240-8a4f-410f-a9b2-5df89d7038df",
+  "scryfall_uri": "https://scryfall.com/card/me3/1/akron-legionnaire?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T11:30:45Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/b/3/b3e10240-8a4f-410f-a9b2-5df89d7038df.jpg?1783942245",
+    "normal": "https://cards.scryfall.io/normal/front/b/3/b3e10240-8a4f-410f-a9b2-5df89d7038df.jpg?1783942245",
+    "large": "https://cards.scryfall.io/large/front/b/3/b3e10240-8a4f-410f-a9b2-5df89d7038df.jpg?1783942245",
+    "png": "https://cards.scryfall.io/png/front/b/3/b3e10240-8a4f-410f-a9b2-5df89d7038df.png?1783942245",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/b/3/b3e10240-8a4f-410f-a9b2-5df89d7038df.jpg?1783942245",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/b/3/b3e10240-8a4f-410f-a9b2-5df89d7038df.jpg?1783942245",
+    "thumb": "https://cards.scryfall.io/thumb/front/b/3/b3e10240-8a4f-410f-a9b2-5df89d7038df.webp?1783942245",
+    "grid": "https://cards.scryfall.io/grid/front/b/3/b3e10240-8a4f-410f-a9b2-5df89d7038df.webp?1783942245",
+    "display": "https://cards.scryfall.io/display/front/b/3/b3e10240-8a4f-410f-a9b2-5df89d7038df.webp?1783942245",
+    "art": "https://cards.scryfall.io/art/front/b/3/b3e10240-8a4f-410f-a9b2-5df89d7038df.webp?1783942245",
+    "crop": "https://cards.scryfall.io/crop/front/b/3/b3e10240-8a4f-410f-a9b2-5df89d7038df.webp?1783942245",
+    "jpeg": "https://cards.scryfall.io/normal/front/b/3/b3e10240-8a4f-410f-a9b2-5df89d7038df.jpg?1783942245"
+  },
+  "mana_cost": "{6}{W}{W}",
+  "cmc": 8.0,
+  "type_line": "Creature — Giant Soldier",
+  "oracle_text": "Except for creatures named Akron Legionnaire and artifact creatures, creatures you control can't attack.",
+  "power": "8",
+  "toughness": "4",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": [],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "legal",
+    "predh": "legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": true,
+  "variation": false,
+  "set_id": "b65fb1f2-4768-4c70-8fdf-30a069ad592e",
+  "set": "me3",
+  "set_name": "Masters Edition III",
+  "set_type": "masters",
+  "set_uri": "https://api.scryfall.com/sets/b65fb1f2-4768-4c70-8fdf-30a069ad592e",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Ame3&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/me3?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/b3e10240-8a4f-410f-a9b2-5df89d7038df/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Ac5f50a78-9dc4-4f3c-aa11-b41c8278bc16&unique=prints",
+  "collector_number": "1",
+  "digital": true,
+  "rarity": "rare",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Mark Poole",
+  "artist_ids": [
+    "bfdeaf09-f915-4058-8e8b-bcac3bc43c33"
+  ],
+  "illustration_id": "d4f2788b-aaf3-43b4-a257-3ae85d4f94e2",
+  "border_color": "black",
+  "frame": "1997",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 27106,
+  "penny_rank": 16618,
+  "prices": {
+    "usd": null,
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": null,
+    "eur_foil": null,
+    "tix": "0.02"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=201117&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DAkron%2BLegionnaire",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DAkron%2BLegionnaire",
+    "edhrec": "https://edhrec.com/route/?cc=Akron+Legionnaire"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fmagic%2Fproduct%3FproductLineName%3Dmagic%26q%3DAkron%2BLegionnaire%26view%3Dgrid",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products/Search?referrer=scryfall&searchString=Akron+Legionnaire&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/33478?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

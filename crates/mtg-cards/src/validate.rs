@@ -525,6 +525,7 @@ impl<'a> Walker<'a> {
                 self.at("group", |w| w.selector(group));
             }
             Pred::Kicked => self.uses("Pred", "Kicked"),
+            Pred::CounterCount { .. } => self.uses("Pred", "CounterCount"),
             _ => self.uses("Pred", "Suspended"),
         }
     }
@@ -593,6 +594,7 @@ impl<'a> Walker<'a> {
             | Pred::SingleTarget
             | Pred::GreatestAmong { .. }
             | Pred::Kicked
+            | Pred::CounterCount { .. }
             | Pred::Suspended => self.fe1a_pred(pred),
             Pred::Not(inner) => self.pred(inner),
             Pred::AnyOf(preds) => {
@@ -2394,6 +2396,15 @@ impl Walker<'_> {
         if matches!(effect, Effect::Discard { random: true, .. }) {
             self.uses("Effect", "Discard.Random");
         }
+        if matches!(
+            effect,
+            Effect::Discard {
+                filter: Some(_),
+                ..
+            }
+        ) {
+            self.uses("Effect", "Discard.Filter");
+        }
         // A move onto the battlefield needs entering permanents and a random order needs the engine's randomness;
         // a move to a hand, a graveyard or a library in the owner's order needs neither.
         if matches!(
@@ -2437,6 +2448,14 @@ impl Walker<'_> {
                     },
                 ..
             } => self.uses("Effect", "Move.Random.Top"),
+            Effect::Move {
+                to:
+                    Destination::Library {
+                        place: Place::Below(_),
+                        order: Some(Order::Random),
+                    },
+                ..
+            } => self.uses("Effect", "Move.Random.Below"),
             _ => {}
         }
         self.at(tag, |w| match effect {
@@ -2444,6 +2463,29 @@ impl Walker<'_> {
             | Effect::Scry { who, count }
             | Effect::Surveil { who, count } => {
                 w.at("who", |w| w.reference(who, Kind::Player));
+                w.at("count", |w| w.amount(count));
+            }
+            Effect::Conjure {
+                who,
+                name,
+                zone,
+                count,
+            } => {
+                if name.is_empty() {
+                    w.problem("a conjured card has a name");
+                }
+                if !matches!(
+                    zone,
+                    ZoneKind::Hand | ZoneKind::Library | ZoneKind::Graveyard | ZoneKind::Exile
+                ) {
+                    w.problem("a card is conjured into a hand, a library, a graveyard or exile");
+                }
+                w.at("who", |w| w.reference(who, Kind::Player));
+                w.at("count", |w| w.amount(count));
+            }
+            Effect::Seek { who, filter, count } => {
+                w.at("who", |w| w.reference(who, Kind::Player));
+                w.at("filter", |w| w.selector(filter));
                 w.at("count", |w| w.amount(count));
             }
             Effect::Mill { who, count, bind } => {
@@ -2454,10 +2496,17 @@ impl Walker<'_> {
                 }
             }
             Effect::Discard {
-                who, count, bind, ..
+                who,
+                count,
+                filter,
+                bind,
+                ..
             } => {
                 w.at("who", |w| w.reference(who, Kind::Player));
                 w.at("count", |w| w.amount(count));
+                if let Some(filter) = filter {
+                    w.at("filter", |w| w.selector(filter));
+                }
                 if let Some(name) = bind {
                     w.at("as", |w| w.bind(name, Kind::Object));
                 }
@@ -2991,7 +3040,10 @@ impl Walker<'_> {
                 match (when, by) {
                     (
                         ReplaceWhen::Damage { .. },
-                        ReplaceBy::Prevent | ReplaceBy::PreventUpTo(_) | ReplaceBy::PreventAnd(_),
+                        ReplaceBy::Prevent
+                        | ReplaceBy::PreventNext
+                        | ReplaceBy::PreventUpTo(_)
+                        | ReplaceBy::PreventAnd(_),
                     )
                     | (
                         ReplaceWhen::ZoneChange {
@@ -3453,6 +3505,7 @@ impl Walker<'_> {
                 w.x_now =
                     matches!(when, ReplaceWhen::Enters { what } if what.0.contains(&Pred::This));
                 w.at("by", |w| w.replace_by(when, by));
+                w.not_next_damage(by);
                 if let Some(condition) = condition {
                     w.at("condition", |w| w.condition(condition));
                 }
@@ -3777,6 +3830,13 @@ impl Walker<'_> {
         }
     }
 
+    /// A permanent's replacement is not a shield, so it cannot prevent just the next damage.
+    fn not_next_damage(&mut self, by: &ReplaceBy) {
+        if matches!(by, ReplaceBy::PreventNext) {
+            self.problem("only a shield prevents the next damage");
+        }
+    }
+
     fn replace_by(&mut self, when: &ReplaceWhen, by: &ReplaceBy) {
         self.uses("ReplaceBy", &tag_of(by));
         let enters = matches!(when, ReplaceWhen::Enters { .. });
@@ -3806,10 +3866,10 @@ impl Walker<'_> {
             {
                 self.problem("a zone change or an entering is not prevented");
             }
-            ReplaceBy::PreventUpTo(_) | ReplaceBy::PreventAllBut(_)
+            ReplaceBy::PreventUpTo(_) | ReplaceBy::PreventAllBut(_) | ReplaceBy::PreventNext
                 if !matches!(when, ReplaceWhen::Damage { .. }) =>
             {
-                self.problem("only damage is prevented in part");
+                self.problem("only damage is prevented in part or once");
             }
             ReplaceBy::PreventRemovingCounter(_) if !matches!(when, ReplaceWhen::Damage { .. }) => {
                 self.problem("only damage is prevented with a counter removed");
@@ -4401,6 +4461,10 @@ mod tests {
         format!(r#"{{"Spell":{{"effects":[{{"Shield":{{"when":{{"Damage":{{"to":"You"}}}},"by":"Prevent","duration":{FOLLOWS_A_COUNTER}}}}}]}}}}"#),
         &["faces[0].abilities[0].Spell.effects[0].Shield: only a continuous effect lasts for as long as the permanents it names have a counter"]
     )]
+    #[case::a_permanent_that_prevents_only_the_next_damage(
+        r#"{"Replacement":{"when":{"Damage":{"to":"You"}},"by":"PreventNext"}}"#.to_owned(),
+        &["faces[0].abilities[0].Replacement: only a shield prevents the next damage"]
+    )]
     #[case::the_same_zone_twice(
         r#"{"Spell":{"effects":[{"Search":{"also":["Hand","Hand"],"filter":[],"as":"card"}}]}}"#.to_owned(),
         &["faces[0].abilities[0].Spell.effects[0].Search: a search of several zones names a library, hand, graveyard or exile, each once"]
@@ -4432,6 +4496,28 @@ mod tests {
         #[case] expected: &[&str],
     ) {
         assert_eq!(problems(&ability), expected);
+    }
+
+    #[rstest]
+    #[case::conjure_into_a_hand(
+        r#"{"Spell":{"effects":[{"Conjure":{"name":"Ponder","zone":"Hand"}}]}}"#,
+        0
+    )]
+    #[case::conjure_into_exile(
+        r#"{"Spell":{"effects":[{"Conjure":{"name":"Ponder","zone":"Exile"}}]}}"#,
+        0
+    )]
+    #[case::conjure_onto_the_battlefield(
+        r#"{"Spell":{"effects":[{"Conjure":{"name":"Ponder","zone":"Battlefield"}}]}}"#,
+        1
+    )]
+    #[case::conjure_nothing(r#"{"Spell":{"effects":[{"Conjure":{"name":"","zone":"Hand"}}]}}"#, 1)]
+    #[case::seek_a_land(r#"{"Spell":{"effects":[{"Seek":{"filter":[{"Type":"Land"}]}}]}}"#, 0)]
+    fn conjure_names_a_card_and_a_zone_that_takes_new_cards(
+        #[case] ability: &str,
+        #[case] expected: usize,
+    ) {
+        assert_eq!(problems(ability).len(), expected, "{ability}");
     }
 
     #[rstest]
@@ -4512,9 +4598,12 @@ mod tests {
     #[case::affinity_given_to_spells(r#"{"Static":{"affected":{"Each":["Spell",{"Type":"Enchantment"}]},"mods":[{"AddKeyword":{"Affinity":[{"Subtype":"Aura"}]}}]}}"#, &["Ability.Static", "Ability.Static.SpellKeywords", "Keyword.Affinity", "Mod.AddKeyword"])]
     #[case::a_discard_of_your_choice(r#"{"Spell":{"effects":[{"Discard":{"count":2}}]}}"#, &["Ability.Spell", "Effect.Discard"])]
     #[case::a_discard_at_random(r#"{"Spell":{"effects":[{"Discard":{"random":true}}]}}"#, &["Ability.Spell", "Effect.Discard", "Effect.Discard.Random"])]
+    #[case::a_discard_of_matching_cards(r#"{"Spell":{"effects":[{"Discard":{"filter":[{"Type":"Creature"}]}}]}}"#, &["Ability.Spell", "Effect.Discard", "Effect.Discard.Filter"])]
     #[case::a_move_to_the_hand(r#"{"Spell":{"effects":[{"Move":{"what":"This","to":"Hand"}}]}}"#, &["Ability.Spell", "Effect.Move"])]
     #[case::a_move_to_the_top_of_a_library(r#"{"Spell":{"effects":[{"Move":{"what":"This","to":{"Library":{"place":"Top","order":"Chosen"}}}}]}}"#, &["Ability.Spell", "Effect.Move"])]
     #[case::a_move_shuffled_in(r#"{"Spell":{"effects":[{"Move":{"what":"This","to":{"Library":{"place":"Shuffled","order":"Random"}}}}]}}"#, &["Ability.Spell", "Effect.Move"])]
+    #[case::a_move_beneath_the_top_of_a_library(r#"{"Spell":{"effects":[{"Move":{"what":"This","to":{"Library":{"place":{"Below":2}}}}}]}}"#, &["Ability.Spell", "Effect.Move"])]
+    #[case::a_move_beneath_the_top_in_a_random_order(r#"{"Spell":{"effects":[{"Move":{"what":"This","to":{"Library":{"place":{"Below":2},"order":"Random"}}}}]}}"#, &["Ability.Spell", "Effect.Move", "Effect.Move.Random.Below"])]
     #[case::a_move_to_the_battlefield_attached(r#"{"Spell":{"targets":[{"what":{"Object":[{"Type":"Creature"}]}}],"effects":[{"Move":{"what":"This","to":{"BattlefieldAttached":{"to":{"Target":0}}}}}]}}"#, &["Ability.Spell", "Effect.Move", "Effect.Move.Battlefield", "Effect.Move.Attached"])]
     #[case::a_move_to_the_battlefield(r#"{"Spell":{"effects":[{"Move":{"what":"This","to":{"Battlefield":{}}}}]}}"#, &["Ability.Spell", "Effect.Move", "Effect.Move.Battlefield"])]
     #[case::a_cast_transformed(r#"{"Spell":{"effects":[{"Exile":{"what":"This","as":"card"}},{"CastFromZone":{"what":{"Bound":"card"},"free":true,"transformed":true}}]}}"#, &["Ability.Spell", "Effect.Exile", "Effect.CastFromZone", "Effect.CastFromZone.Transformed"])]

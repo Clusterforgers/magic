@@ -1,0 +1,40 @@
+{
+  "oracle_id": "252ff28e-3ea7-4e2c-a30c-3cb80aa278d0",
+  "name": "Call from the Grave",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Call from the Grave",
+      "oracle_fingerprint": "192627fd821080d4c5b10bcc0659cbc6",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "ChooseAtRandom": {
+                  "from": {
+                    "Each": [{ "Type": "Creature" }, { "In": "Graveyard" }, { "OwnedBy": "You" }]
+                  },
+                  "as": "picked"
+                }
+              },
+              {
+                "Move": {
+                  "what": { "Bound": "picked" },
+                  "to": { "Battlefield": { "under": "You" } },
+                  "as": "moved2"
+                }
+              },
+              {
+                "DealDamage": {
+                  "to": "You",
+                  "amount": { "Stat": { "of": { "Bound": "moved2" }, "stat": "ManaValue" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

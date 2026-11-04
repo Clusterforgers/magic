@@ -1,0 +1,34 @@
+{
+  "oracle_id": "3808afb9-962f-48ba-94c5-6b3eae7053d0",
+  "name": "Dredging Claw",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dredging Claw",
+      "oracle_fingerprint": "db4b7cac9d7fb36ff8742ae02cf45de5",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 0 } }, { "AddKeyword": "Menace" }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Creature" }, { "OwnedBy": "You" }],
+                "from": "Graveyard",
+                "to": "Battlefield"
+              }
+            },
+            "effects": [
+              { "May": { "effects": [{ "Attach": { "what": "This", "to": "Triggering" } }] } }
+            ]
+          }
+        },
+        { "Keyword": { "Equip": "{1}{B}" } }
+      ]
+    }
+  ]
+}

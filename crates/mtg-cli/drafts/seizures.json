@@ -1,0 +1,30 @@
+{
+  "oracle_id": "550921f5-ec65-460d-9ada-f2c5a4c4b2c4",
+  "name": "Seizures",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Seizures",
+      "oracle_fingerprint": "a11d26ac92a0f481f66eb14063ef42e5",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Triggered": {
+            "when": { "Tapped": { "what": [{ "Is": "Attached" }] } },
+            "effects": [
+              {
+                "Pay": {
+                  "who": { "ControllerOf": "Triggering" },
+                  "cost": "{3}",
+                  "unpaid": [
+                    { "DealDamage": { "to": { "ControllerOf": "Triggering" }, "amount": 3 } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

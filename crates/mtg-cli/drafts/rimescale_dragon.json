@@ -1,0 +1,26 @@
+{
+  "oracle_id": "3f8182e5-4df5-4beb-a3b7-387ed1e86c99",
+  "name": "Rimescale Dragon",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Rimescale Dragon",
+      "oracle_fingerprint": "8de65943d6f50a703a5037eb3e86110a",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 7, "end": 116 }
+          }
+        },
+        {
+          "Static": {
+            "affected": { "Each": [{ "Type": "Creature" }, { "HasCounter": { "Other": "ice" } }] },
+            "mods": ["DoesntUntap"]
+          }
+        }
+      ]
+    }
+  ]
+}

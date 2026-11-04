@@ -1,0 +1,60 @@
+{
+  "oracle_id": "88eeb519-5782-4732-bd34-81d1ee6dbc8f",
+  "name": "Ka-Zar of the Savage Land",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ka-Zar of the Savage Land",
+      "oracle_fingerprint": "ddcdefb72020b4c923b2887cfbfcf177",
+      "abilities": [
+        { "Rule": { "rule": { "LookAtTopAnyTime": "You" } } },
+        {
+          "Rule": {
+            "rule": {
+              "MayCast": {
+                "what": [{ "Type": "Land" }, "TopOfLibrary"],
+                "from": "Library",
+                "play": true
+              }
+            }
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Zabu",
+                      "colors": ["Green"],
+                      "supertypes": ["Legendary"],
+                      "types": ["Creature"],
+                      "subtypes": ["Cat"],
+                      "power": 2,
+                      "toughness": 2,
+                      "abilities": [
+                        {
+                          "Triggered": {
+                            "when": {
+                              "ZoneChange": {
+                                "what": [{ "Type": "Land" }, { "ControlledBy": "You" }],
+                                "to": "Battlefield"
+                              }
+                            },
+                            "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }]
+                          }
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -28,4 +28,8 @@ left: number | null,
 /**
  * What happens as it prevents damage, reading the damage as `ReplaceBy::PreventAnd` does; nothing when empty.
  */
-then?: unknown, };
+then?: unknown, 
+/**
+ * It prevents the next damage event it covers and ends ("the next time a source of your choice would deal damage").
+ */
+once: boolean, };

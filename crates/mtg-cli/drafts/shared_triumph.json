@@ -1,0 +1,25 @@
+{
+  "oracle_id": "64d022ab-5222-4a7a-ab8a-89749560f666",
+  "name": "Shared Triumph",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Shared Triumph",
+      "oracle_fingerprint": "2c3e1ddd11d5e1c76cc4c71465ec22e0",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "Choose": "CreatureType" }
+          }
+        },
+        {
+          "Static": {
+            "affected": { "Each": [{ "Type": "Creature" }, "ChosenSubtype"] },
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

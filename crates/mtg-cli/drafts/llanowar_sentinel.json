@@ -1,0 +1,30 @@
+{
+  "oracle_id": "272ab5d5-7edb-4457-8a09-cabe2325c881",
+  "name": "Llanowar Sentinel",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Llanowar Sentinel",
+      "oracle_fingerprint": "563b7a77092e45b6e6cd8a8bca3ef7fe",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": "{1}{G}",
+                  "paid": [
+                    { "Search": { "filter": [{ "Named": "Llanowar Sentinel" }], "as": "found" } },
+                    { "Move": { "what": { "Bound": "found" }, "to": { "Battlefield": {} } } },
+                    { "Shuffle": {} }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,39 @@
+{
+  "oracle_id": "c28a7641-49e3-43b1-a366-8d6e9c8dab9c",
+  "name": "Freyalise Supplicant",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Freyalise Supplicant",
+      "oracle_fingerprint": "4828076668e83743158eff55d54a35a1",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [
+              "Tap",
+              {
+                "Sacrifice": {
+                  "filter": [
+                    { "Type": "Creature" },
+                    { "AnyOf": [{ "Color": "Red" }, { "Color": "White" }] }
+                  ]
+                }
+              }
+            ],
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [
+              {
+                "DealDamage": {
+                  "to": { "Target": 0 },
+                  "amount": {
+                    "Half": { "of": { "Stat": { "of": "Paid", "stat": "Power" } }, "up": false }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

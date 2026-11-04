@@ -1,0 +1,37 @@
+{
+  "oracle_id": "265204a9-0ce2-4a0a-a9ea-8537cd94b079",
+  "name": "Pentagram of the Ages",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Pentagram of the Ages",
+      "oracle_fingerprint": "b71d0f8cb85b9565cddb936b22c6d353",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{4}" }, "Tap"],
+            "effects": [
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "AnyOf": [{ "In": "Battlefield" }, { "In": "Stack" }, { "In": "Command" }] }
+                    ]
+                  },
+                  "as": "source"
+                }
+              },
+              {
+                "Shield": {
+                  "when": { "Damage": { "to": "You", "source": [{ "Is": { "Bound": "source" } }] } },
+                  "by": "PreventNext",
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

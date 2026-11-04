@@ -1,0 +1,39 @@
+{
+  "oracle_id": "a47bf064-b810-43d0-89a5-13c107a317b0",
+  "name": "Dispense Justice",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dispense Justice",
+      "oracle_fingerprint": "476b55302ba53dcc05f454ecd7282bb2",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              {
+                "Sacrifice": {
+                  "who": { "Target": 0 },
+                  "filter": [{ "Type": "Creature" }, "Attacking"],
+                  "count": {
+                    "When": {
+                      "condition": {
+                        "Compare": {
+                          "left": { "Count": [{ "Type": "Artifact" }, { "ControlledBy": "You" }] },
+                          "op": "Ge",
+                          "right": 3
+                        }
+                      },
+                      "then": 2,
+                      "otherwise": 1
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

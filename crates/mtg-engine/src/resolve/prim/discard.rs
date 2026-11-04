@@ -1,6 +1,7 @@
 //! `Effect::Discard`: players discard cards of their choice (CR 701.9).
 
 use mtg_cards::effect::Effect;
+use mtg_cards::refs::Selector;
 
 use mtg_core::ids::{ObjectId, PlayerId};
 
@@ -21,6 +22,7 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         who,
         count,
         random,
+        filter,
         bind,
     } = effect
     else {
@@ -38,19 +40,19 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
     } else {
         let choosers: Vec<Chooser> = players
             .into_iter()
-            .map(|player| Chooser {
-                player,
-                from: cx
-                    .state()
-                    .zone(Zone::Hand(player))
-                    .iter()
-                    .copied()
-                    .filter(|id| crate::prohibit::may_discard(cx.state(), player, *id))
-                    .collect(),
-                take,
-                text: wording::discard(take),
+            .map(|player| {
+                let from = hand_cards(cx, player, filter.as_ref())?;
+                Ok(Chooser {
+                    player,
+                    from,
+                    take,
+                    text: match filter {
+                        Some(filter) => wording::discard_matching(filter, take),
+                        None => wording::discard(take),
+                    },
+                })
             })
-            .collect();
+            .collect::<Result<_, ResolveError>>()?;
         match pick_cards(cx, &choosers)? {
             Picked::Ask(decision) => return Ok(Run::Ask(decision)),
             Picked::Done(chosen) => (Vec::new(), chosen),
@@ -85,6 +87,31 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
             next: Next::Sibling,
         },
     })
+}
+
+/// The cards of the player's hand they may discard, only those the filter selects when there is one; none is a discard of
+/// nothing, never a stuck choice.
+fn hand_cards(
+    cx: &Cx<'_>,
+    player: PlayerId,
+    filter: Option<&Selector>,
+) -> Result<Vec<ObjectId>, ResolveError> {
+    let mut from = Vec::new();
+    for id in cx.state().zone(Zone::Hand(player)).iter().copied() {
+        if !crate::prohibit::may_discard(cx.state(), player, id) {
+            continue;
+        }
+        if let Some(filter) = filter {
+            let Some(object) = cx.state().object(id) else {
+                continue;
+            };
+            if !cx.scope.selects(filter, object.reference())? {
+                continue;
+            }
+        }
+        from.push(id);
+    }
+    Ok(from)
 }
 
 /// The cards each player discards at random (CR 701.9b): the hand is shuffled with the next unspent substream of the
@@ -307,6 +334,34 @@ mod tests {
     #[case::none_to_discard(r#"{"Discard":{"count":0}}"#)]
     #[case::a_negative_count(r#"{"Discard":{"count":-2}}"#)]
     fn discarding_nothing_asks_nothing_and_happens_nothing(#[case] json: &str) {
+        let game = game();
+        let run = run_with(&game, Vec::new(), &effect(json)).unwrap();
+        assert_eq!(discards(run), []);
+    }
+
+    #[test]
+    fn a_filter_limits_the_cards_to_choose_from_and_the_words_name_them() {
+        let game = game();
+        let json = r#"{"Discard":{"filter":[{"Type":"Creature"},{"Named":"B"}],"count":1}}"#;
+        // One card matches and one is discarded: no question.
+        let run = run_with(&game, Vec::new(), &effect(json)).unwrap();
+        assert_eq!(discards(run), [(ME, hand(&game, ME)[1])]);
+        let json = r#"{"Discard":{"filter":[{"Type":"Creature"}]}}"#;
+        let DecisionKind::ChooseCards(options) =
+            asked(run_with(&game, Vec::new(), &effect(json)).unwrap()).kind
+        else {
+            panic!("cards are chosen");
+        };
+        assert_eq!(options.from, hand(&game, ME));
+        assert_eq!(options.text, "Discard a creature card.");
+    }
+
+    #[rstest]
+    #[case::no_card_matches(r#"{"Discard":{"filter":[{"Type":"Land"}]}}"#)]
+    #[case::none_of_several(r#"{"Discard":{"count":2,"filter":[{"Named":"Z"}]}}"#)]
+    fn no_card_that_matches_the_filter_is_a_discard_of_nothing_not_a_stuck_choice(
+        #[case] json: &str,
+    ) {
         let game = game();
         let run = run_with(&game, Vec::new(), &effect(json)).unwrap();
         assert_eq!(discards(run), []);

@@ -1,0 +1,38 @@
+{
+  "oracle_id": "9d5ff568-1c55-4757-94d0-5743ca674bab",
+  "name": "Cynical Loner",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Cynical Loner",
+      "oracle_fingerprint": "acb169113704d38a670b2a967bfbaa7f",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "CantBeBlockedBy": [{ "Subtype": "Glimmer" }] }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Main2", "whose": "You" } },
+            "if": {
+              "CountOf": { "subject": "This", "selector": ["Tapped"], "op": "Ge", "right": 1 }
+            },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    { "Search": { "filter": [], "as": "found" } },
+                    { "Move": { "what": { "Bound": "found" }, "to": "Graveyard" } },
+                    { "Shuffle": {} }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

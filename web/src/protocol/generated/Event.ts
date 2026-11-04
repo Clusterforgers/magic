@@ -3,6 +3,7 @@ import type { AbilityCopy } from "./AbilityCopy";
 import type { AbilitySource } from "./AbilitySource";
 import type { AttackTarget } from "./AttackTarget";
 import type { BecameCopy } from "./BecameCopy";
+import type { CardConjured } from "./CardConjured";
 import type { CardCopy } from "./CardCopy";
 import type { CardsFound } from "./CardsFound";
 import type { Cause } from "./Cause";
@@ -551,7 +552,15 @@ amount: number, } } | { "CountersChanged": CountersChanged } | { "TokenCreated":
 /**
  * The cards picked.
  */
-cards: Array<ObjectId>, } } | { "LibraryBottomed": { 
+cards: Array<ObjectId>, } } | { "CardConjured": CardConjured } | { "Sought": { 
+/**
+ * Who seeks.
+ */
+player: PlayerId, 
+/**
+ * How many cards were picked.
+ */
+count: number, } } | { "LibraryBottomed": { 
 /**
  * Whose library.
  */
@@ -563,7 +572,19 @@ cards: Array<ObjectId>,
 /**
  * The order was drawn at random, with the next substream of the generator (CR 702.85a).
  */
-random: boolean, } } | { "Entered": { 
+random: boolean, } } | { "LibraryInserted": { 
+/**
+ * Whose library.
+ */
+player: PlayerId, 
+/**
+ * The cards, top to bottom as they lie after the move.
+ */
+cards: Array<ObjectId>, 
+/**
+ * How many cards of the library stay above them.
+ */
+below: number, } } | { "Entered": { 
 /**
  * The permanent.
  */

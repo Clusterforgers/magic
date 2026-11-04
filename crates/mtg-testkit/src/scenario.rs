@@ -349,6 +349,7 @@ impl Scenario {
                 step: self.step,
             },
             validate_decks: false,
+            conjurable: Arc::default(),
         })
     }
 
