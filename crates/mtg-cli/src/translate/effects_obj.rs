@@ -438,8 +438,11 @@ fn sacrifice(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
             "TargetMax",
             "RememberSacrificed",
             "Optional",
+            "SacMessage",
         ],
     )?;
+    // The prompt text of the choice.
+    let _ = p.get("SacMessage");
     let optional = p.get("Optional") == Some("True");
     if optional && p.get("Amount").is_some_and(|n| n != "1") {
         return unmapped("key:Sacrifice.Optional-amount");
@@ -495,18 +498,25 @@ fn gain_control(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
             "AddKWs",
         ],
     )?;
-    if p.has("NewController") {
-        return unmapped("key:GainControl.NewController");
-    }
     let duration = match p.get("LoseControl") {
         None => "Forever",
         Some("EOT") => "UntilEndOfTurn",
         Some(other) => return unmapped(format!("key:GainControl.LoseControl={other}")),
     };
     let affected = objects(subject(ctx, p, "", None)?)?;
+    let controller = match p.get("NewController") {
+        None => json!("You"),
+        Some(word) => match defined(ctx, word)? {
+            // One player takes control; a group has no single new controller.
+            group if matches!(group.as_str(), Some("Opponents" | "EachPlayer")) => {
+                return unmapped(format!("key:GainControl.NewController={word}"));
+            }
+            single => single,
+        },
+    };
     let mut effects = vec![json!({"Continuous": {
         "affected": affected,
-        "mods": [{"SetController": "You"}],
+        "mods": [{"SetController": controller}],
         "duration": duration,
     }})];
     if p.get("Untap") == Some("True") {
@@ -524,17 +534,43 @@ fn gain_control(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
     Ok(effects)
 }
 
-/// `Attach`: the attachment (`Defined$`, the card itself by default) is attached to the target.
+/// `Attach`: the attachment (`Object$`, the card itself by default) goes onto the host (the target, or `Defined$`). An
+/// `Object$ Targeted` with a `Defined$` host attaches the target to that host.
 pub fn attach(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
     only(
         p,
         "Attach",
-        &["ValidTgts", "Defined", "TargetMin", "TargetMax"],
+        &[
+            "ValidTgts",
+            "Defined",
+            "TargetMin",
+            "TargetMax",
+            "Object",
+            "Optional",
+        ],
     )?;
-    if !p.has("ValidTgts") {
-        return unmapped("key:Attach.no-ValidTgts");
+    let object = p.get("Object");
+    if object.is_some_and(|word| word.starts_with("Valid ")) {
+        return unmapped("key:Attach.Object-all");
     }
-    let what = defined(ctx, p.get("Defined").unwrap_or("Self"))?;
-    let to = subject(ctx, p, "", None)?;
-    Ok(vec![json!({"Attach": {"what": what, "to": to}})])
+    let (what, to) = match (object, p.has("ValidTgts"), p.get("Defined")) {
+        (None, true, None) => (json!("This"), subject(ctx, p, "", None)?),
+        (None, false, Some(host)) => (json!("This"), defined(ctx, host)?),
+        (Some(word), true, None) if !matches!(word, "Targeted" | "ThisTargetedCard") => {
+            let to = subject(ctx, p, "", None)?;
+            (defined(ctx, word)?, to)
+        }
+        (Some("Targeted" | "ThisTargetedCard"), true, Some(host)) => {
+            let what = subject(ctx, p, "", None)?;
+            (what, defined(ctx, host)?)
+        }
+        (Some(word), false, Some(host)) => (defined(ctx, word)?, defined(ctx, host)?),
+        (None, false, None) => return unmapped("key:Attach.no-ValidTgts"),
+        _ => return unmapped("key:Attach.Object-shape"),
+    };
+    let mut effect = json!({"Attach": {"what": what, "to": to}});
+    if p.get("Optional") == Some("True") {
+        effect = json!({"May": {"effects": [effect]}});
+    }
+    Ok(vec![effect])
 }

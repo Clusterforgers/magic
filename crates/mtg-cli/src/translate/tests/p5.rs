@@ -121,3 +121,74 @@ fn may_wrapper(#[case] line: &str, #[case] node: Value) {
 fn may_gaps(#[case] line: &str, #[case] gap: &str) {
     assert_eq!(gaps(&spell(line)), [gap]);
 }
+
+fn plain(line: &str) -> String {
+    format!("Name:T\nTypes:Sorcery\nA:SP$ {line}\n")
+}
+
+#[rstest]
+#[case::attach_self_to_target(
+    "Attach | ValidTgts$ Creature",
+    json!({"Attach": {"what": "This", "to": {"Target": 0}}})
+)]
+#[case::attach_defined_host("Attach | Defined$ Enchanted", json!({"Attach": {"what": "This", "to": "Attached"}}))]
+#[case::attach_object(
+    "Attach | Object$ Self | ValidTgts$ Creature",
+    json!({"Attach": {"what": "This", "to": {"Target": 0}}})
+)]
+#[case::attach_target_to_host(
+    "Attach | ValidTgts$ Equipment | Object$ Targeted | Defined$ Self",
+    json!({"Attach": {"what": {"Target": 0}, "to": "This"}})
+)]
+#[case::attach_optional(
+    "Attach | ValidTgts$ Creature | Optional$ True",
+    json!({"May": {"effects": [{"Attach": {"what": "This", "to": {"Target": 0}}}]}})
+)]
+fn attach_words(#[case] line: &str, #[case] node: Value) {
+    let found = abilities(&plain(line));
+    assert_eq!(found[0]["Spell"]["effects"][0], node);
+}
+
+#[rstest]
+#[case::all(
+    "Attach | Object$ Valid Equipment | Defined$ Self",
+    "key:Attach.Object-all"
+)]
+#[case::both_hosts(
+    "Attach | Object$ Self | ValidTgts$ Creature | Defined$ Self",
+    "key:Attach.Object-shape"
+)]
+#[case::nothing("Attach", "key:Attach.no-ValidTgts")]
+fn attach_gaps(#[case] line: &str, #[case] gap: &str) {
+    assert_eq!(gaps(&plain(line)), [gap]);
+}
+
+#[rstest]
+#[case::you("GainControl | ValidTgts$ Creature | NewController$ You", "You")]
+#[case::default("GainControl | ValidTgts$ Creature", "You")]
+#[case::other(
+    "GainControl | ValidTgts$ Creature | NewController$ DefendingPlayer",
+    "Defending"
+)]
+fn gain_control_new_controller(#[case] line: &str, #[case] who: &str) {
+    let found = abilities(&plain(line));
+    assert_eq!(
+        found[0]["Spell"]["effects"][0]["Continuous"]["mods"][0]["SetController"],
+        who
+    );
+}
+
+#[test]
+fn a_group_cannot_take_control() {
+    let line = "GainControl | ValidTgts$ Creature | NewController$ Player.Opponent";
+    assert_eq!(
+        gaps(&plain(line)),
+        ["key:GainControl.NewController=Player.Opponent"]
+    );
+}
+
+#[test]
+fn the_sacrifice_prompt_is_text_only() {
+    let line = "Sacrifice | SacValid$ Creature | SacMessage$ Creature";
+    assert_eq!(gaps(&plain(line)), Vec::<String>::new());
+}
