@@ -35,7 +35,7 @@ mod tests {
     #[case::soulshift("soulshift", 2, 1)]
     #[case::flanking("flanking", 0, 1)]
     #[case::unleash("unleash", 0, 2)]
-    #[case::unknown("rampage", 1, 0)]
+    #[case::unknown("double team", 1, 0)]
     fn a_macro_adds_the_abilities_of_its_entry(
         #[case] name: &str,
         #[case] amount: u32,
