@@ -418,6 +418,22 @@ pub struct ProposeArgs {
     /// provider and with or without `--solved-examples`; a card without a script gets no hint.
     #[arg(long, value_name = "DIR")]
     pub forge_hint: Option<PathBuf>,
+
+    /// Line mode, for a local model only (`--provider openai --base-url`): for each name in `--names-file` whose Forge
+    /// translation has exactly one gapped line, the model writes only that ability from a small prompt and the schema of
+    /// its kind; the part is merged into the translation and the checker judges the card. Needs `--forge-hint` and
+    /// `--translations`. The results are proposals marked as model-written and unread; only the checker's `Verified`
+    /// can play without a read.
+    #[arg(long, requires_all = ["names_file", "translations"], conflicts_with_all = ["cards", "sample", "promote"])]
+    pub lines: bool,
+
+    /// With `--lines`: the cards to work on, one name a line, taken in order.
+    #[arg(long, value_name = "FILE", requires = "lines")]
+    pub names_file: Option<PathBuf>,
+
+    /// With `--lines`: the folder of the translator's proposals (`<slug>.json` and `meta/<slug>.json`).
+    #[arg(long, value_name = "DIR", requires = "lines")]
+    pub translations: Option<PathBuf>,
 }
 
 /// Options of `export-pairs`.

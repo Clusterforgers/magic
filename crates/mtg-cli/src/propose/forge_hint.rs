@@ -182,11 +182,15 @@ impl ForgeHints {
     /// The hint for a card: its script found by its name, else by the name of one of its faces. `None` when the card has
     /// no script or nothing in it to show.
     pub fn hint(&self, card: &PrintedCard) -> Option<String> {
+        self.script_of(card).and_then(|script| hint_text(&script))
+    }
+
+    /// The whole text of the card's script, found by the name of the card or of one of its faces.
+    pub fn script_of(&self, card: &PrintedCard) -> Option<String> {
         let faces = card.faces.iter().map(|face| face.name.as_str());
         std::iter::once(card.name.as_str())
             .chain(faces)
             .find_map(|name| self.script(name))
-            .and_then(|script| hint_text(&script))
     }
 
     /// The text of the script that has a face named `name`: the file named by the rule first, else the index of the
