@@ -44,7 +44,7 @@ fn recipient(ctx: &Ctx, valid: &str) -> Tr<Value> {
 /// `DamageDone` and `DamageDoneOnce`: a source deals damage to a recipient.
 pub fn damage(ctx: &Ctx, p: &Params, mode: &str) -> Tr<Value> {
     keys(p, mode, &["ValidSource", "ValidTarget", "CombatDamage"])?;
-    let source = selector_any(ctx, p.get("ValidSource").unwrap_or("Card"))?;
+    let source = super::valid::source_any(ctx, p.get("ValidSource").unwrap_or("Card"))?;
     let mut pattern = json!({ "source": source });
     if let Some(target) = p.get("ValidTarget") {
         pattern["to"] = recipient(ctx, target)?;
@@ -98,7 +98,7 @@ fn becomes_target(ctx: &Ctx, p: &Params) -> Tr<Value> {
     keys(p, "BecomesTarget", &["ValidTarget", "ValidSource"])?;
     let what = selector_any(ctx, p.get("ValidTarget").unwrap_or("Card"))?;
     let by = match p.get("ValidSource") {
-        Some(valid) => selector_any(ctx, valid)?,
+        Some(valid) => super::valid::source_any(ctx, valid)?,
         None => Vec::new(),
     };
     Ok(json!({"BecomesTarget": {"what": what, "by": by}}))

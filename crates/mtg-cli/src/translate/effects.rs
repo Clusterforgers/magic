@@ -6,7 +6,7 @@ use super::amount::amount;
 use super::condition::prefixed;
 use super::ctx::{Ctx, Tr, only, unmapped};
 use super::remember;
-use super::valid::{defined, selector_any, subject};
+use super::valid::{defined, objects, selector_any, subject};
 use super::{effects_effect, effects_loop, effects_obj, effects_zone, tokens};
 use crate::forge::script::Params;
 
@@ -19,7 +19,15 @@ pub fn chain(ctx: &mut Ctx, params: &Params) -> Tr<Vec<Value>> {
 /// is paid as it resolves: its effects and those after it happen if the cost is paid.
 pub fn chain_at(ctx: &mut Ctx, p: &Params, top: bool) -> Tr<Vec<Value>> {
     ctx.mark_parent();
-    let (condition, own) = prefixed(ctx, p)?;
+    // A condition on a line that picks its own target reads that target, which the line declares only after it.
+    let coming = p
+        .has("ValidTgts")
+        .then(|| u8::try_from(ctx.targets.len()).ok())
+        .flatten();
+    ctx.coming = coming;
+    let stated = prefixed(ctx, p);
+    ctx.coming = None;
+    let (condition, own) = stated?;
     let unless_keys = [
         "UnlessCost",
         "UnlessPayer",
@@ -33,6 +41,14 @@ pub fn chain_at(ctx: &mut Ctx, p: &Params, top: bool) -> Tr<Vec<Value>> {
         (true, false) => &["Optional"],
     };
     let mut effects = line(ctx, &own.without(&unless_keys).without(spent))?;
+    if let (Some(index), Some(condition)) = (coming, &condition)
+        && usize::from(index) >= ctx.targets.len()
+        && condition
+            .to_string()
+            .contains(&json!({ "Target": index }).to_string())
+    {
+        return unmapped("defined:Targeted-without-target");
+    }
     if asks {
         let who = may_decider(ctx, p)?;
         let mut node = serde_json::Map::new();
@@ -442,7 +458,23 @@ fn delayed(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
     let Some(execute) = p.get("Execute") else {
         return unmapped("key:DelayedTrigger.no-Execute");
     };
+    // The objects the trigger is about, which `Card.IsTriggerRemembered` in its event names.
+    let pin = match p.get("RememberObjects") {
+        None => None,
+        Some("Remembered" | "RememberedLKI") if ctx.remembered.is_some() => ctx.remembered.clone(),
+        Some("Targeted") => Some(objects(ctx.last_target()?)?),
+        Some("ParentTarget") => Some(objects(ctx.parent()?)?),
+        Some("Self") => Some(json!("This")),
+        Some(other) => return unmapped(format!("key:DelayedTrigger.RememberObjects={other}")),
+    };
     let (when, this_turn) = if p.get("Mode") == Some("Phase") {
+        // A step has no event to name the objects in; the lines after it read them as remembered.
+        if let Some(other) = p
+            .get("RememberObjects")
+            .filter(|word| !matches!(*word, "Remembered" | "RememberedLKI"))
+        {
+            return unmapped(format!("key:DelayedTrigger.RememberObjects={other}"));
+        }
         (delayed_step(p)?, false)
     } else {
         // The ability's own keys are not part of the event.
@@ -455,13 +487,11 @@ fn delayed(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
             "SorcerySpeed",
             "PlayerTurn",
         ]);
-        super::triggers::delayed_when(ctx, &event)?
+        let before = std::mem::replace(&mut ctx.pinned, pin);
+        let read = super::triggers::delayed_when(ctx, &event);
+        ctx.pinned = before;
+        read?
     };
-    match p.get("RememberObjects") {
-        None => {}
-        Some("Remembered" | "RememberedLKI") if ctx.remembered.is_some() => {}
-        Some(other) => return unmapped(format!("key:DelayedTrigger.RememberObjects={other}")),
-    }
     let part = ctx.sub(execute)?;
     let effects = chain_at(ctx, &part, false)?;
     let mut node = json!({"DelayedTrigger": {"when": when, "effects": effects}});

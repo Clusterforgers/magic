@@ -188,6 +188,45 @@ pub fn remembered(ctx: &Ctx) -> Tr<Value> {
         .map_or_else(|| unmapped("defined:Remembered-without-a-change"), Ok)
 }
 
+/// `Remembered$Amount`: how many objects the slot holds. They sit in the zone the step put them in (CR 400.7), which the
+/// selector does not know, so it looks in every zone.
+pub fn remembered_count(ctx: &Ctx) -> Tr<Value> {
+    let Some(held) = slot_ref(ctx, Slot::Remembered) else {
+        return unmapped("amount:Remembered-without-a-change");
+    };
+    let zones: Vec<Value> = [
+        "Battlefield",
+        "Hand",
+        "Library",
+        "Graveyard",
+        "Exile",
+        "Stack",
+    ]
+    .iter()
+    .map(|zone| json!({"In": zone}))
+    .collect();
+    Ok(json!({"Count": [{"Is": held}, {"AnyOf": zones}]}))
+}
+
+/// `RememberedController`: whoever controlled the objects as the step named them. What a step moved is another object
+/// (CR 400.7) whose controller is its owner, so the reading is of the target the step named, which keeps the controller
+/// it last had; a name the translator cannot trace back to a target stays a gap.
+pub fn remembered_controller(ctx: &Ctx) -> Tr<Value> {
+    let before = match &ctx.remembered {
+        Some(Value::Object(map)) if map.len() == 1 => {
+            match map.get("Bound").and_then(Value::as_str) {
+                Some(name) => ctx.moved_from.get(name).cloned(),
+                None => map.get("Target").map(|_| Value::Object(map.clone())),
+            }
+        }
+        _ => None,
+    };
+    match before {
+        Some(what) => Ok(json!({"ControllerOf": what})),
+        None => unmapped("defined:RememberedController"),
+    }
+}
+
 /// `Defined$ Imprinted`.
 pub fn imprinted(ctx: &Ctx) -> Tr<Value> {
     slot_ref(ctx, Slot::Imprinted)

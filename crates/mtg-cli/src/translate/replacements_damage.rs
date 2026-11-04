@@ -5,7 +5,7 @@ use serde_json::{Value, json};
 
 use super::ctx::{Ctx, Tr, check_keys, unmapped};
 use super::effects_obj::duration;
-use super::valid::{selector_any, subject};
+use super::valid::{selector_any, source_any, subject};
 use crate::forge::script::Params;
 
 const KEYS: [&str; 10] = [
@@ -148,7 +148,7 @@ fn static_replacement(ctx: &Ctx, p: &Params, recipient: Option<Value>, by: &Valu
         if is_remembered(word) {
             return unmapped("replacement:DamageDone-remembered-in-a-static");
         }
-        when.insert("source".into(), json!(selector_any(ctx, word)?));
+        when.insert("source".into(), json!(source_any(ctx, word)?));
     }
     if let Some(combat) = combat(p)? {
         when.insert("combat".into(), json!(combat));
@@ -248,7 +248,7 @@ fn one_shield(
             return unmapped("replacement:DamageDone-shield-source");
         }
         (Some(word), _) => {
-            when.insert("source".into(), json!(selector_any(ctx, word)?));
+            when.insert("source".into(), json!(source_any(ctx, word)?));
         }
         (None, _) => {}
     }

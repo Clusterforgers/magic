@@ -237,7 +237,10 @@ fn event_amount(ctx: &Ctx, expression: &str) -> Tr<Option<Value>> {
         | "TriggeredSourceLKICopy" => super::triggered::resolve(ctx.trigger.as_ref(), head)?,
         "Enchanted" | "Equipped" => json!("Attached"),
         "Sacrificed" => json!("Paid"),
-        "Remembered" | "RememberedLKI" if what != "Amount" => match &ctx.remembered {
+        "Remembered" | "RememberedLKI" if what == "Amount" => {
+            return super::memory::remembered_count(ctx).map(Some);
+        }
+        "Remembered" | "RememberedLKI" => match &ctx.remembered {
             Some(remembered) => remembered.clone(),
             None => return unmapped("amount:Remembered-without-a-change"),
         },

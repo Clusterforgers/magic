@@ -1,6 +1,8 @@
 //! `Effect::DelayedTrigger`: a delayed triggered ability is set up (CR 603.7).
 
 use mtg_cards::effect::Effect;
+use mtg_cards::refs::Ref;
+use mtg_cards::trigger::TriggerPattern;
 use mtg_cards::value::Amount;
 
 use super::wrong_effect;
@@ -75,8 +77,9 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         source,
         snapshot,
         ability,
-        bindings,
+        mut bindings,
     } = origin(cx)?;
+    let when = name_targets(cx, when, &mut bindings)?;
     let state = cx.state();
     Ok(Run::events(vec![Event::DelayedTriggerCreated(Box::new(
         DelayedCreated {
@@ -85,7 +88,7 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
             snapshot,
             controller: cx.controller(),
             ability,
-            when: when.clone(),
+            when,
             once: *once,
             this_turn: *this_turn,
             effects: fixed_target_stats(cx, effects)?,
@@ -93,6 +96,53 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
             bindings,
         },
     ))]))
+}
+
+/// The event pattern with each `Target` it names replaced by a bound name that holds the targets as chosen now: the delayed
+/// ability has no targets of its own, and "when that creature dies" must keep the creature the spell chose.
+fn name_targets(
+    cx: &Cx<'_>,
+    when: &TriggerPattern,
+    bindings: &mut Vec<(String, Vec<Target>)>,
+) -> Result<TriggerPattern, ResolveError> {
+    let bad = |error: serde_json::Error| ResolveError::Invalid(format!("delayed event: {error}"));
+    let mut tree = serde_json::to_value(when).map_err(bad)?;
+    let mut named = Vec::new();
+    rename_targets(&mut tree, &mut named);
+    for index in named {
+        let chosen = cx.scope.refs(&Ref::Target(index))?;
+        bindings.push((target_name(index), chosen));
+    }
+    serde_json::from_value(tree).map_err(bad)
+}
+
+fn target_name(index: u8) -> String {
+    format!("?target{index}")
+}
+
+fn rename_targets(tree: &mut serde_json::Value, named: &mut Vec<u8>) {
+    match tree {
+        serde_json::Value::Object(fields) => {
+            let index = (fields.len() == 1)
+                .then(|| fields.get("Target").and_then(serde_json::Value::as_u64))
+                .flatten()
+                .and_then(|index| u8::try_from(index).ok());
+            if let Some(index) = index {
+                if !named.contains(&index) {
+                    named.push(index);
+                }
+                *tree = serde_json::json!({ "Bound": target_name(index) });
+            } else {
+                fields
+                    .values_mut()
+                    .for_each(|field| rename_targets(field, named));
+            }
+        }
+        serde_json::Value::Array(items) => items
+            .iter_mut()
+            .for_each(|item| rename_targets(item, named)),
+        _ => {}
+    }
 }
 
 /// The delayed effects with every stat of a target of this resolution read now (CR 608.2h): the delayed ability has no

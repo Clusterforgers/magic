@@ -281,6 +281,39 @@ fn commas(spec: &str) -> String {
     }
 }
 
+/// `ValidSource$` as a selector. Forge writes "a source" as `Card.YouCtrl,Emblem.YouCtrl` because an emblem is not a card;
+/// the selector of a source already takes any object, so an emblem alternative that a card alternative with the same
+/// properties covers (`Other` aside: an emblem is never the object itself) is dropped.
+pub fn source_any(ctx: &Ctx, spec: &str) -> Tr<Vec<Value>> {
+    let spec = commas(spec);
+    let alternatives: Vec<&str> = spec.split(',').map(str::trim).collect();
+    let props = |alternative: &str, base: &str| -> Option<Vec<String>> {
+        let rest = alternative.strip_prefix(base)?;
+        if !rest.is_empty() && !rest.starts_with('.') {
+            return None;
+        }
+        let mut props: Vec<String> = rest
+            .split('+')
+            .map(|part| part.trim_start_matches('.').to_owned())
+            .filter(|part| !part.is_empty() && part != "Other")
+            .collect();
+        props.sort();
+        Some(props)
+    };
+    let kept: Vec<&str> = alternatives
+        .iter()
+        .copied()
+        .filter(|alternative| {
+            props(alternative, "Emblem").is_none_or(|emblem| {
+                !alternatives
+                    .iter()
+                    .any(|other| props(other, "Card").as_ref() == Some(&emblem))
+            })
+        })
+        .collect();
+    selector_any(ctx, &kept.join(","))
+}
+
 /// A comma-separated list of alternatives as a selector: one alternative, or alternatives that share their predicates but
 /// one each (`Instant.YouCtrl,Sorcery.YouCtrl`, `Creature.attacking,Creature.blocking`).
 pub fn selector_any(ctx: &Ctx, spec: &str) -> Tr<Vec<Value>> {
@@ -411,6 +444,7 @@ pub fn defined(ctx: &Ctx, word: &str) -> Tr<Value> {
             || unmapped("defined:ChosenCard-without-a-choice"),
             |name| Ok(json!({"Bound": name})),
         ),
+        "RememberedController" => super::memory::remembered_controller(ctx),
         "DelayTriggerRemembered"
         | "DelayTriggerRememberedLKI"
         | "DelayedTriggerRemembered"
