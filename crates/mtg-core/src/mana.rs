@@ -354,6 +354,11 @@ impl ManaCost {
         self.0.iter().all(|s| s.is_plain())
     }
 
+    /// Whether the cost is exactly `n` generic mana and no other symbol (`{1}`; `{0}` holds no symbol), not merely a mana value of `n`. A card without a cost has none to ask.
+    pub fn is_generic_only(&self, n: u32) -> bool {
+        self.0.iter().all(|s| matches!(s, ManaSymbol::Generic(_))) && self.generic() == n
+    }
+
     /// Generic requirement of the plain symbols (payable with any mana); hybrid ones are in [`resolutions`](Self::resolutions).
     pub fn generic(&self) -> u32 {
         self.0
@@ -507,12 +512,29 @@ impl fmt::Display for ManaCost {
 
 #[cfg(test)]
 mod tests {
-    //! Goal: mana cost parsing, values, colours and display agree for every symbol form, and costs are canonical values, since payment, deck import and the card pips rely on them.
+    //! Goal: mana cost parsing, values, colours and display agree for every symbol form, a cost is generic-only only when no coloured, hybrid or Phyrexian symbol is in it, and costs are canonical values, since payment, deck import and the card pips rely on them.
     use super::*;
     use proptest::prelude::*;
     use rstest::rstest;
 
     use Color::{Black, Blue, Green, Red, White};
+
+    #[rstest]
+    #[case::one("{1}", 1, true)]
+    #[case::zero("{0}", 0, true)]
+    #[case::white("{W}", 1, false)]
+    #[case::hybrid("{U/B}", 1, false)]
+    #[case::phyrexian("{B/P}", 1, false)]
+    #[case::colourless("{C}", 1, false)]
+    #[case::two("{2}", 1, false)]
+    #[case::generic_and_colour("{1}{W}", 1, false)]
+    fn a_generic_only_cost_is_exactly_that_many_generic_mana(
+        #[case] cost: &str,
+        #[case] n: u32,
+        #[case] expected: bool,
+    ) {
+        assert_eq!(ManaCost::parse(cost).unwrap().is_generic_only(n), expected);
+    }
 
     fn colors_of(text: &str) -> ColorSet {
         text.chars().filter_map(Color::from_symbol).collect()

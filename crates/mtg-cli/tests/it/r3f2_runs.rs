@@ -146,3 +146,74 @@ fn food_world() -> World {
     );
     world
 }
+
+const URZA: &str = "Name:Urza's Saga\nManaCost:no cost\nTypes:Enchantment Land Urza's Saga\nK:Chapter:3:Animate1,Animate2,Tutor\nSVar:Animate1:DB$ Animate | Defined$ Self | Abilities$ ABMana | Duration$ Permanent | SpellDescription$ CARDNAME gains \"{T}: Add {C}.\"\nSVar:ABMana:AB$ Mana | Cost$ T | Produced$ C | SpellDescription$ Add {C}.\nSVar:Animate2:DB$ Animate | Defined$ Self | Abilities$ ABToken | Duration$ Permanent | SpellDescription$ CARDNAME gains a token ability.\nSVar:ABToken:AB$ Token | Cost$ 2 T | TokenScript$ c_0_0_a_construct_total_artifacts | SpellDescription$ Create a Construct.\nSVar:Tutor:DB$ ChangeZone | Origin$ Library | Destination$ Battlefield | ChangeType$ Artifact.ManaCost0,Artifact.ManaCost1 | ChangeNum$ 1 | SpellDescription$ Search your library for an artifact card with mana cost {0} or {1}, put it onto the battlefield, then shuffle.\n";
+
+fn artifact(name: &str, cost: &str) -> Arc<CardDefinition> {
+    Arc::new(
+        CardDefinition::new(name)
+            .with_type(CardType::Artifact)
+            .with_mana_cost(ManaCost::parse(cost).unwrap()),
+    )
+}
+
+#[test]
+fn urzas_saga_offers_only_artifacts_whose_cost_is_zero_or_one_generic() {
+    let mut cards = library(20);
+    cards.extend([
+        artifact("Cost W", "{W}"),
+        artifact("Cost 1", "{1}"),
+        artifact("Cost 0", "{0}"),
+        artifact("Cost 2", "{2}"),
+        artifact("Cost UB", "{U/B}"),
+        artifact("Cost P", "{B/P}"),
+    ]);
+    let mut world = World::default();
+    let construct = Script::parse(
+        "Name:Construct Token\nManaCost:no cost\nTypes:Artifact Creature Construct\nPT:0/0\n",
+    );
+    world.tokens.insert(
+        "c_0_0_a_construct_total_artifacts".to_owned(),
+        construct.faces.into_iter().next().unwrap(),
+    );
+    let saga = translated_in(
+        &world,
+        URZA,
+        "Urza's Saga",
+        "Enchantment Land — Urza's Saga",
+        "",
+    );
+    let scenario = Scenario::new(2)
+        .hand(0, [saga])
+        .battlefield(0, (0..2).map(|_| ready(forest())).collect::<Vec<_>>())
+        .library(0, cards)
+        .library(1, library(20));
+    let mut driver = Driver::from_scenario(scenario).unwrap();
+    driver.play_land("Urza's Saga").unwrap();
+    driver.idle_until(7, Step::Main1).unwrap();
+    let mut offered: Vec<String> = Vec::new();
+    for _ in 0..40 {
+        let decision = driver.decision().unwrap().clone();
+        match &decision.kind {
+            mtg_engine::decision::DecisionKind::ChooseCards(o) => {
+                offered = o
+                    .from
+                    .iter()
+                    .map(|i| driver.state().object(*i).unwrap().card().name.clone())
+                    .collect();
+                let pick = o.from.iter().copied().take(1).collect();
+                driver
+                    .answer(mtg_engine::decision::Answer::ChooseCards(
+                        mtg_engine::choose::CardsChoice(pick),
+                    ))
+                    .unwrap();
+            }
+            _ if driver.state().stack().is_empty() && !offered.is_empty() => break,
+            _ => {
+                driver.answer_passively().unwrap();
+            }
+        }
+    }
+    offered.sort();
+    assert_eq!(offered, ["Cost 0", "Cost 1"]);
+}

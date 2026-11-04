@@ -667,6 +667,7 @@ impl<'a> Walker<'a> {
             | Pred::HasAnyCounter
             | Pred::ChosenColor
             | Pred::XInCost
+            | Pred::GenericCost(_)
             | Pred::Goaded
             | Pred::ChosenSubtype
             | Pred::ChosenName

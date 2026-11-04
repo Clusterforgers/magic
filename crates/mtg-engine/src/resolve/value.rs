@@ -1212,6 +1212,7 @@ impl<'a> Scope<'a> {
             | Pred::SharesType(_)
             | Pred::SharesColor(_)
             | Pred::XInCost
+            | Pred::GenericCost(_)
             | Pred::Goaded
             | Pred::HasAttached(_)
             | Pred::AttachedTo(_) => self.w6d_pred(pred, seen)?,

@@ -38,6 +38,7 @@ impl Scope<'_> {
             Pred::SharesType(named) => self.w6d_shares_type(named, seen)?,
             Pred::SharesColor(named) => self.w6d_shares_color(named, seen)?,
             Pred::XInCost => Self::w6d_x_in_cost(seen),
+            Pred::GenericCost(n) => Self::generic_cost(*n, seen),
             Pred::Goaded => self.w6d_goaded(seen),
             Pred::HasAttached(attached) => self.w6d_has_attached(attached, seen)?,
             Pred::AttachedTo(host) => self.w6d_attached_to(host, seen)?,
@@ -90,6 +91,14 @@ impl Scope<'_> {
         seen.card
             .filter(|card| card.face_down().is_none())
             .is_some_and(|card| card.card().x_in_cost > 0)
+    }
+
+    /// Whether the object's mana cost is exactly `n` generic mana.
+    fn generic_cost(n: u32, seen: &Seen<'_>) -> bool {
+        seen.card
+            .filter(|card| card.face_down().is_none())
+            .and_then(|card| card.card().mana_cost.as_ref())
+            .is_some_and(|cost| cost.is_generic_only(n))
     }
 
     /// Whether the object is a creature on the battlefield that some player goads.

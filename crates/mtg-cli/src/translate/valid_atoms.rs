@@ -237,19 +237,11 @@ fn counted(prop: &str) -> Option<Value> {
     Some(compare(stat, op, digits.parse().ok()?))
 }
 
-/// `ManaCost0`, `ManaCost1`: a mana cost that totals exactly that, so a card without one is out. {X} counts as zero in
-/// the library, and a land or a suspend-only card (Lotus Bloom) has mana value 0 and no cost.
+/// `ManaCost0`, `ManaCost1`: a mana cost of exactly that many generic mana (`{1}`), not just that mana value: `{W}`,
+/// `{U/B}` and `{B/P}` are other costs, and a land or a suspend-only card (Lotus Bloom) has no cost at all.
 fn mana_cost(prop: &str) -> Option<Vec<Value>> {
     let number: i64 = prop.strip_prefix("ManaCost")?.parse().ok()?;
-    let mut preds = vec![
-        compare("ManaValue", "Eq", number),
-        json!({"Not": "XInCost"}),
-    ];
-    if number == 0 {
-        preds.push(json!({"Not": {"Type": "Land"}}));
-        preds.push(json!({"Not": {"HasKeywordNamed": "Suspend"}}));
-    }
-    Some(preds)
+    Some(vec![json!({"GenericCost": number})])
 }
 
 fn compare(stat: &str, op: &str, to: i64) -> Value {
