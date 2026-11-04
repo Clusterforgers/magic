@@ -14,9 +14,14 @@
               {
                 "If": {
                   "condition": {
-                    "Compare": { "left": { "LowestLife": "Opponents" }, "op": "Ge", "right": 11 }
+                    "Not": {
+                      "Any": [
+                        { "Compare": { "left": { "Life": "Opponents" }, "op": "Le", "right": 10 } }
+                      ]
+                    }
                   },
-                  "then": [{ "LoseLife": { "amount": 1 } }]
+                  "then": [],
+                  "otherwise": [{ "LoseLife": { "amount": 1 } }]
                 }
               }
             ]

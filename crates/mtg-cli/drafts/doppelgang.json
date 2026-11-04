@@ -9,7 +9,7 @@
       "abilities": [
         {
           "Spell": {
-            "targets": [{ "what": { "Object": [] }, "bounds": { "min": "X", "max": "X" } }],
+            "targets": [{ "what": { "Object": [] }, "bounds": { "min": "X", "max": 1 } }],
             "effects": [
               { "CreateToken": { "token": { "CopyOf": { "of": { "Target": 0 } } }, "count": "X" } }
             ]

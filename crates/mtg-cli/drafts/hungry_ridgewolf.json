@@ -12,17 +12,14 @@
             "affected": "This",
             "mods": [{ "ModifyPT": { "power": 1, "toughness": 0 } }, { "AddKeyword": "Trample" }],
             "condition": {
-              "Compare": {
-                "left": {
-                  "Count": [
-                    { "AnyOf": [{ "Subtype": "Wolf" }, { "Subtype": "Werewolf" }] },
-                    "Other",
-                    { "ControlledBy": "You" }
-                  ]
+              "Any": [
+                {
+                  "Compare": { "left": { "Count": ["Commander", "This"] }, "op": "Ge", "right": 1 }
                 },
-                "op": "Ge",
-                "right": 1
-              }
+                {
+                  "Compare": { "left": { "Count": ["Commander", "This"] }, "op": "Ge", "right": 1 }
+                }
+              ]
             }
           }
         }

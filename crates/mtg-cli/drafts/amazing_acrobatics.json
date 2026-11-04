@@ -12,19 +12,13 @@
             "effects": [
               {
                 "Modal": {
-                  "choose": { "min": 1, "max": 2 },
                   "modes": [
                     {
                       "targets": [{ "what": { "Object": ["Spell"] } }],
                       "effects": [{ "Counter": { "what": { "Target": 0 } } }]
                     },
                     {
-                      "targets": [
-                        {
-                          "what": { "Object": [{ "Type": "Creature" }] },
-                          "bounds": { "min": 1, "max": 2 }
-                        }
-                      ],
+                      "targets": [{ "what": { "Object": [{ "Type": "Creature" }] }, "divide": 1 }],
                       "effects": [{ "Tap": { "what": { "Target": 0 } } }]
                     }
                   ]

@@ -9,8 +9,8 @@
       "abilities": [
         {
           "Triggered": {
-            "when": { "BecomesBlocked": { "what": ["This"] } },
-            "effects": [{ "Move": { "what": "This", "to": "Hand" } }]
+            "when": { "BecomesBlocked": { "what": [{ "Is": "This" }] } },
+            "effects": [{ "Move": { "what": "Triggering", "to": "Hand" } }]
           }
         }
       ]

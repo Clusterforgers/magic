@@ -13,13 +13,8 @@
               "Attacks": {
                 "what": [
                   { "Type": "Creature" },
-                  {
-                    "AnyOf": [
-                      { "HasAttached": [{ "Subtype": "Aura" }] },
-                      { "HasAttached": [{ "Subtype": "Equipment" }] }
-                    ]
-                  },
-                  { "ControlledBy": "You" }
+                  { "ControlledBy": "You" },
+                  { "HasAttached": [{ "Type": "Artifact" }, { "Type": "Enchantment" }] }
                 ]
               }
             },

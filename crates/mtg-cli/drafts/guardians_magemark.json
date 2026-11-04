@@ -14,8 +14,8 @@
             "affected": {
               "Each": [
                 { "Type": "Creature" },
-                { "HasAttached": [{ "Subtype": "Aura" }] },
-                { "ControlledBy": "You" }
+                { "ControlledBy": "You" },
+                { "HasAttached": [{ "Type": "Artifact" }] }
               ]
             },
             "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }]

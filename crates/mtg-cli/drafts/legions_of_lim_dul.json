@@ -6,9 +6,7 @@
     {
       "name": "Legions of Lim-Dûl",
       "oracle_fingerprint": "c9d31062908a06ef78d242326dd3728e",
-      "abilities": [
-        { "Keyword": { "Landwalk": [{ "Subtype": "Swamp" }, { "Supertype": "Snow" }] } }
-      ]
+      "abilities": [{ "Keyword": { "Landwalk": [{ "Subtype": "Snow" }, { "Subtype": "Swamp" }] } }]
     }
   ]
 }

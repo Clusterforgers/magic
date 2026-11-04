@@ -13,17 +13,12 @@
               {
                 "RepeatEach": {
                   "over": "Opponents",
-                  "as": "each",
+                  "as": "opponent",
                   "effects": [
                     {
                       "DealDamage": {
-                        "to": { "Bound": "each" },
-                        "amount": {
-                          "Count": [
-                            { "Subtype": "Island" },
-                            { "ControlledBy": { "Bound": "each" } }
-                          ]
-                        }
+                        "to": { "Bound": "opponent" },
+                        "amount": { "Count": [{ "Type": "Instant" }] }
                       }
                     }
                   ]

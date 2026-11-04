@@ -11,9 +11,23 @@
           "Spell": {
             "effects": [
               {
-                "Move": {
-                  "what": { "Each": [{ "Type": "Creature" }, { "In": "Graveyard" }] },
-                  "to": "Hand"
+                "RepeatEach": {
+                  "over": "EachPlayer",
+                  "as": "player",
+                  "effects": [
+                    {
+                      "Move": {
+                        "what": {
+                          "Each": [
+                            { "Type": "Creature" },
+                            { "In": "Graveyard" },
+                            { "OwnedBy": { "Bound": "player" } }
+                          ]
+                        },
+                        "to": "Hand"
+                      }
+                    }
+                  ]
                 }
               }
             ]

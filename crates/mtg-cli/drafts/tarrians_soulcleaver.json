@@ -11,12 +11,24 @@
         {
           "Triggered": {
             "when": {
-              "ZoneChange": {
-                "what": [{ "AnyOf": [{ "Type": "Creature" }, { "Type": "Artifact" }] }, "Other"],
-                "from": "Battlefield",
-                "to": "Graveyard"
-              }
+              "AnyOf": [
+                {
+                  "ZoneChange": {
+                    "what": [{ "Type": "Artifact" }],
+                    "from": "Battlefield",
+                    "to": "Graveyard"
+                  }
+                },
+                {
+                  "ZoneChange": {
+                    "what": [{ "Type": "Creature" }],
+                    "from": "Battlefield",
+                    "to": "Graveyard"
+                  }
+                }
+              ]
             },
+            "if": { "Not": { "Matches": { "subject": "This", "selector": [{ "Is": "This" }] } } },
             "effects": [{ "PutCounters": { "on": "Attached", "counter": "+1/+1" } }]
           }
         },

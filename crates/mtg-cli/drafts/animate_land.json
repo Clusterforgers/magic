@@ -17,7 +17,8 @@
                   "mods": [{ "SetPT": { "power": 3, "toughness": 3 } }, { "AddType": "Creature" }],
                   "duration": "UntilEndOfTurn"
                 }
-              }
+              },
+              { "Attach": { "what": { "Target": 0 }, "to": { "Target": 0 } } }
             ]
           }
         }

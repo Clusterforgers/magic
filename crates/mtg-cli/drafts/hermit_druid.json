@@ -9,17 +9,17 @@
       "abilities": [
         {
           "Activated": {
-            "cost": [{ "Mana": "{G}" }, "Tap"],
+            "cost": [{ "Mana": "{G}" }, { "TapPermanents": { "filter": [{ "Type": "Creature" }] } }],
             "effects": [
               {
                 "RevealUntil": {
-                  "filter": [{ "Type": "Land" }, { "Supertype": "Basic" }],
+                  "filter": [{ "Type": "Land" }, { "Subtype": "Basic" }],
                   "as": "found",
-                  "revealed_as": "revealed2"
+                  "revealed_as": "revealed"
                 }
               },
               { "Move": { "what": { "Bound": "found" }, "to": "Hand" } },
-              { "Move": { "what": { "Bound": "revealed2" }, "to": "Graveyard" } }
+              { "Move": { "what": { "Bound": "revealed" }, "to": "Graveyard" } }
             ]
           }
         }

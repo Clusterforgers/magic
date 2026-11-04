@@ -9,8 +9,11 @@
       "abilities": [
         {
           "Static": {
-            "affected": { "Each": [{ "Type": "Creature" }, { "Type": "Land" }] },
-            "mods": [{ "ModifyPT": { "power": 2, "toughness": 2 } }]
+            "affected": "This",
+            "mods": [{ "ModifyPT": { "power": 2, "toughness": 2 } }],
+            "condition": {
+              "Matches": { "subject": "This", "selector": [{ "Subtype": "Creature" }] }
+            }
           }
         }
       ]

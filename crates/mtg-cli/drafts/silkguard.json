@@ -12,34 +12,10 @@
             "targets": [
               {
                 "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
-                "bounds": { "min": 0, "max": "X" }
+                "bounds": { "min": "X", "max": 1 }
               }
             ],
-            "effects": [
-              { "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1" } },
-              {
-                "Continuous": {
-                  "affected": {
-                    "Each": [
-                      {
-                        "AnyOf": [
-                          { "Subtype": "Aura" },
-                          { "Subtype": "Equipment" },
-                          {
-                            "Not": {
-                              "AnyOf": [{ "Not": { "Type": "Creature" } }, { "Not": "Modified" }]
-                            }
-                          }
-                        ]
-                      },
-                      { "ControlledBy": "You" }
-                    ]
-                  },
-                  "mods": [{ "AddKeyword": "Hexproof" }],
-                  "duration": "UntilEndOfTurn"
-                }
-              }
-            ]
+            "effects": [{ "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1" } }]
           }
         }
       ]

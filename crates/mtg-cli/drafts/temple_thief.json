@@ -13,12 +13,11 @@
             "mods": [
               {
                 "CantBeBlockedBy": [
-                  { "Type": "Creature" },
-                  {
-                    "AnyOf": [{ "HasAttached": [{ "Subtype": "Aura" }] }, { "Type": "Enchantment" }]
-                  }
+                  { "HasAttached": [{ "Type": "Artifact" }] },
+                  { "Type": "Creature" }
                 ]
-              }
+              },
+              { "CantBeBlockedBy": [{ "Type": "Enchantment" }, { "Type": "Creature" }] }
             ]
           }
         }

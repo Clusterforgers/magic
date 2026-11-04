@@ -16,14 +16,8 @@
                     {
                       "AnyOf": [
                         { "Type": "Land" },
-                        {
-                          "Not": {
-                            "AnyOf": [
-                              { "Not": { "Type": "Creature" } },
-                              { "Not": { "Not": { "Color": "Black" } } }
-                            ]
-                          }
-                        }
+                        { "Type": "Creature" },
+                        { "Not": { "Color": "Black" } }
                       ]
                     }
                   ]

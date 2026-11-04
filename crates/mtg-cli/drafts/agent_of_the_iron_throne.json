@@ -9,15 +9,21 @@
       "abilities": [
         {
           "Static": {
-            "affected": { "Each": [{ "Type": "Creature" }, "Commander", { "OwnedBy": "You" }] },
+            "affected": "This",
             "mods": [
+              {
+                "GrantAbility": {
+                  "Activated": { "cost": [], "effects": [{ "Transform": { "what": "This" } }] }
+                }
+              },
               {
                 "GrantAbility": {
                   "Triggered": {
                     "when": {
                       "ZoneChange": {
                         "what": [
-                          { "AnyOf": [{ "Type": "Artifact" }, { "Type": "Creature" }] },
+                          { "Type": "Artifact" },
+                          { "Type": "Creature" },
                           { "ControlledBy": "You" }
                         ],
                         "from": "Battlefield",
@@ -28,7 +34,13 @@
                   }
                 }
               }
-            ]
+            ],
+            "condition": {
+              "Matches": {
+                "subject": "This",
+                "selector": [{ "Is": "This" }, { "Is": "This" }, { "OwnedBy": "You" }]
+              }
+            }
           }
         }
       ]

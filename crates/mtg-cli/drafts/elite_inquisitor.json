@@ -9,9 +9,15 @@
       "abilities": [
         { "Keyword": "FirstStrike" },
         { "Keyword": "Vigilance" },
-        { "Keyword": { "Protection": [{ "Subtype": "Vampire" }] } },
-        { "Keyword": { "Protection": [{ "Subtype": "Werewolf" }] } },
-        { "Keyword": { "Protection": [{ "Subtype": "Zombie" }] } }
+        {
+          "Keyword": {
+            "Protection": [
+              { "Subtype": "Vampire" },
+              { "Subtype": "Werewolf" },
+              { "Subtype": "Zombie" }
+            ]
+          }
+        }
       ]
     }
   ]

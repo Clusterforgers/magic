@@ -17,7 +17,8 @@
                   "mods": [{ "ModifyPT": { "power": 2, "toughness": 0 } }],
                   "duration": "UntilEndOfTurn"
                 }
-              }
+              },
+              { "Attach": { "what": "This", "to": "This" } }
             ]
           }
         }

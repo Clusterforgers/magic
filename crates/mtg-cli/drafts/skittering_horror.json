@@ -10,6 +10,7 @@
         {
           "Triggered": {
             "when": { "SpellCast": { "what": [{ "Type": "Creature" }], "by": "You" } },
+            "if": { "Compare": { "left": 1, "op": "Eq", "right": 1 } },
             "effects": [{ "Sacrifice": { "filter": ["This"] } }]
           }
         }

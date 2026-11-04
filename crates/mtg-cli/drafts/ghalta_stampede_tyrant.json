@@ -15,18 +15,13 @@
               {
                 "Choose": {
                   "from": {
-                    "Each": [{ "Type": "Creature" }, { "OwnedBy": "You" }, { "In": "Hand" }]
+                    "Each": [{ "In": "Hand" }, { "OwnedBy": "You" }, { "Type": "Creature" }]
                   },
-                  "count": {
-                    "min": 0,
-                    "max": {
-                      "Count": [{ "Type": "Creature" }, { "OwnedBy": "You" }, { "In": "Hand" }]
-                    }
-                  },
-                  "as": "picked"
+                  "count": { "min": 0, "max": 1 },
+                  "as": "card"
                 }
               },
-              { "Move": { "what": { "Bound": "picked" }, "to": { "Battlefield": {} } } }
+              { "Move": { "what": { "Bound": "card" }, "to": { "Battlefield": {} } } }
             ]
           }
         }
