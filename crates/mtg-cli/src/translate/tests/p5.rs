@@ -444,6 +444,29 @@ fn villainous_choice_gaps(#[case] line: &str, #[case] gap: &str) {
     assert_eq!(gaps(&spell(line)), [gap]);
 }
 
+#[test]
+fn a_delayed_trigger_reads_any_trigger_mode() {
+    let line = "DelayedTrigger | Mode$ SpellCast | ValidActivatingPlayer$ You | ThisTurn$ True | Execute$ Main";
+    assert_eq!(gaps(&spell(line)), Vec::<String>::new());
+    let found = abilities(&spell(line));
+    let node = &found[0]["Spell"]["effects"][0]["DelayedTrigger"];
+    assert_eq!(node["when"], json!({"SpellCast": {"by": "You"}}));
+    assert_eq!(node["this_turn"], true);
+    assert_eq!(node["effects"], json!([{"GainLife": {"amount": 3}}]));
+}
+
+#[test]
+fn created_tokens_leave_at_the_end_step_by_name() {
+    let line = "Token | TokenScript$ w_1_1_soldier | AtEOT$ Sacrifice";
+    assert_eq!(gaps(&plain(line)), Vec::<String>::new());
+    let found = abilities(&plain(line));
+    let effects = &found[0]["Spell"]["effects"];
+    let bind = effects[0]["CreateToken"]["as"].clone();
+    assert!(bind.is_string());
+    let gone = &effects[1]["DelayedTrigger"]["effects"][0]["Sacrifice"];
+    assert_eq!(gone["filter"], json!([{"Is": {"Bound": bind}}]));
+}
+
 /// The modifications an animate line gives.
 fn animate_mods(words: &str) -> Vec<Value> {
     let line = format!("Animate | ValidTgts$ Permanent | Duration$ Permanent | {words}");
