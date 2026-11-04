@@ -219,7 +219,7 @@ fn who_picks_unknowns_stay_gaps(#[case] line: &str, #[case] gap: &str) {
 }
 
 #[rstest]
-#[case::stack("Stack", "zone:Origin=Stack")]
+#[case::stack("Stack", "defined:Stack-Targeted")]
 #[case::stack_with_battlefield("Battlefield,Stack", "zone:Origin=Battlefield,Stack")]
 #[case::command("Command", "zone:Origin=Command")]
 #[case::repeated("Graveyard,Graveyard", "zone:Origin=Graveyard,Graveyard")]
