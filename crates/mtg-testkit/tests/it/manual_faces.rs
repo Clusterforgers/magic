@@ -1,14 +1,16 @@
 //! Goal: the manual actions that turn a double-faced permanent over, put a double-faced card onto the battlefield back face up, and give a creature a combat permission until end of turn each do what the card text says through the layers, refuse what is not theirs, and replay from the log.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
+use mtg_cards::keyword::Keyword;
 use mtg_core::ids::ObjectId;
 use mtg_engine::characteristics::characteristics;
+use mtg_engine::decision::DecisionKind;
 use mtg_engine::error::IllegalAnswer;
 use mtg_engine::manual::{ManualAction, ManualRefusal, ManualZone};
 use mtg_engine::turn::Step;
 use mtg_engine::zones::Zone;
 use mtg_engine::{EngineError, Event};
-use mtg_testkit::cards::{forest, free_creature};
+use mtg_testkit::cards::{forest, free_creature, keyworded};
 use mtg_testkit::corpus::card;
 use mtg_testkit::{Driver, Scenario, ScriptError, ready};
 use rstest::rstest;
@@ -125,6 +127,125 @@ fn a_crafted_card_reaches_its_back_face_through_exile() {
         .manual(ManualAction::MoveBack { object: delver })
         .unwrap();
     assert_eq!(shown(&driver, delver).0, "Insectile Aberration");
+}
+
+/// Passes priority to the declare-attackers decision of `turn`.
+fn to_attackers(driver: &mut Driver, turn: u32) {
+    driver.idle_until(turn, Step::BeginCombat).unwrap();
+    while matches!(driver.decision().unwrap().kind, DecisionKind::Priority(_)) {
+        driver.pass().unwrap();
+    }
+}
+
+fn combat_table() -> Driver {
+    Driver::from_scenario(
+        Scenario::new(2)
+            .at(1, 0, Step::Main1)
+            .library(0, vec![forest(); 12])
+            .library(1, vec![forest(); 12])
+            .battlefield(
+                0,
+                [
+                    ready(keyworded("Mobile Fort", 3, 5, &[Keyword::Defender])),
+                    ready(free_creature("A1", 2, 2)),
+                    ready(free_creature("A2", 2, 2)),
+                    ready(forest()),
+                ],
+            )
+            .battlefield(1, [ready(free_creature("Kemba's Legion", 3, 3))]),
+    )
+    .unwrap()
+}
+
+#[rstest]
+#[case::with_the_action(true)]
+#[case::without_it(false)]
+fn a_defender_attacks_only_after_the_action(#[case] acts: bool) {
+    let mut driver = combat_table();
+    let fort = driver.id_of("Mobile Fort").unwrap();
+    if acts {
+        let events = driver
+            .manual(ManualAction::AttackDespiteDefender { object: fort })
+            .unwrap();
+        assert!(
+            events
+                .iter()
+                .any(|e| matches!(e, Event::RuleCreated { .. }))
+        );
+    }
+    to_attackers(&mut driver, 1);
+    assert_eq!(driver.attack(&[("Mobile Fort", 1)]).is_ok(), acts);
+}
+
+#[test]
+fn the_attack_permission_ends_with_the_turn() {
+    let mut driver = combat_table();
+    let fort = driver.id_of("Mobile Fort").unwrap();
+    driver
+        .manual(ManualAction::AttackDespiteDefender { object: fort })
+        .unwrap();
+    to_attackers(&mut driver, 3);
+    assert!(driver.attack(&[("Mobile Fort", 1)]).is_err());
+}
+
+#[rstest]
+#[case::one_more(1, true)]
+#[case::none(0, false)]
+fn a_blocker_blocks_extra_creatures_after_the_action(#[case] extra: u32, #[case] works: bool) {
+    let mut driver = combat_table();
+    let legion = driver.id_of("Kemba's Legion").unwrap();
+    if extra > 0 {
+        let action = ManualAction::BlockAdditional {
+            object: legion,
+            count: extra,
+        };
+        driver.manual_by(pid(1), &action).unwrap();
+    }
+    to_attackers(&mut driver, 1);
+    driver.attack(&[("A1", 1), ("A2", 1)]).unwrap();
+    while !matches!(
+        driver.decision().unwrap().kind,
+        DecisionKind::DeclareBlockers(_)
+    ) {
+        let decision = driver.decision().unwrap().clone();
+        driver.answer(Driver::passive_answer(&decision)).unwrap();
+    }
+    let blocked = driver.block(&[("Kemba's Legion", "A1"), ("Kemba's Legion", "A2")]);
+    assert_eq!(blocked.is_ok(), works);
+}
+
+#[rstest]
+#[case::zero(0)]
+#[case::too_many(100)]
+fn extra_blocks_are_limited_to_one_to_ninety_nine(#[case] count: u32) {
+    let mut driver = combat_table();
+    let object = driver.id_of("Kemba's Legion").unwrap();
+    let action = ManualAction::BlockAdditional { object, count };
+    let got = refused(driver.manual_by(pid(1), &action));
+    assert_eq!(got, ManualRefusal::OutOfRange("the number of extra blocks"));
+}
+
+#[rstest]
+#[case::a_land("Forest", false)]
+#[case::an_opponents_creature("Kemba's Legion", true)]
+fn combat_permissions_refuse_what_is_not_the_seats_creature(
+    #[case] name: &str,
+    #[case] theirs: bool,
+    #[values(true, false)] attack: bool,
+) {
+    let mut driver = combat_table();
+    let object = driver.id_of(name).unwrap();
+    let action = if attack {
+        ManualAction::AttackDespiteDefender { object }
+    } else {
+        ManualAction::BlockAdditional { object, count: 1 }
+    };
+    let want = if theirs {
+        ManualRefusal::NotYours
+    } else {
+        ManualRefusal::NotACreature(object)
+    };
+    assert_eq!(refused(driver.manual(action)), want);
 }
 
 #[test]

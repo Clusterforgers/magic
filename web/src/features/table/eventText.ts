@@ -448,6 +448,13 @@ export function describeManual(
     return `${who} gives ${n.card(object)} ${signed(power)}/${signed(toughness)} until end of turn (by hand)`
   }
   if ('Transform' in action) return `${who} turns ${n.card(action.Transform.object)} over (by hand)`
+  if ('AttackDespiteDefender' in action) {
+    return `${who} lets ${n.card(action.AttackDespiteDefender.object)} attack despite defender this turn (by hand)`
+  }
+  if ('BlockAdditional' in action) {
+    const { object, count } = action.BlockAdditional
+    return `${who} lets ${n.card(object)} block ${count} more ${count === 1 ? 'creature' : 'creatures'} this turn (by hand)`
+  }
   if ('MoveBack' in action) {
     return `${who} puts ${n.card(action.MoveBack.object)} onto the battlefield back face up (by hand)`
   }

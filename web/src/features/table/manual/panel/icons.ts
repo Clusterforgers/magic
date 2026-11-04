@@ -19,6 +19,7 @@ import {
   RotateCwIcon,
   ScanEyeIcon,
   SearchIcon,
+  ShieldIcon,
   ShuffleIcon,
   SkullIcon,
   SparklesIcon,
@@ -65,4 +66,6 @@ export const CARD_COMMAND_ICONS: Record<CardCommandId, LucideIcon> = {
   give: HandshakeIcon,
   transform: FlipHorizontal2Icon,
   back: FlipHorizontal2Icon,
+  defender: SwordIcon,
+  blocks: ShieldIcon,
 }

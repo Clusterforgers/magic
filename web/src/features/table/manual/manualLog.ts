@@ -23,6 +23,8 @@ const CHANGES: Record<ActionKind, readonly string[]> = {
   Pump: ['EffectCreated'],
   Transform: ['Transformed'],
   MoveBack: ['ZoneChanged', 'Transformed'],
+  AttackDespiteDefender: ['RuleCreated'],
+  BlockAdditional: ['EffectCreated'],
   LookTop: ['LibraryLooked'],
   ArrangeTop: ['Scried', 'Surveilled', 'ZoneChanged'],
   Shuffle: ['LibraryShuffled'],

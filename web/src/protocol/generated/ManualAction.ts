@@ -138,7 +138,19 @@ object: ObjectId, } } | { "MoveBack": {
 /**
  * The card.
  */
-object: ObjectId, } } | { "LookTop": { 
+object: ObjectId, } } | { "AttackDespiteDefender": { 
+/**
+ * The creature.
+ */
+object: ObjectId, } } | { "BlockAdditional": { 
+/**
+ * The creature.
+ */
+object: ObjectId, 
+/**
+ * How many more creatures, 1 to 99.
+ */
+count: number, } } | { "LookTop": { 
 /**
  * How many, 1 to 10.
  */

@@ -46,6 +46,7 @@ export const LIMITS = {
   damage: 99,
   mana: 20,
   pump: 99,
+  blocks: 99,
   note: 80,
 } as const
 

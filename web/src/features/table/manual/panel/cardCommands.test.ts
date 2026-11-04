@@ -40,13 +40,13 @@ describe('which commands a picked card offers', () => {
       'an untapped creature of the seat',
       card(),
       {},
-      ['move', 'counters', 'tap', 'damage', 'pump', 'transform', 'sacrifice', 'give'],
+      ['move', 'counters', 'tap', 'damage', 'pump', 'blocks', 'transform', 'sacrifice', 'give'],
     ],
     [
       'a summoning sick creature of the seat',
       permanent({ summoning_sick: true }),
       {},
-      ['move', 'counters', 'tap', 'damage', 'pump', 'unsick', 'transform', 'sacrifice', 'give'],
+      ['move', 'counters', 'tap', 'damage', 'pump', 'unsick', 'blocks', 'transform', 'sacrifice', 'give'],
     ],
     [
       'a land',
@@ -101,13 +101,13 @@ describe('which commands a picked card offers', () => {
       'a creature the seat controls and an opponent owns',
       card({ owner: 1 }),
       {},
-      ['move', 'counters', 'tap', 'damage', 'pump', 'transform', 'sacrifice', 'give'],
+      ['move', 'counters', 'tap', 'damage', 'pump', 'blocks', 'transform', 'sacrifice', 'give'],
     ],
     [
       'a token of the seat',
       card({ kind: 'Token' }),
       {},
-      ['move', 'counters', 'tap', 'damage', 'pump', 'sacrifice', 'give'],
+      ['move', 'counters', 'tap', 'damage', 'pump', 'blocks', 'sacrifice', 'give'],
     ],
   ])('%s: %j', (_name, object, over, expected) => {
     expect(ids(object, over)).toEqual(expected)

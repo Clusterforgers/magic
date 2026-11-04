@@ -45,6 +45,8 @@ pub(crate) fn kind(action: &ManualAction) -> &'static str {
         ManualAction::Pump { .. } => "pump",
         ManualAction::Transform { .. } => "transform",
         ManualAction::MoveBack { .. } => "move back",
+        ManualAction::AttackDespiteDefender { .. } => "attack despite defender",
+        ManualAction::BlockAdditional { .. } => "block additional",
         ManualAction::LookTop { .. } => "look at the top",
         ManualAction::ArrangeTop { .. } => "arrange the top",
         ManualAction::Shuffle {} => "shuffle",

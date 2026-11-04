@@ -481,6 +481,18 @@ pub enum ManualAction {
         /// The card.
         object: ObjectId,
     },
+    /// A creature of the seat may attack this turn as though it did not have defender.
+    AttackDespiteDefender {
+        /// The creature.
+        object: ObjectId,
+    },
+    /// A creature of the seat can block extra creatures this turn.
+    BlockAdditional {
+        /// The creature.
+        object: ObjectId,
+        /// How many more creatures, 1 to 99.
+        count: u32,
+    },
     /// The seat looks at the top cards of its library, all of a shorter one; only it learns them.
     LookTop {
         /// How many, 1 to 10.
@@ -688,6 +700,12 @@ pub(crate) fn events(
         }
         ManualAction::MoveBack { object } => {
             crate::manual_faces::move_back(state, player, *object)?
+        }
+        ManualAction::AttackDespiteDefender { object } => {
+            crate::manual_faces::attack_despite_defender(state, player, *object)?
+        }
+        ManualAction::BlockAdditional { object, count } => {
+            crate::manual_faces::block_additional(state, player, *object, *count)?
         }
         ManualAction::LookTop { count } => crate::manual_library::look_top(state, player, *count)?,
         ManualAction::ArrangeTop {

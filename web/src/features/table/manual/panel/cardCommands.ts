@@ -32,6 +32,8 @@ export type CardCommandId =
   | 'give'
   | 'transform'
   | 'back'
+  | 'defender'
+  | 'blocks'
 
 /** One command of the picked card. */
 export interface CardCommand {
@@ -216,6 +218,23 @@ export function controlCommands(input: MenuInput): CardCommand[] {
         unavailable: off,
       })
     }
+    if (object.types.includes('Creature')) {
+      if ((object.keywords ?? []).includes('Defender')) {
+        out.push({
+          id: 'defender',
+          label: 'May attack despite defender',
+          effect: 'Until end of turn, it may attack as though it did not have defender.',
+          action: { AttackDespiteDefender: { object: object.id } },
+          unavailable: off,
+        })
+      }
+      out.push({
+        id: 'blocks',
+        label: 'Block additional creatures…',
+        effect: 'Until end of turn, it can block more creatures.',
+        unavailable: off,
+      })
+    }
     if (object.kind !== 'Token') {
       out.push({
         id: 'transform',
@@ -367,6 +386,19 @@ export function previewOfCard(command: CardCommand, draft: CardDraft, context: C
       return sends(command, `${name}: the battlefield → graveyard, sacrificed`, `Sacrifice ${name}`)
     case 'transform':
       return sends(command, `${name}: turned over to its other face`, `Turn over ${name}`)
+    case 'defender':
+      return sends(command, `${name}: may attack this turn despite defender`, `Let ${name} attack`)
+    case 'blocks': {
+      const count = draft.count
+      if (!Number.isInteger(count) || count < 1 || count > LIMITS.blocks) {
+        return { problem: `Choose from 1 to ${LIMITS.blocks} more creatures.` }
+      }
+      return {
+        preview: `${name}: can block ${count} more ${count === 1 ? 'creature' : 'creatures'} this turn`,
+        apply: `Block ${count} more`,
+        action: { BlockAdditional: { object: object.id, count } },
+      }
+    }
     case 'back':
       return sends(command, `${name}: onto the battlefield, back face up`, `Put ${name} back face up`)
     case 'give': {
