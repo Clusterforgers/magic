@@ -19,7 +19,7 @@
                 }
               },
               { "Choose": { "from": { "Bound": "top" }, "as": "kept2", "rest_as": "rest3" } },
-              { "Exile": { "what": { "Bound": "kept2" } } },
+              { "Exile": { "what": { "Bound": "kept2" }, "as": "kept2_exiled" } },
               {
                 "Move": {
                   "what": { "Bound": "rest3" },
@@ -29,7 +29,11 @@
               {
                 "Rule": {
                   "rule": {
-                    "MayCast": { "from": "Exile", "only": { "Bound": "kept2" }, "play": true }
+                    "MayCast": {
+                      "from": "Exile",
+                      "only": { "Bound": "kept2_exiled" },
+                      "play": true
+                    }
                   },
                   "duration": "UntilEndOfTurn"
                 }

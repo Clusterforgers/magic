@@ -19,14 +19,14 @@
                   "revealed_as": "revealed2"
                 }
               },
-              { "Exile": { "what": { "Bound": "found" } } },
+              { "Exile": { "what": { "Bound": "found" }, "as": "found_exiled" } },
               {
                 "Move": {
                   "what": { "Bound": "revealed2" },
                   "to": { "Library": { "place": "Bottom", "order": "Random" } }
                 }
               },
-              { "CastFromZone": { "what": { "Bound": "found" }, "free": true } }
+              { "CastFromZone": { "what": { "Bound": "found_exiled" }, "free": true } }
             ]
           }
         }

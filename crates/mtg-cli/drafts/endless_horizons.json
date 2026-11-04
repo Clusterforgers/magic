@@ -23,9 +23,9 @@
                   "as": "found"
                 }
               },
-              { "Exile": { "what": { "Bound": "found" } } },
+              { "Exile": { "what": { "Bound": "found" }, "as": "found_exiled" } },
               { "Shuffle": {} },
-              { "Remember": { "what": { "Bound": "found" }, "slot": "remembered" } }
+              { "Remember": { "what": { "Bound": "found_exiled" }, "slot": "remembered" } }
             ]
           }
         },

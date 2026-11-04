@@ -61,7 +61,7 @@
                                 "as": "kept2"
                               }
                             },
-                            { "Exile": { "what": { "Bound": "kept2" } } },
+                            { "Exile": { "what": { "Bound": "kept2" }, "as": "kept2_exiled" } },
                             {
                               "Move": {
                                 "what": { "Bound": "top" },
@@ -71,7 +71,7 @@
                             {
                               "Choose": {
                                 "from": {
-                                  "Each": [{ "Is": { "Bound": "kept2" } }, { "In": "Exile" }]
+                                  "Each": [{ "Is": { "Bound": "kept2_exiled" } }, { "In": "Exile" }]
                                 },
                                 "count": { "min": 0, "max": 1 },
                                 "as": "picked4"

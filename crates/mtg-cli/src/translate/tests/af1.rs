@@ -32,11 +32,11 @@ fn delayed_sacrifice_takes_all_tokens(#[case] line: &str) {
 #[rstest]
 #[case::hoarding_dragon(
     "Name:T\nTypes:Creature Dragon\nT:Mode$ ChangesZone | Origin$ Any | Destination$ Battlefield | ValidCard$ Card.Self | Execute$ Go\nSVar:Go:DB$ ChangeZone | Origin$ Library | Destination$ Exile | ChangeType$ Artifact | ChangeNum$ 1 | RememberChanged$ True | SubAbility$ R\nSVar:R:DB$ ChangeZone | Defined$ Remembered | Origin$ Exile | Destination$ Hand\n",
-    r#""Exile":{"as":"found","what":{"Bound":"found"}}"#
+    r#""Exile":{"as":"found_exiled","what":{"Bound":"found"}}"#
 )]
 #[case::fevered_suspicion(
     "Name:T\nTypes:Sorcery\nA:SP$ DigUntil | Defined$ Opponent | Valid$ Card.nonLand | FoundDestination$ Exile | RevealedDestination$ Exile | RememberFound$ True | SubAbility$ P\nSVar:P:DB$ Play | Defined$ Remembered | WithoutManaCost$ True | ValidSA$ Spell | Optional$ True | Amount$ All\n",
-    r#""Exile":{"as":"found","what":{"Bound":"found"}}"#
+    r#""Exile":{"as":"found_exiled","what":{"Bound":"found"}}"#
 )]
 fn exile_of_a_found_card_rebinds_it(#[case] script: &str, #[case] step: &str) {
     let out = text(&json!(abilities(script)));
@@ -46,11 +46,19 @@ fn exile_of_a_found_card_rebinds_it(#[case] script: &str, #[case] step: &str) {
 #[rstest]
 #[case::read_later(
     json!([{"Exile": {"what": {"Bound": "a"}}}, {"Remember": {"what": {"Bound": "a"}, "slot": "s"}}]),
-    json!([{"Exile": {"what": {"Bound": "a"}, "as": "a"}}, {"Remember": {"what": {"Bound": "a"}, "slot": "s"}}])
+    json!([{"Exile": {"what": {"Bound": "a"}, "as": "a_exiled"}}, {"Remember": {"what": {"Bound": "a_exiled"}, "slot": "s"}}])
 )]
-#[case::read_after_the_group(
-    json!([{"May": {"effects": [{"Move": {"what": {"Bound": "a"}, "to": "Hand"}}]}}, {"Draw": {"count": {"Count": [{"Is": {"Bound": "a"}}]}}}]),
-    json!([{"May": {"effects": [{"Move": {"what": {"Bound": "a"}, "to": "Hand", "as": "a"}}]}}, {"Draw": {"count": {"Count": [{"Is": {"Bound": "a"}}]}}}])
+#[case::branch_does_not_bind_outside(
+    json!([{"May": {"effects": [{"Exile": {"what": {"Bound": "a"}}}]}}, {"Draw": {"count": {"Count": [{"Is": {"Bound": "a"}}]}}}]),
+    json!([{"May": {"effects": [{"Exile": {"what": {"Bound": "a"}}}]}}, {"Draw": {"count": {"Count": [{"Is": {"Bound": "a"}}]}}}])
+)]
+#[case::inside_branch(
+    json!([{"May": {"effects": [{"Exile": {"what": {"Bound": "a"}}}, {"Remember": {"what": {"Bound": "a"}, "slot": "s"}}]}}]),
+    json!([{"May": {"effects": [{"Exile": {"what": {"Bound": "a"}, "as": "a_exiled"}}, {"Remember": {"what": {"Bound": "a_exiled"}, "slot": "s"}}]}}])
+)]
+#[case::move_is_left_alone(
+    json!([{"Move": {"what": {"Bound": "a"}, "to": "Hand"}}, {"Remember": {"what": {"Bound": "a"}, "slot": "s"}}]),
+    json!([{"Move": {"what": {"Bound": "a"}, "to": "Hand"}}, {"Remember": {"what": {"Bound": "a"}, "slot": "s"}}])
 )]
 #[case::never_read(
     json!([{"Exile": {"what": {"Bound": "a"}}}, {"Draw": {}}]),

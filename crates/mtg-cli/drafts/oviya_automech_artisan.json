@@ -9,9 +9,7 @@
       "abilities": [
         {
           "Static": {
-            "affected": {
-              "Each": [{ "HasKeyword": { "Typecycling": { "find": [], "cost": "{G}" } } }]
-            },
+            "affected": { "Each": [{ "Type": "Creature" }, { "AttackingPlayer": "Opponents" }] },
             "mods": [{ "AddKeyword": "Trample" }]
           }
         },
@@ -20,40 +18,38 @@
             "cost": [{ "Mana": "{G}" }, "Tap"],
             "effects": [
               {
-                "May": {
-                  "effects": [
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "AnyOf": [{ "Type": "Creature" }, { "Subtype": "Vehicle" }] },
+                      { "In": "Hand" },
+                      { "OwnedBy": "You" }
+                    ]
+                  },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "picked"
+                }
+              },
+              {
+                "Move": {
+                  "what": { "Bound": "picked" },
+                  "to": { "Battlefield": {} },
+                  "as": "moved2"
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Bound": "moved2" },
+                      "selector": [{ "Type": "Artifact" }],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [
                     {
-                      "Choose": {
-                        "from": {
-                          "Each": [
-                            { "In": "Hand" },
-                            { "OwnedBy": "You" },
-                            { "AnyOf": [{ "Type": "Creature" }, { "Subtype": "Vehicle" }] }
-                          ]
-                        },
-                        "as": "card",
-                        "rest_as": "artifact"
-                      }
-                    },
-                    { "Move": { "what": { "Bound": "card" }, "to": { "Battlefield": {} } } },
-                    {
-                      "If": {
-                        "condition": {
-                          "Matches": {
-                            "subject": { "Bound": "card" },
-                            "selector": [{ "Is": "This" }]
-                          }
-                        },
-                        "then": [
-                          {
-                            "PutCounters": {
-                              "on": { "Bound": "card" },
-                              "counter": "+1/+1",
-                              "count": 2
-                            }
-                          }
-                        ]
-                      }
+                      "PutCounters": { "on": { "Bound": "moved2" }, "counter": "+1/+1", "count": 2 }
                     }
                   ]
                 }

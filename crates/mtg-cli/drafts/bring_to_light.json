@@ -25,9 +25,9 @@
                   "as": "found"
                 }
               },
-              { "Exile": { "what": { "Bound": "found" } } },
+              { "Exile": { "what": { "Bound": "found" }, "as": "found_exiled" } },
               { "Shuffle": {} },
-              { "CastFromZone": { "what": { "Bound": "found" }, "free": true } }
+              { "CastFromZone": { "what": { "Bound": "found_exiled" }, "free": true } }
             ]
           }
         }

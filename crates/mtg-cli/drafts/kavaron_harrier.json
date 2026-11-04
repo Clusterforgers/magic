@@ -38,7 +38,8 @@
                           {
                             "Sacrifice": {
                               "who": { "ControllerOf": { "Bound": "token" } },
-                              "filter": [{ "Is": { "Bound": "token" } }]
+                              "filter": [{ "Is": { "Bound": "token" } }],
+                              "count": { "Count": [{ "Is": { "Bound": "token" } }] }
                             }
                           }
                         ]

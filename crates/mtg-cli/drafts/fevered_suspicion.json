@@ -18,11 +18,11 @@
                   "revealed_as": "revealed2"
                 }
               },
-              { "Exile": { "what": { "Bound": "found" } } },
+              { "Exile": { "what": { "Bound": "found" }, "as": "found_exiled" } },
               { "Exile": { "what": { "Bound": "revealed2" } } },
               {
                 "RepeatEach": {
-                  "over": { "Bound": "found" },
+                  "over": { "Bound": "found_exiled" },
                   "as": "card3",
                   "effects": [{ "CastFromZone": { "what": { "Bound": "card3" }, "free": true } }]
                 }
