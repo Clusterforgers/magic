@@ -214,6 +214,16 @@ fn costed(ctx: &Ctx, name: &str, variant: &str, cost_text: &str, rest: Option<&s
 fn other_keyword(ctx: &Ctx, name: &str, first: Option<&str>, second: Option<&str>) -> Tr<Value> {
     match (name, first) {
         ("Protection", Some(valid)) => Ok(json!({"Protection": selector_any(ctx, valid)?})),
+        // "Hexproof from triggered abilities" is not a quality of the source.
+        ("Hexproof", Some(valid)) if valid != "Triggered" => {
+            let colored = ["White", "Blue", "Black", "Red", "Green"].contains(&valid);
+            let spec = if colored {
+                format!("Card.{valid}")
+            } else {
+                valid.to_owned()
+            };
+            Ok(json!({"HexproofFrom": selector_any(ctx, &spec)?}))
+        }
         ("Enchant", Some(valid)) if !matches!(valid, "Player" | "Opponent") => {
             Ok(json!({"Enchant": selector_any(ctx, valid)?}))
         }

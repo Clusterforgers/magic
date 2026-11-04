@@ -125,6 +125,21 @@ fn a_class_line_the_node_cannot_say_stays_a_gap(#[case] line: &str, #[case] gap:
     );
 }
 
+#[rstest]
+#[case::black("Hexproof:Black", json!({"HexproofFrom": [{"Color": "Black"}]}))]
+#[case::artifact("Hexproof:Artifact", json!({"HexproofFrom": [{"Type": "Artifact"}]}))]
+fn hexproof_from_a_quality_keeps_its_selector(#[case] word: &str, #[case] node: Value) {
+    let found = abilities(&creature(&format!("K:{word}\n")));
+    assert_eq!(found, vec![normal(json!({ "Keyword": node }))]);
+}
+
+#[test]
+fn hexproof_from_triggered_abilities_stays_a_gap() {
+    let script = creature("K:Hexproof:Triggered:triggered abilities\n");
+    assert_eq!(abilities(&script), Vec::<Value>::new());
+    assert_eq!(gaps(&script).len(), 1);
+}
+
 const KICKED: &str = "R:Event$ Moved | ValidCard$ Card.Self+kicked | Destination$ Battlefield | ReplaceWith$ Pump | ReplacementResult$ Updated\n";
 
 #[test]
