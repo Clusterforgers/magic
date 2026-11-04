@@ -29,6 +29,7 @@ pub fn effects(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
             "Defined",
             "ReplacementEffects",
             "Triggers",
+            "Boon",
         ],
     )?;
     if super::effects_emblem::is_emblem(p) {
@@ -113,20 +114,20 @@ fn remembered_static(ctx: &mut Ctx, name: &str, who: &Value, duration: &str) -> 
     };
     match part.get("Mode").unwrap_or_default() {
         "CantBlockBy" if on_remembered("ValidAttacker") && !part.has("ValidBlocker") => {
-            Ok(vec![continuous(&who, &[json!("CantBeBlocked")], duration)])
+            Ok(vec![continuous(who, &[json!("CantBeBlocked")], duration)])
         }
         "CantAttack" if on_remembered("ValidCard") => {
-            Ok(vec![continuous(&who, &[json!("CantAttack")], duration)])
+            Ok(vec![continuous(who, &[json!("CantAttack")], duration)])
         }
         "CantBlock" if on_remembered("ValidCard") => {
-            Ok(vec![continuous(&who, &[json!("CantBlock")], duration)])
+            Ok(vec![continuous(who, &[json!("CantBlock")], duration)])
         }
         "MustAttack" if on_remembered("ValidCreature") => Ok(vec![
             json!({"Rule": {"rule": {"MustAttack": who}, "duration": duration}}),
         ]),
         "Continuous" if on_remembered("Affected") => {
             let mods = pump_like(ctx, &part)?;
-            Ok(vec![continuous(&who, &mods, duration)])
+            Ok(vec![continuous(who, &mods, duration)])
         }
         other => unmapped(format!("effect:Effect-static-{other}")),
     }

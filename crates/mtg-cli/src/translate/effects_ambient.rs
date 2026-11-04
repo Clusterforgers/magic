@@ -73,7 +73,8 @@ pub fn delayed_triggers(ctx: &mut Ctx, p: &Params, remembered: Option<&Value>) -
         if when.to_string().contains("\"This\"") || effects.to_string().contains("\"This\"") {
             return unmapped("effect:Effect-trigger-about-the-source");
         }
-        let mut delayed = json!({"when": when, "once": false, "effects": effects});
+        let boon = p.get("Boon") == Some("True");
+        let mut delayed = json!({"when": when, "once": boon, "effects": effects});
         if this_turn {
             delayed["this_turn"] = json!(true);
         }

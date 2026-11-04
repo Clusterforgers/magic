@@ -94,7 +94,7 @@ pub fn static_prevention(ctx: &Ctx, p: &Params) -> Tr<Vec<Value>> {
     // A list of one player and one permanent word names disjoint recipients, so one replacement for each is exact.
     let mut out = Vec::new();
     for recipient in recipients(ctx, p.get("ValidTarget"))? {
-        out.push(static_replacement(ctx, p, recipient, by.clone())?);
+        out.push(static_replacement(ctx, p, recipient, &by)?);
     }
     Ok(out)
 }
@@ -127,7 +127,7 @@ fn recipients(ctx: &Ctx, word: Option<&str>) -> Tr<Vec<Option<Value>>> {
 }
 
 /// One `Replacement` of damage to `recipient` by the line's source and combat restrictions.
-fn static_replacement(ctx: &Ctx, p: &Params, recipient: Option<Value>, by: Value) -> Tr<Value> {
+fn static_replacement(ctx: &Ctx, p: &Params, recipient: Option<Value>, by: &Value) -> Tr<Value> {
     let mut when = serde_json::Map::new();
     if let Some(to) = recipient {
         when.insert("to".into(), to);

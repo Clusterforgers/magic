@@ -63,6 +63,10 @@ fn damage_replacements_map(#[case] script: &str, #[case] holds: &[&str], #[case]
     "Name:T\nTypes:Sorcery\nA:SP$ Effect | StaticAbilities$ Pump | Triggers$ Draws\nSVar:Pump:Mode$ Continuous | Affected$ Creature.YouCtrl | AddPower$ 1\nSVar:Draws:Mode$ Drawn | ValidCard$ Card.YouCtrl | TriggerZones$ Command | Execute$ Gain\nSVar:Gain:DB$ GainLife | LifeAmount$ 1\n",
     &["Continuous", "DelayedTrigger"], 2
 )]
+#[case::a_one_time_boon(
+    "Name:T\nTypes:Sorcery\nA:SP$ Effect | Boon$ True | Duration$ Permanent | Triggers$ Casts\nSVar:Casts:Mode$ SpellCast | ValidCard$ Card.nonCreature | ValidActivatingPlayer$ You | TriggerZones$ Command | Execute$ Draw1\nSVar:Draw1:DB$ Draw | NumCards$ 1\n",
+    &["DelayedTrigger", "SpellCast", "Draw"], 1
+)]
 #[case::two_statics_on_a_target(
     "Name:T\nTypes:Sorcery\nA:SP$ Effect | ValidTgts$ Creature | RememberObjects$ Targeted | StaticAbilities$ A,B\nSVar:A:Mode$ CantAttack | ValidCard$ Card.IsRemembered\nSVar:B:Mode$ CantBlock | ValidCard$ Card.IsRemembered\n",
     &["CantAttack", "CantBlock"], 2
