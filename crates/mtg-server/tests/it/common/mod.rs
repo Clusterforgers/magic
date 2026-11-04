@@ -358,3 +358,22 @@ pub async fn passive_until_priority(
     }
     panic!("no priority decision came up");
 }
+
+/// The oracle id of the corpus card called `name`; the corpus is parsed once per test process, not once per name.
+pub fn oracle_id_of(name: &str) -> String {
+    use std::collections::BTreeMap;
+    use std::sync::OnceLock;
+    static IDS: OnceLock<BTreeMap<String, String>> = OnceLock::new();
+    let ids = IDS.get_or_init(|| {
+        let text = mtg_testkit::corpus::scryfall_array().unwrap_or_default();
+        let mut ids = BTreeMap::new();
+        for record in mtg_import::scryfall::cards(text.as_bytes()).filter_map(Result::ok) {
+            ids.entry(record.name)
+                .or_insert_with(|| record.oracle_id.to_string());
+        }
+        ids
+    });
+    ids.get(name)
+        .cloned()
+        .unwrap_or_else(|| panic!("the corpus has no card named {name}"))
+}

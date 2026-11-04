@@ -14,7 +14,7 @@ use mtg_cards::{Caps, builtin};
 use mtg_db::{Database, ImplStatus, NewRules};
 use mtg_import::ids::OracleId;
 use mtg_import::mtgjson::{PreconCard, PreconDeck};
-use mtg_import::scryfall::{CardRecord, cards};
+use mtg_import::scryfall::cards;
 use mtg_protocol::ClientMessage;
 use mtg_server::{
     CardSource, DeckRef, GameId, GameRecipe, GameRecords, RecordStatus, Registry, ServerConfig,
@@ -34,13 +34,8 @@ fn scryfall() -> String {
 /// The card the tests keep out of the rules files and compile instead.
 const GROWTH: &str = "Giant Growth";
 
-fn records() -> Vec<CardRecord> {
-    cards(scryfall().as_bytes()).map(Result::unwrap).collect()
-}
-
 fn id_of(name: &str) -> String {
-    let record = records().into_iter().find(|record| record.name == name);
-    record.unwrap().oracle_id.to_string()
+    crate::common::oracle_id_of(name)
 }
 
 /// The embedded rules without the files of these cards: the cards have no hand-written rules.
