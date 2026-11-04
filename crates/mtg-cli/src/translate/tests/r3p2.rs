@@ -220,3 +220,42 @@ fn a_revealed_card_choice_reveals_the_choice() {
         json!({"Reveal": {"what": {"Bound": effects[0]["Choose"]["as"]}}})
     );
 }
+
+fn piles(line: &str) -> String {
+    format!(
+        "Name:T\nTypes:Sorcery\nA:SP$ Dig | DigNum$ 5 | ChangeNum$ All | DestinationZone$ Exile | RememberChanged$ True | SubAbility$ Split\nSVar:Split:DB$ TwoPiles | {line}\nSVar:Hand:DB$ ChangeZone | Defined$ Remembered | Origin$ Exile | Destination$ Hand\nSVar:Grave:DB$ ChangeZone | Defined$ Remembered | Origin$ Exile | Destination$ Graveyard\n"
+    )
+}
+
+/// `TwoPiles` separates and chooses once, then runs the part of each pile on that pile.
+#[test]
+fn two_piles_run_each_part_on_its_pile() {
+    let script = piles(
+        "DefinedCards$ Remembered | Separator$ You | Chooser$ Player.Opponent | ChosenPile$ Hand | UnchosenPile$ Grave",
+    );
+    let found = abilities(&script);
+    assert_eq!(found.len(), 1, "{:?}", gaps(&script));
+    let effects = found[0]["Spell"]["effects"].as_array().expect("effects");
+    let split = &effects[1]["SeparatePiles"];
+    let (pile, rest) = (&split["as"], &split["rest_as"]);
+    assert_eq!(split["chooser"], json!("Opponents"));
+    assert_eq!(effects[2]["Move"]["what"], json!({"Bound": pile}));
+    assert_eq!(effects[3]["Move"]["what"], json!({"Bound": rest}));
+}
+
+#[rstest]
+#[case::face_down(
+    "DefinedCards$ Remembered | Separator$ You | Chooser$ You | ChosenPile$ Hand | FaceDown$ One",
+    "key:TwoPiles.FaceDown"
+)]
+#[case::everyone_chooses(
+    "DefinedCards$ Remembered | Separator$ You | Chooser$ Player | ChosenPile$ Hand",
+    "key:TwoPiles.Chooser=Player"
+)]
+#[case::no_chooser(
+    "DefinedCards$ Remembered | Separator$ You | ChosenPile$ Hand",
+    "key:TwoPiles.shape"
+)]
+fn an_unread_pile_split_is_a_named_gap(#[case] line: &str, #[case] gap: &str) {
+    assert_eq!(gaps(&piles(line)), [gap]);
+}

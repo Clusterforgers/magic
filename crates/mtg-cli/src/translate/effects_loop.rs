@@ -265,3 +265,58 @@ pub fn add_phase(p: &Params) -> Tr<Value> {
     };
     Ok(json!({"AddPhase": {"phases": phases}}))
 }
+
+/// `TwoPiles`: one player separates the cards into two piles, another chooses one; the parts for the chosen and the other
+/// pile read their pile as `Remembered`.
+pub fn two_piles(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
+    only(
+        p,
+        "TwoPiles",
+        &[
+            "Defined",
+            "DefinedCards",
+            "Separator",
+            "Chooser",
+            "ChosenPile",
+            "UnchosenPile",
+        ],
+    )?;
+    if !matches!(p.get("Defined"), None | Some("You")) {
+        return unmapped("key:TwoPiles.Defined");
+    }
+    let (Some(cards), Some(separator), Some(chooser), Some(chosen)) = (
+        p.get("DefinedCards"),
+        p.get("Separator"),
+        p.get("Chooser"),
+        p.get("ChosenPile"),
+    ) else {
+        return unmapped("key:TwoPiles.shape");
+    };
+    let one_player = |word: &str, key: &str| -> Tr<Value> {
+        let who = defined(ctx, word)?;
+        // The engine takes the first opponent in turn order; everyone at once is no single player.
+        if who.as_str() == Some("EachPlayer") {
+            return unmapped(format!("key:TwoPiles.{key}={word}"));
+        }
+        Ok(who)
+    };
+    let who = one_player(separator, "Separator")?;
+    let chooser = one_player(chooser, "Chooser")?;
+    let what = defined(ctx, cards)?;
+    let (chosen_as, rest_as) = (ctx.fresh("pile"), ctx.fresh("rest"));
+    let mut effects = vec![json!({"SeparatePiles": {
+        "who": who, "what": what, "chooser": chooser, "as": chosen_as, "rest_as": rest_as}})];
+    let outer = ctx.remembered.clone();
+    for (name, bound) in [
+        (Some(chosen), &chosen_as),
+        (p.get("UnchosenPile"), &rest_as),
+    ] {
+        if let Some(name) = name {
+            ctx.remembered = Some(json!({ "Bound": bound }));
+            let part = ctx.sub(name)?;
+            effects.extend(chain_at(ctx, &part, false)?);
+        }
+    }
+    ctx.remembered = outer;
+    Ok(effects)
+}

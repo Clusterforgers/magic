@@ -248,6 +248,7 @@ fn api_line(ctx: &mut Ctx, p: &Params, api: &str) -> Tr<Vec<Value>> {
         "ChooseColor" | "ChooseType" => effects_loop::choose_value(ctx, p, api),
         "ChooseNumber" => effects_loop::choose_number(ctx, p),
         "AddPhase" => one(effects_loop::add_phase(p)),
+        "TwoPiles" => effects_loop::two_piles(ctx, p),
         "Charm" => one(charm(ctx, p)),
         "DelayedTrigger" => one(delayed(ctx, p)),
         "Dig" => effects_zone::dig(ctx, p),
