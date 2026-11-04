@@ -207,7 +207,8 @@ fn landwalk(word: &str) -> Tr<Value> {
 pub fn keyword_abilities(ctx: &mut Ctx, body: &str) -> Vec<Tr<Value>> {
     match body.strip_prefix("Chapter:") {
         Some(rest) => chapters(ctx, rest),
-        None => vec![super::card::audited_one(|| keyword_ability(ctx, body))],
+        None => super::keyword_alt::alt_keyword(body)
+            .unwrap_or_else(|| vec![super::card::audited_one(|| keyword_ability(ctx, body))]),
     }
 }
 

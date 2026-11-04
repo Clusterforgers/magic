@@ -233,6 +233,39 @@ fn a_free_cast_from_the_graveyard_follows_its_timing(
     Ok(())
 }
 
+/// The printed alternative cost of a graveyard card (`static:AlternativeCost` with `EffectZone$ Graveyard`).
+fn printed_from_graveyard() -> Arc<CardDefinition> {
+    Arc::new(
+        CardDefinition::new("Grave Printer")
+            .with_type(CardType::Creature)
+            .with_mana_cost(mtg_core::mana::ManaCost::parse("{5}{W}").unwrap())
+            .with_power_toughness(2, 2)
+            .with_rules(Ability::AltCast {
+                way: CastWay::Alternative,
+                cost: Some("{W}".parse().map(mtg_cards::cost::Cost::mana).unwrap()),
+                from: ZoneKind::Graveyard,
+                condition: None,
+                flash: false,
+            }),
+    )
+}
+
+#[rstest]
+fn a_printed_alternative_cost_casts_from_the_graveyard_and_is_remembered(
+    #[values(2, 3, 4)] seats: usize,
+) -> Result<(), ScriptError> {
+    let scenario = table(seats, Step::Main1, vec![], lands(1, plains))
+        .graveyard(0, [printed_from_graveyard()]);
+    let mut driver = Driver::from_scenario(scenario)?;
+    assert!(offered(&driver, "Grave Printer")?);
+    cast_for(&mut driver, "Grave Printer", "Alternative cost")?;
+    assert_eq!(
+        remembered(&driver, "Grave Printer"),
+        Some(CastWay::Alternative)
+    );
+    Ok(())
+}
+
 #[test]
 fn bot_games_with_the_table_cards_keep_every_invariant_and_use_each_way() {
     use mtg_engine::Event;

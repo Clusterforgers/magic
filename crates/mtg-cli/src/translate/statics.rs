@@ -47,6 +47,7 @@ fn by_mode(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
         "MustAttack" => must_attack(ctx, p)?,
         "ReduceCost" => cost_modifier(ctx, p, "Reduce")?,
         "RaiseCost" => cost_modifier(ctx, p, "Increase")?,
+        "AlternativeCost" => super::statics_alt::alternative_cost(ctx, p)?,
         other => return unmapped(format!("static:{other}")),
     })
 }
