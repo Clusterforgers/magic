@@ -1,8 +1,8 @@
-# Deck check and the Verified marker
+# Deck check and the deck state
 
-Design of the deck check: when a deck is chosen or built, a check finds the cards the game plays by hand and highlights them, and a saved deck that passes shows a Verified marker until it changes.
+Design of the deck check: when a deck is chosen or built, a check finds the cards the game plays by hand and highlights them, and a deck shows the state of the check of the moment, Verified when it passes.
 
-The per-card support lookup (`Library::support` in `mtg-cards`), the report (`mtg_cards::deck::deck_report`), the deck endpoints and the derived marker are implemented (`server.md`, "Cards and decks"); the highlighting in the builder and the list, the card preview and the live check are implemented (`web.md`); the table note, a seat's deck name, format and count of manual cards in the lobby roster, is implemented in the server (`server.md`, "Choosing a deck"), and so is each precon's state, judged by the same report, and its check at a table without an account (`server.md`, "Precons"); the state and the count of cards to read show in the builder, the decks list, the lobby, the precon browser and the not-validated list (`web.md`). A card without an implementation counts as `Manual` unless it has no rules text, so the report always says how much of the deck the table resolves by hand.
+The per-card support lookup (`Library::support` in `mtg-cards`), the report (`mtg_cards::deck::deck_report`), the deck endpoints and the deck state are implemented (`server.md`, "Cards and decks"); the highlighting in the builder and the list, the card preview and the live check are implemented (`web.md`); the table note, a seat's deck name, format and count of manual cards in the lobby roster, is implemented in the server (`server.md`, "Choosing a deck"), and so is each precon's state, judged by the same report, and its check at a table without an account (`server.md`, "Precons"); the state and the count of cards to read show in the builder, the decks list, the lobby, the precon browser and the not-validated list (`web.md`). A card without an implementation counts as `Manual` unless it has no rules text, so the report always says how much of the deck the table resolves by hand.
 
 ## Terms
 
@@ -22,13 +22,12 @@ The per-card support lookup (`Library::support` in `mtg-cards`), the report (`mt
   - `Unchecked`: never checked, or changed since.
 - To read: a card whose current draft no player has judged is played by hand and counted in `summary.to_read` (distinct cards, any zone). A draft is `pending` while nobody judged it, and again once it or the card's text changed since the last read. Each card of the report that has such a draft carries `draft: pending`; a card with a wrong read carries `draft: wrong` and an approved one `draft: approved`. A card has no `draft` while a rules file or a `Verified` row outranks the draft, or the engine could not run the draft whole.
 
-## The marker
+## The deck state
 
-- The marker is derived, never a flag set by hand. A check stores `{deck_hash, coverage_hash, checked_at, summary}` with the deck. The Verified marker shows only while the stored check is clean (a deck that runs on reads is not), the stored `deck_hash` equals the current one, the stored `coverage_hash` equals the one computed from the cards' current support records, and the check of the moment is clean too, so a ban that changes no hash still removes it. A stored check that was not clean never gives the marker; `mtg_cards::deck::marker` derives the state (`verified`, `read`, `manual_play`, `blocked`, `unchecked`) and `changed` ("changed since the last check").
-- Editing the deck changes the hash, so the marker disappears at once with the note "changed since the last check"; nothing can leave it behind by mistake.
-- `deck_hash` is SHA-256 over the sorted `(zone, oracle id, count)` of main, sideboard, commander and companion: the text `mtg-deck-check/deck/v1` and one line `<zone> <oracle id> <count>` per card and zone, ordered by zone name and id, copies in one zone summed, as 64 lower-case hex digits. Printings, the deck's name, notes and format are not in it, so swapping art keeps the marker.
-- `coverage_hash` is SHA-256 over the sorted `(oracle id, support fingerprint)` of the deck's distinct cards: the text `mtg-deck-check/coverage/v1` and one line `<oracle id> <fingerprint>` per card. An engine or card-data release that changes one of them drops the marker with the reason ("Sheoldred's implementation changed").
-- The check is cheap, so the server re-runs it each time a deck is opened and answers the report next to the stored check. Opening writes nothing: a clean result of the moment brings the marker back when the deck is saved again, and a worse one shows as `blocked` or `manual_play` at once.
+- The state is derived, never a flag: every read of a deck (the list and the deck page) runs the check of the moment and shows its state (`verified`, `read`, `manual_play`, `blocked`), so a saved clean deck is Verified without being saved again, a deck that got worse shows it at once, and a rule or engine change never reads as "changed". A save stores `{deck_hash, coverage_hash, checked_at, summary}` in `last_check`; nothing compares it with the check of the moment. Only the builder's draft that differs from the saved deck shows "Unsaved draft", and its counts say "as saved".
+- `deck_hash` is SHA-256 over the sorted `(zone, oracle id, count)` of main, sideboard, commander and companion: the text `mtg-deck-check/deck/v1` and one line `<zone> <oracle id> <count>` per card and zone, ordered by zone name and id, copies in one zone summed, as 64 lower-case hex digits. Printings, the deck's name, notes and format are not in it, so swapping art keeps the state.
+- `coverage_hash` is SHA-256 over the sorted `(oracle id, support fingerprint)` of the deck's distinct cards: the text `mtg-deck-check/coverage/v1` and one line `<oracle id> <fingerprint>` per card. The hash identifies a check and the cards' rules it was made under; no state depends on it.
+- The check is cheap, so the server re-runs it each time a deck is listed or opened and answers the report next to the stored check. Reading writes nothing.
 - Saving runs the check, so a clean deck is marked at once. `POST /api/decks/check` runs the same function without saving, on a stored deck or an unsaved list (a signed-in account's) or on a precon (`precon:<code>`, no account needed); a pasted list without an account is an extension.
 
 ## The report
@@ -70,12 +69,12 @@ Not built yet, in order of value:
 2. Swap suggestions: for a flagged card, verified cards of the same type, mana value and colour identity, one click to swap.
 3. Demand-ranked backlog: every flagged card in every saved deck counts toward the coverage dashboard, so implementation follows what the table plays. Fix marks are the first signal of it: a player marks a card as important to fix and `mtg-cli fix-marks` and `check-rules --gaps --marks` rank by the marks ([server.md](server.md), Fix marks). The proposal checker repairs the mechanical slips of a model before it judges ([cards-dsl.md](cards-dsl.md), Model-assisted reading), so more proposals reach a verdict.
 4. Table setting "verified decks only" for friends who want no cards played by hand; the default allows them with a visible note to all seats.
-5. History: the last few checks per deck (date, engine version, result), which explains why a marker went away.
+5. History: the last few checks per deck (date, engine version, result), which explains why a state changed.
 6. Paste-a-list check without an account, and `mtg-cli check <file>` for the same report.
 
 ## Rollout
 
-- Decks table and REST, the report function and endpoint, the builder panel with highlighting, the marker and precon badges.
+- Decks table and REST, the report function and endpoint, the builder panel with highlighting, the deck state and precon badges.
 - The coverage dashboard ranks cards by deck demand; Stale detection comes from import drift (a changed oracle fingerprint).
 - Then the smoke test, swap suggestions and the table setting.
 
@@ -83,5 +82,5 @@ Not built yet, in order of value:
 
 1. Saving runs the check automatically; the button stays for unsaved decks and pasted lists.
 2. A deck with cards played by hand may be played, with a note to everyone at the table. The note is a count ("Bo's deck: 3 cards played by hand"), never the names, because names would reveal the deck. A card's name, badge and the clause to resolve appear when it becomes public (cast or in play).
-3. The sideboard counts toward the marker: one manual card there keeps the deck unmarked. The report still shows it under its zone.
+3. The sideboard counts toward the state: one manual card there keeps the deck from Verified. The report still shows it under its zone.
 4. A precon is checked as `commander` when it has a commander and as `freeform` otherwise, since it is a product and not an entry in a tournament format. Its state is the report of the moment, kept in an index until the cards, the precons, the rules or the engine change; nothing is stored, so it is `verified`, `manual_play` or `blocked` and never `unchecked`. Whether a game takes the deck is a separate flag (`playable`) with its own issues: the report's legality is clean, no card is `unplayable` and the engine accepts the deck in the format it is for (a Commander precon in a Commander game, any other in a Normal game). A card played by hand (`manual`, `partial`) never keeps a deck from being playable, so a Commander precon with manual cards is `manual_play` and playable.

@@ -100,8 +100,7 @@ export function unvalidatedLink(counts: Counts): string {
 }
 
 /**
- * The line under a deck's name that explains its check state: how many cards are played by hand, what blocks it, or that
- * it was never checked. A verified deck, and one that changed since its check, need no line: its marker says so.
+ * The line under a deck's name that explains its check state: how many cards are played by hand, what blocks it. A verified deck needs no line: its marker says so.
  */
 export function checkNote(deck: DeckListItem): string | null {
   const { counts, issues } = deck.summary
@@ -119,7 +118,7 @@ export function checkNote(deck: DeckListItem): string | null {
       return `${parts.length > 0 ? `${parts.join(', ')}. ` : ''}${BLOCKED_MEANING}.`
     }
     case 'unchecked':
-      return deck.changed ? null : 'Not checked yet'
+      return 'Not checked yet'
   }
 }
 

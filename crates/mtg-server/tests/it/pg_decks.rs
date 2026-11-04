@@ -1,4 +1,4 @@
-//! Goal: stored decks work end to end over real HTTP on Postgres: only a signed-in account reaches them and only its own, a save runs the deck check and stores its hashes, the Verified marker is derived each time (a clean check of an unchanged deck is verified; an edit, other rules or another engine remove it, a ban turns it into blocked, and a check that was not clean never gives it), the check endpoint reports without saving, a pasted list resolves to cards or is reported line by line, exports read back through the importer, the caps and rules of a deck are enforced, and a server without a database says so.
+//! Goal: stored decks work end to end over real HTTP on Postgres: only a signed-in account reaches them and only its own, a save runs the deck check and stores its hashes, the deck state is the check of the moment (a clean deck is verified whatever its stored hashes say, a ban, other rules or another engine show their result at once, and nothing reads "changed"), the check endpoint reports without saving, a pasted list resolves to cards or is reported line by line, exports read back through the importer, the caps and rules of a deck are enforced, and a server without a database says so.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
 use crate::net;
@@ -539,10 +539,10 @@ async fn replacing_a_deck_runs_the_check_again_and_marks_it_at_once(pool: PgPool
     );
 }
 
-// ---- the marker ----
+// ---- the deck state ----
 
 #[sqlx::test(migrations = false)]
-async fn the_marker_follows_the_deck_the_rules_and_the_engine(pool: PgPool) {
+async fn the_state_is_the_check_of_the_moment_not_the_stored_one(pool: PgPool) {
     let server = start(&pool).await;
     let ann = register_ann(&server).await;
     let view = create(&server, &ann, &modern()).await;
@@ -551,7 +551,8 @@ async fn the_marker_follows_the_deck_the_rules_and_the_engine(pool: PgPool) {
     assert_eq!(view["verified"], true);
     let saved = stored(&pool, &ann, &id).await;
 
-    // One edit that bypasses the check: the stored check stays, the hashes no longer match.
+    // A write that bypasses the check: the stored hashes no longer match the deck, yet it shows
+    // the result of now, verified, and never "changed".
     let owner = Uuid::parse_str(&ann.id).unwrap();
     let repo = Database::from_pool(pool.clone()).decks();
     let mut edited = mtg_db::DeckDraft {
@@ -561,7 +562,6 @@ async fn the_marker_follows_the_deck_the_rules_and_the_engine(pool: PgPool) {
         lines: saved.lines.clone(),
         check: saved.check.clone(),
     };
-    edited.lines[0].count -= 1;
     edited.lines.push(DeckLine {
         zone: DeckZone::Sideboard,
         oracle_id: OracleId(oracle("Forest")),
@@ -573,71 +573,26 @@ async fn the_marker_follows_the_deck_the_rules_and_the_engine(pool: PgPool) {
         .unwrap()
         .unwrap();
     let after_edit = ann.get(server.addr, &path).await.json();
-    assert_eq!(after_edit["state"], "unchecked");
-    assert_eq!(
-        (
-            after_edit["verified"].as_bool(),
-            after_edit["changed"].as_bool()
-        ),
-        (Some(false), Some(true))
-    );
     assert_ne!(
         after_edit["check"]["deck_hash"],
         after_edit["report"]["deck_hash"]
     );
-    assert_eq!(
-        after_edit["check"]["coverage_hash"], after_edit["report"]["coverage_hash"],
-        "the same cards"
-    );
     let listed = ann.get(server.addr, "/api/decks").await.json();
-    assert_eq!(listed["decks"][0]["state"], "unchecked");
-    assert_eq!(listed["decks"][0]["changed"], true);
+    for shown in [&after_edit, &listed["decks"][0]] {
+        assert_eq!(
+            (
+                shown["state"].as_str(),
+                shown["verified"].as_bool(),
+                shown["changed"].as_bool()
+            ),
+            (Some("verified"), Some(true), Some(false))
+        );
+    }
 
-    // Saving it through the server marks it again, with the sideboard counting like any zone.
-    let mut side = modern();
-    side["cards"]
-        .as_array_mut()
-        .unwrap()
-        .push(line("sideboard", "Forest", 1));
-    let remarked = ann.put(server.addr, &path, &side.to_string()).await.json();
-    assert_eq!(remarked["state"], "verified");
-    assert_eq!(
-        remarked["report"]["summary"]["zones"][1]["zone"],
-        "sideboard"
-    );
-
-    // Another engine: the same deck under a server that runs nothing is unchecked, not verified.
+    // Other engine or other rules for a card of the deck: the worse result of now shows at once,
+    // in the list too, and reading stores nothing.
     let weaker = serve(&pool, CardSource::new(pool.clone()).with_caps(Caps::none())).await;
     let before = stored(&pool, &ann, &id).await;
-    let under_none = ann.get(weaker.addr, &path).await.json();
-    assert_eq!(under_none["state"], "unchecked");
-    assert_eq!(
-        (
-            under_none["verified"].as_bool(),
-            under_none["changed"].as_bool()
-        ),
-        (Some(false), Some(true))
-    );
-    assert_eq!(
-        under_none["check"]["deck_hash"],
-        under_none["report"]["deck_hash"]
-    );
-    assert_ne!(
-        under_none["check"]["coverage_hash"],
-        under_none["report"]["coverage_hash"]
-    );
-    assert_eq!(under_none["report"]["summary"]["state"], "manual_play");
-    assert_eq!(
-        ann.get(weaker.addr, "/api/decks").await.json()["decks"][0]["state"],
-        "unchecked"
-    );
-    assert_eq!(
-        stored(&pool, &ann, &id).await,
-        before,
-        "reading a deck stores nothing"
-    );
-
-    // Other rules for a card of the deck: also unchecked.
     let mut sources = builtin::sources();
     sources.retain(|s| !s.path.ends_with("lightning_bolt.json"));
     let rules = Library::from_sources(&sources).unwrap();
@@ -648,25 +603,26 @@ async fn the_marker_follows_the_deck_the_rules_and_the_engine(pool: PgPool) {
             .with_rules(rules),
     )
     .await;
-    let under_rules = ann.get(other.addr, &path).await.json();
-    assert_eq!(
-        (
-            under_rules["state"].as_str(),
-            under_rules["changed"].as_bool()
-        ),
-        (Some("unchecked"), Some(true))
-    );
+    for addr in [weaker.addr, other.addr] {
+        let view = ann.get(addr, &path).await.json();
+        let list = ann.get(addr, "/api/decks").await.json();
+        for shown in [&view, &list["decks"][0]] {
+            assert_eq!(shown["state"], "manual_play");
+            assert_eq!(
+                (shown["verified"].as_bool(), shown["changed"].as_bool()),
+                (Some(false), Some(false))
+            );
+        }
+    }
+    assert_eq!(stored(&pool, &ann, &id).await, before);
 
-    // The first server still sees the deck as verified: nothing above wrote to it.
+    // The first server still sees the deck as verified.
     let back = ann.get(server.addr, &path).await.json();
-    assert_eq!(
-        (back["state"].as_str(), back["verified"].as_bool()),
-        (Some("verified"), Some(true))
-    );
+    assert_eq!(back["state"], "verified");
 }
 
 #[sqlx::test(migrations = false)]
-async fn a_ban_that_leaves_the_hashes_alone_still_removes_the_marker(pool: PgPool) {
+async fn a_ban_that_leaves_the_hashes_alone_still_blocks_the_deck(pool: PgPool) {
     let server = start(&pool).await;
     let ann = register_ann(&server).await;
     let view = create(&server, &ann, &modern()).await;
@@ -682,7 +638,7 @@ async fn a_ban_that_leaves_the_hashes_alone_still_removes_the_marker(pool: PgPoo
     let after = ann.get(server.addr, &path).await.json();
     assert_eq!(
         after["changed"], false,
-        "neither the deck nor its cards' rules changed"
+        "a rule or data change never reads as changed"
     );
     assert_eq!(after["state"], "blocked");
     assert_eq!(after["verified"], false);

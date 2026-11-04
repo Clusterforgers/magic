@@ -1,5 +1,5 @@
 //! The deck check: whether a deck is legal in its format, how far the game plays each of its cards,
-//! and the two hashes the Verified marker is derived from. One pure function, [`deck_report`], serves
+//! and the two hashes a save stores. One pure function, [`deck_report`], serves
 //! the server, the CLI and the tests (`docs/deck-check.md`).
 //!
 //! The report keeps "illegal" (`legality`) apart from "not implemented" (`cards`), reports every
@@ -8,7 +8,7 @@
 mod companion;
 mod hashes;
 mod legality;
-mod marker;
+mod stored;
 
 use std::collections::BTreeMap;
 
@@ -21,7 +21,7 @@ use crate::support::{Caps, PrintedCard, Reason, Support, SupportRecord};
 
 pub use hashes::{coverage_hash, deck_hash};
 pub use legality::{Issue, IssueCode, SUPPORTED_FORMATS, can_pair, is_supported_format};
-pub use marker::{Marker, StoredCheck, marker};
+pub use stored::StoredCheck;
 
 /// A part of a deck.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash, Serialize, Deserialize)]
@@ -174,22 +174,11 @@ pub enum DeckState {
     ManualPlay,
     /// Illegal in its format, or holds an `unplayable` card.
     Blocked,
-    /// Never checked, or changed since: a report is never in this state.
+    /// Kept for older clients: no report and no deck is in this state.
     Unchecked,
 }
 
 impl DeckState {
-    /// How bad the state is for playing: `verified` < `read` < `manual_play` < `blocked`; `unchecked` has no rank.
-    const fn rank(self) -> Option<u8> {
-        match self {
-            DeckState::Verified => Some(0),
-            DeckState::Read => Some(1),
-            DeckState::ManualPlay => Some(2),
-            DeckState::Blocked => Some(3),
-            DeckState::Unchecked => None,
-        }
-    }
-
     /// The state of a deck from whether it has legality issues and its copies by support state.
     fn of(has_issues: bool, counts: &Counts) -> DeckState {
         let runs_whole = counts

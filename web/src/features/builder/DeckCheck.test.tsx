@@ -207,8 +207,7 @@ describe('the marker beside the name', () => {
     ['a clean saved check', { state: 'verified', verified: true }, 'Verified'],
     ['a deck played by hand', { state: 'manual_play' }, 'Played by hand'],
     ['a blocked deck', { state: 'blocked' }, 'Blocked'],
-    ['a deck never checked', { state: 'unchecked', changed: false }, 'Unchecked'],
-    ['a stale stored check', { state: 'unchecked', changed: true }, 'Changed since the last check'],
+    ['a deck on reads', { state: 'read' }, 'Runs on reads'],
   ] as const)('says the word for %s', async (_what, over, word) => {
     await renderBuilder({ view: over })
     const marker = deckPane().querySelector('[data-marker]')
@@ -216,11 +215,11 @@ describe('the marker beside the name', () => {
     expect(pane().queryByText('Unsaved changes')).toBeNull()
   })
 
-  it('turns to "Changed since the last check" the moment the draft differs, then follows the save', async () => {
+  it('turns to "Unsaved draft" the moment the draft differs, then follows the save', async () => {
     const { user } = await renderBuilder({ view: { state: 'verified', verified: true } })
     expect(deckPane().querySelector('[data-marker]')).toHaveAttribute('data-marker', 'verified')
     await user.click(screen.getByRole('button', { name: 'Add one Lightning Bolt' }))
-    expect(deckPane().querySelector('[data-marker]')).toHaveTextContent(/^Changed since the last check$/)
+    expect(deckPane().querySelector('[data-marker]')).toHaveTextContent(/^Unsaved draft$/)
     expect(pane().getByText('Unsaved changes')).toBeInTheDocument()
     expect(deckPane().querySelector('[data-slot="check-counts"]')).toHaveTextContent(/ · as saved$/)
     await user.click(pane().getByRole('button', { name: 'Save' }))

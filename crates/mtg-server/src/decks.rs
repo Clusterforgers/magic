@@ -1,11 +1,11 @@
-//! The deck endpoints: the decks a signed-in account stores, the deck check and the marker derived
-//! from it, import of pasted lists and export as text, Arena or MTGO text. Everything here needs an
+//! The deck endpoints: the decks a signed-in account stores, the deck check and its state,
+//! shown from the check of the moment, import of pasted lists and export as text, Arena or MTGO text. Everything here needs an
 //! account, except the check of a precon (`precon:<code>`); a server without a database answers 503
 //! `decks_unavailable`.
 //!
 //! Saving a deck runs the check and stores `{deck_hash, coverage_hash, checked_at, summary}` with it.
-//! Whether a deck is verified is never stored: it is derived each time the deck is read, from the
-//! stored check and the check run at that moment (`mtg_cards::deck::marker`).
+//! Whether a deck is verified is never stored: each read runs the check at that moment and shows its
+//! state, so a release that changes rules never needs a save to show the result.
 
 use std::collections::HashMap;
 
@@ -15,7 +15,7 @@ use axum::extract::{Path, Query, Request, State};
 use axum::http::header::{CONTENT_DISPOSITION, CONTENT_TYPE};
 use axum::http::{HeaderMap, HeaderValue, StatusCode};
 use axum::response::{IntoResponse, Response};
-use mtg_cards::deck::{DeckReport, DeckZone, StoredCheck, marker};
+use mtg_cards::deck::{DeckReport, DeckState, DeckZone, StoredCheck};
 use mtg_core::house::HouseRules;
 use mtg_db::{CreateDeckError, DeckDraft, DeckId, DeckRepo, StoredDeck};
 use mtg_import::decklist::ExportFormat;
@@ -119,13 +119,13 @@ pub(crate) fn lines_of(deck: &StoredDeck) -> Vec<Line> {
     deck.lines.iter().map(Line::from_stored).collect()
 }
 
-/// A stored deck as the owner sees it: its cards, the check stored with it, the check of now and the
-/// marker derived from the two.
+/// A stored deck as the owner sees it: its cards, the check stored with it, the check of now, whose
+/// state the deck shows.
 fn deck_view(loaded: &Loaded, deck: &StoredDeck) -> DeckView {
     let lines = lines_of(deck);
     let report = loaded.report(&deck.format, &lines);
     let check = stored_check(deck);
-    let mark = marker(check.as_ref(), &report);
+    let state = report.summary.state;
     let mut views = Vec::with_capacity(lines.len());
     for line in &lines {
         views.extend(loaded.view(line));
@@ -138,9 +138,9 @@ fn deck_view(loaded: &Loaded, deck: &StoredDeck) -> DeckView {
         created_at: deck.created_at.clone(),
         updated_at: deck.updated_at.clone(),
         cards: views,
-        state: mark.state,
-        verified: mark.verified,
-        changed: mark.changed,
+        state,
+        verified: state == DeckState::Verified,
+        changed: false,
         check,
         report,
     }
@@ -179,16 +179,16 @@ fn list_item(loaded: &Loaded, deck: &StoredDeck) -> DeckListItem {
         .collect::<Vec<_>>();
     let pictures = pictures_of(loaded, &lines, &commanders);
     let check = stored_check(deck);
-    let mark = marker(check.as_ref(), &report);
+    let state = report.summary.state;
     DeckListItem {
         id: deck.id.to_string(),
         name: deck.name.clone(),
         format: deck.format.clone(),
         created_at: deck.created_at.clone(),
         updated_at: deck.updated_at.clone(),
-        state: mark.state,
-        verified: mark.verified,
-        changed: mark.changed,
+        state,
+        verified: state == DeckState::Verified,
+        changed: false,
         checked_at: check.map(|check| check.checked_at),
         summary: report.summary,
         commanders,
@@ -264,8 +264,7 @@ pub(crate) async fn create(
     Ok((StatusCode::CREATED, Json(view)))
 }
 
-/// `GET /api/decks/{id}`: the deck with the check run now and the marker derived from it and from
-/// the check stored at the last save.
+/// `GET /api/decks/{id}`: the deck with the check run now and its state, beside the check stored at the last save.
 pub(crate) async fn get_one(
     State(app): State<AppState>,
     path: Result<Path<String>, PathRejection>,

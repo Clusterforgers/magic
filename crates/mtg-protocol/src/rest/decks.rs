@@ -1,4 +1,4 @@
-//! Bodies of the deck endpoints of `mtg-server`: stored decks with their derived marker, the deck
+//! Bodies of the deck endpoints of `mtg-server`: stored decks with the state of the check of the moment, the deck
 //! check, import of pasted lists and the error codes of the card and deck endpoints.
 
 use mtg_cards::deck::{DeckReport, DeckState, DeckZone, StoredCheck, Summary};
@@ -83,13 +83,11 @@ pub struct DeckView {
     pub updated_at: String,
     /// The lines in the owner's order.
     pub cards: Vec<DeckLineView>,
-    /// `verified`, `read`, `manual_play`, `blocked`, or `unchecked` when no check is stored or the deck or its
-    /// cards' rules changed since.
+    /// `verified`, `read`, `manual_play` or `blocked`: the state of the check run now, whatever was stored.
     pub state: DeckState,
-    /// True exactly when `state` is `verified`: the stored check is clean, its hashes equal the ones
-    /// computed now, and the check of now is clean too.
+    /// True exactly when `state` is `verified`.
     pub verified: bool,
-    /// A check is stored but the deck, the rules of its cards or what the engine runs changed since it.
+    /// Always false; kept so older clients still read the field.
     pub changed: bool,
     /// The check stored when the deck was last saved.
     pub check: Option<StoredCheck>,
@@ -126,7 +124,7 @@ pub struct DeckListItem {
     pub state: DeckState,
     /// True exactly when `state` is `verified`.
     pub verified: bool,
-    /// A check is stored but the deck changed since it.
+    /// Always false; kept so older clients still read the field.
     pub changed: bool,
     /// When the stored check ran.
     pub checked_at: Option<String>,
