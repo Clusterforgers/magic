@@ -462,3 +462,17 @@ fn bot_games_with_sagas_keep_every_invariant_and_replay() {
     assert!(in_order > 0, "chapters triggered in order");
     assert!(left > 0, "some Saga left after its last chapter");
 }
+
+#[test]
+fn a_saga_played_as_a_land_enters_with_a_lore_counter() -> Result<(), ScriptError> {
+    let land = std::sync::Arc::new(
+        mtg_cards::CardDefinition::new("Saga Land")
+            .with_type(mtg_core::card::CardType::Land)
+            .with_type(mtg_core::card::CardType::Enchantment)
+            .with_subtype("Saga"),
+    );
+    let mut driver = Driver::from_scenario(table(2, vec![land]))?;
+    driver.play_land("Saga Land")?;
+    assert_eq!(lore(&driver, "Saga Land"), 1);
+    Ok(())
+}

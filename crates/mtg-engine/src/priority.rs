@@ -480,11 +480,9 @@ pub(crate) fn answer(
             if !options.playable_lands.contains(&object) {
                 return Err(IllegalAnswer::NotOffered("land").into());
             }
-            Ok(Outcome::Events(vec![Event::LandPlayed {
-                player,
-                object,
-                face: None,
-            }]))
+            Ok(Outcome::Events(crate::stack::land_played(
+                state, player, object, None,
+            )))
         }
         PriorityAction::PlayLandFace(object, face) => {
             let offered = options
@@ -495,11 +493,12 @@ pub(crate) fn answer(
                 return Err(IllegalAnswer::NotOffered("land").into());
             }
             // The front face of an adventure or modal double-faced card is the card itself.
-            Ok(Outcome::Events(vec![Event::LandPlayed {
+            Ok(Outcome::Events(crate::stack::land_played(
+                state,
                 player,
                 object,
-                face: (face != 0).then_some(face),
-            }]))
+                (face != 0).then_some(face),
+            )))
         }
         PriorityAction::CastSpell(object) => {
             if !options.castable.contains(&object) {

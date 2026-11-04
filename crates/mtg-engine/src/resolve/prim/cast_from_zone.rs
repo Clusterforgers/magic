@@ -9,7 +9,6 @@ use super::may::performed_name;
 use super::wrong_effect;
 use crate::choose::{Choice, Target, YesNoOptions};
 use crate::decision::{Decision, DecisionKind};
-use crate::events::Event;
 use crate::object::{GameObject, ObjectKind};
 use crate::priority::may_play_land_while_resolving;
 use crate::resolve::{Cast, Cx, Next, ResolveError, Run};
@@ -98,11 +97,7 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
                 .ok_or_else(|| unexpected("a cast of a card that is gone"))?;
             if *play && is_land(card) {
                 return Ok(Run::Done {
-                    events: vec![Event::LandPlayed {
-                        player,
-                        object: card.id(),
-                        face: None,
-                    }],
+                    events: crate::stack::land_played(cx.state(), player, card.id(), None),
                     bound: vec![performed(cx, true)],
                     snapshots: Vec::new(),
                     next: Next::Sibling,
