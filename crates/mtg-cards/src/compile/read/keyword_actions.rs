@@ -1,6 +1,8 @@
 //! Keyword actions that the macro table expands (`crate::macros::ACTIONS`): "Earthbend 2." and "~ endures 2.", and the
 //! words they render back to.
 
+use std::sync::OnceLock;
+
 use mtg_core::card::CardType;
 
 use super::tokens::Reader;
@@ -38,6 +40,33 @@ pub fn keyword_action(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
     })
 }
 
+/// The expansions of a table entry for each number up to `MOST`, built once: matching effects back to words runs for
+/// every ability a view words, and expanding a template parses JSON.
+fn expansions(name: &str, on: &Ref) -> &'static [(u32, Vec<Effect>)] {
+    type Row = Vec<(u32, Vec<Effect>)>;
+    static CACHE: OnceLock<[Row; 4]> = OnceLock::new();
+    let cache = CACHE.get_or_init(|| {
+        let build = |name: &str, on: &Ref| -> Row {
+            (1..=MOST)
+                .filter_map(|amount| Some((amount, macros::action_effects(name, amount, on)?)))
+                .collect()
+        };
+        [
+            build("earthbend", &Ref::Target(0)),
+            build("endure", &Ref::This),
+            build("endure", &Ref::Target(0)),
+            build("endure", &Ref::Triggering),
+        ]
+    });
+    match (name, on) {
+        ("earthbend", _) => &cache[0],
+        ("endure", Ref::This) => &cache[1],
+        ("endure", Ref::Target(0)) => &cache[2],
+        ("endure", Ref::Triggering) => &cache[3],
+        _ => &[],
+    }
+}
+
 /// The words of the table entry the effects begin with, and how many effects they are; `say` words the object an
 /// endure works on when it is not the card itself.
 pub fn text(
@@ -45,9 +74,8 @@ pub fn text(
     mut say: impl FnMut(&Ref) -> Option<String>,
 ) -> Option<(String, usize)> {
     let found = |name: &str, on: &Ref| {
-        (1..=MOST).find_map(|amount| {
-            let steps = macros::action_effects(name, amount, on)?;
-            effects.starts_with(&steps).then_some((amount, steps.len()))
+        expansions(name, on).iter().find_map(|(amount, steps)| {
+            effects.starts_with(steps).then_some((*amount, steps.len()))
         })
     };
     if let Some((amount, len)) = found("earthbend", &Ref::Target(0)) {
@@ -88,5 +116,16 @@ mod tests {
     #[test]
     fn effects_of_no_action_have_no_words() {
         assert!(text(&[Effect::Proliferate { who: Ref::You }], |_| None).is_none());
+    }
+
+    #[test]
+    fn wording_effects_that_are_no_action_is_cheap() {
+        // A view words every ability of every object on every event; expanding templates per call made a game crawl.
+        let effects = [Effect::Proliferate { who: Ref::You }];
+        let started = std::time::Instant::now();
+        for _ in 0..20_000 {
+            assert!(text(&effects, |_| None).is_none());
+        }
+        assert!(started.elapsed().as_secs() < 2, "{:?}", started.elapsed());
     }
 }
