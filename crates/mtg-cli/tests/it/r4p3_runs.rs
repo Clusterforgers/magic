@@ -93,3 +93,42 @@ fn a_card_that_stays_tapped_misses_one_untap_step(
         tapped
     );
 }
+
+const PHANTOM: &str = "Name:Phantom Shell\nManaCost:2 G G\nTypes:Creature Spirit\nPT:1/1\nR:Event$ DamageDone | ActiveZones$ Battlefield | ValidTarget$ Card.Self | ReplaceWith$ DBRemove | PreventionEffect$ True | AlwaysReplace$ True | Description$ x\nSVar:DBRemove:DB$ RemoveCounter | Defined$ Self | CounterType$ P1P1 | CounterNum$ 1\n";
+const SHELL: &str = "Name:Phantom Shell\nManaCost:2 G G\nTypes:Creature Spirit\nPT:1/1\n";
+
+#[rstest]
+#[case::prevents_and_loses_a_counter(PHANTOM, Some(2))]
+#[case::an_ordinary_creature_dies(SHELL, None)]
+fn damage_to_a_phantom_is_prevented_and_costs_a_counter(
+    #[case] script: &str,
+    #[case] counters: Option<u32>,
+) {
+    let card = translated(script, "Phantom Shell", "Creature — Spirit", "{2}{G}{G}");
+    let scenario = Scenario::new(2)
+        .at(1, 0, Step::Main1)
+        .hand(0, [mtg_testkit::cards::burn("Burn", 5)])
+        .battlefield(
+            0,
+            [
+                mtg_testkit::with_counters(
+                    ready(card),
+                    mtg_cards::value::CounterKind::PlusOnePlusOne,
+                    3,
+                ),
+                ready(mtg_testkit::cards::mountain()),
+            ],
+        );
+    let mut driver = Driver::from_scenario(scenario).unwrap();
+    let target = driver.target_named("Phantom Shell").unwrap();
+    driver.cast_at("Burn", &[target]).unwrap();
+    settle(&mut driver);
+    let left = driver.id_of("Phantom Shell").ok().and_then(|id| {
+        driver
+            .state()
+            .object(id)
+            .and_then(|o| o.permanent())
+            .map(|p| p.counters_of(&mtg_cards::value::CounterKind::PlusOnePlusOne))
+    });
+    assert_eq!(left, counters);
+}

@@ -123,3 +123,18 @@ fn doesnt_untap_during_your_next_untap_step(
         assert!(gaps(&text).iter().any(|g| g == gap), "{:?}", gaps(&text));
     }
 }
+
+#[rstest]
+#[case::remove_a_counter(
+    "R:Event$ DamageDone | ActiveZones$ Battlefield | ValidTarget$ Card.Self | ReplaceWith$ D | PreventionEffect$ True | AlwaysReplace$ True\nSVar:D:DB$ RemoveCounter | Defined$ Self | CounterType$ P1P1 | CounterNum$ 1",
+    r#"{"PreventRemovingCounter":"+1/+1"}"#
+)]
+fn a_prevention_that_always_replaces_reads_as_the_prevention_it_prints(
+    #[case] line: &str,
+    #[case] by: &str,
+) {
+    let text = creature(line);
+    let found = abilities(&text);
+    assert_eq!(found.len(), 1, "{:?}", gaps(&text));
+    assert!(found[0].to_string().contains(by), "{}", found[0]);
+}

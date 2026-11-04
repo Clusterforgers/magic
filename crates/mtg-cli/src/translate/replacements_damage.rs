@@ -8,7 +8,8 @@ use super::effects_obj::duration;
 use super::valid::{selector_any, source_any, subject};
 use crate::forge::script::Params;
 
-const KEYS: [&str; 10] = [
+const KEYS: [&str; 11] = [
+    "AlwaysReplace",
     "PreventionEffect",
     "DamageTarget",
     "ReplaceWith",
