@@ -7,7 +7,8 @@ use mtg_cards::trigger::TriggerPattern;
 use mtg_core::ids::{ObjectId, PlayerId};
 
 use super::{Happened, counted};
-use crate::abilities::Cause;
+use crate::abilities::{AbilityRef, Cause};
+use crate::ability_reader;
 use crate::characteristics::controller_of;
 use crate::choose::Target;
 use crate::events::{Event, ZoneCause};
@@ -64,8 +65,22 @@ pub(super) fn did_happened(
         |action: Action, id: ObjectId| did(action, player_of(id, action.looks_back()), Some(id));
     let mut found = Vec::new();
     match event {
-        Event::AbilityActivated { player, source, .. } => {
-            found.push(did(Action::Activated, Some(*player), Some(source.id)));
+        Event::AbilityActivated {
+            player,
+            source,
+            ability,
+            origin,
+        } => {
+            // A mana ability does not use the stack (CR 605.3b), so it is no activation that triggers; only a limit logs
+            // its use.
+            let address = AbilityRef {
+                object: source.id,
+                ability: *ability,
+                source: *origin,
+            };
+            if !ability_reader::ability(pre, address).is_some_and(|rules| rules.is_mana_ability()) {
+                found.push(did(Action::Activated, Some(*player), Some(source.id)));
+            }
         }
         Event::AbilityTriggered(triggered) => found.push(did(
             Action::AbilityTriggered,

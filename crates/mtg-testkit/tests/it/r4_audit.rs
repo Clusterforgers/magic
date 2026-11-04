@@ -258,3 +258,23 @@ fn the_owner_of_the_cards_orders_them_into_the_library() {
     }
     assert_eq!(orderer, Some(pid(1)));
 }
+
+#[test]
+fn a_limited_mana_ability_is_no_activation_that_triggers() {
+    let limited = def(
+        "Limited",
+        CardType::Creature,
+        Some((1, 1)),
+        &[
+            r#"{"Activated":{"cost":["Tap"],"limit":"OncePerTurn","effects":[{"AddMana":{"mana":{"Fixed":["Green"]}}}]}}"#,
+        ],
+    );
+    let sc = Scenario::new(2)
+        .battlefield(0, [ready(activation_watcher()), ready(limited)])
+        .library(0, forest_lib(9))
+        .library(1, forest_lib(9));
+    let mut dr = Driver::from_scenario(sc).unwrap();
+    dr.tap_for_mana("Limited").unwrap();
+    settle(&mut dr);
+    assert_eq!(hand_len(&dr, 0), 0);
+}

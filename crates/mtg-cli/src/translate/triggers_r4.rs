@@ -17,13 +17,12 @@ pub fn pattern(ctx: &Ctx, p: &Params, mode: &str) -> Option<Tr<Value>> {
     })
 }
 
-/// What a `ValidSA` part asks of the activation: only the words that hold for every ability the engine logs as activated.
+/// What a `ValidSA` part asks of the activation: only the words that leave mana abilities out, because the engine logs
+/// no activation for a mana ability (it uses no stack, CR 605.3b). `Activated` and `SpellAbility` alone count mana
+/// abilities too and stay gaps.
 fn activation_word(word: &str, mode: &str) -> Tr<()> {
     match word {
-        // Mana abilities do not log an activation unless they have a limit.
-        "SpellAbility" | "Activated" | "SpellAbility.!ManaAbility" | "Activated.!ManaAbility" => {
-            Ok(())
-        }
+        "SpellAbility.!ManaAbility" | "Activated.!ManaAbility" => Ok(()),
         other => unmapped(format!("key:Trigger.{mode}.ValidSA={other}")),
     }
 }
@@ -47,9 +46,10 @@ fn ability_cast(ctx: &Ctx, p: &Params) -> Tr<Value> {
         "AbilityCast",
         &["ValidCard", "ValidActivatingPlayer", "ValidSA"],
     )?;
-    if let Some(word) = p.get("ValidSA") {
-        activation_word(word, "AbilityCast")?;
-    }
+    let Some(word) = p.get("ValidSA") else {
+        return unmapped("key:Trigger.AbilityCast.ValidSA-missing");
+    };
+    activation_word(word, "AbilityCast")?;
     activation(ctx, p)
 }
 
@@ -64,12 +64,12 @@ fn spell_ability_cast(ctx: &Ctx, p: &Params) -> Tr<Value> {
     let mut activated = false;
     for word in words.split(',') {
         match word {
-            "SpellAbility" | "SpellAbility.!ManaAbility" => {
+            "SpellAbility.!ManaAbility" => {
                 activation_word(word, "SpellAbilityCast")?;
                 activated = true;
                 spell.get_or_insert_with(Vec::new);
             }
-            "Activated" | "Activated.!ManaAbility" => {
+            "Activated.!ManaAbility" => {
                 activation_word(word, "SpellAbilityCast")?;
                 activated = true;
             }

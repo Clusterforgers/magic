@@ -13,9 +13,8 @@ fn trigger(line: &str) -> String {
 #[rstest]
 #[case::mine("Mode$ AbilityCast | ValidActivatingPlayer$ You | ValidSA$ SpellAbility.!ManaAbility", json!({"Did": {"action": "Activated", "who": "You"}}))]
 #[case::theirs("Mode$ AbilityCast | ValidActivatingPlayer$ Opponent | ValidSA$ Activated.!ManaAbility", json!({"Did": {"action": "Activated", "who": "Opponents"}}))]
-#[case::anyones("Mode$ AbilityCast | ValidSA$ SpellAbility", json!({"Did": {"action": "Activated"}}))]
-#[case::of_a_creature("Mode$ AbilityCast | ValidCard$ Creature.YouCtrl | ValidActivatingPlayer$ You", json!({"Did": {"action": "Activated", "who": "You", "what": [{"Type": "Creature"}, {"ControlledBy": "You"}]}}))]
-#[case::spell_or_ability("Mode$ SpellAbilityCast | ValidSA$ Spell,Activated | ValidActivatingPlayer$ You", json!({"AnyOf": [{"SpellCast": {"by": "You"}}, {"Did": {"action": "Activated", "who": "You"}}]}))]
+#[case::of_a_creature("Mode$ AbilityCast | ValidCard$ Creature.YouCtrl | ValidActivatingPlayer$ You | ValidSA$ Activated.!ManaAbility", json!({"Did": {"action": "Activated", "who": "You", "what": [{"Type": "Creature"}, {"ControlledBy": "You"}]}}))]
+#[case::spell_or_ability("Mode$ SpellAbilityCast | ValidSA$ Spell,Activated.!ManaAbility | ValidActivatingPlayer$ You", json!({"AnyOf": [{"SpellCast": {"by": "You"}}, {"Did": {"action": "Activated", "who": "You"}}]}))]
 fn activations(#[case] line: &str, #[case] when: Value) {
     let expected = normal(json!({"Triggered": {"when": when, "effects": [{"Draw": {}}]}}));
     assert_eq!(abilities(&trigger(line)), vec![expected]);
@@ -25,6 +24,18 @@ fn activations(#[case] line: &str, #[case] when: Value) {
 #[case::loyalty(
     "Mode$ AbilityCast | ValidActivatingPlayer$ You | ValidSA$ Activated.Loyalty",
     "key:Trigger.AbilityCast.ValidSA=Activated.Loyalty"
+)]
+#[case::with_mana_abilities(
+    "Mode$ AbilityCast | ValidSA$ Activated",
+    "key:Trigger.AbilityCast.ValidSA=Activated"
+)]
+#[case::no_activation_word(
+    "Mode$ AbilityCast | ValidCard$ Creature.YouCtrl | ValidActivatingPlayer$ You",
+    "key:Trigger.AbilityCast.ValidSA-missing"
+)]
+#[case::spell_or_any_activation(
+    "Mode$ SpellAbilityCast | ValidSA$ Spell,Activated | ValidActivatingPlayer$ You",
+    "key:Trigger.SpellAbilityCast.ValidSA=Activated"
 )]
 #[case::tap_cost(
     "Mode$ AbilityCast | ValidSA$ Activated.!hasTapCost",
