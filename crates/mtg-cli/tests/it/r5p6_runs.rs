@@ -108,3 +108,42 @@ fn every_land_you_control_becomes_the_basic_type_chosen_and_theirs_do_not() {
         "{kinds:?}"
     );
 }
+
+const HUSH: &str = "Name:Hush\nManaCost:W\nTypes:Enchantment\nT:Mode$ SpellCast | ValidCard$ Creature | Execute$ TC | TriggerZones$ Battlefield\nSVar:TC:DB$ Counter | Defined$ TriggeredSpellAbility\n";
+const BOON: &str = "Name:Boon\nManaCost:W\nTypes:Sorcery\nA:SP$ GainLife | LifeAmount$ 3\n";
+
+#[rstest]
+#[case::creature_spell_countered("Grizzly Bears", true, 0, 20)]
+#[case::creature_spell_without_the_trigger("Grizzly Bears", false, 1, 20)]
+#[case::other_spell_resolves("Boon", true, 0, 23)]
+fn a_cast_trigger_counters_only_the_spells_it_names(
+    #[case] cast: &str,
+    #[case] with_hush: bool,
+    #[case] on_battlefield: usize,
+    #[case] life: i32,
+) {
+    use mtg_core::ids::PlayerId;
+    let hush = translated(HUSH, "Hush", "Enchantment", "{W}");
+    let boon = translated(BOON, "Boon", "Sorcery", "{W}");
+    let scenario = Scenario::new(2)
+        .hand(0, [boon, bear()])
+        .battlefield(
+            0,
+            [ready(plains()), ready(forest()), ready(forest())]
+                .into_iter()
+                .chain(with_hush.then(|| ready(hush))),
+        )
+        .library(0, [plains()])
+        .library(1, [plains()]);
+    let mut driver = Driver::from_scenario(scenario).unwrap();
+    driver.cast(cast).unwrap();
+    crate::r3p3_runs::settle(&mut driver);
+    let state = driver.state();
+    let bears = state
+        .zone(mtg_engine::zones::Zone::Battlefield)
+        .iter()
+        .filter(|id| state.object(**id).is_some_and(|o| o.card().name == cast))
+        .count();
+    assert_eq!(bears, on_battlefield);
+    assert_eq!(state.player(PlayerId::from_index(0)).unwrap().life(), life);
+}

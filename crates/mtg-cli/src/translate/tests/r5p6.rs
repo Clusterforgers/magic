@@ -1,5 +1,6 @@
 //! Goal: round 5 piece 6 translates "becomes the chosen color or type" from a value chosen earlier in the ability, and names a gap when the choice is of another kind or missing.
 use rstest::rstest;
+use serde_json::json;
 
 use super::{abilities, gaps};
 
@@ -78,4 +79,30 @@ fn a_choice_of_another_kind_is_a_gap(
 fn without_a_choice_the_chosen_color_is_a_gap() {
     let text = "Name:T\nTypes:Sorcery\nA:SP$ Animate | Defined$ Self | Colors$ ChosenColor | OverwriteColors$ True\n";
     assert_eq!(gaps(text), ["key:Animate.Colors=ChosenColor"]);
+}
+
+const HUSH: &str = "Name:Hush\nTypes:Enchantment\nT:Mode$ SpellCast | ValidCard$ Card | Execute$ TC | TriggerZones$ Battlefield\nSVar:TC:DB$ Counter | Defined$ TriggeredSpellAbility\n";
+
+#[test]
+fn a_cast_trigger_counters_the_spell_it_is_about() {
+    assert_eq!(gaps(HUSH), Vec::<String>::new());
+    let found = abilities(HUSH);
+    assert_eq!(
+        found[0]["Triggered"]["effects"][0],
+        json!({"Counter": {"what": "Triggering"}})
+    );
+}
+
+#[rstest]
+#[case::other_word("Defined$ Targeted")]
+#[case::with_a_target("ValidTgts$ Card | Defined$ TriggeredSpellAbility")]
+fn another_defined_is_a_gap(#[case] params: &str) {
+    let text = HUSH.replace("Defined$ TriggeredSpellAbility", params);
+    assert_eq!(gaps(&text), ["key:Counter.Defined"]);
+}
+
+#[test]
+fn outside_a_cast_trigger_the_triggered_spell_is_a_gap() {
+    let text = HUSH.replace("Mode$ SpellCast", "Mode$ ChangesZone");
+    assert!(gaps(&text).contains(&"key:Counter.Defined".to_owned()));
 }

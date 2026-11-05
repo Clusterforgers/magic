@@ -201,12 +201,29 @@ fn put_counter_all(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
 }
 
 fn counter(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
-    only(p, "Counter", &["TargetType", "ValidTgts", "Destination"])?;
+    only(
+        p,
+        "Counter",
+        &["TargetType", "ValidTgts", "Destination", "Defined"],
+    )?;
     // A countered spell goes to its owner's graveyard; another destination needs a node of the engine.
     if let Some(zone) = p.get("Destination")
         && zone != "Graveyard"
     {
         return unmapped(format!("key:Counter.Destination={zone}"));
+    }
+    // The spell a cast trigger is about; no other `Defined$` is known.
+    if let Some(word) = p.get("Defined") {
+        let cast_trigger = ctx
+            .trigger
+            .as_ref()
+            .is_some_and(|shape| shape.mode == "SpellCast");
+        return match word {
+            "TriggeredSpellAbility" | "TriggeredCard" if cast_trigger && !p.has("ValidTgts") => {
+                Ok(json!({"Counter": {"what": "Triggering"}}))
+            }
+            _ => unmapped("key:Counter.Defined"),
+        };
     }
     if p.get("TargetType") != Some("Spell") {
         return unmapped("key:Counter.TargetType");
