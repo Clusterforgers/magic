@@ -2,9 +2,11 @@
 
 use mtg_cards::effect::Effect;
 
+use super::moved_as::count_entry;
 use super::wrong_effect;
+use crate::choose::Target;
 use crate::events::{Event, ZoneCause};
-use crate::object::ObjectKind;
+use crate::object::{ObjectKind, ObjectRef};
 use crate::resolve::{Cx, Next, ResolveError, Run};
 use crate::zones::Zone;
 
@@ -13,10 +15,11 @@ use crate::zones::Zone;
 /// ability, the resolving spell, an object already in exile, one that has changed zones since it was named and a name
 /// that repeats are passed over.
 pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
-    let Effect::ExileHidden { what } = effect else {
+    let Effect::ExileHidden { what, bind } = effect else {
         return Err(wrong_effect("ExileHidden"));
     };
     let mut events = Vec::new();
+    let mut hidden = Vec::new();
     for object in cx.scope.live_objects(what)? {
         let resolving_spell = object.zone() == Zone::Stack && object.id() == cx.resolving.object();
         if object.kind() == ObjectKind::Ability || resolving_spell || object.zone() == Zone::Exile {
@@ -30,10 +33,22 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
                 by: cx.scope.source,
             },
         });
+        hidden.push(Target::Object(ObjectRef {
+            id: object.id(),
+            counter: object.counter() + 1,
+        }));
     }
     Ok(Run::Done {
         events,
-        bound: Vec::new(),
+        bound: bind
+            .iter()
+            .flat_map(|name| {
+                [
+                    (name.clone(), hidden.clone()),
+                    count_entry(name, hidden.len()),
+                ]
+            })
+            .collect(),
         snapshots: Vec::new(),
         next: Next::Sibling,
     })
@@ -100,6 +115,43 @@ mod tests {
                 panic!("not a hidden exile: {event:?}");
             };
             assert_eq!(by.id, source);
+        }
+    }
+
+    #[rstest]
+    #[case::named(
+        r#"{"ExileHidden":{"what":{"Each":[{"In":"Library"},{"OwnedBy":"You"}]},"as":"h"}}"#,
+        5
+    )]
+    #[case::unnamed(
+        r#"{"ExileHidden":{"what":{"Each":[{"In":"Library"},{"OwnedBy":"You"}]}}}"#,
+        0
+    )]
+    fn the_name_holds_the_cards_as_the_objects_they_become_in_exile(
+        #[case] json: &str,
+        #[case] n: usize,
+    ) {
+        let game = game();
+        let source = game.object(game.zone(Zone::Battlefield)[0]).unwrap();
+        let resolving = Resolving::begin(source.id());
+        let cx = Cx {
+            scope: Scope::announcing(&game, ME, source.reference()),
+            resolving: &resolving,
+        };
+        let effect: Effect = serde_json::from_str(json).unwrap();
+        let Run::Done { bound, .. } = run(&cx, &effect).unwrap() else {
+            panic!("hiding asks nothing");
+        };
+        let held = bound
+            .iter()
+            .find(|(name, _)| name == "h")
+            .map_or(0, |(_, v)| v.len());
+        assert_eq!(held, n);
+        for (_, targets) in &bound {
+            for target in targets {
+                let Target::Object(r) = target else { continue };
+                assert_eq!(r.counter, game.object(r.id).unwrap().counter() + 1);
+            }
         }
     }
 

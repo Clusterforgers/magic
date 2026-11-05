@@ -102,6 +102,8 @@ fn zone_word<'a>(word: Option<&'a str>, key: &str, many: bool) -> Tr<&'a str> {
 /// Where the moved objects go, as a destination or the exile verb.
 enum Goes {
     Exile,
+    /// Exile face down, linked to the source (hideaway).
+    Hidden,
     To(Value),
 }
 
@@ -340,6 +342,7 @@ fn with_static_effect(
 fn moves(what: &Value, goes: Goes) -> Value {
     match goes {
         Goes::Exile => json!({"Exile": {"what": what}}),
+        Goes::Hidden => json!({"ExileHidden": {"what": what}}),
         Goes::To(to) => json!({"Move": {"what": what, "to": to}}),
     }
 }
@@ -861,7 +864,7 @@ fn optional(p: &Params, effects: Vec<Value>, who: &Value) -> Tr<Vec<Value>> {
 }
 
 /// The keys of a `Dig` line that are read.
-const DIG_KEYS: [&str; 19] = [
+const DIG_KEYS: [&str; 21] = [
     "DigNum",
     "ChangeNum",
     "ChangeValid",
@@ -880,6 +883,8 @@ const DIG_KEYS: [&str; 19] = [
     "ValidTgts",
     "TargetMin",
     "TargetMax",
+    "ExileFaceDown",
+    "WithMayLook",
     "RememberChanged",
 ];
 
@@ -890,9 +895,11 @@ pub fn dig(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
     if p.get("NoReveal") == Some("True") && p.get("Reveal") == Some("True") {
         return unmapped("key:Dig.NoReveal-with-Reveal");
     }
+    let hidden = face_down(p)?;
     let who = subject(ctx, p, "You", None)?;
     let count = amount(ctx, p.get("DigNum").unwrap_or("1"))?;
     if p.get("ChangeNum") == Some("All")
+        && !hidden
         && p.get("DestinationZone") == Some("Exile")
         && !p.has("ChangeValid")
     {
@@ -931,12 +938,13 @@ pub fn dig(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
         Take::Count(_) | Take::All => {}
     }
     let (to, rest_to) = dig_places(p)?;
+    let to = if hidden { Goes::Hidden } else { to };
     let rest_ref = if filter.is_some() {
         from_top.clone()
     } else {
         json!({ "Bound": rest })
     };
-    if p.get("RememberChanged") == Some("True") && !matches!(take, Take::All) {
+    if p.get("RememberChanged") == Some("True") && !matches!(take, Take::All) && !hidden {
         ctx.remembered = Some(json!({ "Bound": kept }));
     }
     let mut effects = vec![json!({"LookAtTop": {"who": who, "count": count, "as": top}})];
@@ -955,8 +963,10 @@ pub fn dig(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
         effects.push(json!({"Reveal": {"what": shown}}));
     }
     let mut put = moves(&moved, to);
-    if matches!(take, Take::All) && p.get("RememberChanged") == Some("True") {
-        let (verb, stem) = if put.get("Exile").is_some() {
+    if (hidden || matches!(take, Take::All)) && p.get("RememberChanged") == Some("True") {
+        let (verb, stem) = if hidden {
+            ("ExileHidden", "exiled")
+        } else if put.get("Exile").is_some() {
             ("Exile", "exiled")
         } else {
             ("Move", "moved")
@@ -1201,4 +1211,22 @@ pub fn rearrange_top(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
         json!({"Move": {"what": {"Bound": top},
             "to": {"Library": {"place": "Top", "order": "Chosen"}}}}),
     ])
+}
+
+/// `ExileFaceDown$ True` on a `Dig`: the cards taken lie face down in exile and their exiler may look at them. A face-down
+/// exile nobody may look at has no counterpart in the engine.
+fn face_down(p: &Params) -> Tr<bool> {
+    match (p.get("ExileFaceDown"), p.get("WithMayLook")) {
+        (None, None) => Ok(false),
+        (Some("True"), Some("True"))
+            if p.get("DestinationZone") == Some("Exile")
+                && p.get("DestinationZone2") != Some("Exile")
+                && p.get("Reveal") != Some("True") =>
+        {
+            Ok(true)
+        }
+        (Some("True"), Some("True")) => unmapped("key:Dig.ExileFaceDown-destination"),
+        (Some("True"), _) => unmapped("key:Dig.ExileFaceDown"),
+        _ => unmapped("key:Dig.WithMayLook"),
+    }
 }

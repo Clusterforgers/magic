@@ -130,7 +130,11 @@ fn own_optional(p: &Params) -> bool {
     match p.get("Mode") {
         Some("RevealYouChoose") => true,
         Some("Hand" | "Random") => false,
-        _ => !p.has("OptionalDecider") && p.get("NumCards").is_some_and(|n| n != "1"),
+        _ => {
+            !p.has("OptionalDecider")
+                && (p.get("AnyNumber") == Some("True")
+                    || p.get("NumCards").is_some_and(|n| n != "1"))
+        }
     }
 }
 
@@ -535,6 +539,7 @@ fn discard(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
             "RememberDiscarded",
             "DiscardValid",
             "DiscardValidDesc",
+            "AnyNumber",
             "Optional",
         ],
     )?;
@@ -558,7 +563,25 @@ fn discard(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
         Some(spec) => Some(selector_any(ctx, spec)?),
     };
     let who = player(ctx, p)?;
-    let count = if whole_hand {
+    let any_number = p.get("AnyNumber") == Some("True");
+    if any_number
+        && (p.get("Optional") != Some("True")
+            || whole_hand
+            || reveal_choose
+            || random
+            || p.has("NumCards"))
+    {
+        return unmapped("key:Discard.AnyNumber");
+    }
+    let count = if any_number {
+        // "Any number" is up to the cards of the hand that may be chosen; a group would count every hand together.
+        if matches!(who.as_str(), Some("Opponents" | "EachPlayer")) {
+            return unmapped("key:Discard.AnyNumber+group");
+        }
+        let mut hand = vec![json!({"In": "Hand"}), json!({"OwnedBy": who})];
+        hand.extend(filter.iter().flatten().cloned());
+        json!({"Count": hand})
+    } else if whole_hand {
         // One player's hand as it is when the discard happens; a group would count every hand together.
         if matches!(who.as_str(), Some("Opponents" | "EachPlayer")) {
             return unmapped("key:Discard.Mode=Hand+group");
