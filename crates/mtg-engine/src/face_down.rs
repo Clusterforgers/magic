@@ -54,7 +54,7 @@ impl FaceDown {
     /// keeps its own, like a foretold or hidden card in exile.
     pub(crate) fn characteristics(self) -> Option<&'static CardDefinition> {
         match self {
-            FaceDown::Foretold { .. } | FaceDown::Hideaway { .. } => None,
+            FaceDown::Foretold { .. } | FaceDown::Hideaway { .. } | FaceDown::Held { .. } => None,
             FaceDown::Morph | FaceDown::Manifest => Some(&MORPH),
             FaceDown::Disguise | FaceDown::Cloak => Some(&DISGUISE),
         }

@@ -106,6 +106,14 @@ pub enum FaceDown {
         /// The permanent that hid it.
         by: ObjectRef,
     },
+    /// A card an effect exiled face down: it stays in exile with its own characteristics and only the player who exiled it
+    /// may look at it, whatever becomes of the effect's source.
+    Held {
+        /// The source of the effect.
+        by: ObjectRef,
+        /// The player who exiled it.
+        looker: PlayerId,
+    },
 }
 
 impl FaceDown {
@@ -115,6 +123,7 @@ impl FaceDown {
     pub fn may_look(self, owner: PlayerId, controller: PlayerId, viewer: PlayerId) -> bool {
         match self {
             FaceDown::Foretold { .. } | FaceDown::Hideaway { .. } => owner == viewer,
+            FaceDown::Held { looker, .. } => looker == viewer,
             FaceDown::Morph | FaceDown::Disguise | FaceDown::Manifest | FaceDown::Cloak => {
                 controller == viewer
             }

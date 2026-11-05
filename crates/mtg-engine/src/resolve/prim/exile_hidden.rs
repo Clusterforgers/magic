@@ -1,4 +1,4 @@
-//! `Effect::ExileHidden`: objects are exiled face down, linked to the permanent that hides them (hideaway, CR 702.75a).
+//! `Effect::ExileHidden`: objects are exiled face down; the player whose effect it is, and no one else, may look at them for as long as they stay in exile.
 
 use mtg_cards::effect::Effect;
 
@@ -10,7 +10,7 @@ use crate::object::{ObjectKind, ObjectRef};
 use crate::resolve::{Cx, Next, ResolveError, Run};
 use crate::zones::Zone;
 
-/// Each object the effect names that is still where it was named moves to exile with `ZoneCause::Hideaway` naming the
+/// Each object the effect names that is still where it was named moves to exile with `ZoneCause::Held` naming the
 /// source of the effect, so it lies face down there and the source is the permanent its abilities read it by. An
 /// ability, the resolving spell, an object already in exile, one that has changed zones since it was named and a name
 /// that repeats are passed over.
@@ -29,8 +29,9 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
             object: object.id(),
             from: object.zone(),
             to: Zone::Exile,
-            cause: ZoneCause::Hideaway {
+            cause: ZoneCause::Held {
                 by: cx.scope.source,
+                looker: cx.controller(),
             },
         });
         hidden.push(Target::Object(ObjectRef {
@@ -108,7 +109,7 @@ mod tests {
         for event in &events {
             let Event::ZoneChanged {
                 to: Zone::Exile,
-                cause: ZoneCause::Hideaway { by },
+                cause: ZoneCause::Held { by, .. },
                 ..
             } = event
             else {
@@ -172,6 +173,12 @@ mod tests {
         }
         let object = game.object(card).unwrap();
         assert_eq!(object.zone(), Zone::Exile);
-        assert_eq!(object.face_down(), Some(FaceDown::Hideaway { by: source }));
+        assert_eq!(
+            object.face_down(),
+            Some(FaceDown::Held {
+                by: source,
+                looker: ME
+            })
+        );
     }
 }

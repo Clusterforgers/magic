@@ -366,3 +366,86 @@ fn an_aura_trigger_on_damage_to_the_defending_player(
     let rock_stays = names(&driver, Zone::Battlefield).contains(&"Their Rock".to_string());
     assert_eq!(rock_stays, survives);
 }
+
+const EXTRACT_POWER: &str = "Name:Extract Power\nManaCost:5 U\nTypes:Sorcery\nA:SP$ Dig | Defined$ Player | DigNum$ 1 | ChangeNum$ All | DestinationZone$ Exile | ExileFaceDown$ True | WithMayLook$ True | RememberChanged$ True | SubAbility$ DBEffect | SpellDescription$ Look at the top card of each player's library, then exile those cards face down. You may play them without paying their mana costs for as long as they remain exiled.\nSVar:DBEffect:DB$ Effect | RememberObjects$ Remembered | StaticAbilities$ STPlay | Duration$ Permanent | ForgetOnMoved$ Exile | SubAbility$ DBCleanup\nSVar:STPlay:Mode$ Continuous | MayPlay$ True | Affected$ Card.IsRemembered | AffectedZone$ Exile | MayPlayWithoutManaCost$ True | Description$ You may play them without paying their mana costs for as long as they remain exiled.\nSVar:DBCleanup:DB$ Cleanup | ClearRemembered$ True\n";
+
+fn library_of(names: &[&str]) -> Vec<Arc<CardDefinition>> {
+    names
+        .iter()
+        .map(|n| {
+            Arc::new(
+                CardDefinition::new(*n)
+                    .with_type(CardType::Creature)
+                    .with_power_toughness(2, 2)
+                    .with_mana_cost(ManaCost::parse("{2}").unwrap()),
+            )
+        })
+        .collect()
+}
+
+/// Whether each seat may look at the exiled card of this name.
+fn looks(driver: &Driver, name: &str) -> (bool, bool) {
+    let id = *driver
+        .state()
+        .zone(Zone::Exile)
+        .iter()
+        .find(|i| driver.state().object(**i).unwrap().card().name == name)
+        .unwrap();
+    let seat = mtg_core::ids::PlayerId::from_index;
+    (
+        driver.state().may_look_at(seat(0), id),
+        driver.state().may_look_at(seat(1), id),
+    )
+}
+
+#[test]
+fn cards_exiled_face_down_by_a_spell_are_seen_by_its_caster_only() {
+    let spell = card(EXTRACT_POWER, &[CardType::Sorcery], "{0}", None);
+    let scenario = main_phase()
+        .library(0, library_of(&["Mine", "Mine2"]))
+        .library(1, library_of(&["Theirs", "Theirs2"]))
+        .hand(0, [spell]);
+    let mut driver = Driver::from_scenario(scenario).unwrap();
+    cast_and_run(&mut driver, "Extract Power", true, &[]);
+    // The caster looks at both; the owner of the opponent's card does not.
+    assert_eq!(looks(&driver, "Mine"), (true, false));
+    assert_eq!(looks(&driver, "Theirs"), (true, false));
+}
+
+#[test]
+fn a_card_hidden_by_a_permanent_stays_seen_when_the_permanent_leaves() {
+    let hider = Arc::new(
+        CardDefinition::new("Hider")
+            .with_type(CardType::Creature)
+            .with_power_toughness(1, 1)
+            .with_mana_cost(ManaCost::parse("{0}").unwrap())
+            .with_rules(
+                serde_json::from_str::<Ability>(
+                    r#"{"Activated":{"cost":"{0}","effects":[{"LookAtTop":{"as":"top","who":"Opponents"}},{"ExileHidden":{"as":"exiled4","what":{"Bound":"top"}}},{"Rule":{"duration":"Forever","rule":{"MayCast":{"from":"Exile","only":{"Bound":"exiled4"},"play":true}}}}]}}"#,
+                )
+                .unwrap(),
+            ),
+    );
+    let kill = Arc::new(
+        CardDefinition::new("Kill")
+            .with_type(CardType::Instant)
+            .with_mana_cost(ManaCost::parse("{0}").unwrap())
+            .with_rules(
+                serde_json::from_str::<Ability>(
+                    r#"{"Spell":{"effects":[{"Destroy":{"what":{"Target":0}}}],"targets":[{"what":{"Object":[]}}]}}"#,
+                )
+                .unwrap(),
+            ),
+    );
+    let scenario = main_phase()
+        .library(1, library_of(&["Theirs", "Theirs2"]))
+        .battlefield(0, [ready(hider)])
+        .hand(0, [kill]);
+    let mut driver = Driver::from_scenario(scenario).unwrap();
+    driver.begin_activation("Hider").unwrap();
+    run(&mut driver, true, &[]);
+    assert_eq!(looks(&driver, "Theirs"), (true, false));
+    cast_and_run(&mut driver, "Kill", true, &["Hider"]);
+    assert!(!names(&driver, Zone::Battlefield).contains(&"Hider".to_string()));
+    assert_eq!(looks(&driver, "Theirs"), (true, false));
+}

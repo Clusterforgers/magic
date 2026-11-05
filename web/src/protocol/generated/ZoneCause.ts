@@ -17,7 +17,15 @@ by: PlayerId, } } | { "Hideaway": {
 /**
  * The permanent that hides it.
  */
-by: ObjectRef, } } | { "ExiledUntil": { 
+by: ObjectRef, } } | { "Held": { 
+/**
+ * The source of the effect.
+ */
+by: ObjectRef, 
+/**
+ * The player who exiled it and may look at it.
+ */
+looker: PlayerId, } } | { "ExiledUntil": { 
 /**
  * The permanent whose leaving returns it.
  */
