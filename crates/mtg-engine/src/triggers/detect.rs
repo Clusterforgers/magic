@@ -2049,7 +2049,10 @@ fn repeats(
         })
         .filter(|again| {
             let scope = Scope::announcing(state, again.controller, again.source);
-            matching(&again.cause, happened, &scope).is_some()
+            again
+                .cause
+                .as_ref()
+                .is_none_or(|cause| matching(cause, happened, &scope).is_some())
         })
         .count()
 }

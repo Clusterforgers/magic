@@ -3763,7 +3763,9 @@ impl Walker<'_> {
             GameRule::TriggerAgain { cause, source } => {
                 let saved = std::mem::replace(&mut self.scope, Scope::new(&[], false));
                 self.at(tag, |w| {
-                    w.at("cause", |w| w.trigger_pattern(cause));
+                    if let Some(cause) = cause {
+                        w.at("cause", |w| w.trigger_pattern(cause));
+                    }
                     if let Some(source) = source {
                         w.at("source", |w| w.selector(source));
                     }

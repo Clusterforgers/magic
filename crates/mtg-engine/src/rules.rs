@@ -171,9 +171,9 @@ pub enum Rule {
     /// A triggered ability of a permanent the rule's controller controls triggers an additional time when the event
     /// the pattern describes causes it.
     TriggerAgain {
-        /// The event that causes the trigger.
-        #[cfg_attr(feature = "ts", ts(type = "unknown"))]
-        cause: Box<TriggerPattern>,
+        /// The event that causes the trigger; every event when absent.
+        #[cfg_attr(feature = "ts", ts(optional, type = "unknown"))]
+        cause: Option<Box<TriggerPattern>>,
         /// Only abilities of the permanents it selects trigger again; every permanent of the controller when absent.
         #[cfg_attr(feature = "ts", ts(type = "unknown"))]
         source: Option<Selector>,
@@ -367,8 +367,8 @@ pub(crate) struct Again {
     pub(crate) source: ObjectRef,
     /// The permanents whose abilities trigger again; every one of the controller when absent.
     pub(crate) from: Option<Selector>,
-    /// The event that causes the trigger.
-    pub(crate) cause: TriggerPattern,
+    /// The event that causes the trigger; every event when absent.
+    pub(crate) cause: Option<TriggerPattern>,
 }
 
 /// The rules in force in a state.
@@ -550,7 +550,7 @@ impl RulesInForce {
                         controller,
                         source,
                         from: from.clone(),
-                        cause: (**cause).clone(),
+                        cause: cause.as_deref().cloned(),
                     });
                 }
             }
@@ -805,7 +805,7 @@ pub(crate) fn lower_rule(scope: &Scope<'_>, wanted: &GameRule) -> Result<Rule, R
             additional: permission.additional.clone().map(Box::new),
         },
         GameRule::TriggerAgain { cause, source } => Rule::TriggerAgain {
-            cause: Box::new(cause.clone()),
+            cause: cause.clone().map(Box::new),
             source: source.clone(),
         },
         GameRule::MaxHandSize { .. } | GameRule::NoLegendRule(_) | GameRule::UntapDuring { .. } => {
@@ -1915,7 +1915,7 @@ mod tests {
         assert_eq!(again[0].source, named(&game, "Holder"));
         assert_eq!(
             again[0].cause,
-            serde_json::from_str::<TriggerPattern>(cause).unwrap()
+            Some(serde_json::from_str::<TriggerPattern>(cause).unwrap())
         );
     }
 

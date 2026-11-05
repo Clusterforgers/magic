@@ -581,8 +581,12 @@ fn game_rule() -> impl Strategy<Value = GameRule> {
                     additional: None,
                 })
             }),
-        (trigger_pattern(), proptest::option::of(selector()))
-            .prop_map(|(cause, source)| GameRule::TriggerAgain { cause, source }),
+        (trigger_pattern(), proptest::option::of(selector())).prop_map(|(cause, source)| {
+            GameRule::TriggerAgain {
+                cause: Some(cause),
+                source,
+            }
+        }),
         (reference(), amount()).prop_map(|(who, size)| GameRule::MaxHandSize { who, size }),
         reference().prop_map(GameRule::NoLegendRule),
         (selector(), reference()).prop_map(|(what, whose)| GameRule::UntapDuring { what, whose }),

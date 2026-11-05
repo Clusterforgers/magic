@@ -112,9 +112,9 @@ once?: boolean,
  */
 additional?: unknown, } } | { "TriggerAgain": { 
 /**
- * The event that causes the trigger.
+ * The event that causes the trigger; every event when absent.
  */
-cause: unknown, 
+cause?: unknown, 
 /**
  * Only abilities of the permanents it selects trigger again; every permanent of the controller when absent.
  */

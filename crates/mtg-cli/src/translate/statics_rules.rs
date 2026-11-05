@@ -36,7 +36,7 @@ pub fn rule(ctx: &Ctx, p: &Params) -> Option<Tr<Value>> {
             objects(ctx, p, mode, "ValidCard").map(|who| combat(&who, "BlockWhileTapped"))
         }
         "IgnoreHexproof" => ignore_hexproof(ctx, p),
-        "IgnoreLegendRule" => keys(p, mode, &[]).map(|()| json!({"NoLegendRule": "EachPlayer"})),
+        "IgnoreLegendRule" => ignore_legend_rule(p, mode),
         "UntapOtherPlayer" => untap_other_players(ctx, p),
         "Continuous" if p.has("SetMaxHandSize") => hand_size(ctx, p),
         "Continuous" if p.has("MayLookAt") && !p.has("MayPlay") => super::statics_look::look(p),
@@ -194,4 +194,16 @@ fn toughness_damage(p: &Params) -> Tr<Value> {
         None => return unmapped("key:Static.CombatDamageToughness.no-ValidCard"),
     };
     Ok(json!({"ToughnessAssignsDamage": who}))
+}
+
+/// `IgnoreLegendRule`: the legend rule stops for every player, or for the controller when `ValidCard$` is "permanents you
+/// control". A narrower set of permanents (creatures, tokens, a name) is not a rule the engine has.
+fn ignore_legend_rule(p: &Params, mode: &str) -> Tr<Value> {
+    keys(p, mode, &["ValidCard"])?;
+    let who = match p.get("ValidCard") {
+        None => "EachPlayer",
+        Some("Permanent.YouCtrl" | "Card.YouCtrl") => "You",
+        Some(_) => return unmapped("key:Static.IgnoreLegendRule.ValidCard"),
+    };
+    Ok(json!({"NoLegendRule": who}))
 }
