@@ -162,7 +162,18 @@ fn event_amount(p: Params, intervening: Option<Value>) -> Tr<(Params, Option<Val
     let Ok(number) = number.parse::<u32>() else {
         return unmapped(format!("key:Trigger.{key}={word}"));
     };
-    let size = json!({"AtTrigger": {"Compare": {"left": "Triggering", "op": op, "right": number}}});
+    // The amount Forge compares for a counter put is the total on the object, not the number this event added.
+    let left = if key == "CounterAmount" {
+        let on_itself = p.get("ValidCard") == Some("Card.Self");
+        let kind = p.get("CounterType").and_then(super::amount::counter_kind);
+        match (on_itself, kind) {
+            (true, Some(kind)) => json!({"Counters": {"on": "This", "counter": kind}}),
+            _ => return unmapped("key:Trigger.CounterAmount.Total"),
+        }
+    } else {
+        json!("Triggering")
+    };
+    let size = json!({"AtTrigger": {"Compare": {"left": left, "op": op, "right": number}}});
     let both = match intervening {
         None => size,
         Some(other) => json!({"All": [other, size]}),

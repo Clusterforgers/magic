@@ -64,11 +64,6 @@ fn size(op: &str, number: u32) -> Value {
     "Ge",
     3
 )]
-#[case::counters(
-    "CounterAdded | ValidCard$ Creature | CounterType$ P1P1 | CounterAmount$ EQ3",
-    "Eq",
-    3
-)]
 #[case::life_lost("LifeLost | ValidPlayer$ You | LifeAmount$ EQ1", "Eq", 1)]
 #[case::life_gained("LifeGained | ValidPlayer$ You | LifeAmount$ LE2", "Le", 2)]
 fn the_size_is_a_condition_of_the_event(#[case] mode: &str, #[case] op: &str, #[case] number: u32) {
