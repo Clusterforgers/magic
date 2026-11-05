@@ -3240,8 +3240,11 @@ impl Walker<'_> {
             Effect::DelayedTrigger { when, effects, .. } => {
                 w.at("when", |w| w.trigger_pattern(when));
                 let saved = std::mem::replace(&mut w.scope.in_trigger, true);
+                // A delayed trigger on a block or on damage names the one who did it, as any triggered ability does.
+                let dealer = std::mem::replace(&mut w.scope.dealer, true);
                 // The trigger it leaves behind remembers the X of the spell or ability that sets it up.
                 w.effect_list("effects", effects, false);
+                w.scope.dealer = dealer;
                 w.scope.in_trigger = saved;
             }
             Effect::Reflexive { targets, effects } => {

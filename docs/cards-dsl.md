@@ -263,7 +263,8 @@ A whole card the checker cannot prove goes to the players instead of waiting for
 
 - A construct the translator cannot express makes the script a gap and is never approximated; a partial translation records its gaps in its meta.
 - A key a mapper lists as understood must be read: an unread listed key makes the line a gap `key:<api>.<Key>-unread`.
-- A `Triggered*` word names what the engine holds for the trigger's mode (`translate/triggered.rs`): `Triggering` is the subjects of the event and `Dealer` the object that did it.
+- A `Triggered*` word names what the engine holds for the trigger's mode (`translate/triggered.rs`): `Triggering` is the subjects of the event and `Dealer` the object that did it. `Against` is what the subject went against: the player or planeswalker an attacker attacks (also a group of attackers at one player), the attacker a creature blocks (its blocker is the `Dealer`). `Arrived { of, zone }` is the card `of` became one zone change on, for a trigger on a permanent leaving the battlefield; nobody once it moved again or elsewhere.
+- `Amount::CastLastTurn` reads the seat summaries the engine keeps as each turn ends (`turn_summary.rs`): the most spells one of the named players cast in the turn that just ended; the werewolf upkeep words read it.
 - `Permanent` as a card filter outside the battlefield is a card of a permanent type, never an instant or sorcery. `NoResolvingCheck` with a condition is a gap, because the engine checks the condition.
 - `proposal::merge` joins a trusted proposal that leaves clauses by hand with the compiler: per clause the compiler's ability wins, else the translator's; a clause neither reads stays `Manual`, so no clause is read twice or lost.
 
