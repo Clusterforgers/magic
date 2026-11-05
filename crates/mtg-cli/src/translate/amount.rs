@@ -233,10 +233,11 @@ fn event_amount(ctx: &Ctx, expression: &str) -> Tr<Option<Value>> {
             } else {
                 json!({"ControllerOf": object})
             };
-            return match super::amount_more::player_amount("TargetedPlayer", what, &who) {
-                Some(found) => found.map(Some),
-                None => unmapped(format!("amount:{head}${what}")),
-            };
+            return super::amount_more::player_stat(head, what, &who).map(Some);
+        }
+        "TriggeredTarget" if ctx.trigger.as_ref().is_some_and(|shape| shape.to_player) => {
+            let who = super::triggered::resolve(ctx.trigger.as_ref(), head)?;
+            return super::amount_more::player_stat(head, what, &who).map(Some);
         }
         "TriggeredPlayer" => {
             let who = super::triggered::resolve(ctx.trigger.as_ref(), "TriggeredPlayer")?;

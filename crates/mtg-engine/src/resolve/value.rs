@@ -1485,6 +1485,7 @@ impl<'a> Scope<'a> {
             Amount::DieResult(which) => self.c11e_die_result(*which),
             Amount::Chosen | Amount::ChosenAs(_) => self.chosen_number(amount),
             Amount::Promised => i64::from(self.payments(OptionalKind::Gift) > 0),
+            Amount::ResolvedThisTurn => self.resolved_this_turn(),
             Amount::Devoured => self.w7e_devoured(),
             Amount::Bound(name) => self.kept_number(name),
             Amount::CastWith(way) => i64::from(self.cast_way() == Some(*way)),
@@ -1532,6 +1533,24 @@ impl<'a> Scope<'a> {
                 })
                 .and_then(GameObject::announced_x)
         })
+    }
+
+    /// How many times the resolving ability has resolved this turn, this resolution included; zero for a scope that is not
+    /// the resolving ability's own.
+    fn resolved_this_turn(&self) -> i64 {
+        let times = self.state.resolving.as_ref().and_then(|resolving| {
+            let object = self.state.object(resolving.object)?;
+            if !std::ptr::eq(self.choices, object.choices()) {
+                return None;
+            }
+            let ability = object.ability()?;
+            Some(self.state.ability_resolutions(
+                ability.source(),
+                ability.origin(),
+                ability.index(),
+            ))
+        });
+        i64::from(times.unwrap_or(0))
     }
 
     /// The number a `Let` of the resolving spell or ability fixed under the name, read only by the scope of that spell or

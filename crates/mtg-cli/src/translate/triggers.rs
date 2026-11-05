@@ -41,6 +41,9 @@ pub fn triggered(ctx: &mut Ctx, body: &str) -> Tr<Value> {
         by: when
             .get("BecomesBlocked")
             .is_some_and(|node| node.get("by").is_some()),
+        to_player: p.get("ValidTarget").is_some_and(|word| {
+            word == "Player" || word.starts_with("Player.") || word == "Opponent"
+        }),
     });
     let from = match p.get("TriggerZones") {
         None | Some("Battlefield") => None,

@@ -12,6 +12,7 @@ pub fn count(ctx: &Ctx, base: &str) -> Option<Tr<Value>> {
     Some(match word {
         "Domain" if rest.is_empty() => Ok(json!({"Distinct": {
             "of": [{"Type": "Land"}, {"ControlledBy": "You"}], "stat": "BasicLandTypes"}})),
+        "ResolvedThisTurn" if rest.is_empty() => Ok(json!("ResolvedThisTurn")),
         "Party" if rest.is_empty() => Ok(json!({"Party": "You"})),
         "Converge" if rest.is_empty() => Ok(json!("ColorsSpent")),
         "CastTotalManaSpent" if rest.is_empty() => Ok(json!({"ManaSpent": {"of": null}})),
@@ -134,6 +135,20 @@ pub fn player_amount(head: &str, what: &str, who: &Value) -> Option<Tr<Value>> {
         ("PlayerCountPropertyYou", "SacrificedThisTurn") => tallied("Sacrificed"),
         _ => return None,
     })
+}
+
+/// A number about the player `who` of an event or a target (`LifeTotal`, `CardsInHand`, `Counters.Poison`); the gap names `head`.
+pub fn player_stat(head: &str, what: &str, who: &Value) -> Tr<Value> {
+    if let Some(found) = player_amount("TargetedPlayer", what, who) {
+        return found;
+    }
+    match what.strip_prefix("Counters.") {
+        Some(kind) => match super::amount::counter_kind(&kind.to_uppercase()) {
+            Some(counter) => Ok(json!({"Counters": {"on": who, "counter": counter}})),
+            None => unmapped(format!("amount:{head}$Counters.{kind}")),
+        },
+        None => unmapped(format!("amount:{head}${what}")),
+    }
 }
 
 /// `PlayerCountOpponents$HighestCardsInHand` and its kin: the largest count among the players of the cards their own

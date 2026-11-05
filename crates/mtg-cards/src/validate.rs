@@ -917,6 +917,7 @@ impl<'a> Walker<'a> {
             | Amount::PhasedOut(_)
             | Amount::Kicks
             | Amount::Promised
+            | Amount::ResolvedThisTurn
             | Amount::Devoured
             | Amount::Bound(_)
             | Amount::PermanentsGraved

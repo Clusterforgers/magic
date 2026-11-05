@@ -495,6 +495,7 @@ const RUNS: &[&str] = &[
     "Amount.Kicks",
     "Amount.Mutations",
     "Amount.Promised",
+    "Amount.ResolvedThisTurn",
     "Amount.CastWith",
     "Amount.ColorsSpent",
     "Amount.PermanentsGraved",

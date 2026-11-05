@@ -67,8 +67,14 @@ fn present(ctx: &Ctx, p: &Params, suffix: &str) -> Tr<Option<Value>> {
     if let Some(word) = defined_word {
         return of_defined(ctx, word, valid, compare, zone).map(Some);
     }
-    let selector = selector_in(ctx, valid, zone)?;
     let (op, right) = comparison(ctx, compare.unwrap_or("GE1"))?;
+    // The spell itself, on the stack or resolving: one if its caster promised the gift, else none.
+    if valid == "Card.Self+PromisedGift" && matches!(zone, None | Some("Stack")) {
+        return Ok(Some(
+            json!({"Compare": {"left": "Promised", "op": op, "right": right}}),
+        ));
+    }
+    let selector = selector_in(ctx, valid, zone)?;
     Ok(Some(
         json!({"Compare": {"left": {"Count": selector}, "op": op, "right": right}}),
     ))

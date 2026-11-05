@@ -191,6 +191,8 @@ pub(crate) struct Tallies {
     pub(crate) damaged_by: BTreeSet<(ObjectRef, ObjectRef)>,
     /// The modes the abilities chose, as (source, where the ability comes from, its index, the mode).
     pub(crate) modes: BTreeSet<(ObjectRef, AbilitySource, usize, usize)>,
+    /// How many times each ability resolved, as (source, where the ability comes from, its index).
+    pub(crate) resolved: BTreeMap<(ObjectRef, AbilitySource, usize), u32>,
     /// The events of the logged kinds in the order they happened, each with the player it counts for and the object as it was.
     pub(crate) logged: Vec<(TallyEvent, PlayerId, crate::snapshot::Snapshot)>,
 }
@@ -485,6 +487,35 @@ impl GameState {
     ) -> bool {
         let key = (source, origin, ability);
         self.limits_spent.contains(&key) || self.game_limits_spent.contains(&key)
+    }
+
+    /// Counts one more resolution of the ability this turn.
+    pub(crate) fn count_resolution(
+        &mut self,
+        source: ObjectRef,
+        origin: AbilitySource,
+        index: usize,
+    ) {
+        let count = self
+            .tallies
+            .resolved
+            .entry((source, origin, index))
+            .or_insert(0);
+        *count = count.saturating_add(1);
+    }
+
+    /// How many times the ability has resolved this turn.
+    pub(crate) fn ability_resolutions(
+        &self,
+        source: ObjectRef,
+        origin: AbilitySource,
+        index: usize,
+    ) -> u32 {
+        self.tallies
+            .resolved
+            .get(&(source, origin, index))
+            .copied()
+            .unwrap_or(0)
     }
 
     /// Records a use of a limited ability; `false` when its limit was already spent.
@@ -787,6 +818,9 @@ impl Hash for GameState {
         }
         if !self.tallies.modes.is_empty() {
             self.tallies.modes.hash(state);
+        }
+        if !self.tallies.resolved.is_empty() {
+            self.tallies.resolved.hash(state);
         }
         if !self.tallies.logged.is_empty() {
             self.tallies.logged.hash(state);

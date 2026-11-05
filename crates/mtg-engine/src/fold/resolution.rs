@@ -228,6 +228,14 @@ fn begin(state: &mut GameState, id: ObjectId) -> Result<(), EngineError> {
     if let Some(ability) = state.objects.get(&id).and_then(|o| o.ability()) {
         resolving.bindings.clone_from(ability.bindings());
     }
+    let counted = state
+        .objects
+        .get(&id)
+        .and_then(|o| o.ability())
+        .map(|ability| (ability.source(), ability.origin(), ability.index()));
+    if let Some((source, origin, index)) = counted {
+        state.count_resolution(source, origin, index);
+    }
     state.resolving = Some(resolving);
     Ok(())
 }

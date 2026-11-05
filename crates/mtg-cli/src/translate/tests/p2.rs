@@ -141,8 +141,8 @@ fn a_value_written_in_place_is_the_expression() {
 )]
 #[case("SVar:X:Count$Chroma.Bogus", "amount:Count$Devotion")]
 #[case(
-    "SVar:X:Count$wasCastFromTheirHand.2.1",
-    "amount:Count$wasCastFromTheirHand"
+    "SVar:X:Count$wasCastFromTheirMind.2.1",
+    "amount:Count$wasCastFromTheirMind"
 )]
 #[case(
     "SVar:X:PlayerCountOpponents$HighestCounters.Bogus kind",
