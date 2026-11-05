@@ -120,6 +120,10 @@ pub fn by(ctx: &Ctx, p: &Params, name: &str, recipient_is_you: bool, shield: boo
             keys(&part, &["VarName", "VarValue", "VarType"])?;
             redirect(p, &part)
         }
+        ("ReplaceEffect", false) if part.get("VarName") == Some("Affected") => {
+            keys(&part, &["VarName", "VarValue", "VarType", "SubAbility"])?;
+            shield_redirect(ctx, p, &part)
+        }
         ("ReplaceEffect", _) => unmapped("replacement:DamageDone-ReplaceEffect"),
         (_, true) => Ok(json!({"PreventAnd": [effect(ctx, &part, recipient_is_you, shield)?]})),
         (_, false) => Ok(json!({"Instead": [effect(ctx, &part, recipient_is_you, shield)?]})),
@@ -146,4 +150,32 @@ fn redirect(p: &Params, part: &Params) -> Tr<Value> {
         _ => return unmapped("replacement:DamageDone-redirect-target"),
     };
     Ok(json!({"Instead": [{"DealDamage": {"source": "Dealer", "to": to, "amount": "Triggering"}}]}))
+}
+
+/// A shield that sends the damage to a player or card by the same source: "the next time ... is dealt to X instead"
+/// (the effect object exiles itself after the first) or "all damage ... is dealt to X instead".
+fn shield_redirect(ctx: &Ctx, p: &Params, part: &Params) -> Tr<Value> {
+    let to = match (
+        p.get("DamageTarget"),
+        part.get("VarValue"),
+        part.get("VarType"),
+    ) {
+        (Some("You"), Some("You"), Some("Player")) => json!("You"),
+        (Some("EffectSource"), Some("EffectSource"), Some("Card")) => json!("This"),
+        (Some("ReplacedSourceController"), Some("ReplacedSourceController"), Some("Player")) => {
+            json!({"ControllerOf": "Dealer"})
+        }
+        _ => return unmapped("replacement:DamageDone-redirect-target"),
+    };
+    let effects = json!([{"DealDamage": {"source": "Dealer", "to": to, "amount": "Triggering"}}]);
+    match part.get("SubAbility") {
+        None => Ok(json!({"Instead": effects})),
+        Some(name) => {
+            let ends = ctx.svar(name).map(Params::parse);
+            if !ends.as_ref().is_some_and(exiles_the_effect) {
+                return unmapped("replacement:DamageDone-redirect-SubAbility");
+            }
+            Ok(json!({"InsteadNext": effects}))
+        }
+    }
 }

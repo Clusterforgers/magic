@@ -781,6 +781,9 @@ pub enum ReplaceBy {
     PreventHalf,
     /// These effects happen instead.
     Instead(Vec<Effect>),
+    /// The next damage event a shield covers is replaced by these effects, as `Instead` reads it, and the shield ends
+    /// ("the next time a source of your choice would deal damage to you this turn, that damage is dealt to X instead").
+    InsteadNext(Vec<Effect>),
     /// All of the damage is prevented (CR 615) and these effects happen, reading the event as `Instead` does ("prevent
     /// that damage and put that many +1/+1 counters on it").
     PreventAnd(Vec<Effect>),

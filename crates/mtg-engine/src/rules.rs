@@ -271,6 +271,10 @@ pub struct DamageShield {
     /// It prevents the next damage event it covers and ends ("the next time a source of your choice would deal damage").
     #[serde(default)]
     pub once: bool,
+    /// What it does to the damage it covers in place of preventing it: scales it or sends it elsewhere.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[cfg_attr(feature = "ts", ts(type = "unknown", optional))]
+    pub instead: Option<mtg_cards::trigger::ReplaceBy>,
 }
 
 impl DamageShield {

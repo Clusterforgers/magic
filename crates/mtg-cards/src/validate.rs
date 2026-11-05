@@ -3973,8 +3973,8 @@ impl Walker<'_> {
 
     /// A permanent's replacement is not a shield, so it cannot prevent just the next damage.
     fn not_next_damage(&mut self, by: &ReplaceBy) {
-        if matches!(by, ReplaceBy::PreventNext) {
-            self.problem("only a shield prevents the next damage");
+        if matches!(by, ReplaceBy::PreventNext | ReplaceBy::InsteadNext(_)) {
+            self.problem("only a shield changes the next damage");
         }
     }
 
@@ -4013,7 +4013,9 @@ impl Walker<'_> {
             ReplaceBy::PreventRemovingCounter(_) if !matches!(when, ReplaceWhen::Damage { .. }) => {
                 self.problem("only damage is prevented with a counter removed");
             }
-            ReplaceBy::Instead(effects) => self.w5d_instead(when, effects),
+            ReplaceBy::Instead(effects) | ReplaceBy::InsteadNext(effects) => {
+                self.w5d_instead(when, effects);
+            }
             ReplaceBy::PreventAnd(effects) => self.w9c_prevent_and(when, effects),
             ReplaceBy::Dredge(cards) => {
                 if !matches!(when, ReplaceWhen::Draw { .. }) {
@@ -4602,7 +4604,7 @@ mod tests {
     )]
     #[case::a_permanent_that_prevents_only_the_next_damage(
         r#"{"Replacement":{"when":{"Damage":{"to":"You"}},"by":"PreventNext"}}"#.to_owned(),
-        &["faces[0].abilities[0].Replacement: only a shield prevents the next damage"]
+        &["faces[0].abilities[0].Replacement: only a shield changes the next damage"]
     )]
     #[case::the_same_zone_twice(
         r#"{"Spell":{"effects":[{"Search":{"also":["Hand","Hand"],"filter":[],"as":"card"}}]}}"#.to_owned(),

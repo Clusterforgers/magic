@@ -124,6 +124,7 @@ fn shield_for(
         left,
         then: Vec::new(),
         once: false,
+        instead: None,
     }))
 }
 

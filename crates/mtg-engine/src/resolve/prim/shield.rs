@@ -47,12 +47,21 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         ReplaceBy::Prevent
         | ReplaceBy::PreventNext
         | ReplaceBy::PreventUpTo(_)
-        | ReplaceBy::PreventAnd(_),
+        | ReplaceBy::PreventAnd(_)
+        | ReplaceBy::Multiply(_)
+        | ReplaceBy::Add(_)
+        | ReplaceBy::Instead(_)
+        | ReplaceBy::InsteadNext(_),
     ) = (when, by)
     else {
         return Err(ResolveError::Unsupported("Effect.Shield"));
     };
-    let once = matches!(by, ReplaceBy::PreventNext);
+    let once = matches!(by, ReplaceBy::PreventNext | ReplaceBy::InsteadNext(_));
+    let instead = match by {
+        ReplaceBy::Multiply(_) | ReplaceBy::Add(_) | ReplaceBy::Instead(_) => Some(by.clone()),
+        ReplaceBy::InsteadNext(effects) => Some(ReplaceBy::Instead(effects.clone())),
+        _ => None,
+    };
     let (left, then) = match by {
         ReplaceBy::PreventUpTo(most) => (Some(*most), Vec::new()),
         ReplaceBy::PreventAnd(then) => (None, then.clone()),
@@ -71,6 +80,7 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         left,
         then,
         once,
+        instead,
     }));
     if left == Some(0) {
         return Ok(Run::events(Vec::new()));
