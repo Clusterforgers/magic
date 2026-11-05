@@ -14,6 +14,7 @@ use mtg_cards::modify::Duration;
 use mtg_core::ids::{EffectId, ObjectId, PlayerId};
 
 use crate::effects::{ContinuousEffect, Selector};
+use crate::events::Event;
 use crate::object::ObjectRef;
 use crate::state::GameState;
 use crate::zones::Zone;
@@ -69,6 +70,26 @@ impl GameState {
             && crate::characteristics::controller_of(self, chosen.id) == Some(player))
         .then_some(chosen.id)
     }
+}
+
+/// The Ring-bearers another player has gained control of: the status ends then and does not return with the control
+/// (CR 701.54c).
+pub(crate) fn state_based(state: &GameState) -> Vec<Event> {
+    state
+        .ring
+        .iter()
+        .filter(|(player, ring)| {
+            ring.bearer.is_some_and(|chosen| {
+                state.object(chosen.id).is_some_and(|object| {
+                    object.reference() == chosen
+                        && object.zone() == Zone::Battlefield
+                        && crate::characteristics::controller_of(state, chosen.id)
+                            .is_some_and(|now| now != **player)
+                })
+            })
+        })
+        .map(|(player, _)| Event::RingBearerLost { player: *player })
+        .collect()
 }
 
 /// The effects the Rings of the game have on their bearers, for the layers to apply with the others.

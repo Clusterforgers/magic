@@ -43,14 +43,19 @@ pub fn chain_at(ctx: &mut Ctx, p: &Params, top: bool) -> Tr<Vec<Value>> {
     let before = (ctx.remembered.clone(), ctx.imprinted.clone());
     let excess = ctx.excess.clone();
     let mut effects = line(ctx, &own.without(&unless_keys).without(spent))?;
-    // A name bound inside a condition or a "may" is out of scope after it: the lines after read no memory of it.
+    // A name bound inside a condition or a "may" stays for the lines after it that count it or test that it holds something.
     if asks || condition.is_some() {
         ctx.excess = excess;
-        if is_bound(ctx.remembered.as_ref()) && ctx.remembered != before.0 {
-            ctx.remembered = before.0;
-        }
-        if is_bound(ctx.imprinted.as_ref()) && ctx.imprinted != before.1 {
-            ctx.imprinted = before.1;
+        for (now, was) in [(&ctx.remembered, &before.0), (&ctx.imprinted, &before.1)] {
+            if is_bound(now.as_ref()) && now != was {
+                if let Some(name) = now
+                    .as_ref()
+                    .and_then(|held| held.get("Bound"))
+                    .and_then(Value::as_str)
+                {
+                    ctx.scoped.insert(name.to_owned());
+                }
+            }
         }
     }
     if let (Some(index), Some(condition)) = (coming, &condition)
@@ -692,7 +697,14 @@ fn delayed_node(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
     // The objects the trigger is about, which `Card.IsTriggerRemembered` in its event names.
     let pin = match p.get("RememberObjects") {
         None => None,
-        Some("Remembered" | "RememberedLKI") if ctx.remembered.is_some() => ctx.remembered.clone(),
+        Some("Remembered" | "RememberedLKI")
+            if ctx
+                .remembered
+                .as_ref()
+                .is_some_and(|held| !super::memory::is_scoped(ctx, held)) =>
+        {
+            ctx.remembered.clone()
+        }
         Some("Targeted") => Some(objects(ctx.last_target()?)?),
         Some("ParentTarget") => Some(objects(ctx.parent()?)?),
         Some("Self") => Some(json!("This")),

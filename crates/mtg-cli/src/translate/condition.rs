@@ -96,7 +96,13 @@ fn of_defined(
     }
     let (op, right) = comparison(ctx, compare.unwrap_or("GE1"))?;
     let selector = selector_in(ctx, valid, None)?;
-    let subject = defined(ctx, word)?;
+    let subject = match word {
+        "Remembered" | "RememberedLKI" => {
+            super::memory::slot_ref_loose(ctx, super::memory::Slot::Remembered)
+                .map_or_else(|| unmapped("defined:Remembered-without-a-change"), Ok)?
+        }
+        _ => defined(ctx, word)?,
+    };
     Ok(json!({"CountOf": {"subject": subject, "selector": selector, "op": op, "right": right}}))
 }
 

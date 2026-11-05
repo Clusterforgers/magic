@@ -237,6 +237,11 @@ fn show_learned(state: &mut GameState, event: &Event) {
             }
         }
         Event::Revealed(revealed) => sight::show(state, None, &revealed.cards),
+        Event::RingBearerLost { player } => {
+            if let Some(ring) = state.ring.get_mut(player) {
+                ring.bearer = None;
+            }
+        }
         _ => {}
     }
 }
@@ -421,6 +426,7 @@ fn apply_misc(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
         Event::DayNightChanged { .. }
         | Event::MonarchChanged { .. }
         | Event::RingTempted { .. }
+        | Event::RingBearerLost { .. }
         | Event::CitysBlessingGained { .. } => designate(state, event),
 
         Event::PermanentTapped { object } => set_tapped(state, *object, true)?,

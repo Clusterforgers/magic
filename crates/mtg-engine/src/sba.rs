@@ -104,6 +104,9 @@ pub(crate) fn check(state: &GameState) -> Vec<Event> {
     events.extend(crate::citys_blessing::sync(state));
     events.extend(crate::w11d_dungeon::w11d_sba(state));
     events.extend(crate::w15a_initiative::w15a_sba(state));
+    if !state.ring.is_empty() {
+        events.extend(crate::ring::state_based(state));
+    }
     for &id in state.zone(Zone::Battlefield) {
         let Some(object) = state.object(id) else {
             continue;

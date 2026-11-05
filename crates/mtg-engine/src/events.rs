@@ -727,6 +727,11 @@ pub enum Event {
         #[cfg_attr(feature = "ts", ts(optional))]
         bearer: Option<ObjectId>,
     },
+    /// A player's Ring-bearer stopped being it (CR 701.54c): another player gained control of it.
+    RingBearerLost {
+        /// The player whose creature it was.
+        player: PlayerId,
+    },
     /// A player got the city's blessing (CR 702.131): a designation they keep for the rest of the game.
     CitysBlessingGained {
         /// Who got it.
@@ -1104,6 +1109,7 @@ impl Event {
             | Event::MonarchChanged { .. }
             | Event::CitysBlessingGained { .. }
             | Event::RingTempted { .. }
+            | Event::RingBearerLost { .. }
             | Event::DungeonCompleted { .. }
             | Event::Learned { .. }
             | Event::DieRolled { .. }

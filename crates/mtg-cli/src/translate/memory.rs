@@ -171,6 +171,19 @@ fn writes(text: &str, slot: Slot) -> bool {
 /// The objects a slot holds on the line being translated: the name an earlier step of the chain bound, else the memory of
 /// the source when the card reads it across lines.
 pub fn slot_ref(ctx: &Ctx, slot: Slot) -> Option<Value> {
+    slot_ref_loose(ctx, slot).filter(|held| !is_scoped(ctx, held))
+}
+
+/// Whether `held` is a name bound inside a condition or a "may", whose objects a later step cannot use.
+pub fn is_scoped(ctx: &Ctx, held: &Value) -> bool {
+    held.get("Bound")
+        .and_then(Value::as_str)
+        .is_some_and(|name| ctx.scoped.contains(name))
+}
+
+/// [`slot_ref`] for a step that only counts the objects or tests that there are some: a name bound inside a condition or
+/// a "may" reads as empty when that part did not run.
+pub fn slot_ref_loose(ctx: &Ctx, slot: Slot) -> Option<Value> {
     let bound = match slot {
         Slot::Remembered => ctx.remembered.clone(),
         Slot::Imprinted => ctx.imprinted.clone(),
@@ -230,7 +243,7 @@ pub fn remembered_total(ctx: &Ctx, what: &str) -> Tr<Value> {
 /// `Remembered$Amount`: how many objects the slot holds. They sit in the zone the step put them in (CR 400.7), which the
 /// selector does not know, so it looks in every zone.
 pub fn remembered_count(ctx: &Ctx) -> Tr<Value> {
-    let Some(held) = slot_ref(ctx, Slot::Remembered) else {
+    let Some(held) = slot_ref_loose(ctx, Slot::Remembered) else {
         return unmapped("amount:Remembered-without-a-change");
     };
     // A token a step moved is gone, so the engine keeps the number the step moved (CR 111.7, 400.7).
@@ -272,6 +285,13 @@ pub fn remembered_matching(ctx: &Ctx, filter: &str) -> Tr<Value> {
 /// (CR 400.7) whose controller is its owner, so the reading is of the target the step named, which keeps the controller
 /// it last had; a name the translator cannot trace back to a target stays a gap.
 pub fn remembered_controller(ctx: &Ctx) -> Tr<Value> {
+    if ctx
+        .remembered
+        .as_ref()
+        .is_some_and(|held| is_scoped(ctx, held))
+    {
+        return unmapped("defined:RememberedController");
+    }
     let before = match &ctx.remembered {
         Some(Value::Object(map)) if map.len() == 1 => {
             match map.get("Bound").and_then(Value::as_str) {
