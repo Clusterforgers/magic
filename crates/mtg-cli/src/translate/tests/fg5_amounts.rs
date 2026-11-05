@@ -93,8 +93,8 @@ fn game_facts_and_player_counts(#[case] svars: &str, #[case] expected: Value) {
     "amount:Count$ThisTurnEntered_Hand_from_Battlefield_Permanent"
 )]
 #[case::unknown_token_property(
-    "SVar:X:Count$ThisTurnEntered_Battlefield_Card.tokenCreated+YouOwn",
-    "valid:tokenCreated"
+    "SVar:X:Count$ThisTurnEntered_Battlefield_Card.tokenMadeUp+YouOwn",
+    "valid:tokenMadeUp"
 )]
 #[case::spent_of_a_kind(
     "SVar:X:Count$CastTotalManaSpent Treasure",

@@ -30,6 +30,7 @@ pub fn triggered(ctx: &mut Ctx, body: &str) -> Tr<Value> {
     };
     let (p, intervening) = during(strip(&all), intervening)?;
     let (p, intervening) = event_amount(p, intervening)?;
+    let (p, intervening) = defender_poisoned(p, intervening);
     let (when, intervening) = if p.get("Mode") == Some("Always") {
         state_when(ctx, &p, &all)?
     } else {
@@ -179,6 +180,19 @@ fn event_amount(p: Params, intervening: Option<Value>) -> Tr<(Params, Option<Val
         Some(other) => json!({"All": [other, size]}),
     };
     Ok((p.without(&[key]), Some(both)))
+}
+
+/// `DefendingPlayerPoisoned$ True` ("if defending player is poisoned") of an attack: the player attacked has a poison counter.
+fn defender_poisoned(p: Params, intervening: Option<Value>) -> (Params, Option<Value>) {
+    if p.get("Mode") != Some("Attacks") || p.get("DefendingPlayerPoisoned") != Some("True") {
+        return (p, intervening);
+    }
+    let poisoned = json!({"Compare": {"left": {"Counters": {"on": "Defending", "counter": super::amount::counter_kind("POISON")}}, "op": "Ge", "right": 1}});
+    let both = match intervening {
+        None => poisoned,
+        Some(other) => json!({"All": [other, poisoned]}),
+    };
+    (p.without(&["DefendingPlayerPoisoned"]), Some(both))
 }
 
 /// "When you control no Islands": a state trigger holds the line's condition as its pattern and has no intervening one.

@@ -30,6 +30,8 @@ pub enum StatKind {
     BasicLandTypes,
     /// Its printed power, as the card has it before any effect (a face-down or copied object reads what it is now).
     BasePower,
+    /// Its printed toughness, as the card has it before any effect.
+    BaseToughness,
     /// The mana spent to cast it, while it is a spell or when it was cast.
     ManaSpent,
     /// Its name: no number, so only `Amount::Distinct` reads it (the different names among the objects).
@@ -1227,6 +1229,7 @@ mod tests {
     #[case::random(Amount::Random { min: 1, max: 6 }, r#"{"Random":{"min":1,"max":6}}"#)]
     #[case::doors(Amount::Doors(Selector(vec![Pred::Type(CardType::Enchantment)])), r#"{"Doors":[{"Type":"Enchantment"}]}"#)]
     #[case::base_power(Amount::Stat { of: Ref::This, stat: StatKind::BasePower }, r#"{"Stat":{"of":"This","stat":"BasePower"}}"#)]
+    #[case::base_toughness(Amount::Stat { of: Ref::This, stat: StatKind::BaseToughness }, r#"{"Stat":{"of":"This","stat":"BaseToughness"}}"#)]
     #[case::the_number_a_permanent_chose(Amount::Chosen, r#""Chosen""#)]
     #[case::the_number_a_resolution_chose(Amount::ChosenAs("n".to_owned()), r#"{"ChosenAs":"n"}"#)]
     #[case::c11e_the_other_result(Amount::DieResult(DieResult::Other), r#"{"DieResult":"Other"}"#)]

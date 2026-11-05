@@ -65,6 +65,10 @@ fn amount(game: &GameState, json: &str) -> i64 {
     r#"{"Total":{"of":[{"Type":"Artifact"}],"stat":"BasePower"}}"#,
     0
 )]
+#[case::printed_toughness_of_yours(
+    r#"{"Total":{"of":[{"Type":"Creature"},{"ControlledBy":"You"}],"stat":"BaseToughness"}}"#,
+    6
+)]
 #[case::colors_among_all(r#"{"Distinct":{"of":[{"Type":"Creature"}],"stat":"Colors"}}"#, 3)]
 #[case::colors_among_yours(
     r#"{"Distinct":{"of":[{"Type":"Creature"},{"ControlledBy":"You"}],"stat":"Colors"}}"#,

@@ -137,6 +137,13 @@ fn remembered_static(ctx: &mut Ctx, name: &str, who: &Value, duration: &Value) -
         "AddPower",
         "AddToughness",
     ];
+    // `ValidTarget$` and `Activator$` belong to a `CantTarget` line alone.
+    let cant_target = part.get("Mode") == Some("CantTarget");
+    let read: Vec<&str> = if cant_target {
+        [read.as_slice(), &["ValidTarget", "Activator"]].concat()
+    } else {
+        read.to_vec()
+    };
     check_keys(&part, "Effect.static", &read, |_, _| false)?;
     let on_remembered = |key: &str| {
         matches!(
@@ -153,6 +160,16 @@ fn remembered_static(ctx: &mut Ctx, name: &str, who: &Value, duration: &Value) -
         }
         "CantBlock" if on_remembered("ValidCard") => {
             Ok(vec![continuous(who, &[json!("CantBlock")], duration)])
+        }
+        // What the opponents of the effect's controller can't target is what hexproof says (CR 702.11b).
+        "CantTarget"
+            if on_remembered("ValidTarget") && part.get("Activator") == Some("Player.Opponent") =>
+        {
+            Ok(vec![continuous(
+                who,
+                &[json!({"AddKeyword": "Hexproof"})],
+                duration,
+            )])
         }
         "MustAttack" if on_remembered("ValidCreature") => Ok(vec![
             json!({"Rule": {"rule": {"MustAttack": who}, "duration": duration}}),
@@ -173,6 +190,15 @@ fn continuous(affected: &Value, mods: &[Value], duration: &Value) -> Value {
 /// moved).
 fn remembered(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
     let word = p.get("RememberObjects").unwrap_or_default();
+    // `Defined$` names the same objects the effect remembers.
+    if let Some(defined) = p
+        .get("Defined")
+        .filter(|defined| Some(*defined) != p.get("RememberObjects"))
+    {
+        return unmapped(format!(
+            "key:Effect.Defined={defined}-beside-RememberObjects"
+        ));
+    }
     let who = match word {
         "Targeted" if p.has("ValidTgts") => subject(ctx, p, "", None)?,
         "Self" => json!("This"),

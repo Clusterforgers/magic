@@ -18,6 +18,7 @@ pub fn atom(prop: &str) -> Option<Vec<Value>> {
         "BottomLibrary" => return one(json!("BottomOfLibrary")),
         "Suspended" => return one(json!("Suspended")),
         "ThisTurnEntered" => return one(json!("EnteredThisTurn")),
+        "tokenCreated" => return one(json!("Token")),
         "wasDealtDamageThisTurn" => return one(json!("DamagedThisTurn")),
         "blockingSource" => return one(json!({"Blocks": "This"})),
         "blockedBySource" => return one(json!({"BlockedBy": "This"})),
@@ -230,9 +231,13 @@ fn counters(prop: &str) -> Option<Value> {
 
 /// `numColorsEQ2`, `basePowerGE3`: a characteristic compared with a written number.
 fn counted(prop: &str) -> Option<Value> {
-    let (stat, rest) = [("numColors", "Colors"), ("basePower", "BasePower")]
-        .iter()
-        .find_map(|(word, stat)| prop.strip_prefix(word).map(|rest| (*stat, rest)))?;
+    let (stat, rest) = [
+        ("numColors", "Colors"),
+        ("basePower", "BasePower"),
+        ("baseToughness", "BaseToughness"),
+    ]
+    .iter()
+    .find_map(|(word, stat)| prop.strip_prefix(word).map(|rest| (*stat, rest)))?;
     let op = super::valid::cmp(rest.get(..2)?)?;
     let digits = rest.get(2..)?;
     if digits.is_empty() || !digits.chars().all(|c| c.is_ascii_digit()) {
