@@ -199,8 +199,18 @@ fn spend_as_any(permissions: &[&Cast], ways: &mut [Way], printed: Option<&ManaCo
         .iter()
         .any(|permission| permission.spend_as != SpendAs::Normal)
     {
+        // Mana of any color still does not pay `{C}`; only mana of any type does.
+        let any_type = permissions
+            .iter()
+            .any(|permission| permission.spend_as == SpendAs::AnyType);
         for way in ways {
-            way.mana = way.cost(printed).map(|cost| cost.paid_by_any_mana());
+            way.mana = way.cost(printed).map(|cost| {
+                if any_type {
+                    cost.paid_by_any_mana()
+                } else {
+                    cost.paid_by_any_color()
+                }
+            });
         }
     }
 }

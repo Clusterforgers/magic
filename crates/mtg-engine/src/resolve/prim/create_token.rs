@@ -9,6 +9,7 @@ use mtg_cards::definition::Layout;
 use mtg_cards::effect::{Effect, TokenRef};
 use mtg_cards::modify::Modification;
 use mtg_cards::refs::Ref;
+use mtg_cards::value::Amount;
 use mtg_core::ids::{ObjectId, PlayerId};
 
 use super::wrong_effect;
@@ -114,11 +115,18 @@ fn made_from(cx: &Cx<'_>, token: &TokenRef) -> Result<Vec<MadeFrom>, ResolveErro
     Ok(match token {
         TokenRef::Named(id) => vec![(Arc::new(w7c_predefined_definition(id)?), None)],
         TokenRef::Custom(spec) => vec![(Arc::new(token_definition(spec, &caps())), None)],
-        TokenRef::Sized { size, token } => {
-            let size = i32::try_from(cx.scope.amount(size)?.max(0)).unwrap_or(i32::MAX);
+        TokenRef::Sized {
+            size,
+            toughness,
+            token,
+        } => {
+            let stat = |amount: &Amount| -> Result<i32, ResolveError> {
+                Ok(i32::try_from(cx.scope.amount(amount)?.max(0)).unwrap_or(i32::MAX))
+            };
+            let power = stat(size)?;
             let spec = TokenSpec {
-                power: Some(size),
-                toughness: Some(size),
+                power: Some(power),
+                toughness: Some(toughness.as_ref().map_or(Ok(power), stat)?),
                 ..(**token).clone()
             };
             vec![(Arc::new(token_definition(&spec, &caps())), None)]
@@ -408,6 +416,17 @@ mod tests {
         };
         let def = &token.definition;
         assert_eq!((def.power, def.toughness), (Some(expected), Some(expected)));
+    }
+
+    #[test]
+    fn a_sized_token_may_have_a_toughness_of_its_own_in_its_definition() {
+        let token = r#"{"Sized":{"size":3,"toughness":5,"token":{"name":"Horror","types":["Creature"],"subtypes":["Horror"]}}}"#;
+        let made = tokens(run_with(&game(2), Vec::new(), &effect(token, "")).unwrap());
+        let [token] = made.as_slice() else {
+            panic!("one token");
+        };
+        let def = &token.definition;
+        assert_eq!((def.power, def.toughness), (Some(3), Some(5)));
     }
 
     #[rstest]

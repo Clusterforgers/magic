@@ -10,6 +10,7 @@ pub mod allgaps;
 pub mod amount;
 pub mod amount_more;
 pub mod amount_when;
+mod any_player;
 pub mod card;
 pub mod condition;
 pub mod cost;

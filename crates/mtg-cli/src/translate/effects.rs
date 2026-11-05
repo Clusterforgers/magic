@@ -96,6 +96,7 @@ pub fn chain_at(ctx: &mut Ctx, p: &Params, top: bool) -> Tr<Vec<Value>> {
         effects = vec![json!({"If": {"condition": condition, "then": effects}})];
     }
     effects.extend(rest);
+    let effects = super::any_player::pay_for_any(effects)?;
     match p.get("Cost") {
         Some(text) if !top => {
             let cost = super::cost::cost(ctx, text)?;

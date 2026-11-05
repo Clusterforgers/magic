@@ -194,8 +194,11 @@ pub enum TokenRef {
     /// An X/X token whose size is an amount counted as the token is created ("an X/X black Horror creature token, where X
     /// is this creature's power"); the description leaves out its power and toughness.
     Sized {
-        /// Both its power and its toughness.
+        /// Its power, and its toughness too unless `toughness` is given.
         size: Amount,
+        /// Its toughness when it differs from `size`.
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        toughness: Option<Amount>,
         /// The rest of the token.
         token: Box<TokenSpec>,
     },
