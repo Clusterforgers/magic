@@ -111,7 +111,6 @@ mod commander;
 mod commander_casts;
 mod commander_draw;
 mod commander_fuzz;
-mod zz_log_size;
 mod commander_identity;
 mod commander_objects;
 mod commander_pairs;

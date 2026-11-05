@@ -747,6 +747,7 @@ impl GameState {
 }
 
 impl Hash for GameState {
+    #[allow(clippy::too_many_lines)]
     fn hash<H: Hasher>(&self, state: &mut H) {
         self.format.name().hash(state);
         self.house_rules.hash(state);

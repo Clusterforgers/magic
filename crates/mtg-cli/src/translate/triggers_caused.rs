@@ -21,9 +21,8 @@ const MODES: [(&str, &str); 7] = [
 pub fn pattern(ctx: &Ctx, p: &Params, mode: &str) -> Option<Tr<Value>> {
     let (_, key) = MODES.iter().find(|(known, _)| *known == mode)?;
     let word = p.get(key)?;
-    let by = match players(word) {
-        Some(by) => by,
-        None => return Some(unmapped(format!("key:Trigger.{mode}.{key}={word}"))),
+    let Ok(by) = players(word) else {
+        return Some(unmapped(format!("key:Trigger.{mode}.{key}={word}")));
     };
     let inner = match super::triggers::pattern(ctx, &p.without(&[key])) {
         Ok(inner) => inner,
@@ -36,13 +35,13 @@ pub fn pattern(ctx: &Ctx, p: &Params, mode: &str) -> Option<Tr<Value>> {
     Some(Ok(json!({ "Caused": caused })))
 }
 
-/// The players a cause word names: `Some(None)` for any, `None` for a word that names the cause some other way. The spell or
+/// The players a cause word names: `Ok(None)` for any, `Err` for a word that names the cause some other way. The spell or
 /// ability is the cause whatever the word says: no turn action and no state-based action ever matches.
-fn players(word: &str) -> Option<Option<&'static str>> {
+fn players(word: &str) -> Result<Option<&'static str>, ()> {
     match word {
-        "SpellAbility" => Some(None),
-        "You" | "SpellAbility.YouCtrl" => Some(Some("You")),
-        "Opponent" | "Player.Opponent" | "SpellAbility.OppCtrl" => Some(Some("Opponents")),
-        _ => None,
+        "SpellAbility" => Ok(None),
+        "You" | "SpellAbility.YouCtrl" => Ok(Some("You")),
+        "Opponent" | "Player.Opponent" | "SpellAbility.OppCtrl" => Ok(Some("Opponents")),
+        _ => Err(()),
     }
 }

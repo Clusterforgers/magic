@@ -57,9 +57,8 @@ fn a_property_of_the_turns_log_is_a_did_this_turn_predicate(
     #[case] property: &str,
     #[case] expected: &str,
 ) {
-    let script = format!(
-        "Name:T\nTypes:Instant\nA:SP$ Pump | ValidTgts$ Creature.{property} | NumAtt$ 1\n"
-    );
+    let script =
+        format!("Name:T\nTypes:Instant\nA:SP$ Pump | ValidTgts$ Creature.{property} | NumAtt$ 1\n");
     assert_eq!(gaps(&script), Vec::<String>::new());
     let expected: Value = serde_json::from_str(expected).unwrap();
     let found = &abilities(&script)[0]["Spell"]["targets"][0]["what"]["Object"][1];

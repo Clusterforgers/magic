@@ -95,5 +95,5 @@ fn an_event_matches_only_the_cause_the_pattern_names(
 #[test]
 fn a_cause_never_leaks_into_the_state_it_was_read_from() {
     let pre = board(BY_YOU);
-    assert!(detect(&pre, &[counters(&pre, "Ogre")], &pre).is_empty());
+    assert_eq!(detect(&pre, &[counters(&pre, "Ogre")], &pre).len(), 0);
 }
