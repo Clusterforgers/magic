@@ -98,3 +98,76 @@ fn a_clash_with_a_remembered_opponent_is_a_gap() {
         ["key:Clash.RememberClasher"]
     );
 }
+
+fn blocker(line: &str, trigger: &str) -> String {
+    format!(
+        "Name:T\nTypes:Creature Bear\nPT:2/2\n{trigger}A:AB$ MustBlock | Cost$ G | {line}\nSVar:Trig:DB$ MustBlock | {line}\n"
+    )
+}
+
+#[rstest]
+#[case::ability("ValidTgts$ Creature", "", "UntilEndOfTurn")]
+#[case::until_combat(
+    "ValidTgts$ Creature | Duration$ UntilEndOfCombat",
+    "",
+    "UntilEndOfCombat"
+)]
+fn a_must_block_ability_forces_a_block_of_the_source(
+    #[case] line: &str,
+    #[case] trigger: &str,
+    #[case] duration: &str,
+) {
+    let script = blocker(line, trigger);
+    assert_eq!(gaps(&script), Vec::<String>::new());
+    let found = abilities(&script);
+    let rule = &found[0]["Activated"]["effects"][0]["Rule"];
+    assert_eq!(
+        rule["rule"],
+        json!({"MustBlockAttacker": {"who": {"Target": 0}, "attacker": "This"}})
+    );
+    assert_eq!(rule["duration"], json!(duration));
+}
+
+#[rstest]
+#[case::attack_of_self(
+    "T:Mode$ Attacks | ValidCard$ Card.Self | Execute$ Trig | TriggerZones$ Battlefield\n",
+    true
+)]
+#[case::attack_of_another(
+    "T:Mode$ Attacks | ValidCard$ Creature.Other+YouCtrl | Execute$ Trig | TriggerZones$ Battlefield\n",
+    false
+)]
+#[case::damage(
+    "T:Mode$ DamageDone | ValidSource$ Card.Self | Execute$ Trig | TriggerZones$ Battlefield\n",
+    false
+)]
+fn a_must_block_trigger_names_the_source_only_when_it_attacks(
+    #[case] trigger: &str,
+    #[case] reads: bool,
+) {
+    let script = blocker("ValidTgts$ Creature", trigger)
+        .replace("A:AB$ MustBlock | Cost$ G | ValidTgts$ Creature\n", "");
+    let failed = gaps(&script)
+        .iter()
+        .any(|gap| gap == "key:MustBlock.attacker");
+    assert_eq!(failed, !reads, "{:?}", gaps(&script));
+}
+
+#[rstest]
+#[case::attacker_named(
+    "DefinedAttacker$ ParentTarget | ValidTgts$ Creature",
+    "key:MustBlock.DefinedAttacker"
+)]
+#[case::all(
+    "ValidTgts$ Creature | BlockAllDefined$ True",
+    "key:MustBlock.BlockAllDefined"
+)]
+#[case::no_target("Duration$ UntilEndOfCombat", "key:MustBlock.no-target")]
+fn a_must_block_beyond_the_node_is_a_gap(#[case] line: &str, #[case] gap: &str) {
+    let script = blocker(line, "");
+    assert!(
+        gaps(&script).iter().any(|g| g == gap),
+        "{:?}",
+        gaps(&script)
+    );
+}

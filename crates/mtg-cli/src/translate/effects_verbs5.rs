@@ -17,6 +17,7 @@ pub fn effects(ctx: &mut Ctx, p: &Params, api: &str) -> Option<Tr<Vec<Value>>> {
     Some(match api {
         "Poison" => poison(ctx, p).map(|node| vec![node]),
         "Fog" => fog(p).map(|node| vec![node]),
+        "MustBlock" => must_block(ctx, p).map(|node| vec![node]),
         "SkipPhase" => skip_phase(ctx, p).map(|node| vec![node]),
         "SacrificeAll" => sacrifice_all(ctx, p).map(|node| vec![node]),
         "Earthbend" => earthbend(ctx, p),
@@ -118,4 +119,24 @@ fn to_values(effects: &[Effect]) -> Tr<Vec<Value>> {
         .iter()
         .map(|effect| serde_json::to_value(effect).or_else(|_| unmapped("effect:serialize")))
         .collect()
+}
+
+/// `MustBlock` on a target: the creature blocks the source creature this turn if able (the requirement of Provoke).
+fn must_block(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
+    only(p, "MustBlock", &["ValidTgts", "Duration"])?;
+    if !p.has("ValidTgts") {
+        return unmapped("key:MustBlock.no-target");
+    }
+    // The attacker is the source, which a trigger of another object's attack does not name.
+    if ctx
+        .trigger
+        .as_ref()
+        .is_some_and(|t| t.mode != "Attacks" || !t.itself)
+    {
+        return unmapped("key:MustBlock.attacker");
+    }
+    let duration = super::effects_obj::duration(p.get("Duration"))?;
+    let who = subject(ctx, p, "Self", None)?;
+    Ok(json!({"Rule": {
+        "rule": {"MustBlockAttacker": {"who": who, "attacker": "This"}}, "duration": duration}}))
 }

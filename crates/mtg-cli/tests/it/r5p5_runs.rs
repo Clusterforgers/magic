@@ -122,3 +122,15 @@ fn a_clash_runs_the_part_the_cards_decide(
     crate::r3p3_runs::settle(&mut driver);
     assert_eq!(life(&driver, 0), life_after);
 }
+
+const LURE: &str = "Name:Poll\nManaCost:G\nTypes:Creature Bear\nPT:1/1\nA:AB$ MustBlock | Cost$ G | ValidTgts$ Creature | TgtPrompt$ Select target creature to block this creature\n";
+
+#[test]
+fn a_translated_lure_ability_is_offered_and_resolves_on_a_target() {
+    let card = translated(LURE, "Poll", "Creature — Bear", "{G}");
+    let scenario = Scenario::new(2)
+        .battlefield(0, [ready(card), ready(forest())])
+        .battlefield(1, [ready(bear())]);
+    let driver = Driver::from_scenario(scenario).unwrap();
+    assert_eq!(driver.offered_abilities("Poll").unwrap().len(), 1);
+}
