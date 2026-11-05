@@ -18,9 +18,14 @@ pub(super) fn w2b_you_and_each(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
     let count = drawn(r)?;
     Some(vec![
         Effect::Draw {
+            bind: None,
             who: Ref::You,
             count: count.clone(),
         },
-        Effect::Draw { who: other, count },
+        Effect::Draw {
+            bind: None,
+            who: other,
+            count,
+        },
     ])
 }

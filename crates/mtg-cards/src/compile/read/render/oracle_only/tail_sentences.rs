@@ -43,6 +43,7 @@ fn sentence(before: &Effect, last: &Effect) -> Option<String> {
                     of: Ref::Target(0),
                     stat: StatKind::Power,
                 },
+            ..
         } => {
             let others = Pred::Not(Box::new(Pred::Is(Ref::Target(0))));
             let rest = Selector(

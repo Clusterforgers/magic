@@ -262,6 +262,7 @@ fn damage_to_itself(steps: &[Effect]) -> Option<String> {
             source: Some(Ref::This),
             to: Ref::This,
             amount: Amount::Fixed(amount),
+            ..
         },
     ] = steps
     else {

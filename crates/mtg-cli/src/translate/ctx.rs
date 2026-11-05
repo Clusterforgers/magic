@@ -133,6 +133,8 @@ pub struct Ctx<'a> {
     pub chosen_card: Option<String>,
     /// The name the latest number chosen by the ability is bound to (`ChosenNumber` after it).
     pub chosen_number: Option<String>,
+    /// The `SVar` a damage step's `ExcessSVar` sets and the number the step bound the excess damage to.
+    pub excess: Option<(String, String)>,
     /// The name of the `SVar` that reads the result of the latest die roll (`ResultSVar`).
     pub die_result: Option<String>,
     /// The choice of a vote whose votes `VoteNum` counts.
@@ -175,6 +177,7 @@ impl<'a> Ctx<'a> {
             chosen_card: None,
             chosen_number: None,
             die_result: None,
+            excess: None,
             vote_num: None,
             modal_keyword: None,
             extra_mode_cost: None,
@@ -197,6 +200,7 @@ impl<'a> Ctx<'a> {
         self.chosen_kind = None;
         self.chosen_card = None;
         self.chosen_number = None;
+        self.excess = None;
         self.die_result = None;
         self.vote_num = None;
         self.trigger = None;
@@ -221,8 +225,10 @@ impl<'a> Ctx<'a> {
             self.depth,
         );
         let die = self.die_result.take();
+        let excess = self.excess.take();
         let out = run(self);
         self.die_result = die;
+        self.excess = excess;
         self.pinned = before;
         self.targets = targets;
         (

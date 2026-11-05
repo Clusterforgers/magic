@@ -25,6 +25,7 @@ pub(super) fn add(ability: &Ability, texts: &mut Vec<String>) {
                     of: Ref::Target(0),
                     stat: StatKind::Power,
                 },
+            ..
         },
     ] = effects.as_slice()
     else {

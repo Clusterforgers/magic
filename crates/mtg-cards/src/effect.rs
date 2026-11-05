@@ -209,6 +209,18 @@ pub enum TokenRef {
     },
 }
 
+/// What damage beyond lethal does (CR 120.10): damage dealt to a creature, planeswalker or battle beyond what is lethal to it.
+#[derive(Debug, Clone, PartialEq, Eq, Hash, Serialize, Deserialize)]
+#[serde(deny_unknown_fields)]
+pub struct Excess {
+    /// The name the number of excess damage is kept under, for `Amount::Bound` in the steps after it.
+    #[serde(rename = "as", default, skip_serializing_if = "Option::is_none")]
+    pub bind: Option<String>,
+    /// Who is dealt the excess damage instead of the recipient: only the lethal part goes to the recipient.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub to: Option<Ref>,
+}
+
 /// One option of a modal spell or ability, with its own targets.
 #[derive(Debug, Clone, PartialEq, Eq, Hash, Serialize, Deserialize)]
 #[serde(deny_unknown_fields)]
@@ -288,6 +300,9 @@ pub enum Effect {
         /// How many.
         #[serde(default = "Amount::one", skip_serializing_if = "Amount::is_one")]
         count: Amount,
+        /// The name the drawn cards are bound to, as the cards they become, for the steps after it.
+        #[serde(rename = "as", default, skip_serializing_if = "Option::is_none")]
+        bind: Option<String>,
     },
     /// The player discards cards of their choice, or at random.
     Discard {
@@ -560,6 +575,9 @@ pub enum Effect {
         to: Ref,
         /// How much.
         amount: Amount,
+        /// What the damage beyond lethal does (CR 120.10); none when it is dealt as it is.
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        excess: Option<Excess>,
     },
     /// The player gains life.
     GainLife {
@@ -1624,13 +1642,13 @@ mod tests {
     use rstest::rstest;
 
     #[rstest]
-    #[case::draw_one(Effect::Draw { who: Ref::You, count: Amount::one() }, r#"{"Draw":{}}"#)]
+    #[case::draw_one(Effect::Draw { bind: None, who: Ref::You, count: Amount::one() }, r#"{"Draw":{}}"#)]
     #[case::opponent_draws(
-        Effect::Draw { who: Ref::Target(0), count: Amount::Fixed(2) },
+        Effect::Draw { bind: None, who: Ref::Target(0), count: Amount::Fixed(2) },
         r#"{"Draw":{"who":{"Target":0},"count":2}}"#
     )]
     #[case::bolt(
-        Effect::DealDamage { source: None, to: Ref::Target(0), amount: Amount::Fixed(3) },
+        Effect::DealDamage { excess: None, source: None, to: Ref::Target(0), amount: Amount::Fixed(3) },
         r#"{"DealDamage":{"to":{"Target":0},"amount":3}}"#
     )]
     #[case::wrath(
@@ -1662,7 +1680,7 @@ mod tests {
         r#"{"Seek":{"who":"Opponents","filter":[{"Supertype":"Basic"}]}}"#
     )]
     #[case::pay(
-        Effect::Pay { who: Ref::Triggering, cost: Cost::mana("{1}".parse().unwrap()), times: Amount::one(), paid: vec![], unpaid: vec![Effect::Draw { who: Ref::You, count: Amount::one() }] },
+        Effect::Pay { who: Ref::Triggering, cost: Cost::mana("{1}".parse().unwrap()), times: Amount::one(), paid: vec![], unpaid: vec![Effect::Draw { bind: None, who: Ref::You, count: Amount::one() }] },
         r#"{"Pay":{"who":"Triggering","cost":"{1}","unpaid":[{"Draw":{}}]}}"#
     )]
     #[case::put_a_poison_counter_on_a_player(
@@ -1690,7 +1708,7 @@ mod tests {
         r#"{"MultiplyCounters":{"on":{"Target":0},"factor":3}}"#
     )]
     #[case::repeat_for_each_opponent(
-        Effect::RepeatEach { over: Ref::Opponents, bind: "foe".to_owned(), effects: vec![Effect::Draw { who: Ref::Bound("foe".to_owned()), count: Amount::one() }] },
+        Effect::RepeatEach { over: Ref::Opponents, bind: "foe".to_owned(), effects: vec![Effect::Draw { bind: None, who: Ref::Bound("foe".to_owned()), count: Amount::one() }] },
         r#"{"RepeatEach":{"over":"Opponents","as":"foe","effects":[{"Draw":{"who":{"Bound":"foe"}}}]}}"#
     )]
     #[case::roll_a_die_with_a_table(
@@ -1698,7 +1716,7 @@ mod tests {
         r#"{"RollDice":{"sides":20,"plus":2,"results":[{"from":1,"to":9,"effects":[{"Shuffle":{}}]},{"from":10,"effects":[{"Shuffle":{}}]}]}}"#
     )]
     #[case::flip_a_coin(
-        Effect::FlipCoin { who: Ref::You, win: vec![Effect::Draw { who: Ref::You, count: Amount::one() }], lose: Vec::new(), lose_first: false, until: false },
+        Effect::FlipCoin { who: Ref::You, win: vec![Effect::Draw { bind: None, who: Ref::You, count: Amount::one() }], lose: Vec::new(), lose_first: false, until: false },
         r#"{"FlipCoin":{"win":[{"Draw":{}}]}}"#
     )]
     #[case::flip_until_a_loss(
@@ -1706,7 +1724,7 @@ mod tests {
         r#"{"FlipCoin":{"until":true}}"#
     )]
     #[case::clash_and_repeat(
-        Effect::Clash { who: Ref::You, win: vec![Effect::Draw { who: Ref::You, count: Amount::one() }], lose: Vec::new(), until: true, with: None },
+        Effect::Clash { who: Ref::You, win: vec![Effect::Draw { bind: None, who: Ref::You, count: Amount::one() }], lose: Vec::new(), until: true, with: None },
         r#"{"Clash":{"win":[{"Draw":{}}],"until":true}}"#
     )]
     #[case::lose_game(Effect::LoseGame { who: Ref::Opponents }, r#"{"LoseGame":{"who":"Opponents"}}"#)]
@@ -1715,7 +1733,7 @@ mod tests {
     #[case::exchange_life(Effect::ExchangeLife { who: Ref::You, with: Ref::Opponents }, r#"{"ExchangeLife":{"with":"Opponents"}}"#)]
     #[case::remove_damage(Effect::RemoveDamage { what: Ref::This }, r#"{"RemoveDamage":{"what":"This"}}"#)]
     #[case::repeat_while(
-        Effect::RepeatWhile { condition: Condition::YourTurn, effects: vec![Effect::Draw { who: Ref::You, count: Amount::one() }], most: 3, times: None },
+        Effect::RepeatWhile { condition: Condition::YourTurn, effects: vec![Effect::Draw { bind: None, who: Ref::You, count: Amount::one() }], most: 3, times: None },
         r#"{"RepeatWhile":{"condition":"YourTurn","effects":[{"Draw":{}}],"most":3}}"#
     )]
     #[case::separate_piles(
@@ -1751,11 +1769,11 @@ mod tests {
         r#"{"Vote":{"options":{"Of":{"Each":[{"In":"Battlefield"}]}},"as":"top"}}"#
     )]
     #[case::w2d_villainous_choice(
-        Effect::VillainousChoice { who: Ref::Triggering, first: vec![Effect::Draw { who: Ref::You, count: Amount::Fixed(1) }], second: Vec::new(), they: true },
+        Effect::VillainousChoice { who: Ref::Triggering, first: vec![Effect::Draw { bind: None, who: Ref::You, count: Amount::Fixed(1) }], second: Vec::new(), they: true },
         r#"{"VillainousChoice":{"who":"Triggering","first":[{"Draw":{}}],"second":[],"they":true}}"#
     )]
     #[case::dk1c5_either(
-        Effect::Either { first: vec![Effect::Draw { who: Ref::You, count: Amount::Fixed(1) }], second: vec![Effect::UnlockDoor { who: Ref::You }] },
+        Effect::Either { first: vec![Effect::Draw { bind: None, who: Ref::You, count: Amount::Fixed(1) }], second: vec![Effect::UnlockDoor { who: Ref::You }] },
         r#"{"Either":{"first":[{"Draw":{}}],"second":[{"UnlockDoor":{}}]}}"#
     )]
     #[case::attach_the_source_to_a_target(

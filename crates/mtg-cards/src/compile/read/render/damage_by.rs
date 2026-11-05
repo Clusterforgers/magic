@@ -12,6 +12,7 @@ impl Writer<'_> {
             source: Some(source),
             to,
             amount,
+            ..
         } = effect
         else {
             return None;

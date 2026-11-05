@@ -1067,6 +1067,7 @@ fn verb_phrase(effect: &Effect) -> Option<String> {
         Effect::Draw {
             who: Ref::You,
             count: Amount::Fixed(n),
+            ..
         } => format!("draw {}", cards(*n)),
         Effect::Discard {
             who: Ref::You,

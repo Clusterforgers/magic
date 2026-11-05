@@ -27,7 +27,12 @@ pub(super) fn add(ability: &Ability, texts: &mut Vec<String>) {
     else {
         return;
     };
-    let [Effect::Draw { who: drawer, count }] = steps.as_slice() else {
+    let [
+        Effect::Draw {
+            who: drawer, count, ..
+        },
+    ] = steps.as_slice()
+    else {
         return;
     };
     if *who != theirs || *drawer != theirs {
@@ -38,6 +43,7 @@ pub(super) fn add(ability: &Ability, texts: &mut Vec<String>) {
         *effects = vec![Effect::May {
             who: Ref::You,
             effects: vec![Effect::Draw {
+                bind: None,
                 who: Ref::You,
                 count: count.clone(),
             }],

@@ -41,6 +41,7 @@ pub(super) fn add(ability: &Ability, texts: &mut Vec<String>) {
             Effect::Draw {
                 who: Ref::OwnerOf(owner),
                 count,
+                ..
             },
         ] if *first == shuffled && **owner == Ref::Target(0) => {
             let Some(cards) = cards_text(count) else {

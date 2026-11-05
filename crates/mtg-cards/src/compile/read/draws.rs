@@ -56,6 +56,7 @@ pub(super) fn wheel(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
             bind,
         },
         Effect::Draw {
+            bind: None,
             who: Ref::EachPlayer,
             count,
         },

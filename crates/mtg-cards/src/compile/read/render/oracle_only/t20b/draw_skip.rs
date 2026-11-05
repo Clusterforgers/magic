@@ -38,6 +38,7 @@ pub(super) fn add(ability: &Ability, texts: &mut Vec<String>) {
         Effect::Draw {
             who: Ref::You,
             count,
+            ..
         },
     ] = effects.as_slice()
     else {

@@ -170,6 +170,7 @@ fn each_player_draws_the_most_cards_a_player_discarded(
                 bind: Some(draws::DISCARDED.to_owned()),
             },
             Effect::Draw {
+                bind: None,
                 who: Ref::EachPlayer,
                 count: draws::most_discarded(),
             },

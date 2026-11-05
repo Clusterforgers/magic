@@ -234,6 +234,7 @@ pub fn one_target(what: Targetable) -> TargetSpec {
 /// An effect that deals `amount` damage to what `to` names.
 pub fn damage(to: Ref, amount: i32) -> Effect {
     Effect::DealDamage {
+        excess: None,
         source: None,
         to,
         amount: Amount::Fixed(amount),
@@ -251,6 +252,7 @@ pub fn gain_life(amount: i32) -> Effect {
 /// An effect that makes its controller draw `count` cards.
 pub fn draw(count: i32) -> Effect {
     Effect::Draw {
+        bind: None,
         who: Ref::You,
         count: Amount::Fixed(count),
     }

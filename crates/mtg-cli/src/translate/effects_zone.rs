@@ -235,6 +235,19 @@ const STATIC_CARD_TYPES: [&str; 8] = [
     "Battle",
 ];
 
+/// The modifications of an `AddType$` list (`Island & Wraith`): a supertype, a card type or a subtype each.
+pub(super) fn added_types(list: &str) -> Vec<Value> {
+    list.split('&')
+        .map(str::trim)
+        .filter(|word| !word.is_empty())
+        .map(|word| match word {
+            "Legendary" | "Snow" | "Basic" => json!({ "AddSupertype": word }),
+            _ if STATIC_CARD_TYPES.contains(&word) => json!({ "AddType": word }),
+            _ => json!({ "AddSubtype": word }),
+        })
+        .collect()
+}
+
 /// The modifications of the static the `StaticEffect$` `SVar` names ("It's a 1/1 Spirit creature with flying in addition to
 /// its other types"): types added, a fixed power and toughness, a color and keywords. A word that takes something away or
 /// adds a color stays a gap.
@@ -272,17 +285,7 @@ fn static_effect_mods(ctx: &mut Ctx, name: &str) -> Tr<Vec<Value>> {
         }
         _ => return unmapped("key:ChangeZone.StaticEffect=power-alone"),
     }
-    for word in part.get("AddType").unwrap_or_default().split('&') {
-        let word = word.trim();
-        if word.is_empty() {
-            continue;
-        }
-        mods.push(match word {
-            "Legendary" | "Snow" | "Basic" => json!({ "AddSupertype": word }),
-            _ if STATIC_CARD_TYPES.contains(&word) => json!({ "AddType": word }),
-            _ => json!({ "AddSubtype": word }),
-        });
-    }
+    mods.extend(added_types(part.get("AddType").unwrap_or_default()));
     if let Some(color) = part.get("SetColor") {
         if !matches!(color, "White" | "Blue" | "Black" | "Red" | "Green") {
             return unmapped("key:ChangeZone.StaticEffect=color");

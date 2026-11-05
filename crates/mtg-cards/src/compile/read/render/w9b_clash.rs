@@ -59,6 +59,7 @@ impl Writer<'_> {
                         source: None,
                         to: Ref::ControllerOf(target),
                         amount: Amount::Fixed(amount),
+                        ..
                     },
                 ] if **target == Ref::Target(0) => {
                     format!("~ deals {amount} damage to that creature's controller")

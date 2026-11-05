@@ -58,6 +58,7 @@ pub fn gift(name: &str) -> Arc<CardDefinition> {
                     Effect::May {
                         who: Ref::Target(0),
                         effects: vec![Effect::Draw {
+                            bind: None,
                             who: Ref::Target(0),
                             count: Amount::Fixed(1),
                         }],

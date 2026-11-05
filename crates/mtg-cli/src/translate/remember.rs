@@ -15,7 +15,10 @@ pub fn wanted(p: &Params, keys: &[&str]) -> bool {
 pub fn bind_moved(ctx: &mut Ctx, effect: &mut Value, verb: &str, stem: &str) {
     let name = ctx.fresh(stem);
     ctx.remembered = Some(json!({ "Bound": name }));
-    if matches!(verb, "Mill" | "Sacrifice" | "Destroy" | "Move" | "Exile") {
+    if matches!(
+        verb,
+        "Mill" | "Draw" | "Sacrifice" | "Destroy" | "Move" | "Exile"
+    ) {
         ctx.counted.insert(name.clone());
     }
     // A destroy can fail on an indestructible permanent, so what it named is not what it moved.

@@ -6,7 +6,7 @@ use super::ctx::{Ctx, Tr, unmapped};
 use super::valid::{defined, selector_in};
 
 /// The DSL name of a counter kind (`P1P1` is `+1/+1`).
-pub fn counter_kind(word: &str) -> Option<Value> {
+pub(super) fn counter_kind(word: &str) -> Option<Value> {
     let word = word.trim();
     if let Some(keyword) = keyword_counter(word) {
         return Some(json!({"Other": keyword}));
@@ -109,6 +109,11 @@ pub fn amount(ctx: &Ctx, text: &str) -> Tr<Value> {
         && let Some(name) = &ctx.vote_num
     {
         return Ok(json!({"Players": {"Bound": name}}));
+    }
+    if let Some((svar, bound)) = &ctx.excess
+        && svar == text
+    {
+        return Ok(json!({ "Bound": bound }));
     }
     if ctx.die_result.as_deref() == Some(text) {
         return Ok(json!({"DieResult": "Only"}));
@@ -253,6 +258,9 @@ fn event_amount(ctx: &Ctx, expression: &str) -> Tr<Option<Value>> {
         "Sacrificed" => json!("Paid"),
         "Remembered" | "RememberedLKI" if what == "Amount" => {
             return super::memory::remembered_count(ctx).map(Some);
+        }
+        "Remembered" if what.starts_with("Valid ") => {
+            return super::memory::remembered_matching(ctx, &what["Valid ".len()..]).map(Some);
         }
         "Remembered" if super::memory::stat_word(what).is_some() => {
             return super::memory::remembered_total(ctx, what).map(Some);

@@ -11,8 +11,11 @@ impl Writer<'_> {
             Effect::Draw {
                 who: Ref::You,
                 count,
+                ..
             },
-            Effect::Draw { who, count: again },
+            Effect::Draw {
+                who, count: again, ..
+            },
             ..,
         ] = effects
         else {

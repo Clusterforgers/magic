@@ -40,7 +40,19 @@ pub fn chain_at(ctx: &mut Ctx, p: &Params, top: bool) -> Tr<Vec<Value>> {
         (true, true) => &["OptionalDecider"],
         (true, false) => &["Optional"],
     };
+    let before = (ctx.remembered.clone(), ctx.imprinted.clone());
+    let excess = ctx.excess.clone();
     let mut effects = line(ctx, &own.without(&unless_keys).without(spent))?;
+    // A name bound inside a condition or a "may" is out of scope after it: the lines after read no memory of it.
+    if asks || condition.is_some() {
+        ctx.excess = excess;
+        if is_bound(ctx.remembered.as_ref()) && ctx.remembered != before.0 {
+            ctx.remembered = before.0;
+        }
+        if is_bound(ctx.imprinted.as_ref()) && ctx.imprinted != before.1 {
+            ctx.imprinted = before.1;
+        }
+    }
     if let (Some(index), Some(condition)) = (coming, &condition)
         && usize::from(index) >= ctx.targets.len()
         && condition
@@ -341,6 +353,10 @@ fn deal_damage(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
             "TargetMax",
             "DamageSource",
             "DividedAsYouChoose",
+            "ExcessSVar",
+            "ExcessSVarCondition",
+            "ExcessDamage",
+            "ExcessDamageCondition",
         ],
     )?;
     super::effects_obj::damage_map(p)?;
@@ -354,7 +370,63 @@ fn deal_damage(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
     if let Some(source) = p.get("DamageSource") {
         effect["source"] = defined(ctx, source)?;
     }
+    let excess = excess_part(ctx, p)?;
+    if let Some((part, name)) = excess {
+        effect["excess"] = part;
+        if let Some(name) = name {
+            ctx.excess = Some(name);
+        }
+    }
     Ok(json!({ "DealDamage": effect }))
+}
+
+/// The node of an excess and the `SVar` and number name it sets, when it sets one.
+type ExcessPart = (Value, Option<(String, String)>);
+
+/// `ExcessSVar$` and `ExcessDamage$` of a damage line (CR 120.10): the node that keeps the damage beyond lethal as a number,
+/// or deals it to someone else, and the `SVar` and number name the lines after it read. They need one targeted recipient:
+/// a divided or several-target line, or a condition on which damaged object counts, is a gap.
+fn excess_part(ctx: &mut Ctx, p: &Params) -> Tr<Option<ExcessPart>> {
+    let (svar, instead) = (p.get("ExcessSVar"), p.get("ExcessDamage"));
+    if svar.is_none() && instead.is_none() {
+        return if p.has("ExcessSVarCondition") || p.has("ExcessDamageCondition") {
+            unmapped("key:DealDamage.ExcessCondition-without-excess")
+        } else {
+            Ok(None)
+        };
+    }
+    if svar.is_some() && instead.is_some() {
+        return unmapped("key:DealDamage.ExcessSVar-with-ExcessDamage");
+    }
+    if !p.has("ValidTgts")
+        || p.has("DividedAsYouChoose")
+        || p.get("TargetMax").is_some_and(|max| max != "1")
+    {
+        return unmapped("key:DealDamage.Excess-without-one-target");
+    }
+    if p.has("ExcessDamageCondition") {
+        return unmapped("key:DealDamage.ExcessDamageCondition");
+    }
+    if p.get("ExcessSVarCondition")
+        .is_some_and(|c| c != "Card.targetedBy")
+    {
+        return unmapped("key:DealDamage.ExcessSVarCondition");
+    }
+    if let Some(who) = instead {
+        if p.has("ExcessSVarCondition") {
+            return unmapped("key:DealDamage.ExcessSVarCondition");
+        }
+        if !matches!(who, "TargetedController" | "ThisTargetedController") {
+            return unmapped(format!("key:DealDamage.ExcessDamage={who}"));
+        }
+        return Ok(Some((
+            json!({"to": defined(ctx, "TargetedController")?}),
+            None,
+        )));
+    }
+    let svar = svar.unwrap_or_default();
+    let bound = ctx.fresh("excess");
+    Ok(Some((json!({"as": bound}), Some((svar.to_owned(), bound)))))
 }
 
 /// The player of a line: its target or `Defined$` word, `You` when it has neither.
@@ -374,20 +446,35 @@ fn draw(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
             "TargetMin",
             "TargetMax",
             "Upto",
+            "RememberDrawn",
         ],
     )?;
     let who = player(ctx, p)?;
     let count = amount(ctx, p.get("NumCards").unwrap_or("1"))?;
+    // `AllReplaced` also counts draws a replacement effect changed; the cards are those that were drawn.
+    let remember = match p.get("RememberDrawn") {
+        None | Some("False") => false,
+        Some("True" | "AllReplaced") => true,
+        Some(other) => return unmapped(format!("key:Draw.RememberDrawn={other}")),
+    };
+    let mut draw = json!({"Draw": {"who": who, "count": count}});
+    if remember {
+        if matches!(who.as_str(), Some("Opponents" | "EachPlayer")) {
+            return unmapped("key:Draw.RememberDrawn.group");
+        }
+        remember::bind_moved(ctx, &mut draw, "Draw", "drawn");
+    }
     match p.get("Upto") {
-        None => Ok(vec![json!({"Draw": {"who": who, "count": count}})]),
+        None => Ok(vec![draw]),
         Some("True") => {
             if matches!(who.as_str(), Some("Opponents" | "EachPlayer")) {
                 return unmapped("key:Draw.Upto.group");
             }
             let bind = ctx.fresh("number");
+            draw["Draw"]["count"] = json!({"ChosenAs": bind});
             Ok(vec![
                 json!({"ChooseValue": {"who": who, "kind": {"Number": [0, count]}, "as": bind}}),
-                json!({"Draw": {"who": who, "count": {"ChosenAs": bind}}}),
+                draw,
             ])
         }
         Some(other) => unmapped(format!("key:Draw.Upto={other}")),
@@ -674,4 +761,9 @@ fn delayed_step(p: &Params) -> Tr<Value> {
 fn proliferate(p: &Params) -> Tr<Value> {
     only(p, "Proliferate", &[])?;
     Ok(json!({"Proliferate": {}}))
+}
+
+/// Whether a memory holds a name that a step bound.
+fn is_bound(held: Option<&Value>) -> bool {
+    held.is_some_and(|what| what.get("Bound").is_some())
 }

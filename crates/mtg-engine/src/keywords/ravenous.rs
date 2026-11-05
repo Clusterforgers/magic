@@ -53,6 +53,7 @@ impl KeywordRules for Ravenous {
                 from: ZoneKind::Battlefield,
                 targets: Vec::new(),
                 effects: vec![Effect::Draw {
+                    bind: None,
                     who: Ref::You,
                     count: Amount::one(),
                 }],

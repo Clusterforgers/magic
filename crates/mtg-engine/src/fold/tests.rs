@@ -38,6 +38,7 @@ fn zap() -> Arc<CardDefinition> {
                     divide: None,
                 }],
                 effects: vec![Effect::DealDamage {
+                    excess: None,
                     source: None,
                     to: Ref::Target(0),
                     amount: Amount::Fixed(1),
@@ -58,6 +59,7 @@ fn totem() -> Arc<CardDefinition> {
                 from: ZoneKind::Battlefield,
                 targets: Vec::new(),
                 effects: vec![Effect::Draw {
+                    bind: None,
                     who: Ref::You,
                     count: Amount::one(),
                 }],

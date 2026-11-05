@@ -36,6 +36,7 @@ pub(super) fn text(targets: &[TargetSpec], effects: &[Effect]) -> Option<String>
                         of: Ref::Target(0),
                         stat: StatKind::Power,
                     },
+                ..
             },
         ] => Some(format!(
             "{} deals damage equal to its power to {}",

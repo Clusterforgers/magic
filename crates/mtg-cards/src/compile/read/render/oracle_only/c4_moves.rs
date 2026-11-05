@@ -69,7 +69,7 @@ pub(super) fn add(ability: &Ability, texts: &mut Vec<String>) {
                 source: None,
                 to: Ref::Target(0),
                 amount: Amount::X,
-            },
+             .. },
             Effect::Choose {
                 who: Ref::You,
                 from: Ref::Each(lands),
