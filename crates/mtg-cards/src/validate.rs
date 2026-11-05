@@ -572,6 +572,7 @@ impl<'a> Walker<'a> {
     fn w21a_pred(&mut self, pred: &Pred) {
         match pred {
             Pred::Modified => self.uses("Pred", "Modified"),
+            Pred::RingBearer => self.uses("Pred", "RingBearer"),
             Pred::FaceDown => self.uses("Pred", "FaceDown"),
             Pred::TargetsPlayer(who) => {
                 self.uses("Pred", "TargetsPlayer");
@@ -582,6 +583,7 @@ impl<'a> Walker<'a> {
         }
     }
 
+    #[allow(clippy::too_many_lines)]
     fn pred(&mut self, pred: &Pred) {
         match pred {
             Pred::Subtype(subtype) => self.known_subtype(subtype),
@@ -622,6 +624,7 @@ impl<'a> Walker<'a> {
             }
             Pred::Targeting(inner) | Pred::HasAttached(inner) => self.selector(inner),
             Pred::Modified
+            | Pred::RingBearer
             | Pred::FaceDown
             | Pred::TargetsPlayer(_)
             | Pred::GravedThisTurn
@@ -1847,6 +1850,7 @@ impl<'a> Walker<'a> {
             | TriggerPattern::PlayerAttacked { who }
             | TriggerPattern::CompletedDungeon { who }
             | TriggerPattern::Proliferated { who }
+            | TriggerPattern::RingTempts { who, .. }
             | TriggerPattern::CoinFlipWon { who }
             | TriggerPattern::W15cClashWon { who }
             | TriggerPattern::DiceRolled { who, .. }
@@ -1967,6 +1971,7 @@ impl<'a> Walker<'a> {
                 | TriggerPattern::DoorUnlocked { .. }
                 | TriggerPattern::DayNightChanges { .. }
                 | TriggerPattern::Proliferated { .. }
+                | TriggerPattern::RingTempts { .. }
                 | TriggerPattern::CoinFlipWon { .. }
                 | TriggerPattern::W15cClashWon { .. }
                 | TriggerPattern::DiceRolled { .. }
@@ -2828,6 +2833,7 @@ impl Walker<'_> {
             | Effect::LoseGame { who }
             | Effect::Proliferate { who }
             | Effect::BecomeMonarch { who }
+            | Effect::RingTempts { who }
             | Effect::TakeInitiative { who }
             | Effect::Venture { who, .. }
             | Effect::UnlockDoor { who }

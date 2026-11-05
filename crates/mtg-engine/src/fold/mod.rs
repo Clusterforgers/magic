@@ -249,6 +249,20 @@ fn designate(state: &mut GameState, event: &Event) {
         Event::CitysBlessingGained { player } => {
             state.citys_blessing.insert(*player);
         }
+        Event::RingTempted {
+            player,
+            level,
+            bearer,
+        } => {
+            let chosen = bearer
+                .and_then(|id| state.object(id))
+                .map(crate::object::GameObject::reference);
+            let ring = state.ring.entry(*player).or_default();
+            ring.level = *level;
+            if chosen.is_some() {
+                ring.bearer = chosen;
+            }
+        }
         _ => {}
     }
 }
@@ -406,6 +420,7 @@ fn apply_misc(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
         Event::Flipped { object } => flip(state, *object)?,
         Event::DayNightChanged { .. }
         | Event::MonarchChanged { .. }
+        | Event::RingTempted { .. }
         | Event::CitysBlessingGained { .. } => designate(state, event),
 
         Event::PermanentTapped { object } => set_tapped(state, *object, true)?,

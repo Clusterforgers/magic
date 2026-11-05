@@ -716,6 +716,17 @@ pub enum Event {
         /// The new monarch.
         player: PlayerId,
     },
+    /// The Ring tempted a player (CR 701.54): their Ring level rose to `level`, and they chose `bearer`, if they controlled a creature.
+    RingTempted {
+        /// The tempted player.
+        player: PlayerId,
+        /// Their Ring level now.
+        level: u8,
+        /// The creature they chose as their Ring-bearer.
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        #[cfg_attr(feature = "ts", ts(optional))]
+        bearer: Option<ObjectId>,
+    },
     /// A player got the city's blessing (CR 702.131): a designation they keep for the rest of the game.
     CitysBlessingGained {
         /// Who got it.
@@ -1092,6 +1103,7 @@ impl Event {
             | Event::DayNightChanged { .. }
             | Event::MonarchChanged { .. }
             | Event::CitysBlessingGained { .. }
+            | Event::RingTempted { .. }
             | Event::DungeonCompleted { .. }
             | Event::Learned { .. }
             | Event::DieRolled { .. }

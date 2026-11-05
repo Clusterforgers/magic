@@ -22,6 +22,7 @@ pub fn pattern(ctx: &Ctx, p: &Params, mode: &str) -> Option<Tr<Value>> {
         "UnlockDoor" => unlock_door(p),
         "CommitCrime" => player_event(p, "CommitCrime", "W11cCrime"),
         "DungeonCompleted" => player_event(p, "DungeonCompleted", "CompletedDungeon"),
+        "RingTemptsYou" => ring_tempts(ctx, p),
         "BecomesCrewed" => becomes_crewed(ctx, p),
         "Attached" => attached(ctx, p),
         "CounterAddedOnce" => counters(ctx, p, "CountersPut").map(|inner| batch(&inner)),
@@ -91,6 +92,23 @@ fn player_event(p: &Params, mode: &str, variant: &str) -> Tr<Value> {
     keys(p, mode, &["ValidPlayer"])?;
     let who = player_ref(p.get("ValidPlayer"))?;
     Ok(json!({ variant: {"who": who} }))
+}
+
+/// The Ring tempts a player: `ValidPlayer` is who; `ValidCard` is the creature chosen as Ring-bearer, which only its
+/// controller's Ring can choose, so it names the player when `ValidPlayer` is absent.
+fn ring_tempts(ctx: &Ctx, p: &Params) -> Tr<Value> {
+    keys(p, "RingTemptsYou", &["ValidPlayer", "ValidCard"])?;
+    let mut pattern = json!({});
+    let who = match (p.get("ValidPlayer"), p.get("ValidCard")) {
+        (None, Some(valid)) if valid.contains("YouCtrl") => json!("You"),
+        (None, Some(_)) => return unmapped("key:Trigger.RingTemptsYou.ValidCard"),
+        (valid, _) => player_ref(valid)?,
+    };
+    pattern["who"] = who;
+    if let Some(valid) = p.get("ValidCard") {
+        pattern["bearer"] = json!(selector_any(ctx, valid)?);
+    }
+    Ok(json!({"RingTempts": pattern}))
 }
 
 /// A Vehicle becomes crewed, the first time in a turn when the line says so.

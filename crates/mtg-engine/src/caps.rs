@@ -65,6 +65,7 @@ const RUNS: &[&str] = &[
     "Trigger.Cycled",
     "Trigger.BecomesMonarch",
     "Trigger.Proliferated",
+    "Trigger.RingTempts",
     "Trigger.CoinFlipWon",
     "Trigger.W15cClashWon",
     "Trigger.DiceRolled",
@@ -257,6 +258,7 @@ const RUNS: &[&str] = &[
     "Effect.Learn",
     "Effect.Crewed",
     "Effect.BecomeMonarch",
+    "Effect.RingTempts",
     "Effect.Venture",
     "Trigger.Ventured",
     "Trigger.CompletedDungeon",
@@ -644,6 +646,7 @@ const RUNS: &[&str] = &[
     "Condition.FirstCombat",
     "Rule.CanBeCommander",
     "Pred.Modified",
+    "Pred.RingBearer",
     "Pred.FaceDown",
     "Pred.TargetsPlayer",
     "Pred.GravedThisTurn",
@@ -974,6 +977,9 @@ mod tests {
     #[case::goading("Effect.Goad", true)]
     #[case::fighting("Effect.Fight", true)]
     #[case::becoming_the_monarch("Effect.BecomeMonarch", true)]
+    #[case::the_ring_tempting("Effect.RingTempts", true)]
+    #[case::the_ring_tempting_triggers("Trigger.RingTempts", true)]
+    #[case::the_ring_bearer("Pred.RingBearer", true)]
     #[case::amassing("Effect.Amass", true)]
     #[case::monstrosity("Effect.Monstrosity", true)]
     #[case::becoming_a_level("Effect.BecomeLevel", true)]

@@ -63,6 +63,7 @@ fn reports(effect: &Effect) -> Reports {
         | Effect::Goad { .. }
         | Effect::Fight { .. }
         | Effect::BecomeMonarch { .. }
+        | Effect::RingTempts { .. }
         | Effect::CreateEmblem { .. }
         | Effect::BecomeDayNight { .. }
         | Effect::Amass { .. }

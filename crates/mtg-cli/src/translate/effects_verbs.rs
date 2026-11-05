@@ -16,6 +16,7 @@ pub fn effects(ctx: &mut Ctx, p: &Params, api: &str) -> Option<Tr<Vec<Value>>> {
         "Explore" => object_verb(ctx, p, api, "Explore"),
         "BecomeMonarch" => player_verb(ctx, p, api, "BecomeMonarch"),
         "TakeInitiative" => player_verb(ctx, p, api, "TakeInitiative"),
+        "RingTemptsYou" => player_verb(ctx, p, api, "RingTempts"),
         "Learn" => player_verb(ctx, p, api, "Learn"),
         "TimeTravel" => player_verb(ctx, p, api, "TimeTravel"),
         "Incubate" => incubate(ctx, p),

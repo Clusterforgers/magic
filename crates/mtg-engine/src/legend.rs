@@ -28,7 +28,7 @@ pub(crate) struct Group {
 
 /// Every group the rule applies to: by player in turn order from the active player, then by name.
 pub(crate) fn groups(state: &GameState) -> Vec<Group> {
-    if !state.possible.legends {
+    if !state.possible.legends && state.ring.is_empty() {
         return Vec::new();
     }
     let mut found: BTreeMap<(PlayerId, String), Vec<ObjectId>> = BTreeMap::new();
@@ -36,7 +36,9 @@ pub(crate) fn groups(state: &GameState) -> Vec<Group> {
         let Some(object) = state.object(id) else {
             continue;
         };
-        if !object.card().supertypes.contains(&Supertype::Legendary) {
+        if !object.card().supertypes.contains(&Supertype::Legendary)
+            && !crate::ring::is_legendary_bearer(state, id)
+        {
             continue;
         }
         let controller = controller_of_object(state, object);

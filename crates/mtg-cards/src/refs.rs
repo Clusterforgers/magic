@@ -295,6 +295,8 @@ pub enum Pred {
     /// Is the card one of the objects the reference names is, in whatever zone it is now: a card that went to a graveyard is a
     /// new object there (CR 400.7), and this finds it again by its card.
     SameCard(Ref),
+    /// Is the Ring-bearer of its controller (CR 701.54).
+    RingBearer,
     /// Is modified (CR 700.9): a permanent with a counter on it, an Equipment attached, or an Aura its controller controls attached.
     Modified,
     /// Lies face down: a face-down permanent, or a card exiled face down.

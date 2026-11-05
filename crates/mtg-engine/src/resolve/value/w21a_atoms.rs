@@ -19,6 +19,15 @@ impl Scope<'_> {
     ) -> Result<bool, ResolveError> {
         Ok(match pred {
             Pred::Modified => self.w21a_modified(seen)?,
+            Pred::RingBearer => {
+                seen.zone == Zone::Battlefield
+                    && self
+                        .state
+                        .object(reference.id)
+                        .is_some_and(|object| object.reference() == reference)
+                    && crate::characteristics::controller_of(self.state, reference.id)
+                        .is_some_and(|player| self.state.ring_bearer(player) == Some(reference.id))
+            }
             Pred::FaceDown => self.state.object(reference.id).is_some_and(|object| {
                 object.reference() == reference && object.face_down().is_some()
             }),

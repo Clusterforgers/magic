@@ -268,6 +268,8 @@ pub struct GameState {
     pub(crate) monarch: Option<PlayerId>,
     /// The players who have the city's blessing (CR 702.131), for the rest of the game.
     pub(crate) citys_blessing: std::collections::BTreeSet<PlayerId>,
+    /// Each tempted player's Ring (CR 701.54).
+    pub(crate) ring: crate::ring::Rings,
     /// The dungeons (CR 309): each player's venture marker and the dungeons they completed.
     pub(crate) w11d: crate::w11d_dungeon::W11dDungeons,
     /// Who has the initiative (CR 725) and the object that stands for it.
@@ -471,7 +473,7 @@ impl GameState {
     /// Whether detecting triggers can find anything in this game: a card with a triggered ability or an effect that
     /// sets one up exists, so a game of vanilla cards pays nothing for them.
     pub(crate) fn watches(&self) -> bool {
-        self.triggers_possible || !self.delayed.is_empty()
+        self.triggers_possible || !self.delayed.is_empty() || !self.ring.is_empty()
     }
 
     /// Whether the once-each-turn ability `ability` of `source` has been used this turn, or the once-each-game one this game.
@@ -797,6 +799,10 @@ impl Hash for GameState {
         // Likewise a game without a monarch.
         if let Some(monarch) = self.monarch {
             monarch.hash(state);
+        }
+        // Likewise a game the Ring has not tempted anyone in.
+        if !self.ring.is_empty() {
+            self.ring.hash(state);
         }
         // Likewise a game where nobody has the city's blessing.
         if !self.citys_blessing.is_empty() {

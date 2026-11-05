@@ -680,7 +680,19 @@ next_turn_of?: PlayerId, } } | { "MonarchChanged": {
 /**
  * The new monarch.
  */
-player: PlayerId, } } | { "CitysBlessingGained": { 
+player: PlayerId, } } | { "RingTempted": { 
+/**
+ * The tempted player.
+ */
+player: PlayerId, 
+/**
+ * Their Ring level now.
+ */
+level: number, 
+/**
+ * The creature they chose as their Ring-bearer.
+ */
+bearer?: ObjectId, } } | { "CitysBlessingGained": { 
 /**
  * Who got it.
  */

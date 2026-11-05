@@ -512,14 +512,18 @@ fn static_mod(
 /// The ability `grant` gives, if it gives one.
 fn granted_ability(state: &GameState, grant: Grant) -> Option<Arc<Ability>> {
     match grant {
-        Grant::Effect(id) => state
-            .effects()
-            .iter()
-            .find(|effect| effect.id == id)
-            .and_then(|effect| match &effect.modification {
-                Modification::GrantAbility(granted) => Some(Arc::clone(granted)),
-                _ => None,
-            }),
+        Grant::Effect(id) => {
+            let ring = crate::ring::effects(state);
+            state
+                .effects()
+                .iter()
+                .chain(&ring)
+                .find(|effect| effect.id == id)
+                .and_then(|effect| match &effect.modification {
+                    Modification::GrantAbility(granted) => Some(Arc::clone(granted)),
+                    _ => None,
+                })
+        }
         Grant::Static {
             source,
             rule,
