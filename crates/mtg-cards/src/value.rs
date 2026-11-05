@@ -322,6 +322,8 @@ pub enum TurnTally {
     Surveilled,
     /// The permanents the player sacrificed this turn, each once, as the player who controlled it.
     Sacrificed,
+    /// The permanent cards put into the player's graveyard from anywhere this turn (descended, CR 702.188 of the Lost Caverns rules); a token is no card.
+    Descended,
 }
 
 /// A kind of event the game logs for the turn with the object it was about, which `Amount::Tally` filters and counts.

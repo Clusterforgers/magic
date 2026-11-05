@@ -17,8 +17,26 @@ pub fn effects(ctx: &mut Ctx, p: &Params, api: &str) -> Option<Tr<Vec<Value>>> {
         "EachDamage" => each_damage(ctx, p),
         "Empower" => empower(ctx, p),
         "Endure" => endure(ctx, p),
+        "Detain" => detain(ctx, p),
         _ => return None,
     })
+}
+
+/// `Detain`: until the controller's next turn the objects can't attack or block and their abilities can't be activated
+/// (mana abilities stay, as `Prohibited::Activate` leaves them).
+fn detain(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
+    only(
+        p,
+        "Detain",
+        &["Defined", "ValidTgts", "TargetMin", "TargetMax"],
+    )?;
+    let what = subject(ctx, p, "Self", None)?;
+    Ok(vec![
+        json!({"Continuous": {"affected": what, "mods": ["CantAttack", "CantBlock"],
+            "duration": "UntilYourNextTurn"}}),
+        json!({"Rule": {"rule": {"Cant": {"who": "EachPlayer",
+            "action": {"Activate": [{"Is": what}]}}}, "duration": "UntilYourNextTurn"}}),
+    ])
 }
 
 /// A keyword action of the cards crate (`empower`, `endure`) on the object, with the number the line names.
@@ -76,6 +94,7 @@ pub fn keyword_forms(ctx: &mut Ctx, body: &str) -> Option<Vec<Tr<Value>>> {
         ["Equip", price, valid, _words] if !valid.is_empty() && !valid.contains('$') => {
             Some(vec![equip_to(ctx, price, valid)])
         }
+        ["Reinforce", count, price] => Some(vec![reinforce(ctx, count, price)]),
         ["Awaken", count, price] => {
             let count: u32 = count.parse().ok()?;
             Some(vec![cost(ctx, price).map(
@@ -84,6 +103,30 @@ pub fn keyword_forms(ctx: &mut Ctx, body: &str) -> Option<Vec<Tr<Value>>> {
         }
         _ => None,
     }
+}
+
+/// `Reinforce N` (CR 702.77 of the old rules): from the hand, for the cost and the discard of the card, N +1/+1 counters on a
+/// target creature. `Reinforce X` takes the X the cost names.
+fn reinforce(ctx: &mut Ctx, count: &str, price: &str) -> Tr<Value> {
+    let count = if count == "X" {
+        json!("X")
+    } else {
+        json!(
+            count
+                .parse::<u32>()
+                .or_else(|_| unmapped("keyword:Reinforce-shape"))?
+        )
+    };
+    let mut parts = match cost(ctx, price)? {
+        Value::Array(parts) => parts,
+        other => vec![json!({ "Mana": other })],
+    };
+    parts.push(json!("DiscardSelf"));
+    Ok(json!({"Activated": {
+        "cost": parts,
+        "from": "Hand",
+        "targets": [{"what": {"Object": [{"Type": "Creature"}]}}],
+        "effects": [{"PutCounters": {"on": {"Target": 0}, "counter": "+1/+1", "count": count}}]}}))
 }
 
 /// `Equip` to a kind of creature: the creature must also match the valid-string, which has to name a creature.

@@ -161,6 +161,8 @@ pub(crate) enum Tally {
     Scried,
     /// A permanent sacrificed (counted for the player who controlled it).
     Sacrificed,
+    /// A permanent card put into a graveyard from anywhere (counted for its owner).
+    Descended,
     /// A token created (counted for the player who controls it).
     Tokens,
     /// A kind of counter put on a permanent or a card in exile, once for each event (counted for the object).

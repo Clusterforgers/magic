@@ -354,6 +354,7 @@ impl<'a> Scope<'a> {
             TurnTally::Scried => Tally::Scried,
             TurnTally::Surveilled => Tally::Surveilled,
             TurnTally::Sacrificed => Tally::Sacrificed,
+            TurnTally::Descended => Tally::Descended,
             TurnTally::LifeGainedTotal
             | TurnTally::CreaturesAttacked
             | TurnTally::CreaturesDied

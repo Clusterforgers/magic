@@ -159,6 +159,22 @@ fn w21a_tally_graveyards(
     if from == Zone::Battlefield && matches!(to, Zone::Graveyard(_)) {
         state.tally_object(card, None, Tally::W21aGraved);
     }
+    let permanent_card = state.object(card.id).is_some_and(|object| {
+        object.kind() != ObjectKind::Token
+            && [
+                CardType::Artifact,
+                CardType::Battle,
+                CardType::Creature,
+                CardType::Enchantment,
+                CardType::Land,
+                CardType::Planeswalker,
+            ]
+            .iter()
+            .any(|kind| object.base_types().contains(*kind))
+    });
+    if permanent_card && matches!(to, Zone::Graveyard(_)) {
+        state.tally(owner, Tally::Descended);
+    }
     state.tally_object(
         card,
         None,

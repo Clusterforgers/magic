@@ -153,3 +153,46 @@ fn only_a_sacrifice_counts_for_the_player_who_controlled_it(
         .unwrap();
     assert_eq!(got, expected);
 }
+
+fn descended(game: &GameState, who: Ref) -> i64 {
+    let old = game.object(id(game, "Old")).unwrap().reference();
+    let amount = Amount::Tallied {
+        who,
+        what: mtg_cards::value::TurnTally::Descended,
+    };
+    Scope::announcing(game, ME, old).amount(&amount).unwrap()
+}
+
+#[rstest]
+#[case::dies("Old", Zone::Battlefield, 1, 0)]
+#[case::discarded("Newcomer", Zone::Hand(ME), 1, 0)]
+#[case::an_opponents_card_counts_for_its_owner("Guest", Zone::Battlefield, 0, 1)]
+fn a_permanent_card_put_into_a_graveyard_from_anywhere_descends_its_owner(
+    #[case] name: &str,
+    #[case] from: Zone,
+    #[case] mine: i64,
+    #[case] theirs: i64,
+) {
+    let mut game = table();
+    assert_eq!(descended(&game, Ref::You), 0);
+    let owner = game.object(id(&game, name)).unwrap().owner();
+    let event = moved(&game, name, from, Zone::Graveyard(owner));
+    fold(&mut game, &[event]);
+    assert_eq!(descended(&game, Ref::You), mine);
+    assert_eq!(descended(&game, Ref::Opponents), theirs);
+    let turn = Event::TurnBegan {
+        number: 2,
+        active: PlayerId(1),
+        extra: false,
+    };
+    fold(&mut game, &[turn]);
+    assert_eq!(descended(&game, Ref::EachPlayer), 0);
+}
+
+#[test]
+fn a_card_put_into_a_graveyard_from_the_hand_to_the_battlefield_does_not_descend() {
+    let mut game = table();
+    let event = moved(&game, "Newcomer", Zone::Hand(ME), Zone::Battlefield);
+    fold(&mut game, &[event]);
+    assert_eq!(descended(&game, Ref::EachPlayer), 0);
+}

@@ -45,6 +45,10 @@ pub fn condition(ctx: &Ctx, p: &Params) -> Tr<Option<Value>> {
     if let Some(name) = p.get("Condition") {
         all.push(named(name)?);
     }
+    // "At the beginning of your end step, if you descended this turn": the phase trigger names the player with a property.
+    if p.get("ValidPlayer") == Some("You.descended") {
+        all.push(json!({"Compare": {"left": {"Tallied": {"who": "You", "what": "Descended"}}, "op": "Ge", "right": 1}}));
+    }
     all.extend(super::header::trigger_gates(p)?);
     Ok(single(all))
 }

@@ -145,6 +145,69 @@ fn keyword_forms_with_a_second_field(#[case] lines: &str, #[case] count: usize) 
     }
 }
 
+#[rstest]
+#[case::number("K:Reinforce:2:1 G\n", json!(2), "{1}{G}")]
+#[case::x("K:Reinforce:X:X W W\n", json!("X"), "{X}{W}{W}")]
+fn reinforce_is_an_ability_of_the_hand_that_discards_the_card(
+    #[case] line: &str,
+    #[case] count: Value,
+    #[case] mana: &str,
+) {
+    let script = format!("Name:T\nTypes:Instant\n{line}");
+    let found = abilities(&script);
+    assert_eq!(found.len(), 1, "{:?}", gaps(&script));
+    let ability = &found[0]["Activated"];
+    assert_eq!(ability["from"], json!("Hand"));
+    assert_eq!(ability["cost"], json!([{"Mana": mana}, "DiscardSelf"]));
+    assert_eq!(ability["effects"][0]["PutCounters"]["count"], count);
+}
+
+#[test]
+fn detain_stops_attack_block_and_activation_until_the_next_turn() {
+    let script =
+        spell("A:SP$ Detain | ValidTgts$ Creature.OppCtrl | TargetMin$ 0 | TargetMax$ 2\n");
+    let found = abilities(&script);
+    assert_eq!(found.len(), 1, "{:?}", gaps(&script));
+    let effects = &found[0]["Spell"]["effects"];
+    assert_eq!(
+        effects[0]["Continuous"]["mods"],
+        json!(["CantAttack", "CantBlock"])
+    );
+    assert_eq!(
+        effects[0]["Continuous"]["duration"],
+        json!("UntilYourNextTurn")
+    );
+    assert_eq!(
+        effects[1]["Rule"]["rule"]["Cant"]["action"],
+        json!({"Activate": [{"Is": {"Target": 0}}]})
+    );
+}
+
+#[test]
+fn a_descended_end_step_trigger_checks_the_tally_as_an_intervening_if() {
+    let script = "Name:T\nTypes:Creature Elf\nPT:1/1\nT:Mode$ Phase | Phase$ End of Turn | ValidPlayer$ You.descended | TriggerZones$ Battlefield | Execute$ Draw\nSVar:Draw:DB$ Draw\n";
+    let found = abilities(script);
+    assert_eq!(found.len(), 1, "{:?}", gaps(script));
+    let ability = &found[0]["Triggered"];
+    assert_eq!(ability["when"]["StepBegins"]["whose"], json!("You"));
+    assert_eq!(
+        ability["if"],
+        json!({"Compare": {"left": {"Tallied": {"who": "You", "what": "Descended"}}, "op": "Ge", "right": 1}})
+    );
+}
+
+#[test]
+fn the_descended_count_reads_the_tally() {
+    let script =
+        spell("A:SP$ DealDamage | ValidTgts$ Any | NumDmg$ X\nSVar:X:Count$YouDescendedThisTurn\n");
+    let found = abilities(&script);
+    assert_eq!(found.len(), 1, "{:?}", gaps(&script));
+    assert_eq!(
+        found[0]["Spell"]["effects"][0]["DealDamage"]["amount"],
+        json!({"Tallied": {"who": "You", "what": "Descended"}})
+    );
+}
+
 #[test]
 fn equip_to_a_noncreature_is_a_gap() {
     let script = "Name:T\nTypes:Artifact Equipment\nK:Equip:3:Planeswalker.YouCtrl:planeswalker\n";
