@@ -749,6 +749,5 @@ fn proliferate(p: &Params) -> Tr<Value> {
 
 /// Whether a memory holds a name that a step bound.
 fn is_bound(held: Option<&Value>) -> bool {
-    held.as_ref()
-        .is_some_and(|what| what.get("Bound").is_some())
+    held.is_some_and(|what| what.get("Bound").is_some())
 }

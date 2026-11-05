@@ -30,6 +30,7 @@ pub fn effects(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
             "ReplacementEffects",
             "Triggers",
             "Boon",
+            "ForgetCounter",
         ],
     )?;
     // The Forge effect object ends when what it remembers changes zones; our references to remembered objects drop out the
@@ -76,11 +77,11 @@ pub fn effects(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
     let Some(names) = p.get("StaticAbilities") else {
         return unmapped("key:Effect.no-StaticAbilities");
     };
-    let duration = duration(p.get("Duration"))?;
+    let duration = lasting(p)?;
     let who = remembered(ctx, p)?;
     let mut out = Vec::new();
     for name in names.split(',').map(str::trim) {
-        out.extend(remembered_static(ctx, name, &who, duration)?);
+        out.extend(remembered_static(ctx, name, &who, &duration)?);
     }
     Ok(out)
 }
@@ -96,8 +97,26 @@ fn ambient_with(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
     super::effects_ambient::continuous_statics(ctx, p)
 }
 
+/// How long the objects stay remembered: the `Duration$`, or for as long as every one of them has a counter of the kind
+/// `ForgetCounter$` names (an object that leaves the battlefield is a new one, CR 400.7, so it drops out the same way).
+fn lasting(p: &Params) -> Tr<Value> {
+    let Some(kind) = p.get("ForgetCounter") else {
+        return duration(p.get("Duration")).map(|word| json!(word));
+    };
+    if !p.has("RememberObjects")
+        || p.get("Duration") != Some("Permanent")
+        || p.get("ForgetOnMoved") != Some("Battlefield")
+    {
+        return unmapped("key:Effect.ForgetCounter-beyond-a-permanent-effect-on-the-battlefield");
+    }
+    match super::amount::counter_kind(kind) {
+        Some(kind) => Ok(json!({"WhileHasCounter": kind})),
+        None => unmapped(format!("key:Effect.ForgetCounter={kind}")),
+    }
+}
+
 /// One static of an `Effect` line about the objects it remembers.
-fn remembered_static(ctx: &mut Ctx, name: &str, who: &Value, duration: &str) -> Tr<Vec<Value>> {
+fn remembered_static(ctx: &mut Ctx, name: &str, who: &Value, duration: &Value) -> Tr<Vec<Value>> {
     let part = ctx.sub(name)?;
     if part.has("MayPlay") {
         let rule = super::mayplay::may_cast(ctx, &part, Some(who))?;
@@ -110,6 +129,7 @@ fn remembered_static(ctx: &mut Ctx, name: &str, who: &Value, duration: &str) -> 
         "ValidCard",
         "Affected",
         "AddKeyword",
+        "AddType",
         "AddPower",
         "AddToughness",
     ];
@@ -141,7 +161,7 @@ fn remembered_static(ctx: &mut Ctx, name: &str, who: &Value, duration: &str) -> 
     }
 }
 
-fn continuous(affected: &Value, mods: &[Value], duration: &str) -> Value {
+fn continuous(affected: &Value, mods: &[Value], duration: &Value) -> Value {
     json!({"Continuous": {"affected": affected, "mods": mods, "duration": duration}})
 }
 
@@ -169,6 +189,9 @@ fn pump_like(ctx: &Ctx, part: &Params) -> Tr<Vec<Value>> {
         let toughness = amount(ctx, part.get("AddToughness").unwrap_or("0"))?;
         mods.push(json!({"ModifyPT": {"power": power, "toughness": toughness}}));
     }
+    mods.extend(super::effects_zone::added_types(
+        part.get("AddType").unwrap_or_default(),
+    ));
     if let Some(keywords) = part.get("AddKeyword") {
         for keyword in keyword_list(ctx, keywords)? {
             mods.push(json!({ "AddKeyword": keyword }));

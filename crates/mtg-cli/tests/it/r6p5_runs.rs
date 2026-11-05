@@ -202,3 +202,40 @@ fn damage_that_is_not_beyond_lethal_gains_nothing() {
         20
     );
 }
+
+const FLOOD: &str = "Name:Flood\nManaCost:W\nTypes:Sorcery\nA:SP$ PutCounter | ValidTgts$ Land | CounterType$ FLOOD | CounterNum$ 1 | SubAbility$ DBEffect\nSVar:DBEffect:DB$ Effect | RememberObjects$ Targeted | StaticAbilities$ Wet | ForgetOnMoved$ Battlefield | ForgetCounter$ FLOOD | Duration$ Permanent | SubAbility$ DBGone\nSVar:Wet:Mode$ Continuous | Affected$ Card.IsRemembered | AddType$ Island | Description$ It's an Island.\nSVar:DBGone:DB$ RemoveCounter | Defined$ Targeted | CounterType$ FLOOD | CounterNum$ 1\n";
+
+fn is_island(driver: &Driver, name: &str, nth: usize) -> bool {
+    let state = driver.state();
+    let id = state
+        .zone(Zone::Battlefield)
+        .iter()
+        .copied()
+        .filter(|id| state.object(*id).is_some_and(|o| o.card().name == name))
+        .nth(nth)
+        .unwrap();
+    let chars = mtg_engine::characteristics::characteristics(state, id).unwrap();
+    chars
+        .subtypes
+        .iter()
+        .any(|s| format!("{s:?}").contains("Island"))
+}
+
+#[rstest]
+#[case::while_the_counter_stays(FLOOD.replace("SubAbility$ DBGone", "").replace("DB$ RemoveCounter", "DB$ Unused"), true)]
+#[case::until_the_counter_goes(FLOOD.to_owned(), false)]
+fn a_land_is_an_island_for_as_long_as_it_has_the_counter(
+    #[case] script: String,
+    #[case] island: bool,
+) {
+    let card = translated(&script, "Flood", "Sorcery", "{W}");
+    let scenario = Scenario::new(2)
+        .hand(0, [card])
+        .battlefield(0, [ready(plains()), ready(forest()), ready(forest())]);
+    let mut driver = Driver::from_scenario(scenario).unwrap();
+    let target = driver.target_named("Forest").unwrap();
+    driver.cast_at("Flood", &[target]).unwrap();
+    settle(&mut driver);
+    let wet = (0..2).filter(|n| is_island(&driver, "Forest", *n)).count();
+    assert_eq!(wet, usize::from(island), "one Forest or none");
+}

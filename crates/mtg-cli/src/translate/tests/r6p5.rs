@@ -132,3 +132,30 @@ fn damage_beyond_lethal_is_kept_or_sent_on(#[case] line: &str, #[case] nodes: Va
 fn damage_beyond_lethal_outside_one_target_is_a_gap(#[case] line: &str, #[case] gap: &str) {
     assert_eq!(gaps(&spell(line)), [gap]);
 }
+
+const FLOODED: &str = "Name:T\nTypes:Sorcery\nA:SP$ PutCounter | ValidTgts$ Land | CounterType$ FLOOD | SubAbility$ E\nSVar:E:DB$ Effect | RememberObjects$ Targeted | StaticAbilities$ S | ForgetOnMoved$ Battlefield | ForgetCounter$ FLOOD | Duration$ Permanent\nSVar:S:Mode$ Continuous | Affected$ Card.IsRemembered | AddType$ Island\n";
+
+#[test]
+fn an_effect_that_forgets_with_the_counter_lasts_while_the_land_has_it() {
+    assert_eq!(gaps(FLOODED), Vec::<String>::new());
+    assert_eq!(
+        abilities(FLOODED)[0]["Spell"]["effects"][1],
+        json!({"Continuous": {"affected": {"Target": 0},
+            "duration": {"WhileHasCounter": {"Other": "flood"}}, "mods": [{"AddSubtype": "Island"}]}})
+    );
+}
+
+#[rstest]
+#[case::not_permanent(FLOODED.replace("Duration$ Permanent", "Duration$ EOT"))]
+#[case::not_on_the_battlefield(FLOODED.replace("ForgetOnMoved$ Battlefield", "ForgetOnMoved$ Exile"))]
+#[case::no_objects(FLOODED.replace("RememberObjects$ Targeted | ", ""))]
+fn a_counter_that_ends_an_effect_beyond_a_permanent_one_is_a_gap(#[case] text: String) {
+    assert!(
+        gaps(&text)
+            .iter()
+            .any(|gap| gap.starts_with("key:Effect.ForgetCounter")
+                || gap == "key:Effect.ExileOnMoved-without-RememberObjects"),
+        "{:?}",
+        gaps(&text)
+    );
+}

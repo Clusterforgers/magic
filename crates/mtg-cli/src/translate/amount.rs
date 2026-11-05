@@ -6,7 +6,7 @@ use super::ctx::{Ctx, Tr, unmapped};
 use super::valid::{defined, selector_in};
 
 /// The DSL name of a counter kind (`P1P1` is `+1/+1`).
-pub fn counter_kind(word: &str) -> Option<Value> {
+pub(super) fn counter_kind(word: &str) -> Option<Value> {
     let word = word.trim();
     if let Some(keyword) = keyword_counter(word) {
         return Some(json!({"Other": keyword}));
