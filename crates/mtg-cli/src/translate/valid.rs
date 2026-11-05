@@ -45,6 +45,12 @@ fn property(ctx: &Ctx, prop: &str) -> Tr<Vec<Value>> {
         "MultiColor" => return one(json!({"Compare": {"stat": "Colors", "op": "Ge", "to": 2}})),
         "EnchantedBy" | "EquippedBy" | "AttachedBy" => return one(json!({"Is": "Attached"})),
         "IsCommander" => return one(json!("Commander")),
+        // Attached to the object the line is about: its source.
+        "Attached" => return one(json!({"AttachedTo": "This"})),
+        // A permanent card outside the battlefield; on the battlefield every object is one.
+        "Permanent" => {
+            return one(json!({"AnyOf": PERMANENT_TYPES.map(|name| json!({"Type": name}))}));
+        }
         "modified" => return one(json!("Modified")),
         "singleTarget" => return one(json!("SingleTarget")),
         "IsGoaded" | "Goaded" => return one(json!("Goaded")),
@@ -277,6 +283,16 @@ pub fn selector(ctx: &Ctx, spec: &str) -> Tr<Vec<Value>> {
     }
     Ok(preds)
 }
+
+/// The card types a permanent can have.
+const PERMANENT_TYPES: [&str; 6] = [
+    "Artifact",
+    "Battle",
+    "Creature",
+    "Enchantment",
+    "Land",
+    "Planeswalker",
+];
 
 /// Subtypes that are not creature types.
 const NOT_CREATURE_TYPES: [&str; 22] = [

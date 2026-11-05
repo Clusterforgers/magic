@@ -349,6 +349,8 @@ fn cleanup(p: &Params) -> Tr<Vec<Value>> {
             "ClearImprinted",
             "ClearTriggered",
             "ClearChosenCard",
+            "ClearNamedCard",
+            "ClearChosenPlayer",
         ],
     )?;
     Ok(Vec::new())

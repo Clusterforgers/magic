@@ -418,12 +418,14 @@ pub fn check_keys(
 /// Keys that a mapper lists and may leave unread because they change nothing the translation keeps: bookkeeping of
 /// remembered objects, the hidden-zone flags of a library search (it may find nothing and always shuffles), and display
 /// flags of a private look.
-const INERT: [(&str, &str); 15] = [
+const INERT: [(&str, &str); 17] = [
     ("Replacement.DamageDone", "AlwaysReplace"),
     ("Cleanup", "ClearRemembered"),
     ("Cleanup", "ClearImprinted"),
     ("Cleanup", "ClearTriggered"),
     ("Cleanup", "ClearChosenCard"),
+    ("Cleanup", "ClearNamedCard"),
+    ("Cleanup", "ClearChosenPlayer"),
     ("ChooseSource", "ChoiceTitle"),
     ("Effect", "Stackable"),
     ("ChangeZone.Search", "Hidden"),
