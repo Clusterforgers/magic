@@ -49,7 +49,11 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
             ability,
             origin: AbilitySource::Printed,
             controller: cx.controller(),
-            cause: Cause::default(),
+            // What the earlier steps took away (a sacrificed creature) stays readable as it was (CR 608.2h).
+            cause: Cause {
+                snapshots: cx.resolving.snapshots().to_vec(),
+                ..Cause::default()
+            },
             snapshot,
             delayed: Some(id),
         })),

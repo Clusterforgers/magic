@@ -1137,11 +1137,21 @@ impl<'a> Scope<'a> {
         }
         let mut count = 0;
         for object in self.objects(subject)? {
-            if self.selects(selector, object)? {
+            if self.selects(selector, self.as_it_left(object))? {
                 count += 1;
             }
         }
         Ok(count)
+    }
+
+    /// The reference to read an object a step moved (an `as` name binds it as the object it became) by: the object as it
+    /// was when it left, when that is known (CR 608.2h), so a sacrificed creature keeps its counters and a token that
+    /// ceased to exist is still seen. Any other reference stays as it is.
+    fn as_it_left(&self, reference: ObjectRef) -> ObjectRef {
+        self.snapshots
+            .iter()
+            .find(|s| s.id == reference.id && s.counter + 1 == reference.counter)
+            .map_or(reference, |s| s.reference())
     }
 
     /// Whether the object satisfies every predicate of the selector.
@@ -1433,7 +1443,10 @@ impl<'a> Scope<'a> {
             Amount::Stat { of, stat } => self
                 .objects(of)?
                 .iter()
-                .filter_map(|object| self.seen(*object).and_then(|seen| Self::stat(&seen, *stat)))
+                .filter_map(|object| {
+                    self.seen(self.as_it_left(*object))
+                        .and_then(|seen| Self::stat(&seen, *stat))
+                })
                 .sum(),
             Amount::Life(who) => self
                 .players(who)?
