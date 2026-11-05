@@ -559,7 +559,8 @@ pub enum Effect {
         slot: String,
     },
     /// The source remembers the number the amount works out to in `slot` (Forge: RememberAmount, SetChosenNumber), added to
-    /// what the slot holds; `Amount::Remembered` reads the numbers added up. A source that has left remembers nothing.
+    /// what the slot holds; `Amount::Remembered` reads the numbers added up. The numbers of a source are gone when the
+    /// resolution that wrote them ends.
     RememberValue {
         /// The number remembered.
         value: Amount,

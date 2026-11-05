@@ -69,3 +69,34 @@ fn the_mana_value_of_a_countered_spell_is_drawn(
         .len();
     assert_eq!(hand, drawn);
 }
+
+/// A permanent whose free ability remembers a number only the first time, then gains 2 life if a number is remembered.
+#[test]
+fn a_number_does_not_outlive_the_resolution_that_wrote_it() {
+    let rules: Ability = serde_json::from_str(
+        r#"{"Activated":{"cost":[],"effects":[
+            {"If":{"condition":{"Compare":{"left":{"Counters":{"on":"This","counter":{"Other":"t"}}},"op":"Lt","right":1}},
+              "then":[{"RememberValue":{"value":1,"slot":"n"}},
+                      {"PutCounters":{"on":"This","counter":{"Other":"t"}}}]}},
+            {"If":{"condition":{"Compare":{"left":{"Remembered":{"on":"This","slot":"n"}},"op":"Ge","right":1}},
+              "then":[{"GainLife":{"amount":2}}]}}]}}"#,
+    )
+    .unwrap();
+    let leech = Arc::new(
+        CardDefinition::new("Leech")
+            .with_type(CardType::Artifact)
+            .with_rules(rules),
+    );
+    let scenario = Scenario::new(2).battlefield(0, [ready(leech)]);
+    let mut driver = Driver::from_scenario(scenario).unwrap();
+    for _ in 0..2 {
+        driver.begin_activation("Leech").unwrap();
+        settle(&mut driver);
+    }
+    let life = driver
+        .state()
+        .player(PlayerId::from_index(0))
+        .unwrap()
+        .life();
+    assert_eq!(life, 22, "the second activation remembers nothing");
+}
