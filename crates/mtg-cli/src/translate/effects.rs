@@ -100,7 +100,7 @@ pub fn chain_at(ctx: &mut Ctx, p: &Params, top: bool) -> Tr<Vec<Value>> {
         Some(text) if !top => {
             let cost = super::cost::cost(ctx, text)?;
             if let Some((verb, taken)) = taken_read_after(&cost, &effects) {
-                return Ok(taken_then(ctx, verb, taken, effects));
+                return Ok(taken_then(ctx, verb, &taken, effects));
             }
             Ok(vec![json!({"Pay": {"cost": cost, "paid": effects}})])
         }
@@ -124,13 +124,13 @@ fn taken_read_after(cost: &Value, effects: &[Value]) -> Option<(&'static str, Va
 }
 
 /// "You may sacrifice or discard ...; if you do, ...": the step names what it took and the effects after it read that name.
-fn taken_then(ctx: &mut Ctx, verb: &str, taken: Value, mut effects: Vec<Value>) -> Vec<Value> {
+fn taken_then(ctx: &mut Ctx, verb: &str, taken: &Value, mut effects: Vec<Value>) -> Vec<Value> {
     let name = ctx.fresh(if verb == "Sacrifice" {
         "sacrificed"
     } else {
         "discarded"
     });
-    let mut step = json!({ verb: taken });
+    let mut step = json!({ verb: taken.clone() });
     step[verb]["as"] = json!(name);
     for effect in &mut effects {
         name_paid(effect, &name);
