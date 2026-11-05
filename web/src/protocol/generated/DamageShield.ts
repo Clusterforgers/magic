@@ -32,4 +32,8 @@ then?: unknown,
 /**
  * It prevents the next damage event it covers and ends ("the next time a source of your choice would deal damage").
  */
-once: boolean, };
+once: boolean, 
+/**
+ * What it does to the damage it covers in place of preventing it: scales it or sends it elsewhere.
+ */
+instead?: unknown, };
