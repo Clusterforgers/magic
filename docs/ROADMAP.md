@@ -21,17 +21,16 @@ One item is one piece of about 15 minutes and one line: the outcome, the cards i
 ## Next up
 
 - Live game first: the cards friends marked (`mtg-cli fix-marks`) and the games that ended in `failed` outrank everything (`docs/deploy.md`, Operations).
-- Cards (`docs/cards-backlog.md`): the local model proposes rules (`mtg-cli propose` on the owner's GPU, `--solved-examples 5`, in popularity order), the checker judges, agents build the missing writers and engine pieces from the top of the gap ledger, and the passing proposals are promoted into the corpus (`docs/cards-dsl.md`, Model-assisted reading). Once rt1f lands, agents draft the missing cards of one precon each for the read tier (`docs/cards-dsl.md`, Drafts).
+- Cards (`docs/cards-backlog.md`): the Forge translator drafts rules automatically (`mtg-cli translate-forge`, `promote --draft --source forge`, `compile --all`), the checker judges, and agents build the missing readers, writers and engine pieces from the top of the gap ledger.
 - Table and prompts: the open items under "M5 Table and prompts", one Opus validator walk per batch.
 - Tooling: (dep) dependencies, alone between rounds.
 
 ## Done
 
-- Foundations: workspace, lint rules, CI, `CLAUDE.md`, local Postgres and the React stack (`docs/spike-react.md`).
+- Foundations: workspace, lint rules, CI, `CLAUDE.md`, local Postgres and the React stack.
 - Card data: Scryfall and MTGJSON import, deck-list parsers and exporters, the schema with card search and precons, and `mtg-cli` (fetch, ingest, migrate, compile, coverage, fix-marks, promote).
 - Engine: zones, turns, priority, stack, combat with forecast, layers (CR 613), replacement and prevention, counters, planeswalkers, battles and Sieges, attachments, copies and faces, Rooms, soulbond, mutate, phasing, day and night, vehicles, the Monarch and the initiative, bots, `mtg-testkit` (`docs/engine.md`).
 - Card language and compiler: the DSL, the reader framework, the renderer with goldens, the corpus ratchet, templates for every ability shape and stored `card_rules` (`docs/cards-dsl.md`).
-- Model-assisted reading: `check-rules`, `propose` (a local OpenAI-style server), `promote` (`--draft` writes the 355 first read-tier drafts, which `compile` stores in `card_drafts`), the repair of mechanical slips, writers for the accepted wordings, `coverage --all`, the gap ledger and `export-pairs` (`docs/cards-dsl.md`).
 - Protocol and server: generated bindings with a drift test, the game actor, a WebSocket per seat, persistence and resume, accounts (the admin makes, resets and removes them), lobbies, open games, precons, concurrent keep and mulligan, seat presence, the snapshot log (`docs/protocol.md`, `docs/server.md`).
 - Game flow: auto-pass, response clocks, yields, stops, Full Control, the timer bank, the by-hand window, the answer to a one-option question, auto choices (trigger order, damage) and leak tests (`docs/arena-flow.md`).
 - Commander: house rules, format rules, deck check, every partner pair kind end to end, companion in the engine, tax, commander damage and any number of seats (`docs/server.md`).
@@ -41,7 +40,6 @@ One item is one piece of about 15 minutes and one line: the outcome, the cards i
 - Card images: a server cache with a warm-up, and pictures in the table, builder and preview (`docs/server.md`, `docs/web.md`).
 - Testing: scenarios, invariants and fuzz decks, `scripts/check.sh` with the `gate` and `affected` modes, content stamps and side-by-side test binaries, and Playwright specs including the four-seat Commander game with precons or the owner's deck (`E2E_DECK=owner`).
 - Deployment: two amd64 images, the Helm chart and ArgoCD app in `k3s-cluster-manifests`, `scripts/release.sh` (build, push, roll out, roll back) and a nightly `pg_dump` onto its own volume (`docs/deploy.md`).
-- Reference engines: Forge, XMage and Magarena surveyed (`docs/reference-engines.md`).
 
 ## Live game
 
@@ -119,7 +117,6 @@ Open card, compiler and wording items: `docs/cards-backlog.md`.
 
 - [ ] Target: every stored card Verified, or as near as the rules allow; after each round `compile` and `coverage` are re-run and the numbers go on the Status line
 - [ ] (rt1ea) The by-hand window after `AbilityLeftToTable`: the server holds the controller of the ability at every priority window until it passes and the Priority prompt reads "Apply the card's text by hand", as for a card with clauses left to the table; frees the table to apply a failed read ability (`mtg-server` stops, `web/src/play/byHand.ts`, `docs/server.md`, `docs/web.md`)
-- [ ] (g2a) Plan (Opus design, after ts1) for every Commander-legal card to run automatically within about two to three weekly budgets: cost per card of each route (templates, local model on the idle GPU, a model trained on the Verified pairs, agents), a tier for unread drafts that run marked with fail-soft and a first-use read, the order by popularity and the yield to expect; written into `docs/cards-dsl.md`
 - [ ] (fg1a) `translate-forge`: valid-strings with alternatives that differ in several properties (`Card.Self,Creature.Other+YouCtrl`) need an `All` inside `AnyOf` or an `Either` of selectors in the DSL; frees about 270 cards, 200 of them alone (Acclaimed Contender, Agent of Erebos, Ajani Unrelenting; `translate/valid.rs`)
 - [ ] (fg1b) `translate-forge`: Forge's `Effect` object with `Triggers$` and `ReplacementEffects$` as `DelayedTrigger { once: false, this_turn }` and `Shield`, and an emblem as `CreateEmblem`; frees about 400 cards (Aegis of Honor, Ajani Steadfast, Acidic Dagger; `translate/effects_effect.rs`)
 - [ ] (fg1c) `translate-forge`: remembered objects beyond an exile: `RememberChanged` on moves and `Dig`, `RememberObjects`, `Mill`, `Sacrifice`, `Discard` and `Token` remembers, as bound names; frees about 700 cards (Act on Impulse, Abstract Performance, Aang's Iceberg; `translate/ctx.rs` `remembered`)
@@ -155,11 +152,7 @@ Open card, compiler and wording items: `docs/cards-backlog.md`.
 - [ ] (rt1j) The review screen: `/read?deck=` and `?precon=`, `ReadDialog` from the table's card preview, keys C and W, the required note, the 2 s delay, `stale_read`, a dev route and the layout gate at six sizes (`web/src/features/reads`; `docs/web.md`, Reading cards; after rt1h and rt1i)
 - [ ] (rt1o) `ToRead` becomes a `Link` to the review screen (`/read?deck=` or `?precon=`, from `data-read-path`) in the builder check bar, decks list, lobby rows and preview, precon rows and details and the not-validated list; frees the ways in (`web/src/features/decks/ToRead.tsx`; after rt1j)
 - [ ] (rt1p) The dev fixtures of the builder, lobby, precons and not-validated list show a deck on reads and one with drafts waiting, and the layout gate screenshots them in both themes at 390x844 and 1440x900 (`web/src/features/*/dev`, `web/e2e`; after rt1i)
-- [ ] (rt1l) Validator walk (Opus): read a precon's queue on screen at 1400 and 390 px, judge one card wrong, start a game and see the approved cards run and the wrong one played by hand; defects become lettered items (after rt1f and rt1j)
-- [ ] (t14c) A/B of `--forge-hint` against `--solved-examples` on the same 100 cards: which hint the checker accepts more often; the result goes into `docs/cards-dsl.md`
-- [ ] (rt1m) The checker finishes on every proposal: `check` does not return on `pop2/rejected/tempt_with_vengeance.json` (a Spell with `RepeatEach` nested ten deep, the renderer writes every wording of each level), so a nested or very long effect list gets a bounded set of wordings and the verdict `Invalid` or `Unchecked`; then `NEVER_FINISH` in `tests/it/read_sheet.rs` goes (`crates/mtg-cards` render, proposal; no dependency)
 - [ ] (rt1n) A 4-seat bot game with 16 copies of Exotic Orchard takes 94 s for 2,635 answers (about 40 ms an answer, against 0.1 ms usual), so the smoke gate stops it at its 20 s limit; find the slow step of its mana ability and make it fast (`crates/mtg-engine` mana; no dependency)
-- [ ] (rt1q) The 22 proposals the smoke gate refuses (8 engine errors: `Effect.AddMana.OfTapped.Stack` is in `Caps` but not resolved, a payment picked among objects, a random pick among hidden cards, a `land` bound twice, an object missing from the library; 14 never seen: counterspells and costs above the library's lands) run once the engine or the gate is fixed, from the sweeps' rejected proposals through `promote --draft` (`crates/mtg-engine`, `crates/mtg-testkit` smoke; no dependency)
 - [ ] Gate: every corpus card is Verified or played through manual clauses and actions that show each unread clause, and fuzz games with a deck from each cluster pass every invariant, and a four-seat Commander game plays from the lobby to a winner in the web
 
 ## Tooling
