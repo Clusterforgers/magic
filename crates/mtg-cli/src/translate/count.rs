@@ -264,7 +264,7 @@ fn most_common(ctx: &Ctx, filter: &str, stat: &str, gaps: &mut Gaps) -> Option<V
 
 /// The selector of a zone list: the zones outside the battlefield share one `In`; a list with the battlefield or the
 /// command zone is one alternative per zone, because control counts on the battlefield and ownership elsewhere.
-fn zone_selector(ctx: &Ctx, zones: &[&str], filter: &str) -> Tr<Vec<Value>> {
+pub(super) fn zone_selector(ctx: &Ctx, zones: &[&str], filter: &str) -> Tr<Vec<Value>> {
     match zones {
         [] | ["Battlefield"] => selector_in(ctx, filter, None),
         [only] => selector_in(ctx, filter, Some(only)),

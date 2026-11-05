@@ -7,8 +7,9 @@ use std::fmt::Write as _;
 use mtg_cards::builtin;
 use mtg_cards::coverage::analyze_with;
 use mtg_cards::generated::{Generation, generate};
-use mtg_cards::load::{Library, slug};
-use mtg_cards::support::{Caps, PrintedCard, support};
+use mtg_cards::load::{Library, slug, unwhole};
+use mtg_cards::proposal::check_exact;
+use mtg_cards::support::{Caps, PrintedCard, Support, support};
 use mtg_db::Database;
 
 use crate::audit::stored_cards;
@@ -109,6 +110,17 @@ impl Stored {
             let _ = writeln!(text, "{slug}\t{bucket}\t{blocker}");
         }
         Some(text)
+    }
+
+    /// Whether `promote --draft` would take the proposal (without the smoke gate): the exact check gives a whole
+    /// rules file the engine runs as `Verified`.
+    pub fn offered(&self, slug: &str, proposal: &str) -> Option<bool> {
+        let printed = self.cards.get(slug)?;
+        let report = check_exact(proposal, printed, self.library, &self.names, &self.caps);
+        let (Some(record), Some(rules)) = (report.support, report.rules) else {
+            return Some(false);
+        };
+        Some(unwhole(&rules).is_none() && record.support == Support::Verified)
     }
 
     /// What the corpus or the compiler makes of the card today: `corpus-verified`, `compiled-verified`, `partial`,

@@ -127,11 +127,12 @@ fn property(ctx: &Ctx, prop: &str) -> Tr<Vec<Value>> {
     if prop.chars().next().is_some_and(char::is_uppercase) && ctx.world.subtypes.contains(prop) {
         return one(json!({"Subtype": prop}));
     }
-    unmapped(format!("valid:{prop}"))
+    super::filter::atom(ctx, ctx.scope.get(), prop)
+        .unwrap_or_else(|| unmapped(format!("valid:{prop}")))
 }
 
 /// `FirstStrike` as `First Strike`.
-fn spaced(word: &str) -> String {
+pub(super) fn spaced(word: &str) -> String {
     let mut out = String::new();
     for (at, c) in word.chars().enumerate() {
         if at > 0 && c.is_uppercase() && !out.ends_with(' ') {
@@ -205,7 +206,7 @@ fn base(ctx: &Ctx, word: &str) -> Tr<Vec<Value>> {
         "Permanent" | "Card" | "Any" => Ok(Vec::new()),
         "Spell" => Ok(vec![json!("Spell")]),
         _ if ctx.world.subtypes.contains(word) => Ok(vec![json!({"Subtype": word})]),
-        _ => unmapped(format!("valid-base:{word}")),
+        _ => super::filter::base(word).map_or_else(|| unmapped(format!("valid-base:{word}")), Ok),
     }
 }
 
@@ -225,7 +226,7 @@ fn negated(preds: Vec<Value>) -> Tr<Value> {
 /// The properties of an alternative, split at `+`. A property with an object argument (`AttachedTo Creature.attacking`)
 /// takes the `+` parts after it: they belong to the object it names (`AttachedTo Creature.attacking+OppCtrl` is an Aura
 /// on an attacking creature an opponent controls).
-fn split_properties(props: &str) -> Vec<String> {
+pub(super) fn split_properties(props: &str) -> Vec<String> {
     let mut out: Vec<String> = Vec::new();
     let mut greedy = false;
     for part in props.split('+').filter(|part| !part.is_empty()) {
@@ -253,23 +254,36 @@ pub fn selector(ctx: &Ctx, spec: &str) -> Tr<Vec<Value>> {
     if head == "Player" && !props.is_empty() {
         return unmapped(format!("valid:Player.{props}"));
     }
+    // Every unknown word of the alternative is reported, not only the first.
+    let mut gaps = super::filter::Unknowns::default();
     let (mut preds, props) = if matches!(head, "Targeted" | "TargetedCard") {
         targeted_base(ctx, props)?
     } else {
-        (base(ctx, head)?, split_properties(props))
+        (gaps.take(base(ctx, head)), split_properties(props))
     };
     let kind = preds.clone();
     for prop in props {
         let prop = prop.as_str();
-        if let Some(found) = super::valid_atoms::extreme(ctx, prop, &kind)? {
-            preds.extend(found);
-            continue;
+        match super::valid_atoms::extreme(ctx, prop, &kind) {
+            Ok(Some(found)) => {
+                preds.extend(found);
+                continue;
+            }
+            Ok(None) => {}
+            Err(gap) => {
+                gaps.note(&gap);
+                continue;
+            }
         }
         match prop.strip_prefix('!') {
-            Some(inner) => preds.push(negated(property(ctx, inner)?)?),
-            None => preds.extend(property(ctx, prop)?),
+            Some(inner) => match property(ctx, inner).and_then(negated) {
+                Ok(pred) => preds.push(pred),
+                Err(gap) => gaps.note(&gap),
+            },
+            None => preds.extend(gaps.take(property(ctx, prop))),
         }
     }
+    gaps.finish()?;
     // "Pirates" and "Elves" name the creatures of the type, "Pirate creatures" says it: the type word is left out beside a
     // creature type unless Forge's rendering of the text has it.
     let says_creature = |name: &str| ctx.oracle.contains(&format!("{name} creature"));
@@ -360,7 +374,10 @@ pub fn source_any(ctx: &Ctx, spec: &str) -> Tr<Vec<Value>> {
             })
         })
         .collect();
-    selector_any(ctx, &kept.join(","))
+    let before = ctx.scope.replace(super::filter::Scope::Source);
+    let found = selector_any(ctx, &kept.join(","));
+    ctx.scope.set(before);
+    found
 }
 
 /// A comma-separated list of alternatives as a selector: one alternative, or alternatives that share their predicates but
@@ -371,10 +388,18 @@ pub fn selector_any(ctx: &Ctx, spec: &str) -> Tr<Vec<Value>> {
     if let [only] = alternatives.as_slice() {
         return selector(ctx, only);
     }
-    let lists: Vec<Vec<Value>> = alternatives
-        .iter()
-        .map(|alternative| selector(ctx, alternative))
-        .collect::<Tr<_>>()?;
+    if let Err(gap) = super::filter::parse(spec) {
+        return unmapped(gap);
+    }
+    let mut gaps = super::filter::Unknowns::default();
+    let mut lists: Vec<Vec<Value>> = Vec::new();
+    for alternative in &alternatives {
+        match selector(ctx, alternative) {
+            Ok(list) => lists.push(list),
+            Err(gap) => gaps.note(&gap),
+        }
+    }
+    gaps.finish()?;
     let common: Vec<Value> = lists[0]
         .iter()
         .filter(|pred| lists.iter().all(|list| list.contains(pred)))
@@ -483,6 +508,15 @@ pub fn defined(ctx: &Ctx, word: &str) -> Tr<Value> {
     if let Some(spec) = word.trim().strip_prefix("Valid ") {
         return Ok(json!({"Each": selector_any(ctx, spec)?}));
     }
+    // `ValidGraveyard Creature.YouOwn`: the objects of a zone list, read as `Count$Valid<zones>` reads them.
+    if let Some(rest) = word.trim().strip_prefix("Valid")
+        && let Some((zones, spec)) = rest.split_once(' ')
+        && !zones.is_empty()
+        && zones.chars().all(|c| c.is_ascii_alphabetic() || c == ',')
+    {
+        let zones: Vec<&str> = zones.split(',').collect();
+        return Ok(json!({"Each": super::count::zone_selector(ctx, &zones, spec)?}));
+    }
     let controller = |inner: Value| Ok(json!({ "ControllerOf": inner }));
     match word.trim() {
         "You" => Ok(json!("You")),
@@ -547,7 +581,11 @@ pub fn objects(reference: Value) -> Tr<Value> {
 /// The target specification `ValidTgts$` and its bounds stand for, as the DSL writes it.
 pub fn target_spec(ctx: &Ctx, params: &Params, zone: Option<&str>) -> Tr<Value> {
     let valid = params.get("ValidTgts").unwrap_or_default();
-    let mut what = target_what(ctx, valid, zone)?;
+    // A target being chosen reads no other target of its line (`filter::Scope::Targeting`).
+    let before = ctx.scope.replace(super::filter::Scope::Targeting);
+    let what = target_what(ctx, valid, zone);
+    ctx.scope.set(before);
+    let mut what = what?;
     if let Some(word) = params.get("TargetsWithDefinedController") {
         restrict_to_controller(ctx, word, zone, &mut what)?;
     }

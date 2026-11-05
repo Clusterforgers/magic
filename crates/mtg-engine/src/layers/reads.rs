@@ -191,6 +191,7 @@ pub(crate) fn reads_of_ref(reference: &Ref) -> Traits {
         | Ref::ActivePlayer
         | Ref::Bound(_)
         | Ref::Affected
+        | Ref::Candidate
         | Ref::Paid => Traits::NONE,
         Ref::Remembered { on, .. } => reads_of_ref(on),
         Ref::ControllerOf(inner) => Traits::CONTROL.or(reads_of_ref(inner)),
@@ -279,6 +280,7 @@ fn reads_of_pred(pred: &Pred) -> Traits {
         Pred::ControlledBy(who) => Traits::CONTROL.or(reads_of_ref(who)),
         Pred::HasKeyword(_) | Pred::HasKeywordNamed(_) => Traits::KEYWORDS,
         Pred::Compare { stat, to, .. } => reads_of_stat(*stat).or(reads_of_amount(to)),
+        Pred::Test { left, right, .. } => reads_of_amount(left).or(reads_of_amount(right)),
         Pred::Not(inner) => reads_of_pred(inner),
         Pred::Targeting(inner) | Pred::HasAttached(inner) => reads_of_selector(inner),
         Pred::AnyOf(any) => any
@@ -416,5 +418,29 @@ pub(crate) fn reads_of_condition(condition: &Condition) -> Traits {
         | Condition::StartingPlayer(who)
         | Condition::Searched { who, .. } => reads_of_ref(who),
         Condition::Level { of, .. } => reads_of_ref(of),
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    //! Goal: a `Pred::Test` reports to the layers what its amounts read, so a filter that compares power to base power waits for the effects that set them.
+    use mtg_cards::refs::{Pred, Selector};
+
+    use super::*;
+
+    #[test]
+    fn a_test_reads_the_stats_it_compares() {
+        let pred: Pred = serde_json::from_str(
+            r#"{"Test":{"left":{"Stat":{"of":"Candidate","stat":"Power"}},"op":"Gt","right":{"Stat":{"of":"Candidate","stat":"BasePower"}}}}"#,
+        )
+        .unwrap();
+        let power: Pred =
+            serde_json::from_str(r#"{"Compare":{"stat":"Power","op":"Gt","to":0}}"#).unwrap();
+        let reads = reads_of_selector(&Selector(vec![pred]));
+        assert_ne!(reads, Traits::NONE);
+        assert_eq!(
+            reads,
+            reads_of_selector(&Selector(vec![power])).or(reads_of_stat(StatKind::BasePower))
+        );
     }
 }

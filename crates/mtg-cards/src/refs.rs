@@ -107,6 +107,8 @@ pub enum Ref {
     Paid,
     /// The object a static ability's change applies to, worked out for each such object ("for each other creature that shares a type with it").
     Affected,
+    /// The object a `Pred::Test` is judging: "a creature you control with power greater than its base power".
+    Candidate,
     /// The objects the source named by `on` remembers in `slot` (`Effect::Remember`; the slot `exiled` holds what the source
     /// exiled), as the objects they are now: one that has changed zones since is another object and drops out.
     Remembered {
@@ -284,6 +286,15 @@ pub enum Pred {
         op: Cmp,
         /// The amount compared with.
         to: Amount,
+    },
+    /// Two amounts of the object compare: `Ref::Candidate` in them is the object itself ("power less than toughness").
+    Test {
+        /// The amount on the left.
+        left: Amount,
+        /// The comparison.
+        op: Cmp,
+        /// The amount on the right.
+        right: Amount,
     },
     /// A spell or ability on the stack with a target that matches the selector. A spell being cast reads the targets
     /// announced so far; the cost judged before any target holds it where some object in play matches.

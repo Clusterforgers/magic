@@ -255,6 +255,7 @@ pub(crate) fn modified(
             casting: Some((spell, player)),
             cast_targets: Some(CastTargets { choices, judging }),
             affected: None,
+            candidate: std::cell::Cell::new(None),
             choices: if own { choices } else { &announced },
             specs: if own {
                 specs.iter().collect()

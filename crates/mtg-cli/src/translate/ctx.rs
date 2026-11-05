@@ -127,6 +127,8 @@ pub struct Ctx<'a> {
     /// A cost is being translated: the engine checks a cost against no target specification, so the count grammar
     /// reads no target there.
     pub in_cost: std::cell::Cell<bool>,
+    /// Where the filter being read stands (`filter::Scope`): atoms refuse the scopes they are not legal in.
+    pub scope: std::cell::Cell<super::filter::Scope>,
     /// The index of the target the line being translated is about to declare, for the condition it states ahead of its effect.
     pub coming: Option<u8>,
     /// The latest target the ability had declared before the line being translated (`Defined$ ParentTarget`).
@@ -175,6 +177,7 @@ impl<'a> Ctx<'a> {
             counted: std::collections::BTreeSet::new(),
             scoped: std::collections::BTreeSet::new(),
             in_cost: std::cell::Cell::new(false),
+            scope: std::cell::Cell::new(super::filter::Scope::Object),
             coming: None,
             memory: super::memory::plan(face),
             pinned: None,
