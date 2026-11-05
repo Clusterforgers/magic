@@ -231,6 +231,10 @@ fn the_table_of_modifications_has_every_variant_of_the_dsl() {
             // Only an effect has it, and it works out its keyword with an answer, so it is not a row of the table.
             | mtg_cards::modify::Modification::AddProtectionFromChosenColor
             | mtg_cards::modify::Modification::AddProtectionFromChosenCardType
+            // Only an effect has these, and they read a value the resolution chose, so they are not rows of the table.
+            | mtg_cards::modify::Modification::SetColorsChosen(_)
+            | mtg_cards::modify::Modification::SetLandTypesChosen(_)
+            | mtg_cards::modify::Modification::SetCreatureTypesChosen(_)
             | mtg_cards::modify::Modification::RemoveKeyword(_)
             | mtg_cards::modify::Modification::LockKeyword(_)
             | mtg_cards::modify::Modification::GrantAbility(_)
