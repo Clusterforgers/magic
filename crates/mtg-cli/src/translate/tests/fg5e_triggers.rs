@@ -48,8 +48,8 @@ fn a_mode_maps_to_its_pattern(#[case] trigger: &str, #[case] when: Value) {
     "key:Trigger.LifeLostAll.ValidAmountEach"
 )]
 #[case::source(
-    "Mode$ CounterAddedOnce | ValidCard$ Creature | ValidSource$ You",
-    "key:Trigger.Counter.ValidSource"
+    "Mode$ CounterAddedOnce | ValidCard$ Creature | ValidSource$ Card.Red",
+    "key:Trigger.CounterAddedOnce.ValidSource=Card.Red"
 )]
 #[case::defender(
     "Mode$ AttackerUnblocked | ValidCard$ Card.Self | ValidDefender$ You",
