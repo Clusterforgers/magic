@@ -115,9 +115,9 @@ fn untap_up_to(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
 
 /// `TapAll`, `UntapAll`: the verb on every object the valid-string names.
 fn all_of(ctx: &mut Ctx, p: &Params, verb: &str) -> Tr<Value> {
-    only(p, verb, &["ValidCards"])?;
+    only(p, verb, &["ValidCards", "ValidTgts"])?;
     let valid = p.get("ValidCards").unwrap_or_default();
-    Ok(json!({ verb: {"what": {"Each": selector_any(ctx, valid)?}} }))
+    Ok(json!({ verb: {"what": {"Each": frame::all_matching(ctx, p, verb, valid)?}} }))
 }
 
 fn destroy(ctx: &mut Ctx, p: &Params) -> Tr<Value> {

@@ -2,7 +2,7 @@
 
 use serde_json::{Value, json};
 
-use super::ctx::{Ctx, Tr, unmapped};
+use super::ctx::{Ctx, Tr};
 use super::memory::Slot;
 use crate::forge::script::Params;
 
@@ -48,9 +48,8 @@ pub fn apply(
     mut effects: Vec<Value>,
 ) -> Tr<Vec<Value>> {
     let across = ctx.memory.crosses(Slot::Remembered);
-    if asked.contains(&Forgets::Moved) && !across && before.is_some() {
-        return unmapped("key:Forget-moved-from-a-bound-name");
-    }
+    // A name holds the objects as they were (zone-change counter included), so one that moved is a new object and drops out
+    // of a bound name as it does of the source's memory (CR 400.7).
     if !asked.contains(&Forgets::All) {
         return Ok(effects);
     }
