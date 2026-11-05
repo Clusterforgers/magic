@@ -340,6 +340,7 @@ fn rule_mana(state: &GameState, player: PlayerId, id: ObjectId, printed: usize) 
                 .when_spent
                 .and_then(|rider| rider.entry(chosen, Some(id))),
         );
+        only.extend(crate::spend::snow_rider(state, id));
         let once = shape.once;
         // Every use takes others, so what limits the uses is what the cost takes.
         let repeat = !tap
@@ -428,13 +429,15 @@ pub(crate) fn options(state: &GameState, player: PlayerId) -> Vec<ManaOption> {
         if can_tap {
             for (ability, def) in chars.abilities.iter().enumerate() {
                 let AbilityDef::Mana(mana) = def;
-                found.push(ManaOption::new(
+                let mut option = ManaOption::new(
                     ManaSource {
                         object: id,
                         ability,
                     },
                     mana.produces,
-                ));
+                );
+                option.only.extend(crate::spend::snow_rider(state, id));
+                found.push(option);
             }
         }
         for mana in rule_mana(state, player, id, chars.abilities.len()) {

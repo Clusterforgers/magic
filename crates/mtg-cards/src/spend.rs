@@ -210,6 +210,8 @@ pub enum SpendOn {
     /// Not a restriction: a spell of the kind that this mana helps pay for can't be countered ("Spend this mana only to
     /// cast a creature spell, and that spell can't be countered").
     Uncounterable(SpendFilter),
+    /// Not a restriction: the mana came from a snow source, so it pays for `{S}` (CR 107.4h) and counts as snow mana spent.
+    Snow,
 }
 
 /// What happens when a mana is spent to cast a spell of some kind: a triggered ability of the permanent that added the
@@ -245,7 +247,18 @@ impl WhenSpent {
 impl SpendOn {
     /// Whether the use limits what the mana may be spent on; a rider does not.
     pub const fn restricts(&self) -> bool {
-        !matches!(self, SpendOn::When(_) | SpendOn::Uncounterable(_))
+        !matches!(
+            self,
+            SpendOn::When(_) | SpendOn::Uncounterable(_) | SpendOn::Snow
+        )
+    }
+
+    /// How many of `spent` carry the snow rider.
+    pub fn snow_in(spent: &[Vec<SpendOn>]) -> usize {
+        spent
+            .iter()
+            .filter(|only| only.contains(&SpendOn::Snow))
+            .count()
     }
 
     /// The riders among `only`: what spending the mana on a spell sets off.
@@ -272,6 +285,7 @@ impl SpendOn {
             SpendOn::CostWithX => SpendOn::CostWithX,
             SpendOn::When(rider) => rider.entry(chosen, rider.source)?,
             SpendOn::Uncounterable(filter) => SpendOn::Uncounterable(filter.resolved(chosen)?),
+            SpendOn::Snow => SpendOn::Snow,
         })
     }
 

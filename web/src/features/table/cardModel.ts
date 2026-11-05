@@ -172,6 +172,8 @@ function pipOf(symbol: ManaSymbol, index: number): ManaPip {
         phyrexian: true,
         name: `colorless mana or ${LIFE_PER_SYMBOL} life`,
       }
+    case 'snow':
+      return { ...base, tone: 'colorless', text: 'S', name: 'mana from a snow source' }
   }
 }
 

@@ -66,6 +66,8 @@ function symbolWords(symbol: ManaSymbol): string {
       return `colorless or ${colorName(shape.color)}`
     case 'colorlessPhyrexian':
       return `colorless or ${life}`
+    case 'snow':
+      return 'snow'
   }
 }
 

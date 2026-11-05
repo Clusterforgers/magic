@@ -760,3 +760,4 @@ mod r5p5;
 mod r5p6;
 mod r5q1;
 mod r6p1;
+mod r6p2;

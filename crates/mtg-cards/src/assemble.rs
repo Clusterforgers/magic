@@ -1822,7 +1822,7 @@ mod tests {
 
     #[rstest]
     #[case::x_in_the_cost("{X}{G}", "Creature \u{2014} Elf", X_COST, "{X}")]
-    #[case::snow_in_the_cost("{1}{S}", "Creature \u{2014} Elf", "", "{S}")]
+    #[case::unknown_symbol_in_the_cost("{1}{Z}", "Creature \u{2014} Elf", "", "{Z}")]
     #[case::garbage_cost("1G", "Creature \u{2014} Elf", "", "the game cannot read it")]
     #[case::a_type_of_no_game_here("{G}", "Plane \u{2014} Dominaria", "", "Plane")]
     fn what_the_definition_cannot_hold_or_play_makes_the_card_manual(
@@ -1930,7 +1930,7 @@ mod tests {
                     0..5,
                 ),
                 x in 0usize..3,
-                unknown_symbol in prop::option::of(prop::sample::select(vec!["{S}", "{Z}", "{HW}"])),
+                unknown_symbol in prop::option::of(prop::sample::select(vec!["{Z}", "{HW}"])),
                 power in prop::sample::select(vec![None, Some("0"), Some("7"), Some("-1"), Some("*"), Some("1+*")]),
                 toughness in prop::sample::select(vec![None, Some("1"), Some("12"), Some("X")]),
                 type_word in prop::sample::select(vec!["Creature", "Artifact", "Land", "Plane", "Scheme"]),

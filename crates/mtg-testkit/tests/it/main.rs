@@ -440,6 +440,7 @@ mod search_pairs;
 mod seed_campaigns;
 mod small_effects_fuzz;
 mod smoke;
+mod snow_mana;
 mod soulbond;
 mod spectacle;
 mod spectacle_fuzz;
