@@ -127,6 +127,13 @@ pub(super) const ATOMS: &[Atom] = &[
         lower: |_| one(json!({"Not": {"OwnedBy": "You"}})),
     },
     Atom {
+        word: "AdventureCard",
+        scopes: OBJECT,
+        reads_target: false,
+        probe: "Edgewall Innkeeper",
+        lower: |_| one(json!("HasAdventure")),
+    },
+    Atom {
         word: "IsRingbearer",
         scopes: OBJECT,
         reads_target: false,
@@ -223,8 +230,16 @@ pub(super) fn atom(ctx: &Ctx, scope: Scope, word: &str) -> Option<Tr<Vec<Value>>
         }
         return Some((row.lower)(ctx));
     }
-    if let Some(test) = stat_test(word) {
+    if let Some(test) = stat_test(word).or_else(|| parity(word)) {
         return Some(one(test));
+    }
+    // `DamagedBy Equipped`: was dealt damage this turn by the object the word names.
+    if let Some(name) = word.strip_prefix("DamagedBy ") {
+        return Some(match super::valid::defined(ctx, name) {
+            Ok(who) if !super::valid_atoms::is_player(&who) => one(json!({"DamagedBy": who})),
+            Ok(_) => unmapped(format!("valid:{word}-names-a-player")),
+            Err(gap) => Err(gap),
+        });
     }
     // `blockingTriggeredAttacker`, `blockedByEquipped`: blocks (is blocked by) the object a `Defined$` word names.
     for (prefix, key) in [("blocking", "Blocks"), ("blockedBy", "BlockedBy")] {
@@ -250,6 +265,24 @@ pub(super) fn atom(ctx: &Ctx, scope: Scope, word: &str) -> Option<Tr<Vec<Value>>
         .iter()
         .find(|known| known.eq_ignore_ascii_case(&spaced))?;
     Some(one(json!({"HasKeywordNamed": named})))
+}
+
+/// `powerEven`, `cmcOdd`: the stat equals twice its half rounded down (zero is even); a negative stat reads as zero.
+fn parity(word: &str) -> Option<Value> {
+    let (stat, odd) = [
+        ("power", "Power"),
+        ("toughness", "Toughness"),
+        ("cmc", "ManaValue"),
+    ]
+    .iter()
+    .find_map(|(name, stat)| {
+        let rest = word.strip_prefix(name)?;
+        matches!(rest, "Even" | "Odd").then_some((*stat, rest == "Odd"))
+    })?;
+    let value = json!({"Stat": {"of": "Candidate", "stat": stat}});
+    let doubled = json!({"Times": {"by": 2, "of": {"Half": {"of": value, "up": false}}}});
+    let op = if odd { "Ne" } else { "Eq" };
+    Some(json!({"Test": {"left": value, "op": op, "right": doubled}}))
 }
 
 /// `powerLTtoughness`, `powerGTbasePower`: a stat of the object against another stat of it. The right side is a stat word
@@ -295,6 +328,12 @@ fn stat_test(word: &str) -> Option<Value> {
 
 /// The predicates of a base word the old reader does not know: a supertype (`Legendary.YouCtrl`).
 pub(super) fn base(word: &str) -> Option<Vec<Value>> {
+    // A spell, an activated ability or a triggered ability: what can target.
+    if word == "SpellAbility" {
+        return Some(vec![
+            json!({"AnyOf": ["Spell", {"Ability": "Activated"}, {"Ability": "Triggered"}]}),
+        ]);
+    }
     SUPERTYPES
         .contains(&word)
         .then(|| vec![json!({"Supertype": word})])

@@ -564,6 +564,9 @@ fn this_turn_suffix(r: &mut Reader<'_>) -> Option<Pred> {
     if r.words(super::w13b_mill_rad::W13B_MILLED_THIS_TURN) {
         return Some(Pred::MilledThisTurn);
     }
+    if r.words("that has an Adventure") || r.words("that have an Adventure") {
+        return Some(Pred::HasAdventure);
+    }
     if r.words("that attacked this turn") {
         return Some(Pred::AttackedThisTurn);
     }
@@ -724,6 +727,7 @@ pub(super) fn suffix_text(pred: &Pred, form: Form) -> Option<String> {
         Pred::EnteredThisTurn => "that entered this turn".to_owned(),
         Pred::SummoningSick => "that has summoning sickness".to_owned(),
         Pred::MilledThisTurn => "that was milled this turn".to_owned(),
+        Pred::HasAdventure => "that has an Adventure".to_owned(),
         Pred::AttackedThisTurn => "that attacked this turn".to_owned(),
         Pred::Crewed(Ref::This) => "that crewed it this turn".to_owned(),
         Pred::Saddled(Ref::This) => "that saddled it this turn".to_owned(),

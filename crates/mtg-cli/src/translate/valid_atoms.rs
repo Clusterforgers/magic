@@ -34,6 +34,7 @@ pub fn atom(prop: &str) -> Option<Vec<Value>> {
         "blocked" => return Some(vec![json!("Attacking"), json!({"Not": "Unblocked"})]),
         "PairedWith" => return one(json!({"PairedWith": "This"})),
         "milledThisTurn" => return one(json!("MilledThisTurn")),
+        "withTypeCycling" => return one(json!({"HasKeywordNamed": "Typecycling"})),
         "MonoColor" => return one(compare("Colors", "Eq", 1)),
         // How the spell was cast, for the ways the cast node has.
         "surged" => return one(json!({"CastWith": "Surge"})),

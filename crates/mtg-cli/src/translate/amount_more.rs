@@ -24,6 +24,9 @@ pub fn count(ctx: &Ctx, base: &str) -> Option<Tr<Value>> {
         "CardsInYourHand" if rest.is_empty() => {
             Ok(json!({"Count": [{"In": "Hand"}, {"OwnedBy": "You"}]}))
         }
+        // The mana value of the top card of your library; zero when it is empty.
+        "TopOfLibraryCMC" if rest.is_empty() => Ok(json!({"Total": {
+            "of": [{"In": "Library"}, {"OwnedBy": "You"}, "TopOfLibrary"], "stat": "ManaValue"}})),
         "TotalCommanderCastFromCommandZone" if rest.is_empty() => {
             Ok(json!({"CommanderCasts": "You"}))
         }

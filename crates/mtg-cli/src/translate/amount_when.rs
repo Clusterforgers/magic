@@ -26,6 +26,21 @@ pub fn when(ctx: &Ctx, base: &str) -> Option<Tr<Value>> {
         "Blessing" => json!({"CitysBlessing": "You"}),
         "StartingPlayer" => json!({"StartingPlayer": "You"}),
         "Night" => json!("IsNight"),
+        // An instant resolves in the phase it was cast in, so the phase now is the phase it was cast in.
+        "IfCastInOwnMainPhase" => {
+            json!({"All": ["YourTurn", {"Any": [{"Step": "Main1"}, {"Step": "Main2"}]}]})
+        }
+        // An {X} paid in the madness or foretell cost is not the X of the mana cost: only fixed amounts are read.
+        "Madness" | "Foretold" if branches.contains('X') => {
+            return Some(unmapped(format!("amount:Count${word}-with-X")));
+        }
+        "Madness" => json!({"CastWith": "Madness"}),
+        "Foretold" => json!({"CastWith": "Foretold"}),
+        // The three Urza lands together (Urza's Tower, Mine and Power-Plant, each one under your control).
+        "UrzaLands" => {
+            let held = |name: &str| json!({"Compare": {"left": {"Count": [{"Named": name}, {"ControlledBy": "You"}]}, "op": "Ge", "right": 1}});
+            json!({"All": [held("Urza's Tower"), held("Urza's Mine"), held("Urza's Power Plant")]})
+        }
         // How this card was cast (`wasCastFromGraveyard.2.1`): the cast-way atoms of a valid-string, asked of the source.
         _ if word.starts_with("wasCast") => {
             let selector = super::valid_atoms::atom(word)?;

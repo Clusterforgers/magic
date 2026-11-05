@@ -662,6 +662,7 @@ const RUNS: &[&str] = &[
     "Rule.CanBeCommander",
     "Pred.Modified",
     "Pred.RingBearer",
+    "Pred.HasAdventure",
     "Pred.FaceDown",
     "Pred.TargetsPlayer",
     "Pred.GravedThisTurn",
@@ -998,6 +999,7 @@ mod tests {
     #[case::the_ring_tempting("Effect.RingTempts", true)]
     #[case::the_ring_tempting_triggers("Trigger.RingTempts", true)]
     #[case::the_ring_bearer("Pred.RingBearer", true)]
+    #[case::adventure_cards("Pred.HasAdventure", true)]
     #[case::amassing("Effect.Amass", true)]
     #[case::monstrosity("Effect.Monstrosity", true)]
     #[case::becoming_a_level("Effect.BecomeLevel", true)]

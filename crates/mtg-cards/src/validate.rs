@@ -560,6 +560,7 @@ impl<'a> Walker<'a> {
             }
             Pred::CastWith(_) => self.uses("Pred", "CastWith"),
             Pred::TopOfLibrary => self.uses("Pred", "TopOfLibrary"),
+            Pred::HasAdventure => self.uses("Pred", "HasAdventure"),
             Pred::SingleTarget => self.uses("Pred", "SingleTarget"),
             Pred::BottomOfLibrary => self.uses("Pred", "BottomOfLibrary"),
             Pred::BlockedBy(who) => {
@@ -667,6 +668,7 @@ impl<'a> Walker<'a> {
             Pred::WasCast { .. }
             | Pred::CastWith(_)
             | Pred::TopOfLibrary
+            | Pred::HasAdventure
             | Pred::BottomOfLibrary
             | Pred::BlockedBy(_)
             | Pred::Blocks(_)
