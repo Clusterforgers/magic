@@ -45,6 +45,7 @@ impl Pass<'_> {
             snapshots: Vec::new(),
             amount,
             source,
+            against: None,
         }
     }
 

@@ -50,7 +50,11 @@ enum Happened {
     /// A token was created, the `nth` of its controller's turn: it enters the battlefield from no zone.
     Created { object: ObjectId, nth: u32 },
     /// A creature was declared as an attacker, the `nth` time this turn for it.
-    Attacked { attacker: ObjectId, nth: u32 },
+    Attacked {
+        attacker: ObjectId,
+        nth: u32,
+        at: AttackTarget,
+    },
     /// A creature was declared as the only attacker.
     AttackedAlone { attacker: ObjectId },
     /// A creature was declared as an attacker of a player, or of a planeswalker that player controls.
@@ -476,8 +480,9 @@ fn happenings(pre: &GameState, events: &[Event], post: &GameState) -> Vec<Happen
                 nth: ordinal(post, look.later, token.controller, Tally::Tokens),
             }),
             Event::AttackersDeclared { attackers, .. } => {
-                found.extend(attackers.iter().map(|(attacker, _)| Happened::Attacked {
+                found.extend(attackers.iter().map(|(attacker, at)| Happened::Attacked {
                     attacker: *attacker,
+                    at: *at,
                     nth: before(look, *attacker).map_or(0, |object| {
                         object_ordinal(look, object, None, Tally::Attacked)
                     }),
@@ -1168,6 +1173,7 @@ fn counted(state: &GameState, subjects: Vec<Target>, amount: u32) -> Cause {
         snapshots,
         amount,
         source: None,
+        against: None,
     }
 }
 
@@ -1233,12 +1239,16 @@ fn matching(pattern: &TriggerPattern, happened: &Happened, scope: &Scope<'_>) ->
                 && scope.selects(what, reference).ok()?)
             .then(|| cause(state, vec![Target::Object(reference)]))
         }
-        (TriggerPattern::Attacks { what }, Happened::Attacked { attacker, .. }) => {
+        (TriggerPattern::Attacks { what }, Happened::Attacked { attacker, at, .. }) => {
             let reference = object(*attacker)?;
-            scope
-                .selects(what, reference)
-                .ok()?
-                .then(|| cause(state, vec![Target::Object(reference)]))
+            let against = match at {
+                AttackTarget::Player(player) => Some(Target::Player(*player)),
+                AttackTarget::Planeswalker(walker) => object(*walker).map(Target::Object),
+            };
+            scope.selects(what, reference).ok()?.then(|| Cause {
+                against,
+                ..cause(state, vec![Target::Object(reference)])
+            })
         }
         (TriggerPattern::AttacksAlone { what }, Happened::AttackedAlone { attacker }) => {
             let reference = object(*attacker)?;
@@ -1714,8 +1724,10 @@ fn matching_permanents(
         }
         (TriggerPattern::Blocks { what }, Happened::Blocked { blocker, attacker }) => {
             let (blocker, attacker) = (object(*blocker)?, object(*attacker)?);
-            picks(what, blocker)?.then(|| {
-                cause(
+            picks(what, blocker)?.then(|| Cause {
+                source: Some(blocker),
+                against: Some(Target::Object(attacker)),
+                ..cause(
                     state,
                     vec![Target::Object(blocker), Target::Object(attacker)],
                 )
@@ -1777,7 +1789,10 @@ fn matching_permanents(
             }
             (picked.len() >= usize::try_from(*at_least).unwrap_or(usize::MAX)).then(|| {
                 let count = u32::try_from(picked.len()).unwrap_or(u32::MAX);
-                counted(state, picked, count)
+                Cause {
+                    against: Some(Target::Player(*attacked)),
+                    ..counted(state, picked, count)
+                }
             })
         }
         (

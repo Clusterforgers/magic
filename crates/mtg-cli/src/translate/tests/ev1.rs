@@ -85,17 +85,6 @@ fn a_controller_word_is_the_controller_of_the_event_object(
     );
 }
 
-#[test]
-fn both_creatures_of_a_block_leave_the_blocker_controller_a_gap() {
-    let script = creature(
-        "T:Mode$ Blocks | ValidCard$ Creature | Execute$ Hit\nSVar:Hit:DB$ LoseLife | Defined$ TriggeredBlockerController | LifeAmount$ 1",
-    );
-    assert_eq!(
-        gaps(&script),
-        vec!["defined:TriggeredBlockerController-in-Blocks".to_owned()]
-    );
-}
-
 #[rstest]
 #[case::other_remembered("ForgetOtherRemembered", Vec::new())]
 #[case::other_targets("ForgetOtherTargets", Vec::new())]

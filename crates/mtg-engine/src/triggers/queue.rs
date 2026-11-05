@@ -394,6 +394,7 @@ mod tests {
                 snapshots: Vec::new(),
                 amount: 0,
                 source: None,
+                against: None,
             },
             snapshot: snapshot(state, object.id()).unwrap(),
             delayed: None,

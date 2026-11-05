@@ -200,6 +200,19 @@ fn event_amount(ctx: &Ctx, expression: &str) -> Tr<Option<Value>> {
                 other => unmapped(format!("amount:TriggerCount${other}")),
             };
         }
+        "TriggerObjectsAttackers" if what == "Amount" => {
+            // A group of attackers holds them all and counts them.
+            return if ctx.trigger.as_ref().is_some_and(|shape| {
+                matches!(shape.pattern.as_str(), "GroupAttacks" | "GroupAttacksAt")
+            }) {
+                Ok(Some(json!("Triggering")))
+            } else {
+                unmapped("amount:TriggerObjectsAttackers-outside-a-group")
+            };
+        }
+        "TriggeredDefendingPlayer" => {
+            return super::amount_more::player_stat(head, what, &json!("Defending")).map(Some);
+        }
         "PlayerCountOpponents" | "PlayerCountRegisteredOpponents" | "PlayerCountPlayers" => {
             let who = if head == "PlayerCountPlayers" {
                 "EachPlayer"

@@ -1475,6 +1475,7 @@ fn pipeline_events() -> Vec<Event> {
                 snapshots: vec![shot.clone()],
                 amount: 0,
                 source: None,
+                against: None,
             }),
             delayed: Some(DelayedId(2)),
         })),

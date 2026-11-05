@@ -818,6 +818,7 @@ fn delayed_node(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
             .get("BecomesBlocked")
             .is_some_and(|node| node.get("by").is_some()),
         to_player: false,
+        pattern: super::triggered::key_of(&when),
     });
     let outer = std::mem::replace(&mut ctx.trigger, shape);
     let declared = ctx.targets.len();

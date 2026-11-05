@@ -48,6 +48,7 @@ pub(super) fn who(ctx: &Ctx, reference: &Ref) -> String {
         Ref::Triggering => "the triggering object".to_owned(),
         Ref::TriggeringPlayer => "the triggering player".to_owned(),
         Ref::Dealer => "the source of the damage".to_owned(),
+        Ref::Against => "what it went against".to_owned(),
         Ref::Attached => "the permanent it is attached to".to_owned(),
         Ref::AttachedPlayer => "the player it is attached to".to_owned(),
         Ref::Monarch => "the monarch".to_owned(),

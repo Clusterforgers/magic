@@ -1325,6 +1325,7 @@ mod tests {
                 snapshots: vec![snapshot(&t.state, subject).unwrap()],
                 amount: 0,
                 source: None,
+                against: None,
             },
             snapshot: snapshot(&t.state, t.creature).unwrap(),
             delayed: None,

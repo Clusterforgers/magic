@@ -377,6 +377,7 @@ fn cause() -> Cause {
         snapshots: Vec::new(),
         amount: 0,
         source: None,
+        against: None,
     }
 }
 

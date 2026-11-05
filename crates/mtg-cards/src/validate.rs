@@ -488,6 +488,12 @@ impl<'a> Walker<'a> {
                 }
                 self.expect(Kind::Player, want);
             }
+            Ref::Against => {
+                if !self.scope.in_trigger {
+                    self.problem("`Against` is only valid in a triggered ability");
+                }
+                self.expect(Kind::Either, want);
+            }
             Ref::Affected => {
                 if !self.scope.in_static {
                     self.problem("`Affected` is only valid in the changes of a static ability");
@@ -2273,7 +2279,7 @@ impl Walker<'_> {
                 .get(usize::from(*index))
                 .map_or(Kind::Either, |t| t.0),
             Ref::Bound(name) => self.scope.lookup(name).unwrap_or(Kind::Either),
-            Ref::Triggering => Kind::Either,
+            Ref::Triggering | Ref::Against => Kind::Either,
         }
     }
 
@@ -5131,6 +5137,10 @@ mod tests {
     #[case::a_state_among_events(
         r#"{"Triggered":{"when":{"AnyOf":[{"Attacks":{"what":["This"]}},{"State":{"condition":"YourTurn"}}]},"effects":[{"Draw":{}}]}}"#,
         "abilities[0].Triggered.when[1]: a state is the whole pattern of a triggered ability"
+    )]
+    #[case::what_the_event_went_against_outside_a_trigger(
+        r#"{"Spell":{"effects":[{"Draw":{"who":"Against"}}]}}"#,
+        "`Against` is only valid in a triggered ability"
     )]
     #[case::a_state_in_a_delayed_trigger(
         r#"{"Spell":{"effects":[{"DelayedTrigger":{"when":{"State":{"condition":"YourTurn"}},"effects":[{"Draw":{}}]}}]}}"#,

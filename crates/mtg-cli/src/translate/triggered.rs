@@ -17,6 +17,16 @@ pub struct Shape {
     pub by: bool,
     /// The event names a player as its target (`ValidTarget$ Player`), so `TriggeredTarget` is that player.
     pub to_player: bool,
+    /// The engine pattern the line reads (`Attacks`, `GroupAttacksAt`, `Blocks`): what the event holds depends on it.
+    pub pattern: String,
+}
+
+/// The name of the pattern a trigger's `when` is.
+pub fn key_of(when: &Value) -> String {
+    (when.as_object())
+        .and_then(|map| map.keys().next())
+        .cloned()
+        .unwrap_or_default()
 }
 
 /// The kind of object a word names.
@@ -32,6 +42,14 @@ enum Word {
     Activator,
     Source,
     Target,
+    /// The player or planeswalker an attacker attacks.
+    Defender,
+    /// The player a group of attackers attacks.
+    AttackedTarget,
+    /// Every creature of a declaration of attackers.
+    Attackers,
+    /// The player who declared the attackers.
+    AttackingPlayer,
 }
 
 /// The word's kind and whether it names that object's controller; none for a word this module does not know.
@@ -50,6 +68,13 @@ fn kind(word: &str) -> Option<(Word, bool)> {
         "TriggeredSource" | "TriggeredSourceLKICopy" => (Word::Source, false),
         "TriggeredSourceController" => (Word::Source, true),
         "TriggeredTarget" | "TriggeredTargetLKICopy" => (Word::Target, false),
+        "TriggeredDefender"
+        | "TriggeredDefender.Opponent & Valid Planeswalker.TriggeredDefender" => {
+            (Word::Defender, false)
+        }
+        "TriggeredAttackedTarget" => (Word::AttackedTarget, false),
+        "TriggeredAttackers" => (Word::Attackers, false),
+        "TriggeredAttackingPlayer" => (Word::AttackingPlayer, false),
         _ => return None,
     })
 }
@@ -129,6 +154,19 @@ pub fn resolve(shape: Option<&Shape>, word: &str) -> Tr<Value> {
             "Triggering"
         }
         Word::Blocker if mode == "AttackerBlockedByCreature" && shape.by => "Dealer",
+        // A block holds the blocker as its dealer and the attacker it blocks as what it went against.
+        Word::Blocker if shape.pattern == "Blocks" && !shape.itself => "Dealer",
+        Word::Attacker if shape.pattern == "Blocks" => "Against",
+        Word::Defender if shape.pattern == "Attacks" => "Against",
+        Word::AttackedTarget if shape.pattern == "GroupAttacksAt" => "Against",
+        Word::Attackers if matches!(shape.pattern.as_str(), "GroupAttacks" | "GroupAttacksAt") => {
+            "Triggering"
+        }
+        Word::AttackingPlayer
+            if matches!(shape.pattern.as_str(), "GroupAttacks" | "GroupAttacksAt") =>
+        {
+            return Ok(json!({"ControllerOf": "Triggering"}));
+        }
         // A block holds both creatures; only "this blocks" names one without doubt.
         Word::Blocker if mode == "Blocks" && shape.itself => "This",
         Word::Player if did == Some((true, true)) => "TriggeringPlayer",
@@ -164,6 +202,7 @@ pub fn resolve(shape: Option<&Shape>, word: &str) -> Tr<Value> {
             Ok(json!({"ControllerOf": "Triggering"}))
         }
         (Word::Attacker, "Triggering") => Ok(json!({"ControllerOf": "Triggering"})),
+        (Word::Attacker, "Against") => Ok(json!({"ControllerOf": "Against"})),
         (Word::Attacker | Word::Blocker, "This") => Ok(json!("You")),
         (Word::Target, "Triggering") if !shape.to_player => {
             Ok(json!({"ControllerOf": "Triggering"}))

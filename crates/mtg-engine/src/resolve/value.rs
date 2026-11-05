@@ -894,6 +894,11 @@ impl<'a> Scope<'a> {
                 .map(Target::Object)
                 .into_iter()
                 .collect(),
+            Ref::Against => self
+                .cause
+                .and_then(|cause| cause.against)
+                .into_iter()
+                .collect(),
             Ref::Attached => state
                 .host_of(self.source.id)
                 .and_then(|host| state.object(host))
@@ -2745,6 +2750,7 @@ mod tests {
             snapshots: Vec::new(),
             amount: 0,
             source: None,
+            against: None,
         };
         let mut scope = scope(&game);
         let triggering: Ref = serde_json::from_str(r#""Triggering""#).unwrap();
@@ -2754,6 +2760,23 @@ mod tests {
         ));
         scope.cause = Some(&cause);
         assert_eq!(scope.players(&triggering).unwrap(), [PlayerId(1)]);
+    }
+
+    #[test]
+    fn what_the_event_went_against_reads_empty_without_a_cause_or_a_target() {
+        let game = game();
+        let against: Ref = serde_json::from_str(r#""Against""#).unwrap();
+        let mut scope = scope(&game);
+        assert_eq!(scope.refs(&against), Ok(Vec::new()));
+        let none = crate::abilities::Cause::default();
+        scope.cause = Some(&none);
+        assert_eq!(scope.refs(&against), Ok(Vec::new()));
+        let some = crate::abilities::Cause {
+            against: Some(Target::Player(PlayerId(1))),
+            ..none.clone()
+        };
+        scope.cause = Some(&some);
+        assert_eq!(scope.players(&against).unwrap(), [PlayerId(1)]);
     }
 
     #[test]
