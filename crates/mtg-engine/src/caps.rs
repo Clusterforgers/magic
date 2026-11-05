@@ -342,6 +342,7 @@ const RUNS: &[&str] = &[
     "Rule.Cant.PlayLand",
     "Rule.Cant.Sacrifice",
     "Rule.Cant.PutCounter",
+    "Rule.Cant.PutCounterOf",
     "Rule.Cant.Trigger",
     "Rule.Cant.Attach",
     "Rule.Cant.Discard",
@@ -1022,6 +1023,7 @@ mod tests {
     #[case::cant_play_land("Rule.Cant.PlayLand", true)]
     #[case::cant_sacrifice("Rule.Cant.Sacrifice", true)]
     #[case::cant_put_counter("Rule.Cant.PutCounter", true)]
+    #[case::cant_put_counter_of("Rule.Cant.PutCounterOf", true)]
     #[case::cant_trigger("Rule.Cant.Trigger", true)]
     #[case::cant_attach("Rule.Cant.Attach", true)]
     #[case::cant_discard("Rule.Cant.Discard", true)]

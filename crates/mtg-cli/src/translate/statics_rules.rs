@@ -95,13 +95,23 @@ fn objects(ctx: &Ctx, p: &Params, mode: &str, key: &str) -> Tr<Value> {
 
 /// `CantPutCounter` of any kind on objects, or on players.
 fn put_counter(ctx: &Ctx, p: &Params) -> Tr<Value> {
-    keys(p, "CantPutCounter", &["ValidCard", "ValidPlayer"])?;
+    keys(
+        p,
+        "CantPutCounter",
+        &["ValidCard", "ValidPlayer", "CounterType"],
+    )?;
     let who = match (p.get("ValidCard"), p.get("ValidPlayer")) {
         (Some(word), None) => object_word(ctx, word)?,
         (None, Some(word)) => player_word(Some(word))?,
         _ => return unmapped("key:Static.CantPutCounter.subject"),
     };
-    Ok(cant(&who, &json!("PutCounter")))
+    let Some(kind) = p.get("CounterType") else {
+        return Ok(cant(&who, &json!("PutCounter")));
+    };
+    let Some(kind) = super::amount::counter_kind(kind) else {
+        return unmapped("key:Static.CantPutCounter.CounterType");
+    };
+    Ok(cant(&who, &json!({"PutCounterOf": kind})))
 }
 
 /// `CantTarget`: the objects can't be the target of spells and abilities from the sources `ValidSource$` names.

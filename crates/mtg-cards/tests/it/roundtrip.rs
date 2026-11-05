@@ -603,6 +603,9 @@ fn prohibited() -> impl Strategy<Value = Prohibited> {
         Just(Prohibited::PlayLand),
         Just(Prohibited::Sacrifice),
         Just(Prohibited::PutCounter),
+        Just(Prohibited::PutCounterOf(
+            mtg_cards::value::CounterKind::lore()
+        )),
         Just(Prohibited::Attach),
         Just(Prohibited::Discard),
         Just(Prohibited::Exile),
