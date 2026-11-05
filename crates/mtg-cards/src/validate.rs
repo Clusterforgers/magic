@@ -3841,6 +3841,7 @@ impl Walker<'_> {
             }
             GameRule::CantGainLife(who)
             | GameRule::NoLifeLossFromDamage(who)
+            | GameRule::LifeFloor { who, .. }
             | GameRule::RadiationGainsLife(who)
             | GameRule::LifeTotalCantChange(who)
             | GameRule::CantDraw(who)

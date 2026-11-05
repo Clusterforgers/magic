@@ -756,6 +756,10 @@ describe('events with more than one shape', () => {
       'Creatures controlled by Bo become white and black while Jace Beleren stays',
     ],
     [
+      effect(objects(2), { AddColors: 0b00100 }, 'UntilEndOfTurn'),
+      'Hill Giant becomes black in addition to its other colors until end of turn',
+    ],
+    [
       effect(objects(2), { SetColors: 0 }, 'UntilEndOfTurn'),
       'Hill Giant becomes colorless until end of turn',
     ],
@@ -923,6 +927,10 @@ describe('events with more than one shape', () => {
     [
       ruleEffect({ CantBeCountered: [{ id: 4, counter: 0 }] }, 'Forever'),
       "Lightning Bolt can't be countered",
+    ],
+    [
+      ruleEffect({ LifeFloor: { players: [0], floor: 1 } }, 'Forever'),
+      "Damage can't reduce Ana below 1 life",
     ],
     [
       ruleEffect({ RadiationGainsLife: [0] }, 'Forever'),

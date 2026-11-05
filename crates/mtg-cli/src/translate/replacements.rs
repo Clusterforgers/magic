@@ -63,6 +63,9 @@ fn single(ctx: &mut Ctx, body: &str) -> Tr<Value> {
             _ => super::replacements_counter::add_counter(ctx, &p),
         };
     }
+    if event == "LifeReduced" {
+        return super::replacements_life::life_reduced(ctx, &p, line_condition.as_ref());
+    }
     if event == "GameLoss" {
         return super::replacements_loss::game_loss(ctx, &p, line_condition.as_ref());
     }

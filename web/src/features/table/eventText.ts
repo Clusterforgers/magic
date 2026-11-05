@@ -151,6 +151,10 @@ function modificationWords(modification: Modification, group: boolean, n: EventN
     const colors = colorsInSet(modification.SetColors).map((color) => color.toLowerCase())
     return `${becomes} ${colors.length === 0 ? 'colorless' : joinWords(colors)}`
   }
+  if ('AddColors' in modification) {
+    const colors = colorsInSet(modification.AddColors).map((color) => color.toLowerCase())
+    return `${becomes} ${joinWords(colors)} in addition to its other colors`
+  }
   if ('AddKeyword' in modification) return `${gains} ${keywordWords(modification.AddKeyword)}`
   if ('RemoveKeyword' in modification) return `${loses} ${keywordWords(modification.RemoveKeyword)}`
   if ('LockKeyword' in modification) {
@@ -241,6 +245,8 @@ function describeRule(effect: RuleEffect, n: EventNames): string {
   else if ('CantGainLife' in rule) what = `${seats(rule.CantGainLife)} can't gain life`
   else if ('NoLifeLossFromDamage' in rule)
     what = `Damage doesn't cause ${seats(rule.NoLifeLossFromDamage)} to lose life`
+  else if ('LifeFloor' in rule)
+    what = `Damage can't reduce ${seats(rule.LifeFloor.players)} below ${rule.LifeFloor.floor} life`
   else if ('RadiationGainsLife' in rule)
     what = `Radiation makes ${seats(rule.RadiationGainsLife)} gain life rather than lose life`
   else if ('CantDraw' in rule) what = `${seats(rule.CantDraw)} can't draw cards`

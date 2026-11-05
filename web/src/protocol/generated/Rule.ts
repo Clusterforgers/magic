@@ -58,7 +58,15 @@ most: number,
 /**
  * The players whose blocks it limits.
  */
-who: Array<PlayerId>, } } | { "CantBeCountered": Array<ObjectRef> } | { "CantGainLife": Array<PlayerId> } | { "NoLifeLossFromDamage": Array<PlayerId> } | { "RadiationGainsLife": Array<PlayerId> } | { "LifeTotalCantChange": Array<PlayerId> } | { "PlayersHave": { 
+who: Array<PlayerId>, } } | { "CantBeCountered": Array<ObjectRef> } | { "CantGainLife": Array<PlayerId> } | { "NoLifeLossFromDamage": Array<PlayerId> } | { "LifeFloor": { 
+/**
+ * The players.
+ */
+players: Array<PlayerId>, 
+/**
+ * The life total damage leaves them at least at.
+ */
+floor: number, } } | { "RadiationGainsLife": Array<PlayerId> } | { "LifeTotalCantChange": Array<PlayerId> } | { "PlayersHave": { 
 /**
  * The players.
  */

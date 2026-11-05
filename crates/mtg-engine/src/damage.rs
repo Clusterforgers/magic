@@ -999,4 +999,154 @@ mod tests {
             assert_eq!(game.player(FOE).unwrap().life(), life);
         }
     }
+
+    mod life_floor {
+        //! Goal: under the rule "damage that would reduce your life total to less than N reduces it to N instead" (CR 614.1, 120.3a) the damage is dealt in full and only the life lost is cut down so the life total stays at N, while it was N or more; below N the damage takes life as usual, several damages dealt together stop at the floor in total, the source's lifelink still gains the whole amount, and another player's life is untouched.
+        use std::sync::Arc;
+
+        use mtg_cards::CardDefinition;
+        use mtg_cards::ability::Ability;
+        use mtg_cards::keyword::Keyword;
+        use mtg_core::card::CardType;
+
+        use super::*;
+        use crate::fixtures::state;
+        use crate::fold::apply_event;
+
+        const ME: PlayerId = PlayerId(0);
+        const FOE: PlayerId = PlayerId(1);
+
+        fn game(floor: i32) -> (GameState, ObjectId) {
+            let guard =
+                format!(r#"{{"Rule":{{"rule":{{"LifeFloor":{{"who":"You","floor":{floor}}}}}}}}}"#);
+            let source = CardDefinition::new("Source")
+                .with_type(CardType::Creature)
+                .with_power_toughness(3, 3)
+                .with_rules(Ability::Keyword(Keyword::Lifelink));
+            let guard = CardDefinition::new("Guard")
+                .with_type(CardType::Creature)
+                .with_power_toughness(1, 1)
+                .with_rules(serde_json::from_str::<Ability>(&guard).unwrap());
+            let game = state(
+                vec![vec![], vec![]],
+                vec![vec![Arc::new(source)], vec![Arc::new(guard)]],
+            );
+            let id = game.zone(Zone::Battlefield)[0];
+            (game, id)
+        }
+
+        fn lose(game: &mut GameState, amount: u32) {
+            if amount == 0 {
+                return;
+            }
+            let lost = Event::LifeLost {
+                player: FOE,
+                amount,
+            };
+            apply_event(game, &lost).unwrap();
+        }
+
+        fn hit(game: &mut GameState, id: ObjectId, who: PlayerId, amount: u32) -> Vec<Event> {
+            let events = dealt_by(
+                game,
+                &Dealer::live(game, id),
+                DamageTarget::Player(who),
+                amount,
+            );
+            for event in &events {
+                apply_event(game, event).unwrap();
+            }
+            events
+        }
+
+        #[rstest]
+        #[case::above_the_floor_it_is_plain(1, 0, 5, 15)]
+        #[case::down_to_the_floor(1, 0, 19, 1)]
+        #[case::more_than_the_floor_allows(1, 0, 25, 1)]
+        #[case::a_higher_floor(7, 0, 25, 7)]
+        #[case::life_already_at_the_floor(1, 19, 4, 1)]
+        #[case::below_the_floor_it_takes_life_as_usual(7, 15, 4, 1)]
+        fn the_life_total_stops_at_the_floor(
+            #[case] floor: i32,
+            #[case] lost_before: u32,
+            #[case] damage: u32,
+            #[case] life: i32,
+        ) {
+            let (mut game, id) = game(floor);
+            lose(&mut game, lost_before);
+            hit(&mut game, id, FOE, damage);
+            assert_eq!(game.player(FOE).unwrap().life(), life);
+        }
+
+        #[test]
+        fn a_life_total_below_the_floor_is_not_raised() {
+            let (mut game, id) = game(7);
+            lose(&mut game, 15);
+            assert_eq!(game.player(FOE).unwrap().life(), 5);
+            hit(&mut game, id, FOE, 3);
+            assert_eq!(game.player(FOE).unwrap().life(), 2);
+        }
+
+        #[test]
+        fn the_damage_is_dealt_in_full_and_lifelink_gains_all_of_it() {
+            let (mut game, id) = game(1);
+            let events = hit(&mut game, id, FOE, 25);
+            assert!(events.iter().any(|event| matches!(
+                event,
+                Event::DamageDealt {
+                    amount: 25,
+                    form: DamageForm::Normal,
+                    ..
+                }
+            )));
+            assert!(events.iter().any(|event| matches!(
+                event,
+                Event::LifeGained {
+                    player: ME,
+                    amount: 25
+                }
+            )));
+            assert_eq!(game.player(ME).unwrap().life(), 45);
+        }
+
+        #[test]
+        fn damage_dealt_together_stops_at_the_floor_in_total() {
+            let (mut game, id) = game(1);
+            lose(&mut game, 16);
+            let mut events = dealt_by(
+                &game,
+                &Dealer::live(&game, id),
+                DamageTarget::Player(FOE),
+                3,
+            );
+            events.extend(dealt_by(
+                &game,
+                &Dealer::live(&game, id),
+                DamageTarget::Player(FOE),
+                3,
+            ));
+            for event in &events {
+                apply_event(&mut game, event).unwrap();
+            }
+            assert_eq!(game.player(FOE).unwrap().life(), 1);
+        }
+
+        #[test]
+        fn another_player_is_not_protected() {
+            let (mut game, id) = game(1);
+            let events = dealt_by(
+                &game,
+                &Dealer::live(&game, id),
+                DamageTarget::Player(ME),
+                25,
+            );
+            for event in events
+                .iter()
+                .filter(|event| matches!(event, Event::DamageDealt { .. }))
+            {
+                apply_event(&mut game, event).unwrap();
+            }
+            assert_eq!(game.player(ME).unwrap().life(), -5);
+        }
+    }
 }

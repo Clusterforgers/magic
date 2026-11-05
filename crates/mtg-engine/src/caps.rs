@@ -315,6 +315,7 @@ const RUNS: &[&str] = &[
     "Rule.CantBeCountered",
     "Rule.CantGainLife",
     "Rule.NoLifeLossFromDamage",
+    "Rule.LifeFloor",
     "Rule.RadiationGainsLife",
     "Rule.LifeTotalCantChange",
     "Rule.PlayersHave",
