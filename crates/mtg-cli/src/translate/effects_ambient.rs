@@ -60,6 +60,8 @@ pub fn delayed_triggers(ctx: &mut Ctx, p: &Params, remembered: Option<&Value>) -
         let Some(text) = ctx.svar(name) else {
             return unmapped("svar:missing");
         };
+        // `OneOff$ True` ("when you next cast ...") ends the trigger once it has triggered, as a boon does.
+        let one_off = Params::parse(text).get("OneOff") == Some("True");
         let body = without_zones(text);
         let line = ctx.nested(remembered.cloned(), |ctx| triggered(ctx, &body))?;
         let Some(inner) = line.get("Triggered").and_then(Value::as_object) else {
@@ -75,7 +77,7 @@ pub fn delayed_triggers(ctx: &mut Ctx, p: &Params, remembered: Option<&Value>) -
         if when.to_string().contains("\"This\"") || effects.to_string().contains("\"This\"") {
             return unmapped("effect:Effect-trigger-about-the-source");
         }
-        let boon = p.get("Boon") == Some("True");
+        let boon = p.get("Boon") == Some("True") || one_off;
         let mut delayed = json!({"when": when, "once": boon, "effects": effects});
         if this_turn {
             delayed["this_turn"] = json!(true);
@@ -90,7 +92,7 @@ fn without_zones(body: &str) -> String {
     let parsed = Params::parse(body);
     let kept: Vec<String> = parsed
         .iter()
-        .filter(|(key, value)| !(*key == "TriggerZones" && *value == "Command"))
+        .filter(|(key, value)| !(*key == "TriggerZones" && *value == "Command") && *key != "OneOff")
         .map(|(key, value)| format!("{key}$ {value}"))
         .collect();
     kept.join(" | ")

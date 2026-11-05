@@ -93,9 +93,9 @@ fn zone_changes(ctx: &Ctx, p: &Params) -> Tr<Value> {
 }
 
 fn life_lost(p: &Params) -> Tr<Value> {
-    keys(p, "LifeLost", &["ValidPlayer"])?;
+    keys(p, "LifeLost", &["ValidPlayer", "FirstTime"])?;
     let who = player_ref(p.get("ValidPlayer"))?;
-    Ok(json!({"LifeLost": {"who": who}}))
+    super::triggers::first_time(p, json!({"LifeLost": {"who": who}}))
 }
 
 fn taps_for_mana(ctx: &Ctx, p: &Params) -> Tr<Value> {

@@ -196,6 +196,60 @@ pub fn gate_words(p: &Params) -> &'static [&'static str] {
     if is_trigger(p) { &TRIGGER_GATES } else { &[] }
 }
 
+/// The state words of a trigger line that carry a value of their own: the mana not spent on the permanent's spell, a
+/// player's life total and amount, and the state of a defined player.
+const TRIGGER_STATE: [&str; 5] = [
+    "ManaNotSpent",
+    "ManaSpent",
+    "LifeTotal",
+    "LifeAmount",
+    "CheckDefinedPlayer",
+];
+
+/// The state words a line of this kind has, to be removed with its condition keys.
+pub fn state_words(p: &Params) -> &'static [&'static str] {
+    if is_trigger(p) { &TRIGGER_STATE } else { &[] }
+}
+
+/// The conditions of the state words of a trigger line, all rechecked as the ability resolves (CR 603.4): the mana types
+/// spent on the permanent's spell, the life total of a player and whether a player is the monarch or has the initiative.
+pub fn trigger_state(ctx: &Ctx, p: &Params) -> Tr<Vec<Value>> {
+    let mut all = Vec::new();
+    if !is_trigger(p) {
+        return Ok(all);
+    }
+    for (key, spent) in [("ManaSpent", true), ("ManaNotSpent", false)] {
+        let Some(text) = p.get(key) else { continue };
+        for letter in text.split_whitespace() {
+            let Some(kind) = mana_type(letter) else {
+                return unmapped(format!("key:Trigger.{key}={letter}"));
+            };
+            let found = json!({ "ManaSpent": kind });
+            all.push(if spent { found } else { json!({"Not": found}) });
+        }
+    }
+    match (p.get("LifeTotal"), p.get("LifeAmount")) {
+        (None, None) => {}
+        (Some(who), Some(compare)) => {
+            let Ok(who) = super::triggers::player_ref(Some(who)) else {
+                return unmapped(format!("key:Trigger.LifeTotal={who}"));
+            };
+            let (op, right) = comparison(ctx, compare)?;
+            all.push(json!({"Compare": {"left": {"Life": who}, "op": op, "right": right}}));
+        }
+        (Some(_), None) => return unmapped("key:Trigger.LifeTotal-without-LifeAmount"),
+        (None, Some(_)) => return unmapped("key:Trigger.LifeAmount-without-LifeTotal"),
+    }
+    if let Some(word) = p.get("CheckDefinedPlayer") {
+        all.push(match word {
+            "You.isMonarch" => json!({"Monarch": "You"}),
+            "You.hasInitiative" => json!({"Initiative": "You"}),
+            other => return unmapped(format!("key:Trigger.CheckDefinedPlayer={other}")),
+        });
+    }
+    Ok(all)
+}
+
 /// The conditions the gating words of a trigger line state. A turn word is a condition of the event ("during your turn",
 /// CR 603.4 does not recheck it); an "if" word is rechecked as the ability resolves unless the line says otherwise.
 pub fn trigger_gates(p: &Params) -> Tr<Vec<Value>> {
