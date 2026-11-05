@@ -205,6 +205,15 @@ fn a_pump_until_the_source_untaps_lasts_while_it_is_tapped() {
     assert_eq!(effect["duration"], json!("WhileSourceTapped"));
 }
 
+#[test]
+fn control_until_the_source_untaps_lasts_while_it_is_tapped() {
+    let script = "Name:T\nTypes:Artifact\nA:AB$ GainControl | Cost$ 2 T | ValidTgts$ Creature | LoseControl$ Untap,LeavesPlay\n";
+    assert_eq!(gaps(script), Vec::<String>::new());
+    let effect = &abilities(script)[0]["Activated"]["effects"][0]["Continuous"];
+    assert_eq!(effect["duration"], json!("WhileSourceTapped"));
+    assert_eq!(effect["mods"], json!([{"SetController": "You"}]));
+}
+
 #[rstest]
 #[case::itself(
     "Mode$ AssignNoCombatDamage | ValidCard$ Card.Self",
