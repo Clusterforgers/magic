@@ -159,7 +159,7 @@ pub fn process(
 
 /// The source `dealer` and the player who controls what `target` is, when protection of the target from the dealer
 /// prevents the damage (CR 702.16e).
-fn protection_of(
+pub(crate) fn protection_of(
     state: &GameState,
     dealer: ObjectId,
     target: DamageTarget,
