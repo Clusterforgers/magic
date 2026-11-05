@@ -1,0 +1,20 @@
+{
+  "oracle_id": "deb499bd-71d4-4430-8a58-a31f5ab1b239",
+  "name": "Sinister Strength",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sinister Strength",
+      "oracle_fingerprint": "1c5757c47305950a46d804b212407503",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "ModifyPT": { "power": 3, "toughness": 1 } }, { "SetColors": ["Black"] }]
+          }
+        }
+      ]
+    }
+  ]
+}

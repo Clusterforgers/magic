@@ -27,7 +27,8 @@
                     "filter": [
                       { "Type": "Artifact" },
                       { "Not": { "Supertype": "Legendary" } },
-                      { "ControlledBy": "You" }
+                      { "ControlledBy": "You" },
+                      { "Not": { "Is": "Affected" } }
                     ]
                   }
                 },

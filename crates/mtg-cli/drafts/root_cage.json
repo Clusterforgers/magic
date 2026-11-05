@@ -1,0 +1,19 @@
+{
+  "oracle_id": "14c3a43c-cdb1-45d1-8eba-8e6d16bd7643",
+  "name": "Root Cage",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Root Cage",
+      "oracle_fingerprint": "d24a62a61d769543bd6c20327b043a5c",
+      "abilities": [
+        {
+          "Static": {
+            "affected": { "Each": [{ "Subtype": "Mercenary" }] },
+            "mods": ["DoesntUntap"]
+          }
+        }
+      ]
+    }
+  ]
+}

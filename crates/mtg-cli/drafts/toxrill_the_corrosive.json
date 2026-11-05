@@ -29,13 +29,13 @@
                   "power": {
                     "Times": {
                       "by": -1,
-                      "of": { "Counters": { "on": "This", "counter": { "Other": "slime" } } }
+                      "of": { "Counters": { "on": "Affected", "counter": { "Other": "slime" } } }
                     }
                   },
                   "toughness": {
                     "Times": {
                       "by": -1,
-                      "of": { "Counters": { "on": "This", "counter": { "Other": "slime" } } }
+                      "of": { "Counters": { "on": "Affected", "counter": { "Other": "slime" } } }
                     }
                   }
                 }

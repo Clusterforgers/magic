@@ -27,7 +27,8 @@
                     "filter": [
                       { "Type": "Creature" },
                       { "ControlledBy": "You" },
-                      { "Not": { "Supertype": "Legendary" } }
+                      { "Not": { "Supertype": "Legendary" } },
+                      { "Not": { "Is": "Affected" } }
                     ]
                   }
                 },

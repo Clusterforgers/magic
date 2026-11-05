@@ -1,0 +1,31 @@
+{
+  "oracle_id": "b11c250c-f191-4c52-ba02-a9176f163447",
+  "name": "Emiel the Blessed",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Emiel the Blessed",
+      "oracle_fingerprint": "d24df4605bbcb42f87bfdaac327b6ca0",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{3}",
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, "Other", { "ControlledBy": "You" }] } }
+            ],
+            "effects": [
+              { "Exile": { "what": { "Target": 0 }, "as": "exiled" } },
+              { "Move": { "what": { "Bound": "exiled" }, "to": { "Battlefield": {} } } }
+            ]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 109, "end": 312 }
+          }
+        }
+      ]
+    }
+  ]
+}

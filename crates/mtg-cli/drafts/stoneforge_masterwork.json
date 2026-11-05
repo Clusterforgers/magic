@@ -16,16 +16,16 @@
                   "power": {
                     "Count": [
                       { "Type": "Creature" },
-                      { "SharesSubtype": "This" },
-                      "Other",
+                      { "SharesSubtype": "Affected" },
+                      { "Not": { "Is": "Affected" } },
                       { "ControlledBy": "You" }
                     ]
                   },
                   "toughness": {
                     "Count": [
                       { "Type": "Creature" },
-                      { "SharesSubtype": "This" },
-                      "Other",
+                      { "SharesSubtype": "Affected" },
+                      { "Not": { "Is": "Affected" } },
                       { "ControlledBy": "You" }
                     ]
                   }

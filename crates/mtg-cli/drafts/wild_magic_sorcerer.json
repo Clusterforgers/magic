@@ -23,7 +23,11 @@
                   "Tally": {
                     "event": "SpellCast",
                     "who": "EachPlayer",
-                    "filter": [{ "ControlledBy": "You" }, { "WasCast": { "from": "Exile" } }]
+                    "filter": [
+                      { "ControlledBy": "You" },
+                      { "WasCast": { "from": "Exile" } },
+                      { "Not": { "Is": "Affected" } }
+                    ]
                   }
                 },
                 "op": "Eq",

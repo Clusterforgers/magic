@@ -13,8 +13,8 @@
             "mods": [
               {
                 "SetPT": {
-                  "power": { "Stat": { "of": "This", "stat": "ManaValue" } },
-                  "toughness": { "Stat": { "of": "This", "stat": "ManaValue" } }
+                  "power": { "Stat": { "of": "Affected", "stat": "ManaValue" } },
+                  "toughness": { "Stat": { "of": "Affected", "stat": "ManaValue" } }
                 }
               },
               { "AddType": "Creature" }

@@ -1,0 +1,33 @@
+{
+  "oracle_id": "b304ac72-7f40-40de-b8d6-6392909b6029",
+  "name": "Guide of Souls",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Guide of Souls",
+      "oracle_fingerprint": "25daad4a752743f9bce8577c050743e7",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Creature" }, "Other", { "ControlledBy": "You" }],
+                "to": "Battlefield"
+              }
+            },
+            "effects": [
+              { "GainLife": { "amount": 1 } },
+              { "PutCounters": { "on": "You", "counter": { "Other": "energy" } } }
+            ]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 95, "end": 277 }
+          }
+        }
+      ]
+    }
+  ]
+}

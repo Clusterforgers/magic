@@ -37,7 +37,8 @@
                           { "Subtype": "Saga" }
                         ]
                       },
-                      { "ControlledBy": "You" }
+                      { "ControlledBy": "You" },
+                      { "Not": { "Is": "Affected" } }
                     ]
                   }
                 },

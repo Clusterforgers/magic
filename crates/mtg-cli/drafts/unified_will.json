@@ -1,0 +1,37 @@
+{
+  "oracle_id": "f90cc072-750c-4a87-bf6c-37192d15e691",
+  "name": "Unified Will",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Unified Will",
+      "oracle_fingerprint": "9a1b54804c02e3b2a3fbf96eef66cc74",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": ["Spell"] } }],
+            "effects": [
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "Count": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                      "op": "Gt",
+                      "right": {
+                        "Count": [
+                          { "Type": "Creature" },
+                          { "ControlledBy": { "ControllerOf": { "Target": 0 } } }
+                        ]
+                      }
+                    }
+                  },
+                  "then": [{ "Counter": { "what": { "Target": 0 } } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

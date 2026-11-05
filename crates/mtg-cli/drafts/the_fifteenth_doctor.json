@@ -57,7 +57,11 @@
                   "Tally": {
                     "event": "SpellCast",
                     "who": "EachPlayer",
-                    "filter": [{ "Not": { "Type": "Artifact" } }, { "ControlledBy": "You" }]
+                    "filter": [
+                      { "Not": { "Type": "Artifact" } },
+                      { "ControlledBy": "You" },
+                      { "Not": { "Is": "Affected" } }
+                    ]
                   }
                 },
                 "op": "Eq",

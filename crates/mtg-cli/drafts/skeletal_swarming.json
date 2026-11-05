@@ -14,7 +14,11 @@
               {
                 "ModifyPT": {
                   "power": {
-                    "Count": [{ "Subtype": "Skeleton" }, { "ControlledBy": "You" }, "Other"]
+                    "Count": [
+                      { "Subtype": "Skeleton" },
+                      { "ControlledBy": "You" },
+                      { "Not": { "Is": "Affected" } }
+                    ]
                   },
                   "toughness": 0
                 }

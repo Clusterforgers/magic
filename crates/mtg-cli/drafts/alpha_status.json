@@ -18,7 +18,11 @@
                     "Times": {
                       "by": 2,
                       "of": {
-                        "Count": [{ "Type": "Creature" }, { "SharesSubtype": "This" }, "Other"]
+                        "Count": [
+                          { "Type": "Creature" },
+                          { "SharesSubtype": "Affected" },
+                          { "Not": { "Is": "Affected" } }
+                        ]
                       }
                     }
                   },
@@ -26,7 +30,11 @@
                     "Times": {
                       "by": 2,
                       "of": {
-                        "Count": [{ "Type": "Creature" }, { "SharesSubtype": "This" }, "Other"]
+                        "Count": [
+                          { "Type": "Creature" },
+                          { "SharesSubtype": "Affected" },
+                          { "Not": { "Is": "Affected" } }
+                        ]
                       }
                     }
                   }

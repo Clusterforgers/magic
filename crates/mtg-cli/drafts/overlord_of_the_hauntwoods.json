@@ -1,0 +1,40 @@
+{
+  "oracle_id": "4669e8c7-fc37-4b97-9cb7-8d29b43d9176",
+  "name": "Overlord of the Hauntwoods",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Overlord of the Hauntwoods",
+      "oracle_fingerprint": "d40b077237fac5fd13c8dbed12e8237d",
+      "abilities": [
+        { "AltCast": { "way": "Impending", "cost": "{1}{G}{G}" } },
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "WithCounters": { "counter": { "Other": "time" }, "count": 4 } },
+            "condition": { "CastWith": "Impending" }
+          }
+        },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "RemoveType": "Creature" }],
+            "condition": {
+              "Compare": {
+                "left": { "Counters": { "on": "This", "counter": { "Other": "time" } } },
+                "op": "Gt",
+                "right": 0
+              }
+            }
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 219, "end": 346 }
+          }
+        }
+      ]
+    }
+  ]
+}
