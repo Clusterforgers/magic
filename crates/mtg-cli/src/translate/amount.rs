@@ -256,6 +256,14 @@ fn event_amount(ctx: &Ctx, expression: &str) -> Tr<Option<Value>> {
         | "TriggeredBlockerLKICopy"
         | "TriggeredSource"
         | "TriggeredSourceLKICopy" => super::triggered::resolve(ctx.trigger.as_ref(), head)?,
+        // The spell a cast trigger is about.
+        "TriggeredSpellAbility"
+            if ctx.trigger.as_ref().is_some_and(|shape| {
+                matches!(shape.mode.as_str(), "SpellCast" | "SpellCastOrCopy")
+            }) =>
+        {
+            json!("Triggering")
+        }
         "Enchanted" | "Equipped" => json!("Attached"),
         "Sacrificed" => json!("Paid"),
         "Remembered" | "RememberedLKI" if what == "Amount" => {

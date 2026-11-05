@@ -686,6 +686,13 @@ fn delayed(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
         super::valid::subject(ctx, p, "", None)?;
         own = p.without(&["ValidTgts", "TgtPrompt"]);
         p = &own;
+    } else if p.get("RememberObjects") == Some("Targeted")
+        && ctx.targets.is_empty()
+        && ctx.coming.is_none()
+    {
+        // Nothing was targeted: the word names nobody, and a step's trigger needs no one.
+        own = p.without(&["RememberObjects"]);
+        p = &own;
     }
     if p.get("RememberObjects") == Some("RememberedController") {
         let who = super::memory::remembered_controller(ctx)?;
