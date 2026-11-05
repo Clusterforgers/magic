@@ -78,6 +78,7 @@ mod modal;
 mod monstrosity;
 mod move_counters;
 mod moved_as;
+mod one_of;
 mod pair;
 mod reflexive;
 mod remember;
@@ -268,8 +269,16 @@ fn dispatch(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         Effect::Vote { .. } => vote::run(cx, effect),
         Effect::Planechase { .. } => c10_vp_planechase::run(cx, effect),
         Effect::VillainousChoice { .. } => w2d_villainous::run(cx, effect),
-        Effect::Either { .. } => dk1c5_either::run(cx, effect),
+        Effect::Either { .. } | Effect::OneOf { .. } => choice_of_lists(cx, effect),
         other => fe1n(cx, other),
+    }
+}
+
+/// A choice among lists of effects: two printed options ("or") or several.
+fn choice_of_lists(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
+    match effect {
+        Effect::OneOf { .. } => one_of::run(cx, effect),
+        _ => dk1c5_either::run(cx, effect),
     }
 }
 
@@ -315,7 +324,8 @@ mod tests {
         {"RollDice":{"sides":6,"results":[{"from":1,"effects":[]}]}}, {"FlipCoin":{"win":[]}}, {"Clash":{}},
         {"Vote":{"options":{"Named":["time","knowledge"]}}}, {"Planechase":{"act":"Planeswalk"}},
         {"VillainousChoice":{"who":"Opponents","first":[],"second":[]}},
-        {"Either":{"first":[],"second":[]}}
+        {"Either":{"first":[],"second":[]}},
+        {"OneOf":{"options":[[],[],[]]}}
     ]"#;
 
     fn tag(effect: &Effect) -> String {
@@ -334,7 +344,7 @@ mod tests {
     #[test]
     fn the_capabilities_name_exactly_the_effects_that_run() {
         let effects: Vec<Effect> = serde_json::from_str(EFFECTS).unwrap();
-        assert_eq!(effects.len(), 108, "one sample for each variant of Effect");
+        assert_eq!(effects.len(), 109, "one sample for each variant of Effect");
         let game = state(
             vec![vec![], vec![]],
             vec![vec![creature("Bear", 2, 2)], vec![]],
@@ -477,5 +487,6 @@ mod tests {
         "Effect.Planechase",
         "Effect.VillainousChoice",
         "Effect.Either",
+        "Effect.OneOf",
     ];
 }

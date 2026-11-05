@@ -3078,6 +3078,15 @@ impl Walker<'_> {
                 w.effect_list("first", first, false);
                 w.effect_list("second", second, false);
             }
+            Effect::OneOf { who, options } => {
+                w.at("who", |w| w.reference(who, Kind::Player));
+                if !(2..=crate::effect::MOST_OPTIONS).contains(&options.len()) {
+                    w.problem("a choice of lists has two to eight options");
+                }
+                for option in options {
+                    w.effect_list("options", option, false);
+                }
+            }
             Effect::Vote {
                 options,
                 secret,
@@ -5846,6 +5855,20 @@ mod tests {
                 .any(|p| p.contains("`Triggering` is only valid in a triggered ability")),
             "{found:?}"
         );
+    }
+
+    #[rstest]
+    #[case::two(2, true)]
+    #[case::eight(8, true)]
+    #[case::one(1, false)]
+    #[case::nine(9, false)]
+    fn r1c_a_choice_of_lists_has_two_to_eight_options(#[case] options: usize, #[case] fine: bool) {
+        let lists = vec![r#"[{"GainLife":{"amount":1}}]"#; options].join(",");
+        let found = problems(&format!(
+            r#"{{"Spell":{{"effects":[{{"OneOf":{{"options":[{lists}]}}}}]}}}}"#
+        ));
+        let flagged = found.iter().any(|p| p.contains("two to eight options"));
+        assert_eq!(flagged, !fine, "{found:?}");
     }
 }
 

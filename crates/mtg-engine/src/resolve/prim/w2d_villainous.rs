@@ -13,7 +13,7 @@ use crate::wording;
 
 /// How an option is offered: what its effects do as a card says it (the prompt wording of a short effect, else the
 /// card's own sentence), or its place when there are no words for them.
-fn w2d_label(effects: &[Effect], fallback: &str) -> ChoiceOption {
+pub(super) fn w2d_label(effects: &[Effect], fallback: &str) -> ChoiceOption {
     let asked = wording::may(effects);
     let sentence = || {
         render_ability(&Ability::Spell {

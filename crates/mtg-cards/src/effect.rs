@@ -15,6 +15,9 @@ use crate::value::{Amount, CastWay, Cmp, Condition, CounterKind, DayNight, StatK
 /// The most passes any `RepeatWhile` makes, whatever it writes: a loop that never ends cannot hang a game.
 pub const MOST_PASSES: u32 = 1000;
 
+/// The most options a `OneOf` offers.
+pub const MOST_OPTIONS: usize = 8;
+
 /// The name a clash binds its opponent to.
 pub const W9B_CLASHED: &str = "clashed";
 
@@ -1221,6 +1224,16 @@ pub enum Effect {
         /// The second option, after "or".
         second: Vec<Effect>,
     },
+    /// `who` chooses one of the lists as the effect resolves and only that one is done ("choose one of three ways"); the
+    /// first of several players named who is still in the game chooses, and the chooser is the controller by default. The
+    /// choice is public, and an unanswered question takes the first option.
+    OneOf {
+        /// Who chooses.
+        #[serde(default = "Ref::you", skip_serializing_if = "Ref::is_you")]
+        who: Ref,
+        /// The options, as printed; two to [`MOST_OPTIONS`].
+        options: Vec<Vec<Effect>>,
+    },
     /// A step of a Planechase game (CR 901): the controller planeswalks, or chaos ensues. A game without a planar deck,
     /// which every game the engine plays is, does nothing for it.
     Planechase {
@@ -1793,6 +1806,14 @@ mod tests {
     #[case::dk1c5_either(
         Effect::Either { first: vec![Effect::Draw { bind: None, who: Ref::You, count: Amount::Fixed(1) }], second: vec![Effect::UnlockDoor { who: Ref::You }] },
         r#"{"Either":{"first":[{"Draw":{}}],"second":[{"UnlockDoor":{}}]}}"#
+    )]
+    #[case::r1c_one_of(
+        Effect::OneOf { who: Ref::Triggering, options: vec![vec![Effect::Draw { bind: None, who: Ref::You, count: Amount::Fixed(1) }], vec![Effect::UnlockDoor { who: Ref::You }], Vec::new()] },
+        r#"{"OneOf":{"who":"Triggering","options":[[{"Draw":{}}],[{"UnlockDoor":{}}],[]]}}"#
+    )]
+    #[case::r1c_one_of_by_you(
+        Effect::OneOf { who: Ref::You, options: vec![Vec::new(), Vec::new()] },
+        r#"{"OneOf":{"options":[[],[]]}}"#
     )]
     #[case::attach_the_source_to_a_target(
         Effect::Attach { what: Ref::This, to: Ref::Target(0) },

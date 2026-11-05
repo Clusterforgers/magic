@@ -113,8 +113,8 @@ fn copy_spell(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
 fn choose_player(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
     only(p, "ChoosePlayer", &["Defined", "Choices", "ChoiceTitle"])?;
     let from = match p.get("Choices") {
-        Some("Player.Opponent") => json!("Opponents"),
-        Some("Player") => json!("EachPlayer"),
+        Some("Player.Opponent" | "Opponent" | "Player.Other") => json!("Opponents"),
+        Some("Player") | None => json!("EachPlayer"),
         _ => return unmapped("key:ChoosePlayer.Choices"),
     };
     let who = defined(ctx, p.get("Defined").unwrap_or("You"))?;
