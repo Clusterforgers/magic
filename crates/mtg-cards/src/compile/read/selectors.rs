@@ -703,6 +703,7 @@ fn like_this(r: &mut Reader<'_>) -> Option<Pred> {
     })
 }
 
+#[allow(clippy::too_many_lines)]
 pub(super) fn suffix_text(pred: &Pred, form: Form) -> Option<String> {
     if let Some(text) = super::t17b_attached::suffix_text(pred, form) {
         return Some(text);
