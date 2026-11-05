@@ -605,8 +605,10 @@ fn layer_of(wanted: &Wanted, defining: bool) -> Option<Layer> {
         | Wanted::AddSubtype(_)
         | Wanted::SetCreatureTypes(_)
         | Wanted::SetLandTypes(_)
+        | Wanted::SetLandTypesChosen(_)
+        | Wanted::SetCreatureTypesChosen(_)
         | Wanted::AddAllCreatureTypes => Layer::Type,
-        Wanted::SetColors(_) => Layer::Color,
+        Wanted::SetColors(_) | Wanted::SetColorsChosen(_) => Layer::Color,
         Wanted::AddKeyword(_)
         | Wanted::AddProtectionFromChosenColor
         | Wanted::AddProtectionFromChosenCardType

@@ -111,5 +111,6 @@ fn name_card(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
     };
     let bind = ctx.fresh("name");
     ctx.chosen = Some(bind.clone());
+    ctx.chosen_kind = None;
     Ok(json!({"ChooseValue": {"who": who, "kind": {"CardName": selector}, "as": bind}}))
 }

@@ -127,6 +127,8 @@ pub struct Ctx<'a> {
     pub parent_target: Option<u8>,
     /// The name the latest value chosen by the ability is bound to (`ChosenColor`, `ChosenType` after it).
     pub chosen: Option<String>,
+    /// What kind of value `chosen` holds (`Color`, `CreatureType`, `LandType`, `CardType`), none for a name.
+    pub chosen_kind: Option<&'static str>,
     /// The name the cards the latest `ChooseCard` picked are bound to (`ChosenCard` after it).
     pub chosen_card: Option<String>,
     /// The name the latest number chosen by the ability is bound to (`ChosenNumber` after it).
@@ -163,6 +165,7 @@ impl<'a> Ctx<'a> {
             delayed_remembered: None,
             parent_target: None,
             chosen: None,
+            chosen_kind: None,
             chosen_card: None,
             chosen_number: None,
             die_result: None,
@@ -182,6 +185,7 @@ impl<'a> Ctx<'a> {
         self.coming = None;
         self.parent_target = None;
         self.chosen = None;
+        self.chosen_kind = None;
         self.chosen_card = None;
         self.chosen_number = None;
         self.die_result = None;

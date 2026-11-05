@@ -470,7 +470,14 @@ fn animate(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
         if p.get("OverwriteColors") != Some("True") {
             return unmapped("key:Animate.Colors-added");
         }
-        mods.push(json!({"SetColors": color_names(colors)?}));
+        if colors == "ChosenColor" {
+            match (ctx.chosen_kind, ctx.chosen.as_ref()) {
+                (Some("Color"), Some(name)) => mods.push(json!({"SetColorsChosen": name})),
+                _ => return unmapped("key:Animate.Colors=ChosenColor"),
+            }
+        } else {
+            mods.push(json!({"SetColors": color_names(colors)?}));
+        }
     }
     mods.extend(type_mods(ctx, p)?);
     if let Some(keywords) = p.get("Keywords") {
@@ -527,7 +534,21 @@ fn type_mods(ctx: &Ctx, p: &Params) -> Tr<Vec<Value>> {
     };
     let (mut card_types, mut subtypes, mut lands, mut supertypes) =
         (Vec::new(), Vec::new(), Vec::new(), Vec::new());
+    let mut chosen_mods = Vec::new();
     for word in types.split(',').map(str::trim) {
+        if word == "ChosenType" {
+            let by_kind = match (ctx.chosen_kind, ctx.chosen.as_ref()) {
+                (Some("LandType"), Some(name)) if remove_lands => ("SetLandTypesChosen", name),
+                (Some("CreatureType"), Some(name))
+                    if p.get("RemoveCreatureTypes") == Some("True") =>
+                {
+                    ("SetCreatureTypesChosen", name)
+                }
+                _ => return unmapped("key:Animate.Types=ChosenType-kind"),
+            };
+            chosen_mods.push(json!({ by_kind.0: by_kind.1 }));
+            continue;
+        }
         if super::ctx::CARD_TYPES.contains(&word) {
             card_types.push(word);
         } else if remove_lands && BASIC_LAND_TYPES.contains(&word) {
@@ -542,6 +563,14 @@ fn type_mods(ctx: &Ctx, p: &Params) -> Tr<Vec<Value>> {
     }
     if remove_cards && card_types.is_empty() {
         return unmapped("key:Animate.RemoveCardTypes");
+    }
+    if !chosen_mods.is_empty() {
+        if !lands.is_empty() || !subtypes.is_empty() || remove_cards {
+            return unmapped("key:Animate.Types=ChosenType-with-more");
+        }
+        mods.extend(chosen_mods);
+        mods.extend(supertypes.iter().map(|name| json!({"AddSupertype": name})));
+        return Ok(mods);
     }
     if remove_lands {
         mods.push(json!({"SetLandTypes": lands}));

@@ -229,17 +229,18 @@ pub fn roll_dice(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
 pub fn choose_value(ctx: &mut Ctx, p: &Params, api: &str) -> Tr<Vec<Value>> {
     only(p, api, &["Defined", "Type"])?;
     let kind = match (api, p.get("Type")) {
-        ("ChooseColor", None) => json!("Color"),
-        ("ChooseType", Some("Creature")) => json!("CreatureType"),
-        ("ChooseType", Some("Card")) => json!("CardType"),
-        ("ChooseType", Some("Basic Land" | "Land")) => json!("LandType"),
+        ("ChooseColor", None) => "Color",
+        ("ChooseType", Some("Creature")) => "CreatureType",
+        ("ChooseType", Some("Card")) => "CardType",
+        ("ChooseType", Some("Basic Land" | "Land")) => "LandType",
         (_, other) => return unmapped(format!("key:{api}.Type={}", other.unwrap_or(""))),
     };
     let who = defined(ctx, p.get("Defined").unwrap_or("You"))?;
     let bind = ctx.fresh("chosen");
     ctx.chosen = Some(bind.clone());
+    ctx.chosen_kind = Some(kind);
     Ok(vec![
-        json!({"ChooseValue": {"who": who, "kind": kind, "as": bind}}),
+        json!({"ChooseValue": {"who": who, "kind": json!(kind), "as": bind}}),
     ])
 }
 

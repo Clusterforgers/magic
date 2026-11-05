@@ -65,6 +65,15 @@ pub enum Modification {
     AddAllCreatureTypes,
     /// Replaces the colors (layer 5).
     SetColors(Vec<Color>),
+    /// Makes the color the resolution chose under this name the only color (layer 5): "becomes the color of your choice".
+    /// Only an effect of a spell or ability has it, never a static ability.
+    SetColorsChosen(String),
+    /// Makes the land type the resolution chose under this name the only land type (layer 4): "becomes the basic land type
+    /// of your choice". Only an effect of a spell or ability has it.
+    SetLandTypesChosen(String),
+    /// Makes the creature type the resolution chose under this name the only creature type (layer 4): "becomes the
+    /// creature type of your choice". Only an effect of a spell or ability has it.
+    SetCreatureTypesChosen(String),
     /// Adds a keyword ability (layer 6).
     AddKeyword(Keyword),
     /// Adds protection from a colour the controller chooses as the effect begins (layer 6): "protection from the
@@ -144,8 +153,10 @@ impl Modification {
             | Modification::AddSubtype(_)
             | Modification::SetCreatureTypes(_)
             | Modification::SetLandTypes(_)
+            | Modification::SetLandTypesChosen(_)
+            | Modification::SetCreatureTypesChosen(_)
             | Modification::AddAllCreatureTypes => Some("4"),
-            Modification::SetColors(_) => Some("5"),
+            Modification::SetColors(_) | Modification::SetColorsChosen(_) => Some("5"),
             Modification::AddKeyword(_)
             | Modification::AddProtectionFromChosenColor
             | Modification::AddProtectionFromChosenCardType
