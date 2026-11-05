@@ -139,7 +139,7 @@ impl Spend {
                 }
                 SpendOn::CostWithX => self.kind != SpendKind::Other && self.has_x,
                 // A rider limits nothing, so it neither allows nor refuses a payment.
-                SpendOn::When(_) | SpendOn::Uncounterable(_) => false,
+                SpendOn::When(_) | SpendOn::Uncounterable(_) | SpendOn::Snow => false,
             })
     }
 
@@ -238,4 +238,17 @@ pub struct Spent {
     pub restricted: Vec<Restricted>,
     /// The sources the payment taps, in the order they are activated.
     pub steps: Vec<Step>,
+}
+
+/// The rider a snow source's mana carries (CR 107.4h): it pays for `{S}` and counts as snow mana spent.
+pub(crate) fn snow_rider(state: &GameState, source: ObjectId) -> Option<SpendOn> {
+    state
+        .object(source)
+        .filter(|object| {
+            object
+                .card()
+                .supertypes
+                .contains(&mtg_core::card::Supertype::Snow)
+        })
+        .map(|_| SpendOn::Snow)
 }

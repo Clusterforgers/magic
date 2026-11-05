@@ -5,4 +5,4 @@ import type { WhenSpent } from "./WhenSpent";
 /**
  * One thing mana may be spent on; a restriction lists the uses that are allowed.
  */
-export type SpendOn = { "Spell": SpendFilter } | { "Ability": SpendFilter } | "CostWithX" | { "When": WhenSpent } | { "Uncounterable": SpendFilter };
+export type SpendOn = { "Spell": SpendFilter } | { "Ability": SpendFilter } | "CostWithX" | { "When": WhenSpent } | { "Uncounterable": SpendFilter } | "Snow";

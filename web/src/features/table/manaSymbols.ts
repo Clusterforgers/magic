@@ -11,7 +11,8 @@ const LETTER: Record<Color, string> = { White: 'W', Blue: 'U', Black: 'B', Red: 
 
 /** The letter of a colour as costs write it: W, U, B, R or G. */
 export function colorLetter(color: Color): string {
-  return LETTER[color]
+    | { kind: 'snow' }
+return LETTER[color]
 }
 
 /** One way to pay a symbol: one mana of a kind, some generic mana, or some life. */
@@ -34,6 +35,7 @@ export type SymbolShape =
 export function shapeOf(symbol: ManaSymbol): SymbolShape {
   if (symbol === 'Colorless') return { kind: 'colorless' }
   if (symbol === 'ColorlessPhyrexian') return { kind: 'colorlessPhyrexian' }
+  if (symbol === 'Snow') return { kind: 'snow' }
   if ('Generic' in symbol) return { kind: 'generic', count: symbol.Generic }
   if ('Colored' in symbol) return { kind: 'colored', color: symbol.Colored }
   if ('Hybrid' in symbol) return { kind: 'hybrid', colors: symbol.Hybrid }
@@ -65,6 +67,8 @@ export function symbolText(symbol: ManaSymbol): string {
       return `C/${colorLetter(shape.color)}`
     case 'colorlessPhyrexian':
       return 'C/P'
+    case 'snow':
+      return 'S'
   }
 }
 
@@ -99,6 +103,9 @@ export function waysOf(symbol: ManaSymbol): Way[] {
       return [mana(shape.color), mana('Colorless')]
     case 'colorlessPhyrexian':
       return [mana('Colorless'), life]
+    // The server checks that the mana comes from a snow source; by count it is one generic.
+    case 'snow':
+      return [{ kind: 'generic', count: 1 }]
   }
 }
 

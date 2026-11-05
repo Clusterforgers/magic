@@ -361,7 +361,7 @@ mod tests {
 
     #[rstest]
     #[case::number("3", "invalid type")]
-    #[case::bad_symbol(r#""{S}""#, "unsupported mana symbol")]
+    #[case::bad_symbol(r#""{Y}""#, "unsupported mana symbol")]
     #[case::bad_part(r#"["Teleport"]"#, "unknown variant `Teleport`")]
     fn bad_costs_say_why(#[case] json: &str, #[case] expected: &str) {
         let error = serde_json::from_str::<Cost>(json).unwrap_err().to_string();

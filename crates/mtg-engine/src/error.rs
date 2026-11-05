@@ -146,6 +146,9 @@ pub enum PaymentError {
         /// Mana the payment would produce.
         got: u32,
     },
+    /// The cost needs more mana from snow sources than the payment spends.
+    #[error("the cost needs more mana from snow sources")]
+    MissingSnow,
     /// A colored or colorless requirement is not covered.
     #[error("the cost needs more {0:?} mana")]
     MissingMana(ManaType),

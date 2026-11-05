@@ -23,6 +23,7 @@ use crate::help::{self, Convoked, Help, Used};
 use crate::mana_cost::{self, Forced};
 use crate::mana_plan::{Needs, complete_with, covers_cost, plan, rest_after, spent_of};
 use crate::mana_repeat;
+use crate::mana_snow;
 use crate::mana_takes::{assignment, solving, sources_of, without_taken};
 use crate::spend::{Restricted, Spend, Spent, Step};
 
@@ -138,6 +139,22 @@ impl ManaPool {
             self.tidy_kept();
         }
         true
+    }
+
+    /// The pool without the restricted units at these places.
+    pub(crate) fn without_restricted(&self, places: &[usize]) -> ManaPool {
+        let mut pool = self.clone();
+        if let Some(held) = pool.restricted.as_mut() {
+            let mut at = 0;
+            held.retain(|_| {
+                at += 1;
+                !places.contains(&(at - 1))
+            });
+            if held.is_empty() {
+                pool.restricted = None;
+            }
+        }
+        pool
     }
 
     /// Removes one mana equal to `unit`; false (and no change) if there is none.
@@ -998,6 +1015,25 @@ pub fn can_afford_with(
     life: i32,
     spend: &Spend,
 ) -> bool {
+    let snow = cost.snow();
+    if snow == 0 {
+        return can_afford_plain(cost, pool, sources, help, life, spend);
+    }
+    let rest = cost.without_snow();
+    mana_snow::choices(pool, sources, spend, snow)
+        .iter()
+        .any(|c| can_afford_plain(&rest, &c.pool, &c.sources, help, life, spend))
+}
+
+/// [`can_afford_with`] for a cost without `{S}`.
+fn can_afford_plain(
+    cost: &ManaCost,
+    pool: &ManaPool,
+    sources: &[ManaOption],
+    help: Help<'_>,
+    life: i32,
+    spend: &Spend,
+) -> bool {
     let floating = pool.floating(spend);
     let sources = usable(&mana_repeat::expand(sources, cost), spend, life);
     within_energy(&sources, &[]).iter().any(|sources| {
@@ -1081,6 +1117,29 @@ pub fn auto_payment(
 /// They are used only when mana cannot pay the cost without them, then as few as possible (cards last, so creatures
 /// that are tapped anyway go first); mana and life are chosen for the rest as [`auto_payment`] does.
 pub fn auto_payment_with(
+    cost: &ManaCost,
+    pool: &ManaPool,
+    sources: &[ManaOption],
+    help: Help<'_>,
+    life: i32,
+    spend: &Spend,
+) -> Option<Payment> {
+    let snow = cost.snow();
+    if snow == 0 {
+        return auto_plain(cost, pool, sources, help, life, spend);
+    }
+    let rest = cost.without_snow();
+    let mut best = None;
+    for c in mana_snow::choices(pool, sources, spend, snow) {
+        if let Some(payment) = auto_plain(&rest, &c.pool, &c.sources, help, life, spend) {
+            keep_better(&mut best, c.join(payment), sources);
+        }
+    }
+    best
+}
+
+/// [`auto_payment_with`] for a cost without `{S}`.
+fn auto_plain(
     cost: &ManaCost,
     pool: &ManaPool,
     sources: &[ManaOption],
@@ -1245,11 +1304,17 @@ pub fn check_payment_with(
     spend: &Spend,
     payment: &Payment,
 ) -> Result<Spent, PaymentError> {
+    let snow = cost.snow();
+    let cost = &cost.snow_as_generic();
     mana_repeat::forged(payment)?;
     let sources = mana_repeat::expand(sources, cost);
     let payment = mana_repeat::unfold(payment, &sources);
-    check_expanded(cost, pool, &sources, help, tapped, life, spend, &payment)
-        .map(mana_repeat::fold_spent)
+    let got = check_expanded(cost, pool, &sources, help, tapped, life, spend, &payment)
+        .map(mana_repeat::fold_spent)?;
+    if mana_snow::spent_snow(&got) < snow {
+        return Err(PaymentError::MissingSnow);
+    }
+    Ok(got)
 }
 
 /// [`check_payment_with`] over the sources `mana_repeat::expand` made, for a payment that names the copies.
@@ -1389,6 +1454,39 @@ pub fn complete_payment(
 // Every argument is a different thing a payment depends on; the callers each have them all.
 #[allow(clippy::too_many_arguments)]
 pub fn complete_payment_with(
+    cost: &ManaCost,
+    pool: &ManaPool,
+    sources: &[ManaOption],
+    help: Help<'_>,
+    tapped: &[ObjectId],
+    life: i32,
+    spend: &Spend,
+    partial: &Payment,
+) -> Result<Payment, PaymentError> {
+    let snow = cost.snow();
+    if snow == 0 {
+        return complete_plain(cost, pool, sources, help, tapped, life, spend, partial);
+    }
+    let whole = cost.snow_as_generic();
+    let already = mana_snow::held_snow(sources, partial);
+    if already >= snow {
+        return complete_plain(&whole, pool, sources, help, tapped, life, spend, partial);
+    }
+    let (rest_pool, rest_sources) = mana_snow::without_partial(pool, sources, partial);
+    let mut refusal = PaymentError::MissingSnow;
+    for c in mana_snow::choices(&rest_pool, &rest_sources, spend, snow - already) {
+        let joined = c.join(partial.clone());
+        match complete_plain(&whole, pool, sources, help, tapped, life, spend, &joined) {
+            Ok(done) => return Ok(done),
+            Err(error) => refusal = error,
+        }
+    }
+    Err(refusal)
+}
+
+/// [`complete_payment_with`] for a cost without `{S}`.
+#[allow(clippy::too_many_arguments)]
+fn complete_plain(
     cost: &ManaCost,
     pool: &ManaPool,
     sources: &[ManaOption],
@@ -2313,6 +2411,7 @@ mod tests {
         match *first {
             ManaSymbol::Generic(0) => pays(rest, spent, life),
             ManaSymbol::Generic(n) => generic(n),
+            ManaSymbol::Snow => generic(1),
             ManaSymbol::Colored(c) => colour(c),
             ManaSymbol::Colorless => one(ManaType::Colorless),
             ManaSymbol::Hybrid(a, b) => colour(a) || colour(b),
@@ -2381,6 +2480,7 @@ mod tests {
         let life = || ([0; 6], 0, 2);
         let choices: Vec<Way> = match *first {
             ManaSymbol::Generic(n) => vec![generic(n)],
+            ManaSymbol::Snow => vec![generic(1)],
             ManaSymbol::Colored(c) => vec![colour(c)],
             ManaSymbol::Colorless => vec![colourless()],
             ManaSymbol::Hybrid(a, b) => vec![colour(a), colour(b)],

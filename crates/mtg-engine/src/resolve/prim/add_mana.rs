@@ -91,6 +91,7 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
             .as_deref()
             .and_then(|rider| rider.entry(chosen_type, source)),
     );
+    only.extend(source.and_then(|id| crate::spend::snow_rider(state, id)));
     let only = &only;
     let mut events = Vec::new();
     // The types a player picks between and how many mana of the one picked.

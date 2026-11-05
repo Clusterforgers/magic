@@ -45,6 +45,7 @@ export function symbol(inner: string): ManaSymbol {
   const [a, b, c] = parts
   if (parts.length === 1) {
     if (/^\d+$/.test(inner)) return { Generic: Number(inner) }
+    if (inner === 'S') return 'Snow'
     return inner === 'C' ? 'Colorless' : { Colored: colorOf(inner) }
   }
   if (parts.length === 2 && a !== undefined && b !== undefined) {
@@ -64,6 +65,7 @@ export function symbol(inner: string): ManaSymbol {
 function rank(value: ManaSymbol): [number, number] {
   if (value === 'Colorless') return [1, 0]
   if (value === 'ColorlessPhyrexian') return [7, 0]
+  if (value === 'Snow') return [9, 0]
   if ('Generic' in value) return [0, 0]
   if ('Colored' in value) return [2, COLORS.indexOf(value.Colored)]
   if ('ColorlessHybrid' in value) return [3, COLORS.indexOf(value.ColorlessHybrid)]
