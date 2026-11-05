@@ -47,14 +47,13 @@ pub fn chain_at(ctx: &mut Ctx, p: &Params, top: bool) -> Tr<Vec<Value>> {
     if asks || condition.is_some() {
         ctx.excess = excess;
         for (now, was) in [(&ctx.remembered, &before.0), (&ctx.imprinted, &before.1)] {
-            if is_bound(now.as_ref()) && now != was {
-                if let Some(name) = now
+            if now != was
+                && let Some(name) = now
                     .as_ref()
                     .and_then(|held| held.get("Bound"))
                     .and_then(Value::as_str)
-                {
-                    ctx.scoped.insert(name.to_owned());
-                }
+            {
+                ctx.scoped.insert(name.to_owned());
             }
         }
     }
@@ -792,9 +791,4 @@ fn delayed_step(p: &Params) -> Tr<Value> {
 fn proliferate(p: &Params) -> Tr<Value> {
     only(p, "Proliferate", &[])?;
     Ok(json!({"Proliferate": {}}))
-}
-
-/// Whether a memory holds a name that a step bound.
-fn is_bound(held: Option<&Value>) -> bool {
-    held.is_some_and(|what| what.get("Bound").is_some())
 }

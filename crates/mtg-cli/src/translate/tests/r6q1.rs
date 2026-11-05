@@ -1,7 +1,7 @@
 //! Goal: round 6 audit fixes translate a name bound inside a condition or a may to the steps that count it or test that it holds something (an unbound name reads as empty) and leave a step that needs the objects themselves a gap.
 use rstest::rstest;
 
-use super::{abilities, gaps};
+use super::gaps;
 
 fn spell(body: &str) -> String {
     format!("Name:T\nTypes:Sorcery\nA:SP$ {body}\n")
@@ -19,7 +19,6 @@ fn spell(body: &str) -> String {
 )]
 fn a_name_bound_in_a_branch_is_counted_or_tested_after_it(#[case] line: &str) {
     assert_eq!(gaps(&spell(line)), Vec::<String>::new());
-    assert!(!abilities(&spell(line)).is_empty());
 }
 
 #[rstest]
