@@ -136,6 +136,9 @@ pub mod state;
 pub mod tokens;
 pub mod triggers;
 pub mod turn;
+mod turn_log;
+#[cfg(test)]
+mod turn_log_tests;
 mod turn_summary;
 pub mod w11d_dungeon;
 pub mod w15a_initiative;

@@ -644,6 +644,20 @@ pub enum TriggerPattern {
         /// Which time in the turn it must be, from one.
         nth: u32,
     },
+    /// The event, when a spell or ability caused it ("whenever you put a -1/-1 counter on a creature", "when a spell or
+    /// ability an opponent controls causes you to discard this"): the controller of the spell or ability that is
+    /// resolving, being cast or activated when the event happens, or the controller of the source of the damage. Turn
+    /// actions and state-based actions have no cause and never match.
+    Caused {
+        /// The event, or a `Batch` of events.
+        inner: Box<TriggerPattern>,
+        /// The players who caused it; any when absent.
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        by: Option<Ref>,
+        /// What caused it (the source of the spell or ability, or of the damage); anything when empty.
+        #[serde(default, skip_serializing_if = "Selector::is_empty")]
+        source: Selector,
+    },
 }
 
 /// The event a replacement effect replaces (CR 614). Each variant is one kind of event the engine's replacement step

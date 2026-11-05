@@ -313,6 +313,7 @@ fn scope_of<'a>(
         cast_targets: None,
         affected: None,
         candidate: std::cell::Cell::new(None),
+        caused: None,
     }
 }
 

@@ -335,6 +335,17 @@ pub enum TallyEvent {
     Entered,
     /// A permanent was put into a graveyard from the battlefield (the object as it last existed there, tokens included).
     Died,
+    /// Damage was dealt (the dealer; an amount counts the damage dealt, `Pred::DidThisTurn` reads who it went to).
+    Damaged,
+    /// A creature was declared as an attacker (the attacker; `Pred::DidThisTurn` reads who it attacks).
+    Attacked,
+    /// A creature was declared as a blocker (the blocker; `Pred::DidThisTurn` reads the attacker it blocks).
+    Blocked,
+    /// An ability was activated, a mana ability excepted (the source of the ability).
+    Activated,
+    /// Counters were put on a permanent or a card in exile by a spell or ability (the object; an amount counts the
+    /// counters put, for the player who controlled the spell or ability).
+    CountersPut,
 }
 
 /// Which result of the latest die roll an amount reads.

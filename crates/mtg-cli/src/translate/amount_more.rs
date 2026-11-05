@@ -14,6 +14,7 @@ pub fn count(ctx: &Ctx, base: &str) -> Option<Tr<Value>> {
             "of": [{"Type": "Land"}, {"ControlledBy": "You"}], "stat": "BasicLandTypes"}})),
         "ResolvedThisTurn" if rest.is_empty() => Ok(json!("ResolvedThisTurn")),
         "Party" if rest.is_empty() => Ok(json!({"Party": "You"})),
+        "CountersAddedThisTurn" => counters_added(ctx, rest),
         "Converge" if rest.is_empty() => Ok(json!("ColorsSpent")),
         "CastTotalManaSpent" if rest.is_empty() => Ok(json!({"ManaSpent": {"of": null}})),
         "YourStartingLife" if rest.is_empty() => Ok(json!({"StartingLife": "You"})),
@@ -44,6 +45,26 @@ pub fn count(ctx: &Ctx, base: &str) -> Option<Tr<Value>> {
         _ if word.starts_with("Devotion.") || word.starts_with("DevotionDual.") => devotion(word),
         _ => return None,
     })
+}
+
+/// `CountersAddedThisTurn Any You Creature`: the counters of any kind that the players put this turn on the permanents the
+/// valid-string selects. A kind of counter is a different count and stays a gap.
+fn counters_added(ctx: &Ctx, rest: &str) -> Tr<Value> {
+    let words: Vec<&str> = rest.split(' ').collect();
+    let [kind, who, valid] = words[..] else {
+        return unmapped("amount:Count$CountersAddedThisTurn");
+    };
+    let who = match who {
+        "You" => "You",
+        "Player" => "EachPlayer",
+        "Opponent" => "Opponents",
+        _ => return unmapped("amount:Count$CountersAddedThisTurn"),
+    };
+    if kind != "Any" {
+        return unmapped("amount:Count$CountersAddedThisTurn-of-a-kind");
+    }
+    let filter = selector_in(ctx, valid, None)?;
+    Ok(json!({"Tally": {"event": "CountersPut", "who": who, "filter": filter}}))
 }
 
 /// `YourCountersEnergy`: the counters of that kind on you; a kind that is not one plain word stays a gap.

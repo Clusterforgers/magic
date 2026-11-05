@@ -89,6 +89,7 @@ const RUNS: &[&str] = &[
     "Trigger.ZoneChangeExcept",
     "Trigger.Batch",
     "Trigger.Nth",
+    "Trigger.Caused",
     "Trigger.Did",
     "Ability.OpeningHand",
     "Amount.Triggering",
@@ -669,6 +670,7 @@ const RUNS: &[&str] = &[
     "Pred.TargetsPlayer",
     "Pred.GravedThisTurn",
     "Pred.ArrivedFrom",
+    "Pred.DidThisTurn",
     "Pred.WasCast",
     "Pred.CastWith",
     "Pred.Test",
@@ -1003,6 +1005,7 @@ mod tests {
     #[case::the_ring_tempting("Effect.RingTempts", true)]
     #[case::the_ring_tempting_triggers("Trigger.RingTempts", true)]
     #[case::the_ring_bearer("Pred.RingBearer", true)]
+    #[case::did_this_turn("Pred.DidThisTurn", true)]
     #[case::amassing("Effect.Amass", true)]
     #[case::monstrosity("Effect.Monstrosity", true)]
     #[case::becoming_a_level("Effect.BecomeLevel", true)]
@@ -1115,6 +1118,7 @@ mod tests {
     #[case::zone_changes_from_elsewhere("Trigger.ZoneChangeExcept", true)]
     #[case::batch_triggers("Trigger.Batch", true)]
     #[case::nth_triggers("Trigger.Nth", true)]
+    #[case::caused_triggers("Trigger.Caused", true)]
     #[case::r3p1_actions_taken_by_a_player("Trigger.Did", true)]
     #[case::r3p1_beginning_the_game_on_the_battlefield("Ability.OpeningHand", true)]
     #[case::r3p1_untapping_the_source_as_a_cost("Cost.Untap", false)]

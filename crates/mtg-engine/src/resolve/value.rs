@@ -109,6 +109,8 @@ pub struct Scope<'a> {
     pub(crate) affected: Option<(ObjectRef, &'a std::cell::Cell<bool>)>,
     /// The object a `Pred::Test` is judging (`Ref::Candidate`).
     pub(crate) candidate: std::cell::Cell<Option<ObjectRef>>,
+    /// The spell or ability that caused the events a trigger is being matched against (`TriggerPattern::Caused`).
+    pub(crate) caused: Option<crate::triggers::CausedBy>,
 }
 
 /// The targets a spell being cast has chosen so far (CR 601.2c).
@@ -271,7 +273,13 @@ impl<'a> Scope<'a> {
             cast_targets: None,
             affected: None,
             candidate: std::cell::Cell::new(None),
+            caused: None,
         }
+    }
+
+    /// The same scope matching events a spell or ability caused (`TriggerPattern::Caused`).
+    pub(crate) fn with_caused(self, caused: Option<crate::triggers::CausedBy>) -> Self {
+        Scope { caused, ..self }
     }
 
     /// The same scope working a static ability's change out for `object`; a read of `Ref::Affected` sets `read`.
@@ -532,6 +540,9 @@ impl<'a> Scope<'a> {
         players: &[PlayerId],
         filter: &Selector,
     ) -> Result<i64, ResolveError> {
+        if crate::turn_log::is_record(event) {
+            return Ok(self.recorded(event, players, filter));
+        }
         let mut scope = self.clone();
         scope
             .snapshots
@@ -1370,6 +1381,12 @@ impl<'a> Scope<'a> {
             Pred::MilledThisTurn => state.object_tallied(reference, None, Tally::W13bMilled) > 0,
             Pred::DamagedThisTurn => state.object_tallied(reference, None, Tally::Damaged) > 0,
             Pred::AttackedThisTurn => state.object_tallied(reference, None, Tally::Attacked) > 0,
+            Pred::DidThisTurn {
+                event,
+                by,
+                to,
+                combat,
+            } => self.did_this_turn(*event, (by.as_ref(), to.as_ref()), *combat, reference),
             Pred::DamagedBy(named) => self
                 .objects(named)?
                 .iter()

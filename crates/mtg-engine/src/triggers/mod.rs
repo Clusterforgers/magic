@@ -4,12 +4,15 @@
 //! Detection is a function of events and data ([`detect()`]); the queue is state, so a log folds to the same queue
 //! and an engine rebuilt from it carries on (`docs/cards-dsl.md`, Triggers, replacement and layers).
 
+mod cause_of;
 mod delayed;
 mod detect;
 #[cfg(test)]
 mod detect_against;
 #[cfg(test)]
 mod detect_batches;
+#[cfg(test)]
+mod detect_caused;
 #[cfg(test)]
 mod detect_crewed;
 #[cfg(test)]
@@ -49,6 +52,7 @@ use crate::keywords;
 use crate::object::ObjectRef;
 use crate::snapshot::Snapshot;
 
+pub(crate) use cause_of::{CausedBy, cause_of};
 pub use delayed::{Delayed, DelayedCreated, DelayedId};
 pub use detect::detect;
 pub(crate) use detect::{needs_before, step_matches};

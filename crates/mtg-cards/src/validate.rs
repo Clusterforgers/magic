@@ -682,6 +682,15 @@ impl<'a> Walker<'a> {
                     self.problem("`CastFrom` names a hand or a graveyard");
                 }
             }
+            Pred::DidThisTurn { by, to, .. } => {
+                self.uses("Pred", "DidThisTurn");
+                if let Some(by) = by {
+                    self.at("by", |w| w.reference(by, Kind::Player));
+                }
+                if let Some(to) = to {
+                    self.at("to", |w| w.reference(to, Kind::Either));
+                }
+            }
             Pred::Targeting(inner) | Pred::HasAttached(inner) => self.selector(inner),
             Pred::Modified
             | Pred::RingBearer
@@ -1984,6 +1993,19 @@ impl<'a> Walker<'a> {
             TriggerPattern::AnyOf(patterns) => self.any_of(patterns),
             TriggerPattern::Batch(inner) => self.batch(inner),
             TriggerPattern::Nth { event, nth } => self.nth(event, *nth),
+            TriggerPattern::Caused { inner, by, source } => {
+                self.at("source", |w| w.selector(source));
+                if let Some(by) = by {
+                    self.at("by", |w| w.reference(by, Kind::Player));
+                }
+                if matches!(
+                    **inner,
+                    TriggerPattern::Caused { .. } | TriggerPattern::State { .. }
+                ) {
+                    self.problem("a cause wraps one event or a batch of events");
+                }
+                self.at("inner", |w| w.trigger_pattern(inner));
+            }
         }
     }
 
@@ -2038,6 +2060,7 @@ impl<'a> Walker<'a> {
         if matches!(
             inner,
             TriggerPattern::Batch(_)
+                | TriggerPattern::Caused { .. }
                 | TriggerPattern::Nth { .. }
                 | TriggerPattern::AnyOf(_)
                 | TriggerPattern::State { .. }

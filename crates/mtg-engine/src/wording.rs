@@ -785,6 +785,10 @@ fn clause(pattern: &TriggerPattern) -> (String, bool) {
         TriggerPattern::Nth { event, nth } => {
             (format!("{} (time {nth} this turn)", clause(event).0), false)
         }
+        TriggerPattern::Caused { inner, .. } => (
+            format!("{}, caused by a spell or ability", clause(inner).0),
+            false,
+        ),
         TriggerPattern::AnyOf(patterns) => {
             let clauses: Vec<(String, bool)> = patterns.iter().map(clause).collect();
             (
