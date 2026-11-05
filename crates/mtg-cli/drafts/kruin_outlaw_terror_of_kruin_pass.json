@@ -1,0 +1,45 @@
+{
+  "oracle_id": "cf518f59-f083-42a0-9953-fac2757bf804",
+  "name": "Kruin Outlaw // Terror of Kruin Pass",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Kruin Outlaw",
+      "oracle_fingerprint": "763538b53592e16785693e28409482a5",
+      "abilities": [
+        { "Keyword": "FirstStrike" },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep" } },
+            "if": {
+              "Compare": { "left": { "CastLastTurn": "EachPlayer" }, "op": "Eq", "right": 0 }
+            },
+            "effects": [{ "Transform": { "what": "This" } }]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Terror of Kruin Pass",
+      "oracle_fingerprint": "93862ae24a7d79269b0ce53ea0138203",
+      "abilities": [
+        { "Keyword": "DoubleStrike" },
+        {
+          "Static": {
+            "affected": { "Each": [{ "Subtype": "Werewolf" }, { "ControlledBy": "You" }] },
+            "mods": [{ "AddKeyword": "Menace" }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep" } },
+            "if": {
+              "Compare": { "left": { "CastLastTurn": "EachPlayer" }, "op": "Ge", "right": 2 }
+            },
+            "effects": [{ "Transform": { "what": "This" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

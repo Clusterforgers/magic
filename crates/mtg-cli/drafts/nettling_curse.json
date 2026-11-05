@@ -1,0 +1,34 @@
+{
+  "oracle_id": "93d575b3-0fff-4fc6-85c6-3a8a9d672d6f",
+  "name": "Nettling Curse",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Nettling Curse",
+      "oracle_fingerprint": "aa1f1a74aaad1e0cc2c9f22fdbe9f2b1",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": [{ "Is": "Attached" }] } },
+            "effects": [{ "LoseLife": { "who": { "ControllerOf": "Triggering" }, "amount": 3 } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{1}{R}",
+            "effects": [
+              { "Rule": { "rule": { "MustAttack": "Attached" }, "duration": "UntilEndOfTurn" } }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Blocks": { "what": [{ "Is": "Attached" }] } },
+            "effects": [{ "LoseLife": { "who": { "ControllerOf": "Dealer" }, "amount": 3 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

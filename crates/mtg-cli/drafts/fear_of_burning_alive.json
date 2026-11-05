@@ -15,7 +15,13 @@
         },
         {
           "Triggered": {
-            "when": { "DealsDamage": { "source": [{ "ControlledBy": "You" }], "to": "Opponents" } },
+            "when": {
+              "DealsDamage": {
+                "source": [{ "ControlledBy": "You" }],
+                "to": "Opponents",
+                "combat": false
+              }
+            },
             "if": {
               "Compare": {
                 "left": { "CardTypes": [{ "In": "Graveyard" }, { "OwnedBy": "You" }] },

@@ -1,0 +1,32 @@
+{
+  "oracle_id": "f589e5ee-399c-4613-b7a2-9ab2866cc830",
+  "name": "Nita, Forum Conciliator",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Nita, Forum Conciliator",
+      "oracle_fingerprint": "7f67f45126f4888998dba244fc2a645c",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "what": [{ "Not": { "OwnedBy": "You" } }], "by": "You" } },
+            "effects": [
+              {
+                "PutCounters": {
+                  "on": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                  "counter": "+1/+1"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 91, "end": 362 }
+          }
+        }
+      ]
+    }
+  ]
+}

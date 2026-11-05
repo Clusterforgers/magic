@@ -1,0 +1,53 @@
+{
+  "oracle_id": "1d078108-f88c-4a32-a28f-bae5182b2f53",
+  "name": "Baird, Argivian Recruiter",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Baird, Argivian Recruiter",
+      "oracle_fingerprint": "8c6f693a746b0ffde1f1ea1bd3bdc4f8",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "if": {
+              "Compare": {
+                "left": {
+                  "Count": [
+                    { "Type": "Creature" },
+                    { "ControlledBy": "You" },
+                    {
+                      "Test": {
+                        "left": { "Stat": { "of": "Candidate", "stat": "Power" } },
+                        "op": "Gt",
+                        "right": { "Stat": { "of": "Candidate", "stat": "BasePower" } }
+                      }
+                    }
+                  ]
+                },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Soldier",
+                      "colors": ["White"],
+                      "types": ["Creature"],
+                      "subtypes": ["Soldier"],
+                      "power": 1,
+                      "toughness": 1
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

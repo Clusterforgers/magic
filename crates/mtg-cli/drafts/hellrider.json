@@ -1,0 +1,20 @@
+{
+  "oracle_id": "f02557b0-f422-48cb-875e-2c814c39967d",
+  "name": "Hellrider",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Hellrider",
+      "oracle_fingerprint": "40e0a15b54830e99975741345c9697db",
+      "abilities": [
+        { "Keyword": "Haste" },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } },
+            "effects": [{ "DealDamage": { "to": "Against", "amount": 1 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

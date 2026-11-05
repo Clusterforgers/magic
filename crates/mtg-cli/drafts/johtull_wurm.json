@@ -1,0 +1,59 @@
+{
+  "oracle_id": "ab5a8242-4e42-43e6-a6ee-eeb0a8db3d11",
+  "name": "Johtull Wurm",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Johtull Wurm",
+      "oracle_fingerprint": "8ebd420183a36749cbb20f761b947bb6",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "BecomesBlocked": { "what": ["This"] } },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [
+                    {
+                      "ModifyPT": {
+                        "power": {
+                          "Times": {
+                            "by": -1,
+                            "of": {
+                              "Times": {
+                                "by": 2,
+                                "of": {
+                                  "Sum": [
+                                    { "Count": [{ "Type": "Creature" }, { "Blocks": "This" }] },
+                                    -1
+                                  ]
+                                }
+                              }
+                            }
+                          }
+                        },
+                        "toughness": {
+                          "Times": {
+                            "by": -1,
+                            "of": {
+                              "Sum": [
+                                { "Count": [{ "Type": "Creature" }, { "Blocks": "This" }] },
+                                -1
+                              ]
+                            }
+                          }
+                        }
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

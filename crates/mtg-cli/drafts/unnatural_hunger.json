@@ -18,7 +18,7 @@
                   "cost": [
                     {
                       "Sacrifice": {
-                        "filter": [{ "Type": "Creature" }, { "Not": { "Is": "Attached" } }]
+                        "filter": [{ "Type": "Creature" }, { "Not": { "Is": "Attached" } }, "Other"]
                       }
                     }
                   ],

@@ -1,0 +1,29 @@
+{
+  "oracle_id": "3e34a3de-ae30-4d7b-88f1-03e2b79c4451",
+  "name": "Call of the Full Moon",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Call of the Full Moon",
+      "oracle_fingerprint": "82f34059cd373bfe1297e22aeb74ec14",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "ModifyPT": { "power": 3, "toughness": 2 } }, { "AddKeyword": "Trample" }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep" } },
+            "if": {
+              "Compare": { "left": { "CastLastTurn": "EachPlayer" }, "op": "Ge", "right": 2 }
+            },
+            "effects": [{ "Sacrifice": { "filter": ["This"] } }]
+          }
+        }
+      ]
+    }
+  ]
+}

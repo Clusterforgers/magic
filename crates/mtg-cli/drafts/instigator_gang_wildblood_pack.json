@@ -1,0 +1,50 @@
+{
+  "oracle_id": "27c2bb87-7e50-4a80-b41c-ff0237a3d648",
+  "name": "Instigator Gang // Wildblood Pack",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Instigator Gang",
+      "oracle_fingerprint": "730815b369a25dab4888dab263b3b8a8",
+      "abilities": [
+        {
+          "Static": {
+            "affected": { "Each": [{ "Type": "Creature" }, "Attacking", { "ControlledBy": "You" }] },
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 0 } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep" } },
+            "if": {
+              "Compare": { "left": { "CastLastTurn": "EachPlayer" }, "op": "Eq", "right": 0 }
+            },
+            "effects": [{ "Transform": { "what": "This" } }]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Wildblood Pack",
+      "oracle_fingerprint": "379aa04b2d88f1040bc79863efe7dda2",
+      "abilities": [
+        { "Keyword": "Trample" },
+        {
+          "Static": {
+            "affected": { "Each": [{ "Type": "Creature" }, "Attacking", { "ControlledBy": "You" }] },
+            "mods": [{ "ModifyPT": { "power": 3, "toughness": 0 } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep" } },
+            "if": {
+              "Compare": { "left": { "CastLastTurn": "EachPlayer" }, "op": "Ge", "right": 2 }
+            },
+            "effects": [{ "Transform": { "what": "This" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

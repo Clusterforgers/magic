@@ -24,7 +24,13 @@
         },
         {
           "Triggered": {
-            "when": { "DealsDamage": { "source": [{ "ControlledBy": "You" }], "to": "Opponents" } },
+            "when": {
+              "DealsDamage": {
+                "source": [{ "ControlledBy": "You" }],
+                "to": "Opponents",
+                "combat": false
+              }
+            },
             "from": "Graveyard",
             "effects": [
               { "Pay": { "cost": "{2}", "paid": [{ "Move": { "what": "This", "to": "Hand" } }] } }

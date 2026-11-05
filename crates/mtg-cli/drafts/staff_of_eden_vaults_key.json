@@ -1,7 +1,7 @@
 {
   "oracle_id": "c4fe63e7-bb4c-4aff-b74f-d385d0128def",
   "name": "Staff of Eden, Vault's Key",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Staff of Eden, Vault's Key",
@@ -37,9 +37,15 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 158, "end": 220 }
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [
+              {
+                "Draw": {
+                  "count": { "Count": [{ "ControlledBy": "You" }, { "Not": { "OwnedBy": "You" } }] }
+                }
+              }
+            ]
           }
         }
       ]

@@ -1,0 +1,22 @@
+{
+  "oracle_id": "723959e1-8356-4fdb-99e2-818df317dc72",
+  "name": "Jabs, Mistress of Mockery",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Jabs, Mistress of Mockery",
+      "oracle_fingerprint": "2f7cedf15908ca2aab9371d473aefb6a",
+      "abilities": [
+        {
+          "Rule": {
+            "rule": {
+              "TriggerAgain": {
+                "source": [{ "ControlledBy": "You" }, { "Not": { "OwnedBy": "You" } }]
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

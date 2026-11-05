@@ -1,14 +1,20 @@
 {
   "oracle_id": "52adc761-1a0a-43d1-a706-41a92bb7880c",
   "name": "Afflicted Deserter // Werewolf Ransacker",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Afflicted Deserter",
       "oracle_fingerprint": "e85f9d225d537639fd16ebf6206903d4",
       "abilities": [
         {
-          "Manual": { "reason": "you apply this clause by hand", "span": { "start": 0, "end": 91 } }
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep" } },
+            "if": {
+              "Compare": { "left": { "CastLastTurn": "EachPlayer" }, "op": "Eq", "right": 0 }
+            },
+            "effects": [{ "Transform": { "what": "This" } }]
+          }
         }
       ]
     },
@@ -57,9 +63,12 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 203, "end": 307 }
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep" } },
+            "if": {
+              "Compare": { "left": { "CastLastTurn": "EachPlayer" }, "op": "Ge", "right": 2 }
+            },
+            "effects": [{ "Transform": { "what": "This" } }]
           }
         }
       ]

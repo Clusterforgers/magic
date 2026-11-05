@@ -1,0 +1,43 @@
+{
+  "oracle_id": "f94cb722-7e46-4569-b474-9654ecf7ec14",
+  "name": "Mondronen Shaman // Tovolar's Magehunter",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mondronen Shaman",
+      "oracle_fingerprint": "e85f9d225d537639fd16ebf6206903d4",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep" } },
+            "if": {
+              "Compare": { "left": { "CastLastTurn": "EachPlayer" }, "op": "Eq", "right": 0 }
+            },
+            "effects": [{ "Transform": { "what": "This" } }]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Tovolar's Magehunter",
+      "oracle_fingerprint": "bd2530b8b81819850a927cf467064916",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "by": "Opponents" } },
+            "effects": [{ "DealDamage": { "to": "Triggering", "amount": 2 } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep" } },
+            "if": {
+              "Compare": { "left": { "CastLastTurn": "EachPlayer" }, "op": "Ge", "right": 2 }
+            },
+            "effects": [{ "Transform": { "what": "This" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

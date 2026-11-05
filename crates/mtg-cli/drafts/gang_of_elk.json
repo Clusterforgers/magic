@@ -1,0 +1,44 @@
+{
+  "oracle_id": "b99d6d51-3ead-4b81-8e0c-f458619ebb24",
+  "name": "Gang of Elk",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Gang of Elk",
+      "oracle_fingerprint": "3219de70fcbe7062bcf358fe568f70b3",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "BecomesBlocked": { "what": ["This"] } },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [
+                    {
+                      "ModifyPT": {
+                        "power": {
+                          "Times": {
+                            "by": 2,
+                            "of": { "Count": [{ "Type": "Creature" }, { "Blocks": "This" }] }
+                          }
+                        },
+                        "toughness": {
+                          "Times": {
+                            "by": 2,
+                            "of": { "Count": [{ "Type": "Creature" }, { "Blocks": "This" }] }
+                          }
+                        }
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

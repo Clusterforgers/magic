@@ -1,0 +1,20 @@
+{
+  "oracle_id": "ccc4f21f-cf8c-40bb-a6d6-1f624320c5b2",
+  "name": "Slitherwisp",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Slitherwisp",
+      "oracle_fingerprint": "029824734783ce46024ae1e16487b2d4",
+      "abilities": [
+        { "Keyword": "Flash" },
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "what": [{ "HasKeyword": "Flash" }, "Other"], "by": "You" } },
+            "effects": [{ "Draw": {} }, { "LoseLife": { "who": "Opponents", "amount": 1 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

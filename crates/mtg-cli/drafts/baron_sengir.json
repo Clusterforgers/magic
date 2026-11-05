@@ -1,0 +1,33 @@
+{
+  "oracle_id": "fc728cd7-2b5b-45f3-896a-a45648bcb61d",
+  "name": "Baron Sengir",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Baron Sengir",
+      "oracle_fingerprint": "4d43cacce2b6e30665ff0da31f4746fb",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Creature" }, { "DamagedBy": "This" }],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "effects": [{ "PutCounters": { "on": "This", "counter": { "Other": "+2/+2" } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "targets": [{ "what": { "Object": [{ "Subtype": "Vampire" }, "Other"] } }],
+            "effects": [{ "Regenerate": { "what": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

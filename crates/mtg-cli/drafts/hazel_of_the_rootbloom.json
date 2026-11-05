@@ -1,0 +1,44 @@
+{
+  "oracle_id": "845b40b1-dc09-44fa-9910-22544c1424ba",
+  "name": "Hazel of the Rootbloom",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Hazel of the Rootbloom",
+      "oracle_fingerprint": "85ac065c2a2acb68ed3d5e621c4b83cc",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [
+              "Tap",
+              { "PayLife": 2 },
+              { "TapPermanents": { "filter": ["Token"], "count": "X" } }
+            ],
+            "effects": [{ "AddMana": { "mana": { "AnyCombination": { "count": "X" } } } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "targets": [{ "what": { "Object": ["Token", { "ControlledBy": "You" }] } }],
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": { "CopyOf": { "of": { "Target": 0 } } },
+                  "count": {
+                    "Sum": [
+                      {
+                        "CountOf": { "of": { "Target": 0 }, "filter": [{ "Subtype": "Squirrel" }] }
+                      },
+                      1
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

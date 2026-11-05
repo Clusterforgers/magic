@@ -1,0 +1,43 @@
+{
+  "oracle_id": "3233af43-7826-4895-b67e-03c6102c2cd5",
+  "name": "Kutzil, Malamet Exemplar",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Kutzil, Malamet Exemplar",
+      "oracle_fingerprint": "9f33773379eeeedb94b2a609fdb8a715",
+      "abilities": [
+        {
+          "Rule": {
+            "rule": { "Cant": { "who": "Opponents", "action": { "Cast": {} } } },
+            "condition": "YourTurn"
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "Batch": {
+                "DealsDamage": {
+                  "source": [
+                    { "Type": "Creature" },
+                    { "ControlledBy": "You" },
+                    {
+                      "Test": {
+                        "left": { "Stat": { "of": "Candidate", "stat": "Power" } },
+                        "op": "Gt",
+                        "right": { "Stat": { "of": "Candidate", "stat": "BasePower" } }
+                      }
+                    }
+                  ],
+                  "to": "EachPlayer",
+                  "combat": true
+                }
+              }
+            },
+            "effects": [{ "Draw": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,7 +1,7 @@
 {
   "oracle_id": "197809b7-1ddb-4329-8d82-7651696538a8",
   "name": "Frenzied Gorespawn",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Frenzied Gorespawn",
@@ -14,16 +14,25 @@
               {
                 "what": {
                   "PerPlayer": { "players": "Opponents", "what": [{ "Type": "Creature" }] }
-                }
+                },
+                "bounds": { "min": 0, "max": 1 }
               }
             ],
             "effects": [{ "Goad": { "what": { "Target": 0 } } }]
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 200, "end": 307 }
+          "Triggered": {
+            "when": { "GroupAttacksAt": { "what": [{ "Type": "Creature" }], "at": "Opponents" } },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "Triggering",
+                  "mods": [{ "AddKeyword": "Menace" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
           }
         }
       ]

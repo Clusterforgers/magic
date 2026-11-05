@@ -1,0 +1,40 @@
+{
+  "oracle_id": "97cb993c-90ae-49ff-8ccb-b4fe317a43ef",
+  "name": "Garna, the Bloodflame",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Garna, the Bloodflame",
+      "oracle_fingerprint": "ed9182fb8aaf81e1f8202cd22f67df50",
+      "abilities": [
+        { "Keyword": "Flash" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Move": {
+                  "what": {
+                    "Each": [
+                      { "Type": "Creature" },
+                      { "OwnedBy": "You" },
+                      "EnteredThisTurn",
+                      { "In": "Graveyard" }
+                    ]
+                  },
+                  "to": "Hand"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Static": {
+            "affected": { "Each": [{ "Type": "Creature" }, "Other", { "ControlledBy": "You" }] },
+            "mods": [{ "AddKeyword": "Haste" }]
+          }
+        }
+      ]
+    }
+  ]
+}

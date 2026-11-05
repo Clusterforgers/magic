@@ -1,0 +1,39 @@
+{
+  "oracle_id": "427ba80d-cfdf-4651-a1eb-89a2125a9217",
+  "name": "Conjured Currency",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Conjured Currency",
+      "oracle_fingerprint": "5446ce689bd8d60ffe7cbca3bbeca199",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "Not": { "ControlledBy": "You" } }, { "Not": { "OwnedBy": "You" } }]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "ExchangeControl": {
+                        "what": ["This", { "Target": 0 }],
+                        "duration": "Forever"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

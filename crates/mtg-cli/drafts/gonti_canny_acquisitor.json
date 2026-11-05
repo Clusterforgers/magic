@@ -1,0 +1,26 @@
+{
+  "oracle_id": "7923ef4a-b1be-4f6a-b17b-4eab101390de",
+  "name": "Gonti, Canny Acquisitor",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Gonti, Canny Acquisitor",
+      "oracle_fingerprint": "448d3fb43a436d36d9e89370d11211ce",
+      "abilities": [
+        {
+          "CostModifier": {
+            "applies_to": ["Spell", { "Not": { "OwnedBy": "You" } }, { "ControlledBy": "You" }],
+            "change": "Reduce",
+            "mana": "{1}"
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 53, "end": 310 }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,74 @@
+{
+  "oracle_id": "863a148c-596a-492b-b68e-3e1cbfcb140f",
+  "name": "Tasha, the Witch Queen",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Tasha, the Witch Queen",
+      "oracle_fingerprint": "5697570d2a46fa6b538c8770cfdd3350",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "what": [{ "Not": { "OwnedBy": "You" } }], "by": "You" } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Demon",
+                      "colors": ["Black"],
+                      "types": ["Creature"],
+                      "subtypes": ["Demon"],
+                      "power": 3,
+                      "toughness": 3
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Plus": 1 },
+            "targets": [
+              {
+                "what": {
+                  "PerPlayer": {
+                    "players": "Opponents",
+                    "what": [
+                      { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] },
+                      { "In": "Graveyard" }
+                    ]
+                  }
+                },
+                "bounds": { "min": 0, "max": 1 }
+              }
+            ],
+            "effects": [
+              { "Draw": {} },
+              { "Exile": { "what": { "Target": 0 }, "as": "exiled" } },
+              { "PutCounters": { "on": { "Bound": "exiled" }, "counter": { "Other": "page" } } }
+            ]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Minus": 3 },
+            "effects": [
+              {
+                "Choose": {
+                  "from": { "Each": [{ "HasCounter": { "Other": "page" } }, { "In": "Exile" }] },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "picked"
+                }
+              },
+              { "CastFromZone": { "what": { "Bound": "picked" }, "free": true } }
+            ]
+          }
+        },
+        { "Rule": { "rule": "CanBeCommander" } }
+      ]
+    }
+  ]
+}

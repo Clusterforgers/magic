@@ -1,0 +1,62 @@
+{
+  "oracle_id": "aa2c0d23-8df8-408b-a8c0-c4cd005f078d",
+  "name": "Catapult Fodder // Catapult Captain",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Catapult Fodder",
+      "oracle_fingerprint": "44ac867bca047ef0f1e103f8f73a2745",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "BeginCombat", "whose": "You" } },
+            "if": {
+              "Compare": {
+                "left": {
+                  "Count": [
+                    { "Type": "Creature" },
+                    { "ControlledBy": "You" },
+                    {
+                      "Test": {
+                        "left": { "Stat": { "of": "Candidate", "stat": "Power" } },
+                        "op": "Lt",
+                        "right": { "Stat": { "of": "Candidate", "stat": "Toughness" } }
+                      }
+                    }
+                  ]
+                },
+                "op": "Ge",
+                "right": 3
+              }
+            },
+            "effects": [{ "Transform": { "what": "This" } }]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Catapult Captain",
+      "oracle_fingerprint": "bb67c08060521fc76d91ce03024513e6",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [
+              { "Mana": "{2}{B}" },
+              "Tap",
+              { "Sacrifice": { "filter": [{ "Type": "Creature" }, "Other"] } }
+            ],
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              {
+                "LoseLife": {
+                  "who": { "Target": 0 },
+                  "amount": { "Stat": { "of": "Paid", "stat": "Toughness" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

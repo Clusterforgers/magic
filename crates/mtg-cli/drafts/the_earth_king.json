@@ -1,0 +1,63 @@
+{
+  "oracle_id": "d5770b0f-4493-42e9-a2d7-0e74a28da4ba",
+  "name": "The Earth King",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "The Earth King",
+      "oracle_fingerprint": "98dde2b3872541acc0e297c38bedc12e",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Bear",
+                      "colors": ["Green"],
+                      "types": ["Creature"],
+                      "subtypes": ["Bear"],
+                      "power": 4,
+                      "toughness": 4
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "GroupAttacks": {
+                "what": [
+                  { "Type": "Creature" },
+                  { "ControlledBy": "You" },
+                  { "Compare": { "stat": "Power", "op": "Ge", "to": 4 } }
+                ]
+              }
+            },
+            "effects": [
+              {
+                "Search": {
+                  "filter": [{ "Type": "Land" }, { "Supertype": "Basic" }],
+                  "count": { "min": 0, "max": "Triggering" },
+                  "as": "found"
+                }
+              },
+              {
+                "Move": {
+                  "what": { "Bound": "found" },
+                  "to": { "Battlefield": { "tapped": true } }
+                }
+              },
+              { "Shuffle": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,132 @@
+{
+  "object": "card",
+  "id": "a7c2ea6e-7d29-4526-b135-9bbb1eed9d4a",
+  "oracle_id": "427ba80d-cfdf-4651-a1eb-89a2125a9217",
+  "multiverse_ids": [
+    253606
+  ],
+  "mtgo_id": 46471,
+  "mtgo_foil_id": 46472,
+  "tcgplayer_id": 66664,
+  "cardmarket_id": 258531,
+  "name": "Conjured Currency",
+  "lang": "en",
+  "released_at": "2012-10-05",
+  "uri": "https://api.scryfall.com/cards/a7c2ea6e-7d29-4526-b135-9bbb1eed9d4a",
+  "scryfall_uri": "https://scryfall.com/card/rtr/33/conjured-currency?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T10:59:30Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/a/7/a7c2ea6e-7d29-4526-b135-9bbb1eed9d4a.jpg?1783940370",
+    "normal": "https://cards.scryfall.io/normal/front/a/7/a7c2ea6e-7d29-4526-b135-9bbb1eed9d4a.jpg?1783940370",
+    "large": "https://cards.scryfall.io/large/front/a/7/a7c2ea6e-7d29-4526-b135-9bbb1eed9d4a.jpg?1783940370",
+    "png": "https://cards.scryfall.io/png/front/a/7/a7c2ea6e-7d29-4526-b135-9bbb1eed9d4a.png?1783940370",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/a/7/a7c2ea6e-7d29-4526-b135-9bbb1eed9d4a.jpg?1783940370",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/a/7/a7c2ea6e-7d29-4526-b135-9bbb1eed9d4a.jpg?1783940370",
+    "thumb": "https://cards.scryfall.io/thumb/front/a/7/a7c2ea6e-7d29-4526-b135-9bbb1eed9d4a.webp?1783940370",
+    "grid": "https://cards.scryfall.io/grid/front/a/7/a7c2ea6e-7d29-4526-b135-9bbb1eed9d4a.webp?1783940370",
+    "display": "https://cards.scryfall.io/display/front/a/7/a7c2ea6e-7d29-4526-b135-9bbb1eed9d4a.webp?1783940370",
+    "art": "https://cards.scryfall.io/art/front/a/7/a7c2ea6e-7d29-4526-b135-9bbb1eed9d4a.webp?1783940370",
+    "crop": "https://cards.scryfall.io/crop/front/a/7/a7c2ea6e-7d29-4526-b135-9bbb1eed9d4a.webp?1783940370",
+    "jpeg": "https://cards.scryfall.io/normal/front/a/7/a7c2ea6e-7d29-4526-b135-9bbb1eed9d4a.jpg?1783940370"
+  },
+  "mana_cost": "{5}{U}",
+  "cmc": 6.0,
+  "type_line": "Enchantment",
+  "oracle_text": "At the beginning of your upkeep, you may exchange control of this enchantment and target permanent you neither own nor control.",
+  "colors": [
+    "U"
+  ],
+  "color_identity": [
+    "U"
+  ],
+  "keywords": [],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "80b2374d-c5f1-403e-9772-f6c806fd275e",
+  "set": "rtr",
+  "set_name": "Return to Ravnica",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/80b2374d-c5f1-403e-9772-f6c806fd275e",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Artr&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/rtr?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/a7c2ea6e-7d29-4526-b135-9bbb1eed9d4a/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A427ba80d-cfdf-4651-a1eb-89a2125a9217&unique=prints",
+  "collector_number": "33",
+  "digital": false,
+  "rarity": "rare",
+  "flavor_text": "A bargain in Keyhole Downs is always too good to be true.",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Steve Argyle",
+  "artist_ids": [
+    "a44ddda4-5331-4f83-aac9-3e00ed36bd7b"
+  ],
+  "illustration_id": "9a3b5a76-6933-4ff6-abfd-1568ff4923c0",
+  "border_color": "black",
+  "frame": "2003",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 18504,
+  "prices": {
+    "usd": "0.26",
+    "usd_foil": "0.51",
+    "usd_etched": null,
+    "eur": "0.27",
+    "eur_foil": "0.49",
+    "tix": "0.02"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=253606&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DConjured%2BCurrency",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DConjured%2BCurrency",
+    "edhrec": "https://edhrec.com/route/?cc=Conjured+Currency"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F66664%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=258531&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/46471?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

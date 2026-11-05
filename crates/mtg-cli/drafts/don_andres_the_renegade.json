@@ -1,0 +1,43 @@
+{
+  "oracle_id": "060ef981-db05-436b-b1c1-f55071375344",
+  "name": "Don Andres, the Renegade",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Don Andres, the Renegade",
+      "oracle_fingerprint": "e93b7d5de3822f651162d1be8fd48405",
+      "abilities": [
+        {
+          "Static": {
+            "affected": {
+              "Each": [
+                { "Type": "Creature" },
+                { "Not": { "OwnedBy": "You" } },
+                { "ControlledBy": "You" }
+              ]
+            },
+            "mods": [
+              { "ModifyPT": { "power": 2, "toughness": 2 } },
+              { "AddKeyword": "Menace" },
+              { "AddKeyword": "Deathtouch" },
+              { "AddSubtype": "Pirate" }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "SpellCast": {
+                "what": [{ "Not": { "OwnedBy": "You" } }, { "Not": { "Type": "Creature" } }],
+                "by": "You"
+              }
+            },
+            "effects": [
+              { "CreateToken": { "token": { "Named": "treasure" }, "count": 2, "tapped": true } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

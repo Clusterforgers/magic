@@ -1,7 +1,7 @@
 {
   "oracle_id": "64720167-b88b-47f7-bfc1-d5e005c9fd68",
   "name": "Geier Reach Bandit // Vildin-Pack Alpha",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Geier Reach Bandit",
@@ -9,7 +9,13 @@
       "abilities": [
         { "Keyword": "Haste" },
         {
-          "Manual": { "reason": "you apply this clause by hand", "span": { "start": 6, "end": 97 } }
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep" } },
+            "if": {
+              "Compare": { "left": { "CastLastTurn": "EachPlayer" }, "op": "Eq", "right": 0 }
+            },
+            "effects": [{ "Transform": { "what": "This" } }]
+          }
         }
       ]
     },
@@ -29,9 +35,12 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 62, "end": 166 }
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep" } },
+            "if": {
+              "Compare": { "left": { "CastLastTurn": "EachPlayer" }, "op": "Ge", "right": 2 }
+            },
+            "effects": [{ "Transform": { "what": "This" } }]
           }
         }
       ]

@@ -1,0 +1,48 @@
+{
+  "oracle_id": "1c69a41e-122a-42c1-98d4-56035d68cfc8",
+  "name": "Unquenchable Fury",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Unquenchable Fury",
+      "oracle_fingerprint": "558fc59251ae732800f3ba0ea1fafd70",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [
+              {
+                "GrantAbility": {
+                  "Triggered": {
+                    "when": { "Attacks": { "what": ["This"] } },
+                    "effects": [
+                      {
+                        "DealDamage": {
+                          "to": "Against",
+                          "amount": { "Count": [{ "In": "Hand" }, { "OwnedBy": "Defending" }] }
+                        }
+                      }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": ["This", { "OwnedBy": "You" }],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "effects": [{ "Move": { "what": "Triggering", "to": "Hand" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

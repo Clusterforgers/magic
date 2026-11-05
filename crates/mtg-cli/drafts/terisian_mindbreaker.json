@@ -1,0 +1,32 @@
+{
+  "oracle_id": "d16fcb45-7fe7-4640-a325-badb64cadd62",
+  "name": "Terisian Mindbreaker",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Terisian Mindbreaker",
+      "oracle_fingerprint": "254535cc8d80233b00dd75ea5a2a6de2",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [
+              {
+                "Mill": {
+                  "who": "Defending",
+                  "count": {
+                    "Half": {
+                      "of": { "Count": [{ "In": "Library" }, { "OwnedBy": "Defending" }] },
+                      "up": true
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Unearth": "{1}{U}{U}{U}" } }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,39 @@
+{
+  "oracle_id": "f6634a84-a9ce-4bbd-bc2c-3f9179b7f16a",
+  "name": "Village Messenger // Moonrise Intruder",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Village Messenger",
+      "oracle_fingerprint": "4a1d18e3a64e1103d6d5d2cb7d853669",
+      "abilities": [
+        { "Keyword": "Haste" },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep" } },
+            "if": {
+              "Compare": { "left": { "CastLastTurn": "EachPlayer" }, "op": "Eq", "right": 0 }
+            },
+            "effects": [{ "Transform": { "what": "This" } }]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Moonrise Intruder",
+      "oracle_fingerprint": "b5973aca2456067e4cda86856e5b1390",
+      "abilities": [
+        { "Keyword": "Menace" },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep" } },
+            "if": {
+              "Compare": { "left": { "CastLastTurn": "EachPlayer" }, "op": "Ge", "right": 2 }
+            },
+            "effects": [{ "Transform": { "what": "This" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

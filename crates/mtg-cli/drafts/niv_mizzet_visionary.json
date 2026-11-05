@@ -11,7 +11,13 @@
         { "Rule": { "rule": { "NoMaxHandSize": "You" } } },
         {
           "Triggered": {
-            "when": { "DealsDamage": { "source": [{ "ControlledBy": "You" }], "to": "Opponents" } },
+            "when": {
+              "DealsDamage": {
+                "source": [{ "ControlledBy": "You" }],
+                "to": "Opponents",
+                "combat": false
+              }
+            },
             "effects": [{ "Draw": { "count": "Triggering" } }]
           }
         }

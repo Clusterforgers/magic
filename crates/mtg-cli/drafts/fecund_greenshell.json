@@ -1,7 +1,7 @@
 {
   "oracle_id": "a090be5a-b0f2-4c17-8f7d-e742f9de8f6b",
   "name": "Fecund Greenshell",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Fecund Greenshell",
@@ -22,9 +22,56 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 81, "end": 318 }
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [
+                  {
+                    "AnyOf": [
+                      "This",
+                      {
+                        "Not": {
+                          "AnyOf": [
+                            { "Not": { "Type": "Creature" } },
+                            { "Not": "Other" },
+                            {
+                              "Not": {
+                                "Test": {
+                                  "left": { "Stat": { "of": "Candidate", "stat": "Power" } },
+                                  "op": "Lt",
+                                  "right": { "Stat": { "of": "Candidate", "stat": "Toughness" } }
+                                }
+                              }
+                            },
+                            { "Not": { "ControlledBy": "You" } }
+                          ]
+                        }
+                      }
+                    ]
+                  }
+                ],
+                "to": "Battlefield"
+              }
+            },
+            "effects": [
+              { "LookAtTop": { "as": "top" } },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [{ "In": "Library" }, { "Is": { "Bound": "top" } }, { "Type": "Land" }]
+                  },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "kept2"
+                }
+              },
+              {
+                "Move": {
+                  "what": { "Bound": "kept2" },
+                  "to": { "Battlefield": { "tapped": true } }
+                }
+              },
+              { "Move": { "what": { "Bound": "top" }, "to": "Hand" } }
+            ]
           }
         }
       ]

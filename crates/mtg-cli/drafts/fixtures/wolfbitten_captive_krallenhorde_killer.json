@@ -1,0 +1,198 @@
+{
+  "object": "card",
+  "id": "1303e02a-ef69-4817-bca5-02c74774b811",
+  "oracle_id": "7f59252f-3a37-4a22-938c-001f3208bd94",
+  "multiverse_ids": [
+    253426,
+    253431
+  ],
+  "mtgo_id": 43299,
+  "mtgo_foil_id": 43300,
+  "tcgplayer_id": 57631,
+  "cardmarket_id": 252496,
+  "name": "Wolfbitten Captive // Krallenhorde Killer",
+  "lang": "en",
+  "released_at": "2012-02-03",
+  "uri": "https://api.scryfall.com/cards/1303e02a-ef69-4817-bca5-02c74774b811",
+  "scryfall_uri": "https://scryfall.com/card/dka/133/wolfbitten-captive-krallenhorde-killer?utm_source=api",
+  "layout": "transform",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T11:06:45Z",
+  "cmc": 1.0,
+  "type_line": "Creature — Human Werewolf // Creature — Werewolf",
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [
+    "Transform"
+  ],
+  "card_faces": [
+    {
+      "object": "card_face",
+      "name": "Wolfbitten Captive",
+      "mana_cost": "{G}",
+      "type_line": "Creature — Human Werewolf",
+      "oracle_text": "{1}{G}: This creature gets +2/+2 until end of turn. Activate only once each turn.\nAt the beginning of each upkeep, if no spells were cast last turn, transform this creature.",
+      "colors": [
+        "G"
+      ],
+      "power": "1",
+      "toughness": "1",
+      "artist": "Zoltan Boros",
+      "artist_id": "1885e6cb-c827-4896-994e-3d0a027d602f",
+      "illustration_id": "48b0bc15-59af-4537-86ea-3b2f4536239a",
+      "image_uris": {
+        "small": "https://cards.scryfall.io/small/front/1/3/1303e02a-ef69-4817-bca5-02c74774b811.jpg?1783940805",
+        "normal": "https://cards.scryfall.io/normal/front/1/3/1303e02a-ef69-4817-bca5-02c74774b811.jpg?1783940805",
+        "large": "https://cards.scryfall.io/large/front/1/3/1303e02a-ef69-4817-bca5-02c74774b811.jpg?1783940805",
+        "png": "https://cards.scryfall.io/png/front/1/3/1303e02a-ef69-4817-bca5-02c74774b811.png?1783940805",
+        "art_crop": "https://cards.scryfall.io/art_crop/front/1/3/1303e02a-ef69-4817-bca5-02c74774b811.jpg?1783940805",
+        "border_crop": "https://cards.scryfall.io/border_crop/front/1/3/1303e02a-ef69-4817-bca5-02c74774b811.jpg?1783940805",
+        "thumb": "https://cards.scryfall.io/thumb/front/1/3/1303e02a-ef69-4817-bca5-02c74774b811.webp?1783940805",
+        "grid": "https://cards.scryfall.io/grid/front/1/3/1303e02a-ef69-4817-bca5-02c74774b811.webp?1783940805",
+        "display": "https://cards.scryfall.io/display/front/1/3/1303e02a-ef69-4817-bca5-02c74774b811.webp?1783940805",
+        "art": "https://cards.scryfall.io/art/front/1/3/1303e02a-ef69-4817-bca5-02c74774b811.webp?1783940805",
+        "crop": "https://cards.scryfall.io/crop/front/1/3/1303e02a-ef69-4817-bca5-02c74774b811.webp?1783940805",
+        "jpeg": "https://cards.scryfall.io/normal/front/1/3/1303e02a-ef69-4817-bca5-02c74774b811.jpg?1783940805"
+      }
+    },
+    {
+      "object": "card_face",
+      "name": "Krallenhorde Killer",
+      "mana_cost": "",
+      "type_line": "Creature — Werewolf",
+      "oracle_text": "{3}{G}: This creature gets +4/+4 until end of turn. Activate only once each turn.\nAt the beginning of each upkeep, if a player cast two or more spells last turn, transform this creature.",
+      "colors": [
+        "G"
+      ],
+      "color_indicator": [
+        "G"
+      ],
+      "power": "2",
+      "toughness": "2",
+      "artist": "Zoltan Boros",
+      "artist_id": "1885e6cb-c827-4896-994e-3d0a027d602f",
+      "illustration_id": "f2cc14d5-c25b-44ee-87a3-7989e47c1fda",
+      "image_uris": {
+        "small": "https://cards.scryfall.io/small/back/1/3/1303e02a-ef69-4817-bca5-02c74774b811.jpg?1783940805",
+        "normal": "https://cards.scryfall.io/normal/back/1/3/1303e02a-ef69-4817-bca5-02c74774b811.jpg?1783940805",
+        "large": "https://cards.scryfall.io/large/back/1/3/1303e02a-ef69-4817-bca5-02c74774b811.jpg?1783940805",
+        "png": "https://cards.scryfall.io/png/back/1/3/1303e02a-ef69-4817-bca5-02c74774b811.png?1783940805",
+        "art_crop": "https://cards.scryfall.io/art_crop/back/1/3/1303e02a-ef69-4817-bca5-02c74774b811.jpg?1783940805",
+        "border_crop": "https://cards.scryfall.io/border_crop/back/1/3/1303e02a-ef69-4817-bca5-02c74774b811.jpg?1783940805",
+        "thumb": "https://cards.scryfall.io/thumb/back/1/3/1303e02a-ef69-4817-bca5-02c74774b811.webp?1783940805",
+        "grid": "https://cards.scryfall.io/grid/back/1/3/1303e02a-ef69-4817-bca5-02c74774b811.webp?1783940805",
+        "display": "https://cards.scryfall.io/display/back/1/3/1303e02a-ef69-4817-bca5-02c74774b811.webp?1783940805",
+        "art": "https://cards.scryfall.io/art/back/1/3/1303e02a-ef69-4817-bca5-02c74774b811.webp?1783940805",
+        "crop": "https://cards.scryfall.io/crop/back/1/3/1303e02a-ef69-4817-bca5-02c74774b811.webp?1783940805",
+        "jpeg": "https://cards.scryfall.io/normal/back/1/3/1303e02a-ef69-4817-bca5-02c74774b811.jpg?1783940805"
+      }
+    }
+  ],
+  "all_parts": [
+    {
+      "object": "related_card",
+      "id": "825c61e7-bf33-45ea-af78-97ab3bc96753",
+      "component": "combo_piece",
+      "name": "Dark Ascension Checklist",
+      "type_line": "Card",
+      "uri": "https://api.scryfall.com/cards/825c61e7-bf33-45ea-af78-97ab3bc96753"
+    },
+    {
+      "object": "related_card",
+      "id": "1303e02a-ef69-4817-bca5-02c74774b811",
+      "component": "combo_piece",
+      "name": "Wolfbitten Captive // Krallenhorde Killer",
+      "type_line": "Creature — Human Werewolf // Creature — Werewolf",
+      "uri": "https://api.scryfall.com/cards/1303e02a-ef69-4817-bca5-02c74774b811"
+    }
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "8052750a-aaf2-46fc-b46d-633f14124017",
+  "set": "dka",
+  "set_name": "Dark Ascension",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/8052750a-aaf2-46fc-b46d-633f14124017",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Adka&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/dka?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/1303e02a-ef69-4817-bca5-02c74774b811/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A7f59252f-3a37-4a22-938c-001f3208bd94&unique=prints",
+  "collector_number": "133",
+  "digital": false,
+  "rarity": "rare",
+  "artist": "Zoltan Boros",
+  "artist_ids": [
+    "1885e6cb-c827-4896-994e-3d0a027d602f"
+  ],
+  "border_color": "black",
+  "frame": "2003",
+  "frame_effects": [
+    "sunmoondfc"
+  ],
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 18437,
+  "penny_rank": 7395,
+  "prices": {
+    "usd": "0.33",
+    "usd_foil": "2.06",
+    "usd_etched": null,
+    "eur": "0.41",
+    "eur_foil": "1.94",
+    "tix": "0.02"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=253426&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DWolfbitten%2BCaptive%2B%252F%252F%2BKrallenhorde%2BKiller",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DWolfbitten%2BCaptive%2B%252F%252F%2BKrallenhorde%2BKiller",
+    "edhrec": "https://edhrec.com/route/?cc=Wolfbitten+Captive"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F57631%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=252496&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/43299?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

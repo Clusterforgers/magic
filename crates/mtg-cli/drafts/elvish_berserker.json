@@ -1,0 +1,34 @@
+{
+  "oracle_id": "c9046281-dedb-4246-8e5d-7786fe0c41c7",
+  "name": "Elvish Berserker",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Elvish Berserker",
+      "oracle_fingerprint": "fc9044f5d406523a8fb22cdef5cbde42",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "BecomesBlocked": { "what": ["This"] } },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [
+                    {
+                      "ModifyPT": {
+                        "power": { "Count": [{ "Type": "Creature" }, { "Blocks": "This" }] },
+                        "toughness": { "Count": [{ "Type": "Creature" }, { "Blocks": "This" }] }
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

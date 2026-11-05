@@ -1,0 +1,57 @@
+{
+  "oracle_id": "85aedc9f-df35-49bc-88c8-23efda9a4b1b",
+  "name": "Frost Augur",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Frost Augur",
+      "oracle_fingerprint": "2eb51c7b87a0e070fa4a988364d9a856",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{S}" }, "Tap"],
+            "effects": [
+              { "LookAtTop": { "as": "top" } },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "In": "Library" },
+                      { "Is": { "Bound": "top" } },
+                      { "Supertype": "Snow" }
+                    ]
+                  },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "revealed2"
+                }
+              },
+              { "Reveal": { "what": { "Bound": "revealed2" } } },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Bound": "revealed2" },
+                      "selector": [{ "Supertype": "Snow" }],
+                      "op": "Eq",
+                      "right": 1
+                    }
+                  },
+                  "then": [
+                    {
+                      "Move": {
+                        "what": {
+                          "Each": [{ "In": "Library" }, { "OwnedBy": "You" }, "TopOfLibrary"]
+                        },
+                        "to": "Hand"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

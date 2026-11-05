@@ -1,0 +1,34 @@
+{
+  "oracle_id": "1b1a0f35-3126-4b88-90aa-c56e67850a9d",
+  "name": "Ferocity",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ferocity",
+      "oracle_fingerprint": "d1ebac2bef2d7f56de43c0c71cacfc0a",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Triggered": {
+            "when": { "BecomesBlocked": { "what": [{ "Is": "Attached" }] } },
+            "effects": [
+              {
+                "May": {
+                  "effects": [{ "PutCounters": { "on": "Triggering", "counter": "+1/+1" } }]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Blocks": { "what": [{ "Is": "Attached" }] } },
+            "effects": [
+              { "May": { "effects": [{ "PutCounters": { "on": "Dealer", "counter": "+1/+1" } }] } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

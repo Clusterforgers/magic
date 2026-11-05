@@ -1,0 +1,29 @@
+{
+  "oracle_id": "81d72511-88b4-45ec-a5a9-e722caf55577",
+  "name": "Mystical Teachings",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mystical Teachings",
+      "oracle_fingerprint": "41832c43f1934d2b2f4735da32aec8db",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Search": {
+                  "filter": [{ "AnyOf": [{ "Type": "Instant" }, { "HasKeyword": "Flash" }] }],
+                  "reveal": true,
+                  "as": "found"
+                }
+              },
+              { "Move": { "what": { "Bound": "found" }, "to": "Hand" } },
+              { "Shuffle": {} }
+            ]
+          }
+        },
+        { "Keyword": { "Flashback": "{5}{B}" } }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,55 @@
+{
+  "oracle_id": "a29b2e93-d872-4be8-8b15-57f57282ed45",
+  "name": "Labyrinth Raptor",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Labyrinth Raptor",
+      "oracle_fingerprint": "9e96b991896011752bb6c864ba61a7f1",
+      "abilities": [
+        { "Keyword": "Menace" },
+        {
+          "Triggered": {
+            "when": {
+              "BecomesBlocked": {
+                "what": [
+                  { "Type": "Creature" },
+                  { "ControlledBy": "You" },
+                  { "HasKeyword": "Menace" }
+                ]
+              }
+            },
+            "effects": [
+              {
+                "Sacrifice": {
+                  "who": "Defending",
+                  "filter": [{ "Type": "Creature" }, { "Blocks": "Triggering" }]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{B}{R}",
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": {
+                    "Each": [
+                      { "Type": "Creature" },
+                      { "ControlledBy": "You" },
+                      { "HasKeyword": "Menace" }
+                    ]
+                  },
+                  "mods": [{ "ModifyPT": { "power": 1, "toughness": 0 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

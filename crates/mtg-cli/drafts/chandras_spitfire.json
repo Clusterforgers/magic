@@ -10,7 +10,7 @@
         { "Keyword": "Flying" },
         {
           "Triggered": {
-            "when": { "DealsDamage": { "source": [], "to": "Opponents" } },
+            "when": { "DealsDamage": { "source": [], "to": "Opponents", "combat": false } },
             "effects": [
               {
                 "Continuous": {

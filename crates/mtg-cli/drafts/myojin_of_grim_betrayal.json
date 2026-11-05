@@ -1,7 +1,7 @@
 {
   "oracle_id": "896fc91a-1f57-45e2-b135-37bc9c2c80a7",
   "name": "Myojin of Grim Betrayal",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Myojin of Grim Betrayal",
@@ -24,9 +24,18 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 99, "end": 287 }
+          "Activated": {
+            "cost": [{ "RemoveCounters": { "counter": { "Other": "indestructible" } } }],
+            "effects": [
+              {
+                "Move": {
+                  "what": {
+                    "Each": [{ "Type": "Creature" }, "EnteredThisTurn", { "In": "Graveyard" }]
+                  },
+                  "to": { "Battlefield": { "under": "You" } }
+                }
+              }
+            ]
           }
         }
       ]

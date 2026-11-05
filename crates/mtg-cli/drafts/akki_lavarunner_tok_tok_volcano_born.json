@@ -1,0 +1,33 @@
+{
+  "oracle_id": "47795817-73e5-4af6-bd1e-d69b193e8e9e",
+  "name": "Akki Lavarunner // Tok-Tok, Volcano Born",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Akki Lavarunner",
+      "oracle_fingerprint": "50d601b154afb4e82b2b730a9ce1b14a",
+      "abilities": [
+        { "Keyword": "Haste" },
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": ["This"], "to": "Opponents" } },
+            "effects": [{ "Flip": { "what": "This" } }]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Tok-Tok, Volcano Born",
+      "oracle_fingerprint": "07b3321699bc8dab5275512051995e1d",
+      "abilities": [
+        { "Keyword": { "Protection": [{ "Color": "Red" }] } },
+        {
+          "Replacement": {
+            "when": { "Damage": { "to": "EachPlayer", "source": [{ "Color": "Red" }] } },
+            "by": { "Add": 1 }
+          }
+        }
+      ]
+    }
+  ]
+}

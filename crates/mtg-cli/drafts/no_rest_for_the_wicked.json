@@ -1,0 +1,33 @@
+{
+  "oracle_id": "d03fd358-ff3f-45ab-9601-07dbb535cb51",
+  "name": "No Rest for the Wicked",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "No Rest for the Wicked",
+      "oracle_fingerprint": "24b4355ee1cca9d41f33906144a19bde",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["SacrificeSelf"],
+            "effects": [
+              {
+                "Move": {
+                  "what": {
+                    "Each": [
+                      { "Type": "Creature" },
+                      { "OwnedBy": "You" },
+                      { "ArrivedFrom": "Battlefield" },
+                      { "In": "Graveyard" }
+                    ]
+                  },
+                  "to": "Hand"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

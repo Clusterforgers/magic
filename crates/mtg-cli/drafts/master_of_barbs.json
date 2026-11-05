@@ -10,7 +10,9 @@
         { "Keyword": "Menace" },
         {
           "Triggered": {
-            "when": { "Batch": { "DealsDamage": { "source": [], "to": "Opponents" } } },
+            "when": {
+              "Batch": { "DealsDamage": { "source": [], "to": "Opponents", "combat": false } }
+            },
             "effects": [
               {
                 "Continuous": {

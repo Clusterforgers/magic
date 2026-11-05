@@ -1,0 +1,31 @@
+{
+  "oracle_id": "bd7c5a8b-cf62-41e1-a664-b16e3e5d142b",
+  "name": "Laughing Jasper Flint",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Laughing Jasper Flint",
+      "oracle_fingerprint": "b8f439a0b95136bc19a93a9a7b662bff",
+      "abilities": [
+        {
+          "Static": {
+            "affected": {
+              "Each": [
+                { "Type": "Creature" },
+                { "ControlledBy": "You" },
+                { "Not": { "OwnedBy": "You" } }
+              ]
+            },
+            "mods": [{ "AddSubtype": "Mercenary" }]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 86, "end": 335 }
+          }
+        }
+      ]
+    }
+  ]
+}

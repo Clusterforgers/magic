@@ -1,0 +1,19 @@
+{
+  "oracle_id": "c1612eef-5059-46fd-a5fd-c8ebf6779a6e",
+  "name": "Sphere of Duty",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sphere of Duty",
+      "oracle_fingerprint": "fcc60b80265874708018b23fad0e7921",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Damage": { "to": "You", "source": [{ "Color": "Green" }] } },
+            "by": { "PreventUpTo": 2 }
+          }
+        }
+      ]
+    }
+  ]
+}

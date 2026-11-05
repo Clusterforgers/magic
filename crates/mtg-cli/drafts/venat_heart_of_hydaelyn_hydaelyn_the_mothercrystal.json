@@ -1,0 +1,69 @@
+{
+  "oracle_id": "2e5adbcf-6b5c-4ded-a339-8757040ef878",
+  "name": "Venat, Heart of Hydaelyn // Hydaelyn, the Mothercrystal",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Venat, Heart of Hydaelyn",
+      "oracle_fingerprint": "4e4c96ef3f1e545beda64adb25927192",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "what": [{ "Supertype": "Legendary" }], "by": "You" } },
+            "limit": "OncePerTurn",
+            "effects": [{ "Draw": {} }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{7}" }, "Tap"],
+            "timing": "Sorcery",
+            "targets": [{ "what": { "Object": [{ "Not": { "Type": "Land" } }] } }],
+            "effects": [
+              { "Exile": { "what": { "Target": 0 } } },
+              { "Transform": { "what": "This" } }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Hydaelyn, the Mothercrystal",
+      "oracle_fingerprint": "042d6d7b4c0a923e452f6464abfed9db",
+      "abilities": [
+        { "Keyword": "Indestructible" },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "BeginCombat", "whose": "You" } },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, "Other", { "ControlledBy": "You" }] } }
+            ],
+            "effects": [
+              { "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1" } },
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "AddKeyword": "Indestructible" }],
+                  "duration": "UntilYourNextTurn"
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Target": 0 },
+                      "selector": [{ "Supertype": "Legendary" }],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [{ "Draw": {} }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

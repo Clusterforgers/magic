@@ -1,0 +1,38 @@
+{
+  "oracle_id": "c05c5375-d0d7-4cf2-92e6-76f86cd0febf",
+  "name": "Gatstaf Shepherd // Gatstaf Howler",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Gatstaf Shepherd",
+      "oracle_fingerprint": "e85f9d225d537639fd16ebf6206903d4",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep" } },
+            "if": {
+              "Compare": { "left": { "CastLastTurn": "EachPlayer" }, "op": "Eq", "right": 0 }
+            },
+            "effects": [{ "Transform": { "what": "This" } }]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Gatstaf Howler",
+      "oracle_fingerprint": "23520abebf0c5ee5c56bb7c6e9cf0e95",
+      "abilities": [
+        { "Keyword": "Intimidate" },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep" } },
+            "if": {
+              "Compare": { "left": { "CastLastTurn": "EachPlayer" }, "op": "Ge", "right": 2 }
+            },
+            "effects": [{ "Transform": { "what": "This" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

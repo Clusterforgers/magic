@@ -1,0 +1,32 @@
+{
+  "oracle_id": "5ea5d171-a7b8-4269-9405-d2f4ccf0cbcb",
+  "name": "Screaming Swarm",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Screaming Swarm",
+      "oracle_fingerprint": "255159b92f9db26a111d15611a6136a7",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": {
+              "GroupAttacks": { "what": [{ "Type": "Creature" }, { "ControlledBy": "You" }] }
+            },
+            "targets": [{ "what": "Player" }],
+            "effects": [{ "Mill": { "who": { "Target": 0 }, "count": "Triggering" } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{2}{U}",
+            "from": "Graveyard",
+            "effects": [
+              { "Move": { "what": "This", "to": { "Library": { "place": { "Below": 1 } } } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

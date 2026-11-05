@@ -1,0 +1,27 @@
+{
+  "oracle_id": "b01465ea-cab9-4a59-81a6-8db4648b89f4",
+  "name": "Last One Standing",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Last One Standing",
+      "oracle_fingerprint": "39f16ee73cbc9f6f14636d9a388723c0",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "ChooseAtRandom": { "from": { "Each": [{ "Type": "Creature" }] }, "as": "card" } },
+              {
+                "Destroy": {
+                  "what": {
+                    "Each": [{ "Type": "Creature" }, { "Not": { "Is": { "Bound": "card" } } }]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

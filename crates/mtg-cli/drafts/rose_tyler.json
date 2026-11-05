@@ -1,7 +1,7 @@
 {
   "oracle_id": "2f56de72-80d7-48c6-9b57-84fbd252c699",
   "name": "Rose Tyler",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Rose Tyler",
@@ -21,9 +21,28 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 51, "end": 211 }
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [
+              {
+                "PutCounters": {
+                  "on": "This",
+                  "counter": { "Other": "time" },
+                  "count": {
+                    "Sum": [
+                      { "Count": ["Suspended", { "OwnedBy": "You" }, { "In": "Exile" }] },
+                      {
+                        "Count": [
+                          "Other",
+                          { "ControlledBy": "You" },
+                          { "HasCounter": { "Other": "time" } }
+                        ]
+                      }
+                    ]
+                  }
+                }
+              }
+            ]
           }
         },
         { "Keyword": "DoctorsCompanion" }

@@ -1,0 +1,41 @@
+{
+  "oracle_id": "c912a43b-8994-434e-84c0-f4cf58abbd42",
+  "name": "Mechanized Warfare",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mechanized Warfare",
+      "oracle_fingerprint": "a0f5c4896fa1c189963c5ff2715ccc04",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": {
+              "Damage": {
+                "to": "Opponents",
+                "source": [
+                  { "AnyOf": [{ "Color": "Red" }, { "Type": "Artifact" }] },
+                  { "ControlledBy": "You" }
+                ]
+              }
+            },
+            "by": { "Add": 1 }
+          }
+        },
+        {
+          "Replacement": {
+            "when": {
+              "Damage": {
+                "to": { "Each": [{ "ControlledBy": "Opponents" }] },
+                "source": [
+                  { "AnyOf": [{ "Color": "Red" }, { "Type": "Artifact" }] },
+                  { "ControlledBy": "You" }
+                ]
+              }
+            },
+            "by": { "Add": 1 }
+          }
+        }
+      ]
+    }
+  ]
+}

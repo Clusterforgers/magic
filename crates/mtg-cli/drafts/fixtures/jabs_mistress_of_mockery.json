@@ -1,0 +1,131 @@
+{
+  "object": "card",
+  "id": "97ef5bee-81d8-4dc2-9ad8-7b6a8fac5026",
+  "oracle_id": "723959e1-8356-4fdb-99e2-818df317dc72",
+  "multiverse_ids": [],
+  "tcgplayer_id": 709780,
+  "name": "Jabs, Mistress of Mockery",
+  "lang": "en",
+  "released_at": "2026-10-19",
+  "uri": "https://api.scryfall.com/cards/97ef5bee-81d8-4dc2-9ad8-7b6a8fac5026",
+  "scryfall_uri": "https://scryfall.com/card/mbc/23/jabs-mistress-of-mockery?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-08-03T12:09:00Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/9/7/97ef5bee-81d8-4dc2-9ad8-7b6a8fac5026.jpg?1785758940",
+    "normal": "https://cards.scryfall.io/normal/front/9/7/97ef5bee-81d8-4dc2-9ad8-7b6a8fac5026.jpg?1785758940",
+    "large": "https://cards.scryfall.io/large/front/9/7/97ef5bee-81d8-4dc2-9ad8-7b6a8fac5026.jpg?1785758940",
+    "png": "https://cards.scryfall.io/png/front/9/7/97ef5bee-81d8-4dc2-9ad8-7b6a8fac5026.png?1785758940",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/9/7/97ef5bee-81d8-4dc2-9ad8-7b6a8fac5026.jpg?1785758940",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/9/7/97ef5bee-81d8-4dc2-9ad8-7b6a8fac5026.jpg?1785758940",
+    "thumb": "https://cards.scryfall.io/thumb/front/9/7/97ef5bee-81d8-4dc2-9ad8-7b6a8fac5026.webp?1785758940",
+    "grid": "https://cards.scryfall.io/grid/front/9/7/97ef5bee-81d8-4dc2-9ad8-7b6a8fac5026.webp?1785758940",
+    "display": "https://cards.scryfall.io/display/front/9/7/97ef5bee-81d8-4dc2-9ad8-7b6a8fac5026.webp?1785758940",
+    "art": "https://cards.scryfall.io/art/front/9/7/97ef5bee-81d8-4dc2-9ad8-7b6a8fac5026.webp?1785758940",
+    "crop": "https://cards.scryfall.io/crop/front/9/7/97ef5bee-81d8-4dc2-9ad8-7b6a8fac5026.webp?1785758940",
+    "jpeg": "https://cards.scryfall.io/normal/front/9/7/97ef5bee-81d8-4dc2-9ad8-7b6a8fac5026.jpg?1785758940"
+  },
+  "mana_cost": "{2}{R}",
+  "cmc": 3.0,
+  "type_line": "Legendary Creature — Human Rogue",
+  "oracle_text": "If a triggered ability of a permanent you control but don't own triggers, that ability triggers an additional time.",
+  "power": "2",
+  "toughness": "3",
+  "colors": [
+    "R"
+  ],
+  "color_identity": [
+    "R"
+  ],
+  "keywords": [],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "not_legal",
+    "pauper": "not_legal",
+    "vintage": "not_legal",
+    "penny": "not_legal",
+    "commander": "not_legal",
+    "oathbreaker": "not_legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "not_legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "a4135564-9f37-4aaf-963a-90666f843e0d",
+  "set": "mbc",
+  "set_name": "Mystery Booster Commander Edition",
+  "set_type": "draft_innovation",
+  "set_uri": "https://api.scryfall.com/sets/a4135564-9f37-4aaf-963a-90666f843e0d",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Ambc&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/mbc?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/97ef5bee-81d8-4dc2-9ad8-7b6a8fac5026/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A723959e1-8356-4fdb-99e2-818df317dc72&unique=prints",
+  "collector_number": "23",
+  "digital": false,
+  "rarity": "rare",
+  "flavor_text": "All her shows have a captive audience.",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Leanna Crossan",
+  "artist_ids": [
+    "976cfe82-042e-4c2a-b762-2bc3e86cb6d0"
+  ],
+  "illustration_id": "dede2be6-f2d6-4220-aaa2-23011ab92624",
+  "border_color": "black",
+  "frame": "2015",
+  "frame_effects": [
+    "legendary"
+  ],
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "edhrec_rank": 23094,
+  "prices": {
+    "usd": null,
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": null,
+    "eur_foil": null,
+    "tix": null
+  },
+  "related_uris": {
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DJabs%252C%2BMistress%2Bof%2BMockery",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DJabs%252C%2BMistress%2Bof%2BMockery",
+    "edhrec": "https://edhrec.com/route/?cc=Jabs%2C+Mistress+of+Mockery"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F709780%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products/Search?referrer=scryfall&searchString=Jabs%2C+Mistress+of+Mockery&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards?affiliate_id=scryfall&data%5Bsearch%5D=Jabs%2C+Mistress+of+Mockery&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

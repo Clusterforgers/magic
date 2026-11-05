@@ -1,0 +1,36 @@
+{
+  "oracle_id": "f606ab91-1f20-4351-acd3-6366b1895f72",
+  "name": "Mindreaver",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mindreaver",
+      "oracle_fingerprint": "a553f474bcc76df4eadefa54b2cc7673",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "what": [{ "Targeting": ["This"] }], "by": "You" } },
+            "targets": [{ "what": "Player" }],
+            "effects": [{ "ExileTop": { "who": { "Target": 0 }, "count": 3, "as": "exiled" } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{U}{U}" }, "SacrificeSelf"],
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    "Spell",
+                    { "SharesName": { "Each": [{ "ExiledWith": "This" }, { "In": "Exile" }] } }
+                  ]
+                }
+              }
+            ],
+            "effects": [{ "Counter": { "what": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

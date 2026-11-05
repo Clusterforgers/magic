@@ -1,0 +1,134 @@
+{
+  "object": "card",
+  "id": "89459624-9c34-4456-82ec-f425ce7b402a",
+  "oracle_id": "c2008ba9-00df-4607-ba0c-189af52033eb",
+  "multiverse_ids": [],
+  "name": "Mr. Foxglove",
+  "lang": "en",
+  "released_at": "2026-10-19",
+  "uri": "https://api.scryfall.com/cards/89459624-9c34-4456-82ec-f425ce7b402a",
+  "scryfall_uri": "https://scryfall.com/card/plst/BLC-6/mr-foxglove?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-08-25T17:04:01Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/8/9/89459624-9c34-4456-82ec-f425ce7b402a.jpg?1787677441",
+    "normal": "https://cards.scryfall.io/normal/front/8/9/89459624-9c34-4456-82ec-f425ce7b402a.jpg?1787677441",
+    "large": "https://cards.scryfall.io/large/front/8/9/89459624-9c34-4456-82ec-f425ce7b402a.jpg?1787677441",
+    "png": "https://cards.scryfall.io/png/front/8/9/89459624-9c34-4456-82ec-f425ce7b402a.png?1787677441",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/8/9/89459624-9c34-4456-82ec-f425ce7b402a.jpg?1787677441",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/8/9/89459624-9c34-4456-82ec-f425ce7b402a.jpg?1787677441",
+    "thumb": "https://cards.scryfall.io/thumb/front/8/9/89459624-9c34-4456-82ec-f425ce7b402a.webp?1787677441",
+    "grid": "https://cards.scryfall.io/grid/front/8/9/89459624-9c34-4456-82ec-f425ce7b402a.webp?1787677441",
+    "display": "https://cards.scryfall.io/display/front/8/9/89459624-9c34-4456-82ec-f425ce7b402a.webp?1787677441",
+    "art": "https://cards.scryfall.io/art/front/8/9/89459624-9c34-4456-82ec-f425ce7b402a.webp?1787677441",
+    "crop": "https://cards.scryfall.io/crop/front/8/9/89459624-9c34-4456-82ec-f425ce7b402a.webp?1787677441",
+    "jpeg": "https://cards.scryfall.io/normal/front/8/9/89459624-9c34-4456-82ec-f425ce7b402a.jpg?1787677441"
+  },
+  "mana_cost": "{2}{G}{W}{U}",
+  "cmc": 5.0,
+  "type_line": "Legendary Creature — Fox Rogue",
+  "oracle_text": "Lifelink\nWhenever Mr. Foxglove attacks, draw cards equal to the number of cards in defending player's hand minus the number of cards in your hand. If you didn't draw cards this way, you may put a creature card from your hand onto the battlefield.",
+  "power": "3",
+  "toughness": "5",
+  "colors": [
+    "G",
+    "U",
+    "W"
+  ],
+  "color_identity": [
+    "G",
+    "U",
+    "W"
+  ],
+  "keywords": [
+    "Lifelink"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": true,
+  "variation": false,
+  "set_id": "67e47ba2-b019-4181-9005-fe9fc021de44",
+  "set": "plst",
+  "set_name": "The List",
+  "set_type": "masters",
+  "set_uri": "https://api.scryfall.com/sets/67e47ba2-b019-4181-9005-fe9fc021de44",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Aplst&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/plst?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/89459624-9c34-4456-82ec-f425ce7b402a/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Ac2008ba9-00df-4607-ba0c-189af52033eb&unique=prints",
+  "collector_number": "BLC-6",
+  "digital": false,
+  "rarity": "mythic",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Anna Podedworna",
+  "artist_ids": [
+    "1874cb2c-f690-475f-a217-c14f11166758"
+  ],
+  "illustration_id": "b1731d86-e194-401c-8e1d-6219db6ea110",
+  "border_color": "black",
+  "frame": "2015",
+  "frame_effects": [
+    "legendary"
+  ],
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "edhrec_rank": 7302,
+  "prices": {
+    "usd": null,
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": null,
+    "eur_foil": null,
+    "tix": null
+  },
+  "related_uris": {
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DMr.%2BFoxglove",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DMr.%2BFoxglove",
+    "edhrec": "https://edhrec.com/route/?cc=Mr.+Foxglove"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fmagic%2Fproduct%3FproductLineName%3Dmagic%26q%3DMr.%2BFoxglove%26view%3Dgrid",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products/Search?referrer=scryfall&searchString=Mr.+Foxglove&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards?affiliate_id=scryfall&data%5Bsearch%5D=Mr.+Foxglove&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

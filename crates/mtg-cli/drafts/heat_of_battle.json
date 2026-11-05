@@ -1,0 +1,19 @@
+{
+  "oracle_id": "400285bb-ded9-4018-a7ea-3e6f4d24b900",
+  "name": "Heat of Battle",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Heat of Battle",
+      "oracle_fingerprint": "a0a737c422d2ca5ba37ce9bea1012ce0",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Blocks": { "what": [{ "Type": "Creature" }] } },
+            "effects": [{ "DealDamage": { "to": { "ControllerOf": "Dealer" }, "amount": 1 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,46 @@
+{
+  "oracle_id": "f49b31ce-910e-446a-b7a7-4274d71e961d",
+  "name": "General Marhault Elsdragon",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "General Marhault Elsdragon",
+      "oracle_fingerprint": "f52411f59c462d7b19b1d4bd160236ae",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "BecomesBlocked": { "what": [{ "Type": "Creature" }, { "ControlledBy": "You" }] }
+            },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "Triggering",
+                  "mods": [
+                    {
+                      "ModifyPT": {
+                        "power": {
+                          "Times": {
+                            "by": 3,
+                            "of": { "Count": [{ "Type": "Creature" }, { "Blocks": "Triggering" }] }
+                          }
+                        },
+                        "toughness": {
+                          "Times": {
+                            "by": 3,
+                            "of": { "Count": [{ "Type": "Creature" }, { "Blocks": "Triggering" }] }
+                          }
+                        }
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

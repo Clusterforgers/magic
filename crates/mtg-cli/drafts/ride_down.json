@@ -1,0 +1,28 @@
+{
+  "oracle_id": "9d136448-7331-4a61-b2ad-cfeb23dfa464",
+  "name": "Ride Down",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ride Down",
+      "oracle_fingerprint": "227542ddcbef0d3ddf87112f71b6b24c",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }, "Blocking"] } }],
+            "effects": [
+              { "Destroy": { "what": { "Target": 0 } } },
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Type": "Creature" }, { "BlockedBy": { "Target": 0 } }] },
+                  "mods": [{ "AddKeyword": "Trample" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

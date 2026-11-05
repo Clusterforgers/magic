@@ -29,7 +29,7 @@
         },
         {
           "Triggered": {
-            "when": { "DealsDamage": { "source": [], "to": "Opponents" } },
+            "when": { "DealsDamage": { "source": [], "to": "Opponents", "combat": false } },
             "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }]
           }
         }

@@ -1,0 +1,44 @@
+{
+  "oracle_id": "f105960e-6609-4192-afc0-e243013b7cc1",
+  "name": "Volo, Guide to Monsters",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Volo, Guide to Monsters",
+      "oracle_fingerprint": "8f1c7197c9202cdb35035ce96c8b88d6",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "SpellCast": {
+                "what": [
+                  { "Type": "Creature" },
+                  {
+                    "Not": {
+                      "SharesSubtype": {
+                        "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }]
+                      }
+                    }
+                  },
+                  {
+                    "Not": {
+                      "SharesSubtype": {
+                        "Each": [
+                          { "Type": "Creature" },
+                          { "OwnedBy": "You" },
+                          { "In": "Graveyard" }
+                        ]
+                      }
+                    }
+                  }
+                ],
+                "by": "You"
+              }
+            },
+            "effects": [{ "CopySpell": { "what": "Triggering" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,66 @@
+{
+  "source": "forge",
+  "oracle_matches": true,
+  "lines": [
+    {
+      "face": 0,
+      "tag": "K",
+      "text": "Escape:B B R R ExileFromGrave<5/Card.Other/other>",
+      "abilities": [
+        0
+      ],
+      "gap": null
+    },
+    {
+      "face": 0,
+      "tag": "T",
+      "text": "When NICKNAME enters, sacrifice it unless it escaped.",
+      "abilities": [
+        1
+      ],
+      "gap": null
+    },
+    {
+      "face": 0,
+      "tag": "T",
+      "text": "Whenever NICKNAME enters or attacks, each opponent discards a card, then each opponent who didn't discard a nonland card this way loses 3 life.",
+      "abilities": [],
+      "gap": "valid:RememberedPlayerOwn"
+    },
+    {
+      "face": 0,
+      "tag": "T",
+      "text": "Whenever NICKNAME enters or attacks, each opponent discards a card, then each opponent who didn't discard a nonland card this way loses 3 life.",
+      "abilities": [],
+      "gap": "valid:RememberedPlayerOwn"
+    }
+  ],
+  "proof": {
+    "marks": [
+      {
+        "face": 0,
+        "span": {
+          "start": 0,
+          "end": 50
+        },
+        "mark": "Auto"
+      },
+      {
+        "face": 0,
+        "span": {
+          "start": 51,
+          "end": 191
+        },
+        "mark": "ByHand"
+      },
+      {
+        "face": 0,
+        "span": {
+          "start": 192,
+          "end": 322
+        },
+        "mark": "Auto"
+      }
+    ]
+  }
+}

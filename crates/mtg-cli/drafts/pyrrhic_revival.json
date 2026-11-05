@@ -1,0 +1,25 @@
+{
+  "oracle_id": "e8daf155-1fc9-4a0e-a7b5-69a50bc23576",
+  "name": "Pyrrhic Revival",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Pyrrhic Revival",
+      "oracle_fingerprint": "da95e10066ca3076ec71dc5bf140b6b2",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Move": {
+                  "what": { "Each": [{ "Type": "Creature" }, { "In": "Graveyard" }] },
+                  "to": { "Battlefield": { "counters": [["-1/-1", 1]] } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

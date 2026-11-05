@@ -1,0 +1,166 @@
+{
+  "object": "card",
+  "id": "3cf9f3ae-694d-4d37-9498-4bdd1723a55e",
+  "oracle_id": "060ef981-db05-436b-b1c1-f55071375344",
+  "multiverse_ids": [
+    642144
+  ],
+  "mtgo_id": 119210,
+  "tcgplayer_id": 525707,
+  "cardmarket_id": 743443,
+  "name": "Don Andres, the Renegade",
+  "lang": "en",
+  "released_at": "2023-11-17",
+  "uri": "https://api.scryfall.com/cards/3cf9f3ae-694d-4d37-9498-4bdd1723a55e",
+  "scryfall_uri": "https://scryfall.com/card/lcc/6/don-andres-the-renegade?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T03:38:57Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/3/c/3cf9f3ae-694d-4d37-9498-4bdd1723a55e.jpg?1783913937",
+    "normal": "https://cards.scryfall.io/normal/front/3/c/3cf9f3ae-694d-4d37-9498-4bdd1723a55e.jpg?1783913937",
+    "large": "https://cards.scryfall.io/large/front/3/c/3cf9f3ae-694d-4d37-9498-4bdd1723a55e.jpg?1783913937",
+    "png": "https://cards.scryfall.io/png/front/3/c/3cf9f3ae-694d-4d37-9498-4bdd1723a55e.png?1783913937",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/3/c/3cf9f3ae-694d-4d37-9498-4bdd1723a55e.jpg?1783913937",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/3/c/3cf9f3ae-694d-4d37-9498-4bdd1723a55e.jpg?1783913937",
+    "thumb": "https://cards.scryfall.io/thumb/front/3/c/3cf9f3ae-694d-4d37-9498-4bdd1723a55e.webp?1783913937",
+    "grid": "https://cards.scryfall.io/grid/front/3/c/3cf9f3ae-694d-4d37-9498-4bdd1723a55e.webp?1783913937",
+    "display": "https://cards.scryfall.io/display/front/3/c/3cf9f3ae-694d-4d37-9498-4bdd1723a55e.webp?1783913937",
+    "art": "https://cards.scryfall.io/art/front/3/c/3cf9f3ae-694d-4d37-9498-4bdd1723a55e.webp?1783913937",
+    "crop": "https://cards.scryfall.io/crop/front/3/c/3cf9f3ae-694d-4d37-9498-4bdd1723a55e.webp?1783913937",
+    "jpeg": "https://cards.scryfall.io/normal/front/3/c/3cf9f3ae-694d-4d37-9498-4bdd1723a55e.jpg?1783913937"
+  },
+  "mana_cost": "{1}{U}{B}{R}",
+  "cmc": 4.0,
+  "type_line": "Legendary Creature — Vampire Pirate",
+  "oracle_text": "Each creature you control but don't own gets +2/+2, has menace and deathtouch, and is a Pirate in addition to its other types.\nWhenever you cast a noncreature spell you don't own, create two tapped Treasure tokens.",
+  "power": "4",
+  "toughness": "3",
+  "colors": [
+    "B",
+    "R",
+    "U"
+  ],
+  "color_identity": [
+    "B",
+    "R",
+    "U"
+  ],
+  "keywords": [
+    "Treasure"
+  ],
+  "all_parts": [
+    {
+      "object": "related_card",
+      "id": "4a0c9cb4-d761-4015-8e43-4aff4da9928b",
+      "component": "combo_piece",
+      "name": "Don Andres, the Renegade",
+      "type_line": "Legendary Creature — Vampire Pirate",
+      "uri": "https://api.scryfall.com/cards/4a0c9cb4-d761-4015-8e43-4aff4da9928b"
+    },
+    {
+      "object": "related_card",
+      "id": "3dfaedeb-f8ec-4f0e-b243-c850770a86f2",
+      "component": "token",
+      "name": "Treasure",
+      "type_line": "Token Artifact — Treasure",
+      "uri": "https://api.scryfall.com/cards/3dfaedeb-f8ec-4f0e-b243-c850770a86f2"
+    }
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "d253edc3-5bc7-4cf1-9446-a8540dedffa5",
+  "set": "lcc",
+  "set_name": "The Lost Caverns of Ixalan Commander",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/d253edc3-5bc7-4cf1-9446-a8540dedffa5",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Alcc&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/lcc?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/3cf9f3ae-694d-4d37-9498-4bdd1723a55e/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A060ef981-db05-436b-b1c1-f55071375344&unique=prints",
+  "collector_number": "6",
+  "digital": false,
+  "rarity": "mythic",
+  "flavor_text": "\"Why climb the tangled rigging of the Legion of Dusk's hierarchy when I can fly a free flag of my own?\"",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Daarken",
+  "artist_ids": [
+    "e607a0d4-fc12-4c01-9e3f-501f5269b9cb"
+  ],
+  "illustration_id": "7cf0ee79-9435-4b12-9914-938053ef2c9d",
+  "border_color": "black",
+  "frame": "2015",
+  "frame_effects": [
+    "legendary"
+  ],
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "edhrec_rank": 5454,
+  "preview": {
+    "source": "Infrecuentes",
+    "source_uri": "https://youtu.be/3-fg0Ig-TlM?si=i3kG6FazhEASCdb1",
+    "previewed_at": "2023-11-01"
+  },
+  "prices": {
+    "usd": "0.42",
+    "usd_foil": "0.39",
+    "usd_etched": null,
+    "eur": "0.41",
+    "eur_foil": "0.40",
+    "tix": "2.00"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=642144&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DDon%2BAndres%252C%2Bthe%2BRenegade",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DDon%2BAndres%252C%2Bthe%2BRenegade",
+    "edhrec": "https://edhrec.com/route/?cc=Don+Andres%2C+the+Renegade"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F525707%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=743443&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/119210?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

@@ -1,0 +1,33 @@
+{
+  "oracle_id": "5a824aff-52fe-4402-b074-884afb5286d4",
+  "name": "Amazing Alliance",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Amazing Alliance",
+      "oracle_fingerprint": "ae41a1f8fc2101b5b1c9bb4cfebd3eb2",
+      "abilities": [
+        {
+          "Static": {
+            "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "GroupAttacks": {
+                "what": [
+                  { "Type": "Creature" },
+                  { "Supertype": "Legendary" },
+                  { "ControlledBy": "You" }
+                ]
+              }
+            },
+            "effects": [{ "GainLife": { "amount": "Triggering" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,29 @@
+{
+  "oracle_id": "24697554-02fa-48ba-b51d-6bba3f85c293",
+  "name": "Errant and Giada",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Errant and Giada",
+      "oracle_fingerprint": "cd831cb54e2ebc0c40e0efde2097acd4",
+      "abilities": [
+        { "Keyword": "Flash" },
+        { "Keyword": "Flying" },
+        { "Rule": { "rule": { "LookAtTopAnyTime": "You" } } },
+        {
+          "Rule": {
+            "rule": {
+              "MayCast": {
+                "what": [
+                  "TopOfLibrary",
+                  { "AnyOf": [{ "HasKeyword": "Flying" }, { "HasKeyword": "Flash" }] }
+                ],
+                "from": "Library"
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

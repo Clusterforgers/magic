@@ -1,0 +1,30 @@
+{
+  "oracle_id": "7351317d-62a1-4894-9811-aa950c49eece",
+  "name": "Cunning Nightbonder",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Cunning Nightbonder",
+      "oracle_fingerprint": "14f6d341012d44123e72cb698ed2729d",
+      "abilities": [
+        { "Keyword": "Flash" },
+        {
+          "CostModifier": {
+            "applies_to": ["Spell", { "HasKeyword": "Flash" }, { "ControlledBy": "You" }],
+            "change": "Reduce",
+            "mana": "{1}"
+          }
+        },
+        {
+          "Rule": {
+            "rule": {
+              "CantBeCountered": {
+                "Each": ["Spell", { "HasKeyword": "Flash" }, { "WasCast": { "by": "You" } }]
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

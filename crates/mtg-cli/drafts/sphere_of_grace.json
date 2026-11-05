@@ -1,0 +1,19 @@
+{
+  "oracle_id": "e45de1f7-ad45-494d-855e-3e11f109909d",
+  "name": "Sphere of Grace",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sphere of Grace",
+      "oracle_fingerprint": "9d189cc2b8d9e65ba5641714d4d9759f",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Damage": { "to": "You", "source": [{ "Color": "Black" }] } },
+            "by": { "PreventUpTo": 2 }
+          }
+        }
+      ]
+    }
+  ]
+}

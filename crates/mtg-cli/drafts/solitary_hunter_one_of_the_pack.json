@@ -1,0 +1,37 @@
+{
+  "oracle_id": "c99834dc-755f-407c-ad0e-550f8ae12198",
+  "name": "Solitary Hunter // One of the Pack",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Solitary Hunter",
+      "oracle_fingerprint": "e85f9d225d537639fd16ebf6206903d4",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep" } },
+            "if": {
+              "Compare": { "left": { "CastLastTurn": "EachPlayer" }, "op": "Eq", "right": 0 }
+            },
+            "effects": [{ "Transform": { "what": "This" } }]
+          }
+        }
+      ]
+    },
+    {
+      "name": "One of the Pack",
+      "oracle_fingerprint": "ee899af71fe7787206931dcab99b26ee",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep" } },
+            "if": {
+              "Compare": { "left": { "CastLastTurn": "EachPlayer" }, "op": "Ge", "right": 2 }
+            },
+            "effects": [{ "Transform": { "what": "This" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

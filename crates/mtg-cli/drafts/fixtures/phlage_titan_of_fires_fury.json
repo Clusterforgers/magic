@@ -1,0 +1,142 @@
+{
+  "object": "card",
+  "id": "e419cd0b-2449-4cc5-9ead-b9e45e271700",
+  "oracle_id": "3407eb6e-b74d-4159-a801-d7163937953c",
+  "multiverse_ids": [
+    662349
+  ],
+  "mtgo_id": 126413,
+  "arena_id": 91048,
+  "tcgplayer_id": 552633,
+  "cardmarket_id": 771520,
+  "name": "Phlage, Titan of Fire's Fury",
+  "lang": "en",
+  "released_at": "2024-06-14",
+  "uri": "https://api.scryfall.com/cards/e419cd0b-2449-4cc5-9ead-b9e45e271700",
+  "scryfall_uri": "https://scryfall.com/card/mh3/197/phlage-titan-of-fires-fury?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T02:54:07Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/e/4/e419cd0b-2449-4cc5-9ead-b9e45e271700.jpg?1783911247",
+    "normal": "https://cards.scryfall.io/normal/front/e/4/e419cd0b-2449-4cc5-9ead-b9e45e271700.jpg?1783911247",
+    "large": "https://cards.scryfall.io/large/front/e/4/e419cd0b-2449-4cc5-9ead-b9e45e271700.jpg?1783911247",
+    "png": "https://cards.scryfall.io/png/front/e/4/e419cd0b-2449-4cc5-9ead-b9e45e271700.png?1783911247",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/e/4/e419cd0b-2449-4cc5-9ead-b9e45e271700.jpg?1783911247",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/e/4/e419cd0b-2449-4cc5-9ead-b9e45e271700.jpg?1783911247",
+    "thumb": "https://cards.scryfall.io/thumb/front/e/4/e419cd0b-2449-4cc5-9ead-b9e45e271700.webp?1783911247",
+    "grid": "https://cards.scryfall.io/grid/front/e/4/e419cd0b-2449-4cc5-9ead-b9e45e271700.webp?1783911247",
+    "display": "https://cards.scryfall.io/display/front/e/4/e419cd0b-2449-4cc5-9ead-b9e45e271700.webp?1783911247",
+    "art": "https://cards.scryfall.io/art/front/e/4/e419cd0b-2449-4cc5-9ead-b9e45e271700.webp?1783911247",
+    "crop": "https://cards.scryfall.io/crop/front/e/4/e419cd0b-2449-4cc5-9ead-b9e45e271700.webp?1783911247",
+    "jpeg": "https://cards.scryfall.io/normal/front/e/4/e419cd0b-2449-4cc5-9ead-b9e45e271700.jpg?1783911247"
+  },
+  "mana_cost": "{1}{R}{W}",
+  "cmc": 3.0,
+  "type_line": "Legendary Creature — Elder Giant",
+  "oracle_text": "When Phlage enters, sacrifice it unless it escaped.\nWhenever Phlage enters or attacks, it deals 3 damage to any target and you gain 3 life.\nEscape—{R}{R}{W}{W}, Exile five other cards from your graveyard. (You may cast this card from your graveyard for its escape cost.)",
+  "power": "6",
+  "toughness": "6",
+  "colors": [
+    "R",
+    "W"
+  ],
+  "color_identity": [
+    "R",
+    "W"
+  ],
+  "keywords": [
+    "Escape"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "not_legal",
+    "modern": "banned",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo",
+    "arena"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "3ed80bb6-77e8-4aa7-8262-95377a38aba1",
+  "set": "mh3",
+  "set_name": "Modern Horizons 3",
+  "set_type": "draft_innovation",
+  "set_uri": "https://api.scryfall.com/sets/3ed80bb6-77e8-4aa7-8262-95377a38aba1",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Amh3&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/mh3?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/e419cd0b-2449-4cc5-9ead-b9e45e271700/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A3407eb6e-b74d-4159-a801-d7163937953c&unique=prints",
+  "collector_number": "197",
+  "digital": false,
+  "rarity": "mythic",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Lucas Graciano",
+  "artist_ids": [
+    "ce98f39c-7cdd-47e6-a520-6c50443bb4c2"
+  ],
+  "illustration_id": "58dc4ed9-6535-486f-869a-e7fe4cb718d4",
+  "border_color": "black",
+  "frame": "2015",
+  "frame_effects": [
+    "legendary"
+  ],
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 8066,
+  "prices": {
+    "usd": "2.56",
+    "usd_foil": "4.75",
+    "usd_etched": null,
+    "eur": "4.74",
+    "eur_foil": "7.25",
+    "tix": "0.08"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=662349&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DPhlage%252C%2BTitan%2Bof%2BFire%2527s%2BFury",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DPhlage%252C%2BTitan%2Bof%2BFire%2527s%2BFury",
+    "edhrec": "https://edhrec.com/route/?cc=Phlage%2C+Titan+of+Fire%27s+Fury"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F552633%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=771520&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/126413?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

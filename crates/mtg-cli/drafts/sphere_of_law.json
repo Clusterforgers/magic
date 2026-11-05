@@ -1,0 +1,19 @@
+{
+  "oracle_id": "a8da7c57-c60f-42b1-b611-64a0a43295f2",
+  "name": "Sphere of Law",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sphere of Law",
+      "oracle_fingerprint": "4121f9e5e5fe4f019204e6ebed73d270",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Damage": { "to": "You", "source": [{ "Color": "Red" }] } },
+            "by": { "PreventUpTo": 2 }
+          }
+        }
+      ]
+    }
+  ]
+}

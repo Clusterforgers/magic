@@ -1,0 +1,39 @@
+{
+  "oracle_id": "c7b1aaff-e2c3-427c-8478-1fd053f7ffb2",
+  "name": "Village Ironsmith // Ironfang",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Village Ironsmith",
+      "oracle_fingerprint": "763538b53592e16785693e28409482a5",
+      "abilities": [
+        { "Keyword": "FirstStrike" },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep" } },
+            "if": {
+              "Compare": { "left": { "CastLastTurn": "EachPlayer" }, "op": "Eq", "right": 0 }
+            },
+            "effects": [{ "Transform": { "what": "This" } }]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Ironfang",
+      "oracle_fingerprint": "c88ed87ffece42b8f4d77fa3b1e5c7ce",
+      "abilities": [
+        { "Keyword": "FirstStrike" },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep" } },
+            "if": {
+              "Compare": { "left": { "CastLastTurn": "EachPlayer" }, "op": "Ge", "right": 2 }
+            },
+            "effects": [{ "Transform": { "what": "This" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

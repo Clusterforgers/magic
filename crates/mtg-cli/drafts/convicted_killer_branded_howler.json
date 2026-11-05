@@ -1,0 +1,37 @@
+{
+  "oracle_id": "c1801b5c-1a87-46d0-83d3-e8dfd94211f4",
+  "name": "Convicted Killer // Branded Howler",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Convicted Killer",
+      "oracle_fingerprint": "e85f9d225d537639fd16ebf6206903d4",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep" } },
+            "if": {
+              "Compare": { "left": { "CastLastTurn": "EachPlayer" }, "op": "Eq", "right": 0 }
+            },
+            "effects": [{ "Transform": { "what": "This" } }]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Branded Howler",
+      "oracle_fingerprint": "ee899af71fe7787206931dcab99b26ee",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep" } },
+            "if": {
+              "Compare": { "left": { "CastLastTurn": "EachPlayer" }, "op": "Ge", "right": 2 }
+            },
+            "effects": [{ "Transform": { "what": "This" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

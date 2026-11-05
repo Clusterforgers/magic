@@ -9,7 +9,13 @@
       "abilities": [
         {
           "Triggered": {
-            "when": { "DealsDamage": { "source": [{ "ControlledBy": "You" }], "to": "Opponents" } },
+            "when": {
+              "DealsDamage": {
+                "source": [{ "ControlledBy": "You" }],
+                "to": "Opponents",
+                "combat": false
+              }
+            },
             "effects": [
               {
                 "Continuous": {

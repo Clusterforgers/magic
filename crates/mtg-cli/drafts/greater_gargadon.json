@@ -1,0 +1,38 @@
+{
+  "oracle_id": "406b4b1d-756b-4062-897d-3693832086a0",
+  "name": "Greater Gargadon",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Greater Gargadon",
+      "oracle_fingerprint": "cc0dfc87b7fd546cc93b1da24c4c630a",
+      "abilities": [
+        { "Keyword": { "Suspend": { "time": 10, "cost": "{R}" } } },
+        {
+          "Activated": {
+            "cost": [
+              {
+                "Sacrifice": {
+                  "filter": [
+                    {
+                      "AnyOf": [{ "Type": "Artifact" }, { "Type": "Creature" }, { "Type": "Land" }]
+                    }
+                  ]
+                }
+              }
+            ],
+            "condition": {
+              "Compare": {
+                "left": { "Count": ["This", "Suspended", { "In": "Exile" }] },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "from": "Exile",
+            "effects": [{ "RemoveCounters": { "from": "This", "counter": { "Other": "time" } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

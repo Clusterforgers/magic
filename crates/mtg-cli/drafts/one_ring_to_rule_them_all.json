@@ -1,0 +1,73 @@
+{
+  "oracle_id": "c75add5e-4e9d-4c68-a8ad-b878b1dbc0a4",
+  "name": "One Ring to Rule Them All",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "One Ring to Rule Them All",
+      "oracle_fingerprint": "759a5def3e358e973bc82a66cea851db",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 1 } },
+            "effects": [
+              { "RingTempts": {} },
+              {
+                "Mill": {
+                  "who": "EachPlayer",
+                  "count": {
+                    "Total": {
+                      "of": [{ "Type": "Creature" }, { "ControlledBy": "You" }, "RingBearer"],
+                      "stat": "Power"
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 2 } },
+            "effects": [
+              {
+                "Destroy": {
+                  "what": {
+                    "Each": [{ "Type": "Creature" }, { "Not": { "Supertype": "Legendary" } }]
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 3 } },
+            "effects": [
+              {
+                "RepeatEach": {
+                  "over": "Opponents",
+                  "as": "each",
+                  "effects": [
+                    {
+                      "LoseLife": {
+                        "who": { "Bound": "each" },
+                        "amount": {
+                          "Count": [
+                            { "Type": "Creature" },
+                            { "OwnedBy": { "Bound": "each" } },
+                            { "In": "Graveyard" }
+                          ]
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

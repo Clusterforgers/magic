@@ -1,0 +1,27 @@
+{
+  "oracle_id": "1734e777-d34a-4526-ae24-ef034f147cc5",
+  "name": "Raid Bombardment",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Raid Bombardment",
+      "oracle_fingerprint": "01a6358978fce41c13199c04bf19974f",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "Attacks": {
+                "what": [
+                  { "Type": "Creature" },
+                  { "Compare": { "stat": "Power", "op": "Le", "to": 2 } },
+                  { "ControlledBy": "You" }
+                ]
+              }
+            },
+            "effects": [{ "DealDamage": { "to": "Against", "amount": 1 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

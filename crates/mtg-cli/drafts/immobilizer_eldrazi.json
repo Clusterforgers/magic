@@ -1,0 +1,39 @@
+{
+  "oracle_id": "416f9656-9247-4ef2-971b-1515fc8e031b",
+  "name": "Immobilizer Eldrazi",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Immobilizer Eldrazi",
+      "oracle_fingerprint": "de561d311967f11345b544a2caf59397",
+      "abilities": [
+        { "Keyword": "Devoid" },
+        {
+          "Activated": {
+            "cost": "{2}{C}",
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": {
+                    "Each": [
+                      { "Type": "Creature" },
+                      {
+                        "Test": {
+                          "left": { "Stat": { "of": "Candidate", "stat": "Power" } },
+                          "op": "Lt",
+                          "right": { "Stat": { "of": "Candidate", "stat": "Toughness" } }
+                        }
+                      }
+                    ]
+                  },
+                  "mods": ["CantBlock"],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

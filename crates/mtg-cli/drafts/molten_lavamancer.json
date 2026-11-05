@@ -12,7 +12,11 @@
           "Triggered": {
             "when": {
               "Batch": {
-                "DealsDamage": { "source": [{ "ControlledBy": "You" }], "to": "Opponents" }
+                "DealsDamage": {
+                  "source": [{ "ControlledBy": "You" }],
+                  "to": "Opponents",
+                  "combat": false
+                }
               }
             },
             "if": { "AtTrigger": "YourTurn" },

@@ -1,0 +1,39 @@
+{
+  "oracle_id": "8bdf986e-a47e-47b6-8cdb-576c86c4041b",
+  "name": "Hanweir Watchkeep // Bane of Hanweir",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Hanweir Watchkeep",
+      "oracle_fingerprint": "6c07cf62bbfbb8d8087951815f6023c7",
+      "abilities": [
+        { "Keyword": "Defender" },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep" } },
+            "if": {
+              "Compare": { "left": { "CastLastTurn": "EachPlayer" }, "op": "Eq", "right": 0 }
+            },
+            "effects": [{ "Transform": { "what": "This" } }]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Bane of Hanweir",
+      "oracle_fingerprint": "044ed07707f4f0efb485802b66bbcd29",
+      "abilities": [
+        { "Rule": { "rule": { "MustAttack": "This" } } },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep" } },
+            "if": {
+              "Compare": { "left": { "CastLastTurn": "EachPlayer" }, "op": "Ge", "right": 2 }
+            },
+            "effects": [{ "Transform": { "what": "This" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

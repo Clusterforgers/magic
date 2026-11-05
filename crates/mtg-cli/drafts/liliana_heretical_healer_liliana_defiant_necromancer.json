@@ -1,7 +1,7 @@
 {
   "oracle_id": "b96a8ad2-3d86-459b-a34f-19c9dc07c3c4",
   "name": "Liliana, Heretical Healer // Liliana, Defiant Necromancer",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Liliana, Heretical Healer",
@@ -91,9 +91,48 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 136, "end": 277 }
+          "Loyalty": {
+            "cost": { "Minus": 8 },
+            "effects": [
+              {
+                "CreateEmblem": {
+                  "abilities": [
+                    {
+                      "Triggered": {
+                        "when": {
+                          "ZoneChange": {
+                            "what": [{ "Type": "Creature" }],
+                            "from": "Battlefield",
+                            "to": "Graveyard"
+                          }
+                        },
+                        "effects": [
+                          {
+                            "Bind": {
+                              "what": { "Arrived": { "of": "Triggering", "zone": "Graveyard" } },
+                              "as": "event"
+                            }
+                          },
+                          {
+                            "DelayedTrigger": {
+                              "when": { "StepBegins": { "step": "End" } },
+                              "effects": [
+                                {
+                                  "Move": {
+                                    "what": { "Bound": "event" },
+                                    "to": { "Battlefield": { "under": "You" } }
+                                  }
+                                }
+                              ]
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
           }
         }
       ]

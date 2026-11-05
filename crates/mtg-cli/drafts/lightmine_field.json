@@ -1,0 +1,26 @@
+{
+  "oracle_id": "20490b29-4f08-48a2-bf54-2ba118e746ac",
+  "name": "Lightmine Field",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Lightmine Field",
+      "oracle_fingerprint": "576bebf1666c13dfe049d44c923cdaa2",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "GroupAttacks": { "what": [{ "Type": "Creature" }] } },
+            "effects": [
+              {
+                "DealDamage": {
+                  "to": "Triggering",
+                  "amount": { "Count": [{ "Type": "Creature" }, "Attacking"] }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,196 @@
+{
+  "object": "card",
+  "id": "34898af1-ebe6-4ede-81be-23fd62844480",
+  "oracle_id": "29b22d41-4c6e-46de-8553-983d05f12f0f",
+  "multiverse_ids": [
+    686046
+  ],
+  "mtgo_id": 135822,
+  "tcgplayer_id": 609942,
+  "cardmarket_id": 805828,
+  "name": "Hinterland Logger // Timber Shredder",
+  "lang": "en",
+  "released_at": "2025-01-24",
+  "uri": "https://api.scryfall.com/cards/34898af1-ebe6-4ede-81be-23fd62844480",
+  "scryfall_uri": "https://scryfall.com/card/inr/203/hinterland-logger-timber-shredder?utm_source=api",
+  "layout": "transform",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T02:01:42Z",
+  "cmc": 2.0,
+  "type_line": "Creature — Human Werewolf // Creature — Werewolf",
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [
+    "Transform",
+    "Trample"
+  ],
+  "card_faces": [
+    {
+      "object": "card_face",
+      "name": "Hinterland Logger",
+      "mana_cost": "{1}{G}",
+      "type_line": "Creature — Human Werewolf",
+      "oracle_text": "At the beginning of each upkeep, if no spells were cast last turn, transform this creature.",
+      "colors": [
+        "G"
+      ],
+      "power": "2",
+      "toughness": "1",
+      "flavor_text": "\"There's a forester lives up in the highlands. Tried to sell her one of my finest axes at a bargain, but she wasn't interested.\"\n—Old Rutstein",
+      "artist": "Karl Kopinski",
+      "artist_id": "0fad2c48-a56e-4a0b-b512-224f6f238f20",
+      "illustration_id": "615bff40-1073-4eab-96b3-ced4384dc97b",
+      "image_uris": {
+        "small": "https://cards.scryfall.io/small/front/3/4/34898af1-ebe6-4ede-81be-23fd62844480.jpg?1783908102",
+        "normal": "https://cards.scryfall.io/normal/front/3/4/34898af1-ebe6-4ede-81be-23fd62844480.jpg?1783908102",
+        "large": "https://cards.scryfall.io/large/front/3/4/34898af1-ebe6-4ede-81be-23fd62844480.jpg?1783908102",
+        "png": "https://cards.scryfall.io/png/front/3/4/34898af1-ebe6-4ede-81be-23fd62844480.png?1783908102",
+        "art_crop": "https://cards.scryfall.io/art_crop/front/3/4/34898af1-ebe6-4ede-81be-23fd62844480.jpg?1783908102",
+        "border_crop": "https://cards.scryfall.io/border_crop/front/3/4/34898af1-ebe6-4ede-81be-23fd62844480.jpg?1783908102",
+        "thumb": "https://cards.scryfall.io/thumb/front/3/4/34898af1-ebe6-4ede-81be-23fd62844480.webp?1783908102",
+        "grid": "https://cards.scryfall.io/grid/front/3/4/34898af1-ebe6-4ede-81be-23fd62844480.webp?1783908102",
+        "display": "https://cards.scryfall.io/display/front/3/4/34898af1-ebe6-4ede-81be-23fd62844480.webp?1783908102",
+        "art": "https://cards.scryfall.io/art/front/3/4/34898af1-ebe6-4ede-81be-23fd62844480.webp?1783908102",
+        "crop": "https://cards.scryfall.io/crop/front/3/4/34898af1-ebe6-4ede-81be-23fd62844480.webp?1783908102",
+        "jpeg": "https://cards.scryfall.io/normal/front/3/4/34898af1-ebe6-4ede-81be-23fd62844480.jpg?1783908102"
+      }
+    },
+    {
+      "object": "card_face",
+      "name": "Timber Shredder",
+      "mana_cost": "",
+      "type_line": "Creature — Werewolf",
+      "oracle_text": "Trample\nAt the beginning of each upkeep, if a player cast two or more spells last turn, transform this creature.",
+      "colors": [
+        "G"
+      ],
+      "color_indicator": [
+        "G"
+      ],
+      "power": "4",
+      "toughness": "2",
+      "flavor_text": "\"She even had the audacity to criticize my wares as inferior.\"\n—Old Rutstein",
+      "artist": "Karl Kopinski",
+      "artist_id": "0fad2c48-a56e-4a0b-b512-224f6f238f20",
+      "illustration_id": "50405707-fbec-460d-868b-e937d7963cbb",
+      "image_uris": {
+        "small": "https://cards.scryfall.io/small/back/3/4/34898af1-ebe6-4ede-81be-23fd62844480.jpg?1783908102",
+        "normal": "https://cards.scryfall.io/normal/back/3/4/34898af1-ebe6-4ede-81be-23fd62844480.jpg?1783908102",
+        "large": "https://cards.scryfall.io/large/back/3/4/34898af1-ebe6-4ede-81be-23fd62844480.jpg?1783908102",
+        "png": "https://cards.scryfall.io/png/back/3/4/34898af1-ebe6-4ede-81be-23fd62844480.png?1783908102",
+        "art_crop": "https://cards.scryfall.io/art_crop/back/3/4/34898af1-ebe6-4ede-81be-23fd62844480.jpg?1783908102",
+        "border_crop": "https://cards.scryfall.io/border_crop/back/3/4/34898af1-ebe6-4ede-81be-23fd62844480.jpg?1783908102",
+        "thumb": "https://cards.scryfall.io/thumb/back/3/4/34898af1-ebe6-4ede-81be-23fd62844480.webp?1783908102",
+        "grid": "https://cards.scryfall.io/grid/back/3/4/34898af1-ebe6-4ede-81be-23fd62844480.webp?1783908102",
+        "display": "https://cards.scryfall.io/display/back/3/4/34898af1-ebe6-4ede-81be-23fd62844480.webp?1783908102",
+        "art": "https://cards.scryfall.io/art/back/3/4/34898af1-ebe6-4ede-81be-23fd62844480.webp?1783908102",
+        "crop": "https://cards.scryfall.io/crop/back/3/4/34898af1-ebe6-4ede-81be-23fd62844480.webp?1783908102",
+        "jpeg": "https://cards.scryfall.io/normal/back/3/4/34898af1-ebe6-4ede-81be-23fd62844480.jpg?1783908102"
+      }
+    }
+  ],
+  "all_parts": [
+    {
+      "object": "related_card",
+      "id": "34898af1-ebe6-4ede-81be-23fd62844480",
+      "component": "combo_piece",
+      "name": "Hinterland Logger // Timber Shredder",
+      "type_line": "Creature — Human Werewolf // Creature — Werewolf",
+      "uri": "https://api.scryfall.com/cards/34898af1-ebe6-4ede-81be-23fd62844480"
+    },
+    {
+      "object": "related_card",
+      "id": "4d323ead-24f5-42e4-9e23-aa14eb66264d",
+      "component": "combo_piece",
+      "name": "Shadows Over Innistrad Checklist 1",
+      "type_line": "Card",
+      "uri": "https://api.scryfall.com/cards/4d323ead-24f5-42e4-9e23-aa14eb66264d"
+    }
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": true,
+  "variation": false,
+  "set_id": "b9618c8c-9f31-4b42-9798-2991893c27bf",
+  "set": "inr",
+  "set_name": "Innistrad Remastered",
+  "set_type": "masters",
+  "set_uri": "https://api.scryfall.com/sets/b9618c8c-9f31-4b42-9798-2991893c27bf",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Ainr&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/inr?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/34898af1-ebe6-4ede-81be-23fd62844480/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A29b22d41-4c6e-46de-8553-983d05f12f0f&unique=prints",
+  "collector_number": "203",
+  "digital": false,
+  "rarity": "common",
+  "artist": "Karl Kopinski",
+  "artist_ids": [
+    "0fad2c48-a56e-4a0b-b512-224f6f238f20"
+  ],
+  "border_color": "black",
+  "frame": "2015",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 22611,
+  "penny_rank": 13707,
+  "prices": {
+    "usd": "0.17",
+    "usd_foil": "0.30",
+    "usd_etched": null,
+    "eur": "0.10",
+    "eur_foil": "0.07",
+    "tix": "0.04"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=686046&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DHinterland%2BLogger%2B%252F%252F%2BTimber%2BShredder",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DHinterland%2BLogger%2B%252F%252F%2BTimber%2BShredder",
+    "edhrec": "https://edhrec.com/route/?cc=Hinterland+Logger"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F609942%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=805828&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/135822?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

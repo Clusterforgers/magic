@@ -1,0 +1,46 @@
+{
+  "oracle_id": "2cb1c213-b3f2-4433-8f89-6a3b4c3d2795",
+  "name": "Kroxa, Titan of Death's Hunger",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Kroxa, Titan of Death's Hunger",
+      "oracle_fingerprint": "877b441f3869e7978fa40cb84e6a1a2a",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "Count": ["This", { "CastWith": "Escape" }] },
+                      "op": "Eq",
+                      "right": 0
+                    }
+                  },
+                  "then": [{ "Sacrifice": { "filter": ["This"] } }]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 51, "end": 191 }
+          }
+        },
+        {
+          "Keyword": {
+            "Escape": [
+              { "Mana": "{B}{B}{R}{R}" },
+              { "ExileFromGraveyard": { "filter": ["Other"], "count": 5 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

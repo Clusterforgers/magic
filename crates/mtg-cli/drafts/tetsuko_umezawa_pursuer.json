@@ -1,0 +1,34 @@
+{
+  "oracle_id": "708d4567-a5a3-437f-bae4-ae10f1537aa9",
+  "name": "Tetsuko Umezawa, Pursuer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Tetsuko Umezawa, Pursuer",
+      "oracle_fingerprint": "bf5d0998121f68d55260325cc1120446",
+      "abilities": [
+        { "Keyword": "DoubleStrike" },
+        { "Keyword": "Prowess" },
+        {
+          "Triggered": {
+            "when": {
+              "Blocks": {
+                "what": [
+                  { "Type": "Creature" },
+                  { "ControlledBy": "Opponents" },
+                  {
+                    "AnyOf": [
+                      { "Compare": { "stat": "Power", "op": "Le", "to": 1 } },
+                      { "Compare": { "stat": "Toughness", "op": "Le", "to": 1 } }
+                    ]
+                  }
+                ]
+              }
+            },
+            "effects": [{ "DealDamage": { "to": { "ControllerOf": "Dealer" }, "amount": 1 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

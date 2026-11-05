@@ -1,0 +1,113 @@
+{
+  "oracle_id": "ea9f4de3-fc35-435a-8dff-a5657d14a9bd",
+  "name": "Daretti, Scrap Savant",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Daretti, Scrap Savant",
+      "oracle_fingerprint": "4c8c466a6a8bc086a492aef46a2f9eb9",
+      "abilities": [
+        {
+          "Loyalty": {
+            "cost": { "Plus": 2 },
+            "effects": [
+              { "Discard": { "count": 2, "optional": true, "as": "discarded" } },
+              { "Remember": { "what": { "Bound": "discarded" }, "slot": "remembered" } },
+              {
+                "Draw": {
+                  "count": {
+                    "Count": [
+                      { "Is": { "Bound": "discarded" } },
+                      {
+                        "AnyOf": [
+                          { "In": "Battlefield" },
+                          { "In": "Hand" },
+                          { "In": "Library" },
+                          { "In": "Graveyard" },
+                          { "In": "Exile" },
+                          { "In": "Stack" }
+                        ]
+                      }
+                    ]
+                  }
+                }
+              },
+              { "Forget": { "slot": "remembered" } }
+            ]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Minus": 2 },
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "Type": "Artifact" }, { "OwnedBy": "You" }, { "In": "Graveyard" }]
+                }
+              }
+            ],
+            "effects": [
+              { "Sacrifice": { "filter": [{ "Type": "Artifact" }], "as": "sacrificed" } },
+              { "Remember": { "what": { "Bound": "sacrificed" }, "slot": "remembered" } },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": { "left": { "Bound": "sacrificed~moved" }, "op": "Ge", "right": 1 }
+                  },
+                  "then": [{ "Move": { "what": { "Target": 0 }, "to": { "Battlefield": {} } } }]
+                }
+              },
+              { "Forget": { "slot": "remembered" } }
+            ]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Minus": 10 },
+            "effects": [
+              {
+                "CreateEmblem": {
+                  "abilities": [
+                    {
+                      "Triggered": {
+                        "when": {
+                          "ZoneChange": {
+                            "what": [{ "Type": "Artifact" }, { "OwnedBy": "You" }],
+                            "from": "Battlefield",
+                            "to": "Graveyard"
+                          }
+                        },
+                        "effects": [
+                          {
+                            "Bind": {
+                              "what": { "Arrived": { "of": "Triggering", "zone": "Graveyard" } },
+                              "as": "event"
+                            }
+                          },
+                          {
+                            "DelayedTrigger": {
+                              "when": { "StepBegins": { "step": "End" } },
+                              "effects": [
+                                {
+                                  "Move": {
+                                    "what": { "Bound": "event" },
+                                    "to": { "Battlefield": {} }
+                                  }
+                                }
+                              ]
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        { "Rule": { "rule": "CanBeCommander" } }
+      ]
+    }
+  ]
+}
