@@ -369,6 +369,11 @@ pub fn line(
         "Cleanup" => return cleanup(ctx, p, run),
         _ => {}
     }
+    if let Some((rest, asked)) = super::forget::split(p) {
+        let before = ctx.remembered.clone();
+        let effects = line(ctx, &rest, api, run)?;
+        return super::forget::apply(ctx, &asked, before, effects);
+    }
     let keys: Vec<(String, Slot)> = p
         .iter()
         .filter(|(_, value)| *value == "True")
