@@ -174,3 +174,70 @@ fn if_you_dont_take_the_card_counts_the_card_in_its_new_zone(
         4 - zombies_in_hand - (graveyard - 1)
     );
 }
+
+const HYDRA: &str = "Name:Hydra Brood\nManaCost:4 G G\nTypes:Creature Hydra\nPT:7/7\nA:AB$ PutCounter | Cost$ X X G | Monstrosity$ X\nT:Mode$ BecomeMonstrous | ValidCard$ Card.Self | TriggerZones$ Battlefield | Execute$ TrigToken | TriggerDescription$ When CARDNAME becomes monstrous, create X X/X green Hydra creature tokens.\nSVar:TrigToken:DB$ Token | TokenAmount$ MonstrosityX | TokenScript$ g_x_x_hydra | TokenOwner$ You | TokenPower$ MonstrosityX | TokenToughness$ MonstrosityX\nSVar:X:Count$xPaid\nSVar:MonstrosityX:TriggerCount$Amount\n";
+
+#[rstest]
+#[case::one(1)]
+#[case::two(2)]
+fn monstrosity_x_makes_x_tokens_of_size_x(#[case] x: u32) {
+    use mtg_cli::forge::script::Script;
+    use mtg_engine::choose::NumberChoice;
+    use mtg_engine::decision::{Answer, DecisionKind};
+    let mut world = World::default();
+    world.tokens.insert(
+        "g_x_x_hydra".to_owned(),
+        Script::parse("Name:Hydra Token\nColors:green\nTypes:Creature Hydra\nPT:*/*\n")
+            .faces
+            .into_iter()
+            .next()
+            .unwrap(),
+    );
+    let hydra = translated_in(
+        &world,
+        HYDRA,
+        "Hydra Brood",
+        "Creature — Hydra",
+        "{4}{G}{G}",
+    );
+    let scenario = Scenario::new(2).battlefield(
+        0,
+        std::iter::once(ready(hydra)).chain((0..5).map(|_| ready(forest()))),
+    );
+    let mut driver = Driver::from_scenario(scenario).unwrap();
+    driver.begin_activation("Hydra Brood").unwrap();
+    for _ in 0..40 {
+        let decision = driver.decision().unwrap().clone();
+        match &decision.kind {
+            DecisionKind::ChooseNumber(_) => driver
+                .answer(Answer::ChooseNumber(NumberChoice::Number(x)))
+                .map(drop)
+                .unwrap(),
+            DecisionKind::PayMana(_) => driver
+                .answer(Answer::PayMana(mtg_engine::decision::PayChoice::Auto))
+                .map(drop)
+                .unwrap(),
+            DecisionKind::Priority(_) if driver.state().stack().is_empty() => break,
+            _ => {
+                let next = match &decision.kind {
+                    DecisionKind::YesNo(_) => Answer::YesNo(mtg_engine::choose::YesNoChoice(true)),
+                    _ => Driver::passive_answer(&decision),
+                };
+                driver.answer(next).map(drop).unwrap();
+            }
+        }
+    }
+    let state = driver.state();
+    let tokens: Vec<_> = state
+        .zone(Zone::Battlefield)
+        .iter()
+        .filter(|id| state.object(**id).is_some_and(|o| o.card().name == "Hydra"))
+        .map(|id| mtg_engine::characteristics::characteristics(state, *id).unwrap())
+        .collect();
+    assert_eq!(tokens.len(), x as usize);
+    assert!(
+        tokens
+            .iter()
+            .all(|c| c.power == Some(i32::try_from(x).unwrap()))
+    );
+}

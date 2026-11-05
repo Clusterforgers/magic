@@ -186,6 +186,7 @@ fn event_amount(ctx: &Ctx, expression: &str) -> Tr<Option<Value>> {
     let of = match head {
         "TriggerCount" => {
             return match what {
+                "Amount" if monstrosity(ctx) => monstrosity_x(ctx),
                 "DamageAmount" | "LifeAmount" | "Amount" => Ok(Some(json!("Triggering"))),
                 other => unmapped(format!("amount:TriggerCount${other}")),
             };
@@ -412,6 +413,22 @@ fn this_turn_cast(ctx: &Ctx, word: &str) -> Tr<Value> {
     let valid = word.strip_prefix("ThisTurnCast_").unwrap_or_default();
     let filter = selector_in(ctx, valid, None)?;
     Ok(json!({"Tally": {"event": "SpellCast", "who": "EachPlayer", "filter": filter}}))
+}
+
+/// Whether the trigger being translated is a creature becoming monstrous.
+fn monstrosity(ctx: &Ctx) -> bool {
+    ctx.trigger
+        .as_ref()
+        .is_some_and(|shape| shape.mode == "BecomeMonstrous")
+}
+
+/// The amount of a monstrosity trigger is the X it was paid with, which only the creature itself reads.
+fn monstrosity_x(ctx: &Ctx) -> Tr<Option<Value>> {
+    if ctx.trigger.as_ref().is_some_and(|shape| shape.itself) {
+        Ok(Some(json!("X")))
+    } else {
+        unmapped("amount:TriggerCount$Amount-of-another-monstrosity")
+    }
 }
 
 #[cfg(test)]

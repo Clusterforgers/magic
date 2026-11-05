@@ -38,3 +38,27 @@ fn the_nth_counter_compares_the_total(#[case] mode: &str, #[case] condition: Opt
         ),
     }
 }
+
+#[rstest]
+#[case::itself("Card.Self", Some(json!("X")))]
+#[case::another_creature("Creature.YouCtrl", None)]
+fn the_x_of_a_monstrosity_is_read_by_the_creature_itself(
+    #[case] valid: &str,
+    #[case] amount: Option<Value>,
+) {
+    let text = format!(
+        "Name:T\nTypes:Creature Hydra\nPT:1/1\nT:Mode$ BecomeMonstrous | ValidCard$ {valid} | TriggerZones$ Battlefield | Execute$ Go | TriggerDescription$ x\nSVar:Go:DB$ GainLife | LifeAmount$ MX\nSVar:MX:TriggerCount$Amount\n"
+    );
+    match amount {
+        Some(amount) => {
+            assert_eq!(gaps(&text), Vec::<String>::new());
+            let found = &abilities(&text)[0]["Triggered"];
+            assert_eq!(found["effects"][0]["GainLife"]["amount"], amount);
+            assert_eq!(
+                found["when"],
+                json!({"BecomesMonstrous": {"what": ["This"]}})
+            );
+        }
+        None => assert_ne!(gaps(&text), Vec::<String>::new()),
+    }
+}

@@ -17,7 +17,6 @@ fn trigger(line: &str) -> String {
 #[case::lost("Mode$ LosesGame | ValidPlayer$ You", json!({"action": "LostGame", "who": "You"}))]
 #[case::land("Mode$ LandPlayed | ValidCard$ Land.YouCtrl", json!({"action": "PlayedLand", "what": [{"Type": "Land"}, {"ControlledBy": "You"}]}))]
 #[case::explores("Mode$ Explores | ValidCard$ Card.Self", json!({"action": "Explored", "what": ["This"]}))]
-#[case::monstrous("Mode$ BecomeMonstrous | ValidCard$ Card.Self", json!({"action": "BecameMonstrous", "what": ["This"]}))]
 #[case::mutates("Mode$ Mutates | ValidCard$ Creature.YouCtrl", json!({"action": "Mutated", "what": [{"Type": "Creature"}, {"ControlledBy": "You"}]}))]
 fn action_modes_are_did(#[case] line: &str, #[case] node: Value) {
     let expected = normal(json!({"Triggered": {"when": {"Did": node}, "effects": [{"Draw": {}}]}}));

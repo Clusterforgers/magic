@@ -109,6 +109,11 @@ fn did(ctx: &Ctx, p: &Params, mode: &str, action: &str, subject: Subject) -> Tr<
     if let Some(valid) = object_key.and_then(|key| p.get(key)) {
         node["what"] = json!(selector_any(ctx, valid)?);
     }
+    // Becoming monstrous is its own pattern: it carries the X the monstrosity was paid with.
+    if action == "BecameMonstrous" {
+        let what = node.get("what").cloned().unwrap_or_else(|| json!([]));
+        return Ok(json!({ "BecomesMonstrous": { "what": what } }));
+    }
     Ok(json!({ "Did": node }))
 }
 
