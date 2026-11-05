@@ -148,7 +148,13 @@ fn destroy_all(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
     only(
         p,
         "DestroyAll",
-        &["ValidCards", "ValidTgts", "NoRegen", "RememberDestroyed", "Zone"],
+        &[
+            "ValidCards",
+            "ValidTgts",
+            "NoRegen",
+            "RememberDestroyed",
+            "Zone",
+        ],
     )?;
     if let Some(zone) = p.get("Zone")
         && zone != "Battlefield"
@@ -184,7 +190,13 @@ fn damage_all(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
     only(
         p,
         "DamageAll",
-        &["NumDmg", "ValidCards", "ValidPlayers", "DamageMap", "ValidTgts"],
+        &[
+            "NumDmg",
+            "ValidCards",
+            "ValidPlayers",
+            "DamageMap",
+            "ValidTgts",
+        ],
     )?;
     if p.has("ValidTgts") && p.has("ValidPlayers") {
         return unmapped("key:DamageAll.ValidTgts-with-ValidPlayers");
