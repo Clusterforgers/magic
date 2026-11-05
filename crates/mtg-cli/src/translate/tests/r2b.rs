@@ -37,3 +37,45 @@ fn a_cause_that_is_an_object_filter_stays_a_gap() {
         vec!["key:Trigger.Discarded.ValidCause=Card.Red".to_owned()]
     );
 }
+
+#[rstest]
+#[case::blocked_this_turn("blockedThisTurn", r#"{"DidThisTurn":{"event":"Blocked"}}"#)]
+#[case::blocked_this_combat(
+    "blockedThisCombat",
+    r#"{"DidThisTurn":{"event":"Blocked","combat":true}}"#
+)]
+#[case::attacked_this_combat(
+    "attackedThisCombat",
+    r#"{"DidThisTurn":{"event":"Attacked","combat":true}}"#
+)]
+#[case::dealt_damage_this_turn("dealtDamageThisTurn", r#"{"DidThisTurn":{"event":"Damaged"}}"#)]
+#[case::dealt_damage_to_you(
+    "dealtDamageToYouThisTurn",
+    r#"{"DidThisTurn":{"event":"Damaged","to":"You"}}"#
+)]
+fn a_property_of_the_turns_log_is_a_did_this_turn_predicate(
+    #[case] property: &str,
+    #[case] expected: &str,
+) {
+    let script = format!(
+        "Name:T\nTypes:Instant\nA:SP$ Pump | ValidTgts$ Creature.{property} | NumAtt$ 1\n"
+    );
+    assert_eq!(gaps(&script), Vec::<String>::new());
+    let expected: Value = serde_json::from_str(expected).unwrap();
+    let found = &abilities(&script)[0]["Spell"]["targets"][0]["what"]["Object"][1];
+    assert_eq!(*found, expected);
+}
+
+#[rstest]
+#[case::any_kind_of_counter("Any You Creature", true)]
+#[case::a_kind_of_counter("P1P1 You Creature", false)]
+fn counters_put_this_turn_count_only_without_a_kind(#[case] words: &str, #[case] read: bool) {
+    let script = format!(
+        "Name:T\nTypes:Creature Human\nPT:1/1\nS:Mode$ Continuous | Affected$ Card.Self | AddPower$ X\nSVar:X:Count$CountersAddedThisTurn {words}\n"
+    );
+    assert_eq!(gaps(&script).is_empty(), read, "{:?}", gaps(&script));
+    if read {
+        let found = serde_json::to_string(&abilities(&script)).unwrap();
+        assert!(found.contains(r#""event":"CountersPut""#), "{found}");
+    }
+}

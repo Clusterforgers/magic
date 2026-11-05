@@ -20,6 +20,12 @@ pub fn atom(prop: &str) -> Option<Vec<Value>> {
         "ThisTurnEntered" => return one(json!("EnteredThisTurn")),
         "tokenCreated" => return one(json!("Token")),
         "wasDealtDamageThisTurn" => return one(json!("DamagedThisTurn")),
+        // The turn's log: what the object itself did.
+        "blockedThisTurn" => return one(did("Blocked", None, false)),
+        "blockedThisCombat" => return one(did("Blocked", None, true)),
+        "attackedThisCombat" => return one(did("Attacked", None, true)),
+        "dealtDamageThisTurn" => return one(did("Damaged", None, false)),
+        "dealtDamageToYouThisTurn" => return one(did("Damaged", Some("You"), false)),
         "blockingSource" => return one(json!({"Blocks": "This"})),
         "blockedBySource" => return one(json!({"BlockedBy": "This"})),
         "attackingYou" => return one(json!({"AttackingPlayer": "You"})),
@@ -65,6 +71,18 @@ pub fn atom(prop: &str) -> Option<Vec<Value>> {
         return Some(vec![found]);
     }
     was_cast(prop.strip_prefix("wasCast")?)
+}
+
+/// `DidThisTurn`: the object did the event in the turn's log (to whom, in this combat only).
+fn did(event: &str, to: Option<&str>, combat: bool) -> Value {
+    let mut pred = json!({ "event": event });
+    if let Some(to) = to {
+        pred["to"] = json!(to);
+    }
+    if combat {
+        pred["combat"] = json!(true);
+    }
+    json!({ "DidThisTurn": pred })
 }
 
 /// Whether a reference names players only (a word that does not is a gap, or an object whose controller is wanted).
