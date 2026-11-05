@@ -68,6 +68,8 @@ fn token_create(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
             "RememberTokens",
             "AttachedTo",
             "ValidTgts",
+            "PumpKeywords",
+            "PumpDuration",
         ],
     )?;
     let Some(script) = p.get("TokenScript") else {
@@ -139,6 +141,22 @@ fn token_create(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
         create["as"] = name;
     }
     let attach = attached(ctx, p, &mut create)?;
+    // "It gains haste until end of turn": a grant on the tokens just made.
+    if let Some(words) = p.get("PumpKeywords") {
+        let mods: Vec<Value> = super::keyword::keyword_list(ctx, words)?
+            .into_iter()
+            .map(|keyword| json!({ "AddKeyword": keyword }))
+            .collect();
+        let duration = super::effects_obj::duration(p.get("PumpDuration"))?;
+        let name = match create.get("as") {
+            Some(name) => name.clone(),
+            None => json!(ctx.fresh("token")),
+        };
+        create["as"] = name.clone();
+        after.push(json!({"Continuous": {"affected": {"Bound": name}, "mods": mods, "duration": duration}}));
+    } else if p.has("PumpDuration") {
+        return unmapped("key:Token.PumpDuration");
+    }
     let mut effects = before;
     effects.push(json!({ "CreateToken": create }));
     effects.extend(after);

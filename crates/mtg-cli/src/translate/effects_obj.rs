@@ -439,6 +439,7 @@ fn pump_all(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
         p,
         "PumpAll",
         &[
+            "ValidTgts",
             "NumAtt",
             "NumDef",
             "KW",
@@ -449,7 +450,7 @@ fn pump_all(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
     )?;
     let duration = pump_duration(p)?;
     let valid = p.get("ValidCards").unwrap_or_default();
-    let affected = json!({"Each": selector_any(ctx, valid)?});
+    let affected = json!({"Each": group_of_player(ctx, p, valid)?});
     let mods = pump_mods(ctx, p, None)?;
     Ok(vec![
         json!({"Continuous": {"affected": affected, "mods": mods, "duration": duration}}),
@@ -802,6 +803,7 @@ fn gain_control(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
             "NewController",
             "Untap",
             "AddKWs",
+            "AllValid",
         ],
     )?;
     let duration = match p.get("LoseControl") {
@@ -809,7 +811,10 @@ fn gain_control(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
         Some("EOT") => "UntilEndOfTurn",
         Some(other) => return unmapped(format!("key:GainControl.LoseControl={other}")),
     };
-    let affected = objects(subject(ctx, p, "", None)?)?;
+    let affected = match p.get("AllValid") {
+        Some(valid) => json!({"Each": group_of_player(ctx, p, valid)?}),
+        None => objects(subject(ctx, p, "", None)?)?,
+    };
     let controller = match p.get("NewController") {
         None => json!("You"),
         Some(word) => match defined(ctx, word)? {
@@ -985,4 +990,22 @@ fn alter_attribute(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
     }
     let what = subject(ctx, p, "Self", None)?;
     Ok(vec![json!({"Prepare": {"what": what}})])
+}
+
+/// The objects a group line (`PumpAll`, `GainControl` with `AllValid$`) acts on. A `ValidTgts$` that names a player is the
+/// player whose objects they are ("creatures target player controls"): the target is declared first, and a valid-string that
+/// does not name the player itself is limited to the objects that player controls.
+fn group_of_player(ctx: &mut Ctx, p: &Params, valid: &str) -> Tr<Vec<Value>> {
+    if !p.has("ValidTgts") {
+        return selector_any(ctx, valid);
+    }
+    if !matches!(p.get("ValidTgts"), Some("Player" | "Opponent")) {
+        return unmapped("key:Group.ValidTgts-not-a-player");
+    }
+    let target = subject(ctx, p, "", None)?;
+    let mut preds = selector_any(ctx, valid)?;
+    if !valid.contains("TargetedPlayer") {
+        preds.push(json!({"ControlledBy": target}));
+    }
+    Ok(preds)
 }
