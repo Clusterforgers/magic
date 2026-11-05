@@ -1,5 +1,5 @@
 /**
- * Combat damage as strikes (docs/web.md, Table effects): which creature strikes what in a batch, and the path its
+ * Combat damage as strikes (docs/web.md, Table feedback): which creature strikes what in a batch, and the path its
  * picture takes there and back. Pure: `planStrikes` reads the public events and the two moments, `strikeKeyframes`
  * turns two boxes into a path, `impactDelay` says when a strike lands.
  */

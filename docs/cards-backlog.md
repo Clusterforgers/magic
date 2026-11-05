@@ -1,6 +1,6 @@
 # Cards backlog
 
-Open card, compiler and wording items by code area; the rules of `docs/ROADMAP.md` apply (one line per item, claims, ids). The gap ledger (`mtg-cli check-rules --gaps`, `coverage --all`) ranks them by the popularity of the cards they hold back. Design and task order: `docs/cards-dsl.md` (Tasks).
+Open card, compiler and wording items by code area; the rules of `docs/ROADMAP.md` apply (one line per item, claims, ids). The gap ledger (`mtg-cli check-rules --gaps`, `coverage --all`) ranks them by the popularity of the cards they hold back. Design: `docs/cards-dsl.md`.
 
 ## Generality
 
@@ -15,7 +15,7 @@ Open card, compiler and wording items by code area; the rules of `docs/ROADMAP.m
 
 ## Forge coverage
 
-Ordered by scripts freed per piece (`docs/cards-dsl.md`, Forge coverage). `gn1a` and `gn1j` are writer items beside this list; `gn1c`, `gn1e`, `gn1f`, `gn1i` and `gn1m` free 280, 164, 117, 97 and 104 scripts and stay as they are; a new decision comes with its web prompt in the same piece.
+Ordered by scripts freed per piece (`mtg-cli translate-forge`, `forge-check`). `gn1a` and `gn1j` are writer items beside this list; a new decision comes with its web prompt in the same piece.
 
 - [ ] (fg5ea) Effect verbs with no mapper yet that free the most scripts: Vote, Repeat, ChooseSource; `translate/effects_verbs.rs`; MakeCard and Seek need engine nodes (conjure a named card, seek a card from the library); GenericChoice maps only two parts chosen by you, SetState only Transform; `translate/effects_verbs2.rs`
 - [ ] (fg5eb) Replacement events beyond entering and token multiplying: `Counter`, `AddCounter` (needs a selector for `CountersPut.on`), `Draw`, `ProduceMana`, `GameLoss`, `LifeReduced`, `Untap-affected`, token halving and added tokens; `translate/replacements_token.rs`
@@ -29,7 +29,7 @@ Ordered by scripts freed per piece (`docs/cards-dsl.md`, Forge coverage). `gn1a`
 - [ ] (fe1ia) Macro keywords with a printed parameter besides a number: Champion (a type), Amplify (a type), Reinforce, Recover and Fortify (a cost); `Keyword::Macro` carries the cost or type that `$C` and `$T` fill in the table; `macros.rs`, `compile/keywords.rs`
 - [ ] (fe1ib) Tribute (an opponent of your choice decides as it enters, then "if tribute wasn't paid") and Haunt (exile it haunting a creature, remembered for the second trigger; after fe1c); `trigger.rs` `ReplaceBy`, `macros.rs`, `replace.rs`
 - [ ] (fe1ic) Airbend (a cast permission whose cost replaces the mana cost), Ripple (a same-name predicate and a reveal of the top N), Epic and Paradigm (a spell that leaves the stack into a repeating upkeep copy); `modify.rs` `CastPermission`, `refs.rs`, `macros.rs`
-- [ ] (fe1j) `Effect::Conjure { card, to, count, as }` by name or spellbook with the definition table at run time, `Heist`, intensity (`Starting intensity`, `Intensify`, `Amount::Intensity`); frees 147 scripts (Argothian Uprooting, Awestruck Cygnet, Bladehold Cleaver); `effect.rs`, `mtg-engine` setup and `resolve/prim/`, web spellbook prompt
+- [ ] (fe1j) `Heist` and intensity (`Starting intensity`, `Intensify`, `Amount::Intensity`) beside the existing `Effect::Conjure`; frees scripts with spellbook cards (Argothian Uprooting, Bladehold Cleaver); `effect.rs`, `resolve/prim/`, web spellbook prompt
 - [ ] (fe1u) One-shot skips for `Prohibited::SkipTurn` and `SkipStep` ("skip your next turn", "skip your next draw step": a rule used up by its skip, a duration `NextTurn`) and the manual panel (`manual.rs`), which bypasses prohibitions, obeying `Cant`; `prohibit.rs`, `steps.rs`, `manual.rs`, `modify.rs`
 - [ ] (fe1v) `Effect::RemoveDamage` with an amount (`DamageRemoved` carries the amount) and `ExchangeLife` with a creature's toughness; frees the remaining `fe1n` scripts; `resolve/prim/fe1n_damage.rs`, `fe1n_life.rs`
 - [ ] (fg3u) `translate-forge` mappers for the choices that persist past one ability (`ChosenAs`, `ChosenName`, `Chosen`, the `Choose` enters kinds, `ChooseNumber`, `ChoosePlayer`) and the `Remember*` params; `mtg-cli`
@@ -81,7 +81,6 @@ Ordered by scripts freed per piece (`docs/cards-dsl.md`, Forge coverage). `gn1a`
 
 - [ ] (c2g) Keywords given to spells beyond convoke, improvise and delve, and keywords with a cost given to cards in a hand or graveyard; frees about 20 cards (Ghost Ark, Past in Flames, Zhulodok)
 - [ ] (c2d) The cards that print scavenge, transmute, awaken, gravestorm or sunburst and wait on another wording; frees about 15 cards (Brainspoil, Ondu Rising, Dodgy Jalopy)
-- [ ] (c2l3a) Plot: the special action from a hand, the plotted card cast free as a sorcery on a later turn, plot cost reductions; frees about 4 cards (Lock and Load, Pyretic Charge)
 - [ ] (c2l3c) The backup, emerge, harmonize, replicate, mayhem and afflict cards that wait on another wording, and "Discard any number of cards, then draw that many cards"; frees about 15 cards (Guardian Scalelord, Adipose Offspring, The Elder Dragon War)
 - [ ] (r2da-h) "Do this only once each turn" after a may as its own limit: a declined may leaves the ability open for the turn (now read as a trigger limited to once each turn)
 - [ ] (r2da-c-j) Exert as a cost part and mana whose spell gains haste (Arena of Glory, Carnelian Orb of Dragonkind, Oasis Ritualist, Fervent Paincaster)
@@ -165,7 +164,7 @@ Ordered by scripts freed per piece (`docs/cards-dsl.md`, Forge coverage). `gn1a`
 - [ ] (r1auhb) Villainous choices left: an additional choice, "Then" before the subject, "that opponent" and "each opponent who" subjects, a target's owner; frees about 10 cards (The Valeyard, This Is How It Ends)
 - [ ] (r1auj) Piles that the controller separates or of permanents and targets (Steam Augury, Boneyard Parley, Make an Example, Whims of the Fates)
 
-## Model-assisted reading
+## Checker and proposals
 
 - [ ] (t17e) Slips the proposal repair still leaves: an ability whose printed line the abilities of its kind do not give one-to-one, a target used in an event, phrases the target reader does not read ("target player's library"), a group in a static (`ControllerOf` as `affected`), a player where an object is meant, an `X` standing for "the chosen number"
 - [ ] (t19d) `mtg-cli compile` counts the cards with no rules text outside reminder text (they play as printed, nothing to store) apart from the cards it cannot read
@@ -222,7 +221,6 @@ Ordered by scripts freed per piece (`docs/cards-dsl.md`, Forge coverage). `gn1a`
 - [ ] (t13c) A generic lasting-effect object with typed statics and triggers, bound objects and an end condition ("for as long as", "until your next turn"), the old duration nodes kept (about 200 tail cards, touches layers and lifetimes)
 - [ ] (t13d) Optional parameters on the big node families instead of new nodes: a library position and several origin zones on `Move`, division among targets on `PutCounters`, an `in` zone on `Continuous`, copy exceptions, "different names" (3 to 15 cards each)
 - [ ] (t13e) A cost item that wraps an effect (`CostItem::Do`) and one rule node for "X can't happen" (can't be cast, can't win or lose, triggers don't fire, untap in another player's untap step); about 65 tail cards
-- [ ] (t21a) The cards whose stored proposal differs from the printed text are proposed again after each writer round: the gap ledger (`check-rules --gaps`) names them and `propose --resume` retries them
 - [ ] (r4d-e) A count of transformed permanents (Mutagen Connoisseur)
 - [ ] (r4d-f) Alternative costs past a "you control" condition: "If the {1}{B} cost was paid" (Baleful Mastery), "If a white creature is attacking" (Nemesis Trap), the other Traps and Invigorate
 - [ ] (r4d-g) A blocker of several attackers: its controller divides its damage, "Whenever ~ blocks" triggers once, and the web names a blocker for several attackers
@@ -240,7 +238,6 @@ Ordered by scripts freed per piece (`docs/cards-dsl.md`, Forge coverage). `gn1a`
 - [ ] (r3w4b) Delayed triggers and repeated steps left: a loyalty ability's delayed return (Nahiri, the Harbinger), steps repeated for each object ("each Dragon you control", "each of those creatures"), a delayed trigger on its own line (Forth Eorlingas!)
 - [ ] (r3w6a) The A to L mismatches left: "you may have it fight", "you and target opponent each create", "another target player", a token "that's all colors", one of two counter removals as a cost; Commodore Guff, Kazuul and Gyome need a rewrite
 - [ ] (r3w5a) Writers for the rules of the r3 samples: a draw replaced after the first in a draw step (Notion Thief), a type and a granted ability during your turn (Gourmand's Talent)
-- [ ] (r2ec) A specialist model: `mtg-cli export-pairs` writes card text and rules pairs from the Verified cards with a held-out split, decoding is limited to the DSL grammar (`dsl-schema`), and a LoRA fine-tune with a short prompt replaces the 22K-token reference
 - [ ] (r2cf) A card's name in its token or a name that starts with a creature type reads as `~` in both the checker and the corpus calibration (Kher Keep, Tuktuk the Explorer, Sliver Hivelord)
 
 ## Layouts

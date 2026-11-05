@@ -1,4 +1,4 @@
-/** The one wording and address for cards that wait for a player's read, so every deck check agrees (docs/web.md, "Reading cards"). */
+/** The one wording and address for cards that wait for a player's read, so every deck check agrees (docs/web.md, "Accounts and games pages"). */
 import { BY_HAND } from './byHand'
 
 /** What is said of a draft nobody has judged, in a count: "3 cards to read". */

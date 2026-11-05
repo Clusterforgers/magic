@@ -1,5 +1,5 @@
 //! `promote`: the proposals the checker accepts become corpus cards, a rules file in `cards/` and the card's Scryfall
-//! record from the cache as its fixture (`docs/cards-dsl.md`, Model-assisted reading).
+//! record from the cache as its fixture (`docs/cards-dsl.md`, Proposals and drafts).
 
 pub mod draft;
 pub mod fixture;

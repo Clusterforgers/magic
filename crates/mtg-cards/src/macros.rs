@@ -1,6 +1,6 @@
 //! Keyword macros: a keyword or keyword action that expands into existing nodes, so a new one is a table entry and no engine code.
 //!
-//! Design record: `docs/cards-dsl.md`, "Keyword macros". A template is JSON for the abilities (keywords) or effects
+//! Design record: `docs/cards-dsl.md`, "Keywords". A template is JSON for the abilities (keywords) or effects
 //! (actions) it stands for; `$N` is the keyword's number, `$ON` the object an action works on.
 
 use crate::ability::Ability;

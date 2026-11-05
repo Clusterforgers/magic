@@ -4,7 +4,7 @@
 //! What a player has begun lives outside game state until it is paid for, so backing out is free and leaves no trace
 //! in the log. [`announce`] walks the [`Phase`]s in the order of the rules; each is a module that asks its question,
 //! passes or rewinds the whole announcement, and the ones that wait for a later task are stubs that pass
-//! (`docs/engine.md`, Casting).
+//! (`docs/engine.md`, Announcement).
 
 mod again;
 mod alternative;

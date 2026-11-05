@@ -1,5 +1,5 @@
 //! Proposed rules: a rules file written by a person or a model, checked against the printed card
-//! without trusting it (`docs/cards-dsl.md`, Model-assisted reading).
+//! without trusting it (`docs/cards-dsl.md`, Proposals and drafts).
 //!
 //! The text of the card is the only ground truth. A proposal is accepted when it is valid (the
 //! levels of a rules file), when every ability is written back by the renderers as a clause of the

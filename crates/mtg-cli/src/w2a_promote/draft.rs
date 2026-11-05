@@ -1,5 +1,5 @@
 //! `promote --draft`: a proposal the checker marks `Unchecked` that is a whole card becomes a draft for players to read,
-//! once the engine runs it as a `Read` card and it passes the smoke gate (`docs/cards-dsl.md`, Model-assisted reading,
+//! once the engine runs it as a `Read` card and it passes the smoke gate (`docs/cards-dsl.md`, Proposals and drafts,
 //! Drafts).
 
 use std::collections::{BTreeMap, BTreeSet};

@@ -1,5 +1,5 @@
 //! Why the cards of a player's hand and command zone that the priority offer leaves out cannot be played now
-//! (`PriorityOptions.unplayable`, `docs/engine.md`, Priority). The spells are judged once, and the same judgement decides
+//! (`PriorityOptions.unplayable`, `docs/engine.md`, Priority options). The spells are judged once, and the same judgement decides
 //! `castable`, so the offer runs the rules of a card once.
 
 use std::collections::{BTreeMap, BTreeSet};

@@ -2,7 +2,7 @@
 //! APNAP order, with the delayed ones (CR 603.7) that effects set up.
 //!
 //! Detection is a function of events and data ([`detect()`]); the queue is state, so a log folds to the same queue
-//! and an engine rebuilt from it carries on (`docs/cards-dsl.md`, Triggers).
+//! and an engine rebuilt from it carries on (`docs/cards-dsl.md`, Triggers, replacement and layers).
 
 mod delayed;
 mod detect;

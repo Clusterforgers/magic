@@ -233,7 +233,7 @@ fn the_embedded_map_reads_and_names_only_verbs_the_dsl_has() {
 #[test]
 fn the_embedded_map_names_the_sixty_most_used_apis() {
     let map = Map::standard().unwrap_or_else(|error| panic!("{error}"));
-    // The APIs of the survey's ranking (`docs/reference-engines.md`): names only.
+    // The most used Forge APIs (`docs/reference-engines.md`): names only.
     let top = [
         "ChangeZone",
         "Pump",

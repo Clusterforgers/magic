@@ -2,7 +2,7 @@
 //!
 //! It is asked when a player has two or more triggered abilities to put on the stack together and the order can
 //! matter; abilities of one source and one ability do the same in any order, and are never asked about
-//! (`docs/cards-dsl.md`, Triggers).
+//! (`docs/cards-dsl.md`, Triggers, replacement and layers).
 
 use mtg_core::ids::PlayerId;
 use serde::{Deserialize, Serialize};

@@ -1,5 +1,5 @@
 //! The DSL reference: the type tree of a rules file and its vocabulary as compact text, generated from the source of the
-//! types so it cannot drift from them (`docs/cards-dsl.md`, Model-assisted reading).
+//! types so it cannot drift from them (`docs/cards-dsl.md`, Proposals and drafts).
 
 mod lex;
 mod parse;

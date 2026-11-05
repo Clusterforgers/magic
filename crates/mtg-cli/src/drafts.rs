@@ -1,6 +1,6 @@
 //! Drafts of the read tier in this crate: the whole rules files under `drafts/` that `promote --draft` writes, embedded
 //! at build time; whether one fits its stored card, the smoke gate on one, and the store `compile` keeps in `card_drafts`
-//! (`docs/cards-dsl.md`, Model-assisted reading, Drafts).
+//! (`docs/cards-dsl.md`, Proposals and drafts, Drafts).
 
 use std::collections::{BTreeMap, BTreeSet};
 use std::fmt::Write as _;

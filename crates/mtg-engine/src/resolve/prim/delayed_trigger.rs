@@ -62,7 +62,7 @@ pub(super) fn origin(cx: &Cx<'_>) -> Result<Origin, ResolveError> {
 }
 
 /// Sets the delayed trigger up with the names this resolution has bound so far, as they are now; it triggers on the
-/// next event its pattern describes (`docs/cards-dsl.md`, Triggers).
+/// next event its pattern describes (`docs/cards-dsl.md`, Triggers, replacement and layers).
 pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
     let Effect::DelayedTrigger {
         when,
