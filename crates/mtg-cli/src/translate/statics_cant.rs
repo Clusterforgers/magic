@@ -9,9 +9,15 @@ use crate::forge::script::Params;
 
 /// The rule of a static line of one of these modes; `None` for any other.
 pub fn rule(ctx: &Ctx, p: &Params) -> Option<Tr<Value>> {
+    rule_for(ctx, p, None)
+}
+
+/// [`rule`], where `Player.IsRemembered` names the players `remembered` stands for (an `Effect` object that remembers a
+/// player: "target player can't cast spells this turn").
+pub fn rule_for(ctx: &Ctx, p: &Params, remembered: Option<&Value>) -> Option<Tr<Value>> {
     let found = match p.get("Mode").unwrap_or_default() {
-        "CantBeCast" => cant_be_cast(ctx, p),
-        "CantBeActivated" => cant_be_activated(ctx, p),
+        "CantBeCast" => cant_be_cast(ctx, p, remembered),
+        "CantBeActivated" => cant_be_activated(ctx, p, remembered),
         "DisableTriggers" => disable_triggers(ctx, p),
         _ => return None,
     };
@@ -51,8 +57,11 @@ fn keys(p: &Params, mode: &str, read: &[&str]) -> Tr<()> {
 }
 
 /// The players a `Caster$` or `Activator$` word names; every player when absent.
-fn who(word: Option<&str>) -> Tr<Value> {
+fn who(word: Option<&str>, remembered: Option<&Value>) -> Tr<Value> {
     match word {
+        Some("Player.IsRemembered") if remembered.is_some() => {
+            Ok(remembered.cloned().unwrap_or_default())
+        }
         None | Some("Player") => Ok(json!("EachPlayer")),
         Some("You") => Ok(json!("You")),
         Some("Opponent") => Ok(json!("Opponents")),
@@ -65,7 +74,7 @@ fn cant(who: &Value, action: &Value) -> Value {
 }
 
 /// `CantBeCast`: the spells `ValidCard$` names can't be cast by the `Caster$`, once `NumLimitEachTurn$` of them were.
-fn cant_be_cast(ctx: &Ctx, p: &Params) -> Tr<Value> {
+fn cant_be_cast(ctx: &Ctx, p: &Params, remembered: Option<&Value>) -> Tr<Value> {
     keys(
         p,
         "CantBeCast",
@@ -85,12 +94,15 @@ fn cant_be_cast(ctx: &Ctx, p: &Params) -> Tr<Value> {
         };
         action["more_than"] = json!(limit);
     }
-    Ok(cant(&who(p.get("Caster"))?, &json!({"Cast": action})))
+    Ok(cant(
+        &who(p.get("Caster"), remembered)?,
+        &json!({"Cast": action}),
+    ))
 }
 
 /// `CantBeActivated`: the activated abilities (not the mana abilities) of the permanents `ValidCard$` names can't be
 /// activated, by the `Activator$` when it names one.
-fn cant_be_activated(ctx: &Ctx, p: &Params) -> Tr<Value> {
+fn cant_be_activated(ctx: &Ctx, p: &Params, remembered: Option<&Value>) -> Tr<Value> {
     keys(
         p,
         "CantBeActivated",
@@ -116,11 +128,14 @@ fn cant_be_activated(ctx: &Ctx, p: &Params) -> Tr<Value> {
     };
     if let Some(kind) = kind {
         let action = json!({"ActivateKind": {"kind": kind, "sources": sources}});
-        return Ok(cant(&who(p.get("Activator"))?, &action));
+        return Ok(cant(&who(p.get("Activator"), remembered)?, &action));
     }
     match p.get("Activator") {
         None => Ok(cant(&json!({"Each": sources}), &json!({"Activate": []}))),
-        Some(word) => Ok(cant(&who(Some(word))?, &json!({"Activate": sources}))),
+        Some(word) => Ok(cant(
+            &who(Some(word), remembered)?,
+            &json!({"Activate": sources}),
+        )),
     }
 }
 

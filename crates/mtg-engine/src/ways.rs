@@ -9,6 +9,7 @@ use mtg_cards::ability::Ability;
 use mtg_cards::cost::{Cost, CostItem};
 use mtg_cards::definition::Layout;
 use mtg_cards::keyword::Keyword;
+use mtg_cards::modify::SpendAs;
 use mtg_cards::refs::{Pred, Selector, ZoneKind};
 use mtg_cards::value::{Amount, CastWay};
 use mtg_core::card::CardType;
@@ -191,6 +192,19 @@ fn with_required(state: &GameState, id: ObjectId, ways: Vec<Way>) -> Vec<Way> {
     })
 }
 
+/// Mana of any color or type may pay for a cast through a permission that says so (CR 609.4b): the ways cost the same total
+/// in generic mana.
+fn spend_as_any(permissions: &[&Cast], ways: &mut [Way], printed: Option<&ManaCost>) {
+    if permissions
+        .iter()
+        .any(|permission| permission.spend_as != SpendAs::Normal)
+    {
+        for way in ways {
+            way.mana = way.cost(printed).map(|cost| cost.paid_by_any_mana());
+        }
+    }
+}
+
 /// The ways of [`of`] before the required additional costs.
 fn listed(state: &GameState, player: PlayerId, id: ObjectId) -> Vec<Way> {
     let Some(card) = state.object(id) else {
@@ -296,6 +310,9 @@ fn listed(state: &GameState, player: PlayerId, id: ObjectId) -> Vec<Way> {
     // The back face of a card with disturb is cast from its graveyard (CR 702.146a).
     ways.extend(keywords::disturb::way(state, id, instant));
     ways.extend(alt_cast_ways(state, player, card, instant));
+    if !own {
+        spend_as_any(&permissions, &mut ways, printed);
+    }
     ways
 }
 

@@ -406,6 +406,20 @@ impl ManaCost {
         }))
     }
 
+    /// The cost with each colored, colorless and hybrid symbol replaced by `{1}`: what the mana must cover when mana of
+    /// any color or type may be spent on it (CR 609.4b).
+    #[must_use]
+    pub fn paid_by_any_mana(&self) -> ManaCost {
+        ManaCost::from_symbols(self.0.iter().map(|s| match s {
+            ManaSymbol::Colored(_)
+            | ManaSymbol::Colorless
+            | ManaSymbol::Hybrid(..)
+            | ManaSymbol::MonoHybrid(_)
+            | ManaSymbol::ColorlessHybrid(_) => ManaSymbol::Generic(1),
+            other => *other,
+        }))
+    }
+
     /// The cost without its `{S}` symbols.
     #[must_use]
     pub fn without_snow(&self) -> ManaCost {

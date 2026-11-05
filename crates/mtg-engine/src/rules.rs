@@ -14,7 +14,7 @@ use std::sync::OnceLock;
 use mtg_cards::ability::Ability;
 use mtg_cards::cost::Cost;
 use mtg_cards::keyword::Keyword;
-use mtg_cards::modify::{Attacked, GameRule, Prohibited};
+use mtg_cards::modify::{Attacked, GameRule, Prohibited, SpendAs};
 use mtg_cards::refs::{Ref, Selector, ZoneKind};
 use mtg_cards::trigger::TriggerPattern;
 use mtg_core::ids::{EffectId, ObjectId, PlayerId};
@@ -167,6 +167,10 @@ pub enum Rule {
         #[serde(default, skip_serializing_if = "Option::is_none")]
         #[cfg_attr(feature = "ts", ts(optional, type = "unknown"))]
         additional: Option<Box<Cost>>,
+        /// How the mana of a cast through it may be spent.
+        #[serde(default, skip_serializing_if = "SpendAs::is_normal")]
+        #[cfg_attr(feature = "ts", ts(optional, type = "unknown"))]
+        spend_as: SpendAs,
     },
     /// A triggered ability of a permanent the rule's controller controls triggers an additional time when the event
     /// the pattern describes causes it.
@@ -466,6 +470,8 @@ pub(crate) struct Cast {
     pub(crate) once: bool,
     /// What the caster pays in addition to the other costs of a cast through it.
     pub(crate) additional: Option<Cost>,
+    /// How the mana of a cast through it may be spent.
+    pub(crate) spend_as: SpendAs,
 }
 
 impl Cast {
@@ -613,6 +619,7 @@ impl RulesInForce {
                 play: false,
                 once: false,
                 additional: None,
+                spend_as: SpendAs::Normal,
             });
         }
     }
@@ -692,6 +699,7 @@ impl RulesInForce {
                 play,
                 once,
                 additional,
+                spend_as,
             } => {
                 if let Some(source) = source {
                     self.casts.push(Cast {
@@ -706,6 +714,7 @@ impl RulesInForce {
                         play: *play,
                         once: *once,
                         additional: additional.as_deref().cloned(),
+                        spend_as: *spend_as,
                     });
                 }
             }
@@ -879,6 +888,7 @@ pub(crate) fn lower_rule(scope: &Scope<'_>, wanted: &GameRule) -> Result<Rule, R
             play: permission.play,
             once: permission.once,
             additional: permission.additional.clone().map(Box::new),
+            spend_as: permission.spend_as,
         },
         GameRule::NextSpell { what, benefit } => next_spell(scope, what, benefit)?,
         GameRule::TriggerAgain { cause, source } => Rule::TriggerAgain {
@@ -1842,6 +1852,7 @@ mod tests {
             play,
             once: false,
             additional: None,
+            spend_as: SpendAs::Normal,
         }
     }
 

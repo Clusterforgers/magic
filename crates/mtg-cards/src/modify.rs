@@ -250,6 +250,28 @@ pub struct CastPermission {
     /// discarding a card in addition to paying its other costs".
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub additional: Option<Cost>,
+    /// How the mana of a cast through it may be spent: as mana of any color or of any type ("spend mana as though it were mana of any color").
+    #[serde(default, skip_serializing_if = "SpendAs::is_normal")]
+    pub spend_as: SpendAs,
+}
+
+/// Which mana may pay for a cast through a permission.
+#[derive(Debug, Clone, Copy, Default, PartialEq, Eq, Hash, Serialize, Deserialize)]
+pub enum SpendAs {
+    /// Mana pays what its type says.
+    #[default]
+    Normal,
+    /// Mana of any color pays a colored symbol (CR 609.4b); the engine lets any mana pay it.
+    AnyColor,
+    /// Mana of any type pays the cost (CR 609.4b).
+    AnyType,
+}
+
+impl SpendAs {
+    /// Whether mana pays what its type says.
+    pub fn is_normal(&self) -> bool {
+        *self == SpendAs::Normal
+    }
 }
 
 /// Whether an attack tax names no mana.

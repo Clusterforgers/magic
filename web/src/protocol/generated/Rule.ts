@@ -110,7 +110,11 @@ once?: boolean,
 /**
  * What the caster pays in addition to the other costs of a cast through it.
  */
-additional?: unknown, } } | { "TriggerAgain": { 
+additional?: unknown, 
+/**
+ * How the mana of a cast through it may be spent.
+ */
+spend_as?: unknown, } } | { "TriggerAgain": { 
 /**
  * The event that causes the trigger; every event when absent.
  */

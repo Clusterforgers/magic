@@ -32,6 +32,7 @@ pub fn effects(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
             "Boon",
             "ForgetCounter",
             "ForgetOnCast",
+            "EffectOwner",
         ],
     )?;
     if p.has("ForgetOnCast") {
@@ -39,6 +40,20 @@ pub fn effects(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
     }
     // The Forge effect object ends when what it remembers changes zones; our references to remembered objects drop out the
     // same way, so the keys only matter beside `RememberObjects`.
+    // Who holds the effect: only a permission to cast reads it, as the player who may cast.
+    let owner = match p.get("EffectOwner") {
+        None | Some("You") => None,
+        Some(word) => Some(defined(ctx, word)?),
+    };
+    let remembering = p.has("RememberObjects") || p.has("ValidTgts");
+    if owner.is_some()
+        && (p.has("Triggers")
+            || p.has("ReplacementEffects")
+            || !remembering
+            || super::effects_emblem::is_emblem(p))
+    {
+        return unmapped("key:Effect.EffectOwner");
+    }
     if (p.has("ExileOnMoved") || p.has("ForgetOnMoved")) && !p.has("RememberObjects") {
         return unmapped("key:Effect.ExileOnMoved-without-RememberObjects");
     }
@@ -50,7 +65,7 @@ pub fn effects(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
             return unmapped("key:Effect.Triggers-and-ReplacementEffects");
         }
         let remembered = super::replacements_damage::remembered_of(ctx, p)?;
-        let mut out = ambient_with(ctx, p)?;
+        let mut out = ambient_with(ctx, p, remembered.as_ref())?;
         out.extend(super::effects_ambient::delayed_triggers(
             ctx,
             p,
@@ -67,7 +82,7 @@ pub fn effects(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
     }
     if p.has("ReplacementEffects") {
         let remembered = super::replacements_damage::remembered_of(ctx, p)?;
-        let mut out = ambient_with(ctx, p)?;
+        let mut out = ambient_with(ctx, p, remembered.as_ref())?;
         out.extend(super::replacements_damage::shield(
             ctx,
             p,
@@ -78,22 +93,38 @@ pub fn effects(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
     if !p.has("RememberObjects") && !p.has("ValidTgts") {
         return super::effects_ambient::continuous_statics(ctx, p);
     }
+    remembered_statics(ctx, p, owner.as_ref(), None)
+}
+
+/// The statics of an `Effect` line about the objects it remembers.
+fn remembered_statics(
+    ctx: &mut Ctx,
+    p: &Params,
+    owner: Option<&Value>,
+    known: Option<&Value>,
+) -> Tr<Vec<Value>> {
     let Some(names) = p.get("StaticAbilities") else {
         return unmapped("key:Effect.no-StaticAbilities");
     };
     let duration = lasting(p)?;
-    let who = remembered(ctx, p)?;
+    let who = match known {
+        Some(who) => who.clone(),
+        None => remembered(ctx, p)?,
+    };
     let mut out = Vec::new();
     for name in names.split(',').map(str::trim) {
-        out.extend(remembered_static(ctx, name, &who, &duration)?);
+        out.extend(remembered_static(ctx, name, &who, &duration, owner)?);
     }
     Ok(out)
 }
 
 /// The statics of an `Effect` line that has no remembered objects, when the line also holds a trigger or a replacement.
-fn ambient_with(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
+fn ambient_with(ctx: &mut Ctx, p: &Params, known: Option<&Value>) -> Tr<Vec<Value>> {
     if !p.has("StaticAbilities") {
         return Ok(Vec::new());
+    }
+    if known.is_some() {
+        return remembered_statics(ctx, p, None, known);
     }
     if p.has("RememberObjects") || p.has("ValidTgts") {
         return unmapped("key:Effect.static-with-remembered-and-more");
@@ -120,10 +151,29 @@ fn lasting(p: &Params) -> Tr<Value> {
 }
 
 /// One static of an `Effect` line about the objects it remembers.
-fn remembered_static(ctx: &mut Ctx, name: &str, who: &Value, duration: &Value) -> Tr<Vec<Value>> {
+fn remembered_static(
+    ctx: &mut Ctx,
+    name: &str,
+    who: &Value,
+    duration: &Value,
+    owner: Option<&Value>,
+) -> Tr<Vec<Value>> {
     let part = ctx.sub(name)?;
+    if owner.is_some() && !part.has("MayPlay") {
+        return unmapped("key:Effect.EffectOwner");
+    }
+    // A prohibition on the remembered players ("target player cannot cast spells this turn").
+    if let Some(found) = super::statics_cant::rule_for(ctx, &part, Some(who)) {
+        let mut rule = found?;
+        rule["Rule"]["duration"] = duration.clone();
+        return Ok(vec![rule]);
+    }
+    let who = &objects(who.clone())?;
     if part.has("MayPlay") {
-        let rule = super::mayplay::may_cast(ctx, &part, Some(who))?;
+        let mut rule = super::mayplay::may_cast(ctx, &part, Some(who))?;
+        if let Some(owner) = owner {
+            rule["MayCast"]["who"] = owner.clone();
+        }
         return Ok(vec![json!({"Rule": {"rule": rule, "duration": duration}})]);
     }
     let read = [
@@ -213,7 +263,7 @@ fn remembered(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
         "ParentTarget" => ctx.parent()?,
         other => return unmapped(format!("key:Effect.RememberObjects={other}")),
     };
-    objects(who)
+    Ok(who)
 }
 
 /// Power, toughness and keywords of a continuous static line.
