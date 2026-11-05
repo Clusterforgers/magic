@@ -510,6 +510,15 @@ pub fn defined(ctx: &Ctx, word: &str) -> Tr<Value> {
     if let Some(spec) = word.trim().strip_prefix("Valid ") {
         return Ok(json!({"Each": selector_any(ctx, spec)?}));
     }
+    // `ValidGraveyard Creature.YouOwn`: the objects of a zone list, read as `Count$Valid<zones>` reads them.
+    if let Some(rest) = word.trim().strip_prefix("Valid")
+        && let Some((zones, spec)) = rest.split_once(' ')
+        && !zones.is_empty()
+        && zones.chars().all(|c| c.is_ascii_alphabetic() || c == ',')
+    {
+        let zones: Vec<&str> = zones.split(',').collect();
+        return Ok(json!({"Each": super::count::zone_selector(ctx, &zones, spec)?}));
+    }
     let controller = |inner: Value| Ok(json!({ "ControllerOf": inner }));
     match word.trim() {
         "You" => Ok(json!("You")),

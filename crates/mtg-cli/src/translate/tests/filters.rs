@@ -165,6 +165,29 @@ fn count_of_text(text: &str) -> Value {
     found[0]["Spell"]["effects"][0]["DealDamage"]["amount"].clone()
 }
 
+#[rstest]
+#[case::owned_and_died(
+    "Creature.YouOwn+ThisTurnEnteredFrom_Battlefield",
+    &[json!({"Type": "Creature"}), json!({"OwnedBy": "You"}), json!({"ArrivedFrom": "Battlefield"}), json!({"In": "Graveyard"})]
+)]
+#[case::every_graveyard(
+    "Creature.ThisTurnEnteredFrom_Battlefield",
+    &[json!({"Type": "Creature"}), json!({"ArrivedFrom": "Battlefield"}), json!({"In": "Graveyard"})]
+)]
+fn a_defined_filter_over_a_zone_is_the_objects_of_the_zone(
+    #[case] filter: &str,
+    #[case] expected: &[Value],
+) {
+    let text = format!(
+        "Name:T\nTypes:Creature Elf\nPT:1/1\nA:AB$ ChangeZone | Cost$ Sac<1/CARDNAME> | Origin$ Graveyard | Destination$ Hand | Defined$ ValidGraveyard {filter}\n"
+    );
+    assert_eq!(gaps(&text), Vec::<String>::new());
+    let found = abilities(&text)[0]["Activated"]["effects"][0].to_string();
+    for pred in expected {
+        assert!(found.contains(&pred.to_string()), "{pred} in {found}");
+    }
+}
+
 #[test]
 fn a_word_is_matched_whole() {
     // `YouDontOwnIt` is not `YouDontOwn`, `suspendedX` is not `suspended`.
