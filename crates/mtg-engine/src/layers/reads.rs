@@ -296,6 +296,7 @@ fn reads_of_stat(stat: StatKind) -> Traits {
         StatKind::ManaValue
         | StatKind::Loyalty
         | StatKind::BasePower
+        | StatKind::BaseToughness
         | StatKind::ManaSpent
         | StatKind::Name => Traits::NONE,
     }

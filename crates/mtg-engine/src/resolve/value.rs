@@ -1372,6 +1372,7 @@ impl<'a> Scope<'a> {
             StatKind::Toughness => seen.chars.toughness.map(i64::from),
             StatKind::Colors => i64::try_from(seen.chars.colors.iter().count()).ok(),
             StatKind::BasePower => seen.card.and_then(|c| c.card().power).map(i64::from),
+            StatKind::BaseToughness => seen.card.and_then(|c| c.card().toughness).map(i64::from),
             StatKind::ManaSpent => seen
                 .card
                 .and_then(|c| i64::try_from(c.mana_spent().len()).ok()),
