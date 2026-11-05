@@ -170,10 +170,16 @@ fn damage_all(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
         &["NumDmg", "ValidCards", "ValidPlayers", "DamageMap"],
     )?;
     damage_map(p)?;
-    let valid = p.get("ValidCards").unwrap_or_default();
     let amount = amount(ctx, p.get("NumDmg").unwrap_or("1"))?;
-    let mut effects =
-        vec![json!({"DealDamage": {"to": {"Each": selector_any(ctx, valid)?}, "amount": amount}})];
+    // Players alone: no objects are hit (an empty selector would name every one).
+    let mut effects = Vec::new();
+    if let Some(valid) = p.get("ValidCards") {
+        effects.push(
+            json!({"DealDamage": {"to": {"Each": selector_any(ctx, valid)?}, "amount": amount}}),
+        );
+    } else if !p.has("ValidPlayers") {
+        return unmapped("key:DamageAll.no-valid");
+    }
     match p.get("ValidPlayers") {
         None => {}
         Some("Player") => {
@@ -714,7 +720,11 @@ fn remove_counter(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
     let Some(kind) = p.get("CounterType").and_then(kind_word) else {
         return unmapped("key:RemoveCounter.CounterType");
     };
-    let count = amount(ctx, p.get("CounterNum").unwrap_or("1"))?;
+    // Every counter of the kind: as many as the object holds as the step resolves.
+    let count = match p.get("CounterNum") {
+        Some("All") => json!({"Counters": {"on": from, "counter": kind}}),
+        other => amount(ctx, other.unwrap_or("1"))?,
+    };
     Ok(json!({"RemoveCounters": {"from": from, "counter": kind, "count": count}}))
 }
 
