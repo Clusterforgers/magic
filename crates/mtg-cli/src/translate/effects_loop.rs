@@ -106,23 +106,47 @@ pub fn repeat_each(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
     ])
 }
 
-/// `ImmediateTrigger`: a reflexive trigger that runs the named ability with targets of its own.
+/// `ImmediateTrigger`: a reflexive trigger that runs the named ability with targets of its own. `RememberObjects$` names
+/// the objects the trigger is about, bound now (the trigger has targets of its own, so a `Target` would be another one)
+/// and read by `DelayTriggerRemembered` in its steps.
 pub fn immediate_trigger(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
-    only(p, "ImmediateTrigger", &["Execute", "UnlessSwitched"])?;
+    only(
+        p,
+        "ImmediateTrigger",
+        &["Execute", "UnlessSwitched", "RememberObjects"],
+    )?;
     let Some(name) = p.get("Execute") else {
         return unmapped("key:ImmediateTrigger.no-Execute");
     };
     let part = ctx.sub(name)?;
+    let mut out = Vec::new();
+    let mut bound = None;
+    if let Some(word) = p.get("RememberObjects") {
+        let what = match word {
+            // A target an earlier step moved is another object now (CR 400.7), so `Targeted` stays a gap.
+            "Remembered" | "RememberedCard" | "RememberedLKI" | "ChosenCard" | "ChosenPlayer" => {
+                defined(ctx, word)?
+            }
+            w if super::triggered::is_word(w) => defined(ctx, w)?,
+            other => return unmapped(format!("key:ImmediateTrigger.RememberObjects={other}")),
+        };
+        let bind = ctx.fresh("when");
+        out.push(json!({"Bind": {"what": what, "as": bind}}));
+        bound = Some(json!({ "Bound": bind }));
+    }
+    let outer_delayed = std::mem::replace(&mut ctx.delayed_remembered, bound);
     let outer = std::mem::take(&mut ctx.targets);
     let parent = ctx.parent_target.take();
     let effects = chain_at(ctx, &part, false);
     let targets = std::mem::replace(&mut ctx.targets, outer);
     ctx.parent_target = parent;
+    ctx.delayed_remembered = outer_delayed;
     let mut reflexive = json!({"Reflexive": {"effects": effects?}});
     if !targets.is_empty() {
         reflexive["Reflexive"]["targets"] = Value::Array(targets);
     }
-    Ok(vec![reflexive])
+    out.push(reflexive);
+    Ok(out)
 }
 
 /// `PeekAndReveal`: look at the top cards of a library and reveal all of them or the matching ones the player picks.
