@@ -255,13 +255,10 @@ mod tests {
     }
 
     #[test]
-    fn a_name_nothing_bound_is_an_error_not_an_empty_set() {
+    fn a_name_nothing_bound_taps_nothing() {
         let game = game();
         let tap = effect(r#"{"Tap":{"what":{"Bound":"ghost"}}}"#);
-        assert!(matches!(
-            done(&game, &Bindings::new(), vec![], &tap, run),
-            Err(ResolveError::Invalid(_))
-        ));
+        assert!(done(&game, &Bindings::new(), vec![], &tap, run).is_ok());
     }
 
     #[test]
