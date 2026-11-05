@@ -161,6 +161,7 @@ fn can_activate(
             .permanent()
             .map_or(0, |permanent| permanent.counters_of(&CounterKind::Loyalty));
         return loyalty::can_activate(state, player, object, *cost)
+            && loyalty_mana_affordable(state, player, object, address, rules)
             && announceable(state, player, object.id(), rules)
             && some_x_has_targets(state, player, object.id(), rules, |x| {
                 x == 0 || (*cost == LoyaltyCost::MinusX && x <= counters)
@@ -241,6 +242,27 @@ fn can_activate(
         && some_x_has_targets(state, player, object.id(), rules, |x| {
             x == 0 || (price.x > 0 && can_pay_x(state, player, object, &price, &claimed, x))
         })
+}
+
+/// Whether `player` can pay the mana that cost modifiers add to a loyalty ability (CR 606.4, 601.2f), if any do.
+fn loyalty_mana_affordable(
+    state: &GameState,
+    player: PlayerId,
+    object: &GameObject,
+    address: AbilityRef,
+    rules: &Ability,
+) -> bool {
+    let Some((mana, price)) =
+        crate::c11a_less::loyalty_mana(state, player, (object.id(), address, rules))
+    else {
+        return true;
+    };
+    let Some(seat) = state.player(player) else {
+        return false;
+    };
+    let sources = price.sources(state, player, object.id());
+    let spend = Spend::for_ability(state, object.id(), false);
+    can_afford(&mana, seat.mana(), &sources, seat.life(), &spend)
 }
 
 /// Whether `player` can pay the mana of `price` with `x` more generic mana for each `{X}`, as `can_activate` judges the

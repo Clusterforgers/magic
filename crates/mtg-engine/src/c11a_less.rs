@@ -37,6 +37,19 @@ pub(crate) fn c11a_mana(
     (price.mana.is_some() || total != ManaCost::ZERO).then_some(total)
 }
 
+/// The mana a cost modifier adds to the activation of the loyalty ability `rules` (the cost itself is counters, CR 606.4)
+/// and the price whose sources pay it; none while no modifier adds any.
+pub(crate) fn loyalty_mana(
+    state: &GameState,
+    player: PlayerId,
+    (source, address, rules): (ObjectId, AbilityRef, &Ability),
+) -> Option<(ManaCost, Price)> {
+    let price =
+        Price::announced_in(&mtg_cards::cost::Cost(Vec::new()), state, player, source).ok()?;
+    let total = crate::activation_kind::modified(state, source, address, rules, ManaCost::ZERO);
+    (total != ManaCost::ZERO).then_some((total, price))
+}
+
 /// The mana of `price` with the changes the ability prints of its own cost applied.
 fn c11a_own(
     state: &GameState,

@@ -275,3 +275,74 @@ fn an_opponent_gains_control_of_the_other_permanents_you_control_and_only_those(
     assert_eq!(controller("Forest"), 1);
     assert_eq!(controller("Theirs"), 1);
 }
+
+fn field() -> Arc<CardDefinition> {
+    let rules: mtg_cards::ability::Ability = serde_json::from_value(json!({"CostModifier": {
+        "activating": "Any", "applies_to": [], "change": "Increase", "mana": "{2}"}}))
+    .unwrap();
+    Arc::new(
+        CardDefinition::new("Suppression")
+            .with_type(mtg_core::card::CardType::Enchantment)
+            .with_rules(rules),
+    )
+}
+
+fn walker_with_plus_one() -> Arc<CardDefinition> {
+    let rules: mtg_cards::ability::Ability = serde_json::from_value(json!({"Loyalty": {
+        "cost": {"Plus": 1}, "effects": [{"GainLife": {"amount": 3}}]}}))
+    .unwrap();
+    Arc::new(
+        CardDefinition::new("Walker")
+            .with_type(mtg_core::card::CardType::Planeswalker)
+            .with_loyalty(3)
+            .with_rules(rules),
+    )
+}
+
+#[rstest]
+#[case::no_field_no_mana(false, 0, true, 23)]
+#[case::no_field_the_lands_stay_untapped(false, 2, true, 23)]
+#[case::field_without_mana(true, 1, false, 20)]
+#[case::field_with_mana(true, 2, true, 23)]
+fn a_cost_increase_on_activated_abilities_applies_to_loyalty_abilities(
+    #[case] field_in_play: bool,
+    #[case] lands: usize,
+    #[case] activated: bool,
+    #[case] life_after: i32,
+) {
+    let mut board = vec![ready(walker_with_plus_one())];
+    board.extend((0..lands).map(|_| ready(forest())));
+    let mut scenario = Scenario::new(2).battlefield(0, board);
+    if field_in_play {
+        scenario = scenario.battlefield(1, [ready(field())]);
+    }
+    let mut driver = Driver::from_scenario(scenario).unwrap();
+    let began = driver.begin_ability("Walker", 0).is_ok();
+    assert_eq!(began, activated);
+    if began {
+        for _ in 0..6 {
+            let decision = driver.decision().unwrap().clone();
+            if let mtg_engine::decision::DecisionKind::PayMana(_) = decision.kind {
+                driver
+                    .answer(mtg_engine::decision::Answer::PayMana(
+                        mtg_engine::decision::PayChoice::Auto,
+                    ))
+                    .unwrap();
+            }
+        }
+        settle(&mut driver);
+        let untapped = driver
+            .state()
+            .zone(Zone::Battlefield)
+            .iter()
+            .filter(|id| {
+                driver.state().object(**id).is_some_and(|o| {
+                    o.card().name == "Forest" && o.permanent().is_some_and(|p| !p.tapped())
+                })
+            })
+            .count();
+        let left = if field_in_play { 0 } else { lands };
+        assert_eq!(untapped, left, "the {{2}} is paid only under the field");
+    }
+    assert_eq!(life(&driver, 0), life_after);
+}

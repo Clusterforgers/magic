@@ -136,6 +136,18 @@ fn printed(ctx: &Ctx<'_>, choices: &Choices) -> Option<Printed> {
                 );
                 Some(Printed::new(mana, sources, life))
             }
+            // A loyalty cost is counters; only what a cost modifier adds is mana.
+            rules @ Ability::Loyalty { .. } => {
+                let Some((mana, price)) = crate::c11a_less::loyalty_mana(
+                    ctx.state,
+                    ctx.player,
+                    (ability.object, *ability, rules),
+                ) else {
+                    return Some(Printed::new(None, Vec::new(), 0));
+                };
+                let sources = price.sources(ctx.state, ctx.player, ability.object);
+                Some(Printed::new(Some(mana), sources, 0))
+            }
             _ => Some(Printed::new(None, Vec::new(), 0)),
         },
         What::Trigger(_) | What::Attack(..) => Some(Printed::new(None, Vec::new(), 0)),
