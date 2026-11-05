@@ -216,7 +216,7 @@ fn a_targeted_pump_that_ends_at_the_end_step_holds_the_target_by_name() {
 
 #[rstest]
 #[case::graveyard("Graveyard", None)]
-#[case::exile("Exile", Some("key:Counter.Destination=Exile"))]
+#[case::exile("Exile", None)]
 #[case::library("TopOfLibrary", Some("key:Counter.Destination=TopOfLibrary"))]
 fn a_countered_spell_goes_to_the_graveyard_or_the_translation_is_a_gap(
     #[case] word: &str,
