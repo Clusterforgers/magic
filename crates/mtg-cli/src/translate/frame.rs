@@ -11,7 +11,7 @@ use crate::forge::script::Params;
 /// A family of script keys that means the same on every verb.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum Slot {
-    /// `DefinedPlayer$`: the player the line acts for.
+    /// The verb's actor key (`DefinedPlayer$`, or `Defined$` on a verb whose subject is a player): the player the line acts for.
     Actor,
     /// `Defined$`: objects the line names.
     Named,
@@ -35,7 +35,6 @@ impl Slot {
     /// The keys of the slot that are the same on every verb.
     fn keys(self) -> &'static [&'static str] {
         match self {
-            Slot::Actor => &["DefinedPlayer"],
             Slot::Named => &["Defined"],
             Slot::Target => &["ValidTgts"],
             Slot::Limits => &["TargetMin", "TargetMax"],
@@ -56,7 +55,7 @@ impl Slot {
                 "Transformed",
                 "AttachedTo",
             ],
-            Slot::Pool | Slot::Count => &[],
+            Slot::Actor | Slot::Pool | Slot::Count => &[],
         }
     }
 }
@@ -68,6 +67,8 @@ pub struct Verb {
     pub label: &'static str,
     /// The slots it reads.
     pub slots: &'static [Slot],
+    /// The key of `Slot::Actor`.
+    pub actor: &'static str,
     /// The key of `Slot::Pool`.
     pub pool: &'static str,
     /// The key of `Slot::Count`.
@@ -84,6 +85,7 @@ impl Verb {
         for slot in self.slots {
             keys.extend_from_slice(slot.keys());
             match slot {
+                Slot::Actor => keys.push(self.actor),
                 Slot::Pool => keys.push(self.pool),
                 Slot::Count => keys.push(self.count),
                 _ => {}
@@ -93,24 +95,70 @@ impl Verb {
     }
 }
 
-/// The player words a player slot may hold when the line has no target of its own.
-const PLAYER_WORDS: [&str; 15] = [
-    "TriggeredActivator",
-    "TriggeredSourceController",
-    "TriggeredDefendingPlayer",
-    "TriggeredPlayer",
-    "TriggeredTarget",
-    "TriggeredCardController",
-    "RememberedController",
-    "ChosenPlayer",
-    "Remembered",
-    "TargetedController",
-    "TargetedOwner",
-    "ParentTarget",
-    "Player.EnchantedBy",
-    "Player.IsRemembered",
-    "DefendingPlayer",
-];
+/// A word that names one player, by the way the line gets to that player.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum PlayerWord {
+    /// A player of the event that triggered the line (`TriggeredPlayer`, `TriggeredCardController`...).
+    Event,
+    /// A player the line remembered or chose earlier.
+    Earlier,
+    /// The controller or owner of a target, or the player a parent line targeted.
+    OfTarget,
+    /// The player an aura enchants.
+    Enchanted,
+    /// The defending player.
+    Defending,
+}
+
+impl PlayerWord {
+    /// The kind of player a word names, or none when it names anything else.
+    pub fn parse(word: &str) -> Option<Self> {
+        Some(match word {
+            "TriggeredActivator"
+            | "TriggeredSourceController"
+            | "TriggeredDefendingPlayer"
+            | "TriggeredPlayer"
+            | "TriggeredTarget"
+            | "TriggeredCardController" => Self::Event,
+            "RememberedController" | "ChosenPlayer" | "Remembered" | "Player.IsRemembered" => {
+                Self::Earlier
+            }
+            "TargetedController" | "TargetedOwner" | "ParentTarget" => Self::OfTarget,
+            "Player.EnchantedBy" => Self::Enchanted,
+            "DefendingPlayer" => Self::Defending,
+            _ => return None,
+        })
+    }
+}
+
+/// Whether a word names one player a line without a target of its own may act for.
+fn is_player_word(word: &str) -> bool {
+    PlayerWord::parse(word).is_some()
+}
+
+/// The actor of a verb whose subject is a player (`Defined$ You`, `Player`, `Opponent`, a player word or the one player the
+/// line targets). `Self` is the source's controller. A word that names objects is a gap, never a player.
+pub fn player_actor(ctx: &mut Ctx, p: &Params, verb: &Verb) -> Tr<Value> {
+    let gap = || unmapped(format!("key:{}.{}", verb.label, verb.actor));
+    if p.has("ValidTgts") {
+        if !matches!(
+            p.get("ValidTgts"),
+            Some("Player" | "Opponent" | "Player.Opponent")
+        ) {
+            return gap();
+        }
+        return subject(ctx, p, "You", None);
+    }
+    match p.get(verb.actor) {
+        None | Some("You" | "Self" | "Card.Self") => Ok(json!("You")),
+        Some(word @ ("Player" | "Opponent" | "Player.Opponent" | "Player.Other")) => {
+            defined(ctx, word)
+        }
+        Some("Targeted" | "TargetedPlayer") => ctx.player_target(),
+        Some(word) if is_player_word(word) => defined(ctx, word),
+        Some(_) => gap(),
+    }
+}
 
 /// Who a line that picks is about: the player whose cards they are, the player who decides, and whether a loop runs.
 #[derive(Debug, Clone)]
@@ -143,7 +191,8 @@ fn one_player(ctx: &Ctx, word: &str, label: &str) -> Tr<Value> {
 /// `DefinedPlayer$` and `Chooser$` of a line that picks: whose cards they are (you, the one player the line targets, a
 /// player a word names, or each of them in turn) and who picks (the actor unless `Chooser$` says otherwise, you when you
 /// target the actor without saying who).
-pub fn parties(ctx: &mut Ctx, p: &Params, label: &str) -> Tr<Parties> {
+pub fn parties(ctx: &mut Ctx, p: &Params, verb: &Verb) -> Tr<Parties> {
+    let label = verb.label;
     let targets = p.has("ValidTgts");
     let one_target = matches!(
         p.get("ValidTgts"),
@@ -153,7 +202,7 @@ pub fn parties(ctx: &mut Ctx, p: &Params, label: &str) -> Tr<Parties> {
     if targets && !one_target {
         return unmapped(format!("key:{label}.ValidTgts"));
     }
-    let word = p.get("DefinedPlayer");
+    let word = p.get(verb.actor);
     let mut each = None;
     let (acts, targeted) = match (word, targets) {
         (None | Some("You"), false) => (json!("You"), false),
@@ -178,10 +227,10 @@ pub fn parties(ctx: &mut Ctx, p: &Params, label: &str) -> Tr<Parties> {
             (ctx.player_target()?, false)
         }
         (Some("ParentTarget"), false) if !parent_is_player(ctx) => {
-            return unmapped(format!("key:{label}.DefinedPlayer"));
+            return unmapped(format!("key:{label}.{}", verb.actor));
         }
-        (Some(word), false) if PLAYER_WORDS.contains(&word) => (defined(ctx, word)?, false),
-        _ => return unmapped(format!("key:{label}.DefinedPlayer")),
+        (Some(word), false) if is_player_word(word) => (defined(ctx, word)?, false),
+        _ => return unmapped(format!("key:{label}.{}", verb.actor)),
     };
     let decides = match p.get("Chooser") {
         None if targets && word.is_none() => json!("You"),
@@ -190,9 +239,7 @@ pub fn parties(ctx: &mut Ctx, p: &Params, label: &str) -> Tr<Parties> {
         Some("You") => json!("You"),
         Some("Targeted") if targets => ctx.last_target()?,
         Some(chooser)
-            if PLAYER_WORDS.contains(&chooser)
-                && (!targets || word == Some("You"))
-                && each.is_none() =>
+            if is_player_word(chooser) && (!targets || word == Some("You")) && each.is_none() =>
         {
             one_player(ctx, chooser, &format!("{label}.Chooser"))?
         }
@@ -218,14 +265,15 @@ pub fn parent_is_player(ctx: &Ctx) -> bool {
 
 /// Who decides on a line where no player picks: `Chooser$`, with `DefinedPlayer$` saying the same or nothing more; you
 /// without one.
-pub fn decider(ctx: &Ctx, p: &Params, label: &str) -> Tr<Value> {
-    match (p.get("Chooser"), p.get("DefinedPlayer")) {
+pub fn decider(ctx: &Ctx, p: &Params, verb: &Verb) -> Tr<Value> {
+    let label = verb.label;
+    match (p.get("Chooser"), p.get(verb.actor)) {
         (None, None | Some("You")) => Ok(json!("You")),
         (Some(chooser), None) => one_player(ctx, chooser, &format!("{label}.Chooser")),
         (Some(chooser), Some(word)) if chooser == word => {
             one_player(ctx, chooser, &format!("{label}.Chooser"))
         }
-        _ => unmapped(format!("key:{label}.DefinedPlayer")),
+        _ => unmapped(format!("key:{label}.{}", verb.actor)),
     }
 }
 
@@ -294,11 +342,30 @@ pub fn optional(p: &Params, label: &str, effects: Vec<Value>, who: &Value) -> Tr
     {
         return unmapped(format!("key:{label}.Optional"));
     }
+    Ok(ask(effects, who))
+}
+
+/// The one way a "may" is written: the player `who` decides whether to do all of `effects`. A player asked twice by two parts
+/// of one line (the trigger and the step it runs) is asked once: effects that already begin with that player's "may" take
+/// the rest into it.
+pub fn ask(mut effects: Vec<Value>, who: &Value) -> Vec<Value> {
+    let same_asker = |may: &Value| may.get("who").unwrap_or(&json!("You")) == who;
+    let begins_with_may = effects
+        .first()
+        .and_then(|step| step.get("May"))
+        .is_some_and(same_asker);
+    if begins_with_may {
+        let rest: Vec<Value> = effects.drain(1..).collect();
+        if let Some(inner) = effects[0]["May"]["effects"].as_array_mut() {
+            inner.extend(rest);
+        }
+        return effects;
+    }
     let mut may = json!({"May": {"effects": effects}});
     if *who != json!("You") {
         may["May"]["who"] = who.clone();
     }
-    Ok(vec![may])
+    vec![may]
 }
 
 /// Where moved objects go, as a destination or the exile verb.

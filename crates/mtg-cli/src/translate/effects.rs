@@ -67,12 +67,7 @@ pub fn chain_at(ctx: &mut Ctx, p: &Params, top: bool) -> Tr<Vec<Value>> {
     }
     if asks {
         let who = may_decider(ctx, p)?;
-        let mut node = serde_json::Map::new();
-        if who != json!("You") {
-            node.insert("who".into(), who);
-        }
-        node.insert("effects".into(), json!(effects));
-        effects = vec![json!({ "May": node })];
+        effects = super::frame::ask(effects, &who);
     }
     let mut rest = match p.get("SubAbility") {
         Some(name) => {

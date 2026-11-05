@@ -209,6 +209,10 @@ fn costed(ctx: &Ctx, name: &str, variant: &str, cost_text: &str, rest: Option<&s
     if rest.is_some() && matches!(name, "Equip" | "Kicker" | "Escape" | "Ninjutsu") {
         return unmapped(format!("keyword:{name}-with-restriction"));
     }
+    // A reduction in the second field changes the cost the keyword is paid at: dropping it would print the wrong cost.
+    if rest.is_some_and(|text| text.contains("ReduceCost$")) {
+        return unmapped(format!("keyword:{name}-with-reduction"));
+    }
     Ok(json!({ variant: cost(ctx, cost_text)? }))
 }
 

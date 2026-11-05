@@ -6,7 +6,7 @@ use serde_json::{Value, json};
 use super::amount::amount;
 use super::ctx::{Ctx, Tr, only, unmapped};
 use super::effects::chain_at;
-use super::valid::{defined, selector_any, selector_in};
+use super::valid::{defined, selector_any, selector_in, subject};
 use crate::forge::script::Params;
 
 /// `ChooseCard`: the chooser picks cards that match, optionally or at random; the later lines read them as `ChosenCard`.
@@ -16,6 +16,7 @@ pub fn choose_card(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
         "ChooseCard",
         &[
             "Defined",
+            "ValidTgts",
             "Choices",
             "ChoiceZone",
             "Amount",
@@ -27,6 +28,20 @@ pub fn choose_card(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
             "RememberChosen",
         ],
     )?;
+    // "Target opponent chooses a creature they control": the one player the line targets is the chooser, declared before the
+    // pool that names them is read.
+    let chooser = match p.get("ValidTgts") {
+        None => None,
+        Some("Player" | "Opponent" | "Player.Opponent")
+            if !p.has("Defined")
+                && !p.has("TargetMin")
+                && !p.has("TargetMax")
+                && p.get("AtRandom") != Some("True") =>
+        {
+            Some(subject(ctx, p, "You", None)?)
+        }
+        Some(_) => return unmapped("key:ChooseCard.ValidTgts"),
+    };
     let mut filter = selector_in(ctx, p.get("Choices").unwrap_or("Card"), p.get("ChoiceZone"))?;
     match p.get("ControlledByPlayer") {
         Some("Remembered") => {
@@ -45,7 +60,10 @@ pub fn choose_card(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
         }
         json!({"ChooseAtRandom": {"from": from, "count": count, "as": bind}})
     } else {
-        let who = defined(ctx, p.get("Defined").unwrap_or("You"))?;
+        let who = match chooser {
+            Some(target) => target,
+            None => defined(ctx, p.get("Defined").unwrap_or("You"))?,
+        };
         let min = match (p.get("Mandatory"), p.get("MinAmount")) {
             (Some("True"), None) => count.clone(),
             (Some("True"), Some(min)) => amount(ctx, min)?,

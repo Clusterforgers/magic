@@ -4,6 +4,7 @@ use serde_json::{Value, json};
 
 use super::amount::{amount, counter_kind};
 use super::ctx::{Ctx, Tr, only, unmapped};
+use super::frame::{self, Slot, Verb};
 use super::keyword::{keyword_list, keyword_value};
 use super::remember;
 use super::valid::{defined, objects, selector_any, selector_in, subject};
@@ -808,45 +809,48 @@ fn kind_word(word: &str) -> Option<Value> {
     })
 }
 
+/// `Sacrifice`: the player `Defined$` names sacrifices permanents.
+const SACRIFICE: Verb = Verb {
+    label: "Sacrifice",
+    slots: &[
+        Slot::Actor,
+        Slot::Pool,
+        Slot::Target,
+        Slot::Limits,
+        Slot::Count,
+        Slot::Optional,
+    ],
+    actor: "Defined",
+    pool: "SacValid",
+    count: "Amount",
+    own: &["RememberSacrificed", "SacMessage"],
+};
+
 fn sacrifice(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
-    only(
-        p,
-        "Sacrifice",
-        &[
-            "Defined",
-            "SacValid",
-            "Amount",
-            "ValidTgts",
-            "TargetMin",
-            "TargetMax",
-            "RememberSacrificed",
-            "Optional",
-            "SacMessage",
-        ],
-    )?;
+    SACRIFICE.admit(p)?;
     // The prompt text of the choice.
     let _ = p.get("SacMessage");
-    let optional = p.get("Optional") == Some("True");
-    if optional && p.get("Amount").is_some_and(|n| n != "1") {
+    let may = match p.get("Optional") {
+        None | Some("False") => false,
+        Some("True") => true,
+        Some(_) => return unmapped("key:Sacrifice.Optional"),
+    };
+    if may && p.get("Amount").is_some_and(|n| n != "1") {
         return unmapped("key:Sacrifice.Optional-amount");
     }
-    if let Some(valid) = p.get("ValidTgts")
-        && !matches!(valid, "Player" | "Opponent" | "Player.Opponent")
-    {
-        return unmapped("key:Sacrifice.ValidTgts-objects");
-    }
-    let who = subject(ctx, p, "You", None)?;
-    let filter = match p.get("SacValid").unwrap_or("Self") {
-        "Self" => vec![json!("This")],
-        valid => selector_any(ctx, valid)?,
+    let who = frame::player_actor(ctx, p, &SACRIFICE)?;
+    let filter = match p.get("SacValid") {
+        None | Some("Self") if who == json!("You") => vec![json!("This")],
+        None | Some("Self") => return unmapped("key:Sacrifice.SacValid"),
+        Some(valid) => selector_any(ctx, valid)?,
     };
-    let count = amount(ctx, p.get("Amount").unwrap_or("1"))?;
+    let count = frame::count(ctx, p, &SACRIFICE)?.max;
     let mut effect = json!({"Sacrifice": {"who": who, "filter": filter, "count": count}});
     if remember::wanted(p, &["RememberSacrificed"]) {
         remember::bind_moved(ctx, &mut effect, "Sacrifice", "sacrificed");
     }
-    if optional {
-        effect = json!({"May": {"effects": [effect]}});
+    if may {
+        effect = super::frame::ask(vec![effect], &json!("You")).remove(0);
     }
     Ok(effect)
 }
@@ -957,7 +961,7 @@ pub fn attach(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
     };
     let mut effect = json!({"Attach": {"what": what, "to": to}});
     if p.get("Optional") == Some("True") {
-        effect = json!({"May": {"effects": [effect]}});
+        effect = super::frame::ask(vec![effect], &json!("You")).remove(0);
     }
     Ok(vec![effect])
 }
