@@ -897,12 +897,8 @@ impl<'a> Scope<'a> {
                         .collect()
                 })
                 .ok_or_else(|| ResolveError::Invalid("there is no triggering event".into()))?,
-            Ref::Dealer => self
-                .cause
-                .and_then(|cause| cause.source)
-                .map(Target::Object)
-                .into_iter()
-                .collect(),
+            Ref::Dealer => self.dealer(),
+            Ref::Against => self.against(),
             Ref::Attached => state
                 .host_of(self.source.id)
                 .and_then(|host| state.object(host))
@@ -942,6 +938,7 @@ impl<'a> Scope<'a> {
                 .flat_map(|source| crate::memory::recall(state, source, slot))
                 .map(Target::Object)
                 .collect(),
+            Ref::Arrived { of, zone } => self.arrived(of, *zone)?,
             Ref::ControllerOf(inner) => self.seats_of(inner, |seen| seen.controller)?,
             Ref::OwnerOf(inner) => self.seats_of(inner, |seen| seen.owner)?,
             Ref::Each(selector) => self
@@ -952,7 +949,24 @@ impl<'a> Scope<'a> {
         })
     }
 
-    /// The objects the cost picked, in the order of its parts: one the cost took out of its zone is the object it was
+    /// The object that dealt the damage or blocked, when the cause names one.
+    fn dealer(&self) -> Vec<Target> {
+        self.cause
+            .and_then(|cause| cause.source)
+            .map(Target::Object)
+            .into_iter()
+            .collect()
+    }
+
+    /// What the attacker attacks or the blocker blocks, when the cause names it.
+    fn against(&self) -> Vec<Target> {
+        self.cause
+            .and_then(|cause| cause.against)
+            .into_iter()
+            .collect()
+    }
+
+    /// The objects the cost picked, in the order of its parts: one the cost took out of its zone is theobject it was
     /// (`Choices.cost_shots` holds how it was), any other the object it is now. A copy of a spell paid nothing and names
     /// what the original's cost took.
     fn paid(&self) -> Vec<Target> {
@@ -1061,6 +1075,23 @@ impl<'a> Scope<'a> {
             .into_iter()
             .filter_map(Target::player)
             .collect())
+    }
+
+    /// The objects the reference named that have moved once since and are now in `zone`: the card they became (CR 400.7).
+    /// An object that moved twice, moved to another zone or is gone is nobody.
+    fn arrived(&self, of: &Ref, zone: ZoneKind) -> Result<Vec<Target>, ResolveError> {
+        let mut found: Vec<Target> = Vec::new();
+        for named in self.objects(of)? {
+            if let Some(now) = self.state.object(named.id).filter(|now| {
+                now.counter() == named.counter + 1
+                    && now.kind() != ObjectKind::Ability
+                    && zone_kind(now.zone()) == zone
+            }) && !found.contains(&Target::Object(now.reference()))
+            {
+                found.push(Target::Object(now.reference()));
+            }
+        }
+        Ok(found)
     }
 
     /// The objects a reference names (players among them are ignored).
@@ -1500,6 +1531,7 @@ impl<'a> Scope<'a> {
     }
 
     /// The number an amount stands for as one recipient of the running effect reads it (`share`, see `share.rs`).
+    #[allow(clippy::too_many_lines)]
     pub(super) fn amount_of(
         &self,
         amount: &Amount,
@@ -1586,6 +1618,7 @@ impl<'a> Scope<'a> {
             Amount::HighestCounters { who, counter } => self.highest_counters(who, counter)?,
             Amount::Party(who) => self.party(who)?,
             Amount::StartingLife(who) => self.w14b_starting_life(who)?,
+            Amount::CastLastTurn(who) => self.cast_last_turn(who)?,
             Amount::Mutations(of) => self.mutations(of)?,
             Amount::Kicks => i64::try_from(self.payments(OptionalKind::Kicker))
                 .map_err(|_| ResolveError::Invalid("too many kicks".into()))?,
@@ -1930,6 +1963,10 @@ impl<'a> Scope<'a> {
     }
 
     /// The lowest starting life total among the players a reference names; 0 for none.
+    fn cast_last_turn(&self, who: &Ref) -> Result<i64, ResolveError> {
+        Ok(i64::from(self.state.cast_last_turn(&self.players(who)?)))
+    }
+
     fn w14b_starting_life(&self, who: &Ref) -> Result<i64, ResolveError> {
         Ok(self
             .players(who)?
@@ -2762,6 +2799,7 @@ mod tests {
             snapshots: Vec::new(),
             amount: 0,
             source: None,
+            against: None,
         };
         let mut scope = scope(&game);
         let triggering: Ref = serde_json::from_str(r#""Triggering""#).unwrap();
@@ -2771,6 +2809,64 @@ mod tests {
         ));
         scope.cause = Some(&cause);
         assert_eq!(scope.players(&triggering).unwrap(), [PlayerId(1)]);
+    }
+
+    #[rstest]
+    #[case::not_moved(&[], ZoneKind::Graveyard, true)]
+    #[case::moved_once_to_the_zone(&[Zone::Graveyard(PlayerId(1))], ZoneKind::Graveyard, false)]
+    #[case::moved_once_elsewhere(&[Zone::Exile], ZoneKind::Graveyard, true)]
+    #[case::moved_twice(&[Zone::Graveyard(PlayerId(1)), Zone::Exile], ZoneKind::Exile, true)]
+    #[case::returned_to_the_battlefield(&[Zone::Graveyard(PlayerId(1)), Zone::Battlefield], ZoneKind::Battlefield, true)]
+    fn the_object_one_move_on_is_nobody_unless_it_moved_once_into_the_zone(
+        #[case] moves: &[Zone],
+        #[case] zone: ZoneKind,
+        #[case] nobody: bool,
+    ) {
+        let mut game = game();
+        let ogre = named(&game, "Ogre", 1);
+        let mut from = Zone::Battlefield;
+        for to in moves {
+            apply_event(
+                &mut game,
+                &Event::ZoneChanged {
+                    object: ogre.id,
+                    from,
+                    to: *to,
+                    cause: ZoneCause::Moved,
+                },
+            )
+            .unwrap();
+            from = *to;
+        }
+        let bound: Bindings = [("it".to_owned(), vec![Target::Object(ogre)])].into();
+        let mut scope = scope(&game);
+        scope.bindings = &bound;
+        let arrived = Ref::Arrived {
+            of: Box::new(Ref::Bound("it".to_owned())),
+            zone,
+        };
+        let found = scope.objects(&arrived).unwrap();
+        assert_eq!(found.is_empty(), nobody);
+        if let [now] = found.as_slice() {
+            assert_eq!(now.counter, ogre.counter + 1);
+        }
+    }
+
+    #[test]
+    fn what_the_event_went_against_reads_empty_without_a_cause_or_a_target() {
+        let game = game();
+        let against: Ref = serde_json::from_str(r#""Against""#).unwrap();
+        let mut scope = scope(&game);
+        assert_eq!(scope.refs(&against), Ok(Vec::new()));
+        let none = crate::abilities::Cause::default();
+        scope.cause = Some(&none);
+        assert_eq!(scope.refs(&against), Ok(Vec::new()));
+        let some = crate::abilities::Cause {
+            against: Some(Target::Player(PlayerId(1))),
+            ..none.clone()
+        };
+        scope.cause = Some(&some);
+        assert_eq!(scope.players(&against).unwrap(), [PlayerId(1)]);
     }
 
     #[test]

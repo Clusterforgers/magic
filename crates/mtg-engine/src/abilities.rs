@@ -134,6 +134,11 @@ pub struct Cause {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     #[cfg_attr(feature = "ts", ts(optional))]
     pub source: Option<ObjectRef>,
+    /// What the subject went against (`Ref::Against`): the player, planeswalker or battle an attacker attacks, the attacker a
+    /// creature blocks; none for any other event.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[cfg_attr(feature = "ts", ts(optional))]
+    pub against: Option<Target>,
 }
 
 #[allow(clippy::trivially_copy_pass_by_ref)]

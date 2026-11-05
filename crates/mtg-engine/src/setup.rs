@@ -509,6 +509,8 @@ impl GameState {
             possible: Possible::default(),
             result: None,
             day_night: None,
+            seat_turns: std::collections::BTreeMap::new(),
+            last_turn_of: None,
             monarch: None,
             citys_blessing: std::collections::BTreeSet::new(),
             ring: crate::ring::Rings::new(),

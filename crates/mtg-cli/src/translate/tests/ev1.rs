@@ -38,11 +38,6 @@ fn a_delayed_step_names_the_object_of_the_event(
 }
 
 #[rstest]
-#[case::new_card(
-    "Mode$ ChangesZone | Origin$ Battlefield | Destination$ Graveyard | ValidCard$ Card.Self",
-    "TriggeredNewCardLKICopy",
-    "key:RememberObjects=TriggeredNewCardLKICopy-after-a-move"
-)]
 #[case::card_after_a_move(
     "Mode$ ChangesZone | Origin$ Battlefield | Destination$ Graveyard | ValidCard$ Card.Self",
     "TriggeredCard",
@@ -82,17 +77,6 @@ fn a_controller_word_is_the_controller_of_the_event_object(
     assert_eq!(
         abilities(&script)[0]["Triggered"]["effects"][0]["DealDamage"]["to"],
         who
-    );
-}
-
-#[test]
-fn both_creatures_of_a_block_leave_the_blocker_controller_a_gap() {
-    let script = creature(
-        "T:Mode$ Blocks | ValidCard$ Creature | Execute$ Hit\nSVar:Hit:DB$ LoseLife | Defined$ TriggeredBlockerController | LifeAmount$ 1",
-    );
-    assert_eq!(
-        gaps(&script),
-        vec!["defined:TriggeredBlockerController-in-Blocks".to_owned()]
     );
 }
 

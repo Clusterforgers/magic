@@ -80,6 +80,9 @@ pub enum Ref {
     /// The object that did what the trigger event is about: the source of the damage ("Whenever a Vampire you control deals
     /// combat damage to a player, put a +1/+1 counter on it"); nobody for an event with no such object.
     Dealer,
+    /// What the subject of the trigger event went against: the player, planeswalker or battle an attacker attacks, the
+    /// attacker a creature blocks; nobody for an event with no such thing.
+    Against,
     /// What the source is attached to ("enchanted creature", "equipped creature").
     Attached,
     /// The player the source is attached to ("enchanted player").
@@ -121,6 +124,14 @@ pub enum Ref {
     ControllerOf(Box<Ref>),
     /// The owner of the referenced object.
     OwnerOf(Box<Ref>),
+    /// The object an object named one zone change ago has become, when it is now in this zone ("return it to the battlefield"
+    /// after it died): the same card one incarnation on (CR 400.7). Nobody when it moved twice, moved elsewhere or is gone.
+    Arrived {
+        /// The reference to the object as it was before it moved.
+        of: Box<Ref>,
+        /// The zone it must be in now.
+        zone: ZoneKind,
+    },
     /// Every object matching the selector when the effect runs.
     Each(Selector),
 }

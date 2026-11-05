@@ -510,6 +510,7 @@ const RUNS: &[&str] = &[
     "Amount.Largest",
     "Amount.HighestCounters",
     "Amount.StartingLife",
+    "Amount.CastLastTurn",
     "Amount.Party",
     "Amount.Tally",
     "Amount.CommanderColors",

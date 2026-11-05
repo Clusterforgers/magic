@@ -200,6 +200,7 @@ fn event_amount(ctx: &Ctx, expression: &str) -> Tr<Option<Value>> {
                 other => unmapped(format!("amount:TriggerCount${other}")),
             };
         }
+        "TriggerObjectsAttackers" | "TriggeredDefendingPlayer" => return attacks(ctx, head, what),
         "PlayerCountOpponents" | "PlayerCountRegisteredOpponents" | "PlayerCountPlayers" => {
             let who = if head == "PlayerCountPlayers" {
                 "EachPlayer"
@@ -289,6 +290,22 @@ fn event_amount(ctx: &Ctx, expression: &str) -> Tr<Option<Value>> {
         _ => return Ok(None),
     };
     targeted_amount(head, what, &of).map(Some)
+}
+
+/// The amounts of an attack: how many attackers a group holds, and a stat of the defending player.
+fn attacks(ctx: &Ctx, head: &str, what: &str) -> Tr<Option<Value>> {
+    if head == "TriggeredDefendingPlayer" {
+        return super::amount_more::player_stat(head, what, &json!("Defending")).map(Some);
+    }
+    let group = ctx
+        .trigger
+        .as_ref()
+        .is_some_and(|shape| matches!(shape.pattern.as_str(), "GroupAttacks" | "GroupAttacksAt"));
+    match (group, what) {
+        (true, "Amount") => Ok(Some(json!("Triggering"))),
+        (true, _) => unmapped(format!("amount:{head}${what}")),
+        (false, _) => unmapped(format!("amount:{head}-outside-a-group")),
+    }
 }
 
 /// A stat of the object a reference head names; a gap carries that head, not `Targeted$` whatever was read.

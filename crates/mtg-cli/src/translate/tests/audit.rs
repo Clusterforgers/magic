@@ -38,15 +38,15 @@ const SELF_BLOCKED_BY: &str =
     Err("defined:TriggeredBlocker-in-AttackerBlocked")
 )]
 #[case::this_blocks("Mode$ Blocks | ValidCard$ Card.Self", "TriggeredBlocker", Ok("This"))]
-#[case::this_blocks_the_attacker_is_not_held(
+#[case::this_blocks_the_attacker_it_went_against(
     "Mode$ Blocks | ValidCard$ Card.Self",
     "TriggeredAttacker",
-    Err("defined:TriggeredAttacker-in-Blocks")
+    Ok("Against")
 )]
-#[case::another_blocks_holds_two_creatures(
+#[case::another_blocks_the_blocker_is_the_dealer(
     "Mode$ Blocks | ValidCard$ Creature",
     "TriggeredBlocker",
-    Err("defined:TriggeredBlocker-in-Blocks")
+    Ok("Dealer")
 )]
 #[case::damage_source(
     "Mode$ DamageDone | ValidSource$ Creature.YouCtrl | ValidTarget$ Player",

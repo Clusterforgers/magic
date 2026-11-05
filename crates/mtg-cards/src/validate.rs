@@ -491,6 +491,12 @@ impl<'a> Walker<'a> {
                 }
                 self.expect(Kind::Player, want);
             }
+            Ref::Against => {
+                if !self.scope.in_trigger {
+                    self.problem("`Against` is only valid in a triggered ability");
+                }
+                self.expect(Kind::Either, want);
+            }
             Ref::Affected => {
                 if !self.scope.in_static {
                     self.problem("`Affected` is only valid in the changes of a static ability");
@@ -520,6 +526,10 @@ impl<'a> Walker<'a> {
             Ref::ControllerOf(inner) | Ref::OwnerOf(inner) => {
                 self.expect(Kind::Player, want);
                 self.at("of", |w| w.reference(inner, Kind::Object));
+            }
+            Ref::Arrived { of, .. } => {
+                self.expect(Kind::Object, want);
+                self.at("of", |w| w.reference(of, Kind::Object));
             }
             Ref::Each(selector) => {
                 self.expect(Kind::Object, want);
@@ -875,6 +885,7 @@ impl<'a> Walker<'a> {
             }
             Amount::HighestCounters { who, .. } => self.player_amount("HighestCounters", who),
             Amount::StartingLife(who) => self.player_amount("StartingLife", who),
+            Amount::CastLastTurn(who) => self.player_amount("CastLastTurn", who),
             Amount::Party(who) => self.player_amount("Party", who),
             Amount::CastWith(_) => self.uses("Amount", "CastWith"),
             Amount::ColorsSpent => self.uses("Amount", "ColorsSpent"),
@@ -2283,6 +2294,7 @@ impl Walker<'_> {
             | Ref::Attached
             | Ref::Paid
             | Ref::Remembered { .. }
+            | Ref::Arrived { .. }
             | Ref::Each(_) => Kind::Object,
             Ref::Target(index) => self
                 .scope
@@ -2290,7 +2302,7 @@ impl Walker<'_> {
                 .get(usize::from(*index))
                 .map_or(Kind::Either, |t| t.0),
             Ref::Bound(name) => self.scope.lookup(name).unwrap_or(Kind::Either),
-            Ref::Triggering => Kind::Either,
+            Ref::Triggering | Ref::Against => Kind::Either,
         }
     }
 
@@ -3245,8 +3257,11 @@ impl Walker<'_> {
             Effect::DelayedTrigger { when, effects, .. } => {
                 w.at("when", |w| w.trigger_pattern(when));
                 let saved = std::mem::replace(&mut w.scope.in_trigger, true);
+                // A delayed trigger on a block or on damage names the one who did it, as any triggered ability does.
+                let dealer = std::mem::replace(&mut w.scope.dealer, true);
                 // The trigger it leaves behind remembers the X of the spell or ability that sets it up.
                 w.effect_list("effects", effects, false);
+                w.scope.dealer = dealer;
                 w.scope.in_trigger = saved;
             }
             Effect::Reflexive { targets, effects } => {
@@ -5148,6 +5163,10 @@ mod tests {
     #[case::a_state_among_events(
         r#"{"Triggered":{"when":{"AnyOf":[{"Attacks":{"what":["This"]}},{"State":{"condition":"YourTurn"}}]},"effects":[{"Draw":{}}]}}"#,
         "abilities[0].Triggered.when[1]: a state is the whole pattern of a triggered ability"
+    )]
+    #[case::what_the_event_went_against_outside_a_trigger(
+        r#"{"Spell":{"effects":[{"Draw":{"who":"Against"}}]}}"#,
+        "`Against` is only valid in a triggered ability"
     )]
     #[case::a_state_in_a_delayed_trigger(
         r#"{"Spell":{"effects":[{"DelayedTrigger":{"when":{"State":{"condition":"YourTurn"}},"effects":[{"Draw":{}}]}}]}}"#,

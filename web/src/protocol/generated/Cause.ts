@@ -26,4 +26,9 @@ amount?: number,
 /**
  * The object that did it (`Ref::Dealer`): the source of the damage; none for any other event.
  */
-source?: ObjectRef, };
+source?: ObjectRef, 
+/**
+ * What the subject went against (`Ref::Against`): the player, planeswalker or battle an attacker attacks, the attacker a
+ * creature blocks; none for any other event.
+ */
+against?: Target, };

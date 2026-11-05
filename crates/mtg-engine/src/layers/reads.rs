@@ -180,6 +180,7 @@ pub(crate) fn reads_of_ref(reference: &Ref) -> Traits {
         | Ref::Triggering
         | Ref::TriggeringPlayer
         | Ref::Dealer
+        | Ref::Against
         | Ref::Attached
         | Ref::AttachedPlayer
         | Ref::Monarch
@@ -196,6 +197,7 @@ pub(crate) fn reads_of_ref(reference: &Ref) -> Traits {
         Ref::Remembered { on, .. } => reads_of_ref(on),
         Ref::ControllerOf(inner) => Traits::CONTROL.or(reads_of_ref(inner)),
         Ref::OwnerOf(inner) => reads_of_ref(inner),
+        Ref::Arrived { of, .. } => reads_of_ref(of),
         Ref::Each(selector) => reads_of_selector(selector),
     }
 }
@@ -342,6 +344,7 @@ pub(crate) fn reads_of_amount(amount: &Amount) -> Traits {
         | Amount::Tallied { who, .. }
         | Amount::CommanderColors(who)
         | Amount::StartingLife(who)
+        | Amount::CastLastTurn(who)
         | Amount::HighestCounters { who, .. }
         | Amount::LowestLife(who)
         | Amount::LowestHand(who)

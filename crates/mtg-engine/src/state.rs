@@ -266,6 +266,10 @@ pub struct GameState {
     pub(crate) result: Option<GameResult>,
     /// Day or night (CR 726); neither until a permanent with daybound or nightbound appears.
     pub(crate) day_night: Option<crate::day_night::DayNight>,
+    /// Each seat's latest finished turn, kept as it ends.
+    pub(crate) seat_turns: BTreeMap<PlayerId, crate::turn_summary::TurnSummary>,
+    /// The seat whose turn ended last.
+    pub(crate) last_turn_of: Option<PlayerId>,
     /// The monarch (CR 724): at most one player, from the first card that makes one.
     pub(crate) monarch: Option<PlayerId>,
     /// The players who have the city's blessing (CR 702.131), for the rest of the game.
@@ -830,6 +834,7 @@ impl Hash for GameState {
         if let Some(day_night) = self.day_night {
             day_night.hash(state);
         }
+        self.hash_turn_summaries(state);
         // Likewise a game without a monarch.
         if let Some(monarch) = self.monarch {
             monarch.hash(state);

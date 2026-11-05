@@ -46,6 +46,8 @@ pub fn triggered(ctx: &mut Ctx, body: &str) -> Tr<Value> {
         to_player: p.get("ValidTarget").is_some_and(|word| {
             word == "Player" || word.starts_with("Player.") || word == "Opponent"
         }),
+        pattern: super::triggered::key_of(&when),
+        arrives: super::triggered::arrival(&when),
     });
     let from = match p.get("TriggerZones") {
         None | Some("Battlefield") => None,

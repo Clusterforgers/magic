@@ -7,6 +7,8 @@
 mod delayed;
 mod detect;
 #[cfg(test)]
+mod detect_against;
+#[cfg(test)]
 mod detect_batches;
 #[cfg(test)]
 mod detect_crewed;

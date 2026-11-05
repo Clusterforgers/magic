@@ -304,6 +304,11 @@ fn begin_turn(
     extra: bool,
 ) -> Result<(), EngineError> {
     let (before, previous) = (state.turn.number, state.turn.regular);
+    // The turn that is ending is kept before its counts are cleared.
+    if before != 0 {
+        let ending = state.turn.active;
+        state.summarize_turn(ending);
+    }
     if extra {
         if state.extra_turns.pop().map(|turn| turn.player) != Some(active) {
             return Err(invalid(format!("{active:?} has no extra turn to take")));
