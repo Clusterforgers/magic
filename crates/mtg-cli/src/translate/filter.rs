@@ -110,6 +110,8 @@ pub struct Atom {
 const OBJECT: &[Scope] = &[Scope::Object, Scope::Source, Scope::Targeting];
 const SOURCE: &[Scope] = &[Scope::Source];
 
+// The rows share the signature of `Atom::lower`.
+#[allow(clippy::unnecessary_wraps)]
 fn one(value: Value) -> Tr<Vec<Value>> {
     Ok(vec![value])
 }

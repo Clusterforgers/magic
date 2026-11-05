@@ -127,10 +127,8 @@ fn property(ctx: &Ctx, prop: &str) -> Tr<Vec<Value>> {
     if prop.chars().next().is_some_and(char::is_uppercase) && ctx.world.subtypes.contains(prop) {
         return one(json!({"Subtype": prop}));
     }
-    if let Some(found) = super::filter::atom(ctx, ctx.scope.get(), prop) {
-        return found;
-    }
-    unmapped(format!("valid:{prop}"))
+    super::filter::atom(ctx, ctx.scope.get(), prop)
+        .unwrap_or_else(|| unmapped(format!("valid:{prop}")))
 }
 
 /// `FirstStrike` as `First Strike`.
