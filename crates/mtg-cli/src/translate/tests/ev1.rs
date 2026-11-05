@@ -38,11 +38,6 @@ fn a_delayed_step_names_the_object_of_the_event(
 }
 
 #[rstest]
-#[case::new_card(
-    "Mode$ ChangesZone | Origin$ Battlefield | Destination$ Graveyard | ValidCard$ Card.Self",
-    "TriggeredNewCardLKICopy",
-    "key:RememberObjects=TriggeredNewCardLKICopy-after-a-move"
-)]
 #[case::card_after_a_move(
     "Mode$ ChangesZone | Origin$ Battlefield | Destination$ Graveyard | ValidCard$ Card.Self",
     "TriggeredCard",

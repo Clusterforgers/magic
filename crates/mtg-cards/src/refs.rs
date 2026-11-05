@@ -122,6 +122,14 @@ pub enum Ref {
     ControllerOf(Box<Ref>),
     /// The owner of the referenced object.
     OwnerOf(Box<Ref>),
+    /// The object an object named one zone change ago has become, when it is now in this zone ("return it to the battlefield"
+    /// after it died): the same card one incarnation on (CR 400.7). Nobody when it moved twice, moved elsewhere or is gone.
+    Arrived {
+        /// The reference to the object as it was before it moved.
+        of: Box<Ref>,
+        /// The zone it must be in now.
+        zone: ZoneKind,
+    },
     /// Every object matching the selector when the effect runs.
     Each(Selector),
 }

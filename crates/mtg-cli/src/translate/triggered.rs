@@ -19,6 +19,18 @@ pub struct Shape {
     pub to_player: bool,
     /// The engine pattern the line reads (`Attacks`, `GroupAttacksAt`, `Blocks`): what the event holds depends on it.
     pub pattern: String,
+    /// The zone the event object moved to from the battlefield (a death, a sacrifice, an exile): the card it became is there.
+    pub arrives: Option<String>,
+}
+
+/// The zone a permanent that left the battlefield by this pattern arrived in, when the pattern names one.
+pub fn arrival(when: &Value) -> Option<String> {
+    if when.get("Sacrificed").is_some() {
+        return Some("Graveyard".to_owned());
+    }
+    let change = when.get("ZoneChange")?;
+    (change.get("from")? == "Battlefield").then_some(())?;
+    change.get("to")?.as_str().map(str::to_owned)
 }
 
 /// The name of the pattern a trigger's `when` is.
@@ -117,6 +129,14 @@ const STAYS: [&str; 8] = [
 /// object after a zone change (`TriggeredNewCard`) needs the object one move on, and an object that moved is another one
 /// (CR 400.7), so those stay gaps.
 pub fn remembered_by_event(shape: Option<&Shape>, word: &str) -> Tr<Value> {
+    // The card an object became when it left the battlefield is the object one move on, in the zone the pattern names.
+    if matches!(word.trim(), "TriggeredNewCard" | "TriggeredNewCardLKICopy")
+        && let Some(shape) = shape
+        && let Some(zone) = &shape.arrives
+    {
+        let of = if shape.itself { "This" } else { "Triggering" };
+        return Ok(json!({"Arrived": {"of": of, "zone": zone}}));
+    }
     let stays = shape.is_some_and(|shape| STAYS.contains(&shape.mode.as_str()));
     let object = !matches!(kind(word.trim()), Some((Word::Player | Word::Activator, _)));
     if word.contains("NewCard") || word.ends_with("Controller") || (object && !stays) {

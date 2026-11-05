@@ -938,6 +938,7 @@ impl<'a> Scope<'a> {
                 .flat_map(|source| crate::memory::recall(state, source, slot))
                 .map(Target::Object)
                 .collect(),
+            Ref::Arrived { of, zone } => self.arrived(of, *zone)?,
             Ref::ControllerOf(inner) => self.seats_of(inner, |seen| seen.controller)?,
             Ref::OwnerOf(inner) => self.seats_of(inner, |seen| seen.owner)?,
             Ref::Each(selector) => self
@@ -1057,6 +1058,23 @@ impl<'a> Scope<'a> {
             .into_iter()
             .filter_map(Target::player)
             .collect())
+    }
+
+    /// The objects the reference named that have moved once since and are now in `zone`: the card they became (CR 400.7).
+    /// An object that moved twice, moved to another zone or is gone is nobody.
+    fn arrived(&self, of: &Ref, zone: ZoneKind) -> Result<Vec<Target>, ResolveError> {
+        let mut found: Vec<Target> = Vec::new();
+        for named in self.objects(of)? {
+            if let Some(now) = self.state.object(named.id).filter(|now| {
+                now.counter() == named.counter + 1
+                    && now.kind() != ObjectKind::Ability
+                    && zone_kind(now.zone()) == zone
+            }) && !found.contains(&Target::Object(now.reference()))
+            {
+                found.push(Target::Object(now.reference()));
+            }
+        }
+        Ok(found)
     }
 
     /// The objects a reference names (players among them are ignored).
@@ -2760,6 +2778,47 @@ mod tests {
         ));
         scope.cause = Some(&cause);
         assert_eq!(scope.players(&triggering).unwrap(), [PlayerId(1)]);
+    }
+
+    #[rstest]
+    #[case::not_moved(&[], ZoneKind::Graveyard, true)]
+    #[case::moved_once_to_the_zone(&[Zone::Graveyard(PlayerId(1))], ZoneKind::Graveyard, false)]
+    #[case::moved_once_elsewhere(&[Zone::Exile], ZoneKind::Graveyard, true)]
+    #[case::moved_twice(&[Zone::Graveyard(PlayerId(1)), Zone::Exile], ZoneKind::Exile, true)]
+    #[case::returned_to_the_battlefield(&[Zone::Graveyard(PlayerId(1)), Zone::Battlefield], ZoneKind::Battlefield, true)]
+    fn the_object_one_move_on_is_nobody_unless_it_moved_once_into_the_zone(
+        #[case] moves: &[Zone],
+        #[case] zone: ZoneKind,
+        #[case] nobody: bool,
+    ) {
+        let mut game = game();
+        let ogre = named(&game, "Ogre", 1);
+        let mut from = Zone::Battlefield;
+        for to in moves {
+            apply_event(
+                &mut game,
+                &Event::ZoneChanged {
+                    object: ogre.id,
+                    from,
+                    to: *to,
+                    cause: ZoneCause::Moved,
+                },
+            )
+            .unwrap();
+            from = *to;
+        }
+        let bound: Bindings = [("it".to_owned(), vec![Target::Object(ogre)])].into();
+        let mut scope = scope(&game);
+        scope.bindings = &bound;
+        let arrived = Ref::Arrived {
+            of: Box::new(Ref::Bound("it".to_owned())),
+            zone,
+        };
+        let found = scope.objects(&arrived).unwrap();
+        assert_eq!(found.is_empty(), nobody);
+        if let [now] = found.as_slice() {
+            assert_eq!(now.counter, ogre.counter + 1);
+        }
     }
 
     #[test]
