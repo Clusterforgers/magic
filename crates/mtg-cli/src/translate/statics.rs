@@ -585,7 +585,8 @@ fn cost_modifier(ctx: &Ctx, p: &Params, change: &str) -> Tr<Value> {
     }
     if p.get("OnlyFirstSpell") == Some("True") {
         // "The first spell of that kind you cast each turn": none of that kind was cast before.
-        if activating.is_some() || p.get("ValidCard").is_none() || p.get("Activator") != Some("You") {
+        if activating.is_some() || p.get("ValidCard").is_none() || p.get("Activator") != Some("You")
+        {
             return unmapped("key:Static.CostModifier.OnlyFirstSpell-shape");
         }
         let filter = selector_any(ctx, p.get("ValidCard").unwrap_or_default())?;

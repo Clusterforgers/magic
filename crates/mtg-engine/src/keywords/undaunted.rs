@@ -25,6 +25,8 @@ impl KeywordRules for Undaunted {
             mana: ManaCostX::new(0, ManaCost::from_symbols([ManaSymbol::Generic(1)])),
             per: Amount::Players(Ref::Opponents),
             condition: None,
+            activating: None,
+            least: 0,
         }]
     }
 }

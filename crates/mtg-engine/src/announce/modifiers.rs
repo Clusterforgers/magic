@@ -184,7 +184,7 @@ pub(crate) fn modified(
         return mana;
     };
     let announced = Choices::default();
-    let (mut more, mut less) = (ManaCost::ZERO, ManaCost::ZERO);
+    let (mut more, mut less, mut floor) = (ManaCost::ZERO, ManaCost::ZERO, 0u32);
     for modifier in gathered(state, spell, player) {
         let Ability::CostModifier {
             applies_to,
@@ -192,6 +192,8 @@ pub(crate) fn modified(
             mana: unit,
             per,
             condition,
+            activating: None,
+            least,
         } = &*modifier.ability
         else {
             continue;
@@ -222,7 +224,10 @@ pub(crate) fn modified(
         let part = repeated(unit, times);
         match change {
             CostChange::Increase => more = joined(more, &part),
-            CostChange::Reduce => less = joined(less, &part),
+            CostChange::Reduce => {
+                floor = floor.max(*least);
+                less = joined(less, &part);
+            }
         }
     }
     // The commander tax is an increase of the cost like any other (CR 903.8).
@@ -239,7 +244,9 @@ pub(crate) fn modified(
         Some(joined(mana.unwrap_or(ManaCost::ZERO), &more))
     };
     match mana {
-        Some(cost) if !less.symbols().is_empty() => Some(reduced(&cost, &less)),
+        Some(cost) if !less.symbols().is_empty() => {
+            Some(floored(&cost, reduced(&cost, &less), floor))
+        }
         other => other,
     }
 }
@@ -247,6 +254,16 @@ pub(crate) fn modified(
 /// `cost` less `less`, as a spell's reductions take it (an activated ability's own reductions, `c11a_less`).
 pub(crate) fn c11a_reduced(cost: &ManaCost, less: &ManaCost) -> ManaCost {
     reduced(cost, less)
+}
+
+/// `after`, a reduction of `before`, raised to `least` mana (or to what `before` was when that is less): "This effect can't
+/// reduce the mana in that cost to less than one mana."
+pub(crate) fn floored(before: &ManaCost, after: ManaCost, least: u32) -> ManaCost {
+    let wanted = least.min(before.mana_value());
+    match wanted.checked_sub(after.mana_value()) {
+        Some(short) if short > 0 => after.with(ManaSymbol::Generic(short)),
+        _ => after,
+    }
 }
 
 /// The mana of `unit` `times` over; an `{X}` in it has no value here and is left out.

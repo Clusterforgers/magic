@@ -1352,7 +1352,9 @@ fn ability() -> impl Strategy<Value = Ability> {
                     change,
                     mana,
                     per,
-                    condition
+                    condition,
+                    activating: None,
+                    least: 0
                 }
             ),
         keyword().prop_map(Ability::Keyword),

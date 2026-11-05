@@ -41,8 +41,9 @@ fn offered(
         .library(0, (0..10).map(|_| forest()))
         .library(1, (0..10).map(|_| forest()));
     let mut driver = Driver::from_scenario(scenario).unwrap();
-    driver.pass_until(Step::DeclareAttackers).unwrap();
-    let allowed = driver.attack(&[("Serpent", 1)]).is_ok();
+    // With no creature to attack with, the declaration is skipped and the turn runs on.
+    let allowed = driver.pass_until(Step::DeclareAttackers).is_ok()
+        && driver.attack(&[("Serpent", 1)]).is_ok();
     let state = replay(driver.engine().setup(), driver.engine().events()).unwrap();
     assert_eq!(state.state_hash(), driver.state().state_hash());
     allowed

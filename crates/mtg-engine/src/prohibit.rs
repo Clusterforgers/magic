@@ -8,6 +8,7 @@
 
 use crate::triggers::step_matches;
 use crate::turn::Step;
+use mtg_cards::ability::ActivationKind;
 use mtg_cards::modify::Prohibited;
 use mtg_cards::refs::Selector;
 use mtg_cards::value::{Condition, TallyEvent};
@@ -55,7 +56,12 @@ impl Banned {
 #[derive(Debug, Clone, Copy)]
 pub(crate) enum Doing {
     /// `player` activates an ability of `source`.
-    Activate { player: PlayerId, source: ObjectId },
+    Activate {
+        player: PlayerId,
+        source: ObjectId,
+        /// The specific kind of the ability (`activation_kind::specific`); none for any other.
+        kind: Option<ActivationKind>,
+    },
     /// `target` becomes the target of a spell or ability of `by`, controlled by `controller`.
     BeTargeted { target: Target, by: ObjectRef },
     /// `player` plays a land.
@@ -116,8 +122,22 @@ fn holder(state: &GameState, object: ObjectId) -> Option<PlayerId> {
 fn applies(state: &GameState, ban: &Banned, doing: Doing) -> bool {
     let who = &ban.who;
     match (&ban.action, doing) {
-        (Prohibited::Activate(sources), Doing::Activate { player, source }) => {
+        (Prohibited::Activate(sources), Doing::Activate { player, source, .. }) => {
             covers(who, Some(player), Some(source))
+                && state
+                    .object(source)
+                    .is_some_and(|o| picks(state, ban, sources, o.reference()))
+        }
+        (
+            Prohibited::ActivateKind { kind, sources },
+            Doing::Activate {
+                player,
+                source,
+                kind: own,
+            },
+        ) => {
+            crate::activation_kind::is_kind(*kind, own)
+                && covers(who, Some(player), Some(source))
                 && state
                     .object(source)
                     .is_some_and(|o| picks(state, ban, sources, o.reference()))

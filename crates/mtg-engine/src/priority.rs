@@ -140,6 +140,7 @@ fn can_activate(
         crate::prohibit::Doing::Activate {
             player,
             source: object.id(),
+            kind: crate::activation_kind::specific(state, address, rules),
         },
     ) {
         return false;
@@ -209,7 +210,9 @@ fn can_activate(
             return false;
         }
     }
-    if let Some(mana) = crate::c11a_less::c11a_mana(state, player, object.id(), &price) {
+    if let Some(mana) =
+        crate::c11a_less::c11a_mana(state, player, (object.id(), address, rules), &price)
+    {
         let mana = &mana;
         let Some(seat) = state.player(player) else {
             return false;

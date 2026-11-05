@@ -14,6 +14,8 @@ pub(super) fn add(ability: &Ability, texts: &mut Vec<String>) {
         mana,
         per,
         condition: None,
+        activating: None,
+        least: 0,
     } = ability
     else {
         return;

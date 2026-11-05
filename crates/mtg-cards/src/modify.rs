@@ -6,7 +6,7 @@ use mtg_core::card::{CardType, Subtype, Supertype};
 use mtg_core::color::Color;
 use serde::{Deserialize, Serialize};
 
-use crate::ability::Ability;
+use crate::ability::{Ability, ActivationKind};
 use crate::cost::Cost;
 use crate::keyword::Keyword;
 use crate::mana::ManaCostX;
@@ -340,6 +340,15 @@ pub enum Prohibited {
     Attack {
         /// The attack is open while this holds for the defending player.
         unless: Condition,
+    },
+    /// Activate abilities of one kind of the sources the selector picks (every source when empty): the kind is a loyalty
+    /// ability, the equip ability or the cycling ability, or any activated ability but a mana ability.
+    ActivateKind {
+        /// The kind of ability.
+        kind: ActivationKind,
+        /// The sources; every source when empty.
+        #[serde(default, skip_serializing_if = "Selector::is_empty")]
+        sources: Selector,
     },
 }
 

@@ -3,6 +3,7 @@
 mod abilities;
 mod ability_costs;
 mod actions_fuzz;
+mod activation_costs;
 mod activation_moments;
 mod active_leaves;
 mod active_leaves_fuzz;
