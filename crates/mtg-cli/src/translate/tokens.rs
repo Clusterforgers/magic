@@ -63,6 +63,8 @@ fn token_create(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
             "TokenOwner",
             "TokenTapped",
             "TokenAttacking",
+            "TokenPower",
+            "TokenToughness",
             "RememberTokens",
             "AttachedTo",
             "ValidTgts",
@@ -77,6 +79,30 @@ fn token_create(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
     let Some(face) = ctx.world.tokens.get(script.trim()) else {
         return unmapped("token:unknown-script");
     };
+    // A token whose size is counted: it enters as 0/0 and its base power and toughness are set to the numbers fixed before it
+    // was made, in the same resolution (state-based actions wait for the end of it).
+    let sized = match (p.get("TokenPower"), p.get("TokenToughness")) {
+        (None, None) => None,
+        (Some(power), Some(toughness))
+            if face
+                .pt
+                .as_deref()
+                .is_some_and(|pt| pt.split('/').any(|part| part.parse::<i32>().is_err())) =>
+        {
+            Some((power, toughness))
+        }
+        _ => return unmapped("key:Token.TokenPower-shape"),
+    };
+    let zero;
+    let face = if sized.is_some() {
+        zero = Face {
+            pt: Some("0/0".to_owned()),
+            ..face.clone()
+        };
+        &zero
+    } else {
+        face
+    };
     let token = token_ref(ctx, face)?;
     let count = amount(ctx, p.get("TokenAmount").unwrap_or("1"))?;
     let who = defined(ctx, p.get("TokenOwner").unwrap_or("You"))?;
@@ -87,13 +113,35 @@ fn token_create(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
         "tapped": flag(p, "TokenTapped")?,
         "attacking": flag(p, "TokenAttacking")?,
     });
+    let mut before = Vec::new();
+    let mut after = Vec::new();
+    if let Some((power, toughness)) = sized {
+        let (power, toughness) = (amount(ctx, power)?, amount(ctx, toughness)?);
+        let (fixed_power, fixed_toughness) = (ctx.fresh("power"), ctx.fresh("toughness"));
+        before.push(json!({"Let": {"as": fixed_power, "amount": power}}));
+        before.push(json!({"Let": {"as": fixed_toughness, "amount": toughness}}));
+        let name = match create.get("as") {
+            Some(name) => name.clone(),
+            None => json!(ctx.fresh("token")),
+        };
+        create["as"] = name.clone();
+        after.push(json!({"Continuous": {
+            "affected": {"Bound": name},
+            "mods": [{"SetPT": {"power": {"Bound": fixed_power}, "toughness": {"Bound": fixed_toughness}}}],
+            "duration": "Forever"}}));
+    }
     if flag(p, "RememberTokens")? {
-        let name = ctx.fresh("token");
+        let name = match create.get("as") {
+            Some(name) => name.clone(),
+            None => json!(ctx.fresh("token")),
+        };
         ctx.remembered = Some(json!({ "Bound": name }));
-        create["as"] = json!(name);
+        create["as"] = name;
     }
     let attach = attached(ctx, p, face, &mut create)?;
-    let mut effects = vec![json!({ "CreateToken": create })];
+    let mut effects = before;
+    effects.push(json!({ "CreateToken": create }));
+    effects.extend(after);
     effects.extend(attach);
     Ok(effects)
 }

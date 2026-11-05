@@ -2,6 +2,8 @@
 
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
+use mtg_cli::forge::script::Script;
+use mtg_cli::translate::ctx::World;
 use mtg_core::color::Color;
 use mtg_engine::characteristics::characteristics;
 use mtg_engine::choose::{ChoiceOption, OptionChoice};
@@ -189,4 +191,47 @@ fn the_line_after_a_may_happens_whether_or_not_the_player_agrees(
         .count();
     assert_eq!(yard, milled);
     assert_eq!(state.player(PlayerId::from_index(0)).unwrap().life(), 23);
+}
+
+const MONUMENT: &str = "Name:Monument\nManaCost:W\nTypes:Sorcery\nA:SP$ Token | TokenPower$ X | TokenToughness$ X | TokenScript$ w_x_x_spirit | TokenOwner$ You\nSVar:X:Count$Valid Creature.YouCtrl\n";
+
+#[test]
+fn a_token_counted_by_creatures_is_sized_without_counting_itself() {
+    let mut world = World::default();
+    world.tokens.insert(
+        "w_x_x_spirit".to_owned(),
+        Script::parse("Name:Spirit Token\nColors:white\nTypes:Creature Spirit\nPT:*/*\n")
+            .faces
+            .remove(0),
+    );
+    world.subtypes.insert("Spirit".to_owned());
+    let card = crate::r3p3_runs::translated_in(&world, MONUMENT, "Monument", "Sorcery", "{W}");
+    let scenario = Scenario::new(2)
+        .hand(0, [card])
+        .battlefield(
+            0,
+            [
+                ready(plains()),
+                ready(bear()),
+                ready(free_creature("Ogre", 3, 3)),
+            ],
+        )
+        .library(0, [plains()])
+        .library(1, [plains()]);
+    let mut driver = Driver::from_scenario(scenario).unwrap();
+    driver.cast("Monument").unwrap();
+    crate::r3p3_runs::settle(&mut driver);
+    let state = driver.state();
+    let spirit = state
+        .zone(mtg_engine::zones::Zone::Battlefield)
+        .iter()
+        .find(|id| {
+            state
+                .object(**id)
+                .is_some_and(|o| o.card().name == "Spirit")
+        })
+        .copied()
+        .expect("the token survives");
+    let chars = characteristics(state, spirit).unwrap();
+    assert_eq!((chars.power, chars.toughness), (Some(2), Some(2)));
 }

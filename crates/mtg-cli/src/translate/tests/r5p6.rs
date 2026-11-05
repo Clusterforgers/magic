@@ -124,3 +124,37 @@ fn a_may_line_does_not_gate_the_sub_ability_after_it() {
     );
     assert!(effects[1].get("GainLife").is_some(), "{effects}");
 }
+
+const MONUMENT: &str = "Name:T\nTypes:Sorcery\nA:SP$ Token | TokenPower$ X | TokenToughness$ X | TokenScript$ w_x_x_spirit | TokenOwner$ You\nSVar:X:Count$Valid Creature.YouCtrl\n";
+
+#[test]
+fn a_counted_token_is_made_then_sized_by_numbers_fixed_before_it() {
+    assert_eq!(gaps(MONUMENT), Vec::<String>::new());
+    let found = abilities(MONUMENT);
+    let effects = found[0]["Spell"]["effects"].as_array().unwrap();
+    assert!(
+        effects[0].get("Let").is_some() && effects[1].get("Let").is_some(),
+        "{effects:?}"
+    );
+    let name = &effects[2]["CreateToken"]["as"];
+    assert_eq!(effects[3]["Continuous"]["affected"], json!({"Bound": name}));
+    assert_eq!(effects[3]["Continuous"]["duration"], json!("Forever"));
+    assert_eq!(
+        effects[2]["CreateToken"]["token"]["Custom"]["power"],
+        json!(0)
+    );
+}
+
+#[rstest]
+#[case::only_power("TokenPower$ X")]
+#[case::only_toughness("TokenToughness$ X")]
+fn half_a_size_is_a_gap(#[case] keep: &str) {
+    let text = MONUMENT.replace("TokenPower$ X | TokenToughness$ X", keep);
+    assert_eq!(gaps(&text), ["key:Token.TokenPower-shape"]);
+}
+
+#[test]
+fn a_size_on_a_fixed_token_is_a_gap() {
+    let text = MONUMENT.replace("w_x_x_spirit", "w_1_1_soldier");
+    assert_eq!(gaps(&text), ["key:Token.TokenPower-shape"]);
+}
