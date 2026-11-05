@@ -269,9 +269,16 @@ fn dispatch(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         Effect::Vote { .. } => vote::run(cx, effect),
         Effect::Planechase { .. } => c10_vp_planechase::run(cx, effect),
         Effect::VillainousChoice { .. } => w2d_villainous::run(cx, effect),
-        Effect::Either { .. } => dk1c5_either::run(cx, effect),
-        Effect::OneOf { .. } => one_of::run(cx, effect),
+        Effect::Either { .. } | Effect::OneOf { .. } => choice_of_lists(cx, effect),
         other => fe1n(cx, other),
+    }
+}
+
+/// A choice among lists of effects: two printed options ("or") or several.
+fn choice_of_lists(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
+    match effect {
+        Effect::OneOf { .. } => one_of::run(cx, effect),
+        _ => dk1c5_either::run(cx, effect),
     }
 }
 
