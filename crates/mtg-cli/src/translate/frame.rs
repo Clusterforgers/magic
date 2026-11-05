@@ -543,6 +543,14 @@ fn goes_in(
             }
             match p.get("GainControl") {
                 None | Some("False") => {}
+                // The script says "under your control" where the printed text says the owner's: the script is out of date.
+                Some("True")
+                    if ["owner's control", "owner’s control"]
+                        .iter()
+                        .any(|text| ctx.oracle.contains(text)) =>
+                {
+                    return unmapped("key:ChangeZone.GainControl-printed-as-owner");
+                }
                 Some("True") => enters["under"] = json!("You"),
                 Some(word) => enters["under"] = one_player(ctx, word, "Frame.GainControl")?,
             }
