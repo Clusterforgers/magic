@@ -78,3 +78,27 @@ fn an_animation_with_a_clean_up_sets_a_delayed_trigger(#[case] word: &str) {
     let effects = &abilities(&text)[0]["Activated"]["effects"];
     assert!(effects[1]["DelayedTrigger"].is_object(), "{effects}");
 }
+
+#[rstest]
+#[case::exile("Exile", true)]
+#[case::graveyard("Graveyard", false)]
+fn a_counterspell_that_exiles_sets_a_shield_before_it_counters(
+    #[case] zone: &str,
+    #[case] shield: bool,
+) {
+    let text = spell(&format!(
+        "Counter | TargetType$ Spell | ValidTgts$ Card | Destination${zone}"
+    ));
+    assert_eq!(gaps(&text), Vec::<String>::new());
+    let effects = abilities(&text)[0]["Spell"]["effects"].clone();
+    assert_eq!(effects[0].get("Shield").is_some(), shield, "{effects}");
+    assert!(
+        effects
+            .as_array()
+            .unwrap()
+            .last()
+            .unwrap()
+            .get("Counter")
+            .is_some()
+    );
+}

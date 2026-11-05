@@ -18,7 +18,7 @@ pub fn effects(ctx: &mut Ctx, p: &Params, api: &str) -> Tr<Vec<Value>> {
         "DamageAll" => damage_all(ctx, p),
         "DamageResolve" => damage_resolve(p),
         "PutCounterAll" => one(put_counter_all(ctx, p)),
-        "Counter" => one(counter(ctx, p)),
+        "Counter" => counter(ctx, p),
         "PreventDamage" => one(prevent_damage(ctx, p)),
         "Pump" => pump(ctx, p),
         "Debuff" => debuff(ctx, p),
@@ -204,18 +204,18 @@ fn put_counter_all(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
     )
 }
 
-fn counter(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
+fn counter(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
     only(
         p,
         "Counter",
         &["TargetType", "ValidTgts", "Destination", "Defined"],
     )?;
-    // A countered spell goes to its owner's graveyard; another destination needs a node of the engine.
-    if let Some(zone) = p.get("Destination")
-        && zone != "Graveyard"
-    {
-        return unmapped(format!("key:Counter.Destination={zone}"));
-    }
+    // A countered spell goes to its owner's graveyard; exile instead is a shield on the spell, set before it is countered.
+    let exiled = match p.get("Destination") {
+        None | Some("Graveyard") => false,
+        Some("Exile") => true,
+        Some(zone) => return unmapped(format!("key:Counter.Destination={zone}")),
+    };
     // The spell a cast trigger is about; no other `Defined$` is known.
     if let Some(word) = p.get("Defined") {
         let cast_trigger = ctx
@@ -227,7 +227,14 @@ fn counter(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
                 Ok(json!({"Counter": {"what": "Triggering"}}))
             }
             _ => unmapped("key:Counter.Defined"),
-        };
+        }
+        .and_then(|node| {
+            if exiled {
+                unmapped("key:Counter.Destination=Exile-of-a-trigger")
+            } else {
+                Ok(vec![node])
+            }
+        });
     }
     if p.get("TargetType") != Some("Spell") {
         return unmapped("key:Counter.TargetType");
@@ -235,7 +242,14 @@ fn counter(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
     let mut selector = vec![json!("Spell")];
     selector.extend(selector_any(ctx, p.get("ValidTgts").unwrap_or("Card"))?);
     let what = ctx.target(json!({"what": {"Object": selector}}))?;
-    Ok(json!({"Counter": {"what": what}}))
+    let mut effects = Vec::new();
+    if exiled {
+        effects.push(json!({"Shield": {
+            "when": {"ZoneChange": {"what": [{"Is": what}, "Spell"], "from": "Stack", "to": "Graveyard"}},
+            "by": {"MoveTo": "Exile"}, "duration": "UntilEndOfTurn"}}));
+    }
+    effects.push(json!({"Counter": {"what": what}}));
+    Ok(effects)
 }
 
 /// `PreventDamage`: the next damage to the target this turn is prevented, up to an amount or all of it.

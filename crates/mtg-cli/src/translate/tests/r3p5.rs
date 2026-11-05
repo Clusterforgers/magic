@@ -171,7 +171,8 @@ fn a_keyword_choice_gives_the_first_keyword_to_the_passive_answer() {
 #[rstest]
 #[case::sacrifice("Sacrifice", true)]
 #[case::destroy("Destroy", true)]
-#[case::exile_in_your_turn_word("SacrificeCtrl", false)]
+#[case::sacrifice_ctrl("SacrificeCtrl", true)]
+#[case::unknown_word("Bogus", false)]
 fn a_pump_that_ends_the_creature_at_the_end_step_says_so(#[case] word: &str, #[case] read: bool) {
     let text = format!(
         "Name:T\nTypes:Creature Elf\nPT:1/1\nA:AB$ Pump | Cost$ 2 | Defined$ Self | NumAtt$ +1 | AtEOT$ {word}\n"

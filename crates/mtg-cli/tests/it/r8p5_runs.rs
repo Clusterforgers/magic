@@ -7,7 +7,7 @@ use mtg_core::ids::PlayerId;
 use mtg_engine::decision::{Answer, DecisionKind, PayChoice};
 use mtg_engine::turn::Step;
 use mtg_engine::zones::Zone;
-use mtg_testkit::cards::{bear, forest, free_creature, mountain};
+use mtg_testkit::cards::{bear, forest, free_creature, island, mountain};
 use mtg_testkit::{Driver, Scenario, ready};
 use rstest::rstest;
 
@@ -147,4 +147,48 @@ fn an_animated_artifact_is_sacrificed_at_the_end_step() {
     let turn = driver.state().turn().number();
     driver.idle_until(turn + 1, Step::Upkeep).unwrap();
     assert_eq!(count(&driver, grave(0), "Rig", 0), 1);
+}
+
+#[rstest]
+#[case::exile("Exile", 1, 0)]
+#[case::graveyard("Graveyard", 0, 1)]
+fn a_countered_spell_goes_where_the_counterspell_says(
+    #[case] zone: &str,
+    #[case] exiled: usize,
+    #[case] buried: usize,
+) {
+    let deny = format!(
+        "Name:Deny\nManaCost:U\nTypes:Instant\nA:SP$ Counter | TargetType$ Spell | ValidTgts$ Card | Destination${zone} | SpellDescription$ x\n"
+    );
+    let gain = "Name:Gain\nManaCost:R\nTypes:Instant\nA:SP$ GainLife | LifeAmount$ 3 | SpellDescription$ x\n";
+    let scenario = Scenario::new(2)
+        .hand(
+            0,
+            [
+                translated(gain, "Gain", "Instant", "{R}"),
+                translated(&deny, "Deny", "Instant", "{U}"),
+            ],
+        )
+        .battlefield(0, [ready(mountain()), ready(island())])
+        .library(0, [mountain()])
+        .library(1, [mountain()]);
+    let mut driver = Driver::from_scenario(scenario).unwrap();
+    driver.cast("Gain").unwrap();
+    driver.begin_cast("Deny").unwrap();
+    let DecisionKind::ChooseTargets(options) = driver.decision().unwrap().kind.clone() else {
+        panic!("no target decision");
+    };
+    driver.choose_targets(&options.legal[..1]).unwrap();
+    driver.answer(Answer::PayMana(PayChoice::Auto)).unwrap();
+    settle(&mut driver);
+    assert_eq!(count(&driver, Zone::Exile, "Gain", 0), exiled);
+    assert_eq!(count(&driver, grave(0), "Gain", 0), buried);
+    assert_eq!(
+        driver
+            .state()
+            .player(PlayerId::from_index(0))
+            .unwrap()
+            .life(),
+        20
+    );
 }
