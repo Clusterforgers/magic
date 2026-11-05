@@ -846,7 +846,7 @@ impl<'a> Scope<'a> {
                 .map(|cause| {
                     (cause.subjects.iter())
                         .filter(|subject| matches!(subject, Target::Player(_)))
-                        .cloned()
+                        .copied()
                         .collect()
                 })
                 .ok_or_else(|| ResolveError::Invalid("there is no triggering event".into()))?,
@@ -2658,7 +2658,7 @@ mod tests {
     fn a_name_nothing_bound_is_an_empty_set() {
         let game = game();
         let ghost: Ref = serde_json::from_str(r#"{"Bound":"ghost"}"#).unwrap();
-        assert!(scope(&game).refs(&ghost).unwrap().is_empty());
+        assert_eq!(scope(&game).refs(&ghost).unwrap().len(), 0);
     }
 
     #[test]

@@ -63,7 +63,7 @@ fn power_of(driver: &Driver, name: &str) -> Option<i32> {
 }
 
 /// Answers the announcements of a cast or activation in order, paying automatically, until priority or payment is done.
-fn announce(driver: &mut Driver, mut targets: Vec<Vec<Target>>, mode: Option<Vec<usize>>, x: u32) {
+fn announce(driver: &mut Driver, mut targets: Vec<Vec<Target>>, mode: Option<&[usize]>, x: u32) {
     for _ in 0..30 {
         let decision = driver.decision().unwrap().clone();
         match &decision.kind {
@@ -73,7 +73,7 @@ fn announce(driver: &mut Driver, mut targets: Vec<Vec<Target>>, mode: Option<Vec
                     .unwrap();
             }
             DecisionKind::ChooseMode(_) => {
-                let modes = mode.clone().unwrap_or(vec![0]);
+                let modes = mode.map_or(vec![0], <[usize]>::to_vec);
                 driver
                     .answer(Answer::ChooseMode(ModeChoice::Modes(modes)))
                     .unwrap();
@@ -295,7 +295,7 @@ fn a_creature_exiled_with_the_source_returns_whoever_owned_it(#[case] owner: usi
     driver.begin_ability("Sisters", 1).unwrap();
     announce(&mut driver, vec![], None, 0);
     settle(&mut driver, true, None);
-    assert!(names(&driver, Zone::Exile).is_empty());
+    assert_eq!(names(&driver, Zone::Exile).len(), 0);
     assert!(names(&driver, Zone::Battlefield).contains(&"Victim".to_owned()));
 }
 
