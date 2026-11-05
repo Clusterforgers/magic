@@ -8,12 +8,23 @@ use crate::forge::script::Params;
 
 /// A `LifeReduced` line about damage to you as a `Rule` ability that holds while the line's condition does.
 pub fn life_reduced(ctx: &Ctx, p: &Params, condition: Option<&Value>) -> Tr<Value> {
+    // "If you control a creature" (`IsPresent$`) and "as long as you're the monarch" (`Monarch$ True`) are the condition of the rule.
+    let mut held: Vec<Value> = condition.cloned().into_iter().collect();
+    held.extend(super::condition::condition(ctx, p)?);
+    let p = &super::condition::strip(p);
+    let p = &match p.get("Monarch") {
+        Some("True") => {
+            held.push(json!({"Monarch": "You"}));
+            p.without(&["Monarch"])
+        }
+        _ => p.clone(),
+    };
     let rule = if p.get("Layer") == Some("CantHappen") {
         check_keys(
             p,
             "Replacement.LifeReduced",
-            &["Event", "ValidPlayer", "IsDamage", "Layer", "ActiveZones"],
-            |_, _| false,
+            &["Event", "ValidPlayer", "IsDamage", "Layer"],
+            |key, value| key == "ActiveZones" && value == "Battlefield",
         )?;
         if p.get("ValidPlayer") != Some("You") || p.get("IsDamage") != Some("True") {
             return unmapped("key:Replacement.LifeReduced.shape");
@@ -23,8 +34,10 @@ pub fn life_reduced(ctx: &Ctx, p: &Params, condition: Option<&Value>) -> Tr<Valu
         floor(ctx, p)?
     };
     let mut ability = json!({"Rule": {"rule": rule}});
-    if let Some(condition) = condition {
-        ability["Rule"]["condition"] = condition.clone();
+    match held.len() {
+        0 => {}
+        1 => ability["Rule"]["condition"] = held.remove(0),
+        _ => ability["Rule"]["condition"] = json!({"All": held}),
     }
     Ok(ability)
 }
@@ -34,15 +47,8 @@ fn floor(ctx: &Ctx, p: &Params) -> Tr<Value> {
     check_keys(
         p,
         "Replacement.LifeReduced",
-        &[
-            "Event",
-            "ValidPlayer",
-            "IsDamage",
-            "Result",
-            "ReplaceWith",
-            "ActiveZones",
-        ],
-        |_, _| false,
+        &["Event", "ValidPlayer", "IsDamage", "Result", "ReplaceWith"],
+        |key, value| key == "ActiveZones" && value == "Battlefield",
     )?;
     let (Some(player), Some(result), Some("True")) =
         (p.get("ValidPlayer"), p.get("Result"), p.get("IsDamage"))
