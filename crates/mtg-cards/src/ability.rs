@@ -29,6 +29,25 @@ impl Timing {
     }
 }
 
+/// Who may activate an ability.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Default, Serialize, Deserialize)]
+pub enum Activators {
+    /// The controller of the permanent (the default).
+    #[default]
+    Controller,
+    /// Any player (CR 602.2).
+    Anyone,
+    /// The opponents of its controller.
+    Opponents,
+}
+
+impl Activators {
+    /// Whether this is the default, so serialization can leave it out.
+    pub const fn is_controller(&self) -> bool {
+        matches!(self, Activators::Controller)
+    }
+}
+
 /// A limit on how often an ability can be used.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
 pub enum Limit {
@@ -36,6 +55,8 @@ pub enum Limit {
     OncePerTurn,
     /// Once each game for the object that has it (an exhaust ability, CR 702.177).
     OncePerGame,
+    /// This many times each turn (a limit of 2 or 3, CR 602.5b).
+    TimesPerTurn(u32),
 }
 
 /// The loyalty cost of a planeswalker ability (CR 606.4).
@@ -128,6 +149,9 @@ pub enum Ability {
         /// How often.
         #[serde(default, skip_serializing_if = "Option::is_none")]
         limit: Option<Limit>,
+        /// Who may activate it.
+        #[serde(default, skip_serializing_if = "Activators::is_controller")]
+        by: Activators,
         /// The zone it can be activated from.
         #[serde(default, skip_serializing_if = "ZoneKind::is_battlefield")]
         from: ZoneKind,
@@ -358,6 +382,7 @@ mod tests {
             timing: Timing::Instant,
             condition: None,
             limit: None,
+            by: Activators::Controller,
             from: ZoneKind::Battlefield,
             targets: vec![],
             effects: vec![add(&[ManaType::Colorless, ManaType::Colorless])],

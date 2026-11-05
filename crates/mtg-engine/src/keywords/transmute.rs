@@ -32,6 +32,7 @@ impl KeywordRules for Transmute {
             timing: Timing::Sorcery,
             condition: None,
             limit: None,
+            by: mtg_cards::ability::Activators::Controller,
             from: ZoneKind::Hand,
             targets: Vec::new(),
             effects: vec![

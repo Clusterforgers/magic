@@ -98,6 +98,7 @@ pub(super) fn ability_into(ability: &Ability, depth: u8, out: &mut Vec<Step>) {
             timing,
             condition,
             limit,
+            by: _,
             from,
             targets: specs,
             effects: list,

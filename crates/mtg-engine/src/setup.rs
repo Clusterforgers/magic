@@ -573,6 +573,13 @@ impl GameState {
                 .any(crate::ability_reader::definition_works_elsewhere)
         });
         self.possible.elsewhere = elsewhere;
+        let others = self.objects().any(|object| {
+            object
+                .def
+                .each_face()
+                .any(crate::ability_reader::definition_lets_others_activate)
+        });
+        self.possible.others_activate = others;
         let states = self.objects().any(|object| {
             object
                 .def

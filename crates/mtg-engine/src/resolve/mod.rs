@@ -566,6 +566,7 @@ mod tests {
                     timing: Timing::Instant,
                     condition: None,
                     limit: None,
+                    by: mtg_cards::ability::Activators::Controller,
                     from: ZoneKind::Battlefield,
                     targets: Vec::new(),
                     effects: vec![gain(1), gain(2), gain(4)],

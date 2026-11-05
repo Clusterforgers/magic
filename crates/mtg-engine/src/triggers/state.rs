@@ -84,7 +84,9 @@ fn triggers_of(
         {
             continue;
         }
-        if limit.is_some() && state.limit_spent(source, address.source, address.ability) {
+        if let Some(limit) = limit
+            && state.limit_spent(*limit, source, address.source, address.ability)
+        {
             continue;
         }
         let Some(shot) = snapshot(state, object.id()) else {

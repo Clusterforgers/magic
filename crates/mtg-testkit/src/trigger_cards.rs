@@ -275,6 +275,7 @@ pub fn once_each_turn(ability: Ability) -> Ability {
             timing,
             condition,
             limit: Some(Limit::OncePerTurn),
+            by: mtg_cards::ability::Activators::Controller,
             from,
             targets,
             effects,
@@ -356,6 +357,7 @@ pub fn delaying(when: TriggerPattern, once: bool, effects: Vec<Effect>) -> Abili
         timing: Timing::Instant,
         condition: None,
         limit: None,
+        by: mtg_cards::ability::Activators::Controller,
         from: ZoneKind::Battlefield,
         targets: Vec::new(),
         effects: vec![Effect::DelayedTrigger {

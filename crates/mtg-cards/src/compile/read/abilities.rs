@@ -325,6 +325,7 @@ pub fn activated(r: &mut Reader<'_>) -> Option<Ability> {
         timing,
         condition,
         limit,
+        by: crate::ability::Activators::Controller,
         from: if in_graveyard {
             ZoneKind::Graveyard
         } else {

@@ -36,17 +36,26 @@ pub fn condition(ctx: &Ctx, p: &Params) -> Tr<Option<Value>> {
     for suffix in ["", "2"] {
         all.extend(present(ctx, p, suffix)?);
     }
-    if let Some(name) = p.get("CheckSVar") {
-        let (op, right) = comparison(ctx, p.get("SVarCompare").unwrap_or("GE1"))?;
-        all.push(json!({"Compare": {"left": amount(ctx, name)?, "op": op, "right": right}}));
-    } else if p.has("SVarCompare") {
-        return unmapped("key:Condition.SVarCompareWithoutCheckSVar");
-    }
+    all.extend(check_svar(ctx, p)?);
     if let Some(name) = p.get("Condition") {
         all.push(named(name)?);
     }
     all.extend(super::header::trigger_gates(p)?);
     Ok(single(all))
+}
+
+/// `CheckSVar$` with its `SVarCompare$`: a count compared (at least 1 by default), `None` without the word.
+pub fn check_svar(ctx: &Ctx, p: &Params) -> Tr<Option<Value>> {
+    let Some(name) = p.get("CheckSVar") else {
+        if p.has("SVarCompare") {
+            return unmapped("key:Condition.SVarCompareWithoutCheckSVar");
+        }
+        return Ok(None);
+    };
+    let (op, right) = comparison(ctx, p.get("SVarCompare").unwrap_or("GE1"))?;
+    Ok(Some(
+        json!({"Compare": {"left": amount(ctx, name)?, "op": op, "right": right}}),
+    ))
 }
 
 /// The condition of one `IsPresent` clause (`suffix` is empty for the first and `2` for the second), `None` without one.

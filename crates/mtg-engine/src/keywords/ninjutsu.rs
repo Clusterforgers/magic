@@ -52,6 +52,7 @@ fn activation(cost: &Cost) -> Ability {
         timing: Timing::Instant,
         condition: None,
         limit: None,
+        by: mtg_cards::ability::Activators::Controller,
         from: ZoneKind::Hand,
         targets: Vec::new(),
         effects: vec![

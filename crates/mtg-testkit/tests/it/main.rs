@@ -616,5 +616,6 @@ mod dk1f_suppression_ray;
 mod mana_any_shape;
 mod mana_ban;
 mod poisoned_defender;
+mod r2d;
 mod ring;
 mod target_reductions;

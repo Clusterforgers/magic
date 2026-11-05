@@ -34,6 +34,7 @@ fn shade(price: &str) -> Arc<CardDefinition> {
                 timing: Timing::Instant,
                 condition: None,
                 limit: None,
+                by: mtg_cards::ability::Activators::Controller,
                 from: ZoneKind::Battlefield,
                 targets: vec![one_target(Targetable::AnyTarget)],
                 effects: vec![damage(Ref::Target(0), 1)],

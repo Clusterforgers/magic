@@ -60,6 +60,7 @@ pub(super) fn attach_to_a_creature_you_control(
         timing: Timing::Sorcery,
         condition,
         limit: None,
+        by: mtg_cards::ability::Activators::Controller,
         from: ZoneKind::Battlefield,
         targets: vec![TargetSpec {
             what: Targetable::Object(Selector(host)),

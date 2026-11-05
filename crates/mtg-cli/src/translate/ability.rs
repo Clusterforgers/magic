@@ -85,12 +85,13 @@ fn spell(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
         return unmapped("key:Spell.Boast-or-Forecast");
     }
     when.extend(words.conditions);
+    when.extend(super::condition::check_svar(ctx, p)?);
     let only = match when.len() {
         0 => None,
         1 => when.pop(),
         _ => Some(json!({ "All": when })),
     };
-    let p = &p.without(&["PlayerTurn", "ActivationPhases", "Boast", "Forecast"]);
+    let p = &p.without(&ACTIVATION_WORDS).without(&["PlayerTurn"]);
     let effects = chain(ctx, p)?;
     let mut ability = json!({ "effects": effects });
     if !ctx.targets.is_empty() {
@@ -159,10 +160,16 @@ fn activated(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
     if p.get("SorcerySpeed") == Some("True") {
         ability["timing"] = json!("Sorcery");
     }
+    if let Some(by) = activators(p, &ability["cost"])? {
+        ability["by"] = json!(by);
+    }
     match p.get("ActivationLimit") {
         None if words.once_per_turn => ability["limit"] = json!("OncePerTurn"),
         None => {}
         Some("1") => ability["limit"] = json!("OncePerTurn"),
+        Some(times @ ("2" | "3")) => {
+            ability["limit"] = json!({"TimesPerTurn": times.parse::<u32>().unwrap_or(2)})
+        }
         Some(other) => return unmapped(format!("key:AB.ActivationLimit={other}")),
     }
     // Once a game is stricter than once a turn, so it replaces it.
@@ -181,6 +188,27 @@ fn activated(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
         ability["targets"] = Value::Array(targets);
     }
     Ok(json!({ "Activated": ability }))
+}
+
+/// `Activator$`: "Any player may activate this ability" (`Player`) or "Only your opponents may activate" (`Opponent`); `None`
+/// for the controller. A player who does not control the permanent cannot tap it or give it up, so a cost that does is a gap.
+fn activators(p: &Params, cost: &Value) -> Tr<Option<&'static str>> {
+    let by = match p.get("Activator") {
+        None | Some("You") => return Ok(None),
+        Some("Player") => "Anyone",
+        Some("Opponent" | "Player.Opponent") => "Opponents",
+        Some(other) => return unmapped(format!("key:AB.Activator={other}")),
+    };
+    let own = |item: &Value| {
+        matches!(
+            item.as_str(),
+            Some("Tap" | "Untap" | "SacrificeSelf" | "ExileSelf" | "DiscardSelf")
+        )
+    };
+    if cost.as_array().is_some_and(|items| items.iter().any(own)) || own(cost) {
+        return unmapped("key:AB.Activator-with-a-cost-of-the-source");
+    }
+    Ok(Some(by))
 }
 
 /// `ReduceCost$ <count>`: "This ability costs {1} less to activate for each ..." (CR 602.2b), the `Changed` cost item that

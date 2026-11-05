@@ -59,6 +59,8 @@ pub enum Stage {
 pub(crate) struct Possible {
     /// Some card has an ability that works from a zone other than the battlefield.
     pub(crate) elsewhere: bool,
+    /// Some card has an activated ability that players other than its controller may activate.
+    pub(crate) others_activate: bool,
     /// Some card has a state trigger or gives one.
     pub(crate) states: bool,
     /// A +1/+1, -1/-1 or keyword counter has been on a permanent, so the layers work out its power, toughness and keywords
@@ -193,6 +195,8 @@ pub(crate) struct Tallies {
     pub(crate) modes: BTreeSet<(ObjectRef, AbilitySource, usize, usize)>,
     /// How many times each ability resolved, as (source, where the ability comes from, its index).
     pub(crate) resolved: BTreeMap<(ObjectRef, AbilitySource, usize), u32>,
+    /// How many times each ability with a several-times limit was used, keyed as `resolved`.
+    pub(crate) limit_uses: BTreeMap<(ObjectRef, AbilitySource, usize), u32>,
     /// The events of the logged kinds in the order they happened, each with the player it counts for and the object as it was.
     pub(crate) logged: Vec<(TallyEvent, PlayerId, crate::snapshot::Snapshot)>,
 }
@@ -485,11 +489,15 @@ impl GameState {
     /// Whether the once-each-turn ability `ability` of `source` has been used this turn, or the once-each-game one this game.
     pub(crate) fn limit_spent(
         &self,
+        limit: Limit,
         source: ObjectRef,
         origin: AbilitySource,
         ability: usize,
     ) -> bool {
         let key = (source, origin, ability);
+        if let Limit::TimesPerTurn(most) = limit {
+            return self.tallies.limit_uses.get(&key).copied().unwrap_or(0) >= most;
+        }
         self.limits_spent.contains(&key) || self.game_limits_spent.contains(&key)
     }
 
@@ -534,6 +542,13 @@ impl GameState {
         match limit {
             Limit::OncePerTurn => self.limits_spent.insert(key),
             Limit::OncePerGame => self.game_limits_spent.insert(key),
+            Limit::TimesPerTurn(most) => {
+                let used = self.tallies.limit_uses.entry(key).or_insert(0);
+                *used < most && {
+                    *used += 1;
+                    true
+                }
+            }
         }
     }
 

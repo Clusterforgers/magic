@@ -35,6 +35,7 @@ impl KeywordRules for Reconfigure {
                 timing: Timing::Sorcery,
                 condition: Some(attached.clone()),
                 limit: None,
+                by: mtg_cards::ability::Activators::Controller,
                 from: ZoneKind::Battlefield,
                 targets: Vec::new(),
                 effects: vec![Effect::Unattach { what: Ref::This }],

@@ -11,7 +11,7 @@ use mtg_core::card::{CardType, Subtype, Supertype};
 use mtg_core::color::{Color, ColorSet};
 use mtg_core::mana::{ManaCost, ManaType, ParseManaCostError};
 
-use crate::ability::{Ability, Limit, Timing};
+use crate::ability::{Ability, Activators, Limit, Timing};
 use crate::card::{Card, TokenSpec};
 use crate::cost::CostItem;
 use crate::definition::{AbilityDef, CardDefinition, Layout, ManaAbility, ManualClause};
@@ -324,6 +324,7 @@ pub(crate) fn bare_tap_mana(ability: &Ability) -> Option<&Produce> {
         timing: Timing::Instant,
         condition: None,
         limit: None,
+        by: Activators::Controller,
         from: ZoneKind::Battlefield,
         targets,
         effects,
@@ -644,6 +645,7 @@ pub fn mana_shape(ability: &Ability) -> Option<ManaShape<'_>> {
         timing: Timing::Instant,
         condition,
         limit,
+        by: Activators::Controller,
         from: ZoneKind::Battlefield,
         targets,
         effects,
@@ -718,7 +720,7 @@ pub fn mana_shape(ability: &Ability) -> Option<ManaShape<'_>> {
         .is_some_and(|cost| !cost.symbols().is_empty());
     let distinct = c8_time_distinct(then);
     (targets.is_empty()
-        && *limit != Some(Limit::OncePerGame)
+        && matches!(limit, None | Some(Limit::OncePerTurn))
         && (tap
             || sacrifice
             || !pays.is_empty()

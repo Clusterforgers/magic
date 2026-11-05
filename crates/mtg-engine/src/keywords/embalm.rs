@@ -45,6 +45,7 @@ pub(super) fn zombie_copy(cost: &Cost, more: Vec<Modification>, color: Color) ->
         timing: Timing::Sorcery,
         condition: None,
         limit: None,
+        by: mtg_cards::ability::Activators::Controller,
         from: ZoneKind::Graveyard,
         targets: Vec::new(),
         effects: vec![Effect::CreateToken {

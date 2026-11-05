@@ -607,6 +607,7 @@ mod tests {
             timing: Timing::Instant,
             condition: None,
             limit: None,
+            by: crate::ability::Activators::Controller,
             from: ZoneKind::Battlefield,
             targets: Vec::new(),
             effects: Vec::new(),

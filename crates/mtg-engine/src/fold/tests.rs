@@ -56,6 +56,7 @@ fn totem() -> Arc<CardDefinition> {
                 timing: Timing::Instant,
                 condition: None,
                 limit: None,
+                by: mtg_cards::ability::Activators::Controller,
                 from: ZoneKind::Battlefield,
                 targets: Vec::new(),
                 effects: vec![Effect::Draw {
