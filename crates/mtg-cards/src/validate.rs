@@ -889,6 +889,10 @@ impl<'a> Walker<'a> {
             Amount::Party(who) => self.player_amount("Party", who),
             Amount::CastWith(_) => self.uses("Amount", "CastWith"),
             Amount::ColorsSpent => self.uses("Amount", "ColorsSpent"),
+            Amount::Remembered { on, .. } => {
+                self.uses("Amount", "Remembered");
+                self.at("on", |w| w.reference(on, Kind::Object));
+            }
             Amount::CommanderColors(who) => self.player_amount("CommanderColors", who),
             Amount::TriggeringTargets => {
                 self.uses("Amount", "TriggeringTargets");
@@ -2756,6 +2760,7 @@ impl Walker<'_> {
                 w.at("with", |w| w.reference(with, Kind::Object));
             }
             Effect::Remember { what, .. } => w.at("what", |w| w.reference(what, Kind::Object)),
+            Effect::RememberValue { value, .. } => w.at("value", |w| w.amount(value)),
             Effect::Encode { what, on } => {
                 w.at("what", |w| w.reference(what, Kind::Object));
                 w.at("on", |w| w.reference(on, Kind::Object));

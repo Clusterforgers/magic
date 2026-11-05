@@ -932,12 +932,22 @@ impl<'a> Scope<'a> {
             // Validation proves a name is bound by an earlier step; only a declined or skipped branch leaves it unset.
             Ref::Bound(name) => self.bindings.get(name).cloned().unwrap_or_default(),
             Ref::Paid => self.paid(),
-            Ref::Remembered { on, slot } => self
-                .objects(on)?
-                .into_iter()
-                .flat_map(|source| crate::memory::recall(state, source, slot))
-                .map(Target::Object)
-                .collect(),
+            Ref::Remembered { on, slot } => {
+                let mut held = Vec::new();
+                for source in self.objects(on)? {
+                    held.extend(
+                        crate::memory::recall(state, source, slot)
+                            .into_iter()
+                            .map(Target::Object),
+                    );
+                    held.extend(
+                        crate::memory::recall_players(state, source, slot)
+                            .into_iter()
+                            .map(Target::Player),
+                    );
+                }
+                held
+            }
             Ref::Arrived { of, zone } => self.arrived(of, *zone)?,
             Ref::ControllerOf(inner) => self.seats_of(inner, |seen| seen.controller)?,
             Ref::OwnerOf(inner) => self.seats_of(inner, |seen| seen.owner)?,
@@ -1635,6 +1645,15 @@ impl<'a> Scope<'a> {
             | Amount::ManaInPool(_)
             | Amount::Doors(_) => self.fill_amount(amount, share)?,
             Amount::Tally { event, who, filter } => self.logged(*event, who, filter)?,
+            Amount::Remembered { on, slot } => {
+                let mut total = 0_i64;
+                for source in self.objects(on)? {
+                    total += crate::memory::recall_numbers(self.state, source, slot)
+                        .iter()
+                        .sum::<i64>();
+                }
+                total
+            }
             Amount::Triggering => self
                 .cause
                 .map(|cause| i64::from(cause.amount))

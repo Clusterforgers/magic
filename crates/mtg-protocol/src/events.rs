@@ -933,6 +933,7 @@ mod tests {
                 source,
                 slot: "s".to_owned(),
                 objects: vec![held],
+                values: Vec::new(),
                 replace: false,
             }))
         };

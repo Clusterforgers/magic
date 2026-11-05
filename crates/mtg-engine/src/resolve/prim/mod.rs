@@ -188,7 +188,9 @@ fn dispatch(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         Effect::Exile { .. } => exile::run(cx, effect),
         Effect::ExileHidden { .. } => exile_hidden::run(cx, effect),
         Effect::Encode { .. } => encode::run(cx, effect),
-        Effect::Remember { .. } | Effect::Forget { .. } => remember::run(cx, effect),
+        Effect::Remember { .. } | Effect::Forget { .. } | Effect::RememberValue { .. } => {
+            remember::run(cx, effect)
+        }
         Effect::Manifest { .. } | Effect::Cloak { .. } => manifest::run(cx, effect),
         Effect::Sacrifice { .. } => sacrifice::run(cx, effect),
         Effect::Counter { .. } => counter::run(cx, effect),

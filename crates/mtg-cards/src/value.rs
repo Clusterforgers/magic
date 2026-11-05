@@ -526,6 +526,13 @@ pub enum Amount {
     },
     /// The number of colors in the color identity of the commanders the players named have, all together (CR 903.4).
     CommanderColors(Ref),
+    /// The numbers the sources named by `on` remember in `slot` (`Effect::RememberValue`), added up; 0 when none is held.
+    Remembered {
+        /// The object whose memory is read.
+        on: Ref,
+        /// The name of the memory.
+        slot: String,
+    },
     /// The number of the turn, counting from 1 (CR 500).
     TurnNumber,
     /// How many targets the spell or ability that triggered this one has.
@@ -694,6 +701,10 @@ enum Tagged {
         who: Ref,
         filter: Selector,
     },
+    Remembered {
+        on: Ref,
+        slot: String,
+    },
     CommanderColors(Ref),
     TurnNumber,
     TriggeringTargets,
@@ -806,6 +817,10 @@ enum TaggedRef<'a> {
         who: &'a Ref,
         filter: &'a Selector,
     },
+    Remembered {
+        on: &'a Ref,
+        slot: &'a str,
+    },
     CommanderColors(&'a Ref),
     TurnNumber,
     TriggeringTargets,
@@ -885,6 +900,7 @@ impl From<Tagged> for Amount {
             Tagged::Triggering => Amount::Triggering,
             Tagged::DieResult(which) => Amount::DieResult(which),
             Tagged::Tally { event, who, filter } => Amount::Tally { event, who, filter },
+            Tagged::Remembered { on, slot } => Amount::Remembered { on, slot },
             Tagged::CommanderColors(who) => Amount::CommanderColors(who),
             Tagged::TurnNumber => Amount::TurnNumber,
             Tagged::TriggeringTargets => Amount::TriggeringTargets,
@@ -976,6 +992,9 @@ impl Serialize for Amount {
                 filter,
             }
             .serialize(serializer),
+            Amount::Remembered { on, slot } => {
+                TaggedRef::Remembered { on, slot }.serialize(serializer)
+            }
             Amount::CommanderColors(who) => TaggedRef::CommanderColors(who).serialize(serializer),
             Amount::TurnNumber => TaggedRef::TurnNumber.serialize(serializer),
             Amount::TriggeringTargets => TaggedRef::TriggeringTargets.serialize(serializer),
@@ -1257,6 +1276,7 @@ mod tests {
     #[case::exiled_this_way(Amount::Exiled(Selector(vec![Pred::Type(CardType::Creature)])), r#"{"Exiled":[{"Type":"Creature"}]}"#)]
     #[case::distinct(Amount::Distinct { of: Selector(vec![Pred::Type(CardType::Creature)]), stat: StatKind::Power }, r#"{"Distinct":{"of":[{"Type":"Creature"}],"stat":"Power"}}"#)]
     #[case::tally(Amount::Tally { event: TallyEvent::TokenCreated, who: Ref::You, filter: Selector(vec![Pred::Type(CardType::Creature)]) }, r#"{"Tally":{"event":"TokenCreated","who":"You","filter":[{"Type":"Creature"}]}}"#)]
+    #[case::remembered(Amount::Remembered { on: Ref::This, slot: "n".to_owned() }, r#"{"Remembered":{"on":"This","slot":"n"}}"#)]
     #[case::commander_colors(Amount::CommanderColors(Ref::You), r#"{"CommanderColors":"You"}"#)]
     #[case::turn_number(Amount::TurnNumber, r#""TurnNumber""#)]
     #[case::triggering_targets(Amount::TriggeringTargets, r#""TriggeringTargets""#)]

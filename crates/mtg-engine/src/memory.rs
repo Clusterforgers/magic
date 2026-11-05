@@ -4,6 +4,7 @@ use std::collections::BTreeMap;
 
 use mtg_cards::refs::EXILED_SLOT;
 use mtg_core::card::CardType;
+use mtg_core::ids::PlayerId;
 use serde::{Deserialize, Serialize};
 
 use crate::events::{Event, ZoneCause};
@@ -11,8 +12,20 @@ use crate::object::ObjectRef;
 use crate::state::GameState;
 use crate::zones::Zone;
 
-/// What each source remembers: the objects by slot, each as the object it was when remembered (CR 400.7).
-pub type Memory = BTreeMap<(ObjectRef, String), Vec<ObjectRef>>;
+/// What each source remembers: the things by slot, each object as the object it was when remembered (CR 400.7).
+pub type Memory = BTreeMap<(ObjectRef, String), Vec<Held>>;
+
+/// One thing a source remembers.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, PartialOrd, Ord, Serialize, Deserialize)]
+#[cfg_attr(feature = "ts", derive(ts_rs::TS))]
+pub enum Held {
+    /// An object, as the incarnation it was.
+    Object(ObjectRef),
+    /// A player.
+    Player(PlayerId),
+    /// A number.
+    Number(i64),
+}
 
 /// A source remembered objects, or forgot a slot.
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
@@ -24,6 +37,9 @@ pub struct Remembered {
     pub slot: String,
     /// The objects added to the slot; the slot is emptied first when `replace` is set.
     pub objects: Vec<ObjectRef>,
+    /// The players and numbers added to the slot after the objects (`Effect::RememberValue`).
+    #[serde(default)]
+    pub values: Vec<Held>,
     /// The slot starts empty before the objects are added.
     #[serde(default)]
     pub replace: bool,
@@ -37,8 +53,15 @@ pub(crate) fn fold(state: &mut GameState, change: &Remembered) {
     }
     let held = state.memory.entry(key.clone()).or_default();
     for object in &change.objects {
-        if !held.contains(object) {
-            held.push(*object);
+        let object = Held::Object(*object);
+        if !held.contains(&object) {
+            held.push(object);
+        }
+    }
+    for value in &change.values {
+        // A number may repeat (two remembered 3s sum to 6); an object or a player is held once.
+        if matches!(value, Held::Number(_)) || !held.contains(value) {
+            held.push(*value);
         }
     }
     if held.is_empty() {
@@ -61,7 +84,7 @@ pub(crate) fn forget_object(state: &mut GameState, event: &Event) {
         Event::ZoneChanged { object, .. } => {
             let id = *object;
             for held in state.memory.values_mut() {
-                held.retain(|named| named.id != id);
+                held.retain(|named| !matches!(named, Held::Object(object) if object.id == id));
             }
             let forgotten = state.object(id).and_then(|left| {
                 let me = left.reference();
@@ -129,9 +152,10 @@ fn carry_exiled_with_cost(state: &mut GameState, id: mtg_core::ids::ObjectId) {
         .map(crate::object::GameObject::reference)
         .collect();
     if !exiled.is_empty() {
-        state
-            .memory
-            .insert((arriving, EXILED_SLOT.to_owned()), exiled);
+        state.memory.insert(
+            (arriving, EXILED_SLOT.to_owned()),
+            exiled.into_iter().map(Held::Object).collect(),
+        );
     }
 }
 
@@ -205,6 +229,7 @@ pub(crate) fn exiled_by(source: ObjectRef, events: &[Event], state: &GameState) 
             source,
             slot: EXILED_SLOT.to_owned(),
             objects,
+            values: Vec::new(),
             replace: false,
         }))
     })
@@ -217,11 +242,43 @@ pub(crate) fn recall(state: &GameState, source: ObjectRef, slot: &str) -> Vec<Ob
         .get(&(source, slot.to_owned()))
         .into_iter()
         .flatten()
-        .copied()
+        .filter_map(|held| match held {
+            Held::Object(object) => Some(*object),
+            _ => None,
+        })
         .filter(|named| {
             state
                 .object(named.id)
                 .is_some_and(|object| object.counter() == named.counter)
+        })
+        .collect()
+}
+
+/// The players the source remembers in the slot who are still in the game.
+pub(crate) fn recall_players(state: &GameState, source: ObjectRef, slot: &str) -> Vec<PlayerId> {
+    state
+        .memory
+        .get(&(source, slot.to_owned()))
+        .into_iter()
+        .flatten()
+        .filter_map(|held| match held {
+            Held::Player(player) => Some(*player),
+            _ => None,
+        })
+        .filter(|player| state.is_alive(*player))
+        .collect()
+}
+
+/// The numbers the source remembers in the slot, in the order remembered.
+pub(crate) fn recall_numbers(state: &GameState, source: ObjectRef, slot: &str) -> Vec<i64> {
+    state
+        .memory
+        .get(&(source, slot.to_owned()))
+        .into_iter()
+        .flatten()
+        .filter_map(|held| match held {
+            Held::Number(number) => Some(*number),
+            _ => None,
         })
         .collect()
 }
@@ -269,6 +326,7 @@ mod tests {
             source: named(game, "Source"),
             slot: slot.to_owned(),
             objects,
+            values: Vec::new(),
             replace,
         };
         apply_event(game, &Event::Remembered(Box::new(change))).unwrap();

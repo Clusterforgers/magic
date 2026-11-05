@@ -369,6 +369,7 @@ pub(crate) fn reads_of_amount(amount: &Amount) -> Traits {
             .or(reads_of_amount(then))
             .or(reads_of_amount(otherwise)),
         Amount::Tally { who, filter, .. } => reads_of_ref(who).or(reads_of_selector(filter)),
+        Amount::Remembered { on, .. } => reads_of_ref(on),
         Amount::CardTypes(of) => reads_of_selector(of).or(Traits::TYPES),
         Amount::Largest { who, of } => reads_of_ref(who).or(reads_of_selector(of)),
         Amount::Party(who) => reads_of_ref(who)

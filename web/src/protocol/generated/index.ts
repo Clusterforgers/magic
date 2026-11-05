@@ -125,6 +125,7 @@ export type { GivesView } from "./GivesView";
 export type { Grant } from "./Grant";
 export type { HandLimit } from "./HandLimit";
 export type { Handicap } from "./Handicap";
+export type { Held } from "./Held";
 export type { HiddenEvent } from "./HiddenEvent";
 export type { HouseRules } from "./HouseRules";
 export type { IgnoredCards } from "./IgnoredCards";
