@@ -845,6 +845,8 @@ fn wheel_text(effects: &[Effect]) -> Option<(String, usize)> {
             count: hand,
             random: false,
             filter: None,
+            by: None,
+            optional: false,
             bind,
         },
         Effect::Draw {
@@ -1247,6 +1249,8 @@ fn your_cards(effect: &Effect) -> Option<String> {
             count,
             random,
             filter,
+            by: None,
+            optional: false,
             bind: None,
         } => format!(
             "discard {}{}",
@@ -2789,6 +2793,8 @@ impl Writer<'_> {
                 count,
                 random,
                 filter,
+                by: None,
+                optional: false,
                 bind: None,
             } => {
                 let cards = draws::discarded_filtered_text(who, count, filter.as_ref())?;

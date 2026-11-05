@@ -51,6 +51,8 @@ pub(super) fn wheel(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
             count: hand_of(&Ref::EachPlayer),
             random: false,
             filter: None,
+            by: None,
+            optional: false,
             bind,
         },
         Effect::Draw {

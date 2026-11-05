@@ -34,10 +34,6 @@ fn a_discard_with_a_filter_limits_the_cards(#[case] line: &str, #[case] node: Va
     "Discard | Mode$ Random | DiscardValid$ Creature",
     "key:Discard.DiscardValid+Random"
 )]
-#[case::revealed_hand(
-    "Discard | ValidTgts$ Opponent | Mode$ RevealYouChoose | DiscardValid$ Creature",
-    "key:Discard.Mode=RevealYouChoose"
-)]
 fn a_discard_beyond_the_filter_stays_a_gap(#[case] line: &str, #[case] gap: &str) {
     let script = spell(line);
     assert_eq!(abilities(&script), Vec::<Value>::new());

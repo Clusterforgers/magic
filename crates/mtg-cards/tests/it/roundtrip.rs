@@ -769,6 +769,8 @@ fn leaf_effect() -> impl Strategy<Value = Effect> {
                 count,
                 random,
                 filter,
+                by: None,
+                optional: false,
                 bind: None
             }),
         (who(), amount()).prop_map(|(who, count)| Effect::Mill {

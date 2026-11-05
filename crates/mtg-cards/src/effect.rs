@@ -303,6 +303,12 @@ pub enum Effect {
         /// Which cards of the hand may be chosen ("discard a creature card"); any card when absent.
         #[serde(default, skip_serializing_if = "Option::is_none")]
         filter: Option<Selector>,
+        /// The player who chooses the cards from the hand ("you choose a card from it"); the discarding player when absent.
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        by: Option<Ref>,
+        /// The chooser may take none ("you may choose a nonland card"); only with `by`.
+        #[serde(default, skip_serializing_if = "is_false")]
+        optional: bool,
         /// The name the discarded cards are bound to, as the objects they become in their graveyards (CR 400.7), for the
         /// steps that count them ("the greatest number of cards a player discarded this way").
         #[serde(rename = "as", default, skip_serializing_if = "Option::is_none")]

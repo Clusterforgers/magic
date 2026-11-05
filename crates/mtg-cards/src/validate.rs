@@ -2481,6 +2481,9 @@ impl Walker<'_> {
         ) {
             self.uses("Effect", "Discard.Filter");
         }
+        if matches!(effect, Effect::Discard { by: Some(_), .. }) {
+            self.uses("Effect", "Discard.Chooser");
+        }
         // A move onto the battlefield needs entering permanents and a random order needs the engine's randomness;
         // a move to a hand, a graveyard or a library in the owner's order needs neither.
         if matches!(
@@ -2575,10 +2578,14 @@ impl Walker<'_> {
                 who,
                 count,
                 filter,
+                by,
                 bind,
                 ..
             } => {
                 w.at("who", |w| w.reference(who, Kind::Player));
+                if let Some(by) = by {
+                    w.at("by", |w| w.reference(by, Kind::Player));
+                }
                 w.at("count", |w| w.amount(count));
                 if let Some(filter) = filter {
                     w.at("filter", |w| w.selector(filter));

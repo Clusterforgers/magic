@@ -165,6 +165,8 @@ fn each_player_draws_the_most_cards_a_player_discarded(
                 count: draws::hand_of(&Ref::EachPlayer),
                 random: false,
                 filter: None,
+                by: None,
+                optional: false,
                 bind: Some(draws::DISCARDED.to_owned()),
             },
             Effect::Draw {
