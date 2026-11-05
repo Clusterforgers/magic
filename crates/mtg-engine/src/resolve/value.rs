@@ -135,6 +135,9 @@ pub(super) struct Seen<'a> {
     pub(super) counters: Counted<'a>,
     /// The X it was cast with while it is a spell on the stack, else 0 (CR 202.3e).
     x: u32,
+    /// Its power and toughness after the layers that set them, where the layers have worked them out: else it is the
+    /// printed ones.
+    base_pt: Option<(Option<i32>, Option<i32>)>,
 }
 
 /// The counters of an object that was seen.
@@ -602,6 +605,7 @@ impl<'a> Scope<'a> {
                         keywords: Some(&held.keywords),
                         counters,
                         x: stacked_x(object),
+                        base_pt: Some(held.base_pt),
                     },
                     None => Seen {
                         owner: object.owner(),
@@ -614,6 +618,7 @@ impl<'a> Scope<'a> {
                         keywords: None,
                         counters,
                         x: stacked_x(object),
+                        base_pt: None,
                     },
                 });
             }
@@ -633,6 +638,11 @@ impl<'a> Scope<'a> {
                 keywords: None,
                 counters,
                 x: stacked_x(object),
+                base_pt: self
+                    .state
+                    .layers()
+                    .get(object.id())
+                    .map(|held| held.base_pt),
             });
         }
         let shot = self
@@ -655,6 +665,7 @@ impl<'a> Scope<'a> {
             } else {
                 0
             },
+            base_pt: None,
         })
     }
 
@@ -681,6 +692,7 @@ impl<'a> Scope<'a> {
                 .permanent()
                 .map_or(Counted::Card(&object.card_counters), Counted::Live),
             x: stacked_x(object),
+            base_pt: Some(held.base_pt),
         };
         for pred in &selector.0 {
             if !self.pred(pred, object.reference(), &seen)? {
@@ -1414,8 +1426,15 @@ impl<'a> Scope<'a> {
             StatKind::Power => seen.chars.power.map(i64::from),
             StatKind::Toughness => seen.chars.toughness.map(i64::from),
             StatKind::Colors => i64::try_from(seen.chars.colors.iter().count()).ok(),
-            StatKind::BasePower => seen.card.and_then(|c| c.card().power).map(i64::from),
-            StatKind::BaseToughness => seen.card.and_then(|c| c.card().toughness).map(i64::from),
+            // The base after the effects that set it (CR 613.4b): a printed 1/1 that an effect made 3/3 reads 3.
+            StatKind::BasePower => seen
+                .base_pt
+                .map_or_else(|| seen.card.and_then(|c| c.card().power), |base| base.0)
+                .map(i64::from),
+            StatKind::BaseToughness => seen
+                .base_pt
+                .map_or_else(|| seen.card.and_then(|c| c.card().toughness), |base| base.1)
+                .map(i64::from),
             StatKind::ManaSpent => seen
                 .card
                 .and_then(|c| i64::try_from(c.mana_spent().len()).ok()),

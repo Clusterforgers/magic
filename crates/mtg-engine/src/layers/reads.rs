@@ -289,17 +289,14 @@ fn reads_of_pred(pred: &Pred) -> Traits {
 
 fn reads_of_stat(stat: StatKind) -> Traits {
     match stat {
-        StatKind::Power => Traits::POWER,
-        StatKind::Toughness => Traits::TOUGHNESS,
+        // The base after the effects that set it still depends on the layers that set power and toughness.
+        StatKind::Power | StatKind::BasePower => Traits::POWER,
+        StatKind::Toughness | StatKind::BaseToughness => Traits::TOUGHNESS,
         StatKind::Colors => Traits::COLORS,
-        StatKind::BasicLandTypes => Traits::SUBTYPES,
-        StatKind::ManaValue
-        | StatKind::Loyalty
-        | StatKind::BasePower
-        | StatKind::BaseToughness
-        | StatKind::ManaSpent
-        | StatKind::CreatureType
-        | StatKind::Name => Traits::NONE,
+        StatKind::BasicLandTypes | StatKind::CreatureType => Traits::SUBTYPES,
+        StatKind::ManaValue | StatKind::Loyalty | StatKind::ManaSpent | StatKind::Name => {
+            Traits::NONE
+        }
     }
 }
 

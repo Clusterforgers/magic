@@ -149,6 +149,9 @@ pub(crate) struct Applied {
 pub(crate) struct Held {
     id: ObjectId,
     pub(crate) chars: Characteristics,
+    /// Its power and toughness once the layers that set them are through (7a and 7b, CR 613.4): the base the modifiers
+    /// and counters of 7c add to. Until then, as the card prints them.
+    pub(crate) base_pt: (Option<i32>, Option<i32>),
     pub(crate) controller: PlayerId,
     /// The abilities it has: the printed ones less those lost, then those given, in the order they were given.
     pub(crate) abilities: Vec<HeldAbility>,
@@ -189,9 +192,11 @@ impl Held {
                 ));
             }
         }
+        let chars = base(object);
         Held {
             id,
-            chars: base(object),
+            base_pt: (chars.power, chars.toughness),
+            chars,
             controller: object.controller(),
             abilities,
             keywords,
@@ -206,6 +211,7 @@ impl Held {
     fn outside(state: &GameState, object: &GameObject) -> Held {
         let mut held = Held::new(object);
         held.chars = outside(state, object, None);
+        held.base_pt = (held.chars.power, held.chars.toughness);
         held
     }
 
@@ -796,6 +802,11 @@ fn compute_with(state: &GameState, registered: &[&ContinuousEffect]) -> Layers {
     };
     for layer in LAYERS {
         pass.run(Some(layer));
+        if layer == Layer::PtSet {
+            for held in pass.held.values_mut() {
+                held.base_pt = (held.chars.power, held.chars.toughness);
+            }
+        }
     }
     pass.run(None);
     Layers {
@@ -1503,6 +1514,8 @@ pub(crate) fn outside(
     chars
 }
 
+#[cfg(test)]
+mod base_pt;
 #[cfg(test)]
 mod c4_control;
 #[cfg(test)]
