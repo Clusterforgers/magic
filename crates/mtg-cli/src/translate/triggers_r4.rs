@@ -12,7 +12,7 @@ pub fn pattern(ctx: &Ctx, p: &Params, mode: &str) -> Option<Tr<Value>> {
     Some(match mode {
         "AbilityCast" => ability_cast(ctx, p),
         "SpellAbilityCast" => spell_ability_cast(ctx, p),
-        "AttackersDeclaredOneTarget" => attackers_at_one_target(ctx, p),
+        "AttackersDeclaredOneTarget" => attackers_at_one_target(ctx, p, mode),
         _ => return None,
     })
 }
@@ -111,10 +111,10 @@ fn spell_ability_cast(ctx: &Ctx, p: &Params) -> Tr<Value> {
 }
 
 /// "Whenever one or more Dragons you control attack an opponent": the attackers of one player attacked, once for each.
-fn attackers_at_one_target(ctx: &Ctx, p: &Params) -> Tr<Value> {
+pub(super) fn attackers_at_one_target(ctx: &Ctx, p: &Params, mode: &str) -> Tr<Value> {
     keys(
         p,
-        "AttackersDeclaredOneTarget",
+        mode,
         &[
             "AttackingPlayer",
             "ValidAttackers",
@@ -126,14 +126,14 @@ fn attackers_at_one_target(ctx: &Ctx, p: &Params) -> Tr<Value> {
     let target = p.get("AttackedTarget");
     let Ok(at) = player_ref(target) else {
         return unmapped(format!(
-            "key:Trigger.AttackersDeclaredOneTarget.AttackedTarget={}",
+            "key:Trigger.{mode}.AttackedTarget={}",
             target.unwrap_or_default()
         ));
     };
     let word = p.get("AttackingPlayer");
     let Ok(by) = player_ref(word) else {
         return unmapped(format!(
-            "key:Trigger.AttackersDeclaredOneTarget.AttackingPlayer={}",
+            "key:Trigger.{mode}.AttackingPlayer={}",
             word.unwrap_or_default()
         ));
     };
@@ -151,7 +151,7 @@ fn attackers_at_one_target(ctx: &Ctx, p: &Params) -> Tr<Value> {
             .and_then(|n| n.parse::<u32>().ok())
         {
             Some(least) if least >= 2 => node["at_least"] = json!(least),
-            _ => return unmapped("key:Trigger.AttackersDeclaredOneTarget.ValidAttackersAmount"),
+            _ => return unmapped(format!("key:Trigger.{mode}.ValidAttackersAmount")),
         },
     }
     Ok(json!({ "GroupAttacksAt": node }))
