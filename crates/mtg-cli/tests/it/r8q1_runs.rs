@@ -533,7 +533,10 @@ fn a_delayed_trigger_chooses_its_land_when_it_triggers(
         characteristics.types.contains(CardType::Creature),
         chosen_dies
     );
-    assert_eq!(characteristics.power.unwrap_or(0), counters as i32);
+    assert_eq!(
+        characteristics.power.unwrap_or(0),
+        i32::try_from(counters).unwrap()
+    );
 }
 
 const RESONANCE: &str = "Name:Resonance Technician\nManaCost:3 UR UR\nTypes:Creature Weird Detective\nPT:4/4\nA:AB$ CopySpellAbility | Cost$ T tapXType<X/Artifact/artifacts you control> | ValidTgts$ Instant.YouCtrl+cmcEQX,Sorcery.YouCtrl+cmcEQX | TargetType$ Spell | AILogic$ Once | MayChooseTarget$ True | SpellDescription$ Copy target instant or sorcery spell you control with mana value X. You may choose new targets for the copy.\nSVar:X:Count$xPaid\n";
