@@ -185,3 +185,29 @@ fn a_protection_the_rules_cannot_read_is_a_gap(#[case] gains: &str, #[case] gap:
         format!("Name:T\nTypes:Instant\nA:SP$ Protection | ValidTgts$ Creature | {gains}\n");
     assert_eq!(gaps(&script), [gap]);
 }
+
+#[rstest]
+#[case::itself("Defined$ Self", json!("This"))]
+#[case::the_default("Defined$ Self | Activate$ True", json!("This"))]
+fn a_prepare_card_becomes_prepared(#[case] extra: &str, #[case] what: serde_json::Value) {
+    let script = format!(
+        "Name:T\nTypes:Creature Elf\nPT:1/1\nA:AB$ AlterAttribute | Cost$ 1 | Attributes$ Prepared | {extra}\n"
+    );
+    assert_eq!(gaps(&script), Vec::<String>::new());
+    assert_eq!(
+        abilities(&script)[0]["Activated"]["effects"][0],
+        json!({"Prepare": {"what": what}})
+    );
+}
+
+#[rstest]
+#[case::suspected("Attributes$ Suspected", "key:AlterAttribute.Attributes=Suspected")]
+#[case::unprepared(
+    "Attributes$ Prepared | Activate$ False",
+    "key:AlterAttribute.Activate"
+)]
+fn an_attribute_the_rules_do_not_run_is_a_gap(#[case] line: &str, #[case] gap: &str) {
+    let script =
+        format!("Name:T\nTypes:Creature Elf\nPT:1/1\nA:AB$ AlterAttribute | Cost$ 1 | {line}\n");
+    assert_eq!(gaps(&script), [gap]);
+}

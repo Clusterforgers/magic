@@ -22,6 +22,7 @@ pub fn effects(ctx: &mut Ctx, p: &Params, api: &str) -> Tr<Vec<Value>> {
         "PreventDamage" => one(prevent_damage(ctx, p)),
         "Pump" => pump(ctx, p),
         "Debuff" => debuff(ctx, p),
+        "AlterAttribute" => alter_attribute(ctx, p),
         "Protection" | "ProtectionAll" => protection(ctx, p, api),
         "PumpAll" => pump_all(ctx, p),
         "Animate" | "AnimateAll" => animate(ctx, p),
@@ -960,4 +961,28 @@ fn protection(ctx: &mut Ctx, p: &Params, api: &str) -> Tr<Vec<Value>> {
     Ok(vec![
         json!({"Continuous": {"affected": affected, "mods": mods, "duration": duration}}),
     ])
+}
+
+/// `AlterAttribute`: a prepare card becomes prepared. The other attributes (suspected, solved, plotted, saddled) and the
+/// removal of one (`Activate$ False`) stay gaps named after the value.
+fn alter_attribute(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
+    only(
+        p,
+        "AlterAttribute",
+        &["Attributes", "Defined", "ValidTgts", "Activate"],
+    )?;
+    match p.get("Attributes") {
+        Some("Prepared") => {}
+        other => {
+            return unmapped(format!(
+                "key:AlterAttribute.Attributes={}",
+                other.unwrap_or_default()
+            ));
+        }
+    }
+    if !matches!(p.get("Activate"), None | Some("True")) {
+        return unmapped("key:AlterAttribute.Activate");
+    }
+    let what = subject(ctx, p, "Self", None)?;
+    Ok(vec![json!({"Prepare": {"what": what}})])
 }
