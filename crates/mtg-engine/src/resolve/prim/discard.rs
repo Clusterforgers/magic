@@ -6,7 +6,7 @@ use mtg_cards::refs::Selector;
 use mtg_core::ids::{ObjectId, PlayerId};
 
 use super::wrong_effect;
-use crate::choose::{Chooser, Picked, Target, pick_cards};
+use crate::choose::{Picked, Selection, Target, pick_selections};
 use crate::events::Event;
 use crate::object::ObjectRef;
 use crate::resolve::{Cx, Next, ResolveError, Run};
@@ -23,6 +23,8 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         count,
         random,
         filter,
+        by,
+        optional,
         bind,
     } = effect
     else {
@@ -38,24 +40,42 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
     let (picks, chosen) = if *random {
         c6_eg_at_random(cx, &players, take)
     } else {
-        let choosers: Vec<Chooser> = players
-            .into_iter()
+        let chooser = match by {
+            Some(by) => cx.scope.players(by)?.first().copied(),
+            None => None,
+        };
+        let selections: Vec<Selection> = players
+            .iter()
             .map(|player| {
-                let from = hand_cards(cx, player, filter.as_ref())?;
-                Ok(Chooser {
-                    player,
-                    from,
-                    take,
-                    text: match filter {
-                        Some(filter) => wording::discard_matching(filter, take),
-                        None => wording::discard(take),
+                let from = hand_cards(cx, *player, filter.as_ref())?;
+                let text = match filter {
+                    Some(filter) => wording::discard_matching(filter, take),
+                    None => wording::discard(take),
+                };
+                Ok(Selection {
+                    player: chooser.unwrap_or(*player),
+                    min: if *optional && chooser.is_some() {
+                        0
+                    } else {
+                        take
                     },
+                    max: take,
+                    from,
+                    text,
                 })
             })
             .collect::<Result<_, ResolveError>>()?;
-        match pick_cards(cx, &choosers)? {
+        match pick_selections(cx, &selections)? {
+            // The chooser's picks are the discards of the players whose hands they chose from, in the same order.
+            Picked::Done(chosen) => (
+                Vec::new(),
+                players
+                    .iter()
+                    .zip(chosen)
+                    .map(|(player, (_, cards))| (*player, cards))
+                    .collect(),
+            ),
             Picked::Ask(decision) => return Ok(Run::Ask(decision)),
-            Picked::Done(chosen) => (Vec::new(), chosen),
         }
     };
     // The cards as they become in their graveyards (CR 400.7), for a later step that counts them.
@@ -291,6 +311,50 @@ mod tests {
         )
         .unwrap();
         assert_eq!(discards(run), [(ME, picked)]);
+    }
+    #[test]
+    fn the_chooser_picks_the_card_from_the_hand_of_the_player_who_discards_it() {
+        let game = game();
+        let json = r#"{"Discard":{"who":"Opponents","by":"You"}}"#;
+        let decision = asked(run_with(&game, Vec::new(), &effect(json)).unwrap());
+        assert_eq!(decision.player, ME);
+        let DecisionKind::ChooseCards(options) = decision.kind else {
+            panic!("cards are chosen");
+        };
+        assert_eq!(options.from, hand(&game, FOE));
+        let picked = hand(&game, FOE)[1];
+        let run = run_with(
+            &game,
+            vec![(ME, Choice::Cards(vec![picked]))],
+            &effect(json),
+        )
+        .unwrap();
+        assert_eq!(discards(run), [(FOE, picked)]);
+    }
+
+    #[rstest]
+    #[case::may_take_none(true, 0)]
+    #[case::must_take_one(false, 1)]
+    fn an_optional_choice_may_take_no_card(#[case] optional: bool, #[case] least: u32) {
+        let game = game();
+        let json =
+            format!(r#"{{"Discard":{{"who":"Opponents","by":"You","optional":{optional}}}}}"#);
+        let decision = asked(run_with(&game, Vec::new(), &effect(&json)).unwrap());
+        let DecisionKind::ChooseCards(options) = decision.kind else {
+            panic!("cards are chosen");
+        };
+        assert_eq!(options.min, least);
+        let run = run_with(&game, vec![(ME, Choice::Cards(Vec::new()))], &effect(&json));
+        assert_eq!(run.is_ok(), optional);
+    }
+
+    #[test]
+    fn a_hand_with_no_more_cards_than_taken_is_discarded_without_a_question() {
+        let game = game();
+        let json = r#"{"Discard":{"who":"Opponents","by":"You","count":2}}"#;
+        let run = run_with(&game, Vec::new(), &effect(json)).unwrap();
+        let all = hand(&game, FOE);
+        assert_eq!(discards(run), [(FOE, all[0]), (FOE, all[1])]);
     }
 
     #[rstest]

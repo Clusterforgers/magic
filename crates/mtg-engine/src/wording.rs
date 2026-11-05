@@ -1058,6 +1058,8 @@ fn verb_phrase(effect: &Effect) -> Option<String> {
             count: Amount::Fixed(n),
             random: false,
             filter: None,
+            by: None,
+            optional: false,
             bind: None,
         } => format!("discard {}", cards(*n)),
         Effect::Mill {

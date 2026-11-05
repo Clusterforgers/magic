@@ -111,6 +111,9 @@ const MAY_APIS: [&str; 9] = [
 /// Whether the line asks a player to do it: `OptionalDecider$`, or `Optional$ True` on an API of `MAY_APIS`.
 fn asks_may(p: &Params) -> Tr<bool> {
     let optional = p.get("Optional") == Some("True");
+    // On a discard the caster chooses, "optional" is the choice of the card, which the discard itself carries.
+    let own = api_of(p)? == "Discard" && p.get("Mode") == Some("RevealYouChoose");
+    let optional = optional && !own;
     Ok(p.has("OptionalDecider") || (optional && MAY_APIS.contains(&api_of(p)?)))
 }
 
@@ -257,7 +260,7 @@ fn api_line(ctx: &mut Ctx, p: &Params, api: &str) -> Tr<Vec<Value>> {
         "Draw" => draw(ctx, p),
         "GainLife" => one(life(ctx, p, "GainLife")),
         "LoseLife" => one(life(ctx, p, "LoseLife")),
-        "Discard" => one(discard(ctx, p)),
+        "Discard" => discard(ctx, p),
         "Mill" => one(mill(ctx, p)),
         "Scry" => one(count_verb(ctx, p, "Scry", "ScryNum")),
         "Surveil" => one(count_verb(ctx, p, "Surveil", "Amount")),
@@ -399,7 +402,7 @@ fn life(ctx: &mut Ctx, p: &Params, verb: &str) -> Tr<Value> {
     Ok(json!({ verb: {"who": who, "amount": amount} }))
 }
 
-fn discard(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
+fn discard(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
     only(
         p,
         "Discard",
@@ -413,11 +416,16 @@ fn discard(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
             "RememberDiscarded",
             "DiscardValid",
             "DiscardValidDesc",
+            "Optional",
         ],
     )?;
     let whole_hand = p.get("Mode") == Some("Hand");
+    let reveal_choose = p.get("Mode") == Some("RevealYouChoose");
+    if p.has("Optional") && !reveal_choose {
+        return unmapped("key:Discard.Optional");
+    }
     let random = match p.get("Mode") {
-        None | Some("TgtChoose" | "Hand") => false,
+        None | Some("TgtChoose" | "Hand" | "RevealYouChoose") => false,
         Some("Random") => true,
         Some(other) => return unmapped(format!("key:Discard.Mode={other}")),
     };
@@ -441,6 +449,16 @@ fn discard(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
         amount(ctx, p.get("NumCards").unwrap_or("1"))?
     };
     let mut discard = json!({"who": who, "count": count, "random": random});
+    if reveal_choose {
+        // "Reveals their hand, you choose": a hand that is the chooser's own has nothing to reveal.
+        if who.as_str() == Some("You") {
+            return unmapped("key:Discard.Mode=RevealYouChoose+You");
+        }
+        discard["by"] = json!("You");
+        if p.get("Optional") == Some("True") {
+            discard["optional"] = json!(true);
+        }
+    }
     if let Some(filter) = filter {
         discard["filter"] = json!(filter);
     }
@@ -449,7 +467,12 @@ fn discard(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
         ctx.remembered = Some(json!({ "Bound": name }));
         discard["as"] = json!(name);
     }
-    Ok(json!({ "Discard": discard }))
+    let discard = json!({ "Discard": discard });
+    if !reveal_choose {
+        return Ok(vec![discard]);
+    }
+    let hand = json!({"Reveal": {"what": {"Each": [{"OwnedBy": who}, {"In": "Hand"}]}}});
+    Ok(vec![hand, discard])
 }
 
 /// `Mill`, naming the cards milled for `RememberMilled`.

@@ -83,21 +83,39 @@ fn discarded(ctx: &Ctx, count: &Amount, filter: Option<&Selector>) -> String {
     }
 }
 
+/// A discard, with the player who chooses the cards when it is not the one who discards.
+fn discard_text(ctx: &Ctx, effect: &Effect) -> Option<String> {
+    let Effect::Discard {
+        who,
+        count,
+        random,
+        filter,
+        by,
+        optional,
+        ..
+    } = effect
+    else {
+        return None;
+    };
+    let at_random = if *random { " at random" } else { "" };
+    let cards = discarded(ctx, count, filter.as_ref());
+    let may = if *optional { " (may be none)" } else { "" };
+    let chosen = by.as_ref().map_or(String::new(), |by| {
+        format!(" chosen by {}{may}", phrase::who(ctx, by))
+    });
+    Some(act(
+        ctx,
+        who,
+        "discard",
+        &format!("{cards}{at_random}{chosen}"),
+    ))
+}
+
 /// The effects about cards in hands and libraries, and about life and damage.
 fn cards(ctx: &Ctx, effect: &Effect) -> Option<String> {
     Some(match effect {
         Effect::Draw { who, count } => act(ctx, who, "draw", &phrase::counted(ctx, count, "card")),
-        Effect::Discard {
-            who,
-            count,
-            random,
-            filter,
-            ..
-        } => {
-            let at_random = if *random { " at random" } else { "" };
-            let cards = discarded(ctx, count, filter.as_ref());
-            act(ctx, who, "discard", &format!("{cards}{at_random}"))
-        }
+        Effect::Discard { .. } => discard_text(ctx, effect)?,
         Effect::Mill { who, count, .. } => {
             act(ctx, who, "mill", &phrase::counted(ctx, count, "card"))
         }
