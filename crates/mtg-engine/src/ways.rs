@@ -885,7 +885,10 @@ pub(crate) fn grantable_as_is(
                         state,
                         player,
                         id,
-                        way.alternative.is_some_and(CastWay::replaces_cost),
+                        (
+                            way.alternative.is_some_and(CastWay::replaces_cost),
+                            way.alternative,
+                        ),
                         &cost,
                         |total| {
                             can_afford_with(
@@ -1012,7 +1015,10 @@ pub(crate) fn hindrance_as_is(
                 state,
                 player,
                 id,
-                way.alternative.is_some_and(CastWay::replaces_cost),
+                (
+                    way.alternative.is_some_and(CastWay::replaces_cost),
+                    way.alternative,
+                ),
                 cost,
                 |total| can_afford_with(total, pool, sources, help.help(), life, &spend),
             )

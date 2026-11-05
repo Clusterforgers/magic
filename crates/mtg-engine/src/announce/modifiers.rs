@@ -15,6 +15,7 @@ use mtg_cards::ability::{Ability, CostChange};
 use mtg_cards::keyword::Keyword;
 use mtg_cards::mana::ManaCostX;
 use mtg_cards::refs::{Pred, TargetSpec};
+use mtg_cards::value::CastWay;
 use mtg_core::ids::{ObjectId, PlayerId};
 use mtg_core::mana::{ManaCost, ManaSymbol};
 
@@ -55,6 +56,7 @@ pub(crate) fn cheapest<'a>(
     state: &GameState,
     player: PlayerId,
     spell: ObjectId,
+    way: Option<CastWay>,
     printed: &'a ManaCost,
 ) -> Cow<'a, ManaCost> {
     if !state.possible.costs {
@@ -65,7 +67,10 @@ pub(crate) fn cheapest<'a>(
         player,
         spell,
         &[],
-        &Choices::default(),
+        &Choices {
+            way,
+            ..Choices::default()
+        },
         Some(printed.clone()),
         Some(&possible_specs(state, spell)),
     );
