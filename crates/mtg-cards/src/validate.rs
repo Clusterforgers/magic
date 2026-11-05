@@ -3195,10 +3195,10 @@ impl Walker<'_> {
                             from: Some(ZoneKind::Battlefield | ZoneKind::Stack),
                             to: Some(ZoneKind::Graveyard),
                             ..
-                        },
+                        }
+                        | ReplaceWhen::Countered { .. },
                         ReplaceBy::MoveTo(_),
                     ) => {}
-                    (ReplaceWhen::Countered { .. }, ReplaceBy::MoveTo(_)) => {}
                     _ => w.uses("Effect", &format!("Shield.{}", tag_of(when))),
                 }
             }
