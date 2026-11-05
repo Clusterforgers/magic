@@ -682,6 +682,15 @@ impl<'a> Walker<'a> {
                     self.problem("`CastFrom` names a hand or a graveyard");
                 }
             }
+            Pred::DidThisTurn { by, to, .. } => {
+                self.uses("Pred", "DidThisTurn");
+                if let Some(by) = by {
+                    self.at("by", |w| w.reference(by, Kind::Player));
+                }
+                if let Some(to) = to {
+                    self.at("to", |w| w.reference(to, Kind::Either));
+                }
+            }
             Pred::Targeting(inner) | Pred::HasAttached(inner) => self.selector(inner),
             Pred::Modified
             | Pred::RingBearer

@@ -146,6 +146,14 @@ fn put_on_stack(state: &mut GameState, put: &PutOnStack) -> Result<(), EngineErr
     for target in put.choices.targeted_objects() {
         state.tally_object(target, Some(put.controller), Tally::Targeted);
     }
+    if put.cause.is_none() {
+        state.record(
+            mtg_cards::value::TallyEvent::Activated,
+            Some(put.controller),
+            (put.source.id, None),
+            1,
+        );
+    }
     // The modes this ability chose are kept for the turn ("choose one that hasn't been chosen this turn").
     for mode in &put.choices.modes {
         state

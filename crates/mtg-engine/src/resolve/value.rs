@@ -540,6 +540,9 @@ impl<'a> Scope<'a> {
         players: &[PlayerId],
         filter: &Selector,
     ) -> Result<i64, ResolveError> {
+        if crate::turn_log::is_record(event) {
+            return Ok(self.recorded(event, players, filter));
+        }
         let mut scope = self.clone();
         scope
             .snapshots
@@ -1378,6 +1381,12 @@ impl<'a> Scope<'a> {
             Pred::MilledThisTurn => state.object_tallied(reference, None, Tally::W13bMilled) > 0,
             Pred::DamagedThisTurn => state.object_tallied(reference, None, Tally::Damaged) > 0,
             Pred::AttackedThisTurn => state.object_tallied(reference, None, Tally::Attacked) > 0,
+            Pred::DidThisTurn {
+                event,
+                by,
+                to,
+                combat,
+            } => self.did_this_turn(*event, (by.as_ref(), to.as_ref()), *combat, reference),
             Pred::DamagedBy(named) => self
                 .objects(named)?
                 .iter()

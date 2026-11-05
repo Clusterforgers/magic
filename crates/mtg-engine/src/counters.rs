@@ -71,6 +71,13 @@ pub(crate) fn fold(state: &mut GameState, event: &CountersChanged) -> Result<(),
             }
             if event.delta > 0 {
                 state.tally_object(named, None, Tally::Countered);
+                let by = state.resolving_controller();
+                state.record(
+                    mtg_cards::value::TallyEvent::CountersPut,
+                    by,
+                    (named.id, None),
+                    event.delta.unsigned_abs(),
+                );
             }
         }
         Target::Player(id) => {

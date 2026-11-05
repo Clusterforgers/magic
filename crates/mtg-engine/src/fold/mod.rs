@@ -372,6 +372,7 @@ fn apply_turn(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
             }
             if *step == Step::BeginCombat {
                 state.turn.combats += 1;
+                state.begin_combat_log();
             }
             // "Each of your draw steps" counts the draws of each draw step afresh, an added one included.
             if *step == Step::Draw {

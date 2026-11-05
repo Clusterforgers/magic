@@ -670,6 +670,7 @@ const RUNS: &[&str] = &[
     "Pred.TargetsPlayer",
     "Pred.GravedThisTurn",
     "Pred.ArrivedFrom",
+    "Pred.DidThisTurn",
     "Pred.WasCast",
     "Pred.CastWith",
     "Pred.Test",
@@ -1004,6 +1005,7 @@ mod tests {
     #[case::the_ring_tempting("Effect.RingTempts", true)]
     #[case::the_ring_tempting_triggers("Trigger.RingTempts", true)]
     #[case::the_ring_bearer("Pred.RingBearer", true)]
+    #[case::did_this_turn("Pred.DidThisTurn", true)]
     #[case::amassing("Effect.Amass", true)]
     #[case::monstrosity("Effect.Monstrosity", true)]
     #[case::becoming_a_level("Effect.BecomeLevel", true)]

@@ -195,6 +195,10 @@ pub(crate) struct Tallies {
     pub(crate) resolved: BTreeMap<(ObjectRef, AbilitySource, usize), u32>,
     /// The events of the logged kinds in the order they happened, each with the player it counts for and the object as it was.
     pub(crate) logged: Vec<(TallyEvent, PlayerId, crate::snapshot::Snapshot)>,
+    /// What was done this turn, as records of references (`turn_log`).
+    pub(crate) records: Vec<crate::turn_log::Record>,
+    /// Where in `records` the combat phase now going on, or the latest, began.
+    pub(crate) combat_from: usize,
 }
 
 /// A creature that dealt combat damage to a player this turn, as it was then (prowl, CR 702.76).
@@ -825,6 +829,10 @@ impl Hash for GameState {
         }
         if !self.tallies.resolved.is_empty() {
             self.tallies.resolved.hash(state);
+        }
+        if !self.tallies.records.is_empty() {
+            self.tallies.records.hash(state);
+            self.tallies.combat_from.hash(state);
         }
         if !self.tallies.logged.is_empty() {
             self.tallies.logged.hash(state);

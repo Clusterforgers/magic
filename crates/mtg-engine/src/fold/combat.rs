@@ -1,6 +1,6 @@
 //! Folding combat events: declarations, damage assignment and damage.
 
-use mtg_cards::value::CounterKind;
+use mtg_cards::value::{CounterKind, TallyEvent};
 use mtg_core::card::CardType;
 
 use super::{invalid, player_mut};
@@ -218,11 +218,27 @@ pub(super) fn apply(state: &mut GameState, event: &Event) -> Result<(), EngineEr
                     target_left: false,
                 })
                 .collect();
-            for (attacker, _) in attackers {
+            for (attacker, at) in attackers {
                 tally(state, *attacker, Tally::Attacked);
-                if let Some(controller) = crate::characteristics::controller_of(state, *attacker) {
+                let controller = crate::characteristics::controller_of(state, *attacker);
+                if let Some(controller) = controller {
                     state.tally(controller, Tally::Attackers);
                 }
+                let against = match at {
+                    crate::combat::AttackTarget::Player(player) => Target::Player(*player),
+                    crate::combat::AttackTarget::Planeswalker(object) => {
+                        match state.object(*object).map(GameObject::reference) {
+                            Some(object) => Target::Object(object),
+                            None => continue,
+                        }
+                    }
+                };
+                state.record(
+                    TallyEvent::Attacked,
+                    controller,
+                    (*attacker, Some(against)),
+                    1,
+                );
             }
             state.combat.attackers_declared = true;
         }
@@ -244,6 +260,13 @@ pub(super) fn apply(state: &mut GameState, event: &Event) -> Result<(), EngineEr
                     .ok_or_else(|| invalid(format!("{attacker:?} is not attacking")))?;
                 target.blockers.push(*blocker);
                 target.blocked = true;
+                let blocked = state.object(*attacker).map(GameObject::reference);
+                state.record(
+                    TallyEvent::Blocked,
+                    Some(*player),
+                    (*blocker, blocked.map(Target::Object)),
+                    1,
+                );
             }
             state.combat.blockers_declared.push(*player);
         }
@@ -266,17 +289,26 @@ pub(super) fn apply(state: &mut GameState, event: &Event) -> Result<(), EngineEr
             deathtouch,
             form,
             toxic,
-        } => match target {
-            DamageTarget::Player(id) => {
-                damage_player(state, *source, *id, (*amount, *form, *toxic))?;
-            }
-            DamageTarget::Object(id) => {
-                damage_object(state, *id, *amount, *deathtouch, *form)?;
-                if *amount > 0 {
-                    state.note_damaged_by(*id, *source);
+        } => {
+            let hit = match target {
+                DamageTarget::Player(id) => {
+                    damage_player(state, *source, *id, (*amount, *form, *toxic))?;
+                    Target::Player(*id)
                 }
-            }
-        },
+                DamageTarget::Object(id) => {
+                    damage_object(state, *id, *amount, *deathtouch, *form)?;
+                    if *amount > 0 {
+                        state.note_damaged_by(*id, *source);
+                    }
+                    match state.object(*id).map(GameObject::reference) {
+                        Some(object) => Target::Object(object),
+                        None => return Ok(()),
+                    }
+                }
+            };
+            let dealer = crate::characteristics::controller_of(state, *source);
+            state.record(TallyEvent::Damaged, dealer, (*source, Some(hit)), *amount);
+        }
         Event::CombatEnded => state.combat = CombatState::default(),
         Event::JoinedAttack { object, target } => join_attack(state, *object, *target)?,
         Event::RemovedFromCombat { object } => state.combat.remove_object(*object),

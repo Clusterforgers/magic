@@ -316,6 +316,24 @@ pub enum Pred {
     AttackedThisTurn,
     /// Was dealt damage this turn by one of the objects the reference names (the object as it is now: one that left and came back is another).
     DamagedBy(Ref),
+    /// Was the object that did the event this turn ("creature that blocked this turn", "creature that dealt damage to you
+    /// this turn", "creature that attacked this combat"): the turn's records of the kind, with the object as the one
+    /// that did it (the dealer of damage, the attacker, the blocker, the source of an activated ability, the permanent
+    /// that got counters). A record of a hidden object names no one.
+    DidThisTurn {
+        /// The kind of event.
+        event: crate::value::TallyEvent,
+        /// The players it counts for (the controller of the dealer, the attacker, the blocker or the source; the player
+        /// who put the counters); anyone when absent.
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        by: Option<Ref>,
+        /// What it was done to (the player or object damaged, attacked or blocked); anything when absent.
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        to: Option<Ref>,
+        /// Only in the combat phase now going on or the latest one.
+        #[serde(default, skip_serializing_if = "crate::effect::is_false")]
+        combat: bool,
+    },
     /// Is the card one of the objects the reference names is, in whatever zone it is now: a card that went to a graveyard is a
     /// new object there (CR 400.7), and this finds it again by its card.
     SameCard(Ref),
