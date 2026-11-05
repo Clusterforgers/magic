@@ -21,6 +21,7 @@ pub fn effects(ctx: &mut Ctx, p: &Params, api: &str) -> Tr<Vec<Value>> {
         "Counter" => one(counter(ctx, p)),
         "PreventDamage" => one(prevent_damage(ctx, p)),
         "Pump" => pump(ctx, p),
+        "Debuff" => debuff(ctx, p),
         "PumpAll" => pump_all(ctx, p),
         "Animate" | "AnimateAll" => animate(ctx, p),
         "PutCounter" => put_counter(ctx, p),
@@ -876,4 +877,32 @@ pub fn attach(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
         effect = json!({"May": {"effects": [effect]}});
     }
     Ok(vec![effect])
+}
+
+/// `Debuff`: the object loses the keywords for a while ("target creature loses flying until end of turn").
+fn debuff(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
+    only(
+        p,
+        "Debuff",
+        &[
+            "Keywords",
+            "Defined",
+            "ValidTgts",
+            "Duration",
+            "TargetMin",
+            "TargetMax",
+        ],
+    )?;
+    let Some(keywords) = p.get("Keywords") else {
+        return unmapped("key:Debuff.nothing");
+    };
+    let duration = duration(p.get("Duration"))?;
+    let affected = objects(subject(ctx, p, "Self", None)?)?;
+    let mods: Vec<Value> = keyword_list(ctx, keywords)?
+        .into_iter()
+        .map(|keyword| json!({ "RemoveKeyword": keyword }))
+        .collect();
+    Ok(vec![
+        json!({"Continuous": {"affected": affected, "mods": mods, "duration": duration}}),
+    ])
 }

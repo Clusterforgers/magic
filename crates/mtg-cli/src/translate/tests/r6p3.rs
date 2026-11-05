@@ -53,3 +53,64 @@ fn a_strive_the_rule_cannot_read_is_a_gap(#[case] line: &str) {
     let text = format!("Name:T\nTypes:Instant\n{line}\n");
     assert_eq!(gaps(&text).len(), 1);
 }
+
+use mtg_cards::keyword::Keyword;
+use mtg_core::card::CardType;
+use mtg_engine::decision::DecisionKind;
+use mtg_engine::turn::Step;
+use mtg_testkit::{Driver, Scenario, ready};
+
+fn creature(script: &str) -> std::sync::Arc<mtg_cards::CardDefinition> {
+    let mut card = mtg_cards::CardDefinition::new("Subject")
+        .with_type(CardType::Creature)
+        .with_power_toughness(2, 2);
+    for value in abilities(script) {
+        card = card.with_rules(serde_json::from_value(value).unwrap());
+    }
+    std::sync::Arc::new(card)
+}
+
+fn settle(driver: &mut Driver) {
+    for _ in 0..80 {
+        let idle = driver.state().stack().is_empty() && driver.state().resolving().is_none();
+        if idle
+            && matches!(
+                driver.engine().decision().map(|d| &d.kind),
+                Some(DecisionKind::Priority(_))
+            )
+        {
+            return;
+        }
+        driver.answer_passively().unwrap();
+    }
+    panic!("the stack never emptied");
+}
+
+#[rstest]
+#[case::one("Flying")]
+#[case::the_other("First Strike")]
+#[case::both("Flying & First Strike")]
+fn a_debuff_takes_the_named_keywords_and_no_others(#[case] lost: &str) {
+    let script = format!(
+        "Name:Subject\nTypes:Creature Elf\nPT:2/2\nK:Flying\nK:First Strike\nA:AB$ Debuff | Cost$ 0 | Defined$ Self | Keywords$ {lost}\n"
+    );
+    assert_eq!(gaps(&script), Vec::<String>::new());
+    let scenario = Scenario::new(2)
+        .at(1, 0, Step::Main1)
+        .battlefield(0, [ready(creature(&script))]);
+    let mut driver = Driver::from_scenario(scenario).unwrap();
+    driver.begin_activation("Subject").unwrap();
+    driver.pay_tapping(&[], 0).unwrap();
+    settle(&mut driver);
+    let id = driver.id_of("Subject").unwrap();
+    let has = |keyword| mtg_engine::keywords::has_keyword(driver.state(), id, &keyword);
+    let (loses_flying, loses_strike) = (lost.contains("Flying"), lost.contains("First Strike"));
+    assert_eq!(has(Keyword::Flying), !loses_flying);
+    assert_eq!(has(Keyword::FirstStrike), !loses_strike);
+}
+
+#[test]
+fn a_debuff_of_a_keyword_the_rules_cannot_name_is_a_gap() {
+    let script = "Name:T\nTypes:Instant\nA:SP$ Debuff | ValidTgts$ Creature | Keywords$ walk\n";
+    assert_eq!(gaps(script).len(), 1);
+}
