@@ -277,8 +277,8 @@ fn mana(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
         _ => return unmapped("key:Mana.Produced"),
     };
     // Whose pool: the player the line names (the default is the controller).
-    if let Some(word) = p.get("Defined") {
-        if !matches!(
+    if let Some(word) = p.get("Defined")
+        && !matches!(
             word,
             "You"
                 | "Targeted"
@@ -286,9 +286,9 @@ fn mana(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
                 | "TriggeredPlayer"
                 | "TriggeredActivator"
                 | "TriggeredCardController"
-        ) {
-            return unmapped(format!("key:Mana.Defined={word}"));
-        }
+        )
+    {
+        return unmapped(format!("key:Mana.Defined={word}"));
     }
     if p.has("Defined") || p.has("ValidTgts") {
         let who = super::valid::subject(ctx, p, "You", None)?;
