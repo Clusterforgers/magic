@@ -1,5 +1,9 @@
 //! Goal: audit fixes of round 8 play right in real games: last known information of a sacrificed creature, exile-instead counters, bans on activation, the defending player of an Aura, face-down looks, copies, delayed triggers and hands.
-#![allow(clippy::unwrap_used, clippy::expect_used, clippy::cast_possible_truncation)]
+#![allow(
+    clippy::unwrap_used,
+    clippy::expect_used,
+    clippy::cast_possible_truncation
+)]
 
 use std::collections::BTreeMap;
 use std::sync::Arc;
@@ -259,4 +263,43 @@ fn a_spell_countered_this_way_is_exiled_and_one_that_is_not_is_not(
     let in_exile = names(&driver, Zone::Exile).contains(&"Victim".to_string());
     let in_graveyard = names(&driver, Zone::Graveyard(seat(0))).contains(&"Victim".to_string());
     assert_eq!((in_exile, in_graveyard), (exiled, !exiled));
+}
+
+/// The Aura a Forge script gives.
+fn aura(text: &str) -> Arc<CardDefinition> {
+    let base = card(text, &[CardType::Enchantment], "{2}{W}", None);
+    Arc::new((*base).clone().with_subtype("Aura"))
+}
+
+const ARREST: &str = "Name:Arrest\nManaCost:2 W\nTypes:Enchantment Aura\nK:Enchant:Creature\nS:Mode$ CantAttack,CantBlock,CantBeActivated | ValidCard$ Creature.EnchantedBy | Description$ Enchanted creature can't attack or block and its activated abilities can't be activated.\n";
+
+fn llanowar() -> Arc<CardDefinition> {
+    Arc::new(
+        CardDefinition::new("Llanowar Elves")
+            .with_type(CardType::Creature)
+            .with_power_toughness(1, 1)
+            .with_mana_cost(ManaCost::parse("{0}").unwrap())
+            .with_rules(
+                serde_json::from_str::<Ability>(
+                    r#"{"Activated":{"cost":["Tap"],"effects":[{"AddMana":{"mana":{"Fixed":["Green"]}}}]}}"#,
+                )
+                .unwrap(),
+            ),
+    )
+}
+
+#[rstest::rstest]
+#[case::enchanted_creature_cannot_tap_for_mana(true, false)]
+#[case::other_creature_still_taps(false, true)]
+fn a_plain_ban_on_activation_includes_mana_abilities(#[case] enchanted: bool, #[case] taps: bool) {
+    use mtg_testkit::scenario::attached_to;
+    let host = ready(llanowar());
+    let aura = if enchanted {
+        attached_to(ready(aura(ARREST)), 0, 0)
+    } else {
+        ready(aura(ARREST))
+    };
+    let scenario = main_phase().battlefield(0, [host, aura]);
+    let mut driver = Driver::from_scenario(scenario).unwrap();
+    assert_eq!(driver.tap_for_mana("Llanowar Elves").is_ok(), taps);
 }

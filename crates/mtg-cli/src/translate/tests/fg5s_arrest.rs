@@ -25,7 +25,10 @@ fn the_line_is_a_restriction_and_a_rule() {
         found[1],
         json!({"Static": {"affected": "Attached", "mods": ["CantAttack", "CantBlock"]}})
     );
-    assert!(found[2]["Rule"]["rule"]["Cant"]["action"]["Activate"].is_array());
+    assert_eq!(
+        found[2]["Rule"]["rule"]["Cant"]["action"]["ActivateKind"]["kind"],
+        "Every"
+    );
 }
 
 #[test]

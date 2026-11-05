@@ -25,13 +25,21 @@ pub fn split_modes(body: &str) -> Vec<String> {
     if !body.contains(MODE) || body.contains("Secondary$") {
         return vec![body.to_owned()];
     }
+    // Oracle bans mana abilities too unless the line says it does not (`ValidSA$ Activated.!ManaAbility`), and a
+    // `ValidSA$` of its own stays as written.
+    let activated = if body.contains("ValidSA$") {
+        "Mode$ CantBeActivated"
+    } else {
+        "Mode$ CantBeActivated | ValidSA$ Activated"
+    };
     vec![
-        body.replacen(MODE, "Mode$ CantAttack,CantBlock", 1),
-        body.replacen(
-            MODE,
-            "Mode$ CantBeActivated | ValidSA$ Activated.!ManaAbility",
-            1,
-        ),
+        // The attack and block line has no ability to qualify.
+        body.replacen(MODE, "Mode$ CantAttack,CantBlock", 1)
+            .split(" | ")
+            .filter(|part| !part.starts_with("ValidSA$"))
+            .collect::<Vec<_>>()
+            .join(" | "),
+        body.replacen(MODE, activated, 1),
     ]
 }
 
