@@ -238,7 +238,7 @@ pub fn trigger_state(ctx: &Ctx, p: &Params) -> Tr<Vec<Value>> {
         }
     }
     match (p.get("LifeTotal"), p.get("LifeAmount")) {
-        (None, None) => {}
+        (None, _) => {}
         (Some(who), Some(compare)) => {
             let Ok(who) = super::triggers::player_ref(Some(who)) else {
                 return unmapped(format!("key:Trigger.LifeTotal={who}"));
@@ -246,7 +246,6 @@ pub fn trigger_state(ctx: &Ctx, p: &Params) -> Tr<Vec<Value>> {
             let (op, right) = comparison(ctx, compare)?;
             all.push(json!({"Compare": {"left": {"Life": who}, "op": op, "right": right}}));
         }
-        (Some(_), None) => return unmapped("key:Trigger.LifeTotal-without-LifeAmount"),
         (None, Some(_)) => {}
     }
     if let Some(word) = p.get("CheckDefinedPlayer") {
