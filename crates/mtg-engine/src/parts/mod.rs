@@ -12,11 +12,11 @@ mod c11c_counter_picks;
 mod counters;
 mod damage;
 mod discard;
+mod draw;
 pub(crate) mod energy;
 mod evidence;
 mod exile;
 mod exile_hand;
-mod draw;
 mod exile_top;
 mod forage;
 mod life;
@@ -211,6 +211,14 @@ fn read_more(item: &CostItem) -> Result<Option<(Part, bool)>, &'static str> {
             let (number, x) = amount(count, item)?;
             (Part::ExileTop(number), x)
         }
+        CostItem::Draw(count) => {
+            let (number, x) = amount(count, item)?;
+            (Part::Draw(number), x)
+        }
+        CostItem::DiscardRandom(count) => {
+            let (number, x) = amount(count, item)?;
+            (Part::DiscardRandom(number), x)
+        }
         CostItem::Unattach => (Part::Unattach, false),
         CostItem::TapPower { filter, power } => {
             let count = usize::try_from(*power).unwrap_or(usize::MAX);
@@ -298,14 +306,6 @@ impl Part {
             CostItem::Mill(count) => {
                 let (number, x) = amount(count, item)?;
                 (Part::Mill(number), x)
-            }
-            CostItem::Draw(count) => {
-                let (number, x) = amount(count, item)?;
-                (Part::Draw(number), x)
-            }
-            CostItem::DiscardRandom(count) => {
-                let (number, x) = amount(count, item)?;
-                (Part::DiscardRandom(number), x)
             }
             CostItem::RemoveCounters {
                 counter,

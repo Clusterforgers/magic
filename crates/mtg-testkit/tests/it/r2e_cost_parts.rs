@@ -89,7 +89,10 @@ fn a_new_cost_part_is_offered_exactly_when_it_can_be_paid(
     let count = usize::try_from(amount).unwrap();
     if part == "Draw" {
         assert_eq!(hand_after, hand_before + count);
-        assert_eq!(zone(driver.state(), Zone::Library(pid(0))).len(), library - count);
+        assert_eq!(
+            zone(driver.state(), Zone::Library(pid(0))).len(),
+            library - count
+        );
     } else {
         assert_eq!(hand_after, hand_before - count);
         assert_eq!(zone(driver.state(), Zone::Graveyard(pid(0))).len(), count);

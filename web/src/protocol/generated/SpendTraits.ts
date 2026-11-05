@@ -47,4 +47,8 @@ from_graveyard?: boolean,
 /**
  * It shares a creature type with a commander of the caster.
  */
-shares_commander_type?: boolean, };
+shares_commander_type?: boolean, 
+/**
+ * The source of the ability is on the battlefield.
+ */
+on_battlefield?: boolean, };

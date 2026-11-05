@@ -46,7 +46,7 @@ pub fn random(number: &str) -> Tr<Value> {
 
 /// `Cost$ Mandatory Sac<1/CARDNAME>`: the source is sacrificed without a choice, and the effects follow if it was
 /// ("Sacrifice it. If you do, ...").
-pub fn mandatory(cost: &str, effects: Vec<Value>) -> Tr<Vec<Value>> {
+pub fn mandatory(cost: &str, effects: &[Value]) -> Tr<Vec<Value>> {
     if !matches!(
         cost,
         "Sac<1/CARDNAME>" | "Sac<1/CARDNAME/this artifact>" | "Sac<1/CARDNAME/this creature>"

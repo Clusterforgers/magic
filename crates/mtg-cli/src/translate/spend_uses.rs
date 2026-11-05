@@ -52,7 +52,12 @@ pub fn filter(ctx: &Ctx, properties: &str, ability: bool) -> Option<Value> {
             return None;
         }
     }
-    let many = |key: &str| filter.get(key).and_then(Value::as_array).is_some_and(|l| l.len() > 1);
+    let many = |key: &str| {
+        filter
+            .get(key)
+            .and_then(Value::as_array)
+            .is_some_and(|l| l.len() > 1)
+    };
     if many("subtypes") || many("colors") || many("facts") {
         return None;
     }

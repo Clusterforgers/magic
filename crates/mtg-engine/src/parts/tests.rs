@@ -471,10 +471,7 @@ fn the_new_parts_are_read_and_named(#[case] json: &str, #[case] name: &str) {
 #[case::damage(r#"{"DamageToYou":{"Life":"You"}}"#, "Cost.DamageToYou.Counted")]
 #[case::exile_top(r#"{"ExileTop":{"Life":"You"}}"#, "Cost.ExileTop.Counted")]
 #[case::draw(r#"{"Draw":{"Life":"You"}}"#, "Cost.Draw.Counted")]
-#[case::discard_random(
-    r#"{"DiscardRandom":{"Life":"You"}}"#,
-    "Cost.DiscardRandom.Counted"
-)]
+#[case::discard_random(r#"{"DiscardRandom":{"Life":"You"}}"#, "Cost.DiscardRandom.Counted")]
 #[case::blight(r#"{"Blight":{"Life":"You"}}"#, "Cost.Blight.Counted")]
 #[case::blight_x(r#"{"Blight":"X"}"#, "Cost.Blight.Counted")]
 #[case::library_zone(r#"{"ToLibrary":{"from":"Exile","filter":[]}}"#, "Cost.ToLibrary.Zone")]
