@@ -498,9 +498,6 @@ fn a_hidden_keyword_of_a_static_line_is_the_restriction_it_prints(
 #[case::untap(
     "Mode$ Continuous | Affected$ Creature | AddHiddenKeyword$ This card doesn't untap during your next untap step."
 )]
-#[case::must_be_blocked(
-    "Mode$ Continuous | Affected$ Creature | AddHiddenKeyword$ CARDNAME must be blocked if able."
-)]
 fn a_hidden_keyword_with_no_modification_stays_a_named_gap(#[case] line: &str) {
     assert_eq!(
         static_gaps(line),

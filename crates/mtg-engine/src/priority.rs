@@ -191,12 +191,8 @@ fn can_activate(
         return false;
     };
     // A player who does not control the permanent can neither tap it nor give it up as a cost (CR 602.2).
-    if controller_of_object(state, object) != player
-        && (price.tap || !matches!(price.leaves, Leaves::Stays))
-    {
-        return false;
-    }
-    if rules.is_mana_ability() {
+    let foreign = controller_of_object(state, object) != player;
+    if rules.is_mana_ability() || (foreign && (price.tap || price.leaves != Leaves::Stays)) {
         return false;
     }
     if !leaves_from_here(state, player, object, price.leaves) {

@@ -66,7 +66,7 @@ fn a_limit_of_several_uses_stops_after_that_many_in_a_turn(
     assert_eq!(offered(&driver), 0);
     assert_eq!(
         driver.state().player(pid(0)).unwrap().life(),
-        20 + most as i32
+        20 + i32::try_from(most).unwrap()
     );
     Ok(())
 }

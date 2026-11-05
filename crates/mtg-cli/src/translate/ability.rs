@@ -174,7 +174,7 @@ fn activated(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
         None => {}
         Some("1") => ability["limit"] = json!("OncePerTurn"),
         Some(times @ ("2" | "3")) => {
-            ability["limit"] = json!({"TimesPerTurn": times.parse::<u32>().unwrap_or(2)})
+            ability["limit"] = json!({"TimesPerTurn": times.parse::<u32>().unwrap_or(2)});
         }
         Some(other) => return unmapped(format!("key:AB.ActivationLimit={other}")),
     }
