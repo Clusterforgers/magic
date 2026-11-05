@@ -541,9 +541,12 @@ fn attacker_blocked(ctx: &Ctx, p: &Params) -> Tr<Value> {
 fn counts_the_cast_exactly(condition: &Value) -> bool {
     let compare = |value: &Value| {
         value.get("Compare").is_some_and(|c| {
-            matches!(c.get("op").and_then(Value::as_str), Some("Eq" | "Le" | "Lt"))
-                && c.get("left")
-                    .is_some_and(|left| left.to_string().contains("\"event\":\"SpellCast\""))
+            matches!(
+                c.get("op").and_then(Value::as_str),
+                Some("Eq" | "Le" | "Lt")
+            ) && c
+                .get("left")
+                .is_some_and(|left| left.to_string().contains("\"event\":\"SpellCast\""))
         })
     };
     compare(condition)

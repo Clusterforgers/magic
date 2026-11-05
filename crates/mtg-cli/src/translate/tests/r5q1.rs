@@ -319,7 +319,10 @@ fn a_cast_count_that_later_spells_change_is_not_rechecked_at_resolution(
 #[rstest]
 #[case::look_at("look at target player's hand. You may choose a card from it", false)]
 #[case::reveals("target player reveals their hand. You choose a card from it", true)]
-fn only_a_hand_the_text_reveals_is_shown_to_every_seat(#[case] words: &str, #[case] revealed: bool) {
+fn only_a_hand_the_text_reveals_is_shown_to_every_seat(
+    #[case] words: &str,
+    #[case] revealed: bool,
+) {
     let script = format!(
         "Name:Gearhulk\nTypes:Artifact Creature Construct\nPT:4/4\nT:Mode$ ChangesZone | ValidCard$ Card.Self | Origin$ Any | Destination$ Battlefield | Execute$ TrigDiscard | TriggerDescription$ x\nSVar:TrigDiscard:DB$ Discard | ValidTgts$ Player | Mode$ RevealYouChoose | Optional$ True | DiscardValid$ Card\nOracle:When this creature enters, {words}.\n"
     );
@@ -327,4 +330,29 @@ fn only_a_hand_the_text_reveals_is_shown_to_every_seat(#[case] words: &str, #[ca
     assert_eq!(found.len(), 1, "{:?}", super::gaps(&script));
     assert_eq!(found[0].to_string().contains("\"Reveal\""), revealed);
     assert!(found[0].to_string().contains("\"by\":\"You\""));
+}
+
+const HALL: &str = "Name:Hall\nTypes:Land\nA:AB$ Clone | Cost$ 0 | ValidTgts$ Creature.YouCtrl | ValidTgtsDesc$ creature you control | Duration$ UntilEndOfTurn | SubAbility$ DBEffect | SpellDescription$ x\nSVar:DBEffect:DB$ Effect | StaticAbilities$ LegendPermission\nSVar:LegendPermission:Mode$ IgnoreLegendRule | ValidCard$ Permanent.YouCtrl | Description$ The legend rule doesn't apply to permanents you control this turn.\n";
+
+#[test]
+fn a_land_copying_a_legend_keeps_both_while_the_legend_rule_is_off() {
+    let legend = Arc::new(
+        CardDefinition::new("Legend")
+            .with_type(CardType::Creature)
+            .with_supertype(mtg_core::card::Supertype::Legendary)
+            .with_power_toughness(2, 2)
+            .with_mana_cost(ManaCost::parse("{1}").unwrap()),
+    );
+    let hall = card(HALL, "Hall", &[CardType::Land], None);
+    let scenario = Scenario::new(2)
+        .battlefield(0, [ready(hall), ready(legend)])
+        .library(0, library(9))
+        .library(1, library(9));
+    let mut driver = Driver::from_scenario(scenario).unwrap();
+    let target = driver.target_named("Legend").unwrap();
+    driver.begin_ability("Hall", 0).unwrap();
+    announce(&mut driver, vec![vec![target]], None, 0);
+    // The invariant checks run at every decision of the driver and must not call the kept pair a violation.
+    settle(&mut driver, true, None);
+    assert_eq!(names(&driver, Zone::Battlefield), ["Legend", "Legend"]);
 }
