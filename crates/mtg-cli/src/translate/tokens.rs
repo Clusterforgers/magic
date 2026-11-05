@@ -75,6 +75,8 @@ fn token_create(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
             "RememberTokens",
             "AttachedTo",
             "ValidTgts",
+            "TargetMin",
+            "TargetMax",
             "PumpKeywords",
             "PumpDuration",
         ],
@@ -421,8 +423,12 @@ fn attached(ctx: &mut Ctx, p: &Params, create: &mut Value) -> Tr<Option<Value>> 
         }
         return Ok(None);
     };
+    // One token goes to at most one target; with none chosen the token is not attached and ceases to exist as an Aura would.
+    if p.get("TargetMax").is_some_and(|max| max != "1") {
+        return unmapped("key:Token.TargetMax");
+    }
     let to = match (word, p.has("ValidTgts")) {
-        ("Targeted", true) => super::valid::subject(ctx, p, "", None)?,
+        ("Targeted" | "ThisTargetedCard", true) => super::valid::subject(ctx, p, "", None)?,
         ("Self", false) => defined(ctx, "Self")?,
         _ => return unmapped(format!("key:Token.AttachedTo={word}")),
     };

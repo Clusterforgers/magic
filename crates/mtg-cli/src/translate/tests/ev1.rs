@@ -83,7 +83,7 @@ fn a_controller_word_is_the_controller_of_the_event_object(
 #[rstest]
 #[case::other_remembered("ForgetOtherRemembered", Vec::new())]
 #[case::other_targets("ForgetOtherTargets", Vec::new())]
-#[case::changed_on_a_name("ForgetChanged", vec!["key:Forget-moved-from-a-bound-name".to_owned()])]
+#[case::changed_on_a_name("ForgetChanged", Vec::new())]
 fn a_forget_key_empties_the_slot_or_stays_a_gap(#[case] key: &str, #[case] want: Vec<String>) {
     let script = format!(
         "Name:T\nTypes:Sorcery\nA:SP$ ChangeZone | Origin$ Battlefield | Destination$ Exile | ValidTgts$ Creature | RememberChanged$ True | SubAbility$ Back\nSVar:Back:DB$ ChangeZone | Defined$ Remembered | Origin$ Exile | Destination$ Battlefield | {key}$ True\n"

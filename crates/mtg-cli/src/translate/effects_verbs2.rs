@@ -79,11 +79,18 @@ fn branch(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
             "BranchConditionSVarCompare",
             "TrueSubAbility",
             "FalseSubAbility",
+            "ValidTgts",
+            "TargetMin",
+            "TargetMax",
         ],
     )?;
     let (Some(name), Some(yes)) = (p.get("BranchConditionSVar"), p.get("TrueSubAbility")) else {
         return unmapped("key:Branch.shape");
     };
+    // The target is chosen before the condition is read: the condition and both parts may name it (`Defined$ Targeted`).
+    if p.has("ValidTgts") {
+        subject(ctx, p, "", None)?;
+    }
     let word = p.get("BranchConditionSVarCompare").unwrap_or("GE1");
     let Some(op) = word.get(..2).and_then(cmp) else {
         return unmapped(format!("compare:{word}"));

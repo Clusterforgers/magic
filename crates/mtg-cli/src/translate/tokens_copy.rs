@@ -33,8 +33,10 @@ pub fn copy_permanent(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
             "PumpDuration",
             "Controller",
             "AtEOT",
+            "RememberTokens",
         ],
     )?;
+    let remember = flag(p, "RememberTokens")?;
     let of = objects(subject(ctx, p, "", None)?)?;
     let count = amount(ctx, p.get("NumCopies").unwrap_or("1"))?;
     let mut except = exceptions(ctx, p)?;
@@ -58,11 +60,14 @@ pub fn copy_permanent(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
         }
         Some(other) => return unmapped(format!("key:CopyPermanent.Controller={other}")),
     }
-    if temporary.is_none() && !p.has("AtEOT") {
+    if temporary.is_none() && !p.has("AtEOT") && !remember {
         return Ok(vec![json!({ "CreateToken": create })]);
     }
     let name = ctx.fresh("copy");
     create["as"] = json!(name);
+    if remember {
+        ctx.remembered = Some(json!({ "Bound": name }));
+    }
     let bound = json!({ "Bound": name });
     let mut effects = vec![json!({ "CreateToken": create })];
     if let Some(keywords) = temporary {
