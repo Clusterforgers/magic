@@ -246,7 +246,7 @@ pub fn trigger_state(ctx: &Ctx, p: &Params) -> Tr<Vec<Value>> {
             let (op, right) = comparison(ctx, compare)?;
             all.push(json!({"Compare": {"left": {"Life": who}, "op": op, "right": right}}));
         }
-        (None, Some(_)) => {}
+        (Some(_), None) => return unmapped("key:Trigger.LifeTotal-without-LifeAmount"),
     }
     if let Some(word) = p.get("CheckDefinedPlayer") {
         all.push(match word {
