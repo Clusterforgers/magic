@@ -690,6 +690,7 @@ mod tests {
             wording: String::new(),
             triggered: !can_cancel,
             apart: Vec::new(),
+            together: None,
         })
     }
 

@@ -2,7 +2,7 @@
 
 use super::{generic, parts};
 use crate::modify::Duration;
-use crate::refs::{Bounds, Pred, Ref, Selector, TargetSpec, Targetable, ZoneKind};
+use crate::refs::{Bounds, Pred, Ref, Selector, TargetSet, TargetSpec, Targetable, ZoneKind};
 use crate::value::{Amount, Cmp, Condition, CounterKind, StatKind};
 
 /// What a phrase needs to know about the ability it sits in: the targets its `Target(n)` references name.
@@ -167,6 +167,16 @@ fn targetable(ctx: &Ctx, what: &Targetable, plural: bool) -> String {
             })
             .collect::<Vec<_>>()
             .join(" or "),
+        Targetable::Together { what, rule } => format!(
+            "{} {}",
+            targetable(ctx, what, plural),
+            match rule {
+                TargetSet::SameController => "controlled by the same player",
+                TargetSet::DifferentControllers => "controlled by different players",
+                TargetSet::DifferentNames => "with different names",
+                TargetSet::DifferentManaValues => "with different mana values",
+            }
+        ),
         Targetable::PerPlayer { players, what } => format!(
             "{} controlled by each of {}",
             noun(&selector(ctx, what)),

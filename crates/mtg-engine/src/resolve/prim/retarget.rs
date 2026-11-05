@@ -162,6 +162,7 @@ pub(super) fn ask(
                         wording,
                         triggered: false,
                         apart: Vec::new(),
+                        together: None,
                     }),
                 }));
             }

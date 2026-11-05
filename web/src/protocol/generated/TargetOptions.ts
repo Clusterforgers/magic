@@ -2,6 +2,7 @@
 import type { ObjectId } from "./ObjectId";
 import type { PlayerId } from "./PlayerId";
 import type { Target } from "./Target";
+import type { Together } from "./Together";
 
 /**
  * The targets a player may choose for one target specification of a spell or ability being put on the stack.
@@ -44,4 +45,8 @@ triggered?: boolean,
  * For targets chosen for each of several players, the player each legal target belongs to, in the order of `legal`:
  * no two targets may belong to one player. Empty for any other specification.
  */
-apart?: Array<PlayerId>, };
+apart?: Array<PlayerId>, 
+/**
+ * For a specification whose targets must share or differ in something, how; `None` for any other.
+ */
+together?: Together, };

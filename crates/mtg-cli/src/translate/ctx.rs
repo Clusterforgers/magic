@@ -371,14 +371,23 @@ pub fn is_hint(key: &str) -> bool {
         || (key.starts_with("AI") && key.len() > 2)
 }
 
+/// The keys that restrict the targets of a line, which `target_spec` reads.
+pub const SET_KEYS: [&str; 5] = [
+    "TargetsWithDefinedController",
+    "TargetsWithSameController",
+    "TargetsWithDifferentControllers",
+    "TargetsWithDifferentNames",
+    "TargetsWithDifferentCMC",
+];
+
 /// Refuses a key that the mapper of `api` does not read: a key that changes what the line does and is not understood
 /// must leave the line out, not be ignored.
 pub fn only(params: &Params, api: &str, read: &[&str]) -> Tr<()> {
     check_keys(params, api, read, |key, _| {
-        COMMON.contains(&key) || key == "TargetsWithDefinedController"
+        COMMON.contains(&key) || SET_KEYS.contains(&key)
     })?;
-    // `target_spec` reads it; the audit makes a line whose mapper builds no target a gap.
-    params.promise(api, &["TargetsWithDefinedController"]);
+    // `target_spec` reads them; the audit makes a line whose mapper builds no target a gap.
+    params.promise(api, &SET_KEYS);
     Ok(())
 }
 
