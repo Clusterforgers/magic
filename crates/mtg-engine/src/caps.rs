@@ -519,6 +519,8 @@ const RUNS: &[&str] = &[
     "Amount.ManaSpent",
     "Amount.ManaColors",
     "Amount.MostCommon",
+    "Amount.CountOf",
+    "Amount.Product",
     "Amount.Random",
     "Amount.ManaInPool",
     "Amount.Doors",

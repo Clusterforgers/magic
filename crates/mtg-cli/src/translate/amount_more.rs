@@ -72,6 +72,22 @@ fn valid_count(ctx: &Ctx, word: &str, rest: &str) -> Tr<Value> {
     };
     let (spec, reduce) = rest.split_once('$').unwrap_or((rest, ""));
     let of = selector_in(ctx, spec, zone)?;
+    reduced(word, &of, reduce)
+}
+
+/// The objects the selector names, counted or reduced to one characteristic by the word after the `$` of the expression.
+pub(super) fn reduced(word: &str, of: &[Value], reduce: &str) -> Tr<Value> {
+    // All the counters of one kind (or of every kind) on the objects together.
+    if let Some(kind) = reduce.strip_prefix("CardCounters.") {
+        let on = json!({"Each": of});
+        if kind == "ALL" {
+            return Ok(json!({"AnyCounters": on}));
+        }
+        return match super::amount::counter_kind(&kind.to_uppercase()) {
+            Some(counter) => Ok(json!({"Counters": {"on": on, "counter": counter}})),
+            None => unmapped(format!("amount:Count${word}$CardCounters.{kind}")),
+        };
+    }
     let (kind, stat) = match reduce {
         "" => return Ok(json!({"Count": of})),
         "CardTypes" => return Ok(json!({"CardTypes": of})),

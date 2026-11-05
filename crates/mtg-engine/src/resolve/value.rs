@@ -188,6 +188,25 @@ fn colors_among(mana: &[ManaType]) -> usize {
         .count()
 }
 
+/// The zone one alternative of "in this zone or that" names: `In`, or a conjunction written as not any of its negations
+/// that holds an `In` (the cards of each zone under their own control or ownership rule).
+fn alternative_zone(pred: &Pred) -> Option<ZoneKind> {
+    match pred {
+        Pred::In(kind) => Some(*kind),
+        Pred::Not(inner) => match &**inner {
+            Pred::AnyOf(negated) => negated.iter().find_map(|each| match each {
+                Pred::Not(zone) => match &**zone {
+                    Pred::In(kind) => Some(*kind),
+                    _ => None,
+                },
+                _ => None,
+            }),
+            _ => None,
+        },
+        _ => None,
+    }
+}
+
 /// Whether the predicate holds only for objects on the stack (a spell, an ability, or one of several that are).
 fn on_the_stack(pred: &Pred) -> bool {
     match pred {
@@ -1081,14 +1100,10 @@ impl<'a> Scope<'a> {
             .iter()
             .find_map(|pred| match pred {
                 Pred::In(kind) => Some(vec![*kind]),
-                Pred::AnyOf(list) if list.iter().all(|pred| matches!(pred, Pred::In(_))) => Some(
-                    list.iter()
-                        .filter_map(|pred| match pred {
-                            Pred::In(kind) => Some(*kind),
-                            _ => None,
-                        })
-                        .collect(),
-                ),
+                Pred::AnyOf(list) => list
+                    .iter()
+                    .map(alternative_zone)
+                    .collect::<Option<Vec<_>>>(),
                 _ => None,
             })
             .unwrap_or_default();
@@ -1133,7 +1148,7 @@ impl<'a> Scope<'a> {
     }
 
     /// How many of the objects the reference names satisfy the selector.
-    fn count_of(&self, subject: &Ref, selector: &Selector) -> Result<i64, ResolveError> {
+    pub(super) fn count_of(&self, subject: &Ref, selector: &Selector) -> Result<i64, ResolveError> {
         // A name no step bound (a declined "you may") stands for no objects.
         if let Ref::Bound(name) = subject
             && !self.bindings.contains_key(name)
@@ -1387,6 +1402,13 @@ impl<'a> Scope<'a> {
             .and_then(|permanent| permanent.chosen())
     }
 
+    /// The printed name of the card, none for a face-down card (it has no name).
+    pub(super) fn card_name(seen: &Seen<'_>) -> Option<String> {
+        seen.card
+            .filter(|card| card.face_down().is_none())
+            .map(|card| card.card().name.clone())
+    }
+
     pub(super) fn stat(seen: &Seen<'_>, stat: StatKind) -> Option<i64> {
         match stat {
             StatKind::Power => seen.chars.power.map(i64::from),
@@ -1415,8 +1437,8 @@ impl<'a> Scope<'a> {
             StatKind::BasicLandTypes => {
                 i64::try_from(Self::w7a_basic_land_types(seen).count()).ok()
             }
-            // A name is no number; `Amount::Distinct` reads it through `w2c_distinct`.
-            StatKind::Name => None,
+            // A name and creature types are no numbers; `Amount::Distinct` and `Amount::MostCommon` read them.
+            StatKind::Name | StatKind::CreatureType => None,
         }
     }
 
@@ -1538,6 +1560,8 @@ impl<'a> Scope<'a> {
             | Amount::ManaSpent { .. }
             | Amount::ManaColors(_)
             | Amount::MostCommon { .. }
+            | Amount::Product(_)
+            | Amount::CountOf { .. }
             | Amount::Random { .. }
             | Amount::ManaInPool(_)
             | Amount::Doors(_) => self.fill_amount(amount, share)?,

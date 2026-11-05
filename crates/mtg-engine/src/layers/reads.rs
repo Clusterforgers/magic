@@ -298,6 +298,7 @@ fn reads_of_stat(stat: StatKind) -> Traits {
         | StatKind::BasePower
         | StatKind::BaseToughness
         | StatKind::ManaSpent
+        | StatKind::CreatureType
         | StatKind::Name => Traits::NONE,
     }
 }
@@ -346,9 +347,10 @@ pub(crate) fn reads_of_amount(amount: &Amount) -> Traits {
         | Amount::LowestLife(who)
         | Amount::LowestHand(who)
         | Amount::HighestLife(who) => reads_of_ref(who),
-        Amount::Sum(parts) => parts
+        Amount::Sum(parts) | Amount::Product(parts) => parts
             .iter()
             .fold(Traits::NONE, |all, part| all.or(reads_of_amount(part))),
+        Amount::CountOf { of, filter } => reads_of_ref(of).or(reads_of_selector(filter)),
         Amount::EvenShare(total) => reads_of_amount(total),
         Amount::Times { of, .. } | Amount::Half { of, .. } => reads_of_amount(of),
         Amount::Devotion(_) => Traits::CONTROL,
