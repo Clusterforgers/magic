@@ -66,6 +66,7 @@ pub mod statics_cast;
 pub mod statics_defender;
 pub mod statics_look;
 mod statics_rules;
+mod spend_uses;
 pub mod stored;
 pub mod tokens;
 mod tokens_copy;

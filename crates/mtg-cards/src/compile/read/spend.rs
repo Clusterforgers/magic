@@ -330,6 +330,7 @@ fn qualifier_text(filter: &SpendFilter) -> String {
             SpendFact::NotOwned => " you don't own",
             SpendFact::FromGraveyard => " from your graveyard",
             SpendFact::SharesCommanderType => " that shares a creature type with your commander",
+            SpendFact::OnBattlefield => " on the battlefield",
         });
     }
     text
