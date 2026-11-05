@@ -43,6 +43,7 @@ pub fn divided_creatures(most: i32) -> TargetSpec {
 /// Each target of the first specification is dealt its share of the division.
 fn share_damage() -> Effect {
     Effect::DealDamage {
+        excess: None,
         source: None,
         to: Ref::Target(0),
         amount: Amount::Divided,
@@ -83,6 +84,7 @@ pub fn even_bolt(name: &str, total: i32) -> Arc<CardDefinition> {
                 divide: None,
             }],
             effects: vec![Effect::DealDamage {
+                excess: None,
                 source: None,
                 to: Ref::Target(0),
                 amount: Amount::EvenShare(Box::new(Amount::Fixed(total))),

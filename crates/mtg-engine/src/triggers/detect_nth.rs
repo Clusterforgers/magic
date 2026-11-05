@@ -67,6 +67,7 @@ fn pinger(name: &str) -> Arc<CardDefinition> {
                 divide: None,
             }],
             effects: vec![Effect::DealDamage {
+                excess: None,
                 source: None,
                 to: Ref::Target(0),
                 amount: Amount::Fixed(1),

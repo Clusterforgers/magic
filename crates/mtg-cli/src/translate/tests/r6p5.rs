@@ -72,3 +72,63 @@ fn a_reveal_that_remembers_nothing_stays_one_step() {
         json!([{"Reveal": {"what": {"Each": [{"OwnedBy": {"Target": 0}}, {"In": "Hand"}]}}}])
     );
 }
+
+#[rstest]
+#[case::kept_as_a_number(
+    "DealDamage | ValidTgts$ Creature | NumDmg$ 4 | ExcessSVar$ Excess | ExcessSVarCondition$ Card.targetedBy | SubAbility$ G\nSVar:G:DB$ GainLife | LifeAmount$ Excess | ConditionCheckSVar$ Excess",
+    json!([
+        {"DealDamage": {"to": {"Target": 0}, "amount": 4, "excess": {"as": "excess"}}},
+        {"If": {"condition": {"Compare": {"left": {"Bound": "excess"}, "op": "Ge", "right": 1}},
+            "then": [{"GainLife": {"amount": {"Bound": "excess"}}}]}}
+    ])
+)]
+#[case::named_x(
+    "DealDamage | ValidTgts$ Creature | NumDmg$ 4 | ExcessSVar$ X | SubAbility$ G\nSVar:G:DB$ GainLife | LifeAmount$ X",
+    json!([
+        {"DealDamage": {"to": {"Target": 0}, "amount": 4, "excess": {"as": "excess"}}},
+        {"GainLife": {"amount": {"Bound": "excess"}}}
+    ])
+)]
+#[case::sent_to_the_controller(
+    "DealDamage | ValidTgts$ Creature | NumDmg$ 4 | ExcessDamage$ TargetedController",
+    json!([{"DealDamage": {"to": {"Target": 0}, "amount": 4,
+        "excess": {"to": {"ControllerOf": {"Target": 0}}}}}])
+)]
+fn damage_beyond_lethal_is_kept_or_sent_on(#[case] line: &str, #[case] nodes: Value) {
+    let text = spell(line);
+    assert_eq!(gaps(&text), Vec::<String>::new());
+    assert_eq!(abilities(&text)[0]["Spell"]["effects"], nodes);
+}
+
+#[rstest]
+#[case::trample_condition(
+    "DealDamage | ValidTgts$ Creature | NumDmg$ 4 | ExcessDamage$ TargetedController | ExcessDamageCondition$ Card.withTrample",
+    "key:DealDamage.ExcessDamageCondition"
+)]
+#[case::condition_on_the_kind(
+    "DealDamage | ValidTgts$ Any | NumDmg$ 4 | ExcessSVar$ Excess | ExcessSVarCondition$ Creature",
+    "key:DealDamage.ExcessSVarCondition"
+)]
+#[case::divided(
+    "DealDamage | ValidTgts$ Creature | NumDmg$ 4 | DividedAsYouChoose$ 4 | ExcessSVar$ Excess",
+    "key:DealDamage.Excess-without-one-target"
+)]
+#[case::someone_else(
+    "DealDamage | ValidTgts$ Creature | NumDmg$ 4 | ExcessDamage$ You",
+    "key:DealDamage.ExcessDamage=You"
+)]
+#[case::both(
+    "DealDamage | ValidTgts$ Creature | NumDmg$ 4 | ExcessDamage$ TargetedController | ExcessSVar$ X",
+    "key:DealDamage.ExcessSVar-with-ExcessDamage"
+)]
+#[case::a_condition_alone(
+    "DealDamage | ValidTgts$ Creature | NumDmg$ 4 | ExcessSVarCondition$ Card.targetedBy",
+    "key:DealDamage.ExcessCondition-without-excess"
+)]
+#[case::read_outside_a_condition(
+    "DealDamage | ValidTgts$ Creature | NumDmg$ 4 | ConditionPresent$ Creature.YouCtrl | ExcessSVar$ Excess | SubAbility$ G\nSVar:G:DB$ GainLife | LifeAmount$ Excess",
+    "amount:Excess"
+)]
+fn damage_beyond_lethal_outside_one_target_is_a_gap(#[case] line: &str, #[case] gap: &str) {
+    assert_eq!(gaps(&spell(line)), [gap]);
+}

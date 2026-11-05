@@ -110,6 +110,11 @@ pub fn amount(ctx: &Ctx, text: &str) -> Tr<Value> {
     {
         return Ok(json!({"Players": {"Bound": name}}));
     }
+    if let Some((svar, bound)) = &ctx.excess
+        && svar == text
+    {
+        return Ok(json!({ "Bound": bound }));
+    }
     if ctx.die_result.as_deref() == Some(text) {
         return Ok(json!({"DieResult": "Only"}));
     }

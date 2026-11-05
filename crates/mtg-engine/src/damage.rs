@@ -1,6 +1,8 @@
 //! Combat damage: dividing an attacker's damage among its blockers and the player it attacks, and dealing it
 //! simultaneously in the first-strike step and the regular one.
 
+use mtg_cards::value::CounterKind;
+use mtg_core::card::CardType;
 use mtg_core::ids::{ObjectId, PlayerId};
 
 use crate::answers::Outcome;
@@ -89,6 +91,26 @@ pub(crate) fn lethal_damage(state: &GameState, id: ObjectId, deathtouch: bool) -
         .map_or(0, crate::object::PermanentState::damage);
     let left = u32::try_from((i64::from(toughness) - i64::from(marked)).max(0)).unwrap_or(u32::MAX);
     if deathtouch { left.min(1) } else { left }
+}
+
+/// Damage that is lethal to `id` for excess damage (CR 120.10): its toughness less the damage marked for a creature, its
+/// loyalty for a planeswalker, its defense for a battle (the greatest when it is several); `None` for any other object.
+pub(crate) fn lethal_for_excess(state: &GameState, id: ObjectId, deathtouch: bool) -> Option<u32> {
+    let counters = state.object(id).and_then(GameObject::permanent)?;
+    let chars = characteristics(state, id)?;
+    let mut lethal: Option<u32> = None;
+    if chars.is_creature() {
+        lethal = Some(lethal_damage(state, id, deathtouch));
+    }
+    if chars.types.contains(CardType::Planeswalker) {
+        let loyalty = counters.counters_of(&CounterKind::Loyalty);
+        lethal = Some(lethal.map_or(loyalty, |other| other.max(loyalty)));
+    }
+    if crate::battle::is_battle(state, id) {
+        let defense = counters.counters_of(&CounterKind::defense());
+        lethal = Some(lethal.map_or(defense, |other| other.max(defense)));
+    }
+    lethal
 }
 
 /// What an attacker's damage amounts to in one step: dealt as it stands or waiting for its controller's division.
@@ -299,6 +321,11 @@ impl Dealer {
             controller: controller_of(state, id),
             keywords: keywords::damage_rules(state, id),
         }
+    }
+
+    /// Whether the source has deathtouch, which makes any damage to a creature lethal.
+    pub(crate) fn has_deathtouch(&self) -> bool {
+        self.keywords.deathtouch
     }
 
     /// Whether the source has lifelink and `player` is the one who gains the life (CR 702.15).

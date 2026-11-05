@@ -2209,6 +2209,7 @@ impl Writer<'_> {
                 source: None,
                 to,
                 amount,
+                ..
             } => format!(
                 "~ deals {} damage to {}",
                 points_text(amount)?,
@@ -2942,6 +2943,7 @@ impl Writer<'_> {
                 source: None,
                 to,
                 amount,
+                ..
             } = effect
             else {
                 return None;

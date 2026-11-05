@@ -41,9 +41,11 @@ pub fn chain_at(ctx: &mut Ctx, p: &Params, top: bool) -> Tr<Vec<Value>> {
         (true, false) => &["Optional"],
     };
     let before = (ctx.remembered.clone(), ctx.imprinted.clone());
+    let excess = ctx.excess.clone();
     let mut effects = line(ctx, &own.without(&unless_keys).without(spent))?;
     // A name bound inside a condition or a "may" is out of scope after it: the lines after read no memory of it.
     if asks || condition.is_some() {
+        ctx.excess = excess;
         if is_bound(ctx.remembered.as_ref()) && ctx.remembered != before.0 {
             ctx.remembered = before.0;
         }
@@ -340,6 +342,10 @@ fn deal_damage(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
             "TargetMax",
             "DamageSource",
             "DividedAsYouChoose",
+            "ExcessSVar",
+            "ExcessSVarCondition",
+            "ExcessDamage",
+            "ExcessDamageCondition",
         ],
     )?;
     super::effects_obj::damage_map(p)?;
@@ -353,7 +359,63 @@ fn deal_damage(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
     if let Some(source) = p.get("DamageSource") {
         effect["source"] = defined(ctx, source)?;
     }
+    let excess = excess_part(ctx, p)?;
+    if let Some((part, name)) = excess {
+        effect["excess"] = part;
+        if let Some(name) = name {
+            ctx.excess = Some(name);
+        }
+    }
     Ok(json!({ "DealDamage": effect }))
+}
+
+/// The node of an excess and the `SVar` and number name it sets, when it sets one.
+type ExcessPart = (Value, Option<(String, String)>);
+
+/// `ExcessSVar$` and `ExcessDamage$` of a damage line (CR 120.10): the node that keeps the damage beyond lethal as a number,
+/// or deals it to someone else, and the `SVar` and number name the lines after it read. They need one targeted recipient:
+/// a divided or several-target line, or a condition on which damaged object counts, is a gap.
+fn excess_part(ctx: &mut Ctx, p: &Params) -> Tr<Option<ExcessPart>> {
+    let (svar, instead) = (p.get("ExcessSVar"), p.get("ExcessDamage"));
+    if svar.is_none() && instead.is_none() {
+        return if p.has("ExcessSVarCondition") || p.has("ExcessDamageCondition") {
+            unmapped("key:DealDamage.ExcessCondition-without-excess")
+        } else {
+            Ok(None)
+        };
+    }
+    if svar.is_some() && instead.is_some() {
+        return unmapped("key:DealDamage.ExcessSVar-with-ExcessDamage");
+    }
+    if !p.has("ValidTgts")
+        || p.has("DividedAsYouChoose")
+        || p.get("TargetMax").is_some_and(|max| max != "1")
+    {
+        return unmapped("key:DealDamage.Excess-without-one-target");
+    }
+    if p.has("ExcessDamageCondition") {
+        return unmapped("key:DealDamage.ExcessDamageCondition");
+    }
+    if p.get("ExcessSVarCondition")
+        .is_some_and(|c| c != "Card.targetedBy")
+    {
+        return unmapped("key:DealDamage.ExcessSVarCondition");
+    }
+    if let Some(who) = instead {
+        if p.has("ExcessSVarCondition") {
+            return unmapped("key:DealDamage.ExcessSVarCondition");
+        }
+        if !matches!(who, "TargetedController" | "ThisTargetedController") {
+            return unmapped(format!("key:DealDamage.ExcessDamage={who}"));
+        }
+        return Ok(Some((
+            json!({"to": defined(ctx, "TargetedController")?}),
+            None,
+        )));
+    }
+    let svar = svar.unwrap_or_default();
+    let bound = ctx.fresh("excess");
+    Ok(Some((json!({"as": bound}), Some((svar.to_owned(), bound)))))
 }
 
 /// The player of a line: its target or `Defined$` word, `You` when it has neither.

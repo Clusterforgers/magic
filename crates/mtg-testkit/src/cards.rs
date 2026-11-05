@@ -234,6 +234,7 @@ pub fn one_target(what: Targetable) -> TargetSpec {
 /// An effect that deals `amount` damage to what `to` names.
 pub fn damage(to: Ref, amount: i32) -> Effect {
     Effect::DealDamage {
+        excess: None,
         source: None,
         to,
         amount: Amount::Fixed(amount),

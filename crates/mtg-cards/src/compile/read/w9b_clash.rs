@@ -38,6 +38,7 @@ fn w9b_controller_damage(r: &mut Reader<'_>) -> Option<Effect> {
     let amount = r.number()?;
     r.need("damage to that creature's controller")?;
     Some(Effect::DealDamage {
+        excess: None,
         source: None,
         to: Ref::ControllerOf(Box::new(Ref::Target(0))),
         amount: Amount::Fixed(i32::try_from(amount).ok()?),

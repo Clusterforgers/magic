@@ -110,3 +110,95 @@ fn a_revealed_hand_counts_the_cards_shown_not_the_one_drawn_after(
     let foe = driver.state().player(PlayerId::from_index(1)).unwrap();
     assert_eq!(foe.life(), life);
 }
+
+fn storm(damage: u32) -> String {
+    format!(
+        "Name:Storm\nManaCost:R\nTypes:Sorcery\nA:SP$ DealDamage | ValidTgts$ Creature | NumDmg$ {damage} | ExcessDamage$ TargetedController\n"
+    )
+}
+
+#[rstest]
+#[case::short_of_lethal(1, 20, true)]
+#[case::exactly_lethal(2, 20, false)]
+#[case::three_beyond(5, 17, false)]
+fn excess_damage_goes_to_the_controller_of_the_creature(
+    #[case] damage: u32,
+    #[case] life: i32,
+    #[case] survives: bool,
+) {
+    let card = translated(&storm(damage), "Storm", "Sorcery", "{R}");
+    let scenario = Scenario::new(2)
+        .hand(0, [card])
+        .battlefield(0, [ready(mtg_testkit::cards::mountain())])
+        .battlefield(1, [ready(bear())]);
+    let mut driver = Driver::from_scenario(scenario).unwrap();
+    let target = driver.target_named("Grizzly Bears").unwrap();
+    driver.cast_at("Storm", &[target]).unwrap();
+    settle(&mut driver);
+    let foe = PlayerId::from_index(1);
+    assert_eq!(driver.state().player(foe).unwrap().life(), life);
+    let alive = driver.state().zone(Zone::Battlefield).iter().any(|id| {
+        driver
+            .state()
+            .object(*id)
+            .is_some_and(|o| o.card().name == "Grizzly Bears")
+    });
+    assert_eq!(alive, survives);
+}
+
+const SIPHON: &str = "Name:Siphon\nManaCost:R\nTypes:Sorcery\nA:SP$ DealDamage | ValidTgts$ Creature,Planeswalker | NumDmg$ 5 | ExcessSVar$ Excess | SubAbility$ Gain\nSVar:Gain:DB$ GainLife | LifeAmount$ Excess | ConditionCheckSVar$ Excess\n";
+
+#[rstest]
+#[case::creature("Grizzly Bears", 23)]
+#[case::planeswalker_of_three_loyalty("Walker", 22)]
+fn the_excess_damage_is_the_life_gained(#[case] victim: &str, #[case] life: i32) {
+    let card = translated(SIPHON, "Siphon", "Sorcery", "{R}");
+    let scenario = Scenario::new(2)
+        .hand(0, [card])
+        .battlefield(0, [ready(mtg_testkit::cards::mountain())])
+        .battlefield(
+            1,
+            [
+                ready(bear()),
+                ready(mtg_testkit::cards::walker("Walker", 2)),
+            ],
+        );
+    let mut driver = Driver::from_scenario(scenario).unwrap();
+    let target = driver.target_named(victim).unwrap();
+    driver.cast_at("Siphon", &[target]).unwrap();
+    settle(&mut driver);
+    assert_eq!(
+        driver
+            .state()
+            .player(PlayerId::from_index(0))
+            .unwrap()
+            .life(),
+        life
+    );
+}
+
+#[test]
+fn damage_that_is_not_beyond_lethal_gains_nothing() {
+    let card = translated(
+        &SIPHON.replace("NumDmg$ 5", "NumDmg$ 2"),
+        "Siphon",
+        "Sorcery",
+        "{R}",
+    );
+    let scenario = Scenario::new(2)
+        .hand(0, [card])
+        .battlefield(0, [ready(mtg_testkit::cards::mountain())])
+        .battlefield(1, [ready(bear())]);
+    let mut driver = Driver::from_scenario(scenario).unwrap();
+    let target = driver.target_named("Grizzly Bears").unwrap();
+    driver.cast_at("Siphon", &[target]).unwrap();
+    settle(&mut driver);
+    assert_eq!(
+        driver
+            .state()
+            .player(PlayerId::from_index(0))
+            .unwrap()
+            .life(),
+        20
+    );
+}

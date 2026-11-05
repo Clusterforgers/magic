@@ -26,6 +26,7 @@ pub(super) fn add(ability: &Ability, texts: &mut Vec<String>) {
             source: Some(Ref::Dealer),
             to: Ref::Chosen,
             amount: Amount::Triggering,
+            ..
         },
     ] = effects.as_slice()
     else {

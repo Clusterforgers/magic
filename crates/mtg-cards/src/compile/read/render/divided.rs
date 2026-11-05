@@ -13,6 +13,7 @@ impl Writer<'_> {
             source: None,
             to: Ref::Target(0),
             amount: Amount::Divided,
+            ..
         } = effect
         else {
             return None;

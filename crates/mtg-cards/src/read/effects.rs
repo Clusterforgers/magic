@@ -135,7 +135,9 @@ fn cards(ctx: &Ctx, effect: &Effect) -> Option<String> {
             "lose",
             &format!("{} life", phrase::amount(ctx, amount)),
         ),
-        Effect::DealDamage { source, to, amount } => {
+        Effect::DealDamage {
+            source, to, amount, ..
+        } => {
             let damage = format!(
                 "{} damage to {}",
                 phrase::amount(ctx, amount),

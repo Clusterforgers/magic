@@ -23,11 +23,13 @@ pub(super) fn add(ability: &Ability, texts: &mut Vec<String>) {
             source: first,
             to: Ref::Target(0),
             amount: out,
+            ..
         },
         Effect::DealDamage {
             source: Some(Ref::Target(0)),
             to: Ref::This,
             amount: back,
+            ..
         },
     ] = ability.effects()
     else {
@@ -40,6 +42,7 @@ pub(super) fn add(ability: &Ability, texts: &mut Vec<String>) {
         return;
     }
     let one = Effect::DealDamage {
+        excess: None,
         source: None,
         to: Ref::Target(0),
         amount: out.clone(),

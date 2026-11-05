@@ -209,6 +209,18 @@ pub enum TokenRef {
     },
 }
 
+/// What damage beyond lethal does (CR 120.10): damage dealt to a creature, planeswalker or battle beyond what is lethal to it.
+#[derive(Debug, Clone, PartialEq, Eq, Hash, Serialize, Deserialize)]
+#[serde(deny_unknown_fields)]
+pub struct Excess {
+    /// The name the number of excess damage is kept under, for `Amount::Bound` in the steps after it.
+    #[serde(rename = "as", default, skip_serializing_if = "Option::is_none")]
+    pub bind: Option<String>,
+    /// Who is dealt the excess damage instead of the recipient: only the lethal part goes to the recipient.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub to: Option<Ref>,
+}
+
 /// One option of a modal spell or ability, with its own targets.
 #[derive(Debug, Clone, PartialEq, Eq, Hash, Serialize, Deserialize)]
 #[serde(deny_unknown_fields)]
@@ -563,6 +575,9 @@ pub enum Effect {
         to: Ref,
         /// How much.
         amount: Amount,
+        /// What the damage beyond lethal does (CR 120.10); none when it is dealt as it is.
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        excess: Option<Excess>,
     },
     /// The player gains life.
     GainLife {
@@ -1626,7 +1641,7 @@ mod tests {
         r#"{"Draw":{"who":{"Target":0},"count":2}}"#
     )]
     #[case::bolt(
-        Effect::DealDamage { source: None, to: Ref::Target(0), amount: Amount::Fixed(3) },
+        Effect::DealDamage { excess: None, source: None, to: Ref::Target(0), amount: Amount::Fixed(3) },
         r#"{"DealDamage":{"to":{"Target":0},"amount":3}}"#
     )]
     #[case::wrath(

@@ -2871,7 +2871,7 @@ impl Walker<'_> {
                     w.at("as", |w| w.bind_moved(name));
                 }
             }
-            Effect::DealDamage { source, to, amount } => {
+            Effect::DealDamage { source, to, amount, excess } => {
                 if let Some(source) = source {
                     w.at("source", |w| w.reference(source, Kind::Object));
                 }
@@ -2879,6 +2879,16 @@ impl Walker<'_> {
                 // The recipients of the damage each read their share of a division.
                 w.amounting = Amounting::Shared;
                 w.at("amount", |w| w.amount(amount));
+                if let Some(excess) = excess {
+                    w.uses("Effect", "DealDamage.Excess");
+                    if let Some(to) = &excess.to {
+                        w.at("excess", |w| w.at("to", |w| w.reference(to, Kind::Either)));
+                    }
+                    if let Some(name) = &excess.bind {
+                        w.at("excess", |w| w.at("as", |w| w.bind(name, Kind::Either)));
+                        w.scope.numbers.insert(name.clone());
+                    }
+                }
             }
             Effect::GainLife { who, amount } | Effect::LoseLife { who, amount } => {
                 w.at("who", |w| w.reference(who, Kind::Player));

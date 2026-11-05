@@ -13,11 +13,12 @@ fn swapped(effects: &[Effect]) -> (Vec<Effect>, bool) {
     let mut out = Vec::new();
     for effect in effects {
         out.push(match effect {
-            Effect::DealDamage { source, to, amount }
-                if *to == Ref::ControllerOf(Box::new(Ref::Target(0))) =>
-            {
+            Effect::DealDamage {
+                source, to, amount, ..
+            } if *to == Ref::ControllerOf(Box::new(Ref::Target(0))) => {
                 found = true;
                 Effect::DealDamage {
+                    excess: None,
                     source: source.clone(),
                     to: Ref::Triggering,
                     amount: amount.clone(),
