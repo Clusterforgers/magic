@@ -464,6 +464,8 @@ fn choose_and_move(ctx: &mut Ctx, p: &Params, origin: &str, destination: &str) -
         if owner != json!("You") {
             return unmapped("key:ChangeZone.Choose.DefinedPlayer");
         }
+    } else if origin == "Exile" && filter.iter().any(|pred| pred.get("ExiledWith").is_some()) {
+        // Exile is shared: a card exiled with this is named by that, whoever owns it.
     } else {
         filter.push(json!({"OwnedBy": owner}));
     }
