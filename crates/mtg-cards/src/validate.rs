@@ -962,6 +962,20 @@ impl<'a> Walker<'a> {
         }
     }
 
+    /// `Performed`: "if you do" of the effect just before its `If`.
+    fn performed(&mut self) {
+        self.uses("Condition", "Performed");
+        // The engine knows whether a `May` was accepted, whether a `CastFromZone` cast or played the card and whether a `Sacrifice` or a `RemoveCounters` took something; any other effect before it waits.
+        if !self.after_may {
+            self.uses("Condition", "Performed.Other");
+        }
+        if self.after != After::Condition {
+            self.problem(
+                "`Performed` is the condition of an `If` that follows the effect it asks about",
+            );
+        }
+    }
+
     fn condition(&mut self, condition: &Condition) {
         match condition {
             Condition::Not(inner) => self.at("Not", |w| w.condition(inner)),
@@ -1016,16 +1030,7 @@ impl<'a> Walker<'a> {
                 self.uses("Condition", "ChosenWord");
                 self.chosen_as(name);
             }
-            Condition::Performed => {
-                self.uses("Condition", "Performed");
-                // The engine knows whether a `May` was accepted, whether a `CastFromZone` cast or played the card and whether a `Sacrifice` or a `RemoveCounters` took something; any other effect before it waits.
-                if !self.after_may {
-                    self.uses("Condition", "Performed.Other");
-                }
-                if self.after != After::Condition {
-                    self.problem("`Performed` is the condition of an `If` that follows the effect it asks about");
-                }
-            }
+            Condition::Performed => self.performed(),
             Condition::CompletedDungeon(who) => {
                 self.uses("Condition", "CompletedDungeon");
                 self.at("CompletedDungeon", |w| w.reference(who, Kind::Player));

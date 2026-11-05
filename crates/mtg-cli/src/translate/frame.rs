@@ -396,7 +396,7 @@ pub fn place(ctx: &mut Ctx, what: &Value, places: Places) -> Vec<Value> {
     let [word, other] = second.words;
     let first_way = (word, vec![moves(what, first)]);
     let other_way = (other, vec![moves(what, second.goes)]);
-    either(ctx, &second.who, first_way, other_way)
+    either(ctx, &second.who, &first_way, &other_way)
 }
 
 /// The one general step of a player choosing between two courses: the choice of a word, then the course it picked. Nobody to
@@ -404,8 +404,8 @@ pub fn place(ctx: &mut Ctx, what: &Value, places: Places) -> Vec<Value> {
 pub fn either(
     ctx: &mut Ctx,
     who: &Value,
-    first: (String, Vec<Value>),
-    second: (String, Vec<Value>),
+    first: &(String, Vec<Value>),
+    second: &(String, Vec<Value>),
 ) -> Vec<Value> {
     let name = ctx.fresh("way");
     let mut choose = json!({"kind": {"Options": [first.0, second.0]}, "as": name});
@@ -523,7 +523,7 @@ pub fn moved_name(
     ctx: &mut Ctx,
     effects: &mut [Value],
     verb: &str,
-    stem: &str,
+    prefix: &str,
     gap: &str,
 ) -> Tr<String> {
     let Some(step) = effects.iter_mut().find(|step| step.get(verb).is_some()) else {
@@ -532,7 +532,7 @@ pub fn moved_name(
     if let Some(name) = step[verb].get("as").and_then(Value::as_str) {
         return Ok(name.to_owned());
     }
-    let name = ctx.fresh(stem);
+    let name = ctx.fresh(prefix);
     step[verb]["as"] = json!(name);
     Ok(name)
 }

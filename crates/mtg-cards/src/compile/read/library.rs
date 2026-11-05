@@ -792,11 +792,8 @@ fn search_sequence(effects: &[Effect], who: &Ref) -> Option<(String, usize)> {
     let library = if *who == Ref::You { "your" } else { "their" };
     let mut text = format!("search {library} library for {looks_for}");
     if *reveal {
-        text.push_str(if plural {
-            ", reveal them"
-        } else {
-            ", reveal it"
-        });
+        text += ", reveal ";
+        text += if plural { "them" } else { "it" };
     }
     let found = Ref::Bound(bind.clone());
     let rest = &effects[count_of..];

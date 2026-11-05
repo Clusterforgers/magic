@@ -36,7 +36,7 @@ fn choice(words: [&str; 2], who: Option<Value>) -> Value {
     json!({ "ChooseValue": choose })
 }
 
-fn on_library(what: &Value, place: Value) -> Value {
+fn on_library(what: &Value, place: &Value) -> Value {
     json!({"Move": {"what": what, "to": {"Library": {"place": place}}}})
 }
 
@@ -75,8 +75,8 @@ fn two_ways_are_a_choice_of_a_word_then_the_move(
         found[1]["If"],
         json!({
             "condition": {"ChosenWord": {"name": name, "word": words[1]}},
-            "then": [on_library(&what, second)],
-            "otherwise": [on_library(&what, first)],
+            "then": [on_library(&what, &second)],
+            "otherwise": [on_library(&what, &first)],
         })
     );
 }
@@ -512,4 +512,69 @@ fn a_spell_exiled_with_counters_has_them_in_exile() {
         object.card_counters_of(&serde_json::from_value(json!({"Other": "time"})).unwrap()),
         3
     );
+}
+
+fn rally() -> Arc<CardDefinition> {
+    let rules = abilities(
+        "Name:Rally\nTypes:Instant\nA:SP$ ChangeZone | ValidTgts$ Creature.YouOwn | Origin$ Graveyard | Destination$ Battlefield | Attacking$ True | SpellDescription$ d\n",
+    );
+    let mut rally = CardDefinition::new("Rally")
+        .with_type(CardType::Instant)
+        .with_mana_cost(cost(0, &[]));
+    for value in rules {
+        rally = rally.with_rules(serde_json::from_value::<Ability>(value).unwrap());
+    }
+    Arc::new(rally)
+}
+
+fn rally_game(seats: usize) -> Driver {
+    let mut scenario = Scenario::new(seats).at(1, 0, Step::Main1);
+    for seat in 0..seats {
+        scenario = scenario.library(seat, vec![forest(); 6]);
+    }
+    Driver::from_scenario(
+        scenario
+            .hand(0, [rally()])
+            .graveyard(0, vec![creature("Bear", 2, 2)])
+            .battlefield(0, vec![ready(creature("Ogre", 3, 3))]),
+    )
+    .unwrap()
+}
+
+fn cast_rally(driver: &mut Driver) -> Decision {
+    let dead = driver.state().zone(Zone::Graveyard(ME))[0];
+    let reference = driver.state().object(dead).unwrap().reference();
+    driver
+        .cast_at("Rally", &[mtg_engine::choose::Target::Object(reference)])
+        .unwrap();
+    resolve(driver)
+}
+
+#[test]
+fn with_several_defenders_the_controller_chooses_what_it_attacks() {
+    let mut driver = rally_game(3);
+    driver.pass_until(Step::DeclareAttackers).unwrap();
+    driver.attack(&[("Ogre", 1)]).unwrap();
+    let asked = cast_rally(&mut driver);
+    assert_eq!(asked.player, ME);
+    assert!(
+        matches!(asked.kind, DecisionKind::ChooseOption(_)),
+        "{asked:?}"
+    );
+    driver
+        .answer(Answer::ChooseOption(OptionChoice(1)))
+        .unwrap();
+    assert_eq!(driver.state().combat().attackers().len(), 2);
+}
+
+#[test]
+fn outside_an_attack_it_enters_and_nothing_is_asked() {
+    let mut driver = rally_game(2);
+    let asked = cast_rally(&mut driver);
+    assert!(matches!(asked.kind, DecisionKind::Priority(_)), "{asked:?}");
+    assert!(
+        driver.id_of("Bear").is_ok(),
+        "the creature is on the battlefield"
+    );
+    assert_eq!(driver.state().combat().attackers().len(), 0);
 }
