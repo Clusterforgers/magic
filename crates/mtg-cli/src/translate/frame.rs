@@ -545,9 +545,12 @@ fn goes_in(
                 None | Some("False") => {}
                 // The script says "under your control" where the printed text says the owner's: the script is out of date.
                 Some("True")
-                    if ["owner's control", "owner’s control"]
-                        .iter()
-                        .any(|text| ctx.oracle.contains(text)) =>
+                    if [
+                        "that card to the battlefield under its owner's",
+                        "that card to the battlefield under its owner’s",
+                    ]
+                    .iter()
+                    .any(|text| ctx.oracle.contains(text)) =>
                 {
                     return unmapped("key:ChangeZone.GainControl-printed-as-owner");
                 }
