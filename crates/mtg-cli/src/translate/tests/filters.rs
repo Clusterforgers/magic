@@ -116,6 +116,55 @@ fn a_source_word_is_refused_for_an_object() {
     );
 }
 
+fn stat_of_the_candidate(stat: &str) -> Value {
+    json!({"Stat": {"of": "Candidate", "stat": stat}})
+}
+
+#[rstest]
+#[case::power_below_toughness("powerLTtoughness", "Power", "Lt", "Toughness")]
+#[case::power_above_base_power("powerGTbasePower", "Power", "Gt", "BasePower")]
+#[case::power_not_base_power("powerNOTbasePower", "Power", "Ne", "BasePower")]
+#[case::power_equals_toughness("equalPT", "Power", "Eq", "Toughness")]
+fn two_stats_of_the_object_compare(
+    #[case] word: &str,
+    #[case] left: &str,
+    #[case] op: &str,
+    #[case] right: &str,
+) {
+    let found = count_of(&format!("Creature.YouCtrl+{word}"));
+    let test = json!({"Test": {"left": stat_of_the_candidate(left), "op": op,
+        "right": stat_of_the_candidate(right)}});
+    assert!(
+        found["Count"]
+            .as_array()
+            .is_some_and(|preds| preds.contains(&test)),
+        "{found}"
+    );
+}
+
+#[rstest]
+#[case::a_number("powerGE3")]
+#[case::a_part("powerLEY")]
+fn a_number_or_a_part_on_the_right_stays_with_the_old_reader(#[case] word: &str) {
+    let text = format!(
+        "{}SVar:Y:Count$Valid Land.YouCtrl\n",
+        counting(&format!("Creature.{word}"))
+    );
+    let found = count_of_text(&text);
+    assert!(
+        found["Count"]
+            .as_array()
+            .is_some_and(|preds| preds.iter().any(|pred| pred.get("Compare").is_some())),
+        "{found}"
+    );
+    assert!(!found.to_string().contains("Test"));
+}
+
+fn count_of_text(text: &str) -> Value {
+    let found = abilities(text);
+    found[0]["Spell"]["effects"][0]["DealDamage"]["amount"].clone()
+}
+
 #[test]
 fn a_word_is_matched_whole() {
     // `YouDontOwnIt` is not `YouDontOwn`, `suspendedX` is not `suspended`.

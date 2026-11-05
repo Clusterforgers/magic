@@ -212,6 +212,8 @@ struct Scope {
     in_trigger: bool,
     /// The changes of a static ability are being checked: `Affected` names the object each one applies to.
     in_static: bool,
+    /// The amounts of a `Pred::Test` are being checked: `Candidate` names the object it judges.
+    in_test: bool,
     /// `Dealer` names something: a triggered ability, or a replacement of damage.
     dealer: bool,
     names: Vec<BTreeMap<String, Kind>>,
@@ -236,6 +238,7 @@ impl Scope {
             in_trigger,
             dealer: in_trigger,
             in_static: false,
+            in_test: false,
             names: vec![BTreeMap::new()],
             numbers: BTreeSet::new(),
         }
@@ -494,6 +497,12 @@ impl<'a> Walker<'a> {
                 }
                 self.expect(Kind::Object, want);
             }
+            Ref::Candidate => {
+                if !self.scope.in_test {
+                    self.problem("`Candidate` is only valid in the amounts of a `Test`");
+                }
+                self.expect(Kind::Object, want);
+            }
             Ref::Dealer => {
                 if !self.scope.in_trigger {
                     self.problem("`Dealer` is only valid in a triggered ability");
@@ -623,6 +632,13 @@ impl<'a> Walker<'a> {
                 .push((self.face, self.current_path(), name.clone())),
             Pred::Compare { to, .. } => {
                 self.at("to", |w| w.amount(to));
+            }
+            Pred::Test { left, right, .. } => {
+                self.uses("Pred", "Test");
+                let before = std::mem::replace(&mut self.scope.in_test, true);
+                self.at("left", |w| w.amount(left));
+                self.at("right", |w| w.amount(right));
+                self.scope.in_test = before;
             }
             Pred::CastFrom(zone) => {
                 if !matches!(zone, ZoneKind::Hand | ZoneKind::Graveyard) {
@@ -2261,6 +2277,7 @@ impl Walker<'_> {
             | Ref::ControllerOf(_)
             | Ref::OwnerOf(_) => Kind::Player,
             Ref::Affected
+            | Ref::Candidate
             | Ref::This
             | Ref::Dealer
             | Ref::Attached

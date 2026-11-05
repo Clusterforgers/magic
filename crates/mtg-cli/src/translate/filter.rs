@@ -207,6 +207,13 @@ pub(super) const ATOMS: &[Atom] = &[
         probe: "Lithomancer's Focus",
         lower: |_| one(json!("Colorless")),
     },
+    Atom {
+        word: "equalPT",
+        scopes: OBJECT,
+        reads_target: false,
+        probe: "Master Symmetrist",
+        lower: |_| one(stat_test("powerEQtoughness").unwrap_or_default()),
+    },
 ];
 
 /// The predicates of `word` from the table, `None` when no row has the word, a gap when the row is not legal in `scope`.
@@ -216,6 +223,9 @@ pub(super) fn atom(ctx: &Ctx, scope: Scope, word: &str) -> Option<Tr<Vec<Value>>
             return Some(unmapped(format!("valid:{word}-in-{scope:?}")));
         }
         return Some((row.lower)(ctx));
+    }
+    if let Some(test) = stat_test(word) {
+        return Some(one(test));
     }
     // `hasKeywordFlash`: the object has the keyword, as `withFlash` says.
     let name = word.strip_prefix("hasKeyword")?;
@@ -227,6 +237,47 @@ pub(super) fn atom(ctx: &Ctx, scope: Scope, word: &str) -> Option<Tr<Vec<Value>>
         .iter()
         .find(|known| known.eq_ignore_ascii_case(&spaced))?;
     Some(one(json!({"HasKeywordNamed": named})))
+}
+
+/// `powerLTtoughness`, `powerGTbasePower`: a stat of the object against another stat of it. The right side is a stat word
+/// (parts and numbers are the old readers' and come first); the whole word is matched.
+fn stat_test(word: &str) -> Option<Value> {
+    const STATS: [(&str, &str); 5] = [
+        ("power", "Power"),
+        ("toughness", "Toughness"),
+        ("basePower", "BasePower"),
+        ("baseToughness", "BaseToughness"),
+        ("cmc", "ManaValue"),
+    ];
+    const OPS: [(&str, &str); 7] = [
+        ("GE", "Ge"),
+        ("LE", "Le"),
+        ("EQ", "Eq"),
+        ("GT", "Gt"),
+        ("LT", "Lt"),
+        ("NE", "Ne"),
+        ("NOT", "Ne"),
+    ];
+    let stat = |name: &str| {
+        STATS
+            .iter()
+            .find(|(word, _)| *word == name)
+            .map(|(_, kind)| *kind)
+    };
+    let candidate = |kind: &str| json!({"Stat": {"of": "Candidate", "stat": kind}});
+    for (left_word, left) in STATS {
+        let Some(rest) = word.strip_prefix(left_word) else {
+            continue;
+        };
+        for (op_word, op) in OPS {
+            if let Some(right) = rest.strip_prefix(op_word).and_then(stat) {
+                return Some(
+                    json!({"Test": {"left": candidate(left), "op": op, "right": candidate(right)}}),
+                );
+            }
+        }
+    }
+    None
 }
 
 /// The predicates of a base word the old reader does not know: a supertype (`Legendary.YouCtrl`).

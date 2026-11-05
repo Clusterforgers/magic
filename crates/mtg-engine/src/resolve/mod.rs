@@ -19,6 +19,8 @@ mod value_fill;
 mod value_fill_tests;
 #[cfg(test)]
 mod value_general;
+#[cfg(test)]
+mod value_test_tests;
 
 use std::sync::Arc;
 
@@ -310,6 +312,7 @@ fn scope_of<'a>(
         casting: None,
         cast_targets: None,
         affected: None,
+        candidate: std::cell::Cell::new(None),
     }
 }
 

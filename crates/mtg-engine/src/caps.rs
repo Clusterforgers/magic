@@ -667,6 +667,7 @@ const RUNS: &[&str] = &[
     "Pred.ArrivedFrom",
     "Pred.WasCast",
     "Pred.CastWith",
+    "Pred.Test",
     "Pred.TopOfLibrary",
     "Pred.BottomOfLibrary",
     "Pred.BlockedBy",

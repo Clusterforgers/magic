@@ -107,6 +107,8 @@ pub struct Scope<'a> {
     pub(crate) cast_targets: Option<CastTargets<'a>>,
     /// The object a static ability's change is being worked out for (`Ref::Affected`), and where a read of it is noted.
     pub(crate) affected: Option<(ObjectRef, &'a std::cell::Cell<bool>)>,
+    /// The object a `Pred::Test` is judging (`Ref::Candidate`).
+    pub(crate) candidate: std::cell::Cell<Option<ObjectRef>>,
 }
 
 /// The targets a spell being cast has chosen so far (CR 601.2c).
@@ -268,6 +270,7 @@ impl<'a> Scope<'a> {
             casting: None,
             cast_targets: None,
             affected: None,
+            candidate: std::cell::Cell::new(None),
         }
     }
 
@@ -871,6 +874,12 @@ impl<'a> Scope<'a> {
                 read.set(true);
                 vec![Target::Object(object)]
             }
+            Ref::Candidate => {
+                let object = self.candidate.get().ok_or_else(|| {
+                    ResolveError::Invalid("there is no candidate object here".into())
+                })?;
+                vec![Target::Object(object)]
+            }
             Ref::Target(index) if self.choices.way == Some(CastWay::Overload) => {
                 self.each_target(usize::from(*index))?
             }
@@ -1363,6 +1372,14 @@ impl<'a> Scope<'a> {
                 Some(value) => op.holds(value, self.amount(to)?),
                 None => false,
             },
+            Pred::Test { left, op, right } => {
+                // The amounts read the object judged as `Ref::Candidate`.
+                let before = self.candidate.replace(Some(reference));
+                let amounts = self.amount(left).and_then(|l| Ok((l, self.amount(right)?)));
+                self.candidate.set(before);
+                let (left, right) = amounts?;
+                op.holds(left, right)
+            }
             Pred::Modified
             | Pred::RingBearer
             | Pred::FaceDown
