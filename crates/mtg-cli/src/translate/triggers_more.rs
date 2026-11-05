@@ -44,8 +44,11 @@ pub fn damage(ctx: &Ctx, p: &Params, mode: &str) -> Tr<Value> {
     keys(p, mode, &["ValidSource", "ValidTarget", "CombatDamage"])?;
     let source = super::valid::source_any(ctx, p.get("ValidSource").unwrap_or("Card"))?;
     let mut pattern = json!({ "source": source });
-    if p.get("CombatDamage") == Some("True") {
-        pattern["combat"] = json!(true);
+    match p.get("CombatDamage") {
+        None => {}
+        Some("True") => pattern["combat"] = json!(true),
+        Some("False") => pattern["combat"] = json!(false),
+        Some(other) => return unmapped(format!("key:Trigger.{mode}.CombatDamage={other}")),
     }
     let Some(target) = p.get("ValidTarget") else {
         return Ok(json!({ "DealsDamage": pattern }));

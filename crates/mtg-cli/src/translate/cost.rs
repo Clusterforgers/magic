@@ -140,7 +140,7 @@ fn item(ctx: &Ctx, word: &str) -> Tr<Value> {
     match head {
         "Sac" if on_self => Ok(json!("SacrificeSelf")),
         "Sac" => Ok(
-            json!({"Sacrifice": {"filter": selector_any(ctx, what)?, "count": amount(ctx, number)?}}),
+            json!({"Sacrifice": {"filter": selector_any(ctx, &other_if_worded(ctx, "sacrifice", number, what)?)?, "count": amount(ctx, number)?}}),
         ),
         "PayLife" => Ok(json!({"PayLife": amount(ctx, number)?})),
         "PayEnergy" => Ok(json!({"PayEnergy": amount(ctx, number)?})),
@@ -153,10 +153,89 @@ fn item(ctx: &Ctx, word: &str) -> Tr<Value> {
         "Return" if on_self => Ok(json!({"ReturnToHand": {"filter": ["This"]}})),
         "Return" => zone_cost(ctx, "ReturnToHand", number, what),
         "Reveal" => zone_cost(ctx, "RevealFromHand", number, what),
-        "tapXType" => zone_cost(ctx, "TapPermanents", number, what),
+        "tapXType" => zone_cost(
+            ctx,
+            "TapPermanents",
+            number,
+            &other_if_worded(ctx, "tap", number, what)?,
+        ),
         "SubCounter" => remove_counters(ctx, number, what),
         _ => unmapped(format!("cost:{head}")),
     }
+}
+
+/// The filter of a cost the script wrote without `Other` where the card says "tap another untapped creature": the paid
+/// permanent is never the source. The wording must name the type and the count the cost pays, since a card with several
+/// abilities words each of them; when the card words the same count both ways the cost cannot be told apart and is a gap.
+fn other_if_worded(ctx: &Ctx, verb: &str, number: &str, what: &str) -> Tr<String> {
+    if what.contains("Other") || what.contains("Self") {
+        return Ok(what.to_string());
+    }
+    let stems: Vec<String> = what
+        .split(';')
+        .map(|alt| {
+            let kind = alt.split('.').next().unwrap_or_default().to_lowercase();
+            kind.chars().take(4).collect()
+        })
+        .collect();
+    let names = |noun: &str| {
+        stems
+            .iter()
+            .any(|stem| matches!(stem.as_str(), "card" | "perm") || noun.starts_with(stem))
+    };
+    let text = ctx.oracle.to_lowercase().replace("\\n", " ");
+    let words: Vec<&str> = text
+        .split(|c: char| !c.is_alphanumeric())
+        .filter(|w| !w.is_empty())
+        .collect();
+    let (mut with_other, mut without) = (false, false);
+    for (at, _) in words.iter().enumerate().filter(|(_, w)| **w == verb) {
+        let rest = &words[at + 1..];
+        let Some(head) = rest.iter().position(|next| *next != "untapped") else {
+            continue;
+        };
+        let (count, other, nouns) = match rest[head] {
+            "another" => (Some("1"), true, &rest[head + 1..]),
+            "other" => (None, true, &rest[head + 1..]),
+            first => {
+                let count = match first {
+                    "a" | "an" | "one" => "1",
+                    "two" => "2",
+                    "three" => "3",
+                    "four" => "4",
+                    "five" => "5",
+                    "x" => "X",
+                    _ => continue,
+                };
+                let mut tail = rest[head + 1..].iter().skip_while(|w| **w == "untapped");
+                let other = tail.next() == Some(&"other");
+                (Some(count), other, &rest[head + 1..])
+            }
+        };
+        let counted = count.is_none_or(|count| count == number);
+        let close = nouns.iter().take(4).any(|noun| names(noun));
+        if counted && close {
+            if other {
+                with_other = true;
+            } else {
+                without = true;
+            }
+        }
+    }
+    if !with_other {
+        return Ok(what.to_string());
+    }
+    if without {
+        return unmapped("cost:Other-ambiguous");
+    }
+    Ok(what
+        .split(';')
+        .map(|alt| match alt {
+            alt if alt.contains('.') => format!("{alt}+Other"),
+            alt => format!("{alt}.Other"),
+        })
+        .collect::<Vec<_>>()
+        .join(";"))
 }
 
 fn discard(ctx: &Ctx, number: &str, what: &str) -> Tr<Value> {
