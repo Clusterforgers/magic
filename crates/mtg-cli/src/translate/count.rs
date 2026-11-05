@@ -355,8 +355,11 @@ fn referred(ctx: &Ctx, head: &str, word: &str, body: &Body<'_>, gaps: &mut Gaps)
             let stat = reference.map(|of| targeted_amount(head, word, &of));
             stat.and_then(|stat| gaps.take(stat))
         }
-        Body::Word { word, arg: Some(_) } => {
-            gaps.note(&Unmapped(format!("amount:{head}${word}")));
+        Body::Word {
+            word,
+            arg: Some(arg),
+        } => {
+            gaps.note(&Unmapped(format!("amount:{head}${word} {arg}")));
             None
         }
     }
