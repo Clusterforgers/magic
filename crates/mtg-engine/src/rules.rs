@@ -826,6 +826,7 @@ pub(crate) fn lower_objects(scope: &Scope<'_>, who: &Ref) -> Result<Vec<ObjectRe
 
 /// What the data's references name in `scope`, as the engine plays the rule: the permanents, the spells or the players.
 /// A rule the engine does not play refuses by name.
+#[allow(clippy::too_many_lines)] // one arm for every rule
 pub(crate) fn lower_rule(scope: &Scope<'_>, wanted: &GameRule) -> Result<Rule, ResolveError> {
     let objects = |who: &Ref, zone: Zone| w17b_rule_objects(scope, who, zone);
     Ok(match wanted {
@@ -982,8 +983,8 @@ pub(crate) fn names_nothing(rule: &Rule) -> bool {
         Rule::IgnoreHexproof {
             by, what, players, ..
         } => by.is_empty() || (what.is_empty() && players.is_empty()),
-        Rule::LifeFloor { players, .. } => players.is_empty(),
-        Rule::CantGainLife(players)
+        Rule::LifeFloor { players, .. }
+        | Rule::CantGainLife(players)
         | Rule::NoLifeLossFromDamage(players)
         | Rule::RadiationGainsLife(players)
         | Rule::LifeTotalCantChange(players)

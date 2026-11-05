@@ -171,6 +171,7 @@ fn fe1n(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
 }
 
 /// Hands the effect to the primitive of its variant.
+#[allow(clippy::too_many_lines)] // one arm for every effect
 fn dispatch(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
     match effect {
         Effect::Draw { .. } => draw::run(cx, effect),

@@ -298,7 +298,7 @@ impl Modification {
             Modification::AddColors(colors) => {
                 chars.colors = colors
                     .iter()
-                    .fold(chars.colors, |set, color| set.with(color));
+                    .fold(chars.colors, mtg_core::color::ColorSet::with);
             }
             Modification::LoseAbilities => chars.abilities.clear(),
             Modification::SetPowerToughness { power, toughness } => {

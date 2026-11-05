@@ -21,6 +21,7 @@ enum Reports {
 
 /// The way each effect reports. The match names every variant, so a new effect does not build until it is placed
 /// here: an effect counts as done without acting only by being listed under `Nothing` on purpose.
+#[allow(clippy::too_many_lines)] // one arm for every effect
 fn reports(effect: &Effect) -> Reports {
     match effect {
         Effect::Draw { .. }
