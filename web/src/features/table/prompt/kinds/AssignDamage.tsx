@@ -198,7 +198,14 @@ export const AssignDamagePrompt: PromptComponent<'AssignDamage'> = ({ options })
     if (verdict.legal) answer(toAnswer(recipients, amounts))
   }
 
-  const asUnblocked = (): void => answer(toAnswer(recipients, recipients.map(() => 0)))
+  const asUnblocked = (): void => {
+    answer(
+      toAnswer(
+        recipients,
+        recipients.map(() => 0),
+      ),
+    )
+  }
 
   const target = blockers.length === 1 ? 'its blocker' : 'its blockers'
   const verb = blockers.length === 1 ? 'Assign' : 'Divide'
