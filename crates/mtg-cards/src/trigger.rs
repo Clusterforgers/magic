@@ -696,6 +696,12 @@ pub enum ReplaceWhen {
         /// The card that would be discarded.
         what: Selector,
     },
+    /// A spell matching the selector would be countered (CR 701.6): the move from the stack to the graveyard of a spell an
+    /// effect counted, not of one that resolved, fizzled or could not be countered.
+    Countered {
+        /// The spell that would be countered.
+        what: Selector,
+    },
     /// Counters would be put on a permanent or a player, by an effect or as a permanent enters.
     CountersPut {
         /// What receives them; any permanent or player when absent.

@@ -1,5 +1,5 @@
 //! Goal: audit fixes of round 8 play right in real games: last known information of a sacrificed creature, exile-instead counters, bans on activation, the defending player of an Aura, face-down looks, copies, delayed triggers and hands.
-#![allow(clippy::unwrap_used, clippy::expect_used)]
+#![allow(clippy::unwrap_used, clippy::expect_used, clippy::cast_possible_truncation)]
 
 use std::collections::BTreeMap;
 use std::sync::Arc;
@@ -184,4 +184,79 @@ fn nothing_to_sacrifice_shrinks_nothing() {
     let mut driver = Driver::from_scenario(scenario).unwrap();
     cast_and_run(&mut driver, "Tip the Scales", true, &[]);
     assert_eq!(pt(&driver, "Big"), (Some(6), Some(6)));
+}
+
+const NO_MORE_LIES: &str = "Name:No More Lies\nManaCost:W U\nTypes:Instant\nA:SP$ Counter | TargetType$ Spell | UnlessCost$ 3 | TgtPrompt$ Select target spell | ValidTgts$ Card | Destination$ Exile | SpellDescription$ Counter target spell unless its controller pays {3}. If that spell is countered this way, exile it instead of putting it into its owner's graveyard.\n";
+
+#[rstest::rstest]
+#[case::countered_spell_is_exiled(false, true)]
+#[case::uncounterable_spell_resolves_to_the_graveyard(true, false)]
+fn a_spell_countered_this_way_is_exiled_and_one_that_is_not_is_not(
+    #[case] uncounterable: bool,
+    #[case] exiled: bool,
+) {
+    use mtg_testkit::cards::{island, plains};
+    let lies = card(NO_MORE_LIES, &[CardType::Instant], "{W}{U}", None);
+    let rules = if uncounterable {
+        r#"{"Rule":{"rule":{"CantBeCountered":"This"},"from":"Stack"}}"#
+    } else {
+        r#"{"Spell":{"effects":[{"GainLife":{"amount":1}}]}}"#
+    };
+    let victim = Arc::new(
+        CardDefinition::new("Victim")
+            .with_type(CardType::Instant)
+            .with_mana_cost(ManaCost::parse("{0}").unwrap())
+            .with_rules(
+                serde_json::from_str::<Ability>(
+                    r#"{"Spell":{"effects":[{"GainLife":{"amount":1}}]}}"#,
+                )
+                .unwrap(),
+            )
+            .with_rules(serde_json::from_str::<Ability>(rules).unwrap()),
+    );
+    let scenario = Scenario::new(2)
+        .at(1, 0, mtg_engine::turn::Step::Main1)
+        .hand(0, [victim])
+        .hand(1, [lies])
+        .battlefield(
+            1,
+            [
+                ready(island()),
+                ready(plains()),
+                ready(island()),
+                ready(plains()),
+            ],
+        );
+    let mut driver = Driver::from_scenario(scenario).unwrap();
+    driver.cast("Victim").unwrap();
+    // The opponent answers with No More Lies on the victim.
+    driver.pass().unwrap();
+    let target = {
+        let id = *driver
+            .state()
+            .stack()
+            .iter()
+            .find(|i| driver.state().object(**i).unwrap().card().name == "Victim")
+            .unwrap();
+        Target::Object(driver.state().object(id).unwrap().reference())
+    };
+    driver.begin_cast("No More Lies").unwrap();
+    for _ in 0..4 {
+        match driver.decision().unwrap().kind.clone() {
+            DecisionKind::ChooseTargets(_) => {
+                driver
+                    .answer(Answer::ChooseTargets(TargetChoice::Targets(vec![target])))
+                    .unwrap();
+            }
+            DecisionKind::PayMana(_) => {
+                driver.answer(Answer::PayMana(PayChoice::Auto)).unwrap();
+            }
+            _ => break,
+        }
+    }
+    run(&mut driver, false, &[]);
+    let seat = |i| mtg_core::ids::PlayerId::from_index(i);
+    let in_exile = names(&driver, Zone::Exile).contains(&"Victim".to_string());
+    let in_graveyard = names(&driver, Zone::Graveyard(seat(0))).contains(&"Victim".to_string());
+    assert_eq!((in_exile, in_graveyard), (exiled, !exiled));
 }

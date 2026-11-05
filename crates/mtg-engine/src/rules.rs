@@ -208,6 +208,10 @@ pub enum Rule {
         /// Where they go instead.
         #[cfg_attr(feature = "ts", ts(type = "unknown"))]
         to: ZoneKind,
+        /// It covers a spell that is countered only, not one that resolves or fizzles.
+        #[serde(default, skip_serializing_if = "std::ops::Not::not")]
+        #[cfg_attr(feature = "ts", ts(as = "Option<bool>", optional))]
+        countered: bool,
     },
     /// Cards in graveyards can't be the targets of spells or abilities (CR 115.4).
     GraveyardCardsUntargetable,

@@ -216,7 +216,8 @@ fn counter(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
         "Counter",
         &["TargetType", "ValidTgts", "Destination", "Defined"],
     )?;
-    // A countered spell goes to its owner's graveyard; exile instead is a shield on the spell, set before it is countered.
+    // A countered spell goes to its owner's graveyard; exile instead is a shield on the spell, set before it is countered. It
+    // applies to a counter that works only: a spell that can't be countered resolves as it does.
     let exiled = match p.get("Destination") {
         None | Some("Graveyard") => false,
         Some("Exile") => true,
@@ -251,7 +252,7 @@ fn counter(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
     let mut effects = Vec::new();
     if exiled {
         effects.push(json!({"Shield": {
-            "when": {"ZoneChange": {"what": [{"Is": what}, "Spell"], "from": "Stack", "to": "Graveyard"}},
+            "when": {"Countered": {"what": [{"Is": what}, "Spell"]}},
             "by": {"MoveTo": "Exile"}, "duration": "UntilEndOfTurn"}}));
     }
     effects.push(json!({"Counter": {"what": what}}));

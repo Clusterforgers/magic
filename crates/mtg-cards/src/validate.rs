@@ -3941,6 +3941,7 @@ impl Walker<'_> {
             }
             ReplaceWhen::ZoneChange { what, .. }
             | ReplaceWhen::Destroyed { what }
+            | ReplaceWhen::Countered { what }
             | ReplaceWhen::Discarded { what }
             | ReplaceWhen::Enters { what } => {
                 self.at("what", |w| w.selector(what));
@@ -4000,30 +4001,22 @@ impl Walker<'_> {
     fn replace_by(&mut self, when: &ReplaceWhen, by: &ReplaceBy) {
         self.uses("ReplaceBy", &tag_of(by));
         let enters = matches!(when, ReplaceWhen::Enters { .. });
+        let zone_move = matches!(
+            when,
+            ReplaceWhen::ZoneChange { .. }
+                | ReplaceWhen::Destroyed { .. }
+                | ReplaceWhen::Countered { .. }
+                | ReplaceWhen::Discarded { .. }
+                | ReplaceWhen::Enters { .. }
+        );
         match by {
             ReplaceBy::Multiply(0) => self.problem("multiplying by zero is `Prevent`"),
             ReplaceBy::Add(0) => self.problem("adding nothing changes nothing"),
-            ReplaceBy::Multiply(_) | ReplaceBy::Add(_)
-                if matches!(
-                    when,
-                    ReplaceWhen::ZoneChange { .. }
-                        | ReplaceWhen::Destroyed { .. }
-                        | ReplaceWhen::Discarded { .. }
-                        | ReplaceWhen::Enters { .. }
-                ) =>
-            {
+            ReplaceBy::Multiply(_) | ReplaceBy::Add(_) if zone_move => {
                 self.problem("a zone change has no number to change");
             }
             ReplaceBy::PreventUpTo(0) => self.problem("preventing nothing changes nothing"),
-            ReplaceBy::Prevent
-                if matches!(
-                    when,
-                    ReplaceWhen::ZoneChange { .. }
-                        | ReplaceWhen::Destroyed { .. }
-                        | ReplaceWhen::Discarded { .. }
-                        | ReplaceWhen::Enters { .. }
-                ) =>
-            {
+            ReplaceBy::Prevent if zone_move => {
                 self.problem("a zone change or an entering is not prevented");
             }
             by if prevents_in_part(by) && !matches!(when, ReplaceWhen::Damage { .. }) => {
@@ -4047,7 +4040,9 @@ impl Walker<'_> {
             ReplaceBy::MoveTo(_)
                 if !matches!(
                     when,
-                    ReplaceWhen::ZoneChange { .. } | ReplaceWhen::Discarded { .. }
+                    ReplaceWhen::ZoneChange { .. }
+                        | ReplaceWhen::Discarded { .. }
+                        | ReplaceWhen::Countered { .. }
                 ) =>
             {
                 self.problem("`MoveTo` replaces a `ZoneChange` or a `Discarded`");

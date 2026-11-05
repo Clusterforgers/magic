@@ -21,15 +21,19 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
     let Effect::Shield { when, by, duration } = effect else {
         return Err(wrong_effect("Shield"));
     };
-    if let (
-        ReplaceWhen::ZoneChange {
-            what,
-            from: Some(ZoneKind::Battlefield | ZoneKind::Stack),
-            to: Some(ZoneKind::Graveyard),
-        },
-        ReplaceBy::MoveTo(to),
-    ) = (when, by)
-    {
+    let covered = match (when, by) {
+        (
+            ReplaceWhen::ZoneChange {
+                what,
+                from: Some(ZoneKind::Battlefield | ZoneKind::Stack),
+                to: Some(ZoneKind::Graveyard),
+            },
+            ReplaceBy::MoveTo(to),
+        ) => Some((what, to, false)),
+        (ReplaceWhen::Countered { what }, ReplaceBy::MoveTo(to)) => Some((what, to, true)),
+        _ => None,
+    };
+    if let Some((what, to, countered)) = covered {
         let objects = cx
             .scope
             .live_objects(&Ref::Each(what.clone()))?
@@ -38,7 +42,11 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
             .collect();
         return Ok(begin(
             cx,
-            Rule::DiesInstead { objects, to: *to },
+            Rule::DiesInstead {
+                objects,
+                to: *to,
+                countered,
+            },
             duration.clone(),
         ));
     }

@@ -525,6 +525,7 @@ const RUNS: &[&str] = &[
     "ReplaceWhen.TokenCreation",
     "ReplaceWhen.Damage",
     "ReplaceWhen.ZoneChange",
+    "ReplaceWhen.Countered",
     "ReplaceWhen.CountersPut",
     "ReplaceWhen.LifeGain",
     "ReplaceWhen.Draw",

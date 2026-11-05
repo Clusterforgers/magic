@@ -142,7 +142,11 @@ objects: Array<ObjectRef>,
 /**
  * Where they go instead.
  */
-to: unknown, } } | "GraveyardCardsUntargetable" | { "CantLoseGame": { 
+to: unknown, 
+/**
+ * It covers a spell that is countered only, not one that resolves or fizzles.
+ */
+countered?: boolean, } } | "GraveyardCardsUntargetable" | { "CantLoseGame": { 
 /**
  * The players who can't lose.
  */

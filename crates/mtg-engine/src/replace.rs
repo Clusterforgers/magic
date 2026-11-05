@@ -504,6 +504,8 @@ enum Unit {
         discard: bool,
         /// The move is a destruction (CR 701.8): lethal damage or deathtouch, or an effect that destroys.
         destroyed: bool,
+        /// The move is the end of a countered spell (CR 701.6).
+        countered: bool,
     },
     /// A card would enter the battlefield.
     Enter {
@@ -581,6 +583,7 @@ fn is_self(when: &ReplaceWhen) -> bool {
         ReplaceWhen::Enters { what }
         | ReplaceWhen::ZoneChange { what, .. }
         | ReplaceWhen::Destroyed { what }
+        | ReplaceWhen::Countered { what }
         | ReplaceWhen::Discarded { what } => only_this(what),
         ReplaceWhen::Damage { to, .. } | ReplaceWhen::CountersPut { on: to, .. } => {
             matches!(to, Some(Ref::This))
@@ -740,6 +743,16 @@ impl Pass<'_> {
                 to,
                 discard: discards(event),
                 destroyed: destruction(item).is_some(),
+                countered: matches!(
+                    event,
+                    Event::ResolutionEnded {
+                        outcome: ResolutionOutcome::Countered,
+                        ..
+                    } | Event::ZoneChanged {
+                        cause: ZoneCause::Countered,
+                        ..
+                    }
+                ),
             };
         }
         match event {
@@ -814,6 +827,7 @@ impl Pass<'_> {
     }
 
     /// Whether the effect replaces this event.
+    #[allow(clippy::too_many_lines)]
     fn matches(
         &self,
         source: &Source,
@@ -908,6 +922,14 @@ impl Pass<'_> {
                 Unit::Move {
                     object,
                     destroyed: true,
+                    ..
+                },
+            )
+            | (
+                ReplaceWhen::Countered { what },
+                Unit::Move {
+                    object,
+                    countered: true,
                     ..
                 },
             )

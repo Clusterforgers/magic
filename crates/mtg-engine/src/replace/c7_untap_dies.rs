@@ -16,6 +16,7 @@ impl Pass<'_> {
             object,
             from: Zone::Battlefield | Zone::Stack,
             to: Zone::Graveyard(_),
+            countered: was_countered,
             ..
         } = self.unit(&slot.item)
         else {
@@ -27,10 +28,18 @@ impl Pass<'_> {
         self.shields
             .iter()
             .filter_map(|effect| {
-                let Rule::DiesInstead { objects, to } = &effect.rule else {
+                let Rule::DiesInstead {
+                    objects,
+                    to,
+                    countered,
+                } = &effect.rule
+                else {
                     return None;
                 };
                 let origin = Origin::Shield(effect.id);
+                if *countered && !was_countered {
+                    return None;
+                }
                 let covered = objects
                     .iter()
                     .any(|named| named.id == object && named.counter == current);
