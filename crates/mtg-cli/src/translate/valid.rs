@@ -376,7 +376,10 @@ pub fn source_any(ctx: &Ctx, spec: &str) -> Tr<Vec<Value>> {
             })
         })
         .collect();
-    selector_any(ctx, &kept.join(","))
+    let before = ctx.scope.replace(super::filter::Scope::Source);
+    let found = selector_any(ctx, &kept.join(","));
+    ctx.scope.set(before);
+    found
 }
 
 /// A comma-separated list of alternatives as a selector: one alternative, or alternatives that share their predicates but
@@ -571,7 +574,11 @@ pub fn objects(reference: Value) -> Tr<Value> {
 /// The target specification `ValidTgts$` and its bounds stand for, as the DSL writes it.
 pub fn target_spec(ctx: &Ctx, params: &Params, zone: Option<&str>) -> Tr<Value> {
     let valid = params.get("ValidTgts").unwrap_or_default();
-    let mut what = target_what(ctx, valid, zone)?;
+    // A target being chosen reads no other target of its line (`filter::Scope::Targeting`).
+    let before = ctx.scope.replace(super::filter::Scope::Targeting);
+    let what = target_what(ctx, valid, zone);
+    ctx.scope.set(before);
+    let mut what = what?;
     if let Some(word) = params.get("TargetsWithDefinedController") {
         restrict_to_controller(ctx, word, zone, &mut what)?;
     }

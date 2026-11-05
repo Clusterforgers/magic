@@ -10,7 +10,8 @@
 
 use serde_json::{Value, json};
 
-use super::ctx::{Ctx, Tr, Unmapped, unmapped};
+use super::ctx::{Ctx, SUPERTYPES, Tr, Unmapped, unmapped};
+use super::keyword::keyword_name;
 
 /// A filter: any of its alternatives.
 #[derive(Debug, PartialEq, Eq)]
@@ -82,7 +83,7 @@ impl Filter<'_> {
 
 /// Where a filter is read: the scopes an atom may be legal in.
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
-pub(super) enum Scope {
+pub enum Scope {
     /// Objects on the table or in a zone.
     Object,
     /// A damage source (`ValidSource$`): the object that deals the damage.
@@ -92,7 +93,7 @@ pub(super) enum Scope {
 }
 
 /// One row of the atom table.
-pub(super) struct Atom {
+pub struct Atom {
     /// The whole word, matched exactly.
     pub word: &'static str,
     /// The scopes where the word is legal; any other scope refuses it.
@@ -100,6 +101,7 @@ pub(super) struct Atom {
     /// Whether the predicates read another target of the line.
     pub reads_target: bool,
     /// A card whose script uses the word, the first test of the row.
+    #[cfg_attr(not(test), allow(dead_code))]
     pub probe: &'static str,
     /// The predicates the word stands for.
     pub lower: fn(&Ctx) -> Tr<Vec<Value>>,
@@ -117,7 +119,95 @@ fn colored(name: &'static str) -> Value {
 }
 
 /// The rows. Words that need an engine fact are not here: they stay gaps.
-pub(super) const ATOMS: &[Atom] = &[];
+pub(super) const ATOMS: &[Atom] = &[
+    Atom {
+        word: "YouDontOwn",
+        scopes: OBJECT,
+        reads_target: false,
+        probe: "Edea, Possessed Sorceress",
+        lower: |_| one(json!({"Not": {"OwnedBy": "You"}})),
+    },
+    Atom {
+        word: "IsRingbearer",
+        scopes: OBJECT,
+        reads_target: false,
+        probe: "Frodo, Adventurous Hobbit",
+        lower: |_| one(json!("RingBearer")),
+    },
+    Atom {
+        word: "suspended",
+        scopes: OBJECT,
+        reads_target: false,
+        probe: "Pardic Dragon",
+        lower: |_| one(json!("Suspended")),
+    },
+    Atom {
+        word: "escaped",
+        scopes: OBJECT,
+        reads_target: false,
+        probe: "Phlage, Titan of Fire's Fury",
+        lower: |_| one(json!({"CastWith": "Escape"})),
+    },
+    Atom {
+        word: "DamagedBy",
+        scopes: OBJECT,
+        reads_target: false,
+        probe: "Baron Sengir",
+        lower: |_| one(json!({"DamagedBy": "This"})),
+    },
+    Atom {
+        word: "nonChosenCard",
+        scopes: OBJECT,
+        reads_target: false,
+        probe: "Mount Doom",
+        lower: |ctx| match &ctx.chosen_card {
+            Some(name) => one(json!({"Not": {"Is": {"Bound": name}}})),
+            None => unmapped("valid:nonChosenCard-without-a-choice"),
+        },
+    },
+    Atom {
+        word: "RedSource",
+        scopes: SOURCE,
+        reads_target: false,
+        probe: "Sphere of Law",
+        lower: |_| one(colored("Red")),
+    },
+    Atom {
+        word: "BlueSource",
+        scopes: SOURCE,
+        reads_target: false,
+        probe: "Circle of Protection: Blue",
+        lower: |_| one(colored("Blue")),
+    },
+    Atom {
+        word: "BlackSource",
+        scopes: SOURCE,
+        reads_target: false,
+        probe: "Pilgrim of Virtue",
+        lower: |_| one(colored("Black")),
+    },
+    Atom {
+        word: "GreenSource",
+        scopes: SOURCE,
+        reads_target: false,
+        probe: "Circle of Protection: Green",
+        lower: |_| one(colored("Green")),
+    },
+    Atom {
+        word: "WhiteSource",
+        scopes: SOURCE,
+        reads_target: false,
+        probe: "Circle of Protection: White",
+        lower: |_| one(colored("White")),
+    },
+    Atom {
+        word: "ColorlessSource",
+        scopes: SOURCE,
+        reads_target: false,
+        probe: "Lithomancer's Focus",
+        lower: |_| one(json!("Colorless")),
+    },
+];
 
 /// The predicates of `word` from the table, `None` when no row has the word, a gap when the row is not legal in `scope`.
 pub(super) fn atom(ctx: &Ctx, scope: Scope, word: &str) -> Option<Tr<Vec<Value>>> {
@@ -127,12 +217,23 @@ pub(super) fn atom(ctx: &Ctx, scope: Scope, word: &str) -> Option<Tr<Vec<Value>>
         }
         return Some((row.lower)(ctx));
     }
-    None
+    // `hasKeywordFlash`: the object has the keyword, as `withFlash` says.
+    let name = word.strip_prefix("hasKeyword")?;
+    let spaced = super::valid::spaced(name);
+    if let Some(keyword) = keyword_name(&spaced) {
+        return Some(one(json!({"HasKeyword": keyword})));
+    }
+    let named = mtg_cards::keyword::Keyword::NAMES
+        .iter()
+        .find(|known| known.eq_ignore_ascii_case(&spaced))?;
+    Some(one(json!({"HasKeywordNamed": named})))
 }
 
-/// The predicates of a base word the old reader does not know.
-pub(super) fn base(_word: &str) -> Option<Vec<Value>> {
-    None
+/// The predicates of a base word the old reader does not know: a supertype (`Legendary.YouCtrl`).
+pub(super) fn base(word: &str) -> Option<Vec<Value>> {
+    SUPERTYPES
+        .contains(&word)
+        .then(|| vec![json!({"Supertype": word})])
 }
 
 /// The gaps of one filter: every unknown word, once, in the order met.
