@@ -109,7 +109,6 @@ const PUBLIC: Record<VariantName<Event>, [Event, string]> = {
     { RingTempted: { player: 1, level: 2, bearer: 3 } },
     'The Ring tempts Bo (level 2) and chooses Forest as their Ring-bearer',
   ],
-  RingTemptedNoCreature: [{ RingTempted: { player: 1, level: 1 } }, 'The Ring tempts Bo (level 1)'],
   Ventured: [
     {
       Ventured: {
@@ -562,6 +561,10 @@ function effect(
 const say = (event: Event): string => describeEvent({ Public: event }, names).text
 
 describe('describeEvent', () => {
+  it('leaves the Ring-bearer out when the player controls no creature', () => {
+    expect(say({ RingTempted: { player: 1, level: 1 } })).toBe('The Ring tempts Bo (level 1)')
+  })
+
   it.each(Object.entries(PUBLIC))('says the public event %s in one sentence', (_name, [event, text]) => {
     expect(describeEvent({ Public: event }, names).text).toBe(text)
   })
