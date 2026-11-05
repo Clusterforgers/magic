@@ -3788,6 +3788,9 @@ impl Walker<'_> {
                 }
             }),
             GameRule::PlayersHave { who, .. } => self.at(tag, |w| w.reference(who, Kind::Player)),
+            GameRule::NextSpell { what, .. } => {
+                self.at(tag, |w| w.at("what", |w| w.selector(what)));
+            }
             GameRule::CanBeCommander => {}
             GameRule::GraveyardCardsUntargetable
             | GameRule::CantLoseGame { .. }

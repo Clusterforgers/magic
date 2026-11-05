@@ -118,7 +118,15 @@ cause?: unknown,
 /**
  * Only abilities of the permanents it selects trigger again; every permanent of the controller when absent.
  */
-source: unknown, } } | { "DamageCantBePrevented": { 
+source: unknown, } } | { "NextSpell": { 
+/**
+ * The cards the cast must match, judged when it is cast; every card when empty.
+ */
+what: unknown, 
+/**
+ * What the spell gets; a cost change counts its times (`per`) as a fixed number.
+ */
+benefit: unknown, } } | { "DamageCantBePrevented": { 
 /**
  * The sources, judged when the damage would be dealt.
  */

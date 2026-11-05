@@ -14,7 +14,8 @@ use std::sync::Arc;
 use mtg_cards::ability::{Ability, CostChange};
 use mtg_cards::keyword::Keyword;
 use mtg_cards::mana::ManaCostX;
-use mtg_cards::refs::{Pred, TargetSpec};
+use mtg_cards::modify::SpellBenefit;
+use mtg_cards::refs::{Pred, Selector, TargetSpec};
 use mtg_cards::value::CastWay;
 use mtg_core::ids::{ObjectId, PlayerId};
 use mtg_core::mana::{ManaCost, ManaSymbol};
@@ -26,6 +27,7 @@ use crate::choose::Choices;
 use crate::keywords::affinity;
 use crate::object::{ObjectKind, ObjectRef};
 use crate::resolve::{CastTargets, Scope};
+use crate::rules::Rule;
 use crate::spell_keywords::given_to_spell;
 use crate::state::GameState;
 use crate::zones::Zone;
@@ -145,7 +147,50 @@ fn gathered(state: &GameState, spell: ObjectId, caster: PlayerId) -> Vec<Modifie
         }
     }
     found.extend(given_affinity(state, spell, caster));
+    found.extend(next_spell_costs(state, spell, caster));
     found
+}
+
+/// The cost changes of the `NextSpell` rules in force for `caster`: each one is a modifier of the spell it selects.
+fn next_spell_costs(state: &GameState, spell: ObjectId, caster: PlayerId) -> Vec<Modifier> {
+    let Some(target) = state
+        .object(spell)
+        .map(crate::object::GameObject::reference)
+    else {
+        return Vec::new();
+    };
+    state
+        .rule_effects
+        .iter()
+        .filter(|effect| effect.controller == caster)
+        .filter_map(|effect| {
+            let Rule::NextSpell {
+                what,
+                benefit: SpellBenefit::Cost { change, mana, per },
+            } = &effect.rule
+            else {
+                return None;
+            };
+            let applies_to = if what.is_empty() {
+                Selector(vec![Pred::Spell])
+            } else {
+                what.clone()
+            };
+            Some(Modifier {
+                source: effect.source.unwrap_or(target),
+                controller: caster,
+                ability: Arc::new(Ability::CostModifier {
+                    applies_to,
+                    change: *change,
+                    mana: mana.clone(),
+                    per: per.clone(),
+                    condition: None,
+                    activating: None,
+                    least: 0,
+                }),
+            })
+        })
+        .collect()
 }
 
 /// The reductions of the affinity that static abilities give to `spell` ("Enchantment spells you cast have affinity for

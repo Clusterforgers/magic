@@ -178,6 +178,15 @@ pub enum Rule {
         #[cfg_attr(feature = "ts", ts(type = "unknown"))]
         source: Option<Selector>,
     },
+    /// The next spell its controller casts that `what` selects gets the benefit; the cast ends the rule.
+    NextSpell {
+        /// The cards the cast must match, judged when it is cast; every card when empty.
+        #[cfg_attr(feature = "ts", ts(type = "unknown"))]
+        what: Selector,
+        /// What the spell gets; a cost change counts its times (`per`) as a fixed number.
+        #[cfg_attr(feature = "ts", ts(type = "unknown"))]
+        benefit: mtg_cards::modify::SpellBenefit,
+    },
     /// Damage from the sources can't be prevented (CR 614.17); every source when the selector is empty.
     DamageCantBePrevented {
         /// The sources, judged when the damage would be dealt.
@@ -568,7 +577,40 @@ impl RulesInForce {
         }
     }
 
+    /// Opens the flash or free cast of a `NextSpell` rule; costs and keywords are read from the rule when a spell is
+    /// announced.
+    fn put_next_spell(
+        &mut self,
+        what: &Selector,
+        benefit: &mtg_cards::modify::SpellBenefit,
+        controller: PlayerId,
+        source: Option<ObjectRef>,
+    ) {
+        use mtg_cards::modify::SpellBenefit;
+        let (free, flash) = match benefit {
+            SpellBenefit::Free => (true, false),
+            SpellBenefit::Flash => (false, true),
+            SpellBenefit::Cost { .. } | SpellBenefit::Keyword(_) => return,
+        };
+        if let Some(source) = source {
+            self.casts.push(Cast {
+                controller,
+                source,
+                who: vec![controller],
+                what: what.clone(),
+                from: None,
+                free,
+                flash,
+                only: None,
+                play: false,
+                once: false,
+                additional: None,
+            });
+        }
+    }
+
     /// Puts a rule in force. `controller` and `source` are those of the effect or the permanent that has the rule.
+    #[allow(clippy::too_many_lines)]
     fn put(&mut self, rule: &Rule, controller: PlayerId, source: Option<ObjectRef>) {
         let ids = |named: &[ObjectRef]| named.iter().map(|r| r.id).collect::<Vec<_>>();
         match rule {
@@ -659,6 +701,9 @@ impl RulesInForce {
                     });
                 }
             }
+            Rule::NextSpell { what, benefit } => {
+                self.put_next_spell(what, benefit, controller, source);
+            }
             Rule::Cant { who, action } => self.cants.push(crate::prohibit::Banned::new(
                 who, action, controller, source,
             )),
@@ -670,6 +715,29 @@ impl RulesInForce {
             | Rule::ToughnessAssignsDamage(_) => self.w17b.w17b_put(rule),
         }
     }
+}
+
+/// The benefit of a `NextSpell` rule with the times of a cost change counted now.
+fn next_spell(
+    scope: &Scope<'_>,
+    what: &Selector,
+    benefit: &mtg_cards::modify::SpellBenefit,
+) -> Result<Rule, ResolveError> {
+    use mtg_cards::modify::SpellBenefit;
+    let benefit = match benefit {
+        SpellBenefit::Cost { change, mana, per } => SpellBenefit::Cost {
+            change: *change,
+            mana: mana.clone(),
+            per: mtg_cards::value::Amount::Fixed(
+                i32::try_from(scope.amount(per)?.clamp(0, 100)).unwrap_or(0),
+            ),
+        },
+        other => other.clone(),
+    };
+    Ok(Rule::NextSpell {
+        what: what.clone(),
+        benefit,
+    })
 }
 
 /// The players and planeswalkers `at` names, as what creatures attack.
@@ -804,6 +872,7 @@ pub(crate) fn lower_rule(scope: &Scope<'_>, wanted: &GameRule) -> Result<Rule, R
             once: permission.once,
             additional: permission.additional.clone().map(Box::new),
         },
+        GameRule::NextSpell { what, benefit } => next_spell(scope, what, benefit)?,
         GameRule::TriggerAgain { cause, source } => Rule::TriggerAgain {
             cause: cause.clone().map(Box::new),
             source: source.clone(),
@@ -910,6 +979,7 @@ pub(crate) fn names_nothing(rule: &Rule) -> bool {
         Rule::BlockLimitEach { who, .. } | Rule::PlayersHave { who, .. } => who.is_empty(),
         Rule::Cant { who, .. } => who.is_empty(),
         Rule::TriggerAgain { .. }
+        | Rule::NextSpell { .. }
         | Rule::DamageCantBePrevented { .. }
         | Rule::Regenerate(_)
         | Rule::AttackLimit(_)
@@ -1129,6 +1199,15 @@ pub(crate) fn fold_created(state: &mut GameState, effect: &RuleEffect) -> Result
     ) {
         state.possible.protection = true;
     }
+    if matches!(
+        effect.rule,
+        Rule::NextSpell {
+            benefit: mtg_cards::modify::SpellBenefit::Cost { .. },
+            ..
+        }
+    ) {
+        state.possible.costs = true;
+    }
     state.rule_effects.push(effect.clone());
     Ok(())
 }
@@ -1149,6 +1228,33 @@ pub(crate) fn fold_used(state: &mut GameState, id: EffectId, left: u32) -> Resul
         }
         None => Err(invalid(format!("unknown prevention shield {id:?}"))),
     }
+}
+
+/// Ends the `NextSpell` rules the cast of `spell` by `player` spends (the card is judged where it is cast from, as the
+/// announcement judged it).
+pub(crate) fn spend_next_spells(state: &mut GameState, player: PlayerId, spell: ObjectId) {
+    let Some(target) = state.object(spell).map(GameObject::reference) else {
+        return;
+    };
+    let spent: Vec<EffectId> = state
+        .rule_effects
+        .iter()
+        .filter_map(|effect| {
+            let Rule::NextSpell { what, .. } = &effect.rule else {
+                return None;
+            };
+            let scope = Scope {
+                casting: Some((spell, player)),
+                ..Scope::announcing(state, effect.controller, effect.source.unwrap_or(target))
+            };
+            (effect.controller == player
+                && (what.is_empty() || scope.selects(what, target).unwrap_or(false)))
+            .then_some(effect.id)
+        })
+        .collect();
+    state
+        .rule_effects
+        .retain(|effect| !spent.contains(&effect.id));
 }
 
 /// Folds `RuleExpired`: the change leaves the state.
