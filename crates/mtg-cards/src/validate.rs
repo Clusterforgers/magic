@@ -3179,7 +3179,11 @@ impl Walker<'_> {
                         ReplaceBy::Prevent
                         | ReplaceBy::PreventNext
                         | ReplaceBy::PreventUpTo(_)
-                        | ReplaceBy::PreventAnd(_),
+                        | ReplaceBy::PreventAnd(_)
+                        | ReplaceBy::Multiply(_)
+                        | ReplaceBy::Add(_)
+                        | ReplaceBy::Instead(_)
+                        | ReplaceBy::InsteadNext(_),
                     )
                     | (
                         ReplaceWhen::ZoneChange {
