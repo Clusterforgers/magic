@@ -231,7 +231,14 @@ mod tests {
         else {
             panic!("the effect is done");
         };
-        assert!(bound.is_empty() && snapshots.is_empty() && next == Next::Sibling);
+        assert!(bound.is_empty() && next == Next::Sibling);
+        assert_eq!(
+            snapshots.len(),
+            events
+                .iter()
+                .filter(|e| matches!(e, Event::CardDiscarded { .. }))
+                .count()
+        );
         events
             .into_iter()
             .map(|event| match event {
