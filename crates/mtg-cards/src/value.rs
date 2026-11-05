@@ -460,6 +460,9 @@ pub enum Amount {
     Mutations(Ref),
     /// One if the caster promised a gift as they cast the spell the ability reads, else zero (CR 702.174).
     Promised,
+    /// How many times the ability that reads it has resolved this turn, this resolution included; zero outside a resolving
+    /// ability (Ashling's "if this is the third time this ability has resolved this turn").
+    ResolvedThisTurn,
     /// How many permanents this permanent devoured as it entered (CR 702.82); zero once it has left the battlefield.
     Devoured,
     /// The number a `Let` of the resolving spell or ability fixed under the name; zero before it ran.
@@ -647,6 +650,7 @@ enum Tagged {
     Kicks,
     Mutations(Ref),
     Promised,
+    ResolvedThisTurn,
     Devoured,
     Bound(String),
     CastWith(CastWay),
@@ -752,6 +756,7 @@ enum TaggedRef<'a> {
     Kicks,
     Mutations(&'a Ref),
     Promised,
+    ResolvedThisTurn,
     Devoured,
     Bound(&'a str),
     CastWith(CastWay),
@@ -836,6 +841,7 @@ impl From<Tagged> for Amount {
             Tagged::Kicks => Amount::Kicks,
             Tagged::Mutations(of) => Amount::Mutations(of),
             Tagged::Promised => Amount::Promised,
+            Tagged::ResolvedThisTurn => Amount::ResolvedThisTurn,
             Tagged::Devoured => Amount::Devoured,
             Tagged::Bound(name) => Amount::Bound(name),
             Tagged::CastWith(way) => Amount::CastWith(way),
@@ -914,6 +920,7 @@ impl Serialize for Amount {
             Amount::Kicks => TaggedRef::Kicks.serialize(serializer),
             Amount::Mutations(of) => TaggedRef::Mutations(of).serialize(serializer),
             Amount::Promised => TaggedRef::Promised.serialize(serializer),
+            Amount::ResolvedThisTurn => TaggedRef::ResolvedThisTurn.serialize(serializer),
             Amount::Devoured => TaggedRef::Devoured.serialize(serializer),
             Amount::Bound(name) => TaggedRef::Bound(name).serialize(serializer),
             Amount::CastWith(way) => TaggedRef::CastWith(*way).serialize(serializer),

@@ -744,6 +744,7 @@ fn delayed_node(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
         by: when
             .get("BecomesBlocked")
             .is_some_and(|node| node.get("by").is_some()),
+        to_player: false,
     });
     let outer = std::mem::replace(&mut ctx.trigger, shape);
     let effects = ctx

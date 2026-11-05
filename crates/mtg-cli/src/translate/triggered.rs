@@ -15,6 +15,8 @@ pub struct Shape {
     pub itself: bool,
     /// The pattern names the object that did it (`ValidBlocker$` of a block), so the event holds a `Dealer`.
     pub by: bool,
+    /// The event names a player as its target (`ValidTarget$ Player`), so `TriggeredTarget` is that player.
+    pub to_player: bool,
 }
 
 /// The kind of object a word names.

@@ -59,7 +59,7 @@ fn selector_atoms_map(#[case] script: &str, #[case] expected: Value) {
 }
 
 #[rstest]
-#[case::wrong_cast_zone("Creature.wasCastFromTheirHand")]
+#[case::wrong_cast_zone("Creature.wasCastFromTheirMind")]
 #[case::unknown_cast_suffix("Creature.wasCastFromNowhere")]
 #[case::every_zone_at_once("Creature.YouOwn | AffectedZone$ All")]
 #[case::saddled_is_a_condition("Creature.IsSaddled")]

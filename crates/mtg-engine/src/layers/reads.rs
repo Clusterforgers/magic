@@ -310,6 +310,7 @@ pub(crate) fn reads_of_amount(amount: &Amount) -> Traits {
         | Amount::TargetCount(_)
         | Amount::Kicks
         | Amount::Promised
+        | Amount::ResolvedThisTurn
         | Amount::Devoured
         | Amount::Bound(_)
         | Amount::CastWith(_)

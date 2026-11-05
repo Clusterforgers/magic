@@ -467,13 +467,18 @@ pub fn defined(ctx: &Ctx, word: &str) -> Tr<Value> {
         "Player" => Ok(json!("EachPlayer")),
         "Self" | "Card.Self" => Ok(json!("This")),
         "Sacrificed" => Ok(json!("Paid")),
+        // The cards this permanent exiled and that are still in exile.
+        "ExiledWith" => Ok(json!({"Each": [{"ExiledWith": "This"}, {"In": "Exile"}]})),
+        "TopOfLibrary" => {
+            Ok(json!({"Each": [{"In": "Library"}, {"OwnedBy": "You"}, "TopOfLibrary"]}))
+        }
         "Targeted" | "TargetedPlayer" | "TargetedCard" => ctx.last_target(),
         "ParentTarget" => ctx.parent(),
         "TargetedController" => controller(ctx.last_target()?),
         "TargetedOwner" => Ok(json!({ "OwnerOf": ctx.last_target()? })),
         "Enchanted" | "Equipped" => Ok(json!("Attached")),
         "EnchantedController" | "EquippedController" => controller(json!("Attached")),
-        "EnchantedPlayer" => Ok(json!("AttachedPlayer")),
+        "EnchantedPlayer" | "Player.EnchantedBy" => Ok(json!("AttachedPlayer")),
         "ChosenCard" | "ChosenPlayer" => ctx.chosen_card.as_ref().map_or_else(
             || unmapped("defined:ChosenCard-without-a-choice"),
             |name| Ok(json!({"Bound": name})),

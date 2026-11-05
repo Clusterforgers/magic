@@ -10,6 +10,10 @@ use super::valid::{defined, objects, selector_any};
 pub fn atom(prop: &str) -> Option<Vec<Value>> {
     let one = |value: Value| Some(vec![value]);
     match prop {
+        "hasABasicLandType" => {
+            let basic = ["Plains", "Island", "Swamp", "Mountain", "Forest"];
+            return one(json!({"AnyOf": basic.map(|name| json!({"Subtype": name}))}));
+        }
         "TopLibrary" => return one(json!("TopOfLibrary")),
         "BottomLibrary" => return one(json!("BottomOfLibrary")),
         "Suspended" => return one(json!("Suspended")),
@@ -260,9 +264,11 @@ fn was_cast(rest: &str) -> Option<Vec<Value>> {
     }
     let mut owner = false;
     if let Some(zone) = rest.strip_prefix("From") {
-        let (zone, yours) = match zone.strip_prefix("Your") {
-            Some(zone) => (zone, true),
-            None => (zone, false),
+        // A spell is cast from its caster's own hand, so `Their` adds no owner test.
+        let (zone, yours) = match (zone.strip_prefix("Your"), zone.strip_prefix("Their")) {
+            (Some(zone), _) => (zone, true),
+            (None, Some(zone)) => (zone, false),
+            (None, None) => (zone, false),
         };
         if !matches!(zone, "Hand" | "Graveyard" | "Exile" | "Library") {
             return None;
