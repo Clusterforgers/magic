@@ -68,6 +68,8 @@ fn token_create(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
             "RememberTokens",
             "AttachedTo",
             "ValidTgts",
+            "PumpKeywords",
+            "PumpDuration",
         ],
     )?;
     let Some(script) = p.get("TokenScript") else {
@@ -139,6 +141,7 @@ fn token_create(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
         create["as"] = name;
     }
     let attach = attached(ctx, p, &mut create)?;
+    after.extend(pumped(ctx, p, &mut create)?);
     let mut effects = before;
     effects.push(json!({ "CreateToken": create }));
     effects.extend(after);
@@ -239,7 +242,14 @@ fn mana(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
     only(
         p,
         "Mana",
-        &["Produced", "Amount", "RestrictValid", "AddsNoCounter"],
+        &[
+            "Produced",
+            "Amount",
+            "RestrictValid",
+            "AddsNoCounter",
+            "Defined",
+            "ValidTgts",
+        ],
     )?;
     let produced = p.get("Produced").unwrap_or_default();
     let times = p.get("Amount").unwrap_or("1");
@@ -266,6 +276,26 @@ fn mana(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
         }
         _ => return unmapped("key:Mana.Produced"),
     };
+    // Whose pool: the player the line names (the default is the controller).
+    if let Some(word) = p.get("Defined")
+        && !matches!(
+            word,
+            "You"
+                | "Targeted"
+                | "ChosenPlayer"
+                | "TriggeredPlayer"
+                | "TriggeredActivator"
+                | "TriggeredCardController"
+        )
+    {
+        return unmapped(format!("key:Mana.Defined={word}"));
+    }
+    if p.has("Defined") || p.has("ValidTgts") {
+        let who = super::valid::subject(ctx, p, "You", None)?;
+        if who != json!("You") {
+            effect["who"] = who;
+        }
+    }
     let mut only = Vec::new();
     let restriction = p.get("RestrictValid");
     if let Some(restriction) = restriction {
@@ -393,4 +423,27 @@ fn attached(ctx: &mut Ctx, p: &Params, create: &mut Value) -> Tr<Option<Value>> 
         name
     };
     Ok(Some(json!({"Attach": {"what": {"Bound": name}, "to": to}})))
+}
+
+/// `PumpKeywords$`: "it gains haste until end of turn", a grant on the tokens just made.
+fn pumped(ctx: &mut Ctx, p: &Params, create: &mut Value) -> Tr<Option<Value>> {
+    let Some(words) = p.get("PumpKeywords") else {
+        if p.has("PumpDuration") {
+            return unmapped("key:Token.PumpDuration");
+        }
+        return Ok(None);
+    };
+    let mods: Vec<Value> = super::keyword::keyword_list(ctx, words)?
+        .into_iter()
+        .map(|keyword| json!({ "AddKeyword": keyword }))
+        .collect();
+    let duration = super::effects_obj::duration(p.get("PumpDuration"))?;
+    let name = match create.get("as") {
+        Some(name) => name.clone(),
+        None => json!(ctx.fresh("token")),
+    };
+    create["as"] = name.clone();
+    Ok(Some(
+        json!({"Continuous": {"affected": {"Bound": name}, "mods": mods, "duration": duration}}),
+    ))
 }

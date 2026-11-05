@@ -42,7 +42,7 @@ fn reveal_hand(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
 }
 
 /// `CopySpellAbility` of a spell: a target spell, or the spell a cast trigger is about. A copy of an ability, a copy
-/// for each way to target, and a controller of the copy other than the controller of the effect stay gaps.
+/// for each way to target, and a controller of the copy other than the one a trigger names stays a gap.
 fn copy_spell(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
     only(
         p,
@@ -57,9 +57,19 @@ fn copy_spell(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
             "SetColor",
         ],
     )?;
-    if p.get("Controller").is_some_and(|who| who != "You") {
-        return unmapped("key:CopySpellAbility.Controller");
-    }
+    let who = match p.get("Controller") {
+        None | Some("You") => None,
+        // The player who cast the spell the trigger is about.
+        Some("TriggeredCardController" | "TriggeredActivator")
+            if ctx
+                .trigger
+                .as_ref()
+                .is_some_and(|shape| shape.mode == "SpellCast") =>
+        {
+            Some(json!("TriggeringPlayer"))
+        }
+        Some(_) => return unmapped("key:CopySpellAbility.Controller"),
+    };
     let what = if p.has("ValidTgts") {
         if p.get("TargetType") != Some("Spell") {
             return unmapped("key:CopySpellAbility.TargetType");
@@ -81,6 +91,9 @@ fn copy_spell(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
         return unmapped("key:CopySpellAbility.Defined");
     };
     let mut copy = json!({"what": what});
+    if let Some(who) = who {
+        copy["who"] = who;
+    }
     if p.has("Amount") {
         copy["count"] = amount(ctx, p.get("Amount").unwrap_or("1"))?;
     }
