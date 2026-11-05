@@ -200,18 +200,8 @@ fn event_amount(ctx: &Ctx, expression: &str) -> Tr<Option<Value>> {
                 other => unmapped(format!("amount:TriggerCount${other}")),
             };
         }
-        "TriggerObjectsAttackers" if what == "Amount" => {
-            // A group of attackers holds them all and counts them.
-            return if ctx.trigger.as_ref().is_some_and(|shape| {
-                matches!(shape.pattern.as_str(), "GroupAttacks" | "GroupAttacksAt")
-            }) {
-                Ok(Some(json!("Triggering")))
-            } else {
-                unmapped("amount:TriggerObjectsAttackers-outside-a-group")
-            };
-        }
-        "TriggeredDefendingPlayer" => {
-            return super::amount_more::player_stat(head, what, &json!("Defending")).map(Some);
+        "TriggerObjectsAttackers" | "TriggeredDefendingPlayer" => {
+            return attack_amount(ctx, head, what).map(Some);
         }
         "PlayerCountOpponents" | "PlayerCountRegisteredOpponents" | "PlayerCountPlayers" => {
             let who = if head == "PlayerCountPlayers" {
@@ -302,6 +292,22 @@ fn event_amount(ctx: &Ctx, expression: &str) -> Tr<Option<Value>> {
         _ => return Ok(None),
     };
     targeted_amount(head, what, &of).map(Some)
+}
+
+/// The amounts of an attack: how many attackers a group holds, and a stat of the defending player.
+fn attack_amount(ctx: &Ctx, head: &str, what: &str) -> Tr<Value> {
+    if head == "TriggeredDefendingPlayer" {
+        return super::amount_more::player_stat(head, what, &json!("Defending"));
+    }
+    let group = ctx
+        .trigger
+        .as_ref()
+        .is_some_and(|shape| matches!(shape.pattern.as_str(), "GroupAttacks" | "GroupAttacksAt"));
+    match (group, what) {
+        (true, "Amount") => Ok(json!("Triggering")),
+        (true, _) => unmapped(format!("amount:{head}${what}")),
+        (false, _) => unmapped(format!("amount:{head}-outside-a-group")),
+    }
 }
 
 /// A stat of the object a reference head names; a gap carries that head, not `Targeted$` whatever was read.
