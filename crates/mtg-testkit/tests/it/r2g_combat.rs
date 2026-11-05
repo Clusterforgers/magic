@@ -1,4 +1,5 @@
 //! Goal: combat rules a static ability states are read as the rules say: a rule that creatures with a landwalk ability can be blocked as though they did not have it frees the blockers of the one land it names (CR 702.14), or of every landwalk, or lets named blockers ignore it, and leaves another landwalk alone.
+#![allow(clippy::unwrap_used, clippy::expect_used)]
 
 use crate::common;
 
