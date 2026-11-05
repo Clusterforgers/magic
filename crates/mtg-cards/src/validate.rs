@@ -589,6 +589,7 @@ impl<'a> Walker<'a> {
                 self.at("group", |w| w.selector(group));
             }
             Pred::Kicked => self.uses("Pred", "Kicked"),
+            Pred::AdditionalCostPaid => self.uses("Pred", "AdditionalCostPaid"),
             Pred::CounterCount { .. } => self.uses("Pred", "CounterCount"),
             _ => self.uses("Pred", "Suspended"),
         }
@@ -676,6 +677,7 @@ impl<'a> Walker<'a> {
             | Pred::LeastAmong { .. }
             | Pred::HasKeywordNamed(_)
             | Pred::Kicked
+            | Pred::AdditionalCostPaid
             | Pred::CounterCount { .. }
             | Pred::Suspended => self.fe1a_pred(pred),
             Pred::Not(inner) => self.pred(inner),

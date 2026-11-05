@@ -375,6 +375,8 @@ pub enum Pred {
     Suspended,
     /// Is a spell, or a permanent that entered as a spell, cast with at least one kicker cost paid (CR 702.33).
     Kicked,
+    /// Is a spell, or a permanent that entered as a spell, cast with an additional cost paid (bargain, casualty, gift; CR 601.2b).
+    AdditionalCostPaid,
     /// The predicate is false.
     Not(Box<Pred>),
     /// At least one of the predicates is true.
@@ -591,6 +593,7 @@ mod tests {
     )]
     #[case::suspended(Pred::Suspended, r#""Suspended""#)]
     #[case::kicked(Pred::Kicked, r#""Kicked""#)]
+    #[case::additional_cost_paid(Pred::AdditionalCostPaid, r#""AdditionalCostPaid""#)]
     fn the_cast_library_combat_and_greatest_atoms_have_stable_json(
         #[case] value: Pred,
         #[case] json: &str,

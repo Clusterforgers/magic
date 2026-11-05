@@ -286,6 +286,9 @@ pub fn keyword_abilities(ctx: &mut Ctx, body: &str) -> Vec<Tr<Value>> {
     if let Some(levels) = super::keyword_class::class_level(ctx, body) {
         return levels;
     }
+    if let Some(forms) = super::effects_r2h::keyword_forms(ctx, body) {
+        return forms;
+    }
     match body.strip_prefix("Chapter:") {
         Some(rest) => chapters(ctx, rest),
         None => super::keyword_alt::alt_keyword(body)
@@ -366,6 +369,17 @@ pub fn keyword_ability(ctx: &mut Ctx, body: &str) -> Tr<Value> {
         ["ETBReplacement", "Other", name] => choice(ctx, name)?,
         ["ETBReplacement", "Copy", name, "Optional"] => {
             super::effects_copy::enters_as_copy(ctx, name)?
+        }
+        [
+            "ETBReplacement",
+            "Other",
+            name,
+            "Mandatory",
+            zone,
+            valid,
+            ..,
+        ] => {
+            return super::effects_r2h::extra_counters(ctx, name, zone, valid);
         }
         [name, ..] if matches!(*name, "etbCounter" | "ETBReplacement") => {
             return unmapped(format!("keyword:{name}-shape"));

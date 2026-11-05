@@ -78,6 +78,16 @@ fn present(ctx: &Ctx, p: &Params, suffix: &str) -> Tr<Option<Value>> {
             json!({"Compare": {"left": "Promised", "op": op, "right": right}}),
         ));
     }
+    // The spell itself on the stack: cast with its additional cost paid (teamwork, bargain).
+    if matches!(valid, "Card.Self+Teamwork" | "Card.Self+bargained")
+        && matches!(zone, None | Some("Stack"))
+    {
+        return match compare.unwrap_or("GE1") {
+            "GE1" => Ok(Some(json!("AdditionalCostPaid"))),
+            "EQ0" => Ok(Some(json!({"Not": "AdditionalCostPaid"}))),
+            other => unmapped(format!("compare:{other}")),
+        };
+    }
     let player = match p.get("PresentPlayer") {
         None => false,
         Some("You") => true,
@@ -240,6 +250,7 @@ pub fn named(name: &str) -> Tr<Value> {
         "PlayerTurn" => json!("YourTurn"),
         "NotPlayerTurn" => json!({"Not": "YourTurn"}),
         "Kicked" => json!("Kicked"),
+        "Bargain" => json!("AdditionalCostPaid"),
         "Blessing" => json!({"CitysBlessing": "You"}),
         "Monarch" => json!({"Monarch": "You"}),
         "Night" => json!("IsNight"),

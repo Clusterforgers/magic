@@ -19,6 +19,7 @@ pub fn when(ctx: &Ctx, base: &str) -> Option<Tr<Value>> {
     let (word, branches) = base.split_once('.')?;
     let condition = match word {
         "Kicked" => json!("Kicked"),
+        "Bargained" | "Teamwork" => json!("AdditionalCostPaid"),
         "Monarch" => json!({"Monarch": "You"}),
         "Morbid" => {
             json!({"Compare": {"left": {"Tallied": {"who": "EachPlayer", "what": "CreaturesDied"}}, "op": "Ge", "right": 1}})

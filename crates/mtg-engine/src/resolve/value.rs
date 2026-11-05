@@ -1433,6 +1433,7 @@ impl<'a> Scope<'a> {
             | Pred::LeastAmong { .. }
             | Pred::HasKeywordNamed(_)
             | Pred::Kicked
+            | Pred::AdditionalCostPaid
             | Pred::Suspended => self.fe1a_pred(pred, reference, seen)?,
             Pred::Not(inner) => !self.pred(inner, reference, seen)?,
             Pred::AnyOf(any) => self.w6d_any_of(any, reference, seen)?,
