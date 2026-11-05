@@ -138,7 +138,7 @@ fn token_create(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
         ctx.remembered = Some(json!({ "Bound": name }));
         create["as"] = name;
     }
-    let attach = attached(ctx, p, face, &mut create)?;
+    let attach = attached(ctx, p, &mut create)?;
     let mut effects = before;
     effects.push(json!({ "CreateToken": create }));
     effects.extend(after);
@@ -371,18 +371,15 @@ fn spend_filter(restriction: &str) -> Tr<Value> {
     Ok(filter)
 }
 
-/// `AttachedTo$`: an Aura or Equipment token created attached to the target or to the source. A Role needs the rule that
-/// keeps one per controller on an object, which the engine lacks, so it stays a gap.
-fn attached(ctx: &mut Ctx, p: &Params, face: &Face, create: &mut Value) -> Tr<Option<Value>> {
+/// `AttachedTo$`: an Aura or Equipment token created attached to the target or to the source. A Role stays one per controller
+/// on a creature through the state-based actions (CR 704.5y).
+fn attached(ctx: &mut Ctx, p: &Params, create: &mut Value) -> Tr<Option<Value>> {
     let Some(word) = p.get("AttachedTo") else {
         if p.has("ValidTgts") {
             return unmapped("key:Token.ValidTgts");
         }
         return Ok(None);
     };
-    if face.types.split_whitespace().any(|w| w == "Role") {
-        return unmapped("token:Role-rule");
-    }
     let to = match (word, p.has("ValidTgts")) {
         ("Targeted", true) => super::valid::subject(ctx, p, "", None)?,
         ("Self", false) => defined(ctx, "Self")?,

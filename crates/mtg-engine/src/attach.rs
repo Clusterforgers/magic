@@ -470,6 +470,47 @@ pub(crate) fn state_based(state: &GameState, leaving: &[ObjectId]) -> Vec<Event>
             _ => {}
         }
     }
+    events.extend(roles(state, leaving));
+    events
+}
+
+/// A creature with more than one Role of one controller keeps only the newest of that controller's Roles; the others go to
+/// their owners' graveyards (CR 704.5y).
+fn roles(state: &GameState, leaving: &[ObjectId]) -> Vec<Event> {
+    let role = Subtype("Role".to_owned());
+    let mut groups: std::collections::BTreeMap<(ObjectId, PlayerId), Vec<(u64, ObjectId)>> =
+        std::collections::BTreeMap::new();
+    for &id in state.zone(Zone::Battlefield) {
+        let Some(object) = state.object(id).filter(|_| !leaving.contains(&id)) else {
+            continue;
+        };
+        let Some(host) = state.host_of(id) else {
+            continue;
+        };
+        let is_role = characteristics(state, id)
+            .is_some_and(|chars| chars.has_subtype(&object.card().subtypes, &role));
+        if let (true, Some(permanent)) = (is_role, object.permanent()) {
+            groups
+                .entry((host, controller_of_object(state, object)))
+                .or_default()
+                .push((permanent.timestamp, id));
+        }
+    }
+    let mut events = Vec::new();
+    for (_, mut roles) in groups {
+        roles.sort_unstable();
+        roles.pop();
+        for (_, id) in roles {
+            if let Some(object) = state.object(id) {
+                events.push(Event::ZoneChanged {
+                    object: id,
+                    from: Zone::Battlefield,
+                    to: Zone::Graveyard(object.owner()),
+                    cause: ZoneCause::StateBased,
+                });
+            }
+        }
+    }
     events
 }
 
@@ -727,6 +768,67 @@ mod tests {
             .map(|(name, put)| ((*name).to_owned(), *put))
             .collect();
         assert_eq!(actions(&attached), expected);
+    }
+
+    fn role(name: &str) -> Arc<CardDefinition> {
+        let mut card = CardDefinition::new(name)
+            .with_type(CardType::Enchantment)
+            .with_rules(serde_json::from_str::<Ability>(ON_CREATURES).unwrap());
+        card.subtypes.push(Subtype("Aura".into()));
+        card.subtypes.push(Subtype("Role".into()));
+        Arc::new(card)
+    }
+
+    /// Seat 0: Bear, Ogre, Halo (an Aura, no Role) and the Roles Royal, Wicked and Cursed; seat 1: the Role Monster. Each pair
+    /// says which seat-0 permanent a permanent starts attached to; the stamp order is the order of the battlefield.
+    fn role_actions(attached: &[(usize, usize, usize)]) -> Vec<String> {
+        let mut game = setup(
+            vec![vec![], vec![]],
+            vec![
+                vec![
+                    creature("Bear", 2, 2),
+                    creature("Ogre", 3, 4),
+                    card("Halo", &[CardType::Enchantment], "Aura", &[ON_CREATURES]),
+                    role("Royal"),
+                    role("Wicked"),
+                    role("Cursed"),
+                ],
+                vec![role("Monster")],
+            ],
+        );
+        for (seat, place, host) in attached {
+            let preset = &mut game.players[*seat].battlefield[*place];
+            *preset = PresetPermanent {
+                attached_to: Some((0, *host)),
+                ..preset.clone()
+            };
+        }
+        let game = GameState::from_setup(&game).unwrap();
+        let mut put: Vec<String> = roles(&game, &[])
+            .iter()
+            .map(|event| match event {
+                Event::ZoneChanged { object, .. } => {
+                    game.object(*object).unwrap().card().name.clone()
+                }
+                other => panic!("{other:?}"),
+            })
+            .collect();
+        put.sort();
+        put
+    }
+
+    #[rstest]
+    #[case::one_role_stays(vec![(0, 3, 0)], &[])]
+    #[case::the_newer_of_two_roles_of_one_controller_stays(vec![(0, 3, 0), (0, 4, 0)], &["Royal"])]
+    #[case::of_three_only_the_newest_stays(vec![(0, 3, 0), (0, 4, 0), (0, 5, 0)], &["Royal", "Wicked"])]
+    #[case::roles_on_different_creatures_stay(vec![(0, 3, 0), (0, 4, 1)], &[])]
+    #[case::roles_of_different_controllers_stay(vec![(0, 3, 0), (1, 0, 0)], &[])]
+    #[case::an_aura_that_is_no_role_stays(vec![(0, 2, 0), (0, 3, 0)], &[])]
+    fn a_creature_keeps_only_the_newest_role_of_each_controller(
+        #[case] attached: Vec<(usize, usize, usize)>,
+        #[case] expected: &[&str],
+    ) {
+        assert_eq!(role_actions(&attached), expected);
     }
 
     #[rstest]
