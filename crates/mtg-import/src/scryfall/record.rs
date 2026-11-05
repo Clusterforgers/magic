@@ -407,6 +407,7 @@ mod tests {
     #[case::phyrexian("{1}{B/P}{B/P}", Some("{1}{B/P}{B/P}"))]
     #[case::mixed("{2}{W/P}{G/U/P}", Some("{2}{W/P}{G/U/P}"))]
     #[case::other_way_round("{W/G}", Some("{G/W}"))]
+    #[case::snow("{S}", Some("{S}"))]
     fn a_cost_is_read_or_absent(#[case] text: &str, #[case] shown: Option<&str>) {
         let cost = face(text).cost().unwrap();
         assert_eq!(cost.map(|c| c.to_string()).as_deref(), shown);
@@ -414,7 +415,6 @@ mod tests {
 
     #[rstest]
     #[case::x("{X}{R}", "X")]
-    #[case::snow("{S}", "S")]
     #[case::after_a_good_symbol("{2}{HW}", "HW")]
     fn a_symbol_that_is_left_out_is_named(#[case] text: &str, #[case] symbol: &str) {
         assert_eq!(
