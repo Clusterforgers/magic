@@ -834,11 +834,7 @@ impl Hash for GameState {
         if let Some(day_night) = self.day_night {
             day_night.hash(state);
         }
-        // Likewise a game no turn has ended in.
-        if let Some(last) = self.last_turn_of {
-            last.hash(state);
-            self.seat_turns.hash(state);
-        }
+        self.hash_turn_summaries(state);
         // Likewise a game without a monarch.
         if let Some(monarch) = self.monarch {
             monarch.hash(state);

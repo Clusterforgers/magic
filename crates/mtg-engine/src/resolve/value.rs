@@ -1506,6 +1506,7 @@ impl<'a> Scope<'a> {
     }
 
     /// The number an amount stands for as one recipient of the running effect reads it (`share`, see `share.rs`).
+    #[allow(clippy::too_many_lines)]
     pub(super) fn amount_of(
         &self,
         amount: &Amount,

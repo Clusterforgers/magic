@@ -22,6 +22,15 @@ impl GameState {
         self.last_turn_of = Some(active);
     }
 
+    /// Adds the summaries to the hash; a game no turn has ended in hashes as it did before they existed.
+    pub(crate) fn hash_turn_summaries<H: std::hash::Hasher>(&self, state: &mut H) {
+        use std::hash::Hash;
+        if let Some(last) = self.last_turn_of {
+            last.hash(state);
+            self.seat_turns.hash(state);
+        }
+    }
+
     /// The most spells one of `players` cast during the turn that ended last; 0 before any turn has ended.
     pub(crate) fn cast_last_turn(&self, players: &[PlayerId]) -> u32 {
         let Some(summary) = self
