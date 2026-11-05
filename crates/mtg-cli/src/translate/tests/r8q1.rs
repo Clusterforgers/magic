@@ -39,3 +39,13 @@ fn a_ban_on_abilities_with_a_tap_cost_is_not_widened_to_all() {
     );
     assert_eq!(gaps(&text), ["key:Static.CantBeActivated.ValidSA"]);
 }
+
+#[test]
+fn a_target_of_a_delayed_trigger_body_is_chosen_when_it_triggers() {
+    let text = "Name:Subject\nTypes:Instant\nA:SP$ DelayedTrigger | ValidTgts$ Creature | Mode$ ChangesZone | RememberObjects$ Targeted | ValidCard$ Card.IsTriggerRemembered | Origin$ Battlefield | Destination$ Graveyard | ThisTurn$ True | Execute$ Land | SpellDescription$ x\nSVar:Land:DB$ Earthbend | Num$ 4\n";
+    assert!(gaps(text).is_empty(), "{:?}", gaps(text));
+    let json = serde_json::to_string(&abilities(text)).unwrap();
+    // The spell announces the creature alone; the land is a target of the reflexive ability.
+    assert_eq!(json.matches(r#""targets":["#).count(), 2, "{json}");
+    assert!(json.contains(r#""Reflexive""#), "{json}");
+}

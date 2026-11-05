@@ -455,7 +455,10 @@ const FIERY_ENCORE: &str = "Name:Fiery Encore\nManaCost:4 R\nTypes:Sorcery\nA:SP
 #[test]
 fn a_storm_copy_of_a_spell_with_a_reflexive_trigger_plays_through() {
     let encore = card(FIERY_ENCORE, &[CardType::Sorcery], "{0}", None);
-    let filler = json_sorcery("Filler", r#"{"Spell":{"effects":[{"GainLife":{"amount":1}}]}}"#);
+    let filler = json_sorcery(
+        "Filler",
+        r#"{"Spell":{"effects":[{"GainLife":{"amount":1}}]}}"#,
+    );
     let discard = |name: &str, cost: &str| {
         Arc::new(
             CardDefinition::new(name)
@@ -465,7 +468,15 @@ fn a_storm_copy_of_a_spell_with_a_reflexive_trigger_plays_through() {
         )
     };
     let scenario = main_phase()
-        .hand(0, [filler, encore, discard("Disc", "{3}"), discard("Disc2", "{2}")])
+        .hand(
+            0,
+            [
+                filler,
+                encore,
+                discard("Disc", "{3}"),
+                discard("Disc2", "{2}"),
+            ],
+        )
         .library(0, library_of(&["Draw1", "Draw2", "Draw3"]))
         .battlefield(1, [ready(free_creature("Vic", 9, 9))]);
     let mut driver = Driver::from_scenario(scenario).unwrap();
@@ -473,6 +484,50 @@ fn a_storm_copy_of_a_spell_with_a_reflexive_trigger_plays_through() {
     cast_and_run(&mut driver, "Fiery Encore", true, &["Vic", "Disc", "Disc2"]);
     let id = driver.id_of("Vic").unwrap();
     // The copy and the spell each discard a card and deal its mana value (3 and 2) as damage.
-    let damage = driver.state().object(id).unwrap().permanent().unwrap().damage();
+    let damage = driver
+        .state()
+        .object(id)
+        .unwrap()
+        .permanent()
+        .unwrap()
+        .damage();
     assert_eq!(damage, 5);
+}
+
+const FATAL_FISSURE: &str = "Name:Fatal Fissure\nManaCost:1 B\nTypes:Instant\nA:SP$ DelayedTrigger | ValidTgts$ Creature | Mode$ ChangesZone | RememberObjects$ Targeted | ValidCard$ Card.IsTriggerRemembered | Origin$ Battlefield | Destination$ Graveyard | ThisTurn$ True | Execute$ TrigEarthbend | TriggerDescription$ When that creature dies this turn, you earthbend 4. | SpellDescription$ Choose target creature. When that creature dies this turn, you earthbend 4.\nSVar:TrigEarthbend:DB$ Earthbend | Num$ 4\n";
+
+#[rstest::rstest]
+#[case::the_chosen_creature_dies(true, 4)]
+#[case::another_creature_dies(false, 0)]
+fn a_delayed_trigger_chooses_its_land_when_it_triggers(
+    #[case] chosen_dies: bool,
+    #[case] counters: u32,
+) {
+    use mtg_testkit::cards::forest;
+    let fissure = card(FATAL_FISSURE, &[CardType::Instant], "{0}", None);
+    let kill = json_sorcery(
+        "Kill",
+        r#"{"Spell":{"effects":[{"Destroy":{"what":{"Target":0}}}],"targets":[{"what":{"Object":[{"Type":"Creature"}]}}]}}"#,
+    );
+    let scenario = main_phase().hand(0, [fissure, kill]).battlefield(
+        0,
+        [
+            ready(free_creature("Chosen", 1, 1)),
+            ready(free_creature("Other", 1, 1)),
+            ready(forest()),
+        ],
+    );
+    let mut driver = Driver::from_scenario(scenario).unwrap();
+    // With no land the spell can still be cast: its only target is the creature.
+    cast_and_run(&mut driver, "Fatal Fissure", true, &["Chosen"]);
+    let victim = if chosen_dies { "Chosen" } else { "Other" };
+    cast_and_run(&mut driver, "Kill", true, &[victim, "Forest"]);
+    let forest = driver.id_of("Forest").unwrap();
+    let characteristics =
+        mtg_engine::characteristics::characteristics(driver.state(), forest).unwrap();
+    assert_eq!(
+        characteristics.types.contains(CardType::Creature),
+        chosen_dies
+    );
+    assert_eq!(characteristics.power.unwrap_or(0), counters as i32);
 }

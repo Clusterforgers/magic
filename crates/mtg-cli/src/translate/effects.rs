@@ -796,11 +796,12 @@ fn delayed_node(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
         to_player: false,
     });
     let outer = std::mem::replace(&mut ctx.trigger, shape);
+    let declared = ctx.targets.len();
     let effects = ctx
         .sub(execute)
         .and_then(|part| chain_at(ctx, &part, false));
     ctx.trigger = outer;
-    let effects = effects?;
+    let effects = later_targets(ctx, declared, effects?)?;
     let mut node = json!({"DelayedTrigger": {"when": when, "effects": effects}});
     if this_turn {
         node["DelayedTrigger"]["this_turn"] = json!(true);
@@ -841,4 +842,54 @@ fn delayed_step(p: &Params) -> Tr<Value> {
 fn proliferate(p: &Params) -> Tr<Value> {
     only(p, "Proliferate", &[])?;
     Ok(json!({"Proliferate": {}}))
+}
+
+/// The targets a delayed trigger's own effects declare are chosen when it triggers, not when the spell is cast: they move
+/// into a reflexive ability that has them for its own (`Target` counts from its first). An effect that also reads a target
+/// of the spell cannot be split that way and stays a gap by name.
+fn later_targets(ctx: &mut Ctx, declared: usize, effects: Vec<Value>) -> Tr<Vec<Value>> {
+    if ctx.targets.len() == declared {
+        return Ok(effects);
+    }
+    let own = ctx.targets.split_off(declared);
+    let mut reads_outer = false;
+    let moved: Vec<Value> = effects
+        .into_iter()
+        .map(|effect| rebase_targets(effect, declared, &mut reads_outer))
+        .collect();
+    if reads_outer {
+        return unmapped("effect:DelayedTrigger-target-with-a-spell-target");
+    }
+    Ok(vec![
+        json!({"Reflexive": {"targets": own, "effects": moved}}),
+    ])
+}
+
+/// The value with every `{"Target": n}` from `first` on renumbered from zero; `outer` is set when one below `first` is read.
+fn rebase_targets(value: Value, first: usize, outer: &mut bool) -> Value {
+    match value {
+        Value::Object(map) => {
+            if let (1, Some(index)) = (map.len(), map.get("Target").and_then(Value::as_u64)) {
+                return match usize::try_from(index) {
+                    Ok(at) if at >= first => json!({"Target": at - first}),
+                    _ => {
+                        *outer = true;
+                        Value::Object(map)
+                    }
+                };
+            }
+            Value::Object(
+                map.into_iter()
+                    .map(|(key, inner)| (key, rebase_targets(inner, first, outer)))
+                    .collect(),
+            )
+        }
+        Value::Array(items) => Value::Array(
+            items
+                .into_iter()
+                .map(|inner| rebase_targets(inner, first, outer))
+                .collect(),
+        ),
+        other => other,
+    }
 }
