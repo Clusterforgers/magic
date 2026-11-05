@@ -514,6 +514,7 @@ fn create_effect(
         effect.duration,
         mtg_cards::modify::Duration::WhileSourceOnBattlefield
             | mtg_cards::modify::Duration::WhileYouControlSource
+            | mtg_cards::modify::Duration::WhileSourceTapped
     ) && effect.source.is_none()
     {
         return Err(invalid(

@@ -13,7 +13,7 @@ use serde::{Deserialize, Serialize};
 
 use crate::characteristics::Characteristics;
 use crate::land_types::is_land_type;
-use crate::object::{GameObject, ObjectRef};
+use crate::object::{GameObject, ObjectRef, PermanentState};
 use crate::state::GameState;
 use crate::turn::Step;
 use crate::zones::Zone;
@@ -370,6 +370,15 @@ pub(crate) fn lasts(
             state
                 .object(source.id)
                 .is_some_and(|o| o.counter() == source.counter && o.zone().is_permanent_zone())
+        }),
+        // "For as long as ~ remains tapped" (CR 611.2b): the housekeeping that follows the untap removes the effect at once,
+        // so tapping the source again does not bring it back.
+        Duration::WhileSourceTapped => source.is_some_and(|source| {
+            state.object(source.id).is_some_and(|o| {
+                o.counter() == source.counter
+                    && o.zone() == Zone::Battlefield
+                    && o.permanent().is_some_and(PermanentState::tapped)
+            })
         }),
         // The control of the source is derived by the layers. The pass that decides which effects apply asks only that the
         // source is there (`lasts_before_control`) and checks the control itself after the control layer, so this full

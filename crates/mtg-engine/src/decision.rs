@@ -603,6 +603,11 @@ pub struct DamageOptions {
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     #[cfg_attr(feature = "ts", ts(as = "Option<Vec<u32>>", optional))]
     pub lethal: Vec<u32>,
+    /// Whether the attacker's controller may instead assign all of the damage to the player or planeswalker attacked as
+    /// though the attacker were not blocked (CR 510.1c): answered by giving no damage to any blocker.
+    #[serde(default, skip_serializing_if = "std::ops::Not::not")]
+    #[cfg_attr(feature = "ts", ts(as = "Option<bool>", optional))]
+    pub unblocked: bool,
 }
 
 /// Options for the cleanup discard.

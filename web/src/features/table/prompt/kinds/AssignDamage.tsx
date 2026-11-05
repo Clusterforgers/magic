@@ -133,7 +133,7 @@ function Row({
  * lethal figures are the engine's, and an attacker's deathtouch is named where it shortens them.
  */
 export const AssignDamagePrompt: PromptComponent<'AssignDamage'> = ({ options }) => {
-  const { attacker, power, blockers, excess, lethal } = options
+  const { attacker, power, blockers, excess, lethal, unblocked } = options
   const { answer, selection } = usePrompt()
   const statusId = useId()
   const inputs = useRef(new Map<ObjectId, HTMLInputElement>())
@@ -198,6 +198,8 @@ export const AssignDamagePrompt: PromptComponent<'AssignDamage'> = ({ options })
     if (verdict.legal) answer(toAnswer(recipients, amounts))
   }
 
+  const asUnblocked = (): void => answer(toAnswer(recipients, recipients.map(() => 0)))
+
   const target = blockers.length === 1 ? 'its blocker' : 'its blockers'
   const verb = blockers.length === 1 ? 'Assign' : 'Divide'
   const where = blockers.length === 1 ? 'to' : 'among'
@@ -253,6 +255,11 @@ export const AssignDamagePrompt: PromptComponent<'AssignDamage'> = ({ options })
           >
             {verdict.status}
           </p>
+          {unblocked === true ? (
+            <Button type="button" variant="outline" className="h-10 px-4" onClick={asUnblocked}>
+              Assign as though unblocked
+            </Button>
+          ) : null}
         </div>
       </form>
     </PromptLayout>

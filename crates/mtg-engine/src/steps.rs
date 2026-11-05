@@ -5,11 +5,14 @@ use std::collections::BTreeSet;
 
 use mtg_core::ids::{ObjectId, PlayerId};
 
+use crate::answers::Outcome;
 use crate::characteristics::controller_of;
+use crate::choose::{CardsChoice, CardsOptions, check_cards};
 use crate::combat::{attack_options, block_options, defending_players};
 use crate::damage::{DamagePass, damage_events, first_strike_step_needed, pending_assignment};
 use crate::decision::{Decision, DecisionKind, DiscardOptions};
 use crate::effects::ends_with_turn;
+use crate::error::EngineError;
 use crate::events::{Event, NothingToDo};
 use crate::flow::Progress;
 use crate::object::{GameObject, PermanentState};
@@ -43,52 +46,7 @@ fn grant(state: &GameState) -> Event {
 fn begin_step(state: &GameState, step: Step) -> Progress {
     let active = state.active_player();
     match step {
-        Step::Untap => {
-            // Phasing comes first (CR 502.1): what phases in untaps with the rest.
-            let leaving = active.map_or_else(Vec::new, |active| {
-                crate::phasing::w7e_keyword_out_events(state, active)
-            });
-            let going: BTreeSet<ObjectId> = leaving
-                .iter()
-                .filter_map(|event| match event {
-                    Event::PermanentPhasedOut { object, .. } => Some(*object),
-                    _ => None,
-                })
-                .collect();
-            let mut events =
-                active.map_or_else(Vec::new, |active| crate::phasing::in_events(state, active));
-            events.splice(0..0, leaving);
-            let coming: Vec<_> = events
-                .iter()
-                .filter_map(|event| match event {
-                    Event::PermanentPhasedIn { object } => Some(*object),
-                    _ => None,
-                })
-                .collect();
-            let during = active.map_or_else(Vec::new, |active| untap_during(state, active));
-            events.extend(
-                state
-                    .zone(Zone::Battlefield)
-                    .iter()
-                    .chain(&coming)
-                    .filter(|id| {
-                        active.is_some()
-                            && !going.contains(*id)
-                            && (controller_of(state, **id) == active || during.contains(*id))
-                            && !crate::characteristics::doesnt_untap(state, **id)
-                            && state
-                                .object(**id)
-                                .and_then(GameObject::permanent)
-                                .is_some_and(PermanentState::tapped)
-                    })
-                    .filter_map(|id| state.object(*id).map(crate::stun::untap_event)),
-            );
-            if let Some(active) = active {
-                events.extend(crate::c7_untap::c7_untap_spent(state, active));
-            }
-            events.extend(leave_step(state));
-            Progress::Events(events)
-        }
+        Step::Untap => untap_step(state),
         Step::Draw => {
             let skipped = state.turn().number() == 1
                 && state.ruleset().skips_first_draw(state.players().len());
@@ -121,6 +79,104 @@ fn begin_step(state: &GameState, step: Step) -> Progress {
             Progress::Events(vec![grant(state)])
         }
     }
+}
+
+/// The untap step: phasing, then the active player determines which permanents untap and they untap together (CR 502).
+/// A permanent that may stay tapped is asked about whatever the hand: one question lists every such tapped permanent that
+/// would untap, and the answer is the ones that stay tapped (CR 502.3); no such permanent, no question.
+fn untap_step(state: &GameState) -> Progress {
+    let (events, optional) = untap_events(state, &[]);
+    match (state.active_player(), optional.first()) {
+        (Some(player), Some(&source)) => Progress::Decide(Decision {
+            player,
+            kind: DecisionKind::ChooseCards(CardsOptions {
+                source,
+                max: u32::try_from(optional.len()).unwrap_or(u32::MAX),
+                from: optional,
+                min: 0,
+                text: "Choose the permanents to keep tapped.".to_owned(),
+                can_cancel: false,
+            }),
+        }),
+        _ => Progress::Events(events),
+    }
+}
+
+/// The events of the untap step with the permanents `kept` staying tapped, and the permanents that may stay tapped and
+/// would untap otherwise.
+pub(crate) fn untap_events(state: &GameState, kept: &[ObjectId]) -> (Vec<Event>, Vec<ObjectId>) {
+    let active = state.active_player();
+    // Phasing comes first (CR 502.1): what phases in untaps with the rest.
+    let leaving = active.map_or_else(Vec::new, |active| {
+        crate::phasing::w7e_keyword_out_events(state, active)
+    });
+    let going: BTreeSet<ObjectId> = leaving
+        .iter()
+        .filter_map(|event| match event {
+            Event::PermanentPhasedOut { object, .. } => Some(*object),
+            _ => None,
+        })
+        .collect();
+    let mut events =
+        active.map_or_else(Vec::new, |active| crate::phasing::in_events(state, active));
+    events.splice(0..0, leaving);
+    let coming: Vec<_> = events
+        .iter()
+        .filter_map(|event| match event {
+            Event::PermanentPhasedIn { object } => Some(*object),
+            _ => None,
+        })
+        .collect();
+    let during = active.map_or_else(Vec::new, |active| untap_during(state, active));
+    let untapping: Vec<ObjectId> = state
+        .zone(Zone::Battlefield)
+        .iter()
+        .chain(&coming)
+        .filter(|id| {
+            active.is_some()
+                && !going.contains(*id)
+                && (controller_of(state, **id) == active || during.contains(*id))
+                && !crate::characteristics::doesnt_untap(state, **id)
+                && state
+                    .object(**id)
+                    .and_then(GameObject::permanent)
+                    .is_some_and(PermanentState::tapped)
+        })
+        .copied()
+        .collect();
+    let optional: Vec<ObjectId> = untapping
+        .iter()
+        .copied()
+        .filter(|id| {
+            controller_of(state, *id) == active && crate::combat_quirks::may_stay_tapped(state, *id)
+        })
+        .collect();
+    events.extend(
+        untapping
+            .iter()
+            .filter(|id| !kept.contains(id))
+            .filter_map(|id| state.object(*id).map(crate::stun::untap_event)),
+    );
+    if let Some(active) = active {
+        events.extend(crate::c7_untap::c7_untap_spent(state, active));
+    }
+    events.extend(leave_step(state));
+    (events, optional)
+}
+
+/// The answer to the question of the untap step: the permanents chosen stay tapped and the others untap.
+pub(crate) fn untap_answer(
+    state: &GameState,
+    options: &CardsOptions,
+    choice: &CardsChoice,
+) -> Result<Outcome, EngineError> {
+    check_cards(options, &choice.0)?;
+    Ok(Outcome::Events(untap_events(state, &choice.0).0))
+}
+
+/// Whether a choice of cards outside any resolution is the question of the untap step.
+pub(crate) fn asks_untap(state: &GameState) -> bool {
+    state.turn().step() == Step::Untap
 }
 
 /// Events for `player` drawing `count` cards, or failing to on an empty library. A player who can't draw cards neither

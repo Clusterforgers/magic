@@ -30,4 +30,9 @@ excess?: DamageTarget,
  * Damage that is lethal to each blocker, in the order of `blockers`: what its toughness leaves after the
  * damage marked, and at most 1 from a source with deathtouch.
  */
-lethal?: Array<number>, };
+lethal?: Array<number>, 
+/**
+ * Whether the attacker's controller may instead assign all of the damage to the player or planeswalker attacked as
+ * though the attacker were not blocked (CR 510.1c): answered by giving no damage to any blocker.
+ */
+unblocked?: boolean, };

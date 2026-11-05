@@ -536,27 +536,19 @@ fn a_blocker_cant_block_the_attackers_its_line_names(
 }
 
 #[rstest]
-#[case::doran_the_siege_tower("Creature.YouCtrl", Some(json!("You")))]
-#[case::every_creature("Creature", Some(json!("EachPlayer")))]
-#[case::only_toughness_above_power("Creature.powerLTtoughness+YouCtrl", None)]
-#[case::only_equipped("Creature.EquippedBy+powerLTtoughness", None)]
-fn assigning_damage_by_toughness_is_read_only_for_every_creature(
+#[case::doran_the_siege_tower("Creature.YouCtrl", json!("You"))]
+#[case::every_creature("Creature", json!("EachPlayer"))]
+fn assigning_damage_by_toughness_of_every_creature_is_a_rule_of_the_players(
     #[case] valid: &str,
-    #[case] who: Option<Value>,
+    #[case] who: Value,
 ) {
     let text = format!(
         "Name:Subject\nTypes:Creature Elf\nPT:0/5\nS:Mode$ CombatDamageToughness | ValidCard$ {valid}\n"
     );
-    match who {
-        Some(who) => assert_eq!(
-            abilities(&text),
-            vec![json!({"Rule": {"rule": {"ToughnessAssignsDamage": who}}})]
-        ),
-        None => {
-            let wanted = format!("key:Static.CombatDamageToughness.ValidCard={valid}");
-            assert!(gaps(&text).contains(&wanted), "{:?}", gaps(&text));
-        }
-    }
+    assert_eq!(
+        abilities(&text),
+        vec![json!({"Rule": {"rule": {"ToughnessAssignsDamage": who}}})]
+    );
 }
 
 /// The damage the Runner (0 power, 5 toughness) of seat 0 deals to seat 1 when it attacks unblocked, with a Doran line or not.

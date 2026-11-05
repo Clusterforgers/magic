@@ -291,6 +291,7 @@ const RUNS: &[&str] = &[
     "Effect.Continuous",
     "Effect.ExchangeControl",
     "Duration.WhileYouControlSource",
+    "Duration.WhileSourceTapped",
     "Duration.WhileHasCounter",
     "Effect.Rule",
     "Effect.Regenerate",
@@ -826,6 +827,7 @@ mod tests {
     #[case::continuous_effects("Effect.Continuous", true)]
     #[case::control_for_as_long_as_you_control_the_source("Duration.WhileYouControlSource", true)]
     #[case::continuous_for_as_long_as_it_has_a_counter("Duration.WhileHasCounter", true)]
+    #[case::continuous_for_as_long_as_the_source_is_tapped("Duration.WhileSourceTapped", true)]
     #[case::a_rule_for_as_long_as_you_control_the_source(
         "Rule.Duration.WhileYouControlSource",
         false

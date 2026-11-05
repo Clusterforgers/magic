@@ -144,6 +144,7 @@ impl Delayed {
             // does.
             Duration::UntilOpponentBecomesMonarch
             | Duration::WhileYouControlSource
+            | Duration::WhileSourceTapped
             | Duration::WhileHasCounter(_)
             | Duration::NextUntapStep => true,
         }

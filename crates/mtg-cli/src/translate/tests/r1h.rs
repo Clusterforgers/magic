@@ -181,3 +181,95 @@ fn an_effect_line_with_a_combat_static_acts_on_the_remembered_creature(
     assert_eq!(gaps(&script), Vec::<String>::new());
     assert_eq!(abilities(&script)[0]["Spell"]["effects"][0], effect);
 }
+
+fn combat_rule(who: &str, quirk: &str) -> Value {
+    json!({"Combat": {"who": who, "quirk": quirk}})
+}
+
+#[test]
+fn the_untap_choice_is_a_rule_of_the_card() {
+    let script =
+        "Name:T\nTypes:Artifact\nK:You may choose not to untap CARDNAME during your untap step.\n";
+    assert_eq!(gaps(script), Vec::<String>::new());
+    assert_eq!(
+        abilities(script)[0]["Rule"]["rule"],
+        combat_rule("This", "MayStayTapped")
+    );
+}
+
+#[test]
+fn a_pump_until_the_source_untaps_lasts_while_it_is_tapped() {
+    let script = "Name:T\nTypes:Artifact\nA:AB$ Pump | Cost$ 2 T | ValidTgts$ Creature | NumAtt$ +2 | Duration$ UntilUntaps\n";
+    assert_eq!(gaps(script), Vec::<String>::new());
+    let effect = &abilities(script)[0]["Activated"]["effects"][0]["Continuous"];
+    assert_eq!(effect["duration"], json!("WhileSourceTapped"));
+}
+
+#[rstest]
+#[case::itself(
+    "Mode$ AssignNoCombatDamage | ValidCard$ Card.Self",
+    "This",
+    "AssignsNoCombatDamage"
+)]
+#[case::unblocked(
+    "Mode$ AssignCombatDamageAsUnblocked | ValidCard$ Card.Self | Optional$ True",
+    "This",
+    "AssignsAsUnblocked"
+)]
+#[case::toughness(
+    "Mode$ CombatDamageToughness | ValidCard$ Card.Self",
+    "This",
+    "AssignsByToughness"
+)]
+fn a_combat_damage_static_is_a_rule_about_creatures(
+    #[case] line: &str,
+    #[case] who: &str,
+    #[case] quirk: &str,
+) {
+    let script = permanent(line);
+    assert_eq!(gaps(&script), Vec::<String>::new());
+    assert_eq!(
+        abilities(&script)[0]["Rule"]["rule"],
+        combat_rule(who, quirk)
+    );
+}
+
+#[rstest]
+#[case::toughness_above_power("Creature.powerLTtoughness+YouCtrl")]
+#[case::equipped_with_toughness_above_power("Creature.EquippedBy+powerLTtoughness")]
+fn damage_by_toughness_of_some_creatures_names_them(#[case] valid: &str) {
+    let script = permanent(&format!("Mode$ CombatDamageToughness | ValidCard$ {valid}"));
+    assert_eq!(gaps(&script), Vec::<String>::new());
+    let rule = &abilities(&script)[0]["Rule"]["rule"]["Combat"];
+    assert_eq!(rule["quirk"], json!("AssignsByToughness"));
+    assert!(rule["who"].get("Each").is_some(), "{rule}");
+}
+
+#[test]
+fn damage_by_toughness_of_every_creature_stays_a_rule_of_the_players() {
+    let script = permanent("Mode$ CombatDamageToughness | ValidCard$ Creature.YouCtrl");
+    assert_eq!(
+        abilities(&script)[0]["Rule"]["rule"],
+        json!({"ToughnessAssignsDamage": "You"})
+    );
+}
+
+#[test]
+fn a_mandatory_assignment_as_unblocked_stays_a_gap() {
+    let script = permanent("Mode$ AssignCombatDamageAsUnblocked | ValidCard$ Card.Self");
+    assert_eq!(
+        gaps(&script),
+        vec!["key:Static.AssignCombatDamageAsUnblocked.mandatory".to_owned()]
+    );
+}
+
+#[test]
+fn a_creature_that_assigns_no_combat_damage_this_turn_is_a_rule_for_the_turn() {
+    let script = "Name:T\nTypes:Creature Bear\nPT:2/2\nA:AB$ Effect | Cost$ 1 | StaticAbilities$ SNo | SpellDescription$ x\nSVar:SNo:Mode$ AssignNoCombatDamage | ValidCard$ Card.EffectSource | Description$ EFFECTSOURCE assigns no combat damage this turn.\n";
+    assert_eq!(gaps(script), Vec::<String>::new());
+    let effect = &abilities(script)[0]["Activated"]["effects"][0];
+    assert_eq!(
+        effect["Rule"],
+        json!({"rule": combat_rule("This", "AssignsNoCombatDamage"), "duration": "UntilEndOfTurn"})
+    );
+}

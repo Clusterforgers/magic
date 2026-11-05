@@ -71,6 +71,7 @@ mod tests {
             blockers: ids(blockers),
             excess: trample.then_some(DamageTarget::Player(PlayerId::from_index(1))),
             lethal,
+            unblocked: false,
         };
         let answer = damage_in_order(&options);
         let shares = answer

@@ -169,6 +169,8 @@ fn remembered_static(ctx: &mut Ctx, name: &str, who: &Value, duration: &Value) -
             let only = json!({"CanBlockOnly": [{"Not": {"Is": "This"}}]});
             Ok(vec![continuous(who, &[only], duration)])
         }
+        "AssignNoCombatDamage" if on_remembered("ValidCard") => Ok(vec![json!({"Rule": {
+            "rule": {"Combat": {"who": who, "quirk": "AssignsNoCombatDamage"}}, "duration": duration}})]),
         "MustBlock" if on_remembered("ValidCreature") => Ok(vec![
             json!({"Rule": {"rule": {"MustBlock": who}, "duration": duration}}),
         ]),

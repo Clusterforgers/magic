@@ -200,6 +200,9 @@ pub enum Duration {
     WhileSourceOnBattlefield,
     /// For as long as the controller of the effect controls the source ("gain control of target creature for as long as you control ~"): it ends when the source leaves the battlefield or another player controls it (CR 611.2b).
     WhileYouControlSource,
+    /// For as long as the source stays tapped ("for as long as ~ remains tapped", CR 611.2b): it ends when the source untaps, leaves
+    /// the battlefield or is another object, and does not come back when it is tapped again. Only a continuous effect lasts this long.
+    WhileSourceTapped,
     /// Until a player who is an opponent of the controller becomes the monarch (an exile that lasts that long).
     UntilOpponentBecomesMonarch,
     /// Through the next untap step of the player who controls a permanent it applies to ("doesn't untap during its
@@ -289,6 +292,15 @@ pub enum CombatQuirk {
     AttackDespiteDefender,
     /// They can block as though they were untapped.
     BlockWhileTapped,
+    /// Their controller may choose not to untap them during their untap step (CR 502.3): asked for each one that is tapped.
+    MayStayTapped,
+    /// They assign no combat damage (CR 510.1): the damage they would deal in the combat damage steps is not dealt.
+    AssignsNoCombatDamage,
+    /// Their controller may have each of them assign its combat damage as though it were not blocked (CR 510.1c): asked when
+    /// it is blocked and the damage is divided.
+    AssignsAsUnblocked,
+    /// They assign combat damage equal to their toughness rather than their power (CR 510.1a).
+    AssignsByToughness,
     /// They must be blocked if able: a requirement on the block declaration (CR 509.1c).
     MustBeBlocked(Blocking),
 }
@@ -814,6 +826,7 @@ mod tests {
     #[rstest]
     #[case(Duration::UntilEndOfTurn, r#""UntilEndOfTurn""#)]
     #[case(Duration::WhileYouControlSource, r#""WhileYouControlSource""#)]
+    #[case(Duration::WhileSourceTapped, r#""WhileSourceTapped""#)]
     #[case(
         Duration::WhileHasCounter(Box::new(CounterKind::Other("vow".into()))),
         r#"{"WhileHasCounter":{"Other":"vow"}}"#

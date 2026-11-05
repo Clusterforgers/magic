@@ -10,14 +10,10 @@ use crate::forge::script::Params;
 pub fn ability(ctx: &Ctx, p: &Params) -> Option<Tr<Value>> {
     Some(match p.get("Mode").unwrap_or_default() {
         "MinMaxBlocker" => block_limit(ctx, p),
-        "CantAttackUnless" => attack_tax(ctx, p).map(rule),
-        "CantPreventDamage" => no_prevention(ctx, p).map(rule),
+        "CantAttackUnless" => attack_tax(ctx, p).map(|found| json!({"Rule": {"rule": found}})),
+        "CantPreventDamage" => no_prevention(ctx, p).map(|found| json!({"Rule": {"rule": found}})),
         _ => return None,
     })
-}
-
-fn rule(rule: Value) -> Value {
-    json!({"Rule": {"rule": rule}})
 }
 
 /// Refuses a key the mode does not read.

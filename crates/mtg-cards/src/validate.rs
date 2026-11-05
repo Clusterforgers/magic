@@ -3158,6 +3158,9 @@ impl Walker<'_> {
                 if matches!(duration, Duration::WhileHasCounter(_)) {
                     w.uses("Duration", "WhileHasCounter");
                 }
+                if *duration == Duration::WhileSourceTapped {
+                    w.uses("Duration", "WhileSourceTapped");
+                }
                 if *duration == Duration::NextUntapStep && mods.as_slice() != [Modification::DoesntUntap] {
                     w.problem(C7_UNTAP_ONLY);
                 }
@@ -3189,6 +3192,9 @@ impl Walker<'_> {
                 // Only the layers end an effect when the source changes controller.
                 if *duration == Duration::WhileYouControlSource {
                     w.uses("Rule", "Duration.WhileYouControlSource");
+                }
+                if *duration == Duration::WhileSourceTapped {
+                    w.uses("Rule", "Duration.WhileSourceTapped");
                 }
                 if *duration == Duration::NextUntapStep {
                     w.problem(C7_UNTAP_ONLY);
@@ -3223,6 +3229,9 @@ impl Walker<'_> {
                 }
                 if *duration == Duration::WhileYouControlSource {
                     w.uses("Shield", "Duration.WhileYouControlSource");
+                }
+                if *duration == Duration::WhileSourceTapped {
+                    w.uses("Shield", "Duration.WhileSourceTapped");
                 }
                 if *duration == Duration::NextUntapStep {
                     w.problem(C7_UNTAP_ONLY);
