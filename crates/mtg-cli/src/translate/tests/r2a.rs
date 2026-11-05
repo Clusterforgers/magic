@@ -71,3 +71,16 @@ fn a_count_word_reads_to_its_amount(#[case] count: &str, #[case] part: &str) {
 fn an_x_paid_in_an_alternative_cost_stays_a_gap(#[case] count: &str, #[case] gap: &str) {
     assert_eq!(drawn(count), Err(vec![gap.to_owned()]));
 }
+
+#[rstest]
+#[case::each_creature("Valid Creature.YouCtrl", "RepeatEach")]
+#[case::the_attacker("TriggeredAttackerLKICopy", "Triggering")]
+fn doubling_power_reads_each_object_once(#[case] defined: &str, #[case] part: &str) {
+    let script = format!(
+        "Name:T\nTypes:Creature Elf\nT:Mode$ Attacks | ValidCard$ Creature.YouCtrl | Execute$ Dbl\nSVar:Dbl:DB$ Pump | Defined$ {defined} | NumAtt$ Double\n"
+    );
+    assert_eq!(gaps(&script), Vec::<String>::new(), "{defined}");
+    let found = abilities(&script)[0].to_string();
+    assert!(found.contains(part), "{found}");
+    assert!(found.contains("\"stat\":\"Power\""), "{found}");
+}

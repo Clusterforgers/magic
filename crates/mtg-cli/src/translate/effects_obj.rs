@@ -332,7 +332,12 @@ fn pump_amount(ctx: &Ctx, text: &str, single: Option<&Value>, stat: &str) -> Tr<
         return amount(ctx, text);
     }
     match single {
-        Some(of) if of == "This" || of.get("Target").is_some() => {
+        Some(of)
+            if of == "This"
+                || of == "Triggering"
+                || of.get("Target").is_some()
+                || of.get("Bound").is_some() =>
+        {
             Ok(json!({"Stat": {"of": of, "stat": stat}}))
         }
         _ => unmapped("amount:Double-of-several"),
@@ -399,7 +404,15 @@ fn pump(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
         return Ok(Vec::new());
     }
     let mut effects = Vec::new();
-    if p.has("NumAtt") || p.has("NumDef") || p.has("KW") {
+    let doubles = p.get("NumAtt") == Some("Double") || p.get("NumDef") == Some("Double");
+    if doubles && affected.get("Each").is_some() {
+        // Each object doubles its own value: one pass per object, the pass reading the object it is for.
+        let name = ctx.fresh("doubled");
+        let one = json!({ "Bound": name });
+        let mods = pump_mods(ctx, p, Some(&one))?;
+        let pass = json!({"Continuous": {"affected": one, "mods": mods, "duration": duration}});
+        effects.push(json!({"RepeatEach": {"over": affected, "as": name, "effects": [pass]}}));
+    } else if p.has("NumAtt") || p.has("NumDef") || p.has("KW") {
         let mods = pump_mods(ctx, p, Some(&affected))?;
         effects.push(
             json!({"Continuous": {"affected": affected, "mods": mods, "duration": duration}}),
