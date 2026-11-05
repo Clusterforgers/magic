@@ -1394,6 +1394,9 @@ fn entering_texts(by: &ReplaceBy, condition: Option<&Condition>) -> Vec<String> 
             "As ~ enters, you may pay {life} life. If you don't, it enters tapped"
         )],
         (ReplaceBy::RevealOrTapped(of), None) => reveal_texts(of),
+        (ReplaceBy::RevealOrTapped(of), Some(Condition::Not(held))) => {
+            reveal_unless_texts(of, held)
+        }
         (ReplaceBy::TappedForCounters { counter, count }, None) => {
             super::w13b_mill_rad::w13b_tapped_texts(counter, *count)
         }
@@ -2052,6 +2055,24 @@ fn reveal_texts(of: &Selector) -> Vec<String> {
         .map(|tail| {
             format!(
                 "As ~ enters, you may reveal {article} {card}. If you don't, {tail} enters tapped"
+            )
+        })
+        .collect()
+}
+
+/// "As ~ enters, you may reveal a Dragon card from your hand. ~ enters tapped unless you revealed a Dragon card this way
+/// or you control a Dragon": the reveal and the permanent that makes it needless.
+fn reveal_unless_texts(of: &Selector, held: &Condition) -> Vec<String> {
+    let Some(card) = phrase_text(of, Form::Subject) else {
+        return Vec::new();
+    };
+    let article = article(&card);
+    let revealed = card.split(" from ").next().unwrap_or(&card).to_owned();
+    holds_texts(held)
+        .into_iter()
+        .map(|held| {
+            format!(
+                "As ~ enters, you may reveal {article} {card}. ~ enters tapped unless you revealed {article} {revealed} this way or {held}"
             )
         })
         .collect()

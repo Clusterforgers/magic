@@ -410,6 +410,7 @@ mod pump_spells;
 mod r4_audit;
 mod r6q1_face_down_cost;
 mod r7p3_next_spell;
+mod r8p2_enters;
 mod random_pick;
 mod rebound;
 mod reconfigure;
