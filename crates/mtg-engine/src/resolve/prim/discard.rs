@@ -86,6 +86,12 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
             })
         })
         .collect();
+    // A name bound to the hand before the discard still reads the card as it was there (CR 608.2h).
+    let snapshots = chosen
+        .iter()
+        .flat_map(|(_, cards)| cards)
+        .filter_map(|id| crate::snapshot::snapshot(cx.state(), *id))
+        .collect();
     let events = picks
         .into_iter()
         .chain(chosen.into_iter().flat_map(|(player, cards)| {
@@ -94,14 +100,14 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
                 .map(move |object| Event::CardDiscarded { player, object })
         }))
         .collect();
-    Ok(match bind {
-        None => Run::events(events),
-        Some(name) => Run::Done {
-            events,
-            bound: vec![(name.clone(), discarded)],
-            snapshots: Vec::new(),
-            next: Next::Sibling,
-        },
+    Ok(Run::Done {
+        events,
+        bound: bind
+            .iter()
+            .map(|name| (name.clone(), discarded.clone()))
+            .collect(),
+        snapshots,
+        next: Next::Sibling,
     })
 }
 

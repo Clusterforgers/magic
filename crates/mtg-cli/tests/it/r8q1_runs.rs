@@ -73,7 +73,11 @@ fn run(driver: &mut Driver, yes: bool, want: &[&str]) {
             DecisionKind::ChooseTargets(o) => {
                 let picked: Vec<Target> = want
                     .iter()
-                    .filter_map(|n| driver.target_named(n).ok())
+                    .filter_map(|n| match *n {
+                        "p0" => Some(driver.target_player(0)),
+                        "p1" => Some(driver.target_player(1)),
+                        _ => driver.target_named(n).ok(),
+                    })
                     .filter(|t| o.legal.contains(t))
                     .take(o.max as usize)
                     .collect();
@@ -567,5 +571,29 @@ fn a_cost_that_taps_x_artifacts_is_offered_when_some_x_has_a_target(
             .unwrap()
             .is_empty(),
         offered
+    );
+}
+
+const BRAIN_PRY: &str = "Name:Brain Pry\nManaCost:1 B\nTypes:Sorcery\nA:SP$ NameCard | Defined$ You | ValidCards$ Card.nonLand | ValidDescription$ nonland | SubAbility$ RevealHand | SpellDescription$ Choose a nonland card name. Target player reveals their hand. That player discards a card with that name. If they can't, you draw a card.\nSVar:RevealHand:DB$ RevealHand | RememberRevealed$ True | ValidTgts$ Player | SubAbility$ DBDiscard\nSVar:DBDiscard:DB$ Discard | Defined$ Targeted | NumCards$ 1 | Mode$ TgtChoose | DiscardValid$ Card.NamedCard | SubAbility$ DBDraw\nSVar:DBDraw:DB$ Draw | Defined$ You | NumCards$ 1 | ConditionDefined$ Remembered | ConditionPresent$ Card.NamedCard | ConditionCompare$ EQ0 | SubAbility$ DBCleanup\nSVar:DBCleanup:DB$ Cleanup | ClearRemembered$ True | ClearNamedCard$ True\n";
+
+#[rstest::rstest]
+#[case::the_named_card_is_discarded_and_nothing_is_drawn(&["Named", "Other"], 0)]
+#[case::without_the_card_the_caster_draws(&["Other"], 1)]
+fn brain_pry_draws_only_when_no_card_with_the_name_was_discarded(
+    #[case] hand: &[&str],
+    #[case] drawn: usize,
+) {
+    let pry = card(BRAIN_PRY, &[CardType::Sorcery], "{0}", None);
+    let scenario = main_phase()
+        .library(0, library_of(&["Top1", "Top2"]))
+        .hand(0, [pry])
+        .hand(1, library_of(hand));
+    let mut driver = Driver::from_scenario(scenario).unwrap();
+    cast_and_run(&mut driver, "Brain Pry", true, &["Named", "p1"]);
+    let seat = mtg_core::ids::PlayerId::from_index;
+    assert_eq!(names(&driver, Zone::Hand(seat(0))).len(), drawn);
+    assert_eq!(
+        names(&driver, Zone::Graveyard(seat(1))).contains(&"Named".to_string()),
+        hand.contains(&"Named")
     );
 }
