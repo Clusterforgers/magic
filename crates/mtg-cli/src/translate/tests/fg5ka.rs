@@ -45,7 +45,7 @@ fn an_unless_cost_of_items_is_paid_by_the_payer(#[case] line: &str, #[case] node
 )]
 #[case::mana_x(
     "GainLife | LifeAmount$ 2 | UnlessCost$ X | UnlessPayer$ You",
-    "key:Unless.UnlessCost-X"
+    "amount:X"
 )]
 #[case::their_chooser_without_target(
     "ChangeZone | DefinedPlayer$ You | Chooser$ Targeted | Origin$ Hand | Destination$ Exile | ChangeType$ Card",

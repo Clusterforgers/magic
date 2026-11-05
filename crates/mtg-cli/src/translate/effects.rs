@@ -164,7 +164,7 @@ fn unless_pays(
             single => single,
         },
     };
-    let cost = unless_cost(ctx, unless)?;
+    let (cost, times) = unless_cost(ctx, unless)?;
     let (mut paid, mut unpaid) = (Vec::new(), Vec::new());
     if switched {
         paid.extend(effects);
@@ -181,6 +181,9 @@ fn unless_pays(
         pay.insert("who".into(), who);
     }
     pay.insert("cost".into(), cost);
+    if let Some(times) = times {
+        pay.insert("times".into(), times);
+    }
     if !paid.is_empty() {
         pay.insert("paid".into(), json!(paid));
     }
@@ -191,13 +194,29 @@ fn unless_pays(
 }
 
 /// The cost an `UnlessCost$` names: mana and the items `Pay` asks the payer for (life, discard, sacrifice, energy);
-/// a cost that reads an announced X stays a gap because nobody announces it here.
-fn unless_cost(ctx: &Ctx, text: &str) -> Tr<Value> {
+/// a cost of an amount (`X`, `PayLife<X>`, `PayEnergy<X>`) is one unit paid that many times at once, and the payer announces
+/// nothing; any other cost that reads X stays a gap.
+fn unless_cost(ctx: &Ctx, text: &str) -> Tr<(Value, Option<Value>)> {
+    let word = text.trim();
+    let unit = match word {
+        "X" | "Y" => Some(("1".to_owned(), word)),
+        _ => ["PayLife", "PayEnergy"].iter().find_map(|verb| {
+            let inner = word
+                .strip_prefix(verb)?
+                .strip_prefix('<')?
+                .strip_suffix('>')?;
+            matches!(inner, "X" | "Y").then(|| (format!("{verb}<1>"), inner))
+        }),
+    };
+    if let Some((unit, var)) = unit {
+        let times = amount(ctx, var)?;
+        return Ok((super::cost::cost(ctx, &unit)?, Some(times)));
+    }
     let cost = super::cost::cost(ctx, text)?;
     if reads_x(&cost) {
         return unmapped("key:Unless.UnlessCost-X");
     }
-    Ok(cost)
+    Ok((cost, None))
 }
 
 /// Whether a serialized cost holds an `{X}` of mana or the announced X as an amount.

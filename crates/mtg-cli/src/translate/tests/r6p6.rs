@@ -100,3 +100,75 @@ fn find(driver: &Driver, seat: usize, name: &str) -> Target {
 fn controller_restriction_words(#[case] body: &str, #[case] expected: &[&str]) {
     assert_eq!(gaps(&line(body)), expected);
 }
+
+fn sorcery(script: &str) -> Arc<CardDefinition> {
+    let mut card = CardDefinition::new("Subject")
+        .with_type(CardType::Sorcery)
+        .with_mana_cost(mtg_testkit::cards::cost(0, &[mtg_core::color::Color::Red]));
+    for value in abilities(script) {
+        card = card.with_rules(serde_json::from_value::<Ability>(value).unwrap());
+    }
+    Arc::new(card)
+}
+
+/// The target loses 4 life unless it pays {X}, X being the creatures the caster controls (two).
+const UNLESS: &str = "Name:Subject\nTypes:Sorcery\nManaCost:R\nA:SP$ LoseLife | ValidTgts$ Player | LifeAmount$ 4 | UnlessCost$ X | UnlessPayer$ Targeted\nSVar:X:Count$Valid Creature.YouCtrl\n";
+
+fn life_after(lands: usize, pays: bool) -> i32 {
+    use mtg_engine::decision::Answer;
+    let scenario = Scenario::new(2)
+        .at(1, 0, Step::Main1)
+        .hand(0, [sorcery(UNLESS)])
+        .battlefield(
+            0,
+            [
+                ready(mountain()),
+                ready(free_creature("A", 1, 1)),
+                ready(free_creature("B", 1, 1)),
+            ],
+        )
+        .battlefield(1, (0..lands).map(|_| ready(mountain())));
+    let mut driver = Driver::from_scenario(scenario).unwrap();
+    let target = driver.target_player(1);
+    driver.begin_cast("Subject").unwrap();
+    driver.choose_targets(&[target]).unwrap();
+    driver.pay_tapping(&["Mountain"], 0).unwrap();
+    for _ in 0..60 {
+        let decision = driver.decision().unwrap().clone();
+        let idle = driver.state().stack().is_empty() && driver.state().resolving().is_none();
+        let answer = match &decision.kind {
+            DecisionKind::Priority(_) if idle => break,
+            DecisionKind::YesNo(_) => Answer::YesNo(mtg_engine::choose::YesNoChoice(pays)),
+            DecisionKind::PayMana(_) => Answer::PayMana(mtg_engine::decision::PayChoice::Auto),
+            _ => Driver::passive_answer(&decision),
+        };
+        driver.answer(answer).unwrap();
+    }
+    driver
+        .state()
+        .player(mtg_core::ids::PlayerId::from_index(1))
+        .unwrap()
+        .life()
+}
+
+#[rstest]
+#[case::pays_the_amount(2, true, 20)]
+#[case::declines(2, false, 16)]
+fn an_unless_cost_of_an_amount_is_paid_that_many_times(
+    #[case] lands: usize,
+    #[case] pays: bool,
+    #[case] life: i32,
+) {
+    assert_eq!(life_after(lands, pays), life);
+}
+
+#[rstest]
+#[case::life("PayLife<X>")]
+#[case::energy("PayEnergy<X>")]
+#[case::mana("X")]
+fn an_amount_cost_reads_its_svar(#[case] cost: &str) {
+    let text = format!(
+        "Name:T\nTypes:Sorcery\nA:SP$ GainLife | LifeAmount$ 2 | UnlessCost$ {cost} | UnlessPayer$ You\nSVar:X:Count$Valid Creature.YouCtrl\n"
+    );
+    assert!(gaps(&text).is_empty(), "{:?}", gaps(&text));
+}
