@@ -288,10 +288,21 @@ pub(crate) fn mode_options(
         })
         .collect();
     let available = u32::try_from(modes.len()).unwrap_or(u32::MAX);
-    let min = modal.choose.fixed_min().unwrap_or(0);
     if !enough_modes(modal, available) {
         return None;
     }
+    let min = match &modal.choose.min {
+        Amount::Fixed(n) => u32::try_from(*n).unwrap_or(0),
+        // A fewest that depends on the game ("choose both instead") is read as the ability is announced.
+        other => announcing(state, source, controller)
+            .amount(other)
+            .map_or(0, |n| u32::try_from(n).unwrap_or(0)),
+    };
+    let min = if modal.repeat {
+        min
+    } else {
+        min.min(available)
+    };
     let wanted = match &modal.choose.max {
         None => available,
         Some(_) if all_may_be_chosen(state, source, controller, modal.all_if) => available,

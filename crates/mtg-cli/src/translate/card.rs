@@ -358,10 +358,45 @@ fn has_unused_target(value: &Value) -> bool {
     }
 }
 
+/// Reads the source for `Paid` in an ability whose whole cost takes only the source (`SacrificeSelf`), outside its cost.
+fn source_is_paid(value: &mut Value) {
+    match value {
+        Value::Object(map) => {
+            let own_cost = map
+                .get("cost")
+                .and_then(Value::as_array)
+                .is_some_and(|items| items.iter().any(|item| item == "SacrificeSelf"));
+            for (key, inner) in map.iter_mut() {
+                if own_cost && key != "cost" {
+                    name_source(inner);
+                } else {
+                    source_is_paid(inner);
+                }
+            }
+        }
+        Value::Array(items) => items.iter_mut().for_each(source_is_paid),
+        _ => {}
+    }
+}
+
+/// Replaces every read of `Paid` with the source.
+fn name_source(value: &mut Value) {
+    match value {
+        Value::String(word) if word == "Paid" => *value = Value::String("This".to_owned()),
+        Value::Array(items) => items.iter_mut().for_each(name_source),
+        Value::Object(map) => map.values_mut().for_each(name_source),
+        _ => {}
+    }
+}
+
 /// The ability in canonical form, or the gap that names why the DSL does not read it.
-fn checked(value: Value) -> Tr<Value> {
+fn checked(mut value: Value) -> Tr<Value> {
     if has_unused_target(&value) {
         return unmapped("targets:unused");
+    }
+    // "Sacrifice this: ... its power": what the cost took is the source, which the effects read as it left.
+    if reads_paid_without_objects(&value) {
+        source_is_paid(&mut value);
     }
     if reads_paid_without_objects(&value) {
         return unmapped("paid:cost-takes-no-objects");

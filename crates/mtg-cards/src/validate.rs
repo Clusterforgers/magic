@@ -140,6 +140,17 @@ fn is_uuid(text: &str) -> bool {
         })
 }
 
+/// The most an amount can be when it is fixed or a choice between fixed amounts; any other amount is left to the engine, which clamps it.
+fn most_of(amount: &Amount) -> Option<i64> {
+    match amount {
+        Amount::Fixed(n) => Some(i64::from(*n)),
+        Amount::When {
+            then, otherwise, ..
+        } => Some(most_of(then)?.max(most_of(otherwise)?)),
+        _ => None,
+    }
+}
+
 fn is_name(text: &str) -> bool {
     let mut chars = text.chars();
     chars.next().is_some_and(|c| c.is_ascii_lowercase())
@@ -219,6 +230,8 @@ struct Scope {
     names: Vec<BTreeMap<String, Kind>>,
     /// The names a `Let` fixed, which `Amount::Bound` may read.
     numbers: BTreeSet<String>,
+    /// The names steps bound as what they moved, discarded, chose or found: visible to every later step, since a step that did not run took nothing and reads empty.
+    moved: BTreeMap<String, Kind>,
 }
 
 impl Scope {
@@ -241,10 +254,17 @@ impl Scope {
             tests: 0,
             names: vec![BTreeMap::new()],
             numbers: BTreeSet::new(),
+            moved: BTreeMap::new(),
         }
     }
 
     fn lookup(&self, name: &str) -> Option<Kind> {
+        self.in_scope(name)
+            .or_else(|| self.moved.get(name).copied())
+    }
+
+    /// The kind of a name bound in a scope that is still open.
+    fn in_scope(&self, name: &str) -> Option<Kind> {
         self.names
             .iter()
             .rev()
@@ -426,13 +446,20 @@ impl<'a> Walker<'a> {
     /// Binds the objects a named step moved and the number it moved, which survives a token that ceased to exist.
     fn bind_moved(&mut self, name: &str) {
         self.bind(name, Kind::Object);
+        self.scope.moved.insert(name.to_owned(), Kind::Object);
         self.scope.numbers.insert(format!("{name}~moved"));
+    }
+
+    /// Binds what a step took or chose, which later steps may ask about even when a branch or a declined choice skipped it.
+    fn bind_kept(&mut self, name: &str, kind: Kind) {
+        self.bind(name, kind);
+        self.scope.moved.insert(name.to_owned(), kind);
     }
 
     fn bind(&mut self, name: &str, kind: Kind) {
         if !is_name(name) {
             self.problem(format!("`{name}` is not a name (lowercase letters, digits and underscores, starting with a letter)"));
-        } else if self.scope.lookup(name).is_some() {
+        } else if self.scope.in_scope(name).is_some() {
             self.problem(format!("`{name}` is already bound"));
         } else if let Some(scope) = self.scope.names.last_mut() {
             scope.insert(name.to_owned(), kind);
@@ -2663,7 +2690,7 @@ impl Walker<'_> {
                     w.at("filter", |w| w.selector(filter));
                 }
                 if let Some(name) = bind {
-                    w.at("as", |w| w.bind(name, Kind::Object));
+                    w.at("as", |w| w.bind_kept(name, Kind::Object));
                 }
             }
             Effect::LookAtTop { who, count, bind } | Effect::ExileTop { who, count, bind } => {
@@ -2803,7 +2830,7 @@ impl Walker<'_> {
                 w.at("who", |w| w.reference(who, Kind::Player));
                 w.at("filter", |w| w.selector(filter));
                 w.at("count", |w| w.bounds(count));
-                w.at("as", |w| w.bind(bind, Kind::Object));
+                w.at("as", |w| w.bind_kept(bind, Kind::Object));
             }
             Effect::ExileUntil {
                 who,
@@ -2877,7 +2904,7 @@ impl Walker<'_> {
                 w.at("who", |w| w.reference(who, Kind::Player));
                 w.at("from", |w| w.reference(from, kind));
                 w.at("count", |w| w.bounds(count));
-                w.at("as", |w| w.bind(bind, kind));
+                w.at("as", |w| w.bind_kept(bind, kind));
                 if let Some(rest) = rest_as {
                     w.at("rest_as", |w| w.bind(rest, kind));
                 }
@@ -3409,10 +3436,7 @@ impl Walker<'_> {
             self.problem("a modal ability needs at least two modes");
         }
         self.at("choose", |w| w.bounds(choose));
-        let limit = choose.max.as_ref().map(|m| match m {
-            Amount::Fixed(n) => i64::from(*n),
-            _ => i64::MAX,
-        });
+        let limit = choose.max.as_ref().and_then(most_of);
         if !repeat && limit.is_some_and(|n| n > i64::try_from(modes.len()).unwrap_or(i64::MAX)) {
             self.problem("chooses more modes than there are");
         }
@@ -4532,6 +4556,7 @@ fn has_keyword(card: &Card, printed: &PrintedCard, keyword: &str, granted: &[Key
     granted.iter().any(|k| lists(k, keyword))
         || card.abilities().any(|(face, ability)| match ability {
             Ability::Keyword(k) => lists(k, keyword),
+            ability if mentions_keyword(ability, keyword) => true,
             Ability::Manual { span, .. } => printed
                 .faces
                 .get(face)
@@ -4546,6 +4571,24 @@ fn has_keyword(card: &Card, printed: &PrintedCard, keyword: &str, granted: &[Key
         })
 }
 
+/// Whether the ability names the keyword as a word of its own rules: an exert cost, a search for a creature with reach.
+/// Scryfall lists those keywords for such a card as for a keyword line.
+fn mentions_keyword(ability: &Ability, keyword: &str) -> bool {
+    fn names(value: &serde_json::Value, keyword: &str) -> bool {
+        match value {
+            serde_json::Value::String(word) => word.eq_ignore_ascii_case(keyword),
+            serde_json::Value::Array(items) => items.iter().any(|item| names(item, keyword)),
+            // Taking a keyword away names it and grants nothing.
+            serde_json::Value::Object(map) => map.iter().any(|(key, item)| {
+                key.eq_ignore_ascii_case(keyword)
+                    || (key != "RemoveKeyword" && names(item, keyword))
+            }),
+            _ => false,
+        }
+    }
+    serde_json::to_value(ability).is_ok_and(|value| names(&value, keyword))
+}
+
 /// Whether Scryfall lists `keyword` (any case) for a card that has the keyword `k`.
 fn lists(k: &Keyword, keyword: &str) -> bool {
     k.name().eq_ignore_ascii_case(keyword)
@@ -4557,6 +4600,8 @@ fn lists(k: &Keyword, keyword: &str) -> bool {
         // Scryfall lists `Equip` for an Equipment that equips only some creatures as for any other.
         || (matches!(k, Keyword::EquipTo { .. })
             && Keyword::Equip(Cost::default()).name().eq_ignore_ascii_case(keyword))
+        // Scryfall lists `Hexproof` for "hexproof from black" as for plain hexproof.
+        || (matches!(k, Keyword::HexproofFrom(_)) && "Hexproof".eq_ignore_ascii_case(keyword))
         // Scryfall lists `Cycling` as well for a typecycling card (CR 702.29).
         || (matches!(k, Keyword::Typecycling { .. })
             && Keyword::Cycling(Cost::default()).name().eq_ignore_ascii_case(keyword))
@@ -5752,6 +5797,58 @@ mod tests {
         );
     }
 
+    /// What a step took or chose stays readable after a branch or a declined choice, which reads empty ("if you don't").
+    #[rstest]
+    #[case::a_declined_sacrifice(
+        r#"{"Spell":{"effects":[{"May":{"effects":[{"Sacrifice":{"filter":[{"Type":"Creature"}],"as":"gone"}}]}},{"If":{"condition":{"CountOf":{"op":"Eq","right":0,"selector":[],"subject":{"Bound":"gone"}}},"then":[{"Draw":{}}]}}]}}"#,
+        &[]
+    )]
+    #[case::a_discard_in_a_branch(
+        r#"{"Spell":{"effects":[{"If":{"condition":"YourTurn","then":[{"Discard":{"as":"thrown"}}]}},{"Draw":{"count":{"Count":[{"Is":{"Bound":"thrown"}}]}}}]}}"#,
+        &[]
+    )]
+    #[case::a_search_in_a_declined_choice(
+        r#"{"Spell":{"effects":[{"May":{"effects":[{"Search":{"as":"found","filter":[{"Subtype":"Food"}]}}]}},{"If":{"condition":{"CountOf":{"op":"Eq","right":0,"selector":[],"subject":{"Bound":"found"}}},"then":[{"Draw":{}}]}}]}}"#,
+        &[]
+    )]
+    #[case::a_look_stays_in_its_choice(
+        r#"{"Spell":{"effects":[{"May":{"effects":[{"LookAtTop":{"as":"top"}}]}},{"Reveal":{"what":{"Bound":"top"}}}]}}"#,
+        &["faces[0].abilities[0].Spell.effects[1].Reveal.what: `top` is not bound by an earlier step"]
+    )]
+    #[case::the_same_name_in_two_branches(
+        r#"{"Spell":{"effects":[{"If":{"condition":"YourTurn","then":[{"Sacrifice":{"filter":["This"],"as":"gone"}}],"otherwise":[{"Sacrifice":{"filter":["This"],"as":"gone"}}]}}]}}"#,
+        &[]
+    )]
+    fn r1g_taken_names_outlive_their_branch(#[case] ability: &str, #[case] expected: &[&str]) {
+        assert_eq!(problems(ability), expected, "{ability}");
+    }
+
+    /// A modal ability may choose up to a number the game decides; only a fixed choice past the modes is refused.
+    #[rstest]
+    #[case::a_fixed_count_past_the_modes("3", true)]
+    #[case::a_choice_between_fixed_counts_past_the_modes(
+        r#"{"When":{"condition":"YourTurn","then":4,"otherwise":1}}"#,
+        true
+    )]
+    #[case::a_choice_within_the_modes(
+        r#"{"When":{"condition":"YourTurn","then":2,"otherwise":1}}"#,
+        false
+    )]
+    #[case::a_count_the_game_decides(r#"{"Players":"Opponents"}"#, false)]
+    fn r1g_a_modal_most_is_read_by_its_value(#[case] most: &str, #[case] refused: bool) {
+        let json = format!(
+            r#"{{"Spell":{{"effects":[{{"Modal":{{"choose":{{"min":1,"max":{most}}},"modes":[{{"effects":[{{"Draw":{{}}}}]}},{{"effects":[{{"GainLife":{{"amount":1}}}}]}}]}}}}]}}}}"#
+        );
+        let found = problems(&json);
+        assert_eq!(
+            found
+                .iter()
+                .any(|p| p.contains("more modes than there are")),
+            refused,
+            "{found:?}"
+        );
+    }
+
     #[rstest]
     #[case::full_with_clause(
         "Full",
@@ -5965,6 +6062,24 @@ mod printed_keywords {
         &[(BIRD, "Flying", r#"{"Keyword":"Reach"}"#)],
         &["Flying"],
         &["Flying"]
+    )]
+    #[case::hexproof_from_is_listed_as_hexproof(
+        "Full",
+        &[(BIRD, "Hexproof from black", r#"{"Keyword":{"HexproofFrom":[{"Color":"Black"}]}}"#)],
+        &["Hexproof"],
+        &[]
+    )]
+    #[case::an_exert_cost_is_listed_as_exert(
+        "Full",
+        &[(BIRD, "{T}, Exert: Draw a card.", r#"{"Activated":{"cost":["Tap","Exert"],"effects":[{"Draw":{}}]}}"#)],
+        &["Exert"],
+        &[]
+    )]
+    #[case::a_filter_that_names_reach_lists_reach(
+        "Full",
+        &[(BIRD, "Search for a creature with reach.", r#"{"Triggered":{"when":{"StepBegins":{"step":"Upkeep","whose":"You"}},"effects":[{"Destroy":{"what":{"Each":[{"Type":"Creature"},{"HasKeyword":"Reach"}]}}}]}}"#)],
+        &["Reach"],
+        &[]
     )]
     #[case::a_full_card_with_the_ability_passes(
         "Full",

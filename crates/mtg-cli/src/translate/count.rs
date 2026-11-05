@@ -318,6 +318,7 @@ fn reference_head(head: &str) -> Option<&'static str> {
         "Targeted" => "Targeted",
         "ParentTargeted" => "ParentTarget",
         "Sacrificed" => "Sacrificed",
+        "Discarded" => "Discarded",
         "Enchanted" => "Enchanted",
         "Equipped" => "Equipped",
         "TriggerRemembered" => "DelayedTriggerRemembered",
@@ -357,7 +358,7 @@ fn referred(ctx: &Ctx, head: &str, word: &str, body: &Body<'_>, gaps: &mut Gaps)
         Body::Word {
             word: "Amount",
             arg: None,
-        } if matches!(head, "Sacrificed" | "TriggerRemembered") => {
+        } if matches!(head, "Sacrificed" | "Discarded" | "TriggerRemembered") => {
             reference.map(|of| json!({"CountOf": {"of": of, "filter": []}}))
         }
         Body::Word { word, arg: None } => {

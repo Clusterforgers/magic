@@ -99,9 +99,61 @@ pub fn chain_at(ctx: &mut Ctx, p: &Params, top: bool) -> Tr<Vec<Value>> {
     match p.get("Cost") {
         Some(text) if !top => {
             let cost = super::cost::cost(ctx, text)?;
+            if let Some((verb, taken)) = taken_read_after(&cost, &effects) {
+                return Ok(taken_then(ctx, verb, &taken, effects));
+            }
             Ok(vec![json!({"Pay": {"cost": cost, "paid": effects}})])
         }
         _ => Ok(effects),
+    }
+}
+
+/// The sacrifice or discard a payment is when it is the whole cost and the effects after it read what it took ("the
+/// sacrificed creature's power"): a payment names no objects to its effects, a step does.
+fn taken_read_after(cost: &Value, effects: &[Value]) -> Option<(&'static str, Value)> {
+    let [item] = cost.as_array()?.as_slice() else {
+        return None;
+    };
+    let (verb, taken) = ["Sacrifice", "Discard"]
+        .into_iter()
+        .find_map(|verb| item.get(verb).map(|taken| (verb, taken.clone())))?;
+    let reads = Value::Array(effects.to_vec())
+        .to_string()
+        .contains("\"Paid\"");
+    reads.then_some((verb, taken))
+}
+
+/// "You may sacrifice or discard ...; if you do, ...": the step names what it took and the effects after it read that name.
+fn taken_then(ctx: &mut Ctx, verb: &str, taken: &Value, mut effects: Vec<Value>) -> Vec<Value> {
+    let name = ctx.fresh(if verb == "Sacrifice" {
+        "sacrificed"
+    } else {
+        "discarded"
+    });
+    let mut step = json!({ verb: taken.clone() });
+    step[verb]["as"] = json!(name);
+    for effect in &mut effects {
+        name_paid(effect, &name);
+    }
+    // A sacrificed token is gone, so the number moved says it; a discarded card is in the graveyard to count.
+    let did = if verb == "Sacrifice" {
+        json!({"Compare": {"left": {"Bound": format!("{name}~moved")}, "op": "Ge", "right": 1}})
+    } else {
+        json!({"CountOf": {"op": "Ge", "right": 1, "selector": [], "subject": {"Bound": name}}})
+    };
+    super::frame::ask(
+        vec![step, json!({"If": {"condition": did, "then": effects}})],
+        &json!("You"),
+    )
+}
+
+/// Replaces every read of `Paid` with the name of the step that took the objects.
+fn name_paid(value: &mut Value, name: &str) {
+    match value {
+        Value::String(word) if word == "Paid" => *value = json!({"Bound": name}),
+        Value::Array(items) => items.iter_mut().for_each(|item| name_paid(item, name)),
+        Value::Object(map) => map.values_mut().for_each(|item| name_paid(item, name)),
+        _ => {}
     }
 }
 
@@ -709,6 +761,10 @@ fn charm(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
         modes.push(mode);
     }
     ctx.targets = outer;
+    // "Each mode must target a different player" is a rule across modes that the engine's targeting cannot enforce.
+    if p.get("CharmNum") == Some("MaxUniqueOpponents") {
+        return unmapped("key:Charm.DifferentPlayerPerMode");
+    }
     let max = p.get("CharmNum").unwrap_or("1");
     let min = p.get("MinCharmNum").unwrap_or(max);
     let (min, max) = (amount(ctx, min)?, amount(ctx, max)?);
