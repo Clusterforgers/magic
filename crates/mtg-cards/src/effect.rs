@@ -372,6 +372,10 @@ pub enum Effect {
         /// Who searches.
         #[serde(default = "Ref::you", skip_serializing_if = "Ref::is_you")]
         who: Ref,
+        /// Whose zone is searched when it is not the searcher's own ("search target opponent's library"); exactly one player,
+        /// the searcher sees the matches and chooses. Absent: the searcher's own.
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        of: Option<Ref>,
         /// Whose zone: their library unless the zone says otherwise.
         #[serde(
             default = "ZoneKind::library",
@@ -1673,11 +1677,11 @@ mod tests {
         r#"{"Move":{"what":{"Bound":"land"},"to":{"Battlefield":{"tapped":true}}}}"#
     )]
     #[case::search(
-        Effect::Search { who: Ref::You, zone: ZoneKind::Library, also: Vec::new(), filter: Selector(vec![Pred::Supertype(mtg_core::card::Supertype::Basic)]), count: Bounds::default(), reveal: false, bind: "land".into() },
+        Effect::Search { who: Ref::You, of: None, zone: ZoneKind::Library, also: Vec::new(), filter: Selector(vec![Pred::Supertype(mtg_core::card::Supertype::Basic)]), count: Bounds::default(), reveal: false, bind: "land".into() },
         r#"{"Search":{"filter":[{"Supertype":"Basic"}],"as":"land"}}"#
     )]
     #[case::search_of_several_zones(
-        Effect::Search { who: Ref::You, zone: ZoneKind::Library, also: vec![ZoneKind::Hand, ZoneKind::Graveyard], filter: Selector(vec![Pred::Subtype(mtg_core::card::Subtype("Rune".into()))]), count: Bounds::default(), reveal: false, bind: "rune".into() },
+        Effect::Search { who: Ref::You, of: None, zone: ZoneKind::Library, also: vec![ZoneKind::Hand, ZoneKind::Graveyard], filter: Selector(vec![Pred::Subtype(mtg_core::card::Subtype("Rune".into()))]), count: Bounds::default(), reveal: false, bind: "rune".into() },
         r#"{"Search":{"also":["Hand","Graveyard"],"filter":[{"Subtype":"Rune"}],"as":"rune"}}"#
     )]
     #[case::conjure(

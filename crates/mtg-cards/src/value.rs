@@ -1078,6 +1078,14 @@ pub enum Condition {
         /// The zone searched.
         zone: ZoneKind,
     },
+    /// The word the resolution's `ChooseValue` of words bound under the name is this one ("on the top or bottom"): false
+    /// when nothing was chosen.
+    ChosenWord {
+        /// The name the word was bound to.
+        name: String,
+        /// The word asked about.
+        word: String,
+    },
     /// The effect just before this one in its list was carried out in full ("if you do"): a "may" that was
     /// accepted, a cost that was paid, cards that were moved.
     Performed,

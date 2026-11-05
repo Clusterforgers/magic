@@ -33,6 +33,7 @@ impl KeywordRules for Typecycling {
             effects: vec![
                 Effect::Search {
                     who: Ref::You,
+                    of: None,
                     zone: ZoneKind::Library,
                     also: Vec::new(),
                     filter: find.clone(),

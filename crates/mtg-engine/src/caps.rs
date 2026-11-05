@@ -171,6 +171,7 @@ const RUNS: &[&str] = &[
     "Effect.Reveal",
     "Effect.Search",
     "Search.Zones",
+    "Search.Of",
     "Effect.Shuffle",
     "Effect.Move",
     "Effect.Move.Battlefield",
@@ -496,6 +497,7 @@ const RUNS: &[&str] = &[
     "Condition.Kicked",
     "Condition.KickedWith",
     "Condition.Performed",
+    "Condition.ChosenWord",
     "Amount.Kicks",
     "Amount.Mutations",
     "Amount.Promised",
@@ -744,6 +746,7 @@ mod tests {
     #[case::moving_in_a_random_order_to_the_top("Effect.Move.Random.Top", false)]
     #[case::searching("Effect.Search", true)]
     #[case::searching_several_zones("Search.Zones", true)]
+    #[case::searching_another_library("Search.Of", true)]
     #[case::sacrificing("Effect.Sacrifice", true)]
     #[case::damage("Effect.DealDamage", true)]
     #[case::gaining_life("Effect.GainLife", true)]
@@ -1108,6 +1111,7 @@ mod tests {
     #[case::r3p1_untapping_the_source_as_a_cost("Cost.Untap", false)]
     #[case::event_amounts("Amount.Triggering", true)]
     #[case::if_you_do("Condition.Performed", true)]
+    #[case::a_chosen_word("Condition.ChosenWord", true)]
     #[case::if_you_do_after_another_effect("Condition.Performed.Other", false)]
     #[case::the_monarch("Condition.Monarch", true)]
     #[case::the_monarch_as_the_turn_began("Condition.MonarchAtTurnStart", true)]

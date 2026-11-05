@@ -1012,6 +1012,10 @@ impl<'a> Walker<'a> {
                 self.uses("Condition", "StartingPlayer");
                 self.at("StartingPlayer", |w| w.reference(who, Kind::Player));
             }
+            Condition::ChosenWord { name, .. } => {
+                self.uses("Condition", "ChosenWord");
+                self.chosen_as(name);
+            }
             Condition::Performed => {
                 self.uses("Condition", "Performed");
                 // The engine knows whether a `May` was accepted, whether a `CastFromZone` cast or played the card and whether a `Sacrifice` or a `RemoveCounters` took something; any other effect before it waits.
@@ -2733,6 +2737,7 @@ impl Walker<'_> {
             | Effect::Bolster { count } => w.at("count", |w| w.amount(count)),
             Effect::Search {
                 who,
+                of,
                 zone,
                 also,
                 filter,
@@ -2740,6 +2745,13 @@ impl Walker<'_> {
                 bind,
                 ..
             } => {
+                if let Some(of) = of {
+                    w.uses("Search", "Of");
+                    if !also.is_empty() {
+                        w.problem("a search of another player's zone names one zone");
+                    }
+                    w.at("of", |w| w.reference(of, Kind::Player));
+                }
                 if !also.is_empty() {
                     w.uses("Search", "Zones");
                     let zones: Vec<_> = std::iter::once(zone).chain(also).collect();

@@ -37,6 +37,7 @@ pub(super) fn zone_of(kind: ZoneKind, player: PlayerId) -> Result<Zone, ResolveE
 pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
     let Effect::Search {
         who,
+        of,
         zone,
         also,
         filter,
@@ -62,6 +63,21 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         required
     };
     let text = wording::search(*zone, filter, required, most);
+    // Another player's zone: the one player `of` names; nobody left to name is nothing to search.
+    let owner = match of {
+        None => None,
+        Some(reference) => {
+            let owners = cx.scope.players(reference)?;
+            match owners
+                .first()
+                .copied()
+                .filter(|player| state.is_alive(*player))
+            {
+                Some(player) => Some(player),
+                None => return Ok(Run::events(Vec::new())),
+            }
+        }
+    };
     let mut searches: Vec<(PlayerId, Zone)> = Vec::new();
     let mut selections = Vec::new();
     for player in cx
@@ -74,7 +90,7 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         if *zone == ZoneKind::Library && cant_search(state, player) {
             continue;
         }
-        let place = zone_of(*zone, player)?;
+        let place = zone_of(*zone, owner.unwrap_or(player))?;
         let mut matches: Vec<ObjectId> = Vec::new();
         for id in state.zone(place) {
             if let Some(card) = state.object(*id)

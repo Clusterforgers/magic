@@ -749,6 +749,7 @@ fn search_sequence(effects: &[Effect], who: &Ref) -> Option<(String, usize)> {
     let [
         Effect::Search {
             who: searcher,
+            of: None,
             zone: ZoneKind::Library,
             also,
             filter,
@@ -772,6 +773,7 @@ fn search_sequence(effects: &[Effect], who: &Ref) -> Option<(String, usize)> {
         [
             Effect::Search {
                 who: second,
+                of: None,
                 zone: ZoneKind::Library,
                 also: other_also,
                 filter: other,
