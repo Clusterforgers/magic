@@ -2678,6 +2678,12 @@ impl Walker<'_> {
                     w.uses("Exile", &format!("Duration.{}", tag_of(duration)));
                 }
             }
+            Effect::ExileHidden { what, bind } => {
+                w.at("what", |w| w.reference(what, Kind::Object));
+                if let Some(name) = bind {
+                    w.at("as", |w| w.bind_moved(name));
+                }
+            }
             Effect::Tap { what, bind } => {
                 w.at("what", |w| w.reference(what, Kind::Object));
                 if let Some(name) = bind {
@@ -2685,7 +2691,6 @@ impl Walker<'_> {
                 }
             }
             Effect::Reveal { what }
-            | Effect::ExileHidden { what }
             | Effect::Counter { what }
             | Effect::Untap { what }
             | Effect::TapOrUntap { what }

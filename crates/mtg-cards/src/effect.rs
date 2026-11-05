@@ -522,6 +522,9 @@ pub enum Effect {
     ExileHidden {
         /// What is exiled face down.
         what: Ref,
+        /// The name the cards exiled are bound to, as the objects they become in exile (CR 400.7).
+        #[serde(rename = "as", default, skip_serializing_if = "Option::is_none")]
+        bind: Option<String>,
     },
     /// Exiles the card of the resolving spell encoded on a creature (cipher, CR 702.99a): it lies in exile linked to that
     /// creature, and the link ends when the card leaves exile or the creature leaves the battlefield. Nothing happens
@@ -1623,6 +1626,7 @@ pub fn hideaway(count: Amount) -> Vec<Effect> {
         },
         Effect::ExileHidden {
             what: Ref::Bound(HIDDEN.to_owned()),
+            bind: None,
         },
         Effect::Move {
             what: Ref::Bound(UNHIDDEN.to_owned()),
