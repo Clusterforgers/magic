@@ -305,7 +305,8 @@ const IMPRINT_AS: [(&str, &str, &str); 8] = [
 ];
 
 /// The keys that remember the objects the line acts on (its target or `Defined$`), for verbs that cannot fail to act.
-const ACTED_ON: [(&str, &str); 3] = [
+const ACTED_ON: [(&str, &str); 4] = [
+    ("DealDamage", "RememberDamaged"),
     ("PutCounter", "RememberPut"),
     ("Tap", "RememberTapped"),
     ("GainControl", "RememberControlled"),
@@ -348,6 +349,10 @@ pub fn line(
             line = rename(&line, key, own);
             moved.push(*slot);
         } else if ACTED_ON.contains(&(api, key.as_str())) && !p.has("CardChoices") {
+            // Damage divided or dealt to several targets names the ones that got some; one object is bound here.
+            if p.has("DividedAsYouChoose") || p.has("TargetMax") {
+                return unmapped(format!("key:{api}.{key}-with-several-objects"));
+            }
             line = line.without(&[key]);
             acted.push(*slot);
         } else if key == "RememberTargets" && !matches!(api, "ChangeZone" | "Destroy") {

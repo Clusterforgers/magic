@@ -111,13 +111,14 @@ fn destroy(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
             "TargetMin",
             "TargetMax",
             "RememberDestroyed",
+            "RememberLKI",
             "RememberTargets",
         ],
     )?;
     let what = subject(ctx, p, "", None)?;
     let regenerate = p.get("NoRegen") != Some("True");
     let mut effect = json!({"Destroy": {"what": what, "regenerate": regenerate}});
-    if remember::wanted(p, &["RememberDestroyed", "RememberTargets"]) {
+    if remember::wanted(p, &["RememberDestroyed", "RememberLKI", "RememberTargets"]) {
         remember::bind_moved(ctx, &mut effect, "Destroy", "destroyed");
     }
     Ok(effect)
