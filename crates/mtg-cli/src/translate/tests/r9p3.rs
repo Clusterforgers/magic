@@ -58,3 +58,25 @@ fn an_attack_trigger_asks_whether_the_defender_is_poisoned(
     assert_eq!(found.is_empty(), asked, "{found:?}");
     assert_eq!(json.contains(r#""on":"Defending""#), asked, "{json}");
 }
+
+#[rstest]
+#[case::opponents("Player.Opponent", true)]
+#[case::everyone("", false)]
+fn a_remembered_target_that_opponents_cannot_target_has_hexproof(
+    #[case] activator: &str,
+    #[case] read: bool,
+) {
+    let activator = if activator.is_empty() {
+        String::new()
+    } else {
+        format!(" | Activator$ {activator}")
+    };
+    let (json, found) = card(
+        "Instant",
+        &format!(
+            "A:SP$ Pump | ValidTgts$ Creature | SubAbility$ E\nSVar:E:DB$ Effect | Defined$ Targeted | StaticAbilities$ S | RememberObjects$ Targeted | ExileOnMoved$ Battlefield\nSVar:S:Mode$ CantTarget | ValidTarget$ Card.IsRemembered{activator}"
+        ),
+    );
+    assert_eq!(found.is_empty(), read, "{found:?}");
+    assert_eq!(json.contains("Hexproof"), read, "{json}");
+}
