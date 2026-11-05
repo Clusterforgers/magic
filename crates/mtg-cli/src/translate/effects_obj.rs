@@ -196,6 +196,7 @@ fn damage_all(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
             "ValidPlayers",
             "DamageMap",
             "ValidTgts",
+            "DamageSource",
         ],
     )?;
     if p.has("ValidTgts") && p.has("ValidPlayers") {
@@ -203,6 +204,11 @@ fn damage_all(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
     }
     damage_map(p)?;
     let amount = amount(ctx, p.get("NumDmg").unwrap_or("1"))?;
+    // The creature or permanent that deals the damage, when it is not the ability's own source.
+    let source = p
+        .get("DamageSource")
+        .map(|word| defined(ctx, word))
+        .transpose()?;
     // Players alone: no objects are hit (an empty selector would name every one).
     let mut effects = Vec::new();
     if let Some(valid) = p.get("ValidCards") {
@@ -221,6 +227,11 @@ fn damage_all(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
             effects.push(json!({"DealDamage": {"to": "Opponents", "amount": amount}}));
         }
         Some(other) => return unmapped(format!("key:DamageAll.ValidPlayers={other}")),
+    }
+    if let Some(source) = source {
+        for effect in &mut effects {
+            effect["DealDamage"]["source"] = source.clone();
+        }
     }
     Ok(effects)
 }
@@ -509,7 +520,8 @@ fn pump(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
         effects.push(
             json!({"Continuous": {"affected": affected, "mods": mods, "duration": duration}}),
         );
-    } else if !p.has("KWChoice") {
+    } else if !p.has("KWChoice") && !p.has("AtEOT") {
+        // A line with only `AtEOT$` is the clean-up of the object ("sacrifice it at the beginning of the next end step").
         return unmapped("key:Pump.nothing");
     }
     if let Some(choice) = p.get("KWChoice") {
@@ -681,10 +693,11 @@ fn animate(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
     Ok(effects)
 }
 
-/// Colours as the DSL names them.
+/// Colours as the DSL names them; `Colorless` names none, so setting it gives the empty set (CR 105.2c).
 pub fn color_names(colors: &str) -> Tr<Vec<&'static str>> {
     colors
         .split(',')
+        .filter(|word| word.trim() != "Colorless")
         .map(|word| match word.trim() {
             "White" => Ok("White"),
             "Blue" => Ok("Blue"),
@@ -814,10 +827,20 @@ fn put_counter(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
             "ValidTgts",
             "TargetMin",
             "TargetMax",
+            "CounterTypes",
             "DividedAsYouChoose",
         ],
     )?;
-    let kinds = counter_choices(p.get("CounterType").unwrap_or_default())?;
+    // `CounterTypes$` is every kind in the list at once ("a flying counter and a lifelink counter"); `CounterType$` a list is a choice.
+    let all_kinds = p.has("CounterTypes");
+    if all_kinds && (p.has("CounterType") || p.has("DividedAsYouChoose")) {
+        return unmapped("key:PutCounter.CounterTypes");
+    }
+    let kinds = counter_choices(
+        p.get("CounterTypes")
+            .or(p.get("CounterType"))
+            .unwrap_or_default(),
+    )?;
     let mut effects = Vec::new();
     // `Choices$` is a pick made as the effect resolves, from the objects that match, with no targets.
     let on = match p.get("Choices") {
@@ -838,11 +861,15 @@ fn put_counter(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
     } else {
         amount(ctx, p.get("CounterNum").unwrap_or("1"))?
     };
-    let puts = kinds
+    let puts: Vec<Value> = kinds
         .into_iter()
         .map(|kind| json!({"PutCounters": {"on": on, "counter": kind, "count": count}}))
         .collect();
-    effects.push(either(puts)?);
+    if all_kinds {
+        effects.extend(puts);
+    } else {
+        effects.push(either(puts)?);
+    }
     Ok(effects)
 }
 
@@ -871,8 +898,18 @@ fn remove_counter(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
         ],
     )?;
     let from = subject(ctx, p, "Self", None)?;
-    if p.get("CounterType") == Some("ALL") && matches!(p.get("CounterNum"), None | Some("All")) {
+    if matches!(p.get("CounterType"), Some("ALL" | "All"))
+        && matches!(p.get("CounterNum"), None | Some("All"))
+    {
         return Ok(json!({"RemoveAllCounters": {"from": from}}));
+    }
+    // Counters of any kinds, picked one at a time by the controller (CR 122.1).
+    if p.get("CounterType") == Some("Any") {
+        if matches!(p.get("CounterNum"), Some("All" | "Any")) {
+            return unmapped("key:RemoveCounter.Any-number");
+        }
+        let count = amount(ctx, p.get("CounterNum").unwrap_or("1"))?;
+        return Ok(json!({"RemoveCounters": {"from": from, "count": count}}));
     }
     let Some(kind) = p.get("CounterType").and_then(kind_word) else {
         return unmapped("key:RemoveCounter.CounterType");
@@ -1043,13 +1080,44 @@ pub fn attach(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
             "TargetMax",
             "Object",
             "Optional",
+            "Choices",
+            "ChoiceTitle",
         ],
     )?;
     let object = p.get("Object");
     if object.is_some_and(|word| word.starts_with("Valid ")) {
         return unmapped("key:Attach.Object-all");
     }
-    let (what, to) = match (object, p.has("ValidTgts"), p.get("Defined")) {
+    let mut effects = Vec::new();
+    let (what, to) = if let Some(choices) = p.get("Choices") {
+        // The player picks, as the effect resolves: the attachment (for a host named by `Defined$`) or the host (for an
+        // `Object$`).
+        if p.has("ValidTgts") || (object.is_some() == p.has("Defined")) {
+            return unmapped("key:Attach.Choices-shape");
+        }
+        let chosen = ctx.fresh("attach");
+        let from = json!({"Each": selector_in(ctx, choices, None)?});
+        effects.push(json!({"Choose": {
+            "who": "You", "from": from, "count": {"min": 1, "max": 1}, "as": chosen}}));
+        let bound = json!({ "Bound": chosen });
+        match (object, p.get("Defined")) {
+            (Some(word), None) => (defined(ctx, word)?, bound),
+            (None, Some(host)) => (bound, defined(ctx, host)?),
+            _ => return unmapped("key:Attach.Choices-shape"),
+        }
+    } else {
+        attach_ends(ctx, p, object)?
+    };
+    effects.push(json!({"Attach": {"what": what, "to": to}}));
+    if p.get("Optional") == Some("True") {
+        effects = super::frame::ask(effects, &json!("You"));
+    }
+    Ok(effects)
+}
+
+/// The attachment and the host of an attach line with no `Choices$`.
+fn attach_ends(ctx: &mut Ctx, p: &Params, object: Option<&str>) -> Tr<(Value, Value)> {
+    Ok(match (object, p.has("ValidTgts"), p.get("Defined")) {
         (None, true, None) => (json!("This"), subject(ctx, p, "", None)?),
         (None, false, Some(host)) => (json!("This"), defined(ctx, host)?),
         (Some(word), true, None) if !matches!(word, "Targeted" | "ThisTargetedCard") => {
@@ -1063,12 +1131,7 @@ pub fn attach(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
         (Some(word), false, Some(host)) => (defined(ctx, word)?, defined(ctx, host)?),
         (None, false, None) => return unmapped("key:Attach.no-ValidTgts"),
         _ => return unmapped("key:Attach.Object-shape"),
-    };
-    let mut effect = json!({"Attach": {"what": what, "to": to}});
-    if p.get("Optional") == Some("True") {
-        effect = super::frame::ask(vec![effect], &json!("You")).remove(0);
-    }
-    Ok(vec![effect])
+    })
 }
 
 /// `Debuff`: the object loses the keywords for a while ("target creature loses flying until end of turn").

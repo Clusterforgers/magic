@@ -85,7 +85,8 @@ fn keyword_list_of(ctx: &Ctx, words: &str) -> Tr<Vec<Value>> {
 }
 
 /// The keys a `Clone` line may have, besides the exceptions.
-const CLONE_KEYS: [&str; 18] = [
+const CLONE_KEYS: [&str; 19] = [
+    "ChoiceZone",
     "CloneTarget",
     "Defined",
     "ValidTgts",
@@ -110,6 +111,9 @@ const CLONE_KEYS: [&str; 18] = [
 /// player picks, for the `Duration$` (for good without one). With `Choices$` and a target the target becomes the copy.
 fn clone(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
     only(p, "Clone", &CLONE_KEYS)?;
+    if p.has("ChoiceZone") {
+        return unmapped("key:Clone.ChoiceZone");
+    }
     if p.has("TargetMin") || p.has("TargetMax") {
         return unmapped("key:Clone.TargetMin");
     }
@@ -178,7 +182,13 @@ pub fn enters_as_copy(ctx: &Ctx, name: &str) -> Tr<Value> {
     let Some(choices) = p.get("Choices") else {
         return unmapped("key:Clone.no-Choices");
     };
-    let mut by = json!({"AsCopy": {"of": selector_any(ctx, choices)?}});
+    let mut of = selector_any(ctx, choices)?;
+    match p.get("ChoiceZone") {
+        None | Some("Battlefield") => {}
+        Some("Graveyard") => of.push(json!({"In": "Graveyard"})),
+        Some(other) => return unmapped(format!("key:Clone.ChoiceZone={other}")),
+    }
+    let mut by = json!({"AsCopy": {"of": of}});
     let except = exceptions(ctx, &p, false)?;
     if !except.is_empty() {
         by["AsCopy"]["except"] = Value::Array(except);

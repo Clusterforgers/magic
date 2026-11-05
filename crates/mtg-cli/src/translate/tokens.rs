@@ -85,8 +85,32 @@ fn token_create(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
         return unmapped("key:Token.no-TokenScript");
     };
     if script.contains(',') {
-        return unmapped("key:Token.TokenScript-list");
+        // Each script is its own token, made in the order listed with the same count and owner.
+        if [
+            "TokenPower",
+            "TokenToughness",
+            "RememberTokens",
+            "AttachedTo",
+            "ValidTgts",
+            "PumpKeywords",
+            "PumpDuration",
+        ]
+        .iter()
+        .any(|key| p.has(key))
+        {
+            return unmapped("key:Token.TokenScript-list");
+        }
+        let mut effects = Vec::new();
+        for one in script.split(',') {
+            effects.extend(token_of(ctx, p, one)?);
+        }
+        return Ok(effects);
     }
+    token_of(ctx, p, script)
+}
+
+/// The token one script names.
+fn token_of(ctx: &mut Ctx, p: &Params, script: &str) -> Tr<Vec<Value>> {
     let Some(face) = ctx.world.tokens.get(script.trim()) else {
         return unmapped("token:unknown-script");
     };
@@ -196,20 +220,40 @@ fn custom(ctx: &Ctx, face: &Face, words: &[&str]) -> Tr<Value> {
     if words.contains(&"Creature") != face.pt.is_some() {
         return unmapped("token:stats-shape");
     }
-    if let Some(pt) = &face.pt {
-        let (power, toughness) = parse_pt(pt)?;
-        spec["power"] = json!(power);
-        spec["toughness"] = json!(toughness);
-    }
     // The lines of a token script are read like those of a card: a token with a line left out is not written.
     let inner = translate_face(ctx.world, face);
     if let Some(gap) = inner.gaps.into_iter().next() {
         return unmapped(format!("token:{}", gap.0));
     }
+    if let Some(pt) = &face.pt {
+        let (power, toughness) = match parse_pt(pt) {
+            Ok(stats) => stats,
+            // A `*` stat is set by the token's own characteristic-defining ability (CR 604.3), from a base of zero.
+            Err(_) if defines_stats(&inner.abilities) => {
+                let part = |text: &str| text.parse().unwrap_or(0);
+                pt.split_once('/')
+                    .map_or((0, 0), |(p, t)| (part(p), part(t)))
+            }
+            Err(gap) => return Err(gap),
+        };
+        spec["power"] = json!(power);
+        spec["toughness"] = json!(toughness);
+    }
     if !inner.abilities.is_empty() {
         spec["abilities"] = Value::Array(inner.abilities);
     }
     Ok(json!({ "Custom": spec }))
+}
+
+/// Whether one of the abilities is a characteristic-defining static that sets power and toughness.
+fn defines_stats(abilities: &[Value]) -> bool {
+    abilities.iter().any(|ability| {
+        ability.pointer("/Static/defining") == Some(&json!(true))
+            && ability
+                .pointer("/Static/mods")
+                .and_then(Value::as_array)
+                .is_some_and(|mods| mods.iter().any(|m| m.get("SetPT").is_some()))
+    })
 }
 
 fn parse_pt(pt: &str) -> Tr<(i32, i32)> {
@@ -223,6 +267,9 @@ fn colors_of(colors: &str) -> Tr<Value> {
     let mut out = Vec::new();
     for word in colors.split(',') {
         out.push(match word.trim() {
+            // A colorless token has no color; "all" is the five colors.
+            "colorless" => continue,
+            "all" => return Ok(json!(["White", "Blue", "Black", "Red", "Green"])),
             "white" => "White",
             "blue" => "Blue",
             "black" => "Black",
@@ -430,6 +477,8 @@ fn attached(ctx: &mut Ctx, p: &Params, create: &mut Value) -> Tr<Option<Value>> 
     let to = match (word, p.has("ValidTgts")) {
         ("Targeted" | "ThisTargetedCard", true) => super::valid::subject(ctx, p, "", None)?,
         ("Self", false) => defined(ctx, "Self")?,
+        // The target an earlier step of the ability chose.
+        ("Targeted", false) => defined(ctx, "Targeted")?,
         _ => return unmapped(format!("key:Token.AttachedTo={word}")),
     };
     let name = if let Some(name) = create.get("as").and_then(Value::as_str) {
