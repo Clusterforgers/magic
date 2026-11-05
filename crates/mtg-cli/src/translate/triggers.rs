@@ -409,6 +409,10 @@ fn card_event(ctx: &Ctx, p: &Params, variant: &str) -> Tr<Value> {
 
 /// "Whenever you attack" and "whenever you attack with two or more creatures".
 fn attackers_declared(ctx: &Ctx, p: &Params) -> Tr<Value> {
+    // One player is attacked once in a declaration, so "attacks you" is the attackers at that one player.
+    if matches!(p.get("AttackedTarget"), Some("You" | "Player.EnchantedBy")) {
+        return super::triggers_r4::attackers_at_one_target(ctx, p, "AttackersDeclared");
+    }
     keys(
         p,
         "AttackersDeclared",

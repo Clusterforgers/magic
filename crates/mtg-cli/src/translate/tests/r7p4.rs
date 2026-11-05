@@ -244,3 +244,35 @@ fn a_desert_counts_where_it_is_yours(
 ) {
     assert_eq!(life_with_desert(mine, theirs, battlefield), life);
 }
+
+#[rstest]
+#[case::you("AttackingPlayer$ Player | AttackedTarget$ You", json!("You"))]
+#[case::enchanted(
+    "AttackingPlayer$ Player | AttackedTarget$ Player.EnchantedBy",
+    json!("AttachedPlayer")
+)]
+fn attackers_at_one_player_are_the_group_at_that_player(#[case] keys: &str, #[case] at: Value) {
+    let text = trigger(&format!("AttackersDeclared | {keys}"));
+    assert_eq!(gaps(&text), Vec::<String>::new());
+    let one = trigger(&format!("AttackersDeclaredOneTarget | {keys}"));
+    let found = &abilities(&text)[0]["Triggered"]["when"];
+    assert_eq!(found, &abilities(&one)[0]["Triggered"]["when"]);
+    assert_eq!(found["GroupAttacksAt"]["at"], at);
+}
+
+#[rstest]
+#[case::any_player("AttackedTarget$ Player")]
+#[case::opponents("AttackedTarget$ Opponent")]
+#[case::player_or_walker("AttackedTarget$ You,Planeswalker.YouCtrl")]
+fn several_attacked_players_stay_a_gap(#[case] keys: &str) {
+    let text = trigger(&format!(
+        "AttackersDeclared | AttackingPlayer$ Player | {keys}"
+    ));
+    assert!(
+        gaps(&text)
+            .iter()
+            .any(|found| found.starts_with("key:Trigger.AttackersDeclared.AttackedTarget")),
+        "{:?}",
+        gaps(&text)
+    );
+}
