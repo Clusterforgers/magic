@@ -193,7 +193,7 @@ Keyword     = Flying | Reach | FirstStrike | ... | Shroud | Protection(Selector)
 
 **Values** (evaluated when an effect runs or a pattern is matched; they produce no events)
 ```
-Ref       = You | Opponents | EachPlayer | This | Target(i) | Triggering | Dealer | Attached | AttachedPlayer | Monarch | Defending | Attacked | MostLife | ActivePlayer | Paid | Bound(name)
+Ref       = You | Opponents | EachPlayer | This | Target(i) | Triggering | Dealer | Attached | AttachedPlayer | Monarch | Defending | Attacked | MostLife | ActivePlayer | Paid | Affected (in a static ability: the object each change or condition is worked out for, so "for each other creature that shares a type with it" counts per object) | Bound(name)
           | ControllerOf(Ref) | OwnerOf(Ref) | Each(Selector)
 Selector  = [Pred]                       all must hold; the zone is Battlefield unless In(zone) says otherwise (Spell means the stack); [] matches everything there
 Pred      = This | Other | Is(Ref) | SharesSubtype(Ref) | SharesName(Ref) | SharesType(Ref) | SharesColor(Ref) | XInCost | Goaded | HasAttached(Selector) | AttachedTo(Ref) | ExiledWith(Ref) | EncodedWith(Ref) | Type | Supertype | Subtype | Color | Colorless | Token | Commander | Spell | Ability(Activated|Triggered) | Tapped | Untapped | Monstrous | HasAnyCounter

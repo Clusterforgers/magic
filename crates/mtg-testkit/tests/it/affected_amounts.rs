@@ -1,5 +1,5 @@
-//! Goal: a static change whose amount reads `Affected` is worked out for each object it applies to, so a creature counts
-//! the creatures that share a type with it, the counters on itself or its own mana value, and not those of the source.
+//! Goal: a static change whose amount or condition reads `Affected` is worked out for each object it applies to (a creature counts
+//! the creatures that share a type with it, the counters on itself, its own mana value), a spell is not counted in its own first-spell condition, and a spell remembers the cards exiled to cast it.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
 use std::sync::Arc;
