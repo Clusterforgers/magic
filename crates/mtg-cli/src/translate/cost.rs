@@ -88,6 +88,10 @@ pub fn cost(ctx: &Ctx, text: &str) -> Tr<Value> {
     let mut items = Vec::new();
     for word in parts(text) {
         if is_mana(word) {
+            // An {X} that the card ties to another value (the mana value of a target) is not the player's free choice.
+            if word.contains('X') && ctx.svar("X").is_some_and(|value| !value.contains("xPaid")) {
+                return unmapped("cost:X-tied-to-a-value");
+            }
             mana.push_str(&symbol(word));
         } else {
             items.push(item(ctx, word)?);
