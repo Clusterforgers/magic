@@ -109,6 +109,7 @@ fn token(r: &mut Reader<'_>) -> Option<TokenRef> {
         // The announced X stands for the amount until the where clause or the cost names it.
         Some(()) if r.where_x || r.x_free => TokenRef::Sized {
             size: Amount::X,
+            toughness: None,
             token: spec,
         },
         Some(()) => return None,
@@ -473,7 +474,11 @@ fn token_text(token: &TokenRef) -> Option<Described> {
         }
         TokenRef::Custom(spec) | TokenRef::Sized { token: spec, .. } => {
             let size = match token {
-                TokenRef::Sized { size, .. } if *size == Amount::X => "X/X".to_owned(),
+                TokenRef::Sized {
+                    size,
+                    toughness: None,
+                    ..
+                } if *size == Amount::X => "X/X".to_owned(),
                 TokenRef::Sized { .. } => return None,
                 _ => format!("{}/{}", spec.power?, spec.toughness?),
             };

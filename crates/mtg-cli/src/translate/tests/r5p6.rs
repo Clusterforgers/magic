@@ -128,21 +128,24 @@ fn a_may_line_does_not_gate_the_sub_ability_after_it() {
 const MONUMENT: &str = "Name:T\nTypes:Sorcery\nA:SP$ Token | TokenPower$ X | TokenToughness$ X | TokenScript$ w_x_x_spirit | TokenOwner$ You\nSVar:X:Count$Valid Creature.YouCtrl\n";
 
 #[test]
-fn a_counted_token_is_made_then_sized_by_numbers_fixed_before_it() {
+fn a_counted_token_has_its_size_as_part_of_what_it_is() {
     assert_eq!(gaps(MONUMENT), Vec::<String>::new());
     let found = abilities(MONUMENT);
     let effects = found[0]["Spell"]["effects"].as_array().unwrap();
-    assert!(
-        effects[0].get("Let").is_some() && effects[1].get("Let").is_some(),
-        "{effects:?}"
-    );
-    let name = &effects[2]["CreateToken"]["as"];
-    assert_eq!(effects[3]["Continuous"]["affected"], json!({"Bound": name}));
-    assert_eq!(effects[3]["Continuous"]["duration"], json!("Forever"));
-    assert_eq!(
-        effects[2]["CreateToken"]["token"]["Custom"]["power"],
-        json!(0)
-    );
+    assert_eq!(effects.len(), 1, "{effects:?}");
+    let sized = &effects[0]["CreateToken"]["token"]["Sized"];
+    assert!(sized["size"].get("Count").is_some(), "{sized}");
+    assert!(sized.get("toughness").is_none());
+    assert!(sized["token"].get("power").is_none());
+}
+
+#[test]
+fn a_token_with_two_different_sizes_keeps_both() {
+    let text = MONUMENT.replace("TokenToughness$ X", "TokenToughness$ 2");
+    assert_eq!(gaps(&text), Vec::<String>::new());
+    let found = abilities(&text);
+    let sized = &found[0]["Spell"]["effects"][0]["CreateToken"]["token"]["Sized"];
+    assert_eq!(sized["toughness"], json!(2), "{sized}");
 }
 
 #[rstest]

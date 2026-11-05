@@ -484,6 +484,23 @@ pub fn permanent_card(spec: &str) -> Tr<Option<Value>> {
     Ok(Some(json!({"AnyOf": any})))
 }
 
+/// "Put there this turn" outside the battlefield: `EnteredThisTurn` tallies only arrivals on the battlefield, so a card in
+/// another zone is selected by its latest arrival from any zone.
+fn arrived_outside(preds: &mut [Value]) {
+    for pred in preds.iter_mut().filter(|pred| *pred == "EnteredThisTurn") {
+        let origins = [
+            "Battlefield",
+            "Hand",
+            "Library",
+            "Graveyard",
+            "Stack",
+            "Exile",
+            "Command",
+        ];
+        *pred = json!({"AnyOf": origins.map(|zone| json!({"ArrivedFrom": zone}))});
+    }
+}
+
 /// A selector over the cards of a zone: the alternatives with `In(zone)` added when the zone is not the battlefield.
 pub fn selector_in(ctx: &Ctx, spec: &str, zone: Option<&str>) -> Tr<Vec<Value>> {
     let spec = &commas(spec);
@@ -492,6 +509,9 @@ pub fn selector_in(ctx: &Ctx, spec: &str, zone: Option<&str>) -> Tr<Vec<Value>> 
         && let Some(any) = permanent_card(spec)?
     {
         preds.push(any);
+    }
+    if !matches!(zone, None | Some("Battlefield")) {
+        arrived_outside(&mut preds);
     }
     match zone {
         None | Some("Battlefield") => {}
@@ -601,6 +621,12 @@ pub fn target_spec(ctx: &Ctx, params: &Params, zone: Option<&str>) -> Tr<Value> 
     let what = target_what(ctx, valid, zone);
     ctx.scope.set(before);
     let mut what = what?;
+    // Outside the battlefield the controller is the owner ("from your graveyard"), which the text states in its own words.
+    if matches!(zone, None | Some("Battlefield"))
+        && super::any_player::narrows_target(ctx.oracle, valid)
+    {
+        return unmapped("target:script-narrower-than-oracle");
+    }
     if let Some(word) = params.get("TargetsWithDefinedController") {
         restrict_to_controller(ctx, word, zone, &mut what)?;
     }

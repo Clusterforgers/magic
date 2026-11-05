@@ -411,7 +411,16 @@ pub fn unique_targets(ctx: &Ctx, p: &Params) -> Tr<Option<Params>> {
             if kinds.iter().any(|(_, players)| *players) {
                 return unmapped("key:TargetUnique=players");
             }
-            out.push(alternative.to_owned());
+            // "Any other target": a player, or a creature, planeswalker or battle that is none of the earlier targets.
+            if base.trim() == "Any" && alternative.trim() == "Any" && !nots.is_empty() {
+                let others: Vec<String> = ["Creature", "Planeswalker", "Battle"]
+                    .iter()
+                    .map(|kind| format!("{kind}.{}", nots.join("+")))
+                    .collect();
+                out.push(format!("Player,{}", others.join(",")));
+            } else {
+                out.push(alternative.to_owned());
+            }
         } else if nots.is_empty() {
             out.push(alternative.to_owned());
         } else {

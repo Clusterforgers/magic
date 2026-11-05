@@ -740,6 +740,38 @@ const DIG_KEYS: [&str; 21] = [
     "RememberChanged",
 ];
 
+/// Whether the sentence of the Oracle text that looks at the top cards lets the player take none ("you may", "up to", "any
+/// number"). Taking one of the cards looked at is not a search, so a sentence that says none of these takes exactly as many
+/// as there are (CR 701.20); a text without such a sentence keeps the choice open.
+fn sentence_allows_none(oracle: &str) -> bool {
+    let text = oracle.replace("\\n", "\n").to_lowercase();
+    let Some(start) = ["look at the top", "reveal the top"]
+        .iter()
+        .filter_map(|opening| text.find(opening))
+        .min()
+    else {
+        return true;
+    };
+    // Both openings are ASCII and at least 14 bytes long; the opening itself ("reveal the top") takes no card.
+    let line = text[start + 14..].split('\n').next().unwrap_or_default();
+    // The first sentence that takes a card says whether the player may take none.
+    for sentence in line.split(". ").take(3) {
+        if ["may", "up to", "any number"]
+            .iter()
+            .any(|word| sentence.contains(word))
+        {
+            return true;
+        }
+        if ["exile", "put ", "reveal", "take", "return"]
+            .iter()
+            .any(|word| sentence.contains(word))
+        {
+            return false;
+        }
+    }
+    true
+}
+
 /// `Dig`: look at the top cards, take some, put the rest somewhere ("look at the top four cards of your library; you may
 /// reveal a creature card from among them and put it into your hand; put the rest on the bottom in any order").
 pub fn dig(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
@@ -763,7 +795,8 @@ pub fn dig(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
     let from_top = json!({ "Bound": top });
     let take = Take::of(ctx, p)?;
     let filter = p.get("ChangeValid");
-    let may = p.get("Optional") == Some("True") || filter.is_some();
+    let may =
+        p.get("Optional") == Some("True") || (filter.is_some() && sentence_allows_none(ctx.oracle));
     // "Put all of them" has no choice: what matches moves, and a "may" would be all or nothing.
     if matches!(take, Take::All) && p.get("Optional") == Some("True") {
         return unmapped("key:Dig.ChangeNum");

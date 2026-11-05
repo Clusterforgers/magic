@@ -8,7 +8,8 @@ use crate::common::casting::lands;
 use mtg_cards::CardDefinition;
 use mtg_core::card::CardType;
 use mtg_core::color::Color;
-use mtg_testkit::cards::{creature, forest};
+use mtg_core::mana::ManaSymbol;
+use mtg_testkit::cards::{creature, creature_costing, forest};
 use mtg_testkit::{Driver, Scenario, ScriptError, ready};
 use rstest::rstest;
 
@@ -48,5 +49,28 @@ fn a_permission_lets_mana_of_any_type_or_color_pay_a_colored_cost(
         .battlefield(0, mine);
     let mut driver = Driver::from_scenario(table)?;
     assert_eq!(driver.begin_cast("Bear").is_ok(), offered);
+    Ok(())
+}
+
+#[rstest]
+#[case::any_color_does_not_pay_colorless("AnyColor", false)]
+#[case::any_type_pays_colorless("AnyType", true)]
+fn mana_of_any_color_does_not_pay_a_colorless_symbol(
+    #[case] spend: &str,
+    #[case] offered: bool,
+) -> Result<(), ScriptError> {
+    let mut mine = lands(2, forest);
+    mine.push(ready(spender(spend)));
+    let eldrazi = creature_costing(
+        "Eldrazi",
+        &[ManaSymbol::Colorless, ManaSymbol::Colorless],
+        2,
+        2,
+    );
+    let table = Scenario::new(2)
+        .graveyard(0, [eldrazi])
+        .battlefield(0, mine);
+    let mut driver = Driver::from_scenario(table)?;
+    assert_eq!(driver.begin_cast("Eldrazi").is_ok(), offered);
     Ok(())
 }

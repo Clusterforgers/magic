@@ -466,9 +466,16 @@ fn token_text(ctx: &Ctx, token: &TokenRef) -> String {
     match token {
         TokenRef::Named(name) => name.clone(),
         TokenRef::Custom(spec) => spec_text(ctx, spec),
-        TokenRef::Sized { size, token } => {
-            let size = phrase::amount(ctx, size);
-            format!("{size}/{size} {}", spec_text(ctx, token))
+        TokenRef::Sized {
+            size,
+            toughness,
+            token,
+        } => {
+            let power = phrase::amount(ctx, size);
+            let toughness = toughness
+                .as_ref()
+                .map_or_else(|| power.clone(), |t| phrase::amount(ctx, t));
+            format!("{power}/{toughness} {}", spec_text(ctx, token))
         }
         TokenRef::CopyOf {
             of, no_mana_cost, ..

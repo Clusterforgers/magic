@@ -2216,8 +2216,15 @@ impl Walker<'_> {
                 }
             }
             TokenRef::Custom(spec) => self.at("Custom", |w| w.token_spec(spec, false)),
-            TokenRef::Sized { size, token } => {
+            TokenRef::Sized {
+                size,
+                toughness,
+                token,
+            } => {
                 self.at("size", |w| w.amount(size));
+                if let Some(toughness) = toughness {
+                    self.at("toughness", |w| w.amount(toughness));
+                }
                 self.at("token", |w| w.token_spec(token, true));
             }
             TokenRef::CopyOf { of, except, .. } => {

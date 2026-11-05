@@ -93,9 +93,10 @@ fn modes_that_must_target_different_players_stay_a_gap() {
 fn the_player_who_sacrifices_is_the_one_asked() {
     let text = "Name:T\nManaCost:2\nTypes:Enchantment\nT:Mode$ Phase | Phase$ Upkeep | ValidPlayer$ You | Execute$ Sac | TriggerDescription$ x\nSVar:Sac:DB$ Sacrifice | Defined$ Player.Opponent | SacValid$ Creature | Optional$ True\n";
     assert_eq!(gaps(text), Vec::<String>::new());
-    let found = &abilities(text)[0]["Triggered"]["effects"][0]["May"];
+    // The opponents are asked in turn and the one who says yes sacrifices, as a payment does.
+    let found = &abilities(text)[0]["Triggered"]["effects"][0]["Pay"];
     assert_eq!(found["who"], "Opponents", "{found}");
-    assert!(found["effects"][0].get("Sacrifice").is_some(), "{found}");
+    assert!(found["cost"][0].get("Sacrifice").is_some(), "{found}");
 }
 
 #[test]
