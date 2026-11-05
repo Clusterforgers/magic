@@ -7,7 +7,6 @@ use mtg_cards::CardDefinition;
 use mtg_cards::ability::Ability;
 use mtg_cards::trigger::TriggerPattern;
 use mtg_core::card::CardType;
-use mtg_core::color::Color;
 use mtg_core::ids::PlayerId;
 use mtg_engine::choose::{CardsChoice, YesNoChoice};
 use mtg_engine::decision::{Answer, DecisionKind};
@@ -178,6 +177,7 @@ fn named(
     assert_eq!(gaps(&text), Vec::<String>::new(), "{script}");
     let mut card = CardDefinition::new(name)
         .with_type(types)
+        .with_subtype("Elf")
         .with_mana_cost(cost(mana, &[]));
     if let Some((power, toughness)) = power {
         card = card.with_power_toughness(power, toughness);
@@ -440,5 +440,78 @@ fn a_one_off_cast_trigger_fires_for_the_next_creature_spell_only() {
         settle(&mut driver, Step::Main1, false, None);
     }
     assert_eq!(life(&driver, 0), 21);
-    let _ = Color::White;
+}
+
+const DYING: &str = "T:Mode$ ChangesZone | Origin$ Battlefield | Destination$ Graveyard,Exile | ValidCard$ Card.Self | Execute$ Gain";
+
+fn removal(name: &str, api: &str) -> Arc<CardDefinition> {
+    let text = format!("Name:{name}\nTypes:Instant\nA:SP$ {api} | ValidTgts$ Creature\n");
+    assert_eq!(gaps(&text), Vec::<String>::new(), "{api}");
+    let mut card = CardDefinition::new(name)
+        .with_type(CardType::Instant)
+        .with_mana_cost(cost(0, &[]));
+    for value in abilities(&text) {
+        card = card.with_rules(serde_json::from_value::<Ability>(value).unwrap());
+    }
+    Arc::new(card)
+}
+
+#[rstest]
+#[case::dies("Destroy")]
+#[case::is_exiled("ChangeZone | Origin$ Battlefield | Destination$ Exile")]
+fn a_creature_that_dies_or_is_put_into_exile_triggers_once_either_way(#[case] api: &str) {
+    let scenario = Scenario::new(2)
+        .at(1, 0, Step::Main1)
+        .hand(0, [removal("Remover", api)])
+        .battlefield(0, std::iter::once(ready(subject(DYING))));
+    let mut driver = Driver::from_scenario(scenario).unwrap();
+    let target = driver.target_named("Subject").unwrap();
+    driver.cast_at("Remover", &[target]).unwrap();
+    settle(&mut driver, Step::Main1, false, None);
+    assert_eq!(life(&driver, 0), 21);
+}
+
+#[test]
+fn the_two_lines_of_an_eminence_ability_work_from_the_command_zone_and_the_battlefield() {
+    let eminence = "T:Mode$ SpellCast | ValidCard$ Card.Elf+Other | ValidActivatingPlayer$ You | TriggerZones$ Command | PresentZone$ Command | IsPresent$ Card.StrictlySelf | Execute$ Gain\nT:Mode$ SpellCast | ValidCard$ Card.Elf+Other | ValidActivatingPlayer$ You | TriggerZones$ Battlefield | PresentZone$ Battlefield | IsPresent$ Card.StrictlySelf | Execute$ Gain | Secondary$ True";
+    let script = format!("Name:Subject\nTypes:Legendary Creature Elf\nPT:1/1\n{eminence}\n{GAIN}");
+    let found: Vec<Value> = abilities(&script)
+        .into_iter()
+        .filter(|ability| ability.get("Triggered").is_some())
+        .collect();
+    assert_eq!(gaps(&script), Vec::<String>::new());
+    let zones: Vec<Value> = found
+        .iter()
+        .map(|ability| {
+            ability["Triggered"]
+                .get("from")
+                .cloned()
+                .unwrap_or(Value::Null)
+        })
+        .collect();
+    assert_eq!(zones, vec![json!("Command"), Value::Null]);
+}
+
+#[test]
+fn an_eminence_commander_triggers_from_the_command_zone_and_again_on_the_battlefield() {
+    let eminence = "T:Mode$ SpellCast | ValidCard$ Card.Elf+Other | ValidActivatingPlayer$ You | TriggerZones$ Command | PresentZone$ Command | IsPresent$ Card.StrictlySelf | Execute$ Gain\nT:Mode$ SpellCast | ValidCard$ Card.Elf+Other | ValidActivatingPlayer$ You | TriggerZones$ Battlefield | PresentZone$ Battlefield | IsPresent$ Card.StrictlySelf | Execute$ Gain | Secondary$ True";
+    let commander = subject(eminence);
+    let elf = |name: &str| named(name, CardType::Creature, 0, Some((1, 1)), "");
+    let scenario = Scenario::new(2)
+        .format(Arc::new(mtg_engine::format::Commander))
+        .commanders(0, [commander])
+        .at(1, 0, Step::Main1)
+        .hand(0, [elf("First"), elf("Second")]);
+    let mut driver = Driver::from_scenario(scenario).unwrap();
+    // A Commander game starts at 40 life.
+    driver.cast("First").unwrap();
+    settle(&mut driver, Step::Main1, false, None);
+    assert_eq!(life(&driver, 0), 41);
+    driver.cast("Subject").unwrap();
+    settle(&mut driver, Step::Main1, false, None);
+    assert_eq!(life(&driver, 0), 41);
+    driver.cast("Second").unwrap();
+    settle(&mut driver, Step::Main1, false, None);
+    // Once from the command zone and once from the battlefield.
+    assert_eq!(life(&driver, 0), 42);
 }

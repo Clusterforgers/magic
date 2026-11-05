@@ -21,7 +21,7 @@ const COMMON: [&str; 6] = [
 /// A trigger line as a `Triggered` ability.
 pub fn triggered(ctx: &mut Ctx, body: &str) -> Tr<Value> {
     ctx.reset();
-    let all = Params::parse(body);
+    let all = in_own_zone(Params::parse(body));
     let intervening = condition(ctx, &all)?;
     // The engine checks the condition again as the ability resolves (CR 603.4) unless the line says it does not.
     let intervening = match (all.get("NoResolvingCheck"), intervening) {
@@ -51,7 +51,7 @@ pub fn triggered(ctx: &mut Ctx, body: &str) -> Tr<Value> {
     });
     let from = match p.get("TriggerZones") {
         None | Some("Battlefield") => None,
-        Some(zone @ ("Graveyard" | "Hand" | "Exile" | "Library")) => Some(zone),
+        Some(zone @ ("Graveyard" | "Hand" | "Exile" | "Library" | "Command")) => Some(zone),
         Some(other) => return unmapped(format!("key:Trigger.TriggerZones={other}")),
     };
     let Some(execute) = p.get("Execute") else {
@@ -115,6 +115,21 @@ pub fn triggered(ctx: &mut Ctx, body: &str) -> Tr<Value> {
         }
     }
     Ok(ability)
+}
+
+/// `IsPresent$ Card.StrictlySelf | PresentZone$ Command` beside `TriggerZones$ Command` (an Eminence ability): the card is in
+/// the zone the ability works from, which the ability's `from` already says.
+fn in_own_zone(p: Params) -> Params {
+    let zone = p.get("TriggerZones").filter(|zone| *zone == "Command");
+    if p.get("IsPresent") == Some("Card.StrictlySelf")
+        && zone.is_some()
+        && p.get("PresentZone") == zone
+        && !p.has("PresentCompare")
+        && !p.has("PresentPlayer")
+    {
+        return p.without(&["IsPresent", "PresentZone"]);
+    }
+    p
 }
 
 /// The step a card enters in (`Phase$ Declare Attackers` of a zone change) as a condition of the event, checked as the ability

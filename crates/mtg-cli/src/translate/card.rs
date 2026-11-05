@@ -133,10 +133,7 @@ pub fn translate_face(world: &World, face: &Face) -> FaceOut {
             continue;
         }
         let before = Before::of(&out);
-        take(
-            &mut out,
-            audited_one(|| merged_trigger(&mut ctx, &group).map(|ability| vec![ability])),
-        );
+        take(&mut out, audited_one(|| merged_trigger(&mut ctx, &group)));
         record(&mut out, "T", &group, &before);
     }
     for (group, result) in static_abilities(&mut ctx, &face.statics) {
@@ -246,11 +243,51 @@ fn join_statics(first: &mut Value, second: &Value) -> bool {
 
 /// One trigger from a group of lines: the event patterns of the lines joined as alternatives when the rest of the
 /// abilities is the same.
-fn merged_trigger(ctx: &mut Ctx, group: &[&String]) -> Tr<Value> {
+fn merged_trigger(ctx: &mut Ctx, group: &[&String]) -> Tr<Vec<Value>> {
     let mut abilities = Vec::new();
     for body in group {
         abilities.push(triggered(ctx, body)?);
     }
+    if differ_only_in_zone(&abilities) {
+        return Ok(abilities);
+    }
+    merge_alternatives(abilities).map(|ability| vec![ability])
+}
+
+/// Whether the abilities are the same but for the zone each works from and the check that the card is there (an Eminence ability works from the command zone
+/// and again from the battlefield): they stay apart, as only one of the zones holds the card at a time.
+fn differ_only_in_zone(abilities: &[Value]) -> bool {
+    let without_zone = |ability: &Value| {
+        let mut inner = ability.get("Triggered").cloned().unwrap_or(Value::Null);
+        if let Some(map) = inner.as_object_mut() {
+            map.remove("from");
+            map.remove("if");
+        }
+        inner
+    };
+    let zone = |ability: &Value| {
+        ability
+            .get("Triggered")
+            .and_then(|inner| inner.get("from"))
+            .cloned()
+            .unwrap_or_else(|| json!("Battlefield"))
+    };
+    let Some(first) = abilities.first() else {
+        return false;
+    };
+    abilities.len() > 1
+        && abilities
+            .iter()
+            .all(|each| without_zone(each) == without_zone(first))
+        && abilities.iter().enumerate().all(|(at, each)| {
+            abilities[..at]
+                .iter()
+                .all(|before| zone(before) != zone(each))
+        })
+}
+
+/// The abilities joined as one whose event is any of theirs.
+fn merge_alternatives(mut abilities: Vec<Value>) -> Tr<Value> {
     let mut merged = abilities.remove(0);
     for other in abilities {
         let (Some(mine), Some(theirs)) = (
