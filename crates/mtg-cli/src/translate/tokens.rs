@@ -141,22 +141,7 @@ fn token_create(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
         create["as"] = name;
     }
     let attach = attached(ctx, p, &mut create)?;
-    // "It gains haste until end of turn": a grant on the tokens just made.
-    if let Some(words) = p.get("PumpKeywords") {
-        let mods: Vec<Value> = super::keyword::keyword_list(ctx, words)?
-            .into_iter()
-            .map(|keyword| json!({ "AddKeyword": keyword }))
-            .collect();
-        let duration = super::effects_obj::duration(p.get("PumpDuration"))?;
-        let name = match create.get("as") {
-            Some(name) => name.clone(),
-            None => json!(ctx.fresh("token")),
-        };
-        create["as"] = name.clone();
-        after.push(json!({"Continuous": {"affected": {"Bound": name}, "mods": mods, "duration": duration}}));
-    } else if p.has("PumpDuration") {
-        return unmapped("key:Token.PumpDuration");
-    }
+    after.extend(pumped(ctx, p, &mut create)?);
     let mut effects = before;
     effects.push(json!({ "CreateToken": create }));
     effects.extend(after);
@@ -411,4 +396,27 @@ fn attached(ctx: &mut Ctx, p: &Params, create: &mut Value) -> Tr<Option<Value>> 
         name
     };
     Ok(Some(json!({"Attach": {"what": {"Bound": name}, "to": to}})))
+}
+
+/// `PumpKeywords$`: "it gains haste until end of turn", a grant on the tokens just made.
+fn pumped(ctx: &mut Ctx, p: &Params, create: &mut Value) -> Tr<Option<Value>> {
+    let Some(words) = p.get("PumpKeywords") else {
+        if p.has("PumpDuration") {
+            return unmapped("key:Token.PumpDuration");
+        }
+        return Ok(None);
+    };
+    let mods: Vec<Value> = super::keyword::keyword_list(ctx, words)?
+        .into_iter()
+        .map(|keyword| json!({ "AddKeyword": keyword }))
+        .collect();
+    let duration = super::effects_obj::duration(p.get("PumpDuration"))?;
+    let name = match create.get("as") {
+        Some(name) => name.clone(),
+        None => json!(ctx.fresh("token")),
+    };
+    create["as"] = name.clone();
+    Ok(Some(
+        json!({"Continuous": {"affected": {"Bound": name}, "mods": mods, "duration": duration}}),
+    ))
 }
