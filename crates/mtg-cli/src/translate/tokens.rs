@@ -242,7 +242,14 @@ fn mana(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
     only(
         p,
         "Mana",
-        &["Produced", "Amount", "RestrictValid", "AddsNoCounter"],
+        &[
+            "Produced",
+            "Amount",
+            "RestrictValid",
+            "AddsNoCounter",
+            "Defined",
+            "ValidTgts",
+        ],
     )?;
     let produced = p.get("Produced").unwrap_or_default();
     let times = p.get("Amount").unwrap_or("1");
@@ -269,6 +276,26 @@ fn mana(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
         }
         _ => return unmapped("key:Mana.Produced"),
     };
+    // Whose pool: the player the line names (the default is the controller).
+    if let Some(word) = p.get("Defined") {
+        if !matches!(
+            word,
+            "You"
+                | "Targeted"
+                | "ChosenPlayer"
+                | "TriggeredPlayer"
+                | "TriggeredActivator"
+                | "TriggeredCardController"
+        ) {
+            return unmapped(format!("key:Mana.Defined={word}"));
+        }
+    }
+    if p.has("Defined") || p.has("ValidTgts") {
+        let who = super::valid::subject(ctx, p, "You", None)?;
+        if who != json!("You") {
+            effect["who"] = who;
+        }
+    }
     let mut only = Vec::new();
     let restriction = p.get("RestrictValid");
     if let Some(restriction) = restriction {

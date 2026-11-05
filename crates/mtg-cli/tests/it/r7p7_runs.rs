@@ -102,3 +102,33 @@ fn the_ultimate_takes_only_the_targeted_players_creatures() {
     assert_eq!(count(&driver, 0, "Grizzly Bears"), 2);
     assert_eq!(count(&driver, 1, "Grizzly Bears"), 0);
 }
+
+#[rstest]
+#[case::target_player("Defined$ Targeted | ValidTgts$ Player", 0, 2)]
+#[case::default_you("Defined$ You", 2, 0)]
+fn the_mana_lands_in_the_named_pool(#[case] who: &str, #[case] mine: u32, #[case] theirs: u32) {
+    let script = format!(
+        "Name:Gift\nManaCost:G\nTypes:Sorcery\nA:SP$ Mana | {who} | Produced$ C | Amount$ 2\n"
+    );
+    let spell = translated(&script, "Gift", "Sorcery", "{G}");
+    let scenario = Scenario::new(2)
+        .hand(0, [spell])
+        .battlefield(0, [ready(forest())]);
+    let mut driver = Driver::from_scenario(scenario).unwrap();
+    if who.contains("Targeted") {
+        let target = driver.target_player(1);
+        driver.cast_at("Gift", &[target]).unwrap();
+    } else {
+        driver.cast("Gift").unwrap();
+    }
+    settle(&mut driver);
+    let pool = |seat| {
+        driver
+            .state()
+            .player(PlayerId::from_index(seat))
+            .unwrap()
+            .mana()
+            .total()
+    };
+    assert_eq!((pool(0), pool(1)), (mine, theirs));
+}

@@ -81,3 +81,24 @@ fn a_group_aimed_at_something_else_is_a_gap(#[case] line: &str) {
             .any(|g| g == "key:Group.ValidTgts-not-a-player")
     );
 }
+
+#[rstest]
+#[case::targeted("Mana | ValidTgts$ Player | Defined$ Targeted | Produced$ C | Amount$ 2", Some(json!({"Target": 0})))]
+#[case::you("Mana | Produced$ C | Amount$ 2", None)]
+fn the_mana_goes_to_the_named_player(#[case] line: &str, #[case] who: Option<Value>) {
+    let effects = first_effects(&spell(line));
+    assert_eq!(
+        effects[0]["AddMana"].get("who").cloned(),
+        who,
+        "{effects:?}"
+    );
+}
+
+#[rstest]
+#[case::remembered(
+    "Mana | Defined$ Remembered | Produced$ C",
+    "key:Mana.Defined=Remembered"
+)]
+fn an_unread_pool_owner_is_a_gap(#[case] line: &str, #[case] gap: &str) {
+    assert!(gaps(&spell(line)).iter().any(|g| g == gap));
+}
