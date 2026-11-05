@@ -747,7 +747,7 @@ pub fn dig(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
     let kept = ctx.fresh("kept");
     let rest = ctx.fresh("rest");
     let from_top = json!({ "Bound": top });
-    let take = Take::of(p)?;
+    let take = Take::of(ctx, p)?;
     let filter = p.get("ChangeValid");
     let may = p.get("Optional") == Some("True") || filter.is_some();
     // "Put all of them" has no choice: what matches moves, and a "may" would be all or nothing.
@@ -773,6 +773,10 @@ pub fn dig(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
             choose["count"] = json!({"min": min, "max": taken});
         }
         Take::Any => choose["count"] = json!({"min": 0, "max": null}),
+        Take::Counted(ref taken) => {
+            let min = if may { json!(0) } else { taken.clone() };
+            choose["count"] = json!({"min": min, "max": taken});
+        }
         Take::Count(_) | Take::All => {}
     }
     let (to, rest_to) = dig_places(p)?;
@@ -879,20 +883,23 @@ fn dig_places(p: &Params) -> Tr<(Goes, Goes)> {
 /// How many of the cards a `Dig` looks at are taken.
 enum Take {
     Count(u64),
+    /// A number the card counts (`ChangeNum$ X`).
+    Counted(Value),
     Any,
     All,
 }
 
 impl Take {
     /// What `ChangeNum$` says.
-    fn of(p: &Params) -> Tr<Take> {
+    fn of(ctx: &Ctx, p: &Params) -> Tr<Take> {
         match p.get("ChangeNum") {
             None | Some("1") => Ok(Take::Count(1)),
             Some("Any") => Ok(Take::Any),
             Some("All") => Ok(Take::All),
-            Some(n) => n
-                .parse::<u64>()
-                .map_or_else(|_| unmapped("key:Dig.ChangeNum"), |n| Ok(Take::Count(n))),
+            Some(n) => match n.parse::<u64>() {
+                Ok(n) => Ok(Take::Count(n)),
+                Err(_) => Ok(Take::Counted(amount(ctx, n)?)),
+            },
         }
     }
 }
@@ -980,6 +987,7 @@ fn change_zone_all(ctx: &mut Ctx, p: &Params, origin: &str, destination: &str) -
         "ChangeZoneAll",
         &[
             "Origin",
+            "GainControl",
             "Destination",
             "ChangeType",
             "Tapped",

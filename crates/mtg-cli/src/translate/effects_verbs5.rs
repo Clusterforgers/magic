@@ -9,7 +9,7 @@ use serde_json::{Value, json};
 
 use super::amount::amount;
 use super::ctx::{Ctx, Tr, only, unmapped};
-use super::valid::{defined, subject};
+use super::valid::{defined, selector_any, subject};
 use crate::forge::script::Params;
 
 /// The effects of a verb this module reads; `None` for any other API.
@@ -70,9 +70,9 @@ fn skip_phase(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
 
 /// `SacrificeAll` of named objects: their controller sacrifices each one. A valid-string of permanents stays a gap.
 fn sacrifice_all(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
-    only(p, "SacrificeAll", &["Defined", "Controller"])?;
+    only(p, "SacrificeAll", &["Defined", "Controller", "ValidCards"])?;
     let Some(word) = p.get("Defined") else {
-        return unmapped("key:SacrificeAll.ValidCards");
+        return sacrifice_group(ctx, p);
     };
     let object = defined(ctx, word)?;
     let who = match p.get("Controller") {
@@ -81,6 +81,32 @@ fn sacrifice_all(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
         Some(_) => return unmapped("key:SacrificeAll.Controller"),
     };
     Ok(json!({"Sacrifice": {"who": who, "filter": [{"Is": object}]}}))
+}
+
+/// `SacrificeAll` of a valid-string: each player the filter names (the controller it words, else every player)
+/// sacrifices all the permanents they control that match, as a count the filter itself gives, which no hand of one
+/// player exceeds.
+fn sacrifice_group(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
+    if p.has("Controller") {
+        return unmapped("key:SacrificeAll.Controller");
+    }
+    let Some(valid) = p.get("ValidCards") else {
+        return unmapped("key:SacrificeAll.no-ValidCards");
+    };
+    let filter = selector_any(ctx, valid)?;
+    let controlled = |who: &str| filter.contains(&json!({"ControlledBy": who}));
+    let who = if controlled("You") {
+        json!("You")
+    } else if controlled("Opponents") {
+        json!("Opponents")
+    } else {
+        json!("EachPlayer")
+    };
+    let mut effect = json!({"filter": filter, "count": {"Count": filter}});
+    if who != json!("You") {
+        effect["who"] = who;
+    }
+    Ok(json!({ "Sacrifice": effect }))
 }
 
 /// `Earthbend`: a land its controller has becomes a creature with counters, through the keyword action's table entry.

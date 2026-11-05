@@ -541,6 +541,7 @@ fn discard(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
             "DiscardValidDesc",
             "AnyNumber",
             "Optional",
+            "UnlessType",
         ],
     )?;
     let whole_hand = p.get("Mode") == Some("Hand");
@@ -582,10 +583,7 @@ fn discard(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
         hand.extend(filter.iter().flatten().cloned());
         json!({"Count": hand})
     } else if whole_hand {
-        // One player's hand as it is when the discard happens; a group would count every hand together.
-        if matches!(who.as_str(), Some("Opponents" | "EachPlayer")) {
-            return unmapped("key:Discard.Mode=Hand+group");
-        }
+        // A group counts every hand together, more than any one hand holds, so each hand is taken whole.
         json!({"Count": [{"In": "Hand"}, {"OwnedBy": who}]})
     } else {
         amount(ctx, p.get("NumCards").unwrap_or("1"))?
@@ -610,6 +608,17 @@ fn discard(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
         discard["as"] = json!(name);
     }
     let discard = json!({ "Discard": discard });
+    if let Some(unless) = p.get("UnlessType") {
+        // "Discard two cards unless you discard a creature card": the player may instead pay one matching card.
+        if whole_hand || reveal_choose || random || any_number || p.has("Optional") {
+            return unmapped("key:Discard.UnlessType+shape");
+        }
+        let cost = json!([{"Discard": {"count": 1, "filter": selector_any(ctx, unless)?}}]);
+        let who = player(ctx, p)?;
+        return Ok(vec![
+            json!({"Pay": {"who": who, "cost": cost, "unpaid": [discard]}}),
+        ]);
+    }
     if !reveal_choose {
         return Ok(vec![discard]);
     }
