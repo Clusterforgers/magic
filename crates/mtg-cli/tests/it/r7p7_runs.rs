@@ -156,3 +156,45 @@ fn the_copy_goes_to_the_named_player(
     assert_eq!(count(&driver, 0, "Grizzly Bears"), mine);
     assert_eq!(count(&driver, 1, "Grizzly Bears"), theirs);
 }
+
+fn life(driver: &Driver, seat: usize) -> i32 {
+    driver
+        .state()
+        .player(PlayerId::from_index(seat))
+        .unwrap()
+        .life()
+}
+
+#[rstest]
+#[case::caster("TriggeredCardController", 20, 26)]
+#[case::me("You", 23, 23)]
+fn the_copy_of_the_opponents_spell_is_controlled_as_the_card_says(
+    #[case] controller: &str,
+    #[case] mine: i32,
+    #[case] theirs: i32,
+) {
+    let watcher = format!(
+        "Name:Watcher\nManaCost:G\nTypes:Creature Wizard\nPT:1/1\nT:Mode$ SpellCast | ValidCard$ Instant | Execute$ Copy | TriggerZones$ Battlefield | TriggerDescription$ x\nSVar:Copy:DB$ CopySpellAbility | Defined$ TriggeredSpellAbility | Controller$ {controller}\n"
+    );
+    let watcher = translated(&watcher, "Watcher", "Creature — Wizard", "{G}");
+    let boon = translated(
+        "Name:Boon\nManaCost:G\nTypes:Instant\nA:SP$ GainLife | LifeAmount$ 3\n",
+        "Boon",
+        "Instant",
+        "{G}",
+    );
+    let scenario = Scenario::new(2)
+        .battlefield(0, [ready(watcher)])
+        .battlefield(1, [ready(forest())])
+        .hand(1, [boon]);
+    let mut driver = Driver::from_scenario(scenario).unwrap();
+    for _ in 0..8 {
+        if driver.decision().unwrap().player == PlayerId::from_index(1) {
+            break;
+        }
+        driver.answer_passively().unwrap();
+    }
+    driver.cast("Boon").unwrap();
+    settle(&mut driver);
+    assert_eq!((life(&driver, 0), life(&driver, 1)), (mine, theirs));
+}

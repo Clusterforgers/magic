@@ -127,3 +127,28 @@ fn an_unread_copy_owner_is_a_gap() {
             .any(|g| g == "key:CopyPermanent.Controller=Opponent")
     );
 }
+
+fn copier(controller: &str) -> String {
+    format!(
+        "Name:T\nTypes:Creature Wizard\nPT:1/1\nT:Mode$ SpellCast | ValidCard$ Instant | Execute$ Copy | TriggerZones$ Battlefield | TriggerDescription$ x\nSVar:Copy:DB$ CopySpellAbility | Defined$ TriggeredSpellAbility | Controller$ {controller}\n"
+    )
+}
+
+#[rstest]
+#[case::caster("TriggeredCardController", Some(json!("TriggeringPlayer")))]
+#[case::you("You", None)]
+fn the_copy_is_controlled_by_the_named_player(#[case] who: &str, #[case] expected: Option<Value>) {
+    let found = abilities(&copier(who));
+    assert_eq!(found.len(), 1, "{:?}", gaps(&copier(who)));
+    let copy = &found[0]["Triggered"]["effects"][0]["CopySpell"];
+    assert_eq!(copy.get("who").cloned(), expected, "{copy}");
+}
+
+#[test]
+fn another_copy_controller_is_a_gap() {
+    assert!(
+        gaps(&copier("TargetedOrController"))
+            .iter()
+            .any(|g| g == "key:CopySpellAbility.Controller")
+    );
+}
