@@ -89,20 +89,15 @@ fn stays_tapped(remember: &str, valid: &str, duration: &str) -> String {
     "Targeted",
     "Card.IsRemembered",
     "UntilTheEndOfYourNextUntap",
-    "replacement:Untap-effect-shape"
+    "replacement:Untap-shape"
 )]
 #[case::a_group(
     "Self",
     "Land.YouCtrl",
     "UntilTheEndOfYourNextUntap",
-    "replacement:Untap-shape"
-)]
-#[case::another_duration(
-    "Self",
-    "Card.IsRemembered",
-    "UntilUntaps",
     "replacement:Untap-effect-shape"
 )]
+#[case::another_duration("Self", "Card.IsRemembered", "UntilUntaps", "replacement:Untap-shape")]
 fn doesnt_untap_during_your_next_untap_step(
     #[case] remember: &str,
     #[case] valid: &str,
