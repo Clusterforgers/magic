@@ -611,5 +611,6 @@ mod dk1f_cards;
 mod dk1f_pippin;
 mod dk1f_suppression_ray;
 mod mana_any_shape;
+mod mana_ban;
 mod ring;
 mod target_reductions;

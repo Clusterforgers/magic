@@ -122,8 +122,16 @@ fn holder(state: &GameState, object: ObjectId) -> Option<PlayerId> {
 fn applies(state: &GameState, ban: &Banned, doing: Doing) -> bool {
     let who = &ban.who;
     match (&ban.action, doing) {
-        (Prohibited::Activate(sources), Doing::Activate { player, source, .. }) => {
-            covers(who, Some(player), Some(source))
+        (
+            Prohibited::Activate(sources),
+            Doing::Activate {
+                player,
+                source,
+                kind,
+            },
+        ) => {
+            kind != Some(ActivationKind::Mana)
+                && covers(who, Some(player), Some(source))
                 && state
                     .object(source)
                     .is_some_and(|o| picks(state, ban, sources, o.reference()))

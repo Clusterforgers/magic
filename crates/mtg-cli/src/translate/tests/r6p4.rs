@@ -128,14 +128,3 @@ fn a_prohibition_names_its_kind(#[case] line: &str, #[case] cant: Value) {
         vec![normal(json!({"Rule": {"rule": {"Cant": cant}}}))]
     );
 }
-
-#[rstest]
-#[case::all_abilities_include_mana_abilities(
-    "Mode$ CantBeActivated | ValidCard$ Artifact | ValidSA$ Activated"
-)]
-fn all_activated_abilities_stay_a_gap_while_mana_abilities_are_not_forbidden(#[case] line: &str) {
-    assert_eq!(
-        gaps(&artifact(line)),
-        vec!["key:Static.CantBeActivated.ValidSA".to_owned()]
-    );
-}

@@ -36,7 +36,11 @@ pub(crate) fn specific(
 
 /// Whether an ability whose specific kind is `own` is of the kind `wanted`.
 pub(crate) fn is_kind(wanted: ActivationKind, own: Option<ActivationKind>) -> bool {
-    wanted == ActivationKind::Any || Some(wanted) == own
+    match wanted {
+        ActivationKind::Every => true,
+        ActivationKind::Any => own != Some(ActivationKind::Mana),
+        _ => Some(wanted) == own,
+    }
 }
 
 /// The mana of an activation with the cost modifiers in play applied: the increases first, then the reductions, and no

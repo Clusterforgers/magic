@@ -50,10 +50,6 @@ fn cant_rules(#[case] line: &str, #[case] cant: Value) {
 }
 
 #[rstest]
-#[case::plain_activated(
-    "Mode$ CantBeActivated | ValidCard$ Artifact | ValidSA$ Activated",
-    "key:Static.CantBeActivated.ValidSA"
-)]
 #[case::other_zone(
     "Mode$ CantBeActivated | ValidCard$ Artifact | ValidSA$ Activated.!ManaAbility | AffectedZone$ Graveyard",
     "key:Static.CantBeActivated.AffectedZone"

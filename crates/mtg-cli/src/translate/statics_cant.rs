@@ -95,13 +95,16 @@ fn cant_be_activated(ctx: &Ctx, p: &Params) -> Tr<Value> {
     // abilities is the plain form (an unqualified `Activated` includes the mana abilities, which no rule here forbids).
     let kind = match p.get("ValidSA") {
         Some("Activated.!ManaAbility") => None,
+        // Mana abilities are activated abilities too (CR 605): they are forbidden with the rest.
+        None | Some("Activated") => Some("Every"),
         Some("Activated.Loyalty") => Some("Loyalty"),
         Some("Activated.Cycling") => Some("Cycling"),
         _ => return unmapped("key:Static.CantBeActivated.ValidSA"),
     };
     let sources = match (p.get("ValidCard"), kind) {
         (Some(valid), _) => selector_any(ctx, valid)?,
-        (None, Some(_)) => Vec::new(),
+        (None, Some("Loyalty" | "Cycling")) => Vec::new(),
+        (None, Some(_)) => return unmapped("key:Static.CantBeActivated.no-ValidCard"),
         (None, None) => return unmapped("key:Static.CantBeActivated.no-ValidCard"),
     };
     if let Some(kind) = kind {

@@ -401,10 +401,25 @@ pub fn mana_ways(state: &GameState, id: ObjectId) -> Vec<(AbilityRef, Vec<ManaOp
         return Vec::new();
     };
     let player = controller_of_object(state, object);
+    if mana_forbidden(state, player, id) {
+        return Vec::new();
+    }
     rule_mana(state, player, id, chars.abilities.len())
         .into_iter()
         .map(|mana| (mana.address, mana.options))
         .collect()
+}
+
+/// Whether a rule keeps `player` from using the mana abilities of `id` (CR 605).
+fn mana_forbidden(state: &GameState, player: PlayerId, id: ObjectId) -> bool {
+    crate::prohibit::forbidden(
+        state,
+        crate::prohibit::Doing::Activate {
+            player,
+            source: id,
+            kind: Some(mtg_cards::ability::ActivationKind::Mana),
+        },
+    )
 }
 
 /// The mana abilities `player` can activate now: the printed ones of an untapped permanent they control and the
@@ -419,6 +434,9 @@ pub(crate) fn options(state: &GameState, player: PlayerId) -> Vec<ManaOption> {
             continue;
         };
         if controller_of_object(state, object) != player {
+            continue;
+        }
+        if mana_forbidden(state, player, id) {
             continue;
         }
         let Some(chars) = characteristics(state, id) else {

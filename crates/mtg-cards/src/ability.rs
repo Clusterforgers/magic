@@ -85,6 +85,10 @@ pub enum ActivationKind {
     Equip,
     /// The cycling ability (CR 702.29).
     Cycling,
+    /// A mana ability (CR 605); only a prohibition names it.
+    Mana,
+    /// Every activated ability, mana abilities included; only a prohibition names it.
+    Every,
 }
 
 /// Whether a count is zero, so serialization can leave it out.
