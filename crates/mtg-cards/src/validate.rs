@@ -457,7 +457,7 @@ impl<'a> Walker<'a> {
             Ref::This | Ref::Attached => self.expect(Kind::Object, want),
             Ref::Remembered { on, .. } => {
                 self.reference(on, Kind::Object);
-                self.expect(Kind::Object, want);
+                self.expect(Kind::Either, want);
             }
             Ref::Paid => {
                 if !self.pays_objects {
@@ -2297,7 +2297,6 @@ impl Walker<'_> {
             | Ref::Dealer
             | Ref::Attached
             | Ref::Paid
-            | Ref::Remembered { .. }
             | Ref::Arrived { .. }
             | Ref::Each(_) => Kind::Object,
             Ref::Target(index) => self
@@ -2306,7 +2305,7 @@ impl Walker<'_> {
                 .get(usize::from(*index))
                 .map_or(Kind::Either, |t| t.0),
             Ref::Bound(name) => self.scope.lookup(name).unwrap_or(Kind::Either),
-            Ref::Triggering | Ref::Against => Kind::Either,
+            Ref::Triggering | Ref::Against | Ref::Remembered { .. } => Kind::Either,
         }
     }
 
@@ -2759,7 +2758,7 @@ impl Walker<'_> {
                 w.at("what", |w| w.reference(what, Kind::Object));
                 w.at("with", |w| w.reference(with, Kind::Object));
             }
-            Effect::Remember { what, .. } => w.at("what", |w| w.reference(what, Kind::Object)),
+            Effect::Remember { what, .. } => w.at("what", |w| w.reference(what, Kind::Either)),
             Effect::RememberValue { value, .. } => w.at("value", |w| w.amount(value)),
             Effect::Encode { what, on } => {
                 w.at("what", |w| w.reference(what, Kind::Object));

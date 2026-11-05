@@ -9,7 +9,7 @@ use crate::memory::{Held, Remembered};
 use crate::resolve::{Cx, ResolveError, Run};
 
 /// `Remember` adds the objects `what` names (still the objects named) to the slot of the source; `Forget` empties the slot.
-/// A source that has left its zone remembers nothing, since its memory ended with it.
+/// A source that has left its zone remembers no objects, since its memory ended with it. `RememberValue` adds a number.
 pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
     let source = cx.scope.source;
     let here = cx
@@ -53,7 +53,8 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         },
         _ => return Err(wrong_effect("Remember")),
     };
-    let events = if here {
+    // A number is read in the same resolution, even by an ability whose source has left; the end of the resolution clears it.
+    let events = if here || matches!(effect, Effect::RememberValue { .. }) {
         vec![Event::Remembered(Box::new(change))]
     } else {
         Vec::new()

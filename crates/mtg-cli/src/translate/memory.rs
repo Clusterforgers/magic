@@ -374,6 +374,10 @@ pub fn line(
         let effects = line(ctx, &rest, api, run)?;
         return super::forget::apply(ctx, &asked, &before, effects);
     }
+    if let Some((rest, kind)) = super::number::split(p, api) {
+        let effects = line(ctx, &rest, api, run)?;
+        return super::number::apply(ctx, kind, effects);
+    }
     let keys: Vec<(String, Slot)> = p
         .iter()
         .filter(|(_, value)| *value == "True")
@@ -440,7 +444,7 @@ pub fn line(
             && let Some(what) = held(ctx, slot)
             && Some(&what) != held_before(&before, slot).as_ref()
         {
-            effects.push(remember_step(ctx, &what, slot)?);
+            effects.push(remember_step(&what, slot));
         }
     }
     Ok(effects)
@@ -476,26 +480,9 @@ fn rename(p: &Params, from: &str, to: &str) -> Params {
     Params::parse(&body.join(" | "))
 }
 
-/// The step that makes the source remember `what`. The store holds objects, so a player reads back as nobody and stays a gap.
-fn remember_step(ctx: &Ctx, what: &Value, slot: Slot) -> Tr<Value> {
-    let player = match what {
-        Value::String(word) => matches!(
-            word.as_str(),
-            "You" | "Opponents" | "EachPlayer" | "AttachedPlayer" | "Defending"
-        ),
-        Value::Object(map) if map.contains_key("ControllerOf") || map.contains_key("OwnerOf") => true,
-        Value::Object(map) => map.get("Target").and_then(Value::as_u64).is_some_and(|index| {
-            usize::try_from(index)
-                .ok()
-                .and_then(|index| ctx.targets.get(index))
-                .is_some_and(|spec| !matches!(spec.get("what"), Some(Value::Object(kind)) if kind.contains_key("Object")))
-        }),
-        _ => false,
-    };
-    if player {
-        return unmapped(format!("key:{}-of-a-player", slot.name()));
-    }
-    Ok(json!({"Remember": {"what": what, "slot": slot.name()}}))
+/// The step that makes the source remember `what`: objects or players.
+fn remember_step(what: &Value, slot: Slot) -> Value {
+    json!({"Remember": {"what": what, "slot": slot.name()}})
 }
 
 /// `DB$ Remember | Defined$ X` and `DB$ Imprint`: the slot gets the objects.
@@ -512,7 +499,7 @@ fn remember_api(ctx: &mut Ctx, p: &Params, slot: Slot) -> Tr<Vec<Value>> {
     let what = defined(ctx, word)?;
     set(ctx, slot, Some(what.clone()));
     if ctx.memory.crosses(slot) {
-        return Ok(vec![remember_step(ctx, &what, slot)?]);
+        return Ok(vec![remember_step(&what, slot)]);
     }
     Ok(Vec::new())
 }
