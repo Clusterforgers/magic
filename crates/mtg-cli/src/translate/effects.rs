@@ -123,7 +123,7 @@ const MAY_APIS: [&str; 9] = [
 /// above one that no `OptionalDecider$` hands to someone else. A single card is "you may discard", the usual May.
 fn own_optional(p: &Params) -> bool {
     match p.get("Mode") {
-        Some("RevealYouChoose") => true,
+        Some("RevealYouChoose" | "LookYouChoose") => true,
         Some("Hand" | "Random") => false,
         _ => {
             !p.has("OptionalDecider")
@@ -545,12 +545,17 @@ fn discard(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
         ],
     )?;
     let whole_hand = p.get("Mode") == Some("Hand");
-    let reveal_choose = p.get("Mode") == Some("RevealYouChoose");
+    let look_only = p.get("Mode") == Some("LookYouChoose");
+    let reveal_choose = look_only || p.get("Mode") == Some("RevealYouChoose");
+    let reveal_all = p.get("Mode") == Some("RevealDiscardAll");
     if p.has("Optional") && !own_optional(p) {
         return unmapped("key:Discard.Optional");
     }
     let random = match p.get("Mode") {
-        None | Some("TgtChoose" | "Hand" | "RevealYouChoose") => false,
+        None
+        | Some("TgtChoose" | "Hand" | "RevealYouChoose" | "LookYouChoose" | "RevealDiscardAll") => {
+            false
+        }
         Some("Random") => true,
         Some(other) => return unmapped(format!("key:Discard.Mode={other}")),
     };
@@ -581,6 +586,16 @@ fn discard(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
         }
         let mut hand = vec![json!({"In": "Hand"}), json!({"OwnedBy": who})];
         hand.extend(filter.iter().flatten().cloned());
+        json!({"Count": hand})
+    } else if reveal_all {
+        let Some(filter) = &filter else {
+            return unmapped("key:Discard.Mode=RevealDiscardAll+no-filter");
+        };
+        if p.has("NumCards") || p.has("Optional") || any_number {
+            return unmapped("key:Discard.Mode=RevealDiscardAll+count");
+        }
+        let mut hand = vec![json!({"In": "Hand"}), json!({"OwnedBy": who})];
+        hand.extend(filter.iter().cloned());
         json!({"Count": hand})
     } else if whole_hand {
         // A group counts every hand together, more than any one hand holds, so each hand is taken whole.
@@ -619,7 +634,7 @@ fn discard(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
             json!({"Pay": {"who": who, "cost": cost, "unpaid": [discard]}}),
         ]);
     }
-    if !reveal_choose {
+    if look_only || !(reveal_choose || reveal_all) {
         return Ok(vec![discard]);
     }
     // "Look at" shows the hand to the chooser only, who sees it in the choice; "reveals" shows every seat.
