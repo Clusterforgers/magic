@@ -408,6 +408,8 @@ const RUNS: &[&str] = &[
     "Effect.Let",
     "Effect.Bind",
     "Effect.Modal.Who",
+    "Effect.Modal.ModeCosts",
+    "Effect.Modal.ExtraModeCost",
     "Effect.Planechase",
     "Effect.VillainousChoice",
     "Effect.Either",
@@ -900,6 +902,8 @@ mod tests {
     #[case::modes_at_random("Effect.Modal.AtRandom", true)]
     #[case::modes_not_chosen_twice_in_a_turn("Effect.Modal.OnceEachTurn", true)]
     #[case::modes_not_chosen_twice_ever("Effect.Modal.OnceEver", true)]
+    #[case::modes_with_costs("Effect.Modal.ModeCosts", true)]
+    #[case::modes_with_an_extra_cost("Effect.Modal.ExtraModeCost", true)]
     #[case::every_mode_under_a_condition("Effect.Modal.AllIf", true)]
     #[case::voting("Effect.Vote", true)]
     #[case::a_kept_number("Effect.Let", true)]

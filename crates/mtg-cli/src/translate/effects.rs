@@ -478,14 +478,22 @@ fn count_verb(ctx: &mut Ctx, p: &Params, verb: &str, key: &str) -> Tr<Value> {
 /// `Charm`: a modal spell or ability whose modes are the named parts of `Choices$`, each with targets of its own.
 fn charm(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
     only(p, "Charm", &["Choices", "CharmNum", "MinCharmNum"])?;
+    let keyword = ctx.modal_keyword.take();
+    let extra = ctx.extra_mode_cost.take();
     let Some(choices) = p.get("Choices") else {
         return unmapped("key:Charm.no-Choices");
     };
     let outer = std::mem::take(&mut ctx.targets);
+    let mut mode_costs = Vec::new();
     let mut modes = Vec::new();
     for name in choices.split(',') {
         let part = ctx.sub(name)?;
-        let effects = chain_at(ctx, &part, true)?;
+        mode_costs.push(
+            part.get("ModeCost")
+                .map(|cost| cost_of(ctx, cost))
+                .transpose()?,
+        );
+        let effects = chain_at(ctx, &part.without(&["ModeCost"]), true)?;
         let mut mode = json!({ "effects": effects });
         if !ctx.targets.is_empty() {
             mode["targets"] = Value::Array(std::mem::take(&mut ctx.targets));
@@ -497,10 +505,25 @@ fn charm(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
     let min = p.get("MinCharmNum").unwrap_or(max);
     let (min, max) = (amount(ctx, min)?, amount(ctx, max)?);
     let mut modal = json!({ "modes": modes });
+    match (keyword, extra) {
+        (Some("Spree" | "Tiered"), None) if mode_costs.iter().all(Option::is_some) => {
+            modal["mode_costs"] = json!(mode_costs.into_iter().flatten().collect::<Vec<_>>());
+        }
+        (Some("Escalate"), Some(cost)) if mode_costs.iter().all(Option::is_none) => {
+            modal["extra_mode_cost"] = cost_of(ctx, &cost)?;
+        }
+        (None, None) if mode_costs.iter().all(Option::is_none) => {}
+        _ => return unmapped("key:Charm.ModeCost"),
+    }
     if (&min, &max) != (&json!(1), &json!(1)) {
         modal["choose"] = json!({"min": min, "max": max});
     }
     Ok(json!({ "Modal": modal }))
+}
+
+/// The cost a mode adds: mana, or the items of a cost.
+fn cost_of(ctx: &Ctx, text: &str) -> Tr<Value> {
+    super::cost::cost(ctx, text)
 }
 
 /// `DelayedTrigger` at a step ("at the beginning of the next end step, ..."): the part named by `Execute$` happens then.

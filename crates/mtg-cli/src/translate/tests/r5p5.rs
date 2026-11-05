@@ -171,3 +171,56 @@ fn a_must_block_beyond_the_node_is_a_gap(#[case] line: &str, #[case] gap: &str) 
         gaps(&script)
     );
 }
+
+fn modal(keyword: &str, first: &str, second: &str) -> String {
+    format!(
+        "Name:T\nManaCost:G\nTypes:Instant\n{keyword}\nA:SP$ Charm | Choices$ DBA,DBB | MinCharmNum$ 1 | CharmNum$ 2\nSVar:DBA:DB$ GainLife | LifeAmount$ 2 {first}\nSVar:DBB:DB$ Draw {second}\n"
+    )
+}
+
+#[rstest]
+#[case::spree("K:Spree", "| ModeCost$ 1", "| ModeCost$ 2 R", json!(["{1}", "{2}{R}"]))]
+#[case::tiered_free_tier("K:Tiered", "| ModeCost$ 0", "| ModeCost$ 3", json!(["{0}", "{3}"]))]
+fn a_mode_cost_is_the_cost_of_its_mode(
+    #[case] keyword: &str,
+    #[case] first: &str,
+    #[case] second: &str,
+    #[case] costs: serde_json::Value,
+) {
+    let script = modal(keyword, first, second);
+    assert_eq!(gaps(&script), Vec::<String>::new());
+    let found = abilities(&script);
+    assert_eq!(
+        found[0]["Spell"]["effects"][0]["Modal"]["mode_costs"],
+        costs
+    );
+}
+
+#[test]
+fn escalate_is_the_cost_of_each_mode_beyond_the_first() {
+    let script = modal("K:Escalate:2", "", "");
+    assert_eq!(gaps(&script), Vec::<String>::new());
+    let found = abilities(&script);
+    let modal = &found[0]["Spell"]["effects"][0]["Modal"];
+    assert_eq!(modal["extra_mode_cost"], json!("{2}"));
+    assert!(modal.get("mode_costs").is_none());
+}
+
+#[rstest]
+#[case::one_mode_without("K:Spree", "| ModeCost$ 1", "", "key:Charm.ModeCost")]
+#[case::cost_without_keyword("", "| ModeCost$ 1", "| ModeCost$ 1", "key:Charm.ModeCost")]
+#[case::escalate_with_mode_cost("K:Escalate:2", "| ModeCost$ 1", "", "key:Charm.ModeCost")]
+fn a_mode_cost_the_keyword_does_not_explain_is_a_gap(
+    #[case] keyword: &str,
+    #[case] first: &str,
+    #[case] second: &str,
+    #[case] gap: &str,
+) {
+    assert_eq!(gaps(&modal(keyword, first, second)), [gap]);
+}
+
+#[test]
+fn a_modal_keyword_without_a_modal_spell_is_a_gap() {
+    let script = "Name:T\nTypes:Instant\nK:Spree\nA:SP$ Draw\n";
+    assert_eq!(gaps(script), ["keyword:Spree-unused"]);
+}

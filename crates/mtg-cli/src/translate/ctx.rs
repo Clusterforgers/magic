@@ -135,6 +135,10 @@ pub struct Ctx<'a> {
     pub die_result: Option<String>,
     /// The choice of a vote whose votes `VoteNum` counts.
     pub vote_num: Option<String>,
+    /// The keyword (`Spree`, `Tiered`, `Escalate`) whose modal spell has not yet taken its mode costs.
+    pub modal_keyword: Option<&'static str>,
+    /// The cost `Escalate` adds for each mode beyond the first.
+    pub extra_mode_cost: Option<String>,
     /// What the trigger line being translated is about, for its `Triggered*` words.
     pub trigger: Option<super::triggered::Shape>,
     binds: usize,
@@ -169,6 +173,8 @@ impl<'a> Ctx<'a> {
             chosen_number: None,
             die_result: None,
             vote_num: None,
+            modal_keyword: None,
+            extra_mode_cost: None,
             trigger: None,
             binds: 0,
             depth: 0,

@@ -265,6 +265,10 @@ const DECK_RULES: [&str; 3] = [
 
 /// The abilities a `K:` line stands for: those of `keyword_ability`, or the chapters of a Saga.
 pub fn keyword_abilities(ctx: &mut Ctx, body: &str) -> Vec<Tr<Value>> {
+    // The costs of the modes are the modal spell's own: the spell line reads them.
+    if matches!(body.trim(), "Spree" | "Tiered") || body.trim().starts_with("Escalate:") {
+        return Vec::new();
+    }
     if DECK_RULES.contains(&body.trim()) {
         return Vec::new();
     }

@@ -134,3 +134,41 @@ fn a_translated_lure_ability_is_offered_and_resolves_on_a_target() {
     let driver = Driver::from_scenario(scenario).unwrap();
     assert_eq!(driver.offered_abilities("Poll").unwrap().len(), 1);
 }
+
+const SPREE: &str = "Name:Poll\nManaCost:G\nTypes:Instant\nK:Spree\nA:SP$ Charm | Choices$ DBA,DBB | MinCharmNum$ 1 | CharmNum$ 2\nSVar:DBA:DB$ GainLife | LifeAmount$ 2 | ModeCost$ 1\nSVar:DBB:DB$ GainLife | LifeAmount$ 3 | ModeCost$ 1\n";
+
+// (modes chosen, lands tapped, life gained)
+#[rstest]
+#[case::one_mode(&[0], 2, 2)]
+#[case::both_modes_pay_each_cost(&[0, 1], 3, 5)]
+fn a_spree_spell_adds_the_cost_of_each_chosen_mode(
+    #[case] modes: &[usize],
+    #[case] lands: usize,
+    #[case] gained: i32,
+) {
+    use mtg_engine::choose::ModeChoice;
+    let card = translated(SPREE, "Poll", "Instant", "{G}");
+    let scenario = Scenario::new(2)
+        .hand(0, [card])
+        .battlefield(0, (0..3).map(|_| ready(forest())));
+    let mut driver = Driver::from_scenario(scenario).unwrap();
+    driver.begin_cast("Poll").unwrap();
+    driver
+        .answer(Answer::ChooseMode(ModeChoice::Modes(modes.to_vec())))
+        .unwrap();
+    driver.pay_tapping(&vec!["Forest"; lands], 0).unwrap();
+    crate::r3p3_runs::settle(&mut driver);
+    assert_eq!(life(&driver, 0), 20 + gained);
+    let tapped = driver
+        .state()
+        .zone(mtg_engine::zones::Zone::Battlefield)
+        .iter()
+        .filter(|id| {
+            driver.state().object(**id).is_some_and(|o| {
+                o.permanent()
+                    .is_some_and(mtg_engine::object::PermanentState::tapped)
+            })
+        })
+        .count();
+    assert_eq!(tapped, lands);
+}
