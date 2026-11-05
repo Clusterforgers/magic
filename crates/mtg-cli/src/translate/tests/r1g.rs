@@ -78,6 +78,18 @@ fn a_discard_paid_in_a_sub_ability_names_the_card_it_took() {
 }
 
 #[test]
+fn modes_that_must_target_different_players_stay_a_gap() {
+    let text = "Name:T\nManaCost:2\nTypes:Creature Imp\nPT:1/1\nT:Mode$ Attacks | ValidCard$ Card.Self | Execute$ C | TriggerDescription$ x\nSVar:C:DB$ Charm | MinCharmNum$ 1 | CharmNum$ MaxUniqueOpponents | Choices$ A,B\nSVar:A:DB$ Draw | ValidTgts$ Opponent\nSVar:B:DB$ LoseLife | ValidTgts$ Opponent | LifeAmount$ 2\n";
+    assert!(
+        gaps(text)
+            .iter()
+            .any(|g| g == "key:Charm.DifferentPlayerPerMode"),
+        "{:?}",
+        gaps(text)
+    );
+}
+
+#[test]
 fn the_player_who_sacrifices_is_the_one_asked() {
     let text = "Name:T\nManaCost:2\nTypes:Enchantment\nT:Mode$ Phase | Phase$ Upkeep | ValidPlayer$ You | Execute$ Sac | TriggerDescription$ x\nSVar:Sac:DB$ Sacrifice | Defined$ Player.Opponent | SacValid$ Creature | Optional$ True\n";
     assert_eq!(gaps(text), Vec::<String>::new());

@@ -722,6 +722,10 @@ fn charm(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
         modes.push(mode);
     }
     ctx.targets = outer;
+    // "Each mode must target a different player" is a rule across modes that the engine's targeting cannot enforce.
+    if p.get("CharmNum") == Some("MaxUniqueOpponents") {
+        return unmapped("key:Charm.DifferentPlayerPerMode");
+    }
     let max = p.get("CharmNum").unwrap_or("1");
     let min = p.get("MinCharmNum").unwrap_or(max);
     let (min, max) = (amount(ctx, min)?, amount(ctx, max)?);
