@@ -74,9 +74,9 @@ pub fn triggered(ctx: &mut Ctx, body: &str) -> Tr<Value> {
     match p.get("OptionalDecider") {
         None => {}
         Some("You" | "TriggeredCardController") if pays => {}
-        Some("You") => effects = vec![json!({"May": {"effects": effects}})],
+        Some("You") => effects = super::frame::ask(effects, &json!("You")),
         Some("TriggeredCardController") if itself => {
-            effects = vec![json!({"May": {"effects": effects}})];
+            effects = super::frame::ask(effects, &json!("You"));
         }
         Some(other) => return unmapped(format!("key:Trigger.OptionalDecider={other}")),
     }

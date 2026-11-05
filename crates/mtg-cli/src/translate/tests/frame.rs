@@ -267,6 +267,7 @@ const OTHER: Verb = Verb {
         Slot::Optional,
         Slot::Pool,
     ],
+    actor: "Defined",
     pool: "SacValid",
     count: "Amount",
     own: &[],
@@ -274,9 +275,10 @@ const OTHER: Verb = Verb {
 
 #[rstest]
 #[case::the_slots_of_the_other_verb(
-    "Amount$ 2 | SacValid$ Creature | Mandatory$ True | DefinedPlayer$ You",
+    "Amount$ 2 | SacValid$ Creature | Mandatory$ True | Defined$ You",
     None
 )]
+#[case::the_spelling_of_the_actor_elsewhere("DefinedPlayer$ You", Some("key:Other.DefinedPlayer"))]
 #[case::a_key_outside_them("Origin$ Hand", Some("key:Other.Origin"))]
 #[case::the_spelling_of_another_verb("ChangeNum$ 2", Some("key:Other.ChangeNum"))]
 fn another_verb_declares_its_own_slots(#[case] line: &str, #[case] gap: Option<&str>) {
@@ -295,7 +297,7 @@ fn another_verb_gets_the_slots_read_the_same() {
     let params = Params::parse(
         "DB$ Other | Amount$ 2 | SacValid$ Creature | Mandatory$ True | ValidTgts$ Opponent | Chooser$ You",
     );
-    let parties = frame::parties(&mut ctx, &params, OTHER.label).unwrap();
+    let parties = frame::parties(&mut ctx, &params, &OTHER).unwrap();
     assert_eq!(parties.acts, json!({"Target": 0}));
     assert_eq!(parties.decides, json!("You"));
     let count = frame::count(&ctx, &params, &OTHER).unwrap();

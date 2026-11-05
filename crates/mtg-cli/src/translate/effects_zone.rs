@@ -273,6 +273,7 @@ const NAMED: Verb = Verb {
         Slot::Optional,
         Slot::Destination,
     ],
+    actor: "DefinedPlayer",
     pool: "",
     count: "ChangeNum",
     own: &[
@@ -299,6 +300,7 @@ const PICKED: Verb = Verb {
         Slot::Optional,
         Slot::Destination,
     ],
+    actor: "DefinedPlayer",
     pool: "ChangeType",
     count: "ChangeNum",
     own: &[
@@ -323,6 +325,7 @@ const SEARCHED: Verb = Verb {
         Slot::Optional,
         Slot::Destination,
     ],
+    actor: "DefinedPlayer",
     pool: "ChangeType",
     count: "ChangeNum",
     own: &[
@@ -399,7 +402,7 @@ fn change_zone(ctx: &mut Ctx, p: &Params, origin: &str, destination: &str) -> Tr
     if !frame::is_optional(p) {
         return Ok(effects);
     }
-    let who = frame::decider(ctx, p, NAMED.label)?;
+    let who = frame::decider(ctx, p, &NAMED)?;
     if who != json!("You") && keeps {
         return unmapped("key:ChangeZone.Optional-remembered");
     }
@@ -483,7 +486,7 @@ fn choose_and_move(ctx: &mut Ctx, p: &Params, origin: &str, destination: &str) -
     if p.get("Reorder").is_some_and(|word| word != "True") {
         return unmapped("key:ChangeZone.Choose.Reorder");
     }
-    let who = frame::parties(ctx, p, PICKED.label)?;
+    let who = frame::parties(ctx, p, &PICKED)?;
     let (owner, chooser) = (who.acts.clone(), who.decides.clone());
     let mut filter = selector_in(ctx, p.get("ChangeType").unwrap_or("Card"), Some(origin))?;
     if origin == "Battlefield" {
@@ -542,7 +545,7 @@ fn choose_and_move(ctx: &mut Ctx, p: &Params, origin: &str, destination: &str) -
 /// the library is the actor's.
 fn search(ctx: &mut Ctx, p: &Params, destination: &str) -> Tr<Vec<Value>> {
     SEARCHED.admit(p)?;
-    let seat = frame::parties(ctx, p, SEARCHED.label)?;
+    let seat = frame::parties(ctx, p, &SEARCHED)?;
     let another = seat.acts != seat.decides;
     // Not looking at the library only matters when the cards are not named already.
     if p.has("NoLooking")
