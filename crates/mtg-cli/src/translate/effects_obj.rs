@@ -148,7 +148,7 @@ fn destroy_all(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
     only(
         p,
         "DestroyAll",
-        &["ValidCards", "NoRegen", "RememberDestroyed", "Zone"],
+        &["ValidCards", "ValidTgts", "NoRegen", "RememberDestroyed", "Zone"],
     )?;
     if let Some(zone) = p.get("Zone")
         && zone != "Battlefield"
@@ -157,7 +157,7 @@ fn destroy_all(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
     }
     let valid = p.get("ValidCards").unwrap_or_default();
     let regenerate = p.get("NoRegen") != Some("True");
-    let what = json!({"Each": selector_any(ctx, valid)?});
+    let what = json!({"Each": frame::all_matching(ctx, p, "DestroyAll", valid)?});
     let mut effect = json!({"Destroy": {"what": what, "regenerate": regenerate}});
     if remember::wanted(p, &["RememberDestroyed"]) {
         remember::bind_moved(ctx, &mut effect, "Destroy", "destroyed");
@@ -184,15 +184,18 @@ fn damage_all(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
     only(
         p,
         "DamageAll",
-        &["NumDmg", "ValidCards", "ValidPlayers", "DamageMap"],
+        &["NumDmg", "ValidCards", "ValidPlayers", "DamageMap", "ValidTgts"],
     )?;
+    if p.has("ValidTgts") && p.has("ValidPlayers") {
+        return unmapped("key:DamageAll.ValidTgts-with-ValidPlayers");
+    }
     damage_map(p)?;
     let amount = amount(ctx, p.get("NumDmg").unwrap_or("1"))?;
     // Players alone: no objects are hit (an empty selector would name every one).
     let mut effects = Vec::new();
     if let Some(valid) = p.get("ValidCards") {
         effects.push(
-            json!({"DealDamage": {"to": {"Each": selector_any(ctx, valid)?}, "amount": amount}}),
+            json!({"DealDamage": {"to": {"Each": frame::all_matching(ctx, p, "DamageAll", valid)?}, "amount": amount}}),
         );
     } else if !p.has("ValidPlayers") {
         return unmapped("key:DamageAll.no-valid");
@@ -215,7 +218,7 @@ fn put_counter_all(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
     only(
         p,
         "PutCounterAll",
-        &["ValidCards", "CounterType", "CounterNum"],
+        &["ValidCards", "CounterType", "CounterNum", "ValidTgts"],
     )?;
     let Some(kind) = p.get("CounterType").and_then(kind_word) else {
         return unmapped("key:PutCounterAll.CounterType");
@@ -223,15 +226,109 @@ fn put_counter_all(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
     let valid = p.get("ValidCards").unwrap_or_default();
     let count = amount(ctx, p.get("CounterNum").unwrap_or("1"))?;
     Ok(
-        json!({"PutCounters": {"on": {"Each": selector_any(ctx, valid)?}, "counter": kind, "count": count}}),
+        json!({"PutCounters": {"on": {"Each": frame::all_matching(ctx, p, "PutCounterAll", valid)?}, "counter": kind, "count": count}}),
     )
+}
+
+/// `TargetValidTargeting$` of a `Counter`: the spell or ability has a target the words name (`You`, `Player`, or objects on
+/// the battlefield such as `Creature.YouCtrl+inRealZoneBattlefield`); several words are alternatives.
+fn counter_targeting(ctx: &Ctx, words: &str) -> Tr<Value> {
+    let mut alternatives = Vec::new();
+    for word in words.split(',') {
+        alternatives.push(match word {
+            "You" => json!({"TargetsPlayer": "You"}),
+            "Player" => json!({"TargetsPlayer": "EachPlayer"}),
+            "Card.Self" | "Card.StrictlySelf" => json!({"Targeting": ["This"]}),
+            object => {
+                let spec = object
+                    .replace("+inRealZoneBattlefield", "")
+                    .replace(".inRealZoneBattlefield", "")
+                    .replace(".inZoneBattlefield", "");
+                if spec.contains("inRealZone") || spec.contains("inZone") {
+                    return unmapped("key:Counter.TargetValidTargeting");
+                }
+                json!({"Targeting": selector_any(ctx, &spec)?})
+            }
+        });
+    }
+    Ok(match alternatives.len() {
+        1 => alternatives.remove(0),
+        _ => json!({"AnyOf": alternatives}),
+    })
+}
+
+/// What `Counter` may target: the `TargetType$` words (`Spell`, `Activated`, `Triggered`, the abilities with a shared
+/// `YouCtrl` or `YouDontCtrl`) as one selector. `ValidTgts$` filters the spells; an ability has no card type of its own, so
+/// a line that has abilities admits only `Card,Emblem` (anything) or a controller (`Card.OppCtrl`).
+fn counter_selector(ctx: &Ctx, p: &Params) -> Tr<Vec<Value>> {
+    let gap = || unmapped("key:Counter.TargetType");
+    let Some(words) = p.get("TargetType") else {
+        return gap();
+    };
+    let mut kinds: Vec<Value> = Vec::new();
+    let mut control: Option<Option<&str>> = None;
+    for word in words.split(',') {
+        let (base, suffix) = match word.split_once('.') {
+            Some((base, suffix)) => (base, Some(suffix)),
+            None => (word, None),
+        };
+        let kind = match base {
+            "Spell" if suffix.is_none() => json!("Spell"),
+            "Activated" => json!({"Ability": "Activated"}),
+            "Triggered" => json!({"Ability": "Triggered"}),
+            _ => return gap(),
+        };
+        if base != "Spell" {
+            if !matches!(suffix, None | Some("YouCtrl" | "YouDontCtrl")) {
+                return gap();
+            }
+            if control.is_some_and(|seen| seen != suffix) {
+                return gap();
+            }
+            control = Some(suffix);
+        }
+        if !kinds.contains(&kind) {
+            kinds.push(kind);
+        }
+    }
+    let spells = kinds.contains(&json!("Spell"));
+    let abilities = kinds.len() > usize::from(spells);
+    if spells && abilities && control.flatten().is_some() {
+        return gap();
+    }
+    let valid = p.get("ValidTgts").unwrap_or("Card");
+    let mut selector = if kinds.len() == 1 {
+        kinds
+    } else {
+        vec![json!({"AnyOf": kinds})]
+    };
+    let any_card = matches!(valid, "Card" | "Card,Emblem" | "Emblem,Card");
+    if abilities && !any_card && !valid.starts_with("Card.") {
+        return unmapped("key:Counter.ValidTgts-of-an-ability");
+    }
+    if !(abilities && any_card) {
+        selector.extend(selector_any(ctx, valid)?);
+    }
+    if let Some(word) = control.flatten() {
+        selector.extend(selector_any(ctx, &format!("Card.{word}"))?);
+    }
+    if let Some(words) = p.get("TargetValidTargeting") {
+        selector.push(counter_targeting(ctx, words)?);
+    }
+    Ok(selector)
 }
 
 fn counter(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
     only(
         p,
         "Counter",
-        &["TargetType", "ValidTgts", "Destination", "Defined"],
+        &[
+            "TargetType",
+            "ValidTgts",
+            "Destination",
+            "Defined",
+            "TargetValidTargeting",
+        ],
     )?;
     // A countered spell goes to its owner's graveyard; exile instead is a shield on the spell, set before it is countered. It
     // applies to a counter that works only: a spell that can't be countered resolves as it does.
@@ -260,11 +357,7 @@ fn counter(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
             }
         });
     }
-    if p.get("TargetType") != Some("Spell") {
-        return unmapped("key:Counter.TargetType");
-    }
-    let mut selector = vec![json!("Spell")];
-    selector.extend(selector_any(ctx, p.get("ValidTgts").unwrap_or("Card"))?);
+    let selector = counter_selector(ctx, p)?;
     let what = ctx.target(json!({"what": {"Object": selector}}))?;
     let mut effects = Vec::new();
     if exiled {
