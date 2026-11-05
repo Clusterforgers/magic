@@ -172,3 +172,17 @@ fn an_amount_cost_reads_its_svar(#[case] cost: &str) {
     );
     assert!(gaps(&text).is_empty(), "{:?}", gaps(&text));
 }
+
+#[rstest]
+#[case::count_one_of_a_target("ValidTgts$ Creature | ChangeNum$ 1", &[])]
+#[case::mandatory_target("ValidTgts$ Creature | Mandatory$ True", &[])]
+#[case::count_two_of_a_target("ValidTgts$ Creature | ChangeNum$ 2", &["key:ChangeZone.ChangeNum"])]
+#[case::count_beside_bounds("ValidTgts$ Creature | TargetMax$ 2 | ChangeNum$ 1", &["key:ChangeZone.ChangeNum"])]
+#[case::count_of_a_named_card("Defined$ Self | ChangeNum$ 1", &["key:ChangeZone.ChangeNum"])]
+#[case::mandatory_and_optional("ValidTgts$ Creature | Mandatory$ True | Optional$ True", &["key:ChangeZone.Mandatory"])]
+fn a_count_of_one_target_reads_once(#[case] keys: &str, #[case] expected: &[&str]) {
+    let text = line(&format!(
+        "A:SP$ ChangeZone | Origin$ Graveyard | Destination$ Hand | {keys}"
+    ));
+    assert_eq!(gaps(&text), expected);
+}
