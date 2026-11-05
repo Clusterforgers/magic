@@ -113,6 +113,15 @@ fn becomes_target(ctx: &Ctx, p: &Params) -> Tr<Value> {
         "BecomesTarget",
         &["ValidTarget", "ValidSource", "FirstTime"],
     )?;
+    // The pattern holds objects: a player that becomes a target is another event.
+    if p.get("ValidTarget").is_some_and(|valid| {
+        valid.split(',').any(|word| {
+            let head = word.split('.').next().unwrap_or_default();
+            matches!(head, "You" | "Player" | "Opponent")
+        })
+    }) {
+        return unmapped("trigger:BecomesTarget-a-player");
+    }
     let what = selector_any(ctx, p.get("ValidTarget").unwrap_or("Card"))?;
     let by = match p.get("ValidSource") {
         Some(valid) => super::valid::source_any(ctx, valid)?,
