@@ -376,6 +376,19 @@ impl Selector {
     }
 }
 
+/// What the targets chosen for one specification must have in common or differ in.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
+pub enum TargetSet {
+    /// One player controls them all (owns them all, outside the battlefield).
+    SameController,
+    /// No two have one controller (owner, outside the battlefield).
+    DifferentControllers,
+    /// No two have one name.
+    DifferentNames,
+    /// No two have one mana value.
+    DifferentManaValues,
+}
+
 /// What a target can be.
 #[derive(Debug, Clone, PartialEq, Eq, Hash, Serialize, Deserialize)]
 #[serde(deny_unknown_fields)]
@@ -397,6 +410,13 @@ pub enum Targetable {
         players: Ref,
         /// What each may be, without the player.
         what: Selector,
+    },
+    /// Targets of `what` that together obey `rule` ("two target creatures controlled by the same player").
+    Together {
+        /// What each may be.
+        what: Box<Targetable>,
+        /// What the chosen targets share or differ in.
+        rule: TargetSet,
     },
 }
 

@@ -1845,7 +1845,7 @@ pub fn spec_text(spec: &TargetSpec) -> Option<String> {
                     None => format!("target {phrase}"),
                 }
             }
-            Targetable::PerPlayer { .. } => return None,
+            Targetable::Together { .. } | Targetable::PerPlayer { .. } => return None,
         });
     }
     let Targetable::Object(selector) = &spec.what else {

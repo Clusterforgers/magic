@@ -739,13 +739,20 @@ impl<'a> Scope<'a> {
         let Some(spec) = self.specs.get(self.target_base + index) else {
             return Ok(Vec::new());
         };
-        match &spec.what {
+        let mut what = &spec.what;
+        while let Targetable::Together { what: inner, .. } = what {
+            what = inner;
+        }
+        match what {
             Targetable::Object(selector) => self.refs(&Ref::Each(selector.clone())),
             Targetable::PerPlayer { players, what } => self.refs(&Ref::Each(
                 Targetable::c10_dice_per_player_objects(players, what),
             )),
             Targetable::Player => self.refs(&Ref::EachPlayer),
             Targetable::Opponent => self.refs(&Ref::Opponents),
+            Targetable::Together { .. } => {
+                Err(ResolveError::Unsupported("overload of a nested target"))
+            }
             Targetable::AnyTarget | Targetable::Either(_) => Err(ResolveError::Unsupported(
                 "overload of a target that is not an object or a player",
             )),

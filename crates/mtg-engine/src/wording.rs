@@ -5,7 +5,9 @@
 //! They are hints for a person choosing, not rules: a predicate with no short phrase is left out.
 
 use mtg_cards::effect::{Effect, Place};
-use mtg_cards::refs::{AbilityKind, Bounds, Pred, Ref, Selector, TargetSpec, Targetable, ZoneKind};
+use mtg_cards::refs::{
+    AbilityKind, Bounds, Pred, Ref, Selector, TargetSet, TargetSpec, Targetable, ZoneKind,
+};
 use mtg_cards::trigger::{Step, TriggerPattern};
 use mtg_cards::value::{Amount, CastWay, Cmp, Condition, DayNight, StatKind};
 use mtg_core::ids::PlayerId;
@@ -211,6 +213,16 @@ fn kind_of(what: &Targetable) -> (String, String) {
         Targetable::Object(selector) => phrase(selector),
         Targetable::PerPlayer { players, what } => {
             phrase(&Targetable::c10_dice_per_player_objects(players, what))
+        }
+        Targetable::Together { what, rule } => {
+            let (head, tail) = kind_of(what);
+            let rule = match rule {
+                TargetSet::SameController => "controlled by the same player",
+                TargetSet::DifferentControllers => "controlled by different players",
+                TargetSet::DifferentNames => "with different names",
+                TargetSet::DifferentManaValues => "with different mana values",
+            };
+            (head, join(&tail, rule))
         }
         Targetable::Either(kinds) => (
             kinds

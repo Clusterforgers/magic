@@ -175,6 +175,7 @@ fn kind_of_targetable(what: &Targetable) -> Kind {
     match what {
         Targetable::Player | Targetable::Opponent => Kind::Player,
         Targetable::Object(_) | Targetable::PerPlayer { .. } => Kind::Object,
+        Targetable::Together { what, .. } => kind_of_targetable(what),
         Targetable::AnyTarget | Targetable::Either(_) => Kind::Either,
     }
 }
@@ -2107,6 +2108,10 @@ impl Walker<'_> {
                 self.uses("Target", "PerPlayer");
                 self.at("players", |w| w.reference(players, Kind::Player));
                 self.at("what", |w| w.selector(what));
+            }
+            Targetable::Together { what, .. } => {
+                self.uses("Target", "Together");
+                self.at("what", |w| w.targetable(what));
             }
             Targetable::AnyTarget | Targetable::Player | Targetable::Opponent => {}
         }

@@ -521,6 +521,20 @@ pub fn target_spec(ctx: &Ctx, params: &Params, zone: Option<&str>) -> Tr<Value> 
     if let Some(word) = params.get("TargetsWithDefinedController") {
         restrict_to_controller(ctx, word, zone, &mut what)?;
     }
+    for (key, rule) in [
+        ("TargetsWithSameController", "SameController"),
+        ("TargetsWithDifferentControllers", "DifferentControllers"),
+        ("TargetsWithDifferentNames", "DifferentNames"),
+        ("TargetsWithDifferentCMC", "DifferentManaValues"),
+    ] {
+        match params.get(key) {
+            None | Some("False") => {}
+            Some("True") if what.get("Object").is_some() => {
+                what = json!({"Together": {"what": what, "rule": rule}});
+            }
+            Some(other) => return unmapped(format!("key:{key}={other}")),
+        }
+    }
     let min = params.get("TargetMin");
     let max = params.get("TargetMax");
     let mut spec = json!({ "what": what });
