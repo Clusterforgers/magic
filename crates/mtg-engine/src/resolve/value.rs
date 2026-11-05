@@ -2061,6 +2061,9 @@ impl<'a> Scope<'a> {
             }
             Condition::CastWith(way) => self.cast_way() == Some(*way),
             Condition::ManaSpent(mana) => self.mana_spent().contains(mana),
+            Condition::ChosenWord { name, word } => {
+                matches!(self.chosen_value(name), Some(Chosen::Word(chosen)) if chosen == word)
+            }
             Condition::Performed => return Err(ResolveError::Unsupported("\"if you do\"")),
             Condition::Searched { who, zone } => self.searched(who, *zone)?,
             Condition::CompletedDungeon(who)

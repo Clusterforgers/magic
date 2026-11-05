@@ -962,6 +962,20 @@ impl<'a> Walker<'a> {
         }
     }
 
+    /// `Performed`: "if you do" of the effect just before its `If`.
+    fn performed(&mut self) {
+        self.uses("Condition", "Performed");
+        // The engine knows whether a `May` was accepted, whether a `CastFromZone` cast or played the card and whether a `Sacrifice` or a `RemoveCounters` took something; any other effect before it waits.
+        if !self.after_may {
+            self.uses("Condition", "Performed.Other");
+        }
+        if self.after != After::Condition {
+            self.problem(
+                "`Performed` is the condition of an `If` that follows the effect it asks about",
+            );
+        }
+    }
+
     fn condition(&mut self, condition: &Condition) {
         match condition {
             Condition::Not(inner) => self.at("Not", |w| w.condition(inner)),
@@ -1012,16 +1026,11 @@ impl<'a> Walker<'a> {
                 self.uses("Condition", "StartingPlayer");
                 self.at("StartingPlayer", |w| w.reference(who, Kind::Player));
             }
-            Condition::Performed => {
-                self.uses("Condition", "Performed");
-                // The engine knows whether a `May` was accepted, whether a `CastFromZone` cast or played the card and whether a `Sacrifice` or a `RemoveCounters` took something; any other effect before it waits.
-                if !self.after_may {
-                    self.uses("Condition", "Performed.Other");
-                }
-                if self.after != After::Condition {
-                    self.problem("`Performed` is the condition of an `If` that follows the effect it asks about");
-                }
+            Condition::ChosenWord { name, .. } => {
+                self.uses("Condition", "ChosenWord");
+                self.chosen_as(name);
             }
+            Condition::Performed => self.performed(),
             Condition::CompletedDungeon(who) => {
                 self.uses("Condition", "CompletedDungeon");
                 self.at("CompletedDungeon", |w| w.reference(who, Kind::Player));
@@ -2733,6 +2742,7 @@ impl Walker<'_> {
             | Effect::Bolster { count } => w.at("count", |w| w.amount(count)),
             Effect::Search {
                 who,
+                of,
                 zone,
                 also,
                 filter,
@@ -2740,6 +2750,13 @@ impl Walker<'_> {
                 bind,
                 ..
             } => {
+                if let Some(of) = of {
+                    w.uses("Search", "Of");
+                    if !also.is_empty() {
+                        w.problem("a search of another player's zone names one zone");
+                    }
+                    w.at("of", |w| w.reference(of, Kind::Player));
+                }
                 if !also.is_empty() {
                     w.uses("Search", "Zones");
                     let zones: Vec<_> = std::iter::once(zone).chain(also).collect();
@@ -4789,6 +4806,8 @@ mod tests {
     #[case::a_copy_with_the_exceptions_the_values_keep(r#"{"Spell":{"effects":[{"CreateToken":{"token":{"CopyOf":{"of":"This","except":[{"AddKeyword":"Haste"},{"AddSubtype":"Zombie"},{"SetColors":["Blue"]},{"SetPT":{"power":1,"toughness":1}}]}}}}]}}"#, &["Ability.Spell", "Effect.CreateToken", "Effect.CreateToken.Copy", "Keyword.Haste", "Mod.AddKeyword", "Mod.AddSubtype", "Mod.SetColors", "Mod.SetPT"])]
     #[case::a_copy_with_an_exception_that_waits(r#"{"Spell":{"effects":[{"CreateToken":{"token":{"CopyOf":{"of":"This","except":["SwitchPT"]}}}}]}}"#, &["Ability.Spell", "Copy.Except.SwitchPT", "Effect.CreateToken", "Effect.CreateToken.Copy", "Mod.SwitchPT"])]
     #[case::a_chosen_value(r#"{"Spell":{"effects":[{"ChooseValue":{"kind":"Color","as":"it"}},{"GainLife":{"amount":{"Count":[{"ChosenAs":"it"}]}}}]}}"#, &["Ability.Spell", "Effect.ChooseValue", "Effect.GainLife"])]
+    #[case::a_chosen_word(r#"{"Spell":{"effects":[{"ChooseValue":{"kind":{"Options":["a","b"]},"as":"it"}},{"If":{"condition":{"ChosenWord":{"name":"it","word":"a"}},"then":[{"Draw":{}}]}}]}}"#, &["Ability.Spell", "Condition.ChosenWord", "Effect.ChooseValue", "Effect.Draw", "Effect.If"])]
+    #[case::a_search_of_another_library(r#"{"Spell":{"effects":[{"Search":{"of":{"Target":0},"filter":[],"as":"it"}}],"targets":[{"what":"Opponent"}]}}"#, &["Ability.Spell", "Effect.Search", "Search.Of"])]
     #[case::populate(r#"{"Spell":{"effects":[{"Choose":{"from":{"Each":[{"Type":"Creature"},"Token",{"ControlledBy":"You"}]},"as":"token"}},{"CreateToken":{"token":{"CopyOf":{"of":{"Bound":"token"}}}}}]}}"#, &["Ability.Spell", "Effect.Choose", "Effect.CreateToken", "Effect.CreateToken.Copy"])]
     #[case::a_copy_that_is_exiled_at_the_end_step(r#"{"Spell":{"effects":[{"CreateToken":{"token":{"CopyOf":{"of":"This","except":[{"AddKeyword":"Haste"}]}},"as":"copy"}},{"DelayedTrigger":{"when":{"StepBegins":{"step":"End"}},"effects":[{"Exile":{"what":{"Bound":"copy"}}}]}}]}}"#, &["Ability.Spell", "Effect.CreateToken", "Effect.CreateToken.Copy", "Effect.DelayedTrigger", "Effect.Exile", "Keyword.Haste", "Mod.AddKeyword", "Trigger.StepBegins"])]
     #[case::enters_as_a_copy(r#"{"Replacement":{"when":{"Enters":{"what":["This"]}},"by":{"AsCopy":{"of":[{"Type":"Creature"}],"except":[{"AddSubtype":"Illusion"}]}}}}"#, &["Ability.Replacement", "Mod.AddSubtype", "ReplaceBy.AsCopy", "ReplaceWhen.Enters"])]

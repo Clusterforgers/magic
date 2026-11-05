@@ -808,6 +808,7 @@ fn leaf_effect() -> impl Strategy<Value = Effect> {
             .prop_map(
                 |(who, zone, also, filter, count, reveal, bind)| Effect::Search {
                     who,
+                    of: None,
                     zone,
                     also,
                     filter,

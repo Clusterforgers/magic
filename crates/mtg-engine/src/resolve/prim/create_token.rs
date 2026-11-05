@@ -88,7 +88,7 @@ fn copies_of(
 
 /// What a player who puts tokens onto the battlefield attacking may have them attack: the other players and the
 /// planeswalkers they control, while that player's own attack is under way and its attackers are declared.
-fn attackable(state: &GameState, player: PlayerId) -> Vec<(AttackTarget, ChoiceOption)> {
+pub(super) fn attackable(state: &GameState, player: PlayerId) -> Vec<(AttackTarget, ChoiceOption)> {
     if state.turn().active() != player || !state.combat().attackers_declared() {
         return Vec::new();
     }

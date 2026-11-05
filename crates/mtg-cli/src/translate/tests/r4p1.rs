@@ -55,7 +55,7 @@ fn another_player_searches_their_own_library(#[case] lines: &str, #[case] parts:
 #[rstest]
 #[case::chooser_apart(
     "A:SP$ ChangeZone | DefinedPlayer$ TriggeredTarget | Origin$ Library | Destination$ Hand | ChangeType$ Card | Chooser$ You",
-    "key:ChangeZone.Search.Chooser"
+    "defined:TriggeredTarget-in-no-trigger"
 )]
 #[case::unknown_player(
     "A:SP$ ChangeZone | DefinedPlayer$ Banana | Origin$ Library | Destination$ Hand | ChangeType$ Card",
@@ -177,19 +177,11 @@ fn the_targeted_player_is_the_owner_of_the_cards_and_may_be_the_chooser(
 }
 
 #[rstest]
-#[case::you_search_their_library(
-    "A:SP$ ChangeZone | ValidTgts$ Opponent | Origin$ Library | Destination$ Battlefield | ChangeType$ Creature | GainControl$ True",
-    "key:ChangeZone.Search.ValidTgts"
-)]
-#[case::a_chooser_apart_from_the_target(
-    "A:SP$ ChangeZone | ValidTgts$ Player | Origin$ Library | Destination$ Exile | ChangeType$ Card | Chooser$ You",
-    "key:ChangeZone.Search.ValidTgts"
-)]
 #[case::several_targets_search(
     "A:SP$ ChangeZone | ValidTgts$ Player | TargetMin$ 0 | TargetMax$ 2 | Chooser$ Targeted | Origin$ Library | Destination$ Hand | ChangeType$ Card",
     "key:ChangeZone.Search.ValidTgts"
 )]
-fn a_search_of_a_targets_library_stays_a_named_gap(#[case] lines: &str, #[case] gap: &str) {
+fn a_search_of_several_targets_libraries_stays_a_named_gap(#[case] lines: &str, #[case] gap: &str) {
     let script = card("Sorcery", lines);
     assert!(abilities(&script).is_empty(), "{:?}", abilities(&script));
     assert_eq!(gaps(&script), [gap]);

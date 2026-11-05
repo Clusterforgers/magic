@@ -407,6 +407,7 @@ pub(crate) fn reads_of_condition(condition: &Condition) -> Traits {
         | Condition::InCombat
         | Condition::FirstCombat
         | Condition::NeitherDayNorNight
+        | Condition::ChosenWord { .. }
         | Condition::Performed => Traits::NONE,
         Condition::Monarch(who)
         | Condition::MonarchAtTurnStart(who)

@@ -372,6 +372,10 @@ pub enum Effect {
         /// Who searches.
         #[serde(default = "Ref::you", skip_serializing_if = "Ref::is_you")]
         who: Ref,
+        /// Whose zone is searched when it is not the searcher's own ("search target opponent's library"); exactly one player,
+        /// the searcher sees the matches and chooses. Absent: the searcher's own.
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        of: Option<Ref>,
         /// Whose zone: their library unless the zone says otherwise.
         #[serde(
             default = "ZoneKind::library",
@@ -715,7 +719,7 @@ pub enum Effect {
         /// The object they are attached to.
         to: Ref,
     },
-    /// Puts a creature that just entered the battlefield into combat, tapped and attacking the player or planeswalker the creature that the cost of the ability returned to its owner's hand was attacking (CR 702.49a, 508.4); it was never declared as an attacker.
+    /// Puts a creature that just entered the battlefield into combat, attacking the player or planeswalker the creature that the cost of the ability returned to its owner's hand was attacking (CR 702.49a), or, with no such cost, what its controller chooses among the defenders of their own attack (CR 508.4); it was never declared as an attacker.
     JoinAttack {
         /// The creature that joins the attack.
         what: Ref,
@@ -1673,12 +1677,16 @@ mod tests {
         r#"{"Move":{"what":{"Bound":"land"},"to":{"Battlefield":{"tapped":true}}}}"#
     )]
     #[case::search(
-        Effect::Search { who: Ref::You, zone: ZoneKind::Library, also: Vec::new(), filter: Selector(vec![Pred::Supertype(mtg_core::card::Supertype::Basic)]), count: Bounds::default(), reveal: false, bind: "land".into() },
+        Effect::Search { who: Ref::You, of: None, zone: ZoneKind::Library, also: Vec::new(), filter: Selector(vec![Pred::Supertype(mtg_core::card::Supertype::Basic)]), count: Bounds::default(), reveal: false, bind: "land".into() },
         r#"{"Search":{"filter":[{"Supertype":"Basic"}],"as":"land"}}"#
     )]
     #[case::search_of_several_zones(
-        Effect::Search { who: Ref::You, zone: ZoneKind::Library, also: vec![ZoneKind::Hand, ZoneKind::Graveyard], filter: Selector(vec![Pred::Subtype(mtg_core::card::Subtype("Rune".into()))]), count: Bounds::default(), reveal: false, bind: "rune".into() },
+        Effect::Search { who: Ref::You, of: None, zone: ZoneKind::Library, also: vec![ZoneKind::Hand, ZoneKind::Graveyard], filter: Selector(vec![Pred::Subtype(mtg_core::card::Subtype("Rune".into()))]), count: Bounds::default(), reveal: false, bind: "rune".into() },
         r#"{"Search":{"also":["Hand","Graveyard"],"filter":[{"Subtype":"Rune"}],"as":"rune"}}"#
+    )]
+    #[case::search_of_another_player(
+        Effect::Search { who: Ref::You, of: Some(Ref::Opponents), zone: ZoneKind::Library, also: Vec::new(), filter: Selector(vec![]), count: Bounds::default(), reveal: false, bind: "it".into() },
+        r#"{"Search":{"of":"Opponents","filter":[],"as":"it"}}"#
     )]
     #[case::conjure(
         Effect::Conjure { who: Ref::You, name: "Lightning Bolt".into(), zone: ZoneKind::Hand, count: Amount::Fixed(2) },

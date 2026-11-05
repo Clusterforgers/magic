@@ -37,6 +37,7 @@ impl KeywordRules for Transmute {
             effects: vec![
                 Effect::Search {
                     who: Ref::You,
+                    of: None,
                     zone: ZoneKind::Library,
                     also: Vec::new(),
                     filter: Selector(vec![Pred::Compare {

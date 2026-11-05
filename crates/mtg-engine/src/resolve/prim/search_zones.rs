@@ -66,6 +66,7 @@ fn labelled(subset: &[ZoneKind]) -> String {
 pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
     let Effect::Search {
         who,
+        of: _,
         zone,
         also,
         filter,

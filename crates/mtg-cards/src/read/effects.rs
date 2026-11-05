@@ -170,6 +170,7 @@ fn cards(ctx: &Ctx, effect: &Effect) -> Option<String> {
         }
         Effect::Search {
             who,
+            of,
             zone,
             filter,
             count,
@@ -181,7 +182,7 @@ fn cards(ctx: &Ctx, effect: &Effect) -> Option<String> {
             "search",
             &format!(
                 "{} {} for {} {}{}",
-                phrase::whose(ctx, who),
+                phrase::whose(ctx, of.as_ref().unwrap_or(who)),
                 phrase::zone_text(*zone).trim_start_matches("a "),
                 bounds(ctx, count),
                 found_cards(ctx, filter, count),

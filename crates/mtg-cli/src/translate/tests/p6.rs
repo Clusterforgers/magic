@@ -162,8 +162,8 @@ fn change_zone_words(#[case] line: &str, #[case] has: &[&str]) {
 }
 
 #[rstest]
-#[case::battlefield_without_owner(
-    "A:SP$ ChangeZone | Origin$ Battlefield | Destination$ Hand | Hidden$ True | ChangeType$ Land",
+#[case::battlefield_for_a_target_without_owner(
+    "A:SP$ ChangeZone | ValidTgts$ Opponent | Origin$ Battlefield | Destination$ Hand | Hidden$ True | ChangeType$ Land",
     "key:ChangeZone.Choose.Battlefield-owner"
 )]
 #[case::transformed_to_hand(
@@ -211,7 +211,7 @@ fn who_picks_in_a_hidden_move(#[case] line: &str, #[case] has: &[&str]) {
 )]
 #[case::targeted_controller_with_target(
     "A:SP$ ChangeZone | Origin$ Hand | Destination$ Exile | ChangeType$ Card | ValidTgts$ Creature | DefinedPlayer$ TargetedController | Hidden$ True",
-    "key:ChangeZone.Choose.DefinedPlayer"
+    "key:ChangeZone.Choose.ValidTgts"
 )]
 fn who_picks_unknowns_stay_gaps(#[case] line: &str, #[case] gap: &str) {
     let (_, found) = sorcery(line);
