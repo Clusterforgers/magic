@@ -764,3 +764,4 @@ mod r6p2;
 mod r6p3;
 mod r6p4;
 mod r6p5;
+mod r6p6;

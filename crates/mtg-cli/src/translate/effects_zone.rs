@@ -388,8 +388,23 @@ fn change_zone(ctx: &mut Ctx, p: &Params, origin: &str, destination: &str) -> Tr
             "StaticEffect",
             "Optional",
             "Duration",
+            "ChangeNum",
+            "Mandatory",
         ],
     )?;
+    // A target is one object: `ChangeNum$ 1` says so again; any other count, or one beside target bounds, is not read.
+    if p.has("ChangeNum")
+        && (p.get("ChangeNum") != Some("1")
+            || !p.has("ValidTgts")
+            || p.has("TargetMax")
+            || p.has("TargetMin"))
+    {
+        return unmapped("key:ChangeZone.ChangeNum");
+    }
+    // `Mandatory$ True` is the default of a target; a line that is also optional is a contradiction.
+    if p.has("Mandatory") && (p.get("Mandatory") != Some("True") || p.has("Optional")) {
+        return unmapped("key:ChangeZone.Mandatory");
+    }
     let what = if origin == "Stack" && !p.has("ValidTgts") {
         spell_subject(ctx, p)?
     } else {
