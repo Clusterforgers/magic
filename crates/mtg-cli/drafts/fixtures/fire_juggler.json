@@ -1,0 +1,136 @@
+{
+  "object": "card",
+  "id": "f04d5eef-da88-496b-a902-b87b0b386f96",
+  "oracle_id": "dd1b4235-f053-4c46-8993-ae8d7860a0f3",
+  "multiverse_ids": [
+    152534
+  ],
+  "mtgo_id": 28994,
+  "mtgo_foil_id": 28995,
+  "tcgplayer_id": 17985,
+  "cardmarket_id": 18919,
+  "name": "Fire Juggler",
+  "lang": "en",
+  "released_at": "2008-02-01",
+  "uri": "https://api.scryfall.com/cards/f04d5eef-da88-496b-a902-b87b0b386f96",
+  "scryfall_uri": "https://scryfall.com/card/mor/90/fire-juggler?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T11:39:47Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/f/0/f04d5eef-da88-496b-a902-b87b0b386f96.jpg?1783942787",
+    "normal": "https://cards.scryfall.io/normal/front/f/0/f04d5eef-da88-496b-a902-b87b0b386f96.jpg?1783942787",
+    "large": "https://cards.scryfall.io/large/front/f/0/f04d5eef-da88-496b-a902-b87b0b386f96.jpg?1783942787",
+    "png": "https://cards.scryfall.io/png/front/f/0/f04d5eef-da88-496b-a902-b87b0b386f96.png?1783942787",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/f/0/f04d5eef-da88-496b-a902-b87b0b386f96.jpg?1783942787",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/f/0/f04d5eef-da88-496b-a902-b87b0b386f96.jpg?1783942787",
+    "thumb": "https://cards.scryfall.io/thumb/front/f/0/f04d5eef-da88-496b-a902-b87b0b386f96.webp?1783942787",
+    "grid": "https://cards.scryfall.io/grid/front/f/0/f04d5eef-da88-496b-a902-b87b0b386f96.webp?1783942787",
+    "display": "https://cards.scryfall.io/display/front/f/0/f04d5eef-da88-496b-a902-b87b0b386f96.webp?1783942787",
+    "art": "https://cards.scryfall.io/art/front/f/0/f04d5eef-da88-496b-a902-b87b0b386f96.webp?1783942787",
+    "crop": "https://cards.scryfall.io/crop/front/f/0/f04d5eef-da88-496b-a902-b87b0b386f96.webp?1783942787",
+    "jpeg": "https://cards.scryfall.io/normal/front/f/0/f04d5eef-da88-496b-a902-b87b0b386f96.jpg?1783942787"
+  },
+  "mana_cost": "{2}{R}",
+  "cmc": 3.0,
+  "type_line": "Creature — Goblin Shaman",
+  "oracle_text": "Whenever this creature becomes blocked, clash with an opponent. If you win, this creature deals 4 damage to each creature blocking it. (Each clashing player reveals the top card of their library, then puts that card on their choice of the top or bottom. A player wins if their card had a greater mana value.)",
+  "power": "2",
+  "toughness": "2",
+  "colors": [
+    "R"
+  ],
+  "color_identity": [
+    "R"
+  ],
+  "keywords": [
+    "Clash"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "c41550df-7b41-41a3-85ab-8612eb2f168f",
+  "set": "mor",
+  "set_name": "Morningtide",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/c41550df-7b41-41a3-85ab-8612eb2f168f",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Amor&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/mor?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/f04d5eef-da88-496b-a902-b87b0b386f96/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Add1b4235-f053-4c46-8993-ae8d7860a0f3&unique=prints",
+  "collector_number": "90",
+  "digital": false,
+  "rarity": "common",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Thomas Denmark",
+  "artist_ids": [
+    "aac733a9-d67b-4458-be6e-0b45241e1d17"
+  ],
+  "illustration_id": "1646888e-ea41-49d7-834a-c2820ad796ee",
+  "border_color": "black",
+  "frame": "2003",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 28700,
+  "penny_rank": 17094,
+  "prices": {
+    "usd": "0.04",
+    "usd_foil": "0.32",
+    "usd_etched": null,
+    "eur": "0.09",
+    "eur_foil": "0.26",
+    "tix": "0.04"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=152534&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DFire%2BJuggler",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DFire%2BJuggler",
+    "edhrec": "https://edhrec.com/route/?cc=Fire+Juggler"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F17985%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=18919&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/28994?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

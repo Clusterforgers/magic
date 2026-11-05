@@ -1,0 +1,44 @@
+{
+  "oracle_id": "88075828-a76e-412d-b738-182f50e3a133",
+  "name": "Demonic Junker",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Demonic Junker",
+      "oracle_fingerprint": "907271a8ca15afbe327acb87e04f0aef",
+      "abilities": [
+        { "Keyword": { "Affinity": [{ "Type": "Artifact" }] } },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              {
+                "what": {
+                  "PerPlayer": { "players": "EachPlayer", "what": [{ "Type": "Creature" }] }
+                },
+                "bounds": { "min": 0, "max": 1 }
+              }
+            ],
+            "effects": [
+              { "Destroy": { "what": { "Target": 0 }, "as": "destroyed" } },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Bound": "destroyed" },
+                      "selector": [{ "Type": "Creature" }, { "ControlledBy": "You" }],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [{ "PutCounters": { "on": "This", "counter": "+1/+1", "count": 2 } }]
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Crew": 2 } }
+      ]
+    }
+  ]
+}

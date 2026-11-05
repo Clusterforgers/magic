@@ -1,0 +1,141 @@
+{
+  "object": "card",
+  "id": "67b99400-a53a-48c8-a4d0-21bf63274225",
+  "oracle_id": "bf06d873-08be-4a45-b8fb-fe1dfadc3a39",
+  "multiverse_ids": [],
+  "resource_id": "0A931DDA17708A248AE941358BF69558E808A78CEEAE10478177928A6BB61CC4",
+  "mtgo_id": 154656,
+  "tcgplayer_id": 709012,
+  "cardmarket_id": 900373,
+  "name": "Chief of the Wilds",
+  "lang": "en",
+  "released_at": "2026-08-14",
+  "uri": "https://api.scryfall.com/cards/67b99400-a53a-48c8-a4d0-21bf63274225",
+  "scryfall_uri": "https://scryfall.com/card/hoc/103/chief-of-the-wilds?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-29T11:13:07Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/6/7/67b99400-a53a-48c8-a4d0-21bf63274225.jpg?1785323587",
+    "normal": "https://cards.scryfall.io/normal/front/6/7/67b99400-a53a-48c8-a4d0-21bf63274225.jpg?1785323587",
+    "large": "https://cards.scryfall.io/large/front/6/7/67b99400-a53a-48c8-a4d0-21bf63274225.jpg?1785323587",
+    "png": "https://cards.scryfall.io/png/front/6/7/67b99400-a53a-48c8-a4d0-21bf63274225.png?1785323587",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/6/7/67b99400-a53a-48c8-a4d0-21bf63274225.jpg?1785323587",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/6/7/67b99400-a53a-48c8-a4d0-21bf63274225.jpg?1785323587",
+    "thumb": "https://cards.scryfall.io/thumb/front/6/7/67b99400-a53a-48c8-a4d0-21bf63274225.webp?1785323587",
+    "grid": "https://cards.scryfall.io/grid/front/6/7/67b99400-a53a-48c8-a4d0-21bf63274225.webp?1785323587",
+    "display": "https://cards.scryfall.io/display/front/6/7/67b99400-a53a-48c8-a4d0-21bf63274225.webp?1785323587",
+    "art": "https://cards.scryfall.io/art/front/6/7/67b99400-a53a-48c8-a4d0-21bf63274225.webp?1785323587",
+    "crop": "https://cards.scryfall.io/crop/front/6/7/67b99400-a53a-48c8-a4d0-21bf63274225.webp?1785323587",
+    "jpeg": "https://cards.scryfall.io/normal/front/6/7/67b99400-a53a-48c8-a4d0-21bf63274225.jpg?1785323587"
+  },
+  "mana_cost": "{2}{B}{G}",
+  "cmc": 4.0,
+  "type_line": "Legendary Creature — Wolf",
+  "oracle_text": "Menace\nWhenever another Wolf you control enters, put two +1/+1 counters on Chief of the Wilds.\nIf a triggered ability of another Wolf or battle you control triggers, that ability triggers an additional time.",
+  "power": "4",
+  "toughness": "4",
+  "colors": [
+    "B",
+    "G"
+  ],
+  "color_identity": [
+    "B",
+    "G"
+  ],
+  "keywords": [
+    "Menace"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "a185c905-5359-4f40-85c3-a3eae2ca4ff0",
+  "set": "hoc",
+  "set_name": "The Hobbit Eternal",
+  "set_type": "eternal",
+  "set_uri": "https://api.scryfall.com/sets/a185c905-5359-4f40-85c3-a3eae2ca4ff0",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Ahoc&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/hoc?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/67b99400-a53a-48c8-a4d0-21bf63274225/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Abf06d873-08be-4a45-b8fb-fe1dfadc3a39&unique=prints",
+  "collector_number": "103",
+  "digital": false,
+  "rarity": "mythic",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Tomas Duchek",
+  "artist_ids": [
+    "ceb3ce65-efa6-4bcc-b2a3-33e83a047528"
+  ],
+  "illustration_id": "eee93f3b-06ab-4709-ab0b-db60f7bbf1ef",
+  "border_color": "black",
+  "frame": "2015",
+  "frame_effects": [
+    "legendary",
+    "extendedart"
+  ],
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "promo_types": [
+    "universesbeyond"
+  ],
+  "edhrec_rank": 17721,
+  "prices": {
+    "usd": "20.32",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "19.01",
+    "eur_foil": null,
+    "tix": "0.81"
+  },
+  "related_uris": {
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DChief%2Bof%2Bthe%2BWilds",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DChief%2Bof%2Bthe%2BWilds",
+    "edhrec": "https://edhrec.com/route/?cc=Chief+of+the+Wilds"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F709012%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=900373&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/154656?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

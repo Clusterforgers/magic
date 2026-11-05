@@ -1,0 +1,21 @@
+{
+  "oracle_id": "30c3c700-46f4-4a77-8c45-5c7e3a21bd62",
+  "name": "Wizard's Staff",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Wizard's Staff",
+      "oracle_fingerprint": "c47d552c70a761292d746775d04e2ca4",
+      "abilities": [
+        { "Static": { "affected": "Attached", "mods": [{ "AddKeyword": "Prowess" }] } },
+        {
+          "Rule": {
+            "rule": { "TriggerAgain": { "source": [{ "Type": "Creature" }, { "Is": "Attached" }] } }
+          }
+        },
+        { "Keyword": { "EquipTo": { "to": [{ "Subtype": "Wizard" }], "cost": "{1}" } } },
+        { "Keyword": { "Equip": "{3}" } }
+      ]
+    }
+  ]
+}

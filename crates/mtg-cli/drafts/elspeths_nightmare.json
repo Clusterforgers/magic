@@ -1,0 +1,61 @@
+{
+  "oracle_id": "ff768016-67f8-409e-8359-9ed05bcb46d2",
+  "name": "Elspeth's Nightmare",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Elspeth's Nightmare",
+      "oracle_fingerprint": "ebd064f69203b7f0d8d5695e9d5391b2",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 1 } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Type": "Creature" },
+                    { "ControlledBy": "Opponents" },
+                    { "Compare": { "stat": "Power", "op": "Le", "to": 2 } }
+                  ]
+                }
+              }
+            ],
+            "effects": [{ "Destroy": { "what": { "Target": 0 } } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 2 } },
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              {
+                "Reveal": { "what": { "Each": [{ "OwnedBy": { "Target": 0 } }, { "In": "Hand" }] } }
+              },
+              {
+                "Discard": {
+                  "who": { "Target": 0 },
+                  "filter": [{ "Not": { "Type": "Creature" } }, { "Not": { "Type": "Land" } }],
+                  "by": "You"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 3 } },
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              {
+                "Exile": {
+                  "what": { "Each": [{ "In": "Graveyard" }, { "OwnedBy": { "Target": 0 } }] }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

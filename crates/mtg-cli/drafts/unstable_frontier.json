@@ -1,0 +1,35 @@
+{
+  "oracle_id": "495214b5-2eab-4fe4-8879-a30a57a67163",
+  "name": "Unstable Frontier",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Unstable Frontier",
+      "oracle_fingerprint": "b40d8f786645b62bce3d2bce0c9542c4",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Colorless"] } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "targets": [{ "what": { "Object": [{ "Type": "Land" }, { "ControlledBy": "You" }] } }],
+            "effects": [
+              { "ChooseValue": { "kind": "LandType", "as": "chosen" } },
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "SetLandTypesChosen": "chosen" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

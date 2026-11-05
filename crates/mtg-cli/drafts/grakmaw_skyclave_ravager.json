@@ -1,0 +1,84 @@
+{
+  "oracle_id": "9c93acf3-d3da-4b4b-947f-ec8fc99d0d34",
+  "name": "Grakmaw, Skyclave Ravager",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Grakmaw, Skyclave Ravager",
+      "oracle_fingerprint": "11a3805c8972baa04099e34a51ae1c38",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "WithCounters": { "counter": "+1/+1", "count": 3 } }
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [
+                  { "Type": "Creature" },
+                  { "ControlledBy": "You" },
+                  "Other",
+                  { "HasCounter": "+1/+1" }
+                ],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } },
+            "effects": [
+              {
+                "Let": {
+                  "as": "power",
+                  "amount": { "Counters": { "on": "This", "counter": "+1/+1" } }
+                }
+              },
+              {
+                "Let": {
+                  "as": "toughness2",
+                  "amount": { "Counters": { "on": "This", "counter": "+1/+1" } }
+                }
+              },
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Hydra",
+                      "colors": ["Black", "Green"],
+                      "types": ["Creature"],
+                      "subtypes": ["Hydra"],
+                      "power": 0,
+                      "toughness": 0
+                    }
+                  },
+                  "as": "token3"
+                }
+              },
+              {
+                "Continuous": {
+                  "affected": { "Bound": "token3" },
+                  "mods": [
+                    {
+                      "SetPT": {
+                        "power": { "Bound": "power" },
+                        "toughness": { "Bound": "toughness2" }
+                      }
+                    }
+                  ],
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

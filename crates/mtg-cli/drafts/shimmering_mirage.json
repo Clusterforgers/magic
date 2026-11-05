@@ -1,0 +1,29 @@
+{
+  "oracle_id": "d1720ddc-d6ad-4d78-8dd7-29539bbb73da",
+  "name": "Shimmering Mirage",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Shimmering Mirage",
+      "oracle_fingerprint": "2a91da1fdd6eb7b0443c2834540403ce",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Land" }] } }],
+            "effects": [
+              { "ChooseValue": { "kind": "LandType", "as": "chosen" } },
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "SetLandTypesChosen": "chosen" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              { "Draw": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

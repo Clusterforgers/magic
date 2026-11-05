@@ -22,8 +22,7 @@
                           "Each": [
                             { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] },
                             { "ExiledWith": "This" },
-                            { "In": "Exile" },
-                            { "OwnedBy": "You" }
+                            { "In": "Exile" }
                           ]
                         },
                         "count": { "min": 0, "max": 1 },

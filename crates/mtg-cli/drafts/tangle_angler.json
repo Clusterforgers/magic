@@ -1,0 +1,28 @@
+{
+  "oracle_id": "887a9f2f-17b4-4a20-a464-9665cde6f293",
+  "name": "Tangle Angler",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Tangle Angler",
+      "oracle_fingerprint": "07fa824ec17af2dbe7311c60b127d4fb",
+      "abilities": [
+        { "Keyword": "Infect" },
+        {
+          "Activated": {
+            "cost": "{G}",
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Rule": {
+                  "rule": { "MustBlockAttacker": { "who": { "Target": 0 }, "attacker": "This" } },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,42 +1,4 @@
 {
   "source": "forge",
-  "oracle_matches": true,
-  "lines": [
-    {
-      "face": 0,
-      "tag": "A",
-      "text": "CARDNAME becomes the creature type of your choice until end of turn.",
-      "abilities": [],
-      "gap": "defined:none-for-Animate"
-    },
-    {
-      "face": 0,
-      "tag": "S",
-      "text": "Creature spells you cast that share a creature type with CARDNAME cost {1} less to cast.",
-      "abilities": [
-        0
-      ],
-      "gap": null
-    }
-  ],
-  "proof": {
-    "marks": [
-      {
-        "face": 0,
-        "span": {
-          "start": 0,
-          "end": 93
-        },
-        "mark": "Auto"
-      },
-      {
-        "face": 0,
-        "span": {
-          "start": 94,
-          "end": 172
-        },
-        "mark": "ByHand"
-      }
-    ]
-  }
+  "oracle_matches": true
 }

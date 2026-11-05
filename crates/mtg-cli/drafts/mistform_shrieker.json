@@ -1,0 +1,30 @@
+{
+  "oracle_id": "50fe31e9-473e-4d2f-b1b5-3eef3c7bb0e6",
+  "name": "Mistform Shrieker",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mistform Shrieker",
+      "oracle_fingerprint": "777bf53d561359d3cd5ba3c52e2a068b",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Activated": {
+            "cost": "{1}",
+            "effects": [
+              { "ChooseValue": { "kind": "CreatureType", "as": "chosen" } },
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "SetCreatureTypesChosen": "chosen" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Morph": "{3}{U}{U}" } }
+      ]
+    }
+  ]
+}

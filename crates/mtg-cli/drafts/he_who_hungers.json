@@ -1,0 +1,28 @@
+{
+  "oracle_id": "5449bf36-e26c-4f76-bcae-944c70d184f8",
+  "name": "He Who Hungers",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "He Who Hungers",
+      "oracle_fingerprint": "9ea4ac7a3135a37b16b2336c48eec08b",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{1}" }, { "Sacrifice": { "filter": [{ "Subtype": "Spirit" }] } }],
+            "timing": "Sorcery",
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              {
+                "Reveal": { "what": { "Each": [{ "OwnedBy": { "Target": 0 } }, { "In": "Hand" }] } }
+              },
+              { "Discard": { "who": { "Target": 0 }, "by": "You" } }
+            ]
+          }
+        },
+        { "Keyword": { "Macro": { "name": "soulshift", "amount": 4 } } }
+      ]
+    }
+  ]
+}

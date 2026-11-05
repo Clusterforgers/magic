@@ -1,0 +1,45 @@
+{
+  "oracle_id": "3a487f20-6b1d-4be3-b51f-0c8f0a611601",
+  "name": "Sisay's Ingenuity",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sisay's Ingenuity",
+      "oracle_fingerprint": "1b8cc0c783eeb400ba445d8ebb8b43f0",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "Draw": {} }]
+          }
+        },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [
+              {
+                "GrantAbility": {
+                  "Activated": {
+                    "cost": "{2}{U}",
+                    "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+                    "effects": [
+                      { "ChooseValue": { "kind": "Color", "as": "chosen" } },
+                      {
+                        "Continuous": {
+                          "affected": { "Target": 0 },
+                          "mods": [{ "SetColorsChosen": "chosen" }],
+                          "duration": "UntilEndOfTurn"
+                        }
+                      }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

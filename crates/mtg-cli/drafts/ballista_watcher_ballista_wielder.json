@@ -1,0 +1,58 @@
+{
+  "oracle_id": "b6811c31-fcd3-4d00-89d5-cf974575a87c",
+  "name": "Ballista Watcher // Ballista Wielder",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ballista Watcher",
+      "oracle_fingerprint": "5fcab992578d20c26379c3d28b7065d9",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{2}{R}" }, "Tap"],
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 1 } }]
+          }
+        },
+        { "Keyword": "Daybound" }
+      ]
+    },
+    {
+      "name": "Ballista Wielder",
+      "oracle_fingerprint": "0a88e941b28bc6907e21a2a09678e7d3",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{2}{R}",
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [
+              { "DealDamage": { "to": { "Target": 0 }, "amount": 1 } },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Target": 0 },
+                      "selector": [{ "Type": "Creature" }],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [
+                    {
+                      "Continuous": {
+                        "affected": { "Target": 0 },
+                        "mods": ["CantBlock"],
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": "Nightbound" }
+      ]
+    }
+  ]
+}

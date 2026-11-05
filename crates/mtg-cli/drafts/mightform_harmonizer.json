@@ -1,16 +1,39 @@
 {
   "oracle_id": "8e025cda-71c5-4d06-8436-decd408667af",
   "name": "Mightform Harmonizer",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Mightform Harmonizer",
       "oracle_fingerprint": "b85d54a4a5bcacfea1bbbb8f3b348459",
       "abilities": [
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 0, "end": 113 }
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Land" }, { "ControlledBy": "You" }],
+                "to": "Battlefield"
+              }
+            },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    {
+                      "ModifyPT": {
+                        "power": { "Stat": { "of": { "Target": 0 }, "stat": "Power" } },
+                        "toughness": 0
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
           }
         },
         { "AltCast": { "way": "Warp", "cost": "{2}{G}" } },

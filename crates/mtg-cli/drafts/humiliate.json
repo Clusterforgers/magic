@@ -1,0 +1,37 @@
+{
+  "oracle_id": "cf18a1ca-1fb5-4c90-b20a-6ae2fb54a9bb",
+  "name": "Humiliate",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Humiliate",
+      "oracle_fingerprint": "9e556aebf63d30f3e137dd4266e421ce",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              {
+                "Reveal": { "what": { "Each": [{ "OwnedBy": { "Target": 0 } }, { "In": "Hand" }] } }
+              },
+              {
+                "Discard": {
+                  "who": { "Target": 0 },
+                  "filter": [{ "Not": { "Type": "Land" } }],
+                  "by": "You"
+                }
+              },
+              {
+                "Choose": {
+                  "from": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                  "as": "card"
+                }
+              },
+              { "PutCounters": { "on": { "Bound": "card" }, "counter": "+1/+1" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

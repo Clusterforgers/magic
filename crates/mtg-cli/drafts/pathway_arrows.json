@@ -1,0 +1,39 @@
+{
+  "oracle_id": "cb15bcc7-151f-44a4-90ee-2d39d8fd5299",
+  "name": "Pathway Arrows",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Pathway Arrows",
+      "oracle_fingerprint": "37eef4cec182296c78f5d11dbb417fbc",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [
+              {
+                "GrantAbility": {
+                  "Activated": {
+                    "cost": [{ "Mana": "{2}" }, "Tap"],
+                    "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+                    "effects": [
+                      { "DealDamage": { "to": { "Target": 0 }, "amount": 1 } },
+                      {
+                        "Tap": {
+                          "what": {
+                            "Each": [{ "Type": "Creature" }, { "Is": { "Target": 0 } }, "Colorless"]
+                          }
+                        }
+                      }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Equip": "{2}" } }
+      ]
+    }
+  ]
+}

@@ -1,7 +1,7 @@
 {
   "oracle_id": "5811effb-5010-44b9-bb97-9d7eb358327f",
   "name": "Doomsday Specter",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Doomsday Specter",
@@ -29,9 +29,9 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 99, "end": 239 }
+          "Triggered": {
+            "when": { "DealsDamage": { "source": ["This"], "to": "EachPlayer", "combat": true } },
+            "effects": [{ "Discard": { "who": "Triggering", "by": "You" } }]
           }
         }
       ]

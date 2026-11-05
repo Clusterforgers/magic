@@ -1,0 +1,19 @@
+{
+  "oracle_id": "22c49415-e8d2-4b4c-b021-57ee54670f86",
+  "name": "Warped Devotion",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Warped Devotion",
+      "oracle_fingerprint": "c7a4319bf2b6870b6defa3c10985a2b3",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": [], "from": "Battlefield", "to": "Hand" } },
+            "effects": [{ "Discard": { "who": { "OwnerOf": "Triggering" } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

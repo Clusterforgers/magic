@@ -1,7 +1,7 @@
 {
   "oracle_id": "02c4abd0-9a68-4a85-954b-3f64666c1f8d",
   "name": "Mistform Wall",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Mistform Wall",
@@ -15,9 +15,18 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 51, "end": 129 }
+          "Activated": {
+            "cost": "{1}",
+            "effects": [
+              { "ChooseValue": { "kind": "CreatureType", "as": "chosen" } },
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "SetCreatureTypesChosen": "chosen" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
           }
         }
       ]

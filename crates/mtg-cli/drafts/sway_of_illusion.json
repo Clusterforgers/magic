@@ -1,0 +1,34 @@
+{
+  "oracle_id": "9a7e2298-8855-43a7-8cb1-4b31e4058c3f",
+  "name": "Sway of Illusion",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sway of Illusion",
+      "oracle_fingerprint": "6e325e745917f0a2bffcd0cfbd750b7b",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": { "Object": [{ "Type": "Creature" }] },
+                "bounds": { "min": 0, "max": { "Count": [{ "Type": "Creature" }] } }
+              }
+            ],
+            "effects": [
+              { "ChooseValue": { "kind": "Color", "as": "chosen" } },
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "SetColorsChosen": "chosen" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              { "Draw": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

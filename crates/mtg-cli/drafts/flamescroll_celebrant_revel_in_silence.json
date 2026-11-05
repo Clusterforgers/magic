@@ -1,0 +1,48 @@
+{
+  "oracle_id": "5f1d3d22-18f7-42b7-8039-ef7aa5d29856",
+  "name": "Flamescroll Celebrant // Revel in Silence",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Flamescroll Celebrant",
+      "oracle_fingerprint": "baa7aa95ac98fb223c8a43b205e1274b",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Did": { "action": "Activated", "who": "Opponents" } },
+            "effects": [{ "DealDamage": { "to": "TriggeringPlayer", "amount": 1 } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{1}{R}",
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "ModifyPT": { "power": 2, "toughness": 0 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Revel in Silence",
+      "oracle_fingerprint": "06b1a63eed086f088db1f5a51c777b2c",
+      "abilities": [
+        {
+          "Manual": { "reason": "you apply this clause by hand", "span": { "start": 0, "end": 88 } }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 89, "end": 112 }
+          }
+        }
+      ]
+    }
+  ]
+}

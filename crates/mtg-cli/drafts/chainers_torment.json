@@ -1,0 +1,86 @@
+{
+  "oracle_id": "3c18113f-8d1e-4c63-a759-8cfc94e90876",
+  "name": "Chainer's Torment",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Chainer's Torment",
+      "oracle_fingerprint": "c422ac74f55cd24e6b90d9a88b886ae0",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 1 } },
+            "effects": [
+              { "DealDamage": { "to": "Opponents", "amount": 2 } },
+              { "GainLife": { "amount": 2 } }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 2 } },
+            "effects": [
+              { "DealDamage": { "to": "Opponents", "amount": 2 } },
+              { "GainLife": { "amount": 2 } }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 3 } },
+            "effects": [
+              {
+                "Let": {
+                  "as": "power",
+                  "amount": { "Half": { "of": { "Life": "You" }, "up": true } }
+                }
+              },
+              {
+                "Let": {
+                  "as": "toughness2",
+                  "amount": { "Half": { "of": { "Life": "You" }, "up": true } }
+                }
+              },
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Nightmare Horror",
+                      "colors": ["Black"],
+                      "types": ["Creature"],
+                      "subtypes": ["Nightmare", "Horror"],
+                      "power": 0,
+                      "toughness": 0
+                    }
+                  },
+                  "as": "token3"
+                }
+              },
+              {
+                "Continuous": {
+                  "affected": { "Bound": "token3" },
+                  "mods": [
+                    {
+                      "SetPT": {
+                        "power": { "Bound": "power" },
+                        "toughness": { "Bound": "toughness2" }
+                      }
+                    }
+                  ],
+                  "duration": "Forever"
+                }
+              },
+              {
+                "DealDamage": {
+                  "source": { "Bound": "token3" },
+                  "to": "You",
+                  "amount": { "Half": { "of": { "Life": "You" }, "up": true } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

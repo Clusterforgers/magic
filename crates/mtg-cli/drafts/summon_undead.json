@@ -1,0 +1,29 @@
+{
+  "oracle_id": "c86ff0e3-5d6e-4981-a2da-8da70b9daeb0",
+  "name": "Summon Undead",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Summon Undead",
+      "oracle_fingerprint": "ae135156024e2fbdd0315daef8f07b7f",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "May": { "effects": [{ "Mill": { "count": 3 } }] } },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [{ "Type": "Creature" }, { "OwnedBy": "You" }, { "In": "Graveyard" }]
+                  },
+                  "as": "picked"
+                }
+              },
+              { "Move": { "what": { "Bound": "picked" }, "to": { "Battlefield": {} } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

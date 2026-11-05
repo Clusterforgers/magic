@@ -1,0 +1,134 @@
+{
+  "object": "card",
+  "id": "f7f77c7e-d35f-477e-acc4-a393044319ea",
+  "oracle_id": "81641cf1-2dcf-4cd3-ab92-7f5e8e20cb84",
+  "multiverse_ids": [
+    143372
+  ],
+  "mtgo_id": 28555,
+  "mtgo_foil_id": 28556,
+  "tcgplayer_id": 15490,
+  "cardmarket_id": 17953,
+  "name": "Fistful of Force",
+  "lang": "en",
+  "released_at": "2007-10-12",
+  "uri": "https://api.scryfall.com/cards/f7f77c7e-d35f-477e-acc4-a393044319ea",
+  "scryfall_uri": "https://scryfall.com/card/lrw/212/fistful-of-force?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T11:41:04Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/f/7/f7f77c7e-d35f-477e-acc4-a393044319ea.jpg?1783942864",
+    "normal": "https://cards.scryfall.io/normal/front/f/7/f7f77c7e-d35f-477e-acc4-a393044319ea.jpg?1783942864",
+    "large": "https://cards.scryfall.io/large/front/f/7/f7f77c7e-d35f-477e-acc4-a393044319ea.jpg?1783942864",
+    "png": "https://cards.scryfall.io/png/front/f/7/f7f77c7e-d35f-477e-acc4-a393044319ea.png?1783942864",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/f/7/f7f77c7e-d35f-477e-acc4-a393044319ea.jpg?1783942864",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/f/7/f7f77c7e-d35f-477e-acc4-a393044319ea.jpg?1783942864",
+    "thumb": "https://cards.scryfall.io/thumb/front/f/7/f7f77c7e-d35f-477e-acc4-a393044319ea.webp?1783942864",
+    "grid": "https://cards.scryfall.io/grid/front/f/7/f7f77c7e-d35f-477e-acc4-a393044319ea.webp?1783942864",
+    "display": "https://cards.scryfall.io/display/front/f/7/f7f77c7e-d35f-477e-acc4-a393044319ea.webp?1783942864",
+    "art": "https://cards.scryfall.io/art/front/f/7/f7f77c7e-d35f-477e-acc4-a393044319ea.webp?1783942864",
+    "crop": "https://cards.scryfall.io/crop/front/f/7/f7f77c7e-d35f-477e-acc4-a393044319ea.webp?1783942864",
+    "jpeg": "https://cards.scryfall.io/normal/front/f/7/f7f77c7e-d35f-477e-acc4-a393044319ea.jpg?1783942864"
+  },
+  "mana_cost": "{1}{G}",
+  "cmc": 2.0,
+  "type_line": "Instant",
+  "oracle_text": "Target creature gets +2/+2 until end of turn. Clash with an opponent. If you win, that creature gets an additional +2/+2 and gains trample until end of turn. (Each clashing player reveals the top card of their library, then puts that card on their choice of the top or bottom. A player wins if their card had a greater mana value.)",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [
+    "Clash"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "30ec97cb-dca9-4bf4-a98b-310f9d8ceaff",
+  "set": "lrw",
+  "set_name": "Lorwyn",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/30ec97cb-dca9-4bf4-a98b-310f9d8ceaff",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Alrw&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/lrw?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/f7f77c7e-d35f-477e-acc4-a393044319ea/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A81641cf1-2dcf-4cd3-ab92-7f5e8e20cb84&unique=prints",
+  "collector_number": "212",
+  "digital": false,
+  "rarity": "common",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Ralph Horsley",
+  "artist_ids": [
+    "a51444a8-eb4b-4615-a663-d1d418591ccb"
+  ],
+  "illustration_id": "09cae9ce-d613-40cc-84f8-4ed9bf005894",
+  "border_color": "black",
+  "frame": "2003",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 28751,
+  "penny_rank": 17103,
+  "prices": {
+    "usd": "0.14",
+    "usd_foil": "0.33",
+    "usd_etched": null,
+    "eur": "0.04",
+    "eur_foil": "0.22",
+    "tix": "0.03"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=143372&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DFistful%2Bof%2BForce",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DFistful%2Bof%2BForce",
+    "edhrec": "https://edhrec.com/route/?cc=Fistful+of+Force"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F15490%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=17953&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/28555?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

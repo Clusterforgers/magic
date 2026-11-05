@@ -1,0 +1,47 @@
+{
+  "oracle_id": "c87db803-3490-41bc-af7a-78f99bcd77c8",
+  "name": "Fire Magic",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Fire Magic",
+      "oracle_fingerprint": "754711880f638d261225330df220ff74",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Modal": {
+                  "mode_costs": ["{0}", "{2}", "{5}"],
+                  "modes": [
+                    {
+                      "effects": [
+                        {
+                          "DealDamage": { "to": { "Each": [{ "Type": "Creature" }] }, "amount": 1 }
+                        }
+                      ]
+                    },
+                    {
+                      "effects": [
+                        {
+                          "DealDamage": { "to": { "Each": [{ "Type": "Creature" }] }, "amount": 2 }
+                        }
+                      ]
+                    },
+                    {
+                      "effects": [
+                        {
+                          "DealDamage": { "to": { "Each": [{ "Type": "Creature" }] }, "amount": 3 }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

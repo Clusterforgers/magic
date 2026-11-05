@@ -1,0 +1,33 @@
+{
+  "oracle_id": "61017a67-653c-4f75-9ec3-22d2149340a8",
+  "name": "Pilfering Imp",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Pilfering Imp",
+      "oracle_fingerprint": "f657ff8694b9293fbefb7c9c1464c709",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{1}{B}" }, "Tap", "SacrificeSelf"],
+            "timing": "Sorcery",
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              {
+                "Reveal": { "what": { "Each": [{ "OwnedBy": { "Target": 0 } }, { "In": "Hand" }] } }
+              },
+              {
+                "Discard": {
+                  "who": { "Target": 0 },
+                  "filter": [{ "Not": { "Type": "Land" } }],
+                  "by": "You"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

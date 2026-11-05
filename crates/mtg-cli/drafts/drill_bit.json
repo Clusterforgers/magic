@@ -1,0 +1,31 @@
+{
+  "oracle_id": "0dbd6e47-a8b4-4268-ba44-8924cd4963a6",
+  "name": "Drill Bit",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Drill Bit",
+      "oracle_fingerprint": "e10644ebe000dd39d62fef90ef61b9ec",
+      "abilities": [
+        { "Keyword": { "Spectacle": "{B}" } },
+        {
+          "Spell": {
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              {
+                "Reveal": { "what": { "Each": [{ "OwnedBy": { "Target": 0 } }, { "In": "Hand" }] } }
+              },
+              {
+                "Discard": {
+                  "who": { "Target": 0 },
+                  "filter": [{ "Not": { "Type": "Land" } }],
+                  "by": "You"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

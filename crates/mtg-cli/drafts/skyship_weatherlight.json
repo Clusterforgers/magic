@@ -41,9 +41,7 @@
             "effects": [
               {
                 "ChooseAtRandom": {
-                  "from": {
-                    "Each": [{ "ExiledWith": "This" }, { "In": "Exile" }, { "OwnedBy": "You" }]
-                  },
+                  "from": { "Each": [{ "ExiledWith": "This" }, { "In": "Exile" }] },
                   "as": "picked"
                 }
               },

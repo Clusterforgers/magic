@@ -1,0 +1,143 @@
+{
+  "object": "card",
+  "id": "f0797466-c527-4d35-86bc-e0e90fd04073",
+  "oracle_id": "fb2cd508-f5cd-4d5b-b8e7-3cae1f39fd58",
+  "multiverse_ids": [],
+  "resource_id": "737D5914E4791ECDC5EB5E4DCEE853919534BDDD5C40F0820886694070083083",
+  "mtgo_id": 147961,
+  "arena_id": 100626,
+  "tcgplayer_id": 673673,
+  "cardmarket_id": 868408,
+  "name": "Splinter, Radical Rat",
+  "lang": "en",
+  "released_at": "2026-03-06",
+  "uri": "https://api.scryfall.com/cards/f0797466-c527-4d35-86bc-e0e90fd04073",
+  "scryfall_uri": "https://scryfall.com/card/tmt/169/splinter-radical-rat?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T00:54:31Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/f/0/f0797466-c527-4d35-86bc-e0e90fd04073.jpg?1783904071",
+    "normal": "https://cards.scryfall.io/normal/front/f/0/f0797466-c527-4d35-86bc-e0e90fd04073.jpg?1783904071",
+    "large": "https://cards.scryfall.io/large/front/f/0/f0797466-c527-4d35-86bc-e0e90fd04073.jpg?1783904071",
+    "png": "https://cards.scryfall.io/png/front/f/0/f0797466-c527-4d35-86bc-e0e90fd04073.png?1783904071",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/f/0/f0797466-c527-4d35-86bc-e0e90fd04073.jpg?1783904071",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/f/0/f0797466-c527-4d35-86bc-e0e90fd04073.jpg?1783904071",
+    "thumb": "https://cards.scryfall.io/thumb/front/f/0/f0797466-c527-4d35-86bc-e0e90fd04073.webp?1783904071",
+    "grid": "https://cards.scryfall.io/grid/front/f/0/f0797466-c527-4d35-86bc-e0e90fd04073.webp?1783904071",
+    "display": "https://cards.scryfall.io/display/front/f/0/f0797466-c527-4d35-86bc-e0e90fd04073.webp?1783904071",
+    "art": "https://cards.scryfall.io/art/front/f/0/f0797466-c527-4d35-86bc-e0e90fd04073.webp?1783904071",
+    "crop": "https://cards.scryfall.io/crop/front/f/0/f0797466-c527-4d35-86bc-e0e90fd04073.webp?1783904071",
+    "jpeg": "https://cards.scryfall.io/normal/front/f/0/f0797466-c527-4d35-86bc-e0e90fd04073.jpg?1783904071"
+  },
+  "mana_cost": "{1}{W/B}{W/B}",
+  "cmc": 3.0,
+  "type_line": "Legendary Creature — Mutant Ninja Rat",
+  "oracle_text": "If a triggered ability of a Ninja creature you control triggers, that ability triggers an additional time.\n{1}{U}: Target Ninja can't be blocked this turn.",
+  "power": "2",
+  "toughness": "4",
+  "colors": [
+    "B",
+    "W"
+  ],
+  "color_identity": [
+    "B",
+    "U",
+    "W"
+  ],
+  "keywords": [],
+  "legalities": {
+    "standard": "legal",
+    "future": "legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "arena",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "03990f52-1d8a-4ce8-828a-c9bf633f0de6",
+  "set": "tmt",
+  "set_name": "Teenage Mutant Ninja Turtles",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/03990f52-1d8a-4ce8-828a-c9bf633f0de6",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Atmt&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/tmt?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/f0797466-c527-4d35-86bc-e0e90fd04073/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Afb2cd508-f5cd-4d5b-b8e7-3cae1f39fd58&unique=prints",
+  "collector_number": "169",
+  "digital": false,
+  "rarity": "rare",
+  "flavor_text": "\"The first rule of the ninja is 'do no harm.' Unless you need to do harm. Then do lots of harm!\"",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Manuel Castañón",
+  "artist_ids": [
+    "35f11eeb-36ff-4059-bb70-d1274f5bd858"
+  ],
+  "illustration_id": "a08c9dff-f99f-48c3-acf0-01d854f277f6",
+  "border_color": "black",
+  "frame": "2015",
+  "frame_effects": [
+    "legendary"
+  ],
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "promo_types": [
+    "universesbeyond"
+  ],
+  "edhrec_rank": 9176,
+  "prices": {
+    "usd": "0.50",
+    "usd_foil": "0.88",
+    "usd_etched": null,
+    "eur": "0.46",
+    "eur_foil": "0.55",
+    "tix": "0.02"
+  },
+  "related_uris": {
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DSplinter%252C%2BRadical%2BRat",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DSplinter%252C%2BRadical%2BRat",
+    "edhrec": "https://edhrec.com/route/?cc=Splinter%2C+Radical+Rat"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F673673%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=868408&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/147961?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

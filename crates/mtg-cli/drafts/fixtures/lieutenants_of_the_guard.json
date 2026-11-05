@@ -1,0 +1,150 @@
+{
+  "object": "card",
+  "id": "71bf4f19-802d-466a-85f1-2062ae3656a1",
+  "oracle_id": "80745dea-2335-43fc-9915-f62e0436e73b",
+  "multiverse_ids": [
+    416773
+  ],
+  "tcgplayer_id": 121431,
+  "cardmarket_id": 291738,
+  "name": "Lieutenants of the Guard",
+  "lang": "en",
+  "released_at": "2016-08-26",
+  "uri": "https://api.scryfall.com/cards/71bf4f19-802d-466a-85f1-2062ae3656a1",
+  "scryfall_uri": "https://scryfall.com/card/cn2/16/lieutenants-of-the-guard?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T10:09:25Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/7/1/71bf4f19-802d-466a-85f1-2062ae3656a1.jpg?1783937365",
+    "normal": "https://cards.scryfall.io/normal/front/7/1/71bf4f19-802d-466a-85f1-2062ae3656a1.jpg?1783937365",
+    "large": "https://cards.scryfall.io/large/front/7/1/71bf4f19-802d-466a-85f1-2062ae3656a1.jpg?1783937365",
+    "png": "https://cards.scryfall.io/png/front/7/1/71bf4f19-802d-466a-85f1-2062ae3656a1.png?1783937365",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/7/1/71bf4f19-802d-466a-85f1-2062ae3656a1.jpg?1783937365",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/7/1/71bf4f19-802d-466a-85f1-2062ae3656a1.jpg?1783937365",
+    "thumb": "https://cards.scryfall.io/thumb/front/7/1/71bf4f19-802d-466a-85f1-2062ae3656a1.webp?1783937365",
+    "grid": "https://cards.scryfall.io/grid/front/7/1/71bf4f19-802d-466a-85f1-2062ae3656a1.webp?1783937365",
+    "display": "https://cards.scryfall.io/display/front/7/1/71bf4f19-802d-466a-85f1-2062ae3656a1.webp?1783937365",
+    "art": "https://cards.scryfall.io/art/front/7/1/71bf4f19-802d-466a-85f1-2062ae3656a1.webp?1783937365",
+    "crop": "https://cards.scryfall.io/crop/front/7/1/71bf4f19-802d-466a-85f1-2062ae3656a1.webp?1783937365",
+    "jpeg": "https://cards.scryfall.io/normal/front/7/1/71bf4f19-802d-466a-85f1-2062ae3656a1.jpg?1783937365"
+  },
+  "mana_cost": "{4}{W}",
+  "cmc": 5.0,
+  "type_line": "Creature — Human Soldier",
+  "oracle_text": "Council's dilemma — When this creature enters, starting with you, each player votes for strength or numbers. Put a +1/+1 counter on this creature for each strength vote and create a 1/1 white Soldier creature token for each numbers vote.",
+  "power": "2",
+  "toughness": "2",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": [
+    "Council's dilemma"
+  ],
+  "all_parts": [
+    {
+      "object": "related_card",
+      "id": "71bf4f19-802d-466a-85f1-2062ae3656a1",
+      "component": "combo_piece",
+      "name": "Lieutenants of the Guard",
+      "type_line": "Creature — Human Soldier",
+      "uri": "https://api.scryfall.com/cards/71bf4f19-802d-466a-85f1-2062ae3656a1"
+    },
+    {
+      "object": "related_card",
+      "id": "36d229e4-2a21-4d56-be82-5f812659f8e6",
+      "component": "token",
+      "name": "Soldier",
+      "type_line": "Token Creature — Soldier",
+      "uri": "https://api.scryfall.com/cards/36d229e4-2a21-4d56-be82-5f812659f8e6"
+    }
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "ad1b8847-1905-4080-9e26-80691ea7c1ef",
+  "set": "cn2",
+  "set_name": "Conspiracy: Take the Crown",
+  "set_type": "draft_innovation",
+  "set_uri": "https://api.scryfall.com/sets/ad1b8847-1905-4080-9e26-80691ea7c1ef",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Acn2&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/cn2?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/71bf4f19-802d-466a-85f1-2062ae3656a1/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A80745dea-2335-43fc-9915-f62e0436e73b&unique=prints",
+  "collector_number": "16",
+  "digital": false,
+  "rarity": "common",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Johannes Voss",
+  "artist_ids": [
+    "3593dd7e-c547-4a32-81cd-7da725f60118"
+  ],
+  "illustration_id": "301cc6ff-0024-4ea2-8a2a-5d87c9c5dfd2",
+  "border_color": "black",
+  "frame": "2015",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 15944,
+  "prices": {
+    "usd": "0.17",
+    "usd_foil": "0.38",
+    "usd_etched": null,
+    "eur": "0.12",
+    "eur_foil": "0.37",
+    "tix": null
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=416773&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DLieutenants%2Bof%2Bthe%2BGuard",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DLieutenants%2Bof%2Bthe%2BGuard",
+    "edhrec": "https://edhrec.com/route/?cc=Lieutenants+of+the+Guard"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F121431%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=291738&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards?affiliate_id=scryfall&data%5Bsearch%5D=Lieutenants+of+the+Guard&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

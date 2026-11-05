@@ -1,0 +1,24 @@
+{
+  "oracle_id": "e7a1c21b-5966-4ce0-a925-0b3cb3c3db00",
+  "name": "Mirror Room // Fractured Realm",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Mirror Room",
+      "oracle_fingerprint": "1814daf69ceb188e10a2468a6236ef95",
+      "abilities": [
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 0, "end": 153 }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Fractured Realm",
+      "oracle_fingerprint": "cc55465f1c13948dd747b2c99238b324",
+      "abilities": [{ "Rule": { "rule": { "TriggerAgain": {} } } }]
+    }
+  ]
+}

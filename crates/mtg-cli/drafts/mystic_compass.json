@@ -1,0 +1,29 @@
+{
+  "oracle_id": "87bafa97-38fd-41a2-8b1d-315e88d9d0bf",
+  "name": "Mystic Compass",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mystic Compass",
+      "oracle_fingerprint": "37b432cc909c0b79019df1ef493bf051",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{1}" }, "Tap"],
+            "targets": [{ "what": { "Object": [{ "Type": "Land" }] } }],
+            "effects": [
+              { "ChooseValue": { "kind": "LandType", "as": "chosen" } },
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "SetLandTypesChosen": "chosen" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,20 @@
+{
+  "oracle_id": "0972d46e-423b-454e-87c7-a2d40fb6fb6d",
+  "name": "Katara, the Fearless",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Katara, the Fearless",
+      "oracle_fingerprint": "0ac2fd59d3726bce38fedc593d05d4ef",
+      "abilities": [
+        {
+          "Rule": {
+            "rule": {
+              "TriggerAgain": { "source": [{ "Subtype": "Ally" }, { "ControlledBy": "You" }] }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

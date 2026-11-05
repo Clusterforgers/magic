@@ -1,0 +1,36 @@
+{
+  "oracle_id": "2d29c40a-4e13-4d99-bb5a-e991e385b8c2",
+  "name": "Grandmother Goby",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Grandmother Goby",
+      "oracle_fingerprint": "1c10b2c11249c8092ed6652aa2d5bd30",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "what": [{ "Not": { "Type": "Creature" } }], "by": "You" } },
+            "effects": [
+              { "Counter": { "what": "Triggering" } },
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Merfolk",
+                      "colors": ["Blue"],
+                      "types": ["Creature"],
+                      "subtypes": ["Merfolk"],
+                      "power": 1,
+                      "toughness": 1
+                    }
+                  },
+                  "count": { "Stat": { "of": "Triggering", "stat": "ManaSpent" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,63 @@
+{
+  "oracle_id": "5b0b6c8f-472a-4ee2-8368-3b17a2df498d",
+  "name": "Corpse Cobble",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Corpse Cobble",
+      "oracle_fingerprint": "1bc29a7a0f1853c7a66f304298411f4b",
+      "abilities": [
+        {
+          "AdditionalCost": {
+            "cost": [{ "Sacrifice": { "filter": [{ "Type": "Creature" }], "count": "X" } }],
+            "required": true
+          }
+        },
+        {
+          "Spell": {
+            "effects": [
+              { "Let": { "as": "power", "amount": { "Stat": { "of": "Paid", "stat": "Power" } } } },
+              {
+                "Let": {
+                  "as": "toughness2",
+                  "amount": { "Stat": { "of": "Paid", "stat": "Power" } }
+                }
+              },
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Zombie",
+                      "colors": ["Blue", "Black"],
+                      "types": ["Creature"],
+                      "subtypes": ["Zombie"],
+                      "power": 0,
+                      "toughness": 0,
+                      "abilities": [{ "Keyword": "Menace" }]
+                    }
+                  },
+                  "as": "token3"
+                }
+              },
+              {
+                "Continuous": {
+                  "affected": { "Bound": "token3" },
+                  "mods": [
+                    {
+                      "SetPT": {
+                        "power": { "Bound": "power" },
+                        "toughness": { "Bound": "toughness2" }
+                      }
+                    }
+                  ],
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Flashback": "{3}{U}{B}" } }
+      ]
+    }
+  ]
+}

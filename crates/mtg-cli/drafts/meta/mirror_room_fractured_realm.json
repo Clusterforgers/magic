@@ -1,0 +1,42 @@
+{
+  "source": "forge",
+  "oracle_matches": true,
+  "lines": [
+    {
+      "face": 0,
+      "tag": "T",
+      "text": "When you unlock this door, create a token that's a copy of target creature you control, except it's a Reflection in addition to its other creature types.",
+      "abilities": [],
+      "gap": "key:CopyPermanent.Defined-unread"
+    },
+    {
+      "face": 1,
+      "tag": "S",
+      "text": "If a triggered ability of a permanent you control triggers, that ability triggers an additional time.",
+      "abilities": [
+        0
+      ],
+      "gap": null
+    }
+  ],
+  "proof": {
+    "marks": [
+      {
+        "face": 0,
+        "span": {
+          "start": 0,
+          "end": 153
+        },
+        "mark": "ByHand"
+      },
+      {
+        "face": 1,
+        "span": {
+          "start": 0,
+          "end": 101
+        },
+        "mark": "Auto"
+      }
+    ]
+  }
+}

@@ -1,0 +1,59 @@
+{
+  "oracle_id": "9d2aea05-f55c-4355-950f-bfdc4e985e80",
+  "name": "Selvala's Stampede",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Selvala's Stampede",
+      "oracle_fingerprint": "1ef74a350e8eeaba8b376396e2a1699c",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "Vote": { "options": { "Named": ["wild", "free"] } } },
+              {
+                "RevealUntil": {
+                  "filter": [{ "Type": "Creature" }, { "OwnedBy": "You" }],
+                  "count": { "Players": { "Bound": "wild" } },
+                  "as": "found",
+                  "revealed_as": "revealed2"
+                }
+              },
+              { "Move": { "what": { "Bound": "found" }, "to": { "Battlefield": {} } } },
+              {
+                "Move": {
+                  "what": { "Bound": "revealed2" },
+                  "to": { "Library": { "place": "Top" } }
+                }
+              },
+              { "Shuffle": {} },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      {
+                        "AnyOf": [
+                          { "Type": "Artifact" },
+                          { "Type": "Battle" },
+                          { "Type": "Creature" },
+                          { "Type": "Enchantment" },
+                          { "Type": "Land" },
+                          { "Type": "Planeswalker" }
+                        ]
+                      },
+                      { "In": "Hand" },
+                      { "OwnedBy": "You" }
+                    ]
+                  },
+                  "count": { "min": 0, "max": { "Players": { "Bound": "free" } } },
+                  "as": "picked3"
+                }
+              },
+              { "Move": { "what": { "Bound": "picked3" }, "to": { "Battlefield": {} } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

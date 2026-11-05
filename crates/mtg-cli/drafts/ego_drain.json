@@ -1,0 +1,50 @@
+{
+  "oracle_id": "b4fc198f-3595-4880-ad12-96c18fbf9c33",
+  "name": "Ego Drain",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ego Drain",
+      "oracle_fingerprint": "ed8d1665adb2536e3b831b183f0d58a9",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              {
+                "Reveal": { "what": { "Each": [{ "OwnedBy": { "Target": 0 } }, { "In": "Hand" }] } }
+              },
+              {
+                "Discard": {
+                  "who": { "Target": 0 },
+                  "filter": [{ "Not": { "Type": "Land" } }],
+                  "by": "You"
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "Count": [{ "Subtype": "Faerie" }, { "ControlledBy": "You" }] },
+                      "op": "Eq",
+                      "right": 0
+                    }
+                  },
+                  "then": [
+                    {
+                      "Choose": {
+                        "from": { "Each": [{ "In": "Hand" }, { "OwnedBy": "You" }] },
+                        "as": "picked"
+                      }
+                    },
+                    { "Exile": { "what": { "Bound": "picked" } } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

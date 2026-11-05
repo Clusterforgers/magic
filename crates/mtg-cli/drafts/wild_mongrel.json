@@ -1,0 +1,35 @@
+{
+  "oracle_id": "e9441ab3-7a17-4f9b-a873-e5e82f6e9690",
+  "name": "Wild Mongrel",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Wild Mongrel",
+      "oracle_fingerprint": "10d183dc7f3b849a8c6b7b2314de8277",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Discard": {} }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              { "ChooseValue": { "kind": "Color", "as": "chosen" } },
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "SetColorsChosen": "chosen" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

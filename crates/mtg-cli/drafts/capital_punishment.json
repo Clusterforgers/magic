@@ -1,0 +1,28 @@
+{
+  "oracle_id": "c2902f4f-b40e-49f7-8ab0-5b6a70021482",
+  "name": "Capital Punishment",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Capital Punishment",
+      "oracle_fingerprint": "32d81f95143cb7ee6889d0f9bababf7d",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "Vote": { "options": { "Named": ["death", "taxes"] } } },
+              {
+                "Sacrifice": {
+                  "who": "Opponents",
+                  "filter": [{ "Type": "Creature" }],
+                  "count": { "Players": { "Bound": "death" } }
+                }
+              },
+              { "Discard": { "who": "Opponents", "count": { "Players": { "Bound": "taxes" } } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

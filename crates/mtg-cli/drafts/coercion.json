@@ -1,0 +1,24 @@
+{
+  "oracle_id": "68413337-ddb9-46f8-8c8e-f3d2d672c652",
+  "name": "Coercion",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Coercion",
+      "oracle_fingerprint": "da91b0615d83bdd1df34f32e583e258e",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              {
+                "Reveal": { "what": { "Each": [{ "OwnedBy": { "Target": 0 } }, { "In": "Hand" }] } }
+              },
+              { "Discard": { "who": { "Target": 0 }, "by": "You" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

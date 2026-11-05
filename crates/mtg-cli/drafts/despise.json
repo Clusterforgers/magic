@@ -1,0 +1,30 @@
+{
+  "oracle_id": "b13b40f1-1b1f-40e8-989b-ef24dc05007a",
+  "name": "Despise",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Despise",
+      "oracle_fingerprint": "231fc720a67e57d32662f38a396c82ac",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              {
+                "Reveal": { "what": { "Each": [{ "OwnedBy": { "Target": 0 } }, { "In": "Hand" }] } }
+              },
+              {
+                "Discard": {
+                  "who": { "Target": 0 },
+                  "filter": [{ "AnyOf": [{ "Type": "Creature" }, { "Type": "Planeswalker" }] }],
+                  "by": "You"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

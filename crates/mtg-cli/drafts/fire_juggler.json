@@ -1,0 +1,32 @@
+{
+  "oracle_id": "dd1b4235-f053-4c46-8993-ae8d7860a0f3",
+  "name": "Fire Juggler",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Fire Juggler",
+      "oracle_fingerprint": "32db3047fa9ff992a1e1abb3c216ba2b",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "BecomesBlocked": { "what": ["This"] } },
+            "effects": [
+              {
+                "Clash": {
+                  "win": [
+                    {
+                      "DealDamage": {
+                        "to": { "Each": [{ "Type": "Creature" }, { "Blocks": "This" }] },
+                        "amount": 4
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

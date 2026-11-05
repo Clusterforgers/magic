@@ -1,0 +1,65 @@
+{
+  "oracle_id": "178a79e2-64fd-4777-95fe-98b7834a642a",
+  "name": "Quartzwood Crasher",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Quartzwood Crasher",
+      "oracle_fingerprint": "d11e268008d3b9a2bc232be84921a783",
+      "abilities": [
+        { "Keyword": "Trample" },
+        {
+          "Triggered": {
+            "when": {
+              "Batch": {
+                "DealsDamage": {
+                  "source": [
+                    { "Type": "Creature" },
+                    { "ControlledBy": "You" },
+                    { "HasKeyword": "Trample" }
+                  ],
+                  "to": "EachPlayer",
+                  "combat": true
+                }
+              }
+            },
+            "effects": [
+              { "Let": { "as": "power", "amount": "Triggering" } },
+              { "Let": { "as": "toughness2", "amount": "Triggering" } },
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Dinosaur Beast",
+                      "colors": ["Green"],
+                      "types": ["Creature"],
+                      "subtypes": ["Dinosaur", "Beast"],
+                      "power": 0,
+                      "toughness": 0,
+                      "abilities": [{ "Keyword": "Trample" }]
+                    }
+                  },
+                  "as": "token3"
+                }
+              },
+              {
+                "Continuous": {
+                  "affected": { "Bound": "token3" },
+                  "mods": [
+                    {
+                      "SetPT": {
+                        "power": { "Bound": "power" },
+                        "toughness": { "Bound": "toughness2" }
+                      }
+                    }
+                  ],
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

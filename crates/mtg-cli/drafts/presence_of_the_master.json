@@ -1,0 +1,19 @@
+{
+  "oracle_id": "e1aad679-93ec-420e-881b-35ebc99763a2",
+  "name": "Presence of the Master",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Presence of the Master",
+      "oracle_fingerprint": "d340dd8708b9be0293afd11d10675246",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "what": [{ "Type": "Enchantment" }] } },
+            "effects": [{ "Counter": { "what": "Triggering" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

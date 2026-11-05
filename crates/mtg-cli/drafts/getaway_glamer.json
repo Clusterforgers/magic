@@ -1,0 +1,74 @@
+{
+  "oracle_id": "98eac0f7-3f4d-46ef-9575-680c52e967cf",
+  "name": "Getaway Glamer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Getaway Glamer",
+      "oracle_fingerprint": "eefe07b3630aa17132efce4b5e10f15f",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Modal": {
+                  "choose": { "min": 1, "max": 2 },
+                  "mode_costs": ["{1}", "{2}"],
+                  "modes": [
+                    {
+                      "targets": [
+                        { "what": { "Object": [{ "Type": "Creature" }, { "Not": "Token" }] } }
+                      ],
+                      "effects": [
+                        { "Exile": { "what": { "Target": 0 }, "as": "exiled" } },
+                        {
+                          "DelayedTrigger": {
+                            "when": { "StepBegins": { "step": "End" } },
+                            "effects": [
+                              {
+                                "Move": {
+                                  "what": { "Bound": "exiled" },
+                                  "to": { "Battlefield": {} }
+                                }
+                              }
+                            ]
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+                      "effects": [
+                        {
+                          "If": {
+                            "condition": {
+                              "CountOf": {
+                                "subject": { "Target": 0 },
+                                "selector": [
+                                  { "Type": "Creature" },
+                                  {
+                                    "GreatestAmong": {
+                                      "stat": "Power",
+                                      "group": [{ "Type": "Creature" }]
+                                    }
+                                  }
+                                ],
+                                "op": "Ge",
+                                "right": 1
+                              }
+                            },
+                            "then": [{ "Destroy": { "what": { "Target": 0 } } }]
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

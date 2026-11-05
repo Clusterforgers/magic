@@ -1,0 +1,57 @@
+{
+  "oracle_id": "2a4cde8f-38e0-439b-9928-95ab23317f70",
+  "name": "Skeletonize",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Skeletonize",
+      "oracle_fingerprint": "4aece5ac408460fede58c39e54aae89f",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              { "DealDamage": { "to": { "Target": 0 }, "amount": 3 } },
+              {
+                "DelayedTrigger": {
+                  "when": {
+                    "ZoneChange": {
+                      "what": [{ "Is": { "Target": 0 } }],
+                      "from": "Battlefield",
+                      "to": "Graveyard"
+                    }
+                  },
+                  "this_turn": true,
+                  "effects": [
+                    {
+                      "CreateToken": {
+                        "token": {
+                          "Custom": {
+                            "name": "Skeleton",
+                            "colors": ["Black"],
+                            "types": ["Creature"],
+                            "subtypes": ["Skeleton"],
+                            "power": 1,
+                            "toughness": 1,
+                            "abilities": [
+                              {
+                                "Activated": {
+                                  "cost": "{B}",
+                                  "effects": [{ "Regenerate": { "what": "This" } }]
+                                }
+                              }
+                            ]
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

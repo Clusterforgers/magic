@@ -1,0 +1,87 @@
+{
+  "oracle_id": "7851e4c8-020c-4a3d-88ed-0c97609cdfed",
+  "name": "Experimental Overload",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Experimental Overload",
+      "oracle_fingerprint": "5c570dc30872144b3f8fe42ca27f6da7",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Let": {
+                  "as": "power",
+                  "amount": {
+                    "Count": [
+                      { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] },
+                      { "OwnedBy": "You" },
+                      { "In": "Graveyard" }
+                    ]
+                  }
+                }
+              },
+              {
+                "Let": {
+                  "as": "toughness2",
+                  "amount": {
+                    "Count": [
+                      { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] },
+                      { "OwnedBy": "You" },
+                      { "In": "Graveyard" }
+                    ]
+                  }
+                }
+              },
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Weird",
+                      "colors": ["Blue", "Red"],
+                      "types": ["Creature"],
+                      "subtypes": ["Weird"],
+                      "power": 0,
+                      "toughness": 0
+                    }
+                  },
+                  "as": "token3"
+                }
+              },
+              {
+                "Continuous": {
+                  "affected": { "Bound": "token3" },
+                  "mods": [
+                    {
+                      "SetPT": {
+                        "power": { "Bound": "power" },
+                        "toughness": { "Bound": "toughness2" }
+                      }
+                    }
+                  ],
+                  "duration": "Forever"
+                }
+              },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] },
+                      { "OwnedBy": "You" },
+                      { "In": "Graveyard" }
+                    ]
+                  },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "picked4"
+                }
+              },
+              { "Move": { "what": { "Bound": "picked4" }, "to": "Hand" } },
+              { "Exile": { "what": "This" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

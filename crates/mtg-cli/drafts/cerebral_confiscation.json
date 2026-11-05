@@ -1,0 +1,46 @@
+{
+  "oracle_id": "1ea71ea2-65ca-4907-b857-dbd1ba8efacd",
+  "name": "Cerebral Confiscation",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Cerebral Confiscation",
+      "oracle_fingerprint": "d2a65b95b675a3744c560ccdf4d15136",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Modal": {
+                  "modes": [
+                    {
+                      "targets": [{ "what": "Opponent" }],
+                      "effects": [{ "Discard": { "who": { "Target": 0 }, "count": 2 } }]
+                    },
+                    {
+                      "targets": [{ "what": "Opponent" }],
+                      "effects": [
+                        {
+                          "Reveal": {
+                            "what": { "Each": [{ "OwnedBy": { "Target": 0 } }, { "In": "Hand" }] }
+                          }
+                        },
+                        {
+                          "Discard": {
+                            "who": { "Target": 0 },
+                            "filter": [{ "Not": { "Type": "Land" } }],
+                            "by": "You"
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

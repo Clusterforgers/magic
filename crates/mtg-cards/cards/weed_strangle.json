@@ -1,0 +1,32 @@
+{
+  "oracle_id": "af64ce09-b7d9-4db9-905e-c4356f242ced",
+  "name": "Weed Strangle",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Weed Strangle",
+      "oracle_fingerprint": "6e52eed436b68a146492683534907d13",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              { "Destroy": { "what": { "Target": 0 } } },
+              {
+                "Clash": {
+                  "win": [
+                    {
+                      "GainLife": {
+                        "amount": { "Stat": { "of": { "Target": 0 }, "stat": "Toughness" } }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,30 @@
+{
+  "oracle_id": "91c2f488-2b49-4499-8d5d-c1aff73a4b57",
+  "name": "Shattered Dreams",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Shattered Dreams",
+      "oracle_fingerprint": "577436eff80e3fccb8729b69418cbf50",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              {
+                "Reveal": { "what": { "Each": [{ "OwnedBy": { "Target": 0 } }, { "In": "Hand" }] } }
+              },
+              {
+                "Discard": {
+                  "who": { "Target": 0 },
+                  "filter": [{ "Type": "Artifact" }],
+                  "by": "You"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

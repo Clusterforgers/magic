@@ -1,0 +1,74 @@
+{
+  "oracle_id": "003bf21f-6815-4098-a186-aa15f5947541",
+  "name": "Kalitas, Bloodchief of Ghet",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Kalitas, Bloodchief of Ghet",
+      "oracle_fingerprint": "2bc647c14c7dd97938ad2ee5e48a8745",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{B}{B}{B}" }, "Tap"],
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              { "Destroy": { "what": { "Target": 0 }, "as": "destroyed" } },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": { "left": { "Bound": "destroyed~moved" }, "op": "Ge", "right": 1 }
+                  },
+                  "then": [
+                    {
+                      "Let": {
+                        "as": "power2",
+                        "amount": { "Stat": { "of": { "Bound": "destroyed" }, "stat": "Power" } }
+                      }
+                    },
+                    {
+                      "Let": {
+                        "as": "toughness3",
+                        "amount": {
+                          "Stat": { "of": { "Bound": "destroyed" }, "stat": "Toughness" }
+                        }
+                      }
+                    },
+                    {
+                      "CreateToken": {
+                        "token": {
+                          "Custom": {
+                            "name": "Vampire",
+                            "colors": ["Black"],
+                            "types": ["Creature"],
+                            "subtypes": ["Vampire"],
+                            "power": 0,
+                            "toughness": 0
+                          }
+                        },
+                        "as": "token4"
+                      }
+                    },
+                    {
+                      "Continuous": {
+                        "affected": { "Bound": "token4" },
+                        "mods": [
+                          {
+                            "SetPT": {
+                              "power": { "Bound": "power2" },
+                              "toughness": { "Bound": "toughness3" }
+                            }
+                          }
+                        ],
+                        "duration": "Forever"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

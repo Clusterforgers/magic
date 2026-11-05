@@ -1,0 +1,25 @@
+{
+  "oracle_id": "738d2be9-c40b-4a9b-95ed-18d659080918",
+  "name": "Tourach's Canticle",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Tourach's Canticle",
+      "oracle_fingerprint": "2e73634bf01653012b7ed80c4f197f90",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              {
+                "Reveal": { "what": { "Each": [{ "OwnedBy": { "Target": 0 } }, { "In": "Hand" }] } }
+              },
+              { "Discard": { "who": { "Target": 0 }, "by": "You" } },
+              { "Discard": { "who": { "Target": 0 }, "random": true } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,29 @@
+{
+  "oracle_id": "c5fdcbc9-e7da-4a88-95cf-c526f10ad96e",
+  "name": "Sea Snidd",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sea Snidd",
+      "oracle_fingerprint": "954240764f22bf7947878683d358181a",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "targets": [{ "what": { "Object": [{ "Type": "Land" }] } }],
+            "effects": [
+              { "ChooseValue": { "kind": "LandType", "as": "chosen" } },
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "SetLandTypesChosen": "chosen" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

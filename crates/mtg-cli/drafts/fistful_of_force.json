@@ -1,0 +1,43 @@
+{
+  "oracle_id": "81641cf1-2dcf-4cd3-ab92-7f5e8e20cb84",
+  "name": "Fistful of Force",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Fistful of Force",
+      "oracle_fingerprint": "dc41730de63bd4085f68924d012498c9",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "ModifyPT": { "power": 2, "toughness": 2 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "Clash": {
+                  "win": [
+                    {
+                      "Continuous": {
+                        "affected": { "Target": 0 },
+                        "mods": [
+                          { "ModifyPT": { "power": 2, "toughness": 2 } },
+                          { "AddKeyword": "Trample" }
+                        ],
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

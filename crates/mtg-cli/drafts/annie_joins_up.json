@@ -1,0 +1,42 @@
+{
+  "oracle_id": "4c3ad545-b375-44a7-a24e-58baacc4e4b6",
+  "name": "Annie Joins Up",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Annie Joins Up",
+      "oracle_fingerprint": "172b284b379eed49bef84e2c1fe9c594",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "AnyOf": [{ "Type": "Creature" }, { "Type": "Planeswalker" }] },
+                    { "ControlledBy": "Opponents" }
+                  ]
+                }
+              }
+            ],
+            "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 5 } }]
+          }
+        },
+        {
+          "Rule": {
+            "rule": {
+              "TriggerAgain": {
+                "source": [
+                  { "Type": "Creature" },
+                  { "ControlledBy": "You" },
+                  { "Supertype": "Legendary" }
+                ]
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,30 @@
+{
+  "oracle_id": "33d405ea-7a9a-4970-b70f-9c05d90dd6f0",
+  "name": "Duress",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Duress",
+      "oracle_fingerprint": "f40eaa83b50ede4ae3e3350218cf3da9",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              {
+                "Reveal": { "what": { "Each": [{ "OwnedBy": { "Target": 0 } }, { "In": "Hand" }] } }
+              },
+              {
+                "Discard": {
+                  "who": { "Target": 0 },
+                  "filter": [{ "Not": { "Type": "Creature" } }, { "Not": { "Type": "Land" } }],
+                  "by": "You"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

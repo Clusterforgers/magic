@@ -1,7 +1,7 @@
 {
   "oracle_id": "e3d6d146-47f4-46f9-9a15-2ea649093668",
   "name": "Grunn, the Lonely King",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Grunn, the Lonely King",
@@ -16,9 +16,24 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 130, "end": 209 }
+          "Triggered": {
+            "when": { "AttacksAlone": { "what": ["This"] } },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [
+                    {
+                      "ModifyPT": {
+                        "power": { "Stat": { "of": "This", "stat": "Power" } },
+                        "toughness": { "Stat": { "of": "This", "stat": "Toughness" } }
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
           }
         }
       ]

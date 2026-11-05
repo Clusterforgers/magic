@@ -1,0 +1,75 @@
+{
+  "oracle_id": "d262f3e1-b5bc-4dab-86c2-cd89c2419e54",
+  "name": "Caught in the Crossfire",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Caught in the Crossfire",
+      "oracle_fingerprint": "41c908e02a9144ff044c062a7f9b60c4",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Modal": {
+                  "choose": { "min": 1, "max": 2 },
+                  "mode_costs": ["{1}", "{1}"],
+                  "modes": [
+                    {
+                      "effects": [
+                        {
+                          "DealDamage": {
+                            "to": {
+                              "Each": [
+                                { "Type": "Creature" },
+                                {
+                                  "AnyOf": [
+                                    { "Subtype": "Assassin" },
+                                    { "Subtype": "Mercenary" },
+                                    { "Subtype": "Pirate" },
+                                    { "Subtype": "Rogue" },
+                                    { "Subtype": "Warlock" }
+                                  ]
+                                }
+                              ]
+                            },
+                            "amount": 2
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "effects": [
+                        {
+                          "DealDamage": {
+                            "to": {
+                              "Each": [
+                                { "Type": "Creature" },
+                                {
+                                  "Not": {
+                                    "AnyOf": [
+                                      { "Subtype": "Assassin" },
+                                      { "Subtype": "Mercenary" },
+                                      { "Subtype": "Pirate" },
+                                      { "Subtype": "Rogue" },
+                                      { "Subtype": "Warlock" }
+                                    ]
+                                  }
+                                }
+                              ]
+                            },
+                            "amount": 2
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,43 @@
+{
+  "oracle_id": "16b8eab0-ccbd-4dbf-9998-82a4d85d0f77",
+  "name": "Yes Man, Personal Securitron",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Yes Man, Personal Securitron",
+      "oracle_fingerprint": "c9db3d467f97aa186cd3c9775f2f1725",
+      "abilities": [
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 0, "end": 147 }
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield" } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "who": { "OwnerOf": "This" },
+                  "token": {
+                    "Custom": {
+                      "name": "Soldier",
+                      "colors": ["White"],
+                      "types": ["Creature"],
+                      "subtypes": ["Soldier"],
+                      "power": 1,
+                      "toughness": 1
+                    }
+                  },
+                  "count": { "Counters": { "on": "This", "counter": { "Other": "quest" } } },
+                  "tapped": true
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

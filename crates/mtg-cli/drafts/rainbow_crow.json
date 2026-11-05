@@ -1,0 +1,29 @@
+{
+  "oracle_id": "79bf98c8-1169-477d-838e-2ebc0fa396dc",
+  "name": "Rainbow Crow",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Rainbow Crow",
+      "oracle_fingerprint": "b4f7482d75ae4f0bf885ce90401ce60e",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Activated": {
+            "cost": "{1}",
+            "effects": [
+              { "ChooseValue": { "kind": "Color", "as": "chosen" } },
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "SetColorsChosen": "chosen" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

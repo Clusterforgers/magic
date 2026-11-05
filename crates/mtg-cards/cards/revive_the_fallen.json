@@ -1,0 +1,22 @@
+{
+  "oracle_id": "2f857ef6-c1e5-4b85-b3fb-8163be4895b5",
+  "name": "Revive the Fallen",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Revive the Fallen",
+      "oracle_fingerprint": "9a023d50750c9cbfa94a0cd84df47edc",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }, { "In": "Graveyard" }] } }],
+            "effects": [
+              { "Move": { "what": { "Target": 0 }, "to": "Hand" } },
+              { "Clash": { "win": [{ "Move": { "what": "This", "to": "Hand" } }] } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

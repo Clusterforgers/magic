@@ -1,0 +1,61 @@
+{
+  "oracle_id": "bb97f7c6-6a75-4f4e-b74e-c57ce98a08fc",
+  "name": "Trickery Charm",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Trickery Charm",
+      "oracle_fingerprint": "3d68c177d17cb168857523af94a750fb",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Modal": {
+                  "modes": [
+                    {
+                      "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+                      "effects": [
+                        {
+                          "Continuous": {
+                            "affected": { "Target": 0 },
+                            "mods": [{ "AddKeyword": "Flying" }],
+                            "duration": "UntilEndOfTurn"
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+                      "effects": [
+                        { "ChooseValue": { "kind": "CreatureType", "as": "chosen" } },
+                        {
+                          "Continuous": {
+                            "affected": { "Target": 0 },
+                            "mods": [{ "SetCreatureTypesChosen": "chosen" }],
+                            "duration": "UntilEndOfTurn"
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "effects": [
+                        { "LookAtTop": { "count": 4, "as": "top2" } },
+                        {
+                          "Move": {
+                            "what": { "Bound": "top2" },
+                            "to": { "Library": { "place": "Top", "order": "Chosen" } }
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

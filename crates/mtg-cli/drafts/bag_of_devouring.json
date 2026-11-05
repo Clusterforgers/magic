@@ -49,13 +49,7 @@
                       "effects": [
                         {
                           "Choose": {
-                            "from": {
-                              "Each": [
-                                { "ExiledWith": "This" },
-                                { "In": "Exile" },
-                                { "OwnedBy": "You" }
-                              ]
-                            },
+                            "from": { "Each": [{ "ExiledWith": "This" }, { "In": "Exile" }] },
                             "count": { "min": 0, "max": { "DieResult": "Only" } },
                             "as": "picked"
                           }

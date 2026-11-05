@@ -1,0 +1,27 @@
+{
+  "oracle_id": "7fc3c2a5-2754-4237-8a37-cb3166c20c3c",
+  "name": "Trumpeting Armodon",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Trumpeting Armodon",
+      "oracle_fingerprint": "b086dc82bdedf231ffa93829eb5538b2",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{1}{G}",
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Rule": {
+                  "rule": { "MustBlockAttacker": { "who": { "Target": 0 }, "attacker": "This" } },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

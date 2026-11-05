@@ -1,0 +1,33 @@
+{
+  "oracle_id": "336cc3ab-c1c7-4bf1-b1d7-dfc9f3c556ab",
+  "name": "Venarian Glimmer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Venarian Glimmer",
+      "oracle_fingerprint": "96ee179f66abdaad506373de2a9d7c08",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              {
+                "Reveal": { "what": { "Each": [{ "OwnedBy": { "Target": 0 } }, { "In": "Hand" }] } }
+              },
+              {
+                "Discard": {
+                  "who": { "Target": 0 },
+                  "filter": [
+                    { "Not": { "Type": "Land" } },
+                    { "Compare": { "stat": "ManaValue", "op": "Le", "to": "X" } }
+                  ],
+                  "by": "You"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

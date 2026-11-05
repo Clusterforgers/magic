@@ -1,0 +1,40 @@
+{
+  "oracle_id": "1b78aa71-b554-45dc-a737-52cd74c3e7f1",
+  "name": "Redcap Melee",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Redcap Melee",
+      "oracle_fingerprint": "545262adbdc85429ab7333073caf8536",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "AnyOf": [{ "Type": "Creature" }, { "Type": "Planeswalker" }] }]
+                }
+              }
+            ],
+            "effects": [
+              { "DealDamage": { "to": { "Target": 0 }, "amount": 4 } },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Target": 0 },
+                      "selector": [{ "Not": { "Color": "Red" } }],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [{ "Sacrifice": { "filter": [{ "Type": "Land" }] } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

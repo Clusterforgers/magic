@@ -1,0 +1,31 @@
+{
+  "oracle_id": "ecf613a7-a3df-4da6-b3db-4626b5ae8df6",
+  "name": "Dwarven Shrine",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dwarven Shrine",
+      "oracle_fingerprint": "af9c2cea53c090ec4781190d45828aa5",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "SpellCast": {} },
+            "effects": [
+              {
+                "DealDamage": {
+                  "to": "Triggering",
+                  "amount": {
+                    "Times": {
+                      "by": 2,
+                      "of": { "Count": [{ "SharesName": "Triggering" }, { "In": "Graveyard" }] }
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

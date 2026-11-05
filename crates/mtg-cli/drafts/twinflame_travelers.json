@@ -1,0 +1,23 @@
+{
+  "oracle_id": "341cf69a-246c-4eb5-910c-18c13a4c3dce",
+  "name": "Twinflame Travelers",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Twinflame Travelers",
+      "oracle_fingerprint": "9dc45a61cf5448a5a64970caf5604907",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Rule": {
+            "rule": {
+              "TriggerAgain": {
+                "source": [{ "Subtype": "Elemental" }, "Other", { "ControlledBy": "You" }]
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

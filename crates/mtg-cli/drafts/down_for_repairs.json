@@ -1,0 +1,39 @@
+{
+  "oracle_id": "455dc001-3f6d-4d44-afa7-0f83a2520baf",
+  "name": "Down for Repairs",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Down for Repairs",
+      "oracle_fingerprint": "39cb9a0a92479741c9cf3566631bc3b2",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": "Player" },
+              {
+                "what": {
+                  "Object": [{ "Subtype": "Attraction" }, { "ControlledBy": { "Target": 0 } }]
+                },
+                "bounds": { "min": 0, "max": 1 }
+              }
+            ],
+            "effects": [
+              {
+                "Reveal": { "what": { "Each": [{ "OwnedBy": { "Target": 0 } }, { "In": "Hand" }] } }
+              },
+              {
+                "Discard": {
+                  "who": { "Target": 0 },
+                  "filter": [{ "Not": { "Type": "Land" } }],
+                  "by": "You"
+                }
+              },
+              { "Destroy": { "what": { "Target": 1 } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

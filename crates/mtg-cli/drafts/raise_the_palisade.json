@@ -1,0 +1,26 @@
+{
+  "oracle_id": "f55a3781-fe33-4301-9bb5-6a54b9c13c4f",
+  "name": "Raise the Palisade",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Raise the Palisade",
+      "oracle_fingerprint": "d5e02162dc2ccd86b24debe9265dc36f",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "ChooseValue": { "kind": "CreatureType", "as": "chosen" } },
+              {
+                "Move": {
+                  "what": { "Each": [{ "Type": "Creature" }, { "Not": { "ChosenAs": "chosen" } }] },
+                  "to": "Hand"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

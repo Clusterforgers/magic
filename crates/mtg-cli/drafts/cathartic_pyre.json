@@ -1,0 +1,61 @@
+{
+  "oracle_id": "f7e55117-69fb-412e-b16e-d92e0f95f629",
+  "name": "Cathartic Pyre",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Cathartic Pyre",
+      "oracle_fingerprint": "291799e54053e7d46bd33188e5fcff6d",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Modal": {
+                  "modes": [
+                    {
+                      "targets": [
+                        {
+                          "what": {
+                            "Object": [
+                              { "AnyOf": [{ "Type": "Creature" }, { "Type": "Planeswalker" }] }
+                            ]
+                          }
+                        }
+                      ],
+                      "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 3 } }]
+                    },
+                    {
+                      "effects": [
+                        { "Discard": { "count": 2, "optional": true, "as": "discarded" } },
+                        {
+                          "Draw": {
+                            "count": {
+                              "Count": [
+                                { "Is": { "Bound": "discarded" } },
+                                {
+                                  "AnyOf": [
+                                    { "In": "Battlefield" },
+                                    { "In": "Hand" },
+                                    { "In": "Library" },
+                                    { "In": "Graveyard" },
+                                    { "In": "Exile" },
+                                    { "In": "Stack" }
+                                  ]
+                                }
+                              ]
+                            }
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

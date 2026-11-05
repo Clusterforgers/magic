@@ -1,0 +1,141 @@
+{
+  "object": "card",
+  "id": "1b2b198d-493c-4d6c-bfb6-e842728522f6",
+  "oracle_id": "66412a7a-4ec0-41f0-80ad-eb483213ff81",
+  "multiverse_ids": [
+    473128
+  ],
+  "mtgo_id": 78472,
+  "arena_id": 70313,
+  "tcgplayer_id": 198969,
+  "cardmarket_id": 400414,
+  "name": "Maraleaf Rider",
+  "lang": "en",
+  "released_at": "2019-10-04",
+  "uri": "https://api.scryfall.com/cards/1b2b198d-493c-4d6c-bfb6-e842728522f6",
+  "scryfall_uri": "https://scryfall.com/card/eld/166/maraleaf-rider?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T08:50:07Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/1/b/1b2b198d-493c-4d6c-bfb6-e842728522f6.jpg?1783932607",
+    "normal": "https://cards.scryfall.io/normal/front/1/b/1b2b198d-493c-4d6c-bfb6-e842728522f6.jpg?1783932607",
+    "large": "https://cards.scryfall.io/large/front/1/b/1b2b198d-493c-4d6c-bfb6-e842728522f6.jpg?1783932607",
+    "png": "https://cards.scryfall.io/png/front/1/b/1b2b198d-493c-4d6c-bfb6-e842728522f6.png?1783932607",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/1/b/1b2b198d-493c-4d6c-bfb6-e842728522f6.jpg?1783932607",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/1/b/1b2b198d-493c-4d6c-bfb6-e842728522f6.jpg?1783932607",
+    "thumb": "https://cards.scryfall.io/thumb/front/1/b/1b2b198d-493c-4d6c-bfb6-e842728522f6.webp?1783932607",
+    "grid": "https://cards.scryfall.io/grid/front/1/b/1b2b198d-493c-4d6c-bfb6-e842728522f6.webp?1783932607",
+    "display": "https://cards.scryfall.io/display/front/1/b/1b2b198d-493c-4d6c-bfb6-e842728522f6.webp?1783932607",
+    "art": "https://cards.scryfall.io/art/front/1/b/1b2b198d-493c-4d6c-bfb6-e842728522f6.webp?1783932607",
+    "crop": "https://cards.scryfall.io/crop/front/1/b/1b2b198d-493c-4d6c-bfb6-e842728522f6.webp?1783932607",
+    "jpeg": "https://cards.scryfall.io/normal/front/1/b/1b2b198d-493c-4d6c-bfb6-e842728522f6.jpg?1783932607"
+  },
+  "mana_cost": "{1}{G}",
+  "cmc": 2.0,
+  "type_line": "Creature — Elf Knight",
+  "oracle_text": "Sacrifice a Food: Target creature blocks this creature this turn if able.",
+  "power": "3",
+  "toughness": "1",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "arena",
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "a90a7b2f-9dd8-4fc7-9f7d-8ea2797ec782",
+  "set": "eld",
+  "set_name": "Throne of Eldraine",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/a90a7b2f-9dd8-4fc7-9f7d-8ea2797ec782",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Aeld&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/eld?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/1b2b198d-493c-4d6c-bfb6-e842728522f6/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A66412a7a-4ec0-41f0-80ad-eb483213ff81&unique=prints",
+  "collector_number": "166",
+  "digital": false,
+  "rarity": "common",
+  "flavor_text": "They both hunger for battle.",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Kieran Yanner",
+  "artist_ids": [
+    "aa7e89ed-d294-4633-9057-ce04dacfcfa4"
+  ],
+  "illustration_id": "d27ec4c7-8f95-45ee-8bed-b64dc270466e",
+  "border_color": "black",
+  "frame": "2015",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 24897,
+  "penny_rank": 17493,
+  "preview": {
+    "source": "AliasV",
+    "source_uri": "https://www.youtube.com/watch?v=yAx83hiIc3I",
+    "previewed_at": "2019-09-11"
+  },
+  "prices": {
+    "usd": "0.12",
+    "usd_foil": "0.17",
+    "usd_etched": null,
+    "eur": "0.03",
+    "eur_foil": "0.22",
+    "tix": "0.03"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=473128&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DMaraleaf%2BRider",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DMaraleaf%2BRider",
+    "edhrec": "https://edhrec.com/route/?cc=Maraleaf+Rider"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F198969%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=400414&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/78472?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

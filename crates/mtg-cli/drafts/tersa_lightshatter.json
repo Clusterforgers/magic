@@ -1,0 +1,70 @@
+{
+  "oracle_id": "9918eb7b-054e-4b1c-afc7-1163ab642d50",
+  "name": "Tersa Lightshatter",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Tersa Lightshatter",
+      "oracle_fingerprint": "100802a7d0115166b8ae8a95ec289a4a",
+      "abilities": [
+        { "Keyword": "Haste" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              { "Discard": { "count": 2, "optional": true, "as": "discarded" } },
+              {
+                "Draw": {
+                  "count": {
+                    "Count": [
+                      { "Is": { "Bound": "discarded" } },
+                      {
+                        "AnyOf": [
+                          { "In": "Battlefield" },
+                          { "In": "Hand" },
+                          { "In": "Library" },
+                          { "In": "Graveyard" },
+                          { "In": "Exile" },
+                          { "In": "Stack" }
+                        ]
+                      }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "if": {
+              "Compare": {
+                "left": { "Count": [{ "In": "Graveyard" }, { "OwnedBy": "You" }] },
+                "op": "Ge",
+                "right": 7
+              }
+            },
+            "effects": [
+              {
+                "ChooseAtRandom": {
+                  "from": { "Each": [{ "In": "Graveyard" }, { "OwnedBy": "You" }] },
+                  "as": "picked"
+                }
+              },
+              { "Exile": { "what": { "Bound": "picked" }, "as": "exiled2" } },
+              {
+                "Rule": {
+                  "rule": {
+                    "MayCast": { "from": "Exile", "only": { "Bound": "exiled2" }, "play": true }
+                  },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

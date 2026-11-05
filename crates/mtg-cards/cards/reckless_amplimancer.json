@@ -1,0 +1,34 @@
+{
+  "oracle_id": "1c264f6e-caa7-44cb-8719-86212292679c",
+  "name": "Reckless Amplimancer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Reckless Amplimancer",
+      "oracle_fingerprint": "dcf824d069bf87ac908078c8df436d25",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{4}{G}",
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [
+                    {
+                      "ModifyPT": {
+                        "power": { "Stat": { "of": "This", "stat": "Power" } },
+                        "toughness": { "Stat": { "of": "This", "stat": "Toughness" } }
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

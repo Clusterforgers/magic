@@ -1,0 +1,39 @@
+{
+  "oracle_id": "57303267-7e69-4bd3-8e1f-a528d41121a1",
+  "name": "Lurking Arynx",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Lurking Arynx",
+      "oracle_fingerprint": "bafee5c8dba94bdda8ed39de09140298",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{2}{G}",
+            "condition": {
+              "Compare": {
+                "left": {
+                  "Total": {
+                    "of": [{ "Type": "Creature" }, { "ControlledBy": "You" }],
+                    "stat": "Power"
+                  }
+                },
+                "op": "Ge",
+                "right": 8
+              }
+            },
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Rule": {
+                  "rule": { "MustBlockAttacker": { "who": { "Target": 0 }, "attacker": "This" } },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

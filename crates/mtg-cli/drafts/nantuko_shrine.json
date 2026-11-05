@@ -1,0 +1,36 @@
+{
+  "oracle_id": "fc32ec2b-5432-41cc-ab4c-d9f986126392",
+  "name": "Nantuko Shrine",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Nantuko Shrine",
+      "oracle_fingerprint": "b81d5762fcb4afa56511b9745f5cd0bd",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "SpellCast": {} },
+            "effects": [
+              {
+                "CreateToken": {
+                  "who": "Triggering",
+                  "token": {
+                    "Custom": {
+                      "name": "Squirrel",
+                      "colors": ["Green"],
+                      "types": ["Creature"],
+                      "subtypes": ["Squirrel"],
+                      "power": 1,
+                      "toughness": 1
+                    }
+                  },
+                  "count": { "Count": [{ "SharesName": "Triggering" }, { "In": "Graveyard" }] }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

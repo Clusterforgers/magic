@@ -1,0 +1,37 @@
+{
+  "oracle_id": "dc0a51d4-5b7e-4987-b1fe-349fd118a625",
+  "name": "Hall of Echoes",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Hall of Echoes",
+      "oracle_fingerprint": "27805ddd03239847d30d088cbec0414f",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Colorless"] } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{5}",
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } }
+            ],
+            "effects": [
+              {
+                "BecomeCopy": {
+                  "what": "This",
+                  "of": { "Target": 0 },
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              { "Rule": { "rule": { "NoLegendRule": "You" }, "duration": "UntilEndOfTurn" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

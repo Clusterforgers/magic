@@ -1,0 +1,52 @@
+{
+  "oracle_id": "284b0605-4b33-499e-aff3-e8b9edcce39b",
+  "name": "Psychic Spear",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Psychic Spear",
+      "oracle_fingerprint": "ddebcb4ae37e1c9d6bd8ffd22ef420dc",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              {
+                "Reveal": { "what": { "Each": [{ "OwnedBy": { "Target": 0 } }, { "In": "Hand" }] } }
+              },
+              {
+                "Discard": {
+                  "who": { "Target": 0 },
+                  "filter": [
+                    {
+                      "AnyOf": [
+                        { "Subtype": "Spirit" },
+                        {
+                          "Not": {
+                            "AnyOf": [
+                              { "Not": { "Type": "Instant" } },
+                              { "Not": { "Subtype": "Arcane" } }
+                            ]
+                          }
+                        },
+                        {
+                          "Not": {
+                            "AnyOf": [
+                              { "Not": { "Type": "Sorcery" } },
+                              { "Not": { "Subtype": "Arcane" } }
+                            ]
+                          }
+                        }
+                      ]
+                    }
+                  ],
+                  "by": "You"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

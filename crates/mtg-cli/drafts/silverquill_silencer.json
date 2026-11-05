@@ -1,0 +1,25 @@
+{
+  "oracle_id": "df9ab83c-850a-4be7-89cd-5122353081f6",
+  "name": "Silverquill Silencer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Silverquill Silencer",
+      "oracle_fingerprint": "07a57cafd03c1a9a66271850f3160dc8",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "Choose": "NonlandCardName" }
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "what": ["ChosenName"], "by": "Opponents" } },
+            "effects": [{ "LoseLife": { "who": "Triggering", "amount": 3 } }, { "Draw": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,38 @@
+{
+  "oracle_id": "c7feecf0-5229-4c12-806a-16c9ab38e147",
+  "name": "Vodalian Mystic",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Vodalian Mystic",
+      "oracle_fingerprint": "63917422b19af1f344bcb7a6fa3018a9",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] },
+                    { "In": "Stack" }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              { "ChooseValue": { "kind": "Color", "as": "chosen" } },
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "SetColorsChosen": "chosen" }],
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

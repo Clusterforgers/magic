@@ -1,0 +1,35 @@
+{
+  "oracle_id": "b29a0686-2246-47a9-974d-4425e8a5546c",
+  "name": "Silver Bolt",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Silver Bolt",
+      "oracle_fingerprint": "911c19d97be34bafaa5100d27ef93c3d",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{3}" }, "Tap", "SacrificeSelf"],
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              { "DealDamage": { "to": { "Target": 0 }, "amount": 3 } },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Target": 0 },
+                      "selector": [{ "Subtype": "Werewolf" }],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [{ "Destroy": { "what": { "Target": 0 } } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,7 +1,7 @@
 {
   "oracle_id": "97f1ac0d-a3a6-46d8-ae99-b17b636fe47c",
   "name": "Mistform Warchief",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Mistform Warchief",
@@ -20,9 +20,18 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 94, "end": 172 }
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [
+              { "ChooseValue": { "kind": "CreatureType", "as": "chosen" } },
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "SetCreatureTypesChosen": "chosen" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
           }
         }
       ]

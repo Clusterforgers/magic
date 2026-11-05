@@ -1,0 +1,53 @@
+{
+  "oracle_id": "8e576de0-0846-4665-a07c-83fe483ac196",
+  "name": "Overclocked Electromancer",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Overclocked Electromancer",
+      "oracle_fingerprint": "b167cf28d8c24015fcfd958e3168b4c7",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "BeginCombat", "whose": "You" } },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": [{ "PayEnergy": 3 }],
+                  "paid": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [
+                    {
+                      "ModifyPT": {
+                        "power": { "Stat": { "of": "This", "stat": "Power" } },
+                        "toughness": 0
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 181, "end": 336 }
+          }
+        }
+      ]
+    }
+  ]
+}

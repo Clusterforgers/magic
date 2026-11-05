@@ -1,0 +1,128 @@
+{
+  "object": "card",
+  "id": "b9d4d7da-f98a-4622-91b8-3460fe44551a",
+  "oracle_id": "98b88734-09e2-4209-a787-9b5b345391f9",
+  "multiverse_ids": [
+    201260
+  ],
+  "mtgo_id": 33650,
+  "mtgo_foil_id": 33651,
+  "name": "Mana Vortex",
+  "lang": "en",
+  "released_at": "2009-09-07",
+  "uri": "https://api.scryfall.com/cards/b9d4d7da-f98a-4622-91b8-3460fe44551a",
+  "scryfall_uri": "https://scryfall.com/card/me3/44/mana-vortex?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T11:30:32Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/b/9/b9d4d7da-f98a-4622-91b8-3460fe44551a.jpg?1783942232",
+    "normal": "https://cards.scryfall.io/normal/front/b/9/b9d4d7da-f98a-4622-91b8-3460fe44551a.jpg?1783942232",
+    "large": "https://cards.scryfall.io/large/front/b/9/b9d4d7da-f98a-4622-91b8-3460fe44551a.jpg?1783942232",
+    "png": "https://cards.scryfall.io/png/front/b/9/b9d4d7da-f98a-4622-91b8-3460fe44551a.png?1783942232",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/b/9/b9d4d7da-f98a-4622-91b8-3460fe44551a.jpg?1783942232",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/b/9/b9d4d7da-f98a-4622-91b8-3460fe44551a.jpg?1783942232",
+    "thumb": "https://cards.scryfall.io/thumb/front/b/9/b9d4d7da-f98a-4622-91b8-3460fe44551a.webp?1783942232",
+    "grid": "https://cards.scryfall.io/grid/front/b/9/b9d4d7da-f98a-4622-91b8-3460fe44551a.webp?1783942232",
+    "display": "https://cards.scryfall.io/display/front/b/9/b9d4d7da-f98a-4622-91b8-3460fe44551a.webp?1783942232",
+    "art": "https://cards.scryfall.io/art/front/b/9/b9d4d7da-f98a-4622-91b8-3460fe44551a.webp?1783942232",
+    "crop": "https://cards.scryfall.io/crop/front/b/9/b9d4d7da-f98a-4622-91b8-3460fe44551a.webp?1783942232",
+    "jpeg": "https://cards.scryfall.io/normal/front/b/9/b9d4d7da-f98a-4622-91b8-3460fe44551a.jpg?1783942232"
+  },
+  "mana_cost": "{1}{U}{U}",
+  "cmc": 3.0,
+  "type_line": "Enchantment",
+  "oracle_text": "When you cast this spell, counter it unless you sacrifice a land.\nAt the beginning of each player's upkeep, that player sacrifices a land of their choice.\nWhen there are no lands on the battlefield, sacrifice this enchantment.",
+  "colors": [
+    "U"
+  ],
+  "color_identity": [
+    "U"
+  ],
+  "keywords": [],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "mtgo"
+  ],
+  "reserved": true,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": true,
+  "variation": false,
+  "set_id": "b65fb1f2-4768-4c70-8fdf-30a069ad592e",
+  "set": "me3",
+  "set_name": "Masters Edition III",
+  "set_type": "masters",
+  "set_uri": "https://api.scryfall.com/sets/b65fb1f2-4768-4c70-8fdf-30a069ad592e",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Ame3&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/me3?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/b9d4d7da-f98a-4622-91b8-3460fe44551a/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A98b88734-09e2-4209-a787-9b5b345391f9&unique=prints",
+  "collector_number": "44",
+  "digital": true,
+  "rarity": "rare",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Douglas Shuler",
+  "artist_ids": [
+    "a9ddb513-51c7-455c-ab8f-5b90aae9f75b"
+  ],
+  "illustration_id": "ec13dc41-b91d-4db6-8f22-d17215790d99",
+  "border_color": "black",
+  "frame": "1997",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 20630,
+  "prices": {
+    "usd": null,
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": null,
+    "eur_foil": null,
+    "tix": "0.03"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=201260&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DMana%2BVortex",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DMana%2BVortex",
+    "edhrec": "https://edhrec.com/route/?cc=Mana+Vortex"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fmagic%2Fproduct%3FproductLineName%3Dmagic%26q%3DMana%2BVortex%26view%3Dgrid",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products/Search?referrer=scryfall&searchString=Mana+Vortex&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/33650?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

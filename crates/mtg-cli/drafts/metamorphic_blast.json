@@ -1,0 +1,47 @@
+{
+  "oracle_id": "69c8e690-c0a2-4c4e-910d-123c9c5b922f",
+  "name": "Metamorphic Blast",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Metamorphic Blast",
+      "oracle_fingerprint": "7a8f749e0e4279e99648769bef3cc986",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Modal": {
+                  "choose": { "min": 1, "max": 2 },
+                  "mode_costs": ["{1}", "{3}"],
+                  "modes": [
+                    {
+                      "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+                      "effects": [
+                        {
+                          "Continuous": {
+                            "affected": { "Target": 0 },
+                            "mods": [
+                              { "SetPT": { "power": 0, "toughness": 1 } },
+                              { "SetColors": ["White"] },
+                              { "SetCreatureTypes": ["Rabbit"] }
+                            ],
+                            "duration": "UntilEndOfTurn"
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "targets": [{ "what": "Player" }],
+                      "effects": [{ "Draw": { "who": { "Target": 0 }, "count": 2 } }]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,30 @@
+{
+  "oracle_id": "910f4339-9125-45b7-929f-57e1adb6ac3c",
+  "name": "Lay Bare the Heart",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Lay Bare the Heart",
+      "oracle_fingerprint": "addb969a9130b27a75b8542afac53ccc",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              {
+                "Reveal": { "what": { "Each": [{ "OwnedBy": { "Target": 0 } }, { "In": "Hand" }] } }
+              },
+              {
+                "Discard": {
+                  "who": { "Target": 0 },
+                  "filter": [{ "Not": { "Type": "Land" } }, { "Not": { "Supertype": "Legendary" } }],
+                  "by": "You"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

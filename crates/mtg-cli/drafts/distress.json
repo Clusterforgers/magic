@@ -1,0 +1,30 @@
+{
+  "oracle_id": "7bb1b48b-aa6b-4064-9355-c43b0f509388",
+  "name": "Distress",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Distress",
+      "oracle_fingerprint": "74aac589008393539be5f00dadd75da9",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              {
+                "Reveal": { "what": { "Each": [{ "OwnedBy": { "Target": 0 } }, { "In": "Hand" }] } }
+              },
+              {
+                "Discard": {
+                  "who": { "Target": 0 },
+                  "filter": [{ "Not": { "Type": "Land" } }],
+                  "by": "You"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

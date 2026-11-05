@@ -1,0 +1,33 @@
+{
+  "oracle_id": "81dd22f7-f6c6-4cf2-9744-b1d918dbcf9a",
+  "name": "Blood Funnel",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Blood Funnel",
+      "oracle_fingerprint": "e7c683444a7105280cdde378e26240c6",
+      "abilities": [
+        {
+          "CostModifier": {
+            "applies_to": ["Spell", { "Not": { "Type": "Creature" } }, { "ControlledBy": "You" }],
+            "change": "Reduce",
+            "mana": "{2}"
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "what": [{ "Not": { "Type": "Creature" } }], "by": "You" } },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": [{ "Sacrifice": { "filter": [{ "Type": "Creature" }] } }],
+                  "unpaid": [{ "Counter": { "what": "Triggering" } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

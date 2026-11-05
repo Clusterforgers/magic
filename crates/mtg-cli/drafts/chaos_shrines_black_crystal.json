@@ -26,12 +26,7 @@
               {
                 "Choose": {
                   "from": {
-                    "Each": [
-                      { "Type": "Creature" },
-                      { "ExiledWith": "This" },
-                      { "In": "Exile" },
-                      { "OwnedBy": "You" }
-                    ]
+                    "Each": [{ "Type": "Creature" }, { "ExiledWith": "This" }, { "In": "Exile" }]
                   },
                   "count": { "min": 0, "max": 1 },
                   "as": "picked"

@@ -1,0 +1,42 @@
+{
+  "oracle_id": "8b4670b9-6701-4ca6-afd7-256742267e86",
+  "name": "Diplomacy of the Wastes",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Diplomacy of the Wastes",
+      "oracle_fingerprint": "ceec9a735f05a23e6e1bae8250f6e9ce",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              {
+                "Reveal": { "what": { "Each": [{ "OwnedBy": { "Target": 0 } }, { "In": "Hand" }] } }
+              },
+              {
+                "Discard": {
+                  "who": { "Target": 0 },
+                  "filter": [{ "Not": { "Type": "Land" } }],
+                  "by": "You"
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "Count": [{ "Subtype": "Warrior" }, { "ControlledBy": "You" }] },
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [{ "LoseLife": { "who": { "Target": 0 }, "amount": 2 } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

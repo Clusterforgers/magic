@@ -1,7 +1,7 @@
 {
   "oracle_id": "d53ef172-8c26-4469-94c6-bf7fe4d48dbf",
   "name": "Targ Nar, Demon-Fang Gnoll",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Targ Nar, Demon-Fang Gnoll",
@@ -33,9 +33,24 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 165, "end": 232 }
+          "Activated": {
+            "cost": "{2}{R}{G}",
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [
+                    {
+                      "ModifyPT": {
+                        "power": { "Stat": { "of": "This", "stat": "Power" } },
+                        "toughness": { "Stat": { "of": "This", "stat": "Toughness" } }
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
           }
         }
       ]

@@ -1,0 +1,25 @@
+{
+  "oracle_id": "b5dce42a-a769-4d7d-b29e-8722f79d4092",
+  "name": "Kindred Judgment",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Kindred Judgment",
+      "oracle_fingerprint": "f47d2c4642438dc37e4a85654b02f590",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "ChooseValue": { "kind": "CreatureType", "as": "chosen" } },
+              {
+                "Destroy": {
+                  "what": { "Each": [{ "Type": "Creature" }, { "Not": { "ChosenAs": "chosen" } }] }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

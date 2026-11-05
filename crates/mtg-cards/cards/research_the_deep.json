@@ -1,0 +1,21 @@
+{
+  "oracle_id": "02f35851-c1be-4162-a6f8-7897325555a7",
+  "name": "Research the Deep",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Research the Deep",
+      "oracle_fingerprint": "d2b06cf482d26f5f769af596394268d0",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "Draw": {} },
+              { "Clash": { "win": [{ "Move": { "what": "This", "to": "Hand" } }] } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,14 +1,38 @@
 {
   "oracle_id": "bdbec6d5-0f10-4114-b709-4402a44debdf",
   "name": "Sokka, Bold Boomeranger",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Sokka, Bold Boomeranger",
       "oracle_fingerprint": "a3afa01ff781f135b29f1bff0c62ab99",
       "abilities": [
         {
-          "Manual": { "reason": "you apply this clause by hand", "span": { "start": 0, "end": 70 } }
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              { "Discard": { "count": 2, "optional": true, "as": "discarded" } },
+              {
+                "Draw": {
+                  "count": {
+                    "Count": [
+                      { "Is": { "Bound": "discarded" } },
+                      {
+                        "AnyOf": [
+                          { "In": "Battlefield" },
+                          { "In": "Hand" },
+                          { "In": "Library" },
+                          { "In": "Graveyard" },
+                          { "In": "Exile" },
+                          { "In": "Stack" }
+                        ]
+                      }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
         },
         {
           "Triggered": {

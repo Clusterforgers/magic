@@ -1,0 +1,29 @@
+{
+  "oracle_id": "4ad870b2-133c-4229-84a8-f91e4c62fcd0",
+  "name": "Reef Shaman",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Reef Shaman",
+      "oracle_fingerprint": "954240764f22bf7947878683d358181a",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "targets": [{ "what": { "Object": [{ "Type": "Land" }] } }],
+            "effects": [
+              { "ChooseValue": { "kind": "LandType", "as": "chosen" } },
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "SetLandTypesChosen": "chosen" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

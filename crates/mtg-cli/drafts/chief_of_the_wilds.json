@@ -1,0 +1,38 @@
+{
+  "oracle_id": "bf06d873-08be-4a45-b8fb-fe1dfadc3a39",
+  "name": "Chief of the Wilds",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Chief of the Wilds",
+      "oracle_fingerprint": "4daedd9eaa53f51fe6f3e8d566ff62b3",
+      "abilities": [
+        { "Keyword": "Menace" },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Subtype": "Wolf" }, "Other", { "ControlledBy": "You" }],
+                "to": "Battlefield"
+              }
+            },
+            "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1", "count": 2 } }]
+          }
+        },
+        {
+          "Rule": {
+            "rule": {
+              "TriggerAgain": {
+                "source": [
+                  { "AnyOf": [{ "Subtype": "Wolf" }, { "Type": "Battle" }] },
+                  "Other",
+                  { "ControlledBy": "You" }
+                ]
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

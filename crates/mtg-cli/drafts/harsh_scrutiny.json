@@ -1,0 +1,31 @@
+{
+  "oracle_id": "31338e24-a437-4587-acab-cec46be021e7",
+  "name": "Harsh Scrutiny",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Harsh Scrutiny",
+      "oracle_fingerprint": "5bb6f9b98db2ce06aa45f59304164534",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              {
+                "Reveal": { "what": { "Each": [{ "OwnedBy": { "Target": 0 } }, { "In": "Hand" }] } }
+              },
+              {
+                "Discard": {
+                  "who": { "Target": 0 },
+                  "filter": [{ "Type": "Creature" }],
+                  "by": "You"
+                }
+              },
+              { "Scry": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

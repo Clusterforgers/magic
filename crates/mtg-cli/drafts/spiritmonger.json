@@ -1,7 +1,7 @@
 {
   "oracle_id": "3913c7f2-86b7-4dd4-84a6-9bd4c1c66781",
   "name": "Spiritmonger",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Spiritmonger",
@@ -17,9 +17,18 @@
         },
         { "Activated": { "cost": "{B}", "effects": [{ "Regenerate": { "what": "This" } }] } },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 120, "end": 190 }
+          "Activated": {
+            "cost": "{G}",
+            "effects": [
+              { "ChooseValue": { "kind": "Color", "as": "chosen" } },
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "SetColorsChosen": "chosen" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
           }
         }
       ]

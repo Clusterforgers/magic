@@ -1,0 +1,121 @@
+{
+  "object": "card",
+  "id": "2e3425e9-d369-4e26-b9fb-4193bf5d3e5a",
+  "oracle_id": "50e3540f-963f-4c91-a205-c2f8259a969e",
+  "multiverse_ids": [],
+  "tcgplayer_id": 496883,
+  "name": "Innistrad Charm",
+  "lang": "en",
+  "released_at": "2023-05-06",
+  "uri": "https://api.scryfall.com/cards/2e3425e9-d369-4e26-b9fb-4193bf5d3e5a",
+  "scryfall_uri": "https://scryfall.com/card/unk/UB02c/innistrad-charm?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T04:23:28Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/2/e/2e3425e9-d369-4e26-b9fb-4193bf5d3e5a.jpg?1783916608",
+    "normal": "https://cards.scryfall.io/normal/front/2/e/2e3425e9-d369-4e26-b9fb-4193bf5d3e5a.jpg?1783916608",
+    "large": "https://cards.scryfall.io/large/front/2/e/2e3425e9-d369-4e26-b9fb-4193bf5d3e5a.jpg?1783916608",
+    "png": "https://cards.scryfall.io/png/front/2/e/2e3425e9-d369-4e26-b9fb-4193bf5d3e5a.png?1783916608",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/2/e/2e3425e9-d369-4e26-b9fb-4193bf5d3e5a.jpg?1783916608",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/2/e/2e3425e9-d369-4e26-b9fb-4193bf5d3e5a.jpg?1783916608",
+    "thumb": "https://cards.scryfall.io/thumb/front/2/e/2e3425e9-d369-4e26-b9fb-4193bf5d3e5a.webp?1783916608",
+    "grid": "https://cards.scryfall.io/grid/front/2/e/2e3425e9-d369-4e26-b9fb-4193bf5d3e5a.webp?1783916608",
+    "display": "https://cards.scryfall.io/display/front/2/e/2e3425e9-d369-4e26-b9fb-4193bf5d3e5a.webp?1783916608",
+    "art": "https://cards.scryfall.io/art/front/2/e/2e3425e9-d369-4e26-b9fb-4193bf5d3e5a.webp?1783916608",
+    "crop": "https://cards.scryfall.io/crop/front/2/e/2e3425e9-d369-4e26-b9fb-4193bf5d3e5a.webp?1783916608",
+    "jpeg": "https://cards.scryfall.io/normal/front/2/e/2e3425e9-d369-4e26-b9fb-4193bf5d3e5a.jpg?1783916608"
+  },
+  "mana_cost": "{1}{B}",
+  "cmc": 2.0,
+  "type_line": "Sorcery",
+  "oracle_text": "Choose one —\n• Cemetery Recruitment (Return a creature card from graveyard to hand, draw a card if it's a Zombie.)\n• Duress (Look at their hand, make them discard a noncreature, nonland.)\n• Human Frailty (Destroy target Human.)",
+  "colors": [
+    "B"
+  ],
+  "color_identity": [
+    "B"
+  ],
+  "keywords": [],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "not_legal",
+    "pauper": "not_legal",
+    "vintage": "not_legal",
+    "penny": "not_legal",
+    "commander": "not_legal",
+    "oathbreaker": "not_legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "not_legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "d2703c4f-66b6-438d-9368-ebb55aa12e78",
+  "set": "unk",
+  "set_name": "Unknown Event",
+  "set_type": "funny",
+  "set_uri": "https://api.scryfall.com/sets/d2703c4f-66b6-438d-9368-ebb55aa12e78",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Aunk&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/unk?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/2e3425e9-d369-4e26-b9fb-4193bf5d3e5a/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A50e3540f-963f-4c91-a205-c2f8259a969e&unique=prints",
+  "collector_number": "UB02c",
+  "digital": false,
+  "rarity": "uncommon",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "",
+  "border_color": "black",
+  "frame": "2015",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "promo_types": [
+    "playtest"
+  ],
+  "prices": {
+    "usd": null,
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": null,
+    "eur_foil": null,
+    "tix": null
+  },
+  "related_uris": {
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DInnistrad%2BCharm",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DInnistrad%2BCharm",
+    "edhrec": "https://edhrec.com/route/?cc=Innistrad+Charm"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F496883%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products/Search?referrer=scryfall&searchString=Innistrad+Charm&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards?affiliate_id=scryfall&data%5Bsearch%5D=Innistrad+Charm&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

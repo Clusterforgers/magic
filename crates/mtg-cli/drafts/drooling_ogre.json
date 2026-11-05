@@ -1,0 +1,27 @@
+{
+  "oracle_id": "97b37822-b030-4792-bcd7-c84499f51b18",
+  "name": "Drooling Ogre",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Drooling Ogre",
+      "oracle_fingerprint": "a5d19c691049be0e9525901a3a67401f",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "what": [{ "Type": "Artifact" }] } },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "SetController": "Triggering" }],
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
