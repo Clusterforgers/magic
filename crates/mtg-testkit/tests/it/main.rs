@@ -220,6 +220,7 @@ mod faces_fuzz;
 mod fail_soft;
 mod fe1n_effects;
 mod fe1o_cost_parts;
+mod r2e_cost_parts;
 mod fight;
 mod fight_fuzz;
 mod fight_targets;
