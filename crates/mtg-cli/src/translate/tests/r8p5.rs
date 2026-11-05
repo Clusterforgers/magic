@@ -102,3 +102,21 @@ fn a_counterspell_that_exiles_sets_a_shield_before_it_counters(
             .is_some()
     );
 }
+
+#[rstest]
+#[case::itself("Self", None)]
+#[case::the_parent_target("ParentTarget", Some("key:Clone.CloneTarget=ParentTarget"))]
+#[case::the_equipped("Equipped", Some("key:Clone.CloneTarget=Equipped"))]
+fn the_card_that_becomes_a_copy_is_the_clone_target(#[case] who: &str, #[case] gap: Option<&str>) {
+    let text = format!(
+        "Name:T\nTypes:Creature Shapeshifter\nPT:1/1\nA:AB$ Clone | Cost$ 1 | ValidTgts$ Creature.Other | CloneTarget${who} | Duration$ UntilEndOfTurn\n"
+    );
+    assert_eq!(
+        gaps(&text),
+        gap.map(str::to_owned).into_iter().collect::<Vec<_>>()
+    );
+    if gap.is_none() {
+        let effects = &abilities(&text)[0]["Activated"]["effects"];
+        assert_eq!(effects[0]["BecomeCopy"]["what"], "This", "{effects}");
+    }
+}

@@ -85,7 +85,8 @@ fn keyword_list_of(ctx: &Ctx, words: &str) -> Tr<Vec<Value>> {
 }
 
 /// The keys a `Clone` line may have, besides the exceptions.
-const CLONE_KEYS: [&str; 17] = [
+const CLONE_KEYS: [&str; 18] = [
+    "CloneTarget",
     "Defined",
     "ValidTgts",
     "Choices",
@@ -118,6 +119,11 @@ fn clone(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
         Some("UntilYourNextTurn") => "UntilYourNextTurn",
         Some(other) => return unmapped(format!("key:Clone.Duration={other}")),
     };
+    // `CloneTarget$ Self` names what a clone line does without it: the card itself becomes the copy.
+    match p.get("CloneTarget") {
+        None | Some("Self") => {}
+        Some(other) => return unmapped(format!("key:Clone.CloneTarget={other}")),
+    }
     if p.has("ValidTgts") && p.has("Defined") {
         return unmapped("key:Clone.ValidTgts-and-Defined");
     }
@@ -163,6 +169,9 @@ pub fn enters_as_copy(ctx: &Ctx, name: &str) -> Tr<Value> {
         return unmapped("keyword:ETBReplacement-Copy-part");
     }
     only(&p, "Clone", &CLONE_KEYS)?;
+    if p.has("CloneTarget") {
+        return unmapped("key:Clone.replacement-CloneTarget");
+    }
     if p.has("Defined") || p.has("ValidTgts") || p.has("Duration") || p.has("Optional") {
         return unmapped("key:Clone.replacement-shape");
     }
