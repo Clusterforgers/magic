@@ -143,7 +143,8 @@ pub fn play(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
     let (spell_only, spell_filter) = valid_sa(ctx, p.get("ValidSA"))?;
     let copy = match p.get("CopyCard") {
         None => false,
-        Some("True") if p.get("ValidZone") == Some("Exile") => true,
+        // A named card is copied from where it lies (the cards a move to exile remembered).
+        Some("True") if p.get("ValidZone") == Some("Exile") || p.has("Defined") => true,
         Some(_) => return unmapped("key:Play.CopyCard"),
     };
     let pool = match (p.get("Defined"), p.get("Valid"), p.get("ValidZone")) {
