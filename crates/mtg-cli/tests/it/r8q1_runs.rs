@@ -531,3 +531,41 @@ fn a_delayed_trigger_chooses_its_land_when_it_triggers(
     );
     assert_eq!(characteristics.power.unwrap_or(0), counters as i32);
 }
+
+const RESONANCE: &str = "Name:Resonance Technician\nManaCost:3 UR UR\nTypes:Creature Weird Detective\nPT:4/4\nA:AB$ CopySpellAbility | Cost$ T tapXType<X/Artifact/artifacts you control> | ValidTgts$ Instant.YouCtrl+cmcEQX,Sorcery.YouCtrl+cmcEQX | TargetType$ Spell | AILogic$ Once | MayChooseTarget$ True | SpellDescription$ Copy target instant or sorcery spell you control with mana value X. You may choose new targets for the copy.\nSVar:X:Count$xPaid\n";
+
+#[rstest::rstest]
+#[case::two_artifacts_copy_a_spell_of_value_two(2, true)]
+#[case::one_artifact_cannot_copy_a_spell_of_value_two(1, false)]
+fn a_cost_that_taps_x_artifacts_is_offered_when_some_x_has_a_target(
+    #[case] artifacts: usize,
+    #[case] offered: bool,
+) {
+    use mtg_testkit::cards::forest;
+    let tech = card(RESONANCE, &[CardType::Creature], "{0}", Some((4, 4)));
+    let rock = |n: usize| {
+        ready(Arc::new(
+            CardDefinition::new(format!("Rock{n}"))
+                .with_type(CardType::Artifact)
+                .with_mana_cost(ManaCost::parse("{0}").unwrap()),
+        ))
+    };
+    let two = Arc::new(
+        CardDefinition::new("Two")
+            .with_type(CardType::Instant)
+            .with_mana_cost(ManaCost::parse("{2}").unwrap()),
+    );
+    let mut field = vec![ready(tech), ready(forest()), ready(forest())];
+    field.extend((0..artifacts).map(rock));
+    let scenario = main_phase().hand(0, [two]).battlefield(0, field);
+    let mut driver = Driver::from_scenario(scenario).unwrap();
+    driver.begin_cast("Two").unwrap();
+    driver.answer(Answer::PayMana(PayChoice::Auto)).unwrap();
+    assert_eq!(
+        !driver
+            .offered_abilities("Resonance Technician")
+            .unwrap()
+            .is_empty(),
+        offered
+    );
+}

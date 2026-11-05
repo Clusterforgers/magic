@@ -240,7 +240,10 @@ fn can_activate(
     }
     announceable(state, player, object.id(), rules)
         && some_x_has_targets(state, player, object.id(), rules, |x| {
-            x == 0 || (price.x > 0 && can_pay_x(state, player, object, &price, &claimed, x))
+            x == 0
+                || ((price.x > 0 || price.counted())
+                    && price.at(x).claimed(state, player, object.id()).is_some()
+                    && can_pay_x(state, player, object, &price, &claimed, x))
         })
 }
 
