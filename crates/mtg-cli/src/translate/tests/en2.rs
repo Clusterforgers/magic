@@ -56,9 +56,9 @@ fn normal_effects(effects: &Value) -> Value {
 }
 
 #[rstest]
-#[case::forget_the_others(
-    "ChangeZone | Origin$ Hand | Destination$ Exile | ChangeType$ Card | Hidden$ True | RememberChanged$ True | ForgetOtherRemembered$ True",
-    "key:ChangeZone.Choose.ForgetOtherRemembered"
+#[case::forget_the_chosen(
+    "ChangeZone | Origin$ Hand | Destination$ Exile | ChangeType$ Card | Hidden$ True | RememberChanged$ True | ForgetChosen$ True",
+    "key:ChangeZone.Choose.ForgetChosen"
 )]
 fn a_remembering_pick_with_another_key_stays_a_gap(#[case] line: &str, #[case] gap: &str) {
     is_gap(line, gap);

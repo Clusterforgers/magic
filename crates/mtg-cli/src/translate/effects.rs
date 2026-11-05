@@ -715,6 +715,29 @@ fn delayed(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
         own = p.without(&["RememberObjects"]);
         p = &own;
     }
+    // The object an event of this trigger is about, named now: the delayed trigger fires on another event.
+    if let Some(word) = p
+        .get("RememberObjects")
+        .filter(|word| super::triggered::is_word(word))
+    {
+        let what = super::triggered::remembered_by_event(ctx.trigger.as_ref(), word)?;
+        let name = ctx.fresh("event");
+        out.push(json!({"Bind": {"what": what, "as": name}}));
+        ctx.delayed_remembered = Some(json!({ "Bound": name }));
+    }
+    // A step has no event to name its target in: the lines it runs read the target as the trigger remembers it.
+    if p.get("Mode") == Some("Phase") {
+        let target = match p.get("RememberObjects") {
+            Some("Targeted") => Some(ctx.last_target()?),
+            Some("ParentTarget") => Some(ctx.parent()?),
+            _ => None,
+        };
+        if let Some(what) = target {
+            let name = ctx.fresh("target");
+            out.push(json!({"Bind": {"what": what, "as": name}}));
+            ctx.delayed_remembered = Some(json!({ "Bound": name }));
+        }
+    }
     if p.get("RememberObjects") == Some("RememberedController") {
         let who = super::memory::remembered_controller(ctx)?;
         let name = ctx.fresh("controller");
@@ -748,9 +771,11 @@ fn delayed_node(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
         {
             ctx.remembered.clone()
         }
+        Some("Targeted" | "ParentTarget") if p.get("Mode") == Some("Phase") => None,
         Some("Targeted") => Some(objects(ctx.last_target()?)?),
         Some("ParentTarget") => Some(objects(ctx.parent()?)?),
         Some("Self") => Some(json!("This")),
+        Some(word) if super::triggered::is_word(word) => ctx.delayed_remembered.clone(),
         Some("RememberedController") if p.get("Mode") == Some("Phase") => None,
         Some(other) => return unmapped(format!("key:DelayedTrigger.RememberObjects={other}")),
     };
@@ -759,8 +784,12 @@ fn delayed_node(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
         if let Some(other) = p.get("RememberObjects").filter(|word| {
             !matches!(
                 *word,
-                "Remembered" | "RememberedLKI" | "RememberedController"
-            )
+                "Remembered"
+                    | "RememberedLKI"
+                    | "RememberedController"
+                    | "Targeted"
+                    | "ParentTarget"
+            ) && !super::triggered::is_word(word)
         }) {
             return unmapped(format!("key:DelayedTrigger.RememberObjects={other}"));
         }

@@ -292,9 +292,17 @@ pub fn remembered_of(ctx: &mut Ctx, line: &Params) -> Tr<Option<Value>> {
     match line.get("RememberObjects") {
         None if line.has("ValidTgts") => unmapped("key:Effect.target-not-remembered"),
         None => Ok(None),
-        Some("Targeted") if line.has("ValidTgts") => Ok(Some(subject(ctx, line, "", None)?)),
+        Some("Targeted" | "ThisTargetedCard") if line.has("ValidTgts") => {
+            Ok(Some(subject(ctx, line, "", None)?))
+        }
         Some("Targeted") => Ok(Some(ctx.last_target()?)),
         Some("Self") => Ok(Some(json!("This"))),
+        Some("Remembered" | "RememberedCard") => {
+            Ok(Some(super::valid::defined(ctx, "Remembered")?))
+        }
+        Some(word) if super::triggered::is_word(word) => Ok(Some(
+            super::triggered::remembered_by_event(ctx.trigger.as_ref(), word)?,
+        )),
         Some(other) => unmapped(format!("key:Effect.RememberObjects={other}")),
     }
 }

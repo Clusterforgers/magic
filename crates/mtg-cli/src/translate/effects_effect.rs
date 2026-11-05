@@ -200,11 +200,16 @@ fn remembered(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
         ));
     }
     let who = match word {
-        "Targeted" if p.has("ValidTgts") => subject(ctx, p, "", None)?,
+        "Targeted" | "ThisTargetedCard" if p.has("ValidTgts") => subject(ctx, p, "", None)?,
         "Self" => json!("This"),
         "Targeted" => ctx.last_target()?,
         "Remembered" | "RememberedCard" => defined(ctx, "Remembered")?,
+        // A word another step of the line already reads as an object: the choice, the imprint, the enchanted creature.
+        "ChosenCard" | "Imprinted" | "Enchanted" => defined(ctx, word)?,
         "TriggeredCard" => super::triggered::resolve(ctx.trigger.as_ref(), "TriggeredCard")?,
+        word if super::triggered::is_word(word) => {
+            super::triggered::remembered_by_event(ctx.trigger.as_ref(), word)?
+        }
         "ParentTarget" => ctx.parent()?,
         other => return unmapped(format!("key:Effect.RememberObjects={other}")),
     };

@@ -42,7 +42,10 @@ fn kind(word: &str) -> Option<(Word, bool)> {
         "TriggeredCardOwner" => (Word::Owner, true),
         "TriggeredActivator" => (Word::Activator, false),
         "TriggeredAttacker" | "TriggeredAttackerLKICopy" => (Word::Attacker, false),
+        "TriggeredAttackerController" => (Word::Attacker, true),
         "TriggeredBlocker" | "TriggeredBlockerLKICopy" => (Word::Blocker, false),
+        "TriggeredBlockerController" => (Word::Blocker, true),
+        "TriggeredTargetController" => (Word::Target, true),
         "TriggeredPlayer" => (Word::Player, false),
         "TriggeredSource" | "TriggeredSourceLKICopy" => (Word::Source, false),
         "TriggeredSourceController" => (Word::Source, true),
@@ -72,6 +75,30 @@ const PLAYER_AND_OBJECT: [&str; 4] = ["Discarded", "Cycled", "Sacrificed", "Spel
 
 /// Modes whose event holds one player and no object.
 const ONE_PLAYER: [&str; 4] = ["LifeGained", "LifeLost", "Drawn", "Phase"];
+
+/// Modes whose event object keeps its incarnation, so a name taken from it still reaches the object later.
+const STAYS: [&str; 8] = [
+    "Attacks",
+    "AttackerBlocked",
+    "AttackerBlockedByCreature",
+    "Blocks",
+    "Taps",
+    "Untaps",
+    "DamageDone",
+    "BecomesTarget",
+];
+
+/// The reference a `RememberObjects$ Triggered*` word of a line that sets up a later trigger or effect names. A word for the
+/// object after a zone change (`TriggeredNewCard`) needs the object one move on, and an object that moved is another one
+/// (CR 400.7), so those stay gaps.
+pub fn remembered_by_event(shape: Option<&Shape>, word: &str) -> Tr<Value> {
+    let stays = shape.is_some_and(|shape| STAYS.contains(&shape.mode.as_str()));
+    let object = !matches!(kind(word.trim()), Some((Word::Player | Word::Activator, _)));
+    if word.contains("NewCard") || word.ends_with("Controller") || (object && !stays) {
+        return unmapped(format!("key:RememberObjects={}-after-a-move", word.trim()));
+    }
+    resolve(shape, word)
+}
 
 /// The reference a `Triggered*` word names in a trigger of this shape, or the gap when the engine does not hold it.
 pub fn resolve(shape: Option<&Shape>, word: &str) -> Tr<Value> {
@@ -131,7 +158,16 @@ pub fn resolve(shape: Option<&Shape>, word: &str) -> Tr<Value> {
         (Word::Card, "Triggering") if ONE_OBJECT.contains(&mode) => {
             Ok(json!({"ControllerOf": "Triggering"}))
         }
-        (Word::Source, "Dealer") => Ok(json!({"ControllerOf": "Dealer"})),
+        (Word::Source | Word::Blocker, "Dealer") => Ok(json!({"ControllerOf": "Dealer"})),
+        // The caster controls the spell on the stack; the creature hit or attacking is a permanent.
+        (Word::Card, "Triggering") if mode == "SpellCast" => {
+            Ok(json!({"ControllerOf": "Triggering"}))
+        }
+        (Word::Attacker, "Triggering") => Ok(json!({"ControllerOf": "Triggering"})),
+        (Word::Attacker | Word::Blocker, "This") => Ok(json!("You")),
+        (Word::Target, "Triggering") if !shape.to_player => {
+            Ok(json!({"ControllerOf": "Triggering"}))
+        }
         _ => gap(),
     }
 }

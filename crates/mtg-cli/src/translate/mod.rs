@@ -34,6 +34,7 @@ mod effects_verbs4;
 mod effects_verbs5;
 pub mod effects_vote;
 pub mod effects_zone;
+pub mod forget;
 pub mod frame;
 mod header;
 pub mod keyword;
