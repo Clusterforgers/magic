@@ -302,7 +302,9 @@ fn api_line(ctx: &mut Ctx, p: &Params, api: &str) -> Tr<Vec<Value>> {
         return found;
     }
     match api {
-        "DealDamage" => one(deal_damage(ctx, p)),
+        "DealDamage" => {
+            deal_damage(ctx, p).and_then(|node| super::effects_obj::with_dies_shield(ctx, p, node))
+        }
         "Draw" => draw(ctx, p),
         "GainLife" => one(life(ctx, p, "GainLife")),
         "LoseLife" => one(life(ctx, p, "LoseLife")),
@@ -384,6 +386,7 @@ fn deal_damage(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
             "ExcessSVarCondition",
             "ExcessDamage",
             "ExcessDamageCondition",
+            "ReplaceDyingDefined",
         ],
     )?;
     super::effects_obj::damage_map(p)?;
