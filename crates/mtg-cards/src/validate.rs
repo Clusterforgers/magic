@@ -212,8 +212,8 @@ struct Scope {
     in_trigger: bool,
     /// The changes of a static ability are being checked: `Affected` names the object each one applies to.
     in_static: bool,
-    /// The amounts of a `Pred::Test` are being checked: `Candidate` names the object it judges.
-    in_test: bool,
+    /// How many `Pred::Test` are being checked around this point: `Candidate` names the object the innermost judges.
+    tests: u8,
     /// `Dealer` names something: a triggered ability, or a replacement of damage.
     dealer: bool,
     names: Vec<BTreeMap<String, Kind>>,
@@ -238,7 +238,7 @@ impl Scope {
             in_trigger,
             dealer: in_trigger,
             in_static: false,
-            in_test: false,
+            tests: 0,
             names: vec![BTreeMap::new()],
             numbers: BTreeSet::new(),
         }
@@ -498,7 +498,7 @@ impl<'a> Walker<'a> {
                 self.expect(Kind::Object, want);
             }
             Ref::Candidate => {
-                if !self.scope.in_test {
+                if self.scope.tests == 0 {
                     self.problem("`Candidate` is only valid in the amounts of a `Test`");
                 }
                 self.expect(Kind::Object, want);
@@ -635,10 +635,10 @@ impl<'a> Walker<'a> {
             }
             Pred::Test { left, right, .. } => {
                 self.uses("Pred", "Test");
-                let before = std::mem::replace(&mut self.scope.in_test, true);
+                self.scope.tests += 1;
                 self.at("left", |w| w.amount(left));
                 self.at("right", |w| w.amount(right));
-                self.scope.in_test = before;
+                self.scope.tests -= 1;
             }
             Pred::CastFrom(zone) => {
                 if !matches!(zone, ZoneKind::Hand | ZoneKind::Graveyard) {
