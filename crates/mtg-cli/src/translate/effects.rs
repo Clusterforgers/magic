@@ -115,12 +115,9 @@ fn asks_may(p: &Params) -> Tr<bool> {
 }
 
 /// The player who decides, once the line has declared its targets: the one `OptionalDecider$` names, or you for `Optional$`
-/// on an effect that acts on you. A line with sub-abilities stays a gap: whether they follow a refusal is not known here.
+/// on an effect that acts on you. The sub-abilities after it are not part of the choice: they happen either way, as the Oracle text "You may X. Then Y" says.
 fn may_decider(ctx: &Ctx, p: &Params) -> Tr<Value> {
     let decider = p.get("OptionalDecider");
-    if p.has("SubAbility") {
-        return unmapped("key:May.with-SubAbility");
-    }
     let who = match decider {
         Some(word) => match defined(ctx, word)? {
             group if matches!(group.as_str(), Some("Opponents" | "EachPlayer")) => {

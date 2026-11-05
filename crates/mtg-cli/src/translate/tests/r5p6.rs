@@ -106,3 +106,21 @@ fn outside_a_cast_trigger_the_triggered_spell_is_a_gap() {
     let text = HUSH.replace("Mode$ SpellCast", "Mode$ ChangesZone");
     assert!(gaps(&text).contains(&"key:Counter.Defined".to_owned()));
 }
+
+#[test]
+fn a_may_line_does_not_gate_the_sub_ability_after_it() {
+    let text = "Name:T\nTypes:Sorcery\nA:SP$ Mill | NumCards$ 2 | Defined$ You | Optional$ True | SubAbility$ DBG\nSVar:DBG:DB$ GainLife | LifeAmount$ 3\n";
+    assert_eq!(gaps(text), Vec::<String>::new());
+    let found = abilities(text);
+    let effects = &found[0]["Spell"]["effects"];
+    assert!(
+        effects[0]["May"]["effects"][0].get("Mill").is_some(),
+        "{effects}"
+    );
+    assert!(
+        effects[0]["May"]["effects"]
+            .as_array()
+            .is_some_and(|a| a.len() == 1)
+    );
+    assert!(effects[1].get("GainLife").is_some(), "{effects}");
+}

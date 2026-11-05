@@ -147,3 +147,46 @@ fn a_cast_trigger_counters_only_the_spells_it_names(
     assert_eq!(bears, on_battlefield);
     assert_eq!(state.player(PlayerId::from_index(0)).unwrap().life(), life);
 }
+
+const MILL_THEN_GAIN: &str = "Name:Lore\nManaCost:W\nTypes:Sorcery\nA:SP$ Mill | NumCards$ 2 | Defined$ You | Optional$ True | SubAbility$ DBG\nSVar:DBG:DB$ GainLife | LifeAmount$ 3\n";
+
+#[rstest]
+#[case::accepted(true, 2)]
+#[case::declined(false, 0)]
+fn the_line_after_a_may_happens_whether_or_not_the_player_agrees(
+    #[case] agree: bool,
+    #[case] milled: usize,
+) {
+    use mtg_core::ids::PlayerId;
+    use mtg_engine::zones::Zone;
+    let card = translated(MILL_THEN_GAIN, "Lore", "Sorcery", "{W}");
+    let scenario = Scenario::new(2)
+        .hand(0, [card])
+        .battlefield(0, [ready(plains())])
+        .library(0, [plains(), plains(), plains()])
+        .library(1, [plains()]);
+    let mut driver = Driver::from_scenario(scenario).unwrap();
+    driver.cast("Lore").unwrap();
+    for _ in 0..50 {
+        let decision = driver.decision().unwrap().clone();
+        let answer = match &decision.kind {
+            DecisionKind::Priority(_) if driver.state().stack().is_empty() => break,
+            DecisionKind::Priority(_) => Answer::Priority(PriorityAction::Pass),
+            DecisionKind::YesNo(_) => Answer::YesNo(mtg_engine::choose::YesNoChoice(agree)),
+            _ => Driver::passive_answer(&decision),
+        };
+        driver.answer(answer).unwrap();
+    }
+    let state = driver.state();
+    let yard = state
+        .zone(Zone::Graveyard(PlayerId::from_index(0)))
+        .iter()
+        .filter(|id| {
+            state
+                .object(**id)
+                .is_some_and(|o| o.card().name == "Plains")
+        })
+        .count();
+    assert_eq!(yard, milled);
+    assert_eq!(state.player(PlayerId::from_index(0)).unwrap().life(), 23);
+}
