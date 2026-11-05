@@ -32,12 +32,12 @@ fn smoke(card: &CardDefinition) -> SmokeReport {
     smoke_card(card, &DEFAULT_SEEDS)
 }
 
-/// An instant for `{G}` whose only effect names something no step bound: the engine cannot resolve it.
+/// An instant for `{G}` whose only effect names the affected object outside a static ability: the engine cannot resolve it.
 fn erroring_spell() -> Arc<CardDefinition> {
     let spell = Ability::Spell {
         targets: Vec::new(),
         effects: vec![Effect::GainLife {
-            who: Ref::Bound("nothing".to_owned()),
+            who: Ref::Affected,
             amount: Amount::Fixed(1),
         }],
     };
@@ -120,7 +120,7 @@ fn an_activated_ability_is_counted_when_the_bots_use_it() {
 fn a_rules_file_whose_effect_errors_fails_with_the_engine_error() {
     let report = smoke(&erroring_spell());
     assert!(
-        matches!(&report.failure, Some(SmokeFailure::Engine { detail, .. }) if detail.contains("nothing")),
+        matches!(&report.failure, Some(SmokeFailure::Engine { detail, .. }) if detail.contains("no affected object")),
         "{:?}",
         report.failure
     );
@@ -134,7 +134,7 @@ fn the_gate_sees_the_error_of_a_card_that_already_runs_on_a_read() {
     read.read = true;
     let report = smoke(&read);
     assert!(
-        matches!(&report.failure, Some(SmokeFailure::Engine { detail, .. }) if detail.contains("nothing")),
+        matches!(&report.failure, Some(SmokeFailure::Engine { detail, .. }) if detail.contains("no affected object")),
         "fail-soft resolution must not hide the error from the gate: {:?}",
         report.failure
     );

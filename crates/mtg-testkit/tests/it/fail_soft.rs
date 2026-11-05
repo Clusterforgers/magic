@@ -26,10 +26,10 @@ use rstest::rstest;
 use crate::common::removal::resolve_the_stack;
 use crate::common::{name_of, pid};
 
-/// An effect no step prepared for: it names something that was never bound, so the engine cannot run it.
+/// An effect no step prepared for: it names the affected object outside a static ability, so the engine cannot run it.
 fn failing() -> Effect {
     Effect::GainLife {
-        who: Ref::Bound("nothing".to_owned()),
+        who: Ref::Affected,
         amount: Amount::Fixed(1),
     }
 }
@@ -286,7 +286,7 @@ fn the_same_rules_on_a_card_that_is_not_read_stop_the_game_and_undo_the_action(
     }
     let (error, before, mark) = failure.expect("the ability fails when it resolves");
     assert!(
-        matches!(&error, ScriptError::Engine(EngineError::Resolution(what)) if what.contains("nothing")),
+        matches!(&error, ScriptError::Engine(EngineError::Resolution(what)) if what.contains("no affected object")),
         "{kind:?}: {error:?}"
     );
     assert_eq!(
