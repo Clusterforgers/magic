@@ -474,8 +474,10 @@ fn goes_in(
                 Some("True") => enters["transformed"] = json!(true),
                 Some(_) => return unmapped("key:ChangeZone.Transformed"),
             }
-            if p.get("GainControl") == Some("True") {
-                enters["under"] = json!("You");
+            match p.get("GainControl") {
+                None | Some("False") => {}
+                Some("True") => enters["under"] = json!("You"),
+                Some(word) => enters["under"] = one_player(ctx, word, "Frame.GainControl")?,
             }
             if p.has("WithCountersType") {
                 enters["counters"] = with_counters(p)?;

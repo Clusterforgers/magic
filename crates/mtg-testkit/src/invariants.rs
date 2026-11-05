@@ -1123,7 +1123,9 @@ impl InvariantChecker {
                 self.move_counters_along(*object);
                 Ok(())
             }
-            Event::ZoneChanged { object, .. } => {
+            Event::ZoneChanged { object, .. }
+            | Event::LandPlayed { object, .. }
+            | Event::SpellCast { object, .. } => {
                 self.move_counters_along(*object);
                 Ok(())
             }

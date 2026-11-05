@@ -143,6 +143,17 @@ fn a_pick_from_the_battlefield_says_whose(#[case] who: &str, #[case] filter: Val
     assert_eq!(found[0]["Choose"]["from"]["Each"], filter);
 }
 
+/// `GainControl$` names who controls what enters.
+#[rstest]
+#[case::you("True", json!("You"))]
+#[case::the_target("Targeted", json!({"Target": 0}))]
+fn what_enters_is_under_the_player_said(#[case] word: &str, #[case] under: Value) {
+    let found = effects_of(&format!(
+        "ValidTgts$ Opponent | DefinedPlayer$ You | Chooser$ Targeted | Origin$ Graveyard | Destination$ Battlefield | ChangeType$ Creature.YouOwn | Hidden$ True | GainControl$ {word}"
+    ));
+    assert_eq!(found[1]["Move"]["to"]["Battlefield"]["under"], under);
+}
+
 /// What the destination adds reads the object the move made, never the reference it began with (CR 400.7).
 #[rstest]
 #[case::attacking(
@@ -209,6 +220,14 @@ fn what_follows_a_move_reads_what_it_made(
 #[case::attacking_off_the_battlefield(
     "ValidTgts$ Creature | Origin$ Battlefield | Destination$ Hand | Attacking$ True",
     "key:ChangeZone.Attacking"
+)]
+#[case::a_group_gains_control(
+    "ValidTgts$ Creature | Origin$ Graveyard | Destination$ Battlefield | GainControl$ Player",
+    "key:Frame.GainControl=Player"
+)]
+#[case::a_target_named_again_and_remembered(
+    "Defined$ Targeted | ValidTgts$ Creature | RememberLKI$ True | Origin$ Battlefield | Destination$ Hand",
+    "key:ChangeZone.Defined-with-memory"
 )]
 #[case::a_group_chooses_a_search(
     "Origin$ Library | Destination$ Hand | ChangeType$ Card | Chooser$ Opponent",

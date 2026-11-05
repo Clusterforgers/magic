@@ -369,6 +369,13 @@ fn change_zone(ctx: &mut Ctx, p: &Params, origin: &str, destination: &str) -> Tr
     if p.has("Hidden") && (p.get("Hidden") != Some("True") || !p.has("Defined")) {
         return unmapped("key:ChangeZone.Hidden");
     }
+    // What a later line reads of a target named again is its past (last known information), which no name here holds.
+    if p.get("Defined") == Some("Targeted")
+        && p.has("ValidTgts")
+        && remember::wanted(p, &["RememberChanged", "RememberLKI", "RememberTargets"])
+    {
+        return unmapped("key:ChangeZone.Defined-with-memory");
+    }
     let whats = moved_objects(ctx, p, origin)?;
     let two_ways = p.has("DestinationAlternative");
     let keeps = p.has("Duration")
