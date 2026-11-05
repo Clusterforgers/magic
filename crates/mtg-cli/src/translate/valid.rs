@@ -58,6 +58,15 @@ fn property(ctx: &Ctx, prop: &str) -> Tr<Vec<Value>> {
         "hasXCost" => return one(json!("XInCost")),
         "RememberedPlayerCtrl" => {
             return match super::memory::slot_ref(ctx, super::memory::Slot::Remembered) {
+                // Cards a step moved are no player: asking whose they were needs their controller as they left.
+                Some(held)
+                    if held
+                        .get("Bound")
+                        .and_then(Value::as_str)
+                        .is_some_and(|name| ctx.counted.contains(name)) =>
+                {
+                    unmapped("valid:RememberedPlayerCtrl-of-moved-cards")
+                }
                 Some(who) => one(json!({"ControlledBy": who})),
                 None => unmapped("valid:RememberedPlayerCtrl-without-a-player"),
             };
@@ -524,7 +533,7 @@ pub fn defined(ctx: &Ctx, word: &str) -> Tr<Value> {
         "Opponent" | "Player.Opponent" | "Player.Other" => Ok(json!("Opponents")),
         "Player" => Ok(json!("EachPlayer")),
         "Self" | "Card.Self" => Ok(json!("This")),
-        "Sacrificed" => Ok(json!("Paid")),
+        "Sacrificed" | "Discarded" => Ok(json!("Paid")),
         // The cards this permanent exiled and that are still in exile.
         "ExiledWith" => Ok(json!({"Each": [{"ExiledWith": "This"}, {"In": "Exile"}]})),
         "TopOfLibrary" => {

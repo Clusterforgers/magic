@@ -99,9 +99,51 @@ pub fn chain_at(ctx: &mut Ctx, p: &Params, top: bool) -> Tr<Vec<Value>> {
     match p.get("Cost") {
         Some(text) if !top => {
             let cost = super::cost::cost(ctx, text)?;
+            if let Some(sacrifice) = sacrifice_read_after(&cost, &effects) {
+                return Ok(sacrificed_then(ctx, sacrifice, effects));
+            }
             Ok(vec![json!({"Pay": {"cost": cost, "paid": effects}})])
         }
         _ => Ok(effects),
+    }
+}
+
+/// The sacrifice a payment is when it is the whole cost and the effects after it read what it took ("the sacrificed
+/// creature's power"): a payment names no objects to its effects, a sacrifice step does.
+fn sacrifice_read_after(cost: &Value, effects: &[Value]) -> Option<Value> {
+    let [item] = cost.as_array()?.as_slice() else {
+        return None;
+    };
+    let sacrifice = item.get("Sacrifice")?;
+    let reads = Value::Array(effects.to_vec())
+        .to_string()
+        .contains("\"Paid\"");
+    reads.then(|| sacrifice.clone())
+}
+
+/// "You may sacrifice ...; if you do, ...": the sacrifice names what it took and the effects after it read that name.
+fn sacrificed_then(ctx: &mut Ctx, sacrifice: Value, mut effects: Vec<Value>) -> Vec<Value> {
+    let name = ctx.fresh("sacrificed");
+    let mut step = json!({"Sacrifice": sacrifice});
+    step["Sacrifice"]["as"] = json!(name);
+    for effect in &mut effects {
+        name_paid(effect, &name);
+    }
+    let did = json!({"Compare": {
+        "left": {"Bound": format!("{name}~moved")}, "op": "Ge", "right": 1}});
+    super::frame::ask(
+        vec![step, json!({"If": {"condition": did, "then": effects}})],
+        &json!("You"),
+    )
+}
+
+/// Replaces every read of `Paid` with the name of the step that took the objects.
+fn name_paid(value: &mut Value, name: &str) {
+    match value {
+        Value::String(word) if word == "Paid" => *value = json!({"Bound": name}),
+        Value::Array(items) => items.iter_mut().for_each(|item| name_paid(item, name)),
+        Value::Object(map) => map.values_mut().for_each(|item| name_paid(item, name)),
+        _ => {}
     }
 }
 

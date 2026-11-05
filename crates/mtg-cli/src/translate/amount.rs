@@ -268,7 +268,7 @@ fn event_amount(ctx: &Ctx, expression: &str) -> Tr<Option<Value>> {
         | "TriggeredSourceLKICopy" => super::triggered::resolve(ctx.trigger.as_ref(), head)?,
         "TriggeredSpellAbility" if casts(ctx) => json!("Triggering"),
         "Enchanted" | "Equipped" => json!("Attached"),
-        "Sacrificed" => json!("Paid"),
+        "Sacrificed" | "Discarded" => json!("Paid"),
         // What the reflexive trigger of an `ImmediateTrigger` was told to remember (`RememberObjects$`).
         "TriggerRemembered" => match &ctx.delayed_remembered {
             Some(bound) => bound.clone(),

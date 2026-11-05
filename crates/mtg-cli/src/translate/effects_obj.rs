@@ -845,12 +845,13 @@ fn sacrifice(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
         Some(valid) => selector_any(ctx, valid)?,
     };
     let count = frame::count(ctx, p, &SACRIFICE)?.max;
-    let mut effect = json!({"Sacrifice": {"who": who, "filter": filter, "count": count}});
+    let mut effect = json!({"Sacrifice": {"who": who.clone(), "filter": filter, "count": count}});
     if remember::wanted(p, &["RememberSacrificed"]) {
         remember::bind_moved(ctx, &mut effect, "Sacrifice", "sacrificed");
     }
     if may {
-        effect = super::frame::ask(vec![effect], &json!("You")).remove(0);
+        // The player who sacrifices decides, not the controller of the ability.
+        effect = super::frame::ask(vec![effect], &who).remove(0);
     }
     Ok(effect)
 }
