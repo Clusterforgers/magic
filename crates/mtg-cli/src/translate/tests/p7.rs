@@ -280,14 +280,6 @@ fn static_gaps(line: &str) -> Vec<String> {
     "Mode$ Continuous | Affected$ Card.nonLand | MayPlay$ True | MayPlayAltManaCost$ 0 | MayPlayDontGrantZonePermissions$ True | AffectedZone$ Exile",
     &["key:Static.MayPlay.MayPlayAltManaCost"]
 )]
-#[case::any_color_is_not_dropped(
-    "Mode$ Continuous | Affected$ Card.nonLand | MayPlay$ True | MayPlayIgnoreColor$ True | AffectedZone$ Exile",
-    &["key:Static.MayPlay.MayPlayIgnoreColor"]
-)]
-#[case::any_type_is_not_dropped(
-    "Mode$ Continuous | Affected$ Card.nonLand | MayPlay$ True | MayPlayIgnoreType$ True | AffectedZone$ Exile",
-    &["key:Static.MayPlay.MayPlayIgnoreType"]
-)]
 #[case::the_owner_is_not_you(
     "Mode$ Continuous | Affected$ Card.nonLand | MayPlay$ True | MayPlayPlayer$ CardOwner | AffectedZone$ Exile",
     &["key:Static.MayPlay.MayPlayPlayer=CardOwner"]

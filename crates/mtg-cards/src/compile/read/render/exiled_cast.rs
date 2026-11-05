@@ -39,7 +39,7 @@ impl Writer<'_> {
             play: false,
             once: false,
             additional: None,
-            spend_as: Default::default(),
+            spend_as: crate::modify::SpendAs::Normal,
         };
         (bind == FOUND && exiled_as == EXILED && *permission == allowed).then_some(())?;
         (self.single(&Ref::Target(0))
