@@ -514,6 +514,21 @@ fn clause(pattern: &TriggerPattern) -> (String, bool) {
                 false,
             )
         }
+        TriggerPattern::RingTempts { who: by, bearer } => {
+            let (name, s) = who(by);
+            if bearer.is_empty() {
+                (format!("the Ring tempts {name}"), false)
+            } else {
+                (
+                    format!(
+                        "{name} choose{s} {} as {} Ring-bearer",
+                        subject(bearer),
+                        if s.is_empty() { "your" } else { "their" }
+                    ),
+                    false,
+                )
+            }
+        }
         TriggerPattern::Proliferated { who: by } => {
             let (name, s) = who(by);
             (format!("{name} proliferate{s}"), false)

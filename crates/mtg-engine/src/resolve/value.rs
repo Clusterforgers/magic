@@ -1247,9 +1247,13 @@ impl<'a> Scope<'a> {
             Pred::Crewed(named) => self.crewed_by(named, false, reference)?,
             Pred::Saddled(named) => self.crewed_by(named, true, reference)?,
             Pred::Type(card_type) => seen.chars.types.contains(*card_type),
-            Pred::Supertype(supertype) => seen
-                .card
-                .is_some_and(|c| c.card().supertypes.contains(supertype)),
+            Pred::Supertype(supertype) => {
+                seen.card
+                    .is_some_and(|c| c.card().supertypes.contains(supertype))
+                    || (*supertype == mtg_core::card::Supertype::Legendary
+                        && seen.zone == Zone::Battlefield
+                        && crate::ring::is_legendary_bearer(self.state, reference.id))
+            }
             Pred::Subtype(subtype) => {
                 seen.chars.has_subtype(&[], subtype)
                     || seen
@@ -1305,6 +1309,7 @@ impl<'a> Scope<'a> {
                 None => false,
             },
             Pred::Modified
+            | Pred::RingBearer
             | Pred::FaceDown
             | Pred::TargetsPlayer(_)
             | Pred::GravedThisTurn

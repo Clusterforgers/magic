@@ -413,6 +413,19 @@ pub enum TriggerPattern {
         #[serde(default, skip_serializing_if = "Option::is_none")]
         to: Option<DayNight>,
     },
+    /// The Ring tempts a player ("whenever the Ring tempts you"); `Triggering` is that player. With `bearer` it needs a
+    /// creature chosen as the Ring-bearer that matches ("whenever you choose a creature other than ~ as your Ring-bearer").
+    RingTempts {
+        /// Who is tempted.
+        #[serde(
+            default = "Ref::each_player",
+            skip_serializing_if = "Ref::is_each_player"
+        )]
+        who: Ref,
+        /// The creature chosen as Ring-bearer must match this; any tempting when empty.
+        #[serde(default, skip_serializing_if = "Selector::is_empty")]
+        bearer: Selector,
+    },
     /// A player proliferates ("whenever you proliferate"); `Triggering` is that player.
     Proliferated {
         /// Who proliferates.

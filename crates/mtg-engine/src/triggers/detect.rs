@@ -163,6 +163,11 @@ enum Happened {
     },
     /// A player surveilled, the `nth` time of their turn.
     Surveilled { player: PlayerId, nth: u32 },
+    /// The Ring tempted a player, who chose `bearer`.
+    RingTempted {
+        player: PlayerId,
+        bearer: Option<ObjectId>,
+    },
     /// A player became the monarch.
     BecameMonarch { player: PlayerId },
     /// A player took the initiative.
@@ -1017,6 +1022,10 @@ fn about_players_and_permanents(
             player: surveilled.player,
             nth: ordinal(look.post, look.later, surveilled.player, Tally::Surveilled),
         }),
+        Event::RingTempted { player, bearer, .. } => found.push(Happened::RingTempted {
+            player: *player,
+            bearer: *bearer,
+        }),
         Event::MonarchChanged { player } => found.push(Happened::BecameMonarch { player: *player }),
         Event::InitiativeTaken { player, .. } => {
             found.push(Happened::TookInitiative { player: *player });
@@ -1464,6 +1473,21 @@ fn matching_event(
                     ..counted(state, vec![recipient], *amount)
                 },
             )
+        }
+        (
+            TriggerPattern::RingTempts {
+                who,
+                bearer: wanted,
+            },
+            Happened::RingTempted { player, bearer },
+        ) => {
+            let chosen = (*bearer).and_then(object);
+            let named = !wanted.is_empty();
+            let fits = by(who, player)
+                && (!named || chosen.is_some_and(|c| picks(wanted, c) == Some(true)));
+            let mut subjects = vec![Target::Player(*player)];
+            subjects.extend(chosen.filter(|_| named).map(Target::Object));
+            fits.then(|| counted(state, subjects, happened.amount()))
         }
         (TriggerPattern::LifeGained { who }, Happened::LifeGained { player, .. })
         | (TriggerPattern::LifeLost { who }, Happened::LifeLost { player, .. })

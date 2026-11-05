@@ -424,8 +424,10 @@ impl GameState {
     /// can be in play (a game of cards with none costs nothing) and while the pass itself is under way, which reads its own
     /// objects.
     pub(crate) fn layers(&self) -> &Layers {
-        let nothing_to_derive =
-            self.effects.is_empty() && !self.statics_possible && !self.possible.counters;
+        let nothing_to_derive = self.effects.is_empty()
+            && self.ring.is_empty()
+            && !self.statics_possible
+            && !self.possible.counters;
         if nothing_to_derive || COMPUTING.with(Cell::get) {
             return &EMPTY;
         }
@@ -706,9 +708,11 @@ struct Pass<'a> {
 /// without it (a dropped effect never comes back, so this ends), so that the check reads the control as the layers left
 /// it and never the control as a stale state records it (CR 611.2b, 613.7).
 fn compute(state: &GameState) -> Layers {
+    let rings = crate::ring::effects(state);
     let mut registered: Vec<&ContinuousEffect> = state
         .effects()
         .iter()
+        .chain(&rings)
         .filter(|effect| effect.is_active_before_control(state))
         .collect();
     loop {

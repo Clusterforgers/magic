@@ -774,6 +774,13 @@ pub enum Effect {
         #[serde(default = "Ref::you", skip_serializing_if = "Ref::is_you")]
         who: Ref,
     },
+    /// The Ring tempts the player (CR 701.54): their Ring level rises (to 4 at most) and they choose a creature they
+    /// control as their Ring-bearer, if they control one.
+    RingTempts {
+        /// Who is tempted.
+        #[serde(default = "Ref::you", skip_serializing_if = "Ref::is_you")]
+        who: Ref,
+    },
     /// The player takes the initiative (CR 725), even when they have it.
     TakeInitiative {
         /// Who takes it.

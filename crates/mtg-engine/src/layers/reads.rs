@@ -251,7 +251,7 @@ fn reads_of_pred(pred: &Pred) -> Traits {
         Pred::GreatestAmong { stat, group } | Pred::LeastAmong { stat, group } => {
             reads_of_stat(*stat).or(reads_of_selector(group))
         }
-        Pred::Modified => Traits::CONTROL,
+        Pred::Modified | Pred::RingBearer => Traits::CONTROL,
         Pred::Goaded => Traits::GOADED,
         Pred::Is(who)
         | Pred::BlockedBy(who)

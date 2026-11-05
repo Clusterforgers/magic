@@ -139,7 +139,7 @@ Effect (one variant per engine primitive)
           | ProducedBy{among,count,colorless} | AnyCombination{count,among} | Instead{base,when,instead} | OfTapped,times,only: [SpendOn],lasts: Step|Combat|Turn,when_spent?: WhenSpent} PutCounters{on,counter,count}
   RemoveCounters{from,counter,count} MoveCounters{from,to,counter,count} MultiplyCounters{on,counter?,factor}
   Tap{what,as?} Untap{what} PhaseOut{what} Attach{what,to} Unattach{what} Transform{what} Flip{what} Prepare{what} WinGame{who} LoseGame{who} DrawGame{} SetLife{who,amount} ExchangeLife{who,with} RemoveDamage{what} RepeatWhile{condition,effects,most,times?} SeparatePiles{who,what,chooser,as,rest_as}
-  Surveil{who,count} Proliferate{who} Goad{what} Fight{what,with} BecomeMonarch{who} CreateEmblem{who,abilities} BecomeDayNight{to} Amass{subtype,count} Incubate{who,count}
+  Surveil{who,count} Proliferate{who} Goad{what} Fight{what,with} BecomeMonarch{who} RingTempts{who} CreateEmblem{who,abilities} BecomeDayNight{to} Amass{subtype,count} Incubate{who,count}
   Monstrosity{count} BecomeLevel{level} Adapt{count} Bolster{count} Explore{what} Connive{what} Fabricate{count} Learn{who} Crewed{saddle} TimeTravel{who}
   RepeatEach{over,as,effects} RollDice{who,sides,plus?,results: [{from,to?,effects}]} FlipCoin{who,win,lose} Clash{who,win,lose,until?} Vote{options: Named([name]) | Of(ref),secret?,as?} VillainousChoice{who,first,second,they?} Either{first,second} Planechase{act: Planeswalk | ChaosEnsues}
   ExtraTurn{who,count,skip_untap} EndTurn AddPhase{phases: [Beginning|Combat|Main]} ExileUntil{who,filter,as,exiled_as} RevealUntil{who,filter,count,as,revealed_as} ExileTop{who,count,as} CastFromZone{who,what,free,way?,transformed?,as?,otherwise}
@@ -1110,7 +1110,7 @@ The engine already has most escape hatches as separate nodes: `Continuous` (stat
 | Cost parts | `PutCounters`, `UntapPermanents`, `Exert`, `RemoveCountersAmong`, counted sacrifices | 7 (7) | 40 | cost parts `AddCounter`, `untapXType`, `Exert` |
 | `Effect::ChangeTargets` | `what`, `to: Selector`, single-target filter | 3 (4) | 25 | `ChangeTargets` |
 
-Mechanics without a node (the Ring tempts you, speed, search triggers and replacements) are by-demand tasks, item (h). Forge counts are wording matches, overlap, and include cards already read.
+Mechanics without a node (speed, search triggers and replacements) are by-demand tasks, item (h). Forge counts are wording matches, overlap, and include cards already read.
 
 Near-duplicate families, each a candidate for one parametric node:
 

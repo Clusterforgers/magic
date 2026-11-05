@@ -511,6 +511,7 @@ impl GameState {
             day_night: None,
             monarch: None,
             citys_blessing: std::collections::BTreeSet::new(),
+            ring: crate::ring::Rings::new(),
             w11d: crate::w11d_dungeon::W11dDungeons::default(),
             w15a_initiative: None,
             commanders: Commanders::of(commander_ids),
