@@ -104,8 +104,7 @@ fn cant_be_activated(ctx: &Ctx, p: &Params) -> Tr<Value> {
     let sources = match (p.get("ValidCard"), kind) {
         (Some(valid), _) => selector_any(ctx, valid)?,
         (None, Some("Loyalty" | "Cycling")) => Vec::new(),
-        (None, Some(_)) => return unmapped("key:Static.CantBeActivated.no-ValidCard"),
-        (None, None) => return unmapped("key:Static.CantBeActivated.no-ValidCard"),
+        (None, _) => return unmapped("key:Static.CantBeActivated.no-ValidCard"),
     };
     if let Some(kind) = kind {
         let action = json!({"ActivateKind": {"kind": kind, "sources": sources}});

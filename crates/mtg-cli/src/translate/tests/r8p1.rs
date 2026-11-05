@@ -48,7 +48,7 @@ fn activated_abilities_include_mana_abilities(#[case] line: &str, #[case] expect
     "key:Static.CantBeActivated.ValidCard"
 )]
 fn what_the_prohibition_cannot_say_stays_a_gap(#[case] line: &str, #[case] gap: &str) {
-    assert!(abilities(&artifact(line)).is_empty());
+    assert_eq!(abilities(&artifact(line)), Vec::<Value>::new());
     assert!(!gaps(&artifact(line)).is_empty(), "{gap}");
 }
 
