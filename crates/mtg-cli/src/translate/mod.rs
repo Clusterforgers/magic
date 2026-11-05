@@ -23,6 +23,7 @@ pub mod effects_effect;
 pub mod effects_emblem;
 mod effects_game;
 pub mod effects_loop;
+mod effects_next_spell;
 pub mod effects_obj;
 mod effects_verbs;
 mod effects_verbs2;

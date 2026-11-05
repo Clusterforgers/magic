@@ -407,6 +407,7 @@ mod pump_animate_fuzz;
 mod pump_fuzz;
 mod pump_spells;
 mod r4_audit;
+mod r7p3_next_spell;
 mod random_pick;
 mod rebound;
 mod reconfigure;

@@ -31,8 +31,12 @@ pub fn effects(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
             "Triggers",
             "Boon",
             "ForgetCounter",
+            "ForgetOnCast",
         ],
     )?;
+    if p.has("ForgetOnCast") {
+        return super::effects_next_spell::effects(ctx, p);
+    }
     // The Forge effect object ends when what it remembers changes zones; our references to remembered objects drop out the
     // same way, so the keys only matter beside `RememberObjects`.
     if (p.has("ExileOnMoved") || p.has("ForgetOnMoved")) && !p.has("RememberObjects") {

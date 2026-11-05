@@ -10,7 +10,7 @@ use std::sync::Arc;
 
 use mtg_cards::ability::Ability;
 use mtg_cards::keyword::Keyword;
-use mtg_cards::modify::Modification;
+use mtg_cards::modify::{Modification, SpellBenefit};
 use mtg_cards::refs::{Pred, Ref, Selector};
 use mtg_core::ids::{ObjectId, PlayerId};
 
@@ -18,6 +18,7 @@ use crate::ability_reader::{abilities_of, definition_has_static};
 use crate::characteristics::controller_of_object;
 use crate::object::{GameObject, ObjectKind};
 use crate::resolve::Scope;
+use crate::rules::Rule;
 use crate::state::GameState;
 use crate::zones::Zone;
 
@@ -65,6 +66,25 @@ pub(crate) fn given_to_spell(state: &GameState, caster: PlayerId, spell: ObjectI
                     given.push(keyword.clone());
                 }
             }
+        }
+    }
+    for effect in &state.rule_effects {
+        let Rule::NextSpell {
+            what,
+            benefit: SpellBenefit::Keyword(keyword),
+        } = &effect.rule
+        else {
+            continue;
+        };
+        let scope = Scope {
+            casting: Some((spell, caster)),
+            ..Scope::announcing(state, effect.controller, effect.source.unwrap_or(target))
+        };
+        if effect.controller == caster
+            && (what.is_empty() || scope.selects(what, target).unwrap_or(false))
+            && !given.contains(keyword)
+        {
+            given.push(keyword.clone());
         }
     }
     given

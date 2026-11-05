@@ -352,6 +352,27 @@ pub enum Prohibited {
     },
 }
 
+/// What the next spell of a `GameRule::NextSpell` gets.
+#[derive(Debug, Clone, PartialEq, Eq, Hash, Serialize, Deserialize)]
+pub enum SpellBenefit {
+    /// Its cost changes by `mana` once for each of `per` (CR 601.2f).
+    Cost {
+        /// More or less.
+        change: crate::ability::CostChange,
+        /// The mana added or removed each time.
+        mana: ManaCostX,
+        /// How many times; fixed when the rule begins.
+        #[serde(default = "Amount::one", skip_serializing_if = "Amount::is_one")]
+        per: Amount,
+    },
+    /// It can be cast as though it had flash (CR 601.3).
+    Flash,
+    /// It can be cast without paying its mana cost (CR 118.9).
+    Free,
+    /// It has the keyword while it is cast: convoke, improvise or affinity, which help pay for it.
+    Keyword(Keyword),
+}
+
 /// A change to the rules of the game rather than to an object. `Effect::Rule` makes it for a duration and
 /// `Ability::Rule` for as long as its source has the ability; the references name the players or objects it is about.
 #[derive(Debug, Clone, PartialEq, Eq, Hash, Serialize, Deserialize)]
@@ -515,6 +536,16 @@ pub enum GameRule {
     },
     /// The card can be a player's commander (CR 903.3), in every zone; the rule is written without `from`.
     CanBeCommander,
+    /// The next spell the rule's controller casts that `what` selects gets the benefit, and the rule ends with that cast
+    /// ("the next creature spell you cast this turn costs {1} less"); with the duration `UntilEndOfTurn` it also ends with
+    /// the turn. `what` names the cards, not the stack object (no `Spell`).
+    NextSpell {
+        /// The cards the cast must match.
+        #[serde(default, skip_serializing_if = "Selector::is_empty")]
+        what: Selector,
+        /// What the spell gets.
+        benefit: SpellBenefit,
+    },
     /// A triggered ability of a permanent the rule's controller controls triggers an additional time when the event
     /// `cause` describes makes it trigger ("if a creature dying causes a triggered ability ... to trigger"), or any event
     /// when it names none.

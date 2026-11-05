@@ -300,6 +300,7 @@ fn spell_cast(
         )));
     }
     expect_in(state, object, from)?;
+    crate::rules::spend_next_spells(state, player, object);
     if let Some(source) = crate::rules::c11b_once_source(state, player, object, from, choices.way) {
         state.tally_object(source, None, Tally::C11bOnceUsed);
     }
