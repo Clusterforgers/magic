@@ -26,6 +26,18 @@ use crate::state::GameState;
 use crate::wording;
 use crate::zones::Zone;
 
+/// The players in the order they are asked. The player whose answer opens the journal is asked first even when the
+/// effect no longer names them, because paying can change whom it names ("unless its controller pays" after the payment
+/// sacrificed that permanent); every other answer must belong to a named player.
+fn asked_order(mut named: Vec<PlayerId>, journal: &[(PlayerId, Choice)]) -> Vec<PlayerId> {
+    if let Some((first, _)) = journal.first()
+        && !named.contains(first)
+    {
+        named.insert(0, *first);
+    }
+    named
+}
+
 /// The players the effect names who are in the game are asked in turn order whether they will pay ("Pay {2}?", "Pay 2
 /// life?", "Discard a card?"), until one does. A player who cannot pay, with the floating mana and the permanents they
 /// may tap, the life, the counters, the energy and the objects the cost takes, is asked the same question at the same
@@ -68,7 +80,7 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         .filter(|entry| state.is_alive(entry.0))
         .peekable();
     let mut paid = None;
-    for player in cx.scope.players(who)? {
+    for player in asked_order(cx.scope.players(who)?, cx.journal()) {
         let Some((_, asked)) = journal.next_if(|entry| entry.0 == player) else {
             if state.is_alive(player) {
                 return Ok(Run::Ask(question(cx, player, &template)));
@@ -630,6 +642,20 @@ mod tests {
             said(run_with(&game, given, &pay(r#""You""#, r#""{2}""#))),
             said_
         );
+    }
+
+    #[rstest]
+    #[case::no(&[(1, false)], UNPAID)]
+    #[case::paid(&[(1, true), (1, true)], PAID)]
+    fn answers_of_a_player_the_effect_no_longer_names_are_still_read(
+        #[case] given: &[(usize, bool)],
+        #[case] said_: Said,
+    ) {
+        // "Unless its controller pays": the payment sacrificed the target, so nobody is named any more, but the
+        // controller's answers were given and are read, not refused as unasked.
+        let game = game(&[0, 0]);
+        let who = r#"{"ControllerOf":{"Target":0}}"#;
+        assert_eq!(said(run_with(&game, given, &pay(who, r#""{2}""#))), said_);
     }
 
     /// What seat 0 has to pay with: untapped Forests, Forests that are tapped, green mana floating and life lost.
