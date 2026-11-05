@@ -206,9 +206,18 @@ const TRIGGER_STATE: [&str; 5] = [
     "CheckDefinedPlayer",
 ];
 
+/// The same without the life words, which a life event reads itself (`LifeAmount$ GE5` is the size of the event).
+const TRIGGER_STATE_NO_LIFE: [&str; 3] = ["ManaNotSpent", "ManaSpent", "CheckDefinedPlayer"];
+
 /// The state words a line of this kind has, to be removed with its condition keys.
 pub fn state_words(p: &Params) -> &'static [&'static str] {
-    if is_trigger(p) { &TRIGGER_STATE } else { &[] }
+    if !is_trigger(p) {
+        &[]
+    } else if p.has("LifeTotal") {
+        &TRIGGER_STATE
+    } else {
+        &TRIGGER_STATE_NO_LIFE
+    }
 }
 
 /// The conditions of the state words of a trigger line, all rechecked as the ability resolves (CR 603.4): the mana types
@@ -238,7 +247,7 @@ pub fn trigger_state(ctx: &Ctx, p: &Params) -> Tr<Vec<Value>> {
             all.push(json!({"Compare": {"left": {"Life": who}, "op": op, "right": right}}));
         }
         (Some(_), None) => return unmapped("key:Trigger.LifeTotal-without-LifeAmount"),
-        (None, Some(_)) => return unmapped("key:Trigger.LifeAmount-without-LifeTotal"),
+        (None, Some(_)) => {}
     }
     if let Some(word) = p.get("CheckDefinedPlayer") {
         all.push(match word {
