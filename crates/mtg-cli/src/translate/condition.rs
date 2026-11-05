@@ -8,10 +8,11 @@ use super::valid::{cmp, defined, selector_any, selector_in};
 use crate::forge::script::Params;
 
 /// The keys this module reads.
-pub const KEYS: [&str; 10] = [
+pub const KEYS: [&str; 11] = [
     "IsPresent",
     "PresentDefined",
     "PresentZone",
+    "PresentPlayer",
     "PresentCompare",
     "IsPresent2",
     "PresentZone2",
@@ -64,14 +65,53 @@ fn present(ctx: &Ctx, p: &Params, suffix: &str) -> Tr<Option<Value>> {
         }
         return Ok(None);
     };
+    if defined_word.is_some() && p.has("PresentPlayer") {
+        return unmapped("key:Condition.PresentPlayerWithDefined");
+    }
     if let Some(word) = defined_word {
         return of_defined(ctx, word, valid, compare, zone).map(Some);
     }
-    let selector = selector_in(ctx, valid, zone)?;
+    let player = match p.get("PresentPlayer") {
+        None => false,
+        Some("You") => true,
+        Some(other) => return unmapped(format!("key:Condition.PresentPlayer={other}")),
+    };
+    // "Battlefield,Graveyard" with the default count: it is there in any of the zones.
+    if let Some(list) = zone.filter(|list| list.contains(',')) {
+        let (op, right) = comparison(ctx, compare.unwrap_or("GE1"))?;
+        if (op, &right) != ("Ge", &json!(1)) {
+            return unmapped(format!("zone:{list}"));
+        }
+        let mut any = Vec::new();
+        for each in list.split(',') {
+            any.push(counted(ctx, valid, Some(each), player, "Ge", &right)?);
+        }
+        return Ok(Some(json!({ "Any": any })));
+    }
     let (op, right) = comparison(ctx, compare.unwrap_or("GE1"))?;
-    Ok(Some(
-        json!({"Compare": {"left": {"Count": selector}, "op": op, "right": right}}),
-    ))
+    Ok(Some(counted(ctx, valid, zone, player, op, &right)?))
+}
+
+/// How many objects `valid` names in the zone compare this way; `player` limits them to those of "you".
+fn counted(
+    ctx: &Ctx,
+    valid: &str,
+    zone: Option<&str>,
+    player: bool,
+    op: &str,
+    right: &Value,
+) -> Tr<Value> {
+    let mut selector = selector_in(ctx, valid, zone)?;
+    let owner = |pred: &Value| pred.get("ControlledBy").or(pred.get("OwnedBy")).is_some();
+    if player && !selector.iter().any(owner) {
+        let outside = !matches!(zone, None | Some("Battlefield"));
+        selector.push(if outside {
+            json!({"OwnedBy": "You"})
+        } else {
+            json!({"ControlledBy": "You"})
+        });
+    }
+    Ok(json!({"Compare": {"left": {"Count": selector}, "op": op, "right": right}}))
 }
 
 /// The conditions together: none, the one, or all of them.
