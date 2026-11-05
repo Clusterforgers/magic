@@ -57,10 +57,10 @@ pub fn reveal_or_tapped(ctx: &mut Ctx, part: &Params) -> Tr<(Value, Value)> {
         .get("SubAbility")
         .map(|name| ctx.sub(name))
         .transpose()?;
-    if let Some(clean) = clean {
-        if clean.get("DB") != Some("Cleanup") || clean.get("ClearRemembered") != Some("True") {
-            return unmapped("replacement:Moved-Reveal-shape");
-        }
+    if let Some(clean) = clean
+        && (clean.get("DB") != Some("Cleanup") || clean.get("ClearRemembered") != Some("True"))
+    {
+        return unmapped("replacement:Moved-Reveal-shape");
     }
     // The count is the revealed cards plus the permanents controlled, so zero means neither.
     let held = tap
