@@ -45,6 +45,7 @@ fn c8_eg_permission(additional: Option<Cost>) -> CastPermission {
         play: false,
         once: false,
         additional,
+        spend_as: Default::default(),
     }
 }
 

@@ -7,7 +7,9 @@ use super::valid::{defined, selector_any, selector_in};
 use crate::forge::script::Params;
 
 /// The keys of a `MayPlay` static line.
-const READ: [&str; 13] = [
+const READ: [&str; 15] = [
+    "MayPlayIgnoreType",
+    "MayPlayIgnoreColor",
     "RaiseCost",
     "Mode",
     "MayPlay",
@@ -87,8 +89,19 @@ pub fn may_cast(ctx: &Ctx, p: &Params, only: Option<&Value>) -> Tr<Value> {
         Some("1") => permission["once"] = json!(true),
         Some(other) => return unmapped(format!("key:Static.MayPlay.MayPlayLimit={other}")),
     }
+    // Mana of any type pays for the cast (CR 609.4b); of any color is the same to the engine.
+    match (p.get("MayPlayIgnoreType"), p.get("MayPlayIgnoreColor")) {
+        (Some("True"), _) => permission["spend_as"] = json!("AnyType"),
+        (None, Some("True")) => permission["spend_as"] = json!("AnyColor"),
+        (None, None) => {}
+        _ => return unmapped("key:Static.MayPlay.MayPlayIgnore-value"),
+    }
     match p.get("MayPlayPlayer") {
         None | Some("You") => {}
+        // The owner of the cards named may cast them.
+        Some("CardOwner") if only.is_some() => {
+            permission["who"] = json!({ "OwnerOf": only });
+        }
         Some(other) => return unmapped(format!("key:Static.MayPlay.MayPlayPlayer={other}")),
     }
     // The label of one line of a per-type permission (Muldrotha): each line holds its own `Affected$` and limit.

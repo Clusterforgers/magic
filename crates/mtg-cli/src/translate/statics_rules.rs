@@ -42,6 +42,7 @@ pub fn rule(ctx: &Ctx, p: &Params) -> Option<Tr<Value>> {
         "IgnoreLegendRule" => ignore_legend_rule(p, mode),
         "UntapOtherPlayer" => untap_other_players(ctx, p),
         "Continuous" if p.has("SetMaxHandSize") => hand_size(ctx, p),
+        "Continuous" if p.has("AdjustLandPlays") => land_plays(ctx, p),
         "Continuous" if p.has("MayLookAt") && !p.has("MayPlay") => super::statics_look::look(p),
         _ => return None,
     };
@@ -189,6 +190,22 @@ fn hand_size(ctx: &Ctx, p: &Params) -> Tr<Value> {
         Some("Unlimited") => Ok(json!({"NoMaxHandSize": who})),
         Some(size) => Ok(json!({"MaxHandSize": {"who": who, "size": amount(ctx, size)?}})),
         None => unmapped("key:Static.Continuous.SetMaxHandSize"),
+    }
+}
+
+/// `AdjustLandPlays$` of the players `Affected$` names: that many more land plays on each of their turns.
+fn land_plays(ctx: &Ctx, p: &Params) -> Tr<Value> {
+    keys(
+        p,
+        "Continuous",
+        &["Affected", "AdjustLandPlays", "Secondary"],
+    )?;
+    let who = player_word(p.get("Affected"))?;
+    match p.get("AdjustLandPlays") {
+        Some("Unlimited") | None => unmapped("key:Static.Continuous.AdjustLandPlays=Unlimited"),
+        Some(count) => {
+            Ok(json!({"AdditionalLandPlays": {"who": who, "count": amount(ctx, count)?}}))
+        }
     }
 }
 

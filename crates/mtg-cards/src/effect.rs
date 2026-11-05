@@ -1601,6 +1601,7 @@ pub fn impulse(count: Amount, duration: Duration) -> Vec<Effect> {
                 play: true,
                 once: false,
                 additional: None,
+                spend_as: Default::default(),
             }),
             duration,
         },

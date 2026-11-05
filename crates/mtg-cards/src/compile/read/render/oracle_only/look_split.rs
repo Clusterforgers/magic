@@ -79,6 +79,7 @@ pub(super) fn add(ability: &Ability, texts: &mut Vec<String>) {
             play: true,
             once: false,
             additional: None,
+            spend_as: Default::default(),
         };
     let Some(words) = u32::try_from(*count).ok().and_then(count_word) else {
         return;

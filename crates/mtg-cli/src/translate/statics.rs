@@ -172,7 +172,10 @@ fn affected_valid(ctx: &Ctx, word: &str) -> Tr<Value> {
 }
 
 /// The keys a continuous static line reads.
-const CONTINUOUS: [&str; 25] = [
+const CONTINUOUS: [&str; 28] = [
+    "Goad",
+    "RemoveCardTypes",
+    "RemoveLandTypes",
     "GainsAbilitiesOf",
     "GainsAbilitiesOfZones",
     "AddStaticAbility",
@@ -280,6 +283,9 @@ fn continuous(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
     if p.get("RemoveAllAbilities") == Some("True") {
         mods.push(json!("LoseAbilities"));
     }
+    if p.get("Goad") == Some("True") {
+        mods.push(json!("Goaded"));
+    }
     match p.get("GainControl") {
         None => {}
         Some("You") => mods.push(json!({"SetController": "You"})),
@@ -289,10 +295,41 @@ fn continuous(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
         mods.push(json!({"SetColors": color_set(colors)?}));
     }
     let remove = p.get("RemoveCreatureTypes") == Some("True");
+    let (remove_cards, remove_lands) = (
+        p.get("RemoveCardTypes") == Some("True"),
+        p.get("RemoveLandTypes") == Some("True"),
+    );
     match p.get("AddType") {
         Some(types) => mods.extend(added_types(ctx, types, remove)?),
         None if remove => mods.push(json!({"SetCreatureTypes": []})),
         None => {}
+    }
+    if remove_cards {
+        // The card types the line adds are the only ones left (CR 205.1a).
+        let kept: Vec<Value> = mods
+            .iter()
+            .filter_map(|m| m.get("AddType").cloned())
+            .collect();
+        if kept.is_empty() {
+            return unmapped("key:Static.Continuous.RemoveCardTypes-without-AddType");
+        }
+        mods.retain(|m| m.get("AddType").is_none());
+        mods.push(json!({ "SetTypes": kept }));
+    }
+    if remove_lands {
+        // The land types the line adds are the only ones left (CR 305.7).
+        let land = |m: &Value| {
+            m.get("AddSubtype")
+                .and_then(Value::as_str)
+                .is_some_and(|name| mtg_core::card::LAND_TYPES.contains(&name))
+        };
+        let kept: Vec<Value> = mods
+            .iter()
+            .filter(|m| land(m))
+            .filter_map(|m| m.get("AddSubtype").cloned())
+            .collect();
+        mods.retain(|m| !land(m));
+        mods.push(json!({ "SetLandTypes": kept }));
     }
     if p.get("AddAllCreatureTypes") == Some("True") {
         mods.push(json!("AddAllCreatureTypes"));

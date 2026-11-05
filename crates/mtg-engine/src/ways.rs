@@ -9,6 +9,7 @@ use mtg_cards::ability::Ability;
 use mtg_cards::cost::{Cost, CostItem};
 use mtg_cards::definition::Layout;
 use mtg_cards::keyword::Keyword;
+use mtg_cards::modify::SpendAs;
 use mtg_cards::refs::{Pred, Selector, ZoneKind};
 use mtg_cards::value::{Amount, CastWay};
 use mtg_core::card::CardType;
@@ -296,6 +297,16 @@ fn listed(state: &GameState, player: PlayerId, id: ObjectId) -> Vec<Way> {
     // The back face of a card with disturb is cast from its graveyard (CR 702.146a).
     ways.extend(keywords::disturb::way(state, id, instant));
     ways.extend(alt_cast_ways(state, player, card, instant));
+    // Mana of any color or type may pay for a cast through such a permission (CR 609.4b).
+    if !own
+        && permissions
+            .iter()
+            .any(|permission| permission.spend_as != SpendAs::Normal)
+    {
+        for way in &mut ways {
+            way.mana = way.cost(printed).map(|cost| cost.paid_by_any_mana());
+        }
+    }
     ways
 }
 

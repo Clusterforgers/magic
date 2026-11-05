@@ -10,6 +10,7 @@ Open card, compiler and wording items by code area; the rules of `docs/ROADMAP.m
 - [ ] (gn1i) Zone statics: `Static.affected` on the stack, hand, graveyard or exile for cast keywords, `uses` for "the next spell" and `Shield.uses` for "the next time"; frees about 11 ledger cards (Imoti, Lier, Archway of Innovation, Words of Worship); `ability.rs`, `effect.rs`, engine casting
 - [ ] (gn1j) Writer composition: a frame writes with parts that write alone, for the combinations gn1a names (after gn1a); frees about 27 ledger cards (Sylvan Library, Vanquisher's Banner, Emry, Lurker of the Loch); `compile/read/render`
 - [ ] (gn1k) Activated-ability modifiers: `CostModifier.applies_to` an ability kind with `change: Instead(cost)`, activate as though haste, loyalty twice; frees about 10 ledger cards (Thousand-Year Elixir, Fluctuator, Forge Anew); `ability.rs`, engine announcement
+- [ ] (r1a1) Cast permission `AnyColor`: colorless mana must not pay a colored symbol (`ManaCost::paid_by_any_mana` lets it); frees nothing new, fixes Daxos of Meletis, Robber of the Rich, Mezzio Mugger; `ways.rs`, `mana.rs`
 - [ ] (gn1la) A permanent that returns to the battlefield with its card types set ("it's an enchantment", Enduring Vitality); `Destination::Battlefield`
 - [ ] (gn1o) Mana abilities whose cost puts counters on the source, exerts it or untaps permanents run as mana abilities (after gn1e); frees Devoted Druid and Arena of Glory; `assemble.rs` `pays_with_activation`
 

@@ -76,6 +76,7 @@ pub fn warp_riders() -> Vec<Ability> {
                 play: false,
                 once: false,
                 additional: None,
+                spend_as: Default::default(),
             }),
             duration: Duration::Forever,
         },

@@ -534,6 +534,7 @@ pub fn defined(ctx: &Ctx, word: &str) -> Tr<Value> {
         "ParentTarget" => ctx.parent(),
         "TargetedController" => controller(ctx.last_target()?),
         "TargetedOwner" => Ok(json!({ "OwnerOf": ctx.last_target()? })),
+        "RememberedOwner" => Ok(json!({ "OwnerOf": super::memory::remembered(ctx)? })),
         "Enchanted" | "Equipped" => Ok(json!("Attached")),
         "EnchantedController" | "EquippedController" => controller(json!("Attached")),
         "EnchantedPlayer" | "Player.EnchantedBy" => Ok(json!("AttachedPlayer")),
