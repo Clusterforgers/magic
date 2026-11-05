@@ -68,7 +68,7 @@ pub fn atom(prop: &str) -> Option<Vec<Value>> {
 }
 
 /// Whether a reference names players only (a word that does not is a gap, or an object whose controller is wanted).
-fn is_player(reference: &Value) -> bool {
+pub(super) fn is_player(reference: &Value) -> bool {
     match reference {
         Value::String(word) => matches!(
             word.as_str(),

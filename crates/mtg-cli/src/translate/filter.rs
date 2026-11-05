@@ -227,6 +227,20 @@ pub(super) fn atom(ctx: &Ctx, scope: Scope, word: &str) -> Option<Tr<Vec<Value>>
     if let Some(test) = stat_test(word) {
         return Some(one(test));
     }
+    // `blockingTriggeredAttacker`, `blockedByEquipped`: blocks (is blocked by) the object a `Defined$` word names.
+    for (prefix, key) in [("blocking", "Blocks"), ("blockedBy", "BlockedBy")] {
+        let Some(name) = word.strip_prefix(prefix) else {
+            continue;
+        };
+        if !name.starts_with(|c: char| c.is_ascii_uppercase()) || name.starts_with("Valid") {
+            continue;
+        }
+        return Some(match super::valid::defined(ctx, name) {
+            Ok(who) if !super::valid_atoms::is_player(&who) => one(json!({ key: who })),
+            Ok(_) => unmapped(format!("valid:{word}-names-a-player")),
+            Err(gap) => Err(gap),
+        });
+    }
     // `hasKeywordFlash`: the object has the keyword, as `withFlash` says.
     let name = word.strip_prefix("hasKeyword")?;
     let spaced = super::valid::spaced(name);

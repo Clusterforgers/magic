@@ -189,6 +189,14 @@ fn a_defined_filter_over_a_zone_is_the_objects_of_the_zone(
 }
 
 #[test]
+fn blocking_what_a_defined_word_names_is_a_block_of_that_object() {
+    let text = "Name:Berserk Murlodont\nManaCost:4 G\nTypes:Creature Beast\nPT:3/3\nT:Mode$ AttackerBlocked | ValidCard$ Card.Self | TriggerZones$ Battlefield | Execute$ TrigPump | TriggerDescription$ Whenever a Beast becomes blocked, it gets +1/+1 until end of turn for each creature blocking it.\nSVar:TrigPump:DB$ Pump | Defined$ TriggeredAttackerLKICopy | NumAtt$ +X | NumDef$ +X\nSVar:X:Count$Valid Creature.blockingTriggeredAttacker\n";
+    assert_eq!(gaps(text), Vec::<String>::new());
+    let found = json!(abilities(text)).to_string();
+    assert!(found.contains(r#""Blocks":"#), "{found}");
+}
+
+#[test]
 fn a_word_is_matched_whole() {
     // `YouDontOwnIt` is not `YouDontOwn`, `suspendedX` is not `suspended`.
     assert_eq!(
