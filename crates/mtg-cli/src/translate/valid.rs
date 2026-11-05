@@ -35,7 +35,7 @@ fn remembered_player_controls(ctx: &Ctx) -> Tr<Vec<Value>> {
         {
             unmapped("valid:RememberedPlayerCtrl-of-moved-cards")
         }
-        Some(who) => one(json!({"ControlledBy": who})),
+        Some(who) => Ok(vec![json!({"ControlledBy": who})]),
         None => unmapped("valid:RememberedPlayerCtrl-without-a-player"),
     }
 }
