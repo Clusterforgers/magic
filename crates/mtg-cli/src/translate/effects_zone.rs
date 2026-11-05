@@ -626,7 +626,7 @@ fn search(ctx: &mut Ctx, p: &Params, destination: &str) -> Tr<Vec<Value>> {
             effects.push(shuffle);
         }
     }
-    let effects = frame::optional(p, SEARCHED.label, effects, &seat.decides)?;
+    let effects = frame::optional(p, NAMED.label, effects, &seat.decides)?;
     Ok(match seat.each {
         Some((over, name)) => {
             vec![json!({"RepeatEach": {"over": over, "as": name, "effects": effects}})]
