@@ -2,8 +2,9 @@
 
 use serde_json::{Value, json};
 
+use super::amount::amount;
 use super::ctx::{Ctx, Tr, only, unmapped};
-use super::valid::{selector_any, selector_in};
+use super::valid::{defined, selector_any, selector_in};
 use crate::forge::script::Params;
 
 /// The effects of a verb this module reads; `None` for any other API.
@@ -75,6 +76,35 @@ fn source_restriction(ctx: &Ctx, choices: &str) -> Tr<Vec<Value>> {
     }
 }
 
+/// `Reveal` with `Random$ True`: one card of the hand of the player `Defined$` names, picked at random and shown.
+fn reveal_at_random(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
+    if [
+        "RevealValid",
+        "RevealDefined",
+        "AnyNumber",
+        "Optional",
+        "NumCards",
+    ]
+    .iter()
+    .any(|key| p.has(key))
+    {
+        return unmapped("key:Reveal.Random+shape");
+    }
+    let who = defined(ctx, p.get("Defined").unwrap_or("You"))?;
+    // One card among every hand would not be one player's card.
+    if matches!(who.as_str(), Some("EachPlayer" | "Opponents")) {
+        return unmapped("key:Reveal.Random+group");
+    }
+    let bind = ctx.fresh("revealed");
+    if p.get("RememberRevealed") == Some("True") {
+        ctx.remembered = Some(json!({ "Bound": bind }));
+    }
+    Ok(vec![
+        json!({"ChooseAtRandom": {"from": {"Each": [{"OwnedBy": who}, {"In": "Hand"}]}, "as": bind}}),
+        json!({"Reveal": {"what": {"Bound": bind}}}),
+    ])
+}
+
 /// `Reveal`: the card itself (`RevealDefined$ Self`), or cards of the player's own hand that `RevealValid$` allows (any
 /// number, up to one when optional, else one), named for the lines that read what was revealed. Revealing at random,
 /// the hand of another player, all matching cards or a set of cards other than these stay gaps.
@@ -89,8 +119,13 @@ fn reveal(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
             "AnyNumber",
             "Optional",
             "RememberRevealed",
+            "Random",
+            "NumCards",
         ],
     )?;
+    if p.get("Random") == Some("True") {
+        return reveal_at_random(ctx, p);
+    }
     if p.get("Defined").is_some_and(|who| who != "You") {
         return unmapped("key:Reveal.Defined");
     }
@@ -104,9 +139,8 @@ fn reveal(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
     if p.has("RevealDefined") {
         return unmapped("key:Reveal.RevealDefined");
     }
-    let Some(spec) = p.get("RevealValid") else {
-        return unmapped("key:Reveal.NumCards");
-    };
+    let spec = p.get("RevealValid").unwrap_or("Card");
+    let most = amount(ctx, p.get("NumCards").unwrap_or("1"))?;
     let mut filter = selector_in(ctx, spec, Some("Hand"))?;
     if !filter.iter().any(|pred| pred.get("OwnedBy").is_some()) {
         filter.push(json!({"OwnedBy": "You"}));
@@ -116,8 +150,8 @@ fn reveal(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
         p.get("Optional") == Some("True"),
     ) {
         (true, _) => json!({"min": 0, "max": null}),
-        (false, true) => json!({"min": 0, "max": 1}),
-        (false, false) => json!({"min": 1, "max": 1}),
+        (false, true) => json!({"min": 0, "max": most}),
+        (false, false) => json!({"min": most, "max": most}),
     };
     let bind = ctx.fresh("revealed");
     if remember {
