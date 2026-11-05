@@ -180,12 +180,15 @@ fn event_amount(ctx: &Ctx, expression: &str) -> Tr<Option<Value>> {
                 other => unmapped(format!("amount:TriggerCount${other}")),
             };
         }
-        "PlayerCountOpponents" | "PlayerCountPlayers" => {
+        "PlayerCountOpponents" | "PlayerCountRegisteredOpponents" | "PlayerCountPlayers" => {
             let who = if head == "PlayerCountPlayers" {
                 "EachPlayer"
             } else {
                 "Opponents"
             };
+            if what == "HighestLifeLostThisTurn" {
+                return Ok(Some(json!({"Tallied": {"who": who, "what": "LifeLost"}})));
+            }
             if let Some(found) = super::amount_more::highest(ctx, who, what) {
                 return found.map(Some);
             }
