@@ -18,7 +18,6 @@ fn a_state_change_maps_to_its_node(#[case] line: &str, #[case] node: Value) {
 }
 
 #[rstest]
-#[case::face_up("SetState | Defined$ Self | Mode$ TurnFaceUp", "key:SetState.Mode")]
 #[case::unspecialize("SetState | Defined$ Self | Mode$ Unspecialize", "key:SetState.Mode")]
 #[case::fly_flashback(
     "Pump | ValidTgts$ Instant | KW$ Flashback | PumpZone$ Graveyard",

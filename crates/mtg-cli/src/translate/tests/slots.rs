@@ -55,10 +55,6 @@ fn the_sacrificing_player_is_defined(#[case] line: &str, #[case] expected: Value
     "key:Sacrifice.Defined"
 )]
 #[case::another_player_needs_a_filter("Defined$ Player", "key:Sacrifice.SacValid")]
-#[case::up_to_several(
-    "Optional$ True | Amount$ 2 | SacValid$ Creature",
-    "key:Sacrifice.Optional-amount"
-)]
 #[case::the_actor_spelling_of_another_verb("DefinedPlayer$ You", "key:Sacrifice.DefinedPlayer")]
 fn a_sacrifice_no_slot_honours_is_a_gap(#[case] line: &str, #[case] gap: &str) {
     assert_eq!(gaps(&sacrifice(line)), vec![gap.to_owned()]);

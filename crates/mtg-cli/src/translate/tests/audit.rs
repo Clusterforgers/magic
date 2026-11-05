@@ -223,10 +223,10 @@ fn a_trigger_condition_is_rechecked_unless_the_line_says_not(
     &["\"May\"", "\"CountOf\""],
     &[]
 )]
-#[case::any_number_stays_a_gap(
+#[case::any_number_is_a_sacrifice_up_to_the_count(
     "A:SP$ Sacrifice | SacValid$ Creature | Amount$ 3 | Optional$ True\n",
-    &[],
-    &["key:Sacrifice.Optional-amount"]
+    &["\"SacrificeUpTo\""],
+    &[]
 )]
 fn an_optional_sacrifice_is_a_may(
     #[case] line: &str,
