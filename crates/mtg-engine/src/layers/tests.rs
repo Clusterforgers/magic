@@ -163,7 +163,7 @@ fn leaves(game: &mut GameState, name: &str) {
 }
 
 /// The modifications the engine runs.
-const MODIFICATIONS: [&str; 29] = [
+const MODIFICATIONS: [&str; 31] = [
     r#"{"ModifyPT":{"power":2,"toughness":-1}}"#,
     r#"{"SetPT":{"power":5,"toughness":1}}"#,
     r#""SwitchPT""#,
@@ -193,6 +193,8 @@ const MODIFICATIONS: [&str; 29] = [
     r#"{"LockKeyword":"Flying"}"#,
     r#"{"GainAbilitiesOf":{"Each":[{"Type":"Creature"},{"In":"Graveyard"}]}}"#,
     r#"{"AddColors":["Blue"]}"#,
+    r#"{"SetPower":5}"#,
+    r#"{"SetToughness":1}"#,
 ];
 
 /// CR 613.1e, 105.3: adding a colour keeps the colours the object has; a later setting replaces them all.
@@ -212,6 +214,22 @@ fn added_colours_join_the_ones_the_object_has(#[case] mods: &str, #[case] colour
         })
     });
     assert_eq!(view(&game, "Bear").chars.colors, wanted);
+}
+
+/// CR 613.4b, 613.4c: a power or toughness set alone leaves the other as it was, and bonuses add on top.
+#[rstest]
+#[case::power_alone(r#"{"SetPower":5}"#, (5, 3))]
+#[case::toughness_alone(r#"{"SetToughness":1}"#, (2, 1))]
+#[case::power_then_bonus(r#"{"SetPower":5},{"ModifyPT":{"power":1,"toughness":1}}"#, (6, 4))]
+#[case::bonus_then_power(r#"{"ModifyPT":{"power":1,"toughness":1}},{"SetPower":5}"#, (6, 4))]
+#[case::both_alone(r#"{"SetPower":0},{"SetToughness":7}"#, (0, 7))]
+fn a_power_or_toughness_set_alone_leaves_the_other(#[case] mods: &str, #[case] stats: (i32, i32)) {
+    let game = game_with(totem(&on_the_bear(mods)));
+    let chars = view(&game, "Bear").chars;
+    assert_eq!(
+        (chars.power, chars.toughness),
+        (Some(stats.0), Some(stats.1))
+    );
 }
 
 #[test]
@@ -248,6 +266,8 @@ fn the_table_of_modifications_has_every_variant_of_the_dsl() {
             | mtg_cards::modify::Modification::AddAllCreatureTypes
             | mtg_cards::modify::Modification::SetColors(_)
             | mtg_cards::modify::Modification::AddColors(_)
+            | mtg_cards::modify::Modification::SetPower(_)
+            | mtg_cards::modify::Modification::SetToughness(_)
             | mtg_cards::modify::Modification::AddKeyword(_)
             // Only an effect has it, and it works out its keyword with an answer, so it is not a row of the table.
             | mtg_cards::modify::Modification::AddProtectionFromChosenColor

@@ -1680,6 +1680,9 @@ impl<'a> Walker<'a> {
                 self.at("power", |w| w.amount(power));
                 self.at("toughness", |w| w.amount(toughness));
             }
+            Modification::SetPower(value) | Modification::SetToughness(value) => {
+                self.at("amount", |w| w.amount(value));
+            }
             Modification::AddKeyword(keyword)
             | Modification::RemoveKeyword(keyword)
             | Modification::LockKeyword(keyword) => {

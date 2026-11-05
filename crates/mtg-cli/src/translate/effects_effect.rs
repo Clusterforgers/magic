@@ -174,6 +174,9 @@ fn remembered_static(ctx: &mut Ctx, name: &str, who: &Value, duration: &Value) -
         "MustAttack" if on_remembered("ValidCreature") => Ok(vec![
             json!({"Rule": {"rule": {"MustAttack": who}, "duration": duration}}),
         ]),
+        "MustBlock" if on_remembered("ValidCreature") => Ok(vec![
+            json!({"Rule": {"rule": {"MustBlock": who}, "duration": duration}}),
+        ]),
         "Continuous" if on_remembered("Affected") => {
             let mods = pump_like(ctx, &part)?;
             Ok(vec![continuous(who, &mods, duration)])

@@ -335,6 +335,8 @@ impl Held {
             | Modification::SetColors(_)
             | Modification::AddColors(_)
             | Modification::SetPowerToughness { .. }
+            | Modification::SetPower(_)
+            | Modification::SetToughness(_)
             | Modification::ModifyPowerToughness { .. }
             | Modification::SwitchPowerToughness
             | Modification::CantAttack
@@ -627,7 +629,7 @@ fn layer_of(wanted: &Wanted, defining: bool) -> Option<Layer> {
         | Wanted::GainAbilitiesOf(_)
         | Wanted::LoseAbilities => Layer::Ability,
         Wanted::SetPT { .. } if defining => Layer::PtCharacteristicDefining,
-        Wanted::SetPT { .. } => Layer::PtSet,
+        Wanted::SetPT { .. } | Wanted::SetPower(_) | Wanted::SetToughness(_) => Layer::PtSet,
         Wanted::ModifyPT { .. } => Layer::PtModify,
         Wanted::SwitchPT => Layer::PtSwitch,
         Wanted::CantAttack

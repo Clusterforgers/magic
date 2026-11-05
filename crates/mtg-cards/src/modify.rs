@@ -33,6 +33,10 @@ pub enum Modification {
         /// New toughness.
         toughness: Amount,
     },
+    /// Sets the power alone (layer 7b): "has base power 0".
+    SetPower(Amount),
+    /// Sets the toughness alone (layer 7b).
+    SetToughness(Amount),
     /// Switches power and toughness (layer 7d).
     SwitchPT,
     /// Adds a card type (layer 4).
@@ -169,7 +173,9 @@ impl Modification {
             | Modification::GrantAbility(_)
             | Modification::GainAbilitiesOf(_)
             | Modification::LoseAbilities => Some("6"),
-            Modification::SetPT { .. } => Some("7b"),
+            Modification::SetPT { .. }
+            | Modification::SetPower(_)
+            | Modification::SetToughness(_) => Some("7b"),
             Modification::ModifyPT { .. } => Some("7c"),
             Modification::SwitchPT => Some("7d"),
             Modification::CantAttack

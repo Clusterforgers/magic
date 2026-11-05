@@ -144,6 +144,10 @@ pub enum Modification {
         /// New toughness.
         toughness: i32,
     },
+    /// Sets the power alone (layer 7b).
+    SetPower(i32),
+    /// Sets the toughness alone (layer 7b).
+    SetToughness(i32),
     /// Adds to power and toughness (layer 7c).
     ModifyPowerToughness {
         /// Power delta.
@@ -230,7 +234,9 @@ impl Modification {
             | Modification::GrantAbility(_)
             | Modification::GainAbilities(_)
             | Modification::LoseAbilities => Layer::Ability,
-            Modification::SetPowerToughness { .. } => Layer::PtSet,
+            Modification::SetPowerToughness { .. }
+            | Modification::SetPower(_)
+            | Modification::SetToughness(_) => Layer::PtSet,
             Modification::ModifyPowerToughness { .. } => Layer::PtModify,
             Modification::SwitchPowerToughness => Layer::PtSwitch,
             Modification::CantAttack
@@ -299,6 +305,8 @@ impl Modification {
                 chars.power = Some(*power);
                 chars.toughness = Some(*toughness);
             }
+            Modification::SetPower(power) => chars.power = Some(*power),
+            Modification::SetToughness(toughness) => chars.toughness = Some(*toughness),
             Modification::ModifyPowerToughness { power, toughness } => {
                 chars.power = chars.power.map(|p| p.saturating_add(*power));
                 chars.toughness = chars.toughness.map(|t| t.saturating_add(*toughness));

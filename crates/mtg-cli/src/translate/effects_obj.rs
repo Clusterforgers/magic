@@ -539,8 +539,9 @@ fn animate(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
             let (power, toughness) = (amount(ctx, power)?, amount(ctx, toughness)?);
             mods.push(json!({"SetPT": {"power": power, "toughness": toughness}}));
         }
+        (Some(power), None) => mods.push(json!({"SetPower": amount(ctx, power)?})),
+        (None, Some(toughness)) => mods.push(json!({"SetToughness": amount(ctx, toughness)?})),
         (None, None) => {}
-        _ => return unmapped("key:Animate.half-stats"),
     }
     if let Some(colors) = p.get("Colors") {
         if p.get("OverwriteColors") != Some("True") {

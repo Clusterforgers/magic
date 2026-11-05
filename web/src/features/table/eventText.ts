@@ -163,6 +163,8 @@ function modificationWords(modification: Modification, group: boolean, n: EventN
   }
   if ('GrantAbility' in modification || 'GainAbilities' in modification) return `${gains} an ability`
   if ('SetController' in modification) return `${group ? 'change' : 'changes'} controller`
+  if ('SetPower' in modification) return `${becomes} ${modification.SetPower} power`
+  if ('SetToughness' in modification) return `${becomes} ${modification.SetToughness} toughness`
   if ('SetPowerToughness' in modification) {
     const { power, toughness } = modification.SetPowerToughness
     return `${becomes} ${power}/${toughness}`

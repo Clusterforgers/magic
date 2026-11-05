@@ -764,6 +764,14 @@ describe('events with more than one shape', () => {
       'Hill Giant becomes colorless until end of turn',
     ],
     [
+      effect(objects(2), { SetPower: 0 }, 'UntilEndOfTurn'),
+      'Hill Giant becomes 0 power until end of turn',
+    ],
+    [
+      effect(objects(2), { SetToughness: 4 }, 'UntilEndOfTurn'),
+      'Hill Giant becomes 4 toughness until end of turn',
+    ],
+    [
       effect(objects(2), { SetPowerToughness: { power: 0, toughness: 1 } }, 'UntilEndOfTurn'),
       'Hill Giant becomes 0/1 until end of turn',
     ],

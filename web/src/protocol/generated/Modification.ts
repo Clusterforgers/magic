@@ -18,7 +18,7 @@ power: number,
 /**
  * New toughness.
  */
-toughness: number, } } | { "ModifyPowerToughness": { 
+toughness: number, } } | { "SetPower": number } | { "SetToughness": number } | { "ModifyPowerToughness": { 
 /**
  * Power delta.
  */

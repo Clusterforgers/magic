@@ -362,6 +362,8 @@ const RUNS: &[&str] = &[
     "Mod.AddProtectionFromChosenColor",
     "Mod.AddProtectionFromChosenCardType",
     "Mod.SetPT",
+    "Mod.SetPower",
+    "Mod.SetToughness",
     "Mod.SwitchPT",
     "Mod.AddType",
     "Mod.RemoveType",

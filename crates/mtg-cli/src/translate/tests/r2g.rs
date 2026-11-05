@@ -123,6 +123,24 @@ fn crew_power_counts_another_way(
     }
 }
 
+#[rstest]
+#[case::power_alone("Power$ 0", r#""SetPower":0"#)]
+#[case::toughness_alone("Toughness$ 4", r#""SetToughness":4"#)]
+#[case::both("Power$ 2 | Toughness$ 3", r#""SetPT":{"power":2,"toughness":3}"#)]
+fn animating_sets_the_stats_it_names(#[case] stats: &str, #[case] mods: &str) {
+    let script = format!(
+        "Name:Subject\nTypes:Creature Wall\nPT:0/4\nA:AB$ Animate | Cost$ U | Defined$ Self | {stats} | SpellDescription$ x\n"
+    );
+    assert!(first(&script).to_string().contains(mods));
+}
+
+#[test]
+fn a_creature_that_must_block_is_a_rule_for_the_turn() {
+    let script = "Name:Subject\nManaCost:1 R\nTypes:Instant\nA:SP$ Effect | ValidTgts$ Creature | RememberObjects$ Targeted | StaticAbilities$ MustBlock | SpellDescription$ x\nSVar:MustBlock:Mode$ MustBlock | ValidCreature$ Card.IsRemembered | Description$ x\n";
+    let ability = first(script).to_string();
+    assert!(ability.contains(r#""MustBlock":{"Target":0}"#), "{ability}");
+}
+
 #[test]
 fn turning_a_face_down_creature_face_up_is_an_effect() {
     let script = "Name:Subject\nManaCost:1 R\nTypes:Instant\nA:SP$ SetState | ValidTgts$ Creature.faceDown+OppCtrl | Mode$ TurnFaceUp | SpellDescription$ x\n";
