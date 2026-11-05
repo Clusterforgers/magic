@@ -72,3 +72,18 @@ fn a_player_among_valid_targets_is_not_a_subtype() {
         gaps(script)
     );
 }
+
+#[test]
+fn a_word_of_a_type_line_that_is_no_subtype_stays_out_of_the_world() {
+    use crate::forge::script::Script;
+    use crate::translate::ctx::World;
+
+    let scripts = [Script::parse(
+        "Name:Minion\nTypes:Legendary Planeswalker You\n",
+    )];
+    let world = World::new(&scripts, std::collections::BTreeMap::new());
+    assert!(!world.subtypes.contains("You"), "{:?}", world.subtypes);
+    let scripts = [Script::parse("Name:Bear\nTypes:Creature Bear\n")];
+    let world = World::new(&scripts, std::collections::BTreeMap::new());
+    assert!(world.subtypes.contains("Bear"));
+}
