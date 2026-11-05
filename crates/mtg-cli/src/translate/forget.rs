@@ -44,7 +44,7 @@ pub fn split(p: &Params) -> Option<(Params, Vec<Forgets>)> {
 pub fn apply(
     ctx: &mut Ctx,
     asked: &[Forgets],
-    before: Option<Value>,
+    before: &Option<Value>,
     mut effects: Vec<Value>,
 ) -> Tr<Vec<Value>> {
     let across = ctx.memory.crosses(Slot::Remembered);
@@ -64,7 +64,7 @@ pub fn apply(
             Some(at) => effects.insert(at, step),
             None => effects.push(step),
         }
-    } else if ctx.remembered == before {
+    } else if ctx.remembered == *before {
         ctx.remembered = None;
     }
     Ok(effects)

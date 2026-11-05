@@ -158,15 +158,13 @@ pub fn resolve(shape: Option<&Shape>, word: &str) -> Tr<Value> {
         (Word::Card, "Triggering") if ONE_OBJECT.contains(&mode) => {
             Ok(json!({"ControllerOf": "Triggering"}))
         }
-        (Word::Source, "Dealer") => Ok(json!({"ControllerOf": "Dealer"})),
+        (Word::Source | Word::Blocker, "Dealer") => Ok(json!({"ControllerOf": "Dealer"})),
         // The caster controls the spell on the stack; the creature hit or attacking is a permanent.
         (Word::Card, "Triggering") if mode == "SpellCast" => {
             Ok(json!({"ControllerOf": "Triggering"}))
         }
         (Word::Attacker, "Triggering") => Ok(json!({"ControllerOf": "Triggering"})),
-        (Word::Attacker, "This") => Ok(json!("You")),
-        (Word::Blocker, "Dealer") => Ok(json!({"ControllerOf": "Dealer"})),
-        (Word::Blocker, "This") => Ok(json!("You")),
+        (Word::Attacker | Word::Blocker, "This") => Ok(json!("You")),
         (Word::Target, "Triggering") if !shape.to_player => {
             Ok(json!({"ControllerOf": "Triggering"}))
         }

@@ -372,7 +372,7 @@ pub fn line(
     if let Some((rest, asked)) = super::forget::split(p) {
         let before = ctx.remembered.clone();
         let effects = line(ctx, &rest, api, run)?;
-        return super::forget::apply(ctx, &asked, before, effects);
+        return super::forget::apply(ctx, &asked, &before, effects);
     }
     let keys: Vec<(String, Slot)> = p
         .iter()
@@ -440,7 +440,7 @@ pub fn line(
             && let Some(what) = held(ctx, slot)
             && Some(&what) != held_before(&before, slot).as_ref()
         {
-            effects.push(remember_step(ctx, what, slot)?);
+            effects.push(remember_step(ctx, &what, slot)?);
         }
     }
     Ok(effects)
@@ -477,8 +477,8 @@ fn rename(p: &Params, from: &str, to: &str) -> Params {
 }
 
 /// The step that makes the source remember `what`. The store holds objects, so a player reads back as nobody and stays a gap.
-fn remember_step(ctx: &Ctx, what: Value, slot: Slot) -> Tr<Value> {
-    let player = match &what {
+fn remember_step(ctx: &Ctx, what: &Value, slot: Slot) -> Tr<Value> {
+    let player = match what {
         Value::String(word) => matches!(
             word.as_str(),
             "You" | "Opponents" | "EachPlayer" | "AttachedPlayer" | "Defending"
@@ -512,7 +512,7 @@ fn remember_api(ctx: &mut Ctx, p: &Params, slot: Slot) -> Tr<Vec<Value>> {
     let what = defined(ctx, word)?;
     set(ctx, slot, Some(what.clone()));
     if ctx.memory.crosses(slot) {
-        return Ok(vec![remember_step(ctx, what, slot)?]);
+        return Ok(vec![remember_step(ctx, &what, slot)?]);
     }
     Ok(Vec::new())
 }
