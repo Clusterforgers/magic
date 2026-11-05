@@ -393,6 +393,7 @@ pub fn read(item: &str) -> Option<Keyword> {
         "gift" => gift(rest),
         "devour" => devour(rest),
         "foretell" => cost(rest).map(Keyword::Foretell),
+        "plot" => cost(rest).map(Keyword::Plot),
         "unearth" => spell_cost(rest).map(Keyword::Unearth),
         "embalm" => spell_cost(rest).map(Keyword::Embalm),
         "eternalize" => spell_cost(rest).map(Keyword::Eternalize),
@@ -1246,6 +1247,7 @@ mod tests {
     #[case::fabricate("Fabricate 2", Keyword::Fabricate(2))]
     #[case::fabricate_lowercase("fabricate 1", Keyword::Fabricate(1))]
     #[case::foretell("Foretell {1}{U}", Keyword::Foretell(mana("{1}{U}")))]
+    #[case::plot("Plot {2}{R}", Keyword::Plot(mana("{2}{R}")))]
     #[case::foretell_for_nothing("Foretell {0}", Keyword::Foretell(mana("{0}")))]
     #[case::unearth("Unearth {1}{B}", Keyword::Unearth(mana("{1}{B}")))]
     #[case::unearth_in_mana_only_with_reminder("unearth {B}", Keyword::Unearth(mana("{B}")))]
@@ -1660,6 +1662,7 @@ mod tests {
             "Riot",
             "Decayed",
             "Foretell {1}",
+            "Plot {1}",
             "Fabricate 1",
             "Ascend",
             "Daybound",

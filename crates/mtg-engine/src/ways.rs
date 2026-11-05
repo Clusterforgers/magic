@@ -482,6 +482,7 @@ fn keyword_way(
         Keyword::Morph(_) | Keyword::Megamorph(_) | Keyword::Disguise(_) if in_hand => {
             return Some(face_down_way(instant));
         }
+        Keyword::Plot(_) => return plot_way(state, player, id),
         Keyword::Foretell(cost) => (
             CastWay::Foretold,
             "Foretell",
@@ -601,6 +602,30 @@ fn foretold_before_now(state: &GameState, player: PlayerId, id: ObjectId) -> boo
         card.zone() == Zone::Exile
             && card.owner() == player
             && matches!(card.face_down(), Some(FaceDown::Foretold { turn }) if turn < state.turn().number())
+    })
+}
+
+/// The free cast of a plotted card as a sorcery (CR 702.170a), open on a later turn than the plot.
+fn plot_way(state: &GameState, player: PlayerId, id: ObjectId) -> Option<Way> {
+    plotted_before_now(state, player, id).then(|| Way {
+        alternative: Some(CastWay::Plotted),
+        label: "Cast without paying its mana cost".to_owned(),
+        mana: Some(ManaCost::default()),
+        instant: false,
+        variant: 0,
+        parts: Vec::new(),
+    })
+}
+
+/// Whether `player` plotted the card `id` on an earlier turn and it still lies in exile (CR 702.170a): the free cast is open
+/// to them then, and never on the turn it was plotted in.
+fn plotted_before_now(state: &GameState, player: PlayerId, id: ObjectId) -> bool {
+    state.object(id).is_some_and(|card| {
+        card.zone() == Zone::Exile
+            && card.owner() == player
+            && card
+                .plotted()
+                .is_some_and(|turn| turn < state.turn().number())
     })
 }
 
@@ -752,6 +777,60 @@ pub(crate) fn can_foretell(
     card.kind() == ObjectKind::Card
         && card.zone() == Zone::Hand(player)
         && state.turn().active() == player
+        && can_afford(
+            &cost,
+            pool,
+            &for_card(state, sources, id),
+            life,
+            &Spend::other(),
+        )
+}
+
+/// The mana the special action of plot costs for the card `id` (CR 702.170a): the plot cost, when it has the keyword and the
+/// cost is mana alone.
+pub(crate) fn plot_action_cost(state: &GameState, id: ObjectId) -> Option<ManaCost> {
+    keywords_of(state, id).into_iter().find_map(|keyword| {
+        let Keyword::Plot(cost) = keyword else {
+            return None;
+        };
+        mana_only(cost)
+    })
+}
+
+/// The cards of `hand` that `player` can plot now.
+pub(crate) fn plottable(
+    state: &GameState,
+    player: PlayerId,
+    hand: &[ObjectId],
+    pool: &ManaPool,
+    sources: &[ManaOption],
+    life: i32,
+) -> Vec<ObjectId> {
+    hand.iter()
+        .copied()
+        .filter(|id| can_plot(state, player, *id, pool, sources, life))
+        .collect()
+}
+
+/// Whether `player` can plot the card `id` now: it is in their hand, they can cast a sorcery now and can pay the plot
+/// cost (CR 702.170a).
+pub(crate) fn can_plot(
+    state: &GameState,
+    player: PlayerId,
+    id: ObjectId,
+    pool: &ManaPool,
+    sources: &[ManaOption],
+    life: i32,
+) -> bool {
+    let Some(card) = state.object(id) else {
+        return false;
+    };
+    let Some(cost) = plot_action_cost(state, id) else {
+        return false;
+    };
+    card.kind() == ObjectKind::Card
+        && card.zone() == Zone::Hand(player)
+        && sorcery_timing(state, player)
         && can_afford(
             &cost,
             pool,

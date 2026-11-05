@@ -399,6 +399,8 @@ pub struct GameObject {
     pub(crate) face_down: Option<FaceDown>,
     /// The player who may cast the card from exile as the permanent card of an Adventure it was exiled "on" (CR 715.4); a zone change clears it.
     pub(crate) adventure: Option<PlayerId>,
+    /// The number of the turn the card was plotted in (CR 702.170), while it lies face up in exile; a zone change clears it.
+    pub(crate) plotted: Option<u32>,
     /// The permanent a card in exile waits for: it returns to the battlefield once that permanent has left it
     /// (CR 610.3); a zone change clears it.
     pub(crate) exiled_until: Option<ObjectRef>,
@@ -437,6 +439,7 @@ impl GameObject {
             card_counters: BTreeMap::new(),
             face_down: None,
             adventure: None,
+            plotted: None,
             exiled_until: None,
             encoded_on: None,
             monarch_wait: None,
@@ -473,6 +476,7 @@ impl GameObject {
             card_counters: BTreeMap::new(),
             face_down: None,
             adventure: None,
+            plotted: None,
             exiled_until: None,
             encoded_on: None,
             monarch_wait: None,
@@ -701,6 +705,11 @@ impl GameObject {
         self.adventure
     }
 
+    /// The number of the turn the card was plotted in, while it lies plotted in exile (CR 702.170).
+    pub const fn plotted(&self) -> Option<u32> {
+        self.plotted
+    }
+
     /// The printed card types of the face in use (no effects applied); a bestowed Aura is no creature (CR 702.103b).
     pub fn base_types(&self) -> CardTypes {
         let printed = if let Some(copy) = self.copy_effect() {
@@ -770,6 +779,7 @@ impl PartialEq for GameObject {
             && self.card_counters == other.card_counters
             && self.face_down == other.face_down
             && self.adventure == other.adventure
+            && self.plotted == other.plotted
             && self.exiled_until == other.exiled_until
             && self.encoded_on == other.encoded_on
             && self.monarch_wait == other.monarch_wait
@@ -798,6 +808,7 @@ impl Hash for GameObject {
         self.card_counters.hash(state);
         self.face_down.hash(state);
         self.adventure.hash(state);
+        self.plotted.hash(state);
         if let Some(until) = self.exiled_until {
             until.hash(state);
         }

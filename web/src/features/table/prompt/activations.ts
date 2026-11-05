@@ -169,6 +169,7 @@ function specialActions(options: PriorityOptions): Special[] {
   return [
     ...(options.suspendable ?? []).map((id): Special => [id, 'Suspend', { Suspend: id }]),
     ...(options.foretellable ?? []).map((id): Special => [id, 'Foretell', { Foretell: id }]),
+    ...(options.plottable ?? []).map((id): Special => [id, 'Plot', { Plot: id }]),
     ...(options.turnable ?? []).map((id): Special => [id, 'Turn face up', { TurnFaceUp: id }]),
     ...(options.faces ?? [])
       .filter((face) => face.face === 1 && !face.land)

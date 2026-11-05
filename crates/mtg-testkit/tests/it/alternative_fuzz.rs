@@ -37,6 +37,7 @@ fn bot_games_with_alternative_costs_keep_every_invariant_and_use_each_way() {
                             CastWay::Miracle => "miracle",
                             CastWay::Suspend => "suspend",
                             CastWay::Foretold => "foretold",
+                            CastWay::Plotted => "plotted",
                             CastWay::Escape => "escape",
                             CastWay::Dash => "dash",
                             CastWay::Bestow => "bestow",

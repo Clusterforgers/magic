@@ -193,6 +193,7 @@ mod tests {
                 abilities: Vec::new(),
                 suspendable: Vec::new(),
                 foretellable: Vec::new(),
+                plottable: Vec::new(),
                 companion: false,
                 turnable: Vec::new(),
                 unlockable: Vec::new(),

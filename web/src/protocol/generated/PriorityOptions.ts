@@ -34,6 +34,10 @@ suspendable?: Array<ObjectId>,
  */
 foretellable?: Array<ObjectId>, 
 /**
+ * Cards in the hand that can be plotted now (a special action at sorcery timing that does not use the stack, CR 702.170).
+ */
+plottable?: Array<ObjectId>, 
+/**
  * Face-down permanents their controller can turn face up now (a special action that does not use the stack, CR 702.37e).
  */
 turnable?: Array<ObjectId>, 
