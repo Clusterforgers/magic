@@ -57,9 +57,9 @@ fn a_player_that_becomes_a_target_stays_a_gap() {
 }
 
 #[test]
-fn a_random_discard_cost_stays_a_gap_by_name() {
-    let (_, found) = creature("A:AB$ Draw | Cost$ Discard<1/Random> | NumCards$ 1");
-    assert_eq!(found, ["cost:Discard-random"]);
+fn a_counted_random_discard_cost_stays_a_gap_by_name() {
+    let (_, found) = creature("A:AB$ Draw | Cost$ Discard<X/Random> | NumCards$ 1");
+    assert_eq!(found, ["cost:counted-draw-or-discard"]);
 }
 
 #[rstest]

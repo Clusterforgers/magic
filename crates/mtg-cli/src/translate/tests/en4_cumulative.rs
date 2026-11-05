@@ -20,9 +20,9 @@ fn cumulative_upkeep_maps(#[case] line: &str, #[case] has: &str) {
 }
 
 #[rstest]
-#[case::draw("Cumulative upkeep:Draw<1/You>:Draw a card.")]
+#[case::gain_life("Cumulative upkeep:GainLife<1/Player.Opponent>:An opponent gains 1 life.")]
 fn a_cost_without_a_cost_item_is_a_gap(#[case] line: &str) {
     let script = format!("Name:T\nTypes:Creature Elf\nK:{line}\n");
     assert_eq!(abilities(&script).len(), 0);
-    assert_eq!(gaps(&script), ["cost:Draw"]);
+    assert_eq!(gaps(&script), ["cost:GainLife"]);
 }
