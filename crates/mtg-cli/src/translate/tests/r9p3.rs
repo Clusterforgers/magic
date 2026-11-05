@@ -41,3 +41,20 @@ fn a_token_made_this_turn_gates_an_activation() {
     assert!(found.is_empty(), "{found:?}");
     assert!(json.contains("Token"), "{json}");
 }
+
+#[rstest]
+#[case::poisoned("True", true)]
+#[case::not_asked("False", false)]
+fn an_attack_trigger_asks_whether_the_defender_is_poisoned(
+    #[case] flag: &str,
+    #[case] asked: bool,
+) {
+    let (json, found) = card(
+        "Creature Rat",
+        &format!(
+            "PT:2/2\nT:Mode$ Attacks | ValidCard$ Creature.Self | TriggerZones$ Battlefield | DefendingPlayerPoisoned$ {flag} | Execute$ P\nSVar:P:DB$ Pump | NumAtt$ +1 | NumDef$ +1 | Defined$ Self"
+        ),
+    );
+    assert_eq!(found.is_empty(), asked, "{found:?}");
+    assert_eq!(json.contains(r#""on":"Defending""#), asked, "{json}");
+}
