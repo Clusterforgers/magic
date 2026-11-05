@@ -1,0 +1,82 @@
+{
+  "oracle_id": "23bf0648-7097-41df-a539-1d36ac42cf9c",
+  "name": "Depthshaker Titan",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Depthshaker Titan",
+      "oracle_fingerprint": "0501ab4f16a6f12e7ae6f5604d2ac624",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Type": "Artifact" },
+                    { "Not": { "Type": "Creature" } },
+                    { "ControlledBy": "You" }
+                  ]
+                },
+                "bounds": {
+                  "min": 0,
+                  "max": {
+                    "Count": [
+                      { "Type": "Artifact" },
+                      { "Not": { "Type": "Creature" } },
+                      { "ControlledBy": "You" }
+                    ]
+                  }
+                }
+              }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "SetPT": { "power": 3, "toughness": 3 } }, { "AddType": "Creature" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "RepeatEach": {
+                  "over": { "Target": 0 },
+                  "as": "pumped",
+                  "effects": [
+                    {
+                      "DelayedTrigger": {
+                        "when": { "StepBegins": { "step": "End" } },
+                        "effects": [
+                          {
+                            "Sacrifice": {
+                              "who": { "ControllerOf": { "Bound": "pumped" } },
+                              "filter": [{ "Is": { "Bound": "pumped" } }],
+                              "count": { "Count": [{ "Is": { "Bound": "pumped" } }] }
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Static": {
+            "affected": {
+              "Each": [{ "Type": "Creature" }, { "Type": "Artifact" }, { "ControlledBy": "You" }]
+            },
+            "mods": [
+              { "AddKeyword": "Melee" },
+              { "AddKeyword": "Trample" },
+              { "AddKeyword": "Haste" }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

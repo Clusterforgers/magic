@@ -1,0 +1,56 @@
+{
+  "oracle_id": "d6861319-ae16-4e6c-af87-a264f667d694",
+  "name": "Valakut Exploration",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Valakut Exploration",
+      "oracle_fingerprint": "5e74ba6370e8eac951854f696546a500",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Land" }, { "ControlledBy": "You" }],
+                "to": "Battlefield"
+              }
+            },
+            "effects": [
+              { "ExileTop": { "as": "exiled" } },
+              {
+                "Rule": {
+                  "rule": {
+                    "MayCast": { "from": "Exile", "only": { "Bound": "exiled" }, "play": true }
+                  },
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "if": {
+              "Compare": {
+                "left": { "Count": [{ "ExiledWith": "This" }, { "In": "Exile" }] },
+                "op": "Gt",
+                "right": 0
+              }
+            },
+            "effects": [
+              {
+                "Move": {
+                  "what": { "Each": [{ "ExiledWith": "This" }, { "In": "Exile" }] },
+                  "to": "Graveyard",
+                  "as": "moved"
+                }
+              },
+              { "DealDamage": { "to": "Opponents", "amount": { "Bound": "moved~moved" } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

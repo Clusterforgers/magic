@@ -1,0 +1,61 @@
+{
+  "oracle_id": "2358ffc2-6663-4ef3-b3a4-b036a4733ac6",
+  "name": "Faithful Squire // Kaiso, Memory of Loyalty",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Faithful Squire",
+      "oracle_fingerprint": "71b1d43682cdacbbb7d76561200ceed2",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "SpellCast": {
+                "what": [{ "AnyOf": [{ "Subtype": "Spirit" }, { "Subtype": "Arcane" }] }],
+                "by": "You"
+              }
+            },
+            "effects": [
+              {
+                "May": {
+                  "effects": [{ "PutCounters": { "on": "This", "counter": { "Other": "ki" } } }]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End" } },
+            "if": {
+              "Compare": {
+                "left": {
+                  "Count": [
+                    "This",
+                    { "CounterCount": { "kind": { "Other": "ki" }, "op": "Ge", "to": 2 } }
+                  ]
+                },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "effects": [{ "May": { "effects": [{ "Flip": { "what": "This" } }] } }]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Kaiso, Memory of Loyalty",
+      "oracle_fingerprint": "f11a5d0e4b168aaa9f3be11d12612e24",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 7, "end": 107 }
+          }
+        }
+      ]
+    }
+  ]
+}

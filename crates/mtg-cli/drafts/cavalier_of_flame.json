@@ -1,0 +1,86 @@
+{
+  "oracle_id": "98b19afc-7696-46b9-96f0-7f7c60003e1c",
+  "name": "Cavalier of Flame",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Cavalier of Flame",
+      "oracle_fingerprint": "5aa517c352bc73ae7d4cb9f780feb0fd",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{1}{R}",
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                  "mods": [
+                    { "ModifyPT": { "power": 1, "toughness": 0 } },
+                    { "AddKeyword": "Haste" }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Discard": {
+                  "count": { "Count": [{ "In": "Hand" }, { "OwnedBy": "You" }] },
+                  "optional": true,
+                  "as": "discarded"
+                }
+              },
+              {
+                "Draw": {
+                  "count": {
+                    "Count": [
+                      { "Is": { "Bound": "discarded" } },
+                      {
+                        "AnyOf": [
+                          { "In": "Battlefield" },
+                          { "In": "Hand" },
+                          { "In": "Library" },
+                          { "In": "Graveyard" },
+                          { "In": "Exile" },
+                          { "In": "Stack" }
+                        ]
+                      }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } },
+            "effects": [
+              {
+                "DealDamage": {
+                  "to": { "Each": [{ "Type": "Planeswalker" }, { "ControlledBy": "Opponents" }] },
+                  "amount": {
+                    "Count": [{ "Type": "Land" }, { "OwnedBy": "You" }, { "In": "Graveyard" }]
+                  }
+                }
+              },
+              {
+                "DealDamage": {
+                  "to": "Opponents",
+                  "amount": {
+                    "Count": [{ "Type": "Land" }, { "OwnedBy": "You" }, { "In": "Graveyard" }]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

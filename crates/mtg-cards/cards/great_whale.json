@@ -1,0 +1,28 @@
+{
+  "oracle_id": "c43ce30a-0346-479d-8dbc-56c3872ff82a",
+  "name": "Great Whale",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Great Whale",
+      "oracle_fingerprint": "4fe07254f7bb6a27214a859fa07a8065",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Choose": {
+                  "from": { "Each": [{ "Type": "Land" }] },
+                  "count": { "min": 0, "max": 7 },
+                  "as": "untap"
+                }
+              },
+              { "Untap": { "what": { "Bound": "untap" } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,208 @@
+{
+  "object": "card",
+  "id": "a22b5f27-f9e7-49e1-8e96-dc5d8e7fbe27",
+  "oracle_id": "e70ac420-8540-4a69-820f-ae3e0274ca1a",
+  "multiverse_ids": [
+    548502,
+    548503
+  ],
+  "mtgo_id": 97328,
+  "arena_id": 79629,
+  "tcgplayer_id": 262781,
+  "cardmarket_id": 608262,
+  "name": "Jugan Defends the Temple // Remnant of the Rising Star",
+  "lang": "en",
+  "released_at": "2022-02-18",
+  "uri": "https://api.scryfall.com/cards/a22b5f27-f9e7-49e1-8e96-dc5d8e7fbe27",
+  "scryfall_uri": "https://scryfall.com/card/neo/194/jugan-defends-the-temple-remnant-of-the-rising-star?utm_source=api",
+  "layout": "transform",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T06:24:11Z",
+  "cmc": 3.0,
+  "type_line": "Enchantment — Saga // Enchantment Creature — Dragon Spirit",
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [
+    "Flying",
+    "Transform"
+  ],
+  "produced_mana": [
+    "G"
+  ],
+  "card_faces": [
+    {
+      "object": "card_face",
+      "name": "Jugan Defends the Temple",
+      "mana_cost": "{2}{G}",
+      "type_line": "Enchantment — Saga",
+      "oracle_text": "(As this Saga enters and after your draw step, add a lore counter.)\nI — Create a 1/1 green Human Monk creature token with \"{T}: Add {G}.\"\nII — Put a +1/+1 counter on each of up to two target creatures.\nIII — Exile this Saga, then return it to the battlefield transformed under your control.",
+      "colors": [
+        "G"
+      ],
+      "artist": "Daniel Ljunggren",
+      "artist_id": "0fbd4798-76eb-46d5-a5d4-1e3a25870e34",
+      "illustration_id": "9652dfc8-bf23-4895-b409-cd26ae2f9550",
+      "image_uris": {
+        "small": "https://cards.scryfall.io/small/front/a/2/a22b5f27-f9e7-49e1-8e96-dc5d8e7fbe27.jpg?1783923851",
+        "normal": "https://cards.scryfall.io/normal/front/a/2/a22b5f27-f9e7-49e1-8e96-dc5d8e7fbe27.jpg?1783923851",
+        "large": "https://cards.scryfall.io/large/front/a/2/a22b5f27-f9e7-49e1-8e96-dc5d8e7fbe27.jpg?1783923851",
+        "png": "https://cards.scryfall.io/png/front/a/2/a22b5f27-f9e7-49e1-8e96-dc5d8e7fbe27.png?1783923851",
+        "art_crop": "https://cards.scryfall.io/art_crop/front/a/2/a22b5f27-f9e7-49e1-8e96-dc5d8e7fbe27.jpg?1783923851",
+        "border_crop": "https://cards.scryfall.io/border_crop/front/a/2/a22b5f27-f9e7-49e1-8e96-dc5d8e7fbe27.jpg?1783923851",
+        "thumb": "https://cards.scryfall.io/thumb/front/a/2/a22b5f27-f9e7-49e1-8e96-dc5d8e7fbe27.webp?1783923851",
+        "grid": "https://cards.scryfall.io/grid/front/a/2/a22b5f27-f9e7-49e1-8e96-dc5d8e7fbe27.webp?1783923851",
+        "display": "https://cards.scryfall.io/display/front/a/2/a22b5f27-f9e7-49e1-8e96-dc5d8e7fbe27.webp?1783923851",
+        "art": "https://cards.scryfall.io/art/front/a/2/a22b5f27-f9e7-49e1-8e96-dc5d8e7fbe27.webp?1783923851",
+        "crop": "https://cards.scryfall.io/crop/front/a/2/a22b5f27-f9e7-49e1-8e96-dc5d8e7fbe27.webp?1783923851",
+        "jpeg": "https://cards.scryfall.io/normal/front/a/2/a22b5f27-f9e7-49e1-8e96-dc5d8e7fbe27.jpg?1783923851"
+      }
+    },
+    {
+      "object": "card_face",
+      "name": "Remnant of the Rising Star",
+      "mana_cost": "",
+      "type_line": "Enchantment Creature — Dragon Spirit",
+      "oracle_text": "Flying\nWhenever another creature you control enters, you may pay {X}. When you do, put X +1/+1 counters on that creature.\nAs long as you control five or more modified creatures, this creature gets +5/+5 and has trample. (Equipment, Auras you control, and counters are modifications.)",
+      "colors": [
+        "G"
+      ],
+      "color_indicator": [
+        "G"
+      ],
+      "power": "2",
+      "toughness": "2",
+      "artist": "Daniel Ljunggren",
+      "artist_id": "0fbd4798-76eb-46d5-a5d4-1e3a25870e34",
+      "illustration_id": "34628a44-f933-4b71-b4bd-7e69a9a4dd39",
+      "image_uris": {
+        "small": "https://cards.scryfall.io/small/back/a/2/a22b5f27-f9e7-49e1-8e96-dc5d8e7fbe27.jpg?1783923851",
+        "normal": "https://cards.scryfall.io/normal/back/a/2/a22b5f27-f9e7-49e1-8e96-dc5d8e7fbe27.jpg?1783923851",
+        "large": "https://cards.scryfall.io/large/back/a/2/a22b5f27-f9e7-49e1-8e96-dc5d8e7fbe27.jpg?1783923851",
+        "png": "https://cards.scryfall.io/png/back/a/2/a22b5f27-f9e7-49e1-8e96-dc5d8e7fbe27.png?1783923851",
+        "art_crop": "https://cards.scryfall.io/art_crop/back/a/2/a22b5f27-f9e7-49e1-8e96-dc5d8e7fbe27.jpg?1783923851",
+        "border_crop": "https://cards.scryfall.io/border_crop/back/a/2/a22b5f27-f9e7-49e1-8e96-dc5d8e7fbe27.jpg?1783923851",
+        "thumb": "https://cards.scryfall.io/thumb/back/a/2/a22b5f27-f9e7-49e1-8e96-dc5d8e7fbe27.webp?1783923851",
+        "grid": "https://cards.scryfall.io/grid/back/a/2/a22b5f27-f9e7-49e1-8e96-dc5d8e7fbe27.webp?1783923851",
+        "display": "https://cards.scryfall.io/display/back/a/2/a22b5f27-f9e7-49e1-8e96-dc5d8e7fbe27.webp?1783923851",
+        "art": "https://cards.scryfall.io/art/back/a/2/a22b5f27-f9e7-49e1-8e96-dc5d8e7fbe27.webp?1783923851",
+        "crop": "https://cards.scryfall.io/crop/back/a/2/a22b5f27-f9e7-49e1-8e96-dc5d8e7fbe27.webp?1783923851",
+        "jpeg": "https://cards.scryfall.io/normal/back/a/2/a22b5f27-f9e7-49e1-8e96-dc5d8e7fbe27.jpg?1783923851"
+      }
+    }
+  ],
+  "all_parts": [
+    {
+      "object": "related_card",
+      "id": "d9d59000-11e0-41ca-9626-9eae22627924",
+      "component": "combo_piece",
+      "name": "Jugan Defends the Temple // Remnant of the Rising Star",
+      "type_line": "Enchantment — Saga // Enchantment Creature — Dragon Spirit",
+      "uri": "https://api.scryfall.com/cards/d9d59000-11e0-41ca-9626-9eae22627924"
+    },
+    {
+      "object": "related_card",
+      "id": "86dd086e-c757-4a6a-8838-51860f2095f8",
+      "component": "token",
+      "name": "Human Monk",
+      "type_line": "Token Creature — Human Monk",
+      "uri": "https://api.scryfall.com/cards/86dd086e-c757-4a6a-8838-51860f2095f8"
+    }
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo",
+    "arena"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "59a2059f-5482-433f-8761-eb2e17859b71",
+  "set": "neo",
+  "set_name": "Kamigawa: Neon Dynasty",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/59a2059f-5482-433f-8761-eb2e17859b71",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Aneo&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/neo?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/a22b5f27-f9e7-49e1-8e96-dc5d8e7fbe27/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Ae70ac420-8540-4a69-820f-ae3e0274ca1a&unique=prints",
+  "collector_number": "194",
+  "digital": false,
+  "rarity": "mythic",
+  "artist": "Daniel Ljunggren",
+  "artist_ids": [
+    "0fbd4798-76eb-46d5-a5d4-1e3a25870e34"
+  ],
+  "border_color": "black",
+  "frame": "2015",
+  "frame_effects": [
+    "fandfc",
+    "enchantment"
+  ],
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 6105,
+  "penny_rank": 11340,
+  "preview": {
+    "source": "Wizards of the Coast",
+    "source_uri": "https://www.twitch.tv/videos/1285955562",
+    "previewed_at": "2022-02-03"
+  },
+  "prices": {
+    "usd": "1.13",
+    "usd_foil": "1.75",
+    "usd_etched": null,
+    "eur": "1.42",
+    "eur_foil": "1.87",
+    "tix": "0.02"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=548502&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DJugan%2BDefends%2Bthe%2BTemple%2B%252F%252F%2BRemnant%2Bof%2Bthe%2BRising%2BStar",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DJugan%2BDefends%2Bthe%2BTemple%2B%252F%252F%2BRemnant%2Bof%2Bthe%2BRising%2BStar",
+    "edhrec": "https://edhrec.com/route/?cc=Jugan+Defends+the+Temple"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F262781%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=608262&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/97328?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

@@ -1,0 +1,40 @@
+{
+  "oracle_id": "5e7586dd-d42e-4ac6-adb8-d46b6cdef923",
+  "name": "Disorder in the Court",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Disorder in the Court",
+      "oracle_fingerprint": "cfd9bb9b7c279d846e8677fd50a6e92f",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": { "Object": [{ "Type": "Creature" }] },
+                "bounds": { "min": "X", "max": "X" }
+              }
+            ],
+            "effects": [
+              { "Exile": { "what": { "Target": 0 }, "as": "exiled" } },
+              { "CreateToken": { "token": { "Named": "clue" }, "count": "X" } },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "End" } },
+                  "effects": [
+                    {
+                      "Move": {
+                        "what": { "Bound": "exiled" },
+                        "to": { "Battlefield": { "tapped": true } }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

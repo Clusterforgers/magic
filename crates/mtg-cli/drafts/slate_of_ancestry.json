@@ -1,0 +1,29 @@
+{
+  "oracle_id": "a07483b4-c04f-42a4-b979-8b77c11fa8f5",
+  "name": "Slate of Ancestry",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Slate of Ancestry",
+      "oracle_fingerprint": "ff50a3cf8f81393d6970dd79d6c247fa",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [
+              { "Mana": "{4}" },
+              "Tap",
+              { "Discard": { "count": { "Count": [{ "In": "Hand" }, { "OwnedBy": "You" }] } } }
+            ],
+            "effects": [
+              {
+                "Draw": {
+                  "count": { "Count": [{ "Type": "Creature" }, { "ControlledBy": "You" }] }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

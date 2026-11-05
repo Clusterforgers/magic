@@ -1,0 +1,42 @@
+{
+  "oracle_id": "9c5bc3a7-42fe-4f8f-b799-ece7dd98ea4d",
+  "name": "Thunderheads",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Thunderheads",
+      "oracle_fingerprint": "5149ff41d35be86d2418e70453a90046",
+      "abilities": [
+        { "Keyword": { "Replicate": "{2}{U}" } },
+        {
+          "Spell": {
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Weird",
+                      "colors": ["Blue"],
+                      "types": ["Creature"],
+                      "subtypes": ["Weird"],
+                      "power": 3,
+                      "toughness": 3,
+                      "abilities": [{ "Keyword": "Defender" }, { "Keyword": "Flying" }]
+                    }
+                  },
+                  "as": "token"
+                }
+              },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "End" } },
+                  "effects": [{ "Exile": { "what": { "Bound": "token" } } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

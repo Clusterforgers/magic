@@ -1,42 +1,4 @@
 {
   "source": "forge",
-  "oracle_matches": true,
-  "lines": [
-    {
-      "face": 0,
-      "tag": "A",
-      "text": "Counter target noncreature spell. If that spell is countered this way, exile it instead of putting it into its owner's graveyard.",
-      "abilities": [],
-      "gap": "key:Counter.Destination"
-    },
-    {
-      "face": 0,
-      "tag": "S",
-      "text": "If it's not your turn, you may exile a blue card from your hand rather than pay this spell's mana cost.",
-      "abilities": [
-        0
-      ],
-      "gap": null
-    }
-  ],
-  "proof": {
-    "marks": [
-      {
-        "face": 0,
-        "span": {
-          "start": 0,
-          "end": 103
-        },
-        "mark": "Auto"
-      },
-      {
-        "face": 0,
-        "span": {
-          "start": 104,
-          "end": 233
-        },
-        "mark": "ByHand"
-      }
-    ]
-  }
+  "oracle_matches": true
 }

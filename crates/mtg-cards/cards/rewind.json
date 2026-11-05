@@ -1,0 +1,29 @@
+{
+  "oracle_id": "bb27bfdf-fe8d-45bd-ad62-8118dce06eda",
+  "name": "Rewind",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Rewind",
+      "oracle_fingerprint": "deee9aad2b218b18da85b8bea6075374",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": ["Spell"] } }],
+            "effects": [
+              { "Counter": { "what": { "Target": 0 } } },
+              {
+                "Choose": {
+                  "from": { "Each": [{ "Type": "Land" }] },
+                  "count": { "min": 0, "max": 4 },
+                  "as": "untap"
+                }
+              },
+              { "Untap": { "what": { "Bound": "untap" } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

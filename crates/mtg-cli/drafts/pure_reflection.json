@@ -1,0 +1,63 @@
+{
+  "oracle_id": "fee53820-a17c-4f34-9971-581bf8e12fd6",
+  "name": "Pure Reflection",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Pure Reflection",
+      "oracle_fingerprint": "a51263884f3d9ad55761521c17adf9c0",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "what": [{ "Type": "Creature" }] } },
+            "effects": [
+              { "Destroy": { "what": { "Each": [{ "Subtype": "Reflection" }] } } },
+              {
+                "Let": {
+                  "as": "power",
+                  "amount": { "Stat": { "of": "Triggering", "stat": "ManaValue" } }
+                }
+              },
+              {
+                "Let": {
+                  "as": "toughness2",
+                  "amount": { "Stat": { "of": "Triggering", "stat": "ManaValue" } }
+                }
+              },
+              {
+                "CreateToken": {
+                  "who": "Triggering",
+                  "token": {
+                    "Custom": {
+                      "name": "Reflection",
+                      "colors": ["White"],
+                      "types": ["Creature"],
+                      "subtypes": ["Reflection"],
+                      "power": 0,
+                      "toughness": 0
+                    }
+                  },
+                  "as": "token3"
+                }
+              },
+              {
+                "Continuous": {
+                  "affected": { "Bound": "token3" },
+                  "mods": [
+                    {
+                      "SetPT": {
+                        "power": { "Bound": "power" },
+                        "toughness": { "Bound": "toughness2" }
+                      }
+                    }
+                  ],
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

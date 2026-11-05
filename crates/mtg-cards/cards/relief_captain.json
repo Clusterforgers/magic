@@ -1,0 +1,25 @@
+{
+  "oracle_id": "97e088a3-65eb-42f5-85b8-6aeb770a3f56",
+  "name": "Relief Captain",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Relief Captain",
+      "oracle_fingerprint": "7dcb15ca65327579635c7b9c2f0fc417",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              {
+                "what": { "Object": [{ "Type": "Creature" }, "Other"] },
+                "bounds": { "min": 0, "max": 3 }
+              }
+            ],
+            "effects": [{ "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

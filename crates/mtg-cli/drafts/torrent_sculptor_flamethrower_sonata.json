@@ -1,7 +1,7 @@
 {
   "oracle_id": "8a9fe2dd-50a7-4010-96ba-df4dec265e16",
   "name": "Torrent Sculptor // Flamethrower Sonata",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Torrent Sculptor",
@@ -47,9 +47,50 @@
       "oracle_fingerprint": "536a7532216c43adf97f63e7413f8367",
       "abilities": [
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 0, "end": 206 }
+          "Spell": {
+            "effects": [
+              { "Discard": { "as": "discarded" } },
+              { "Draw": {} },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Bound": "discarded" },
+                      "selector": [{ "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] }],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [
+                    { "Bind": { "what": { "Bound": "discarded" }, "as": "when2" } },
+                    {
+                      "Reflexive": {
+                        "targets": [
+                          {
+                            "what": {
+                              "Object": [
+                                { "AnyOf": [{ "Type": "Creature" }, { "Type": "Planeswalker" }] },
+                                { "Not": { "ControlledBy": "You" } }
+                              ]
+                            }
+                          }
+                        ],
+                        "effects": [
+                          {
+                            "DealDamage": {
+                              "to": { "Target": 0 },
+                              "amount": {
+                                "Stat": { "of": { "Bound": "when2" }, "stat": "ManaValue" }
+                              }
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
           }
         }
       ]

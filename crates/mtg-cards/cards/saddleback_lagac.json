@@ -1,0 +1,25 @@
+{
+  "oracle_id": "3d720d55-3df8-40fd-bc93-ad99c1105249",
+  "name": "Saddleback Lagac",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Saddleback Lagac",
+      "oracle_fingerprint": "9e2107ea505d8fd61418fedaafb5091c",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              {
+                "what": { "Object": [{ "Type": "Creature" }, "Other"] },
+                "bounds": { "min": 0, "max": 2 }
+              }
+            ],
+            "effects": [{ "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

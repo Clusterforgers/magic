@@ -1,0 +1,165 @@
+{
+  "object": "card",
+  "id": "286c55c2-dcc1-4e87-a83f-9981d28ab62d",
+  "oracle_id": "c22589e1-1721-43a3-897e-990af6ebcffa",
+  "multiverse_ids": [
+    655139
+  ],
+  "mtgo_id": 124307,
+  "arena_id": 90544,
+  "tcgplayer_id": 544352,
+  "cardmarket_id": 763887,
+  "name": "Bruse Tarl, Roving Rancher",
+  "lang": "en",
+  "released_at": "2024-04-19",
+  "uri": "https://api.scryfall.com/cards/286c55c2-dcc1-4e87-a83f-9981d28ab62d",
+  "scryfall_uri": "https://scryfall.com/card/otj/198/bruse-tarl-roving-rancher?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T03:03:18Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/2/8/286c55c2-dcc1-4e87-a83f-9981d28ab62d.jpg?1783911798",
+    "normal": "https://cards.scryfall.io/normal/front/2/8/286c55c2-dcc1-4e87-a83f-9981d28ab62d.jpg?1783911798",
+    "large": "https://cards.scryfall.io/large/front/2/8/286c55c2-dcc1-4e87-a83f-9981d28ab62d.jpg?1783911798",
+    "png": "https://cards.scryfall.io/png/front/2/8/286c55c2-dcc1-4e87-a83f-9981d28ab62d.png?1783911798",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/2/8/286c55c2-dcc1-4e87-a83f-9981d28ab62d.jpg?1783911798",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/2/8/286c55c2-dcc1-4e87-a83f-9981d28ab62d.jpg?1783911798",
+    "thumb": "https://cards.scryfall.io/thumb/front/2/8/286c55c2-dcc1-4e87-a83f-9981d28ab62d.webp?1783911798",
+    "grid": "https://cards.scryfall.io/grid/front/2/8/286c55c2-dcc1-4e87-a83f-9981d28ab62d.webp?1783911798",
+    "display": "https://cards.scryfall.io/display/front/2/8/286c55c2-dcc1-4e87-a83f-9981d28ab62d.webp?1783911798",
+    "art": "https://cards.scryfall.io/art/front/2/8/286c55c2-dcc1-4e87-a83f-9981d28ab62d.webp?1783911798",
+    "crop": "https://cards.scryfall.io/crop/front/2/8/286c55c2-dcc1-4e87-a83f-9981d28ab62d.webp?1783911798",
+    "jpeg": "https://cards.scryfall.io/normal/front/2/8/286c55c2-dcc1-4e87-a83f-9981d28ab62d.jpg?1783911798"
+  },
+  "mana_cost": "{2}{R}{W}",
+  "cmc": 4.0,
+  "type_line": "Legendary Creature — Human Warrior",
+  "oracle_text": "Oxen you control have double strike.\nWhenever Bruse Tarl enters or attacks, exile the top card of your library. If it's a land card, create a 2/2 white Ox creature token. Otherwise, you may cast it until the end of your next turn.",
+  "power": "4",
+  "toughness": "3",
+  "colors": [
+    "R",
+    "W"
+  ],
+  "color_identity": [
+    "R",
+    "W"
+  ],
+  "keywords": [],
+  "all_parts": [
+    {
+      "object": "related_card",
+      "id": "026257bf-f4e7-45f8-9c93-7248f201c583",
+      "component": "combo_piece",
+      "name": "Bruse Tarl, Roving Rancher",
+      "type_line": "Legendary Creature — Human Warrior",
+      "uri": "https://api.scryfall.com/cards/026257bf-f4e7-45f8-9c93-7248f201c583"
+    },
+    {
+      "object": "related_card",
+      "id": "cee3ecef-4566-4164-af39-89cb0bbbffeb",
+      "component": "token",
+      "name": "Ox",
+      "type_line": "Token Creature — Ox",
+      "uri": "https://api.scryfall.com/cards/cee3ecef-4566-4164-af39-89cb0bbbffeb"
+    }
+  ],
+  "legalities": {
+    "standard": "legal",
+    "future": "legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "mtgo",
+    "arena"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "55a85ebe-644e-4bef-8be8-5290408be3d1",
+  "set": "otj",
+  "set_name": "Outlaws of Thunder Junction",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/55a85ebe-644e-4bef-8be8-5290408be3d1",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Aotj&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/otj?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/286c55c2-dcc1-4e87-a83f-9981d28ab62d/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Ac22589e1-1721-43a3-897e-990af6ebcffa&unique=prints",
+  "collector_number": "198",
+  "digital": false,
+  "rarity": "rare",
+  "flavor_text": "\"I find a world where the herds finally listen to me, but now the *plants* have an attitude?\"",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Forrest Imel",
+  "artist_ids": [
+    "64fc383d-de34-4151-87d6-27b82e58086e"
+  ],
+  "illustration_id": "642369ff-02d8-424e-b953-0a79907344e9",
+  "border_color": "black",
+  "frame": "2015",
+  "frame_effects": [
+    "legendary"
+  ],
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 15762,
+  "penny_rank": 7649,
+  "preview": {
+    "source": "Wizards of the Coast",
+    "source_uri": "https://magic.wizards.com/en/products/outlaws-of-thunder-junction/card-image-gallery",
+    "previewed_at": "2024-03-27"
+  },
+  "prices": {
+    "usd": "0.22",
+    "usd_foil": "0.31",
+    "usd_etched": null,
+    "eur": "0.11",
+    "eur_foil": "0.18",
+    "tix": "0.02"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=655139&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DBruse%2BTarl%252C%2BRoving%2BRancher",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DBruse%2BTarl%252C%2BRoving%2BRancher",
+    "edhrec": "https://edhrec.com/route/?cc=Bruse+Tarl%2C+Roving+Rancher"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F544352%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=763887&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/124307?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

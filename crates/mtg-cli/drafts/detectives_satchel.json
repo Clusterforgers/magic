@@ -1,0 +1,25 @@
+{
+  "oracle_id": "e4ecfccd-b8b4-4b18-b989-30de79b4971e",
+  "name": "Detective's Satchel",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Detective's Satchel",
+      "oracle_fingerprint": "744a654f6eca18ee250d6b0493c01c34",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "CreateToken": { "token": { "Named": "clue" }, "count": 2 } }]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 149, "end": 279 }
+          }
+        }
+      ]
+    }
+  ]
+}

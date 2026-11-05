@@ -1,42 +1,4 @@
 {
   "source": "forge",
-  "oracle_matches": true,
-  "lines": [
-    {
-      "face": 0,
-      "tag": "T",
-      "text": "Whenever an enchanted creature attacks one of your opponents, it gets +2/+0 and gains trample until end of turn.",
-      "abilities": [
-        0
-      ],
-      "gap": null
-    },
-    {
-      "face": 0,
-      "tag": "T",
-      "text": "Whenever an Aura you control is put into your graveyard from the battlefield, exile it. Until the end of your next turn, you may cast that card.",
-      "abilities": [],
-      "gap": "valid:MayPlay-Affected-with-remembered"
-    }
-  ],
-  "proof": {
-    "marks": [
-      {
-        "face": 0,
-        "span": {
-          "start": 0,
-          "end": 112
-        },
-        "mark": "Auto"
-      },
-      {
-        "face": 0,
-        "span": {
-          "start": 113,
-          "end": 257
-        },
-        "mark": "ByHand"
-      }
-    ]
-  }
+  "oracle_matches": true
 }

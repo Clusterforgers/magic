@@ -1,0 +1,35 @@
+{
+  "oracle_id": "c7335845-ace9-402d-a5be-3bfe3fe9b089",
+  "name": "Septic Rats",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Septic Rats",
+      "oracle_fingerprint": "2078985d5c86988fcd598c231b064e3a",
+      "abilities": [
+        { "Keyword": "Infect" },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": [{ "Type": "Creature" }, "This"] } },
+            "if": {
+              "Compare": {
+                "left": { "Counters": { "on": "Defending", "counter": "poison" } },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

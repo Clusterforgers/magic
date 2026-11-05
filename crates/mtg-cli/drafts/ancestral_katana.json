@@ -1,0 +1,47 @@
+{
+  "oracle_id": "13a9b9fd-20fa-4734-9d95-3ab41ab9c7a0",
+  "name": "Ancestral Katana",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ancestral Katana",
+      "oracle_fingerprint": "cb8771c67f307046a00452efc9552990",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "AttacksAlone": {
+                "what": [
+                  { "AnyOf": [{ "Subtype": "Samurai" }, { "Subtype": "Warrior" }] },
+                  { "ControlledBy": "You" }
+                ]
+              }
+            },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": "{1}",
+                  "paid": [
+                    { "Bind": { "what": "Triggering", "as": "when" } },
+                    {
+                      "Reflexive": {
+                        "effects": [{ "Attach": { "what": "This", "to": { "Bound": "when" } } }]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "ModifyPT": { "power": 2, "toughness": 1 } }]
+          }
+        },
+        { "Keyword": { "Equip": "{3}" } }
+      ]
+    }
+  ]
+}

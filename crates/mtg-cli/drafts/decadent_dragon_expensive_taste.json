@@ -1,0 +1,44 @@
+{
+  "oracle_id": "5df44b8d-b337-49d8-8427-34253f52cb47",
+  "name": "Decadent Dragon // Expensive Taste",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Decadent Dragon",
+      "oracle_fingerprint": "bef84db705b98f4939997208d09bf642",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": "Trample" },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [{ "CreateToken": { "token": { "Named": "treasure" } } }]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Expensive Taste",
+      "oracle_fingerprint": "9f5ac847767d59cb9b68e1988002073c",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              { "LookAtTop": { "who": { "Target": 0 }, "count": 2, "as": "top" } },
+              { "ExileHidden": { "what": { "Bound": "top" }, "held": true, "as": "exiled4" } },
+              {
+                "Rule": {
+                  "rule": {
+                    "MayCast": { "from": "Exile", "only": { "Bound": "exiled4" }, "play": true }
+                  },
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

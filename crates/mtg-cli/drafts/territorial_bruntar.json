@@ -1,0 +1,47 @@
+{
+  "oracle_id": "03f04c2c-1036-497e-8b13-06c61b0b0ba6",
+  "name": "Territorial Bruntar",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Territorial Bruntar",
+      "oracle_fingerprint": "00566eb951df007382e48e29ff71627c",
+      "abilities": [
+        { "Keyword": "Reach" },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Land" }, { "ControlledBy": "You" }],
+                "to": "Battlefield"
+              }
+            },
+            "effects": [
+              {
+                "RevealUntil": {
+                  "filter": [{ "Not": { "Type": "Land" } }],
+                  "as": "found",
+                  "revealed_as": "revealed2"
+                }
+              },
+              { "Exile": { "what": { "Bound": "found" }, "as": "found_exiled" } },
+              { "Exile": { "what": { "Bound": "revealed2" } } },
+              {
+                "Rule": {
+                  "rule": {
+                    "MayCast": {
+                      "what": [{ "Not": { "Type": "Land" } }],
+                      "from": "Exile",
+                      "only": { "Bound": "found_exiled" }
+                    }
+                  },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

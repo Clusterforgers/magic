@@ -1,0 +1,37 @@
+{
+  "oracle_id": "9fbcae6e-5523-47a3-b0ff-ab7a8bb72822",
+  "name": "Unity of Purpose",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Unity of Purpose",
+      "oracle_fingerprint": "348212f9ae95fa5db49a8542c0c8af12",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": { "Object": [{ "Type": "Creature" }, "Other"] },
+                "bounds": { "min": 0, "max": 2 }
+              }
+            ],
+            "effects": [
+              { "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1" } },
+              {
+                "Untap": {
+                  "what": {
+                    "Each": [
+                      { "Type": "Creature" },
+                      { "ControlledBy": "You" },
+                      { "HasCounter": "+1/+1" }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

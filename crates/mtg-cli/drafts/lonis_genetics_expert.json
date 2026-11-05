@@ -1,0 +1,29 @@
+{
+  "oracle_id": "52d8e492-b7b7-4ad4-8f1f-5c50993e55e0",
+  "name": "Lonis, Genetics Expert",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Lonis, Genetics Expert",
+      "oracle_fingerprint": "3d206bf8e9f014d2b5595fa30498e1b5",
+      "abilities": [
+        { "Keyword": "Evolve" },
+        {
+          "Triggered": {
+            "when": { "Batch": { "CountersPut": { "what": ["This"], "counter": "+1/+1" } } },
+            "effects": [{ "CreateToken": { "token": { "Named": "clue" }, "count": "Triggering" } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Sacrificed": { "what": [{ "Subtype": "Clue" }, { "ControlledBy": "You" }] } },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, "Other", { "ControlledBy": "You" }] } }
+            ],
+            "effects": [{ "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

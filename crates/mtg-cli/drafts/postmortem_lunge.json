@@ -1,0 +1,53 @@
+{
+  "oracle_id": "aacd1aae-1bf0-43e4-99f4-c6d738af812c",
+  "name": "Postmortem Lunge",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Postmortem Lunge",
+      "oracle_fingerprint": "d0dcdd99d913d4055e8c341ee6aac48d",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Type": "Creature" },
+                    { "OwnedBy": "You" },
+                    { "Compare": { "stat": "ManaValue", "op": "Eq", "to": "X" } },
+                    { "In": "Graveyard" }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              { "Move": { "what": { "Target": 0 }, "to": { "Battlefield": {} } } },
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "AddKeyword": "Haste" }],
+                  "duration": "Forever"
+                }
+              },
+              {
+                "RepeatEach": {
+                  "over": { "Target": 0 },
+                  "as": "pumped",
+                  "effects": [
+                    {
+                      "DelayedTrigger": {
+                        "when": { "StepBegins": { "step": "End" } },
+                        "effects": [{ "Exile": { "what": { "Bound": "pumped" } } }]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

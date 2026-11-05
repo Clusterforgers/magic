@@ -1,0 +1,52 @@
+{
+  "oracle_id": "3196e1f4-7f94-4eb6-ae2b-ed11ba392552",
+  "name": "Last Rites",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Last Rites",
+      "oracle_fingerprint": "d184b8c476265d22866c4323314abc4f",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              {
+                "Discard": {
+                  "count": { "Count": [{ "In": "Hand" }, { "OwnedBy": "You" }] },
+                  "optional": true,
+                  "as": "discarded"
+                }
+              },
+              {
+                "Reveal": { "what": { "Each": [{ "OwnedBy": { "Target": 0 } }, { "In": "Hand" }] } }
+              },
+              {
+                "Discard": {
+                  "who": { "Target": 0 },
+                  "count": {
+                    "Count": [
+                      { "Is": { "Bound": "discarded" } },
+                      {
+                        "AnyOf": [
+                          { "In": "Battlefield" },
+                          { "In": "Hand" },
+                          { "In": "Library" },
+                          { "In": "Graveyard" },
+                          { "In": "Exile" },
+                          { "In": "Stack" }
+                        ]
+                      }
+                    ]
+                  },
+                  "filter": [{ "Not": { "Type": "Land" } }],
+                  "by": "You"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

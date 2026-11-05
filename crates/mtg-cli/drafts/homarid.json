@@ -1,7 +1,7 @@
 {
   "oracle_id": "5d02b0d9-cc53-4967-84bb-8b7f5c489b5c",
   "name": "Homarid",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Homarid",
@@ -48,9 +48,32 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 278, "end": 375 }
+          "Triggered": {
+            "when": {
+              "State": {
+                "condition": {
+                  "Compare": {
+                    "left": {
+                      "Count": [
+                        "This",
+                        { "CounterCount": { "kind": { "Other": "tide" }, "op": "Ge", "to": 4 } }
+                      ]
+                    },
+                    "op": "Ge",
+                    "right": 1
+                  }
+                }
+              }
+            },
+            "effects": [
+              {
+                "RemoveCounters": {
+                  "from": "This",
+                  "counter": { "Other": "tide" },
+                  "count": { "Counters": { "on": "This", "counter": { "Other": "tide" } } }
+                }
+              }
+            ]
           }
         }
       ]

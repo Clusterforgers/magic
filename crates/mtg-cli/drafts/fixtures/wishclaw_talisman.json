@@ -1,0 +1,137 @@
+{
+  "object": "card",
+  "id": "69d0f5bd-ccea-49b2-bd79-ad5e4d850cf5",
+  "oracle_id": "81c70ae7-3c18-4c9b-8505-e4db9e0e6518",
+  "multiverse_ids": [
+    680756
+  ],
+  "resource_id": "B34D35060DFE929A3F8B4705E7116D69643DBF7946652FFEF0810BBED02E4BFF",
+  "mtgo_id": 134570,
+  "arena_id": 94045,
+  "tcgplayer_id": 591020,
+  "cardmarket_id": 795929,
+  "name": "Wishclaw Talisman",
+  "lang": "en",
+  "released_at": "2024-11-15",
+  "uri": "https://api.scryfall.com/cards/69d0f5bd-ccea-49b2-bd79-ad5e4d850cf5",
+  "scryfall_uri": "https://scryfall.com/card/fdn/617/wishclaw-talisman?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T02:15:26Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/6/9/69d0f5bd-ccea-49b2-bd79-ad5e4d850cf5.jpg?1783908926",
+    "normal": "https://cards.scryfall.io/normal/front/6/9/69d0f5bd-ccea-49b2-bd79-ad5e4d850cf5.jpg?1783908926",
+    "large": "https://cards.scryfall.io/large/front/6/9/69d0f5bd-ccea-49b2-bd79-ad5e4d850cf5.jpg?1783908926",
+    "png": "https://cards.scryfall.io/png/front/6/9/69d0f5bd-ccea-49b2-bd79-ad5e4d850cf5.png?1783908926",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/6/9/69d0f5bd-ccea-49b2-bd79-ad5e4d850cf5.jpg?1783908926",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/6/9/69d0f5bd-ccea-49b2-bd79-ad5e4d850cf5.jpg?1783908926",
+    "thumb": "https://cards.scryfall.io/thumb/front/6/9/69d0f5bd-ccea-49b2-bd79-ad5e4d850cf5.webp?1783908926",
+    "grid": "https://cards.scryfall.io/grid/front/6/9/69d0f5bd-ccea-49b2-bd79-ad5e4d850cf5.webp?1783908926",
+    "display": "https://cards.scryfall.io/display/front/6/9/69d0f5bd-ccea-49b2-bd79-ad5e4d850cf5.webp?1783908926",
+    "art": "https://cards.scryfall.io/art/front/6/9/69d0f5bd-ccea-49b2-bd79-ad5e4d850cf5.webp?1783908926",
+    "crop": "https://cards.scryfall.io/crop/front/6/9/69d0f5bd-ccea-49b2-bd79-ad5e4d850cf5.webp?1783908926",
+    "jpeg": "https://cards.scryfall.io/normal/front/6/9/69d0f5bd-ccea-49b2-bd79-ad5e4d850cf5.jpg?1783908926"
+  },
+  "mana_cost": "{1}{B}",
+  "cmc": 2.0,
+  "type_line": "Artifact",
+  "oracle_text": "This artifact enters with three wish counters on it.\n{1}, {T}, Remove a wish counter from this artifact: Search your library for a card, put it into your hand, then shuffle. An opponent gains control of this artifact. Activate only during your turn.",
+  "colors": [
+    "B"
+  ],
+  "color_identity": [
+    "B"
+  ],
+  "keywords": [],
+  "legalities": {
+    "standard": "legal",
+    "future": "legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "arena",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": true,
+  "variation": false,
+  "set_id": "a7ecb771-d1b6-4dec-8cf5-8d45179f21e0",
+  "set": "fdn",
+  "set_name": "Foundations",
+  "set_type": "core",
+  "set_uri": "https://api.scryfall.com/sets/a7ecb771-d1b6-4dec-8cf5-8d45179f21e0",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Afdn&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/fdn?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/69d0f5bd-ccea-49b2-bd79-ad5e4d850cf5/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A81c70ae7-3c18-4c9b-8505-e4db9e0e6518&unique=prints",
+  "collector_number": "617",
+  "digital": false,
+  "rarity": "rare",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Daarken",
+  "artist_ids": [
+    "e607a0d4-fc12-4c01-9e3f-501f5269b9cb"
+  ],
+  "illustration_id": "1ba62d6d-bcec-4d4b-93c3-2128a476bae8",
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "promo_types": [
+    "startercollection"
+  ],
+  "edhrec_rank": 526,
+  "penny_rank": 886,
+  "prices": {
+    "usd": "2.07",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "2.09",
+    "eur_foil": null,
+    "tix": "0.02"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=680756&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DWishclaw%2BTalisman",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DWishclaw%2BTalisman",
+    "edhrec": "https://edhrec.com/route/?cc=Wishclaw+Talisman"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F591020%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=795929&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/134570?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

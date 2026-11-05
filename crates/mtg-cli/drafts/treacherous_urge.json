@@ -1,0 +1,61 @@
+{
+  "oracle_id": "f44f2d2d-7899-4cf4-baf0-64d5bef60006",
+  "name": "Treacherous Urge",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Treacherous Urge",
+      "oracle_fingerprint": "679bd3279213bc7411067ee45635a5c8",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "Type": "Creature" },
+                      { "In": "Hand" },
+                      { "OwnedBy": { "Target": 0 } }
+                    ]
+                  },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "picked"
+                }
+              },
+              {
+                "Move": {
+                  "what": { "Bound": "picked" },
+                  "to": { "Battlefield": { "under": "You" } },
+                  "as": "moved2"
+                }
+              },
+              {
+                "Continuous": {
+                  "affected": { "Bound": "moved2" },
+                  "mods": [{ "AddKeyword": "Haste" }],
+                  "duration": "Forever"
+                }
+              },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "End" } },
+                  "effects": [
+                    {
+                      "Sacrifice": {
+                        "who": { "ControllerOf": { "Bound": "moved2" } },
+                        "filter": [{ "Is": { "Bound": "moved2" } }],
+                        "count": { "Count": [{ "Is": { "Bound": "moved2" } }] }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

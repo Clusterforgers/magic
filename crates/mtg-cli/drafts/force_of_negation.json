@@ -1,7 +1,7 @@
 {
   "oracle_id": "ac2173f9-f223-440a-9231-fd98762bdc6f",
   "name": "Force of Negation",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Force of Negation",
@@ -14,9 +14,18 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 104, "end": 233 }
+          "Spell": {
+            "targets": [{ "what": { "Object": ["Spell", { "Not": { "Type": "Creature" } }] } }],
+            "effects": [
+              {
+                "Shield": {
+                  "when": { "Countered": { "what": [{ "Is": { "Target": 0 } }, "Spell"] } },
+                  "by": { "MoveTo": "Exile" },
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              { "Counter": { "what": { "Target": 0 } } }
+            ]
           }
         }
       ]

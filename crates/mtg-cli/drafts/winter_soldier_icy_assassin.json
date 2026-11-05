@@ -1,0 +1,39 @@
+{
+  "oracle_id": "6f4c94b6-f829-4646-a574-083997b78dfb",
+  "name": "Winter Soldier, Icy Assassin",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Winter Soldier, Icy Assassin",
+      "oracle_fingerprint": "e0a66a7a8fff75e83fc72e650f19594d",
+      "abilities": [
+        { "Keyword": "Vigilance" },
+        { "Keyword": "Menace" },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              {
+                "ModifyPT": {
+                  "power": {
+                    "Times": {
+                      "by": 2,
+                      "of": { "Count": [{ "Subtype": "Equipment" }, { "AttachedTo": "This" }] }
+                    }
+                  },
+                  "toughness": 0
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 80, "end": 306 }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,59 @@
+{
+  "oracle_id": "309e61f5-1fc7-4481-8d3a-9b35d335c99f",
+  "name": "Dawn of the Dead",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dawn of the Dead",
+      "oracle_fingerprint": "e6e8376e2d9b09a87b64d2bb644f08f3",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [{ "LoseLife": { "amount": 1 } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "Type": "Creature" }, { "OwnedBy": "You" }, { "In": "Graveyard" }]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "Move": {
+                        "what": { "Target": 0 },
+                        "to": { "Battlefield": {} },
+                        "as": "moved"
+                      }
+                    },
+                    {
+                      "Continuous": {
+                        "affected": { "Bound": "moved" },
+                        "mods": [{ "AddKeyword": "Haste" }],
+                        "duration": "UntilEndOfTurn"
+                      }
+                    },
+                    {
+                      "DelayedTrigger": {
+                        "when": { "StepBegins": { "step": "End" } },
+                        "effects": [{ "Exile": { "what": { "Bound": "moved" } } }]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

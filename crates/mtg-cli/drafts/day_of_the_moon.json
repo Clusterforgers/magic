@@ -1,0 +1,40 @@
+{
+  "oracle_id": "7ec3aaa4-8b6a-4046-b599-654f9844ca6c",
+  "name": "Day of the Moon",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Day of the Moon",
+      "oracle_fingerprint": "8061bb198f56635075ba2af6031dbe72",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 1 } },
+            "effects": [
+              { "ChooseValue": { "kind": { "CardName": [{ "Type": "Creature" }] }, "as": "name" } },
+              { "Goad": { "what": { "Each": [{ "Type": "Creature" }, { "ChosenAs": "name" }] } } }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 2 } },
+            "effects": [
+              { "ChooseValue": { "kind": { "CardName": [{ "Type": "Creature" }] }, "as": "name" } },
+              { "Goad": { "what": { "Each": [{ "Type": "Creature" }, { "ChosenAs": "name" }] } } }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 3 } },
+            "effects": [
+              { "ChooseValue": { "kind": { "CardName": [{ "Type": "Creature" }] }, "as": "name" } },
+              { "Goad": { "what": { "Each": [{ "Type": "Creature" }, { "ChosenAs": "name" }] } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

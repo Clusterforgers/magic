@@ -1,0 +1,58 @@
+{
+  "oracle_id": "8ecd3743-7c32-41ce-9ac1-c8c855a47302",
+  "name": "Nurturing Pixie",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Nurturing Pixie",
+      "oracle_fingerprint": "52cd30aa345e2174f28c017c1bb38abf",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Not": { "Subtype": "Faerie" } },
+                    { "Not": { "Type": "Land" } },
+                    { "ControlledBy": "You" }
+                  ]
+                },
+                "bounds": { "min": 0, "max": 1 }
+              }
+            ],
+            "effects": [
+              { "Move": { "what": { "Target": 0 }, "to": "Hand", "as": "moved" } },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Bound": "moved" },
+                      "selector": [
+                        {
+                          "AnyOf": [
+                            { "Type": "Artifact" },
+                            { "Type": "Battle" },
+                            { "Type": "Creature" },
+                            { "Type": "Enchantment" },
+                            { "Type": "Land" },
+                            { "Type": "Planeswalker" }
+                          ]
+                        }
+                      ],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

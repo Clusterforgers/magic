@@ -1,0 +1,76 @@
+{
+  "oracle_id": "d492eb9a-1f3b-4bf2-9a5d-0f4a4433f33f",
+  "name": "Nahiri, the Harbinger",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Nahiri, the Harbinger",
+      "oracle_fingerprint": "3c53e0cde3fe573cd7f058081ce93257",
+      "abilities": [
+        {
+          "Loyalty": {
+            "cost": { "Plus": 2 },
+            "effects": [{ "Pay": { "cost": [{ "Discard": {} }], "paid": [{ "Draw": {} }] } }]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Minus": 2 },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    {
+                      "AnyOf": [
+                        { "Type": "Enchantment" },
+                        {
+                          "Not": {
+                            "AnyOf": [{ "Not": { "Type": "Artifact" } }, { "Not": "Tapped" }]
+                          }
+                        },
+                        {
+                          "Not": {
+                            "AnyOf": [{ "Not": { "Type": "Creature" } }, { "Not": "Tapped" }]
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ],
+            "effects": [{ "Exile": { "what": { "Target": 0 } } }]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Minus": 8 },
+            "effects": [
+              {
+                "Search": {
+                  "filter": [{ "AnyOf": [{ "Type": "Artifact" }, { "Type": "Creature" }] }],
+                  "as": "found"
+                }
+              },
+              { "Move": { "what": { "Bound": "found" }, "to": { "Battlefield": {} } } },
+              { "Shuffle": {} },
+              {
+                "Continuous": {
+                  "affected": { "Bound": "found" },
+                  "mods": [{ "AddKeyword": "Haste" }],
+                  "duration": "Forever"
+                }
+              },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "End" } },
+                  "effects": [{ "Move": { "what": { "Bound": "found" }, "to": "Hand" } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

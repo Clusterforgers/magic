@@ -1,0 +1,41 @@
+{
+  "oracle_id": "59eab251-af80-4091-98de-9ed413c14cdc",
+  "name": "Student of Elements // Tobita, Master of Winds",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Student of Elements",
+      "oracle_fingerprint": "8166d136880aa840f5da969adf1fffd2",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "State": {
+                "condition": {
+                  "Compare": {
+                    "left": { "Count": ["This", { "HasKeyword": "Flying" }] },
+                    "op": "Ge",
+                    "right": 1
+                  }
+                }
+              }
+            },
+            "effects": [{ "Flip": { "what": "This" } }]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Tobita, Master of Winds",
+      "oracle_fingerprint": "be69b7beb011e4fc07ca5edec543f337",
+      "abilities": [
+        {
+          "Static": {
+            "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+            "mods": [{ "AddKeyword": "Flying" }]
+          }
+        }
+      ]
+    }
+  ]
+}

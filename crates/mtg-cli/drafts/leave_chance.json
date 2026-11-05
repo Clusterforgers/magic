@@ -1,7 +1,7 @@
 {
   "oracle_id": "dff5d16f-3a41-4873-8188-076e77f18c75",
   "name": "Leave // Chance",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Leave",
@@ -26,9 +26,35 @@
       "abilities": [
         { "Keyword": "Aftermath" },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 69, "end": 124 }
+          "Spell": {
+            "effects": [
+              {
+                "Discard": {
+                  "count": { "Count": [{ "In": "Hand" }, { "OwnedBy": "You" }] },
+                  "optional": true,
+                  "as": "discarded"
+                }
+              },
+              {
+                "Draw": {
+                  "count": {
+                    "Count": [
+                      { "Is": { "Bound": "discarded" } },
+                      {
+                        "AnyOf": [
+                          { "In": "Battlefield" },
+                          { "In": "Hand" },
+                          { "In": "Library" },
+                          { "In": "Graveyard" },
+                          { "In": "Exile" },
+                          { "In": "Stack" }
+                        ]
+                      }
+                    ]
+                  }
+                }
+              }
+            ]
           }
         }
       ]

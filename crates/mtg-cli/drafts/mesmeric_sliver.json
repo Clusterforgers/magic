@@ -1,0 +1,57 @@
+{
+  "oracle_id": "21c82044-6e16-4e41-a6d0-e4d7cb42f37c",
+  "name": "Mesmeric Sliver",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mesmeric Sliver",
+      "oracle_fingerprint": "7a1d98020e4f63a159ce9b6957d18376",
+      "abilities": [
+        {
+          "Static": {
+            "affected": { "Each": [{ "Subtype": "Sliver" }] },
+            "mods": [
+              {
+                "GrantAbility": {
+                  "Triggered": {
+                    "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+                    "effects": [
+                      {
+                        "May": {
+                          "effects": [
+                            { "Choose": { "from": "Opponents", "as": "player" } },
+                            { "LookAtTop": { "who": { "Bound": "player" }, "as": "top2" } },
+                            {
+                              "Choose": {
+                                "from": { "Bound": "top2" },
+                                "count": { "min": 0, "max": null },
+                                "as": "kept3",
+                                "rest_as": "rest4"
+                              }
+                            },
+                            {
+                              "Move": {
+                                "what": { "Bound": "kept3" },
+                                "to": { "Library": { "place": "Bottom" } }
+                              }
+                            },
+                            {
+                              "Move": {
+                                "what": { "Bound": "rest4" },
+                                "to": { "Library": { "place": "Top", "order": "Chosen" } }
+                              }
+                            }
+                          ]
+                        }
+                      }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

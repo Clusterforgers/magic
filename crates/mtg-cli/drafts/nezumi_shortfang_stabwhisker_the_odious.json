@@ -1,16 +1,31 @@
 {
   "oracle_id": "45c8e860-5ce5-4a1c-aebe-97ddffcb2f74",
   "name": "Nezumi Shortfang // Stabwhisker the Odious",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Nezumi Shortfang",
       "oracle_fingerprint": "8d29b2ffdbff457f2461aeaaccdaa83a",
       "abilities": [
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 0, "end": 107 }
+          "Activated": {
+            "cost": [{ "Mana": "{1}{B}" }, "Tap"],
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              { "Discard": { "who": { "Target": 0 } } },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "Count": [{ "In": "Hand" }, { "OwnedBy": { "Target": 0 } }] },
+                      "op": "Eq",
+                      "right": 0
+                    }
+                  },
+                  "then": [{ "Flip": { "what": "This" } }]
+                }
+              }
+            ]
           }
         }
       ]

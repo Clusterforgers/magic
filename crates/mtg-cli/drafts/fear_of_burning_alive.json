@@ -1,0 +1,35 @@
+{
+  "oracle_id": "0ae74149-60fc-407a-8782-8865458606b5",
+  "name": "Fear of Burning Alive",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Fear of Burning Alive",
+      "oracle_fingerprint": "0e1a1eb42f815fee464a976c172af701",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "DealDamage": { "to": "Opponents", "amount": 4 } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": [{ "ControlledBy": "You" }], "to": "Opponents" } },
+            "if": {
+              "Compare": {
+                "left": { "CardTypes": [{ "In": "Graveyard" }, { "OwnedBy": "You" }] },
+                "op": "Ge",
+                "right": 4
+              }
+            },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "Triggering" }] } }
+            ],
+            "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": "Triggering" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

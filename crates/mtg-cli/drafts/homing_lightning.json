@@ -1,0 +1,32 @@
+{
+  "oracle_id": "6e7f8e25-49a9-49a0-9bf4-129439344550",
+  "name": "Homing Lightning",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Homing Lightning",
+      "oracle_fingerprint": "8b2d35466d5366509d0d17a192839d53",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              { "DealDamage": { "to": { "Target": 0 }, "amount": 4 } },
+              {
+                "DealDamage": {
+                  "to": {
+                    "Each": [
+                      { "SharesName": { "Target": 0 } },
+                      { "Not": { "Is": { "Target": 0 } } }
+                    ]
+                  },
+                  "amount": 4
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

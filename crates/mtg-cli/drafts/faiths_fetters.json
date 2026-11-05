@@ -1,0 +1,28 @@
+{
+  "oracle_id": "2b2d76f5-4c9b-49dc-b202-68095e2d9b29",
+  "name": "Faith's Fetters",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Faith's Fetters",
+      "oracle_fingerprint": "d8dec2ed0eaf853ba096a24e8d3316c4",
+      "abilities": [
+        { "Keyword": { "Enchant": [] } },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "GainLife": { "amount": 4 } }]
+          }
+        },
+        { "Static": { "affected": "Attached", "mods": ["CantAttack", "CantBlock"] } },
+        {
+          "Rule": {
+            "rule": {
+              "Cant": { "who": { "Each": [{ "Is": "Attached" }] }, "action": { "Activate": [] } }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

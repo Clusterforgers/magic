@@ -1,0 +1,79 @@
+{
+  "oracle_id": "2728b2d4-a207-4a2a-aa66-4d9c8865b26d",
+  "name": "Sune's Intervention",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sune's Intervention",
+      "oracle_fingerprint": "3015489e2053655deb942b437f6b1997",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Modal": {
+                  "choose": { "min": 1, "max": 5 },
+                  "modes": [
+                    {
+                      "effects": [
+                        {
+                          "CreateToken": {
+                            "token": {
+                              "Custom": {
+                                "name": "Knight",
+                                "colors": ["White"],
+                                "types": ["Creature"],
+                                "subtypes": ["Knight"],
+                                "power": 2,
+                                "toughness": 2
+                              }
+                            },
+                            "count": 2
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "effects": [
+                        {
+                          "Seek": {
+                            "filter": [
+                              {
+                                "AnyOf": [
+                                  { "Type": "Artifact" },
+                                  { "Type": "Battle" },
+                                  { "Type": "Creature" },
+                                  { "Type": "Enchantment" },
+                                  { "Type": "Land" },
+                                  { "Type": "Planeswalker" }
+                                ]
+                              },
+                              { "Not": { "Type": "Land" } },
+                              { "Compare": { "stat": "ManaValue", "op": "Le", "to": 3 } }
+                            ]
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "targets": [{ "what": { "Object": [{ "Type": "Artifact" }] } }],
+                      "effects": [{ "Destroy": { "what": { "Target": 0 } } }]
+                    },
+                    {
+                      "targets": [{ "what": { "Object": [{ "Type": "Enchantment" }] } }],
+                      "effects": [{ "Destroy": { "what": { "Target": 0 } } }]
+                    },
+                    {
+                      "targets": [{ "what": "Player" }],
+                      "effects": [{ "GainLife": { "who": { "Target": 0 }, "amount": 3 } }]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

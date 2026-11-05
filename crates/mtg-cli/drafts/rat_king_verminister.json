@@ -1,7 +1,7 @@
 {
   "oracle_id": "a5656dab-5ce6-48fd-9eae-2c06969bb8df",
   "name": "Rat King, Verminister",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Rat King, Verminister",
@@ -37,9 +37,41 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 188, "end": 341 }
+          "Activated": {
+            "cost": ["Tap", { "Sacrifice": { "filter": [{ "Subtype": "Rat" }], "count": 3 } }],
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "Type": "Creature" }, { "OwnedBy": "You" }, { "In": "Graveyard" }]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "Move": {
+                  "what": {
+                    "Each": [
+                      {
+                        "AnyOf": [
+                          { "Is": { "Target": 0 } },
+                          {
+                            "Not": {
+                              "AnyOf": [
+                                { "Not": { "Not": { "Is": { "Target": 0 } } } },
+                                { "Not": { "SharesName": { "Target": 0 } } }
+                              ]
+                            }
+                          }
+                        ]
+                      },
+                      { "In": "Graveyard" },
+                      { "OwnedBy": "You" }
+                    ]
+                  },
+                  "to": { "Battlefield": { "tapped": true } }
+                }
+              }
+            ]
           }
         }
       ]

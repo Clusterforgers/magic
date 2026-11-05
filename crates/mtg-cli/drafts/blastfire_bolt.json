@@ -1,0 +1,28 @@
+{
+  "oracle_id": "dcddeac9-8de7-4347-a956-522f4f2fc63b",
+  "name": "Blastfire Bolt",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Blastfire Bolt",
+      "oracle_fingerprint": "7e72007c9173475fe74f311a3d63908c",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              { "DealDamage": { "to": { "Target": 0 }, "amount": 5 } },
+              {
+                "Destroy": {
+                  "what": {
+                    "Each": [{ "AttachedTo": { "Target": 0 } }, { "Subtype": "Equipment" }]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

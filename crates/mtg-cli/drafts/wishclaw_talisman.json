@@ -1,0 +1,42 @@
+{
+  "oracle_id": "81c70ae7-3c18-4c9b-8505-e4db9e0e6518",
+  "name": "Wishclaw Talisman",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Wishclaw Talisman",
+      "oracle_fingerprint": "2637e72c2b88d214fedcbee9a30465b1",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "WithCounters": { "counter": { "Other": "wish" }, "count": 3 } }
+          }
+        },
+        {
+          "Activated": {
+            "cost": [
+              { "Mana": "{1}" },
+              "Tap",
+              { "RemoveCounters": { "counter": { "Other": "wish" } } }
+            ],
+            "condition": "YourTurn",
+            "effects": [
+              { "Search": { "filter": [], "as": "found" } },
+              { "Move": { "what": { "Bound": "found" }, "to": "Hand" } },
+              { "Shuffle": {} },
+              { "Choose": { "from": "Opponents", "as": "player2" } },
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "SetController": { "Bound": "player2" } }],
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

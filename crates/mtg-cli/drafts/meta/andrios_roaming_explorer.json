@@ -1,0 +1,59 @@
+{
+  "source": "forge",
+  "oracle_matches": true,
+  "lines": [
+    {
+      "face": 0,
+      "tag": "K",
+      "text": "Reach",
+      "abilities": [
+        0
+      ],
+      "gap": null
+    },
+    {
+      "face": 0,
+      "tag": "A",
+      "text": "Add {W}{U}{B}{R}{G}. Creature spells you spend this mana to cast have their base power and toughness become 4/3.",
+      "abilities": [],
+      "gap": "key:Mana.TriggersWhenSpent"
+    },
+    {
+      "face": 0,
+      "tag": "S",
+      "text": "As long as NICKNAME is attacking, tapped creatures you control with base power and toughness 4/3 have base power and toughness 16/9.",
+      "abilities": [
+        1
+      ],
+      "gap": null
+    }
+  ],
+  "proof": {
+    "marks": [
+      {
+        "face": 0,
+        "span": {
+          "start": 0,
+          "end": 5
+        },
+        "mark": "Auto"
+      },
+      {
+        "face": 0,
+        "span": {
+          "start": 6,
+          "end": 137
+        },
+        "mark": "Auto"
+      },
+      {
+        "face": 0,
+        "span": {
+          "start": 138,
+          "end": 255
+        },
+        "mark": "ByHand"
+      }
+    ]
+  }
+}

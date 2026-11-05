@@ -1,0 +1,37 @@
+{
+  "oracle_id": "2b46394e-d337-4b1a-88e6-7fdac2ee4ac4",
+  "name": "Underwater Tunnel // Slimy Aquarium",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Underwater Tunnel",
+      "oracle_fingerprint": "74d97ccd83ee50c143c1778db1cd0cb6",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "DoorUnlocked": { "who": "You", "door": 0 } },
+            "effects": [{ "Surveil": { "count": 2 } }]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Slimy Aquarium",
+      "oracle_fingerprint": "7373755a9f1b858a62b4bfc435fd9686",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "DoorUnlocked": { "who": "You", "door": 0 } },
+            "effects": [
+              { "LookAtTop": { "count": 2, "as": "looked" } },
+              { "Choose": { "from": { "Bound": "looked" }, "as": "kept2", "rest_as": "rest3" } },
+              { "Move": { "what": { "Bound": "rest3" }, "to": "Graveyard" } },
+              { "Manifest": { "as": "manifested4" } },
+              { "PutCounters": { "on": { "Bound": "manifested4" }, "counter": "+1/+1" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

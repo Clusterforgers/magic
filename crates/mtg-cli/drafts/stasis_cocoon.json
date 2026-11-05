@@ -12,7 +12,10 @@
         {
           "Rule": {
             "rule": {
-              "Cant": { "who": { "Each": [{ "Is": "Attached" }] }, "action": { "Activate": [] } }
+              "Cant": {
+                "who": "EachPlayer",
+                "action": { "ActivateKind": { "kind": "Every", "sources": [{ "Is": "Attached" }] } }
+              }
             }
           }
         }

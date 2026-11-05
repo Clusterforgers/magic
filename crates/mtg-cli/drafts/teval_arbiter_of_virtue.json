@@ -1,0 +1,31 @@
+{
+  "oracle_id": "f6cf359a-91cb-4b3c-8837-be53e4ed9c93",
+  "name": "Teval, Arbiter of Virtue",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Teval, Arbiter of Virtue",
+      "oracle_fingerprint": "4f9f49b74da352547b51fc471b828bec",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": "Lifelink" },
+        {
+          "Static": {
+            "affected": {
+              "Each": [{ "ControlledBy": "You" }, { "WasCast": {} }, { "In": "Stack" }]
+            },
+            "mods": [{ "AddKeyword": "Delve" }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "by": "You" } },
+            "effects": [
+              { "LoseLife": { "amount": { "Stat": { "of": "Triggering", "stat": "ManaValue" } } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

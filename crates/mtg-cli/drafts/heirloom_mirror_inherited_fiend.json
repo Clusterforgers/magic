@@ -1,0 +1,67 @@
+{
+  "oracle_id": "b33390dd-f2f8-4059-83a9-45c0edccd5e4",
+  "name": "Heirloom Mirror // Inherited Fiend",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Heirloom Mirror",
+      "oracle_fingerprint": "c4072a50cc8c1d79e01e5024820ddb10",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{1}" }, "Tap", { "PayLife": 1 }, { "Discard": {} }],
+            "timing": "Sorcery",
+            "effects": [
+              { "Draw": {} },
+              { "Mill": {} },
+              { "PutCounters": { "on": "This", "counter": { "Other": "ritual" } } },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": {
+                        "Count": [
+                          "This",
+                          { "CounterCount": { "kind": { "Other": "ritual" }, "op": "Ge", "to": 3 } }
+                        ]
+                      },
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [
+                    {
+                      "RemoveCounters": {
+                        "from": "This",
+                        "counter": { "Other": "ritual" },
+                        "count": { "Counters": { "on": "This", "counter": { "Other": "ritual" } } }
+                      }
+                    },
+                    { "Transform": { "what": "This" } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Inherited Fiend",
+      "oracle_fingerprint": "35d30405467b4e9c13c9ba3206dcfeb5",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Activated": {
+            "cost": "{2}{B}",
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }, { "In": "Graveyard" }] } }],
+            "effects": [
+              { "Exile": { "what": { "Target": 0 } } },
+              { "PutCounters": { "on": "This", "counter": "+1/+1" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

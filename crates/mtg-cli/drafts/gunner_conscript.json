@@ -1,0 +1,61 @@
+{
+  "oracle_id": "f3d3ed94-f32c-4a67-8e2a-765e454a80df",
+  "name": "Gunner Conscript",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Gunner Conscript",
+      "oracle_fingerprint": "cf58049a5927bcdab1a731fa495b43be",
+      "abilities": [
+        { "Keyword": "Trample" },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              {
+                "ModifyPT": {
+                  "power": {
+                    "Count": [
+                      { "AnyOf": [{ "Subtype": "Equipment" }, { "Subtype": "Aura" }] },
+                      { "AttachedTo": "This" }
+                    ]
+                  },
+                  "toughness": {
+                    "Count": [
+                      { "AnyOf": [{ "Subtype": "Equipment" }, { "Subtype": "Aura" }] },
+                      { "AttachedTo": "This" }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": ["This", { "HasAttached": [{ "Subtype": "Aura" }] }],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "effects": [{ "CreateToken": { "token": { "Named": "junk" } } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": ["This", { "HasAttached": [{ "Subtype": "Equipment" }] }],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "effects": [{ "CreateToken": { "token": { "Named": "junk" } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,29 @@
+{
+  "oracle_id": "55fe5ec3-1c81-4e9d-9e4c-f68ce6d7c2de",
+  "name": "Pore Over the Pages",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Pore Over the Pages",
+      "oracle_fingerprint": "097d185652c753cf39b1fe3ab4c7f7e6",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "Draw": { "count": 3 } },
+              {
+                "Choose": {
+                  "from": { "Each": [{ "Type": "Land" }] },
+                  "count": { "min": 0, "max": 2 },
+                  "as": "untap"
+                }
+              },
+              { "Untap": { "what": { "Bound": "untap" } } },
+              { "Discard": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

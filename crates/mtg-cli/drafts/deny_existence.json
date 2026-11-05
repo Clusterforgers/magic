@@ -1,0 +1,28 @@
+{
+  "oracle_id": "b665a64b-4772-42dd-9fd2-fd8598e689ba",
+  "name": "Deny Existence",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Deny Existence",
+      "oracle_fingerprint": "55474e93445a7c02714ff2eae358001b",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": ["Spell", { "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Shield": {
+                  "when": { "Countered": { "what": [{ "Is": { "Target": 0 } }, "Spell"] } },
+                  "by": { "MoveTo": "Exile" },
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              { "Counter": { "what": { "Target": 0 } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

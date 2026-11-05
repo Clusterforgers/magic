@@ -1,0 +1,34 @@
+{
+  "oracle_id": "0f719e56-5203-4138-bbe9-6a37b8ac2512",
+  "name": "Joint Assault",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Joint Assault",
+      "oracle_fingerprint": "5ac49ff6fa8f47835cc8471c7d0166d9",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "ModifyPT": { "power": 2, "toughness": 2 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Is": { "Target": 0 } }, { "PairedWith": "This" }] },
+                  "mods": [{ "ModifyPT": { "power": 2, "toughness": 2 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

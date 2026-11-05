@@ -1,0 +1,46 @@
+{
+  "oracle_id": "dd42b9eb-c341-4712-88ee-fce38aace663",
+  "name": "Chimeric Coils",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Chimeric Coils",
+      "oracle_fingerprint": "68ad8d3b34b85c7626c796e7c0ea85c4",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{X}{1}",
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [
+                    { "SetPT": { "power": "X", "toughness": "X" } },
+                    { "SetCreatureTypes": ["Construct"] },
+                    { "AddType": "Creature" },
+                    { "AddType": "Artifact" }
+                  ],
+                  "duration": "Forever"
+                }
+              },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "End" } },
+                  "effects": [
+                    {
+                      "Sacrifice": {
+                        "who": { "ControllerOf": "This" },
+                        "filter": [{ "Is": "This" }],
+                        "count": { "Count": [{ "Is": "This" }] }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

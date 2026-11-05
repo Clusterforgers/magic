@@ -1,0 +1,91 @@
+{
+  "oracle_id": "f9ef90b9-a2b4-4a5b-92fb-2268ea7d709f",
+  "name": "Ayara, Widow of the Realm // Ayara, Furnace Queen",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ayara, Widow of the Realm",
+      "oracle_fingerprint": "ab380a7baab2d94dfa869f61d7683567",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [
+              "Tap",
+              {
+                "Sacrifice": {
+                  "filter": [{ "AnyOf": [{ "Type": "Creature" }, { "Type": "Artifact" }] }, "Other"]
+                }
+              }
+            ],
+            "targets": [
+              { "what": { "Either": ["Opponent", { "Object": [{ "Type": "Battle" }] }] } }
+            ],
+            "effects": [
+              {
+                "DealDamage": {
+                  "to": { "Target": 0 },
+                  "amount": { "Stat": { "of": "Paid", "stat": "ManaValue" } }
+                }
+              },
+              { "GainLife": { "amount": { "Stat": { "of": "Paid", "stat": "ManaValue" } } } }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{5}{R/P}",
+            "timing": "Sorcery",
+            "effects": [{ "Transform": { "what": "This" } }]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Ayara, Furnace Queen",
+      "oracle_fingerprint": "b658683d60ba19f02cbd4e08799a3fa5",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "BeginCombat", "whose": "You" } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "AnyOf": [{ "Type": "Artifact" }, { "Type": "Creature" }] },
+                    { "OwnedBy": "You" },
+                    { "In": "Graveyard" }
+                  ]
+                },
+                "bounds": { "min": 0, "max": 1 }
+              }
+            ],
+            "effects": [
+              { "Move": { "what": { "Target": 0 }, "to": { "Battlefield": {} } } },
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "AddKeyword": "Haste" }],
+                  "duration": "Forever"
+                }
+              },
+              {
+                "RepeatEach": {
+                  "over": { "Target": 0 },
+                  "as": "pumped",
+                  "effects": [
+                    {
+                      "DelayedTrigger": {
+                        "when": { "StepBegins": { "step": "End" } },
+                        "effects": [{ "Exile": { "what": { "Bound": "pumped" } } }]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

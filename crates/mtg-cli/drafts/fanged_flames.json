@@ -1,0 +1,41 @@
+{
+  "oracle_id": "46515251-2172-4b0a-81ac-4c0120b73360",
+  "name": "Fanged Flames",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Fanged Flames",
+      "oracle_fingerprint": "a4a0a34fc1245f9eaf1371e58209b039",
+      "abilities": [
+        { "Keyword": "Devoid" },
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "AnyOf": [{ "Type": "Creature" }, { "Type": "Planeswalker" }] }]
+                }
+              }
+            ],
+            "effects": [
+              { "DealDamage": { "to": { "Target": 0 }, "amount": 4 } },
+              {
+                "Shield": {
+                  "when": {
+                    "ZoneChange": {
+                      "what": [{ "Is": { "Target": 0 } }, { "Type": "Creature" }],
+                      "from": "Battlefield",
+                      "to": "Graveyard"
+                    }
+                  },
+                  "by": { "MoveTo": "Exile" },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

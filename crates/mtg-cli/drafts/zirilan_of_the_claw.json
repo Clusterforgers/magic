@@ -1,0 +1,36 @@
+{
+  "oracle_id": "3aeb28ac-8ed2-4a90-a631-d84361ac6acc",
+  "name": "Zirilan of the Claw",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Zirilan of the Claw",
+      "oracle_fingerprint": "aee65505134851792ae420bc81b9e192",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{1}{R}{R}" }, "Tap"],
+            "effects": [
+              { "Search": { "filter": [{ "Subtype": "Dragon" }], "as": "found" } },
+              { "Move": { "what": { "Bound": "found" }, "to": { "Battlefield": {} } } },
+              { "Shuffle": {} },
+              {
+                "Continuous": {
+                  "affected": { "Bound": "found" },
+                  "mods": [{ "AddKeyword": "Haste" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "End" } },
+                  "effects": [{ "Exile": { "what": { "Bound": "found" } } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

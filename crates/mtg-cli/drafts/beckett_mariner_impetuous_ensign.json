@@ -1,0 +1,45 @@
+{
+  "oracle_id": "1033a0cb-1a00-46c4-83d5-68a6eac85feb",
+  "name": "Beckett Mariner, Impetuous Ensign",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Beckett Mariner, Impetuous Ensign",
+      "oracle_fingerprint": "a4111157a376dc5ecfc3d883c54c2558",
+      "abilities": [
+        { "Keyword": "FirstStrike" },
+        {
+          "Triggered": {
+            "when": { "Tapped": { "what": ["This"] } },
+            "effects": [
+              { "PutCounters": { "on": "This", "counter": { "Other": "promotion" } } },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "Counters": { "on": "This", "counter": { "Other": "promotion" } } },
+                      "op": "Ge",
+                      "right": 3
+                    }
+                  },
+                  "then": [
+                    {
+                      "RemoveCounters": {
+                        "from": "This",
+                        "counter": { "Other": "promotion" },
+                        "count": {
+                          "Counters": { "on": "This", "counter": { "Other": "promotion" } }
+                        }
+                      }
+                    },
+                    { "DealDamage": { "to": "Opponents", "amount": 2 } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

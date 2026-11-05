@@ -1,0 +1,135 @@
+{
+  "object": "card",
+  "id": "cc7c73fd-e5f8-40e6-97ed-bfff0d6cf8d8",
+  "oracle_id": "d160887f-f78e-4a66-9766-0b7dd852a784",
+  "multiverse_ids": [
+    445996
+  ],
+  "mtgo_id": 68784,
+  "tcgplayer_id": 167804,
+  "cardmarket_id": 358612,
+  "name": "Jubilant Mascot",
+  "lang": "en",
+  "released_at": "2018-06-08",
+  "uri": "https://api.scryfall.com/cards/cc7c73fd-e5f8-40e6-97ed-bfff0d6cf8d8",
+  "scryfall_uri": "https://scryfall.com/card/bbd/28/jubilant-mascot?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T09:27:51Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/c/c/cc7c73fd-e5f8-40e6-97ed-bfff0d6cf8d8.jpg?1783934871",
+    "normal": "https://cards.scryfall.io/normal/front/c/c/cc7c73fd-e5f8-40e6-97ed-bfff0d6cf8d8.jpg?1783934871",
+    "large": "https://cards.scryfall.io/large/front/c/c/cc7c73fd-e5f8-40e6-97ed-bfff0d6cf8d8.jpg?1783934871",
+    "png": "https://cards.scryfall.io/png/front/c/c/cc7c73fd-e5f8-40e6-97ed-bfff0d6cf8d8.png?1783934871",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/c/c/cc7c73fd-e5f8-40e6-97ed-bfff0d6cf8d8.jpg?1783934871",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/c/c/cc7c73fd-e5f8-40e6-97ed-bfff0d6cf8d8.jpg?1783934871",
+    "thumb": "https://cards.scryfall.io/thumb/front/c/c/cc7c73fd-e5f8-40e6-97ed-bfff0d6cf8d8.webp?1783934871",
+    "grid": "https://cards.scryfall.io/grid/front/c/c/cc7c73fd-e5f8-40e6-97ed-bfff0d6cf8d8.webp?1783934871",
+    "display": "https://cards.scryfall.io/display/front/c/c/cc7c73fd-e5f8-40e6-97ed-bfff0d6cf8d8.webp?1783934871",
+    "art": "https://cards.scryfall.io/art/front/c/c/cc7c73fd-e5f8-40e6-97ed-bfff0d6cf8d8.webp?1783934871",
+    "crop": "https://cards.scryfall.io/crop/front/c/c/cc7c73fd-e5f8-40e6-97ed-bfff0d6cf8d8.webp?1783934871",
+    "jpeg": "https://cards.scryfall.io/normal/front/c/c/cc7c73fd-e5f8-40e6-97ed-bfff0d6cf8d8.jpg?1783934871"
+  },
+  "mana_cost": "{2}{W}",
+  "cmc": 3.0,
+  "type_line": "Creature — Homunculus",
+  "oracle_text": "At the beginning of combat on your turn, you may pay {3}{W}. If you do, support 2. (Put a +1/+1 counter on each of up to two other target creatures.)",
+  "power": "1",
+  "toughness": "1",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": [
+    "Support"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "95f97fbc-58ef-4645-982e-43e2db6f1124",
+  "set": "bbd",
+  "set_name": "Battlebond",
+  "set_type": "draft_innovation",
+  "set_uri": "https://api.scryfall.com/sets/95f97fbc-58ef-4645-982e-43e2db6f1124",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Abbd&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/bbd?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/cc7c73fd-e5f8-40e6-97ed-bfff0d6cf8d8/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Ad160887f-f78e-4a66-9766-0b7dd852a784&unique=prints",
+  "collector_number": "28",
+  "digital": false,
+  "rarity": "uncommon",
+  "flavor_text": "The competition is but one aspect of the spectacle.",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Filip Burburan",
+  "artist_ids": [
+    "66082c3b-a623-4d34-be51-2475214b85d3"
+  ],
+  "illustration_id": "4d1ed52f-3f5b-44bf-b05e-f00d3916b4cf",
+  "border_color": "black",
+  "frame": "2015",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 28508,
+  "prices": {
+    "usd": "0.21",
+    "usd_foil": "0.39",
+    "usd_etched": null,
+    "eur": "0.12",
+    "eur_foil": "0.15",
+    "tix": "0.06"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=445996&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DJubilant%2BMascot",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DJubilant%2BMascot",
+    "edhrec": "https://edhrec.com/route/?cc=Jubilant+Mascot"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F167804%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=358612&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/68784?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

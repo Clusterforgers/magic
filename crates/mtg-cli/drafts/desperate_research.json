@@ -1,0 +1,40 @@
+{
+  "oracle_id": "308b49ad-ebab-41c4-9e09-44202549bafc",
+  "name": "Desperate Research",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Desperate Research",
+      "oracle_fingerprint": "26c9022c3cbf667e23669fc74e81f657",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "ChooseValue": {
+                  "kind": { "CardName": [{ "Not": { "Supertype": "Basic" } }] },
+                  "as": "name"
+                }
+              },
+              { "LookAtTop": { "count": 7, "as": "top2" } },
+              { "Reveal": { "what": { "Bound": "top2" } } },
+              {
+                "Move": {
+                  "what": {
+                    "Each": [
+                      { "In": "Library" },
+                      { "Is": { "Bound": "top2" } },
+                      { "ChosenAs": "name" }
+                    ]
+                  },
+                  "to": "Hand"
+                }
+              },
+              { "Exile": { "what": { "Bound": "top2" } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

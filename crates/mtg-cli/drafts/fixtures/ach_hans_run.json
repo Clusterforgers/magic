@@ -1,0 +1,129 @@
+{
+  "object": "card",
+  "id": "84f2c8f5-8e11-4639-b7de-00e4a2cbabee",
+  "oracle_id": "a2c5ee76-6084-413c-bb70-45490d818374",
+  "multiverse_ids": [
+    73935
+  ],
+  "tcgplayer_id": 37816,
+  "cardmarket_id": 14879,
+  "name": "\"Ach! Hans, Run!\"",
+  "lang": "en",
+  "released_at": "2004-11-19",
+  "uri": "https://api.scryfall.com/cards/84f2c8f5-8e11-4639-b7de-00e4a2cbabee",
+  "scryfall_uri": "https://scryfall.com/card/unh/116/ach!-hans-run!?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T12:03:54Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/8/4/84f2c8f5-8e11-4639-b7de-00e4a2cbabee.jpg?1783944234",
+    "normal": "https://cards.scryfall.io/normal/front/8/4/84f2c8f5-8e11-4639-b7de-00e4a2cbabee.jpg?1783944234",
+    "large": "https://cards.scryfall.io/large/front/8/4/84f2c8f5-8e11-4639-b7de-00e4a2cbabee.jpg?1783944234",
+    "png": "https://cards.scryfall.io/png/front/8/4/84f2c8f5-8e11-4639-b7de-00e4a2cbabee.png?1783944234",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/8/4/84f2c8f5-8e11-4639-b7de-00e4a2cbabee.jpg?1783944234",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/8/4/84f2c8f5-8e11-4639-b7de-00e4a2cbabee.jpg?1783944234",
+    "thumb": "https://cards.scryfall.io/thumb/front/8/4/84f2c8f5-8e11-4639-b7de-00e4a2cbabee.webp?1783944234",
+    "grid": "https://cards.scryfall.io/grid/front/8/4/84f2c8f5-8e11-4639-b7de-00e4a2cbabee.webp?1783944234",
+    "display": "https://cards.scryfall.io/display/front/8/4/84f2c8f5-8e11-4639-b7de-00e4a2cbabee.webp?1783944234",
+    "art": "https://cards.scryfall.io/art/front/8/4/84f2c8f5-8e11-4639-b7de-00e4a2cbabee.webp?1783944234",
+    "crop": "https://cards.scryfall.io/crop/front/8/4/84f2c8f5-8e11-4639-b7de-00e4a2cbabee.webp?1783944234",
+    "jpeg": "https://cards.scryfall.io/normal/front/8/4/84f2c8f5-8e11-4639-b7de-00e4a2cbabee.jpg?1783944234"
+  },
+  "mana_cost": "{2}{R}{R}{G}{G}",
+  "cmc": 6.0,
+  "type_line": "Enchantment",
+  "oracle_text": "At the beginning of your upkeep, you may say \"Ach! Hans, run! It's the . . .\" and the name of a creature card. If you do, search your library for a card with that name, put it onto the battlefield, then shuffle. That creature gains haste. Exile it at the beginning of the next end step.",
+  "colors": [
+    "G",
+    "R"
+  ],
+  "color_identity": [
+    "G",
+    "R"
+  ],
+  "keywords": [],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "not_legal",
+    "pauper": "not_legal",
+    "vintage": "not_legal",
+    "penny": "not_legal",
+    "commander": "not_legal",
+    "oathbreaker": "not_legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "not_legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "4c8bc76a-05a5-43db-aaf0-34deb347b871",
+  "set": "unh",
+  "set_name": "Unhinged",
+  "set_type": "funny",
+  "set_uri": "https://api.scryfall.com/sets/4c8bc76a-05a5-43db-aaf0-34deb347b871",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Aunh&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/unh?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/84f2c8f5-8e11-4639-b7de-00e4a2cbabee/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Aa2c5ee76-6084-413c-bb70-45490d818374&unique=prints",
+  "collector_number": "116",
+  "digital": false,
+  "rarity": "rare",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Quinton Hoover",
+  "artist_ids": [
+    "1a2db619-92a5-431a-822b-101cdcc5bd5d"
+  ],
+  "illustration_id": "be49af2a-e561-49d6-b21f-4f3bf451f11b",
+  "border_color": "silver",
+  "frame": "2003",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "prices": {
+    "usd": "3.75",
+    "usd_foil": "29.31",
+    "usd_etched": null,
+    "eur": "2.81",
+    "eur_foil": "25.79",
+    "tix": null
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=73935&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3D%2522Ach%2521%2BHans%252C%2BRun%2521%2522",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3D%2522Ach%2521%2BHans%252C%2BRun%2521%2522",
+    "edhrec": "https://edhrec.com/route/?cc=%22Ach%21+Hans%2C+Run%21%22"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F37816%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=14879&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards?affiliate_id=scryfall&data%5Bsearch%5D=%22Ach%21+Hans%2C+Run%21%22&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

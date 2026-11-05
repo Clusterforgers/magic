@@ -1,0 +1,55 @@
+{
+  "oracle_id": "68d97ebb-63f8-4795-bddb-03582e13b34d",
+  "name": "Duskana, the Rage Mother",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Duskana, the Rage Mother",
+      "oracle_fingerprint": "2271f911d783429cf58349d2b84a4eb4",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Draw": {
+                  "count": {
+                    "Count": [
+                      { "Type": "Creature" },
+                      { "ControlledBy": "You" },
+                      { "Compare": { "stat": "BasePower", "op": "Eq", "to": 2 } },
+                      { "Compare": { "stat": "BaseToughness", "op": "Eq", "to": 2 } }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "Attacks": {
+                "what": [
+                  { "Type": "Creature" },
+                  { "ControlledBy": "You" },
+                  { "Compare": { "stat": "BasePower", "op": "Eq", "to": 2 } },
+                  { "Compare": { "stat": "BaseToughness", "op": "Eq", "to": 2 } }
+                ]
+              }
+            },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "Triggering",
+                  "mods": [{ "ModifyPT": { "power": 3, "toughness": 3 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

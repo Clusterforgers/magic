@@ -1,0 +1,29 @@
+{
+  "oracle_id": "88dadc31-dfac-41b3-bf2a-65fa89e3c16d",
+  "name": "Linvala, Keeper of Silence",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Linvala, Keeper of Silence",
+      "oracle_fingerprint": "9b55401a40d301ba960b652e33e5c07b",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Rule": {
+            "rule": {
+              "Cant": {
+                "who": "EachPlayer",
+                "action": {
+                  "ActivateKind": {
+                    "kind": "Every",
+                    "sources": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }]
+                  }
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

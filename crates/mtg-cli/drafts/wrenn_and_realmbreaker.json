@@ -1,0 +1,122 @@
+{
+  "oracle_id": "4566fb92-448e-4b3f-9045-9d74323c35d1",
+  "name": "Wrenn and Realmbreaker",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Wrenn and Realmbreaker",
+      "oracle_fingerprint": "b4b1af6f0bfd8ffcbeaee7b55d979662",
+      "abilities": [
+        {
+          "Static": {
+            "affected": { "Each": [{ "Type": "Land" }, { "ControlledBy": "You" }] },
+            "mods": [
+              {
+                "GrantAbility": {
+                  "Activated": {
+                    "cost": ["Tap"],
+                    "effects": [{ "AddMana": { "mana": { "AnyColor": 1 } } }]
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Plus": 1 },
+            "targets": [
+              {
+                "what": { "Object": [{ "Type": "Land" }, { "ControlledBy": "You" }] },
+                "bounds": { "min": 0, "max": 1 }
+              }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    { "SetPT": { "power": 3, "toughness": 3 } },
+                    { "AddSubtype": "Elemental" },
+                    { "AddType": "Creature" },
+                    { "AddKeyword": "Vigilance" },
+                    { "AddKeyword": "Hexproof" },
+                    { "AddKeyword": "Haste" }
+                  ],
+                  "duration": "UntilYourNextTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Minus": 2 },
+            "effects": [
+              { "Mill": { "count": 3, "as": "milled" } },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      {
+                        "AnyOf": [
+                          { "Type": "Artifact" },
+                          { "Type": "Battle" },
+                          { "Type": "Creature" },
+                          { "Type": "Enchantment" },
+                          { "Type": "Land" },
+                          { "Type": "Planeswalker" }
+                        ]
+                      },
+                      { "Is": { "Bound": "milled" } },
+                      { "AnyOf": [{ "In": "Graveyard" }, { "In": "Exile" }] },
+                      { "OwnedBy": "You" }
+                    ]
+                  },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "picked2"
+                }
+              },
+              { "Move": { "what": { "Bound": "picked2" }, "to": "Hand" } }
+            ]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Minus": 7 },
+            "effects": [
+              {
+                "CreateEmblem": {
+                  "abilities": [
+                    {
+                      "Rule": {
+                        "rule": {
+                          "MayCast": {
+                            "what": [
+                              {
+                                "AnyOf": [
+                                  { "Type": "Artifact" },
+                                  { "Type": "Battle" },
+                                  { "Type": "Creature" },
+                                  { "Type": "Enchantment" },
+                                  { "Type": "Land" },
+                                  { "Type": "Planeswalker" }
+                                ]
+                              }
+                            ],
+                            "from": "Graveyard",
+                            "play": true
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

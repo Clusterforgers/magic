@@ -1,0 +1,68 @@
+{
+  "oracle_id": "9e2e3272-d4e1-4329-b1d2-f393b3511b82",
+  "name": "Subira, Tulzidi Caravanner",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Subira, Tulzidi Caravanner",
+      "oracle_fingerprint": "31a77212b7689edd4ded4642b1f28c75",
+      "abilities": [
+        { "Keyword": "Haste" },
+        {
+          "Activated": {
+            "cost": "{1}",
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Type": "Creature" },
+                    "Other",
+                    { "Compare": { "stat": "Power", "op": "Le", "to": 2 } }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": ["CantBeBlocked"],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [
+              { "Mana": "{1}{R}" },
+              "Tap",
+              { "Discard": { "count": { "Count": [{ "In": "Hand" }, { "OwnedBy": "You" }] } } }
+            ],
+            "effects": [
+              {
+                "DelayedTrigger": {
+                  "when": {
+                    "DealsDamage": {
+                      "source": [
+                        { "Type": "Creature" },
+                        { "ControlledBy": "You" },
+                        { "Compare": { "stat": "Power", "op": "Le", "to": 2 } }
+                      ],
+                      "to": "EachPlayer",
+                      "combat": true
+                    }
+                  },
+                  "once": false,
+                  "this_turn": true,
+                  "effects": [{ "Draw": {} }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

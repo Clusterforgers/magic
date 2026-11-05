@@ -1,0 +1,45 @@
+{
+  "oracle_id": "de1ad369-5aa3-4c54-8fb1-30b7f1d4d542",
+  "name": "Rapid Rescue",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Rapid Rescue",
+      "oracle_fingerprint": "a455b4fb9329cbb41bc87ec51e5ef751",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "Mill": { "count": 2, "as": "milled" } },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "Is": { "Bound": "milled" } },
+                      {
+                        "AnyOf": [
+                          { "Type": "Artifact" },
+                          { "Type": "Battle" },
+                          { "Type": "Creature" },
+                          { "Type": "Enchantment" },
+                          { "Type": "Land" },
+                          { "Type": "Planeswalker" }
+                        ]
+                      },
+                      { "AnyOf": [{ "In": "Graveyard" }, { "In": "Exile" }] },
+                      { "OwnedBy": "You" }
+                    ]
+                  },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "picked2"
+                }
+              },
+              { "Move": { "what": { "Bound": "picked2" }, "to": "Hand" } },
+              { "GainLife": { "amount": 2 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

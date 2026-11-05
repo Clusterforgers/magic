@@ -1,0 +1,35 @@
+{
+  "oracle_id": "b5aae42b-3fde-4f10-b85e-882c528badef",
+  "name": "Burn the Accursed",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Burn the Accursed",
+      "oracle_fingerprint": "4a72d93f812fbbf96634816ddb0a8ae8",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              { "DealDamage": { "to": { "Target": 0 }, "amount": 5 } },
+              {
+                "Shield": {
+                  "when": {
+                    "ZoneChange": {
+                      "what": [{ "Is": { "Target": 0 } }, { "Type": "Creature" }],
+                      "from": "Battlefield",
+                      "to": "Graveyard"
+                    }
+                  },
+                  "by": { "MoveTo": "Exile" },
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              { "DealDamage": { "to": { "ControllerOf": { "Target": 0 } }, "amount": 2 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

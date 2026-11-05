@@ -1,0 +1,33 @@
+{
+  "oracle_id": "23db92aa-d4db-49e3-a5bc-7b120e02822f",
+  "name": "Shagrat, Loot Bearer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Shagrat, Loot Bearer",
+      "oracle_fingerprint": "4546071a9ba99f1201635526c4862354",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "targets": [
+              {
+                "what": { "Object": [{ "Subtype": "Equipment" }] },
+                "bounds": { "min": 0, "max": 1 }
+              }
+            ],
+            "effects": [
+              { "Attach": { "what": { "Target": 0 }, "to": "This" } },
+              {
+                "Amass": {
+                  "subtype": "Orc",
+                  "count": { "Count": [{ "Subtype": "Equipment" }, { "AttachedTo": "This" }] }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

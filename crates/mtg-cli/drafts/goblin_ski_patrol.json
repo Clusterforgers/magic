@@ -1,0 +1,58 @@
+{
+  "oracle_id": "e98396d0-6952-4755-992f-813f565b9189",
+  "name": "Goblin Ski Patrol",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Goblin Ski Patrol",
+      "oracle_fingerprint": "87902e259797ce0b35a9dea7f3fa94aa",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{1}{R}",
+            "condition": {
+              "Compare": {
+                "left": {
+                  "Count": [
+                    { "Subtype": "Mountain" },
+                    { "Supertype": "Snow" },
+                    { "ControlledBy": "You" }
+                  ]
+                },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "limit": "OncePerGame",
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [
+                    { "ModifyPT": { "power": 2, "toughness": 0 } },
+                    { "AddKeyword": "Flying" }
+                  ],
+                  "duration": "Forever"
+                }
+              },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "End" } },
+                  "effects": [
+                    {
+                      "Sacrifice": {
+                        "who": { "ControllerOf": "This" },
+                        "filter": [{ "Is": "This" }],
+                        "count": { "Count": [{ "Is": "This" }] }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

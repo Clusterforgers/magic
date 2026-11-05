@@ -1,0 +1,25 @@
+{
+  "oracle_id": "0c4bc9ea-a5fd-4f44-96a1-5448eee228c4",
+  "name": "Collector Ouphe",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Collector Ouphe",
+      "oracle_fingerprint": "66d992dd5f45e130be329593a636a892",
+      "abilities": [
+        {
+          "Rule": {
+            "rule": {
+              "Cant": {
+                "who": "EachPlayer",
+                "action": {
+                  "ActivateKind": { "kind": "Every", "sources": [{ "Type": "Artifact" }] }
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

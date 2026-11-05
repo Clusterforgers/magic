@@ -1,7 +1,7 @@
 {
   "oracle_id": "6615f881-960c-4216-a32a-63856bc3afd0",
   "name": "The Ancient One",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "The Ancient One",
@@ -36,9 +36,42 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 116, "end": 245 }
+          "Activated": {
+            "cost": "{2}{U}{B}",
+            "effects": [
+              { "Draw": {} },
+              { "Discard": { "as": "discarded" } },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Bound": "discarded" },
+                      "selector": [],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [
+                    { "Bind": { "what": { "Bound": "discarded" }, "as": "when2" } },
+                    {
+                      "Reflexive": {
+                        "targets": [{ "what": "Player" }],
+                        "effects": [
+                          {
+                            "Mill": {
+                              "who": { "Target": 0 },
+                              "count": {
+                                "Stat": { "of": { "Bound": "when2" }, "stat": "ManaValue" }
+                              }
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
           }
         }
       ]

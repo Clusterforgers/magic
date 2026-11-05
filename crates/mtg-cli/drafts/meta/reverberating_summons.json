@@ -1,42 +1,4 @@
 {
   "source": "forge",
-  "oracle_matches": true,
-  "lines": [
-    {
-      "face": 0,
-      "tag": "A",
-      "text": "Draw two cards.",
-      "abilities": [],
-      "gap": "valid-base:Hand"
-    },
-    {
-      "face": 0,
-      "tag": "T",
-      "text": "At the beginning of each combat, if you've cast two or more spells this turn, this enchantment becomes a 3/3 Monk creature with haste in addition to its other types until end of turn.",
-      "abilities": [
-        0
-      ],
-      "gap": null
-    }
-  ],
-  "proof": {
-    "marks": [
-      {
-        "face": 0,
-        "span": {
-          "start": 0,
-          "end": 183
-        },
-        "mark": "Auto"
-      },
-      {
-        "face": 0,
-        "span": {
-          "start": 184,
-          "end": 254
-        },
-        "mark": "ByHand"
-      }
-    ]
-  }
+  "oracle_matches": true
 }

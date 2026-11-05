@@ -1,0 +1,40 @@
+{
+  "oracle_id": "f21ec455-aaf6-4842-aea2-69a7fd99b80f",
+  "name": "Bifurcate",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Bifurcate",
+      "oracle_fingerprint": "afe0f884cafe9c65d9c701ad147f2281",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }, { "Not": "Token" }] } }],
+            "effects": [
+              {
+                "Search": {
+                  "filter": [
+                    { "SharesName": { "Target": 0 } },
+                    {
+                      "AnyOf": [
+                        { "Type": "Artifact" },
+                        { "Type": "Battle" },
+                        { "Type": "Creature" },
+                        { "Type": "Enchantment" },
+                        { "Type": "Land" },
+                        { "Type": "Planeswalker" }
+                      ]
+                    }
+                  ],
+                  "as": "found"
+                }
+              },
+              { "Move": { "what": { "Bound": "found" }, "to": { "Battlefield": {} } } },
+              { "Shuffle": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

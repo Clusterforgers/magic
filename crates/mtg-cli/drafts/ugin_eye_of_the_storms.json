@@ -1,7 +1,7 @@
 {
   "oracle_id": "5c58353a-fd60-4528-bf0d-669626cda0b2",
   "name": "Ugin, Eye of the Storms",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Ugin, Eye of the Storms",
@@ -40,9 +40,42 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 238, "end": 408 }
+          "Loyalty": {
+            "cost": { "Minus": 11 },
+            "effects": [
+              {
+                "Search": {
+                  "filter": [{ "Not": { "Type": "Land" } }, "Colorless"],
+                  "count": {
+                    "min": 0,
+                    "max": {
+                      "Count": [
+                        { "OwnedBy": "You" },
+                        { "Not": { "Type": "Land" } },
+                        "Colorless",
+                        { "In": "Library" }
+                      ]
+                    }
+                  },
+                  "as": "found"
+                }
+              },
+              { "Exile": { "what": { "Bound": "found" }, "as": "found_exiled" } },
+              { "Shuffle": {} },
+              {
+                "Rule": {
+                  "rule": {
+                    "MayCast": {
+                      "what": [{ "Not": { "Type": "Land" } }],
+                      "from": "Exile",
+                      "free": true,
+                      "only": { "Bound": "found_exiled" }
+                    }
+                  },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
           }
         }
       ]

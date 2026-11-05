@@ -1,0 +1,102 @@
+{
+  "oracle_id": "4686f776-2055-470c-bd99-7c4bb32902c0",
+  "name": "Chandra, Dressed to Kill",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Chandra, Dressed to Kill",
+      "oracle_fingerprint": "26652afcda2749837d52e7da79f73b5a",
+      "abilities": [
+        {
+          "Loyalty": {
+            "cost": { "Plus": 1 },
+            "targets": [
+              {
+                "what": { "Either": ["Player", { "Object": [{ "Type": "Planeswalker" }] }] },
+                "bounds": { "min": 0, "max": 1 }
+              }
+            ],
+            "effects": [
+              { "AddMana": { "mana": { "Fixed": ["Red"] } } },
+              { "DealDamage": { "to": { "Target": 0 }, "amount": 1 } }
+            ]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Plus": 1 },
+            "effects": [
+              { "ExileTop": { "as": "exiled" } },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Bound": "exiled" },
+                      "selector": [{ "Color": "Red" }],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [
+                    {
+                      "Rule": {
+                        "rule": {
+                          "MayCast": {
+                            "what": [{ "Not": { "Type": "Land" } }],
+                            "from": "Exile",
+                            "only": { "Bound": "exiled" }
+                          }
+                        },
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Minus": 7 },
+            "effects": [
+              { "ExileTop": { "count": 5, "as": "exiled" } },
+              {
+                "Rule": {
+                  "rule": {
+                    "MayCast": {
+                      "what": [{ "Color": "Red" }, { "Not": { "Type": "Land" } }],
+                      "from": "Exile",
+                      "only": { "Bound": "exiled" }
+                    }
+                  },
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "CreateEmblem": {
+                  "abilities": [
+                    {
+                      "Triggered": {
+                        "when": { "SpellCast": { "what": [{ "Color": "Red" }], "by": "You" } },
+                        "targets": [{ "what": "AnyTarget" }],
+                        "effects": [
+                          {
+                            "DealDamage": {
+                              "to": { "Target": 0 },
+                              "amount": { "Stat": { "of": "Triggering", "stat": "ManaSpent" } }
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,34 @@
+{
+  "oracle_id": "dc9ae094-139f-4f28-9d4e-4d6def765744",
+  "name": "Liquify",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Liquify",
+      "oracle_fingerprint": "15aebf321f23e5e56327337929b27e69",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": ["Spell", { "Compare": { "stat": "ManaValue", "op": "Le", "to": 3 } }]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "Shield": {
+                  "when": { "Countered": { "what": [{ "Is": { "Target": 0 } }, "Spell"] } },
+                  "by": { "MoveTo": "Exile" },
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              { "Counter": { "what": { "Target": 0 } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

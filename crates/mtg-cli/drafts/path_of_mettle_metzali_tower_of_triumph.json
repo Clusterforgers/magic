@@ -1,0 +1,97 @@
+{
+  "oracle_id": "db9ea3f9-c723-422f-98cc-a3ef7ca2c290",
+  "name": "Path of Mettle // Metzali, Tower of Triumph",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Path of Mettle",
+      "oracle_fingerprint": "86b93be8471def67a63b8650e31ea88d",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "DealDamage": {
+                  "to": {
+                    "Each": [
+                      { "Type": "Creature" },
+                      { "Not": { "HasKeyword": "FirstStrike" } },
+                      { "Not": { "HasKeyword": "DoubleStrike" } },
+                      { "Not": { "HasKeyword": "Vigilance" } },
+                      { "Not": { "HasKeyword": "Haste" } }
+                    ]
+                  },
+                  "amount": 1
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "GroupAttacks": { "what": [{ "Type": "Creature" }, { "ControlledBy": "You" }] }
+            },
+            "if": {
+              "AtTrigger": {
+                "Compare": {
+                  "left": {
+                    "Count": [
+                      { "Type": "Creature" },
+                      "Attacking",
+                      { "ControlledBy": "You" },
+                      {
+                        "AnyOf": [
+                          { "HasKeyword": "FirstStrike" },
+                          { "HasKeyword": "DoubleStrike" },
+                          { "HasKeyword": "Vigilance" },
+                          { "HasKeyword": "Haste" }
+                        ]
+                      }
+                    ]
+                  },
+                  "op": "Ge",
+                  "right": 2
+                }
+              }
+            },
+            "effects": [{ "Transform": { "what": "This" } }]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Metzali, Tower of Triumph",
+      "oracle_fingerprint": "e84b5deaa2f8baeb566e1a50233f5402",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "AnyColor": 1 } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{1}{R}" }, "Tap"],
+            "effects": [{ "DealDamage": { "to": "Opponents", "amount": 2 } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{2}{W}" }, "Tap"],
+            "effects": [
+              {
+                "ChooseAtRandom": {
+                  "from": { "Each": [{ "Type": "Creature" }, "AttackedThisTurn"] },
+                  "as": "card"
+                }
+              },
+              { "Destroy": { "what": { "Bound": "card" } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

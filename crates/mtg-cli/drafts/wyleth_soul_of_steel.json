@@ -1,0 +1,31 @@
+{
+  "oracle_id": "35bef4d3-4473-4265-86b0-f1393c82fd1d",
+  "name": "Wyleth, Soul of Steel",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Wyleth, Soul of Steel",
+      "oracle_fingerprint": "68f2e02800f0b11d13eab8b1c899e019",
+      "abilities": [
+        { "Keyword": "Trample" },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [
+              {
+                "Draw": {
+                  "count": {
+                    "Count": [
+                      { "AnyOf": [{ "Subtype": "Equipment" }, { "Subtype": "Aura" }] },
+                      { "AttachedTo": "This" }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

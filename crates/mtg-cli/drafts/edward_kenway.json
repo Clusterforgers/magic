@@ -1,7 +1,7 @@
 {
   "oracle_id": "b2fe6d17-d045-45c6-9ca2-21e73d2e38d2",
   "name": "Edward Kenway",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Edward Kenway",
@@ -33,9 +33,26 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 121, "end": 313 }
+          "Triggered": {
+            "when": {
+              "DealsDamage": {
+                "source": [{ "Subtype": "Vehicle" }, { "ControlledBy": "You" }],
+                "to": "EachPlayer",
+                "combat": true
+              }
+            },
+            "effects": [
+              { "LookAtTop": { "who": "Triggering", "as": "top" } },
+              { "ExileHidden": { "what": { "Bound": "top" }, "held": true, "as": "exiled4" } },
+              {
+                "Rule": {
+                  "rule": {
+                    "MayCast": { "from": "Exile", "only": { "Bound": "exiled4" }, "play": true }
+                  },
+                  "duration": "Forever"
+                }
+              }
+            ]
           }
         }
       ]

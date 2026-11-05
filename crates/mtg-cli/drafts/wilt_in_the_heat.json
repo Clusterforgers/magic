@@ -1,0 +1,48 @@
+{
+  "oracle_id": "3bed0b60-5944-44bb-9ddd-c82f323e6d20",
+  "name": "Wilt in the Heat",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Wilt in the Heat",
+      "oracle_fingerprint": "97ef3fe23f00c10c27739d976d48fcfa",
+      "abilities": [
+        {
+          "CostModifier": {
+            "applies_to": ["This"],
+            "change": "Reduce",
+            "mana": "{2}",
+            "condition": {
+              "Compare": {
+                "left": { "Tallied": { "who": "You", "what": "CardsLeftGraveyard" } },
+                "op": "Ge",
+                "right": 1
+              }
+            }
+          }
+        },
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              { "DealDamage": { "to": { "Target": 0 }, "amount": 5 } },
+              {
+                "Shield": {
+                  "when": {
+                    "ZoneChange": {
+                      "what": [{ "Is": { "Target": 0 } }, { "Type": "Creature" }],
+                      "from": "Battlefield",
+                      "to": "Graveyard"
+                    }
+                  },
+                  "by": { "MoveTo": "Exile" },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

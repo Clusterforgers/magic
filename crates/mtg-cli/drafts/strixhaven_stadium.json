@@ -1,0 +1,65 @@
+{
+  "oracle_id": "2ed0c6fc-b8b4-47da-a04b-1d995bdeecb0",
+  "name": "Strixhaven Stadium",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Strixhaven Stadium",
+      "oracle_fingerprint": "1b59375bfbd156f27ed54461a58115eb",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [
+              { "AddMana": { "mana": { "Fixed": ["Colorless"] } } },
+              { "PutCounters": { "on": "This", "counter": { "Other": "point" } } }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "DealsDamage": { "source": [{ "Type": "Creature" }], "to": "You", "combat": true }
+            },
+            "effects": [{ "RemoveCounters": { "from": "This", "counter": { "Other": "point" } } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "DealsDamage": {
+                "source": [{ "Type": "Creature" }, { "ControlledBy": "You" }],
+                "to": "Opponents",
+                "combat": true
+              }
+            },
+            "effects": [
+              { "PutCounters": { "on": "This", "counter": { "Other": "point" } } },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "Counters": { "on": "This", "counter": { "Other": "point" } } },
+                      "op": "Ge",
+                      "right": 10
+                    }
+                  },
+                  "then": [
+                    {
+                      "RemoveCounters": {
+                        "from": "This",
+                        "counter": { "Other": "point" },
+                        "count": { "Counters": { "on": "This", "counter": { "Other": "point" } } }
+                      }
+                    },
+                    { "LoseGame": { "who": "Triggering" } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,82 @@
+{
+  "oracle_id": "ce690a21-8117-420e-be00-cd6d9923a812",
+  "name": "Anzrag's Rampage",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Anzrag's Rampage",
+      "oracle_fingerprint": "6e1e7b155e0cb55341ed9b22e75d0d9f",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Destroy": {
+                  "what": { "Each": [{ "Type": "Artifact" }, { "Not": { "ControlledBy": "You" } }] }
+                }
+              },
+              {
+                "LookAtTop": {
+                  "count": {
+                    "Tally": {
+                      "event": "Died",
+                      "who": "EachPlayer",
+                      "filter": [{ "Type": "Artifact" }]
+                    }
+                  },
+                  "as": "top"
+                }
+              },
+              {
+                "Exile": {
+                  "what": { "Each": [{ "In": "Library" }, { "Is": { "Bound": "top" } }] },
+                  "as": "exiled4"
+                }
+              },
+              {
+                "Move": {
+                  "what": { "Bound": "top" },
+                  "to": { "Library": { "place": "Bottom", "order": "Chosen" } }
+                }
+              },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "Type": "Creature" },
+                      { "Is": { "Bound": "exiled4" } },
+                      { "In": "Exile" },
+                      { "OwnedBy": "You" }
+                    ]
+                  },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "picked5"
+                }
+              },
+              {
+                "Move": {
+                  "what": { "Bound": "picked5" },
+                  "to": { "Battlefield": {} },
+                  "as": "moved6"
+                }
+              },
+              {
+                "Continuous": {
+                  "affected": { "Bound": "moved6" },
+                  "mods": [{ "AddKeyword": "Haste" }],
+                  "duration": "Forever"
+                }
+              },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "End" } },
+                  "effects": [{ "Move": { "what": { "Bound": "moved6" }, "to": "Hand" } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

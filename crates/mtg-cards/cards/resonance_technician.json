@@ -1,0 +1,48 @@
+{
+  "oracle_id": "ec8a4b26-633a-4e88-aa8a-82e9704b3439",
+  "name": "Resonance Technician",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Resonance Technician",
+      "oracle_fingerprint": "f8e8d18ba36ddcbd8e5ef40d5d34343c",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": [{ "Discard": {} }],
+                  "paid": [{ "CreateToken": { "token": { "Named": "clue" }, "count": 2 } }]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [
+              "Tap",
+              { "TapPermanents": { "filter": [{ "Type": "Artifact" }], "count": "X" } }
+            ],
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    "Spell",
+                    { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] },
+                    { "ControlledBy": "You" },
+                    { "Compare": { "stat": "ManaValue", "op": "Eq", "to": "X" } }
+                  ]
+                }
+              }
+            ],
+            "effects": [{ "CopySpell": { "what": { "Target": 0 }, "new_targets": true } }]
+          }
+        }
+      ]
+    }
+  ]
+}

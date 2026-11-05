@@ -1,0 +1,94 @@
+{
+  "oracle_id": "cb952c81-c7bb-4670-938d-296d35551986",
+  "name": "Budoka Gardener // Dokai, Weaver of Life",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Budoka Gardener",
+      "oracle_fingerprint": "ea87ec5fd93f456ace2bc248876f9fe7",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [
+              {
+                "Choose": {
+                  "from": { "Each": [{ "Type": "Land" }, { "In": "Hand" }, { "OwnedBy": "You" }] },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "picked"
+                }
+              },
+              { "Move": { "what": { "Bound": "picked" }, "to": { "Battlefield": {} } } },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "Count": [{ "Type": "Land" }, { "ControlledBy": "You" }] },
+                      "op": "Ge",
+                      "right": 10
+                    }
+                  },
+                  "then": [{ "Flip": { "what": "This" } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Dokai, Weaver of Life",
+      "oracle_fingerprint": "3fc35fec8dc3754938b9e947c988d9a9",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{4}{G}{G}" }, "Tap"],
+            "effects": [
+              {
+                "Let": {
+                  "as": "power",
+                  "amount": { "Count": [{ "Type": "Land" }, { "ControlledBy": "You" }] }
+                }
+              },
+              {
+                "Let": {
+                  "as": "toughness2",
+                  "amount": { "Count": [{ "Type": "Land" }, { "ControlledBy": "You" }] }
+                }
+              },
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Elemental",
+                      "colors": ["Green"],
+                      "types": ["Creature"],
+                      "subtypes": ["Elemental"],
+                      "power": 0,
+                      "toughness": 0
+                    }
+                  },
+                  "as": "token3"
+                }
+              },
+              {
+                "Continuous": {
+                  "affected": { "Bound": "token3" },
+                  "mods": [
+                    {
+                      "SetPT": {
+                        "power": { "Bound": "power" },
+                        "toughness": { "Bound": "toughness2" }
+                      }
+                    }
+                  ],
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

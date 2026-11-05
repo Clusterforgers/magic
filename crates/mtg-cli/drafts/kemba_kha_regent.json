@@ -1,0 +1,35 @@
+{
+  "oracle_id": "499d5801-0c56-40f2-9a46-77025ed6cb87",
+  "name": "Kemba, Kha Regent",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Kemba, Kha Regent",
+      "oracle_fingerprint": "a37099197460949b4bac4b7085b624ec",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Cat",
+                      "colors": ["White"],
+                      "types": ["Creature"],
+                      "subtypes": ["Cat"],
+                      "power": 2,
+                      "toughness": 2
+                    }
+                  },
+                  "count": { "Count": [{ "Subtype": "Equipment" }, { "AttachedTo": "This" }] }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

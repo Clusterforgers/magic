@@ -1,7 +1,7 @@
 {
   "oracle_id": "4122720b-cad9-4ebb-b458-be71411c21e3",
   "name": "Glassworks // Shattered Yard",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Glassworks",
@@ -23,7 +23,10 @@
       "oracle_fingerprint": "8fa330a955dd623b0c8ed3613019e91b",
       "abilities": [
         {
-          "Manual": { "reason": "you apply this clause by hand", "span": { "start": 0, "end": 77 } }
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "effects": [{ "DealDamage": { "to": "Opponents", "amount": 1 } }]
+          }
         }
       ]
     }

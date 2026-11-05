@@ -1,0 +1,81 @@
+{
+  "oracle_id": "3ba809ce-3556-415c-9fcc-291cb10a43cd",
+  "name": "Ajani, Outland Chaperone",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ajani, Outland Chaperone",
+      "oracle_fingerprint": "676bb607b371304205b4bca358e8c67a",
+      "abilities": [
+        {
+          "Loyalty": {
+            "cost": { "Plus": 1 },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Kithkin",
+                      "colors": ["Green", "White"],
+                      "types": ["Creature"],
+                      "subtypes": ["Kithkin"],
+                      "power": 1,
+                      "toughness": 1
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Minus": 2 },
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }, "Tapped"] } }],
+            "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 4 } }]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Minus": 8 },
+            "effects": [
+              { "LookAtTop": { "count": { "Life": "You" }, "as": "top" } },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "In": "Library" },
+                      { "Is": { "Bound": "top" } },
+                      {
+                        "AnyOf": [
+                          { "Type": "Artifact" },
+                          { "Type": "Battle" },
+                          { "Type": "Creature" },
+                          { "Type": "Enchantment" },
+                          { "Type": "Land" },
+                          { "Type": "Planeswalker" }
+                        ]
+                      },
+                      { "Not": { "Type": "Land" } },
+                      { "Compare": { "stat": "ManaValue", "op": "Le", "to": 3 } }
+                    ]
+                  },
+                  "count": { "min": 0, "max": null },
+                  "as": "kept2"
+                }
+              },
+              { "Move": { "what": { "Bound": "kept2" }, "to": { "Battlefield": {} } } },
+              {
+                "Move": {
+                  "what": { "Bound": "top" },
+                  "to": { "Library": { "place": "Bottom", "order": "Chosen" } }
+                }
+              },
+              { "Shuffle": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

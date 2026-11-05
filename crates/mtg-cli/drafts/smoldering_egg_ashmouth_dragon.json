@@ -1,0 +1,78 @@
+{
+  "oracle_id": "7493d78c-26c4-402e-bec5-6449773d0344",
+  "name": "Smoldering Egg // Ashmouth Dragon",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Smoldering Egg",
+      "oracle_fingerprint": "6030ded11023ed824937cb8c584ffa0f",
+      "abilities": [
+        { "Keyword": "Defender" },
+        {
+          "Triggered": {
+            "when": {
+              "SpellCast": {
+                "what": [{ "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] }],
+                "by": "You"
+              }
+            },
+            "effects": [
+              {
+                "PutCounters": {
+                  "on": "This",
+                  "counter": { "Other": "ember" },
+                  "count": { "Stat": { "of": "Triggering", "stat": "ManaSpent" } }
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": {
+                        "Count": [
+                          "This",
+                          { "CounterCount": { "kind": { "Other": "ember" }, "op": "Ge", "to": 7 } }
+                        ]
+                      },
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [
+                    {
+                      "RemoveCounters": {
+                        "from": "This",
+                        "counter": { "Other": "ember" },
+                        "count": { "Counters": { "on": "This", "counter": { "Other": "ember" } } }
+                      }
+                    },
+                    { "Transform": { "what": "This" } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Ashmouth Dragon",
+      "oracle_fingerprint": "2289192f5dee93990ab471794852a656",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": {
+              "SpellCast": {
+                "what": [{ "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] }],
+                "by": "You"
+              }
+            },
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 2 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

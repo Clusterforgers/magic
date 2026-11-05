@@ -1,0 +1,66 @@
+{
+  "oracle_id": "406e6db7-6e31-44b9-a793-57ee10688f71",
+  "name": "Auntie's Sentence",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Auntie's Sentence",
+      "oracle_fingerprint": "15ab9de447936cb182d1f2ff3dc617b9",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Modal": {
+                  "modes": [
+                    {
+                      "targets": [{ "what": "Opponent" }],
+                      "effects": [
+                        {
+                          "Reveal": {
+                            "what": { "Each": [{ "OwnedBy": { "Target": 0 } }, { "In": "Hand" }] }
+                          }
+                        },
+                        {
+                          "Discard": {
+                            "who": { "Target": 0 },
+                            "filter": [
+                              {
+                                "AnyOf": [
+                                  { "Type": "Artifact" },
+                                  { "Type": "Battle" },
+                                  { "Type": "Creature" },
+                                  { "Type": "Enchantment" },
+                                  { "Type": "Land" },
+                                  { "Type": "Planeswalker" }
+                                ]
+                              },
+                              { "Not": { "Type": "Land" } }
+                            ],
+                            "by": "You"
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+                      "effects": [
+                        {
+                          "Continuous": {
+                            "affected": { "Target": 0 },
+                            "mods": [{ "ModifyPT": { "power": -2, "toughness": -2 } }],
+                            "duration": "UntilEndOfTurn"
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

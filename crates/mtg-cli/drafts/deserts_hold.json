@@ -43,8 +43,13 @@
           "Rule": {
             "rule": {
               "Cant": {
-                "who": { "Each": [{ "Type": "Creature" }, { "Is": "Attached" }] },
-                "action": { "Activate": [] }
+                "who": "EachPlayer",
+                "action": {
+                  "ActivateKind": {
+                    "kind": "Every",
+                    "sources": [{ "Type": "Creature" }, { "Is": "Attached" }]
+                  }
+                }
               }
             }
           }

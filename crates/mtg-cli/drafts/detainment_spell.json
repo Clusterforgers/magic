@@ -1,0 +1,36 @@
+{
+  "oracle_id": "b46526af-6b88-42c4-b317-4b499f151ff0",
+  "name": "Detainment Spell",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Detainment Spell",
+      "oracle_fingerprint": "a23b5d89a6a3f6db25eb3e921bd636af",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Rule": {
+            "rule": {
+              "Cant": {
+                "who": "EachPlayer",
+                "action": {
+                  "ActivateKind": {
+                    "kind": "Every",
+                    "sources": [{ "Type": "Creature" }, { "Is": "Attached" }]
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{1}{W}",
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [{ "Attach": { "what": "This", "to": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,26 @@
+{
+  "oracle_id": "7971a2a6-f89f-46a5-9008-96cfa49de41a",
+  "name": "Curse of Stalked Prey",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Curse of Stalked Prey",
+      "oracle_fingerprint": "c43935f7dcf0eb0fb590558998128fb2",
+      "abilities": [
+        { "Keyword": { "EnchantPlayer": {} } },
+        {
+          "Triggered": {
+            "when": {
+              "DealsDamage": {
+                "source": [{ "Type": "Creature" }],
+                "to": "AttachedPlayer",
+                "combat": true
+              }
+            },
+            "effects": [{ "PutCounters": { "on": "Dealer", "counter": "+1/+1" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

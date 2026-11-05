@@ -1,7 +1,7 @@
 {
   "oracle_id": "9fa75b3c-a512-4318-9c03-e2d958acb6ef",
   "name": "Mazzy, Truesword Paladin",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Mazzy, Truesword Paladin",
@@ -30,9 +30,29 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 113, "end": 257 }
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Subtype": "Aura" }, { "ControlledBy": "You" }, { "OwnedBy": "You" }],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "effects": [
+              { "Exile": { "what": "Triggering", "as": "exiled" } },
+              {
+                "Rule": {
+                  "rule": {
+                    "MayCast": {
+                      "what": [{ "Not": { "Type": "Land" } }],
+                      "from": "Exile",
+                      "only": { "Bound": "exiled" }
+                    }
+                  },
+                  "duration": "UntilEndOfYourNextTurn"
+                }
+              }
+            ]
           }
         }
       ]

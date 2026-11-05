@@ -1,0 +1,50 @@
+{
+  "oracle_id": "e00810cd-8863-433b-aa7a-683b8f308a9b",
+  "name": "Diviner's Lockbox",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Diviner's Lockbox",
+      "oracle_fingerprint": "ae6900f0958174924b034fb1e3103051",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{1}" }, "Tap"],
+            "timing": "Sorcery",
+            "effects": [
+              { "ChooseValue": { "kind": { "CardName": [] }, "as": "name" } },
+              { "LookAtTop": { "as": "top2" } },
+              { "Reveal": { "what": { "Bound": "top2" } } },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Bound": "top2" },
+                      "selector": [{ "ChosenAs": "name" }],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [{ "Sacrifice": { "filter": ["This"] } }]
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Bound": "top2" },
+                      "selector": [{ "ChosenAs": "name" }],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [{ "Draw": { "count": 3 } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

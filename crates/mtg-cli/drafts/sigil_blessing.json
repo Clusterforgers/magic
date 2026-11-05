@@ -1,0 +1,43 @@
+{
+  "oracle_id": "87b5d197-4400-47ff-89a7-9aeeb7c9a0b4",
+  "name": "Sigil Blessing",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sigil Blessing",
+      "oracle_fingerprint": "2ac7b3be9a8f380b0b02affb79609588",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "ModifyPT": { "power": 3, "toughness": 3 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "Continuous": {
+                  "affected": {
+                    "Each": [
+                      { "Is": { "Target": 0 } },
+                      "Other",
+                      { "ControlledBy": "You" },
+                      { "Type": "Creature" }
+                    ]
+                  },
+                  "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

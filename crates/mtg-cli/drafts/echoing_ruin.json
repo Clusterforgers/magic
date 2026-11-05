@@ -1,0 +1,42 @@
+{
+  "oracle_id": "e04ca2dc-873e-4d80-b1d7-4873ffdb3af5",
+  "name": "Echoing Ruin",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Echoing Ruin",
+      "oracle_fingerprint": "7a4e9d147f3bd6488b84799f0cce5b58",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Artifact" }] } }],
+            "effects": [
+              {
+                "Destroy": {
+                  "what": {
+                    "Each": [
+                      {
+                        "AnyOf": [
+                          { "Is": { "Target": 0 } },
+                          {
+                            "Not": {
+                              "AnyOf": [
+                                { "Not": { "Type": "Artifact" } },
+                                { "Not": { "Not": { "Is": { "Target": 0 } } } },
+                                { "Not": { "SharesName": { "Target": 0 } } }
+                              ]
+                            }
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,25 @@
+{
+  "oracle_id": "b74082da-435c-4e45-9424-1188ad7ef5b3",
+  "name": "Joraga Auxiliary",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Joraga Auxiliary",
+      "oracle_fingerprint": "ee5a50d2e0565f0803e19f04d74fe3ce",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{4}{W}{G}",
+            "targets": [
+              {
+                "what": { "Object": [{ "Type": "Creature" }, "Other"] },
+                "bounds": { "min": 0, "max": 2 }
+              }
+            ],
+            "effects": [{ "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

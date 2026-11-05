@@ -1,0 +1,28 @@
+{
+  "oracle_id": "4339f621-8502-4433-a37a-654591ca1b43",
+  "name": "Turn to Slag",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Turn to Slag",
+      "oracle_fingerprint": "6c1b2e9b39317c8914e8227d00769667",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              { "DealDamage": { "to": { "Target": 0 }, "amount": 5 } },
+              {
+                "Destroy": {
+                  "what": {
+                    "Each": [{ "AttachedTo": { "Target": 0 } }, { "Subtype": "Equipment" }]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

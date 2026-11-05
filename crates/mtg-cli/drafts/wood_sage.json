@@ -1,0 +1,36 @@
+{
+  "oracle_id": "6fde7bb3-2539-411f-8733-36ce9595dfd5",
+  "name": "Wood Sage",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Wood Sage",
+      "oracle_fingerprint": "19eafe37705ccd293a0ebe102d21c377",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [
+              { "ChooseValue": { "kind": { "CardName": [{ "Type": "Creature" }] }, "as": "name" } },
+              { "LookAtTop": { "count": 4, "as": "top2" } },
+              { "Reveal": { "what": { "Bound": "top2" } } },
+              {
+                "Move": {
+                  "what": {
+                    "Each": [
+                      { "In": "Library" },
+                      { "Is": { "Bound": "top2" } },
+                      { "ChosenAs": "name" }
+                    ]
+                  },
+                  "to": "Hand"
+                }
+              },
+              { "Move": { "what": { "Bound": "top2" }, "to": "Graveyard" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

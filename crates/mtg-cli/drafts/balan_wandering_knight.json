@@ -1,0 +1,41 @@
+{
+  "oracle_id": "d12cfd46-73c2-4206-9a10-0d2e7d6ac87e",
+  "name": "Balan, Wandering Knight",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Balan, Wandering Knight",
+      "oracle_fingerprint": "d5159b5189152720d5c317e0c591c819",
+      "abilities": [
+        { "Keyword": "FirstStrike" },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "AddKeyword": "DoubleStrike" }],
+            "condition": {
+              "Compare": {
+                "left": { "Count": [{ "Subtype": "Equipment" }, { "AttachedTo": "This" }] },
+                "op": "Ge",
+                "right": 2
+              }
+            }
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{1}{W}",
+            "effects": [
+              {
+                "RepeatEach": {
+                  "over": { "Each": [{ "Subtype": "Equipment" }, { "ControlledBy": "You" }] },
+                  "as": "each",
+                  "effects": [{ "Attach": { "what": { "Bound": "each" }, "to": "This" } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

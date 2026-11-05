@@ -1,0 +1,37 @@
+{
+  "oracle_id": "31d572b8-2c5e-4819-b2a6-e7ef90872d9e",
+  "name": "Bounteous Kirin",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Bounteous Kirin",
+      "oracle_fingerprint": "839f1331e908c499d33046a272712f85",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": {
+              "SpellCast": {
+                "what": [{ "AnyOf": [{ "Subtype": "Spirit" }, { "Subtype": "Arcane" }] }],
+                "by": "You"
+              }
+            },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "GainLife": {
+                        "amount": { "Stat": { "of": "Triggering", "stat": "ManaValue" } }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

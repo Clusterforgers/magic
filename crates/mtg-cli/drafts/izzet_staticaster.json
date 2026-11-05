@@ -1,0 +1,35 @@
+{
+  "oracle_id": "d63adbed-07d3-44e4-83f8-1cbdfc186df4",
+  "name": "Izzet Staticaster",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Izzet Staticaster",
+      "oracle_fingerprint": "17f0137c96767eef702d49c61dc44718",
+      "abilities": [
+        { "Keyword": "Flash" },
+        { "Keyword": "Haste" },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              { "DealDamage": { "to": { "Target": 0 }, "amount": 1 } },
+              {
+                "DealDamage": {
+                  "to": {
+                    "Each": [
+                      { "SharesName": { "Target": 0 } },
+                      { "Not": { "Is": { "Target": 0 } } }
+                    ]
+                  },
+                  "amount": 1
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

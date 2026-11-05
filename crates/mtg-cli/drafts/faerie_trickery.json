@@ -1,0 +1,28 @@
+{
+  "oracle_id": "bbe370ba-412b-4052-89d9-2d0ae4928118",
+  "name": "Faerie Trickery",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Faerie Trickery",
+      "oracle_fingerprint": "4ea86195d45cc9e244aa7e44aa2c9234",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": ["Spell", { "Not": { "Subtype": "Faerie" } }] } }],
+            "effects": [
+              {
+                "Shield": {
+                  "when": { "Countered": { "what": [{ "Is": { "Target": 0 } }, "Spell"] } },
+                  "by": { "MoveTo": "Exile" },
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              { "Counter": { "what": { "Target": 0 } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

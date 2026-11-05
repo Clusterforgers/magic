@@ -1,0 +1,35 @@
+{
+  "oracle_id": "566eafea-c8c2-43d6-b491-f20de276cdb6",
+  "name": "Stupefying Touch",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Stupefying Touch",
+      "oracle_fingerprint": "b40cd46099ff4d79d566fa2694d01e7d",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "Draw": {} }]
+          }
+        },
+        {
+          "Rule": {
+            "rule": {
+              "Cant": {
+                "who": "EachPlayer",
+                "action": {
+                  "ActivateKind": {
+                    "kind": "Every",
+                    "sources": [{ "Type": "Creature" }, { "Is": "Attached" }]
+                  }
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

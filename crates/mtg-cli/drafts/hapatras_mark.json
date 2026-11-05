@@ -1,0 +1,36 @@
+{
+  "oracle_id": "143d3fcf-2152-4911-b95a-d23b91662f33",
+  "name": "Hapatra's Mark",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Hapatra's Mark",
+      "oracle_fingerprint": "3304f7c7019a45ba7cc70d1a1878e40d",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "AddKeyword": "Hexproof" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "RemoveCounters": {
+                  "from": { "Target": 0 },
+                  "counter": "-1/-1",
+                  "count": { "Counters": { "on": { "Target": 0 }, "counter": "-1/-1" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

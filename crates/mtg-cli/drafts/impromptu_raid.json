@@ -1,0 +1,57 @@
+{
+  "oracle_id": "f46fe37f-c552-44e6-9657-ff63dbbd0ccf",
+  "name": "Impromptu Raid",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Impromptu Raid",
+      "oracle_fingerprint": "f0a99562388f417fbac9d861ce3bdccf",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{2}{R/G}",
+            "effects": [
+              { "LookAtTop": { "as": "top" } },
+              { "Reveal": { "what": { "Bound": "top" } } },
+              {
+                "Move": {
+                  "what": {
+                    "Each": [
+                      { "In": "Library" },
+                      { "Is": { "Bound": "top" } },
+                      { "Type": "Creature" }
+                    ]
+                  },
+                  "to": { "Battlefield": {} },
+                  "as": "moved4"
+                }
+              },
+              { "Move": { "what": { "Bound": "top" }, "to": "Graveyard" } },
+              {
+                "Continuous": {
+                  "affected": { "Bound": "moved4" },
+                  "mods": [{ "AddKeyword": "Haste" }],
+                  "duration": "Forever"
+                }
+              },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "End" } },
+                  "effects": [
+                    {
+                      "Sacrifice": {
+                        "who": { "ControllerOf": { "Bound": "moved4" } },
+                        "filter": [{ "Is": { "Bound": "moved4" } }],
+                        "count": { "Count": [{ "Is": { "Bound": "moved4" } }] }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

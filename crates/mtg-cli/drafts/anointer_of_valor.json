@@ -1,0 +1,36 @@
+{
+  "oracle_id": "e4f880f5-0639-4acb-a099-e48f5707f0db",
+  "name": "Anointer of Valor",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Anointer of Valor",
+      "oracle_fingerprint": "dc5ea3bf2e9aa44b16eefa5f214aebae",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": [{ "Type": "Creature" }] } },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": "{3}",
+                  "paid": [
+                    { "Bind": { "what": "Triggering", "as": "when" } },
+                    {
+                      "Reflexive": {
+                        "effects": [
+                          { "PutCounters": { "on": { "Bound": "when" }, "counter": "+1/+1" } }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

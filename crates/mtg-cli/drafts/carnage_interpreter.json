@@ -1,0 +1,35 @@
+{
+  "oracle_id": "4bc79fb3-81bb-42ed-9bbb-93f8cede3094",
+  "name": "Carnage Interpreter",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Carnage Interpreter",
+      "oracle_fingerprint": "f874ed226e1c26f20f0e7c0ff8ebe1b6",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              { "Discard": { "count": { "Count": [{ "In": "Hand" }, { "OwnedBy": "You" }] } } },
+              { "CreateToken": { "token": { "Named": "clue" }, "count": 4 } }
+            ]
+          }
+        },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "ModifyPT": { "power": 2, "toughness": 2 } }, { "AddKeyword": "Menace" }],
+            "condition": {
+              "Compare": {
+                "left": { "Count": [{ "OwnedBy": "You" }, { "In": "Hand" }] },
+                "op": "Le",
+                "right": 1
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

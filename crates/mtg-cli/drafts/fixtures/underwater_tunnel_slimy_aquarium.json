@@ -1,0 +1,175 @@
+{
+  "object": "card",
+  "id": "2dd69f2d-8c9c-41fc-93ea-48fc7a6d5272",
+  "oracle_id": "2b46394e-d337-4b1a-88e6-7fdac2ee4ac4",
+  "multiverse_ids": [
+    673484
+  ],
+  "mtgo_id": 130289,
+  "arena_id": 92149,
+  "tcgplayer_id": 579323,
+  "cardmarket_id": 788421,
+  "name": "Underwater Tunnel // Slimy Aquarium",
+  "lang": "en",
+  "released_at": "2024-09-27",
+  "uri": "https://api.scryfall.com/cards/2dd69f2d-8c9c-41fc-93ea-48fc7a6d5272",
+  "scryfall_uri": "https://scryfall.com/card/dsk/79/underwater-tunnel-slimy-aquarium?utm_source=api",
+  "layout": "split",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T02:24:47Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/2/d/2dd69f2d-8c9c-41fc-93ea-48fc7a6d5272.jpg?1783909487",
+    "normal": "https://cards.scryfall.io/normal/front/2/d/2dd69f2d-8c9c-41fc-93ea-48fc7a6d5272.jpg?1783909487",
+    "large": "https://cards.scryfall.io/large/front/2/d/2dd69f2d-8c9c-41fc-93ea-48fc7a6d5272.jpg?1783909487",
+    "png": "https://cards.scryfall.io/png/front/2/d/2dd69f2d-8c9c-41fc-93ea-48fc7a6d5272.png?1783909487",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/2/d/2dd69f2d-8c9c-41fc-93ea-48fc7a6d5272.jpg?1783909487",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/2/d/2dd69f2d-8c9c-41fc-93ea-48fc7a6d5272.jpg?1783909487",
+    "thumb": "https://cards.scryfall.io/thumb/front/2/d/2dd69f2d-8c9c-41fc-93ea-48fc7a6d5272.webp?1783909487",
+    "grid": "https://cards.scryfall.io/grid/front/2/d/2dd69f2d-8c9c-41fc-93ea-48fc7a6d5272.webp?1783909487",
+    "display": "https://cards.scryfall.io/display/front/2/d/2dd69f2d-8c9c-41fc-93ea-48fc7a6d5272.webp?1783909487",
+    "art": "https://cards.scryfall.io/art/front/2/d/2dd69f2d-8c9c-41fc-93ea-48fc7a6d5272.webp?1783909487",
+    "crop": "https://cards.scryfall.io/crop/front/2/d/2dd69f2d-8c9c-41fc-93ea-48fc7a6d5272.webp?1783909487",
+    "jpeg": "https://cards.scryfall.io/normal/front/2/d/2dd69f2d-8c9c-41fc-93ea-48fc7a6d5272.jpg?1783909487"
+  },
+  "mana_cost": "{U} // {3}{U}",
+  "cmc": 5.0,
+  "type_line": "Enchantment — Room // Enchantment — Room",
+  "colors": [
+    "U"
+  ],
+  "color_identity": [
+    "U"
+  ],
+  "keywords": [
+    "Surveil",
+    "Manifest",
+    "Manifest dread"
+  ],
+  "card_faces": [
+    {
+      "object": "card_face",
+      "name": "Underwater Tunnel",
+      "mana_cost": "{U}",
+      "type_line": "Enchantment — Room",
+      "oracle_text": "When you unlock this door, surveil 2. (Look at the top two cards of your library, then put any number of them into your graveyard and the rest on top of your library in any order.)\n(You may cast either half. That door unlocks on the battlefield. As a sorcery, you may pay the mana cost of a locked door to unlock it.)",
+      "artist": "Titus Lunter",
+      "artist_id": "b11e6b3a-f4ca-4cf1-8fd7-475696de5f5c",
+      "illustration_id": "1aee59e4-70f9-42ff-a8ba-cda108e6ff71"
+    },
+    {
+      "object": "card_face",
+      "name": "Slimy Aquarium",
+      "mana_cost": "{3}{U}",
+      "type_line": "Enchantment — Room",
+      "oracle_text": "When you unlock this door, manifest dread, then put a +1/+1 counter on that creature.\n(You may cast either half. That door unlocks on the battlefield. As a sorcery, you may pay the mana cost of a locked door to unlock it.)",
+      "artist": "Titus Lunter",
+      "artist_id": "b11e6b3a-f4ca-4cf1-8fd7-475696de5f5c"
+    }
+  ],
+  "all_parts": [
+    {
+      "object": "related_card",
+      "id": "2dd69f2d-8c9c-41fc-93ea-48fc7a6d5272",
+      "component": "combo_piece",
+      "name": "Underwater Tunnel // Slimy Aquarium",
+      "type_line": "Enchantment — Room // Enchantment — Room",
+      "uri": "https://api.scryfall.com/cards/2dd69f2d-8c9c-41fc-93ea-48fc7a6d5272"
+    },
+    {
+      "object": "related_card",
+      "id": "01104ab1-84e1-4c78-853d-637c6554bdf9",
+      "component": "combo_piece",
+      "name": "Manifest",
+      "type_line": "Creature",
+      "uri": "https://api.scryfall.com/cards/01104ab1-84e1-4c78-853d-637c6554bdf9"
+    }
+  ],
+  "legalities": {
+    "standard": "legal",
+    "future": "legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "legal",
+    "paupercommander": "legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "mtgo",
+    "arena"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "a111d8a9-b647-48ec-afab-2b78f92173f5",
+  "set": "dsk",
+  "set_name": "Duskmourn: House of Horror",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/a111d8a9-b647-48ec-afab-2b78f92173f5",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Adsk&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/dsk?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/2dd69f2d-8c9c-41fc-93ea-48fc7a6d5272/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A2b46394e-d337-4b1a-88e6-7fdac2ee4ac4&unique=prints",
+  "collector_number": "79",
+  "digital": false,
+  "rarity": "common",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Titus Lunter",
+  "artist_ids": [
+    "b11e6b3a-f4ca-4cf1-8fd7-475696de5f5c"
+  ],
+  "illustration_id": "1aee59e4-70f9-42ff-a8ba-cda108e6ff71",
+  "border_color": "black",
+  "frame": "2015",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 11976,
+  "penny_rank": 7461,
+  "prices": {
+    "usd": "0.12",
+    "usd_foil": "0.20",
+    "usd_etched": null,
+    "eur": "0.10",
+    "eur_foil": "0.16",
+    "tix": "0.03"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=673484&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DUnderwater%2BTunnel%2B%252F%252F%2BSlimy%2BAquarium",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DUnderwater%2BTunnel%2B%252F%252F%2BSlimy%2BAquarium",
+    "edhrec": "https://edhrec.com/route/?cc=Underwater+Tunnel+%2F%2F+Slimy+Aquarium"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F579323%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=788421&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/130289?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

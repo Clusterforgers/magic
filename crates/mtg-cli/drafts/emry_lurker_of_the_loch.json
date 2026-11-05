@@ -1,0 +1,46 @@
+{
+  "oracle_id": "da3e7d3d-2ca0-40c3-9602-fca37c92f507",
+  "name": "Emry, Lurker of the Loch",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Emry, Lurker of the Loch",
+      "oracle_fingerprint": "3f3d61ce469920ddcc07f210e9ad3ed4",
+      "abilities": [
+        { "Keyword": { "Affinity": [{ "Type": "Artifact" }] } },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "Mill": { "count": 4 } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "Type": "Artifact" }, { "OwnedBy": "You" }, { "In": "Graveyard" }]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "Rule": {
+                  "rule": {
+                    "MayCast": {
+                      "what": [{ "Not": { "Type": "Land" } }],
+                      "from": "Graveyard",
+                      "only": { "Target": 0 }
+                    }
+                  },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

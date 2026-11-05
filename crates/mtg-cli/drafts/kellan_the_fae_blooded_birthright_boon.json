@@ -1,0 +1,53 @@
+{
+  "oracle_id": "10c48d19-d91f-4674-b186-477acaf08e5a",
+  "name": "Kellan, the Fae-Blooded // Birthright Boon",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Kellan, the Fae-Blooded",
+      "oracle_fingerprint": "82b79ec5f4069399e60232b0150fee06",
+      "abilities": [
+        { "Keyword": "DoubleStrike" },
+        {
+          "Static": {
+            "affected": { "Each": [{ "Type": "Creature" }, "Other", { "ControlledBy": "You" }] },
+            "mods": [
+              {
+                "ModifyPT": {
+                  "power": {
+                    "Count": [
+                      { "AnyOf": [{ "Subtype": "Equipment" }, { "Subtype": "Aura" }] },
+                      { "AttachedTo": "This" }
+                    ]
+                  },
+                  "toughness": 0
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Birthright Boon",
+      "oracle_fingerprint": "25cbb083e5343a3dd2fc128c9fdb95c1",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Search": {
+                  "filter": [{ "AnyOf": [{ "Subtype": "Aura" }, { "Subtype": "Equipment" }] }],
+                  "reveal": true,
+                  "as": "found"
+                }
+              },
+              { "Move": { "what": { "Bound": "found" }, "to": "Hand" } },
+              { "Shuffle": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

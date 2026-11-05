@@ -1,0 +1,35 @@
+{
+  "oracle_id": "fd57331f-1cfa-4f88-a925-fc171738c3c0",
+  "name": "War Barge",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "War Barge",
+      "oracle_fingerprint": "fe038598d474989a3277a74b7b625df0",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{3}",
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "AddKeyword": { "Landwalk": [{ "Subtype": "Island" }] } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "DelayedTrigger": {
+                  "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield" } },
+                  "this_turn": true,
+                  "effects": [{ "Destroy": { "what": "Triggering", "regenerate": false } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

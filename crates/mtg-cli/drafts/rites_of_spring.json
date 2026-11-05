@@ -1,0 +1,53 @@
+{
+  "oracle_id": "a7f682ce-3d1f-425c-b65a-11a15791aa9e",
+  "name": "Rites of Spring",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Rites of Spring",
+      "oracle_fingerprint": "fd1082ab31154d3bcc86e41704fd3f46",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Discard": {
+                  "count": { "Count": [{ "In": "Hand" }, { "OwnedBy": "You" }] },
+                  "optional": true,
+                  "as": "discarded"
+                }
+              },
+              {
+                "Search": {
+                  "filter": [{ "Type": "Land" }, { "Supertype": "Basic" }],
+                  "count": {
+                    "min": 0,
+                    "max": {
+                      "Count": [
+                        { "Is": { "Bound": "discarded" } },
+                        {
+                          "AnyOf": [
+                            { "In": "Battlefield" },
+                            { "In": "Hand" },
+                            { "In": "Library" },
+                            { "In": "Graveyard" },
+                            { "In": "Exile" },
+                            { "In": "Stack" }
+                          ]
+                        }
+                      ]
+                    }
+                  },
+                  "reveal": true,
+                  "as": "found2"
+                }
+              },
+              { "Move": { "what": { "Bound": "found2" }, "to": "Hand" } },
+              { "Shuffle": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

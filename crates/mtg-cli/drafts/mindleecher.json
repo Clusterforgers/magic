@@ -1,0 +1,32 @@
+{
+  "oracle_id": "4864cc98-4fde-4010-81e9-ea4944347e7e",
+  "name": "Mindleecher",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mindleecher",
+      "oracle_fingerprint": "f7272e2531ef1b5d9dcb1997b5f816c9",
+      "abilities": [
+        { "Keyword": { "Mutate": "{4}{B}" } },
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "Did": { "action": "Mutated", "what": ["This"] } },
+            "effects": [
+              { "LookAtTop": { "who": "Opponents", "as": "top" } },
+              { "ExileHidden": { "what": { "Bound": "top" }, "held": true, "as": "exiled4" } },
+              {
+                "Rule": {
+                  "rule": {
+                    "MayCast": { "from": "Exile", "only": { "Bound": "exiled4" }, "play": true }
+                  },
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

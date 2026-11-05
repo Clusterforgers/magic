@@ -1,0 +1,56 @@
+{
+  "oracle_id": "387fe395-e4a0-4fb2-8d6c-88a1a21d2ed8",
+  "name": "Fortified Beachhead",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Fortified Beachhead",
+      "oracle_fingerprint": "2355ebaef497061f6a4040de090fb8c6",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": {
+              "RevealOrTapped": [{ "Subtype": "Soldier" }, { "In": "Hand" }, { "OwnedBy": "You" }]
+            },
+            "condition": {
+              "Not": {
+                "Compare": {
+                  "left": {
+                    "Count": [
+                      { "Subtype": "Soldier" },
+                      { "In": "Battlefield" },
+                      { "ControlledBy": "You" }
+                    ]
+                  },
+                  "op": "Ge",
+                  "right": 1
+                }
+              }
+            }
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "OneOf": ["White", "Blue"] } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{5}" }, "Tap"],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Subtype": "Soldier" }, { "ControlledBy": "You" }] },
+                  "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

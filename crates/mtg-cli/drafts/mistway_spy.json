@@ -1,0 +1,36 @@
+{
+  "oracle_id": "87ccb151-a948-4e5a-878b-0d46c921a2b7",
+  "name": "Mistway Spy",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mistway Spy",
+      "oracle_fingerprint": "589020cf3ee146be84b131faca0d40fd",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": { "Disguise": "{1}{U}" } },
+        {
+          "Triggered": {
+            "when": { "TurnedFaceUp": { "what": ["This"] } },
+            "effects": [
+              {
+                "DelayedTrigger": {
+                  "when": {
+                    "DealsDamage": {
+                      "source": [{ "Type": "Creature" }, { "ControlledBy": "You" }],
+                      "to": "EachPlayer",
+                      "combat": true
+                    }
+                  },
+                  "once": false,
+                  "this_turn": true,
+                  "effects": [{ "CreateToken": { "token": { "Named": "clue" } } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

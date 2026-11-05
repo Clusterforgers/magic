@@ -1,0 +1,56 @@
+{
+  "oracle_id": "7aa39b85-6646-4365-99c3-9de31ab0594f",
+  "name": "Isperia the Inscrutable",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Isperia the Inscrutable",
+      "oracle_fingerprint": "d6570c2baab625070a27f93cadca44af",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": ["This"], "to": "EachPlayer", "combat": true } },
+            "effects": [
+              { "ChooseValue": { "kind": { "CardName": [] }, "as": "name" } },
+              {
+                "Bind": {
+                  "what": { "Each": [{ "OwnedBy": "Triggering" }, { "In": "Hand" }] },
+                  "as": "revealed2"
+                }
+              },
+              { "Reveal": { "what": { "Bound": "revealed2" } } },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Bound": "revealed2" },
+                      "selector": [{ "ChosenAs": "name" }],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [
+                    {
+                      "Search": {
+                        "filter": [
+                          { "Type": "Creature" },
+                          { "HasKeyword": "Flying" },
+                          { "ControlledBy": "You" }
+                        ],
+                        "reveal": true,
+                        "as": "found3"
+                      }
+                    },
+                    { "Move": { "what": { "Bound": "found3" }, "to": "Hand" } },
+                    { "Shuffle": {} }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

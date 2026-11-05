@@ -1,0 +1,46 @@
+{
+  "oracle_id": "f1b1cf99-b44c-4bcc-b0ed-98f69e66c54a",
+  "name": "Kuon, Ogre Ascendant // Kuon's Essence",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Kuon, Ogre Ascendant",
+      "oracle_fingerprint": "b20266386602f8caa6c516c11454c675",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End" } },
+            "if": {
+              "Compare": {
+                "left": {
+                  "Tally": {
+                    "event": "Died",
+                    "who": "EachPlayer",
+                    "filter": [{ "Type": "Creature" }]
+                  }
+                },
+                "op": "Ge",
+                "right": 3
+              }
+            },
+            "effects": [{ "Flip": { "what": "This" } }]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Kuon's Essence",
+      "oracle_fingerprint": "a9c4814f14daf43586522b1649650fd5",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep" } },
+            "effects": [
+              { "Sacrifice": { "who": "Triggering", "filter": [{ "Type": "Creature" }] } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,64 @@
+{
+  "oracle_id": "503094aa-6f8f-42c1-ad5a-9305934e5f0c",
+  "name": "Myrel, Shield of Argive",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Myrel, Shield of Argive",
+      "oracle_fingerprint": "55493cc49c90e4b5a1db9a4d0439dea2",
+      "abilities": [
+        {
+          "Rule": {
+            "rule": { "Cant": { "who": "Opponents", "action": { "Cast": {} } } },
+            "condition": "YourTurn"
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Soldier",
+                      "types": ["Artifact", "Creature"],
+                      "subtypes": ["Soldier"],
+                      "power": 1,
+                      "toughness": 1
+                    }
+                  },
+                  "count": { "Count": [{ "Subtype": "Soldier" }, { "ControlledBy": "You" }] }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Rule": {
+            "rule": {
+              "Cant": {
+                "who": "Opponents",
+                "action": {
+                  "ActivateKind": {
+                    "kind": "Every",
+                    "sources": [
+                      {
+                        "AnyOf": [
+                          { "Type": "Artifact" },
+                          { "Type": "Creature" },
+                          { "Type": "Enchantment" }
+                        ]
+                      }
+                    ]
+                  }
+                }
+              }
+            },
+            "condition": "YourTurn"
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,118 @@
+{
+  "oracle_id": "e70ac420-8540-4a69-820f-ae3e0274ca1a",
+  "name": "Jugan Defends the Temple // Remnant of the Rising Star",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Jugan Defends the Temple",
+      "oracle_fingerprint": "a77b6ca5a32067aa3bb0ee0886134331",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 1 } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Human Monk",
+                      "colors": ["Green"],
+                      "types": ["Creature"],
+                      "subtypes": ["Human", "Monk"],
+                      "power": 1,
+                      "toughness": 1,
+                      "abilities": [
+                        {
+                          "Activated": {
+                            "cost": ["Tap"],
+                            "effects": [{ "AddMana": { "mana": { "Fixed": ["Green"] } } }]
+                          }
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 2 } },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }] }, "bounds": { "min": 0, "max": 2 } }
+            ],
+            "effects": [{ "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1" } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 3 } },
+            "effects": [
+              { "Exile": { "what": "This", "as": "exiled" } },
+              {
+                "Move": {
+                  "what": { "Bound": "exiled" },
+                  "to": { "Battlefield": { "under": "You", "transformed": true } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Remnant of the Rising Star",
+      "oracle_fingerprint": "972ec9986c75df5dc738c216b89fd6b3",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Creature" }, "Other", { "ControlledBy": "You" }],
+                "to": "Battlefield"
+              }
+            },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": "{X}",
+                  "paid": [
+                    { "Bind": { "what": "Triggering", "as": "when" } },
+                    {
+                      "Reflexive": {
+                        "effects": [
+                          {
+                            "PutCounters": {
+                              "on": { "Bound": "when" },
+                              "counter": "+1/+1",
+                              "count": "X"
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "ModifyPT": { "power": 5, "toughness": 5 } }, { "AddKeyword": "Trample" }],
+            "condition": {
+              "Compare": {
+                "left": { "Count": [{ "Type": "Creature" }, "Modified", { "ControlledBy": "You" }] },
+                "op": "Ge",
+                "right": 5
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

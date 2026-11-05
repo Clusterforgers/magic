@@ -1,0 +1,158 @@
+{
+  "object": "card",
+  "id": "ca03131a-9bd4-4fba-b95c-90f1831e86e7",
+  "oracle_id": "7ceaddba-6301-45f8-86a1-ad4c6e6d3297",
+  "multiverse_ids": [
+    74489
+  ],
+  "mtgo_id": 21749,
+  "mtgo_foil_id": 21750,
+  "tcgplayer_id": 12241,
+  "cardmarket_id": 12799,
+  "name": "Callow Jushi // Jaraku the Interloper",
+  "lang": "en",
+  "released_at": "2005-02-04",
+  "uri": "https://api.scryfall.com/cards/ca03131a-9bd4-4fba-b95c-90f1831e86e7",
+  "scryfall_uri": "https://scryfall.com/card/bok/31/callow-jushi-jaraku-the-interloper?utm_source=api",
+  "layout": "flip",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T12:03:27Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/c/a/ca03131a-9bd4-4fba-b95c-90f1831e86e7.jpg?1783944207",
+    "normal": "https://cards.scryfall.io/normal/front/c/a/ca03131a-9bd4-4fba-b95c-90f1831e86e7.jpg?1783944207",
+    "large": "https://cards.scryfall.io/large/front/c/a/ca03131a-9bd4-4fba-b95c-90f1831e86e7.jpg?1783944207",
+    "png": "https://cards.scryfall.io/png/front/c/a/ca03131a-9bd4-4fba-b95c-90f1831e86e7.png?1783944207",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/c/a/ca03131a-9bd4-4fba-b95c-90f1831e86e7.jpg?1783944207",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/c/a/ca03131a-9bd4-4fba-b95c-90f1831e86e7.jpg?1783944207",
+    "thumb": "https://cards.scryfall.io/thumb/front/c/a/ca03131a-9bd4-4fba-b95c-90f1831e86e7.webp?1783944207",
+    "grid": "https://cards.scryfall.io/grid/front/c/a/ca03131a-9bd4-4fba-b95c-90f1831e86e7.webp?1783944207",
+    "display": "https://cards.scryfall.io/display/front/c/a/ca03131a-9bd4-4fba-b95c-90f1831e86e7.webp?1783944207",
+    "art": "https://cards.scryfall.io/art/front/c/a/ca03131a-9bd4-4fba-b95c-90f1831e86e7.webp?1783944207",
+    "crop": "https://cards.scryfall.io/crop/front/c/a/ca03131a-9bd4-4fba-b95c-90f1831e86e7.webp?1783944207",
+    "jpeg": "https://cards.scryfall.io/normal/front/c/a/ca03131a-9bd4-4fba-b95c-90f1831e86e7.jpg?1783944207"
+  },
+  "mana_cost": "{1}{U}{U}",
+  "cmc": 3.0,
+  "type_line": "Creature — Human Wizard // Legendary Creature — Spirit",
+  "power": "2",
+  "toughness": "2",
+  "colors": [
+    "U"
+  ],
+  "color_identity": [
+    "U"
+  ],
+  "keywords": [],
+  "card_faces": [
+    {
+      "object": "card_face",
+      "name": "Callow Jushi",
+      "mana_cost": "{1}{U}{U}",
+      "type_line": "Creature — Human Wizard",
+      "oracle_text": "Whenever you cast a Spirit or Arcane spell, you may put a ki counter on this creature.\nAt the beginning of the end step, if there are two or more ki counters on this creature, you may flip it.",
+      "power": "2",
+      "toughness": "2",
+      "artist": "Tsutomu Kawade",
+      "artist_id": "433a40d2-2caa-4cba-ba8d-0308a951d026",
+      "illustration_id": "15199d0a-66e1-4846-8eae-7c56eef978f7"
+    },
+    {
+      "object": "card_face",
+      "name": "Jaraku the Interloper",
+      "mana_cost": "",
+      "type_line": "Legendary Creature — Spirit",
+      "oracle_text": "Remove a ki counter from Jaraku: Counter target spell unless its controller pays {2}.",
+      "power": "3",
+      "toughness": "4",
+      "artist": "Tsutomu Kawade",
+      "artist_id": "433a40d2-2caa-4cba-ba8d-0308a951d026"
+    }
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "d4b88587-a1f5-4b47-9e24-78ec9e57bd0e",
+  "set": "bok",
+  "set_name": "Betrayers of Kamigawa",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/d4b88587-a1f5-4b47-9e24-78ec9e57bd0e",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Abok&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/bok?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/ca03131a-9bd4-4fba-b95c-90f1831e86e7/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A7ceaddba-6301-45f8-86a1-ad4c6e6d3297&unique=prints",
+  "collector_number": "31",
+  "digital": false,
+  "rarity": "uncommon",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Tsutomu Kawade",
+  "artist_ids": [
+    "433a40d2-2caa-4cba-ba8d-0308a951d026"
+  ],
+  "illustration_id": "15199d0a-66e1-4846-8eae-7c56eef978f7",
+  "border_color": "black",
+  "frame": "2003",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 25600,
+  "penny_rank": 15614,
+  "prices": {
+    "usd": "0.27",
+    "usd_foil": "1.19",
+    "usd_etched": null,
+    "eur": "0.19",
+    "eur_foil": "0.54",
+    "tix": "0.03"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=74489&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DCallow%2BJushi%2B%252F%252F%2BJaraku%2Bthe%2BInterloper",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DCallow%2BJushi%2B%252F%252F%2BJaraku%2Bthe%2BInterloper",
+    "edhrec": "https://edhrec.com/route/?cc=Callow+Jushi"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F12241%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=12799&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/21749?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

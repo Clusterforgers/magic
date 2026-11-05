@@ -1,0 +1,53 @@
+{
+  "oracle_id": "34d0d070-fcaf-410e-a002-012cbe104fb7",
+  "name": "Moldering Gym // Weight Room",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Moldering Gym",
+      "oracle_fingerprint": "455989a90b96b5276b5194638c47a395",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "DoorUnlocked": { "who": "You", "door": 0 } },
+            "effects": [
+              {
+                "Search": {
+                  "filter": [{ "Type": "Land" }, { "Supertype": "Basic" }],
+                  "as": "found"
+                }
+              },
+              {
+                "Move": {
+                  "what": { "Bound": "found" },
+                  "to": { "Battlefield": { "tapped": true } }
+                }
+              },
+              { "Shuffle": {} }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Weight Room",
+      "oracle_fingerprint": "bb6535db750b260e6aee6fb5e477a94e",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "DoorUnlocked": { "who": "You", "door": 0 } },
+            "effects": [
+              { "LookAtTop": { "count": 2, "as": "looked" } },
+              { "Choose": { "from": { "Bound": "looked" }, "as": "kept2", "rest_as": "rest3" } },
+              { "Move": { "what": { "Bound": "rest3" }, "to": "Graveyard" } },
+              { "Manifest": { "as": "manifested4" } },
+              {
+                "PutCounters": { "on": { "Bound": "manifested4" }, "counter": "+1/+1", "count": 3 }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

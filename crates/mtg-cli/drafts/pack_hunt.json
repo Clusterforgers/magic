@@ -1,0 +1,30 @@
+{
+  "oracle_id": "3ee41993-9d14-43a8-bf92-433c4f3aab01",
+  "name": "Pack Hunt",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Pack Hunt",
+      "oracle_fingerprint": "13cd5871e7e973d5c2fa5d39b8c5591f",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Search": {
+                  "filter": [{ "SharesName": { "Target": 0 } }],
+                  "count": { "min": 0, "max": 3 },
+                  "reveal": true,
+                  "as": "found"
+                }
+              },
+              { "Move": { "what": { "Bound": "found" }, "to": "Hand" } },
+              { "Shuffle": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

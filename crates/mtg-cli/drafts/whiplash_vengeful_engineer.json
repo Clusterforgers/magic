@@ -1,0 +1,39 @@
+{
+  "oracle_id": "00ed7aca-b3c1-4d48-acd5-b1596daeb4c3",
+  "name": "Whiplash, Vengeful Engineer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Whiplash, Vengeful Engineer",
+      "oracle_fingerprint": "3b86f81c11220a9c680aa1b409808111",
+      "abilities": [
+        { "Replacement": { "when": { "Enters": { "what": ["This"] } }, "by": "Tapped" } },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "if": {
+              "Compare": {
+                "left": { "Count": ["This", { "HasAttached": [{ "Subtype": "Equipment" }] }] },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "effects": [
+              {
+                "LoseLife": {
+                  "who": "Opponents",
+                  "amount": { "Count": [{ "Subtype": "Equipment" }, { "AttachedTo": "This" }] }
+                }
+              },
+              {
+                "GainLife": {
+                  "amount": { "Count": [{ "Subtype": "Equipment" }, { "AttachedTo": "This" }] }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

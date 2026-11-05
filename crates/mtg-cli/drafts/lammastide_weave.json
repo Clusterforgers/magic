@@ -1,0 +1,56 @@
+{
+  "oracle_id": "74250f3e-ad88-486f-a10a-90d9a2f0097f",
+  "name": "Lammastide Weave",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Lammastide Weave",
+      "oracle_fingerprint": "5b278dd379044216f8fba6ae2eeeee21",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              { "ChooseValue": { "kind": { "CardName": [] }, "as": "name" } },
+              { "Mill": { "who": { "Target": 0 }, "as": "milled2" } },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": {
+                        "Count": [
+                          { "Is": { "Bound": "milled2" } },
+                          {
+                            "AnyOf": [
+                              { "In": "Battlefield" },
+                              { "In": "Hand" },
+                              { "In": "Library" },
+                              { "In": "Graveyard" },
+                              { "In": "Exile" },
+                              { "In": "Stack" }
+                            ]
+                          },
+                          { "ChosenAs": "name" }
+                        ]
+                      },
+                      "op": "Eq",
+                      "right": 1
+                    }
+                  },
+                  "then": [
+                    {
+                      "GainLife": {
+                        "amount": { "Stat": { "of": { "Bound": "milled2" }, "stat": "ManaValue" } }
+                      }
+                    }
+                  ]
+                }
+              },
+              { "Draw": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,72 @@
+{
+  "oracle_id": "1ff00f5b-4bf9-4724-8bb5-6b9a9eb0ec7f",
+  "name": "Replicating Ring",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Replicating Ring",
+      "oracle_fingerprint": "5e6e89e34338aaeecd1a84f6ca5a46b9",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "AnyColor": 1 } } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [
+              { "PutCounters": { "on": "This", "counter": { "Other": "night" } } },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": {
+                        "Count": [
+                          "This",
+                          { "CounterCount": { "kind": { "Other": "night" }, "op": "Ge", "to": 8 } }
+                        ]
+                      },
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [
+                    {
+                      "RemoveCounters": {
+                        "from": "This",
+                        "counter": { "Other": "night" },
+                        "count": { "Counters": { "on": "This", "counter": { "Other": "night" } } }
+                      }
+                    },
+                    {
+                      "CreateToken": {
+                        "token": {
+                          "Custom": {
+                            "name": "Replicated Ring",
+                            "supertypes": ["Snow"],
+                            "types": ["Artifact"],
+                            "abilities": [
+                              {
+                                "Activated": {
+                                  "cost": ["Tap"],
+                                  "effects": [{ "AddMana": { "mana": { "AnyColor": 1 } } }]
+                                }
+                              }
+                            ]
+                          }
+                        },
+                        "count": 8
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

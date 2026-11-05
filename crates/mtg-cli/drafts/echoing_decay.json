@@ -1,0 +1,39 @@
+{
+  "oracle_id": "a1e46cc7-47da-4165-8c6b-f1cd2aa79aa5",
+  "name": "Echoing Decay",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Echoing Decay",
+      "oracle_fingerprint": "e9802a7ffb9c6aa3b075a81b8797d47c",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "ModifyPT": { "power": -2, "toughness": -2 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "Continuous": {
+                  "affected": {
+                    "Each": [
+                      { "SharesName": { "Target": 0 } },
+                      { "Not": { "Is": { "Target": 0 } } }
+                    ]
+                  },
+                  "mods": [{ "ModifyPT": { "power": -2, "toughness": -2 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

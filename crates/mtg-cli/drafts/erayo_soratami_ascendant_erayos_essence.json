@@ -1,7 +1,7 @@
 {
   "oracle_id": "d83bb32d-f409-421a-9d93-bd7ea3240b47",
   "name": "Erayo, Soratami Ascendant // Erayo's Essence",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Erayo, Soratami Ascendant",
@@ -9,7 +9,19 @@
       "abilities": [
         { "Keyword": "Flying" },
         {
-          "Manual": { "reason": "you apply this clause by hand", "span": { "start": 7, "end": 63 } }
+          "Triggered": {
+            "when": { "SpellCast": {} },
+            "if": {
+              "AtTrigger": {
+                "Compare": {
+                  "left": { "Tally": { "event": "SpellCast", "who": "EachPlayer", "filter": [] } },
+                  "op": "Eq",
+                  "right": 4
+                }
+              }
+            },
+            "effects": [{ "Flip": { "what": "This" } }]
+          }
         }
       ]
     },

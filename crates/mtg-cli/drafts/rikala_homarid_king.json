@@ -1,0 +1,80 @@
+{
+  "oracle_id": "45284633-8aab-4078-ae5c-7b0d75efe2f5",
+  "name": "Rikala, Homarid King",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Rikala, Homarid King",
+      "oracle_fingerprint": "3920ba1d0e0bda147d0e85bd2d62c252",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    { "PutCounters": { "on": "This", "counter": { "Other": "tide" } } },
+                    {
+                      "If": {
+                        "condition": {
+                          "Compare": {
+                            "left": { "Counters": { "on": "This", "counter": { "Other": "tide" } } },
+                            "op": "Ge",
+                            "right": 4
+                          }
+                        },
+                        "then": [
+                          {
+                            "RemoveCounters": {
+                              "from": "This",
+                              "counter": { "Other": "tide" },
+                              "count": {
+                                "Counters": { "on": "This", "counter": { "Other": "tide" } }
+                              }
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Static": {
+            "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+            "mods": [
+              {
+                "ModifyPT": {
+                  "power": { "Counters": { "on": "This", "counter": { "Other": "tide" } } },
+                  "toughness": 0
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "TappedForMana": { "what": [{ "Subtype": "Island" }], "by": "You" } },
+            "if": {
+              "Compare": {
+                "left": {
+                  "Count": [
+                    "This",
+                    { "CounterCount": { "kind": { "Other": "tide" }, "op": "Ge", "to": 3 } }
+                  ]
+                },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Blue"] } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,50 @@
+{
+  "oracle_id": "9d52641e-b9ad-4781-a374-1d2868eb32a8",
+  "name": "Night Dealings",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Night Dealings",
+      "oracle_fingerprint": "541fb54100c71b7761a31dc27eeb66e6",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": [{ "ControlledBy": "You" }], "to": "Opponents" } },
+            "effects": [
+              {
+                "PutCounters": {
+                  "on": "This",
+                  "counter": { "Other": "theft" },
+                  "count": "Triggering"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [
+              { "Mana": "{2}{B}{B}" },
+              { "RemoveCounters": { "counter": { "Other": "theft" }, "count": "X" } }
+            ],
+            "effects": [
+              {
+                "Search": {
+                  "filter": [
+                    { "Not": { "Type": "Land" } },
+                    { "ControlledBy": "You" },
+                    { "Compare": { "stat": "ManaValue", "op": "Eq", "to": "X" } }
+                  ],
+                  "reveal": true,
+                  "as": "found"
+                }
+              },
+              { "Move": { "what": { "Bound": "found" }, "to": "Hand" } },
+              { "Shuffle": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

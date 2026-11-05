@@ -1,0 +1,40 @@
+{
+  "oracle_id": "d14f313c-fea6-49c4-8197-5b74ee584a6b",
+  "name": "Scorching Dragonfire",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Scorching Dragonfire",
+      "oracle_fingerprint": "acb0e3f86c822ce9cab18815ebb3b36c",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "AnyOf": [{ "Type": "Creature" }, { "Type": "Planeswalker" }] }]
+                }
+              }
+            ],
+            "effects": [
+              { "DealDamage": { "to": { "Target": 0 }, "amount": 3 } },
+              {
+                "Shield": {
+                  "when": {
+                    "ZoneChange": {
+                      "what": [{ "Is": { "Target": 0 } }, { "Type": "Creature" }],
+                      "from": "Battlefield",
+                      "to": "Graveyard"
+                    }
+                  },
+                  "by": { "MoveTo": "Exile" },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

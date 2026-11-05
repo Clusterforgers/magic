@@ -1,0 +1,69 @@
+{
+  "oracle_id": "7ceaddba-6301-45f8-86a1-ad4c6e6d3297",
+  "name": "Callow Jushi // Jaraku the Interloper",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Callow Jushi",
+      "oracle_fingerprint": "71b1d43682cdacbbb7d76561200ceed2",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "SpellCast": {
+                "what": [{ "AnyOf": [{ "Subtype": "Spirit" }, { "Subtype": "Arcane" }] }],
+                "by": "You"
+              }
+            },
+            "effects": [
+              {
+                "May": {
+                  "effects": [{ "PutCounters": { "on": "This", "counter": { "Other": "ki" } } }]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End" } },
+            "if": {
+              "Compare": {
+                "left": {
+                  "Count": [
+                    "This",
+                    { "CounterCount": { "kind": { "Other": "ki" }, "op": "Ge", "to": 2 } }
+                  ]
+                },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "effects": [{ "May": { "effects": [{ "Flip": { "what": "This" } }] } }]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Jaraku the Interloper",
+      "oracle_fingerprint": "7d0e7788250e1c8e2d74a03a6ed7027e",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "RemoveCounters": { "counter": { "Other": "ki" } } }],
+            "targets": [{ "what": { "Object": ["Spell"] } }],
+            "effects": [
+              {
+                "Pay": {
+                  "who": { "ControllerOf": { "Target": 0 } },
+                  "cost": "{2}",
+                  "unpaid": [{ "Counter": { "what": { "Target": 0 } } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
