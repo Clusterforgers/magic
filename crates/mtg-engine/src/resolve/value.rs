@@ -850,6 +850,18 @@ impl<'a> Scope<'a> {
         any
     }
 
+    /// The objects and players the sources named by `on` remember in `slot`.
+    fn remembered(&self, on: &Ref, slot: &str) -> Result<Vec<Target>, ResolveError> {
+        let mut held = Vec::new();
+        for source in self.objects(on)? {
+            let objects = crate::memory::recall(self.state, source, slot);
+            held.extend(objects.into_iter().map(Target::Object));
+            let players = crate::memory::recall_players(self.state, source, slot);
+            held.extend(players.into_iter().map(Target::Player));
+        }
+        Ok(held)
+    }
+
     /// The players and objects a reference names, in the order the rules process them.
     pub fn refs(&self, reference: &Ref) -> Result<Vec<Target>, ResolveError> {
         let state = self.state;
@@ -932,22 +944,7 @@ impl<'a> Scope<'a> {
             // Validation proves a name is bound by an earlier step; only a declined or skipped branch leaves it unset.
             Ref::Bound(name) => self.bindings.get(name).cloned().unwrap_or_default(),
             Ref::Paid => self.paid(),
-            Ref::Remembered { on, slot } => {
-                let mut held = Vec::new();
-                for source in self.objects(on)? {
-                    held.extend(
-                        crate::memory::recall(state, source, slot)
-                            .into_iter()
-                            .map(Target::Object),
-                    );
-                    held.extend(
-                        crate::memory::recall_players(state, source, slot)
-                            .into_iter()
-                            .map(Target::Player),
-                    );
-                }
-                held
-            }
+            Ref::Remembered { on, slot } => self.remembered(on, slot)?,
             Ref::Arrived { of, zone } => self.arrived(of, *zone)?,
             Ref::ControllerOf(inner) => self.seats_of(inner, |seen| seen.controller)?,
             Ref::OwnerOf(inner) => self.seats_of(inner, |seen| seen.owner)?,

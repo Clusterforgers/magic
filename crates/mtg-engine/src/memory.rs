@@ -102,7 +102,11 @@ pub(crate) fn forget_object(state: &mut GameState, event: &Event) {
                 .and_then(|item| item.ability())
                 .map(crate::abilities::AbilityObject::source);
             // A number lives for the resolution that wrote it, so a later one never reads an earlier one's.
-            let writer = source.or_else(|| state.object(*object).map(|item| item.reference()));
+            let writer = source.or_else(|| {
+                state
+                    .object(*object)
+                    .map(crate::object::GameObject::reference)
+            });
             if let Some(writer) = writer {
                 for ((owner, _), held) in &mut state.memory {
                     if *owner == writer {
