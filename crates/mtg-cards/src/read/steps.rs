@@ -199,38 +199,53 @@ fn other(ability: &Ability, depth: u8, out: &mut Vec<Step>) {
     }
 }
 
+/// A cost modifier: "this spell costs {1} less to cast", "activated abilities of artifacts cost {1} less to activate".
+fn cost_modifier(ability: &Ability, depth: u8, out: &mut Vec<Step>) {
+    let ctx = Ctx::none();
+    let Ability::CostModifier {
+        applies_to,
+        change,
+        mana,
+        per,
+        condition,
+        activating,
+        ..
+    } = ability
+    else {
+        return;
+    };
+    let more = if *change == CostChange::Increase {
+        "more"
+    } else {
+        "less"
+    };
+    let each = if *per == Amount::one() {
+        String::new()
+    } else {
+        format!(", times {}", phrase::amount(&ctx, per))
+    };
+    let words = if activating.is_some() {
+        format!(
+            "activated abilities of {} cost {mana} {more} to activate{each}",
+            phrase::selectors(&ctx, applies_to)
+        )
+    } else if *applies_to == Selector::this() {
+        format!("this spell costs {mana} {more} to cast{each}")
+    } else {
+        format!(
+            "{} cost {mana} {more} to cast{each}",
+            phrase::selectors(&ctx, applies_to)
+        )
+    };
+    out.push(Step::new(depth, words));
+    gate(&ctx, "while", condition.as_ref(), depth, out);
+}
+
 /// The abilities about the cost of casting a spell, and the keywords and clauses left to the table.
 fn costs(ability: &Ability, depth: u8, out: &mut Vec<Step>) {
     let ctx = Ctx::none();
     match ability {
-        Ability::CostModifier {
-            applies_to,
-            change,
-            mana,
-            per,
-            condition,
-        } => {
-            let more = if *change == CostChange::Increase {
-                "more"
-            } else {
-                "less"
-            };
-            let each = if *per == Amount::one() {
-                String::new()
-            } else {
-                format!(", times {}", phrase::amount(&ctx, per))
-            };
-            let spells = if *applies_to == Selector::this() {
-                "this spell costs".to_owned()
-            } else {
-                format!("{} cost", phrase::selectors(&ctx, applies_to))
-            };
-            out.push(Step::new(
-                depth,
-                format!("{spells} {mana} {more} to cast{each}"),
-            ));
-            gate(&ctx, "while", condition.as_ref(), depth, out);
-        }
+        Ability::CostModifier { .. } => cost_modifier(ability, depth, out),
         Ability::AdditionalCost { cost, required } => {
             let how = if *required { "must pay" } else { "may pay" };
             out.push(Step::new(

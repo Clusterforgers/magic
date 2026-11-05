@@ -91,13 +91,23 @@ fn cant_be_activated(ctx: &Ctx, p: &Params) -> Tr<Value> {
     if !matches!(p.get("AffectedZone"), None | Some("Battlefield")) {
         return unmapped("key:Static.CantBeActivated.AffectedZone");
     }
-    if p.get("ValidSA") != Some("Activated.!ManaAbility") {
-        return unmapped("key:Static.CantBeActivated.ValidSA");
-    }
-    let Some(valid) = p.get("ValidCard") else {
-        return unmapped("key:Static.CantBeActivated.no-ValidCard");
+    // A loyalty ability and the cycling ability are told apart by their kind; every activated ability but the mana
+    // abilities is the plain form (an unqualified `Activated` includes the mana abilities, which no rule here forbids).
+    let kind = match p.get("ValidSA") {
+        Some("Activated.!ManaAbility") => None,
+        Some("Activated.Loyalty") => Some("Loyalty"),
+        Some("Activated.Cycling") => Some("Cycling"),
+        _ => return unmapped("key:Static.CantBeActivated.ValidSA"),
     };
-    let sources = selector_any(ctx, valid)?;
+    let sources = match (p.get("ValidCard"), kind) {
+        (Some(valid), _) => selector_any(ctx, valid)?,
+        (None, Some(_)) => Vec::new(),
+        (None, None) => return unmapped("key:Static.CantBeActivated.no-ValidCard"),
+    };
+    if let Some(kind) = kind {
+        let action = json!({"ActivateKind": {"kind": kind, "sources": sources}});
+        return Ok(cant(&who(p.get("Activator"))?, &action));
+    }
     match p.get("Activator") {
         None => Ok(cant(&json!({"Each": sources}), &json!({"Activate": []}))),
         Some(word) => Ok(cant(&who(Some(word))?, &json!({"Activate": sources}))),

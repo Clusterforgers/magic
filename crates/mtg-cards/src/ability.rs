@@ -74,6 +74,25 @@ pub enum CostChange {
     Reduce,
 }
 
+/// A kind of activated ability whose cost a modifier changes or whose activation a prohibition forbids.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
+pub enum ActivationKind {
+    /// Any activated ability that is not a mana ability.
+    Any,
+    /// A loyalty ability of a planeswalker (CR 606).
+    Loyalty,
+    /// The equip ability (CR 702.6).
+    Equip,
+    /// The cycling ability (CR 702.29).
+    Cycling,
+}
+
+/// Whether a count is zero, so serialization can leave it out.
+#[allow(clippy::trivially_copy_pass_by_ref)]
+const fn is_zero(count: &u32) -> bool {
+    *count == 0
+}
+
 /// Whether a flag is off, so serialization can leave it out (serde calls it with a reference).
 #[allow(clippy::trivially_copy_pass_by_ref)]
 const fn is_false(flag: &bool) -> bool {
@@ -199,6 +218,13 @@ pub enum Ability {
         /// It applies only while this holds.
         #[serde(default, skip_serializing_if = "Option::is_none")]
         condition: Option<Condition>,
+        /// The change is to the cost of activating abilities of this kind (the objects `applies_to` selects have them), not
+        /// to the cost of casting spells.
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        activating: Option<ActivationKind>,
+        /// A reduction never takes the cost below this much mana (the cost itself when it is already less).
+        #[serde(default, skip_serializing_if = "is_zero")]
+        least: u32,
     },
     /// "As an additional cost to cast this spell, you may ..." (CR 118.8): a cost the caster may pay as the spell is announced,
     /// read by `Condition::AdditionalCostPaid`; without "you may" (`required`) the spell is cast only by paying it (CR 601.2b).

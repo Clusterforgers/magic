@@ -13,6 +13,9 @@ pub fn rule(ctx: &Ctx, p: &Params) -> Option<Tr<Value>> {
     if let Some(found) = super::statics_cant::rule(ctx, p) {
         return Some(found);
     }
+    if let Some(found) = super::statics_defender::rule(ctx, p) {
+        return Some(found);
+    }
     let mode = p.get("Mode").unwrap_or_default();
     let found = match mode {
         "CantGainLife" => players(p, mode, "ValidPlayer").map(|who| json!({"CantGainLife": who})),

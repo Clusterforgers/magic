@@ -56,6 +56,7 @@ pub mod statics_again;
 pub mod statics_alt;
 pub mod statics_cant;
 pub mod statics_cast;
+pub mod statics_defender;
 pub mod statics_look;
 mod statics_rules;
 pub mod stored;

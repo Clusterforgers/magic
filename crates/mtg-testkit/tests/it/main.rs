@@ -3,6 +3,7 @@
 mod abilities;
 mod ability_costs;
 mod actions_fuzz;
+mod activation_costs;
 mod activation_moments;
 mod active_leaves;
 mod active_leaves_fuzz;
@@ -21,6 +22,7 @@ mod attack_budget;
 mod attack_payment;
 mod attack_tax;
 mod attack_tax_fuzz;
+mod attack_unless;
 mod aura_abilities;
 mod aura_grants;
 mod back_face_dies;

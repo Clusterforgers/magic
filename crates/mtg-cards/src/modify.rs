@@ -6,7 +6,7 @@ use mtg_core::card::{CardType, Subtype, Supertype};
 use mtg_core::color::Color;
 use serde::{Deserialize, Serialize};
 
-use crate::ability::Ability;
+use crate::ability::{Ability, ActivationKind};
 use crate::cost::Cost;
 use crate::keyword::Keyword;
 use crate::mana::ManaCostX;
@@ -334,6 +334,21 @@ pub enum Prohibited {
         /// The cast is open while this holds for the caster.
         #[serde(default, skip_serializing_if = "Option::is_none")]
         unless: Option<Condition>,
+    },
+    /// Attack a player or a planeswalker they control (CR 508.1b), unless the condition holds for the defending player
+    /// ("you" in it is that player).
+    Attack {
+        /// The attack is open while this holds for the defending player.
+        unless: Condition,
+    },
+    /// Activate abilities of one kind of the sources the selector picks (every source when empty): the kind is a loyalty
+    /// ability, the equip ability or the cycling ability, or any activated ability but a mana ability.
+    ActivateKind {
+        /// The kind of ability.
+        kind: ActivationKind,
+        /// The sources; every source when empty.
+        #[serde(default, skip_serializing_if = "Selector::is_empty")]
+        sources: Selector,
     },
 }
 

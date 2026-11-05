@@ -1073,6 +1073,8 @@ fn cost_modifier(r: &mut Reader<'_>) -> Option<Ability> {
         mana,
         per,
         condition,
+        activating: None,
+        least: 0,
     })
 }
 
@@ -1306,6 +1308,8 @@ pub fn texts(ability: &Ability) -> Vec<String> {
             mana,
             per,
             condition,
+            activating: None,
+            least: 0,
         } => cost_modifier_texts(applies_to, *change, mana, per, condition.as_ref()),
         Ability::Replacement {
             when: ReplaceWhen::LifeGain { .. },

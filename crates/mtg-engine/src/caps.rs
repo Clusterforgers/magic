@@ -348,6 +348,8 @@ const RUNS: &[&str] = &[
     "Rule.Cant.SkipStep",
     "Rule.Cant.SkipTurn",
     "Rule.Cant.Cast",
+    "Rule.Cant.Attack",
+    "Rule.Cant.ActivateKind",
     VARIABLE_STATS,
     "Mod.ModifyPT",
     "Mod.AddKeyword",
@@ -1020,6 +1022,8 @@ mod tests {
     #[case::cant_skip_step("Rule.Cant.SkipStep", true)]
     #[case::cant_skip_turn("Rule.Cant.SkipTurn", true)]
     #[case::cant_cast("Rule.Cant.Cast", true)]
+    #[case::cant_attack("Rule.Cant.Attack", true)]
+    #[case::cant_activate_kind("Rule.Cant.ActivateKind", true)]
     #[case::a_choice_of_mana("Effect.AddMana.OneOf", true)]
     #[case::a_choice_of_lists_of_mana("Effect.AddMana.OneOfLists", true)]
     #[case::mana_of_the_chosen_color("Effect.AddMana.ChosenColor", true)]

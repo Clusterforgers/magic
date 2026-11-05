@@ -494,7 +494,25 @@ fn must_act(ctx: &Ctx, p: &Params, rule: &str) -> Tr<Value> {
     Ok(json!({"Rule": {"rule": {rule: who}}}))
 }
 
-/// `ReduceCost` and `RaiseCost` of spells.
+/// The kind of activated ability a `ReduceCost` or `RaiseCost` line changes the cost of, `None` for the cost of a spell.
+fn activation_kind(p: &Params) -> Tr<Option<&'static str>> {
+    let spell = p.get("ValidSpell");
+    if p.get("Type") == Some("Ability") {
+        return match spell {
+            None | Some("Activated.!ManaAbility") => Ok(Some("Any")),
+            Some(other) => unmapped(format!("key:Static.CostModifier.ValidSpell={other}")),
+        };
+    }
+    match spell {
+        None => Ok(None),
+        Some("Activated.Equip") => Ok(Some("Equip")),
+        Some("Activated.Cycling") => Ok(Some("Cycling")),
+        Some("Activated.!ManaAbility") => Ok(Some("Any")),
+        Some(other) => unmapped(format!("key:Static.CostModifier.ValidSpell={other}")),
+    }
+}
+
+/// `ReduceCost` and `RaiseCost` of spells and of activated abilities.
 fn cost_modifier(ctx: &Ctx, p: &Params, change: &str) -> Tr<Value> {
     keys(
         p,
@@ -502,31 +520,50 @@ fn cost_modifier(ctx: &Ctx, p: &Params, change: &str) -> Tr<Value> {
         &[
             "ValidCard",
             "ValidTarget",
+            "ValidSpell",
             "Color",
             "Type",
             "Activator",
             "Amount",
             "EffectZone",
+            "AffectedZone",
+            "MinMana",
+            "Relative",
+            "OnlyFirstSpell",
+            "Condition",
         ],
     )?;
-    if p.get("Type") != Some("Spell") {
+    let activating = activation_kind(p)?;
+    if activating.is_none() && p.get("Type") != Some("Spell") {
         return unmapped("static:CostModifier-Type");
+    }
+    if !matches!(p.get("AffectedZone"), None | Some("Battlefield")) {
+        return unmapped("key:Static.CostModifier.AffectedZone");
     }
     // A spell's own cost applies in hand and on the stack; any other line works on the battlefield.
     match (p.get("EffectZone"), p.get("ValidCard")) {
         (None | Some("Battlefield"), _) | (Some(_), Some("Card.Self")) => {}
         _ => return unmapped("key:Static.CostModifier.EffectZone"),
     }
-    let applies = match p.get("ValidCard").unwrap_or("Card") {
+    if activating.is_some() && p.has("ValidTarget") {
+        return unmapped("key:Static.CostModifier.ValidTarget-of-an-ability");
+    }
+    let mut applies = match p.get("ValidCard").unwrap_or("Card") {
         "Card.Self" => {
-            if p.has("Activator") {
+            if p.has("Activator") && activating.is_none() {
                 return unmapped("static:CostModifier-self-with-Activator");
             }
             vec![json!("This")]
         }
         valid => {
-            let mut selector = vec![json!("Spell")];
-            selector.extend(selector_any(ctx, valid)?);
+            let mut selector = if activating.is_some() {
+                Vec::new()
+            } else {
+                vec![json!("Spell")]
+            };
+            if valid != "Card" || activating.is_none() {
+                selector.extend(selector_any(ctx, valid)?);
+            }
             match p.get("Activator") {
                 None => {}
                 Some("You") => selector.push(json!({"ControlledBy": "You"})),
@@ -538,11 +575,47 @@ fn cost_modifier(ctx: &Ctx, p: &Params, change: &str) -> Tr<Value> {
             selector
         }
     };
-    let mut applies = applies;
     if let Some(target) = p.get("ValidTarget") {
         // "Spells that target a tapped creature": the cost is judged with the targets the spell has announced.
         applies.push(json!({"Targeting": selector_any(ctx, target)?}));
     }
+    let mut conditions = Vec::new();
+    if let Some(name) = p.get("Condition") {
+        conditions.push(super::condition::named(name)?);
+    }
+    if p.get("OnlyFirstSpell") == Some("True") {
+        // "The first spell of that kind you cast each turn": none of that kind was cast before.
+        if activating.is_some() || p.get("ValidCard").is_none() || p.get("Activator") != Some("You")
+        {
+            return unmapped("key:Static.CostModifier.OnlyFirstSpell-shape");
+        }
+        let filter = selector_any(ctx, p.get("ValidCard").unwrap_or_default())?;
+        conditions.push(json!({"Compare": {
+            "left": {"Tally": {"event": "SpellCast", "who": "You", "filter": filter}},
+            "op": "Eq", "right": 0}}));
+    } else if p.has("OnlyFirstSpell") {
+        return unmapped("key:Static.CostModifier.OnlyFirstSpell-value");
+    }
+    let mut built = modifier(ctx, p, change, &applies)?;
+    if let Some(kind) = activating {
+        built["CostModifier"]["activating"] = json!(kind);
+    }
+    match conditions.len() {
+        0 => {}
+        1 => built["CostModifier"]["condition"] = conditions.remove(0),
+        _ => built["CostModifier"]["condition"] = json!({"All": conditions}),
+    }
+    if let Some(least) = p.get("MinMana") {
+        let Ok(least) = least.parse::<u32>() else {
+            return unmapped("key:Static.CostModifier.MinMana-not-a-number");
+        };
+        built["CostModifier"]["least"] = json!(least);
+    }
+    Ok(built)
+}
+
+/// The `CostModifier` ability for the amount of mana a line changes by.
+fn modifier(ctx: &Ctx, p: &Params, change: &str, applies: &[Value]) -> Tr<Value> {
     let amount = p.get("Amount").unwrap_or_default();
     // `Color$` names the one colour whose symbols the change adds or removes, `Amount$` how many.
     let symbol = match p.get("Color") {
@@ -556,6 +629,9 @@ fn cost_modifier(ctx: &Ctx, p: &Params, change: &str) -> Tr<Value> {
         return Ok(
             json!({"CostModifier": {"applies_to": applies, "change": change, "mana": symbol, "per": per}}),
         );
+    }
+    if p.get("Relative").is_some() {
+        return unmapped("key:Static.CostModifier.Relative-with-a-number");
     }
     if p.has("Color") {
         let Ok(count) = amount.parse::<usize>() else {

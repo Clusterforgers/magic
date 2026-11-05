@@ -3816,7 +3816,9 @@ impl Walker<'_> {
     fn cant_action(&mut self, action: &Prohibited) {
         self.uses("Rule", &format!("Cant.{}", tag_of(action)));
         match action {
-            Prohibited::Activate(sources) | Prohibited::BeTargeted(sources) => {
+            Prohibited::ActivateKind { sources, .. }
+            | Prohibited::Activate(sources)
+            | Prohibited::BeTargeted(sources) => {
                 self.at("action", |w| w.selector(sources));
             }
             Prohibited::Trigger(cause) => {
@@ -3829,6 +3831,9 @@ impl Walker<'_> {
                 if let Some(unless) = unless {
                     self.at("unless", |w| w.condition(unless));
                 }
+            }
+            Prohibited::Attack { unless } => {
+                self.at("unless", |w| w.condition(unless));
             }
             Prohibited::SkipStep(Step::Cleanup) => {
                 self.at("action", |w| w.problem("the cleanup step can't be skipped"));

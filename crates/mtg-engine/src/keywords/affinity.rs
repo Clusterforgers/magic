@@ -35,6 +35,8 @@ pub(crate) fn reduction(kind: &Selector) -> Ability {
         ),
         per: Amount::Count(Selector(counted)),
         condition: None,
+        activating: None,
+        least: 0,
     }
 }
 

@@ -3,12 +3,13 @@
 //! are read as the ability is activated, by its controller: the increases are added first, then the reductions take
 //! their mana off the way a spell's cost reductions do.
 
-use mtg_cards::ability::CostChange;
+use mtg_cards::ability::{Ability, CostChange};
 use mtg_cards::cost::CostItem;
 use mtg_core::card::CardType;
 use mtg_core::ids::{ObjectId, PlayerId};
 use mtg_core::mana::ManaCost;
 
+use crate::abilities::AbilityRef;
 use crate::announce::c11a_reduced;
 use crate::price::Price;
 use crate::resolve::Scope;
@@ -21,12 +22,26 @@ const C11A_MOST_TIMES: i64 = 100;
 pub(crate) fn c11a_mana(
     state: &GameState,
     player: PlayerId,
-    source: ObjectId,
+    (source, address, rules): (ObjectId, AbilityRef, &Ability),
     price: &Price,
 ) -> Option<ManaCost> {
     let mana = price.mana.clone()?;
+    let own = c11a_own(state, player, source, price, mana);
+    Some(crate::activation_kind::modified(
+        state, source, address, rules, own,
+    ))
+}
+
+/// The mana of `price` with the changes the ability prints of its own cost applied.
+fn c11a_own(
+    state: &GameState,
+    player: PlayerId,
+    source: ObjectId,
+    price: &Price,
+    mana: ManaCost,
+) -> ManaCost {
     let Some(object) = state.object(source).filter(|_| !price.changes.is_empty()) else {
-        return Some(mana);
+        return mana;
     };
     let scope = Scope::announcing(state, player, object.reference());
     let (mut more, mut less) = (ManaCost::ZERO, ManaCost::ZERO);
@@ -55,7 +70,7 @@ pub(crate) fn c11a_mana(
             *part = c11a_joined(part.clone(), unit.rest());
         }
     }
-    Some(c11a_reduced(&c11a_joined(mana, &more), &less))
+    c11a_reduced(&c11a_joined(mana, &more), &less)
 }
 
 /// `cost` with every symbol of `more` added.

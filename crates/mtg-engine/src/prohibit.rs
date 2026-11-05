@@ -8,6 +8,7 @@
 
 use crate::triggers::step_matches;
 use crate::turn::Step;
+use mtg_cards::ability::ActivationKind;
 use mtg_cards::modify::Prohibited;
 use mtg_cards::refs::Selector;
 use mtg_cards::value::{Condition, TallyEvent};
@@ -55,7 +56,12 @@ impl Banned {
 #[derive(Debug, Clone, Copy)]
 pub(crate) enum Doing {
     /// `player` activates an ability of `source`.
-    Activate { player: PlayerId, source: ObjectId },
+    Activate {
+        player: PlayerId,
+        source: ObjectId,
+        /// The specific kind of the ability (`activation_kind::specific`); none for any other.
+        kind: Option<ActivationKind>,
+    },
     /// `target` becomes the target of a spell or ability of `by`, controlled by `controller`.
     BeTargeted { target: Target, by: ObjectRef },
     /// `player` plays a land.
@@ -78,6 +84,12 @@ pub(crate) enum Doing {
     SkipTurn { player: PlayerId },
     /// `player` casts the card `card`.
     Cast { player: PlayerId, card: ObjectId },
+    /// `object`, controlled by `player`, attacks `defender` or a planeswalker they control.
+    Attack {
+        player: PlayerId,
+        object: ObjectId,
+        defender: PlayerId,
+    },
 }
 
 /// Whether a prohibition's subjects cover the player or the object an action is about.
@@ -110,8 +122,22 @@ fn holder(state: &GameState, object: ObjectId) -> Option<PlayerId> {
 fn applies(state: &GameState, ban: &Banned, doing: Doing) -> bool {
     let who = &ban.who;
     match (&ban.action, doing) {
-        (Prohibited::Activate(sources), Doing::Activate { player, source }) => {
+        (Prohibited::Activate(sources), Doing::Activate { player, source, .. }) => {
             covers(who, Some(player), Some(source))
+                && state
+                    .object(source)
+                    .is_some_and(|o| picks(state, ban, sources, o.reference()))
+        }
+        (
+            Prohibited::ActivateKind { kind, sources },
+            Doing::Activate {
+                player,
+                source,
+                kind: own,
+            },
+        ) => {
+            crate::activation_kind::is_kind(*kind, own)
+                && covers(who, Some(player), Some(source))
                 && state
                     .object(source)
                     .is_some_and(|o| picks(state, ban, sources, o.reference()))
@@ -168,8 +194,37 @@ fn applies(state: &GameState, ban: &Banned, doing: Doing) -> bool {
                     card,
                 )
         }
+        (
+            Prohibited::Attack { unless },
+            Doing::Attack {
+                player,
+                object,
+                defender,
+            },
+        ) => {
+            covers(who, Some(player), Some(object))
+                && !state.object(object).is_some_and(|o| {
+                    Scope::announcing(state, defender, o.reference())
+                        .holds(unless)
+                        .unwrap_or(false)
+                })
+        }
         _ => false,
     }
+}
+
+/// Whether a prohibition keeps the creature `object` from attacking `defender` or a planeswalker they control.
+pub(crate) fn attack_forbidden(state: &GameState, object: ObjectId, defender: PlayerId) -> bool {
+    controller_of(state, object).is_some_and(|player| {
+        forbidden(
+            state,
+            Doing::Attack {
+                player,
+                object,
+                defender,
+            },
+        )
+    })
 }
 
 /// The parts of a cast prohibition: the filter, the spells a player may cast each turn and the exception.

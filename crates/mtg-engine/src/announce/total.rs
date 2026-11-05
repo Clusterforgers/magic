@@ -117,7 +117,7 @@ fn printed(ctx: &Ctx<'_>, choices: &Choices) -> Option<Printed> {
             })
         }
         What::Ability(ability) => match ctx.ability? {
-            Ability::Activated { cost, .. } => {
+            rules @ Ability::Activated { cost, .. } => {
                 let x = choices.x.unwrap_or(0);
                 let price = Price::announced_in(cost, ctx.state, ctx.player, ability.object)
                     .ok()?
@@ -128,8 +128,12 @@ fn printed(ctx: &Ctx<'_>, choices: &Choices) -> Option<Printed> {
                     choices.cost_picks().iter().flatten().copied().collect();
                 crate::mana_takes::leave(&mut sources, &picked);
                 let life = price.life();
-                let mana =
-                    crate::c11a_less::c11a_mana(ctx.state, ctx.player, ability.object, &price);
+                let mana = crate::c11a_less::c11a_mana(
+                    ctx.state,
+                    ctx.player,
+                    (ability.object, *ability, rules),
+                    &price,
+                );
                 Some(Printed::new(mana, sources, life))
             }
             _ => Some(Printed::new(None, Vec::new(), 0)),
