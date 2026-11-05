@@ -39,6 +39,8 @@ pub fn rule(ctx: &Ctx, p: &Params) -> Option<Tr<Value>> {
             objects(ctx, p, mode, "ValidCard").map(|who| combat(&who, "BlockWhileTapped"))
         }
         "IgnoreHexproof" => ignore_hexproof(ctx, p),
+        "IgnoreLandWalk" => ignore_landwalk(ctx, p),
+        "TapPowerValue" => tap_power_value(ctx, p),
         "IgnoreLegendRule" => ignore_legend_rule(p, mode),
         "UntapOtherPlayer" => untap_other_players(ctx, p),
         "Continuous" if p.has("SetMaxHandSize") => hand_size(ctx, p),
@@ -143,8 +145,60 @@ fn untap_other_players(ctx: &Ctx, p: &Params) -> Tr<Value> {
 }
 
 /// A combat permission for the creatures `who` names.
-fn combat(who: &Value, quirk: &str) -> Value {
-    json!({"Combat": {"who": who, "quirk": quirk}})
+fn combat(who: &Value, quirk: impl Into<Value>) -> Value {
+    json!({"Combat": {"who": who, "quirk": Into::<Value>::into(quirk)}})
+}
+
+/// `TapPowerValue`: the creatures count their toughness (`Value$ Toughness`) or `Value$ N` more power when tapped to crew
+/// a Vehicle or saddle a Mount. A line that reaches stations or spacecraft is another rule.
+fn tap_power_value(ctx: &Ctx, p: &Params) -> Tr<Value> {
+    keys(p, "TapPowerValue", &["ValidSA", "ValidCard", "Value"])?;
+    let crews = p.get("ValidSA").is_some_and(|sa| {
+        sa.split(',')
+            .all(|part| matches!(part, "Activated.Crew+Vehicle" | "Activated.Saddle+Mount"))
+    });
+    if !crews {
+        return unmapped("static:TapPowerValue.ValidSA");
+    }
+    let value = match p.get("Value") {
+        Some("Toughness") => json!("Toughness"),
+        Some(n) => match n.parse::<u32>() {
+            Ok(n) => json!({"Plus": n}),
+            Err(_) => return unmapped("static:TapPowerValue.Value"),
+        },
+        None => return unmapped("static:TapPowerValue.no-Value"),
+    };
+    let who = match p.get("ValidCard") {
+        Some(word) => object_word(ctx, word)?,
+        None => return unmapped("static:TapPowerValue.no-ValidCard"),
+    };
+    Ok(combat(&who, json!({"TapPower": value})))
+}
+
+/// `IgnoreLandWalk`: creatures with a landwalk ability (`ValidKeyword$ Landwalk:Forest`, any when absent) can be blocked
+/// as though they did not have it, or the `ValidBlocker$` creatures can block them as though they did not.
+fn ignore_landwalk(ctx: &Ctx, p: &Params) -> Tr<Value> {
+    keys(
+        p,
+        "IgnoreLandWalk",
+        &["ValidKeyword", "ValidBlocker", "Secondary"],
+    )?;
+    match (p.get("ValidKeyword"), p.get("ValidBlocker")) {
+        (Some(word), None) => {
+            let Some(land) = word.strip_prefix("Landwalk:") else {
+                return unmapped("key:Static.IgnoreLandWalk.ValidKeyword");
+            };
+            let land = json!([{"Subtype": land}]);
+            let who = json!({"Each": [{"HasKeyword": {"Landwalk": land}}]});
+            Ok(combat(&who, json!({"IgnoreLandwalk": land})))
+        }
+        (None, None) => {
+            let who = json!({"Each": [{"Type": "Creature"}]});
+            Ok(combat(&who, "IgnoreAllLandwalk"))
+        }
+        (None, Some(word)) => Ok(combat(&object_word(ctx, word)?, "BlockIgnoringLandwalk")),
+        _ => unmapped("key:Static.IgnoreLandWalk.shape"),
+    }
 }
 
 /// `IgnoreHexproof`: spells and abilities the `Activator$` players control may target the `ValidEntity$` permanents and

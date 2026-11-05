@@ -4,8 +4,8 @@
 use std::collections::BTreeMap;
 
 use mtg_cards::keyword::Keyword;
-use mtg_cards::modify::{Blocking, CombatQuirk, GameRule};
-use mtg_cards::refs::Ref;
+use mtg_cards::modify::{Blocking, CombatQuirk, GameRule, TapPowerAs};
+use mtg_cards::refs::{Ref, Selector};
 use mtg_core::ids::{ObjectId, PlayerId};
 
 use crate::decision::{BlockOptions, BlockerOption};
@@ -49,7 +49,7 @@ impl QuirkRules {
                 for creature in creatures {
                     let held = self.quirks.entry(creature.id).or_default();
                     if !held.contains(quirk) {
-                        held.push(*quirk);
+                        held.push(quirk.clone());
                     }
                 }
             }
@@ -90,7 +90,7 @@ pub(crate) fn lower(scope: &Scope<'_>, wanted: &GameRule) -> Result<Rule, Resolv
         }
         GameRule::Combat { who, quirk } => {
             return Ok(Rule::Combat {
-                quirk: *quirk,
+                quirk: quirk.clone(),
                 creatures: objects(who)?,
             });
         }
@@ -116,6 +116,40 @@ pub(crate) fn lower(scope: &Scope<'_>, wanted: &GameRule) -> Result<Rule, Resolv
         players,
         shroud: *shroud,
     })
+}
+
+/// Whether the attacker can be blocked by the blocker as though it did not have the landwalk ability `land` names (CR 702.14).
+pub(crate) fn landwalk_ignored(
+    state: &GameState,
+    attacker: ObjectId,
+    blocker: ObjectId,
+    land: &Selector,
+) -> bool {
+    let quirks = &state.rules().quirks;
+    quirks.has(attacker, |q| match q {
+        CombatQuirk::IgnoreAllLandwalk => true,
+        CombatQuirk::IgnoreLandwalk(ignored) => ignored == land,
+        _ => false,
+    }) || quirks.has(blocker, |q| matches!(q, CombatQuirk::BlockIgnoringLandwalk))
+}
+
+/// What a creature counts for when it is tapped to crew or saddle (CR 702.122): its power, or its toughness when a rule
+/// says so, and the greater amounts rules add to it; never below nothing.
+pub(crate) fn tap_value(state: &GameState, id: ObjectId, power: i32, toughness: i32) -> u32 {
+    let quirks = &state.rules().quirks;
+    let by_toughness = quirks.has(id, |q| {
+        matches!(q, CombatQuirk::TapPower(TapPowerAs::Toughness))
+    });
+    let more: i64 = quirks.quirks.get(&id).map_or(0, |held| {
+        held.iter()
+            .map(|q| match q {
+                CombatQuirk::TapPower(TapPowerAs::Plus(more)) => i64::from(*more),
+                _ => 0,
+            })
+            .sum()
+    });
+    let base = i64::from(if by_toughness { toughness } else { power });
+    u32::try_from((base + more).max(0)).unwrap_or(u32::MAX)
 }
 
 /// Whether the creature may attack as though it did not have defender.

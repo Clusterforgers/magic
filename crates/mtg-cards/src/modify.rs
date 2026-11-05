@@ -283,7 +283,7 @@ pub enum Blocking {
 
 /// What a `GameRule::Combat` says of creatures: a permission, or a limit on a declaration that is not a plain
 /// requirement.
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Eq, Hash, Serialize, Deserialize)]
 pub enum CombatQuirk {
     /// They can't attack unless another creature attacks too (CR 506.5).
     CantAttackAlone,
@@ -295,6 +295,23 @@ pub enum CombatQuirk {
     BlockWhileTapped,
     /// They must be blocked if able: a requirement on the block declaration (CR 509.1c).
     MustBeBlocked(Blocking),
+    /// They can be blocked as though they did not have the landwalk ability the selector names (CR 702.14).
+    IgnoreLandwalk(Selector),
+    /// They can be blocked as though they did not have any landwalk ability.
+    IgnoreAllLandwalk,
+    /// They can block creatures with landwalk as though those did not have it.
+    BlockIgnoringLandwalk,
+    /// Tapped to crew or saddle, they count for another amount than their power.
+    TapPower(TapPowerAs),
+}
+
+/// What a creature counts for when it is tapped to crew or saddle.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
+pub enum TapPowerAs {
+    /// Its toughness rather than its power.
+    Toughness,
+    /// Its power, this much greater.
+    Plus(u32),
 }
 
 /// What a `GameRule::Cant` forbids its subjects. A subject is covered when it is the object an action is about or the

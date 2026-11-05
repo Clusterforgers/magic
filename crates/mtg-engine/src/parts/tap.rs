@@ -38,9 +38,14 @@ pub(super) fn text(filter: &Selector, count: usize) -> String {
 
 /// The power of a permanent as it stands, 0 for no power or a negative one (CR 702.122a counts what is there).
 pub(super) fn power_of(state: &GameState, object: ObjectId) -> u32 {
-    characteristics(state, object)
-        .and_then(|found| found.power)
-        .map_or(0, |power| u32::try_from(power).unwrap_or(0))
+    characteristics(state, object).map_or(0, |found| {
+        crate::combat_quirks::tap_value(
+            state,
+            object,
+            found.power.unwrap_or(0),
+            found.toughness.unwrap_or(0),
+        )
+    })
 }
 
 /// The power of all of `objects` together.
