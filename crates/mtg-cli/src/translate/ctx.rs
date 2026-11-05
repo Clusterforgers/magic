@@ -363,7 +363,12 @@ pub fn is_hint(key: &str) -> bool {
 /// Refuses a key that the mapper of `api` does not read: a key that changes what the line does and is not understood
 /// must leave the line out, not be ignored.
 pub fn only(params: &Params, api: &str, read: &[&str]) -> Tr<()> {
-    check_keys(params, api, read, |key, _| COMMON.contains(&key))
+    check_keys(params, api, read, |key, _| {
+        COMMON.contains(&key) || key == "TargetsWithDefinedController"
+    })?;
+    // `target_spec` reads it; the audit makes a line whose mapper builds no target a gap.
+    params.promise(api, &["TargetsWithDefinedController"]);
+    Ok(())
 }
 
 /// The one place that checks the keys of a line against those a mapper reads: a key that is neither read, accepted, nor a

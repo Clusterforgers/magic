@@ -517,7 +517,10 @@ pub fn objects(reference: Value) -> Tr<Value> {
 /// The target specification `ValidTgts$` and its bounds stand for, as the DSL writes it.
 pub fn target_spec(ctx: &Ctx, params: &Params, zone: Option<&str>) -> Tr<Value> {
     let valid = params.get("ValidTgts").unwrap_or_default();
-    let what = target_what(ctx, valid, zone)?;
+    let mut what = target_what(ctx, valid, zone)?;
+    if let Some(word) = params.get("TargetsWithDefinedController") {
+        restrict_to_controller(ctx, word, zone, &mut what)?;
+    }
     let min = params.get("TargetMin");
     let max = params.get("TargetMax");
     let mut spec = json!({ "what": what });
@@ -536,6 +539,33 @@ pub fn target_spec(ctx: &Ctx, params: &Params, zone: Option<&str>) -> Tr<Value> 
         spec["divide"] = amount(ctx, total)?;
     }
     Ok(spec)
+}
+
+/// `TargetsWithDefinedController$`: the targets are objects that one player controls (owns, outside the battlefield).
+fn restrict_to_controller(ctx: &Ctx, word: &str, zone: Option<&str>, what: &mut Value) -> Tr<()> {
+    let Some(preds) = what.get_mut("Object").and_then(Value::as_array_mut) else {
+        return unmapped("key:TargetsWithDefinedController-for-players");
+    };
+    // An earlier target of the same spell is not yet chosen when the targets are offered: the engine cannot read it in a filter.
+    let who = if matches!(
+        word.trim(),
+        "TriggeredCardController"
+            | "TriggeredTarget"
+            | "TriggeredDefendingPlayer"
+            | "TriggeredPlayer"
+            | "TriggeredSourceController"
+    ) {
+        defined(ctx, word)?
+    } else {
+        return unmapped(format!("key:TargetsWithDefinedController={word}"));
+    };
+    let key = if matches!(zone, None | Some("Battlefield")) {
+        "ControlledBy"
+    } else {
+        "OwnedBy"
+    };
+    preds.push(json!({ key: who }));
+    Ok(())
 }
 
 fn bound(ctx: &Ctx, text: &str) -> Tr<Value> {
