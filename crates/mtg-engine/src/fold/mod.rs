@@ -237,11 +237,6 @@ fn show_learned(state: &mut GameState, event: &Event) {
             }
         }
         Event::Revealed(revealed) => sight::show(state, None, &revealed.cards),
-        Event::RingBearerLost { player } => {
-            if let Some(ring) = state.ring.get_mut(player) {
-                ring.bearer = None;
-            }
-        }
         _ => {}
     }
 }
@@ -253,6 +248,11 @@ fn designate(state: &mut GameState, event: &Event) {
         Event::MonarchChanged { player } => crate::monarch::set(state, Some(*player)),
         Event::CitysBlessingGained { player } => {
             state.citys_blessing.insert(*player);
+        }
+        Event::RingBearerLost { player } => {
+            if let Some(ring) = state.ring.get_mut(player) {
+                ring.bearer = None;
+            }
         }
         Event::RingTempted {
             player,

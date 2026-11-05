@@ -650,10 +650,13 @@ fn by_permanent(sources: &[ManaOption]) -> Vec<Vec<ManaOption>> {
     for group in &mut groups {
         group.sort_by_key(|o| o.source);
     }
-    // Permanents that add restricted mana come first: it is of less use than mana without a restriction.
+    // Permanents that add restricted mana come first: it is of less use than mana without a restriction. A snow source
+    // is worth keeping for an {S} ability, so those come last.
     groups.sort_by_key(|g| {
         (
-            g.iter().all(|o| o.only.is_empty()),
+            g.iter()
+                .all(|o| o.only.is_empty() || mana_snow::is_snow(&o.only)),
+            g.iter().any(|o| mana_snow::is_snow(&o.only)),
             g.len(),
             g.first().map(|o| o.source),
         )
@@ -1049,7 +1052,7 @@ fn can_afford_plain(
     })
 }
 
-/// How much a payment is wanted, lower first: less life, then fewer creatures tapped and cards exiled to help, then fewer sacrifices, then fewer sources that do more than add mana, then fewer taps, then more restricted mana spent, then taps of the kinds the sources make most of.
+/// How much a payment is wanted, lower first: less life, then fewer creatures tapped and cards exiled to help, then fewer sacrifices, then fewer sources that do more than add mana, then fewer taps, then fewer snow sources, then more restricted mana spent, then taps of the kinds the sources make most of.
 ///
 /// Restricted mana is of less use than mana without a restriction, so spending it keeps the rest. The last part keeps a
 /// scarce color untapped when a hybrid symbol can be paid with either of two.
@@ -1059,6 +1062,7 @@ fn preference(
     sources: &[ManaOption],
 ) -> (
     u32,
+    usize,
     usize,
     usize,
     usize,
@@ -1075,12 +1079,15 @@ fn preference(
     let common = used.iter().map(|o| plenty(o.produces)).sum();
     let sacrificed = used.iter().filter(|o| o.sacrifice).count();
     let extras = used.iter().filter(|o| o.extra).count();
+    // A snow source stays untapped for a later {S} unless the payment needs it.
+    let snow = used.iter().filter(|o| mana_snow::is_snow(&o.only)).count();
     (
         payment.life,
         payment.convoke.len() + payment.improvise.len() + payment.delve.len(),
         sacrificed,
         extras,
         payment.taps.len(),
+        snow,
         Reverse(restricted_used(payment, sources)),
         Reverse(common),
     )
@@ -2107,6 +2114,23 @@ mod tests {
         let payment = auto_payment(&cost, &pool, &sources, LIFE).unwrap();
         assert_eq!(payment.taps.len(), 0);
         assert_eq!(payment.pool.len(), 2);
+    }
+
+    #[rstest]
+    #[case::a_plain_cost_keeps_the_snow_land("{1}{U}", "UUU", false)]
+    #[case::snow_in_first_place_still_pays_when_it_must("{U}{U}{U}", "UUU", true)]
+    fn auto_payment_leaves_snow_sources_untapped_unless_needed(
+        #[case] cost_text: &str,
+        #[case] spec: &str,
+        #[case] snow_tapped: bool,
+    ) {
+        let mut sources = lands(spec);
+        sources[0].only = vec![SpendOn::Snow];
+        let payment = auto_payment(&cost(cost_text), &ManaPool::default(), &sources, LIFE).unwrap();
+        assert_eq!(
+            payment.taps.iter().any(|tap| tap.object == ObjectId(0)),
+            snow_tapped
+        );
     }
 
     #[test]

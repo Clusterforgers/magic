@@ -692,7 +692,11 @@ level: number,
 /**
  * The creature they chose as their Ring-bearer.
  */
-bearer?: ObjectId, } } | { "CitysBlessingGained": { 
+bearer?: ObjectId, } } | { "RingBearerLost": { 
+/**
+ * The player whose creature it was.
+ */
+player: PlayerId, } } | { "CitysBlessingGained": { 
 /**
  * Who got it.
  */
