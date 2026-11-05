@@ -111,6 +111,7 @@ fn set_state(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
     let node = match p.get("Mode") {
         Some("Transform") => "Transform",
         Some("Flip") => "Flip",
+        Some("TurnFaceUp") => "TurnFaceUp",
         _ => return unmapped("key:SetState.Mode"),
     };
     let what = subject(ctx, p, "Self", None)?;

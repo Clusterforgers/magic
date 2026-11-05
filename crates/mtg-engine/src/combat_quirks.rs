@@ -884,7 +884,7 @@ mod tests {
         let scope = Scope::announcing(&game, ME, wolf);
         let wanted = GameRule::Combat {
             who: Ref::This,
-            quirk,
+            quirk: quirk.clone(),
         };
         let lowered = lower_rule(&scope, &wanted).unwrap();
         assert_eq!(

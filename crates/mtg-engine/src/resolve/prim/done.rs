@@ -58,6 +58,7 @@ fn reports(effect: &Effect) -> Reports {
         | Effect::MyriadCopies { .. }
         | Effect::Transform { .. }
         | Effect::Flip { .. }
+        | Effect::TurnFaceUp { .. }
         | Effect::Prepare { .. }
         | Effect::Surveil { .. }
         | Effect::Proliferate { .. }

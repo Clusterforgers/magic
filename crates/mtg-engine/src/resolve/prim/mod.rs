@@ -81,6 +81,7 @@ mod moved_as;
 mod pair;
 mod reflexive;
 mod remember;
+mod turn_up;
 // dk1b
 mod dk1c5_unlock;
 #[cfg(test)]
@@ -211,6 +212,7 @@ fn dispatch(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         Effect::MyriadCopies { .. } => myriad_copies::run(cx, effect),
         Effect::Transform { .. } => transform::run(cx, effect),
         Effect::Flip { .. } => flip::run(cx, effect),
+        Effect::TurnFaceUp { .. } => turn_up::run(cx, effect),
         Effect::Prepare { .. } => prepare::run(cx, effect),
         Effect::Surveil { .. } => surveil::run(cx, effect),
         Effect::Proliferate { .. } => proliferate::run(cx, effect),

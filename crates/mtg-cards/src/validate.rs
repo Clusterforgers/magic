@@ -2744,6 +2744,7 @@ impl Walker<'_> {
             | Effect::TapOrUntap { what }
             | Effect::Transform { what }
             | Effect::Flip { what }
+            | Effect::TurnFaceUp { what }
             | Effect::Prepare { what }
             | Effect::Goad { what }
             | Effect::Explore { what }

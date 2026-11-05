@@ -761,6 +761,11 @@ pub enum Effect {
         /// What flips.
         what: Ref,
     },
+    /// Turns face-down permanents face up (CR 702.37e, 708.8); a permanent that is face up already is passed over.
+    TurnFaceUp {
+        /// What is turned.
+        what: Ref,
+    },
     /// Makes prepare cards on the battlefield prepared: while one is, its controller may cast a copy of its spell face and doing so unprepares it. A permanent that is prepared already, is no prepare card or is not on the battlefield is passed over.
     Prepare {
         /// What becomes prepared.
