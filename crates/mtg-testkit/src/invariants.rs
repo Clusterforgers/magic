@@ -604,7 +604,8 @@ fn check_bookkeeping(state: &GameState) -> Result<(), Violation> {
             let t = waiting.trigger();
             // A token that ceased to exist as a state-based action (a copy of a legendary permanent spell) leaves the
             // triggers it caused waiting, and they read its last known information (CR 603.10a).
-            let gone = state.object(t.source.id).is_none() && t.snapshot.zone != Zone::Battlefield;
+            let gone = state.object(t.source.id).is_none()
+                && !matches!(t.snapshot.zone, Zone::Battlefield | Zone::Stack);
             if !state.is_alive(t.controller) || gone {
                 return Err(book(format!(
                     "a triggered ability of {:?} waits for the stack but its controller or source has left the game",

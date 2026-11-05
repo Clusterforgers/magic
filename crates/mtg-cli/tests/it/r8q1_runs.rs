@@ -449,3 +449,30 @@ fn a_card_hidden_by_a_permanent_stays_seen_when_the_permanent_leaves() {
     assert!(!names(&driver, Zone::Battlefield).contains(&"Hider".to_string()));
     assert_eq!(looks(&driver, "Theirs"), (true, false));
 }
+
+const FIERY_ENCORE: &str = "Name:Fiery Encore\nManaCost:4 R\nTypes:Sorcery\nA:SP$ Discard | Mode$ TgtChoose | SubAbility$ DBDraw | RememberDiscarded$ True | SpellDescription$ Discard a card, then draw a card.\nSVar:DBDraw:DB$ Draw | SubAbility$ DBImmediateTrigger\nSVar:DBImmediateTrigger:DB$ ImmediateTrigger | ConditionDefined$ Remembered | ConditionPresent$ Card.nonLand | Execute$ TrigDealDamage | RememberObjects$ RememberedCard | SubAbility$ DBCleanup | SpellDescription$ When you discard a nonland card this way, CARDNAME deals damage equal to that card's mana value to target creature or planeswalker.\nSVar:TrigDealDamage:DB$ DealDamage | ValidTgts$ Creature,Planeswalker | TgtPrompt$ Select target creature or planeswalker | NumDmg$ X\nSVar:X:TriggerRemembered$CardManaCost\nSVar:DBCleanup:DB$ Cleanup | ClearRemembered$ True\nK:Storm\n";
+
+#[test]
+fn a_storm_copy_of_a_spell_with_a_reflexive_trigger_plays_through() {
+    let encore = card(FIERY_ENCORE, &[CardType::Sorcery], "{0}", None);
+    let filler = json_sorcery("Filler", r#"{"Spell":{"effects":[{"GainLife":{"amount":1}}]}}"#);
+    let discard = |name: &str, cost: &str| {
+        Arc::new(
+            CardDefinition::new(name)
+                .with_type(CardType::Creature)
+                .with_power_toughness(1, 1)
+                .with_mana_cost(ManaCost::parse(cost).unwrap()),
+        )
+    };
+    let scenario = main_phase()
+        .hand(0, [filler, encore, discard("Disc", "{3}"), discard("Disc2", "{2}")])
+        .library(0, library_of(&["Draw1", "Draw2", "Draw3"]))
+        .battlefield(1, [ready(free_creature("Vic", 9, 9))]);
+    let mut driver = Driver::from_scenario(scenario).unwrap();
+    cast_and_run(&mut driver, "Filler", true, &[]);
+    cast_and_run(&mut driver, "Fiery Encore", true, &["Vic", "Disc", "Disc2"]);
+    let id = driver.id_of("Vic").unwrap();
+    // The copy and the spell each discard a card and deal its mana value (3 and 2) as damage.
+    let damage = driver.state().object(id).unwrap().permanent().unwrap().damage();
+    assert_eq!(damage, 5);
+}
