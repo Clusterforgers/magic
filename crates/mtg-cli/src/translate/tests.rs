@@ -744,6 +744,7 @@ mod ev1;
 mod f1;
 mod f2;
 mod f3;
+mod r2b;
 mod filters;
 mod frame;
 mod p1;
