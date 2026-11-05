@@ -11,7 +11,7 @@ use crate::turn::Step;
 use mtg_cards::ability::ActivationKind;
 use mtg_cards::modify::Prohibited;
 use mtg_cards::refs::Selector;
-use mtg_cards::value::{Condition, TallyEvent};
+use mtg_cards::value::{Condition, CounterKind, TallyEvent};
 use mtg_core::ids::{ObjectId, PlayerId};
 
 use crate::characteristics::controller_of;
@@ -53,7 +53,7 @@ impl Banned {
 }
 
 /// Something a player or an object is about to do or have done.
-#[derive(Debug, Clone, Copy)]
+#[derive(Debug, Clone)]
 pub(crate) enum Doing {
     /// `player` activates an ability of `source`.
     Activate {
@@ -69,7 +69,7 @@ pub(crate) enum Doing {
     /// `player` sacrifices `object`.
     Sacrifice { player: PlayerId, object: ObjectId },
     /// Counters are put on `on`.
-    PutCounter { on: Target },
+    PutCounter { on: Target, counter: CounterKind },
     /// `object` becomes attached to `to`.
     Attach { object: ObjectId, to: Target },
     /// `player` discards `object`.
@@ -118,7 +118,16 @@ fn holder(state: &GameState, object: ObjectId) -> Option<PlayerId> {
     controller_of(state, object).or_else(|| state.object(object).map(GameObject::owner))
 }
 
+/// Whether the subjects cover the player or object that receives counters.
+fn counters_on(state: &GameState, who: &[Target], on: Target) -> bool {
+    match on {
+        Target::Player(p) => covers(who, Some(p), None),
+        Target::Object(o) => covers(who, holder(state, o.id), Some(o.id)),
+    }
+}
+
 /// Whether one prohibition forbids the action: the one check of each entry of `Prohibited`.
+#[allow(clippy::too_many_lines)]
 fn applies(state: &GameState, ban: &Banned, doing: Doing) -> bool {
     let who = &ban.who;
     match (&ban.action, doing) {
@@ -163,10 +172,10 @@ fn applies(state: &GameState, ban: &Banned, doing: Doing) -> bool {
         | (Prohibited::Discard, Doing::Discard { player, object }) => {
             covers(who, Some(player), Some(object))
         }
-        (Prohibited::PutCounter, Doing::PutCounter { on }) => match on {
-            Target::Player(p) => covers(who, Some(p), None),
-            Target::Object(o) => covers(who, holder(state, o.id), Some(o.id)),
-        },
+        (Prohibited::PutCounter, Doing::PutCounter { on, .. }) => counters_on(state, who, on),
+        (Prohibited::PutCounterOf(kind), Doing::PutCounter { on, counter }) => {
+            *kind == counter && counters_on(state, who, on)
+        }
         (Prohibited::Attach, Doing::Attach { object, to }) => {
             let hosted = match to {
                 Target::Player(p) => covers(who, Some(p), None),
@@ -274,12 +283,13 @@ fn casting_forbidden(
 }
 
 /// Whether a rule in force forbids `doing`: the one place every prohibition is read.
+#[allow(clippy::needless_pass_by_value)]
 pub(crate) fn forbidden(state: &GameState, doing: Doing) -> bool {
     state
         .rules()
         .cants
         .iter()
-        .any(|ban| applies(state, ban, doing))
+        .any(|ban| applies(state, ban, doing.clone()))
 }
 
 /// The prohibitions of triggers in force: the one place trigger detection reads them.
@@ -356,7 +366,10 @@ fn doings(state: &GameState, event: &Event) -> Vec<Doing> {
             });
         }
         Event::CountersChanged(changed) if changed.delta > 0 => {
-            found.push(Doing::PutCounter { on: changed.on });
+            found.push(Doing::PutCounter {
+                on: changed.on,
+                counter: changed.counter.clone(),
+            });
         }
         Event::Attached { object, to } => {
             if let Some(host) = state.object(*to) {
@@ -509,6 +522,16 @@ mod tests {
         r#"{"Cant":{"who":"Opponents","action":"PutCounter"}}"#,
         "counter",
         true
+    )]
+    #[case::counters_of_that_kind(
+        r#"{"Cant":{"who":{"Each":[{"Type":"Creature"}]},"action":{"PutCounterOf":"+1/+1"}}}"#,
+        "counter",
+        true
+    )]
+    #[case::counters_of_another_kind(
+        r#"{"Cant":{"who":{"Each":[{"Type":"Creature"}]},"action":{"PutCounterOf":"-1/-1"}}}"#,
+        "counter",
+        false
     )]
     #[case::removing_counters_is_not_putting(
         r#"{"Cant":{"who":{"Each":[{"Type":"Creature"}]},"action":"PutCounter"}}"#,

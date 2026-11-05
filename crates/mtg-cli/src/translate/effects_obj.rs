@@ -29,6 +29,7 @@ pub fn effects(ctx: &mut Ctx, p: &Params, api: &str) -> Tr<Vec<Value>> {
         "PutCounter" => put_counter(ctx, p),
         "RemoveCounter" => one(remove_counter(ctx, p)),
         "Tap" => tap(ctx, p),
+        "Untap" if p.get("UntapUpTo") == Some("True") => untap_up_to(ctx, p),
         "Untap" => one(simple(ctx, p, "Untap", "Untap")),
         "Regenerate" => one(simple(ctx, p, "Regenerate", "Regenerate")),
         "TapAll" => one(all_of(ctx, p, "Tap")),
@@ -94,6 +95,21 @@ fn tap(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
     }
     let pick = json!({"Choose": {"from": from, "count": {"min": 0, "max": max}, "as": bind}});
     Ok(vec![pick, effect])
+}
+
+/// `Untap` with `UntapUpTo$`: the controller picks up to `Amount$` permanents of `UntapType$` and untaps them.
+fn untap_up_to(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
+    only(p, "Untap", &["UntapUpTo", "UntapType", "Amount"])?;
+    let (Some(kind), Some(count)) = (p.get("UntapType"), p.get("Amount")) else {
+        return unmapped("key:Untap.UntapUpTo-without-type");
+    };
+    let filter = selector_any(ctx, kind)?;
+    let max = amount(ctx, count)?;
+    let bind = ctx.fresh("untap");
+    Ok(vec![
+        json!({"Choose": {"from": {"Each": filter}, "count": {"min": 0, "max": max}, "as": bind}}),
+        json!({"Untap": {"what": {"Bound": bind}}}),
+    ])
 }
 
 /// `TapAll`, `UntapAll`: the verb on every object the valid-string names.

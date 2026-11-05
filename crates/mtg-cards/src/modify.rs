@@ -308,6 +308,8 @@ pub enum Prohibited {
     Sacrifice,
     /// Have counters put on them (CR 122).
     PutCounter,
+    /// Have counters of one kind put on them (CR 122).
+    PutCounterOf(crate::value::CounterKind),
     /// Have triggered abilities of the subjects' permanents trigger from the event the pattern describes (CR 603).
     Trigger(TriggerPattern),
     /// Become attached, or have anything attached to them (CR 701.3).
