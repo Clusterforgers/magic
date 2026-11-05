@@ -501,10 +501,12 @@ pub enum GameRule {
     /// The card can be a player's commander (CR 903.3), in every zone; the rule is written without `from`.
     CanBeCommander,
     /// A triggered ability of a permanent the rule's controller controls triggers an additional time when the event
-    /// `cause` describes makes it trigger ("if a creature dying causes a triggered ability ... to trigger").
+    /// `cause` describes makes it trigger ("if a creature dying causes a triggered ability ... to trigger"), or any event
+    /// when it names none.
     TriggerAgain {
-        /// The event that causes the trigger, as a triggered ability describes it.
-        cause: TriggerPattern,
+        /// The event that causes the trigger, as a triggered ability describes it; every event when absent.
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        cause: Option<TriggerPattern>,
         /// Only abilities of the permanents it selects trigger again; every permanent of the controller when absent.
         #[serde(default, skip_serializing_if = "Option::is_none")]
         source: Option<Selector>,
@@ -719,11 +721,12 @@ mod tests {
     #[case(GameRule::CountersRemain, r#""CountersRemain""#)]
     #[case(
         GameRule::TriggerAgain {
-            cause: TriggerPattern::Attacks { what: Selector::this() },
+            cause: Some(TriggerPattern::Attacks { what: Selector::this() }),
             source: None
         },
         r#"{"TriggerAgain":{"cause":{"Attacks":{"what":["This"]}}}}"#
     )]
+    #[case(GameRule::TriggerAgain { cause: None, source: None }, r#"{"TriggerAgain":{}}"#)]
     #[case(
         GameRule::Cant { who: Ref::You, action: Prohibited::PlayLand },
         r#"{"Cant":{"who":"You","action":"PlayLand"}}"#
@@ -749,7 +752,7 @@ mod tests {
         r#"{"UntapDuring":{"what":["This"],"whose":"Opponents"}}"#
     )]
     #[case(
-        GameRule::TriggerAgain { cause: TriggerPattern::Attacks { what: Selector::this() }, source: Some(Selector::this()) },
+        GameRule::TriggerAgain { cause: Some(TriggerPattern::Attacks { what: Selector::this() }), source: Some(Selector::this()) },
         r#"{"TriggerAgain":{"cause":{"Attacks":{"what":["This"]}},"source":["This"]}}"#
     )]
     fn a_rule_is_written_with_the_players_or_objects_it_names(

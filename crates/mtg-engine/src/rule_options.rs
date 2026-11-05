@@ -1,4 +1,4 @@
-//! Goal: the rule options of a game behave as their parameters say: permanents untap in the untap steps of the players a rule names, the least maximum hand size in force limits the hand at cleanup, the legend rule stops for the players a rule names, and a trigger repeats only for the permanents the rule's selector picks.
+//! Goal: the rule options of a game behave as their parameters say: permanents untap in the untap steps of the players a rule names, the least maximum hand size in force limits the hand at cleanup, the legend rule stops for the players a rule names, and a trigger repeats only for the permanents the rule's selector picks and the event it names (any event when none).
 
 use std::sync::Arc;
 
@@ -180,20 +180,24 @@ fn watcher(name: &str, types: &[CardType]) -> Arc<CardDefinition> {
     Arc::new(card.with_rules(upkeep))
 }
 
+const UPKEEP: &str = r#""cause":{"StepBegins":{"step":"Upkeep","whose":"You"}}"#;
+const OTHER_STEP: &str = r#""cause":{"StepBegins":{"step":"Draw","whose":"You"}}"#;
+
 #[rstest]
-#[case::every_permanent(None, 2, 2)]
-#[case::only_artifacts(Some(r#"[{"Type":"Artifact"}]"#), 2, 1)]
-#[case::nothing_that_matches(Some(r#"[{"Type":"Land"}]"#), 1, 1)]
+#[case::every_permanent(Some(UPKEEP), None, 2, 2)]
+#[case::only_artifacts(Some(UPKEEP), Some(r#""source":[{"Type":"Artifact"}]"#), 2, 1)]
+#[case::nothing_that_matches(Some(UPKEEP), Some(r#""source":[{"Type":"Land"}]"#), 1, 1)]
+#[case::any_cause(None, None, 2, 2)]
+#[case::any_cause_only_artifacts(None, Some(r#""source":[{"Type":"Artifact"}]"#), 2, 1)]
+#[case::another_event(Some(OTHER_STEP), None, 1, 1)]
 fn a_trigger_repeats_for_the_permanents_the_rule_picks(
+    #[case] cause: Option<&str>,
     #[case] source: Option<&str>,
     #[case] gear: usize,
     #[case] bear: usize,
 ) {
-    let cause = r#"{"StepBegins":{"step":"Upkeep","whose":"You"}}"#;
-    let source = source.map_or_else(String::new, |s| format!(r#","source":{s}"#));
-    let again = rule(&format!(
-        r#"{{"TriggerAgain":{{"cause":{cause}{source}}}}}"#
-    ));
+    let parts: Vec<&str> = cause.into_iter().chain(source).collect();
+    let again = rule(&format!(r#"{{"TriggerAgain":{{{}}}}}"#, parts.join(",")));
     let state = build(
         vec![vec![], vec![]],
         vec![

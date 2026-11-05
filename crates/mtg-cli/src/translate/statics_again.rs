@@ -26,7 +26,20 @@ pub fn again(ctx: &Ctx, p: &Params) -> Tr<Value> {
         |key, value| key == "Mode" || (key == "EffectZone" && value == "Battlefield"),
     )?;
     let Some(modes) = p.get("ValidMode") else {
-        return unmapped("static:Panharmonicon-any-cause");
+        // No event named: every trigger of the permanents repeats; a cause parameter without a mode stays a gap.
+        if [
+            "ValidCause",
+            "Origin",
+            "Destination",
+            "ValidActivator",
+            "ValidPlayer",
+        ]
+        .iter()
+        .any(|key| p.has(key))
+        {
+            return unmapped("static:Panharmonicon-any-cause");
+        }
+        return Ok(json!({"TriggerAgain": again_source(ctx, p, None)?}));
     };
     let mut causes: Vec<Value> = Vec::new();
     for mode in modes.split(',') {
@@ -48,16 +61,21 @@ pub fn again(ctx: &Ctx, p: &Params) -> Tr<Value> {
         1 => causes.remove(0),
         _ => json!({ "AnyOf": causes }),
     };
-    let mut rule = json!({ "cause": cause });
-    let source = match p.get("ValidCard").unwrap_or("Permanent.YouCtrl") {
-        // Only the controller's permanents trigger again, so the plain word needs no filter.
-        "Permanent.YouCtrl" => None,
-        valid => Some(selector_any(ctx, valid)?),
-    };
-    if let Some(source) = source {
-        rule["source"] = json!(source);
+    Ok(json!({"TriggerAgain": again_source(ctx, p, Some(cause))?}))
+}
+
+/// The body of a `TriggerAgain` rule: the event that causes it (any event when absent) and the permanents it covers.
+fn again_source(ctx: &Ctx, p: &Params, cause: Option<Value>) -> Tr<Value> {
+    let mut rule = json!({});
+    if let Some(cause) = cause {
+        rule["cause"] = cause;
     }
-    Ok(json!({"TriggerAgain": rule}))
+    match p.get("ValidCard").unwrap_or("Permanent.YouCtrl") {
+        // Only the controller's permanents trigger again, so the plain word needs no filter.
+        "Permanent.YouCtrl" => {}
+        valid => rule["source"] = json!(selector_any(ctx, valid)?),
+    }
+    Ok(rule)
 }
 
 /// The event patterns one `ValidMode$` word names; the batch and one-target forms of an event are the event itself.

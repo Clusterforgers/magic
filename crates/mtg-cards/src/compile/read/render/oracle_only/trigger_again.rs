@@ -29,10 +29,11 @@ fn cause(pattern: &TriggerPattern) -> Option<&'static str> {
 /// Adds the wording of a rule that makes the triggered abilities of the controller's permanents trigger again.
 pub(super) fn add(ability: &Ability, texts: &mut Vec<String>) {
     let Ability::Rule {
-        rule: GameRule::TriggerAgain {
-            cause: event,
-            source: None,
-        },
+        rule:
+            GameRule::TriggerAgain {
+                cause: Some(event),
+                source: None,
+            },
         condition: None,
         ..
     } = ability
