@@ -6,6 +6,7 @@
 //! `Ability`. Nothing of a script is copied into the repository; the proposals are data derived from the scripts.
 
 pub mod ability;
+pub mod allgaps;
 pub mod amount;
 pub mod amount_more;
 pub mod amount_when;
@@ -155,7 +156,12 @@ pub async fn translate_forge(
             (_, _, None) => "whole",
             _ => "partial",
         };
-        let gaps: BTreeSet<&str> = card.gaps().map(|gap| gap.0.as_str()).collect();
+        let behind = allgaps::others(&world, script);
+        let gaps: BTreeSet<&str> = card
+            .gaps()
+            .map(|gap| gap.0.as_str())
+            .chain(behind.iter().map(String::as_str))
+            .collect();
         let gaps: Vec<&str> = gaps.into_iter().collect();
         let _ = writeln!(
             cards,
