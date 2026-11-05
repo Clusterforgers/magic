@@ -75,6 +75,14 @@ pub fn triggered(ctx: &mut Ctx, body: &str) -> Tr<Value> {
         }
         Some(other) => return unmapped(format!("key:Trigger.OptionalDecider={other}")),
     }
+    if let Some(found) = &intervening
+        && when.get("SpellCast").is_some()
+        && counts_the_cast_exactly(found)
+    {
+        // The count grows as more spells are cast, so a recheck at resolution would pass the first spell when a second
+        // is cast in response; the engine has no first-of-the-turn event across all players.
+        return unmapped("trigger:SpellCast-exact-count-recheck");
+    }
     let mut ability = json!({"when": when, "effects": effects});
     if let Some(zone) = from {
         ability["from"] = json!(zone);
@@ -526,4 +534,21 @@ fn attacker_blocked(ctx: &Ctx, p: &Params) -> Tr<Value> {
         node["by"] = json!(selector_any(ctx, valid)?);
     }
     Ok(json!({ "BecomesBlocked": node }))
+}
+
+/// Whether the condition compares the turn's count of spells cast for equality or an upper bound: true when it was
+/// checked as the spell was cast, but a later spell changes it by the time the ability resolves.
+fn counts_the_cast_exactly(condition: &Value) -> bool {
+    let compare = |value: &Value| {
+        value.get("Compare").is_some_and(|c| {
+            matches!(c.get("op").and_then(Value::as_str), Some("Eq" | "Le" | "Lt"))
+                && c.get("left")
+                    .is_some_and(|left| left.to_string().contains("\"event\":\"SpellCast\""))
+        })
+    };
+    compare(condition)
+        || condition
+            .get("All")
+            .and_then(Value::as_array)
+            .is_some_and(|all| all.iter().any(compare))
 }

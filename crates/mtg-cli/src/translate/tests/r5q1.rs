@@ -298,3 +298,20 @@ fn a_creature_exiled_with_the_source_returns_whoever_owned_it(#[case] owner: usi
     assert!(names(&driver, Zone::Exile).is_empty());
     assert!(names(&driver, Zone::Battlefield).contains(&"Victim".to_owned()));
 }
+
+#[rstest]
+#[case::first("EQ1", true)]
+#[case::at_most("LE1", true)]
+#[case::at_least("GE2", false)]
+fn a_cast_count_that_later_spells_change_is_not_rechecked_at_resolution(
+    #[case] compare: &str,
+    #[case] gapped: bool,
+) {
+    let script = format!(
+        "Name:Gargoyle\nTypes:Artifact Creature Gargoyle\nPT:4/5\nT:Mode$ SpellCast | ValidCard$ Card.nonCreature | CheckSVar$ X | SVarCompare${compare} | TriggerZones$ Battlefield | Execute$ TrigCounter | TriggerDescription$ x\nSVar:TrigCounter:DB$ Counter | Defined$ TriggeredSpellAbility\nSVar:X:Count$ThisTurnCast_Card.nonCreature\n"
+    );
+    let named = super::gaps(&script)
+        .iter()
+        .any(|gap| gap.contains("SpellCast-exact-count-recheck"));
+    assert_eq!(named, gapped);
+}
