@@ -64,7 +64,7 @@ fn a_panharmonicon_line_names_the_event_that_triggers_again(
 
 #[rstest]
 #[case::no_event(
-    "S:Mode$ Panharmonicon | ValidCard$ Creature.YouCtrl+Legendary",
+    "S:Mode$ Panharmonicon | ValidCard$ Creature.YouCtrl+Legendary | ValidCause$ Creature",
     "static:Panharmonicon-any-cause"
 )]
 #[case::unknown_event(
