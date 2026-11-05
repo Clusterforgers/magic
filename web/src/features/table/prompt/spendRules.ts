@@ -56,7 +56,7 @@ export function filterHolds(filter: SpendFilter, traits: SpendTraits): boolean {
   )
 }
 
-const restricts = (on: SpendOn): boolean => typeof on === 'string' || !('When' in on)
+const restricts = (on: SpendOn): boolean => on !== 'Snow' && (typeof on === 'string' || !('When' in on))
 
 /**
  * True when mana restricted to `only` may be spent on `spend` (a payment for neither a spell nor an ability when
@@ -68,6 +68,7 @@ export function spendAllows(spend: PaySpend | undefined, only: readonly SpendOn[
   const kind = spend?.kind ?? 'Other'
   const traits = spend?.traits
   return uses.some((on) => {
+    if (on === 'Snow') return false
     if (on === 'CostWithX') return kind !== 'Other' && spend?.has_x === true
     if ('Spell' in on) return kind === 'Spell' && traits !== undefined && filterHolds(on.Spell, traits)
     if ('Ability' in on) return kind === 'Ability' && traits !== undefined && filterHolds(on.Ability, traits)
@@ -77,6 +78,7 @@ export function spendAllows(spend: PaySpend | undefined, only: readonly SpendOn[
 
 /** A use in words, for a button: "creature spells", "abilities", "costs with {X}". */
 export function useWords(on: SpendOn): string {
+  if (on === 'Snow') return 'anything'
   if (on === 'CostWithX') return 'costs with {X}'
   if ('Ability' in on) return 'abilities'
   if ('Spell' in on) {

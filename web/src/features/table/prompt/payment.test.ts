@@ -181,6 +181,8 @@ function pays(
   switch (shape.kind) {
     case 'generic':
       return anyOf(shape.count, spent)
+    case 'snow':
+      return anyOf(1, spent)
     case 'colored':
       return one(shape.color)
     case 'colorless':
