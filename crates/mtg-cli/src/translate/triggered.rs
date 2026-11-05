@@ -24,6 +24,10 @@ enum Word {
     Attacker,
     Blocker,
     Player,
+    /// The owner of the triggering card.
+    Owner,
+    /// The player who cast the spell or activated the ability.
+    Activator,
     Source,
     Target,
 }
@@ -33,6 +37,8 @@ fn kind(word: &str) -> Option<(Word, bool)> {
     Some(match word {
         "TriggeredCard" | "TriggeredCardLKICopy" | "TriggeredNewCardLKICopy" => (Word::Card, false),
         "TriggeredCardController" => (Word::Card, true),
+        "TriggeredCardOwner" => (Word::Owner, true),
+        "TriggeredActivator" => (Word::Activator, false),
         "TriggeredAttacker" | "TriggeredAttackerLKICopy" => (Word::Attacker, false),
         "TriggeredBlocker" | "TriggeredBlockerLKICopy" => (Word::Blocker, false),
         "TriggeredPlayer" => (Word::Player, false),
@@ -77,6 +83,10 @@ pub fn resolve(shape: Option<&Shape>, word: &str) -> Tr<Value> {
     let mode = shape.mode.as_str();
     let did = holds(mode);
     let reference = match what {
+        Word::Owner if ONE_OBJECT.contains(&mode) => "Triggering",
+        Word::Activator if matches!(mode, "SpellCast" | "AbilityCast" | "SpellAbilityCast") => {
+            "Triggering"
+        }
         Word::Card if ONE_OBJECT.contains(&mode) || PLAYER_AND_OBJECT.contains(&mode) => {
             "Triggering"
         }
@@ -103,7 +113,7 @@ pub fn resolve(shape: Option<&Shape>, word: &str) -> Tr<Value> {
         Word::Target if mode == "DamageDone" => "Triggering",
         _ => return gap(),
     };
-    let object = matches!(what, Word::Card | Word::Attacker);
+    let object = matches!(what, Word::Card | Word::Attacker | Word::Owner);
     let reference = if shape.itself && object && reference == "Triggering" {
         "This"
     } else {
@@ -113,6 +123,7 @@ pub fn resolve(shape: Option<&Shape>, word: &str) -> Tr<Value> {
         return Ok(json!(reference));
     }
     match (what, reference) {
+        (Word::Owner, _) => Ok(json!({"OwnerOf": reference})),
         (Word::Card, "This") if ONE_OBJECT.contains(&mode) => Ok(json!("You")),
         (Word::Card, "Triggering") if ONE_OBJECT.contains(&mode) => {
             Ok(json!({"ControllerOf": "Triggering"}))

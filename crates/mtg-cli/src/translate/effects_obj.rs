@@ -268,12 +268,25 @@ fn pump_duration(p: &Params) -> Tr<&'static str> {
     unmapped("keyword:HIDDEN-doesnt-untap-shape")
 }
 
+/// A pump amount: `Double` adds the object's own value as the effect begins, so it needs one object to read.
+fn pump_amount(ctx: &Ctx, text: &str, single: Option<&Value>, stat: &str) -> Tr<Value> {
+    if text != "Double" {
+        return amount(ctx, text);
+    }
+    match single {
+        Some(of) if of == "This" || of.get("Target").is_some() => {
+            Ok(json!({"Stat": {"of": of, "stat": stat}}))
+        }
+        _ => unmapped("amount:Double-of-several"),
+    }
+}
+
 /// The modifications of a pump line: power and toughness, then keywords.
-fn pump_mods(ctx: &Ctx, p: &Params) -> Tr<Vec<Value>> {
+fn pump_mods(ctx: &Ctx, p: &Params, single: Option<&Value>) -> Tr<Vec<Value>> {
     let mut mods = Vec::new();
     if p.has("NumAtt") || p.has("NumDef") {
-        let power = amount(ctx, p.get("NumAtt").unwrap_or("0"))?;
-        let toughness = amount(ctx, p.get("NumDef").unwrap_or("0"))?;
+        let power = pump_amount(ctx, p.get("NumAtt").unwrap_or("0"), single, "Power")?;
+        let toughness = pump_amount(ctx, p.get("NumDef").unwrap_or("0"), single, "Toughness")?;
         mods.push(json!({"ModifyPT": {"power": power, "toughness": toughness}}));
     }
     if let Some(keywords) = p.get("KW") {
@@ -328,7 +341,7 @@ fn pump(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
     }
     let mut effects = Vec::new();
     if p.has("NumAtt") || p.has("NumDef") || p.has("KW") {
-        let mods = pump_mods(ctx, p)?;
+        let mods = pump_mods(ctx, p, Some(&affected))?;
         effects.push(
             json!({"Continuous": {"affected": affected, "mods": mods, "duration": duration}}),
         );
@@ -417,7 +430,7 @@ fn pump_all(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
     let duration = pump_duration(p)?;
     let valid = p.get("ValidCards").unwrap_or_default();
     let affected = json!({"Each": selector_any(ctx, valid)?});
-    let mods = pump_mods(ctx, p)?;
+    let mods = pump_mods(ctx, p, None)?;
     Ok(vec![
         json!({"Continuous": {"affected": affected, "mods": mods, "duration": duration}}),
     ])

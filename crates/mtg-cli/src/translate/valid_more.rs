@@ -45,7 +45,11 @@ pub fn property(ctx: &Ctx, prop: &str) -> Tr<Option<Vec<Value>>> {
         "IsImprinted" => return memory::is_in(ctx, Slot::Imprinted).map(Some),
         "NamedCard" => return one(memory::entered_with(ctx, prop)?),
         "IsNotChosenType" => {
-            return one(json!({"Not": memory::entered_with(ctx, "ChosenType")?}));
+            let chosen = match &ctx.chosen {
+                Some(name) => json!({"ChosenAs": name}),
+                None => memory::entered_with(ctx, "ChosenType")?,
+            };
+            return one(json!({"Not": chosen}));
         }
         _ => {}
     }
