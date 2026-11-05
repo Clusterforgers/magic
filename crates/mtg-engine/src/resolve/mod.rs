@@ -307,6 +307,7 @@ fn scope_of<'a>(
         layered: None,
         casting: None,
         cast_targets: None,
+        affected: None,
     }
 }
 

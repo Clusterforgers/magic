@@ -170,6 +170,40 @@ const CONTINUOUS: [&str; 25] = [
     "SetColor",
 ];
 
+/// The amount of a power or toughness change; one named `AffectedX` is worked out for each object the line affects.
+fn stat(ctx: &Ctx, text: &str) -> Tr<Value> {
+    let value = amount(ctx, text)?;
+    if text.trim_start_matches('-').starts_with("AffectedX") {
+        return Ok(per_affected(value));
+    }
+    Ok(value)
+}
+
+/// An amount read from the object each change applies to: `This` and `Other` of its selectors name that object.
+fn per_affected(value: Value) -> Value {
+    let is_affected = || json!({"Is": "Affected"});
+    match value {
+        Value::String(word) if word == "This" => json!("Affected"),
+        Value::Array(items) => Value::Array(
+            items
+                .into_iter()
+                .map(|item| match item.as_str() {
+                    Some("This") => is_affected(),
+                    Some("Other") => json!({"Not": is_affected()}),
+                    _ => per_affected(item),
+                })
+                .collect(),
+        ),
+        Value::Object(fields) => Value::Object(
+            fields
+                .into_iter()
+                .map(|(key, item)| (key, per_affected(item)))
+                .collect(),
+        ),
+        other => other,
+    }
+}
+
 #[allow(clippy::too_many_lines)]
 fn continuous(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
     keys(p, "Continuous", &CONTINUOUS)?;
@@ -177,13 +211,13 @@ fn continuous(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
     let refinement = refinement(ctx, p, &affected)?;
     let mut mods = Vec::new();
     if p.has("AddPower") || p.has("AddToughness") {
-        let power = amount(ctx, p.get("AddPower").unwrap_or("0"))?;
-        let toughness = amount(ctx, p.get("AddToughness").unwrap_or("0"))?;
+        let power = stat(ctx, p.get("AddPower").unwrap_or("0"))?;
+        let toughness = stat(ctx, p.get("AddToughness").unwrap_or("0"))?;
         mods.push(json!({"ModifyPT": {"power": power, "toughness": toughness}}));
     }
     match (p.get("SetPower"), p.get("SetToughness")) {
         (Some(power), Some(toughness)) => {
-            let (power, toughness) = (amount(ctx, power)?, amount(ctx, toughness)?);
+            let (power, toughness) = (stat(ctx, power)?, stat(ctx, toughness)?);
             mods.push(json!({"SetPT": {"power": power, "toughness": toughness}}));
         }
         (None, None) => {}

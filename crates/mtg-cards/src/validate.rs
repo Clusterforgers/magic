@@ -207,6 +207,8 @@ struct Scope {
     targets: Vec<(Kind, bool, bool)>,
     used: BTreeSet<usize>,
     in_trigger: bool,
+    /// The changes of a static ability are being checked: `Affected` names the object each one applies to.
+    in_static: bool,
     /// `Dealer` names something: a triggered ability, or a replacement of damage.
     dealer: bool,
     names: Vec<BTreeMap<String, Kind>>,
@@ -230,6 +232,7 @@ impl Scope {
             used: BTreeSet::new(),
             in_trigger,
             dealer: in_trigger,
+            in_static: false,
             names: vec![BTreeMap::new()],
             numbers: BTreeSet::new(),
         }
@@ -475,6 +478,12 @@ impl<'a> Walker<'a> {
                 if !self.scope.in_trigger {
                     self.problem("`Triggering` is only valid in a triggered ability");
                 }
+            }
+            Ref::Affected => {
+                if !self.scope.in_static {
+                    self.problem("`Affected` is only valid in the changes of a static ability");
+                }
+                self.expect(Kind::Object, want);
             }
             Ref::Dealer => {
                 if !self.scope.in_trigger {
@@ -2196,7 +2205,8 @@ impl Walker<'_> {
             | Ref::Defending
             | Ref::ControllerOf(_)
             | Ref::OwnerOf(_) => Kind::Player,
-            Ref::This
+            Ref::Affected
+            | Ref::This
             | Ref::Dealer
             | Ref::Attached
             | Ref::Paid
@@ -3369,7 +3379,9 @@ impl Walker<'_> {
                 );
             });
         }
+        self.scope.in_static = true;
         self.at("mods", |w| w.mods(mods));
+        self.scope.in_static = false;
         if names_spells(affected) {
             self.spell_keywords(mods);
         }
