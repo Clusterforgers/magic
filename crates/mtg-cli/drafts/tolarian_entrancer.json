@@ -1,0 +1,35 @@
+{
+  "oracle_id": "50c8c7e2-1b45-44b2-a50b-3b514d4c4c42",
+  "name": "Tolarian Entrancer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Tolarian Entrancer",
+      "oracle_fingerprint": "7c27bcc6a69bb3018301b41dbdac624b",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "BecomesBlocked": { "what": ["This"], "by": [{ "Type": "Creature" }] } },
+            "effects": [
+              { "Bind": { "what": "Dealer", "as": "event" } },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "EndCombat" } },
+                  "effects": [
+                    {
+                      "Continuous": {
+                        "affected": { "Bound": "event" },
+                        "mods": [{ "SetController": "You" }],
+                        "duration": "Forever"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

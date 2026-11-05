@@ -1,0 +1,28 @@
+{
+  "oracle_id": "b233a9e4-0b4c-41e8-a5b8-77824241966b",
+  "name": "Flay Essence",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Flay Essence",
+      "oracle_fingerprint": "a1fd4baf8ae6419b18ad42df5985c623",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "AnyOf": [{ "Type": "Creature" }, { "Type": "Planeswalker" }] }]
+                }
+              }
+            ],
+            "effects": [
+              { "Exile": { "what": { "Target": 0 } } },
+              { "GainLife": { "amount": { "AnyCounters": { "Target": 0 } } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

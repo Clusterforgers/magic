@@ -1,0 +1,93 @@
+{
+  "source": "forge",
+  "oracle_matches": true,
+  "lines": [
+    {
+      "face": 0,
+      "tag": "K",
+      "text": "Lifelink",
+      "abilities": [
+        0
+      ],
+      "gap": null
+    },
+    {
+      "face": 0,
+      "tag": "T",
+      "text": "Whenever another nontoken creature you control dies, exile CARDNAME, then return her to the battlefield transformed under her owner's control. If you do, create a 2/2 black Zombie creature token.",
+      "abilities": [
+        1
+      ],
+      "gap": null
+    },
+    {
+      "face": 1,
+      "tag": "A",
+      "text": "Each player discards a card.",
+      "abilities": [
+        0
+      ],
+      "gap": null
+    },
+    {
+      "face": 1,
+      "tag": "A",
+      "text": "Return target nonlegendary creature card with mana value X from your graveyard to the battlefield.",
+      "abilities": [
+        1
+      ],
+      "gap": null
+    },
+    {
+      "face": 1,
+      "tag": "A",
+      "text": "You get an emblem with \"Whenever a creature dies, return it to the battlefield under your control at the beginning of the next end step.\"",
+      "abilities": [],
+      "gap": "key:RememberObjects=TriggeredNewCardLKICopy-after-a-move"
+    }
+  ],
+  "proof": {
+    "marks": [
+      {
+        "face": 0,
+        "span": {
+          "start": 0,
+          "end": 8
+        },
+        "mark": "Auto"
+      },
+      {
+        "face": 0,
+        "span": {
+          "start": 9,
+          "end": 221
+        },
+        "mark": "Auto"
+      },
+      {
+        "face": 1,
+        "span": {
+          "start": 0,
+          "end": 32
+        },
+        "mark": "Auto"
+      },
+      {
+        "face": 1,
+        "span": {
+          "start": 33,
+          "end": 135
+        },
+        "mark": "Auto"
+      },
+      {
+        "face": 1,
+        "span": {
+          "start": 136,
+          "end": 277
+        },
+        "mark": "ByHand"
+      }
+    ]
+  }
+}

@@ -1,0 +1,54 @@
+{
+  "oracle_id": "97a1b49e-d6bc-46ba-88c1-991057e64170",
+  "name": "Sage-Eye Avengers",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sage-Eye Avengers",
+      "oracle_fingerprint": "10846b0f493f07fc153fbb0b0ecee8f0",
+      "abilities": [
+        { "Keyword": "Prowess" },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "If": {
+                        "condition": {
+                          "Compare": {
+                            "left": {
+                              "CountOf": {
+                                "of": { "Target": 0 },
+                                "filter": [
+                                  { "Type": "Creature" },
+                                  {
+                                    "Compare": {
+                                      "stat": "Power",
+                                      "op": "Lt",
+                                      "to": { "Stat": { "of": "This", "stat": "Power" } }
+                                    }
+                                  }
+                                ]
+                              }
+                            },
+                            "op": "Eq",
+                            "right": 1
+                          }
+                        },
+                        "then": [{ "Move": { "what": { "Target": 0 }, "to": "Hand" } }]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

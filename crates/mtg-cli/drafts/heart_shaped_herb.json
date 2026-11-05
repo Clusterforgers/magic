@@ -1,0 +1,25 @@
+{
+  "oracle_id": "20418984-bc6d-42e5-ada6-30b5281925c0",
+  "name": "Heart-Shaped Herb",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Heart-Shaped Herb",
+      "oracle_fingerprint": "13418018180ce0571571e01be295ee1b",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Damage": { "to": "You", "source": [{ "ControlledBy": "Opponents" }] } },
+            "by": { "PreventUpTo": 1 }
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 85, "end": 282 }
+          }
+        }
+      ]
+    }
+  ]
+}

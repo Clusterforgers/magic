@@ -1,0 +1,62 @@
+{
+  "oracle_id": "d0a493af-551e-4475-af5d-ec4e080728cb",
+  "name": "Myr Incubator",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Myr Incubator",
+      "oracle_fingerprint": "1742ac7cfcb4c9b83fba67de780e14b6",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{6}" }, "SacrificeSelf"],
+            "effects": [
+              {
+                "Search": {
+                  "filter": [{ "Type": "Artifact" }],
+                  "count": {
+                    "min": 0,
+                    "max": {
+                      "Count": [{ "Type": "Artifact" }, { "OwnedBy": "You" }, { "In": "Library" }]
+                    }
+                  },
+                  "as": "found"
+                }
+              },
+              { "Exile": { "what": { "Bound": "found" }, "as": "found_exiled" } },
+              { "Shuffle": {} },
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Myr",
+                      "types": ["Artifact", "Creature"],
+                      "subtypes": ["Myr"],
+                      "power": 1,
+                      "toughness": 1
+                    }
+                  },
+                  "count": {
+                    "Count": [
+                      { "Is": { "Bound": "found_exiled" } },
+                      {
+                        "AnyOf": [
+                          { "In": "Battlefield" },
+                          { "In": "Hand" },
+                          { "In": "Library" },
+                          { "In": "Graveyard" },
+                          { "In": "Exile" },
+                          { "In": "Stack" }
+                        ]
+                      }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

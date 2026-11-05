@@ -1,0 +1,64 @@
+{
+  "oracle_id": "719aeb50-c8cf-4cd8-b74c-d2cef408b52e",
+  "name": "Airlift Chaplain",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Airlift Chaplain",
+      "oracle_fingerprint": "93e732e8f727a5cd6218378ce98015ae",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              { "Mill": { "count": 3, "as": "milled" } },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      {
+                        "AnyOf": [
+                          { "Subtype": "Plains" },
+                          {
+                            "Not": {
+                              "AnyOf": [
+                                { "Not": { "Type": "Creature" } },
+                                {
+                                  "Not": { "Compare": { "stat": "ManaValue", "op": "Le", "to": 3 } }
+                                }
+                              ]
+                            }
+                          }
+                        ]
+                      },
+                      { "Is": { "Bound": "milled" } },
+                      { "AnyOf": [{ "In": "Graveyard" }, { "In": "Exile" }] },
+                      { "OwnedBy": "You" }
+                    ]
+                  },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "picked2"
+                }
+              },
+              { "Move": { "what": { "Bound": "picked2" }, "to": "Hand", "as": "moved3" } },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Bound": "moved3" },
+                      "selector": [],
+                      "op": "Eq",
+                      "right": 0
+                    }
+                  },
+                  "then": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,7 +1,7 @@
 {
   "oracle_id": "cbd76b22-d04e-48e7-bcab-c7f5466d67d8",
   "name": "Lux Artillery",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Lux Artillery",
@@ -24,9 +24,23 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 145, "end": 307 }
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "if": {
+              "Compare": {
+                "left": {
+                  "AnyCounters": {
+                    "Each": [
+                      { "AnyOf": [{ "Type": "Artifact" }, { "Type": "Creature" }] },
+                      { "ControlledBy": "You" }
+                    ]
+                  }
+                },
+                "op": "Ge",
+                "right": 30
+              }
+            },
+            "effects": [{ "DealDamage": { "to": "Opponents", "amount": 10 } }]
           }
         }
       ]

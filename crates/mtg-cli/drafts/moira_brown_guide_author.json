@@ -1,16 +1,82 @@
 {
   "oracle_id": "db02644b-820f-4102-b1f6-ed8fac40baf8",
   "name": "Moira Brown, Guide Author",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Moira Brown, Guide Author",
       "oracle_fingerprint": "759ce52d252182db4010d41577d83f3d",
       "abilities": [
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 0, "end": 207 }
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Wasteland Survival Guide",
+                      "types": ["Artifact"],
+                      "subtypes": ["Book", "Equipment"],
+                      "abilities": [
+                        { "Keyword": { "Equip": "{1}" } },
+                        {
+                          "Static": {
+                            "affected": "Attached",
+                            "mods": [
+                              {
+                                "ModifyPT": {
+                                  "power": {
+                                    "Counters": {
+                                      "on": {
+                                        "Each": [
+                                          {
+                                            "AnyOf": [
+                                              { "Type": "Artifact" },
+                                              { "Type": "Battle" },
+                                              { "Type": "Creature" },
+                                              { "Type": "Enchantment" },
+                                              { "Type": "Land" },
+                                              { "Type": "Planeswalker" }
+                                            ]
+                                          },
+                                          { "ControlledBy": "You" }
+                                        ]
+                                      },
+                                      "counter": { "Other": "quest" }
+                                    }
+                                  },
+                                  "toughness": {
+                                    "Counters": {
+                                      "on": {
+                                        "Each": [
+                                          {
+                                            "AnyOf": [
+                                              { "Type": "Artifact" },
+                                              { "Type": "Battle" },
+                                              { "Type": "Creature" },
+                                              { "Type": "Enchantment" },
+                                              { "Type": "Land" },
+                                              { "Type": "Planeswalker" }
+                                            ]
+                                          },
+                                          { "ControlledBy": "You" }
+                                        ]
+                                      },
+                                      "counter": { "Other": "quest" }
+                                    }
+                                  }
+                                }
+                              }
+                            ]
+                          }
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            ]
           }
         },
         {

@@ -41,7 +41,7 @@
                   "as": "kept2"
                 }
               },
-              { "Reveal": { "what": { "Bound": "kept2" } } },
+              { "Reveal": { "what": { "Bound": "top" } } },
               {
                 "Move": {
                   "what": { "Bound": "kept2" },

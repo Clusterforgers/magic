@@ -1,0 +1,78 @@
+{
+  "oracle_id": "86851bdb-9b2f-4407-97a1-a6a9f2e0ef66",
+  "name": "Vronos, Masked Inquisitor",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Vronos, Masked Inquisitor",
+      "oracle_fingerprint": "02df7712d8075f740e496e3e35c95ff8",
+      "abilities": [
+        {
+          "Loyalty": {
+            "cost": { "Plus": 1 },
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "Type": "Planeswalker" }, { "ControlledBy": "You" }, "Other"]
+                },
+                "bounds": { "min": 0, "max": 2 }
+              }
+            ],
+            "effects": [
+              { "Bind": { "what": { "Target": 0 }, "as": "target" } },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "End" } },
+                  "effects": [{ "PhaseOut": { "what": { "Bound": "target" } } }]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Minus": 2 },
+            "targets": [
+              {
+                "what": {
+                  "PerPlayer": { "players": "Opponents", "what": [{ "Not": { "Type": "Land" } }] }
+                },
+                "bounds": { "min": 0, "max": 1 }
+              }
+            ],
+            "effects": [{ "Move": { "what": { "Target": 0 }, "to": "Hand" } }]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Minus": 7 },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Artifact" }, { "ControlledBy": "You" }] } }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    { "SetPT": { "power": 9, "toughness": 9 } },
+                    { "SetCreatureTypes": ["Construct"] },
+                    { "AddType": "Artifact" },
+                    { "AddType": "Creature" },
+                    { "AddKeyword": "Vigilance" },
+                    { "AddKeyword": "Indestructible" },
+                    {
+                      "GrantAbility": {
+                        "Static": { "affected": "This", "mods": ["CantBeBlocked"] }
+                      }
+                    }
+                  ],
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

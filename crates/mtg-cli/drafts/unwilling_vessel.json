@@ -1,0 +1,75 @@
+{
+  "oracle_id": "d2593334-ce0b-43e1-97ad-b00950bfae2b",
+  "name": "Unwilling Vessel",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Unwilling Vessel",
+      "oracle_fingerprint": "effe59d654a7cc1eb914a801df1ef504",
+      "abilities": [
+        { "Keyword": "Vigilance" },
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                {
+                  "ZoneChange": {
+                    "what": [{ "Type": "Enchantment" }, { "ControlledBy": "You" }],
+                    "to": "Battlefield"
+                  }
+                },
+                {
+                  "Did": {
+                    "action": "FullyUnlocked",
+                    "who": "You",
+                    "what": [{ "Subtype": "Room" }]
+                  }
+                }
+              ]
+            },
+            "effects": [{ "PutCounters": { "on": "This", "counter": { "Other": "possession" } } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } },
+            "effects": [
+              { "Let": { "as": "power", "amount": { "AnyCounters": "This" } } },
+              { "Let": { "as": "toughness2", "amount": { "AnyCounters": "This" } } },
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Spirit",
+                      "colors": ["Blue"],
+                      "types": ["Creature"],
+                      "subtypes": ["Spirit"],
+                      "power": 0,
+                      "toughness": 0,
+                      "abilities": [{ "Keyword": "Flying" }]
+                    }
+                  },
+                  "as": "token3"
+                }
+              },
+              {
+                "Continuous": {
+                  "affected": { "Bound": "token3" },
+                  "mods": [
+                    {
+                      "SetPT": {
+                        "power": { "Bound": "power" },
+                        "toughness": { "Bound": "toughness2" }
+                      }
+                    }
+                  ],
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

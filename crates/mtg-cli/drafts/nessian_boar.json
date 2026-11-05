@@ -1,7 +1,7 @@
 {
   "oracle_id": "139a5f0b-6f76-4918-96e6-cdcf27253230",
   "name": "Nessian Boar",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Nessian Boar",
@@ -11,9 +11,9 @@
           "Rule": { "rule": { "Combat": { "who": "This", "quirk": { "MustBeBlocked": "Every" } } } }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 49, "end": 143 }
+          "Triggered": {
+            "when": { "BecomesBlocked": { "what": ["This"], "by": [{ "Type": "Creature" }] } },
+            "effects": [{ "Draw": { "who": { "ControllerOf": "Dealer" } } }]
           }
         }
       ]

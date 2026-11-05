@@ -1,0 +1,27 @@
+{
+  "oracle_id": "c37051cc-6683-4dbb-b5ff-5c3a5bdab1df",
+  "name": "Painful Quandary",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Painful Quandary",
+      "oracle_fingerprint": "87cc83a0b53e6afd26c238a8bd26b1a1",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "by": "Opponents" } },
+            "effects": [
+              {
+                "Pay": {
+                  "who": { "ControllerOf": "Triggering" },
+                  "cost": [{ "Discard": {} }],
+                  "unpaid": [{ "LoseLife": { "who": "Triggering", "amount": 5 } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

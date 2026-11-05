@@ -1,0 +1,29 @@
+{
+  "oracle_id": "faefb352-575c-49f7-9f7a-96f2279a077b",
+  "name": "Huskburster Swarm",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Huskburster Swarm",
+      "oracle_fingerprint": "142d562326c91b571452cedc8e7ec0b1",
+      "abilities": [
+        {
+          "CostModifier": {
+            "applies_to": ["This"],
+            "change": "Reduce",
+            "mana": "{1}",
+            "per": {
+              "Count": [
+                { "Type": "Creature" },
+                { "OwnedBy": "You" },
+                { "AnyOf": [{ "In": "Graveyard" }, { "In": "Exile" }] }
+              ]
+            }
+          }
+        },
+        { "Keyword": "Menace" },
+        { "Keyword": "Deathtouch" }
+      ]
+    }
+  ]
+}

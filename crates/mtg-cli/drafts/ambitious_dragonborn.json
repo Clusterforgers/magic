@@ -1,0 +1,52 @@
+{
+  "oracle_id": "934094d6-c897-4ae2-89cd-08d106600d3c",
+  "name": "Ambitious Dragonborn",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ambitious Dragonborn",
+      "oracle_fingerprint": "378af3d38c92f82a8951452585816448",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": {
+              "WithCounters": {
+                "counter": "+1/+1",
+                "count": {
+                  "Greatest": {
+                    "of": [
+                      {
+                        "AnyOf": [
+                          {
+                            "Not": {
+                              "AnyOf": [
+                                { "Not": { "Type": "Creature" } },
+                                { "Not": { "OwnedBy": "You" } },
+                                { "Not": { "In": "Graveyard" } }
+                              ]
+                            }
+                          },
+                          {
+                            "Not": {
+                              "AnyOf": [
+                                { "Not": { "Type": "Creature" } },
+                                { "Not": { "ControlledBy": "You" } },
+                                { "Not": { "In": "Battlefield" } }
+                              ]
+                            }
+                          }
+                        ]
+                      }
+                    ],
+                    "stat": "Power"
+                  }
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

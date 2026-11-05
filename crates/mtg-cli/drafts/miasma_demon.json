@@ -1,0 +1,65 @@
+{
+  "oracle_id": "b1df6475-e1e8-4ef3-a7b2-919d5f121c57",
+  "name": "Miasma Demon",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Miasma Demon",
+      "oracle_fingerprint": "d025d279f4dae0ff33a40169b612f42f",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Discard": {
+                  "count": { "Count": [{ "In": "Hand" }, { "OwnedBy": "You" }] },
+                  "optional": true,
+                  "as": "discarded"
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Bound": "discarded" },
+                      "selector": [],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [
+                    { "Bind": { "what": { "Bound": "discarded" }, "as": "when2" } },
+                    {
+                      "Reflexive": {
+                        "targets": [
+                          {
+                            "what": { "Object": [{ "Type": "Creature" }] },
+                            "bounds": {
+                              "min": 0,
+                              "max": { "CountOf": { "of": { "Bound": "when2" }, "filter": [] } }
+                            }
+                          }
+                        ],
+                        "effects": [
+                          {
+                            "Continuous": {
+                              "affected": { "Target": 0 },
+                              "mods": [{ "ModifyPT": { "power": -2, "toughness": -2 } }],
+                              "duration": "UntilEndOfTurn"
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

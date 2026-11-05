@@ -13,7 +13,7 @@
             "effects": [
               { "LookAtTop": { "who": "Triggering", "count": 2, "as": "top" } },
               { "Choose": { "from": { "Bound": "top" }, "as": "kept2", "rest_as": "rest3" } },
-              { "Reveal": { "what": { "Bound": "kept2" } } },
+              { "Reveal": { "what": { "Bound": "top" } } },
               { "Move": { "what": { "Bound": "kept2" }, "to": "Graveyard" } },
               {
                 "Move": {

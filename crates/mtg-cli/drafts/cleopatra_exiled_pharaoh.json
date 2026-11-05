@@ -1,7 +1,7 @@
 {
   "oracle_id": "e7a80464-1522-48d7-bf82-f9894f5c3ae0",
   "name": "Cleopatra, Exiled Pharaoh",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Cleopatra, Exiled Pharaoh",
@@ -22,9 +22,18 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 119, "end": 238 }
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Creature" }, { "Supertype": "Legendary" }, "HasAnyCounter"],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "effects": [
+              { "Draw": { "count": { "AnyCounters": "Triggering" } } },
+              { "LoseLife": { "amount": 2 } }
+            ]
           }
         }
       ]

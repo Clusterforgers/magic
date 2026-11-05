@@ -1,0 +1,44 @@
+{
+  "oracle_id": "0f93d88c-9d2e-416d-a10b-99483360b1fb",
+  "name": "Zurgo Stormrender",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Zurgo Stormrender",
+      "oracle_fingerprint": "a2d93fc945d7bd9ec7106e25bfb8ba4a",
+      "abilities": [
+        { "Keyword": { "Macro": { "name": "mobilize", "amount": 1 } } },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Creature" }, "Token", { "ControlledBy": "You" }],
+                "from": "Battlefield"
+              }
+            },
+            "effects": [
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": {
+                        "CountOf": {
+                          "of": "Triggering",
+                          "filter": [{ "Type": "Creature" }, "Attacking"]
+                        }
+                      },
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [{ "Draw": {} }],
+                  "otherwise": [{ "LoseLife": { "who": "Opponents", "amount": 1 } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

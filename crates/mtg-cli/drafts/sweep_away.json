@@ -1,0 +1,68 @@
+{
+  "oracle_id": "c6901a89-ac7d-4797-a027-97bb1cf42e60",
+  "name": "Sweep Away",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sweep Away",
+      "oracle_fingerprint": "1f9435654f3a3349ebddeb54265b3f67",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": {
+                        "CountOf": {
+                          "of": { "Target": 0 },
+                          "filter": [{ "Type": "Creature" }, "Attacking"]
+                        }
+                      },
+                      "op": "Eq",
+                      "right": 0
+                    }
+                  },
+                  "then": [{ "Move": { "what": { "Target": 0 }, "to": "Hand" } }]
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": {
+                        "CountOf": {
+                          "of": { "Target": 0 },
+                          "filter": [{ "Type": "Creature" }, "Attacking"]
+                        }
+                      },
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [
+                    {
+                      "Either": {
+                        "first": [
+                          {
+                            "Move": {
+                              "what": { "Target": 0 },
+                              "to": { "Library": { "place": "Top" } }
+                            }
+                          }
+                        ],
+                        "second": [{ "Move": { "what": { "Target": 0 }, "to": "Hand" } }]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,7 +1,7 @@
 {
   "oracle_id": "b11c250c-f191-4c52-ba02-a9176f163447",
   "name": "Emiel the Blessed",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Emiel the Blessed",
@@ -20,9 +20,46 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 109, "end": 312 }
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Creature" }, "Other", { "ControlledBy": "You" }],
+                "to": "Battlefield"
+              }
+            },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": "{G/W}",
+                  "paid": [
+                    {
+                      "PutCounters": {
+                        "on": "Triggering",
+                        "counter": "+1/+1",
+                        "count": {
+                          "When": {
+                            "condition": {
+                              "Compare": {
+                                "left": {
+                                  "CountOf": {
+                                    "of": "Triggering",
+                                    "filter": [{ "Subtype": "Unicorn" }]
+                                  }
+                                },
+                                "op": "Ge",
+                                "right": 1
+                              }
+                            },
+                            "then": 2,
+                            "otherwise": 1
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
           }
         }
       ]

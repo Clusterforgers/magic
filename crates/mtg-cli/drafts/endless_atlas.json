@@ -1,0 +1,31 @@
+{
+  "oracle_id": "cb923c4d-1d2e-4039-90bb-72d1981b9738",
+  "name": "Endless Atlas",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Endless Atlas",
+      "oracle_fingerprint": "4cd0f99f5d33223763b71d2f1566ea42",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{2}" }, "Tap"],
+            "condition": {
+              "Compare": {
+                "left": {
+                  "MostCommon": {
+                    "of": [{ "Type": "Land" }, { "ControlledBy": "You" }],
+                    "stat": "Name"
+                  }
+                },
+                "op": "Ge",
+                "right": 3
+              }
+            },
+            "effects": [{ "Draw": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

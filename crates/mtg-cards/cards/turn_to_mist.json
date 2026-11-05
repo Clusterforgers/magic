@@ -1,0 +1,29 @@
+{
+  "oracle_id": "631f04d6-5693-4414-a378-fd839c3b6f6d",
+  "name": "Turn to Mist",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Turn to Mist",
+      "oracle_fingerprint": "8e60dbae7dc7e4a015193b0d6a37d50e",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              { "Exile": { "what": { "Target": 0 }, "as": "exiled" } },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "End" } },
+                  "effects": [
+                    { "Move": { "what": { "Bound": "exiled" }, "to": { "Battlefield": {} } } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

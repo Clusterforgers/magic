@@ -1,0 +1,41 @@
+{
+  "oracle_id": "aac711d1-2fa0-42f9-9eda-a1642f3ff016",
+  "name": "Death's Caress",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Death's Caress",
+      "oracle_fingerprint": "c2e9347927c39a73d0c520219bfdfc80",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              { "Destroy": { "what": { "Target": 0 } } },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": {
+                        "CountOf": { "of": { "Target": 0 }, "filter": [{ "Subtype": "Human" }] }
+                      },
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [
+                    {
+                      "GainLife": {
+                        "amount": { "Stat": { "of": { "Target": 0 }, "stat": "Toughness" } }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

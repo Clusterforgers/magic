@@ -1,0 +1,64 @@
+{
+  "oracle_id": "09619943-6aec-4080-ace5-a0c6ebb23f1c",
+  "name": "Najeela, the Blade-Blossom",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Najeela, the Blade-Blossom",
+      "oracle_fingerprint": "d0e4c2105d5463f375cc3328b707513d",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": [{ "Subtype": "Warrior" }] } },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "CreateToken": {
+                        "who": { "ControllerOf": "Triggering" },
+                        "token": {
+                          "Custom": {
+                            "name": "Warrior",
+                            "colors": ["White"],
+                            "types": ["Creature"],
+                            "subtypes": ["Warrior"],
+                            "power": 1,
+                            "toughness": 1
+                          }
+                        },
+                        "tapped": true,
+                        "attacking": true
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{W}{U}{B}{R}{G}",
+            "condition": "InCombat",
+            "effects": [
+              { "Untap": { "what": { "Each": [{ "Type": "Creature" }, "Attacking"] } } },
+              { "AddPhase": { "phases": ["Combat"] } },
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Type": "Creature" }, "Attacking"] },
+                  "mods": [
+                    { "AddKeyword": "Trample" },
+                    { "AddKeyword": "Lifelink" },
+                    { "AddKeyword": "Haste" }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

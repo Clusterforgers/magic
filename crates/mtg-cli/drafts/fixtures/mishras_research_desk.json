@@ -1,0 +1,138 @@
+{
+  "object": "card",
+  "id": "bb142d99-b210-47c8-897c-be62f90d2192",
+  "oracle_id": "95ac482c-c6ad-49b4-937e-460241ae355f",
+  "multiverse_ids": [
+    583747
+  ],
+  "mtgo_id": 104942,
+  "arena_id": 82646,
+  "tcgplayer_id": 452195,
+  "cardmarket_id": 682609,
+  "name": "Mishra's Research Desk",
+  "lang": "en",
+  "released_at": "2022-11-18",
+  "uri": "https://api.scryfall.com/cards/bb142d99-b210-47c8-897c-be62f90d2192",
+  "scryfall_uri": "https://scryfall.com/card/bro/162/mishras-research-desk?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T05:20:54Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/b/b/bb142d99-b210-47c8-897c-be62f90d2192.jpg?1783920054",
+    "normal": "https://cards.scryfall.io/normal/front/b/b/bb142d99-b210-47c8-897c-be62f90d2192.jpg?1783920054",
+    "large": "https://cards.scryfall.io/large/front/b/b/bb142d99-b210-47c8-897c-be62f90d2192.jpg?1783920054",
+    "png": "https://cards.scryfall.io/png/front/b/b/bb142d99-b210-47c8-897c-be62f90d2192.png?1783920054",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/b/b/bb142d99-b210-47c8-897c-be62f90d2192.jpg?1783920054",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/b/b/bb142d99-b210-47c8-897c-be62f90d2192.jpg?1783920054",
+    "thumb": "https://cards.scryfall.io/thumb/front/b/b/bb142d99-b210-47c8-897c-be62f90d2192.webp?1783920054",
+    "grid": "https://cards.scryfall.io/grid/front/b/b/bb142d99-b210-47c8-897c-be62f90d2192.webp?1783920054",
+    "display": "https://cards.scryfall.io/display/front/b/b/bb142d99-b210-47c8-897c-be62f90d2192.webp?1783920054",
+    "art": "https://cards.scryfall.io/art/front/b/b/bb142d99-b210-47c8-897c-be62f90d2192.webp?1783920054",
+    "crop": "https://cards.scryfall.io/crop/front/b/b/bb142d99-b210-47c8-897c-be62f90d2192.webp?1783920054",
+    "jpeg": "https://cards.scryfall.io/normal/front/b/b/bb142d99-b210-47c8-897c-be62f90d2192.jpg?1783920054"
+  },
+  "mana_cost": "{1}",
+  "cmc": 1.0,
+  "type_line": "Artifact",
+  "oracle_text": "{1}, {T}, Sacrifice this artifact: Exile the top two cards of your library. Choose one of them. Until the end of your next turn, you may play that card.\nUnearth {1}{R} ({1}{R}: Return this card from your graveyard to the battlefield. Exile it at the beginning of the next end step or if it would leave the battlefield. Unearth only as a sorcery.)",
+  "colors": [],
+  "color_identity": [
+    "R"
+  ],
+  "keywords": [
+    "Unearth"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "arena",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "4219a14e-6701-4ddd-a185-21dc054ab19b",
+  "set": "bro",
+  "set_name": "The Brothers' War",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/4219a14e-6701-4ddd-a185-21dc054ab19b",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Abro&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/bro?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/bb142d99-b210-47c8-897c-be62f90d2192/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A95ac482c-c6ad-49b4-937e-460241ae355f&unique=prints",
+  "collector_number": "162",
+  "digital": false,
+  "rarity": "uncommon",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Matt Stewart",
+  "artist_ids": [
+    "20871267-2d8a-41d5-b03a-be3d557c5734"
+  ],
+  "illustration_id": "86286ea4-bb6f-41f6-802a-2f9a91e2ccfc",
+  "border_color": "black",
+  "frame": "2015",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 16367,
+  "penny_rank": 1710,
+  "preview": {
+    "source": "Wizards of the Coast",
+    "source_uri": "",
+    "previewed_at": "2022-11-01"
+  },
+  "prices": {
+    "usd": "0.22",
+    "usd_foil": "0.25",
+    "usd_etched": null,
+    "eur": "0.17",
+    "eur_foil": "0.26",
+    "tix": "0.03"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=583747&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DMishra%2527s%2BResearch%2BDesk",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DMishra%2527s%2BResearch%2BDesk",
+    "edhrec": "https://edhrec.com/route/?cc=Mishra%27s+Research+Desk"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F452195%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=682609&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/104942?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

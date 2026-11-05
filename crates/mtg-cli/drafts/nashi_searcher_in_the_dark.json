@@ -1,0 +1,50 @@
+{
+  "oracle_id": "ade8fc6f-efaa-4a24-96d8-99ef5026cd74",
+  "name": "Nashi, Searcher in the Dark",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Nashi, Searcher in the Dark",
+      "oracle_fingerprint": "a22486250a6264974f42e78b518cfce3",
+      "abilities": [
+        { "Keyword": "Menace" },
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": ["This"], "to": "EachPlayer", "combat": true } },
+            "effects": [
+              { "Mill": { "count": "Triggering", "as": "milled" } },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "AnyOf": [{ "Supertype": "Legendary" }, { "Type": "Enchantment" }] },
+                      { "Is": { "Bound": "milled" } },
+                      { "AnyOf": [{ "In": "Graveyard" }, { "In": "Exile" }] },
+                      { "OwnedBy": "You" }
+                    ]
+                  },
+                  "count": { "min": 0, "max": "Triggering" },
+                  "as": "picked2"
+                }
+              },
+              { "Move": { "what": { "Bound": "picked2" }, "to": "Hand", "as": "moved3" } },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Bound": "moved3" },
+                      "selector": [],
+                      "op": "Eq",
+                      "right": 0
+                    }
+                  },
+                  "then": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

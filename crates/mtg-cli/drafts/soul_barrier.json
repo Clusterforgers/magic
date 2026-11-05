@@ -1,0 +1,29 @@
+{
+  "oracle_id": "3aab67bb-f287-4aa6-a3c5-e850b22dfff6",
+  "name": "Soul Barrier",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Soul Barrier",
+      "oracle_fingerprint": "15f74f37c582d424a851e157431d542f",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "what": [{ "Type": "Creature" }], "by": "Opponents" } },
+            "effects": [
+              {
+                "Pay": {
+                  "who": "Triggering",
+                  "cost": "{2}",
+                  "unpaid": [
+                    { "DealDamage": { "to": { "ControllerOf": "Triggering" }, "amount": 2 } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

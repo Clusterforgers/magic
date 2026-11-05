@@ -1,0 +1,77 @@
+{
+  "oracle_id": "4c11bda3-903f-4b7c-9e5e-f6c5c91977cf",
+  "name": "Porcelain Zealot",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Porcelain Zealot",
+      "oracle_fingerprint": "37046ba8d7d37d46d07c2fe8d4474a1c",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "BeginCombat", "whose": "You" } },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    {
+                      "ModifyPT": {
+                        "power": {
+                          "When": {
+                            "condition": {
+                              "Compare": {
+                                "left": {
+                                  "CountOf": {
+                                    "of": { "Target": 0 },
+                                    "filter": [
+                                      { "Type": "Creature" },
+                                      { "HasKeywordNamed": "Toxic" }
+                                    ]
+                                  }
+                                },
+                                "op": "Ge",
+                                "right": 1
+                              }
+                            },
+                            "then": 2,
+                            "otherwise": 1
+                          }
+                        },
+                        "toughness": {
+                          "When": {
+                            "condition": {
+                              "Compare": {
+                                "left": {
+                                  "CountOf": {
+                                    "of": { "Target": 0 },
+                                    "filter": [
+                                      { "Type": "Creature" },
+                                      { "HasKeywordNamed": "Toxic" }
+                                    ]
+                                  }
+                                },
+                                "op": "Ge",
+                                "right": 1
+                              }
+                            },
+                            "then": 2,
+                            "otherwise": 1
+                          }
+                        }
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

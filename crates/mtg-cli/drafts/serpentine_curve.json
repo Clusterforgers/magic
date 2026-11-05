@@ -1,0 +1,52 @@
+{
+  "oracle_id": "e07ed462-17b8-46ec-8a3f-3f5c89f4bf78",
+  "name": "Serpentine Curve",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Serpentine Curve",
+      "oracle_fingerprint": "6e90166e6f07700ff13fd1e68b179c85",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Fractal",
+                      "colors": ["Green", "Blue"],
+                      "types": ["Creature"],
+                      "subtypes": ["Fractal"],
+                      "power": 0,
+                      "toughness": 0
+                    }
+                  },
+                  "as": "token"
+                }
+              },
+              {
+                "PutCounters": {
+                  "on": { "Bound": "token" },
+                  "counter": "+1/+1",
+                  "count": {
+                    "Sum": [
+                      {
+                        "Count": [
+                          { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] },
+                          { "OwnedBy": "You" },
+                          { "AnyOf": [{ "In": "Graveyard" }, { "In": "Exile" }] }
+                        ]
+                      },
+                      1
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

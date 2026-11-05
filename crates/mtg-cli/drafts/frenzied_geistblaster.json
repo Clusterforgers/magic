@@ -1,0 +1,74 @@
+{
+  "oracle_id": "385d93ac-2bac-46b4-8a5d-84c186de57a6",
+  "name": "Frenzied Geistblaster",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Frenzied Geistblaster",
+      "oracle_fingerprint": "3145943bbc091c67a3608a7d0b637aef",
+      "abilities": [
+        { "Keyword": "Prowess" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "if": {
+              "Compare": {
+                "left": {
+                  "Count": [
+                    {
+                      "AnyOf": [
+                        {
+                          "Not": {
+                            "AnyOf": [
+                              { "Not": { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] } },
+                              { "Not": { "OwnedBy": "You" } },
+                              { "Not": { "In": "Graveyard" } }
+                            ]
+                          }
+                        },
+                        {
+                          "Not": {
+                            "AnyOf": [
+                              { "Not": { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] } },
+                              { "Not": { "OwnedBy": "You" } },
+                              { "Not": { "In": "Library" } }
+                            ]
+                          }
+                        },
+                        {
+                          "Not": {
+                            "AnyOf": [
+                              { "Not": { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] } },
+                              { "Not": { "OwnedBy": "You" } },
+                              { "Not": { "In": "Hand" } }
+                            ]
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                },
+                "op": "Ge",
+                "right": 20
+              }
+            },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": [{ "Discard": {} }],
+                  "paid": [
+                    {
+                      "Seek": {
+                        "filter": [{ "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] }]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

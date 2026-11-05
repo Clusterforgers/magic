@@ -1,0 +1,45 @@
+{
+  "oracle_id": "b8306385-ec89-49f5-ac83-7522e4f0546c",
+  "name": "Thing Swing",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Thing Swing",
+      "oracle_fingerprint": "15eda089595df87542689cdf2c49c0bc",
+      "abilities": [
+        {
+          "CostModifier": {
+            "applies_to": [
+              "This",
+              { "Targeting": [{ "Subtype": "Hero" }, { "ControlledBy": "You" }] }
+            ],
+            "change": "Reduce",
+            "mana": "{2}"
+          }
+        },
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } },
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }] } }
+            ],
+            "effects": [
+              {
+                "DealDamage": {
+                  "source": { "Target": 0 },
+                  "to": { "Target": 1 },
+                  "amount": {
+                    "Times": {
+                      "by": 2,
+                      "of": { "Stat": { "of": { "Target": 0 }, "stat": "Power" } }
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

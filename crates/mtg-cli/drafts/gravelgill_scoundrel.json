@@ -1,0 +1,35 @@
+{
+  "oracle_id": "6d7f7e6e-5076-4af7-afe3-3e500835c4aa",
+  "name": "Gravelgill Scoundrel",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Gravelgill Scoundrel",
+      "oracle_fingerprint": "e192ec03b2e29216b0d7272555ee5e23",
+      "abilities": [
+        { "Keyword": "Vigilance" },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": [{ "TapPermanents": { "filter": [{ "Type": "Creature" }, "Other"] } }],
+                  "paid": [
+                    {
+                      "Continuous": {
+                        "affected": "This",
+                        "mods": ["CantBeBlocked"],
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

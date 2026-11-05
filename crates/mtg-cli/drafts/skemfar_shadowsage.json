@@ -1,0 +1,55 @@
+{
+  "oracle_id": "496ecb73-f508-4ac7-b101-23e03404580f",
+  "name": "Skemfar Shadowsage",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Skemfar Shadowsage",
+      "oracle_fingerprint": "2a2f3e71fa5c09315aa8273b0d976cb9",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Modal": {
+                  "modes": [
+                    {
+                      "effects": [
+                        {
+                          "LoseLife": {
+                            "who": "Opponents",
+                            "amount": {
+                              "MostCommon": {
+                                "of": [{ "Type": "Creature" }, { "ControlledBy": "You" }],
+                                "stat": "CreatureType"
+                              }
+                            }
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "effects": [
+                        {
+                          "GainLife": {
+                            "amount": {
+                              "MostCommon": {
+                                "of": [{ "Type": "Creature" }, { "ControlledBy": "You" }],
+                                "stat": "CreatureType"
+                              }
+                            }
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

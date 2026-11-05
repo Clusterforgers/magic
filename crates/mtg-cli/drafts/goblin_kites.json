@@ -1,0 +1,58 @@
+{
+  "oracle_id": "6efd11c8-be8a-4d44-a776-66d058638ad1",
+  "name": "Goblin Kites",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Goblin Kites",
+      "oracle_fingerprint": "6261b88d8ecb3433a1bc048d0ffd43cf",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{R}",
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Type": "Creature" },
+                    { "ControlledBy": "You" },
+                    { "Compare": { "stat": "Toughness", "op": "Le", "to": 2 } }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "AddKeyword": "Flying" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              { "Bind": { "what": { "Target": 0 }, "as": "target" } },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "End" } },
+                  "effects": [
+                    {
+                      "FlipCoin": {
+                        "lose": [
+                          {
+                            "Sacrifice": {
+                              "filter": [{ "Is": { "Bound": "target" } }],
+                              "count": { "Count": [{ "Is": { "Bound": "target" } }] }
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,59 @@
+{
+  "oracle_id": "3a536065-d62a-44c9-886b-84209b6bce57",
+  "name": "Nimbus Champion",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Nimbus Champion",
+      "oracle_fingerprint": "c34462a5c0965fdfaa5889cf37e08880",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "If": {
+                        "condition": {
+                          "Compare": {
+                            "left": {
+                              "CountOf": {
+                                "of": { "Target": 0 },
+                                "filter": [
+                                  { "Type": "Creature" },
+                                  {
+                                    "Compare": {
+                                      "stat": "Power",
+                                      "op": "Le",
+                                      "to": {
+                                        "Count": [
+                                          { "Subtype": "Warrior" },
+                                          { "ControlledBy": "You" }
+                                        ]
+                                      }
+                                    }
+                                  }
+                                ]
+                              }
+                            },
+                            "op": "Eq",
+                            "right": 1
+                          }
+                        },
+                        "then": [{ "Move": { "what": { "Target": 0 }, "to": "Hand" } }]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,7 +1,7 @@
 {
   "oracle_id": "55b8c81b-f26b-4ae1-94ba-30b19e6a944e",
   "name": "Evereth, Viceroy of Plunder",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Evereth, Viceroy of Plunder",
@@ -9,9 +9,38 @@
       "abilities": [
         { "Keyword": "Flying" },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 7, "end": 192 }
+          "Activated": {
+            "cost": [
+              {
+                "Sacrifice": {
+                  "filter": [{ "AnyOf": [{ "Type": "Creature" }, { "Type": "Artifact" }] }, "Other"]
+                }
+              }
+            ],
+            "timing": "Sorcery",
+            "effects": [
+              { "PutCounters": { "on": "This", "counter": "+1/+1" } },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "CountOf": { "of": "Paid", "filter": [{ "Subtype": "Treasure" }] } },
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [
+                    {
+                      "Continuous": {
+                        "affected": "This",
+                        "mods": [{ "AddKeyword": "Lifelink" }],
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
           }
         },
         {

@@ -1,0 +1,52 @@
+{
+  "oracle_id": "558135b3-babc-40b6-9d9d-57ab0965ee3d",
+  "name": "Calamitous Cave-In",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Calamitous Cave-In",
+      "oracle_fingerprint": "df2339025c0835f10f8ddb4717568c24",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "DealDamage": {
+                  "to": {
+                    "Each": [{ "AnyOf": [{ "Type": "Creature" }, { "Type": "Planeswalker" }] }]
+                  },
+                  "amount": {
+                    "Count": [
+                      {
+                        "AnyOf": [
+                          {
+                            "Not": {
+                              "AnyOf": [
+                                { "Not": { "Subtype": "Cave" } },
+                                { "Not": { "OwnedBy": "You" } },
+                                { "Not": { "In": "Graveyard" } }
+                              ]
+                            }
+                          },
+                          {
+                            "Not": {
+                              "AnyOf": [
+                                { "Not": { "Subtype": "Cave" } },
+                                { "Not": { "ControlledBy": "You" } },
+                                { "Not": { "In": "Battlefield" } }
+                              ]
+                            }
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

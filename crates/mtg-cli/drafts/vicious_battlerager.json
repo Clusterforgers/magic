@@ -1,0 +1,25 @@
+{
+  "oracle_id": "b8942c72-16ce-4f2f-875f-97a56e85a03e",
+  "name": "Vicious Battlerager",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Vicious Battlerager",
+      "oracle_fingerprint": "b6c01457af0feb375edb758611f50971",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "TakeInitiative": {} }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "BecomesBlocked": { "what": ["This"], "by": [{ "Type": "Creature" }] } },
+            "effects": [{ "LoseLife": { "who": { "ControllerOf": "Dealer" }, "amount": 5 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

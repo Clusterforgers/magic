@@ -1,0 +1,41 @@
+{
+  "oracle_id": "b9ea2e9c-a83b-40dd-ad52-b16d65989ba3",
+  "name": "Tangle Asp",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Tangle Asp",
+      "oracle_fingerprint": "d1972ea7a158e129eeb6af068f045239",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "BecomesBlocked": { "what": [{ "Type": "Creature" }], "by": ["This"] } },
+            "effects": [
+              { "Bind": { "what": "Triggering", "as": "event" } },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "EndCombat" } },
+                  "effects": [{ "Destroy": { "what": { "Bound": "event" } } }]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "BecomesBlocked": { "what": ["This"], "by": [{ "Type": "Creature" }] } },
+            "effects": [
+              { "Bind": { "what": "Dealer", "as": "event" } },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "EndCombat" } },
+                  "effects": [{ "Destroy": { "what": { "Bound": "event" } } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

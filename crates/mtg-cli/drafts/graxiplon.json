@@ -1,0 +1,31 @@
+{
+  "oracle_id": "b81ed78a-1bcc-4a98-8d06-6c9fdff0a8d3",
+  "name": "Graxiplon",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Graxiplon",
+      "oracle_fingerprint": "a6c6c319e58c19ce358d3736d9e0f431",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "This",
+            "mods": ["CantBeBlocked"],
+            "condition": {
+              "Compare": {
+                "left": {
+                  "MostCommon": {
+                    "of": [{ "Type": "Creature" }, { "ControlledBy": "Defending" }],
+                    "stat": "CreatureType"
+                  }
+                },
+                "op": "Lt",
+                "right": 3
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

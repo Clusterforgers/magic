@@ -1,0 +1,140 @@
+{
+  "object": "card",
+  "id": "0409bacf-b728-473d-bf9b-41fdf364e783",
+  "oracle_id": "4c11bda3-903f-4b7c-9e5e-f6c5c91977cf",
+  "multiverse_ids": [
+    602560
+  ],
+  "mtgo_id": 106275,
+  "arena_id": 83730,
+  "tcgplayer_id": 479367,
+  "cardmarket_id": 694156,
+  "name": "Porcelain Zealot",
+  "lang": "en",
+  "released_at": "2023-02-10",
+  "uri": "https://api.scryfall.com/cards/0409bacf-b728-473d-bf9b-41fdf364e783",
+  "scryfall_uri": "https://scryfall.com/card/one/30/porcelain-zealot?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T04:47:54Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/0/4/0409bacf-b728-473d-bf9b-41fdf364e783.jpg?1783918074",
+    "normal": "https://cards.scryfall.io/normal/front/0/4/0409bacf-b728-473d-bf9b-41fdf364e783.jpg?1783918074",
+    "large": "https://cards.scryfall.io/large/front/0/4/0409bacf-b728-473d-bf9b-41fdf364e783.jpg?1783918074",
+    "png": "https://cards.scryfall.io/png/front/0/4/0409bacf-b728-473d-bf9b-41fdf364e783.png?1783918074",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/0/4/0409bacf-b728-473d-bf9b-41fdf364e783.jpg?1783918074",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/0/4/0409bacf-b728-473d-bf9b-41fdf364e783.jpg?1783918074",
+    "thumb": "https://cards.scryfall.io/thumb/front/0/4/0409bacf-b728-473d-bf9b-41fdf364e783.webp?1783918074",
+    "grid": "https://cards.scryfall.io/grid/front/0/4/0409bacf-b728-473d-bf9b-41fdf364e783.webp?1783918074",
+    "display": "https://cards.scryfall.io/display/front/0/4/0409bacf-b728-473d-bf9b-41fdf364e783.webp?1783918074",
+    "art": "https://cards.scryfall.io/art/front/0/4/0409bacf-b728-473d-bf9b-41fdf364e783.webp?1783918074",
+    "crop": "https://cards.scryfall.io/crop/front/0/4/0409bacf-b728-473d-bf9b-41fdf364e783.webp?1783918074",
+    "jpeg": "https://cards.scryfall.io/normal/front/0/4/0409bacf-b728-473d-bf9b-41fdf364e783.jpg?1783918074"
+  },
+  "mana_cost": "{3}{W}",
+  "cmc": 4.0,
+  "type_line": "Creature — Phyrexian Soldier",
+  "oracle_text": "At the beginning of combat on your turn, target creature you control gets +1/+1 until end of turn. If that creature has toxic, instead it gets +2/+2 until end of turn.",
+  "power": "2",
+  "toughness": "3",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": [],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "arena",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "04bef644-343f-4230-95ee-255f29aa67a2",
+  "set": "one",
+  "set_name": "Phyrexia: All Will Be One",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/04bef644-343f-4230-95ee-255f29aa67a2",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Aone&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/one?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/0409bacf-b728-473d-bf9b-41fdf364e783/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A4c11bda3-903f-4b7c-9e5e-f6c5c91977cf&unique=prints",
+  "collector_number": "30",
+  "digital": false,
+  "rarity": "uncommon",
+  "flavor_text": "\"There is a single, glorious truth, etched in the hearts of the faithful. Join in unity, or be washed away.\"",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Krharts",
+  "artist_ids": [
+    "15fdfc66-dccf-4ea7-a4c2-cd37ffcbf960"
+  ],
+  "illustration_id": "3e549443-c9a1-4dd0-bf2e-773fb1426b2a",
+  "border_color": "black",
+  "frame": "2015",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 19265,
+  "preview": {
+    "source": "IGN",
+    "source_uri": "https://es.ign.com/magic-the-gathering-arena/187385/news/exclusiva-mundial-revelamos-una-de-las-nuevas-cartas-de-magic-de-la-nueva-expansion-pirexia",
+    "previewed_at": "2023-01-24"
+  },
+  "prices": {
+    "usd": "0.23",
+    "usd_foil": "0.09",
+    "usd_etched": null,
+    "eur": "0.07",
+    "eur_foil": "0.21",
+    "tix": "0.03"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=602560&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DPorcelain%2BZealot",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DPorcelain%2BZealot",
+    "edhrec": "https://edhrec.com/route/?cc=Porcelain+Zealot"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F479367%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=694156&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/106275?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

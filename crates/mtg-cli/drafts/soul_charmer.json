@@ -1,0 +1,33 @@
+{
+  "oracle_id": "de56a8d9-faeb-4e73-bdc1-cc81a6b6d05c",
+  "name": "Soul Charmer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Soul Charmer",
+      "oracle_fingerprint": "332329552cc0bb2b5660bf3eb289053c",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "DealsDamage": {
+                "source": ["This"],
+                "to": { "Each": [{ "Type": "Creature" }] },
+                "combat": true
+              }
+            },
+            "effects": [
+              {
+                "Pay": {
+                  "who": { "ControllerOf": "Triggering" },
+                  "cost": "{2}",
+                  "unpaid": [{ "GainLife": { "amount": 2 } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

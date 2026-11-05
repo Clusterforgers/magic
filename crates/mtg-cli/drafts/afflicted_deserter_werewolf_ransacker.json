@@ -1,0 +1,68 @@
+{
+  "oracle_id": "52adc761-1a0a-43d1-a706-41a92bb7880c",
+  "name": "Afflicted Deserter // Werewolf Ransacker",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Afflicted Deserter",
+      "oracle_fingerprint": "e85f9d225d537639fd16ebf6206903d4",
+      "abilities": [
+        {
+          "Manual": { "reason": "you apply this clause by hand", "span": { "start": 0, "end": 91 } }
+        }
+      ]
+    },
+    {
+      "name": "Werewolf Ransacker",
+      "oracle_fingerprint": "552a84004ae930000756c90111bd1cb7",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Did": { "action": "Transformed", "what": ["This"] } },
+            "targets": [{ "what": { "Object": [{ "Type": "Artifact" }] } }],
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    { "Destroy": { "what": { "Target": 0 }, "as": "destroyed" } },
+                    {
+                      "If": {
+                        "condition": {
+                          "Compare": {
+                            "left": {
+                              "Tally": {
+                                "event": "Died",
+                                "who": "EachPlayer",
+                                "filter": [
+                                  { "Type": "Artifact" },
+                                  { "Is": { "Bound": "destroyed" } }
+                                ]
+                              }
+                            },
+                            "op": "Ge",
+                            "right": 1
+                          }
+                        },
+                        "then": [
+                          {
+                            "DealDamage": { "to": { "ControllerOf": { "Target": 0 } }, "amount": 3 }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 203, "end": 307 }
+          }
+        }
+      ]
+    }
+  ]
+}

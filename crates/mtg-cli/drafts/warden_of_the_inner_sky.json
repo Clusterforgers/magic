@@ -1,0 +1,36 @@
+{
+  "oracle_id": "5268f772-5b42-4b5b-9e57-c32c662a42f3",
+  "name": "Warden of the Inner Sky",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Warden of the Inner Sky",
+      "oracle_fingerprint": "055cb77634e6379b2e32aff69d60fe92",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "AddKeyword": "Flying" }, { "AddKeyword": "Vigilance" }],
+            "condition": {
+              "Compare": { "left": { "AnyCounters": "This" }, "op": "Ge", "right": 3 }
+            }
+          }
+        },
+        {
+          "Activated": {
+            "cost": [
+              {
+                "TapPermanents": {
+                  "filter": [{ "AnyOf": [{ "Type": "Artifact" }, { "Type": "Creature" }] }],
+                  "count": 3
+                }
+              }
+            ],
+            "timing": "Sorcery",
+            "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }, { "Scry": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

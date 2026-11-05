@@ -1,0 +1,48 @@
+{
+  "oracle_id": "74b8182e-54be-444a-97b1-84fc5fd3c290",
+  "name": "End of the Hunt",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "End of the Hunt",
+      "oracle_fingerprint": "0d9a568cd6074571d0ae87e3711e6c80",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              {
+                "Choose": {
+                  "who": { "Target": 0 },
+                  "from": {
+                    "Each": [
+                      { "AnyOf": [{ "Type": "Creature" }, { "Type": "Planeswalker" }] },
+                      { "ControlledBy": { "Target": 0 } },
+                      {
+                        "Compare": {
+                          "stat": "ManaValue",
+                          "op": "Eq",
+                          "to": {
+                            "Greatest": {
+                              "of": [
+                                { "AnyOf": [{ "Type": "Creature" }, { "Type": "Planeswalker" }] },
+                                { "ControlledBy": { "Target": 0 } }
+                              ],
+                              "stat": "ManaValue"
+                            }
+                          }
+                        }
+                      }
+                    ]
+                  },
+                  "as": "card"
+                }
+              },
+              { "Exile": { "what": { "Bound": "card" } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,48 @@
+{
+  "oracle_id": "3593754d-df62-4ee0-80df-0c3fb057816a",
+  "name": "Chicken Egg",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Chicken Egg",
+      "oracle_fingerprint": "079bbcc9438b4f3634e6f307835c83c8",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [
+              {
+                "RollDice": {
+                  "sides": 6,
+                  "results": [
+                    {
+                      "from": 6,
+                      "to": 6,
+                      "effects": [
+                        { "Sacrifice": { "filter": ["This"] } },
+                        {
+                          "CreateToken": {
+                            "token": {
+                              "Custom": {
+                                "name": "Giant Bird",
+                                "colors": ["Red"],
+                                "types": ["Creature"],
+                                "subtypes": ["Giant", "Bird"],
+                                "power": 4,
+                                "toughness": 4
+                              }
+                            }
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

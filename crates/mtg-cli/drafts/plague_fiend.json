@@ -1,0 +1,33 @@
+{
+  "oracle_id": "d287c11e-0684-42ed-abdb-758852ed0502",
+  "name": "Plague Fiend",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Plague Fiend",
+      "oracle_fingerprint": "1f02e0bbdaa7b3e494bbaf6655df2e7b",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "DealsDamage": {
+                "source": ["This"],
+                "to": { "Each": [{ "Type": "Creature" }] },
+                "combat": true
+              }
+            },
+            "effects": [
+              {
+                "Pay": {
+                  "who": { "ControllerOf": "Triggering" },
+                  "cost": "{2}",
+                  "unpaid": [{ "Destroy": { "what": "Triggering" } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

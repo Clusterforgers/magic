@@ -1,16 +1,27 @@
 {
   "oracle_id": "ebec9957-b777-42ae-a394-85c7ed84d00a",
   "name": "Rassilon, the War President",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Rassilon, the War President",
       "oracle_fingerprint": "9285c42e242d57c9bc8a30dd6aa6e6a9",
       "abilities": [
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 0, "end": 145 }
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [
+              { "LoseLife": { "amount": 2 } },
+              { "ExileTop": { "as": "exiled" } },
+              {
+                "Rule": {
+                  "rule": {
+                    "MayCast": { "from": "Exile", "only": { "Bound": "exiled" }, "play": true }
+                  },
+                  "duration": "Forever"
+                }
+              }
+            ]
           }
         },
         {

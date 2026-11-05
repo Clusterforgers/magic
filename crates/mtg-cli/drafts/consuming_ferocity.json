@@ -1,0 +1,70 @@
+{
+  "oracle_id": "8efbe68c-622c-4986-a375-7e0bf780eb2e",
+  "name": "Consuming Ferocity",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Consuming Ferocity",
+      "oracle_fingerprint": "eb4ffb1b9ed604a93897b7dde1da621c",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }, { "Not": { "Subtype": "Wall" } }] } },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 0 } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [
+              { "PutCounters": { "on": "Attached", "counter": { "Other": "+1/+0" } } },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": {
+                        "Counters": {
+                          "on": { "Each": [{ "Type": "Creature" }, { "Is": "Attached" }] },
+                          "counter": { "Other": "+1/+0" }
+                        }
+                      },
+                      "op": "Ge",
+                      "right": 3
+                    }
+                  },
+                  "then": [
+                    {
+                      "DealDamage": {
+                        "source": "Attached",
+                        "to": { "ControllerOf": "Attached" },
+                        "amount": { "Stat": { "of": "Attached", "stat": "Power" } }
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": {
+                        "Counters": {
+                          "on": { "Each": [{ "Type": "Creature" }, { "Is": "Attached" }] },
+                          "counter": { "Other": "+1/+0" }
+                        }
+                      },
+                      "op": "Ge",
+                      "right": 3
+                    }
+                  },
+                  "then": [{ "Destroy": { "what": "Attached", "regenerate": false } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

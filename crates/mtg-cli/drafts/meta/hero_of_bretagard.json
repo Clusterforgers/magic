@@ -1,0 +1,66 @@
+{
+  "source": "forge",
+  "oracle_matches": true,
+  "lines": [
+    {
+      "face": 0,
+      "tag": "T",
+      "text": "Whenever one or more cards are put into exile from your hand or a spell or ability you control exiles one or more permanents from the battlefield, put that many +1/+1 counters on CARDNAME.",
+      "abilities": [],
+      "gap": "key:Trigger.ChangesZoneAll.ValidCause"
+    },
+    {
+      "face": 0,
+      "tag": "T",
+      "text": "Whenever one or more cards are put into exile from your hand or a spell or ability you control exiles one or more permanents from the battlefield, put that many +1/+1 counters on CARDNAME.",
+      "abilities": [],
+      "gap": "key:Trigger.ChangesZoneAll.ValidCause"
+    },
+    {
+      "face": 0,
+      "tag": "S",
+      "text": "As long as CARDNAME has five or more counters on it, it has flying and is an Angel in addition to its other types.",
+      "abilities": [
+        0
+      ],
+      "gap": null
+    },
+    {
+      "face": 0,
+      "tag": "S",
+      "text": "As long as CARDNAME has ten or more counters on it, it has indestructible and is a God in addition to its other types.",
+      "abilities": [
+        1
+      ],
+      "gap": null
+    }
+  ],
+  "proof": {
+    "marks": [
+      {
+        "face": 0,
+        "span": {
+          "start": 0,
+          "end": 193
+        },
+        "mark": "ByHand"
+      },
+      {
+        "face": 0,
+        "span": {
+          "start": 194,
+          "end": 313
+        },
+        "mark": "Auto"
+      },
+      {
+        "face": 0,
+        "span": {
+          "start": 314,
+          "end": 437
+        },
+        "mark": "Auto"
+      }
+    ]
+  }
+}

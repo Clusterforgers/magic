@@ -1,0 +1,51 @@
+{
+  "oracle_id": "c4822813-cd81-465d-9fe8-3a4c2dcd31ef",
+  "name": "Thicket Basilisk",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Thicket Basilisk",
+      "oracle_fingerprint": "a15e0375b32de5361b49403d17678611",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "BecomesBlocked": {
+                "what": [{ "Type": "Creature" }, { "Not": { "Subtype": "Wall" } }],
+                "by": ["This"]
+              }
+            },
+            "effects": [
+              { "Bind": { "what": "Triggering", "as": "event" } },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "EndCombat" } },
+                  "effects": [{ "Destroy": { "what": { "Bound": "event" } } }]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "BecomesBlocked": {
+                "what": ["This"],
+                "by": [{ "Type": "Creature" }, { "Not": { "Subtype": "Wall" } }]
+              }
+            },
+            "effects": [
+              { "Bind": { "what": "Dealer", "as": "event" } },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "EndCombat" } },
+                  "effects": [{ "Destroy": { "what": { "Bound": "event" } } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

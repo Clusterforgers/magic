@@ -1,0 +1,43 @@
+{
+  "oracle_id": "99eb572b-85b1-4d78-aea8-4400a5b7e508",
+  "name": "Emrakul's Evangel",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Emrakul's Evangel",
+      "oracle_fingerprint": "542f4f664ea7fe1367b2d7ef2d9bed3e",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [
+              "Tap",
+              {
+                "Sacrifice": {
+                  "filter": [{ "Type": "Creature" }, "Other", { "Not": { "Subtype": "Eldrazi" } }],
+                  "count": "X"
+                }
+              },
+              "SacrificeSelf"
+            ],
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Eldrazi Horror",
+                      "types": ["Creature"],
+                      "subtypes": ["Eldrazi", "Horror"],
+                      "power": 3,
+                      "toughness": 2
+                    }
+                  },
+                  "count": { "CountOf": { "of": "Paid", "filter": [{ "Type": "Creature" }] } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

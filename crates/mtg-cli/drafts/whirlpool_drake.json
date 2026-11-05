@@ -1,0 +1,44 @@
+{
+  "oracle_id": "aef9fcf0-b755-40f6-821d-836ae1b5497a",
+  "name": "Whirlpool Drake",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Whirlpool Drake",
+      "oracle_fingerprint": "6559c4aed776c90f51e60bbde691ea58",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Move": {
+                  "what": { "Each": [{ "In": "Hand" }, { "OwnedBy": "You" }] },
+                  "to": { "Library": { "place": "Shuffled" } },
+                  "as": "moved"
+                }
+              },
+              { "Draw": { "count": { "Bound": "moved~moved" } } }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } },
+            "effects": [
+              {
+                "Move": {
+                  "what": { "Each": [{ "In": "Hand" }, { "OwnedBy": "You" }] },
+                  "to": { "Library": { "place": "Shuffled" } },
+                  "as": "moved"
+                }
+              },
+              { "Draw": { "count": { "Bound": "moved~moved" } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

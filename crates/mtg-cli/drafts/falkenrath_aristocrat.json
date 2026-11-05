@@ -1,0 +1,41 @@
+{
+  "oracle_id": "cd2a87c4-d1c3-4a9e-b2df-e6fe251421c4",
+  "name": "Falkenrath Aristocrat",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Falkenrath Aristocrat",
+      "oracle_fingerprint": "80ce897605a565b1a562dda552cf9e99",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": "Haste" },
+        {
+          "Activated": {
+            "cost": [{ "Sacrifice": { "filter": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "AddKeyword": "Indestructible" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "CountOf": { "of": "Paid", "filter": [{ "Subtype": "Human" }] } },
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

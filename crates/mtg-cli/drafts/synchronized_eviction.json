@@ -1,0 +1,45 @@
+{
+  "oracle_id": "ad64b05a-4702-47ef-a81e-1b481e57ab55",
+  "name": "Synchronized Eviction",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Synchronized Eviction",
+      "oracle_fingerprint": "6cfd46becfc99450566f1823da9b3e2d",
+      "abilities": [
+        {
+          "CostModifier": {
+            "applies_to": ["This"],
+            "change": "Reduce",
+            "mana": "{2}",
+            "condition": {
+              "Compare": {
+                "left": {
+                  "MostCommon": {
+                    "of": [{ "Type": "Creature" }, { "ControlledBy": "You" }],
+                    "stat": "CreatureType"
+                  }
+                },
+                "op": "Ge",
+                "right": 2
+              }
+            }
+          }
+        },
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Not": { "Type": "Land" } }] } }],
+            "effects": [
+              {
+                "Move": {
+                  "what": { "Target": 0 },
+                  "to": { "Library": { "place": { "Below": 1 } } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

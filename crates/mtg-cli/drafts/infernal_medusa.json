@@ -1,0 +1,46 @@
+{
+  "oracle_id": "2cf5ce1f-d5f6-44cd-96e5-87d990d7e770",
+  "name": "Infernal Medusa",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Infernal Medusa",
+      "oracle_fingerprint": "48453d1ca4fcb77d05a33327b94b2ab7",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "BecomesBlocked": { "what": [{ "Type": "Creature" }], "by": ["This"] } },
+            "effects": [
+              { "Bind": { "what": "Triggering", "as": "event" } },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "EndCombat" } },
+                  "effects": [{ "Destroy": { "what": { "Bound": "event" } } }]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "BecomesBlocked": {
+                "what": ["This"],
+                "by": [{ "Type": "Creature" }, { "Not": { "Subtype": "Wall" } }]
+              }
+            },
+            "effects": [
+              { "Bind": { "what": "Dealer", "as": "event" } },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "EndCombat" } },
+                  "effects": [{ "Destroy": { "what": { "Bound": "event" } } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

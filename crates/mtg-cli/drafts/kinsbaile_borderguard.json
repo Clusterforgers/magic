@@ -1,7 +1,7 @@
 {
   "oracle_id": "b420d983-4edf-4cc1-b442-af2b67e49c76",
   "name": "Kinsbaile Borderguard",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Kinsbaile Borderguard",
@@ -19,9 +19,25 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 84, "end": 182 }
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Kithkin Soldier",
+                      "colors": ["White"],
+                      "types": ["Creature"],
+                      "subtypes": ["Kithkin", "Soldier"],
+                      "power": 1,
+                      "toughness": 1
+                    }
+                  },
+                  "count": { "AnyCounters": "This" }
+                }
+              }
+            ]
           }
         }
       ]

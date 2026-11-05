@@ -1,0 +1,48 @@
+{
+  "oracle_id": "02197d14-8d9f-4b1f-9ee0-ce8ef690843c",
+  "name": "Sworn Defender",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sworn Defender",
+      "oracle_fingerprint": "2b1f86d09b28fb7e852cae6b1817c53f",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{1}",
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Type": "Creature" },
+                    { "AnyOf": [{ "BlockedBy": "This" }, { "Blocks": "This" }] }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [
+                    {
+                      "SetPT": {
+                        "power": {
+                          "Sum": [{ "Stat": { "of": { "Target": 0 }, "stat": "Toughness" } }, -1]
+                        },
+                        "toughness": {
+                          "Sum": [{ "Stat": { "of": { "Target": 0 }, "stat": "Power" } }, 1]
+                        }
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

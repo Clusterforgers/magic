@@ -1,0 +1,53 @@
+{
+  "oracle_id": "ef2e711f-7362-4eed-8f91-f3d653e7f434",
+  "name": "Petradon",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Petradon",
+      "oracle_fingerprint": "301de7ebac755039284f21eb345695c0",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Land" }] }, "bounds": { "min": 2, "max": 2 } }
+            ],
+            "effects": [
+              { "Exile": { "what": { "Target": 0 }, "as": "exiled" } },
+              { "Forget": { "slot": "remembered" } },
+              { "Remember": { "what": { "Bound": "exiled" }, "slot": "remembered" } }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield" } },
+            "effects": [
+              {
+                "Move": {
+                  "what": { "Remembered": { "on": "This", "slot": "remembered" } },
+                  "to": { "Battlefield": {} }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{R}",
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "ModifyPT": { "power": 1, "toughness": 0 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

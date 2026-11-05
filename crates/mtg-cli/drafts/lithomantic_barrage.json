@@ -1,0 +1,87 @@
+{
+  "oracle_id": "5e414dc2-d0ff-43e5-9aa2-cd9d96de6d89",
+  "name": "Lithomantic Barrage",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Lithomantic Barrage",
+      "oracle_fingerprint": "0c2ff835b176bc3469dbd2332b813b07",
+      "abilities": [
+        { "Rule": { "rule": { "CantBeCountered": "This" }, "from": "Stack" } },
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "AnyOf": [{ "Type": "Creature" }, { "Type": "Planeswalker" }] }]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "DealDamage": {
+                  "to": { "Target": 0 },
+                  "amount": {
+                    "When": {
+                      "condition": {
+                        "Compare": {
+                          "left": {
+                            "CountOf": {
+                              "of": { "Target": 0 },
+                              "filter": [
+                                {
+                                  "AnyOf": [
+                                    {
+                                      "Not": {
+                                        "AnyOf": [
+                                          { "Not": { "Type": "Creature" } },
+                                          { "Not": { "Color": "White" } }
+                                        ]
+                                      }
+                                    },
+                                    {
+                                      "Not": {
+                                        "AnyOf": [
+                                          { "Not": { "Type": "Creature" } },
+                                          { "Not": { "Color": "Blue" } }
+                                        ]
+                                      }
+                                    },
+                                    {
+                                      "Not": {
+                                        "AnyOf": [
+                                          { "Not": { "Type": "Planeswalker" } },
+                                          { "Not": { "Color": "White" } }
+                                        ]
+                                      }
+                                    },
+                                    {
+                                      "Not": {
+                                        "AnyOf": [
+                                          { "Not": { "Type": "Planeswalker" } },
+                                          { "Not": { "Color": "Blue" } }
+                                        ]
+                                      }
+                                    }
+                                  ]
+                                }
+                              ]
+                            }
+                          },
+                          "op": "Ge",
+                          "right": 1
+                        }
+                      },
+                      "then": 5,
+                      "otherwise": 1
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

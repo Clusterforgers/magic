@@ -1,0 +1,36 @@
+{
+  "oracle_id": "80d1866f-b5a5-42c6-b81a-851a34ec0cd9",
+  "name": "Herald of Ilharg",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Herald of Ilharg",
+      "oracle_fingerprint": "f5e469eed7dde86be7a3dbcc87626d82",
+      "abilities": [
+        { "Keyword": "Trample" },
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "what": [{ "Type": "Creature" }], "by": "You" } },
+            "effects": [
+              { "PutCounters": { "on": "This", "counter": "+1/+1", "count": 2 } },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "Stat": { "of": "Triggering", "stat": "ManaValue" } },
+                      "op": "Ge",
+                      "right": 5
+                    }
+                  },
+                  "then": [
+                    { "DealDamage": { "to": "Opponents", "amount": { "AnyCounters": "This" } } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

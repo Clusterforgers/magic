@@ -1,7 +1,7 @@
 {
   "oracle_id": "cce643fb-cd88-457c-8f13-c203554df675",
   "name": "Twenty-Toed Toad",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Twenty-Toed Toad",
@@ -20,9 +20,34 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 136, "end": 269 }
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": {
+                        "When": {
+                          "condition": {
+                            "Compare": {
+                              "left": { "AnyCounters": "This" },
+                              "op": "Ge",
+                              "right": 20
+                            }
+                          },
+                          "then": 20,
+                          "otherwise": { "Count": [{ "OwnedBy": "You" }, { "In": "Hand" }] }
+                        }
+                      },
+                      "op": "Ge",
+                      "right": 20
+                    }
+                  },
+                  "then": [{ "WinGame": {} }]
+                }
+              }
+            ]
           }
         }
       ]

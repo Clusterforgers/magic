@@ -1,0 +1,49 @@
+{
+  "oracle_id": "dec281b4-e6d6-4b78-b755-358e07eb7c06",
+  "name": "Will of the All-Hunter",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Will of the All-Hunter",
+      "oracle_fingerprint": "1c1c771f4885cb17faf2f032e25a4f6e",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": {
+                        "CountOf": {
+                          "of": { "Target": 0 },
+                          "filter": [{ "Type": "Creature" }, "Blocking"]
+                        }
+                      },
+                      "op": "Eq",
+                      "right": 1
+                    }
+                  },
+                  "then": [
+                    { "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1", "count": 2 } }
+                  ],
+                  "otherwise": [
+                    {
+                      "Continuous": {
+                        "affected": { "Target": 0 },
+                        "mods": [{ "ModifyPT": { "power": 2, "toughness": 2 } }],
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Cycling": "{2}" } }
+      ]
+    }
+  ]
+}

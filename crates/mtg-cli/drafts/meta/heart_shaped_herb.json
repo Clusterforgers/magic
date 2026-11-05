@@ -1,0 +1,42 @@
+{
+  "source": "forge",
+  "oracle_matches": true,
+  "lines": [
+    {
+      "face": 0,
+      "tag": "A",
+      "text": "You may sacrifice a creature. If you do, return that card to the battlefield under its owner's control with three +1/+1 counters on it and you become the monarch.",
+      "abilities": [],
+      "gap": "key:ChangeZone.GainControl-printed-as-owner"
+    },
+    {
+      "face": 0,
+      "tag": "R",
+      "text": "If a source an opponent controls would deal damage to you, prevent 1 of that damage.",
+      "abilities": [
+        0
+      ],
+      "gap": null
+    }
+  ],
+  "proof": {
+    "marks": [
+      {
+        "face": 0,
+        "span": {
+          "start": 0,
+          "end": 84
+        },
+        "mark": "Auto"
+      },
+      {
+        "face": 0,
+        "span": {
+          "start": 85,
+          "end": 282
+        },
+        "mark": "ByHand"
+      }
+    ]
+  }
+}

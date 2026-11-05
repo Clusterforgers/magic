@@ -1,0 +1,55 @@
+{
+  "oracle_id": "b53597f4-1a0f-4fa8-9c17-29178cdc4d2b",
+  "name": "Slime Against Humanity",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Slime Against Humanity",
+      "oracle_fingerprint": "2596f8deb0b1c952b5e3a90d7b7d66f6",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Ooze",
+                      "colors": ["Green"],
+                      "types": ["Creature"],
+                      "subtypes": ["Ooze"],
+                      "power": 0,
+                      "toughness": 0,
+                      "abilities": [{ "Keyword": "Trample" }]
+                    }
+                  },
+                  "as": "token"
+                }
+              },
+              {
+                "PutCounters": {
+                  "on": { "Bound": "token" },
+                  "counter": "+1/+1",
+                  "count": {
+                    "Sum": [
+                      {
+                        "Count": [
+                          {
+                            "AnyOf": [{ "Subtype": "Ooze" }, { "Named": "Slime Against Humanity" }]
+                          },
+                          { "OwnedBy": "You" },
+                          { "AnyOf": [{ "In": "Graveyard" }, { "In": "Exile" }] }
+                        ]
+                      },
+                      2
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

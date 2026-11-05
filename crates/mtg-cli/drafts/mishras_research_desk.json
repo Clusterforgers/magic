@@ -1,0 +1,36 @@
+{
+  "oracle_id": "95ac482c-c6ad-49b4-937e-460241ae355f",
+  "name": "Mishra's Research Desk",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mishra's Research Desk",
+      "oracle_fingerprint": "cc979f4bd031ed06255a2e99510693de",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{1}" }, "Tap", "SacrificeSelf"],
+            "effects": [
+              { "ExileTop": { "count": 2, "as": "exiled" } },
+              {
+                "Choose": {
+                  "from": { "Each": [{ "Is": { "Bound": "exiled" } }, { "In": "Exile" }] },
+                  "as": "card2"
+                }
+              },
+              {
+                "Rule": {
+                  "rule": {
+                    "MayCast": { "from": "Exile", "only": { "Bound": "card2" }, "play": true }
+                  },
+                  "duration": "UntilEndOfYourNextTurn"
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Unearth": "{1}{R}" } }
+      ]
+    }
+  ]
+}

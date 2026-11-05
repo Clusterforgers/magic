@@ -1,0 +1,51 @@
+{
+  "oracle_id": "f7dcb605-c48e-4e21-86e2-0d0bd4bd2ec7",
+  "name": "Muse Vessel",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Muse Vessel",
+      "oracle_fingerprint": "dc58079f03dce7dee4abd0a652cd409a",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{3}" }, "Tap"],
+            "timing": "Sorcery",
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              {
+                "Choose": {
+                  "who": { "Target": 0 },
+                  "from": { "Each": [{ "In": "Hand" }, { "OwnedBy": { "Target": 0 } }] },
+                  "as": "picked"
+                }
+              },
+              { "Exile": { "what": { "Bound": "picked" } } }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{1}",
+            "effects": [
+              {
+                "Choose": {
+                  "from": { "Each": [{ "ExiledWith": "This" }, { "In": "Exile" }] },
+                  "as": "card"
+                }
+              },
+              {
+                "Rule": {
+                  "rule": {
+                    "MayCast": { "from": "Exile", "only": { "Bound": "card" }, "play": true }
+                  },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,85 @@
+{
+  "oracle_id": "03c934a6-be57-480d-8c84-4e46d9ccb406",
+  "name": "Hulkling, Burgeoning Bruiser",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Hulkling, Burgeoning Bruiser",
+      "oracle_fingerprint": "b3442d25a1041a01cd9e1759bf559f18",
+      "abilities": [
+        { "Keyword": "Vigilance" },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [
+                  { "Type": "Creature" },
+                  "Other",
+                  { "ControlledBy": "You" },
+                  {
+                    "AnyOf": [
+                      {
+                        "Compare": {
+                          "stat": "Power",
+                          "op": "Gt",
+                          "to": { "Stat": { "of": "This", "stat": "Power" } }
+                        }
+                      },
+                      {
+                        "Compare": {
+                          "stat": "Toughness",
+                          "op": "Gt",
+                          "to": { "Stat": { "of": "This", "stat": "Toughness" } }
+                        }
+                      }
+                    ]
+                  }
+                ],
+                "to": "Battlefield"
+              }
+            },
+            "effects": [
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": {
+                        "CountOf": {
+                          "of": "Triggering",
+                          "filter": [
+                            { "Type": "Creature" },
+                            {
+                              "AnyOf": [
+                                {
+                                  "Compare": {
+                                    "stat": "Power",
+                                    "op": "Gt",
+                                    "to": { "Stat": { "of": "This", "stat": "Power" } }
+                                  }
+                                },
+                                {
+                                  "Compare": {
+                                    "stat": "Toughness",
+                                    "op": "Gt",
+                                    "to": { "Stat": { "of": "This", "stat": "Toughness" } }
+                                  }
+                                }
+                              ]
+                            }
+                          ]
+                        }
+                      },
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

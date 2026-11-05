@@ -1,0 +1,42 @@
+{
+  "source": "forge",
+  "oracle_matches": true,
+  "lines": [
+    {
+      "face": 0,
+      "tag": "A",
+      "text": "Add one mana of any color. When you next cast a creature spell this turn, that creature enters with two additional +1/+1 counters on it.",
+      "abilities": [],
+      "gap": "key:Trigger.SpellCast.OneOff"
+    },
+    {
+      "face": 0,
+      "tag": "T",
+      "text": "Whenever another permanent you control is put into a graveyard from the battlefield, if it had one or more counters on it, you may put that number of +1/+1 counters on target creature.",
+      "abilities": [
+        0
+      ],
+      "gap": null
+    }
+  ],
+  "proof": {
+    "marks": [
+      {
+        "face": 0,
+        "span": {
+          "start": 0,
+          "end": 156
+        },
+        "mark": "ByHand"
+      },
+      {
+        "face": 0,
+        "span": {
+          "start": 157,
+          "end": 341
+        },
+        "mark": "Auto"
+      }
+    ]
+  }
+}

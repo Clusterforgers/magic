@@ -1,0 +1,22 @@
+{
+  "oracle_id": "e5cc1492-c9cc-48f0-8c11-02ead883675c",
+  "name": "Gloom Sower",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Gloom Sower",
+      "oracle_fingerprint": "122f88c8fad11a7f5fe304de823c9f4b",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "BecomesBlocked": { "what": ["This"], "by": [{ "Type": "Creature" }] } },
+            "effects": [
+              { "LoseLife": { "who": { "ControllerOf": "Dealer" }, "amount": 2 } },
+              { "GainLife": { "amount": 2 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

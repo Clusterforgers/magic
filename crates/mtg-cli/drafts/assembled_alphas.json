@@ -1,0 +1,31 @@
+{
+  "oracle_id": "151a681d-a350-4d1d-86cd-b80d58602810",
+  "name": "Assembled Alphas",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Assembled Alphas",
+      "oracle_fingerprint": "cb90cc615e05c7fd3a3e57c207d953bb",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "BecomesBlocked": { "what": [{ "Type": "Creature" }], "by": ["This"] } },
+            "effects": [
+              { "DealDamage": { "to": "Triggering", "amount": 3 } },
+              { "DealDamage": { "to": { "ControllerOf": "Triggering" }, "amount": 3 } }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "BecomesBlocked": { "what": ["This"], "by": [{ "Type": "Creature" }] } },
+            "effects": [
+              { "DealDamage": { "to": "Dealer", "amount": 3 } },
+              { "DealDamage": { "to": { "ControllerOf": "Dealer" }, "amount": 3 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,46 @@
+{
+  "oracle_id": "54856e0f-3264-4f56-a7e0-0160a7b07e3d",
+  "name": "Sosuke, Son of Seshiro",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sosuke, Son of Seshiro",
+      "oracle_fingerprint": "5d765a421029d1b4c60a6e29d095689a",
+      "abilities": [
+        {
+          "Static": {
+            "affected": {
+              "Each": [
+                { "Type": "Creature" },
+                { "Subtype": "Snake" },
+                "Other",
+                { "ControlledBy": "You" }
+              ]
+            },
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 0 } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "DealsDamage": {
+                "source": [{ "Subtype": "Warrior" }, { "ControlledBy": "You" }],
+                "to": { "Each": [{ "Type": "Creature" }] },
+                "combat": true
+              }
+            },
+            "effects": [
+              { "Bind": { "what": "Triggering", "as": "event" } },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "EndCombat" } },
+                  "effects": [{ "Destroy": { "what": { "Bound": "event" } } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

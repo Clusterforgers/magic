@@ -1,0 +1,85 @@
+{
+  "oracle_id": "caff40b1-28d1-4ef6-90d1-51a1dc06cbcd",
+  "name": "Specter of Mortality",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Specter of Mortality",
+      "oracle_fingerprint": "c92e803e7ad63d798cc28cb2e7e0e918",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [{ "Type": "Creature" }, { "OwnedBy": "You" }, { "In": "Graveyard" }]
+                  },
+                  "count": {
+                    "min": 0,
+                    "max": {
+                      "Count": [{ "Type": "Creature" }, { "OwnedBy": "You" }, { "In": "Graveyard" }]
+                    }
+                  },
+                  "as": "picked"
+                }
+              },
+              { "Exile": { "what": { "Bound": "picked" }, "as": "exiled2" } },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Bound": "exiled2" },
+                      "selector": [],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [
+                    { "Bind": { "what": { "Bound": "exiled2" }, "as": "when3" } },
+                    {
+                      "Reflexive": {
+                        "effects": [
+                          {
+                            "Continuous": {
+                              "affected": { "Each": [{ "Type": "Creature" }, "Other"] },
+                              "mods": [
+                                {
+                                  "ModifyPT": {
+                                    "power": {
+                                      "Times": {
+                                        "by": -1,
+                                        "of": {
+                                          "CountOf": { "of": { "Bound": "when3" }, "filter": [] }
+                                        }
+                                      }
+                                    },
+                                    "toughness": {
+                                      "Times": {
+                                        "by": -1,
+                                        "of": {
+                                          "CountOf": { "of": { "Bound": "when3" }, "filter": [] }
+                                        }
+                                      }
+                                    }
+                                  }
+                                }
+                              ],
+                              "duration": "UntilEndOfTurn"
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

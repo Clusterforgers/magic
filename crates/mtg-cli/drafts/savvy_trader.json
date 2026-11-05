@@ -1,0 +1,65 @@
+{
+  "oracle_id": "c1aba8c7-d940-4d5d-a176-68cc226906de",
+  "name": "Savvy Trader",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Savvy Trader",
+      "oracle_fingerprint": "af6d79541233e6598639d5858b9239d9",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "OwnedBy": "You" },
+                    {
+                      "AnyOf": [
+                        { "Type": "Artifact" },
+                        { "Type": "Battle" },
+                        { "Type": "Creature" },
+                        { "Type": "Enchantment" },
+                        { "Type": "Land" },
+                        { "Type": "Planeswalker" }
+                      ]
+                    },
+                    { "In": "Graveyard" }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              { "Exile": { "what": { "Target": 0 }, "as": "exiled" } },
+              {
+                "Rule": {
+                  "rule": {
+                    "MayCast": { "from": "Exile", "only": { "Bound": "exiled" }, "play": true }
+                  },
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "CostModifier": {
+            "applies_to": [
+              "Spell",
+              {
+                "AnyOf": [
+                  { "Not": { "WasCast": { "from": "Hand" } } },
+                  { "Not": { "OwnedBy": "You" } }
+                ]
+              },
+              { "ControlledBy": "You" }
+            ],
+            "change": "Reduce",
+            "mana": "{1}"
+          }
+        }
+      ]
+    }
+  ]
+}

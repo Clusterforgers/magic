@@ -1,0 +1,95 @@
+{
+  "oracle_id": "250052a7-1ba5-45d2-aa32-b787fd637fa5",
+  "name": "Skanos Dragonheart",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Skanos Dragonheart",
+      "oracle_fingerprint": "e545128ee8b8e2d63d32385f3204c0c4",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [
+                    {
+                      "ModifyPT": {
+                        "power": {
+                          "Greatest": {
+                            "of": [
+                              {
+                                "AnyOf": [
+                                  {
+                                    "Not": {
+                                      "AnyOf": [
+                                        { "Not": { "Subtype": "Dragon" } },
+                                        { "Not": { "OwnedBy": "You" } },
+                                        { "Not": "Other" },
+                                        { "Not": { "In": "Graveyard" } }
+                                      ]
+                                    }
+                                  },
+                                  {
+                                    "Not": {
+                                      "AnyOf": [
+                                        { "Not": { "Subtype": "Dragon" } },
+                                        { "Not": { "ControlledBy": "You" } },
+                                        { "Not": "Other" },
+                                        { "Not": { "In": "Battlefield" } }
+                                      ]
+                                    }
+                                  }
+                                ]
+                              }
+                            ],
+                            "stat": "Power"
+                          }
+                        },
+                        "toughness": {
+                          "Greatest": {
+                            "of": [
+                              {
+                                "AnyOf": [
+                                  {
+                                    "Not": {
+                                      "AnyOf": [
+                                        { "Not": { "Subtype": "Dragon" } },
+                                        { "Not": { "OwnedBy": "You" } },
+                                        { "Not": "Other" },
+                                        { "Not": { "In": "Graveyard" } }
+                                      ]
+                                    }
+                                  },
+                                  {
+                                    "Not": {
+                                      "AnyOf": [
+                                        { "Not": { "Subtype": "Dragon" } },
+                                        { "Not": { "ControlledBy": "You" } },
+                                        { "Not": "Other" },
+                                        { "Not": { "In": "Battlefield" } }
+                                      ]
+                                    }
+                                  }
+                                ]
+                              }
+                            ],
+                            "stat": "Power"
+                          }
+                        }
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": "ChooseABackground" }
+      ]
+    }
+  ]
+}

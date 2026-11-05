@@ -1,7 +1,7 @@
 {
   "oracle_id": "382267da-c63c-432e-8a11-f803cf0e3a3a",
   "name": "Magmatic Channeler",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Magmatic Channeler",
@@ -27,9 +27,25 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 108, "end": 228 }
+          "Activated": {
+            "cost": ["Tap", { "Discard": {} }],
+            "effects": [
+              { "ExileTop": { "count": 2, "as": "exiled" } },
+              {
+                "Choose": {
+                  "from": { "Each": [{ "Is": { "Bound": "exiled" } }, { "In": "Exile" }] },
+                  "as": "card2"
+                }
+              },
+              {
+                "Rule": {
+                  "rule": {
+                    "MayCast": { "from": "Exile", "only": { "Bound": "card2" }, "play": true }
+                  },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
           }
         }
       ]

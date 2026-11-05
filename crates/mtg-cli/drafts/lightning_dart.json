@@ -1,0 +1,46 @@
+{
+  "oracle_id": "7bc53740-86e7-4e9d-aab6-b5ae62a42133",
+  "name": "Lightning Dart",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Lightning Dart",
+      "oracle_fingerprint": "de566a3182d07a71de49892d87487dbd",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "DealDamage": {
+                  "to": { "Target": 0 },
+                  "amount": {
+                    "When": {
+                      "condition": {
+                        "Compare": {
+                          "left": {
+                            "CountOf": {
+                              "of": { "Target": 0 },
+                              "filter": [
+                                { "Type": "Creature" },
+                                { "AnyOf": [{ "Color": "White" }, { "Color": "Blue" }] }
+                              ]
+                            }
+                          },
+                          "op": "Ge",
+                          "right": 1
+                        }
+                      },
+                      "then": 4,
+                      "otherwise": 1
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

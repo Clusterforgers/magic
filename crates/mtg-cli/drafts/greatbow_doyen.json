@@ -1,0 +1,49 @@
+{
+  "oracle_id": "b32c3a35-cc77-43fa-96e1-5ec8c0ab056f",
+  "name": "Greatbow Doyen",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Greatbow Doyen",
+      "oracle_fingerprint": "ff1f895c584c0efe24f09de00084e3f6",
+      "abilities": [
+        {
+          "Static": {
+            "affected": {
+              "Each": [
+                { "Type": "Creature" },
+                { "Subtype": "Archer" },
+                "Other",
+                { "ControlledBy": "You" }
+              ]
+            },
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "DealsDamage": {
+                "source": [
+                  { "Subtype": "Archer" },
+                  { "ControlledBy": "You" },
+                  { "In": "Battlefield" }
+                ],
+                "to": { "Each": [{ "Type": "Creature" }] }
+              }
+            },
+            "effects": [
+              {
+                "DealDamage": {
+                  "source": "Dealer",
+                  "to": { "ControllerOf": "Triggering" },
+                  "amount": "Triggering"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,56 @@
+{
+  "oracle_id": "2f995678-c315-4afe-845b-8c8ae863de6e",
+  "name": "Tower Worker",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Tower Worker",
+      "oracle_fingerprint": "6b316a82e0b017800716033014d97011",
+      "abilities": [
+        { "Keyword": "Reach" },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [
+              {
+                "AddMana": {
+                  "mana": { "Fixed": ["Colorless"] },
+                  "times": {
+                    "When": {
+                      "condition": {
+                        "Compare": {
+                          "left": {
+                            "Product": [
+                              {
+                                "Count": [
+                                  { "Type": "Creature" },
+                                  { "ControlledBy": "You" },
+                                  { "Named": "Mine Worker" }
+                                ]
+                              },
+                              {
+                                "Count": [
+                                  { "Type": "Creature" },
+                                  { "ControlledBy": "You" },
+                                  { "Named": "Power Plant Worker" }
+                                ]
+                              }
+                            ]
+                          },
+                          "op": "Gt",
+                          "right": 0
+                        }
+                      },
+                      "then": 3,
+                      "otherwise": 1
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

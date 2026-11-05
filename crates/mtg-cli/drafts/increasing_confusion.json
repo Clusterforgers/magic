@@ -1,0 +1,43 @@
+{
+  "oracle_id": "11293f96-3263-45e5-89fc-850df6b25a63",
+  "name": "Increasing Confusion",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Increasing Confusion",
+      "oracle_fingerprint": "1aa702d32411446ae3a1329cb45a501b",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              {
+                "Mill": {
+                  "who": { "Target": 0 },
+                  "count": {
+                    "Product": [
+                      "X",
+                      {
+                        "When": {
+                          "condition": {
+                            "Matches": {
+                              "subject": "This",
+                              "selector": [{ "WasCast": { "from": "Graveyard" } }]
+                            }
+                          },
+                          "then": 2,
+                          "otherwise": 1
+                        }
+                      }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Flashback": "{X}{U}" } }
+      ]
+    }
+  ]
+}

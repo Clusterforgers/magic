@@ -1,0 +1,57 @@
+{
+  "oracle_id": "a26432ff-ae60-454d-a6de-fec3feafa669",
+  "name": "Alora, Merry Thief",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Alora, Merry Thief",
+      "oracle_fingerprint": "3e49d19e061679a94fdd2c0aac0d3a3a",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "GroupAttacks": { "what": [{ "Type": "Creature" }, { "ControlledBy": "You" }] }
+            },
+            "targets": [
+              {
+                "what": { "Object": [{ "Type": "Creature" }, "Attacking"] },
+                "bounds": { "min": 0, "max": 1 }
+              }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": ["CantBeBlocked"],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Target": 0 },
+                      "selector": [],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [
+                    { "Bind": { "what": { "Target": 0 }, "as": "target" } },
+                    {
+                      "DelayedTrigger": {
+                        "when": { "StepBegins": { "step": "End" } },
+                        "effects": [{ "Move": { "what": { "Bound": "target" }, "to": "Hand" } }]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": "ChooseABackground" }
+      ]
+    }
+  ]
+}

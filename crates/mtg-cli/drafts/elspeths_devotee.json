@@ -15,27 +15,18 @@
                 "May": {
                   "effects": [
                     {
-                      "May": {
-                        "effects": [
-                          {
-                            "Search": {
-                              "also": ["Graveyard"],
-                              "filter": [
-                                { "OwnedBy": "You" },
-                                { "Named": "Elspeth, Undaunted Hero" }
-                              ],
-                              "reveal": true,
-                              "as": "found"
-                            }
-                          },
-                          { "Move": { "what": { "Bound": "found" }, "to": "Hand" } },
-                          {
-                            "If": {
-                              "condition": { "Searched": { "zone": "Library" } },
-                              "then": [{ "Shuffle": {} }]
-                            }
-                          }
-                        ]
+                      "Search": {
+                        "also": ["Graveyard"],
+                        "filter": [{ "OwnedBy": "You" }, { "Named": "Elspeth, Undaunted Hero" }],
+                        "reveal": true,
+                        "as": "found"
+                      }
+                    },
+                    { "Move": { "what": { "Bound": "found" }, "to": "Hand" } },
+                    {
+                      "If": {
+                        "condition": { "Searched": { "zone": "Library" } },
+                        "then": [{ "Shuffle": {} }]
                       }
                     }
                   ]

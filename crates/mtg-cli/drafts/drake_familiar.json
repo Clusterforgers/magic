@@ -1,0 +1,37 @@
+{
+  "oracle_id": "5d144825-594a-454b-9276-fe92e87c19c0",
+  "name": "Drake Familiar",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Drake Familiar",
+      "oracle_fingerprint": "0e85bc173375616102590a34e3050a11",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Choose": {
+                  "from": { "Each": [{ "Type": "Enchantment" }] },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "picked"
+                }
+              },
+              { "Move": { "what": { "Bound": "picked" }, "to": "Hand", "as": "moved2" } },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": { "left": { "Bound": "moved2~moved" }, "op": "Lt", "right": 1 }
+                  },
+                  "then": [{ "Sacrifice": { "filter": ["This"] } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,46 @@
+{
+  "oracle_id": "ba72d4a9-6f36-4796-bd71-2342fa9b4a30",
+  "name": "Yuna, Grand Summoner",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Yuna, Grand Summoner",
+      "oracle_fingerprint": "c46b64c02fb547eef17f232bcd988499",
+      "abilities": [
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 0, "end": 156 }
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "ControlledBy": "You" }, "Other", "HasAnyCounter"],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "PutCounters": {
+                        "on": { "Target": 0 },
+                        "counter": "+1/+1",
+                        "count": { "AnyCounters": "Triggering" }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,99 @@
+{
+  "oracle_id": "1941239b-e131-4bde-b493-1c8c805b6a3c",
+  "name": "Cloudkill",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Cloudkill",
+      "oracle_fingerprint": "23004d16248f278cd65d2d82e7feb058",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Type": "Creature" }] },
+                  "mods": [
+                    {
+                      "ModifyPT": {
+                        "power": {
+                          "Times": {
+                            "by": -1,
+                            "of": {
+                              "Greatest": {
+                                "of": [
+                                  {
+                                    "AnyOf": [
+                                      {
+                                        "Not": {
+                                          "AnyOf": [
+                                            { "Not": "Commander" },
+                                            { "Not": { "OwnedBy": "You" } },
+                                            { "Not": { "In": "Battlefield" } }
+                                          ]
+                                        }
+                                      },
+                                      {
+                                        "Not": {
+                                          "AnyOf": [
+                                            { "Not": "Commander" },
+                                            { "Not": { "OwnedBy": "You" } },
+                                            { "Not": { "In": "Command" } }
+                                          ]
+                                        }
+                                      }
+                                    ]
+                                  }
+                                ],
+                                "stat": "ManaValue"
+                              }
+                            }
+                          }
+                        },
+                        "toughness": {
+                          "Times": {
+                            "by": -1,
+                            "of": {
+                              "Greatest": {
+                                "of": [
+                                  {
+                                    "AnyOf": [
+                                      {
+                                        "Not": {
+                                          "AnyOf": [
+                                            { "Not": "Commander" },
+                                            { "Not": { "OwnedBy": "You" } },
+                                            { "Not": { "In": "Battlefield" } }
+                                          ]
+                                        }
+                                      },
+                                      {
+                                        "Not": {
+                                          "AnyOf": [
+                                            { "Not": "Commander" },
+                                            { "Not": { "OwnedBy": "You" } },
+                                            { "Not": { "In": "Command" } }
+                                          ]
+                                        }
+                                      }
+                                    ]
+                                  }
+                                ],
+                                "stat": "ManaValue"
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,58 @@
+{
+  "oracle_id": "54402930-84ea-4c3e-9880-ca631e47485f",
+  "name": "Regent's Authority",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Regent's Authority",
+      "oracle_fingerprint": "410db49d4b6cd364d1fefe1d323f1d00",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": {
+                        "CountOf": {
+                          "of": { "Target": 0 },
+                          "filter": [
+                            { "Type": "Creature" },
+                            { "AnyOf": [{ "Type": "Enchantment" }, { "Supertype": "Legendary" }] }
+                          ]
+                        }
+                      },
+                      "op": "Eq",
+                      "right": 1
+                    }
+                  },
+                  "then": [
+                    { "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1" } },
+                    {
+                      "Continuous": {
+                        "affected": { "Target": 0 },
+                        "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }],
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ],
+                  "otherwise": [
+                    {
+                      "Continuous": {
+                        "affected": { "Target": 0 },
+                        "mods": [{ "ModifyPT": { "power": 2, "toughness": 2 } }],
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

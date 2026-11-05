@@ -1,0 +1,40 @@
+{
+  "oracle_id": "a1bdba37-f034-412f-8395-adbaed95ad11",
+  "name": "Biblioplex Kraken",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Biblioplex Kraken",
+      "oracle_fingerprint": "b68a88e087c017024b84bf18b3157852",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "Scry": { "count": 3 } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": [{ "ReturnToHand": { "filter": [{ "Type": "Creature" }, "Other"] } }],
+                  "paid": [
+                    {
+                      "Continuous": {
+                        "affected": "This",
+                        "mods": ["CantBeBlocked"],
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

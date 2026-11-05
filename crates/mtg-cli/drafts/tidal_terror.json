@@ -1,0 +1,35 @@
+{
+  "oracle_id": "e7866ce6-d507-4221-bb19-d3e6fd7b57d8",
+  "name": "Tidal Terror",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Tidal Terror",
+      "oracle_fingerprint": "14b8224a3a795377386ba0fd86d9294d",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": [{ "TapPermanents": { "filter": [{ "Type": "Creature" }], "count": 2 } }],
+                  "paid": [
+                    {
+                      "Continuous": {
+                        "affected": "This",
+                        "mods": ["CantBeBlocked"],
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Typecycling": { "find": [{ "Subtype": "Island" }], "cost": "{2}" } } }
+      ]
+    }
+  ]
+}

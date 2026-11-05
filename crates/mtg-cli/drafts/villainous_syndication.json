@@ -1,0 +1,72 @@
+{
+  "oracle_id": "4777fa96-12a5-42d5-840f-ddd85f4a4b68",
+  "name": "Villainous Syndication",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Villainous Syndication",
+      "oracle_fingerprint": "d85a40fadcb1fd8559ea7c29813b2a42",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "TapPermanents": { "filter": [{ "Subtype": "Villain" }] } }],
+            "timing": "Sorcery",
+            "effects": [
+              { "Mill": {} },
+              { "PutCounters": { "on": "This", "counter": { "Other": "plan" } } }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "CountersPut": { "what": ["This"], "counter": { "Other": "plan" } } },
+            "if": {
+              "AtTrigger": {
+                "Compare": {
+                  "left": { "Counters": { "on": "This", "counter": { "Other": "plan" } } },
+                  "op": "Eq",
+                  "right": 4
+                }
+              }
+            },
+            "effects": [
+              { "Sacrifice": { "filter": ["This"], "as": "sacrificed" } },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Bound": "sacrificed" },
+                      "selector": [],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [
+                    {
+                      "Reflexive": {
+                        "targets": [
+                          {
+                            "what": {
+                              "Object": [
+                                { "Type": "Creature" },
+                                { "OwnedBy": "You" },
+                                { "In": "Graveyard" }
+                              ]
+                            }
+                          }
+                        ],
+                        "effects": [
+                          { "Move": { "what": { "Target": 0 }, "to": { "Battlefield": {} } } }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

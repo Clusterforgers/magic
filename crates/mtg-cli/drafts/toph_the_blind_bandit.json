@@ -1,0 +1,79 @@
+{
+  "oracle_id": "2ce20f43-9357-448f-bb40-7315feb08433",
+  "name": "Toph, the Blind Bandit",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Toph, the Blind Bandit",
+      "oracle_fingerprint": "c79c8758cd3fe636ba61278556d59514",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [{ "what": { "Object": [{ "Type": "Land" }, { "ControlledBy": "You" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    { "AddType": "Creature" },
+                    { "SetPT": { "power": 0, "toughness": 0 } },
+                    { "AddKeyword": "Haste" }
+                  ],
+                  "duration": "Forever"
+                }
+              },
+              { "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1", "count": 2 } },
+              {
+                "DelayedTrigger": {
+                  "when": {
+                    "AnyOf": [
+                      {
+                        "ZoneChange": {
+                          "what": [{ "Is": { "Target": 0 } }],
+                          "from": "Battlefield",
+                          "to": "Graveyard"
+                        }
+                      },
+                      {
+                        "ZoneChange": {
+                          "what": [{ "Is": { "Target": 0 } }],
+                          "from": "Battlefield",
+                          "to": "Exile"
+                        }
+                      }
+                    ]
+                  },
+                  "effects": [
+                    {
+                      "Move": { "what": "Triggering", "to": { "Battlefield": { "tapped": true } } }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              {
+                "SetPT": {
+                  "power": {
+                    "Counters": {
+                      "on": { "Each": [{ "Type": "Land" }, { "ControlledBy": "You" }] },
+                      "counter": "+1/+1"
+                    }
+                  },
+                  "toughness": 3
+                }
+              }
+            ],
+            "defining": true
+          }
+        }
+      ]
+    }
+  ]
+}

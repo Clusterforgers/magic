@@ -1,0 +1,63 @@
+{
+  "oracle_id": "5f4d0a43-ff5b-4f75-9144-a218ec352489",
+  "name": "Dismantle",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dismantle",
+      "oracle_fingerprint": "ba460a282be25c80c49de415d38ea673",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Artifact" }] } }],
+            "effects": [
+              { "Destroy": { "what": { "Target": 0 } } },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Target": 0 },
+                      "selector": ["HasAnyCounter"],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [
+                    {
+                      "Choose": {
+                        "from": { "Each": [{ "Type": "Artifact" }, { "ControlledBy": "You" }] },
+                        "as": "card"
+                      }
+                    },
+                    {
+                      "Either": {
+                        "first": [
+                          {
+                            "PutCounters": {
+                              "on": { "Bound": "card" },
+                              "counter": "+1/+1",
+                              "count": { "AnyCounters": { "Target": 0 } }
+                            }
+                          }
+                        ],
+                        "second": [
+                          {
+                            "PutCounters": {
+                              "on": { "Bound": "card" },
+                              "counter": "charge",
+                              "count": { "AnyCounters": { "Target": 0 } }
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,27 @@
+{
+  "oracle_id": "53bab610-1d27-4897-a4ad-cfecca82b811",
+  "name": "Nether Void",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Nether Void",
+      "oracle_fingerprint": "99cd0d82c740dd03cb3f8c2bc1e96a61",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "SpellCast": {} },
+            "effects": [
+              {
+                "Pay": {
+                  "who": { "ControllerOf": "Triggering" },
+                  "cost": "{3}",
+                  "unpaid": [{ "Counter": { "what": "Triggering" } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

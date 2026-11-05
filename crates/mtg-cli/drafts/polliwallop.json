@@ -1,0 +1,38 @@
+{
+  "oracle_id": "efd2a4ca-1bd0-4762-a997-f099326b1746",
+  "name": "Polliwallop",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Polliwallop",
+      "oracle_fingerprint": "8ffdcdfdd02f15b9615fb5e90747d2d0",
+      "abilities": [
+        { "Keyword": { "Affinity": [{ "Subtype": "Frog" }] } },
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } },
+              {
+                "what": { "Object": [{ "Type": "Creature" }, { "Not": { "ControlledBy": "You" } }] }
+              }
+            ],
+            "effects": [
+              {
+                "DealDamage": {
+                  "source": { "Target": 0 },
+                  "to": { "Target": 1 },
+                  "amount": {
+                    "Times": {
+                      "by": 2,
+                      "of": { "Stat": { "of": { "Target": 0 }, "stat": "Power" } }
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

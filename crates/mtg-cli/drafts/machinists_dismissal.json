@@ -1,0 +1,52 @@
+{
+  "oracle_id": "2f2a6a57-6919-405b-93df-a1d4c077da0f",
+  "name": "Machinist's Dismissal",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Machinist's Dismissal",
+      "oracle_fingerprint": "d2188f5314758c2f455428e5682f13b0",
+      "abilities": [
+        {
+          "CostModifier": {
+            "applies_to": ["This"],
+            "change": "Reduce",
+            "mana": "{1}",
+            "per": {
+              "Count": [
+                {
+                  "AnyOf": [
+                    {
+                      "Not": {
+                        "AnyOf": [
+                          { "Not": { "Type": "Artifact" } },
+                          { "Not": { "ControlledBy": "You" } },
+                          { "Not": { "In": "Battlefield" } }
+                        ]
+                      }
+                    },
+                    {
+                      "Not": {
+                        "AnyOf": [
+                          { "Not": { "Type": "Artifact" } },
+                          { "Not": { "OwnedBy": "You" } },
+                          { "Not": { "In": "Hand" } }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              ]
+            }
+          }
+        },
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": ["Spell", { "Not": { "Type": "Creature" } }] } }],
+            "effects": [{ "Counter": { "what": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

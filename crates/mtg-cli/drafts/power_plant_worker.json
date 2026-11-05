@@ -1,0 +1,95 @@
+{
+  "oracle_id": "054c6250-ac96-42f6-931d-925761ab7764",
+  "name": "Power Plant Worker",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Power Plant Worker",
+      "oracle_fingerprint": "32f0bcbd95b380d19602c028c762ff26",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{3}",
+            "limit": "OncePerTurn",
+            "effects": [
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": {
+                        "Sum": [
+                          {
+                            "When": {
+                              "condition": {
+                                "Compare": {
+                                  "left": {
+                                    "Count": [
+                                      { "Type": "Creature" },
+                                      { "ControlledBy": "You" },
+                                      { "Named": "Mine Worker" }
+                                    ]
+                                  },
+                                  "op": "Gt",
+                                  "right": 1
+                                }
+                              },
+                              "then": 1,
+                              "otherwise": {
+                                "Count": [
+                                  { "Type": "Creature" },
+                                  { "ControlledBy": "You" },
+                                  { "Named": "Mine Worker" }
+                                ]
+                              }
+                            }
+                          },
+                          {
+                            "When": {
+                              "condition": {
+                                "Compare": {
+                                  "left": {
+                                    "Count": [
+                                      { "Type": "Creature" },
+                                      { "ControlledBy": "You" },
+                                      { "Named": "Tower Worker" }
+                                    ]
+                                  },
+                                  "op": "Gt",
+                                  "right": 1
+                                }
+                              },
+                              "then": 1,
+                              "otherwise": {
+                                "Count": [
+                                  { "Type": "Creature" },
+                                  { "ControlledBy": "You" },
+                                  { "Named": "Tower Worker" }
+                                ]
+                              }
+                            }
+                          }
+                        ]
+                      },
+                      "op": "Ge",
+                      "right": 2
+                    }
+                  },
+                  "then": [{ "PutCounters": { "on": "This", "counter": "+1/+1", "count": 2 } }],
+                  "otherwise": [
+                    {
+                      "Continuous": {
+                        "affected": "This",
+                        "mods": [{ "ModifyPT": { "power": 2, "toughness": 2 } }],
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

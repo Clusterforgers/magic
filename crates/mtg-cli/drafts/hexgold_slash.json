@@ -1,0 +1,43 @@
+{
+  "oracle_id": "573a3afb-3a2a-41b7-ac1a-9685b90bffa3",
+  "name": "Hexgold Slash",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Hexgold Slash",
+      "oracle_fingerprint": "0e6fcd5dfada7a715c758b52170524b2",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "DealDamage": {
+                  "to": { "Target": 0 },
+                  "amount": {
+                    "When": {
+                      "condition": {
+                        "Compare": {
+                          "left": {
+                            "CountOf": {
+                              "of": { "Target": 0 },
+                              "filter": [{ "Type": "Creature" }, { "HasKeywordNamed": "Toxic" }]
+                            }
+                          },
+                          "op": "Ge",
+                          "right": 1
+                        }
+                      },
+                      "then": 4,
+                      "otherwise": 2
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

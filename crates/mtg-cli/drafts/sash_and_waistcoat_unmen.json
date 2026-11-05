@@ -1,0 +1,35 @@
+{
+  "oracle_id": "2ff470ee-4532-4ded-a684-a2c0d1253fb3",
+  "name": "Sash and Waistcoat, Unmen",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Sash and Waistcoat, Unmen",
+      "oracle_fingerprint": "305b405a28477f532814db76957ecdb7",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "AttacksPlayer": { "what": [{ "Type": "Creature" }, "FaceDown"], "at": "Opponents" }
+            },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "Triggering",
+                  "mods": ["CantBeBlocked"],
+                  "duration": "UntilEndOfCombat"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 94, "end": 344 }
+          }
+        }
+      ]
+    }
+  ]
+}

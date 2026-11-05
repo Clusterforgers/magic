@@ -1,0 +1,35 @@
+{
+  "oracle_id": "4a6887e3-7a65-4f24-be71-183b00a0ad56",
+  "name": "Deepwood Denizen",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Deepwood Denizen",
+      "oracle_fingerprint": "3532d94991594795a3e86f44cbd4f004",
+      "abilities": [
+        { "Keyword": "Vigilance" },
+        {
+          "Activated": {
+            "cost": [
+              { "Mana": "{5}{G}" },
+              "Tap",
+              {
+                "Changed": {
+                  "change": "Reduce",
+                  "mana": "{1}",
+                  "per": {
+                    "Counters": {
+                      "on": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                      "counter": "+1/+1"
+                    }
+                  }
+                }
+              }
+            ],
+            "effects": [{ "Draw": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

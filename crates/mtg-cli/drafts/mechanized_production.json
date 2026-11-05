@@ -1,0 +1,39 @@
+{
+  "oracle_id": "39d8406a-90c3-460c-b4e8-0f590573db51",
+  "name": "Mechanized Production",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mechanized Production",
+      "oracle_fingerprint": "fd201c118100ea0fa74a3cb04d1ff5d6",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Artifact" }, { "ControlledBy": "You" }] } },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [
+              { "CreateToken": { "token": { "CopyOf": { "of": "Attached" } } } },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": {
+                        "MostCommon": {
+                          "of": [{ "Type": "Artifact" }, { "ControlledBy": "You" }],
+                          "stat": "Name"
+                        }
+                      },
+                      "op": "Ge",
+                      "right": 8
+                    }
+                  },
+                  "then": [{ "WinGame": {} }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

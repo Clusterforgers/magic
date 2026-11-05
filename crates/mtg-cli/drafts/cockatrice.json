@@ -1,0 +1,52 @@
+{
+  "oracle_id": "af354337-424c-4c7e-8ca5-6149261368d2",
+  "name": "Cockatrice",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Cockatrice",
+      "oracle_fingerprint": "da198821ed79c6b3c32495650dac509b",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": {
+              "BecomesBlocked": {
+                "what": [{ "Type": "Creature" }, { "Not": { "Subtype": "Wall" } }],
+                "by": ["This"]
+              }
+            },
+            "effects": [
+              { "Bind": { "what": "Triggering", "as": "event" } },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "EndCombat" } },
+                  "effects": [{ "Destroy": { "what": { "Bound": "event" } } }]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "BecomesBlocked": {
+                "what": ["This"],
+                "by": [{ "Type": "Creature" }, { "Not": { "Subtype": "Wall" } }]
+              }
+            },
+            "effects": [
+              { "Bind": { "what": "Dealer", "as": "event" } },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "EndCombat" } },
+                  "effects": [{ "Destroy": { "what": { "Bound": "event" } } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

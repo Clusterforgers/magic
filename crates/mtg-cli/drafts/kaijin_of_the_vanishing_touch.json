@@ -1,0 +1,28 @@
+{
+  "oracle_id": "cd8bab2c-b04f-43a2-9786-df5f7411bf16",
+  "name": "Kaijin of the Vanishing Touch",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Kaijin of the Vanishing Touch",
+      "oracle_fingerprint": "3f0efc1a54d9923a18da9e5576c84d3d",
+      "abilities": [
+        { "Keyword": "Defender" },
+        {
+          "Triggered": {
+            "when": { "BecomesBlocked": { "what": [{ "Type": "Creature" }], "by": ["This"] } },
+            "effects": [
+              { "Bind": { "what": "Triggering", "as": "event" } },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "EndCombat" } },
+                  "effects": [{ "Move": { "what": { "Bound": "event" }, "to": "Hand" } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

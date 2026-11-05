@@ -1,0 +1,33 @@
+{
+  "oracle_id": "884686dd-515c-4484-a324-e7d126903a42",
+  "name": "Beacon Bolt",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Beacon Bolt",
+      "oracle_fingerprint": "21f0132ffc0e70322a10e84b01f510fc",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "DealDamage": {
+                  "to": { "Target": 0 },
+                  "amount": {
+                    "Count": [
+                      { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] },
+                      { "OwnedBy": "You" },
+                      { "AnyOf": [{ "In": "Graveyard" }, { "In": "Exile" }] }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": "JumpStart" }
+      ]
+    }
+  ]
+}

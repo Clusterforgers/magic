@@ -1,0 +1,69 @@
+{
+  "oracle_id": "faffc9fb-32b3-4015-8c3f-e6b45002c050",
+  "name": "Chong and Lily, Nomads",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Chong and Lily, Nomads",
+      "oracle_fingerprint": "442d6c75f6152d9f653f3e65b16f471a",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "GroupAttacks": { "what": [{ "Subtype": "Bard" }, { "ControlledBy": "You" }] }
+            },
+            "effects": [
+              {
+                "Modal": {
+                  "modes": [
+                    {
+                      "targets": [
+                        {
+                          "what": { "Object": [{ "Subtype": "Saga" }, { "ControlledBy": "You" }] },
+                          "bounds": {
+                            "min": 0,
+                            "max": { "Count": [{ "Subtype": "Saga" }, { "ControlledBy": "You" }] }
+                          }
+                        }
+                      ],
+                      "effects": [
+                        { "PutCounters": { "on": { "Target": 0 }, "counter": { "Other": "lore" } } }
+                      ]
+                    },
+                    {
+                      "effects": [
+                        {
+                          "Continuous": {
+                            "affected": {
+                              "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }]
+                            },
+                            "mods": [
+                              {
+                                "ModifyPT": {
+                                  "power": {
+                                    "Counters": {
+                                      "on": {
+                                        "Each": [{ "Subtype": "Saga" }, { "ControlledBy": "You" }]
+                                      },
+                                      "counter": { "Other": "lore" }
+                                    }
+                                  },
+                                  "toughness": 0
+                                }
+                              }
+                            ],
+                            "duration": "UntilEndOfTurn"
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

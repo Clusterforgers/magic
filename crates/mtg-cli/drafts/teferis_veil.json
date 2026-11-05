@@ -1,0 +1,27 @@
+{
+  "oracle_id": "c6db2ea4-954c-443b-9603-c41596555c31",
+  "name": "Teferi's Veil",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Teferi's Veil",
+      "oracle_fingerprint": "b40e228a7aee397898120dad75beb0ae",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } },
+            "effects": [
+              { "Bind": { "what": "Triggering", "as": "event" } },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "EndCombat" } },
+                  "effects": [{ "PhaseOut": { "what": { "Bound": "event" } } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

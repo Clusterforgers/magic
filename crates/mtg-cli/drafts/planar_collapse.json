@@ -1,0 +1,25 @@
+{
+  "oracle_id": "82bccc9f-f700-4f1f-b89e-bea63d973161",
+  "name": "Planar Collapse",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Planar Collapse",
+      "oracle_fingerprint": "2327a93c125f30d73000c95c502411df",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "if": {
+              "Compare": { "left": { "Count": [{ "Type": "Creature" }] }, "op": "Ge", "right": 4 }
+            },
+            "effects": [
+              { "Sacrifice": { "filter": ["This"] } },
+              { "Destroy": { "what": { "Each": [{ "Type": "Creature" }] }, "regenerate": false } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

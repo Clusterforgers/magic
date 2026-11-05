@@ -1,0 +1,57 @@
+{
+  "oracle_id": "e801c5bd-68e6-4a74-bed3-addd18db3b2b",
+  "name": "Arms Race",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Arms Race",
+      "oracle_fingerprint": "9ff8b8669c310bcf883525af41be4a91",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{3}{R}",
+            "effects": [
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [{ "Type": "Artifact" }, { "OwnedBy": "You" }, { "In": "Hand" }]
+                  },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "picked"
+                }
+              },
+              {
+                "Move": {
+                  "what": { "Bound": "picked" },
+                  "to": { "Battlefield": {} },
+                  "as": "moved2"
+                }
+              },
+              {
+                "Continuous": {
+                  "affected": { "Bound": "moved2" },
+                  "mods": [{ "AddKeyword": "Haste" }],
+                  "duration": "Forever"
+                }
+              },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "End" } },
+                  "effects": [
+                    {
+                      "Sacrifice": {
+                        "who": { "ControllerOf": { "Bound": "moved2" } },
+                        "filter": [{ "Is": { "Bound": "moved2" } }],
+                        "count": { "Count": [{ "Is": { "Bound": "moved2" } }] }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

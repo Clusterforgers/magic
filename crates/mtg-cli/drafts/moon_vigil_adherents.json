@@ -1,0 +1,77 @@
+{
+  "oracle_id": "d0fa43f6-d8f6-4674-b538-6d546b7dcf40",
+  "name": "Moon-Vigil Adherents",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Moon-Vigil Adherents",
+      "oracle_fingerprint": "f15ad73f798520a961588896475f2e68",
+      "abilities": [
+        { "Keyword": "Trample" },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              {
+                "ModifyPT": {
+                  "power": {
+                    "Count": [
+                      {
+                        "AnyOf": [
+                          {
+                            "Not": {
+                              "AnyOf": [
+                                { "Not": { "Type": "Creature" } },
+                                { "Not": { "ControlledBy": "You" } },
+                                { "Not": { "In": "Battlefield" } }
+                              ]
+                            }
+                          },
+                          {
+                            "Not": {
+                              "AnyOf": [
+                                { "Not": { "Type": "Creature" } },
+                                { "Not": { "OwnedBy": "You" } },
+                                { "Not": { "In": "Graveyard" } }
+                              ]
+                            }
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  "toughness": {
+                    "Count": [
+                      {
+                        "AnyOf": [
+                          {
+                            "Not": {
+                              "AnyOf": [
+                                { "Not": { "Type": "Creature" } },
+                                { "Not": { "ControlledBy": "You" } },
+                                { "Not": { "In": "Battlefield" } }
+                              ]
+                            }
+                          },
+                          {
+                            "Not": {
+                              "AnyOf": [
+                                { "Not": { "Type": "Creature" } },
+                                { "Not": { "OwnedBy": "You" } },
+                                { "Not": { "In": "Graveyard" } }
+                              ]
+                            }
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

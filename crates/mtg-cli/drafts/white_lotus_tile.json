@@ -1,0 +1,33 @@
+{
+  "oracle_id": "f8a5e009-45b7-4e62-a494-1579f5fc0ba6",
+  "name": "White Lotus Tile",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "White Lotus Tile",
+      "oracle_fingerprint": "50d555ee66287385882e5f29d87379ee",
+      "abilities": [
+        { "Replacement": { "when": { "Enters": { "what": ["This"] } }, "by": "Tapped" } },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [
+              {
+                "AddMana": {
+                  "mana": {
+                    "AnyColor": {
+                      "MostCommon": {
+                        "of": [{ "Type": "Creature" }, { "ControlledBy": "You" }],
+                        "stat": "CreatureType"
+                      }
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

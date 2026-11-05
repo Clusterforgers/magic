@@ -1,0 +1,102 @@
+{
+  "oracle_id": "b96a8ad2-3d86-459b-a34f-19c9dc07c3c4",
+  "name": "Liliana, Heretical Healer // Liliana, Defiant Necromancer",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Liliana, Heretical Healer",
+      "oracle_fingerprint": "345a23995bcb8a1ab04cd1fa59673559",
+      "abilities": [
+        { "Keyword": "Lifelink" },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [
+                  { "Type": "Creature" },
+                  { "Not": "Token" },
+                  "Other",
+                  { "ControlledBy": "You" }
+                ],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "effects": [
+              { "Exile": { "what": "This", "as": "exiled" } },
+              {
+                "Move": {
+                  "what": { "Bound": "exiled" },
+                  "to": { "Battlefield": { "transformed": true } },
+                  "as": "moved2"
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Bound": "moved2" },
+                      "selector": [],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [
+                    {
+                      "CreateToken": {
+                        "token": {
+                          "Custom": {
+                            "name": "Zombie",
+                            "colors": ["Black"],
+                            "types": ["Creature"],
+                            "subtypes": ["Zombie"],
+                            "power": 2,
+                            "toughness": 2
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Liliana, Defiant Necromancer",
+      "oracle_fingerprint": "66083e1094a6b8b360dee2d1495225fa",
+      "abilities": [
+        {
+          "Loyalty": { "cost": { "Plus": 2 }, "effects": [{ "Discard": { "who": "EachPlayer" } }] }
+        },
+        {
+          "Loyalty": {
+            "cost": "MinusX",
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Type": "Creature" },
+                    { "OwnedBy": "You" },
+                    { "Not": { "Supertype": "Legendary" } },
+                    { "Compare": { "stat": "ManaValue", "op": "Eq", "to": "X" } },
+                    { "In": "Graveyard" }
+                  ]
+                }
+              }
+            ],
+            "effects": [{ "Move": { "what": { "Target": 0 }, "to": { "Battlefield": {} } } }]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 136, "end": 277 }
+          }
+        }
+      ]
+    }
+  ]
+}
