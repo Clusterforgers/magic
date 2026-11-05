@@ -172,6 +172,7 @@ fn static_effect_mods(ctx: &mut Ctx, name: &str) -> Tr<Vec<Value>> {
             "SetToughness",
             "AddKeyword",
             "SetColor",
+            "RemoveCardTypes",
         ],
         |_, _| false,
     )?;
@@ -193,7 +194,20 @@ fn static_effect_mods(ctx: &mut Ctx, name: &str) -> Tr<Vec<Value>> {
         }
         _ => return unmapped("key:ChangeZone.StaticEffect=power-alone"),
     }
-    mods.extend(added_types(part.get("AddType").unwrap_or_default()));
+    let mut types = added_types(part.get("AddType").unwrap_or_default());
+    if part.get("RemoveCardTypes") == Some("True") {
+        // The card types the line names are the only ones the object has.
+        let only: Vec<Value> = types
+            .iter()
+            .filter_map(|m| m.get("AddType").cloned())
+            .collect();
+        if only.is_empty() {
+            return unmapped("key:ChangeZone.StaticEffect.RemoveCardTypes");
+        }
+        types.retain(|m| m.get("AddType").is_none());
+        types.insert(0, json!({ "SetTypes": only }));
+    }
+    mods.extend(types);
     if let Some(color) = part.get("SetColor") {
         if !matches!(color, "White" | "Blue" | "Black" | "Red" | "Green") {
             return unmapped("key:ChangeZone.StaticEffect=color");
