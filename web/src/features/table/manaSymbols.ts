@@ -11,8 +11,7 @@ const LETTER: Record<Color, string> = { White: 'W', Blue: 'U', Black: 'B', Red: 
 
 /** The letter of a colour as costs write it: W, U, B, R or G. */
 export function colorLetter(color: Color): string {
-    | { kind: 'snow' }
-return LETTER[color]
+  return LETTER[color]
 }
 
 /** One way to pay a symbol: one mana of a kind, some generic mana, or some life. */
@@ -30,6 +29,7 @@ export type SymbolShape =
   | { kind: 'hybridPhyrexian'; colors: [Color, Color] }
   | { kind: 'colorlessHybrid'; color: Color }
   | { kind: 'colorlessPhyrexian' }
+  | { kind: 'snow' }
 
 /** Reads a symbol off the wire into a flat shape. */
 export function shapeOf(symbol: ManaSymbol): SymbolShape {
