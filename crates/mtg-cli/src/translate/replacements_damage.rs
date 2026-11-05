@@ -27,7 +27,10 @@ fn is_remembered(word: &str) -> bool {
     word.split(',').all(|part| {
         matches!(
             part.trim(),
-            "Card.IsRemembered" | "Creature.IsRemembered" | "Player.IsRemembered"
+            "Card.IsRemembered"
+                | "Creature.IsRemembered"
+                | "Permanent.IsRemembered"
+                | "Player.IsRemembered"
         )
     })
 }
@@ -56,7 +59,9 @@ fn read_keys(p: &Params, static_line: bool) -> Tr<()> {
     let prevents = p.get("Prevent") == Some("True");
     let replaces = p.has("ReplaceWith");
     let shield_prevention = p.get("PreventionEffect") == Some("True");
-    if prevents == replaces || (replaces && !static_line && !shield_prevention) {
+    let instead_shield = replaces && !prevents && !static_line && !shield_prevention;
+    if !instead_shield && (prevents == replaces || (replaces && !static_line && !shield_prevention))
+    {
         return unmapped("replacement:DamageDone-not-a-prevention");
     }
     match (p.get("ActiveZones"), static_line) {
@@ -229,9 +234,12 @@ fn one_shield(
                 "Player" => json!("EachPlayer"),
                 "Opponent" | "Player.Opponent" => json!("Opponents"),
                 "Card.EffectSource" | "Creature.EffectSource" => json!("This"),
+                "Permanent,Player" | "Player,Permanent" => json!(null),
                 _ => return unmapped("replacement:DamageDone-shield-recipient"),
             };
-            when.insert("to".into(), to);
+            if !to.is_null() {
+                when.insert("to".into(), to);
+            }
         }
         (None, _) => {}
     }
@@ -249,6 +257,13 @@ fn one_shield(
             return unmapped("replacement:DamageDone-shield-source");
         }
         (Some(word), _) => {
+            // A script that drops "you control" from the source would apply to every player's sources.
+            if p.get("Description")
+                .is_some_and(|text| text.contains("you control"))
+                && !word.contains("YouCtrl")
+            {
+                return unmapped("replacement:DamageDone-shield-source-control");
+            }
             when.insert("source".into(), json!(source_any(ctx, word)?));
         }
         (None, _) => {}
@@ -261,6 +276,7 @@ fn one_shield(
         Some(_) if p.get("Prevent") == Some("True") => {
             return unmapped("replacement:DamageDone-prevent-and-replace");
         }
+        Some(name) if is_damage_scaling(ctx, name) => scaled(ctx, name)?,
         Some(name) => {
             let you = p.get("ValidTarget") == Some("You");
             super::replacements_damage_by::by(ctx, &p, name, you, true)?

@@ -637,6 +637,7 @@ fn applies_to(by: &ReplaceBy, unit: &Unit) -> bool {
         | ReplaceBy::Riot
         | ReplaceBy::AsCopy { .. } => matches!(unit, Unit::Enter { .. }),
         ReplaceBy::Instead(_) => !matches!(unit, Unit::Other),
+        ReplaceBy::InsteadNext(_) => matches!(unit, Unit::Damage { .. }),
     }
 }
 
@@ -1323,11 +1324,15 @@ impl Pass<'_> {
             {
                 continue;
             }
-            let by = match self.left.get(&effect.id) {
-                Some(0) => continue,
-                Some(left) => ReplaceBy::PreventUpTo(*left),
-                None if shield.then.is_empty() => ReplaceBy::Prevent,
-                None => ReplaceBy::PreventAnd(shield.then.clone()),
+            let by = if let Some(instead) = &shield.instead {
+                instead.clone()
+            } else {
+                match self.left.get(&effect.id) {
+                    Some(0) => continue,
+                    Some(left) => ReplaceBy::PreventUpTo(*left),
+                    None if shield.then.is_empty() => ReplaceBy::Prevent,
+                    None => ReplaceBy::PreventAnd(shield.then.clone()),
+                }
             };
             found.push(Candidate {
                 origin,
@@ -2046,6 +2051,22 @@ impl Pass<'_> {
                 applied,
                 frozen: false,
             };
+        }
+    }
+
+    /// A shield for the next damage ends with the first event it changes.
+    fn end_once_shield(&mut self, candidate: &Candidate) {
+        let Origin::Shield(id) = candidate.origin else {
+            return;
+        };
+        let once = self.shields.iter().any(|effect| {
+            effect.id == id && matches!(&effect.rule, Rule::PreventDamage(shield) if shield.once)
+        });
+        if once {
+            self.spent.insert(id);
+            if !self.touched.contains(&id) {
+                self.touched.push(id);
+            }
         }
     }
 
