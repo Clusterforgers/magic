@@ -1,6 +1,6 @@
 //! The engine's answer to a decision that leaves its player one legal answer.
 //!
-//! The table gives it for a seat out of Full Control (`docs/arena-flow.md`, P10). Only decisions whose options every
+//! The table gives it for a seat out of Full Control (`docs/ui-design.md`, Priority, stops and information leaks). Only decisions whose options every
 //! player can see qualify, so answering at once never shows what a hidden zone holds: a question whose single answer
 //! could come from a hand or a library (a discard, a search, a payment the player cannot make) is always asked.
 

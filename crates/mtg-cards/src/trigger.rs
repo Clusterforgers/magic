@@ -51,7 +51,7 @@ const fn is_one_attacker(count: &u32) -> bool {
 }
 
 /// The game event a triggered ability waits for (CR 603.2). Each variant is backed by one or more
-/// engine events (`docs/cards-dsl.md`, Triggers).
+/// engine events (`docs/cards-dsl.md`, Triggers, replacement and layers).
 #[derive(Debug, Clone, PartialEq, Eq, Hash, Serialize, Deserialize)]
 #[serde(deny_unknown_fields)]
 pub enum TriggerPattern {

@@ -1,4 +1,4 @@
-//! The plain answers a table gives for a seat that asks it to (`docs/arena-flow.md`, P10): its triggers in the order
+//! The plain answers a table gives for a seat that asks it to (`docs/ui-design.md`, Priority, stops and information leaks): its triggers in the order
 //! they triggered, and combat damage lethal to each blocker in order. Both read only what every player sees.
 
 use mtg_core::ids::ObjectId;

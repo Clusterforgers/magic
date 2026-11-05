@@ -1,5 +1,5 @@
 //! The card rules as a JSON schema, built from the same parsed type sources as the reference, for servers that limit a
-//! model's output to a schema (`docs/cards-dsl.md`, Proposer).
+//! model's output to a schema (`docs/cards-dsl.md`, Proposals and drafts).
 //!
 //! Only the keywords the grammar converters of llama.cpp and Ollama read are used: `type`, `properties`, `required`,
 //! `additionalProperties: false`, `enum`, `items`, `anyOf` and `$ref` to `$defs`. A schema checks shapes only: a value of

@@ -1,5 +1,5 @@
 //! `propose`: sends a card, the DSL reference and the nearest hand-written files to a model and keeps the proposals the
-//! checker accepts (`docs/cards-dsl.md`, Model-assisted reading). The person who runs it supplies the API key and pays.
+//! checker accepts (`docs/cards-dsl.md`, Proposals and drafts). The person who runs it supplies the API key and pays.
 
 pub mod anthropic;
 pub mod budget;

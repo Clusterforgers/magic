@@ -2,7 +2,7 @@
  * The abilities a Priority prompt lets the viewer activate from the table: which permanents and cards of the hand, the
  * graveyard, the exile and the command zone carry one, what each is called, and the plays a card with several offers in a chooser.
  * Mana abilities are never listed here: they stay the business of `PriorityOptions.mana_abilities` and are no play
- * (docs/arena-flow.md).
+ * (docs/ui-design.md).
  */
 import type {
   AbilityRef,

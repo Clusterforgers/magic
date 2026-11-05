@@ -2,7 +2,7 @@
  * The turn feed: what one batch tells the turn cues (the banner, the ticker and the ladder), worked out from the game
  * before the batch, the game after it and the batch's events alone. It reads nothing a seat does not already see on
  * its own screen and never says how another seat passed: a step counts as skipped when it began and ended inside one
- * batch, which the server makes the same for every seat (`docs/arena-flow.md`, Information leaks), and the only reason
+ * batch, which the server makes the same for every seat (`docs/ui-design.md`, Priority, stops and information leaks), and the only reason
  * it gives is for the viewer's own main phase.
  */
 import { hostsBefore } from '@/play/hosts'

@@ -1,5 +1,5 @@
 //! `translate-forge`: Forge card scripts, read at run time from an owner-provided checkout, translated by mappers into
-//! proposals in the format `propose` takes from a model (`docs/cards-dsl.md`, Model-assisted reading).
+//! proposals in the format `propose` takes from a model (`docs/cards-dsl.md`, Proposals and drafts).
 //!
 //! The translator never guesses: a Forge construct without a mapper leaves its line out of the proposal (the checker then
 //! sees the printed clause unwritten and marks the card `Partial`), and every ability it writes parses as the DSL's

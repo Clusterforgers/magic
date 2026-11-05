@@ -1,5 +1,5 @@
 //! `check-rules --gaps`: everything that holds the checked proposals back, grouped by reason and ranked by the popularity
-//! of the cards each gap would free (`docs/cards-dsl.md`, Model-assisted reading). With the fix marks of the database
+//! of the cards each gap would free (`docs/cards-dsl.md`, Proposals and drafts). With the fix marks of the database
 //! (`--marks`) the gaps that free the most marked cards come first and a column shows the marks.
 
 use std::collections::BTreeMap;
