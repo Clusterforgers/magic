@@ -175,7 +175,7 @@ fn typed_property(prop: &str) -> Option<Vec<Value>> {
     Some(vec![if negated { json!({"Not": pred}) } else { pred }])
 }
 
-fn capitalize(word: &str) -> String {
+pub(super) fn capitalize(word: &str) -> String {
     let mut chars = word.chars();
     match chars.next() {
         Some(first) => first.to_uppercase().chain(chars).collect(),

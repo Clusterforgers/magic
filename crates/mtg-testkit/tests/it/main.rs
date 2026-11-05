@@ -622,5 +622,7 @@ mod mana_any_shape;
 mod mana_ban;
 mod poisoned_defender;
 mod r1g_taken_names;
+mod r2a_adventure;
+mod r2a_doubling;
 mod ring;
 mod target_reductions;

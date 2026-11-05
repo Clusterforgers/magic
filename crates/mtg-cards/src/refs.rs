@@ -214,6 +214,8 @@ pub enum Pred {
     SummoningSick,
     /// Is a card in a graveyard that a mill put there this turn ("a land card in a graveyard that was milled this turn").
     MilledThisTurn,
+    /// Is a card with an Adventure (CR 715): a card of the Adventure layout, in any zone and on the stack as either half.
+    HasAdventure,
     /// Has the card type.
     Type(CardType),
     /// Has the supertype.

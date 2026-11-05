@@ -8,6 +8,7 @@ use std::borrow::Cow;
 use std::collections::{BTreeMap, BTreeSet};
 
 use mtg_cards::ability::Ability;
+use mtg_cards::definition::Layout;
 use mtg_cards::keyword::Keyword;
 use mtg_cards::refs::{AbilityKind, Pred, Ref, Selector, TargetSpec, Targetable, ZoneKind};
 use mtg_cards::value::{
@@ -1379,6 +1380,9 @@ impl<'a> Scope<'a> {
             Pred::EnteredThisTurn => state.object_tallied(reference, None, Tally::Entered) > 0,
             Pred::SummoningSick => crate::keywords::summoning_sick(state, reference.id),
             Pred::MilledThisTurn => state.object_tallied(reference, None, Tally::W13bMilled) > 0,
+            Pred::HasAdventure => seen
+                .card
+                .is_some_and(|c| c.whole_card().layout == Layout::Adventure),
             Pred::DamagedThisTurn => state.object_tallied(reference, None, Tally::Damaged) > 0,
             Pred::AttackedThisTurn => state.object_tallied(reference, None, Tally::Attacked) > 0,
             Pred::DidThisTurn {

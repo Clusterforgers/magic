@@ -108,6 +108,7 @@ fn phrase(selector: &Selector) -> (String, String) {
             Pred::EnteredThisTurn => tail.push("that entered this turn".to_owned()),
             Pred::SummoningSick => tail.push("with summoning sickness".to_owned()),
             Pred::MilledThisTurn => tail.push("that was milled this turn".to_owned()),
+            Pred::HasAdventure => tail.push("that has an Adventure".to_owned()),
             Pred::ArrivedFrom(origin) => tail.push(format!(
                 "that was put there from {} this turn",
                 zone_phrase(*origin, false)
