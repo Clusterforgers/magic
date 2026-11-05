@@ -260,7 +260,7 @@ fn event_amount(ctx: &Ctx, expression: &str) -> Tr<Option<Value>> {
         "Sacrificed" => json!("Paid"),
         // What the reflexive trigger of an `ImmediateTrigger` was told to remember (`RememberObjects$`).
         "TriggerRemembered" => match &ctx.delayed_remembered {
-            Some(held) => held.clone(),
+            Some(bound) => bound.clone(),
             None => return unmapped("amount:TriggerRemembered"),
         },
         "Remembered" | "RememberedLKI" if what == "Amount" => {

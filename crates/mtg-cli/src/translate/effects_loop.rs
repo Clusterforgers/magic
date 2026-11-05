@@ -80,6 +80,7 @@ pub fn repeat_each(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
             "RepeatSubAbility",
             "DamageMap",
             "ChangeZoneTable",
+            "UseImprinted",
         ],
     )?;
     let over = match (p.get("RepeatPlayers"), p.get("RepeatCards")) {
@@ -97,10 +98,18 @@ pub fn repeat_each(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
         return unmapped("key:RepeatEach.no-RepeatSubAbility");
     };
     let bind = ctx.fresh("each");
-    let outer = ctx.remembered.replace(json!({ "Bound": bind }));
+    // `UseImprinted$` names the one the pass is for `Imprinted`, so `Remembered` keeps what it held before the loop.
+    let held = json!({ "Bound": bind });
+    let imprint = p.get("UseImprinted") == Some("True");
+    let (outer, outer_imprinted) = (ctx.remembered.clone(), ctx.imprinted.clone());
+    if imprint {
+        ctx.imprinted = Some(held);
+    } else {
+        ctx.remembered = Some(held);
+    }
     let part = ctx.sub(sub)?;
     let effects = chain_at(ctx, &part, false);
-    ctx.remembered = outer;
+    (ctx.remembered, ctx.imprinted) = (outer, outer_imprinted);
     Ok(vec![
         json!({"RepeatEach": {"over": over, "as": bind, "effects": effects?}}),
     ])
