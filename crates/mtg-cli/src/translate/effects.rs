@@ -123,7 +123,7 @@ const MAY_APIS: [&str; 9] = [
 /// above one that no `OptionalDecider$` hands to someone else. A single card is "you may discard", the usual May.
 fn own_optional(p: &Params) -> bool {
     match p.get("Mode") {
-        Some("RevealYouChoose") => true,
+        Some("RevealYouChoose" | "LookYouChoose") => true,
         Some("Hand" | "Random") => false,
         _ => {
             !p.has("OptionalDecider")
@@ -541,15 +541,21 @@ fn discard(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
             "DiscardValidDesc",
             "AnyNumber",
             "Optional",
+            "UnlessType",
         ],
     )?;
     let whole_hand = p.get("Mode") == Some("Hand");
-    let reveal_choose = p.get("Mode") == Some("RevealYouChoose");
+    let look_only = p.get("Mode") == Some("LookYouChoose");
+    let reveal_choose = look_only || p.get("Mode") == Some("RevealYouChoose");
+    let reveal_all = p.get("Mode") == Some("RevealDiscardAll");
     if p.has("Optional") && !own_optional(p) {
         return unmapped("key:Discard.Optional");
     }
     let random = match p.get("Mode") {
-        None | Some("TgtChoose" | "Hand" | "RevealYouChoose") => false,
+        None
+        | Some("TgtChoose" | "Hand" | "RevealYouChoose" | "LookYouChoose" | "RevealDiscardAll") => {
+            false
+        }
         Some("Random") => true,
         Some(other) => return unmapped(format!("key:Discard.Mode={other}")),
     };
@@ -573,19 +579,21 @@ fn discard(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
     {
         return unmapped("key:Discard.AnyNumber");
     }
-    let count = if any_number {
-        // "Any number" is up to the cards of the hand that may be chosen; a group would count every hand together.
-        if matches!(who.as_str(), Some("Opponents" | "EachPlayer")) {
+    let count = if any_number || reveal_all {
+        // "Any number" is up to the cards of the hand that may be chosen, "all" every one that matches; a group would
+        // count every hand together, which only "all" can take.
+        let group = matches!(who.as_str(), Some("Opponents" | "EachPlayer"));
+        if any_number && group {
             return unmapped("key:Discard.AnyNumber+group");
+        }
+        if reveal_all && (filter.is_none() || p.has("NumCards") || p.has("Optional")) {
+            return unmapped("key:Discard.Mode=RevealDiscardAll+shape");
         }
         let mut hand = vec![json!({"In": "Hand"}), json!({"OwnedBy": who})];
         hand.extend(filter.iter().flatten().cloned());
         json!({"Count": hand})
     } else if whole_hand {
-        // One player's hand as it is when the discard happens; a group would count every hand together.
-        if matches!(who.as_str(), Some("Opponents" | "EachPlayer")) {
-            return unmapped("key:Discard.Mode=Hand+group");
-        }
+        // A group counts every hand together, more than any one hand holds, so each hand is taken whole.
         json!({"Count": [{"In": "Hand"}, {"OwnedBy": who}]})
     } else {
         amount(ctx, p.get("NumCards").unwrap_or("1"))?
@@ -610,7 +618,11 @@ fn discard(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
         discard["as"] = json!(name);
     }
     let discard = json!({ "Discard": discard });
-    if !reveal_choose {
+    if let Some(unless) = p.get("UnlessType") {
+        let plain = !(whole_hand || reveal_choose || random || any_number || p.has("Optional"));
+        return unless_discard(ctx, p, unless, plain, &discard);
+    }
+    if look_only || !(reveal_choose || reveal_all) {
         return Ok(vec![discard]);
     }
     // "Look at" shows the hand to the chooser only, who sees it in the choice; "reveals" shows every seat.
@@ -620,6 +632,25 @@ fn discard(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
     }
     let hand = json!({"Reveal": {"what": {"Each": [{"OwnedBy": who}, {"In": "Hand"}]}}});
     Ok(vec![hand, discard])
+}
+
+/// "Discard two cards unless you discard a creature card": the player may instead pay one matching card. Only a plain
+/// discard of a count has the form.
+fn unless_discard(
+    ctx: &mut Ctx,
+    p: &Params,
+    unless: &str,
+    plain: bool,
+    discard: &Value,
+) -> Tr<Vec<Value>> {
+    if !plain {
+        return unmapped("key:Discard.UnlessType+shape");
+    }
+    let cost = json!([{"Discard": {"count": 1, "filter": selector_any(ctx, unless)?}}]);
+    let who = player(ctx, p)?;
+    Ok(vec![
+        json!({"Pay": {"who": who, "cost": cost, "unpaid": [discard]}}),
+    ])
 }
 
 /// `Mill`, naming the cards milled for `RememberMilled`.

@@ -48,10 +48,6 @@ fn a_reveal_maps_to_the_nodes_that_show_the_cards(#[case] line: &str, #[case] no
 }
 
 #[rstest]
-#[case::random(
-    "Reveal | Random$ True | RememberRevealed$ True | Defined$ You",
-    "key:Reveal.Random"
-)]
 #[case::all_matching("Reveal | RevealAllValid$ Card.nonLand", "key:Reveal.RevealAllValid")]
 #[case::another_player(
     "Reveal | Defined$ Opponent | RevealValid$ Creature",

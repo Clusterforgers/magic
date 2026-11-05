@@ -140,7 +140,7 @@ fn play_effects(#[case] line: &str, #[case] effect: Value) {
     "key:Play.Optional"
 )]
 #[case::copy(
-    "SP$ Play | Defined$ Self | Optional$ True | CopyCard$ True",
+    "SP$ Play | Valid$ Card.YouOwn | Optional$ True | CopyCard$ True",
     "key:Play.CopyCard"
 )]
 fn play_extras_stay_gaps(#[case] line: &str, #[case] gap: &str) {

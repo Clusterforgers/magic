@@ -756,6 +756,7 @@ mod p8;
 mod p8b;
 mod qf1;
 mod r1b;
+mod r1d;
 mod r1e;
 mod r3p2;
 mod r3p3;

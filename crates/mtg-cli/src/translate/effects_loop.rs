@@ -192,13 +192,21 @@ pub fn peek_and_reveal(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
             "Defined",
         ],
     )?;
-    if p.get("Defined").is_some_and(|who| who != "You") {
-        return unmapped("key:PeekAndReveal.Defined");
+    // Every player named reveals their own top cards; a pick among them is one player's.
+    let who = match p.get("Defined") {
+        None | Some("You") => json!("You"),
+        Some(word) => defined(ctx, word)?,
+    };
+    if matches!(who.as_str(), Some("EachPlayer" | "Opponents")) && p.has("RevealValid") {
+        return unmapped("key:PeekAndReveal.Defined+RevealValid");
     }
     let top = ctx.fresh("top");
     let from_top = json!({ "Bound": top });
     let count = amount(ctx, p.get("PeekAmount").unwrap_or("1"))?;
-    let look = json!({"LookAtTop": {"count": count, "as": top}});
+    let mut look = json!({"LookAtTop": {"count": count, "as": top}});
+    if who != json!("You") {
+        look["LookAtTop"]["who"] = who;
+    }
     let mut effects = vec![look];
     let revealed = match (p.get("NoReveal"), p.get("RevealValid")) {
         (Some("True"), None) => {

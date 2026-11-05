@@ -140,20 +140,22 @@ pub fn play(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
         None | Some("You") => json!("You"),
         Some(word) => defined(ctx, word)?,
     };
-    let spell_only = match p.get("ValidSA") {
-        None => false,
-        Some("Spell") => true,
-        Some(_) => return unmapped("key:Play.ValidSA"),
-    };
+    let (spell_only, spell_filter) = valid_sa(ctx, p.get("ValidSA"))?;
     let copy = match p.get("CopyCard") {
         None => false,
-        Some("True") if p.get("ValidZone") == Some("Exile") => true,
+        // A named card is copied from where it lies (the cards a move to exile remembered).
+        Some("True") if p.get("ValidZone") == Some("Exile") || p.has("Defined") => true,
         Some(_) => return unmapped("key:Play.CopyCard"),
     };
     let pool = match (p.get("Defined"), p.get("Valid"), p.get("ValidZone")) {
+        (Some(_), None, None) if !spell_filter.is_empty() => {
+            return unmapped("key:Play.Defined-with-ValidSA-filter");
+        }
         (Some(word), None, None) => defined(ctx, word)?,
         (None, Some(valid), Some(zone)) => {
-            json!({ "Each": selector_in(ctx, valid, Some(zone))? })
+            let mut selector = selector_in(ctx, valid, Some(zone))?;
+            selector.extend(spell_filter);
+            json!({ "Each": selector })
         }
         (None, Some(_), None) => return unmapped("key:Play.no-ValidZone"),
         (None, None, _) => return unmapped("key:Play.no-Defined"),
@@ -199,4 +201,27 @@ pub fn play(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
     let inner = cast(json!({ "Bound": each }), ctx);
     steps.push(json!({"RepeatEach": {"over": over, "as": each, "effects": inner}}));
     Ok(steps)
+}
+
+/// `ValidSA$` of a `Play`: whether only casting is allowed, and what the spell must be besides (`Spell.cmcLE4`,
+/// `Instant.cmcEQX,Sorcery.cmcEQX`), as predicates of the card cast.
+fn valid_sa(ctx: &Ctx, text: Option<&str>) -> Tr<(bool, Vec<Value>)> {
+    let Some(text) = text else {
+        return Ok((false, Vec::new()));
+    };
+    if text == "Spell" {
+        return Ok((true, Vec::new()));
+    }
+    let alternatives: Vec<String> = text
+        .split(',')
+        .map(|part| match part.strip_prefix("Spell") {
+            Some(rest) if rest.starts_with('.') => format!("Card{rest}"),
+            _ => part.to_owned(),
+        })
+        .collect();
+    let known = |a: &String| matches!(a.split('.').next(), Some("Card" | "Instant" | "Sorcery"));
+    if !alternatives.iter().all(known) {
+        return unmapped("key:Play.ValidSA");
+    }
+    Ok((true, selector_any(ctx, &alternatives.join(","))?))
 }

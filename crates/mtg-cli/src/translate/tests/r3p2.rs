@@ -57,17 +57,9 @@ fn a_discard_mode_is_read(#[case] line: &str, #[case] effects: serde_json::Value
 
 /// A mode the engine does not run stays a gap named after it.
 #[rstest]
-#[case::look_you_choose(
-    "Discard | ValidTgts$ Opponent | Mode$ LookYouChoose",
-    "key:Discard.Mode=LookYouChoose"
-)]
-#[case::reveal_all(
+#[case::reveal_all_without_a_filter(
     "Discard | Mode$ RevealDiscardAll",
-    "key:Discard.Mode=RevealDiscardAll"
-)]
-#[case::hand_of_everyone(
-    "Discard | Mode$ Hand | Defined$ Player",
-    "key:Discard.Mode=Hand+group"
+    "key:Discard.Mode=RevealDiscardAll+shape"
 )]
 #[case::hand_with_a_filter(
     "Discard | Mode$ Hand | DiscardValid$ Creature",
