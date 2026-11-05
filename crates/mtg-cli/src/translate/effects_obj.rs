@@ -623,7 +623,22 @@ fn type_mods(ctx: &Ctx, p: &Params) -> Tr<Vec<Value>> {
     Ok(mods)
 }
 
+/// `Monstrosity$`, `Adapt$` and `Bolster$` on a `PutCounter` line: the keyword action with its number.
+fn counter_action(ctx: &mut Ctx, p: &Params) -> Option<Tr<Vec<Value>>> {
+    let key = ["Monstrosity", "Adapt", "Bolster"]
+        .into_iter()
+        .find(|key| p.has(key))?;
+    Some(
+        only(p, "PutCounter", &[key])
+            .and_then(|()| amount(ctx, p.get(key).unwrap_or("1")))
+            .map(|count| vec![json!({ key: {"count": count} })]),
+    )
+}
+
 fn put_counter(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
+    if let Some(done) = counter_action(ctx, p) {
+        return done;
+    }
     only(
         p,
         "PutCounter",
