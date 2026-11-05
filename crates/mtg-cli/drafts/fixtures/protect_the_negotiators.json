@@ -1,0 +1,159 @@
+{
+  "object": "card",
+  "id": "bb6db604-8bbe-4719-88bd-f3cad8c4725d",
+  "oracle_id": "7ccd666a-0d56-4fe3-b16b-d035bf2ad420",
+  "multiverse_ids": [
+    574542
+  ],
+  "mtgo_id": 102600,
+  "arena_id": 82114,
+  "tcgplayer_id": 283121,
+  "cardmarket_id": 671607,
+  "name": "Protect the Negotiators",
+  "lang": "en",
+  "released_at": "2022-09-09",
+  "uri": "https://api.scryfall.com/cards/bb6db604-8bbe-4719-88bd-f3cad8c4725d",
+  "scryfall_uri": "https://scryfall.com/card/dmu/62/protect-the-negotiators?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T05:42:29Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/b/b/bb6db604-8bbe-4719-88bd-f3cad8c4725d.jpg?1783921349",
+    "normal": "https://cards.scryfall.io/normal/front/b/b/bb6db604-8bbe-4719-88bd-f3cad8c4725d.jpg?1783921349",
+    "large": "https://cards.scryfall.io/large/front/b/b/bb6db604-8bbe-4719-88bd-f3cad8c4725d.jpg?1783921349",
+    "png": "https://cards.scryfall.io/png/front/b/b/bb6db604-8bbe-4719-88bd-f3cad8c4725d.png?1783921349",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/b/b/bb6db604-8bbe-4719-88bd-f3cad8c4725d.jpg?1783921349",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/b/b/bb6db604-8bbe-4719-88bd-f3cad8c4725d.jpg?1783921349",
+    "thumb": "https://cards.scryfall.io/thumb/front/b/b/bb6db604-8bbe-4719-88bd-f3cad8c4725d.webp?1783921349",
+    "grid": "https://cards.scryfall.io/grid/front/b/b/bb6db604-8bbe-4719-88bd-f3cad8c4725d.webp?1783921349",
+    "display": "https://cards.scryfall.io/display/front/b/b/bb6db604-8bbe-4719-88bd-f3cad8c4725d.webp?1783921349",
+    "art": "https://cards.scryfall.io/art/front/b/b/bb6db604-8bbe-4719-88bd-f3cad8c4725d.webp?1783921349",
+    "crop": "https://cards.scryfall.io/crop/front/b/b/bb6db604-8bbe-4719-88bd-f3cad8c4725d.webp?1783921349",
+    "jpeg": "https://cards.scryfall.io/normal/front/b/b/bb6db604-8bbe-4719-88bd-f3cad8c4725d.jpg?1783921349"
+  },
+  "mana_cost": "{1}{U}",
+  "cmc": 2.0,
+  "type_line": "Instant",
+  "oracle_text": "Kicker {W} (You may pay an additional {W} as you cast this spell.)\nIf this spell was kicked, create a 1/1 white Soldier creature token.\nCounter target spell unless its controller pays {1} for each creature you control.",
+  "colors": [
+    "U"
+  ],
+  "color_identity": [
+    "U",
+    "W"
+  ],
+  "keywords": [
+    "Kicker"
+  ],
+  "all_parts": [
+    {
+      "object": "related_card",
+      "id": "bb6db604-8bbe-4719-88bd-f3cad8c4725d",
+      "component": "combo_piece",
+      "name": "Protect the Negotiators",
+      "type_line": "Instant",
+      "uri": "https://api.scryfall.com/cards/bb6db604-8bbe-4719-88bd-f3cad8c4725d"
+    },
+    {
+      "object": "related_card",
+      "id": "8c4b0257-2ca5-4015-9d63-d7cf6e87ab9d",
+      "component": "token",
+      "name": "Soldier",
+      "type_line": "Token Creature — Soldier",
+      "uri": "https://api.scryfall.com/cards/8c4b0257-2ca5-4015-9d63-d7cf6e87ab9d"
+    }
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "arena",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "4e47a6cd-cdeb-4b0f-8f24-cfe1a0127cb3",
+  "set": "dmu",
+  "set_name": "Dominaria United",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/4e47a6cd-cdeb-4b0f-8f24-cfe1a0127cb3",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Admu&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/dmu?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/bb6db604-8bbe-4719-88bd-f3cad8c4725d/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A7ccd666a-0d56-4fe3-b16b-d035bf2ad420&unique=prints",
+  "collector_number": "62",
+  "digital": false,
+  "rarity": "uncommon",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Dominik Mayer",
+  "artist_ids": [
+    "c3439c4a-1fee-4e33-9b89-18dac27ac927"
+  ],
+  "illustration_id": "6d5fc2af-540d-4e36-9286-bf067bbcb151",
+  "border_color": "black",
+  "frame": "2015",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": true,
+  "edhrec_rank": 12113,
+  "penny_rank": 8832,
+  "preview": {
+    "source": "Semulin",
+    "source_uri": "https://www.youtube.com/watch?v=JcmwfyUIcjc",
+    "previewed_at": "2022-08-20"
+  },
+  "prices": {
+    "usd": "0.28",
+    "usd_foil": "0.27",
+    "usd_etched": null,
+    "eur": "0.20",
+    "eur_foil": "0.42",
+    "tix": "0.05"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=574542&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DProtect%2Bthe%2BNegotiators",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DProtect%2Bthe%2BNegotiators",
+    "edhrec": "https://edhrec.com/route/?cc=Protect+the+Negotiators"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F283121%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=671607&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/102600?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

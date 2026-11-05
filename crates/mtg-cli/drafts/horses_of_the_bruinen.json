@@ -1,0 +1,25 @@
+{
+  "oracle_id": "100d1c9e-15aa-4bab-9fb3-76c2cd6abc2f",
+  "name": "Horses of the Bruinen",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Horses of the Bruinen",
+      "oracle_fingerprint": "154c6745acec9a93205078e88a2c0afe",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }] }, "bounds": { "min": 0, "max": 2 } }
+            ],
+            "effects": [
+              { "Move": { "what": { "Target": 0 }, "to": "Hand" } },
+              { "Scry": {} },
+              { "RingTempts": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

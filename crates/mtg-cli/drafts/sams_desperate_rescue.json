@@ -1,0 +1,25 @@
+{
+  "oracle_id": "5a3336f1-614a-4b3f-8752-522a34d0417a",
+  "name": "Sam's Desperate Rescue",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sam's Desperate Rescue",
+      "oracle_fingerprint": "049adee5e3d57bdfbd93f47916f68fe1",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "Type": "Creature" }, { "OwnedBy": "You" }, { "In": "Graveyard" }]
+                }
+              }
+            ],
+            "effects": [{ "Move": { "what": { "Target": 0 }, "to": "Hand" } }, { "RingTempts": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

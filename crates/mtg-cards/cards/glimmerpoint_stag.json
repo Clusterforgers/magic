@@ -1,0 +1,31 @@
+{
+  "oracle_id": "9620c8a2-63a8-4151-b4fd-a15db191a7b0",
+  "name": "Glimmerpoint Stag",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Glimmerpoint Stag",
+      "oracle_fingerprint": "77693f826578c589cc8c07259c1c744c",
+      "abilities": [
+        { "Keyword": "Vigilance" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [{ "what": { "Object": ["Other"] } }],
+            "effects": [
+              { "Exile": { "what": { "Target": 0 }, "as": "exiled" } },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "End" } },
+                  "effects": [
+                    { "Move": { "what": { "Bound": "exiled" }, "to": { "Battlefield": {} } } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

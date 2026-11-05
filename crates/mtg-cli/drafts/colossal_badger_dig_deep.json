@@ -1,0 +1,55 @@
+{
+  "oracle_id": "96aab05a-49bc-418a-9980-f3322955de1e",
+  "name": "Colossal Badger // Dig Deep",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Colossal Badger",
+      "oracle_fingerprint": "69c1363a134867cbac189bbd2af4adb0",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "GainLife": { "amount": 3 } }]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Dig Deep",
+      "oracle_fingerprint": "72845a1da39d6c469e8fd7fb8e3bea37",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              { "Mill": { "count": 4, "as": "milled" } },
+              {
+                "PutCounters": {
+                  "on": { "Target": 0 },
+                  "counter": "+1/+1",
+                  "count": {
+                    "Count": [
+                      { "Is": { "Bound": "milled" } },
+                      {
+                        "AnyOf": [
+                          { "In": "Battlefield" },
+                          { "In": "Hand" },
+                          { "In": "Library" },
+                          { "In": "Graveyard" },
+                          { "In": "Exile" },
+                          { "In": "Stack" }
+                        ]
+                      },
+                      { "Type": "Creature" }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

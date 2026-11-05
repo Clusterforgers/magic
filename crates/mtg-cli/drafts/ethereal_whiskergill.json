@@ -1,0 +1,34 @@
+{
+  "oracle_id": "3d3e6dc0-2aed-4afa-bfa9-59d04ade9bee",
+  "name": "Ethereal Whiskergill",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ethereal Whiskergill",
+      "oracle_fingerprint": "cf293e20cd5fe2494ca752bbd7009709",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Rule": {
+            "rule": {
+              "Cant": {
+                "who": "This",
+                "action": {
+                  "Attack": {
+                    "unless": {
+                      "Compare": {
+                        "left": { "Count": [{ "Subtype": "Island" }, { "ControlledBy": "You" }] },
+                        "op": "Ge",
+                        "right": 1
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

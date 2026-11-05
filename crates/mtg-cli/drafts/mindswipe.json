@@ -1,0 +1,29 @@
+{
+  "oracle_id": "4682c39e-c21a-4c8b-bc63-9cbac59dc563",
+  "name": "Mindswipe",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mindswipe",
+      "oracle_fingerprint": "c812fc41122780e6d49f8a1ee0b39e5e",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": ["Spell"] } }],
+            "effects": [
+              {
+                "Pay": {
+                  "who": { "ControllerOf": { "Target": 0 } },
+                  "cost": "{1}",
+                  "times": "X",
+                  "unpaid": [{ "Counter": { "what": { "Target": 0 } } }]
+                }
+              },
+              { "DealDamage": { "to": { "ControllerOf": { "Target": 0 } }, "amount": "X" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

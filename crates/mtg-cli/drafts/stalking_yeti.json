@@ -1,7 +1,7 @@
 {
   "oracle_id": "e79e67db-3f2e-4002-9e6c-8f06ca9d8af4",
   "name": "Stalking Yeti",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Stalking Yeti",
@@ -32,9 +32,10 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 198, "end": 327 }
+          "Activated": {
+            "cost": "{2}{S}",
+            "timing": "Sorcery",
+            "effects": [{ "Move": { "what": "This", "to": "Hand" } }]
           }
         }
       ]

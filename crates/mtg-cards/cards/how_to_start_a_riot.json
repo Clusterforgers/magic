@@ -1,0 +1,36 @@
+{
+  "oracle_id": "268d0056-0d3e-438a-ab17-625a6f5ec68a",
+  "name": "How to Start a Riot",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "How to Start a Riot",
+      "oracle_fingerprint": "8a07405ec1a6aa582ffa4dfe35ff2ee7",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }, { "what": "Player" }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "AddKeyword": "Menace" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "Continuous": {
+                  "affected": {
+                    "Each": [{ "Type": "Creature" }, { "ControlledBy": { "Target": 1 } }]
+                  },
+                  "mods": [{ "ModifyPT": { "power": 2, "toughness": 0 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

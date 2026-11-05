@@ -1,7 +1,7 @@
 {
   "oracle_id": "7f7c917b-f940-4f43-bafa-31f50a6d9d6f",
   "name": "Gandalf, Friend of the Shire",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Gandalf, Friend of the Shire",
@@ -10,9 +10,14 @@
         { "Keyword": "Flash" },
         { "Rule": { "rule": { "MayCast": { "what": [{ "Type": "Sorcery" }], "flash": true } } } },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 60, "end": 166 }
+          "Triggered": {
+            "when": {
+              "RingTempts": {
+                "who": "You",
+                "bearer": [{ "Type": "Creature" }, { "ControlledBy": "You" }, "Other"]
+              }
+            },
+            "effects": [{ "Draw": {} }]
           }
         }
       ]

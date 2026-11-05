@@ -1,0 +1,36 @@
+{
+  "oracle_id": "fe3b0393-dc50-4fa6-9b3f-1175a6a825e4",
+  "name": "Peerless Samurai",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Peerless Samurai",
+      "oracle_fingerprint": "5485d6902405164ea4b17111e91d7d31",
+      "abilities": [
+        { "Keyword": "Menace" },
+        {
+          "Triggered": {
+            "when": {
+              "AttacksAlone": {
+                "what": [
+                  { "AnyOf": [{ "Subtype": "Samurai" }, { "Subtype": "Warrior" }] },
+                  { "ControlledBy": "You" }
+                ]
+              }
+            },
+            "effects": [
+              {
+                "Rule": {
+                  "rule": {
+                    "NextSpell": { "benefit": { "Cost": { "change": "Reduce", "mana": "{1}" } } }
+                  },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

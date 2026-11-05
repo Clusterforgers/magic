@@ -1,7 +1,7 @@
 {
   "oracle_id": "0bbd6cad-9b6f-45a6-9f2e-d7b4853586ae",
   "name": "Graveyard Trespasser // Graveyard Glutton",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Graveyard Trespasser",
@@ -59,9 +59,88 @@
       "abilities": [
         { "Keyword": { "Ward": [{ "Discard": {} }] } },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 21, "end": 196 }
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+                { "Attacks": { "what": ["This"] } }
+              ]
+            },
+            "targets": [
+              { "what": { "Object": [{ "In": "Graveyard" }] }, "bounds": { "min": 0, "max": 2 } }
+            ],
+            "effects": [
+              { "Exile": { "what": { "Target": 0 }, "as": "exiled" } },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Bound": "exiled" },
+                      "selector": [{ "Type": "Creature" }],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [
+                    {
+                      "LoseLife": {
+                        "who": "Opponents",
+                        "amount": {
+                          "Count": [
+                            { "Is": { "Bound": "exiled" } },
+                            {
+                              "AnyOf": [
+                                { "In": "Battlefield" },
+                                { "In": "Hand" },
+                                { "In": "Library" },
+                                { "In": "Graveyard" },
+                                { "In": "Exile" },
+                                { "In": "Stack" }
+                              ]
+                            },
+                            { "Type": "Creature" }
+                          ]
+                        }
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Bound": "exiled" },
+                      "selector": [{ "Type": "Creature" }],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [
+                    {
+                      "GainLife": {
+                        "amount": {
+                          "Count": [
+                            { "Is": { "Bound": "exiled" } },
+                            {
+                              "AnyOf": [
+                                { "In": "Battlefield" },
+                                { "In": "Hand" },
+                                { "In": "Library" },
+                                { "In": "Graveyard" },
+                                { "In": "Exile" },
+                                { "In": "Stack" }
+                              ]
+                            },
+                            { "Type": "Creature" }
+                          ]
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
           }
         },
         { "Keyword": "Nightbound" }

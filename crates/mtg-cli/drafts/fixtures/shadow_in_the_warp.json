@@ -1,0 +1,141 @@
+{
+  "object": "card",
+  "id": "bd60cd99-1511-4903-b678-ff5a1853a742",
+  "oracle_id": "4d81db0d-2f56-42ac-92ce-249a34d262d4",
+  "multiverse_ids": [
+    580962
+  ],
+  "mtgo_id": 108752,
+  "tcgplayer_id": 285940,
+  "cardmarket_id": 674755,
+  "name": "Shadow in the Warp",
+  "lang": "en",
+  "released_at": "2022-10-07",
+  "uri": "https://api.scryfall.com/cards/bd60cd99-1511-4903-b678-ff5a1853a742",
+  "scryfall_uri": "https://scryfall.com/card/40k/140/shadow-in-the-warp?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T05:33:56Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/b/d/bd60cd99-1511-4903-b678-ff5a1853a742.jpg?1783920836",
+    "normal": "https://cards.scryfall.io/normal/front/b/d/bd60cd99-1511-4903-b678-ff5a1853a742.jpg?1783920836",
+    "large": "https://cards.scryfall.io/large/front/b/d/bd60cd99-1511-4903-b678-ff5a1853a742.jpg?1783920836",
+    "png": "https://cards.scryfall.io/png/front/b/d/bd60cd99-1511-4903-b678-ff5a1853a742.png?1783920836",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/b/d/bd60cd99-1511-4903-b678-ff5a1853a742.jpg?1783920836",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/b/d/bd60cd99-1511-4903-b678-ff5a1853a742.jpg?1783920836",
+    "thumb": "https://cards.scryfall.io/thumb/front/b/d/bd60cd99-1511-4903-b678-ff5a1853a742.webp?1783920836",
+    "grid": "https://cards.scryfall.io/grid/front/b/d/bd60cd99-1511-4903-b678-ff5a1853a742.webp?1783920836",
+    "display": "https://cards.scryfall.io/display/front/b/d/bd60cd99-1511-4903-b678-ff5a1853a742.webp?1783920836",
+    "art": "https://cards.scryfall.io/art/front/b/d/bd60cd99-1511-4903-b678-ff5a1853a742.webp?1783920836",
+    "crop": "https://cards.scryfall.io/crop/front/b/d/bd60cd99-1511-4903-b678-ff5a1853a742.webp?1783920836",
+    "jpeg": "https://cards.scryfall.io/normal/front/b/d/bd60cd99-1511-4903-b678-ff5a1853a742.jpg?1783920836"
+  },
+  "mana_cost": "{1}{R}{G}",
+  "cmc": 3.0,
+  "type_line": "Enchantment",
+  "oracle_text": "The first creature spell you cast each turn costs {2} less to cast.\nWhenever an opponent casts their first noncreature spell each turn, this enchantment deals 2 damage to that player.",
+  "colors": [
+    "G",
+    "R"
+  ],
+  "color_identity": [
+    "G",
+    "R"
+  ],
+  "keywords": [],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "f35f5dd8-5b95-4f52-bbe7-1c62909a8d08",
+  "set": "40k",
+  "set_name": "Warhammer 40,000 Commander",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/f35f5dd8-5b95-4f52-bbe7-1c62909a8d08",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3A40k&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/40k?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/bd60cd99-1511-4903-b678-ff5a1853a742/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A4d81db0d-2f56-42ac-92ce-249a34d262d4&unique=prints",
+  "collector_number": "140",
+  "digital": false,
+  "rarity": "rare",
+  "flavor_text": "The astropath collapsed, his empty eye sockets aglow. He spoke three words before falling lifeless to the ground: \"They . . . are . . . coming!\"",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Kim Sokol",
+  "artist_ids": [
+    "f2bd4ad3-6359-4592-9b34-90a70cfe1b61"
+  ],
+  "illustration_id": "c049fb96-7f4b-44f6-b4be-3f4eeec26195",
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "triangle",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "promo_types": [
+    "universesbeyond"
+  ],
+  "edhrec_rank": 3598,
+  "preview": {
+    "source": "MTG Muddstah",
+    "source_uri": "https://www.youtube.com/watch?v=wTvU04n4dVo",
+    "previewed_at": "2022-09-13"
+  },
+  "prices": {
+    "usd": "16.31",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "19.29",
+    "eur_foil": null,
+    "tix": "3.51"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=580962&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DShadow%2Bin%2Bthe%2BWarp",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DShadow%2Bin%2Bthe%2BWarp",
+    "edhrec": "https://edhrec.com/route/?cc=Shadow+in+the+Warp"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F285940%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=674755&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/108752?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

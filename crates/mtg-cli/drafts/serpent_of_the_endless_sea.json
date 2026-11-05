@@ -1,0 +1,47 @@
+{
+  "oracle_id": "3b954d5f-3a93-4dd9-9d60-6097594d449c",
+  "name": "Serpent of the Endless Sea",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Serpent of the Endless Sea",
+      "oracle_fingerprint": "19d57eaa1a506204a64440eec79e1d1f",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              {
+                "SetPT": {
+                  "power": { "Count": [{ "Subtype": "Island" }, { "ControlledBy": "You" }] },
+                  "toughness": { "Count": [{ "Subtype": "Island" }, { "ControlledBy": "You" }] }
+                }
+              }
+            ],
+            "defining": true
+          }
+        },
+        {
+          "Rule": {
+            "rule": {
+              "Cant": {
+                "who": "This",
+                "action": {
+                  "Attack": {
+                    "unless": {
+                      "Compare": {
+                        "left": { "Count": [{ "Subtype": "Island" }, { "ControlledBy": "You" }] },
+                        "op": "Ge",
+                        "right": 1
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

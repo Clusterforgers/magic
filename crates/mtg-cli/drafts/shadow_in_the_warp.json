@@ -1,0 +1,46 @@
+{
+  "oracle_id": "4d81db0d-2f56-42ac-92ce-249a34d262d4",
+  "name": "Shadow in the Warp",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Shadow in the Warp",
+      "oracle_fingerprint": "0821f74261921168ba2437972b88b4a3",
+      "abilities": [
+        {
+          "CostModifier": {
+            "applies_to": ["Spell", { "Type": "Creature" }, { "ControlledBy": "You" }],
+            "change": "Reduce",
+            "mana": "{2}",
+            "condition": {
+              "Compare": {
+                "left": {
+                  "Tally": {
+                    "event": "SpellCast",
+                    "who": "You",
+                    "filter": [{ "Type": "Creature" }]
+                  }
+                },
+                "op": "Eq",
+                "right": 0
+              }
+            }
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "Nth": {
+                "event": {
+                  "SpellCast": { "what": [{ "Not": { "Type": "Creature" } }], "by": "Opponents" }
+                },
+                "nth": 1
+              }
+            },
+            "effects": [{ "DealDamage": { "to": "Triggering", "amount": 2 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

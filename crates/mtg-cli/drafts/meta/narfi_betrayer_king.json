@@ -1,42 +1,4 @@
 {
   "source": "forge",
-  "oracle_matches": true,
-  "lines": [
-    {
-      "face": 0,
-      "tag": "A",
-      "text": "Return CARDNAME from your graveyard to the battlefield tapped.",
-      "abilities": [],
-      "gap": "invalid:unsupported mana symbol {S}"
-    },
-    {
-      "face": 0,
-      "tag": "S",
-      "text": "Other Snow and Zombie creatures you control get +1/+1.",
-      "abilities": [
-        0
-      ],
-      "gap": null
-    }
-  ],
-  "proof": {
-    "marks": [
-      {
-        "face": 0,
-        "span": {
-          "start": 0,
-          "end": 54
-        },
-        "mark": "Auto"
-      },
-      {
-        "face": 0,
-        "span": {
-          "start": 55,
-          "end": 181
-        },
-        "mark": "ByHand"
-      }
-    ]
-  }
+  "oracle_matches": true
 }

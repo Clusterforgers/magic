@@ -1,0 +1,26 @@
+{
+  "oracle_id": "2ac2b815-2d72-48e6-b43a-18884a74bf95",
+  "name": "Skycoach Waypoint",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Skycoach Waypoint",
+      "oracle_fingerprint": "f4d091151a26fdd7f1d6c6dbd66b6b0a",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Colorless"] } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{3}" }, "Tap"],
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [{ "Prepare": { "what": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

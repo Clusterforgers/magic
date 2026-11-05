@@ -1,0 +1,44 @@
+{
+  "oracle_id": "1e105ab7-fb10-4cfd-ac2f-5e11488cf1b0",
+  "name": "Jade Monolith",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Jade Monolith",
+      "oracle_fingerprint": "b598a48a6af2962d87c80677f3f504ad",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{1}",
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "AnyOf": [{ "In": "Battlefield" }, { "In": "Stack" }, { "In": "Command" }] }
+                    ]
+                  },
+                  "as": "source"
+                }
+              },
+              {
+                "Shield": {
+                  "when": {
+                    "Damage": { "to": { "Target": 0 }, "source": [{ "Is": { "Bound": "source" } }] }
+                  },
+                  "by": {
+                    "InsteadNext": [
+                      { "DealDamage": { "source": "Dealer", "to": "You", "amount": "Triggering" } }
+                    ]
+                  },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

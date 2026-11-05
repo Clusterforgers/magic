@@ -42,7 +42,13 @@
                 }
               },
               { "Reveal": { "what": { "Bound": "kept2" } } },
-              { "Move": { "what": { "Bound": "kept2" }, "to": { "Battlefield": {} } } },
+              {
+                "Move": {
+                  "what": { "Bound": "kept2" },
+                  "to": { "Battlefield": {} },
+                  "as": "kept2_moved"
+                }
+              },
               {
                 "Move": {
                   "what": { "Bound": "top" },
@@ -53,7 +59,7 @@
                 "If": {
                   "condition": {
                     "CountOf": {
-                      "subject": { "Bound": "kept2" },
+                      "subject": { "Bound": "kept2_moved" },
                       "selector": [],
                       "op": "Eq",
                       "right": 0

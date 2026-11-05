@@ -1,0 +1,139 @@
+{
+  "object": "card",
+  "id": "1eb10082-4f0a-41f9-9a70-0d3c7ead249f",
+  "oracle_id": "93df61b5-6abe-4603-9a6e-cba90a834173",
+  "multiverse_ids": [],
+  "resource_id": "4B5F11E0D06302D44F66291D483B6781CB635D9CCAE132622809FDB95F01376E",
+  "mtgo_id": 140019,
+  "tcgplayer_id": 631146,
+  "cardmarket_id": 824502,
+  "name": "Cloud's Limit Break",
+  "lang": "en",
+  "released_at": "2025-06-13",
+  "uri": "https://api.scryfall.com/cards/1eb10082-4f0a-41f9-9a70-0d3c7ead249f",
+  "scryfall_uri": "https://scryfall.com/card/fic/14/clouds-limit-break?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T01:32:51Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/1/e/1eb10082-4f0a-41f9-9a70-0d3c7ead249f.jpg?1783906371",
+    "normal": "https://cards.scryfall.io/normal/front/1/e/1eb10082-4f0a-41f9-9a70-0d3c7ead249f.jpg?1783906371",
+    "large": "https://cards.scryfall.io/large/front/1/e/1eb10082-4f0a-41f9-9a70-0d3c7ead249f.jpg?1783906371",
+    "png": "https://cards.scryfall.io/png/front/1/e/1eb10082-4f0a-41f9-9a70-0d3c7ead249f.png?1783906371",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/1/e/1eb10082-4f0a-41f9-9a70-0d3c7ead249f.jpg?1783906371",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/1/e/1eb10082-4f0a-41f9-9a70-0d3c7ead249f.jpg?1783906371",
+    "thumb": "https://cards.scryfall.io/thumb/front/1/e/1eb10082-4f0a-41f9-9a70-0d3c7ead249f.webp?1783906371",
+    "grid": "https://cards.scryfall.io/grid/front/1/e/1eb10082-4f0a-41f9-9a70-0d3c7ead249f.webp?1783906371",
+    "display": "https://cards.scryfall.io/display/front/1/e/1eb10082-4f0a-41f9-9a70-0d3c7ead249f.webp?1783906371",
+    "art": "https://cards.scryfall.io/art/front/1/e/1eb10082-4f0a-41f9-9a70-0d3c7ead249f.webp?1783906371",
+    "crop": "https://cards.scryfall.io/crop/front/1/e/1eb10082-4f0a-41f9-9a70-0d3c7ead249f.webp?1783906371",
+    "jpeg": "https://cards.scryfall.io/normal/front/1/e/1eb10082-4f0a-41f9-9a70-0d3c7ead249f.jpg?1783906371"
+  },
+  "mana_cost": "{1}{W}",
+  "cmc": 2.0,
+  "type_line": "Instant",
+  "oracle_text": "Tiered (Choose one additional cost.)\n• Cross-Slash — {0} — Destroy target tapped creature.\n• Blade Beam — {1} — Destroy any number of target tapped creatures with different controllers.\n• Omnislash — {3}{W} — Destroy all tapped creatures.",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": [
+    "Omnislash",
+    "Blade Beam",
+    "Tiered",
+    "Cross-Slash"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "30659956-4558-4cbf-a65f-34cd00c89579",
+  "set": "fic",
+  "set_name": "Final Fantasy Commander",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/30659956-4558-4cbf-a65f-34cd00c89579",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Afic&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/fic?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/1eb10082-4f0a-41f9-9a70-0d3c7ead249f/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A93df61b5-6abe-4603-9a6e-cba90a834173&unique=prints",
+  "collector_number": "14",
+  "digital": false,
+  "rarity": "rare",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Billy Christian",
+  "artist_ids": [
+    "10f26f94-64fc-4174-856e-701bea4f1521"
+  ],
+  "illustration_id": "21f366d9-3915-42d2-87ce-839e1c721c70",
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "triangle",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "promo_types": [
+    "surgefoil",
+    "universesbeyond",
+    "ffvii"
+  ],
+  "edhrec_rank": 5126,
+  "prices": {
+    "usd": "0.27",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "0.23",
+    "eur_foil": null,
+    "tix": "1.67"
+  },
+  "related_uris": {
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DCloud%2527s%2BLimit%2BBreak",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DCloud%2527s%2BLimit%2BBreak",
+    "edhrec": "https://edhrec.com/route/?cc=Cloud%27s+Limit+Break"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F631146%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=824502&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/140019?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

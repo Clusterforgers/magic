@@ -1,0 +1,29 @@
+{
+  "oracle_id": "e9c78601-4bec-4d16-8fd9-88c6053bd9c4",
+  "name": "Bottle-Cap Blast",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Bottle-Cap Blast",
+      "oracle_fingerprint": "e9df040c7e9b100456bfd6f4d952ad08",
+      "abilities": [
+        { "Keyword": "Improvise" },
+        {
+          "Spell": {
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [
+              { "DealDamage": { "to": { "Target": 0 }, "amount": 5, "excess": { "as": "excess" } } },
+              {
+                "CreateToken": {
+                  "token": { "Named": "treasure" },
+                  "count": { "Bound": "excess" },
+                  "tapped": true
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

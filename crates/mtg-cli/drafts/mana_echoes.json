@@ -1,0 +1,38 @@
+{
+  "oracle_id": "369e90e5-a31b-49cc-b594-8a853f244be1",
+  "name": "Mana Echoes",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mana Echoes",
+      "oracle_fingerprint": "323ea53a67faf41b377f08feea28b057",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": [{ "Type": "Creature" }], "to": "Battlefield" } },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "AddMana": {
+                        "mana": { "Fixed": ["Colorless"] },
+                        "times": {
+                          "Count": [
+                            { "Type": "Creature" },
+                            { "ControlledBy": "You" },
+                            { "SharesSubtype": "Triggering" }
+                          ]
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

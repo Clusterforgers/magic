@@ -1,0 +1,52 @@
+{
+  "oracle_id": "6d972501-4174-4bf0-a26b-2edef31b3a0c",
+  "name": "Slumbering Walker",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Slumbering Walker",
+      "oracle_fingerprint": "3d10777bd7f1be024bf9d37ca2e0d0b1",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "WithCounters": { "counter": "-1/-1", "count": 2 } }
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": [{ "RemoveCounters": {} }],
+                  "paid": [
+                    {
+                      "Reflexive": {
+                        "targets": [
+                          {
+                            "what": {
+                              "Object": [
+                                { "Type": "Creature" },
+                                { "OwnedBy": "You" },
+                                { "Compare": { "stat": "Power", "op": "Le", "to": 2 } },
+                                { "In": "Graveyard" }
+                              ]
+                            }
+                          }
+                        ],
+                        "effects": [
+                          { "Move": { "what": { "Target": 0 }, "to": { "Battlefield": {} } } }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

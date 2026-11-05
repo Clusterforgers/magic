@@ -1,0 +1,43 @@
+{
+  "oracle_id": "925a0b9b-a1fa-4aad-89d9-e2698ac3582f",
+  "name": "Ajani's Presence",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ajani's Presence",
+      "oracle_fingerprint": "ba64d725b96e1b744e2cb78e6602591f",
+      "abilities": [
+        {
+          "CostModifier": {
+            "applies_to": ["This"],
+            "change": "Increase",
+            "mana": "{2}{W}",
+            "per": { "Sum": [{ "TargetCount": 0 }, -1] }
+          }
+        },
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": { "Object": [{ "Type": "Creature" }] },
+                "bounds": { "min": 0, "max": { "Count": [{ "Type": "Creature" }] } }
+              }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    { "ModifyPT": { "power": 1, "toughness": 1 } },
+                    { "AddKeyword": "Indestructible" }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

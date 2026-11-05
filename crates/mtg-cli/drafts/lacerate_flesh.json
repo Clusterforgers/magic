@@ -1,0 +1,22 @@
+{
+  "oracle_id": "201c8de7-9675-475b-8f9e-7b1935234488",
+  "name": "Lacerate Flesh",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Lacerate Flesh",
+      "oracle_fingerprint": "0c153676eff3af84d1141ca167f8b61d",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              { "DealDamage": { "to": { "Target": 0 }, "amount": 4, "excess": { "as": "excess" } } },
+              { "CreateToken": { "token": { "Named": "blood" }, "count": { "Bound": "excess" } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

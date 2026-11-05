@@ -1,0 +1,39 @@
+{
+  "oracle_id": "40ab2b22-9cf6-4a73-a05f-6ce496d10bf7",
+  "name": "Bonus Round",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Bonus Round",
+      "oracle_fingerprint": "8415d6c1083a48bcb6e4132190354d73",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "DelayedTrigger": {
+                  "when": {
+                    "SpellCast": {
+                      "what": [{ "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] }]
+                    }
+                  },
+                  "once": false,
+                  "this_turn": true,
+                  "effects": [
+                    {
+                      "CopySpell": {
+                        "what": "Triggering",
+                        "who": "TriggeringPlayer",
+                        "new_targets": true
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,79 @@
+{
+  "oracle_id": "e1105d84-86b5-44ef-9efc-d994ee1c35cc",
+  "name": "Geyadrone Dihada",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Geyadrone Dihada",
+      "oracle_fingerprint": "0eef0d9275767583babd4a6a0830799b",
+      "abilities": [
+        { "Keyword": { "Protection": [{ "HasCounter": { "Other": "corruption" } }] } },
+        {
+          "Loyalty": {
+            "cost": { "Plus": 1 },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "AnyOf": [{ "Type": "Creature" }, { "Type": "Planeswalker" }] },
+                    "Other"
+                  ]
+                },
+                "bounds": { "min": 0, "max": 1 }
+              }
+            ],
+            "effects": [
+              { "LoseLife": { "who": "Opponents", "amount": 2 } },
+              { "GainLife": { "amount": 2 } },
+              { "PutCounters": { "on": { "Target": 0 }, "counter": { "Other": "corruption" } } }
+            ]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Minus": 3 },
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "AnyOf": [{ "Type": "Creature" }, { "Type": "Planeswalker" }] }]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "SetController": "You" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              { "Untap": { "what": { "Target": 0 } } },
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "AddKeyword": "Haste" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              { "PutCounters": { "on": { "Target": 0 }, "counter": { "Other": "corruption" } } }
+            ]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Minus": 7 },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "HasCounter": { "Other": "corruption" } }] },
+                  "mods": [{ "SetController": "You" }],
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

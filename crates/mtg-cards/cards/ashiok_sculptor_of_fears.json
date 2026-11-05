@@ -1,0 +1,45 @@
+{
+  "oracle_id": "ce79bbd2-edf0-4d5e-9aaf-717ec3960c48",
+  "name": "Ashiok, Sculptor of Fears",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ashiok, Sculptor of Fears",
+      "oracle_fingerprint": "29be69e6af82f24a03d4adb6cae2d418",
+      "abilities": [
+        {
+          "Loyalty": {
+            "cost": { "Plus": 2 },
+            "effects": [{ "Draw": {} }, { "Mill": { "who": "EachPlayer", "count": 2 } }]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Minus": 5 },
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }, { "In": "Graveyard" }] } }],
+            "effects": [
+              { "Move": { "what": { "Target": 0 }, "to": { "Battlefield": { "under": "You" } } } }
+            ]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Minus": 11 },
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": {
+                    "Each": [{ "Type": "Creature" }, { "ControlledBy": { "Target": 0 } }]
+                  },
+                  "mods": [{ "SetController": "You" }],
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

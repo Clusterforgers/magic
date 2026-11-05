@@ -1,0 +1,36 @@
+{
+  "oracle_id": "1a49ec1c-6150-4b46-b671-b7d6f4e301ae",
+  "name": "Growth-Chamber Guardian",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Growth-Chamber Guardian",
+      "oracle_fingerprint": "5becdacf83265a26cf41055c288eafc8",
+      "abilities": [
+        { "Activated": { "cost": "{2}{G}", "effects": [{ "Adapt": { "count": 2 } }] } },
+        {
+          "Triggered": {
+            "when": { "Batch": { "CountersPut": { "what": ["This"], "counter": "+1/+1" } } },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "Search": {
+                        "filter": [{ "Named": "Growth-Chamber Guardian" }],
+                        "reveal": true,
+                        "as": "found"
+                      }
+                    },
+                    { "Move": { "what": { "Bound": "found" }, "to": "Hand" } },
+                    { "Shuffle": {} }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

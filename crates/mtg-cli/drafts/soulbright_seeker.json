@@ -1,0 +1,44 @@
+{
+  "oracle_id": "762679dd-4345-43c3-929b-15959443aeb0",
+  "name": "Soulbright Seeker",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Soulbright Seeker",
+      "oracle_fingerprint": "337a3928d031eee13f7d5d5f876a9f48",
+      "abilities": [
+        {
+          "AdditionalCost": {
+            "cost": [
+              { "OneOf": [[{ "Behold": { "filter": [{ "Subtype": "Elemental" }] } }], "{2}"] }
+            ],
+            "required": true
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{R}",
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "AddKeyword": "Trample" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "If": {
+                  "condition": { "Compare": { "left": "ResolvedThisTurn", "op": "Eq", "right": 3 } },
+                  "then": [{ "AddMana": { "mana": { "Fixed": ["Red", "Red", "Red", "Red"] } } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

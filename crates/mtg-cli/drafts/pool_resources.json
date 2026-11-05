@@ -1,0 +1,32 @@
+{
+  "oracle_id": "2069145f-d8af-4386-a874-52a2efb8c7a9",
+  "name": "Pool Resources",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Pool Resources",
+      "oracle_fingerprint": "ebb0945327afd23fb09b7870c80213a0",
+      "abilities": [
+        { "Keyword": { "Gift": "TappedFish" } },
+        {
+          "Spell": {
+            "effects": [
+              {
+                "If": {
+                  "condition": { "Compare": { "left": "Promised", "op": "Eq", "right": 0 } },
+                  "then": [{ "Draw": { "count": 2 } }]
+                }
+              },
+              {
+                "If": {
+                  "condition": { "Compare": { "left": "Promised", "op": "Eq", "right": 1 } },
+                  "then": [{ "Seek": { "filter": [{ "Not": { "Type": "Land" } }], "count": 2 } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

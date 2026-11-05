@@ -1,0 +1,33 @@
+{
+  "oracle_id": "ce176172-6c7b-40b0-a6d0-68e9c32b3402",
+  "name": "Hammerhead Shark",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Hammerhead Shark",
+      "oracle_fingerprint": "f5da8fc9aa0c22c42652a49b14b4b919",
+      "abilities": [
+        {
+          "Rule": {
+            "rule": {
+              "Cant": {
+                "who": "This",
+                "action": {
+                  "Attack": {
+                    "unless": {
+                      "Compare": {
+                        "left": { "Count": [{ "Subtype": "Island" }, { "ControlledBy": "You" }] },
+                        "op": "Ge",
+                        "right": 1
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

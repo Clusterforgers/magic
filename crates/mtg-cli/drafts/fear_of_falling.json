@@ -1,0 +1,38 @@
+{
+  "oracle_id": "00ba96e0-42a7-432a-a500-5e607d75a358",
+  "name": "Fear of Falling",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Fear of Falling",
+      "oracle_fingerprint": "c1acb32aed8d184ab36f21ddb39232b1",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "Defending" }] } }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "ModifyPT": { "power": -2, "toughness": 0 } }],
+                  "duration": "UntilYourNextTurn"
+                }
+              },
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "RemoveKeyword": "Flying" }],
+                  "duration": "UntilYourNextTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

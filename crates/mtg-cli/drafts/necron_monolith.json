@@ -1,0 +1,54 @@
+{
+  "oracle_id": "20932bca-52be-4288-9c7d-4154650c5ec9",
+  "name": "Necron Monolith",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Necron Monolith",
+      "oracle_fingerprint": "251e1cafbdb400366c272289c694743d",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": "Indestructible" },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [
+              { "Mill": { "count": 3, "as": "milled" } },
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Necron Warrior",
+                      "colors": ["Black"],
+                      "types": ["Artifact", "Creature"],
+                      "subtypes": ["Necron", "Warrior"],
+                      "power": 2,
+                      "toughness": 2
+                    }
+                  },
+                  "count": {
+                    "Count": [
+                      { "Is": { "Bound": "milled" } },
+                      {
+                        "AnyOf": [
+                          { "In": "Battlefield" },
+                          { "In": "Hand" },
+                          { "In": "Library" },
+                          { "In": "Graveyard" },
+                          { "In": "Exile" },
+                          { "In": "Stack" }
+                        ]
+                      },
+                      { "Type": "Creature" }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Crew": 4 } }
+      ]
+    }
+  ]
+}

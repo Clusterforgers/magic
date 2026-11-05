@@ -1,0 +1,64 @@
+{
+  "oracle_id": "9416fd24-15a2-46d0-8b5f-55f5e7b65465",
+  "name": "Leaf-Crowned Elder",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Leaf-Crowned Elder",
+      "oracle_fingerprint": "18d074a9314e110cd9628b23cea97d49",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    { "LookAtTop": { "as": "top" } },
+                    {
+                      "Choose": {
+                        "from": {
+                          "Each": [
+                            { "In": "Library" },
+                            { "Is": { "Bound": "top" } },
+                            { "SharesSubtype": "This" }
+                          ]
+                        },
+                        "count": { "min": 0, "max": 1 },
+                        "as": "revealed2"
+                      }
+                    },
+                    { "Reveal": { "what": { "Bound": "revealed2" } } },
+                    {
+                      "If": {
+                        "condition": {
+                          "CountOf": {
+                            "subject": { "Bound": "revealed2" },
+                            "selector": [],
+                            "op": "Eq",
+                            "right": 1
+                          }
+                        },
+                        "then": [
+                          {
+                            "CastFromZone": {
+                              "what": {
+                                "Each": [{ "In": "Library" }, { "OwnedBy": "You" }, "TopOfLibrary"]
+                              },
+                              "free": true,
+                              "play": true
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,50 @@
+{
+  "oracle_id": "77a963a3-473a-4c34-bc46-8ef016a92c0c",
+  "name": "Veteran Brawlers",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Veteran Brawlers",
+      "oracle_fingerprint": "eefb44e23d2aa476d67a84fc6e9ffeae",
+      "abilities": [
+        {
+          "Rule": {
+            "rule": {
+              "Cant": {
+                "who": "This",
+                "action": {
+                  "Attack": {
+                    "unless": {
+                      "Not": {
+                        "Compare": {
+                          "left": {
+                            "Count": [{ "Type": "Land" }, "Untapped", { "ControlledBy": "You" }]
+                          },
+                          "op": "Ge",
+                          "right": 1
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": ["CantBlock"],
+            "condition": {
+              "Compare": {
+                "left": { "Count": [{ "Type": "Land" }, { "ControlledBy": "You" }, "Untapped"] },
+                "op": "Ge",
+                "right": 1
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

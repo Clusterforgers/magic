@@ -1,0 +1,85 @@
+{
+  "oracle_id": "7b587921-00d3-42c0-b295-b62310173390",
+  "name": "Wrenn and One",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Wrenn and One",
+      "oracle_fingerprint": "da5af14b681d2a2a2500db9f5ea01be4",
+      "abilities": [
+        {
+          "Loyalty": {
+            "cost": { "Plus": 1 },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [
+                    {
+                      "GrantAbility": {
+                        "Activated": {
+                          "cost": ["Tap"],
+                          "effects": [{ "AddMana": { "mana": { "Fixed": ["Green"] } } }]
+                        }
+                      }
+                    }
+                  ],
+                  "duration": "UntilYourNextTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Minus": 1 },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Squirrel",
+                      "colors": ["Green"],
+                      "types": ["Creature"],
+                      "subtypes": ["Squirrel"],
+                      "power": 1,
+                      "toughness": 1
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Minus": 4 },
+            "effects": [
+              {
+                "CreateEmblem": {
+                  "abilities": [
+                    {
+                      "Triggered": {
+                        "when": { "StepBegins": { "step": "Main1", "whose": "You" } },
+                        "effects": [
+                          {
+                            "AddMana": {
+                              "mana": { "Fixed": ["Green"] },
+                              "times": {
+                                "Count": [{ "Type": "Creature" }, { "ControlledBy": "You" }]
+                              }
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

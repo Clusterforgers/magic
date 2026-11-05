@@ -1,0 +1,30 @@
+{
+  "oracle_id": "2e7e3be5-04dd-4ff4-b121-3e65b3e00699",
+  "name": "Bilbo, Retired Burglar",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Bilbo, Retired Burglar",
+      "oracle_fingerprint": "3b229bd6f66dd260c88fa2e104e97e23",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+                { "ZoneChange": { "what": ["This"], "from": "Battlefield" } }
+              ]
+            },
+            "effects": [{ "RingTempts": {} }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": ["This"], "to": "EachPlayer", "combat": true } },
+            "effects": [{ "CreateToken": { "token": { "Named": "treasure" } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

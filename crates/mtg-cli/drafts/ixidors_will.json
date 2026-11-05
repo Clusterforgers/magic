@@ -1,0 +1,33 @@
+{
+  "oracle_id": "a84c9507-d054-4770-84f3-5a4b5a01d826",
+  "name": "Ixidor's Will",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ixidor's Will",
+      "oracle_fingerprint": "d993ccdfdea44e62b24a5480f079d405",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": ["Spell"] } }],
+            "effects": [
+              {
+                "Pay": {
+                  "who": { "ControllerOf": { "Target": 0 } },
+                  "cost": "{1}",
+                  "times": {
+                    "Times": {
+                      "by": 2,
+                      "of": { "Count": [{ "Subtype": "Wizard" }, { "ControlledBy": "You" }] }
+                    }
+                  },
+                  "unpaid": [{ "Counter": { "what": { "Target": 0 } } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

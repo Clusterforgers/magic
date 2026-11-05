@@ -1,0 +1,24 @@
+{
+  "oracle_id": "32a8ca5f-0170-4f5d-97cd-63e2b74fd653",
+  "name": "Groffskithur",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Groffskithur",
+      "oracle_fingerprint": "e0ebeb007b124255f4956e0b87444a6a",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "BecomesBlocked": { "what": ["This"] } },
+            "targets": [
+              { "what": { "Object": [{ "Named": "Groffskithur" }, { "In": "Graveyard" }] } }
+            ],
+            "effects": [
+              { "May": { "effects": [{ "Move": { "what": { "Target": 0 }, "to": "Hand" } }] } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

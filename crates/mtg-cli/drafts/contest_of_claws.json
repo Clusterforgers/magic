@@ -1,0 +1,71 @@
+{
+  "oracle_id": "e30d5114-40d7-4dc5-8067-9c5e9625e097",
+  "name": "Contest of Claws",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Contest of Claws",
+      "oracle_fingerprint": "46fea37c3e2431e48170c9cf3cb081a2",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } },
+              {
+                "what": { "Object": [{ "Type": "Creature" }, { "Not": { "Is": { "Target": 0 } } }] }
+              }
+            ],
+            "effects": [
+              {
+                "DealDamage": {
+                  "source": { "Target": 0 },
+                  "to": { "Target": 1 },
+                  "amount": { "Stat": { "of": { "Target": 0 }, "stat": "Power" } },
+                  "excess": { "as": "excess" }
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": { "left": { "Bound": "excess" }, "op": "Ge", "right": 1 }
+                  },
+                  "then": [
+                    {
+                      "ExileUntil": {
+                        "filter": [
+                          { "Not": { "Type": "Land" } },
+                          {
+                            "Compare": {
+                              "stat": "ManaValue",
+                              "op": "Le",
+                              "to": { "Bound": "excess" }
+                            }
+                          }
+                        ],
+                        "as": "found",
+                        "exiled_as": "exiled"
+                      }
+                    },
+                    {
+                      "CastFromZone": {
+                        "what": { "Bound": "found" },
+                        "free": true,
+                        "otherwise": [{ "Move": { "what": { "Bound": "found" }, "to": "Hand" } }]
+                      }
+                    },
+                    {
+                      "Move": {
+                        "what": { "Bound": "exiled" },
+                        "to": { "Library": { "place": "Bottom", "order": "Random" } }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

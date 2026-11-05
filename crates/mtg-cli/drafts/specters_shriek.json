@@ -1,0 +1,62 @@
+{
+  "oracle_id": "8c9164b5-10ed-4cad-af33-7d4b5d3d6bf2",
+  "name": "Specter's Shriek",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Specter's Shriek",
+      "oracle_fingerprint": "4ee362d17f2e7b51e846574c7d4d8c3f",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              {
+                "Bind": {
+                  "what": { "Each": [{ "OwnedBy": { "Target": 0 } }, { "In": "Hand" }] },
+                  "as": "revealed"
+                }
+              },
+              { "Reveal": { "what": { "Bound": "revealed" } } },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "Not": { "Type": "Land" } },
+                      { "Is": { "Bound": "revealed" } },
+                      { "In": "Hand" }
+                    ]
+                  },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "card2"
+                }
+              },
+              { "Exile": { "what": { "Bound": "card2" }, "as": "card2_exiled" } },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Bound": "card2_exiled" },
+                      "selector": [{ "Not": { "Color": "Black" } }],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [
+                    {
+                      "Choose": {
+                        "from": { "Each": [{ "In": "Hand" }, { "OwnedBy": "You" }] },
+                        "as": "picked3"
+                      }
+                    },
+                    { "Exile": { "what": { "Bound": "picked3" } } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

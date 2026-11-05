@@ -1,0 +1,57 @@
+{
+  "oracle_id": "d5129531-e4b6-454e-9c67-dae925c8f2ee",
+  "name": "Manta Ray",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Manta Ray",
+      "oracle_fingerprint": "282a3fa1dbc643341ac676f9f22288f8",
+      "abilities": [
+        {
+          "Rule": {
+            "rule": {
+              "Cant": {
+                "who": "This",
+                "action": {
+                  "Attack": {
+                    "unless": {
+                      "Compare": {
+                        "left": { "Count": [{ "Subtype": "Island" }, { "ControlledBy": "You" }] },
+                        "op": "Ge",
+                        "right": 1
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              { "CantBeBlockedBy": [{ "Type": "Creature" }, { "Not": { "Color": "Blue" } }] }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "State": {
+                "condition": {
+                  "Compare": {
+                    "left": { "Count": [{ "Subtype": "Island" }, { "ControlledBy": "You" }] },
+                    "op": "Eq",
+                    "right": 0
+                  }
+                }
+              }
+            },
+            "effects": [{ "Sacrifice": { "filter": ["This"] } }]
+          }
+        }
+      ]
+    }
+  ]
+}

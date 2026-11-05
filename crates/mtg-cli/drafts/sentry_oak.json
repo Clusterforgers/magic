@@ -1,0 +1,47 @@
+{
+  "oracle_id": "1b2e0a60-844e-4db7-91fd-323497ab3cbf",
+  "name": "Sentry Oak",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sentry Oak",
+      "oracle_fingerprint": "2f6a83c33537a1080cd8c2213a740281",
+      "abilities": [
+        { "Keyword": "Defender" },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "BeginCombat", "whose": "You" } },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "Clash": {
+                        "win": [
+                          {
+                            "Continuous": {
+                              "affected": "This",
+                              "mods": [{ "ModifyPT": { "power": 2, "toughness": 0 } }],
+                              "duration": "UntilEndOfTurn"
+                            }
+                          },
+                          {
+                            "Continuous": {
+                              "affected": "This",
+                              "mods": [{ "RemoveKeyword": "Defender" }],
+                              "duration": "UntilEndOfTurn"
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

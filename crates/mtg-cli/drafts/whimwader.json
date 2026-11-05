@@ -1,0 +1,33 @@
+{
+  "oracle_id": "21d9ce2c-eb6a-4f43-a79b-0b99b3dc4a00",
+  "name": "Whimwader",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Whimwader",
+      "oracle_fingerprint": "43734c50843943bad88482015872851e",
+      "abilities": [
+        {
+          "Rule": {
+            "rule": {
+              "Cant": {
+                "who": "This",
+                "action": {
+                  "Attack": {
+                    "unless": {
+                      "Compare": {
+                        "left": { "Count": [{ "Color": "Blue" }, { "ControlledBy": "You" }] },
+                        "op": "Ge",
+                        "right": 1
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

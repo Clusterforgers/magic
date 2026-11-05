@@ -1,16 +1,52 @@
 {
   "oracle_id": "dec4cf13-8ac9-4eda-adae-f851b01180fe",
   "name": "Garruk's Lost Wolf // Hey, Has Anyone Seen Garruk?",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Garruk's Lost Wolf",
       "oracle_fingerprint": "f645dbe282888380a11df46da3bef99b",
       "abilities": [
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 0, "end": 180 }
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }, "Other"] } }
+            ],
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Huntsman",
+                      "types": ["Enchantment"],
+                      "subtypes": ["Aura", "Role"],
+                      "abilities": [
+                        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+                        {
+                          "Static": {
+                            "affected": "Attached",
+                            "mods": [
+                              { "ModifyPT": { "power": 1, "toughness": 1 } },
+                              {
+                                "GrantAbility": {
+                                  "Activated": {
+                                    "cost": ["Tap"],
+                                    "effects": [{ "AddMana": { "mana": { "Fixed": ["Green"] } } }]
+                                  }
+                                }
+                              }
+                            ]
+                          }
+                        }
+                      ]
+                    }
+                  },
+                  "as": "token"
+                }
+              },
+              { "Attach": { "what": { "Bound": "token" }, "to": { "Target": 0 } } }
+            ]
           }
         }
       ]

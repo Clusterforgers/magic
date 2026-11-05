@@ -1,0 +1,34 @@
+{
+  "oracle_id": "858265c2-6415-4938-a6ec-734d53046100",
+  "name": "Glorious Gale",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Glorious Gale",
+      "oracle_fingerprint": "96acb9a4a10848df480b16808661d880",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": ["Spell", { "Type": "Creature" }] } }],
+            "effects": [
+              { "Counter": { "what": { "Target": 0 } } },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Target": 0 },
+                      "selector": ["Spell", { "Supertype": "Legendary" }],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [{ "RingTempts": {} }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

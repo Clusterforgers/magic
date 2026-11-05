@@ -1,0 +1,43 @@
+{
+  "oracle_id": "17916cf9-1e6c-41bd-96ce-2b050d828838",
+  "name": "Cursed Courtier",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Cursed Courtier",
+      "oracle_fingerprint": "46e5308c53f8b700ab2883cbfa38f1c4",
+      "abilities": [
+        { "Keyword": "Lifelink" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Cursed",
+                      "types": ["Enchantment"],
+                      "subtypes": ["Aura", "Role"],
+                      "abilities": [
+                        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+                        {
+                          "Static": {
+                            "affected": "Attached",
+                            "mods": [{ "SetPT": { "power": 1, "toughness": 1 } }]
+                          }
+                        }
+                      ]
+                    }
+                  },
+                  "as": "token"
+                }
+              },
+              { "Attach": { "what": { "Bound": "token" }, "to": "This" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

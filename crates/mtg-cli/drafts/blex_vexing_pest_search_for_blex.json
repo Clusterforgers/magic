@@ -1,7 +1,7 @@
 {
   "oracle_id": "b2c53124-e422-4786-8135-67c350d71a36",
   "name": "Blex, Vexing Pest // Search for Blex",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Blex, Vexing Pest",
@@ -40,9 +40,44 @@
       "oracle_fingerprint": "c767723d5327cbda9c4c227aabab178e",
       "abilities": [
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 0, "end": 186 }
+          "Spell": {
+            "effects": [
+              { "LookAtTop": { "count": 5, "as": "top" } },
+              {
+                "Choose": {
+                  "from": { "Bound": "top" },
+                  "count": { "min": 0, "max": null },
+                  "as": "kept2",
+                  "rest_as": "rest3"
+                }
+              },
+              { "Move": { "what": { "Bound": "kept2" }, "to": "Hand" } },
+              { "Move": { "what": { "Bound": "rest3" }, "to": "Graveyard" } },
+              {
+                "LoseLife": {
+                  "amount": {
+                    "Times": {
+                      "by": 3,
+                      "of": {
+                        "Count": [
+                          { "Is": { "Bound": "kept2" } },
+                          {
+                            "AnyOf": [
+                              { "In": "Battlefield" },
+                              { "In": "Hand" },
+                              { "In": "Library" },
+                              { "In": "Graveyard" },
+                              { "In": "Exile" },
+                              { "In": "Stack" }
+                            ]
+                          }
+                        ]
+                      }
+                    }
+                  }
+                }
+              }
+            ]
           }
         }
       ]

@@ -1,0 +1,54 @@
+{
+  "oracle_id": "5ff9d055-c7e4-4015-8403-9801516a2605",
+  "name": "Steady Tortoise // Harried Dash",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Steady Tortoise",
+      "oracle_fingerprint": "ab718f652e0f809462a5b7e0b3ddadac",
+      "abilities": [
+        { "Keyword": { "Ward": "{2}" } },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 9, "end": 128 }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Harried Dash",
+      "oracle_fingerprint": "8b6fbd64b67b07815246e39bba58a61b",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Rabbit",
+                      "colors": ["White"],
+                      "types": ["Creature"],
+                      "subtypes": ["Rabbit"],
+                      "power": 1,
+                      "toughness": 1
+                    }
+                  },
+                  "as": "token"
+                }
+              },
+              {
+                "Continuous": {
+                  "affected": { "Bound": "token" },
+                  "mods": [{ "AddKeyword": "Haste" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

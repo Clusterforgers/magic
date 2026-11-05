@@ -1,0 +1,44 @@
+{
+  "oracle_id": "525d1562-4fb6-4df3-ab6d-ab6a94c866e0",
+  "name": "Wretched Camel",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Wretched Camel",
+      "oracle_fingerprint": "030d22a26ba24a931060638e953bc0fd",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } },
+            "if": {
+              "Any": [
+                {
+                  "Compare": {
+                    "left": { "Count": [{ "Subtype": "Desert" }, { "ControlledBy": "You" }] },
+                    "op": "Ge",
+                    "right": 1
+                  }
+                },
+                {
+                  "Compare": {
+                    "left": {
+                      "Count": [
+                        { "Subtype": "Desert" },
+                        { "In": "Graveyard" },
+                        { "OwnedBy": "You" }
+                      ]
+                    },
+                    "op": "Ge",
+                    "right": 1
+                  }
+                }
+              ]
+            },
+            "targets": [{ "what": "Player" }],
+            "effects": [{ "Discard": { "who": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

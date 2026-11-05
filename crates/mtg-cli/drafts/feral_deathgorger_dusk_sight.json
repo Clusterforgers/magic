@@ -1,7 +1,7 @@
 {
   "oracle_id": "1722f814-2d4e-4d59-9b74-10ef8e89def9",
   "name": "Feral Deathgorger // Dusk Sight",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Feral Deathgorger",
@@ -10,9 +10,20 @@
         { "Keyword": "Flying" },
         { "Keyword": "Deathtouch" },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 19, "end": 99 }
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              {
+                "what": {
+                  "Together": {
+                    "what": { "Object": [{ "In": "Graveyard" }] },
+                    "rule": "SameController"
+                  }
+                },
+                "bounds": { "min": 0, "max": 2 }
+              }
+            ],
+            "effects": [{ "Exile": { "what": { "Target": 0 } } }]
           }
         }
       ]

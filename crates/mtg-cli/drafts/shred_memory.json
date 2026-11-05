@@ -1,0 +1,30 @@
+{
+  "oracle_id": "16cae855-d93a-445d-9cac-dbc5a7c18cb1",
+  "name": "Shred Memory",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Shred Memory",
+      "oracle_fingerprint": "126357cd193abca727ed26a9c9c6f747",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Together": {
+                    "what": { "Object": [{ "In": "Graveyard" }] },
+                    "rule": "SameController"
+                  }
+                },
+                "bounds": { "min": 0, "max": 4 }
+              }
+            ],
+            "effects": [{ "Exile": { "what": { "Target": 0 } } }]
+          }
+        },
+        { "Keyword": { "Transmute": "{1}{B}{B}" } }
+      ]
+    }
+  ]
+}

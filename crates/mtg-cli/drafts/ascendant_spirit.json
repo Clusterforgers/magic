@@ -1,0 +1,126 @@
+{
+  "oracle_id": "784c039d-a9b2-4b22-a937-c8f7b475e96a",
+  "name": "Ascendant Spirit",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ascendant Spirit",
+      "oracle_fingerprint": "59c2aa55d6c164576cdb0ece2311a366",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{S}{S}",
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [
+                    { "SetPT": { "power": 2, "toughness": 3 } },
+                    { "SetCreatureTypes": ["Spirit", "Warrior"] }
+                  ],
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{S}{S}{S}",
+            "effects": [
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "Count": ["This", { "Subtype": "Warrior" }] },
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [{ "PutCounters": { "on": "This", "counter": { "Other": "flying" } } }]
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "Count": ["This", { "Subtype": "Warrior" }] },
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [
+                    {
+                      "Continuous": {
+                        "affected": "This",
+                        "mods": [
+                          { "SetPT": { "power": 4, "toughness": 4 } },
+                          { "SetCreatureTypes": ["Angel", "Spirit", "Warrior"] }
+                        ],
+                        "duration": "Forever"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{S}{S}{S}{S}",
+            "effects": [
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "Count": ["This", { "Subtype": "Angel" }] },
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [{ "PutCounters": { "on": "This", "counter": "+1/+1", "count": 2 } }]
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "Count": ["This", { "Subtype": "Angel" }] },
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [
+                    {
+                      "Continuous": {
+                        "affected": "This",
+                        "mods": [
+                          {
+                            "GrantAbility": {
+                              "Triggered": {
+                                "when": {
+                                  "DealsDamage": {
+                                    "source": ["This"],
+                                    "to": "EachPlayer",
+                                    "combat": true
+                                  }
+                                },
+                                "effects": [{ "Draw": {} }]
+                              }
+                            }
+                          }
+                        ],
+                        "duration": "Forever"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

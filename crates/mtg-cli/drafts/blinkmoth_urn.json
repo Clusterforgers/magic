@@ -1,0 +1,30 @@
+{
+  "oracle_id": "08497e8f-3521-48e4-a1e7-c192b485d891",
+  "name": "Blinkmoth Urn",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Blinkmoth Urn",
+      "oracle_fingerprint": "9d63974549d22fd46be729608e2fd530",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Main1" } },
+            "if": {
+              "CountOf": { "subject": "This", "selector": ["Untapped"], "op": "Ge", "right": 1 }
+            },
+            "effects": [
+              {
+                "AddMana": {
+                  "who": "Triggering",
+                  "mana": { "Fixed": ["Colorless"] },
+                  "times": { "Count": [{ "Type": "Artifact" }, { "ControlledBy": "ActivePlayer" }] }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

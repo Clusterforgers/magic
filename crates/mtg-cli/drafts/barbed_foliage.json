@@ -1,14 +1,25 @@
 {
   "oracle_id": "f9275c99-0616-44b3-a19e-98c683e87ad3",
   "name": "Barbed Foliage",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Barbed Foliage",
       "oracle_fingerprint": "1ba7d6ed0cdf31aa7f88fbfd96fe29a4",
       "abilities": [
         {
-          "Manual": { "reason": "you apply this clause by hand", "span": { "start": 0, "end": 69 } }
+          "Triggered": {
+            "when": { "AttacksPlayer": { "what": [{ "Type": "Creature" }], "at": "You" } },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "Triggering",
+                  "mods": [{ "RemoveKeyword": { "Macro": { "name": "flanking", "amount": 0 } } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
         },
         {
           "Triggered": {

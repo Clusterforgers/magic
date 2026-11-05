@@ -1,0 +1,33 @@
+{
+  "oracle_id": "4543a99d-eefa-470d-976d-11250524ae28",
+  "name": "Evasive Action",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Evasive Action",
+      "oracle_fingerprint": "7cd614bda0d130b130ad4a5011ed9b1d",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": ["Spell"] } }],
+            "effects": [
+              {
+                "Pay": {
+                  "who": { "ControllerOf": { "Target": 0 } },
+                  "cost": "{1}",
+                  "times": {
+                    "Distinct": {
+                      "of": [{ "Type": "Land" }, { "ControlledBy": "You" }],
+                      "stat": "BasicLandTypes"
+                    }
+                  },
+                  "unpaid": [{ "Counter": { "what": { "Target": 0 } } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

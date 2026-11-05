@@ -1,0 +1,28 @@
+{
+  "oracle_id": "28e1a613-30ad-4013-be0b-b0365f627201",
+  "name": "Excise",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Excise",
+      "oracle_fingerprint": "a86419f05261176774216e61d10c5c3a",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }, "Attacking"] } }],
+            "effects": [
+              {
+                "Pay": {
+                  "who": { "ControllerOf": { "Target": 0 } },
+                  "cost": "{1}",
+                  "times": "X",
+                  "unpaid": [{ "Exile": { "what": { "Target": 0 } } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

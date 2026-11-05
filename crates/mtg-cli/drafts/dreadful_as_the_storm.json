@@ -1,0 +1,28 @@
+{
+  "oracle_id": "bd9f4f20-cdef-4a20-b4cb-4f25c137a786",
+  "name": "Dreadful as the Storm",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dreadful as the Storm",
+      "oracle_fingerprint": "8c1ec2416972d11979f8fa95ce336528",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "SetPT": { "power": 5, "toughness": 5 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              { "RingTempts": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,37 @@
+{
+  "oracle_id": "133109c3-a2ca-4231-b3b1-baa700800b07",
+  "name": "Primordial Ooze",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Primordial Ooze",
+      "oracle_fingerprint": "f17e827a63ff469a76ca26e16718a06f",
+      "abilities": [
+        { "Rule": { "rule": { "MustAttack": "This" } } },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [
+              { "PutCounters": { "on": "This", "counter": "+1/+1" } },
+              {
+                "Pay": {
+                  "cost": "{1}",
+                  "times": { "Counters": { "on": "This", "counter": "+1/+1" } },
+                  "unpaid": [
+                    { "Tap": { "what": "This" } },
+                    {
+                      "DealDamage": {
+                        "to": "You",
+                        "amount": { "Counters": { "on": "This", "counter": "+1/+1" } }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

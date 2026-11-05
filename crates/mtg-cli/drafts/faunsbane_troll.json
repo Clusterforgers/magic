@@ -1,0 +1,51 @@
+{
+  "oracle_id": "b707c131-de13-4d4d-839d-b9f47d62f090",
+  "name": "Faunsbane Troll",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Faunsbane Troll",
+      "oracle_fingerprint": "8a90201f7629649664d2182547cef5cd",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Monster",
+                      "types": ["Enchantment"],
+                      "subtypes": ["Aura", "Role"],
+                      "abilities": [
+                        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+                        {
+                          "Static": {
+                            "affected": "Attached",
+                            "mods": [
+                              { "ModifyPT": { "power": 1, "toughness": 1 } },
+                              { "AddKeyword": "Trample" }
+                            ]
+                          }
+                        }
+                      ]
+                    }
+                  },
+                  "as": "token"
+                }
+              },
+              { "Attach": { "what": { "Bound": "token" }, "to": "This" } }
+            ]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 120, "end": 309 }
+          }
+        }
+      ]
+    }
+  ]
+}

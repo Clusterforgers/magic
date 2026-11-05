@@ -1,0 +1,31 @@
+{
+  "oracle_id": "55cbc0e8-eeec-433a-b70c-3501238b658b",
+  "name": "Burning Palm Efreet",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Burning Palm Efreet",
+      "oracle_fingerprint": "b892a4a82e169ed46464018e7ae7f922",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{1}{R}{R}",
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "HasKeyword": "Flying" }] } }
+            ],
+            "effects": [
+              { "DealDamage": { "to": { "Target": 0 }, "amount": 2 } },
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "RemoveKeyword": "Flying" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

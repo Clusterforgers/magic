@@ -1,0 +1,160 @@
+{
+  "object": "card",
+  "id": "1b1e790e-ff82-4888-8aee-9986c646241a",
+  "oracle_id": "cf0492de-cec5-4455-839f-212246b7e9ea",
+  "multiverse_ids": [
+    616915
+  ],
+  "mtgo_id": 112080,
+  "arena_id": 84777,
+  "tcgplayer_id": 498524,
+  "cardmarket_id": 716000,
+  "name": "Gollum's Bite",
+  "lang": "en",
+  "released_at": "2023-06-23",
+  "uri": "https://api.scryfall.com/cards/1b1e790e-ff82-4888-8aee-9986c646241a",
+  "scryfall_uri": "https://scryfall.com/card/ltr/85/gollums-bite?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T04:18:24Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/1/b/1b1e790e-ff82-4888-8aee-9986c646241a.jpg?1783916304",
+    "normal": "https://cards.scryfall.io/normal/front/1/b/1b1e790e-ff82-4888-8aee-9986c646241a.jpg?1783916304",
+    "large": "https://cards.scryfall.io/large/front/1/b/1b1e790e-ff82-4888-8aee-9986c646241a.jpg?1783916304",
+    "png": "https://cards.scryfall.io/png/front/1/b/1b1e790e-ff82-4888-8aee-9986c646241a.png?1783916304",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/1/b/1b1e790e-ff82-4888-8aee-9986c646241a.jpg?1783916304",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/1/b/1b1e790e-ff82-4888-8aee-9986c646241a.jpg?1783916304",
+    "thumb": "https://cards.scryfall.io/thumb/front/1/b/1b1e790e-ff82-4888-8aee-9986c646241a.webp?1783916304",
+    "grid": "https://cards.scryfall.io/grid/front/1/b/1b1e790e-ff82-4888-8aee-9986c646241a.webp?1783916304",
+    "display": "https://cards.scryfall.io/display/front/1/b/1b1e790e-ff82-4888-8aee-9986c646241a.webp?1783916304",
+    "art": "https://cards.scryfall.io/art/front/1/b/1b1e790e-ff82-4888-8aee-9986c646241a.webp?1783916304",
+    "crop": "https://cards.scryfall.io/crop/front/1/b/1b1e790e-ff82-4888-8aee-9986c646241a.webp?1783916304",
+    "jpeg": "https://cards.scryfall.io/normal/front/1/b/1b1e790e-ff82-4888-8aee-9986c646241a.jpg?1783916304"
+  },
+  "mana_cost": "{B}",
+  "cmc": 1.0,
+  "type_line": "Instant",
+  "oracle_text": "Target creature gets -2/-2 until end of turn.\n{3}{B}, Exile this card from your graveyard: The Ring tempts you. Activate only as a sorcery.",
+  "colors": [
+    "B"
+  ],
+  "color_identity": [
+    "B"
+  ],
+  "keywords": [],
+  "all_parts": [
+    {
+      "object": "related_card",
+      "id": "7215460e-8c06-47d0-94e5-d1832d0218af",
+      "component": "combo_piece",
+      "name": "The Ring // The Ring Tempts You",
+      "type_line": "Emblem // Card",
+      "uri": "https://api.scryfall.com/cards/7215460e-8c06-47d0-94e5-d1832d0218af"
+    },
+    {
+      "object": "related_card",
+      "id": "65131fa4-b7cd-4ac3-8b43-d3428aefddc6",
+      "component": "combo_piece",
+      "name": "Gollum's Bite",
+      "type_line": "Instant",
+      "uri": "https://api.scryfall.com/cards/65131fa4-b7cd-4ac3-8b43-d3428aefddc6"
+    }
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "not_legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo",
+    "arena"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "08078706-ac5d-439b-8f01-894d38751367",
+  "set": "ltr",
+  "set_name": "The Lord of the Rings: Tales of Middle-earth",
+  "set_type": "draft_innovation",
+  "set_uri": "https://api.scryfall.com/sets/08078706-ac5d-439b-8f01-894d38751367",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Altr&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/ltr?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/1b1e790e-ff82-4888-8aee-9986c646241a/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Acf0492de-cec5-4455-839f-212246b7e9ea&unique=prints",
+  "collector_number": "85",
+  "digital": false,
+  "rarity": "uncommon",
+  "flavor_text": "\"It was Pity that stayed Bilbo's hand. Do not be too eager to deal out death in judgment; Gollum has some part to play yet, before the end.\"\n—Gandalf, to Frodo",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Anton Solovianchyk",
+  "artist_ids": [
+    "8e962ba2-380a-4e6f-84d9-4198549b11ce"
+  ],
+  "illustration_id": "c013c527-dbb5-467c-ae28-46f50e02a18c",
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "triangle",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "promo_types": [
+    "universesbeyond"
+  ],
+  "edhrec_rank": 11239,
+  "preview": {
+    "source": "PubStomp",
+    "source_uri": "https://www.youtube.com/watch?v=Nd9TnWkhnuQ",
+    "previewed_at": "2023-05-31"
+  },
+  "prices": {
+    "usd": "0.20",
+    "usd_foil": "0.27",
+    "usd_etched": null,
+    "eur": "0.09",
+    "eur_foil": "0.25",
+    "tix": "0.03"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=616915&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DGollum%2527s%2BBite",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DGollum%2527s%2BBite",
+    "edhrec": "https://edhrec.com/route/?cc=Gollum%27s+Bite"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F498524%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=716000&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/112080?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

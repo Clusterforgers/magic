@@ -1,0 +1,55 @@
+{
+  "oracle_id": "6b974499-bf1c-4e5b-a72c-c72220f4e591",
+  "name": "Sméagol, Helpful Guide",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sméagol, Helpful Guide",
+      "oracle_fingerprint": "94e0a7e75f4b260044025c2696a9fafc",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "if": {
+              "Compare": {
+                "left": {
+                  "Tally": {
+                    "event": "Died",
+                    "who": "EachPlayer",
+                    "filter": [{ "Type": "Creature" }, { "ControlledBy": "You" }]
+                  }
+                },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "effects": [{ "RingTempts": {} }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "RingTempts": { "who": "You" } },
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              {
+                "RevealUntil": {
+                  "who": { "Target": 0 },
+                  "filter": [{ "Type": "Land" }],
+                  "as": "found",
+                  "revealed_as": "revealed2"
+                }
+              },
+              {
+                "Move": {
+                  "what": { "Bound": "found" },
+                  "to": { "Battlefield": { "tapped": true, "under": "You" } }
+                }
+              },
+              { "Move": { "what": { "Bound": "revealed2" }, "to": "Graveyard" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

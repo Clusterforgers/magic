@@ -1,0 +1,39 @@
+{
+  "oracle_id": "91740570-1a97-4513-8af9-b32c363daf15",
+  "name": "Pillage the Bog",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Pillage the Bog",
+      "oracle_fingerprint": "b30766fc0cd463932869bb2ba9cea22f",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "LookAtTop": {
+                  "count": {
+                    "Times": {
+                      "by": 2,
+                      "of": { "Count": [{ "Type": "Land" }, { "ControlledBy": "You" }] }
+                    }
+                  },
+                  "as": "top"
+                }
+              },
+              { "Choose": { "from": { "Bound": "top" }, "as": "kept2", "rest_as": "rest3" } },
+              { "Move": { "what": { "Bound": "kept2" }, "to": "Hand" } },
+              {
+                "Move": {
+                  "what": { "Bound": "rest3" },
+                  "to": { "Library": { "place": "Bottom", "order": "Random" } }
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Plot": "{1}{B}{G}" } }
+      ]
+    }
+  ]
+}

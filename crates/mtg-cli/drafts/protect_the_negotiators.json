@@ -1,0 +1,50 @@
+{
+  "oracle_id": "7ccd666a-0d56-4fe3-b16b-d035bf2ad420",
+  "name": "Protect the Negotiators",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Protect the Negotiators",
+      "oracle_fingerprint": "c72d24164cf962258349eaf538fe50ca",
+      "abilities": [
+        { "Keyword": { "Kicker": "{W}" } },
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": ["Spell"] } }],
+            "effects": [
+              {
+                "If": {
+                  "condition": "Kicked",
+                  "then": [
+                    {
+                      "CreateToken": {
+                        "token": {
+                          "Custom": {
+                            "name": "Soldier",
+                            "colors": ["White"],
+                            "types": ["Creature"],
+                            "subtypes": ["Soldier"],
+                            "power": 1,
+                            "toughness": 1
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "Pay": {
+                  "who": { "ControllerOf": { "Target": 0 } },
+                  "cost": "{1}",
+                  "times": { "Count": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                  "unpaid": [{ "Counter": { "what": { "Target": 0 } } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

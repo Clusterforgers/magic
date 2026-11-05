@@ -1,0 +1,28 @@
+{
+  "oracle_id": "b0394cf2-12a0-4d4f-87e0-fe8937e6faff",
+  "name": "Well of Lost Dreams",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Well of Lost Dreams",
+      "oracle_fingerprint": "fedb32aa1a240d7239a1ab52b78d94f6",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "LifeGained": { "who": "You" } },
+            "effects": [
+              { "ChooseValue": { "kind": { "Number": [0, "Triggering"] }, "as": "number" } },
+              {
+                "Pay": {
+                  "cost": "{1}",
+                  "times": { "ChosenAs": "number" },
+                  "paid": [{ "Draw": { "count": { "ChosenAs": "number" } } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

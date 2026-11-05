@@ -24,7 +24,13 @@
                   "as": "kept2"
                 }
               },
-              { "Move": { "what": { "Bound": "kept2" }, "to": { "Library": { "place": "Top" } } } },
+              {
+                "Move": {
+                  "what": { "Bound": "kept2" },
+                  "to": { "Library": { "place": "Top" } },
+                  "as": "kept2_moved"
+                }
+              },
               {
                 "Move": {
                   "what": { "Bound": "top" },
@@ -35,7 +41,7 @@
                 "If": {
                   "condition": {
                     "CountOf": {
-                      "subject": { "Bound": "kept2" },
+                      "subject": { "Bound": "kept2_moved" },
                       "selector": [
                         { "Type": "Creature" },
                         { "Compare": { "stat": "ManaValue", "op": "Gt", "to": 3 } }
@@ -53,7 +59,7 @@
                 "If": {
                   "condition": {
                     "CountOf": {
-                      "subject": { "Bound": "kept2" },
+                      "subject": { "Bound": "kept2_moved" },
                       "selector": [
                         { "Type": "Creature" },
                         { "Compare": { "stat": "ManaValue", "op": "Le", "to": 3 } }

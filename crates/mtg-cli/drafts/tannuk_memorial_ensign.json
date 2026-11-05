@@ -1,0 +1,32 @@
+{
+  "oracle_id": "76cb1912-3791-44b8-b594-b92dab21bafc",
+  "name": "Tannuk, Memorial Ensign",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Tannuk, Memorial Ensign",
+      "oracle_fingerprint": "79f1ac19570e9717085776abf2db4f7f",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Land" }, { "ControlledBy": "You" }],
+                "to": "Battlefield"
+              }
+            },
+            "effects": [
+              { "DealDamage": { "to": "Opponents", "amount": 1 } },
+              {
+                "If": {
+                  "condition": { "Compare": { "left": "ResolvedThisTurn", "op": "Eq", "right": 2 } },
+                  "then": [{ "Draw": {} }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

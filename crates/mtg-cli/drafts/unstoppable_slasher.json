@@ -1,0 +1,48 @@
+{
+  "oracle_id": "6662968e-ca9e-454c-be44-24ad10e43d3e",
+  "name": "Unstoppable Slasher",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Unstoppable Slasher",
+      "oracle_fingerprint": "7c3cf2c7cd3f1acf92dba2d0c9af22f7",
+      "abilities": [
+        { "Keyword": "Deathtouch" },
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": ["This"], "to": "EachPlayer", "combat": true } },
+            "effects": [
+              {
+                "LoseLife": {
+                  "who": "Triggering",
+                  "amount": { "Half": { "of": { "Life": "Triggering" }, "up": true } }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": ["This", { "Not": "HasAnyCounter" }],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "effects": [
+              {
+                "Move": {
+                  "what": "Triggering",
+                  "to": {
+                    "Battlefield": { "tapped": true, "counters": [[{ "Other": "stun" }, 2]] }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,47 @@
+{
+  "oracle_id": "bfa20bc7-4626-4a52-87f4-6e2763cb8ed5",
+  "name": "Archway of Innovation",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Archway of Innovation",
+      "oracle_fingerprint": "7ad475ec7a419d53650e8c1126b37223",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": "Tapped",
+            "condition": {
+              "Not": {
+                "Compare": {
+                  "left": { "Count": [{ "Subtype": "Island" }, { "ControlledBy": "You" }] },
+                  "op": "Ge",
+                  "right": 1
+                }
+              }
+            }
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Blue"] } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{U}" }, "Tap"],
+            "effects": [
+              {
+                "Rule": {
+                  "rule": { "NextSpell": { "benefit": { "Keyword": "Improvise" } } },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

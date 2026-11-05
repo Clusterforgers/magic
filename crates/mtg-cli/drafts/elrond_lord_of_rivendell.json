@@ -1,0 +1,47 @@
+{
+  "oracle_id": "099ae8f2-5c84-43ab-aaa1-ea69f2bba784",
+  "name": "Elrond, Lord of Rivendell",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Elrond, Lord of Rivendell",
+      "oracle_fingerprint": "49ee24a4b5ec9744743c6dca1a460304",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [
+                  {
+                    "AnyOf": [
+                      "This",
+                      {
+                        "Not": {
+                          "AnyOf": [
+                            { "Not": { "Type": "Creature" } },
+                            { "Not": { "ControlledBy": "You" } },
+                            { "Not": "Other" }
+                          ]
+                        }
+                      }
+                    ]
+                  }
+                ],
+                "to": "Battlefield"
+              }
+            },
+            "effects": [
+              { "Scry": {} },
+              {
+                "If": {
+                  "condition": { "Compare": { "left": "ResolvedThisTurn", "op": "Eq", "right": 2 } },
+                  "then": [{ "RingTempts": {} }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,33 @@
+{
+  "oracle_id": "4a3fba0c-50b1-4139-834e-c8fc8e1315bb",
+  "name": "Broken Ambitions",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Broken Ambitions",
+      "oracle_fingerprint": "eceff00e12300b21d6535bb5eea0c15d",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": ["Spell"] } }],
+            "effects": [
+              {
+                "Pay": {
+                  "who": { "ControllerOf": { "Target": 0 } },
+                  "cost": "{1}",
+                  "times": "X",
+                  "unpaid": [{ "Counter": { "what": { "Target": 0 } } }]
+                }
+              },
+              {
+                "Clash": {
+                  "win": [{ "Mill": { "who": { "ControllerOf": { "Target": 0 } }, "count": 4 } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

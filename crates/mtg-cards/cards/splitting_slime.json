@@ -1,0 +1,20 @@
+{
+  "oracle_id": "c2153f2b-4a9f-40b6-8862-0e4143686c8c",
+  "name": "Splitting Slime",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Splitting Slime",
+      "oracle_fingerprint": "2be5276e026d37481aa94854c500b8b7",
+      "abilities": [
+        { "Activated": { "cost": "{4}{G}{G}", "effects": [{ "Monstrosity": { "count": 3 } }] } },
+        {
+          "Triggered": {
+            "when": { "BecomesMonstrous": { "what": ["This"] } },
+            "effects": [{ "CreateToken": { "token": { "CopyOf": { "of": "This" } } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

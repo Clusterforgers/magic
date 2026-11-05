@@ -1,0 +1,43 @@
+{
+  "oracle_id": "2eac0c6a-b289-4b75-9571-59869e62d180",
+  "name": "Solitary Camel",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Solitary Camel",
+      "oracle_fingerprint": "3415ce5e9bfe12138e6e14f1b295679b",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "AddKeyword": "Lifelink" }],
+            "condition": {
+              "Any": [
+                {
+                  "Compare": {
+                    "left": { "Count": [{ "Subtype": "Desert" }, { "ControlledBy": "You" }] },
+                    "op": "Ge",
+                    "right": 1
+                  }
+                },
+                {
+                  "Compare": {
+                    "left": {
+                      "Count": [
+                        { "Subtype": "Desert" },
+                        { "OwnedBy": "You" },
+                        { "In": "Graveyard" }
+                      ]
+                    },
+                    "op": "Ge",
+                    "right": 1
+                  }
+                }
+              ]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

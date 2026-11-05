@@ -1,0 +1,40 @@
+{
+  "oracle_id": "d02befcb-3e2c-4cfe-a913-9bb648e5bb2c",
+  "name": "Aquitect's Will",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Aquitect's Will",
+      "oracle_fingerprint": "2d166b8a156878c70e72b7584ca98a60",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Land" }] } }],
+            "effects": [
+              { "PutCounters": { "on": { "Target": 0 }, "counter": { "Other": "flood" } } },
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "AddSubtype": "Island" }],
+                  "duration": { "WhileHasCounter": { "Other": "flood" } }
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "Count": [{ "Subtype": "Merfolk" }, { "ControlledBy": "You" }] },
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [{ "Draw": {} }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

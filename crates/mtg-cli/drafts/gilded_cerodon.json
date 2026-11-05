@@ -1,0 +1,52 @@
+{
+  "oracle_id": "93dd5f2e-aa13-4616-bfe6-466524b274ff",
+  "name": "Gilded Cerodon",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Gilded Cerodon",
+      "oracle_fingerprint": "1a06984ec0efa50ef649db343b8389c7",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "if": {
+              "Any": [
+                {
+                  "Compare": {
+                    "left": { "Count": [{ "Subtype": "Desert" }, { "ControlledBy": "You" }] },
+                    "op": "Ge",
+                    "right": 1
+                  }
+                },
+                {
+                  "Compare": {
+                    "left": {
+                      "Count": [
+                        { "Subtype": "Desert" },
+                        { "In": "Graveyard" },
+                        { "OwnedBy": "You" }
+                      ]
+                    },
+                    "op": "Ge",
+                    "right": 1
+                  }
+                }
+              ]
+            },
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": ["CantBlock"],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

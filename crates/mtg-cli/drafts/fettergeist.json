@@ -1,0 +1,28 @@
+{
+  "oracle_id": "7ed73cff-137c-4ad1-b11d-c62aa746655e",
+  "name": "Fettergeist",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Fettergeist",
+      "oracle_fingerprint": "9293162880baf0e5cc2aa2cff97b9bad",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": "{1}",
+                  "times": { "Count": [{ "Type": "Creature" }, "Other", { "ControlledBy": "You" }] },
+                  "unpaid": [{ "Sacrifice": { "filter": ["This"] } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,51 @@
+{
+  "oracle_id": "4bcc54d1-8ab6-4ad3-91b6-97fb02b88cc0",
+  "name": "Die Young",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Die Young",
+      "oracle_fingerprint": "a2830777bd208f02c9c5df8ae98aa058",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              { "PutCounters": { "on": "You", "counter": { "Other": "energy" }, "count": 2 } },
+              {
+                "ChooseValue": {
+                  "kind": {
+                    "Number": [0, { "Counters": { "on": "You", "counter": { "Other": "energy" } } }]
+                  },
+                  "as": "number"
+                }
+              },
+              {
+                "Pay": {
+                  "cost": [{ "PayEnergy": 1 }],
+                  "times": { "ChosenAs": "number" },
+                  "paid": [
+                    {
+                      "Continuous": {
+                        "affected": { "Target": 0 },
+                        "mods": [
+                          {
+                            "ModifyPT": {
+                              "power": { "Times": { "by": -1, "of": { "ChosenAs": "number" } } },
+                              "toughness": { "Times": { "by": -1, "of": { "ChosenAs": "number" } } }
+                            }
+                          }
+                        ],
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

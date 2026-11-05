@@ -1,0 +1,40 @@
+{
+  "oracle_id": "262e1cf6-61c8-444d-a71b-050eebcaf932",
+  "name": "Lurking Green Dragon",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Lurking Green Dragon",
+      "oracle_fingerprint": "b672fc0ee7b952a81bbeab03fe92a758",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Rule": {
+            "rule": {
+              "Cant": {
+                "who": "This",
+                "action": {
+                  "Attack": {
+                    "unless": {
+                      "Compare": {
+                        "left": {
+                          "Count": [
+                            { "Type": "Creature" },
+                            { "HasKeyword": "Flying" },
+                            { "ControlledBy": "You" }
+                          ]
+                        },
+                        "op": "Ge",
+                        "right": 1
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

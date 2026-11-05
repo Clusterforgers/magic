@@ -1,0 +1,132 @@
+{
+  "object": "card",
+  "id": "e21aa266-4264-4e02-9403-02930e641573",
+  "oracle_id": "40ab2b22-9cf6-4a73-a05f-6ce496d10bf7",
+  "multiverse_ids": [
+    446024
+  ],
+  "mtgo_id": 68840,
+  "tcgplayer_id": 167814,
+  "cardmarket_id": 358644,
+  "name": "Bonus Round",
+  "lang": "en",
+  "released_at": "2018-06-08",
+  "uri": "https://api.scryfall.com/cards/e21aa266-4264-4e02-9403-02930e641573",
+  "scryfall_uri": "https://scryfall.com/card/bbd/56/bonus-round?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T09:27:39Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/e/2/e21aa266-4264-4e02-9403-02930e641573.jpg?1783934859",
+    "normal": "https://cards.scryfall.io/normal/front/e/2/e21aa266-4264-4e02-9403-02930e641573.jpg?1783934859",
+    "large": "https://cards.scryfall.io/large/front/e/2/e21aa266-4264-4e02-9403-02930e641573.jpg?1783934859",
+    "png": "https://cards.scryfall.io/png/front/e/2/e21aa266-4264-4e02-9403-02930e641573.png?1783934859",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/e/2/e21aa266-4264-4e02-9403-02930e641573.jpg?1783934859",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/e/2/e21aa266-4264-4e02-9403-02930e641573.jpg?1783934859",
+    "thumb": "https://cards.scryfall.io/thumb/front/e/2/e21aa266-4264-4e02-9403-02930e641573.webp?1783934859",
+    "grid": "https://cards.scryfall.io/grid/front/e/2/e21aa266-4264-4e02-9403-02930e641573.webp?1783934859",
+    "display": "https://cards.scryfall.io/display/front/e/2/e21aa266-4264-4e02-9403-02930e641573.webp?1783934859",
+    "art": "https://cards.scryfall.io/art/front/e/2/e21aa266-4264-4e02-9403-02930e641573.webp?1783934859",
+    "crop": "https://cards.scryfall.io/crop/front/e/2/e21aa266-4264-4e02-9403-02930e641573.webp?1783934859",
+    "jpeg": "https://cards.scryfall.io/normal/front/e/2/e21aa266-4264-4e02-9403-02930e641573.jpg?1783934859"
+  },
+  "mana_cost": "{1}{R}{R}",
+  "cmc": 3.0,
+  "type_line": "Sorcery",
+  "oracle_text": "Until end of turn, whenever a player casts an instant or sorcery spell, that player copies it and may choose new targets for the copy.",
+  "colors": [
+    "R"
+  ],
+  "color_identity": [
+    "R"
+  ],
+  "keywords": [],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "95f97fbc-58ef-4645-982e-43e2db6f1124",
+  "set": "bbd",
+  "set_name": "Battlebond",
+  "set_type": "draft_innovation",
+  "set_uri": "https://api.scryfall.com/sets/95f97fbc-58ef-4645-982e-43e2db6f1124",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Abbd&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/bbd?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/e21aa266-4264-4e02-9403-02930e641573/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A40ab2b22-9cf6-4a73-a05f-6ce496d10bf7&unique=prints",
+  "collector_number": "56",
+  "digital": false,
+  "rarity": "rare",
+  "flavor_text": "When the twin-spell bonus round begins, the crowd rises to its feet in anticipation of incredible combinations.",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Lake Hurwitz",
+  "artist_ids": [
+    "3677c64b-55e6-4a0d-a952-bdbb05531220"
+  ],
+  "illustration_id": "11d4f04d-044d-4672-b832-e3d3ce50082f",
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 4789,
+  "prices": {
+    "usd": "5.74",
+    "usd_foil": "47.79",
+    "usd_etched": null,
+    "eur": "4.50",
+    "eur_foil": "21.95",
+    "tix": "1.28"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=446024&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DBonus%2BRound",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DBonus%2BRound",
+    "edhrec": "https://edhrec.com/route/?cc=Bonus+Round"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F167814%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=358644&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/68840?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

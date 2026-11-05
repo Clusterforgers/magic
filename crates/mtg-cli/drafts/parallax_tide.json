@@ -1,0 +1,34 @@
+{
+  "oracle_id": "e36a92be-537d-4a63-858a-afaab064fbf7",
+  "name": "Parallax Tide",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Parallax Tide",
+      "oracle_fingerprint": "4db11745a44f27857a4d81f8677d2e14",
+      "abilities": [
+        { "Keyword": { "Fading": 5 } },
+        {
+          "Activated": {
+            "cost": [{ "RemoveCounters": { "counter": { "Other": "fade" } } }],
+            "targets": [{ "what": { "Object": [{ "Type": "Land" }] } }],
+            "effects": [{ "Exile": { "what": { "Target": 0 } } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield" } },
+            "effects": [
+              {
+                "Move": {
+                  "what": { "Each": [{ "ExiledWith": "This" }, { "In": "Exile" }] },
+                  "to": { "Battlefield": {} }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

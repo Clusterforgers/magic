@@ -1,0 +1,43 @@
+{
+  "oracle_id": "a3f9126f-5797-4436-ac5c-c6911d22ffc2",
+  "name": "Time Reaper",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Time Reaper",
+      "oracle_fingerprint": "30e1d08eaf88131fa0674f603c86b4c5",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": "Haste" },
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": ["This"], "to": "EachPlayer", "combat": true } },
+            "targets": [{ "what": { "Object": [{ "Not": "FaceDown" }, { "In": "Exile" }] } }],
+            "effects": [
+              {
+                "Move": {
+                  "what": { "Target": 0 },
+                  "to": { "Library": { "place": "Bottom" } },
+                  "as": "moved"
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Bound": "moved" },
+                      "selector": [],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [{ "GainLife": { "amount": 3 } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

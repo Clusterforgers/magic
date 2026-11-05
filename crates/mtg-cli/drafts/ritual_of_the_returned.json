@@ -1,0 +1,68 @@
+{
+  "oracle_id": "c74e7441-7563-4954-a1d3-3c0463294455",
+  "name": "Ritual of the Returned",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ritual of the Returned",
+      "oracle_fingerprint": "acd2b968a24bc570f51eefb9cb56ba4f",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "Type": "Creature" }, { "OwnedBy": "You" }, { "In": "Graveyard" }]
+                }
+              }
+            ],
+            "effects": [
+              { "Exile": { "what": { "Target": 0 }, "as": "exiled" } },
+              {
+                "Let": {
+                  "as": "power2",
+                  "amount": { "Stat": { "of": { "Bound": "exiled" }, "stat": "Power" } }
+                }
+              },
+              {
+                "Let": {
+                  "as": "toughness3",
+                  "amount": { "Stat": { "of": { "Bound": "exiled" }, "stat": "Toughness" } }
+                }
+              },
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Zombie",
+                      "colors": ["Black"],
+                      "types": ["Creature"],
+                      "subtypes": ["Zombie"],
+                      "power": 0,
+                      "toughness": 0
+                    }
+                  },
+                  "as": "token4"
+                }
+              },
+              {
+                "Continuous": {
+                  "affected": { "Bound": "token4" },
+                  "mods": [
+                    {
+                      "SetPT": {
+                        "power": { "Bound": "power2" },
+                        "toughness": { "Bound": "toughness3" }
+                      }
+                    }
+                  ],
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,47 @@
+{
+  "oracle_id": "011da9c5-aa8a-4fa0-b1f2-62b9f3760476",
+  "name": "Belladonna Took",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Belladonna Took",
+      "oracle_fingerprint": "caceda5a5dc37f22ac0339c948dcd472",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": { "what": ["Token", { "ControlledBy": "You" }], "to": "Battlefield" }
+            },
+            "effects": [
+              {
+                "If": {
+                  "condition": { "Compare": { "left": "ResolvedThisTurn", "op": "Eq", "right": 1 } },
+                  "then": [{ "GainLife": { "amount": 1 } }]
+                }
+              },
+              {
+                "If": {
+                  "condition": { "Compare": { "left": "ResolvedThisTurn", "op": "Eq", "right": 2 } },
+                  "then": [{ "Draw": {} }]
+                }
+              },
+              {
+                "If": {
+                  "condition": { "Compare": { "left": "ResolvedThisTurn", "op": "Eq", "right": 3 } },
+                  "then": [
+                    {
+                      "PutCounters": {
+                        "on": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                        "counter": "+1/+1"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

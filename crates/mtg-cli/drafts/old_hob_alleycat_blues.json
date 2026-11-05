@@ -1,0 +1,63 @@
+{
+  "oracle_id": "e88b1520-aa9a-41ee-9036-4d4bebd1a0c0",
+  "name": "Old Hob, Alleycat Blues",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Old Hob, Alleycat Blues",
+      "oracle_fingerprint": "ceef0cd03f7c8f06646168c743df4294",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "BeginCombat", "whose": "You" } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Mutant",
+                      "colors": ["Red"],
+                      "types": ["Creature"],
+                      "subtypes": ["Mutant"],
+                      "power": 2,
+                      "toughness": 2
+                    }
+                  },
+                  "as": "token"
+                }
+              },
+              {
+                "Continuous": {
+                  "affected": { "Bound": "token" },
+                  "mods": [{ "AddKeyword": "Haste" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "End" } },
+                  "effects": [{ "Destroy": { "what": { "Bound": "token" } } }]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{1}{W}",
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }, "Token", "Attacking"] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "AddKeyword": "Indestructible" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,46 @@
+{
+  "oracle_id": "c429716b-bd3a-4060-b8a3-82e3d6aecd88",
+  "name": "Sand Strangler",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sand Strangler",
+      "oracle_fingerprint": "5bf07d4f6553f46bc7a8f7c85f5f5dff",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "if": {
+              "Any": [
+                {
+                  "Compare": {
+                    "left": { "Count": [{ "Subtype": "Desert" }, { "ControlledBy": "You" }] },
+                    "op": "Ge",
+                    "right": 1
+                  }
+                },
+                {
+                  "Compare": {
+                    "left": {
+                      "Count": [
+                        { "Subtype": "Desert" },
+                        { "In": "Graveyard" },
+                        { "OwnedBy": "You" }
+                      ]
+                    },
+                    "op": "Ge",
+                    "right": 1
+                  }
+                }
+              ]
+            },
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              { "May": { "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 3 } }] } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

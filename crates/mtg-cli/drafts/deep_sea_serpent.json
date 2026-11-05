@@ -1,0 +1,33 @@
+{
+  "oracle_id": "7fbb98cc-585c-4184-97f5-9b3d3ebdb1e5",
+  "name": "Deep-Sea Serpent",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Deep-Sea Serpent",
+      "oracle_fingerprint": "f5da8fc9aa0c22c42652a49b14b4b919",
+      "abilities": [
+        {
+          "Rule": {
+            "rule": {
+              "Cant": {
+                "who": "This",
+                "action": {
+                  "Attack": {
+                    "unless": {
+                      "Compare": {
+                        "left": { "Count": [{ "Subtype": "Island" }, { "ControlledBy": "You" }] },
+                        "op": "Ge",
+                        "right": 1
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

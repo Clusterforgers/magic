@@ -1,0 +1,32 @@
+{
+  "oracle_id": "b3126751-27fe-42d3-a001-33ecee72b528",
+  "name": "Nature's Panoply",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Nature's Panoply",
+      "oracle_fingerprint": "ea4973f6c23011677eccab232dba8b07",
+      "abilities": [
+        {
+          "CostModifier": {
+            "applies_to": ["This"],
+            "change": "Increase",
+            "mana": "{2}{G}",
+            "per": { "Sum": [{ "TargetCount": 0 }, -1] }
+          }
+        },
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": { "Object": [{ "Type": "Creature" }] },
+                "bounds": { "min": 0, "max": { "Count": [{ "Type": "Creature" }] } }
+              }
+            ],
+            "effects": [{ "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

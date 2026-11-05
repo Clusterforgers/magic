@@ -1,0 +1,83 @@
+{
+  "oracle_id": "f1da52a4-08a0-4427-a461-a1dc6627b98e",
+  "name": "Soul Separator",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Soul Separator",
+      "oracle_fingerprint": "f5705c77773ba23fcd3fd6a74f47bebb",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{5}" }, "Tap", "SacrificeSelf"],
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "Type": "Creature" }, { "OwnedBy": "You" }, { "In": "Graveyard" }]
+                }
+              }
+            ],
+            "effects": [
+              { "Exile": { "what": { "Target": 0 }, "as": "exiled" } },
+              {
+                "CreateToken": {
+                  "token": {
+                    "CopyOf": {
+                      "of": { "Bound": "exiled" },
+                      "except": [
+                        { "SetPT": { "power": 1, "toughness": 1 } },
+                        { "AddSubtype": "Spirit" },
+                        { "AddKeyword": "Flying" }
+                      ]
+                    }
+                  }
+                }
+              },
+              {
+                "Let": {
+                  "as": "power2",
+                  "amount": { "Stat": { "of": { "Bound": "exiled" }, "stat": "Power" } }
+                }
+              },
+              {
+                "Let": {
+                  "as": "toughness3",
+                  "amount": { "Stat": { "of": { "Bound": "exiled" }, "stat": "Toughness" } }
+                }
+              },
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Zombie",
+                      "colors": ["Black"],
+                      "types": ["Creature"],
+                      "subtypes": ["Zombie"],
+                      "power": 0,
+                      "toughness": 0
+                    }
+                  },
+                  "as": "token4"
+                }
+              },
+              {
+                "Continuous": {
+                  "affected": { "Bound": "token4" },
+                  "mods": [
+                    {
+                      "SetPT": {
+                        "power": { "Bound": "power2" },
+                        "toughness": { "Bound": "toughness3" }
+                      }
+                    }
+                  ],
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

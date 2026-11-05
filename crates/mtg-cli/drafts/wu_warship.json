@@ -1,0 +1,33 @@
+{
+  "oracle_id": "f184e860-05c3-43cf-a625-ab53427406c5",
+  "name": "Wu Warship",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Wu Warship",
+      "oracle_fingerprint": "f5da8fc9aa0c22c42652a49b14b4b919",
+      "abilities": [
+        {
+          "Rule": {
+            "rule": {
+              "Cant": {
+                "who": "This",
+                "action": {
+                  "Attack": {
+                    "unless": {
+                      "Compare": {
+                        "left": { "Count": [{ "Subtype": "Island" }, { "ControlledBy": "You" }] },
+                        "op": "Ge",
+                        "right": 1
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

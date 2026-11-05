@@ -1,0 +1,80 @@
+{
+  "oracle_id": "9f6d6e90-7462-46e5-bf2f-725b4badc394",
+  "name": "Gathering Stone",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Gathering Stone",
+      "oracle_fingerprint": "1593865a21943a1f4a3dc0992f216ff1",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "Choose": "CreatureType" }
+          }
+        },
+        {
+          "CostModifier": {
+            "applies_to": ["Spell", "ChosenSubtype", { "ControlledBy": "You" }],
+            "change": "Reduce",
+            "mana": "{1}"
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+                { "StepBegins": { "step": "Upkeep", "whose": "You" } }
+              ]
+            },
+            "effects": [
+              { "LookAtTop": { "as": "top" } },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [{ "In": "Library" }, { "Is": { "Bound": "top" } }, "ChosenSubtype"]
+                  },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "revealed2"
+                }
+              },
+              { "Reveal": { "what": { "Bound": "revealed2" } } },
+              {
+                "Move": { "what": { "Bound": "revealed2" }, "to": "Hand", "as": "revealed2_moved" }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Bound": "revealed2_moved" },
+                      "selector": [],
+                      "op": "Eq",
+                      "right": 0
+                    }
+                  },
+                  "then": [
+                    {
+                      "May": {
+                        "effects": [
+                          {
+                            "Move": {
+                              "what": {
+                                "Each": [{ "In": "Library" }, { "OwnedBy": "You" }, "TopOfLibrary"]
+                              },
+                              "to": "Graveyard"
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

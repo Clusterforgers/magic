@@ -1,0 +1,67 @@
+{
+  "oracle_id": "dacf7f0d-9ce2-4e28-98a5-e7ec270a4c83",
+  "name": "Sarinth Steelseeker",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sarinth Steelseeker",
+      "oracle_fingerprint": "256e80591148255b163b5c06d8ef4d0c",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Artifact" }, { "ControlledBy": "You" }],
+                "to": "Battlefield"
+              }
+            },
+            "effects": [
+              { "LookAtTop": { "as": "top" } },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [{ "In": "Library" }, { "Is": { "Bound": "top" } }, { "Type": "Land" }]
+                  },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "revealed2"
+                }
+              },
+              { "Reveal": { "what": { "Bound": "revealed2" } } },
+              {
+                "Move": { "what": { "Bound": "revealed2" }, "to": "Hand", "as": "revealed2_moved" }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Bound": "revealed2_moved" },
+                      "selector": [],
+                      "op": "Eq",
+                      "right": 0
+                    }
+                  },
+                  "then": [
+                    {
+                      "May": {
+                        "effects": [
+                          {
+                            "Move": {
+                              "what": {
+                                "Each": [{ "In": "Library" }, { "OwnedBy": "You" }, "TopOfLibrary"]
+                              },
+                              "to": "Graveyard"
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

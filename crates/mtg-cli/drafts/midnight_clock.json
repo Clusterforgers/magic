@@ -1,0 +1,60 @@
+{
+  "oracle_id": "c68faebc-b2cd-461b-b93e-e1fcd4816810",
+  "name": "Midnight Clock",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Midnight Clock",
+      "oracle_fingerprint": "04e4d4048c7b615a0647a9ded89344b7",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Blue"] } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{2}{U}",
+            "effects": [{ "PutCounters": { "on": "This", "counter": { "Other": "hour" } } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep" } },
+            "effects": [{ "PutCounters": { "on": "This", "counter": { "Other": "hour" } } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "CountersPut": { "what": ["This"], "counter": { "Other": "hour" } } },
+            "if": {
+              "AtTrigger": {
+                "Compare": {
+                  "left": { "Counters": { "on": "This", "counter": { "Other": "hour" } } },
+                  "op": "Eq",
+                  "right": 12
+                }
+              }
+            },
+            "effects": [
+              {
+                "Move": {
+                  "what": {
+                    "Each": [
+                      { "OwnedBy": "You" },
+                      { "AnyOf": [{ "In": "Graveyard" }, { "In": "Hand" }] }
+                    ]
+                  },
+                  "to": { "Library": { "place": "Shuffled" } }
+                }
+              },
+              { "Draw": { "count": 7 } },
+              { "Exile": { "what": "This" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

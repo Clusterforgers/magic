@@ -1,16 +1,28 @@
 {
   "oracle_id": "ced2ae56-988a-4c60-93d0-85a2261be72c",
   "name": "Digsite Conservator",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Digsite Conservator",
       "oracle_fingerprint": "15d728d0bd4e5f61d31b1095997d59ae",
       "abilities": [
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 0, "end": 107 }
+          "Activated": {
+            "cost": ["SacrificeSelf"],
+            "timing": "Sorcery",
+            "targets": [
+              {
+                "what": {
+                  "Together": {
+                    "what": { "Object": [{ "In": "Graveyard" }] },
+                    "rule": "SameController"
+                  }
+                },
+                "bounds": { "min": 0, "max": 4 }
+              }
+            ],
+            "effects": [{ "Exile": { "what": { "Target": 0 } } }]
           }
         },
         {

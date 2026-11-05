@@ -1,0 +1,62 @@
+{
+  "oracle_id": "e552cab2-cee0-4420-9419-4bada4b2f241",
+  "name": "Gruul Charm",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Gruul Charm",
+      "oracle_fingerprint": "f72a7c841ad06e837cfce07b4c0f05b0",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Modal": {
+                  "modes": [
+                    {
+                      "effects": [
+                        {
+                          "Continuous": {
+                            "affected": {
+                              "Each": [
+                                { "Type": "Creature" },
+                                { "Not": { "HasKeyword": "Flying" } }
+                              ]
+                            },
+                            "mods": ["CantBlock"],
+                            "duration": "UntilEndOfTurn"
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "effects": [
+                        {
+                          "Continuous": {
+                            "affected": { "Each": [{ "OwnedBy": "You" }] },
+                            "mods": [{ "SetController": "You" }],
+                            "duration": "Forever"
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "effects": [
+                        {
+                          "DealDamage": {
+                            "to": { "Each": [{ "Type": "Creature" }, { "HasKeyword": "Flying" }] },
+                            "amount": 3
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

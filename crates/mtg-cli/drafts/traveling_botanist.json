@@ -1,0 +1,62 @@
+{
+  "oracle_id": "14934ab0-41ab-44f8-bb28-2b0457eb6f5f",
+  "name": "Traveling Botanist",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Traveling Botanist",
+      "oracle_fingerprint": "1c42b89d527fe598ba5fc346d2a4e26c",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Tapped": { "what": ["This"] } },
+            "effects": [
+              { "LookAtTop": { "as": "top" } },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [{ "In": "Library" }, { "Is": { "Bound": "top" } }, { "Type": "Land" }]
+                  },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "revealed2"
+                }
+              },
+              { "Reveal": { "what": { "Bound": "revealed2" } } },
+              {
+                "Move": { "what": { "Bound": "revealed2" }, "to": "Hand", "as": "revealed2_moved" }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Bound": "revealed2_moved" },
+                      "selector": [],
+                      "op": "Eq",
+                      "right": 0
+                    }
+                  },
+                  "then": [
+                    {
+                      "May": {
+                        "effects": [
+                          {
+                            "Move": {
+                              "what": {
+                                "Each": [{ "In": "Library" }, { "OwnedBy": "You" }, "TopOfLibrary"]
+                              },
+                              "to": "Graveyard"
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

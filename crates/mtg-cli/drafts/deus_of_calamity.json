@@ -1,0 +1,24 @@
+{
+  "oracle_id": "f263f9d0-2ca9-4d3f-9b41-c67bdc73281a",
+  "name": "Deus of Calamity",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Deus of Calamity",
+      "oracle_fingerprint": "60b495c15837d597dcaf21eb31d0c53f",
+      "abilities": [
+        { "Keyword": "Trample" },
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": ["This"], "to": "Opponents" } },
+            "if": { "AtTrigger": { "Compare": { "left": "Triggering", "op": "Ge", "right": 6 } } },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Land" }, { "ControlledBy": "Triggering" }] } }
+            ],
+            "effects": [{ "Destroy": { "what": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

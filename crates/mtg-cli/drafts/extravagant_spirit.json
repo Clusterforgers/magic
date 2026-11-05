@@ -1,0 +1,28 @@
+{
+  "oracle_id": "6470afc0-2f67-454a-8a5b-d8dfea4b84ce",
+  "name": "Extravagant Spirit",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Extravagant Spirit",
+      "oracle_fingerprint": "e8a4e09af34d655a739583f0bcdadec0",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": "{1}",
+                  "times": { "Count": [{ "OwnedBy": "You" }, { "In": "Hand" }] },
+                  "unpaid": [{ "Sacrifice": { "filter": ["This"] } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

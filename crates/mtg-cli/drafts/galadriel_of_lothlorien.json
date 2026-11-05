@@ -1,0 +1,54 @@
+{
+  "oracle_id": "8d3c9646-2b6b-4315-939d-5a920efc0a60",
+  "name": "Galadriel of Lothlórien",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Galadriel of Lothlórien",
+      "oracle_fingerprint": "6172a9f8258680b6a0d5d386675dbb25",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "RingTempts": {
+                "who": "You",
+                "bearer": [{ "Type": "Creature" }, { "ControlledBy": "You" }, "Other"]
+              }
+            },
+            "effects": [{ "Scry": { "count": 3 } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Did": { "action": "Scried", "who": "You" } },
+            "effects": [
+              { "LookAtTop": { "as": "top" } },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [{ "In": "Library" }, { "Is": { "Bound": "top" } }, { "Type": "Land" }]
+                  },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "kept2"
+                }
+              },
+              { "Reveal": { "what": { "Bound": "kept2" } } },
+              {
+                "Move": {
+                  "what": { "Bound": "kept2" },
+                  "to": { "Battlefield": { "tapped": true } }
+                }
+              },
+              {
+                "Move": {
+                  "what": { "Bound": "top" },
+                  "to": { "Library": { "place": "Top", "order": "Chosen" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,30 @@
+{
+  "oracle_id": "2c769dfc-79be-4fcb-840c-b72cafdd0a23",
+  "name": "Rapid Decay",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Rapid Decay",
+      "oracle_fingerprint": "0340c7567a991466924c6aa92c5a8df6",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Together": {
+                    "what": { "Object": [{ "In": "Graveyard" }] },
+                    "rule": "SameController"
+                  }
+                },
+                "bounds": { "min": 0, "max": 3 }
+              }
+            ],
+            "effects": [{ "Exile": { "what": { "Target": 0 } } }]
+          }
+        },
+        { "Keyword": { "Cycling": "{2}" } }
+      ]
+    }
+  ]
+}

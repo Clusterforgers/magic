@@ -1,0 +1,42 @@
+{
+  "oracle_id": "67330f45-d08c-4fe2-8ae3-8d18939c512a",
+  "name": "Gorging Vulture",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Gorging Vulture",
+      "oracle_fingerprint": "833f40726bcb783f6a6c866a1aca1538",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              { "Mill": { "count": 4, "as": "milled" } },
+              {
+                "GainLife": {
+                  "amount": {
+                    "Count": [
+                      { "Is": { "Bound": "milled" } },
+                      {
+                        "AnyOf": [
+                          { "In": "Battlefield" },
+                          { "In": "Hand" },
+                          { "In": "Library" },
+                          { "In": "Graveyard" },
+                          { "In": "Exile" },
+                          { "In": "Stack" }
+                        ]
+                      },
+                      { "Type": "Creature" }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

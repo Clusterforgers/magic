@@ -1,0 +1,173 @@
+{
+  "object": "card",
+  "id": "526fe356-bff1-4211-9e88-bf913ac76b1d",
+  "oracle_id": "52f1b5a4-62ff-44de-80da-503d4e52d312",
+  "multiverse_ids": [
+    679081
+  ],
+  "resource_id": "2905DEB7488FD4E4E51651839EA116900D902249E8F118C725B3456A74818CAD",
+  "mtgo_id": 133576,
+  "arena_id": 93717,
+  "tcgplayer_id": 590823,
+  "cardmarket_id": 795556,
+  "name": "Cat Collector",
+  "lang": "en",
+  "released_at": "2024-11-15",
+  "uri": "https://api.scryfall.com/cards/526fe356-bff1-4211-9e88-bf913ac76b1d",
+  "scryfall_uri": "https://scryfall.com/card/fdn/4/cat-collector?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T02:18:49Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/5/2/526fe356-bff1-4211-9e88-bf913ac76b1d.jpg?1783909129",
+    "normal": "https://cards.scryfall.io/normal/front/5/2/526fe356-bff1-4211-9e88-bf913ac76b1d.jpg?1783909129",
+    "large": "https://cards.scryfall.io/large/front/5/2/526fe356-bff1-4211-9e88-bf913ac76b1d.jpg?1783909129",
+    "png": "https://cards.scryfall.io/png/front/5/2/526fe356-bff1-4211-9e88-bf913ac76b1d.png?1783909129",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/5/2/526fe356-bff1-4211-9e88-bf913ac76b1d.jpg?1783909129",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/5/2/526fe356-bff1-4211-9e88-bf913ac76b1d.jpg?1783909129",
+    "thumb": "https://cards.scryfall.io/thumb/front/5/2/526fe356-bff1-4211-9e88-bf913ac76b1d.webp?1783909129",
+    "grid": "https://cards.scryfall.io/grid/front/5/2/526fe356-bff1-4211-9e88-bf913ac76b1d.webp?1783909129",
+    "display": "https://cards.scryfall.io/display/front/5/2/526fe356-bff1-4211-9e88-bf913ac76b1d.webp?1783909129",
+    "art": "https://cards.scryfall.io/art/front/5/2/526fe356-bff1-4211-9e88-bf913ac76b1d.webp?1783909129",
+    "crop": "https://cards.scryfall.io/crop/front/5/2/526fe356-bff1-4211-9e88-bf913ac76b1d.webp?1783909129",
+    "jpeg": "https://cards.scryfall.io/normal/front/5/2/526fe356-bff1-4211-9e88-bf913ac76b1d.jpg?1783909129"
+  },
+  "mana_cost": "{2}{W}",
+  "cmc": 3.0,
+  "type_line": "Creature — Human Citizen",
+  "oracle_text": "When this creature enters, create a Food token. (It's an artifact with \"{2}, {T}, Sacrifice this token: You gain 3 life.\")\nWhenever you gain life for the first time during each of your turns, create a 1/1 white Cat creature token.",
+  "power": "3",
+  "toughness": "2",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": [
+    "Food"
+  ],
+  "all_parts": [
+    {
+      "object": "related_card",
+      "id": "526fe356-bff1-4211-9e88-bf913ac76b1d",
+      "component": "combo_piece",
+      "name": "Cat Collector",
+      "type_line": "Creature — Human Citizen",
+      "uri": "https://api.scryfall.com/cards/526fe356-bff1-4211-9e88-bf913ac76b1d"
+    },
+    {
+      "object": "related_card",
+      "id": "2885d54c-9fb2-4f01-8937-54f8ac1ce5bc",
+      "component": "token",
+      "name": "Cat",
+      "type_line": "Token Creature — Cat",
+      "uri": "https://api.scryfall.com/cards/2885d54c-9fb2-4f01-8937-54f8ac1ce5bc"
+    },
+    {
+      "object": "related_card",
+      "id": "6f1077f8-9e2a-4155-a7f0-4604bc0f94e8",
+      "component": "token",
+      "name": "Food",
+      "type_line": "Token Artifact — Food",
+      "uri": "https://api.scryfall.com/cards/6f1077f8-9e2a-4155-a7f0-4604bc0f94e8"
+    }
+  ],
+  "legalities": {
+    "standard": "legal",
+    "future": "legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "arena",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "a7ecb771-d1b6-4dec-8cf5-8d45179f21e0",
+  "set": "fdn",
+  "set_name": "Foundations",
+  "set_type": "core",
+  "set_uri": "https://api.scryfall.com/sets/a7ecb771-d1b6-4dec-8cf5-8d45179f21e0",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Afdn&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/fdn?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/526fe356-bff1-4211-9e88-bf913ac76b1d/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A52f1b5a4-62ff-44de-80da-503d4e52d312&unique=prints",
+  "collector_number": "4",
+  "digital": false,
+  "rarity": "uncommon",
+  "flavor_text": "\"Why so many? Because they need a home, just like I once did.\"",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Chris Seaman",
+  "artist_ids": [
+    "b9c49463-6f55-4039-9d32-c02a658af100"
+  ],
+  "illustration_id": "867ca87d-9518-4875-8039-128b469c99dc",
+  "border_color": "black",
+  "frame": "2015",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "promo_types": [
+    "startercollection"
+  ],
+  "edhrec_rank": 7373,
+  "penny_rank": 9264,
+  "preview": {
+    "source": "Dexerto",
+    "source_uri": "https://www.dexerto.com/magic-the-gathering/exclusive-mtg-foundations-card-preview-cat-collector-2964749/",
+    "previewed_at": "2024-10-28"
+  },
+  "prices": {
+    "usd": "0.37",
+    "usd_foil": "0.34",
+    "usd_etched": null,
+    "eur": "0.12",
+    "eur_foil": "0.22",
+    "tix": "0.03"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=679081&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DCat%2BCollector",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DCat%2BCollector",
+    "edhrec": "https://edhrec.com/route/?cc=Cat+Collector"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F590823%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=795556&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/133576?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

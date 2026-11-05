@@ -1,0 +1,29 @@
+{
+  "oracle_id": "2c51e20b-07b2-4c96-8d73-87379aafbc7c",
+  "name": "Countervailing Winds",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Countervailing Winds",
+      "oracle_fingerprint": "cd30450be3c9e5f454bdf1f77c217886",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": ["Spell"] } }],
+            "effects": [
+              {
+                "Pay": {
+                  "who": { "ControllerOf": { "Target": 0 } },
+                  "cost": "{1}",
+                  "times": { "Count": [{ "OwnedBy": "You" }, { "In": "Graveyard" }] },
+                  "unpaid": [{ "Counter": { "what": { "Target": 0 } } }]
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Cycling": "{2}" } }
+      ]
+    }
+  ]
+}

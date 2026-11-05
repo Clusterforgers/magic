@@ -1,0 +1,29 @@
+{
+  "oracle_id": "b2da7acb-d80c-414c-9f7d-753a5d6ccad9",
+  "name": "Logic Knot",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Logic Knot",
+      "oracle_fingerprint": "cfd5c5982ae5ba349ad8a35536d923e2",
+      "abilities": [
+        { "Keyword": "Delve" },
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": ["Spell"] } }],
+            "effects": [
+              {
+                "Pay": {
+                  "who": { "ControllerOf": { "Target": 0 } },
+                  "cost": "{1}",
+                  "times": "X",
+                  "unpaid": [{ "Counter": { "what": { "Target": 0 } } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

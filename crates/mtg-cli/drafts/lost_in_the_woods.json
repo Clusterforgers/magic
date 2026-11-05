@@ -1,0 +1,64 @@
+{
+  "oracle_id": "a354b7f3-bfd0-47c6-bb16-1a5f8e26467d",
+  "name": "Lost in the Woods",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Lost in the Woods",
+      "oracle_fingerprint": "0e6c9776574db0f4747b4df08239c7fe",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "AttacksPlayerOrPlaneswalker": { "what": [{ "Type": "Creature" }], "at": "You" }
+            },
+            "effects": [
+              { "LookAtTop": { "as": "top" } },
+              { "Reveal": { "what": { "Bound": "top" } } },
+              {
+                "Move": {
+                  "what": { "Each": [{ "In": "Library" }, { "Is": { "Bound": "top" } }] },
+                  "to": { "Library": { "place": "Bottom" } },
+                  "as": "moved4"
+                }
+              },
+              {
+                "Move": {
+                  "what": { "Bound": "top" },
+                  "to": { "Library": { "place": "Bottom", "order": "Chosen" } }
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": {
+                        "Count": [
+                          { "Is": { "Bound": "moved4" } },
+                          {
+                            "AnyOf": [
+                              { "In": "Battlefield" },
+                              { "In": "Hand" },
+                              { "In": "Library" },
+                              { "In": "Graveyard" },
+                              { "In": "Exile" },
+                              { "In": "Stack" }
+                            ]
+                          },
+                          { "Subtype": "Forest" }
+                        ]
+                      },
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [{ "RemoveFromCombat": { "what": "Triggering" } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,42 @@
+{
+  "oracle_id": "f8536726-993b-4100-918c-e3c7177d4c65",
+  "name": "Spectral Denial",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Spectral Denial",
+      "oracle_fingerprint": "a0836dfbfadde968562e1eaa97d83009",
+      "abilities": [
+        {
+          "CostModifier": {
+            "applies_to": ["This"],
+            "change": "Reduce",
+            "mana": "{1}",
+            "per": {
+              "Count": [
+                { "Type": "Creature" },
+                { "ControlledBy": "You" },
+                { "Compare": { "stat": "Power", "op": "Ge", "to": 4 } }
+              ]
+            }
+          }
+        },
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": ["Spell"] } }],
+            "effects": [
+              {
+                "Pay": {
+                  "who": { "ControllerOf": { "Target": 0 } },
+                  "cost": "{1}",
+                  "times": "X",
+                  "unpaid": [{ "Counter": { "what": { "Target": 0 } } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

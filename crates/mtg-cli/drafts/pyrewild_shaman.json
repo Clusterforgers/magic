@@ -1,7 +1,7 @@
 {
   "oracle_id": "a1e71473-3eba-4d29-87e2-7f14acab2ccd",
   "name": "Pyrewild Shaman",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Pyrewild Shaman",
@@ -24,9 +24,27 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 95, "end": 263 }
+          "Triggered": {
+            "when": {
+              "Batch": {
+                "DealsDamage": {
+                  "source": [{ "Type": "Creature" }, { "ControlledBy": "You" }],
+                  "to": "EachPlayer",
+                  "combat": true
+                }
+              }
+            },
+            "if": {
+              "Compare": {
+                "left": { "Count": ["This", { "In": "Graveyard" }, { "OwnedBy": "You" }] },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "from": "Graveyard",
+            "effects": [
+              { "Pay": { "cost": "{3}", "paid": [{ "Move": { "what": "This", "to": "Hand" } }] } }
+            ]
           }
         }
       ]

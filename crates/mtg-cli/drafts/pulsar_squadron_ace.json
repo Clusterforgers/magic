@@ -25,7 +25,7 @@
                   "as": "kept2"
                 }
               },
-              { "Move": { "what": { "Bound": "kept2" }, "to": "Hand" } },
+              { "Move": { "what": { "Bound": "kept2" }, "to": "Hand", "as": "kept2_moved" } },
               {
                 "Move": {
                   "what": { "Bound": "top" },
@@ -36,7 +36,7 @@
                 "If": {
                   "condition": {
                     "CountOf": {
-                      "subject": { "Bound": "kept2" },
+                      "subject": { "Bound": "kept2_moved" },
                       "selector": [],
                       "op": "Eq",
                       "right": 0

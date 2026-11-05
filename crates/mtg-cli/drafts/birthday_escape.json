@@ -1,0 +1,12 @@
+{
+  "oracle_id": "4f958678-2a32-4a30-8fe7-47df9ada6b2f",
+  "name": "Birthday Escape",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Birthday Escape",
+      "oracle_fingerprint": "ed05a07f1f182826d77c250d17d7b543",
+      "abilities": [{ "Spell": { "effects": [{ "Draw": {} }, { "RingTempts": {} }] } }]
+    }
+  ]
+}

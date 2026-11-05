@@ -1,0 +1,60 @@
+{
+  "oracle_id": "922d603e-6623-4455-b91f-fad76f94045a",
+  "name": "Starfield of Nyx",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Starfield of Nyx",
+      "oracle_fingerprint": "3292d36afbfda0ad35ad41bb953eca51",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "Type": "Enchantment" }, { "OwnedBy": "You" }, { "In": "Graveyard" }]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "May": {
+                  "effects": [{ "Move": { "what": { "Target": 0 }, "to": { "Battlefield": {} } } }]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Static": {
+            "affected": {
+              "Each": [
+                { "Type": "Enchantment" },
+                { "ControlledBy": "You" },
+                { "Not": { "Subtype": "Aura" } },
+                "Other"
+              ]
+            },
+            "mods": [
+              {
+                "SetPT": {
+                  "power": { "Stat": { "of": "Affected", "stat": "ManaValue" } },
+                  "toughness": { "Stat": { "of": "Affected", "stat": "ManaValue" } }
+                }
+              },
+              { "AddType": "Creature" }
+            ],
+            "condition": {
+              "Compare": {
+                "left": { "Count": [{ "Type": "Enchantment" }, { "ControlledBy": "You" }] },
+                "op": "Ge",
+                "right": 5
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

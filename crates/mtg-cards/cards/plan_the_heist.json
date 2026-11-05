@@ -1,0 +1,33 @@
+{
+  "oracle_id": "a9471b33-b5b0-408a-9900-6964e5fe42da",
+  "name": "Plan the Heist",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Plan the Heist",
+      "oracle_fingerprint": "aee7eaaa783d4e232271a86acd685a02",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "Count": [{ "In": "Hand" }, { "OwnedBy": "You" }] },
+                      "op": "Eq",
+                      "right": 0
+                    }
+                  },
+                  "then": [{ "Surveil": { "count": 3 } }]
+                }
+              },
+              { "Draw": { "count": 3 } }
+            ]
+          }
+        },
+        { "Keyword": { "Plot": "{3}{U}" } }
+      ]
+    }
+  ]
+}

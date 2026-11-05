@@ -1,0 +1,55 @@
+{
+  "oracle_id": "d209b948-9afb-4fd1-a961-72c87282878c",
+  "name": "Kenrith, the Returned King",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Kenrith, the Returned King",
+      "oracle_fingerprint": "373092e2f5d7cc71622da2910c363568",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{R}",
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Type": "Creature" }] },
+                  "mods": [{ "AddKeyword": "Trample" }, { "AddKeyword": "Haste" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{1}{G}",
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [{ "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1" } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{2}{W}",
+            "targets": [{ "what": "Player" }],
+            "effects": [{ "GainLife": { "who": { "Target": 0 }, "amount": 5 } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{3}{U}",
+            "targets": [{ "what": "Player" }],
+            "effects": [{ "Draw": { "who": { "Target": 0 } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{4}{B}",
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }, { "In": "Graveyard" }] } }],
+            "effects": [{ "Move": { "what": { "Target": 0 }, "to": { "Battlefield": {} } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

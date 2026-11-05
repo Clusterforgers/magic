@@ -1,42 +1,4 @@
 {
   "source": "forge",
-  "oracle_matches": true,
-  "lines": [
-    {
-      "face": 0,
-      "tag": "T",
-      "text": "Whenever one or more tokens you control enter, this creature becomes prepared. (While it's prepared, you may cast a copy of its spell. Doing so unprepares it.)",
-      "abilities": [],
-      "gap": "effect:AlterAttribute"
-    },
-    {
-      "face": 1,
-      "tag": "A",
-      "text": "One or two target creatures each get +2/+2 until end of turn.",
-      "abilities": [
-        0
-      ],
-      "gap": null
-    }
-  ],
-  "proof": {
-    "marks": [
-      {
-        "face": 0,
-        "span": {
-          "start": 0,
-          "end": 159
-        },
-        "mark": "ByHand"
-      },
-      {
-        "face": 1,
-        "span": {
-          "start": 0,
-          "end": 61
-        },
-        "mark": "Auto"
-      }
-    ]
-  }
+  "oracle_matches": true
 }

@@ -1,0 +1,28 @@
+{
+  "oracle_id": "277aafa6-4270-4d24-a888-cf9e8e635d4b",
+  "name": "Watcher for Tomorrow",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Watcher for Tomorrow",
+      "oracle_fingerprint": "fb825d7de67f8594a738485dc4b0b7b9",
+      "abilities": [
+        { "Keyword": { "Hideaway": 4 } },
+        { "Replacement": { "when": { "Enters": { "what": ["This"] } }, "by": "Tapped" } },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield" } },
+            "effects": [
+              {
+                "Move": {
+                  "what": { "Each": [{ "ExiledWith": "This" }, { "In": "Exile" }] },
+                  "to": "Hand"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

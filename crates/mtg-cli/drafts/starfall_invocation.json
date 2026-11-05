@@ -1,0 +1,43 @@
+{
+  "oracle_id": "7024532b-f99b-43a7-b0ed-5b3e7ec7592b",
+  "name": "Starfall Invocation",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Starfall Invocation",
+      "oracle_fingerprint": "4a8b4266711312d293cf185d6b0ae263",
+      "abilities": [
+        { "Keyword": { "Gift": "Card" } },
+        {
+          "Spell": {
+            "effects": [
+              { "Destroy": { "what": { "Each": [{ "Type": "Creature" }] }, "as": "destroyed" } },
+              {
+                "If": {
+                  "condition": { "Compare": { "left": "Promised", "op": "Eq", "right": 1 } },
+                  "then": [
+                    {
+                      "Choose": {
+                        "from": {
+                          "Each": [
+                            { "Type": "Creature" },
+                            { "Not": "Token" },
+                            { "Is": { "Bound": "destroyed" } },
+                            { "OwnedBy": "You" },
+                            { "In": "Graveyard" }
+                          ]
+                        },
+                        "as": "picked2"
+                      }
+                    },
+                    { "Move": { "what": { "Bound": "picked2" }, "to": { "Battlefield": {} } } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

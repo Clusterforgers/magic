@@ -1,0 +1,41 @@
+{
+  "oracle_id": "059788eb-2c55-4da2-bf54-aa2fa7954169",
+  "name": "Inner-Flame Igniter",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Inner-Flame Igniter",
+      "oracle_fingerprint": "d78f67f92c6fca685ed9e76a70051694",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{2}{R}",
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                  "mods": [{ "ModifyPT": { "power": 1, "toughness": 0 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "If": {
+                  "condition": { "Compare": { "left": "ResolvedThisTurn", "op": "Eq", "right": 3 } },
+                  "then": [
+                    {
+                      "Continuous": {
+                        "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                        "mods": [{ "AddKeyword": "FirstStrike" }],
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

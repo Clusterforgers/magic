@@ -1,16 +1,20 @@
 {
   "oracle_id": "c77ddcac-ce54-4348-bde2-5d9caf3d5b04",
   "name": "Spiritcall Enthusiast // Scrollboost",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Spiritcall Enthusiast",
       "oracle_fingerprint": "9f6b6687dffef3bec7c3593229ec464f",
       "abilities": [
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 0, "end": 159 }
+          "Triggered": {
+            "when": {
+              "Batch": {
+                "ZoneChange": { "what": ["Token", { "ControlledBy": "You" }], "to": "Battlefield" }
+              }
+            },
+            "effects": [{ "Prepare": { "what": "This" } }]
           }
         }
       ]

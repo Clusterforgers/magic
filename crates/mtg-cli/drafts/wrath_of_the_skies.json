@@ -1,0 +1,58 @@
+{
+  "oracle_id": "21efa6f2-3e7c-4576-b5a3-0b75b2843442",
+  "name": "Wrath of the Skies",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Wrath of the Skies",
+      "oracle_fingerprint": "8c97bd4052de51126bc7fcd87aa77011",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "PutCounters": { "on": "You", "counter": { "Other": "energy" }, "count": "X" } },
+              {
+                "ChooseValue": {
+                  "kind": {
+                    "Number": [0, { "Counters": { "on": "You", "counter": { "Other": "energy" } } }]
+                  },
+                  "as": "number"
+                }
+              },
+              {
+                "Pay": {
+                  "cost": [{ "PayEnergy": 1 }],
+                  "times": { "ChosenAs": "number" },
+                  "paid": [
+                    {
+                      "Destroy": {
+                        "what": {
+                          "Each": [
+                            {
+                              "AnyOf": [
+                                { "Type": "Artifact" },
+                                { "Type": "Creature" },
+                                { "Type": "Enchantment" }
+                              ]
+                            },
+                            {
+                              "Compare": {
+                                "stat": "ManaValue",
+                                "op": "Le",
+                                "to": { "ChosenAs": "number" }
+                              }
+                            }
+                          ]
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

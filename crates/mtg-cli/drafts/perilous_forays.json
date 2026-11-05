@@ -1,0 +1,44 @@
+{
+  "oracle_id": "d552f5cb-19b6-4def-90d5-6d2d9570f93d",
+  "name": "Perilous Forays",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Perilous Forays",
+      "oracle_fingerprint": "da33a9fe3678eb43c3db654fc16b2070",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{1}" }, { "Sacrifice": { "filter": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Search": {
+                  "filter": [
+                    { "Type": "Land" },
+                    {
+                      "AnyOf": [
+                        { "Subtype": "Plains" },
+                        { "Subtype": "Island" },
+                        { "Subtype": "Swamp" },
+                        { "Subtype": "Mountain" },
+                        { "Subtype": "Forest" }
+                      ]
+                    }
+                  ],
+                  "as": "found"
+                }
+              },
+              {
+                "Move": {
+                  "what": { "Bound": "found" },
+                  "to": { "Battlefield": { "tapped": true } }
+                }
+              },
+              { "Shuffle": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

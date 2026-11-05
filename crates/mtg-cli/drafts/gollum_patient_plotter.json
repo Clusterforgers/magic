@@ -1,0 +1,27 @@
+{
+  "oracle_id": "c4545884-35b7-47cf-939e-3d5d3fe555a4",
+  "name": "Gollum, Patient Plotter",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Gollum, Patient Plotter",
+      "oracle_fingerprint": "b5dc7d28fa77e894b86d1f62ce50aeb9",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield" } },
+            "effects": [{ "RingTempts": {} }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{B}" }, { "Sacrifice": { "filter": [{ "Type": "Creature" }] } }],
+            "timing": "Sorcery",
+            "from": "Graveyard",
+            "effects": [{ "Move": { "what": "This", "to": "Hand" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,35 @@
+{
+  "oracle_id": "df020a47-1784-479b-9882-be77b7f30950",
+  "name": "Highway Robbery",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Highway Robbery",
+      "oracle_fingerprint": "4be93b029df5d547429d4810bfda52f2",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Either": {
+                  "first": [
+                    { "Pay": { "cost": [{ "Discard": {} }], "paid": [{ "Draw": { "count": 2 } }] } }
+                  ],
+                  "second": [
+                    {
+                      "Pay": {
+                        "cost": [{ "Sacrifice": { "filter": [{ "Type": "Land" }] } }],
+                        "paid": [{ "Draw": { "count": 2 } }]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Plot": "{1}{R}" } }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,29 @@
+{
+  "oracle_id": "5a747256-4215-4334-98ab-0c2e4ed92e47",
+  "name": "Casting of Bones",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Casting of Bones",
+      "oracle_fingerprint": "0887786bf904e28d75215e491f17f243",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Is": "Attached" }],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "effects": [
+              { "Draw": { "count": 3, "as": "drawn" } },
+              { "Discard": { "filter": [{ "Is": { "Bound": "drawn" } }] } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

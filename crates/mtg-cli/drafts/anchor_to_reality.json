@@ -28,13 +28,19 @@
                   "as": "found"
                 }
               },
-              { "Move": { "what": { "Bound": "found" }, "to": { "Battlefield": {} } } },
+              {
+                "Move": {
+                  "what": { "Bound": "found" },
+                  "to": { "Battlefield": {} },
+                  "as": "found_moved"
+                }
+              },
               { "Shuffle": {} },
               {
                 "If": {
                   "condition": {
                     "CountOf": {
-                      "subject": { "Bound": "found" },
+                      "subject": { "Bound": "found_moved" },
                       "selector": [],
                       "op": "Ge",
                       "right": 1

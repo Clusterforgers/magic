@@ -1,0 +1,25 @@
+{
+  "oracle_id": "2f1ae834-f6b8-458c-ac0d-3510ddb85193",
+  "name": "Inherited Envelope",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Inherited Envelope",
+      "oracle_fingerprint": "ed80f3993131152eb6a5d6178e67d165",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "RingTempts": {} }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "AnyColor": 1 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

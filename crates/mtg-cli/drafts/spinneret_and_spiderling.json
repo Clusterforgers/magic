@@ -1,7 +1,7 @@
 {
   "oracle_id": "daca1d5e-349d-4e8a-abc7-427dab43fb0c",
   "name": "Spinneret and Spiderling",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Spinneret and Spiderling",
@@ -19,9 +19,20 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 95, "end": 245 }
+          "Triggered": {
+            "when": { "Batch": { "DealsDamage": { "source": ["This"] } } },
+            "if": { "AtTrigger": { "Compare": { "left": "Triggering", "op": "Ge", "right": 4 } } },
+            "effects": [
+              { "ExileTop": { "as": "exiled" } },
+              {
+                "Rule": {
+                  "rule": {
+                    "MayCast": { "from": "Exile", "only": { "Bound": "exiled" }, "play": true }
+                  },
+                  "duration": "UntilEndOfYourNextTurn"
+                }
+              }
+            ]
           }
         }
       ]

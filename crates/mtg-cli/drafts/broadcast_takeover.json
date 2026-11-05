@@ -1,0 +1,38 @@
+{
+  "oracle_id": "e0d221da-16cd-4399-830f-eecc9a0912eb",
+  "name": "Broadcast Takeover",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Broadcast Takeover",
+      "oracle_fingerprint": "b8ddc5cbb5273f0d1da8968c2ddf135f",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Type": "Artifact" }, { "ControlledBy": "Opponents" }] },
+                  "mods": [{ "SetController": "You" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "Untap": {
+                  "what": { "Each": [{ "Type": "Artifact" }, { "ControlledBy": "Opponents" }] }
+                }
+              },
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Type": "Artifact" }, { "ControlledBy": "Opponents" }] },
+                  "mods": [{ "AddKeyword": "Haste" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

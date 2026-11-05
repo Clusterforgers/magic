@@ -1,0 +1,35 @@
+{
+  "oracle_id": "4230c7a3-4591-411e-afab-d2bfb58446de",
+  "name": "Phantasmal Sphere",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Phantasmal Sphere",
+      "oracle_fingerprint": "5dd520786ed28311f608fa0a9fd8c295",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [
+              { "PutCounters": { "on": "This", "counter": "+1/+1" } },
+              {
+                "Pay": {
+                  "cost": "{1}",
+                  "times": { "Counters": { "on": "This", "counter": "+1/+1" } },
+                  "unpaid": [{ "Sacrifice": { "filter": ["This"] } }]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 156, "end": 324 }
+          }
+        }
+      ]
+    }
+  ]
+}

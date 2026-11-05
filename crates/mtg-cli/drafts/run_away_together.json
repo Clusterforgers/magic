@@ -1,0 +1,29 @@
+{
+  "oracle_id": "290faa28-450e-4797-9a8f-642d8af3f82a",
+  "name": "Run Away Together",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Run Away Together",
+      "oracle_fingerprint": "17492dcacf7c338ac529f69017c8f258",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Together": {
+                    "what": { "Object": [{ "Type": "Creature" }] },
+                    "rule": "DifferentControllers"
+                  }
+                },
+                "bounds": { "min": 2, "max": 2 }
+              }
+            ],
+            "effects": [{ "Move": { "what": { "Target": 0 }, "to": "Hand" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

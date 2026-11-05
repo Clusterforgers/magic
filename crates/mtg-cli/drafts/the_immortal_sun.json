@@ -1,0 +1,44 @@
+{
+  "oracle_id": "52232aad-e4ca-4551-8c8d-c69a3b6b49c7",
+  "name": "The Immortal Sun",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "The Immortal Sun",
+      "oracle_fingerprint": "bdc4bff8ecaea43be7dbf15a8ade6533",
+      "abilities": [
+        {
+          "Rule": {
+            "rule": {
+              "Cant": {
+                "who": "EachPlayer",
+                "action": {
+                  "ActivateKind": { "kind": "Loyalty", "sources": [{ "Type": "Planeswalker" }] }
+                }
+              }
+            }
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Draw", "whose": "You" } },
+            "effects": [{ "Draw": {} }]
+          }
+        },
+        {
+          "CostModifier": {
+            "applies_to": ["Spell", { "ControlledBy": "You" }],
+            "change": "Reduce",
+            "mana": "{1}"
+          }
+        },
+        {
+          "Static": {
+            "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

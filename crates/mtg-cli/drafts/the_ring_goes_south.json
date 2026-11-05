@@ -1,0 +1,46 @@
+{
+  "oracle_id": "3d36f0ab-d333-4a08-ad1b-5b7e1ddb647c",
+  "name": "The Ring Goes South",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "The Ring Goes South",
+      "oracle_fingerprint": "345d84f44020444f8517cc379c799a73",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "RingTempts": {} },
+              {
+                "RevealUntil": {
+                  "filter": [{ "Type": "Land" }],
+                  "count": {
+                    "Count": [
+                      { "Type": "Creature" },
+                      { "Supertype": "Legendary" },
+                      { "ControlledBy": "You" }
+                    ]
+                  },
+                  "as": "found",
+                  "revealed_as": "revealed2"
+                }
+              },
+              {
+                "Move": {
+                  "what": { "Bound": "found" },
+                  "to": { "Battlefield": { "tapped": true } }
+                }
+              },
+              {
+                "Move": {
+                  "what": { "Bound": "revealed2" },
+                  "to": { "Library": { "place": "Bottom", "order": "Random" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

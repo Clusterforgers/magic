@@ -1,0 +1,73 @@
+{
+  "oracle_id": "92bf8f05-cbfd-42d8-8bc1-d7f2e46f9872",
+  "name": "Victor, Valgavoth's Seneschal",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Victor, Valgavoth's Seneschal",
+      "oracle_fingerprint": "10e2385736c5d7b70c9f7b9306a94f7e",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                {
+                  "ZoneChange": {
+                    "what": [{ "Type": "Enchantment" }, { "ControlledBy": "You" }],
+                    "to": "Battlefield"
+                  }
+                },
+                {
+                  "Did": {
+                    "action": "FullyUnlocked",
+                    "who": "You",
+                    "what": [{ "Subtype": "Room" }]
+                  }
+                }
+              ]
+            },
+            "effects": [
+              {
+                "If": {
+                  "condition": { "Compare": { "left": "ResolvedThisTurn", "op": "Eq", "right": 1 } },
+                  "then": [{ "Surveil": { "count": 2 } }]
+                }
+              },
+              {
+                "If": {
+                  "condition": { "Compare": { "left": "ResolvedThisTurn", "op": "Eq", "right": 2 } },
+                  "then": [{ "Discard": { "who": "Opponents" } }]
+                }
+              },
+              {
+                "If": {
+                  "condition": { "Compare": { "left": "ResolvedThisTurn", "op": "Eq", "right": 3 } },
+                  "then": [
+                    {
+                      "Choose": {
+                        "from": {
+                          "Each": [
+                            { "Type": "Creature" },
+                            { "In": "Graveyard" },
+                            { "OwnedBy": "You" }
+                          ]
+                        },
+                        "as": "picked"
+                      }
+                    },
+                    {
+                      "Move": {
+                        "what": { "Bound": "picked" },
+                        "to": { "Battlefield": { "under": "You" } }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,35 @@
+{
+  "oracle_id": "b3235d21-ce52-4a99-a2fe-99b0fe7cc8bc",
+  "name": "Malignant Growth",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Malignant Growth",
+      "oracle_fingerprint": "40e99b6129e7f6cdffe0050b1f3c6afa",
+      "abilities": [
+        { "Keyword": { "CumulativeUpkeep": "{1}" } },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [{ "PutCounters": { "on": "This", "counter": { "Other": "growth" } } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Draw", "whose": "Opponents" } },
+            "effects": [
+              {
+                "Draw": {
+                  "who": "Triggering",
+                  "count": { "Counters": { "on": "This", "counter": { "Other": "growth" } } },
+                  "as": "drawn"
+                }
+              },
+              { "DealDamage": { "to": "Triggering", "amount": { "Bound": "drawn~moved" } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

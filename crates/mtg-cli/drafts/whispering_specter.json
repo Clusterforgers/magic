@@ -1,0 +1,35 @@
+{
+  "oracle_id": "18d270bf-d0d3-4fac-a8d2-5f920e789bb5",
+  "name": "Whispering Specter",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Whispering Specter",
+      "oracle_fingerprint": "1434ca333d8e13e3cf0ae54bdf16fc00",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": "Infect" },
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": ["This"], "to": "EachPlayer", "combat": true } },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": ["SacrificeSelf"],
+                  "paid": [
+                    {
+                      "Discard": {
+                        "who": "Triggering",
+                        "count": { "Counters": { "on": "Triggering", "counter": "poison" } }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

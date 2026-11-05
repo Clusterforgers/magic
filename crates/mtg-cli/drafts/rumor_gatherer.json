@@ -1,0 +1,37 @@
+{
+  "oracle_id": "3ceca713-38de-4428-a4f1-2146f6e98393",
+  "name": "Rumor Gatherer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Rumor Gatherer",
+      "oracle_fingerprint": "533e0dded9642cf31d53711e52517c0e",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Creature" }, "Other", { "ControlledBy": "You" }],
+                "to": "Battlefield"
+              }
+            },
+            "effects": [
+              {
+                "If": {
+                  "condition": { "Compare": { "left": "ResolvedThisTurn", "op": "Ne", "right": 2 } },
+                  "then": [{ "Scry": {} }]
+                }
+              },
+              {
+                "If": {
+                  "condition": { "Compare": { "left": "ResolvedThisTurn", "op": "Eq", "right": 2 } },
+                  "then": [{ "Draw": {} }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

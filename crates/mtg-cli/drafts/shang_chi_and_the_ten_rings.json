@@ -1,0 +1,35 @@
+{
+  "oracle_id": "5063703b-ddb3-4680-8b16-4cd342dc7d0c",
+  "name": "Shang-Chi and the Ten Rings",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Shang-Chi and the Ten Rings",
+      "oracle_fingerprint": "d1cb3af7318e949926893cc259c71b0d",
+      "abilities": [
+        { "Keyword": "FirstStrike" },
+        {
+          "Triggered": {
+            "when": { "Drew": { "who": "You" } },
+            "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "CountersPut": { "what": ["This"], "counter": "+1/+1" } },
+            "if": {
+              "AtTrigger": {
+                "Compare": {
+                  "left": { "Counters": { "on": "This", "counter": "+1/+1" } },
+                  "op": "Eq",
+                  "right": 10
+                }
+              }
+            },
+            "effects": [{ "Draw": { "count": 5 } }, { "GainLife": { "amount": 5 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

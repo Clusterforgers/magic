@@ -1,0 +1,44 @@
+{
+  "oracle_id": "4da13eb8-ca18-43f1-b54b-d3ddceb980d2",
+  "name": "Kadena, Slinking Sorcerer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Kadena, Slinking Sorcerer",
+      "oracle_fingerprint": "fabb0e8280a54ee3e18313fb2fa6d572",
+      "abilities": [
+        {
+          "CostModifier": {
+            "applies_to": ["Spell", { "Type": "Creature" }, "FaceDown", { "ControlledBy": "You" }],
+            "change": "Reduce",
+            "mana": "{3}",
+            "condition": {
+              "Compare": {
+                "left": {
+                  "Tally": {
+                    "event": "SpellCast",
+                    "who": "You",
+                    "filter": [{ "Type": "Creature" }, "FaceDown"]
+                  }
+                },
+                "op": "Eq",
+                "right": 0
+              }
+            }
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Creature" }, "FaceDown", { "ControlledBy": "You" }],
+                "to": "Battlefield"
+              }
+            },
+            "effects": [{ "Draw": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

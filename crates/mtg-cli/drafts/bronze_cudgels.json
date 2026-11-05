@@ -1,0 +1,28 @@
+{
+  "oracle_id": "82ebd4fa-9db1-4723-8305-8b8a9ce958e2",
+  "name": "Bronze Cudgels",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Bronze Cudgels",
+      "oracle_fingerprint": "73e9ffabe91b0497d5685f7e7c6b7f4b",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{2}",
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "Attached",
+                  "mods": [{ "ModifyPT": { "power": "ResolvedThisTurn", "toughness": 0 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Equip": "{1}" } }
+      ]
+    }
+  ]
+}

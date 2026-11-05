@@ -1,0 +1,23 @@
+{
+  "oracle_id": "a6b28298-9624-49d7-ad73-fcd1fd3556d2",
+  "name": "Slip On the Ring",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Slip On the Ring",
+      "oracle_fingerprint": "25467fa1c16e9e7f51bf020b3aa5e07e",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }, { "OwnedBy": "You" }] } }],
+            "effects": [
+              { "Exile": { "what": { "Target": 0 }, "as": "exiled" } },
+              { "Move": { "what": { "Bound": "exiled" }, "to": { "Battlefield": {} } } },
+              { "RingTempts": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

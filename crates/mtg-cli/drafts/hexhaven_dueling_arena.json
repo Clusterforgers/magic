@@ -1,0 +1,34 @@
+{
+  "oracle_id": "2cc075da-f79b-4050-84eb-2c1b9a30260c",
+  "name": "Hexhaven Dueling Arena",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Hexhaven Dueling Arena",
+      "oracle_fingerprint": "3009c8c23f284b165cda2567f2a6f3f9",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Colorless"] } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{2}" }, "Tap"],
+            "timing": "Sorcery",
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }, "AttackedThisTurn"] } }],
+            "effects": [{ "Prepare": { "what": { "Target": 0 } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{4}" }, "Tap"],
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [{ "Prepare": { "what": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

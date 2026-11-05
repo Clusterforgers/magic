@@ -14,9 +14,8 @@
               {
                 "Pay": {
                   "who": { "ControllerOf": { "Target": 0 } },
-                  "cost": [
-                    { "PayLife": { "Stat": { "of": { "Target": 0 }, "stat": "Toughness" } } }
-                  ],
+                  "cost": [{ "PayLife": 1 }],
+                  "times": { "Stat": { "of": { "Target": 0 }, "stat": "Toughness" } },
                   "unpaid": [{ "Destroy": { "what": { "Target": 0 }, "regenerate": false } }]
                 }
               }

@@ -1,0 +1,48 @@
+{
+  "oracle_id": "39ab72e2-04f2-41cc-ae33-4cc564b1542b",
+  "name": "Windswift Slice",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Windswift Slice",
+      "oracle_fingerprint": "7388eb8b00670b6433b7aae9d1e88247",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } },
+              {
+                "what": { "Object": [{ "Type": "Creature" }, { "Not": { "ControlledBy": "You" } }] }
+              }
+            ],
+            "effects": [
+              {
+                "DealDamage": {
+                  "source": { "Target": 0 },
+                  "to": { "Target": 1 },
+                  "amount": { "Stat": { "of": { "Target": 0 }, "stat": "Power" } },
+                  "excess": { "as": "excess" }
+                }
+              },
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Elf Warrior",
+                      "colors": ["Green"],
+                      "types": ["Creature"],
+                      "subtypes": ["Elf", "Warrior"],
+                      "power": 1,
+                      "toughness": 1
+                    }
+                  },
+                  "count": { "Bound": "excess" }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

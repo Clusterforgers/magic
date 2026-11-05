@@ -1,0 +1,60 @@
+{
+  "oracle_id": "540e1371-baa9-412f-a17a-22ea833ea3e8",
+  "name": "Goblin Mutant",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Goblin Mutant",
+      "oracle_fingerprint": "62da8164945b960575b449553be48e54",
+      "abilities": [
+        { "Keyword": "Trample" },
+        {
+          "Rule": {
+            "rule": {
+              "Cant": {
+                "who": "This",
+                "action": {
+                  "Attack": {
+                    "unless": {
+                      "Not": {
+                        "Compare": {
+                          "left": {
+                            "Count": [
+                              { "Type": "Creature" },
+                              "Untapped",
+                              { "Compare": { "stat": "Power", "op": "Ge", "to": 3 } },
+                              { "ControlledBy": "You" }
+                            ]
+                          },
+                          "op": "Ge",
+                          "right": 1
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              {
+                "CanBlockOnly": [
+                  {
+                    "AnyOf": [
+                      { "Not": { "Type": "Creature" } },
+                      { "Not": { "Compare": { "stat": "Power", "op": "Ge", "to": 3 } } }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

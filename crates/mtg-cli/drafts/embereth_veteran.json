@@ -1,0 +1,72 @@
+{
+  "oracle_id": "2c232056-9dd6-4a78-be08-3bff19daa88d",
+  "name": "Embereth Veteran",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Embereth Veteran",
+      "oracle_fingerprint": "36a27bc3eae5d3dd87d40ac47fd0f626",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{1}" }, "SacrificeSelf"],
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }, "Other"] } }],
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Young Hero",
+                      "types": ["Enchantment"],
+                      "subtypes": ["Aura", "Role"],
+                      "abilities": [
+                        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+                        {
+                          "Static": {
+                            "affected": "Attached",
+                            "mods": [
+                              {
+                                "GrantAbility": {
+                                  "Triggered": {
+                                    "when": { "Attacks": { "what": ["This"] } },
+                                    "if": {
+                                      "Compare": {
+                                        "left": {
+                                          "Count": [
+                                            "This",
+                                            {
+                                              "Compare": {
+                                                "stat": "Toughness",
+                                                "op": "Le",
+                                                "to": 3
+                                              }
+                                            }
+                                          ]
+                                        },
+                                        "op": "Ge",
+                                        "right": 1
+                                      }
+                                    },
+                                    "effects": [
+                                      { "PutCounters": { "on": "This", "counter": "+1/+1" } }
+                                    ]
+                                  }
+                                }
+                              }
+                            ]
+                          }
+                        }
+                      ]
+                    }
+                  },
+                  "as": "token"
+                }
+              },
+              { "Attach": { "what": { "Bound": "token" }, "to": { "Target": 0 } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

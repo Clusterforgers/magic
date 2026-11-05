@@ -1,0 +1,29 @@
+{
+  "oracle_id": "81a602b6-a4f9-4534-a84e-2fa7556c2309",
+  "name": "Greatsword of Tyr",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Greatsword of Tyr",
+      "oracle_fingerprint": "700bd8c4c7f262faa467440872dd7eee",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": [{ "Is": "Attached" }] } },
+            "targets": [
+              {
+                "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "Defending" }] },
+                "bounds": { "min": 0, "max": 1 }
+              }
+            ],
+            "effects": [
+              { "PutCounters": { "on": "Triggering", "counter": "+1/+1" } },
+              { "Tap": { "what": { "Target": 0 } } }
+            ]
+          }
+        },
+        { "Keyword": { "Equip": "{W}" } }
+      ]
+    }
+  ]
+}

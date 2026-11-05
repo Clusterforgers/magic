@@ -17,7 +17,7 @@
                   "revealed_as": "revealed2"
                 }
               },
-              { "Move": { "what": { "Bound": "found" }, "to": "Hand" } },
+              { "Move": { "what": { "Bound": "found" }, "to": "Hand", "as": "found_moved" } },
               {
                 "Move": {
                   "what": { "Bound": "revealed2" },
@@ -28,7 +28,7 @@
                 "If": {
                   "condition": {
                     "CountOf": {
-                      "subject": { "Bound": "found" },
+                      "subject": { "Bound": "found_moved" },
                       "selector": [{ "Type": "Creature" }],
                       "op": "Ge",
                       "right": 1

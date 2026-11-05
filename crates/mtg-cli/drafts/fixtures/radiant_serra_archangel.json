@@ -1,0 +1,138 @@
+{
+  "object": "card",
+  "id": "38b00110-e3de-40ce-b2bd-9466fe9e53a3",
+  "oracle_id": "4a8227ff-0ae4-4405-8e44-1f5187a7f9f5",
+  "multiverse_ids": [
+    497560
+  ],
+  "mtgo_id": 84862,
+  "tcgplayer_id": 226268,
+  "cardmarket_id": 510250,
+  "name": "Radiant, Serra Archangel",
+  "lang": "en",
+  "released_at": "2020-11-20",
+  "uri": "https://api.scryfall.com/cards/38b00110-e3de-40ce-b2bd-9466fe9e53a3",
+  "scryfall_uri": "https://scryfall.com/card/cmr/40/radiant-serra-archangel?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T07:47:56Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/3/8/38b00110-e3de-40ce-b2bd-9466fe9e53a3.jpg?1783928876",
+    "normal": "https://cards.scryfall.io/normal/front/3/8/38b00110-e3de-40ce-b2bd-9466fe9e53a3.jpg?1783928876",
+    "large": "https://cards.scryfall.io/large/front/3/8/38b00110-e3de-40ce-b2bd-9466fe9e53a3.jpg?1783928876",
+    "png": "https://cards.scryfall.io/png/front/3/8/38b00110-e3de-40ce-b2bd-9466fe9e53a3.png?1783928876",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/3/8/38b00110-e3de-40ce-b2bd-9466fe9e53a3.jpg?1783928876",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/3/8/38b00110-e3de-40ce-b2bd-9466fe9e53a3.jpg?1783928876",
+    "thumb": "https://cards.scryfall.io/thumb/front/3/8/38b00110-e3de-40ce-b2bd-9466fe9e53a3.webp?1783928876",
+    "grid": "https://cards.scryfall.io/grid/front/3/8/38b00110-e3de-40ce-b2bd-9466fe9e53a3.webp?1783928876",
+    "display": "https://cards.scryfall.io/display/front/3/8/38b00110-e3de-40ce-b2bd-9466fe9e53a3.webp?1783928876",
+    "art": "https://cards.scryfall.io/art/front/3/8/38b00110-e3de-40ce-b2bd-9466fe9e53a3.webp?1783928876",
+    "crop": "https://cards.scryfall.io/crop/front/3/8/38b00110-e3de-40ce-b2bd-9466fe9e53a3.webp?1783928876",
+    "jpeg": "https://cards.scryfall.io/normal/front/3/8/38b00110-e3de-40ce-b2bd-9466fe9e53a3.jpg?1783928876"
+  },
+  "mana_cost": "{6}{W}",
+  "cmc": 7.0,
+  "type_line": "Legendary Creature — Angel",
+  "oracle_text": "Flying\nTap another untapped creature you control with flying: Radiant gains protection from the color of your choice until end of turn.\nPartner (You can have two commanders if both have partner.)",
+  "power": "6",
+  "toughness": "4",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": [
+    "Flying",
+    "Partner"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "39de6fbf-1f11-48d0-8f04-f0407f6a0732",
+  "set": "cmr",
+  "set_name": "Commander Legends",
+  "set_type": "draft_innovation",
+  "set_uri": "https://api.scryfall.com/sets/39de6fbf-1f11-48d0-8f04-f0407f6a0732",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Acmr&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/cmr?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/38b00110-e3de-40ce-b2bd-9466fe9e53a3/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A4a8227ff-0ae4-4405-8e44-1f5187a7f9f5&unique=prints",
+  "collector_number": "40",
+  "digital": false,
+  "rarity": "uncommon",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Chris Rallis",
+  "artist_ids": [
+    "a8e7b854-b15a-421a-b66d-6e68187ae285"
+  ],
+  "illustration_id": "01980383-ba90-448f-b703-d0a0d19ccc6f",
+  "border_color": "black",
+  "frame": "2015",
+  "frame_effects": [
+    "legendary"
+  ],
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 20260,
+  "prices": {
+    "usd": "0.28",
+    "usd_foil": "0.27",
+    "usd_etched": null,
+    "eur": "0.21",
+    "eur_foil": "0.27",
+    "tix": "0.04"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=497560&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DRadiant%252C%2BSerra%2BArchangel",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DRadiant%252C%2BSerra%2BArchangel",
+    "edhrec": "https://edhrec.com/route/?cc=Radiant%2C+Serra+Archangel"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F226268%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=510250&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/84862?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "oracle_id": "bfd8daa9-029f-41aa-a947-cdfde3f4d6b6",
+  "name": "Took Reaper",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Took Reaper",
+      "oracle_fingerprint": "9c923bbdf3723e59161a6bef4ab0b100",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } },
+            "effects": [{ "RingTempts": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

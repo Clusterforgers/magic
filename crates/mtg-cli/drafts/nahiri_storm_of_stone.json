@@ -1,0 +1,36 @@
+{
+  "oracle_id": "6332d6d3-1d77-486c-b040-02fc7225f245",
+  "name": "Nahiri, Storm of Stone",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Nahiri, Storm of Stone",
+      "oracle_fingerprint": "f341215613fbd917e2df96431c734dc1",
+      "abilities": [
+        {
+          "Static": {
+            "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+            "mods": [{ "AddKeyword": "FirstStrike" }],
+            "condition": "YourTurn"
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": "MinusX",
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }, "Tapped"] } }],
+            "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": "X" } }]
+          }
+        },
+        {
+          "CostModifier": {
+            "applies_to": [{ "ControlledBy": "You" }],
+            "change": "Reduce",
+            "mana": "{1}",
+            "condition": "YourTurn",
+            "activating": "Equip"
+          }
+        }
+      ]
+    }
+  ]
+}

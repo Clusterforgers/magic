@@ -1,0 +1,33 @@
+{
+  "oracle_id": "2e00598c-4f06-45aa-87a7-c63b5e8e92f3",
+  "name": "Steam Frigate",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Steam Frigate",
+      "oracle_fingerprint": "f5da8fc9aa0c22c42652a49b14b4b919",
+      "abilities": [
+        {
+          "Rule": {
+            "rule": {
+              "Cant": {
+                "who": "This",
+                "action": {
+                  "Attack": {
+                    "unless": {
+                      "Compare": {
+                        "left": { "Count": [{ "Subtype": "Island" }, { "ControlledBy": "You" }] },
+                        "op": "Ge",
+                        "right": 1
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

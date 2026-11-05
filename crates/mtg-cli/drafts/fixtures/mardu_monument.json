@@ -1,0 +1,151 @@
+{
+  "object": "card",
+  "id": "9bd0c794-77bc-4d4a-a769-3829e2ce4bdf",
+  "oracle_id": "5f662383-1684-4bd3-be05-e696d301e26c",
+  "multiverse_ids": [
+    693725
+  ],
+  "mtgo_id": 139459,
+  "arena_id": 95773,
+  "tcgplayer_id": 624043,
+  "cardmarket_id": 817880,
+  "name": "Mardu Monument",
+  "lang": "en",
+  "released_at": "2025-04-11",
+  "uri": "https://api.scryfall.com/cards/9bd0c794-77bc-4d4a-a769-3829e2ce4bdf",
+  "scryfall_uri": "https://scryfall.com/card/tdm/245/mardu-monument?utm_source=api",
+  "layout": "normal",
+  "highres_image": false,
+  "image_status": "lowres",
+  "image_updated_at": "2026-07-13T01:48:05Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/9/b/9bd0c794-77bc-4d4a-a769-3829e2ce4bdf.jpg?1783907285",
+    "normal": "https://cards.scryfall.io/normal/front/9/b/9bd0c794-77bc-4d4a-a769-3829e2ce4bdf.jpg?1783907285",
+    "large": "https://cards.scryfall.io/large/front/9/b/9bd0c794-77bc-4d4a-a769-3829e2ce4bdf.jpg?1783907285",
+    "png": "https://cards.scryfall.io/png/front/9/b/9bd0c794-77bc-4d4a-a769-3829e2ce4bdf.png?1783907285",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/9/b/9bd0c794-77bc-4d4a-a769-3829e2ce4bdf.jpg?1783907285",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/9/b/9bd0c794-77bc-4d4a-a769-3829e2ce4bdf.jpg?1783907285",
+    "thumb": "https://cards.scryfall.io/thumb/front/9/b/9bd0c794-77bc-4d4a-a769-3829e2ce4bdf.webp?1783907285",
+    "grid": "https://cards.scryfall.io/grid/front/9/b/9bd0c794-77bc-4d4a-a769-3829e2ce4bdf.webp?1783907285",
+    "display": "https://cards.scryfall.io/display/front/9/b/9bd0c794-77bc-4d4a-a769-3829e2ce4bdf.webp?1783907285",
+    "art": "https://cards.scryfall.io/art/front/9/b/9bd0c794-77bc-4d4a-a769-3829e2ce4bdf.webp?1783907285",
+    "crop": "https://cards.scryfall.io/crop/front/9/b/9bd0c794-77bc-4d4a-a769-3829e2ce4bdf.webp?1783907285",
+    "jpeg": "https://cards.scryfall.io/normal/front/9/b/9bd0c794-77bc-4d4a-a769-3829e2ce4bdf.jpg?1783907285"
+  },
+  "mana_cost": "{2}",
+  "cmc": 2.0,
+  "type_line": "Artifact",
+  "oracle_text": "When this artifact enters, search your library for a basic Mountain, Plains, or Swamp card, reveal it, put it into your hand, then shuffle.\n{2}{R}{W}{B}, {T}, Sacrifice this artifact: Create three 1/1 red Warrior creature tokens. They gain menace and haste until end of turn. Activate only as a sorcery. (A creature with menace can't be blocked except by two or more creatures.)",
+  "colors": [],
+  "color_identity": [
+    "B",
+    "R",
+    "W"
+  ],
+  "keywords": [],
+  "all_parts": [
+    {
+      "object": "related_card",
+      "id": "9bd0c794-77bc-4d4a-a769-3829e2ce4bdf",
+      "component": "combo_piece",
+      "name": "Mardu Monument",
+      "type_line": "Artifact",
+      "uri": "https://api.scryfall.com/cards/9bd0c794-77bc-4d4a-a769-3829e2ce4bdf"
+    },
+    {
+      "object": "related_card",
+      "id": "7edc0515-a130-45a7-aa09-0e23bba41587",
+      "component": "token",
+      "name": "Warrior",
+      "type_line": "Token Creature — Warrior",
+      "uri": "https://api.scryfall.com/cards/7edc0515-a130-45a7-aa09-0e23bba41587"
+    }
+  ],
+  "legalities": {
+    "standard": "legal",
+    "future": "legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "arena",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "1361ca81-1304-49a8-b2e6-e76a4aa4a8c3",
+  "set": "tdm",
+  "set_name": "Tarkir: Dragonstorm",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/1361ca81-1304-49a8-b2e6-e76a4aa4a8c3",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Atdm&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/tdm?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/9bd0c794-77bc-4d4a-a769-3829e2ce4bdf/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A5f662383-1684-4bd3-be05-e696d301e26c&unique=prints",
+  "collector_number": "245",
+  "digital": false,
+  "rarity": "uncommon",
+  "watermark": "mardu",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Salvatorre Zee Yazzie",
+  "artist_ids": [
+    "1629eaec-cc37-4870-bc89-1e8ca5569507"
+  ],
+  "illustration_id": "0fb18376-97f5-425a-aaae-87af3660676a",
+  "border_color": "black",
+  "frame": "2015",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 14280,
+  "prices": {
+    "usd": "0.18",
+    "usd_foil": "0.26",
+    "usd_etched": null,
+    "eur": "0.07",
+    "eur_foil": "0.16",
+    "tix": "0.03"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=693725&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DMardu%2BMonument",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DMardu%2BMonument",
+    "edhrec": "https://edhrec.com/route/?cc=Mardu+Monument"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F624043%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=817880&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/139459?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

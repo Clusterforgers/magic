@@ -1,0 +1,22 @@
+{
+  "oracle_id": "796d3836-d820-440c-b0ad-5907b3cfcb10",
+  "name": "Ranger's Firebrand",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ranger's Firebrand",
+      "oracle_fingerprint": "a1e2a76847bd1e46fd2812c0aff3dc95",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [
+              { "DealDamage": { "to": { "Target": 0 }, "amount": 2 } },
+              { "RingTempts": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

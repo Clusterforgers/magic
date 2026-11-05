@@ -1,7 +1,7 @@
 {
   "oracle_id": "3f8182e5-4df5-4beb-a3b7-387ed1e86c99",
   "name": "Rimescale Dragon",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Rimescale Dragon",
@@ -9,9 +9,13 @@
       "abilities": [
         { "Keyword": "Flying" },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 7, "end": 116 }
+          "Activated": {
+            "cost": "{2}{S}",
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              { "PutCounters": { "on": { "Target": 0 }, "counter": { "Other": "ice" } } },
+              { "Tap": { "what": { "Target": 0 } } }
+            ]
           }
         },
         {

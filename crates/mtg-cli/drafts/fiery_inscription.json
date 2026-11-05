@@ -1,0 +1,30 @@
+{
+  "oracle_id": "111889d4-bcca-4b1f-ad48-3077e2f5136f",
+  "name": "Fiery Inscription",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Fiery Inscription",
+      "oracle_fingerprint": "1ba887c84d3e835b747204d022d2f6f0",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "RingTempts": {} }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "SpellCast": {
+                "what": [{ "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] }],
+                "by": "You"
+              }
+            },
+            "effects": [{ "DealDamage": { "to": "Opponents", "amount": 2 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

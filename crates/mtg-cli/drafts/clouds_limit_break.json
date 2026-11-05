@@ -1,0 +1,49 @@
+{
+  "oracle_id": "93df61b5-6abe-4603-9a6e-cba90a834173",
+  "name": "Cloud's Limit Break",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Cloud's Limit Break",
+      "oracle_fingerprint": "3d2afedee9255c30caed14ad617626d5",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Modal": {
+                  "mode_costs": ["{0}", "{1}", "{3}{W}"],
+                  "modes": [
+                    {
+                      "targets": [{ "what": { "Object": [{ "Type": "Creature" }, "Tapped"] } }],
+                      "effects": [{ "Destroy": { "what": { "Target": 0 } } }]
+                    },
+                    {
+                      "targets": [
+                        {
+                          "what": {
+                            "Together": {
+                              "what": { "Object": [{ "Type": "Creature" }, "Tapped"] },
+                              "rule": "DifferentControllers"
+                            }
+                          },
+                          "bounds": { "min": 0, "max": { "Players": "EachPlayer" } }
+                        }
+                      ],
+                      "effects": [{ "Destroy": { "what": { "Target": 0 } } }]
+                    },
+                    {
+                      "effects": [
+                        { "Destroy": { "what": { "Each": [{ "Type": "Creature" }, "Tapped"] } } }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,48 @@
+{
+  "oracle_id": "9178253e-0d89-450d-a93b-ed4765e945db",
+  "name": "Inquisition",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Inquisition",
+      "oracle_fingerprint": "a53992b4f62131d8c8198e6cc3dc3503",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              {
+                "Bind": {
+                  "what": { "Each": [{ "OwnedBy": { "Target": 0 } }, { "In": "Hand" }] },
+                  "as": "revealed"
+                }
+              },
+              { "Reveal": { "what": { "Bound": "revealed" } } },
+              {
+                "DealDamage": {
+                  "to": { "Target": 0 },
+                  "amount": {
+                    "Count": [
+                      { "Is": { "Bound": "revealed" } },
+                      {
+                        "AnyOf": [
+                          { "In": "Battlefield" },
+                          { "In": "Hand" },
+                          { "In": "Library" },
+                          { "In": "Graveyard" },
+                          { "In": "Exile" },
+                          { "In": "Stack" }
+                        ]
+                      },
+                      { "Color": "White" }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

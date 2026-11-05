@@ -1,0 +1,164 @@
+{
+  "object": "card",
+  "id": "03e88790-ac95-44a2-9886-153a7576c5ba",
+  "oracle_id": "903bb1dc-09cc-4dc2-8400-5a36ce9c8d6e",
+  "multiverse_ids": [],
+  "name": "Galathul Galecaller // Corvid Squall",
+  "lang": "en",
+  "released_at": "2026-05-19",
+  "uri": "https://api.scryfall.com/cards/03e88790-ac95-44a2-9886-153a7576c5ba",
+  "scryfall_uri": "https://scryfall.com/card/ysos/3/galathul-galecaller-corvid-squall?utm_source=api",
+  "layout": "prepare",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T00:43:42Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/0/3/03e88790-ac95-44a2-9886-153a7576c5ba.jpg?1783903422",
+    "normal": "https://cards.scryfall.io/normal/front/0/3/03e88790-ac95-44a2-9886-153a7576c5ba.jpg?1783903422",
+    "large": "https://cards.scryfall.io/large/front/0/3/03e88790-ac95-44a2-9886-153a7576c5ba.jpg?1783903422",
+    "png": "https://cards.scryfall.io/png/front/0/3/03e88790-ac95-44a2-9886-153a7576c5ba.png?1783903422",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/0/3/03e88790-ac95-44a2-9886-153a7576c5ba.jpg?1783903422",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/0/3/03e88790-ac95-44a2-9886-153a7576c5ba.jpg?1783903422",
+    "thumb": "https://cards.scryfall.io/thumb/front/0/3/03e88790-ac95-44a2-9886-153a7576c5ba.webp?1783903422",
+    "grid": "https://cards.scryfall.io/grid/front/0/3/03e88790-ac95-44a2-9886-153a7576c5ba.webp?1783903422",
+    "display": "https://cards.scryfall.io/display/front/0/3/03e88790-ac95-44a2-9886-153a7576c5ba.webp?1783903422",
+    "art": "https://cards.scryfall.io/art/front/0/3/03e88790-ac95-44a2-9886-153a7576c5ba.webp?1783903422",
+    "crop": "https://cards.scryfall.io/crop/front/0/3/03e88790-ac95-44a2-9886-153a7576c5ba.webp?1783903422",
+    "jpeg": "https://cards.scryfall.io/normal/front/0/3/03e88790-ac95-44a2-9886-153a7576c5ba.jpg?1783903422"
+  },
+  "mana_cost": "{1}{U} // {1}{U}",
+  "cmc": 2.0,
+  "type_line": "Creature — Bird Wizard // Sorcery",
+  "power": "2",
+  "toughness": "1",
+  "colors": [
+    "U"
+  ],
+  "color_identity": [
+    "U"
+  ],
+  "keywords": [
+    "Flying",
+    "Storm",
+    "Prepared",
+    "Flash",
+    "Conjure"
+  ],
+  "card_faces": [
+    {
+      "object": "card_face",
+      "name": "Galathul Galecaller",
+      "mana_cost": "{1}{U}",
+      "type_line": "Creature — Bird Wizard",
+      "oracle_text": "Flash\nFlying\nWhenever this creature attacks, it becomes prepared.",
+      "power": "2",
+      "toughness": "1",
+      "artist": "Justine Cruz",
+      "artist_id": "4d6acc42-7bac-42cb-ac57-a56355292e89",
+      "illustration_id": "cd7c6ce8-ba5c-4064-b081-7b7b64d540aa"
+    },
+    {
+      "object": "card_face",
+      "name": "Corvid Squall",
+      "mana_cost": "{1}{U}",
+      "type_line": "Sorcery",
+      "oracle_text": "Conjure a card named Storm Crow onto the battlefield.\nStorm",
+      "artist": "Justine Cruz",
+      "artist_id": "4d6acc42-7bac-42cb-ac57-a56355292e89"
+    }
+  ],
+  "all_parts": [
+    {
+      "object": "related_card",
+      "id": "1b2e0030-83fd-4349-a912-083845477eb4",
+      "component": "combo_piece",
+      "name": "Storm Crow",
+      "type_line": "Creature — Bird",
+      "uri": "https://api.scryfall.com/cards/1b2e0030-83fd-4349-a912-083845477eb4"
+    },
+    {
+      "object": "related_card",
+      "id": "03e88790-ac95-44a2-9886-153a7576c5ba",
+      "component": "combo_piece",
+      "name": "Galathul Galecaller // Corvid Squall",
+      "type_line": "Creature — Bird Wizard // Sorcery",
+      "uri": "https://api.scryfall.com/cards/03e88790-ac95-44a2-9886-153a7576c5ba"
+    }
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "not_legal",
+    "pauper": "not_legal",
+    "vintage": "not_legal",
+    "penny": "not_legal",
+    "commander": "not_legal",
+    "oathbreaker": "not_legal",
+    "standardbrawl": "not_legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "legal",
+    "paupercommander": "not_legal",
+    "duel": "not_legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "arena"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "2fd19b90-7ba4-4f33-b876-3367d15ab426",
+  "set": "ysos",
+  "set_name": "Alchemy: Secrets of Strixhaven",
+  "set_type": "alchemy",
+  "set_uri": "https://api.scryfall.com/sets/2fd19b90-7ba4-4f33-b876-3367d15ab426",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Aysos&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/ysos?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/03e88790-ac95-44a2-9886-153a7576c5ba/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A903bb1dc-09cc-4dc2-8400-5a36ce9c8d6e&unique=prints",
+  "collector_number": "3",
+  "digital": true,
+  "rarity": "rare",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Justine Cruz",
+  "artist_ids": [
+    "4d6acc42-7bac-42cb-ac57-a56355292e89"
+  ],
+  "illustration_id": "cd7c6ce8-ba5c-4064-b081-7b7b64d540aa",
+  "border_color": "black",
+  "frame": "2015",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "prices": {
+    "usd": null,
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": null,
+    "eur_foil": null,
+    "tix": null
+  },
+  "related_uris": {
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DGalathul%2BGalecaller%2B%252F%252F%2BCorvid%2BSquall",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DGalathul%2BGalecaller%2B%252F%252F%2BCorvid%2BSquall",
+    "edhrec": "https://edhrec.com/route/?cc=Galathul+Galecaller"
+  }
+}

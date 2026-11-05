@@ -1,0 +1,41 @@
+{
+  "oracle_id": "a1ed2274-7774-4c65-a95b-28ae5e225994",
+  "name": "Beacon of Destiny",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Beacon of Destiny",
+      "oracle_fingerprint": "f3529cee7f6c4ba0943488003cae35c5",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "AnyOf": [{ "In": "Battlefield" }, { "In": "Stack" }, { "In": "Command" }] }
+                    ]
+                  },
+                  "as": "source"
+                }
+              },
+              {
+                "Shield": {
+                  "when": { "Damage": { "to": "You", "source": [{ "Is": { "Bound": "source" } }] } },
+                  "by": {
+                    "InsteadNext": [
+                      { "DealDamage": { "source": "Dealer", "to": "This", "amount": "Triggering" } }
+                    ]
+                  },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

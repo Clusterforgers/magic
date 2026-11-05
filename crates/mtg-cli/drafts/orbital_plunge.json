@@ -1,0 +1,63 @@
+{
+  "oracle_id": "4f10b164-6d36-4935-92e7-53be73ac4c8a",
+  "name": "Orbital Plunge",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Orbital Plunge",
+      "oracle_fingerprint": "4059935005bac6c47b7b4da5e8d5cccf",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              { "DealDamage": { "to": { "Target": 0 }, "amount": 6, "excess": { "as": "excess" } } },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": { "left": { "Bound": "excess" }, "op": "Ge", "right": 1 }
+                  },
+                  "then": [
+                    {
+                      "CreateToken": {
+                        "token": {
+                          "Custom": {
+                            "name": "Lander",
+                            "types": ["Artifact"],
+                            "subtypes": ["Lander"],
+                            "abilities": [
+                              {
+                                "Activated": {
+                                  "cost": [{ "Mana": "{2}" }, "Tap", "SacrificeSelf"],
+                                  "effects": [
+                                    {
+                                      "Search": {
+                                        "filter": [{ "Type": "Land" }, { "Supertype": "Basic" }],
+                                        "as": "found"
+                                      }
+                                    },
+                                    {
+                                      "Move": {
+                                        "what": { "Bound": "found" },
+                                        "to": { "Battlefield": { "tapped": true } }
+                                      }
+                                    },
+                                    { "Shuffle": {} }
+                                  ]
+                                }
+                              }
+                            ]
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

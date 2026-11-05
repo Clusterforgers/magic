@@ -1,0 +1,131 @@
+{
+  "object": "card",
+  "id": "48c1a040-9045-4977-84e4-695de0f886a9",
+  "oracle_id": "ce176172-6c7b-40b0-a6d0-68e9c32b3402",
+  "multiverse_ids": [
+    397472
+  ],
+  "mtgo_id": 56802,
+  "mtgo_foil_id": 56803,
+  "name": "Hammerhead Shark",
+  "lang": "en",
+  "released_at": "2015-05-06",
+  "uri": "https://api.scryfall.com/cards/48c1a040-9045-4977-84e4-695de0f886a9",
+  "scryfall_uri": "https://scryfall.com/card/tpr/52/hammerhead-shark?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T10:28:17Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/4/8/48c1a040-9045-4977-84e4-695de0f886a9.jpg?1783938497",
+    "normal": "https://cards.scryfall.io/normal/front/4/8/48c1a040-9045-4977-84e4-695de0f886a9.jpg?1783938497",
+    "large": "https://cards.scryfall.io/large/front/4/8/48c1a040-9045-4977-84e4-695de0f886a9.jpg?1783938497",
+    "png": "https://cards.scryfall.io/png/front/4/8/48c1a040-9045-4977-84e4-695de0f886a9.png?1783938497",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/4/8/48c1a040-9045-4977-84e4-695de0f886a9.jpg?1783938497",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/4/8/48c1a040-9045-4977-84e4-695de0f886a9.jpg?1783938497",
+    "thumb": "https://cards.scryfall.io/thumb/front/4/8/48c1a040-9045-4977-84e4-695de0f886a9.webp?1783938497",
+    "grid": "https://cards.scryfall.io/grid/front/4/8/48c1a040-9045-4977-84e4-695de0f886a9.webp?1783938497",
+    "display": "https://cards.scryfall.io/display/front/4/8/48c1a040-9045-4977-84e4-695de0f886a9.webp?1783938497",
+    "art": "https://cards.scryfall.io/art/front/4/8/48c1a040-9045-4977-84e4-695de0f886a9.webp?1783938497",
+    "crop": "https://cards.scryfall.io/crop/front/4/8/48c1a040-9045-4977-84e4-695de0f886a9.webp?1783938497",
+    "jpeg": "https://cards.scryfall.io/normal/front/4/8/48c1a040-9045-4977-84e4-695de0f886a9.jpg?1783938497"
+  },
+  "mana_cost": "{1}{U}",
+  "cmc": 2.0,
+  "type_line": "Creature — Shark",
+  "oracle_text": "This creature can't attack unless defending player controls an Island.",
+  "power": "2",
+  "toughness": "3",
+  "colors": [
+    "U"
+  ],
+  "color_identity": [
+    "U"
+  ],
+  "keywords": [],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "legal",
+    "predh": "legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": true,
+  "variation": false,
+  "set_id": "41b3e002-ab58-46a0-8024-056ee843e267",
+  "set": "tpr",
+  "set_name": "Tempest Remastered",
+  "set_type": "masters",
+  "set_uri": "https://api.scryfall.com/sets/41b3e002-ab58-46a0-8024-056ee843e267",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Atpr&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/tpr?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/48c1a040-9045-4977-84e4-695de0f886a9/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Ace176172-6c7b-40b0-a6d0-68e9c32b3402&unique=prints",
+  "collector_number": "52",
+  "digital": true,
+  "rarity": "common",
+  "flavor_text": "Cross the eyes of a hammerhead and you'll dot its teeth.",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Stephen Daniele",
+  "artist_ids": [
+    "a267f9bb-072b-410a-a704-50f4d19020d8"
+  ],
+  "illustration_id": "0e4a09aa-033d-4801-8c90-a93bbec899ec",
+  "border_color": "black",
+  "frame": "2015",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 25375,
+  "prices": {
+    "usd": null,
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": null,
+    "eur_foil": null,
+    "tix": "0.04"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=397472&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DHammerhead%2BShark",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DHammerhead%2BShark",
+    "edhrec": "https://edhrec.com/route/?cc=Hammerhead+Shark"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fmagic%2Fproduct%3FproductLineName%3Dmagic%26q%3DHammerhead%2BShark%26view%3Dgrid",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products/Search?referrer=scryfall&searchString=Hammerhead+Shark&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/56802?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

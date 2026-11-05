@@ -1,0 +1,51 @@
+{
+  "oracle_id": "06d2a96c-4f4d-4a4a-ac48-6f0fbc9d0afd",
+  "name": "Ashiok's Forerunner",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ashiok's Forerunner",
+      "oracle_fingerprint": "6b50441e3180d68d1ff4900c5ae5cfc4",
+      "abilities": [
+        { "Keyword": "Flash" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "May": {
+                        "effects": [
+                          {
+                            "Search": {
+                              "also": ["Graveyard"],
+                              "filter": [
+                                { "OwnedBy": "You" },
+                                { "Named": "Ashiok, Sculptor of Fears" }
+                              ],
+                              "reveal": true,
+                              "as": "found"
+                            }
+                          },
+                          { "Move": { "what": { "Bound": "found" }, "to": "Hand" } },
+                          {
+                            "If": {
+                              "condition": { "Searched": { "zone": "Library" } },
+                              "then": [{ "Shuffle": {} }]
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

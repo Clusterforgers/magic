@@ -1,0 +1,28 @@
+{
+  "oracle_id": "923d44a9-774d-459c-9cec-1d5b081b51f0",
+  "name": "Biomancer's Familiar",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Biomancer's Familiar",
+      "oracle_fingerprint": "1ac8e5a4e5e85a19b67fd6dd67963a1e",
+      "abilities": [
+        {
+          "CostModifier": {
+            "applies_to": [{ "Type": "Creature" }, { "ControlledBy": "You" }],
+            "change": "Reduce",
+            "mana": "{2}",
+            "activating": "Any",
+            "least": 1
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 142, "end": 246 }
+          }
+        }
+      ]
+    }
+  ]
+}

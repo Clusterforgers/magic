@@ -1,0 +1,36 @@
+{
+  "oracle_id": "55d1a788-fe9a-4e19-a524-6709f728ea28",
+  "name": "Archaic's Agony",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Archaic's Agony",
+      "oracle_fingerprint": "ed4bed6602e50c4585bb2765995bed0a",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "DealDamage": {
+                  "to": { "Target": 0 },
+                  "amount": "ColorsSpent",
+                  "excess": { "as": "excess" }
+                }
+              },
+              { "ExileTop": { "count": { "Bound": "excess" }, "as": "exiled2" } },
+              {
+                "Rule": {
+                  "rule": {
+                    "MayCast": { "from": "Exile", "only": { "Bound": "exiled2" }, "play": true }
+                  },
+                  "duration": "UntilEndOfYourNextTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

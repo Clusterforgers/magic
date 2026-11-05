@@ -1,0 +1,60 @@
+{
+  "oracle_id": "e376702a-f56e-4e47-aa8c-3f80384d12a9",
+  "name": "War of the Last Alliance",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "War of the Last Alliance",
+      "oracle_fingerprint": "6c5a6947fb350ca6e64304cbf420b035",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 1 } },
+            "effects": [
+              {
+                "Search": {
+                  "filter": [{ "Type": "Creature" }, { "Supertype": "Legendary" }],
+                  "reveal": true,
+                  "as": "found"
+                }
+              },
+              { "Move": { "what": { "Bound": "found" }, "to": "Hand" } },
+              { "Shuffle": {} }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 2 } },
+            "effects": [
+              {
+                "Search": {
+                  "filter": [{ "Type": "Creature" }, { "Supertype": "Legendary" }],
+                  "reveal": true,
+                  "as": "found"
+                }
+              },
+              { "Move": { "what": { "Bound": "found" }, "to": "Hand" } },
+              { "Shuffle": {} }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 3 } },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                  "mods": [{ "AddKeyword": "DoubleStrike" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              { "RingTempts": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

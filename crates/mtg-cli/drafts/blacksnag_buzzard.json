@@ -1,0 +1,40 @@
+{
+  "oracle_id": "99da512c-e222-4e5c-aa64-a276ed9ebe87",
+  "name": "Blacksnag Buzzard",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Blacksnag Buzzard",
+      "oracle_fingerprint": "519d32c93fe4b8bc1b15a14865c8aea4",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "WithCounters": { "counter": "+1/+1", "count": 1 } },
+            "condition": {
+              "Compare": {
+                "left": {
+                  "When": {
+                    "condition": {
+                      "Compare": {
+                        "left": { "Tallied": { "who": "EachPlayer", "what": "CreaturesDied" } },
+                        "op": "Ge",
+                        "right": 1
+                      }
+                    },
+                    "then": 1,
+                    "otherwise": 0
+                  }
+                },
+                "op": "Ge",
+                "right": 1
+              }
+            }
+          }
+        },
+        { "Keyword": { "Plot": "{1}{B}" } }
+      ]
+    }
+  ]
+}

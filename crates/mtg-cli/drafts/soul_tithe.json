@@ -1,0 +1,36 @@
+{
+  "oracle_id": "60ff5af4-eb95-4544-9f63-d42c22112486",
+  "name": "Soul Tithe",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Soul Tithe",
+      "oracle_fingerprint": "2bf2c3d213fe266fbddb99ab081fcd5d",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Not": { "Type": "Land" } }] } },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": { "ControllerOf": "Attached" } } },
+            "effects": [
+              {
+                "Pay": {
+                  "who": { "ControllerOf": "Attached" },
+                  "cost": "{1}",
+                  "times": { "Stat": { "of": "Attached", "stat": "ManaValue" } },
+                  "unpaid": [
+                    {
+                      "Sacrifice": {
+                        "who": { "ControllerOf": "Attached" },
+                        "filter": [{ "Is": "Attached" }]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

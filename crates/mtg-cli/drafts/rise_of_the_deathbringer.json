@@ -1,0 +1,52 @@
+{
+  "oracle_id": "57ea9f63-8267-4303-a3dd-9ded220294dc",
+  "name": "Rise of the Deathbringer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Rise of the Deathbringer",
+      "oracle_fingerprint": "3285102c131d280d11e52983022db6ac",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Modal": {
+                  "modes": [
+                    {
+                      "effects": [
+                        {
+                          "Draw": {
+                            "count": {
+                              "Greatest": {
+                                "of": [{ "Type": "Creature" }, { "ControlledBy": "You" }],
+                                "stat": "Power"
+                              }
+                            },
+                            "as": "drawn"
+                          }
+                        },
+                        { "LoseLife": { "amount": { "Bound": "drawn~moved" } } }
+                      ]
+                    },
+                    {
+                      "effects": [
+                        {
+                          "Continuous": {
+                            "affected": { "Each": [{ "Type": "Creature" }] },
+                            "mods": [{ "ModifyPT": { "power": -3, "toughness": -3 } }],
+                            "duration": "UntilEndOfTurn"
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,40 @@
+{
+  "oracle_id": "3c8b0a8a-8f80-4c3e-8f27-fb1df94aa0d4",
+  "name": "Blinding Flare",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Blinding Flare",
+      "oracle_fingerprint": "b5ff54428527f5f05f144af271af665c",
+      "abilities": [
+        {
+          "CostModifier": {
+            "applies_to": ["This"],
+            "change": "Increase",
+            "mana": "{R}",
+            "per": { "Sum": [{ "TargetCount": 0 }, -1] }
+          }
+        },
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": { "Object": [{ "Type": "Creature" }] },
+                "bounds": { "min": 0, "max": { "Count": [{ "Type": "Creature" }] } }
+              }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": ["CantBlock"],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

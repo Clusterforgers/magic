@@ -1,0 +1,43 @@
+{
+  "oracle_id": "242dfae4-504c-45d4-9a49-f7ab515fd23a",
+  "name": "Karrthus, Tyrant of Jund",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Karrthus, Tyrant of Jund",
+      "oracle_fingerprint": "4ef47439fe31836e7f576679cbcd257c",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": "Haste" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Subtype": "Dragon" }] },
+                  "mods": [{ "SetController": "You" }],
+                  "duration": "Forever"
+                }
+              },
+              { "Untap": { "what": { "Each": [{ "Subtype": "Dragon" }] } } }
+            ]
+          }
+        },
+        {
+          "Static": {
+            "affected": {
+              "Each": [
+                { "Type": "Creature" },
+                { "Subtype": "Dragon" },
+                "Other",
+                { "ControlledBy": "You" }
+              ]
+            },
+            "mods": [{ "AddKeyword": "Haste" }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,21 @@
+{
+  "oracle_id": "0f623e23-81ae-4c35-b68b-e0a2f431cbad",
+  "name": "Amass the Components",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Amass the Components",
+      "oracle_fingerprint": "c513683fe1b125b4f4e6f668d4a4fc59",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "Draw": { "count": 3 } },
+              { "Move": { "what": "This", "to": { "Library": { "place": "Bottom" } } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

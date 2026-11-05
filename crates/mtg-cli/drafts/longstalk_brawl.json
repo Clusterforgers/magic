@@ -1,0 +1,33 @@
+{
+  "oracle_id": "adc8976a-0871-4fd6-9c4c-822ba9549b4b",
+  "name": "Longstalk Brawl",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Longstalk Brawl",
+      "oracle_fingerprint": "10e9d9d29e2a12f3562b0cf40ed3e55e",
+      "abilities": [
+        { "Keyword": { "Gift": "TappedFish" } },
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } },
+              {
+                "what": { "Object": [{ "Type": "Creature" }, { "Not": { "ControlledBy": "You" } }] }
+              }
+            ],
+            "effects": [
+              {
+                "If": {
+                  "condition": { "Compare": { "left": "Promised", "op": "Eq", "right": 1 } },
+                  "then": [{ "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1" } }]
+                }
+              },
+              { "Fight": { "what": { "Target": 0 }, "with": { "Target": 1 } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

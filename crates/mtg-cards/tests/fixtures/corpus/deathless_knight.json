@@ -1,0 +1,145 @@
+{
+  "object": "card",
+  "id": "39c6e952-97b5-435c-a7fd-6271ddc23200",
+  "oracle_id": "f96f1a94-6226-4e1f-a7fb-a43a276b3c3a",
+  "multiverse_ids": [
+    473170
+  ],
+  "mtgo_id": 78560,
+  "arena_id": 70355,
+  "tcgplayer_id": 199553,
+  "cardmarket_id": 401839,
+  "name": "Deathless Knight",
+  "lang": "en",
+  "released_at": "2019-10-04",
+  "uri": "https://api.scryfall.com/cards/39c6e952-97b5-435c-a7fd-6271ddc23200",
+  "scryfall_uri": "https://scryfall.com/card/eld/208/deathless-knight?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T08:49:50Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/3/9/39c6e952-97b5-435c-a7fd-6271ddc23200.jpg?1783932590",
+    "normal": "https://cards.scryfall.io/normal/front/3/9/39c6e952-97b5-435c-a7fd-6271ddc23200.jpg?1783932590",
+    "large": "https://cards.scryfall.io/large/front/3/9/39c6e952-97b5-435c-a7fd-6271ddc23200.jpg?1783932590",
+    "png": "https://cards.scryfall.io/png/front/3/9/39c6e952-97b5-435c-a7fd-6271ddc23200.png?1783932590",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/3/9/39c6e952-97b5-435c-a7fd-6271ddc23200.jpg?1783932590",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/3/9/39c6e952-97b5-435c-a7fd-6271ddc23200.jpg?1783932590",
+    "thumb": "https://cards.scryfall.io/thumb/front/3/9/39c6e952-97b5-435c-a7fd-6271ddc23200.webp?1783932590",
+    "grid": "https://cards.scryfall.io/grid/front/3/9/39c6e952-97b5-435c-a7fd-6271ddc23200.webp?1783932590",
+    "display": "https://cards.scryfall.io/display/front/3/9/39c6e952-97b5-435c-a7fd-6271ddc23200.webp?1783932590",
+    "art": "https://cards.scryfall.io/art/front/3/9/39c6e952-97b5-435c-a7fd-6271ddc23200.webp?1783932590",
+    "crop": "https://cards.scryfall.io/crop/front/3/9/39c6e952-97b5-435c-a7fd-6271ddc23200.webp?1783932590",
+    "jpeg": "https://cards.scryfall.io/normal/front/3/9/39c6e952-97b5-435c-a7fd-6271ddc23200.jpg?1783932590"
+  },
+  "mana_cost": "{B/G}{B/G}{B/G}{B/G}",
+  "cmc": 4.0,
+  "type_line": "Creature — Skeleton Knight",
+  "oracle_text": "Haste\nWhen you gain life for the first time each turn, return this card from your graveyard to your hand.",
+  "power": "4",
+  "toughness": "2",
+  "colors": [
+    "B",
+    "G"
+  ],
+  "color_identity": [
+    "B",
+    "G"
+  ],
+  "keywords": [
+    "Haste"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "arena",
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "a90a7b2f-9dd8-4fc7-9f7d-8ea2797ec782",
+  "set": "eld",
+  "set_name": "Throne of Eldraine",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/a90a7b2f-9dd8-4fc7-9f7d-8ea2797ec782",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Aeld&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/eld?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/39c6e952-97b5-435c-a7fd-6271ddc23200/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Af96f1a94-6226-4e1f-a7fb-a43a276b3c3a&unique=prints",
+  "collector_number": "208",
+  "digital": false,
+  "rarity": "uncommon",
+  "flavor_text": "\"Headed to the wilds? Beware the dead riders who serve the Shadow Queen.\"\n—Scalan, Edgewall innkeeper",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Igor Kieryluk",
+  "artist_ids": [
+    "9c3e9d17-509f-485c-9360-46d897ce716b"
+  ],
+  "illustration_id": "7059907e-9624-4fa2-abd1-4ea24c5ed32d",
+  "border_color": "black",
+  "frame": "2015",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 22794,
+  "penny_rank": 2660,
+  "preview": {
+    "source": "Game Legends",
+    "source_uri": "https://www.gamelegends.it/309171/magic-the-gathering-throne-of-eldraine-spoiler-del-cavaliere-immortale/",
+    "previewed_at": "2019-09-19"
+  },
+  "prices": {
+    "usd": "0.10",
+    "usd_foil": "0.37",
+    "usd_etched": null,
+    "eur": "0.11",
+    "eur_foil": "0.30",
+    "tix": "0.03"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=473170&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DDeathless%2BKnight",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DDeathless%2BKnight",
+    "edhrec": "https://edhrec.com/route/?cc=Deathless+Knight"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F199553%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=401839&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/78560?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

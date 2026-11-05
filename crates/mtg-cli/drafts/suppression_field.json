@@ -1,0 +1,21 @@
+{
+  "oracle_id": "63439f19-01e5-4ae1-9841-90493d62d0c8",
+  "name": "Suppression Field",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Suppression Field",
+      "oracle_fingerprint": "2132e9a18294b19ae7d5a7c4ba660a3d",
+      "abilities": [
+        {
+          "CostModifier": {
+            "applies_to": [],
+            "change": "Increase",
+            "mana": "{2}",
+            "activating": "Any"
+          }
+        }
+      ]
+    }
+  ]
+}

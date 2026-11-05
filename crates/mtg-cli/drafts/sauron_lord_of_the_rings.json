@@ -1,7 +1,7 @@
 {
   "oracle_id": "69c674c7-48a5-49c8-b0be-3f2b5c6a548c",
   "name": "Sauron, Lord of the Rings",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Sauron, Lord of the Rings",
@@ -27,9 +27,15 @@
         },
         { "Keyword": "Trample" },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 133, "end": 201 }
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "ControlledBy": "Opponents" }, "Commander"],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "effects": [{ "RingTempts": {} }]
           }
         }
       ]

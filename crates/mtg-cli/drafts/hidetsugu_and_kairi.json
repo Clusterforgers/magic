@@ -1,0 +1,89 @@
+{
+  "oracle_id": "18591d9e-c9f5-4ae8-aee1-8580bc8fa600",
+  "name": "Hidetsugu and Kairi",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Hidetsugu and Kairi",
+      "oracle_fingerprint": "17ec131b55d4ebd2124f5887539f8b7b",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              { "Draw": { "count": 3 } },
+              {
+                "Choose": {
+                  "from": { "Each": [{ "In": "Hand" }, { "OwnedBy": "You" }] },
+                  "count": { "min": 2, "max": 2 },
+                  "as": "picked"
+                }
+              },
+              { "Move": { "what": { "Bound": "picked" }, "to": { "Library": { "place": "Top" } } } }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } },
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              { "ExileTop": { "as": "exiled" } },
+              {
+                "LoseLife": {
+                  "who": { "Target": 0 },
+                  "amount": {
+                    "Total": {
+                      "of": [
+                        { "Is": { "Bound": "exiled" } },
+                        {
+                          "AnyOf": [
+                            { "In": "Battlefield" },
+                            { "In": "Hand" },
+                            { "In": "Library" },
+                            { "In": "Graveyard" },
+                            { "In": "Exile" },
+                            { "In": "Stack" }
+                          ]
+                        }
+                      ],
+                      "stat": "ManaValue"
+                    }
+                  }
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": {
+                        "Count": [
+                          { "Is": { "Bound": "exiled" } },
+                          {
+                            "AnyOf": [
+                              { "In": "Battlefield" },
+                              { "In": "Hand" },
+                              { "In": "Library" },
+                              { "In": "Graveyard" },
+                              { "In": "Exile" },
+                              { "In": "Stack" }
+                            ]
+                          },
+                          { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] }
+                        ]
+                      },
+                      "op": "Eq",
+                      "right": 1
+                    }
+                  },
+                  "then": [{ "CastFromZone": { "what": { "Bound": "exiled" }, "free": true } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

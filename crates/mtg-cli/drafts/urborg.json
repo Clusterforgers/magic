@@ -1,0 +1,49 @@
+{
+  "oracle_id": "b6114962-035e-4e7f-9009-4739bf83a05a",
+  "name": "Urborg",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Urborg",
+      "oracle_fingerprint": "175cc725f37e0527e81f7b7db5645a55",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Black"] } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Either": {
+                  "first": [
+                    {
+                      "Continuous": {
+                        "affected": { "Target": 0 },
+                        "mods": [{ "RemoveKeyword": "FirstStrike" }],
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ],
+                  "second": [
+                    {
+                      "Continuous": {
+                        "affected": { "Target": 0 },
+                        "mods": [{ "RemoveKeyword": { "Landwalk": [{ "Subtype": "Swamp" }] } }],
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

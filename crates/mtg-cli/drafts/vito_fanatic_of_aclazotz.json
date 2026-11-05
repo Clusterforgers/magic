@@ -1,0 +1,55 @@
+{
+  "oracle_id": "9768d43b-8b3f-4d03-ac1b-e603af832875",
+  "name": "Vito, Fanatic of Aclazotz",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Vito, Fanatic of Aclazotz",
+      "oracle_fingerprint": "a3c5f701a9d93bba55e3eed9ccb970e8",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "Sacrificed": { "what": ["Other"], "by": "You" } },
+            "effects": [
+              {
+                "If": {
+                  "condition": { "Compare": { "left": "ResolvedThisTurn", "op": "Eq", "right": 1 } },
+                  "then": [{ "GainLife": { "amount": 2 } }]
+                }
+              },
+              {
+                "If": {
+                  "condition": { "Compare": { "left": "ResolvedThisTurn", "op": "Eq", "right": 2 } },
+                  "then": [{ "LoseLife": { "who": "Opponents", "amount": 2 } }]
+                }
+              },
+              {
+                "If": {
+                  "condition": { "Compare": { "left": "ResolvedThisTurn", "op": "Eq", "right": 3 } },
+                  "then": [
+                    {
+                      "CreateToken": {
+                        "token": {
+                          "Custom": {
+                            "name": "Vampire Demon",
+                            "colors": ["White", "Black"],
+                            "types": ["Creature"],
+                            "subtypes": ["Vampire", "Demon"],
+                            "power": 4,
+                            "toughness": 3,
+                            "abilities": [{ "Keyword": "Flying" }]
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

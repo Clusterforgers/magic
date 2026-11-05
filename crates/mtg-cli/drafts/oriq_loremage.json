@@ -1,0 +1,50 @@
+{
+  "oracle_id": "7d1dbe80-9ad0-41ad-8ba6-e1094f596eaf",
+  "name": "Oriq Loremage",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Oriq Loremage",
+      "oracle_fingerprint": "c91b12144a3ec22b4cdedfac2e2c77d3",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [
+              { "Search": { "filter": [], "as": "found" } },
+              { "Move": { "what": { "Bound": "found" }, "to": "Graveyard", "as": "found_moved" } },
+              { "Shuffle": {} },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": {
+                        "Count": [
+                          { "Is": { "Bound": "found_moved" } },
+                          {
+                            "AnyOf": [
+                              { "In": "Battlefield" },
+                              { "In": "Hand" },
+                              { "In": "Library" },
+                              { "In": "Graveyard" },
+                              { "In": "Exile" },
+                              { "In": "Stack" }
+                            ]
+                          },
+                          { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] }
+                        ]
+                      },
+                      "op": "Eq",
+                      "right": 1
+                    }
+                  },
+                  "then": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

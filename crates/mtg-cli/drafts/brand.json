@@ -1,0 +1,27 @@
+{
+  "oracle_id": "eec7500b-418d-4387-beb2-d53e047c1d22",
+  "name": "Brand",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Brand",
+      "oracle_fingerprint": "12410304fae0f38daefc3c84778bc7f7",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "OwnedBy": "You" }] },
+                  "mods": [{ "SetController": "You" }],
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Cycling": "{2}" } }
+      ]
+    }
+  ]
+}

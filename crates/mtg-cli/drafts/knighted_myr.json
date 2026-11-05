@@ -1,0 +1,28 @@
+{
+  "oracle_id": "dfee20a6-7737-49a8-b1cb-0a4914ac0ad3",
+  "name": "Knighted Myr",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Knighted Myr",
+      "oracle_fingerprint": "e6cdc455a4806a7767a6726aec40d3f0",
+      "abilities": [
+        { "Activated": { "cost": "{2}{W}", "effects": [{ "Adapt": { "count": 1 } }] } },
+        {
+          "Triggered": {
+            "when": { "Batch": { "CountersPut": { "what": ["This"], "counter": "+1/+1" } } },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "AddKeyword": "DoubleStrike" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

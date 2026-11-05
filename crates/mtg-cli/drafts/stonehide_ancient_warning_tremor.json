@@ -1,0 +1,53 @@
+{
+  "oracle_id": "3fb5fe93-f61a-46bc-85ef-419ed1ea3522",
+  "name": "Stonehide Ancient // Warning Tremor",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Stonehide Ancient",
+      "oracle_fingerprint": "de1ab23e8f5383e1b4a0a3a4efa0f30a",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": "Vigilance" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Move": {
+                  "what": { "Each": [{ "Type": "Creature" }, { "Not": { "Subtype": "Dragon" } }] },
+                  "to": "Hand"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Warning Tremor",
+      "oracle_fingerprint": "8e6825f5f841a31fb2c2c079198a9d45",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [
+              { "DealDamage": { "to": { "Target": 0 }, "amount": 2 } },
+              {
+                "Rule": {
+                  "rule": {
+                    "NextSpell": {
+                      "what": [{ "Subtype": "Dragon" }],
+                      "benefit": { "Cost": { "change": "Reduce", "mana": "{1}", "per": 2 } }
+                    }
+                  },
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

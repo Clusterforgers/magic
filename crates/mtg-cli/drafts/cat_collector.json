@@ -1,0 +1,41 @@
+{
+  "oracle_id": "52f1b5a4-62ff-44de-80da-503d4e52d312",
+  "name": "Cat Collector",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Cat Collector",
+      "oracle_fingerprint": "fe6be3e3fa59d414cd083e868098593c",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "CreateToken": { "token": { "Named": "food" } } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Nth": { "event": { "LifeGained": { "who": "You" } }, "nth": 1 } },
+            "if": { "AtTrigger": "YourTurn" },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Cat",
+                      "colors": ["White"],
+                      "types": ["Creature"],
+                      "subtypes": ["Cat"],
+                      "power": 1,
+                      "toughness": 1
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,49 @@
+{
+  "oracle_id": "351c4f85-8792-4710-8cc9-d3e36657f6db",
+  "name": "Sealock Monster",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sealock Monster",
+      "oracle_fingerprint": "1c565ec2786f71b9d7712a108f9ba142",
+      "abilities": [
+        {
+          "Rule": {
+            "rule": {
+              "Cant": {
+                "who": "This",
+                "action": {
+                  "Attack": {
+                    "unless": {
+                      "Compare": {
+                        "left": { "Count": [{ "Subtype": "Island" }, { "ControlledBy": "You" }] },
+                        "op": "Ge",
+                        "right": 1
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        { "Activated": { "cost": "{5}{U}{U}", "effects": [{ "Monstrosity": { "count": 3 } }] } },
+        {
+          "Triggered": {
+            "when": { "BecomesMonstrous": { "what": ["This"] } },
+            "targets": [{ "what": { "Object": [{ "Type": "Land" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "AddSubtype": "Island" }],
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

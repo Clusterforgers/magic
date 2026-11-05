@@ -1,0 +1,48 @@
+{
+  "oracle_id": "c4fe63e7-bb4c-4aff-b74f-d385d0128def",
+  "name": "Staff of Eden, Vault's Key",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Staff of Eden, Vault's Key",
+      "oracle_fingerprint": "0af04cbaf128f666899bba5ce1ca711b",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Supertype": "Legendary" },
+                    { "Not": { "Named": "Staff of Eden, Vault's Key" } },
+                    {
+                      "AnyOf": [
+                        { "Type": "Artifact" },
+                        { "Type": "Battle" },
+                        { "Type": "Creature" },
+                        { "Type": "Enchantment" },
+                        { "Type": "Land" },
+                        { "Type": "Planeswalker" }
+                      ]
+                    },
+                    { "In": "Graveyard" }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              { "Move": { "what": { "Target": 0 }, "to": { "Battlefield": { "under": "You" } } } }
+            ]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 158, "end": 220 }
+          }
+        }
+      ]
+    }
+  ]
+}

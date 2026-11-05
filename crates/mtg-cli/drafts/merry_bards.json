@@ -1,0 +1,96 @@
+{
+  "oracle_id": "699fa8e6-84f5-4010-a8fe-7b2e4f280ef9",
+  "name": "Merry Bards",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Merry Bards",
+      "oracle_fingerprint": "9d7cfa3c86d58ba63176be15279bc23d",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": "{1}",
+                  "paid": [
+                    {
+                      "Reflexive": {
+                        "targets": [
+                          {
+                            "what": {
+                              "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }]
+                            }
+                          }
+                        ],
+                        "effects": [
+                          {
+                            "CreateToken": {
+                              "token": {
+                                "Custom": {
+                                  "name": "Young Hero",
+                                  "types": ["Enchantment"],
+                                  "subtypes": ["Aura", "Role"],
+                                  "abilities": [
+                                    { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+                                    {
+                                      "Static": {
+                                        "affected": "Attached",
+                                        "mods": [
+                                          {
+                                            "GrantAbility": {
+                                              "Triggered": {
+                                                "when": { "Attacks": { "what": ["This"] } },
+                                                "if": {
+                                                  "Compare": {
+                                                    "left": {
+                                                      "Count": [
+                                                        "This",
+                                                        {
+                                                          "Compare": {
+                                                            "stat": "Toughness",
+                                                            "op": "Le",
+                                                            "to": 3
+                                                          }
+                                                        }
+                                                      ]
+                                                    },
+                                                    "op": "Ge",
+                                                    "right": 1
+                                                  }
+                                                },
+                                                "effects": [
+                                                  {
+                                                    "PutCounters": {
+                                                      "on": "This",
+                                                      "counter": "+1/+1"
+                                                    }
+                                                  }
+                                                ]
+                                              }
+                                            }
+                                          }
+                                        ]
+                                      }
+                                    }
+                                  ]
+                                }
+                              },
+                              "as": "token"
+                            }
+                          },
+                          { "Attach": { "what": { "Bound": "token" }, "to": { "Target": 0 } } }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,28 @@
+{
+  "oracle_id": "5bb4ee32-11c6-4ed4-a071-c3cf48070fff",
+  "name": "Embalmer's Tools",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Embalmer's Tools",
+      "oracle_fingerprint": "8e3edd8135c0f5935a778649d259b1d2",
+      "abilities": [
+        {
+          "CostModifier": {
+            "applies_to": [{ "Type": "Creature" }, { "OwnedBy": "You" }, { "In": "Graveyard" }],
+            "change": "Reduce",
+            "mana": "{1}",
+            "activating": "Any"
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "TapPermanents": { "filter": [{ "Subtype": "Zombie" }] } }],
+            "targets": [{ "what": "Player" }],
+            "effects": [{ "Mill": { "who": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

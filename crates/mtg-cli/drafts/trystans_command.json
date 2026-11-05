@@ -1,0 +1,91 @@
+{
+  "oracle_id": "ecc4e230-a546-4cb4-987c-87300060bbe2",
+  "name": "Trystan's Command",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Trystan's Command",
+      "oracle_fingerprint": "ea6eebc0ecb78cf57512536b05370732",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Modal": {
+                  "choose": { "min": 2, "max": 2 },
+                  "modes": [
+                    {
+                      "targets": [
+                        { "what": { "Object": [{ "Subtype": "Elf" }, { "ControlledBy": "You" }] } }
+                      ],
+                      "effects": [
+                        { "CreateToken": { "token": { "CopyOf": { "of": { "Target": 0 } } } } }
+                      ]
+                    },
+                    {
+                      "targets": [
+                        {
+                          "what": {
+                            "Object": [
+                              { "OwnedBy": "You" },
+                              {
+                                "AnyOf": [
+                                  { "Type": "Artifact" },
+                                  { "Type": "Battle" },
+                                  { "Type": "Creature" },
+                                  { "Type": "Enchantment" },
+                                  { "Type": "Land" },
+                                  { "Type": "Planeswalker" }
+                                ]
+                              },
+                              { "In": "Graveyard" }
+                            ]
+                          },
+                          "bounds": { "min": 1, "max": 2 }
+                        }
+                      ],
+                      "effects": [{ "Move": { "what": { "Target": 0 }, "to": "Hand" } }]
+                    },
+                    {
+                      "targets": [
+                        {
+                          "what": {
+                            "Object": [
+                              { "AnyOf": [{ "Type": "Creature" }, { "Type": "Enchantment" }] }
+                            ]
+                          }
+                        }
+                      ],
+                      "effects": [{ "Destroy": { "what": { "Target": 0 } } }]
+                    },
+                    {
+                      "targets": [{ "what": "Player" }],
+                      "effects": [
+                        {
+                          "Continuous": {
+                            "affected": {
+                              "Each": [{ "Type": "Creature" }, { "ControlledBy": { "Target": 0 } }]
+                            },
+                            "mods": [{ "ModifyPT": { "power": 3, "toughness": 3 } }],
+                            "duration": "UntilEndOfTurn"
+                          }
+                        },
+                        {
+                          "Untap": {
+                            "what": {
+                              "Each": [{ "Type": "Creature" }, { "ControlledBy": { "Target": 0 } }]
+                            }
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

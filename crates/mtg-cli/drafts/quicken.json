@@ -1,0 +1,26 @@
+{
+  "oracle_id": "cf188dd3-1927-481b-b8c0-93b1222dbf53",
+  "name": "Quicken",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Quicken",
+      "oracle_fingerprint": "f25b128f56ee98f74940661de4d1c652",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Rule": {
+                  "rule": { "NextSpell": { "what": [{ "Type": "Sorcery" }], "benefit": "Flash" } },
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              { "Draw": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

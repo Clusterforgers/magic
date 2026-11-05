@@ -1,0 +1,63 @@
+{
+  "oracle_id": "48838239-bec4-4a57-9858-425f0a937dc9",
+  "name": "Nahiri's Warcrafting",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Nahiri's Warcrafting",
+      "oracle_fingerprint": "1555625a6d7b5f2c86fafcadb72faf8a",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    {
+                      "AnyOf": [
+                        { "Type": "Creature" },
+                        { "Type": "Planeswalker" },
+                        { "Type": "Battle" }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              { "DealDamage": { "to": { "Target": 0 }, "amount": 5, "excess": { "as": "excess" } } },
+              { "LookAtTop": { "count": { "Bound": "excess" }, "as": "top2" } },
+              {
+                "Choose": {
+                  "from": { "Bound": "top2" },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "kept3",
+                  "rest_as": "rest4"
+                }
+              },
+              { "Exile": { "what": { "Bound": "kept3" }, "as": "kept3_exiled" } },
+              {
+                "Move": {
+                  "what": { "Bound": "rest4" },
+                  "to": { "Library": { "place": "Bottom", "order": "Random" } }
+                }
+              },
+              {
+                "Rule": {
+                  "rule": {
+                    "MayCast": {
+                      "from": "Exile",
+                      "only": { "Bound": "kept3_exiled" },
+                      "play": true
+                    }
+                  },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

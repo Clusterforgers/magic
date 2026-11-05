@@ -1,0 +1,30 @@
+{
+  "oracle_id": "b793141d-581c-4cc7-b09f-1fe8bd5536c5",
+  "name": "Neutralize the Guards",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Neutralize the Guards",
+      "oracle_fingerprint": "5a1a25d0f74203a849f7a081cbc81690",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": {
+                    "Each": [{ "Type": "Creature" }, { "ControlledBy": { "Target": 0 } }]
+                  },
+                  "mods": [{ "ModifyPT": { "power": -1, "toughness": -1 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              { "Surveil": { "count": 2 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

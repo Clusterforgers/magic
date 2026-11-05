@@ -1,0 +1,21 @@
+{
+  "oracle_id": "5a335534-f2de-4c9a-8584-1bb9b301034d",
+  "name": "Seek New Knowledge",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Seek New Knowledge",
+      "oracle_fingerprint": "a886d09f02c4b686609bad9c8a02b140",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "Seek": { "filter": [{ "Not": { "Type": "Land" } }], "count": 2 } },
+              { "Move": { "what": "This", "to": { "Library": { "place": "Bottom" } } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

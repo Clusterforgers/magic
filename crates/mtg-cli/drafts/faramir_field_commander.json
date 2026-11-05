@@ -1,0 +1,58 @@
+{
+  "oracle_id": "adeed5e8-9019-4740-83ea-67dcd754e194",
+  "name": "Faramir, Field Commander",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Faramir, Field Commander",
+      "oracle_fingerprint": "9350f81d25a12746e764896614ccf040",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "if": {
+              "Compare": {
+                "left": {
+                  "Tally": {
+                    "event": "Died",
+                    "who": "EachPlayer",
+                    "filter": [{ "Type": "Creature" }, { "ControlledBy": "You" }]
+                  }
+                },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "effects": [{ "Draw": {} }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "RingTempts": {
+                "who": "You",
+                "bearer": [{ "Type": "Creature" }, { "ControlledBy": "You" }, "Other"]
+              }
+            },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Human Soldier",
+                      "colors": ["White"],
+                      "types": ["Creature"],
+                      "subtypes": ["Human", "Soldier"],
+                      "power": 1,
+                      "toughness": 1
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

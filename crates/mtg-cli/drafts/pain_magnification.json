@@ -1,0 +1,20 @@
+{
+  "oracle_id": "659c749d-2852-4cce-9eba-7ea962f7af6d",
+  "name": "Pain Magnification",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Pain Magnification",
+      "oracle_fingerprint": "3586f8d1d7dfea294e74007bbee4d5ff",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": [], "to": "Opponents" } },
+            "if": { "AtTrigger": { "Compare": { "left": "Triggering", "op": "Ge", "right": 3 } } },
+            "effects": [{ "Discard": { "who": "Triggering" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,44 @@
+{
+  "oracle_id": "f4bc6674-8586-4dd9-ad3a-87ba704fda7a",
+  "name": "Oracle's Attendants",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Oracle's Attendants",
+      "oracle_fingerprint": "e3284e34e1a9bd58718491c796d73254",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "AnyOf": [{ "In": "Battlefield" }, { "In": "Stack" }, { "In": "Command" }] }
+                    ]
+                  },
+                  "as": "source"
+                }
+              },
+              {
+                "Shield": {
+                  "when": {
+                    "Damage": { "to": { "Target": 0 }, "source": [{ "Is": { "Bound": "source" } }] }
+                  },
+                  "by": {
+                    "Instead": [
+                      { "DealDamage": { "source": "Dealer", "to": "This", "amount": "Triggering" } }
+                    ]
+                  },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

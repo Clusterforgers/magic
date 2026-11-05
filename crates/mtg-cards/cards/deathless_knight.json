@@ -1,0 +1,21 @@
+{
+  "oracle_id": "f96f1a94-6226-4e1f-a7fb-a43a276b3c3a",
+  "name": "Deathless Knight",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Deathless Knight",
+      "oracle_fingerprint": "14a7b5b71bf93489cbab8c139d81ad0e",
+      "abilities": [
+        { "Keyword": "Haste" },
+        {
+          "Triggered": {
+            "when": { "Nth": { "event": { "LifeGained": { "who": "You" } }, "nth": 1 } },
+            "from": "Graveyard",
+            "effects": [{ "Move": { "what": "This", "to": "Hand" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

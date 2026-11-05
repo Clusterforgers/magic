@@ -1,0 +1,42 @@
+{
+  "oracle_id": "423659f1-1b48-4a2b-a1dc-f39fd62c6b6a",
+  "name": "Mogg Jailer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mogg Jailer",
+      "oracle_fingerprint": "f8b1e2edd6020b6ac0745152433b3c05",
+      "abilities": [
+        {
+          "Rule": {
+            "rule": {
+              "Cant": {
+                "who": "This",
+                "action": {
+                  "Attack": {
+                    "unless": {
+                      "Not": {
+                        "Compare": {
+                          "left": {
+                            "Count": [
+                              { "Type": "Creature" },
+                              "Untapped",
+                              { "Compare": { "stat": "Power", "op": "Le", "to": 2 } },
+                              { "ControlledBy": "You" }
+                            ]
+                          },
+                          "op": "Ge",
+                          "right": 1
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

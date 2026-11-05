@@ -1,7 +1,7 @@
 {
   "oracle_id": "4f69d2f9-c16a-4752-9026-794a29d73af8",
   "name": "Robot Domination",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Robot Domination",
@@ -25,9 +25,34 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 153, "end": 292 }
+          "Triggered": {
+            "when": { "CountersPut": { "what": ["This"], "counter": { "Other": "plan" } } },
+            "if": {
+              "AtTrigger": {
+                "Compare": {
+                  "left": { "Counters": { "on": "This", "counter": { "Other": "plan" } } },
+                  "op": "Eq",
+                  "right": 3
+                }
+              }
+            },
+            "effects": [
+              { "Sacrifice": { "filter": ["This"] } },
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Robot Villain",
+                      "types": ["Artifact", "Creature"],
+                      "subtypes": ["Robot", "Villain"],
+                      "power": 2,
+                      "toughness": 2
+                    }
+                  },
+                  "count": 3
+                }
+              }
+            ]
           }
         }
       ]

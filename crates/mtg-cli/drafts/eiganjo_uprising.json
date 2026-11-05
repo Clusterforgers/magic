@@ -1,0 +1,60 @@
+{
+  "oracle_id": "fe2fe9f2-908b-49a9-9648-b01e0417a364",
+  "name": "Eiganjo Uprising",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Eiganjo Uprising",
+      "oracle_fingerprint": "1612bc52953f9b7bb1f03164e6a70076",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Samurai",
+                      "colors": ["White"],
+                      "types": ["Creature"],
+                      "subtypes": ["Samurai"],
+                      "power": 2,
+                      "toughness": 2,
+                      "abilities": [{ "Keyword": "Vigilance" }]
+                    }
+                  },
+                  "count": "X",
+                  "as": "token"
+                }
+              },
+              {
+                "Continuous": {
+                  "affected": { "Bound": "token" },
+                  "mods": [{ "AddKeyword": "Menace" }, { "AddKeyword": "Haste" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "CreateToken": {
+                  "who": "Opponents",
+                  "token": {
+                    "Custom": {
+                      "name": "Samurai",
+                      "colors": ["White"],
+                      "types": ["Creature"],
+                      "subtypes": ["Samurai"],
+                      "power": 2,
+                      "toughness": 2,
+                      "abilities": [{ "Keyword": "Vigilance" }]
+                    }
+                  },
+                  "count": { "Sum": ["X", -1] }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

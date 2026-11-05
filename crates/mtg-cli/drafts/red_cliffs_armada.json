@@ -1,0 +1,33 @@
+{
+  "oracle_id": "063884e0-1f5e-4be9-930b-e73895b2fa41",
+  "name": "Red Cliffs Armada",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Red Cliffs Armada",
+      "oracle_fingerprint": "f5da8fc9aa0c22c42652a49b14b4b919",
+      "abilities": [
+        {
+          "Rule": {
+            "rule": {
+              "Cant": {
+                "who": "This",
+                "action": {
+                  "Attack": {
+                    "unless": {
+                      "Compare": {
+                        "left": { "Count": [{ "Subtype": "Island" }, { "ControlledBy": "You" }] },
+                        "op": "Ge",
+                        "right": 1
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

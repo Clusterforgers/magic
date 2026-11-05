@@ -1,0 +1,74 @@
+{
+  "oracle_id": "9eec304d-ffcb-4287-b877-280ac1e4f496",
+  "name": "Charming Scoundrel",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Charming Scoundrel",
+      "oracle_fingerprint": "8fc8ca840ae5b7527005abfd85c8f77f",
+      "abilities": [
+        { "Keyword": "Haste" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Modal": {
+                  "modes": [
+                    { "effects": [{ "Discard": {} }, { "Draw": {} }] },
+                    { "effects": [{ "CreateToken": { "token": { "Named": "treasure" } } }] },
+                    {
+                      "targets": [
+                        {
+                          "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] }
+                        }
+                      ],
+                      "effects": [
+                        {
+                          "CreateToken": {
+                            "token": {
+                              "Custom": {
+                                "name": "Wicked",
+                                "types": ["Enchantment"],
+                                "subtypes": ["Aura", "Role"],
+                                "abilities": [
+                                  { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+                                  {
+                                    "Triggered": {
+                                      "when": {
+                                        "ZoneChange": {
+                                          "what": ["This"],
+                                          "from": "Battlefield",
+                                          "to": "Graveyard"
+                                        }
+                                      },
+                                      "effects": [
+                                        { "LoseLife": { "who": "Opponents", "amount": 1 } }
+                                      ]
+                                    }
+                                  },
+                                  {
+                                    "Static": {
+                                      "affected": "Attached",
+                                      "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }]
+                                    }
+                                  }
+                                ]
+                              }
+                            },
+                            "as": "token"
+                          }
+                        },
+                        { "Attach": { "what": { "Bound": "token" }, "to": { "Target": 0 } } }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,130 @@
+{
+  "object": "card",
+  "id": "484b2978-2da5-41cf-85d4-128e9dae75c0",
+  "oracle_id": "637a10e8-4384-49a0-ad78-03da8930811e",
+  "multiverse_ids": [
+    6537
+  ],
+  "tcgplayer_id": 103,
+  "cardmarket_id": 9853,
+  "name": "Armored Galleon",
+  "lang": "en",
+  "released_at": "1998-06-24",
+  "uri": "https://api.scryfall.com/cards/484b2978-2da5-41cf-85d4-128e9dae75c0",
+  "scryfall_uri": "https://scryfall.com/card/p02/33/armored-galleon?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T12:41:28Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/4/8/484b2978-2da5-41cf-85d4-128e9dae75c0.jpg?1783946488",
+    "normal": "https://cards.scryfall.io/normal/front/4/8/484b2978-2da5-41cf-85d4-128e9dae75c0.jpg?1783946488",
+    "large": "https://cards.scryfall.io/large/front/4/8/484b2978-2da5-41cf-85d4-128e9dae75c0.jpg?1783946488",
+    "png": "https://cards.scryfall.io/png/front/4/8/484b2978-2da5-41cf-85d4-128e9dae75c0.png?1783946488",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/4/8/484b2978-2da5-41cf-85d4-128e9dae75c0.jpg?1783946488",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/4/8/484b2978-2da5-41cf-85d4-128e9dae75c0.jpg?1783946488",
+    "thumb": "https://cards.scryfall.io/thumb/front/4/8/484b2978-2da5-41cf-85d4-128e9dae75c0.webp?1783946488",
+    "grid": "https://cards.scryfall.io/grid/front/4/8/484b2978-2da5-41cf-85d4-128e9dae75c0.webp?1783946488",
+    "display": "https://cards.scryfall.io/display/front/4/8/484b2978-2da5-41cf-85d4-128e9dae75c0.webp?1783946488",
+    "art": "https://cards.scryfall.io/art/front/4/8/484b2978-2da5-41cf-85d4-128e9dae75c0.webp?1783946488",
+    "crop": "https://cards.scryfall.io/crop/front/4/8/484b2978-2da5-41cf-85d4-128e9dae75c0.webp?1783946488",
+    "jpeg": "https://cards.scryfall.io/normal/front/4/8/484b2978-2da5-41cf-85d4-128e9dae75c0.jpg?1783946488"
+  },
+  "mana_cost": "{4}{U}",
+  "cmc": 5.0,
+  "type_line": "Creature — Human Pirate",
+  "oracle_text": "This creature can't attack unless defending player controls an Island.",
+  "power": "5",
+  "toughness": "4",
+  "colors": [
+    "U"
+  ],
+  "color_identity": [
+    "U"
+  ],
+  "keywords": [],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "ac67f18a-4f0e-407e-bab1-a9fe4f659565",
+  "set": "p02",
+  "set_name": "Portal Second Age",
+  "set_type": "starter",
+  "set_uri": "https://api.scryfall.com/sets/ac67f18a-4f0e-407e-bab1-a9fe4f659565",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Ap02&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/p02?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/484b2978-2da5-41cf-85d4-128e9dae75c0/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A637a10e8-4384-49a0-ad78-03da8930811e&unique=prints",
+  "collector_number": "33",
+  "digital": false,
+  "rarity": "uncommon",
+  "flavor_text": "\"Information equals profits. Our merchants sell it, or our pirates use it.\"\n—Jefan, Talas ship captain",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Doug Chaffee",
+  "artist_ids": [
+    "dd587b27-dca3-4219-aa55-b285a7a77030"
+  ],
+  "illustration_id": "490fd93c-bee5-4337-9c45-e7998eec2e6e",
+  "border_color": "black",
+  "frame": "1997",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 30072,
+  "prices": {
+    "usd": "1.07",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "0.69",
+    "eur_foil": null,
+    "tix": null
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=6537&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DArmored%2BGalleon",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DArmored%2BGalleon",
+    "edhrec": "https://edhrec.com/route/?cc=Armored+Galleon"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F103%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=9853&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards?affiliate_id=scryfall&data%5Bsearch%5D=Armored+Galleon&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

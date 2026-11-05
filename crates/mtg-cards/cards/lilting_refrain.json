@@ -1,0 +1,41 @@
+{
+  "oracle_id": "f91a71b7-9bc0-4609-a312-ffede52dc0ad",
+  "name": "Lilting Refrain",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Lilting Refrain",
+      "oracle_fingerprint": "21dc6c6e6548c3ec0efa9add4d6ae4a6",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [
+              {
+                "May": {
+                  "effects": [{ "PutCounters": { "on": "This", "counter": { "Other": "verse" } } }]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["SacrificeSelf"],
+            "targets": [{ "what": { "Object": ["Spell"] } }],
+            "effects": [
+              {
+                "Pay": {
+                  "who": { "ControllerOf": { "Target": 0 } },
+                  "cost": "{1}",
+                  "times": { "Counters": { "on": "This", "counter": { "Other": "verse" } } },
+                  "unpaid": [{ "Counter": { "what": { "Target": 0 } } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,53 @@
+{
+  "oracle_id": "83b480ea-77c5-4e00-99d0-bea2a60a1bfe",
+  "name": "Kabira Evangel",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Kabira Evangel",
+      "oracle_fingerprint": "fc439bd17a85110fc162422ac9aa3675",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [
+                  {
+                    "AnyOf": [
+                      "This",
+                      {
+                        "Not": {
+                          "AnyOf": [
+                            { "Not": { "Subtype": "Ally" } },
+                            { "Not": "Other" },
+                            { "Not": { "ControlledBy": "You" } }
+                          ]
+                        }
+                      }
+                    ]
+                  }
+                ],
+                "to": "Battlefield"
+              }
+            },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "Continuous": {
+                        "affected": { "Each": [{ "Subtype": "Ally" }, { "ControlledBy": "You" }] },
+                        "mods": ["AddProtectionFromChosenColor"],
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

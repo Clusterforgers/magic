@@ -26,12 +26,14 @@
                 }
               },
               { "Reveal": { "what": { "Bound": "revealed2" } } },
-              { "Move": { "what": { "Bound": "revealed2" }, "to": "Hand" } },
+              {
+                "Move": { "what": { "Bound": "revealed2" }, "to": "Hand", "as": "revealed2_moved" }
+              },
               {
                 "If": {
                   "condition": {
                     "CountOf": {
-                      "subject": { "Bound": "revealed2" },
+                      "subject": { "Bound": "revealed2_moved" },
                       "selector": [{ "In": "Hand" }],
                       "op": "Eq",
                       "right": 1
@@ -44,7 +46,7 @@
                 "If": {
                   "condition": {
                     "CountOf": {
-                      "subject": { "Bound": "revealed2" },
+                      "subject": { "Bound": "revealed2_moved" },
                       "selector": [{ "In": "Hand" }],
                       "op": "Eq",
                       "right": 1

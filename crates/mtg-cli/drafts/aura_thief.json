@@ -1,0 +1,28 @@
+{
+  "oracle_id": "cf0936ea-2741-43a4-ad6a-a1258b54945b",
+  "name": "Aura Thief",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Aura Thief",
+      "oracle_fingerprint": "89cf7c3d1902d4bbd3ca7bedbfc4879a",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Type": "Enchantment" }] },
+                  "mods": [{ "SetController": "You" }],
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

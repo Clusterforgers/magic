@@ -1,0 +1,50 @@
+{
+  "oracle_id": "aa1152cb-255f-43fa-81f5-430304ce4d98",
+  "name": "Slipstream Serpent",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Slipstream Serpent",
+      "oracle_fingerprint": "47ad1c99fb8ef1ba9295d2106ac4180d",
+      "abilities": [
+        {
+          "Rule": {
+            "rule": {
+              "Cant": {
+                "who": "This",
+                "action": {
+                  "Attack": {
+                    "unless": {
+                      "Compare": {
+                        "left": { "Count": [{ "Subtype": "Island" }, { "ControlledBy": "You" }] },
+                        "op": "Ge",
+                        "right": 1
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "State": {
+                "condition": {
+                  "Compare": {
+                    "left": { "Count": [{ "Subtype": "Island" }, { "ControlledBy": "You" }] },
+                    "op": "Eq",
+                    "right": 0
+                  }
+                }
+              }
+            },
+            "effects": [{ "Sacrifice": { "filter": ["This"] } }]
+          }
+        },
+        { "Keyword": { "Morph": "{5}{U}" } }
+      ]
+    }
+  ]
+}

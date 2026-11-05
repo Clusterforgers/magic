@@ -1,0 +1,81 @@
+{
+  "oracle_id": "44a10a63-be9c-4f1d-aad6-b5337112bda5",
+  "name": "Giant Shark",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Giant Shark",
+      "oracle_fingerprint": "7c9f3226e2b92e965ceb373ee47a9044",
+      "abilities": [
+        {
+          "Rule": {
+            "rule": {
+              "Cant": {
+                "who": "This",
+                "action": {
+                  "Attack": {
+                    "unless": {
+                      "Compare": {
+                        "left": { "Count": [{ "Subtype": "Island" }, { "ControlledBy": "You" }] },
+                        "op": "Ge",
+                        "right": 1
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                {
+                  "BecomesBlocked": {
+                    "what": [{ "Type": "Creature" }, "DamagedThisTurn"],
+                    "by": ["This"]
+                  }
+                },
+                {
+                  "BecomesBlocked": {
+                    "what": ["This"],
+                    "by": [{ "Type": "Creature" }, "DamagedThisTurn"]
+                  }
+                }
+              ]
+            },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [
+                    { "ModifyPT": { "power": 2, "toughness": 0 } },
+                    { "AddKeyword": "Trample" }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "State": {
+                "condition": {
+                  "Compare": {
+                    "left": { "Count": [{ "Subtype": "Island" }, { "ControlledBy": "You" }] },
+                    "op": "Eq",
+                    "right": 0
+                  }
+                }
+              }
+            },
+            "effects": [{ "Sacrifice": { "filter": ["This"] } }]
+          }
+        }
+      ]
+    }
+  ]
+}

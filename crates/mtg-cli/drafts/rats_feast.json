@@ -1,0 +1,29 @@
+{
+  "oracle_id": "327c5ca2-4eeb-49cb-84fb-f6a4b06b24bc",
+  "name": "Rats' Feast",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Rats' Feast",
+      "oracle_fingerprint": "3f41c1f7bb17de513a3abc1958899b17",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Together": {
+                    "what": { "Object": [{ "In": "Graveyard" }] },
+                    "rule": "SameController"
+                  }
+                },
+                "bounds": { "min": "X", "max": "X" }
+              }
+            ],
+            "effects": [{ "Exile": { "what": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

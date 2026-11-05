@@ -1,0 +1,148 @@
+{
+  "object": "card",
+  "id": "fa7349d9-c82f-4cf8-a852-92168d1f4966",
+  "oracle_id": "b110b8e6-859b-4370-aceb-b21c6cf61532",
+  "multiverse_ids": [
+    580946
+  ],
+  "mtgo_id": 108720,
+  "tcgplayer_id": 285866,
+  "cardmarket_id": 674727,
+  "name": "Ghyrson Starn, Kelermorph",
+  "lang": "en",
+  "released_at": "2022-10-07",
+  "uri": "https://api.scryfall.com/cards/fa7349d9-c82f-4cf8-a852-92168d1f4966",
+  "scryfall_uri": "https://scryfall.com/card/40k/124/ghyrson-starn-kelermorph?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T05:34:10Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/f/a/fa7349d9-c82f-4cf8-a852-92168d1f4966.jpg?1783920850",
+    "normal": "https://cards.scryfall.io/normal/front/f/a/fa7349d9-c82f-4cf8-a852-92168d1f4966.jpg?1783920850",
+    "large": "https://cards.scryfall.io/large/front/f/a/fa7349d9-c82f-4cf8-a852-92168d1f4966.jpg?1783920850",
+    "png": "https://cards.scryfall.io/png/front/f/a/fa7349d9-c82f-4cf8-a852-92168d1f4966.png?1783920850",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/f/a/fa7349d9-c82f-4cf8-a852-92168d1f4966.jpg?1783920850",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/f/a/fa7349d9-c82f-4cf8-a852-92168d1f4966.jpg?1783920850",
+    "thumb": "https://cards.scryfall.io/thumb/front/f/a/fa7349d9-c82f-4cf8-a852-92168d1f4966.webp?1783920850",
+    "grid": "https://cards.scryfall.io/grid/front/f/a/fa7349d9-c82f-4cf8-a852-92168d1f4966.webp?1783920850",
+    "display": "https://cards.scryfall.io/display/front/f/a/fa7349d9-c82f-4cf8-a852-92168d1f4966.webp?1783920850",
+    "art": "https://cards.scryfall.io/art/front/f/a/fa7349d9-c82f-4cf8-a852-92168d1f4966.webp?1783920850",
+    "crop": "https://cards.scryfall.io/crop/front/f/a/fa7349d9-c82f-4cf8-a852-92168d1f4966.webp?1783920850",
+    "jpeg": "https://cards.scryfall.io/normal/front/f/a/fa7349d9-c82f-4cf8-a852-92168d1f4966.jpg?1783920850"
+  },
+  "mana_cost": "{1}{U}{R}",
+  "cmc": 3.0,
+  "type_line": "Legendary Creature — Tyranid Human",
+  "oracle_text": "Ward {2} (Whenever this creature becomes the target of a spell or ability an opponent controls, counter it unless that player pays {2}.)\nThree Autostubs — Whenever another source you control deals exactly 1 damage to a permanent or player, Ghyrson Starn deals 2 damage to that permanent or player.",
+  "power": "3",
+  "toughness": "2",
+  "colors": [
+    "R",
+    "U"
+  ],
+  "color_identity": [
+    "R",
+    "U"
+  ],
+  "keywords": [
+    "Three Autostubs",
+    "Ward"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "f35f5dd8-5b95-4f52-bbe7-1c62909a8d08",
+  "set": "40k",
+  "set_name": "Warhammer 40,000 Commander",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/f35f5dd8-5b95-4f52-bbe7-1c62909a8d08",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3A40k&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/40k?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/fa7349d9-c82f-4cf8-a852-92168d1f4966/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Ab110b8e6-859b-4370-aceb-b21c6cf61532&unique=prints",
+  "collector_number": "124",
+  "digital": false,
+  "rarity": "rare",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Aaron J. Riley",
+  "artist_ids": [
+    "f21b412c-aef5-4d15-88be-4f40615acde3"
+  ],
+  "illustration_id": "fd735435-d228-4133-8972-be644be821e4",
+  "border_color": "black",
+  "frame": "2015",
+  "frame_effects": [
+    "legendary"
+  ],
+  "security_stamp": "triangle",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "promo_types": [
+    "universesbeyond"
+  ],
+  "edhrec_rank": 3691,
+  "preview": {
+    "source": "Polygon",
+    "source_uri": "https://www.polygon.com/23349573/mtg-40k-preview-ghyrson-starn-kelermorph-red-blue",
+    "previewed_at": "2022-09-13"
+  },
+  "prices": {
+    "usd": "29.07",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "24.42",
+    "eur_foil": null,
+    "tix": "13.42"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=580946&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DGhyrson%2BStarn%252C%2BKelermorph",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DGhyrson%2BStarn%252C%2BKelermorph",
+    "edhrec": "https://edhrec.com/route/?cc=Ghyrson+Starn%2C+Kelermorph"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F285866%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=674727&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/108720?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

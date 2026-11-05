@@ -1,0 +1,31 @@
+{
+  "oracle_id": "46db3dc2-9eb1-4be3-96f9-0013119fcd97",
+  "name": "Ancient Excavation",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ancient Excavation",
+      "oracle_fingerprint": "98fd7ed09d0a67d6b67fd06360f4b4a5",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Draw": {
+                  "count": { "Count": [{ "OwnedBy": "You" }, { "In": "Hand" }] },
+                  "as": "drawn"
+                }
+              },
+              { "Discard": { "count": { "Bound": "drawn~moved" } } }
+            ]
+          }
+        },
+        {
+          "Keyword": {
+            "Typecycling": { "find": [{ "Type": "Land" }, { "Supertype": "Basic" }], "cost": "{2}" }
+          }
+        }
+      ]
+    }
+  ]
+}

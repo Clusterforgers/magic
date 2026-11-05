@@ -1,0 +1,20 @@
+{
+  "oracle_id": "c293f1c0-93de-4a73-aaf6-4e9f01e557ec",
+  "name": "Innocent Bystander",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Innocent Bystander",
+      "oracle_fingerprint": "4cf15d25a8259e43abdd106d0c1adb2d",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Batch": { "DealsDamage": { "source": [], "to": "This" } } },
+            "if": { "AtTrigger": { "Compare": { "left": "Triggering", "op": "Ge", "right": 3 } } },
+            "effects": [{ "CreateToken": { "token": { "Named": "clue" } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

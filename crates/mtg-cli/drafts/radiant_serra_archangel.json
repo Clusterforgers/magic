@@ -1,0 +1,35 @@
+{
+  "oracle_id": "4a8227ff-0ae4-4405-8e44-1f5187a7f9f5",
+  "name": "Radiant, Serra Archangel",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Radiant, Serra Archangel",
+      "oracle_fingerprint": "2305c346866ca068278d371771668f51",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Activated": {
+            "cost": [
+              {
+                "TapPermanents": {
+                  "filter": [{ "Type": "Creature" }, { "HasKeyword": "Flying" }, "Other"]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": ["AddProtectionFromChosenColor"],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": "Partner" }
+      ]
+    }
+  ]
+}

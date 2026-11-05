@@ -1,0 +1,35 @@
+{
+  "oracle_id": "cf0492de-cec5-4455-839f-212246b7e9ea",
+  "name": "Gollum's Bite",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Gollum's Bite",
+      "oracle_fingerprint": "649472b8704cbca5c76bf996b4a55680",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "ModifyPT": { "power": -2, "toughness": -2 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{3}{B}" }, "ExileSelf"],
+            "timing": "Sorcery",
+            "from": "Graveyard",
+            "effects": [{ "RingTempts": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

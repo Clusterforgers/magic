@@ -1,0 +1,134 @@
+{
+  "object": "card",
+  "id": "4540dbe7-5a4b-4603-93c7-5bb294d67686",
+  "oracle_id": "540e1371-baa9-412f-a17a-22ea833ea3e8",
+  "multiverse_ids": [
+    159229
+  ],
+  "mtgo_id": 28033,
+  "mtgo_foil_id": 28034,
+  "name": "Goblin Mutant",
+  "lang": "en",
+  "released_at": "2007-09-10",
+  "uri": "https://api.scryfall.com/cards/4540dbe7-5a4b-4603-93c7-5bb294d67686",
+  "scryfall_uri": "https://scryfall.com/card/me1/96/goblin-mutant?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T11:42:24Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/4/5/4540dbe7-5a4b-4603-93c7-5bb294d67686.jpg?1783942944",
+    "normal": "https://cards.scryfall.io/normal/front/4/5/4540dbe7-5a4b-4603-93c7-5bb294d67686.jpg?1783942944",
+    "large": "https://cards.scryfall.io/large/front/4/5/4540dbe7-5a4b-4603-93c7-5bb294d67686.jpg?1783942944",
+    "png": "https://cards.scryfall.io/png/front/4/5/4540dbe7-5a4b-4603-93c7-5bb294d67686.png?1783942944",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/4/5/4540dbe7-5a4b-4603-93c7-5bb294d67686.jpg?1783942944",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/4/5/4540dbe7-5a4b-4603-93c7-5bb294d67686.jpg?1783942944",
+    "thumb": "https://cards.scryfall.io/thumb/front/4/5/4540dbe7-5a4b-4603-93c7-5bb294d67686.webp?1783942944",
+    "grid": "https://cards.scryfall.io/grid/front/4/5/4540dbe7-5a4b-4603-93c7-5bb294d67686.webp?1783942944",
+    "display": "https://cards.scryfall.io/display/front/4/5/4540dbe7-5a4b-4603-93c7-5bb294d67686.webp?1783942944",
+    "art": "https://cards.scryfall.io/art/front/4/5/4540dbe7-5a4b-4603-93c7-5bb294d67686.webp?1783942944",
+    "crop": "https://cards.scryfall.io/crop/front/4/5/4540dbe7-5a4b-4603-93c7-5bb294d67686.webp?1783942944",
+    "jpeg": "https://cards.scryfall.io/normal/front/4/5/4540dbe7-5a4b-4603-93c7-5bb294d67686.jpg?1783942944"
+  },
+  "mana_cost": "{2}{R}{R}",
+  "cmc": 4.0,
+  "type_line": "Creature — Goblin Mutant",
+  "oracle_text": "Trample\nThis creature can't attack if defending player controls an untapped creature with power 3 or greater.\nThis creature can't block creatures with power 3 or greater.",
+  "power": "5",
+  "toughness": "3",
+  "colors": [
+    "R"
+  ],
+  "color_identity": [
+    "R"
+  ],
+  "keywords": [
+    "Trample"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "legal",
+    "predh": "legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": true,
+  "variation": false,
+  "set_id": "407d388d-1abf-4c1d-b0c6-f56280898a1a",
+  "set": "me1",
+  "set_name": "Masters Edition",
+  "set_type": "masters",
+  "set_uri": "https://api.scryfall.com/sets/407d388d-1abf-4c1d-b0c6-f56280898a1a",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Ame1&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/me1?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/4540dbe7-5a4b-4603-93c7-5bb294d67686/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A540e1371-baa9-412f-a17a-22ea833ea3e8&unique=prints",
+  "collector_number": "96",
+  "digital": true,
+  "rarity": "uncommon",
+  "flavor_text": "If only it had three brains, too.",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Daniel Gelon",
+  "artist_ids": [
+    "63ac31a8-dd1a-4679-9f82-ece89429a084"
+  ],
+  "illustration_id": "f54275d8-213d-43e2-aede-f2e944ddd0a3",
+  "border_color": "black",
+  "frame": "1997",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 31377,
+  "penny_rank": 13228,
+  "prices": {
+    "usd": null,
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": null,
+    "eur_foil": null,
+    "tix": "0.06"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=159229&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DGoblin%2BMutant",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DGoblin%2BMutant",
+    "edhrec": "https://edhrec.com/route/?cc=Goblin+Mutant"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fmagic%2Fproduct%3FproductLineName%3Dmagic%26q%3DGoblin%2BMutant%26view%3Dgrid",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products/Search?referrer=scryfall&searchString=Goblin+Mutant&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/28033?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

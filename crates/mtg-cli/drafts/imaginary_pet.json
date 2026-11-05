@@ -1,0 +1,26 @@
+{
+  "oracle_id": "afee3422-5490-411b-a36e-82e447c1bd0f",
+  "name": "Imaginary Pet",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Imaginary Pet",
+      "oracle_fingerprint": "45b32fd861c21fb3fd74e2db3cf17b44",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "if": {
+              "Compare": {
+                "left": { "Count": [{ "In": "Hand" }, { "OwnedBy": "You" }] },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "effects": [{ "Move": { "what": "This", "to": "Hand" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

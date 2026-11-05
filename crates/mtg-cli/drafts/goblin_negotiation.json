@@ -1,0 +1,38 @@
+{
+  "oracle_id": "79824266-bffa-476c-bdd3-976e9d789a42",
+  "name": "Goblin Negotiation",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Goblin Negotiation",
+      "oracle_fingerprint": "0ade77085b4ab68c8fc1e7b91ecc6651",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "DealDamage": { "to": { "Target": 0 }, "amount": "X", "excess": { "as": "excess" } }
+              },
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Goblin",
+                      "colors": ["Red"],
+                      "types": ["Creature"],
+                      "subtypes": ["Goblin"],
+                      "power": 1,
+                      "toughness": 1
+                    }
+                  },
+                  "count": { "Bound": "excess" }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

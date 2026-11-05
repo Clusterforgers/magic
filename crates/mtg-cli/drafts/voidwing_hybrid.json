@@ -1,0 +1,29 @@
+{
+  "oracle_id": "0dab592c-a230-408d-a383-044e561dbe5d",
+  "name": "Voidwing Hybrid",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Voidwing Hybrid",
+      "oracle_fingerprint": "58f426a796733a379dc15a2f11c985d1",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": { "Toxic": 1 } },
+        {
+          "Triggered": {
+            "when": { "Did": { "action": "Proliferated", "who": "You" } },
+            "if": {
+              "Compare": {
+                "left": { "Count": ["This", { "In": "Graveyard" }, { "OwnedBy": "You" }] },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "from": "Graveyard",
+            "effects": [{ "Move": { "what": "This", "to": "Hand" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

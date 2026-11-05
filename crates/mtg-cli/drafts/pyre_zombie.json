@@ -1,0 +1,41 @@
+{
+  "oracle_id": "accb82be-4f90-4d9a-bafd-f8de3622b3a3",
+  "name": "Pyre Zombie",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Pyre Zombie",
+      "oracle_fingerprint": "c74643c9df5737a13147a81fb0f999dc",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "if": {
+              "Compare": {
+                "left": { "Count": ["This", { "In": "Graveyard" }, { "OwnedBy": "You" }] },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "from": "Graveyard",
+            "effects": [
+              {
+                "Pay": {
+                  "cost": "{1}{B}{B}",
+                  "paid": [{ "Move": { "what": "This", "to": "Hand" } }]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{1}{R}{R}" }, "SacrificeSelf"],
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 2 } }]
+          }
+        }
+      ]
+    }
+  ]
+}
