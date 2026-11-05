@@ -103,7 +103,7 @@ fn ambient_with(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
 
 /// How long the objects stay remembered: the `Duration$`, or for as long as every one of them has a counter of the kind
 /// `ForgetCounter$` names (an object that leaves the battlefield is a new one, CR 400.7, so it drops out the same way).
-fn lasting(p: &Params) -> Tr<Value> {
+pub(super) fn lasting(p: &Params) -> Tr<Value> {
     let Some(kind) = p.get("ForgetCounter") else {
         return duration(p.get("Duration")).map(|word| json!(word));
     };
@@ -188,7 +188,7 @@ fn continuous(affected: &Value, mods: &[Value], duration: &Value) -> Value {
 
 /// The objects an effect is about: `RememberObjects$` names them (the target, the source, or what an earlier step
 /// moved).
-fn remembered(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
+pub(super) fn remembered(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
     let word = p.get("RememberObjects").unwrap_or_default();
     // `Defined$` names the same objects the effect remembers.
     if let Some(defined) = p
