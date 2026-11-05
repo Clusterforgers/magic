@@ -224,23 +224,12 @@ fn one_shield(
     read_keys(&p, false)?;
     let duration = duration(line.get("Duration"))?;
     let mut when = serde_json::Map::new();
+    let mut recipients = vec![None];
     match (p.get("ValidTarget"), remembered) {
         (Some(word), Some(who)) if is_remembered(word) => {
             when.insert("to".into(), who.clone());
         }
-        (Some(word), _) => {
-            let to = match word {
-                "You" => json!("You"),
-                "Player" => json!("EachPlayer"),
-                "Opponent" | "Player.Opponent" => json!("Opponents"),
-                "Card.EffectSource" | "Creature.EffectSource" => json!("This"),
-                "Permanent,Player" | "Player,Permanent" => json!(null),
-                _ => return unmapped("replacement:DamageDone-shield-recipient"),
-            };
-            if !to.is_null() {
-                when.insert("to".into(), to);
-            }
-        }
+        (Some(word), _) => recipients = shield_recipients(ctx, &p, word)?,
         (None, _) => {}
     }
     match (p.get("ValidSource"), remembered) {
@@ -282,9 +271,46 @@ fn one_shield(
             super::replacements_damage_by::by(ctx, &p, name, you, true)?
         }
     };
-    Ok(vec![
-        json!({"Shield": {"when": {"Damage": when}, "by": by, "duration": duration}}),
-    ])
+    let mut shields = Vec::new();
+    for recipient in recipients {
+        let mut when = when.clone();
+        if let Some(to) = recipient {
+            when.insert("to".into(), to);
+        }
+        shields.push(json!({"Shield": {"when": {"Damage": when}, "by": by, "duration": duration}}));
+    }
+    Ok(shields)
+}
+
+/// The recipients of a shield, one shield each: a player word, the source itself, or a group of permanents. A list is
+/// one shield for each part only for a prevention, which every part's shield applies in full (CR 615.1); a "next"
+/// shield or a redirect would be used up for each part.
+fn shield_recipients(ctx: &Ctx, p: &Params, word: &str) -> Tr<Vec<Option<Value>>> {
+    let single = |part: &str| -> Tr<Option<Value>> {
+        Ok(Some(match part {
+            "You" => json!("You"),
+            "Player" => json!("EachPlayer"),
+            "Opponent" | "Player.Opponent" => json!("Opponents"),
+            "Card.EffectSource" | "Creature.EffectSource" => json!("This"),
+            "Permanent,Player" | "Player,Permanent" => return Ok(None),
+            other
+                if other.contains("Remembered")
+                    || other.contains("Chosen")
+                    || other.contains("EffectSource")
+                    || other.contains(',') =>
+            {
+                return unmapped("replacement:DamageDone-shield-recipient");
+            }
+            other => json!({"Each": selector_any(ctx, other)?}),
+        }))
+    };
+    if word == "Permanent,Player" || word == "Player,Permanent" || !word.contains(',') {
+        return Ok(vec![single(word)?]);
+    }
+    if p.has("ReplaceWith") {
+        return unmapped("replacement:DamageDone-shield-recipient");
+    }
+    word.split(',').map(|part| single(part.trim())).collect()
 }
 
 /// The recipient and the remembered objects of an `Effect` line that has a target.

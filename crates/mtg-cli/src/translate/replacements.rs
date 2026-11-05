@@ -44,24 +44,22 @@ fn single(ctx: &mut Ctx, body: &str) -> Tr<Value> {
         }
         line_condition = Some(json!("Kicked"));
     }
-    if event == "Untap" {
-        return doesnt_untap(ctx, &p);
-    }
-    if event == "Counter" {
-        if line_condition.is_some() {
-            return unmapped("key:Replacement.Counter.condition");
-        }
-        return super::replacements_counter::counter(ctx, &p);
-    }
-    if matches!(event, "Draw" | "GainLife" | "AddCounter") {
+    if matches!(event, "Counter" | "Draw" | "GainLife" | "AddCounter") {
         if line_condition.is_some() {
             return unmapped(format!("key:Replacement.{event}.condition"));
         }
         return match event {
+            "Counter" => super::replacements_counter::counter(ctx, &p),
             "Draw" => super::replacements_counter::draw(ctx, &p),
             "GainLife" => super::replacements_counter::gain_life(ctx, &p),
             _ => super::replacements_counter::add_counter(ctx, &p),
         };
+    }
+    if event == "Untap" {
+        return doesnt_untap(ctx, &p);
+    }
+    if event == "BeginPhase" {
+        return super::replacements_phase::skip_step(&p, line_condition.as_ref());
     }
     if event == "GameLoss" {
         return super::replacements_loss::game_loss(ctx, &p, line_condition.as_ref());
@@ -82,6 +80,7 @@ fn single(ctx: &mut Ctx, body: &str) -> Tr<Value> {
         "ReplaceWith",
         "ReplacementResult",
         "ActiveZones",
+        "ValidLKI",
         "Origin",
     ];
     check_keys(&p, "Replacement.Moved", &read, |_, _| false)?;
@@ -90,7 +89,7 @@ fn single(ctx: &mut Ctx, body: &str) -> Tr<Value> {
     {
         return unmapped("key:Replacement.Moved.ReplacementResult");
     }
-    if p.get("ValidCard") != Some("Card.Self") && !kicked_self {
+    if (p.get("ValidCard") != Some("Card.Self") || p.has("ValidLKI")) && !kicked_self {
         return super::replacements_moved::others(ctx, &p, line_condition.as_ref());
     }
     if p.get("Destination") == Some("Graveyard") && !p.has("ActiveZones") {
@@ -176,10 +175,13 @@ fn doesnt_untap(ctx: &Ctx, p: &Params) -> Tr<Value> {
 }
 
 /// What the permanent does as it enters, from the part a replacement names.
-fn enters_by(ctx: &Ctx, part: &Params) -> Tr<Value> {
+fn enters_by(ctx: &mut Ctx, part: &Params) -> Tr<Value> {
     let api = part.get("DB").unwrap_or_default();
     if part.get("Defined") != Some("Self") || part.get("ETB") != Some("True") {
         return unmapped("replacement:Moved-not-an-entering-effect");
+    }
+    if let Some(next) = part.get("SubAbility") {
+        return tapped_with_counters(ctx, part, api, next);
     }
     match api {
         "Tap" => {
@@ -190,16 +192,50 @@ fn enters_by(ctx: &Ctx, part: &Params) -> Tr<Value> {
                 _ => unmapped("key:Replacement.UnlessCost-shape"),
             }
         }
-        "PutCounter" => {
-            only_keys(part, &["DB", "Defined", "ETB", "CounterType", "CounterNum"])?;
-            let Some(kind) = part.get("CounterType").and_then(counter_kind) else {
-                return unmapped("key:Replacement.CounterType");
-            };
-            let count = amount(ctx, part.get("CounterNum").unwrap_or("1"))?;
-            Ok(json!({"WithCounters": {"counter": kind, "count": count}}))
-        }
+        "PutCounter" => counters(ctx, part),
         other => unmapped(format!("replacement:Moved-{other}")),
     }
+}
+
+/// `PutCounter` as it enters: the counters the permanent enters with.
+fn counters(ctx: &Ctx, part: &Params) -> Tr<Value> {
+    only_keys(
+        part,
+        &[
+            "DB",
+            "Defined",
+            "ETB",
+            "CounterType",
+            "CounterNum",
+            "SubAbility",
+        ],
+    )?;
+    let Some(kind) = part.get("CounterType").and_then(counter_kind) else {
+        return unmapped("key:Replacement.CounterType");
+    };
+    let count = amount(ctx, part.get("CounterNum").unwrap_or("1"))?;
+    Ok(json!({"WithCounters": {"counter": kind, "count": count}}))
+}
+
+/// "Enters tapped with two depletion counters": a `Tap` and a `PutCounter` of the entering permanent, in either order
+/// (CR 614.1c: both change how it enters).
+fn tapped_with_counters(ctx: &mut Ctx, part: &Params, api: &str, next: &str) -> Tr<Value> {
+    let other = ctx.sub(next)?;
+    let (tap, put) = match (api, other.get("DB")) {
+        ("Tap", Some("PutCounter")) => (part, &other),
+        ("PutCounter", Some("Tap")) => (&other, part),
+        _ => return unmapped("replacement:Moved-not-an-entering-effect"),
+    };
+    if other.get("Defined") != Some("Self")
+        || other.get("ETB") != Some("True")
+        || other.has("SubAbility")
+    {
+        return unmapped("replacement:Moved-not-an-entering-effect");
+    }
+    only_keys(tap, &["DB", "Defined", "ETB", "SubAbility"])?;
+    let mut by = counters(ctx, put)?;
+    by["WithCounters"]["tapped"] = json!(true);
+    Ok(by)
 }
 
 /// "As it enters, you may pay 2 life. If you don't, it enters tapped" and "...reveal a Giant card from your hand".
@@ -230,8 +266,8 @@ fn only_keys(part: &Params, read: &[&str]) -> Tr<()> {
     check_keys(part, "Replacement", read, |_, _| false)
 }
 
-/// An `Effect` line whose replacement is "doesn't untap during your next untap step" for the card itself: the card
-/// holds `DoesntUntap` through the next untap step of its controller.
+/// An `Effect` line whose replacement is an untap that does not happen for a while (CR 502.3): the card itself or the
+/// lands of the controller through their next untap step, or the objects the line remembers for as long as its duration.
 pub fn stays_tapped(ctx: &mut Ctx, line: &Params) -> Tr<Vec<Value>> {
     let Some(name) = line.get("ReplacementEffects") else {
         return unmapped("key:Effect.no-ReplacementEffects");
@@ -248,20 +284,53 @@ pub fn stays_tapped(ctx: &mut Ctx, line: &Params) -> Tr<Vec<Value>> {
         ],
     )?;
     if p.get("Layer") != Some("CantHappen")
-        || p.get("ValidCard") != Some("Card.IsRemembered")
-        || p.get("ValidStepTurnToController") != Some("Player.Activator")
-    {
-        return unmapped("replacement:Untap-shape");
-    }
-    if line.get("RememberObjects") != Some("Self")
-        || line.get("Duration") != Some("UntilTheEndOfYourNextUntap")
         || line.has("StaticAbilities")
         || line.has("Triggers")
-        || line.has("ValidTgts")
+        || (line.has("ValidTgts") && !line.has("RememberObjects"))
+    {
+        return unmapped("replacement:Untap-effect-shape");
+    }
+    if line.has("RememberObjects") {
+        return remembered_stays_tapped(ctx, line, &p);
+    }
+    // "Lands you control don't untap during your next untap step": the group is read when the untap step comes.
+    let valid = p.get("ValidCard").unwrap_or_default();
+    if line.get("Duration") != Some("UntilTheEndOfYourNextUntap")
+        || p.get("ValidStepTurnToController") != Some("Player.Activator")
+        || valid.is_empty()
+        || valid.contains("Remembered")
+        || valid.contains("Self")
     {
         return unmapped("replacement:Untap-effect-shape");
     }
     Ok(vec![
-        json!({"Continuous": {"affected": "This", "mods": ["DoesntUntap"], "duration": "NextUntapStep"}}),
+        json!({"Continuous": {"affected": {"Each": selector_any(ctx, valid)?}, "mods": ["DoesntUntap"], "duration": "NextUntapStep"}}),
+    ])
+}
+
+/// The objects an `Effect` line remembers don't untap during their controllers' untap steps, or the source itself
+/// through the controller's next untap step.
+fn remembered_stays_tapped(ctx: &mut Ctx, line: &Params, p: &Params) -> Tr<Vec<Value>> {
+    if p.get("ValidCard") != Some("Card.IsRemembered") {
+        return unmapped("replacement:Untap-effect-shape");
+    }
+    if line.get("RememberObjects") == Some("Self")
+        && line.get("Duration") == Some("UntilTheEndOfYourNextUntap")
+    {
+        if p.get("ValidStepTurnToController") != Some("Player.Activator") || line.has("ValidTgts") {
+            return unmapped("replacement:Untap-effect-shape");
+        }
+        return Ok(vec![
+            json!({"Continuous": {"affected": "This", "mods": ["DoesntUntap"], "duration": "NextUntapStep"}}),
+        ]);
+    }
+    // Without the step word the rule is "can't become untapped" at all, which an untap effect would break.
+    if p.get("ValidStepTurnToController") != Some("You") {
+        return unmapped("replacement:Untap-shape");
+    }
+    let duration = super::effects_effect::lasting(line)?;
+    let who = super::effects_effect::remembered(ctx, line)?;
+    Ok(vec![
+        json!({"Continuous": {"affected": who, "mods": ["DoesntUntap"], "duration": duration}}),
     ])
 }

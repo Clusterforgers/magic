@@ -155,5 +155,8 @@ fn a_kicked_replacement_that_puts_counters_is_conditional_on_the_kick() {
 fn a_kicked_replacement_with_a_second_body_stays_a_gap() {
     let body = "SVar:Pump:DB$ PutCounter | ETB$ True | Defined$ Self | CounterType$ P1P1 | CounterNum$ 2 | SubAbility$ Haste\nSVar:Haste:DB$ Animate | Defined$ Self | Keywords$ Haste | Duration$ Permanent\n";
     let found = gaps(&creature(&format!("{KICKED}{body}")));
-    assert_eq!(found, vec!["key:Replacement.SubAbility".to_owned()]);
+    assert_eq!(
+        found,
+        vec!["replacement:Moved-not-an-entering-effect".to_owned()]
+    );
 }

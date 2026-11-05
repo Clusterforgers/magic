@@ -16,7 +16,11 @@ pub fn others(ctx: &mut Ctx, p: &Params, line_condition: Option<&Value>) -> Tr<V
     if p.get("ActiveZones") != Some("Battlefield") {
         return unmapped("key:Replacement.Moved.ActiveZones");
     }
-    let valid = p.get("ValidCard").unwrap_or_default();
+    // `ValidLKI$` names the object as it was before it moved, which is how a zone-change pattern reads it.
+    let valid = p
+        .get("ValidCard")
+        .or_else(|| p.get("ValidLKI"))
+        .unwrap_or_default();
     if valid.is_empty() || valid.contains("Self") {
         return unmapped("replacement:Moved-shape");
     }
@@ -66,15 +70,23 @@ fn exiled_instead(p: &Params, part: &Params, what: &[Value]) -> Tr<Value> {
         &["DB", "Hidden", "Origin", "Destination", "Defined"],
         |_, _| false,
     )?;
-    let exiles = part.get("DB") == Some("ChangeZone")
-        && part.get("Hidden") == Some("True")
-        && part.get("Origin") == Some("All")
-        && part.get("Destination") == Some("Exile")
+    // A part that leaves the battlefield names it, which is what the replaced move is when the line says nothing.
+    if part.get("Origin") == Some("Battlefield") {
+        pattern["from"] = json!("Battlefield");
+    }
+    let to = match part.get("Destination") {
+        Some("Exile") => "Exile",
+        Some("Hand") if pattern.get("from").is_some() => "Hand",
+        _ => return unmapped("replacement:Moved-not-an-exile"),
+    };
+    let moves = part.get("DB") == Some("ChangeZone")
+        && matches!(part.get("Hidden"), None | Some("True"))
+        && matches!(part.get("Origin"), Some("All" | "Battlefield"))
         && part.get("Defined") == Some("ReplacedCard");
-    if !exiles {
+    if !moves {
         return unmapped("replacement:Moved-not-an-exile");
     }
-    Ok(json!({"Replacement": {"when": {"ZoneChange": pattern}, "by": {"MoveTo": "Exile"}}}))
+    Ok(json!({"Replacement": {"when": {"ZoneChange": pattern}, "by": {"MoveTo": to}}}))
 }
 
 /// "If this would be put into a graveyard from anywhere, exile it instead": the card itself, in every zone.

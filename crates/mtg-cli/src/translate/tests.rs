@@ -760,6 +760,7 @@ mod r1b;
 mod r1c;
 mod r1d;
 mod r1e;
+mod r1f;
 mod r1g;
 mod r1h;
 mod r3p2;

@@ -274,11 +274,6 @@ fn a_moved_replacement_of_other_cards_acts_while_its_source_is_on_the_battlefiel
     TAP,
     "key:Replacement.Moved.ActiveZones"
 )]
-#[case::last_known_information(
-    "Event$ Moved | ActiveZones$ Battlefield | Origin$ Battlefield | Destination$ Graveyard | ValidLKI$ Creature.OppCtrl | ReplaceWith$ Exile",
-    EXILE,
-    "key:Replacement.Moved.ValidLKI"
-)]
 #[case::exile_elsewhere(
     "Event$ Moved | ActiveZones$ Battlefield | Origin$ Hand | Destination$ Graveyard | ValidCard$ Card | ReplaceWith$ Exile",
     EXILE,
