@@ -148,7 +148,7 @@ fn exceptions(ctx: &Ctx, p: &Params) -> Tr<Vec<Value>> {
 /// step. Other words stay gaps.
 pub fn at_eot(word: &str, bound: &Value) -> Tr<Value> {
     let (step, whose, verb) = match word {
-        "Sacrifice" => ("End", "EachPlayer", "Sacrifice"),
+        "Sacrifice" | "SacrificeCtrl" => ("End", "EachPlayer", "Sacrifice"),
         "Exile" => ("End", "EachPlayer", "Exile"),
         "Destroy" => ("End", "EachPlayer", "Destroy"),
         "Hand" => ("End", "EachPlayer", "Hand"),

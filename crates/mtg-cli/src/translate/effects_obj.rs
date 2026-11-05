@@ -341,6 +341,7 @@ fn pump(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
             "RememberObjects",
             "PumpZone",
             "AtEOT",
+            "ReplaceDyingDefined",
         ],
     )?;
     let duration = pump_duration(p)?;
@@ -374,6 +375,7 @@ fn pump(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
     if let Some(word) = p.get("AtEOT") {
         effects.push(pump_at_eot(ctx, word, &affected)?);
     }
+    effects.extend(dies_shield(ctx, p)?);
     Ok(effects)
 }
 
@@ -406,7 +408,7 @@ pub fn either(mut options: Vec<Value>) -> Tr<Value> {
 /// `AtEOT$` of a pump: what happens to the pumped object at the next end step. The object is the source itself or a
 /// target, which the delayed trigger holds by a name.
 fn pump_at_eot(ctx: &mut Ctx, word: &str, affected: &Value) -> Tr<Value> {
-    if affected == &json!("This") {
+    if affected == &json!("This") || affected.get("Bound").is_some() {
         return super::tokens_copy::at_eot(word, affected);
     }
     if affected.get("Target").is_none() {
@@ -484,6 +486,7 @@ fn animate(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
             "Duration",
             "TargetMin",
             "TargetMax",
+            "AtEOT",
         ],
     )?;
     let duration = duration(p.get("Duration"))?;
@@ -524,9 +527,15 @@ fn animate(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
     if mods.is_empty() {
         return unmapped("key:Animate.nothing");
     }
-    Ok(vec![
-        json!({"Continuous": {"affected": affected, "mods": mods, "duration": duration}}),
-    ])
+    let mut effects =
+        vec![json!({"Continuous": {"affected": affected, "mods": mods, "duration": duration}})];
+    if let Some(word) = p.get("AtEOT") {
+        if p.has("ValidCards") {
+            return unmapped("key:Animate.AtEOT-of-a-group");
+        }
+        effects.push(pump_at_eot(ctx, word, &affected)?);
+    }
+    Ok(effects)
 }
 
 /// Colours as the DSL names them.
@@ -639,6 +648,17 @@ fn counter_action(ctx: &mut Ctx, p: &Params) -> Option<Tr<Vec<Value>>> {
 fn put_counter(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
     if let Some(done) = counter_action(ctx, p) {
         return done;
+    }
+    if let Some(n) = p.get("Support") {
+        // Support N (CR 701.41): a +1/+1 counter on each of up to N other target creatures.
+        only(p, "PutCounter", &["Support"])?;
+        let Ok(n) = n.parse::<u32>() else {
+            return unmapped("key:PutCounter.Support");
+        };
+        let line = format!(
+            "ValidTgts$ Creature.Other | TargetMin$ 0 | TargetMax$ {n} | CounterType$ P1P1 | CounterNum$ 1"
+        );
+        return put_counter(ctx, &Params::parse(&line));
     }
     only(
         p,
@@ -1027,4 +1047,31 @@ fn group_of_player(ctx: &mut Ctx, p: &Params, valid: &str) -> Tr<Vec<Value>> {
         preds.push(json!({"ControlledBy": target}));
     }
     Ok(preds)
+}
+
+/// `ReplaceDyingDefined$` on a damage or pump line ("if that creature would die this turn, exile it instead"): after the
+/// effect, a shield sends the creature the line targets to exile if it would die. Other objects stay a gap by name.
+pub fn with_dies_shield(ctx: &mut Ctx, p: &Params, node: Value) -> Tr<Vec<Value>> {
+    let mut effects = vec![node];
+    effects.extend(dies_shield(ctx, p)?);
+    Ok(effects)
+}
+
+/// The shield alone, when the line has the key.
+fn dies_shield(ctx: &mut Ctx, p: &Params) -> Tr<Option<Value>> {
+    let Some(word) = p.get("ReplaceDyingDefined") else {
+        return Ok(None);
+    };
+    let kind = match word {
+        "Targeted" | "ThisTargetedCard" | "ThisTargetedCard.Creature" if p.has("ValidTgts") => {
+            ctx.last_target()?
+        }
+        _ => return unmapped(format!("key:ReplaceDyingDefined={word}")),
+    };
+    let shield = json!({"Shield": {
+        "when": {"ZoneChange": {
+            "what": [{"Is": kind}, {"Type": "Creature"}], "from": "Battlefield", "to": "Graveyard"}},
+        "by": {"MoveTo": "Exile"},
+        "duration": "UntilEndOfTurn"}});
+    Ok(Some(shield))
 }

@@ -101,16 +101,18 @@ fn branch(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
     Ok(node)
 }
 
-/// `SetState` with `Mode$ Transform`; the other modes (face up, flip, specific faces) are gaps.
+/// `SetState` with `Mode$ Transform` or `Flip`; the other modes (face up or down, unspecialize) are gaps.
 fn set_state(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
     only(
         p,
         "SetState",
         &["Mode", "Defined", "ValidTgts", "TargetMin", "TargetMax"],
     )?;
-    if p.get("Mode") != Some("Transform") {
-        return unmapped("key:SetState.Mode");
-    }
+    let node = match p.get("Mode") {
+        Some("Transform") => "Transform",
+        Some("Flip") => "Flip",
+        _ => return unmapped("key:SetState.Mode"),
+    };
     let what = subject(ctx, p, "Self", None)?;
-    Ok(json!({"Transform": {"what": what}}))
+    Ok(json!({node: {"what": what}}))
 }
