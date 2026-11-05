@@ -315,3 +315,16 @@ fn a_cast_count_that_later_spells_change_is_not_rechecked_at_resolution(
         .any(|gap| gap.contains("SpellCast-exact-count-recheck"));
     assert_eq!(named, gapped);
 }
+
+#[rstest]
+#[case::look_at("look at target player's hand. You may choose a card from it", false)]
+#[case::reveals("target player reveals their hand. You choose a card from it", true)]
+fn only_a_hand_the_text_reveals_is_shown_to_every_seat(#[case] words: &str, #[case] revealed: bool) {
+    let script = format!(
+        "Name:Gearhulk\nTypes:Artifact Creature Construct\nPT:4/4\nT:Mode$ ChangesZone | ValidCard$ Card.Self | Origin$ Any | Destination$ Battlefield | Execute$ TrigDiscard | TriggerDescription$ x\nSVar:TrigDiscard:DB$ Discard | ValidTgts$ Player | Mode$ RevealYouChoose | Optional$ True | DiscardValid$ Card\nOracle:When this creature enters, {words}.\n"
+    );
+    let found = abilities(&script);
+    assert_eq!(found.len(), 1, "{:?}", super::gaps(&script));
+    assert_eq!(found[0].to_string().contains("\"Reveal\""), revealed);
+    assert!(found[0].to_string().contains("\"by\":\"You\""));
+}

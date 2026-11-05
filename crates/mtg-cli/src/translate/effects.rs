@@ -479,6 +479,11 @@ fn discard(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
     if !reveal_choose {
         return Ok(vec![discard]);
     }
+    // "Look at" shows the hand to the chooser only, who sees it in the choice; "reveals" shows every seat.
+    let text = ctx.oracle.to_lowercase();
+    if text.contains("look at") && !text.contains("reveal") {
+        return Ok(vec![discard]);
+    }
     let hand = json!({"Reveal": {"what": {"Each": [{"OwnedBy": who}, {"In": "Hand"}]}}});
     Ok(vec![hand, discard])
 }
