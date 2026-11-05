@@ -39,11 +39,11 @@ impl World {
         let mut subtypes = BTreeSet::new();
         let mut names = BTreeSet::new();
         for face in scripts.iter().flat_map(|script| &script.faces) {
-            subtypes.extend(subtypes_of(&face.types));
+            subtypes.extend(known_subtypes(&face.types));
             names.insert(face.name.clone());
         }
         for face in tokens.values() {
-            subtypes.extend(subtypes_of(&face.types));
+            subtypes.extend(known_subtypes(&face.types));
             names.insert(face.name.clone());
         }
         World {
@@ -72,6 +72,13 @@ pub const CARD_TYPES: [&str; 11] = [
 
 /// The supertypes a `Types:` line may start with.
 pub const SUPERTYPES: [&str; 4] = ["Basic", "Legendary", "Snow", "World"];
+
+/// The subtypes of a type line that some card has: `You` of a planeswalker is the player in a valid-string, not a subtype.
+fn known_subtypes(types: &str) -> impl Iterator<Item = String> {
+    subtypes_of(types)
+        .into_iter()
+        .filter(|word| mtg_core::subtypes::is_known_subtype(word))
+}
 
 /// The subtypes a type line names: its words that are neither card types nor supertypes.
 pub fn subtypes_of(types: &str) -> Vec<String> {

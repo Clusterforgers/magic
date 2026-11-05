@@ -166,6 +166,12 @@ pub const LAND_TYPES: [&str; 17] = [
 ];
 
 impl Subtype {
+    /// Whether some card has this subtype (a name of several known subtypes, such as `Urza's Mine`, counts).
+    pub fn is_known(&self) -> bool {
+        crate::subtypes::is_known_subtype(&self.0)
+            || (self.0.contains(' ') && self.0.split(' ').all(crate::subtypes::is_known_subtype))
+    }
+
     /// Whether the subtype is a creature type, which an effect that sets creature types replaces (CR 205.1b).
     pub fn is_creature_type(&self) -> bool {
         !OTHER_TYPES.contains(&self.0.as_str())

@@ -18,6 +18,7 @@ path = "src/main.rs"
 mtg-db.workspace = true
 mtg-import.workspace = true
 mtg-cards.workspace = true
+mtg-core.workspace = true
 mtg-engine.workspace = true
 mtg-testkit.workspace = true
 chrono.workspace = true
@@ -32,7 +33,6 @@ thiserror.workspace = true
 tokio = { workspace = true, features = ["fs", "io-util"] }
 
 [dev-dependencies]
-mtg-core.workspace = true
 proptest.workspace = true
 rstest.workspace = true
 tempfile.workspace = true

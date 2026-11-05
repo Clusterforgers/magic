@@ -49,3 +49,26 @@ fn a_source_amount_keeps_this_as_the_source() {
     );
     assert!(!found[0].to_string().contains("Affected"), "{}", found[0]);
 }
+
+#[rstest]
+#[case::with_objects("You,Planeswalker.YouCtrl,Creature.YouCtrl+Other")]
+#[case::with_a_subtype("You,Human.YouCtrl")]
+fn a_player_among_the_objects_a_static_line_affects_is_a_gap(#[case] affected: &str) {
+    let script = format!(
+        "Name:T\nTypes:Creature\nS:Mode$ Continuous | Affected$ {affected} | AddKeyword$ Hexproof\n"
+    );
+    assert!(abilities(&script).is_empty(), "{:?}", abilities(&script));
+}
+
+#[test]
+fn a_player_among_valid_targets_is_not_a_subtype() {
+    let script = "Name:T\nTypes:Creature\nT:Mode$ BecomesTarget | ValidTarget$ You | ValidSource$ Spell | Execute$ Go\nSVar:Go:DB$ Untap | Defined$ Self\n";
+    let found = abilities(script);
+    assert!(
+        !found
+            .iter()
+            .any(|a| a.to_string().contains(r#""Subtype":"You""#)),
+        "{found:?} {:?}",
+        gaps(script)
+    );
+}
