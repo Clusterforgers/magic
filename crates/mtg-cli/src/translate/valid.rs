@@ -243,6 +243,10 @@ fn split_properties(props: &str) -> Vec<String> {
 pub fn selector(ctx: &Ctx, spec: &str) -> Tr<Vec<Value>> {
     let spec = spec.trim();
     let (head, props) = spec.split_once('.').unwrap_or((spec, ""));
+    // A player is no object: the property names what the engine lacks.
+    if head == "Player" && !props.is_empty() {
+        return unmapped(format!("valid:Player.{props}"));
+    }
     let mut preds = base(ctx, head)?;
     let kind = preds.clone();
     for prop in split_properties(props) {

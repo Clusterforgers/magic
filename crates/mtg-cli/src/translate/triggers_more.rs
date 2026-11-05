@@ -29,9 +29,8 @@ pub(super) fn batch(inner: &Value) -> Value {
 /// The recipient of damage: a player word, the card itself, what it enchants or equips, or the objects a valid-string names.
 fn recipient(ctx: &Ctx, valid: &str) -> Tr<Value> {
     Ok(match valid {
-        "Player" => json!("EachPlayer"),
-        "You" => json!("You"),
-        "Opponent" | "Player.Opponent" => json!("Opponents"),
+        "Player" | "You" | "Opponent" => super::triggers::player_ref(Some(valid))?,
+        word if word.starts_with("Player.") => super::triggers::player_ref(Some(word))?,
         "Card.Self" | "Creature.Self" => json!("This"),
         "Card.AttachedBy" | "Creature.AttachedBy" | "Card.EnchantedBy" | "Creature.EnchantedBy" => {
             json!("Attached")
