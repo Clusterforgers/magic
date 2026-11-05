@@ -56,6 +56,8 @@ pub enum Command {
     FixMarks(FixMarksArgs),
     /// List the verdicts players gave the drafts of the read tier, newest first; `--wrong` keeps the wrong ones and `--quick` the accounts that judged different cards less than 4 seconds apart.
     Reads(ReadsArgs),
+    /// Find the drafts likely to be wrong, read-only and without a model: the engine's English of each draft against the Oracle text on a fixed list of meaning-bearing tokens, as a TSV of findings per draft.
+    DraftSuspects(DraftSuspectsArgs),
     /// Cross-check the rules of the stored precon cards against Forge's card scripts, read from a local checkout: the verbs Forge names that the rules lack, and the unread tail grouped by Forge API and key.
     ForgeCheck(ForgeCheckArgs),
     /// Translate the Forge card scripts of a read-only checkout into proposals in the format `propose` writes, with mappers and no model; `check-rules` then judges them.
@@ -249,6 +251,22 @@ pub struct FixMarksArgs {
     /// How many cards the table lists, the most marked first.
     #[arg(long, value_name = "N", default_value_t = 50)]
     pub limit: u32,
+}
+
+/// Options of `draft-suspects`.
+#[derive(Debug, Args)]
+pub struct DraftSuspectsArgs {
+    /// Only this draft, by slug (the file name without `.json`).
+    #[arg(long, value_name = "SLUG")]
+    pub file: Option<String>,
+
+    /// The drafts directory, with `fixtures/` below it (default `crates/mtg-cli/drafts`).
+    #[arg(long, value_name = "DIR")]
+    pub dir: Option<PathBuf>,
+
+    /// Write the TSV to this file and print only the summary.
+    #[arg(long, value_name = "FILE")]
+    pub out: Option<PathBuf>,
 }
 
 /// Options of `reads`.

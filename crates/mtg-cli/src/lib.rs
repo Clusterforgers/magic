@@ -15,6 +15,7 @@ pub mod coverage;
 pub mod coverage_all;
 pub mod coverage_deck;
 pub mod coverage_decks;
+pub mod draft_suspects;
 pub mod drafts;
 pub mod error;
 pub mod fetch;
@@ -118,6 +119,7 @@ pub async fn run(cli: Cli, progress: Progress) -> Result<String, CliError> {
             fix_marks::fix_marks(&connect(cli.database_url).await?, &args).await
         }
         Command::Reads(args) => reads::reads(&connect(cli.database_url).await?, &args).await,
+        Command::DraftSuspects(args) => draft_suspects::draft_suspects(&args),
         Command::ForgeCheck(args) => {
             let db = connect(cli.database_url).await?;
             forge::forge_check(&db, &args).await
