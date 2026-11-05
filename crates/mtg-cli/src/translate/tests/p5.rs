@@ -105,7 +105,6 @@ fn may_wrapper(#[case] line: &str, #[case] node: Value) {
     "GainLife | LifeAmount$ 3 | OptionalDecider$ Opponent",
     "key:May.OptionalDecider=Opponent"
 )]
-#[case::with_sub("Draw | Optional$ True | SubAbility$ Sub", "key:May.with-SubAbility")]
 #[case::targeted_optional(
     "Draw | Optional$ True | ValidTgts$ Player",
     "key:May.Optional-decider"

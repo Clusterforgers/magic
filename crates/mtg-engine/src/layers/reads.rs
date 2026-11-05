@@ -88,8 +88,11 @@ pub(crate) fn writes_of_wanted(wanted: &Wanted) -> Traits {
         Wanted::AddSubtype(_) | Wanted::SetCreatureTypes(_) | Wanted::AddAllCreatureTypes => {
             Traits::SUBTYPES
         }
-        Wanted::SetLandTypes(_) => Traits::SUBTYPES.or(Traits::KEYWORDS).or(Traits::RULES),
-        Wanted::SetColors(_) => Traits::COLORS,
+        Wanted::SetLandTypes(_) | Wanted::SetLandTypesChosen(_) => {
+            Traits::SUBTYPES.or(Traits::KEYWORDS).or(Traits::RULES)
+        }
+        Wanted::SetCreatureTypesChosen(_) => Traits::SUBTYPES,
+        Wanted::SetColors(_) | Wanted::SetColorsChosen(_) => Traits::COLORS,
         Wanted::AddKeyword(_)
         | Wanted::AddProtectionFromChosenColor
         | Wanted::AddProtectionFromChosenCardType
@@ -142,6 +145,9 @@ pub(crate) fn reads_of_modification(wanted: &Wanted) -> Traits {
         | Wanted::AddSubtype(_)
         | Wanted::SetCreatureTypes(_)
         | Wanted::SetLandTypes(_)
+        | Wanted::SetLandTypesChosen(_)
+        | Wanted::SetCreatureTypesChosen(_)
+        | Wanted::SetColorsChosen(_)
         | Wanted::AddAllCreatureTypes
         | Wanted::SetColors(_)
         | Wanted::AddKeyword(_)

@@ -1657,6 +1657,9 @@ impl<'a> Walker<'a> {
             | Modification::AddSubtype(_)
             | Modification::SetCreatureTypes(_)
             | Modification::SetLandTypes(_)
+            | Modification::SetLandTypesChosen(_)
+            | Modification::SetCreatureTypesChosen(_)
+            | Modification::SetColorsChosen(_)
             | Modification::AddAllCreatureTypes
             | Modification::SetColors(_)
             | Modification::AddProtectionFromChosenColor
@@ -3414,6 +3417,9 @@ impl Walker<'_> {
                 m,
                 Modification::AddProtectionFromChosenColor
                     | Modification::AddProtectionFromChosenCardType
+                    | Modification::SetColorsChosen(_)
+                    | Modification::SetLandTypesChosen(_)
+                    | Modification::SetCreatureTypesChosen(_)
             )
         }) {
             self.at("mods", |w| {

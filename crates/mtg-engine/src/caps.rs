@@ -364,6 +364,9 @@ const RUNS: &[&str] = &[
     "Mod.SetLandTypes",
     "Mod.AddAllCreatureTypes",
     "Mod.SetColors",
+    "Mod.SetColorsChosen",
+    "Mod.SetLandTypesChosen",
+    "Mod.SetCreatureTypesChosen",
     "Mod.RemoveKeyword",
     "Mod.LockKeyword",
     "Mod.GrantAbility",
@@ -824,6 +827,9 @@ mod tests {
     #[case::copy_keeps_this_ability("Copy.Except.ThisAbility", true)]
     #[case::subtypes("Mod.AddSubtype", true)]
     #[case::colours("Mod.SetColors", true)]
+    #[case::chosen_colours("Mod.SetColorsChosen", true)]
+    #[case::chosen_land_types("Mod.SetLandTypesChosen", true)]
+    #[case::chosen_creature_types("Mod.SetCreatureTypesChosen", true)]
     #[case::granted_abilities("Mod.GrantAbility", true)]
     #[case::abilities_of_other_cards("Mod.GainAbilitiesOf", true)]
     #[case::lost_abilities("Mod.LoseAbilities", true)]

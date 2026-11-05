@@ -217,6 +217,20 @@ pub(crate) fn lower(scope: &Scope<'_>, wanted: &Wanted) -> Result<Modification, 
         Wanted::SetCreatureTypes(types) => Modification::SetCreatureTypes(types.clone()),
         Wanted::SetLandTypes(types) => Modification::SetLandTypes(types.clone()),
         Wanted::AddAllCreatureTypes => Modification::AddAllCreatureTypes,
+        Wanted::SetColorsChosen(name) => match scope.chosen_value(name) {
+            Some(Chosen::Color(color)) => {
+                Modification::SetColors(std::iter::once(*color).collect())
+            }
+            _ => return Err(ResolveError::Invalid("no color was chosen".into())),
+        },
+        Wanted::SetLandTypesChosen(name) => match scope.chosen_value(name) {
+            Some(Chosen::LandType(land)) => Modification::SetLandTypes(vec![land.clone()]),
+            _ => return Err(ResolveError::Invalid("no land type was chosen".into())),
+        },
+        Wanted::SetCreatureTypesChosen(name) => match scope.chosen_value(name) {
+            Some(Chosen::CreatureType(kind)) => Modification::SetCreatureTypes(vec![kind.clone()]),
+            _ => return Err(ResolveError::Invalid("no creature type was chosen".into())),
+        },
         Wanted::SetColors(colors) => Modification::SetColors(colors.iter().copied().collect()),
         Wanted::AddKeyword(keyword) => Modification::AddKeyword(chosen_in(scope, keyword)),
         Wanted::LockKeyword(keyword) => Modification::LockKeyword(keyword.clone()),

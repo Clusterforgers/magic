@@ -21,6 +21,10 @@ fn world() -> World {
             "Name:Boar Token\nColors:green\nTypes:Creature Boar\nPT:2/2\nK:Trample\n",
         ),
         (
+            "w_x_x_spirit",
+            "Name:Spirit Token\nColors:white\nTypes:Creature Spirit\nPT:*/*\n",
+        ),
+        (
             "c_a_treasure_sac",
             "Name:Treasure Token\nTypes:Artifact Treasure\n",
         ),
@@ -744,3 +748,4 @@ mod r5p1;
 mod r5p3;
 mod r5p4;
 mod r5p5;
+mod r5p6;
