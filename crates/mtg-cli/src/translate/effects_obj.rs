@@ -22,6 +22,7 @@ pub fn effects(ctx: &mut Ctx, p: &Params, api: &str) -> Tr<Vec<Value>> {
         "PreventDamage" => one(prevent_damage(ctx, p)),
         "Pump" => pump(ctx, p),
         "Debuff" => debuff(ctx, p),
+        "Protection" | "ProtectionAll" => protection(ctx, p, api),
         "PumpAll" => pump_all(ctx, p),
         "Animate" | "AnimateAll" => animate(ctx, p),
         "PutCounter" => put_counter(ctx, p),
@@ -902,6 +903,60 @@ fn debuff(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
         .into_iter()
         .map(|keyword| json!({ "RemoveKeyword": keyword }))
         .collect();
+    Ok(vec![
+        json!({"Continuous": {"affected": affected, "mods": mods, "duration": duration}}),
+    ])
+}
+
+/// `Protection` and `ProtectionAll`: the objects gain protection from the colour or card type their controller chooses as
+/// the effect begins, or from the colours it names, for a while.
+fn protection(ctx: &mut Ctx, p: &Params, api: &str) -> Tr<Vec<Value>> {
+    only(
+        p,
+        api,
+        &[
+            "Gains",
+            "Choices",
+            "Choser",
+            "Duration",
+            "Defined",
+            "ValidTgts",
+            "ValidCards",
+            "TargetMin",
+            "TargetMax",
+        ],
+    )?;
+    if !matches!(p.get("Choser"), None | Some("Controller")) {
+        return unmapped("key:Protection.Choser");
+    }
+    let duration = duration(p.get("Duration"))?;
+    let affected = if api == "ProtectionAll" {
+        let valid = p.get("ValidCards").unwrap_or_default();
+        json!({"Each": selector_any(ctx, valid)?})
+    } else {
+        objects(subject(ctx, p, "Self", None)?)?
+    };
+    let mods = match (p.get("Gains"), p.get("Choices")) {
+        (Some("Choice"), Some("AnyColor")) => vec![json!("AddProtectionFromChosenColor")],
+        (Some("Choice"), Some("CardType")) => vec![json!("AddProtectionFromChosenCardType")],
+        (Some("Choice"), choices) => {
+            return unmapped(format!("key:Protection.Choices={}", choices.unwrap_or("")));
+        }
+        (Some(gains), None) => {
+            let mut mods = Vec::new();
+            for word in gains.split(',').map(str::trim) {
+                let color = ["white", "blue", "black", "red", "green"].contains(&word);
+                if !color {
+                    return unmapped(format!("key:Protection.Gains={gains}"));
+                }
+                let capital = word[..1].to_uppercase() + &word[1..];
+                let keyword = keyword_value(ctx, &format!("Protection:Card.{capital}"))?;
+                mods.push(json!({ "AddKeyword": keyword }));
+            }
+            mods
+        }
+        _ => return unmapped("key:Protection.Gains"),
+    };
     Ok(vec![
         json!({"Continuous": {"affected": affected, "mods": mods, "duration": duration}}),
     ])

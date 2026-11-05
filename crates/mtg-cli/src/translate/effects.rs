@@ -286,9 +286,8 @@ fn api_line(ctx: &mut Ctx, p: &Params, api: &str) -> Tr<Vec<Value>> {
         "Destroy" | "DestroyAll" | "Counter" | "Pump" | "PumpAll" | "PutCounter"
         | "RemoveCounter" | "Tap" | "Untap" | "TapAll" | "UntapAll" | "Sacrifice"
         | "Regenerate" | "Fight" | "GainControl" | "DamageAll" | "Animate" | "PreventDamage"
-        | "DamageResolve" | "PutCounterAll" | "AnimateAll" | "Debuff" => {
-            effects_obj::effects(ctx, p, api)
-        }
+        | "DamageResolve" | "PutCounterAll" | "AnimateAll" | "Debuff" | "Protection"
+        | "ProtectionAll" => effects_obj::effects(ctx, p, api),
         "ChangeZone" | "ChangeZoneAll" => effects_zone::effects(ctx, p, api),
         "Token" | "Mana" | "ManaReflected" | "Investigate" => tokens::effects(ctx, p, api),
         other => unmapped(format!("effect:{other}")),
