@@ -44,24 +44,19 @@ fn single(ctx: &mut Ctx, body: &str) -> Tr<Value> {
         }
         line_condition = Some(json!("Kicked"));
     }
-    if event == "Untap" {
-        return doesnt_untap(ctx, &p);
-    }
-    if event == "Counter" {
-        if line_condition.is_some() {
-            return unmapped("key:Replacement.Counter.condition");
-        }
-        return super::replacements_counter::counter(ctx, &p);
-    }
-    if matches!(event, "Draw" | "GainLife" | "AddCounter") {
+    if matches!(event, "Counter" | "Draw" | "GainLife" | "AddCounter") {
         if line_condition.is_some() {
             return unmapped(format!("key:Replacement.{event}.condition"));
         }
         return match event {
+            "Counter" => super::replacements_counter::counter(ctx, &p),
             "Draw" => super::replacements_counter::draw(ctx, &p),
             "GainLife" => super::replacements_counter::gain_life(ctx, &p),
             _ => super::replacements_counter::add_counter(ctx, &p),
         };
+    }
+    if event == "Untap" {
+        return doesnt_untap(ctx, &p);
     }
     if matches!(event, "BeginPhase" | "LifeReduced") {
         return super::replacements_phase::held(ctx, event, &p, line_condition.as_ref());
