@@ -64,12 +64,12 @@ fn play_words(#[case] lines: &str, #[case] has: &[&str], #[case] lacks: &[&str])
     "key:Play.WithTotalCMC"
 )]
 #[case::copy_outside_exile(
-    "DB$ Play | Defined$ Remembered | CopyCard$ True | Optional$ True",
+    "DB$ Play | Valid$ Card.YouOwn | CopyCard$ True | Optional$ True",
     "key:Play.CopyCard"
 )]
 #[case::spell_filter(
-    "DB$ Play | Defined$ Remembered | ValidSA$ Spell.cmcLEX | Optional$ True",
-    "key:Play.ValidSA"
+    "DB$ Play | Defined$ Remembered | ValidSA$ Spell.cmcLE4 | Optional$ True",
+    "key:Play.Defined-with-ValidSA-filter"
 )]
 #[case::amount_variable(
     "DB$ Play | Defined$ Remembered | Amount$ X | Optional$ True",
@@ -258,8 +258,8 @@ fn a_static_effect_is_a_forever_continuous_over_the_moved_object(
 
 #[rstest]
 #[case::adds_a_color("SVar:Animate:Mode$ Continuous | AddType$ Zombie | AddColor$ Black")]
-#[case::takes_types_away(
-    "SVar:Animate:Mode$ Continuous | AddType$ Artifact | RemoveCardTypes$ True"
+#[case::takes_abilities_away(
+    "SVar:Animate:Mode$ Continuous | AddType$ Artifact | RemoveAllAbilities$ True"
 )]
 #[case::power_alone("SVar:Animate:Mode$ Continuous | SetPower$ 4")]
 #[case::affects_creatures_only(

@@ -267,10 +267,12 @@ fn sacrifice_named_objects(#[case] line: &str, #[case] who: Option<Value>) {
 }
 
 #[test]
-fn sacrifice_all_of_a_valid_string_is_a_gap() {
+fn sacrifice_all_of_a_valid_string_with_a_controller_is_a_gap() {
     assert_eq!(
-        gaps(&plain("SacrificeAll | ValidCards$ Creature.YouCtrl")),
-        ["key:SacrificeAll.ValidCards"]
+        gaps(&plain(
+            "SacrificeAll | ValidCards$ Creature.YouCtrl | Controller$ You"
+        )),
+        ["key:SacrificeAll.Controller"]
     );
 }
 
