@@ -224,7 +224,7 @@ pub fn remembered_total(ctx: &Ctx, what: &str) -> Tr<Value> {
             .and_then(Value::as_str)
             .is_some_and(|n| ctx.counted.contains(n))
     {
-        return super::amount::targeted_amount(what, &held);
+        return super::amount::targeted_amount("Remembered", what, &held);
     }
     let zones: Vec<Value> = [
         "Battlefield",

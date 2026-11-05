@@ -84,6 +84,13 @@ pub fn loyalty(cost: &str) -> Option<Value> {
 
 /// The cost items a cost stands for, as the DSL's `Cost`: a string for mana alone.
 pub fn cost(ctx: &Ctx, text: &str) -> Tr<Value> {
+    ctx.in_cost.set(true);
+    let found = cost_items(ctx, text);
+    ctx.in_cost.set(false);
+    found
+}
+
+fn cost_items(ctx: &Ctx, text: &str) -> Tr<Value> {
     let mut mana = String::new();
     let mut items = Vec::new();
     for word in parts(text) {

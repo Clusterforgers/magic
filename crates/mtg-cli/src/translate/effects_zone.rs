@@ -793,12 +793,8 @@ pub fn dig(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
         json!({ "Bound": kept })
     };
     if p.get("Reveal") == Some("True") {
-        let shown = if matches!(take, Take::All) {
-            from_top
-        } else {
-            moved.clone()
-        };
-        effects.push(json!({"Reveal": {"what": shown}}));
+        // "Reveal the top X cards" shows every card dug, not only the ones taken.
+        effects.push(json!({"Reveal": {"what": from_top}}));
     }
     let mut put = moves(&moved, to);
     if (hidden || matches!(take, Take::All)) && p.get("RememberChanged") == Some("True") {

@@ -766,7 +766,7 @@ impl<'a> Walker<'a> {
             Amount::Counters { on, .. } | Amount::AnyCounters(on) => {
                 self.at("on", |w| w.reference(on, Kind::Either));
             }
-            Amount::Sum(parts) => {
+            Amount::Sum(parts) | Amount::Product(parts) => {
                 for (i, part) in parts.iter().enumerate() {
                     self.amounting = Amounting::of(sharing);
                     self.at(format!("[{i}]"), |w| w.amount(part));
@@ -885,6 +885,11 @@ impl<'a> Walker<'a> {
             Amount::ManaInPool(who) => self.player_amount("ManaInPool", who),
             Amount::MostCommon { of, .. } => self.w2c_selector_amount("MostCommon", of),
             Amount::Doors(of) => self.w2c_selector_amount("Doors", of),
+            Amount::CountOf { of, filter } => {
+                self.uses("Amount", "CountOf");
+                self.at("of", |w| w.reference(of, Kind::Either));
+                self.at("filter", |w| w.selector(filter));
+            }
             Amount::Random { min, max } => self.random_amount(*min, *max),
             // Checked by `amount` before it reaches here; listed so a new variant must be placed.
             Amount::Fixed(_)
@@ -898,6 +903,7 @@ impl<'a> Walker<'a> {
             | Amount::Counters { .. }
             | Amount::AnyCounters(_)
             | Amount::Sum(_)
+            | Amount::Product(_)
             | Amount::Times { .. }
             | Amount::Half { .. }
             | Amount::Divided

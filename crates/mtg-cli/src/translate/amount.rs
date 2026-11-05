@@ -137,6 +137,15 @@ fn negate(ctx: &Ctx, inner: &str) -> Tr<Value> {
 
 /// The amount of the value of a named part.
 fn expression_amount(ctx: &Ctx, expression: &str) -> Tr<Value> {
+    match read_expression(ctx, expression) {
+        Ok(found) => Ok(found),
+        // What the readers above leave as a gap, the grammar reads whole or names every word that stops it.
+        Err(gap) => super::count::amount_of(ctx, expression).unwrap_or(Err(gap)),
+    }
+}
+
+/// The amount of an expression the readers of this file know, or the gap that stops them.
+fn read_expression(ctx: &Ctx, expression: &str) -> Tr<Value> {
     let expression = expression.trim();
     if let Ok(number) = expression.parse::<i32>() {
         return Ok(json!(number));
@@ -160,16 +169,16 @@ fn expression_amount(ctx: &Ctx, expression: &str) -> Tr<Value> {
         return apply_steps(ctx, amount, steps);
     }
     if let Some(rest) = expression.strip_prefix("Targeted$") {
-        return targeted_amount(rest, &ctx.last_target()?);
+        return targeted_amount("Targeted", rest, &ctx.last_target()?);
     }
     if let Some(rest) = expression.strip_prefix("ParentTargeted$") {
-        return targeted_amount(rest, &ctx.parent()?);
+        return targeted_amount("ParentTargeted", rest, &ctx.parent()?);
     }
     unmapped(format!("amount:{}", head(expression)))
 }
 
 /// The part of an expression before its first `$`, space or dot, for naming a gap.
-fn head(expression: &str) -> String {
+pub(super) fn head(expression: &str) -> String {
     expression
         .split(['$', ' ', '.', '/'])
         .next()
@@ -279,17 +288,20 @@ fn event_amount(ctx: &Ctx, expression: &str) -> Tr<Option<Value>> {
         },
         _ => return Ok(None),
     };
-    targeted_amount(what, &of).map(Some)
+    targeted_amount(head, what, &of).map(Some)
 }
 
-/// A stat of the latest target.
-pub(super) fn targeted_amount(what: &str, of: &Value) -> Tr<Value> {
+/// A stat of the object a reference head names; a gap carries that head, not `Targeted$` whatever was read.
+pub(super) fn targeted_amount(head: &str, what: &str, of: &Value) -> Tr<Value> {
     // A stat of an object that left its zone is read as the object last was: `LKI` says so.
     let what = what.strip_suffix("LKI").unwrap_or(what);
     if let Some(kind) = what.strip_prefix("CardCounters.") {
+        if kind == "ALL" {
+            return Ok(json!({"AnyCounters": of}));
+        }
         return match counter_kind(kind) {
             Some(counter) => Ok(json!({"Counters": {"on": of, "counter": counter}})),
-            None => unmapped(format!("amount:Targeted$CardCounters.{kind}")),
+            None => unmapped(format!("amount:{head}$CardCounters.{kind}")),
         };
     }
     let stat = match what {
@@ -298,7 +310,7 @@ pub(super) fn targeted_amount(what: &str, of: &Value) -> Tr<Value> {
         "CardManaCost" => "ManaValue",
         "CardNumColors" => "Colors",
         "CastTotalManaSpent" => "ManaSpent",
-        other => return unmapped(format!("amount:Targeted${other}")),
+        other => return unmapped(format!("amount:{head}${other}")),
     };
     Ok(json!({"Stat": {"of": of, "stat": stat}}))
 }
@@ -310,7 +322,7 @@ fn count_amount(ctx: &Ctx, expression: &str) -> Tr<Value> {
 }
 
 /// The `/Plus.N`, `/Minus.N`, `/Twice` and `/Times.N` steps that follow the base of an expression.
-fn apply_steps(ctx: &Ctx, mut value: Value, steps: &str) -> Tr<Value> {
+pub(super) fn apply_steps(ctx: &Ctx, mut value: Value, steps: &str) -> Tr<Value> {
     for step in steps.split('/').filter(|step| !step.is_empty()) {
         value = match step.split_once('.') {
             Some(("Plus", n)) => plus(ctx, &value, n, false)?,

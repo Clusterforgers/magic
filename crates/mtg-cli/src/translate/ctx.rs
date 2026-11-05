@@ -124,6 +124,9 @@ pub struct Ctx<'a> {
     pub pinned: Option<Value>,
     /// What `DelayTriggerRemembered` names in the steps of a delayed trigger: the name its setup bound.
     pub delayed_remembered: Option<Value>,
+    /// A cost is being translated: the engine checks a cost against no target specification, so the count grammar
+    /// reads no target there.
+    pub in_cost: std::cell::Cell<bool>,
     /// The index of the target the line being translated is about to declare, for the condition it states ahead of its effect.
     pub coming: Option<u8>,
     /// The latest target the ability had declared before the line being translated (`Defined$ ParentTarget`).
@@ -171,6 +174,7 @@ impl<'a> Ctx<'a> {
             moved_from: BTreeMap::new(),
             counted: std::collections::BTreeSet::new(),
             scoped: std::collections::BTreeSet::new(),
+            in_cost: std::cell::Cell::new(false),
             coming: None,
             memory: super::memory::plan(face),
             pinned: None,

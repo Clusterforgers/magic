@@ -456,7 +456,7 @@ pub fn selector_in(ctx: &Ctx, spec: &str, zone: Option<&str>) -> Tr<Vec<Value>> 
     }
     match zone {
         None | Some("Battlefield") => {}
-        Some(zone @ ("Graveyard" | "Hand" | "Library" | "Exile")) => {
+        Some(zone @ ("Graveyard" | "Hand" | "Library" | "Exile" | "Command")) => {
             owned_outside(&mut preds);
             preds.push(json!({ "In": zone }));
         }

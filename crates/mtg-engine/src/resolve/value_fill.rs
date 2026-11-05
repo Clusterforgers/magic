@@ -40,6 +40,14 @@ impl Scope<'_> {
             Amount::ManaInPool(who) => self.pooled(who),
             Amount::MostCommon { of, stat } => self.most_common(of, *stat),
             Amount::Doors(of) => self.unlocked_doors(of),
+            Amount::CountOf { of, filter } => self.count_of(of, filter),
+            Amount::Product(parts) => {
+                let mut product = 1i64;
+                for part in parts {
+                    product = product.saturating_mul(self.amount_of(part, share)?);
+                }
+                Ok(product)
+            }
             Amount::Random { min, max } => Ok(self.random_between(*min, *max)),
             _ => Err(ResolveError::Invalid("not a filled amount".into())),
         }
@@ -119,11 +127,26 @@ impl Scope<'_> {
     /// color is counted once for every object that has it.
     fn most_common(&self, of: &Selector, stat: StatKind) -> Result<i64, ResolveError> {
         let mut tally: BTreeMap<String, i64> = BTreeMap::new();
+        // Objects with every creature type (changelings) share each type, also one no other object names.
+        let mut every = 0i64;
         for object in self.matching(of)? {
             let Some(seen) = self.seen(object) else {
                 continue;
             };
-            if stat == StatKind::Colors {
+            if stat == StatKind::CreatureType {
+                let (types, all) = crate::characteristics::creature_types(self.state, object.id);
+                if all {
+                    every += 1;
+                } else {
+                    for kind in types {
+                        *tally.entry(kind.0).or_default() += 1;
+                    }
+                }
+            } else if stat == StatKind::Name {
+                if let Some(name) = Self::card_name(&seen) {
+                    *tally.entry(name).or_default() += 1;
+                }
+            } else if stat == StatKind::Colors {
                 for color in seen.chars.colors.iter() {
                     *tally.entry(format!("{color:?}")).or_default() += 1;
                 }
@@ -131,7 +154,7 @@ impl Scope<'_> {
                 *tally.entry(value.to_string()).or_default() += 1;
             }
         }
-        Ok(tally.into_values().max().unwrap_or(0))
+        Ok(tally.into_values().max().unwrap_or(0) + every)
     }
 
     /// The doors unlocked among the Rooms the selector names (CR 709.5).

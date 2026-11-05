@@ -34,6 +34,7 @@ fn stat_word(stat: StatKind) -> &'static str {
         StatKind::Colors => "colors",
         StatKind::BasicLandTypes => "basic land types",
         StatKind::Name => "name",
+        StatKind::CreatureType => "creature type",
         StatKind::BasePower => "base power",
         StatKind::BaseToughness => "base toughness",
         StatKind::ManaSpent => "mana spent",

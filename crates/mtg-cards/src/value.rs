@@ -36,6 +36,8 @@ pub enum StatKind {
     ManaSpent,
     /// Its name: no number, so only `Amount::Distinct` reads it (the different names among the objects).
     Name,
+    /// Its creature types: no number, so only `Amount::MostCommon` reads it (the most creatures sharing one type).
+    CreatureType,
 }
 
 /// A comparison between two numbers.
@@ -566,6 +568,16 @@ pub enum Amount {
     Chosen,
     /// The number the resolution remembered under the name (`Effect::ChooseValue`); 0 for a value that is no number.
     ChosenAs(String),
+    /// How many of the objects the reference names satisfy the filter, an object that left the zone judged as it was
+    /// (CR 400.7): "the number of Humans among the sacrificed creatures". Zero when the reference names none.
+    CountOf {
+        /// The objects counted from.
+        of: Ref,
+        /// What each must satisfy.
+        filter: Selector,
+    },
+    /// The product of the amounts: "X times the number of ...".
+    Product(Vec<Amount>),
 }
 
 impl Amount {
@@ -703,6 +715,11 @@ enum Tagged {
     Doors(Selector),
     Chosen,
     ChosenAs(String),
+    CountOf {
+        of: Ref,
+        filter: Selector,
+    },
+    Product(Vec<Amount>),
 }
 
 /// The tagged forms of [`Amount`] by reference, written by serde.
@@ -809,6 +826,11 @@ enum TaggedRef<'a> {
     Doors(&'a Selector),
     Chosen,
     ChosenAs(&'a String),
+    CountOf {
+        of: &'a Ref,
+        filter: &'a Selector,
+    },
+    Product(&'a [Amount]),
 }
 
 impl From<Tagged> for Amount {
@@ -877,6 +899,8 @@ impl From<Tagged> for Amount {
             Tagged::Doors(of) => Amount::Doors(of),
             Tagged::Chosen => Amount::Chosen,
             Tagged::ChosenAs(name) => Amount::ChosenAs(name),
+            Tagged::CountOf { of, filter } => Amount::CountOf { of, filter },
+            Tagged::Product(parts) => Amount::Product(parts),
         }
     }
 }
@@ -972,6 +996,10 @@ impl Serialize for Amount {
             Amount::Doors(of) => TaggedRef::Doors(of).serialize(serializer),
             Amount::Chosen => TaggedRef::Chosen.serialize(serializer),
             Amount::ChosenAs(name) => TaggedRef::ChosenAs(name).serialize(serializer),
+            Amount::CountOf { of, filter } => {
+                TaggedRef::CountOf { of, filter }.serialize(serializer)
+            }
+            Amount::Product(parts) => TaggedRef::Product(parts).serialize(serializer),
         }
     }
 }

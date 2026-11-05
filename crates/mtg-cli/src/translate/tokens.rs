@@ -262,6 +262,8 @@ fn mana(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
     let times = p.get("Amount").unwrap_or("1");
     let words: Vec<&str> = produced.split_whitespace().collect();
     let mut effect = match words.as_slice() {
+        // "Any combination of colors" is not one color: only a single mana is the same thing.
+        ["Combo", "Any"] if times != "1" => return unmapped("key:Mana.Produced=Combo Any"),
         ["Any"] | ["Combo", "Any"] => json!({"mana": {"AnyColor": amount(ctx, times)?}}),
         ["Chosen" | "ChosenColor"] => match times.parse::<u32>() {
             Ok(count) if count > 0 => json!({"mana": {"ChosenColor": count}}),

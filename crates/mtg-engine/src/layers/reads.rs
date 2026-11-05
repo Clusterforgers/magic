@@ -289,16 +289,14 @@ fn reads_of_pred(pred: &Pred) -> Traits {
 
 fn reads_of_stat(stat: StatKind) -> Traits {
     match stat {
-        StatKind::Power => Traits::POWER,
-        StatKind::Toughness => Traits::TOUGHNESS,
+        // The base after the effects that set it still depends on the layers that set power and toughness.
+        StatKind::Power | StatKind::BasePower => Traits::POWER,
+        StatKind::Toughness | StatKind::BaseToughness => Traits::TOUGHNESS,
         StatKind::Colors => Traits::COLORS,
-        StatKind::BasicLandTypes => Traits::SUBTYPES,
-        StatKind::ManaValue
-        | StatKind::Loyalty
-        | StatKind::BasePower
-        | StatKind::BaseToughness
-        | StatKind::ManaSpent
-        | StatKind::Name => Traits::NONE,
+        StatKind::BasicLandTypes | StatKind::CreatureType => Traits::SUBTYPES,
+        StatKind::ManaValue | StatKind::Loyalty | StatKind::ManaSpent | StatKind::Name => {
+            Traits::NONE
+        }
     }
 }
 
@@ -346,9 +344,10 @@ pub(crate) fn reads_of_amount(amount: &Amount) -> Traits {
         | Amount::LowestLife(who)
         | Amount::LowestHand(who)
         | Amount::HighestLife(who) => reads_of_ref(who),
-        Amount::Sum(parts) => parts
+        Amount::Sum(parts) | Amount::Product(parts) => parts
             .iter()
             .fold(Traits::NONE, |all, part| all.or(reads_of_amount(part))),
+        Amount::CountOf { of, filter } => reads_of_ref(of).or(reads_of_selector(filter)),
         Amount::EvenShare(total) => reads_of_amount(total),
         Amount::Times { of, .. } | Amount::Half { of, .. } => reads_of_amount(of),
         Amount::Devotion(_) => Traits::CONTROL,

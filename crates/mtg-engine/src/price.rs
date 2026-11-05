@@ -87,7 +87,7 @@ const fn unpaid(item: &CostItem) -> &'static str {
 fn builds_on_x(amount: &Amount) -> bool {
     match amount {
         Amount::X => true,
-        Amount::Sum(parts) => parts.iter().any(builds_on_x),
+        Amount::Sum(parts) | Amount::Product(parts) => parts.iter().any(builds_on_x),
         Amount::Times { of, .. } | Amount::Half { of, .. } | Amount::EvenShare(of) => {
             builds_on_x(of)
         }

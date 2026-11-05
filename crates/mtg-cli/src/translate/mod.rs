@@ -14,6 +14,7 @@ pub mod card;
 pub mod condition;
 pub mod cost;
 pub mod cost_more;
+pub mod count;
 pub mod ctx;
 pub mod effects;
 pub mod effects_ambient;
