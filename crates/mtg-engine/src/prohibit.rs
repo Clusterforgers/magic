@@ -78,6 +78,12 @@ pub(crate) enum Doing {
     SkipTurn { player: PlayerId },
     /// `player` casts the card `card`.
     Cast { player: PlayerId, card: ObjectId },
+    /// `object`, controlled by `player`, attacks `defender` or a planeswalker they control.
+    Attack {
+        player: PlayerId,
+        object: ObjectId,
+        defender: PlayerId,
+    },
 }
 
 /// Whether a prohibition's subjects cover the player or the object an action is about.
@@ -168,8 +174,37 @@ fn applies(state: &GameState, ban: &Banned, doing: Doing) -> bool {
                     card,
                 )
         }
+        (
+            Prohibited::Attack { unless },
+            Doing::Attack {
+                player,
+                object,
+                defender,
+            },
+        ) => {
+            covers(who, Some(player), Some(object))
+                && !state.object(object).is_some_and(|o| {
+                    Scope::announcing(state, defender, o.reference())
+                        .holds(unless)
+                        .unwrap_or(false)
+                })
+        }
         _ => false,
     }
+}
+
+/// Whether a prohibition keeps the creature `object` from attacking `defender` or a planeswalker they control.
+pub(crate) fn attack_forbidden(state: &GameState, object: ObjectId, defender: PlayerId) -> bool {
+    controller_of(state, object).is_some_and(|player| {
+        forbidden(
+            state,
+            Doing::Attack {
+                player,
+                object,
+                defender,
+            },
+        )
+    })
 }
 
 /// The parts of a cast prohibition: the filter, the spells a player may cast each turn and the exception.

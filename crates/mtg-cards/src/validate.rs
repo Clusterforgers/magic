@@ -3817,6 +3817,9 @@ impl Walker<'_> {
                     self.at("unless", |w| w.condition(unless));
                 }
             }
+            Prohibited::Attack { unless } => {
+                self.at("unless", |w| w.condition(unless));
+            }
             Prohibited::SkipStep(Step::Cleanup) => {
                 self.at("action", |w| w.problem("the cleanup step can't be skipped"));
             }

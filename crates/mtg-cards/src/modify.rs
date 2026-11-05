@@ -335,6 +335,12 @@ pub enum Prohibited {
         #[serde(default, skip_serializing_if = "Option::is_none")]
         unless: Option<Condition>,
     },
+    /// Attack a player or a planeswalker they control (CR 508.1b), unless the condition holds for the defending player
+    /// ("you" in it is that player).
+    Attack {
+        /// The attack is open while this holds for the defending player.
+        unless: Condition,
+    },
 }
 
 /// A change to the rules of the game rather than to an object. `Effect::Rule` makes it for a duration and
