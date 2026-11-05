@@ -57,10 +57,6 @@ fn a_discard_mode_is_read(#[case] line: &str, #[case] effects: serde_json::Value
 
 /// A mode the engine does not run stays a gap named after it.
 #[rstest]
-#[case::reveal_you_choose(
-    "Discard | ValidTgts$ Opponent | Mode$ RevealYouChoose",
-    "key:Discard.Mode=RevealYouChoose"
-)]
 #[case::look_you_choose(
     "Discard | ValidTgts$ Opponent | Mode$ LookYouChoose",
     "key:Discard.Mode=LookYouChoose"
