@@ -481,6 +481,12 @@ impl<'a> Walker<'a> {
                     self.problem("`Triggering` is only valid in a triggered ability");
                 }
             }
+            Ref::TriggeringPlayer => {
+                if !self.scope.in_trigger {
+                    self.problem("`TriggeringPlayer` is only valid in a triggered ability");
+                }
+                self.expect(Kind::Player, want);
+            }
             Ref::Affected => {
                 if !self.scope.in_static {
                     self.problem("`Affected` is only valid in the changes of a static ability");
@@ -2224,6 +2230,7 @@ impl Walker<'_> {
             | Ref::MostLife
             | Ref::ActivePlayer
             | Ref::Defending
+            | Ref::TriggeringPlayer
             | Ref::ControllerOf(_)
             | Ref::OwnerOf(_) => Kind::Player,
             Ref::Affected

@@ -841,6 +841,15 @@ impl<'a> Scope<'a> {
                 .cause
                 .map(|cause| cause.subjects.clone())
                 .ok_or_else(|| ResolveError::Invalid("there is no triggering event".into()))?,
+            Ref::TriggeringPlayer => self
+                .cause
+                .map(|cause| {
+                    (cause.subjects.iter())
+                        .filter(|subject| matches!(subject, Target::Player(_)))
+                        .cloned()
+                        .collect()
+                })
+                .ok_or_else(|| ResolveError::Invalid("there is no triggering event".into()))?,
             Ref::Dealer => self
                 .cause
                 .and_then(|cause| cause.source)

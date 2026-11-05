@@ -75,6 +75,8 @@ pub enum Ref {
     Target(u8),
     /// The player or object the trigger event is about ("that creature", "that player").
     Triggering,
+    /// The player the trigger event is about, never the object it also holds ("that player" of an activation: damage to it spares the activated permanent).
+    TriggeringPlayer,
     /// The object that did what the trigger event is about: the source of the damage ("Whenever a Vampire you control deals
     /// combat damage to a player, put a +1/+1 counter on it"); nobody for an event with no such object.
     Dealer,

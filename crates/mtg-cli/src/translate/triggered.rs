@@ -84,9 +84,9 @@ pub fn resolve(shape: Option<&Shape>, word: &str) -> Tr<Value> {
     let did = holds(mode);
     let reference = match what {
         Word::Owner if ONE_OBJECT.contains(&mode) => "Triggering",
-        Word::Activator if matches!(mode, "SpellCast" | "AbilityCast" | "SpellAbilityCast") => {
-            "Triggering"
-        }
+        // An activation holds the player and the permanent; the player alone is "that player".
+        Word::Activator if mode == "AbilityCast" => "TriggeringPlayer",
+        Word::Activator if matches!(mode, "SpellCast" | "SpellAbilityCast") => "Triggering",
         Word::Card if ONE_OBJECT.contains(&mode) || PLAYER_AND_OBJECT.contains(&mode) => {
             "Triggering"
         }
@@ -102,6 +102,7 @@ pub fn resolve(shape: Option<&Shape>, word: &str) -> Tr<Value> {
         Word::Blocker if mode == "AttackerBlockedByCreature" && shape.by => "Dealer",
         // A block holds both creatures; only "this blocks" names one without doubt.
         Word::Blocker if mode == "Blocks" && shape.itself => "This",
+        Word::Player if did == Some((true, true)) => "TriggeringPlayer",
         Word::Player
             if ONE_PLAYER.contains(&mode)
                 || PLAYER_AND_OBJECT.contains(&mode)

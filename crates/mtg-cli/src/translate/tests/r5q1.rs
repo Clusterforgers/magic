@@ -228,3 +228,41 @@ fn a_token_as_big_as_the_total_power_of_the_creatures_sacrificed_to_cast(
     settle(&mut driver, true, None);
     assert_eq!(power_of(&driver, "Zombie"), power);
 }
+
+const MENTOR: &str = "Name:Mentor\nTypes:Creature Human Cleric\nPT:2/2\nT:Mode$ AbilityCast | ValidActivatingPlayer$ Opponent | ValidCard$ Artifact.inZoneBattlefield,Creature.inZoneBattlefield,Land.inZoneBattlefield | ValidSA$ SpellAbility.!ManaAbility | TriggerZones$ Battlefield | Execute$ TrigDmg | TriggerDescription$ x\nSVar:TrigDmg:DB$ DealDamage | NumDmg$ 2 | Defined$ TriggeredActivator\n";
+const SHAMAN: &str = "Name:Shaman\nTypes:Creature Centaur Shaman\nPT:3/4\nT:Mode$ AbilityCast | ValidActivatingPlayer$ Player | ValidSA$ SpellAbility.!ManaAbility | TriggerZones$ Battlefield | Execute$ TrigDmg | TriggerDescription$ x\nSVar:TrigDmg:DB$ DealDamage | NumDmg$ 1 | Defined$ TriggeredActivator\n";
+
+#[rstest]
+#[case::opponent_activates(MENTOR, 2)]
+#[case::opponent_activates_every_ability(SHAMAN, 1)]
+fn damage_for_an_activation_hits_the_player_and_spares_the_activated_permanent(
+    #[case] script: &str,
+    #[case] damage: i32,
+) {
+    let watcher = card(script, "Watcher", &[CardType::Creature], Some((2, 2)));
+    let worker = Arc::new(
+        CardDefinition::new("Worker")
+            .with_type(CardType::Creature)
+            .with_power_toughness(1, 1)
+            .with_mana_cost(ManaCost::parse("{0}").unwrap())
+            .with_rules(
+                serde_json::from_str::<Ability>(
+                    r#"{"Activated":{"cost":"{0}","effects":[{"GainLife":{"amount":1}}]}}"#,
+                )
+                .unwrap(),
+            ),
+    );
+    let scenario = Scenario::new(2)
+        .at(3, 1, mtg_engine::turn::Step::Main1)
+        .battlefield(0, [ready(watcher)])
+        .battlefield(1, [ready(worker)])
+        .library(0, library(9))
+        .library(1, library(9));
+    let mut driver = Driver::from_scenario(scenario).unwrap();
+    driver.begin_activation("Worker").unwrap();
+    announce(&mut driver, vec![], None, 0);
+    settle(&mut driver, true, None);
+    let life = driver.state().player(seat(1)).unwrap().life();
+    assert_eq!(life, 20 + 1 - damage);
+    assert!(names(&driver, Zone::Battlefield).contains(&"Worker".to_owned()));
+}
