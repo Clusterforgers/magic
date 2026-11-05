@@ -63,6 +63,9 @@ fn single(ctx: &mut Ctx, body: &str) -> Tr<Value> {
             _ => super::replacements_counter::add_counter(ctx, &p),
         };
     }
+    if event == "BeginPhase" {
+        return super::replacements_phase::skip_step(&p, line_condition.as_ref());
+    }
     if event == "GameLoss" {
         return super::replacements_loss::game_loss(ctx, &p, line_condition.as_ref());
     }
@@ -82,6 +85,7 @@ fn single(ctx: &mut Ctx, body: &str) -> Tr<Value> {
         "ReplaceWith",
         "ReplacementResult",
         "ActiveZones",
+        "ValidLKI",
         "Origin",
     ];
     check_keys(&p, "Replacement.Moved", &read, |_, _| false)?;
@@ -90,7 +94,7 @@ fn single(ctx: &mut Ctx, body: &str) -> Tr<Value> {
     {
         return unmapped("key:Replacement.Moved.ReplacementResult");
     }
-    if p.get("ValidCard") != Some("Card.Self") && !kicked_self {
+    if (p.get("ValidCard") != Some("Card.Self") || p.has("ValidLKI")) && !kicked_self {
         return super::replacements_moved::others(ctx, &p, line_condition.as_ref());
     }
     if p.get("Destination") == Some("Graveyard") && !p.has("ActiveZones") {
