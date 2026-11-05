@@ -102,3 +102,28 @@ fn the_mana_goes_to_the_named_player(#[case] line: &str, #[case] who: Option<Val
 fn an_unread_pool_owner_is_a_gap(#[case] line: &str, #[case] gap: &str) {
     assert!(gaps(&spell(line)).iter().any(|g| g == gap));
 }
+
+#[rstest]
+#[case::default("", None)]
+#[case::you("Controller$ You", None)]
+#[case::target_controller("Controller$ TargetedController", Some(json!({"ControllerOf": {"Target": 0}})))]
+fn the_copy_is_made_for_the_named_player(#[case] extra: &str, #[case] who: Option<Value>) {
+    let effects = first_effects(&spell(&format!(
+        "CopyPermanent | ValidTgts$ Creature | {extra}"
+    )));
+    assert_eq!(
+        effects[0]["CreateToken"].get("who").cloned(),
+        who,
+        "{effects:?}"
+    );
+}
+
+#[test]
+fn an_unread_copy_owner_is_a_gap() {
+    let text = spell("CopyPermanent | ValidTgts$ Creature | Controller$ Opponent");
+    assert!(
+        gaps(&text)
+            .iter()
+            .any(|g| g == "key:CopyPermanent.Controller=Opponent")
+    );
+}

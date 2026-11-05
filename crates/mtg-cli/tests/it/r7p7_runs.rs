@@ -132,3 +132,27 @@ fn the_mana_lands_in_the_named_pool(#[case] who: &str, #[case] mine: u32, #[case
     };
     assert_eq!((pool(0), pool(1)), (mine, theirs));
 }
+
+#[rstest]
+#[case::default("TokenTapped$ False", 1, 1)]
+#[case::to_the_controller("Controller$ TargetedController", 0, 2)]
+fn the_copy_goes_to_the_named_player(
+    #[case] extra: &str,
+    #[case] mine: usize,
+    #[case] theirs: usize,
+) {
+    let script = format!(
+        "Name:Mirror\nManaCost:G\nTypes:Sorcery\nA:SP$ CopyPermanent | ValidTgts$ Creature | {extra}\n"
+    );
+    let spell = translated(&script, "Mirror", "Sorcery", "{G}");
+    let scenario = Scenario::new(2)
+        .hand(0, [spell])
+        .battlefield(0, [ready(forest())])
+        .battlefield(1, [ready(bear())]);
+    let mut driver = Driver::from_scenario(scenario).unwrap();
+    let target = driver.target_named("Grizzly Bears").unwrap();
+    driver.cast_at("Mirror", &[target]).unwrap();
+    settle(&mut driver);
+    assert_eq!(count(&driver, 0, "Grizzly Bears"), mine);
+    assert_eq!(count(&driver, 1, "Grizzly Bears"), theirs);
+}

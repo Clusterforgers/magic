@@ -31,6 +31,7 @@ pub fn copy_permanent(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
             "NonLegendary",
             "PumpKeywords",
             "PumpDuration",
+            "Controller",
             "AtEOT",
         ],
     )?;
@@ -49,6 +50,14 @@ pub fn copy_permanent(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
     }
     let mut create = json!({
         "token": spec, "count": count, "tapped": flag(p, "TokenTapped")?});
+    // Who owns and controls the copies: the controller by default.
+    match p.get("Controller") {
+        None | Some("You") => {}
+        Some(word @ ("TriggeredCardController" | "TargetedController" | "TargetedPlayer")) => {
+            create["who"] = super::valid::defined(ctx, word)?;
+        }
+        Some(other) => return unmapped(format!("key:CopyPermanent.Controller={other}")),
+    }
     if temporary.is_none() && !p.has("AtEOT") {
         return Ok(vec![json!({ "CreateToken": create })]);
     }
