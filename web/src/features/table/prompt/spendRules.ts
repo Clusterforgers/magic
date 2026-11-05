@@ -51,6 +51,8 @@ export function filterHolds(filter: SpendFilter, traits: SpendTraits): boolean {
           return traits.from_graveyard === true
         case 'SharesCommanderType':
           return traits.shares_commander_type === true
+        case 'OnBattlefield':
+          return traits.on_battlefield === true
       }
     })
   )

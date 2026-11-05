@@ -54,6 +54,13 @@ describe('spendAllows', () => {
     ['mana value too low', spell({ value: 4 }), [onSpell({ min_value: 5 })], false],
     ['a fact that holds', spell({ from_graveyard: true }), [onSpell({ facts: ['FromGraveyard'] })], true],
     ['a fact that does not', spell(), [onSpell({ facts: ['FromGraveyard'] })], false],
+    [
+      'an ability source on the battlefield',
+      { ...ability, traits: { ...ability.traits, on_battlefield: true } },
+      [{ Ability: { facts: ['OnBattlefield'] } }],
+      true,
+    ],
+    ['an ability source elsewhere', ability, [{ Ability: { facts: ['OnBattlefield'] } }], false],
     ['an unresolved chosen type holds for nothing', spell(), [onSpell({ chosen_type: true })], false],
     ['a cost with X pays a spell with X', spell({}, true), ['CostWithX'], true],
     ['a cost with X pays an ability with X', { ...ability, has_x: true }, ['CostWithX'], true],
