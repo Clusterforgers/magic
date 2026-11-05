@@ -107,6 +107,7 @@ mod partner;
 mod partner_group;
 mod partner_with;
 mod persist;
+pub(crate) mod plot;
 mod protection;
 #[cfg(test)]
 mod provided;
@@ -453,6 +454,7 @@ pub fn rules(keyword: &Keyword) -> &'static dyn KeywordRules {
         Keyword::Encore(_) => &encore::Encore,
         Keyword::Squad(_) => &squad::Squad,
         Keyword::Foretell(_) => &foretell::Foretell,
+        Keyword::Plot(_) => &plot::Plot,
         Keyword::Daybound => &daybound::Daybound,
         Keyword::Nightbound => &nightbound::Nightbound,
         Keyword::Wither => &wither::Wither,
@@ -835,6 +837,7 @@ mod tests {
             Keyword::Encore(cost()),
             Keyword::Squad(cost()),
             Keyword::Foretell(cost()),
+            Keyword::Plot(cost()),
             Keyword::Daybound,
             Keyword::Nightbound,
             Keyword::Wither,
@@ -990,6 +993,7 @@ mod tests {
         "Keyword.Dredge",
         "Keyword.Suspend",
         "Keyword.Foretell",
+        "Keyword.Plot",
         "Keyword.Morph",
         "Keyword.Megamorph",
         "Keyword.Disguise",

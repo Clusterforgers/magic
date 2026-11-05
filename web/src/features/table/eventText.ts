@@ -528,6 +528,7 @@ const BECAUSE: Record<
   StateBased: 'is put into the graveyard',
   Discarded: 'is discarded',
   Foretold: 'is foretold',
+  Plotted: 'is plotted',
   Adventure: 'is exiled on an adventure',
 }
 

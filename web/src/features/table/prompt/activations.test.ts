@@ -343,6 +343,7 @@ describe('special actions are offered as plays', () => {
   const cases: [string, Partial<PriorityOptions>, Zone, PriorityAction][] = [
     ['suspend', { suspendable: [10] }, { Hand: ME }, { Suspend: 10 }],
     ['foretell', { foretellable: [10] }, { Hand: ME }, { Foretell: 10 }],
+    ['plot', { plottable: [10] }, { Hand: ME }, { Plot: 10 }],
     ['turn face up', { turnable: [10] }, 'Battlefield', { TurnFaceUp: 10 }],
     [
       'cast prepared',

@@ -385,6 +385,7 @@ mod pipeline_log;
 mod planeswalkers;
 mod player_keywords;
 mod player_keywords_fuzz;
+mod plot;
 mod prepare;
 mod prepare_cards;
 mod prepare_fuzz;

@@ -85,6 +85,8 @@ pub enum CastWay {
     Suspend,
     /// Foretell (CR 702.143): from exile, face down, on a later turn than it was foretold, for its foretell cost.
     Foretold,
+    /// Plot (CR 702.170): from exile, face up, as a sorcery on a later turn than it was plotted, without paying its mana cost.
+    Plotted,
     /// Escape (CR 702.138): from a graveyard for its escape cost, which exiles other cards of the graveyard; the permanent remembers that it escaped.
     Escape,
     /// Dash (CR 702.109): the creature has haste and returns to its owner's hand at the next end step.
@@ -1142,6 +1144,7 @@ mod tests {
     #[case::madness(CastWay::Madness, true)]
     #[case::suspend(CastWay::Suspend, true)]
     #[case::foretold(CastWay::Foretold, true)]
+    #[case::plotted(CastWay::Plotted, true)]
     #[case::escape(CastWay::Escape, true)]
     #[case::dash(CastWay::Dash, true)]
     #[case::blitz(CastWay::Blitz, true)]

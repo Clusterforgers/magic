@@ -60,7 +60,7 @@ pub(super) fn move_object(
     {
         object.face_down = None;
     }
-    object.adventure = None;
+    (object.adventure, object.plotted) = (None, None);
     object.exiled_until = None;
     object.encoded_on = None;
     object.monarch_wait = None;
@@ -397,6 +397,9 @@ pub(super) fn apply(state: &mut GameState, event: &Event) -> Result<(), EngineEr
             if *cause == ZoneCause::Milled {
                 w13b_tally_milled(state, *object);
             }
+            if *cause == ZoneCause::Plotted {
+                mark_plotted(state, *object);
+            }
             if *cause == ZoneCause::Adventure
                 && let Some(card) = state.objects.get_mut(object)
             {
@@ -464,6 +467,13 @@ fn card_drawn(
         state.tally(player, Tally::C6BlkDrawStepDrawn);
     }
     Ok(())
+}
+
+/// Marks the card as plotted in the current turn (CR 702.170a).
+fn mark_plotted(state: &mut GameState, object: ObjectId) {
+    if let Some(card) = state.objects.get_mut(&object) {
+        card.plotted = Some(state.turn.number());
+    }
 }
 
 /// Counts a sacrificed permanent for the player who controlled it as it left.

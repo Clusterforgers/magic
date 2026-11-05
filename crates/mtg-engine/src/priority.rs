@@ -71,6 +71,15 @@ pub(crate) fn sorcery_timing(state: &GameState, player: PlayerId) -> bool {
     state.turn().active() == player && state.turn().step().is_main() && state.stack().is_empty()
 }
 
+/// The answer that plots `object`, when it is offered.
+fn plot_answer(options: &PriorityOptions, object: ObjectId) -> Result<Outcome, EngineError> {
+    if options.plottable.contains(&object) {
+        Ok(Outcome::BeginPlot(object))
+    } else {
+        Err(IllegalAnswer::NotOffered("plot").into())
+    }
+}
+
 /// Whether `player` has a land play left this turn (CR 305.2): the turn's plays so far are fewer than the ruleset and
 /// the rules in play allow.
 pub(crate) fn land_play_left(state: &GameState, player: PlayerId) -> bool {
@@ -404,6 +413,7 @@ pub(crate) fn priority_options(state: &GameState, player: PlayerId) -> PriorityO
         .copied()
         .filter(|id| ways::can_foretell(state, player, *id, &pool, &all_mana, life))
         .collect();
+    let plottable = ways::plottable(state, player, hand, &pool, &all_mana, life);
     let companion = crate::companions::can_bring(state, player, &pool, &all_mana, life);
     let turnable: Vec<ObjectId> = state
         .zone(Zone::Battlefield)
@@ -438,7 +448,7 @@ pub(crate) fn priority_options(state: &GameState, player: PlayerId) -> PriorityO
         lands: &playable_lands,
         castable: &castable,
         faces: &faces,
-        special: [&suspendable, &foretellable],
+        special: [&suspendable, &foretellable, &plottable],
     };
     let unplayable = unplayable::unplayable(state, player, &judged, &offered);
     PriorityOptions {
@@ -449,6 +459,7 @@ pub(crate) fn priority_options(state: &GameState, player: PlayerId) -> PriorityO
             &[
                 suspendable.as_slice(),
                 foretellable.as_slice(),
+                plottable.as_slice(),
                 turnable.as_slice(),
             ]
             .concat(),
@@ -461,6 +472,7 @@ pub(crate) fn priority_options(state: &GameState, player: PlayerId) -> PriorityO
         abilities,
         suspendable,
         foretellable,
+        plottable,
         turnable,
         unlockable,
         companion,
@@ -527,6 +539,7 @@ pub(crate) fn answer(
             }
             Ok(Outcome::BeginForetell(object))
         }
+        PriorityAction::Plot(object) => plot_answer(options, object),
         PriorityAction::BringCompanion => {
             let outside = crate::companions::outside(state, player)
                 .filter(|_| options.companion)

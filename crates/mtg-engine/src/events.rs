@@ -1013,6 +1013,8 @@ pub enum ZoneCause {
     Exiled,
     /// It was exiled face down by foretelling (CR 702.143a): it lies face down, and only its owner may look at it.
     Foretold,
+    /// It was exiled face up by plotting (CR 702.170a): it lies in exile and its owner may cast it on a later turn.
+    Plotted,
     /// It was manifested by `by` (CR 701.40a): it entered the battlefield face down under the control of `by`, who alone may look at it.
     Manifested {
         /// The player who manifested it and controls it.

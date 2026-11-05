@@ -72,8 +72,8 @@ pub(crate) struct Offered<'a> {
     pub(crate) castable: &'a [ObjectId],
     /// `PriorityOptions.faces`.
     pub(crate) faces: &'a [FaceOption],
-    /// `PriorityOptions.suspendable` and `foretellable`.
-    pub(crate) special: [&'a [ObjectId]; 2],
+    /// `PriorityOptions.suspendable`, `foretellable` and `plottable`.
+    pub(crate) special: [&'a [ObjectId]; 3],
 }
 
 /// The cards of `player`'s hand and command zone that `offered` leaves out, in zone order, each with its first reason: a

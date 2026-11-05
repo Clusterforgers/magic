@@ -234,6 +234,7 @@ pub(crate) fn priority_actions(options: &PriorityOptions) -> Vec<PriorityAction>
             .iter()
             .map(|o| PriorityAction::Foretell(*o)),
     );
+    actions.extend(options.plottable.iter().map(|o| PriorityAction::Plot(*o)));
     actions.extend(
         options
             .turnable
@@ -263,6 +264,7 @@ fn played_object(action: &PriorityAction) -> Option<ObjectId> {
         | PriorityAction::CastSpell(object)
         | PriorityAction::Suspend(object)
         | PriorityAction::Foretell(object)
+        | PriorityAction::Plot(object)
         | PriorityAction::TurnFaceUp(object)
         | PriorityAction::CastPrepared(object) => Some(*object),
         PriorityAction::ActivateMana(source) => Some(source.object),
@@ -1232,6 +1234,7 @@ mod tests {
             (PriorityAction::Activate(ability), Some(object)),
             (PriorityAction::Suspend(object), Some(object)),
             (PriorityAction::Foretell(object), Some(object)),
+            (PriorityAction::Plot(object), Some(object)),
             (PriorityAction::TurnFaceUp(object), Some(object)),
             (PriorityAction::CastPrepared(object), Some(object)),
             (PriorityAction::BringCompanion, None),

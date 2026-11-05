@@ -21,6 +21,7 @@ mod modifiers;
 mod optional;
 mod parts;
 mod payment;
+pub(crate) mod plot;
 mod price;
 pub(crate) mod required;
 pub(crate) mod suspend;
@@ -282,6 +283,8 @@ pub(crate) enum Special {
     Suspend,
     /// Foretell (CR 702.143a).
     Foretell,
+    /// Plot (CR 702.170a).
+    Plot,
     /// Turning a face-down permanent face up (CR 702.37e).
     TurnFaceUp,
     /// Putting a companion from outside the game into the hand (CR 702.139): the card is the id it will have there.
@@ -649,6 +652,7 @@ pub(crate) fn announce(state: &GameState, pending: &mut Pending) -> Next {
         return match special {
             Special::Suspend => suspend::next(state, *player, *card),
             Special::Foretell => foretell::next(state, *player, *card),
+            Special::Plot => plot::next(state, *player, *card),
             Special::TurnFaceUp => turn_up::next(state, *player, *card),
             Special::Companion => companion::next(state, *player, *card),
             Special::Unlock(door) => dk1c5_unlock::next(state, *player, *card, *door),

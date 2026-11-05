@@ -469,6 +469,7 @@ const RUNS: &[&str] = &[
     "ReplaceBy.Dredge",
     "Keyword.Suspend",
     "Keyword.Foretell",
+    "Keyword.Plot",
     "Keyword.Morph",
     "Keyword.Megamorph",
     "Keyword.Disguise",

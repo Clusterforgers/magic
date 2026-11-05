@@ -140,6 +140,8 @@ pub enum Keyword {
     Squad(Cost),
     /// Foretell with its cost: a special action from the hand exiles the card face down, and it is cast later for its foretell cost (CR 702.143).
     Foretell(Cost),
+    /// Plot with its cost: a special action at sorcery timing exiles the card from the hand face up, and it is cast on a later turn as a sorcery without paying its mana cost (CR 702.170).
+    Plot(Cost),
     /// Daybound (CR 702.145): the game becomes day when this permanent appears while it is neither, and the permanent is turned to its night face when it becomes night.
     Daybound,
     /// Nightbound (CR 702.145): the permanent is turned to its day face when it becomes day.
@@ -439,6 +441,7 @@ impl Keyword {
         "Encore",
         "Squad",
         "Foretell",
+        "Plot",
         "Daybound",
         "Nightbound",
         "Wither",
@@ -604,6 +607,7 @@ impl Keyword {
             Keyword::Encore(_) => "Encore",
             Keyword::Squad(_) => "Squad",
             Keyword::Foretell(_) => "Foretell",
+            Keyword::Plot(_) => "Plot",
             Keyword::Daybound => "Daybound",
             Keyword::Nightbound => "Nightbound",
             Keyword::Wither => "Wither",
@@ -813,6 +817,7 @@ mod tests {
             Keyword::Encore(cost.clone()),
             Keyword::Squad(cost.clone()),
             Keyword::Foretell(cost.clone()),
+            Keyword::Plot(cost.clone()),
             Keyword::Daybound,
             Keyword::Nightbound,
             Keyword::Wither,

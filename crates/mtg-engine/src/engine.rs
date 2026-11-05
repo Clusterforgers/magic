@@ -469,6 +469,10 @@ impl Engine {
                 self.pending = Some(Pending::special(player, card, Special::Foretell));
                 Ok(())
             }
+            Outcome::BeginPlot(card) => {
+                self.pending = Some(Pending::special(player, card, Special::Plot));
+                Ok(())
+            }
             Outcome::BeginCompanion(card) => {
                 self.pending = Some(Pending::special(player, card, Special::Companion));
                 Ok(())
