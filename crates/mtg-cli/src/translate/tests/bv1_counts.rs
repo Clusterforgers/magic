@@ -104,6 +104,27 @@ fn a_filter_over_a_reference_is_never_a_count_of_the_object_itself() {
 }
 
 #[test]
+fn a_cost_never_reads_a_target() {
+    let text = "Name:T\nTypes:Creature Elf\nPT:1/1\nA:AB$ Draw | Cost$ T Sac<1/Creature.Other+cmcEQX/a creature> | ValidTgts$ Player | NumCards$ 1\nSVar:X:Targeted$CardManaCost/Minus.1\n";
+    assert!(
+        gaps(text)
+            .iter()
+            .any(|gap| gap.contains("amount:Targeted$-in-a-cost"))
+    );
+}
+
+#[test]
+fn revealing_the_top_cards_shows_all_of_them_not_the_ones_taken() {
+    let text = "Name:T\nTypes:Sorcery\nA:SP$ Dig | DigNum$ 4 | Reveal$ True | ChangeNum$ 1 | ChangeValid$ Creature | DestinationZone$ Hand | RestRandomOrder$ True\n";
+    let found = abilities(text);
+    let effects = found[0]["Spell"]["effects"].to_string();
+    assert!(
+        effects.contains(r#"{"Reveal":{"what":{"Bound":"top"#),
+        "{effects}"
+    );
+}
+
+#[test]
 fn a_last_state_count_with_a_fallback_stays_a_gap() {
     let text = burning("SVar:X:Count$LastStateBattlefieldWithFallback Creature.YouCtrl");
     assert_eq!(
@@ -126,6 +147,25 @@ fn a_zone_list_with_the_battlefield_is_one_alternative_per_zone() {
     assert!(alternatives[1].to_string().contains("ControlledBy"));
     assert!(alternatives[0].to_string().contains("OwnedBy"));
     assert!(!alternatives[0].to_string().contains("ControlledBy"));
+}
+
+#[rstest]
+#[case::control_on_the_battlefield_owner_elsewhere("Goblin.YouCtrl", None)]
+#[case::owner_on_the_battlefield_is_not_what_oracle_says(
+    "Goblin.YouOwn+Other",
+    Some("zone:YouOwn-on-the-battlefield")
+)]
+#[case::a_commander_is_named_by_its_owner("Goblin.YouOwn+IsCommander", None)]
+fn a_zone_list_with_the_battlefield_follows_oracle_on_control(
+    #[case] filter: &str,
+    #[case] gap: Option<&str>,
+) {
+    let text = burning(&format!("SVar:X:Count$ValidBattlefield,Graveyard {filter}"));
+    let found = gaps(&text);
+    match gap {
+        Some(name) => assert_eq!(found, vec![name.to_owned()]),
+        None => assert!(found.is_empty(), "{found:?}"),
+    }
 }
 
 #[rstest]

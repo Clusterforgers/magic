@@ -5,7 +5,7 @@
 use serde_json::{Value, json};
 
 use super::amount::{amount, apply_steps, targeted_amount};
-use super::ctx::{Ctx, Tr, Unmapped};
+use super::ctx::{Ctx, Tr, Unmapped, unmapped};
 use super::valid::{defined, selector_any, selector_in};
 
 /// A count expression: `head$body` and the `/step`s after it.
@@ -194,6 +194,9 @@ pub(super) fn amount_of(ctx: &Ctx, text: &str) -> Option<Tr<Value>> {
         gaps.take(part)
     } else {
         let reference = reference_head(expr.head)?;
+        if ctx.in_cost.get() && matches!(expr.head, "Targeted" | "ParentTargeted") {
+            return Some(Err(Unmapped(format!("amount:{}$-in-a-cost", expr.head))));
+        }
         referred(ctx, expr.head, reference, &expr.body, &mut gaps)
     };
     let value = steps(ctx, base, &expr.steps, &mut gaps);
@@ -276,9 +279,15 @@ fn zone_selector(ctx: &Ctx, zones: &[&str], filter: &str) -> Tr<Vec<Value>> {
             let mut alternatives = Vec::new();
             for zone in many {
                 let preds = match *zone {
-                    "Battlefield" => selector_in(ctx, filter, None).map(|mut preds| {
+                    "Battlefield" => selector_in(ctx, filter, None).and_then(|mut preds| {
+                        // Oracle says "you control" on the battlefield; the script's ownership there disagrees, except
+                        // for a commander, which Oracle names by owner.
+                        let owned = preds.iter().any(|pred| pred.get("OwnedBy").is_some());
+                        if owned && !preds.iter().any(|pred| pred == "Commander") {
+                            return unmapped("zone:YouOwn-on-the-battlefield");
+                        }
                         preds.push(json!({"In": "Battlefield"}));
-                        preds
+                        Ok(preds)
                     }),
                     other => selector_in(ctx, filter, Some(other)),
                 };
