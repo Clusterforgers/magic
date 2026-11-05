@@ -99,6 +99,18 @@ pub fn translate_face(world: &World, face: &Face) -> FaceOut {
     let mut ctx = Ctx::new(face, world);
     let mut out = FaceOut::default();
     for body in &face.keywords {
+        match body.trim() {
+            "Spree" => ctx.modal_keyword = Some("Spree"),
+            "Tiered" => ctx.modal_keyword = Some("Tiered"),
+            other => {
+                if let Some(cost) = other.strip_prefix("Escalate:") {
+                    ctx.modal_keyword = Some("Escalate");
+                    ctx.extra_mode_cost = Some(cost.to_owned());
+                }
+            }
+        }
+    }
+    for body in &face.keywords {
         let before = Before::of(&out);
         for result in keyword_abilities(&mut ctx, body) {
             take(&mut out, result.map(|ability| vec![ability]));
@@ -109,6 +121,12 @@ pub fn translate_face(world: &World, face: &Face) -> FaceOut {
         let before = Before::of(&out);
         take(&mut out, audited_one(|| ability_line(&mut ctx, body)));
         record(&mut out, "A", &[body], &before);
+    }
+    if let Some(word) = ctx.modal_keyword.take() {
+        take(
+            &mut out,
+            unmapped::<Vec<Value>>(format!("keyword:{word}-unused")),
+        );
     }
     for group in trigger_groups(&face.triggers) {
         if super::triggers_static::is_bookkeeping(&ctx, &group) {

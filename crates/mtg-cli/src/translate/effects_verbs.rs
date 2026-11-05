@@ -30,6 +30,7 @@ pub fn effects(ctx: &mut Ctx, p: &Params, api: &str) -> Option<Tr<Vec<Value>>> {
         "ExchangeControl" => exchange_control(ctx, p),
         "ExchangeLife" => exchange_life(ctx, p),
         "FlipCoin" => flip_coin(ctx, p),
+        "Clash" => clash(ctx, p),
         _ => return None,
     };
     Some(node.map(|node| vec![node]))
@@ -162,6 +163,19 @@ fn flip_coin(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
         if let Some(name) = p.get(key) {
             let part = ctx.sub(name)?;
             node["FlipCoin"][field] = Value::Array(chain_at(ctx, &part, false)?);
+        }
+    }
+    Ok(node)
+}
+
+/// `Clash` of the controller with an opponent they choose: the win and the otherwise part.
+fn clash(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
+    only(p, "Clash", &["WinSubAbility", "OtherwiseSubAbility"])?;
+    let mut node = json!({"Clash": {}});
+    for (key, field) in [("WinSubAbility", "win"), ("OtherwiseSubAbility", "lose")] {
+        if let Some(name) = p.get(key) {
+            let part = ctx.sub(name)?;
+            node["Clash"][field] = Value::Array(chain_at(ctx, &part, false)?);
         }
     }
     Ok(node)
