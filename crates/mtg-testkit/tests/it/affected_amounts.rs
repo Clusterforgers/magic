@@ -127,3 +127,47 @@ fn only_the_first_spell_of_the_turn_has_the_keyword_while_it_is_cast() {
     driver.cast("Second").unwrap();
     assert!(!lifelink(&driver, "Second"));
 }
+
+/// A 4/4 that may exile a creature card from a graveyard as it is cast, and gets +X/+X for the power X of the card exiled
+/// with it (Redemptor Dreadnought).
+const EXILE_COST: &str =
+    r#"{"AdditionalCost":{"cost":[{"ExileFromGraveyard":{"filter":[{"Type":"Creature"}]}}]}}"#;
+const EXILED_POWER: &str = r#"{"Static":{"affected":"This","mods":[{"ModifyPT":{"power":{"Total":{"of":[{"ExiledWith":"This"},{"In":"Exile"}],"stat":"Power"}},"toughness":{"Total":{"of":[{"ExiledWith":"This"},{"In":"Exile"}],"stat":"Power"}}}}]}}"#;
+
+#[test]
+fn a_spell_remembers_the_cards_exiled_to_cast_it_as_exiled_with_it() {
+    use mtg_engine::choose::CostsChoice;
+    use mtg_engine::decision::{Answer, DecisionKind, PayChoice};
+
+    let mut dreadnought = CardDefinition::new("Dread")
+        .with_type(CardType::Creature)
+        .with_power_toughness(4, 4)
+        .with_mana_cost(ManaCost::parse("{0}").unwrap());
+    for rule in [EXILE_COST, EXILED_POWER] {
+        dreadnought = dreadnought.with_rules(serde_json::from_str::<Ability>(rule).unwrap());
+    }
+    let scenario = Scenario::new(2)
+        .hand(0, [Arc::new(dreadnought)])
+        .graveyard(0, [kind("Dead", "Bear")])
+        .battlefield(0, []);
+    let mut driver = Driver::from_scenario(scenario).unwrap();
+    driver.begin_cast("Dread").unwrap();
+    for _ in 0..30 {
+        let decision = driver.decision().unwrap().clone();
+        match decision.kind {
+            DecisionKind::ChooseCosts(_) => driver
+                .answer(Answer::ChooseCosts(CostsChoice::Costs(vec![0])))
+                .map(|_| ())
+                .unwrap(),
+            DecisionKind::PayMana(_) => driver
+                .answer(Answer::PayMana(PayChoice::Auto))
+                .map(|_| ())
+                .unwrap(),
+            DecisionKind::Priority(_) if driver.state().stack().is_empty() => break,
+            _ => {
+                driver.answer_passively().map(|_| ()).unwrap();
+            }
+        }
+    }
+    assert_eq!(stats(&driver, "Dread"), (6, 6));
+}
