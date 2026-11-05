@@ -9,7 +9,7 @@ use super::ctx::{Ctx, Tr, Unmapped, World, unmapped};
 use super::keyword::keyword_abilities;
 use super::ledger::{Before, record};
 use super::replacements::replacement_lines;
-use super::statics::static_line;
+use super::statics::static_lines;
 use super::triggers::triggered;
 use crate::forge::script::{Face, Params, Script};
 
@@ -141,7 +141,13 @@ pub fn translate_face(world: &World, face: &Face) -> FaceOut {
     }
     for (group, result) in static_abilities(&mut ctx, &face.statics) {
         let before = Before::of(&out);
-        take(&mut out, result.map(|ability| vec![ability]));
+        take(
+            &mut out,
+            result.map(|ability| match ability {
+                Value::Array(parts) => parts,
+                single => vec![single],
+            }),
+        );
         record(&mut out, "S", &group, &before);
     }
     for body in &face.replacements {
@@ -186,14 +192,41 @@ fn trigger_groups(bodies: &[String]) -> Vec<Vec<&String>> {
     groups
 }
 
+/// Whether a static line only hands the computer player a variable (`AddSVar$ AITap`, `AddSVar$ AE`): it changes nothing in
+/// the game and states no rule.
+fn is_ai_hint(body: &str) -> bool {
+    let p = Params::parse(body);
+    let mut keys = p.iter().map(|(key, _)| key).peekable();
+    keys.peek() == Some(&"Mode")
+        && p.iter()
+            .next()
+            .is_some_and(|(_, mode)| mode == "Continuous")
+        && p.iter().any(|(key, _)| key == "AddSVar")
+        && keys.all(|key| {
+            matches!(
+                key,
+                "Mode"
+                    | "Affected"
+                    | "AffectedDefined"
+                    | "AddSVar"
+                    | "Description"
+                    | "EffectZone"
+                    | "Secondary"
+            )
+        })
+}
+
 /// The static abilities of the lines, a line marked `Secondary$` joined to the one before it when both change the same
 /// objects ("gets +2/+2 and can't block"); a secondary line that fails takes the line before it down with it.
 fn static_abilities<'a>(ctx: &mut Ctx, bodies: &'a [String]) -> Vec<(Vec<&'a String>, Tr<Value>)> {
     let mut out: Vec<(Vec<&String>, Tr<Value>)> = Vec::new();
     for line in bodies {
         for body in super::statics_cant::split_modes(line) {
+            if is_ai_hint(&body) {
+                continue;
+            }
             let secondary = Params::parse(&body).get("Secondary") == Some("True");
-            let result = audited_one(|| static_line(ctx, &body));
+            let result = audited_one(|| static_lines(ctx, &body));
             if secondary && let Some((lines, previous)) = out.last_mut() {
                 match (&result, previous.is_ok()) {
                     (Ok(second), true) => {

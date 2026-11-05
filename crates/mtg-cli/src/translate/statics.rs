@@ -36,8 +36,17 @@ fn before_itself(mut condition: Value) -> Value {
     condition
 }
 
-/// A static line as an ability.
+/// A static line as one ability; a line that needs two (a modification and a rule) is a gap here.
 pub fn static_line(ctx: &mut Ctx, body: &str) -> Tr<Value> {
+    let found = static_lines(ctx, body)?;
+    if found.is_array() {
+        return unmapped("static:two-abilities");
+    }
+    Ok(found)
+}
+
+/// A static line as an ability, or an array of abilities when the line states a modification and a rule.
+pub fn static_lines(ctx: &mut Ctx, body: &str) -> Tr<Value> {
     ctx.reset();
     let all = Params::parse(body);
     let condition = condition(ctx, &all)?;
@@ -53,13 +62,19 @@ pub fn static_line(ctx: &mut Ctx, body: &str) -> Tr<Value> {
     if condition.is_some() && ability.pointer("/Static/defining").is_some() {
         return unmapped("key:Static.Continuous.defining-with-condition");
     }
-    if let Some(condition) = condition
-        && let Some(inner) = ability.as_object_mut().and_then(|o| o.values_mut().next())
-    {
-        inner["condition"] = match inner.get("condition") {
-            Some(earlier) => json!({"All": [earlier, condition]}),
-            None => condition,
+    if let Some(condition) = condition {
+        let parts = match &mut ability {
+            Value::Array(items) => items.iter_mut().collect(),
+            single => vec![single],
         };
+        for part in parts {
+            if let Some(inner) = part.as_object_mut().and_then(|o| o.values_mut().next()) {
+                inner["condition"] = match inner.get("condition") {
+                    Some(earlier) => json!({"All": [earlier, condition.clone()]}),
+                    None => condition.clone(),
+                };
+            }
+        }
     }
     Ok(ability)
 }
@@ -240,6 +255,8 @@ fn continuous(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
     let affected = affected(ctx, p)?;
     let refinement = refinement(ctx, p, &affected)?;
     let mut mods = Vec::new();
+    // A hidden keyword that is a rule of combat (`CARDNAME must be blocked if able.`) is a rule beside the modifications.
+    let mut quirk: Option<Value> = None;
     if p.has("AddPower") || p.has("AddToughness") {
         let power = stat(ctx, p.get("AddPower").unwrap_or("0"))?;
         let toughness = stat(ctx, p.get("AddToughness").unwrap_or("0"))?;
@@ -274,7 +291,10 @@ fn continuous(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
             "CARDNAME can't attack or block" => {
                 mods.extend([json!("CantAttack"), json!("CantBlock")]);
             }
-            _ => return unmapped("key:Static.Continuous.AddHiddenKeyword"),
+            other => match combat_quirk(other) {
+                Some(found) => quirk = Some(found),
+                None => return unmapped("key:Static.Continuous.AddHiddenKeyword"),
+            },
         }
     }
     if p.get("RemoveAllAbilities") == Some("True") {
@@ -308,8 +328,15 @@ fn continuous(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
     if let Some(names) = p.get("AddStaticAbility") {
         mods.extend(granted_statics(ctx, names)?);
     }
+    let rule = quirk.map(|quirk| {
+        let mut rule = json!({"rule": {"Combat": {"who": affected, "quirk": quirk}}});
+        if let Some(refinement) = &refinement {
+            rule["condition"] = refinement.clone();
+        }
+        json!({ "Rule": rule })
+    });
     if mods.is_empty() {
-        return unmapped("static:Continuous-nothing");
+        return rule.map_or_else(|| unmapped("static:Continuous-nothing"), Ok);
     }
     // Only the keywords a player can have apply to players; any other change would be lost.
     if matches!(affected.as_str(), Some("You" | "EachPlayer" | "Opponents"))
@@ -342,7 +369,22 @@ fn continuous(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
         }
         ability["defining"] = json!(true);
     }
-    Ok(json!({ "Static": ability }))
+    let ability = json!({ "Static": ability });
+    Ok(match rule {
+        Some(rule) => json!([ability, rule]),
+        None => ability,
+    })
+}
+
+/// The combat rule a hidden keyword in words stands for (`MustBeBlocked`, `CantAttackAlone`).
+fn combat_quirk(word: &str) -> Option<Value> {
+    Some(match word {
+        "CARDNAME can't attack alone" => json!("CantAttackAlone"),
+        "CARDNAME can't block alone" => json!("CantBlockAlone"),
+        "CARDNAME must be blocked if able" => json!({"MustBeBlocked": "AtLeastOne"}),
+        "All creatures able to block CARDNAME do so" => json!({"MustBeBlocked": "Every"}),
+        _ => return None,
+    })
 }
 
 /// `AddType$ Artifact & Zombie`: the card types and subtypes a static line adds.

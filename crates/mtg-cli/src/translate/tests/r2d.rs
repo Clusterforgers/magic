@@ -5,9 +5,8 @@ use serde_json::{Value, json};
 use super::{abilities, gaps};
 
 fn activated(cost: &str, extra: &str) -> Value {
-    let text = format!(
-        "Name:T\nTypes:Artifact\nA:AB$ Draw | Cost$ {cost} | NumCards$ 1 | {extra}\n"
-    );
+    let text =
+        format!("Name:T\nTypes:Artifact\nA:AB$ Draw | Cost$ {cost} | NumCards$ 1 | {extra}\n");
     abilities(&text).into_iter().next().unwrap_or_default()["Activated"].clone()
 }
 
@@ -41,8 +40,16 @@ fn the_activators_are_the_players_the_word_names(
 
 #[rstest]
 #[case::tap("T", "Activator$ Player", "key:AB.Activator-with-a-cost-of-the-source")]
-#[case::sacrifice("1 Sac<1/CARDNAME>", "Activator$ Opponent", "key:AB.Activator-with-a-cost-of-the-source")]
-#[case::remembered("1", "Activator$ Player.IsRemembered", "key:AB.Activator=Player.IsRemembered")]
+#[case::sacrifice(
+    "1 Sac<1/CARDNAME>",
+    "Activator$ Opponent",
+    "key:AB.Activator-with-a-cost-of-the-source"
+)]
+#[case::remembered(
+    "1",
+    "Activator$ Player.IsRemembered",
+    "key:AB.Activator=Player.IsRemembered"
+)]
 fn a_player_cannot_pay_a_cost_of_a_permanent_they_do_not_control(
     #[case] cost: &str,
     #[case] keys: &str,
@@ -79,4 +86,54 @@ fn a_spell_cast_only_if_a_count_holds_is_a_cast_restriction() {
     let text = "Name:T\nTypes:Instant\nA:SP$ Draw | CheckSVar$ X | SVarCompare$ GE2\nSVar:X:Count$YourLifeTotal\n";
     let found = abilities(text);
     assert_eq!(found[0]["CastOnly"]["condition"]["Compare"]["op"], "Ge");
+}
+
+fn static_abilities(line: &str, types: &str) -> Vec<Value> {
+    abilities(&format!("Name:T\nTypes:{types}\nS:{line}\n"))
+}
+
+#[rstest]
+#[case::hint_for_the_computer("Mode$ Continuous | Affected$ Land | AddSVar$ AITap", 0)]
+#[case::secondary_hint(
+    "Mode$ Continuous | Affected$ Creature.Other+YouCtrl | AddSVar$ EqMe | Secondary$ True",
+    0
+)]
+#[case::hint_beside_a_change(
+    "Mode$ Continuous | Affected$ Creature.YouCtrl | AddPower$ 1 | AddSVar$ AE",
+    1
+)]
+fn a_static_line_that_only_hands_a_variable_to_the_computer_states_nothing(
+    #[case] line: &str,
+    #[case] count: usize,
+) {
+    assert_eq!(static_abilities(line, "Artifact").len(), count);
+}
+
+#[rstest]
+#[case::lure(
+    "Mode$ Continuous | AffectedDefined$ Enchanted | Affected$ Creature | AddHiddenKeyword$ All creatures able to block CARDNAME do so.",
+    1,
+    json!({"MustBeBlocked": "Every"})
+)]
+#[case::alone(
+    "Mode$ Continuous | AffectedDefined$ Enchanted | Affected$ Creature | AddHiddenKeyword$ CARDNAME can't attack alone.",
+    1,
+    json!("CantAttackAlone")
+)]
+#[case::with_a_change(
+    "Mode$ Continuous | AffectedDefined$ Enchanted | Affected$ Creature | AddPower$ 3 | AddHiddenKeyword$ CARDNAME must be blocked if able.",
+    2,
+    json!({"MustBeBlocked": "AtLeastOne"})
+)]
+fn a_hidden_keyword_of_combat_is_a_rule_of_the_creature(
+    #[case] line: &str,
+    #[case] count: usize,
+    #[case] quirk: Value,
+) {
+    let found = static_abilities(line, "Enchantment Aura");
+    let rules: Vec<&Value> = found.iter().filter(|a| a.get("Rule").is_some()).collect();
+    assert_eq!(rules.len(), 1, "{found:?}");
+    assert_eq!(rules[0]["Rule"]["rule"]["Combat"]["quirk"], quirk);
+    assert_eq!(rules[0]["Rule"]["rule"]["Combat"]["who"], "Attached");
+    assert_eq!(found.len(), count, "{found:?}");
 }
