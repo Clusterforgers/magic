@@ -1,0 +1,53 @@
+{
+  "oracle_id": "15211eaa-d906-4b95-8942-2f49d3cb4b81",
+  "name": "Uneasy Partings",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Uneasy Partings",
+      "oracle_fingerprint": "80c037bb86c54e363f8439cb1d3c4493",
+      "abilities": [
+        {
+          "CostModifier": {
+            "applies_to": [
+              "This",
+              { "Targeting": [{ "Type": "Creature" }, "Attacking", { "Not": "Token" }] }
+            ],
+            "change": "Reduce",
+            "mana": "{1}"
+          }
+        },
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "ChooseValue": {
+                  "who": { "OwnerOf": { "Target": 0 } },
+                  "kind": { "Options": ["Top", "Bottom"] },
+                  "as": "way"
+                }
+              },
+              {
+                "If": {
+                  "condition": { "ChosenWord": { "name": "way", "word": "Bottom" } },
+                  "then": [
+                    {
+                      "Move": {
+                        "what": { "Target": 0 },
+                        "to": { "Library": { "place": "Bottom" } }
+                      }
+                    }
+                  ],
+                  "otherwise": [
+                    { "Move": { "what": { "Target": 0 }, "to": { "Library": { "place": "Top" } } } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

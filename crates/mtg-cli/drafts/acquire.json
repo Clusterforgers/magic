@@ -1,0 +1,34 @@
+{
+  "oracle_id": "f1c3d749-5cdb-4af2-967f-6413d6cb04fe",
+  "name": "Acquire",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Acquire",
+      "oracle_fingerprint": "abbbfa8768c316ebb32957641cff5901",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              {
+                "Search": {
+                  "of": { "Target": 0 },
+                  "filter": [{ "Type": "Artifact" }],
+                  "as": "found"
+                }
+              },
+              {
+                "Move": {
+                  "what": { "Bound": "found" },
+                  "to": { "Battlefield": { "under": "You" } }
+                }
+              },
+              { "Shuffle": { "who": { "Target": 0 } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

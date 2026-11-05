@@ -1,0 +1,43 @@
+{
+  "oracle_id": "b6801429-3995-4571-92f9-ef211675c5d5",
+  "name": "Preeminent Captain",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Preeminent Captain",
+      "oracle_fingerprint": "2b01de9f58eb584098375195176d1be8",
+      "abilities": [
+        { "Keyword": "FirstStrike" },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "Type": "Creature" },
+                      { "Subtype": "Soldier" },
+                      { "OwnedBy": "You" },
+                      { "In": "Hand" }
+                    ]
+                  },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "picked"
+                }
+              },
+              {
+                "Move": {
+                  "what": { "Bound": "picked" },
+                  "to": { "Battlefield": { "tapped": true } },
+                  "as": "moved2"
+                }
+              },
+              { "JoinAttack": { "what": { "Bound": "moved2" } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

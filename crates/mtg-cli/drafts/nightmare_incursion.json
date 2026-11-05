@@ -1,0 +1,33 @@
+{
+  "oracle_id": "3e734759-d43a-4bbe-baff-26d866ff0923",
+  "name": "Nightmare Incursion",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Nightmare Incursion",
+      "oracle_fingerprint": "f0f69822c5af29d3afafba69fc0dd5af",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              {
+                "Search": {
+                  "of": { "Target": 0 },
+                  "filter": [],
+                  "count": {
+                    "min": 0,
+                    "max": { "Count": [{ "Subtype": "Swamp" }, { "ControlledBy": "You" }] }
+                  },
+                  "as": "found"
+                }
+              },
+              { "Exile": { "what": { "Bound": "found" } } },
+              { "Shuffle": { "who": { "Target": 0 } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

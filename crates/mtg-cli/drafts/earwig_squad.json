@@ -1,0 +1,38 @@
+{
+  "oracle_id": "f8526509-2e14-4ac0-b1de-cf4ee7d4f875",
+  "name": "Earwig Squad",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Earwig Squad",
+      "oracle_fingerprint": "61eac9a1bbc62c28a550e9bbbc391a85",
+      "abilities": [
+        { "Keyword": { "Prowl": "{2}{B}" } },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": ["This", { "CastWith": "Prowl" }],
+                "from": "Stack",
+                "to": "Battlefield"
+              }
+            },
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              {
+                "Search": {
+                  "of": { "Target": 0 },
+                  "filter": [],
+                  "count": { "min": 0, "max": 3 },
+                  "as": "found"
+                }
+              },
+              { "Exile": { "what": { "Bound": "found" } } },
+              { "Shuffle": { "who": { "Target": 0 } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

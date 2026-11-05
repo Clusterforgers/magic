@@ -1,0 +1,44 @@
+{
+  "oracle_id": "1056b27c-125c-4daa-a0c8-533efc9ccc32",
+  "name": "Vanish from Sight",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Vanish from Sight",
+      "oracle_fingerprint": "ea1622ad2659ae07d8ce90e4b893dbd6",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Not": { "Type": "Land" } }] } }],
+            "effects": [
+              {
+                "ChooseValue": {
+                  "who": { "OwnerOf": { "Target": 0 } },
+                  "kind": { "Options": ["Top", "Bottom"] },
+                  "as": "way"
+                }
+              },
+              {
+                "If": {
+                  "condition": { "ChosenWord": { "name": "way", "word": "Bottom" } },
+                  "then": [
+                    {
+                      "Move": {
+                        "what": { "Target": 0 },
+                        "to": { "Library": { "place": "Bottom" } }
+                      }
+                    }
+                  ],
+                  "otherwise": [
+                    { "Move": { "what": { "Target": 0 }, "to": { "Library": { "place": "Top" } } } }
+                  ]
+                }
+              },
+              { "Surveil": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

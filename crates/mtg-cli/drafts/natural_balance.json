@@ -1,0 +1,135 @@
+{
+  "oracle_id": "69acaa6f-3ba2-420c-9069-02958f844121",
+  "name": "Natural Balance",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Natural Balance",
+      "oracle_fingerprint": "3f094c7b45785dd9c90ae8fad6096470",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "RepeatEach": {
+                  "over": "EachPlayer",
+                  "as": "each",
+                  "effects": [
+                    {
+                      "If": {
+                        "condition": {
+                          "Compare": {
+                            "left": {
+                              "Sum": [
+                                {
+                                  "Count": [
+                                    { "Type": "Land" },
+                                    { "ControlledBy": { "Bound": "each" } }
+                                  ]
+                                },
+                                -5
+                              ]
+                            },
+                            "op": "Gt",
+                            "right": 0
+                          }
+                        },
+                        "then": [
+                          {
+                            "Sacrifice": {
+                              "who": { "Bound": "each" },
+                              "filter": [{ "Type": "Land" }],
+                              "count": {
+                                "Sum": [
+                                  {
+                                    "Count": [
+                                      { "Type": "Land" },
+                                      { "ControlledBy": { "Bound": "each" } }
+                                    ]
+                                  },
+                                  -5
+                                ]
+                              }
+                            }
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "If": {
+                        "condition": {
+                          "Compare": {
+                            "left": {
+                              "Sum": [
+                                5,
+                                {
+                                  "Times": {
+                                    "by": -1,
+                                    "of": {
+                                      "Count": [
+                                        { "Type": "Land" },
+                                        { "ControlledBy": { "Bound": "each" } }
+                                      ]
+                                    }
+                                  }
+                                }
+                              ]
+                            },
+                            "op": "Gt",
+                            "right": 0
+                          }
+                        },
+                        "then": [
+                          {
+                            "May": {
+                              "who": { "Bound": "each" },
+                              "effects": [
+                                {
+                                  "Search": {
+                                    "who": { "Bound": "each" },
+                                    "filter": [{ "Type": "Land" }, { "Supertype": "Basic" }],
+                                    "count": {
+                                      "min": 0,
+                                      "max": {
+                                        "Sum": [
+                                          5,
+                                          {
+                                            "Times": {
+                                              "by": -1,
+                                              "of": {
+                                                "Count": [
+                                                  { "Type": "Land" },
+                                                  { "ControlledBy": { "Bound": "each" } }
+                                                ]
+                                              }
+                                            }
+                                          }
+                                        ]
+                                      }
+                                    },
+                                    "as": "found2"
+                                  }
+                                },
+                                {
+                                  "Move": {
+                                    "what": { "Bound": "found2" },
+                                    "to": { "Battlefield": {} }
+                                  }
+                                },
+                                { "Shuffle": { "who": { "Bound": "each" } } }
+                              ]
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,58 @@
+{
+  "oracle_id": "3cfea32e-6b52-441b-90aa-d8a137997297",
+  "name": "Paladin Elizabeth Taggerdy",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Paladin Elizabeth Taggerdy",
+      "oracle_fingerprint": "aed6ad6d8bd328d9d2d516004de60b2b",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "if": {
+              "AtTrigger": {
+                "Compare": {
+                  "left": { "Count": [{ "Type": "Creature" }, "Attacking", "Other"] },
+                  "op": "Ge",
+                  "right": 2
+                }
+              }
+            },
+            "effects": [
+              { "Draw": {} },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "Type": "Creature" },
+                      { "OwnedBy": "You" },
+                      {
+                        "Compare": {
+                          "stat": "ManaValue",
+                          "op": "Le",
+                          "to": { "Stat": { "of": "This", "stat": "Power" } }
+                        }
+                      },
+                      { "In": "Hand" }
+                    ]
+                  },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "picked"
+                }
+              },
+              {
+                "Move": {
+                  "what": { "Bound": "picked" },
+                  "to": { "Battlefield": { "tapped": true } },
+                  "as": "moved2"
+                }
+              },
+              { "JoinAttack": { "what": { "Bound": "moved2" } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

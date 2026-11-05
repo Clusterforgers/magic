@@ -1,0 +1,68 @@
+{
+  "oracle_id": "f73bf7c5-e43d-4684-8588-2fb400f2ca31",
+  "name": "Dubious Challenge",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dubious Challenge",
+      "oracle_fingerprint": "d7a7ba6db157c0f218e0c61abd915486",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              { "LookAtTop": { "count": 10, "as": "top" } },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "In": "Library" },
+                      { "Is": { "Bound": "top" } },
+                      { "Type": "Creature" }
+                    ]
+                  },
+                  "count": { "min": 0, "max": 2 },
+                  "as": "kept2"
+                }
+              },
+              { "Exile": { "what": { "Bound": "kept2" }, "as": "kept2_exiled" } },
+              {
+                "Move": {
+                  "what": { "Bound": "top" },
+                  "to": { "Library": { "place": "Bottom", "order": "Chosen" } }
+                }
+              },
+              { "Shuffle": {} },
+              {
+                "Choose": {
+                  "who": { "Target": 0 },
+                  "from": {
+                    "Each": [
+                      { "Is": { "Bound": "kept2_exiled" } },
+                      { "In": "Exile" },
+                      { "OwnedBy": "You" }
+                    ]
+                  },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "picked4"
+                }
+              },
+              {
+                "Move": {
+                  "what": { "Bound": "picked4" },
+                  "to": { "Battlefield": { "under": { "Target": 0 } } }
+                }
+              },
+              {
+                "Move": {
+                  "what": { "Each": [{ "Is": { "Bound": "kept2_exiled" } }, { "In": "Exile" }] },
+                  "to": { "Battlefield": {} }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

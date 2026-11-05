@@ -1,7 +1,7 @@
 {
   "oracle_id": "7ad52f9c-48d8-486f-90b7-73ce5cb3b9db",
   "name": "Rex, Cyber-Hound",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Rex, Cyber-Hound",
@@ -17,9 +17,14 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 108, "end": 228 }
+          "Activated": {
+            "cost": [{ "PayEnergy": 2 }],
+            "timing": "Sorcery",
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }, { "In": "Graveyard" }] } }],
+            "effects": [
+              { "Exile": { "what": { "Target": 0 }, "as": "exiled" } },
+              { "PutCounters": { "on": { "Bound": "exiled" }, "counter": { "Other": "brain" } } }
+            ]
           }
         },
         {

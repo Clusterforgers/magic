@@ -1,0 +1,39 @@
+{
+  "oracle_id": "bcc797b9-d2e5-4fde-8d80-c890c871f344",
+  "name": "Jester's Mask",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Jester's Mask",
+      "oracle_fingerprint": "ee2eb8251eb35a7a45183ec1498c1b3a",
+      "abilities": [
+        { "Replacement": { "when": { "Enters": { "what": ["This"] } }, "by": "Tapped" } },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{1}" }, "Tap", "SacrificeSelf"],
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              {
+                "Move": {
+                  "what": { "Each": [{ "In": "Hand" }, { "OwnedBy": { "Target": 0 } }] },
+                  "to": { "Library": { "place": "Top" } },
+                  "as": "moved"
+                }
+              },
+              {
+                "Search": {
+                  "of": { "Target": 0 },
+                  "filter": [],
+                  "count": { "min": 0, "max": { "Bound": "moved~moved" } },
+                  "as": "found2"
+                }
+              },
+              { "Move": { "what": { "Bound": "found2" }, "to": "Hand" } },
+              { "Shuffle": { "who": { "Target": 0 } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -40,7 +40,14 @@
         {
           "Triggered": {
             "when": { "ZoneChange": { "what": [{ "Is": "Attached" }], "from": "Battlefield" } },
-            "effects": [{ "Move": { "what": "This", "to": { "Battlefield": {} } } }]
+            "effects": [
+              {
+                "Move": {
+                  "what": "This",
+                  "to": { "Battlefield": { "under": { "ControllerOf": "Triggering" } } }
+                }
+              }
+            ]
           }
         }
       ]

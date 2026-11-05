@@ -1,0 +1,23 @@
+{
+  "oracle_id": "36e937a9-e15e-4404-bcdd-c2b0943a34ad",
+  "name": "Extract",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Extract",
+      "oracle_fingerprint": "35390d52037f59d5f62953ee2b4e16b0",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              { "Search": { "of": { "Target": 0 }, "filter": [], "as": "found" } },
+              { "Exile": { "what": { "Bound": "found" } } },
+              { "Shuffle": { "who": { "Target": 0 } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

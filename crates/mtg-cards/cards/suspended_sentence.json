@@ -1,0 +1,33 @@
+{
+  "oracle_id": "98641070-93bd-4088-90cb-956c2b21979e",
+  "name": "Suspended Sentence",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Suspended Sentence",
+      "oracle_fingerprint": "8bd505a85e81c2caa7048ade31c8857d",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }] } }
+            ],
+            "effects": [
+              { "Destroy": { "what": { "Target": 0 } } },
+              { "LoseLife": { "who": { "ControllerOf": { "Target": 0 } }, "amount": 3 } },
+              { "Exile": { "what": "This", "as": "exiled" } },
+              {
+                "PutCounters": {
+                  "on": { "Bound": "exiled" },
+                  "counter": { "Other": "time" },
+                  "count": 3
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Suspend": { "time": 3, "cost": "{1}{B}" } } }
+      ]
+    }
+  ]
+}

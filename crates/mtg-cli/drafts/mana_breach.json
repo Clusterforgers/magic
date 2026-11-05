@@ -1,0 +1,28 @@
+{
+  "oracle_id": "221d0305-94db-4791-9dc7-89ee96c7fcd6",
+  "name": "Mana Breach",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mana Breach",
+      "oracle_fingerprint": "6405c104c72a1dafb0f9e464877c9a80",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "SpellCast": {} },
+            "effects": [
+              {
+                "Choose": {
+                  "who": "Triggering",
+                  "from": { "Each": [{ "Type": "Land" }, { "ControlledBy": "Triggering" }] },
+                  "as": "picked"
+                }
+              },
+              { "Move": { "what": { "Bound": "picked" }, "to": "Hand" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

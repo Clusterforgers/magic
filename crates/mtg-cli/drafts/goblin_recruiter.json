@@ -1,0 +1,34 @@
+{
+  "oracle_id": "792e1072-00bf-4f63-b956-5f20cdf09f11",
+  "name": "Goblin Recruiter",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Goblin Recruiter",
+      "oracle_fingerprint": "dd608e6a6c8f016d43798d87908df845",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Search": {
+                  "filter": [{ "Subtype": "Goblin" }],
+                  "count": {
+                    "min": 0,
+                    "max": {
+                      "Count": [{ "Subtype": "Goblin" }, { "OwnedBy": "You" }, { "In": "Library" }]
+                    }
+                  },
+                  "as": "found"
+                }
+              },
+              { "Shuffle": {} },
+              { "Move": { "what": { "Bound": "found" }, "to": { "Library": { "place": "Top" } } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

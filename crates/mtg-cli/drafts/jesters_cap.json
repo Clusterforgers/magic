@@ -1,0 +1,31 @@
+{
+  "oracle_id": "8783a94a-d0b2-4291-a550-dbcf8e16bf4b",
+  "name": "Jester's Cap",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Jester's Cap",
+      "oracle_fingerprint": "38f2f4838cbbe5844159910abffd4cea",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{2}" }, "Tap", "SacrificeSelf"],
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              {
+                "Search": {
+                  "of": { "Target": 0 },
+                  "filter": [],
+                  "count": { "min": 0, "max": 3 },
+                  "as": "found"
+                }
+              },
+              { "Exile": { "what": { "Bound": "found" } } },
+              { "Shuffle": { "who": { "Target": 0 } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

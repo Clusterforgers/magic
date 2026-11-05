@@ -1,0 +1,42 @@
+{
+  "source": "forge",
+  "oracle_matches": true,
+  "lines": [
+    {
+      "face": 0,
+      "tag": "T",
+      "text": "Whenever a player loses life during your turn, you may create that many tapped 2/2 black Zombie creature tokens. Do this only once each turn.",
+      "abilities": [],
+      "gap": "key:Trigger.LifeLost.ResolvedLimit"
+    },
+    {
+      "face": 1,
+      "tag": "A",
+      "text": "Search your library for a card, put it into your hand or graveyard, then shuffle. You lose 3 life. (Cast only from your graveyard. Then exile it.)",
+      "abilities": [
+        0
+      ],
+      "gap": null
+    }
+  ],
+  "proof": {
+    "marks": [
+      {
+        "face": 0,
+        "span": {
+          "start": 0,
+          "end": 141
+        },
+        "mark": "ByHand"
+      },
+      {
+        "face": 1,
+        "span": {
+          "start": 48,
+          "end": 146
+        },
+        "mark": "Auto"
+      }
+    ]
+  }
+}

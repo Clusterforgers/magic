@@ -1,0 +1,84 @@
+{
+  "oracle_id": "f666c38d-e601-4aa9-b140-4b6607bb12dd",
+  "name": "Once and Future",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Once and Future",
+      "oracle_fingerprint": "71aa4891b803fe47d3dfeb853e4fae35",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "OwnedBy": "You" }, { "In": "Graveyard" }] } },
+              {
+                "what": {
+                  "Object": [
+                    { "OwnedBy": "You" },
+                    { "In": "Graveyard" },
+                    { "Not": { "Is": { "Target": 0 } } }
+                  ]
+                },
+                "bounds": { "min": 0, "max": 1 }
+              }
+            ],
+            "effects": [
+              { "Move": { "what": { "Target": 0 }, "to": "Hand" } },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": {
+                        "When": {
+                          "condition": {
+                            "Compare": {
+                              "left": { "ManaSpent": { "of": "Green" } },
+                              "op": "Ge",
+                              "right": 3
+                            }
+                          },
+                          "then": 1,
+                          "otherwise": 0
+                        }
+                      },
+                      "op": "Eq",
+                      "right": 0
+                    }
+                  },
+                  "then": [
+                    { "Move": { "what": { "Target": 1 }, "to": { "Library": { "place": "Top" } } } }
+                  ]
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": {
+                        "When": {
+                          "condition": {
+                            "Compare": {
+                              "left": { "ManaSpent": { "of": "Green" } },
+                              "op": "Ge",
+                              "right": 3
+                            }
+                          },
+                          "then": 1,
+                          "otherwise": 0
+                        }
+                      },
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [{ "Move": { "what": { "Target": 1 }, "to": "Hand" } }]
+                }
+              },
+              { "Exile": { "what": "This" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

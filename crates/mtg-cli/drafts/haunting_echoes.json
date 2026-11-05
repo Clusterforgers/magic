@@ -1,0 +1,45 @@
+{
+  "oracle_id": "3abd345a-69a5-486e-ada9-dd1ca0decc28",
+  "name": "Haunting Echoes",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Haunting Echoes",
+      "oracle_fingerprint": "c2d7954bc288cf76d000a3f1f79bf1c5",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              {
+                "Exile": {
+                  "what": {
+                    "Each": [
+                      { "Not": { "Supertype": "Basic" } },
+                      { "In": "Graveyard" },
+                      { "OwnedBy": { "Target": 0 } }
+                    ]
+                  },
+                  "as": "exiled"
+                }
+              },
+              {
+                "Search": {
+                  "of": { "Target": 0 },
+                  "filter": [{ "SharesName": { "Bound": "exiled" } }],
+                  "count": {
+                    "min": 0,
+                    "max": { "Count": [{ "In": "Library" }, { "OwnedBy": { "Target": 0 } }] }
+                  },
+                  "as": "found2"
+                }
+              },
+              { "Exile": { "what": { "Bound": "found2" } } },
+              { "Shuffle": { "who": { "Target": 0 } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

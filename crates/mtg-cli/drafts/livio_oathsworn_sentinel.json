@@ -1,0 +1,49 @@
+{
+  "oracle_id": "53c6f2cf-ed3e-4c0c-ad42-56a6ce1622b6",
+  "name": "Livio, Oathsworn Sentinel",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Livio, Oathsworn Sentinel",
+      "oracle_fingerprint": "6e9af800d16a900b7d5568146e071902",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{1}{W}",
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }, "Other"] } }],
+            "effects": [
+              {
+                "May": {
+                  "who": { "ControllerOf": { "Target": 0 } },
+                  "effects": [
+                    { "Exile": { "what": { "Target": 0 }, "as": "exiled" } },
+                    {
+                      "PutCounters": {
+                        "on": { "Bound": "exiled" },
+                        "counter": { "Other": "aegis" }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{2}{W}" }, "Tap"],
+            "effects": [
+              {
+                "Move": {
+                  "what": { "Each": [{ "HasCounter": { "Other": "aegis" } }, { "In": "Exile" }] },
+                  "to": { "Battlefield": {} }
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": "Partner" }
+      ]
+    }
+  ]
+}

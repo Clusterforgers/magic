@@ -1,7 +1,7 @@
 {
   "oracle_id": "bfa60dd1-fcc8-4126-ab7a-4695c74f5bce",
   "name": "Bereaved Survivor // Dauntless Avenger",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Bereaved Survivor",
@@ -26,9 +26,30 @@
       "oracle_fingerprint": "7cc97a176dfe251291c230abb9ec1572",
       "abilities": [
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 0, "end": 146 }
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Type": "Creature" },
+                    { "OwnedBy": "You" },
+                    { "Compare": { "stat": "ManaValue", "op": "Le", "to": 2 } },
+                    { "In": "Graveyard" }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "Move": {
+                  "what": { "Target": 0 },
+                  "to": { "Battlefield": { "tapped": true } },
+                  "as": "moved"
+                }
+              },
+              { "JoinAttack": { "what": { "Bound": "moved" } } }
+            ]
           }
         }
       ]

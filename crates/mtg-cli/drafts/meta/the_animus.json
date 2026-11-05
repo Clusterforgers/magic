@@ -1,0 +1,42 @@
+{
+  "source": "forge",
+  "oracle_matches": true,
+  "lines": [
+    {
+      "face": 0,
+      "tag": "A",
+      "text": "Until your next turn, target legendary creature you control becomes a copy of target creature card in exile with a memory counter on it. Activate only as a sorcery.",
+      "abilities": [],
+      "gap": "key:Clone.CloneTarget=ThisTargetedCard"
+    },
+    {
+      "face": 0,
+      "tag": "T",
+      "text": "At the beginning of your end step, exile up to one target legendary creature card from a graveyard with a memory counter on it.",
+      "abilities": [
+        0
+      ],
+      "gap": null
+    }
+  ],
+  "proof": {
+    "marks": [
+      {
+        "face": 0,
+        "span": {
+          "start": 0,
+          "end": 127
+        },
+        "mark": "Auto"
+      },
+      {
+        "face": 0,
+        "span": {
+          "start": 128,
+          "end": 297
+        },
+        "mark": "ByHand"
+      }
+    ]
+  }
+}

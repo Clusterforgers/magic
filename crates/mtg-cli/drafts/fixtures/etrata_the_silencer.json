@@ -1,0 +1,142 @@
+{
+  "object": "card",
+  "id": "fa36b142-e67e-49da-9080-c5994e275266",
+  "oracle_id": "2ee87667-ec9d-4ced-b7e6-df3fd18b0ed6",
+  "multiverse_ids": [
+    452920
+  ],
+  "mtgo_id": 69713,
+  "arena_id": 68631,
+  "tcgplayer_id": 176817,
+  "cardmarket_id": 364209,
+  "name": "Etrata, the Silencer",
+  "lang": "en",
+  "released_at": "2018-10-05",
+  "uri": "https://api.scryfall.com/cards/fa36b142-e67e-49da-9080-c5994e275266",
+  "scryfall_uri": "https://scryfall.com/card/grn/170/etrata-the-silencer?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T09:15:35Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/f/a/fa36b142-e67e-49da-9080-c5994e275266.jpg?1783934135",
+    "normal": "https://cards.scryfall.io/normal/front/f/a/fa36b142-e67e-49da-9080-c5994e275266.jpg?1783934135",
+    "large": "https://cards.scryfall.io/large/front/f/a/fa36b142-e67e-49da-9080-c5994e275266.jpg?1783934135",
+    "png": "https://cards.scryfall.io/png/front/f/a/fa36b142-e67e-49da-9080-c5994e275266.png?1783934135",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/f/a/fa36b142-e67e-49da-9080-c5994e275266.jpg?1783934135",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/f/a/fa36b142-e67e-49da-9080-c5994e275266.jpg?1783934135",
+    "thumb": "https://cards.scryfall.io/thumb/front/f/a/fa36b142-e67e-49da-9080-c5994e275266.webp?1783934135",
+    "grid": "https://cards.scryfall.io/grid/front/f/a/fa36b142-e67e-49da-9080-c5994e275266.webp?1783934135",
+    "display": "https://cards.scryfall.io/display/front/f/a/fa36b142-e67e-49da-9080-c5994e275266.webp?1783934135",
+    "art": "https://cards.scryfall.io/art/front/f/a/fa36b142-e67e-49da-9080-c5994e275266.webp?1783934135",
+    "crop": "https://cards.scryfall.io/crop/front/f/a/fa36b142-e67e-49da-9080-c5994e275266.webp?1783934135",
+    "jpeg": "https://cards.scryfall.io/normal/front/f/a/fa36b142-e67e-49da-9080-c5994e275266.jpg?1783934135"
+  },
+  "mana_cost": "{2}{U}{B}",
+  "cmc": 4.0,
+  "type_line": "Legendary Creature — Vampire Assassin",
+  "oracle_text": "Etrata can't be blocked.\nWhenever Etrata deals combat damage to a player, exile target creature that player controls and put a hit counter on that card. That player loses the game if they own three or more exiled cards with hit counters on them. Etrata's owner shuffles Etrata into their library.",
+  "power": "3",
+  "toughness": "5",
+  "colors": [
+    "B",
+    "U"
+  ],
+  "color_identity": [
+    "B",
+    "U"
+  ],
+  "keywords": [],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "arena",
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "597c6d4a-8212-4903-a6af-12c4ae9e13f0",
+  "set": "grn",
+  "set_name": "Guilds of Ravnica",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/597c6d4a-8212-4903-a6af-12c4ae9e13f0",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Agrn&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/grn?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/fa36b142-e67e-49da-9080-c5994e275266/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A2ee87667-ec9d-4ced-b7e6-df3fd18b0ed6&unique=prints",
+  "collector_number": "170",
+  "digital": false,
+  "rarity": "rare",
+  "watermark": "dimir",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Bastien L. Deharme",
+  "artist_ids": [
+    "798f63ec-41ad-474e-9708-df08193345c6"
+  ],
+  "illustration_id": "ec1c222c-25c4-41f9-b843-fc56c7926b89",
+  "border_color": "black",
+  "frame": "2015",
+  "frame_effects": [
+    "legendary"
+  ],
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 7216,
+  "penny_rank": 12114,
+  "prices": {
+    "usd": "0.69",
+    "usd_foil": "4.34",
+    "usd_etched": null,
+    "eur": "0.57",
+    "eur_foil": "1.62",
+    "tix": "0.02"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=452920&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DEtrata%252C%2Bthe%2BSilencer",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DEtrata%252C%2Bthe%2BSilencer",
+    "edhrec": "https://edhrec.com/route/?cc=Etrata%2C+the+Silencer"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F176817%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=364209&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/69713?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

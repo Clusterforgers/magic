@@ -1,0 +1,53 @@
+{
+  "oracle_id": "402c3afe-7041-41a3-8fcd-64a060c12d4a",
+  "name": "Anoint with Affliction",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Anoint with Affliction",
+      "oracle_fingerprint": "9ced68b9572d06e90bfdcae8bf18afc5",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": {
+                        "Counters": {
+                          "on": { "ControllerOf": { "Target": 0 } },
+                          "counter": "poison"
+                        }
+                      },
+                      "op": "Ge",
+                      "right": 3
+                    }
+                  },
+                  "then": [{ "Exile": { "what": { "Target": 0 } } }]
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Target": 0 },
+                      "selector": [
+                        { "Type": "Creature" },
+                        { "Compare": { "stat": "ManaValue", "op": "Le", "to": 3 } }
+                      ],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [{ "Exile": { "what": { "Target": 0 } } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,91 @@
+{
+  "oracle_id": "aa97eb3d-8b8d-418b-8615-839812d60fe0",
+  "name": "Reap Intellect",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Reap Intellect",
+      "oracle_fingerprint": "914017c6a6ff7fe99a44009bbbf8cb30",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "Not": { "Type": "Land" } },
+                      { "In": "Hand" },
+                      { "OwnedBy": { "Target": 0 } }
+                    ]
+                  },
+                  "count": { "min": 0, "max": "X" },
+                  "as": "picked"
+                }
+              },
+              { "Exile": { "what": { "Bound": "picked" }, "as": "exiled2" } },
+              {
+                "RepeatEach": {
+                  "over": { "Each": [{ "Is": { "Bound": "exiled2" } }, { "In": "Exile" }] },
+                  "as": "each3",
+                  "effects": [
+                    {
+                      "Choose": {
+                        "from": {
+                          "Each": [
+                            { "SharesName": { "Bound": "each3" } },
+                            { "In": "Graveyard" },
+                            { "OwnedBy": { "Target": 0 } }
+                          ]
+                        },
+                        "count": {
+                          "min": 0,
+                          "max": {
+                            "Count": [{ "In": "Graveyard" }, { "OwnedBy": { "Target": 0 } }]
+                          }
+                        },
+                        "as": "picked4"
+                      }
+                    },
+                    { "Exile": { "what": { "Bound": "picked4" } } },
+                    {
+                      "Choose": {
+                        "from": {
+                          "Each": [
+                            { "SharesName": { "Bound": "each3" } },
+                            { "In": "Hand" },
+                            { "OwnedBy": { "Target": 0 } }
+                          ]
+                        },
+                        "count": {
+                          "min": 0,
+                          "max": { "Count": [{ "In": "Hand" }, { "OwnedBy": { "Target": 0 } }] }
+                        },
+                        "as": "picked5"
+                      }
+                    },
+                    { "Exile": { "what": { "Bound": "picked5" } } },
+                    {
+                      "Search": {
+                        "of": { "Target": 0 },
+                        "filter": [{ "SharesName": { "Bound": "each3" } }],
+                        "count": {
+                          "min": 0,
+                          "max": { "Count": [{ "In": "Library" }, { "OwnedBy": { "Target": 0 } }] }
+                        },
+                        "as": "found6"
+                      }
+                    },
+                    { "Exile": { "what": { "Bound": "found6" } } },
+                    { "Shuffle": { "who": { "Target": 0 } } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

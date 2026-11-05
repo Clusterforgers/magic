@@ -1,0 +1,37 @@
+{
+  "oracle_id": "671a8509-3b6e-499c-a744-ff8b3c2b6e6a",
+  "name": "Head Games",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Head Games",
+      "oracle_fingerprint": "c3dee96fec3731bf8efdb8784ba605cb",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              {
+                "Move": {
+                  "what": { "Each": [{ "In": "Hand" }, { "OwnedBy": { "Target": 0 } }] },
+                  "to": { "Library": { "place": "Top" } },
+                  "as": "moved"
+                }
+              },
+              {
+                "Search": {
+                  "of": { "Target": 0 },
+                  "filter": [],
+                  "count": { "min": 0, "max": { "Bound": "moved~moved" } },
+                  "as": "found2"
+                }
+              },
+              { "Move": { "what": { "Bound": "found2" }, "to": "Hand" } },
+              { "Shuffle": { "who": { "Target": 0 } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

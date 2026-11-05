@@ -1,0 +1,35 @@
+{
+  "oracle_id": "79b978b8-44c8-4ca8-bdd5-10490145398d",
+  "name": "Mimeofacture",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mimeofacture",
+      "oracle_fingerprint": "43b6fe49c4e0c329982e6e188e2e79de",
+      "abilities": [
+        { "Keyword": { "Replicate": "{3}{U}" } },
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "ControlledBy": "Opponents" }] } }],
+            "effects": [
+              {
+                "Search": {
+                  "of": { "ControllerOf": { "Target": 0 } },
+                  "filter": [{ "SharesName": { "Target": 0 } }],
+                  "as": "found"
+                }
+              },
+              {
+                "Move": {
+                  "what": { "Bound": "found" },
+                  "to": { "Battlefield": { "under": "You" } }
+                }
+              },
+              { "Shuffle": { "who": { "ControllerOf": { "Target": 0 } } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

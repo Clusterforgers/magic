@@ -1,0 +1,44 @@
+{
+  "oracle_id": "68abaca6-a86a-46e3-b5b8-9860bb6425d2",
+  "name": "Rootwater Thief",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Rootwater Thief",
+      "oracle_fingerprint": "24b9d7d72b40e251221382136149093e",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{U}",
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "AddKeyword": "Flying" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": ["This"], "to": "EachPlayer", "combat": true } },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": "{2}",
+                  "paid": [
+                    { "Search": { "of": "Triggering", "filter": [], "as": "found" } },
+                    { "Exile": { "what": { "Bound": "found" } } },
+                    { "Shuffle": { "who": "Triggering" } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

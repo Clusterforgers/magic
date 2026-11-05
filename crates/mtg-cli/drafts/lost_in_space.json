@@ -1,0 +1,50 @@
+{
+  "oracle_id": "cec95b9f-9d1e-4988-befe-d0c9e20e428d",
+  "name": "Lost in Space",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Lost in Space",
+      "oracle_fingerprint": "943eb1e7a8c392938a0bb15725e1dcf7",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "AnyOf": [{ "Type": "Artifact" }, { "Type": "Creature" }] }]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "ChooseValue": {
+                  "who": { "OwnerOf": { "Target": 0 } },
+                  "kind": { "Options": ["Top", "Bottom"] },
+                  "as": "way"
+                }
+              },
+              {
+                "If": {
+                  "condition": { "ChosenWord": { "name": "way", "word": "Bottom" } },
+                  "then": [
+                    {
+                      "Move": {
+                        "what": { "Target": 0 },
+                        "to": { "Library": { "place": "Bottom" } }
+                      }
+                    }
+                  ],
+                  "otherwise": [
+                    { "Move": { "what": { "Target": 0 }, "to": { "Library": { "place": "Top" } } } }
+                  ]
+                }
+              },
+              { "Surveil": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

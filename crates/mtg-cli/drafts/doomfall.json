@@ -1,0 +1,58 @@
+{
+  "oracle_id": "ba2c2a65-256a-46db-bf2b-b02b7d114a42",
+  "name": "Doomfall",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Doomfall",
+      "oracle_fingerprint": "1d249e2231ec078afcbf36076ac7698d",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Modal": {
+                  "modes": [
+                    {
+                      "targets": [{ "what": "Opponent" }],
+                      "effects": [
+                        {
+                          "Choose": {
+                            "who": { "Target": 0 },
+                            "from": {
+                              "Each": [{ "Type": "Creature" }, { "ControlledBy": { "Target": 0 } }]
+                            },
+                            "as": "picked"
+                          }
+                        },
+                        { "Exile": { "what": { "Bound": "picked" } } }
+                      ]
+                    },
+                    {
+                      "targets": [{ "what": "Opponent" }],
+                      "effects": [
+                        {
+                          "Choose": {
+                            "from": {
+                              "Each": [
+                                { "Not": { "Type": "Land" } },
+                                { "In": "Hand" },
+                                { "OwnedBy": { "Target": 0 } }
+                              ]
+                            },
+                            "as": "picked2"
+                          }
+                        },
+                        { "Exile": { "what": { "Bound": "picked2" } } }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

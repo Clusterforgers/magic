@@ -1,0 +1,23 @@
+{
+  "oracle_id": "4badd4e0-e5d7-4516-b220-cea2b02c79aa",
+  "name": "Insidious Dreams",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Insidious Dreams",
+      "oracle_fingerprint": "5a467bb54eccdf21ab24a36bf64672b8",
+      "abilities": [
+        { "AdditionalCost": { "cost": [{ "Discard": { "count": "X" } }], "required": true } },
+        {
+          "Spell": {
+            "effects": [
+              { "Search": { "filter": [], "count": { "min": 0, "max": "X" }, "as": "found" } },
+              { "Shuffle": {} },
+              { "Move": { "what": { "Bound": "found" }, "to": { "Library": { "place": "Top" } } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

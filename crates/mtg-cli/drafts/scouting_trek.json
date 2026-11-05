@@ -1,0 +1,39 @@
+{
+  "oracle_id": "929c231a-12d9-4f1a-9849-64a8b5a65f20",
+  "name": "Scouting Trek",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Scouting Trek",
+      "oracle_fingerprint": "88c394be83316e04b1cc92962ac9debc",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Search": {
+                  "filter": [{ "Type": "Land" }, { "Supertype": "Basic" }],
+                  "count": {
+                    "min": 0,
+                    "max": {
+                      "Count": [
+                        { "Type": "Land" },
+                        { "Supertype": "Basic" },
+                        { "OwnedBy": "You" },
+                        { "In": "Library" }
+                      ]
+                    }
+                  },
+                  "reveal": true,
+                  "as": "found"
+                }
+              },
+              { "Shuffle": {} },
+              { "Move": { "what": { "Bound": "found" }, "to": { "Library": { "place": "Top" } } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

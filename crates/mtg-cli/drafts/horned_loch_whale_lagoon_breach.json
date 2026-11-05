@@ -1,0 +1,68 @@
+{
+  "oracle_id": "adca3929-4ecc-45bc-932e-604bcc32550a",
+  "name": "Horned Loch-Whale // Lagoon Breach",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Horned Loch-Whale",
+      "oracle_fingerprint": "615d19fc429da0e7227c8cba0fc01018",
+      "abilities": [
+        { "Keyword": "Flash" },
+        { "Keyword": { "Ward": "{2}" } },
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": "Tapped",
+            "condition": { "Not": "YourTurn" }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Lagoon Breach",
+      "oracle_fingerprint": "03c92a13aa436c308afc9a8fca3e939b",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Type": "Creature" },
+                    "Attacking",
+                    { "Not": { "ControlledBy": "You" } }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "ChooseValue": {
+                  "who": { "OwnerOf": { "Target": 0 } },
+                  "kind": { "Options": ["Top", "Bottom"] },
+                  "as": "way"
+                }
+              },
+              {
+                "If": {
+                  "condition": { "ChosenWord": { "name": "way", "word": "Bottom" } },
+                  "then": [
+                    {
+                      "Move": {
+                        "what": { "Target": 0 },
+                        "to": { "Library": { "place": "Bottom" } }
+                      }
+                    }
+                  ],
+                  "otherwise": [
+                    { "Move": { "what": { "Target": 0 }, "to": { "Library": { "place": "Top" } } } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

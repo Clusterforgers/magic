@@ -1,7 +1,7 @@
 {
   "oracle_id": "53029460-50a0-4934-8fa9-0271517cd5d0",
   "name": "Grolnok, the Omnivore",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Grolnok, the Omnivore",
@@ -14,16 +14,21 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 55, "end": 163 }
+          "Triggered": {
+            "when": {
+              "ZoneChange": { "what": [{ "OwnedBy": "You" }], "from": "Library", "to": "Graveyard" }
+            },
+            "effects": [
+              { "Exile": { "what": "Triggering", "as": "exiled" } },
+              { "PutCounters": { "on": { "Bound": "exiled" }, "counter": { "Other": "croak" } } }
+            ]
           }
         },
         {
           "Rule": {
             "rule": {
               "MayCast": {
-                "what": [{ "HasCounter": { "Other": "croak" } }],
+                "what": [{ "OwnedBy": "You" }, { "HasCounter": { "Other": "croak" } }],
                 "from": "Exile",
                 "play": true
               }

@@ -1,0 +1,58 @@
+{
+  "oracle_id": "c6c1e576-7197-4067-8cd1-aa535188e1b8",
+  "name": "Debt to the Kami",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Debt to the Kami",
+      "oracle_fingerprint": "052d15efb4b350c464be4a6c6ea43123",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Modal": {
+                  "modes": [
+                    {
+                      "targets": [{ "what": "Opponent" }],
+                      "effects": [
+                        {
+                          "Choose": {
+                            "who": { "Target": 0 },
+                            "from": {
+                              "Each": [{ "Type": "Creature" }, { "ControlledBy": { "Target": 0 } }]
+                            },
+                            "as": "picked"
+                          }
+                        },
+                        { "Exile": { "what": { "Bound": "picked" } } }
+                      ]
+                    },
+                    {
+                      "targets": [{ "what": "Opponent" }],
+                      "effects": [
+                        {
+                          "Choose": {
+                            "who": { "Target": 0 },
+                            "from": {
+                              "Each": [
+                                { "Type": "Enchantment" },
+                                { "ControlledBy": { "Target": 0 } }
+                              ]
+                            },
+                            "as": "picked2"
+                          }
+                        },
+                        { "Exile": { "what": { "Bound": "picked2" } } }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

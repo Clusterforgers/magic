@@ -1,0 +1,29 @@
+{
+  "oracle_id": "b63dad39-4dd5-4340-953e-b05df1a3c776",
+  "name": "Congregation at Dawn",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Congregation at Dawn",
+      "oracle_fingerprint": "feab4dff810cb02f23698bc44e358d71",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Search": {
+                  "filter": [{ "Type": "Creature" }],
+                  "count": { "min": 0, "max": 3 },
+                  "reveal": true,
+                  "as": "found"
+                }
+              },
+              { "Shuffle": {} },
+              { "Move": { "what": { "Bound": "found" }, "to": { "Library": { "place": "Top" } } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

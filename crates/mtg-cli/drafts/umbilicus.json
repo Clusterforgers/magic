@@ -1,0 +1,36 @@
+{
+  "oracle_id": "c9132e72-d016-4cb7-8662-a16b7d932bef",
+  "name": "Umbilicus",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Umbilicus",
+      "oracle_fingerprint": "b37f140f3f7246098f9bf0d8d38059da",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep" } },
+            "effects": [
+              {
+                "Pay": {
+                  "who": "Triggering",
+                  "cost": [{ "PayLife": 2 }],
+                  "unpaid": [
+                    {
+                      "Choose": {
+                        "who": "Triggering",
+                        "from": { "Each": [{ "ControlledBy": "Triggering" }] },
+                        "as": "picked"
+                      }
+                    },
+                    { "Move": { "what": { "Bound": "picked" }, "to": "Hand" } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

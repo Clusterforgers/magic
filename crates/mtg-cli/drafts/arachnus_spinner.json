@@ -1,0 +1,41 @@
+{
+  "oracle_id": "8fea91ee-5849-4c46-8198-fd383d9a55e8",
+  "name": "Arachnus Spinner",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Arachnus Spinner",
+      "oracle_fingerprint": "b416b2aa4ede1c4e76036370818a5ae8",
+      "abilities": [
+        { "Keyword": "Reach" },
+        {
+          "Activated": {
+            "cost": [{ "TapPermanents": { "filter": [{ "Subtype": "Spider" }] } }],
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Search": {
+                  "also": ["Graveyard"],
+                  "filter": [{ "OwnedBy": "You" }, { "Named": "Arachnus Web" }],
+                  "as": "found"
+                }
+              },
+              {
+                "Move": {
+                  "what": { "Bound": "found" },
+                  "to": { "BattlefieldAttached": { "to": { "Target": 0 } } }
+                }
+              },
+              {
+                "If": {
+                  "condition": { "Searched": { "zone": "Library" } },
+                  "then": [{ "Shuffle": {} }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

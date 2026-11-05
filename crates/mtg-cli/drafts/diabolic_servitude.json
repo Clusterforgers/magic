@@ -1,0 +1,54 @@
+{
+  "oracle_id": "e275cbfb-3d25-4189-84f0-3162eadc7d65",
+  "name": "Diabolic Servitude",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Diabolic Servitude",
+      "oracle_fingerprint": "120da04b98b83408881b46291bd4aa17",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "Type": "Creature" }, { "OwnedBy": "You" }, { "In": "Graveyard" }]
+                }
+              }
+            ],
+            "effects": [
+              { "Move": { "what": { "Target": 0 }, "to": { "Battlefield": {} }, "as": "moved" } },
+              { "Remember": { "what": { "Bound": "moved" }, "slot": "remembered" } }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Is": { "Remembered": { "on": "This", "slot": "remembered" } } }],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "effects": [
+              { "Exile": { "what": { "Remembered": { "on": "This", "slot": "remembered" } } } },
+              { "Forget": { "slot": "remembered" } },
+              { "Move": { "what": "This", "to": "Hand" } }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield" } },
+            "effects": [
+              { "Exile": { "what": { "Remembered": { "on": "This", "slot": "remembered" } } } },
+              { "Forget": { "slot": "remembered" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,133 @@
+{
+  "object": "card",
+  "id": "ac9fcf7c-8785-4285-b583-7060edabc3c6",
+  "oracle_id": "f33ef275-632e-46c8-a735-042dee340a12",
+  "multiverse_ids": [
+    414397
+  ],
+  "mtgo_id": 61176,
+  "mtgo_foil_id": 61177,
+  "tcgplayer_id": 120520,
+  "cardmarket_id": 291140,
+  "name": "Prying Questions",
+  "lang": "en",
+  "released_at": "2016-07-22",
+  "uri": "https://api.scryfall.com/cards/ac9fcf7c-8785-4285-b583-7060edabc3c6",
+  "scryfall_uri": "https://scryfall.com/card/emn/101/prying-questions?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T10:11:15Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/a/c/ac9fcf7c-8785-4285-b583-7060edabc3c6.jpg?1783937475",
+    "normal": "https://cards.scryfall.io/normal/front/a/c/ac9fcf7c-8785-4285-b583-7060edabc3c6.jpg?1783937475",
+    "large": "https://cards.scryfall.io/large/front/a/c/ac9fcf7c-8785-4285-b583-7060edabc3c6.jpg?1783937475",
+    "png": "https://cards.scryfall.io/png/front/a/c/ac9fcf7c-8785-4285-b583-7060edabc3c6.png?1783937475",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/a/c/ac9fcf7c-8785-4285-b583-7060edabc3c6.jpg?1783937475",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/a/c/ac9fcf7c-8785-4285-b583-7060edabc3c6.jpg?1783937475",
+    "thumb": "https://cards.scryfall.io/thumb/front/a/c/ac9fcf7c-8785-4285-b583-7060edabc3c6.webp?1783937475",
+    "grid": "https://cards.scryfall.io/grid/front/a/c/ac9fcf7c-8785-4285-b583-7060edabc3c6.webp?1783937475",
+    "display": "https://cards.scryfall.io/display/front/a/c/ac9fcf7c-8785-4285-b583-7060edabc3c6.webp?1783937475",
+    "art": "https://cards.scryfall.io/art/front/a/c/ac9fcf7c-8785-4285-b583-7060edabc3c6.webp?1783937475",
+    "crop": "https://cards.scryfall.io/crop/front/a/c/ac9fcf7c-8785-4285-b583-7060edabc3c6.webp?1783937475",
+    "jpeg": "https://cards.scryfall.io/normal/front/a/c/ac9fcf7c-8785-4285-b583-7060edabc3c6.jpg?1783937475"
+  },
+  "mana_cost": "{2}{B}",
+  "cmc": 3.0,
+  "type_line": "Sorcery",
+  "oracle_text": "Target opponent loses 3 life and puts a card from their hand on top of their library.",
+  "colors": [
+    "B"
+  ],
+  "color_identity": [
+    "B"
+  ],
+  "keywords": [],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "5f0e4093-334f-4439-bbb5-a0affafd0ffc",
+  "set": "emn",
+  "set_name": "Eldritch Moon",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/5f0e4093-334f-4439-bbb5-a0affafd0ffc",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Aemn&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/emn?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/ac9fcf7c-8785-4285-b583-7060edabc3c6/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Af33ef275-632e-46c8-a735-042dee340a12&unique=prints",
+  "collector_number": "101",
+  "digital": false,
+  "rarity": "uncommon",
+  "flavor_text": "What remained of the Lunarch Inquisition found new ways to extract confessions.",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "David Palumbo",
+  "artist_ids": [
+    "04ce1c75-e30c-4b7a-8cb0-b53e4ecc2f39"
+  ],
+  "illustration_id": "7399d4e0-c977-4dd6-acda-219acae72aeb",
+  "border_color": "black",
+  "frame": "2015",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 30513,
+  "penny_rank": 10387,
+  "prices": {
+    "usd": "0.06",
+    "usd_foil": "1.03",
+    "usd_etched": null,
+    "eur": "0.04",
+    "eur_foil": "0.16",
+    "tix": "0.03"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=414397&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DPrying%2BQuestions",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DPrying%2BQuestions",
+    "edhrec": "https://edhrec.com/route/?cc=Prying+Questions"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F120520%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=291140&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/61176?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

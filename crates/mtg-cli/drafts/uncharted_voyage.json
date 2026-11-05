@@ -1,0 +1,44 @@
+{
+  "oracle_id": "1d6796ce-9316-430a-8126-8b0414cf181c",
+  "name": "Uncharted Voyage",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Uncharted Voyage",
+      "oracle_fingerprint": "d337fc288758f2b4c0cedf271db46019",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "ChooseValue": {
+                  "who": { "OwnerOf": { "Target": 0 } },
+                  "kind": { "Options": ["Top", "Bottom"] },
+                  "as": "way"
+                }
+              },
+              {
+                "If": {
+                  "condition": { "ChosenWord": { "name": "way", "word": "Bottom" } },
+                  "then": [
+                    {
+                      "Move": {
+                        "what": { "Target": 0 },
+                        "to": { "Library": { "place": "Bottom" } }
+                      }
+                    }
+                  ],
+                  "otherwise": [
+                    { "Move": { "what": { "Target": 0 }, "to": { "Library": { "place": "Top" } } } }
+                  ]
+                }
+              },
+              { "Surveil": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,34 @@
+{
+  "oracle_id": "d047a819-5196-4a16-8d67-a4edaf6fdef0",
+  "name": "Dwarven Recruiter",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dwarven Recruiter",
+      "oracle_fingerprint": "aed4517142117db4313c7484b8a72c74",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Search": {
+                  "filter": [{ "Subtype": "Dwarf" }],
+                  "count": {
+                    "min": 0,
+                    "max": {
+                      "Count": [{ "Subtype": "Dwarf" }, { "OwnedBy": "You" }, { "In": "Library" }]
+                    }
+                  },
+                  "as": "found"
+                }
+              },
+              { "Shuffle": {} },
+              { "Move": { "what": { "Bound": "found" }, "to": { "Library": { "place": "Top" } } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

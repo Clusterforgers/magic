@@ -1,0 +1,92 @@
+{
+  "oracle_id": "d4453b3e-733e-4038-81da-135a6a03079c",
+  "name": "Summoner's Grimoire",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Summoner's Grimoire",
+      "oracle_fingerprint": "e95518245b72c77591e4a95eeb5b1cfa",
+      "abilities": [
+        { "Keyword": "JobSelect" },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [
+              { "AddSubtype": "Shaman" },
+              {
+                "GrantAbility": {
+                  "Triggered": {
+                    "when": { "Attacks": { "what": ["This"] } },
+                    "effects": [
+                      {
+                        "May": {
+                          "effects": [
+                            {
+                              "Choose": {
+                                "from": {
+                                  "Each": [
+                                    { "Type": "Creature" },
+                                    { "OwnedBy": "You" },
+                                    { "In": "Hand" }
+                                  ]
+                                },
+                                "as": "card"
+                              }
+                            },
+                            {
+                              "If": {
+                                "condition": {
+                                  "CountOf": {
+                                    "subject": { "Bound": "card" },
+                                    "selector": [{ "Type": "Enchantment" }],
+                                    "op": "Ge",
+                                    "right": 1
+                                  }
+                                },
+                                "then": [
+                                  {
+                                    "Move": {
+                                      "what": { "Bound": "card" },
+                                      "to": { "Battlefield": { "tapped": true } },
+                                      "as": "moved2"
+                                    }
+                                  },
+                                  { "JoinAttack": { "what": { "Bound": "moved2" } } }
+                                ]
+                              }
+                            },
+                            {
+                              "If": {
+                                "condition": {
+                                  "CountOf": {
+                                    "subject": { "Bound": "card" },
+                                    "selector": [{ "Not": { "Type": "Enchantment" } }],
+                                    "op": "Ge",
+                                    "right": 1
+                                  }
+                                },
+                                "then": [
+                                  {
+                                    "Move": {
+                                      "what": { "Bound": "card" },
+                                      "to": { "Battlefield": {} }
+                                    }
+                                  }
+                                ]
+                              }
+                            }
+                          ]
+                        }
+                      }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Equip": "{3}" } }
+      ]
+    }
+  ]
+}

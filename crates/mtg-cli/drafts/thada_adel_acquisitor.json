@@ -1,0 +1,38 @@
+{
+  "oracle_id": "a9a84fbb-0972-4a3d-bdae-a3b01219b35d",
+  "name": "Thada Adel, Acquisitor",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Thada Adel, Acquisitor",
+      "oracle_fingerprint": "6d31569c7331f430aa89a6e024cb10ce",
+      "abilities": [
+        { "Keyword": { "Landwalk": [{ "Subtype": "Island" }] } },
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": ["This"], "to": "EachPlayer", "combat": true } },
+            "effects": [
+              {
+                "Search": { "of": "Triggering", "filter": [{ "Type": "Artifact" }], "as": "found" }
+              },
+              { "Exile": { "what": { "Bound": "found" }, "as": "found_exiled" } },
+              { "Shuffle": { "who": "Triggering" } },
+              {
+                "Rule": {
+                  "rule": {
+                    "MayCast": {
+                      "from": "Exile",
+                      "only": { "Bound": "found_exiled" },
+                      "play": true
+                    }
+                  },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

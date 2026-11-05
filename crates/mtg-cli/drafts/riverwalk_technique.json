@@ -1,0 +1,64 @@
+{
+  "oracle_id": "a123aab8-3f3a-4187-abcb-21a99dcf13bb",
+  "name": "Riverwalk Technique",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Riverwalk Technique",
+      "oracle_fingerprint": "70eed54a205ce347c581d1e52c53aadc",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Modal": {
+                  "modes": [
+                    {
+                      "targets": [{ "what": { "Object": [{ "Not": { "Type": "Land" } }] } }],
+                      "effects": [
+                        {
+                          "ChooseValue": {
+                            "who": { "OwnerOf": { "Target": 0 } },
+                            "kind": { "Options": ["Top", "Bottom"] },
+                            "as": "way"
+                          }
+                        },
+                        {
+                          "If": {
+                            "condition": { "ChosenWord": { "name": "way", "word": "Bottom" } },
+                            "then": [
+                              {
+                                "Move": {
+                                  "what": { "Target": 0 },
+                                  "to": { "Library": { "place": "Bottom" } }
+                                }
+                              }
+                            ],
+                            "otherwise": [
+                              {
+                                "Move": {
+                                  "what": { "Target": 0 },
+                                  "to": { "Library": { "place": "Top" } }
+                                }
+                              }
+                            ]
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "targets": [
+                        { "what": { "Object": ["Spell", { "Not": { "Type": "Creature" } }] } }
+                      ],
+                      "effects": [{ "Counter": { "what": { "Target": 0 } } }]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

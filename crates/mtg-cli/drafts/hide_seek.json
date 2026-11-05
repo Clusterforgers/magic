@@ -1,0 +1,65 @@
+{
+  "oracle_id": "60e59923-ecd9-457e-b772-693138e05ab2",
+  "name": "Hide // Seek",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Hide",
+      "oracle_fingerprint": "58674655f0abf3849bf2cc3982aa2aff",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "AnyOf": [{ "Type": "Artifact" }, { "Type": "Enchantment" }] }]
+                }
+              }
+            ],
+            "effects": [
+              { "Move": { "what": { "Target": 0 }, "to": { "Library": { "place": "Bottom" } } } }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Seek",
+      "oracle_fingerprint": "69989fc5dd787d2c835ea2ba73c07337",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              { "Search": { "of": { "Target": 0 }, "filter": [], "as": "found" } },
+              { "Exile": { "what": { "Bound": "found" }, "as": "found_exiled" } },
+              { "Shuffle": { "who": { "Target": 0 } } },
+              {
+                "GainLife": {
+                  "amount": {
+                    "Total": {
+                      "of": [
+                        { "Is": { "Bound": "found_exiled" } },
+                        {
+                          "AnyOf": [
+                            { "In": "Battlefield" },
+                            { "In": "Hand" },
+                            { "In": "Library" },
+                            { "In": "Graveyard" },
+                            { "In": "Exile" },
+                            { "In": "Stack" }
+                          ]
+                        }
+                      ],
+                      "stat": "ManaValue"
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

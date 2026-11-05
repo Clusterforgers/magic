@@ -1,0 +1,66 @@
+{
+  "oracle_id": "5a6f4181-f5ad-4ecf-9566-e52870af14d0",
+  "name": "Slimefoot and Squee",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Slimefoot and Squee",
+      "oracle_fingerprint": "0bbac8d0749cee5c6ae915911d17a447",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+                { "Attacks": { "what": ["This"] } }
+              ]
+            },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Saproling",
+                      "colors": ["Green"],
+                      "types": ["Creature"],
+                      "subtypes": ["Saproling"],
+                      "power": 1,
+                      "toughness": 1
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [
+              { "Mana": "{1}{B}{R}{G}" },
+              { "Sacrifice": { "filter": [{ "Subtype": "Saproling" }] } }
+            ],
+            "timing": "Sorcery",
+            "from": "Graveyard",
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Type": "Creature" },
+                    { "OwnedBy": "You" },
+                    "Other",
+                    { "In": "Graveyard" }
+                  ]
+                },
+                "bounds": { "min": 0, "max": 1 }
+              }
+            ],
+            "effects": [
+              { "Move": { "what": "This", "to": { "Battlefield": {} } } },
+              { "Move": { "what": { "Target": 0 }, "to": { "Battlefield": {} } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,7 +1,7 @@
 {
   "oracle_id": "43c69d19-c06c-470a-bdba-a0335ff2d655",
   "name": "Floodpits Drowner",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Floodpits Drowner",
@@ -22,9 +22,19 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 114, "end": 224 }
+          "Activated": {
+            "cost": [{ "Mana": "{1}{U}" }, "Tap"],
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "Type": "Creature" }, { "HasCounter": { "Other": "stun" } }]
+                }
+              }
+            ],
+            "effects": [
+              { "Move": { "what": "This", "to": { "Library": { "place": "Shuffled" } } } },
+              { "Move": { "what": { "Target": 0 }, "to": { "Library": { "place": "Shuffled" } } } }
+            ]
           }
         }
       ]

@@ -1,0 +1,42 @@
+{
+  "oracle_id": "08daa30f-7ce0-4a72-b539-fbb0c585fd73",
+  "name": "Illuna, Apex of Wishes",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Illuna, Apex of Wishes",
+      "oracle_fingerprint": "a1bf37a200d5c017b4acd48ce3f7fefb",
+      "abilities": [
+        { "Keyword": { "Mutate": "{3}{U}{U}{R/G}" } },
+        { "Keyword": "Flying" },
+        { "Keyword": "Trample" },
+        {
+          "Triggered": {
+            "when": { "Did": { "action": "Mutated", "what": ["This"] } },
+            "effects": [
+              {
+                "RevealUntil": {
+                  "filter": [{ "Not": { "Type": "Land" } }],
+                  "as": "found",
+                  "revealed_as": "revealed2"
+                }
+              },
+              { "Exile": { "what": { "Bound": "found" }, "as": "found_exiled" } },
+              { "Exile": { "what": { "Bound": "revealed2" } } },
+              { "ChooseValue": { "kind": { "Options": ["Battlefield", "Hand"] }, "as": "way3" } },
+              {
+                "If": {
+                  "condition": { "ChosenWord": { "name": "way3", "word": "Hand" } },
+                  "then": [{ "Move": { "what": { "Bound": "found_exiled" }, "to": "Hand" } }],
+                  "otherwise": [
+                    { "Move": { "what": { "Bound": "found_exiled" }, "to": { "Battlefield": {} } } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
