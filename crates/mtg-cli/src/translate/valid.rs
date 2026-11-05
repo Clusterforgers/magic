@@ -23,6 +23,23 @@ pub fn cmp(word: &str) -> Option<&'static str> {
     })
 }
 
+/// `RememberedPlayerCtrl`: controlled by the remembered player. Cards a step moved are no player: asking whose they were
+/// needs their controller as they left, so that stays a gap.
+fn remembered_player_controls(ctx: &Ctx) -> Tr<Vec<Value>> {
+    match super::memory::slot_ref(ctx, super::memory::Slot::Remembered) {
+        Some(held)
+            if held
+                .get("Bound")
+                .and_then(Value::as_str)
+                .is_some_and(|name| ctx.counted.contains(name)) =>
+        {
+            unmapped("valid:RememberedPlayerCtrl-of-moved-cards")
+        }
+        Some(who) => one(json!({"ControlledBy": who})),
+        None => unmapped("valid:RememberedPlayerCtrl-without-a-player"),
+    }
+}
+
 /// The predicates a property of a valid-string stands for.
 fn property(ctx: &Ctx, prop: &str) -> Tr<Vec<Value>> {
     let one = |value: Value| Ok(vec![value]);
@@ -57,19 +74,7 @@ fn property(ctx: &Ctx, prop: &str) -> Tr<Vec<Value>> {
         "HasCounters" => return one(json!("HasAnyCounter")),
         "hasXCost" => return one(json!("XInCost")),
         "RememberedPlayerCtrl" => {
-            return match super::memory::slot_ref(ctx, super::memory::Slot::Remembered) {
-                // Cards a step moved are no player: asking whose they were needs their controller as they left.
-                Some(held)
-                    if held
-                        .get("Bound")
-                        .and_then(Value::as_str)
-                        .is_some_and(|name| ctx.counted.contains(name)) =>
-                {
-                    unmapped("valid:RememberedPlayerCtrl-of-moved-cards")
-                }
-                Some(who) => one(json!({"ControlledBy": who})),
-                None => unmapped("valid:RememberedPlayerCtrl-without-a-player"),
-            };
+            return remembered_player_controls(ctx);
         }
         "ChosenCard" => {
             return match &ctx.chosen_card {

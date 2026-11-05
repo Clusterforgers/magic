@@ -65,6 +65,19 @@ fn a_discard_cost_names_the_card_it_took(#[case] amount: &str, #[case] stat: &st
 }
 
 #[test]
+fn a_discard_paid_in_a_sub_ability_names_the_card_it_took() {
+    let text = "Name:T\nManaCost:2\nTypes:Enchantment\nT:Mode$ Phase | Phase$ End of Turn | ValidPlayer$ You | Execute$ Go | TriggerDescription$ x\nSVar:Go:AB$ Draw | Cost$ Discard<1/Card> | Defined$ You | NumCards$ X\nSVar:X:Discarded$CardManaCost\n";
+    assert_eq!(gaps(text), Vec::<String>::new());
+    let found = abilities(text)[0].to_string();
+    assert!(found.contains(r#""Discard":{"as":"discarded""#), "{found}");
+    assert!(found.contains(r#""of":{"Bound":"discarded"}"#), "{found}");
+    assert!(
+        !found.contains("Paid") && !found.contains("Pay\""),
+        "{found}"
+    );
+}
+
+#[test]
 fn the_player_who_sacrifices_is_the_one_asked() {
     let text = "Name:T\nManaCost:2\nTypes:Enchantment\nT:Mode$ Phase | Phase$ Upkeep | ValidPlayer$ You | Execute$ Sac | TriggerDescription$ x\nSVar:Sac:DB$ Sacrifice | Defined$ Player.Opponent | SacValid$ Creature | Optional$ True\n";
     assert_eq!(gaps(text), Vec::<String>::new());

@@ -99,8 +99,8 @@ pub fn chain_at(ctx: &mut Ctx, p: &Params, top: bool) -> Tr<Vec<Value>> {
     match p.get("Cost") {
         Some(text) if !top => {
             let cost = super::cost::cost(ctx, text)?;
-            if let Some(sacrifice) = sacrifice_read_after(&cost, &effects) {
-                return Ok(sacrificed_then(ctx, sacrifice, effects));
+            if let Some((verb, taken)) = taken_read_after(&cost, &effects) {
+                return Ok(taken_then(ctx, verb, taken, effects));
             }
             Ok(vec![json!({"Pay": {"cost": cost, "paid": effects}})])
         }
@@ -108,29 +108,39 @@ pub fn chain_at(ctx: &mut Ctx, p: &Params, top: bool) -> Tr<Vec<Value>> {
     }
 }
 
-/// The sacrifice a payment is when it is the whole cost and the effects after it read what it took ("the sacrificed
-/// creature's power"): a payment names no objects to its effects, a sacrifice step does.
-fn sacrifice_read_after(cost: &Value, effects: &[Value]) -> Option<Value> {
+/// The sacrifice or discard a payment is when it is the whole cost and the effects after it read what it took ("the
+/// sacrificed creature's power"): a payment names no objects to its effects, a step does.
+fn taken_read_after(cost: &Value, effects: &[Value]) -> Option<(&'static str, Value)> {
     let [item] = cost.as_array()?.as_slice() else {
         return None;
     };
-    let sacrifice = item.get("Sacrifice")?;
+    let (verb, taken) = ["Sacrifice", "Discard"]
+        .into_iter()
+        .find_map(|verb| item.get(verb).map(|taken| (verb, taken.clone())))?;
     let reads = Value::Array(effects.to_vec())
         .to_string()
         .contains("\"Paid\"");
-    reads.then(|| sacrifice.clone())
+    reads.then_some((verb, taken))
 }
 
-/// "You may sacrifice ...; if you do, ...": the sacrifice names what it took and the effects after it read that name.
-fn sacrificed_then(ctx: &mut Ctx, sacrifice: Value, mut effects: Vec<Value>) -> Vec<Value> {
-    let name = ctx.fresh("sacrificed");
-    let mut step = json!({"Sacrifice": sacrifice});
-    step["Sacrifice"]["as"] = json!(name);
+/// "You may sacrifice or discard ...; if you do, ...": the step names what it took and the effects after it read that name.
+fn taken_then(ctx: &mut Ctx, verb: &str, taken: Value, mut effects: Vec<Value>) -> Vec<Value> {
+    let name = ctx.fresh(if verb == "Sacrifice" {
+        "sacrificed"
+    } else {
+        "discarded"
+    });
+    let mut step = json!({ verb: taken });
+    step[verb]["as"] = json!(name);
     for effect in &mut effects {
         name_paid(effect, &name);
     }
-    let did = json!({"Compare": {
-        "left": {"Bound": format!("{name}~moved")}, "op": "Ge", "right": 1}});
+    // A sacrificed token is gone, so the number moved says it; a discarded card is in the graveyard to count.
+    let did = if verb == "Sacrifice" {
+        json!({"Compare": {"left": {"Bound": format!("{name}~moved")}, "op": "Ge", "right": 1}})
+    } else {
+        json!({"CountOf": {"op": "Ge", "right": 1, "selector": [], "subject": {"Bound": name}}})
+    };
     super::frame::ask(
         vec![step, json!({"If": {"condition": did, "then": effects}})],
         &json!("You"),
