@@ -954,6 +954,11 @@ impl<'a> Scope<'a> {
             .cause
             .and_then(|cause| cause.subjects.iter().find_map(|subject| subject.object()))
             .map_or(self.source.id, |object| object.id);
+        self.defending_of(attacker)
+    }
+
+    /// The player the creature attacks, or planeswalker's controller, as the attacker (or one that has left combat) is.
+    pub(crate) fn defending_of(&self, attacker: ObjectId) -> Option<PlayerId> {
         let combat = self.state.combat();
         let target = combat
             .attackers()

@@ -1464,9 +1464,14 @@ fn matching_event(
                 DamageTarget::Player(player) => Target::Player(*player),
                 DamageTarget::Object(hit) => Target::Object(object(*hit)?),
             };
-            let named = to
-                .as_ref()
-                .is_none_or(|to| scope.refs(to).is_ok_and(|named| named.contains(&recipient)));
+            let named = to.as_ref().is_none_or(|to| {
+                // "Defending" is the player the damage dealer attacks, whatever the ability's own source is (an Aura).
+                if matches!(to, Ref::Defending) {
+                    scope.defending_of(dealer.id).map(Target::Player) == Some(recipient)
+                } else {
+                    scope.refs(to).is_ok_and(|named| named.contains(&recipient))
+                }
+            });
             (combat.is_none_or(|wanted| wanted == *was) && named && picks(source, dealer)?).then(
                 || Cause {
                     source: Some(dealer),

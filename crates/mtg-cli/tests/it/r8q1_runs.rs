@@ -303,3 +303,66 @@ fn a_plain_ban_on_activation_includes_mana_abilities(#[case] enchanted: bool, #[
     let mut driver = Driver::from_scenario(scenario).unwrap();
     assert_eq!(driver.tap_for_mana("Llanowar Elves").is_ok(), taps);
 }
+
+const LATULLA: &str = "Name:Latulla's Orders\nManaCost:1 R\nTypes:Enchantment Aura\nK:Flash\nK:Enchant:Creature\nT:Mode$ DamageDone | ValidSource$ Card.AttachedBy | ValidTarget$ Player.TriggeredDefendingPlayer | CombatDamage$ True | Execute$ TrigDestroy | OptionalDecider$ You | TriggerDescription$ Whenever enchanted creature deals combat damage to defending player, you may destroy target artifact that player controls.\nSVar:TrigDestroy:DB$ Destroy | ValidTgts$ Artifact.ControlledBy TriggeredTarget | TgtPrompt$ Select target artifact damaged player controls\n";
+
+#[rstest::rstest]
+#[case::unblocked_attacker_destroys_an_artifact(false, false)]
+#[case::blocked_attacker_deals_no_damage_to_the_player(true, true)]
+fn an_aura_trigger_on_damage_to_the_defending_player(
+    #[case] blocked: bool,
+    #[case] survives: bool,
+) {
+    use mtg_testkit::cards::mountain;
+    use mtg_testkit::scenario::attached_to;
+    let art = Arc::new(
+        CardDefinition::new("Their Rock")
+            .with_type(CardType::Artifact)
+            .with_mana_cost(ManaCost::parse("{0}").unwrap()),
+    );
+    let mut theirs = vec![ready(art)];
+    if blocked {
+        theirs.push(ready(free_creature("Wall", 0, 4)));
+    }
+    let scenario = main_phase()
+        .battlefield(
+            0,
+            [
+                ready(free_creature("Attacker", 2, 2)),
+                attached_to(ready(aura(LATULLA)), 0, 0),
+                ready(mountain()),
+            ],
+        )
+        .battlefield(1, theirs);
+    let mut driver = Driver::from_scenario(scenario).unwrap();
+    driver
+        .pass_until(mtg_engine::turn::Step::DeclareAttackers)
+        .unwrap();
+    driver.attack(&[("Attacker", 1)]).unwrap();
+    for _ in 0..60 {
+        if driver.state().turn().step() == mtg_engine::turn::Step::Main2 {
+            break;
+        }
+        let decision = driver.decision().unwrap().clone();
+        match &decision.kind {
+            DecisionKind::ChooseTargets(o) => {
+                let rock = driver.target_named("Their Rock").unwrap();
+                assert!(o.legal.contains(&rock));
+                driver
+                    .answer(Answer::ChooseTargets(TargetChoice::Targets(vec![rock])))
+                    .unwrap();
+            }
+            DecisionKind::YesNo(_) => {
+                driver.answer(Answer::YesNo(YesNoChoice(true))).unwrap();
+            }
+            DecisionKind::DeclareBlockers(_) if blocked => {
+                driver.block(&[("Wall", "Attacker")]).unwrap();
+            }
+            _ => {
+                driver.answer_passively().unwrap();
+            }
+        }
+    }
+    let rock_stays = names(&driver, Zone::Battlefield).contains(&"Their Rock".to_string());
+    assert_eq!(rock_stays, survives);
+}
