@@ -285,6 +285,7 @@ mod keywords_triggers_fuzz;
 mod kicker;
 mod kicker_either;
 mod lands_and_sickness;
+mod last_turn_spells;
 mod layers;
 mod layers_fuzz;
 mod legend_rule;

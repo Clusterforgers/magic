@@ -1592,6 +1592,7 @@ impl<'a> Scope<'a> {
             Amount::HighestCounters { who, counter } => self.highest_counters(who, counter)?,
             Amount::Party(who) => self.party(who)?,
             Amount::StartingLife(who) => self.w14b_starting_life(who)?,
+            Amount::CastLastTurn(who) => self.cast_last_turn(who)?,
             Amount::Mutations(of) => self.mutations(of)?,
             Amount::Kicks => i64::try_from(self.payments(OptionalKind::Kicker))
                 .map_err(|_| ResolveError::Invalid("too many kicks".into()))?,
@@ -1936,6 +1937,10 @@ impl<'a> Scope<'a> {
     }
 
     /// The lowest starting life total among the players a reference names; 0 for none.
+    fn cast_last_turn(&self, who: &Ref) -> Result<i64, ResolveError> {
+        Ok(i64::from(self.state.cast_last_turn(&self.players(who)?)))
+    }
+
     fn w14b_starting_life(&self, who: &Ref) -> Result<i64, ResolveError> {
         Ok(self
             .players(who)?

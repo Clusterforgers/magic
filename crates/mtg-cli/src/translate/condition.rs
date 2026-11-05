@@ -268,6 +268,12 @@ pub fn revolt() -> Value {
     json!({"Compare": {"left": {"Tallied": {"who": "You", "what": "PermanentsLeftUnder"}}, "op": "Ge", "right": 1}})
 }
 
+/// A werewolf's upkeep condition: "no spells were cast last turn", or "a player cast two or more spells last turn".
+pub fn spells_last_turn(two_by_one: bool) -> Value {
+    let (op, right) = if two_by_one { ("Ge", 2) } else { ("Eq", 0) };
+    json!({"Compare": {"left": {"CastLastTurn": "EachPlayer"}, "op": op, "right": right}})
+}
+
 /// Adamant: at least three mana of the color (`Any`: of one color, whichever) was spent to cast the spell.
 pub fn adamant(color: &str) -> Tr<Value> {
     const COLORS: [&str; 5] = ["White", "Blue", "Black", "Red", "Green"];

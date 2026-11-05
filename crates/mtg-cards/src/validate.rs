@@ -869,6 +869,7 @@ impl<'a> Walker<'a> {
             }
             Amount::HighestCounters { who, .. } => self.player_amount("HighestCounters", who),
             Amount::StartingLife(who) => self.player_amount("StartingLife", who),
+            Amount::CastLastTurn(who) => self.player_amount("CastLastTurn", who),
             Amount::Party(who) => self.player_amount("Party", who),
             Amount::CastWith(_) => self.uses("Amount", "CastWith"),
             Amount::ColorsSpent => self.uses("Amount", "ColorsSpent"),
