@@ -6,6 +6,15 @@ use serde_json::{Value, json};
 use super::ctx::{Ctx, Tr, check_keys, unmapped};
 use crate::forge::script::Params;
 
+/// The replacement line of a `BeginPhase` or `LifeReduced` event.
+pub fn held(ctx: &Ctx, event: &str, p: &Params, line_condition: Option<&Value>) -> Tr<Value> {
+    if event == "BeginPhase" {
+        skip_step(p, line_condition)
+    } else {
+        life_floor(ctx, p, line_condition)
+    }
+}
+
 /// `Event$ BeginPhase | Skip$ True`: the players skip the step (CR 614.10) as a rule of the permanent.
 pub fn skip_step(p: &Params, line_condition: Option<&Value>) -> Tr<Value> {
     if line_condition.is_some() {
