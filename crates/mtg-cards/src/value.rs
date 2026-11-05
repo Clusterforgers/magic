@@ -353,7 +353,7 @@ pub enum Amount {
     X,
     /// How many objects match the selector when the effect runs.
     Count(Selector),
-    /// A characteristic of the referenced object (its last known value if it left).
+    /// A characteristic of the referenced object (its last known value if it left); of several objects, their total.
     Stat {
         /// The object.
         of: Ref,

@@ -1362,7 +1362,7 @@ pub(crate) fn max_hand_size(state: &GameState, player: PlayerId, base: usize) ->
 
 /// Whether the legend rule does not apply to the permanents `player` controls: the one place the state-based actions
 /// read this rule.
-pub(crate) fn no_legend_rule(state: &GameState, player: PlayerId) -> bool {
+pub fn no_legend_rule(state: &GameState, player: PlayerId) -> bool {
     state.rules().no_legend.contains(&player)
 }
 

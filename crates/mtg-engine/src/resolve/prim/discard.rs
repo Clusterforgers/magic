@@ -54,11 +54,7 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
                 };
                 Ok(Selection {
                     player: chooser.unwrap_or(*player),
-                    min: if *optional && chooser.is_some() {
-                        0
-                    } else {
-                        take
-                    },
+                    min: if *optional { 0 } else { take },
                     max: take,
                     from,
                     text,

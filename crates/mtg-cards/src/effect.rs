@@ -306,7 +306,7 @@ pub enum Effect {
         /// The player who chooses the cards from the hand ("you choose a card from it"); the discarding player when absent.
         #[serde(default, skip_serializing_if = "Option::is_none")]
         by: Option<Ref>,
-        /// The chooser may take none ("you may choose a nonland card"); only with `by`.
+        /// The player may take fewer, even none ("discard up to two cards", "you may choose a nonland card").
         #[serde(default, skip_serializing_if = "is_false")]
         optional: bool,
         /// The name the discarded cards are bound to, as the objects they become in their graveyards (CR 400.7), for the

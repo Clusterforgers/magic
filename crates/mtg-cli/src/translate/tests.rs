@@ -25,6 +25,14 @@ fn world() -> World {
             "Name:Spirit Token\nColors:white\nTypes:Creature Spirit\nPT:*/*\n",
         ),
         (
+            "b_x_x_demon_flying",
+            "Name:Demon Token\nColors:black\nTypes:Creature Demon\nPT:*/*\nK:Flying\n",
+        ),
+        (
+            "ub_x_x_zombie_menace",
+            "Name:Zombie Token\nColors:blue,black\nTypes:Creature Zombie\nPT:*/*\nK:Menace\n",
+        ),
+        (
             "c_a_treasure_sac",
             "Name:Treasure Token\nTypes:Artifact Treasure\n",
         ),
@@ -750,3 +758,4 @@ mod r5p3;
 mod r5p4;
 mod r5p5;
 mod r5p6;
+mod r5q1;

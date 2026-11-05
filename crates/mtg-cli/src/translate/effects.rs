@@ -108,11 +108,21 @@ const MAY_APIS: [&str; 9] = [
     "Animate",
 ];
 
+/// A discard whose `Optional$` is the count itself ("discard up to two cards"): the chooser of a revealed hand, or a count
+/// above one that no `OptionalDecider$` hands to someone else. A single card is "you may discard", the usual May.
+fn own_optional(p: &Params) -> bool {
+    match p.get("Mode") {
+        Some("RevealYouChoose") => true,
+        Some("Hand" | "Random") => false,
+        _ => !p.has("OptionalDecider") && p.get("NumCards").is_some_and(|n| n != "1"),
+    }
+}
+
 /// Whether the line asks a player to do it: `OptionalDecider$`, or `Optional$ True` on an API of `MAY_APIS`.
 fn asks_may(p: &Params) -> Tr<bool> {
     let optional = p.get("Optional") == Some("True");
     // On a discard the caster chooses, "optional" is the choice of the card, which the discard itself carries.
-    let own = api_of(p)? == "Discard" && p.get("Mode") == Some("RevealYouChoose");
+    let own = api_of(p)? == "Discard" && own_optional(p);
     let optional = optional && !own;
     Ok(p.has("OptionalDecider") || (optional && MAY_APIS.contains(&api_of(p)?)))
 }
@@ -419,7 +429,7 @@ fn discard(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
     )?;
     let whole_hand = p.get("Mode") == Some("Hand");
     let reveal_choose = p.get("Mode") == Some("RevealYouChoose");
-    if p.has("Optional") && !reveal_choose {
+    if p.has("Optional") && !own_optional(p) {
         return unmapped("key:Discard.Optional");
     }
     let random = match p.get("Mode") {
@@ -447,15 +457,15 @@ fn discard(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
         amount(ctx, p.get("NumCards").unwrap_or("1"))?
     };
     let mut discard = json!({"who": who, "count": count, "random": random});
+    if p.get("Optional") == Some("True") {
+        discard["optional"] = json!(true);
+    }
     if reveal_choose {
         // "Reveals their hand, you choose": a hand that is the chooser's own has nothing to reveal.
         if who.as_str() == Some("You") {
             return unmapped("key:Discard.Mode=RevealYouChoose+You");
         }
         discard["by"] = json!("You");
-        if p.get("Optional") == Some("True") {
-            discard["optional"] = json!(true);
-        }
     }
     if let Some(filter) = filter {
         discard["filter"] = json!(filter);

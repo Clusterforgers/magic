@@ -877,11 +877,8 @@ impl<'a> Scope<'a> {
                 .map(Target::Player)
                 .into_iter()
                 .collect(),
-            Ref::Bound(name) => self
-                .bindings
-                .get(name)
-                .cloned()
-                .ok_or_else(|| ResolveError::Invalid(format!("`{name}` is not bound")))?,
+            // Validation proves a name is bound by an earlier step; only a declined or skipped branch leaves it unset.
+            Ref::Bound(name) => self.bindings.get(name).cloned().unwrap_or_default(),
             Ref::Paid => self.paid(),
             Ref::Remembered { on, slot } => self
                 .objects(on)?
@@ -1412,13 +1409,11 @@ impl<'a> Scope<'a> {
             Amount::X => i64::from(self.x_value()),
             Amount::Count(selector) => i64::try_from(self.matching(selector)?.len())
                 .map_err(|_| ResolveError::Invalid("too many objects".into()))?,
-            Amount::Stat { of, stat } => match self.objects(of)?.first() {
-                Some(object) => self
-                    .seen(*object)
-                    .and_then(|seen| Self::stat(&seen, *stat))
-                    .unwrap_or(0),
-                None => 0,
-            },
+            Amount::Stat { of, stat } => self
+                .objects(of)?
+                .iter()
+                .filter_map(|object| self.seen(*object).and_then(|seen| Self::stat(&seen, *stat)))
+                .sum(),
             Amount::Life(who) => self
                 .players(who)?
                 .first()
@@ -2651,13 +2646,10 @@ mod tests {
     }
 
     #[test]
-    fn a_name_nothing_bound_is_an_error_not_an_empty_set() {
+    fn a_name_nothing_bound_is_an_empty_set() {
         let game = game();
         let ghost: Ref = serde_json::from_str(r#"{"Bound":"ghost"}"#).unwrap();
-        assert!(matches!(
-            scope(&game).refs(&ghost),
-            Err(ResolveError::Invalid(_))
-        ));
+        assert!(scope(&game).refs(&ghost).unwrap().is_empty());
     }
 
     #[test]
