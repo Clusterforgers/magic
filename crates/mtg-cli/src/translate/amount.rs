@@ -258,6 +258,11 @@ fn event_amount(ctx: &Ctx, expression: &str) -> Tr<Option<Value>> {
         | "TriggeredSourceLKICopy" => super::triggered::resolve(ctx.trigger.as_ref(), head)?,
         "Enchanted" | "Equipped" => json!("Attached"),
         "Sacrificed" => json!("Paid"),
+        // What the reflexive trigger of an `ImmediateTrigger` was told to remember (`RememberObjects$`).
+        "TriggerRemembered" => match &ctx.delayed_remembered {
+            Some(held) => held.clone(),
+            None => return unmapped("amount:TriggerRemembered"),
+        },
         "Remembered" | "RememberedLKI" if what == "Amount" => {
             return super::memory::remembered_count(ctx).map(Some);
         }

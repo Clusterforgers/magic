@@ -493,6 +493,7 @@ pub fn defined(ctx: &Ctx, word: &str) -> Tr<Value> {
         | "DelayTriggerRememberedLKI"
         | "DelayedTriggerRemembered"
         | "RememberedLKI"
+        | "RememberedCard"
         | "Player.IsRemembered"
         | "Remembered" => super::memory::remembered(ctx),
         word if super::triggered::is_word(word) => {
