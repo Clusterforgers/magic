@@ -337,7 +337,7 @@ fn a_perpetual_static_grant_is_a_gap() {
     assert_eq!(gaps(text), ["duration:Perpetual"]);
 }
 
-fn token_card(text: &str) -> super::super::card::CardOut {
+pub(super) fn token_card(text: &str) -> super::super::card::CardOut {
     use crate::forge::script::Script;
     let mut world = super::world();
     for (stem, face) in [
@@ -374,10 +374,6 @@ fn an_aura_token_is_created_and_attached_to_the_target() {
 }
 
 #[rstest]
-#[case::role(
-    "Name:T\nTypes:Sorcery\nA:SP$ Token | TokenScript$ role_test | TokenOwner$ You | AttachedTo$ Targeted | ValidTgts$ Creature.YouCtrl\n",
-    "token:Role-rule"
-)]
 #[case::to_a_player(
     "Name:T\nTypes:Sorcery\nA:SP$ Token | TokenScript$ w_aura | TokenOwner$ You | AttachedTo$ TriggeredDefendingPlayer\n",
     "key:Token.AttachedTo=TriggeredDefendingPlayer"

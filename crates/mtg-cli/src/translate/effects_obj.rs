@@ -21,6 +21,9 @@ pub fn effects(ctx: &mut Ctx, p: &Params, api: &str) -> Tr<Vec<Value>> {
         "Counter" => one(counter(ctx, p)),
         "PreventDamage" => one(prevent_damage(ctx, p)),
         "Pump" => pump(ctx, p),
+        "Debuff" => debuff(ctx, p),
+        "AlterAttribute" => alter_attribute(ctx, p),
+        "Protection" | "ProtectionAll" => protection(ctx, p, api),
         "PumpAll" => pump_all(ctx, p),
         "Animate" | "AnimateAll" => animate(ctx, p),
         "PutCounter" => put_counter(ctx, p),
@@ -876,4 +879,110 @@ pub fn attach(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
         effect = json!({"May": {"effects": [effect]}});
     }
     Ok(vec![effect])
+}
+
+/// `Debuff`: the object loses the keywords for a while ("target creature loses flying until end of turn").
+fn debuff(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
+    only(
+        p,
+        "Debuff",
+        &[
+            "Keywords",
+            "Defined",
+            "ValidTgts",
+            "Duration",
+            "TargetMin",
+            "TargetMax",
+        ],
+    )?;
+    let Some(keywords) = p.get("Keywords") else {
+        return unmapped("key:Debuff.nothing");
+    };
+    let duration = duration(p.get("Duration"))?;
+    let affected = objects(subject(ctx, p, "Self", None)?)?;
+    let mods: Vec<Value> = keyword_list(ctx, keywords)?
+        .into_iter()
+        .map(|keyword| json!({ "RemoveKeyword": keyword }))
+        .collect();
+    Ok(vec![
+        json!({"Continuous": {"affected": affected, "mods": mods, "duration": duration}}),
+    ])
+}
+
+/// `Protection` and `ProtectionAll`: the objects gain protection from the colour or card type their controller chooses as
+/// the effect begins, or from the colours it names, for a while.
+fn protection(ctx: &mut Ctx, p: &Params, api: &str) -> Tr<Vec<Value>> {
+    only(
+        p,
+        api,
+        &[
+            "Gains",
+            "Choices",
+            "Choser",
+            "Duration",
+            "Defined",
+            "ValidTgts",
+            "ValidCards",
+            "TargetMin",
+            "TargetMax",
+        ],
+    )?;
+    if !matches!(p.get("Choser"), None | Some("Controller")) {
+        return unmapped("key:Protection.Choser");
+    }
+    let duration = duration(p.get("Duration"))?;
+    let affected = if api == "ProtectionAll" {
+        let valid = p.get("ValidCards").unwrap_or_default();
+        json!({"Each": selector_any(ctx, valid)?})
+    } else {
+        objects(subject(ctx, p, "Self", None)?)?
+    };
+    let mods = match (p.get("Gains"), p.get("Choices")) {
+        (Some("Choice"), Some("AnyColor")) => vec![json!("AddProtectionFromChosenColor")],
+        (Some("Choice"), Some("CardType")) => vec![json!("AddProtectionFromChosenCardType")],
+        (Some("Choice"), choices) => {
+            return unmapped(format!("key:Protection.Choices={}", choices.unwrap_or("")));
+        }
+        (Some(gains), None) => {
+            let mut mods = Vec::new();
+            for word in gains.split(',').map(str::trim) {
+                let color = ["white", "blue", "black", "red", "green"].contains(&word);
+                if !color {
+                    return unmapped(format!("key:Protection.Gains={gains}"));
+                }
+                let capital = word[..1].to_uppercase() + &word[1..];
+                let keyword = keyword_value(ctx, &format!("Protection:Card.{capital}"))?;
+                mods.push(json!({ "AddKeyword": keyword }));
+            }
+            mods
+        }
+        _ => return unmapped("key:Protection.Gains"),
+    };
+    Ok(vec![
+        json!({"Continuous": {"affected": affected, "mods": mods, "duration": duration}}),
+    ])
+}
+
+/// `AlterAttribute`: a prepare card becomes prepared. The other attributes (suspected, solved, plotted, saddled) and the
+/// removal of one (`Activate$ False`) stay gaps named after the value.
+fn alter_attribute(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
+    only(
+        p,
+        "AlterAttribute",
+        &["Attributes", "Defined", "ValidTgts", "Activate"],
+    )?;
+    match p.get("Attributes") {
+        Some("Prepared") => {}
+        other => {
+            return unmapped(format!(
+                "key:AlterAttribute.Attributes={}",
+                other.unwrap_or_default()
+            ));
+        }
+    }
+    if !matches!(p.get("Activate"), None | Some("True")) {
+        return unmapped("key:AlterAttribute.Activate");
+    }
+    let what = subject(ctx, p, "Self", None)?;
+    Ok(vec![json!({"Prepare": {"what": what}})])
 }

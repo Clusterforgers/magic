@@ -12,6 +12,9 @@ use super::ctx::{Tr, unmapped};
 pub fn alt_keyword(body: &str) -> Option<Vec<Tr<Value>>> {
     let mut fields = body.splitn(3, ':');
     let name = fields.next()?;
+    if name == "Strive" {
+        return Some(vec![strive(fields.next(), fields.next())]);
+    }
     let (way, count, cost_text) = match (name, fields.next(), fields.next()) {
         ("Warp", Some(text), None) => (CastWay::Warp, None, text),
         ("Surge", Some(text), None) => (CastWay::Surge, None, text),
@@ -51,4 +54,21 @@ fn abilities(way: CastWay, count: Option<&str>, cost_text: &str) -> Vec<Tr<Value
     all.into_iter()
         .map(|ability| serde_json::to_value(ability).or_else(|_| unmapped("keyword:AltCast")))
         .collect()
+}
+
+/// `Strive`: this spell costs the mana more for each target beyond the first.
+fn strive(cost_text: Option<&str>, rest: Option<&str>) -> Tr<Value> {
+    let (Some(text), None) = (cost_text, rest) else {
+        return unmapped("keyword:Strive-shape");
+    };
+    let Some(mana) = mana(text) else {
+        return unmapped("keyword:Strive-cost");
+    };
+    let mana = serde_json::to_value(mana).or_else(|_| unmapped("keyword:Strive-cost"))?;
+    Ok(serde_json::json!({"CostModifier": {
+        "applies_to": ["This"],
+        "change": "Increase",
+        "mana": mana,
+        "per": {"Sum": [{"TargetCount": 0}, -1]},
+    }}))
 }
