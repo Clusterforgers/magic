@@ -349,16 +349,28 @@ fn pump_mods(ctx: &Ctx, p: &Params, single: Option<&Value>) -> Tr<Vec<Value>> {
     }
     if let Some(keywords) = p.get("KW") {
         for word in keywords.split('&').map(str::trim) {
+            if super::statics_combat::is_rule_word(word) {
+                continue;
+            }
             match hidden(word) {
                 Some(found) => mods.extend(found),
                 None => mods.push(json!({ "AddKeyword": keyword_value(ctx, word)? })),
             }
         }
     }
-    if mods.is_empty() {
-        return unmapped("key:Pump.nothing");
-    }
+    mods.extend(super::statics_combat::block_capacity(p)?);
     Ok(mods)
+}
+
+/// The effects of the hidden keywords of a pump line that are rules, not changes to the object: "must be blocked if able"
+/// and "prevent all damage that would be dealt to it".
+fn hidden_effects(p: &Params, affected: &Value, duration: &str) -> Tr<Vec<Value>> {
+    p.get("KW")
+        .into_iter()
+        .flat_map(|keywords| keywords.split('&').map(str::trim))
+        .filter(|word| super::statics_combat::is_rule_word(word))
+        .map(|word| super::statics_combat::hidden_effect(word, affected, duration))
+        .collect()
 }
 
 fn pump(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
@@ -380,6 +392,8 @@ fn pump(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
             "PumpZone",
             "AtEOT",
             "ReplaceDyingDefined",
+            "CanBlockAmount",
+            "CanBlockAny",
         ],
     )?;
     let duration = pump_duration(p)?;
@@ -387,7 +401,12 @@ fn pump(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
     remember_objects(ctx, p)?;
     // A pump that only chooses a target ("target creature you control deals damage ... to target creature") or only
     // remembers objects changes nothing itself; the part after it uses them.
-    let selects_only = !(p.has("NumAtt") || p.has("NumDef") || p.has("KW") || p.has("KWChoice"))
+    let selects_only = !(p.has("NumAtt")
+        || p.has("NumDef")
+        || p.has("KW")
+        || p.has("KWChoice")
+        || p.has("CanBlockAmount")
+        || p.has("CanBlockAny"))
         && ((p.has("ValidTgts") && p.has("SubAbility")) || p.has("RememberObjects"));
     // The pumped object is on the battlefield; a pump of a card in another zone, or of a spell, is only a target choice.
     match p.get("PumpZone") {
@@ -399,11 +418,23 @@ fn pump(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
         return Ok(Vec::new());
     }
     let mut effects = Vec::new();
-    if p.has("NumAtt") || p.has("NumDef") || p.has("KW") {
+    if p.has("NumAtt")
+        || p.has("NumDef")
+        || p.has("KW")
+        || p.has("CanBlockAmount")
+        || p.has("CanBlockAny")
+    {
         let mods = pump_mods(ctx, p, Some(&affected))?;
-        effects.push(
-            json!({"Continuous": {"affected": affected, "mods": mods, "duration": duration}}),
-        );
+        let rules = hidden_effects(p, &affected, duration)?;
+        if mods.is_empty() && rules.is_empty() {
+            return unmapped("key:Pump.nothing");
+        }
+        if !mods.is_empty() {
+            effects.push(
+                json!({"Continuous": {"affected": affected, "mods": mods, "duration": duration}}),
+            );
+        }
+        effects.extend(rules);
     } else if !p.has("KWChoice") {
         return unmapped("key:Pump.nothing");
     }
@@ -492,9 +523,18 @@ fn pump_all(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
     let valid = p.get("ValidCards").unwrap_or_default();
     let affected = json!({"Each": group_of_player(ctx, p, valid)?});
     let mods = pump_mods(ctx, p, None)?;
-    Ok(vec![
-        json!({"Continuous": {"affected": affected, "mods": mods, "duration": duration}}),
-    ])
+    let rules = hidden_effects(p, &affected, duration)?;
+    if mods.is_empty() && rules.is_empty() {
+        return unmapped("key:Pump.nothing");
+    }
+    let mut effects = Vec::new();
+    if !mods.is_empty() {
+        effects.push(
+            json!({"Continuous": {"affected": affected, "mods": mods, "duration": duration}}),
+        );
+    }
+    effects.extend(rules);
+    Ok(effects)
 }
 
 /// `Animate`: the object becomes something else for a while ("becomes a 4/4 Elemental creature with flying").

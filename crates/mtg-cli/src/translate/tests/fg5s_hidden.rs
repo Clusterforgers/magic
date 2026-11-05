@@ -51,7 +51,6 @@ fn a_hidden_keyword_can_be_several_modifications(#[case] kw: &str, #[case] mods:
     "HIDDEN This card doesn't untap during your next untap step.",
     " | Duration$ UntilEndOfCombat"
 )]
-#[case::must_be_blocked("HIDDEN CARDNAME must be blocked if able.", "")]
 #[case::untap_with_another(
     "HIDDEN This card doesn't untap during your next untap step. & Flying",
     " | Duration$ Permanent"

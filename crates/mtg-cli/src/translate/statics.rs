@@ -69,6 +69,9 @@ fn by_mode(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
     if let Some(found) = super::effects_animate::animate_words(ctx, p) {
         return found;
     }
+    if let Some(found) = super::statics_combat::ability(ctx, p) {
+        return found;
+    }
     Ok(match p.get("Mode").unwrap_or_default() {
         "Continuous" if p.has("MayPlay") => {
             json!({"Rule": {"rule": super::mayplay::may_cast(ctx, p, None)?}})
@@ -172,7 +175,9 @@ fn affected_valid(ctx: &Ctx, word: &str) -> Tr<Value> {
 }
 
 /// The keys a continuous static line reads.
-const CONTINUOUS: [&str; 25] = [
+const CONTINUOUS: [&str; 27] = [
+    "CanBlockAmount",
+    "CanBlockAny",
     "GainsAbilitiesOf",
     "GainsAbilitiesOfZones",
     "AddStaticAbility",
@@ -277,6 +282,7 @@ fn continuous(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
             _ => return unmapped("key:Static.Continuous.AddHiddenKeyword"),
         }
     }
+    mods.extend(super::statics_combat::block_capacity(p)?);
     if p.get("RemoveAllAbilities") == Some("True") {
         mods.push(json!("LoseAbilities"));
     }
