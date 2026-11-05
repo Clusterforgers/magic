@@ -105,6 +105,11 @@ pub fn amount(ctx: &Ctx, text: &str) -> Tr<Value> {
     {
         return negate(ctx, inner);
     }
+    if text == "VoteNum"
+        && let Some(name) = &ctx.vote_num
+    {
+        return Ok(json!({"Players": {"Bound": name}}));
+    }
     if ctx.die_result.as_deref() == Some(text) {
         return Ok(json!({"DieResult": "Only"}));
     }

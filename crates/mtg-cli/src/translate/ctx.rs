@@ -133,6 +133,8 @@ pub struct Ctx<'a> {
     pub chosen_number: Option<String>,
     /// The name of the `SVar` that reads the result of the latest die roll (`ResultSVar`).
     pub die_result: Option<String>,
+    /// The choice of a vote whose votes `VoteNum` counts.
+    pub vote_num: Option<String>,
     /// What the trigger line being translated is about, for its `Triggered*` words.
     pub trigger: Option<super::triggered::Shape>,
     binds: usize,
@@ -166,6 +168,7 @@ impl<'a> Ctx<'a> {
             chosen_card: None,
             chosen_number: None,
             die_result: None,
+            vote_num: None,
             trigger: None,
             binds: 0,
             depth: 0,
@@ -185,6 +188,7 @@ impl<'a> Ctx<'a> {
         self.chosen_card = None;
         self.chosen_number = None;
         self.die_result = None;
+        self.vote_num = None;
         self.trigger = None;
         self.binds = 0;
         self.depth = 0;

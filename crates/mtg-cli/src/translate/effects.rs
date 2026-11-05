@@ -269,6 +269,7 @@ fn api_line(ctx: &mut Ctx, p: &Params, api: &str) -> Tr<Vec<Value>> {
         "ImmediateTrigger" => effects_loop::immediate_trigger(ctx, p),
         "PeekAndReveal" => effects_loop::peek_and_reveal(ctx, p),
         "RollDice" => effects_loop::roll_dice(ctx, p),
+        "Vote" => super::effects_vote::vote(ctx, p),
         "ChooseCard" => effects_loop::choose_card(ctx, p),
         "ChooseColor" | "ChooseType" => effects_loop::choose_value(ctx, p, api),
         "ChooseNumber" => effects_loop::choose_number(ctx, p),
