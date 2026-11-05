@@ -226,17 +226,13 @@ fn with_static_effect(
         return unmapped("key:ChangeZone.StaticEffect=destination");
     }
     let mods = static_effect_mods(ctx, name)?;
-    let Some(step) = effects.iter_mut().find(|step| step.get("Move").is_some()) else {
-        return unmapped("key:ChangeZone.StaticEffect=move");
-    };
-    let named = step["Move"].get("as").and_then(Value::as_str);
-    let moved = if let Some(name) = named {
-        name.to_owned()
-    } else {
-        let name = ctx.fresh("moved");
-        step["Move"]["as"] = json!(name);
-        name
-    };
+    let moved = frame::moved_name(
+        ctx,
+        effects,
+        "Move",
+        "moved",
+        "key:ChangeZone.StaticEffect=move",
+    )?;
     effects.push(json!({"Continuous": {
         "affected": {"Bound": moved},
         "mods": mods,
@@ -392,15 +388,33 @@ fn change_zone(ctx: &mut Ctx, p: &Params, origin: &str, destination: &str) -> Tr
     if !two_ways {
         with_static_effect(ctx, p, destination, &mut effects)?;
     }
+    enters_as_said(ctx, p, destination, &mut effects)?;
     if !frame::is_optional(p) {
         return Ok(effects);
     }
     let who = frame::decider(ctx, p, NAMED.label)?;
+    if who != json!("You") && keeps {
+        return unmapped("key:ChangeZone.Optional-remembered");
+    }
     // One question stands for all the objects: only you may answer for several targets at once.
     if who != json!("You") && p.has("TargetMax") {
         return unmapped("key:ChangeZone.Optional-for-several");
     }
     frame::optional(p, NAMED.label, effects, &who)
+}
+
+/// What the destination adds after the move: joining the attack, the counters of an exile.
+fn enters_as_said(
+    ctx: &mut Ctx,
+    p: &Params,
+    destination: &str,
+    effects: &mut Vec<Value>,
+) -> Tr<()> {
+    frame::enters_attacking(ctx, p, effects)?;
+    if destination == "Exile" {
+        frame::exiled_with_counters(ctx, p, effects)?;
+    }
+    Ok(())
 }
 
 /// `Duration$` and `Remember*` of a move: how long it lasts and the name of what it moved.
@@ -500,6 +514,9 @@ fn choose_and_move(ctx: &mut Ctx, p: &Params, origin: &str, destination: &str) -
         if remembers || p.has("StaticEffect") {
             return unmapped("key:ChangeZone.Choose.RememberChanged-for-each-player");
         }
+        if p.has("Attacking") || (destination == "Exile" && p.has("WithCountersType")) {
+            return unmapped("key:ChangeZone.Choose.Attacking-for-each-player");
+        }
         let mut effects = vec![choose];
         effects.extend(moved);
         Ok(vec![
@@ -509,6 +526,7 @@ fn choose_and_move(ctx: &mut Ctx, p: &Params, origin: &str, destination: &str) -
         let mut steps = vec![choose];
         steps.extend(moved);
         with_static_effect(ctx, p, destination, &mut steps)?;
+        enters_as_said(ctx, p, destination, &mut steps)?;
         Ok(steps)
     }
 }

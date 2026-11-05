@@ -49,6 +49,7 @@ impl Slot {
                 "LibraryPositionAlternative",
                 "Shuffle",
                 "Tapped",
+                "Attacking",
                 "GainControl",
                 "WithCountersType",
                 "WithCountersAmount",
@@ -93,7 +94,7 @@ impl Verb {
 }
 
 /// The player words a player slot may hold when the line has no target of its own.
-const PLAYER_WORDS: [&str; 12] = [
+const PLAYER_WORDS: [&str; 15] = [
     "TriggeredActivator",
     "TriggeredSourceController",
     "TriggeredDefendingPlayer",
@@ -106,6 +107,9 @@ const PLAYER_WORDS: [&str; 12] = [
     "TargetedController",
     "TargetedOwner",
     "ParentTarget",
+    "Player.EnchantedBy",
+    "Player.IsRemembered",
+    "DefendingPlayer",
 ];
 
 /// Who a line that picks is about: the player whose cards they are, the player who decides, and whether a loop runs.
@@ -141,8 +145,10 @@ fn one_player(ctx: &Ctx, word: &str, label: &str) -> Tr<Value> {
 /// target the actor without saying who).
 pub fn parties(ctx: &mut Ctx, p: &Params, label: &str) -> Tr<Parties> {
     let targets = p.has("ValidTgts");
-    let one_target = matches!(p.get("ValidTgts"), Some("Player" | "Opponent"))
-        && !p.has("TargetMin")
+    let one_target = matches!(
+        p.get("ValidTgts"),
+        Some("Player" | "Opponent" | "Player.Opponent")
+    ) && !p.has("TargetMin")
         && !p.has("TargetMax");
     if targets && !one_target {
         return unmapped(format!("key:{label}.ValidTgts"));
@@ -428,10 +434,14 @@ fn goes_in(
     if destination != "Battlefield" {
         for key in [
             "GainControl",
+            "Attacking",
             "WithCountersType",
             "Transformed",
             "AttachedTo",
         ] {
+            if key == "WithCountersType" && destination == "Exile" {
+                continue;
+            }
             if p.has(key) {
                 return unmapped(format!("key:ChangeZone.{key}"));
             }
@@ -443,7 +453,13 @@ fn goes_in(
         "Graveyard" => Goes::To(json!("Graveyard")),
         "Battlefield" if p.has("AttachedTo") => {
             // The attached placement carries only the host: any other way of entering is a gap, not a drop.
-            for key in ["Tapped", "GainControl", "WithCountersType", "Transformed"] {
+            for key in [
+                "Tapped",
+                "Attacking",
+                "GainControl",
+                "WithCountersType",
+                "Transformed",
+            ] {
                 if p.has(key) {
                     return unmapped(format!("key:ChangeZone.AttachedTo-with-{key}"));
                 }
@@ -497,6 +513,62 @@ fn with_counters(p: &Params) -> Tr<Value> {
         Some(n) => Ok(json!([[kind, n]])),
         None => unmapped("key:ChangeZone.WithCountersAmount"),
     }
+}
+
+/// The name of what the first move among the steps moved, naming it when it has none; a step list with no move of `verb` is a
+/// gap: what follows reads the moved objects as they are now (CR 400.7), never the reference the move began with.
+pub fn moved_name(
+    ctx: &mut Ctx,
+    effects: &mut [Value],
+    verb: &str,
+    stem: &str,
+    gap: &str,
+) -> Tr<String> {
+    let Some(step) = effects.iter_mut().find(|step| step.get(verb).is_some()) else {
+        return unmapped(gap.to_owned());
+    };
+    if let Some(name) = step[verb].get("as").and_then(Value::as_str) {
+        return Ok(name.to_owned());
+    }
+    let name = ctx.fresh(stem);
+    step[verb]["as"] = json!(name);
+    Ok(name)
+}
+
+/// `Attacking$ True`: the one object that entered joins the attack, its controller choosing what it attacks (CR 508.4).
+pub fn enters_attacking(ctx: &mut Ctx, p: &Params, effects: &mut Vec<Value>) -> Tr<()> {
+    match p.get("Attacking") {
+        None => return Ok(()),
+        Some("True") => {}
+        Some(_) => return unmapped("key:Frame.Attacking"),
+    }
+    if p.has("TargetMax") || !matches!(p.get("ChangeNum"), None | Some("1")) {
+        return unmapped("key:Frame.Attacking-for-several");
+    }
+    let name = moved_name(ctx, effects, "Move", "moved", "key:Frame.Attacking-move")?;
+    effects.push(json!({"JoinAttack": {"what": {"Bound": name}}}));
+    Ok(())
+}
+
+/// `WithCountersType$` on a move to exile ("exile it with three time counters on it"): the counters go on the object it became.
+pub fn exiled_with_counters(ctx: &mut Ctx, p: &Params, effects: &mut Vec<Value>) -> Tr<()> {
+    if !p.has("WithCountersType") {
+        return Ok(());
+    }
+    let counters = with_counters(p)?;
+    let name = moved_name(
+        ctx,
+        effects,
+        "Exile",
+        "exiled",
+        "key:Frame.WithCounters-exile",
+    )?;
+    effects.push(json!({"PutCounters": {
+        "on": {"Bound": name},
+        "counter": counters[0][0],
+        "count": counters[0][1],
+    }}));
+    Ok(())
 }
 
 /// The step that moves `what` the given way.

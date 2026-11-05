@@ -1684,6 +1684,10 @@ mod tests {
         Effect::Search { who: Ref::You, of: None, zone: ZoneKind::Library, also: vec![ZoneKind::Hand, ZoneKind::Graveyard], filter: Selector(vec![Pred::Subtype(mtg_core::card::Subtype("Rune".into()))]), count: Bounds::default(), reveal: false, bind: "rune".into() },
         r#"{"Search":{"also":["Hand","Graveyard"],"filter":[{"Subtype":"Rune"}],"as":"rune"}}"#
     )]
+    #[case::search_of_another_player(
+        Effect::Search { who: Ref::You, of: Some(Ref::Opponents), zone: ZoneKind::Library, also: Vec::new(), filter: Selector(vec![]), count: Bounds::default(), reveal: false, bind: "it".into() },
+        r#"{"Search":{"of":"Opponents","filter":[],"as":"it"}}"#
+    )]
     #[case::conjure(
         Effect::Conjure { who: Ref::You, name: "Lightning Bolt".into(), zone: ZoneKind::Hand, count: Amount::Fixed(2) },
         r#"{"Conjure":{"name":"Lightning Bolt","zone":"Hand","count":2}}"#
