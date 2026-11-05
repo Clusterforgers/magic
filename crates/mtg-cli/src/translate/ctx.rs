@@ -143,6 +143,8 @@ pub struct Ctx<'a> {
     pub chosen_number: Option<String>,
     /// The `SVar` a damage step's `ExcessSVar` sets and the number the step bound the excess damage to.
     pub excess: Option<(String, String)>,
+    /// The amount a step remembered as a number (`RememberRemoved$`, `RememberCounteredCMC$`), which `Count$RememberedNumber` reads.
+    pub number: Option<Value>,
     /// The name of the `SVar` that reads the result of the latest die roll (`ResultSVar`).
     pub die_result: Option<String>,
     /// The choice of a vote whose votes `VoteNum` counts.
@@ -189,6 +191,7 @@ impl<'a> Ctx<'a> {
             chosen_number: None,
             die_result: None,
             excess: None,
+            number: None,
             vote_num: None,
             modal_keyword: None,
             extra_mode_cost: None,
@@ -213,6 +216,7 @@ impl<'a> Ctx<'a> {
         self.chosen_card = None;
         self.chosen_number = None;
         self.excess = None;
+        self.number = None;
         self.die_result = None;
         self.vote_num = None;
         self.trigger = None;
@@ -238,9 +242,11 @@ impl<'a> Ctx<'a> {
         );
         let die = self.die_result.take();
         let excess = self.excess.take();
+        let number = self.number.take();
         let out = run(self);
         self.die_result = die;
         self.excess = excess;
+        self.number = number;
         self.pinned = before;
         self.targets = targets;
         (

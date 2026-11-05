@@ -312,6 +312,7 @@ const PUBLIC: Record<VariantName<Event>, [Event, string]> = {
         source: { id: 3, counter: 0 },
         slot: 'exiled',
         objects: [{ id: 1, counter: 1 }],
+        values: [],
         replace: false,
       },
     },

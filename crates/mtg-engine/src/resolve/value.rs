@@ -862,6 +862,18 @@ impl<'a> Scope<'a> {
         any
     }
 
+    /// The objects and players the sources named by `on` remember in `slot`.
+    fn remembered(&self, on: &Ref, slot: &str) -> Result<Vec<Target>, ResolveError> {
+        let mut held = Vec::new();
+        for source in self.objects(on)? {
+            let objects = crate::memory::recall(self.state, source, slot);
+            held.extend(objects.into_iter().map(Target::Object));
+            let players = crate::memory::recall_players(self.state, source, slot);
+            held.extend(players.into_iter().map(Target::Player));
+        }
+        Ok(held)
+    }
+
     /// The players and objects a reference names, in the order the rules process them.
     pub fn refs(&self, reference: &Ref) -> Result<Vec<Target>, ResolveError> {
         let state = self.state;
@@ -944,12 +956,7 @@ impl<'a> Scope<'a> {
             // Validation proves a name is bound by an earlier step; only a declined or skipped branch leaves it unset.
             Ref::Bound(name) => self.bindings.get(name).cloned().unwrap_or_default(),
             Ref::Paid => self.paid(),
-            Ref::Remembered { on, slot } => self
-                .objects(on)?
-                .into_iter()
-                .flat_map(|source| crate::memory::recall(state, source, slot))
-                .map(Target::Object)
-                .collect(),
+            Ref::Remembered { on, slot } => self.remembered(on, slot)?,
             Ref::Arrived { of, zone } => self.arrived(of, *zone)?,
             Ref::ControllerOf(inner) => self.seats_of(inner, |seen| seen.controller)?,
             Ref::OwnerOf(inner) => self.seats_of(inner, |seen| seen.owner)?,
@@ -1656,6 +1663,15 @@ impl<'a> Scope<'a> {
             | Amount::ManaInPool(_)
             | Amount::Doors(_) => self.fill_amount(amount, share)?,
             Amount::Tally { event, who, filter } => self.logged(*event, who, filter)?,
+            Amount::Remembered { on, slot } => {
+                let mut total = 0_i64;
+                for source in self.objects(on)? {
+                    total += crate::memory::recall_numbers(self.state, source, slot)
+                        .iter()
+                        .sum::<i64>();
+                }
+                total
+            }
             Amount::Triggering => self
                 .cause
                 .map(|cause| i64::from(cause.amount))

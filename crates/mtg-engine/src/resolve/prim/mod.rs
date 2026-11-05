@@ -171,6 +171,7 @@ fn fe1n(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
 }
 
 /// Hands the effect to the primitive of its variant.
+#[allow(clippy::too_many_lines)] // one arm per effect
 fn dispatch(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
     match effect {
         Effect::Draw { .. } => draw::run(cx, effect),
@@ -189,7 +190,9 @@ fn dispatch(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         Effect::Exile { .. } => exile::run(cx, effect),
         Effect::ExileHidden { .. } => exile_hidden::run(cx, effect),
         Effect::Encode { .. } => encode::run(cx, effect),
-        Effect::Remember { .. } | Effect::Forget { .. } => remember::run(cx, effect),
+        Effect::Remember { .. } | Effect::Forget { .. } | Effect::RememberValue { .. } => {
+            remember::run(cx, effect)
+        }
         Effect::Manifest { .. } | Effect::Cloak { .. } => manifest::run(cx, effect),
         Effect::Sacrifice { .. } => sacrifice::run(cx, effect),
         Effect::Counter { .. } => counter::run(cx, effect),

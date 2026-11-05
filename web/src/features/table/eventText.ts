@@ -635,7 +635,12 @@ function describePipeline(event: PipelineEvent, n: EventNames, context?: EventCo
     const { player, choice } = event.ChoiceMade
     return quiet(`${n.seat(player)} ${describeChoice(choice, n)}`)
   }
-  if ('Remembered' in event) return quiet('A source remembers objects')
+  if ('Remembered' in event)
+    return quiet(
+      event.Remembered.objects.length === 0 && event.Remembered.values.length > 0
+        ? 'A source remembers a value'
+        : 'A source remembers objects',
+    )
   if ('StepDone' in event) return quiet('A step of the resolution is done')
   if ('ResolutionEnded' in event) {
     const { object, outcome } = event.ResolutionEnded

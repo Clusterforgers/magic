@@ -26,6 +26,7 @@ mod memory_runs;
 mod promote_draft;
 mod propose;
 mod propose_http;
+mod r2c_runs;
 mod r3f2_runs;
 mod r3p3_runs;
 mod r4f2_runs;

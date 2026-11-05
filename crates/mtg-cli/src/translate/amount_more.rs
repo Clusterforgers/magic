@@ -13,6 +13,10 @@ pub fn count(ctx: &Ctx, base: &str) -> Option<Tr<Value>> {
         "Domain" if rest.is_empty() => Ok(json!({"Distinct": {
             "of": [{"Type": "Land"}, {"ControlledBy": "You"}], "stat": "BasicLandTypes"}})),
         "ResolvedThisTurn" if rest.is_empty() => Ok(json!("ResolvedThisTurn")),
+        // The number an earlier step of the ability remembered; the size of a number is the number.
+        "RememberedNumber" | "RememberedSize" if rest.is_empty() => {
+            return super::number::read(ctx).map(Ok);
+        }
         "Party" if rest.is_empty() => Ok(json!({"Party": "You"})),
         "CountersAddedThisTurn" => counters_added(ctx, rest),
         "Converge" if rest.is_empty() => Ok(json!("ColorsSpent")),

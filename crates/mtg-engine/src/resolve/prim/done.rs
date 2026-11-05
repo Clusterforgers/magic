@@ -115,7 +115,7 @@ fn reports(effect: &Effect) -> Reports {
         Effect::May { .. } | Effect::CastFromZone { .. } => Reports::Itself,
         #[rustfmt::skip]
         Effect::LookAtTop { .. } | Effect::Choose { .. } | Effect::ChooseAtRandom { .. } | Effect::Encode { .. }
-        | Effect::Remember { .. } | Effect::Forget { .. } | Effect::DelayedTrigger { .. } | Effect::Reflexive { .. }
+        | Effect::Remember { .. } | Effect::Forget { .. } | Effect::RememberValue { .. } | Effect::DelayedTrigger { .. } | Effect::Reflexive { .. }
         | Effect::If { .. } | Effect::Modal { .. } | Effect::RepeatEach { .. } | Effect::RollDice { .. }
         | Effect::FlipCoin { .. } | Effect::Clash { .. } | Effect::Vote { .. } | Effect::VillainousChoice { .. }
         | Effect::ChooseValue { .. } | Effect::Let { .. } | Effect::Bind { .. } | Effect::RepeatWhile { .. } | Effect::SeparatePiles { .. }
