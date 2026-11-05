@@ -41,6 +41,7 @@ fn branches<'a>(effect: &'a Effect, chosen: &[usize]) -> Vec<&'a [Effect]> {
         Effect::VillainousChoice { first, second, .. } | Effect::Either { first, second } => {
             vec![first, second]
         }
+        Effect::OneOf { options, .. } => options.iter().map(Vec::as_slice).collect(),
         Effect::If {
             then, otherwise, ..
         } => vec![then, otherwise],

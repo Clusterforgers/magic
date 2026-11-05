@@ -70,8 +70,8 @@ fn a_choice_of_a_source_and_its_shield_are_a_choose_and_a_shield(
     "key:ChooseSource.Defined"
 )]
 #[case::unless_cost(
-    "AB$ ChooseSource | Cost$ 1 | Choices$ Card,Emblem | UnlessCost$ 1 | UnlessPayer$ Player | SubAbility$ DBEffect",
-    "key:Unless.UnlessPayer=Player"
+    "AB$ ChooseSource | Cost$ 1 | Choices$ Card,Emblem | UnlessCost$ 1 | UnlessPayer$ Nobody | SubAbility$ DBEffect",
+    "defined:Nobody"
 )]
 #[case::remembered_choice(
     "AB$ ChooseSource | Cost$ 1 | Choices$ Card,Emblem | RememberChosen$ True | SubAbility$ DBEffect",

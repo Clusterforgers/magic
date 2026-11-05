@@ -602,6 +602,15 @@ fn block(ctx: &Ctx, effect: &Effect, depth: u8, out: &mut Vec<Step>) -> bool {
             out.push(Step::new(depth + 1, "or:"));
             list(ctx, second, depth + 1, out);
         }
+        Effect::OneOf { options, .. } => {
+            out.push(Step::new(depth, "choose one when this resolves:"));
+            for (at, option) in options.iter().enumerate() {
+                if at > 0 {
+                    out.push(Step::new(depth + 1, "or:"));
+                }
+                list(ctx, option, depth + 1, out);
+            }
+        }
         _ => return repeated(ctx, effect, depth, out),
     }
     true

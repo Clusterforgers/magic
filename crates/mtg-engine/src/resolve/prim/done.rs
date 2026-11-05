@@ -119,7 +119,7 @@ fn reports(effect: &Effect) -> Reports {
         | Effect::If { .. } | Effect::Modal { .. } | Effect::RepeatEach { .. } | Effect::RollDice { .. }
         | Effect::FlipCoin { .. } | Effect::Clash { .. } | Effect::Vote { .. } | Effect::VillainousChoice { .. }
         | Effect::ChooseValue { .. } | Effect::Let { .. } | Effect::Bind { .. } | Effect::RepeatWhile { .. } | Effect::SeparatePiles { .. }
-        | Effect::Either { .. } => Reports::Nothing,
+        | Effect::Either { .. } | Effect::OneOf { .. } => Reports::Nothing,
     }
 }
 

@@ -426,6 +426,7 @@ const RUNS: &[&str] = &[
     "Effect.Planechase",
     "Effect.VillainousChoice",
     "Effect.Either",
+    "Effect.OneOf",
     "Keyword.Flash",
     "Keyword.Flying",
     "Keyword.Reach",

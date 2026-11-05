@@ -4,7 +4,7 @@ use serde_json::{Value, json};
 
 use super::amount::amount;
 use super::condition::prefixed;
-use super::ctx::{Ctx, Tr, only, unmapped};
+use super::ctx::{Ctx, Tr, flag, only, unmapped};
 use super::remember;
 use super::valid::{defined, objects, selector_any, subject};
 use super::{effects_effect, effects_loop, effects_obj, effects_zone, tokens};
@@ -156,6 +156,8 @@ fn may_decider(ctx: &Ctx, p: &Params) -> Tr<Value> {
         None if !p.has("ValidTgts") && matches!(p.get("Defined"), None | Some("You")) => {
             json!("You")
         }
+        // The objects these verbs act on make no choice; whoever controls the ability says whether it is done.
+        None if matches!(api_of(p)?, "PutCounter" | "Animate" | "Tap" | "Untap") => json!("You"),
         None => return unmapped("key:May.Optional-decider"),
     };
     Ok(who)
@@ -181,13 +183,9 @@ fn unless_pays(
     let who = match p.get("UnlessPayer") {
         None if api_of(p)? == "Counter" => json!({ "ControllerOf": ctx.last_target()? }),
         None => return unmapped("key:Unless.no-UnlessPayer"),
-        Some(word) => match defined(ctx, word)? {
-            // Nobody decides for a group: whether any of them pays is not one player's choice.
-            group if matches!(group.as_str(), Some("Opponents" | "EachPlayer")) => {
-                return unmapped(format!("key:Unless.UnlessPayer={word}"));
-            }
-            single => single,
-        },
+        // A group ("unless any player pays") is asked in turn order until one pays; every seat gets the normal clock and an
+        // unanswered question is a no.
+        Some(word) => defined(ctx, word)?,
     };
     let (cost, times) = unless_cost(ctx, unless)?;
     let (mut paid, mut unpaid) = (Vec::new(), Vec::new());
@@ -646,7 +644,17 @@ fn count_verb(ctx: &mut Ctx, p: &Params, verb: &str, key: &str) -> Tr<Value> {
 
 /// `Charm`: a modal spell or ability whose modes are the named parts of `Choices$`, each with targets of its own.
 fn charm(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
-    only(p, "Charm", &["Choices", "CharmNum", "MinCharmNum"])?;
+    only(
+        p,
+        "Charm",
+        &[
+            "Choices",
+            "CharmNum",
+            "MinCharmNum",
+            "ChoiceRestriction",
+            "CanRepeatModes",
+        ],
+    )?;
     let keyword = ctx.modal_keyword.take();
     let extra = ctx.extra_mode_cost.take();
     let Some(choices) = p.get("Choices") else {
@@ -686,6 +694,16 @@ fn charm(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
     }
     if (&min, &max) != (&json!(1), &json!(1)) {
         modal["choose"] = json!({"min": min, "max": max});
+    }
+    // A mode chosen earlier in the turn or the game is not offered; the engine keeps that for the ability of a permanent.
+    match p.get("ChoiceRestriction") {
+        None => {}
+        Some("ThisTurn") => modal["once_each_turn"] = json!(true),
+        Some("ThisGame") => modal["once_ever"] = json!(true),
+        Some(other) => return unmapped(format!("key:Charm.ChoiceRestriction={other}")),
+    }
+    if flag(p, "CanRepeatModes")? {
+        modal["repeat"] = json!(true);
     }
     Ok(json!({ "Modal": modal }))
 }

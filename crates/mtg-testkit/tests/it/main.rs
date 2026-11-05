@@ -409,6 +409,7 @@ mod pump_animate;
 mod pump_animate_fuzz;
 mod pump_fuzz;
 mod pump_spells;
+mod r1c;
 mod r4_audit;
 mod r6q1_face_down_cost;
 mod r7p3_next_spell;

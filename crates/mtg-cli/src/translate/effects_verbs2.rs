@@ -1,5 +1,6 @@
 //! Effects that read sub-abilities or card faces: `GenericChoice` between two parts, `Branch` on a number and `SetState`.
 
+use mtg_cards::effect::MOST_OPTIONS;
 use serde_json::{Value, json};
 
 use super::amount::amount;
@@ -47,12 +48,10 @@ fn part(ctx: &mut Ctx, name: &str) -> Tr<Vec<Value>> {
     chain_at(ctx, &sub, false)
 }
 
-/// `GenericChoice` made by the controller between exactly two parts, as `Either`.
+/// `GenericChoice`: the controller (or the one player `Defined$` names) chooses one of the parts as the effect resolves;
+/// two parts chosen by the controller are an `Either`, any other choice a `OneOf`.
 fn generic_choice(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
     only(p, "GenericChoice", &["Choices", "Defined", "ValidTgts"])?;
-    if !matches!(p.get("Defined"), None | Some("You")) {
-        return unmapped("key:GenericChoice.Defined");
-    }
     // A target is declared for the parts to read; without `Defined$ You` Forge lets the target choose, which is not read.
     if p.has("ValidTgts") {
         if p.get("Defined") != Some("You") {
@@ -60,13 +59,33 @@ fn generic_choice(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
         }
         subject(ctx, p, "You", None)?;
     }
-    let names: Vec<&str> = p.get("Choices").unwrap_or_default().split(',').collect();
-    let [first, second] = names[..] else {
-        return unmapped("key:GenericChoice.Choices");
+    let who = match p.get("Defined") {
+        None | Some("You") => json!("You"),
+        Some(word) => match defined(ctx, word)? {
+            // Exactly one player chooses: for a group Forge asks each in turn, which is not one choice.
+            group if matches!(group.as_str(), Some("Opponents" | "EachPlayer")) => {
+                return unmapped(format!("key:GenericChoice.Defined={word}"));
+            }
+            single => single,
+        },
     };
-    let first = part(ctx, first)?;
-    let second = part(ctx, second)?;
-    Ok(json!({"Either": {"first": first, "second": second}}))
+    let names: Vec<&str> = p.get("Choices").unwrap_or_default().split(',').collect();
+    if !(2..=MOST_OPTIONS).contains(&names.len()) {
+        return unmapped("key:GenericChoice.Choices");
+    }
+    let mut options = Vec::new();
+    for name in names {
+        options.push(part(ctx, name)?);
+    }
+    let by_you = who == json!("You");
+    if let ([first, second], true) = (&options[..], by_you) {
+        return Ok(json!({"Either": {"first": first, "second": second}}));
+    }
+    let mut node = json!({ "options": options });
+    if !by_you {
+        node["who"] = who;
+    }
+    Ok(json!({"OneOf": node}))
 }
 
 /// `Branch` on a named number against a comparison (at least one by default), as `If`.

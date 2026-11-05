@@ -62,13 +62,9 @@ fn unless_branches(#[case] line: &str, #[case] pay: Value) {
 }
 
 #[rstest]
-#[case::group(
-    "GainLife | LifeAmount$ 3 | UnlessCost$ 2 | UnlessPayer$ Player",
-    "key:Unless.UnlessPayer=Player"
-)]
-#[case::group_opponents(
-    "GainLife | LifeAmount$ 3 | UnlessCost$ 2 | UnlessPayer$ Opponent",
-    "key:Unless.UnlessPayer=Opponent"
+#[case::unknown_payer(
+    "GainLife | LifeAmount$ 3 | UnlessCost$ 2 | UnlessPayer$ Nobody",
+    "defined:Nobody"
 )]
 #[case::resolve_value(
     "GainLife | LifeAmount$ 3 | UnlessCost$ 2 | UnlessPayer$ You | UnlessResolveSubs$ Sometimes",

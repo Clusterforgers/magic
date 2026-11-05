@@ -41,10 +41,13 @@ fn a_verb_maps_to_its_node(#[case] line: &str, #[case] node: Value) {
 }
 
 #[rstest]
-#[case::three_choices("GenericChoice | Choices$ Win,Lose,Third", "key:GenericChoice.Choices")]
-#[case::opponent_chooses(
-    "GenericChoice | Defined$ Opponent | Choices$ Win,Lose",
-    "key:GenericChoice.Defined"
+#[case::nine_choices(
+    "GenericChoice | Choices$ Win,Lose,Third,Win,Lose,Third,Win,Lose,Third",
+    "key:GenericChoice.Choices"
+)]
+#[case::everyone_chooses(
+    "GenericChoice | Defined$ Player.Opponent | Choices$ Win,Lose",
+    "key:GenericChoice.Defined=Player.Opponent"
 )]
 #[case::fallback(
     "GenericChoice | Choices$ Win,Lose | FallbackAbility$ Win",
