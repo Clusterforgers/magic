@@ -25,11 +25,16 @@ pub(crate) fn c11a_mana(
     (source, address, rules): (ObjectId, AbilityRef, &Ability),
     price: &Price,
 ) -> Option<ManaCost> {
-    let mana = price.mana.clone()?;
-    let own = c11a_own(state, player, source, price, mana);
-    Some(crate::activation_kind::modified(
-        state, source, address, rules, own,
-    ))
+    // A cost without mana still takes the mana a modifier adds ("activated abilities cost {2} more").
+    let own = c11a_own(
+        state,
+        player,
+        source,
+        price,
+        price.mana.clone().unwrap_or(ManaCost::ZERO),
+    );
+    let total = crate::activation_kind::modified(state, source, address, rules, own);
+    (price.mana.is_some() || total != ManaCost::ZERO).then_some(total)
 }
 
 /// The mana of `price` with the changes the ability prints of its own cost applied.

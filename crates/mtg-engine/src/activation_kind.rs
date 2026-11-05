@@ -29,7 +29,7 @@ pub(crate) fn specific(
     }
     match keyword_adding(state, address)? {
         Keyword::Equip(_) | Keyword::EquipTo { .. } => Some(ActivationKind::Equip),
-        Keyword::Cycling(_) => Some(ActivationKind::Cycling),
+        Keyword::Cycling(_) | Keyword::Typecycling { .. } => Some(ActivationKind::Cycling),
         _ => None,
     }
 }
