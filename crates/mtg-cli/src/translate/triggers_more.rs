@@ -41,7 +41,22 @@ fn recipient(ctx: &Ctx, valid: &str) -> Tr<Value> {
 
 /// `DamageDone` and `DamageDoneOnce`: a source deals damage to a recipient.
 pub fn damage(ctx: &Ctx, p: &Params, mode: &str) -> Tr<Value> {
-    keys(p, mode, &["ValidSource", "ValidTarget", "CombatDamage"])?;
+    keys(
+        p,
+        mode,
+        &[
+            "ValidSource",
+            "ValidTarget",
+            "CombatDamage",
+            "TriggerController",
+        ],
+    )?;
+    // The controller of the source is the controller of the ability only for the card itself.
+    if let Some(word) = p.get("TriggerController")
+        && (word != "TriggeredSourceController" || p.get("ValidSource") != Some("Card.Self"))
+    {
+        return unmapped(format!("key:Trigger.{mode}.TriggerController={word}"));
+    }
     let source = super::valid::source_any(ctx, p.get("ValidSource").unwrap_or("Card"))?;
     let mut pattern = json!({ "source": source });
     match p.get("CombatDamage") {
@@ -60,7 +75,14 @@ pub fn damage(ctx: &Ctx, p: &Params, mode: &str) -> Tr<Value> {
         return Ok(json!({ "DealsDamage": pattern }));
     }
     if mode != "DamageDone" {
-        return unmapped("key:Trigger.DamageDoneOnce.ValidTarget-or");
+        // Several kinds of permanent are one selector of alternatives; a player among them has no such selector.
+        let players =
+            |word: &&str| matches!(word.split('.').next(), Some("You" | "Player" | "Opponent"));
+        if recipients.iter().any(players) {
+            return unmapped("key:Trigger.DamageDoneOnce.ValidTarget-or");
+        }
+        pattern["to"] = json!({"Each": selector_any(ctx, target)?});
+        return Ok(json!({ "DealsDamage": pattern }));
     }
     let mut any = Vec::new();
     for each in recipients {
@@ -93,9 +115,9 @@ fn zone_changes(ctx: &Ctx, p: &Params) -> Tr<Value> {
 }
 
 fn life_lost(p: &Params) -> Tr<Value> {
-    keys(p, "LifeLost", &["ValidPlayer"])?;
+    keys(p, "LifeLost", &["ValidPlayer", "FirstTime"])?;
     let who = player_ref(p.get("ValidPlayer"))?;
-    Ok(json!({"LifeLost": {"who": who}}))
+    super::triggers::first_time(p, json!({"LifeLost": {"who": who}}))
 }
 
 fn taps_for_mana(ctx: &Ctx, p: &Params) -> Tr<Value> {

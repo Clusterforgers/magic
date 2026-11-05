@@ -46,6 +46,7 @@ pub fn condition(ctx: &Ctx, p: &Params) -> Tr<Option<Value>> {
         all.push(named(name)?);
     }
     all.extend(super::header::trigger_gates(p)?);
+    all.extend(super::header::trigger_state(ctx, p)?);
     Ok(single(all))
 }
 
@@ -295,5 +296,6 @@ pub fn self_was_cast(ctx: &Ctx, spec: &str) -> Tr<Value> {
 pub fn strip(p: &Params) -> Params {
     let mut keys = KEYS.to_vec();
     keys.extend(super::header::gate_words(p));
+    keys.extend(super::header::state_words(p));
     p.without(&keys)
 }

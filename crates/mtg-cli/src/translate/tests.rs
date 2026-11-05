@@ -529,8 +529,8 @@ fn normal(value: Value) -> Value {
     "key:Draw.Foo"
 )]
 #[case::unknown_trigger(
-    "Name:T\nTypes:Creature Elf\nT:Mode$ Exploited | Execute$ X\nSVar:X:DB$ Draw\n",
-    "trigger:Exploited"
+    "Name:T\nTypes:Creature Elf\nT:Mode$ Clashed | Execute$ X\nSVar:X:DB$ Draw\n",
+    "trigger:Clashed"
 )]
 #[case::unknown_property(
     "Name:T\nTypes:Sorcery\nA:SP$ Destroy | ValidTgts$ Creature.withQuux\n",
@@ -764,6 +764,7 @@ mod r1f;
 mod r1fix;
 mod r1g;
 mod r1h;
+mod r2f;
 mod r3p2;
 mod r3p3;
 mod r3p4;

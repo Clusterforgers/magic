@@ -21,7 +21,7 @@ const COMMON: [&str; 6] = [
 /// A trigger line as a `Triggered` ability.
 pub fn triggered(ctx: &mut Ctx, body: &str) -> Tr<Value> {
     ctx.reset();
-    let all = Params::parse(body);
+    let all = in_own_zone(Params::parse(body));
     let intervening = condition(ctx, &all)?;
     // The engine checks the condition again as the ability resolves (CR 603.4) unless the line says it does not.
     let intervening = match (all.get("NoResolvingCheck"), intervening) {
@@ -51,7 +51,7 @@ pub fn triggered(ctx: &mut Ctx, body: &str) -> Tr<Value> {
     });
     let from = match p.get("TriggerZones") {
         None | Some("Battlefield") => None,
-        Some(zone @ ("Graveyard" | "Hand" | "Exile" | "Library")) => Some(zone),
+        Some(zone @ ("Graveyard" | "Hand" | "Exile" | "Library" | "Command")) => Some(zone),
         Some(other) => return unmapped(format!("key:Trigger.TriggerZones={other}")),
     };
     let Some(execute) = p.get("Execute") else {
@@ -115,6 +115,21 @@ pub fn triggered(ctx: &mut Ctx, body: &str) -> Tr<Value> {
         }
     }
     Ok(ability)
+}
+
+/// `IsPresent$ Card.StrictlySelf | PresentZone$ Command` beside `TriggerZones$ Command` (an Eminence ability): the card is in
+/// the zone the ability works from, which the ability's `from` already says.
+fn in_own_zone(p: Params) -> Params {
+    let zone = p.get("TriggerZones").filter(|zone| *zone == "Command");
+    if p.get("IsPresent") == Some("Card.StrictlySelf")
+        && zone.is_some()
+        && p.get("PresentZone") == zone
+        && !p.has("PresentCompare")
+        && !p.has("PresentPlayer")
+    {
+        return p.without(&["IsPresent", "PresentZone"]);
+    }
+    p
 }
 
 /// The step a card enters in (`Phase$ Declare Attackers` of a zone change) as a condition of the event, checked as the ability
@@ -247,6 +262,9 @@ pub(super) fn pattern(ctx: &Ctx, p: &Params) -> Tr<Value> {
     if let Some(found) = super::triggers_more::pattern(ctx, p, mode) {
         return found;
     }
+    if let Some(found) = super::triggers_r2f::pattern(ctx, p, mode) {
+        return found;
+    }
     if let Some(found) = super::triggers_did::pattern(ctx, p, mode) {
         return found;
     }
@@ -287,6 +305,7 @@ fn zone(word: Option<&str>, key: &str) -> Tr<Option<&'static str>> {
         Some("Library") => Ok(Some("Library")),
         Some("Exile") => Ok(Some("Exile")),
         Some("Stack") => Ok(Some("Stack")),
+        Some("Command") => Ok(Some("Command")),
         Some(other) => unmapped(format!("zone:Trigger.{key}={other}")),
     }
 }
@@ -303,14 +322,53 @@ fn changes_zone(ctx: &Ctx, p: &Params) -> Tr<Value> {
         _ => return unmapped("key:Trigger.ChangesZone.TriggerController"),
     }
     let what = selector_any(ctx, p.get("ValidCard").unwrap_or("Card"))?;
-    let mut pattern = json!({ "what": what });
-    if let Some(from) = zone(p.get("Origin"), "Origin")? {
-        pattern["from"] = json!(from);
+    let (origins, destinations) = (zone_list(p, "Origin")?, zone_list(p, "Destination")?);
+    // Every zone but the battlefield, to one: "put into a graveyard from anywhere other than the battlefield".
+    if let ([_, _, ..], [Some(to)]) = (origins.as_slice(), destinations.as_slice())
+        && origins.len() == 5
+        && !origins.contains(&Some("Battlefield"))
+        && !origins.contains(&None)
+    {
+        return Ok(json!({"ZoneChangeExcept": {"what": what, "except": "Battlefield", "to": to}}));
     }
-    if let Some(to) = zone(p.get("Destination"), "Destination")? {
-        pattern["to"] = json!(to);
+    let mut any = Vec::new();
+    for from in &origins {
+        for to in &destinations {
+            let mut pattern = json!({ "what": what });
+            if let Some(from) = from {
+                pattern["from"] = json!(from);
+            }
+            if let Some(to) = to {
+                pattern["to"] = json!(to);
+            }
+            any.push(json!({ "ZoneChange": pattern }));
+        }
     }
-    Ok(json!({ "ZoneChange": pattern }))
+    // "Dies or is put into exile": either move triggers it once.
+    match any.len() {
+        1 => Ok(any.remove(0)),
+        2..=6 => Ok(json!({ "AnyOf": any })),
+        _ => unmapped("key:Trigger.ChangesZone.zone-list"),
+    }
+}
+
+/// The zones a comma-joined zone word names (`Graveyard,Exile`); `None` for any zone.
+fn zone_list(p: &Params, key: &str) -> Tr<Vec<Option<&'static str>>> {
+    let Some(words) = p.get(key) else {
+        return Ok(vec![None]);
+    };
+    if words == "Any" {
+        return Ok(vec![None]);
+    }
+    let mut out = Vec::new();
+    for word in words.split(',') {
+        let found = zone(Some(word), key)?;
+        if found.is_none() || out.contains(&found) {
+            return unmapped(format!("zone:Trigger.{key}={words}"));
+        }
+        out.push(found);
+    }
+    Ok(out)
 }
 
 /// The step a Forge `Phase$` word names.
@@ -360,8 +418,19 @@ fn phase(p: &Params) -> Tr<Value> {
 }
 
 fn attacks(ctx: &Ctx, p: &Params) -> Tr<Value> {
-    keys(p, "Attacks", &["ValidCard", "Alone", "Attacked"])?;
+    keys(
+        p,
+        "Attacks",
+        &["ValidCard", "Alone", "Attacked", "FirstAttack"],
+    )?;
     let what = selector_any(ctx, p.get("ValidCard").unwrap_or("Creature"))?;
+    // "Attacks for the first time each turn": the turn's first attack of the creature.
+    if p.get("FirstAttack") == Some("True") {
+        if p.has("Alone") || p.has("Attacked") {
+            return unmapped("key:Trigger.Attacks.FirstAttack-with-more");
+        }
+        return Ok(json!({"Nth": {"event": {"Attacks": {"what": what}}, "nth": 1}}));
+    }
     if let Some(word) = p.get("Attacked") {
         if p.get("Alone") == Some("True") {
             return unmapped("key:Trigger.Attacks.Attacked-with-Alone");
@@ -549,19 +618,36 @@ fn spell_cast(ctx: &Ctx, p: &Params) -> Tr<Value> {
 
 /// A permanent is sacrificed, by a player.
 fn sacrificed(ctx: &Ctx, p: &Params) -> Tr<Value> {
-    keys(p, "Sacrificed", &["ValidCard", "ValidPlayer"])?;
+    keys(
+        p,
+        "Sacrificed",
+        &["ValidCard", "ValidPlayer", "Origin", "Destination"],
+    )?;
+    // Forge's own scripts print these two words on a sacrifice and leave the event alone; any other pair is a gap.
+    for (key, plain) in [("Origin", "Any"), ("Destination", "Battlefield")] {
+        if let Some(word) = p.get(key).filter(|word| *word != plain) {
+            return unmapped(format!("key:Trigger.Sacrificed.{key}={word}"));
+        }
+    }
     let what = selector_any(ctx, p.get("ValidCard").unwrap_or("Card"))?;
     let by = player_ref(p.get("ValidPlayer"))?;
     Ok(json!({"Sacrificed": {"what": what, "by": by}}))
 }
 
 fn drawn(p: &Params) -> Tr<Value> {
-    keys(p, "Drawn", &["ValidCard", "Number"])?;
-    let who = match p.get("ValidCard") {
-        Some("Card.YouOwn" | "Card.YouCtrl") => "You",
-        Some("Card.OppOwn") => "Opponents",
-        None | Some("Card") => "EachPlayer",
-        Some(other) => return unmapped(format!("key:Trigger.Drawn.ValidCard={other}")),
+    keys(p, "Drawn", &["ValidCard", "ValidPlayer", "Number"])?;
+    // `ValidPlayer$` names who draws, `ValidCard$` names the card drawn and so who owns it; the two are not given together.
+    let who = match (p.get("ValidCard"), p.get("ValidPlayer")) {
+        (Some("Card.YouOwn" | "Card.YouCtrl"), None) => "You",
+        (Some("Card.OppOwn"), None) => "Opponents",
+        (None | Some("Card"), None) => "EachPlayer",
+        (None, Some(word)) => match player_ref(Some(word)) {
+            Ok(found) if found == "You" => "You",
+            Ok(found) if found == "Opponents" => "Opponents",
+            Ok(found) if found == "EachPlayer" => "EachPlayer",
+            _ => return unmapped(format!("key:Trigger.Drawn.ValidPlayer={word}")),
+        },
+        (Some(other), _) => return unmapped(format!("key:Trigger.Drawn.ValidCard={other}")),
     };
     let drew = json!({"Drew": {"who": who}});
     // "Your second card each turn".
