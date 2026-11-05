@@ -169,8 +169,8 @@ fn printed(layout: &str, faces: Vec<PrintedFace>) -> PrintedCard {
     "you choose and pay the {X} in the mana cost by hand"
 )]
 #[case::a_symbol_the_game_lacks(
-    printed("normal", vec![face("Chill", "{1}{S}", "Instant")]),
-    "you pay the {S} in the mana cost by hand: the game does not know the symbol"
+    printed("normal", vec![face("Chill", "{1}{Z}", "Instant")]),
+    "you pay the {Z} in the mana cost by hand: the game does not know the symbol"
 )]
 #[case::a_cost_nobody_can_read(
     printed("normal", vec![face("Garbled", "1G", "Instant")]),
