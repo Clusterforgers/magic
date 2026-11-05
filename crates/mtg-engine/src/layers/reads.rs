@@ -183,6 +183,7 @@ pub(crate) fn reads_of_ref(reference: &Ref) -> Traits {
         | Ref::MostLife
         | Ref::ActivePlayer
         | Ref::Bound(_)
+        | Ref::Affected
         | Ref::Paid => Traits::NONE,
         Ref::Remembered { on, .. } => reads_of_ref(on),
         Ref::ControllerOf(inner) => Traits::CONTROL.or(reads_of_ref(inner)),

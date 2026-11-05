@@ -6,6 +6,7 @@ mod actions_fuzz;
 mod activation_moments;
 mod active_leaves;
 mod active_leaves_fuzz;
+mod affected_amounts;
 mod affinity;
 mod afflict;
 mod aftermath;

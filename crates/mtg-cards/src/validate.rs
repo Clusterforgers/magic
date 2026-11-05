@@ -7,6 +7,8 @@ use std::collections::{BTreeMap, BTreeSet};
 
 use serde::Serialize;
 
+use mtg_core::card::Subtype;
+
 use crate::ability::{Ability, LoyaltyCost, Timing};
 use crate::assemble::{MANA_WAYS, PLAIN_MANA_ABILITY, mana_shape, plain_mana_ability};
 use crate::card::{Card, Face, ImplStatus, TokenSpec};
@@ -207,6 +209,8 @@ struct Scope {
     targets: Vec<(Kind, bool, bool)>,
     used: BTreeSet<usize>,
     in_trigger: bool,
+    /// The changes of a static ability are being checked: `Affected` names the object each one applies to.
+    in_static: bool,
     /// `Dealer` names something: a triggered ability, or a replacement of damage.
     dealer: bool,
     names: Vec<BTreeMap<String, Kind>>,
@@ -230,6 +234,7 @@ impl Scope {
             used: BTreeSet::new(),
             in_trigger,
             dealer: in_trigger,
+            in_static: false,
             names: vec![BTreeMap::new()],
             numbers: BTreeSet::new(),
         }
@@ -476,6 +481,12 @@ impl<'a> Walker<'a> {
                     self.problem("`Triggering` is only valid in a triggered ability");
                 }
             }
+            Ref::Affected => {
+                if !self.scope.in_static {
+                    self.problem("`Affected` is only valid in the changes of a static ability");
+                }
+                self.expect(Kind::Object, want);
+            }
             Ref::Dealer => {
                 if !self.scope.in_trigger {
                     self.problem("`Dealer` is only valid in a triggered ability");
@@ -573,6 +584,7 @@ impl<'a> Walker<'a> {
 
     fn pred(&mut self, pred: &Pred) {
         match pred {
+            Pred::Subtype(subtype) => self.known_subtype(subtype),
             Pred::ControlledBy(r) | Pred::OwnedBy(r) | Pred::AttackingPlayer(r) => {
                 self.reference(r, Kind::Player);
             }
@@ -643,7 +655,6 @@ impl<'a> Walker<'a> {
             | Pred::Other
             | Pred::Type(_)
             | Pred::Supertype(_)
-            | Pred::Subtype(_)
             | Pred::Color(_)
             | Pred::Colorless
             | Pred::Token
@@ -1600,6 +1611,15 @@ impl<'a> Walker<'a> {
     fn modification(&mut self, modification: &Modification) {
         self.uses("Mod", &tag_of(modification));
         match modification {
+            Modification::AddSubtype(subtype) => self.known_subtype(subtype),
+            Modification::SetCreatureTypes(types) | Modification::SetLandTypes(types) => {
+                for subtype in types {
+                    self.known_subtype(subtype);
+                }
+            }
+            _ => {}
+        }
+        match modification {
             Modification::ModifyPT { power, toughness }
             | Modification::SetPT { power, toughness } => {
                 self.at("power", |w| w.amount(power));
@@ -1724,6 +1744,13 @@ impl<'a> Walker<'a> {
                     });
                 });
             }
+        }
+    }
+
+    /// Refuses a word that is no subtype of any card (`Opponent`, `Spell`, `Basic`, `You`): a selector with it matches nothing.
+    fn known_subtype(&mut self, subtype: &Subtype) {
+        if !subtype.is_known() {
+            self.problem(format!("`{}` is not a subtype", subtype.0));
         }
     }
 
@@ -2196,7 +2223,8 @@ impl Walker<'_> {
             | Ref::Defending
             | Ref::ControllerOf(_)
             | Ref::OwnerOf(_) => Kind::Player,
-            Ref::This
+            Ref::Affected
+            | Ref::This
             | Ref::Dealer
             | Ref::Attached
             | Ref::Paid
@@ -3369,6 +3397,7 @@ impl Walker<'_> {
                 );
             });
         }
+        self.scope.in_static = true;
         self.at("mods", |w| w.mods(mods));
         if names_spells(affected) {
             self.spell_keywords(mods);
@@ -3387,6 +3416,7 @@ impl Walker<'_> {
         if let Some(condition) = condition {
             self.at("condition", |w| w.condition(condition));
         }
+        self.scope.in_static = false;
         if defining {
             self.defining(affected, mods, condition.is_some(), from);
         }
@@ -4970,6 +5000,22 @@ mod tests {
     #[case::the_triggering_event_in_the_cause(
         r#"{"Rule":{"rule":{"TriggerAgain":{"cause":{"ZoneChange":{"what":[{"Is":"Triggering"}]}}}}}}"#,
         "`Triggering` is only valid in a triggered ability"
+    )]
+    #[case::a_player_word_as_a_subtype(
+        r#"{"Static":{"affected":{"Each":[{"Subtype":"You"}]},"mods":[{"AddKeyword":"Hexproof"}]}}"#,
+        "`You` is not a subtype"
+    )]
+    #[case::a_selector_word_as_a_subtype(
+        r#"{"Spell":{"effects":[{"Destroy":{"what":{"Each":[{"Subtype":"Opponent"}]}}}]}}"#,
+        "`Opponent` is not a subtype"
+    )]
+    #[case::a_spell_word_as_an_added_subtype(
+        r#"{"Static":{"affected":"This","mods":[{"AddSubtype":"Spell"}]}}"#,
+        "`Spell` is not a subtype"
+    )]
+    #[case::affected_outside_a_static_ability(
+        r#"{"Spell":{"effects":[{"Draw":{"count":{"Counters":{"on":"Affected","counter":"charge"}}}}]}}"#,
+        "`Affected` is only valid in the changes of a static ability"
     )]
     #[case::tapping_from_the_graveyard(
         r#"{"Activated":{"cost":["Tap"],"from":"Graveyard","effects":[{"Draw":{}}]}}"#,

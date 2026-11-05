@@ -10,11 +10,41 @@ use super::keyword::keyword_list;
 use super::valid::{defined, selector_any, selector_in};
 use crate::forge::script::Params;
 
+/// The spells cast this turn that a condition of a line about spells on the stack counts are those cast before the spell it
+/// affects: "the first spell you cast each turn" is about the spell itself, which a cast trigger already finds logged.
+fn before_itself(mut condition: Value) -> Value {
+    match &mut condition {
+        Value::Object(fields) => {
+            for (key, inner) in fields.iter_mut() {
+                if key == "Tally"
+                    && inner.get("event") == Some(&json!("SpellCast"))
+                    && let Some(filter) = inner.get_mut("filter").and_then(Value::as_array_mut)
+                {
+                    filter.push(json!({"Not": {"Is": "Affected"}}));
+                } else {
+                    *inner = before_itself(inner.take());
+                }
+            }
+        }
+        Value::Array(items) => {
+            for inner in items.iter_mut() {
+                *inner = before_itself(inner.take());
+            }
+        }
+        _ => {}
+    }
+    condition
+}
+
 /// A static line as an ability.
 pub fn static_line(ctx: &mut Ctx, body: &str) -> Tr<Value> {
     ctx.reset();
     let all = Params::parse(body);
     let condition = condition(ctx, &all)?;
+    let condition = match condition {
+        Some(found) if all.get("AffectedZone") == Some("Stack") => Some(before_itself(found)),
+        other => other,
+    };
     let p = strip(&all);
     let mut ability = match super::statics_rules::rule(ctx, &p) {
         Some(found) => found?,
@@ -170,6 +200,40 @@ const CONTINUOUS: [&str; 25] = [
     "SetColor",
 ];
 
+/// The amount of a power or toughness change; one named `AffectedX` is worked out for each object the line affects.
+fn stat(ctx: &Ctx, text: &str) -> Tr<Value> {
+    let value = amount(ctx, text)?;
+    if text.trim_start_matches('-').starts_with("AffectedX") {
+        return Ok(per_affected(value));
+    }
+    Ok(value)
+}
+
+/// An amount read from the object each change applies to: `This` and `Other` of its selectors name that object.
+fn per_affected(value: Value) -> Value {
+    let is_affected = || json!({"Is": "Affected"});
+    match value {
+        Value::String(word) if word == "This" => json!("Affected"),
+        Value::Array(items) => Value::Array(
+            items
+                .into_iter()
+                .map(|item| match item.as_str() {
+                    Some("This") => is_affected(),
+                    Some("Other") => json!({"Not": is_affected()}),
+                    _ => per_affected(item),
+                })
+                .collect(),
+        ),
+        Value::Object(fields) => Value::Object(
+            fields
+                .into_iter()
+                .map(|(key, item)| (key, per_affected(item)))
+                .collect(),
+        ),
+        other => other,
+    }
+}
+
 #[allow(clippy::too_many_lines)]
 fn continuous(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
     keys(p, "Continuous", &CONTINUOUS)?;
@@ -177,13 +241,13 @@ fn continuous(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
     let refinement = refinement(ctx, p, &affected)?;
     let mut mods = Vec::new();
     if p.has("AddPower") || p.has("AddToughness") {
-        let power = amount(ctx, p.get("AddPower").unwrap_or("0"))?;
-        let toughness = amount(ctx, p.get("AddToughness").unwrap_or("0"))?;
+        let power = stat(ctx, p.get("AddPower").unwrap_or("0"))?;
+        let toughness = stat(ctx, p.get("AddToughness").unwrap_or("0"))?;
         mods.push(json!({"ModifyPT": {"power": power, "toughness": toughness}}));
     }
     match (p.get("SetPower"), p.get("SetToughness")) {
         (Some(power), Some(toughness)) => {
-            let (power, toughness) = (amount(ctx, power)?, amount(ctx, toughness)?);
+            let (power, toughness) = (stat(ctx, power)?, stat(ctx, toughness)?);
             mods.push(json!({"SetPT": {"power": power, "toughness": toughness}}));
         }
         (None, None) => {}

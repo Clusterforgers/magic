@@ -726,6 +726,7 @@ mod p6;
 mod p7;
 mod p8;
 mod p8b;
+mod qf1;
 mod r3p2;
 mod r3p3;
 mod r3p4;

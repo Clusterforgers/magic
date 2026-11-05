@@ -105,6 +105,8 @@ pub struct Scope<'a> {
     pub(crate) casting: Option<(ObjectId, PlayerId)>,
     /// What the spell being cast has announced, which `Pred::Targeting` reads whoever's ability asks.
     pub(crate) cast_targets: Option<CastTargets<'a>>,
+    /// The object a static ability's change is being worked out for (`Ref::Affected`), and where a read of it is noted.
+    pub(crate) affected: Option<(ObjectRef, &'a std::cell::Cell<bool>)>,
 }
 
 /// The targets a spell being cast has chosen so far (CR 601.2c).
@@ -243,6 +245,15 @@ impl<'a> Scope<'a> {
             layered: None,
             casting: None,
             cast_targets: None,
+            affected: None,
+        }
+    }
+
+    /// The same scope working a static ability's change out for `object`; a read of `Ref::Affected` sets `read`.
+    pub(crate) fn with_affected(self, object: ObjectRef, read: &'a std::cell::Cell<bool>) -> Self {
+        Scope {
+            affected: Some((object, read)),
+            ..self
         }
     }
 
@@ -815,6 +826,13 @@ impl<'a> Scope<'a> {
                 .map(Target::Player)
                 .collect(),
             Ref::This => vec![Target::Object(self.source)],
+            Ref::Affected => {
+                let (object, read) = self.affected.ok_or_else(|| {
+                    ResolveError::Invalid("there is no affected object here".into())
+                })?;
+                read.set(true);
+                vec![Target::Object(object)]
+            }
             Ref::Target(index) if self.choices.way == Some(CastWay::Overload) => {
                 self.each_target(usize::from(*index))?
             }

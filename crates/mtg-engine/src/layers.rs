@@ -558,9 +558,18 @@ impl Cand<'_> {
 #[derive(Debug, Clone, PartialEq)]
 struct Foot {
     modification: Modification,
+    /// What it does to an object whose amounts read the object itself (`Ref::Affected`), else the same change for all.
+    each: BTreeMap<ObjectId, Modification>,
     set: BTreeSet<ObjectId>,
     /// The players it gives a keyword to or takes one from.
     players: BTreeSet<PlayerId>,
+}
+
+impl Foot {
+    /// The change made to the object `id`.
+    fn change_for(&self, id: ObjectId) -> &Modification {
+        self.each.get(&id).unwrap_or(&self.modification)
+    }
 }
 
 /// The effects of a static ability that began to apply in an earlier layer: they go on applying to the permanents they
@@ -1066,6 +1075,7 @@ impl<'a> Pass<'a> {
                         .collect(),
                 };
                 Some(Foot {
+                    each: BTreeMap::new(),
                     modification: effect.modification.clone(),
                     set,
                     players: BTreeSet::new(),
@@ -1073,6 +1083,39 @@ impl<'a> Pass<'a> {
             }
             Source::Static(cand) => self.static_footprint(view, cand),
         }
+    }
+
+    /// The change a static ability makes, and for each object it applies to the change that differs because its amounts read
+    /// the object itself.
+    fn lowered(
+        &self,
+        scope: &Scope<'_>,
+        wanted: &Wanted,
+        set: &BTreeSet<ObjectId>,
+    ) -> Option<(Modification, BTreeMap<ObjectId, Modification>)> {
+        let read = std::cell::Cell::new(false);
+        let first = set
+            .iter()
+            .next()
+            .and_then(|id| self.state.object(*id))
+            .map(GameObject::reference);
+        let probe = match first {
+            Some(object) => scope.clone().with_affected(object, &read),
+            None => scope.clone(),
+        };
+        let modification = lower(&probe, wanted).ok()?;
+        let mut each = BTreeMap::new();
+        if read.get() {
+            for id in set {
+                let object = self.state.object(*id)?.reference();
+                let flag = std::cell::Cell::new(false);
+                each.insert(
+                    *id,
+                    lower(&scope.clone().with_affected(object, &flag), wanted).ok()?,
+                );
+            }
+        }
+        Some((modification, each))
     }
 
     fn static_footprint(&self, view: View<'_>, cand: &StaticCand) -> Option<Foot> {
@@ -1118,12 +1161,19 @@ impl<'a> Pass<'a> {
         let set = if let Some(started) = started {
             started.set.clone()
         } else {
-            if let Some(condition) = condition
-                && !scope.holds(condition).unwrap_or(false)
-            {
-                return None;
-            }
-            match affected {
+            // A condition that reads the affected object holds for some of them and not for the others.
+            let asked = std::cell::Cell::new(false);
+            let per_object = if let Some(condition) = condition {
+                let probe = scope.clone().with_affected(cand.holder, &asked);
+                let holds = probe.holds(condition).unwrap_or(false);
+                if !asked.get() && !holds {
+                    return None;
+                }
+                asked.get()
+            } else {
+                false
+            };
+            let chosen: BTreeSet<ObjectId> = match affected {
                 Ref::This => BTreeSet::from([cand.holder.id]),
                 Ref::Attached => {
                     let host = self.state.host_of(cand.holder.id)?;
@@ -1144,15 +1194,30 @@ impl<'a> Pass<'a> {
                 }
                 // The data check keeps every other reference out of a static ability.
                 _ => BTreeSet::new(),
+            };
+            match condition {
+                Some(condition) if per_object => chosen
+                    .into_iter()
+                    .filter(|id| {
+                        let flag = std::cell::Cell::new(false);
+                        self.state.object(*id).is_some_and(|object| {
+                            scope
+                                .clone()
+                                .with_affected(object.reference(), &flag)
+                                .holds(condition)
+                                .unwrap_or(false)
+                        })
+                    })
+                    .collect(),
+                _ => chosen,
             }
         };
         let wanted = mods.get(cand.index)?;
-        let modification = {
-            let _reading = Needing::enter(reads_of_modification(wanted));
-            lower(&scope, wanted).ok()?
-        };
+        let _reading = Needing::enter(reads_of_modification(wanted));
+        let (modification, each) = self.lowered(&scope, wanted, &set)?;
         Some(Foot {
             modification,
+            each,
             set,
             players,
         })
@@ -1193,12 +1258,13 @@ impl<'a> Pass<'a> {
         }
         for id in &foot.set {
             if let Some(held) = self.held.get_mut(id) {
-                held.change(&foot.modification, cand.origin, cand.timestamp);
+                let change = foot.change_for(*id);
+                held.change(change, cand.origin, cand.timestamp);
                 held.applied.push(Applied {
                     origin: cand.origin,
                     layer: cand.layer,
                     timestamp: cand.timestamp,
-                    modification: foot.modification.clone(),
+                    modification: change.clone(),
                 });
             }
         }
@@ -1267,12 +1333,13 @@ impl<'a> Pass<'a> {
                 .iter()
                 .filter_map(|id| {
                     let mut trial = self.held.get(id)?.without_history();
-                    trial.change(&by_b.modification, waiting[b].origin, waiting[b].timestamp);
+                    let change = by_b.change_for(*id);
+                    trial.change(change, waiting[b].origin, waiting[b].timestamp);
                     trial.applied.push(Applied {
                         origin: waiting[b].origin,
                         layer: waiting[b].layer,
                         timestamp: waiting[b].timestamp,
-                        modification: by_b.modification.clone(),
+                        modification: change.clone(),
                     });
                     Some((*id, trial))
                 })

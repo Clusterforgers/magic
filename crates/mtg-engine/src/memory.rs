@@ -3,6 +3,7 @@
 use std::collections::BTreeMap;
 
 use mtg_cards::refs::EXILED_SLOT;
+use mtg_core::card::CardType;
 use serde::{Deserialize, Serialize};
 
 use crate::events::{Event, ZoneCause};
@@ -50,6 +51,9 @@ pub(crate) fn fold(state: &mut GameState, change: &Remembered) {
 /// permanents it exiled) or a delayed trigger. That memory stays until the last such ability has ended, or, for a source
 /// no ability waits on, until the next step begins.
 pub(crate) fn forget_object(state: &mut GameState, event: &Event) {
+    if let Event::SpellResolved { object } = event {
+        carry_exiled_with_cost(state, *object);
+    }
     if state.memory.is_empty() {
         return;
     }
@@ -98,6 +102,37 @@ pub(crate) fn forget_object(state: &mut GameState, event: &Event) {
         _ => return,
     }
     state.memory.retain(|_, held| !held.is_empty());
+}
+
+/// A permanent spell that exiled cards as it was cast (an additional cost) remembers them as exiled with it once it resolves
+/// (CR 607.2a): the new object arrives with the counter after the one the spell has.
+fn carry_exiled_with_cost(state: &mut GameState, id: mtg_core::ids::ObjectId) {
+    let Some(spell) = state.object(id) else {
+        return;
+    };
+    let types = spell.base_types();
+    if types.contains(CardType::Instant) || types.contains(CardType::Sorcery) {
+        return;
+    }
+    let arriving = ObjectRef {
+        id,
+        counter: spell.counter() + 1,
+    };
+    let exiled: Vec<ObjectRef> = spell
+        .choices()
+        .cost_picks()
+        .iter()
+        .flatten()
+        .filter(|picked| **picked != id)
+        .filter_map(|picked| state.object(*picked))
+        .filter(|card| card.zone() == Zone::Exile)
+        .map(crate::object::GameObject::reference)
+        .collect();
+    if !exiled.is_empty() {
+        state
+            .memory
+            .insert((arriving, EXILED_SLOT.to_owned()), exiled);
+    }
 }
 
 /// The abilities that do not count as waiting because they are the one that is ending.
