@@ -1156,8 +1156,15 @@ fn change_zone_all(ctx: &mut Ctx, p: &Params, origin: &str, destination: &str) -
         Some(_) => return unmapped("key:ChangeZoneAll.UseAllOriginZones"),
     }
     let zone = (origin != "Battlefield").then_some(origin);
+    // The cards are read from the object the line targets (`TargetedCard.Self`): the target is declared first.
+    let of_target = p.has("ValidTgts")
+        && matches!(origin, "Battlefield")
+        && p.get("ChangeType").is_some_and(|t| t.contains("Targeted"));
+    if of_target {
+        subject(ctx, p, "", None)?;
+    }
     let mut filter = selector_in(ctx, p.get("ChangeType").unwrap_or("Card"), zone)?;
-    if p.has("ValidTgts") {
+    if p.has("ValidTgts") && !of_target {
         // "Exile target player's graveyard": the cards of the zone that player owns.
         if !matches!(origin, "Graveyard" | "Hand" | "Exile")
             || !matches!(p.get("ValidTgts"), Some("Player" | "Opponent"))
