@@ -329,3 +329,42 @@ fn whole_games_of_failing_read_cards_keep_every_invariant_at_every_table_size(#[
     }
     assert!(left > 0, "{kind:?}: the bots met the failing ability");
 }
+
+/// A spell that gains 2 life, then asks for a copy with an exception the engine does not play.
+fn unplayed_copy_spell(read: bool) -> Arc<CardDefinition> {
+    let copy: Effect = serde_json::from_str(
+        r#"{"CreateToken":{"token":{"CopyOf":{"of":"This","except":["SwitchPT"]}}}}"#,
+    )
+    .unwrap();
+    let mut definition = (*with_rules(
+        &instant(NAME, 0, &[Color::Green]),
+        vec![Ability::Spell {
+            targets: Vec::new(),
+            effects: vec![gain_life(2), copy, gain_life(5)],
+        }],
+    ))
+    .clone();
+    definition.read = read;
+    Arc::new(definition)
+}
+
+#[rstest]
+fn what_the_engine_does_not_play_yet_never_stops_a_game_whoever_wrote_the_card(
+    #[values(2, 3, 4)] seats: usize,
+    #[values(true, false)] read: bool,
+) {
+    let mut scenario = Scenario::new(seats)
+        .hand(0, [unplayed_copy_spell(read)])
+        .battlefield(0, [ready(forest()), ready(forest())]);
+    for seat in 0..seats {
+        scenario = scenario.library(seat, vec![forest(); 12]);
+    }
+    let mut driver = Driver::from_scenario(scenario).unwrap();
+    let start = life(&driver, 0);
+    driver.cast(NAME).unwrap();
+    resolve_the_stack(&mut driver).unwrap();
+    assert_eq!(left_to_table(driver.engine().events()).len(), 1);
+    assert_eq!(life(&driver, 0), start + 2, "the step before stands");
+    let turn = driver.state().turn().number();
+    driver.idle_until(turn + 1, Step::Upkeep).unwrap();
+}

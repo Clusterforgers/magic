@@ -408,7 +408,7 @@ fn step_with(
     };
     // A rules error of a card on a player's read leaves the ability to the table; any other card's stops the game.
     run_step(state, resolving, object, &rules, run).or_else(|error| {
-        left::left_to_table(state, object, &rules)
+        left::left_to_table(state, object, &rules, &error)
             .map(Progress::Done)
             .ok_or_else(|| error.into())
     })
