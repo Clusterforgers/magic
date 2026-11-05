@@ -1019,7 +1019,11 @@ fn group_of_player(ctx: &mut Ctx, p: &Params, valid: &str) -> Tr<Vec<Value>> {
     }
     let target = subject(ctx, p, "", None)?;
     let mut preds = selector_any(ctx, valid)?;
-    if !valid.contains("TargetedPlayer") {
+    // A valid-string that says whose objects they are ("you control") already did.
+    let owned = preds
+        .iter()
+        .any(|pred| pred.get("ControlledBy").is_some() || pred.get("OwnedBy").is_some());
+    if !valid.contains("TargetedPlayer") && !owned {
         preds.push(json!({"ControlledBy": target}));
     }
     Ok(preds)

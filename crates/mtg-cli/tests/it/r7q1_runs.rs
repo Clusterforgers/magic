@@ -241,3 +241,37 @@ fn monstrosity_x_makes_x_tokens_of_size_x(#[case] x: u32) {
             .all(|c| c.power == Some(i32::try_from(x).unwrap()))
     );
 }
+
+const SWALLOWER: &str = "Name:Sky Gulp\nManaCost:G\nTypes:Creature Dragon\nPT:6/6\nT:Mode$ ChangesZone | Origin$ Any | Destination$ Battlefield | ValidCard$ Card.Self | Execute$ TrigGainControl | TriggerDescription$ When CARDNAME enters, target opponent gains control of all other permanents you control.\nSVar:TrigGainControl:DB$ GainControl | ValidTgts$ Opponent | AllValid$ Permanent.StrictlyOther+YouCtrl | NewController$ TargetedPlayer\n";
+
+#[test]
+fn an_opponent_gains_control_of_the_other_permanents_you_control_and_only_those() {
+    use mtg_engine::characteristics::controller_of;
+    let mut world = World::default();
+    world.subtypes.insert("Dragon".to_owned());
+    let gulp = translated_in(&world, SWALLOWER, "Sky Gulp", "Creature — Dragon", "{G}");
+    let scenario = Scenario::new(2)
+        .hand(0, [gulp])
+        .battlefield(0, [ready(forest()), ready(mtg_testkit::cards::bear())])
+        .battlefield(
+            1,
+            [ready(mtg_testkit::cards::free_creature("Theirs", 2, 2))],
+        );
+    let mut driver = Driver::from_scenario(scenario).unwrap();
+    driver.cast("Sky Gulp").unwrap();
+    settle(&mut driver);
+    let controller = |name: &str| {
+        let state = driver.state();
+        let id = state
+            .zone(Zone::Battlefield)
+            .iter()
+            .copied()
+            .find(|id| state.object(*id).is_some_and(|o| o.card().name == name))
+            .unwrap();
+        controller_of(state, id).unwrap().index()
+    };
+    assert_eq!(controller("Sky Gulp"), 0, "the swallower stays");
+    assert_eq!(controller("Grizzly Bears"), 1);
+    assert_eq!(controller("Forest"), 1);
+    assert_eq!(controller("Theirs"), 1);
+}
