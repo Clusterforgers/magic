@@ -109,13 +109,21 @@ fn taps_for_mana(ctx: &Ctx, p: &Params) -> Tr<Value> {
 }
 
 fn becomes_target(ctx: &Ctx, p: &Params) -> Tr<Value> {
-    keys(p, "BecomesTarget", &["ValidTarget", "ValidSource"])?;
+    keys(
+        p,
+        "BecomesTarget",
+        &["ValidTarget", "ValidSource", "FirstTime"],
+    )?;
     let what = selector_any(ctx, p.get("ValidTarget").unwrap_or("Card"))?;
     let by = match p.get("ValidSource") {
         Some(valid) => super::valid::source_any(ctx, valid)?,
         None => Vec::new(),
     };
-    Ok(json!({"BecomesTarget": {"what": what, "by": by}}))
+    // The turn's count of targetings counts every source, so only a line with no source word can ask for the first.
+    if p.get("FirstTime") == Some("True") && !by.is_empty() {
+        return unmapped("key:Trigger.BecomesTarget.FirstTime-with-source");
+    }
+    super::triggers::first_time(p, json!({"BecomesTarget": {"what": what, "by": by}}))
 }
 
 /// `CounterAdded` and `CounterRemoved` of the kind `CounterType$` names.

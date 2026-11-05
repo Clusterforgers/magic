@@ -29,6 +29,7 @@ pub fn triggered(ctx: &mut Ctx, body: &str) -> Tr<Value> {
         (_, other) => other,
     };
     let (p, intervening) = during(strip(&all), intervening)?;
+    let (p, intervening) = event_amount(p, intervening)?;
     let (when, intervening) = if p.get("Mode") == Some("Always") {
         state_when(ctx, &p, &all)?
     } else {
@@ -131,6 +132,39 @@ fn during(p: Params, intervening: Option<Value>) -> Tr<(Params, Option<Value>)> 
         Some(other) => json!({"All": [other, during]}),
     };
     Ok((p.without(&["Phase"]), Some(both)))
+}
+
+/// The size an event must have (`DamageAmount$ GE5`, `CounterAmount$ EQ3`, `LifeAmount$ EQ1`) as a condition of the event,
+/// checked as the ability triggers: the amount of the event compared with a number. Other modes keep the key and name it.
+fn event_amount(p: Params, intervening: Option<Value>) -> Tr<(Params, Option<Value>)> {
+    let key = match p.get("Mode") {
+        Some("DamageDone" | "DamageDoneOnce") => "DamageAmount",
+        Some("CounterAdded") => "CounterAmount",
+        Some("LifeGained" | "LifeLost") => "LifeAmount",
+        _ => return Ok((p, intervening)),
+    };
+    let Some(word) = p.get(key) else {
+        return Ok((p, intervening));
+    };
+    let (op, number) = word.split_at_checked(2).unwrap_or_default();
+    let op = match op {
+        "EQ" => "Eq",
+        "NE" => "Ne",
+        "LT" => "Lt",
+        "LE" => "Le",
+        "GT" => "Gt",
+        "GE" => "Ge",
+        _ => return unmapped(format!("key:Trigger.{key}={word}")),
+    };
+    let Ok(number) = number.parse::<u32>() else {
+        return unmapped(format!("key:Trigger.{key}={word}"));
+    };
+    let size = json!({"AtTrigger": {"Compare": {"left": "Triggering", "op": op, "right": number}}});
+    let both = match intervening {
+        None => size,
+        Some(other) => json!({"All": [other, size]}),
+    };
+    Ok((p.without(&[key]), Some(both)))
 }
 
 /// "When you control no Islands": a state trigger holds the line's condition as its pattern and has no intervening one.
@@ -501,9 +535,18 @@ fn drawn(p: &Params) -> Tr<Value> {
 }
 
 fn life_gained(p: &Params) -> Tr<Value> {
-    keys(p, "LifeGained", &["ValidPlayer"])?;
+    keys(p, "LifeGained", &["ValidPlayer", "FirstTime"])?;
     let who = player_ref(p.get("ValidPlayer"))?;
-    Ok(json!({"LifeGained": {"who": who}}))
+    first_time(p, json!({"LifeGained": {"who": who}}))
+}
+
+/// `FirstTime$ True`: the first time in the turn the event happens to the player or object.
+pub(super) fn first_time(p: &Params, event: Value) -> Tr<Value> {
+    match p.get("FirstTime") {
+        None | Some("False") => Ok(event),
+        Some("True") => Ok(json!({"Nth": {"event": event, "nth": 1}})),
+        Some(other) => unmapped(format!("key:Trigger.FirstTime={other}")),
+    }
 }
 
 /// A trigger on a permanent: sacrificed, tapped, untapped, blocks, becomes blocked.
