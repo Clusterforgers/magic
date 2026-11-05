@@ -61,6 +61,7 @@ fn prevents_in_part(by: &ReplaceBy) -> bool {
         ReplaceBy::PreventUpTo(_)
             | ReplaceBy::PreventHalf
             | ReplaceBy::PreventAllBut(_)
+            | ReplaceBy::LifeFloor(_)
             | ReplaceBy::PreventNext
     )
 }

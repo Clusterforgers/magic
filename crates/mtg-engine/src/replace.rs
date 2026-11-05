@@ -601,7 +601,8 @@ fn applies_to(by: &ReplaceBy, unit: &Unit) -> bool {
         | ReplaceBy::PreventHalf
         | ReplaceBy::PreventRemovingCounter(_)
         | ReplaceBy::PreventAnd(_)
-        | ReplaceBy::PreventAllBut(_) => {
+        | ReplaceBy::PreventAllBut(_)
+        | ReplaceBy::LifeFloor(_) => {
             matches!(unit, Unit::Damage { .. })
         }
         ReplaceBy::Dredge(_) => matches!(unit, Unit::Draw { .. }),
@@ -1839,6 +1840,9 @@ impl Pass<'_> {
             }
             (ReplaceBy::PreventAllBut(kept), Unit::Damage { .. }) => {
                 self.w9c_prevent_all_but(at, candidate, *kept, applied);
+            }
+            (ReplaceBy::LifeFloor(floor), Unit::Damage { .. }) => {
+                self.r1f_life_floor(at, *floor, applied);
             }
             (ReplaceBy::Instead(effects), _) => {
                 self.w5d_instead(at, candidate, effects, &unit, applied);
@@ -3086,6 +3090,8 @@ fn zone_word(zone: Zone) -> &'static str {
         Zone::Command(_) => "the command zone",
     }
 }
+
+mod r1f_life_floor;
 
 mod day;
 

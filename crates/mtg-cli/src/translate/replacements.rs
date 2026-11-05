@@ -66,6 +66,9 @@ fn single(ctx: &mut Ctx, body: &str) -> Tr<Value> {
     if event == "BeginPhase" {
         return super::replacements_phase::skip_step(&p, line_condition.as_ref());
     }
+    if event == "LifeReduced" {
+        return super::replacements_phase::life_floor(ctx, &p, line_condition.as_ref());
+    }
     if event == "GameLoss" {
         return super::replacements_loss::game_loss(ctx, &p, line_condition.as_ref());
     }
