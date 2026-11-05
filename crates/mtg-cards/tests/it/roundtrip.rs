@@ -848,7 +848,11 @@ fn leaf_effect() -> impl Strategy<Value = Effect> {
                 bind,
                 duration
             }),
-        reference().prop_map(|what| Effect::ExileHidden { what, bind: None }),
+        reference().prop_map(|what| Effect::ExileHidden {
+            what,
+            bind: None,
+            held: false,
+        }),
         (reference(), reference()).prop_map(|(what, on)| Effect::Encode { what, on }),
         (reference(), "[a-z]{1,6}").prop_map(|(what, slot)| Effect::Remember { what, slot }),
         "[a-z]{1,6}".prop_map(|slot| Effect::Forget { slot }),
