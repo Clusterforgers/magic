@@ -465,10 +465,14 @@ pub(super) fn player_ref(word: Option<&str>) -> Tr<Value> {
     match word {
         None | Some("Player") => Ok(json!("EachPlayer")),
         Some("You") => Ok(json!("You")),
-        Some("Opponent" | "Player.Opponent") => Ok(json!("Opponents")),
+        // Teams do not exist at our tables: the other players are the opponents.
+        Some("Opponent" | "Player.Opponent" | "Player.Other") => Ok(json!("Opponents")),
         Some("Player.EnchantedBy") => Ok(json!("AttachedPlayer")),
         Some("Player.EnchantedController") => Ok(json!({"ControllerOf": "Attached"})),
         Some("Player.Chosen") => Ok(json!("Chosen")),
+        Some("Player.TriggeredDefendingPlayer" | "TriggeredDefendingPlayer") => {
+            Ok(json!("Defending"))
+        }
         Some(other) => unmapped(format!("player:{other}")),
     }
 }

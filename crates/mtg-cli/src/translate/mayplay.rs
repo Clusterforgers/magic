@@ -36,17 +36,30 @@ pub fn may_cast(ctx: &Ctx, p: &Params, only: Option<&Value>) -> Tr<Value> {
         return unmapped("key:Static.MayPlay.EffectZone");
     }
     let mut permission = json!({ "from": from });
-    match (&only, p.get("Affected").unwrap_or("Card")) {
-        (Some(objects), "Card.IsRemembered" | "Card.IsRemembered+YouOwn") => {
+    let affected = p.get("Affected").unwrap_or("Card");
+    match (&only, affected) {
+        (Some(objects), valid) => {
+            // "That card" with more words (`Card.IsRemembered+nonLand`): the remembered objects the rest still matches.
+            let Some(props) = valid.strip_prefix("Card.") else {
+                return unmapped("valid:MayPlay-Affected-with-remembered");
+            };
+            let parts: Vec<&str> = props.split('+').collect();
+            if !parts.contains(&"IsRemembered") {
+                return unmapped("valid:MayPlay-Affected-with-remembered");
+            }
             permission["only"] = (*objects).clone();
+            let rest: Vec<&str> = parts
+                .into_iter()
+                .filter(|part| *part != "IsRemembered")
+                .collect();
             // Exile holds anyone's cards: "the card you own" excludes the others among the ones named.
-            if p.get("Affected")
-                .is_some_and(|valid| valid.ends_with("+YouOwn"))
-            {
-                permission["what"] = json!([{"OwnedBy": "You"}]);
+            if !rest.is_empty() {
+                let what = selector_any(ctx, &format!("Card.{}", rest.join("+")))?;
+                if !what.is_empty() {
+                    permission["what"] = json!(what);
+                }
             }
         }
-        (Some(_), _) => return unmapped("valid:MayPlay-Affected-with-remembered"),
         (None, valid) => {
             // A graveyard, hand or library is the player's own: the ownership is in `from`. Exile holds anyone's cards.
             let what: Vec<Value> = selector_any(ctx, valid)?

@@ -45,6 +45,12 @@ fn property(ctx: &Ctx, prop: &str) -> Tr<Vec<Value>> {
         "MultiColor" => return one(json!({"Compare": {"stat": "Colors", "op": "Ge", "to": 2}})),
         "EnchantedBy" | "EquippedBy" | "AttachedBy" => return one(json!({"Is": "Attached"})),
         "IsCommander" => return one(json!("Commander")),
+        // Attached to the object the line is about: its source.
+        "Attached" => return one(json!({"AttachedTo": "This"})),
+        // A permanent card outside the battlefield; on the battlefield every object is one.
+        "Permanent" => {
+            return one(json!({"AnyOf": PERMANENT_TYPES.map(|name| json!({"Type": name}))}));
+        }
         "modified" => return one(json!("Modified")),
         "singleTarget" => return one(json!("SingleTarget")),
         "IsGoaded" | "Goaded" => return one(json!("Goaded")),
@@ -243,9 +249,17 @@ fn split_properties(props: &str) -> Vec<String> {
 pub fn selector(ctx: &Ctx, spec: &str) -> Tr<Vec<Value>> {
     let spec = spec.trim();
     let (head, props) = spec.split_once('.').unwrap_or((spec, ""));
-    let mut preds = base(ctx, head)?;
+    // A player is no object: the property names what the engine lacks.
+    if head == "Player" && !props.is_empty() {
+        return unmapped(format!("valid:Player.{props}"));
+    }
+    let (mut preds, props) = if matches!(head, "Targeted" | "TargetedCard") {
+        targeted_base(ctx, props)?
+    } else {
+        (base(ctx, head)?, split_properties(props))
+    };
     let kind = preds.clone();
-    for prop in split_properties(props) {
+    for prop in props {
         let prop = prop.as_str();
         if let Some(found) = super::valid_atoms::extreme(ctx, prop, &kind)? {
             preds.extend(found);
@@ -269,6 +283,16 @@ pub fn selector(ctx: &Ctx, spec: &str) -> Tr<Vec<Value>> {
     }
     Ok(preds)
 }
+
+/// The card types a permanent can have.
+const PERMANENT_TYPES: [&str; 6] = [
+    "Artifact",
+    "Battle",
+    "Creature",
+    "Enchantment",
+    "Land",
+    "Planeswalker",
+];
 
 /// Subtypes that are not creature types.
 const NOT_CREATURE_TYPES: [&str; 22] = [
@@ -640,4 +664,36 @@ pub fn subject(ctx: &mut Ctx, params: &Params, default: &str, zone: Option<&str>
         return unmapped(format!("defined:none-for-{api}"));
     }
     defined(ctx, word)
+}
+
+/// The base `Targeted` of a valid-string: the chosen target itself, the cards that share its name (`sameName`, which leaves
+/// the target out beside `Other`) or what is attached to it (`Attached`); the properties left apply to those objects.
+fn targeted_base(ctx: &Ctx, props: &str) -> Tr<(Vec<Value>, Vec<String>)> {
+    let target = objects(ctx.last_target()?)?;
+    let mut rest = split_properties(props);
+    let mut take = |word: &str| {
+        let found = rest.iter().any(|prop| prop == word);
+        rest.retain(|prop| prop != word);
+        found
+    };
+    let (same_name, attached, other) = (take("sameName"), take("Attached"), take("Other"));
+    take("Self");
+    let mut preds = Vec::new();
+    if same_name {
+        preds.push(json!({"SharesName": target}));
+        if other {
+            preds.push(json!({"Not": {"Is": target}}));
+        }
+    } else if attached {
+        preds.push(json!({"AttachedTo": target}));
+        if other {
+            preds.push(json!("Other"));
+        }
+    } else {
+        preds.push(json!({"Is": target}));
+        if other {
+            preds.push(json!("Other"));
+        }
+    }
+    Ok((preds, rest))
 }

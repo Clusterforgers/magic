@@ -29,9 +29,8 @@ pub(super) fn batch(inner: &Value) -> Value {
 /// The recipient of damage: a player word, the card itself, what it enchants or equips, or the objects a valid-string names.
 fn recipient(ctx: &Ctx, valid: &str) -> Tr<Value> {
     Ok(match valid {
-        "Player" => json!("EachPlayer"),
-        "You" => json!("You"),
-        "Opponent" | "Player.Opponent" => json!("Opponents"),
+        "Player" | "You" | "Opponent" => super::triggers::player_ref(Some(valid))?,
+        word if word.starts_with("Player.") => super::triggers::player_ref(Some(word))?,
         "Card.Self" | "Creature.Self" => json!("This"),
         "Card.AttachedBy" | "Creature.AttachedBy" | "Card.EnchantedBy" | "Creature.EnchantedBy" => {
             json!("Attached")
@@ -114,6 +113,15 @@ fn becomes_target(ctx: &Ctx, p: &Params) -> Tr<Value> {
         "BecomesTarget",
         &["ValidTarget", "ValidSource", "FirstTime"],
     )?;
+    // The pattern holds objects: a player that becomes a target is another event.
+    if p.get("ValidTarget").is_some_and(|valid| {
+        valid.split(',').any(|word| {
+            let head = word.split('.').next().unwrap_or_default();
+            matches!(head, "You" | "Player" | "Opponent")
+        })
+    }) {
+        return unmapped("trigger:BecomesTarget-a-player");
+    }
     let what = selector_any(ctx, p.get("ValidTarget").unwrap_or("Card"))?;
     let by = match p.get("ValidSource") {
         Some(valid) => super::valid::source_any(ctx, valid)?,

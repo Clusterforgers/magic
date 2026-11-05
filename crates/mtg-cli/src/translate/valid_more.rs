@@ -43,7 +43,13 @@ pub fn property(ctx: &Ctx, prop: &str) -> Tr<Option<Vec<Value>>> {
             };
         }
         "IsImprinted" => return memory::is_in(ctx, Slot::Imprinted).map(Some),
-        "NamedCard" => return one(memory::entered_with(ctx, prop)?),
+        // A card named by an earlier step of the ability, else the name the source chose as it entered.
+        "NamedCard" => {
+            return match (&ctx.chosen, ctx.chosen_kind) {
+                (Some(name), None) => one(json!({"ChosenAs": name})),
+                _ => one(memory::entered_with(ctx, prop)?),
+            };
+        }
         "IsNotChosenType" => {
             let chosen = match &ctx.chosen {
                 Some(name) => json!({"ChosenAs": name}),

@@ -153,6 +153,10 @@ fn item(ctx: &Ctx, word: &str) -> Tr<Value> {
 }
 
 fn discard(ctx: &Ctx, number: &str, what: &str) -> Tr<Value> {
+    // Paying at random picks the cards without the payer: the cost has no such pick.
+    if what == "Random" {
+        return unmapped("cost:Discard-random");
+    }
     let count = amount(ctx, number)?;
     if matches!(what, "Card" | "") {
         return Ok(json!({"Discard": {"count": count}}));

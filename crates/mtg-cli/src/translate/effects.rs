@@ -355,6 +355,8 @@ fn cleanup(p: &Params) -> Tr<Vec<Value>> {
             "ClearImprinted",
             "ClearTriggered",
             "ClearChosenCard",
+            "ClearNamedCard",
+            "ClearChosenPlayer",
         ],
     )?;
     Ok(Vec::new())
@@ -703,11 +705,32 @@ fn delayed(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
     // "Its controller" is named before the trigger is set up: the spell it is about is gone when the trigger fires.
     let mut out = Vec::new();
     let outer = ctx.delayed_remembered.take();
+    // The delayed trigger line itself chooses a target: the event and the later lines read it as targeted.
+    let own;
+    let mut p = p;
+    if p.has("ValidTgts") {
+        super::valid::subject(ctx, p, "", None)?;
+        own = p.without(&["ValidTgts", "TgtPrompt"]);
+        p = &own;
+    } else if p.get("RememberObjects") == Some("Targeted")
+        && ctx.targets.is_empty()
+        && ctx.coming.is_none()
+    {
+        // Nothing was targeted: the word names nobody, and a step's trigger needs no one.
+        own = p.without(&["RememberObjects"]);
+        p = &own;
+    }
     if p.get("RememberObjects") == Some("RememberedController") {
         let who = super::memory::remembered_controller(ctx)?;
         let name = ctx.fresh("controller");
         out.push(json!({"Bind": {"what": who, "as": name}}));
         ctx.delayed_remembered = Some(json!({ "Bound": name }));
+    }
+    // A target the event waits for is the object the event is about when it fires.
+    if matches!(p.get("RememberObjects"), Some("Targeted" | "ParentTarget"))
+        && p.get("Mode") == Some("ChangesZone")
+    {
+        ctx.delayed_remembered = Some(json!("Triggering"));
     }
     let node = delayed_node(ctx, p);
     ctx.delayed_remembered = outer;

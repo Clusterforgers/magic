@@ -256,6 +256,7 @@ fn event_amount(ctx: &Ctx, expression: &str) -> Tr<Option<Value>> {
         | "TriggeredBlockerLKICopy"
         | "TriggeredSource"
         | "TriggeredSourceLKICopy" => super::triggered::resolve(ctx.trigger.as_ref(), head)?,
+        "TriggeredSpellAbility" if casts(ctx) => json!("Triggering"),
         "Enchanted" | "Equipped" => json!("Attached"),
         "Sacrificed" => json!("Paid"),
         // What the reflexive trigger of an `ImmediateTrigger` was told to remember (`RememberObjects$`).
@@ -434,6 +435,13 @@ fn monstrosity_x(ctx: &Ctx) -> Tr<Option<Value>> {
     } else {
         unmapped("amount:TriggerCount$Amount-of-another-monstrosity")
     }
+}
+
+/// Whether the trigger is about a spell that was cast: `TriggeredSpellAbility` names that spell.
+fn casts(ctx: &Ctx) -> bool {
+    ctx.trigger
+        .as_ref()
+        .is_some_and(|shape| matches!(shape.mode.as_str(), "SpellCast" | "SpellCastOrCopy"))
 }
 
 #[cfg(test)]
