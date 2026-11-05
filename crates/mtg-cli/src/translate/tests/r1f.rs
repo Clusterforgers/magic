@@ -194,29 +194,3 @@ fn a_skipped_step_with_a_condition_stays_a_gap() {
     let text = "Name:T\nTypes:Enchantment\nR:Event$ BeginPhase | ActiveZones$ Battlefield | ValidPlayer$ You | Phase$ Upkeep | Skip$ True | Hellbent$ True\n";
     assert_eq!(abilities(text), Vec::<Value>::new());
 }
-
-fn floor_card(n: u32, extra: &str) -> String {
-    format!(
-        "Name:T\nTypes:Enchantment\nR:Event$ LifeReduced | ActiveZones$ Battlefield | ValidPlayer$ You.lifeGE{n} | Result$ LT{n} | IsDamage$ True{extra} | ReplaceWith$ Cut\nSVar:Cut:DB$ ReplaceEffect | VarName$ Amount | VarValue$ X\nSVar:X:ReplaceCount$Amount/LimitMax.Difference\nSVar:Difference:Count$YourLifeTotal/Minus.{n}\n"
-    )
-}
-
-#[rstest]
-#[case::one(1)]
-#[case::seven(7)]
-fn damage_cannot_take_life_below_the_floor(#[case] n: u32) {
-    let want = json!({"Replacement": {"when": {"Damage": {"to": "You"}}, "by": {"LifeFloor": n}}});
-    assert_eq!(one(&floor_card(n, "")), normal(want));
-}
-
-#[test]
-fn a_life_floor_keeps_its_condition() {
-    let found = one(&floor_card(1, " | IsPresent$ Creature.YouCtrl"));
-    assert!(found["Replacement"].get("condition").is_some(), "{found}");
-}
-
-#[test]
-fn a_floor_that_differs_from_its_amount_stays_a_gap() {
-    let text = floor_card(1, "").replace("Minus.1", "Minus.2");
-    assert_eq!(abilities(&text), Vec::<Value>::new());
-}

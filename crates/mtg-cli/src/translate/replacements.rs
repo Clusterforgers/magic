@@ -58,8 +58,8 @@ fn single(ctx: &mut Ctx, body: &str) -> Tr<Value> {
     if event == "Untap" {
         return doesnt_untap(ctx, &p);
     }
-    if matches!(event, "BeginPhase" | "LifeReduced") {
-        return super::replacements_phase::held(ctx, event, &p, line_condition.as_ref());
+    if event == "BeginPhase" {
+        return super::replacements_phase::skip_step(&p, line_condition.as_ref());
     }
     if event == "GameLoss" {
         return super::replacements_loss::game_loss(ctx, &p, line_condition.as_ref());

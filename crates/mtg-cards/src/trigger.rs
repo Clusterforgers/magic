@@ -795,8 +795,6 @@ pub enum ReplaceBy {
     PreventAnd(Vec<Effect>),
     /// All but this much of the damage is prevented (CR 615): "prevent all but 1 of that damage".
     PreventAllBut(u32),
-    /// Damage to a player that would take their life total below this number, from at least it, takes it to this number instead (CR 614.1a): "damage that would reduce your life total to less than 1 reduces it to 1 instead". Only a static ability uses it.
-    LifeFloor(u32),
     /// All of the damage is prevented and the permanent with the ability loses one counter of this kind, if it has one
     /// ("prevent that damage. Remove a +1/+1 counter from this creature").
     PreventRemovingCounter(CounterKind),
