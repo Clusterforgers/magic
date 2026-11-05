@@ -306,6 +306,7 @@ mod tests {
                 cast_targets: None,
                 affected: None,
                 candidate: std::cell::Cell::new(None),
+                caused: None,
             };
             (
                 scope.all_targets_illegal(),

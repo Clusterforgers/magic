@@ -89,6 +89,7 @@ const RUNS: &[&str] = &[
     "Trigger.ZoneChangeExcept",
     "Trigger.Batch",
     "Trigger.Nth",
+    "Trigger.Caused",
     "Trigger.Did",
     "Ability.OpeningHand",
     "Amount.Triggering",
@@ -1115,6 +1116,7 @@ mod tests {
     #[case::zone_changes_from_elsewhere("Trigger.ZoneChangeExcept", true)]
     #[case::batch_triggers("Trigger.Batch", true)]
     #[case::nth_triggers("Trigger.Nth", true)]
+    #[case::caused_triggers("Trigger.Caused", true)]
     #[case::r3p1_actions_taken_by_a_player("Trigger.Did", true)]
     #[case::r3p1_beginning_the_game_on_the_battlefield("Ability.OpeningHand", true)]
     #[case::r3p1_untapping_the_source_as_a_cost("Cost.Untap", false)]

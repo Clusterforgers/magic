@@ -1154,6 +1154,8 @@ fn about_players_and_permanents(
 struct Used {
     limits: BTreeSet<(ObjectRef, AbilitySource, usize)>,
     delayed: BTreeSet<DelayedId>,
+    /// The spell or ability that caused the batch, for `TriggerPattern::Caused`.
+    caused: Option<super::CausedBy>,
 }
 
 /// The cause of a trigger about `subjects`, with the objects among them as they are in `state`.
@@ -1459,6 +1461,11 @@ fn matching_event(
         (TriggerPattern::Nth { event, nth }, happened) => (happened.nth_for(event) == Some(*nth))
             .then(|| matching(event, happened, scope))
             .flatten(),
+        (TriggerPattern::Caused { inner, by, source }, happened) => {
+            caused_by(scope, by.as_ref(), source)
+                .then(|| matching(inner, happened, scope))
+                .flatten()
+        }
         (
             TriggerPattern::DealsDamage { source, to, combat },
             Happened::Damaged {
@@ -1835,6 +1842,25 @@ pub(crate) fn step_matches(named: mtg_cards::trigger::Step, began: Step) -> bool
     )
 }
 
+/// Whether the spell or ability that caused the events is controlled by one of the players `by` names and is one of the
+/// objects `source` selects; no cause is no match.
+fn caused_by(scope: &Scope<'_>, by: Option<&Ref>, source: &Selector) -> bool {
+    let Some(caused) = scope.caused else {
+        return false;
+    };
+    if let Some(who) = by
+        && !scope
+            .players(who)
+            .is_ok_and(|players| players.contains(&caused.player))
+    {
+        return false;
+    }
+    source.is_empty()
+        || caused
+            .object
+            .is_some_and(|object| scope.selects(source, object).unwrap_or(false))
+}
+
 /// What `pattern` finds in `happened`: one cause for an event, and for the events of a batch one for each player they
 /// are about (or one in all when they are about none).
 fn causes(pattern: &TriggerPattern, happened: &Happened, scope: &Scope<'_>) -> Vec<Cause> {
@@ -1849,6 +1875,13 @@ fn causes(pattern: &TriggerPattern, happened: &Happened, scope: &Scope<'_>) -> V
                 .iter()
                 .flat_map(|member| causes(member, happened, scope))
                 .collect()
+        }
+        (TriggerPattern::Caused { inner, by, source }, happened) => {
+            if caused_by(scope, by.as_ref(), source) {
+                causes(inner, happened, scope)
+            } else {
+                Vec::new()
+            }
         }
         (TriggerPattern::Batch(inner), Happened::Batch(members)) => {
             let mut groups: Vec<(Vec<Target>, Cause)> = Vec::new();
@@ -1944,7 +1977,7 @@ fn object_triggers(
         if *from != zone && !from_anywhere {
             continue;
         }
-        let scope = Scope::announcing(state, controller, source);
+        let scope = Scope::announcing(state, controller, source).with_caused(used.caused);
         for cause in causes(when, happened, &scope) {
             // CR 603.4: an "if" in the trigger is checked as the event happens.
             if let Some(condition) = intervening_if {
@@ -2143,7 +2176,7 @@ fn delayed(
         };
         let (source, controller) = (waiting.source(), waiting.controller());
         // The event it waits for may name what the resolution bound ("whenever that creature deals combat damage").
-        let mut scope = Scope::announcing(state, controller, source);
+        let mut scope = Scope::announcing(state, controller, source).with_caused(used.caused);
         scope.bindings = &waiting.bindings;
         let Some(cause) = matching(pattern, happened, &scope) else {
             continue;
@@ -2205,7 +2238,10 @@ pub fn detect(pre: &GameState, events: &[Event], post: &GameState) -> Vec<Trigge
         return Vec::new();
     }
     let mut found = Vec::new();
-    let mut used = Used::default();
+    let mut used = Used {
+        caused: super::cause_of(pre, events, post),
+        ..Used::default()
+    };
     let all = happenings(pre, events, post);
     let (before, after) = (OnceCell::new(), OnceCell::new());
     for happened in &all {

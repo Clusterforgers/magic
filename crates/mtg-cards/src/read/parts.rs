@@ -225,6 +225,9 @@ pub(super) fn trigger(ctx: &Ctx, when: &TriggerPattern) -> String {
         TriggerPattern::Nth { event, nth } => {
             format!("{} for the {nth}th time each turn", trigger(ctx, event))
         }
+        TriggerPattern::Caused { inner, .. } => {
+            format!("{}, caused by a spell or ability", trigger(ctx, inner))
+        }
         other => generic::node(ctx, other),
     }
 }
