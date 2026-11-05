@@ -146,7 +146,7 @@ pub(crate) fn payable(
     state: &GameState,
     player: PlayerId,
     id: ObjectId,
-    fixed: bool,
+    (fixed, way): (bool, Option<CastWay>),
     cost: &ManaCost,
     pays: impl Fn(&ManaCost) -> bool,
 ) -> bool {
@@ -158,7 +158,7 @@ pub(crate) fn payable(
         .map(|(_, rules)| rules)
         .filter(|rules| targets_read_x(rules));
     let Some(rules) = rules else {
-        return pays(&cheapest(state, player, id, cost));
+        return pays(&cheapest(state, player, id, way, cost));
     };
     let symbols = state
         .object(id)
@@ -168,7 +168,7 @@ pub(crate) fn payable(
         let total = cost
             .clone()
             .with(ManaSymbol::Generic(x.saturating_mul(symbols)));
-        if !pays(&cheapest(state, player, id, &total)) {
+        if !pays(&cheapest(state, player, id, way, &total)) {
             return false;
         }
         if targets_met_at(state, id, player, &rules, x) {

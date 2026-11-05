@@ -266,8 +266,8 @@ fn event_amount(ctx: &Ctx, expression: &str) -> Tr<Option<Value>> {
             return super::memory::remembered_total(ctx, what).map(Some);
         }
         "Remembered" | "RememberedLKI" => match &ctx.remembered {
-            Some(remembered) => remembered.clone(),
-            None => return unmapped("amount:Remembered-without-a-change"),
+            Some(remembered) if !super::memory::is_scoped(ctx, remembered) => remembered.clone(),
+            _ => return unmapped("amount:Remembered-without-a-change"),
         },
         _ => return Ok(None),
     };

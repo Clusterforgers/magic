@@ -76,7 +76,7 @@ pub(crate) fn choices(
         .collect()
 }
 
-fn is_snow(only: &[SpendOn]) -> bool {
+pub(crate) fn is_snow(only: &[SpendOn]) -> bool {
     only.contains(&SpendOn::Snow)
 }
 

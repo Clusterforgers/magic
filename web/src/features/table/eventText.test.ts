@@ -109,6 +109,7 @@ const PUBLIC: Record<VariantName<Event>, [Event, string]> = {
     { RingTempted: { player: 1, level: 2, bearer: 3 } },
     'The Ring tempts Bo (level 2) and chooses Forest as their Ring-bearer',
   ],
+  RingBearerLost: [{ RingBearerLost: { player: 1 } }, 'Bo loses their Ring-bearer'],
   Ventured: [
     {
       Ventured: {

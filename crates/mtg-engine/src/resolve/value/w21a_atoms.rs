@@ -2,6 +2,7 @@
 //! a player target, and a card put into a graveyard from the battlefield this turn.
 
 use mtg_cards::refs::{Pred, Selector};
+use mtg_cards::value::CastWay;
 use mtg_core::card::Subtype;
 
 use super::{ResolveError, Scope, Seen};
@@ -28,9 +29,18 @@ impl Scope<'_> {
                     && crate::characteristics::controller_of(self.state, reference.id)
                         .is_some_and(|player| self.state.ring_bearer(player) == Some(reference.id))
             }
-            Pred::FaceDown => self.state.object(reference.id).is_some_and(|object| {
-                object.reference() == reference && object.face_down().is_some()
-            }),
+            Pred::FaceDown => {
+                // A spell still being announced is face down when it is cast that way (morph, disguise).
+                let announcing = self.casting.is_some_and(|(cast, _)| cast == reference.id)
+                    && self
+                        .cast_targets
+                        .as_ref()
+                        .is_some_and(|cast| cast.choices.way == Some(CastWay::FaceDown));
+                announcing
+                    || self.state.object(reference.id).is_some_and(|object| {
+                        object.reference() == reference && object.face_down().is_some()
+                    })
+            }
             Pred::TargetsPlayer(who) => {
                 let players = self.players(who)?;
                 seen.zone == Zone::Stack

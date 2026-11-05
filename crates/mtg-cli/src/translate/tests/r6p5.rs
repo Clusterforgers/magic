@@ -29,14 +29,6 @@ fn a_draw_that_remembers_names_the_cards_it_drew(#[case] line: &str, #[case] nod
     "key:Draw.RememberDrawn.group"
 )]
 #[case::unknown_value("Draw | RememberDrawn$ Maybe", "key:Draw.RememberDrawn=Maybe")]
-#[case::inside_a_condition(
-    "Draw | ConditionPresent$ Creature.YouCtrl | RememberDrawn$ True | SubAbility$ L\nSVar:L:DB$ GainLife | LifeAmount$ 3 | ConditionDefined$ Remembered | ConditionPresent$ Card | ConditionCompare$ EQ0",
-    "defined:Remembered-without-a-change"
-)]
-#[case::inside_a_may(
-    "Draw | Optional$ True | RememberDrawn$ True | SubAbility$ L\nSVar:L:DB$ Discard | Defined$ You | NumCards$ 2 | ConditionDefined$ Remembered | ConditionPresent$ Card | ConditionCompare$ GE1",
-    "defined:Remembered-without-a-change"
-)]
 fn a_memory_that_cannot_be_read_is_a_gap(#[case] line: &str, #[case] gap: &str) {
     assert_eq!(gaps(&spell(line)), [gap]);
 }

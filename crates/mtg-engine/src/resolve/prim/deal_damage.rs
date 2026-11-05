@@ -62,7 +62,12 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         if let (Some(excess), DamageTarget::Object(id)) = (excess, target)
             && let Some(lethal) = damage::lethal_for_excess(cx.state(), id, dealer.has_deathtouch())
         {
-            let over = amount.saturating_sub(lethal);
+            // Damage that protection prevents is not dealt, so none of it is beyond lethal (CR 120.10).
+            let over = if crate::replace::protection_of(cx.state(), source.id, target).is_some() {
+                0
+            } else {
+                amount.saturating_sub(lethal)
+            };
             beyond = beyond.saturating_add(over);
             if excess.to.is_some() {
                 amount -= over;
@@ -180,6 +185,29 @@ mod tests {
             (creature, player, kept),
             (want.0, want.1, want.2.map(str::to_owned))
         );
+    }
+
+    #[rstest]
+    #[case::protected_deals_no_excess(true, (5, Some("0:n")))]
+    #[case::unprotected_has_excess(false, (5, Some("3:n")))]
+    fn damage_prevented_by_protection_has_no_excess(
+        #[case] protected: bool,
+        #[case] want: (u32, Option<&str>),
+    ) {
+        let mut def = (*creature("Source", 1, 2)).clone();
+        if protected {
+            def = def.with_rules(mtg_cards::ability::Ability::Keyword(
+                mtg_cards::keyword::Keyword::Protection(mtg_cards::refs::Selector::default()),
+            ));
+        }
+        let table = setup(
+            vec![Vec::new(); 2],
+            vec![vec![std::sync::Arc::new(def)], Vec::new()],
+        );
+        let game = GameState::from_setup(&table).unwrap();
+        let json = r#"{"DealDamage":{"to":"This","amount":5,"excess":{"as":"n"}}}"#;
+        let (creature, _, kept) = run(&game, json);
+        assert_eq!((creature, kept), (want.0, want.1.map(str::to_owned)));
     }
 
     #[test]

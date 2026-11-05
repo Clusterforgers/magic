@@ -249,6 +249,11 @@ fn designate(state: &mut GameState, event: &Event) {
         Event::CitysBlessingGained { player } => {
             state.citys_blessing.insert(*player);
         }
+        Event::RingBearerLost { player } => {
+            if let Some(ring) = state.ring.get_mut(player) {
+                ring.bearer = None;
+            }
+        }
         Event::RingTempted {
             player,
             level,
@@ -421,6 +426,7 @@ fn apply_misc(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
         Event::DayNightChanged { .. }
         | Event::MonarchChanged { .. }
         | Event::RingTempted { .. }
+        | Event::RingBearerLost { .. }
         | Event::CitysBlessingGained { .. } => designate(state, event),
 
         Event::PermanentTapped { object } => set_tapped(state, *object, true)?,

@@ -847,6 +847,9 @@ function describePublic(event: Event, n: EventNames, context?: EventContext): Lo
     const chosen = bearer === undefined ? '' : ` and chooses ${n.card(bearer)} as their Ring-bearer`
     return line(`The Ring tempts ${n.seat(player)} (level ${level})${chosen}`)
   }
+  if ('RingBearerLost' in event) {
+    return line(`${n.seat(event.RingBearerLost.player)} loses their Ring-bearer`)
+  }
   if ('Explored' in event) return line(`${n.card(event.Explored.object)} explores`)
   if ('Connived' in event) return line(`${n.card(event.Connived.object)} connives`)
   if ('Exerted' in event) return line(`${n.card(event.Exerted.object)} is exerted`)

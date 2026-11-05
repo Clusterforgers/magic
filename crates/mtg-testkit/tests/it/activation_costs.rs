@@ -137,3 +137,82 @@ fn only_the_first_spell_of_a_kind_each_turn_is_cheaper(
 ) {
     assert_eq!(first_spell_casts(order), expected);
 }
+
+/// Whether the Pinger (`cost`, then gain 1 life) of seat 0 can be activated with `lands` Forests while a Warden in play
+/// has the rule `warden`, which `lands` Forests pay for as mana abilities.
+fn pinger_offered(warden: &str, cost: &str, lands: usize) -> bool {
+    let pinger = Arc::new(CardDefinition::new("Pinger").with_type(CardType::Artifact).with_rules(
+        ability(&format!(
+            r#"{{"Activated":{{"cost":{cost},"effects":[{{"GainLife":{{"who":"You","amount":1}}}}]}}}}"#
+        )),
+    ));
+    let warden = Arc::new(
+        CardDefinition::new("Warden")
+            .with_type(CardType::Artifact)
+            .with_rules(ability(warden)),
+    );
+    let mut mine = vec![ready(pinger), ready(warden)];
+    mine.extend((0..lands).map(|_| ready(forest())));
+    let scenario = Scenario::new(2)
+        .at(2, 0, Step::Main1)
+        .battlefield(0, mine)
+        .library(0, (0..10).map(|_| forest()))
+        .library(1, (0..10).map(|_| forest()));
+    let driver = Driver::from_scenario(scenario).unwrap();
+    !driver.offered_abilities("Pinger").unwrap().is_empty()
+}
+
+#[rstest]
+#[case::tap_only_pays_the_increase_and_one_land_is_short(r#"["Tap"]"#, 1, false)]
+#[case::tap_only_with_two_lands_pays_it(r#"["Tap"]"#, 2, true)]
+#[case::a_mana_cost_pays_it_too(r#"[{"Mana":"{1}"}]"#, 2, false)]
+#[case::a_mana_cost_with_three_lands(r#"[{"Mana":"{1}"}]"#, 3, true)]
+fn an_increase_to_every_activation_reaches_costs_without_mana(
+    #[case] cost: &str,
+    #[case] lands: usize,
+    #[case] expected: bool,
+) {
+    let field = modifier("[]", "Any", "Increase", "{2}", 0);
+    assert_eq!(pinger_offered(&field, cost, lands), expected);
+}
+
+#[test]
+fn without_the_increase_a_tap_ability_needs_no_mana() {
+    assert!(pinger_offered(r#"{"Keyword":"Defender"}"#, r#"["Tap"]"#, 0));
+}
+
+/// Whether the landcycling `{1}` of a card in seat 0's hand is offered with one Forest and the Warden's rule in play.
+fn landcycling_offered(warden: &str) -> bool {
+    let walker = Arc::new(
+        CardDefinition::new("Walker")
+            .with_type(CardType::Creature)
+            .with_rules(Ability::Keyword(Keyword::Typecycling {
+                find: mtg_cards::refs::Selector::default(),
+                cost: Cost::mana("{1}".parse().unwrap()),
+            })),
+    );
+    let warden = Arc::new(
+        CardDefinition::new("Warden")
+            .with_type(CardType::Artifact)
+            .with_rules(ability(warden)),
+    );
+    let scenario = Scenario::new(2)
+        .at(2, 0, Step::Main1)
+        .hand(0, vec![walker])
+        .battlefield(0, vec![ready(warden), ready(forest())])
+        .library(0, (0..10).map(|_| forest()))
+        .library(1, (0..10).map(|_| forest()));
+    let driver = Driver::from_scenario(scenario).unwrap();
+    !driver.offered_abilities("Walker").unwrap().is_empty()
+}
+
+#[rstest]
+#[case::cycling_increase_taxes_landcycling("Cycling", "Increase", false)]
+#[case::another_kind_does_not("Equip", "Increase", true)]
+#[case::cycling_reduction_makes_it_free("Cycling", "Reduce", true)]
+fn landcycling_counts_as_cycling(#[case] kind: &str, #[case] change: &str, #[case] expected: bool) {
+    assert_eq!(
+        landcycling_offered(&modifier("[]", kind, change, "{1}", 0)),
+        expected
+    );
+}

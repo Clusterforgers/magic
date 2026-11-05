@@ -618,6 +618,11 @@ fn cost_modifier(ctx: &Ctx, p: &Params, change: &str) -> Tr<Value> {
 fn modifier(ctx: &Ctx, p: &Params, change: &str, applies: &[Value]) -> Tr<Value> {
     let amount = p.get("Amount").unwrap_or_default();
     // `Color$` names the one colour whose symbols the change adds or removes, `Amount$` how many.
+    // "{U} (or {1}) less" takes a coloured symbol when the cost has one and generic mana when it has not, which a
+    // reduction of one symbol does not say.
+    if p.has("Color") && ctx.oracle.contains("(or {1})") {
+        return unmapped("key:Static.CostModifier.Color-or-generic");
+    }
     let symbol = match p.get("Color") {
         None => "{1}".to_owned(),
         Some(color @ ("W" | "U" | "B" | "R" | "G")) => format!("{{{color}}}"),

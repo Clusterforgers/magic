@@ -328,3 +328,36 @@ fn the_bearer_is_legendary_for_the_legend_rule(#[case] choose_plain: bool, #[cas
     }
     assert_eq!(questions == 2, asked);
 }
+
+#[rstest]
+#[case::taken_and_returned(true, None)]
+#[case::taken_and_never_returned(false, None)]
+fn a_bearer_another_player_controlled_is_not_the_bearer_when_it_comes_back(
+    #[case] returns: bool,
+    #[case] expected: Option<&str>,
+) {
+    let mut driver = table(1, &[("Hero", 2)], &[]);
+    tempted(&mut driver, 0, "Hero").unwrap();
+    let hero = driver.id_of("Hero").unwrap();
+    assert_eq!(bearer(&driver), Some(hero));
+    let on_hero = driver.on(hero);
+    driver
+        .add_effect(
+            on_hero,
+            mtg_engine::effects::Modification::SetController(pid(1)),
+            mtg_cards::modify::Duration::UntilEndOfTurn,
+        )
+        .unwrap();
+    driver.pass().unwrap();
+    assert_eq!(bearer(&driver), None);
+    if returns {
+        driver.idle_until(2, Step::Main1).unwrap();
+        assert_eq!(
+            mtg_engine::characteristics::controller_of(driver.state(), hero),
+            Some(pid(0))
+        );
+    }
+    assert_eq!(bearer(&driver), expected.map(|_| hero));
+    // The level stays, and a creature of mine chosen later is the bearer again.
+    assert_eq!(level(&driver), 1);
+}

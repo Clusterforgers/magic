@@ -114,6 +114,9 @@ pub struct Ctx<'a> {
     pub moved_from: BTreeMap<String, Value>,
     /// The bound names whose step keeps how many objects it moved (`<name>~moved`), which survives a token that ceased to exist.
     pub counted: std::collections::BTreeSet<String>,
+    /// The bound names a condition or a "may" bound: later steps may count them or test that they hold something (an
+    /// unbound name reads as empty), but not use the objects themselves.
+    pub scoped: std::collections::BTreeSet<String>,
     /// The memories the card reads on a line other than the one that wrote them.
     pub memory: super::memory::Plan,
     /// The objects an `Effect` object remembers, which a trigger or static it carries reads as `IsRemembered`; kept across
@@ -167,6 +170,7 @@ impl<'a> Ctx<'a> {
             imprinted: None,
             moved_from: BTreeMap::new(),
             counted: std::collections::BTreeSet::new(),
+            scoped: std::collections::BTreeSet::new(),
             coming: None,
             memory: super::memory::plan(face),
             pinned: None,
@@ -194,6 +198,7 @@ impl<'a> Ctx<'a> {
         self.imprinted = None;
         self.moved_from.clear();
         self.counted.clear();
+        self.scoped.clear();
         self.coming = None;
         self.parent_target = None;
         self.chosen = None;
