@@ -30,7 +30,7 @@ fn a_power_up_ability_is_once_and_cheaper_while_the_permanent_entered_this_turn(
 #[test]
 fn a_power_up_ability_of_a_card_without_a_mana_cost_stays_a_gap() {
     let script = "Name:Subject\nTypes:Creature Robot\nPT:1/1\nA:AB$ PutCounter | Cost$ 5 U | Defined$ Self | CounterType$ P1P1 | CounterNum$ 3 | PowerUp$ True | SpellDescription$ x\n";
-    assert!(!gaps(script).is_empty());
+    assert_ne!(gaps(script).len(), 0);
 }
 
 #[rstest]
@@ -119,7 +119,7 @@ fn crew_power_counts_another_way(
     );
     match quirk {
         Some(quirk) => assert!(first(&script).to_string().contains(quirk)),
-        None => assert!(!gaps(&script).is_empty()),
+        None => assert_ne!(gaps(&script).len(), 0),
     }
 }
 
@@ -176,5 +176,5 @@ fn a_damage_floor_is_a_rule(#[case] line: &str, #[case] floor: i64) {
 #[test]
 fn a_floor_that_differs_from_the_life_it_needs_stays_a_gap() {
     let script = "Name:Subject\nTypes:Creature Spirit\nPT:1/1\nR:Event$ LifeReduced | ActiveZones$ Battlefield | ValidPlayer$ You.lifeGE3 | Result$ LT1 | IsDamage$ True | ReplaceWith$ ReduceLoss | Description$ x\nSVar:ReduceLoss:DB$ ReplaceEffect | VarName$ Amount | VarValue$ X\nSVar:X:ReplaceCount$Amount/LimitMax.Difference\n";
-    assert!(!gaps(script).is_empty());
+    assert_ne!(gaps(script).len(), 0);
 }

@@ -28,6 +28,12 @@ pub fn replacement_lines(ctx: &mut Ctx, body: &str) -> Tr<Vec<Value>> {
         }
         return super::replacements_damage::static_prevention(ctx, &p);
     }
+    if all.get("Event") == Some("LifeReduced") {
+        ctx.reset();
+        let (condition, p) = prefixed(ctx, &all)?;
+        return super::replacements_life::life_reduced(ctx, &p, condition.as_ref())
+            .map(|ability| vec![ability]);
+    }
     single(ctx, body).map(|ability| vec![ability])
 }
 
@@ -62,9 +68,6 @@ fn single(ctx: &mut Ctx, body: &str) -> Tr<Value> {
             "GainLife" => super::replacements_counter::gain_life(ctx, &p),
             _ => super::replacements_counter::add_counter(ctx, &p),
         };
-    }
-    if event == "LifeReduced" {
-        return super::replacements_life::life_reduced(ctx, &p, line_condition.as_ref());
     }
     if event == "GameLoss" {
         return super::replacements_loss::game_loss(ctx, &p, line_condition.as_ref());
