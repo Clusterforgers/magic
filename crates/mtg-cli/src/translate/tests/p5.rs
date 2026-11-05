@@ -197,8 +197,8 @@ fn keyword_and_player_counters(#[case] line: &str, #[case] name: &str) {
     "PutCounter | ValidTgts$ Creature | CounterType$ Wibble",
     "key:PutCounter.CounterType"
 )]
-#[case::any(
-    "RemoveCounter | ValidTgts$ Creature | CounterType$ Any",
+#[case::unknown_remove(
+    "RemoveCounter | ValidTgts$ Creature | CounterType$ Wibble",
     "key:RemoveCounter.CounterType"
 )]
 fn unknown_counter_words(#[case] line: &str, #[case] gap: &str) {

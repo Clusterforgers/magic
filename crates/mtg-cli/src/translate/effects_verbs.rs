@@ -82,8 +82,13 @@ fn multiply_counter(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
     let mut read = TARGETING.to_vec();
     read.extend(["CounterType", "Multiplier"]);
     only(p, "MultiplyCounter", &read)?;
-    let Some(kind) = p.get("CounterType").and_then(counter_kind) else {
-        return unmapped("key:MultiplyCounter.CounterType");
+    // No kind means each kind the object holds ("double the number of each kind of counter on it").
+    let kind = match p.get("CounterType") {
+        None => Value::Null,
+        Some(word) => match counter_kind(word) {
+            Some(kind) => kind,
+            None => return unmapped("key:MultiplyCounter.CounterType"),
+        },
     };
     let factor = match p.get("Multiplier") {
         None => 2,
@@ -93,7 +98,11 @@ fn multiply_counter(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
         },
     };
     let on = subject(ctx, p, "Self", None)?;
-    Ok(json!({"MultiplyCounters": {"on": on, "counter": kind, "factor": factor}}))
+    let mut effect = json!({"MultiplyCounters": {"on": on, "factor": factor}});
+    if !kind.is_null() {
+        effect["MultiplyCounters"]["counter"] = kind;
+    }
+    Ok(effect)
 }
 
 /// `MoveCounter` of one named kind from the `Source$` onto the target or `Defined$`.
@@ -101,8 +110,7 @@ fn move_counter(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
     let mut read = TARGETING.to_vec();
     read.extend(["Source", "CounterType", "CounterNum"]);
     only(p, "MoveCounter", &read)?;
-    let (Some(source), Some(kind)) = (p.get("Source"), p.get("CounterType").and_then(counter_kind))
-    else {
+    let Some(kind) = p.get("CounterType").and_then(counter_kind) else {
         return unmapped("key:MoveCounter.Source-or-CounterType");
     };
     if p.get("CounterNum")
@@ -110,8 +118,15 @@ fn move_counter(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
     {
         return unmapped("key:MoveCounter.CounterNum");
     }
-    let from = defined(ctx, source)?;
-    let to = subject(ctx, p, "Self", None)?;
+    // Without `Source$` the target is the source and `Defined$` the object that receives them.
+    let (from, to) = match (p.get("Source"), p.get("Defined"), p.has("ValidTgts")) {
+        (Some(source), _, _) => (defined(ctx, source)?, subject(ctx, p, "Self", None)?),
+        (None, Some(receiver), true) => (
+            subject(ctx, &p.without(&["Defined"]), "Self", None)?,
+            defined(ctx, receiver)?,
+        ),
+        _ => return unmapped("key:MoveCounter.Source-or-CounterType"),
+    };
     let count = amount(ctx, p.get("CounterNum").unwrap_or("1"))?;
     Ok(json!({"MoveCounters": {"from": from, "to": to, "counter": kind, "count": count}}))
 }

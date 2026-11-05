@@ -1367,6 +1367,7 @@ fn is_imperative(effect: &Effect) -> bool {
                 | Effect::CreateToken { who: Ref::You, .. }
                 | Effect::PutCounters { .. }
                 | Effect::RemoveCounters { .. }
+                | Effect::RemoveAllCounters { .. }
                 | Effect::MoveCounters { .. }
                 | Effect::MultiplyCounters { .. }
                 | Effect::Transform { .. }
@@ -1805,6 +1806,12 @@ impl Writer<'_> {
                     self.counter_place(from, true)?
                 )
             }
+            Effect::RemoveAllCounters { from } => {
+                format!(
+                    "remove all counters from {}",
+                    self.counter_place(from, true)?
+                )
+            }
             Effect::MultiplyCounters {
                 on,
                 counter,
@@ -2195,6 +2202,7 @@ impl Writer<'_> {
             }
             Effect::PutCounters { .. }
             | Effect::RemoveCounters { .. }
+            | Effect::RemoveAllCounters { .. }
             | Effect::MoveCounters { .. }
             | Effect::MultiplyCounters { .. } => self.counters(effect)?,
             Effect::CreateToken { .. } => self.created(effect)?,
