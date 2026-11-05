@@ -8,7 +8,8 @@ use mtg_cards::card::Card;
 use mtg_cards::support::{PrintedCard, PrintedFace, oracle_fingerprint};
 use mtg_cards::{CardDefinition, builtin};
 use mtg_core::ids::PlayerId;
-use mtg_testkit::cards::mountain;
+use mtg_engine::zones::Zone;
+use mtg_testkit::cards::{forest, mountain};
 use mtg_testkit::{Driver, Scenario, ready};
 use rstest::rstest;
 use serde_json::{Value, json};
@@ -100,7 +101,8 @@ fn a_copy_with_a_computed_size_stays_by_hand(#[case] power: Value, #[case] runs:
     assert_eq!(defined(&rules, "Saw Half", "Instant", "{R}").is_ok(), runs);
 }
 
-use crate::r3p3_runs::translated;
+use crate::r3p3_runs::{translated, translated_in};
+use mtg_cli::translate::ctx::World;
 
 #[rstest]
 #[case::the_third_counter_one_at_a_time(1, 3, 5)]
@@ -124,4 +126,51 @@ fn the_nth_counter_is_the_total_on_the_object(
         settle(&mut driver);
     }
     assert_eq!(life(&driver, 0), 20 + gained);
+}
+
+fn zombie() -> Arc<CardDefinition> {
+    Arc::new(
+        CardDefinition::new("Zed")
+            .with_type(mtg_core::card::CardType::Creature)
+            .with_subtype("Zombie")
+            .with_power_toughness(1, 1),
+    )
+}
+
+const PEEK: &str = "Name:Grave Peek\nManaCost:R\nTypes:Sorcery\nA:SP$ PeekAndReveal | PeekAmount$ 1 | RevealValid$ Zombie | RevealOptional$ True | RememberRevealed$ True | SubAbility$ DBToHand\nSVar:DBToHand:DB$ ChangeZone | Defined$ Remembered | Origin$ Library | Destination$ Hand | SubAbility$ DBToGrave\nSVar:DBToGrave:DB$ ChangeZone | Defined$ TopOfLibrary | Origin$ Library | Destination$ Graveyard | Optional$ True | ConditionDefined$ Remembered | ConditionPresent$ Card | ConditionCompare$ EQ0 | SubAbility$ DBCleanup\nSVar:DBCleanup:DB$ Cleanup | ClearRemembered$ True\n";
+
+#[rstest]
+#[case::taken_so_nothing_else_is_asked(zombie(), 1, 1)]
+#[case::not_a_zombie_so_the_top_card_may_go(forest(), 0, 2)]
+fn if_you_dont_take_the_card_counts_the_card_in_its_new_zone(
+    #[case] top: Arc<CardDefinition>,
+    #[case] zombies_in_hand: usize,
+    #[case] graveyard: usize,
+) {
+    let mut world = World::default();
+    world.subtypes.insert("Zombie".to_owned());
+    let spell = translated_in(&world, PEEK, "Grave Peek", "Sorcery", "{R}");
+    let scenario = Scenario::new(2)
+        .hand(0, [spell])
+        .library(0, vec![top, mountain(), mountain(), mountain()])
+        .battlefield(0, [ready(mountain())]);
+    let mut driver = Driver::from_scenario(scenario).unwrap();
+    driver.cast("Grave Peek").unwrap();
+    settle(&mut driver);
+    let me = PlayerId::from_index(0);
+    let count = |zone, name: &str| {
+        let state = driver.state();
+        state
+            .zone(zone)
+            .iter()
+            .filter(|id| state.object(**id).is_some_and(|o| o.card().name == name))
+            .count()
+    };
+    assert_eq!(count(Zone::Hand(me), "Zed"), zombies_in_hand);
+    // The spell is in the graveyard; the peeked card joins it only when nothing was taken.
+    assert_eq!(driver.state().zone(Zone::Graveyard(me)).len(), graveyard);
+    assert_eq!(
+        driver.state().zone(Zone::Library(me)).len(),
+        4 - zombies_in_hand - (graveyard - 1)
+    );
 }

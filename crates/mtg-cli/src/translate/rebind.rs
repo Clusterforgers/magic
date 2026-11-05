@@ -11,8 +11,13 @@ pub fn rebind(ability: &mut Value) {
             for index in 0..items.len() {
                 let (head, tail) = items.split_at_mut(index + 1);
                 if let Some((old, new)) = mark(&mut head[index], tail) {
-                    for after in tail {
+                    for after in tail.iter_mut() {
                         rename(after, &old, &new);
+                    }
+                }
+                if let Some((old, new)) = mark_moved(&mut head[index], tail) {
+                    for after in tail.iter_mut() {
+                        rename_in_conditions(after, &old, &new);
                     }
                 }
             }
@@ -118,6 +123,62 @@ fn rename(value: &mut Value, old: &Value, new: &str) {
             } else {
                 map.values_mut().for_each(|child| rename(child, old, new));
             }
+        }
+        _ => {}
+    }
+}
+
+/// Names the objects a `Move` of a bound name moves when a later `If` of the same list asks about that name: the cards
+/// are other objects once they moved (CR 400.7), so the old name holds none of them ("if you don't put the card into your
+/// hand" would always hold). The old name and the new one.
+fn mark_moved(step: &mut Value, later: &[Value]) -> Option<(String, String)> {
+    let body = step.get_mut("Move")?;
+    let old = body.get("what")?.get("Bound")?.as_str()?.to_owned();
+    if body.get("as").is_some() || !later.iter().any(|step| asks_about(step, &old)) {
+        return None;
+    }
+    let new = format!("{old}_moved");
+    body["as"] = json!(new);
+    Some((old, new))
+}
+
+/// Whether an `If` in the step, or inside it, has a condition that reads the bound name.
+fn asks_about(value: &Value, name: &str) -> bool {
+    match value {
+        Value::Array(items) => items.iter().any(|item| asks_about(item, name)),
+        Value::Object(map) => {
+            map.get("If")
+                .and_then(|body| body.get("condition"))
+                .is_some_and(|condition| reads(condition, name))
+                || map.values().any(|child| asks_about(child, name))
+        }
+        _ => false,
+    }
+}
+
+fn reads(value: &Value, name: &str) -> bool {
+    match value {
+        Value::Array(items) => items.iter().any(|item| reads(item, name)),
+        Value::Object(map) => {
+            map.get("Bound").and_then(Value::as_str) == Some(name)
+                || map.values().any(|child| reads(child, name))
+        }
+        _ => false,
+    }
+}
+
+/// Makes the conditions of the `If` steps in `value` read `new` where they read `old`; the branches keep what they read.
+fn rename_in_conditions(value: &mut Value, old: &str, new: &str) {
+    match value {
+        Value::Array(items) => items
+            .iter_mut()
+            .for_each(|item| rename_in_conditions(item, old, new)),
+        Value::Object(map) => {
+            if let Some(condition) = map.get_mut("If").and_then(|body| body.get_mut("condition")) {
+                rename(condition, &json!({ "Bound": old }), new);
+            }
+            map.values_mut()
+                .for_each(|child| rename_in_conditions(child, old, new));
         }
         _ => {}
     }
