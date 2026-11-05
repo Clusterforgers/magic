@@ -91,6 +91,20 @@ fn table_answer(
     }
 }
 
+/// The answer to a choice of cards the game itself asks outside any resolution: which permanents stay tapped in the untap
+/// step, and else the legend rule.
+fn table_cards(
+    state: &GameState,
+    options: &choose::CardsOptions,
+    choice: &choose::CardsChoice,
+) -> Result<Outcome, EngineError> {
+    if crate::steps::asks_untap(state) {
+        crate::steps::untap_answer(state, options, choice)
+    } else {
+        crate::legend::answer(state, options, choice)
+    }
+}
+
 /// The answer to a mode decision, refused when the cost of the modes it names cannot be paid.
 fn mode_checked(
     state: &GameState,
@@ -175,11 +189,12 @@ pub(crate) fn handle(
         {
             crate::mulligan::opening_choice(state, player, options, &choice)
         }
-        // Nothing resolving and nothing announced: the question is the legend rule of the state-based actions.
+        // Nothing resolving and nothing announced: the question is which permanents stay tapped in the untap step, and else
+        // the legend rule of the state-based actions.
         (DecisionKind::ChooseCards(options), Answer::ChooseCards(choice))
             if state.resolving().is_none() && pending.is_none() && !replacing =>
         {
-            crate::legend::answer(state, options, &choice)
+            table_cards(state, options, &choice)
         }
         (DecisionKind::ChooseCards(options), Answer::ChooseCards(choice)) => {
             let outcome = choose::cards_answer(player, options, choice, pending.is_some())?;

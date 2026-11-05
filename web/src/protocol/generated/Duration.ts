@@ -4,4 +4,4 @@ import type { CounterKind } from "./CounterKind";
 /**
  * How long a continuous effect, rule or delayed trigger lasts.
  */
-export type Duration = "UntilEndOfTurn" | "UntilEndOfCombat" | "UntilYourNextTurn" | "UntilEndOfYourNextTurn" | "WhileSourceOnBattlefield" | "WhileYouControlSource" | "UntilOpponentBecomesMonarch" | "NextUntapStep" | { "WhileHasCounter": CounterKind } | "Forever";
+export type Duration = "UntilEndOfTurn" | "UntilEndOfCombat" | "UntilYourNextTurn" | "UntilEndOfYourNextTurn" | "WhileSourceOnBattlefield" | "WhileYouControlSource" | "WhileSourceTapped" | "UntilOpponentBecomesMonarch" | "NextUntapStep" | { "WhileHasCounter": CounterKind } | "Forever";

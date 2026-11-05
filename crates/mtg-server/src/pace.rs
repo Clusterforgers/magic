@@ -646,6 +646,7 @@ mod tests {
             blockers: (20..).map(ObjectId).take(lethal.len()).collect(),
             excess: trample.then_some(DamageTarget::Player(PlayerId(0))),
             lethal: lethal.to_vec(),
+            unblocked: false,
         })
     }
 

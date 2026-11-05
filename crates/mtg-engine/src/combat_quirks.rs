@@ -134,6 +134,38 @@ pub(crate) fn blocks_while_tapped(state: &GameState, id: ObjectId) -> bool {
         .has(id, |q| matches!(q, CombatQuirk::BlockWhileTapped))
 }
 
+/// Whether the permanent's controller may choose not to untap it during their untap step (CR 502.3).
+pub(crate) fn may_stay_tapped(state: &GameState, id: ObjectId) -> bool {
+    state
+        .rules()
+        .quirks
+        .has(id, |q| matches!(q, CombatQuirk::MayStayTapped))
+}
+
+/// Whether the creature assigns no combat damage (CR 510.1).
+pub(crate) fn assigns_no_combat_damage(state: &GameState, id: ObjectId) -> bool {
+    state
+        .rules()
+        .quirks
+        .has(id, |q| matches!(q, CombatQuirk::AssignsNoCombatDamage))
+}
+
+/// Whether the creature's controller may have it assign combat damage as though it were not blocked (CR 510.1c).
+pub(crate) fn assigns_as_unblocked(state: &GameState, id: ObjectId) -> bool {
+    state
+        .rules()
+        .quirks
+        .has(id, |q| matches!(q, CombatQuirk::AssignsAsUnblocked))
+}
+
+/// Whether a rule makes the creature assign combat damage equal to its toughness (CR 510.1a).
+pub(crate) fn assigns_by_toughness(state: &GameState, id: ObjectId) -> bool {
+    state
+        .rules()
+        .quirks
+        .has(id, |q| matches!(q, CombatQuirk::AssignsByToughness))
+}
+
 /// Whether the creature can't attack unless another creature attacks too.
 pub(crate) fn cant_attack_alone(state: &GameState, id: ObjectId) -> bool {
     state

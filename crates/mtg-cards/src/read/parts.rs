@@ -488,6 +488,16 @@ fn combat_quirk(who: &str, quirk: CombatQuirk) -> String {
             format!("{who} can attack as though they didn't have defender")
         }
         CombatQuirk::BlockWhileTapped => format!("{who} can block as though they were untapped"),
+        CombatQuirk::MayStayTapped => {
+            format!("{who} may choose not to untap during their controller's untap step")
+        }
+        CombatQuirk::AssignsNoCombatDamage => format!("{who} assign no combat damage"),
+        CombatQuirk::AssignsAsUnblocked => {
+            format!("you may have {who} assign combat damage as though they weren't blocked")
+        }
+        CombatQuirk::AssignsByToughness => {
+            format!("{who} assign combat damage equal to their toughness rather than their power")
+        }
         CombatQuirk::MustBeBlocked(Blocking::AtLeastOne) => {
             format!("{who} must be blocked if able")
         }

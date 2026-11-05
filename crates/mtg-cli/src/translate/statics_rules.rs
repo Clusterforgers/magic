@@ -30,7 +30,11 @@ pub fn rule(ctx: &Ctx, p: &Params) -> Option<Tr<Value>> {
         }
         "CantTarget" => cant_target(ctx, p),
         "Panharmonicon" => super::statics_again::again(ctx, p),
-        "CombatDamageToughness" => toughness_damage(p),
+        "CombatDamageToughness" => toughness_damage(ctx, p),
+        "AssignNoCombatDamage" => {
+            objects(ctx, p, mode, "ValidCard").map(|who| combat(&who, "AssignsNoCombatDamage"))
+        }
+        "AssignCombatDamageAsUnblocked" => assign_as_unblocked(ctx, p),
         "CastWithFlash" => super::statics_cast::cast_with_flash(ctx, p),
         "CanAttackDefender" => {
             objects(ctx, p, mode, "ValidCard").map(|who| combat(&who, "AttackDespiteDefender"))
@@ -211,19 +215,33 @@ fn land_plays(ctx: &Ctx, p: &Params) -> Tr<Value> {
 
 /// `CombatDamageToughness`: every creature of the players assigns combat damage equal to its toughness. A line that
 /// limits it to some creatures (those with toughness above power, with defender) would change more than it prints.
-fn toughness_damage(p: &Params) -> Tr<Value> {
+fn toughness_damage(ctx: &Ctx, p: &Params) -> Tr<Value> {
     keys(p, "CombatDamageToughness", &["ValidCard"])?;
     let who = match p.get("ValidCard") {
         Some("Creature.YouCtrl") => "You",
         Some("Creature") => "EachPlayer",
-        Some(other) => {
-            return unmapped(format!(
-                "key:Static.CombatDamageToughness.ValidCard={other}"
-            ));
-        }
+        // Some creatures only: a rule of those creatures, not of the players.
+        Some(other) => return Ok(combat(&object_word(ctx, other)?, "AssignsByToughness")),
         None => return unmapped("key:Static.CombatDamageToughness.no-ValidCard"),
     };
     Ok(json!({"ToughnessAssignsDamage": who}))
+}
+
+/// `AssignCombatDamageAsUnblocked`: the controller may have the creatures assign their combat damage as though they were
+/// not blocked. Only the optional form is the rule the engine asks about.
+fn assign_as_unblocked(ctx: &Ctx, p: &Params) -> Tr<Value> {
+    keys(
+        p,
+        "AssignCombatDamageAsUnblocked",
+        &["ValidCard", "Optional"],
+    )?;
+    if p.get("Optional") != Some("True") {
+        return unmapped("key:Static.AssignCombatDamageAsUnblocked.mandatory");
+    }
+    let Some(word) = p.get("ValidCard") else {
+        return unmapped("key:Static.AssignCombatDamageAsUnblocked.no-ValidCard");
+    };
+    Ok(combat(&object_word(ctx, word)?, "AssignsAsUnblocked"))
 }
 
 /// `IgnoreLegendRule`: the legend rule stops for every player, or for the controller when `ValidCard$` is "permanents you

@@ -57,7 +57,7 @@ pub(crate) fn strike_power(state: &GameState, id: ObjectId, pass: DamagePass) ->
     let on_battlefield = state
         .object(id)
         .is_some_and(|o| o.zone() == Zone::Battlefield);
-    if !on_battlefield {
+    if !on_battlefield || crate::combat_quirks::assigns_no_combat_damage(state, id) {
         return None;
     }
     let rules = keywords::damage_rules(state, id);
@@ -151,13 +151,21 @@ pub(crate) fn division(
         return Division::Fixed(defender.map_or_else(Vec::new, |defender| vec![(defender, power)]));
     }
     let blockers = attacker.blockers();
+    let unblocked = crate::combat_quirks::assigns_as_unblocked(state, attacker.object());
     if blockers.is_empty() {
         return Division::Fixed(match defender {
-            Some(defender) if rules.trample => vec![(defender, power)],
+            Some(defender) if rules.trample || unblocked => vec![(defender, power)],
             _ => Vec::new(),
         });
     }
     if let Some(recorded) = &attacker.assignment {
+        // An answer that gave nothing to any blocker is the choice to assign as though it were not blocked (CR 510.1c).
+        if let Some(defender) = defender
+            && unblocked
+            && recorded.iter().all(|(_, share)| *share == 0)
+        {
+            return Division::Fixed(vec![(defender, power)]);
+        }
         let mut shares: Vec<(DamageTarget, u32)> = blockers
             .iter()
             .map(|blocker| {
@@ -188,6 +196,7 @@ pub(crate) fn division(
             .iter()
             .map(|blocker| lethal_damage(state, *blocker, rules.deathtouch))
             .collect(),
+        unblocked: unblocked && defender.is_some(),
     };
     if has_choice(&options) {
         Division::Choose(options)
@@ -200,6 +209,9 @@ pub(crate) fn division(
 fn has_choice(options: &DamageOptions) -> bool {
     if options.power == 0 {
         return false;
+    }
+    if options.unblocked {
+        return true;
     }
     match (options.excess.is_some(), options.blockers.as_slice()) {
         (_, []) | (false, [_]) => false,
@@ -270,6 +282,13 @@ pub(crate) fn assignment_answer(
     let assigned = assignment
         .iter()
         .fold(0u32, |sum, (_, n)| sum.saturating_add(*n));
+    // Nothing for any blocker is the choice to assign as though the attacker were not blocked (CR 510.1c).
+    if options.unblocked && assigned == 0 {
+        return Ok(Outcome::Events(vec![Event::DamageAssigned {
+            attacker: options.attacker,
+            assignment: Vec::new(),
+        }]));
+    }
     let split_error = IllegalAnswer::DamageSplit {
         power: options.power,
         assigned,
@@ -465,6 +484,7 @@ mod tests {
                 .collect(),
             excess: trample.then_some(PLAYER),
             lethal: lethal.to_vec(),
+            unblocked: false,
         }
     }
 

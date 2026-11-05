@@ -129,10 +129,11 @@ pub fn w17b_cant_cast(state: &GameState, player: PlayerId) -> bool {
 /// Whether the creature `id` assigns combat damage equal to its toughness rather than its power.
 pub(crate) fn w17b_by_toughness(state: &GameState, id: ObjectId) -> bool {
     let rules = &state.rules().w17b;
-    !rules.toughness.is_empty()
-        && state
-            .object(id)
-            .is_some_and(|o| rules.toughness.contains(&controller_of_object(state, o)))
+    crate::combat_quirks::assigns_by_toughness(state, id)
+        || (!rules.toughness.is_empty()
+            && state
+                .object(id)
+                .is_some_and(|o| rules.toughness.contains(&controller_of_object(state, o))))
 }
 
 /// The counters that remain on `object` as it moves to `to`: those on the permanent or on the card, when it keeps them

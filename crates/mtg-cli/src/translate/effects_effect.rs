@@ -7,7 +7,7 @@ use super::amount::amount;
 use super::ctx::{Ctx, Tr, check_keys, only, unmapped};
 use super::effects_obj::duration;
 use super::keyword::keyword_list;
-use super::valid::{defined, objects, subject};
+use super::valid::{defined, objects, selector_any, subject};
 use crate::forge::script::Params;
 
 /// The effects of an `Effect` line.
@@ -179,6 +179,7 @@ fn remembered_static(
     let read = [
         "Mode",
         "ValidAttacker",
+        "ValidBlocker",
         "ValidCreature",
         "ValidCard",
         "Affected",
@@ -205,6 +206,24 @@ fn remembered_static(
         "CantBlockBy" if on_remembered("ValidAttacker") && !part.has("ValidBlocker") => {
             Ok(vec![continuous(who, &[json!("CantBeBlocked")], duration)])
         }
+        "CantBlockBy" if on_remembered("ValidAttacker") => {
+            let blockers = selector_any(ctx, part.get("ValidBlocker").unwrap_or_default())?;
+            let by = json!({"CantBeBlockedBy": blockers});
+            Ok(vec![continuous(who, &[by], duration)])
+        }
+        // "Can't block EFFECTSOURCE": the remembered creature blocks only what is not the source.
+        "CantBlockBy"
+            if part.get("ValidAttacker") == Some("Creature.EffectSource")
+                && on_remembered("ValidBlocker") =>
+        {
+            let only = json!({"CanBlockOnly": [{"Not": {"Is": "This"}}]});
+            Ok(vec![continuous(who, &[only], duration)])
+        }
+        "AssignNoCombatDamage" if on_remembered("ValidCard") => Ok(vec![json!({"Rule": {
+            "rule": {"Combat": {"who": who, "quirk": "AssignsNoCombatDamage"}}, "duration": duration}})]),
+        "MustBlock" if on_remembered("ValidCreature") => Ok(vec![
+            json!({"Rule": {"rule": {"MustBlock": who}, "duration": duration}}),
+        ]),
         "CantAttack" if on_remembered("ValidCard") => {
             Ok(vec![continuous(who, &[json!("CantAttack")], duration)])
         }

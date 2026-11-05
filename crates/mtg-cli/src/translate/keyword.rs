@@ -301,6 +301,9 @@ fn combat_quirks(body: &str) -> Option<Vec<Value>> {
         "CARDNAME can't attack or block alone." => {
             vec![json!("CantAttackAlone"), json!("CantBlockAlone")]
         }
+        "You may choose not to untap CARDNAME during your untap step." => {
+            vec![json!("MayStayTapped")]
+        }
         "CARDNAME must be blocked if able." => {
             vec![json!({"MustBeBlocked": "AtLeastOne"})]
         }
