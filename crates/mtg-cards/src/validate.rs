@@ -3197,8 +3197,8 @@ impl Walker<'_> {
                             ..
                         },
                         ReplaceBy::MoveTo(_),
-                    )
-                    | (ReplaceWhen::Countered { .. }, ReplaceBy::MoveTo(_)) => {}
+                    ) => {}
+                    (ReplaceWhen::Countered { .. }, ReplaceBy::MoveTo(_)) => {}
                     _ => w.uses("Effect", &format!("Shield.{}", tag_of(when))),
                 }
             }
