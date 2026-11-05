@@ -81,6 +81,10 @@ fn cost_item(ctx: &Ctx, item: &CostItem) -> String {
             )
         ),
         CostItem::Mill(count) => format!("mill {}", phrase::counted(ctx, count, "card")),
+        CostItem::Draw(count) => format!("draw {}", phrase::counted(ctx, count, "card")),
+        CostItem::DiscardRandom(count) => {
+            format!("discard {} at random", phrase::counted(ctx, count, "card"))
+        }
         CostItem::PayEnergy(count) => format!("pay {} energy", phrase::amount(ctx, count)),
         CostItem::TapPermanents { filter, count } => {
             format!("tap {} you control", taken(ctx, count, filter))

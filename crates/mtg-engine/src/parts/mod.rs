@@ -16,10 +16,12 @@ pub(crate) mod energy;
 mod evidence;
 mod exile;
 mod exile_hand;
+mod draw;
 mod exile_top;
 mod forage;
 mod life;
 pub(crate) mod mill;
+mod random;
 mod reveal;
 mod sacrifice;
 mod source;
@@ -130,6 +132,10 @@ pub(crate) enum Part {
     Energy(u32),
     /// Cards milled from the top of the payer's library (CR 701.17).
     Mill(u32),
+    /// Cards drawn (CR 121).
+    Draw(u32),
+    /// Cards discarded from the payer's hand at random (CR 701.9b).
+    DiscardRandom(u32),
     /// Objects picked at the announcement.
     Pick(Pick),
     /// A part whose amount is the X announced with the ability, held here as it stands for X = 0; `Part::at` counts it.
@@ -142,6 +148,8 @@ const fn counted(item: &CostItem) -> &'static str {
         CostItem::PayLife(_) => "Cost.PayLife.Counted",
         CostItem::PayEnergy(_) => "Cost.PayEnergy.Counted",
         CostItem::Mill(_) => "Cost.Mill.Counted",
+        CostItem::Draw(_) => "Cost.Draw.Counted",
+        CostItem::DiscardRandom(_) => "Cost.DiscardRandom.Counted",
         CostItem::DamageToYou(_) => "Cost.DamageToYou.Counted",
         CostItem::ExileTop(_) => "Cost.ExileTop.Counted",
         CostItem::Blight(_) => "Cost.Blight.Counted",
@@ -291,6 +299,14 @@ impl Part {
                 let (number, x) = amount(count, item)?;
                 (Part::Mill(number), x)
             }
+            CostItem::Draw(count) => {
+                let (number, x) = amount(count, item)?;
+                (Part::Draw(number), x)
+            }
+            CostItem::DiscardRandom(count) => {
+                let (number, x) = amount(count, item)?;
+                (Part::DiscardRandom(number), x)
+            }
             CostItem::RemoveCounters {
                 counter,
                 count,
@@ -380,6 +396,8 @@ impl Part {
                 Part::Life(_) => Part::Life(x),
                 Part::Energy(_) => Part::Energy(x),
                 Part::Mill(_) => Part::Mill(x),
+                Part::Draw(_) => Part::Draw(x),
+                Part::DiscardRandom(_) => Part::DiscardRandom(x),
                 Part::Damage(_) => Part::Damage(x),
                 Part::ExileTop(_) => Part::ExileTop(x),
                 Part::Unattach => Part::Unattach,
@@ -427,6 +445,8 @@ impl Part {
             Part::Life(_) => life::most(payer),
             Part::Energy(_) => energy::most(payer),
             Part::Mill(_) => mill::most(payer),
+            Part::Draw(_) => draw::most(payer),
+            Part::DiscardRandom(_) => random::most(payer),
             Part::Counters { counter, .. } => counters::most(payer, counter),
             Part::PutCounters { .. } | Part::Damage(_) => u32::MAX,
             Part::Among {
@@ -445,6 +465,8 @@ impl Part {
             Part::Life(_) => "Cost.PayLife",
             Part::Energy(_) => "Cost.PayEnergy",
             Part::Mill(_) => "Cost.Mill",
+            Part::Draw(_) => "Cost.Draw",
+            Part::DiscardRandom(_) => "Cost.DiscardRandom",
             Part::Damage(_) => "Cost.DamageToYou",
             Part::Unattach => "Cost.Unattach",
             Part::ExileTop(_) => "Cost.ExileTop",
@@ -489,6 +511,10 @@ impl Part {
             Part::ExileTop(amount) => format!("Exile the top {amount} cards of your library"),
             Part::Mill(1) => "Mill a card".to_owned(),
             Part::Mill(amount) => format!("Mill {amount} cards"),
+            Part::Draw(1) => "Draw a card".to_owned(),
+            Part::Draw(amount) => format!("Draw {amount} cards"),
+            Part::DiscardRandom(1) => "Discard a card at random".to_owned(),
+            Part::DiscardRandom(amount) => format!("Discard {amount} cards at random"),
             Part::Counters { counter, count } => {
                 let plural = if *count == 1 { "" } else { "s" };
                 format!("Remove {count} {} counter{plural}", counter.name())
@@ -530,6 +556,8 @@ impl Part {
             Part::Life(amount) => life::payable(payer, *amount).then(Vec::new),
             Part::Energy(amount) => energy::payable(payer, *amount).then(Vec::new),
             Part::Mill(amount) => mill::payable(payer, *amount).then(Vec::new),
+            Part::Draw(amount) => draw::payable(payer, *amount).then(Vec::new),
+            Part::DiscardRandom(amount) => random::payable(payer, *amount).then(Vec::new),
             Part::Damage(_) => payer.state.object(payer.source).is_some().then(Vec::new),
             Part::Unattach => unattach::payable(payer).then(Vec::new),
             Part::ExileTop(amount) => exile_top::payable(payer, *amount).then(Vec::new),
@@ -590,6 +618,8 @@ impl Part {
             Part::Life(amount) => life::events(player, *amount),
             Part::Energy(amount) => energy::events(player, *amount),
             Part::Mill(amount) => mill::events(state, player, *amount),
+            Part::Draw(amount) => draw::events(state, player, *amount),
+            Part::DiscardRandom(amount) => random::events(state, player, *amount),
             Part::Damage(amount) => damage::events(state, player, source, *amount),
             Part::Unattach => vec![unattach::event(source)],
             Part::ExileTop(amount) => exile_top::events(state, player, *amount),

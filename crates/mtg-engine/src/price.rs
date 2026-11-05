@@ -59,6 +59,8 @@ const fn unpaid(item: &CostItem) -> &'static str {
         CostItem::Discard { .. } => "Cost.Discard",
         CostItem::PayEnergy(_) => "Cost.PayEnergy",
         CostItem::Mill(_) => "Cost.Mill",
+        CostItem::Draw(_) => "Cost.Draw",
+        CostItem::DiscardRandom(_) => "Cost.DiscardRandom",
         CostItem::DamageToYou(_) => "Cost.DamageToYou",
         CostItem::Unattach => "Cost.Unattach",
         CostItem::ExileTop(_) => "Cost.ExileTop",

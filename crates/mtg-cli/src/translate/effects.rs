@@ -97,6 +97,9 @@ pub fn chain_at(ctx: &mut Ctx, p: &Params, top: bool) -> Tr<Vec<Value>> {
     }
     effects.extend(rest);
     match p.get("Cost") {
+        Some(text) if !top && text.starts_with("Mandatory ") => {
+            Ok(super::cost_more::mandatory(&text["Mandatory ".len()..], effects)?)
+        }
         Some(text) if !top => {
             let cost = super::cost::cost(ctx, text)?;
             Ok(vec![json!({"Pay": {"cost": cost, "paid": effects}})])

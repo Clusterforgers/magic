@@ -85,6 +85,8 @@ fn is_fixed(item: &CostItem) -> bool {
         CostItem::PayLife(amount)
         | CostItem::PayEnergy(amount)
         | CostItem::Mill(amount)
+        | CostItem::Draw(amount)
+        | CostItem::DiscardRandom(amount)
         | CostItem::DamageToYou(amount)
         | CostItem::ExileTop(amount)
         | CostItem::Blight(amount) => fixed(amount),
@@ -111,6 +113,8 @@ fn amount_is_x(item: &CostItem) -> bool {
         CostItem::PayLife(amount)
         | CostItem::PayEnergy(amount)
         | CostItem::Mill(amount)
+        | CostItem::Draw(amount)
+        | CostItem::DiscardRandom(amount)
         | CostItem::DamageToYou(amount)
         | CostItem::ExileTop(amount)
         | CostItem::Blight(amount) => *amount == Amount::X,
@@ -1157,6 +1161,8 @@ impl<'a> Walker<'a> {
                     CostItem::PayLife(amount)
                     | CostItem::PayEnergy(amount)
                     | CostItem::Mill(amount)
+                    | CostItem::Draw(amount)
+                    | CostItem::DiscardRandom(amount)
                     | CostItem::DamageToYou(amount)
                     | CostItem::ExileTop(amount)
                     | CostItem::Blight(amount) => {
@@ -1426,6 +1432,8 @@ impl<'a> Walker<'a> {
                 item,
                 CostItem::PayLife(_)
                     | CostItem::Mill(_)
+                    | CostItem::Draw(_)
+                    | CostItem::DiscardRandom(_)
                     | CostItem::RemoveCounters { .. }
                     | CostItem::Sacrifice { .. }
                     | CostItem::Discard { .. }

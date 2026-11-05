@@ -239,9 +239,8 @@ fn other_if_worded(ctx: &Ctx, verb: &str, number: &str, what: &str) -> Tr<String
 }
 
 fn discard(ctx: &Ctx, number: &str, what: &str) -> Tr<Value> {
-    // Paying at random picks the cards without the payer: the cost has no such pick.
     if what == "Random" {
-        return unmapped("cost:Discard-random");
+        return super::cost_more::random(number);
     }
     // "Hand" discards the whole hand whatever the number says: the count is the hand size.
     if what == "Hand" {

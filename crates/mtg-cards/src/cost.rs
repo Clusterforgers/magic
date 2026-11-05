@@ -48,6 +48,10 @@ pub enum CostItem {
     },
     /// Mill cards from the top of the payer's library ("Mill a card").
     Mill(Amount),
+    /// Draw cards ("Draw a card"): paid only when the library holds that many.
+    Draw(Amount),
+    /// Discard cards from the hand at random ("Discard a card at random"): the payer picks nothing.
+    DiscardRandom(Amount),
     /// Pay energy (`{E}`, CR 107.14): remove that many energy counters from the payer.
     PayEnergy(Amount),
     /// Remove counters of a kind from the source ("Remove a charge counter from this land"), or one from each of `count`
@@ -210,6 +214,8 @@ impl CostItem {
             CostItem::PayLife(amount)
             | CostItem::PayEnergy(amount)
             | CostItem::Mill(amount)
+            | CostItem::Draw(amount)
+            | CostItem::DiscardRandom(amount)
             | CostItem::DamageToYou(amount)
             | CostItem::ExileTop(amount)
             | CostItem::Blight(amount) => Some(amount),
@@ -244,6 +250,8 @@ impl Cost {
             CostItem::PayLife(amount)
             | CostItem::PayEnergy(amount)
             | CostItem::Mill(amount)
+            | CostItem::Draw(amount)
+            | CostItem::DiscardRandom(amount)
             | CostItem::DamageToYou(amount)
             | CostItem::ExileTop(amount)
             | CostItem::Blight(amount) => *amount == Amount::X,
