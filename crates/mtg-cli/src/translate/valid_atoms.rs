@@ -4,7 +4,7 @@
 use serde_json::{Value, json};
 
 use super::ctx::{CARD_TYPES, Ctx, Tr, unmapped};
-use super::valid::{defined, objects, selector_any};
+use super::valid::{capitalize, defined, objects, selector_any};
 
 /// The predicates of a property such as `wasCastFromYourHandByYou` or `blockingSource`, when it is one of these.
 pub fn atom(prop: &str) -> Option<Vec<Value>> {
@@ -68,6 +68,25 @@ pub fn atom(prop: &str) -> Option<Vec<Value>> {
     was_cast(prop.strip_prefix("wasCast")?)
 }
 
+const COLORS: [&str; 5] = ["White", "Blue", "Black", "Red", "Green"];
+
+/// The tests that make `color` the most common among all permanents or tied for it: no other color has more permanents.
+fn prominent(color: &str) -> Option<Vec<Value>> {
+    if !COLORS.contains(&color) {
+        return None;
+    }
+    let permanents = |name: &str| json!({"Count": [{"Color": name}]});
+    Some(
+        COLORS
+            .iter()
+            .filter(|other| **other != color)
+            .map(|other| {
+                json!({"Test": {"left": permanents(color), "op": "Ge", "right": permanents(other)}})
+            })
+            .collect(),
+    )
+}
+
 /// Whether a reference names players only (a word that does not is a gap, or an object whose controller is wanted).
 pub(super) fn is_player(reference: &Value) -> bool {
     match reference {
@@ -126,6 +145,22 @@ pub fn argument(ctx: &Ctx, prop: &str) -> Tr<Option<Vec<Value>>> {
     };
     let one = |value: Value| Ok(Some(vec![value]));
     match head {
+        // The color is the most common among all permanents or tied for it: no other color has more permanents.
+        "MostProminentColor" => match prominent(&capitalize(arg)) {
+            Some(tests) => Ok(Some(tests)),
+            None => unmapped(format!("valid:{prop}")),
+        },
+        // The object has one of the colors that are the most common among all permanents (or tied for it).
+        "SharesColorWith" if arg == "MostProminentColor" => {
+            let each = COLORS.iter().filter_map(|color| {
+                let mut all = vec![json!({"Color": color})];
+                all.extend(prominent(color)?);
+                let failing: Vec<Value> =
+                    all.into_iter().map(|pred| json!({"Not": pred})).collect();
+                Some(json!({"Not": {"AnyOf": failing}}))
+            });
+            one(json!({"AnyOf": each.collect::<Vec<_>>()}))
+        }
         // This attachment sits on one of the objects the word names.
         "AttachedTo" => one(json!({"AttachedTo": objects_of(ctx, arg)?})),
         // The object has an attachment that matches: the opposite direction of `AttachedTo`.

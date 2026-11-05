@@ -27,6 +27,37 @@ fn a_fact_word_reads_to_its_predicate(#[case] spec: &str, #[case] expected: Valu
 }
 
 #[rstest]
+#[case::black("black", "Black")]
+#[case::white("white", "White")]
+fn the_most_common_color_is_no_color_with_fewer_permanents_than_another(
+    #[case] word: &str,
+    #[case] color: &str,
+) {
+    let found = selected(&format!("Card.MostProminentColor {word}"));
+    let tests = found.as_array().unwrap();
+    assert_eq!(tests.len(), 4, "{found}");
+    for test in tests {
+        assert_eq!(test["Test"]["op"], "Ge");
+        assert_eq!(test["Test"]["left"], json!({"Count": [{"Color": color}]}));
+    }
+}
+
+#[test]
+fn sharing_a_color_with_the_most_common_one_is_any_of_five_colors() {
+    let found = selected("Creature.SharesColorWith MostProminentColor");
+    assert_eq!(found[1]["AnyOf"].as_array().unwrap().len(), 5, "{found}");
+}
+
+#[test]
+fn a_group_that_shares_a_most_common_color_is_not_the_group_that_shares_one_color() {
+    let script = "Name:T\nTypes:Enchantment\nS:Mode$ Continuous | Affected$ Creature.nonArtifact | AddPower$ 2 | CheckSVar$ X | SVarCompare$ EQY\nSVar:X:Count$Valid Creature.nonArtifact+SharesColorWith MostProminentColor\nSVar:Y:Count$Valid Creature.nonArtifact\n";
+    assert_eq!(
+        gaps(script),
+        vec!["amount:Count$Valid-most-common-color-of-a-group".to_owned()]
+    );
+}
+
+#[rstest]
 #[case::power_even("powerEven", "Eq")]
 #[case::power_odd("powerOdd", "Ne")]
 #[case::mana_value_even("cmcEven", "Eq")]

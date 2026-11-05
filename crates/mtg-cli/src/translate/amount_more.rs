@@ -74,6 +74,9 @@ fn valid_count(ctx: &Ctx, word: &str, rest: &str) -> Tr<Value> {
         _ => None,
     };
     let (spec, reduce) = rest.split_once('$').unwrap_or((rest, ""));
+    if spec.contains("SharesColorWith MostProminentColor") && !spec.contains("EnchantedBy") {
+        return unmapped("amount:Count$Valid-most-common-color-of-a-group");
+    }
     let of = selector_in(ctx, spec, zone)?;
     reduced(word, &of, reduce)
 }

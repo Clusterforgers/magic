@@ -227,6 +227,16 @@ fn counted(ctx: &Ctx, body: &Body<'_>, gaps: &mut Gaps) -> Option<Value> {
                 gaps.note(&Unmapped("amount:Count$Valid-without-a-filter".to_owned()));
                 return None;
             };
+            // "They all share a color" is not "they share a most common color": a count over a group stays a gap, and
+            // one over the enchanted object alone is that object's test.
+            if filter.contains("SharesColorWith MostProminentColor")
+                && !filter.contains("EnchantedBy")
+            {
+                gaps.note(&Unmapped(
+                    "amount:Count$Valid-most-common-color-of-a-group".to_owned(),
+                ));
+                return None;
+            }
             let of = zone_selector(ctx, zones, filter);
             let of = gaps.take(of.map(Value::from))?;
             let word = format!("Valid{}", zones.join(","));
