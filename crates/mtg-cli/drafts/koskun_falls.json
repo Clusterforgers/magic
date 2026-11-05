@@ -1,0 +1,27 @@
+{
+  "oracle_id": "a9b9e798-debc-4f2c-9770-e16f670082f7",
+  "name": "Koskun Falls",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Koskun Falls",
+      "oracle_fingerprint": "70087943f4280a60ef4670786b0094fa",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": [{ "TapPermanents": { "filter": [{ "Type": "Creature" }] } }],
+                  "unpaid": [{ "Sacrifice": { "filter": ["This"] } }]
+                }
+              }
+            ]
+          }
+        },
+        { "Rule": { "rule": { "AttackTax": { "attacked": "Player", "mana": "{2}" } } } }
+      ]
+    }
+  ]
+}

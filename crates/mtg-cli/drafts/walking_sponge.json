@@ -1,0 +1,54 @@
+{
+  "oracle_id": "000e5d65-96c3-498b-bd01-72b1a1991850",
+  "name": "Walking Sponge",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Walking Sponge",
+      "oracle_fingerprint": "cbf89f23cba0e1780a1d9bbd46d9dec2",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "OneOf": {
+                  "options": [
+                    [
+                      {
+                        "Continuous": {
+                          "affected": { "Target": 0 },
+                          "mods": [{ "RemoveKeyword": "Flying" }],
+                          "duration": "UntilEndOfTurn"
+                        }
+                      }
+                    ],
+                    [
+                      {
+                        "Continuous": {
+                          "affected": { "Target": 0 },
+                          "mods": [{ "RemoveKeyword": "FirstStrike" }],
+                          "duration": "UntilEndOfTurn"
+                        }
+                      }
+                    ],
+                    [
+                      {
+                        "Continuous": {
+                          "affected": { "Target": 0 },
+                          "mods": [{ "RemoveKeyword": "Trample" }],
+                          "duration": "UntilEndOfTurn"
+                        }
+                      }
+                    ]
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

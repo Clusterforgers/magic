@@ -1,0 +1,105 @@
+{
+  "oracle_id": "a5f5e662-b32c-44f1-848d-0228f0fe1eb6",
+  "name": "Journey to the Lost City",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Journey to the Lost City",
+      "oracle_fingerprint": "6200986dee7c19eb5f882aa929ee30fc",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [
+              { "ExileTop": { "count": 4, "as": "exiled" } },
+              {
+                "RollDice": {
+                  "sides": 20,
+                  "results": [
+                    {
+                      "from": 1,
+                      "to": 9,
+                      "effects": [
+                        {
+                          "Choose": {
+                            "from": {
+                              "Each": [
+                                { "Type": "Land" },
+                                { "Is": { "Bound": "exiled" } },
+                                { "In": "Exile" },
+                                { "OwnedBy": "You" }
+                              ]
+                            },
+                            "count": { "min": 0, "max": 1 },
+                            "as": "picked2"
+                          }
+                        },
+                        { "Move": { "what": { "Bound": "picked2" }, "to": { "Battlefield": {} } } }
+                      ]
+                    },
+                    {
+                      "from": 10,
+                      "to": 19,
+                      "effects": [
+                        {
+                          "CreateToken": {
+                            "token": {
+                              "Custom": {
+                                "name": "Wolf",
+                                "colors": ["Green"],
+                                "types": ["Creature"],
+                                "subtypes": ["Wolf"],
+                                "power": 2,
+                                "toughness": 2
+                              }
+                            },
+                            "as": "token3"
+                          }
+                        },
+                        {
+                          "PutCounters": {
+                            "on": { "Bound": "token3" },
+                            "counter": "+1/+1",
+                            "count": {
+                              "Count": [
+                                { "Is": { "Bound": "exiled" } },
+                                {
+                                  "AnyOf": [
+                                    { "In": "Battlefield" },
+                                    { "In": "Hand" },
+                                    { "In": "Library" },
+                                    { "In": "Graveyard" },
+                                    { "In": "Exile" },
+                                    { "In": "Stack" }
+                                  ]
+                                },
+                                { "Type": "Creature" }
+                              ]
+                            }
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "from": 20,
+                      "to": 20,
+                      "effects": [
+                        {
+                          "Move": {
+                            "what": { "Each": [{ "ExiledWith": "This" }, { "In": "Exile" }] },
+                            "to": { "Battlefield": {} }
+                          }
+                        },
+                        { "Sacrifice": { "filter": ["This"] } }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

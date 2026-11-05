@@ -1,0 +1,27 @@
+{
+  "oracle_id": "11cd0c42-4148-4d82-9172-b1a1967fe319",
+  "name": "Browbeat",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Browbeat",
+      "oracle_fingerprint": "4b4334ad8daa5dadac07b25ba0232847",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              {
+                "Pay": {
+                  "who": "EachPlayer",
+                  "cost": [{ "DamageToYou": 5 }],
+                  "unpaid": [{ "Draw": { "who": { "Target": 0 }, "count": 3 } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

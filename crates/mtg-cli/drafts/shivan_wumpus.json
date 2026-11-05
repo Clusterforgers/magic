@@ -1,0 +1,28 @@
+{
+  "oracle_id": "4b78222f-6973-42a3-987e-eb8cc8fd6c76",
+  "name": "Shivan Wumpus",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Shivan Wumpus",
+      "oracle_fingerprint": "eed8abb8e4fa9f4f7c12cd36105e941e",
+      "abilities": [
+        { "Keyword": "Trample" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Pay": {
+                  "who": "EachPlayer",
+                  "cost": [{ "Sacrifice": { "filter": [{ "Type": "Land" }] } }],
+                  "paid": [{ "Move": { "what": "This", "to": { "Library": { "place": "Top" } } } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

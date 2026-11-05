@@ -1,0 +1,30 @@
+{
+  "oracle_id": "50994df7-300d-4e30-897a-0974dc0820ee",
+  "name": "Relentless X-ATM092",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Relentless X-ATM092",
+      "oracle_fingerprint": "7b5f5d1a2de2f1ad7d2c7c076af43e24",
+      "abilities": [
+        { "Static": { "affected": "This", "mods": [{ "MinBlockers": 3 }] } },
+        {
+          "Activated": {
+            "cost": "{8}",
+            "from": "Graveyard",
+            "effects": [
+              {
+                "Move": {
+                  "what": "This",
+                  "to": {
+                    "Battlefield": { "tapped": true, "counters": [[{ "Other": "finality" }, 1]] }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

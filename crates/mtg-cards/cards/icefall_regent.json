@@ -1,0 +1,39 @@
+{
+  "oracle_id": "0cf18002-1bbe-40b3-ae15-fa51e61e9391",
+  "name": "Icefall Regent",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Icefall Regent",
+      "oracle_fingerprint": "9f857a0f99ea01b188b23cb6011adb02",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }] } }
+            ],
+            "effects": [
+              { "Tap": { "what": { "Target": 0 } } },
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": ["DoesntUntap"],
+                  "duration": "WhileYouControlSource"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "CostModifier": {
+            "applies_to": ["Spell", { "ControlledBy": "Opponents" }, { "Targeting": ["This"] }],
+            "change": "Increase",
+            "mana": "{2}"
+          }
+        }
+      ]
+    }
+  ]
+}

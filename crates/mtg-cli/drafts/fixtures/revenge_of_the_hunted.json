@@ -1,0 +1,137 @@
+{
+  "object": "card",
+  "id": "36f7d663-115c-4ad0-a072-633df054cce4",
+  "oracle_id": "6292edfc-d75b-465e-9e10-9d259551b1a5",
+  "multiverse_ids": [
+    275712
+  ],
+  "mtgo_id": 44215,
+  "mtgo_foil_id": 44216,
+  "tcgplayer_id": 58294,
+  "cardmarket_id": 254284,
+  "name": "Revenge of the Hunted",
+  "lang": "en",
+  "released_at": "2012-05-04",
+  "uri": "https://api.scryfall.com/cards/36f7d663-115c-4ad0-a072-633df054cce4",
+  "scryfall_uri": "https://scryfall.com/card/avr/191/revenge-of-the-hunted?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T11:04:22Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/3/6/36f7d663-115c-4ad0-a072-633df054cce4.jpg?1783940662",
+    "normal": "https://cards.scryfall.io/normal/front/3/6/36f7d663-115c-4ad0-a072-633df054cce4.jpg?1783940662",
+    "large": "https://cards.scryfall.io/large/front/3/6/36f7d663-115c-4ad0-a072-633df054cce4.jpg?1783940662",
+    "png": "https://cards.scryfall.io/png/front/3/6/36f7d663-115c-4ad0-a072-633df054cce4.png?1783940662",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/3/6/36f7d663-115c-4ad0-a072-633df054cce4.jpg?1783940662",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/3/6/36f7d663-115c-4ad0-a072-633df054cce4.jpg?1783940662",
+    "thumb": "https://cards.scryfall.io/thumb/front/3/6/36f7d663-115c-4ad0-a072-633df054cce4.webp?1783940662",
+    "grid": "https://cards.scryfall.io/grid/front/3/6/36f7d663-115c-4ad0-a072-633df054cce4.webp?1783940662",
+    "display": "https://cards.scryfall.io/display/front/3/6/36f7d663-115c-4ad0-a072-633df054cce4.webp?1783940662",
+    "art": "https://cards.scryfall.io/art/front/3/6/36f7d663-115c-4ad0-a072-633df054cce4.webp?1783940662",
+    "crop": "https://cards.scryfall.io/crop/front/3/6/36f7d663-115c-4ad0-a072-633df054cce4.webp?1783940662",
+    "jpeg": "https://cards.scryfall.io/normal/front/3/6/36f7d663-115c-4ad0-a072-633df054cce4.jpg?1783940662"
+  },
+  "mana_cost": "{4}{G}{G}",
+  "cmc": 6.0,
+  "type_line": "Sorcery",
+  "oracle_text": "Until end of turn, target creature gets +6/+6 and gains trample, and all creatures able to block it this turn do so.\nMiracle {G} (You may cast this card for its miracle cost when you draw it if it's the first card you drew this turn.)",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [
+    "Miracle"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "039810a9-92d7-4f2d-b2d0-ca661ac586c0",
+  "set": "avr",
+  "set_name": "Avacyn Restored",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/039810a9-92d7-4f2d-b2d0-ca661ac586c0",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Aavr&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/avr?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/36f7d663-115c-4ad0-a072-633df054cce4/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A6292edfc-d75b-465e-9e10-9d259551b1a5&unique=prints",
+  "collector_number": "191",
+  "digital": false,
+  "rarity": "rare",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Christopher Moeller",
+  "artist_ids": [
+    "21e10012-06ae-44f2-b38d-3824dd2e73d4"
+  ],
+  "illustration_id": "689cdbad-889f-4a2c-9caf-ad54bc2b7cbc",
+  "border_color": "black",
+  "frame": "2003",
+  "frame_effects": [
+    "miracle"
+  ],
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 17223,
+  "penny_rank": 10393,
+  "prices": {
+    "usd": "0.33",
+    "usd_foil": "0.95",
+    "usd_etched": null,
+    "eur": "0.48",
+    "eur_foil": "1.37",
+    "tix": "0.02"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=275712&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DRevenge%2Bof%2Bthe%2BHunted",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DRevenge%2Bof%2Bthe%2BHunted",
+    "edhrec": "https://edhrec.com/route/?cc=Revenge+of+the+Hunted"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F58294%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=254284&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/44215?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

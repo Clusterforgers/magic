@@ -1,0 +1,44 @@
+{
+  "oracle_id": "8d24c12a-a300-4199-b2a9-3d5ead8df617",
+  "name": "Reluctant Role Model",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Reluctant Role Model",
+      "oracle_fingerprint": "2373bacefa068737fa690cc801e0de6f",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Main2", "whose": "You" } },
+            "if": {
+              "CountOf": { "subject": "This", "selector": ["Tapped"], "op": "Ge", "right": 1 }
+            },
+            "effects": [
+              {
+                "Either": {
+                  "first": [{ "PutCounters": { "on": "This", "counter": { "Other": "flying" } } }],
+                  "second": [
+                    {
+                      "Either": {
+                        "first": [
+                          { "PutCounters": { "on": "This", "counter": { "Other": "lifelink" } } }
+                        ],
+                        "second": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 131, "end": 266 }
+          }
+        }
+      ]
+    }
+  ]
+}

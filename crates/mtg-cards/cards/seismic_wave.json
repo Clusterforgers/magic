@@ -1,0 +1,33 @@
+{
+  "oracle_id": "6a56e2ef-75dd-47d5-b61c-11faaba8cd9a",
+  "name": "Seismic Wave",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Seismic Wave",
+      "oracle_fingerprint": "0a9ef57d98dd170036d1f4b4f1832b1f",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "AnyTarget" }, { "what": "Opponent" }],
+            "effects": [
+              { "DealDamage": { "to": { "Target": 0 }, "amount": 2 } },
+              {
+                "DealDamage": {
+                  "to": {
+                    "Each": [
+                      { "Type": "Creature" },
+                      { "Not": { "Type": "Artifact" } },
+                      { "ControlledBy": { "Target": 1 } }
+                    ]
+                  },
+                  "amount": 1
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,44 @@
+{
+  "oracle_id": "33b401b1-cf94-4c7a-8a8a-426ac3d87bd0",
+  "name": "Baeloth Barrityl, Entertainer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Baeloth Barrityl, Entertainer",
+      "oracle_fingerprint": "ae1ae5cdfb5d06eb9d78931f7ac0b76b",
+      "abilities": [
+        {
+          "Static": {
+            "affected": {
+              "Each": [
+                { "Type": "Creature" },
+                {
+                  "Compare": {
+                    "stat": "Power",
+                    "op": "Lt",
+                    "to": { "Stat": { "of": "This", "stat": "Power" } }
+                  }
+                },
+                { "ControlledBy": "Opponents" }
+              ]
+            },
+            "mods": ["Goaded"]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Creature" }, { "AnyOf": ["Attacking", "Blocking"] }, "Goaded"],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "effects": [{ "CreateToken": { "token": { "Named": "treasure" } } }]
+          }
+        },
+        { "Keyword": "ChooseABackground" }
+      ]
+    }
+  ]
+}

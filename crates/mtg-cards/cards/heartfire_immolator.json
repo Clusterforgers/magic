@@ -1,0 +1,34 @@
+{
+  "oracle_id": "1e414a4f-6e76-4cbe-9c69-d52852cd5bc0",
+  "name": "Heartfire Immolator",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Heartfire Immolator",
+      "oracle_fingerprint": "cdccaf7ddea13500c6e14e0e51bc8600",
+      "abilities": [
+        { "Keyword": "Prowess" },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{R}" }, "SacrificeSelf"],
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "AnyOf": [{ "Type": "Creature" }, { "Type": "Planeswalker" }] }]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "DealDamage": {
+                  "to": { "Target": 0 },
+                  "amount": { "Stat": { "of": "This", "stat": "Power" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

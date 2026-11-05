@@ -1,0 +1,62 @@
+{
+  "oracle_id": "02c60b8b-f665-4279-a00f-ae03991df4a6",
+  "name": "Azusa's Many Journeys // Likeness of the Seeker",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Azusa's Many Journeys",
+      "oracle_fingerprint": "3439b1d307d0a370793899a2db0d21d0",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 1 } },
+            "effects": [
+              { "Rule": { "rule": { "AdditionalLandPlays": {} }, "duration": "UntilEndOfTurn" } }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 2 } },
+            "effects": [{ "GainLife": { "amount": 3 } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 3 } },
+            "effects": [
+              { "Exile": { "what": "This", "as": "exiled" } },
+              {
+                "Move": {
+                  "what": { "Bound": "exiled" },
+                  "to": { "Battlefield": { "under": "You", "transformed": true } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Likeness of the Seeker",
+      "oracle_fingerprint": "143bc2947431663e7144c956472d699f",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "BecomesBlocked": { "what": ["This"] } },
+            "effects": [
+              {
+                "Choose": {
+                  "from": { "Each": [{ "Type": "Land" }, { "ControlledBy": "You" }] },
+                  "count": { "min": 0, "max": 3 },
+                  "as": "untap"
+                }
+              },
+              { "Untap": { "what": { "Bound": "untap" } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

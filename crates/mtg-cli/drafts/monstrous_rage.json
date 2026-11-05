@@ -1,0 +1,52 @@
+{
+  "oracle_id": "646a2371-54c0-4492-ac2f-20f109d6108c",
+  "name": "Monstrous Rage",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Monstrous Rage",
+      "oracle_fingerprint": "e7a258857a9b89875e5f7044cf782af6",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "ModifyPT": { "power": 2, "toughness": 0 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Monster",
+                      "types": ["Enchantment"],
+                      "subtypes": ["Aura", "Role"],
+                      "abilities": [
+                        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+                        {
+                          "Static": {
+                            "affected": "Attached",
+                            "mods": [
+                              { "ModifyPT": { "power": 1, "toughness": 1 } },
+                              { "AddKeyword": "Trample" }
+                            ]
+                          }
+                        }
+                      ]
+                    }
+                  },
+                  "as": "token"
+                }
+              },
+              { "Attach": { "what": { "Bound": "token" }, "to": { "Target": 0 } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

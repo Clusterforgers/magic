@@ -1,42 +1,4 @@
 {
   "source": "forge",
-  "oracle_matches": true,
-  "lines": [
-    {
-      "face": 0,
-      "tag": "K",
-      "text": "etbCounter:P1P1:Y:no Condition:CARDNAME enters with a number of +1/+1 counters on it equal to the amount of mana spent to cast it.",
-      "abilities": [
-        0
-      ],
-      "gap": null
-    },
-    {
-      "face": 0,
-      "tag": "T",
-      "text": "Whenever NICKNAME attacks, you may exile target creature card with lesser power from your graveyard. If you do, create a token that's a copy of that card and that's tapped and attacking. Exile the token at the end of combat.",
-      "abilities": [],
-      "gap": "key:ChangeZone.Optional"
-    }
-  ],
-  "proof": {
-    "marks": [
-      {
-        "face": 0,
-        "span": {
-          "start": 0,
-          "end": 96
-        },
-        "mark": "Auto"
-      },
-      {
-        "face": 0,
-        "span": {
-          "start": 97,
-          "end": 314
-        },
-        "mark": "ByHand"
-      }
-    ]
-  }
+  "oracle_matches": true
 }

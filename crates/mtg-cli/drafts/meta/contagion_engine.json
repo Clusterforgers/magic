@@ -1,0 +1,42 @@
+{
+  "source": "forge",
+  "oracle_matches": true,
+  "lines": [
+    {
+      "face": 0,
+      "tag": "A",
+      "text": "Proliferate twice.",
+      "abilities": [],
+      "gap": "key:Proliferate.Amount"
+    },
+    {
+      "face": 0,
+      "tag": "T",
+      "text": "When CARDNAME enters, put a -1/-1 counter on each creature target player controls.",
+      "abilities": [
+        0
+      ],
+      "gap": null
+    }
+  ],
+  "proof": {
+    "marks": [
+      {
+        "face": 0,
+        "span": {
+          "start": 0,
+          "end": 87
+        },
+        "mark": "Auto"
+      },
+      {
+        "face": 0,
+        "span": {
+          "start": 88,
+          "end": 243
+        },
+        "mark": "ByHand"
+      }
+    ]
+  }
+}

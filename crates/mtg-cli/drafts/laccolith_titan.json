@@ -1,0 +1,39 @@
+{
+  "oracle_id": "0d9ac5e0-2b4e-4e7b-937e-9e9bfce7e96b",
+  "name": "Laccolith Titan",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Laccolith Titan",
+      "oracle_fingerprint": "18fb85681442e200023d2b995de03ef6",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "BecomesBlocked": { "what": ["This"] } },
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "DealDamage": {
+                        "to": { "Target": 0 },
+                        "amount": { "Stat": { "of": "This", "stat": "Power" } }
+                      }
+                    },
+                    {
+                      "Rule": {
+                        "rule": { "Combat": { "who": "This", "quirk": "AssignsNoCombatDamage" } },
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

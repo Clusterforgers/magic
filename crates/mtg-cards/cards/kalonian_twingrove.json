@@ -1,0 +1,68 @@
+{
+  "oracle_id": "cbaf8e87-da5b-4120-afec-8fe2db55b835",
+  "name": "Kalonian Twingrove",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Kalonian Twingrove",
+      "oracle_fingerprint": "7e734f3a259a38bc1800036ef9d55ca5",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              {
+                "SetPT": {
+                  "power": { "Count": [{ "Subtype": "Forest" }, { "ControlledBy": "You" }] },
+                  "toughness": { "Count": [{ "Subtype": "Forest" }, { "ControlledBy": "You" }] }
+                }
+              }
+            ],
+            "defining": true
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Treefolk Warrior",
+                      "colors": ["Green"],
+                      "types": ["Creature"],
+                      "subtypes": ["Treefolk", "Warrior"],
+                      "power": 0,
+                      "toughness": 0,
+                      "abilities": [
+                        {
+                          "Static": {
+                            "affected": "This",
+                            "mods": [
+                              {
+                                "SetPT": {
+                                  "power": {
+                                    "Count": [{ "Subtype": "Forest" }, { "ControlledBy": "You" }]
+                                  },
+                                  "toughness": {
+                                    "Count": [{ "Subtype": "Forest" }, { "ControlledBy": "You" }]
+                                  }
+                                }
+                              }
+                            ],
+                            "defining": true
+                          }
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

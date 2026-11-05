@@ -1,0 +1,31 @@
+{
+  "oracle_id": "b5a390fd-2864-4481-84b4-41e8fac91a80",
+  "name": "Ashnod's Battle Gear",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ashnod's Battle Gear",
+      "oracle_fingerprint": "bd1ada35b3d1a1cf20c54748ae3306d8",
+      "abilities": [
+        { "Rule": { "rule": { "Combat": { "who": "This", "quirk": "MayStayTapped" } } } },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{2}" }, "Tap"],
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "ModifyPT": { "power": 2, "toughness": -2 } }],
+                  "duration": "WhileSourceTapped"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,35 @@
+{
+  "oracle_id": "068699a9-dd5c-428b-96eb-fd085dda71e9",
+  "name": "Mezzio Mugger",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mezzio Mugger",
+      "oracle_fingerprint": "a4619e2998fac5346168d1887a51ea85",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [
+              { "ExileTop": { "who": "EachPlayer", "as": "exiled" } },
+              {
+                "Rule": {
+                  "rule": {
+                    "MayCast": {
+                      "from": "Exile",
+                      "only": { "Bound": "exiled" },
+                      "play": true,
+                      "spend_as": "AnyColor"
+                    }
+                  },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Blitz": "{2}{R}" } }
+      ]
+    }
+  ]
+}

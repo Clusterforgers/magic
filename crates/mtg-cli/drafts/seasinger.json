@@ -1,0 +1,36 @@
+{
+  "oracle_id": "13745b92-1e30-4075-9733-5d00da11408c",
+  "name": "Seasinger",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Seasinger",
+      "oracle_fingerprint": "606d8b75bcb83b995eb5f79a3e8cd37e",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "State": {
+                "condition": {
+                  "Compare": {
+                    "left": { "Count": [{ "Subtype": "Island" }, { "ControlledBy": "You" }] },
+                    "op": "Eq",
+                    "right": 0
+                  }
+                }
+              }
+            },
+            "effects": [{ "Sacrifice": { "filter": ["This"] } }]
+          }
+        },
+        { "Rule": { "rule": { "Combat": { "who": "This", "quirk": "MayStayTapped" } } } },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 120, "end": 267 }
+          }
+        }
+      ]
+    }
+  ]
+}

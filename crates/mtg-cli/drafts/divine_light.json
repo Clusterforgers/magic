@@ -1,0 +1,30 @@
+{
+  "oracle_id": "924bf3bb-9f06-4a2c-a17f-3fe11551bcf2",
+  "name": "Divine Light",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Divine Light",
+      "oracle_fingerprint": "3d3ff42fd3617f034f0ebdf434cdfd21",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Shield": {
+                  "when": {
+                    "Damage": {
+                      "to": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] }
+                    }
+                  },
+                  "by": "Prevent",
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

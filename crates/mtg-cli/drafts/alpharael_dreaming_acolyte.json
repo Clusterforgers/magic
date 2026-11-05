@@ -1,0 +1,34 @@
+{
+  "oracle_id": "e4be4071-7910-460f-90f3-6c4d8cc9db65",
+  "name": "Alpharael, Dreaming Acolyte",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Alpharael, Dreaming Acolyte",
+      "oracle_fingerprint": "4eca43e501492f796341d671ad8533f4",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              { "Draw": { "count": 2 } },
+              {
+                "Pay": {
+                  "cost": [{ "Discard": { "filter": [{ "Type": "Artifact" }] } }],
+                  "unpaid": [{ "Discard": { "count": 2 } }]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "AddKeyword": "Deathtouch" }],
+            "condition": "YourTurn"
+          }
+        }
+      ]
+    }
+  ]
+}

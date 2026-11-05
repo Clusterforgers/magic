@@ -1,0 +1,43 @@
+{
+  "oracle_id": "a6c05941-2cfb-4dac-a7c0-ab808187eb7c",
+  "name": "Liliana Vess",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Liliana Vess",
+      "oracle_fingerprint": "45dd1dc58ed261408f5e3c364d3a6341",
+      "abilities": [
+        {
+          "Loyalty": {
+            "cost": { "Plus": 1 },
+            "targets": [{ "what": "Player" }],
+            "effects": [{ "Discard": { "who": { "Target": 0 } } }]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Minus": 2 },
+            "effects": [
+              { "Search": { "filter": [], "as": "card" } },
+              { "Shuffle": {} },
+              { "Move": { "what": { "Bound": "card" }, "to": { "Library": { "place": "Top" } } } }
+            ]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Minus": 8 },
+            "effects": [
+              {
+                "Move": {
+                  "what": { "Each": [{ "Type": "Creature" }, { "In": "Graveyard" }] },
+                  "to": { "Battlefield": { "under": "You" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

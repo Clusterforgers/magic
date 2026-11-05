@@ -1,0 +1,54 @@
+{
+  "oracle_id": "72e1a239-11a7-4dbe-b093-65d395e3ccc9",
+  "name": "Dance of Many",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dance of Many",
+      "oracle_fingerprint": "083b54bc56b73bfaeb7e087e6fb7dd8e",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }, { "Not": "Token" }] } }],
+            "effects": [
+              { "CreateToken": { "token": { "CopyOf": { "of": { "Target": 0 } } }, "as": "copy" } },
+              { "Remember": { "what": { "Bound": "copy" }, "slot": "remembered" } }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield" } },
+            "effects": [
+              { "Exile": { "what": { "Remembered": { "on": "This", "slot": "remembered" } } } },
+              { "Forget": { "slot": "remembered" } }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Is": { "Remembered": { "on": "This", "slot": "remembered" } } }],
+                "from": "Battlefield"
+              }
+            },
+            "effects": [
+              { "Sacrifice": { "filter": ["This"] } },
+              { "Forget": { "slot": "remembered" } }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [
+              { "Pay": { "cost": "{U}{U}", "unpaid": [{ "Sacrifice": { "filter": ["This"] } }] } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

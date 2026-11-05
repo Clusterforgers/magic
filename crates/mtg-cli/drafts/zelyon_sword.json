@@ -1,0 +1,29 @@
+{
+  "oracle_id": "991038e0-f8d6-42e6-b8a2-3d77aae7a256",
+  "name": "Zelyon Sword",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Zelyon Sword",
+      "oracle_fingerprint": "f6b2b6830189e4f0c782aaeaa13c8da1",
+      "abilities": [
+        { "Rule": { "rule": { "Combat": { "who": "This", "quirk": "MayStayTapped" } } } },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{3}" }, "Tap"],
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "ModifyPT": { "power": 2, "toughness": 0 } }],
+                  "duration": "WhileSourceTapped"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

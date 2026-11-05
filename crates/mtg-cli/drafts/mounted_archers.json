@@ -1,0 +1,28 @@
+{
+  "oracle_id": "22517690-3ec1-49c9-951f-93eb3114423a",
+  "name": "Mounted Archers",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mounted Archers",
+      "oracle_fingerprint": "f9907e30adaa64515977d0a4843bc017",
+      "abilities": [
+        { "Keyword": "Reach" },
+        {
+          "Activated": {
+            "cost": "{W}",
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "BlocksAdditional": 1 }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

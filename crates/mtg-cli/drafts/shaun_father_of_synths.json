@@ -1,0 +1,70 @@
+{
+  "oracle_id": "0bd11d6c-b707-4b37-b49c-a3274b2a5a81",
+  "name": "Shaun, Father of Synths",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Shaun, Father of Synths",
+      "oracle_fingerprint": "6d218acb81fd5128cba06367c3f51228",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "GroupAttacks": { "what": [{ "Type": "Creature" }, { "ControlledBy": "You" }] }
+            },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Type": "Creature" },
+                    "Attacking",
+                    "Other",
+                    { "Supertype": "Legendary" },
+                    { "ControlledBy": "You" }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "CreateToken": {
+                        "token": {
+                          "CopyOf": {
+                            "of": { "Target": 0 },
+                            "except": [
+                              { "AddType": "Artifact" },
+                              { "AddType": "Creature" },
+                              { "AddSubtype": "Synth" },
+                              { "RemoveSupertype": "Legendary" }
+                            ]
+                          }
+                        },
+                        "tapped": true,
+                        "attacking": true
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield" } },
+            "effects": [
+              {
+                "Exile": {
+                  "what": { "Each": [{ "Subtype": "Synth" }, { "ControlledBy": "You" }, "Token"] }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

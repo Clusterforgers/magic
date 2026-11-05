@@ -1,0 +1,28 @@
+{
+  "oracle_id": "c11fef0f-972d-4756-9902-fd3e3af00707",
+  "name": "Culvert Ambusher",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Culvert Ambusher",
+      "oracle_fingerprint": "dfa6abdb927b30bd3dd9cd52f2e2dfe0",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+                { "TurnedFaceUp": { "what": ["This"] } }
+              ]
+            },
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              { "Rule": { "rule": { "MustBlock": { "Target": 0 } }, "duration": "UntilEndOfTurn" } }
+            ]
+          }
+        },
+        { "Keyword": { "Disguise": "{4}{G}" } }
+      ]
+    }
+  ]
+}

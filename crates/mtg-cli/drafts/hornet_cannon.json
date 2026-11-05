@@ -1,0 +1,41 @@
+{
+  "oracle_id": "595ae6f1-e66a-4774-943a-9d5368f4a3b4",
+  "name": "Hornet Cannon",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Hornet Cannon",
+      "oracle_fingerprint": "60d7f92f419a9293f0d733f7339f532d",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{3}" }, "Tap"],
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Hornet",
+                      "types": ["Artifact", "Creature"],
+                      "subtypes": ["Insect"],
+                      "power": 1,
+                      "toughness": 1,
+                      "abilities": [{ "Keyword": "Flying" }, { "Keyword": "Haste" }]
+                    }
+                  },
+                  "as": "token"
+                }
+              },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "End" } },
+                  "effects": [{ "Destroy": { "what": { "Bound": "token" } } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

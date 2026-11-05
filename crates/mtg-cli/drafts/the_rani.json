@@ -1,0 +1,61 @@
+{
+  "oracle_id": "ac9b0bdf-caf8-4dba-a900-e59de35e77d7",
+  "name": "The Rani",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "The Rani",
+      "oracle_fingerprint": "dde981b31f1b99461b37624786d3d6e5",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+                { "Attacks": { "what": ["This"] } }
+              ]
+            },
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }, "Other"] } }],
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Mark of the Rani",
+                      "colors": ["Red"],
+                      "types": ["Enchantment"],
+                      "subtypes": ["Aura"],
+                      "abilities": [
+                        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+                        {
+                          "Static": {
+                            "affected": "Attached",
+                            "mods": [{ "ModifyPT": { "power": 2, "toughness": 2 } }, "Goaded"]
+                          }
+                        }
+                      ]
+                    }
+                  },
+                  "as": "token"
+                }
+              },
+              { "Attach": { "what": { "Bound": "token" }, "to": { "Target": 0 } } }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "DealsDamage": {
+                "source": [{ "Type": "Creature" }, "Goaded"],
+                "to": "Opponents",
+                "combat": true
+              }
+            },
+            "effects": [{ "CreateToken": { "token": { "Named": "clue" } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,27 @@
+{
+  "oracle_id": "b416d7ac-ec56-40e2-ba3d-bcecd1b73175",
+  "name": "Primeval Light",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Primeval Light",
+      "oracle_fingerprint": "844ffba6870c829cbcc8657c61fd1832",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              {
+                "Destroy": {
+                  "what": {
+                    "Each": [{ "Type": "Enchantment" }, { "ControlledBy": { "Target": 0 } }]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

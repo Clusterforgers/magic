@@ -1,7 +1,7 @@
 {
   "oracle_id": "0fb70b94-0847-4155-8953-cb53fef82ef1",
   "name": "Curse of Hospitality",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Curse of Hospitality",
@@ -17,9 +17,31 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 66, "end": 321 }
+          "Triggered": {
+            "when": {
+              "DealsDamage": {
+                "source": [{ "Type": "Creature" }],
+                "to": "AttachedPlayer",
+                "combat": true
+              }
+            },
+            "effects": [
+              { "ExileTop": { "who": "Triggering", "as": "exiled" } },
+              {
+                "Rule": {
+                  "rule": {
+                    "MayCast": {
+                      "who": { "ControllerOf": "Dealer" },
+                      "from": "Exile",
+                      "only": { "Bound": "exiled" },
+                      "play": true,
+                      "spend_as": "AnyColor"
+                    }
+                  },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
           }
         }
       ]

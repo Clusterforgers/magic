@@ -1,0 +1,39 @@
+{
+  "oracle_id": "ef6eb92f-93e6-40e4-a7a6-8e826bb6a5e0",
+  "name": "Imaryll, Elfhame Elite",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Imaryll, Elfhame Elite",
+      "oracle_fingerprint": "17b003e21e8c8f1265c371359c164399",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [
+                    {
+                      "ModifyPT": {
+                        "power": {
+                          "Count": [{ "Subtype": "Elf" }, { "ControlledBy": "You" }, "Other"]
+                        },
+                        "toughness": {
+                          "Count": [{ "Subtype": "Elf" }, { "ControlledBy": "You" }, "Other"]
+                        }
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        { "Rule": { "rule": { "Combat": { "who": "This", "quirk": "AssignsAsUnblocked" } } } }
+      ]
+    }
+  ]
+}

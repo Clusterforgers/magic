@@ -1,0 +1,27 @@
+{
+  "oracle_id": "598a7347-b772-4839-a02f-b930076c1354",
+  "name": "Ancient Kavu",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ancient Kavu",
+      "oracle_fingerprint": "140caf7ac7c09936e2dbbc0b868076c6",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{2}",
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "SetColors": [] }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

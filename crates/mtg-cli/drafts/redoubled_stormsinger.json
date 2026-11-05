@@ -1,0 +1,54 @@
+{
+  "oracle_id": "792c4d38-41e6-49eb-bd4e-de0a5ac8330f",
+  "name": "Redoubled Stormsinger",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Redoubled Stormsinger",
+      "oracle_fingerprint": "d95967baca0f37a701986193461f3e26",
+      "abilities": [
+        { "Keyword": "FirstStrike" },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "CopyOf": {
+                      "of": {
+                        "Each": [
+                          { "Type": "Creature" },
+                          "Token",
+                          { "ControlledBy": "You" },
+                          "EnteredThisTurn"
+                        ]
+                      }
+                    }
+                  },
+                  "tapped": true,
+                  "attacking": true,
+                  "as": "copy"
+                }
+              },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "End" } },
+                  "effects": [
+                    {
+                      "Sacrifice": {
+                        "who": { "ControllerOf": { "Bound": "copy" } },
+                        "filter": [{ "Is": { "Bound": "copy" } }],
+                        "count": { "Count": [{ "Is": { "Bound": "copy" } }] }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

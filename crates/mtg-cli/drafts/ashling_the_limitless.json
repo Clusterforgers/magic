@@ -1,0 +1,76 @@
+{
+  "oracle_id": "77a9e7cf-76e9-4323-8504-a5b831de00be",
+  "name": "Ashling, the Limitless",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ashling, the Limitless",
+      "oracle_fingerprint": "a450abb07280480004ad3f5a9e11d1e9",
+      "abilities": [
+        {
+          "Static": {
+            "affected": {
+              "Each": [
+                { "Subtype": "Elemental" },
+                { "OwnedBy": "You" },
+                {
+                  "AnyOf": [
+                    { "Type": "Artifact" },
+                    { "Type": "Battle" },
+                    { "Type": "Creature" },
+                    { "Type": "Enchantment" },
+                    { "Type": "Land" },
+                    { "Type": "Planeswalker" }
+                  ]
+                },
+                { "In": "Hand" }
+              ]
+            },
+            "mods": [{ "AddKeyword": { "Evoke": "{4}" } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "Sacrificed": {
+                "what": [{ "Subtype": "Elemental" }, { "Not": "Token" }],
+                "by": "You"
+              }
+            },
+            "effects": [
+              { "CreateToken": { "token": { "CopyOf": { "of": "Triggering" } }, "as": "copy" } },
+              {
+                "Continuous": {
+                  "affected": { "Bound": "copy" },
+                  "mods": [{ "AddKeyword": "Haste" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "End", "whose": "You" } },
+                  "effects": [
+                    {
+                      "Pay": {
+                        "cost": "{W}{U}{B}{R}{G}",
+                        "unpaid": [
+                          {
+                            "Sacrifice": {
+                              "who": { "ControllerOf": { "Bound": "copy" } },
+                              "filter": [{ "Is": { "Bound": "copy" } }],
+                              "count": { "Count": [{ "Is": { "Bound": "copy" } }] }
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

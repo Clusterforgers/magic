@@ -1,0 +1,30 @@
+{
+  "oracle_id": "b86ccfc1-a26b-4942-9d77-fef7676c77be",
+  "name": "Mole Worms",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mole Worms",
+      "oracle_fingerprint": "f8beb85ec3fd87d4e985822ee10bc2a0",
+      "abilities": [
+        { "Rule": { "rule": { "Combat": { "who": "This", "quirk": "MayStayTapped" } } } },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "targets": [{ "what": { "Object": [{ "Type": "Land" }] } }],
+            "effects": [
+              { "Tap": { "what": { "Target": 0 } } },
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": ["DoesntUntap"],
+                  "duration": "WhileSourceTapped"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

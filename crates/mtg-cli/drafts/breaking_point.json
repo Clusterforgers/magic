@@ -1,0 +1,33 @@
+{
+  "oracle_id": "a648b9ed-810a-41db-af40-3b5b4658db90",
+  "name": "Breaking Point",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Breaking Point",
+      "oracle_fingerprint": "5f5b4b9795510a84b73970bacc928c40",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Pay": {
+                  "who": "EachPlayer",
+                  "cost": [{ "DamageToYou": 6 }],
+                  "unpaid": [
+                    {
+                      "Destroy": {
+                        "what": { "Each": [{ "Type": "Creature" }] },
+                        "regenerate": false
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

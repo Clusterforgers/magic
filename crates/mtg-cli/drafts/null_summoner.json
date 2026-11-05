@@ -1,0 +1,57 @@
+{
+  "oracle_id": "56c412be-daab-4461-931f-1e2ea8ecd75d",
+  "name": "Null Summoner",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Null Summoner",
+      "oracle_fingerprint": "f29980d9c241d717ffca489754659da6",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": ["This", { "WasCast": { "by": "You" } }],
+                "to": "Battlefield"
+              }
+            },
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "Not": { "Type": "Land" } },
+                      { "In": "Hand" },
+                      { "OwnedBy": { "Target": 0 } }
+                    ]
+                  },
+                  "as": "picked"
+                }
+              },
+              { "Exile": { "what": { "Bound": "picked" } } }
+            ]
+          }
+        },
+        {
+          "Rule": {
+            "rule": {
+              "MayCast": {
+                "what": [{ "Not": { "Type": "Land" } }, { "ExiledWith": "This" }],
+                "from": "Exile",
+                "spend_as": "AnyType"
+              }
+            },
+            "condition": {
+              "Compare": {
+                "left": { "Count": [{ "In": "Graveyard" }, { "OwnedBy": "You" }] },
+                "op": "Ge",
+                "right": 7
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

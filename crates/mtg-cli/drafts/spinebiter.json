@@ -1,0 +1,15 @@
+{
+  "oracle_id": "9b844a0c-590f-46c7-b53e-c99398e0d8c0",
+  "name": "Spinebiter",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Spinebiter",
+      "oracle_fingerprint": "6aea4e9cbbb7f6b2f7216cf8d49ee523",
+      "abilities": [
+        { "Keyword": "Infect" },
+        { "Rule": { "rule": { "Combat": { "who": "This", "quirk": "AssignsAsUnblocked" } } } }
+      ]
+    }
+  ]
+}

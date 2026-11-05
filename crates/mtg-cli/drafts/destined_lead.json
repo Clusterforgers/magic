@@ -1,0 +1,52 @@
+{
+  "oracle_id": "7ebde396-6672-491a-a6ce-1de49b12379b",
+  "name": "Destined // Lead",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Destined",
+      "oracle_fingerprint": "f233f704d73410c0ad40545d06f113a2",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    { "ModifyPT": { "power": 1, "toughness": 0 } },
+                    { "AddKeyword": "Indestructible" }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Lead",
+      "oracle_fingerprint": "8974c2b9ca8a958214630fec2a2bce12",
+      "abilities": [
+        { "Keyword": "Aftermath" },
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Rule": {
+                  "rule": {
+                    "Combat": { "who": { "Target": 0 }, "quirk": { "MustBeBlocked": "Every" } }
+                  },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

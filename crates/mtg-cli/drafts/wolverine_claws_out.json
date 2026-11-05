@@ -1,0 +1,20 @@
+{
+  "oracle_id": "7100fe0c-1c2a-461a-83b3-684d44279081",
+  "name": "Wolverine, Claws Out",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Wolverine, Claws Out",
+      "oracle_fingerprint": "3b4f15f63ef89b35d11f4c3fc64a8659",
+      "abilities": [
+        { "Rule": { "rule": { "Combat": { "who": "This", "quirk": "AssignsAsUnblocked" } } } },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 78, "end": 152 }
+          }
+        }
+      ]
+    }
+  ]
+}

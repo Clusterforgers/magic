@@ -1,0 +1,41 @@
+{
+  "oracle_id": "9e120284-0fcc-432c-9471-9106eab71025",
+  "name": "Cinder Shade",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Cinder Shade",
+      "oracle_fingerprint": "8a1367c99df00decc01402d9a651a0a8",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{B}",
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{R}" }, "SacrificeSelf"],
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "DealDamage": {
+                  "to": { "Target": 0 },
+                  "amount": { "Stat": { "of": "This", "stat": "Power" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

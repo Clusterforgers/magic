@@ -1,7 +1,7 @@
 {
   "oracle_id": "bd7c5a8b-cf62-41e1-a664-b16e3e5d142b",
   "name": "Laughing Jasper Flint",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Laughing Jasper Flint",
@@ -20,9 +20,44 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 86, "end": 335 }
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              {
+                "ExileTop": {
+                  "who": { "Target": 0 },
+                  "count": {
+                    "Count": [
+                      {
+                        "AnyOf": [
+                          { "Subtype": "Assassin" },
+                          { "Subtype": "Mercenary" },
+                          { "Subtype": "Pirate" },
+                          { "Subtype": "Rogue" },
+                          { "Subtype": "Warlock" }
+                        ]
+                      },
+                      { "ControlledBy": "You" }
+                    ]
+                  },
+                  "as": "exiled"
+                }
+              },
+              {
+                "Rule": {
+                  "rule": {
+                    "MayCast": {
+                      "what": [{ "Not": { "Type": "Land" } }],
+                      "from": "Exile",
+                      "only": { "Bound": "exiled" },
+                      "spend_as": "AnyType"
+                    }
+                  },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
           }
         }
       ]

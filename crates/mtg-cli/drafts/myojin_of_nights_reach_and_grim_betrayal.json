@@ -1,7 +1,7 @@
 {
   "oracle_id": "46376bc5-a18c-4986-99d7-b3707c516c23",
   "name": "Myojin of Night's Reach and Grim Betrayal",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Myojin of Night's Reach and Grim Betrayal",
@@ -24,9 +24,24 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 133, "end": 374 }
+          "Activated": {
+            "cost": [{ "RemoveCounters": { "counter": { "Other": "indestructible" } } }],
+            "effects": [
+              {
+                "Discard": {
+                  "who": "Opponents",
+                  "count": { "Count": [{ "In": "Hand" }, { "OwnedBy": "Opponents" }] }
+                }
+              },
+              {
+                "Move": {
+                  "what": {
+                    "Each": [{ "Type": "Creature" }, "EnteredThisTurn", { "In": "Graveyard" }]
+                  },
+                  "to": { "Battlefield": { "under": "You" } }
+                }
+              }
+            ]
           }
         }
       ]

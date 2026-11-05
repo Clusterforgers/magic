@@ -1,0 +1,52 @@
+{
+  "oracle_id": "9ac62ff0-6d13-4091-ba84-fbfbe742a4f4",
+  "name": "Disciple of Perdition",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Disciple of Perdition",
+      "oracle_fingerprint": "7461ceb32bd1137569f3a327464a2bd6",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } },
+            "effects": [
+              {
+                "Modal": {
+                  "choose": {
+                    "min": 1,
+                    "max": {
+                      "When": {
+                        "condition": {
+                          "Compare": { "left": { "Life": "You" }, "op": "Eq", "right": 13 }
+                        },
+                        "then": 2,
+                        "otherwise": 1
+                      }
+                    }
+                  },
+                  "modes": [
+                    { "effects": [{ "Draw": {} }, { "LoseLife": { "amount": 1 } }] },
+                    {
+                      "targets": [{ "what": "Opponent" }],
+                      "effects": [
+                        {
+                          "Exile": {
+                            "what": {
+                              "Each": [{ "In": "Graveyard" }, { "OwnedBy": { "Target": 0 } }]
+                            }
+                          }
+                        },
+                        { "LoseLife": { "who": { "Target": 0 }, "amount": 1 } }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

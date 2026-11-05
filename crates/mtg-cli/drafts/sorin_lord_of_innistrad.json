@@ -1,0 +1,87 @@
+{
+  "oracle_id": "5c780dda-ee76-482a-a610-53c321c4fdec",
+  "name": "Sorin, Lord of Innistrad",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sorin, Lord of Innistrad",
+      "oracle_fingerprint": "777ea51b5b3db15b2ef95f7e8165233e",
+      "abilities": [
+        {
+          "Loyalty": {
+            "cost": { "Plus": 1 },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Vampire",
+                      "colors": ["Black"],
+                      "types": ["Creature"],
+                      "subtypes": ["Vampire"],
+                      "power": 1,
+                      "toughness": 1,
+                      "abilities": [{ "Keyword": "Lifelink" }]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Minus": 2 },
+            "effects": [
+              {
+                "CreateEmblem": {
+                  "abilities": [
+                    {
+                      "Static": {
+                        "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                        "mods": [{ "ModifyPT": { "power": 1, "toughness": 0 } }]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Minus": 6 },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    {
+                      "AnyOf": [
+                        { "Type": "Creature" },
+                        {
+                          "Not": {
+                            "AnyOf": [{ "Not": { "Type": "Planeswalker" } }, { "Not": "Other" }]
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                },
+                "bounds": { "min": 0, "max": 3 }
+              }
+            ],
+            "effects": [
+              { "Destroy": { "what": { "Target": 0 }, "as": "destroyed" } },
+              {
+                "Move": {
+                  "what": { "Each": [{ "Is": { "Bound": "destroyed" } }, { "In": "Graveyard" }] },
+                  "to": { "Battlefield": { "under": "You" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

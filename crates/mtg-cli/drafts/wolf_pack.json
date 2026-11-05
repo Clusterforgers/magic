@@ -1,0 +1,14 @@
+{
+  "oracle_id": "ec58a82f-8c78-4f88-90d5-e32d83be7a48",
+  "name": "Wolf Pack",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Wolf Pack",
+      "oracle_fingerprint": "a8b85d1eabd97b1215d65f7feb7aabc1",
+      "abilities": [
+        { "Rule": { "rule": { "Combat": { "who": "This", "quirk": "AssignsAsUnblocked" } } } }
+      ]
+    }
+  ]
+}

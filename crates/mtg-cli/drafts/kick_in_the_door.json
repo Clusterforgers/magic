@@ -1,0 +1,36 @@
+{
+  "oracle_id": "d3278ddb-c198-450d-946e-8547e5c96dd1",
+  "name": "Kick in the Door",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Kick in the Door",
+      "oracle_fingerprint": "6647688a0d7c662a98cad38e9c7958d2",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              { "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1" } },
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "AddKeyword": "Haste" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "CantBeBlockedBy": [{ "Subtype": "Wall" }] }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              { "Venture": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

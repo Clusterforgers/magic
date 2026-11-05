@@ -1,0 +1,40 @@
+{
+  "oracle_id": "d73df13d-942a-4104-ac9d-de7c100c086f",
+  "name": "Cosmic Horror",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Cosmic Horror",
+      "oracle_fingerprint": "e56db1cb460860a779938d702419207c",
+      "abilities": [
+        { "Keyword": "FirstStrike" },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": "{3}{B}{B}{B}",
+                  "unpaid": [{ "Destroy": { "what": "This", "as": "destroyed" } }]
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Bound": "destroyed" },
+                      "selector": [],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [{ "DealDamage": { "to": "You", "amount": 7 } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

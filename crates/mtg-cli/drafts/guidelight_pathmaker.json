@@ -1,0 +1,40 @@
+{
+  "oracle_id": "f8103865-5086-4f16-a35a-a56acdab1547",
+  "name": "Guidelight Pathmaker",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Guidelight Pathmaker",
+      "oracle_fingerprint": "d1cdce6627299d894d5e7066db153514",
+      "abilities": [
+        { "Keyword": "Vigilance" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              { "Search": { "filter": [{ "Type": "Artifact" }], "reveal": true, "as": "found" } },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Bound": "found" },
+                      "selector": [{ "Compare": { "stat": "ManaValue", "op": "Le", "to": 2 } }],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [
+                    { "Move": { "what": { "Bound": "found" }, "to": { "Battlefield": {} } } }
+                  ]
+                }
+              },
+              { "Move": { "what": { "Bound": "found" }, "to": "Hand" } },
+              { "Shuffle": {} }
+            ]
+          }
+        },
+        { "Keyword": { "Crew": 2 } }
+      ]
+    }
+  ]
+}

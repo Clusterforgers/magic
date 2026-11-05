@@ -1,0 +1,57 @@
+{
+  "oracle_id": "b8f05217-1f61-4d6d-be17-7fb15f1d1e32",
+  "name": "Momo's Heist",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Momo's Heist",
+      "oracle_fingerprint": "af9e09bbb608aa3387edd05ac192ce55",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Artifact" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "SetController": "You" }],
+                  "duration": "Forever"
+                }
+              },
+              { "Untap": { "what": { "Target": 0 } } },
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "AddKeyword": "Haste" }],
+                  "duration": "Forever"
+                }
+              },
+              {
+                "RepeatEach": {
+                  "over": { "Target": 0 },
+                  "as": "pumped",
+                  "effects": [
+                    {
+                      "DelayedTrigger": {
+                        "when": { "StepBegins": { "step": "End" } },
+                        "effects": [
+                          {
+                            "Sacrifice": {
+                              "who": { "ControllerOf": { "Bound": "pumped" } },
+                              "filter": [{ "Is": { "Bound": "pumped" } }],
+                              "count": { "Count": [{ "Is": { "Bound": "pumped" } }] }
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

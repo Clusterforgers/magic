@@ -1,0 +1,26 @@
+{
+  "oracle_id": "d7c18aa7-4184-4658-9a5a-0b64992348ee",
+  "name": "Mystic Meditation",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mystic Meditation",
+      "oracle_fingerprint": "04a933c5716b3d1bce73bf5ebbd694aa",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "Draw": { "count": 3 } },
+              {
+                "Pay": {
+                  "cost": [{ "Discard": { "filter": [{ "Type": "Creature" }] } }],
+                  "unpaid": [{ "Discard": { "count": 2 } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

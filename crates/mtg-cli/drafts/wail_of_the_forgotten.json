@@ -1,0 +1,78 @@
+{
+  "oracle_id": "030b5408-f216-43e4-8593-f78d22821876",
+  "name": "Wail of the Forgotten",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Wail of the Forgotten",
+      "oracle_fingerprint": "62434d66a9986d554fed41ce6ed9a8f0",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Modal": {
+                  "choose": {
+                    "min": 1,
+                    "max": {
+                      "When": {
+                        "condition": {
+                          "Compare": {
+                            "left": {
+                              "Count": [
+                                { "OwnedBy": "You" },
+                                {
+                                  "AnyOf": [
+                                    { "Type": "Artifact" },
+                                    { "Type": "Battle" },
+                                    { "Type": "Creature" },
+                                    { "Type": "Enchantment" },
+                                    { "Type": "Land" },
+                                    { "Type": "Planeswalker" }
+                                  ]
+                                },
+                                { "In": "Graveyard" }
+                              ]
+                            },
+                            "op": "Ge",
+                            "right": 8
+                          }
+                        },
+                        "then": 3,
+                        "otherwise": 1
+                      }
+                    }
+                  },
+                  "modes": [
+                    {
+                      "targets": [{ "what": { "Object": [{ "Not": { "Type": "Land" } }] } }],
+                      "effects": [{ "Move": { "what": { "Target": 0 }, "to": "Hand" } }]
+                    },
+                    {
+                      "targets": [{ "what": "Opponent" }],
+                      "effects": [{ "Discard": { "who": { "Target": 0 } } }]
+                    },
+                    {
+                      "effects": [
+                        { "LookAtTop": { "count": 3, "as": "top" } },
+                        {
+                          "Choose": {
+                            "from": { "Each": [{ "In": "Library" }, { "Is": { "Bound": "top" } }] },
+                            "count": { "min": 0, "max": 1 },
+                            "as": "kept2"
+                          }
+                        },
+                        { "Move": { "what": { "Bound": "kept2" }, "to": "Hand" } },
+                        { "Move": { "what": { "Bound": "top" }, "to": "Graveyard" } }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,77 @@
+{
+  "oracle_id": "2699005b-a471-429f-a9d8-fbf2077ee2fd",
+  "name": "Disciple of Freyalise // Garden of Freyalise",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Disciple of Freyalise",
+      "oracle_fingerprint": "53618a903250c02f9fcd8ca41c0b84fe",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "Sacrifice": {
+                        "filter": [{ "Type": "Creature" }, "Other"],
+                        "as": "sacrificed"
+                      }
+                    },
+                    {
+                      "If": {
+                        "condition": {
+                          "Compare": {
+                            "left": { "Bound": "sacrificed~moved" },
+                            "op": "Ge",
+                            "right": 1
+                          }
+                        },
+                        "then": [
+                          {
+                            "GainLife": {
+                              "amount": {
+                                "Stat": { "of": { "Bound": "sacrificed" }, "stat": "Power" }
+                              }
+                            }
+                          },
+                          {
+                            "Draw": {
+                              "count": {
+                                "Stat": { "of": { "Bound": "sacrificed" }, "stat": "Power" }
+                              }
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Garden of Freyalise",
+      "oracle_fingerprint": "a69e0f9d579df9b79c91921ee10fdadf",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "PayLifeOrTapped": 3 }
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Green"] } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,20 @@
+{
+  "oracle_id": "d5ea9176-30c1-4152-9086-322f39245f46",
+  "name": "Preacher",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Preacher",
+      "oracle_fingerprint": "f0d5c7310f146bbb4bbae413357539fe",
+      "abilities": [
+        { "Rule": { "rule": { "Combat": { "who": "This", "quirk": "MayStayTapped" } } } },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 66, "end": 185 }
+          }
+        }
+      ]
+    }
+  ]
+}

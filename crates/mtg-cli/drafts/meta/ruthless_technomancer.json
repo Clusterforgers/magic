@@ -1,0 +1,42 @@
+{
+  "source": "forge",
+  "oracle_matches": true,
+  "lines": [
+    {
+      "face": 0,
+      "tag": "A",
+      "text": "Return target creature card with power X or less from your graveyard to the battlefield. X can't be 0.",
+      "abilities": [],
+      "gap": "cost:XMin1"
+    },
+    {
+      "face": 0,
+      "tag": "T",
+      "text": "When CARDNAME enters, you may sacrifice another creature you control. If you do, create a number of Treasure tokens equal to that creature's power.",
+      "abilities": [
+        0
+      ],
+      "gap": null
+    }
+  ],
+  "proof": {
+    "marks": [
+      {
+        "face": 0,
+        "span": {
+          "start": 0,
+          "end": 152
+        },
+        "mark": "Auto"
+      },
+      {
+        "face": 0,
+        "span": {
+          "start": 153,
+          "end": 286
+        },
+        "mark": "ByHand"
+      }
+    ]
+  }
+}

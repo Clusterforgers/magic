@@ -1,0 +1,35 @@
+{
+  "oracle_id": "2c438ecb-b127-4450-9395-2d1eea294f30",
+  "name": "Domineering Will",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Domineering Will",
+      "oracle_fingerprint": "73c13715f25b3313ed8222a400aed7a3",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": "Player" },
+              {
+                "what": { "Object": [{ "Type": "Creature" }, { "Not": "Attacking" }] },
+                "bounds": { "min": 0, "max": 3 }
+              }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 1 },
+                  "mods": [{ "SetController": { "Target": 0 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              { "Untap": { "what": { "Target": 1 } } },
+              { "Rule": { "rule": { "MustBlock": { "Target": 1 } }, "duration": "UntilEndOfTurn" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,72 @@
+{
+  "oracle_id": "c1372f18-9b33-40e8-bfe2-dc4ca3b3ef55",
+  "name": "Shatter Assumptions",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Shatter Assumptions",
+      "oracle_fingerprint": "5859ecd1007dbfe7cac2dc5774711b35",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Modal": {
+                  "modes": [
+                    {
+                      "targets": [{ "what": "Opponent" }],
+                      "effects": [
+                        {
+                          "Reveal": {
+                            "what": { "Each": [{ "OwnedBy": { "Target": 0 } }, { "In": "Hand" }] }
+                          }
+                        },
+                        {
+                          "Discard": {
+                            "who": { "Target": 0 },
+                            "count": {
+                              "Count": [
+                                { "In": "Hand" },
+                                { "OwnedBy": { "Target": 0 } },
+                                { "Not": { "Type": "Land" } },
+                                "Colorless"
+                              ]
+                            },
+                            "filter": [{ "Not": { "Type": "Land" } }, "Colorless"]
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "targets": [{ "what": "Opponent" }],
+                      "effects": [
+                        {
+                          "Reveal": {
+                            "what": { "Each": [{ "OwnedBy": { "Target": 0 } }, { "In": "Hand" }] }
+                          }
+                        },
+                        {
+                          "Discard": {
+                            "who": { "Target": 0 },
+                            "count": {
+                              "Count": [
+                                { "In": "Hand" },
+                                { "OwnedBy": { "Target": 0 } },
+                                { "Compare": { "stat": "Colors", "op": "Ge", "to": 2 } }
+                              ]
+                            },
+                            "filter": [{ "Compare": { "stat": "Colors", "op": "Ge", "to": 2 } }]
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,34 @@
+{
+  "oracle_id": "46b83657-1699-4162-a4bb-b792da396fe6",
+  "name": "Cleansing",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Cleansing",
+      "oracle_fingerprint": "f2af7dee003c2aecd0336fb89c8ed561",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "RepeatEach": {
+                  "over": { "Each": [{ "Type": "Land" }] },
+                  "as": "each",
+                  "effects": [
+                    {
+                      "Pay": {
+                        "who": "EachPlayer",
+                        "cost": [{ "PayLife": 1 }],
+                        "unpaid": [{ "Destroy": { "what": { "Bound": "each" } } }]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

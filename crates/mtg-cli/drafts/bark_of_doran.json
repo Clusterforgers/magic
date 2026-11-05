@@ -1,0 +1,42 @@
+{
+  "oracle_id": "db3ba239-2239-4e9d-ad70-cff32ed24578",
+  "name": "Bark of Doran",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Bark of Doran",
+      "oracle_fingerprint": "511b55be158502df5ecbff7a34cd080c",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "ModifyPT": { "power": 0, "toughness": 1 } }]
+          }
+        },
+        {
+          "Rule": {
+            "rule": {
+              "Combat": {
+                "who": {
+                  "Each": [
+                    { "Type": "Creature" },
+                    { "Is": "Attached" },
+                    {
+                      "Test": {
+                        "left": { "Stat": { "of": "Candidate", "stat": "Power" } },
+                        "op": "Lt",
+                        "right": { "Stat": { "of": "Candidate", "stat": "Toughness" } }
+                      }
+                    }
+                  ]
+                },
+                "quirk": "AssignsByToughness"
+              }
+            }
+          }
+        },
+        { "Keyword": { "Equip": "{1}" } }
+      ]
+    }
+  ]
+}

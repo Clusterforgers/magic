@@ -1,0 +1,64 @@
+{
+  "oracle_id": "4d504d5f-02a4-4104-89b7-88884483f53a",
+  "name": "Predators' Hour",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Predators' Hour",
+      "oracle_fingerprint": "789476e846bcb94f0afd03af75d7007d",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                  "mods": [
+                    { "AddKeyword": "Menace" },
+                    {
+                      "GrantAbility": {
+                        "Triggered": {
+                          "when": {
+                            "DealsDamage": {
+                              "source": ["This"],
+                              "to": "EachPlayer",
+                              "combat": true
+                            }
+                          },
+                          "effects": [
+                            { "LookAtTop": { "who": "Triggering", "as": "top" } },
+                            {
+                              "ExileHidden": {
+                                "what": { "Bound": "top" },
+                                "held": true,
+                                "as": "exiled4"
+                              }
+                            },
+                            {
+                              "Rule": {
+                                "rule": {
+                                  "MayCast": {
+                                    "from": "Exile",
+                                    "only": { "Bound": "exiled4" },
+                                    "play": true,
+                                    "spend_as": "AnyType"
+                                  }
+                                },
+                                "duration": "Forever"
+                              }
+                            }
+                          ]
+                        }
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

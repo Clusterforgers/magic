@@ -1,0 +1,47 @@
+{
+  "oracle_id": "d4e2cc1a-4212-4284-9ebe-d3c40931de50",
+  "name": "Icy Prison",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Icy Prison",
+      "oracle_fingerprint": "54b679e8962dbc214cfc34a75af26aac",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [{ "Exile": { "what": { "Target": 0 } } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield" } },
+            "effects": [
+              {
+                "Move": {
+                  "what": { "Each": [{ "ExiledWith": "This" }, { "In": "Exile" }] },
+                  "to": { "Battlefield": {} }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [
+              {
+                "Pay": {
+                  "who": "EachPlayer",
+                  "cost": "{3}",
+                  "unpaid": [{ "Sacrifice": { "filter": ["This"] } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

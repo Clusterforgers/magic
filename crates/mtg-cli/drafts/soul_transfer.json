@@ -1,0 +1,113 @@
+{
+  "oracle_id": "1e46c709-5278-44f3-9f0e-f71bd9558339",
+  "name": "Soul Transfer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Soul Transfer",
+      "oracle_fingerprint": "2c6253a29f425855c57c1b0a8d39bd28",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Modal": {
+                  "choose": {
+                    "min": 1,
+                    "max": {
+                      "When": {
+                        "condition": {
+                          "Compare": {
+                            "left": {
+                              "Sum": [
+                                {
+                                  "When": {
+                                    "condition": {
+                                      "Compare": {
+                                        "left": {
+                                          "Count": [
+                                            { "Type": "Artifact" },
+                                            { "ControlledBy": "You" }
+                                          ]
+                                        },
+                                        "op": "Gt",
+                                        "right": 1
+                                      }
+                                    },
+                                    "then": 1,
+                                    "otherwise": {
+                                      "Count": [{ "Type": "Artifact" }, { "ControlledBy": "You" }]
+                                    }
+                                  }
+                                },
+                                {
+                                  "When": {
+                                    "condition": {
+                                      "Compare": {
+                                        "left": {
+                                          "Count": [
+                                            { "Type": "Enchantment" },
+                                            { "ControlledBy": "You" }
+                                          ]
+                                        },
+                                        "op": "Gt",
+                                        "right": 1
+                                      }
+                                    },
+                                    "then": 1,
+                                    "otherwise": {
+                                      "Count": [
+                                        { "Type": "Enchantment" },
+                                        { "ControlledBy": "You" }
+                                      ]
+                                    }
+                                  }
+                                }
+                              ]
+                            },
+                            "op": "Ge",
+                            "right": 2
+                          }
+                        },
+                        "then": 2,
+                        "otherwise": 1
+                      }
+                    }
+                  },
+                  "modes": [
+                    {
+                      "targets": [
+                        {
+                          "what": {
+                            "Object": [
+                              { "AnyOf": [{ "Type": "Creature" }, { "Type": "Planeswalker" }] }
+                            ]
+                          }
+                        }
+                      ],
+                      "effects": [{ "Exile": { "what": { "Target": 0 } } }]
+                    },
+                    {
+                      "targets": [
+                        {
+                          "what": {
+                            "Object": [
+                              { "AnyOf": [{ "Type": "Creature" }, { "Type": "Planeswalker" }] },
+                              { "OwnedBy": "You" },
+                              { "In": "Graveyard" }
+                            ]
+                          }
+                        }
+                      ],
+                      "effects": [{ "Move": { "what": { "Target": 0 }, "to": "Hand" } }]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

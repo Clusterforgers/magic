@@ -1,0 +1,51 @@
+{
+  "oracle_id": "2577ef8e-d85e-47af-ac34-629f31992751",
+  "name": "Aether Rift",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Aether Rift",
+      "oracle_fingerprint": "6174fe71df4d817886e14659691eff75",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [
+              { "Discard": { "random": true, "as": "discarded" } },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Bound": "discarded" },
+                      "selector": [{ "Type": "Creature" }],
+                      "op": "Eq",
+                      "right": 1
+                    }
+                  },
+                  "then": [
+                    {
+                      "Pay": {
+                        "who": "EachPlayer",
+                        "cost": [{ "PayLife": 5 }],
+                        "unpaid": [
+                          {
+                            "Move": {
+                              "what": {
+                                "Each": [{ "Is": { "Bound": "discarded" } }, { "In": "Graveyard" }]
+                              },
+                              "to": { "Battlefield": {} }
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,42 @@
+{
+  "oracle_id": "65e64c50-4757-4e8e-8043-bc61a5f21750",
+  "name": "Full Steam Ahead",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Full Steam Ahead",
+      "oracle_fingerprint": "4ea222079df6e247f17dbe45440fb7f4",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                  "mods": [
+                    { "ModifyPT": { "power": 2, "toughness": 2 } },
+                    { "AddKeyword": "Trample" }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                  "mods": [
+                    {
+                      "GrantAbility": {
+                        "Static": { "affected": "This", "mods": [{ "MaxBlockers": 1 }] }
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

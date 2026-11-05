@@ -1,0 +1,34 @@
+{
+  "oracle_id": "f2fae95d-074b-4c0c-99cd-f9385a424c05",
+  "name": "Villainous Wealth",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Villainous Wealth",
+      "oracle_fingerprint": "15e69e6bbfbf853c9c8e614d6a693536",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              { "ExileTop": { "who": { "Target": 0 }, "count": "X", "as": "exiled" } },
+              {
+                "RepeatEach": {
+                  "over": {
+                    "Each": [
+                      { "Is": { "Bound": "exiled" } },
+                      { "In": "Exile" },
+                      { "Compare": { "stat": "ManaValue", "op": "Le", "to": "X" } }
+                    ]
+                  },
+                  "as": "card2",
+                  "effects": [{ "CastFromZone": { "what": { "Bound": "card2" }, "free": true } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

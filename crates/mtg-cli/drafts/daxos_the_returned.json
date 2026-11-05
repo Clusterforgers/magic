@@ -1,0 +1,66 @@
+{
+  "oracle_id": "8a9e8f60-eb13-4ae8-82df-d4c46da74451",
+  "name": "Daxos the Returned",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Daxos the Returned",
+      "oracle_fingerprint": "99d6b5ea979b1b3d3223357f65a44f55",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "what": [{ "Type": "Enchantment" }], "by": "You" } },
+            "effects": [{ "PutCounters": { "on": "You", "counter": { "Other": "experience" } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{1}{W}{B}",
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Spirit",
+                      "colors": ["White", "Black"],
+                      "types": ["Enchantment", "Creature"],
+                      "subtypes": ["Spirit"],
+                      "power": 0,
+                      "toughness": 0,
+                      "abilities": [
+                        {
+                          "Static": {
+                            "affected": "This",
+                            "mods": [
+                              {
+                                "SetPT": {
+                                  "power": {
+                                    "Counters": {
+                                      "on": "You",
+                                      "counter": { "Other": "experience" }
+                                    }
+                                  },
+                                  "toughness": {
+                                    "Counters": {
+                                      "on": "You",
+                                      "counter": { "Other": "experience" }
+                                    }
+                                  }
+                                }
+                              }
+                            ],
+                            "defining": true
+                          }
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

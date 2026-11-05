@@ -1,0 +1,52 @@
+{
+  "oracle_id": "61822bbe-0407-4425-b8d7-0263a8c521ec",
+  "name": "Dragonbroods' Relic",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dragonbroods' Relic",
+      "oracle_fingerprint": "cfa9b97a9865e10ad9606e58dd4fcdc3",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap", { "TapPermanents": { "filter": [{ "Type": "Creature" }] } }],
+            "effects": [{ "AddMana": { "mana": { "AnyColor": 1 } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{3}{W}{U}{B}{R}{G}" }, "SacrificeSelf"],
+            "timing": "Sorcery",
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Reliquary Dragon",
+                      "colors": ["White", "Blue", "Black", "Red", "Green"],
+                      "types": ["Creature"],
+                      "subtypes": ["Dragon"],
+                      "power": 4,
+                      "toughness": 4,
+                      "abilities": [
+                        { "Keyword": "Flying" },
+                        { "Keyword": "Lifelink" },
+                        {
+                          "Triggered": {
+                            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+                            "targets": [{ "what": "AnyTarget" }],
+                            "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 3 } }]
+                          }
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

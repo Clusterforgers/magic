@@ -1,0 +1,88 @@
+{
+  "oracle_id": "4567a42a-aa1c-4ca2-b5e2-b09acac3f276",
+  "name": "Braids's Frightful Return",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Braids's Frightful Return",
+      "oracle_fingerprint": "e249356f2081eb1af72d979eec9d6b4b",
+      "abilities": [
+        { "Keyword": "ReadAhead" },
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 1 } },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": [{ "Sacrifice": { "filter": [{ "Type": "Creature" }] } }],
+                  "paid": [{ "Discard": { "who": "Opponents" } }]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 2 } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "Type": "Creature" }, { "OwnedBy": "You" }, { "In": "Graveyard" }]
+                }
+              }
+            ],
+            "effects": [{ "Move": { "what": { "Target": 0 }, "to": "Hand" } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 3 } },
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              {
+                "May": {
+                  "who": { "Target": 0 },
+                  "effects": [
+                    {
+                      "Sacrifice": {
+                        "who": { "Target": 0 },
+                        "filter": [{ "Not": { "Type": "Land" } }, { "Not": "Token" }],
+                        "as": "sacrificed"
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Bound": "sacrificed" },
+                      "selector": [],
+                      "op": "Eq",
+                      "right": 0
+                    }
+                  },
+                  "then": [{ "Draw": {} }]
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Bound": "sacrificed" },
+                      "selector": [],
+                      "op": "Eq",
+                      "right": 0
+                    }
+                  },
+                  "then": [{ "LoseLife": { "who": { "Target": 0 }, "amount": 2 } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

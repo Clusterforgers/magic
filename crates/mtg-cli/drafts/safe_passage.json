@@ -1,0 +1,37 @@
+{
+  "oracle_id": "dfa459a1-b065-4488-88d3-4da388261b52",
+  "name": "Safe Passage",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Safe Passage",
+      "oracle_fingerprint": "114563bc05ea42d1c47dc8952abe251b",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Shield": {
+                  "when": { "Damage": { "to": "You" } },
+                  "by": "Prevent",
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "Shield": {
+                  "when": {
+                    "Damage": {
+                      "to": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] }
+                    }
+                  },
+                  "by": "Prevent",
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

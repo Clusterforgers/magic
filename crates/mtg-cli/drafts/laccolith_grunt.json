@@ -1,0 +1,39 @@
+{
+  "oracle_id": "f973daa7-241e-4eb7-9d98-9ea7557caa3a",
+  "name": "Laccolith Grunt",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Laccolith Grunt",
+      "oracle_fingerprint": "18fb85681442e200023d2b995de03ef6",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "BecomesBlocked": { "what": ["This"] } },
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "DealDamage": {
+                        "to": { "Target": 0 },
+                        "amount": { "Stat": { "of": "This", "stat": "Power" } }
+                      }
+                    },
+                    {
+                      "Rule": {
+                        "rule": { "Combat": { "who": "This", "quirk": "AssignsNoCombatDamage" } },
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

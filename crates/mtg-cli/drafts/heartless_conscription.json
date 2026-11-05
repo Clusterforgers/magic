@@ -1,0 +1,34 @@
+{
+  "oracle_id": "cb9b317b-bb31-4c19-8b78-0fb9a61324b3",
+  "name": "Heartless Conscription",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Heartless Conscription",
+      "oracle_fingerprint": "08aab4895486f05688941444f9a783e6",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "Exile": { "what": { "Each": [{ "Type": "Creature" }] }, "as": "exiled" } },
+              {
+                "Rule": {
+                  "rule": {
+                    "MayCast": {
+                      "from": "Exile",
+                      "only": { "Bound": "exiled" },
+                      "play": true,
+                      "spend_as": "AnyType"
+                    }
+                  },
+                  "duration": "Forever"
+                }
+              },
+              { "Exile": { "what": "This" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

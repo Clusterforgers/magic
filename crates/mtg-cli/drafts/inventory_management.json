@@ -1,0 +1,50 @@
+{
+  "oracle_id": "b20eae3d-d0ff-42c3-a060-d06629506781",
+  "name": "Inventory Management",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Inventory Management",
+      "oracle_fingerprint": "9b3b4b8a407b518fd48d0f67f7b95ca0",
+      "abilities": [
+        { "Keyword": "SplitSecond" },
+        {
+          "Spell": {
+            "effects": [
+              {
+                "RepeatEach": {
+                  "over": {
+                    "Each": [
+                      { "AnyOf": [{ "Subtype": "Aura" }, { "Subtype": "Equipment" }] },
+                      { "ControlledBy": "You" }
+                    ]
+                  },
+                  "as": "each",
+                  "effects": [
+                    {
+                      "May": {
+                        "effects": [
+                          {
+                            "Choose": {
+                              "from": {
+                                "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }]
+                              },
+                              "as": "attach2"
+                            }
+                          },
+                          {
+                            "Attach": { "what": { "Bound": "each" }, "to": { "Bound": "attach2" } }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

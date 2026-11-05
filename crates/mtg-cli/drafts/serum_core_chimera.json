@@ -1,0 +1,64 @@
+{
+  "oracle_id": "ed54a59b-b24c-4681-b862-fa634fe759fd",
+  "name": "Serum-Core Chimera",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Serum-Core Chimera",
+      "oracle_fingerprint": "e56701b0bbb90c130dbf6680eb3d6332",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "what": [{ "Not": { "Type": "Creature" } }], "by": "You" } },
+            "effects": [{ "PutCounters": { "on": "This", "counter": { "Other": "oil" } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "RemoveCounters": { "counter": { "Other": "oil" }, "count": 3 } }],
+            "timing": "Sorcery",
+            "effects": [
+              { "Draw": {} },
+              {
+                "May": {
+                  "effects": [
+                    { "Discard": { "filter": [{ "Not": { "Type": "Land" } }], "as": "discarded" } }
+                  ]
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Bound": "discarded" },
+                      "selector": [],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [
+                    {
+                      "Reflexive": {
+                        "targets": [
+                          {
+                            "what": {
+                              "Object": [
+                                { "AnyOf": [{ "Type": "Creature" }, { "Type": "Planeswalker" }] }
+                              ]
+                            }
+                          }
+                        ],
+                        "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 3 } }]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

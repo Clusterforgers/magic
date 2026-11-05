@@ -1,0 +1,41 @@
+{
+  "oracle_id": "a905dafa-1818-471a-a485-d84be447263b",
+  "name": "Rhystic Shield",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Rhystic Shield",
+      "oracle_fingerprint": "85740d16d6ecf15dd83ae56bb09afe4e",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                  "mods": [{ "ModifyPT": { "power": 0, "toughness": 1 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "Pay": {
+                  "who": "EachPlayer",
+                  "cost": "{2}",
+                  "unpaid": [
+                    {
+                      "Continuous": {
+                        "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                        "mods": [{ "ModifyPT": { "power": 0, "toughness": 2 } }],
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

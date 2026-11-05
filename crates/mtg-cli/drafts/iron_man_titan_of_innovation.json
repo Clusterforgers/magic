@@ -1,0 +1,78 @@
+{
+  "oracle_id": "67ab82de-1167-42f5-90bd-21c63edcc712",
+  "name": "Iron Man, Titan of Innovation",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Iron Man, Titan of Innovation",
+      "oracle_fingerprint": "951095b794b085d7f5cc667c92eaaab0",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": "Haste" },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [
+              { "CreateToken": { "token": { "Named": "treasure" } } },
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "Sacrifice": {
+                        "filter": [{ "Type": "Artifact" }, { "Not": { "Type": "Creature" } }],
+                        "as": "sacrificed"
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Bound": "sacrificed" },
+                      "selector": [],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [
+                    {
+                      "Search": {
+                        "filter": [
+                          { "Type": "Artifact" },
+                          {
+                            "Compare": {
+                              "stat": "ManaValue",
+                              "op": "Eq",
+                              "to": {
+                                "Sum": [
+                                  {
+                                    "Stat": { "of": { "Bound": "sacrificed" }, "stat": "ManaValue" }
+                                  },
+                                  1
+                                ]
+                              }
+                            }
+                          }
+                        ],
+                        "as": "found2"
+                      }
+                    },
+                    {
+                      "Move": {
+                        "what": { "Bound": "found2" },
+                        "to": { "Battlefield": { "tapped": true } }
+                      }
+                    },
+                    { "Shuffle": {} }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

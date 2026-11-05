@@ -1,0 +1,54 @@
+{
+  "oracle_id": "7a0bc265-6b40-48d6-a588-c9624df7d1bc",
+  "name": "Cruelclaw's Heist",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Cruelclaw's Heist",
+      "oracle_fingerprint": "efcc6138ef2f111b3224103d6508f260",
+      "abilities": [
+        { "Keyword": { "Gift": "Card" } },
+        {
+          "Spell": {
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "Not": { "Type": "Land" } },
+                      { "In": "Hand" },
+                      { "OwnedBy": { "Target": 0 } }
+                    ]
+                  },
+                  "as": "picked"
+                }
+              },
+              { "Exile": { "what": { "Bound": "picked" }, "as": "exiled2" } },
+              {
+                "If": {
+                  "condition": { "Compare": { "left": "Promised", "op": "Eq", "right": 1 } },
+                  "then": [
+                    {
+                      "Rule": {
+                        "rule": {
+                          "MayCast": {
+                            "what": [{ "Not": { "Type": "Land" } }],
+                            "from": "Exile",
+                            "only": { "Bound": "exiled2" },
+                            "spend_as": "AnyType"
+                          }
+                        },
+                        "duration": "Forever"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,20 @@
+{
+  "oracle_id": "6df6e834-1917-4bf4-b0b7-09834bf90fb2",
+  "name": "Samurai of the Pale Curtain",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Samurai of the Pale Curtain",
+      "oracle_fingerprint": "ea08ead43c11ec6e168a3876504195a6",
+      "abilities": [
+        { "Keyword": { "Macro": { "name": "bushido", "amount": 1 } } },
+        {
+          "Replacement": {
+            "when": { "ZoneChange": { "what": [], "from": "Battlefield", "to": "Graveyard" } },
+            "by": { "MoveTo": "Exile" }
+          }
+        }
+      ]
+    }
+  ]
+}

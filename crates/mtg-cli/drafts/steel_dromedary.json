@@ -1,0 +1,42 @@
+{
+  "oracle_id": "40fa5656-354f-47f9-ba8d-40291ee5b40e",
+  "name": "Steel Dromedary",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Steel Dromedary",
+      "oracle_fingerprint": "9cd10ba2f12d59354dc6e29e76779462",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "WithCounters": { "counter": "+1/+1", "count": 2, "tapped": true } }
+          }
+        },
+        {
+          "Static": {
+            "affected": { "Each": ["This", { "HasCounter": "+1/+1" }] },
+            "mods": ["DoesntUntap"]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "BeginCombat", "whose": "You" } },
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "MoveCounters": { "from": "This", "to": { "Target": 0 }, "counter": "+1/+1" }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

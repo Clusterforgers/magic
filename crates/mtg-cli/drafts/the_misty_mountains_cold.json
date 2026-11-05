@@ -1,0 +1,209 @@
+{
+  "oracle_id": "c50282bd-4b57-4c7b-9598-ea67ba49248b",
+  "name": "The Misty Mountains Cold",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "The Misty Mountains Cold",
+      "oracle_fingerprint": "614c0a3e6f5742a10f0a470a2e1ba729",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 1 } },
+            "effects": [
+              { "CreateToken": { "token": { "Named": "treasure" } } },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "Count": [{ "Subtype": "Treasure" }, { "ControlledBy": "You" }] },
+                      "op": "Ge",
+                      "right": 4
+                    }
+                  },
+                  "then": [{ "Sacrifice": { "filter": ["This"], "as": "sacrificed" } }]
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Bound": "sacrificed" },
+                      "selector": [],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [
+                    {
+                      "CreateToken": {
+                        "token": {
+                          "Custom": {
+                            "name": "Dragon",
+                            "colors": ["Red"],
+                            "types": ["Creature"],
+                            "subtypes": ["Dragon"],
+                            "power": 6,
+                            "toughness": 6,
+                            "abilities": [{ "Keyword": "Flying" }]
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 2 } },
+            "effects": [
+              { "CreateToken": { "token": { "Named": "treasure" } } },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "Count": [{ "Subtype": "Treasure" }, { "ControlledBy": "You" }] },
+                      "op": "Ge",
+                      "right": 4
+                    }
+                  },
+                  "then": [{ "Sacrifice": { "filter": ["This"], "as": "sacrificed" } }]
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Bound": "sacrificed" },
+                      "selector": [],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [
+                    {
+                      "CreateToken": {
+                        "token": {
+                          "Custom": {
+                            "name": "Dragon",
+                            "colors": ["Red"],
+                            "types": ["Creature"],
+                            "subtypes": ["Dragon"],
+                            "power": 6,
+                            "toughness": 6,
+                            "abilities": [{ "Keyword": "Flying" }]
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 3 } },
+            "effects": [
+              { "CreateToken": { "token": { "Named": "treasure" } } },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "Count": [{ "Subtype": "Treasure" }, { "ControlledBy": "You" }] },
+                      "op": "Ge",
+                      "right": 4
+                    }
+                  },
+                  "then": [{ "Sacrifice": { "filter": ["This"], "as": "sacrificed" } }]
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Bound": "sacrificed" },
+                      "selector": [],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [
+                    {
+                      "CreateToken": {
+                        "token": {
+                          "Custom": {
+                            "name": "Dragon",
+                            "colors": ["Red"],
+                            "types": ["Creature"],
+                            "subtypes": ["Dragon"],
+                            "power": 6,
+                            "toughness": 6,
+                            "abilities": [{ "Keyword": "Flying" }]
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 4 } },
+            "effects": [
+              { "CreateToken": { "token": { "Named": "treasure" } } },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "Count": [{ "Subtype": "Treasure" }, { "ControlledBy": "You" }] },
+                      "op": "Ge",
+                      "right": 4
+                    }
+                  },
+                  "then": [{ "Sacrifice": { "filter": ["This"], "as": "sacrificed" } }]
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Bound": "sacrificed" },
+                      "selector": [],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [
+                    {
+                      "CreateToken": {
+                        "token": {
+                          "Custom": {
+                            "name": "Dragon",
+                            "colors": ["Red"],
+                            "types": ["Creature"],
+                            "subtypes": ["Dragon"],
+                            "power": 6,
+                            "toughness": 6,
+                            "abilities": [{ "Keyword": "Flying" }]
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

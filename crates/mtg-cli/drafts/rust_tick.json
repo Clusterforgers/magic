@@ -1,0 +1,30 @@
+{
+  "oracle_id": "c7f20899-2625-4b3a-8bd8-0bcee07ed86e",
+  "name": "Rust Tick",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Rust Tick",
+      "oracle_fingerprint": "a29896d42c4ec49ef0999cdc43d52aa3",
+      "abilities": [
+        { "Rule": { "rule": { "Combat": { "who": "This", "quirk": "MayStayTapped" } } } },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{1}" }, "Tap"],
+            "targets": [{ "what": { "Object": [{ "Type": "Artifact" }] } }],
+            "effects": [
+              { "Tap": { "what": { "Target": 0 } } },
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": ["DoesntUntap"],
+                  "duration": "WhileSourceTapped"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

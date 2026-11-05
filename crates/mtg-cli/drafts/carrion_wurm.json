@@ -1,0 +1,36 @@
+{
+  "oracle_id": "ed0cf504-c365-4486-92bc-c329b83b99d0",
+  "name": "Carrion Wurm",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Carrion Wurm",
+      "oracle_fingerprint": "6fcf84c2ead18ef8c642001136a7dff3",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [{ "Attacks": { "what": ["This"] } }, { "Blocks": { "what": ["This"] } }]
+            },
+            "effects": [
+              {
+                "Pay": {
+                  "who": "EachPlayer",
+                  "cost": [{ "ExileFromGraveyard": { "filter": [], "count": 3 } }],
+                  "paid": [
+                    {
+                      "Rule": {
+                        "rule": { "Combat": { "who": "This", "quirk": "AssignsNoCombatDamage" } },
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

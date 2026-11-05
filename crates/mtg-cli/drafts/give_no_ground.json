@@ -1,0 +1,30 @@
+{
+  "oracle_id": "bae18a46-00e0-4b3e-8fdb-44cc61f30f8e",
+  "name": "Give No Ground",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Give No Ground",
+      "oracle_fingerprint": "20b86ec661ca442e5b5013f2b7de6611",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    { "ModifyPT": { "power": 2, "toughness": 6 } },
+                    { "BlocksAdditional": 99 }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,55 @@
+{
+  "oracle_id": "efe9c3e0-7315-408e-9903-9d25a681039b",
+  "name": "Golos, Tireless Pilgrim",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Golos, Tireless Pilgrim",
+      "oracle_fingerprint": "392e37afe9e231022503716ddf856e98",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    { "Search": { "filter": [{ "Type": "Land" }], "as": "found" } },
+                    {
+                      "Move": {
+                        "what": { "Bound": "found" },
+                        "to": { "Battlefield": { "tapped": true } }
+                      }
+                    },
+                    { "Shuffle": {} }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{2}{W}{U}{B}{R}{G}",
+            "effects": [
+              { "ExileTop": { "count": 3, "as": "exiled" } },
+              {
+                "Rule": {
+                  "rule": {
+                    "MayCast": {
+                      "from": "Exile",
+                      "free": true,
+                      "only": { "Bound": "exiled" },
+                      "play": true
+                    }
+                  },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

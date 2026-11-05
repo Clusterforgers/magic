@@ -1,0 +1,121 @@
+{
+  "oracle_id": "fe01c96b-eb78-4477-bec2-944b2a28c778",
+  "name": "Eddie Brock // Venom, Lethal Protector",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Eddie Brock",
+      "oracle_fingerprint": "668972bdbc540bd172142a79431561be",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Type": "Creature" },
+                    { "Compare": { "stat": "ManaValue", "op": "Le", "to": 1 } },
+                    { "OwnedBy": "You" },
+                    { "In": "Graveyard" }
+                  ]
+                }
+              }
+            ],
+            "effects": [{ "Move": { "what": { "Target": 0 }, "to": { "Battlefield": {} } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{3}{B}{R}{G}",
+            "timing": "Sorcery",
+            "effects": [{ "Transform": { "what": "This" } }]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Venom, Lethal Protector",
+      "oracle_fingerprint": "fe93e9ffca184b882419b68809dfe94d",
+      "abilities": [
+        { "Keyword": "Menace" },
+        { "Keyword": "Trample" },
+        { "Keyword": "Haste" },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "Sacrifice": {
+                        "filter": [{ "Type": "Creature" }, "Other"],
+                        "as": "sacrificed2"
+                      }
+                    },
+                    {
+                      "If": {
+                        "condition": {
+                          "Compare": {
+                            "left": { "Bound": "sacrificed2~moved" },
+                            "op": "Ge",
+                            "right": 1
+                          }
+                        },
+                        "then": [
+                          {
+                            "Draw": {
+                              "count": {
+                                "Stat": { "of": { "Bound": "sacrificed2" }, "stat": "ManaValue" }
+                              }
+                            }
+                          },
+                          {
+                            "Choose": {
+                              "from": {
+                                "Each": [
+                                  { "OwnedBy": "You" },
+                                  {
+                                    "Compare": {
+                                      "stat": "ManaValue",
+                                      "op": "Le",
+                                      "to": {
+                                        "Stat": {
+                                          "of": { "Bound": "sacrificed2" },
+                                          "stat": "ManaValue"
+                                        }
+                                      }
+                                    }
+                                  },
+                                  {
+                                    "AnyOf": [
+                                      { "Type": "Artifact" },
+                                      { "Type": "Battle" },
+                                      { "Type": "Creature" },
+                                      { "Type": "Enchantment" },
+                                      { "Type": "Land" },
+                                      { "Type": "Planeswalker" }
+                                    ]
+                                  },
+                                  { "In": "Hand" }
+                                ]
+                              },
+                              "count": { "min": 0, "max": 1 },
+                              "as": "picked"
+                            }
+                          },
+                          { "Move": { "what": { "Bound": "picked" }, "to": { "Battlefield": {} } } }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

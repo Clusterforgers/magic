@@ -1,7 +1,7 @@
 {
   "oracle_id": "094bc780-3c37-4863-b6ed-e2d16ed94544",
   "name": "Nacatl Hunt-Pride",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Nacatl Hunt-Pride",
@@ -24,9 +24,12 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 59, "end": 110 }
+          "Activated": {
+            "cost": [{ "Mana": "{G}" }, "Tap"],
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              { "Rule": { "rule": { "MustBlock": { "Target": 0 } }, "duration": "UntilEndOfTurn" } }
+            ]
           }
         }
       ]

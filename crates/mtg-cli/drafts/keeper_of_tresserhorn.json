@@ -1,0 +1,27 @@
+{
+  "oracle_id": "ce976cb2-2b69-4d00-918c-d4900244ac86",
+  "name": "Keeper of Tresserhorn",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Keeper of Tresserhorn",
+      "oracle_fingerprint": "523917d870c3816723204c9ad276abfe",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Unblocked": { "what": ["This"] } },
+            "effects": [
+              {
+                "Rule": {
+                  "rule": { "Combat": { "who": "This", "quirk": "AssignsNoCombatDamage" } },
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              { "LoseLife": { "who": "Defending", "amount": 2 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

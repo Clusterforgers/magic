@@ -1,0 +1,73 @@
+{
+  "oracle_id": "e1b74ef7-ab6b-4d40-8087-3f3a448b7e0a",
+  "name": "Crovax the Cursed",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Crovax the Cursed",
+      "oracle_fingerprint": "374c70dbf99e0ee48c2fba7d3ce0fed3",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "WithCounters": { "counter": "+1/+1", "count": 4 } }
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    { "Sacrifice": { "filter": [{ "Type": "Creature" }], "as": "sacrificed" } }
+                  ]
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Bound": "sacrificed" },
+                      "selector": [{ "Type": "Creature" }],
+                      "op": "Eq",
+                      "right": 1
+                    }
+                  },
+                  "then": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }]
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Bound": "sacrificed" },
+                      "selector": [{ "Type": "Creature" }],
+                      "op": "Eq",
+                      "right": 0
+                    }
+                  },
+                  "then": [{ "RemoveCounters": { "from": "This", "counter": "+1/+1" } }]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{B}",
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "AddKeyword": "Flying" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

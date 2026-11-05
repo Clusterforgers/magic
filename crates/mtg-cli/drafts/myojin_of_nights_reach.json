@@ -1,0 +1,54 @@
+{
+  "oracle_id": "5ac65688-0a74-4dc4-b6cb-12bdf8aed01e",
+  "name": "Myojin of Night's Reach",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Myojin of Night's Reach",
+      "oracle_fingerprint": "31ccae37a77086d8b49f08aa64df201d",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "WithCounters": { "counter": { "Other": "divinity" }, "count": 1 } },
+            "condition": {
+              "Matches": {
+                "subject": "This",
+                "selector": [
+                  "This",
+                  { "WasCast": { "by": "You", "from": "Hand" } },
+                  { "OwnedBy": "You" }
+                ]
+              }
+            }
+          }
+        },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "AddKeyword": "Indestructible" }],
+            "condition": {
+              "Matches": {
+                "subject": "This",
+                "selector": [{ "HasCounter": { "Other": "divinity" } }]
+              }
+            }
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "RemoveCounters": { "counter": { "Other": "divinity" } } }],
+            "effects": [
+              {
+                "Discard": {
+                  "who": "Opponents",
+                  "count": { "Count": [{ "In": "Hand" }, { "OwnedBy": "Opponents" }] }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

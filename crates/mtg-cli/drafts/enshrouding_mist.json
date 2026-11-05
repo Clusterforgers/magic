@@ -1,0 +1,47 @@
+{
+  "oracle_id": "e513c05c-14c0-4d2e-a5b3-e4f29cb4c1a2",
+  "name": "Enshrouding Mist",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Enshrouding Mist",
+      "oracle_fingerprint": "110b6e3b1b8a661d2b9ce2cf37d5e4a1",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "Shield": {
+                  "when": { "Damage": { "to": { "Target": 0 } } },
+                  "by": "Prevent",
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Target": 0 },
+                      "selector": ["Renowned"],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [{ "Untap": { "what": { "Target": 0 } } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

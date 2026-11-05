@@ -1,0 +1,157 @@
+{
+  "oracle_id": "77322d69-330e-4b00-b984-62c6d45c9540",
+  "name": "Vault 101: Birthday Party",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Vault 101: Birthday Party",
+      "oracle_fingerprint": "9924f2a34e4973f31360668f1c913221",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 1 } },
+            "effects": [
+              { "CreateToken": { "token": { "Named": "food" } } },
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Human Soldier",
+                      "colors": ["White"],
+                      "types": ["Creature"],
+                      "subtypes": ["Human", "Soldier"],
+                      "power": 1,
+                      "toughness": 1
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 2 } },
+            "effects": [
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "AnyOf": [{ "Subtype": "Aura" }, { "Subtype": "Equipment" }] },
+                      { "AnyOf": [{ "In": "Hand" }, { "In": "Graveyard" }] },
+                      { "OwnedBy": "You" }
+                    ]
+                  },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "picked"
+                }
+              },
+              {
+                "Move": {
+                  "what": { "Bound": "picked" },
+                  "to": { "Battlefield": {} },
+                  "as": "moved2"
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Bound": "moved2" },
+                      "selector": [{ "Subtype": "Equipment" }],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [
+                    {
+                      "May": {
+                        "effects": [
+                          {
+                            "Choose": {
+                              "from": {
+                                "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }]
+                              },
+                              "as": "attach3"
+                            }
+                          },
+                          {
+                            "Attach": {
+                              "what": { "Bound": "moved2" },
+                              "to": { "Bound": "attach3" }
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 3 } },
+            "effects": [
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "AnyOf": [{ "Subtype": "Aura" }, { "Subtype": "Equipment" }] },
+                      { "AnyOf": [{ "In": "Hand" }, { "In": "Graveyard" }] },
+                      { "OwnedBy": "You" }
+                    ]
+                  },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "picked"
+                }
+              },
+              {
+                "Move": {
+                  "what": { "Bound": "picked" },
+                  "to": { "Battlefield": {} },
+                  "as": "moved2"
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Bound": "moved2" },
+                      "selector": [{ "Subtype": "Equipment" }],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [
+                    {
+                      "May": {
+                        "effects": [
+                          {
+                            "Choose": {
+                              "from": {
+                                "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }]
+                              },
+                              "as": "attach3"
+                            }
+                          },
+                          {
+                            "Attach": {
+                              "what": { "Bound": "moved2" },
+                              "to": { "Bound": "attach3" }
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

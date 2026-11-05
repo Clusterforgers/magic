@@ -1,0 +1,34 @@
+{
+  "oracle_id": "248e0dfa-0bcb-402c-badf-ca59f02792f7",
+  "name": "Phantasmagorian",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Phantasmagorian",
+      "oracle_fingerprint": "796570c6edd06f1d7874217649439d8c",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "what": ["This"] } },
+            "effects": [
+              {
+                "Pay": {
+                  "who": "EachPlayer",
+                  "cost": [{ "Discard": { "count": 3 } }],
+                  "paid": [{ "Counter": { "what": "Triggering" } }]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Discard": { "count": 3 } }],
+            "from": "Graveyard",
+            "effects": [{ "Move": { "what": "This", "to": "Hand" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

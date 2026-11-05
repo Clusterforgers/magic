@@ -1,0 +1,50 @@
+{
+  "oracle_id": "3577c47e-76d3-4659-b922-31c4b74be3a0",
+  "name": "Enduring Vitality",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Enduring Vitality",
+      "oracle_fingerprint": "c0392f733be15b6d0906c13dde9b1040",
+      "abilities": [
+        { "Keyword": "Vigilance" },
+        {
+          "Static": {
+            "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+            "mods": [
+              {
+                "GrantAbility": {
+                  "Activated": {
+                    "cost": ["Tap"],
+                    "effects": [{ "AddMana": { "mana": { "AnyColor": 1 } } }]
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": ["This", { "Type": "Creature" }],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "effects": [
+              { "Move": { "what": "Triggering", "to": { "Battlefield": {} }, "as": "moved" } },
+              {
+                "Continuous": {
+                  "affected": { "Bound": "moved" },
+                  "mods": [{ "SetTypes": ["Enchantment"] }],
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

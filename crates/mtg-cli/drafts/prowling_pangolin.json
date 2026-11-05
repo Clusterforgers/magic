@@ -1,0 +1,27 @@
+{
+  "oracle_id": "92042cad-09f5-464f-85ad-baad27e6d1eb",
+  "name": "Prowling Pangolin",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Prowling Pangolin",
+      "oracle_fingerprint": "16c3e9768adfbe4697ce9d200f8a9815",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Pay": {
+                  "who": "EachPlayer",
+                  "cost": [{ "Sacrifice": { "filter": [{ "Type": "Creature" }], "count": 2 } }],
+                  "paid": [{ "Sacrifice": { "filter": ["This"] } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

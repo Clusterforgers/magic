@@ -1,0 +1,26 @@
+{
+  "oracle_id": "045ece1e-23aa-4122-8726-86b2af4345ba",
+  "name": "Thirst for Identity",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Thirst for Identity",
+      "oracle_fingerprint": "04a933c5716b3d1bce73bf5ebbd694aa",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "Draw": { "count": 3 } },
+              {
+                "Pay": {
+                  "cost": [{ "Discard": { "filter": [{ "Type": "Creature" }] } }],
+                  "unpaid": [{ "Discard": { "count": 2 } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,15 @@
+{
+  "oracle_id": "f6f4c684-2915-4a58-9c4b-487387f7cf73",
+  "name": "Rhox",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Rhox",
+      "oracle_fingerprint": "844271dba61a8919fc47766918eb6d7e",
+      "abilities": [
+        { "Rule": { "rule": { "Combat": { "who": "This", "quirk": "AssignsAsUnblocked" } } } },
+        { "Activated": { "cost": "{2}{G}", "effects": [{ "Regenerate": { "what": "This" } }] } }
+      ]
+    }
+  ]
+}

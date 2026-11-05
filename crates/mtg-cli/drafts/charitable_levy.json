@@ -1,0 +1,86 @@
+{
+  "oracle_id": "8a628875-96c8-4a28-aaff-99fd99ae778e",
+  "name": "Charitable Levy",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Charitable Levy",
+      "oracle_fingerprint": "83b19f1383615306a8ab47cc62da89cb",
+      "abilities": [
+        {
+          "CostModifier": {
+            "applies_to": ["Spell", { "Not": { "Type": "Creature" } }],
+            "change": "Increase",
+            "mana": "{1}"
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "what": [{ "Not": { "Type": "Creature" } }] } },
+            "effects": [
+              { "PutCounters": { "on": "This", "counter": { "Other": "collection" } } },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": {
+                        "Count": [
+                          "This",
+                          {
+                            "CounterCount": {
+                              "kind": { "Other": "collection" },
+                              "op": "Ge",
+                              "to": 3
+                            }
+                          }
+                        ]
+                      },
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [{ "Sacrifice": { "filter": ["This"], "as": "sacrificed" } }]
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Bound": "sacrificed" },
+                      "selector": [],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [{ "Draw": {} }]
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Bound": "sacrificed" },
+                      "selector": [],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [
+                    { "Search": { "filter": [{ "Subtype": "Plains" }], "as": "found2" } },
+                    {
+                      "Move": {
+                        "what": { "Bound": "found2" },
+                        "to": { "Battlefield": { "tapped": true } }
+                      }
+                    },
+                    { "Shuffle": {} }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

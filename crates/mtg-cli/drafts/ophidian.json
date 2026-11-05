@@ -1,0 +1,33 @@
+{
+  "oracle_id": "953bdefa-4639-4524-af5c-5055d1289f40",
+  "name": "Ophidian",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ophidian",
+      "oracle_fingerprint": "9de522e813decec87d9df0fdbd415327",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Unblocked": { "what": ["This"] } },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    { "Draw": {} },
+                    {
+                      "Rule": {
+                        "rule": { "Combat": { "who": "This", "quirk": "AssignsNoCombatDamage" } },
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

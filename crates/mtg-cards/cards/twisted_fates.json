@@ -1,0 +1,30 @@
+{
+  "oracle_id": "3ce30a19-e716-478f-be89-e2d95753cfed",
+  "name": "Twisted Fates",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Twisted Fates",
+      "oracle_fingerprint": "0b9163ecbc466c448e14a70a54db78e7",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "Not": { "Type": "Land" } }] } },
+              { "what": "Player" }
+            ],
+            "effects": [
+              { "Destroy": { "what": { "Target": 0 } } },
+              {
+                "PutCounters": {
+                  "on": { "Each": [{ "Type": "Creature" }, { "ControlledBy": { "Target": 1 } }] },
+                  "counter": "+1/+1"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

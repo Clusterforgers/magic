@@ -1,0 +1,15 @@
+{
+  "oracle_id": "ed11efb6-1423-4ce0-be1d-9e0320124758",
+  "name": "Sea's Claim",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sea's Claim",
+      "oracle_fingerprint": "e9c7b96d1935796559fdb2e0e075ea35",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Land" }] } },
+        { "Static": { "affected": "Attached", "mods": [{ "SetLandTypes": ["Island"] }] } }
+      ]
+    }
+  ]
+}

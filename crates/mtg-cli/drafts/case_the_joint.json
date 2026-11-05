@@ -1,0 +1,21 @@
+{
+  "oracle_id": "575d067a-83a0-49e7-8a74-e3e46a946c8c",
+  "name": "Case the Joint",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Case the Joint",
+      "oracle_fingerprint": "b353cce959adb7353532bd6f37e40a89",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "Draw": { "count": 2 } },
+              { "LookAtTop": { "who": "EachPlayer", "as": "top" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

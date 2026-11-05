@@ -1,0 +1,46 @@
+{
+  "oracle_id": "cf9fc317-3184-4999-84ef-945a8842096e",
+  "name": "Rysorian Badger",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Rysorian Badger",
+      "oracle_fingerprint": "813b3f999167948dcead4fd421505ce4",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Unblocked": { "what": ["This"] } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Type": "Creature" },
+                    { "OwnedBy": "Defending" },
+                    { "In": "Graveyard" }
+                  ]
+                },
+                "bounds": { "min": 0, "max": 2 }
+              }
+            ],
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    { "Exile": { "what": { "Target": 0 }, "as": "exiled" } },
+                    { "GainLife": { "amount": { "Bound": "exiled~moved" } } },
+                    {
+                      "Rule": {
+                        "rule": { "Combat": { "who": "This", "quirk": "AssignsNoCombatDamage" } },
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

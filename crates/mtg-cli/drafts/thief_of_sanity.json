@@ -1,0 +1,44 @@
+{
+  "oracle_id": "68b51d58-7566-4a26-8c31-8da32799bea7",
+  "name": "Thief of Sanity",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Thief of Sanity",
+      "oracle_fingerprint": "ff9ef1e9a6cdb0aea06c8b338321fbca",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": ["This"], "to": "EachPlayer", "combat": true } },
+            "effects": [
+              { "LookAtTop": { "who": "Triggering", "count": 3, "as": "top" } },
+              {
+                "Choose": {
+                  "from": { "Each": [{ "In": "Library" }, { "Is": { "Bound": "top" } }] },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "kept2"
+                }
+              },
+              { "ExileHidden": { "what": { "Bound": "kept2" }, "held": true, "as": "exiled4" } },
+              { "Move": { "what": { "Bound": "top" }, "to": "Graveyard" } },
+              {
+                "Rule": {
+                  "rule": {
+                    "MayCast": {
+                      "what": [{ "Not": { "Type": "Land" } }],
+                      "from": "Exile",
+                      "only": { "Bound": "exiled4" },
+                      "spend_as": "AnyType"
+                    }
+                  },
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

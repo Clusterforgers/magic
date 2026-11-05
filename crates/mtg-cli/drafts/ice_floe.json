@@ -1,0 +1,40 @@
+{
+  "oracle_id": "cfaaead2-09e8-47cb-9e39-8570b8d8de86",
+  "name": "Ice Floe",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ice Floe",
+      "oracle_fingerprint": "6f6558ec737e5d3a2855e42230fb9f5f",
+      "abilities": [
+        { "Rule": { "rule": { "Combat": { "who": "This", "quirk": "MayStayTapped" } } } },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Type": "Creature" },
+                    { "Not": { "HasKeyword": "Flying" } },
+                    { "AttackingPlayer": "You" }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              { "Tap": { "what": { "Target": 0 } } },
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": ["DoesntUntap"],
+                  "duration": "WhileSourceTapped"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,60 @@
+{
+  "oracle_id": "b23c1f40-291d-43b3-971d-97ded8b367cb",
+  "name": "See the Truth",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "See the Truth",
+      "oracle_fingerprint": "f4d106cfc3e5dfac7b27da32dc650e45",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "LookAtTop": { "count": 3, "as": "top" } },
+              {
+                "Choose": {
+                  "from": { "Bound": "top" },
+                  "count": {
+                    "min": {
+                      "When": {
+                        "condition": {
+                          "Matches": {
+                            "subject": "This",
+                            "selector": [{ "WasCast": { "from": "Hand" } }, { "OwnedBy": "You" }]
+                          }
+                        },
+                        "then": 1,
+                        "otherwise": 3
+                      }
+                    },
+                    "max": {
+                      "When": {
+                        "condition": {
+                          "Matches": {
+                            "subject": "This",
+                            "selector": [{ "WasCast": { "from": "Hand" } }, { "OwnedBy": "You" }]
+                          }
+                        },
+                        "then": 1,
+                        "otherwise": 3
+                      }
+                    }
+                  },
+                  "as": "kept2",
+                  "rest_as": "rest3"
+                }
+              },
+              { "Move": { "what": { "Bound": "kept2" }, "to": "Hand" } },
+              {
+                "Move": {
+                  "what": { "Bound": "rest3" },
+                  "to": { "Library": { "place": "Bottom", "order": "Chosen" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

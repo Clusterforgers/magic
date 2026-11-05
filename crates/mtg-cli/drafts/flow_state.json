@@ -1,0 +1,168 @@
+{
+  "oracle_id": "e7194bca-0cf4-4a86-8b84-d2f9219a08b3",
+  "name": "Flow State",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Flow State",
+      "oracle_fingerprint": "14332ee5823ebaa83780d76fb231780e",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "LookAtTop": { "count": 3, "as": "top" } },
+              {
+                "Choose": {
+                  "from": { "Bound": "top" },
+                  "count": {
+                    "min": {
+                      "When": {
+                        "condition": {
+                          "Compare": {
+                            "left": {
+                              "Sum": [
+                                {
+                                  "When": {
+                                    "condition": {
+                                      "Compare": {
+                                        "left": {
+                                          "Count": [
+                                            { "Type": "Instant" },
+                                            { "OwnedBy": "You" },
+                                            { "In": "Graveyard" }
+                                          ]
+                                        },
+                                        "op": "Gt",
+                                        "right": 1
+                                      }
+                                    },
+                                    "then": 1,
+                                    "otherwise": {
+                                      "Count": [
+                                        { "Type": "Instant" },
+                                        { "OwnedBy": "You" },
+                                        { "In": "Graveyard" }
+                                      ]
+                                    }
+                                  }
+                                },
+                                {
+                                  "When": {
+                                    "condition": {
+                                      "Compare": {
+                                        "left": {
+                                          "Count": [
+                                            { "Type": "Sorcery" },
+                                            { "OwnedBy": "You" },
+                                            { "In": "Graveyard" }
+                                          ]
+                                        },
+                                        "op": "Gt",
+                                        "right": 1
+                                      }
+                                    },
+                                    "then": 1,
+                                    "otherwise": {
+                                      "Count": [
+                                        { "Type": "Sorcery" },
+                                        { "OwnedBy": "You" },
+                                        { "In": "Graveyard" }
+                                      ]
+                                    }
+                                  }
+                                }
+                              ]
+                            },
+                            "op": "Ge",
+                            "right": 2
+                          }
+                        },
+                        "then": 2,
+                        "otherwise": 1
+                      }
+                    },
+                    "max": {
+                      "When": {
+                        "condition": {
+                          "Compare": {
+                            "left": {
+                              "Sum": [
+                                {
+                                  "When": {
+                                    "condition": {
+                                      "Compare": {
+                                        "left": {
+                                          "Count": [
+                                            { "Type": "Instant" },
+                                            { "OwnedBy": "You" },
+                                            { "In": "Graveyard" }
+                                          ]
+                                        },
+                                        "op": "Gt",
+                                        "right": 1
+                                      }
+                                    },
+                                    "then": 1,
+                                    "otherwise": {
+                                      "Count": [
+                                        { "Type": "Instant" },
+                                        { "OwnedBy": "You" },
+                                        { "In": "Graveyard" }
+                                      ]
+                                    }
+                                  }
+                                },
+                                {
+                                  "When": {
+                                    "condition": {
+                                      "Compare": {
+                                        "left": {
+                                          "Count": [
+                                            { "Type": "Sorcery" },
+                                            { "OwnedBy": "You" },
+                                            { "In": "Graveyard" }
+                                          ]
+                                        },
+                                        "op": "Gt",
+                                        "right": 1
+                                      }
+                                    },
+                                    "then": 1,
+                                    "otherwise": {
+                                      "Count": [
+                                        { "Type": "Sorcery" },
+                                        { "OwnedBy": "You" },
+                                        { "In": "Graveyard" }
+                                      ]
+                                    }
+                                  }
+                                }
+                              ]
+                            },
+                            "op": "Ge",
+                            "right": 2
+                          }
+                        },
+                        "then": 2,
+                        "otherwise": 1
+                      }
+                    }
+                  },
+                  "as": "kept2",
+                  "rest_as": "rest3"
+                }
+              },
+              { "Move": { "what": { "Bound": "kept2" }, "to": "Hand" } },
+              {
+                "Move": {
+                  "what": { "Bound": "rest3" },
+                  "to": { "Library": { "place": "Bottom", "order": "Chosen" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

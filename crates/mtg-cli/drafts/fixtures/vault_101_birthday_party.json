@@ -1,0 +1,162 @@
+{
+  "object": "card",
+  "id": "fc513659-ea88-4d04-82bd-5bb2e740d957",
+  "oracle_id": "77322d69-330e-4b00-b984-62c6d45c9540",
+  "multiverse_ids": [
+    652115
+  ],
+  "mtgo_id": 132303,
+  "tcgplayer_id": 522958,
+  "cardmarket_id": 755880,
+  "name": "Vault 101: Birthday Party",
+  "lang": "en",
+  "released_at": "2024-03-08",
+  "uri": "https://api.scryfall.com/cards/fc513659-ea88-4d04-82bd-5bb2e740d957",
+  "scryfall_uri": "https://scryfall.com/card/pip/28/vault-101:-birthday-party?utm_source=api",
+  "layout": "saga",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T03:13:32Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/f/c/fc513659-ea88-4d04-82bd-5bb2e740d957.jpg?1783912412",
+    "normal": "https://cards.scryfall.io/normal/front/f/c/fc513659-ea88-4d04-82bd-5bb2e740d957.jpg?1783912412",
+    "large": "https://cards.scryfall.io/large/front/f/c/fc513659-ea88-4d04-82bd-5bb2e740d957.jpg?1783912412",
+    "png": "https://cards.scryfall.io/png/front/f/c/fc513659-ea88-4d04-82bd-5bb2e740d957.png?1783912412",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/f/c/fc513659-ea88-4d04-82bd-5bb2e740d957.jpg?1783912412",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/f/c/fc513659-ea88-4d04-82bd-5bb2e740d957.jpg?1783912412",
+    "thumb": "https://cards.scryfall.io/thumb/front/f/c/fc513659-ea88-4d04-82bd-5bb2e740d957.webp?1783912412",
+    "grid": "https://cards.scryfall.io/grid/front/f/c/fc513659-ea88-4d04-82bd-5bb2e740d957.webp?1783912412",
+    "display": "https://cards.scryfall.io/display/front/f/c/fc513659-ea88-4d04-82bd-5bb2e740d957.webp?1783912412",
+    "art": "https://cards.scryfall.io/art/front/f/c/fc513659-ea88-4d04-82bd-5bb2e740d957.webp?1783912412",
+    "crop": "https://cards.scryfall.io/crop/front/f/c/fc513659-ea88-4d04-82bd-5bb2e740d957.webp?1783912412",
+    "jpeg": "https://cards.scryfall.io/normal/front/f/c/fc513659-ea88-4d04-82bd-5bb2e740d957.jpg?1783912412"
+  },
+  "mana_cost": "{3}{W}",
+  "cmc": 4.0,
+  "type_line": "Enchantment — Saga",
+  "oracle_text": "(As this Saga enters and after your draw step, add a lore counter. Sacrifice after III.)\nI — Create a 1/1 white Human Soldier creature token and a Food token. (A Food token is an artifact with \"{2}, {T}, Sacrifice this token: You gain 3 life.\")\nII, III — You may put an Aura or Equipment card from your hand or graveyard onto the battlefield. If an Equipment is put onto the battlefield this way, you may attach it to a creature you control.",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": [
+    "Food"
+  ],
+  "all_parts": [
+    {
+      "object": "related_card",
+      "id": "741caee0-03c7-4b72-8f71-234e66eb6609",
+      "component": "combo_piece",
+      "name": "Vault 101: Birthday Party",
+      "type_line": "Enchantment — Saga",
+      "uri": "https://api.scryfall.com/cards/741caee0-03c7-4b72-8f71-234e66eb6609"
+    },
+    {
+      "object": "related_card",
+      "id": "737741e7-b2b2-4c41-ab7c-4eeaf9f37b71",
+      "component": "token",
+      "name": "Human Soldier",
+      "type_line": "Token Creature — Human Soldier",
+      "uri": "https://api.scryfall.com/cards/737741e7-b2b2-4c41-ab7c-4eeaf9f37b71"
+    },
+    {
+      "object": "related_card",
+      "id": "e5d0801a-9565-419f-bb0b-23547c9dd59d",
+      "component": "token",
+      "name": "Food",
+      "type_line": "Token Artifact — Food",
+      "uri": "https://api.scryfall.com/cards/e5d0801a-9565-419f-bb0b-23547c9dd59d"
+    }
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "d84d7a49-2ef4-4808-83b4-8c65b4aa0e2d",
+  "set": "pip",
+  "set_name": "Fallout",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/d84d7a49-2ef4-4808-83b4-8c65b4aa0e2d",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Apip&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/pip?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/fc513659-ea88-4d04-82bd-5bb2e740d957/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A77322d69-330e-4b00-b984-62c6d45c9540&unique=prints",
+  "collector_number": "28",
+  "digital": false,
+  "rarity": "rare",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Andrea Piparo",
+  "artist_ids": [
+    "e8ab9604-1b3c-4bb5-9290-dfb3fd3cf01d"
+  ],
+  "illustration_id": "19663243-f622-4844-b5b8-6306f0e6b7f0",
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "triangle",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "promo_types": [
+    "universesbeyond"
+  ],
+  "edhrec_rank": 11687,
+  "prices": {
+    "usd": "0.33",
+    "usd_foil": "0.58",
+    "usd_etched": null,
+    "eur": "0.25",
+    "eur_foil": "0.52",
+    "tix": "0.31"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=652115&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DVault%2B101%253A%2BBirthday%2BParty",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DVault%2B101%253A%2BBirthday%2BParty",
+    "edhrec": "https://edhrec.com/route/?cc=Vault+101%3A+Birthday+Party"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F522958%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=755880&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/132303?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

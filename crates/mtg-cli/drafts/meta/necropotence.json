@@ -1,0 +1,59 @@
+{
+  "source": "forge",
+  "oracle_matches": true,
+  "lines": [
+    {
+      "face": 0,
+      "tag": "A",
+      "text": "Exile the top card of your library face down. Put that card into your hand at the beginning of your next end step.",
+      "abilities": [],
+      "gap": "key:ChangeZone.ExileFaceDown"
+    },
+    {
+      "face": 0,
+      "tag": "T",
+      "text": "Whenever you discard a card, exile that card from your graveyard.",
+      "abilities": [
+        0
+      ],
+      "gap": null
+    },
+    {
+      "face": 0,
+      "tag": "R",
+      "text": "Skip your draw step.",
+      "abilities": [
+        1
+      ],
+      "gap": null
+    }
+  ],
+  "proof": {
+    "marks": [
+      {
+        "face": 0,
+        "span": {
+          "start": 0,
+          "end": 20
+        },
+        "mark": "Auto"
+      },
+      {
+        "face": 0,
+        "span": {
+          "start": 21,
+          "end": 86
+        },
+        "mark": "Auto"
+      },
+      {
+        "face": 0,
+        "span": {
+          "start": 87,
+          "end": 213
+        },
+        "mark": "ByHand"
+      }
+    ]
+  }
+}

@@ -1,0 +1,102 @@
+{
+  "oracle_id": "ca16b735-26c7-4d0b-959b-b031f6cb376e",
+  "name": "Genku, Future Shaper",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Genku, Future Shaper",
+      "oracle_fingerprint": "18d9ba21ea4b1e9a315d97e744ec0708",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "ControlledBy": "You" }, "Other", { "Not": "Token" }],
+                "from": "Battlefield"
+              }
+            },
+            "effects": [
+              {
+                "Modal": {
+                  "once_each_turn": true,
+                  "modes": [
+                    {
+                      "effects": [
+                        {
+                          "CreateToken": {
+                            "token": {
+                              "Custom": {
+                                "name": "Fox",
+                                "colors": ["White"],
+                                "types": ["Creature"],
+                                "subtypes": ["Fox"],
+                                "power": 2,
+                                "toughness": 2,
+                                "abilities": [{ "Keyword": "Vigilance" }]
+                              }
+                            }
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "effects": [
+                        {
+                          "CreateToken": {
+                            "token": {
+                              "Custom": {
+                                "name": "Moonfolk",
+                                "colors": ["Blue"],
+                                "types": ["Creature"],
+                                "subtypes": ["Moonfolk"],
+                                "power": 1,
+                                "toughness": 2,
+                                "abilities": [{ "Keyword": "Flying" }]
+                              }
+                            }
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "effects": [
+                        {
+                          "CreateToken": {
+                            "token": {
+                              "Custom": {
+                                "name": "Rat",
+                                "colors": ["Black"],
+                                "types": ["Creature"],
+                                "subtypes": ["Rat"],
+                                "power": 1,
+                                "toughness": 1,
+                                "abilities": [{ "Keyword": "Lifelink" }]
+                              }
+                            }
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{3}{W}{U}",
+            "effects": [
+              {
+                "PutCounters": {
+                  "on": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                  "counter": "+1/+1"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

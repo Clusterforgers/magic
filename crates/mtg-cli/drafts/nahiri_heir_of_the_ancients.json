@@ -1,0 +1,101 @@
+{
+  "oracle_id": "39bbc4cf-53fe-47dd-8ba3-1a59b1fa7dd1",
+  "name": "Nahiri, Heir of the Ancients",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Nahiri, Heir of the Ancients",
+      "oracle_fingerprint": "582e6323c6490d95155e8c73b79ea3df",
+      "abilities": [
+        {
+          "Loyalty": {
+            "cost": { "Plus": 1 },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Kor Warrior",
+                      "colors": ["White"],
+                      "types": ["Creature"],
+                      "subtypes": ["Kor", "Warrior"],
+                      "power": 1,
+                      "toughness": 1
+                    }
+                  },
+                  "as": "token"
+                }
+              },
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "Choose": {
+                        "from": { "Each": [{ "Subtype": "Equipment" }, { "ControlledBy": "You" }] },
+                        "as": "attach2"
+                      }
+                    },
+                    { "Attach": { "what": { "Bound": "attach2" }, "to": { "Bound": "token" } } }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Minus": 2 },
+            "effects": [
+              { "LookAtTop": { "count": 6, "as": "top" } },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "In": "Library" },
+                      { "Is": { "Bound": "top" } },
+                      { "AnyOf": [{ "Subtype": "Warrior" }, { "Subtype": "Equipment" }] }
+                    ]
+                  },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "kept2"
+                }
+              },
+              { "Move": { "what": { "Bound": "kept2" }, "to": "Hand" } },
+              {
+                "Move": {
+                  "what": { "Bound": "top" },
+                  "to": { "Library": { "place": "Bottom", "order": "Random" } }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Minus": 3 },
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "AnyOf": [{ "Type": "Creature" }, { "Type": "Planeswalker" }] }]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "DealDamage": {
+                  "to": { "Target": 0 },
+                  "amount": {
+                    "Times": {
+                      "by": 2,
+                      "of": { "Count": [{ "Subtype": "Equipment" }, { "ControlledBy": "You" }] }
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

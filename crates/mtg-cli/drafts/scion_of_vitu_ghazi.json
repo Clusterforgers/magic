@@ -1,0 +1,51 @@
+{
+  "oracle_id": "a34c4d5c-6ecb-4da2-8734-a2f3d35cfe8b",
+  "name": "Scion of Vitu-Ghazi",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Scion of Vitu-Ghazi",
+      "oracle_fingerprint": "ecd0bce99a8e0f6684003ed1ef5bb87a",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [
+                  { "WasCast": { "by": "You", "from": "Hand" } },
+                  { "OwnedBy": "You" },
+                  "This"
+                ],
+                "to": "Battlefield"
+              }
+            },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Bird",
+                      "colors": ["White"],
+                      "types": ["Creature"],
+                      "subtypes": ["Bird"],
+                      "power": 1,
+                      "toughness": 1,
+                      "abilities": [{ "Keyword": "Flying" }]
+                    }
+                  }
+                }
+              },
+              {
+                "Choose": {
+                  "from": { "Each": [{ "Type": "Creature" }, "Token", { "ControlledBy": "You" }] },
+                  "as": "populated"
+                }
+              },
+              { "CreateToken": { "token": { "CopyOf": { "of": { "Bound": "populated" } } } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

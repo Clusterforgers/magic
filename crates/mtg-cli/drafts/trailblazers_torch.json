@@ -1,0 +1,34 @@
+{
+  "oracle_id": "1cdac498-3c94-48d6-b94c-1d98697370ea",
+  "name": "Trailblazer's Torch",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Trailblazer's Torch",
+      "oracle_fingerprint": "ef5dd3e4a382c886997febf9859c3fc0",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "TakeInitiative": {} }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "BecomesBlocked": { "what": [{ "Type": "Creature" }, { "Is": "Attached" }] } },
+            "effects": [
+              {
+                "DealDamage": {
+                  "source": "Triggering",
+                  "to": { "Each": [{ "Type": "Creature" }, { "Blocks": "Attached" }] },
+                  "amount": 2
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Equip": "{1}" } }
+      ]
+    }
+  ]
+}

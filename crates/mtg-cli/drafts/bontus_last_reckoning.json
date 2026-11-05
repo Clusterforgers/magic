@@ -1,0 +1,27 @@
+{
+  "oracle_id": "c010d833-1873-4132-b4ff-8d78b3d7c2d7",
+  "name": "Bontu's Last Reckoning",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Bontu's Last Reckoning",
+      "oracle_fingerprint": "82b15ed25d119e8dc3ec0c96aa9623ea",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "Destroy": { "what": { "Each": [{ "Type": "Creature" }] } } },
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Type": "Land" }, { "ControlledBy": "You" }] },
+                  "mods": ["DoesntUntap"],
+                  "duration": "NextUntapStep"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

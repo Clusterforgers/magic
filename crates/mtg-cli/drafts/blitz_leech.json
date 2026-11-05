@@ -1,0 +1,32 @@
+{
+  "oracle_id": "7679942f-fcbc-4750-8e8c-fe0ad8103c11",
+  "name": "Blitz Leech",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Blitz Leech",
+      "oracle_fingerprint": "1098b6e7dc144a041ec2a00d09a0a970",
+      "abilities": [
+        { "Keyword": "Flash" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }] } }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "ModifyPT": { "power": -2, "toughness": -2 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              { "RemoveAllCounters": { "from": { "Target": 0 } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

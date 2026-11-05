@@ -1,0 +1,58 @@
+{
+  "oracle_id": "29e96c47-94ad-4740-ba86-66dc2cf9ae2f",
+  "name": "Skyclave Aerialist // Skyclave Invader",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Skyclave Aerialist",
+      "oracle_fingerprint": "bc0e5aef21d97b08fcda6f963329acc5",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Activated": {
+            "cost": "{4}{G/P}",
+            "timing": "Sorcery",
+            "effects": [{ "Transform": { "what": "This" } }]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Skyclave Invader",
+      "oracle_fingerprint": "4db393e6c99e86f0d45de1b95f451d67",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "Did": { "action": "Transformed", "what": ["This"] } },
+            "effects": [
+              { "LookAtTop": { "as": "top" } },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Bound": "top" },
+                      "selector": [{ "Type": "Land" }],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [
+                    {
+                      "May": {
+                        "effects": [
+                          { "Move": { "what": { "Bound": "top" }, "to": { "Battlefield": {} } } }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              },
+              { "Move": { "what": { "Bound": "top" }, "to": "Hand" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

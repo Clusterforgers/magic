@@ -1,7 +1,7 @@
 {
   "oracle_id": "8e51fdb8-4f83-4e94-b36c-40a501075ecb",
   "name": "Lady Octopus, Inspired Inventor",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Lady Octopus, Inspired Inventor",
@@ -19,9 +19,33 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 97, "end": 264 }
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "Type": "Artifact" },
+                      { "OwnedBy": "You" },
+                      { "In": "Hand" },
+                      {
+                        "Compare": {
+                          "stat": "ManaValue",
+                          "op": "Le",
+                          "to": {
+                            "Counters": { "on": "This", "counter": { "Other": "ingenuity" } }
+                          }
+                        }
+                      }
+                    ]
+                  },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "picked"
+                }
+              },
+              { "CastFromZone": { "what": { "Bound": "picked" }, "free": true } }
+            ]
           }
         }
       ]

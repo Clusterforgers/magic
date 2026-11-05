@@ -1,0 +1,57 @@
+{
+  "oracle_id": "4f07a2e6-692b-4d8c-9ecf-4d94b03706a0",
+  "name": "Infernal Kirin",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Infernal Kirin",
+      "oracle_fingerprint": "482ce339416530502081835935db817e",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": {
+              "SpellCast": {
+                "what": [{ "AnyOf": [{ "Subtype": "Spirit" }, { "Subtype": "Arcane" }] }],
+                "by": "You"
+              }
+            },
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              {
+                "Reveal": { "what": { "Each": [{ "OwnedBy": { "Target": 0 } }, { "In": "Hand" }] } }
+              },
+              {
+                "Discard": {
+                  "who": { "Target": 0 },
+                  "count": {
+                    "Count": [
+                      { "In": "Hand" },
+                      { "OwnedBy": { "Target": 0 } },
+                      {
+                        "Compare": {
+                          "stat": "ManaValue",
+                          "op": "Eq",
+                          "to": { "Stat": { "of": "Triggering", "stat": "ManaValue" } }
+                        }
+                      }
+                    ]
+                  },
+                  "filter": [
+                    {
+                      "Compare": {
+                        "stat": "ManaValue",
+                        "op": "Eq",
+                        "to": { "Stat": { "of": "Triggering", "stat": "ManaValue" } }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

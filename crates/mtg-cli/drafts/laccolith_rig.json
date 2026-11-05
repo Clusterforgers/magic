@@ -1,0 +1,43 @@
+{
+  "oracle_id": "0b583980-1508-4247-8a28-7127241d8ec0",
+  "name": "Laccolith Rig",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Laccolith Rig",
+      "oracle_fingerprint": "88d228fb183f9b53e9eb40924be41954",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Triggered": {
+            "when": { "BecomesBlocked": { "what": [{ "Is": "Attached" }] } },
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "DealDamage": {
+                        "source": "Triggering",
+                        "to": { "Target": 0 },
+                        "amount": { "Stat": { "of": "Triggering", "stat": "Power" } }
+                      }
+                    },
+                    {
+                      "Rule": {
+                        "rule": {
+                          "Combat": { "who": "Triggering", "quirk": "AssignsNoCombatDamage" }
+                        },
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

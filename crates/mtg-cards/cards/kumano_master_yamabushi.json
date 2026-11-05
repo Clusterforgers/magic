@@ -1,0 +1,32 @@
+{
+  "oracle_id": "6d776c7b-4ca1-48cd-88c7-dfbbe5a56a0b",
+  "name": "Kumano, Master Yamabushi",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Kumano, Master Yamabushi",
+      "oracle_fingerprint": "e5a0eb5f0eea90c08e462cd49d3b5c16",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{1}{R}",
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 1 } }]
+          }
+        },
+        {
+          "Replacement": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Creature" }, { "DamagedBy": "This" }],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "by": { "MoveTo": "Exile" }
+          }
+        }
+      ]
+    }
+  ]
+}

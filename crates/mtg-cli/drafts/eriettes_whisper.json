@@ -1,0 +1,61 @@
+{
+  "oracle_id": "27ca3201-a374-4a9d-b0ba-93b391f36844",
+  "name": "Eriette's Whisper",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Eriette's Whisper",
+      "oracle_fingerprint": "ebbc45a193ee01e875465d675bf6b297",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": "Opponent" },
+              {
+                "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                "bounds": { "min": 0, "max": 1 }
+              }
+            ],
+            "effects": [
+              { "Discard": { "who": { "Target": 0 }, "count": 2 } },
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Wicked",
+                      "types": ["Enchantment"],
+                      "subtypes": ["Aura", "Role"],
+                      "abilities": [
+                        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+                        {
+                          "Triggered": {
+                            "when": {
+                              "ZoneChange": {
+                                "what": ["This"],
+                                "from": "Battlefield",
+                                "to": "Graveyard"
+                              }
+                            },
+                            "effects": [{ "LoseLife": { "who": "Opponents", "amount": 1 } }]
+                          }
+                        },
+                        {
+                          "Static": {
+                            "affected": "Attached",
+                            "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }]
+                          }
+                        }
+                      ]
+                    }
+                  },
+                  "as": "token"
+                }
+              },
+              { "Attach": { "what": { "Bound": "token" }, "to": { "Target": 1 } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

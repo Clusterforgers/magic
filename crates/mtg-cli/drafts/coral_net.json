@@ -24,10 +24,18 @@
                   "Triggered": {
                     "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
                     "effects": [
+                      { "May": { "effects": [{ "Discard": { "as": "discarded" } }] } },
                       {
-                        "Pay": {
-                          "cost": [{ "Discard": {} }],
-                          "unpaid": [{ "Sacrifice": { "filter": ["This"] } }]
+                        "If": {
+                          "condition": {
+                            "CountOf": {
+                              "subject": { "Bound": "discarded" },
+                              "selector": [],
+                              "op": "Eq",
+                              "right": 0
+                            }
+                          },
+                          "then": [{ "Sacrifice": { "filter": ["This"] } }]
                         }
                       }
                     ]

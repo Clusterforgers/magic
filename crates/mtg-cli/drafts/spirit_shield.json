@@ -1,0 +1,29 @@
+{
+  "oracle_id": "db53fad4-03b8-47bb-9459-b1eb6cca961c",
+  "name": "Spirit Shield",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Spirit Shield",
+      "oracle_fingerprint": "f452112660411df03bb4cc1443b07884",
+      "abilities": [
+        { "Rule": { "rule": { "Combat": { "who": "This", "quirk": "MayStayTapped" } } } },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{2}" }, "Tap"],
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "ModifyPT": { "power": 0, "toughness": 2 } }],
+                  "duration": "WhileSourceTapped"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

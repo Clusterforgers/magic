@@ -1,0 +1,49 @@
+{
+  "oracle_id": "f5cdb413-2b72-4dc6-b93d-2532ac2ae568",
+  "name": "Black Cat, Cunning Thief",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Black Cat, Cunning Thief",
+      "oracle_fingerprint": "4726282c6ad49894472d7a3cb620f54e",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              { "LookAtTop": { "who": { "Target": 0 }, "count": 9, "as": "top" } },
+              {
+                "Choose": {
+                  "from": { "Each": [{ "In": "Library" }, { "Is": { "Bound": "top" } }] },
+                  "count": { "min": 0, "max": 2 },
+                  "as": "kept2"
+                }
+              },
+              { "ExileHidden": { "what": { "Bound": "kept2" }, "held": true, "as": "exiled4" } },
+              {
+                "Move": {
+                  "what": { "Bound": "top" },
+                  "to": { "Library": { "place": "Bottom", "order": "Random" } }
+                }
+              },
+              {
+                "Rule": {
+                  "rule": {
+                    "MayCast": {
+                      "from": "Exile",
+                      "only": { "Bound": "exiled4" },
+                      "play": true,
+                      "spend_as": "AnyType"
+                    }
+                  },
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

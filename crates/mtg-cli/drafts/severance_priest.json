@@ -1,0 +1,137 @@
+{
+  "oracle_id": "3a38bf69-511f-4851-870f-8a65641d832e",
+  "name": "Severance Priest",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Severance Priest",
+      "oracle_fingerprint": "b6c397ad1078ba88d9fc01cb7a02f9a2",
+      "abilities": [
+        { "Keyword": "Deathtouch" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "Not": { "Type": "Land" } },
+                      { "In": "Hand" },
+                      { "OwnedBy": { "Target": 0 } }
+                    ]
+                  },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "picked"
+                }
+              },
+              { "Exile": { "what": { "Bound": "picked" }, "as": "exiled2" } },
+              { "Remember": { "what": { "Bound": "exiled2" }, "slot": "remembered" } }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield" } },
+            "effects": [
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Remembered": { "on": "This", "slot": "remembered" } },
+                      "selector": [{ "ExiledWith": "This" }],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [
+                    {
+                      "Let": {
+                        "as": "power",
+                        "amount": {
+                          "Total": {
+                            "of": [
+                              { "Is": { "Remembered": { "on": "This", "slot": "remembered" } } },
+                              {
+                                "AnyOf": [
+                                  { "In": "Battlefield" },
+                                  { "In": "Hand" },
+                                  { "In": "Library" },
+                                  { "In": "Graveyard" },
+                                  { "In": "Exile" },
+                                  { "In": "Stack" }
+                                ]
+                              }
+                            ],
+                            "stat": "ManaValue"
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "Let": {
+                        "as": "toughness2",
+                        "amount": {
+                          "Total": {
+                            "of": [
+                              { "Is": { "Remembered": { "on": "This", "slot": "remembered" } } },
+                              {
+                                "AnyOf": [
+                                  { "In": "Battlefield" },
+                                  { "In": "Hand" },
+                                  { "In": "Library" },
+                                  { "In": "Graveyard" },
+                                  { "In": "Exile" },
+                                  { "In": "Stack" }
+                                ]
+                              }
+                            ],
+                            "stat": "ManaValue"
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "CreateToken": {
+                        "who": {
+                          "OwnerOf": { "Remembered": { "on": "This", "slot": "remembered" } }
+                        },
+                        "token": {
+                          "Custom": {
+                            "name": "Spirit",
+                            "colors": ["White"],
+                            "types": ["Creature"],
+                            "subtypes": ["Spirit"],
+                            "power": 0,
+                            "toughness": 0
+                          }
+                        },
+                        "as": "token3"
+                      }
+                    },
+                    {
+                      "Continuous": {
+                        "affected": { "Bound": "token3" },
+                        "mods": [
+                          {
+                            "SetPT": {
+                              "power": { "Bound": "power" },
+                              "toughness": { "Bound": "toughness2" }
+                            }
+                          }
+                        ],
+                        "duration": "Forever"
+                      }
+                    }
+                  ]
+                }
+              },
+              { "Forget": { "slot": "remembered" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

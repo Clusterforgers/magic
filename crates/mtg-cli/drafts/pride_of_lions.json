@@ -1,0 +1,14 @@
+{
+  "oracle_id": "5b5e0df8-f8f0-40a1-9814-89d73a026ad0",
+  "name": "Pride of Lions",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Pride of Lions",
+      "oracle_fingerprint": "a8b85d1eabd97b1215d65f7feb7aabc1",
+      "abilities": [
+        { "Rule": { "rule": { "Combat": { "who": "This", "quirk": "AssignsAsUnblocked" } } } }
+      ]
+    }
+  ]
+}

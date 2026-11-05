@@ -1,0 +1,84 @@
+{
+  "oracle_id": "9466cfc1-a8fe-44a0-abd2-5d2dfe7110e0",
+  "name": "Neyam Shai Murad",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Neyam Shai Murad",
+      "oracle_fingerprint": "dde2e8aa23aede93bb204dfc7b997acb",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": ["This"], "to": "EachPlayer", "combat": true } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "OwnedBy": "Triggering" },
+                    {
+                      "AnyOf": [
+                        { "Type": "Artifact" },
+                        { "Type": "Battle" },
+                        { "Type": "Creature" },
+                        { "Type": "Enchantment" },
+                        { "Type": "Land" },
+                        { "Type": "Planeswalker" }
+                      ]
+                    },
+                    { "In": "Graveyard" }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    { "Move": { "what": { "Target": 0 }, "to": "Hand", "as": "moved" } },
+                    {
+                      "If": {
+                        "condition": {
+                          "CountOf": {
+                            "subject": { "Bound": "moved" },
+                            "selector": [],
+                            "op": "Ge",
+                            "right": 1
+                          }
+                        },
+                        "then": [
+                          {
+                            "Choose": {
+                              "who": "Triggering",
+                              "from": {
+                                "Each": [
+                                  { "OwnedBy": "You" },
+                                  {
+                                    "AnyOf": [
+                                      { "Type": "Artifact" },
+                                      { "Type": "Battle" },
+                                      { "Type": "Creature" },
+                                      { "Type": "Enchantment" },
+                                      { "Type": "Land" },
+                                      { "Type": "Planeswalker" }
+                                    ]
+                                  },
+                                  { "In": "Graveyard" }
+                                ]
+                              },
+                              "as": "card2"
+                            }
+                          }
+                        ]
+                      }
+                    },
+                    { "Move": { "what": { "Bound": "card2" }, "to": { "Battlefield": {} } } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

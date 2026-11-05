@@ -1,0 +1,44 @@
+{
+  "oracle_id": "da099c34-74b2-4db8-8583-09bf2c56606f",
+  "name": "Perfect Intimidation",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Perfect Intimidation",
+      "oracle_fingerprint": "c06742267ab417761aaa35edb7b933d2",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Modal": {
+                  "choose": { "min": 1, "max": 2 },
+                  "modes": [
+                    {
+                      "targets": [{ "what": "Opponent" }],
+                      "effects": [
+                        {
+                          "Choose": {
+                            "who": { "Target": 0 },
+                            "from": { "Each": [{ "In": "Hand" }, { "OwnedBy": { "Target": 0 } }] },
+                            "count": { "min": 2, "max": 2 },
+                            "as": "picked"
+                          }
+                        },
+                        { "Exile": { "what": { "Bound": "picked" } } }
+                      ]
+                    },
+                    {
+                      "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+                      "effects": [{ "RemoveAllCounters": { "from": { "Target": 0 } } }]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

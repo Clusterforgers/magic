@@ -1,0 +1,38 @@
+{
+  "oracle_id": "018985f5-6a67-4f2f-855c-efa7254ad3f8",
+  "name": "Mindclaw Shaman",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mindclaw Shaman",
+      "oracle_fingerprint": "8d87bf2c9425cf1a6a1c8dd60c6e8ab2",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              {
+                "Reveal": { "what": { "Each": [{ "OwnedBy": { "Target": 0 } }, { "In": "Hand" }] } }
+              },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "OwnedBy": { "Target": 0 } },
+                      { "In": "Hand" },
+                      { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] }
+                    ]
+                  },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "picked"
+                }
+              },
+              { "CastFromZone": { "what": { "Bound": "picked" }, "free": true } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

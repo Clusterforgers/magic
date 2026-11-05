@@ -1,0 +1,28 @@
+{
+  "oracle_id": "88e98269-fe0e-42f8-830d-776aa06a58dc",
+  "name": "Spin Engine",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Spin Engine",
+      "oracle_fingerprint": "8a0d6fd56e4e789e6d1e51ec534d9479",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{R}",
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "CanBlockOnly": [{ "Not": { "Is": "This" } }] }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

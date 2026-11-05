@@ -1,0 +1,34 @@
+{
+  "oracle_id": "287aae84-b098-456e-b9cb-8eac51c36360",
+  "name": "Lidless Gaze",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Lidless Gaze",
+      "oracle_fingerprint": "5ed54118fcedc6ce171c486b6f902ba1",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "ExileTop": { "who": "EachPlayer", "as": "exiled" } },
+              {
+                "Rule": {
+                  "rule": {
+                    "MayCast": {
+                      "from": "Exile",
+                      "only": { "Bound": "exiled" },
+                      "play": true,
+                      "spend_as": "AnyType"
+                    }
+                  },
+                  "duration": "UntilEndOfYourNextTurn"
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Flashback": "{2}{B}{R}" } }
+      ]
+    }
+  ]
+}

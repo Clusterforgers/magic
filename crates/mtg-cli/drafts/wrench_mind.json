@@ -1,0 +1,27 @@
+{
+  "oracle_id": "484eeb13-fe74-45fe-b089-7beec87cfcdb",
+  "name": "Wrench Mind",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Wrench Mind",
+      "oracle_fingerprint": "370ef1504fce0ad89c8d69ba7341438e",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Player" }, { "what": "Player" }],
+            "effects": [
+              {
+                "Pay": {
+                  "who": { "Target": 1 },
+                  "cost": [{ "Discard": { "filter": [{ "Type": "Artifact" }] } }],
+                  "unpaid": [{ "Discard": { "who": { "Target": 0 }, "count": 2 } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

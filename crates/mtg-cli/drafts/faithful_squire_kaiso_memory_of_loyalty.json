@@ -1,7 +1,7 @@
 {
   "oracle_id": "2358ffc2-6663-4ef3-b3a4-b036a4733ac6",
   "name": "Faithful Squire // Kaiso, Memory of Loyalty",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Faithful Squire",
@@ -50,9 +50,18 @@
       "abilities": [
         { "Keyword": "Flying" },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 7, "end": 107 }
+          "Activated": {
+            "cost": [{ "RemoveCounters": { "counter": { "Other": "ki" } } }],
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Shield": {
+                  "when": { "Damage": { "to": { "Target": 0 } } },
+                  "by": "Prevent",
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
           }
         }
       ]

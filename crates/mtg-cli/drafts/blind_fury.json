@@ -1,0 +1,39 @@
+{
+  "oracle_id": "5dbfd316-a0a9-4caa-99b1-069931d2aaa4",
+  "name": "Blind Fury",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Blind Fury",
+      "oracle_fingerprint": "c809e03262ac6e349db8c09002ced723",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Type": "Creature" }] },
+                  "mods": [{ "RemoveKeyword": "Trample" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "Shield": {
+                  "when": {
+                    "Damage": {
+                      "to": { "Each": [{ "Type": "Creature" }] },
+                      "source": [{ "Type": "Creature" }],
+                      "combat": true
+                    }
+                  },
+                  "by": { "Multiply": 2 },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

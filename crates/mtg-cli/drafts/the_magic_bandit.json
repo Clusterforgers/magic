@@ -1,0 +1,55 @@
+{
+  "oracle_id": "db94faef-87d7-435d-8be0-dbe20cee5848",
+  "name": "The Magic Bandit",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "The Magic Bandit",
+      "oracle_fingerprint": "4158d94e1fafa1bd5f7f7879297cddeb",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": ["This"], "to": "EachPlayer", "combat": true } },
+            "effects": [
+              { "ExileTop": { "who": "Triggering", "as": "exiled" } },
+              {
+                "Rule": {
+                  "rule": {
+                    "MayCast": {
+                      "what": [{ "Not": { "Type": "Land" } }],
+                      "from": "Exile",
+                      "only": { "Bound": "exiled" },
+                      "spend_as": "AnyType"
+                    }
+                  },
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "what": [{ "Not": { "OwnedBy": "You" } }], "by": "You" } },
+            "effects": [{ "CopySpell": { "what": "Triggering" } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "Did": {
+                "action": "PlayedLand",
+                "what": [
+                  { "Type": "Land" },
+                  { "ControlledBy": "You" },
+                  { "Not": { "OwnedBy": "You" } }
+                ]
+              }
+            },
+            "effects": [{ "CreateToken": { "token": { "CopyOf": { "of": "Triggering" } } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

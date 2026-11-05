@@ -1,0 +1,39 @@
+{
+  "oracle_id": "b6265654-84c3-469b-9afa-f752fd64abe0",
+  "name": "Mwonvuli Beast Tracker",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mwonvuli Beast Tracker",
+      "oracle_fingerprint": "10fc8f099a0b34f9a87683e7ed3d95a6",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Search": {
+                  "filter": [
+                    { "Type": "Creature" },
+                    {
+                      "AnyOf": [
+                        { "HasKeyword": "Deathtouch" },
+                        { "HasKeyword": "Hexproof" },
+                        { "HasKeyword": "Reach" },
+                        { "HasKeyword": "Trample" }
+                      ]
+                    },
+                    { "ControlledBy": "You" }
+                  ],
+                  "as": "found"
+                }
+              },
+              { "Shuffle": {} },
+              { "Move": { "what": { "Bound": "found" }, "to": { "Library": { "place": "Top" } } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

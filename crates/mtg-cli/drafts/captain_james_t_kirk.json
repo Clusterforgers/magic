@@ -1,0 +1,79 @@
+{
+  "oracle_id": "19edde54-153f-46b8-8a8d-a20fdef0667f",
+  "name": "Captain James T. Kirk",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Captain James T. Kirk",
+      "oracle_fingerprint": "1cd1a03455e2b9c9bf6907f22d10e662",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+                { "Attacks": { "what": ["This"] } }
+              ]
+            },
+            "effects": [
+              {
+                "Modal": {
+                  "choose": {
+                    "min": 1,
+                    "max": {
+                      "When": {
+                        "condition": {
+                          "Compare": {
+                            "left": { "Count": [{ "In": "Hand" }, { "OwnedBy": "You" }] },
+                            "op": "Eq",
+                            "right": 0
+                          }
+                        },
+                        "then": 3,
+                        "otherwise": 1
+                      }
+                    }
+                  },
+                  "modes": [
+                    { "effects": [{ "Discard": {} }, { "Draw": {} }] },
+                    {
+                      "effects": [
+                        {
+                          "CreateToken": {
+                            "token": {
+                              "Custom": {
+                                "name": "Officer",
+                                "colors": ["Red"],
+                                "types": ["Creature"],
+                                "subtypes": ["Officer"],
+                                "power": 1,
+                                "toughness": 1
+                              }
+                            }
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "effects": [
+                        {
+                          "Continuous": {
+                            "affected": {
+                              "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }]
+                            },
+                            "mods": [{ "ModifyPT": { "power": 1, "toughness": 0 } }],
+                            "duration": "UntilEndOfTurn"
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

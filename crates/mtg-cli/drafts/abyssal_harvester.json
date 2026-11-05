@@ -1,0 +1,51 @@
+{
+  "oracle_id": "68cc5065-0514-4adf-885f-da554e1db00a",
+  "name": "Abyssal Harvester",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Abyssal Harvester",
+      "oracle_fingerprint": "46397a0f38f88c056d801e249f1dd1b6",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "Type": "Creature" }, "EnteredThisTurn", { "In": "Graveyard" }]
+                }
+              }
+            ],
+            "effects": [
+              { "Exile": { "what": { "Target": 0 }, "as": "exiled" } },
+              {
+                "CreateToken": {
+                  "token": {
+                    "CopyOf": {
+                      "of": { "Bound": "exiled" },
+                      "except": [{ "AddSubtype": "Nightmare" }]
+                    }
+                  },
+                  "as": "copy2"
+                }
+              },
+              {
+                "Exile": {
+                  "what": {
+                    "Each": [
+                      { "Subtype": "Nightmare" },
+                      "Token",
+                      { "Not": { "Is": { "Bound": "copy2" } } },
+                      { "ControlledBy": "You" }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

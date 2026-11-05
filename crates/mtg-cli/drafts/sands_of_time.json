@@ -1,0 +1,22 @@
+{
+  "oracle_id": "c8f69b48-a3b2-4324-852d-11fad19d6432",
+  "name": "Sands of Time",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Sands of Time",
+      "oracle_fingerprint": "e2a102b87b699d55ee7667cd9cc3c72b",
+      "abilities": [
+        {
+          "Rule": { "rule": { "Cant": { "who": "EachPlayer", "action": { "SkipStep": "Untap" } } } }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 36, "end": 231 }
+          }
+        }
+      ]
+    }
+  ]
+}

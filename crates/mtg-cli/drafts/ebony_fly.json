@@ -1,0 +1,78 @@
+{
+  "oracle_id": "2a2f2d6c-3937-4e4b-9e4a-3480e0c787d0",
+  "name": "Ebony Fly",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ebony Fly",
+      "oracle_fingerprint": "ada476ef4a302b80db259bd245288a6e",
+      "abilities": [
+        { "Replacement": { "when": { "Enters": { "what": ["This"] } }, "by": "Tapped" } },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Colorless"] } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{4}",
+            "effects": [
+              {
+                "RollDice": {
+                  "sides": 6,
+                  "results": [
+                    {
+                      "from": 1,
+                      "effects": [
+                        {
+                          "May": {
+                            "effects": [
+                              {
+                                "Continuous": {
+                                  "affected": "This",
+                                  "mods": [
+                                    {
+                                      "SetPT": {
+                                        "power": { "DieResult": "Only" },
+                                        "toughness": { "DieResult": "Only" }
+                                      }
+                                    },
+                                    { "SetCreatureTypes": ["Insect"] },
+                                    { "AddType": "Artifact" },
+                                    { "AddType": "Creature" },
+                                    { "AddKeyword": "Flying" }
+                                  ],
+                                  "duration": "UntilEndOfTurn"
+                                }
+                              }
+                            ]
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }, "Other", "Attacking"] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "AddKeyword": "Flying" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

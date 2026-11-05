@@ -1,0 +1,52 @@
+{
+  "oracle_id": "63c4915f-5ad9-468f-95c5-d44f1b71631e",
+  "name": "Uvilda, Dean of Perfection // Nassari, Dean of Expression",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Uvilda, Dean of Perfection",
+      "oracle_fingerprint": "6dabdf35dc99c6e121580ae25a8f4ffb",
+      "abilities": [
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 0, "end": 328 }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Nassari, Dean of Expression",
+      "oracle_fingerprint": "fe0c3ff8008125be1b24bcaf856c359f",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [
+              { "ExileTop": { "who": "Opponents", "as": "exiled" } },
+              {
+                "Rule": {
+                  "rule": {
+                    "MayCast": {
+                      "what": [{ "Not": { "Type": "Land" } }],
+                      "from": "Exile",
+                      "only": { "Bound": "exiled" },
+                      "spend_as": "AnyColor"
+                    }
+                  },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "what": [{ "WasCast": { "from": "Exile" } }], "by": "You" } },
+            "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

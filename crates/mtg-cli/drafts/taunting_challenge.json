@@ -1,0 +1,28 @@
+{
+  "oracle_id": "50c52320-9f84-4655-a91a-e09b71f9025c",
+  "name": "Taunting Challenge",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Taunting Challenge",
+      "oracle_fingerprint": "d9c0a615e0a55531a191313b70df4626",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Rule": {
+                  "rule": {
+                    "Combat": { "who": { "Target": 0 }, "quirk": { "MustBeBlocked": "Every" } }
+                  },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

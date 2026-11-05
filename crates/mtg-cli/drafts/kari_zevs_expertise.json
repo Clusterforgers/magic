@@ -1,0 +1,56 @@
+{
+  "oracle_id": "e0de0121-6185-45c5-9d88-a415b07347e0",
+  "name": "Kari Zev's Expertise",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Kari Zev's Expertise",
+      "oracle_fingerprint": "e5dec1599394510edf4d6367dcff5d78",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "AnyOf": [{ "Type": "Creature" }, { "Subtype": "Vehicle" }] }]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "SetController": "You" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              { "Untap": { "what": { "Target": 0 } } },
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "AddKeyword": "Haste" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "OwnedBy": "You" },
+                      { "Not": { "Type": "Land" } },
+                      { "In": "Hand" },
+                      { "Compare": { "stat": "ManaValue", "op": "Le", "to": 2 } }
+                    ]
+                  },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "picked"
+                }
+              },
+              { "CastFromZone": { "what": { "Bound": "picked" }, "free": true } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

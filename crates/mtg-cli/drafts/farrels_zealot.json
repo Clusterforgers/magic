@@ -1,0 +1,34 @@
+{
+  "oracle_id": "0d063c0e-66bc-4a9c-98aa-a381b9cea120",
+  "name": "Farrel's Zealot",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Farrel's Zealot",
+      "oracle_fingerprint": "0da82eae43690f2a49bf1cd90569d738",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Unblocked": { "what": ["This"] } },
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    { "DealDamage": { "to": { "Target": 0 }, "amount": 3 } },
+                    {
+                      "Rule": {
+                        "rule": { "Combat": { "who": "This", "quirk": "AssignsNoCombatDamage" } },
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

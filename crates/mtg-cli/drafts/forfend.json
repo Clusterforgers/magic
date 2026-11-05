@@ -1,0 +1,26 @@
+{
+  "oracle_id": "59f8f2c4-d30d-411c-9fac-a5a3219bb124",
+  "name": "Forfend",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Forfend",
+      "oracle_fingerprint": "ddf0ccda6362f31b0149e64171ea920e",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Shield": {
+                  "when": { "Damage": { "to": { "Each": [{ "Type": "Creature" }] } } },
+                  "by": "Prevent",
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

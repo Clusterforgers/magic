@@ -1,0 +1,80 @@
+{
+  "oracle_id": "eab5eef8-d180-4b08-a770-6b3a1df03745",
+  "name": "Nibelheim Aflame",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Nibelheim Aflame",
+      "oracle_fingerprint": "8d59af732381e4602ba07e36f520ede7",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } }
+            ],
+            "effects": [
+              {
+                "DealDamage": {
+                  "source": { "Target": 0 },
+                  "to": { "Each": [{ "Type": "Creature" }, { "Not": { "Is": { "Target": 0 } } }] },
+                  "amount": { "Stat": { "of": { "Target": 0 }, "stat": "Power" } }
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": {
+                        "When": {
+                          "condition": {
+                            "Matches": {
+                              "subject": "This",
+                              "selector": [{ "WasCast": { "from": "Graveyard" } }]
+                            }
+                          },
+                          "then": 1,
+                          "otherwise": 0
+                        }
+                      },
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [
+                    {
+                      "Discard": { "count": { "Count": [{ "In": "Hand" }, { "OwnedBy": "You" }] } }
+                    }
+                  ]
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": {
+                        "When": {
+                          "condition": {
+                            "Matches": {
+                              "subject": "This",
+                              "selector": [{ "WasCast": { "from": "Graveyard" } }]
+                            }
+                          },
+                          "then": 1,
+                          "otherwise": 0
+                        }
+                      },
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [{ "Draw": { "count": 4 } }]
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Flashback": "{5}{R}{R}" } }
+      ]
+    }
+  ]
+}

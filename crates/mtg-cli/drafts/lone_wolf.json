@@ -1,0 +1,14 @@
+{
+  "oracle_id": "f77dfcb6-72b0-4d50-8177-6f6c57a034b9",
+  "name": "Lone Wolf",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Lone Wolf",
+      "oracle_fingerprint": "a8b85d1eabd97b1215d65f7feb7aabc1",
+      "abilities": [
+        { "Rule": { "rule": { "Combat": { "who": "This", "quirk": "AssignsAsUnblocked" } } } }
+      ]
+    }
+  ]
+}

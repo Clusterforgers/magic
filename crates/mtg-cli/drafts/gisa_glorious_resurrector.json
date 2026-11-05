@@ -1,0 +1,48 @@
+{
+  "oracle_id": "f1354b1b-896c-4492-b0c0-3dd07c6d3917",
+  "name": "Gisa, Glorious Resurrector",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Gisa, Glorious Resurrector",
+      "oracle_fingerprint": "8826db8e7e773bab467d081faee569ce",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "by": { "MoveTo": "Exile" }
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [
+              {
+                "Move": {
+                  "what": {
+                    "Each": [{ "Type": "Creature" }, { "ExiledWith": "This" }, { "In": "Exile" }]
+                  },
+                  "to": { "Battlefield": { "under": "You" } },
+                  "as": "moved"
+                }
+              },
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Is": { "Bound": "moved" } }] },
+                  "mods": [{ "AddKeyword": "Decayed" }],
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

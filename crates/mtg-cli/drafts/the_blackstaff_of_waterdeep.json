@@ -1,0 +1,41 @@
+{
+  "oracle_id": "a4faed58-4b1b-4cab-8a12-4fcd20b320ab",
+  "name": "The Blackstaff of Waterdeep",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "The Blackstaff of Waterdeep",
+      "oracle_fingerprint": "fbf2a88185275eadcdf5cb361b861b07",
+      "abilities": [
+        { "Rule": { "rule": { "Combat": { "who": "This", "quirk": "MayStayTapped" } } } },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{1}{U}" }, "Tap"],
+            "timing": "Sorcery",
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Type": "Artifact" },
+                    "Other",
+                    { "Not": "Token" },
+                    { "ControlledBy": "You" }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "SetPT": { "power": 4, "toughness": 4 } }, { "AddType": "Creature" }],
+                  "duration": "WhileSourceTapped"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,44 @@
+{
+  "oracle_id": "db70ddae-0ac1-47f2-9158-8448e337a08f",
+  "name": "Cheeky House-Mouse // Squeak By",
+  "impl_status": "Full",
+  "faces": [
+    { "name": "Cheeky House-Mouse", "oracle_fingerprint": "e3b0c44298fc1c149afbf4c8996fb924" },
+    {
+      "name": "Squeak By",
+      "oracle_fingerprint": "fffa7edcfe26a0d02039b1121c3f2664",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    {
+                      "CantBeBlockedBy": [
+                        { "Type": "Creature" },
+                        { "Compare": { "stat": "Power", "op": "Ge", "to": 3 } }
+                      ]
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

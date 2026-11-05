@@ -1,0 +1,50 @@
+{
+  "oracle_id": "7728e8b6-c226-49dd-b065-512d81e63a2b",
+  "name": "Darkstar Banisher",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Darkstar Banisher",
+      "oracle_fingerprint": "394fe8babdad2a95fc933240f1dd57c2",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Not": { "Type": "Land" } },
+                    { "ControlledBy": "Opponents" },
+                    { "Compare": { "stat": "ManaValue", "op": "Le", "to": 4 } }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              { "Exile": { "what": { "Target": 0 }, "as": "exiled" } },
+              { "Remember": { "what": { "Bound": "exiled" }, "slot": "remembered" } }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield" } },
+            "effects": [
+              {
+                "Seek": {
+                  "who": { "OwnerOf": { "Remembered": { "on": "This", "slot": "remembered" } } },
+                  "filter": [
+                    { "SharesType": { "Remembered": { "on": "This", "slot": "remembered" } } }
+                  ]
+                }
+              },
+              { "Forget": { "slot": "remembered" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

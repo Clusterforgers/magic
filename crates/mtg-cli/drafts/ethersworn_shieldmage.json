@@ -1,0 +1,30 @@
+{
+  "oracle_id": "ee988017-fc7e-4d8a-8f5c-0a7e57a8d050",
+  "name": "Ethersworn Shieldmage",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ethersworn Shieldmage",
+      "oracle_fingerprint": "3273fae42ddbfe7ea2ee90edc9be9866",
+      "abilities": [
+        { "Keyword": "Flash" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Shield": {
+                  "when": {
+                    "Damage": { "to": { "Each": [{ "Type": "Creature" }, { "Type": "Artifact" }] } }
+                  },
+                  "by": "Prevent",
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

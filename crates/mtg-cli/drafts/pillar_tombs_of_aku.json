@@ -1,0 +1,60 @@
+{
+  "oracle_id": "b8cdf79f-b247-4346-8122-9a2d7d23b3c3",
+  "name": "Pillar Tombs of Aku",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Pillar Tombs of Aku",
+      "oracle_fingerprint": "318b98ef2f8eaa5e852a9adb5072bf11",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep" } },
+            "effects": [
+              {
+                "May": {
+                  "who": "Triggering",
+                  "effects": [
+                    {
+                      "Sacrifice": {
+                        "who": "Triggering",
+                        "filter": [{ "Type": "Creature" }],
+                        "as": "sacrificed"
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Bound": "sacrificed" },
+                      "selector": [],
+                      "op": "Eq",
+                      "right": 0
+                    }
+                  },
+                  "then": [{ "LoseLife": { "who": "Triggering", "amount": 5 } }]
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Bound": "sacrificed" },
+                      "selector": [],
+                      "op": "Eq",
+                      "right": 0
+                    }
+                  },
+                  "then": [{ "Sacrifice": { "filter": ["This"] } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

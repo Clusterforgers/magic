@@ -1,7 +1,7 @@
 {
   "oracle_id": "52826984-44cb-48dc-a737-bb02983ffea8",
   "name": "Glamdring",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Glamdring",
@@ -28,9 +28,31 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 103, "end": 298 }
+          "Triggered": {
+            "when": {
+              "DealsDamage": {
+                "source": [{ "Type": "Creature" }, { "Is": "Attached" }],
+                "to": "EachPlayer",
+                "combat": true
+              }
+            },
+            "effects": [
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "OwnedBy": "You" },
+                      { "In": "Hand" },
+                      { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] },
+                      { "Compare": { "stat": "ManaValue", "op": "Le", "to": "Triggering" } }
+                    ]
+                  },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "picked"
+                }
+              },
+              { "CastFromZone": { "what": { "Bound": "picked" }, "free": true } }
+            ]
           }
         },
         { "Keyword": { "Equip": "{3}" } }

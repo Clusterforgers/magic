@@ -1,0 +1,32 @@
+{
+  "oracle_id": "98636623-bbc6-4935-a2bb-2234691eb6d8",
+  "name": "Thousand-Faced Shadow",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Thousand-Faced Shadow",
+      "oracle_fingerprint": "74795e8bf3068e11b8ec06611bec7581",
+      "abilities": [
+        { "Keyword": { "Ninjutsu": "{2}{U}{U}" } },
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": { "what": ["This", "Attacking"], "from": "Hand", "to": "Battlefield" }
+            },
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }, "Other", "Attacking"] } }],
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": { "CopyOf": { "of": { "Target": 0 } } },
+                  "tapped": true,
+                  "attacking": true
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

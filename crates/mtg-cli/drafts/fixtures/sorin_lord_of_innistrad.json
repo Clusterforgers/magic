@@ -1,0 +1,160 @@
+{
+  "object": "card",
+  "id": "ab98caf7-cc24-4027-ad8a-026150b61858",
+  "oracle_id": "5c780dda-ee76-482a-a610-53c321c4fdec",
+  "multiverse_ids": [
+    640585
+  ],
+  "mtgo_id": 118978,
+  "tcgplayer_id": 525735,
+  "cardmarket_id": 743642,
+  "name": "Sorin, Lord of Innistrad",
+  "lang": "en",
+  "released_at": "2023-11-17",
+  "uri": "https://api.scryfall.com/cards/ab98caf7-cc24-4027-ad8a-026150b61858",
+  "scryfall_uri": "https://scryfall.com/card/lcc/289/sorin-lord-of-innistrad?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T03:37:25Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/a/b/ab98caf7-cc24-4027-ad8a-026150b61858.jpg?1783913845",
+    "normal": "https://cards.scryfall.io/normal/front/a/b/ab98caf7-cc24-4027-ad8a-026150b61858.jpg?1783913845",
+    "large": "https://cards.scryfall.io/large/front/a/b/ab98caf7-cc24-4027-ad8a-026150b61858.jpg?1783913845",
+    "png": "https://cards.scryfall.io/png/front/a/b/ab98caf7-cc24-4027-ad8a-026150b61858.png?1783913845",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/a/b/ab98caf7-cc24-4027-ad8a-026150b61858.jpg?1783913845",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/a/b/ab98caf7-cc24-4027-ad8a-026150b61858.jpg?1783913845",
+    "thumb": "https://cards.scryfall.io/thumb/front/a/b/ab98caf7-cc24-4027-ad8a-026150b61858.webp?1783913845",
+    "grid": "https://cards.scryfall.io/grid/front/a/b/ab98caf7-cc24-4027-ad8a-026150b61858.webp?1783913845",
+    "display": "https://cards.scryfall.io/display/front/a/b/ab98caf7-cc24-4027-ad8a-026150b61858.webp?1783913845",
+    "art": "https://cards.scryfall.io/art/front/a/b/ab98caf7-cc24-4027-ad8a-026150b61858.webp?1783913845",
+    "crop": "https://cards.scryfall.io/crop/front/a/b/ab98caf7-cc24-4027-ad8a-026150b61858.webp?1783913845",
+    "jpeg": "https://cards.scryfall.io/normal/front/a/b/ab98caf7-cc24-4027-ad8a-026150b61858.jpg?1783913845"
+  },
+  "mana_cost": "{2}{W}{B}",
+  "cmc": 4.0,
+  "type_line": "Legendary Planeswalker — Sorin",
+  "oracle_text": "+1: Create a 1/1 black Vampire creature token with lifelink.\n−2: You get an emblem with \"Creatures you control get +1/+0.\"\n−6: Destroy up to three target creatures and/or other planeswalkers. Return each card put into a graveyard this way to the battlefield under your control.",
+  "loyalty": "3",
+  "colors": [
+    "B",
+    "W"
+  ],
+  "color_identity": [
+    "B",
+    "W"
+  ],
+  "keywords": [],
+  "all_parts": [
+    {
+      "object": "related_card",
+      "id": "8d2ea7d8-a807-472e-a35f-976fe44de054",
+      "component": "token",
+      "name": "Vampire",
+      "type_line": "Token Creature — Vampire",
+      "uri": "https://api.scryfall.com/cards/8d2ea7d8-a807-472e-a35f-976fe44de054"
+    },
+    {
+      "object": "related_card",
+      "id": "ab98caf7-cc24-4027-ad8a-026150b61858",
+      "component": "combo_piece",
+      "name": "Sorin, Lord of Innistrad",
+      "type_line": "Legendary Planeswalker — Sorin",
+      "uri": "https://api.scryfall.com/cards/ab98caf7-cc24-4027-ad8a-026150b61858"
+    },
+    {
+      "object": "related_card",
+      "id": "f6719a3f-4bd1-4f4f-b4c2-0d1fa7694732",
+      "component": "combo_piece",
+      "name": "Sorin, Lord of Innistrad Emblem",
+      "type_line": "Emblem — Sorin",
+      "uri": "https://api.scryfall.com/cards/f6719a3f-4bd1-4f4f-b4c2-0d1fa7694732"
+    }
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": true,
+  "variation": false,
+  "set_id": "d253edc3-5bc7-4cf1-9446-a8540dedffa5",
+  "set": "lcc",
+  "set_name": "The Lost Caverns of Ixalan Commander",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/d253edc3-5bc7-4cf1-9446-a8540dedffa5",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Alcc&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/lcc?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/ab98caf7-cc24-4027-ad8a-026150b61858/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A5c780dda-ee76-482a-a610-53c321c4fdec&unique=prints",
+  "collector_number": "289",
+  "digital": false,
+  "rarity": "mythic",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Michael Komarck",
+  "artist_ids": [
+    "96a53b95-fe5f-4fbb-9411-ccf4ee150aca"
+  ],
+  "illustration_id": "b99ca65a-252a-4ce4-9e42-c6219d385987",
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "edhrec_rank": 4938,
+  "penny_rank": 3623,
+  "prices": {
+    "usd": "0.54",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "0.84",
+    "eur_foil": null,
+    "tix": "0.08"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=640585&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DSorin%252C%2BLord%2Bof%2BInnistrad",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DSorin%252C%2BLord%2Bof%2BInnistrad",
+    "edhrec": "https://edhrec.com/route/?cc=Sorin%2C+Lord+of+Innistrad"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F525735%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=743642&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/118978?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

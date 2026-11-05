@@ -1,0 +1,52 @@
+{
+  "oracle_id": "321dbd10-1d48-49fc-ba6a-1df241a53338",
+  "name": "Brain in a Jar",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Brain in a Jar",
+      "oracle_fingerprint": "b83cd6bad867522e9c19d1709c566e36",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{1}" }, "Tap"],
+            "effects": [
+              { "PutCounters": { "on": "This", "counter": "charge" } },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "OwnedBy": "You" },
+                      { "In": "Hand" },
+                      { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] },
+                      {
+                        "Compare": {
+                          "stat": "ManaValue",
+                          "op": "Eq",
+                          "to": { "Counters": { "on": "This", "counter": "charge" } }
+                        }
+                      }
+                    ]
+                  },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "picked"
+                }
+              },
+              { "CastFromZone": { "what": { "Bound": "picked" }, "free": true } }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [
+              { "Mana": "{3}" },
+              "Tap",
+              { "RemoveCounters": { "counter": "charge", "count": "X" } }
+            ],
+            "effects": [{ "Scry": { "count": "X" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

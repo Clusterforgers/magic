@@ -1,0 +1,62 @@
+{
+  "oracle_id": "e7fc5ad6-f2f0-4b06-a61b-05022db9d93b",
+  "name": "Arcades, the Strategist",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Arcades, the Strategist",
+      "oracle_fingerprint": "63808178213b2e7df17800f5c8fb5c50",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": "Vigilance" },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [
+                  { "Type": "Creature" },
+                  { "HasKeyword": "Defender" },
+                  { "ControlledBy": "You" }
+                ],
+                "to": "Battlefield"
+              }
+            },
+            "effects": [{ "Draw": {} }]
+          }
+        },
+        {
+          "Rule": {
+            "rule": {
+              "Combat": {
+                "who": {
+                  "Each": [
+                    { "Type": "Creature" },
+                    { "HasKeyword": "Defender" },
+                    { "ControlledBy": "You" }
+                  ]
+                },
+                "quirk": "AssignsByToughness"
+              }
+            }
+          }
+        },
+        {
+          "Rule": {
+            "rule": {
+              "Combat": {
+                "who": {
+                  "Each": [
+                    { "Type": "Creature" },
+                    { "HasKeyword": "Defender" },
+                    { "ControlledBy": "You" }
+                  ]
+                },
+                "quirk": "AttackDespiteDefender"
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

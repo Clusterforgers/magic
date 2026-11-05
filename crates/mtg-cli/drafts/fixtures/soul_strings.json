@@ -1,0 +1,132 @@
+{
+  "object": "card",
+  "id": "e34f9d1b-a89a-439f-8aa9-b96a1bf892eb",
+  "oracle_id": "fac310c7-c1e5-42f9-8140-17472be21d0d",
+  "multiverse_ids": [
+    24605
+  ],
+  "mtgo_id": 14191,
+  "mtgo_foil_id": 14192,
+  "tcgplayer_id": 7374,
+  "cardmarket_id": 3972,
+  "name": "Soul Strings",
+  "lang": "en",
+  "released_at": "2000-06-05",
+  "uri": "https://api.scryfall.com/cards/e34f9d1b-a89a-439f-8aa9-b96a1bf892eb",
+  "scryfall_uri": "https://scryfall.com/card/pcy/78/soul-strings?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T12:29:41Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/e/3/e34f9d1b-a89a-439f-8aa9-b96a1bf892eb.jpg?1783945781",
+    "normal": "https://cards.scryfall.io/normal/front/e/3/e34f9d1b-a89a-439f-8aa9-b96a1bf892eb.jpg?1783945781",
+    "large": "https://cards.scryfall.io/large/front/e/3/e34f9d1b-a89a-439f-8aa9-b96a1bf892eb.jpg?1783945781",
+    "png": "https://cards.scryfall.io/png/front/e/3/e34f9d1b-a89a-439f-8aa9-b96a1bf892eb.png?1783945781",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/e/3/e34f9d1b-a89a-439f-8aa9-b96a1bf892eb.jpg?1783945781",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/e/3/e34f9d1b-a89a-439f-8aa9-b96a1bf892eb.jpg?1783945781",
+    "thumb": "https://cards.scryfall.io/thumb/front/e/3/e34f9d1b-a89a-439f-8aa9-b96a1bf892eb.webp?1783945781",
+    "grid": "https://cards.scryfall.io/grid/front/e/3/e34f9d1b-a89a-439f-8aa9-b96a1bf892eb.webp?1783945781",
+    "display": "https://cards.scryfall.io/display/front/e/3/e34f9d1b-a89a-439f-8aa9-b96a1bf892eb.webp?1783945781",
+    "art": "https://cards.scryfall.io/art/front/e/3/e34f9d1b-a89a-439f-8aa9-b96a1bf892eb.webp?1783945781",
+    "crop": "https://cards.scryfall.io/crop/front/e/3/e34f9d1b-a89a-439f-8aa9-b96a1bf892eb.webp?1783945781",
+    "jpeg": "https://cards.scryfall.io/normal/front/e/3/e34f9d1b-a89a-439f-8aa9-b96a1bf892eb.jpg?1783945781"
+  },
+  "mana_cost": "{X}{B}",
+  "cmc": 1.0,
+  "type_line": "Sorcery",
+  "oracle_text": "Return two target creature cards from your graveyard to your hand unless any player pays {X}.",
+  "colors": [
+    "B"
+  ],
+  "color_identity": [
+    "B"
+  ],
+  "keywords": [],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "legal",
+    "predh": "legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "c233bd36-57c0-4aa2-ae6c-7aeabfb4e3ce",
+  "set": "pcy",
+  "set_name": "Prophecy",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/c233bd36-57c0-4aa2-ae6c-7aeabfb4e3ce",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Apcy&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/pcy?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/e34f9d1b-a89a-439f-8aa9-b96a1bf892eb/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Afac310c7-c1e5-42f9-8140-17472be21d0d&unique=prints",
+  "collector_number": "78",
+  "digital": false,
+  "rarity": "common",
+  "flavor_text": "Everyone is manipulated. It's just more obvious with the dead.",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Daren Bader",
+  "artist_ids": [
+    "7da1a585-c875-45e4-b322-5da9e8e1f651"
+  ],
+  "illustration_id": "67aed4b7-5554-4dbd-b306-0fc0908b2481",
+  "border_color": "black",
+  "frame": "1997",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 27084,
+  "prices": {
+    "usd": "0.11",
+    "usd_foil": "1.09",
+    "usd_etched": null,
+    "eur": "0.11",
+    "eur_foil": "1.04",
+    "tix": "0.04"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=24605&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DSoul%2BStrings",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DSoul%2BStrings",
+    "edhrec": "https://edhrec.com/route/?cc=Soul+Strings"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F7374%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=3972&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/14191?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

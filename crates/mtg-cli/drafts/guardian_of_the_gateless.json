@@ -1,0 +1,36 @@
+{
+  "oracle_id": "e133605f-9227-42c4-afe9-6613ab095433",
+  "name": "Guardian of the Gateless",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Guardian of the Gateless",
+      "oracle_fingerprint": "3c63c25aa2205cd5b88eef5cc4e1f822",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Static": { "affected": "This", "mods": [{ "BlocksAdditional": 99 }] } },
+        {
+          "Triggered": {
+            "when": { "Blocks": { "what": ["This"] } },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [
+                    {
+                      "ModifyPT": {
+                        "power": { "Count": [{ "Type": "Creature" }, { "BlockedBy": "This" }] },
+                        "toughness": { "Count": [{ "Type": "Creature" }, { "BlockedBy": "This" }] }
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

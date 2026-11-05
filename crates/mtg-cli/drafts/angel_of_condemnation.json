@@ -1,7 +1,7 @@
 {
   "oracle_id": "2317a33f-665e-4cbc-bb5c-16b912ac2eef",
   "name": "Angel of Condemnation",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Angel of Condemnation",
@@ -27,9 +27,12 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 163, "end": 333 }
+          "Activated": {
+            "cost": [{ "Mana": "{2}{W}" }, "Tap", "Exert"],
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }, "Other"] } }],
+            "effects": [
+              { "Exile": { "what": { "Target": 0 }, "duration": "WhileSourceOnBattlefield" } }
+            ]
           }
         }
       ]

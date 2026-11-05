@@ -1,0 +1,39 @@
+{
+  "oracle_id": "077885dc-3a88-4ad4-bd5d-bf709aa71e8d",
+  "name": "Corpseweaver Prodigy",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Corpseweaver Prodigy",
+      "oracle_fingerprint": "bf76f0cf608ea09b6fcd1d8c0ba8bc7d",
+      "abilities": [
+        { "Keyword": "Deathtouch" },
+        {
+          "Replacement": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "by": { "MoveTo": "Exile" }
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Main2", "whose": "You" } },
+            "if": {
+              "Compare": {
+                "left": { "Tallied": { "who": "You", "what": "LifeGainedTotal" } },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "effects": [{ "Conjure": { "name": "Bridge from Below", "zone": "Graveyard" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

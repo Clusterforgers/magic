@@ -1,0 +1,64 @@
+{
+  "oracle_id": "760e8561-4ec6-4594-ba5d-f79cb9f25fd0",
+  "name": "Inscription of Ruin",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Inscription of Ruin",
+      "oracle_fingerprint": "5cf6bd84328e43f8db1cd6fbb991db17",
+      "abilities": [
+        { "Keyword": { "Kicker": "{2}{B}{B}" } },
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Modal": {
+                  "choose": {
+                    "min": { "When": { "condition": "Kicked", "then": 0, "otherwise": 1 } },
+                    "max": { "When": { "condition": "Kicked", "then": 3, "otherwise": 1 } }
+                  },
+                  "modes": [
+                    {
+                      "targets": [{ "what": "Opponent" }],
+                      "effects": [{ "Discard": { "who": { "Target": 0 }, "count": 2 } }]
+                    },
+                    {
+                      "targets": [
+                        {
+                          "what": {
+                            "Object": [
+                              { "Type": "Creature" },
+                              { "Compare": { "stat": "ManaValue", "op": "Le", "to": 2 } },
+                              { "OwnedBy": "You" },
+                              { "In": "Graveyard" }
+                            ]
+                          }
+                        }
+                      ],
+                      "effects": [
+                        { "Move": { "what": { "Target": 0 }, "to": { "Battlefield": {} } } }
+                      ]
+                    },
+                    {
+                      "targets": [
+                        {
+                          "what": {
+                            "Object": [
+                              { "Type": "Creature" },
+                              { "Compare": { "stat": "ManaValue", "op": "Le", "to": 3 } }
+                            ]
+                          }
+                        }
+                      ],
+                      "effects": [{ "Destroy": { "what": { "Target": 0 } } }]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,59 @@
+{
+  "oracle_id": "4e58ad76-37c7-4531-b207-6890b39a2679",
+  "name": "Ruthless Technomancer",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Ruthless Technomancer",
+      "oracle_fingerprint": "ef5f17842fefba63bf6186f736364c19",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "Sacrifice": {
+                        "filter": [{ "Type": "Creature" }, "Other"],
+                        "as": "sacrificed"
+                      }
+                    },
+                    {
+                      "If": {
+                        "condition": {
+                          "Compare": {
+                            "left": { "Bound": "sacrificed~moved" },
+                            "op": "Ge",
+                            "right": 1
+                          }
+                        },
+                        "then": [
+                          {
+                            "CreateToken": {
+                              "token": { "Named": "treasure" },
+                              "count": {
+                                "Stat": { "of": { "Bound": "sacrificed" }, "stat": "Power" }
+                              }
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 153, "end": 286 }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,35 @@
+{
+  "oracle_id": "49d6a9be-1d10-4ce4-afa3-aa637f39b898",
+  "name": "Release to the Wind",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Release to the Wind",
+      "oracle_fingerprint": "d628b28a4a28bf496d89e75b42b84a50",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Not": { "Type": "Land" } }] } }],
+            "effects": [
+              { "Exile": { "what": { "Target": 0 } } },
+              {
+                "Rule": {
+                  "rule": {
+                    "MayCast": {
+                      "who": { "OwnerOf": { "Target": 0 } },
+                      "what": [{ "Not": { "Type": "Land" } }],
+                      "from": "Exile",
+                      "free": true,
+                      "only": { "Target": 0 }
+                    }
+                  },
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

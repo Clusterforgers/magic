@@ -1,0 +1,59 @@
+{
+  "oracle_id": "2c029419-3601-4158-b10f-45a19de7faa3",
+  "name": "Ravenous Vampire",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ravenous Vampire",
+      "oracle_fingerprint": "2c138f5b3c2cae85f5e33c0ecf5bc6ad",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "Sacrifice": {
+                        "filter": [{ "Type": "Creature" }, { "Not": { "Type": "Artifact" } }],
+                        "as": "sacrificed"
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Bound": "sacrificed" },
+                      "selector": [{ "Type": "Creature" }, { "Not": { "Type": "Artifact" } }],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }]
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Bound": "sacrificed" },
+                      "selector": [{ "Type": "Creature" }, { "Not": { "Type": "Artifact" } }],
+                      "op": "Eq",
+                      "right": 0
+                    }
+                  },
+                  "then": [{ "Tap": { "what": "This" } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

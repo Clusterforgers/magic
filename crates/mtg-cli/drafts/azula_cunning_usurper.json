@@ -1,0 +1,63 @@
+{
+  "oracle_id": "7c9e351d-2e6c-4050-9c3d-b15bb9255a4d",
+  "name": "Azula, Cunning Usurper",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Azula, Cunning Usurper",
+      "oracle_fingerprint": "a85149fe59254e092281574719e30037",
+      "abilities": [
+        { "Keyword": { "Macro": { "name": "firebending", "amount": 2 } } },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              {
+                "Choose": {
+                  "who": { "Target": 0 },
+                  "from": {
+                    "Each": [
+                      { "Type": "Creature" },
+                      { "Not": "Token" },
+                      { "ControlledBy": { "Target": 0 } }
+                    ]
+                  },
+                  "as": "picked"
+                }
+              },
+              { "Exile": { "what": { "Bound": "picked" } } },
+              {
+                "Choose": {
+                  "who": { "Target": 0 },
+                  "from": {
+                    "Each": [
+                      { "Not": { "Type": "Land" } },
+                      { "In": "Graveyard" },
+                      { "OwnedBy": { "Target": 0 } }
+                    ]
+                  },
+                  "as": "picked2"
+                }
+              },
+              { "Exile": { "what": { "Bound": "picked2" } } }
+            ]
+          }
+        },
+        {
+          "Rule": {
+            "rule": {
+              "MayCast": {
+                "what": [{ "ExiledWith": "This" }],
+                "from": "Exile",
+                "flash": true,
+                "spend_as": "AnyType"
+              }
+            },
+            "condition": "YourTurn"
+          }
+        }
+      ]
+    }
+  ]
+}

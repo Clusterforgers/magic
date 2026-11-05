@@ -1,0 +1,21 @@
+{
+  "oracle_id": "af32757c-9d3c-4f6c-a6fa-d5729a440382",
+  "name": "Spreading Seas",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Spreading Seas",
+      "oracle_fingerprint": "b3c917334bb2b1ba73f7a7882bcd463a",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Land" }] } },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "Draw": {} }]
+          }
+        },
+        { "Static": { "affected": "Attached", "mods": [{ "SetLandTypes": ["Island"] }] } }
+      ]
+    }
+  ]
+}

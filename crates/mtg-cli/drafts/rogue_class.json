@@ -1,0 +1,64 @@
+{
+  "oracle_id": "76f0f39a-ce1b-4935-a6b8-5c4e1a27ab24",
+  "name": "Rogue Class",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Rogue Class",
+      "oracle_fingerprint": "d713488de3a72d02cceba60fdf9beb16",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "DealsDamage": {
+                "source": [{ "Type": "Creature" }, { "ControlledBy": "You" }],
+                "to": "EachPlayer",
+                "combat": true
+              }
+            },
+            "effects": [
+              { "LookAtTop": { "who": "Triggering", "as": "top" } },
+              { "ExileHidden": { "what": { "Bound": "top" }, "held": true } }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{1}{U}{B}",
+            "timing": "Sorcery",
+            "condition": { "Level": { "of": "This", "op": "Eq", "level": 1 } },
+            "effects": [{ "BecomeLevel": { "level": 2 } }]
+          }
+        },
+        {
+          "Static": {
+            "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+            "mods": [{ "AddKeyword": "Menace" }],
+            "condition": { "Level": { "of": "This", "op": "Ge", "level": 2 } }
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{2}{U}{B}",
+            "timing": "Sorcery",
+            "condition": { "Level": { "of": "This", "op": "Eq", "level": 2 } },
+            "effects": [{ "BecomeLevel": { "level": 3 } }]
+          }
+        },
+        {
+          "Rule": {
+            "rule": {
+              "MayCast": {
+                "what": [{ "ExiledWith": "This" }],
+                "from": "Exile",
+                "play": true,
+                "spend_as": "AnyType"
+              }
+            },
+            "condition": { "Level": { "of": "This", "op": "Ge", "level": 3 } }
+          }
+        }
+      ]
+    }
+  ]
+}

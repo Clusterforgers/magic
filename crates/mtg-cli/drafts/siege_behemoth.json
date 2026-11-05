@@ -1,0 +1,27 @@
+{
+  "oracle_id": "cadf7be1-4a74-4163-bb2f-6bfbbb557973",
+  "name": "Siege Behemoth",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Siege Behemoth",
+      "oracle_fingerprint": "22340ae7c55cb5f3cf6bc9186f3037e5",
+      "abilities": [
+        { "Keyword": "Hexproof" },
+        {
+          "Rule": {
+            "rule": {
+              "Combat": {
+                "who": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                "quirk": "AssignsAsUnblocked"
+              }
+            },
+            "condition": {
+              "Compare": { "left": { "Count": ["This", "Attacking"] }, "op": "Ge", "right": 1 }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

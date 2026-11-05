@@ -1,0 +1,39 @@
+{
+  "oracle_id": "928c62fe-9c4d-4e89-bd7a-0d3b6a81f393",
+  "name": "Misery's Shadow",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Misery's Shadow",
+      "oracle_fingerprint": "222e3c89f7077a7da082dc5a030c6aad",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "by": { "MoveTo": "Exile" }
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{1}",
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

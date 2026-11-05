@@ -1,0 +1,29 @@
+{
+  "oracle_id": "e9ef7f8c-21ef-45f0-af64-8ffa9f0089d1",
+  "name": "Endoskeleton",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Endoskeleton",
+      "oracle_fingerprint": "64f391158de4f5868c2056ec170c3aed",
+      "abilities": [
+        { "Rule": { "rule": { "Combat": { "who": "This", "quirk": "MayStayTapped" } } } },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{2}" }, "Tap"],
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "ModifyPT": { "power": 0, "toughness": 3 } }],
+                  "duration": "WhileSourceTapped"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

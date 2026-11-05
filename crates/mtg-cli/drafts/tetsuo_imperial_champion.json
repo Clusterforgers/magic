@@ -1,0 +1,79 @@
+{
+  "oracle_id": "1111e042-0bce-4819-ab42-9912aed4d930",
+  "name": "Tetsuo, Imperial Champion",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Tetsuo, Imperial Champion",
+      "oracle_fingerprint": "141239032083d8c61f4164859934df02",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "if": {
+              "Compare": {
+                "left": { "Count": ["This", { "HasAttached": [{ "Subtype": "Equipment" }] }] },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "effects": [
+              {
+                "Modal": {
+                  "modes": [
+                    {
+                      "targets": [{ "what": "AnyTarget" }],
+                      "effects": [
+                        {
+                          "DealDamage": {
+                            "to": { "Target": 0 },
+                            "amount": {
+                              "Greatest": {
+                                "of": [{ "Subtype": "Equipment" }, { "AttachedTo": "This" }],
+                                "stat": "ManaValue"
+                              }
+                            }
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "effects": [
+                        {
+                          "Choose": {
+                            "from": {
+                              "Each": [
+                                { "OwnedBy": "You" },
+                                { "In": "Hand" },
+                                { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] },
+                                {
+                                  "Compare": {
+                                    "stat": "ManaValue",
+                                    "op": "Le",
+                                    "to": {
+                                      "Greatest": {
+                                        "of": [{ "Subtype": "Equipment" }, { "AttachedTo": "This" }],
+                                        "stat": "ManaValue"
+                                      }
+                                    }
+                                  }
+                                }
+                              ]
+                            },
+                            "count": { "min": 0, "max": 1 },
+                            "as": "picked"
+                          }
+                        },
+                        { "CastFromZone": { "what": { "Bound": "picked" }, "free": true } }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

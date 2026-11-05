@@ -1,0 +1,61 @@
+{
+  "oracle_id": "dd893746-e8bd-49fa-a1ce-755d5bd4f513",
+  "name": "Let's Play a Game",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Let's Play a Game",
+      "oracle_fingerprint": "84aaa83f69f88c21713648cb0f8d9a7e",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Modal": {
+                  "choose": {
+                    "min": 1,
+                    "max": {
+                      "When": {
+                        "condition": {
+                          "Compare": {
+                            "left": { "CardTypes": [{ "In": "Graveyard" }, { "OwnedBy": "You" }] },
+                            "op": "Ge",
+                            "right": 4
+                          }
+                        },
+                        "then": 3,
+                        "otherwise": 1
+                      }
+                    }
+                  },
+                  "modes": [
+                    {
+                      "effects": [
+                        {
+                          "Continuous": {
+                            "affected": {
+                              "Each": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }]
+                            },
+                            "mods": [{ "ModifyPT": { "power": -1, "toughness": -1 } }],
+                            "duration": "UntilEndOfTurn"
+                          }
+                        }
+                      ]
+                    },
+                    { "effects": [{ "Discard": { "who": "Opponents", "count": 2 } }] },
+                    {
+                      "effects": [
+                        { "LoseLife": { "who": "Opponents", "amount": 3 } },
+                        { "GainLife": { "amount": 3 } }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

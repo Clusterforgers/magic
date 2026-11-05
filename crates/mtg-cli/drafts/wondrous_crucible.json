@@ -1,0 +1,42 @@
+{
+  "oracle_id": "d0e80414-abde-4f5e-9539-3efc83aa507f",
+  "name": "Wondrous Crucible",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Wondrous Crucible",
+      "oracle_fingerprint": "64c43817d7521e45fe5930c4e7223b8f",
+      "abilities": [
+        {
+          "Static": {
+            "affected": { "Each": [{ "ControlledBy": "You" }] },
+            "mods": [{ "AddKeyword": { "Ward": "{2}" } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "effects": [
+              { "Mill": { "count": 2 } },
+              {
+                "ChooseAtRandom": {
+                  "from": {
+                    "Each": [
+                      { "Not": { "Type": "Land" } },
+                      { "In": "Graveyard" },
+                      { "OwnedBy": "You" }
+                    ]
+                  },
+                  "as": "picked"
+                }
+              },
+              { "Exile": { "what": { "Bound": "picked" }, "as": "exiled2" } },
+              { "CopyCard": { "what": { "Bound": "exiled2" }, "as": "copy3" } },
+              { "CastFromZone": { "what": { "Bound": "copy3" }, "free": true } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

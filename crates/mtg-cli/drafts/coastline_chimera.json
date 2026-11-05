@@ -1,0 +1,28 @@
+{
+  "oracle_id": "da95382c-0536-49aa-a0db-3b52926bf559",
+  "name": "Coastline Chimera",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Coastline Chimera",
+      "oracle_fingerprint": "e6edfccddcc4235c1dd2c2cdae9cc7f1",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Activated": {
+            "cost": "{1}{W}",
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "BlocksAdditional": 1 }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,36 @@
+{
+  "oracle_id": "280148c5-3a2f-48f7-a147-4578f2068073",
+  "name": "Kukemssa Pirates",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Kukemssa Pirates",
+      "oracle_fingerprint": "7d7c66af4ab3a708bf5581827138b414",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Unblocked": { "what": ["This"] } },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Artifact" }, { "ControlledBy": "Defending" }] } }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "SetController": "You" }],
+                  "duration": "Forever"
+                }
+              },
+              {
+                "Rule": {
+                  "rule": { "Combat": { "who": "This", "quirk": "AssignsNoCombatDamage" } },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,29 @@
+{
+  "oracle_id": "55cc14d0-11ed-444d-884a-cfb692ba632b",
+  "name": "Diplomatic Escort",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Diplomatic Escort",
+      "oracle_fingerprint": "c4f1cca65be162df6dd233d37f6523a3",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{U}" }, "Tap", { "Discard": {} }],
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "AnyOf": ["Spell", { "Ability": "Activated" }, { "Ability": "Triggered" }] },
+                    { "Targeting": [{ "Type": "Creature" }] }
+                  ]
+                }
+              }
+            ],
+            "effects": [{ "Counter": { "what": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

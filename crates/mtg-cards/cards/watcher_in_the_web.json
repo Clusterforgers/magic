@@ -1,0 +1,15 @@
+{
+  "oracle_id": "232a4128-133e-446d-9f1c-dd3875094473",
+  "name": "Watcher in the Web",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Watcher in the Web",
+      "oracle_fingerprint": "a3fdc392d3962da5e0c60d18459f0e59",
+      "abilities": [
+        { "Keyword": "Reach" },
+        { "Static": { "affected": "This", "mods": [{ "BlocksAdditional": 7 }] } }
+      ]
+    }
+  ]
+}

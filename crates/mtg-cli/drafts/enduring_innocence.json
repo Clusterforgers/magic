@@ -1,7 +1,7 @@
 {
   "oracle_id": "98a389f4-2905-47f3-b60e-3d4afb3e5cb0",
   "name": "Enduring Innocence",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Enduring Innocence",
@@ -28,9 +28,24 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 142, "end": 293 }
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": ["This", { "Type": "Creature" }],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "effects": [
+              { "Move": { "what": "Triggering", "to": { "Battlefield": {} }, "as": "moved" } },
+              {
+                "Continuous": {
+                  "affected": { "Bound": "moved" },
+                  "mods": [{ "SetTypes": ["Enchantment"] }],
+                  "duration": "Forever"
+                }
+              }
+            ]
           }
         }
       ]

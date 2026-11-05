@@ -1,0 +1,30 @@
+{
+  "oracle_id": "1c6da9a9-6395-460b-8150-ea46d7299dc2",
+  "name": "Rhystic Tutor",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Rhystic Tutor",
+      "oracle_fingerprint": "887d622125b5d38e306f2cac13c1e752",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Pay": {
+                  "who": "EachPlayer",
+                  "cost": "{2}",
+                  "unpaid": [
+                    { "Search": { "filter": [], "as": "found" } },
+                    { "Move": { "what": { "Bound": "found" }, "to": "Hand" } },
+                    { "Shuffle": {} }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

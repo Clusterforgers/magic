@@ -1,0 +1,60 @@
+{
+  "oracle_id": "4efcdefc-e49d-4bce-8581-69037bb48c0a",
+  "name": "Sol'Kanar the Tainted",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sol'Kanar the Tainted",
+      "oracle_fingerprint": "b0f48f5efdc08d93cf7905276a38a1c9",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "effects": [
+              {
+                "Modal": {
+                  "once_ever": true,
+                  "modes": [
+                    { "effects": [{ "Draw": {} }] },
+                    {
+                      "effects": [
+                        { "LoseLife": { "who": "Opponents", "amount": 2 } },
+                        { "GainLife": { "amount": 2 } }
+                      ]
+                    },
+                    {
+                      "targets": [
+                        {
+                          "what": {
+                            "Object": [
+                              { "AnyOf": [{ "Type": "Creature" }, { "Type": "Planeswalker" }] },
+                              "Other"
+                            ]
+                          },
+                          "bounds": { "min": 0, "max": 1 }
+                        }
+                      ],
+                      "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 3 } }]
+                    },
+                    {
+                      "effects": [
+                        { "Exile": { "what": "This", "as": "exiled" } },
+                        { "Choose": { "from": "Opponents", "as": "player2" } },
+                        {
+                          "Move": {
+                            "what": { "Bound": "exiled" },
+                            "to": { "Battlefield": { "under": { "Bound": "player2" } } }
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

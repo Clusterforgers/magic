@@ -1,0 +1,135 @@
+{
+  "oracle_id": "d90af00a-d322-4265-9954-7b1e80702e18",
+  "name": "Skyclave Apparition",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Skyclave Apparition",
+      "oracle_fingerprint": "546b302c5676c6aa461e770c290ec6c1",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Not": { "Type": "Land" } },
+                    { "Not": "Token" },
+                    { "Not": { "ControlledBy": "You" } },
+                    { "Compare": { "stat": "ManaValue", "op": "Le", "to": 4 } }
+                  ]
+                },
+                "bounds": { "min": 0, "max": 1 }
+              }
+            ],
+            "effects": [
+              { "Exile": { "what": { "Target": 0 }, "as": "exiled" } },
+              { "Remember": { "what": { "Bound": "exiled" }, "slot": "remembered" } }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield" } },
+            "effects": [
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Remembered": { "on": "This", "slot": "remembered" } },
+                      "selector": [{ "ExiledWith": "This" }],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [
+                    {
+                      "Let": {
+                        "as": "power",
+                        "amount": {
+                          "Total": {
+                            "of": [
+                              { "Is": { "Remembered": { "on": "This", "slot": "remembered" } } },
+                              {
+                                "AnyOf": [
+                                  { "In": "Battlefield" },
+                                  { "In": "Hand" },
+                                  { "In": "Library" },
+                                  { "In": "Graveyard" },
+                                  { "In": "Exile" },
+                                  { "In": "Stack" }
+                                ]
+                              }
+                            ],
+                            "stat": "ManaValue"
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "Let": {
+                        "as": "toughness2",
+                        "amount": {
+                          "Total": {
+                            "of": [
+                              { "Is": { "Remembered": { "on": "This", "slot": "remembered" } } },
+                              {
+                                "AnyOf": [
+                                  { "In": "Battlefield" },
+                                  { "In": "Hand" },
+                                  { "In": "Library" },
+                                  { "In": "Graveyard" },
+                                  { "In": "Exile" },
+                                  { "In": "Stack" }
+                                ]
+                              }
+                            ],
+                            "stat": "ManaValue"
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "CreateToken": {
+                        "who": {
+                          "OwnerOf": { "Remembered": { "on": "This", "slot": "remembered" } }
+                        },
+                        "token": {
+                          "Custom": {
+                            "name": "Illusion",
+                            "colors": ["Blue"],
+                            "types": ["Creature"],
+                            "subtypes": ["Illusion"],
+                            "power": 0,
+                            "toughness": 0
+                          }
+                        },
+                        "as": "token3"
+                      }
+                    },
+                    {
+                      "Continuous": {
+                        "affected": { "Bound": "token3" },
+                        "mods": [
+                          {
+                            "SetPT": {
+                              "power": { "Bound": "power" },
+                              "toughness": { "Bound": "toughness2" }
+                            }
+                          }
+                        ],
+                        "duration": "Forever"
+                      }
+                    }
+                  ]
+                }
+              },
+              { "Forget": { "slot": "remembered" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,22 @@
+{
+  "oracle_id": "dfa8415d-2474-46ca-b92f-6e12e3268cf5",
+  "name": "Unexpected Fangs",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Unexpected Fangs",
+      "oracle_fingerprint": "7bd048413ea8c35e459f3437216cd3c6",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              { "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1" } },
+              { "PutCounters": { "on": { "Target": 0 }, "counter": { "Other": "lifelink" } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

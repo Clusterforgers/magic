@@ -1,0 +1,45 @@
+{
+  "oracle_id": "e4190320-5854-479e-be11-a5d5ef3db6a6",
+  "name": "Noyan Dar, Roil Shaper",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Noyan Dar, Roil Shaper",
+      "oracle_fingerprint": "2051a9dcb9fc151d286d2c9347ed224b",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "SpellCast": {
+                "what": [{ "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] }],
+                "by": "You"
+              }
+            },
+            "targets": [{ "what": { "Object": [{ "Type": "Land" }, { "ControlledBy": "You" }] } }],
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    { "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1", "count": 3 } },
+                    {
+                      "Continuous": {
+                        "affected": { "Target": 0 },
+                        "mods": [
+                          { "SetPT": { "power": 0, "toughness": 0 } },
+                          { "AddSubtype": "Elemental" },
+                          { "AddType": "Creature" },
+                          { "AddKeyword": "Haste" }
+                        ],
+                        "duration": "Forever"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

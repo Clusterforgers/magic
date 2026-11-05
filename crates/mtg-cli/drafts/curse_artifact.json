@@ -1,0 +1,48 @@
+{
+  "oracle_id": "f08ae501-8b96-40ee-aa7b-c25293ddfa88",
+  "name": "Curse Artifact",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Curse Artifact",
+      "oracle_fingerprint": "199114ad87e4af302d2b17705c860a95",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Artifact" }] } },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": { "ControllerOf": "Attached" } } },
+            "effects": [
+              {
+                "May": {
+                  "who": "Triggering",
+                  "effects": [
+                    {
+                      "Sacrifice": {
+                        "who": "Triggering",
+                        "filter": [{ "Type": "Artifact" }, { "Is": "Attached" }],
+                        "as": "sacrificed"
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Bound": "sacrificed" },
+                      "selector": [],
+                      "op": "Eq",
+                      "right": 0
+                    }
+                  },
+                  "then": [{ "DealDamage": { "to": "Triggering", "amount": 2 } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

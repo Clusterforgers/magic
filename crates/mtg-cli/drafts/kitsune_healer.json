@@ -1,7 +1,7 @@
 {
   "oracle_id": "9c6bd752-e3c8-408c-96f4-16405a653161",
   "name": "Kitsune Healer",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Kitsune Healer",
@@ -23,9 +23,20 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 76, "end": 159 }
+          "Activated": {
+            "cost": ["Tap"],
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "Supertype": "Legendary" }] } }
+            ],
+            "effects": [
+              {
+                "Shield": {
+                  "when": { "Damage": { "to": { "Target": 0 } } },
+                  "by": "Prevent",
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
           }
         }
       ]

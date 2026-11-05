@@ -1,0 +1,63 @@
+{
+  "oracle_id": "a9ddb3dc-f289-46a1-af17-3a8523a26b0d",
+  "name": "The Watcher in the Water",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "The Watcher in the Water",
+      "oracle_fingerprint": "7ca66a8ab40f652541fc0a645021c5f7",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "WithCounters": { "counter": { "Other": "stun" }, "count": 9, "tapped": true } }
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Drew": { "who": "You" } },
+            "if": { "AtTrigger": { "Not": "YourTurn" } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Tentacle",
+                      "colors": ["Blue"],
+                      "types": ["Creature"],
+                      "subtypes": ["Tentacle"],
+                      "power": 1,
+                      "toughness": 1
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Subtype": "Tentacle" }, { "ControlledBy": "You" }],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "targets": [
+              { "what": { "Object": [{ "Subtype": "Kraken" }] }, "bounds": { "min": 0, "max": 1 } },
+              {
+                "what": { "Object": [{ "Not": { "Type": "Land" } }] },
+                "bounds": { "min": 0, "max": 1 }
+              }
+            ],
+            "effects": [
+              { "Untap": { "what": { "Target": 0 } } },
+              { "PutCounters": { "on": { "Target": 1 }, "counter": { "Other": "stun" } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

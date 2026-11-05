@@ -1,0 +1,28 @@
+{
+  "oracle_id": "145a15f9-89a9-4eb7-9924-e768f17e7e68",
+  "name": "Favored Hoplite",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Favored Hoplite",
+      "oracle_fingerprint": "925313275bf01a9e62a8874bee90e2a1",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "what": [{ "Targeting": ["This"] }], "by": "You" } },
+            "effects": [
+              { "PutCounters": { "on": "This", "counter": "+1/+1" } },
+              {
+                "Shield": {
+                  "when": { "Damage": { "to": "This" } },
+                  "by": "Prevent",
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

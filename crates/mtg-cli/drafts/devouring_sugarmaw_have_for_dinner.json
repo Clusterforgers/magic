@@ -1,0 +1,63 @@
+{
+  "oracle_id": "c8bc28ea-5630-49d5-963a-5789fa83f3c7",
+  "name": "Devouring Sugarmaw // Have for Dinner",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Devouring Sugarmaw",
+      "oracle_fingerprint": "fa1921de26b5949d3bd9e9c733881de9",
+      "abilities": [
+        { "Keyword": "Menace" },
+        { "Keyword": "Trample" },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": [
+                    {
+                      "Sacrifice": {
+                        "filter": [
+                          { "AnyOf": ["Token", { "Type": "Artifact" }, { "Type": "Enchantment" }] }
+                        ]
+                      }
+                    }
+                  ],
+                  "unpaid": [{ "Tap": { "what": "This" } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Have for Dinner",
+      "oracle_fingerprint": "640e3a77452aed8ca516e3cca8acb923",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Human",
+                      "colors": ["White"],
+                      "types": ["Creature"],
+                      "subtypes": ["Human"],
+                      "power": 1,
+                      "toughness": 1
+                    }
+                  }
+                }
+              },
+              { "CreateToken": { "token": { "Named": "food" } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

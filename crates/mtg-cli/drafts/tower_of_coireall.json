@@ -1,0 +1,28 @@
+{
+  "oracle_id": "f9afad36-933f-4d18-acb7-32e5cb5c8161",
+  "name": "Tower of Coireall",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Tower of Coireall",
+      "oracle_fingerprint": "3391aeebc1e1174819f371b24399db94",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "CantBeBlockedBy": [{ "Subtype": "Wall" }] }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

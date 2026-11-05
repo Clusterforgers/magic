@@ -1,0 +1,20 @@
+{
+  "oracle_id": "bc628018-f5d0-4bd2-91e7-ee4e4a5af9aa",
+  "name": "Vanguard's Shield",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Vanguard's Shield",
+      "oracle_fingerprint": "a4cfb1211b5c0bcede57ac1b86f83f7f",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "ModifyPT": { "power": 0, "toughness": 3 } }, { "BlocksAdditional": 1 }]
+          }
+        },
+        { "Keyword": { "Equip": "{3}" } }
+      ]
+    }
+  ]
+}

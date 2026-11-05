@@ -1,0 +1,14 @@
+{
+  "oracle_id": "48408f60-56bc-402f-ba19-c9dc53836765",
+  "name": "Deathcoil Wurm",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Deathcoil Wurm",
+      "oracle_fingerprint": "a8b85d1eabd97b1215d65f7feb7aabc1",
+      "abilities": [
+        { "Rule": { "rule": { "Combat": { "who": "This", "quirk": "AssignsAsUnblocked" } } } }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,35 @@
+{
+  "oracle_id": "fac310c7-c1e5-42f9-8140-17472be21d0d",
+  "name": "Soul Strings",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Soul Strings",
+      "oracle_fingerprint": "578ac8ea0730b26ff5bc491cd70aff04",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "Type": "Creature" }, { "OwnedBy": "You" }, { "In": "Graveyard" }]
+                },
+                "bounds": { "min": 2, "max": 2 }
+              }
+            ],
+            "effects": [
+              {
+                "Pay": {
+                  "who": "EachPlayer",
+                  "cost": "{1}",
+                  "times": "X",
+                  "unpaid": [{ "Move": { "what": { "Target": 0 }, "to": "Hand" } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

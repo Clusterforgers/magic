@@ -1,0 +1,47 @@
+{
+  "oracle_id": "e5fdd6fd-6492-47ec-8b74-9ff22ff9849a",
+  "name": "Dead Man's Chest",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dead Man's Chest",
+      "oracle_fingerprint": "4b0817e8986a1036bfed902d24e38018",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }] } },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Is": "Attached" }],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "effects": [
+              {
+                "ExileTop": {
+                  "who": { "OwnerOf": "Triggering" },
+                  "count": { "Stat": { "of": "Triggering", "stat": "Power" } },
+                  "as": "exiled"
+                }
+              },
+              {
+                "Rule": {
+                  "rule": {
+                    "MayCast": {
+                      "what": [{ "Not": { "Type": "Land" } }],
+                      "from": "Exile",
+                      "only": { "Bound": "exiled" },
+                      "spend_as": "AnyType"
+                    }
+                  },
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

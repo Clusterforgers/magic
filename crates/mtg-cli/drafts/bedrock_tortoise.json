@@ -1,0 +1,42 @@
+{
+  "oracle_id": "d9c2e674-11a9-47f0-8790-a53b62c43fe6",
+  "name": "Bedrock Tortoise",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Bedrock Tortoise",
+      "oracle_fingerprint": "b2a8d51cecf20458820e607e2e44fc29",
+      "abilities": [
+        {
+          "Static": {
+            "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+            "mods": [{ "AddKeyword": "Hexproof" }],
+            "condition": "YourTurn"
+          }
+        },
+        {
+          "Rule": {
+            "rule": {
+              "Combat": {
+                "who": {
+                  "Each": [
+                    { "Type": "Creature" },
+                    {
+                      "Test": {
+                        "left": { "Stat": { "of": "Candidate", "stat": "Power" } },
+                        "op": "Lt",
+                        "right": { "Stat": { "of": "Candidate", "stat": "Toughness" } }
+                      }
+                    },
+                    { "ControlledBy": "You" }
+                  ]
+                },
+                "quirk": "AssignsByToughness"
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

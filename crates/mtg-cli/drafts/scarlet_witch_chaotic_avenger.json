@@ -1,0 +1,37 @@
+{
+  "oracle_id": "8c72d54e-97a6-408e-ae77-18d3c96b3bd8",
+  "name": "Scarlet Witch, Chaotic Avenger",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Scarlet Witch, Chaotic Avenger",
+      "oracle_fingerprint": "a58f711882b9ee709ded19566aa24ffe",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": ["This"], "to": "EachPlayer", "combat": true } },
+            "effects": [
+              { "LookAtTop": { "count": 2, "as": "top" } },
+              { "ExileHidden": { "what": { "Bound": "top" }, "held": true } },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "ExiledWith": "This" },
+                      { "In": "Exile" },
+                      { "AnyOf": [{ "Subtype": "Hero" }, { "Not": { "Type": "Creature" } }] }
+                    ]
+                  },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "picked4"
+                }
+              },
+              { "CastFromZone": { "what": { "Bound": "picked4" }, "free": true } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,53 @@
+{
+  "oracle_id": "caeb39ee-f0bb-4305-9e8b-b30ba0a74c78",
+  "name": "Arixmethes, Slumbering Isle",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Arixmethes, Slumbering Isle",
+      "oracle_fingerprint": "363fb87f4d685a401645b2004d3cd8a0",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": {
+              "WithCounters": { "counter": { "Other": "slumber" }, "count": 5, "tapped": true }
+            }
+          }
+        },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "SetTypes": ["Land"] }],
+            "condition": {
+              "Matches": {
+                "subject": "This",
+                "selector": [{ "HasCounter": { "Other": "slumber" } }]
+              }
+            }
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "by": "You" } },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    { "RemoveCounters": { "from": "This", "counter": { "Other": "slumber" } } }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Green", "Blue"] } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

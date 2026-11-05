@@ -1,0 +1,42 @@
+{
+  "oracle_id": "d64feb23-8259-4445-9b40-efc8b4466679",
+  "name": "Timely Interference",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Timely Interference",
+      "oracle_fingerprint": "c718e213a387b024269831deed02960a",
+      "abilities": [
+        { "Keyword": { "Kicker": "{1}{R}" } },
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "ModifyPT": { "power": -1, "toughness": 0 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "If": {
+                  "condition": "Kicked",
+                  "then": [
+                    {
+                      "Rule": {
+                        "rule": { "MustBlock": { "Target": 0 } },
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              },
+              { "Draw": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

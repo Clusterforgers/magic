@@ -1,0 +1,57 @@
+{
+  "oracle_id": "a3a6c024-43de-4f5c-a1d6-c48a0c96a43b",
+  "name": "Nazahn, Revered Bladesmith",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Nazahn, Revered Bladesmith",
+      "oracle_fingerprint": "66307504aabe30e0f01b1206d726b43b",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Search": { "filter": [{ "Subtype": "Equipment" }], "reveal": true, "as": "found" }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Bound": "found" },
+                      "selector": [{ "Named": "Hammer of Nazahn" }],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [
+                    { "Move": { "what": { "Bound": "found" }, "to": { "Battlefield": {} } } }
+                  ]
+                }
+              },
+              { "Move": { "what": { "Bound": "found" }, "to": "Hand" } },
+              { "Shuffle": {} }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "Attacks": {
+                "what": [
+                  { "Type": "Creature" },
+                  { "ControlledBy": "You" },
+                  { "HasAttached": [{ "Subtype": "Equipment" }] }
+                ]
+              }
+            },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "Defending" }] } }
+            ],
+            "effects": [{ "May": { "effects": [{ "Tap": { "what": { "Target": 0 } } }] } }]
+          }
+        }
+      ]
+    }
+  ]
+}

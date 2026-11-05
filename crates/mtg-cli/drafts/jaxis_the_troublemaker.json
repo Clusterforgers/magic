@@ -1,0 +1,69 @@
+{
+  "oracle_id": "764121bf-535d-40d0-ab9d-65486da31734",
+  "name": "Jaxis, the Troublemaker",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Jaxis, the Troublemaker",
+      "oracle_fingerprint": "cb2958e0ab4ea1482f97bc7ffff9dd8f",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{R}" }, "Tap", { "Discard": {} }],
+            "timing": "Sorcery",
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, "Other", { "ControlledBy": "You" }] } }
+            ],
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "CopyOf": { "of": { "Target": 0 }, "except": [{ "AddKeyword": "Haste" }] }
+                  },
+                  "as": "copy"
+                }
+              },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "End" } },
+                  "effects": [
+                    {
+                      "Sacrifice": {
+                        "who": { "ControllerOf": { "Bound": "copy" } },
+                        "filter": [{ "Is": { "Bound": "copy" } }],
+                        "count": { "Count": [{ "Is": { "Bound": "copy" } }] }
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "Continuous": {
+                  "affected": { "Bound": "copy" },
+                  "mods": [
+                    {
+                      "GrantAbility": {
+                        "Triggered": {
+                          "when": {
+                            "ZoneChange": {
+                              "what": ["This"],
+                              "from": "Battlefield",
+                              "to": "Graveyard"
+                            }
+                          },
+                          "effects": [{ "Draw": {} }]
+                        }
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Blitz": "{1}{R}" } }
+      ]
+    }
+  ]
+}

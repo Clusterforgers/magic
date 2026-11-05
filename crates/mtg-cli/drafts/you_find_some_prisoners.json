@@ -1,0 +1,54 @@
+{
+  "oracle_id": "467c526a-02a7-405d-98de-c632ea83519b",
+  "name": "You Find Some Prisoners",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "You Find Some Prisoners",
+      "oracle_fingerprint": "21984ded143ab53dca2aa4bcb80a5e87",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Modal": {
+                  "modes": [
+                    {
+                      "targets": [{ "what": { "Object": [{ "Type": "Artifact" }] } }],
+                      "effects": [{ "Destroy": { "what": { "Target": 0 } } }]
+                    },
+                    {
+                      "targets": [{ "what": "Opponent" }],
+                      "effects": [
+                        { "ExileTop": { "who": { "Target": 0 }, "count": 3, "as": "exiled" } },
+                        {
+                          "Choose": {
+                            "from": { "Each": [{ "Is": { "Bound": "exiled" } }, { "In": "Exile" }] },
+                            "as": "card2"
+                          }
+                        },
+                        {
+                          "Rule": {
+                            "rule": {
+                              "MayCast": {
+                                "from": "Exile",
+                                "only": { "Bound": "card2" },
+                                "play": true,
+                                "spend_as": "AnyColor"
+                              }
+                            },
+                            "duration": "UntilEndOfYourNextTurn"
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

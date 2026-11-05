@@ -1,0 +1,20 @@
+{
+  "oracle_id": "c8f8fbf0-4f51-4a5c-82f9-99917513df6d",
+  "name": "Lush Growth",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Lush Growth",
+      "oracle_fingerprint": "779999ecb96235d07e8be4a8aa304376",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Land" }] } },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "SetLandTypes": ["Mountain", "Forest", "Plains"] }]
+          }
+        }
+      ]
+    }
+  ]
+}

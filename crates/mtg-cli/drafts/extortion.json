@@ -1,0 +1,21 @@
+{
+  "oracle_id": "8841fdb9-0565-4ef5-814c-293c14242741",
+  "name": "Extortion",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Extortion",
+      "oracle_fingerprint": "7057b31a88fd00a7b857b06625c17ceb",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              { "Discard": { "who": { "Target": 0 }, "count": 2, "by": "You", "optional": true } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,42 @@
+{
+  "oracle_id": "90514aa5-84b6-4be7-b6d0-b05529c97140",
+  "name": "Hellcarver Demon",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Hellcarver Demon",
+      "oracle_fingerprint": "5f4647b5e63c3ceb6beaea1a986ab282",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": ["This"], "to": "EachPlayer", "combat": true } },
+            "effects": [
+              {
+                "Sacrifice": {
+                  "filter": [{ "ControlledBy": "You" }, "Other"],
+                  "count": { "Count": [{ "ControlledBy": "You" }, "Other"] }
+                }
+              },
+              { "Discard": { "count": { "Count": [{ "In": "Hand" }, { "OwnedBy": "You" }] } } },
+              { "ExileTop": { "count": 6, "as": "exiled" } },
+              {
+                "RepeatEach": {
+                  "over": {
+                    "Each": [
+                      { "Is": { "Bound": "exiled" } },
+                      { "Not": { "Type": "Land" } },
+                      { "In": "Exile" }
+                    ]
+                  },
+                  "as": "card2",
+                  "effects": [{ "CastFromZone": { "what": { "Bound": "card2" }, "free": true } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

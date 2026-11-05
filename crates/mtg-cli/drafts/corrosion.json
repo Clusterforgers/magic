@@ -1,0 +1,78 @@
+{
+  "oracle_id": "3d3fd8a2-78d4-4f52-8fcd-0c6fa93f0043",
+  "name": "Corrosion",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Corrosion",
+      "oracle_fingerprint": "b7a626fb5dc54941669c9b317214fa2f",
+      "abilities": [
+        { "Keyword": { "CumulativeUpkeep": "{1}" } },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              {
+                "PutCounters": {
+                  "on": { "Each": [{ "Type": "Artifact" }, { "ControlledBy": { "Target": 0 } }] },
+                  "counter": { "Other": "rust" }
+                }
+              },
+              {
+                "RepeatEach": {
+                  "over": { "Each": [{ "Type": "Artifact" }] },
+                  "as": "each",
+                  "effects": [
+                    {
+                      "If": {
+                        "condition": {
+                          "Compare": {
+                            "left": {
+                              "Counters": {
+                                "on": { "Bound": "each" },
+                                "counter": { "Other": "rust" }
+                              }
+                            },
+                            "op": "Ge",
+                            "right": {
+                              "Total": {
+                                "of": [
+                                  { "Is": { "Bound": "each" } },
+                                  {
+                                    "AnyOf": [
+                                      { "In": "Battlefield" },
+                                      { "In": "Hand" },
+                                      { "In": "Library" },
+                                      { "In": "Graveyard" },
+                                      { "In": "Exile" },
+                                      { "In": "Stack" }
+                                    ]
+                                  }
+                                ],
+                                "stat": "ManaValue"
+                              }
+                            }
+                          }
+                        },
+                        "then": [
+                          { "Destroy": { "what": { "Bound": "each" }, "regenerate": false } }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 418, "end": 509 }
+          }
+        }
+      ]
+    }
+  ]
+}

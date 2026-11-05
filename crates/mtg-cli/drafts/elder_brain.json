@@ -1,0 +1,41 @@
+{
+  "oracle_id": "e537bd23-7368-459b-badf-b7b7c112c88a",
+  "name": "Elder Brain",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Elder Brain",
+      "oracle_fingerprint": "6d6c4af159fa175219769ab2782d9d90",
+      "abilities": [
+        { "Keyword": "Menace" },
+        {
+          "Triggered": {
+            "when": { "AttacksPlayer": { "what": ["This"], "at": "EachPlayer" } },
+            "effects": [
+              {
+                "Exile": {
+                  "what": { "Each": [{ "In": "Hand" }, { "OwnedBy": "Defending" }] },
+                  "as": "exiled"
+                }
+              },
+              { "Draw": { "who": "Defending", "count": { "Bound": "exiled~moved" } } },
+              {
+                "Rule": {
+                  "rule": {
+                    "MayCast": {
+                      "from": "Exile",
+                      "only": { "Bound": "exiled" },
+                      "play": true,
+                      "spend_as": "AnyColor"
+                    }
+                  },
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,32 @@
+{
+  "oracle_id": "eef50ef8-958b-4f5c-b261-16926d9fe672",
+  "name": "Plague Reaver",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Plague Reaver",
+      "oracle_fingerprint": "716c92937b66391226589661d58a7a0f",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "effects": [
+              {
+                "Sacrifice": {
+                  "filter": [{ "Type": "Creature" }, "Other", { "ControlledBy": "You" }],
+                  "count": { "Count": [{ "Type": "Creature" }, "Other", { "ControlledBy": "You" }] }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 78, "end": 252 }
+          }
+        }
+      ]
+    }
+  ]
+}

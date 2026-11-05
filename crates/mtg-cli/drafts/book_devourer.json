@@ -1,0 +1,54 @@
+{
+  "oracle_id": "fb6d24cb-4e79-4d0c-b32f-47d5f709de1b",
+  "name": "Book Devourer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Book Devourer",
+      "oracle_fingerprint": "3bebc2085602fddcd5cd3187625393c8",
+      "abilities": [
+        { "Keyword": "Trample" },
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": ["This"], "to": "EachPlayer", "combat": true } },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "Discard": {
+                        "count": { "Count": [{ "In": "Hand" }, { "OwnedBy": "You" }] },
+                        "as": "discarded"
+                      }
+                    },
+                    {
+                      "If": {
+                        "condition": {
+                          "CountOf": {
+                            "subject": { "Bound": "discarded" },
+                            "selector": [],
+                            "op": "Ge",
+                            "right": 1
+                          }
+                        },
+                        "then": [
+                          {
+                            "Draw": {
+                              "count": {
+                                "CountOf": { "of": { "Bound": "discarded" }, "filter": [] }
+                              }
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,153 @@
+{
+  "object": "card",
+  "id": "c7284e32-de54-4c83-a7de-7b249c47319a",
+  "oracle_id": "ba4c9337-4cdf-44d8-849b-ffd808e5407d",
+  "multiverse_ids": [
+    39517
+  ],
+  "mtgo_id": 17705,
+  "mtgo_foil_id": 17706,
+  "tcgplayer_id": 10435,
+  "cardmarket_id": 1673,
+  "name": "Ironfist Crusher",
+  "lang": "en",
+  "released_at": "2002-10-07",
+  "uri": "https://api.scryfall.com/cards/c7284e32-de54-4c83-a7de-7b249c47319a",
+  "scryfall_uri": "https://scryfall.com/card/ons/42/ironfist-crusher?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T12:18:14Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/c/7/c7284e32-de54-4c83-a7de-7b249c47319a.jpg?1783945094",
+    "normal": "https://cards.scryfall.io/normal/front/c/7/c7284e32-de54-4c83-a7de-7b249c47319a.jpg?1783945094",
+    "large": "https://cards.scryfall.io/large/front/c/7/c7284e32-de54-4c83-a7de-7b249c47319a.jpg?1783945094",
+    "png": "https://cards.scryfall.io/png/front/c/7/c7284e32-de54-4c83-a7de-7b249c47319a.png?1783945094",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/c/7/c7284e32-de54-4c83-a7de-7b249c47319a.jpg?1783945094",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/c/7/c7284e32-de54-4c83-a7de-7b249c47319a.jpg?1783945094",
+    "thumb": "https://cards.scryfall.io/thumb/front/c/7/c7284e32-de54-4c83-a7de-7b249c47319a.webp?1783945094",
+    "grid": "https://cards.scryfall.io/grid/front/c/7/c7284e32-de54-4c83-a7de-7b249c47319a.webp?1783945094",
+    "display": "https://cards.scryfall.io/display/front/c/7/c7284e32-de54-4c83-a7de-7b249c47319a.webp?1783945094",
+    "art": "https://cards.scryfall.io/art/front/c/7/c7284e32-de54-4c83-a7de-7b249c47319a.webp?1783945094",
+    "crop": "https://cards.scryfall.io/crop/front/c/7/c7284e32-de54-4c83-a7de-7b249c47319a.webp?1783945094",
+    "jpeg": "https://cards.scryfall.io/normal/front/c/7/c7284e32-de54-4c83-a7de-7b249c47319a.jpg?1783945094"
+  },
+  "mana_cost": "{4}{W}",
+  "cmc": 5.0,
+  "type_line": "Creature — Human Soldier",
+  "oracle_text": "This creature can block any number of creatures.\nMorph {3}{W} (You may cast this card face down as a 2/2 creature for {3}. Turn it face up any time for its morph cost.)",
+  "power": "2",
+  "toughness": "4",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": [
+    "Morph"
+  ],
+  "all_parts": [
+    {
+      "object": "related_card",
+      "id": "5430da88-b72e-4d64-bd3c-b21062cac1c2",
+      "component": "combo_piece",
+      "name": "Morph",
+      "type_line": "Creature",
+      "uri": "https://api.scryfall.com/cards/5430da88-b72e-4d64-bd3c-b21062cac1c2"
+    },
+    {
+      "object": "related_card",
+      "id": "c7284e32-de54-4c83-a7de-7b249c47319a",
+      "component": "combo_piece",
+      "name": "Ironfist Crusher",
+      "type_line": "Creature — Human Soldier",
+      "uri": "https://api.scryfall.com/cards/c7284e32-de54-4c83-a7de-7b249c47319a"
+    }
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "legal",
+    "predh": "legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "914a6c6d-cb3b-45e8-a2db-9978a2339faf",
+  "set": "ons",
+  "set_name": "Onslaught",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/914a6c6d-cb3b-45e8-a2db-9978a2339faf",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Aons&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/ons?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/c7284e32-de54-4c83-a7de-7b249c47319a/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Aba4c9337-4cdf-44d8-849b-ffd808e5407d&unique=prints",
+  "collector_number": "42",
+  "digital": false,
+  "rarity": "uncommon",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Iain McCaig",
+  "artist_ids": [
+    "8d244b88-ef56-4523-8c0c-9fecccc4ab9d"
+  ],
+  "illustration_id": "38122ca6-5240-4483-8526-8a6c425a542f",
+  "border_color": "black",
+  "frame": "1997",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 27901,
+  "prices": {
+    "usd": "0.12",
+    "usd_foil": "0.72",
+    "usd_etched": null,
+    "eur": "0.07",
+    "eur_foil": "0.67",
+    "tix": "0.06"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=39517&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DIronfist%2BCrusher",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DIronfist%2BCrusher",
+    "edhrec": "https://edhrec.com/route/?cc=Ironfist+Crusher"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F10435%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=1673&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/17705?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

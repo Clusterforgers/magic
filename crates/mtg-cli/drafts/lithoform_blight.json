@@ -1,0 +1,46 @@
+{
+  "oracle_id": "b256c311-e37d-4b3c-889c-85443e3d5e7e",
+  "name": "Lithoform Blight",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Lithoform Blight",
+      "oracle_fingerprint": "2e131cc0bc37b0b10b867a729f75abfe",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Land" }] } },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "Draw": {} }]
+          }
+        },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [
+              "LoseAbilities",
+              { "SetLandTypes": [] },
+              {
+                "GrantAbility": {
+                  "Activated": {
+                    "cost": ["Tap"],
+                    "effects": [{ "AddMana": { "mana": { "Fixed": ["Colorless"] } } }]
+                  }
+                }
+              },
+              {
+                "GrantAbility": {
+                  "Activated": {
+                    "cost": ["Tap", { "PayLife": 1 }],
+                    "effects": [{ "AddMana": { "mana": { "AnyColor": 1 } } }]
+                  }
+                }
+              }
+            ],
+            "condition": { "Matches": { "subject": "Attached", "selector": [{ "Type": "Land" }] } }
+          }
+        }
+      ]
+    }
+  ]
+}

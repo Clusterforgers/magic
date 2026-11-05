@@ -1,0 +1,32 @@
+{
+  "oracle_id": "e447f7cc-4cdc-4a79-8058-8c1f1224d357",
+  "name": "Ghosthelm Courier",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ghosthelm Courier",
+      "oracle_fingerprint": "736e935910b55b6c88f28526b54b7a93",
+      "abilities": [
+        { "Rule": { "rule": { "Combat": { "who": "This", "quirk": "MayStayTapped" } } } },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{2}{U}" }, "Tap"],
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }, { "Subtype": "Wizard" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    { "ModifyPT": { "power": 2, "toughness": 2 } },
+                    { "AddKeyword": "Shroud" }
+                  ],
+                  "duration": "WhileSourceTapped"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,33 @@
+{
+  "oracle_id": "fde7645a-5f02-4d5f-b38c-8390f325899e",
+  "name": "Druid's Deliverance",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Druid's Deliverance",
+      "oracle_fingerprint": "d80fecb30a364d6303c6c743cb467a53",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Shield": {
+                  "when": { "Damage": { "to": "You", "combat": true } },
+                  "by": "Prevent",
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "Choose": {
+                  "from": { "Each": [{ "Type": "Creature" }, "Token", { "ControlledBy": "You" }] },
+                  "as": "populated"
+                }
+              },
+              { "CreateToken": { "token": { "CopyOf": { "of": { "Bound": "populated" } } } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

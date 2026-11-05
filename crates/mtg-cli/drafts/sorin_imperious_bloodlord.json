@@ -1,0 +1,102 @@
+{
+  "oracle_id": "fee680c6-afe2-4321-9d8a-8f81a612a53b",
+  "name": "Sorin, Imperious Bloodlord",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sorin, Imperious Bloodlord",
+      "oracle_fingerprint": "b3637e0e39937ce17146934d75ee4cde",
+      "abilities": [
+        {
+          "Loyalty": {
+            "cost": { "Plus": 1 },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "AddKeyword": "Deathtouch" }, { "AddKeyword": "Lifelink" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Target": 0 },
+                      "selector": [{ "Subtype": "Vampire" }],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [{ "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1" } }]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Plus": 1 },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    { "Sacrifice": { "filter": [{ "Subtype": "Vampire" }], "as": "sacrificed" } }
+                  ]
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Bound": "sacrificed" },
+                      "selector": [{ "Type": "Creature" }],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [
+                    {
+                      "Reflexive": {
+                        "targets": [{ "what": "AnyTarget" }],
+                        "effects": [
+                          { "DealDamage": { "to": { "Target": 0 }, "amount": 3 } },
+                          { "GainLife": { "amount": 3 } }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Minus": 3 },
+            "effects": [
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "Type": "Creature" },
+                      { "Subtype": "Vampire" },
+                      { "In": "Hand" },
+                      { "OwnedBy": "You" }
+                    ]
+                  },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "picked"
+                }
+              },
+              { "Move": { "what": { "Bound": "picked" }, "to": { "Battlefield": {} } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

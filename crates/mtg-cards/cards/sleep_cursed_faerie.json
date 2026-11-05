@@ -1,0 +1,22 @@
+{
+  "oracle_id": "a17633aa-b1a7-4ae5-b051-6747975d8a2f",
+  "name": "Sleep-Cursed Faerie",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sleep-Cursed Faerie",
+      "oracle_fingerprint": "e7df9e66a05e78ada5cd2f5a75f26bb8",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": { "Ward": "{2}" } },
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "WithCounters": { "counter": { "Other": "stun" }, "count": 3, "tapped": true } }
+          }
+        },
+        { "Activated": { "cost": "{1}{U}", "effects": [{ "Untap": { "what": "This" } }] } }
+      ]
+    }
+  ]
+}

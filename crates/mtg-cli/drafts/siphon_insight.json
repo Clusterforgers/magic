@@ -1,0 +1,49 @@
+{
+  "oracle_id": "aee82122-d13e-4175-b499-9dde718e4da9",
+  "name": "Siphon Insight",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Siphon Insight",
+      "oracle_fingerprint": "d2f2bcc660b82cdf271472997f09d6a8",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              { "LookAtTop": { "who": { "Target": 0 }, "count": 2, "as": "top" } },
+              {
+                "Choose": {
+                  "from": { "Each": [{ "In": "Library" }, { "Is": { "Bound": "top" } }] },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "kept2"
+                }
+              },
+              { "ExileHidden": { "what": { "Bound": "kept2" }, "held": true, "as": "exiled4" } },
+              {
+                "Move": {
+                  "what": { "Bound": "top" },
+                  "to": { "Library": { "place": "Bottom", "order": "Chosen" } }
+                }
+              },
+              {
+                "Rule": {
+                  "rule": {
+                    "MayCast": {
+                      "from": "Exile",
+                      "only": { "Bound": "exiled4" },
+                      "play": true,
+                      "spend_as": "AnyColor"
+                    }
+                  },
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Flashback": "{1}{U}{B}" } }
+      ]
+    }
+  ]
+}

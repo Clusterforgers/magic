@@ -1,0 +1,20 @@
+{
+  "oracle_id": "8adbba6e-03ef-4278-aec5-8a4496b377a8",
+  "name": "Abandon Hope",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Abandon Hope",
+      "oracle_fingerprint": "727ebfe8c870b6f79eeef93bf9f4afe1",
+      "abilities": [
+        { "AdditionalCost": { "cost": [{ "Discard": { "count": "X" } }], "required": true } },
+        {
+          "Spell": {
+            "targets": [{ "what": "Opponent" }],
+            "effects": [{ "Discard": { "who": { "Target": 0 }, "count": "X", "by": "You" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

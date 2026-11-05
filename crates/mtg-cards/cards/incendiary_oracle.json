@@ -1,0 +1,39 @@
+{
+  "oracle_id": "2c3ed6b9-1a2b-42ad-baa9-ee2a0ad505a7",
+  "name": "Incendiary Oracle",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Incendiary Oracle",
+      "oracle_fingerprint": "63c67a8f2862e045c65cb692c393ff6d",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{1}{R}",
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "ModifyPT": { "power": 1, "toughness": 0 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Replacement": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Creature" }, { "DamagedBy": "This" }],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "by": { "MoveTo": "Exile" }
+          }
+        }
+      ]
+    }
+  ]
+}

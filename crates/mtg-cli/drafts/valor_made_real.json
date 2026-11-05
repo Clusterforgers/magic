@@ -1,0 +1,27 @@
+{
+  "oracle_id": "5bd1348c-51cc-4426-b995-8bb6d4a5bd2e",
+  "name": "Valor Made Real",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Valor Made Real",
+      "oracle_fingerprint": "1bfff79b7e4a775f64e35443d3f884eb",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "BlocksAdditional": 99 }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

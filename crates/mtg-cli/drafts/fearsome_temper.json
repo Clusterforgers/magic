@@ -1,0 +1,39 @@
+{
+  "oracle_id": "85e9bc3e-e0da-4ad4-9631-472f75f91663",
+  "name": "Fearsome Temper",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Fearsome Temper",
+      "oracle_fingerprint": "ab32af787d1027ce6ed6ede2c638cfad",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [
+              { "ModifyPT": { "power": 2, "toughness": 2 } },
+              {
+                "GrantAbility": {
+                  "Activated": {
+                    "cost": "{2}{R}",
+                    "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+                    "effects": [
+                      {
+                        "Continuous": {
+                          "affected": { "Target": 0 },
+                          "mods": [{ "CanBlockOnly": [{ "Not": { "Is": "This" } }] }],
+                          "duration": "UntilEndOfTurn"
+                        }
+                      }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

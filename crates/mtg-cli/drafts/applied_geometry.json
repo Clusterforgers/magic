@@ -1,0 +1,40 @@
+{
+  "oracle_id": "88fc179c-055b-47c2-b830-1fd2b1377147",
+  "name": "Applied Geometry",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Applied Geometry",
+      "oracle_fingerprint": "231a68f68438ae14c29f18752dda7952",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": { "Object": [{ "Not": { "Subtype": "Aura" } }, { "ControlledBy": "You" }] }
+              }
+            ],
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "CopyOf": {
+                      "of": { "Target": 0 },
+                      "except": [
+                        { "SetPT": { "power": 0, "toughness": 0 } },
+                        { "AddType": "Creature" },
+                        { "AddSubtype": "Fractal" }
+                      ]
+                    }
+                  },
+                  "as": "copy"
+                }
+              },
+              { "PutCounters": { "on": { "Bound": "copy" }, "counter": "+1/+1", "count": 6 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

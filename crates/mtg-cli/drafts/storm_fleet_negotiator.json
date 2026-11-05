@@ -1,0 +1,45 @@
+{
+  "oracle_id": "60cb885c-5cd3-4963-8a6a-cebf07cc61b5",
+  "name": "Storm Fleet Negotiator",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Storm Fleet Negotiator",
+      "oracle_fingerprint": "69108b3046519d880e1085004f79feed",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [
+              { "LookAtTop": { "who": "EachPlayer", "as": "top" } },
+              { "Reveal": { "what": { "Bound": "top" } } },
+              {
+                "CreateToken": {
+                  "token": { "Named": "map" },
+                  "count": {
+                    "Count": [
+                      { "Is": { "Bound": "top" } },
+                      {
+                        "AnyOf": [
+                          { "In": "Battlefield" },
+                          { "In": "Hand" },
+                          { "In": "Library" },
+                          { "In": "Graveyard" },
+                          { "In": "Exile" },
+                          { "In": "Stack" }
+                        ]
+                      },
+                      { "Not": { "Type": "Land" } }
+                    ]
+                  }
+                }
+              },
+              { "Draw": { "who": "EachPlayer" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

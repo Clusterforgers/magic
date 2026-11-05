@@ -1,0 +1,32 @@
+{
+  "oracle_id": "9e48eb8e-ec62-4d73-ac80-31e6fe74ec31",
+  "name": "Cease-Fire",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Cease-Fire",
+      "oracle_fingerprint": "f1c2c1b9db2ca2e61b603fe38956d5e2",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              {
+                "Rule": {
+                  "rule": {
+                    "Cant": {
+                      "who": { "Target": 0 },
+                      "action": { "Cast": { "filter": [{ "Type": "Creature" }] } }
+                    }
+                  },
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              { "Draw": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

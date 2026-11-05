@@ -1,0 +1,26 @@
+{
+  "oracle_id": "ec664e13-b7c4-4ca3-80d6-55a564d97937",
+  "name": "Immovable Rod",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Immovable Rod",
+      "oracle_fingerprint": "f64e2b964e05238068019c1d06099367",
+      "abilities": [
+        { "Rule": { "rule": { "Combat": { "who": "This", "quirk": "MayStayTapped" } } } },
+        {
+          "Triggered": {
+            "when": { "Untapped": { "what": ["This"] } },
+            "effects": [{ "Venture": {} }]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 133, "end": 262 }
+          }
+        }
+      ]
+    }
+  ]
+}

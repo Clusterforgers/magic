@@ -1,0 +1,28 @@
+{
+  "oracle_id": "d47a7aa5-3b64-4ff8-bb10-e46a34d1993c",
+  "name": "Duct Crawler",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Duct Crawler",
+      "oracle_fingerprint": "3577bedd3b18a6dcb7ef6edbae6ff3d2",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{1}{R}",
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "CanBlockOnly": [{ "Not": { "Is": "This" } }] }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

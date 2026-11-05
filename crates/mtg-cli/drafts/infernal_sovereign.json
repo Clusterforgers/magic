@@ -1,0 +1,32 @@
+{
+  "oracle_id": "b08cb220-34fe-4c54-b654-64a3c24dba44",
+  "name": "Infernal Sovereign",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Infernal Sovereign",
+      "oracle_fingerprint": "58dd29979dc8ef92b28a931ac9ef2ba8",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": "Trample" },
+        { "Rule": { "rule": { "Cant": { "who": "You", "action": { "SkipStep": "Draw" } } } } },
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                { "SpellCast": { "by": "You" } },
+                {
+                  "Did": {
+                    "action": "PlayedLand",
+                    "what": [{ "Type": "Land" }, { "ControlledBy": "You" }]
+                  }
+                }
+              ]
+            },
+            "effects": [{ "Draw": {} }, { "LoseLife": { "amount": 1 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

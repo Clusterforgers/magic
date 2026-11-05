@@ -1,7 +1,7 @@
 {
   "oracle_id": "6f4c94b6-f829-4646-a574-083997b78dfb",
   "name": "Winter Soldier, Icy Assassin",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Winter Soldier, Icy Assassin",
@@ -28,9 +28,30 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 80, "end": 306 }
+          "Activated": {
+            "cost": "{3}{W}{B}",
+            "from": "Graveyard",
+            "effects": [
+              {
+                "Move": {
+                  "what": "This",
+                  "to": { "Battlefield": { "counters": [[{ "Other": "finality" }, 1]] } }
+                }
+              },
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "Choose": {
+                        "from": { "Each": [{ "Subtype": "Equipment" }, { "ControlledBy": "You" }] },
+                        "as": "attach"
+                      }
+                    },
+                    { "Attach": { "what": { "Bound": "attach" }, "to": "This" } }
+                  ]
+                }
+              }
+            ]
           }
         }
       ]

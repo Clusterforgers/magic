@@ -1,0 +1,31 @@
+{
+  "oracle_id": "5f71c09a-47fb-4bb2-9329-78f5bb195e5d",
+  "name": "Thalakos Dreamsower",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Thalakos Dreamsower",
+      "oracle_fingerprint": "eb234d105b5e25384648b2b1e47858ea",
+      "abilities": [
+        { "Keyword": "Shadow" },
+        { "Rule": { "rule": { "Combat": { "who": "This", "quirk": "MayStayTapped" } } } },
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": ["This"], "to": "Opponents" } },
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              { "Tap": { "what": { "Target": 0 } } },
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": ["DoesntUntap"],
+                  "duration": "WhileSourceTapped"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

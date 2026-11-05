@@ -1,0 +1,37 @@
+{
+  "oracle_id": "923b2a1b-d7b6-439d-9681-c7ba88165c31",
+  "name": "Hedge Whisperer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Hedge Whisperer",
+      "oracle_fingerprint": "398d05b15a1eaba7eb60ec47a6a8690c",
+      "abilities": [
+        { "Rule": { "rule": { "Combat": { "who": "This", "quirk": "MayStayTapped" } } } },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{3}{G}" }, "Tap", { "CollectEvidence": 4 }],
+            "timing": "Sorcery",
+            "targets": [{ "what": { "Object": [{ "Type": "Land" }, { "ControlledBy": "You" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    { "SetPT": { "power": 5, "toughness": 5 } },
+                    { "SetColors": ["Green"] },
+                    { "AddSubtype": "Plant" },
+                    { "AddSubtype": "Boar" },
+                    { "AddType": "Creature" },
+                    { "AddKeyword": "Haste" }
+                  ],
+                  "duration": "WhileSourceTapped"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

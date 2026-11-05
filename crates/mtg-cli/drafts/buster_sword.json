@@ -1,0 +1,49 @@
+{
+  "oracle_id": "5e060d58-4d6e-425c-b7d4-727669fcce5b",
+  "name": "Buster Sword",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Buster Sword",
+      "oracle_fingerprint": "d59d23ae6b11bb729c008f9aebcb7cf2",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "ModifyPT": { "power": 3, "toughness": 2 } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "DealsDamage": {
+                "source": [{ "Type": "Creature" }, { "Is": "Attached" }],
+                "to": "EachPlayer",
+                "combat": true
+              }
+            },
+            "effects": [
+              { "Draw": {} },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "Not": { "Type": "Land" } },
+                      { "OwnedBy": "You" },
+                      { "In": "Hand" },
+                      { "Compare": { "stat": "ManaValue", "op": "Le", "to": "Triggering" } }
+                    ]
+                  },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "picked"
+                }
+              },
+              { "CastFromZone": { "what": { "Bound": "picked" }, "free": true } }
+            ]
+          }
+        },
+        { "Keyword": { "Equip": "{2}" } }
+      ]
+    }
+  ]
+}

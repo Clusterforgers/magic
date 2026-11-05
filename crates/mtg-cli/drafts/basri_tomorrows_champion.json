@@ -1,0 +1,50 @@
+{
+  "oracle_id": "d8e1e9ba-708c-4f54-abc3-817004a2f2ac",
+  "name": "Basri, Tomorrow's Champion",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Basri, Tomorrow's Champion",
+      "oracle_fingerprint": "71b1c19c7a33118f99d814b0513c3e24",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{W}" }, "Tap", "Exert"],
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Cat",
+                      "colors": ["White"],
+                      "types": ["Creature"],
+                      "subtypes": ["Cat"],
+                      "power": 1,
+                      "toughness": 1,
+                      "abilities": [{ "Keyword": "Lifelink" }]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Cycling": "{2}{W}" } },
+        {
+          "Triggered": {
+            "when": { "Cycled": { "what": ["This"] } },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Subtype": "Cat" }, { "ControlledBy": "You" }] },
+                  "mods": [{ "AddKeyword": "Hexproof" }, { "AddKeyword": "Indestructible" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

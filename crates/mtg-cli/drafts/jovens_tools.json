@@ -1,0 +1,32 @@
+{
+  "oracle_id": "b1935140-b038-4a81-98f7-28d2c137124a",
+  "name": "Joven's Tools",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Joven's Tools",
+      "oracle_fingerprint": "425fdeb3a3bab2c12c0d58e5432301a4",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{4}" }, "Tap"],
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    {
+                      "CantBeBlockedBy": [{ "Type": "Creature" }, { "Not": { "Subtype": "Wall" } }]
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

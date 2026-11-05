@@ -35,9 +35,9 @@
                   "Object": [
                     "Spell",
                     {
-                      "Targeting": [
-                        { "AnyOf": [{ "Type": "Artifact" }, { "Type": "Creature" }] },
-                        { "ControlledBy": "You" }
+                      "AnyOf": [
+                        { "Targeting": [{ "Type": "Artifact" }, { "ControlledBy": "You" }] },
+                        { "Targeting": [{ "Type": "Creature" }, { "ControlledBy": "You" }] }
                       ]
                     }
                   ]

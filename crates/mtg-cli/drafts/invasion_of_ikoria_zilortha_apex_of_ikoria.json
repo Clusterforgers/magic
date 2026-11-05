@@ -1,0 +1,62 @@
+{
+  "oracle_id": "21d90735-5e04-4a8c-a546-ff26d4d5998d",
+  "name": "Invasion of Ikoria // Zilortha, Apex of Ikoria",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Invasion of Ikoria",
+      "oracle_fingerprint": "f06c70878d4995ae74c855fb88e5811c",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Search": {
+                  "also": ["Graveyard"],
+                  "filter": [
+                    { "Type": "Creature" },
+                    { "ControlledBy": "You" },
+                    { "Not": { "Subtype": "Human" } },
+                    { "Compare": { "stat": "ManaValue", "op": "Le", "to": "X" } }
+                  ],
+                  "as": "found"
+                }
+              },
+              { "Move": { "what": { "Bound": "found" }, "to": { "Battlefield": {} } } },
+              {
+                "If": {
+                  "condition": { "Searched": { "zone": "Library" } },
+                  "then": [{ "Shuffle": {} }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Zilortha, Apex of Ikoria",
+      "oracle_fingerprint": "5c346bc051d44a2f9f2abcaf3cceeef6",
+      "abilities": [
+        { "Keyword": "Reach" },
+        {
+          "Rule": {
+            "rule": {
+              "Combat": {
+                "who": {
+                  "Each": [
+                    { "Type": "Creature" },
+                    { "ControlledBy": "You" },
+                    { "Not": { "Subtype": "Human" } }
+                  ]
+                },
+                "quirk": "AssignsAsUnblocked"
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

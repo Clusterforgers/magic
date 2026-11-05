@@ -1,0 +1,86 @@
+{
+  "oracle_id": "e0e36c5a-0245-43ba-a832-95d343cae335",
+  "name": "Crucias, Titan of the Waves",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Crucias, Titan of the Waves",
+      "oracle_fingerprint": "ce793621196277d73b59df75e1f34f24",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    { "Discard": { "as": "discarded" } },
+                    {
+                      "If": {
+                        "condition": {
+                          "CountOf": {
+                            "subject": { "Bound": "discarded" },
+                            "selector": [],
+                            "op": "Ge",
+                            "right": 1
+                          }
+                        },
+                        "then": [
+                          { "CreateToken": { "token": { "Named": "treasure" } } },
+                          {
+                            "Either": {
+                              "first": [
+                                {
+                                  "Seek": {
+                                    "filter": [
+                                      {
+                                        "Compare": {
+                                          "stat": "ManaValue",
+                                          "op": "Gt",
+                                          "to": {
+                                            "Stat": {
+                                              "of": { "Bound": "discarded" },
+                                              "stat": "ManaValue"
+                                            }
+                                          }
+                                        }
+                                      }
+                                    ]
+                                  }
+                                }
+                              ],
+                              "second": [
+                                {
+                                  "Seek": {
+                                    "filter": [
+                                      {
+                                        "Compare": {
+                                          "stat": "ManaValue",
+                                          "op": "Lt",
+                                          "to": {
+                                            "Stat": {
+                                              "of": { "Bound": "discarded" },
+                                              "stat": "ManaValue"
+                                            }
+                                          }
+                                        }
+                                      }
+                                    ]
+                                  }
+                                }
+                              ]
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

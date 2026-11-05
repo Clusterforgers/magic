@@ -1,0 +1,27 @@
+{
+  "oracle_id": "975226a4-2d03-4993-9337-cfd6595011bd",
+  "name": "Flame Elemental",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Flame Elemental",
+      "oracle_fingerprint": "7e8925d4f592da6cda268eeb8fe8ff81",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{R}" }, "Tap", "SacrificeSelf"],
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "DealDamage": {
+                  "to": { "Target": 0 },
+                  "amount": { "Stat": { "of": "This", "stat": "Power" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,43 @@
+{
+  "oracle_id": "ea016b84-7f77-42e7-bd14-2e62a1e35f3b",
+  "name": "Ersatz Gnomes",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ersatz Gnomes",
+      "oracle_fingerprint": "d9fd04115868e2a390d6e1b3ccded605",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "targets": [{ "what": { "Object": [{ "In": "Stack" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "SetColors": [] }],
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "targets": [{ "what": { "Object": [] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "SetColors": [] }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

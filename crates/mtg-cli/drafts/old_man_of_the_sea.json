@@ -1,0 +1,20 @@
+{
+  "oracle_id": "cce84cf1-5574-43b0-9d75-72e6451403a7",
+  "name": "Old Man of the Sea",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Old Man of the Sea",
+      "oracle_fingerprint": "f33f250df421e360e7b515fe154df3f4",
+      "abilities": [
+        { "Rule": { "rule": { "Combat": { "who": "This", "quirk": "MayStayTapped" } } } },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 66, "end": 280 }
+          }
+        }
+      ]
+    }
+  ]
+}

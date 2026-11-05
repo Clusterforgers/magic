@@ -1,0 +1,129 @@
+{
+  "object": "card",
+  "id": "35698c86-4552-4c04-8f51-099bb2dbce6d",
+  "oracle_id": "8cef3ce7-8fbc-4e68-93f9-d6adfc2c2cbf",
+  "multiverse_ids": [
+    397573
+  ],
+  "mtgo_id": 56618,
+  "mtgo_foil_id": 56619,
+  "name": "Recycle",
+  "lang": "en",
+  "released_at": "2015-05-06",
+  "uri": "https://api.scryfall.com/cards/35698c86-4552-4c04-8f51-099bb2dbce6d",
+  "scryfall_uri": "https://scryfall.com/card/tpr/189/recycle?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T10:27:37Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/3/5/35698c86-4552-4c04-8f51-099bb2dbce6d.jpg?1783938457",
+    "normal": "https://cards.scryfall.io/normal/front/3/5/35698c86-4552-4c04-8f51-099bb2dbce6d.jpg?1783938457",
+    "large": "https://cards.scryfall.io/large/front/3/5/35698c86-4552-4c04-8f51-099bb2dbce6d.jpg?1783938457",
+    "png": "https://cards.scryfall.io/png/front/3/5/35698c86-4552-4c04-8f51-099bb2dbce6d.png?1783938457",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/3/5/35698c86-4552-4c04-8f51-099bb2dbce6d.jpg?1783938457",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/3/5/35698c86-4552-4c04-8f51-099bb2dbce6d.jpg?1783938457",
+    "thumb": "https://cards.scryfall.io/thumb/front/3/5/35698c86-4552-4c04-8f51-099bb2dbce6d.webp?1783938457",
+    "grid": "https://cards.scryfall.io/grid/front/3/5/35698c86-4552-4c04-8f51-099bb2dbce6d.webp?1783938457",
+    "display": "https://cards.scryfall.io/display/front/3/5/35698c86-4552-4c04-8f51-099bb2dbce6d.webp?1783938457",
+    "art": "https://cards.scryfall.io/art/front/3/5/35698c86-4552-4c04-8f51-099bb2dbce6d.webp?1783938457",
+    "crop": "https://cards.scryfall.io/crop/front/3/5/35698c86-4552-4c04-8f51-099bb2dbce6d.webp?1783938457",
+    "jpeg": "https://cards.scryfall.io/normal/front/3/5/35698c86-4552-4c04-8f51-099bb2dbce6d.jpg?1783938457"
+  },
+  "mana_cost": "{4}{G}{G}",
+  "cmc": 6.0,
+  "type_line": "Enchantment",
+  "oracle_text": "Skip your draw step.\nWhenever you play a card, draw a card.\nYour maximum hand size is two.",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "legal",
+    "predh": "legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "mtgo"
+  ],
+  "reserved": true,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": true,
+  "variation": false,
+  "set_id": "41b3e002-ab58-46a0-8024-056ee843e267",
+  "set": "tpr",
+  "set_name": "Tempest Remastered",
+  "set_type": "masters",
+  "set_uri": "https://api.scryfall.com/sets/41b3e002-ab58-46a0-8024-056ee843e267",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Atpr&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/tpr?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/35698c86-4552-4c04-8f51-099bb2dbce6d/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A8cef3ce7-8fbc-4e68-93f9-d6adfc2c2cbf&unique=prints",
+  "collector_number": "189",
+  "digital": true,
+  "rarity": "rare",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Phil Foglio",
+  "artist_ids": [
+    "3bfc0fd7-f6ce-4c3f-a755-aaafc84ac704"
+  ],
+  "illustration_id": "976cc565-f5ff-4cda-a799-8e85d629aa20",
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 17552,
+  "prices": {
+    "usd": null,
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": null,
+    "eur_foil": null,
+    "tix": "0.25"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=397573&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DRecycle",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DRecycle",
+    "edhrec": "https://edhrec.com/route/?cc=Recycle"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fmagic%2Fproduct%3FproductLineName%3Dmagic%26q%3DRecycle%26view%3Dgrid",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products/Search?referrer=scryfall&searchString=Recycle&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/56618?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

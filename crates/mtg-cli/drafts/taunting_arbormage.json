@@ -1,0 +1,30 @@
+{
+  "oracle_id": "58254569-0ba6-4ac1-9403-dc21a1b5c2e8",
+  "name": "Taunting Arbormage",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Taunting Arbormage",
+      "oracle_fingerprint": "346f1a7f98a35bf397d2e7c8bb119151",
+      "abilities": [
+        { "Keyword": { "Kicker": "{3}" } },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This", "Kicked"], "to": "Battlefield" } },
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Rule": {
+                  "rule": {
+                    "Combat": { "who": { "Target": 0 }, "quirk": { "MustBeBlocked": "Every" } }
+                  },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

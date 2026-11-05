@@ -1,0 +1,35 @@
+{
+  "oracle_id": "195736a9-d8b0-4c74-abe9-0289aa83c67d",
+  "name": "Wildfire Eternal",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Wildfire Eternal",
+      "oracle_fingerprint": "ef333026f787de9147dc21abb9843098",
+      "abilities": [
+        { "Keyword": { "Afflict": 4 } },
+        {
+          "Triggered": {
+            "when": { "Unblocked": { "what": ["This"] } },
+            "effects": [
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "OwnedBy": "You" },
+                      { "In": "Hand" },
+                      { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] }
+                    ]
+                  },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "picked"
+                }
+              },
+              { "CastFromZone": { "what": { "Bound": "picked" }, "free": true } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

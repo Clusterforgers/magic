@@ -1,7 +1,7 @@
 {
   "oracle_id": "2deae472-3cfe-4d7b-b9cf-a045f07a002e",
   "name": "Gyrus, Waker of Corpses",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Gyrus, Waker of Corpses",
@@ -16,9 +16,49 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 97, "end": 314 }
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Type": "Creature" },
+                    { "OwnedBy": "You" },
+                    {
+                      "Compare": {
+                        "stat": "Power",
+                        "op": "Lt",
+                        "to": { "Stat": { "of": "This", "stat": "Power" } }
+                      }
+                    },
+                    { "In": "Graveyard" }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    { "Exile": { "what": { "Target": 0 }, "as": "exiled" } },
+                    {
+                      "CreateToken": {
+                        "token": { "CopyOf": { "of": { "Bound": "exiled" } } },
+                        "tapped": true,
+                        "attacking": true,
+                        "as": "copy2"
+                      }
+                    },
+                    {
+                      "DelayedTrigger": {
+                        "when": { "StepBegins": { "step": "EndCombat" } },
+                        "effects": [{ "Exile": { "what": { "Bound": "copy2" } } }]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
           }
         }
       ]

@@ -1,0 +1,34 @@
+{
+  "oracle_id": "ecf0b5ad-5989-4b99-9552-c5a24504f983",
+  "name": "Leap of Faith",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Leap of Faith",
+      "oracle_fingerprint": "9214e77a260b9b48c11a612c5e0df894",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "AddKeyword": "Flying" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "Shield": {
+                  "when": { "Damage": { "to": { "Target": 0 } } },
+                  "by": "Prevent",
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

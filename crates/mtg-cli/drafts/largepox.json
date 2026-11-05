@@ -1,0 +1,65 @@
+{
+  "oracle_id": "5eee53e8-dd44-4b75-a8eb-18f8721bd6ac",
+  "name": "Largepox",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Largepox",
+      "oracle_fingerprint": "ab1e0ab51592ddb205550485fcd0b353",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "Discard": { "who": "EachPlayer" } },
+              { "LoseLife": { "who": "EachPlayer", "amount": 1 } },
+              { "Sacrifice": { "who": "EachPlayer", "filter": [{ "Type": "Artifact" }] } },
+              { "Sacrifice": { "who": "EachPlayer", "filter": [{ "Type": "Creature" }] } },
+              { "Sacrifice": { "who": "EachPlayer", "filter": [{ "Type": "Enchantment" }] } },
+              { "Sacrifice": { "who": "EachPlayer", "filter": [{ "Type": "Land" }] } },
+              { "Sacrifice": { "who": "EachPlayer", "filter": [{ "Type": "Planeswalker" }] } },
+              { "Sacrifice": { "who": "EachPlayer", "filter": [{ "Type": "Kindred" }] } },
+              {
+                "RepeatEach": {
+                  "over": "EachPlayer",
+                  "as": "player",
+                  "effects": [
+                    {
+                      "Choose": {
+                        "who": { "Bound": "player" },
+                        "from": {
+                          "Each": [{ "In": "Graveyard" }, { "OwnedBy": { "Bound": "player" } }]
+                        },
+                        "as": "picked2"
+                      }
+                    },
+                    { "Exile": { "what": { "Bound": "picked2" } } }
+                  ]
+                }
+              },
+              { "Mill": { "who": "EachPlayer" } },
+              {
+                "RepeatEach": {
+                  "over": "EachPlayer",
+                  "as": "each3",
+                  "effects": [
+                    {
+                      "Choose": {
+                        "who": { "Bound": "each3" },
+                        "from": {
+                          "Each": [{ "ControlledBy": { "Bound": "each3" } }, "HasAnyCounter"]
+                        },
+                        "as": "card4"
+                      }
+                    },
+                    { "RemoveCounters": { "from": { "Bound": "card4" } } }
+                  ]
+                }
+              },
+              { "PutCounters": { "on": "EachPlayer", "counter": "poison" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,43 @@
+{
+  "oracle_id": "a9be4be0-71fe-41d9-8f30-351385753fc9",
+  "name": "Burning-Tree Bloodscale",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Burning-Tree Bloodscale",
+      "oracle_fingerprint": "a30bda2614928da4bc79aec1c155499e",
+      "abilities": [
+        { "Keyword": { "Macro": { "name": "bloodthirst", "amount": 1 } } },
+        {
+          "Activated": {
+            "cost": "{2}{R}",
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "CanBlockOnly": [{ "Not": { "Is": "This" } }] }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{2}{G}",
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Rule": {
+                  "rule": { "MustBlockAttacker": { "who": { "Target": 0 }, "attacker": "This" } },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

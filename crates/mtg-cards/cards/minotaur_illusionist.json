@@ -1,0 +1,41 @@
+{
+  "oracle_id": "ee5fc6e9-0c10-4015-8853-dd1f33dcc27e",
+  "name": "Minotaur Illusionist",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Minotaur Illusionist",
+      "oracle_fingerprint": "757a9f032fe8991a0b1b7444a31c1e94",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{1}{U}",
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "AddKeyword": "Shroud" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{R}" }, "SacrificeSelf"],
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "DealDamage": {
+                  "to": { "Target": 0 },
+                  "amount": { "Stat": { "of": "This", "stat": "Power" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

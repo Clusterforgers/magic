@@ -1,0 +1,33 @@
+{
+  "oracle_id": "7b9b3347-a374-40fd-a12a-73187225194e",
+  "name": "Shinen of Life's Roar",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Shinen of Life's Roar",
+      "oracle_fingerprint": "32a4698239c51d0ad1eea7ebf4c96da5",
+      "abilities": [
+        {
+          "Rule": { "rule": { "Combat": { "who": "This", "quirk": { "MustBeBlocked": "Every" } } } }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{2}{G}{G}" }, "DiscardSelf"],
+            "from": "Hand",
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Rule": {
+                  "rule": {
+                    "Combat": { "who": { "Target": 0 }, "quirk": { "MustBeBlocked": "Every" } }
+                  },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

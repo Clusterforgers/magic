@@ -1,0 +1,29 @@
+{
+  "oracle_id": "f07f98bb-4190-4643-aeb9-c5eaf358c97c",
+  "name": "Tawnos's Weaponry",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Tawnos's Weaponry",
+      "oracle_fingerprint": "deca6e0f21b3542cb8046de63a8f640d",
+      "abilities": [
+        { "Rule": { "rule": { "Combat": { "who": "This", "quirk": "MayStayTapped" } } } },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{2}" }, "Tap"],
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }],
+                  "duration": "WhileSourceTapped"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

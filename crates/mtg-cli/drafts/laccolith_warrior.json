@@ -1,0 +1,39 @@
+{
+  "oracle_id": "bf957e0b-3070-4a85-a63d-3dadd7364d53",
+  "name": "Laccolith Warrior",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Laccolith Warrior",
+      "oracle_fingerprint": "18fb85681442e200023d2b995de03ef6",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "BecomesBlocked": { "what": ["This"] } },
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "DealDamage": {
+                        "to": { "Target": 0 },
+                        "amount": { "Stat": { "of": "This", "stat": "Power" } }
+                      }
+                    },
+                    {
+                      "Rule": {
+                        "rule": { "Combat": { "who": "This", "quirk": "AssignsNoCombatDamage" } },
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

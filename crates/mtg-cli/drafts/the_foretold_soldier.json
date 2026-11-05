@@ -1,0 +1,26 @@
+{
+  "oracle_id": "02a45719-ee4a-49c4-96ec-a140cd6e1547",
+  "name": "The Foretold Soldier",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "The Foretold Soldier",
+      "oracle_fingerprint": "1ad9153f7dcba5661b4b080da6cfccae",
+      "abilities": [
+        {
+          "Rule": {
+            "rule": { "Combat": { "who": "This", "quirk": { "MustBeBlocked": "AtLeastOne" } } }
+          }
+        },
+        { "Static": { "affected": "This", "mods": [{ "MaxBlockers": 1 }] } },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 97, "end": 174 }
+          }
+        },
+        { "Keyword": { "Foretell": "{1}{G}" } }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,62 @@
+{
+  "oracle_id": "e2d54c59-7722-4520-adca-cd02a0871ab2",
+  "name": "Elephant Resurgence",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Elephant Resurgence",
+      "oracle_fingerprint": "5fa580ee6e15a001dc3ff3701fb45cc6",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "CreateToken": {
+                  "who": "EachPlayer",
+                  "token": {
+                    "Custom": {
+                      "name": "Elephant",
+                      "colors": ["Green"],
+                      "types": ["Creature"],
+                      "subtypes": ["Elephant"],
+                      "power": 0,
+                      "toughness": 0,
+                      "abilities": [
+                        {
+                          "Static": {
+                            "affected": "This",
+                            "mods": [
+                              {
+                                "SetPT": {
+                                  "power": {
+                                    "Count": [
+                                      { "Type": "Creature" },
+                                      { "OwnedBy": "You" },
+                                      { "In": "Graveyard" }
+                                    ]
+                                  },
+                                  "toughness": {
+                                    "Count": [
+                                      { "Type": "Creature" },
+                                      { "OwnedBy": "You" },
+                                      { "In": "Graveyard" }
+                                    ]
+                                  }
+                                }
+                              }
+                            ],
+                            "defining": true
+                          }
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

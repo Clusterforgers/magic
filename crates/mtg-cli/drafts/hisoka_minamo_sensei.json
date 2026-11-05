@@ -1,0 +1,33 @@
+{
+  "oracle_id": "b69701d6-8e46-4184-991b-9f5e95a5e16d",
+  "name": "Hisoka, Minamo Sensei",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Hisoka, Minamo Sensei",
+      "oracle_fingerprint": "786fd810a288b4f7ec264c1220b64d79",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{2}{U}" }, { "Discard": {} }],
+            "targets": [{ "what": { "Object": ["Spell"] } }],
+            "effects": [
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "Stat": { "of": { "Target": 0 }, "stat": "ManaValue" } },
+                      "op": "Eq",
+                      "right": { "Stat": { "of": "Paid", "stat": "ManaValue" } }
+                    }
+                  },
+                  "then": [{ "Counter": { "what": { "Target": 0 } } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

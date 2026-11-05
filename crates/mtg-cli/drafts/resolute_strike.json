@@ -1,0 +1,56 @@
+{
+  "oracle_id": "563e9574-3f60-4558-88cb-aaf97caa7515",
+  "name": "Resolute Strike",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Resolute Strike",
+      "oracle_fingerprint": "3ba395d8bc193f3e2cc1001fd684957f",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "ModifyPT": { "power": 2, "toughness": 2 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Target": 0 },
+                      "selector": [{ "Subtype": "Warrior" }],
+                      "op": "Eq",
+                      "right": 1
+                    }
+                  },
+                  "then": [
+                    {
+                      "May": {
+                        "effects": [
+                          {
+                            "Choose": {
+                              "from": {
+                                "Each": [{ "Subtype": "Equipment" }, { "ControlledBy": "You" }]
+                              },
+                              "as": "attach"
+                            }
+                          },
+                          { "Attach": { "what": { "Bound": "attach" }, "to": { "Target": 0 } } }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

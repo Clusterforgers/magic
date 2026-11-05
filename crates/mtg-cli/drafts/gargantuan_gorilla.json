@@ -1,0 +1,95 @@
+{
+  "oracle_id": "8314bdf5-1539-4215-949e-f46584cb43bb",
+  "name": "Gargantuan Gorilla",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Gargantuan Gorilla",
+      "oracle_fingerprint": "1c362d30c19aadc141c0fe864cc8de06",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    { "Sacrifice": { "filter": [{ "Subtype": "Forest" }], "as": "sacrificed" } }
+                  ]
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Bound": "sacrificed" },
+                      "selector": [{ "Subtype": "Forest" }, { "Supertype": "Snow" }],
+                      "op": "Eq",
+                      "right": 1
+                    }
+                  },
+                  "then": [
+                    {
+                      "Continuous": {
+                        "affected": "This",
+                        "mods": [{ "AddKeyword": "Trample" }],
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Bound": "sacrificed" },
+                      "selector": [{ "Subtype": "Forest" }],
+                      "op": "Eq",
+                      "right": 0
+                    }
+                  },
+                  "then": [{ "Sacrifice": { "filter": ["This"] } }]
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Bound": "sacrificed" },
+                      "selector": [{ "Subtype": "Forest" }],
+                      "op": "Eq",
+                      "right": 0
+                    }
+                  },
+                  "then": [{ "DealDamage": { "to": "You", "amount": 7 } }]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }, "Other"] } }],
+            "effects": [
+              {
+                "DealDamage": {
+                  "to": { "Target": 0 },
+                  "amount": { "Stat": { "of": "This", "stat": "Power" } }
+                }
+              },
+              {
+                "DealDamage": {
+                  "source": { "Target": 0 },
+                  "to": "This",
+                  "amount": { "Stat": { "of": { "Target": 0 }, "stat": "Power" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,16 @@
+{
+  "oracle_id": "2608df54-dfbe-417d-aef5-49afbdfb03da",
+  "name": "Leyline of Punishment",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Leyline of Punishment",
+      "oracle_fingerprint": "191e7b6a76d2e62b6246366569b32ebb",
+      "abilities": [
+        "OpeningHand",
+        { "Rule": { "rule": { "CantGainLife": "EachPlayer" } } },
+        { "Rule": { "rule": { "DamageCantBePrevented": {} } } }
+      ]
+    }
+  ]
+}

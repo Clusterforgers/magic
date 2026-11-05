@@ -1,7 +1,7 @@
 {
   "oracle_id": "eb7b024c-da9b-4544-8648-0ac0395cf7fc",
   "name": "Capricious Hellraiser",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Capricious Hellraiser",
@@ -23,9 +23,33 @@
         },
         { "Keyword": "Flying" },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 91, "end": 282 }
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "ChooseAtRandom": {
+                  "from": { "Each": [{ "OwnedBy": "You" }, { "In": "Graveyard" }] },
+                  "count": 3,
+                  "as": "picked"
+                }
+              },
+              { "Exile": { "what": { "Bound": "picked" }, "as": "exiled2" } },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "Is": { "Bound": "exiled2" } },
+                      { "Not": { "Type": "Land" } },
+                      { "Not": { "Type": "Creature" } },
+                      { "In": "Exile" }
+                    ]
+                  },
+                  "as": "card3"
+                }
+              },
+              { "CopyCard": { "what": { "Bound": "card3" }, "as": "copy4" } },
+              { "CastFromZone": { "what": { "Bound": "copy4" }, "free": true } }
+            ]
           }
         }
       ]

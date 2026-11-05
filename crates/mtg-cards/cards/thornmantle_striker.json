@@ -1,0 +1,76 @@
+{
+  "oracle_id": "39f17e13-018c-4a00-ab25-1ac5a904de63",
+  "name": "Thornmantle Striker",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Thornmantle Striker",
+      "oracle_fingerprint": "04908933b9ed66ecac7a019635b0608e",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Modal": {
+                  "modes": [
+                    {
+                      "targets": [{ "what": { "Object": [] } }],
+                      "effects": [
+                        {
+                          "RemoveCounters": {
+                            "from": { "Target": 0 },
+                            "count": { "Count": [{ "Subtype": "Elf" }, { "ControlledBy": "You" }] }
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "targets": [
+                        {
+                          "what": {
+                            "Object": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }]
+                          }
+                        }
+                      ],
+                      "effects": [
+                        {
+                          "Continuous": {
+                            "affected": { "Target": 0 },
+                            "mods": [
+                              {
+                                "ModifyPT": {
+                                  "power": {
+                                    "Times": {
+                                      "by": -1,
+                                      "of": {
+                                        "Count": [{ "Subtype": "Elf" }, { "ControlledBy": "You" }]
+                                      }
+                                    }
+                                  },
+                                  "toughness": {
+                                    "Times": {
+                                      "by": -1,
+                                      "of": {
+                                        "Count": [{ "Subtype": "Elf" }, { "ControlledBy": "You" }]
+                                      }
+                                    }
+                                  }
+                                }
+                              }
+                            ],
+                            "duration": "UntilEndOfTurn"
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

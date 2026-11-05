@@ -1,0 +1,106 @@
+{
+  "oracle_id": "0eff910a-712d-4652-8b3b-9eddf63eb891",
+  "name": "Founding the Third Path",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Founding the Third Path",
+      "oracle_fingerprint": "96c2b00bc43819d6459b799c11b08eae",
+      "abilities": [
+        { "Keyword": "ReadAhead" },
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 1 } },
+            "effects": [
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "OwnedBy": "You" },
+                      { "In": "Hand" },
+                      {
+                        "AnyOf": [
+                          {
+                            "Not": {
+                              "AnyOf": [
+                                { "Not": { "Type": "Instant" } },
+                                {
+                                  "Not": { "Compare": { "stat": "ManaValue", "op": "Eq", "to": 1 } }
+                                }
+                              ]
+                            }
+                          },
+                          {
+                            "Not": {
+                              "AnyOf": [
+                                { "Not": { "Type": "Instant" } },
+                                {
+                                  "Not": { "Compare": { "stat": "ManaValue", "op": "Eq", "to": 2 } }
+                                }
+                              ]
+                            }
+                          },
+                          {
+                            "Not": {
+                              "AnyOf": [
+                                { "Not": { "Type": "Sorcery" } },
+                                {
+                                  "Not": { "Compare": { "stat": "ManaValue", "op": "Eq", "to": 1 } }
+                                }
+                              ]
+                            }
+                          },
+                          {
+                            "Not": {
+                              "AnyOf": [
+                                { "Not": { "Type": "Sorcery" } },
+                                {
+                                  "Not": { "Compare": { "stat": "ManaValue", "op": "Eq", "to": 2 } }
+                                }
+                              ]
+                            }
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "picked"
+                }
+              },
+              { "CastFromZone": { "what": { "Bound": "picked" }, "free": true } }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 2 } },
+            "targets": [{ "what": "Player" }],
+            "effects": [{ "Mill": { "who": { "Target": 0 }, "count": 4 } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 3 } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] },
+                    { "OwnedBy": "You" },
+                    { "In": "Graveyard" }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              { "Exile": { "what": { "Target": 0 }, "as": "exiled" } },
+              { "CopyCard": { "what": { "Bound": "exiled" }, "as": "copy2" } },
+              { "CastFromZone": { "what": { "Bound": "copy2" } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

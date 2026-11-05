@@ -1,0 +1,58 @@
+{
+  "oracle_id": "c8de07d4-9bc1-4bfe-b5a4-0a58e05af022",
+  "name": "The Thing",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "The Thing",
+      "oracle_fingerprint": "de3974a1b52608f4c22a7a5015f3605d",
+      "abilities": [
+        { "Keyword": "Trample" },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "BeginCombat", "whose": "You" } },
+            "if": {
+              "Compare": {
+                "left": {
+                  "Tally": {
+                    "event": "SpellCast",
+                    "who": "EachPlayer",
+                    "filter": [{ "Not": { "Type": "Creature" } }, { "ControlledBy": "You" }]
+                  }
+                },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1", "count": 4 } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": "{W}{U}{R}{G}",
+                  "paid": [
+                    {
+                      "Reflexive": {
+                        "targets": [
+                          {
+                            "what": { "Object": [{ "ControlledBy": "You" }] },
+                            "bounds": { "min": 0, "max": { "Count": [{ "ControlledBy": "You" }] } }
+                          }
+                        ],
+                        "effects": [{ "MultiplyCounters": { "on": { "Target": 0 } } }]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

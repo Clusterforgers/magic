@@ -1,0 +1,75 @@
+{
+  "oracle_id": "3df26058-c58d-4869-ae32-922d28c3aca2",
+  "name": "Treasure Chest",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Treasure Chest",
+      "oracle_fingerprint": "9e4f4cc4c49816711ac69499fa610bd5",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{4}" }, "SacrificeSelf"],
+            "effects": [
+              {
+                "RollDice": {
+                  "sides": 20,
+                  "results": [
+                    { "from": 1, "to": 1, "effects": [{ "LoseLife": { "amount": 3 } }] },
+                    {
+                      "from": 2,
+                      "to": 9,
+                      "effects": [
+                        { "CreateToken": { "token": { "Named": "treasure" }, "count": 5 } }
+                      ]
+                    },
+                    {
+                      "from": 10,
+                      "to": 19,
+                      "effects": [{ "GainLife": { "amount": 3 } }, { "Draw": { "count": 3 } }]
+                    },
+                    {
+                      "from": 20,
+                      "to": 20,
+                      "effects": [
+                        { "Search": { "filter": [], "as": "found" } },
+                        {
+                          "If": {
+                            "condition": {
+                              "CountOf": {
+                                "subject": { "Bound": "found" },
+                                "selector": [{ "Type": "Artifact" }],
+                                "op": "Ge",
+                                "right": 1
+                              }
+                            },
+                            "then": [
+                              {
+                                "May": {
+                                  "effects": [
+                                    {
+                                      "Move": {
+                                        "what": { "Bound": "found" },
+                                        "to": { "Battlefield": {} }
+                                      }
+                                    }
+                                  ]
+                                }
+                              }
+                            ]
+                          }
+                        },
+                        { "Move": { "what": { "Bound": "found" }, "to": "Hand" } },
+                        { "Shuffle": {} }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

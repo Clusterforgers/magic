@@ -1,0 +1,135 @@
+{
+  "object": "card",
+  "id": "489f192f-0d8a-468b-94f5-67a937e5028e",
+  "oracle_id": "954aaaa7-c3c1-4696-9ace-bcb5359b1709",
+  "multiverse_ids": [
+    416850
+  ],
+  "tcgplayer_id": 121933,
+  "cardmarket_id": 291815,
+  "name": "Hundred-Handed One",
+  "lang": "en",
+  "released_at": "2016-08-26",
+  "uri": "https://api.scryfall.com/cards/489f192f-0d8a-468b-94f5-67a937e5028e",
+  "scryfall_uri": "https://scryfall.com/card/cn2/93/hundred-handed-one?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T10:08:52Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/4/8/489f192f-0d8a-468b-94f5-67a937e5028e.jpg?1783937332",
+    "normal": "https://cards.scryfall.io/normal/front/4/8/489f192f-0d8a-468b-94f5-67a937e5028e.jpg?1783937332",
+    "large": "https://cards.scryfall.io/large/front/4/8/489f192f-0d8a-468b-94f5-67a937e5028e.jpg?1783937332",
+    "png": "https://cards.scryfall.io/png/front/4/8/489f192f-0d8a-468b-94f5-67a937e5028e.png?1783937332",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/4/8/489f192f-0d8a-468b-94f5-67a937e5028e.jpg?1783937332",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/4/8/489f192f-0d8a-468b-94f5-67a937e5028e.jpg?1783937332",
+    "thumb": "https://cards.scryfall.io/thumb/front/4/8/489f192f-0d8a-468b-94f5-67a937e5028e.webp?1783937332",
+    "grid": "https://cards.scryfall.io/grid/front/4/8/489f192f-0d8a-468b-94f5-67a937e5028e.webp?1783937332",
+    "display": "https://cards.scryfall.io/display/front/4/8/489f192f-0d8a-468b-94f5-67a937e5028e.webp?1783937332",
+    "art": "https://cards.scryfall.io/art/front/4/8/489f192f-0d8a-468b-94f5-67a937e5028e.webp?1783937332",
+    "crop": "https://cards.scryfall.io/crop/front/4/8/489f192f-0d8a-468b-94f5-67a937e5028e.webp?1783937332",
+    "jpeg": "https://cards.scryfall.io/normal/front/4/8/489f192f-0d8a-468b-94f5-67a937e5028e.jpg?1783937332"
+  },
+  "mana_cost": "{2}{W}{W}",
+  "cmc": 4.0,
+  "type_line": "Creature — Giant",
+  "oracle_text": "Vigilance\n{3}{W}{W}{W}: Monstrosity 3. (If this creature isn't monstrous, put three +1/+1 counters on it and it becomes monstrous.)\nAs long as this creature is monstrous, it has reach and can block an additional ninety-nine creatures each combat.",
+  "power": "3",
+  "toughness": "5",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": [
+    "Vigilance",
+    "Monstrosity"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": true,
+  "variation": false,
+  "set_id": "ad1b8847-1905-4080-9e26-80691ea7c1ef",
+  "set": "cn2",
+  "set_name": "Conspiracy: Take the Crown",
+  "set_type": "draft_innovation",
+  "set_uri": "https://api.scryfall.com/sets/ad1b8847-1905-4080-9e26-80691ea7c1ef",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Acn2&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/cn2?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/489f192f-0d8a-468b-94f5-67a937e5028e/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A954aaaa7-c3c1-4696-9ace-bcb5359b1709&unique=prints",
+  "collector_number": "93",
+  "digital": false,
+  "rarity": "rare",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Brad Rigney",
+  "artist_ids": [
+    "f17194b9-10e9-44ea-9b65-6812ab398624"
+  ],
+  "illustration_id": "eb3be84d-a1c2-4cf3-807c-ee27fa6f61b4",
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 16423,
+  "penny_rank": 13713,
+  "prices": {
+    "usd": "0.24",
+    "usd_foil": "0.56",
+    "usd_etched": null,
+    "eur": "0.15",
+    "eur_foil": "0.46",
+    "tix": null
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=416850&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DHundred-Handed%2BOne",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DHundred-Handed%2BOne",
+    "edhrec": "https://edhrec.com/route/?cc=Hundred-Handed+One"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F121933%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=291815&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards?affiliate_id=scryfall&data%5Bsearch%5D=Hundred-Handed+One&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

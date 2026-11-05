@@ -1,0 +1,23 @@
+{
+  "oracle_id": "e2f22cef-9494-4356-aa5c-619aecd7e74d",
+  "name": "Avatar of Hope",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Avatar of Hope",
+      "oracle_fingerprint": "ca70c37f5e4b9019cf5f22523b853061",
+      "abilities": [
+        {
+          "CostModifier": {
+            "applies_to": ["This"],
+            "change": "Reduce",
+            "mana": "{6}",
+            "condition": { "Compare": { "left": { "Life": "You" }, "op": "Le", "right": 3 } }
+          }
+        },
+        { "Keyword": "Flying" },
+        { "Static": { "affected": "This", "mods": [{ "BlocksAdditional": 99 }] } }
+      ]
+    }
+  ]
+}

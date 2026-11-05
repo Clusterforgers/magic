@@ -1,0 +1,122 @@
+{
+  "oracle_id": "9aa8eef1-fc67-4d54-9783-4d0175a76741",
+  "name": "Spellweaver Helix",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Spellweaver Helix",
+      "oracle_fingerprint": "9ffed3f109b4903d424f533695a47a0c",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              {
+                "what": {
+                  "Together": {
+                    "what": { "Object": [{ "Type": "Sorcery" }, { "In": "Graveyard" }] },
+                    "rule": "SameController"
+                  }
+                },
+                "bounds": { "min": 2, "max": 2 }
+              }
+            ],
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    { "Exile": { "what": { "Target": 0 }, "as": "exiled" } },
+                    { "Remember": { "what": { "Bound": "exiled" }, "slot": "imprinted" } }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "SpellCast": {
+                "what": [
+                  { "SharesName": { "Remembered": { "on": "This", "slot": "imprinted" } } },
+                  { "Not": "Token" }
+                ]
+              }
+            },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "If": {
+                        "condition": {
+                          "Compare": {
+                            "left": {
+                              "Count": [
+                                { "Is": { "Remembered": { "on": "This", "slot": "imprinted" } } },
+                                { "SharesName": "Triggering" },
+                                { "In": "Exile" }
+                              ]
+                            },
+                            "op": "Eq",
+                            "right": 1
+                          }
+                        },
+                        "then": [
+                          {
+                            "CopyCard": {
+                              "what": {
+                                "Each": [
+                                  { "Is": { "Remembered": { "on": "This", "slot": "imprinted" } } },
+                                  { "Not": { "SharesName": "Triggering" } },
+                                  { "In": "Exile" }
+                                ]
+                              },
+                              "as": "copy"
+                            }
+                          },
+                          { "CastFromZone": { "what": { "Bound": "copy" }, "free": true } }
+                        ]
+                      }
+                    },
+                    {
+                      "If": {
+                        "condition": {
+                          "Compare": {
+                            "left": {
+                              "Count": [
+                                { "Is": { "Remembered": { "on": "This", "slot": "imprinted" } } },
+                                { "SharesName": "Triggering" },
+                                { "In": "Exile" }
+                              ]
+                            },
+                            "op": "Eq",
+                            "right": 2
+                          }
+                        },
+                        "then": [
+                          {
+                            "CopyCard": {
+                              "what": {
+                                "Each": [
+                                  { "Is": { "Remembered": { "on": "This", "slot": "imprinted" } } },
+                                  { "In": "Exile" }
+                                ]
+                              },
+                              "as": "copy2"
+                            }
+                          },
+                          { "CastFromZone": { "what": { "Bound": "copy2" }, "free": true } }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,26 @@
+{
+  "oracle_id": "94a844d2-0574-45a7-b347-e0e329767c42",
+  "name": "Necropotence",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Necropotence",
+      "oracle_fingerprint": "a862c34144c341a88c52790b6db4d7a0",
+      "abilities": [
+        { "Rule": { "rule": { "Cant": { "who": "You", "action": { "SkipStep": "Draw" } } } } },
+        {
+          "Triggered": {
+            "when": { "Discarded": { "by": "You" } },
+            "effects": [{ "Exile": { "what": "Triggering" } }]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 87, "end": 213 }
+          }
+        }
+      ]
+    }
+  ]
+}

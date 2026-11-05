@@ -1,0 +1,35 @@
+{
+  "oracle_id": "ce969713-fdaa-4c31-b164-76a9b0b9ff81",
+  "name": "Nakaya Shade",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Nakaya Shade",
+      "oracle_fingerprint": "19f6dfbb3e865fd2550df1e74a77d4df",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{B}",
+            "effects": [
+              {
+                "Pay": {
+                  "who": "EachPlayer",
+                  "cost": "{2}",
+                  "unpaid": [
+                    {
+                      "Continuous": {
+                        "affected": "This",
+                        "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }],
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

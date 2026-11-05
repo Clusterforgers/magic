@@ -1,0 +1,48 @@
+{
+  "oracle_id": "dba3dcc1-2177-4a8c-8cf3-7d4fb83c7a16",
+  "name": "Baloth Prime",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Baloth Prime",
+      "oracle_fingerprint": "8585420df52d507cbd6f98cb07715ac0",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "WithCounters": { "counter": { "Other": "stun" }, "count": 6, "tapped": true } }
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Sacrificed": { "what": [{ "Type": "Land" }], "by": "You" } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Beast",
+                      "colors": ["Green"],
+                      "types": ["Creature"],
+                      "subtypes": ["Beast"],
+                      "power": 4,
+                      "toughness": 4
+                    }
+                  },
+                  "tapped": true
+                }
+              },
+              { "Untap": { "what": "This" } }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{4}" }, { "Sacrifice": { "filter": [{ "Type": "Land" }] } }],
+            "effects": [{ "GainLife": { "amount": 2 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

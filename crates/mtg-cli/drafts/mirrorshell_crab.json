@@ -1,0 +1,38 @@
+{
+  "oracle_id": "cd727e02-5064-4b89-9398-e3cc4463ba56",
+  "name": "Mirrorshell Crab",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mirrorshell Crab",
+      "oracle_fingerprint": "5efaf5cb6de957be46f57c466f329afb",
+      "abilities": [
+        { "Keyword": { "Ward": "{3}" } },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{2}{U}" }, "DiscardSelf"],
+            "from": "Hand",
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "AnyOf": ["Spell", { "Ability": "Activated" }, { "Ability": "Triggered" }] }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "Pay": {
+                  "who": { "ControllerOf": { "Target": 0 } },
+                  "cost": "{3}",
+                  "unpaid": [{ "Counter": { "what": { "Target": 0 } } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

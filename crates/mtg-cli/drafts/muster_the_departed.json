@@ -1,0 +1,68 @@
+{
+  "oracle_id": "f0ba9cca-b946-465c-acae-0b465d7e1622",
+  "name": "Muster the Departed",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Muster the Departed",
+      "oracle_fingerprint": "cda4a77a7ee03de0a003d9c417290a7b",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Spirit",
+                      "colors": ["White"],
+                      "types": ["Creature"],
+                      "subtypes": ["Spirit"],
+                      "power": 1,
+                      "toughness": 1,
+                      "abilities": [{ "Keyword": "Flying" }]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "if": {
+              "Compare": {
+                "left": {
+                  "When": {
+                    "condition": {
+                      "Compare": {
+                        "left": { "Tallied": { "who": "EachPlayer", "what": "CreaturesDied" } },
+                        "op": "Ge",
+                        "right": 1
+                      }
+                    },
+                    "then": 1,
+                    "otherwise": 0
+                  }
+                },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "effects": [
+              {
+                "Choose": {
+                  "from": { "Each": [{ "Type": "Creature" }, "Token", { "ControlledBy": "You" }] },
+                  "as": "populated"
+                }
+              },
+              { "CreateToken": { "token": { "CopyOf": { "of": { "Bound": "populated" } } } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

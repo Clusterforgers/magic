@@ -1,0 +1,39 @@
+{
+  "oracle_id": "f881378b-b539-4ea8-981d-e01ee82af105",
+  "name": "Tidebinder Mage",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Tidebinder Mage",
+      "oracle_fingerprint": "72a6b02018917ecdeab133cd1af940c4",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Type": "Creature" },
+                    { "AnyOf": [{ "Color": "Red" }, { "Color": "Green" }] },
+                    { "ControlledBy": "Opponents" }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              { "Tap": { "what": { "Target": 0 } } },
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": ["DoesntUntap"],
+                  "duration": "WhileSourceOnBattlefield"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

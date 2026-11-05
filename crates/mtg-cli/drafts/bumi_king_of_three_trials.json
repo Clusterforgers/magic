@@ -1,0 +1,94 @@
+{
+  "oracle_id": "f7493bcf-5c17-4562-a759-37082ec49ff8",
+  "name": "Bumi, King of Three Trials",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Bumi, King of Three Trials",
+      "oracle_fingerprint": "4fb6c981783a30f3064c7fe6c4a2f874",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Modal": {
+                  "choose": {
+                    "min": 0,
+                    "max": {
+                      "Count": [
+                        { "Subtype": "Lesson" },
+                        { "OwnedBy": "You" },
+                        { "In": "Graveyard" }
+                      ]
+                    }
+                  },
+                  "modes": [
+                    {
+                      "effects": [
+                        { "PutCounters": { "on": "This", "counter": "+1/+1", "count": 3 } }
+                      ]
+                    },
+                    {
+                      "targets": [{ "what": "Player" }],
+                      "effects": [{ "Scry": { "who": { "Target": 0 }, "count": 3 } }]
+                    },
+                    {
+                      "targets": [
+                        { "what": { "Object": [{ "Type": "Land" }, { "ControlledBy": "You" }] } }
+                      ],
+                      "effects": [
+                        {
+                          "Continuous": {
+                            "affected": { "Target": 0 },
+                            "mods": [
+                              { "AddType": "Creature" },
+                              { "SetPT": { "power": 0, "toughness": 0 } },
+                              { "AddKeyword": "Haste" }
+                            ],
+                            "duration": "Forever"
+                          }
+                        },
+                        { "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1", "count": 3 } },
+                        {
+                          "DelayedTrigger": {
+                            "when": {
+                              "AnyOf": [
+                                {
+                                  "ZoneChange": {
+                                    "what": [{ "Is": { "Target": 0 } }],
+                                    "from": "Battlefield",
+                                    "to": "Graveyard"
+                                  }
+                                },
+                                {
+                                  "ZoneChange": {
+                                    "what": [{ "Is": { "Target": 0 } }],
+                                    "from": "Battlefield",
+                                    "to": "Exile"
+                                  }
+                                }
+                              ]
+                            },
+                            "effects": [
+                              {
+                                "Move": {
+                                  "what": "Triggering",
+                                  "to": { "Battlefield": { "tapped": true } }
+                                }
+                              }
+                            ]
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

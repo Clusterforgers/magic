@@ -1,0 +1,55 @@
+{
+  "oracle_id": "5bb38d08-582e-43aa-9507-7c20759978ec",
+  "name": "Follow the Lumarets",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Follow the Lumarets",
+      "oracle_fingerprint": "139365736a5eadff6dd750a92e26dcca",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "LookAtTop": { "count": 4, "as": "top" } },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "In": "Library" },
+                      { "Is": { "Bound": "top" } },
+                      { "AnyOf": [{ "Type": "Creature" }, { "Type": "Land" }] }
+                    ]
+                  },
+                  "count": {
+                    "min": 0,
+                    "max": {
+                      "When": {
+                        "condition": {
+                          "Compare": {
+                            "left": { "Tallied": { "who": "You", "what": "LifeGainedTotal" } },
+                            "op": "Ge",
+                            "right": 1
+                          }
+                        },
+                        "then": 2,
+                        "otherwise": 1
+                      }
+                    }
+                  },
+                  "as": "kept2"
+                }
+              },
+              { "Move": { "what": { "Bound": "kept2" }, "to": "Hand" } },
+              {
+                "Move": {
+                  "what": { "Bound": "top" },
+                  "to": { "Library": { "place": "Bottom", "order": "Random" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

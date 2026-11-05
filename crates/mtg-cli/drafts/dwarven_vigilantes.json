@@ -1,0 +1,39 @@
+{
+  "oracle_id": "b49baf80-237c-41ee-8a22-2b6a68a313e7",
+  "name": "Dwarven Vigilantes",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dwarven Vigilantes",
+      "oracle_fingerprint": "ddeb9057745e4f07c073229db54483a1",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Unblocked": { "what": ["This"] } },
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "DealDamage": {
+                        "to": { "Target": 0 },
+                        "amount": { "Stat": { "of": "This", "stat": "Power" } }
+                      }
+                    },
+                    {
+                      "Rule": {
+                        "rule": { "Combat": { "who": "This", "quirk": "AssignsNoCombatDamage" } },
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

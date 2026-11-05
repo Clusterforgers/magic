@@ -1,0 +1,59 @@
+{
+  "source": "forge",
+  "oracle_matches": true,
+  "lines": [
+    {
+      "face": 0,
+      "tag": "A",
+      "text": "You may exile an instant or sorcery card from your hand and put three refine counters on it. It gains \"At the beginning of your upkeep, if this card is exiled, remove a refine counter from it\" and \"When the last refine counter is removed from this card, if it's exiled, you may cast it. It costs {4} less to cast this way.\"",
+      "abilities": [],
+      "gap": "key:PutCounter.TgtZone"
+    },
+    {
+      "face": 1,
+      "tag": "T",
+      "text": "At the beginning of your upkeep, exile the top card of each opponent's library. Until end of turn, you may cast spells from among those exiled cards, and you may spend mana as though it were mana of any color to cast those spells.",
+      "abilities": [
+        0
+      ],
+      "gap": null
+    },
+    {
+      "face": 1,
+      "tag": "T",
+      "text": "Whenever you cast a spell from exile, put a +1/+1 counter on CARDNAME.",
+      "abilities": [
+        1
+      ],
+      "gap": null
+    }
+  ],
+  "proof": {
+    "marks": [
+      {
+        "face": 0,
+        "span": {
+          "start": 0,
+          "end": 328
+        },
+        "mark": "ByHand"
+      },
+      {
+        "face": 1,
+        "span": {
+          "start": 0,
+          "end": 230
+        },
+        "mark": "Auto"
+      },
+      {
+        "face": 1,
+        "span": {
+          "start": 231,
+          "end": 300
+        },
+        "mark": "Auto"
+      }
+    ]
+  }
+}

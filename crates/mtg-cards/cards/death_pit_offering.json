@@ -1,0 +1,32 @@
+{
+  "oracle_id": "d445032b-b243-4203-9c88-a0ac357fb9b5",
+  "name": "Death Pit Offering",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Death Pit Offering",
+      "oracle_fingerprint": "370380eac508d3e3b5765d7242e95d3e",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Sacrifice": {
+                  "filter": [{ "Type": "Creature" }, { "ControlledBy": "You" }],
+                  "count": { "Count": [{ "Type": "Creature" }, { "ControlledBy": "You" }] }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Static": {
+            "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+            "mods": [{ "ModifyPT": { "power": 2, "toughness": 2 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

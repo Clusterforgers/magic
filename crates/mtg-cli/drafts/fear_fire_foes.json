@@ -1,0 +1,34 @@
+{
+  "oracle_id": "35a0e085-df04-454d-b4d3-42db387bbad0",
+  "name": "Fear, Fire, Foes!",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Fear, Fire, Foes!",
+      "oracle_fingerprint": "f56ef2a7ba0d4bbb0fd907f4f8ff612d",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              { "Rule": { "rule": { "DamageCantBePrevented": {} }, "duration": "UntilEndOfTurn" } },
+              { "DealDamage": { "to": { "Target": 0 }, "amount": "X" } },
+              {
+                "DealDamage": {
+                  "to": {
+                    "Each": [
+                      { "Type": "Creature" },
+                      { "Not": { "Is": { "Target": 0 } } },
+                      { "ControlledBy": { "ControllerOf": { "Target": 0 } } }
+                    ]
+                  },
+                  "amount": 1
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

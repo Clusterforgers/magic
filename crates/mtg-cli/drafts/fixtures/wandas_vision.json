@@ -1,0 +1,138 @@
+{
+  "object": "card",
+  "id": "43cf33cc-c1ac-4196-aa82-b27083694f64",
+  "oracle_id": "1448eadb-e8b1-4e8f-9697-3bb919085dab",
+  "multiverse_ids": [],
+  "resource_id": "03280A70FC919529CBE7841A95A650D0C9C38597A12150B6C4AA7A5B539E6FC0",
+  "mtgo_id": 151865,
+  "arena_id": 105718,
+  "tcgplayer_id": 697333,
+  "cardmarket_id": 892150,
+  "name": "Wanda's Vision",
+  "lang": "en",
+  "released_at": "2026-06-26",
+  "uri": "https://api.scryfall.com/cards/43cf33cc-c1ac-4196-aa82-b27083694f64",
+  "scryfall_uri": "https://scryfall.com/card/msc/708/wandas-vision?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T00:37:22Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/4/3/43cf33cc-c1ac-4196-aa82-b27083694f64.jpg?1783903042",
+    "normal": "https://cards.scryfall.io/normal/front/4/3/43cf33cc-c1ac-4196-aa82-b27083694f64.jpg?1783903042",
+    "large": "https://cards.scryfall.io/large/front/4/3/43cf33cc-c1ac-4196-aa82-b27083694f64.jpg?1783903042",
+    "png": "https://cards.scryfall.io/png/front/4/3/43cf33cc-c1ac-4196-aa82-b27083694f64.png?1783903042",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/4/3/43cf33cc-c1ac-4196-aa82-b27083694f64.jpg?1783903042",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/4/3/43cf33cc-c1ac-4196-aa82-b27083694f64.jpg?1783903042",
+    "thumb": "https://cards.scryfall.io/thumb/front/4/3/43cf33cc-c1ac-4196-aa82-b27083694f64.webp?1783903042",
+    "grid": "https://cards.scryfall.io/grid/front/4/3/43cf33cc-c1ac-4196-aa82-b27083694f64.webp?1783903042",
+    "display": "https://cards.scryfall.io/display/front/4/3/43cf33cc-c1ac-4196-aa82-b27083694f64.webp?1783903042",
+    "art": "https://cards.scryfall.io/art/front/4/3/43cf33cc-c1ac-4196-aa82-b27083694f64.webp?1783903042",
+    "crop": "https://cards.scryfall.io/crop/front/4/3/43cf33cc-c1ac-4196-aa82-b27083694f64.webp?1783903042",
+    "jpeg": "https://cards.scryfall.io/normal/front/4/3/43cf33cc-c1ac-4196-aa82-b27083694f64.jpg?1783903042"
+  },
+  "mana_cost": "{3}{R}{R}",
+  "cmc": 5.0,
+  "type_line": "Enchantment",
+  "oracle_text": "Whenever you cast your second spell each turn, exile cards from the top of your library until you exile a nonland card. You may cast that card without paying its mana cost.",
+  "colors": [
+    "R"
+  ],
+  "color_identity": [
+    "R"
+  ],
+  "keywords": [],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "mtgo",
+    "arena"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "9d739461-c5ac-43a1-af41-3d5a585b5c8d",
+  "set": "msc",
+  "set_name": "Marvel Super Heroes Commander",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/9d739461-c5ac-43a1-af41-3d5a585b5c8d",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Amsc&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/msc?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/43cf33cc-c1ac-4196-aa82-b27083694f64/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A1448eadb-e8b1-4e8f-9697-3bb919085dab&unique=prints",
+  "collector_number": "708",
+  "digital": false,
+  "rarity": "rare",
+  "flavor_text": "\"I made a family, just like everyone else.\"\n—Scarlet Witch, Wanda Maximoff",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Peter Scanlan",
+  "artist_ids": [
+    "4fbd488e-501b-4079-b075-9ebb440ff303"
+  ],
+  "illustration_id": "c7a7b654-9c9d-4e02-8b59-367dd40237d2",
+  "border_color": "black",
+  "frame": "2015",
+  "frame_effects": [
+    "enchantment"
+  ],
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "promo_types": [
+    "universesbeyond"
+  ],
+  "edhrec_rank": 14912,
+  "prices": {
+    "usd": "4.85",
+    "usd_foil": "5.34",
+    "usd_etched": null,
+    "eur": "3.93",
+    "eur_foil": "3.08",
+    "tix": "1.04"
+  },
+  "related_uris": {
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DWanda%2527s%2BVision",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DWanda%2527s%2BVision",
+    "edhrec": "https://edhrec.com/route/?cc=Wanda%27s+Vision"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F697333%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=892150&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/151865?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

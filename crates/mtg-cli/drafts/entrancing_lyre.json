@@ -1,0 +1,39 @@
+{
+  "oracle_id": "9f70b907-586f-4c5d-bb7f-8aadf640ada9",
+  "name": "Entrancing Lyre",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Entrancing Lyre",
+      "oracle_fingerprint": "c2d2a0d672eefd8f6f0ea1d6af01a55e",
+      "abilities": [
+        { "Rule": { "rule": { "Combat": { "who": "This", "quirk": "MayStayTapped" } } } },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{X}" }, "Tap"],
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Type": "Creature" },
+                    { "Compare": { "stat": "Power", "op": "Le", "to": "X" } }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              { "Tap": { "what": { "Target": 0 } } },
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": ["DoesntUntap"],
+                  "duration": "WhileSourceTapped"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

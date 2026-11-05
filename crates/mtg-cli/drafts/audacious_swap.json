@@ -1,0 +1,59 @@
+{
+  "oracle_id": "40b0b93d-4075-42d6-bcd8-b2f9910cc7d2",
+  "name": "Audacious Swap",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Audacious Swap",
+      "oracle_fingerprint": "0c78842676b756b84a7937c10a704945",
+      "abilities": [
+        { "Keyword": { "Casualty": 2 } },
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Not": { "Type": "Enchantment" } }] } }],
+            "effects": [
+              { "Move": { "what": { "Target": 0 }, "to": { "Library": { "place": "Shuffled" } } } },
+              { "ExileTop": { "who": { "OwnerOf": { "Target": 0 } }, "as": "exiled" } },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Bound": "exiled" },
+                      "selector": [{ "Type": "Land" }],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [
+                    { "Move": { "what": { "Bound": "exiled" }, "to": { "Battlefield": {} } } }
+                  ]
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Bound": "exiled" },
+                      "selector": [],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [
+                    {
+                      "CastFromZone": {
+                        "who": { "OwnerOf": { "Bound": "exiled" } },
+                        "what": { "Bound": "exiled" },
+                        "free": true
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

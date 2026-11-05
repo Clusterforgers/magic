@@ -1,16 +1,24 @@
 {
   "oracle_id": "47543892-4d60-4c6b-a6a4-69b9172af01e",
   "name": "Insult // Injury",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Insult",
       "oracle_fingerprint": "0325eddca254d483ecda3537ac6ad3ab",
       "abilities": [
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 0, "end": 126 }
+          "Spell": {
+            "effects": [
+              { "Rule": { "rule": { "DamageCantBePrevented": {} }, "duration": "UntilEndOfTurn" } },
+              {
+                "Shield": {
+                  "when": { "Damage": { "source": [{ "ControlledBy": "You" }] } },
+                  "by": { "Multiply": 2 },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
           }
         }
       ]

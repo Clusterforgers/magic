@@ -1,0 +1,26 @@
+{
+  "oracle_id": "27b0bd3f-2c11-474a-8512-fe035a514905",
+  "name": "Entourage of Trest",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Entourage of Trest",
+      "oracle_fingerprint": "adf03cdf086d494ea12984d530cceb03",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "BecomeMonarch": {} }]
+          }
+        },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "BlocksAdditional": 1 }],
+            "condition": { "Monarch": "You" }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,42 @@
+{
+  "oracle_id": "9dd674a7-becf-4106-b53f-bca88426d92d",
+  "name": "Zimone, Paradox Sculptor",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Zimone, Paradox Sculptor",
+      "oracle_fingerprint": "caad0a5b6951918a8286198ece86b2ef",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "BeginCombat", "whose": "You" } },
+            "targets": [
+              {
+                "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                "bounds": { "min": 0, "max": 2 }
+              }
+            ],
+            "effects": [{ "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1" } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{U}{G}" }, "Tap"],
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "AnyOf": [{ "Type": "Creature" }, { "Type": "Artifact" }] },
+                    { "ControlledBy": "You" }
+                  ]
+                },
+                "bounds": { "min": 0, "max": 2 }
+              }
+            ],
+            "effects": [{ "MultiplyCounters": { "on": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

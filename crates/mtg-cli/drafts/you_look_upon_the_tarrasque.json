@@ -1,0 +1,76 @@
+{
+  "oracle_id": "231a6f8a-624a-4bff-8648-0b4ef910a6aa",
+  "name": "You Look Upon the Tarrasque",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "You Look Upon the Tarrasque",
+      "oracle_fingerprint": "c0021f883c53e5a9018e1b70cd41d771",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Modal": {
+                  "modes": [
+                    {
+                      "effects": [
+                        {
+                          "Shield": {
+                            "when": { "Damage": { "to": "You", "combat": true } },
+                            "by": "Prevent",
+                            "duration": "UntilEndOfTurn"
+                          }
+                        },
+                        {
+                          "Shield": {
+                            "when": {
+                              "Damage": {
+                                "to": {
+                                  "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }]
+                                },
+                                "combat": true
+                              }
+                            },
+                            "by": "Prevent",
+                            "duration": "UntilEndOfTurn"
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+                      "effects": [
+                        {
+                          "Continuous": {
+                            "affected": { "Target": 0 },
+                            "mods": [
+                              { "ModifyPT": { "power": 5, "toughness": 5 } },
+                              { "AddKeyword": "Indestructible" }
+                            ],
+                            "duration": "UntilEndOfTurn"
+                          }
+                        },
+                        {
+                          "Rule": {
+                            "rule": {
+                              "Combat": {
+                                "who": { "Target": 0 },
+                                "quirk": { "MustBeBlocked": "Every" }
+                              }
+                            },
+                            "duration": "UntilEndOfTurn"
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

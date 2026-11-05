@@ -1,0 +1,129 @@
+{
+  "oracle_id": "63a509ea-cedc-40e9-b4e8-0ff4fc356485",
+  "name": "Wrenn and Seven",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Wrenn and Seven",
+      "oracle_fingerprint": "02e6ec64c81b384683ad7e44ecaba8de",
+      "abilities": [
+        {
+          "Loyalty": {
+            "cost": { "Plus": 1 },
+            "effects": [
+              { "LookAtTop": { "count": 4, "as": "top" } },
+              { "Reveal": { "what": { "Bound": "top" } } },
+              {
+                "Move": {
+                  "what": {
+                    "Each": [{ "In": "Library" }, { "Is": { "Bound": "top" } }, { "Type": "Land" }]
+                  },
+                  "to": "Hand"
+                }
+              },
+              { "Move": { "what": { "Bound": "top" }, "to": "Graveyard" } }
+            ]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": "Zero",
+            "effects": [
+              {
+                "Choose": {
+                  "from": { "Each": [{ "Type": "Land" }, { "In": "Hand" }, { "OwnedBy": "You" }] },
+                  "count": {
+                    "min": 0,
+                    "max": { "Count": [{ "Type": "Land" }, { "OwnedBy": "You" }, { "In": "Hand" }] }
+                  },
+                  "as": "picked"
+                }
+              },
+              {
+                "Move": {
+                  "what": { "Bound": "picked" },
+                  "to": { "Battlefield": { "tapped": true } }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Minus": 3 },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Treefolk",
+                      "colors": ["Green"],
+                      "types": ["Creature"],
+                      "subtypes": ["Treefolk"],
+                      "power": 0,
+                      "toughness": 0,
+                      "abilities": [
+                        { "Keyword": "Reach" },
+                        {
+                          "Static": {
+                            "affected": "This",
+                            "mods": [
+                              {
+                                "SetPT": {
+                                  "power": {
+                                    "Count": [{ "Type": "Land" }, { "ControlledBy": "You" }]
+                                  },
+                                  "toughness": {
+                                    "Count": [{ "Type": "Land" }, { "ControlledBy": "You" }]
+                                  }
+                                }
+                              }
+                            ],
+                            "defining": true
+                          }
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Minus": 8 },
+            "effects": [
+              {
+                "Move": {
+                  "what": {
+                    "Each": [
+                      { "OwnedBy": "You" },
+                      {
+                        "AnyOf": [
+                          { "Type": "Artifact" },
+                          { "Type": "Battle" },
+                          { "Type": "Creature" },
+                          { "Type": "Enchantment" },
+                          { "Type": "Land" },
+                          { "Type": "Planeswalker" }
+                        ]
+                      },
+                      { "In": "Graveyard" }
+                    ]
+                  },
+                  "to": "Hand"
+                }
+              },
+              {
+                "CreateEmblem": {
+                  "abilities": [{ "Rule": { "rule": { "NoMaxHandSize": "You" } } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

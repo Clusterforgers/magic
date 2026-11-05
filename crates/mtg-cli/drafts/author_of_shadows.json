@@ -1,0 +1,50 @@
+{
+  "oracle_id": "8bad4e43-4375-4e7f-897e-d28be72308d7",
+  "name": "Author of Shadows",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Author of Shadows",
+      "oracle_fingerprint": "62c9033bf3384fc7b8a703eacb2dc892",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Exile": {
+                  "what": { "Each": [{ "Not": { "OwnedBy": "You" } }, { "In": "Graveyard" }] },
+                  "as": "exiled"
+                }
+              },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "Not": { "Type": "Land" } },
+                      { "Is": { "Bound": "exiled" } },
+                      { "In": "Exile" }
+                    ]
+                  },
+                  "as": "card2"
+                }
+              },
+              {
+                "Rule": {
+                  "rule": {
+                    "MayCast": {
+                      "from": "Exile",
+                      "only": { "Bound": "card2" },
+                      "spend_as": "AnyColor"
+                    }
+                  },
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

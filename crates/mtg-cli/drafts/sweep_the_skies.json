@@ -1,0 +1,34 @@
+{
+  "oracle_id": "7596fe49-c9cf-4415-ac1b-156cbbf9604e",
+  "name": "Sweep the Skies",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sweep the Skies",
+      "oracle_fingerprint": "5bb5a863a96fafabcc3c8e251d7e1346",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Thopter",
+                      "types": ["Artifact", "Creature"],
+                      "subtypes": ["Thopter"],
+                      "power": 1,
+                      "toughness": 1,
+                      "abilities": [{ "Keyword": "Flying" }]
+                    }
+                  },
+                  "count": "ColorsSpent"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

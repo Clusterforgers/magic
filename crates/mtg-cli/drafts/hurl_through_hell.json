@@ -1,0 +1,34 @@
+{
+  "oracle_id": "4254c048-7207-4ca0-bd20-ebb418d9ed1a",
+  "name": "Hurl Through Hell",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Hurl Through Hell",
+      "oracle_fingerprint": "383131877498c905c3d718ac56131dea",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              { "Exile": { "what": { "Target": 0 }, "as": "exiled" } },
+              {
+                "Rule": {
+                  "rule": {
+                    "MayCast": {
+                      "what": [{ "Not": { "Type": "Land" } }],
+                      "from": "Exile",
+                      "only": { "Bound": "exiled" },
+                      "spend_as": "AnyColor"
+                    }
+                  },
+                  "duration": "UntilEndOfYourNextTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

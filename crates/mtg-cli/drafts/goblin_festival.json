@@ -1,0 +1,36 @@
+{
+  "oracle_id": "de21b90f-a268-46d6-b977-d5b0856176f3",
+  "name": "Goblin Festival",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Goblin Festival",
+      "oracle_fingerprint": "49b82b30af9211f9272643604fb5d464",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{2}",
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [
+              { "DealDamage": { "to": { "Target": 0 }, "amount": 1 } },
+              {
+                "FlipCoin": {
+                  "lose": [
+                    { "Choose": { "from": "Opponents", "as": "player" } },
+                    {
+                      "Continuous": {
+                        "affected": "This",
+                        "mods": [{ "SetController": { "Bound": "player" } }],
+                        "duration": "Forever"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

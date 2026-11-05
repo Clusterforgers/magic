@@ -1,0 +1,57 @@
+{
+  "oracle_id": "93e0fd89-8a0d-4d97-aa22-aafe83d53515",
+  "name": "Time of Ice",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Time of Ice",
+      "oracle_fingerprint": "a04fbfc753217af54db32214afa488e8",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 1 } },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }] } }
+            ],
+            "effects": [
+              { "Tap": { "what": { "Target": 0 } } },
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": ["DoesntUntap"],
+                  "duration": "WhileYouControlSource"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 3 } },
+            "effects": [
+              { "Move": { "what": { "Each": [{ "Type": "Creature" }, "Tapped"] }, "to": "Hand" } }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 2 } },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }] } }
+            ],
+            "effects": [
+              { "Tap": { "what": { "Target": 0 } } },
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": ["DoesntUntap"],
+                  "duration": "WhileYouControlSource"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

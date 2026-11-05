@@ -1,0 +1,14 @@
+{
+  "oracle_id": "9cdf840d-314e-46ef-9c04-74f145d9e65b",
+  "name": "Thorn Elemental",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Thorn Elemental",
+      "oracle_fingerprint": "a8b85d1eabd97b1215d65f7feb7aabc1",
+      "abilities": [
+        { "Rule": { "rule": { "Combat": { "who": "This", "quirk": "AssignsAsUnblocked" } } } }
+      ]
+    }
+  ]
+}

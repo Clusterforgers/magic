@@ -1,0 +1,42 @@
+{
+  "source": "forge",
+  "oracle_matches": true,
+  "lines": [
+    {
+      "face": 0,
+      "tag": "K",
+      "text": "You may choose not to untap CARDNAME during your untap step.",
+      "abilities": [
+        0
+      ],
+      "gap": null
+    },
+    {
+      "face": 0,
+      "tag": "A",
+      "text": "For as long as CARDNAME remains tapped, target tapped creature doesn't untap during its controller's untap step, and at the beginning of each of your draw steps, put a -1/-1 counter on that creature. When CARDNAME leaves the battlefield or becomes untapped, remove all -1/-1 counters from the creature.",
+      "abilities": [],
+      "gap": "key:Effect.Triggers-and-ReplacementEffects"
+    }
+  ],
+  "proof": {
+    "marks": [
+      {
+        "face": 0,
+        "span": {
+          "start": 0,
+          "end": 65
+        },
+        "mark": "Auto"
+      },
+      {
+        "face": 0,
+        "span": {
+          "start": 66,
+          "end": 383
+        },
+        "mark": "ByHand"
+      }
+    ]
+  }
+}

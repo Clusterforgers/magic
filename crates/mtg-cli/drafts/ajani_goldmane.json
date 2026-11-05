@@ -1,7 +1,7 @@
 {
   "oracle_id": "dfb5f660-fd8b-4b7b-934c-6a71cd182f15",
   "name": "Ajani Goldmane",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Ajani Goldmane",
@@ -29,9 +29,40 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 125, "end": 243 }
+          "Loyalty": {
+            "cost": { "Minus": 6 },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Avatar",
+                      "colors": ["White"],
+                      "types": ["Creature"],
+                      "subtypes": ["Avatar"],
+                      "power": 0,
+                      "toughness": 0,
+                      "abilities": [
+                        {
+                          "Static": {
+                            "affected": "This",
+                            "mods": [
+                              {
+                                "SetPT": {
+                                  "power": { "Life": "You" },
+                                  "toughness": { "Life": "You" }
+                                }
+                              }
+                            ],
+                            "defining": true
+                          }
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            ]
           }
         }
       ]

@@ -1,0 +1,55 @@
+{
+  "oracle_id": "13ca49a2-8a78-4be4-976a-b684086864bb",
+  "name": "Shadow, Mysterious Assassin",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Shadow, Mysterious Assassin",
+      "oracle_fingerprint": "7e188a4353ca15619b3891603a621243",
+      "abilities": [
+        { "Keyword": "Deathtouch" },
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": ["This"], "to": "EachPlayer", "combat": true } },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "Sacrifice": {
+                        "filter": ["Other", { "Not": { "Type": "Land" } }],
+                        "as": "sacrificed"
+                      }
+                    },
+                    {
+                      "If": {
+                        "condition": {
+                          "Compare": {
+                            "left": { "Bound": "sacrificed~moved" },
+                            "op": "Ge",
+                            "right": 1
+                          }
+                        },
+                        "then": [
+                          { "Draw": { "count": 2 } },
+                          {
+                            "LoseLife": {
+                              "who": "Opponents",
+                              "amount": {
+                                "Stat": { "of": { "Bound": "sacrificed" }, "stat": "ManaValue" }
+                              }
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,199 @@
+{
+  "object": "card",
+  "id": "4a6bec46-1acd-4726-b8d9-3045ac6a2ea2",
+  "oracle_id": "32af5f7b-a970-484a-9aff-226749551d32",
+  "multiverse_ids": [
+    636733,
+    636734
+  ],
+  "mtgo_id": 117862,
+  "arena_id": 87173,
+  "tcgplayer_id": 525625,
+  "cardmarket_id": 743965,
+  "name": "Thousand Moons Smithy // Barracks of the Thousand",
+  "lang": "en",
+  "released_at": "2023-11-17",
+  "uri": "https://api.scryfall.com/cards/4a6bec46-1acd-4726-b8d9-3045ac6a2ea2",
+  "scryfall_uri": "https://scryfall.com/card/lci/39/thousand-moons-smithy-barracks-of-the-thousand?utm_source=api",
+  "layout": "transform",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T03:36:47Z",
+  "cmc": 4.0,
+  "type_line": "Legendary Artifact // Legendary Artifact Land",
+  "color_identity": [
+    "W"
+  ],
+  "keywords": [
+    "Transform"
+  ],
+  "produced_mana": [
+    "W"
+  ],
+  "card_faces": [
+    {
+      "object": "card_face",
+      "name": "Thousand Moons Smithy",
+      "mana_cost": "{2}{W}{W}",
+      "type_line": "Legendary Artifact",
+      "oracle_text": "When Thousand Moons Smithy enters, create a white Gnome Soldier artifact creature token with \"This token's power and toughness are each equal to the number of artifacts and/or creatures you control.\"\nAt the beginning of your first main phase, you may tap five untapped artifacts and/or creatures you control. If you do, transform Thousand Moons Smithy.",
+      "colors": [
+        "W"
+      ],
+      "artist": "Manuel Castañón",
+      "artist_id": "35f11eeb-36ff-4059-bb70-d1274f5bd858",
+      "illustration_id": "83acee40-d32e-41fc-ba28-7cd99e8e37c5",
+      "image_uris": {
+        "small": "https://cards.scryfall.io/small/front/4/a/4a6bec46-1acd-4726-b8d9-3045ac6a2ea2.jpg?1783913807",
+        "normal": "https://cards.scryfall.io/normal/front/4/a/4a6bec46-1acd-4726-b8d9-3045ac6a2ea2.jpg?1783913807",
+        "large": "https://cards.scryfall.io/large/front/4/a/4a6bec46-1acd-4726-b8d9-3045ac6a2ea2.jpg?1783913807",
+        "png": "https://cards.scryfall.io/png/front/4/a/4a6bec46-1acd-4726-b8d9-3045ac6a2ea2.png?1783913807",
+        "art_crop": "https://cards.scryfall.io/art_crop/front/4/a/4a6bec46-1acd-4726-b8d9-3045ac6a2ea2.jpg?1783913807",
+        "border_crop": "https://cards.scryfall.io/border_crop/front/4/a/4a6bec46-1acd-4726-b8d9-3045ac6a2ea2.jpg?1783913807",
+        "thumb": "https://cards.scryfall.io/thumb/front/4/a/4a6bec46-1acd-4726-b8d9-3045ac6a2ea2.webp?1783913807",
+        "grid": "https://cards.scryfall.io/grid/front/4/a/4a6bec46-1acd-4726-b8d9-3045ac6a2ea2.webp?1783913807",
+        "display": "https://cards.scryfall.io/display/front/4/a/4a6bec46-1acd-4726-b8d9-3045ac6a2ea2.webp?1783913807",
+        "art": "https://cards.scryfall.io/art/front/4/a/4a6bec46-1acd-4726-b8d9-3045ac6a2ea2.webp?1783913807",
+        "crop": "https://cards.scryfall.io/crop/front/4/a/4a6bec46-1acd-4726-b8d9-3045ac6a2ea2.webp?1783913807",
+        "jpeg": "https://cards.scryfall.io/normal/front/4/a/4a6bec46-1acd-4726-b8d9-3045ac6a2ea2.jpg?1783913807"
+      }
+    },
+    {
+      "object": "card_face",
+      "name": "Barracks of the Thousand",
+      "mana_cost": "",
+      "type_line": "Legendary Artifact Land",
+      "oracle_text": "(Transforms from Thousand Moons Smithy.)\n{T}: Add {W}.\nWhenever you cast an artifact or creature spell using mana produced by Barracks of the Thousand, create a white Gnome Soldier artifact creature token with \"This token's power and toughness are each equal to the number of artifacts and/or creatures you control.\"",
+      "colors": [],
+      "artist": "Manuel Castañón",
+      "artist_id": "35f11eeb-36ff-4059-bb70-d1274f5bd858",
+      "illustration_id": "a8028e72-cee3-4e7d-bfd8-2039198c81af",
+      "image_uris": {
+        "small": "https://cards.scryfall.io/small/back/4/a/4a6bec46-1acd-4726-b8d9-3045ac6a2ea2.jpg?1783913807",
+        "normal": "https://cards.scryfall.io/normal/back/4/a/4a6bec46-1acd-4726-b8d9-3045ac6a2ea2.jpg?1783913807",
+        "large": "https://cards.scryfall.io/large/back/4/a/4a6bec46-1acd-4726-b8d9-3045ac6a2ea2.jpg?1783913807",
+        "png": "https://cards.scryfall.io/png/back/4/a/4a6bec46-1acd-4726-b8d9-3045ac6a2ea2.png?1783913807",
+        "art_crop": "https://cards.scryfall.io/art_crop/back/4/a/4a6bec46-1acd-4726-b8d9-3045ac6a2ea2.jpg?1783913807",
+        "border_crop": "https://cards.scryfall.io/border_crop/back/4/a/4a6bec46-1acd-4726-b8d9-3045ac6a2ea2.jpg?1783913807",
+        "thumb": "https://cards.scryfall.io/thumb/back/4/a/4a6bec46-1acd-4726-b8d9-3045ac6a2ea2.webp?1783913807",
+        "grid": "https://cards.scryfall.io/grid/back/4/a/4a6bec46-1acd-4726-b8d9-3045ac6a2ea2.webp?1783913807",
+        "display": "https://cards.scryfall.io/display/back/4/a/4a6bec46-1acd-4726-b8d9-3045ac6a2ea2.webp?1783913807",
+        "art": "https://cards.scryfall.io/art/back/4/a/4a6bec46-1acd-4726-b8d9-3045ac6a2ea2.webp?1783913807",
+        "crop": "https://cards.scryfall.io/crop/back/4/a/4a6bec46-1acd-4726-b8d9-3045ac6a2ea2.webp?1783913807",
+        "jpeg": "https://cards.scryfall.io/normal/back/4/a/4a6bec46-1acd-4726-b8d9-3045ac6a2ea2.jpg?1783913807"
+      }
+    }
+  ],
+  "all_parts": [
+    {
+      "object": "related_card",
+      "id": "89a0f7fe-6bff-4c0a-b419-1f4f457c194c",
+      "component": "combo_piece",
+      "name": "Thousand Moons Smithy // Barracks of the Thousand",
+      "type_line": "Legendary Artifact // Legendary Artifact Land",
+      "uri": "https://api.scryfall.com/cards/89a0f7fe-6bff-4c0a-b419-1f4f457c194c"
+    },
+    {
+      "object": "related_card",
+      "id": "cbe7c36a-77b7-4418-9e2d-b6aeea61502e",
+      "component": "token",
+      "name": "Gnome Soldier",
+      "type_line": "Token Artifact Creature — Gnome Soldier",
+      "uri": "https://api.scryfall.com/cards/cbe7c36a-77b7-4418-9e2d-b6aeea61502e"
+    }
+  ],
+  "legalities": {
+    "standard": "legal",
+    "future": "legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "arena",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "70169a6e-89d1-4a3a-aef7-3152958d55ac",
+  "set": "lci",
+  "set_name": "The Lost Caverns of Ixalan",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/70169a6e-89d1-4a3a-aef7-3152958d55ac",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Alci&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/lci?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/4a6bec46-1acd-4726-b8d9-3045ac6a2ea2/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A32af5f7b-a970-484a-9aff-226749551d32&unique=prints",
+  "collector_number": "39",
+  "digital": false,
+  "rarity": "rare",
+  "artist": "Manuel Castañón",
+  "artist_ids": [
+    "35f11eeb-36ff-4059-bb70-d1274f5bd858"
+  ],
+  "border_color": "black",
+  "frame": "2015",
+  "frame_effects": [
+    "legendary"
+  ],
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 2084,
+  "penny_rank": 3373,
+  "preview": {
+    "source": "CoolStuffInc",
+    "source_uri": "https://www.coolstuffinc.com/a/michaelflores-10312023-the-lost-caverns-of-ixalan-preview-synergy-and-context",
+    "previewed_at": "2023-10-31"
+  },
+  "prices": {
+    "usd": "2.96",
+    "usd_foil": "4.72",
+    "usd_etched": null,
+    "eur": "1.62",
+    "eur_foil": "1.83",
+    "tix": "0.02"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=636733&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DThousand%2BMoons%2BSmithy%2B%252F%252F%2BBarracks%2Bof%2Bthe%2BThousand",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DThousand%2BMoons%2BSmithy%2B%252F%252F%2BBarracks%2Bof%2Bthe%2BThousand",
+    "edhrec": "https://edhrec.com/route/?cc=Thousand+Moons+Smithy"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F525625%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=743965&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/117862?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

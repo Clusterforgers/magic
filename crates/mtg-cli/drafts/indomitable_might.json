@@ -1,0 +1,22 @@
+{
+  "oracle_id": "069c3c87-81a8-4d2a-ad2f-8d3243d0e3db",
+  "name": "Indomitable Might",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Indomitable Might",
+      "oracle_fingerprint": "88a0f3fa9bb6f02275092db99c29a3b9",
+      "abilities": [
+        { "Keyword": "Flash" },
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "ModifyPT": { "power": 3, "toughness": 3 } }]
+          }
+        },
+        { "Rule": { "rule": { "Combat": { "who": "Attached", "quirk": "AssignsAsUnblocked" } } } }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,25 @@
+{
+  "oracle_id": "a6fc0b0c-9ba2-47f2-ab92-26fd20d0f86d",
+  "name": "Skullcrack",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Skullcrack",
+      "oracle_fingerprint": "8a7e6efb3ca06f76348e3d37892b783f",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Either": ["Player", { "Object": [{ "Type": "Planeswalker" }] }] } }
+            ],
+            "effects": [
+              { "Rule": { "rule": { "CantGainLife": "EachPlayer" }, "duration": "UntilEndOfTurn" } },
+              { "Rule": { "rule": { "DamageCantBePrevented": {} }, "duration": "UntilEndOfTurn" } },
+              { "DealDamage": { "to": { "Target": 0 }, "amount": 3 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

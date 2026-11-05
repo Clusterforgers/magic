@@ -1,0 +1,20 @@
+{
+  "oracle_id": "062b4d84-5ba3-417b-b8e1-65afce7b05e3",
+  "name": "Giant Oyster",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Giant Oyster",
+      "oracle_fingerprint": "437e80e996e52e30228f629264b3ca52",
+      "abilities": [
+        { "Rule": { "rule": { "Combat": { "who": "This", "quirk": "MayStayTapped" } } } },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 66, "end": 383 }
+          }
+        }
+      ]
+    }
+  ]
+}

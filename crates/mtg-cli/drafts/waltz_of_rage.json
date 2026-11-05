@@ -1,0 +1,57 @@
+{
+  "oracle_id": "78df47c3-b771-4377-8963-ae3065fdcf8a",
+  "name": "Waltz of Rage",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Waltz of Rage",
+      "oracle_fingerprint": "d2a4e7717947b3b1a0d4d9e8899be7e7",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } }
+            ],
+            "effects": [
+              {
+                "DealDamage": {
+                  "source": { "Target": 0 },
+                  "to": { "Each": [{ "Type": "Creature" }, { "Not": { "Is": { "Target": 0 } } }] },
+                  "amount": { "Stat": { "of": { "Target": 0 }, "stat": "Power" } }
+                }
+              },
+              {
+                "DelayedTrigger": {
+                  "when": {
+                    "ZoneChange": {
+                      "what": [{ "Type": "Creature" }, { "ControlledBy": "You" }],
+                      "from": "Battlefield",
+                      "to": "Graveyard"
+                    }
+                  },
+                  "once": false,
+                  "this_turn": true,
+                  "effects": [
+                    { "ExileTop": { "as": "exiled" } },
+                    {
+                      "Rule": {
+                        "rule": {
+                          "MayCast": {
+                            "from": "Exile",
+                            "only": { "Bound": "exiled" },
+                            "play": true
+                          }
+                        },
+                        "duration": "UntilEndOfYourNextTurn"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,27 @@
+{
+  "oracle_id": "d64687e4-ec37-4db2-9e60-4626c7a3b011",
+  "name": "Winternight Stories",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Winternight Stories",
+      "oracle_fingerprint": "0981a963097e61a0831c696118c1b2e0",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "Draw": { "count": 3 } },
+              {
+                "Pay": {
+                  "cost": [{ "Discard": { "filter": [{ "Type": "Creature" }] } }],
+                  "unpaid": [{ "Discard": { "count": 2 } }]
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Harmonize": "{4}{U}" } }
+      ]
+    }
+  ]
+}

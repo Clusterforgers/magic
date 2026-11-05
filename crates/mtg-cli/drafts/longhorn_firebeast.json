@@ -1,0 +1,27 @@
+{
+  "oracle_id": "c6ca1f21-3aaf-4a5e-938e-7daed67a9d6e",
+  "name": "Longhorn Firebeast",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Longhorn Firebeast",
+      "oracle_fingerprint": "8f255fa75fa9c26efe089e0a5a0b1ecc",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Pay": {
+                  "who": "Opponents",
+                  "cost": [{ "DamageToYou": 5 }],
+                  "paid": [{ "Sacrifice": { "filter": ["This"] } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

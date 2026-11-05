@@ -1,0 +1,25 @@
+{
+  "oracle_id": "fcc9f3bc-0bc3-4189-a4d0-9698594b99a8",
+  "name": "Enchanted River's Grasp",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Enchanted River's Grasp",
+      "oracle_fingerprint": "7d727d6ccffb429ab49f0fef7c933888",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              { "Tap": { "what": "Attached" } },
+              { "RemoveAllCounters": { "from": "Attached" } }
+            ]
+          }
+        },
+        { "Static": { "affected": "Attached", "mods": ["LoseAbilities"] } },
+        { "Static": { "affected": "Attached", "mods": ["DoesntUntap"] } }
+      ]
+    }
+  ]
+}

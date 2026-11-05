@@ -1,0 +1,15 @@
+{
+  "oracle_id": "a59897cb-7ead-494a-a1d0-c9baf79bf18b",
+  "name": "Wall of Glare",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Wall of Glare",
+      "oracle_fingerprint": "e52e6c883478bf4559ed64c93e767d64",
+      "abilities": [
+        { "Keyword": "Defender" },
+        { "Static": { "affected": "This", "mods": [{ "BlocksAdditional": 99 }] } }
+      ]
+    }
+  ]
+}

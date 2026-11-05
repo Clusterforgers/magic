@@ -1,0 +1,67 @@
+{
+  "oracle_id": "2f497352-c812-48c4-a922-cc311bcdcdc6",
+  "name": "Arboreal Alliance",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Arboreal Alliance",
+      "oracle_fingerprint": "8478da106d447154d02aa50137fd6b74",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              { "Let": { "as": "power", "amount": "X" } },
+              { "Let": { "as": "toughness2", "amount": "X" } },
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Treefolk",
+                      "colors": ["Green"],
+                      "types": ["Creature"],
+                      "subtypes": ["Treefolk"],
+                      "power": 0,
+                      "toughness": 0
+                    }
+                  },
+                  "as": "token3"
+                }
+              },
+              {
+                "Continuous": {
+                  "affected": { "Bound": "token3" },
+                  "mods": [
+                    {
+                      "SetPT": {
+                        "power": { "Bound": "power" },
+                        "toughness": { "Bound": "toughness2" }
+                      }
+                    }
+                  ],
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "GroupAttacks": { "what": [{ "Subtype": "Elf" }, { "ControlledBy": "You" }] }
+            },
+            "effects": [
+              {
+                "Choose": {
+                  "from": { "Each": [{ "Type": "Creature" }, "Token", { "ControlledBy": "You" }] },
+                  "as": "populated"
+                }
+              },
+              { "CreateToken": { "token": { "CopyOf": { "of": { "Bound": "populated" } } } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

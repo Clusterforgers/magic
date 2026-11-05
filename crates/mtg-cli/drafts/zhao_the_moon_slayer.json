@@ -1,0 +1,41 @@
+{
+  "oracle_id": "94c64d41-d756-42b6-b0e7-0a351d64a68c",
+  "name": "Zhao, the Moon Slayer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Zhao, the Moon Slayer",
+      "oracle_fingerprint": "87abb7a028d19fd8dfe0c8cd7fd2cdf8",
+      "abilities": [
+        { "Keyword": "Menace" },
+        {
+          "Replacement": {
+            "when": {
+              "Enters": { "what": [{ "Type": "Land" }, { "Not": { "Supertype": "Basic" } }] }
+            },
+            "by": "Tapped"
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{7}",
+            "effects": [{ "PutCounters": { "on": "This", "counter": { "Other": "conqueror" } } }]
+          }
+        },
+        {
+          "Static": {
+            "affected": { "Each": [{ "Type": "Land" }, { "Not": { "Supertype": "Basic" } }] },
+            "mods": [{ "SetLandTypes": ["Mountain"] }],
+            "condition": {
+              "Compare": {
+                "left": { "Count": ["This", { "HasCounter": { "Other": "conqueror" } }] },
+                "op": "Ge",
+                "right": 1
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

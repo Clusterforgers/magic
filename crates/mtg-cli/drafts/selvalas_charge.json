@@ -1,0 +1,52 @@
+{
+  "oracle_id": "7e6478c1-e5b3-4641-baa7-7cdeab042569",
+  "name": "Selvala's Charge",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Selvala's Charge",
+      "oracle_fingerprint": "3e9068020cb78908fe0d85fafe313133",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "LookAtTop": { "who": "EachPlayer", "as": "top" } },
+              { "Reveal": { "what": { "Bound": "top" } } },
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Elephant",
+                      "colors": ["Green"],
+                      "types": ["Creature"],
+                      "subtypes": ["Elephant"],
+                      "power": 3,
+                      "toughness": 3
+                    }
+                  },
+                  "count": {
+                    "Count": [
+                      { "Is": { "Bound": "top" } },
+                      {
+                        "AnyOf": [
+                          { "In": "Battlefield" },
+                          { "In": "Hand" },
+                          { "In": "Library" },
+                          { "In": "Graveyard" },
+                          { "In": "Exile" },
+                          { "In": "Stack" }
+                        ]
+                      },
+                      { "Not": { "Type": "Land" } }
+                    ]
+                  }
+                }
+              },
+              { "Draw": { "who": "EachPlayer" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,32 @@
+{
+  "oracle_id": "86541bba-7db8-4893-addf-8a4a42168ce4",
+  "name": "Somnophore",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Somnophore",
+      "oracle_fingerprint": "1aebba8a1051f94e8eff740ccf9d790e",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": ["This"], "to": "EachPlayer" } },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "Triggering" }] } }
+            ],
+            "effects": [
+              { "Tap": { "what": { "Target": 0 } } },
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": ["DoesntUntap"],
+                  "duration": "WhileSourceOnBattlefield"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

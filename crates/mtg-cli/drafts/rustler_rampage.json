@@ -1,0 +1,51 @@
+{
+  "oracle_id": "ef0c0f28-e1ee-42a1-9878-95a0ceb0a9fa",
+  "name": "Rustler Rampage",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Rustler Rampage",
+      "oracle_fingerprint": "b0d081be7bae0d1eab21ab51f61ecba3",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Modal": {
+                  "choose": { "min": 1, "max": 2 },
+                  "mode_costs": ["{1}", "{1}"],
+                  "modes": [
+                    {
+                      "targets": [{ "what": "Player" }],
+                      "effects": [
+                        {
+                          "Untap": {
+                            "what": {
+                              "Each": [{ "Type": "Creature" }, { "ControlledBy": { "Target": 0 } }]
+                            }
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+                      "effects": [
+                        {
+                          "Continuous": {
+                            "affected": { "Target": 0 },
+                            "mods": [{ "AddKeyword": "DoubleStrike" }],
+                            "duration": "UntilEndOfTurn"
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

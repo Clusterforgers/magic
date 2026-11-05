@@ -1,0 +1,54 @@
+{
+  "oracle_id": "9d83a1d3-ef0f-4134-a38b-c992d396592b",
+  "name": "Roar of Challenge",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Roar of Challenge",
+      "oracle_fingerprint": "73c8376b70f30699f1c23a7d7a0ca2b9",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Rule": {
+                  "rule": {
+                    "Combat": { "who": { "Target": 0 }, "quirk": { "MustBeBlocked": "Every" } }
+                  },
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": {
+                        "Count": [
+                          { "Type": "Creature" },
+                          { "ControlledBy": "You" },
+                          { "Compare": { "stat": "Power", "op": "Ge", "to": 4 } }
+                        ]
+                      },
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [
+                    {
+                      "Continuous": {
+                        "affected": { "Target": 0 },
+                        "mods": [{ "AddKeyword": "Indestructible" }],
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

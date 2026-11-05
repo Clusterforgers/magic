@@ -1,0 +1,36 @@
+{
+  "oracle_id": "8345187a-a210-49d7-bdce-10fb2909e050",
+  "name": "Amnesia",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Amnesia",
+      "oracle_fingerprint": "c2d9aa936ae1e3232e61bd7544f19a4c",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              {
+                "Reveal": { "what": { "Each": [{ "OwnedBy": { "Target": 0 } }, { "In": "Hand" }] } }
+              },
+              {
+                "Discard": {
+                  "who": { "Target": 0 },
+                  "count": {
+                    "Count": [
+                      { "In": "Hand" },
+                      { "OwnedBy": { "Target": 0 } },
+                      { "Not": { "Type": "Land" } }
+                    ]
+                  },
+                  "filter": [{ "Not": { "Type": "Land" } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

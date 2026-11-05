@@ -1,0 +1,29 @@
+{
+  "oracle_id": "c2032f88-a000-4ed2-a7e5-61d29723d45e",
+  "name": "Redeem",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Redeem",
+      "oracle_fingerprint": "1abcd1b6a7aaee60bba9360e8929cf7c",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }] }, "bounds": { "min": 0, "max": 2 } }
+            ],
+            "effects": [
+              {
+                "Shield": {
+                  "when": { "Damage": { "to": { "Target": 0 } } },
+                  "by": "Prevent",
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

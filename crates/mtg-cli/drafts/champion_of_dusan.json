@@ -1,0 +1,26 @@
+{
+  "oracle_id": "0a427652-9745-4802-8c8f-5ae29a29b496",
+  "name": "Champion of Dusan",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Champion of Dusan",
+      "oracle_fingerprint": "89da6564826d12752671c9003ab7872e",
+      "abilities": [
+        { "Keyword": "Trample" },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{1}{G}" }, "ExileSelf"],
+            "timing": "Sorcery",
+            "from": "Graveyard",
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              { "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1" } },
+              { "PutCounters": { "on": { "Target": 0 }, "counter": { "Other": "trample" } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
