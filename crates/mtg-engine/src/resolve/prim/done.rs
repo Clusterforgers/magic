@@ -37,6 +37,7 @@ fn reports(effect: &Effect) -> Reports {
         | Effect::Manifest { .. }
         | Effect::Cloak { .. }
         | Effect::Sacrifice { .. }
+        | Effect::SacrificeUpTo { .. }
         | Effect::Counter { .. }
         | Effect::DealDamage { .. }
         | Effect::GainLife { .. }

@@ -544,9 +544,11 @@ fn animate(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
     }
     if let Some(colors) = p.get("Colors") {
         if p.get("OverwriteColors") != Some("True") {
-            return unmapped("key:Animate.Colors-added");
-        }
-        if colors == "ChosenColor" {
+            if colors == "ChosenColor" {
+                return unmapped("key:Animate.Colors-added");
+            }
+            mods.push(json!({"AddColors": color_names(colors)?}));
+        } else if colors == "ChosenColor" {
             match (ctx.chosen_kind, ctx.chosen.as_ref()) {
                 (Some("Color"), Some(name)) => mods.push(json!({"SetColorsChosen": name})),
                 _ => return unmapped("key:Animate.Colors=ChosenColor"),
@@ -835,9 +837,8 @@ fn sacrifice(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
         Some("True") => true,
         Some(_) => return unmapped("key:Sacrifice.Optional"),
     };
-    if may && p.get("Amount").is_some_and(|n| n != "1") {
-        return unmapped("key:Sacrifice.Optional-amount");
-    }
+    // "Sacrifice any number of": an optional sacrifice of more than one takes as many as the player chooses.
+    let up_to = may && p.get("Amount").is_some_and(|n| n != "1");
     let who = frame::player_actor(ctx, p, &SACRIFICE)?;
     let filter = match p.get("SacValid") {
         None | Some("Self") if who == json!("You") => vec![json!("This")],
@@ -845,11 +846,12 @@ fn sacrifice(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
         Some(valid) => selector_any(ctx, valid)?,
     };
     let count = frame::count(ctx, p, &SACRIFICE)?.max;
-    let mut effect = json!({"Sacrifice": {"who": who, "filter": filter, "count": count}});
+    let verb = if up_to { "SacrificeUpTo" } else { "Sacrifice" };
+    let mut effect = json!({verb: {"who": who, "filter": filter, "count": count}});
     if remember::wanted(p, &["RememberSacrificed"]) {
-        remember::bind_moved(ctx, &mut effect, "Sacrifice", "sacrificed");
+        remember::bind_moved(ctx, &mut effect, verb, "sacrificed");
     }
-    if may {
+    if may && !up_to {
         effect = super::frame::ask(vec![effect], &json!("You")).remove(0);
     }
     Ok(effect)

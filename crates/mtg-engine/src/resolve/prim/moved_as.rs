@@ -20,6 +20,7 @@ fn name(effect: &Effect) -> Option<&str> {
         Effect::Mill { bind, .. }
         | Effect::Draw { bind, .. }
         | Effect::Sacrifice { bind, .. }
+        | Effect::SacrificeUpTo { bind, .. }
         | Effect::Destroy { bind, .. }
         | Effect::Move { bind, .. } => bind.as_deref(),
         _ => None,

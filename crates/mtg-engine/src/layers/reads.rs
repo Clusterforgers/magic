@@ -52,7 +52,7 @@ pub(crate) fn writes(modification: &Modification) -> Traits {
         | Modification::AddAllCreatureTypes => Traits::SUBTYPES,
         // The land loses its abilities with its land types.
         Modification::SetLandTypes(_) => Traits::SUBTYPES.or(Traits::KEYWORDS).or(Traits::RULES),
-        Modification::SetColors(_) => Traits::COLORS,
+        Modification::SetColors(_) | Modification::AddColors(_) => Traits::COLORS,
         Modification::AddKeyword(_)
         | Modification::RemoveKeyword(_)
         | Modification::LockKeyword(_) => Traits::KEYWORDS,
@@ -92,7 +92,7 @@ pub(crate) fn writes_of_wanted(wanted: &Wanted) -> Traits {
             Traits::SUBTYPES.or(Traits::KEYWORDS).or(Traits::RULES)
         }
         Wanted::SetCreatureTypesChosen(_) => Traits::SUBTYPES,
-        Wanted::SetColors(_) | Wanted::SetColorsChosen(_) => Traits::COLORS,
+        Wanted::SetColors(_) | Wanted::AddColors(_) | Wanted::SetColorsChosen(_) => Traits::COLORS,
         Wanted::AddKeyword(_)
         | Wanted::AddProtectionFromChosenColor
         | Wanted::AddProtectionFromChosenCardType
@@ -150,6 +150,7 @@ pub(crate) fn reads_of_modification(wanted: &Wanted) -> Traits {
         | Wanted::SetColorsChosen(_)
         | Wanted::AddAllCreatureTypes
         | Wanted::SetColors(_)
+        | Wanted::AddColors(_)
         | Wanted::AddKeyword(_)
         | Wanted::AddProtectionFromChosenColor
         | Wanted::AddProtectionFromChosenCardType

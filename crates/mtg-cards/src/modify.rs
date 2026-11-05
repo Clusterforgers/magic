@@ -65,6 +65,8 @@ pub enum Modification {
     AddAllCreatureTypes,
     /// Replaces the colors (layer 5).
     SetColors(Vec<Color>),
+    /// Adds these colors to the ones it has (layer 5): "is a black Zombie in addition to its other colors".
+    AddColors(Vec<Color>),
     /// Makes the color the resolution chose under this name the only color (layer 5): "becomes the color of your choice".
     /// Only an effect of a spell or ability has it, never a static ability.
     SetColorsChosen(String),
@@ -156,7 +158,9 @@ impl Modification {
             | Modification::SetLandTypesChosen(_)
             | Modification::SetCreatureTypesChosen(_)
             | Modification::AddAllCreatureTypes => Some("4"),
-            Modification::SetColors(_) | Modification::SetColorsChosen(_) => Some("5"),
+            Modification::SetColors(_)
+            | Modification::AddColors(_)
+            | Modification::SetColorsChosen(_) => Some("5"),
             Modification::AddKeyword(_)
             | Modification::AddProtectionFromChosenColor
             | Modification::AddProtectionFromChosenCardType

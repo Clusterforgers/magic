@@ -163,7 +163,7 @@ fn leaves(game: &mut GameState, name: &str) {
 }
 
 /// The modifications the engine runs.
-const MODIFICATIONS: [&str; 28] = [
+const MODIFICATIONS: [&str; 29] = [
     r#"{"ModifyPT":{"power":2,"toughness":-1}}"#,
     r#"{"SetPT":{"power":5,"toughness":1}}"#,
     r#""SwitchPT""#,
@@ -192,7 +192,27 @@ const MODIFICATIONS: [&str; 28] = [
     r#"{"SetLandTypes":["Mountain"]}"#,
     r#"{"LockKeyword":"Flying"}"#,
     r#"{"GainAbilitiesOf":{"Each":[{"Type":"Creature"},{"In":"Graveyard"}]}}"#,
+    r#"{"AddColors":["Blue"]}"#,
 ];
+
+/// CR 613.1e, 105.3: adding a colour keeps the colours the object has; a later setting replaces them all.
+#[rstest]
+#[case::added_alone(r#"{"AddColors":["Blue"]}"#, &["Blue"])]
+#[case::added_to_a_set_colour(r#"{"SetColors":["Red"]},{"AddColors":["Blue"]}"#, &["Red", "Blue"])]
+#[case::set_after_the_addition(r#"{"AddColors":["Blue"]},{"SetColors":["Red"]}"#, &["Red"])]
+#[case::two_at_once(r#"{"AddColors":["Blue","Black"]}"#, &["Blue", "Black"])]
+fn added_colours_join_the_ones_the_object_has(#[case] mods: &str, #[case] colours: &[&str]) {
+    use mtg_core::color::{Color, ColorSet};
+    let game = game_with(totem(&on_the_bear(mods)));
+    let wanted = colours.iter().fold(ColorSet::EMPTY, |set, name| {
+        set.with(match *name {
+            "Red" => Color::Red,
+            "Blue" => Color::Blue,
+            _ => Color::Black,
+        })
+    });
+    assert_eq!(view(&game, "Bear").chars.colors, wanted);
+}
 
 #[test]
 fn the_table_of_modifications_has_every_variant_of_the_dsl() {
@@ -227,6 +247,7 @@ fn the_table_of_modifications_has_every_variant_of_the_dsl() {
             | mtg_cards::modify::Modification::SetLandTypes(_)
             | mtg_cards::modify::Modification::AddAllCreatureTypes
             | mtg_cards::modify::Modification::SetColors(_)
+            | mtg_cards::modify::Modification::AddColors(_)
             | mtg_cards::modify::Modification::AddKeyword(_)
             // Only an effect has it, and it works out its keyword with an answer, so it is not a row of the table.
             | mtg_cards::modify::Modification::AddProtectionFromChosenColor
@@ -259,7 +280,10 @@ fn the_table_of_modifications_has_every_variant_of_the_dsl() {
 
 #[rstest]
 fn every_modification_gives_the_same_view_as_a_static_ability_and_as_an_effect(
-    #[values(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 18, 25, 26)] which: usize,
+    #[values(
+        0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 18, 25, 26, 28
+    )]
+    which: usize,
 ) {
     let modification = MODIFICATIONS[which];
     let mut by_effect = game_with(idle_totem());

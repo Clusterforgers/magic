@@ -333,6 +333,7 @@ impl Held {
             | Modification::SetCreatureTypes(_)
             | Modification::AddAllCreatureTypes
             | Modification::SetColors(_)
+            | Modification::AddColors(_)
             | Modification::SetPowerToughness { .. }
             | Modification::ModifyPowerToughness { .. }
             | Modification::SwitchPowerToughness
@@ -616,7 +617,7 @@ fn layer_of(wanted: &Wanted, defining: bool) -> Option<Layer> {
         | Wanted::SetLandTypesChosen(_)
         | Wanted::SetCreatureTypesChosen(_)
         | Wanted::AddAllCreatureTypes => Layer::Type,
-        Wanted::SetColors(_) | Wanted::SetColorsChosen(_) => Layer::Color,
+        Wanted::SetColors(_) | Wanted::AddColors(_) | Wanted::SetColorsChosen(_) => Layer::Color,
         Wanted::AddKeyword(_)
         | Wanted::AddProtectionFromChosenColor
         | Wanted::AddProtectionFromChosenCardType

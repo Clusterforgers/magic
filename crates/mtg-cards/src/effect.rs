@@ -572,6 +572,20 @@ pub enum Effect {
         #[serde(rename = "as", default, skip_serializing_if = "Option::is_none")]
         bind: Option<String>,
     },
+    /// The player sacrifices as many permanents they control that match as they choose, up to the count ("sacrifice any
+    /// number of lands"); none is allowed.
+    SacrificeUpTo {
+        /// Who sacrifices.
+        #[serde(default = "Ref::you", skip_serializing_if = "Ref::is_you")]
+        who: Ref,
+        /// Which permanents may be chosen.
+        filter: Selector,
+        /// The most.
+        count: Amount,
+        /// The name the objects are bound to, as the objects they become, for the steps after it.
+        #[serde(rename = "as", default, skip_serializing_if = "Option::is_none")]
+        bind: Option<String>,
+    },
     /// Counters spells or abilities (CR 701.6).
     Counter {
         /// What is countered.

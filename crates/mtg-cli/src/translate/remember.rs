@@ -17,7 +17,14 @@ pub fn bind_moved(ctx: &mut Ctx, effect: &mut Value, verb: &str, stem: &str) {
     ctx.remembered = Some(json!({ "Bound": name }));
     if matches!(
         verb,
-        "Mill" | "Draw" | "Sacrifice" | "Destroy" | "Move" | "Exile" | "ExileHidden"
+        "Mill"
+            | "Draw"
+            | "Sacrifice"
+            | "SacrificeUpTo"
+            | "Destroy"
+            | "Move"
+            | "Exile"
+            | "ExileHidden"
     ) {
         ctx.counted.insert(name.clone());
     }

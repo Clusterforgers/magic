@@ -199,6 +199,7 @@ fn w5d_asks(effect: &Effect) -> bool {
             | Effect::Pay { .. }
             | Effect::Search { .. }
             | Effect::Sacrifice { .. }
+            | Effect::SacrificeUpTo { .. }
             | Effect::Discard { .. }
             | Effect::TapOrUntap { .. }
     )
@@ -1716,6 +1717,7 @@ impl<'a> Walker<'a> {
             | Modification::SetColorsChosen(_)
             | Modification::AddAllCreatureTypes
             | Modification::SetColors(_)
+            | Modification::AddColors(_)
             | Modification::AddProtectionFromChosenColor
             | Modification::AddProtectionFromChosenCardType
             | Modification::LoseAbilities
@@ -1791,6 +1793,7 @@ impl<'a> Walker<'a> {
                 modification,
                 Modification::SetPT { .. }
                     | Modification::SetColors(_)
+                    | Modification::AddColors(_)
                     | Modification::AddType(_)
                     | Modification::AddSubtype(_)
             );
@@ -2431,6 +2434,7 @@ impl Walker<'_> {
                         Effect::May { .. }
                             | Effect::CastFromZone { .. }
                             | Effect::Sacrifice { .. }
+                            | Effect::SacrificeUpTo { .. }
                             | Effect::RemoveCounters { .. }
                     )
                 );
@@ -2940,7 +2944,8 @@ impl Walker<'_> {
                     w.at("as", |w| w.bind_moved(name));
                 }
             }
-            Effect::Sacrifice { who, filter, count, bind } => {
+            Effect::Sacrifice { who, filter, count, bind }
+            | Effect::SacrificeUpTo { who, filter, count, bind } => {
                 w.at("who", |w| w.reference(who, Kind::Player));
                 w.at("filter", |w| w.selector(filter));
                 w.at("count", |w| w.amount(count));

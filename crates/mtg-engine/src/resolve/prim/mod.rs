@@ -190,7 +190,7 @@ fn dispatch(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         Effect::Encode { .. } => encode::run(cx, effect),
         Effect::Remember { .. } | Effect::Forget { .. } => remember::run(cx, effect),
         Effect::Manifest { .. } | Effect::Cloak { .. } => manifest::run(cx, effect),
-        Effect::Sacrifice { .. } => sacrifice::run(cx, effect),
+        Effect::Sacrifice { .. } | Effect::SacrificeUpTo { .. } => sacrifice::run(cx, effect),
         Effect::Counter { .. } => counter::run(cx, effect),
         Effect::DealDamage { .. } => deal_damage::run(cx, effect),
         Effect::GainLife { .. } => gain_life::run(cx, effect),

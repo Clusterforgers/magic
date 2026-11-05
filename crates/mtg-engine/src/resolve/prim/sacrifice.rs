@@ -4,7 +4,7 @@ use mtg_cards::effect::Effect;
 
 use super::wrong_effect;
 use crate::characteristics::controller_of;
-use crate::choose::{Chooser, Picked, pick_cards};
+use crate::choose::{Picked, Selection, pick_selections};
 use crate::events::{Event, ZoneCause};
 use crate::resolve::{Cx, Next, ResolveError, Run};
 use crate::snapshot::snapshot;
@@ -16,21 +16,30 @@ use crate::zones::Zone;
 /// more match, those are sacrificed, and with none nothing happens. Every sacrifice is chosen before any is made, then
 /// the permanents go to their owners' graveyards together (`ZoneCause::Sacrificed`) and the step carries what they were.
 pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
-    let Effect::Sacrifice {
+    let (Effect::Sacrifice {
         who, filter, count, ..
-    } = effect
+    }
+    | Effect::SacrificeUpTo {
+        who, filter, count, ..
+    }) = effect
     else {
         return Err(wrong_effect("Sacrifice"));
     };
     let take = usize::try_from(cx.scope.amount(count)?.max(0)).unwrap_or(usize::MAX);
+    // "Any number" may stop short, even at none (CR 701.21); a plain sacrifice takes the whole count.
+    let fewest = if matches!(effect, Effect::SacrificeUpTo { .. }) {
+        0
+    } else {
+        take
+    };
     let state = cx.state();
     let matching = cx.scope.matching(filter)?;
-    let choosers: Vec<Chooser> = cx
+    let choosers: Vec<Selection> = cx
         .scope
         .players(who)?
         .into_iter()
         .filter(|player| state.is_alive(*player))
-        .map(|player| Chooser {
+        .map(|player| Selection {
             player,
             from: matching
                 .iter()
@@ -43,11 +52,16 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
                 .map(|permanent| permanent.id)
                 .filter(|id| crate::prohibit::may_sacrifice(state, player, *id))
                 .collect(),
-            take,
-            text: wording::sacrifice(filter, take),
+            min: fewest,
+            max: take,
+            text: if fewest == 0 {
+                wording::sacrifice_up_to(filter, take)
+            } else {
+                wording::sacrifice(filter, take)
+            },
         })
         .collect();
-    let chosen = match pick_cards(cx, &choosers)? {
+    let chosen = match pick_selections(cx, &choosers)? {
         Picked::Ask(decision) => return Ok(Run::Ask(decision)),
         Picked::Done(chosen) => chosen,
     };
@@ -75,7 +89,7 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
 
 #[cfg(test)]
 mod tests {
-    //! Goal: a sacrifice takes the number of permanents from each player it names in turn order, only from the permanents that player controls and that match, the player chooses and is asked only when more match than they sacrifice, none matching is no event, the question carries the words of the card, and the permanents go to their owners' graveyards with the cause and as they were.
+    //! Goal: a sacrifice takes the number of permanents from each player it names in turn order, only from the permanents that player controls and that match, the player chooses and is asked only when more match than they sacrifice, none matching is no event, the question carries the words of the card, and the permanents go to their owners' graveyards with the cause and as they were, and an any-number sacrifice may take none.
     use std::sync::Arc;
 
     use mtg_cards::CardDefinition;
@@ -370,6 +384,38 @@ mod tests {
             matches!(refused, Err(ResolveError::Invalid(_))),
             "{refused:?}"
         );
+    }
+
+    #[rstest]
+    #[case::none(vec![], 0)]
+    #[case::one(vec!["Wolf"], 1)]
+    #[case::all_of_them(vec!["Source", "Wolf"], 2)]
+    fn any_number_may_stop_at_none_or_take_them_all(
+        #[case] chosen: Vec<&str>,
+        #[case] gone: usize,
+    ) {
+        // CR 701.21: the player sacrifices as many as they choose, up to the count.
+        let game = game();
+        let sacrifice = effect(r#"{"SacrificeUpTo":{"filter":[{"Type":"Creature"}],"count":5}}"#);
+        let decision = asked(run_with(&game, Vec::new(), &sacrifice).unwrap());
+        let DecisionKind::ChooseCards(options) = decision.kind else {
+            panic!("cards are chosen");
+        };
+        assert_eq!(
+            (options.min, options.max, options.text.as_str()),
+            (0, 2, "Sacrifice up to 5 creatures.")
+        );
+        let cards = chosen.iter().map(|name| named(&game, name)).collect();
+        let run = run_with(&game, vec![(ME, Choice::Cards(cards))], &sacrifice).unwrap();
+        assert_eq!(sacrifices(run).0.len(), gone);
+    }
+
+    #[test]
+    fn any_number_with_nothing_to_sacrifice_asks_nothing() {
+        let game = game();
+        let sacrifice = effect(r#"{"SacrificeUpTo":{"filter":[{"Type":"Land"}],"count":3}}"#);
+        let run = run_with(&game, Vec::new(), &sacrifice).unwrap();
+        assert_eq!(sacrifices(run), (Vec::new(), Vec::new()));
     }
 
     #[test]

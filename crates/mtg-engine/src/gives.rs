@@ -121,7 +121,7 @@ impl Gives {
             | Modification::SetCreatureTypes(_)
             | Modification::SetLandTypes(_)
             | Modification::AddAllCreatureTypes => GivenRule::ChangeTypes,
-            Modification::SetColors(_) => GivenRule::SetColors,
+            Modification::SetColors(_) | Modification::AddColors(_) => GivenRule::SetColors,
             Modification::Goaded { .. } => GivenRule::Goaded,
         };
         self.rule(rule);

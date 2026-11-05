@@ -118,6 +118,8 @@ pub enum Modification {
     AddAllCreatureTypes,
     /// Replaces the colors (layer 5).
     SetColors(ColorSet),
+    /// Adds colours to the ones it has (layer 5).
+    AddColors(ColorSet),
     /// Adds a keyword ability (layer 6); `keywords_of` reads it and `characteristics` leaves it alone.
     AddKeyword(#[cfg_attr(feature = "ts", ts(type = "unknown"))] Keyword),
     /// Removes a keyword ability (layer 6), printed or granted before it; `keywords_of` reads it.
@@ -221,7 +223,7 @@ impl Modification {
             | Modification::SetCreatureTypes(_)
             | Modification::SetLandTypes(_)
             | Modification::AddAllCreatureTypes => Layer::Type,
-            Modification::SetColors(_) => Layer::Color,
+            Modification::SetColors(_) | Modification::AddColors(_) => Layer::Color,
             Modification::AddKeyword(_)
             | Modification::LockKeyword(_)
             | Modification::RemoveKeyword(_)
@@ -287,6 +289,11 @@ impl Modification {
             }
             Modification::AddAllCreatureTypes => chars.all_creature_types = true,
             Modification::SetColors(colors) => chars.colors = *colors,
+            Modification::AddColors(colors) => {
+                chars.colors = colors
+                    .iter()
+                    .fold(chars.colors, |set, color| set.with(color));
+            }
             Modification::LoseAbilities => chars.abilities.clear(),
             Modification::SetPowerToughness { power, toughness } => {
                 chars.power = Some(*power);
