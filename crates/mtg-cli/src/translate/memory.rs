@@ -159,6 +159,7 @@ fn writes(text: &str, slot: Slot) -> bool {
         };
         let (key, value) = (key.trim(), value.trim());
         (value == "True" && Slot::of_key(key) == Some(slot))
+            || (key == "ImprintCards" && slot == Slot::Imprinted)
             || (matches!(key, "SP" | "AB" | "DB")
                 && value
                     == match slot {
@@ -336,7 +337,10 @@ const ZONES: [&str; 6] = [
 ];
 
 /// The key an `Imprint*` key reads as when a verb binds what it moved: the verb remembers, and the line imprints.
-const IMPRINT_AS: [(&str, &str, &str); 8] = [
+const IMPRINT_AS: [(&str, &str, &str); 11] = [
+    ("Token", "ImprintTokens", "RememberTokens"),
+    ("CopyPermanent", "ImprintTokens", "RememberTokens"),
+    ("ChooseCard", "ImprintChosen", "RememberChosen"),
     ("ChangeZone", "Imprint", "RememberChanged"),
     ("ChangeZoneAll", "Imprint", "RememberChanged"),
     ("Dig", "Imprint", "RememberChanged"),
@@ -348,9 +352,10 @@ const IMPRINT_AS: [(&str, &str, &str); 8] = [
 ];
 
 /// The keys that remember the objects the line acts on (its target or `Defined$`), for verbs that cannot fail to act.
-const ACTED_ON: [(&str, &str); 4] = [
+const ACTED_ON: [(&str, &str); 5] = [
     ("DealDamage", "RememberDamaged"),
     ("PutCounter", "RememberPut"),
+    ("PutCounter", "RememberCards"),
     ("Tap", "RememberTapped"),
     ("GainControl", "RememberControlled"),
 ];
@@ -373,6 +378,9 @@ pub fn line(
         let before = ctx.remembered.clone();
         let effects = line(ctx, &rest, api, run)?;
         return super::forget::apply(ctx, &asked, &before, effects);
+    }
+    if let Some(word) = p.get("ImprintCards") {
+        return imprint_cards(ctx, p, api, word, run);
     }
     let keys: Vec<(String, Slot)> = p
         .iter()
@@ -441,6 +449,49 @@ pub fn line(
             && Some(&what) != held_before(&before, slot).as_ref()
         {
             effects.push(remember_step(ctx, &what, slot)?);
+        }
+    }
+    Ok(effects)
+}
+
+/// `ImprintCards$ <word>`: the line imprints the objects the word names. A word that stands for the line's own target is read
+/// once the line has declared it; the others are read first, so the line's own parts (a trigger, a shield) can read the slot.
+fn imprint_cards(
+    ctx: &mut Ctx,
+    p: &Params,
+    api: &str,
+    word: &str,
+    run: fn(&mut Ctx, &Params, &str) -> Tr<Vec<Value>>,
+) -> Tr<Vec<Value>> {
+    let rest = p.without(&["ImprintCards"]);
+    let own_target = matches!(word, "ThisTargetedCard" | "Targeted") && p.has("ValidTgts");
+    if own_target {
+        let mut effects = line(ctx, &rest, api, run)?;
+        let what = ctx.last_target()?;
+        set(ctx, Slot::Imprinted, Some(what.clone()));
+        if ctx.memory.crosses(Slot::Imprinted) {
+            effects.push(remember_step(ctx, &what, Slot::Imprinted)?);
+        }
+        return Ok(effects);
+    }
+    let what = match word {
+        "Self" | "Remembered" | "Imprinted" | "Targeted" | "ParentTarget" | "Enchanted"
+        | "ChosenCard" | "TriggeredCard" | "TriggeredSource" | "TriggeredAttacker" => {
+            defined(ctx, word)?
+        }
+        other => return unmapped(format!("key:{api}.ImprintCards={other}")),
+    };
+    let before = ctx.imprinted.clone();
+    set(ctx, Slot::Imprinted, Some(what.clone()));
+    let mut effects = Vec::new();
+    if ctx.memory.crosses(Slot::Imprinted) {
+        effects.push(remember_step(ctx, &what, Slot::Imprinted)?);
+    }
+    match line(ctx, &rest, api, run) {
+        Ok(more) => effects.extend(more),
+        Err(gap) => {
+            ctx.imprinted = before;
+            return Err(gap);
         }
     }
     Ok(effects)

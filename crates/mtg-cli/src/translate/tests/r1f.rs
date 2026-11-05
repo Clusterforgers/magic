@@ -1,6 +1,6 @@
 //! Goal: the replacement shapes of an enters-tapped-with-counters chain, a damage shield over a group or a list of
-//! recipients, an untap that does not happen, a card that goes to the hand or exile instead of dying, a skipped step and
-//! a life floor read as the DSL says them, and a neighbouring shape the DSL cannot say stays a named gap.
+//! recipients, an untap that does not happen, a card that goes to the hand or exile instead of dying, a skipped step read as
+//! the DSL says them, and a neighbouring shape the DSL cannot say stays a named gap.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
 use rstest::rstest;

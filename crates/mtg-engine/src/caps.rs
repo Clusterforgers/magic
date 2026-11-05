@@ -215,6 +215,7 @@ const RUNS: &[&str] = &[
     "Ability.ManaAbility.Complex",
     "Effect.PutCounters",
     "Effect.RemoveCounters",
+    "Effect.RemoveAllCounters",
     "Effect.MoveCounters",
     "Effect.MultiplyCounters",
     "Effect.Tap",
@@ -894,6 +895,7 @@ mod tests {
     #[case::conditions("Effect.If", true)]
     #[case::putting_counters("Effect.PutCounters", true)]
     #[case::removing_counters("Effect.RemoveCounters", true)]
+    #[case::removing_all_counters("Effect.RemoveAllCounters", true)]
     #[case::moving_counters("Effect.MoveCounters", true)]
     #[case::multiplying_counters("Effect.MultiplyCounters", true)]
     #[case::divided_amounts_read_outside_damage_and_counters("Amount.Divided.Elsewhere", false)]

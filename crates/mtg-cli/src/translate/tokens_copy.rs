@@ -33,9 +33,25 @@ pub fn copy_permanent(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
             "PumpDuration",
             "Controller",
             "AtEOT",
+            "RememberTokens",
+            "Populate",
+            "TokenAttacking",
         ],
     )?;
-    let of = objects(subject(ctx, p, "", None)?)?;
+    let remember = flag(p, "RememberTokens")?;
+    let mut effects = Vec::new();
+    let of = if flag(p, "Populate")? {
+        if p.has("Defined") || p.has("ValidTgts") {
+            return unmapped("key:CopyPermanent.Populate-with-subject");
+        }
+        // Populate (CR 701.36): one creature token the player controls is chosen and copied.
+        let chosen = ctx.fresh("populated");
+        effects.push(json!({"Choose": {
+            "from": {"Each": [{"Type": "Creature"}, "Token", {"ControlledBy": "You"}]}, "as": chosen}}));
+        json!({ "Bound": chosen })
+    } else {
+        objects(subject(ctx, p, "", None)?)?
+    };
     let count = amount(ctx, p.get("NumCopies").unwrap_or("1"))?;
     let mut except = exceptions(ctx, p)?;
     let temporary = temporary_keywords(ctx, p)?;
@@ -50,6 +66,9 @@ pub fn copy_permanent(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
     }
     let mut create = json!({
         "token": spec, "count": count, "tapped": flag(p, "TokenTapped")?});
+    if flag(p, "TokenAttacking")? {
+        create["attacking"] = json!(true);
+    }
     // Who owns and controls the copies: the controller by default.
     match p.get("Controller") {
         None | Some("You") => {}
@@ -58,13 +77,17 @@ pub fn copy_permanent(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
         }
         Some(other) => return unmapped(format!("key:CopyPermanent.Controller={other}")),
     }
-    if temporary.is_none() && !p.has("AtEOT") {
-        return Ok(vec![json!({ "CreateToken": create })]);
+    if temporary.is_none() && !p.has("AtEOT") && !remember {
+        effects.push(json!({ "CreateToken": create }));
+        return Ok(effects);
     }
     let name = ctx.fresh("copy");
     create["as"] = json!(name);
+    if remember {
+        ctx.remembered = Some(json!({ "Bound": name }));
+    }
     let bound = json!({ "Bound": name });
-    let mut effects = vec![json!({ "CreateToken": create })];
+    effects.push(json!({ "CreateToken": create }));
     if let Some(keywords) = temporary {
         let mods: Vec<Value> = keywords
             .into_iter()

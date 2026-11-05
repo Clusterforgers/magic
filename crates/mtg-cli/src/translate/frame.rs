@@ -293,6 +293,30 @@ pub fn affects(ctx: &mut Ctx, p: &Params, default: &str, zone: Option<&str>) -> 
     subject(ctx, p, default, zone)
 }
 
+/// `ValidTgts$` of a verb that acts on every object that matches (`DestroyAll`, `DamageAll`, `PutCounterAll`): the line
+/// declares its target before the valid-string is read. A target player limits the objects to those the player controls
+/// ("all creatures target player controls") unless the valid-string names the target itself; a target object must be named
+/// by the valid-string, else the line is a gap.
+pub fn all_matching(ctx: &mut Ctx, p: &Params, label: &str, valid: &str) -> Tr<Vec<Value>> {
+    if !p.has("ValidTgts") {
+        return super::valid::selector_any(ctx, valid);
+    }
+    if p.has("TargetMin") || p.has("TargetMax") {
+        return unmapped(format!("key:{label}.ValidTgts-bounds"));
+    }
+    let spec = super::valid::target_spec(ctx, p, None)?;
+    let player = matches!(spec["what"].as_str(), Some("Player" | "Opponent"));
+    let target = ctx.target(spec)?;
+    let named = valid.contains("Targeted");
+    let mut preds = super::valid::selector_any(ctx, valid)?;
+    if player && !named {
+        preds.push(json!({ "ControlledBy": target }));
+    } else if !player && !named {
+        return unmapped(format!("key:{label}.ValidTgts-unread"));
+    }
+    Ok(preds)
+}
+
 /// How many of a pool a player picks.
 #[derive(Debug, Clone)]
 pub struct Count {

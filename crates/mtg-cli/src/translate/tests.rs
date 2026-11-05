@@ -21,6 +21,14 @@ fn world() -> World {
             "Name:Boar Token\nColors:green\nTypes:Creature Boar\nPT:2/2\nK:Trample\n",
         ),
         (
+            "c_1_1_a_thopter_flying",
+            "Name:Thopter Token\nColors:colorless\nTypes:Artifact Creature Thopter\nPT:1/1\nK:Flying\n",
+        ),
+        (
+            "g_x_x_treefolk_forests",
+            "Name:Treefolk Token\nColors:green\nTypes:Creature Treefolk\nPT:*/*\nS:Mode$ Continuous | CharacteristicDefining$ True | SetPower$ X | SetToughness$ X\nSVar:X:Count$YourLifeTotal\n",
+        ),
+        (
             "w_x_x_spirit",
             "Name:Spirit Token\nColors:white\nTypes:Creature Spirit\nPT:*/*\n",
         ),
@@ -747,6 +755,8 @@ mod p7;
 mod p8;
 mod p8b;
 mod qf1;
+mod r1b;
+mod r1e;
 mod r1f;
 mod r3p2;
 mod r3p3;
