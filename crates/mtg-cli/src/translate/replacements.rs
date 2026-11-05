@@ -110,6 +110,15 @@ fn single(ctx: &mut Ctx, body: &str) -> Tr<Value> {
     };
     let raw = ctx.sub(name)?;
     let (part_condition, part) = prefixed(ctx, &raw)?;
+    if part.get("DB") == Some("Reveal") {
+        if line_condition.is_some() || part_condition.is_some() {
+            return unmapped("key:Replacement.two-conditions");
+        }
+        let (by, condition) = super::replacements_enter::reveal_or_tapped(ctx, &part)?;
+        return Ok(
+            json!({"Replacement": {"when": {"Enters": {"what": ["This"]}}, "by": by, "condition": condition}}),
+        );
+    }
     let by = enters_by(ctx, &part)?;
     let mut ability = json!({"when": {"Enters": {"what": ["This"]}}, "by": by});
     let conditions: Vec<Value> = [line_condition, part_condition]

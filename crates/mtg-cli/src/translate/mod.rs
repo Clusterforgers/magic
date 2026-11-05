@@ -48,6 +48,7 @@ pub mod replacements;
 mod replacements_counter;
 pub mod replacements_damage;
 pub mod replacements_damage_by;
+mod replacements_enter;
 mod replacements_loss;
 mod replacements_moved;
 mod replacements_token;
