@@ -14,9 +14,31 @@ fn one(text: &str) -> Value {
     normal(found.remove(0))
 }
 
+/// The effects of the single spell or activated ability the script makes.
+fn effects(text: &str) -> Vec<Value> {
+    let found = abilities(text);
+    assert_eq!(found.len(), 1, "{:?}", gaps(text));
+    let body = found[0]
+        .as_object()
+        .and_then(|o| o.values().next())
+        .cloned()
+        .unwrap_or_default();
+    body["effects"].as_array().cloned().unwrap_or_default()
+}
+
 #[rstest]
-#[case::tap_first("DB$ Tap | Defined$ Self | ETB$ True | SubAbility$ C", "DB$ PutCounter | Defined$ Self | ETB$ True | CounterType$ DEPLETION | CounterNum$ 2", "depletion", 2)]
-#[case::counters_first("DB$ PutCounter | Defined$ Self | ETB$ True | CounterType$ STUN | CounterNum$ 3 | SubAbility$ C", "DB$ Tap | Defined$ Self | ETB$ True", "stun", 3)]
+#[case::tap_first(
+    "DB$ Tap | Defined$ Self | ETB$ True | SubAbility$ C",
+    "DB$ PutCounter | Defined$ Self | ETB$ True | CounterType$ DEPLETION | CounterNum$ 2",
+    "depletion",
+    2
+)]
+#[case::counters_first(
+    "DB$ PutCounter | Defined$ Self | ETB$ True | CounterType$ STUN | CounterNum$ 3 | SubAbility$ C",
+    "DB$ Tap | Defined$ Self | ETB$ True",
+    "stun",
+    3
+)]
 fn a_permanent_enters_tapped_with_counters(
     #[case] first: &str,
     #[case] second: &str,
@@ -50,19 +72,36 @@ fn shield(target: &str, extra: &str) -> String {
 #[case::you_and_yours("You,Creature.YouCtrl", vec![json!("You"), json!({"Each": [{"Type": "Creature"}, {"ControlledBy": "You"}]})])]
 fn a_prevention_shield_covers_each_recipient(#[case] target: &str, #[case] to: Vec<Value>) {
     let text = shield(target, "");
-    let found: Vec<Value> = abilities(&text).into_iter().map(normal).collect();
+    let found = effects(&text);
     let want: Vec<Value> = to
         .into_iter()
         .map(|to| {
-            normal(json!({"Shield": {"when": {"Damage": {"to": to}}, "by": "Prevent", "duration": "UntilEndOfTurn"}}))
+            json!({"Shield": {"when": {"Damage": {"to": to}}, "by": "Prevent", "duration": "UntilEndOfTurn"}})
         })
         .collect();
-    assert_eq!(found, want, "{:?}", gaps(&text));
+    let found: Vec<Value> = found
+        .into_iter()
+        .map(|e| {
+            serde_json::to_value(serde_json::from_value::<mtg_cards::effect::Effect>(e).unwrap())
+                .unwrap()
+        })
+        .collect();
+    let want: Vec<Value> = want
+        .into_iter()
+        .map(|e| {
+            serde_json::to_value(serde_json::from_value::<mtg_cards::effect::Effect>(e).unwrap())
+                .unwrap()
+        })
+        .collect();
+    assert_eq!(found, want);
 }
 
 #[test]
 fn a_redirect_over_a_list_of_recipients_stays_a_gap() {
-    let text = shield("You,Creature.YouCtrl", " | ReplaceWith$ X\nSVar:X:DB$ DealDamage");
+    let text = shield(
+        "You,Creature.YouCtrl",
+        " | ReplaceWith$ X\nSVar:X:DB$ DealDamage",
+    );
     assert_eq!(abilities(&text), Vec::<Value>::new());
 }
 
@@ -80,7 +119,7 @@ fn lands_do_not_untap_through_the_next_untap_step() {
     );
     let want = json!({"Continuous": {"affected": {"Each": [{"Type": "Land"}, {"ControlledBy": "You"}]},
         "mods": ["DoesntUntap"], "duration": "NextUntapStep"}});
-    assert_eq!(one(&text), normal(want));
+    assert_eq!(effects(&text), [want]);
 }
 
 #[rstest]
@@ -91,9 +130,13 @@ fn a_remembered_creature_does_not_untap_for_a_while(#[case] duration: &str, #[ca
         &format!("ValidTgts$ Creature | RememberObjects$ Targeted | Duration$ {duration}"),
         "ValidCard$ Card.IsRemembered | ValidStepTurnToController$ You",
     );
-    let found = one(&text);
-    assert_eq!(found["Continuous"]["mods"], json!(["DoesntUntap"]), "{found}");
-    assert_eq!(found["Continuous"]["duration"], json!(word), "{found}");
+    let found = effects(&text);
+    assert_eq!(
+        found[0]["Continuous"]["mods"],
+        json!(["DoesntUntap"]),
+        "{found:?}"
+    );
+    assert_eq!(found[0]["Continuous"]["duration"], json!(word), "{found:?}");
 }
 
 #[test]
@@ -107,8 +150,14 @@ fn cant_become_untapped_stays_a_gap() {
 }
 
 #[rstest]
-#[case::exile("DB$ ChangeZone | Origin$ Battlefield | Destination$ Exile | Defined$ ReplacedCard", "Exile")]
-#[case::hand("DB$ ChangeZone | Origin$ Battlefield | Destination$ Hand | Defined$ ReplacedCard", "Hand")]
+#[case::exile(
+    "DB$ ChangeZone | Origin$ Battlefield | Destination$ Exile | Defined$ ReplacedCard",
+    "Exile"
+)]
+#[case::hand(
+    "DB$ ChangeZone | Origin$ Battlefield | Destination$ Hand | Defined$ ReplacedCard",
+    "Hand"
+)]
 fn a_creature_that_would_die_goes_elsewhere(#[case] part: &str, #[case] to: &str) {
     let text = format!(
         "Name:T\nTypes:Enchantment\nR:Event$ Moved | ActiveZones$ Battlefield | Origin$ Battlefield | Destination$ Graveyard | ValidLKI$ Creature.OppCtrl | ReplaceWith$ X\nSVar:X:{part}\n"
@@ -135,7 +184,8 @@ fn a_step_is_skipped(#[case] who: &str, #[case] expected: &str) {
     let text = format!(
         "Name:T\nTypes:Enchantment\nR:Event$ BeginPhase | ActiveZones$ Battlefield | Phase$ Draw | Skip$ True{who}\n"
     );
-    let want = json!({"Rule": {"rule": {"Cant": {"who": expected, "action": {"SkipStep": "Draw"}}}}});
+    let want =
+        json!({"Rule": {"rule": {"Cant": {"who": expected, "action": {"SkipStep": "Draw"}}}}});
     assert_eq!(one(&text), normal(want));
 }
 
