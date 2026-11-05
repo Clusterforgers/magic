@@ -29,7 +29,9 @@ fn again(effect: &Effect) -> Option<Effect> {
         Effect::Draw {
             who: Ref::You,
             count,
+            ..
         } => Effect::Draw {
+            bind: None,
             who: theirs,
             count: count.clone(),
         },

@@ -504,6 +504,7 @@ pub(super) fn imperative(r: &mut Reader<'_>) -> Option<Effect> {
         },
         "sacrifice" => itself_sacrificed(r, who)?,
         "draw" => Effect::Draw {
+            bind: None,
             who,
             count: draws::drawn(r)?,
         },
@@ -719,6 +720,7 @@ fn predicate(r: &mut Reader<'_>, who: &Ref) -> Option<Effect> {
     let who = who.clone();
     Some(match r.take_word()? {
         "draw" | "draws" => Effect::Draw {
+            bind: None,
             who,
             count: draws::drawn(r)?,
         },

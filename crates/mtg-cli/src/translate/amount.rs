@@ -254,6 +254,9 @@ fn event_amount(ctx: &Ctx, expression: &str) -> Tr<Option<Value>> {
         "Remembered" | "RememberedLKI" if what == "Amount" => {
             return super::memory::remembered_count(ctx).map(Some);
         }
+        "Remembered" if what.starts_with("Valid ") => {
+            return super::memory::remembered_matching(ctx, &what["Valid ".len()..]).map(Some);
+        }
         "Remembered" if super::memory::stat_word(what).is_some() => {
             return super::memory::remembered_total(ctx, what).map(Some);
         }

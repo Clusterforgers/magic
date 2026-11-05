@@ -761,7 +761,11 @@ fn token_ref() -> impl Strategy<Value = TokenRef> {
 fn leaf_effect() -> impl Strategy<Value = Effect> {
     let who = || reference();
     let part1 = prop_oneof![
-        (who(), amount()).prop_map(|(who, count)| Effect::Draw { who, count }),
+        (who(), amount()).prop_map(|(who, count)| Effect::Draw {
+            bind: None,
+            who,
+            count
+        }),
         (
             who(),
             amount(),

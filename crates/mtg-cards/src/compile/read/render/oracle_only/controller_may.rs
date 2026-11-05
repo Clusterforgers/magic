@@ -23,7 +23,7 @@ pub(super) fn add(ability: &Ability, texts: &mut Vec<String>) {
     else {
         return;
     };
-    let [Effect::Draw { who, count }] = inner.as_slice() else {
+    let [Effect::Draw { who, count, .. }] = inner.as_slice() else {
         return;
     };
     if *chooser != controller || *who != controller || !count.is_one() {

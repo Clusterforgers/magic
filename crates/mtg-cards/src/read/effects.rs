@@ -114,7 +114,9 @@ fn discard_text(ctx: &Ctx, effect: &Effect) -> Option<String> {
 /// The effects about cards in hands and libraries, and about life and damage.
 fn cards(ctx: &Ctx, effect: &Effect) -> Option<String> {
     Some(match effect {
-        Effect::Draw { who, count } => act(ctx, who, "draw", &phrase::counted(ctx, count, "card")),
+        Effect::Draw { who, count, .. } => {
+            act(ctx, who, "draw", &phrase::counted(ctx, count, "card"))
+        }
         Effect::Discard { .. } => discard_text(ctx, effect)?,
         Effect::Mill { who, count, .. } => {
             act(ctx, who, "mill", &phrase::counted(ctx, count, "card"))

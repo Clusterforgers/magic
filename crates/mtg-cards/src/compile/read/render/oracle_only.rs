@@ -651,6 +651,7 @@ fn w4e_with_effects(ability: &Ability, sentence: &str) -> Vec<String> {
     {
         targets.clear();
         *effects = vec![crate::effect::Effect::Draw {
+            bind: None,
             who: crate::refs::Ref::You,
             count: crate::value::Amount::one(),
         }];

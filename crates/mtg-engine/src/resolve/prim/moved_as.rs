@@ -1,4 +1,4 @@
-//! The `as` name of a `Mill`, `Sacrifice`, `Destroy` or `Move`: the objects the step moved, as the objects they become.
+//! The `as` name of a `Mill`, `Draw`, `Sacrifice`, `Destroy` or `Move`: the objects the step moved, as the objects they become.
 
 use mtg_cards::effect::Effect;
 
@@ -18,6 +18,7 @@ pub(super) fn count_entry(name: &str, moved: usize) -> (String, Vec<Target>) {
 fn name(effect: &Effect) -> Option<&str> {
     match effect {
         Effect::Mill { bind, .. }
+        | Effect::Draw { bind, .. }
         | Effect::Sacrifice { bind, .. }
         | Effect::Destroy { bind, .. }
         | Effect::Move { bind, .. } => bind.as_deref(),
@@ -43,7 +44,8 @@ pub(super) fn bind(cx: &Cx<'_>, effect: &Effect, mut run: Run) -> Run {
         let mut moved: Vec<Target> = Vec::new();
         let mut count: Vec<_> = Vec::new();
         for event in events.iter() {
-            let Event::ZoneChanged { object, .. } = event else {
+            let (Event::ZoneChanged { object, .. } | Event::CardDrawn { object, .. }) = event
+            else {
                 continue;
             };
             if !count.contains(object) {
@@ -69,7 +71,7 @@ pub(super) fn bind(cx: &Cx<'_>, effect: &Effect, mut run: Run) -> Run {
 
 #[cfg(test)]
 mod tests {
-    //! Goal: a Mill, Sacrifice, Destroy or Move with an `as` name keeps how many objects it moved (tokens that ceased to exist included) and binds exactly the objects it moved, each as the object it becomes (its counter one on), and without a name binds nothing.
+    //! Goal: a Mill, Draw, Sacrifice, Destroy or Move with an `as` name keeps how many objects it moved (tokens that ceased to exist included) and binds exactly the objects it moved, each as the object it becomes (its counter one on), and without a name binds nothing.
     use mtg_core::ids::PlayerId;
     use rstest::rstest;
 
@@ -177,7 +179,44 @@ mod tests {
     }
 
     #[rstest]
+    #[case::two(2, 2)]
+    #[case::none(0, 0)]
+    #[case::more_than_the_library_holds(9, 5)]
+    fn a_named_draw_binds_the_cards_it_drew(#[case] asked: usize, #[case] drew: usize) {
+        let (game, events, bound) =
+            bound_by(&format!(r#"{{"Draw":{{"count":{asked},"as":"it"}}}}"#));
+        let it = bound
+            .iter()
+            .find(|(name, _)| name == "it")
+            .map(|(_, t)| t.clone())
+            .unwrap();
+        let cards: Vec<_> = events
+            .iter()
+            .filter_map(|event| match event {
+                Event::CardDrawn { object, .. } => Some(*object),
+                _ => None,
+            })
+            .collect();
+        assert_eq!(it.len(), drew.min(cards.len()));
+        assert_eq!(cards.len(), drew);
+        for (object, target) in cards.iter().zip(&it) {
+            let renewed = ObjectRef {
+                id: *object,
+                counter: game.object(*object).unwrap().counter() + 1,
+            };
+            assert_eq!(*target, Target::Object(renewed));
+        }
+        assert!(
+            bound
+                .iter()
+                .any(|(name, _)| *name == format!("{LET}{drew}:it{MOVED}")),
+            "{bound:?}"
+        );
+    }
+
+    #[rstest]
     #[case::mill(r#"{"Mill":{"count":2}}"#)]
+    #[case::draw(r#"{"Draw":{"count":2}}"#)]
     #[case::destroy(r#"{"Destroy":{"what":"This"}}"#)]
     fn an_unnamed_step_binds_no_moved_objects(#[case] json: &str) {
         let (_, _, bound) = bound_by(json);

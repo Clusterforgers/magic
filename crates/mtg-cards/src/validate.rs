@@ -2541,8 +2541,14 @@ impl Walker<'_> {
             _ => {}
         }
         self.at(tag, |w| match effect {
-            Effect::Draw { who, count }
-            | Effect::Scry { who, count }
+            Effect::Draw { who, count, bind } => {
+                w.at("who", |w| w.reference(who, Kind::Player));
+                w.at("count", |w| w.amount(count));
+                if let Some(name) = bind {
+                    w.at("as", |w| w.bind_moved(name));
+                }
+            }
+            Effect::Scry { who, count }
             | Effect::Surveil { who, count } => {
                 w.at("who", |w| w.reference(who, Kind::Player));
                 w.at("count", |w| w.amount(count));

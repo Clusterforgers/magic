@@ -51,6 +51,7 @@ fn draw_when_it_dies() -> Ability {
         from: ZoneKind::Battlefield,
         targets: Vec::new(),
         effects: vec![Effect::Draw {
+            bind: None,
             who: Ref::You,
             count: Amount::one(),
         }],

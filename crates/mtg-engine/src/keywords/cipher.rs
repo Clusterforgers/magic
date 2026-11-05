@@ -121,6 +121,7 @@ mod tests {
         card = card.with_rules(Ability::Spell {
             targets: Vec::new(),
             effects: vec![Effect::Draw {
+                bind: None,
                 who: Ref::You,
                 count: Amount::one(),
             }],

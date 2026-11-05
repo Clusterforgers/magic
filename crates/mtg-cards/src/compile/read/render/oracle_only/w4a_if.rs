@@ -29,6 +29,7 @@ pub(super) fn add(ability: &Ability, texts: &mut Vec<String>) {
 /// The draw that stands for a step while the ability is written.
 fn w4a_marker(number: i32) -> Effect {
     Effect::Draw {
+        bind: None,
         who: Ref::You,
         count: Amount::Fixed(number),
     }

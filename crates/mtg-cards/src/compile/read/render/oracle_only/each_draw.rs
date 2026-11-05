@@ -10,8 +10,8 @@ pub(super) fn add(ability: &Ability, texts: &mut Vec<String>) {
     let together = matches!(
         ability.effects(),
         [
-            Effect::Draw { who: Ref::You, count: a },
-            Effect::Draw { who: Ref::Target(0), count: b },
+            Effect::Draw { who: Ref::You, count: a , .. },
+            Effect::Draw { who: Ref::Target(0), count: b , .. },
         ] if a == b && a.is_one()
     );
     if !together {

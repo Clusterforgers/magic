@@ -58,6 +58,7 @@ fn totem() -> Arc<CardDefinition> {
                 from: ZoneKind::Battlefield,
                 targets: Vec::new(),
                 effects: vec![Effect::Draw {
+                    bind: None,
                     who: Ref::You,
                     count: Amount::one(),
                 }],

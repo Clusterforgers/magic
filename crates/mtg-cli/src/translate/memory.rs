@@ -255,6 +255,19 @@ pub fn remembered_count(ctx: &Ctx) -> Tr<Value> {
     Ok(json!({"Count": [{"Is": held}, {"AnyOf": zones}]}))
 }
 
+/// `Remembered$Valid <filter>`: how many of the objects the slot holds match the filter, as they are now.
+pub fn remembered_matching(ctx: &Ctx, filter: &str) -> Tr<Value> {
+    let Some(held) = slot_ref(ctx, Slot::Remembered) else {
+        return unmapped("amount:Remembered-without-a-change");
+    };
+    let mut selector = vec![
+        json!({"Is": held}),
+        json!({"AnyOf": ZONES.map(|zone| json!({"In": zone}))}),
+    ];
+    selector.extend(super::valid::selector_any(ctx, filter)?);
+    Ok(json!({"Count": selector}))
+}
+
 /// `RememberedController`: whoever controlled the objects as the step named them. What a step moved is another object
 /// (CR 400.7) whose controller is its owner, so the reading is of the target the step named, which keeps the controller
 /// it last had; a name the translator cannot trace back to a target stays a gap.
@@ -291,6 +304,16 @@ pub fn is_in(ctx: &Ctx, slot: Slot) -> Tr<Vec<Value>> {
         None => unmapped(format!("valid:Is{}", slot.word())),
     }
 }
+
+/// Every zone an object can be in: a remembered object is looked for where it is now.
+const ZONES: [&str; 6] = [
+    "Battlefield",
+    "Hand",
+    "Library",
+    "Graveyard",
+    "Exile",
+    "Stack",
+];
 
 /// The key an `Imprint*` key reads as when a verb binds what it moved: the verb remembers, and the line imprints.
 const IMPRINT_AS: [(&str, &str, &str); 8] = [

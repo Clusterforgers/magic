@@ -25,6 +25,7 @@ pub(super) fn add(ability: &Ability, texts: &mut Vec<String>) {
         Effect::Draw {
             who: Ref::Target(0),
             count: Amount::Sum(parts),
+            ..
         },
     ] = effects.as_slice()
     else {

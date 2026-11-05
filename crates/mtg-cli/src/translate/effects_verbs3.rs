@@ -10,7 +10,7 @@ use crate::forge::script::Params;
 /// The effects of a verb this module reads; `None` for any other API.
 pub fn effects(ctx: &mut Ctx, p: &Params, api: &str) -> Option<Tr<Vec<Value>>> {
     let node = match api {
-        "RevealHand" => reveal_hand(ctx, p),
+        "RevealHand" => return Some(reveal_hand(ctx, p)),
         "NameCard" => name_card(ctx, p),
         "CopySpellAbility" => copy_spell(ctx, p),
         "ChoosePlayer" => choose_player(ctx, p),
@@ -19,12 +19,26 @@ pub fn effects(ctx: &mut Ctx, p: &Params, api: &str) -> Option<Tr<Vec<Value>>> {
     Some(node.map(|node| vec![node]))
 }
 
-/// `RevealHand`: the player shows every card of their hand. Looking at the hand (`Look$`) or remembering the cards
-/// are other effects and stay gaps.
-fn reveal_hand(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
-    only(p, "RevealHand", &["Defined", "ValidTgts"])?;
+/// `RevealHand`: the player shows every card of their hand. Looking at the hand (`Look$`) is another effect and stays a gap. Remembering the cards
+/// is the same step that names them.
+fn reveal_hand(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
+    only(
+        p,
+        "RevealHand",
+        &["Defined", "ValidTgts", "RememberRevealed"],
+    )?;
     let who = subject(ctx, p, "You", None)?;
-    Ok(json!({"Reveal": {"what": {"Each": [{"OwnedBy": who}, {"In": "Hand"}]}}}))
+    let hand = json!({"Each": [{"OwnedBy": who}, {"In": "Hand"}]});
+    if p.get("RememberRevealed") != Some("True") {
+        return Ok(vec![json!({"Reveal": {"what": hand}})]);
+    }
+    // The cards are named as they are shown, so the lines after read that hand and not the one a later step leaves.
+    let name = ctx.fresh("revealed");
+    ctx.remembered = Some(json!({ "Bound": name }));
+    Ok(vec![
+        json!({"Bind": {"what": hand, "as": name}}),
+        json!({"Reveal": {"what": {"Bound": name}}}),
+    ])
 }
 
 /// `CopySpellAbility` of a spell: a target spell, or the spell a cast trigger is about. A copy of an ability, a copy

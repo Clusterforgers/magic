@@ -37,6 +37,7 @@ mod r5p1_runs;
 mod r5p4_runs;
 mod r5p5_runs;
 mod r5p6_runs;
+mod r6p5_runs;
 mod reads;
 mod rebind_runs;
 mod t18a_propose_speed;

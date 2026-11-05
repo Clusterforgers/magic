@@ -852,6 +852,7 @@ fn wheel_text(effects: &[Effect]) -> Option<(String, usize)> {
         Effect::Draw {
             who: Ref::EachPlayer,
             count,
+            ..
         },
         ..,
     ] = effects
@@ -1238,6 +1239,7 @@ fn your_cards(effect: &Effect) -> Option<String> {
         Effect::Draw {
             who: Ref::You,
             count,
+            ..
         } => format!("draw {}", cards_text(count)?),
         Effect::Mill {
             who: Ref::You,

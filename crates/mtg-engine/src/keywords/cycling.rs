@@ -28,6 +28,7 @@ impl KeywordRules for Cycling {
             from: ZoneKind::Hand,
             targets: Vec::new(),
             effects: vec![Effect::Draw {
+                bind: None,
                 who: mtg_cards::refs::Ref::You,
                 count: mtg_cards::value::Amount::one(),
             }],

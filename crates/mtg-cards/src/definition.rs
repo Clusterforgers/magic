@@ -735,6 +735,7 @@ mod tests {
             .with_rules(Ability::Spell {
                 targets: vec![],
                 effects: vec![Effect::Draw {
+                    bind: None,
                     who: Ref::You,
                     count: Amount::one(),
                 }],
