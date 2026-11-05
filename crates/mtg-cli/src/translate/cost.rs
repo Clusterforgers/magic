@@ -157,6 +157,10 @@ fn discard(ctx: &Ctx, number: &str, what: &str) -> Tr<Value> {
     if what == "Random" {
         return unmapped("cost:Discard-random");
     }
+    // "Hand" discards the whole hand whatever the number says: the count is the hand size.
+    if what == "Hand" {
+        return Ok(json!({"Discard": {"count": {"Count": [{"In": "Hand"}, {"OwnedBy": "You"}]}}}));
+    }
     let count = amount(ctx, number)?;
     if matches!(what, "Card" | "") {
         return Ok(json!({"Discard": {"count": count}}));
