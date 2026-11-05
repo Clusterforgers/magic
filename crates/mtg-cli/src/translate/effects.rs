@@ -642,7 +642,7 @@ fn discard(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
 /// "Discard two cards unless you discard a creature card": the player may instead pay one matching card. Only a plain
 /// discard of a count has the form.
 fn unless_discard(
-    ctx: &Ctx,
+    ctx: &mut Ctx,
     p: &Params,
     unless: &str,
     plain: bool,
