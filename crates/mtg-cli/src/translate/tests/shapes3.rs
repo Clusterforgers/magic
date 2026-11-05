@@ -23,5 +23,8 @@ fn a_damage_trigger_keeps_the_kind_of_damage(#[case] key: &str, #[case] combat: 
 #[test]
 fn a_kind_of_damage_the_trigger_cannot_say_is_a_gap() {
     let text = "Name:Subject\nTypes:Creature Elf\nPT:2/2\nT:Mode$ DamageDone | ValidSource$ Card | CombatDamage$ Maybe | Execute$ Pump\nSVar:Pump:DB$ Pump | Defined$ Self | NumAtt$ +1\n";
-    assert!(!gaps(text).is_empty());
+    assert_eq!(
+        gaps(text),
+        vec!["key:Trigger.DamageDone.CombatDamage=Maybe".to_string()]
+    );
 }
