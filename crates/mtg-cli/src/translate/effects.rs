@@ -579,23 +579,18 @@ fn discard(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
     {
         return unmapped("key:Discard.AnyNumber");
     }
-    let count = if any_number {
-        // "Any number" is up to the cards of the hand that may be chosen; a group would count every hand together.
-        if matches!(who.as_str(), Some("Opponents" | "EachPlayer")) {
+    let count = if any_number || reveal_all {
+        // "Any number" is up to the cards of the hand that may be chosen, "all" every one that matches; a group would
+        // count every hand together, which only "all" can take.
+        let group = matches!(who.as_str(), Some("Opponents" | "EachPlayer"));
+        if any_number && group {
             return unmapped("key:Discard.AnyNumber+group");
+        }
+        if reveal_all && (filter.is_none() || p.has("NumCards") || p.has("Optional")) {
+            return unmapped("key:Discard.Mode=RevealDiscardAll+shape");
         }
         let mut hand = vec![json!({"In": "Hand"}), json!({"OwnedBy": who})];
         hand.extend(filter.iter().flatten().cloned());
-        json!({"Count": hand})
-    } else if reveal_all {
-        let Some(filter) = &filter else {
-            return unmapped("key:Discard.Mode=RevealDiscardAll+no-filter");
-        };
-        if p.has("NumCards") || p.has("Optional") || any_number {
-            return unmapped("key:Discard.Mode=RevealDiscardAll+count");
-        }
-        let mut hand = vec![json!({"In": "Hand"}), json!({"OwnedBy": who})];
-        hand.extend(filter.iter().cloned());
         json!({"Count": hand})
     } else if whole_hand {
         // A group counts every hand together, more than any one hand holds, so each hand is taken whole.
@@ -625,7 +620,7 @@ fn discard(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
     let discard = json!({ "Discard": discard });
     if let Some(unless) = p.get("UnlessType") {
         let plain = !(whole_hand || reveal_choose || random || any_number || p.has("Optional"));
-        return unless_discard(ctx, p, unless, plain, discard);
+        return unless_discard(ctx, p, unless, plain, &discard);
     }
     if look_only || !(reveal_choose || reveal_all) {
         return Ok(vec![discard]);
@@ -646,7 +641,7 @@ fn unless_discard(
     p: &Params,
     unless: &str,
     plain: bool,
-    discard: Value,
+    discard: &Value,
 ) -> Tr<Vec<Value>> {
     if !plain {
         return unmapped("key:Discard.UnlessType+shape");
