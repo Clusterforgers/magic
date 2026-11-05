@@ -425,7 +425,7 @@ fn a_card_hidden_by_a_permanent_stays_seen_when_the_permanent_leaves() {
             .with_mana_cost(ManaCost::parse("{0}").unwrap())
             .with_rules(
                 serde_json::from_str::<Ability>(
-                    r#"{"Activated":{"cost":"{0}","effects":[{"LookAtTop":{"as":"top","who":"Opponents"}},{"ExileHidden":{"as":"exiled4","what":{"Bound":"top"}}},{"Rule":{"duration":"Forever","rule":{"MayCast":{"from":"Exile","only":{"Bound":"exiled4"},"play":true}}}}]}}"#,
+                    r#"{"Activated":{"cost":"{0}","effects":[{"LookAtTop":{"as":"top","who":"Opponents"}},{"ExileHidden":{"as":"exiled4","held":true,"what":{"Bound":"top"}}},{"Rule":{"duration":"Forever","rule":{"MayCast":{"from":"Exile","only":{"Bound":"exiled4"},"play":true}}}}]}}"#,
                 )
                 .unwrap(),
             ),

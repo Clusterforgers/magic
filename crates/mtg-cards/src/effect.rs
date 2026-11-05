@@ -518,10 +518,14 @@ pub enum Effect {
         #[serde(rename = "as", default, skip_serializing_if = "Option::is_none")]
         bind: Option<String>,
     },
-    /// Exiles objects face down, linked to the source of the effect: the permanent hides them (hideaway, CR 702.75a).
+    /// Exiles objects face down, linked to the source of the effect: the permanent hides them (hideaway, CR 702.75a), or,
+    /// with `held`, the player whose effect it is alone looks at them for as long as they lie in exile.
     ExileHidden {
         /// What is exiled face down.
         what: Ref,
+        /// Only the player whose effect it is looks at them, whatever becomes of the source (not hideaway).
+        #[serde(default, skip_serializing_if = "std::ops::Not::not")]
+        held: bool,
         /// The name the cards exiled are bound to, as the objects they become in exile (CR 400.7).
         #[serde(rename = "as", default, skip_serializing_if = "Option::is_none")]
         bind: Option<String>,
@@ -1626,6 +1630,7 @@ pub fn hideaway(count: Amount) -> Vec<Effect> {
         },
         Effect::ExileHidden {
             what: Ref::Bound(HIDDEN.to_owned()),
+            held: false,
             bind: None,
         },
         Effect::Move {

@@ -342,7 +342,7 @@ fn with_static_effect(
 fn moves(what: &Value, goes: Goes) -> Value {
     match goes {
         Goes::Exile => json!({"Exile": {"what": what}}),
-        Goes::Hidden => json!({"ExileHidden": {"what": what}}),
+        Goes::Hidden => json!({"ExileHidden": {"what": what, "held": true}}),
         Goes::To(to) => json!({"Move": {"what": what, "to": to}}),
     }
 }

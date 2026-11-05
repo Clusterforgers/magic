@@ -1142,7 +1142,13 @@ impl<'a> Scope<'a> {
         }
         let mut count = 0;
         for object in self.objects(subject)? {
-            if self.selects(selector, self.as_it_left(object))? {
+            // An object that is gone (a token that left) is judged as it was; one that is there, as it is.
+            let judged = if self.seen(object).is_some() {
+                object
+            } else {
+                self.as_it_left(object)
+            };
+            if self.selects(selector, judged)? {
                 count += 1;
             }
         }

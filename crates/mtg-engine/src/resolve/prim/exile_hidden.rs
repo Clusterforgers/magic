@@ -1,4 +1,4 @@
-//! `Effect::ExileHidden`: objects are exiled face down; the player whose effect it is, and no one else, may look at them for as long as they stay in exile.
+//! `Effect::ExileHidden`: objects are exiled face down, linked to the source of the effect (hideaway), or, when `held`, seen by the player whose effect it is alone.
 
 use mtg_cards::effect::Effect;
 
@@ -10,12 +10,12 @@ use crate::object::{ObjectKind, ObjectRef};
 use crate::resolve::{Cx, Next, ResolveError, Run};
 use crate::zones::Zone;
 
-/// Each object the effect names that is still where it was named moves to exile with `ZoneCause::Held` naming the
+/// Each object the effect names that is still where it was named moves to exile with `ZoneCause::Hideaway` (`ZoneCause::Held` when `held`) naming the
 /// source of the effect, so it lies face down there and the source is the permanent its abilities read it by. An
 /// ability, the resolving spell, an object already in exile, one that has changed zones since it was named and a name
 /// that repeats are passed over.
 pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
-    let Effect::ExileHidden { what, bind } = effect else {
+    let Effect::ExileHidden { what, bind, held } = effect else {
         return Err(wrong_effect("ExileHidden"));
     };
     let mut events = Vec::new();
@@ -29,9 +29,15 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
             object: object.id(),
             from: object.zone(),
             to: Zone::Exile,
-            cause: ZoneCause::Held {
-                by: cx.scope.source,
-                looker: cx.controller(),
+            cause: if *held {
+                ZoneCause::Held {
+                    by: cx.scope.source,
+                    looker: cx.controller(),
+                }
+            } else {
+                ZoneCause::Hideaway {
+                    by: cx.scope.source,
+                }
             },
         });
         hidden.push(Target::Object(ObjectRef {
@@ -109,7 +115,7 @@ mod tests {
         for event in &events {
             let Event::ZoneChanged {
                 to: Zone::Exile,
-                cause: ZoneCause::Held { by, .. },
+                cause: ZoneCause::Hideaway { by },
                 ..
             } = event
             else {
@@ -173,12 +179,19 @@ mod tests {
         }
         let object = game.object(card).unwrap();
         assert_eq!(object.zone(), Zone::Exile);
-        assert_eq!(
-            object.face_down(),
-            Some(FaceDown::Held {
-                by: source,
-                looker: ME
-            })
+        assert_eq!(object.face_down(), Some(FaceDown::Hideaway { by: source }));
+    }
+
+    #[test]
+    fn a_held_card_lies_face_down_for_the_player_whose_effect_it_is() {
+        let game = game();
+        let events = hidden(
+            &game,
+            r#"{"ExileHidden":{"what":{"Each":[{"In":"Library"},{"OwnedBy":"You"}]},"held":true}}"#,
         );
+        let Some(Event::ZoneChanged { cause, .. }) = events.first() else {
+            panic!("a card is hidden");
+        };
+        assert!(matches!(cause, ZoneCause::Held { looker, .. } if *looker == ME));
     }
 }
