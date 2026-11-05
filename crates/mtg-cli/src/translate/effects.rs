@@ -624,15 +624,8 @@ fn discard(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
     }
     let discard = json!({ "Discard": discard });
     if let Some(unless) = p.get("UnlessType") {
-        // "Discard two cards unless you discard a creature card": the player may instead pay one matching card.
-        if whole_hand || reveal_choose || random || any_number || p.has("Optional") {
-            return unmapped("key:Discard.UnlessType+shape");
-        }
-        let cost = json!([{"Discard": {"count": 1, "filter": selector_any(ctx, unless)?}}]);
-        let who = player(ctx, p)?;
-        return Ok(vec![
-            json!({"Pay": {"who": who, "cost": cost, "unpaid": [discard]}}),
-        ]);
+        let plain = !(whole_hand || reveal_choose || random || any_number || p.has("Optional"));
+        return unless_discard(ctx, p, unless, plain, discard);
     }
     if look_only || !(reveal_choose || reveal_all) {
         return Ok(vec![discard]);
@@ -644,6 +637,25 @@ fn discard(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
     }
     let hand = json!({"Reveal": {"what": {"Each": [{"OwnedBy": who}, {"In": "Hand"}]}}});
     Ok(vec![hand, discard])
+}
+
+/// "Discard two cards unless you discard a creature card": the player may instead pay one matching card. Only a plain
+/// discard of a count has the form.
+fn unless_discard(
+    ctx: &Ctx,
+    p: &Params,
+    unless: &str,
+    plain: bool,
+    discard: Value,
+) -> Tr<Vec<Value>> {
+    if !plain {
+        return unmapped("key:Discard.UnlessType+shape");
+    }
+    let cost = json!([{"Discard": {"count": 1, "filter": selector_any(ctx, unless)?}}]);
+    let who = player(ctx, p)?;
+    Ok(vec![
+        json!({"Pay": {"who": who, "cost": cost, "unpaid": [discard]}}),
+    ])
 }
 
 /// `Mill`, naming the cards milled for `RememberMilled`.
