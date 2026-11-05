@@ -87,3 +87,23 @@ fn a_word_of_a_type_line_that_is_no_subtype_stays_out_of_the_world() {
     let world = World::new(&scripts, std::collections::BTreeMap::new());
     assert!(world.subtypes.contains("Bear"));
 }
+
+#[rstest]
+#[case::on_the_stack("AffectedZone$ Stack", true)]
+#[case::on_the_battlefield("EffectZone$ Battlefield", false)]
+fn the_spells_a_first_spell_line_counts_exclude_the_spell_it_affects(
+    #[case] zone: &str,
+    #[case] excluded: bool,
+) {
+    let script = format!(
+        "Name:T\nTypes:Creature Wizard\nS:Mode$ Continuous | Affected$ Creature.YouCtrl | {zone} | CheckSVar$ X | SVarCompare$ EQ0 | AddKeyword$ Lifelink\nSVar:X:Count$ThisTurnCast_Creature.YouCtrl\n"
+    );
+    let found = abilities(&script);
+    assert_eq!(found.len(), 1, "{:?}", gaps(&script));
+    let text = found[0].to_string();
+    assert_eq!(
+        text.contains(r#"{"Not":{"Is":"Affected"}}"#),
+        excluded,
+        "{text}"
+    );
+}

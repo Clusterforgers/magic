@@ -10,11 +10,41 @@ use super::keyword::keyword_list;
 use super::valid::{defined, selector_any, selector_in};
 use crate::forge::script::Params;
 
+/// The spells cast this turn that a condition of a line about spells on the stack counts are those cast before the spell it
+/// affects: "the first spell you cast each turn" is about the spell itself, which a cast trigger already finds logged.
+fn before_itself(mut condition: Value) -> Value {
+    match &mut condition {
+        Value::Object(fields) => {
+            for (key, inner) in fields.iter_mut() {
+                if key == "Tally"
+                    && inner.get("event") == Some(&json!("SpellCast"))
+                    && let Some(filter) = inner.get_mut("filter").and_then(Value::as_array_mut)
+                {
+                    filter.push(json!({"Not": {"Is": "Affected"}}));
+                } else {
+                    *inner = before_itself(inner.take());
+                }
+            }
+        }
+        Value::Array(items) => {
+            for inner in items.iter_mut() {
+                *inner = before_itself(inner.take());
+            }
+        }
+        _ => {}
+    }
+    condition
+}
+
 /// A static line as an ability.
 pub fn static_line(ctx: &mut Ctx, body: &str) -> Tr<Value> {
     ctx.reset();
     let all = Params::parse(body);
     let condition = condition(ctx, &all)?;
+    let condition = match condition {
+        Some(found) if all.get("AffectedZone") == Some("Stack") => Some(before_itself(found)),
+        other => other,
+    };
     let p = strip(&all);
     let mut ability = match super::statics_rules::rule(ctx, &p) {
         Some(found) => found?,

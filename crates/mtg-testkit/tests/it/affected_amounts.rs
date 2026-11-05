@@ -97,3 +97,33 @@ fn an_object_takes_its_own_mana_value() {
     assert_eq!(stats(&driver, "One"), (1, 1));
     assert_eq!(stats(&driver, "Three"), (3, 3));
 }
+
+/// The first instant you cast each turn has lifelink (the shape of Elda's demonstrate): the spells cast before the
+/// affected one are counted, not the affected spell itself.
+const FIRST_INSTANT: &str = r#"{"Static":{"affected":{"Each":[{"Type":"Instant"},{"ControlledBy":"You"},{"In":"Stack"}]},"mods":[{"AddKeyword":"Lifelink"}],"condition":{"Compare":{"left":{"Tally":{"event":"SpellCast","who":"EachPlayer","filter":[{"Type":"Instant"},{"ControlledBy":"You"},{"Not":{"Is":"Affected"}}]}},"op":"Eq","right":0}}}}"#;
+
+#[test]
+fn only_the_first_spell_of_the_turn_has_the_keyword_while_it_is_cast() {
+    use mtg_cards::keyword::Keyword;
+    use mtg_engine::keywords::keywords_of;
+    use mtg_testkit::cards::instant;
+
+    let scenario = Scenario::new(2)
+        .hand(0, [instant("First", 0, &[]), instant("Second", 0, &[])])
+        .battlefield(0, [ready(source(FIRST_INSTANT))]);
+    let mut driver = Driver::from_scenario(scenario).unwrap();
+    let lifelink = |driver: &Driver, name: &str| {
+        let stacked = driver
+            .state()
+            .stack()
+            .iter()
+            .copied()
+            .find(|id| driver.state().object(*id).unwrap().card().name == name)
+            .unwrap();
+        keywords_of(driver.state(), stacked).contains(&&Keyword::Lifelink)
+    };
+    driver.cast("First").unwrap();
+    assert!(lifelink(&driver, "First"));
+    driver.cast("Second").unwrap();
+    assert!(!lifelink(&driver, "Second"));
+}

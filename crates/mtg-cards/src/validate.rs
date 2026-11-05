@@ -3399,7 +3399,6 @@ impl Walker<'_> {
         }
         self.scope.in_static = true;
         self.at("mods", |w| w.mods(mods));
-        self.scope.in_static = false;
         if names_spells(affected) {
             self.spell_keywords(mods);
         }
@@ -3417,6 +3416,7 @@ impl Walker<'_> {
         if let Some(condition) = condition {
             self.at("condition", |w| w.condition(condition));
         }
+        self.scope.in_static = false;
         if defining {
             self.defining(affected, mods, condition.is_some(), from);
         }
