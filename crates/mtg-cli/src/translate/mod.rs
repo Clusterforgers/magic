@@ -123,7 +123,7 @@ pub async fn translate_forge(
     let mut funnel = Funnel::default();
     let popularity = Popularity::from_cache(cache).ok();
     let mut index = String::from("slug\tname\ttranslated\ttoday\n");
-    let mut cards = String::from("slug\tname\ttranslated\ttoday\toracle_matches\tgaps\n");
+    let mut cards = String::from("slug\tname\ttranslated\ttoday\toracle_matches\tgaps\toffered\n");
     for script in &scripts {
         if !wanted.is_empty() && !selected(script, &wanted) {
             continue;
@@ -166,9 +166,19 @@ pub async fn translate_forge(
             .chain(behind.iter().map(String::as_str))
             .collect();
         let gaps: Vec<&str> = gaps.into_iter().collect();
+        // `whole` overstates: the checker refuses some whole drafts or rates them partial.
+        let offered = match (&stored, state) {
+            (Some(stored), "whole") => {
+                let text = serde_json::to_string(&card.proposal()).unwrap_or_default();
+                stored
+                    .offered(&stem, &text)
+                    .map_or("", |yes| if yes { "true" } else { "false" })
+            }
+            _ => "",
+        };
         let _ = writeln!(
             cards,
-            "{stem}\t{}\t{state}\t{today}\t{}\t{}",
+            "{stem}\t{}\t{state}\t{today}\t{}\t{}\t{offered}",
             card.name,
             oracle_matches.map_or("", |same| if same { "true" } else { "false" }),
             gaps.join("; ")
