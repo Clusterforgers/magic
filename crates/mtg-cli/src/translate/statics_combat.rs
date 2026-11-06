@@ -92,7 +92,7 @@ fn attack_tax(ctx: &Ctx, p: &Params) -> Tr<Value> {
 }
 
 /// `CantAttackUnless` on the card itself or the creature it is attached to (`creature` is its reference), with no player
-/// named: the creature costs the mana, once or for each of the amount an SVar counts, as it attacks anyone (CR 508.1h).
+/// named: the creature costs the mana, once or for each of the amount an `SVar` counts, as it attacks anyone (CR 508.1h).
 fn self_tax(ctx: &Ctx, p: &Params, creature: &str) -> Tr<Value> {
     let cost = p.get("Cost").unwrap_or_default();
     let (mana, per) = if !cost.is_empty() && cost.bytes().all(|b| b.is_ascii_digit()) {

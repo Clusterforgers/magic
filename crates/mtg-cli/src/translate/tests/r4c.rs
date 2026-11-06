@@ -62,11 +62,7 @@ fn a_card_played_during_a_turn_you_attacked_is_a_conditional_permission(
 }
 
 #[rstest]
-#[case::enchanted(
-    "Creature.AttachedBy",
-    "Cost$ 3",
-    r#""mana":"{3}""#
-)]
+#[case::enchanted("Creature.AttachedBy", "Cost$ 3", r#""mana":"{3}""#)]
 #[case::itself_per_counter(
     "Card.Self",
     "Cost$ Y\nSVar:Y:Count$CardCounters.P1P1",
