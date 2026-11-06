@@ -6,7 +6,7 @@ use crate::ability::Ability;
 use serde_json::{Value, json};
 
 /// The trigger the keyword stands for, over the creatures `choices` names.
-fn trigger(choices: Value) -> Value {
+fn trigger(choices: &Value) -> Value {
     json!({"Triggered": {
         "when": {"ZoneChange": {"what": ["This"], "to": "Battlefield"}},
         "effects": [
@@ -42,7 +42,7 @@ fn words(value: &Value) -> Option<Vec<String>> {
             "Other",
             {"ControlledBy": "You"}]),
     };
-    (trigger(any_of(&words)) == *value && !words.is_empty()).then_some(words)
+    (trigger(&any_of(&words)) == *value && !words.is_empty()).then_some(words)
 }
 
 /// "a Goblin", "an Elf", "a creature".
