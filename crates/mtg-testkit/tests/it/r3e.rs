@@ -1,4 +1,4 @@
-//! Goal: the mechanics added in round 3e play as the Comprehensive Rules say: assist (CR 702.132) lets another player pay generic mana of the cost, asked of that player with a default of nothing; prototype (CR 702.160, 718) gives the spell and the permanent the prototype mana cost, colours, power and toughness, only when cast for the prototype cost; sneak is cast in the declare blockers step by returning an unblocked attacker and the creature enters tapped and attacking what that attacker attacked, replaying to the same state; at 2 to 4 seats.
+//! Goal: the mechanics added in round 3e play as the Comprehensive Rules say: craft (CR 702.167) exiles this permanent and the materials from the battlefield and the graveyard and returns the card transformed; assist (CR 702.132) lets another player pay generic mana of the cost, asked of that player with a default of nothing; prototype (CR 702.160, 718) gives the spell and the permanent the prototype mana cost, colours, power and toughness, only when cast for the prototype cost; sneak is cast in the declare blockers step by returning an unblocked attacker and the creature enters tapped and attacking what that attacker attacked, replaying to the same state; at 2 to 4 seats.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
 use std::sync::Arc;
@@ -8,8 +8,11 @@ use crate::common::{names, on_battlefield, pid};
 use mtg_cards::CardDefinition;
 use mtg_cards::ability::Ability;
 use mtg_cards::alt_riders::{alt_cast, sneak_riders};
-use mtg_cards::cost::Cost;
+use mtg_cards::cost::{Cost, CostItem};
+use mtg_cards::definition::Layout;
 use mtg_cards::keyword::Keyword;
+use mtg_cards::refs::{Pred, Selector};
+use mtg_cards::value::Amount;
 use mtg_cards::value::CastWay;
 use mtg_core::card::CardType;
 use mtg_core::color::Color;
@@ -386,5 +389,117 @@ fn a_spell_the_caster_cannot_pay_alone_is_offered_when_a_player_can_help(
 ) -> Result<(), ScriptError> {
     let driver = Driver::from_scenario(assist_table(seats, 1, theirs))?;
     assert_eq!(offered(&driver, "Helped Giant")?, offered_now);
+    Ok(())
+}
+
+// Craft (CR 702.167): exile this permanent and materials, return the card transformed.
+
+/// "Craft with one or more creatures {1}{B}" on an artifact whose back face is a 3/3 creature.
+fn relic() -> Arc<CardDefinition> {
+    let craft = Ability::Keyword(Keyword::Craft(Cost(vec![
+        CostItem::Mana("{1}{B}".parse().unwrap()),
+        CostItem::Craft {
+            filter: Selector(vec![Pred::Type(CardType::Creature)]),
+            count: Amount::X,
+            least: None,
+        },
+    ])));
+    let front = CardDefinition::new("Relic Engine")
+        .with_type(CardType::Artifact)
+        .with_rules(craft.clone());
+    let back = CardDefinition::new("Relic Beast")
+        .with_type(CardType::Creature)
+        .with_power_toughness(3, 3);
+    Arc::new(
+        CardDefinition::new("Relic Engine")
+            .with_type(CardType::Artifact)
+            .with_rules(craft)
+            .with_faces(Layout::Transform, vec![front, back]),
+    )
+}
+
+/// Seat 0 controls the relic, two Swamps and `bears` Grizzly Bears, with `graveyard` more in the graveyard.
+fn craft_table(seats: usize, bears: usize, graveyard: usize) -> Scenario {
+    let bear = || mtg_testkit::corpus::card("Grizzly Bears").unwrap();
+    (0..seats).fold(
+        Scenario::new(seats)
+            .at(1, 0, Step::Main1)
+            .battlefield(
+                0,
+                lands(2, swamp)
+                    .into_iter()
+                    .chain([ready(relic())])
+                    .chain((0..bears).map(|_| ready(bear()))),
+            )
+            .graveyard(0, (0..graveyard).map(|_| bear())),
+        |scenario, seat| scenario.library(seat, (0..8).map(|_| forest())),
+    )
+}
+
+/// Activates the craft with `x` materials, taking the first offered cards.
+fn craft(driver: &mut Driver, x: u32) -> Result<(), ScriptError> {
+    driver.begin_activation("Relic Engine")?;
+    for _ in 0..10 {
+        match &driver.decision()?.kind {
+            DecisionKind::ChooseNumber(_) => {
+                driver.answer(Answer::ChooseNumber(NumberChoice::Number(x)))?;
+            }
+            DecisionKind::ChooseCards(options) => {
+                let pick = options.from.iter().copied().take(x as usize).collect();
+                driver.answer(Answer::ChooseCards(mtg_engine::choose::CardsChoice(pick)))?;
+            }
+            DecisionKind::PayMana(_) => break,
+            _ => {
+                driver.answer_passively()?;
+            }
+        }
+    }
+    pay(driver)?;
+    settle(driver)
+}
+
+#[rstest]
+#[case::from_the_battlefield(2, 0, 2)]
+#[case::from_the_graveyard(0, 2, 2)]
+#[case::from_both(1, 1, 2)]
+#[case::one_of_two(1, 1, 1)]
+fn craft_exiles_the_materials_and_returns_the_card_transformed(
+    #[case] bears: usize,
+    #[case] graveyard: usize,
+    #[case] x: u32,
+    #[values(2, 3, 4)] seats: usize,
+) -> Result<(), ScriptError> {
+    let mut driver = Driver::from_scenario(craft_table(seats, bears, graveyard))?;
+    craft(&mut driver, x)?;
+    assert!(on_battlefield(driver.state(), "Relic Engine").is_none());
+    let beast = on_battlefield(driver.state(), "Relic Beast").expect("the back face returned");
+    assert_eq!(driver.state().object(beast).unwrap().face(), Some(1));
+    let exiled = driver.state().zone(Zone::Exile).len();
+    assert_eq!(
+        exiled, x as usize,
+        "the materials are exiled, the card returned"
+    );
+    assert_eq!(
+        driver.state().zone(Zone::Graveyard(pid(0))).len()
+            + driver
+                .state()
+                .zone(Zone::Battlefield)
+                .iter()
+                .filter(|id| driver
+                    .state()
+                    .object(**id)
+                    .is_some_and(|o| o.card().name == "Grizzly Bears"))
+                .count(),
+        bears + graveyard - x as usize
+    );
+    Ok(())
+}
+
+#[rstest]
+fn craft_is_not_offered_without_a_material_or_at_instant_speed(
+    #[values(2, 3, 4)] seats: usize,
+) -> Result<(), ScriptError> {
+    let driver = Driver::from_scenario(craft_table(seats, 0, 0))?;
+    assert!(driver.offered_abilities("Relic Engine")?.is_empty());
     Ok(())
 }

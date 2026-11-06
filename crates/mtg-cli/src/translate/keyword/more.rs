@@ -25,6 +25,7 @@ pub fn special(ctx: &Ctx, text: &str) -> Option<Tr<Value>> {
         ["Station", number] => station(number),
         ["Devour", count] | ["Devour", count, _] => devour(count, fields.get(2).copied()),
         ["Awaken", count, price] => awaken(ctx, count, price),
+        ["Craft", price] => craft(ctx, price),
         ["Equip", price, valid] | ["Equip", price, valid, _] if !valid.is_empty() => {
             equip_to(ctx, price, valid)
         }
@@ -112,6 +113,31 @@ fn awaken(ctx: &Ctx, count: &str, price: &str) -> Tr<Value> {
         }
         _ => unmapped("keyword:Awaken-shape"),
     }
+}
+
+/// `Craft:2 B B XMin1 ExileCtrlOrGrave<X/Creature.Other>`: the mana, the fewest materials for an X, and the one pick of materials.
+fn craft(ctx: &Ctx, price: &str) -> Tr<Value> {
+    let mut least = None;
+    let mut words = Vec::new();
+    for word in super::super::cost::parts(price) {
+        match word.strip_prefix("XMin") {
+            Some(number) => least = number.parse::<u32>().ok(),
+            None => words.push(word),
+        }
+    }
+    let mut paid = cost(ctx, &words.join(" "))?;
+    let materials = paid.as_array_mut().and_then(|items| {
+        let mut found = items.iter_mut().filter(|item| item.get("Craft").is_some());
+        let first = found.next();
+        if found.next().is_some() { None } else { first }
+    });
+    let Some(materials) = materials else {
+        return unmapped("keyword:Craft-materials");
+    };
+    if let (Some(least), Some(body)) = (least, materials.get_mut("Craft")) {
+        body["least"] = json!(least);
+    }
+    Ok(json!({"Craft": paid}))
 }
 
 /// `Station:8`: the threshold is also on the card's `STATION` lines, which carry it.

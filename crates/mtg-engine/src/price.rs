@@ -69,6 +69,7 @@ const fn unpaid(item: &CostItem) -> &'static str {
         CostItem::Behold { .. } => "Cost.Behold",
         CostItem::ToLibrary { .. } => "Cost.ToLibrary",
         CostItem::Forage => "Cost.Forage",
+        CostItem::Craft { .. } => "Cost.Craft",
         CostItem::RemoveCounters { .. } => "Cost.RemoveCounters",
         CostItem::PutCounters { .. } => "Cost.PutCounters",
         CostItem::UntapPermanents { .. } => "Cost.UntapPermanents",

@@ -1,4 +1,4 @@
-//! Goal: the alternative costs of Forge scripts become `AltCast` and `FreeCast` abilities that parse as the DSL and leave other shapes as gaps.
+//! Goal: the alternative costs, Assist and Craft of Forge scripts become `AltCast`, `FreeCast` and keyword abilities that parse as the DSL and leave other shapes as gaps.
 use mtg_cards::ability::Ability;
 use rstest::rstest;
 use serde_json::{Value, json};
@@ -63,4 +63,16 @@ fn static_alt_costs(#[case] line: &str, #[case] expected: Value) {
 )]
 fn static_alt_gaps(#[case] line: &str, #[case] gap: &str) {
     assert_eq!(gaps(&creature(line)), vec![gap.to_owned()]);
+}
+
+#[rstest]
+#[case::assist("K:Assist", json!({"Keyword": "Assist"}))]
+#[case::craft_x(
+    "K:Craft:2 B B XMin1 ExileCtrlOrGrave<X/Creature.Other>\nSVar:X:Count$xPaid",
+    json!({"Keyword": {"Craft": [{"Mana": "{2}{B}{B}"}, {"Craft": {"filter": [{"Type": "Creature"}, "Other"], "count": "X", "least": 1}}]}})
+)]
+fn assist_and_craft_keywords(#[case] line: &str, #[case] expected: Value) {
+    let found = abilities(&creature(line));
+    assert_eq!(found, vec![expected]);
+    assert!(serde_json::from_value::<Ability>(found[0].clone()).is_ok());
 }

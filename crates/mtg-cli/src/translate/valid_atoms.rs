@@ -49,6 +49,7 @@ pub fn atom(prop: &str) -> Option<Vec<Value>> {
         "spectacle" => return one(json!({"CastWith": "Spectacle"})),
         "prowled" => return one(json!({"CastWith": "Prowl"})),
         "webSlinged" => return one(json!({"CastWith": "WebSlinging"})),
+        "sneaked" => return one(json!({"CastWith": "Sneak"})),
         _ => {}
     }
     if let Some(zone) = prop.strip_prefix("ThisTurnEnteredFrom_")

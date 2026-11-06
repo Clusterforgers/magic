@@ -1227,7 +1227,8 @@ impl<'a> Walker<'a> {
                     | CostItem::RevealFromHand { filter, count }
                     | CostItem::ReturnToHand { filter, count }
                     | CostItem::Behold { filter, count }
-                    | CostItem::ToLibrary { filter, count, .. } => {
+                    | CostItem::ToLibrary { filter, count, .. }
+                    | CostItem::Craft { filter, count, .. } => {
                         w.at("filter", |w| w.selector(filter));
                         w.at("count", |w| w.amount(count));
                     }
@@ -1493,6 +1494,7 @@ impl<'a> Walker<'a> {
                     | CostItem::Blight(_)
                     | CostItem::Behold { .. }
                     | CostItem::ToLibrary { .. }
+                    | CostItem::Craft { .. }
                     | CostItem::Forage
             ) {
                 self.uses(kind, &format!("{prefix}.{}", tag_of(item)));
@@ -4344,6 +4346,7 @@ fn picks(cost: &Cost) -> bool {
                 | CostItem::Blight(_)
                 | CostItem::Behold { .. }
                 | CostItem::ToLibrary { .. }
+                | CostItem::Craft { .. }
                 | CostItem::Forage
         ),
     })

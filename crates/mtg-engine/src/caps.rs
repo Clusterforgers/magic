@@ -125,6 +125,7 @@ const RUNS: &[&str] = &[
     "Cost.Discard",
     "Cost.RemoveCounters",
     "Cost.ExileFromGraveyard",
+    "Cost.Craft",
     "Cost.TapPermanents",
     "Cost.UntapPermanents",
     "Cost.PutCounters",
@@ -137,6 +138,7 @@ const RUNS: &[&str] = &[
     "Cost.Sacrifice.Counted.Activated",
     "Cost.Discard.Counted.Activated",
     "Cost.ExileFromGraveyard.Counted.Activated",
+    "Cost.Craft.Counted.Activated",
     "Cost.ExileFromHand.Counted.Activated",
     "Cost.RevealFromHand.Counted.Activated",
     "Cost.TapPermanents.Counted.Activated",
@@ -649,6 +651,7 @@ const RUNS: &[&str] = &[
     "Keyword.Transmute",
     "Keyword.Awaken",
     "Keyword.Assist",
+    "Keyword.Craft",
     "Keyword.Prototype",
     "Keyword.Gravestorm",
     "Keyword.Sunburst",
@@ -1261,6 +1264,7 @@ mod tests {
     #[case::awaken("Keyword.Awaken", true)]
     #[case::prototype("Keyword.Prototype", true)]
     #[case::assist("Keyword.Assist", true)]
+    #[case::craft("Keyword.Craft", true)]
     #[case::gravestorm("Keyword.Gravestorm", true)]
     #[case::sunburst("Keyword.Sunburst", true)]
     #[case::afterlife("Keyword.Afterlife", true)]

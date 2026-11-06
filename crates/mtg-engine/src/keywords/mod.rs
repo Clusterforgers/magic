@@ -29,6 +29,7 @@ pub(crate) mod cipher;
 mod companion;
 mod conspire;
 mod convoke;
+mod craft;
 mod crew;
 mod cumulative_upkeep;
 mod cycling;
@@ -540,6 +541,7 @@ fn rules_of_later(keyword: &Keyword) -> &'static dyn KeywordRules {
         Keyword::Phasing => &w7e_phasing::Phasing,
         Keyword::Spectacle(_) => &spectacle::Spectacle,
         Keyword::Assist => &spectacle::Spectacle,
+        Keyword::Craft(_) => &craft::Craft,
         Keyword::Prototype { .. } => &spectacle::Spectacle,
         Keyword::UmbraArmor => &umbra_armor::UmbraArmor,
         Keyword::Cipher => &cipher::Cipher,
@@ -926,6 +928,7 @@ mod tests {
                 cost: cost(),
             },
             Keyword::Assist,
+            Keyword::Craft(cost()),
             Keyword::Prototype {
                 cost: cost(),
                 power: 2,
@@ -1088,6 +1091,7 @@ mod tests {
         "Keyword.Transmute",
         "Keyword.Awaken",
         "Keyword.Assist",
+        "Keyword.Craft",
         "Keyword.Prototype",
         "Keyword.Gravestorm",
         "Keyword.Sunburst",
@@ -1290,6 +1294,7 @@ mod tests {
     #[case::phasing(Keyword::Phasing, Hooks::none())]
     #[case::spectacle(Keyword::Spectacle(Cost::mana("{1}{B}".parse().unwrap())), Hooks::none())]
     #[case::assist(Keyword::Assist, Hooks::none())]
+    #[case::craft(Keyword::Craft(Cost::mana("{2}{B}".parse().unwrap())), Hooks { abilities: 1, ..Hooks::none() })]
     #[case::prototype(Keyword::Prototype { cost: Cost::mana("{1}{U}{U}".parse().unwrap()), power: 2, toughness: 1 }, Hooks::none())]
     #[case::suspend(Keyword::Suspend { time: 2, cost: Cost::mana("{R}".parse().unwrap()) }, Hooks { abilities: 3, ..Hooks::none() })]
     fn a_keyword_answers_the_hooks_of_its_row(#[case] keyword: Keyword, #[case] row: Hooks) {

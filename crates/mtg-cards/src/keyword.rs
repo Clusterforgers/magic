@@ -309,6 +309,8 @@ pub enum Keyword {
         /// The alternative cost.
         cost: Cost,
     },
+    /// Craft with its cost (CR 702.167): at sorcery speed, for the cost, which exiles this permanent and the materials, return this card from exile transformed.
+    Craft(Cost),
     /// Assist (CR 702.132): as the spell is cast its caster may choose another player, who may pay any amount of the generic mana of its total cost.
     Assist,
     /// Prototype with its cost and size (CR 702.160): the permanent spell may be cast from a hand for the cost, with that mana cost, its colours and that power and toughness; it keeps them as a permanent.
@@ -525,6 +527,7 @@ impl Keyword {
         "Awaken",
         "Prototype",
         "Assist",
+        "Craft",
         "Gravestorm",
         "Sunburst",
         "Afterlife",
@@ -702,6 +705,7 @@ impl Keyword {
             Keyword::Awaken { .. } => "Awaken",
             Keyword::Prototype { .. } => "Prototype",
             Keyword::Assist => "Assist",
+            Keyword::Craft(_) => "Craft",
             Keyword::Gravestorm => "Gravestorm",
             Keyword::Sunburst => "Sunburst",
             Keyword::UmbraArmor => "Umbra armor",
@@ -924,6 +928,7 @@ mod tests {
                 toughness: 1,
             },
             Keyword::Assist,
+            Keyword::Craft(Cost::default()),
             Keyword::Gravestorm,
             Keyword::Sunburst,
             Keyword::Afterlife(2),

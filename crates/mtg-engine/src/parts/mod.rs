@@ -79,6 +79,8 @@ pub(crate) enum Kind {
     ToLibrary(ZoneKind, bool),
     /// One Food the payer controls is sacrificed, or three cards of their graveyard are exiled.
     Forage,
+    /// Permanents the payer controls and/or cards in their graveyard are exiled (craft, CR 702.167).
+    Craft,
 }
 
 /// A part of the cost that takes objects the player picks.
@@ -163,6 +165,7 @@ const fn counted(item: &CostItem) -> &'static str {
         CostItem::Discard { .. } => "Cost.Discard.Counted",
         CostItem::ExileFromGraveyard { .. } => "Cost.ExileFromGraveyard.Counted",
         CostItem::ExileFromHand { .. } => "Cost.ExileFromHand.Counted",
+        CostItem::Craft { .. } => "Cost.Craft.Counted",
         CostItem::RevealFromHand { .. } => "Cost.RevealFromHand.Counted",
         CostItem::TapPermanents { .. } => "Cost.TapPermanents.Counted",
         CostItem::ReturnToHand { .. } => "Cost.ReturnToHand.Counted",
@@ -273,6 +276,19 @@ fn read_more(item: &CostItem) -> Result<Option<(Part, bool)>, &'static str> {
                 return Err("Cost.ToLibrary.Zone");
             }
             pick(Kind::ToLibrary(*from, *bottom), filter, count, item)?
+        }
+        CostItem::Craft {
+            filter,
+            count,
+            least,
+        } => {
+            let (mut part, x) = pick(Kind::Craft, filter, count, item)?;
+            // Before X is announced the part stands for the fewest materials it may take, so a cost with fewer than
+            // that is never offered (CR 702.167a).
+            if x && let Part::Pick(pick) = &mut part {
+                pick.count = usize::try_from(least.unwrap_or(1)).unwrap_or(1);
+            }
+            (part, x)
         }
         CostItem::Forage => {
             let filter = Selector::default();
@@ -484,6 +500,7 @@ impl Part {
                 Kind::Behold => "Cost.Behold",
                 Kind::ToLibrary(..) => "Cost.ToLibrary",
                 Kind::Forage => "Cost.Forage",
+                Kind::Craft => "Cost.Craft",
                 Kind::ExileHand => "Cost.ExileFromHand",
                 Kind::Reveal => "Cost.RevealFromHand",
                 Kind::Tap => "Cost.TapPermanents",
@@ -591,7 +608,13 @@ impl Part {
                 found.sort_by_key(|id| spare.contains(id));
                 (found.len() >= pick.count).then(|| found.into_iter().take(pick.count).collect())
             }
-            Part::X(_) => Some(Vec::new()),
+            // Craft takes at least the fewest materials its pick holds before X is announced.
+            Part::X(inner) => match &**inner {
+                Part::Pick(pick) if pick.kind == Kind::Craft => Part::Pick(pick.clone())
+                    .payable(payer, spare)
+                    .map(|_| Vec::new()),
+                _ => Some(Vec::new()),
+            },
         }
     }
 
@@ -661,6 +684,7 @@ pub(crate) fn photographed(
                 | Kind::ExileAny
                 | Kind::Evidence
                 | Kind::Forage
+                | Kind::Craft
                 | Kind::ExileHand
                 | Kind::Reveal
         ) {
@@ -751,12 +775,13 @@ impl Pick {
             Kind::Behold => behold::candidates(payer, &self.filter),
             Kind::ToLibrary(from, _) => to_library::candidates(payer, from, &self.filter),
             Kind::Forage => forage::candidates(payer),
+            Kind::Craft => exile::craft_candidates(payer, &self.filter),
         };
         // A prohibition keeps an object out of the cost it forbids (`prohibit.rs`).
         found.retain(|id| match self.kind {
             Kind::Sacrifice => crate::prohibit::may_sacrifice(payer.state, payer.player, *id),
             Kind::Discard => crate::prohibit::may_discard(payer.state, payer.player, *id),
-            Kind::Exile | Kind::ExileHand | Kind::ExileAny => {
+            Kind::Exile | Kind::ExileHand | Kind::ExileAny | Kind::Craft => {
                 crate::prohibit::may_exile(payer.state, *id)
             }
             _ => true,
@@ -855,6 +880,7 @@ impl Pick {
                 to_library::text(from, &self.filter, self.count, bottom)
             }
             Kind::Forage => forage::text(),
+            Kind::Craft => exile::craft_text(&self.filter, self.count),
         }
     }
 
@@ -896,6 +922,7 @@ impl Pick {
             Kind::ExileAny | Kind::Evidence => exile::event(state, object),
             Kind::Behold => behold::event(state, player, object),
             Kind::Forage => forage::event(state, object),
+            Kind::Craft => exile_hand::event(state, object),
             Kind::Blight(_) | Kind::ToLibrary(..) => None,
         }
     }

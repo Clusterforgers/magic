@@ -184,6 +184,17 @@ pub enum CostItem {
     },
     /// Forage (Bloomburrow): exile three cards from the payer's graveyard or sacrifice a Food they control.
     Forage,
+    /// Craft materials (CR 702.167): exile permanents the payer controls and/or cards in their graveyard that match, other than the source.
+    Craft {
+        /// Which permanents and cards may be chosen.
+        filter: Selector,
+        /// How many; X for "one or more".
+        #[serde(default = "Amount::one", skip_serializing_if = "Amount::is_one")]
+        count: Amount,
+        /// The least X when the count is X (1 when absent).
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        least: Option<u32>,
+    },
     /// One of these costs, chosen by the caster as the spell is announced ("discard a card or pay 3 life"): the only item of
     /// the required additional cost of a spell.
     OneOf(Vec<Cost>),
