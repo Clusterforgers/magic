@@ -334,23 +334,21 @@ fn the_renderer_writes_the_hand_written_abilities_as_the_cards_text() {
                     printed.name
                 );
             }
-            // Two statics under one condition are one sentence of the card.
+            // Two statics with one subject may be one sentence of the card; printed as two sentences, each
+            // is checked on its own below.
             if let Some(&(same, second)) = listed.get(at + 1) {
                 let pair = static_pair_texts(ability, second);
-                if same == face && !pair.is_empty() {
-                    let lines: Vec<&str> = compiled
-                        .clauses
+                let lines: Vec<&str> = compiled
+                    .clauses
+                    .iter()
+                    .filter(|clause| clause.face == face && clause.kind == ClauseKind::Static)
+                    .map(|clause| without_numerals(without_ability_word(&clause.text)))
+                    .collect();
+                if same == face
+                    && lines
                         .iter()
-                        .filter(|clause| clause.face == face && clause.kind == ClauseKind::Static)
-                        .map(|clause| without_numerals(without_ability_word(&clause.text)))
-                        .collect();
-                    assert!(
-                        lines
-                            .iter()
-                            .any(|text| pair.iter().any(|written| same_text(written, text))),
-                        "{}: none of {pair:?} is in {lines:?}",
-                        printed.name
-                    );
+                        .any(|text| pair.iter().any(|written| same_text(written, text)))
+                {
                     skip_next = true;
                     rendered += 2;
                     continue;
