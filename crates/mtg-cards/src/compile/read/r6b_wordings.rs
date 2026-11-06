@@ -179,6 +179,15 @@ fn implied_you(text: &str) -> Option<String> {
     if !AND_VERBS.contains(&verb) {
         return None;
     }
+    // "the sacrificed creature" names a sacrifice of the cost; without one the wording is not this rule's.
+    if text.contains(" sacrificed ")
+        && !text
+            .split(": ")
+            .next()
+            .is_some_and(|cost| cost.contains("Sacrifice"))
+    {
+        return None;
+    }
     let clause_start = text[..at].rfind(": ").map_or(0, |colon| colon + 2);
     let clause = &text[clause_start..at];
     let opener = clause.split(' ').next()?;
