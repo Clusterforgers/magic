@@ -1,0 +1,61 @@
+{
+  "oracle_id": "a78b063a-7f74-465a-9670-34f927f4bfe9",
+  "name": "Aquatic Alchemist // Bubble Up",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Aquatic Alchemist",
+      "oracle_fingerprint": "b0ce2b83e973942ad1f1ba14746a24af",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "Nth": {
+                "event": {
+                  "SpellCast": {
+                    "what": [{ "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] }],
+                    "by": "You"
+                  }
+                },
+                "nth": 1
+              }
+            },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "ModifyPT": { "power": 2, "toughness": 0 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Bubble Up",
+      "oracle_fingerprint": "b61664fec92f8703aca04c4be693d0c0",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] },
+                    { "In": "Graveyard" },
+                    { "OwnedBy": "You" }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              { "Move": { "what": { "Target": 0 }, "to": { "Library": { "place": "Top" } } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,58 @@
+{
+  "oracle_id": "b85e7ab2-6f57-4b65-8c16-034b342996f0",
+  "name": "Ambitious Farmhand // Seasoned Cathar",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ambitious Farmhand",
+      "oracle_fingerprint": "b2ab8dce25c5aaa0ed2326500dc2c4f3",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "Search": {
+                        "filter": [{ "Supertype": "Basic" }, { "Subtype": "Plains" }],
+                        "reveal": true,
+                        "as": "land"
+                      }
+                    },
+                    { "Move": { "what": { "Bound": "land" }, "to": "Hand" } },
+                    { "Shuffle": {} }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{1}{W}{W}",
+            "condition": {
+              "Compare": {
+                "left": {
+                  "Distinct": {
+                    "of": [{ "Type": "Creature" }, { "ControlledBy": "You" }],
+                    "stat": "Power"
+                  }
+                },
+                "op": "Ge",
+                "right": 3
+              }
+            },
+            "effects": [{ "Transform": { "what": "This" } }]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Seasoned Cathar",
+      "oracle_fingerprint": "8701c4216ab0c9a70ce992c6ad633b95",
+      "abilities": [{ "Keyword": "Lifelink" }]
+    }
+  ]
+}
