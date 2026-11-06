@@ -485,7 +485,10 @@ pub fn written_variants(ability: &Ability) -> Vec<String> {
             }
         }
     }
-    texts
+    if !texts.is_empty() {
+        return texts;
+    }
+    super::r5a_order::canonical(ability).map_or(texts, |ordered| written_as_given(&ordered))
 }
 
 /// Every wording of an ability, its selectors in the order given.
@@ -504,6 +507,7 @@ fn written_as_given(ability: &Ability) -> Vec<String> {
     oracle_only::add(ability, &mut texts);
     done_once_kept(ability, &mut texts);
     texts.extend(super::r5b_performed::variants(ability, written_variants));
+    super::r5a_wordings::add(&mut texts);
     texts
 }
 

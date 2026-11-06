@@ -1,0 +1,45 @@
+{
+  "oracle_id": "ba399fe7-3597-49e2-a291-6051e52d27aa",
+  "name": "Propagator Primordium",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Propagator Primordium",
+      "oracle_fingerprint": "00123852073168cb842b08b530fd7e94",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              { "Conjure": { "name": "Propagator Primordium", "zone": "Graveyard", "count": 2 } }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [{ "PutCounters": { "on": "This", "counter": { "Other": "spore" } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "RemoveCounters": { "counter": { "Other": "spore" }, "count": 3 } }],
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Type": "Creature" },
+                    { "Subtype": "Fungus" },
+                    { "In": "Graveyard" },
+                    { "OwnedBy": "You" }
+                  ]
+                }
+              }
+            ],
+            "effects": [{ "Move": { "what": { "Target": 0 }, "to": { "Battlefield": {} } } }]
+          }
+        }
+      ]
+    }
+  ]
+}
