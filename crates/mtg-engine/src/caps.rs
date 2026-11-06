@@ -327,6 +327,7 @@ const RUNS: &[&str] = &[
     "Rule.Combat",
     "Rule.IgnoreHexproof",
     "Rule.CantBeCountered",
+    "Rule.CantBeRegenerated",
     "Rule.CantGainLife",
     "Rule.NoLifeLossFromDamage",
     "Rule.LifeFloor",
@@ -911,6 +912,7 @@ mod tests {
     #[case::combat_quirks("Rule.Combat", true)]
     #[case::ignored_hexproof("Rule.IgnoreHexproof", true)]
     #[case::spells_that_cant_be_countered("Rule.CantBeCountered", true)]
+    #[case::no_regeneration("Rule.CantBeRegenerated", true)]
     #[case::no_life_gain("Rule.CantGainLife", true)]
     #[case::no_life_loss_from_damage("Rule.NoLifeLossFromDamage", true)]
     #[case::radiation_gains_life("Rule.RadiationGainsLife", true)]

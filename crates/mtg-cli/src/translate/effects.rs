@@ -476,14 +476,17 @@ fn api_line(ctx: &mut Ctx, p: &Params, api: &str) -> Tr<Vec<Value>> {
         "Dig" => effects_zone::dig(ctx, p),
         "RearrangeTopOfLibrary" => effects_zone::rearrange_top(ctx, p),
         "DigUntil" => effects_zone::dig_until(ctx, p),
+        "DigMultiple" => super::effects_dig::dig_multiple(ctx, p),
+        "SkipTurn" => super::effects_verbs::skip_turn(ctx, p),
         "ManifestDread" => effects_zone::manifest_dread(ctx, p),
         "Attach" => effects_obj::attach(ctx, p),
         "CopyPermanent" => super::tokens_copy::copy_permanent(ctx, p),
         "Destroy" | "DestroyAll" | "Counter" | "Pump" | "PumpAll" | "PutCounter"
         | "RemoveCounter" | "Tap" | "Untap" | "TapAll" | "UntapAll" | "Sacrifice"
         | "Regenerate" | "Fight" | "Airbend" | "GainControl" | "DamageAll" | "Animate"
-        | "PreventDamage" | "DamageResolve" | "PutCounterAll" | "AnimateAll" | "Debuff"
-        | "Protection" | "ProtectionAll" | "AlterAttribute" => effects_obj::effects(ctx, p, api),
+        | "PreventDamage" | "DamageResolve" | "PutCounterAll" | "RemoveCounterAll"
+        | "AddOrRemoveCounter" | "AnimateAll" | "Debuff" | "Protection" | "ProtectionAll"
+        | "AlterAttribute" => effects_obj::effects(ctx, p, api),
         "ChangeZone" | "ChangeZoneAll" => effects_zone::effects(ctx, p, api),
         "Token" | "Mana" | "ManaReflected" | "Investigate" => tokens::effects(ctx, p, api),
         other => unmapped(format!("effect:{other}")),

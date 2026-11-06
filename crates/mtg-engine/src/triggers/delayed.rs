@@ -151,7 +151,8 @@ impl Delayed {
             | Duration::WhileYouControlSource
             | Duration::WhileSourceTapped
             | Duration::WhileHasCounter(_)
-            | Duration::NextUntapStep => true,
+            | Duration::NextUntapStep
+            | Duration::UntilTurnSkipped => true,
         }
     }
 }

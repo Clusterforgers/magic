@@ -421,6 +421,8 @@ mod r4a_amplify;
 mod r4a_champion;
 mod r4a_enters_with;
 mod r4a_tribute;
+mod r4b_dig;
+mod r4b_skip;
 mod r4f_stack_move;
 mod r6q1_face_down_cost;
 mod r7p3_next_spell;

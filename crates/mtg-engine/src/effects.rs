@@ -388,7 +388,11 @@ pub(crate) fn lasts(
         // `UntilEndOfTurn` ends with the cleanup step, which logs the expiry (CR 514.2); `UntilEndOfYourNextTurn` ends
         // the same way, in the cleanup step of the next turn its controller has.
         // `NextUntapStep` ends with the untap step that the permanent it holds down would untap in (`c7_untap`).
-        Duration::UntilEndOfTurn | Duration::Forever | Duration::NextUntapStep => true,
+        // `UntilTurnSkipped` ends with the turn it skips (`prohibit::skipped_turn_rules`).
+        Duration::UntilEndOfTurn
+        | Duration::Forever
+        | Duration::NextUntapStep
+        | Duration::UntilTurnSkipped => true,
         Duration::UntilEndOfYourNextTurn => state.is_alive(controller),
         // Begun before the end step of its controller's own turn, it carries the turn before (`began_turn`), so that end step ends it.
         Duration::UntilYourNextEndStep => {

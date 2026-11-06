@@ -51,14 +51,19 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
 }
 
 /// `Effect::RemoveAllCounters`: each permanent and player the effect names loses every counter of every kind, all
-/// together in the order the reference lists them and the fixed order of the kinds; what holds none gives no event.
+/// together in the order the reference lists them and the fixed order of the kinds (only the one kind when the effect
+/// names it); what holds none gives no event.
 pub(super) fn run_all(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
-    let Effect::RemoveAllCounters { from } = effect else {
+    let Effect::RemoveAllCounters { from, counter } = effect else {
         return Err(wrong_effect("RemoveAllCounters"));
     };
+    let only = counter.as_ref();
     let mut events = Vec::new();
     for holder in holders(cx, from)? {
         for (counter, held) in kinds_held(cx.state(), holder) {
+            if only.is_some_and(|only| *only != counter) {
+                continue;
+            }
             if let Ok(taken) = i32::try_from(held)
                 && taken > 0
             {
@@ -212,6 +217,14 @@ mod tests {
             on("Wolf", CounterKind::MinusOneMinusOne, -1),
             on("Bear", CounterKind::Charge, -1),
         ]
+    )]
+    #[case::all_counters_of_one_kind_from_each_permanent(
+        r#"{"RemoveAllCounters":{"from":{"Each":[{"Type":"Creature"}]},"counter":"+1/+1"}}"#,
+        vec![on("Wolf", CounterKind::PlusOnePlusOne, -3)]
+    )]
+    #[case::all_counters_of_a_kind_nobody_holds(
+        r#"{"RemoveAllCounters":{"from":{"Each":[{"Type":"Creature"}]},"counter":"poison"}}"#,
+        vec![]
     )]
     #[case::all_counters_of_a_holder_with_none(
         r#"{"RemoveAllCounters":{"from":"This"}}"#,

@@ -21,6 +21,7 @@ pub mod effects;
 pub mod effects_ambient;
 pub mod effects_animate;
 pub mod effects_copy;
+mod effects_dig;
 mod effects_digital;
 pub mod effects_effect;
 pub mod effects_emblem;

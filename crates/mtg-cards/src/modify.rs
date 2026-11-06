@@ -226,6 +226,9 @@ pub enum Duration {
     /// of the kind or leaves, and a counter put on another permanent later changes nothing. Only a continuous effect that
     /// names its objects (a reference, not a group) lasts this way.
     WhileHasCounter(Box<CounterKind>),
+    /// Until the turn it makes a player skip has been skipped ("skip your next turn", CR 614.10): only the rule that a
+    /// player skips a turn lasts this long.
+    UntilTurnSkipped,
     /// Without end (until the object or the game is gone).
     Forever,
 }
@@ -542,6 +545,8 @@ pub enum GameRule {
     },
     /// The spells can't be countered.
     CantBeCountered(Ref),
+    /// The permanents can't be regenerated (CR 701.19c): a regeneration shield does nothing to their destruction.
+    CantBeRegenerated(Ref),
     /// The players can't gain life.
     CantGainLife(Ref),
     /// Damage dealt to the players causes no loss of life: it is still dealt, and every other effect of it happens.

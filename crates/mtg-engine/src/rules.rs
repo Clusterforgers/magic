@@ -94,6 +94,8 @@ pub enum Rule {
     },
     /// The spells can't be countered.
     CantBeCountered(Vec<ObjectRef>),
+    /// The permanents can't be regenerated.
+    CantBeRegenerated(Vec<ObjectRef>),
     /// The players can't gain life.
     CantGainLife(Vec<PlayerId>),
     /// Damage dealt to the players causes no loss of life.
@@ -410,6 +412,7 @@ impl RuleEffect {
             Rule::MustAttack(named)
             | Rule::MustBlock(named)
             | Rule::CantBeCountered(named)
+            | Rule::CantBeRegenerated(named)
             | Rule::MayCast {
                 only: Some(named), ..
             } => named.iter().all(gone),
@@ -470,6 +473,7 @@ pub(crate) struct RulesInForce {
     attack_players: Vec<(ObjectId, PlayerId)>,
     must_block: BTreeSet<ObjectId>,
     uncounterable: BTreeSet<ObjectId>,
+    unregenerable: BTreeSet<ObjectId>,
     no_life_gain: BTreeSet<PlayerId>,
     no_damage_loss: BTreeSet<PlayerId>,
     life_floors: BTreeMap<PlayerId, Vec<i32>>,
@@ -751,6 +755,7 @@ impl RulesInForce {
             }
             Rule::BlockLimitEach { most, who } => self.w14a_limit_blocks(*most, who),
             Rule::CantBeCountered(named) => self.uncounterable.extend(ids(named)),
+            Rule::CantBeRegenerated(named) => self.unregenerable.extend(ids(named)),
             Rule::CantGainLife(players) => self.no_life_gain.extend(players),
             Rule::NoLifeLossFromDamage(players) => self.no_damage_loss.extend(players),
             Rule::LifeFloor { players, floor } => {
@@ -1025,6 +1030,9 @@ pub(crate) fn lower_rule(scope: &Scope<'_>, wanted: &GameRule) -> Result<Rule, R
         GameRule::BlockLimit(most) => Rule::BlockLimit(*most),
         GameRule::BlockLimitEach { most, who } => w14a_block_limit_each(scope, *most, who)?,
         GameRule::CantBeCountered(who) => Rule::CantBeCountered(objects(who, Zone::Stack)?),
+        GameRule::CantBeRegenerated(who) => {
+            Rule::CantBeRegenerated(objects(who, Zone::Battlefield)?)
+        }
         GameRule::CantGainLife(who) => Rule::CantGainLife(scope.players(who)?),
         GameRule::NoLifeLossFromDamage(who) => Rule::NoLifeLossFromDamage(scope.players(who)?),
         GameRule::LifeFloor { who, floor } => Rule::LifeFloor {
@@ -1151,9 +1159,10 @@ pub(crate) fn names_nothing(rule: &Rule) -> bool {
         Rule::AttackTax(tax) => {
             tax.players.is_empty() || (tax.mana.symbols().is_empty() && tax.life == 0)
         }
-        Rule::MustAttack(named) | Rule::MustBlock(named) | Rule::CantBeCountered(named) => {
-            named.is_empty()
-        }
+        Rule::MustAttack(named)
+        | Rule::MustBlock(named)
+        | Rule::CantBeCountered(named)
+        | Rule::CantBeRegenerated(named) => named.is_empty(),
         Rule::MustAttackPlayers(pairs) => pairs.is_empty(),
         Rule::MustBlockAttacker { blockers, .. } => blockers.is_empty(),
         Rule::Combat { creatures, .. } => creatures.is_empty(),
@@ -1300,6 +1309,7 @@ static NONE: RulesInForce = RulesInForce {
     attack_players: Vec::new(),
     must_block: BTreeSet::new(),
     uncounterable: BTreeSet::new(),
+    unregenerable: BTreeSet::new(),
     no_life_gain: BTreeSet::new(),
     no_damage_loss: BTreeSet::new(),
     life_floors: BTreeMap::new(),
@@ -1541,6 +1551,11 @@ pub fn must_block(state: &GameState, id: ObjectId) -> bool {
 /// Whether the spell `id` can't be countered: the one place a counter reads this rule.
 pub fn cant_be_countered(state: &GameState, id: ObjectId) -> bool {
     state.rules().uncounterable.contains(&id)
+}
+
+/// Whether the permanent `id` can't be regenerated: the one place a regeneration shield reads this rule.
+pub fn cant_be_regenerated(state: &GameState, id: ObjectId) -> bool {
+    state.rules().unregenerable.contains(&id)
 }
 
 /// Whether `player` can't gain life: the one place a gain of life reads this rule. A life total that can't change

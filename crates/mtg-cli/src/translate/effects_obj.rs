@@ -19,6 +19,8 @@ pub fn effects(ctx: &mut Ctx, p: &Params, api: &str) -> Tr<Vec<Value>> {
         "DamageAll" => damage_all(ctx, p),
         "DamageResolve" => damage_resolve(ctx, p),
         "PutCounterAll" => one(put_counter_all(ctx, p)),
+        "RemoveCounterAll" => one(remove_counter_all(ctx, p)),
+        "AddOrRemoveCounter" => one(add_or_remove_counter(ctx, p)),
         "Counter" => counter(ctx, p),
         "PreventDamage" => one(prevent_damage(ctx, p)),
         "Pump" => pump(ctx, p),
@@ -320,6 +322,75 @@ fn put_counter_all(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
     Ok(
         json!({"PutCounters": {"on": {"Each": frame::all_matching(ctx, p, "PutCounterAll", valid)?}, "counter": kind, "count": count}}),
     )
+}
+
+/// `AddOrRemoveCounter`: the controller puts counters of a kind on the object or takes them off ("put a plague counter on
+/// it or remove one from it"); with `Optional$` the controller may do neither.
+fn add_or_remove_counter(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
+    only(
+        p,
+        "AddOrRemoveCounter",
+        &[
+            "CounterType",
+            "CounterNum",
+            "Defined",
+            "ValidTgts",
+            "TargetMin",
+            "TargetMax",
+            "Optional",
+            "DefinedPlayer",
+        ],
+    )?;
+    let Some(kind) = p.get("CounterType").and_then(kind_word) else {
+        return unmapped("key:AddOrRemoveCounter.CounterType");
+    };
+    let on = subject(ctx, p, "Self", None)?;
+    let count = amount(ctx, p.get("CounterNum").unwrap_or("1"))?;
+    let put = json!({"PutCounters": {"on": on, "counter": kind, "count": count}});
+    let take = json!({"RemoveCounters": {"from": on, "counter": kind, "count": count}});
+    let mut options = vec![json!([put]), json!([take])];
+    match p.get("Optional") {
+        None | Some("False") => {}
+        Some("True") => options.push(json!([])),
+        Some(_) => return unmapped("key:AddOrRemoveCounter.Optional"),
+    }
+    let mut choice = json!({"OneOf": {"options": options}});
+    if let Some(word) = p.get("DefinedPlayer") {
+        choice["OneOf"]["who"] = defined(ctx, word)?;
+    }
+    Ok(choice)
+}
+
+/// `RemoveCounterAll`: counters off every battlefield object that matches, every kind, every counter of one kind, or a
+/// number of them from each.
+fn remove_counter_all(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
+    only(
+        p,
+        "RemoveCounterAll",
+        &[
+            "ValidCards",
+            "CounterType",
+            "CounterNum",
+            "AllCounters",
+            "AllCounterTypes",
+            "ValidTgts",
+        ],
+    )?;
+    let valid = p.get("ValidCards").unwrap_or_default();
+    let from = json!({"Each": frame::all_matching(ctx, p, "RemoveCounterAll", valid)?});
+    if p.get("AllCounterTypes") == Some("True") {
+        return Ok(json!({"RemoveAllCounters": {"from": from}}));
+    }
+    let Some(kind) = p.get("CounterType").and_then(kind_word) else {
+        return unmapped("key:RemoveCounterAll.CounterType");
+    };
+    // A line with no count takes every counter of the kind (Corrosion).
+    let every = p.get("AllCounters") == Some("True");
+    let Some(number) = p.get("CounterNum").filter(|_| !every) else {
+        return Ok(json!({"RemoveAllCounters": {"from": from, "counter": kind}}));
+    };
+    let count = amount(ctx, number)?;
+    Ok(json!({"RemoveCounters": {"from": from, "counter": kind, "count": count}}))
 }
 
 /// `TargetValidTargeting$` of a `Counter`: the spell or ability has a target the words name (`You`, `Player`, or objects on

@@ -790,6 +790,7 @@ mod r3p6;
 mod r3p7;
 mod r3p8;
 mod r4a;
+mod r4b;
 mod r4c;
 mod r4d;
 mod r4f2;

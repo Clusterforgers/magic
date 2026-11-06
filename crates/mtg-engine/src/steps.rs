@@ -429,13 +429,14 @@ pub(crate) fn end_turn(state: &GameState) -> Vec<Event> {
             events
         };
     }
-    let (passed, active, extra) = next_turn(state);
+    let (passed, spent, active, extra) = next_turn(state);
     events.extend(passed);
     events.push(Event::TurnBegan {
         number: state.turn().number() + 1,
         active,
         extra: extra.is_some(),
     });
+    events.extend(spent);
     events.extend(crate::c10_xp_copy_ends::c10_xp_copies_ending(state, active));
     // The spells the ending turn's active player cast are counted before the new turn clears the count (CR 726.3a).
     if let Some(to) = crate::day_night::at_turn_start(state) {
@@ -454,21 +455,29 @@ pub(crate) fn end_turn(state: &GameState) -> Vec<Event> {
     events
 }
 
+/// The turn that follows: the events that pass over extra turns, the events that end the rules used up by skipped turns, the
+/// player and the extra turn taken.
+type NextTurn = (Vec<Event>, Vec<Event>, PlayerId, Option<ExtraTurn>);
+
 /// Who takes the next turn: the latest extra turn added whose player is still in the game and does not skip it (an
 /// earlier one waits), else the next player in turn order after the seat of the regular turn (CR 500.7). The events
 /// pass over the extra turns of players who have left or skip them.
-fn next_turn(state: &GameState) -> (Vec<Event>, PlayerId, Option<ExtraTurn>) {
+fn next_turn(state: &GameState) -> NextTurn {
     let mut passed = Vec::new();
+    let mut spent = Vec::new();
     for turn in state.extra_turns().iter().rev() {
         if state.is_alive(turn.player)
             && !crate::rules::skips_extra_turns(state, turn.player)
             && !crate::prohibit::skips_turn(state, turn.player)
         {
-            return (passed, turn.player, Some(*turn));
+            return (passed, spent, turn.player, Some(*turn));
         }
         passed.push(Event::ExtraTurnSkipped {
             player: turn.player,
         });
+        if crate::prohibit::skips_turn(state, turn.player) {
+            spent.extend(used_skips(state, turn.player));
+        }
     }
     let regular = state.turn().regular();
     let first = state.next_alive_after(regular).unwrap_or(regular);
@@ -476,11 +485,20 @@ fn next_turn(state: &GameState) -> (Vec<Event>, PlayerId, Option<ExtraTurn>) {
     let mut next = first;
     for _ in 0..state.players().len() {
         if !crate::prohibit::skips_turn(state, next) {
-            return (passed, next, None);
+            return (passed, spent, next, None);
         }
+        spent.extend(used_skips(state, next));
         next = state.next_alive_after(next).unwrap_or(next);
     }
-    (passed, first, None)
+    (passed, spent, first, None)
+}
+
+/// The events that end the rule a skipped turn of `player` uses up ("skip your next turn"), after the turn that follows has
+/// begun.
+fn used_skips(state: &GameState, player: PlayerId) -> impl Iterator<Item = Event> {
+    crate::prohibit::skipped_turn_rules(state, player)
+        .into_iter()
+        .map(|id| Event::RuleExpired { id })
 }
 
 /// Whether the turn that is ending is the last of the last round the house rule allows.

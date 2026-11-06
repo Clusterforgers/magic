@@ -688,10 +688,14 @@ pub enum Effect {
         #[serde(default, skip_serializing_if = "std::ops::Not::not")]
         up_to: bool,
     },
-    /// Removes every counter of every kind from an object or player ("Remove all counters from target creature").
+    /// Removes every counter of every kind from an object or player ("Remove all counters from target creature"), or
+    /// every counter of one kind ("remove all gold counters from all creatures").
     RemoveAllCounters {
         /// Where they come from.
         from: Ref,
+        /// The one kind removed; every kind when absent.
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        counter: Option<CounterKind>,
     },
     /// Moves counters from one object onto another (CR 122.5); the first object gives up what it has, up to the count.
     MoveCounters {
@@ -1773,7 +1777,7 @@ mod tests {
         r#"{"RemoveCounters":{"from":{"Target":0},"count":3,"up_to":true}}"#
     )]
     #[case::remove_all_counters(
-        Effect::RemoveAllCounters { from: Ref::Target(0) },
+        Effect::RemoveAllCounters { from: Ref::Target(0), counter: None },
         r#"{"RemoveAllCounters":{"from":{"Target":0}}}"#
     )]
     #[case::double_the_counters_of_a_kind(

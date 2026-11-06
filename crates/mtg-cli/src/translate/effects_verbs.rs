@@ -24,6 +24,7 @@ pub fn effects(ctx: &mut Ctx, p: &Params, api: &str) -> Option<Tr<Vec<Value>>> {
         "TapOrUntap" => object_verb(ctx, p, api, "TapOrUntap"),
         "Phases" => object_verb(ctx, p, api, "PhaseOut"),
         "AddTurn" => add_turn(ctx, p),
+        "Radiation" => radiation(ctx, p),
         "Manifest" => manifest(ctx, p, "Manifest"),
         "Cloak" => manifest(ctx, p, "Cloak"),
         "MultiplyCounter" => multiply_counter(ctx, p),
@@ -56,6 +57,29 @@ fn incubate(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
     let who = subject(ctx, p, "You", None)?;
     let count = amount(ctx, p.get("Amount").unwrap_or("1"))?;
     Ok(json!({"Incubate": {"who": who, "count": count}}))
+}
+
+/// `SkipTurn`: each turn is one rule that the player skips a turn and ends with the turn it skips (CR 614.10).
+pub fn skip_turn(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
+    let mut read = TARGETING.to_vec();
+    read.push("NumTurns");
+    only(p, "SkipTurn", &read)?;
+    let who = subject(ctx, p, "You", None)?;
+    let Ok(turns) = p.get("NumTurns").unwrap_or("1").parse::<usize>() else {
+        return unmapped("key:SkipTurn.NumTurns");
+    };
+    let rule = json!({"Rule": {"rule": {"Cant": {"who": who, "action": "SkipTurn"}}, "duration": "UntilTurnSkipped"}});
+    Ok(vec![rule; turns])
+}
+
+/// `Radiation`: the players get rad counters (CR 725), counters of the kind `rad` on a player.
+fn radiation(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
+    let mut read = TARGETING.to_vec();
+    read.push("Num");
+    only(p, "Radiation", &read)?;
+    let who = subject(ctx, p, "You", None)?;
+    let count = amount(ctx, p.get("Num").unwrap_or("1"))?;
+    Ok(json!({"PutCounters": {"on": who, "counter": {"Other": "rad"}, "count": count}}))
 }
 
 fn add_turn(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
