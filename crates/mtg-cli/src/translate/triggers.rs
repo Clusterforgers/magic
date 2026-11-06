@@ -103,19 +103,8 @@ pub fn triggered(ctx: &mut Ctx, body: &str) -> Tr<Value> {
     if let Some(condition) = intervening {
         ability["if"] = condition;
     }
-    match p.get("ActivationLimit") {
-        None => {}
-        Some("1") => ability["limit"] = json!("OncePerTurn"),
-        Some(other) => return unmapped(format!("key:Trigger.ActivationLimit={other}")),
-    }
-    // "Do this only once each turn" limits what happens, not the triggering. The engine spends the limit as the ability
-    // triggers: the same unless the first one is stifled, which a limit of 1 cannot tell apart from one that resolved.
-    match p.get("ResolvedLimit") {
-        None => {}
-        Some("1") if p.get("ActivationLimit").is_none() => {
-            ability["limit"] = json!("OncePerTurn");
-        }
-        Some(other) => return unmapped(format!("key:Trigger.ResolvedLimit={other}")),
+    if let Some(limit) = once_a_turn(&p)? {
+        ability["limit"] = limit;
     }
     if !ctx.targets.is_empty() {
         ability["targets"] = Value::Array(ctx.targets.clone());
@@ -130,6 +119,22 @@ pub fn triggered(ctx: &mut Ctx, body: &str) -> Tr<Value> {
         }
     }
     Ok(ability)
+}
+
+/// The limit a line states: `ActivationLimit$ 1` ("triggers only once each turn"), or `ResolvedLimit$ 1` ("do this only once
+/// each turn"), which limits what happens, not the triggering. The engine spends the limit as the ability triggers: the same
+/// unless the first one is stifled, which a limit of 1 cannot tell apart from one that resolved.
+fn once_a_turn(p: &Params) -> Tr<Option<Value>> {
+    let once = Some(json!("OncePerTurn"));
+    match (p.get("ActivationLimit"), p.get("ResolvedLimit")) {
+        (None, None) => Ok(None),
+        (Some("1"), None) | (None, Some("1")) => Ok(once),
+        (Some(other), _) if other != "1" => {
+            unmapped(format!("key:Trigger.ActivationLimit={other}"))
+        }
+        (_, Some(other)) => unmapped(format!("key:Trigger.ResolvedLimit={other}")),
+        (Some(_), None) => Ok(once),
+    }
 }
 
 /// Damage to a permanent: the event's subject is the permanent that was damaged (a player recipient is a player).

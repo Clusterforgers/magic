@@ -40,7 +40,10 @@ fn an_object_effect_on_damage_to_a_player_stays_a_gap() {
         "Creature Ox",
         "PT:2/2\nT:Mode$ DamageDone | ValidSource$ Card.Self | ValidTarget$ Player | TriggerZones$ Battlefield | Execute$ T\nSVar:T:DB$ Pump | NumAtt$ +1 | Defined$ TriggeredTargetLKICopy",
     );
-    assert!(!found.is_empty());
+    assert_eq!(
+        found,
+        ["trigger:object-effect-on-a-player-event".to_owned()]
+    );
 }
 
 #[rstest]
