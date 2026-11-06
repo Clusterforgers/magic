@@ -181,6 +181,11 @@ fn dispatch(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         Effect::Scry { .. } => scry::run(cx, effect),
         Effect::LookAtTop { .. } => look_at_top::run(cx, effect),
         Effect::Reveal { .. } => reveal::run(cx, effect),
+        Effect::Search {
+            zone: mtg_cards::refs::ZoneKind::Outside,
+            bind,
+            ..
+        } => Ok(search::nothing_outside(bind)),
         Effect::Search { .. } => search::run(cx, effect),
         Effect::Choose { .. } => choose::run(cx, effect),
         Effect::ChooseAtRandom { .. } => choose_at_random::run(cx, effect),

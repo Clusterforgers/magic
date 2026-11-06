@@ -2,6 +2,8 @@
 //! into your hand". A Commander game has no sideboard, so the search of `ZoneKind::Outside` finds nothing; the sentence is
 //! the same one the card prints.
 
+use std::fmt::Write;
+
 use crate::effect::{Destination, Effect};
 use crate::refs::{Pred, Ref, Selector, ZoneKind};
 use crate::value::{Amount, Cmp, StatKind};
@@ -38,7 +40,7 @@ fn what(filter: &Selector) -> Option<String> {
         text += " you own";
     }
     if let Some(name) = name {
-        text += &format!(" named {name}");
+        let _ = write!(text, " named {name}");
     }
     Some(text)
 }

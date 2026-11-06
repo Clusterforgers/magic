@@ -28,6 +28,16 @@ pub(super) fn zone_of(kind: ZoneKind, player: PlayerId) -> Result<Zone, ResolveE
     }
 }
 
+/// Nothing is outside a Commander game (no sideboard), so the search finds nothing and asks nothing.
+pub(super) fn nothing_outside(bind: &str) -> Run {
+    Run::Done {
+        events: Vec::new(),
+        bound: vec![(bind.to_owned(), Vec::new())],
+        snapshots: Vec::new(),
+        next: Next::Sibling,
+    }
+}
+
 /// Each player the effect names who is still in the game, in turn order, searches their zone for the cards that match
 /// the filter and chooses between `count.min` and `count.max` of them; the cards chosen of all the players are bound to
 /// the name. The searcher alone is asked and sees the matches, so nobody else learns what the zone holds. A hidden zone
@@ -52,15 +62,6 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
     };
     if !also.is_empty() {
         return super::search_zones::run(cx, effect);
-    }
-    // Nothing is outside a Commander game, so the search finds nothing and asks nothing.
-    if *zone == ZoneKind::Outside {
-        return Ok(Run::Done {
-            events: Vec::new(),
-            bound: vec![(bind.clone(), Vec::new())],
-            snapshots: Vec::new(),
-            next: Next::Sibling,
-        });
     }
     let state = cx.state();
     let most = match &count.max {

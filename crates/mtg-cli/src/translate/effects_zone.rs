@@ -74,7 +74,9 @@ fn outside(step: &mut Value, reveal: bool) {
     match step {
         Value::Array(list) => {
             list.retain(|item| *item != json!({"Shuffle": {}}));
-            list.iter_mut().for_each(|item| outside(item, reveal));
+            for item in list.iter_mut() {
+                outside(item, reveal);
+            }
         }
         Value::Object(map) => {
             if let Some(search) = map.get_mut("Search") {
@@ -82,7 +84,9 @@ fn outside(step: &mut Value, reveal: bool) {
                 // Only the card says whether the cards are shown; nothing is found either way.
                 search["reveal"] = json!(reveal);
             }
-            map.values_mut().for_each(|item| outside(item, reveal));
+            for item in map.values_mut() {
+                outside(item, reveal);
+            }
         }
         _ => {}
     }
