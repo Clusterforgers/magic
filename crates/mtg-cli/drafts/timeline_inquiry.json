@@ -1,0 +1,24 @@
+{
+  "oracle_id": "74a478c8-7498-43a6-ae0b-3964c5815b3d",
+  "name": "Timeline Inquiry",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Timeline Inquiry",
+      "oracle_fingerprint": "19dbaaa9a026fe90f5272edf410bb794",
+      "abilities": [
+        { "Keyword": { "Macro": { "name": "teamwork", "amount": 2 } } },
+        {
+          "Spell": {
+            "effects": [
+              { "Draw": { "count": 3 } },
+              {
+                "If": { "condition": { "Not": "AdditionalCostPaid" }, "then": [{ "Discard": {} }] }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,38 @@
+{
+  "oracle_id": "150f920c-c942-4feb-824f-79dd9b531687",
+  "name": "Repulsor Blast",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Repulsor Blast",
+      "oracle_fingerprint": "5428c23894b2ef4fb109ecc57871d711",
+      "abilities": [
+        { "Keyword": { "Macro": { "name": "teamwork", "amount": 2 } } },
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              { "DealDamage": { "to": { "Target": 0 }, "amount": 5 } },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": {
+                        "When": { "condition": "AdditionalCostPaid", "then": 1, "otherwise": 0 }
+                      },
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [
+                    { "DealDamage": { "to": { "ControllerOf": { "Target": 0 } }, "amount": 2 } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

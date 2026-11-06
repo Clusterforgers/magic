@@ -1,0 +1,34 @@
+{
+  "oracle_id": "0678beaf-564c-4e98-b45f-a544925683a1",
+  "name": "Urborg Panther",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Urborg Panther",
+      "oracle_fingerprint": "9a1aa01bb4eefea2b592259530cbeeb3",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{B}" }, "SacrificeSelf"],
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }, { "Blocks": "This" }] } }],
+            "effects": [{ "Destroy": { "what": { "Target": 0 } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [
+              { "Sacrifice": { "filter": [{ "Type": "Creature" }, { "Named": "Feral Shadow" }] } },
+              { "Sacrifice": { "filter": [{ "Type": "Creature" }, { "Named": "Breathstealer" }] } },
+              "SacrificeSelf"
+            ],
+            "effects": [
+              { "Search": { "filter": [{ "Named": "Spirit of the Night" }], "as": "found" } },
+              { "Move": { "what": { "Bound": "found" }, "to": { "Battlefield": {} } } },
+              { "Shuffle": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

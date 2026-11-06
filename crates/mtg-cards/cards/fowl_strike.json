@@ -1,0 +1,31 @@
+{
+  "oracle_id": "390320f7-11b8-4b61-8316-36c396470a09",
+  "name": "Fowl Strike",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Fowl Strike",
+      "oracle_fingerprint": "e58bf1fa04afff8a43010b80661cebfa",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "HasKeyword": "Flying" }] } }
+            ],
+            "effects": [{ "Destroy": { "what": { "Target": 0 } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{2}{G}" }, "DiscardSelf"],
+            "from": "Hand",
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              { "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1", "count": 2 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

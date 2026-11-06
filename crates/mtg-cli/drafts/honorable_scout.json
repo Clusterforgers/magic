@@ -1,0 +1,37 @@
+{
+  "oracle_id": "16345f75-f33e-4a31-adb1-d3563358fcec",
+  "name": "Honorable Scout",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Honorable Scout",
+      "oracle_fingerprint": "9570fb87bdee9b30cc78f49f60206c3c",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              {
+                "GainLife": {
+                  "amount": {
+                    "Times": {
+                      "by": 2,
+                      "of": {
+                        "Count": [
+                          { "Type": "Creature" },
+                          { "AnyOf": [{ "Color": "Black" }, { "Color": "Red" }] },
+                          { "ControlledBy": { "Target": 0 } }
+                        ]
+                      }
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,59 @@
+{
+  "oracle_id": "e0256da6-21f3-4019-9da0-75962b7f295c",
+  "name": "Cruel Deceiver",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Cruel Deceiver",
+      "oracle_fingerprint": "83351aad654c2abb63f67be7b30af794",
+      "abilities": [
+        { "Activated": { "cost": "{1}", "effects": [{ "LookAtTop": { "as": "top" } }] } },
+        {
+          "Activated": {
+            "cost": "{2}",
+            "limit": "OncePerTurn",
+            "effects": [
+              { "LookAtTop": { "as": "top" } },
+              { "Reveal": { "what": { "Bound": "top" } } },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Bound": "top" },
+                      "selector": [{ "Type": "Land" }],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [
+                    {
+                      "Continuous": {
+                        "affected": "This",
+                        "mods": [
+                          {
+                            "GrantAbility": {
+                              "Triggered": {
+                                "when": {
+                                  "DealsDamage": {
+                                    "source": ["This"],
+                                    "to": { "Each": [{ "Type": "Creature" }] }
+                                  }
+                                },
+                                "effects": [{ "Destroy": { "what": "Triggering" } }]
+                              }
+                            }
+                          }
+                        ],
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

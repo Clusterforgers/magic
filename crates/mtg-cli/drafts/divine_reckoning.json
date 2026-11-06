@@ -1,0 +1,34 @@
+{
+  "oracle_id": "15d8b339-7520-43c9-b2dc-4a936357042b",
+  "name": "Divine Reckoning",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Divine Reckoning",
+      "oracle_fingerprint": "cc980fbd8d5a2b2ac71242ac42e33fa1",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Choose": {
+                  "who": "EachPlayer",
+                  "from": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "Chooser" }] },
+                  "as": "card"
+                }
+              },
+              {
+                "Destroy": {
+                  "what": {
+                    "Each": [{ "Type": "Creature" }, { "Not": { "Is": { "Bound": "card" } } }]
+                  }
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Flashback": "{5}{W}{W}" } }
+      ]
+    }
+  ]
+}

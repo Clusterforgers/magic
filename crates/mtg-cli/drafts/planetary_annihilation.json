@@ -1,0 +1,38 @@
+{
+  "oracle_id": "1d45f248-5b83-4377-a3ba-4eae48e63ca1",
+  "name": "Planetary Annihilation",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Planetary Annihilation",
+      "oracle_fingerprint": "1d8e161940d26e03d226544ae720d309",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Choose": {
+                  "who": "EachPlayer",
+                  "from": { "Each": [{ "Type": "Land" }, { "ControlledBy": "Chooser" }] },
+                  "count": { "min": 6, "max": 6 },
+                  "as": "card"
+                }
+              },
+              { "Reveal": { "what": { "Bound": "card" } } },
+              {
+                "Sacrifice": {
+                  "who": "EachPlayer",
+                  "filter": [{ "Type": "Land" }, { "Not": { "Is": { "Bound": "card" } } }],
+                  "count": {
+                    "Count": [{ "Type": "Land" }, { "Not": { "Is": { "Bound": "card" } } }]
+                  }
+                }
+              },
+              { "DealDamage": { "to": { "Each": [{ "Type": "Creature" }] }, "amount": 6 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

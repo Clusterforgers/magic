@@ -1,0 +1,51 @@
+{
+  "oracle_id": "0efe1357-bfbb-42c0-9cc9-6a919d686c66",
+  "name": "Go Nuts!",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Go Nuts!",
+      "oracle_fingerprint": "1861c39b844e19a0579737664ad29a16",
+      "abilities": [
+        { "Keyword": { "Macro": { "name": "teamwork", "amount": 3 } } },
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Modal": {
+                  "choose": {
+                    "min": {
+                      "When": { "condition": "AdditionalCostPaid", "then": 2, "otherwise": 1 }
+                    },
+                    "max": {
+                      "When": { "condition": "AdditionalCostPaid", "then": 2, "otherwise": 1 }
+                    }
+                  },
+                  "modes": [
+                    {
+                      "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+                      "effects": [{ "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1" } }]
+                    },
+                    {
+                      "targets": [
+                        {
+                          "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] }
+                        },
+                        {
+                          "what": {
+                            "Object": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }]
+                          }
+                        }
+                      ],
+                      "effects": [{ "Fight": { "what": { "Target": 0 }, "with": { "Target": 1 } } }]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

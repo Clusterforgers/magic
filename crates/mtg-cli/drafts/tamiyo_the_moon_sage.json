@@ -1,0 +1,75 @@
+{
+  "oracle_id": "f88be051-36ae-407e-bd5a-2b029c26414e",
+  "name": "Tamiyo, the Moon Sage",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Tamiyo, the Moon Sage",
+      "oracle_fingerprint": "6657cb140c41e6794127991b65478d14",
+      "abilities": [
+        {
+          "Loyalty": {
+            "cost": { "Plus": 1 },
+            "targets": [{ "what": { "Object": [] } }],
+            "effects": [
+              { "Tap": { "what": { "Target": 0 } } },
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": ["DoesntUntap"],
+                  "duration": "NextUntapStep"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Minus": 2 },
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              {
+                "Draw": {
+                  "count": {
+                    "Count": [{ "Type": "Creature" }, "Tapped", { "ControlledBy": { "Target": 0 } }]
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Minus": 8 },
+            "effects": [
+              {
+                "CreateEmblem": {
+                  "abilities": [
+                    { "Rule": { "rule": { "NoMaxHandSize": "You" } } },
+                    {
+                      "Triggered": {
+                        "when": {
+                          "ZoneChange": {
+                            "what": [{ "Not": "Token" }, { "OwnedBy": "You" }],
+                            "to": "Graveyard"
+                          }
+                        },
+                        "effects": [
+                          {
+                            "May": {
+                              "effects": [{ "Move": { "what": "Triggering", "to": "Hand" } }]
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

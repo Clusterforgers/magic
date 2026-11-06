@@ -1,0 +1,32 @@
+{
+  "oracle_id": "54ea46ea-7c83-44a9-85b0-eff9745c6ffa",
+  "name": "Renewing Dawn",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Renewing Dawn",
+      "oracle_fingerprint": "3e82720b1dfbd4106e13270aa40e3bfd",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              {
+                "GainLife": {
+                  "amount": {
+                    "Times": {
+                      "by": 2,
+                      "of": {
+                        "Count": [{ "Subtype": "Mountain" }, { "ControlledBy": { "Target": 0 } }]
+                      }
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

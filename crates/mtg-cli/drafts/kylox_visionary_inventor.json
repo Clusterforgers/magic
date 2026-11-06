@@ -1,0 +1,50 @@
+{
+  "oracle_id": "37f6bbb8-2136-4f03-966c-85d72180e71f",
+  "name": "Kylox, Visionary Inventor",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Kylox, Visionary Inventor",
+      "oracle_fingerprint": "3b9bdebd1140dd1934957e2fd673bea4",
+      "abilities": [
+        { "Keyword": "Menace" },
+        { "Keyword": { "Ward": "{2}" } },
+        { "Keyword": "Haste" },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [
+              {
+                "SacrificeUpTo": {
+                  "filter": [{ "Type": "Creature" }, "Other"],
+                  "count": { "Count": [{ "Type": "Creature" }, "Other"] },
+                  "as": "sacrificed"
+                }
+              },
+              {
+                "ExileTop": {
+                  "count": { "Stat": { "of": { "Bound": "sacrificed" }, "stat": "Power" } },
+                  "as": "exiled2"
+                }
+              },
+              {
+                "RepeatEach": {
+                  "over": {
+                    "Each": [
+                      { "Is": { "Bound": "exiled2" } },
+                      { "OwnedBy": "You" },
+                      { "In": "Exile" },
+                      { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] }
+                    ]
+                  },
+                  "as": "card3",
+                  "effects": [{ "CastFromZone": { "what": { "Bound": "card3" }, "free": true } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,42 @@
+{
+  "oracle_id": "f9453fe2-fadf-4cd4-8d2c-0eaa0e2d78d6",
+  "name": "Templar Knight",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Templar Knight",
+      "oracle_fingerprint": "389c9293e0d64afa78934ce7c549fc04",
+      "abilities": [
+        { "Keyword": "Vigilance" },
+        {
+          "Activated": {
+            "cost": [
+              { "Mana": "{W}" },
+              {
+                "TapPermanents": {
+                  "filter": [{ "Type": "Creature" }, "Attacking", { "Named": "Templar Knight" }],
+                  "count": 5
+                }
+              }
+            ],
+            "effects": [
+              {
+                "Search": {
+                  "filter": [
+                    { "Type": "Artifact" },
+                    { "Supertype": "Legendary" },
+                    { "OwnedBy": "You" }
+                  ],
+                  "as": "found"
+                }
+              },
+              { "Move": { "what": { "Bound": "found" }, "to": { "Battlefield": {} } } },
+              { "Shuffle": {} }
+            ]
+          }
+        },
+        { "Rule": { "rule": "AnyNumberInDeck" } }
+      ]
+    }
+  ]
+}

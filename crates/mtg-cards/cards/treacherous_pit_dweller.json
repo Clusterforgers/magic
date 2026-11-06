@@ -1,0 +1,29 @@
+{
+  "oracle_id": "899387c5-6781-485b-b8bc-aa89d3b97413",
+  "name": "Treacherous Pit-Dweller",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Treacherous Pit-Dweller",
+      "oracle_fingerprint": "066df26995bfdf9b20c92b253fea87ae",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Graveyard", "to": "Battlefield" } },
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "SetController": { "Target": 0 } }],
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": "Undying" }
+      ]
+    }
+  ]
+}

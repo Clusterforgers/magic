@@ -1,0 +1,95 @@
+{
+  "oracle_id": "87050537-99c9-4993-a770-4329b2e749e4",
+  "name": "Cid, Timeless Artificer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Cid, Timeless Artificer",
+      "oracle_fingerprint": "e642f036fc0fac3796b0b1836f8b7b8b",
+      "abilities": [
+        {
+          "Static": {
+            "affected": {
+              "Each": [
+                {
+                  "AnyOf": [
+                    {
+                      "Not": {
+                        "AnyOf": [
+                          { "Not": { "Type": "Creature" } },
+                          { "Not": { "Type": "Artifact" } }
+                        ]
+                      }
+                    },
+                    { "Subtype": "Hero" }
+                  ]
+                },
+                { "ControlledBy": "You" }
+              ]
+            },
+            "mods": [
+              {
+                "ModifyPT": {
+                  "power": {
+                    "Count": [
+                      {
+                        "AnyOf": [
+                          {
+                            "Not": {
+                              "AnyOf": [
+                                { "Not": { "Subtype": "Artificer" } },
+                                { "Not": { "ControlledBy": "You" } },
+                                { "Not": { "In": "Battlefield" } }
+                              ]
+                            }
+                          },
+                          {
+                            "Not": {
+                              "AnyOf": [
+                                { "Not": { "Subtype": "Artificer" } },
+                                { "Not": { "OwnedBy": "You" } },
+                                { "Not": { "In": "Graveyard" } }
+                              ]
+                            }
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  "toughness": {
+                    "Count": [
+                      {
+                        "AnyOf": [
+                          {
+                            "Not": {
+                              "AnyOf": [
+                                { "Not": { "Subtype": "Artificer" } },
+                                { "Not": { "ControlledBy": "You" } },
+                                { "Not": { "In": "Battlefield" } }
+                              ]
+                            }
+                          },
+                          {
+                            "Not": {
+                              "AnyOf": [
+                                { "Not": { "Subtype": "Artificer" } },
+                                { "Not": { "OwnedBy": "You" } },
+                                { "Not": { "In": "Graveyard" } }
+                              ]
+                            }
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        },
+        { "Rule": { "rule": "AnyNumberInDeck" } },
+        { "Keyword": { "Cycling": "{W}{U}" } }
+      ]
+    }
+  ]
+}

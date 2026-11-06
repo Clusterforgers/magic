@@ -1,0 +1,22 @@
+{
+  "oracle_id": "6beaeec2-b4e9-4904-b817-c0118549d4a9",
+  "name": "Mosquito Guard",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mosquito Guard",
+      "oracle_fingerprint": "2feb0dc8fc6b80f08e7ca10d82a6348c",
+      "abilities": [
+        { "Keyword": "FirstStrike" },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{1}{W}" }, "DiscardSelf"],
+            "from": "Hand",
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [{ "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

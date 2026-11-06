@@ -1,0 +1,42 @@
+{
+  "oracle_id": "2b87bcac-ec64-4012-9e75-f459d3640eb3",
+  "name": "Earth's Mightiest Heroes",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Earth's Mightiest Heroes",
+      "oracle_fingerprint": "97ae52f82400f2146db1640bcb876930",
+      "abilities": [
+        { "Keyword": { "Macro": { "name": "teamwork", "amount": 5 } } },
+        {
+          "Spell": {
+            "effects": [
+              { "LookAtTop": { "count": 8, "as": "top" } },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "In": "Library" },
+                      { "Is": { "Bound": "top" } },
+                      { "Type": "Creature" }
+                    ]
+                  },
+                  "count": {
+                    "min": 0,
+                    "max": {
+                      "When": { "condition": "AdditionalCostPaid", "then": 8, "otherwise": 1 }
+                    }
+                  },
+                  "as": "kept2"
+                }
+              },
+              { "Reveal": { "what": { "Bound": "top" } } },
+              { "Move": { "what": { "Bound": "kept2" }, "to": { "Battlefield": {} } } },
+              { "Move": { "what": { "Bound": "top" }, "to": "Graveyard" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

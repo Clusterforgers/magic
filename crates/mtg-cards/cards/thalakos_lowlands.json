@@ -1,0 +1,34 @@
+{
+  "oracle_id": "5a54d6a3-b1d0-42fe-9531-604b34d197f1",
+  "name": "Thalakos Lowlands",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Thalakos Lowlands",
+      "oracle_fingerprint": "ae162025fc1e04592f20aaeec48d259a",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Colorless"] } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [
+              { "AddMana": { "mana": { "OneOf": ["White", "Blue"] } } },
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": ["DoesntUntap"],
+                  "duration": "NextUntapStep"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

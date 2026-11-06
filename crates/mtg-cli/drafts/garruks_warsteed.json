@@ -1,0 +1,42 @@
+{
+  "oracle_id": "d4911e00-eed1-4c8c-8779-8a3f9406ead7",
+  "name": "Garruk's Warsteed",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Garruk's Warsteed",
+      "oracle_fingerprint": "ff9464ed7ef7a9a03ce0bc5112964ff2",
+      "abilities": [
+        { "Keyword": "Vigilance" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "Search": {
+                        "also": ["Graveyard"],
+                        "filter": [{ "OwnedBy": "You" }, { "Named": "Garruk, Savage Herald" }],
+                        "reveal": true,
+                        "as": "found"
+                      }
+                    },
+                    { "Move": { "what": { "Bound": "found" }, "to": "Hand" } },
+                    {
+                      "If": {
+                        "condition": { "Searched": { "zone": "Library" } },
+                        "then": [{ "Shuffle": {} }]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

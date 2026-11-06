@@ -1,0 +1,40 @@
+{
+  "oracle_id": "29cb8f47-7bb5-4881-98ef-59fc858cf9d7",
+  "name": "Jinxed Ring",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Jinxed Ring",
+      "oracle_fingerprint": "0cb29e4b122738ef22435e2a89d4b9d2",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Not": "Token" }, { "OwnedBy": "You" }],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "effects": [{ "DealDamage": { "to": "You", "amount": 1 } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Sacrifice": { "filter": [{ "Type": "Creature" }] } }],
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "SetController": { "Target": 0 } }],
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

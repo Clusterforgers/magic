@@ -1,0 +1,28 @@
+{
+  "oracle_id": "186bfdac-ce9c-476f-89b6-ef467487fca5",
+  "name": "Pitiless Carnage",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Pitiless Carnage",
+      "oracle_fingerprint": "e3d2aedd67b1ad7bf62fbadb745993ad",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "SacrificeUpTo": {
+                  "filter": [{ "ControlledBy": "You" }],
+                  "count": { "Count": [{ "ControlledBy": "You" }] },
+                  "as": "sacrificed"
+                }
+              },
+              { "Draw": { "count": { "Bound": "sacrificed~moved" } } }
+            ]
+          }
+        },
+        { "Keyword": { "Plot": "{1}{B}{B}" } }
+      ]
+    }
+  ]
+}

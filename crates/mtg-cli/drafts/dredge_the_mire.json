@@ -1,0 +1,38 @@
+{
+  "oracle_id": "10e286b0-7245-4c30-a7a9-6d4a9c49b0a7",
+  "name": "Dredge the Mire",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dredge the Mire",
+      "oracle_fingerprint": "1a5fd3a16df5d6d5711015a4fd07a570",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Choose": {
+                  "who": "Opponents",
+                  "from": {
+                    "Each": [
+                      { "Type": "Creature" },
+                      { "In": "Graveyard" },
+                      { "OwnedBy": "Chooser" }
+                    ]
+                  },
+                  "as": "card"
+                }
+              },
+              {
+                "Move": {
+                  "what": { "Each": [{ "Is": { "Bound": "card" } }, { "In": "Graveyard" }] },
+                  "to": { "Battlefield": { "under": "You" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

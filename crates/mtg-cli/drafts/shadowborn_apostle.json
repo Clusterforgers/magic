@@ -1,0 +1,37 @@
+{
+  "oracle_id": "595a15f0-77f3-4544-8acc-10630e12cc14",
+  "name": "Shadowborn Apostle",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Shadowborn Apostle",
+      "oracle_fingerprint": "61a878cd0bf26f2e55576c3fc5f9b387",
+      "abilities": [
+        { "Rule": { "rule": "AnyNumberInDeck" } },
+        {
+          "Activated": {
+            "cost": [
+              { "Mana": "{B}" },
+              {
+                "Sacrifice": {
+                  "filter": [{ "Type": "Creature" }, { "Named": "Shadowborn Apostle" }],
+                  "count": 6
+                }
+              }
+            ],
+            "effects": [
+              {
+                "Search": {
+                  "filter": [{ "Type": "Creature" }, { "Subtype": "Demon" }],
+                  "as": "found"
+                }
+              },
+              { "Move": { "what": { "Bound": "found" }, "to": { "Battlefield": {} } } },
+              { "Shuffle": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

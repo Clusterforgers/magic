@@ -1,0 +1,90 @@
+{
+  "oracle_id": "87adda41-113b-4126-8978-25a258b31bdd",
+  "name": "Iroh, Tea Master",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Iroh, Tea Master",
+      "oracle_fingerprint": "929d41484df342aa1b8d1f1406d50aa6",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "CreateToken": { "token": { "Named": "food" } } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "BeginCombat", "whose": "You" } },
+            "targets": [
+              { "what": "Opponent" },
+              { "what": { "Object": [{ "ControlledBy": "You" }] } }
+            ],
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "Continuous": {
+                        "affected": { "Target": 1 },
+                        "mods": [{ "SetController": { "Target": 0 } }],
+                        "duration": "Forever"
+                      }
+                    },
+                    {
+                      "If": {
+                        "condition": {
+                          "CountOf": {
+                            "subject": { "Target": 1 },
+                            "selector": [],
+                            "op": "Ge",
+                            "right": 1
+                          }
+                        },
+                        "then": [
+                          {
+                            "Reflexive": {
+                              "effects": [
+                                {
+                                  "CreateToken": {
+                                    "token": {
+                                      "Custom": {
+                                        "name": "Ally",
+                                        "colors": ["White"],
+                                        "types": ["Creature"],
+                                        "subtypes": ["Ally"],
+                                        "power": 1,
+                                        "toughness": 1
+                                      }
+                                    },
+                                    "as": "token"
+                                  }
+                                },
+                                {
+                                  "PutCounters": {
+                                    "on": { "Bound": "token" },
+                                    "counter": "+1/+1",
+                                    "count": {
+                                      "Count": [
+                                        { "OwnedBy": "You" },
+                                        { "ControlledBy": "Opponents" }
+                                      ]
+                                    }
+                                  }
+                                }
+                              ]
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,59 @@
+{
+  "source": "forge",
+  "oracle_matches": true,
+  "lines": [
+    {
+      "face": 0,
+      "tag": "A",
+      "text": "Each player discards a card. Each opponent who can't loses 3 life.",
+      "abilities": [],
+      "gap": "defined:OppNonRememberedController"
+    },
+    {
+      "face": 0,
+      "tag": "A",
+      "text": "Target creature gets -X/-X until end of turn, where X is the number of cards in your graveyard.",
+      "abilities": [
+        0
+      ],
+      "gap": null
+    },
+    {
+      "face": 0,
+      "tag": "A",
+      "text": "You get an emblem with \"At the beginning of combat on your turn, put target creature card from a graveyard onto the battlefield under your control. It gains haste.\"",
+      "abilities": [
+        1
+      ],
+      "gap": null
+    }
+  ],
+  "proof": {
+    "marks": [
+      {
+        "face": 0,
+        "span": {
+          "start": 0,
+          "end": 70
+        },
+        "mark": "ByHand"
+      },
+      {
+        "face": 0,
+        "span": {
+          "start": 71,
+          "end": 170
+        },
+        "mark": "Auto"
+      },
+      {
+        "face": 0,
+        "span": {
+          "start": 171,
+          "end": 339
+        },
+        "mark": "Auto"
+      }
+    ]
+  }
+}

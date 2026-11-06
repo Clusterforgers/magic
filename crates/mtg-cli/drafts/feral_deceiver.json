@@ -1,0 +1,48 @@
+{
+  "oracle_id": "c3b8ea58-d84f-4c60-9f72-e4ec389eb93c",
+  "name": "Feral Deceiver",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Feral Deceiver",
+      "oracle_fingerprint": "6b820de7115d062ebbd68dfba996b071",
+      "abilities": [
+        { "Activated": { "cost": "{1}", "effects": [{ "LookAtTop": { "as": "top" } }] } },
+        {
+          "Activated": {
+            "cost": "{2}",
+            "limit": "OncePerTurn",
+            "effects": [
+              { "LookAtTop": { "as": "top" } },
+              { "Reveal": { "what": { "Bound": "top" } } },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Bound": "top" },
+                      "selector": [{ "Type": "Land" }],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [
+                    {
+                      "Continuous": {
+                        "affected": "This",
+                        "mods": [
+                          { "ModifyPT": { "power": 2, "toughness": 2 } },
+                          { "AddKeyword": "Trample" }
+                        ],
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

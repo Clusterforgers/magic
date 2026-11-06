@@ -1,0 +1,31 @@
+{
+  "oracle_id": "48adccf6-adb4-49b2-b013-4dc5e0fc7bcb",
+  "name": "Witch Engine",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Witch Engine",
+      "oracle_fingerprint": "277ec2c1bbadc0735a1779d6be59c871",
+      "abilities": [
+        { "Keyword": { "Landwalk": [{ "Subtype": "Swamp" }] } },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              { "AddMana": { "mana": { "Fixed": ["Black", "Black", "Black", "Black"] } } },
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "SetController": { "Target": 0 } }],
+                  "duration": "Forever"
+                }
+              },
+              { "RemoveFromCombat": { "what": "This" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

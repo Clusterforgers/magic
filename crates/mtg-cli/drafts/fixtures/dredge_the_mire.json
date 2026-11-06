@@ -1,0 +1,136 @@
+{
+  "object": "card",
+  "id": "f57b4b40-bd46-4859-89f0-fa0bd04cc6e9",
+  "oracle_id": "10e286b0-7245-4c30-a7a9-6d4a9c49b0a7",
+  "multiverse_ids": [
+    484890
+  ],
+  "mtgo_id": 80667,
+  "tcgplayer_id": 212222,
+  "cardmarket_id": 452498,
+  "name": "Dredge the Mire",
+  "lang": "en",
+  "released_at": "2020-04-17",
+  "uri": "https://api.scryfall.com/cards/f57b4b40-bd46-4859-89f0-fa0bd04cc6e9",
+  "scryfall_uri": "https://scryfall.com/card/c20/43/dredge-the-mire?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T08:26:56Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/f/5/f57b4b40-bd46-4859-89f0-fa0bd04cc6e9.jpg?1783931216",
+    "normal": "https://cards.scryfall.io/normal/front/f/5/f57b4b40-bd46-4859-89f0-fa0bd04cc6e9.jpg?1783931216",
+    "large": "https://cards.scryfall.io/large/front/f/5/f57b4b40-bd46-4859-89f0-fa0bd04cc6e9.jpg?1783931216",
+    "png": "https://cards.scryfall.io/png/front/f/5/f57b4b40-bd46-4859-89f0-fa0bd04cc6e9.png?1783931216",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/f/5/f57b4b40-bd46-4859-89f0-fa0bd04cc6e9.jpg?1783931216",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/f/5/f57b4b40-bd46-4859-89f0-fa0bd04cc6e9.jpg?1783931216",
+    "thumb": "https://cards.scryfall.io/thumb/front/f/5/f57b4b40-bd46-4859-89f0-fa0bd04cc6e9.webp?1783931216",
+    "grid": "https://cards.scryfall.io/grid/front/f/5/f57b4b40-bd46-4859-89f0-fa0bd04cc6e9.webp?1783931216",
+    "display": "https://cards.scryfall.io/display/front/f/5/f57b4b40-bd46-4859-89f0-fa0bd04cc6e9.webp?1783931216",
+    "art": "https://cards.scryfall.io/art/front/f/5/f57b4b40-bd46-4859-89f0-fa0bd04cc6e9.webp?1783931216",
+    "crop": "https://cards.scryfall.io/crop/front/f/5/f57b4b40-bd46-4859-89f0-fa0bd04cc6e9.webp?1783931216",
+    "jpeg": "https://cards.scryfall.io/normal/front/f/5/f57b4b40-bd46-4859-89f0-fa0bd04cc6e9.jpg?1783931216"
+  },
+  "mana_cost": "{3}{B}",
+  "cmc": 4.0,
+  "type_line": "Sorcery",
+  "oracle_text": "Each opponent chooses a creature card in their graveyard. Put those cards onto the battlefield under your control.",
+  "colors": [
+    "B"
+  ],
+  "color_identity": [
+    "B"
+  ],
+  "keywords": [],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "f60ec786-1f8d-42f7-9abc-0d880fe243f6",
+  "set": "c20",
+  "set_name": "Commander 2020",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/f60ec786-1f8d-42f7-9abc-0d880fe243f6",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Ac20&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/c20?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/f57b4b40-bd46-4859-89f0-fa0bd04cc6e9/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A10e286b0-7245-4c30-a7a9-6d4a9c49b0a7&unique=prints",
+  "collector_number": "43",
+  "digital": false,
+  "rarity": "rare",
+  "flavor_text": "Fortunately, the reanimation spell just missed the long-dead colony of dung scorpions.",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Lie Setiawan",
+  "artist_ids": [
+    "6f771d3f-310e-4aa4-841f-5ba4ba9f025a"
+  ],
+  "illustration_id": "48cfcf0c-c821-4451-b821-2f9306607873",
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "edhrec_rank": 10993,
+  "preview": {
+    "source": "Olivia Gobert-Hicks",
+    "source_uri": "https://twitter.com/goberthicks/status/1246915736624197632",
+    "previewed_at": "2020-04-05"
+  },
+  "prices": {
+    "usd": "0.38",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "0.19",
+    "eur_foil": null,
+    "tix": "0.59"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=484890&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DDredge%2Bthe%2BMire",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DDredge%2Bthe%2BMire",
+    "edhrec": "https://edhrec.com/route/?cc=Dredge+the+Mire"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F212222%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=452498&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/80667?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

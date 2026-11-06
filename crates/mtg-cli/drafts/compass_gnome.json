@@ -31,6 +31,7 @@
                             ]
                           }
                         ],
+                        "reveal": true,
                         "as": "found"
                       }
                     },

@@ -1,14 +1,36 @@
 {
   "oracle_id": "5b287dcc-f853-4df1-8ddf-5b8b2adc2873",
   "name": "Limited Resources",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Limited Resources",
       "oracle_fingerprint": "159be41e076c97cf33354942b66a2aca",
       "abilities": [
         {
-          "Manual": { "reason": "you apply this clause by hand", "span": { "start": 0, "end": 98 } }
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Choose": {
+                  "who": "EachPlayer",
+                  "from": { "Each": [{ "Type": "Land" }, { "ControlledBy": "Chooser" }] },
+                  "count": { "min": 5, "max": 5 },
+                  "as": "card"
+                }
+              },
+              { "Reveal": { "what": { "Bound": "card" } } },
+              {
+                "Sacrifice": {
+                  "who": "EachPlayer",
+                  "filter": [{ "Type": "Land" }, { "Not": { "Is": { "Bound": "card" } } }],
+                  "count": {
+                    "Count": [{ "Type": "Land" }, { "Not": { "Is": { "Bound": "card" } } }]
+                  }
+                }
+              }
+            ]
+          }
         },
         {
           "Rule": {

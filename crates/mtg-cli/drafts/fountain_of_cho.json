@@ -1,0 +1,29 @@
+{
+  "oracle_id": "0799df10-b489-4f79-bf98-7a0c500b46a1",
+  "name": "Fountain of Cho",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Fountain of Cho",
+      "oracle_fingerprint": "36a3381a3ae93decac50d48127d50489",
+      "abilities": [
+        { "Replacement": { "when": { "Enters": { "what": ["This"] } }, "by": "Tapped" } },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "PutCounters": { "on": "This", "counter": { "Other": "storage" } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [
+              "Tap",
+              { "RemoveCounters": { "counter": { "Other": "storage" }, "count": "X" } }
+            ],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["White"] }, "times": "X" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

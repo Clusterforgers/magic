@@ -1,0 +1,28 @@
+{
+  "oracle_id": "39145960-a212-46b4-addb-4b187f6bf6fd",
+  "name": "Knight of Wundagore",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Knight of Wundagore",
+      "oracle_fingerprint": "653893e5120e5445ec4904ba23d5c3b6",
+      "abilities": [
+        { "Keyword": "Trample" },
+        {
+          "Triggered": {
+            "when": {
+              "Caused": {
+                "inner": {
+                  "CountersPut": { "what": [{ "Type": "Creature" }, "Other"], "counter": "+1/+1" }
+                },
+                "by": "You"
+              }
+            },
+            "limit": "OncePerTurn",
+            "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

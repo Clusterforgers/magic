@@ -1,0 +1,33 @@
+{
+  "oracle_id": "3348df85-e61c-47b5-857d-c79befb38a8a",
+  "name": "Hollow Trees",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Hollow Trees",
+      "oracle_fingerprint": "02b0acad9e02b2bd8cbd7360c5f32273",
+      "abilities": [
+        { "Replacement": { "when": { "Enters": { "what": ["This"] } }, "by": "Tapped" } },
+        { "Rule": { "rule": { "Combat": { "who": "This", "quirk": "MayStayTapped" } } } },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "if": {
+              "CountOf": { "subject": "This", "selector": ["Tapped"], "op": "Ge", "right": 1 }
+            },
+            "effects": [{ "PutCounters": { "on": "This", "counter": { "Other": "storage" } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [
+              "Tap",
+              { "RemoveCounters": { "counter": { "Other": "storage" }, "count": "X" } }
+            ],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Green"] }, "times": "X" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

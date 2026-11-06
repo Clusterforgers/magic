@@ -45,13 +45,7 @@
                   "then": [
                     {
                       "Choose": {
-                        "from": {
-                          "Each": [
-                            { "Type": "Creature" },
-                            { "In": "Graveyard" },
-                            { "OwnedBy": "You" }
-                          ]
-                        },
+                        "from": { "Each": [{ "Type": "Creature" }, { "In": "Graveyard" }] },
                         "as": "picked"
                       }
                     },

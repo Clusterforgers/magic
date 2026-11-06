@@ -1,0 +1,37 @@
+{
+  "oracle_id": "5513a221-dfff-4e02-8037-dcff3d0381d7",
+  "name": "Petty Larceny",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Petty Larceny",
+      "oracle_fingerprint": "e0c58893f93f3473d7c6fa6cc6f7b1e7",
+      "abilities": [
+        { "Keyword": { "Freerunning": "{1}{B}" } },
+        {
+          "Spell": {
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              { "LookAtTop": { "who": { "Target": 0 }, "count": 2, "as": "top" } },
+              { "ExileHidden": { "what": { "Bound": "top" }, "held": true, "as": "exiled4" } },
+              {
+                "Rule": {
+                  "rule": {
+                    "MayCast": {
+                      "from": "Exile",
+                      "only": { "Bound": "exiled4" },
+                      "play": true,
+                      "spend_as": "AnyType"
+                    }
+                  },
+                  "duration": "Forever"
+                }
+              },
+              { "CreateToken": { "token": { "Named": "treasure" } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

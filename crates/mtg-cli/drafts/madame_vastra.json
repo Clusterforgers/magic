@@ -1,0 +1,34 @@
+{
+  "oracle_id": "4789357c-3ab7-4327-b5ee-b1110ddb876f",
+  "name": "Madame Vastra",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Madame Vastra",
+      "oracle_fingerprint": "e7f976c3d384831349df9644bf130352",
+      "abilities": [
+        { "Keyword": { "PartnerWith": "Jenny Flint" } },
+        {
+          "Rule": {
+            "rule": { "Combat": { "who": "This", "quirk": { "MustBeBlocked": "AtLeastOne" } } }
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Creature" }, { "DamagedBy": "This" }],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "effects": [
+              { "CreateToken": { "token": { "Named": "food" } } },
+              { "CreateToken": { "token": { "Named": "clue" } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

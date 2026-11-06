@@ -1,0 +1,66 @@
+{
+  "oracle_id": "113fc13a-6df9-4eed-b9d4-002a85a036a1",
+  "name": "Nissa Revane",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Nissa Revane",
+      "oracle_fingerprint": "6639378d04d29217dd8c70d34c3fc564",
+      "abilities": [
+        {
+          "Loyalty": {
+            "cost": { "Plus": 1 },
+            "effects": [
+              { "Search": { "filter": [{ "Named": "Nissa's Chosen" }], "as": "found" } },
+              { "Move": { "what": { "Bound": "found" }, "to": { "Battlefield": {} } } },
+              { "Shuffle": {} }
+            ]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Plus": 1 },
+            "effects": [
+              {
+                "GainLife": {
+                  "amount": {
+                    "Times": {
+                      "by": 2,
+                      "of": { "Count": [{ "Subtype": "Elf" }, { "ControlledBy": "You" }] }
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Minus": 7 },
+            "effects": [
+              {
+                "Search": {
+                  "filter": [{ "Type": "Creature" }, { "Subtype": "Elf" }],
+                  "count": {
+                    "min": 0,
+                    "max": {
+                      "Count": [
+                        { "Type": "Creature" },
+                        { "Subtype": "Elf" },
+                        { "OwnedBy": "You" },
+                        { "In": "Library" }
+                      ]
+                    }
+                  },
+                  "as": "found"
+                }
+              },
+              { "Move": { "what": { "Bound": "found" }, "to": { "Battlefield": {} } } },
+              { "Shuffle": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

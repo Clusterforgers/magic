@@ -1,0 +1,62 @@
+{
+  "oracle_id": "9f8f29ba-7e64-455d-be05-ec7973f2bd0a",
+  "name": "Sauron, the Dark Lord",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sauron, the Dark Lord",
+      "oracle_fingerprint": "abb4b6c504190925b75d131161e88c4b",
+      "abilities": [
+        {
+          "Keyword": {
+            "Ward": [
+              {
+                "Sacrifice": {
+                  "filter": [
+                    { "AnyOf": [{ "Type": "Artifact" }, { "Type": "Creature" }] },
+                    { "Supertype": "Legendary" }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "by": "Opponents" } },
+            "effects": [{ "Amass": { "subtype": "Orc", "count": 1 } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "DealsDamage": {
+                "source": [{ "Subtype": "Army" }, { "ControlledBy": "You" }],
+                "to": "EachPlayer",
+                "combat": true
+              }
+            },
+            "effects": [{ "RingTempts": {} }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "RingTempts": { "who": "You" } },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": [
+                    {
+                      "Discard": { "count": { "Count": [{ "In": "Hand" }, { "OwnedBy": "You" }] } }
+                    }
+                  ],
+                  "paid": [{ "Draw": { "count": 4 } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,138 @@
+{
+  "object": "card",
+  "id": "ef749290-58e2-4b40-a141-5fe294f9b995",
+  "oracle_id": "48adccf6-adb4-49b2-b013-4dc5e0fc7bcb",
+  "multiverse_ids": [
+    5836
+  ],
+  "mtgo_id": 12425,
+  "mtgo_foil_id": 12426,
+  "tcgplayer_id": 7113,
+  "cardmarket_id": 10376,
+  "name": "Witch Engine",
+  "lang": "en",
+  "released_at": "1998-10-12",
+  "uri": "https://api.scryfall.com/cards/ef749290-58e2-4b40-a141-5fe294f9b995",
+  "scryfall_uri": "https://scryfall.com/card/usg/169/witch-engine?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T12:38:55Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/e/f/ef749290-58e2-4b40-a141-5fe294f9b995.jpg?1783946335",
+    "normal": "https://cards.scryfall.io/normal/front/e/f/ef749290-58e2-4b40-a141-5fe294f9b995.jpg?1783946335",
+    "large": "https://cards.scryfall.io/large/front/e/f/ef749290-58e2-4b40-a141-5fe294f9b995.jpg?1783946335",
+    "png": "https://cards.scryfall.io/png/front/e/f/ef749290-58e2-4b40-a141-5fe294f9b995.png?1783946335",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/e/f/ef749290-58e2-4b40-a141-5fe294f9b995.jpg?1783946335",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/e/f/ef749290-58e2-4b40-a141-5fe294f9b995.jpg?1783946335",
+    "thumb": "https://cards.scryfall.io/thumb/front/e/f/ef749290-58e2-4b40-a141-5fe294f9b995.webp?1783946335",
+    "grid": "https://cards.scryfall.io/grid/front/e/f/ef749290-58e2-4b40-a141-5fe294f9b995.webp?1783946335",
+    "display": "https://cards.scryfall.io/display/front/e/f/ef749290-58e2-4b40-a141-5fe294f9b995.webp?1783946335",
+    "art": "https://cards.scryfall.io/art/front/e/f/ef749290-58e2-4b40-a141-5fe294f9b995.webp?1783946335",
+    "crop": "https://cards.scryfall.io/crop/front/e/f/ef749290-58e2-4b40-a141-5fe294f9b995.webp?1783946335",
+    "jpeg": "https://cards.scryfall.io/normal/front/e/f/ef749290-58e2-4b40-a141-5fe294f9b995.jpg?1783946335"
+  },
+  "mana_cost": "{5}{B}",
+  "cmc": 6.0,
+  "type_line": "Creature — Horror",
+  "oracle_text": "Swampwalk (This creature can't be blocked as long as defending player controls a Swamp.)\n{T}: Add {B}{B}{B}{B}. Target opponent gains control of this creature. (Activate only as an instant.)",
+  "power": "4",
+  "toughness": "4",
+  "colors": [
+    "B"
+  ],
+  "color_identity": [
+    "B"
+  ],
+  "keywords": [
+    "Landwalk",
+    "Swampwalk"
+  ],
+  "produced_mana": [
+    "B"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "legal",
+    "predh": "legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "c330df40-51db-4caf-bde6-48df6c181001",
+  "set": "usg",
+  "set_name": "Urza's Saga",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/c330df40-51db-4caf-bde6-48df6c181001",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Ausg&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/usg?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/ef749290-58e2-4b40-a141-5fe294f9b995/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A48adccf6-adb4-49b2-b013-4dc5e0fc7bcb&unique=prints",
+  "collector_number": "169",
+  "digital": false,
+  "rarity": "rare",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Kev Walker",
+  "artist_ids": [
+    "f366a0ee-a0cd-466d-ba6a-90058c7a31a6"
+  ],
+  "illustration_id": "9e04ba8c-0f26-452e-96e6-498776e4ef5e",
+  "border_color": "black",
+  "frame": "1997",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 23391,
+  "prices": {
+    "usd": "0.49",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "0.36",
+    "eur_foil": null,
+    "tix": "0.03"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=5836&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DWitch%2BEngine",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DWitch%2BEngine",
+    "edhrec": "https://edhrec.com/route/?cc=Witch+Engine"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F7113%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=10376&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/12425?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

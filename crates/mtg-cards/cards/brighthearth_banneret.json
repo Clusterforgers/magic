@@ -1,0 +1,32 @@
+{
+  "oracle_id": "04120095-74a5-4284-bfba-aeb0b509dc84",
+  "name": "Brighthearth Banneret",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Brighthearth Banneret",
+      "oracle_fingerprint": "a7f7cb87d83467b5b4849e2e3d94ce35",
+      "abilities": [
+        {
+          "CostModifier": {
+            "applies_to": [
+              "Spell",
+              { "AnyOf": [{ "Subtype": "Elemental" }, { "Subtype": "Warrior" }] },
+              { "ControlledBy": "You" }
+            ],
+            "change": "Reduce",
+            "mana": "{1}"
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{1}{R}" }, "DiscardSelf"],
+            "from": "Hand",
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [{ "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,29 @@
+{
+  "oracle_id": "9e4db334-4698-4986-820f-1daf1bffda83",
+  "name": "Angel's Herald",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Angel's Herald",
+      "oracle_fingerprint": "4f5b317ae1fc11c7bdc618f42d378f68",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [
+              { "Mana": "{2}{W}" },
+              "Tap",
+              { "Sacrifice": { "filter": [{ "Type": "Creature" }, { "Color": "Green" }] } },
+              { "Sacrifice": { "filter": [{ "Type": "Creature" }, { "Color": "White" }] } },
+              { "Sacrifice": { "filter": [{ "Type": "Creature" }, { "Color": "Blue" }] } }
+            ],
+            "effects": [
+              { "Search": { "filter": [{ "Named": "Empyrial Archangel" }], "as": "found" } },
+              { "Move": { "what": { "Bound": "found" }, "to": { "Battlefield": {} } } },
+              { "Shuffle": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

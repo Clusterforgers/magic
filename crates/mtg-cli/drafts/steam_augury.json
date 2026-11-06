@@ -1,0 +1,31 @@
+{
+  "oracle_id": "0aa556a6-66aa-42f1-ba41-0001e10c20a4",
+  "name": "Steam Augury",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Steam Augury",
+      "oracle_fingerprint": "1eda0501bc731bd3b7899e9d239b61f9",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "LookAtTop": { "count": 5, "as": "top" } },
+              { "Reveal": { "what": { "Bound": "top" } } },
+              {
+                "SeparatePiles": {
+                  "what": { "Bound": "top" },
+                  "chooser": "Opponents",
+                  "as": "pile2",
+                  "rest_as": "rest3"
+                }
+              },
+              { "Move": { "what": { "Bound": "pile2" }, "to": "Hand" } },
+              { "Move": { "what": { "Bound": "rest3" }, "to": "Graveyard" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

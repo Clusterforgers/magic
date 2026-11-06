@@ -1,0 +1,88 @@
+{
+  "oracle_id": "861e427f-cbb4-4ed5-8356-747ac638ac34",
+  "name": "Whiskervale Forerunner",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Whiskervale Forerunner",
+      "oracle_fingerprint": "d94d713a0744cc701b0ee88167f8c1eb",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "Nth": {
+                "event": {
+                  "BecomesTarget": { "what": ["This"], "by": [{ "ControlledBy": "You" }] }
+                },
+                "nth": 1
+              }
+            },
+            "effects": [
+              { "LookAtTop": { "count": 5, "as": "top" } },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "Type": "Creature" },
+                      { "Compare": { "stat": "ManaValue", "op": "Le", "to": 3 } },
+                      { "Is": { "Bound": "top" } },
+                      { "In": "Library" }
+                    ]
+                  },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "card2"
+                }
+              },
+              { "Reveal": { "what": { "Bound": "card2" } } },
+              {
+                "If": {
+                  "condition": {
+                    "All": [
+                      {
+                        "CountOf": {
+                          "subject": { "Bound": "top" },
+                          "selector": [{ "Is": { "Bound": "card2" } }],
+                          "op": "Eq",
+                          "right": 1
+                        }
+                      },
+                      "YourTurn"
+                    ]
+                  },
+                  "then": [
+                    {
+                      "May": {
+                        "effects": [
+                          { "Move": { "what": { "Bound": "card2" }, "to": { "Battlefield": {} } } }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Bound": "top" },
+                      "selector": [{ "Is": { "Bound": "card2" } }, { "In": "Battlefield" }],
+                      "op": "Eq",
+                      "right": 0
+                    }
+                  },
+                  "then": [{ "Move": { "what": { "Bound": "card2" }, "to": "Hand" } }]
+                }
+              },
+              {
+                "Move": {
+                  "what": { "Each": [{ "Is": { "Bound": "top" } }, { "In": "Library" }] },
+                  "to": { "Library": { "place": "Bottom", "order": "Random" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

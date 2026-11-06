@@ -1,0 +1,58 @@
+{
+  "oracle_id": "d83bf132-e67e-4af0-b236-4f7a32fa3dec",
+  "name": "Harsh Deceiver",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Harsh Deceiver",
+      "oracle_fingerprint": "91c719d7f6efdcb7f09232978deb07ef",
+      "abilities": [
+        { "Activated": { "cost": "{1}", "effects": [{ "LookAtTop": { "as": "top" } }] } },
+        {
+          "Activated": {
+            "cost": "{2}",
+            "limit": "OncePerTurn",
+            "effects": [
+              { "LookAtTop": { "as": "top" } },
+              { "Reveal": { "what": { "Bound": "top" } } },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Bound": "top" },
+                      "selector": [{ "Type": "Land" }],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [{ "Untap": { "what": "This" } }]
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Bound": "top" },
+                      "selector": [{ "Type": "Land" }],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [
+                    {
+                      "Continuous": {
+                        "affected": "This",
+                        "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }],
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

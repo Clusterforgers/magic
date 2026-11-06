@@ -1,0 +1,84 @@
+{
+  "oracle_id": "e0df8e2a-96d2-4e4d-b065-aa2e162abbfe",
+  "name": "Liliana, Waker of the Dead",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Liliana, Waker of the Dead",
+      "oracle_fingerprint": "488bfea8c392a38e976fe3bcbf1e5eea",
+      "abilities": [
+        {
+          "Manual": { "reason": "you apply this clause by hand", "span": { "start": 0, "end": 70 } }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Minus": 3 },
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    {
+                      "ModifyPT": {
+                        "power": {
+                          "Times": {
+                            "by": -1,
+                            "of": { "Count": [{ "OwnedBy": "You" }, { "In": "Graveyard" }] }
+                          }
+                        },
+                        "toughness": {
+                          "Times": {
+                            "by": -1,
+                            "of": { "Count": [{ "OwnedBy": "You" }, { "In": "Graveyard" }] }
+                          }
+                        }
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Minus": 7 },
+            "effects": [
+              {
+                "CreateEmblem": {
+                  "abilities": [
+                    {
+                      "Triggered": {
+                        "when": { "StepBegins": { "step": "BeginCombat", "whose": "You" } },
+                        "targets": [
+                          { "what": { "Object": [{ "Type": "Creature" }, { "In": "Graveyard" }] } }
+                        ],
+                        "effects": [
+                          {
+                            "Move": {
+                              "what": { "Target": 0 },
+                              "to": { "Battlefield": { "under": "You" } }
+                            }
+                          },
+                          {
+                            "Continuous": {
+                              "affected": { "Target": 0 },
+                              "mods": [{ "AddKeyword": "Haste" }],
+                              "duration": "Forever"
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

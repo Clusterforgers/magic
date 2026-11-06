@@ -1,0 +1,44 @@
+{
+  "oracle_id": "1f21cf59-6390-44b4-ab2e-ef290dfd8c85",
+  "name": "Nest of Scarabs",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Nest of Scarabs",
+      "oracle_fingerprint": "8c8b50914bbcce4b2944ee21b2c40cb0",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "Caused": {
+                "inner": {
+                  "Batch": {
+                    "CountersPut": { "what": [{ "Type": "Creature" }], "counter": "-1/-1" }
+                  }
+                },
+                "by": "You"
+              }
+            },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Insect",
+                      "colors": ["Black"],
+                      "types": ["Creature"],
+                      "subtypes": ["Insect"],
+                      "power": 1,
+                      "toughness": 1
+                    }
+                  },
+                  "count": "Triggering"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

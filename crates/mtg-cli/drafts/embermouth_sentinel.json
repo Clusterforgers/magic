@@ -44,6 +44,7 @@
                           {
                             "Search": {
                               "filter": [{ "Type": "Land" }, { "Supertype": "Basic" }],
+                              "reveal": true,
                               "as": "found2"
                             }
                           },

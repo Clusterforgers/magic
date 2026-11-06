@@ -1,0 +1,45 @@
+{
+  "oracle_id": "59a6cb4e-1646-42b5-b482-da641c0f7f6f",
+  "name": "Crackleburr",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Crackleburr",
+      "oracle_fingerprint": "10b102dbdc7b5af9f21cca834bd75bfc",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [
+              { "Mana": "{U/R}{U/R}" },
+              "Tap",
+              {
+                "TapPermanents": {
+                  "filter": [{ "Type": "Creature" }, { "Color": "Red" }],
+                  "count": 2
+                }
+              }
+            ],
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 3 } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [
+              { "Mana": "{U/R}{U/R}" },
+              "Untap",
+              {
+                "UntapPermanents": {
+                  "filter": [{ "Type": "Creature" }, { "Color": "Blue" }, { "ControlledBy": "You" }],
+                  "count": 2
+                }
+              }
+            ],
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [{ "Move": { "what": { "Target": 0 }, "to": "Hand" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

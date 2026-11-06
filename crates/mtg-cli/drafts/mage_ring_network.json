@@ -1,0 +1,34 @@
+{
+  "oracle_id": "136596a0-b179-40be-b42d-c0b992621c95",
+  "name": "Mage-Ring Network",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mage-Ring Network",
+      "oracle_fingerprint": "db89c57c95ed57ce284f4f78429ae463",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Colorless"] } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{1}" }, "Tap"],
+            "effects": [{ "PutCounters": { "on": "This", "counter": { "Other": "storage" } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [
+              "Tap",
+              { "RemoveCounters": { "counter": { "Other": "storage" }, "count": "X" } }
+            ],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Colorless"] }, "times": "X" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

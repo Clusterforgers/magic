@@ -1,0 +1,33 @@
+{
+  "oracle_id": "e43413e4-be17-49af-978a-26210d05f52a",
+  "name": "Bottomless Vault",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Bottomless Vault",
+      "oracle_fingerprint": "4f6eb3670c3d51a9b4180b7ebd309d49",
+      "abilities": [
+        { "Replacement": { "when": { "Enters": { "what": ["This"] } }, "by": "Tapped" } },
+        { "Rule": { "rule": { "Combat": { "who": "This", "quirk": "MayStayTapped" } } } },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "if": {
+              "CountOf": { "subject": "This", "selector": ["Tapped"], "op": "Ge", "right": 1 }
+            },
+            "effects": [{ "PutCounters": { "on": "This", "counter": { "Other": "storage" } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [
+              "Tap",
+              { "RemoveCounters": { "counter": { "Other": "storage" }, "count": "X" } }
+            ],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Black"] }, "times": "X" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

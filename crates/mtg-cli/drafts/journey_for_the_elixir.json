@@ -1,0 +1,43 @@
+{
+  "oracle_id": "e87606d5-5a23-4507-aece-8fdd044e7185",
+  "name": "Journey for the Elixir",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Journey for the Elixir",
+      "oracle_fingerprint": "f86dc13aa2e71853a1f56fc33f1a86c5",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Search": {
+                  "also": ["Graveyard"],
+                  "filter": [{ "Type": "Land" }, { "Supertype": "Basic" }],
+                  "reveal": true,
+                  "as": "found"
+                }
+              },
+              { "Move": { "what": { "Bound": "found" }, "to": "Hand" } },
+              {
+                "Search": {
+                  "also": ["Graveyard"],
+                  "filter": [{ "Named": "Jiang Yanggu" }],
+                  "reveal": true,
+                  "as": "found2"
+                }
+              },
+              { "Move": { "what": { "Bound": "found2" }, "to": "Hand" } },
+              {
+                "If": {
+                  "condition": { "Searched": { "zone": "Library" } },
+                  "then": [{ "Shuffle": {} }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

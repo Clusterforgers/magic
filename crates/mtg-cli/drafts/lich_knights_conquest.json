@@ -1,0 +1,46 @@
+{
+  "oracle_id": "b0e533dd-baf2-482a-b9e1-872eb5e47439",
+  "name": "Lich-Knights' Conquest",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Lich-Knights' Conquest",
+      "oracle_fingerprint": "28e92c898d0c1c74fa6691d6a2f24b64",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "SacrificeUpTo": {
+                  "filter": [
+                    { "AnyOf": [{ "Type": "Enchantment" }, { "Type": "Artifact" }, "Token"] }
+                  ],
+                  "count": {
+                    "Count": [
+                      { "AnyOf": [{ "Type": "Enchantment" }, { "Type": "Artifact" }, "Token"] },
+                      { "ControlledBy": "You" }
+                    ]
+                  },
+                  "as": "sacrificed"
+                }
+              },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [{ "Type": "Creature" }, { "OwnedBy": "You" }, { "In": "Graveyard" }]
+                  },
+                  "count": {
+                    "min": { "Bound": "sacrificed~moved" },
+                    "max": { "Bound": "sacrificed~moved" }
+                  },
+                  "as": "picked2"
+                }
+              },
+              { "Move": { "what": { "Bound": "picked2" }, "to": { "Battlefield": {} } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,53 @@
+{
+  "oracle_id": "eedb1527-548a-435a-a3e1-8ad7d9d6d8a9",
+  "name": "Intrude on the Mind",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Intrude on the Mind",
+      "oracle_fingerprint": "6ebc3c9668348de7a42d2db2c2d29880",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "LookAtTop": { "count": 5, "as": "top" } },
+              { "Reveal": { "what": { "Bound": "top" } } },
+              {
+                "SeparatePiles": {
+                  "what": { "Bound": "top" },
+                  "chooser": "Opponents",
+                  "as": "pile2",
+                  "rest_as": "rest3"
+                }
+              },
+              { "Move": { "what": { "Bound": "pile2" }, "to": "Hand" } },
+              { "Move": { "what": { "Bound": "rest3" }, "to": "Graveyard", "as": "moved4" } },
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Thopter",
+                      "types": ["Artifact", "Creature"],
+                      "subtypes": ["Thopter"],
+                      "power": 0,
+                      "toughness": 0,
+                      "abilities": [{ "Keyword": "Flying" }]
+                    }
+                  },
+                  "as": "token5"
+                }
+              },
+              {
+                "PutCounters": {
+                  "on": { "Bound": "token5" },
+                  "counter": "+1/+1",
+                  "count": { "Count": [{ "Is": { "Bound": "moved4" } }, { "In": "Graveyard" }] }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
