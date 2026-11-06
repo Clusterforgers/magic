@@ -1479,10 +1479,10 @@ impl<'a> Scope<'a> {
                 to,
                 combat,
             } => self.did_this_turn(*event, (by.as_ref(), to.as_ref()), *combat, reference),
-            Pred::DamagedBy(named) => self
-                .objects(named)?
-                .iter()
-                .any(|source| state.damaged_by(reference, *source)),
+            Pred::DamagedBy(named) => self.objects(named)?.iter().any(|source| {
+                state.damaged_by(reference, *source)
+                    || state.damaged_by_departed(reference, *source)
+            }),
             Pred::SameCard(named) => self
                 .objects(named)?
                 .iter()

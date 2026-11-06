@@ -86,6 +86,21 @@ pub fn on_triggered_card(ctx: &Ctx, p: &Params) -> Tr<Option<Value>> {
     ))
 }
 
+/// A trigger whose `CheckSVar$` tests the X its text defines ("where X is the amount of life you gained this turn") with
+/// no "if" printed (Rodolf Duskbringer): the script stops the trigger at zero where the card still lets it happen.
+fn fix9_unprinted_check(p: &Params) -> Tr<()> {
+    let (Some(name), Some(text)) = (p.get("CheckSVar"), p.get("TriggerDescription")) else {
+        return Ok(());
+    };
+    let printed_if = text
+        .split(|c: char| !c.is_alphabetic())
+        .any(|word| word.eq_ignore_ascii_case("if"));
+    if !p.has("SVarCompare") && !printed_if && text.contains(&format!("where {name} is")) {
+        return unmapped("key:Trigger.CheckSVar-not-printed");
+    }
+    Ok(())
+}
+
 /// `CheckSVar$` with its `SVarCompare$`: a count compared (at least 1 by default), `None` without the word.
 pub fn check_svar(ctx: &Ctx, p: &Params) -> Tr<Option<Value>> {
     // The first check, then the second to fourth that a line states in order ("a Forest and an Island").
@@ -95,6 +110,7 @@ pub fn check_svar(ctx: &Ctx, p: &Params) -> Tr<Option<Value>> {
         ("CheckThirdSVar", "ThirdSVarCompare"),
         ("CheckFourthSVar", "FourthSVarCompare"),
     ];
+    fix9_unprinted_check(p)?;
     let mut all = Vec::new();
     for (key, compare) in rounds {
         let Some(name) = p.get(key) else {
@@ -223,7 +239,11 @@ fn of_defined(
         Some(_) => return unmapped("key:Condition.inRealZone"),
         None => (valid, None),
     };
-    let selector = selector_in(ctx, valid, None)?;
+    let mut selector = selector_in(ctx, valid, None)?;
+    // Remembered objects may be cards in any zone: "if it was a permanent card" is a card of a permanent type.
+    if matches!(word, "Remembered" | "RememberedLKI") {
+        super::valid::fix9_permanent_card(valid, &mut selector)?;
+    }
     let subject = match word {
         "Remembered" | "RememberedLKI" => {
             super::memory::slot_ref_loose(ctx, super::memory::Slot::Remembered)
@@ -231,6 +251,12 @@ fn of_defined(
         }
         _ => defined(ctx, word)?,
     };
+    // "If a creature is dealt damage this way": the object the damage was aimed at, only when it was really dealt some.
+    if let Some((named, source)) = &ctx.damaged
+        && *named == subject
+    {
+        selector.push(json!({"DamagedBy": source}));
+    }
     let subject = match arrived {
         Some(zone) => json!({"Arrived": {"of": subject, "zone": zone}}),
         None => subject,
