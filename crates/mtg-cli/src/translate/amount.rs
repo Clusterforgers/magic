@@ -188,6 +188,7 @@ pub(super) fn head(expression: &str) -> String {
 
 /// The amounts that name an object of the event or of the cost (`TriggerCount$DamageAmount`, `TriggeredCard$CardPower`,
 /// `Sacrificed$CardManaCost`, `Remembered$CardManaCost`) and the count of opponents; `None` for any other expression.
+#[allow(clippy::too_many_lines)]
 fn event_amount(ctx: &Ctx, expression: &str) -> Tr<Option<Value>> {
     let Some((head, what)) = expression.split_once('$') else {
         return Ok(None);
@@ -201,11 +202,7 @@ fn event_amount(ctx: &Ctx, expression: &str) -> Tr<Option<Value>> {
             };
         }
         "TriggerObjectsAttackers" | "TriggeredDefendingPlayer" => return attacks(ctx, head, what),
-        "DungeonsCompleted" if what == "Amount" => {
-            return Ok(Some(
-                json!({"Tallied": {"who": "You", "what": "DungeonsCompleted"}}),
-            ));
-        }
+        "DungeonsCompleted" => return super::amount_more::dungeons(what).map(Some),
         "PlayerCountOpponents" | "PlayerCountRegisteredOpponents" | "PlayerCountPlayers" => {
             let who = if head == "PlayerCountPlayers" {
                 "EachPlayer"

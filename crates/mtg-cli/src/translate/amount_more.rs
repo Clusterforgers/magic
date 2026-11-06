@@ -196,6 +196,14 @@ pub fn player_amount(head: &str, what: &str, who: &Value) -> Option<Tr<Value>> {
     })
 }
 
+/// `DungeonsCompleted$Amount`: the dungeons you have completed this game.
+pub fn dungeons(what: &str) -> Tr<Value> {
+    match what {
+        "Amount" => Ok(json!({"Tallied": {"who": "You", "what": "DungeonsCompleted"}})),
+        other => unmapped(format!("amount:DungeonsCompleted${other}")),
+    }
+}
+
 /// A number about the player `who` of an event or a target (`LifeTotal`, `CardsInHand`, `Counters.Poison`); the gap names `head`.
 pub fn player_stat(head: &str, what: &str, who: &Value) -> Tr<Value> {
     if let Some(found) = player_amount("TargetedPlayer", what, who) {
