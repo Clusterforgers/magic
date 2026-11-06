@@ -2,6 +2,7 @@
 import type { CounterKind } from "./CounterKind";
 import type { ObjectId } from "./ObjectId";
 import type { Snapshot } from "./Snapshot";
+import type { SpentFrom } from "./SpentFrom";
 
 /**
  * What the cost of an ability or a spell took (CR 601.2h, 608.2h).
@@ -26,4 +27,9 @@ variant?: number,
  * The kind of counter removed from each permanent picked for a part that removes a counter of any kind ("Remove a
  * counter from a permanent you control"), in the order of the picks.
  */
-kinds?: Array<CounterKind>, };
+kinds?: Array<CounterKind>, 
+/**
+ * The sources of the mana spent to cast the spell and how much of it each supplied, for "mana from a Treasure was
+ * spent"; the mana already in the pool when the spell was cast has no source and is not listed.
+ */
+sources?: Array<SpentFrom>, };

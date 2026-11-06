@@ -154,7 +154,7 @@ impl Spend {
 }
 
 /// What a restriction reads of the object: its types, supertypes, subtypes and number of colors as the game sees it now.
-fn traits_of(state: &GameState, id: ObjectId) -> SpendTraits {
+pub(crate) fn traits_of(state: &GameState, id: ObjectId) -> SpendTraits {
     let (Some(object), Some(chars)) = (state.object(id), characteristics(state, id)) else {
         return SpendTraits::default();
     };

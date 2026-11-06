@@ -131,6 +131,8 @@ pub struct Ctx<'a> {
     pub in_cost: std::cell::Cell<bool>,
     /// The cost being read is that of an activated ability, the one place a waterbend cost has its helpers.
     pub waterbend_ok: std::cell::Cell<bool>,
+    /// A keyword a static ability gives may cost "equal to its mana cost" (`CardManaCost`).
+    pub own_cost_ok: std::cell::Cell<bool>,
     /// Where the filter being read stands (`filter::Scope`): atoms refuse the scopes they are not legal in.
     pub scope: std::cell::Cell<super::filter::Scope>,
     /// The index of the target the line being translated is about to declare, for the condition it states ahead of its effect.
@@ -191,6 +193,7 @@ impl<'a> Ctx<'a> {
             scoped: std::collections::BTreeSet::new(),
             in_cost: std::cell::Cell::new(false),
             waterbend_ok: std::cell::Cell::new(false),
+            own_cost_ok: std::cell::Cell::new(false),
             scope: std::cell::Cell::new(super::filter::Scope::Object),
             coming: None,
             coming_player: false,

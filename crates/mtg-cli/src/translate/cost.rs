@@ -128,7 +128,7 @@ fn item(ctx: &Ctx, word: &str) -> Tr<Value> {
         "Q" => return Ok(json!("Untap")),
         _ => {}
     }
-    if let Some(found) = super::cost_more::bare(word) {
+    if let Some(found) = super::cost_more::bare(ctx, word) {
         return Ok(found);
     }
     let Some((head, rest)) = word.split_once('<') else {

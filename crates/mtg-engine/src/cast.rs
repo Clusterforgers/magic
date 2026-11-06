@@ -393,6 +393,7 @@ pub(crate) fn pay_answer(
     Ok(match outcome {
         Outcome::Events(events) => {
             let mut events = parts::mill::in_turn(state, player, events);
+            record_sources(state, &mut events);
             // The mana a cast spends can set off an ability as the spell is cast.
             events.extend(crate::spend_rider::created(state, player, options, &events));
             Outcome::Events(events)
@@ -560,6 +561,56 @@ fn announcement(
             ..
         })
         | None => Err(unexpected()),
+    }
+}
+
+/// Gives the spell the payment casts the sources of the mana it spends, in the order they added it (CR 601.2h): what each
+/// was as it paid, and how much of its mana was spent. Mana that was already in the pool has no source here.
+fn record_sources(state: &GameState, events: &mut [Event]) {
+    let mut left: usize = events
+        .iter()
+        .map(|event| match event {
+            Event::ManaSpent { mana, .. } => mana.len(),
+            _ => 0,
+        })
+        .sum();
+    let mut from: Vec<mtg_cards::spend::SpentFrom> = Vec::new();
+    for event in events.iter() {
+        let Event::ManaAdded {
+            source: Some(source),
+            ..
+        } = event
+        else {
+            continue;
+        };
+        if left == 0 {
+            break;
+        }
+        left -= 1;
+        // Only the kind of the source is kept: its types, supertypes and subtypes, which a filter of sources reads.
+        let full = crate::spend::traits_of(state, *source);
+        let traits = mtg_cards::spend::SpendTraits {
+            types: full.types,
+            supertypes: full.supertypes,
+            subtypes: full.subtypes,
+            ..Default::default()
+        };
+        match from.iter_mut().find(|known| known.traits == traits) {
+            Some(known) => known.count += 1,
+            None => from.push(mtg_cards::spend::SpentFrom { traits, count: 1 }),
+        }
+    }
+    if from.is_empty() {
+        return;
+    }
+    for event in events.iter_mut() {
+        if let Event::SpellCast { choices, .. } = event {
+            choices
+                .cost_taken
+                .get_or_insert_with(Box::default)
+                .sources
+                .clone_from(&from);
+        }
     }
 }
 

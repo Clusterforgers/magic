@@ -11,6 +11,7 @@ use mtg_core::mana::ManaType;
 use crate::cost::Cost;
 use crate::keyword::Keyword;
 use crate::refs::{Ref, Selector, ZoneKind};
+use crate::spend::SpendFilter;
 use crate::trigger::Step;
 
 /// A characteristic of an object that has a number.
@@ -572,10 +573,13 @@ pub enum Amount {
         /// The amount when it does not.
         otherwise: Box<Amount>,
     },
-    /// How much mana was spent to cast the spell the source is or came from: of the one type, or of all types when none is named.
+    /// How much mana was spent to cast the spell the source is or came from: of the one type, or of all types when none is named,
+    /// and only the mana of sources of that kind when one is ("mana from a Treasure"; mana already in the pool has no source).
     ManaSpent {
         /// The type counted; all mana when none.
         of: Option<ManaType>,
+        /// The kind of source the mana came from; any source when none.
+        from: Option<Box<SpendFilter>>,
     },
     /// How many different colors of mana the players the reference names hold in their pools, all together.
     ManaColors(Ref),
@@ -740,6 +744,8 @@ enum Tagged {
     },
     ManaSpent {
         of: Option<ManaType>,
+        #[serde(default)]
+        from: Option<Box<SpendFilter>>,
     },
     ManaColors(Ref),
     MostCommon {
@@ -856,6 +862,8 @@ enum TaggedRef<'a> {
     },
     ManaSpent {
         of: Option<ManaType>,
+        #[serde(skip_serializing_if = "Option::is_none")]
+        from: Option<&'a SpendFilter>,
     },
     ManaColors(&'a Ref),
     MostCommon {
@@ -937,7 +945,7 @@ impl From<Tagged> for Amount {
                 then,
                 otherwise,
             },
-            Tagged::ManaSpent { of } => Amount::ManaSpent { of },
+            Tagged::ManaSpent { of, from } => Amount::ManaSpent { of, from },
             Tagged::ManaColors(who) => Amount::ManaColors(who),
             Tagged::MostCommon { of, stat } => Amount::MostCommon { of, stat },
             Tagged::Random { min, max } => Amount::Random { min, max },
@@ -952,6 +960,8 @@ impl From<Tagged> for Amount {
 }
 
 impl Serialize for Amount {
+    // One arm for each variant of the amount.
+    #[allow(clippy::too_many_lines)]
     fn serialize<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
         match self {
             Amount::Fixed(n) => serializer.serialize_i32(*n),
@@ -1032,7 +1042,11 @@ impl Serialize for Amount {
                 otherwise,
             }
             .serialize(serializer),
-            Amount::ManaSpent { of } => TaggedRef::ManaSpent { of: *of }.serialize(serializer),
+            Amount::ManaSpent { of, from } => TaggedRef::ManaSpent {
+                of: *of,
+                from: from.as_deref(),
+            }
+            .serialize(serializer),
             Amount::ManaColors(who) => TaggedRef::ManaColors(who).serialize(serializer),
             Amount::MostCommon { of, stat } => {
                 TaggedRef::MostCommon { of, stat: *stat }.serialize(serializer)
@@ -1309,8 +1323,8 @@ mod tests {
         Amount::When { condition: Box::new(Condition::YourTurn), then: Box::new(Amount::Fixed(3)), otherwise: Box::new(Amount::X) },
         r#"{"When":{"condition":"YourTurn","then":3,"otherwise":"X"}}"#
     )]
-    #[case::mana_spent(Amount::ManaSpent { of: Some(ManaType::Red) }, r#"{"ManaSpent":{"of":"Red"}}"#)]
-    #[case::all_mana_spent(Amount::ManaSpent { of: None }, r#"{"ManaSpent":{"of":null}}"#)]
+    #[case::mana_spent(Amount::ManaSpent { of: Some(ManaType::Red), from: None }, r#"{"ManaSpent":{"of":"Red"}}"#)]
+    #[case::all_mana_spent(Amount::ManaSpent { of: None, from: None }, r#"{"ManaSpent":{"of":null}}"#)]
     #[case::mana_colors(Amount::ManaColors(Ref::You), r#"{"ManaColors":"You"}"#)]
     #[case::mana_in_pool(Amount::ManaInPool(Ref::You), r#"{"ManaInPool":"You"}"#)]
     #[case::most_common(Amount::MostCommon { of: Selector(vec![Pred::Type(CardType::Creature)]), stat: StatKind::Colors }, r#"{"MostCommon":{"of":[{"Type":"Creature"}],"stat":"Colors"}}"#)]

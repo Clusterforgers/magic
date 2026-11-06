@@ -94,6 +94,9 @@ pub enum CostItem {
     },
     /// Exert the source (CR 701.43): it does not untap during its controller's next untap step.
     Exert,
+    /// The mana cost printed on the card the keyword is on: a static ability that gives a keyword to cards of other zones
+    /// ("its escape cost is equal to its mana cost") writes it, and the layers read it off each card it reaches.
+    OwnManaCost,
     /// Remove that many counters in all from among the permanents the payer controls that match ("Remove three counters
     /// from among artifacts you control"), of the kind named or of any kind; the engine takes them from the permanents in
     /// play order.

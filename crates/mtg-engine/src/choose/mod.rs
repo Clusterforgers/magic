@@ -178,6 +178,14 @@ pub struct CostTaken {
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     #[cfg_attr(feature = "ts", ts(as = "Option<Vec<CounterKind>>", optional))]
     pub kinds: Vec<CounterKind>,
+    /// The sources of the mana spent to cast the spell and how much of it each supplied, for "mana from a Treasure was
+    /// spent"; the mana already in the pool when the spell was cast has no source and is not listed.
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[cfg_attr(
+        feature = "ts",
+        ts(as = "Option<Vec<mtg_cards::spend::SpentFrom>>", optional)
+    )]
+    pub sources: Vec<mtg_cards::spend::SpentFrom>,
 }
 
 /// Whether a count is 0, so serialization can leave it out.
@@ -190,6 +198,13 @@ impl Choices {
     /// The mana spent to cast the spell, as it was paid (CR 601.2h).
     pub fn spent(&self) -> &[mtg_core::mana::ManaType] {
         self.spent.as_deref().map_or(&[], Vec::as_slice)
+    }
+
+    /// The sources of the mana spent to cast the spell.
+    pub fn spent_from(&self) -> &[mtg_cards::spend::SpentFrom] {
+        self.cost_taken
+            .as_deref()
+            .map_or(&[], |taken| &taken.sources)
     }
 
     /// The permanents and cards picked for the parts of the cost that take them, one list for each such part.

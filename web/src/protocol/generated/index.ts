@@ -243,6 +243,7 @@ export type { SpendFilter } from "./SpendFilter";
 export type { SpendKind } from "./SpendKind";
 export type { SpendOn } from "./SpendOn";
 export type { SpendTraits } from "./SpendTraits";
+export type { SpentFrom } from "./SpentFrom";
 export type { Stage } from "./Stage";
 export type { StateView } from "./StateView";
 export type { Step } from "./Step";

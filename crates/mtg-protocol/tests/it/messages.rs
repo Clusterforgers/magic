@@ -1438,6 +1438,10 @@ fn w2f_cost_taken(
         shots: vec![shot],
         variant: 1,
         kinds: vec![mtg_cards::value::CounterKind::Other("shield".into())],
+        sources: vec![mtg_cards::spend::SpentFrom {
+            traits: mtg_cards::spend::SpendTraits::default(),
+            count: 2,
+        }],
     }
 }
 

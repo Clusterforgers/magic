@@ -735,6 +735,27 @@ impl Keyword {
         }
     }
 
+    /// The keyword with the `OwnManaCost` part of its cost read as `mana`, the mana cost of the card it is on; the keywords a
+    /// static ability gives with "equal to its mana cost" (escape, replicate, scavenge, encore, emerge, flashback).
+    #[must_use]
+    pub fn with_own_mana_cost(mut self, mana: &mtg_core::mana::ManaCost) -> Keyword {
+        if let Keyword::Escape(cost)
+        | Keyword::Replicate(cost)
+        | Keyword::Scavenge(cost)
+        | Keyword::Encore(cost)
+        | Keyword::Emerge(cost)
+        | Keyword::Flashback(cost) = &mut self
+        {
+            for item in &mut cost.0 {
+                if matches!(item, crate::cost::CostItem::OwnManaCost) {
+                    *item =
+                        crate::cost::CostItem::Mana(crate::mana::ManaCostX::new(0, mana.clone()));
+                }
+            }
+        }
+        self
+    }
+
     /// Whether Scryfall's keyword text names a keyword of this enum (case-insensitive).
     pub fn is_known_name(printed: &str) -> bool {
         Keyword::NAMES

@@ -127,7 +127,7 @@ fn mana_spent_counts_the_mana_of_a_type_or_all(
         .and_then(|object| object.permanent.as_mut())
         .unwrap()
         .spent = spent;
-    let amount = Amount::ManaSpent { of };
+    let amount = Amount::ManaSpent { of, from: None };
     let scope = Scope::announcing(&game, PlayerId(0), source);
     assert_eq!(scope.amount(&amount), Ok(expected));
 }

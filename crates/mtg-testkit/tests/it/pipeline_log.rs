@@ -239,8 +239,16 @@ fn games_without_spells_hold_none_of_the_new_events_and_log_a_cast_as_it_always_
                 let fields = json["SpellCast"].as_object().unwrap();
                 let choices = fields.get("choices").and_then(|c| c.as_object());
                 assert_eq!(fields.len(), 2 + usize::from(choices.is_some()), "{json}");
+                // The sources of that mana ride in the cost taken.
                 assert!(
-                    choices.is_none_or(|c| c.len() == 1 && c.contains_key("spent")),
+                    choices.is_none_or(|c| {
+                        c.keys().all(|key| key == "spent" || key == "cost_taken")
+                            && c.get("cost_taken").is_none_or(|taken| {
+                                taken.as_object().is_some_and(|taken| {
+                                    taken.len() == 1 && taken.contains_key("sources")
+                                })
+                            })
+                    }),
                     "{json}"
                 );
             }
