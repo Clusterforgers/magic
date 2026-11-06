@@ -158,6 +158,7 @@ fn item(ctx: &Ctx, word: &str) -> Tr<Value> {
             Ok(json!({"ExileFromGraveyard": {"filter": [{"Is": card}], "any_player": true}}))
         }
         "ExileFromHand" => zone_cost(ctx, "ExileFromHand", number, what),
+        "ExileCtrlOrGrave" => zone_cost(ctx, "Craft", number, what),
         "Return" if on_self => Ok(json!({"ReturnToHand": {"filter": ["This"]}})),
         "Return" => zone_cost(ctx, "ReturnToHand", number, what),
         "Reveal" => zone_cost(ctx, "RevealFromHand", number, what),

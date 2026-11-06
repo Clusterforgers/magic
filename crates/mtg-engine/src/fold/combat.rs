@@ -21,7 +21,7 @@ fn on_battlefield(state: &GameState, id: mtg_core::ids::ObjectId) -> bool {
 }
 
 /// A creature that was not declared as an attacker joins the attack, unblocked (CR 508.4).
-fn join_attack(
+pub(super) fn join_attack(
     state: &mut GameState,
     object: mtg_core::ids::ObjectId,
     target: crate::combat::AttackTarget,

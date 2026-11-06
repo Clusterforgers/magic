@@ -123,6 +123,10 @@ pub enum CastWay {
     Surge,
     /// Web-slinging: a spell cast from a hand for its web-slinging cost, which returns a tapped creature the caster controls.
     WebSlinging,
+    /// Sneak: a spell cast from a hand in the declare blockers step for its sneak cost, which returns an unblocked attacker the caster controls; the permanent enters tapped and attacking what that creature attacked.
+    Sneak,
+    /// Prototype (CR 702.160): a permanent spell cast from a hand for its prototype cost; the spell and the permanent have the prototype mana cost, colours, power and toughness.
+    Prototype,
     /// Impending: a permanent spell cast from a hand for its impending cost; it enters with time counters and is no creature while it has one.
     Impending,
     /// Without paying its mana cost, by a permission or an effect (CR 118.9).
@@ -1241,6 +1245,7 @@ mod tests {
     #[case::blitz(CastWay::Blitz, true)]
     #[case::prowl(CastWay::Prowl, true)]
     #[case::spectacle(CastWay::Spectacle, true)]
+    #[case::prototype(CastWay::Prototype, true)]
     #[case::mayhem(CastWay::Mayhem, true)]
     #[case::disturb(CastWay::Disturb, true)]
     #[case::emerge(CastWay::Emerge, true)]

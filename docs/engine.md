@@ -130,6 +130,7 @@ The rules of the pipeline are in [cards-dsl.md](cards-dsl.md) (Execution); this 
 - Rewind: a step that cannot be met rewinds the announcement as a whole (CR 601.2): a mode or target specification with nothing to offer, an X or a total cost the player cannot pay, a division that cannot be given.
 - Cast during a resolution (`Effect::CastFromZone`, CR 608.2g) uses the same procedure with a granted way; special actions (suspend, foretell, companion, unlock) share it as `Special`.
 - Alternative and additional costs, casting restrictions (`Ability::CastOnly`), free casts and the per-keyword ways (`CastWay::*`) are read in `ways.rs` and `announce/required.rs`; each keyword's details are in its `keywords/<name>.rs`.
+- Assist (`announce/assist.rs`) is a step of the announcement after the total cost: the caster picks a player, that player picks an amount (`ChooseNumber` that cannot be backed out of, default 0), the amount comes off the generic mana and the helper's mana is spent in the same batch as the caster's payment. Prototype is `GameObject::prototype` (cost, colours, size by the cast way); Sneak puts the creature in the attack as the spell resolves (`sneak.rs`); Craft is a cost pick over the battlefield and the graveyard (`Kind::Craft`) and a return of the exiled card (`Ref::Arrived`).
 
 ## Replacement
 

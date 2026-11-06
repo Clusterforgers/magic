@@ -6,7 +6,8 @@
 //! the same question, from 0 to the loyalty counters of the planeswalker, and removes that many.
 
 use mtg_cards::ability::{Ability, LoyaltyCost};
-use mtg_cards::value::{CastWay, CounterKind};
+use mtg_cards::cost::CostItem;
+use mtg_cards::value::{Amount, CastWay, CounterKind};
 use mtg_core::ids::{ObjectId, PlayerId};
 use mtg_core::mana::{ManaCost, ManaSymbol};
 
@@ -154,6 +155,12 @@ pub(crate) fn payable(
         return false;
     };
     let cost = &*cost;
+    let alone = pays;
+    // A spell with assist may be paid for with the help of another player (CR 702.132a).
+    let pays = |total: &ManaCost| {
+        alone(total)
+            || super::assist::helped(state, player, id, total).is_some_and(|less| alone(&less))
+    };
     let rules = spell_ability(state, id)
         .map(|(_, rules)| rules)
         .filter(|rules| targets_read_x(rules));
@@ -234,19 +241,38 @@ struct Offer {
     except: Vec<u32>,
 }
 
+/// The least X the cost allows: craft takes at least as many materials as it names (CR 702.167a).
+fn least_x(ctx: &Ctx<'_>) -> u32 {
+    let Some(Ability::Activated { cost, .. }) = ctx.ability else {
+        return 0;
+    };
+    cost.0
+        .iter()
+        .find_map(|item| match item {
+            CostItem::Craft {
+                count: Amount::X,
+                least,
+                ..
+            } => Some(least.unwrap_or(1)),
+            _ => None,
+        })
+        .unwrap_or(0)
+}
+
 impl Offer {
     /// The values of X from 0 to `most` for which every target specification can be met, or `None` when there are
     /// none. A target specification that does not read X is the same for every value.
     fn of(ctx: &Ctx<'_>, choices: &Choices, most: u32) -> Option<Offer> {
+        let least = least_x(ctx);
         let specs = targets::specs(ctx, choices);
         if !specs.iter().any(reads_x) {
             return Some(Offer {
-                min: 0,
+                min: least,
                 max: most,
                 except: Vec::new(),
             });
         }
-        let met: Vec<u32> = (0..=most)
+        let met: Vec<u32> = (least..=most)
             .filter(|x| {
                 targets_met(
                     ctx.state,

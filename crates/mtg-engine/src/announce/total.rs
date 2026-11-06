@@ -162,7 +162,7 @@ pub(super) fn affordable(ctx: &Ctx<'_>, total: &Total) -> bool {
     let life = seat
         .life()
         .saturating_sub(i32::try_from(total.life).unwrap_or(i32::MAX));
-    total.mana.as_ref().is_none_or(|cost| {
+    let alone = |cost: &ManaCost| {
         can_afford_with(
             cost,
             seat.mana(),
@@ -171,5 +171,13 @@ pub(super) fn affordable(ctx: &Ctx<'_>, total: &Total) -> bool {
             life,
             &total.spend,
         )
+    };
+    total.mana.as_ref().is_none_or(|cost| {
+        alone(cost)
+            || match ctx.what {
+                What::Spell(spell) => super::assist::helped(ctx.state, ctx.player, *spell, cost)
+                    .is_some_and(|less| alone(&less)),
+                _ => false,
+            }
     })
 }

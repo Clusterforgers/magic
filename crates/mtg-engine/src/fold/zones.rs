@@ -720,7 +720,16 @@ fn resolve_spell(state: &mut GameState, id: ObjectId) -> Result<(), EngineError>
         let owner = owner_of(state, id)?;
         move_object(state, id, Zone::Graveyard(owner), Placement::Top)?;
     } else {
+        let sneaking = crate::sneak::target_of(state, id);
         move_object(state, id, Zone::Battlefield, Placement::Top)?;
+        // The creature enters attacking, never declared as an attacker (CR 508.4).
+        if let Some(target) = sneaking
+            && state
+                .object(id)
+                .is_some_and(|o| o.zone() == Zone::Battlefield)
+        {
+            super::combat::join_attack(state, id, target)?;
+        }
     }
     priority_to_active(state);
     Ok(())

@@ -51,3 +51,35 @@ pub(super) fn text_any(filter: &Selector, count: usize) -> String {
 pub(super) fn text(filter: &Selector, count: usize) -> String {
     crate::wording::exile_from_graveyard(filter, count)
 }
+
+/// The permanents the payer controls and the cards in their graveyard that match: the materials of craft (CR 702.167a).
+pub(super) fn craft_candidates(payer: &Payer<'_>, filter: &Selector) -> Vec<ObjectId> {
+    let mine = payer
+        .state
+        .zone(Zone::Battlefield)
+        .iter()
+        .copied()
+        .filter(|id| {
+            payer
+                .state
+                .object(*id)
+                .is_some_and(|object| object.controller() == payer.player)
+        });
+    let graveyard = payer
+        .state
+        .zone(Zone::Graveyard(payer.player))
+        .iter()
+        .copied();
+    payer.matching(mine.chain(graveyard), filter, |_| true)
+}
+
+/// "Exile a creature from among permanents you control and/or cards in your graveyard."
+pub(super) fn craft_text(filter: &Selector, count: usize) -> String {
+    let (head, _) = crate::wording::phrase(filter);
+    let what = if count == 1 {
+        format!("one {head}")
+    } else {
+        format!("{count} {head}s")
+    };
+    format!("Exile {what} from among permanents you control and/or cards in your graveyard.")
+}

@@ -479,16 +479,27 @@ fn announcement(
                 granted,
                 ..
             },
-        ) => spell_events(
-            state,
-            player,
-            *spell,
-            &pending.cost_parts(),
-            choices,
-            granted.is_some(),
-        )
-        .map(|events| unpreparing(state, *spell, events))
-        .ok_or_else(unexpected),
+        ) => {
+            // The player who helps with assist pays first, in the same batch as the caster's payment (CR 702.132a).
+            let helped = match pending.done.assist_paid {
+                Some((helper, amount)) => {
+                    crate::announce::assist::events(state, *spell, helper, amount)
+                        .ok_or_else(unexpected)?
+                }
+                None => Vec::new(),
+            };
+            let cast = spell_events(
+                state,
+                player,
+                *spell,
+                &pending.cost_parts(),
+                choices,
+                granted.is_some(),
+            )
+            .map(|events| unpreparing(state, *spell, events))
+            .ok_or_else(unexpected)?;
+            Ok(helped.into_iter().chain(cast).collect())
+        }
         Some(Pending {
             what: What::Ability(ability),
             choices,
@@ -522,6 +533,28 @@ pub(crate) fn pay_choice(
     pay_with(player, options, tapped, choice, announced, &|option, _| {
         Ok(tap_events(player, option))
     })
+}
+
+/// The events of `player` paying the cost of `options` with the payment the engine picks, and nothing else: the help
+/// another player gives with assist.
+pub(crate) fn auto_pay_events(
+    state: &GameState,
+    player: PlayerId,
+    options: &PayOptions,
+) -> Option<Vec<Event>> {
+    let outcome = pay_with(
+        player,
+        options,
+        &unusable(state, player, options),
+        PayChoice::Auto,
+        Vec::new(),
+        &|option, taken| mana_ability::activation(state, player, option, taken),
+    )
+    .ok()?;
+    match outcome {
+        Outcome::Events(events) => Some(events),
+        _ => None,
+    }
 }
 
 /// [`pay_choice`] with the events of using each mana source given by `activate`.

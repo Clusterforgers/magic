@@ -1,7 +1,10 @@
 //! Alternative-cost keywords: `Warp`, `Surge`, `Web-slinging` and `Impending` as an `AltCast` with the abilities that read
 //! how the card was cast, the same shapes the engine's alternative-cost table runs (`mtg_cards::alt_riders`).
 
-use mtg_cards::alt_riders::{alt_cast, impending_riders, warp_riders};
+use mtg_cards::ability::Ability;
+use mtg_cards::alt_riders::{alt_cast, impending_riders, sneak_riders, warp_riders};
+use mtg_cards::cost::Cost;
+use mtg_cards::keyword::Keyword;
 use mtg_cards::mana::ManaCostX;
 use mtg_cards::value::CastWay;
 use serde_json::Value;
@@ -15,9 +18,13 @@ pub fn alt_keyword(body: &str) -> Option<Vec<Tr<Value>>> {
     if name == "Strive" {
         return Some(vec![strive(fields.next(), fields.next())]);
     }
+    if name == "Prototype" {
+        return Some(vec![prototype(fields.next(), fields.next())]);
+    }
     let (way, count, cost_text) = match (name, fields.next(), fields.next()) {
         ("Warp", Some(text), None) => (CastWay::Warp, None, text),
         ("Surge", Some(text), None) => (CastWay::Surge, None, text),
+        ("Sneak", Some(text), None) => (CastWay::Sneak, None, text),
         ("Web-slinging", Some(text), None) => (CastWay::WebSlinging, None, text),
         ("Impending", Some(count), Some(text)) => (CastWay::Impending, Some(count), text),
         _ => return None,
@@ -49,11 +56,34 @@ fn abilities(way: CastWay, count: Option<&str>, cost_text: &str) -> Vec<Tr<Value
             Some(n) => all.extend(impending_riders(n)),
             None => return vec![unmapped("keyword:Impending-count")],
         },
+        CastWay::Sneak => all.extend(sneak_riders()),
         _ => {}
     }
     all.into_iter()
         .map(|ability| serde_json::to_value(ability).or_else(|_| unmapped("keyword:AltCast")))
         .collect()
+}
+
+/// `Prototype:1 U U:2:1`: the prototype mana cost, then the power and toughness.
+fn prototype(cost_text: Option<&str>, size: Option<&str>) -> Tr<Value> {
+    let (Some(text), Some(size)) = (cost_text, size) else {
+        return unmapped("keyword:Prototype-shape");
+    };
+    let Some(mana) = mana(text) else {
+        return unmapped("keyword:Prototype-cost");
+    };
+    let sized = size.split_once(':').and_then(|(power, toughness)| {
+        Some((power.parse::<i32>().ok()?, toughness.parse::<i32>().ok()?))
+    });
+    let Some((power, toughness)) = sized else {
+        return unmapped("keyword:Prototype-size");
+    };
+    let ability = Ability::Keyword(Keyword::Prototype {
+        cost: Cost::mana(mana),
+        power,
+        toughness,
+    });
+    serde_json::to_value(ability).or_else(|_| unmapped("keyword:Prototype"))
 }
 
 /// `Strive`: this spell costs the mana more for each target beyond the first.

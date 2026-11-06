@@ -80,7 +80,7 @@ fn zone_phrase(kind: ZoneKind, yours: bool) -> String {
 
 /// A noun phrase for what a selector matches, split into the part that is pluralised and the part after it:
 /// ("tapped creature", "you control").
-fn phrase(selector: &Selector) -> (String, String) {
+pub(crate) fn phrase(selector: &Selector) -> (String, String) {
     let (mut adjectives, mut nouns, mut tail) = (Vec::new(), Vec::new(), Vec::new());
     let (mut zone, mut yours, mut this) = (None, false, false);
     for pred in &selector.0 {

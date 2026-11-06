@@ -1,4 +1,4 @@
-//! Goal: the alternative costs of Forge scripts become `AltCast` and `FreeCast` abilities that parse as the DSL and leave other shapes as gaps.
+//! Goal: the alternative costs, Assist and Craft of Forge scripts become `AltCast`, `FreeCast` and keyword abilities that parse as the DSL and leave other shapes as gaps.
 use mtg_cards::ability::Ability;
 use rstest::rstest;
 use serde_json::{Value, json};
@@ -14,10 +14,17 @@ fn creature(lines: &str) -> String {
 #[case::surge("K:Surge:3 R R", "Surge", 1)]
 #[case::web("K:Web-slinging:2 W", "WebSlinging", 1)]
 #[case::impending("K:Impending:3:2 U U", "Impending", 3)]
+#[case::prototype("K:Prototype:1 U U:2:1", "Prototype", 1)]
+#[case::sneak("K:Sneak:W B", "Sneak", 2)]
 fn keyword_alt_costs(#[case] line: &str, #[case] way: &str, #[case] count: usize) {
     let found = abilities(&creature(line));
     assert_eq!(found.len(), count);
-    assert_eq!(found[0]["AltCast"]["way"], json!(way));
+    assert_eq!(
+        found[0]["AltCast"]["way"].as_str().or(found[0]["Keyword"]
+            .as_object()
+            .and_then(|k| k.keys().next().map(String::as_str))),
+        Some(way)
+    );
     assert!(
         found
             .iter()
@@ -56,4 +63,16 @@ fn static_alt_costs(#[case] line: &str, #[case] expected: Value) {
 )]
 fn static_alt_gaps(#[case] line: &str, #[case] gap: &str) {
     assert_eq!(gaps(&creature(line)), vec![gap.to_owned()]);
+}
+
+#[rstest]
+#[case::assist("K:Assist", json!({"Keyword": "Assist"}))]
+#[case::craft_x(
+    "K:Craft:2 B B XMin1 ExileCtrlOrGrave<X/Creature.Other>\nSVar:X:Count$xPaid",
+    json!({"Keyword": {"Craft": [{"Mana": "{2}{B}{B}"}, {"Craft": {"filter": [{"Type": "Creature"}, "Other"], "count": "X", }}]}})
+)]
+fn assist_and_craft_keywords(#[case] line: &str, #[case] expected: Value) {
+    let found = abilities(&creature(line));
+    assert_eq!(found, vec![expected]);
+    assert!(serde_json::from_value::<Ability>(found[0].clone()).is_ok());
 }

@@ -56,6 +56,7 @@ mod price;
 mod replace_dry;
 mod saga;
 mod sba;
+mod sneak;
 mod soulbond;
 mod spell_keywords;
 mod spend_rider;

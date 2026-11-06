@@ -329,6 +329,7 @@ fn restricted(state: &GameState, id: ObjectId, is: impl Fn(&Modification) -> boo
 /// The characteristics of a card or token on its own, before any effect.
 pub(crate) fn base(object: &GameObject) -> Characteristics {
     let card = object.card();
+    let prototype = object.prototype();
     Characteristics {
         types: object.base_types(),
         // A bestowed creature card is an Aura while it is bestowed (CR 702.103b).
@@ -340,9 +341,9 @@ pub(crate) fn base(object: &GameObject) -> Characteristics {
         creature_types_set: false,
         land_types_set: false,
         all_creature_types: false,
-        colors: card.colors(),
-        power: card.power,
-        toughness: card.toughness,
+        colors: prototype.map_or_else(|| card.colors(), |(cost, _, _)| cost.colors()),
+        power: prototype.map_or(card.power, |(_, power, _)| Some(power)),
+        toughness: prototype.map_or(card.toughness, |(_, _, toughness)| Some(toughness)),
         abilities: card.abilities.clone(),
     }
 }

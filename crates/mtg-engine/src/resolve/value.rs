@@ -1845,7 +1845,7 @@ impl<'a> Scope<'a> {
             let cost = self
                 .seen(object)
                 .and_then(|seen| seen.card)
-                .and_then(|card| card.card().mana_cost.as_ref());
+                .and_then(|card| card.mana_cost());
             let symbols = cost.map_or(&[][..], ManaCost::symbols);
             let counted = symbols
                 .iter()

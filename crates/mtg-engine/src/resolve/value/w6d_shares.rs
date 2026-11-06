@@ -97,7 +97,7 @@ impl Scope<'_> {
     fn generic_cost(n: u32, seen: &Seen<'_>) -> bool {
         seen.card
             .filter(|card| card.face_down().is_none())
-            .and_then(|card| card.card().mana_cost.as_ref())
+            .and_then(|card| card.mana_cost())
             .is_some_and(|cost| cost.is_generic_only(n))
     }
 

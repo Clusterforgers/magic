@@ -186,9 +186,12 @@ fn greedy(kind: &DecisionKind) -> Option<Answered> {
 #[test]
 fn the_steps_are_listed_in_the_order_of_the_rules() {
     let rules: Vec<char> = Phase::ORDER.iter().map(|phase| phase.rule()).collect();
-    assert_eq!(rules, ['b', 'b', 'b', 'b', 'b', 'c', 'd', 'e', 'f', 'g']);
+    assert_eq!(
+        rules,
+        ['b', 'b', 'b', 'b', 'b', 'c', 'd', 'e', 'f', 'f', 'g']
+    );
     assert_eq!(Phase::ORDER[0], Phase::Modes);
-    assert_eq!(Phase::ORDER[9], Phase::Payment);
+    assert_eq!(Phase::ORDER[10], Phase::Payment);
     let mut seen = Phase::ORDER.to_vec();
     seen.dedup();
     assert_eq!(seen.len(), Phase::ORDER.len(), "each step once");

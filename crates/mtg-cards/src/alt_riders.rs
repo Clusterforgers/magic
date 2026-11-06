@@ -41,6 +41,31 @@ pub fn web_slinging_return() -> CostItem {
     }
 }
 
+/// The part of a sneak cost beyond its mana: return an unblocked attacker you control to its owner's hand.
+pub fn sneak_return() -> CostItem {
+    CostItem::ReturnToHand {
+        filter: Selector(vec![
+            Pred::Attacking,
+            Pred::Unblocked,
+            Pred::Type(CardType::Creature),
+            Pred::ControlledBy(Ref::You),
+        ]),
+        count: Amount::one(),
+    }
+}
+
+/// Sneak: the permanent enters tapped; it joins the attack of the creature the cost returned as it resolves.
+pub fn sneak_riders() -> Vec<Ability> {
+    vec![Ability::Replacement {
+        when: ReplaceWhen::Enters {
+            what: Selector::this(),
+        },
+        by: ReplaceBy::Tapped,
+        condition: Some(Condition::CastWith(CastWay::Sneak)),
+        from: ZoneKind::Battlefield,
+    }]
+}
+
 /// The alternative cost of the keyword with its mana and the conditions it carries: the `AltCast` a `Warp`, `Surge`,
 /// `Web-slinging` or `Impending` line stands for.
 pub fn alt_cast(way: CastWay, mana: ManaCostX) -> Ability {
@@ -48,12 +73,19 @@ pub fn alt_cast(way: CastWay, mana: ManaCostX) -> Ability {
     if way == CastWay::WebSlinging {
         items.push(web_slinging_return());
     }
+    if way == CastWay::Sneak {
+        items.push(sneak_return());
+    }
     Ability::AltCast {
         way,
         cost: Some(Cost(items)),
         from: ZoneKind::Hand,
-        condition: (way == CastWay::Surge).then(spell_cast_this_turn),
-        flash: false,
+        condition: match way {
+            CastWay::Surge => Some(spell_cast_this_turn()),
+            CastWay::Sneak => Some(Condition::Step(Step::DeclareBlockers)),
+            _ => None,
+        },
+        flash: way == CastWay::Sneak,
     }
 }
 
@@ -153,6 +185,7 @@ fn riders(way: CastWay, count: u32) -> Vec<Ability> {
     match way {
         CastWay::Warp => warp_riders(),
         CastWay::Impending => impending_riders(count),
+        CastWay::Sneak => sneak_riders(),
         _ => Vec::new(),
     }
 }
@@ -165,7 +198,7 @@ pub fn keyword_line(abilities: &[Ability]) -> Option<(String, usize)> {
         cost: Some(cost),
         from: ZoneKind::Hand,
         condition,
-        flash: false,
+        flash: _,
     }) = abilities.first()
     else {
         return None;
@@ -175,6 +208,7 @@ pub fn keyword_line(abilities: &[Ability]) -> Option<(String, usize)> {
         CastWay::Surge => "Surge",
         CastWay::WebSlinging => "Web-slinging",
         CastWay::Impending => "Impending",
+        CastWay::Sneak => "Sneak",
         _ => return None,
     };
     let mana = cost.0.iter().find_map(|item| match item {
@@ -187,7 +221,7 @@ pub fn keyword_line(abilities: &[Ability]) -> Option<(String, usize)> {
         0
     };
     if abilities.first() != Some(&alt_cast(*way, mana.clone()))
-        || (*way != CastWay::Surge && condition.is_some())
+        || (!matches!(way, CastWay::Surge | CastWay::Sneak) && condition.is_some())
     {
         return None;
     }
@@ -230,6 +264,7 @@ mod tests {
         match way {
             CastWay::Warp => all.extend(warp_riders()),
             CastWay::Impending => all.extend(impending_riders(3)),
+            CastWay::Sneak => all.extend(sneak_riders()),
             _ => {}
         }
         all
@@ -240,6 +275,7 @@ mod tests {
     #[case::surge(CastWay::Surge, "{3}{R}{R}", "Surge {3}{R}{R}", 1)]
     #[case::web(CastWay::WebSlinging, "{2}{W}", "Web-slinging {2}{W}", 1)]
     #[case::impending(CastWay::Impending, "{2}{U}{U}", "Impending 3\u{2014}{2}{U}{U}", 3)]
+    #[case::sneak(CastWay::Sneak, "{W}{B}", "Sneak {W}{B}", 2)]
     fn a_keyword_line_is_written(
         #[case] way: CastWay,
         #[case] mana: &str,

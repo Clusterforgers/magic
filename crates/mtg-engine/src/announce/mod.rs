@@ -9,6 +9,7 @@
 mod again;
 mod alternative;
 mod anchor;
+pub(crate) mod assist;
 mod c9_emerge_reduce;
 pub(crate) mod companion;
 mod division;
@@ -93,6 +94,8 @@ pub(crate) enum Phase {
     Legality,
     /// The total cost: the cost, its alternative and additional parts, X and the cost modifiers (CR 601.2f).
     Total,
+    /// The player who helps pay the generic mana of a spell with assist (CR 702.132a).
+    Assist,
     /// Mana abilities and payment, then the spell or ability goes on the stack (CR 601.2g, 601.2h, 601.2i).
     Payment,
 }
@@ -100,7 +103,7 @@ pub(crate) enum Phase {
 impl Phase {
     /// The steps in the order of the rules; the announcement asks them one after the other and a step that has
     /// nothing to ask passes to the next.
-    pub(crate) const ORDER: [Phase; 10] = [
+    pub(crate) const ORDER: [Phase; 11] = [
         Phase::Modes,
         Phase::Alternative,
         Phase::Optional,
@@ -110,6 +113,7 @@ impl Phase {
         Phase::Division,
         Phase::Legality,
         Phase::Total,
+        Phase::Assist,
         Phase::Payment,
     ];
 
@@ -126,7 +130,7 @@ impl Phase {
             Phase::Targets => 'c',
             Phase::Division => 'd',
             Phase::Legality => 'e',
-            Phase::Total => 'f',
+            Phase::Total | Phase::Assist => 'f',
             Phase::Payment => 'g',
         }
     }
@@ -138,9 +142,12 @@ impl Phase {
                 Unplayable::Targets
             }
             Phase::Parts => Unplayable::Cost,
-            Phase::Alternative | Phase::Optional | Phase::X | Phase::Total | Phase::Payment => {
-                Unplayable::Mana
-            }
+            Phase::Alternative
+            | Phase::Optional
+            | Phase::X
+            | Phase::Total
+            | Phase::Assist
+            | Phase::Payment => Unplayable::Mana,
         }
     }
 
@@ -158,6 +165,7 @@ impl Phase {
             Phase::Division => division::run(ctx, work),
             Phase::Legality => legality::run(ctx, work),
             Phase::Total => total::run(ctx, work),
+            Phase::Assist => assist::run(ctx, work),
             Phase::Payment => Some(payment::run(ctx, work)),
         }
     }
@@ -264,6 +272,12 @@ pub(crate) struct Done {
     pub(crate) repeated: Option<usize>,
     /// X is settled.
     pub(crate) x: bool,
+    /// The player the caster picked to help pay with assist, by position among those offered (0 is no one).
+    pub(crate) assist_pick: Option<usize>,
+    /// How much generic mana the helper chose to pay.
+    pub(crate) assist_amount: Option<u32>,
+    /// The helper and the generic mana they pay, once the step has taken it off the cost.
+    pub(crate) assist_paid: Option<(PlayerId, u32)>,
     /// How many target specifications have their division settled.
     pub(crate) divided: usize,
     /// The kind of counter the player picked for the next permanent of a cost that removes a counter of any kind, by
@@ -447,6 +461,9 @@ impl Pending {
         let wanted = match answered {
             Answered::Modes(_) => Phase::Modes,
             Answered::Way(_) if self.done.asked == Some(Phase::Face) => Phase::Face,
+            Answered::Way(_) | Answered::Number(_) if self.done.asked == Some(Phase::Assist) => {
+                Phase::Assist
+            }
             // The X of a counted part is asked while the parts are, before the picks that depend on it, and a choice of
             // option among the parts is the kind of counter a picked permanent loses.
             Answered::Way(_) | Answered::Number(_) if self.done.asked == Some(Phase::Parts) => {
@@ -479,6 +496,10 @@ impl Pending {
                 self.done.modes = true;
             }
             Answered::Way(pick) if wanted == Phase::Face => self.done.face_picked = Some(pick),
+            Answered::Way(pick) if wanted == Phase::Assist => self.done.assist_pick = Some(pick),
+            Answered::Number(amount) if wanted == Phase::Assist => {
+                self.done.assist_amount = Some(amount);
+            }
             Answered::Way(pick) if wanted == Phase::Parts => {
                 self.done.w2f_kind_picked = u8::try_from(pick).ok();
             }

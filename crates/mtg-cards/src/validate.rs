@@ -1229,7 +1229,8 @@ impl<'a> Walker<'a> {
                     | CostItem::RevealFromHand { filter, count }
                     | CostItem::ReturnToHand { filter, count }
                     | CostItem::Behold { filter, count }
-                    | CostItem::ToLibrary { filter, count, .. } => {
+                    | CostItem::ToLibrary { filter, count, .. }
+                    | CostItem::Craft { filter, count, .. } => {
                         w.at("filter", |w| w.selector(filter));
                         w.at("count", |w| w.amount(count));
                     }
@@ -1495,6 +1496,7 @@ impl<'a> Walker<'a> {
                     | CostItem::Blight(_)
                     | CostItem::Behold { .. }
                     | CostItem::ToLibrary { .. }
+                    | CostItem::Craft { .. }
                     | CostItem::Forage
             ) {
                 self.uses(kind, &format!("{prefix}.{}", tag_of(item)));
@@ -1664,6 +1666,7 @@ impl<'a> Walker<'a> {
             | Keyword::Foretell(cost)
             | Keyword::Plot(cost)
             | Keyword::Awaken { cost, .. }
+            | Keyword::Prototype { cost, .. }
             | Keyword::Suspend { cost, .. } => {
                 self.at("cost", |w| w.cost(cost));
                 // Only mana is paid for these: a part that takes objects, life or counters is not.
@@ -4346,6 +4349,7 @@ fn picks(cost: &Cost) -> bool {
                 | CostItem::Blight(_)
                 | CostItem::Behold { .. }
                 | CostItem::ToLibrary { .. }
+                | CostItem::Craft { .. }
                 | CostItem::Forage
         ),
     })
