@@ -141,6 +141,8 @@ pub async fn translate_forge(
     let mut index = String::from("slug\tname\ttranslated\ttoday\n");
     // Offered cards whose clauses have no read-back writer: the offer trusts their translation.
     let mut trusted = String::from("slug\tunwritten constructs\n");
+    // Offered cards with a clause written back as other text: the reading back finds them wrong or lacks the wording.
+    let mut differs = String::from("slug\tclause\twritten\n");
     let mut cards = String::from("slug\tname\ttranslated\ttoday\toracle_matches\tgaps\toffered\n");
     for script in &scripts {
         if !wanted.is_empty() && !selected(script, &wanted) {
@@ -186,9 +188,13 @@ pub async fn translate_forge(
         let mut gaps: Vec<String> = gaps.into_iter().map(str::to_owned).collect();
         // `whole` overstates: the checker refuses some whole drafts or rates them partial; a refusal is named as a gap.
         let offered = match (&stored, state) {
-            (Some(stored), "whole") => {
-                offered_column(stored, &card, &stem, &mut trusted, &mut gaps)
-            }
+            (Some(stored), "whole") => offered_column(
+                stored,
+                &card,
+                &stem,
+                (&mut trusted, &mut differs),
+                &mut gaps,
+            ),
             _ => "",
         };
         let _ = writeln!(
@@ -210,6 +216,7 @@ pub async fn translate_forge(
     write_file(&out_dir.join("translate-cards.tsv"), &cards)?;
     if stored.is_some() {
         write_file(&out_dir.join("translate-trusted.tsv"), &trusted)?;
+        write_file(&out_dir.join("translate-differs.tsv"), &differs)?;
     }
     if let Some(lines) = stored.as_ref().and_then(Stored::precon_lines) {
         write_file(&out_dir.join("precon-today.tsv"), &lines)?;
@@ -223,7 +230,7 @@ fn offered_column(
     stored: &Stored,
     card: &CardOut,
     stem: &str,
-    trusted: &mut String,
+    (trusted, differs): (&mut String, &mut String),
     gaps: &mut Vec<String>,
 ) -> &'static str {
     let text = serde_json::to_string(&card.proposal()).unwrap_or_default();
@@ -233,6 +240,9 @@ fn offered_column(
             None => {
                 if !offer.unwritten.is_empty() {
                     let _ = writeln!(trusted, "{stem}\t{}", offer.unwritten.join("; "));
+                }
+                for (clause, written) in &offer.differs {
+                    let _ = writeln!(differs, "{stem}\t{clause}\t{written}");
                 }
                 "true"
             }

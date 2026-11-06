@@ -271,6 +271,15 @@ fn tails(of: &Ref, stat: StatKind) -> Vec<String> {
     if *of == Ref::Paid {
         return paid_names(stat);
     }
+    // What an earlier step sacrificed: "that creature's power".
+    if let Ref::Bound(bound) = of
+        && bound.starts_with("sacrificed")
+    {
+        return ["that creature's", "the sacrificed creature's"]
+            .iter()
+            .map(|owner| format!("{owner} {name}"))
+            .collect();
+    }
     // What an earlier step exiled: "the mana value of the permanent exiled this way".
     if matches!(of, Ref::Bound(_)) {
         return ["permanent", "card", "creature"]

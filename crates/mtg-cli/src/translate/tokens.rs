@@ -170,6 +170,11 @@ fn token_of(ctx: &mut Ctx, p: &Params, script: &str) -> Tr<Vec<Value>> {
     } else {
         defined(ctx, p.get("TokenOwner").unwrap_or("You"))?
     };
+    if !flag(p, "TokenTapped")? && says_tapped_token(ctx.oracle, p.get("TokenScript").unwrap_or(""))
+    {
+        // The script makes them untapped where the card says "create a tapped ... token".
+        return unmapped("key:Token.TokenTapped-missing");
+    }
     let mut create = json!({
         "who": who,
         "token": token,
@@ -558,4 +563,19 @@ fn pumped(ctx: &mut Ctx, p: &Params, create: &mut Value) -> Tr<Option<Value>> {
     Ok(Some(
         json!({"Continuous": {"affected": {"Bound": name}, "mods": mods, "duration": duration}}),
     ))
+}
+
+/// Whether a sentence of the card's text creates tapped tokens of this script ("create a tapped Treasure token" for
+/// `c_a_treasure_sac`): a word of five or more letters of the script names the token.
+fn says_tapped_token(oracle: &str, script: &str) -> bool {
+    let names: Vec<&str> = script.split('_').filter(|word| word.len() >= 5).collect();
+    oracle.to_lowercase().split(['.', '\n']).any(|sentence| {
+        sentence.find("create ").is_some_and(|at| {
+            let rest = &sentence[at..];
+            rest.find(" token").is_some_and(|end| {
+                let head = &rest[..end];
+                head.contains(" tapped ") && names.iter().any(|name| head.contains(name))
+            })
+        })
+    })
 }

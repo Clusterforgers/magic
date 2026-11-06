@@ -129,6 +129,16 @@ impl Stored {
         Some(Offer {
             refused: refusal(&report, &self.caps),
             unwritten: report.unwritten().map(str::to_owned).collect(),
+            differs: report
+                .clauses
+                .iter()
+                .filter_map(|clause| match &clause.state {
+                    ClauseState::Differs { written, .. } => {
+                        Some((clause.text.clone(), written.clone()))
+                    }
+                    _ => None,
+                })
+                .collect(),
         })
     }
 
@@ -164,6 +174,8 @@ pub struct Offer {
     pub refused: Option<String>,
     /// The constructs of its clauses that have no read-back writer.
     pub unwritten: Vec<String>,
+    /// The clauses written back as other text, each with the wording of its ability.
+    pub differs: Vec<(String, String)>,
 }
 
 /// Why the exact check refuses a whole translation, as a gap name: the first problem (`offer:invalid:`), a printed
