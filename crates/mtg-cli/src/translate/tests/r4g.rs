@@ -102,6 +102,31 @@ fn a_damage_replacement_reads_the_execute_mode_of_its_batch(
 }
 
 #[rstest]
+#[case::yours(
+    "| ValidActivatingPlayer$ You | ValidSA$ Activated.Loyalty",
+    r#""who":"You""#
+)]
+#[case::an_opponents("| ValidSA$ Activated.Loyalty+OppCtrl", r#""who":"Opponents""#)]
+#[case::of_a_kind(
+    "| ValidCard$ Planeswalker.Other | ValidActivatingPlayer$ You | ValidSA$ Activated.Loyalty",
+    r#""Other""#
+)]
+fn activating_a_loyalty_ability_is_activating_an_ability_of_a_planeswalker(
+    #[case] words: &str,
+    #[case] expected: &str,
+) {
+    let (json, found) = card(
+        "Enchantment",
+        &format!(
+            "T:Mode$ AbilityCast {words} | TriggerZones$ Battlefield | Execute$ D\nSVar:D:DB$ Draw | Defined$ You"
+        ),
+    );
+    assert!(found.is_empty(), "{found:?}");
+    assert!(json.contains(r#"{"Type":"Planeswalker"}"#), "{json}");
+    assert!(json.contains(expected), "{json}");
+}
+
+#[rstest]
 #[case::yours("SpellAbility.YouCtrl", true)]
 #[case::an_opponents("SpellAbility.OppCtrl", false)]
 fn valiant_counts_the_first_targeting_by_a_source_you_control(
