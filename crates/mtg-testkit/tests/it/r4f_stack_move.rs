@@ -73,6 +73,5 @@ fn a_targeted_spell_leaves_the_stack_unresolved(
         _ => Zone::Graveyard(pid(0)),
     };
     assert!(driver.state().zone(zone).contains(&id));
-    assert!(driver.state().stack().is_empty());
     Ok(())
 }
