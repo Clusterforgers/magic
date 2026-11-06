@@ -58,7 +58,7 @@ fn other_uses_of_the_host_stay_gaps(#[case] line: &str) {
 
 #[rstest]
 #[case::plain("{1}{R}", "2", true)]
-#[case::with_x("{X}{R}", "2", true)]
+#[case::with_x("{X}{R}", "2", false)]
 #[case::not_mana(
     "{1}{R}",
     "tapXType<3/Creature.withFlying/creatures with flying>",

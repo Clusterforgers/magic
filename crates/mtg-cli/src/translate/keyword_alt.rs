@@ -67,7 +67,10 @@ fn abilities(way: CastWay, count: Option<&str>, cost_text: &str) -> Vec<Tr<Value
 /// `MayFlashCost:2`: the card may be cast as though it had flash if the caster pays the mana more (CR 601.3b, 118.8): a
 /// way to cast it at instant speed for its own mana cost and the extra mana.
 pub fn may_flash_cost(printed: &str, extra: &str) -> Tr<Value> {
-    let Some(total) = mana(&format!("{printed} {extra}")).filter(|_| !printed.is_empty()) else {
+    // An alternative way holds no {X} in the engine: such a card would never be offered at instant speed.
+    let Some(total) = mana(&format!("{printed} {extra}"))
+        .filter(|_| !printed.is_empty() && !printed.contains('X'))
+    else {
         return unmapped("keyword:MayFlashCost-cost");
     };
     let ability = Ability::AltCast {
