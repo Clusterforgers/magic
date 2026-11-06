@@ -69,7 +69,7 @@ fn static_alt_gaps(#[case] line: &str, #[case] gap: &str) {
 #[case::assist("K:Assist", json!({"Keyword": "Assist"}))]
 #[case::craft_x(
     "K:Craft:2 B B XMin1 ExileCtrlOrGrave<X/Creature.Other>\nSVar:X:Count$xPaid",
-    json!({"Keyword": {"Craft": [{"Mana": "{2}{B}{B}"}, {"Craft": {"filter": [{"Type": "Creature"}, "Other"], "count": "X", "least": 1}}]}})
+    json!({"Keyword": {"Craft": [{"Mana": "{2}{B}{B}"}, {"Craft": {"filter": [{"Type": "Creature"}, "Other"], "count": "X", }}]}})
 )]
 fn assist_and_craft_keywords(#[case] line: &str, #[case] expected: Value) {
     let found = abilities(&creature(line));

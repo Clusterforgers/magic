@@ -134,7 +134,10 @@ fn craft(ctx: &Ctx, price: &str) -> Tr<Value> {
     let Some(materials) = materials else {
         return unmapped("keyword:Craft-materials");
     };
-    if let (Some(least), Some(body)) = (least, materials.get_mut("Craft")) {
+    if let (Some(least), Some(body)) = (
+        least.filter(|least| *least != 1),
+        materials.get_mut("Craft"),
+    ) {
         body["least"] = json!(least);
     }
     Ok(json!({"Craft": paid}))

@@ -401,6 +401,7 @@ pub fn read(item: &str) -> Option<Keyword> {
         "scavenge" => spell_cost(rest).map(Keyword::Scavenge),
         "transmute" => spell_cost(rest).map(Keyword::Transmute),
         "awaken" => awaken(rest),
+        "craft" => craft(rest),
         "prototype" => prototype(rest),
         "escape" => spell_cost(rest).map(Keyword::Escape),
         "dash" => spell_cost(rest).map(Keyword::Dash),
@@ -852,6 +853,53 @@ fn spell_cost(rest: &str) -> Option<Cost> {
     })
 }
 
+/// `with one or more creatures {2}{B}{B}`: the materials one pick of the cost exiles, and the mana of craft. The materials
+/// are one type or subtype, "one or more" of them (an X of at least 1) or a number.
+fn craft(rest: &str) -> Option<Keyword> {
+    let words = rest.strip_prefix("with ")?.trim();
+    let at = words.find('{')?;
+    let (materials, price) = words.split_at(at);
+    let mana = ManaCostX::from_str(price.trim()).ok()?;
+    let materials = materials.trim();
+    let (count, noun) = match materials.strip_prefix("one or more ") {
+        Some(noun) => (Amount::X, noun),
+        None => {
+            let (number, noun) = materials.split_once(' ').unwrap_or(("1", materials));
+            let number = match number {
+                "1" | "a" | "an" | "one" => 1,
+                "two" => 2,
+                "three" => 3,
+                "four" => 4,
+                "five" => 5,
+                "six" => 6,
+                _ => return None,
+            };
+            (Amount::Fixed(number), noun)
+        }
+    };
+    let single = noun.trim().trim_end_matches('s');
+    let kind = match single.to_ascii_lowercase().as_str() {
+        "creature" => Pred::Type(CardType::Creature),
+        "artifact" => Pred::Type(CardType::Artifact),
+        "enchantment" => Pred::Type(CardType::Enchantment),
+        "land" => Pred::Type(CardType::Land),
+        word if word.chars().all(char::is_alphabetic) && !word.is_empty() => {
+            let mut chars = word.chars();
+            let first = chars.next()?.to_ascii_uppercase();
+            Pred::Subtype(Subtype(format!("{first}{}", chars.as_str())))
+        }
+        _ => return None,
+    };
+    Some(Keyword::Craft(Cost(vec![
+        CostItem::Mana(mana),
+        CostItem::Craft {
+            filter: Selector(vec![kind, Pred::Other]),
+            count,
+            least: None,
+        },
+    ])))
+}
+
 /// `3—{4}{U}`: the counters and the mana cost of awaken.
 fn awaken(rest: &str) -> Option<Keyword> {
     let (count, price) = rest.split_once('\u{2014}')?;
@@ -1278,6 +1326,8 @@ mod tests {
     #[case::awaken_big("Awaken 6\u{2014}{6}{U}{U}{U}", Keyword::Awaken { count: 6, cost: mana("{6}{U}{U}{U}") })]
     #[case::gravestorm("Gravestorm", Keyword::Gravestorm)]
     #[case::assist("Assist", Keyword::Assist)]
+    #[case::craft_x("Craft with one or more creatures {2}{B}{B}", Keyword::Craft(Cost(vec![CostItem::Mana("{2}{B}{B}".parse().unwrap()), CostItem::Craft { filter: Selector(vec![Pred::Type(CardType::Creature), Pred::Other]), count: Amount::X, least: None }])))]
+    #[case::craft_one("Craft with artifact {3}{W}", Keyword::Craft(Cost(vec![CostItem::Mana("{3}{W}".parse().unwrap()), CostItem::Craft { filter: Selector(vec![Pred::Type(CardType::Artifact), Pred::Other]), count: Amount::one(), least: None }])))]
     #[case::sunburst("Sunburst", Keyword::Sunburst)]
     #[case::eternalize_with_a_life_cost(
         "Eternalize—Pay 3 life.",
@@ -1743,6 +1793,7 @@ mod tests {
             "Exploit",
             "Soulbond",
             "Read ahead",
+            "Craft with one or more creatures {2}{B}{B}",
             "Plainscycling {2}",
             "Companion \u{2014} Each nonland card in your starting deck has a different name.",
         ];
