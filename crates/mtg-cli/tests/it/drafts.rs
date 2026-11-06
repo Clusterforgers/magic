@@ -9,10 +9,12 @@ use std::collections::{BTreeMap, BTreeSet};
 use std::fs;
 use std::io::BufReader;
 use std::path::{Path, PathBuf};
+use std::sync::atomic::{AtomicUsize, Ordering};
 
 use mtg_cards::builtin;
 use mtg_cards::card::Card;
-use mtg_cards::load::{canonical, slug, unwhole};
+use mtg_cards::load::{Library, canonical, slug, unwhole};
+use mtg_cards::proposal::partial::PartialProof;
 use mtg_cards::proposal::{Verdict, check, check_exact};
 use mtg_cards::support::read_hash;
 use mtg_cards::validate::named_cards;
@@ -240,59 +242,116 @@ fn every_draft_is_a_whole_unchecked_card_in_canonical_form_that_fits_its_record(
         .map(|(i, proof)| (&i.printed, &i.card, *proof))
         .collect();
     let fits = misfits_proved(library, &caps, &pairs);
+    let jobs: Vec<_> = items.iter().zip(&fits).zip(&metas).zip(&proofs).collect();
+    let judged = par_map(&jobs, |&(((item, fit), meta), proof)| {
+        judge_draft(item, fit.as_ref(), meta, *proof, library, &names, &caps)
+    });
     let mut hashes: BTreeMap<String, &str> = BTreeMap::new();
-    for (((item, fit), meta), proof) in items.iter().zip(fits).zip(&metas).zip(&proofs) {
+    for (item, (found, hash)) in items.iter().zip(judged) {
         let slug = &item.slug;
-        if item.text != canonical(&item.card) {
-            problems.push(format!("{slug}: not in canonical form (`cargo run -p mtg-cli -- promote --draft` writes it)"));
-        }
-        if let Some(why) = unwhole(&item.card).filter(|_| proof.is_none()) {
-            problems.push(format!("{slug}: {why}"));
-        }
-        match fit {
-            None => {}
-            Some(Misfit::Outranked) => problems.push(format!(
-                "{slug}: the card is Verified without the draft: delete the draft and its record"
-            )),
-            Some(other) => problems.push(format!("{slug}: {}", other.reason())),
-        }
-        let trusted = meta.source.as_deref() == Some("forge") && meta.oracle_matches;
-        // A Forge draft is judged as written, as `promote --draft` and the offer judge it: a repair would change it.
-        let judge = if meta.source.as_deref() == Some("forge") {
-            check_exact
-        } else {
-            check
-        };
-        let report = judge(&item.text, &item.printed, library, &names, &caps);
-        match report.verdict() {
-            // A proved partial draft is accepted as `Partial`; the proof carries it.
-            Verdict::Accepted if proof.is_some() => {}
-            Verdict::Unchecked => {}
-            Verdict::Mismatch if trusted => {}
-            Verdict::Accepted => problems.push(format!(
-                "{slug}: the checker accepts it now: promote it as a corpus card and delete the draft"
-            )),
-            other => problems.push(format!(
-                "{slug}: the checker finds it {}{}",
-                other.word(),
-                report
-                    .problems
-                    .first()
-                    .map_or(String::new(), |problem| format!(": {problem}"))
-            )),
-        }
-        if report.rules.as_ref() != Some(&item.card) {
-            problems.push(format!("{slug}: the checker completes it differently"));
-        }
-        let hash = read_hash(&item.printed, &item.card);
-        if hash.len() != 32 || !hash.bytes().all(|b| b.is_ascii_hexdigit()) {
-            problems.push(format!("{slug}: read hash {hash} is not 32 hex characters"));
-        }
+        problems.extend(found);
         if let Some(other) = hashes.insert(hash, slug) {
             problems.push(format!("{slug}: the same read hash as {other}"));
         }
     }
+    // Stable by slug: each draft's lines keep their order.
+    problems.sort_by(|a, b| slug_of(a).cmp(slug_of(b)));
     assert!(problems.is_empty(), "{}", problems.join("\n"));
+}
+
+/// The slug a problem line opens with.
+fn slug_of(problem: &str) -> &str {
+    problem.split_once(':').map_or(problem, |(slug, _)| slug)
+}
+
+/// `f` over `items` on every core, in the order of `items`.
+fn par_map<T: Sync, R: Send>(items: &[T], f: impl Fn(&T) -> R + Sync) -> Vec<R> {
+    let threads = std::thread::available_parallelism().map_or(1, usize::from);
+    let next = AtomicUsize::new(0);
+    let mut done: Vec<(usize, R)> = std::thread::scope(|scope| {
+        let workers: Vec<_> = (0..threads)
+            .map(|_| {
+                scope.spawn(|| {
+                    let mut out = Vec::new();
+                    loop {
+                        let index = next.fetch_add(1, Ordering::Relaxed);
+                        let Some(item) = items.get(index) else {
+                            break out;
+                        };
+                        out.push((index, f(item)));
+                    }
+                })
+            })
+            .collect();
+        workers
+            .into_iter()
+            .flat_map(|worker| worker.join().unwrap())
+            .collect()
+    });
+    done.sort_by_key(|(index, _)| *index);
+    done.into_iter().map(|(_, result)| result).collect()
+}
+
+/// The problems of one draft, but for a read hash it shares, and its read hash.
+fn judge_draft(
+    item: &Item,
+    fit: Option<&Misfit>,
+    meta: &DraftMeta,
+    proof: Option<&PartialProof>,
+    library: &Library,
+    names: &BTreeSet<String>,
+    caps: &Caps,
+) -> (Vec<String>, String) {
+    let mut problems = Vec::new();
+    let slug = &item.slug;
+    if item.text != canonical(&item.card) {
+        problems.push(format!(
+            "{slug}: not in canonical form (`cargo run -p mtg-cli -- promote --draft` writes it)"
+        ));
+    }
+    if let Some(why) = unwhole(&item.card).filter(|_| proof.is_none()) {
+        problems.push(format!("{slug}: {why}"));
+    }
+    match fit {
+        None => {}
+        Some(Misfit::Outranked) => problems.push(format!(
+            "{slug}: the card is Verified without the draft: delete the draft and its record"
+        )),
+        Some(other) => problems.push(format!("{slug}: {}", other.reason())),
+    }
+    let trusted = meta.source.as_deref() == Some("forge") && meta.oracle_matches;
+    // A Forge draft is judged as written, as `promote --draft` and the offer judge it: a repair would change it.
+    let judge = if meta.source.as_deref() == Some("forge") {
+        check_exact
+    } else {
+        check
+    };
+    let report = judge(&item.text, &item.printed, library, names, caps);
+    match report.verdict() {
+        // A proved partial draft is accepted as `Partial`; the proof carries it.
+        Verdict::Accepted if proof.is_some() => {}
+        Verdict::Unchecked => {}
+        Verdict::Mismatch if trusted => {}
+        Verdict::Accepted => problems.push(format!(
+            "{slug}: the checker accepts it now: promote it as a corpus card and delete the draft"
+        )),
+        other => problems.push(format!(
+            "{slug}: the checker finds it {}{}",
+            other.word(),
+            report
+                .problems
+                .first()
+                .map_or(String::new(), |problem| format!(": {problem}"))
+        )),
+    }
+    if report.rules.as_ref() != Some(&item.card) {
+        problems.push(format!("{slug}: the checker completes it differently"));
+    }
+    let hash = read_hash(&item.printed, &item.card);
+    if hash.len() != 32 || !hash.bytes().all(|b| b.is_ascii_hexdigit()) {
+        problems.push(format!("{slug}: read hash {hash} is not 32 hex characters"));
+    }
+    (problems, hash)
 }
 
 /// The newest Oracle Cards file of `MTG_REAL_DATA_DIR` or the `mtg-cli` cache; `None` where nothing was fetched.
