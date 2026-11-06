@@ -1,0 +1,41 @@
+{
+  "oracle_id": "4c5b2be9-5d48-4e62-ae67-d61f3708bb4f",
+  "name": "Thieving Sprite",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Thieving Sprite",
+      "oracle_fingerprint": "fca8c87b2d2569031b9306c7f5cbb128",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              {
+                "Choose": {
+                  "who": { "Target": 0 },
+                  "from": { "Each": [{ "In": "Hand" }, { "OwnedBy": { "Target": 0 } }] },
+                  "count": {
+                    "min": { "Count": [{ "Subtype": "Faerie" }, { "ControlledBy": "You" }] },
+                    "max": { "Count": [{ "Subtype": "Faerie" }, { "ControlledBy": "You" }] }
+                  },
+                  "as": "shown"
+                }
+              },
+              { "Reveal": { "what": { "Bound": "shown" } } },
+              {
+                "Discard": {
+                  "who": { "Target": 0 },
+                  "filter": [{ "Is": { "Bound": "shown" } }],
+                  "by": "You"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

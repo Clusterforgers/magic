@@ -1,0 +1,79 @@
+{
+  "oracle_id": "c1b9475e-a272-4820-b5f0-25f7a94ff834",
+  "name": "Kate Stewart",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Kate Stewart",
+      "oracle_fingerprint": "044e39561a589fc7bac2b5ff4d238f3b",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "Batch": {
+                "CountersPut": {
+                  "what": [{ "ControlledBy": "You" }, { "In": "Battlefield" }],
+                  "counter": { "Other": "time" }
+                }
+              }
+            },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Soldier",
+                      "colors": ["White"],
+                      "types": ["Creature"],
+                      "subtypes": ["Soldier"],
+                      "power": 1,
+                      "toughness": 1
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": "{8}",
+                  "paid": [
+                    {
+                      "Continuous": {
+                        "affected": { "Each": [{ "Type": "Creature" }, "Attacking"] },
+                        "mods": [
+                          {
+                            "ModifyPT": {
+                              "power": {
+                                "Counters": {
+                                  "on": { "Each": [{ "ControlledBy": "You" }] },
+                                  "counter": { "Other": "time" }
+                                }
+                              },
+                              "toughness": {
+                                "Counters": {
+                                  "on": { "Each": [{ "ControlledBy": "You" }] },
+                                  "counter": { "Other": "time" }
+                                }
+                              }
+                            }
+                          }
+                        ],
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

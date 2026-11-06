@@ -1,0 +1,57 @@
+{
+  "oracle_id": "e9666fd2-3ebf-4f57-a51d-a80e625f39fa",
+  "name": "Soul of Emancipation",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Soul of Emancipation",
+      "oracle_fingerprint": "98b911f1772b9d9e91c05b17063103bd",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              {
+                "what": { "Object": [{ "Not": { "Type": "Land" } }] },
+                "bounds": { "min": 0, "max": 3 }
+              }
+            ],
+            "effects": [
+              { "Destroy": { "what": { "Target": 0 }, "as": "destroyed" } },
+              {
+                "Together": {
+                  "effects": [
+                    {
+                      "RepeatEach": {
+                        "over": { "Bound": "destroyed" },
+                        "as": "each2",
+                        "effects": [
+                          {
+                            "CreateToken": {
+                              "who": { "ControllerOf": { "Departed": { "Bound": "each2" } } },
+                              "token": {
+                                "Custom": {
+                                  "name": "Angel",
+                                  "colors": ["White"],
+                                  "types": ["Creature"],
+                                  "subtypes": ["Angel"],
+                                  "power": 3,
+                                  "toughness": 3,
+                                  "abilities": [{ "Keyword": "Flying" }]
+                                }
+                              }
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

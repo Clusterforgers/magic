@@ -1,7 +1,7 @@
 {
   "oracle_id": "79090b00-d920-4134-a838-fb434cf3ee4d",
   "name": "Swat Away",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Swat Away",
@@ -22,9 +22,53 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 66, "end": 166 }
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    {
+                      "AnyOf": [
+                        {
+                          "Not": {
+                            "AnyOf": [
+                              { "Not": { "Type": "Creature" } },
+                              { "Not": { "In": "Battlefield" } }
+                            ]
+                          }
+                        },
+                        { "In": "Stack" }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "ChooseValue": {
+                  "who": { "OwnerOf": { "Target": 0 } },
+                  "kind": { "Options": ["Top", "Bottom"] },
+                  "as": "way"
+                }
+              },
+              {
+                "If": {
+                  "condition": { "ChosenWord": { "name": "way", "word": "Bottom" } },
+                  "then": [
+                    {
+                      "Move": {
+                        "what": { "Target": 0 },
+                        "to": { "Library": { "place": "Bottom" } }
+                      }
+                    }
+                  ],
+                  "otherwise": [
+                    { "Move": { "what": { "Target": 0 }, "to": { "Library": { "place": "Top" } } } }
+                  ]
+                }
+              }
+            ]
           }
         }
       ]

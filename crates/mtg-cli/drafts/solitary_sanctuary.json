@@ -1,7 +1,7 @@
 {
   "oracle_id": "4c0a8eed-f2e2-4821-8011-6e6ad2081936",
   "name": "Solitary Sanctuary",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Solitary Sanctuary",
@@ -20,9 +20,19 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 189, "end": 300 }
+          "Triggered": {
+            "when": {
+              "Caused": {
+                "inner": {
+                  "Tapped": { "what": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }] }
+                },
+                "by": "You"
+              }
+            },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } }
+            ],
+            "effects": [{ "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1" } }]
           }
         }
       ]

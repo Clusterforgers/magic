@@ -1,0 +1,37 @@
+{
+  "oracle_id": "a127d62a-8709-46bb-9301-96f09e7924a1",
+  "name": "Netherborn Altar",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Netherborn Altar",
+      "oracle_fingerprint": "55b6ec0665997d2a5fe507709d68d64a",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap", { "PutCounters": { "counter": { "Other": "soul" } } }],
+            "effects": [
+              {
+                "Choose": {
+                  "from": { "Each": ["Commander", { "OwnedBy": "You" }, { "In": "Command" }] },
+                  "as": "picked"
+                }
+              },
+              { "Move": { "what": { "Bound": "picked" }, "to": "Hand" } },
+              {
+                "LoseLife": {
+                  "amount": {
+                    "Times": {
+                      "by": 3,
+                      "of": { "Counters": { "on": "This", "counter": { "Other": "soul" } } }
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

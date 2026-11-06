@@ -1,42 +1,4 @@
 {
   "source": "forge",
-  "oracle_matches": true,
-  "lines": [
-    {
-      "face": 0,
-      "tag": "T",
-      "text": "Whenever you cast a noncreature spell, NICKNAME gets +1/+1 until end of turn and deals 1 damage to each opponent.",
-      "abilities": [
-        0
-      ],
-      "gap": null
-    },
-    {
-      "face": 1,
-      "tag": "A",
-      "text": "Look at the top two cards of your library and exile them face down. For as long as they remain exiled, you may play them if you control a Wizard.",
-      "abilities": [],
-      "gap": "key:Dig.ExileFaceDown"
-    }
-  ],
-  "proof": {
-    "marks": [
-      {
-        "face": 0,
-        "span": {
-          "start": 0,
-          "end": 112
-        },
-        "mark": "Auto"
-      },
-      {
-        "face": 1,
-        "span": {
-          "start": 0,
-          "end": 145
-        },
-        "mark": "ByHand"
-      }
-    ]
-  }
+  "oracle_matches": true
 }

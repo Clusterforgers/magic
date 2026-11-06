@@ -1,0 +1,44 @@
+{
+  "oracle_id": "0523e271-5e0b-4e4b-9eac-86f915d18952",
+  "name": "Head of the Hunt",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Head of the Hunt",
+      "oracle_fingerprint": "8b3a38e8dd2b443d543e3a458902e6dd",
+      "abilities": [
+        { "Keyword": "Flash" },
+        {
+          "Replacement": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "by": {
+              "Instead": [
+                { "Exile": { "what": "Triggering" } },
+                {
+                  "CreateToken": {
+                    "token": {
+                      "Custom": {
+                        "name": "Wolf",
+                        "colors": ["Green"],
+                        "types": ["Creature"],
+                        "subtypes": ["Wolf"],
+                        "power": 2,
+                        "toughness": 2
+                      }
+                    }
+                  }
+                }
+              ]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

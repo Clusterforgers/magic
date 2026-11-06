@@ -1,7 +1,7 @@
 {
   "oracle_id": "e43c31ee-1bac-4f96-8b74-334b3238ab73",
   "name": "Earth Kingdom General",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Earth Kingdom General",
@@ -55,9 +55,19 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 215, "end": 331 }
+          "Triggered": {
+            "when": {
+              "Caused": {
+                "inner": {
+                  "Batch": {
+                    "CountersPut": { "what": [{ "Type": "Creature" }], "counter": "+1/+1" }
+                  }
+                },
+                "by": "You"
+              }
+            },
+            "limit": "OncePerTurn",
+            "effects": [{ "May": { "effects": [{ "GainLife": { "amount": "Triggering" } }] } }]
           }
         }
       ]

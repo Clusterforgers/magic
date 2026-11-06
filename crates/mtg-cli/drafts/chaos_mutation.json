@@ -1,0 +1,54 @@
+{
+  "oracle_id": "1a240953-26e0-429f-9663-dcfe5bc2c1c7",
+  "name": "Chaos Mutation",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Chaos Mutation",
+      "oracle_fingerprint": "df88883af9963bfded4f77e617e3083e",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Together": {
+                    "what": { "Object": [{ "Type": "Creature" }] },
+                    "rule": "DifferentControllers"
+                  }
+                },
+                "bounds": { "min": 0, "max": { "Players": "EachPlayer" } }
+              }
+            ],
+            "effects": [
+              { "Exile": { "what": { "Target": 0 }, "as": "exiled" } },
+              {
+                "RepeatEach": {
+                  "over": { "Each": [{ "Is": { "Bound": "exiled" } }, { "In": "Exile" }] },
+                  "as": "each2",
+                  "effects": [
+                    {
+                      "RevealUntil": {
+                        "who": { "ControllerOf": { "Departed": { "Bound": "each2" } } },
+                        "filter": [{ "Type": "Creature" }],
+                        "as": "found3",
+                        "revealed_as": "revealed4"
+                      }
+                    },
+                    { "Move": { "what": { "Bound": "found3" }, "to": { "Battlefield": {} } } },
+                    {
+                      "Move": {
+                        "what": { "Bound": "revealed4" },
+                        "to": { "Library": { "place": "Bottom", "order": "Random" } }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

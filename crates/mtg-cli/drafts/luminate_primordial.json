@@ -1,0 +1,44 @@
+{
+  "oracle_id": "c1bc819a-f291-4b55-94f7-269f160ce76b",
+  "name": "Luminate Primordial",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Luminate Primordial",
+      "oracle_fingerprint": "a723cf7a28344b2ab79b1a137ac3e969",
+      "abilities": [
+        { "Keyword": "Vigilance" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              {
+                "what": {
+                  "PerPlayer": { "players": "Opponents", "what": [{ "Type": "Creature" }] }
+                },
+                "bounds": { "min": 0, "max": 1 }
+              }
+            ],
+            "effects": [
+              { "Exile": { "what": { "Target": 0 } } },
+              {
+                "RepeatEach": {
+                  "over": { "Target": 0 },
+                  "as": "each",
+                  "effects": [
+                    {
+                      "GainLife": {
+                        "who": { "ControllerOf": { "Bound": "each" } },
+                        "amount": { "Stat": { "of": { "Bound": "each" }, "stat": "Power" } }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

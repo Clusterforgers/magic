@@ -1,0 +1,73 @@
+{
+  "oracle_id": "3e83dec6-e1a0-4137-aaab-308dfd3122e1",
+  "name": "Vivien, Arkbow Ranger",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Vivien, Arkbow Ranger",
+      "oracle_fingerprint": "9e7c0f72b61522238a6256c0dd8e1746",
+      "abilities": [
+        {
+          "Loyalty": {
+            "cost": { "Plus": 1 },
+            "targets": [
+              {
+                "what": { "Object": [{ "Type": "Creature" }] },
+                "bounds": { "min": 0, "max": 2 },
+                "divide": 2
+              }
+            ],
+            "effects": [
+              { "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1", "count": "Divided" } },
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "AddKeyword": "Trample" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Minus": 3 },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } },
+              {
+                "what": {
+                  "Object": [{ "AnyOf": [{ "Type": "Creature" }, { "Type": "Planeswalker" }] }]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "DealDamage": {
+                  "source": { "Target": 0 },
+                  "to": { "Target": 1 },
+                  "amount": { "Stat": { "of": { "Target": 0 }, "stat": "Power" } }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Minus": 5 },
+            "effects": [
+              {
+                "Search": {
+                  "zone": "Outside",
+                  "filter": [{ "Type": "Creature" }, { "OwnedBy": "You" }],
+                  "reveal": true,
+                  "as": "found"
+                }
+              },
+              { "Move": { "what": { "Bound": "found" }, "to": "Hand" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

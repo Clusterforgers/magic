@@ -1,0 +1,35 @@
+{
+  "oracle_id": "e602f06e-64ff-4d1b-813c-6612ee514ea6",
+  "name": "Kashi-Tribe Reaver",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Kashi-Tribe Reaver",
+      "oracle_fingerprint": "54273e939d4cab12d1431d098ac096bb",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "DealsDamage": {
+                "source": ["This"],
+                "to": { "Each": [{ "Type": "Creature" }] },
+                "combat": true
+              }
+            },
+            "effects": [
+              { "Tap": { "what": "Triggering" } },
+              {
+                "Continuous": {
+                  "affected": "Triggering",
+                  "mods": ["DoesntUntap"],
+                  "duration": "NextUntapStep"
+                }
+              }
+            ]
+          }
+        },
+        { "Activated": { "cost": "{1}{G}", "effects": [{ "Regenerate": { "what": "This" } }] } }
+      ]
+    }
+  ]
+}

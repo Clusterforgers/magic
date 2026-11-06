@@ -1,0 +1,46 @@
+{
+  "oracle_id": "c8762dfa-a027-4e1c-a2fa-bfdab1de102a",
+  "name": "Goblin Researcher",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Goblin Researcher",
+      "oracle_fingerprint": "bcb3188c69928608d3048afb15f9cd21",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              { "ExileTop": { "as": "exiled" } },
+              {
+                "Rule": {
+                  "rule": {
+                    "MayCast": {
+                      "from": "Exile",
+                      "only": { "Bound": "exiled" },
+                      "play": true,
+                      "when": {
+                        "Compare": {
+                          "left": {
+                            "Tally": {
+                              "event": "Attacked",
+                              "who": "EachPlayer",
+                              "filter": [{ "Type": "Creature" }, "This"]
+                            }
+                          },
+                          "op": "Ge",
+                          "right": 1
+                        }
+                      }
+                    }
+                  },
+                  "duration": "WhileSourceOnBattlefield"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

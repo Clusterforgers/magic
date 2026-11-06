@@ -1,0 +1,48 @@
+{
+  "oracle_id": "90d8020c-a3e4-4dee-9abf-25d80406b8ab",
+  "name": "Matsu-Tribe Decoy",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Matsu-Tribe Decoy",
+      "oracle_fingerprint": "724c2dbad2f8452002e12b6e206e0461",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{2}{G}",
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Rule": {
+                  "rule": { "MustBlockAttacker": { "who": { "Target": 0 }, "attacker": "This" } },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "DealsDamage": {
+                "source": ["This"],
+                "to": { "Each": [{ "Type": "Creature" }] },
+                "combat": true
+              }
+            },
+            "effects": [
+              { "Tap": { "what": "Triggering" } },
+              {
+                "Continuous": {
+                  "affected": "Triggering",
+                  "mods": ["DoesntUntap"],
+                  "duration": "NextUntapStep"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

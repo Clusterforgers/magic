@@ -1,0 +1,61 @@
+{
+  "oracle_id": "0828d891-f7c3-4e51-b42e-6ce88d48ac8b",
+  "name": "Icewrought Sentry",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Icewrought Sentry",
+      "oracle_fingerprint": "2cf2dd16fc82ce5954f56f74c5c883d1",
+      "abilities": [
+        { "Keyword": "Vigilance" },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": "{1}{U}",
+                  "paid": [
+                    {
+                      "Reflexive": {
+                        "targets": [
+                          {
+                            "what": {
+                              "Object": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }]
+                            }
+                          }
+                        ],
+                        "effects": [{ "Tap": { "what": { "Target": 0 } } }]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "Caused": {
+                "inner": {
+                  "Tapped": { "what": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }] }
+                },
+                "by": "You"
+              }
+            },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "ModifyPT": { "power": 2, "toughness": 1 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

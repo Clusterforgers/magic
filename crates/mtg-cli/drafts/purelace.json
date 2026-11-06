@@ -1,0 +1,29 @@
+{
+  "oracle_id": "3773001a-8868-49ec-a406-298cf72359c2",
+  "name": "Purelace",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Purelace",
+      "oracle_fingerprint": "be8086520606df8f908562cf58be87ba",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "AnyOf": [{ "In": "Stack" }, { "In": "Battlefield" }] }] } }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "SetColors": ["White"] }],
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

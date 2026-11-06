@@ -1,0 +1,30 @@
+{
+  "oracle_id": "430e4e74-33ee-49f2-aef5-6d09079c5eb7",
+  "name": "Trusted Advisor",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Trusted Advisor",
+      "oracle_fingerprint": "a443f323b5053d40481c62422eb0250a",
+      "abilities": [
+        { "Rule": { "rule": { "HandSizeChange": { "who": "You", "by": 2 } } } },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [{ "Type": "Creature" }, { "Color": "Blue" }, { "ControlledBy": "You" }]
+                  },
+                  "as": "picked"
+                }
+              },
+              { "Move": { "what": { "Bound": "picked" }, "to": "Hand" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

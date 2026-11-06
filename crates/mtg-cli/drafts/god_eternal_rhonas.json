@@ -1,7 +1,7 @@
 {
   "oracle_id": "fc4f2cdb-966c-4576-8b37-b3d138f5710e",
   "name": "God-Eternal Rhonas",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "God-Eternal Rhonas",
@@ -39,9 +39,27 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 164, "end": 295 }
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } },
+                { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Exile" } }
+              ]
+            },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "Move": {
+                        "what": "Triggering",
+                        "to": { "Library": { "place": { "Below": 2 } } }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
           }
         }
       ]

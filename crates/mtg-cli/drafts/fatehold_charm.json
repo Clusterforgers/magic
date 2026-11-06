@@ -1,0 +1,127 @@
+{
+  "oracle_id": "313aee0e-4090-4589-b323-a4edbda21c68",
+  "name": "Fatehold Charm",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Fatehold Charm",
+      "oracle_fingerprint": "63bdf833b707699f042504aa7f044f8b",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Modal": {
+                  "modes": [
+                    {
+                      "effects": [
+                        { "Draw": {} },
+                        {
+                          "If": {
+                            "condition": {
+                              "Compare": {
+                                "left": {
+                                  "Count": [
+                                    { "Subtype": "Jace" },
+                                    "Token",
+                                    { "ControlledBy": "You" }
+                                  ]
+                                },
+                                "op": "Lt",
+                                "right": 1
+                              }
+                            },
+                            "then": [
+                              {
+                                "CreateToken": {
+                                  "token": {
+                                    "Custom": {
+                                      "name": "Jace",
+                                      "colors": ["Blue"],
+                                      "types": ["Planeswalker"],
+                                      "subtypes": ["Jace"],
+                                      "abilities": [
+                                        {
+                                          "Loyalty": {
+                                            "cost": { "Minus": 1 },
+                                            "effects": [{ "Surveil": {} }]
+                                          }
+                                        },
+                                        {
+                                          "Loyalty": {
+                                            "cost": { "Minus": 3 },
+                                            "effects": [{ "Draw": {} }]
+                                          }
+                                        }
+                                      ]
+                                    }
+                                  }
+                                }
+                              }
+                            ]
+                          }
+                        },
+                        {
+                          "Choose": {
+                            "from": {
+                              "Each": [{ "Subtype": "Jace" }, "Token", { "ControlledBy": "You" }]
+                            },
+                            "as": "jace"
+                          }
+                        },
+                        {
+                          "PutCounters": {
+                            "on": { "Bound": "jace" },
+                            "counter": "loyalty",
+                            "count": 2
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "targets": [
+                        {
+                          "what": {
+                            "Object": [
+                              {
+                                "AnyOf": [
+                                  {
+                                    "Not": {
+                                      "AnyOf": [
+                                        { "Not": { "Type": "Creature" } },
+                                        { "Not": { "In": "Battlefield" } }
+                                      ]
+                                    }
+                                  },
+                                  { "In": "Stack" }
+                                ]
+                              }
+                            ]
+                          }
+                        }
+                      ],
+                      "effects": [{ "Move": { "what": { "Target": 0 }, "to": "Hand" } }]
+                    },
+                    {
+                      "effects": [
+                        {
+                          "Continuous": {
+                            "affected": {
+                              "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }]
+                            },
+                            "mods": [{ "ModifyPT": { "power": 1, "toughness": 2 } }],
+                            "duration": "UntilEndOfTurn"
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

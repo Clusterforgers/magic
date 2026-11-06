@@ -1,0 +1,25 @@
+{
+  "oracle_id": "0a865453-ddc8-4403-8f1e-5752e3582458",
+  "name": "Keral Keep Disciples",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Keral Keep Disciples",
+      "oracle_fingerprint": "c27919f31dca93213471b527baed6ea5",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "Did": {
+                "action": "Activated",
+                "who": "You",
+                "what": [{ "Type": "Planeswalker" }, { "Subtype": "Chandra" }]
+              }
+            },
+            "effects": [{ "DealDamage": { "to": "Opponents", "amount": 1 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

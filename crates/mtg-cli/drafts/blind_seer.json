@@ -1,0 +1,31 @@
+{
+  "oracle_id": "f905b72d-734a-44e8-b118-c8de889994a9",
+  "name": "Blind Seer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Blind Seer",
+      "oracle_fingerprint": "448d368e4520e01113cb7068c08962bf",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{1}{U}",
+            "targets": [
+              { "what": { "Object": [{ "AnyOf": [{ "In": "Stack" }, { "In": "Battlefield" }] }] } }
+            ],
+            "effects": [
+              { "ChooseValue": { "kind": "Color", "as": "chosen" } },
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "SetColorsChosen": "chosen" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

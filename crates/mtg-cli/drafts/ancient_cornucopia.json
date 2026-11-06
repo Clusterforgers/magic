@@ -1,0 +1,36 @@
+{
+  "oracle_id": "f0950c95-a297-489d-b166-74bba6af5376",
+  "name": "Ancient Cornucopia",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ancient Cornucopia",
+      "oracle_fingerprint": "bc1a6177a382d2c177d2418ab6094089",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "what": [{ "Not": "Colorless" }], "by": "You" } },
+            "limit": "OncePerTurn",
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "GainLife": { "amount": { "Stat": { "of": "Triggering", "stat": "Colors" } } }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "AnyColor": 1 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

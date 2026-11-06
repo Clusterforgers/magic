@@ -1,0 +1,43 @@
+{
+  "oracle_id": "99427ebe-c00d-4206-84ca-9764f6e952c6",
+  "name": "Submerge",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Submerge",
+      "oracle_fingerprint": "fb65c27c773befe300dbd7054b0d3c24",
+      "abilities": [
+        {
+          "FreeCast": {
+            "condition": {
+              "All": [
+                {
+                  "Compare": {
+                    "left": { "Count": [{ "Subtype": "Forest" }, { "ControlledBy": "Opponents" }] },
+                    "op": "Ge",
+                    "right": 1
+                  }
+                },
+                {
+                  "Compare": {
+                    "left": { "Count": [{ "Subtype": "Island" }, { "ControlledBy": "You" }] },
+                    "op": "Ge",
+                    "right": 1
+                  }
+                }
+              ]
+            }
+          }
+        },
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              { "Move": { "what": { "Target": 0 }, "to": { "Library": { "place": "Top" } } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

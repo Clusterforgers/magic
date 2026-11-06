@@ -1,0 +1,78 @@
+{
+  "oracle_id": "71d178b3-e5ca-4576-83f7-8dce74758acd",
+  "name": "Brutal Expulsion",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Brutal Expulsion",
+      "oracle_fingerprint": "cdae0e3d9611c597c4a2c8e1ae48a3f1",
+      "abilities": [
+        { "Keyword": "Devoid" },
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Modal": {
+                  "choose": { "min": 1, "max": 2 },
+                  "modes": [
+                    {
+                      "targets": [
+                        {
+                          "what": {
+                            "Object": [
+                              {
+                                "AnyOf": [
+                                  {
+                                    "Not": {
+                                      "AnyOf": [
+                                        { "Not": { "Type": "Creature" } },
+                                        { "Not": { "In": "Battlefield" } }
+                                      ]
+                                    }
+                                  },
+                                  { "In": "Stack" }
+                                ]
+                              }
+                            ]
+                          }
+                        }
+                      ],
+                      "effects": [{ "Move": { "what": { "Target": 0 }, "to": "Hand" } }]
+                    },
+                    {
+                      "targets": [
+                        {
+                          "what": {
+                            "Object": [
+                              { "AnyOf": [{ "Type": "Creature" }, { "Type": "Planeswalker" }] }
+                            ]
+                          }
+                        }
+                      ],
+                      "effects": [
+                        { "DealDamage": { "to": { "Target": 0 }, "amount": 2 } },
+                        {
+                          "Shield": {
+                            "when": {
+                              "ZoneChange": {
+                                "what": [{ "Is": { "Target": 0 } }, { "Type": "Creature" }],
+                                "from": "Battlefield",
+                                "to": "Graveyard"
+                              }
+                            },
+                            "by": { "MoveTo": "Exile" },
+                            "duration": "UntilEndOfTurn"
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

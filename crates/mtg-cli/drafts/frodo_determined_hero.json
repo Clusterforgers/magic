@@ -1,0 +1,49 @@
+{
+  "oracle_id": "ae50be07-c8bc-45db-b47d-701c5d9ee633",
+  "name": "Frodo, Determined Hero",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Frodo, Determined Hero",
+      "oracle_fingerprint": "c7e6d1816515c23e340dee1ef87c81d0",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+                { "Attacks": { "what": ["This"] } }
+              ]
+            },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Subtype": "Equipment" },
+                    {
+                      "AnyOf": [
+                        { "Compare": { "stat": "ManaValue", "op": "Eq", "to": 2 } },
+                        { "Compare": { "stat": "ManaValue", "op": "Eq", "to": 3 } }
+                      ]
+                    },
+                    { "ControlledBy": "You" }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              { "May": { "effects": [{ "Attach": { "what": { "Target": 0 }, "to": "This" } }] } }
+            ]
+          }
+        },
+        {
+          "Replacement": {
+            "when": { "Damage": { "to": "This" } },
+            "by": "Prevent",
+            "condition": "YourTurn"
+          }
+        }
+      ]
+    }
+  ]
+}

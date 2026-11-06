@@ -1,14 +1,44 @@
 {
   "oracle_id": "56fd8895-3be2-4591-86fa-87567d9cdc14",
   "name": "Commit // Memory",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Commit",
       "oracle_fingerprint": "afb1dcf0a1de014f0c5b663714b6d21d",
       "abilities": [
         {
-          "Manual": { "reason": "you apply this clause by hand", "span": { "start": 0, "end": 83 } }
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    {
+                      "AnyOf": [
+                        {
+                          "Not": {
+                            "AnyOf": [
+                              { "Not": { "Not": { "Type": "Land" } } },
+                              { "Not": { "In": "Battlefield" } }
+                            ]
+                          }
+                        },
+                        { "In": "Stack" }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "Move": {
+                  "what": { "Target": 0 },
+                  "to": { "Library": { "place": { "Below": 1 } } }
+                }
+              }
+            ]
+          }
         }
       ]
     },

@@ -1,7 +1,7 @@
 {
   "oracle_id": "e2c141af-925e-42bd-8d83-e1a71f4c9794",
   "name": "Rakdos, the Muscle",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Rakdos, the Muscle",
@@ -10,9 +10,31 @@
         { "Keyword": "Flying" },
         { "Keyword": "Trample" },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 16, "end": 241 }
+          "Triggered": {
+            "when": { "Sacrificed": { "what": [{ "Type": "Creature" }, "Other"], "by": "You" } },
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              {
+                "ExileTop": {
+                  "who": { "Target": 0 },
+                  "count": { "Stat": { "of": "Triggering", "stat": "ManaValue" } },
+                  "as": "exiled"
+                }
+              },
+              {
+                "Rule": {
+                  "rule": {
+                    "MayCast": {
+                      "from": "Exile",
+                      "only": { "Bound": "exiled" },
+                      "play": true,
+                      "spend_as": "AnyType"
+                    }
+                  },
+                  "duration": "UntilYourNextEndStep"
+                }
+              }
+            ]
           }
         },
         {

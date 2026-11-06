@@ -1,0 +1,32 @@
+{
+  "oracle_id": "b9d186f5-1c92-4539-a5b5-e7fbd4b726fe",
+  "name": "Living Wish",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Living Wish",
+      "oracle_fingerprint": "c46f0fd1b2a6cf38b94a7bbcfa7ebfc1",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Search": {
+                  "zone": "Outside",
+                  "filter": [
+                    { "AnyOf": [{ "Type": "Creature" }, { "Type": "Land" }] },
+                    { "OwnedBy": "You" }
+                  ],
+                  "reveal": true,
+                  "as": "found"
+                }
+              },
+              { "Move": { "what": { "Bound": "found" }, "to": "Hand" } },
+              { "Exile": { "what": "This" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

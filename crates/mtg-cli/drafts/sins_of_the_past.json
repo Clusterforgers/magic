@@ -1,0 +1,57 @@
+{
+  "oracle_id": "9059a940-ac28-4322-a11b-af1d107b2edd",
+  "name": "Sins of the Past",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sins of the Past",
+      "oracle_fingerprint": "7bb41208ab362d6c4c15eb11fe7d3bb3",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] },
+                    { "OwnedBy": "You" },
+                    { "In": "Graveyard" }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "Rule": {
+                  "rule": {
+                    "MayCast": {
+                      "from": "Graveyard",
+                      "free": true,
+                      "only": { "Target": 0 },
+                      "play": true
+                    }
+                  },
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "Shield": {
+                  "when": {
+                    "ZoneChange": {
+                      "what": [{ "Is": { "Target": 0 } }],
+                      "from": "Stack",
+                      "to": "Graveyard"
+                    }
+                  },
+                  "by": { "MoveTo": "Exile" },
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              { "Exile": { "what": "This" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,36 @@
+{
+  "oracle_id": "41b46aa5-6091-4bc4-8d17-d2c6b5fe1c5e",
+  "name": "Kyren Legate",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Kyren Legate",
+      "oracle_fingerprint": "a0ea6bf00d71990185c70c1ea8e1936b",
+      "abilities": [
+        {
+          "FreeCast": {
+            "condition": {
+              "All": [
+                {
+                  "Compare": {
+                    "left": { "Count": [{ "Subtype": "Plains" }, { "ControlledBy": "Opponents" }] },
+                    "op": "Ge",
+                    "right": 1
+                  }
+                },
+                {
+                  "Compare": {
+                    "left": { "Count": [{ "Subtype": "Mountain" }, { "ControlledBy": "You" }] },
+                    "op": "Ge",
+                    "right": 1
+                  }
+                }
+              ]
+            }
+          }
+        },
+        { "Keyword": "Haste" }
+      ]
+    }
+  ]
+}

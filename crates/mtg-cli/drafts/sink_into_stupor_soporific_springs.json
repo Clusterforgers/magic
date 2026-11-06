@@ -1,0 +1,65 @@
+{
+  "oracle_id": "bcc6eece-75ea-494c-b33a-d4477d504e0b",
+  "name": "Sink into Stupor // Soporific Springs",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sink into Stupor",
+      "oracle_fingerprint": "0e6c26be449a4662d7e53c4d0d70e819",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    {
+                      "AnyOf": [
+                        {
+                          "Not": {
+                            "AnyOf": [
+                              { "Not": { "Not": { "Type": "Land" } } },
+                              { "Not": { "ControlledBy": "Opponents" } },
+                              { "Not": { "In": "Battlefield" } }
+                            ]
+                          }
+                        },
+                        {
+                          "Not": {
+                            "AnyOf": [
+                              { "Not": { "In": "Stack" } },
+                              { "Not": { "ControlledBy": "Opponents" } }
+                            ]
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ],
+            "effects": [{ "Move": { "what": { "Target": 0 }, "to": "Hand" } }]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Soporific Springs",
+      "oracle_fingerprint": "ba6da0c6d97016cc03258ceb7d954593",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "PayLifeOrTapped": 3 }
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Blue"] } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

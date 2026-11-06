@@ -1,0 +1,46 @@
+{
+  "oracle_id": "7b1c1a0c-f443-4eb5-a430-9eea886361ca",
+  "name": "Divide by Zero",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Divide by Zero",
+      "oracle_fingerprint": "ce468a2f9c1a00390d1bc70ab018d26c",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    {
+                      "AnyOf": [
+                        {
+                          "Not": {
+                            "AnyOf": [
+                              { "Not": { "Compare": { "stat": "ManaValue", "op": "Ge", "to": 1 } } },
+                              { "Not": { "In": "Battlefield" } }
+                            ]
+                          }
+                        },
+                        {
+                          "Not": {
+                            "AnyOf": [
+                              { "Not": { "In": "Stack" } },
+                              { "Not": { "Compare": { "stat": "ManaValue", "op": "Ge", "to": 1 } } }
+                            ]
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ],
+            "effects": [{ "Move": { "what": { "Target": 0 }, "to": "Hand" } }, { "Learn": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

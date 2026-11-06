@@ -1,0 +1,67 @@
+{
+  "oracle_id": "f72558f5-ac5c-4efa-b01b-439bc0bbf18d",
+  "name": "Nemata, Primeval Warden",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Nemata, Primeval Warden",
+      "oracle_fingerprint": "a174b56bff58c3bcb22ed787ea7dbad5",
+      "abilities": [
+        { "Keyword": "Reach" },
+        {
+          "Replacement": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "by": {
+              "Instead": [
+                { "Exile": { "what": "Triggering" } },
+                {
+                  "CreateToken": {
+                    "token": {
+                      "Custom": {
+                        "name": "Saproling",
+                        "colors": ["Green"],
+                        "types": ["Creature"],
+                        "subtypes": ["Saproling"],
+                        "power": 1,
+                        "toughness": 1
+                      }
+                    }
+                  }
+                }
+              ]
+            }
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{G}" }, { "Sacrifice": { "filter": [{ "Subtype": "Saproling" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "ModifyPT": { "power": 2, "toughness": 2 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [
+              { "Mana": "{1}{B}" },
+              { "Sacrifice": { "filter": [{ "Subtype": "Saproling" }], "count": 2 } }
+            ],
+            "effects": [{ "Draw": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

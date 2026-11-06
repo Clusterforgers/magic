@@ -1,0 +1,56 @@
+{
+  "oracle_id": "7d58b478-a64b-46e9-b62a-08c6c1ca7c13",
+  "name": "Oathkeeper, Takeno's Daisho",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Oathkeeper, Takeno's Daisho",
+      "oracle_fingerprint": "3f87d4e143255f29da9717d8d81bf102",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "ModifyPT": { "power": 3, "toughness": 1 } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } },
+            "effects": [{ "Exile": { "what": "Attached" } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Is": "Attached" }],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "effects": [
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": "Triggering",
+                      "selector": [{ "Subtype": "Samurai" }],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [
+                    {
+                      "Move": { "what": "Triggering", "to": { "Battlefield": { "under": "You" } } }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Equip": "{2}" } }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,39 @@
+{
+  "oracle_id": "c20728ac-c01c-470f-a43b-de6104836645",
+  "name": "Matsu-Tribe Sniper",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Matsu-Tribe Sniper",
+      "oracle_fingerprint": "fb2f5e22ea413ede1fbe41293c310b31",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "HasKeyword": "Flying" }] } }
+            ],
+            "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 1 } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "DealsDamage": { "source": ["This"], "to": { "Each": [{ "Type": "Creature" }] } }
+            },
+            "effects": [
+              { "Tap": { "what": "Triggering" } },
+              {
+                "Continuous": {
+                  "affected": "Triggering",
+                  "mods": ["DoesntUntap"],
+                  "duration": "NextUntapStep"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

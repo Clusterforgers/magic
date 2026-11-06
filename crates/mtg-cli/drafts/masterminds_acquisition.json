@@ -1,0 +1,44 @@
+{
+  "oracle_id": "6aec5b1f-cea6-4ec3-9759-e4544da8c52b",
+  "name": "Mastermind's Acquisition",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mastermind's Acquisition",
+      "oracle_fingerprint": "02827bd94950fb8a15b7d16004f639b2",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Modal": {
+                  "modes": [
+                    {
+                      "effects": [
+                        { "Search": { "filter": [], "as": "found" } },
+                        { "Move": { "what": { "Bound": "found" }, "to": "Hand" } },
+                        { "Shuffle": {} }
+                      ]
+                    },
+                    {
+                      "effects": [
+                        {
+                          "Search": {
+                            "zone": "Outside",
+                            "filter": [{ "OwnedBy": "You" }],
+                            "as": "found2"
+                          }
+                        },
+                        { "Move": { "what": { "Bound": "found2" }, "to": "Hand" } }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

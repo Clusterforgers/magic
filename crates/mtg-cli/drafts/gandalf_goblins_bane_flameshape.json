@@ -1,7 +1,7 @@
 {
   "oracle_id": "f48f2a9b-4ba5-4984-8180-3950889bba65",
   "name": "Gandalf, Goblins' Bane // Flameshape",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Gandalf, Goblins' Bane",
@@ -29,9 +29,30 @@
       "oracle_fingerprint": "e833500cc9dc2e45885ba3f3c1c5296b",
       "abilities": [
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 0, "end": 145 }
+          "Spell": {
+            "effects": [
+              { "LookAtTop": { "count": 2, "as": "top" } },
+              { "ExileHidden": { "what": { "Bound": "top" }, "held": true, "as": "exiled4" } },
+              {
+                "Rule": {
+                  "rule": {
+                    "MayCast": {
+                      "from": "Exile",
+                      "only": { "Bound": "exiled4" },
+                      "play": true,
+                      "when": {
+                        "Compare": {
+                          "left": { "Count": [{ "Subtype": "Wizard" }, { "ControlledBy": "You" }] },
+                          "op": "Ge",
+                          "right": 1
+                        }
+                      }
+                    }
+                  },
+                  "duration": "Forever"
+                }
+              }
+            ]
           }
         }
       ]

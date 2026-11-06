@@ -1,0 +1,45 @@
+{
+  "oracle_id": "d8f7d4c8-bc50-4bcf-b930-797dcb3c2a21",
+  "name": "Unlucky Cabbage Merchant",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Unlucky Cabbage Merchant",
+      "oracle_fingerprint": "04f316470be1596ba09a1be918e97ea7",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "CreateToken": { "token": { "Named": "food" } } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Sacrificed": { "what": [{ "Subtype": "Food" }], "by": "You" } },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "Search": {
+                        "filter": [{ "Type": "Land" }, { "Supertype": "Basic" }],
+                        "as": "found"
+                      }
+                    },
+                    {
+                      "Move": {
+                        "what": { "Bound": "found" },
+                        "to": { "Battlefield": { "tapped": true } }
+                      }
+                    },
+                    { "Move": { "what": "This", "to": { "Library": { "place": "Shuffled" } } } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

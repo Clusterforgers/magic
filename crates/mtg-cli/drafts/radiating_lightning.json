@@ -11,11 +11,19 @@
           "Spell": {
             "targets": [{ "what": "Player" }],
             "effects": [
-              { "DealDamage": { "to": { "Target": 0 }, "amount": 3 } },
               {
-                "DealDamage": {
-                  "to": { "Each": [{ "Type": "Creature" }, { "ControlledBy": { "Target": 0 } }] },
-                  "amount": 1
+                "Together": {
+                  "effects": [
+                    { "DealDamage": { "to": { "Target": 0 }, "amount": 3 } },
+                    {
+                      "DealDamage": {
+                        "to": {
+                          "Each": [{ "Type": "Creature" }, { "ControlledBy": { "Target": 0 } }]
+                        },
+                        "amount": 1
+                      }
+                    }
+                  ]
                 }
               }
             ]

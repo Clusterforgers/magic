@@ -1,0 +1,33 @@
+{
+  "oracle_id": "c7c4c67e-c4db-416b-b2e8-f0e59aa80bba",
+  "name": "Skyshroud Condor",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Skyshroud Condor",
+      "oracle_fingerprint": "52820f8e226417c05f7f39fec3240af1",
+      "abilities": [
+        {
+          "CastOnly": {
+            "condition": {
+              "Not": {
+                "Compare": {
+                  "left": {
+                    "Tally": {
+                      "event": "SpellCast",
+                      "who": "EachPlayer",
+                      "filter": [{ "ControlledBy": "You" }]
+                    }
+                  },
+                  "op": "Le",
+                  "right": 0
+                }
+              }
+            }
+          }
+        },
+        { "Keyword": "Flying" }
+      ]
+    }
+  ]
+}

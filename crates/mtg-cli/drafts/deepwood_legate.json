@@ -1,0 +1,49 @@
+{
+  "oracle_id": "414eb407-dd39-41d2-bf25-a7a77ff35cb4",
+  "name": "Deepwood Legate",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Deepwood Legate",
+      "oracle_fingerprint": "d837ada7091180c3ce4a13f22bfc47ee",
+      "abilities": [
+        {
+          "FreeCast": {
+            "condition": {
+              "All": [
+                {
+                  "Compare": {
+                    "left": { "Count": [{ "Subtype": "Forest" }, { "ControlledBy": "Opponents" }] },
+                    "op": "Ge",
+                    "right": 1
+                  }
+                },
+                {
+                  "Compare": {
+                    "left": { "Count": [{ "Subtype": "Swamp" }, { "ControlledBy": "You" }] },
+                    "op": "Ge",
+                    "right": 1
+                  }
+                }
+              ]
+            }
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{B}",
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

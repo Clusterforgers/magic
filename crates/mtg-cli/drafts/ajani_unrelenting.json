@@ -1,0 +1,95 @@
+{
+  "oracle_id": "71620e92-45a4-49cb-94d5-348013ecf886",
+  "name": "Ajani Unrelenting",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ajani Unrelenting",
+      "oracle_fingerprint": "130778253794fa7020da38bb8bce3dfd",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "Did": { "action": "Activated", "who": "You", "what": [{ "Type": "Planeswalker" }] }
+            },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Cadet",
+                      "types": ["Creature"],
+                      "subtypes": ["Wizard", "Soldier"],
+                      "power": 2,
+                      "toughness": 2
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Plus": 1 },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                  "mods": [
+                    { "ModifyPT": { "power": 1, "toughness": 0 } },
+                    { "AddKeyword": "Haste" }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Minus": 2 },
+            "effects": [
+              { "Discard": { "count": { "Count": [{ "In": "Hand" }, { "OwnedBy": "You" }] } } },
+              {
+                "Draw": {
+                  "count": { "Count": [{ "Type": "Creature" }, { "ControlledBy": "You" }] }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Minus": 3 },
+            "effects": [
+              {
+                "DealDamage": {
+                  "to": {
+                    "Each": [
+                      { "Type": "Creature" },
+                      {
+                        "AnyOf": [
+                          {
+                            "Not": {
+                              "AnyOf": [
+                                { "Not": { "ControlledBy": "You" } },
+                                { "Not": { "Not": "Token" } }
+                              ]
+                            }
+                          },
+                          { "Not": { "ControlledBy": "You" } }
+                        ]
+                      }
+                    ]
+                  },
+                  "amount": 4
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

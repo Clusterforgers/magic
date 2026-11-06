@@ -1,0 +1,31 @@
+{
+  "oracle_id": "44594004-52e7-4ce6-8eb0-61f72fd9c73b",
+  "name": "Irreverent Gremlin",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Irreverent Gremlin",
+      "oracle_fingerprint": "3d5219d631ed5fc066f2395c20241520",
+      "abilities": [
+        { "Keyword": "Menace" },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [
+                  { "Type": "Creature" },
+                  { "Compare": { "stat": "Power", "op": "Le", "to": 2 } },
+                  "Other",
+                  { "ControlledBy": "You" }
+                ],
+                "to": "Battlefield"
+              }
+            },
+            "limit": "OncePerTurn",
+            "effects": [{ "Pay": { "cost": [{ "Discard": {} }], "paid": [{ "Draw": {} }] } }]
+          }
+        }
+      ]
+    }
+  ]
+}

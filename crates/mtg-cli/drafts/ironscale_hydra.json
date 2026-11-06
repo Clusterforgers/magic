@@ -1,0 +1,21 @@
+{
+  "oracle_id": "cef72b9b-91b1-47ff-ab6e-91d3c548e98b",
+  "name": "Ironscale Hydra",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ironscale Hydra",
+      "oracle_fingerprint": "9c3e178f1ac477ed6d77c5ed11f86310",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": {
+              "Damage": { "to": "This", "source": [{ "Type": "Creature" }], "combat": true }
+            },
+            "by": { "PreventAnd": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }] }
+          }
+        }
+      ]
+    }
+  ]
+}

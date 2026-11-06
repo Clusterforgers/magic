@@ -1,42 +1,4 @@
 {
   "source": "forge",
-  "oracle_matches": true,
-  "lines": [
-    {
-      "face": 0,
-      "tag": "T",
-      "text": "When CARDNAME enters, empower Jace 5. (Put five loyalty counters on a Jace token you control. If you don't control one, first create a blue Jace planeswalker token with \"[-1]: Surveil 1\" and \"[-3]: Draw a card.\")",
-      "abilities": [
-        0
-      ],
-      "gap": null
-    },
-    {
-      "face": 0,
-      "tag": "T",
-      "text": "Whenever you activate a loyalty ability, you gain 1 life. You may play an additional land this turn.",
-      "abilities": [],
-      "gap": "key:Trigger.AbilityCast.ValidSA=Activated.Loyalty"
-    }
-  ],
-  "proof": {
-    "marks": [
-      {
-        "face": 0,
-        "span": {
-          "start": 0,
-          "end": 222
-        },
-        "mark": "Auto"
-      },
-      {
-        "face": 0,
-        "span": {
-          "start": 223,
-          "end": 323
-        },
-        "mark": "ByHand"
-      }
-    ]
-  }
+  "oracle_matches": true
 }

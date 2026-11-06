@@ -1,0 +1,33 @@
+{
+  "oracle_id": "405674c5-607a-43d3-8b46-8741d2339f80",
+  "name": "Phyrexian Marauder",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Phyrexian Marauder",
+      "oracle_fingerprint": "cec10967f15fc7f9c1ce5ca1a7677d24",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "WithCounters": { "counter": "+1/+1", "count": "X" } }
+          }
+        },
+        { "Static": { "affected": "This", "mods": ["CantBlock"] } },
+        {
+          "Rule": {
+            "rule": {
+              "AttackTax": {
+                "who": "EachPlayer",
+                "attacked": "Both",
+                "attackers": [{ "Is": "This" }],
+                "mana": "{1}",
+                "per": { "Counters": { "on": "This", "counter": "+1/+1" } }
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,39 @@
+{
+  "oracle_id": "5249dd0d-3bda-452e-ac6e-774c0ebc2e41",
+  "name": "Haste Magic",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Haste Magic",
+      "oracle_fingerprint": "205c45f1521cddc1e1832d1e206c1c9b",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    { "ModifyPT": { "power": 3, "toughness": 1 } },
+                    { "AddKeyword": "Haste" }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              { "ExileTop": { "as": "exiled" } },
+              {
+                "Rule": {
+                  "rule": {
+                    "MayCast": { "from": "Exile", "only": { "Bound": "exiled" }, "play": true }
+                  },
+                  "duration": "UntilYourNextEndStep"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,26 @@
+{
+  "oracle_id": "d29078c0-1fb8-437a-81d1-bb319f646941",
+  "name": "Veteran Bodyguard",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Veteran Bodyguard",
+      "oracle_fingerprint": "34a2704cc429fd1f2269e37642dd7149",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Damage": { "to": "You", "source": [{ "Type": "Creature" }, "Unblocked"] } },
+            "by": {
+              "Instead": [
+                { "DealDamage": { "source": "Dealer", "to": "This", "amount": "Triggering" } }
+              ]
+            },
+            "condition": {
+              "Compare": { "left": { "Count": ["This", "Untapped"] }, "op": "Ge", "right": 1 }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

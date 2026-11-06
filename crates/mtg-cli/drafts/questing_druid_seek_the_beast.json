@@ -1,7 +1,7 @@
 {
   "oracle_id": "555df32f-f8e9-49af-bc4a-1194ea325a97",
   "name": "Questing Druid // Seek the Beast",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Questing Druid",
@@ -34,7 +34,19 @@
       "oracle_fingerprint": "fa39ae469c2f048e0b01cf815b716db4",
       "abilities": [
         {
-          "Manual": { "reason": "you apply this clause by hand", "span": { "start": 0, "end": 92 } }
+          "Spell": {
+            "effects": [
+              { "ExileTop": { "count": 2, "as": "exiled" } },
+              {
+                "Rule": {
+                  "rule": {
+                    "MayCast": { "from": "Exile", "only": { "Bound": "exiled" }, "play": true }
+                  },
+                  "duration": "UntilYourNextEndStep"
+                }
+              }
+            ]
+          }
         }
       ]
     }

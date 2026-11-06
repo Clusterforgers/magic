@@ -1,0 +1,61 @@
+{
+  "oracle_id": "c867a778-97ef-4872-b890-b088b96a1281",
+  "name": "Jennifer Walters // The Sensational She-Hulk",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Jennifer Walters",
+      "oracle_fingerprint": "f433846252142d59fa9f0d4b7e87b801",
+      "abilities": [
+        {
+          "Rule": {
+            "rule": { "Cant": { "who": "Opponents", "action": { "Cast": {} } } },
+            "condition": "YourTurn"
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{3}{W}{W}{G}",
+            "timing": "Sorcery",
+            "effects": [{ "Transform": { "what": "This" } }]
+          }
+        }
+      ]
+    },
+    {
+      "name": "The Sensational She-Hulk",
+      "oracle_fingerprint": "6d57450212e1b66166fc28001dbcdd31",
+      "abilities": [
+        { "Keyword": "Reach" },
+        { "Keyword": "Trample" },
+        {
+          "Rule": {
+            "rule": { "Cant": { "who": "Opponents", "action": { "Cast": {} } } },
+            "condition": "YourTurn"
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "Batch": {
+                "DealsDamage": {
+                  "source": [],
+                  "to": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] }
+                }
+              }
+            },
+            "limit": "OncePerTurn",
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [
+              {
+                "May": {
+                  "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": "Triggering" } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

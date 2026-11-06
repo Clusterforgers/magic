@@ -1,0 +1,41 @@
+{
+  "oracle_id": "0923ad85-2ea4-4463-8f71-b7d0a162b486",
+  "name": "Mogg Salvage",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mogg Salvage",
+      "oracle_fingerprint": "1c1f44aff9d1eaa6411172ba4276a0b4",
+      "abilities": [
+        {
+          "FreeCast": {
+            "condition": {
+              "All": [
+                {
+                  "Compare": {
+                    "left": { "Count": [{ "Subtype": "Island" }, { "ControlledBy": "Opponents" }] },
+                    "op": "Ge",
+                    "right": 1
+                  }
+                },
+                {
+                  "Compare": {
+                    "left": { "Count": [{ "Subtype": "Mountain" }, { "ControlledBy": "You" }] },
+                    "op": "Ge",
+                    "right": 1
+                  }
+                }
+              ]
+            }
+          }
+        },
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Artifact" }] } }],
+            "effects": [{ "Destroy": { "what": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

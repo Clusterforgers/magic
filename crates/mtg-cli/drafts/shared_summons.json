@@ -1,0 +1,30 @@
+{
+  "oracle_id": "c2c9dbd0-2062-4ee1-b32e-8eeacd95589c",
+  "name": "Shared Summons",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Shared Summons",
+      "oracle_fingerprint": "d5ea73276783db7f8d9ff5455ea6584e",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Search": {
+                  "filter": [{ "Type": "Creature" }],
+                  "count": { "min": 0, "max": 2 },
+                  "reveal": true,
+                  "distinct": true,
+                  "as": "found"
+                }
+              },
+              { "Move": { "what": { "Bound": "found" }, "to": "Hand" } },
+              { "Shuffle": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

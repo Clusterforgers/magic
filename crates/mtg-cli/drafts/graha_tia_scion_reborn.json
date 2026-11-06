@@ -1,0 +1,50 @@
+{
+  "oracle_id": "f558c758-8f12-45f9-8683-eee33ba1fb0d",
+  "name": "G'raha Tia, Scion Reborn",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "G'raha Tia, Scion Reborn",
+      "oracle_fingerprint": "28b4e5689bf7cdac700dbea65d0f4e48",
+      "abilities": [
+        { "Keyword": "Lifelink" },
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "what": [{ "Not": { "Type": "Creature" } }], "by": "You" } },
+            "limit": "OncePerTurn",
+            "effects": [
+              {
+                "Pay": {
+                  "cost": [{ "PayLife": { "Stat": { "of": "Triggering", "stat": "ManaValue" } } }],
+                  "paid": [
+                    {
+                      "CreateToken": {
+                        "token": {
+                          "Custom": {
+                            "name": "Hero",
+                            "types": ["Creature"],
+                            "subtypes": ["Hero"],
+                            "power": 1,
+                            "toughness": 1
+                          }
+                        },
+                        "as": "token"
+                      }
+                    },
+                    {
+                      "PutCounters": {
+                        "on": { "Bound": "token" },
+                        "counter": "+1/+1",
+                        "count": { "Stat": { "of": "Triggering", "stat": "ManaValue" } }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,46 @@
+{
+  "oracle_id": "b15c6203-6311-44eb-916d-a4c271960c74",
+  "name": "Kaya's Ghostform",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Kaya's Ghostform",
+      "oracle_fingerprint": "67a96c138208771f1d37aafa1c06106b",
+      "abilities": [
+        {
+          "Keyword": {
+            "Enchant": [
+              { "AnyOf": [{ "Type": "Creature" }, { "Type": "Planeswalker" }] },
+              { "ControlledBy": "You" }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                {
+                  "ZoneChange": {
+                    "what": [{ "Is": "Attached" }],
+                    "from": "Battlefield",
+                    "to": "Graveyard"
+                  }
+                },
+                {
+                  "ZoneChange": {
+                    "what": [{ "Is": "Attached" }],
+                    "from": "Battlefield",
+                    "to": "Exile"
+                  }
+                }
+              ]
+            },
+            "effects": [
+              { "Move": { "what": "Triggering", "to": { "Battlefield": { "under": "You" } } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

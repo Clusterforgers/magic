@@ -1,0 +1,29 @@
+{
+  "oracle_id": "08842aa3-f923-46e9-a106-f542331e9cc1",
+  "name": "Chaoslace",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Chaoslace",
+      "oracle_fingerprint": "8935e9964cfec36e872bb79e5a28713e",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "AnyOf": [{ "In": "Stack" }, { "In": "Battlefield" }] }] } }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "SetColors": ["Red"] }],
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

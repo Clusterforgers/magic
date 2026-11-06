@@ -1,7 +1,7 @@
 {
   "oracle_id": "f589e5ee-399c-4613-b7a2-9ab2866cc830",
   "name": "Nita, Forum Conciliator",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Nita, Forum Conciliator",
@@ -21,9 +21,51 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 91, "end": 362 }
+          "Activated": {
+            "cost": [
+              { "Mana": "{2}" },
+              { "Sacrifice": { "filter": [{ "Type": "Creature" }, "Other"] } }
+            ],
+            "timing": "Sorcery",
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] },
+                    { "OwnedBy": "Opponents" },
+                    { "In": "Graveyard" }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              { "Exile": { "what": { "Target": 0 }, "as": "exiled" } },
+              {
+                "Rule": {
+                  "rule": {
+                    "MayCast": {
+                      "from": "Exile",
+                      "only": { "Bound": "exiled" },
+                      "spend_as": "AnyType"
+                    }
+                  },
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "Shield": {
+                  "when": {
+                    "ZoneChange": {
+                      "what": [{ "Is": { "Bound": "exiled" } }],
+                      "from": "Stack",
+                      "to": "Graveyard"
+                    }
+                  },
+                  "by": { "MoveTo": "Exile" },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
           }
         }
       ]

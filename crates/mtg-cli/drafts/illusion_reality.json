@@ -1,0 +1,42 @@
+{
+  "oracle_id": "5af2689d-c45c-4d45-b6a9-f32e8410b336",
+  "name": "Illusion // Reality",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Illusion",
+      "oracle_fingerprint": "ceda756ce0af6894528d38ae499d64a4",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "AnyOf": [{ "In": "Stack" }, { "In": "Battlefield" }] }] } }
+            ],
+            "effects": [
+              { "ChooseValue": { "kind": "Color", "as": "chosen" } },
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "SetColorsChosen": "chosen" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Reality",
+      "oracle_fingerprint": "0e70d1cb13e4dac4028d88de06de1127",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Artifact" }] } }],
+            "effects": [{ "Destroy": { "what": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

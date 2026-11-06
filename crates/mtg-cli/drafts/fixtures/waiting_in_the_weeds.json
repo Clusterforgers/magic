@@ -1,0 +1,146 @@
+{
+  "object": "card",
+  "id": "7e2d5a77-6ee8-463d-9e6a-fdb1cc6d70e6",
+  "oracle_id": "5a61d51e-1a3f-49f6-9a94-a708dd6f69df",
+  "multiverse_ids": [
+    15434
+  ],
+  "tcgplayer_id": 2792,
+  "cardmarket_id": 11109,
+  "name": "Waiting in the Weeds",
+  "lang": "en",
+  "released_at": "1999-04-21",
+  "uri": "https://api.scryfall.com/cards/7e2d5a77-6ee8-463d-9e6a-fdb1cc6d70e6",
+  "scryfall_uri": "https://scryfall.com/card/6ed/266/waiting-in-the-weeds?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T12:35:52Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/7/e/7e2d5a77-6ee8-463d-9e6a-fdb1cc6d70e6.jpg?1783946152",
+    "normal": "https://cards.scryfall.io/normal/front/7/e/7e2d5a77-6ee8-463d-9e6a-fdb1cc6d70e6.jpg?1783946152",
+    "large": "https://cards.scryfall.io/large/front/7/e/7e2d5a77-6ee8-463d-9e6a-fdb1cc6d70e6.jpg?1783946152",
+    "png": "https://cards.scryfall.io/png/front/7/e/7e2d5a77-6ee8-463d-9e6a-fdb1cc6d70e6.png?1783946152",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/7/e/7e2d5a77-6ee8-463d-9e6a-fdb1cc6d70e6.jpg?1783946152",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/7/e/7e2d5a77-6ee8-463d-9e6a-fdb1cc6d70e6.jpg?1783946152",
+    "thumb": "https://cards.scryfall.io/thumb/front/7/e/7e2d5a77-6ee8-463d-9e6a-fdb1cc6d70e6.webp?1783946152",
+    "grid": "https://cards.scryfall.io/grid/front/7/e/7e2d5a77-6ee8-463d-9e6a-fdb1cc6d70e6.webp?1783946152",
+    "display": "https://cards.scryfall.io/display/front/7/e/7e2d5a77-6ee8-463d-9e6a-fdb1cc6d70e6.webp?1783946152",
+    "art": "https://cards.scryfall.io/art/front/7/e/7e2d5a77-6ee8-463d-9e6a-fdb1cc6d70e6.webp?1783946152",
+    "crop": "https://cards.scryfall.io/crop/front/7/e/7e2d5a77-6ee8-463d-9e6a-fdb1cc6d70e6.webp?1783946152",
+    "jpeg": "https://cards.scryfall.io/normal/front/7/e/7e2d5a77-6ee8-463d-9e6a-fdb1cc6d70e6.jpg?1783946152"
+  },
+  "mana_cost": "{1}{G}{G}",
+  "cmc": 3.0,
+  "type_line": "Sorcery",
+  "oracle_text": "Each player creates a 1/1 green Cat creature token for each untapped Forest they control.",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [],
+  "all_parts": [
+    {
+      "object": "related_card",
+      "id": "7e2d5a77-6ee8-463d-9e6a-fdb1cc6d70e6",
+      "component": "combo_piece",
+      "name": "Waiting in the Weeds",
+      "type_line": "Sorcery",
+      "uri": "https://api.scryfall.com/cards/7e2d5a77-6ee8-463d-9e6a-fdb1cc6d70e6"
+    },
+    {
+      "object": "related_card",
+      "id": "7ebd7482-0f67-4afa-ba82-bf12e7e07b30",
+      "component": "token",
+      "name": "Cat",
+      "type_line": "Token Creature — Cat",
+      "uri": "https://api.scryfall.com/cards/7ebd7482-0f67-4afa-ba82-bf12e7e07b30"
+    }
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "legal",
+    "predh": "legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": true,
+  "variation": false,
+  "set_id": "78ee1957-d5d4-4551-acae-b1b418e8a50b",
+  "set": "6ed",
+  "set_name": "Classic Sixth Edition",
+  "set_type": "core",
+  "set_uri": "https://api.scryfall.com/sets/78ee1957-d5d4-4551-acae-b1b418e8a50b",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3A6ed&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/6ed?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/7e2d5a77-6ee8-463d-9e6a-fdb1cc6d70e6/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A5a61d51e-1a3f-49f6-9a94-a708dd6f69df&unique=prints",
+  "collector_number": "266",
+  "digital": false,
+  "rarity": "rare",
+  "flavor_text": "The trees have ears, eyes, and teeth.",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Susan Van Camp",
+  "artist_ids": [
+    "8921d44a-837d-4d6e-bf9f-e4f7c33f11e8"
+  ],
+  "illustration_id": "35736cda-84b9-4adf-be14-fd534cf7803c",
+  "border_color": "white",
+  "frame": "1997",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 21765,
+  "prices": {
+    "usd": "1.81",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "0.65",
+    "eur_foil": null,
+    "tix": null
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=15434&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DWaiting%2Bin%2Bthe%2BWeeds",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DWaiting%2Bin%2Bthe%2BWeeds",
+    "edhrec": "https://edhrec.com/route/?cc=Waiting+in+the+Weeds"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F2792%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=11109&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards?affiliate_id=scryfall&data%5Bsearch%5D=Waiting+in+the+Weeds&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

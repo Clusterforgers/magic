@@ -1,7 +1,7 @@
 {
   "oracle_id": "7afa530f-ea51-4bee-af3b-59b83ea5cb25",
   "name": "Gideon the Oathless",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Gideon the Oathless",
@@ -20,9 +20,15 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 108, "end": 195 }
+          "Triggered": {
+            "when": {
+              "Did": {
+                "action": "Activated",
+                "who": "Opponents",
+                "what": [{ "Type": "Planeswalker" }]
+              }
+            },
+            "effects": [{ "DealDamage": { "to": "TriggeringPlayer", "amount": 1 } }]
           }
         }
       ]

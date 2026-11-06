@@ -1,0 +1,157 @@
+{
+  "object": "card",
+  "id": "0a838009-b115-4497-b35d-682e41ead7db",
+  "oracle_id": "d8f7d4c8-bc50-4bcf-b930-797dcb3c2a21",
+  "multiverse_ids": [],
+  "resource_id": "DBA685D6B53DA50F13FFA596DD0D533E02ADEE1537827FFC95E42513ED6ABC9D",
+  "mtgo_id": 144888,
+  "arena_id": 97479,
+  "tcgplayer_id": 660648,
+  "cardmarket_id": 856076,
+  "name": "Unlucky Cabbage Merchant",
+  "lang": "en",
+  "released_at": "2025-11-21",
+  "uri": "https://api.scryfall.com/cards/0a838009-b115-4497-b35d-682e41ead7db",
+  "scryfall_uri": "https://scryfall.com/card/tla/201/unlucky-cabbage-merchant?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T01:08:54Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/0/a/0a838009-b115-4497-b35d-682e41ead7db.jpg?1783904934",
+    "normal": "https://cards.scryfall.io/normal/front/0/a/0a838009-b115-4497-b35d-682e41ead7db.jpg?1783904934",
+    "large": "https://cards.scryfall.io/large/front/0/a/0a838009-b115-4497-b35d-682e41ead7db.jpg?1783904934",
+    "png": "https://cards.scryfall.io/png/front/0/a/0a838009-b115-4497-b35d-682e41ead7db.png?1783904934",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/0/a/0a838009-b115-4497-b35d-682e41ead7db.jpg?1783904934",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/0/a/0a838009-b115-4497-b35d-682e41ead7db.jpg?1783904934",
+    "thumb": "https://cards.scryfall.io/thumb/front/0/a/0a838009-b115-4497-b35d-682e41ead7db.webp?1783904934",
+    "grid": "https://cards.scryfall.io/grid/front/0/a/0a838009-b115-4497-b35d-682e41ead7db.webp?1783904934",
+    "display": "https://cards.scryfall.io/display/front/0/a/0a838009-b115-4497-b35d-682e41ead7db.webp?1783904934",
+    "art": "https://cards.scryfall.io/art/front/0/a/0a838009-b115-4497-b35d-682e41ead7db.webp?1783904934",
+    "crop": "https://cards.scryfall.io/crop/front/0/a/0a838009-b115-4497-b35d-682e41ead7db.webp?1783904934",
+    "jpeg": "https://cards.scryfall.io/normal/front/0/a/0a838009-b115-4497-b35d-682e41ead7db.jpg?1783904934"
+  },
+  "mana_cost": "{1}{G}",
+  "cmc": 2.0,
+  "type_line": "Creature — Human Citizen",
+  "oracle_text": "When this creature enters, create a Food token. (It's an artifact with \"{2}, {T}, Sacrifice this token: You gain 3 life.\")\nWhenever you sacrifice a Food, you may search your library for a basic land card and put it onto the battlefield tapped. If you search your library this way, put this creature on the bottom of its owner's library, then shuffle.",
+  "power": "2",
+  "toughness": "2",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [
+    "Food"
+  ],
+  "all_parts": [
+    {
+      "object": "related_card",
+      "id": "d0e54f01-1301-481f-ace0-87966b5135f0",
+      "component": "token",
+      "name": "Food",
+      "type_line": "Token Artifact — Food",
+      "uri": "https://api.scryfall.com/cards/d0e54f01-1301-481f-ace0-87966b5135f0"
+    },
+    {
+      "object": "related_card",
+      "id": "0a838009-b115-4497-b35d-682e41ead7db",
+      "component": "combo_piece",
+      "name": "Unlucky Cabbage Merchant",
+      "type_line": "Creature — Human Citizen",
+      "uri": "https://api.scryfall.com/cards/0a838009-b115-4497-b35d-682e41ead7db"
+    }
+  ],
+  "legalities": {
+    "standard": "legal",
+    "future": "legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "arena",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "118f7e64-5caa-4cb7-99a8-184f4d3a7422",
+  "set": "tla",
+  "set_name": "Avatar: The Last Airbender",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/118f7e64-5caa-4cb7-99a8-184f4d3a7422",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Atla&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/tla?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/0a838009-b115-4497-b35d-682e41ead7db/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Ad8f7d4c8-bc50-4bcf-b930-797dcb3c2a21&unique=prints",
+  "collector_number": "201",
+  "digital": false,
+  "rarity": "uncommon",
+  "flavor_text": "\"My cabbages!\"",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Thomas Chamberlain-Keen",
+  "artist_ids": [
+    "0ff7b311-8dc5-4151-9ef0-143557dfd8fd"
+  ],
+  "illustration_id": "9e98b0f2-8176-42c9-823f-b8f88295e5e6",
+  "border_color": "black",
+  "frame": "2015",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "promo_types": [
+    "universesbeyond"
+  ],
+  "edhrec_rank": 8117,
+  "penny_rank": 7756,
+  "prices": {
+    "usd": "0.26",
+    "usd_foil": "0.32",
+    "usd_etched": null,
+    "eur": "0.14",
+    "eur_foil": "0.17",
+    "tix": "0.03"
+  },
+  "related_uris": {
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DUnlucky%2BCabbage%2BMerchant",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DUnlucky%2BCabbage%2BMerchant",
+    "edhrec": "https://edhrec.com/route/?cc=Unlucky+Cabbage+Merchant"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F660648%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=856076&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/144888?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

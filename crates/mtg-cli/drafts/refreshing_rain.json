@@ -1,0 +1,41 @@
+{
+  "oracle_id": "c6f69168-71c2-41a2-ab95-cfd7baf0ba68",
+  "name": "Refreshing Rain",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Refreshing Rain",
+      "oracle_fingerprint": "983ec0767a10003b7c9ed0328fbdb37d",
+      "abilities": [
+        {
+          "FreeCast": {
+            "condition": {
+              "All": [
+                {
+                  "Compare": {
+                    "left": { "Count": [{ "Subtype": "Swamp" }, { "ControlledBy": "Opponents" }] },
+                    "op": "Ge",
+                    "right": 1
+                  }
+                },
+                {
+                  "Compare": {
+                    "left": { "Count": [{ "Subtype": "Forest" }, { "ControlledBy": "You" }] },
+                    "op": "Ge",
+                    "right": 1
+                  }
+                }
+              ]
+            }
+          }
+        },
+        {
+          "Spell": {
+            "targets": [{ "what": "Player" }],
+            "effects": [{ "GainLife": { "who": { "Target": 0 }, "amount": 6 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

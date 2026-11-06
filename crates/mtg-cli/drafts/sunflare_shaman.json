@@ -13,27 +13,33 @@
             "targets": [{ "what": "AnyTarget" }],
             "effects": [
               {
-                "DealDamage": {
-                  "to": { "Target": 0 },
-                  "amount": {
-                    "Count": [
-                      { "Subtype": "Elemental" },
-                      { "OwnedBy": "You" },
-                      { "In": "Graveyard" }
-                    ]
-                  }
-                }
-              },
-              {
-                "DealDamage": {
-                  "to": "This",
-                  "amount": {
-                    "Count": [
-                      { "Subtype": "Elemental" },
-                      { "OwnedBy": "You" },
-                      { "In": "Graveyard" }
-                    ]
-                  }
+                "Together": {
+                  "effects": [
+                    {
+                      "DealDamage": {
+                        "to": { "Target": 0 },
+                        "amount": {
+                          "Count": [
+                            { "Subtype": "Elemental" },
+                            { "OwnedBy": "You" },
+                            { "In": "Graveyard" }
+                          ]
+                        }
+                      }
+                    },
+                    {
+                      "DealDamage": {
+                        "to": "This",
+                        "amount": {
+                          "Count": [
+                            { "Subtype": "Elemental" },
+                            { "OwnedBy": "You" },
+                            { "In": "Graveyard" }
+                          ]
+                        }
+                      }
+                    }
+                  ]
                 }
               }
             ]

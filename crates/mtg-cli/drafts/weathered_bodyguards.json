@@ -1,0 +1,33 @@
+{
+  "oracle_id": "86d0ba9d-6972-4cbc-871d-3fb413565c45",
+  "name": "Weathered Bodyguards",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Weathered Bodyguards",
+      "oracle_fingerprint": "90cff710065b41bac6e81a5b7c9d61ee",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": {
+              "Damage": {
+                "to": "You",
+                "source": [{ "Type": "Creature" }, "Unblocked"],
+                "combat": true
+              }
+            },
+            "by": {
+              "Instead": [
+                { "DealDamage": { "source": "Dealer", "to": "This", "amount": "Triggering" } }
+              ]
+            },
+            "condition": {
+              "Compare": { "left": { "Count": ["This", "Untapped"] }, "op": "Ge", "right": 1 }
+            }
+          }
+        },
+        { "Keyword": { "Morph": "{3}{W}" } }
+      ]
+    }
+  ]
+}
