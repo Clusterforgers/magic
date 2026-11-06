@@ -936,7 +936,7 @@ fn exile_top(ctx: &mut Ctx, p: &Params, who: &Value, count: &Value) -> Value {
 }
 
 /// Where a `Dig` puts the cards it takes and the rest.
-fn dig_places(p: &Params) -> Tr<(Goes, Goes)> {
+pub(super) fn dig_places(p: &Params) -> Tr<(Goes, Goes)> {
     let to = match p.get("DestinationZone") {
         None | Some("Hand") => Goes::To(json!("Hand")),
         Some("Graveyard") => Goes::To(json!("Graveyard")),

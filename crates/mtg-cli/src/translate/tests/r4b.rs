@@ -53,3 +53,42 @@ fn remove_counter_all_reads_its_count_words(#[case] line: &str, #[case] node: Va
 fn remove_counter_all_leaves_what_it_cannot_read_a_gap(#[case] line: &str, #[case] gap: &str) {
     assert_eq!(gaps(&spell(line)), vec![gap.to_owned()]);
 }
+
+#[rstest]
+#[case::two_alternatives(
+    "DigMultiple | DigNum$ 4 | ChangeValid$ Creature,Land | Optional$ True",
+    2
+)]
+#[case::four_alternatives(
+    "DigMultiple | DigNum$ 4 | ChangeValid$ Creature,Land,Artifact,Enchantment | Optional$ True | DestinationZone2$ Library",
+    4
+)]
+fn dig_multiple_takes_one_card_for_each_alternative(
+    #[case] line: &str,
+    #[case] alternatives: usize,
+) {
+    let found = effects(&spell(line));
+    let steps = found.as_array().unwrap();
+    let choices: Vec<&Value> = steps.iter().filter_map(|step| step.get("Choose")).collect();
+    assert_eq!(choices.len(), alternatives);
+    for (index, choice) in choices.iter().enumerate() {
+        assert_eq!(choice["count"], json!({"min": 0, "max": 1}));
+        // Each later alternative leaves out the cards the earlier ones took.
+        let pool = choice["from"]["Each"].as_array().unwrap();
+        let excluded = pool.iter().filter(|pred| pred.get("Not").is_some()).count();
+        assert_eq!(excluded, index);
+    }
+}
+
+#[rstest]
+#[case::not_optional(
+    "DigMultiple | DigNum$ 4 | ChangeValid$ Creature,Land",
+    "key:DigMultiple.Optional-absent"
+)]
+#[case::other_zone(
+    "DigMultiple | DigNum$ 4 | ChangeValid$ Creature,Land | Optional$ True | SourceZone$ Graveyard",
+    "key:DigMultiple.SourceZone"
+)]
+fn dig_multiple_leaves_what_it_cannot_read_a_gap(#[case] line: &str, #[case] gap: &str) {
+    assert_eq!(gaps(&spell(line)), vec![gap.to_owned()]);
+}

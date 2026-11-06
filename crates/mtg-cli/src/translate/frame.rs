@@ -393,6 +393,7 @@ pub fn ask(mut effects: Vec<Value>, who: &Value) -> Vec<Value> {
 }
 
 /// Where moved objects go, as a destination or the exile verb.
+#[derive(Clone)]
 pub enum Goes {
     /// Exiled.
     Exile,
