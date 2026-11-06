@@ -861,21 +861,20 @@ fn craft(rest: &str) -> Option<Keyword> {
     let (materials, price) = words.split_at(at);
     let mana = ManaCostX::from_str(price.trim()).ok()?;
     let materials = materials.trim();
-    let (count, noun) = match materials.strip_prefix("one or more ") {
-        Some(noun) => (Amount::X, noun),
-        None => {
-            let (number, noun) = materials.split_once(' ').unwrap_or(("1", materials));
-            let number = match number {
-                "1" | "a" | "an" | "one" => 1,
-                "two" => 2,
-                "three" => 3,
-                "four" => 4,
-                "five" => 5,
-                "six" => 6,
-                _ => return None,
-            };
-            (Amount::Fixed(number), noun)
-        }
+    let (count, noun) = if let Some(noun) = materials.strip_prefix("one or more ") {
+        (Amount::X, noun)
+    } else {
+        let (number, noun) = materials.split_once(' ').unwrap_or(("1", materials));
+        let number = match number {
+            "1" | "a" | "an" | "one" => 1,
+            "two" => 2,
+            "three" => 3,
+            "four" => 4,
+            "five" => 5,
+            "six" => 6,
+            _ => return None,
+        };
+        (Amount::Fixed(number), noun)
     };
     let single = noun.trim().trim_end_matches('s');
     let kind = match single.to_ascii_lowercase().as_str() {
