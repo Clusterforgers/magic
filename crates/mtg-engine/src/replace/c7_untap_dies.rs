@@ -14,7 +14,7 @@ impl Pass<'_> {
     pub(super) fn c7_untap_dies(&self, slot: &Slot) -> Vec<Candidate> {
         let Unit::Move {
             object,
-            from: Zone::Battlefield | Zone::Stack,
+            from: from @ (Zone::Battlefield | Zone::Stack),
             to: Zone::Graveyard(_),
             countered: was_countered,
             ..
@@ -32,6 +32,7 @@ impl Pass<'_> {
                     objects,
                     to,
                     countered,
+                    cast,
                 } = &effect.rule
                 else {
                     return None;
@@ -40,9 +41,13 @@ impl Pass<'_> {
                 if *countered && !was_countered {
                     return None;
                 }
-                let covered = objects
-                    .iter()
-                    .any(|named| named.id == object && named.counter == current);
+                // A card named in another zone is cast as the next object (CR 400.7): "if that spell would be put into a graveyard".
+                let cast_from_there = from == Zone::Stack;
+                let covered = objects.iter().any(|named| {
+                    named.id == object
+                        && (named.counter == current
+                            || (*cast && cast_from_there && named.counter + 1 == current))
+                });
                 (covered && !slot.applied.contains(&origin)).then_some(Candidate {
                     origin,
                     object: effect.source?,

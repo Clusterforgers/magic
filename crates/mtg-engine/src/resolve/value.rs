@@ -973,6 +973,7 @@ impl<'a> Scope<'a> {
             Ref::Paid => self.paid(),
             Ref::Remembered { on, slot } => self.remembered(on, slot)?,
             Ref::Arrived { of, zone } => self.arrived(of, *zone)?,
+            Ref::Departed(of) => self.departed_of(of)?,
             Ref::ControllerOf(inner) => self.seats_of(inner, |seen| seen.controller)?,
             Ref::OwnerOf(inner) => self.seats_of(inner, |seen| seen.owner)?,
             Ref::Each(selector) => self
@@ -1128,6 +1129,29 @@ impl<'a> Scope<'a> {
         Ok(found)
     }
 
+    /// The objects the reference named that moved once since, each as the object it was before the move, when the
+    /// resolution kept a record of it (CR 400.7, 608.2h). An object with no record is nobody.
+    fn departed_of(&self, of: &Ref) -> Result<Vec<Target>, ResolveError> {
+        let mut found: Vec<Target> = Vec::new();
+        for named in self.objects(of)? {
+            let Some(before) = named.counter.checked_sub(1) else {
+                continue;
+            };
+            let recorded = self
+                .departed
+                .iter()
+                .any(|shot| shot.id == named.id && shot.counter == before);
+            let old = Target::Object(ObjectRef {
+                id: named.id,
+                counter: before,
+            });
+            if recorded && !found.contains(&old) {
+                found.push(old);
+            }
+        }
+        Ok(found)
+    }
+
     /// The objects a reference names (players among them are ignored).
     pub fn objects(&self, reference: &Ref) -> Result<Vec<ObjectRef>, ResolveError> {
         Ok(self
@@ -1210,6 +1234,8 @@ impl<'a> Scope<'a> {
                 ZoneKind::Exile => zones.push(Zone::Exile),
                 ZoneKind::Command => zones.extend(seats().map(Zone::Command)),
                 ZoneKind::Battlefield => zones.push(Zone::Battlefield),
+                // No object is ever outside the game (a Commander game has no sideboard).
+                ZoneKind::Outside => {}
             }
         }
         zones
@@ -2709,6 +2735,52 @@ mod tests {
         assert_eq!(
             scope(&game).holds(&condition),
             expected.map_err(ResolveError::Unsupported)
+        );
+    }
+
+    #[test]
+    fn departed_names_a_moved_object_as_it_was_and_its_controller_is_the_last_known_one() {
+        // CR 400.7, 608.2h: "its controller" of a permanent that was destroyed is the one who controlled it, not its owner.
+        let mut game = game();
+        let old = named(&game, "Ogre", 1);
+        let mut shot = snapshot(&game, old.id).unwrap();
+        shot.controller = PlayerId(0);
+        apply_event(
+            &mut game,
+            &Event::ZoneChanged {
+                object: old.id,
+                from: Zone::Battlefield,
+                to: Zone::Graveyard(PlayerId(1)),
+                cause: ZoneCause::Destroyed,
+            },
+        )
+        .unwrap();
+        let new = ObjectRef {
+            id: old.id,
+            counter: old.counter + 1,
+        };
+        let bindings: Bindings = [("it".to_owned(), vec![Target::Object(new)])].into();
+        let seats = |scope: &Scope<'_>, json: &str| -> Vec<PlayerId> {
+            scope
+                .players(&serde_json::from_str::<Ref>(json).unwrap())
+                .unwrap()
+        };
+        let before = r#"{"ControllerOf":{"Departed":{"Bound":"it"}}}"#;
+        let mut scope = scope(&game);
+        scope.bindings = &bindings;
+        assert_eq!(
+            seats(&scope, before),
+            [],
+            "without a record of the move there is nobody"
+        );
+        let departed = [shot];
+        scope.departed = &departed;
+        scope.snapshots = vec![&departed[0]];
+        assert_eq!(seats(&scope, before), [PlayerId(0)]);
+        assert_eq!(
+            seats(&scope, r#"{"ControllerOf":{"Bound":"it"}}"#),
+            [PlayerId(1)],
+            "the card now in the graveyard answers to its owner"
         );
     }
 

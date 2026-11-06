@@ -40,6 +40,7 @@ fn label(zone: ZoneKind) -> &'static str {
         ZoneKind::Battlefield => "battlefield",
         ZoneKind::Stack => "stack",
         ZoneKind::Command => "command zone",
+        ZoneKind::Outside => "outside the game",
     }
 }
 

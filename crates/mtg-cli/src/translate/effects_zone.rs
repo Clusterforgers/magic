@@ -12,6 +12,9 @@ use crate::forge::script::Params;
 
 /// The effects of `ChangeZone` and `ChangeZoneAll`.
 pub fn effects(ctx: &mut Ctx, p: &Params, api: &str) -> Tr<Vec<Value>> {
+    if api == "ChangeZone" && p.get("Origin") == Some("Sideboard") {
+        return outside_game(ctx, p);
+    }
     let origin = if api == "ChangeZone" && p.get("Origin") == Some("Stack") {
         "Stack"
     } else if api == "ChangeZone" && p.get("Origin") == Some("All") && named_objects(p) {
@@ -48,6 +51,44 @@ pub fn effects(ctx: &mut Ctx, p: &Params, api: &str) -> Tr<Vec<Value>> {
         }
         ("ChangeZone", _) => change_zone(ctx, p, origin, destination),
         _ => change_zone_all(ctx, p, origin, destination),
+    }
+}
+
+/// A card from outside the game (`Origin$ Sideboard`): a Commander game has no sideboard, so the search finds nothing. It is
+/// read as the library search of the same line, with the zone changed and no shuffle (no library was searched).
+fn outside_game(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
+    let destination = zone_word(p.get("Destination"), "Destination", false)?;
+    if destination != "Hand" || p.has("DifferentNames") {
+        return unmapped(format!("zone:Origin=Sideboard-to-{destination}"));
+    }
+    let mut effects = Value::Array(search(ctx, p, destination)?);
+    outside(&mut effects, p.get("Reveal") == Some("True"));
+    Ok(match effects {
+        Value::Array(list) => list,
+        other => vec![other],
+    })
+}
+
+/// Points the searches of a step at the zone outside the game and drops the shuffles.
+fn outside(step: &mut Value, reveal: bool) {
+    match step {
+        Value::Array(list) => {
+            list.retain(|item| *item != json!({"Shuffle": {}}));
+            for item in list.iter_mut() {
+                outside(item, reveal);
+            }
+        }
+        Value::Object(map) => {
+            if let Some(search) = map.get_mut("Search") {
+                search["zone"] = json!("Outside");
+                // Only the card says whether the cards are shown; nothing is found either way.
+                search["reveal"] = json!(reveal);
+            }
+            for item in map.values_mut() {
+                outside(item, reveal);
+            }
+        }
+        _ => {}
     }
 }
 

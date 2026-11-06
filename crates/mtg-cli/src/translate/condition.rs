@@ -166,6 +166,17 @@ fn of_defined(
         return unmapped("key:Condition.PresentZoneWithDefined");
     }
     let (op, right) = comparison(ctx, compare.unwrap_or("GE1"))?;
+    // "Card.inRealZoneGraveyard": the object the named one became in that zone (CR 400.7), one move on.
+    let (valid, arrived) = match valid
+        .split_once("+inRealZone")
+        .or_else(|| valid.split_once(".inRealZone"))
+    {
+        Some((rest, zone)) if matches!(zone, "Graveyard" | "Exile" | "Hand" | "Library") => {
+            (rest, Some(zone))
+        }
+        Some(_) => return unmapped("key:Condition.inRealZone"),
+        None => (valid, None),
+    };
     let selector = selector_in(ctx, valid, None)?;
     let subject = match word {
         "Remembered" | "RememberedLKI" => {
@@ -173,6 +184,10 @@ fn of_defined(
                 .map_or_else(|| unmapped("defined:Remembered-without-a-change"), Ok)?
         }
         _ => defined(ctx, word)?,
+    };
+    let subject = match arrived {
+        Some(zone) => json!({"Arrived": {"of": subject, "zone": zone}}),
+        None => subject,
     };
     Ok(json!({"CountOf": {"subject": subject, "selector": selector, "op": op, "right": right}}))
 }

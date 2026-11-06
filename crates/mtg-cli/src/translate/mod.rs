@@ -62,6 +62,7 @@ mod replacements_loss;
 mod replacements_mana;
 mod replacements_moved;
 mod replacements_phase;
+mod replacements_shield_moved;
 mod replacements_token;
 pub mod report;
 mod spend_uses;

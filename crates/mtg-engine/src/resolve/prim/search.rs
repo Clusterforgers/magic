@@ -20,9 +20,21 @@ pub(super) fn zone_of(kind: ZoneKind, player: PlayerId) -> Result<Zone, ResolveE
         ZoneKind::Hand => Ok(Zone::Hand(player)),
         ZoneKind::Graveyard => Ok(Zone::Graveyard(player)),
         ZoneKind::Exile => Ok(Zone::Exile),
-        ZoneKind::Battlefield | ZoneKind::Stack | ZoneKind::Command => Err(ResolveError::Invalid(
-            format!("a search of {kind:?} is not a search the rules know"),
-        )),
+        ZoneKind::Battlefield | ZoneKind::Stack | ZoneKind::Command | ZoneKind::Outside => {
+            Err(ResolveError::Invalid(format!(
+                "a search of {kind:?} is not a search the rules know"
+            )))
+        }
+    }
+}
+
+/// Nothing is outside a Commander game (no sideboard), so the search finds nothing and asks nothing.
+pub(super) fn nothing_outside(bind: &str) -> Run {
+    Run::Done {
+        events: Vec::new(),
+        bound: vec![(bind.to_owned(), Vec::new())],
+        snapshots: Vec::new(),
+        next: Next::Sibling,
     }
 }
 

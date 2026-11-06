@@ -242,6 +242,10 @@ pub enum Rule {
         #[serde(default, skip_serializing_if = "std::ops::Not::not")]
         #[cfg_attr(feature = "ts", ts(as = "Option<bool>", optional))]
         countered: bool,
+        /// A card named in another zone is covered as the spell it becomes when cast, one zone change on (CR 400.7).
+        #[serde(default, skip_serializing_if = "std::ops::Not::not")]
+        #[cfg_attr(feature = "ts", ts(as = "Option<bool>", optional))]
+        cast: bool,
     },
     /// A shield over any event of a kind, judged when the event would happen: "if a creature would die this turn, exile it
     /// instead", "permanents enter tapped this turn". The controller and source of the effect that made it read its references.
@@ -399,10 +403,17 @@ impl RuleEffect {
             Rule::MustAttack(named)
             | Rule::MustBlock(named)
             | Rule::CantBeCountered(named)
-            | Rule::DiesInstead { objects: named, .. }
             | Rule::MayCast {
                 only: Some(named), ..
             } => named.iter().all(gone),
+            Rule::DiesInstead { objects, cast, .. } => objects.iter().all(|named| {
+                // A card named in another zone is the spell on the stack one zone change on (CR 400.7).
+                let cast_now = *cast
+                    && state
+                        .object(named.id)
+                        .is_some_and(|o| o.counter() == named.counter + 1);
+                gone(named) && !cast_now
+            }),
             Rule::MustAttackPlayers(pairs) => pairs.iter().all(|(named, _)| gone(named)),
             Rule::MustBlockAttacker { blockers, attacker } => {
                 gone(attacker) || blockers.iter().all(gone)

@@ -216,6 +216,12 @@ fn one_shield(
 ) -> Tr<Vec<Value>> {
     let p = ctx.sub(name)?;
     if p.get("Event") == Some("Moved") {
+        // A shield on the remembered card first; otherwise a shield over a class of moves.
+        if remembered.is_some()
+            && let Ok(out) = super::replacements_shield_moved::shield(ctx, line, &p, remembered)
+        {
+            return Ok(out);
+        }
         let duration = duration(line.get("Duration"))?;
         return super::replacements_moved::shield(ctx, &p, duration);
     }

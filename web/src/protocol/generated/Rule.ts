@@ -179,7 +179,11 @@ to: unknown,
 /**
  * It covers a spell that is countered only, not one that resolves or fizzles.
  */
-countered?: boolean, } } | "GraveyardCardsUntargetable" | { "CantLoseGame": { 
+countered?: boolean, 
+/**
+ * A card named in another zone is covered as the spell it becomes when cast, one zone change on (CR 400.7).
+ */
+cast?: boolean, } } | "GraveyardCardsUntargetable" | { "CantLoseGame": { 
 /**
  * The players who can't lose.
  */

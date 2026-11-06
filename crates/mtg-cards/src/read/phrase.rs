@@ -67,6 +67,7 @@ pub(super) fn who(ctx: &Ctx, reference: &Ref) -> String {
         Ref::ControllerOf(inner) => format!("the controller of {}", who(ctx, inner)),
         Ref::OwnerOf(inner) => format!("the owner of {}", who(ctx, inner)),
         Ref::Arrived { of, .. } => format!("the card {} became", who(ctx, of)),
+        Ref::Departed(of) => format!("{} as it was", who(ctx, of)),
         Ref::Each(selector) => format!("each {}", self::selector(ctx, selector)),
     }
 }
@@ -367,6 +368,7 @@ pub(super) fn zone_text(zone: ZoneKind) -> &'static str {
         ZoneKind::Stack => "the stack",
         ZoneKind::Exile => "exile",
         ZoneKind::Command => "the command zone",
+        ZoneKind::Outside => "outside the game",
     }
 }
 

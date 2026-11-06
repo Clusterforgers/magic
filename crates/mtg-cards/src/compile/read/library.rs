@@ -668,9 +668,20 @@ pub fn sequence(effects: &[Effect]) -> Option<(String, usize)> {
             },
             ..,
         ] => {
-            let (text, used) = sequence(inner)?;
+            let (text, used) = super::outside::sequence(inner).or_else(|| sequence(inner))?;
             (used == inner.len() && matches!(inner.first(), Some(Effect::Search { .. })))
                 .then(|| (format!("you may {text}"), 1))
+        }
+        // A search outside the game may always find nothing, so the card words it as "you may".
+        [
+            Effect::Search {
+                zone: ZoneKind::Outside,
+                ..
+            },
+            ..,
+        ] => {
+            let (text, used) = super::outside::sequence(effects)?;
+            Some((format!("you may {text}"), used))
         }
         [Effect::Search { .. }, ..] => search_sequence(effects, &Ref::You),
         [Effect::RevealUntil { .. }, ..] => super::reveal_until::sequence(effects),
