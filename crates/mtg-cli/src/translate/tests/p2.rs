@@ -132,7 +132,6 @@ fn a_value_written_in_place_is_the_expression() {
 }
 
 #[rstest]
-#[case("SVar:X:Count$Void.1.0", "amount:Count$Void")]
 #[case("SVar:X:Count$YourCountersBogus", "amount:Count$YourCountersBogus")]
 #[case("SVar:X:Count$ManaPool:green", "amount:Count$ManaPool:green")]
 #[case(

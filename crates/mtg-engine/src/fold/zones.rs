@@ -29,6 +29,7 @@ pub(super) fn move_object(
         return Err(invalid(format!("zone {to:?} does not exist")));
     }
     let (was_creature, w14b_phyrexian) = w14b_dying_kind(state, id, to);
+    tally_nonland_leaving(state, id, to);
     log_death(state, id, to);
     // A permanent that enters takes the next timestamp, which its static abilities carry (CR 613.7).
     let timestamp = state.next_timestamp;
@@ -221,6 +222,22 @@ fn w14b_dying_kind(state: &GameState, id: ObjectId, to: Zone) -> (bool, bool) {
     )
 }
 
+/// Counts a nonland permanent about to leave the battlefield for `to` for the player who controls it (void).
+fn tally_nonland_leaving(state: &mut GameState, id: ObjectId, to: Zone) {
+    let Some(controller) = state
+        .object(id)
+        .filter(|object| object.zone() == Zone::Battlefield)
+        .map(GameObject::controller)
+    else {
+        return;
+    };
+    let nonland = crate::characteristics::characteristics(state, id)
+        .is_some_and(|chars| !chars.types.contains(CardType::Land));
+    if nonland && to != Zone::Battlefield {
+        state.tally(controller, Tally::NonlandLeft);
+    }
+}
+
 /// Counts a creature put into a graveyard from the battlefield for its owner, and for the player who controlled it.
 fn tally_death(state: &mut GameState, (owner, controller): (PlayerId, PlayerId), token: bool) {
     state.tally(owner, Tally::Died);
@@ -301,6 +318,9 @@ fn spell_cast(
     choices: &Choices,
 ) -> Result<(), EngineError> {
     state.tally(player, Tally::Cast);
+    if choices.way == Some(CastWay::Warp) {
+        state.tally(player, Tally::Warped);
+    }
     let mana = u32::try_from(choices.spent().len()).unwrap_or(u32::MAX);
     state.tally_by(player, Tally::W9aSpellMana, mana);
     for target in choices.targeted_objects() {

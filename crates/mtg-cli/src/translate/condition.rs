@@ -280,6 +280,11 @@ pub fn named(name: &str) -> Tr<Value> {
             let cards = yours(json!({"In": "Hand"}));
             json!({"Compare": {"left": {"Count": cards}, "op": "Eq", "right": 0}})
         }
+        // Void: a nonland permanent left the battlefield this turn or a spell was warped this turn.
+        "Void" => {
+            let this_turn = |what: &str| json!({"Compare": {"left": {"Tallied": {"who": "EachPlayer", "what": what}}, "op": "Ge", "right": 1}});
+            json!({"Any": [this_turn("NonlandPermanentsLeft"), this_turn("SpellsWarped")]})
+        }
         "Metalcraft" => {
             let artifacts = vec![json!({"Type": "Artifact"}), json!({"ControlledBy": "You"})];
             json!({"Compare": {"left": {"Count": artifacts}, "op": "Ge", "right": 3}})

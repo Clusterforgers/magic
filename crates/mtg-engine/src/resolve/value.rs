@@ -364,6 +364,12 @@ impl<'a> Scope<'a> {
             TurnTally::Surveilled => Tally::Surveilled,
             TurnTally::Sacrificed => Tally::Sacrificed,
             TurnTally::Descended => Tally::Descended,
+            TurnTally::DungeonsCompleted => {
+                let total: u32 = (self.players(who)?.into_iter())
+                    .map(|player| self.state.w11d_completed(player))
+                    .sum();
+                return Ok(i64::from(total));
+            }
             TurnTally::LifeGainedTotal
             | TurnTally::CreaturesAttacked
             | TurnTally::CreaturesDied
@@ -372,8 +378,12 @@ impl<'a> Scope<'a> {
             | TurnTally::NontokenCreaturesDiedUnder
             | TurnTally::PhyrexiansDiedUnder
             | TurnTally::PermanentsLeftUnder
+            | TurnTally::NonlandPermanentsLeft
+            | TurnTally::SpellsWarped
             | TurnTally::CardsLeftGraveyard => {
                 let kind = match what {
+                    TurnTally::NonlandPermanentsLeft => Tally::NonlandLeft,
+                    TurnTally::SpellsWarped => Tally::Warped,
                     TurnTally::PermanentsLeftUnder => Tally::PermanentsLeftUnder,
                     TurnTally::CardsLeftGraveyard => Tally::W21aLeftGraveyard,
                     TurnTally::LifeGainedTotal => Tally::GainedTotal,
@@ -912,6 +922,10 @@ impl<'a> Scope<'a> {
             Ref::Triggering => self
                 .cause
                 .map(|cause| cause.subjects.clone())
+                .ok_or_else(|| ResolveError::Invalid("there is no triggering event".into()))?,
+            Ref::TriggeringFirst => self
+                .cause
+                .map(|cause| cause.subjects.first().copied().into_iter().collect())
                 .ok_or_else(|| ResolveError::Invalid("there is no triggering event".into()))?,
             Ref::TriggeringPlayer => self
                 .cause

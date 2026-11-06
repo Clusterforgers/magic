@@ -184,9 +184,29 @@ pub fn player_amount(head: &str, what: &str, who: &Value) -> Option<Tr<Value>> {
         ("PlayerCountPropertyYou", "CardsDiscardedThisTurn") => tallied("Discarded"),
         ("PlayerCountPropertyYou", "LifeLostThisTurn") => tallied("LifeLost"),
         ("PlayerCountPropertyYou", "LandsPlayed") => tallied("LandsPlayed"),
-        ("PlayerCountPropertyYou", "SacrificedThisTurn") => tallied("Sacrificed"),
+        ("PlayerCountPropertyYou", "SacrificedThisTurn" | "SacrificedThisTurn Permanent") => {
+            tallied("Sacrificed")
+        }
+        // The opponents the player's creatures attacked in this combat, directly or through a planeswalker.
+        ("PlayerCountPropertyYou", "OpponentsAttackedThisCombat") => {
+            Ok(json!({"Players": "Attacked"}))
+        }
+        // The creatures that attacked the player in this combat: one or more means the player has been attacked.
+        ("PlayerCountPropertyYou", "HasPropertyBeenAttackedThisCombat") => Ok(json!({"Tally": {
+            "event": "Attacked",
+            "who": "EachPlayer",
+            "filter": [{"DidThisTurn": {"event": "Attacked", "to": who, "combat": true}}],
+        }})),
         _ => return None,
     })
+}
+
+/// `DungeonsCompleted$Amount`: the dungeons you have completed this game.
+pub fn dungeons(what: &str) -> Tr<Value> {
+    match what {
+        "Amount" => Ok(json!({"Tallied": {"who": "You", "what": "DungeonsCompleted"}})),
+        other => unmapped(format!("amount:DungeonsCompleted${other}")),
+    }
 }
 
 /// A number about the player `who` of an event or a target (`LifeTotal`, `CardsInHand`, `Counters.Poison`); the gap names `head`.

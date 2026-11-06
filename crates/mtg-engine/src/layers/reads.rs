@@ -185,6 +185,7 @@ pub(crate) fn reads_of_ref(reference: &Ref) -> Traits {
         | Ref::Target(_)
         | Ref::Triggering
         | Ref::TriggeringPlayer
+        | Ref::TriggeringFirst
         | Ref::Dealer
         | Ref::Against
         | Ref::Attached

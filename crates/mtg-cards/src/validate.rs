@@ -512,7 +512,7 @@ impl<'a> Walker<'a> {
                     }
                 }
             }
-            Ref::Triggering => {
+            Ref::Triggering | Ref::TriggeringFirst => {
                 if !self.scope.in_trigger {
                     self.problem("`Triggering` is only valid in a triggered ability");
                 }
@@ -1851,6 +1851,7 @@ impl<'a> Walker<'a> {
                     | Modification::AddColors(_)
                     | Modification::AddType(_)
                     | Modification::AddSubtype(_)
+                    | Modification::AddAllCreatureTypes
             );
             if !defines {
                 self.at("mods", |w| {
@@ -2380,7 +2381,9 @@ impl Walker<'_> {
                 .get(usize::from(*index))
                 .map_or(Kind::Either, |t| t.0),
             Ref::Bound(name) => self.scope.lookup(name).unwrap_or(Kind::Either),
-            Ref::Triggering | Ref::Against | Ref::Remembered { .. } => Kind::Either,
+            Ref::Triggering | Ref::TriggeringFirst | Ref::Against | Ref::Remembered { .. } => {
+                Kind::Either
+            }
         }
     }
 
@@ -3343,15 +3346,12 @@ impl Walker<'_> {
                         | ReplaceBy::Instead(_)
                         | ReplaceBy::InsteadNext(_),
                     )
+                    // A death or a counter sent elsewhere, and a class of moves judged as each happens (`Rule::Replaces`).
                     | (
-                        ReplaceWhen::ZoneChange {
-                            from: Some(ZoneKind::Battlefield | ZoneKind::Stack),
-                            to: Some(ZoneKind::Graveyard),
-                            ..
-                        }
-                        | ReplaceWhen::Countered { .. },
+                        ReplaceWhen::ZoneChange { .. } | ReplaceWhen::Countered { .. },
                         ReplaceBy::MoveTo(_),
-                    ) => {}
+                    )
+                    | (ReplaceWhen::Enters { .. }, ReplaceBy::Tapped) => {}
                     _ => w.uses("Effect", &format!("Shield.{}", tag_of(when))),
                 }
             }

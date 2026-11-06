@@ -16,6 +16,8 @@ mod opening;
 mod p12_amounts;
 #[cfg(test)]
 mod p12_arrived;
+#[cfg(test)]
+mod r3d_atoms;
 mod resolution;
 #[cfg(test)]
 mod tests;

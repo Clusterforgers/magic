@@ -89,6 +89,57 @@ fn exiled_instead(p: &Params, part: &Params, what: &[Value]) -> Tr<Value> {
     Ok(json!({"Replacement": {"when": {"ZoneChange": pattern}, "by": {"MoveTo": to}}}))
 }
 
+/// The shield an `Effect` line makes from an `Event$ Moved` replacement over a class of cards: those put into a graveyard
+/// and exiled instead ("if a creature would die this turn"), or permanents that enter tapped ("permanents enter tapped this
+/// turn"). Each move is judged as it happens. A line that names particular objects (`IsRemembered`) is a gap.
+pub fn shield(ctx: &mut Ctx, p: &Params, duration: &str) -> Tr<Vec<Value>> {
+    let valid = p
+        .get("ValidCard")
+        .or_else(|| p.get("ValidLKI"))
+        .unwrap_or_default();
+    let objects = ["Self", "Remembered", "Chosen", "CastSa", "wasCast"];
+    if valid.is_empty() || objects.iter().any(|word| valid.contains(word)) {
+        return unmapped("replacement:Moved-shield-objects");
+    }
+    let read = [
+        "Event",
+        "ValidCard",
+        "ValidLKI",
+        "Destination",
+        "Origin",
+        "ReplaceWith",
+        "ReplacementResult",
+        "ActiveZones",
+    ];
+    check_keys(p, "Replacement.Moved", &read, |_, _| false)?;
+    // The effect object lives in the command zone and the replaced card is the updated one: neither changes the shield.
+    if p.get("ActiveZones").is_some_and(|zone| zone != "Command")
+        || p.get("ReplacementResult")
+            .is_some_and(|result| result != "Updated")
+    {
+        return unmapped("replacement:Moved-shield");
+    }
+    let what = selector_any(ctx, valid)?;
+    let Some(name) = p.get("ReplaceWith") else {
+        return unmapped("replacement:Moved-without-ReplaceWith");
+    };
+    let raw = ctx.sub(name)?;
+    let (part_condition, part) = prefixed(ctx, &raw)?;
+    if part_condition.is_some() {
+        return unmapped("key:Replacement.Moved.condition");
+    }
+    let replacement = match p.get("Destination") {
+        Some("Graveyard") => exiled_instead(p, &part, &what)?,
+        Some("Battlefield") => enter_tapped(p, &part, &what)?,
+        _ => return unmapped("replacement:Moved-shield"),
+    };
+    Ok(vec![json!({"Shield": {
+        "when": replacement["Replacement"]["when"],
+        "by": replacement["Replacement"]["by"],
+        "duration": duration,
+    }})])
+}
+
 /// "If this would be put into a graveyard from anywhere, exile it instead": the card itself, in every zone.
 pub fn self_to_graveyard(ctx: &mut Ctx, p: &Params, line_condition: Option<&Value>) -> Tr<Value> {
     if line_condition.is_some() {

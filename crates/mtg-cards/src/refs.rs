@@ -77,6 +77,9 @@ pub enum Ref {
     Triggering,
     /// The player the trigger event is about, never the object it also holds ("that player" of an activation: damage to it spares the activated permanent).
     TriggeringPlayer,
+    /// The first of the things the trigger event is about: the object that became a target (the spell or ability that targets it
+    /// and its controller follow it among the subjects, and `Dealer` names that spell or ability).
+    TriggeringFirst,
     /// The object that did what the trigger event is about: the source of the damage ("Whenever a Vampire you control deals
     /// combat damage to a player, put a +1/+1 counter on it"); nobody for an event with no such object.
     Dealer,

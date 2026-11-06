@@ -201,8 +201,11 @@ pub fn resolve(shape: Option<&Shape>, word: &str) -> Tr<Value> {
         {
             "Triggering"
         }
-        Word::Source if mode == "DamageDone" => "Dealer",
-        Word::Target if mode == "DamageDone" => "Triggering",
+        Word::Source if matches!(mode, "DamageDone" | "BecomesTarget") => "Dealer",
+        // The event holds what became a target first, then what targets it and the controller of that.
+        Word::Target if mode == "BecomesTarget" => "TriggeringFirst",
+        // A batch of damage holds what was hurt: the one player of a trigger, or the creatures dealt damage together.
+        Word::Target if matches!(mode, "DamageDone" | "DamageDoneOnce") => "Triggering",
         _ => return gap(),
     };
     let object = matches!(what, Word::Card | Word::Attacker | Word::Owner);
@@ -231,6 +234,7 @@ pub fn resolve(shape: Option<&Shape>, word: &str) -> Tr<Value> {
         (Word::Target, "Triggering") if !shape.to_player => {
             Ok(json!({"ControllerOf": "Triggering"}))
         }
+        (Word::Target, "TriggeringFirst") => Ok(json!({"ControllerOf": "TriggeringFirst"})),
         _ => gap(),
     }
 }

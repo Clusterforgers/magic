@@ -440,11 +440,14 @@ fn continuous(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
         Some(other) => return unmapped(format!("key:Static.EffectZone={other}")),
     }
     if p.get("CharacteristicDefining") == Some("True") {
-        // Only power and toughness are defined this way here, and always, never under a condition.
-        if mods
-            .iter()
-            .any(|modification| modification.get("SetPT").is_none())
-        {
+        // Power and toughness, colours, types and subtypes are defined this way, always and never under a condition.
+        let defines = |modification: &Value| {
+            ["SetPT", "SetColors", "AddColors", "AddType", "AddSubtype"]
+                .iter()
+                .any(|key| modification.get(key).is_some())
+                || modification == "AddAllCreatureTypes"
+        };
+        if !mods.iter().all(defines) || ability.get("condition").is_some() {
             return unmapped("key:Static.Continuous.defining-other-than-stats");
         }
         ability["defining"] = json!(true);
