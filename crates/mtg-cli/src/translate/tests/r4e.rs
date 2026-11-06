@@ -54,6 +54,27 @@ fn the_mana_spent_is_counted_by_the_kind_of_its_source(#[case] x: &str, #[case] 
 }
 
 #[rstest]
+#[case::permanent_beside_others("Permanent.Snow,Legendary,Saga", false)]
+#[case::only_permanents("Permanent.Creature+cmcLE3", true)]
+fn a_search_for_a_permanent_beside_other_alternatives_is_refused(
+    #[case] spec: &str,
+    #[case] read: bool,
+) {
+    let text = format!(
+        "Name:T\nTypes:Sorcery\nA:SP$ ChangeZone | Origin$ Library | Destination$ Hand | ChangeType$ {spec} | ChangeNum$ 1\n"
+    );
+    let found = gaps(&text);
+    if read {
+        assert_eq!(found, Vec::<String>::new());
+    } else {
+        assert_eq!(
+            found,
+            vec!["valid:Permanent-card-beside-other-alternatives".to_owned()]
+        );
+    }
+}
+
+#[rstest]
 #[case::unknown_subtype("Count$CastTotalManaSpent Wibble")]
 #[case::two_words("Count$CastTotalManaSpent Snow Treasure")]
 fn a_source_the_reader_does_not_know_stays_a_gap(#[case] x: &str) {

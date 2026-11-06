@@ -76,6 +76,8 @@ A companion (CR 702.139, `companions.rs`) is a card a seat names before the game
 - Convoke, improvise and delve (`help.rs`) help pay after the total cost is fixed; their offer (`Help`) excludes every object the additional costs of the cast take; the `*_with` payment functions take the offer; `help_tests.rs` compares them with a check of every combination.
 - `PayChoice::Complete(partial)` validates the partial parts and pays the rest with `auto_payment` over the unspent pool and untouched permanents (refused if it cannot). `PayOptions.can_cancel` is true while nothing is paid; `Cancel` then drops the pending cast with no event, so a rebuilt engine asks for the same priority decision.
 - `Payment.life` is the life paid, 2 per Phyrexian symbol; it must be even, at most 2 per symbol that life can pay and at most the life total. `PayOptions.life` and `max_life` mean a client never works out the limit. The cast's events are `LifePaid` first, one event for the whole payment, then `SpellCast`, the taps and `ManaSpent`. Everything is validated before any event.
+- The spell keeps which sources paid (`Choices.spent_from`, then the permanent and its snapshot): the traits of each tapped source and how many of its mana were spent, read by `Amount::ManaSpent { from }` ("mana from a Treasure", snow, Desert, Cave). Mana already in the pool has no source and counts toward no kind.
+- A keyword a static ability gives with `CostItem::OwnManaCost` (Underworld Breach: escape, scavenge, encore) reads the printed mana cost of each card in `layers.rs` when it is added; replicate and emerge read the printed card at the cast, so they do not take it.
 
 ## Priority options
 

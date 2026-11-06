@@ -632,6 +632,8 @@ fn search(ctx: &mut Ctx, p: &Params, destination: &str) -> Tr<Vec<Value>> {
     if p.get("Reorder").is_some_and(|word| word != "True") {
         return unmapped("key:ChangeZone.Search.Reorder");
     }
+    // "Permanent" in one alternative only (`Permanent.Snow,Legendary,Saga`) would be dropped from it: refuse the mixture.
+    super::valid::permanent_card(p.get("ChangeType").unwrap_or("Card"))?;
     let filter = selector_any(ctx, p.get("ChangeType").unwrap_or("Card"))?;
     let filter_is_open = filter.is_empty();
     let bind = ctx.fresh("found");
