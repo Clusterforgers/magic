@@ -841,6 +841,9 @@ pub enum ReplaceBy {
         /// What it gets besides: a keyword or an ability.
         mods: Vec<Modification>,
     },
+    /// Tribute N (CR 702.104): as the permanent enters, an opponent of its controller chosen by the controller may put N +1/+1
+    /// counters on it; it remembers whether they did as a number (1 paid, 0 not) that `Amount::Chosen` reads.
+    Tribute(u32),
     /// The permanent enters with these counters when its controller says yes as it enters ("You may have this creature enter with a +1/+1 counter on it"); asked like the payment of `PayLifeOrTapped`.
     MayWithCounters {
         /// The kind of counter.

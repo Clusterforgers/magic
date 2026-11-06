@@ -95,6 +95,31 @@ fn champion_exiles_another_creature_or_is_sacrificed(#[case] types: &str, #[case
 }
 
 #[test]
+fn tribute_asks_an_opponent_and_triggers_when_unpaid() {
+    let text = "Name:Test Bones\nTypes:Creature Minotaur\nPT:3/1\nK:Tribute:2\nSVar:TrigNotTribute:DB$ Pump | Defined$ Self | NumAtt$ +1 | NumDef$ +1 | KW$ Haste\n";
+    let found = abilities(text);
+    assert_eq!(gaps(text), Vec::<String>::new());
+    assert_eq!(
+        found[0],
+        json!({"Replacement": {"when": {"Enters": {"what": ["This"]}}, "by": {"Tribute": 2}}})
+    );
+    assert_eq!(
+        found[1]["Triggered"]["if"],
+        json!({"Compare": {"left": "Chosen", "op": "Eq", "right": 0}})
+    );
+    assert_eq!(
+        found[1]["Triggered"]["when"],
+        json!({"ZoneChange": {"what": ["This"], "to": "Battlefield"}})
+    );
+}
+
+#[test]
+fn tribute_without_a_number_is_a_gap() {
+    let text = "Name:Test Bones\nTypes:Creature Minotaur\nPT:3/1\nK:Tribute:X\n";
+    assert_eq!(gaps(text), vec!["keyword:Tribute-shape".to_owned()]);
+}
+
+#[test]
 fn champion_of_an_unknown_type_is_a_gap() {
     let text = "Name:Test Mob\nTypes:Creature Goblin\nPT:3/3\nK:Champion:Zorp\n";
     assert_eq!(gaps(text), vec!["keyword:Champion-type".to_owned()]);

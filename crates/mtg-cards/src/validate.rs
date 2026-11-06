@@ -4256,6 +4256,7 @@ impl Walker<'_> {
             | ReplaceBy::PayLifeOrTapped(_)
             | ReplaceBy::TappedForCounters { .. }
             | ReplaceBy::RevealOrTapped(_)
+            | ReplaceBy::Tribute(_)
             | ReplaceBy::MayWithCounters { .. }
             | ReplaceBy::Riot
             | ReplaceBy::DayIfNeither

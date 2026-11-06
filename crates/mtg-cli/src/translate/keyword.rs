@@ -13,6 +13,7 @@ mod champion;
 mod equip;
 mod extra;
 mod more;
+mod tribute;
 
 /// The DSL name of a keyword that has no parameter.
 pub fn keyword_name(word: &str) -> Option<&'static str> {
@@ -293,6 +294,9 @@ pub fn keyword_abilities(ctx: &mut Ctx, body: &str) -> Vec<Tr<Value>> {
     }
     if let Some(forms) = super::effects_r2h::keyword_forms(ctx, body) {
         return forms;
+    }
+    if let Some(count) = body.strip_prefix("Tribute:") {
+        return tribute::tribute(ctx, count);
     }
     if let Some(types) = body.strip_prefix("Champion:") {
         return vec![champion::champion(ctx, types)];
