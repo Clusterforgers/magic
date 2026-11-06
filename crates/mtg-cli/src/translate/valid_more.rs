@@ -60,7 +60,9 @@ pub fn property(ctx: &Ctx, prop: &str) -> Tr<Option<Vec<Value>>> {
         }
         _ => {}
     }
-    if let Some(zone) = prop.strip_prefix("inZone")
+    if let Some(zone) = prop
+        .strip_prefix("inZone")
+        .or_else(|| prop.strip_prefix("inRealZone"))
         && ZONES.contains(&zone)
     {
         return one(json!({"In": zone}));

@@ -65,6 +65,25 @@ fn exiling_instead_runs_what_follows_in_its_place(#[case] rest: &str, #[case] ex
 }
 
 #[rstest]
+#[case::you("You", r#""by":"You""#)]
+#[case::an_opponent("Opponent", r#""by":"Opponents""#)]
+fn counters_a_player_puts_on_a_creature_are_a_caused_batch(
+    #[case] who: &str,
+    #[case] expected: &str,
+) {
+    let (json, found) = card(
+        "Creature Elf",
+        &format!(
+            "PT:1/1\nT:Mode$ CounterPlayerAddedAll | ValidObject$ Creature.YouDontCtrl+inRealZoneBattlefield | ValidSource$ {who} | TriggerZones$ Battlefield | Execute$ D\nSVar:D:DB$ Draw | Defined$ You | NumCards$ 1"
+        ),
+    );
+    assert!(found.is_empty(), "{found:?}");
+    assert!(json.contains(r#""Caused":{"#), "{json}");
+    assert!(json.contains(r#""CountersPut""#), "{json}");
+    assert!(json.contains(expected), "{json}");
+}
+
+#[rstest]
 #[case::yours("SpellAbility.YouCtrl", true)]
 #[case::an_opponents("SpellAbility.OppCtrl", false)]
 fn valiant_counts_the_first_targeting_by_a_source_you_control(

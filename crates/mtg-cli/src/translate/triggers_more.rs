@@ -177,8 +177,10 @@ fn only_what_targets(alternatives: &Value) -> bool {
 
 /// `CounterAdded` and `CounterRemoved` of the kind `CounterType$` names.
 pub(super) fn counters(ctx: &Ctx, p: &Params, variant: &str) -> Tr<Value> {
-    keys(p, "Counter", &["ValidCard", "CounterType"])?;
-    let what = selector_any(ctx, p.get("ValidCard").unwrap_or("Permanent"))?;
+    keys(p, "Counter", &["ValidCard", "ValidObject", "CounterType"])?;
+    // `ValidObject$` is what a player puts counters on (`CounterPlayerAddedAll`).
+    let valid = p.get("ValidCard").or_else(|| p.get("ValidObject"));
+    let what = selector_any(ctx, valid.unwrap_or("Permanent"))?;
     let mut pattern = json!({ "what": what });
     if let Some(kind) = p.get("CounterType") {
         let Some(kind) = super::amount::counter_kind(kind) else {

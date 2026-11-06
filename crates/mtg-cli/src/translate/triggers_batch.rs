@@ -25,7 +25,9 @@ pub fn pattern(ctx: &Ctx, p: &Params, mode: &str) -> Option<Tr<Value>> {
         "RingTemptsYou" => ring_tempts(ctx, p),
         "BecomesCrewed" => becomes_crewed(ctx, p),
         "Attached" => attached(ctx, p),
-        "CounterAddedOnce" => counters(ctx, p, "CountersPut").map(|inner| batch(&inner)),
+        "CounterAddedOnce" | "CounterPlayerAddedAll" => {
+            counters(ctx, p, "CountersPut").map(|inner| batch(&inner))
+        }
         _ => return None,
     })
 }
