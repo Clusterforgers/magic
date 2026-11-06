@@ -46,13 +46,13 @@ fn a_remembered_player_is_not_the_cards_a_later_step_remembered(
 }
 
 #[rstest]
-#[case::mandatory("", "DB$ Draw | Defined$ You", true)]
-#[case::may("| OptionalDecider$ You", "DB$ Draw | Defined$ You", false)]
-#[case::pay_a_cost("", "AB$ Draw | Cost$ PayLife<1> | Defined$ You", false)]
-fn a_resolved_limit_is_kept_only_where_the_trigger_always_does_it(
+#[case::mandatory("", "DB$ Draw | Defined$ You", "OncePerTurn")]
+#[case::may("| OptionalDecider$ You", "DB$ Draw | Defined$ You", "OncePerTurnDone")]
+#[case::pay_a_cost("", "AB$ Draw | Cost$ PayLife<1> | Defined$ You", "OncePerTurnDone")]
+fn a_resolved_limit_is_spent_as_the_trigger_triggers_only_where_it_always_does_it(
     #[case] decider: &str,
     #[case] draw: &str,
-    #[case] kept: bool,
+    #[case] limit: &str,
 ) {
     let (json, found) = card(
         "Enchantment",
@@ -60,6 +60,6 @@ fn a_resolved_limit_is_kept_only_where_the_trigger_always_does_it(
             "T:Mode$ ChangesZone | Origin$ Any | Destination$ Battlefield | ValidCard$ Card.token+YouCtrl | TriggerZones$ Battlefield | Execute$ D {decider} | ResolvedLimit$ 1\nSVar:D:{draw}"
         ),
     );
-    assert_eq!(found.is_empty(), kept, "{found:?}");
-    assert_eq!(json.contains(r#""limit":"OncePerTurn""#), kept, "{json}");
+    assert!(found.is_empty(), "{found:?}");
+    assert!(json.contains(&format!(r#""limit":"{limit}""#)), "{json}");
 }

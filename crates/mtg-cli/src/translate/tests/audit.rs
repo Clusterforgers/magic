@@ -144,9 +144,9 @@ fn a_condition_without_a_resolving_check_translates(#[case] line: &str, #[case] 
     "SP$ DealDamage | ValidTgts$ Any | NumDmg$ 2 | TargetMax$ 3 | DividedAsYouChoose$ 3",
     &["key:NumDmg-differs-from-DividedAsYouChoose"]
 )]
-#[case::a_target_beside_a_defined_object(
-    "SP$ GainControl | ValidTgts$ Opponent | Defined$ Self",
-    &["key:GainControl.Defined-unread"]
+#[case::a_remembered_peek_that_is_revealed(
+    "SP$ PeekAndReveal | RememberPeeked$ True",
+    &["key:PeekAndReveal.RememberPeeked-unread"]
 )]
 #[case::next_turn_is_not_read_as_this_turn(
     "SP$ DelayedTrigger | Mode$ Phase | Phase$ Upkeep | ValidPlayer$ You | NextTurn$ True | Execute$ Go",
