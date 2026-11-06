@@ -406,6 +406,7 @@ const SEARCHED: Verb = Verb {
         "NoLooking",
         "Reorder",
         "DifferentNames",
+        "NoShuffle",
     ],
 };
 
@@ -633,6 +634,7 @@ fn choose_and_move(ctx: &mut Ctx, p: &Params, origin: &str, destination: &str) -
 /// The library search: the search, the move of what was found, then the shuffle. The player who decides searches and picks;
 /// the library is the actor's.
 fn search(ctx: &mut Ctx, p: &Params, destination: &str) -> Tr<Vec<Value>> {
+    let had_memory = ctx.remembered.is_some();
     SEARCHED.admit(p)?;
     let seat = frame::parties(ctx, p, &SEARCHED)?;
     let another = seat.acts != seat.decides;
@@ -684,12 +686,21 @@ fn search(ctx: &mut Ctx, p: &Params, destination: &str) -> Tr<Vec<Value>> {
         }
         ctx.remembered = Some(found.clone());
     }
+    let shuffles = match (p.get("NoShuffle"), p.get("Shuffle")) {
+        (None, shuffle) => shuffle,
+        (Some("True"), None) if destination != "Library" => Some("False"),
+        _ => return unmapped("key:ChangeZone.Search.NoShuffle"),
+    };
+    // A second remembering search would make `Remembered` the later search alone, but the shuffle asks about both.
+    if p.has("NoShuffle") && p.get("RememberChanged") == Some("True") && had_memory {
+        return unmapped("key:ChangeZone.Search.NoShuffle-twice");
+    }
     let search = json!({ "Search": find });
     // "Search, reveal, then do something with those cards": the cards stay in the library and the steps after read them.
     let stays = destination == "Library"
         && alternative.is_none()
         && !p.has("LibraryPosition")
-        && p.get("Shuffle") == Some("False")
+        && shuffles == Some("False")
         && p.get("RememberChanged") == Some("True");
     if stays {
         return Ok(vec![search]);
@@ -711,7 +722,7 @@ fn search(ctx: &mut Ctx, p: &Params, destination: &str) -> Tr<Vec<Value>> {
         json!({"Shuffle": {"who": seat.acts.clone()}})
     };
     let mut effects = vec![search];
-    match (destination, p.get("Shuffle")) {
+    match (destination, shuffles) {
         // The shuffle comes first when the card goes back on top: "then shuffle and put that card on top".
         ("Library", _) => {
             effects.push(shuffle);
