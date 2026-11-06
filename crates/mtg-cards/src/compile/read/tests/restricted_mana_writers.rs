@@ -114,7 +114,7 @@ fn another_use_is_not_the_text(#[case] only: &str, #[case] text: &str) {
     "{T}: Add one mana of any color. Spend this mana only to cast spells you don't own."
 )]
 #[case::lord_of_the_forsaken(
-    r#"[{"Spell":{"facts":["FromGraveyard"]}}]"#,
+    r#"[{"Spell":{"facts":["FromYourGraveyard"]}}]"#,
     "{T}: Add one mana of any color. Spend this mana only to cast a spell from your graveyard."
 )]
 #[case::the_ringhart_crest(
@@ -155,7 +155,7 @@ fn the_restrictions_of_the_spender_cards_are_written_as_they_are_worded(
     "{T}: Add one mana of any color. Spend this mana only to cast spells with mana value 6 or greater."
 )]
 #[case::a_hand_for_a_graveyard(
-    r#"[{"Spell":{"facts":["FromGraveyard"]}}]"#,
+    r#"[{"Spell":{"facts":["FromYourGraveyard"]}}]"#,
     "{T}: Add one mana of any color. Spend this mana only to cast a spell from your hand."
 )]
 #[case::owned_for_not_owned(
