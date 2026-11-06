@@ -3398,6 +3398,7 @@ impl Walker<'_> {
                 w.effect_list("then", then, false);
                 w.effect_list("otherwise", otherwise, false);
             }
+            Effect::Together { effects } => w.effect_list("effects", effects, false),
             Effect::May { who, effects } => {
                 w.at("who", |w| w.reference(who, Kind::Player));
                 w.effect_list("effects", effects, false);

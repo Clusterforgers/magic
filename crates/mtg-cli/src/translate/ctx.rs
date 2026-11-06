@@ -145,6 +145,8 @@ pub struct Ctx<'a> {
     pub chosen_number: Option<String>,
     /// The `SVar` a damage step's `ExcessSVar` sets and the number the step bound the excess damage to.
     pub excess: Option<(String, String)>,
+    /// Whether a line with `DamageMap$` has begun a chain whose `DamageResolve` is still to come.
+    pub damage_open: bool,
     /// The amount a step remembered as a number (`RememberRemoved$`, `RememberCounteredCMC$`), which `Count$RememberedNumber` reads.
     pub number: Option<Value>,
     /// The name of the `SVar` that reads the result of the latest die roll (`ResultSVar`).
@@ -194,6 +196,7 @@ impl<'a> Ctx<'a> {
             chosen_number: None,
             die_result: None,
             excess: None,
+            damage_open: false,
             number: None,
             vote_num: None,
             modal_keyword: None,

@@ -1415,6 +1415,12 @@ pub enum Effect {
         #[serde(default, skip_serializing_if = "Vec::is_empty")]
         otherwise: Vec<Effect>,
     },
+    /// Does `effects` in order as one batch: what they move and damage is judged together by the triggers that read a batch
+    /// ("whenever one or more", CR 603.2c, 603.10a), after the last of them.
+    Together {
+        /// What the batch does.
+        effects: Vec<Effect>,
+    },
     /// The player may do these effects.
     May {
         /// Who decides.

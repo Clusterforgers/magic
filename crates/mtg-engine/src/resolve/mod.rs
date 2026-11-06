@@ -274,6 +274,27 @@ fn rules_of(state: &GameState, object: &GameObject) -> Option<Arc<Ability>> {
     }
 }
 
+/// Whether `position` of the resolution under way is inside a `Together` batch, whose events are detected as one after
+/// the last (CR 603.2c).
+pub(crate) fn together_at(state: &GameState, position: &[usize]) -> bool {
+    let Some(object) = state
+        .resolving()
+        .and_then(|resolving| state.object(resolving.object))
+    else {
+        return false;
+    };
+    rules_of(state, object).is_some_and(|rules| {
+        tree::inside_together(rules.effects(), &object.choices().modes, position)
+    })
+}
+
+/// Whether the resolution stands inside a `Together` batch.
+pub(crate) fn together_open(state: &GameState) -> bool {
+    state
+        .resolving()
+        .is_some_and(|resolving| together_at(state, resolving.position()))
+}
+
 /// Whether resolving the object runs effects; a permanent spell, or a card whose text is left to the table, does not.
 pub(crate) fn runs_effects(state: &GameState, object: &GameObject) -> bool {
     rules_of(state, object).is_some()

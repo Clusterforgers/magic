@@ -418,6 +418,7 @@ const RUNS: &[&str] = &[
     "Effect.Reflexive",
     "Effect.If",
     "Effect.May",
+    "Effect.Together",
     "Effect.Pay",
     "Effect.Pay.Counted",
     "Effect.Pay.X",
@@ -953,6 +954,7 @@ mod tests {
     #[case::permanents_graved("Amount.PermanentsGraved", true)]
     #[case::commander_casts("Amount.CommanderCasts", true)]
     #[case::may("Effect.May", true)]
+    #[case::together("Effect.Together", true)]
     #[case::choosing("Effect.Choose", true)]
     #[case::choosing_at_random("Effect.ChooseAtRandom", true)]
     #[case::choosing_a_value("Effect.ChooseValue", true)]
