@@ -19,6 +19,18 @@
                 }
               },
               {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "Count": [{ "Is": "This" }, { "In": "Battlefield" }] },
+                      "op": "Eq",
+                      "right": 0
+                    }
+                  },
+                  "then": [{ "Exile": { "what": { "Bound": "champion" } } }]
+                }
+              },
+              {
                 "Exile": { "what": { "Bound": "champion" }, "duration": "WhileSourceOnBattlefield" }
               },
               {

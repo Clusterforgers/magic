@@ -79,13 +79,23 @@ impl CardOut {
 /// Translates a script.
 pub fn translate_script(world: &World, script: &Script) -> CardOut {
     let names: Vec<&str> = script.names().collect();
+    let mut faces: Vec<FaceOut> = script
+        .faces
+        .iter()
+        .map(|face| translate_face(world, face))
+        .collect();
+    // Forge writes Fuse once on a split card; each half prints it (CR 702.102a).
+    let fuse = json!({"Keyword": "Fuse"});
+    if faces.len() > 1 && faces.iter().any(|face| face.abilities.contains(&fuse)) {
+        for face in &mut faces {
+            if !face.abilities.contains(&fuse) {
+                face.abilities.push(fuse.clone());
+            }
+        }
+    }
     CardOut {
         name: names.join(" // "),
-        faces: script
-            .faces
-            .iter()
-            .map(|face| translate_face(world, face))
-            .collect(),
+        faces,
         oracle: script
             .faces
             .iter()

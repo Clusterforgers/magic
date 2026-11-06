@@ -8,8 +8,9 @@ use mtg_cards::builtin;
 use mtg_cards::coverage::analyze_with;
 use mtg_cards::generated::{Generation, generate};
 use mtg_cards::load::{Library, slug, unwhole};
-use mtg_cards::proposal::check_exact;
+use mtg_cards::proposal::{ClauseState, Report, check_exact};
 use mtg_cards::support::{Caps, PrintedCard, Support, support};
+use mtg_cards::validate::used_primitives;
 use mtg_db::Database;
 
 use crate::audit::stored_cards;
@@ -115,22 +116,20 @@ impl Stored {
     /// Whether `promote --draft` would take the proposal (without the smoke gate): the exact check gives a whole
     /// rules file the engine runs as `Verified`.
     pub fn offered(&self, slug: &str, proposal: &str) -> Option<bool> {
-        self.offer(slug, proposal).map(|(yes, _)| yes)
+        self.offer(slug, proposal)
+            .map(|offer| offer.refused.is_none())
     }
 
-    /// Whether the proposal is offered, with the constructs of its clauses that have no read-back writer: the offer trusts
-    /// the translation for them, because the draft path takes an unchecked verdict of a Forge script that matches the text.
-    pub fn offer(&self, slug: &str, proposal: &str) -> Option<(bool, Vec<String>)> {
+    /// Whether the proposal is offered and why not, with the constructs of its clauses that have no read-back writer:
+    /// the offer trusts the translation for them, because the draft path takes an unchecked verdict of a Forge script
+    /// that matches the text.
+    pub fn offer(&self, slug: &str, proposal: &str) -> Option<Offer> {
         let printed = self.cards.get(slug)?;
         let report = check_exact(proposal, printed, self.library, &self.names, &self.caps);
-        let unwritten: Vec<String> = report.unwritten().map(str::to_owned).collect();
-        let (Some(record), Some(rules)) = (report.support, report.rules) else {
-            return Some((false, unwritten));
-        };
-        Some((
-            unwhole(&rules).is_none() && record.support == Support::Verified,
-            unwritten,
-        ))
+        Some(Offer {
+            refused: refusal(&report, &self.caps),
+            unwritten: report.unwritten().map(str::to_owned).collect(),
+        })
     }
 
     /// What the corpus or the compiler makes of the card today: `corpus-verified`, `compiled-verified`, `partial`,
@@ -157,4 +156,69 @@ impl Stored {
             Generation::Invalid(_) => "invalid".to_owned(),
         }
     }
+}
+
+/// What the offer makes of a whole translation.
+pub struct Offer {
+    /// Why the proposal is not offered, as a gap name (`offer:...`); `None` when it is.
+    pub refused: Option<String>,
+    /// The constructs of its clauses that have no read-back writer.
+    pub unwritten: Vec<String>,
+}
+
+/// Why the exact check refuses a whole translation, as a gap name: the first problem (`offer:invalid:`), a printed
+/// clause no ability stands for (`offer:open:` and its kind), the primitives the engine does not run (`offer:engine:`),
+/// or another state than `Verified`; `None` when the rules are whole and `Verified`.
+pub fn refusal(report: &Report, caps: &Caps) -> Option<String> {
+    if let Some(problem) = report.problems.first() {
+        return Some(format!("offer:invalid:{}", shape(&problem.message)));
+    }
+    let (Some(record), Some(rules)) = (&report.support, &report.rules) else {
+        return Some("offer:invalid:no-rules".to_owned());
+    };
+    if let Some(open) = report
+        .clauses
+        .iter()
+        .find(|clause| clause.state == ClauseState::Open)
+    {
+        return Some(format!("offer:open:{:?}", open.kind));
+    }
+    let missing: BTreeSet<String> = rules
+        .abilities()
+        .flat_map(|(_, ability)| caps.missing(&used_primitives(ability)))
+        .collect();
+    if !missing.is_empty() {
+        let names: Vec<&str> = missing.iter().map(String::as_str).collect();
+        return Some(format!("offer:engine:{}", names.join(",")));
+    }
+    if record.support != Support::Verified {
+        return Some(format!(
+            "offer:{}",
+            format!("{:?}", record.support).to_lowercase()
+        ));
+    }
+    unwhole(rules).map(|_| "offer:unwhole".to_owned())
+}
+
+/// A message as a gap name: one line without the separators of the cards file, with quoted text and numbers folded so
+/// that cards refused for the same reason share it.
+pub fn shape(message: &str) -> String {
+    let mut out = String::new();
+    let mut quoted = false;
+    for c in message.chars() {
+        match c {
+            '"' | '`' => {
+                quoted = !quoted;
+                if quoted {
+                    out.push_str("`_`");
+                }
+            }
+            _ if quoted => {}
+            '0'..='9' if out.ends_with('#') => {}
+            '0'..='9' => out.push('#'),
+            '\t' | '\n' | ';' => out.push(' '),
+            _ => out.push(c),
+        }
+    }
+    out.trim().to_owned()
 }

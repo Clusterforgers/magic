@@ -183,17 +183,11 @@ pub async fn translate_forge(
             .map(|gap| gap.0.as_str())
             .chain(behind.iter().map(String::as_str))
             .collect();
-        let gaps: Vec<&str> = gaps.into_iter().collect();
-        // `whole` overstates: the checker refuses some whole drafts or rates them partial.
+        let mut gaps: Vec<String> = gaps.into_iter().map(str::to_owned).collect();
+        // `whole` overstates: the checker refuses some whole drafts or rates them partial; a refusal is named as a gap.
         let offered = match (&stored, state) {
             (Some(stored), "whole") => {
-                let text = serde_json::to_string(&card.proposal()).unwrap_or_default();
-                stored.offer(&stem, &text).map_or("", |(yes, unwritten)| {
-                    if yes && !unwritten.is_empty() {
-                        let _ = writeln!(trusted, "{stem}\t{}", unwritten.join("; "));
-                    }
-                    if yes { "true" } else { "false" }
-                })
+                offered_column(stored, &card, &stem, &mut trusted, &mut gaps)
             }
             _ => "",
         };
@@ -221,6 +215,32 @@ pub async fn translate_forge(
         write_file(&out_dir.join("precon-today.tsv"), &lines)?;
     }
     Ok(funnel.render(&out_dir))
+}
+
+/// The `offered` column of a whole translation: an offered card with unwritten constructs gets a line of `trusted`, a
+/// refused one its refusal as a gap.
+fn offered_column(
+    stored: &Stored,
+    card: &CardOut,
+    stem: &str,
+    trusted: &mut String,
+    gaps: &mut Vec<String>,
+) -> &'static str {
+    let text = serde_json::to_string(&card.proposal()).unwrap_or_default();
+    stored
+        .offer(stem, &text)
+        .map_or("", |offer| match offer.refused {
+            None => {
+                if !offer.unwritten.is_empty() {
+                    let _ = writeln!(trusted, "{stem}\t{}", offer.unwritten.join("; "));
+                }
+                "true"
+            }
+            Some(why) => {
+                gaps.push(why);
+                "false"
+            }
+        })
 }
 
 /// Whether a script is one of the named cards (by the card's name or the name of a face).

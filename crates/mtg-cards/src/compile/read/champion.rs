@@ -5,12 +5,16 @@
 use crate::ability::Ability;
 use serde_json::{Value, json};
 
-/// The trigger the keyword stands for, over the creatures `choices` names.
+/// The trigger the keyword stands for, over the creatures `choices` names. A champion gone before the trigger resolves
+/// exiles the card for good: the return is a separate ability that finds nothing (the Oracle ruling).
 fn trigger(choices: &Value) -> Value {
     json!({"Triggered": {
         "when": {"ZoneChange": {"what": ["This"], "to": "Battlefield"}},
         "effects": [
             {"Choose": {"from": {"Each": choices}, "count": {"min": 0, "max": 1}, "as": "champion"}},
+            {"If": {"condition": {"Compare": {
+                "left": {"Count": [{"Is": "This"}, {"In": "Battlefield"}]}, "op": "Eq", "right": 0}},
+                "then": [{"Exile": {"what": {"Bound": "champion"}}}]}},
             {"Exile": {"what": {"Bound": "champion"}, "duration": "WhileSourceOnBattlefield"}},
             {"If": {"condition": {"Not": "Performed"}, "then": [{"Sacrifice": {"filter": ["This"]}}]}}]}})
 }

@@ -15,6 +15,7 @@ use mtg_cards::card::Card;
 use mtg_cards::load::{canonical, slug, unwhole};
 use mtg_cards::proposal::{Verdict, check};
 use mtg_cards::support::read_hash;
+use mtg_cards::validate::named_cards;
 use mtg_cards::{Caps, PrintedCard};
 use mtg_cli::cache::{Cache, default_dir};
 use mtg_cli::drafts::{self, DraftItem, DraftMeta, FIXTURES, Misfit, misfits_proved};
@@ -96,14 +97,49 @@ pub fn items() -> (Vec<Item>, Vec<String>) {
     (found, problems)
 }
 
+/// The names a draft may name: the corpus, the drafts and every card a draft names. `promote --draft` checks each
+/// named card against every stored card, as the offer does; `every_card_a_draft_names_is_a_cached_card` checks them
+/// against the Oracle Cards file.
 fn names_of(items: &[Item]) -> BTreeSet<String> {
     let library = builtin::library().unwrap();
     let mut names = mtg_cli::w2a_promote::w2a_corpus_names(library);
     for item in items {
         names.insert(item.printed.name.to_lowercase());
         names.extend(item.printed.faces.iter().map(|f| f.name.to_lowercase()));
+        names.extend(named_cards(&item.card).iter().map(|n| n.to_lowercase()));
     }
     names
+}
+
+/// Runs on the Oracle Cards file of the cache and says so when there is none.
+#[test]
+fn every_card_a_draft_names_is_a_cached_card() {
+    let Some(file) = oracle_cards() else {
+        eprintln!(
+            "skipped: no Oracle Cards file; set MTG_REAL_DATA_DIR or run `mtg-cli fetch scryfall`"
+        );
+        return;
+    };
+    let (items, mut problems) = items();
+    let reader = BufReader::new(flate2::read::GzDecoder::new(BufReader::new(
+        fs::File::open(&file).unwrap(),
+    )));
+    let real: BTreeSet<String> = cards_jsonl(reader)
+        .filter_map(Result::ok)
+        .map(|record| printed_card(&record))
+        .flat_map(|card| {
+            let faces: Vec<String> = card.faces.iter().map(|f| f.name.to_lowercase()).collect();
+            std::iter::once(card.name.to_lowercase()).chain(faces)
+        })
+        .collect();
+    for item in &items {
+        for name in named_cards(&item.card) {
+            if !real.contains(&name.to_lowercase()) {
+                problems.push(format!("{}: no card is named `{name}`", item.slug));
+            }
+        }
+    }
+    assert!(problems.is_empty(), "{}", problems.join("\n"));
 }
 
 #[test]
@@ -230,7 +266,14 @@ fn every_draft_is_a_whole_unchecked_card_in_canonical_form_that_fits_its_record(
             Verdict::Accepted => problems.push(format!(
                 "{slug}: the checker accepts it now: promote it as a corpus card and delete the draft"
             )),
-            other => problems.push(format!("{slug}: the checker finds it {}", other.word())),
+            other => problems.push(format!(
+                "{slug}: the checker finds it {}{}",
+                other.word(),
+                report
+                    .problems
+                    .first()
+                    .map_or(String::new(), |problem| format!(": {problem}"))
+            )),
         }
         if report.rules.as_ref() != Some(&item.card) {
             problems.push(format!("{slug}: the checker completes it differently"));

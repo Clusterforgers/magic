@@ -9,6 +9,7 @@ fn champion(choices: &str, then: &str) -> String {
     format!(
         r#"{{"Triggered":{{"when":{{"ZoneChange":{{"what":["This"],"to":"Battlefield"}}}},"effects":[
 {{"Choose":{{"from":{{"Each":{choices}}},"count":{{"min":0,"max":1}},"as":"champion"}}}},
+{{"If":{{"condition":{{"Compare":{{"left":{{"Count":[{{"Is":"This"}},{{"In":"Battlefield"}}]}},"op":"Eq","right":0}}}},"then":[{{"Exile":{{"what":{{"Bound":"champion"}}}}}}]}}}},
 {{"Exile":{{"what":{{"Bound":"champion"}},"duration":"WhileSourceOnBattlefield"}}}},
 {{"If":{{"condition":{{"Not":"Performed"}},"then":[{then}]}}}}]}}}}"#
     )
@@ -50,6 +51,16 @@ const SACRIFICE: &str = r#"{"Sacrifice":{"filter":["This"]}}"#;
 #[case::not_yours(r#"[{"Subtype":"Goblin"},"Other"]"#, "Champion a Goblin", false)]
 fn champion_line(#[case] choices: &str, #[case] clause: &str, #[case] reads: bool) {
     assert_eq!(line(&champion(choices, SACRIFICE), clause), reads);
+}
+
+/// The trigger without the exile that stays when the champion left first returns the card at once: not Champion.
+#[test]
+fn r5d_a_champion_that_returns_the_card_of_a_champion_gone_first_is_no_champion() {
+    let goblin = r#"[{"Subtype":"Goblin"},"Other",{"ControlledBy":"You"}]"#;
+    let early = r#"{"If":{"condition":{"Compare":{"left":{"Count":[{"Is":"This"},{"In":"Battlefield"}]},"op":"Eq","right":0}},"then":[{"Exile":{"what":{"Bound":"champion"}}}]}},"#;
+    let old = champion(goblin, SACRIFICE).replace(&format!("\n{early}"), "");
+    assert!(line(&champion(goblin, SACRIFICE), "Champion a Goblin"));
+    assert!(!line(&old, "Champion a Goblin"));
 }
 
 fn equip(cost: &str, more: &str) -> String {
