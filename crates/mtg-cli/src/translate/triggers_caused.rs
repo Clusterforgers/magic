@@ -33,7 +33,13 @@ pub fn pattern(ctx: &Ctx, p: &Params, mode: &str) -> Option<Tr<Value>> {
     let Ok(by) = players(word) else {
         return Some(unmapped(format!("key:Trigger.{mode}.{key}={word}")));
     };
-    let inner = match super::triggers::pattern(ctx, &p.without(&[key])) {
+    // A written cause and the printed "whenever you put" name one cause: neither is read again.
+    let read: &[&str] = if you_put(p, mode).is_some() {
+        &[key, "TriggerDescription"]
+    } else {
+        &[key]
+    };
+    let inner = match super::triggers::pattern(ctx, &p.without(read)) {
         Ok(inner) => inner,
         Err(gap) => return Some(Err(gap)),
     };

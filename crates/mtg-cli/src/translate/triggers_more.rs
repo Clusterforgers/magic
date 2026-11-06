@@ -161,9 +161,16 @@ fn becomes_target(ctx: &Ctx, p: &Params) -> Tr<Value> {
             .iter()
             .any(|pred| pred.get("AnyOf").is_some_and(only_what_targets));
     let valiant = p.get("Valiant") == Some("True");
-    if (valiant || p.get("FirstTime") == Some("True")) && !by.is_empty() && !mine {
+    let counted = valiant || p.get("FirstTime") == Some("True");
+    if counted && !by.is_empty() && !mine {
         return unmapped("key:Trigger.BecomesTarget.FirstTime-with-source");
     }
+    // Only a spell or ability targets: the count names the source by its controller alone.
+    let by = if counted && mine {
+        vec![json!({"ControlledBy": "You"})]
+    } else {
+        by
+    };
     let pattern = json!({"BecomesTarget": {"what": what, "by": by}});
     if valiant {
         return Ok(json!({"Nth": {"event": pattern, "nth": 1}}));

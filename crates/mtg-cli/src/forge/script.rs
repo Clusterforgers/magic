@@ -312,6 +312,9 @@ pub struct Script {
     pub faces: Vec<Face>,
 }
 
+/// The `Text:` line of a card that can be the commander.
+const COMMANDER_TEXT: &str = "CARDNAME can be your commander.";
+
 impl Script {
     /// Reads the text of a script; lines of other tags are skipped.
     pub fn parse(text: &str) -> Script {
@@ -337,6 +340,8 @@ impl Script {
                 "PT" => face.pt = Some(body.to_owned()),
                 "Colors" => face.colors = Some(body.to_owned()),
                 "K" => face.keywords.push(body.to_owned()),
+                // Forge prints this rule as text and reads it from there; it is the keyword line the translator knows.
+                "Text" if body == COMMANDER_TEXT => face.keywords.push(body.to_owned()),
                 "A" => face.abilities.push(body.to_owned()),
                 "T" => face.triggers.push(body.to_owned()),
                 "S" => face.statics.push(body.to_owned()),

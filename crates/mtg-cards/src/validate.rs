@@ -4559,6 +4559,20 @@ fn walk<'a>(card: &Card, tokens: &'a BTreeSet<String>) -> Walker<'a> {
         .collect();
     walker.has_additional_cost = card.abilities().any(|(_, a)| match a {
         Ability::AdditionalCost { required, .. } => !required,
+        // A macro keyword that expands into an optional cost (teamwork) gives one, as the engine announces it.
+        Ability::Keyword(Keyword::Macro { name, amount }) => {
+            crate::macros::keyword_abilities(name, *amount).is_some_and(|abilities| {
+                abilities.iter().any(|ability| {
+                    matches!(
+                        ability,
+                        Ability::AdditionalCost {
+                            required: false,
+                            ..
+                        }
+                    )
+                })
+            })
+        }
         Ability::Keyword(keyword) => keyword.has_additional_cost(),
         _ => false,
     });
@@ -4640,6 +4654,16 @@ pub(crate) fn w17a_casting_does_something(abilities: &[Ability]) -> bool {
     abilities
         .iter()
         .any(|ability| matches!(ability, Ability::Keyword(Keyword::Cascade)))
+}
+
+/// The names of the cards the rules of `card` name (a search for a card by name, a partner with), as written.
+pub fn named_cards(card: &Card) -> BTreeSet<String> {
+    let tokens = BTreeSet::new();
+    walk(card, &tokens)
+        .names
+        .into_iter()
+        .map(|(_, _, name)| name)
+        .collect()
 }
 
 /// The problems of a card file against the imported card: names, fingerprints, keywords and the
@@ -4887,6 +4911,37 @@ mod tests {
             .into_iter()
             .map(|p| format!("{}: {}", p.path, p.message))
             .collect()
+    }
+
+    /// A paid optional cost needs a keyword or an ability that gives one: teamwork expands into one, kicker counts apart.
+    #[rstest]
+    #[case::teamwork(r#"{"Keyword":{"Macro":{"name":"teamwork","amount":4}}},"#, true)]
+    #[case::a_macro_without_a_cost(
+        r#"{"Keyword":{"Macro":{"name":"bushido","amount":1}}},"#,
+        false
+    )]
+    #[case::kicker(r#"{"Keyword":{"Kicker":"{1}"}},"#, false)]
+    #[case::nothing("", false)]
+    fn r5d_a_macro_keyword_gives_the_optional_cost_it_expands_into(
+        #[case] keyword: &str,
+        #[case] paid: bool,
+    ) {
+        let found = problems(&format!(
+            r#"{keyword}{{"Spell":{{"effects":[{{"If":{{"condition":"AdditionalCostPaid","then":[{{"Draw":{{}}}}]}}}}]}}}}"#
+        ));
+        let refused = found
+            .iter()
+            .any(|p| p.contains("needs an `AdditionalCost`"));
+        assert_eq!(refused, !paid, "{found:?}");
+    }
+
+    /// The cards a rule names: a search by name and a partner, as written; none for a card that names no card.
+    #[rstest]
+    #[case::search(r#"{"Spell":{"effects":[{"Search":{"filter":[{"Named":"Nissa's Chosen"}],"as":"found"}}]}}"#, &["Nissa's Chosen"])]
+    #[case::no_name(r#"{"Spell":{"effects":[{"Draw":{}}]}}"#, &[])]
+    fn r5d_named_cards_are_the_names_a_rule_writes(#[case] ability: &str, #[case] names: &[&str]) {
+        let found: Vec<String> = named_cards(&card(ability)).into_iter().collect();
+        assert_eq!(found, names);
     }
 
     const FOLLOWS_A_COUNTER: &str = r#"{"WhileHasCounter":{"Other":"vow"}}"#;
