@@ -90,6 +90,14 @@ fn reveal_at_random(ctx: &mut Ctx, p: &Params, target: Option<Value>) -> Tr<Vec<
     {
         return unmapped("key:Reveal.Random+shape");
     }
+    // "Look at a card at random in target player's hand" shows the card to its controller alone, which a reveal does not.
+    if ctx
+        .oracle
+        .to_lowercase()
+        .contains("look at a card at random")
+    {
+        return unmapped("key:Reveal.Random-look");
+    }
     let who = match target {
         Some(target) => target,
         None => defined(ctx, p.get("Defined").unwrap_or("You"))?,
@@ -127,9 +135,6 @@ fn reveal(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
             "ValidTgts",
         ],
     )?;
-    if p.get("Defined").is_some_and(|who| who != "You") {
-        return unmapped("key:Reveal.Defined");
-    }
     // "Target player reveals ... from their hand": the target reveals, and picks what to reveal.
     let target = match p.get("ValidTgts") {
         None => None,
@@ -142,6 +147,13 @@ fn reveal(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
     };
     if p.get("Random") == Some("True") {
         return reveal_at_random(ctx, p, target);
+    }
+    if p.get("Defined").is_some_and(|who| who != "You") {
+        return unmapped("key:Reveal.Defined");
+    }
+    // "Target opponent chooses cards from their hand. Look at those cards": only the controller sees them.
+    if target.is_some() && ctx.oracle.to_lowercase().contains("look at those cards") {
+        return unmapped("key:Reveal.ValidTgts-look");
     }
     let remember = p.get("RememberRevealed") == Some("True");
     if p.get("RevealDefined") == Some("Self") {

@@ -137,3 +137,33 @@ fn the_controller_looks_at_the_target_players_library(#[case] keys: &str, #[case
         assert!(!gaps(&text).is_empty(), "{:?}", abilities(&text));
     }
 }
+
+#[rstest]
+#[case::a_card_at_random(
+    "Random$ True",
+    "Look at a card at random in target player's hand.",
+    "key:Reveal.Random-look"
+)]
+#[case::the_cards_chosen(
+    "NumCards$ 2",
+    "Target opponent chooses two cards from their hand. Look at those cards.",
+    "key:Reveal.ValidTgts-look"
+)]
+fn a_look_at_another_players_hand_is_no_reveal(
+    #[case] keys: &str,
+    #[case] oracle: &str,
+    #[case] gap: &str,
+) {
+    let text = card(&format!(
+        "A:AB$ Reveal | Cost$ 1 | ValidTgts$ Opponent | {keys} | SpellDescription$ {oracle}\nOracle:{oracle}\n"
+    ));
+    assert_eq!(gaps(&text), vec![gap.to_owned()]);
+}
+
+#[test]
+fn a_reveal_at_random_of_an_earlier_target_still_reads() {
+    let found = first(&card(
+        "A:AB$ LoseLife | Cost$ T | ValidTgts$ Opponent | LifeAmount$ 2 | SubAbility$ DBReveal | SpellDescription$ x\nSVar:DBReveal:DB$ Reveal | Defined$ Targeted | Random$ True\n",
+    ));
+    assert!(has(&found, &json!({"OwnedBy": {"Target": 0}})), "{found}");
+}
