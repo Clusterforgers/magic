@@ -640,6 +640,7 @@ fn life(ctx: &mut Ctx, p: &Params, verb: &str) -> Tr<Value> {
     Ok(json!({ verb: {"who": who, "amount": amount} }))
 }
 
+#[allow(clippy::too_many_lines)]
 fn discard(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
     only(
         p,
@@ -760,7 +761,7 @@ fn discard(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
         return Ok(vec![discard]);
     }
     if let Some(shown) = p.get("RevealNumber") {
-        return reveal_some(ctx, shown, who, discard);
+        return reveal_some(ctx, shown, &who, discard);
     }
     let hand = json!({"Reveal": {"what": {"Each": [{"OwnedBy": who}, {"In": "Hand"}]}}});
     Ok(vec![hand, discard])
@@ -768,7 +769,7 @@ fn discard(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
 
 /// "Target player reveals N cards from their hand. You choose one of them. That player discards that card": the player
 /// picks and shows the cards, then the discard is limited to them. A hand of fewer shows what it has.
-fn reveal_some(ctx: &mut Ctx, shown: &str, who: Value, mut discard: Value) -> Tr<Vec<Value>> {
+fn reveal_some(ctx: &mut Ctx, shown: &str, who: &Value, mut discard: Value) -> Tr<Vec<Value>> {
     let count = amount(ctx, shown)?;
     let bind = ctx.fresh("shown");
     let hand = vec![json!({"In": "Hand"}), json!({"OwnedBy": who})];

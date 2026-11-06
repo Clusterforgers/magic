@@ -633,6 +633,7 @@ fn choose_and_move(ctx: &mut Ctx, p: &Params, origin: &str, destination: &str) -
 
 /// The library search: the search, the move of what was found, then the shuffle. The player who decides searches and picks;
 /// the library is the actor's.
+#[allow(clippy::too_many_lines)]
 fn search(ctx: &mut Ctx, p: &Params, destination: &str) -> Tr<Vec<Value>> {
     let had_memory = ctx.remembered.is_some();
     SEARCHED.admit(p)?;

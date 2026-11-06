@@ -27,9 +27,10 @@ fn a_search_with_different_names_finds_one_card_per_name(
     #[case] distinct: bool,
 ) {
     let effects = first_effects(script);
+    let want = json!(true);
     assert_eq!(
         effects[0]["Search"].get("distinct"),
-        distinct.then(|| &json!(true))
+        distinct.then_some(&want)
     );
     assert!(gaps(script).is_empty(), "{:?}", gaps(script));
 }
