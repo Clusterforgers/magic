@@ -24,6 +24,14 @@ fn exiled_cards_put_into_graveyards_are_a_cost(#[case] line: &str, #[case] cost:
     assert_eq!(found[0]["Activated"]["cost"], cost);
 }
 
+#[test]
+fn a_card_exiled_with_the_source_by_a_replacement_stays_a_gap() {
+    let text = creature(
+        "A:AB$ Draw | Cost$ ExiledMoveToGrave<1/Card.ExiledWithSource/card exiled with CARDNAME> | NumCards$ 1\nOracle:If another creature would die, exile it instead.\\nPut a card exiled with T into its owner's graveyard: Draw a card.",
+    );
+    assert!(abilities(&text).is_empty(), "{:?}", abilities(&text));
+}
+
 fn enchantment(lines: &str) -> String {
     format!("Name:T\nManaCost:2\nTypes:Enchantment\n{lines}\n")
 }
