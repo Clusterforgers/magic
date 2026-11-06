@@ -48,3 +48,38 @@ fn equip_with_a_second_cost_is_two_abilities() {
 fn equip_gaps(#[case] line: &str, #[case] gap: &str) {
     assert_eq!(gaps(&equipment(line)), vec![gap.to_owned()]);
 }
+
+const LANCER: &str = "Name:Test Lancer\nTypes:Creature Human Knight\nManaCost:2 W\nPT:2/2\nK:Kicker:2 W\nK:ETBReplacement:Other:DBPutCounter:Mandatory::Card.Self+kicked\nSVar:DBPutCounter:DB$ PutCounter | ETB$ True | Defined$ Self | CounterType$ P1P1 | CounterNum$ 2 | SubAbility$ DBPump\nSVar:DBPump:DB$ Animate | Defined$ Self | Keywords$ First Strike | Duration$ Permanent\n";
+
+const VOLVER: &str = "Name:Test Volver\nTypes:Creature Volver\nManaCost:3 G\nPT:2/2\nK:Kicker:1 U:B\nK:ETBReplacement:Other:Strength:Mandatory::Card.Self+kicked 1\nK:ETBReplacement:Other:Pumped:Mandatory::Card.Self+kicked 2\nSVar:Strength:DB$ PutCounter | Defined$ Self | CounterType$ P1P1 | CounterNum$ 2 | ETB$ True | SubAbility$ Launch\nSVar:Launch:DB$ Animate | Defined$ Self | Keywords$ Flying | Duration$ Permanent\nSVar:Pumped:DB$ PutCounter | Defined$ Self | CounterType$ P1P1 | CounterNum$ 1 | ETB$ True\n";
+
+fn replacement(when: Value, by: Value) -> Value {
+    json!({"Replacement": {"when": {"Enters": {"what": ["This"]}}, "by": by, "condition": when}})
+}
+
+#[test]
+fn a_kicked_permanent_enters_with_counters_and_a_keyword() {
+    let by = json!({"WithCountersAnd": {"counter": "+1/+1", "count": 2,
+        "mods": [{"AddKeyword": "FirstStrike"}]}});
+    assert_eq!(gaps(LANCER), Vec::<String>::new());
+    assert!(abilities(LANCER).contains(&replacement(json!("Kicked"), by)));
+}
+
+#[test]
+fn each_kicker_of_two_has_its_own_entering() {
+    let first = json!({"WithCountersAnd": {"counter": "+1/+1", "count": 2,
+        "mods": [{"AddKeyword": "Flying"}]}});
+    let second = json!({"WithCounters": {"counter": "+1/+1", "count": 1}});
+    let found = abilities(VOLVER);
+    assert_eq!(gaps(VOLVER), Vec::<String>::new());
+    assert!(found.contains(&replacement(json!({"KickedWith": "{1}{U}"}), first)));
+    assert!(found.contains(&replacement(json!({"KickedWith": "{B}"}), second)));
+}
+
+#[rstest]
+#[case::kicker_out_of_range("Card.Self+kicked 3", "keyword:ETBReplacement-kicker-number")]
+#[case::another_way("Card.Self+foretold", "keyword:ETBReplacement-shape")]
+fn entering_with_gaps(#[case] valid: &str, #[case] gap: &str) {
+    let text = VOLVER.replace("Card.Self+kicked 2", valid);
+    assert_eq!(gaps(&text), vec![gap.to_owned()]);
+}

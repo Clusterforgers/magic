@@ -378,6 +378,9 @@ pub fn keyword_ability(ctx: &mut Ctx, body: &str) -> Tr<Value> {
             json!({"WithCounters": {"counter": kind, "count": amount(ctx, count)?}})
         }
         ["ETBReplacement", "Other", name] => choice(ctx, name)?,
+        ["ETBReplacement", "Other", name, "Mandatory", "", valid] if valid.starts_with("Card.Self+") => {
+            return super::enters_with::self_enters(ctx, name, valid);
+        }
         ["ETBReplacement", "Other", name, "Mandatory", zone, valid] if !valid.contains("Self") => {
             return extra::others(ctx, name, zone, valid);
         }

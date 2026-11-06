@@ -158,7 +158,7 @@ impl Pass<'_> {
     }
 
     /// The next free effect id and timestamp, counting the effects this batch has made.
-    fn fresh_effect(&self) -> (EffectId, u64) {
+    pub(super) fn fresh_effect(&self) -> (EffectId, u64) {
         let (id, timestamp) = self
             .slots
             .iter()

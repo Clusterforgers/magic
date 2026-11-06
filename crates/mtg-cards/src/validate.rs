@@ -4234,6 +4234,23 @@ impl Walker<'_> {
                 }
                 self.at("count", |w| w.amount(count));
             }
+            ReplaceBy::WithCountersAnd {
+                count, mods: given, ..
+            } => {
+                if !enters {
+                    self.problem("`WithCountersAnd` replaces an `Enters`");
+                }
+                self.at("count", |w| w.amount(count));
+                if given.iter().any(|given| {
+                    !matches!(
+                        given,
+                        Modification::AddKeyword(_) | Modification::GrantAbility(_)
+                    )
+                }) {
+                    self.problem("a permanent enters with a keyword or an ability only");
+                }
+                self.at("mods", |w| w.mods(given));
+            }
             ReplaceBy::Tapped
             | ReplaceBy::Choose(_)
             | ReplaceBy::PayLifeOrTapped(_)

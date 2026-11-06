@@ -441,6 +441,7 @@ mod restricted_mana;
 mod restriction_fuzz;
 mod reveal_until;
 mod reveal_until_fuzz;
+mod r4a_enters_with;
 mod riot;
 mod rules_fuzz;
 mod rules_games;

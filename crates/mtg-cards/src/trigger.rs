@@ -831,6 +831,16 @@ pub enum ReplaceBy {
         #[serde(default, skip_serializing_if = "is_false")]
         tapped: bool,
     },
+    /// The permanent enters with counters as `WithCounters` says, and has these changes for as long as it stays on the
+    /// battlefield ("enters with two +1/+1 counters on it and with first strike").
+    WithCountersAnd {
+        /// The kind of counter.
+        counter: CounterKind,
+        /// How many.
+        count: Amount,
+        /// What it gets besides: a keyword or an ability.
+        mods: Vec<Modification>,
+    },
     /// The permanent enters with these counters when its controller says yes as it enters ("You may have this creature enter with a +1/+1 counter on it"); asked like the payment of `PayLifeOrTapped`.
     MayWithCounters {
         /// The kind of counter.

@@ -632,6 +632,7 @@ fn applies_to(by: &ReplaceBy, unit: &Unit) -> bool {
         }
         ReplaceBy::Tapped
         | ReplaceBy::WithCounters { .. }
+        | ReplaceBy::WithCountersAnd { .. }
         | ReplaceBy::MayWithCounters { .. }
         | ReplaceBy::Choose(_)
         | ReplaceBy::PayLifeOrTapped(_)
@@ -1624,6 +1625,7 @@ impl Pass<'_> {
                             ReplaceBy::Tapped
                                 | ReplaceBy::Choose(_)
                                 | ReplaceBy::WithCounters { .. }
+                                | ReplaceBy::WithCountersAnd { .. }
                                 | ReplaceBy::MayWithCounters { .. }
                                 | ReplaceBy::Devour { .. }
                                 | ReplaceBy::Riot
@@ -2481,6 +2483,14 @@ impl Pass<'_> {
                     tapped(self, at);
                 }
             }
+            ReplaceBy::WithCountersAnd {
+                counter,
+                count,
+                mods,
+            } => {
+                self.enter_with_counters(at, candidate, object, counter, count, &applied)?;
+                self.enter_with_changes(at, object, controller, mods, &applied)?;
+            }
             ReplaceBy::MayWithCounters { counter, count } => {
                 match self.takes_counters(source, controller)? {
                     Asked::Ask(decision) => return Ok(Applied::Ask(decision)),
@@ -3133,6 +3143,7 @@ mod dredge;
 
 mod reveal;
 
+mod changes;
 mod riot;
 
 mod w13b_tapped_for_counters;
