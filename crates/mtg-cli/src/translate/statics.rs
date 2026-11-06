@@ -49,6 +49,9 @@ pub fn static_line(ctx: &mut Ctx, body: &str) -> Tr<Value> {
 pub fn static_lines(ctx: &mut Ctx, body: &str) -> Tr<Value> {
     ctx.reset();
     let all = Params::parse(body);
+    if let Some(found) = super::statics_exert::exert(ctx, &all) {
+        return found;
+    }
     let condition = condition(ctx, &all)?;
     let condition = match condition {
         Some(found) if all.get("AffectedZone") == Some("Stack") => Some(before_itself(found)),

@@ -336,6 +336,14 @@ fn mana(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
                 None => return unmapped("key:Mana.Produced=Combo"),
             }
         }
+        // "Add {W}{W}, {W}{B}, or {B}{B}" and "X mana in any combination of {R} and/or {G}": each mana picks its own type.
+        ["Combo", rest @ ..] if rest.len() > 1 => {
+            let types: Option<Vec<&str>> = rest.iter().map(|w| mana_type(w)).collect();
+            let Some(among) = types else {
+                return unmapped("key:Mana.Produced=Combo");
+            };
+            json!({"mana": {"AnyCombination": {"count": amount(ctx, times)?, "among": among}}})
+        }
         fixed if !fixed.is_empty() && fixed.iter().all(|w| mana_type(w).is_some()) => {
             fixed_mana(ctx, fixed, times)?
         }
