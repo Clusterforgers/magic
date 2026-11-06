@@ -1,0 +1,42 @@
+{
+  "oracle_id": "2244bef9-1e4e-44ed-9b27-810f04f9e611",
+  "name": "Entrapment Maneuver",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Entrapment Maneuver",
+      "oracle_fingerprint": "5389bf93746dd1ff64b086d45d3868eb",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              {
+                "Sacrifice": {
+                  "who": { "Target": 0 },
+                  "filter": [{ "Type": "Creature" }, "Attacking"],
+                  "as": "sacrificed"
+                }
+              },
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Soldier",
+                      "colors": ["White"],
+                      "types": ["Creature"],
+                      "subtypes": ["Soldier"],
+                      "power": 1,
+                      "toughness": 1
+                    }
+                  },
+                  "count": { "Stat": { "of": { "Bound": "sacrificed" }, "stat": "Toughness" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

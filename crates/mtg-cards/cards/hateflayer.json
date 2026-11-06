@@ -1,0 +1,28 @@
+{
+  "oracle_id": "681d07e6-234f-4544-a2ea-bfbefe6b0b36",
+  "name": "Hateflayer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Hateflayer",
+      "oracle_fingerprint": "c1a7d75581c86ec7e538c2f2a13dc2da",
+      "abilities": [
+        { "Keyword": "Wither" },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{2}{R}" }, "Untap"],
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [
+              {
+                "DealDamage": {
+                  "to": { "Target": 0 },
+                  "amount": { "Stat": { "of": "This", "stat": "Power" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

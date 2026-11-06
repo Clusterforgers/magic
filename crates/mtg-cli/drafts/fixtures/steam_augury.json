@@ -1,0 +1,132 @@
+{
+  "object": "card",
+  "id": "3bb510af-2cc7-4992-aeef-556e8a63f146",
+  "oracle_id": "0aa556a6-66aa-42f1-ba41-0001e10c20a4",
+  "multiverse_ids": [
+    405394
+  ],
+  "tcgplayer_id": 108039,
+  "cardmarket_id": 285997,
+  "name": "Steam Augury",
+  "lang": "en",
+  "released_at": "2015-11-13",
+  "uri": "https://api.scryfall.com/cards/3bb510af-2cc7-4992-aeef-556e8a63f146",
+  "scryfall_uri": "https://scryfall.com/card/c15/233/steam-augury?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T10:20:55Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/3/b/3bb510af-2cc7-4992-aeef-556e8a63f146.jpg?1783938055",
+    "normal": "https://cards.scryfall.io/normal/front/3/b/3bb510af-2cc7-4992-aeef-556e8a63f146.jpg?1783938055",
+    "large": "https://cards.scryfall.io/large/front/3/b/3bb510af-2cc7-4992-aeef-556e8a63f146.jpg?1783938055",
+    "png": "https://cards.scryfall.io/png/front/3/b/3bb510af-2cc7-4992-aeef-556e8a63f146.png?1783938055",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/3/b/3bb510af-2cc7-4992-aeef-556e8a63f146.jpg?1783938055",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/3/b/3bb510af-2cc7-4992-aeef-556e8a63f146.jpg?1783938055",
+    "thumb": "https://cards.scryfall.io/thumb/front/3/b/3bb510af-2cc7-4992-aeef-556e8a63f146.webp?1783938055",
+    "grid": "https://cards.scryfall.io/grid/front/3/b/3bb510af-2cc7-4992-aeef-556e8a63f146.webp?1783938055",
+    "display": "https://cards.scryfall.io/display/front/3/b/3bb510af-2cc7-4992-aeef-556e8a63f146.webp?1783938055",
+    "art": "https://cards.scryfall.io/art/front/3/b/3bb510af-2cc7-4992-aeef-556e8a63f146.webp?1783938055",
+    "crop": "https://cards.scryfall.io/crop/front/3/b/3bb510af-2cc7-4992-aeef-556e8a63f146.webp?1783938055",
+    "jpeg": "https://cards.scryfall.io/normal/front/3/b/3bb510af-2cc7-4992-aeef-556e8a63f146.jpg?1783938055"
+  },
+  "mana_cost": "{2}{U}{R}",
+  "cmc": 4.0,
+  "type_line": "Instant",
+  "oracle_text": "Reveal the top five cards of your library and separate them into two piles. An opponent chooses one of those piles. Put that pile into your hand and the other into your graveyard.",
+  "colors": [
+    "R",
+    "U"
+  ],
+  "color_identity": [
+    "R",
+    "U"
+  ],
+  "keywords": [],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": true,
+  "variation": false,
+  "set_id": "ea6c99f9-5489-4504-b30c-c819fa3b1fd3",
+  "set": "c15",
+  "set_name": "Commander 2015",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/ea6c99f9-5489-4504-b30c-c819fa3b1fd3",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Ac15&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/c15?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/3bb510af-2cc7-4992-aeef-556e8a63f146/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A0aa556a6-66aa-42f1-ba41-0001e10c20a4&unique=prints",
+  "collector_number": "233",
+  "digital": false,
+  "rarity": "rare",
+  "flavor_text": "Keranos is a fickle god, delivering punishment as readily as prophecy.",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Dave Kendall",
+  "artist_ids": [
+    "8a5540a8-18c9-4fa9-802c-59d6866114d5"
+  ],
+  "illustration_id": "fc83e790-16a4-476b-a170-ce7d3480d84c",
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "edhrec_rank": 14071,
+  "penny_rank": 9357,
+  "prices": {
+    "usd": "0.24",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "0.24",
+    "eur_foil": null,
+    "tix": null
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=405394&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DSteam%2BAugury",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DSteam%2BAugury",
+    "edhrec": "https://edhrec.com/route/?cc=Steam+Augury"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F108039%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=285997&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards?affiliate_id=scryfall&data%5Bsearch%5D=Steam+Augury&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

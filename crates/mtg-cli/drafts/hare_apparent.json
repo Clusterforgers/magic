@@ -1,0 +1,43 @@
+{
+  "oracle_id": "3c1619bd-db5e-4df6-a196-0a9d62374f6d",
+  "name": "Hare Apparent",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Hare Apparent",
+      "oracle_fingerprint": "1d36ea8c0b90ee0d574e53fe51f20b37",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Rabbit",
+                      "colors": ["White"],
+                      "types": ["Creature"],
+                      "subtypes": ["Rabbit"],
+                      "power": 1,
+                      "toughness": 1
+                    }
+                  },
+                  "count": {
+                    "Count": [
+                      { "Type": "Creature" },
+                      { "Named": "Hare Apparent" },
+                      { "ControlledBy": "You" },
+                      "Other"
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        },
+        { "Rule": { "rule": "AnyNumberInDeck" } }
+      ]
+    }
+  ]
+}

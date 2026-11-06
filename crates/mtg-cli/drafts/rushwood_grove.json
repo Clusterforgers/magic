@@ -1,0 +1,29 @@
+{
+  "oracle_id": "ccb2f92e-69c0-415c-81cd-52c384b3b233",
+  "name": "Rushwood Grove",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Rushwood Grove",
+      "oracle_fingerprint": "39e1943684c86e10e874e1e00c4972aa",
+      "abilities": [
+        { "Replacement": { "when": { "Enters": { "what": ["This"] } }, "by": "Tapped" } },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "PutCounters": { "on": "This", "counter": { "Other": "storage" } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [
+              "Tap",
+              { "RemoveCounters": { "counter": { "Other": "storage" }, "count": "X" } }
+            ],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Green"] }, "times": "X" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

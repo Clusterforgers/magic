@@ -1,0 +1,34 @@
+{
+  "oracle_id": "1745fd57-467c-45f9-a46e-b9a2af87ec87",
+  "name": "Mogg Hollows",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mogg Hollows",
+      "oracle_fingerprint": "d80e2655b3da9ce315b13cdc39ea8136",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Colorless"] } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [
+              { "AddMana": { "mana": { "OneOf": ["Red", "Green"] } } },
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": ["DoesntUntap"],
+                  "duration": "NextUntapStep"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

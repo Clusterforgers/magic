@@ -25,6 +25,7 @@
                     },
                     { "ControlledBy": "You" }
                   ],
+                  "reveal": true,
                   "as": "found"
                 }
               },

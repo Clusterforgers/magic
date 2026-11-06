@@ -1,0 +1,32 @@
+{
+  "oracle_id": "6faa6b62-d516-415c-8029-223c3f18f8af",
+  "name": "Mana Seism",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mana Seism",
+      "oracle_fingerprint": "be70b8582a0b78c001982300f3c6453c",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "SacrificeUpTo": {
+                  "filter": [{ "Type": "Land" }],
+                  "count": { "Count": [{ "Type": "Land" }, { "ControlledBy": "You" }] },
+                  "as": "sacrificed"
+                }
+              },
+              {
+                "AddMana": {
+                  "mana": { "Fixed": ["Colorless"] },
+                  "times": { "Bound": "sacrificed~moved" }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

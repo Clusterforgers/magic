@@ -1,0 +1,50 @@
+{
+  "oracle_id": "2e338e09-5758-4cc2-9143-21f050a28677",
+  "name": "Viewpoint Synchronization",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Viewpoint Synchronization",
+      "oracle_fingerprint": "42138cc14825582a09bbcf61e8bd4019",
+      "abilities": [
+        { "Keyword": { "Freerunning": "{2}{G}" } },
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Search": {
+                  "filter": [{ "Type": "Land" }, { "Supertype": "Basic" }],
+                  "count": { "min": 0, "max": 3 },
+                  "reveal": true,
+                  "as": "found"
+                }
+              },
+              {
+                "Search": {
+                  "filter": [{ "Type": "Land" }, { "Is": { "Bound": "found" } }],
+                  "count": { "min": 0, "max": 2 },
+                  "as": "found2"
+                }
+              },
+              {
+                "Move": {
+                  "what": { "Bound": "found2" },
+                  "to": { "Battlefield": { "tapped": true } }
+                }
+              },
+              {
+                "Search": {
+                  "filter": [{ "Type": "Land" }, { "Is": { "Bound": "found" } }],
+                  "reveal": true,
+                  "as": "found3"
+                }
+              },
+              { "Move": { "what": { "Bound": "found3" }, "to": "Hand" } },
+              { "Shuffle": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

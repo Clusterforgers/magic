@@ -1,0 +1,28 @@
+{
+  "oracle_id": "06b8acf2-3f2f-4e8f-9584-8d2ffa18a496",
+  "name": "Pale Wayfarer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Pale Wayfarer",
+      "oracle_fingerprint": "3e384542dd4d1762420a520cc912c2ce",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{2}{W}{W}" }, "Untap"],
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": ["AddProtectionFromChosenColor"],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

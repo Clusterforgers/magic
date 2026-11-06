@@ -1,0 +1,39 @@
+{
+  "oracle_id": "127bc05b-2945-434c-bc6a-283a267cc72a",
+  "name": "Smellerbee, Rebel Fighter",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Smellerbee, Rebel Fighter",
+      "oracle_fingerprint": "6f183ececeb0d42df2c008743e4f22cb",
+      "abilities": [
+        { "Keyword": "FirstStrike" },
+        {
+          "Static": {
+            "affected": { "Each": [{ "Type": "Creature" }, "Other", { "ControlledBy": "You" }] },
+            "mods": [{ "AddKeyword": "Haste" }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": [
+                    {
+                      "Discard": { "count": { "Count": [{ "In": "Hand" }, { "OwnedBy": "You" }] } }
+                    }
+                  ],
+                  "paid": [
+                    { "Draw": { "count": { "Count": [{ "Type": "Creature" }, "Attacking"] } } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

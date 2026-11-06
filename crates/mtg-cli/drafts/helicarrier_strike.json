@@ -1,0 +1,35 @@
+{
+  "oracle_id": "ca3cda24-0ecd-4edf-b1b3-54311ad58a51",
+  "name": "Helicarrier Strike",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Helicarrier Strike",
+      "oracle_fingerprint": "907555a1df8f709efcfc2ff27fcda107",
+      "abilities": [
+        { "Keyword": { "Macro": { "name": "teamwork", "amount": 2 } } },
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "Type": "Creature" }, { "AnyOf": ["Attacking", "Blocking"] }]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "DealDamage": {
+                  "to": { "Target": 0 },
+                  "amount": {
+                    "When": { "condition": "AdditionalCostPaid", "then": 4, "otherwise": 2 }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

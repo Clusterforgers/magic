@@ -25,6 +25,7 @@
                   "as": "kept2"
                 }
               },
+              { "Reveal": { "what": { "Bound": "kept2" } } },
               { "Move": { "what": { "Bound": "kept2" }, "to": "Hand" } },
               {
                 "Move": {
@@ -53,6 +54,7 @@
                   "as": "kept2"
                 }
               },
+              { "Reveal": { "what": { "Bound": "kept2" } } },
               { "Move": { "what": { "Bound": "kept2" }, "to": "Hand" } },
               {
                 "Move": {

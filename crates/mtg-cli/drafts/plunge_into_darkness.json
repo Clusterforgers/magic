@@ -1,0 +1,91 @@
+{
+  "oracle_id": "07a39452-f9d5-41ba-acbc-fc5e7f698f64",
+  "name": "Plunge into Darkness",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Plunge into Darkness",
+      "oracle_fingerprint": "b72850fbe31b584c1a7b5f6d92515617",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Modal": {
+                  "modes": [
+                    {
+                      "effects": [
+                        {
+                          "SacrificeUpTo": {
+                            "filter": [{ "Type": "Creature" }],
+                            "count": {
+                              "Count": [{ "Type": "Creature" }, { "ControlledBy": "You" }]
+                            },
+                            "as": "sacrificed"
+                          }
+                        },
+                        {
+                          "GainLife": {
+                            "amount": {
+                              "Times": { "by": 3, "of": { "Bound": "sacrificed~moved" } }
+                            }
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "effects": [
+                        {
+                          "ChooseValue": {
+                            "kind": {
+                              "Number": [
+                                0,
+                                {
+                                  "When": {
+                                    "condition": {
+                                      "Compare": {
+                                        "left": { "Life": "You" },
+                                        "op": "Lt",
+                                        "right": 0
+                                      }
+                                    },
+                                    "then": 0,
+                                    "otherwise": { "Life": "You" }
+                                  }
+                                }
+                              ]
+                            },
+                            "as": "number2"
+                          }
+                        },
+                        {
+                          "Pay": {
+                            "cost": [{ "PayLife": 1 }],
+                            "times": { "ChosenAs": "number2" },
+                            "paid": [
+                              { "LookAtTop": { "count": { "ChosenAs": "number2" }, "as": "top3" } },
+                              {
+                                "Choose": {
+                                  "from": { "Bound": "top3" },
+                                  "as": "kept4",
+                                  "rest_as": "rest5"
+                                }
+                              },
+                              { "Move": { "what": { "Bound": "kept4" }, "to": "Hand" } },
+                              { "Exile": { "what": { "Bound": "rest5" } } }
+                            ]
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Entwine": "{B}" } }
+      ]
+    }
+  ]
+}

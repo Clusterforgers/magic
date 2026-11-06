@@ -1,0 +1,35 @@
+{
+  "oracle_id": "150cefd2-061d-43b2-8470-c17be0144021",
+  "name": "Crossover Collaboration",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Crossover Collaboration",
+      "oracle_fingerprint": "34dad5d784b9eb97b63f7472ae31d7d3",
+      "abilities": [
+        { "Keyword": { "Macro": { "name": "teamwork", "amount": 2 } } },
+        {
+          "Spell": {
+            "effects": [
+              { "ExileTop": { "count": 2, "as": "exiled" } },
+              {
+                "Rule": {
+                  "rule": {
+                    "MayCast": { "from": "Exile", "only": { "Bound": "exiled" }, "play": true }
+                  },
+                  "duration": "UntilEndOfYourNextTurn"
+                }
+              },
+              {
+                "If": {
+                  "condition": "AdditionalCostPaid",
+                  "then": [{ "CreateToken": { "token": { "Named": "treasure" } } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

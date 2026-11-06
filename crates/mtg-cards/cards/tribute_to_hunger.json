@@ -1,0 +1,32 @@
+{
+  "oracle_id": "dc5a501c-e16c-4d4b-a510-70a14272473e",
+  "name": "Tribute to Hunger",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Tribute to Hunger",
+      "oracle_fingerprint": "352f12efd34dd037b6ff3b511b0080f2",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              {
+                "Sacrifice": {
+                  "who": { "Target": 0 },
+                  "filter": [{ "Type": "Creature" }],
+                  "as": "sacrificed"
+                }
+              },
+              {
+                "GainLife": {
+                  "amount": { "Stat": { "of": { "Bound": "sacrificed" }, "stat": "Toughness" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

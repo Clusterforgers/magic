@@ -1,0 +1,158 @@
+{
+  "object": "card",
+  "id": "e786423d-3a49-4318-ac77-791918bcafcb",
+  "oracle_id": "0ee06ed0-717a-4bfa-b634-d00e013c1f16",
+  "multiverse_ids": [
+    650309
+  ],
+  "mtgo_id": 122578,
+  "tcgplayer_id": 535695,
+  "cardmarket_id": 753328,
+  "name": "Lonis, Cryptozoologist",
+  "lang": "en",
+  "released_at": "2024-02-09",
+  "uri": "https://api.scryfall.com/cards/e786423d-3a49-4318-ac77-791918bcafcb",
+  "scryfall_uri": "https://scryfall.com/card/mkc/215/lonis-cryptozoologist?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T03:22:57Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/e/7/e786423d-3a49-4318-ac77-791918bcafcb.jpg?1783912977",
+    "normal": "https://cards.scryfall.io/normal/front/e/7/e786423d-3a49-4318-ac77-791918bcafcb.jpg?1783912977",
+    "large": "https://cards.scryfall.io/large/front/e/7/e786423d-3a49-4318-ac77-791918bcafcb.jpg?1783912977",
+    "png": "https://cards.scryfall.io/png/front/e/7/e786423d-3a49-4318-ac77-791918bcafcb.png?1783912977",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/e/7/e786423d-3a49-4318-ac77-791918bcafcb.jpg?1783912977",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/e/7/e786423d-3a49-4318-ac77-791918bcafcb.jpg?1783912977",
+    "thumb": "https://cards.scryfall.io/thumb/front/e/7/e786423d-3a49-4318-ac77-791918bcafcb.webp?1783912977",
+    "grid": "https://cards.scryfall.io/grid/front/e/7/e786423d-3a49-4318-ac77-791918bcafcb.webp?1783912977",
+    "display": "https://cards.scryfall.io/display/front/e/7/e786423d-3a49-4318-ac77-791918bcafcb.webp?1783912977",
+    "art": "https://cards.scryfall.io/art/front/e/7/e786423d-3a49-4318-ac77-791918bcafcb.webp?1783912977",
+    "crop": "https://cards.scryfall.io/crop/front/e/7/e786423d-3a49-4318-ac77-791918bcafcb.webp?1783912977",
+    "jpeg": "https://cards.scryfall.io/normal/front/e/7/e786423d-3a49-4318-ac77-791918bcafcb.jpg?1783912977"
+  },
+  "mana_cost": "{G}{U}",
+  "cmc": 2.0,
+  "type_line": "Legendary Creature — Snake Elf Scout",
+  "oracle_text": "Whenever another nontoken creature you control enters, investigate.\n{T}, Sacrifice X Clues: Target opponent reveals the top X cards of their library. You may put a nonland permanent card with mana value X or less from among them onto the battlefield under your control. That player puts the rest on the bottom of their library in a random order.",
+  "power": "1",
+  "toughness": "2",
+  "colors": [
+    "G",
+    "U"
+  ],
+  "color_identity": [
+    "G",
+    "U"
+  ],
+  "keywords": [
+    "Investigate"
+  ],
+  "all_parts": [
+    {
+      "object": "related_card",
+      "id": "e786423d-3a49-4318-ac77-791918bcafcb",
+      "component": "combo_piece",
+      "name": "Lonis, Cryptozoologist",
+      "type_line": "Legendary Creature — Snake Elf Scout",
+      "uri": "https://api.scryfall.com/cards/e786423d-3a49-4318-ac77-791918bcafcb"
+    },
+    {
+      "object": "related_card",
+      "id": "ef607895-d6d2-44ab-a6b4-84af55fce593",
+      "component": "token",
+      "name": "Clue",
+      "type_line": "Token Artifact — Clue",
+      "uri": "https://api.scryfall.com/cards/ef607895-d6d2-44ab-a6b4-84af55fce593"
+    }
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "not_legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": true,
+  "variation": false,
+  "set_id": "286c37ca-ba65-4d3e-8c5d-d1878d88fd95",
+  "set": "mkc",
+  "set_name": "Murders at Karlov Manor Commander",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/286c37ca-ba65-4d3e-8c5d-d1878d88fd95",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Amkc&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/mkc?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/e786423d-3a49-4318-ac77-791918bcafcb/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A0ee06ed0-717a-4bfa-b634-d00e013c1f16&unique=prints",
+  "collector_number": "215",
+  "digital": false,
+  "rarity": "rare",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Andrew Mar",
+  "artist_ids": [
+    "adad79bf-cd52-456a-b170-740ed8bff0fc"
+  ],
+  "illustration_id": "aeac62b7-b761-49da-8256-2b22d501ee70",
+  "border_color": "black",
+  "frame": "2015",
+  "frame_effects": [
+    "legendary"
+  ],
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "edhrec_rank": 5279,
+  "penny_rank": 3805,
+  "prices": {
+    "usd": "0.35",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "0.25",
+    "eur_foil": null,
+    "tix": "0.03"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=650309&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DLonis%252C%2BCryptozoologist",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DLonis%252C%2BCryptozoologist",
+    "edhrec": "https://edhrec.com/route/?cc=Lonis%2C+Cryptozoologist"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F535695%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=753328&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/122578?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

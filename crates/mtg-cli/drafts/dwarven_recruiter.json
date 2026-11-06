@@ -20,6 +20,7 @@
                       "Count": [{ "Subtype": "Dwarf" }, { "OwnedBy": "You" }, { "In": "Library" }]
                     }
                   },
+                  "reveal": true,
                   "as": "found"
                 }
               },

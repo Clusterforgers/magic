@@ -1,0 +1,43 @@
+{
+  "oracle_id": "fccc57f6-2555-4ab3-b85a-83b524abe892",
+  "name": "Stormchaser Chimera",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Stormchaser Chimera",
+      "oracle_fingerprint": "cca57d367ae9737ab826e345d78402e6",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Activated": {
+            "cost": "{2}{U}{R}",
+            "effects": [
+              { "Scry": {} },
+              { "LookAtTop": { "as": "top" } },
+              { "Reveal": { "what": { "Bound": "top" } } },
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [
+                    {
+                      "ModifyPT": {
+                        "power": {
+                          "Total": {
+                            "of": [{ "In": "Library" }, { "OwnedBy": "You" }, "TopOfLibrary"],
+                            "stat": "ManaValue"
+                          }
+                        },
+                        "toughness": 0
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

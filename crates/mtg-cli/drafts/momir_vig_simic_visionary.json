@@ -16,7 +16,13 @@
               {
                 "May": {
                   "effects": [
-                    { "Search": { "filter": [{ "Type": "Creature" }], "as": "found" } },
+                    {
+                      "Search": {
+                        "filter": [{ "Type": "Creature" }],
+                        "reveal": true,
+                        "as": "found"
+                      }
+                    },
                     { "Shuffle": {} },
                     {
                       "Move": {

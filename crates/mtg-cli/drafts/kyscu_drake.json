@@ -1,0 +1,42 @@
+{
+  "oracle_id": "94806688-329d-429d-8126-2c9187e71f54",
+  "name": "Kyscu Drake",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Kyscu Drake",
+      "oracle_fingerprint": "3a55d95b4bd4ea2f1e3b3b698795b002",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Activated": {
+            "cost": "{G}",
+            "limit": "OncePerTurn",
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "ModifyPT": { "power": 0, "toughness": 1 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [
+              "SacrificeSelf",
+              { "Sacrifice": { "filter": [{ "Type": "Creature" }, { "Named": "Spitting Drake" }] } }
+            ],
+            "effects": [
+              { "Search": { "filter": [{ "Named": "Viashivan Dragon" }], "as": "found" } },
+              { "Move": { "what": { "Bound": "found" }, "to": { "Battlefield": {} } } },
+              { "Shuffle": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,43 @@
+{
+  "oracle_id": "8ca4ca66-30b1-4074-a2e3-545b7682381b",
+  "name": "Depth Defiler",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Depth Defiler",
+      "oracle_fingerprint": "d1eb28ba65e32bea3d109954d70d2ad0",
+      "abilities": [
+        { "Keyword": "Devoid" },
+        { "Keyword": { "Kicker": "{C}" } },
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "what": ["This"] } },
+            "effects": [
+              {
+                "Modal": {
+                  "choose": {
+                    "min": { "When": { "condition": "Kicked", "then": 2, "otherwise": 1 } },
+                    "max": { "When": { "condition": "Kicked", "then": 2, "otherwise": 1 } }
+                  },
+                  "modes": [
+                    {
+                      "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+                      "effects": [{ "Move": { "what": { "Target": 0 }, "to": "Hand" } }]
+                    },
+                    {
+                      "targets": [{ "what": "Player" }],
+                      "effects": [
+                        { "Draw": { "who": { "Target": 0 }, "count": 2 } },
+                        { "Discard": { "who": { "Target": 0 } } }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

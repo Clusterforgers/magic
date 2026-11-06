@@ -1,0 +1,47 @@
+{
+  "oracle_id": "61c2a2cb-6424-4a20-81fb-f8e15a8f95ce",
+  "name": "Moonveil Regent",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Moonveil Regent",
+      "oracle_fingerprint": "74a4cab953970fe0065ca814c639b574",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "by": "You" } },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": [
+                    {
+                      "Discard": { "count": { "Count": [{ "In": "Hand" }, { "OwnedBy": "You" }] } }
+                    }
+                  ],
+                  "paid": [
+                    { "Draw": { "count": { "Stat": { "of": "Triggering", "stat": "Colors" } } } }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } },
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [
+              {
+                "DealDamage": {
+                  "to": { "Target": 0 },
+                  "amount": { "Distinct": { "of": [{ "ControlledBy": "You" }], "stat": "Colors" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

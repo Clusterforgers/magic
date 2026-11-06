@@ -11,7 +11,7 @@
           "Triggered": {
             "when": { "LifeLost": {} },
             "if": { "AtTrigger": "YourTurn" },
-            "limit": "OncePerTurn",
+            "limit": "OncePerTurnDone",
             "effects": [
               {
                 "May": {

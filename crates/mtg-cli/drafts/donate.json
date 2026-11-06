@@ -1,0 +1,27 @@
+{
+  "oracle_id": "049d1fb2-cce7-40e7-a633-e84cf9782d89",
+  "name": "Donate",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Donate",
+      "oracle_fingerprint": "ea5872c9055a7f09658d36df33664146",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Player" }, { "what": { "Object": [{ "ControlledBy": "You" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 1 },
+                  "mods": [{ "SetController": { "Target": 0 } }],
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,32 @@
+{
+  "oracle_id": "54730a15-0f03-4064-89dc-24de05117e7c",
+  "name": "Spirit en-Dal",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Spirit en-Dal",
+      "oracle_fingerprint": "aa6191235c2255490a0b094705972d4a",
+      "abilities": [
+        { "Keyword": "Shadow" },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{1}{W}" }, { "RevealFromHand": { "filter": ["This"] } }],
+            "condition": { "All": ["YourTurn", { "Step": "Upkeep" }] },
+            "limit": "OncePerTurn",
+            "from": "Hand",
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "AddKeyword": "Shadow" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

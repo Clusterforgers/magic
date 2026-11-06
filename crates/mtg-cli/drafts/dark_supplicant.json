@@ -1,0 +1,34 @@
+{
+  "oracle_id": "dc7929cb-50a9-4662-a106-c415fc03a1a9",
+  "name": "Dark Supplicant",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dark Supplicant",
+      "oracle_fingerprint": "67e270abd8c6cade283dcb30ac482184",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap", { "Sacrifice": { "filter": [{ "Subtype": "Cleric" }], "count": 3 } }],
+            "effects": [
+              {
+                "Search": {
+                  "also": ["Graveyard", "Hand"],
+                  "filter": [{ "OwnedBy": "You" }, { "Named": "Scion of Darkness" }],
+                  "as": "found"
+                }
+              },
+              { "Move": { "what": { "Bound": "found" }, "to": { "Battlefield": {} } } },
+              {
+                "If": {
+                  "condition": { "Searched": { "zone": "Library" } },
+                  "then": [{ "Shuffle": {} }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

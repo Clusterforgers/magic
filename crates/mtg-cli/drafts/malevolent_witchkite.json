@@ -1,0 +1,36 @@
+{
+  "oracle_id": "aee2cd1b-9bf9-4b91-83a4-2f1dbc82dcf4",
+  "name": "Malevolent Witchkite",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Malevolent Witchkite",
+      "oracle_fingerprint": "3c2817096086658c35dfbca8831e6330",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "SacrificeUpTo": {
+                  "filter": [
+                    { "AnyOf": [{ "Type": "Enchantment" }, { "Type": "Artifact" }, "Token"] }
+                  ],
+                  "count": {
+                    "Count": [
+                      { "AnyOf": [{ "Type": "Enchantment" }, { "Type": "Artifact" }, "Token"] },
+                      { "ControlledBy": "You" }
+                    ]
+                  },
+                  "as": "sacrificed"
+                }
+              },
+              { "Draw": { "count": { "Bound": "sacrificed~moved" } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

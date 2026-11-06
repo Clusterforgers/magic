@@ -1,0 +1,50 @@
+{
+  "oracle_id": "4c8196e0-c392-4402-b77c-e3d009e9899c",
+  "name": "Kookus",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Kookus",
+      "oracle_fingerprint": "9144c2b16d82c981d22f2a49061a320e",
+      "abilities": [
+        { "Keyword": "Trample" },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "if": {
+              "Compare": {
+                "left": {
+                  "Count": [
+                    { "Type": "Creature" },
+                    { "ControlledBy": "You" },
+                    { "Named": "Keeper of Kookus" }
+                  ]
+                },
+                "op": "Eq",
+                "right": 0
+              }
+            },
+            "effects": [
+              { "DealDamage": { "to": "You", "amount": 3 } },
+              { "Rule": { "rule": { "MustAttack": "This" }, "duration": "UntilEndOfTurn" } }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{R}",
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "ModifyPT": { "power": 1, "toughness": 0 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

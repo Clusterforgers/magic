@@ -1,0 +1,37 @@
+{
+  "oracle_id": "068b370f-a358-4244-8050-6c81680c55c7",
+  "name": "Stocking the Pantry",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Stocking the Pantry",
+      "oracle_fingerprint": "ba789f2fa1dedee3344b801161a0ecc8",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "Caused": {
+                "inner": {
+                  "Batch": {
+                    "CountersPut": {
+                      "what": [{ "Type": "Creature" }, { "ControlledBy": "You" }],
+                      "counter": "+1/+1"
+                    }
+                  }
+                },
+                "by": "You"
+              }
+            },
+            "effects": [{ "PutCounters": { "on": "This", "counter": { "Other": "supply" } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{2}" }, { "RemoveCounters": { "counter": { "Other": "supply" } } }],
+            "effects": [{ "Draw": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

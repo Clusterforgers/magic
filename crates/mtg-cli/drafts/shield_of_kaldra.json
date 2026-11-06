@@ -1,0 +1,32 @@
+{
+  "oracle_id": "4fdd570f-dbe0-486f-9843-f77f80956307",
+  "name": "Shield of Kaldra",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Shield of Kaldra",
+      "oracle_fingerprint": "363367cc6f9dd1462761242b69b9c2b2",
+      "abilities": [
+        {
+          "Static": {
+            "affected": {
+              "Each": [
+                { "Subtype": "Equipment" },
+                {
+                  "AnyOf": [
+                    { "Named": "Sword of Kaldra" },
+                    { "Named": "Shield of Kaldra" },
+                    { "Named": "Helm of Kaldra" }
+                  ]
+                }
+              ]
+            },
+            "mods": [{ "AddKeyword": "Indestructible" }]
+          }
+        },
+        { "Static": { "affected": "Attached", "mods": [{ "AddKeyword": "Indestructible" }] } },
+        { "Keyword": { "Equip": "{4}" } }
+      ]
+    }
+  ]
+}

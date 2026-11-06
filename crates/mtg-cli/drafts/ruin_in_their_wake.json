@@ -1,0 +1,60 @@
+{
+  "oracle_id": "68adbc52-34dd-47c4-bb1c-0c51033fe7cc",
+  "name": "Ruin in Their Wake",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ruin in Their Wake",
+      "oracle_fingerprint": "4ae421a4b3bce627475ea31552490e4d",
+      "abilities": [
+        { "Keyword": "Devoid" },
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Search": {
+                  "filter": [{ "Type": "Land" }, { "Supertype": "Basic" }],
+                  "reveal": true,
+                  "as": "found"
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": {
+                        "Count": [
+                          { "Type": "Land" },
+                          { "Named": "Wastes" },
+                          { "ControlledBy": "You" }
+                        ]
+                      },
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [
+                    {
+                      "May": {
+                        "effects": [
+                          {
+                            "Move": {
+                              "what": { "Bound": "found" },
+                              "to": { "Battlefield": { "tapped": true } }
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              },
+              { "Move": { "what": { "Bound": "found" }, "to": "Hand" } },
+              { "Shuffle": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,29 @@
+{
+  "oracle_id": "8960a213-cb72-4d67-bb4e-bcb1f657b944",
+  "name": "Piercing Rays",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Piercing Rays",
+      "oracle_fingerprint": "3460a58d0f8408d6c78eaab04345ac07",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }, "Tapped"] } }],
+            "effects": [{ "Exile": { "what": { "Target": 0 } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{2}{W}" }, { "RevealFromHand": { "filter": ["This"] } }],
+            "condition": { "All": ["YourTurn", { "Step": "Upkeep" }] },
+            "limit": "OncePerTurn",
+            "from": "Hand",
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }, "Untapped"] } }],
+            "effects": [{ "Tap": { "what": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

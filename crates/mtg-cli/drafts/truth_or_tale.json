@@ -1,0 +1,42 @@
+{
+  "oracle_id": "10674c2f-7920-4505-b8d5-e96f3da1cda3",
+  "name": "Truth or Tale",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Truth or Tale",
+      "oracle_fingerprint": "f99bc0150fa53d428a71f6b2ecd9c6c4",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "LookAtTop": { "count": 5, "as": "top" } },
+              { "Reveal": { "what": { "Bound": "top" } } },
+              {
+                "SeparatePiles": {
+                  "what": { "Bound": "top" },
+                  "chooser": "Opponents",
+                  "as": "pile2",
+                  "rest_as": "rest3"
+                }
+              },
+              {
+                "Choose": {
+                  "from": { "Each": [{ "Is": { "Bound": "pile2" } }, { "In": "Library" }] },
+                  "as": "card4"
+                }
+              },
+              { "Move": { "what": { "Bound": "card4" }, "to": "Hand" } },
+              {
+                "Move": {
+                  "what": { "Each": [{ "Is": { "Bound": "top" } }, { "In": "Library" }] },
+                  "to": { "Library": { "place": "Bottom" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

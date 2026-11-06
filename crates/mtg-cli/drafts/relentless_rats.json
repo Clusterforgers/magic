@@ -1,0 +1,31 @@
+{
+  "oracle_id": "104ea189-14cd-420f-afdc-57b0f827ab8e",
+  "name": "Relentless Rats",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Relentless Rats",
+      "oracle_fingerprint": "3fcfe0697d51d394abad542fc2fe5f89",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              {
+                "ModifyPT": {
+                  "power": {
+                    "Count": [{ "Type": "Creature" }, { "Named": "Relentless Rats" }, "Other"]
+                  },
+                  "toughness": {
+                    "Count": [{ "Type": "Creature" }, { "Named": "Relentless Rats" }, "Other"]
+                  }
+                }
+              }
+            ]
+          }
+        },
+        { "Rule": { "rule": "AnyNumberInDeck" } }
+      ]
+    }
+  ]
+}

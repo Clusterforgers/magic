@@ -1,0 +1,75 @@
+{
+  "oracle_id": "0ee06ed0-717a-4bfa-b634-d00e013c1f16",
+  "name": "Lonis, Cryptozoologist",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Lonis, Cryptozoologist",
+      "oracle_fingerprint": "95a0546282aa578dac0a91b6866bfd13",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [
+                  { "Type": "Creature" },
+                  { "ControlledBy": "You" },
+                  { "Not": "Token" },
+                  "Other"
+                ],
+                "to": "Battlefield"
+              }
+            },
+            "effects": [{ "CreateToken": { "token": { "Named": "clue" } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap", { "Sacrifice": { "filter": [{ "Subtype": "Clue" }], "count": "X" } }],
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              { "LookAtTop": { "who": { "Target": 0 }, "count": "X", "as": "top" } },
+              { "Reveal": { "what": { "Bound": "top" } } },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "Not": { "Type": "Land" } },
+                      { "Compare": { "stat": "ManaValue", "op": "Le", "to": "X" } },
+                      { "Is": { "Bound": "top" } },
+                      {
+                        "AnyOf": [
+                          { "Type": "Artifact" },
+                          { "Type": "Battle" },
+                          { "Type": "Creature" },
+                          { "Type": "Enchantment" },
+                          { "Type": "Land" },
+                          { "Type": "Planeswalker" }
+                        ]
+                      },
+                      { "In": "Library" }
+                    ]
+                  },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "card2"
+                }
+              },
+              {
+                "Move": {
+                  "what": { "Bound": "card2" },
+                  "to": { "Battlefield": { "under": "You" } }
+                }
+              },
+              {
+                "Move": {
+                  "what": { "Each": [{ "Is": { "Bound": "top" } }, { "In": "Library" }] },
+                  "to": { "Library": { "place": "Bottom", "order": "Random" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

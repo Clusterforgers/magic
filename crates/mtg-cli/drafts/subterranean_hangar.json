@@ -1,0 +1,29 @@
+{
+  "oracle_id": "0bbd5a04-c281-4afb-98a1-657b4eca102c",
+  "name": "Subterranean Hangar",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Subterranean Hangar",
+      "oracle_fingerprint": "686ac5fe6cd16ad9a19fa8c5d43a4a9f",
+      "abilities": [
+        { "Replacement": { "when": { "Enters": { "what": ["This"] } }, "by": "Tapped" } },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "PutCounters": { "on": "This", "counter": { "Other": "storage" } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [
+              "Tap",
+              { "RemoveCounters": { "counter": { "Other": "storage" }, "count": "X" } }
+            ],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Black"] }, "times": "X" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

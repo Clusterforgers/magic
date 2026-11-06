@@ -1,0 +1,34 @@
+{
+  "oracle_id": "2d28c83a-7415-4eb0-95a6-6245f2169d17",
+  "name": "Rootwater Depths",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Rootwater Depths",
+      "oracle_fingerprint": "1b7a891177ba12db509cee2dc8ba1e92",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Colorless"] } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [
+              { "AddMana": { "mana": { "OneOf": ["Blue", "Black"] } } },
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": ["DoesntUntap"],
+                  "duration": "NextUntapStep"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

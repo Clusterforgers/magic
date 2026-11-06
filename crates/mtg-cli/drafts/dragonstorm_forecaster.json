@@ -1,0 +1,33 @@
+{
+  "oracle_id": "02de8fa3-ac8d-47e5-b137-d5a0b7d8e951",
+  "name": "Dragonstorm Forecaster",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dragonstorm Forecaster",
+      "oracle_fingerprint": "1c1bf0228009c743cc09bd9e3367cfa3",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{2}" }, "Tap"],
+            "effects": [
+              {
+                "Search": {
+                  "filter": [
+                    {
+                      "AnyOf": [{ "Named": "Dragonstorm Globe" }, { "Named": "Boulderborn Dragon" }]
+                    }
+                  ],
+                  "reveal": true,
+                  "as": "found"
+                }
+              },
+              { "Move": { "what": { "Bound": "found" }, "to": "Hand" } },
+              { "Shuffle": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

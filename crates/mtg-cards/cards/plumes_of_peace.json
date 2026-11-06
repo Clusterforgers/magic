@@ -1,0 +1,25 @@
+{
+  "oracle_id": "5526dcae-90e8-4102-808d-56c89027898c",
+  "name": "Plumes of Peace",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Plumes of Peace",
+      "oracle_fingerprint": "fa7b9d7f1d215a95ca1641943fca1646",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        { "Static": { "affected": "Attached", "mods": ["DoesntUntap"] } },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{W}{U}" }, { "RevealFromHand": { "filter": ["This"] } }],
+            "condition": { "All": ["YourTurn", { "Step": "Upkeep" }] },
+            "limit": "OncePerTurn",
+            "from": "Hand",
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [{ "Tap": { "what": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

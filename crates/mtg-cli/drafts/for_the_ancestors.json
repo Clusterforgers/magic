@@ -26,6 +26,7 @@
                   "as": "kept3"
                 }
               },
+              { "Reveal": { "what": { "Bound": "kept3" } } },
               { "Move": { "what": { "Bound": "kept3" }, "to": "Hand" } },
               {
                 "Move": {

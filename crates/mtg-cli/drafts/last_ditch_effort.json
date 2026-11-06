@@ -1,0 +1,28 @@
+{
+  "oracle_id": "cdd8d7cf-28f2-4a4d-a373-40d48bff615b",
+  "name": "Last-Ditch Effort",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Last-Ditch Effort",
+      "oracle_fingerprint": "f54f0b6ba2df78d6f7d4234882793985",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [
+              {
+                "SacrificeUpTo": {
+                  "filter": [{ "Type": "Creature" }],
+                  "count": { "Count": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                  "as": "sacrificed"
+                }
+              },
+              { "DealDamage": { "to": { "Target": 0 }, "amount": { "Bound": "sacrificed~moved" } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

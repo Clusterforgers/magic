@@ -1,0 +1,34 @@
+{
+  "oracle_id": "89b1eab9-4d24-4367-99f7-263349f69c3a",
+  "name": "Jinxed Idol",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Jinxed Idol",
+      "oracle_fingerprint": "3c023cbf01a0214170c9bd66d3913528",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [{ "DealDamage": { "to": "You", "amount": 2 } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Sacrifice": { "filter": [{ "Type": "Creature" }] } }],
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "SetController": { "Target": 0 } }],
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

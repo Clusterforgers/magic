@@ -1,0 +1,32 @@
+{
+  "oracle_id": "d42922ba-73e2-459d-8d4e-02ca5759b108",
+  "name": "Brave Meadowguard",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Brave Meadowguard",
+      "oracle_fingerprint": "dc408a2e5b51ec97fabc66d24778185a",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "Conjure": { "name": "Might of the Meek", "zone": "Hand" } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "Nth": {
+                "event": {
+                  "BecomesTarget": { "what": ["This"], "by": [{ "ControlledBy": "You" }] }
+                },
+                "nth": 1
+              }
+            },
+            "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

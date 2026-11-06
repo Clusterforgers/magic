@@ -1,0 +1,58 @@
+{
+  "oracle_id": "55e897e9-5c70-4e32-8f24-3e0fefa319cd",
+  "name": "Nissa's Encouragement",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Nissa's Encouragement",
+      "oracle_fingerprint": "16393fd5438fca3bcc055639d9026578",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Search": {
+                  "also": ["Graveyard"],
+                  "filter": [{ "Named": "Forest" }],
+                  "reveal": true,
+                  "as": "found"
+                }
+              },
+              { "Move": { "what": { "Bound": "found" }, "to": "Hand" } },
+              {
+                "Search": {
+                  "also": ["Graveyard"],
+                  "filter": [{ "Named": "Brambleweft Behemoth" }],
+                  "reveal": true,
+                  "as": "found2"
+                }
+              },
+              { "Move": { "what": { "Bound": "found2" }, "to": "Hand" } },
+              {
+                "If": {
+                  "condition": { "Searched": { "zone": "Library" } },
+                  "then": [{ "Shuffle": {} }]
+                }
+              },
+              {
+                "Search": {
+                  "also": ["Graveyard"],
+                  "filter": [{ "Named": "Nissa, Genesis Mage" }],
+                  "reveal": true,
+                  "as": "found3"
+                }
+              },
+              { "Move": { "what": { "Bound": "found3" }, "to": "Hand" } },
+              {
+                "If": {
+                  "condition": { "Searched": { "zone": "Library" } },
+                  "then": [{ "Shuffle": {} }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

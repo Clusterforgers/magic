@@ -1,0 +1,47 @@
+{
+  "oracle_id": "9ac2dcb6-dacc-4fcb-b820-9fc6744ec503",
+  "name": "Nettle Guard",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Nettle Guard",
+      "oracle_fingerprint": "43b1d2dfec7786cae4348fe91e777789",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "Nth": {
+                "event": {
+                  "BecomesTarget": { "what": ["This"], "by": [{ "ControlledBy": "You" }] }
+                },
+                "nth": 1
+              }
+            },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "ModifyPT": { "power": 0, "toughness": 2 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{1}" }, "SacrificeSelf"],
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "AnyOf": [{ "Type": "Artifact" }, { "Type": "Enchantment" }] }]
+                }
+              }
+            ],
+            "effects": [{ "Destroy": { "what": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

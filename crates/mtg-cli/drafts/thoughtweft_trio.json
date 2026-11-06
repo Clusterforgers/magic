@@ -1,0 +1,51 @@
+{
+  "oracle_id": "15fca8d6-8a86-4c24-9178-f0b6496518ab",
+  "name": "Thoughtweft Trio",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Thoughtweft Trio",
+      "oracle_fingerprint": "1d88c10e71280b5c200a347c49a792aa",
+      "abilities": [
+        { "Keyword": "FirstStrike" },
+        { "Keyword": "Vigilance" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Choose": {
+                  "from": { "Each": [{ "Subtype": "Kithkin" }, "Other", { "ControlledBy": "You" }] },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "champion"
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "Count": [{ "Is": "This" }, { "In": "Battlefield" }] },
+                      "op": "Eq",
+                      "right": 0
+                    }
+                  },
+                  "then": [{ "Exile": { "what": { "Bound": "champion" } } }]
+                }
+              },
+              {
+                "Exile": { "what": { "Bound": "champion" }, "duration": "WhileSourceOnBattlefield" }
+              },
+              {
+                "If": {
+                  "condition": { "Not": "Performed" },
+                  "then": [{ "Sacrifice": { "filter": ["This"] } }]
+                }
+              }
+            ]
+          }
+        },
+        { "Static": { "affected": "This", "mods": [{ "BlocksAdditional": 99 }] } }
+      ]
+    }
+  ]
+}

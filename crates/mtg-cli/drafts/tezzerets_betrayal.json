@@ -1,0 +1,42 @@
+{
+  "oracle_id": "a660e7a0-0750-475d-a4bd-de5b37d53e97",
+  "name": "Tezzeret's Betrayal",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Tezzeret's Betrayal",
+      "oracle_fingerprint": "670dce60d7e7d7fe24dc25aeffbe6581",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              { "Destroy": { "what": { "Target": 0 } } },
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "Search": {
+                        "also": ["Graveyard"],
+                        "filter": [{ "OwnedBy": "You" }, { "Named": "Tezzeret, Master of Metal" }],
+                        "reveal": true,
+                        "as": "found"
+                      }
+                    },
+                    { "Move": { "what": { "Bound": "found" }, "to": "Hand" } },
+                    {
+                      "If": {
+                        "condition": { "Searched": { "zone": "Library" } },
+                        "then": [{ "Shuffle": {} }]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

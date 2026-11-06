@@ -1,0 +1,66 @@
+{
+  "oracle_id": "4eda40a2-39e5-4b0e-ba6d-8a6f89d6f55f",
+  "name": "Owen Grady, Raptor Trainer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Owen Grady, Raptor Trainer",
+      "oracle_fingerprint": "8b1a0296f3eb79b8c4c1248d586109b4",
+      "abilities": [
+        { "Keyword": { "PartnerWith": "Blue, Loyal Raptor" } },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "timing": "Sorcery",
+            "targets": [{ "what": { "Object": [{ "Subtype": "Dinosaur" }] } }],
+            "effects": [
+              {
+                "Either": {
+                  "first": [
+                    { "PutCounters": { "on": { "Target": 0 }, "counter": { "Other": "menace" } } }
+                  ],
+                  "second": [
+                    {
+                      "Either": {
+                        "first": [
+                          {
+                            "PutCounters": {
+                              "on": { "Target": 0 },
+                              "counter": { "Other": "trample" }
+                            }
+                          }
+                        ],
+                        "second": [
+                          {
+                            "Either": {
+                              "first": [
+                                {
+                                  "PutCounters": {
+                                    "on": { "Target": 0 },
+                                    "counter": { "Other": "reach" }
+                                  }
+                                }
+                              ],
+                              "second": [
+                                {
+                                  "PutCounters": {
+                                    "on": { "Target": 0 },
+                                    "counter": { "Other": "haste" }
+                                  }
+                                }
+                              ]
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

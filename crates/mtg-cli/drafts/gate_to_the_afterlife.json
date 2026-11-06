@@ -1,0 +1,58 @@
+{
+  "oracle_id": "5a682ec5-78e6-4238-b5c2-e94b7a8f8066",
+  "name": "Gate to the Afterlife",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Gate to the Afterlife",
+      "oracle_fingerprint": "5c42b2c072a8b47d85a8e3ecfb00d1ec",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Creature" }, { "Not": "Token" }, { "ControlledBy": "You" }],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "effects": [
+              { "GainLife": { "amount": 1 } },
+              { "Pay": { "cost": [{ "Draw": 1 }], "paid": [{ "Discard": {} }] } }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{2}" }, "Tap", "SacrificeSelf"],
+            "condition": {
+              "Compare": {
+                "left": {
+                  "Count": [{ "Type": "Creature" }, { "OwnedBy": "You" }, { "In": "Graveyard" }]
+                },
+                "op": "Ge",
+                "right": 6
+              }
+            },
+            "effects": [
+              {
+                "Search": {
+                  "also": ["Graveyard", "Hand"],
+                  "filter": [{ "OwnedBy": "You" }, { "Named": "God-Pharaoh's Gift" }],
+                  "as": "found"
+                }
+              },
+              { "Move": { "what": { "Bound": "found" }, "to": { "Battlefield": {} } } },
+              {
+                "If": {
+                  "condition": { "Searched": { "zone": "Library" } },
+                  "then": [{ "Shuffle": {} }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

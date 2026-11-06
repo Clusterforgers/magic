@@ -1,0 +1,33 @@
+{
+  "oracle_id": "48a830f1-8965-4f97-b3d8-ca98eab1ba33",
+  "name": "Sand Silos",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sand Silos",
+      "oracle_fingerprint": "92b1238aa5f71b3536949bdae533f9ef",
+      "abilities": [
+        { "Replacement": { "when": { "Enters": { "what": ["This"] } }, "by": "Tapped" } },
+        { "Rule": { "rule": { "Combat": { "who": "This", "quirk": "MayStayTapped" } } } },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "if": {
+              "CountOf": { "subject": "This", "selector": ["Tapped"], "op": "Ge", "right": 1 }
+            },
+            "effects": [{ "PutCounters": { "on": "This", "counter": { "Other": "storage" } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [
+              "Tap",
+              { "RemoveCounters": { "counter": { "Other": "storage" }, "count": "X" } }
+            ],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Blue"] }, "times": "X" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

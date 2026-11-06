@@ -1,0 +1,49 @@
+{
+  "oracle_id": "6067b8d0-5b00-402c-967d-e35a1304fafc",
+  "name": "Nissa, Leyline Tamer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Nissa, Leyline Tamer",
+      "oracle_fingerprint": "e7480f168b0b83455366300cbcda5e4e",
+      "abilities": [
+        { "Keyword": "Deathtouch" },
+        { "Keyword": "Vigilance" },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Land" }, { "ControlledBy": "You" }],
+                "to": "Battlefield"
+              }
+            },
+            "effects": [
+              { "Draw": {} },
+              {
+                "If": {
+                  "condition": { "Compare": { "left": "ResolvedThisTurn", "op": "Eq", "right": 1 } },
+                  "then": [
+                    {
+                      "RevealUntil": {
+                        "filter": [{ "Type": "Creature" }],
+                        "as": "found",
+                        "revealed_as": "revealed2"
+                      }
+                    },
+                    { "Move": { "what": { "Bound": "found" }, "to": { "Battlefield": {} } } },
+                    {
+                      "Move": {
+                        "what": { "Bound": "revealed2" },
+                        "to": { "Library": { "place": "Bottom", "order": "Random" } }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

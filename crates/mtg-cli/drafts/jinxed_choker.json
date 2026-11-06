@@ -1,0 +1,54 @@
+{
+  "oracle_id": "3241abc1-d739-4ac3-93d1-7fc2898b943b",
+  "name": "Jinxed Choker",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Jinxed Choker",
+      "oracle_fingerprint": "c7c2a173ac11d45090511a639fd9ac4b",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "SetController": { "Target": 0 } }],
+                  "duration": "Forever"
+                }
+              },
+              { "PutCounters": { "on": "This", "counter": "charge" } }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [
+              {
+                "DealDamage": {
+                  "to": "You",
+                  "amount": { "Counters": { "on": "This", "counter": "charge" } }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{3}",
+            "effects": [{ "PutCounters": { "on": "This", "counter": "charge" } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{3}",
+            "effects": [{ "RemoveCounters": { "from": "This", "counter": "charge" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

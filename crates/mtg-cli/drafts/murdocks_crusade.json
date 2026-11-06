@@ -1,0 +1,60 @@
+{
+  "oracle_id": "36330947-5ef9-4bff-b541-bfbddd9715a3",
+  "name": "Murdock's Crusade",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Murdock's Crusade",
+      "oracle_fingerprint": "8702b4f90a831b58b9b7bf6404a4d488",
+      "abilities": [
+        { "Keyword": { "Macro": { "name": "teamwork", "amount": 4 } } },
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Modal": {
+                  "choose": {
+                    "min": {
+                      "When": { "condition": "AdditionalCostPaid", "then": 2, "otherwise": 1 }
+                    },
+                    "max": {
+                      "When": { "condition": "AdditionalCostPaid", "then": 2, "otherwise": 1 }
+                    }
+                  },
+                  "modes": [
+                    {
+                      "targets": [
+                        {
+                          "what": {
+                            "Object": [
+                              { "Type": "Creature" },
+                              { "Compare": { "stat": "Toughness", "op": "Ge", "to": 4 } }
+                            ]
+                          }
+                        }
+                      ],
+                      "effects": [{ "Exile": { "what": { "Target": 0 } } }]
+                    },
+                    {
+                      "targets": [
+                        {
+                          "what": {
+                            "Object": [
+                              { "Type": "Enchantment" },
+                              { "Compare": { "stat": "ManaValue", "op": "Ge", "to": 4 } }
+                            ]
+                          }
+                        }
+                      ],
+                      "effects": [{ "Exile": { "what": { "Target": 0 } } }]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

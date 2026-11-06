@@ -1,0 +1,57 @@
+{
+  "oracle_id": "f00dd41d-4b11-491a-9e7b-12245092ab77",
+  "name": "Paroxysm",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Paroxysm",
+      "oracle_fingerprint": "9c1dbd3fa4683ca6a5b80a15e3446262",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": { "ControllerOf": "Attached" } } },
+            "effects": [
+              { "LookAtTop": { "who": "Triggering", "as": "top" } },
+              { "Reveal": { "what": { "Bound": "top" } } },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Bound": "top" },
+                      "selector": [{ "Type": "Land" }],
+                      "op": "Eq",
+                      "right": 1
+                    }
+                  },
+                  "then": [{ "Destroy": { "what": "Attached" } }]
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Bound": "top" },
+                      "selector": [{ "Type": "Land" }],
+                      "op": "Eq",
+                      "right": 0
+                    }
+                  },
+                  "then": [
+                    {
+                      "Continuous": {
+                        "affected": "Attached",
+                        "mods": [{ "ModifyPT": { "power": 3, "toughness": 3 } }],
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

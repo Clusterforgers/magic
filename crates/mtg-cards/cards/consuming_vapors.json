@@ -1,0 +1,33 @@
+{
+  "oracle_id": "a10ce333-48d7-499b-9355-f381f2395497",
+  "name": "Consuming Vapors",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Consuming Vapors",
+      "oracle_fingerprint": "ed1137449a2e1c78dc1d1cc6473e3813",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              {
+                "Sacrifice": {
+                  "who": { "Target": 0 },
+                  "filter": [{ "Type": "Creature" }],
+                  "as": "sacrificed"
+                }
+              },
+              {
+                "GainLife": {
+                  "amount": { "Stat": { "of": { "Bound": "sacrificed" }, "stat": "Toughness" } }
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": "Rebound" }
+      ]
+    }
+  ]
+}

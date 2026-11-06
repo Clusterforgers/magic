@@ -48,7 +48,7 @@
                   "effects": [
                     {
                       "Choose": {
-                        "from": { "Each": [{ "In": "Graveyard" }, { "OwnedBy": "You" }] },
+                        "from": { "Each": [{ "In": "Graveyard" }] },
                         "count": { "min": 0, "max": 1 },
                         "as": "picked"
                       }

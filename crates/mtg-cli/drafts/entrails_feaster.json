@@ -13,9 +13,7 @@
             "effects": [
               {
                 "Choose": {
-                  "from": {
-                    "Each": [{ "Type": "Creature" }, { "In": "Graveyard" }, { "OwnedBy": "You" }]
-                  },
+                  "from": { "Each": [{ "Type": "Creature" }, { "In": "Graveyard" }] },
                   "count": { "min": 0, "max": 1 },
                   "as": "picked"
                 }

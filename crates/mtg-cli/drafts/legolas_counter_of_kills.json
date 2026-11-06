@@ -1,0 +1,36 @@
+{
+  "oracle_id": "ddc12487-f577-4def-acdb-491f7ba6dc51",
+  "name": "Legolas, Counter of Kills",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Legolas, Counter of Kills",
+      "oracle_fingerprint": "2bbb13994b2f3dc52b9e004b54d2a886",
+      "abilities": [
+        { "Keyword": "Reach" },
+        {
+          "Triggered": {
+            "when": { "Did": { "action": "Scried", "who": "You" } },
+            "if": {
+              "CountOf": { "subject": "This", "selector": ["Tapped"], "op": "Ge", "right": 1 }
+            },
+            "limit": "OncePerTurnDone",
+            "effects": [{ "May": { "effects": [{ "Untap": { "what": "This" } }] } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,72 @@
+{
+  "oracle_id": "66f0f43c-829d-44d6-adda-d8885bfbfbaf",
+  "name": "Swashbuckler Extraordinaire",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Swashbuckler Extraordinaire",
+      "oracle_fingerprint": "748c98776b6a52245f054a032148aa53",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "CreateToken": { "token": { "Named": "treasure" } } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "GroupAttacks": { "what": [{ "Type": "Creature" }, { "ControlledBy": "You" }] }
+            },
+            "effects": [
+              {
+                "SacrificeUpTo": {
+                  "filter": [{ "Subtype": "Treasure" }],
+                  "count": { "Count": [{ "Subtype": "Treasure" }, { "ControlledBy": "You" }] },
+                  "as": "sacrificed"
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Bound": "sacrificed" },
+                      "selector": [],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [
+                    { "Bind": { "what": { "Bound": "sacrificed" }, "as": "when2" } },
+                    {
+                      "Reflexive": {
+                        "targets": [
+                          {
+                            "what": { "Object": [{ "Type": "Creature" }] },
+                            "bounds": {
+                              "min": 0,
+                              "max": { "CountOf": { "of": { "Bound": "when2" }, "filter": [] } }
+                            }
+                          }
+                        ],
+                        "effects": [
+                          {
+                            "Continuous": {
+                              "affected": { "Target": 0 },
+                              "mods": [{ "AddKeyword": "DoubleStrike" }],
+                              "duration": "UntilEndOfTurn"
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

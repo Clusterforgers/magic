@@ -1,0 +1,47 @@
+{
+  "oracle_id": "23b2de61-a29c-4a32-b38c-408c723727ce",
+  "name": "Agency Outfitter",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Agency Outfitter",
+      "oracle_fingerprint": "bfae429887d359b59d88d21c3a13b912",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "Search": {
+                        "also": ["Graveyard", "Hand"],
+                        "filter": [
+                          {
+                            "AnyOf": [{ "Named": "Magnifying Glass" }, { "Named": "Thinking Cap" }]
+                          }
+                        ],
+                        "count": { "min": 0, "max": 2 },
+                        "distinct": true,
+                        "as": "found"
+                      }
+                    },
+                    { "Move": { "what": { "Bound": "found" }, "to": { "Battlefield": {} } } },
+                    {
+                      "If": {
+                        "condition": { "Searched": { "zone": "Library" } },
+                        "then": [{ "Shuffle": {} }]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

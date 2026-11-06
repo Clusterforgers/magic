@@ -1,0 +1,34 @@
+{
+  "oracle_id": "f666a990-bd9c-4160-9770-4758fd40ca92",
+  "name": "Jaded Sell-Sword",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Jaded Sell-Sword",
+      "oracle_fingerprint": "4c219d0c514e156bef69bb92c7e8ee4e",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "if": {
+              "Compare": {
+                "left": { "ManaSpent": { "of": null, "from": { "subtypes": ["Treasure"] } } },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "AddKeyword": "FirstStrike" }, { "AddKeyword": "Haste" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

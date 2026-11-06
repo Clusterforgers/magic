@@ -20,6 +20,7 @@
                       "Count": [{ "Subtype": "Goblin" }, { "OwnedBy": "You" }, { "In": "Library" }]
                     }
                   },
+                  "reveal": true,
                   "as": "found"
                 }
               },

@@ -1,0 +1,30 @@
+{
+  "oracle_id": "a2196bc3-2fe6-49d4-8c79-d6beb3d6c5d8",
+  "name": "Wren's Run Hydra",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Wren's Run Hydra",
+      "oracle_fingerprint": "ff2341873ee92b801a6027ba87b2349d",
+      "abilities": [
+        { "Keyword": "Reach" },
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "WithCounters": { "counter": "+1/+1", "count": "X" } }
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{X}{G}{G}" }, "DiscardSelf"],
+            "from": "Hand",
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              { "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1", "count": "X" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

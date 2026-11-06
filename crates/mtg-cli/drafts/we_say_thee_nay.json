@@ -1,0 +1,31 @@
+{
+  "oracle_id": "1abe8246-d2f9-407b-8c16-83da0a6b7de3",
+  "name": "We Say Thee Nay!",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "We Say Thee Nay!",
+      "oracle_fingerprint": "38b73e89573d265e253aaec2b681d51d",
+      "abilities": [
+        { "Keyword": { "Macro": { "name": "teamwork", "amount": 2 } } },
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": ["Spell"] } }],
+            "effects": [
+              {
+                "Pay": {
+                  "who": { "ControllerOf": { "Target": 0 } },
+                  "cost": "{1}",
+                  "times": {
+                    "When": { "condition": "AdditionalCostPaid", "then": 4, "otherwise": 2 }
+                  },
+                  "unpaid": [{ "Counter": { "what": { "Target": 0 } } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

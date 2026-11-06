@@ -1,0 +1,42 @@
+{
+  "oracle_id": "98b99d7c-d006-471a-8583-0468743c1597",
+  "name": "Team Tactics",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Team Tactics",
+      "oracle_fingerprint": "514ddf7b0ee7e79c00f8e7826be39b7b",
+      "abilities": [
+        { "Keyword": { "Macro": { "name": "teamwork", "amount": 1 } } },
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "AddKeyword": "DoubleStrike" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "If": {
+                  "condition": "AdditionalCostPaid",
+                  "then": [
+                    {
+                      "Continuous": {
+                        "affected": { "Target": 0 },
+                        "mods": [{ "AddKeyword": "Trample" }],
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

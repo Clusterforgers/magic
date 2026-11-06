@@ -1,0 +1,65 @@
+{
+  "oracle_id": "e3ff6134-10dd-4565-afcb-0f41a2933d19",
+  "name": "Swindler's Scheme",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Swindler's Scheme",
+      "oracle_fingerprint": "b82b22e5a8600d1982ae0622fcc17c93",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "SpellCast": { "what": [{ "WasCast": { "from": "Hand" } }], "by": "Opponents" }
+            },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    { "LookAtTop": { "as": "top" } },
+                    { "Reveal": { "what": { "Bound": "top" } } },
+                    {
+                      "If": {
+                        "condition": {
+                          "CountOf": {
+                            "subject": { "Bound": "top" },
+                            "selector": [{ "SharesType": "Triggering" }],
+                            "op": "Ge",
+                            "right": 1
+                          }
+                        },
+                        "then": [{ "Counter": { "what": "Triggering" } }]
+                      }
+                    },
+                    {
+                      "If": {
+                        "condition": {
+                          "CountOf": {
+                            "subject": { "Bound": "top" },
+                            "selector": [{ "SharesType": "Triggering" }],
+                            "op": "Ge",
+                            "right": 1
+                          }
+                        },
+                        "then": [
+                          {
+                            "CastFromZone": {
+                              "who": "Triggering",
+                              "what": { "Bound": "top" },
+                              "free": true,
+                              "play": true
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
