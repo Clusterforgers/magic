@@ -1091,6 +1091,9 @@ fn gain_control(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
         Some("EOT") => "UntilEndOfTurn",
         // "For as long as ~ remains tapped" ends when the source untaps or leaves the battlefield.
         Some("Untap,LeavesPlay") => "WhileSourceTapped",
+        // "For as long as you control ~" also ends when another player takes the source (CR 611.2b).
+        Some("LeavesPlay,LoseControl") => "WhileYouControlSource",
+        Some("LeavesPlay") => "WhileSourceOnBattlefield",
         Some(other) => return unmapped(format!("key:GainControl.LoseControl={other}")),
     };
     let affected = match p.get("AllValid") {

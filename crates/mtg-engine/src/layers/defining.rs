@@ -271,6 +271,23 @@ fn a_characteristic_defining_ability_can_define_types_and_subtypes(
     );
 }
 
+#[rstest]
+fn a_characteristic_defining_ability_can_make_its_object_every_creature_type(
+    #[values(Where::Battlefield, Where::Hand, Where::Graveyard)] at: Where,
+) {
+    let ability =
+        r#"{"Static":{"affected":"This","mods":["AddAllCreatureTypes"],"defining":true}}"#;
+    let card = Arc::new(
+        CardDefinition::new("Hulk")
+            .with_type(CardType::Creature)
+            .with_power_toughness(1, 1)
+            .with_rules(rules(ability)),
+    );
+    let game = game_with(card, at);
+    let chars = characteristics(&game, named(&game, "Hulk").id).unwrap();
+    assert!(chars.all_creature_types);
+}
+
 #[test]
 fn abilities_that_count_each_other_end_and_give_the_same_answer_each_time() {
     // "Power: the creature cards in graveyards with power 1 or more", twice over: each counts the other and itself.

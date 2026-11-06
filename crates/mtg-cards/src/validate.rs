@@ -1849,6 +1849,7 @@ impl<'a> Walker<'a> {
                     | Modification::AddColors(_)
                     | Modification::AddType(_)
                     | Modification::AddSubtype(_)
+                    | Modification::AddAllCreatureTypes
             );
             if !defines {
                 self.at("mods", |w| {

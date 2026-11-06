@@ -81,3 +81,43 @@ fn only_if_you_were_attacked_this_step_is_a_cast_restriction() {
         "{json}"
     );
 }
+
+#[rstest]
+#[case::while_you_control_it("LeavesPlay,LoseControl", r#""duration":"WhileYouControlSource""#)]
+#[case::while_it_remains("LeavesPlay", r#""duration":"WhileSourceOnBattlefield""#)]
+#[case::while_it_stays_tapped("Untap,LeavesPlay", r#""duration":"WhileSourceTapped""#)]
+fn control_lasts_as_long_as_the_line_says(#[case] lose: &str, #[case] has: &str) {
+    let line = format!(
+        "A:AB$ GainControl | Cost$ T | ValidTgts$ Creature | LoseControl$ {lose} | SpellDescription$ Test."
+    );
+    let (json, gaps) = creature(&line);
+    assert!(gaps.is_empty(), "gaps: {gaps:?}");
+    assert!(json.contains(has), "{has} missing in {json}");
+}
+
+#[rstest]
+#[case::colorless("SetColor$ Colorless", r#""SetColors":[]"#)]
+#[case::all_colors(
+    "SetColor$ All",
+    r#""SetColors":["White","Blue","Black","Red","Green"]"#
+)]
+#[case::every_creature_type("AddAllCreatureTypes$ True", r#""AddAllCreatureTypes""#)]
+#[case::more_types("AddType$ Elf & Wizard", r#""AddSubtype":"Wizard""#)]
+fn a_characteristic_defining_line_defines_colors_and_types(#[case] mod_: &str, #[case] has: &str) {
+    let line = format!(
+        "S:Mode$ Continuous | Affected$ Card.Self | CharacteristicDefining$ True | {mod_} | Description$ Test."
+    );
+    let (json, gaps) = creature(&line);
+    assert!(gaps.is_empty(), "gaps: {gaps:?}");
+    assert!(
+        json.contains(has) && json.contains(r#""defining":true"#),
+        "{json}"
+    );
+}
+
+#[test]
+fn a_conditional_characteristic_defining_line_stays_a_gap() {
+    let line = "S:Mode$ Continuous | CharacteristicDefining$ True | Affected$ Card.Self | SetColor$ All | IsPresent$ Creature.YouCtrl | Description$ Test.";
+    let (_, gaps) = creature(line);
+    assert_eq!(gaps, ["key:Static.Continuous.defining-with-condition"]);
+}
