@@ -20,13 +20,18 @@ fn rule(json: &str) -> Ability {
 
 /// A creature that keeps its controller's life total at 1 or more against damage.
 fn guard() -> Arc<CardDefinition> {
+    floor_holder("Guard", 1)
+}
+
+/// A creature that keeps its controller's life total at `floor` or more against damage.
+fn floor_holder(name: &str, floor: i32) -> Arc<CardDefinition> {
     Arc::new(
-        CardDefinition::new("Guard")
+        CardDefinition::new(name)
             .with_type(CardType::Creature)
             .with_power_toughness(1, 1)
-            .with_rules(rule(
-                r#"{"Rule":{"rule":{"LifeFloor":{"who":"You","floor":1}}}}"#,
-            )),
+            .with_rules(rule(&format!(
+                r#"{{"Rule":{{"rule":{{"LifeFloor":{{"who":"You","floor":{floor}}}}}}}}}"#
+            ))),
     )
 }
 
@@ -104,5 +109,39 @@ fn the_trigger_reads_the_life_lost_under_a_floor(
         life_before.min(life_before - drained).max(1)
     );
     assert_eq!(life(&driver, 1), 20 - drained);
+    Ok(())
+}
+
+#[rstest]
+#[case::below_the_high_floor_the_low_one_holds(5, 10, 1)]
+#[case::at_the_high_floor_it_holds(7, 10, 7)]
+#[case::above_it_the_high_floor_holds(9, 10, 7)]
+#[case::far_above_the_damage_is_whole(20, 10, 10)]
+fn with_two_floors_the_highest_one_the_life_total_is_at_stops_the_damage(
+    #[values(2, 4)] seats: usize,
+    #[case] life_before: i32,
+    #[case] damage: u32,
+    #[case] left: i32,
+) -> Result<(), ScriptError> {
+    let mut scenario = Scenario::new(seats)
+        .at(1, 0, Step::Main1)
+        .life(0, life_before)
+        .hand(0, vec![zap(damage)])
+        .battlefield(
+            0,
+            vec![
+                ready(floor_holder("Worship", 1)),
+                ready(floor_holder("Wurm", 7)),
+                ready(mountain()),
+            ],
+        );
+    for seat in 0..seats {
+        scenario = scenario.library(seat, vec![forest(); 30]);
+    }
+    let mut driver = Driver::from_scenario(scenario)?;
+    let me = driver.target_player(0);
+    driver.cast_at("Zap", &[me])?;
+    settle(&mut driver)?;
+    assert_eq!(life(&driver, 0), left);
     Ok(())
 }

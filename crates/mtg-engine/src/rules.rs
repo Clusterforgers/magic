@@ -410,7 +410,7 @@ pub(crate) struct RulesInForce {
     uncounterable: BTreeSet<ObjectId>,
     no_life_gain: BTreeSet<PlayerId>,
     no_damage_loss: BTreeSet<PlayerId>,
-    life_floors: BTreeMap<PlayerId, i32>,
+    life_floors: BTreeMap<PlayerId, Vec<i32>>,
     radiation_gains: BTreeSet<PlayerId>,
     no_life_change: BTreeSet<PlayerId>,
     player_keywords: Vec<(PlayerId, Keyword)>,
@@ -663,8 +663,7 @@ impl RulesInForce {
             Rule::NoLifeLossFromDamage(players) => self.no_damage_loss.extend(players),
             Rule::LifeFloor { players, floor } => {
                 for player in players {
-                    let held = self.life_floors.entry(*player).or_insert(*floor);
-                    *held = (*held).max(*floor);
+                    self.life_floors.entry(*player).or_default().push(*floor);
                 }
             }
             Rule::RadiationGainsLife(players) => self.radiation_gains.extend(players),
@@ -1378,9 +1377,14 @@ pub fn life_total_cant_change(state: &GameState, player: PlayerId) -> bool {
     state.rules().no_life_change.contains(&player)
 }
 
-/// The life total damage can't take `player` below, if a rule sets one: the one place the damage events read this rule.
-pub fn damage_life_floor(state: &GameState, player: PlayerId) -> Option<i32> {
-    state.rules().life_floors.get(&player).copied()
+/// The life total damage can't take `player` below at `life`, if a rule sets one: the highest floor the total is at or above,
+/// since a floor that is not yet reached has nothing to hold (CR 614.1); the one place the damage events read this rule.
+pub fn damage_life_floor(state: &GameState, player: PlayerId, life: i32) -> Option<i32> {
+    state
+        .rules()
+        .life_floors
+        .get(&player)
+        .and_then(|floors| floors.iter().copied().filter(|floor| life >= *floor).max())
 }
 
 /// Whether damage dealt to `player` causes no loss of life: the one place the damage events read this rule.

@@ -14,19 +14,13 @@ pub(super) fn damage_lost(
     player: PlayerId,
     amount: u32,
 ) -> u32 {
-    let Some(floor) = crate::rules::damage_life_floor(pre, player) else {
-        return amount;
-    };
     let Some(mut life) = pre.player(player).map(crate::player::Player::life) else {
         return amount;
     };
     let wanted = |amount: u32| i32::try_from(amount).unwrap_or(i32::MAX);
-    let capped = |life: i32, amount: u32| {
-        if life >= floor {
-            wanted(amount).min(life.saturating_sub(floor))
-        } else {
-            wanted(amount)
-        }
+    let capped = |life: i32, amount: u32| match crate::rules::damage_life_floor(pre, player, life) {
+        Some(floor) => wanted(amount).min(life.saturating_sub(floor)),
+        None => wanted(amount),
     };
     for event in earlier {
         life = match event {
