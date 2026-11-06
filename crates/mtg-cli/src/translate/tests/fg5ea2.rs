@@ -95,7 +95,10 @@ fn a_verb_maps_to_its_node(#[case] line: &str, #[case] node: Value) {
 }
 
 #[rstest]
-#[case::reveal_look("RevealHand | ValidTgts$ Player | Look$ True", "key:RevealHand.Look")]
+#[case::reveal_look(
+    "RevealHand | ValidTgts$ Player | Look$ True | RememberRevealed$ True",
+    "key:RevealHand.Look"
+)]
 #[case::name_random("NameCard | Defined$ You | AtRandom$ True", "key:NameCard.AtRandom")]
 #[case::name_list(
     "NameCard | Defined$ You | ChooseFromList$ Alpha,Beta",

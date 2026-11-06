@@ -348,6 +348,10 @@ const PUBLIC: Record<VariantName<Event>, [Event, string]> = {
     { LibraryLooked: { player: 0, cards: [1, 2, 3] } },
     'Ana looks at 3 cards of their library',
   ],
+  HandLooked: [
+    { HandLooked: { player: 0, of: 1, cards: [1, 2] } },
+    "Ana looks at Bo's hand: Grizzly Bears and Hill Giant",
+  ],
   CardsFound: [{ CardsFound: { player: 1, zone: { Library: 1 }, cards: [3] } }, 'Bo finds 1 card'],
   Scried: [{ Scried: { player: 0, top: [1], bottom: [2, 3] } }, 'Ana scries 3'],
   Surveilled: [{ Surveilled: { player: 0, top: [1], graveyard: [2, 3] } }, 'Ana surveils 3'],
@@ -486,6 +490,7 @@ const HIDDEN: Record<VariantName<HiddenEvent>, [HiddenEvent, string]> = {
   ObjectLeftGame: ['ObjectLeftGame', 'A card leaves the game'],
   Remembered: [{ Remembered: { count: 1 } }, 'A source remembers objects'],
   LibraryLooked: [{ LibraryLooked: { player: 1, count: 2 } }, 'Bo looks at 2 cards of their library'],
+  HandLooked: [{ HandLooked: { player: 1, of: 0, count: 2 } }, "Bo looks at 2 cards of Ana's hand"],
   CardsFound: [{ CardsFound: { player: 1, count: 1 } }, 'Bo finds 1 card'],
   Scried: [{ Scried: { player: 1, top: 1, bottom: 1 } }, 'Bo scries 2'],
   Surveilled: [{ Surveilled: { player: 1, top: 1, graveyard: 2 } }, 'Bo surveils 3'],

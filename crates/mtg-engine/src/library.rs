@@ -31,6 +31,18 @@ pub struct LibraryLooked {
     pub cards: Vec<ObjectId>,
 }
 
+/// A player looked at the whole hand of a player.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[cfg_attr(feature = "ts", derive(ts_rs::TS))]
+pub struct HandLooked {
+    /// Who looked.
+    pub player: PlayerId,
+    /// Whose hand.
+    pub of: PlayerId,
+    /// The cards, in the order of the hand.
+    pub cards: Vec<ObjectId>,
+}
+
 /// A player found cards by searching a zone.
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 #[cfg_attr(feature = "ts", derive(ts_rs::TS))]

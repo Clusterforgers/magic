@@ -69,6 +69,7 @@ mod gain_life;
 mod goad;
 mod if_then;
 mod learn;
+mod look_at_hand;
 mod look_at_top;
 mod lose_life;
 mod manifest;
@@ -178,6 +179,7 @@ fn dispatch(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         Effect::Mill { .. } => mill::run(cx, effect),
         Effect::Scry { .. } => scry::run(cx, effect),
         Effect::LookAtTop { .. } => look_at_top::run(cx, effect),
+        Effect::LookAtHand { .. } => look_at_hand::run(cx, effect),
         Effect::Reveal { .. } => reveal::run(cx, effect),
         Effect::Search { .. } => search::run(cx, effect),
         Effect::Choose { .. } => choose::run(cx, effect),
@@ -295,7 +297,7 @@ mod tests {
 
     /// One effect of every variant of the vocabulary.
     const EFFECTS: &str = r#"[
-        {"Draw":{}}, {"Discard":{}}, {"Mill":{}}, {"Scry":{}}, {"LookAtTop":{"as":"top"}},
+        {"Draw":{}}, {"Discard":{}}, {"Mill":{}}, {"Scry":{}}, {"LookAtTop":{"as":"top"}}, {"LookAtHand":{"of":"You"}},
         {"Reveal":{"what":"This"}}, {"Search":{"filter":[],"as":"found"}},
         {"Choose":{"from":"This","as":"chosen"}}, {"ChooseAtRandom":{"from":"This","as":"picked"}}, {"ChooseValue":{"kind":"Color","as":"hue"}}, {"Shuffle":{}}, {"Move":{"what":"This","to":"Hand"}},
         {"Destroy":{"what":"This"}}, {"Exile":{"what":"This"}}, {"Sacrifice":{"filter":[]}},
@@ -344,7 +346,7 @@ mod tests {
     #[test]
     fn the_capabilities_name_exactly_the_effects_that_run() {
         let effects: Vec<Effect> = serde_json::from_str(EFFECTS).unwrap();
-        assert_eq!(effects.len(), 109, "one sample for each variant of Effect");
+        assert_eq!(effects.len(), 110, "one sample for each variant of Effect");
         let game = state(
             vec![vec![], vec![]],
             vec![vec![creature("Bear", 2, 2)], vec![]],
@@ -384,6 +386,7 @@ mod tests {
         "Effect.Mill",
         "Effect.Scry",
         "Effect.LookAtTop",
+        "Effect.LookAtHand",
         "Effect.Reveal",
         "Effect.Search",
         "Effect.Choose",

@@ -168,6 +168,7 @@ const RUNS: &[&str] = &[
     "Effect.Mill",
     "Effect.Scry",
     "Effect.LookAtTop",
+    "Effect.LookAtHand",
     "Effect.Reveal",
     "Effect.Search",
     "Search.Zones",
@@ -744,6 +745,7 @@ mod tests {
     #[case::milling("Effect.Mill", true)]
     #[case::scrying("Effect.Scry", true)]
     #[case::looking_at_the_top("Effect.LookAtTop", true)]
+    #[case::looking_at_a_hand("Effect.LookAtHand", true)]
     #[case::revealing("Effect.Reveal", true)]
     #[case::shuffling("Effect.Shuffle", true)]
     #[case::moving("Effect.Move", true)]

@@ -44,6 +44,7 @@ pub fn chain_at(ctx: &mut Ctx, p: &Params, top: bool) -> Tr<Vec<Value>> {
     let excess = ctx.excess.clone();
     let mut effects = line(ctx, &own.without(&unless_keys).without(spent))?;
     // A name bound inside a condition or a "may" stays for the lines after it that count it or test that it holds something.
+    let mut newly_scoped = Vec::new();
     if asks || condition.is_some() {
         ctx.excess = excess;
         for (now, was) in [(&ctx.remembered, &before.0), (&ctx.imprinted, &before.1)] {
@@ -53,7 +54,9 @@ pub fn chain_at(ctx: &mut Ctx, p: &Params, top: bool) -> Tr<Vec<Value>> {
                     .and_then(|held| held.get("Bound"))
                     .and_then(Value::as_str)
             {
-                ctx.scoped.insert(name.to_owned());
+                if ctx.scoped.insert(name.to_owned()) {
+                    newly_scoped.push(name.to_owned());
+                }
             }
         }
     }
@@ -69,6 +72,17 @@ pub fn chain_at(ctx: &mut Ctx, p: &Params, top: bool) -> Tr<Vec<Value>> {
         let who = may_decider(ctx, p)?;
         effects = super::frame::ask(effects, &who);
     }
+    // A condition on the step that took the cards also covers the permission an `Effect` line gives for them: with nothing
+    // taken the permission names nothing, so the lines that only hold it run inside the condition.
+    let inside = condition.is_some()
+        && !p.has("UnlessCost")
+        && p.get("SubAbility")
+            .is_some_and(|name| holds_what_was_taken(ctx, name));
+    if inside {
+        for name in &newly_scoped {
+            ctx.scoped.remove(name);
+        }
+    }
     let mut rest = match p.get("SubAbility") {
         Some(name) => {
             let next = ctx.sub(name)?;
@@ -76,6 +90,9 @@ pub fn chain_at(ctx: &mut Ctx, p: &Params, top: bool) -> Tr<Vec<Value>> {
         }
         None => Vec::new(),
     };
+    if inside {
+        effects.append(&mut rest);
+    }
     // A roll read only as a number: the lines after it run in its one row, where the result is known.
     if p.has("ResultSVar")
         && !rest.is_empty()
@@ -105,6 +122,32 @@ pub fn chain_at(ctx: &mut Ctx, p: &Params, top: bool) -> Tr<Vec<Value>> {
             Ok(vec![json!({"Pay": {"cost": cost, "paid": effects}})])
         }
         _ => Ok(effects),
+    }
+}
+
+/// Whether the named part is an `Effect` line about the objects the step before it remembered, followed by nothing but the
+/// cleanup of that memory: it holds a permission or shield for those objects and has no other reach.
+fn holds_what_was_taken(ctx: &Ctx, name: &str) -> bool {
+    let Some(text) = ctx.svar(name) else {
+        return false;
+    };
+    let line = Params::parse(text);
+    if line.get("DB") != Some("Effect")
+        || !matches!(
+            line.get("RememberObjects"),
+            Some("Remembered" | "RememberedCard")
+        )
+        || line.has("ConditionDefined")
+        || line.has("ConditionPresent")
+    {
+        return false;
+    }
+    match line.get("SubAbility").and_then(|next| ctx.svar(next)) {
+        None => true,
+        Some(next) => {
+            let next = Params::parse(next);
+            next.get("DB") == Some("Cleanup") && !next.has("SubAbility")
+        }
     }
 }
 

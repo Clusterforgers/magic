@@ -13,7 +13,7 @@ use crate::counters::CountersChanged;
 use crate::day_night::DayNight;
 use crate::decision::Unplayable;
 use crate::effects::ContinuousEffect;
-use crate::library::{CardsFound, LibraryLooked, Revealed, Scried, Surveilled};
+use crate::library::{CardsFound, HandLooked, LibraryLooked, Revealed, Scried, Surveilled};
 use crate::manual::{ManualAction, ManualRoll};
 use crate::object::{Chosen, FaceDown, ObjectRef};
 use crate::player::LossReason;
@@ -561,6 +561,8 @@ pub enum Event {
     EmblemCreated(crate::w6b_emblems::EmblemCreated),
     /// A player looked at cards in a library.
     LibraryLooked(LibraryLooked),
+    /// A player looked at a hand.
+    HandLooked(HandLooked),
     /// A player found cards by searching.
     CardsFound(CardsFound),
     /// A player scried.
@@ -1158,6 +1160,7 @@ impl Event {
             | Event::CommanderStayed { .. }
             | Event::CompanionRevealed { .. }
             | Event::LibraryLooked(_)
+            | Event::HandLooked(_)
             | Event::CardsFound(_)
             | Event::ChosenAtRandom { .. }
             | Event::Sought { .. }

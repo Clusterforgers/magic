@@ -148,6 +148,7 @@ fn cards(ctx: &Ctx, effect: &Effect) -> Option<String> {
                 None => format!("deal {damage}"),
             }
         }
+        Effect::LookAtHand { of } => format!("look at {} hand", phrase::whose(ctx, of)),
         Effect::Reveal { what } => format!("reveal {}", phrase::who(ctx, what)),
         Effect::Shuffle { who } => act(
             ctx,

@@ -28,7 +28,7 @@ use mtg_engine::events::{ResolutionOutcome, ZoneCause};
 use mtg_engine::forecast::{
     AttackerForecast, CombatForecast, CreatureForecast, ForecastDamage, PlayerForecast,
 };
-use mtg_engine::library::{CardsFound, LibraryLooked, Revealed, Scried, Surveilled};
+use mtg_engine::library::{CardsFound, HandLooked, LibraryLooked, Revealed, Scried, Surveilled};
 use mtg_engine::mana::{ManaOption, ManaPool, ManaSource, Payment};
 use mtg_engine::manual::{ManualAction, ManualZone};
 use mtg_engine::object::{Chosen, ObjectRef};
@@ -808,6 +808,11 @@ fn every_event_view_variant_round_trips() {
         HiddenEvent::CardsBottomed { player, count: 2 },
         HiddenEvent::ObjectLeftGame,
         HiddenEvent::LibraryLooked { player, count: 3 },
+        HiddenEvent::HandLooked {
+            player,
+            of: player,
+            count: 4,
+        },
         HiddenEvent::CardsFound { player, count: 1 },
         HiddenEvent::Scried {
             player,
@@ -1567,6 +1572,11 @@ fn primitive_events() -> Vec<Event> {
         Event::LibraryLooked(LibraryLooked {
             player,
             cards: vec![a],
+        }),
+        Event::HandLooked(HandLooked {
+            player,
+            of: player,
+            cards: vec![a, b],
         }),
         Event::CardsFound(CardsFound {
             player,

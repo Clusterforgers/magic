@@ -41,6 +41,7 @@ export function idsToRemember(event: EventView): ObjectId[] {
   if (!('Public' in event) || typeof event.Public === 'string') return []
   const inner = event.Public
   if ('LibraryLooked' in inner) return inner.LibraryLooked.cards
+  if ('HandLooked' in inner) return inner.HandLooked.cards
   if ('Revealed' in inner) return inner.Revealed.cards
   if ('ManualAction' in inner) {
     const { action } = inner.ManualAction

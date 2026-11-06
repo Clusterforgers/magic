@@ -365,6 +365,11 @@ pub enum Effect {
         #[serde(rename = "as")]
         bind: String,
     },
+    /// The controller looks at the whole hand of each player the reference names; only they learn the cards.
+    LookAtHand {
+        /// Whose hand.
+        of: Ref,
+    },
     /// The objects are revealed to every player.
     Reveal {
         /// What is revealed.
