@@ -212,6 +212,8 @@ pub fn variants(ability: &Ability) -> Vec<String> {
     texts.extend(incubated);
     let regenerating = regeneration_wordings(&texts);
     texts.extend(regenerating);
+    let kept_down = super::r5c_order::r5c_held_wordings(&texts);
+    texts.extend(kept_down);
     // A card may count the casts of "a commander" for those of "your commander" (Jirina Kudro).
     let commanders: Vec<String> = texts
         .iter()
@@ -470,6 +472,24 @@ fn produced_wordings(texts: &mut Vec<String>) {
 /// and the wordings of the oracle text that no template reads ("you" after another player's event, "Then" opening a
 /// sentence, "deals damage equal to its power").
 pub fn written_variants(ability: &Ability) -> Vec<String> {
+    let texts = written_as_given(ability);
+    if !texts.is_empty() {
+        return texts;
+    }
+    // A selector is a conjunction: the same parts in the readers' order are the same rule.
+    let mut texts: Vec<String> = Vec::new();
+    for ordered in super::r5c_order::r5c_reordered(ability) {
+        for text in written_as_given(&ordered) {
+            if !texts.contains(&text) {
+                texts.push(text);
+            }
+        }
+    }
+    texts
+}
+
+/// Every wording of an ability, its selectors in the order given.
+fn written_as_given(ability: &Ability) -> Vec<String> {
     if let Some(texts) = super::w20b_reflexive::w20b_variants(ability, written_variants) {
         return texts;
     }
@@ -2324,6 +2344,15 @@ impl Writer<'_> {
     }
 
     fn other_effect(&mut self, effect: &Effect) -> Option<String> {
+        if let Effect::Continuous {
+            affected,
+            mods,
+            duration: Duration::NextUntapStep,
+        } = effect
+            && matches!(mods.as_slice(), [Modification::DoesntUntap])
+        {
+            return self.r5c_held_down(affected);
+        }
         self.graveyard_exile(effect)
             .or_else(|| self.library_exile(effect))
             .or_else(|| self.exiled(effect))
@@ -3037,6 +3066,42 @@ impl Writer<'_> {
     }
 
     /// "target creature gets +2/+2 and gains flying until end of turn".
+    /// "Target creature doesn't untap during its controller's next untap step", "lands you control don't untap during
+    /// your next untap step": a rule that holds permanents down through the next untap step of their controller.
+    fn r5c_held_down(&mut self, affected: &Ref) -> Option<String> {
+        let (subject, plural, yours) = match affected {
+            Ref::This => ("~".to_owned(), false, true),
+            Ref::Triggering => ("that creature".to_owned(), false, false),
+            Ref::Target(0) if self.target_is(|what| matches!(what, Targetable::Object(_))) => {
+                let single = self.at_most_one(affected);
+                let subject = if self.named && self.single(affected) {
+                    "it".to_owned()
+                } else {
+                    self.name_target()?
+                };
+                (subject, !single, false)
+            }
+            Ref::Each(selector) => {
+                let phrase = phrase_text(selector, Form::All)?;
+                let all = selector.0.iter().all(is_a_type);
+                let subject = if all { format!("all {phrase}") } else { phrase };
+                (
+                    subject,
+                    true,
+                    selector.0.contains(&Pred::ControlledBy(Ref::You)),
+                )
+            }
+            _ => return None,
+        };
+        let verb = if plural { "don't" } else { "doesn't" };
+        let step = match (yours, plural) {
+            (true, _) => "your next untap step",
+            (false, false) => "its controller's next untap step",
+            (false, true) => "their controllers' next untap steps",
+        };
+        Some(format!("{subject} {verb} untap during {step}"))
+    }
+
     fn pump(
         &mut self,
         affected: &Ref,
