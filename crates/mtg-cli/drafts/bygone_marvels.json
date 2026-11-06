@@ -8,34 +8,6 @@
       "oracle_fingerprint": "d26c1c29b820657cf7013aa90408f4fb",
       "abilities": [
         {
-          "Spell": {
-            "targets": [
-              {
-                "what": {
-                  "Object": [
-                    { "OwnedBy": "You" },
-                    {
-                      "AnyOf": [
-                        { "Type": "Artifact" },
-                        { "Type": "Battle" },
-                        { "Type": "Creature" },
-                        { "Type": "Enchantment" },
-                        { "Type": "Land" },
-                        { "Type": "Planeswalker" }
-                      ]
-                    },
-                    { "In": "Graveyard" }
-                  ]
-                }
-              }
-            ],
-            "effects": [
-              { "Move": { "what": { "Target": 0 }, "to": "Hand" } },
-              { "Exile": { "what": "This" } }
-            ]
-          }
-        },
-        {
           "Triggered": {
             "when": { "SpellCast": { "what": ["This"] } },
             "if": {
@@ -61,6 +33,34 @@
               }
             },
             "effects": [{ "CopySpell": { "what": "Triggering", "count": 2, "new_targets": true } }]
+          }
+        },
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "OwnedBy": "You" },
+                    {
+                      "AnyOf": [
+                        { "Type": "Artifact" },
+                        { "Type": "Battle" },
+                        { "Type": "Creature" },
+                        { "Type": "Enchantment" },
+                        { "Type": "Land" },
+                        { "Type": "Planeswalker" }
+                      ]
+                    },
+                    { "In": "Graveyard" }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              { "Move": { "what": { "Target": 0 }, "to": "Hand" } },
+              { "Exile": { "what": "This" } }
+            ]
           }
         }
       ]
