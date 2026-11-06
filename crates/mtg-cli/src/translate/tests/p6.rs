@@ -221,7 +221,7 @@ fn who_picks_unknowns_stay_gaps(#[case] line: &str, #[case] gap: &str) {
 #[rstest]
 #[case::stack("Stack", "defined:Stack-Targeted")]
 #[case::stack_with_battlefield("Battlefield,Stack", "zone:Origin=Battlefield,Stack")]
-#[case::command("Command", "zone:Origin=Command")]
+#[case::command_list("Command,Graveyard", "zone:Origin=Command,Graveyard")]
 #[case::repeated("Graveyard,Graveyard", "zone:Origin=Graveyard,Graveyard")]
 fn zones_without_a_node_stay_gaps(#[case] origin: &str, #[case] gap: &str) {
     let (_, found) = sorcery(&format!(

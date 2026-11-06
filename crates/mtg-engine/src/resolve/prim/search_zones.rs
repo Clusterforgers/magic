@@ -64,6 +64,7 @@ fn labelled(subset: &[ZoneKind]) -> String {
 /// give up what it holds (CR 701.23b), so the fewest is then 0. Each zone searched is one `CardsFound` for the
 /// searcher, also when it held nothing that matches, and the cards found are bound to the name. A player who has just
 /// one zone to search is not asked which. Nothing matching is no question.
+#[allow(clippy::too_many_lines)]
 pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
     let Effect::Search {
         who,
@@ -73,6 +74,7 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         filter,
         count,
         reveal,
+        distinct,
         bind,
     } = effect
     else {
@@ -134,6 +136,11 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
                 Ok(cards) => cards,
                 Err(stop) => return Stop::settle(Err(stop)),
             }
+        };
+        let cards = if *distinct {
+            super::search::one_per_name(state, cards)
+        } else {
+            cards
         };
         found.extend(
             cards

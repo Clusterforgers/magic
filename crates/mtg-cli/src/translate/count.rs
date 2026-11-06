@@ -314,7 +314,7 @@ pub(super) fn zone_selector(ctx: &Ctx, zones: &[&str], filter: &str) -> Tr<Vec<V
 }
 
 /// All of the predicates as one: not any of their negations.
-fn all_of(mut preds: Vec<Value>) -> Value {
+pub(super) fn all_of(mut preds: Vec<Value>) -> Value {
     if preds.len() == 1 {
         return preds.remove(0);
     }

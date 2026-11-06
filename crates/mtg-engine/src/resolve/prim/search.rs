@@ -38,6 +38,22 @@ pub(super) fn nothing_outside(bind: &str) -> Run {
     }
 }
 
+/// The first card of each name, in the order chosen: "with different names" keeps one of a kind (CR 201.3).
+pub(super) fn one_per_name(state: &crate::state::GameState, cards: Vec<ObjectId>) -> Vec<ObjectId> {
+    let mut seen: Vec<&str> = Vec::new();
+    let mut kept = Vec::new();
+    for id in cards {
+        let Some(name) = state.object(id).map(|card| card.card().name.as_str()) else {
+            continue;
+        };
+        if !seen.contains(&name) {
+            seen.push(name);
+            kept.push(id);
+        }
+    }
+    kept
+}
+
 /// Each player the effect names who is still in the game, in turn order, searches their zone for the cards that match
 /// the filter and chooses between `count.min` and `count.max` of them; the cards chosen of all the players are bound to
 /// the name. The searcher alone is asked and sees the matches, so nobody else learns what the zone holds. A hidden zone
@@ -46,6 +62,7 @@ pub(super) fn nothing_outside(bind: &str) -> Run {
 /// Everyone chooses before anything is logged. Each search is one `CardsFound`, private to the searcher whether
 /// or not a card was found, and the cards are revealed to every seat in one `Revealed` after it when the effect says so.
 /// A player who can't search libraries does not search one.
+#[allow(clippy::too_many_lines)]
 pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
     let Effect::Search {
         who,
@@ -55,6 +72,7 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         filter,
         count,
         reveal,
+        distinct,
         bind,
     } = effect
     else {
@@ -129,6 +147,11 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
     let mut events = Vec::new();
     let mut found: Vec<Target> = Vec::new();
     for ((player, place), (_, cards)) in searches.into_iter().zip(taken) {
+        let cards = if *distinct {
+            one_per_name(state, cards)
+        } else {
+            cards
+        };
         found.extend(
             cards
                 .iter()
@@ -305,6 +328,26 @@ mod tests {
             options.from.windows(2).all(|pair| pair[0] < pair[1]),
             "the cards are listed by id, which says nothing of their places in the library"
         );
+    }
+
+    #[rstest]
+    #[case::distinct(true, &["Forest", "Island"])]
+    #[case::any_names(false, &["Forest", "Island", "Forest"])]
+    fn different_names_keeps_one_card_of_each_name(#[case] distinct: bool, #[case] kept: &[&str]) {
+        let game = game();
+        let flag = if distinct { r#","distinct":true"# } else { "" };
+        let effect = search(&format!(
+            r#"{{"Search":{{"filter":{BASIC_LAND},"count":{{"min":0,"max":3}}{flag},"as":"found"}}}}"#
+        ));
+        let decision = asked(run_with(&game, Vec::new(), &effect).unwrap());
+        let cards = options_of(&decision).from.clone();
+        let journal = vec![(ME, Choice::Cards(cards))];
+        let (_, found) = done(run_with(&game, journal, &effect).unwrap());
+        let names: Vec<String> = found
+            .iter()
+            .map(|t| name(&game, t.object().unwrap().id))
+            .collect();
+        assert_eq!(names, kept);
     }
 
     #[rstest]

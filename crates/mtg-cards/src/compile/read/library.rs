@@ -756,6 +756,7 @@ pub fn may_search_text(owner: &str, who: &Ref, inner: &[Effect]) -> Option<Strin
 }
 
 /// A search by `who`, the move of what it finds and the shuffle, or the shuffle and then the move to the top.
+#[allow(clippy::too_many_lines)]
 fn search_sequence(effects: &[Effect], who: &Ref) -> Option<(String, usize)> {
     let [
         Effect::Search {
@@ -766,6 +767,7 @@ fn search_sequence(effects: &[Effect], who: &Ref) -> Option<(String, usize)> {
             filter,
             count,
             reveal,
+            distinct: false,
             bind,
         },
         rest @ ..,
@@ -790,6 +792,7 @@ fn search_sequence(effects: &[Effect], who: &Ref) -> Option<(String, usize)> {
                 filter: other,
                 count: other_count,
                 reveal: other_reveal,
+                distinct: false,
                 bind: other_bind,
             },
             ..,

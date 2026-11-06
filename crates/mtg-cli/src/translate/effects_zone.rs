@@ -17,7 +17,16 @@ pub fn effects(ctx: &mut Ctx, p: &Params, api: &str) -> Tr<Vec<Value>> {
     }
     let origin = if api == "ChangeZone" && p.get("Origin") == Some("Stack") {
         "Stack"
-    } else if api == "ChangeZone" && p.get("Origin") == Some("All") && named_objects(p) {
+    } else if api == "ChangeZone"
+        && p.get("Origin") == Some("Battlefield,Stack")
+        && p.has("ValidTgts")
+    {
+        // "Target spell or permanent": the target string says which zone each alternative is in (`Card.inZoneStack`).
+        "Battlefield"
+    } else if api == "ChangeZone"
+        && matches!(p.get("Origin"), None | Some("All"))
+        && named_objects(p)
+    {
         // The named objects are moved from wherever they are now; a zone is no filter on them.
         "All"
     } else {
@@ -99,6 +108,9 @@ fn named_objects(p: &Params) -> bool {
 
 /// Whether the word is one of the hand, graveyard and exile, or a list of them (`Graveyard,Exile`).
 fn hidden_origin(word: &str) -> bool {
+    if word == "Command" {
+        return true;
+    }
     zone_list(word).is_some_and(|zones| {
         zones
             .iter()
@@ -135,6 +147,8 @@ fn searches_library(word: &str) -> bool {
 fn zone_word<'a>(word: Option<&'a str>, key: &str, many: bool) -> Tr<&'a str> {
     match word {
         Some(zone @ ("Battlefield" | "Graveyard" | "Hand" | "Library" | "Exile")) => Ok(zone),
+        // The command zone is only ever searched or named, never a destination of this verb.
+        Some("Command") if key == "Origin" => Ok("Command"),
         Some(list) if many && zone_list(list).is_some() => Ok(list),
         Some(other) => unmapped(format!("zone:{key}={other}")),
         None => unmapped(format!("key:ChangeZone.no-{key}")),
@@ -391,6 +405,8 @@ const SEARCHED: Verb = Verb {
         "OriginAlternative",
         "NoLooking",
         "Reorder",
+        "DifferentNames",
+        "NoShuffle",
     ],
 };
 
@@ -617,7 +633,9 @@ fn choose_and_move(ctx: &mut Ctx, p: &Params, origin: &str, destination: &str) -
 
 /// The library search: the search, the move of what was found, then the shuffle. The player who decides searches and picks;
 /// the library is the actor's.
+#[allow(clippy::too_many_lines)]
 fn search(ctx: &mut Ctx, p: &Params, destination: &str) -> Tr<Vec<Value>> {
+    let had_memory = ctx.remembered.is_some();
     SEARCHED.admit(p)?;
     let seat = frame::parties(ctx, p, &SEARCHED)?;
     let another = seat.acts != seat.decides;
@@ -650,6 +668,11 @@ fn search(ctx: &mut Ctx, p: &Params, destination: &str) -> Tr<Vec<Value>> {
     if !count.is_one {
         find["count"] = json!({"min": 0, "max": count.max});
     }
+    match p.get("DifferentNames") {
+        None => {}
+        Some("True") => find["distinct"] = json!(true),
+        Some(_) => return unmapped("key:ChangeZone.Search.DifferentNames"),
+    }
     let revealed_by_words = p.get("Reorder").is_some() && says_reveal(p);
     if p.get("Reveal") == Some("True")
         || (destination == "Hand" && !filter_is_open)
@@ -664,12 +687,21 @@ fn search(ctx: &mut Ctx, p: &Params, destination: &str) -> Tr<Vec<Value>> {
         }
         ctx.remembered = Some(found.clone());
     }
+    let shuffles = match (p.get("NoShuffle"), p.get("Shuffle")) {
+        (None, shuffle) => shuffle,
+        (Some("True"), None) if destination != "Library" => Some("False"),
+        _ => return unmapped("key:ChangeZone.Search.NoShuffle"),
+    };
+    // A second remembering search would make `Remembered` the later search alone, but the shuffle asks about both.
+    if p.has("NoShuffle") && p.get("RememberChanged") == Some("True") && had_memory {
+        return unmapped("key:ChangeZone.Search.NoShuffle-twice");
+    }
     let search = json!({ "Search": find });
     // "Search, reveal, then do something with those cards": the cards stay in the library and the steps after read them.
     let stays = destination == "Library"
         && alternative.is_none()
         && !p.has("LibraryPosition")
-        && p.get("Shuffle") == Some("False")
+        && shuffles == Some("False")
         && p.get("RememberChanged") == Some("True");
     if stays {
         return Ok(vec![search]);
@@ -691,7 +723,7 @@ fn search(ctx: &mut Ctx, p: &Params, destination: &str) -> Tr<Vec<Value>> {
         json!({"Shuffle": {"who": seat.acts.clone()}})
     };
     let mut effects = vec![search];
-    match (destination, p.get("Shuffle")) {
+    match (destination, shuffles) {
         // The shuffle comes first when the card goes back on top: "then shuffle and put that card on top".
         ("Library", _) => {
             effects.push(shuffle);

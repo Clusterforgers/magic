@@ -379,7 +379,7 @@ pub fn zone_targets(p: &Params) -> Option<Params> {
         return None;
     }
     if let Some(origin) = peek(p, "Origin") {
-        return (origin == zone_text && peek(p, "TargetType").is_none())
+        return (same_zones(origin, zone_text) && peek(p, "TargetType").is_none())
             .then(|| rebuilt(p, &[], &["TgtZone"]));
     }
     let extra = match peek(p, "TargetType") {
@@ -400,6 +400,16 @@ pub fn zone_targets(p: &Params) -> Option<Params> {
         &[("ValidTgts", out.join(","))],
         &["TgtZone", "TargetType"],
     ))
+}
+
+/// Whether two zone lists name the same zones, in any order (`Battlefield,Stack` and `Stack,Battlefield`).
+fn same_zones(left: &str, right: &str) -> bool {
+    fn sorted(text: &str) -> Vec<&str> {
+        let mut zones: Vec<&str> = text.split(',').collect();
+        zones.sort_unstable();
+        zones
+    }
+    sorted(left) == sorted(right)
 }
 
 /// The prefix `ValidTgts$` gets from [`per_player_targets`]: the players, then `>`, then the valid-string without them.

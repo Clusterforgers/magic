@@ -699,6 +699,34 @@ fn bound(ctx: &Ctx, text: &str) -> Tr<Value> {
     amount(ctx, text)
 }
 
+/// "Target spell or nonland permanent": alternatives that name another zone (`Card.inZoneStack`) beside alternatives of the
+/// battlefield. Each alternative is a whole conjunction with its own zone, so the engine looks in every zone named.
+fn mixed_zones(ctx: &Ctx, alternatives: &[&str]) -> Tr<Option<Vec<Value>>> {
+    fn elsewhere(word: &str) -> bool {
+        word.contains("inZoneStack")
+    }
+    // Another zone beside the stack reads ownership, which the plain selector handles.
+    if alternatives
+        .iter()
+        .any(|word| word.contains("inZone") && !elsewhere(word))
+    {
+        return Ok(None);
+    }
+    let outside = alternatives.iter().filter(|word| elsewhere(word)).count();
+    if outside == 0 || outside == alternatives.len() {
+        return Ok(None);
+    }
+    let mut parts = Vec::new();
+    for word in alternatives {
+        let mut preds = selector_any(ctx, word)?;
+        if !elsewhere(word) {
+            preds.push(json!({"In": "Battlefield"}));
+        }
+        parts.push(super::count::all_of(preds));
+    }
+    Ok(Some(vec![json!({"AnyOf": parts})]))
+}
+
 fn target_what(ctx: &Ctx, valid: &str, zone: Option<&str>) -> Tr<Value> {
     // "Up to one target of each player" (`header::per_player_targets`).
     if let Some(rest) = valid.strip_prefix(super::header::FOR_EACH) {
@@ -711,6 +739,11 @@ fn target_what(ctx: &Ctx, valid: &str, zone: Option<&str>) -> Tr<Value> {
     let alternatives: Vec<&str> = valid.split(',').collect();
     let players = |word: &str| matches!(word, "Any" | "Player" | "Opponent" | "Player.Opponent");
     if alternatives.iter().all(|word| !players(word)) {
+        if matches!(zone, None | Some("Battlefield"))
+            && let Some(preds) = mixed_zones(ctx, &alternatives)?
+        {
+            return Ok(json!({"Object": preds}));
+        }
         return Ok(json!({"Object": selector_in(ctx, valid, zone)?}));
     }
     let mut kinds = Vec::new();

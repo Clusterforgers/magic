@@ -44,7 +44,7 @@ fn movers<'a>(
         let spell_by_name = stack_ok
             && match what {
                 Ref::This => named.id == cx.resolving.object(),
-                Ref::Triggering => true,
+                Ref::Triggering | Ref::Target(_) => true,
                 _ => false,
             };
         let object = state.object(named.id).filter(|object| {
