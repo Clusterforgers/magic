@@ -22,7 +22,6 @@ fn add_property(ctx: &Ctx, filter: &mut Value, word: &str, ability: bool) -> boo
         "YouDontOwn" => fact(filter, "NotOwned"),
         "wasCastFromYourGraveyard" => fact(filter, "FromYourGraveyard"),
         "wasCastFromGraveyard" => fact(filter, "FromGraveyard"),
-        "wasCastFromGraveyard" => fact(filter, "FromGraveyard"),
         "inZoneBattlefield" if ability => fact(filter, "OnBattlefield"),
         "cmcGE5" => filter["min_value"] = json!(5),
         _ => {
