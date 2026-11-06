@@ -75,7 +75,9 @@ fn printed_may_step(description: Option<&str>, effects: &[Value]) -> bool {
     effects.len() == 1
         && one_sentence
         && !head.contains("may")
+        && !head.contains(". ")
         && OPTIONAL_VERBS.contains(&verb)
+        && !step.starts_with("tap or untap")
         && !serde_json::to_string(effects)
             .unwrap_or_default()
             .contains("\"May\":")
@@ -101,8 +103,15 @@ fn other_deals_from_host(description: Option<&str>, effects: &[Value]) -> bool {
         return false;
     };
     let json = serde_json::to_string(effects).unwrap_or_default();
-    let first_step = text.split_once(", ").map(|(_, step)| step);
-    first_step.is_some_and(|step| step.starts_with("it deals "))
+    // "Whenever CARDNAME is dealt damage, it deals ...": "it" is the card itself.
+    let Some((head, step)) = text.split_once(", ") else {
+        return false;
+    };
+    let about_the_card = ["CARDNAME", "this ", "This ", "~"]
+        .iter()
+        .any(|word| head.contains(word));
+    !about_the_card
+        && step.starts_with("it deals ")
         && json.contains("\"DealDamage\":")
         && !json.contains("\"source\":")
 }

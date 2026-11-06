@@ -27,6 +27,13 @@ const UPKEEP: &str =
 #[case::printed_forced("put a +1/+1 counter on CARDNAME.", "", false)]
 // A may that is not the verb of the step is not this shape.
 #[case::other_verb("you may draw a card.", "", false)]
+// A tap or untap chooses its state anyway (fix pass 8), and a may after an earlier sentence covers only that sentence.
+#[case::tap_or_untap("you may tap or untap CARDNAME.", "", false)]
+#[case::later_sentence(
+    "scry 1. If you control a land, you may put a +1/+1 counter on CARDNAME.",
+    "",
+    false
+)]
 fn r6a_a_printed_may_over_one_step_asks(
     #[case] printed: &str,
     #[case] decider: &str,
@@ -62,9 +69,17 @@ const DRAGON: &str = "T:Mode$ Attacks | ValidCard$ Creature.Other+YouCtrl | Trig
 #[rstest]
 #[case::from_the_card("", true)]
 #[case::from_the_attacker(" | DamageSource$ TriggeredAttacker", false)]
+// The card itself: "Whenever CARDNAME attacks, it deals" is the card dealing.
+#[case::the_card_attacks(" | DamageSource$ Self", false)]
 fn r6a_a_printed_it_deals_from_the_card_is_a_gap(#[case] source: &str, #[case] gap: bool) {
+    let subject = if source.contains("Self") {
+        "CARDNAME"
+    } else {
+        "another creature you control"
+    };
+    let source = source.replace(" | DamageSource$ Self", "");
     let (_, found) = card(&format!(
-        "{DRAGON} | TriggerDescription$ Whenever another creature you control attacks, it deals 2 damage to any target.\nSVar:Trig:DB$ DealDamage | ValidTgts$ Any | NumDmg$ 2{source}"
+        "{DRAGON} | TriggerDescription$ Whenever {subject} attacks, it deals 2 damage to any target.\nSVar:Trig:DB$ DealDamage | ValidTgts$ Any | NumDmg$ 2{source}"
     ));
     assert_eq!(
         found
