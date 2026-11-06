@@ -94,6 +94,11 @@ pub(super) fn move_object(
     } else {
         Vec::new()
     };
+    let spent_from = if from == Zone::Stack && to == Zone::Battlefield {
+        object.choices.spent_from().to_vec()
+    } else {
+        Vec::new()
+    };
     if from == Zone::Stack {
         object.choices = Choices::default();
     }
@@ -107,7 +112,8 @@ pub(super) fn move_object(
         state.combat.permanent_left(id);
     }
     if to == Zone::Battlefield {
-        let mut permanent = PermanentState::entering(timestamp, paid, way, x, face, spent);
+        let mut permanent =
+            PermanentState::entering(timestamp, paid, way, x, face, spent, spent_from);
         permanent.doors = crate::dk1c5_rooms::Doors::entering(&object.def, face);
         object.permanent = Some(permanent);
     } else if to != Zone::Stack {

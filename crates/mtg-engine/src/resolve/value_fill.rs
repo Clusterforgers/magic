@@ -4,6 +4,7 @@
 use std::collections::BTreeMap;
 
 use mtg_cards::refs::{Ref, Selector};
+use mtg_cards::spend::SpendFilter;
 use mtg_cards::value::{Amount, CounterKind, StatKind};
 use mtg_core::ids::PlayerId;
 use mtg_core::mana::ManaType;
@@ -35,7 +36,7 @@ impl Scope<'_> {
                 };
                 self.amount_of(branch, share)
             }
-            Amount::ManaSpent { of } => Ok(self.spent_of(*of)),
+            Amount::ManaSpent { of, from } => Ok(self.spent_of(*of, from.as_ref())),
             Amount::ManaColors(who) => self.pooled_colors(who),
             Amount::ManaInPool(who) => self.pooled(who),
             Amount::MostCommon { of, stat } => self.most_common(of, *stat),
@@ -71,7 +72,20 @@ impl Scope<'_> {
     }
 
     /// How much mana of the type, or of any, was spent to cast the spell the source is or came from.
-    fn spent_of(&self, of: Option<ManaType>) -> i64 {
+    fn spent_of(&self, of: Option<ManaType>, from: Option<&SpendFilter>) -> i64 {
+        if let Some(from) = from {
+            // The mana of a source has the type it produced, which the sources list does not keep: only a count of any type is read.
+            if of.is_some() {
+                return 0;
+            }
+            let count: u32 = self
+                .mana_spent_from()
+                .iter()
+                .filter(|source| from.holds(&source.traits))
+                .map(|source| source.count)
+                .sum();
+            return i64::from(count);
+        }
         let count = self
             .mana_spent()
             .iter()

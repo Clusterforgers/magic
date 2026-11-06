@@ -23,6 +23,11 @@ pub fn count(ctx: &Ctx, base: &str) -> Option<Tr<Value>> {
         "CountersAddedThisTurn" => counters_added(ctx, rest),
         "Converge" if rest.is_empty() => Ok(json!("ColorsSpent")),
         "CastTotalManaSpent" if rest.is_empty() => Ok(json!({"ManaSpent": {"of": null}})),
+        // The mana the sources of that kind supplied ("mana from a Treasure"); the kinds are the properties a restriction reads.
+        "CastTotalManaSpent" => match super::spend_uses::filter(ctx, rest, false) {
+            Some(from) => Ok(json!({"ManaSpent": {"of": null, "from": from}})),
+            None => unmapped("amount:Count$CastTotalManaSpent-source"),
+        },
         "YourStartingLife" if rest.is_empty() => Ok(json!({"StartingLife": "You"})),
         // The sum over the opponents: all their poison counters together.
         "TotalOppPoisonCounters" if rest.is_empty() => {

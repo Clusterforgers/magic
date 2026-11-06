@@ -85,6 +85,16 @@ pub(crate) const fn is_zero(number: &u32) -> bool {
     *number == 0
 }
 
+/// The mana one source supplied to a payment: what the source was as it paid, and how many of its mana were spent.
+#[derive(Debug, Clone, PartialEq, Eq, Hash, Serialize, Deserialize)]
+#[cfg_attr(feature = "ts", derive(ts_rs::TS))]
+pub struct SpentFrom {
+    /// The source as it paid.
+    pub traits: SpendTraits,
+    /// How many of its mana were spent.
+    pub count: u32,
+}
+
 /// What a spell or an ability source is, as far as a restriction reads it.
 #[derive(Debug, Clone, PartialEq, Eq, Hash, Default, Serialize, Deserialize)]
 #[cfg_attr(feature = "ts", derive(ts_rs::TS))]

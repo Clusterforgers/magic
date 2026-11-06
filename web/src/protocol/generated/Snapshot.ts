@@ -6,6 +6,7 @@ import type { FaceDown } from "./FaceDown";
 import type { ManaType } from "./ManaType";
 import type { ObjectId } from "./ObjectId";
 import type { PlayerId } from "./PlayerId";
+import type { SpentFrom } from "./SpentFrom";
 import type { Zone } from "./Zone";
 
 /**
@@ -70,6 +71,10 @@ way?: CastWay,
  * The mana spent to cast it, as the object remembers it: its triggered abilities read it after it has left.
  */
 spent?: Array<ManaType>, 
+/**
+ * The sources of that mana.
+ */
+spent_from?: Array<SpentFrom>, 
 /**
  * The face of a card with several faces it was in use as (the back face of a transformed permanent); left out for
  * the card as a whole.

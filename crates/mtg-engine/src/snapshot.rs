@@ -64,6 +64,13 @@ pub struct Snapshot {
         ts(as = "Option<Vec<mtg_core::mana::ManaType>>", optional)
     )]
     pub spent: Vec<ManaType>,
+    /// The sources of that mana.
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[cfg_attr(
+        feature = "ts",
+        ts(as = "Option<Vec<mtg_cards::spend::SpentFrom>>", optional)
+    )]
+    pub spent_from: Vec<mtg_cards::spend::SpentFrom>,
     /// The face of a card with several faces it was in use as (the back face of a transformed permanent); left out for
     /// the card as a whole.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -131,6 +138,7 @@ pub fn snapshot(state: &GameState, id: ObjectId) -> Option<Snapshot> {
         paid: object.paid_costs().to_vec(),
         way: object.cast_way(),
         spent: object.mana_spent().to_vec(),
+        spent_from: object.mana_spent_from().to_vec(),
         face: object.face(),
         copy: copiable(object),
         merged: object.merged().map(|cards| match object.copy_effect() {

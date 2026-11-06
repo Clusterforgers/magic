@@ -78,6 +78,7 @@ static NO_CHOICES: Choices = Choices {
     way: None,
     face: None,
     spent: None,
+    spent_from: None,
     cost_taken: None,
 };
 static NO_BINDINGS: Bindings = BTreeMap::new();
@@ -2135,6 +2136,23 @@ impl<'a> Scope<'a> {
             .or_else(|| {
                 self.snapshot_of(self.source)
                     .map(|snapshot| snapshot.spent.clone())
+            })
+            .unwrap_or_default()
+    }
+
+    /// The sources of the mana spent to cast the spell, found as [`Self::mana_spent`] finds the mana.
+    pub(super) fn mana_spent_from(&self) -> Vec<mtg_cards::spend::SpentFrom> {
+        if !self.choices.spent_from().is_empty() {
+            return self.choices.spent_from().to_vec();
+        }
+        self.state
+            .object(self.source.id)
+            .filter(|object| object.counter() == self.source.counter)
+            .map(|object| object.mana_spent_from().to_vec())
+            .filter(|spent| !spent.is_empty())
+            .or_else(|| {
+                self.snapshot_of(self.source)
+                    .map(|snapshot| snapshot.spent_from.clone())
             })
             .unwrap_or_default()
     }

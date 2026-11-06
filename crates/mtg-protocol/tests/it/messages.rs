@@ -1461,6 +1461,7 @@ fn pipeline_events() -> Vec<Event> {
         way: Some(mtg_cards::value::CastWay::Evoke),
         face: Some(1),
         spent: Some(Box::new(vec![ManaType::Red, ManaType::Green])),
+        spent_from: None,
         cost_taken: Some(Box::new(w2f_cost_taken(a, b, shot.clone()))),
     };
     vec![

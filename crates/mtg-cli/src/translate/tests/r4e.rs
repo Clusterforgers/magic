@@ -40,6 +40,31 @@ fn the_cards_own_mana_cost_is_no_cost_word_of_an_ability() {
 }
 
 #[rstest]
+#[case::all_mana("Count$CastTotalManaSpent", json!({"ManaSpent": {"of": null}}))]
+#[case::snow("Count$CastTotalManaSpent Snow", json!({"ManaSpent": {"of": null, "from": {"supertypes": ["Snow"]}}}))]
+#[case::treasure("Count$CastTotalManaSpent Treasure", json!({"ManaSpent": {"of": null, "from": {"subtypes": ["Treasure"]}}}))]
+#[case::artifact("Count$CastTotalManaSpent Artifact", json!({"ManaSpent": {"of": null, "from": {"types": ["Artifact"]}}}))]
+fn the_mana_spent_is_counted_by_the_kind_of_its_source(#[case] x: &str, #[case] expected: Value) {
+    let text = format!("Name:T\nTypes:Sorcery\nA:SP$ Draw | NumCards$ X\nSVar:X:{x}\n");
+    assert_eq!(gaps(&text), Vec::<String>::new());
+    assert_eq!(
+        abilities(&text)[0]["Spell"]["effects"][0]["Draw"]["count"],
+        expected
+    );
+}
+
+#[rstest]
+#[case::unknown_subtype("Count$CastTotalManaSpent Wibble")]
+#[case::two_words("Count$CastTotalManaSpent Snow Treasure")]
+fn a_source_the_reader_does_not_know_stays_a_gap(#[case] x: &str) {
+    let text = format!("Name:T\nTypes:Sorcery\nA:SP$ Draw | NumCards$ X\nSVar:X:{x}\n");
+    assert_eq!(
+        gaps(&text),
+        vec!["amount:Count$CastTotalManaSpent-source".to_owned()]
+    );
+}
+
+#[rstest]
 #[case::promised_gift_amount("Count$PromisedGift.2.1", json!({"When": {
     "condition": {"Compare": {"left": "Promised", "op": "Ge", "right": 1}}, "then": 2, "otherwise": 1}}))]
 fn a_count_of_the_promised_gift_is_a_choice_between_two_amounts(

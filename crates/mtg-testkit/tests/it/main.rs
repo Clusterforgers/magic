@@ -467,6 +467,7 @@ mod spell_gains_follow;
 mod spell_targets;
 mod spell_x_costs;
 mod spender_restrictions;
+mod spent_from;
 mod split_second;
 mod split_second_fuzz;
 mod state_based_actions;

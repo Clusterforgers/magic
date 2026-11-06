@@ -958,7 +958,12 @@ impl<'a> Walker<'a> {
                 self.at("then", |w| w.amount(then));
                 self.at("otherwise", |w| w.amount(otherwise));
             }
-            Amount::ManaSpent { .. } => self.uses("Amount", "ManaSpent"),
+            Amount::ManaSpent { of, from } => {
+                self.uses("Amount", "ManaSpent");
+                if of.is_some() && from.is_some() {
+                    self.problem("`ManaSpent` counts the mana of one type or the mana of one kind of source, not both");
+                }
+            }
             Amount::ManaColors(who) => self.player_amount("ManaColors", who),
             Amount::ManaInPool(who) => self.player_amount("ManaInPool", who),
             Amount::MostCommon { of, .. } => self.w2c_selector_amount("MostCommon", of),
