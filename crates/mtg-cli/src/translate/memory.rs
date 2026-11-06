@@ -60,6 +60,7 @@ pub struct Plan {
 }
 
 /// The choices a permanent's controller made as it entered.
+#[allow(clippy::struct_excessive_bools)] // independent kinds of choice
 #[derive(Debug, Clone, Copy, Default, PartialEq, Eq)]
 pub struct Entered {
     /// A colour.

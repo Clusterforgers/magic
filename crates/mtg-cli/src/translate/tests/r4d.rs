@@ -75,6 +75,11 @@ fn card(types: &str, lines: &str) -> String {
     "A:SP$ Pump | ValidTgts$ Creature.YouCtrl | NumAtt$ +2 | ConditionDefined$ ThisTargetedCard | ConditionPresent$ Creature.powerEQ2",
     r#""subject":{"Target":0}"#
 )]
+#[case::target_filter_reads_the_earlier_target(
+    "Sorcery",
+    "A:SP$ Discard | ValidTgts$ Player | NumCards$ 1 | SubAbility$ Kill\nSVar:Kill:DB$ Destroy | ValidTgts$ Artifact.TargetedPlayerCtrl | TargetMin$ 0 | TargetMax$ 1",
+    r#"{"ControlledBy":{"Target":0}}"#
+)]
 #[case::amount_reads_its_own_player_target(
     "Instant",
     "A:SP$ Draw | ValidTgts$ Opponent | NumCards$ X\nSVar:X:Count$ValidHand Card.TargetedPlayerOwn",
@@ -105,5 +110,5 @@ fn a_word_of_the_pack_reads_as_the_card_says(
     "A:SP$ Pump | ValidTgts$ Creature.YouCtrl | NumAtt$ +1 | SubAbility$ Drop\nSVar:Drop:DB$ AnimateAll | ValidCards$ Creature.TargetedPlayerCtrl | ValidTgts$ Opponent | RemoveKeywords$ First Strike"
 )]
 fn a_word_without_what_it_reads_stays_a_gap(#[case] types: &str, #[case] lines: &str) {
-    assert!(!gaps(&card(types, lines)).is_empty());
+    assert_ne!(gaps(&card(types, lines)).len(), 0);
 }

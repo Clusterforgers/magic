@@ -82,17 +82,6 @@ fn property(ctx: &Ctx, prop: &str) -> Tr<Vec<Value>> {
                 None => unmapped("valid:ChosenCard-without-a-choice"),
             };
         }
-        // The player the source chose; outside the battlefield control is ownership.
-        "ChosenCtrl" => {
-            return one(
-                json!({"ControlledBy": chosen_player(ctx, &format!("valid:{prop}-without-a-choice"))?}),
-            );
-        }
-        "ChosenOwn" => {
-            return one(
-                json!({"OwnedBy": chosen_player(ctx, &format!("valid:{prop}-without-a-choice"))?}),
-            );
-        }
         "ChosenColor" | "ChosenType" => {
             return match &ctx.chosen {
                 Some(name) => one(json!({"ChosenAs": name})),
@@ -816,7 +805,7 @@ fn targeted_base(ctx: &Ctx, props: &str) -> Tr<(Vec<Value>, Vec<String>)> {
 }
 
 /// The player the line or the source chose: a name an earlier step bound, else the one the source chose as it entered.
-fn chosen_player(ctx: &Ctx, gap: &str) -> Tr<Value> {
+pub(super) fn chosen_player(ctx: &Ctx, gap: &str) -> Tr<Value> {
     if let Some(name) = &ctx.chosen_card {
         return Ok(json!({"Bound": name}));
     }

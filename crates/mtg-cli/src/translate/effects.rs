@@ -43,20 +43,8 @@ pub fn chain_at(ctx: &mut Ctx, p: &Params, top: bool) -> Tr<Vec<Value>> {
     };
     let before = (ctx.remembered.clone(), ctx.imprinted.clone());
     let excess = ctx.excess.clone();
-    ctx.coming = coming;
-    ctx.coming_player = matches!(p.get("ValidTgts"), Some("Player" | "Opponent"));
-    let ran = line(ctx, &own.without(&unless_keys).without(spent));
-    ctx.coming = None;
-    ctx.coming_player = false;
-    let mut effects = ran?;
-    // A word that read the line's own target before the line declared one names nothing.
-    if let Some(index) = coming
-        && usize::from(index) >= ctx.targets.len()
-        && serde_json::to_string(&effects)
-            .is_ok_and(|text| text.contains(&json!({ "Target": index }).to_string()))
-    {
-        return unmapped("defined:Targeted-without-target");
-    }
+    let mut effects =
+        line_with_own_target(ctx, p, &own.without(&unless_keys).without(spent), coming)?;
     // A condition on the step that took the cards also covers the permission an `Effect` line gives for them: with nothing
     // taken the permission names nothing, so the lines that only hold it run inside the condition.
     let inside = condition.is_some()
@@ -391,6 +379,30 @@ fn api_of(params: &Params) -> Tr<&str> {
 }
 
 /// One line: its effects, with the objects it remembers or imprints bound (`memory::line`).
+/// The effects of a line whose words may read the target the line itself declares (`coming`); a word that read one the line
+/// never declared names nothing and is a gap.
+fn line_with_own_target(
+    ctx: &mut Ctx,
+    asked: &Params,
+    own: &Params,
+    coming: Option<u8>,
+) -> Tr<Vec<Value>> {
+    ctx.coming = coming;
+    ctx.coming_player = matches!(asked.get("ValidTgts"), Some("Player" | "Opponent"));
+    let ran = line(ctx, own);
+    ctx.coming = None;
+    ctx.coming_player = false;
+    let effects = ran?;
+    if let Some(index) = coming
+        && usize::from(index) >= ctx.targets.len()
+        && serde_json::to_string(&effects)
+            .is_ok_and(|text| text.contains(&json!({ "Target": index }).to_string()))
+    {
+        return unmapped("defined:Targeted-without-target");
+    }
+    Ok(effects)
+}
+
 fn line(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
     let api = api_of(p)?;
     super::memory::line(ctx, p, api, api_line)

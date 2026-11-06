@@ -65,7 +65,7 @@ fn a_player_among_the_objects_a_static_line_affects_is_a_static_of_its_own(#[cas
 #[test]
 fn a_player_beside_an_unknown_subtype_stays_a_gap() {
     let script = "Name:T\nTypes:Creature\nS:Mode$ Continuous | Affected$ You,Human.YouCtrl | AddKeyword$ Hexproof\n";
-    assert!(abilities(script).is_empty());
+    assert_eq!(abilities(script).len(), 0);
 }
 
 #[test]

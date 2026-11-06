@@ -300,7 +300,10 @@ impl<'a> Ctx<'a> {
 
     /// The reference to the latest declared target ("Targeted" in a sub-ability).
     pub fn last_target(&self) -> Tr<Value> {
-        if let Some(index) = self.coming {
+        if let Some(index) = self
+            .coming
+            .filter(|_| self.scope.get() != super::filter::Scope::Targeting)
+        {
             return Ok(json!({ "Target": index }));
         }
         match u8::try_from(self.targets.len().saturating_sub(1)) {
@@ -311,7 +314,10 @@ impl<'a> Ctx<'a> {
 
     /// The reference to the latest declared target when it is a player (`TargetedPlayer`), else a gap.
     pub fn player_target(&self) -> Tr<Value> {
-        if self.coming.is_some() && self.coming_player {
+        if self.coming.is_some()
+            && self.coming_player
+            && self.scope.get() != super::filter::Scope::Targeting
+        {
             return self.last_target();
         }
         let player = self

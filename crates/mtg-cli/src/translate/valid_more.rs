@@ -36,6 +36,16 @@ pub fn property(ctx: &Ctx, prop: &str) -> Tr<Option<Vec<Value>>> {
         // Without an argument the property compares with the card the line belongs to.
         "sharesCreatureTypeWith" => return one(json!({"SharesSubtype": "This"})),
         "Outlaw" => return outlaw(ctx).map(Some),
+        // The player the source chose; outside the battlefield control is ownership.
+        "ChosenCtrl" | "ChosenOwn" => {
+            let who = super::valid::chosen_player(ctx, &format!("valid:{prop}-without-a-choice"))?;
+            let key = if prop == "ChosenCtrl" {
+                "ControlledBy"
+            } else {
+                "OwnedBy"
+            };
+            return one(json!({ key: who }));
+        }
         "IsRemembered" => return memory::is_in(ctx, Slot::Remembered).map(Some),
         "IsTriggerRemembered" => {
             return match &ctx.pinned {
