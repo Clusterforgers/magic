@@ -273,8 +273,10 @@ function describeRule(effect: RuleEffect, n: EventNames): string {
     what = `${seats(who)} may ${play ? 'play' : 'cast'} ${only === null ? 'cards they could not' : named(only)}`
   } else if ('DamageCantBePrevented' in rule) what = "Damage can't be prevented"
   else if ('PreventDamage' in rule) {
-    const { left } = rule.PreventDamage
-    what = left === null ? 'Damage is prevented' : `The next ${left} damage is prevented`
+    const { left, redirect } = rule.PreventDamage
+    if (redirect !== undefined && left !== null)
+      what = `The next ${left} damage is dealt to ${targetName(redirect, n)} instead`
+    else what = left === null ? 'Damage is prevented' : `The next ${left} damage is prevented`
   } else if ('Regenerate' in rule) what = `${n.card(rule.Regenerate.id)} gets a regeneration shield`
   else if ('BlockLimitEach' in rule) {
     const { most, who } = rule.BlockLimitEach

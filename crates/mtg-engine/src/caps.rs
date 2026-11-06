@@ -521,6 +521,7 @@ const RUNS: &[&str] = &[
     "Keyword.Skulk",
     "Keyword.Shadow",
     "Condition.CastWith",
+    "Condition.CastOffSorceryTiming",
     "Condition.ManaSpent",
     "Rule.MayCast",
     "Condition.Kicked",
@@ -577,6 +578,7 @@ const RUNS: &[&str] = &[
     "ReplaceBy.MoveTo",
     "ReplaceBy.Instead",
     "ReplaceBy.InsteadNext",
+    "ReplaceBy.RedirectUpTo",
     "ReplaceBy.PreventAnd",
     "ReplaceBy.PreventAllBut",
     "ReplaceBy.Tapped",
@@ -637,6 +639,7 @@ const RUNS: &[&str] = &[
     "Keyword.Saddle",
     "Keyword.Saddled",
     "Keyword.Exert",
+    "Keyword.FlashSacrifice",
     "Keyword.Macro",
     "Keyword.Station",
     "Keyword.Myriad",
@@ -1305,6 +1308,8 @@ mod tests {
     #[case::freerunning("Keyword.Freerunning", true)]
     #[case::umbra_armor("Keyword.UmbraArmor", true)]
     #[case::cipher("Keyword.Cipher", true)]
+    #[case::flash_sacrifice("Keyword.FlashSacrifice", true)]
+    #[case::cast_off_sorcery_timing("Condition.CastOffSorceryTiming", true)]
     #[case::graft("Keyword.Graft", true)]
     #[case::afflict("Keyword.Afflict", true)]
     #[case::replicate("Keyword.Replicate", true)]

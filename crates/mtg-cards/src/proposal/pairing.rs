@@ -76,7 +76,10 @@ fn kinds_of(ability: &Ability) -> &'static [ClauseKind] {
         Ability::Loyalty { .. } => &[ClauseKind::Loyalty],
         Ability::Activated { .. } => &[ClauseKind::Activated],
         // Exert is a sentence of the card ("You may exert this creature as it attacks."), read by the static templates.
-        Ability::Keyword(Keyword::Exert { .. }) => &[ClauseKind::Keyword, ClauseKind::Static],
+        // So is the flash permission whose permanent is sacrificed at the next cleanup step.
+        Ability::Keyword(Keyword::Exert { .. } | Keyword::FlashSacrifice) => {
+            &[ClauseKind::Keyword, ClauseKind::Static]
+        }
         Ability::Keyword(_) => &[ClauseKind::Keyword],
         Ability::Manual { .. } => &[],
     }

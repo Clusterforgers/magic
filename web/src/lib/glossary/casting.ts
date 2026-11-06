@@ -19,6 +19,10 @@ export const CASTING: readonly Entry[] = [
     'Exert',
     'You may have this creature not untap during your next untap step as it attacks, for an extra effect.',
   ],
+  [
+    'Flash, sacrificed at cleanup',
+    "You may cast this any time you could cast an instant. If you cast it when you couldn't have cast a sorcery, it is sacrificed at the beginning of the next cleanup step.",
+  ],
   ['Read ahead', 'Choose a chapter and start with that many lore counters. Skipped chapters do not trigger.'],
   [
     'Ninjutsu|Commander ninjutsu',

@@ -1136,6 +1136,7 @@ impl<'a> Walker<'a> {
                 }
             }
             Condition::CastWith(_) => self.uses("Condition", "CastWith"),
+            Condition::CastOffSorceryTiming => self.uses("Condition", "CastOffSorceryTiming"),
             Condition::ManaSpent(_) => self.uses("Condition", "ManaSpent"),
             Condition::YourTurn => {}
             Condition::StartingPlayer(who) => {
@@ -3439,7 +3440,8 @@ impl Walker<'_> {
                         | ReplaceBy::Multiply(_)
                         | ReplaceBy::Add(_)
                         | ReplaceBy::Instead(_)
-                        | ReplaceBy::InsteadNext(_),
+                        | ReplaceBy::InsteadNext(_)
+                        | ReplaceBy::RedirectUpTo { .. },
                     )
                     // A death or a counter sent elsewhere, and a class of moves judged as each happens (`Rule::Replaces`).
                     | (
@@ -4281,9 +4283,23 @@ impl Walker<'_> {
         }
     }
 
+    /// Damage redirected in part names an amount and a player or object to deal it to.
+    fn r6f_redirect(&mut self, when: &ReplaceWhen, most: u32, to: &Ref) {
+        if !matches!(when, ReplaceWhen::Damage { .. }) {
+            self.problem("only damage is redirected in part");
+        }
+        if most == 0 {
+            self.problem("redirecting no damage changes nothing");
+        }
+        self.at("to", |w| w.reference(to, Kind::Either));
+    }
+
     /// A permanent's replacement is not a shield, so it cannot prevent just the next damage.
     fn not_next_damage(&mut self, by: &ReplaceBy) {
-        if matches!(by, ReplaceBy::PreventNext | ReplaceBy::InsteadNext(_)) {
+        if matches!(
+            by,
+            ReplaceBy::PreventNext | ReplaceBy::InsteadNext(_) | ReplaceBy::RedirectUpTo { .. }
+        ) {
             self.problem("only a shield changes the next damage");
         }
     }
@@ -4318,6 +4334,7 @@ impl Walker<'_> {
             ReplaceBy::Instead(effects) | ReplaceBy::InsteadNext(effects) => {
                 self.w5d_instead(when, effects);
             }
+            ReplaceBy::RedirectUpTo { most, to } => self.r6f_redirect(when, *most, to),
             ReplaceBy::PreventAnd(effects) => self.w9c_prevent_and(when, effects),
             ReplaceBy::Dredge(cards) => {
                 if !matches!(when, ReplaceWhen::Draw { .. }) {

@@ -36,4 +36,8 @@ once: boolean,
 /**
  * What it does to the damage it covers in place of preventing it: scales it or sends it elsewhere.
  */
-instead?: unknown, };
+instead?: unknown, 
+/**
+ * The player or object the damage it redirects is dealt to, fixed when it was made (`ReplaceBy::RedirectUpTo`).
+ */
+redirect?: Target, };

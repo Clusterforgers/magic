@@ -114,6 +114,7 @@ mod protection;
 mod provided;
 mod prowess;
 mod prowl;
+mod r6f_flash_sacrifice;
 mod ravenous;
 mod reach;
 mod rebound;
@@ -559,6 +560,7 @@ fn rules_of_later(keyword: &Keyword) -> &'static dyn KeywordRules {
         Keyword::ForMirrodin => &for_mirrodin::ForMirrodin,
         Keyword::JobSelect => &job_select::JobSelect,
         Keyword::EquipTo { .. } => &equip::EquipTo,
+        Keyword::FlashSacrifice => &r6f_flash_sacrifice::FlashSacrifice,
         Keyword::Macro { .. } => &macro_keyword::MacroKeyword,
         // The keywords before them are matched by `rules`.
         _ => &Unruled,
@@ -956,6 +958,7 @@ mod tests {
             Keyword::Exert {
                 once_per_turn: false,
             },
+            Keyword::FlashSacrifice,
             Keyword::Macro {
                 name: "bushido".to_owned(),
                 amount: 2,
@@ -1070,6 +1073,7 @@ mod tests {
         "Keyword.Saddle",
         "Keyword.Saddled",
         "Keyword.Exert",
+        "Keyword.FlashSacrifice",
         "Keyword.Macro",
         "Keyword.Station",
         "Keyword.Myriad",
@@ -1255,6 +1259,7 @@ mod tests {
     #[case::dethrone(Keyword::Dethrone, Hooks { abilities: 1, ..Hooks::none() })]
     #[case::umbra_armor(Keyword::UmbraArmor, Hooks { abilities: 1, ..Hooks::none() })]
     #[case::cipher(Keyword::Cipher, Hooks { abilities: 1, ..Hooks::none() })]
+    #[case::flash_sacrifice(Keyword::FlashSacrifice, Hooks { timing: true, abilities: 1, ..Hooks::none() })]
     #[case::graft(Keyword::Graft(2), Hooks { abilities: 2, ..Hooks::none() })]
     #[case::afflict(Keyword::Afflict(2), Hooks { abilities: 1, ..Hooks::none() })]
     #[case::replicate(Keyword::Replicate(Cost::mana("{2}".parse().unwrap())), Hooks { abilities: 1, ..Hooks::none() })]
