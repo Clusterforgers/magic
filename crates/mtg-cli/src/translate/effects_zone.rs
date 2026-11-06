@@ -23,7 +23,10 @@ pub fn effects(ctx: &mut Ctx, p: &Params, api: &str) -> Tr<Vec<Value>> {
     {
         // "Target spell or permanent": the target string says which zone each alternative is in (`Card.inZoneStack`).
         "Battlefield"
-    } else if api == "ChangeZone" && p.get("Origin") == Some("All") && named_objects(p) {
+    } else if api == "ChangeZone"
+        && matches!(p.get("Origin"), None | Some("All"))
+        && named_objects(p)
+    {
         // The named objects are moved from wherever they are now; a zone is no filter on them.
         "All"
     } else {
@@ -105,6 +108,9 @@ fn named_objects(p: &Params) -> bool {
 
 /// Whether the word is one of the hand, graveyard and exile, or a list of them (`Graveyard,Exile`).
 fn hidden_origin(word: &str) -> bool {
+    if word == "Command" {
+        return true;
+    }
     zone_list(word).is_some_and(|zones| {
         zones
             .iter()
@@ -141,6 +147,8 @@ fn searches_library(word: &str) -> bool {
 fn zone_word<'a>(word: Option<&'a str>, key: &str, many: bool) -> Tr<&'a str> {
     match word {
         Some(zone @ ("Battlefield" | "Graveyard" | "Hand" | "Library" | "Exile")) => Ok(zone),
+        // The command zone is only ever searched or named, never a destination of this verb.
+        Some("Command") if key == "Origin" => Ok("Command"),
         Some(list) if many && zone_list(list).is_some() => Ok(list),
         Some(other) => unmapped(format!("zone:{key}={other}")),
         None => unmapped(format!("key:ChangeZone.no-{key}")),
