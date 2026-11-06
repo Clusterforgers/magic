@@ -62,6 +62,7 @@ pub(super) fn one_per_name(state: &crate::state::GameState, cards: Vec<ObjectId>
 /// Everyone chooses before anything is logged. Each search is one `CardsFound`, private to the searcher whether
 /// or not a card was found, and the cards are revealed to every seat in one `Revealed` after it when the effect says so.
 /// A player who can't search libraries does not search one.
+#[allow(clippy::too_many_lines)]
 pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
     let Effect::Search {
         who,
