@@ -72,7 +72,7 @@ fn a_replacement_of_produced_mana_is_a_rule_of_the_permanent(
 fn a_replacement_of_produced_mana_the_engine_cannot_play_stays_a_gap(#[case] lines: &str) {
     let text = enchantment(lines);
     assert!(abilities(&text).is_empty(), "{:?}", abilities(&text));
-    assert!(!gaps(&text).is_empty());
+    assert!(!gaps(&text).is_empty(), "a gap names what is missing");
 }
 
 #[test]
@@ -106,7 +106,7 @@ fn waterbend_is_a_cost_of_an_activated_ability(#[case] cost: &str, #[case] expec
 fn waterbend_anywhere_else_stays_a_gap(#[case] lines: &str) {
     let text = creature(lines);
     assert!(abilities(&text).is_empty(), "{:?}", abilities(&text));
-    assert!(!gaps(&text).is_empty());
+    assert!(!gaps(&text).is_empty(), "a gap names what is missing");
 }
 
 #[rstest]

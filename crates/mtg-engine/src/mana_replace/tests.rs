@@ -71,10 +71,10 @@ fn made(state: &GameState, player: PlayerId) -> Vec<Vec<ManaType>> {
 #[case::black_in_the_same_amount(LAND, "EachPlayer", r#"{"OnlyType":"Black"}"#, vec![vec![B], vec![B], vec![W, C]], vec![vec![B]])]
 #[case::only_your_taps(LAND, "You", r#"{"OnlyType":"Red"}"#, vec![vec![R], vec![R], vec![W, C]], vec![vec![G]])]
 #[case::only_the_permanents_selected(r#"[{"Subtype":"Forest"}]"#, "EachPlayer", r#"{"OnlyType":"Red"}"#, vec![vec![R], vec![B], vec![W, C]], vec![vec![R]])]
-#[case::any_permanent_in_the_same_type(r#"[]"#, "You", r#"{"OnlyType":"Red"}"#, vec![vec![R], vec![R], vec![R, R]], vec![vec![G]])]
-#[case::twice_as_much(r#"[]"#, "You", r#"{"Times":2}"#, vec![vec![G, G], vec![B, B], vec![W, W, C, C]], vec![vec![G]])]
+#[case::any_permanent_in_the_same_type(r"[]", "You", r#"{"OnlyType":"Red"}"#, vec![vec![R], vec![R], vec![R, R]], vec![vec![G]])]
+#[case::twice_as_much(r"[]", "You", r#"{"Times":2}"#, vec![vec![G, G], vec![B, B], vec![W, W, C, C]], vec![vec![G]])]
 #[case::three_times_for_lands(r#"[{"Type":"Land"}]"#, "You", r#"{"Times":3}"#, vec![vec![G, G, G], vec![B, B, B], vec![W, C]], vec![vec![G]])]
-#[case::one_color_becomes_another(r#"[]"#, "You", r#"{"Convert":{"from":"Green","to":"Colorless"}}"#, vec![vec![C], vec![B], vec![W, C]], vec![vec![G]])]
+#[case::one_color_becomes_another(r"[]", "You", r#"{"Convert":{"from":"Green","to":"Colorless"}}"#, vec![vec![C], vec![B], vec![W, C]], vec![vec![G]])]
 fn a_replacement_changes_the_mana_of_the_taps_it_covers(
     #[case] what: &str,
     #[case] who: &str,

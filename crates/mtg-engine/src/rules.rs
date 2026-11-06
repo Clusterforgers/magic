@@ -521,6 +521,12 @@ pub(crate) struct Cast {
 }
 
 impl Cast {
+    /// Whether a cast through the permission from `zone` is for the printed mana cost, with what the permission adds: not a free
+    /// cast and not one for another mana cost.
+    pub(crate) fn adds_to_printed(&self, zone: ZoneKind) -> bool {
+        !self.free && self.rather.is_none() && self.from == Some(zone)
+    }
+
     /// Whether the permission lets `player` cast the card `card`, which is in its zone now.
     pub(crate) fn covers(&self, state: &GameState, player: PlayerId, card: &GameObject) -> bool {
         self.c11b_open(state)
@@ -1101,7 +1107,6 @@ pub(crate) fn names_nothing(rule: &Rule) -> bool {
         | Rule::SkipDrawStep(players)
         | Rule::NoLegendRule(players)
         | Rule::NoMaxHandSize(players) => players.is_empty(),
-        Rule::ManaProduced { who, .. } => who.is_empty(),
         Rule::MayCastRather { casts, .. } => casts.is_empty(),
         Rule::MaxHandSize(sizes) => sizes.is_empty(),
         Rule::UntapDuring { whose, .. } => whose.is_empty(),
@@ -1110,7 +1115,9 @@ pub(crate) fn names_nothing(rule: &Rule) -> bool {
         Rule::MayCast { who, only, .. } => {
             who.is_empty() || only.as_ref().is_some_and(Vec::is_empty)
         }
-        Rule::BlockLimitEach { who, .. } | Rule::PlayersHave { who, .. } => who.is_empty(),
+        Rule::BlockLimitEach { who, .. }
+        | Rule::PlayersHave { who, .. }
+        | Rule::ManaProduced { who, .. } => who.is_empty(),
         Rule::Cant { who, .. } => who.is_empty(),
         Rule::TriggerAgain { .. }
         | Rule::NextSpell { .. }
@@ -1584,12 +1591,7 @@ pub(crate) fn c11b_once_source(
     let zone = crate::resolve::zone_kind(from);
     let covering: Vec<&Cast> = cast_permissions(state)
         .iter()
-        .filter(|cast| {
-            !cast.free
-                && cast.rather.is_none()
-                && cast.from == Some(zone)
-                && cast.covers(state, player, card)
-        })
+        .filter(|cast| cast.adds_to_printed(zone) && cast.covers(state, player, card))
         .collect();
     if covering.iter().any(|cast| !cast.once) {
         return None;

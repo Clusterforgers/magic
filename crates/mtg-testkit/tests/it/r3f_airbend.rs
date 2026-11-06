@@ -78,7 +78,10 @@ fn casting_it_costs_two_and_puts_it_on_the_battlefield_under_its_owner() -> Resu
         driver.answer_passively()?;
     }
     assert!(names(driver.state(), Zone::Battlefield).contains(&"Bear".to_owned()));
-    assert!(names(driver.state(), Zone::Exile).is_empty());
+    assert!(
+        names(driver.state(), Zone::Exile).is_empty(),
+        "the card left exile"
+    );
     for _ in 0..2 {
         assert!(driver.state().zone(Zone::Battlefield).iter().any(|id| {
             let tapped = driver

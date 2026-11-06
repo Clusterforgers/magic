@@ -110,7 +110,10 @@ fn a_tap_for_replaced_mana_adds_it_without_the_stack() -> Result<(), ScriptError
         Scenario::new(2).battlefield(0, [ready(land(Color::Green)), ready(contamination())]),
     )?;
     let log = driver.tap_for_mana("Forest")?;
-    assert!(driver.state().stack().is_empty());
+    assert!(
+        driver.state().stack().is_empty(),
+        "a mana ability never uses the stack"
+    );
     let added: Vec<ManaType> = log
         .iter()
         .filter_map(|event| match event {

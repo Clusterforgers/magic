@@ -3959,25 +3959,12 @@ impl Walker<'_> {
                 }
             }),
             GameRule::PlayersHave { who, .. } => self.at(tag, |w| w.reference(who, Kind::Player)),
-            GameRule::NextSpell { what, .. } => {
-                self.at(tag, |w| w.at("what", |w| w.selector(what)));
-            }
             GameRule::CanBeCommander => {}
             GameRule::GraveyardCardsUntargetable
             | GameRule::CantLoseGame { .. }
             | GameRule::CantCastSpells { .. }
             | GameRule::ToughnessAssignsDamage(_)
             | GameRule::CountersRemain => self.w17b_rule(&tag, rule),
-            GameRule::MayCastRather { only, .. } => {
-                self.at(tag, |w| w.reference(only, Kind::Object))
-            }
-            GameRule::ManaProduced { what, who, change } => self.at(tag, |w| {
-                w.at("what", |w| w.selector(what));
-                w.at("who", |w| w.reference(who, Kind::Player));
-                if matches!(change, crate::modify::ManaChange::Times(0)) {
-                    w.problem("a mana multiplier is at least one");
-                }
-            }),
             GameRule::Cant { who, action } => self.at(tag, |w| {
                 w.at("who", |w| w.reference(who, Kind::Either));
                 w.cant_action(action);
@@ -3985,6 +3972,9 @@ impl Walker<'_> {
             GameRule::TriggerAgain { .. }
             | GameRule::NoLegendRule(_)
             | GameRule::MaxHandSize { .. }
+            | GameRule::NextSpell { .. }
+            | GameRule::MayCastRather { .. }
+            | GameRule::ManaProduced { .. }
             | GameRule::UntapDuring { .. } => self.rule_option(&tag, rule),
         }
     }
@@ -4005,6 +3995,19 @@ impl Walker<'_> {
                 self.scope = saved;
             }
             GameRule::NoLegendRule(who) => self.at(tag, |w| w.reference(who, Kind::Player)),
+            GameRule::NextSpell { what, .. } => {
+                self.at(tag, |w| w.at("what", |w| w.selector(what)));
+            }
+            GameRule::MayCastRather { only, .. } => {
+                self.at(tag, |w| w.reference(only, Kind::Object));
+            }
+            GameRule::ManaProduced { what, who, change } => self.at(tag, |w| {
+                w.at("what", |w| w.selector(what));
+                w.at("who", |w| w.reference(who, Kind::Player));
+                if matches!(change, crate::modify::ManaChange::Times(0)) {
+                    w.problem("a mana multiplier is at least one");
+                }
+            }),
             GameRule::MaxHandSize { who, size } => self.at(tag, |w| {
                 w.at("who", |w| w.reference(who, Kind::Player));
                 w.at("size", |w| w.amount(size));
