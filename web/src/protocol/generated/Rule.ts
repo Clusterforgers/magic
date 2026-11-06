@@ -135,7 +135,11 @@ additional?: unknown,
 /**
  * How the mana of a cast through it may be spent.
  */
-spend_as?: unknown, } } | { "MayCastRather": { 
+spend_as?: unknown, 
+/**
+ * The permission is open only while this holds for the controller of the rule; always when absent.
+ */
+when?: unknown, } } | { "MayCastRather": { 
 /**
  * The owner of each card and the card, as it was named when the rule began.
  */

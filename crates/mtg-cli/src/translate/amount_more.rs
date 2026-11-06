@@ -21,6 +21,7 @@ pub fn count(ctx: &Ctx, base: &str) -> Option<Tr<Value>> {
         }
         "Party" if rest.is_empty() => Ok(json!({"Party": "You"})),
         "CountersAddedThisTurn" => counters_added(ctx, rest),
+        "CreaturesAttackedThisTurn" if !rest.is_empty() => attacked_this_turn(ctx, rest),
         "Converge" if rest.is_empty() => Ok(json!("ColorsSpent")),
         "CastTotalManaSpent" if rest.is_empty() => Ok(json!({"ManaSpent": {"of": null}})),
         "YourStartingLife" if rest.is_empty() => Ok(json!({"StartingLife": "You"})),
@@ -77,6 +78,13 @@ fn counters_added(ctx: &Ctx, rest: &str) -> Tr<Value> {
     }
     let filter = selector_in(ctx, valid, None)?;
     Ok(json!({"Tally": {"event": "CountersPut", "who": who, "filter": filter}}))
+}
+
+/// `CreaturesAttackedThisTurn Creature.token`: the creatures the valid-string selects that were declared as attackers this
+/// turn, whoever controls them (the string names the controller itself); the effect's source is the object itself.
+fn attacked_this_turn(ctx: &Ctx, valid: &str) -> Tr<Value> {
+    let filter = selector_in(ctx, &valid.replace(".EffectSource", ".Self"), None)?;
+    Ok(json!({"Tally": {"event": "Attacked", "who": "EachPlayer", "filter": filter}}))
 }
 
 /// `YourCountersEnergy`: the counters of that kind on you; a kind that is not one plain word stays a gap.

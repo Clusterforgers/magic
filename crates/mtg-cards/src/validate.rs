@@ -1413,6 +1413,9 @@ impl<'a> Walker<'a> {
         if let Some(cost) = &permission.additional {
             self.at("additional", |w| w.permission_cost(cost));
         }
+        if let Some(when) = &permission.when {
+            self.at("when", |w| w.condition(when));
+        }
         if matches!(
             permission.from,
             Some(ZoneKind::Battlefield | ZoneKind::Stack)

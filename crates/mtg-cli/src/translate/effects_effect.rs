@@ -182,7 +182,12 @@ fn remembered_static(
     }
     let who = &objects(who.clone())?;
     if part.has("MayPlay") {
+        let when = super::condition::check_svar(ctx, &part)?;
+        let part = part.without(&super::condition::CHECK_KEYS);
         let mut rule = super::mayplay::may_cast(ctx, &part, Some(who))?;
+        if let Some(when) = when {
+            rule["MayCast"]["when"] = when;
+        }
         if let Some(owner) = owner {
             rule["MayCast"]["who"] = owner.clone();
         }

@@ -45,6 +45,7 @@ fn c11b_permission(what: Selector) -> CastPermission {
         once: true,
         additional: None,
         spend_as: crate::modify::SpendAs::Normal,
+        when: None,
     }
 }
 

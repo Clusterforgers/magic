@@ -41,6 +41,26 @@ fn a_line_it_cannot_state_is_a_gap(#[case] lines: &str, #[case] gap: &str) {
     );
 }
 
+const DIG: &str = "T:Mode$ Attacks | ValidCard$ Card.Self | Execute$ TrigExile\nSVar:TrigExile:DB$ Dig | DigNum$ 1 | ChangeNum$ All | DestinationZone$ Exile | RememberChanged$ True | SubAbility$ DBEffect\nSVar:DBEffect:DB$ Effect | RememberObjects$ Remembered | StaticAbilities$ STPlay | SubAbility$ DBCleanup | ForgetOnMoved$ Exile | Duration$ Permanent\nSVar:DBCleanup:DB$ Cleanup | ClearRemembered$ True\n";
+
+#[rstest]
+#[case::attacked_with_a_token("Creature.token", r#""filter":[{"Type":"Creature"},"Token"]"#)]
+#[case::attacked_with_itself("Creature.EffectSource", r#""filter":[{"Type":"Creature"},"This"]"#)]
+fn a_card_played_during_a_turn_you_attacked_is_a_conditional_permission(
+    #[case] valid: &str,
+    #[case] filter: &str,
+) {
+    let script = card(&format!(
+        "{DIG}SVar:STPlay:Mode$ Continuous | MayPlay$ True | Affected$ Card.IsRemembered | AffectedZone$ Exile | CheckSVar$ Z\nSVar:Z:Count$CreaturesAttackedThisTurn {valid}"
+    ));
+    let found = abilities(&script);
+    assert!(!found.is_empty(), "{:?}", gaps(&script));
+    let text = found[0].to_string();
+    assert!(text.contains(r#""when":{"Compare""#), "{text}");
+    assert!(text.contains(r#""event":"Attacked""#), "{text}");
+    assert!(text.contains(filter), "{text}");
+}
+
 const ALT: &str = "S:Mode$ AlternativeCost | ValidSA$ Spell | ValidCard$ Card.Self | ValidPlayer$ You | Cost$ 0 | EffectZone$ All";
 
 #[rstest]

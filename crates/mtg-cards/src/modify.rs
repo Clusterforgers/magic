@@ -267,6 +267,10 @@ pub struct CastPermission {
     /// How the mana of a cast through it may be spent: as mana of any color or of any type ("spend mana as though it were mana of any color").
     #[serde(default, skip_serializing_if = "SpendAs::is_normal")]
     pub spend_as: SpendAs,
+    /// The permission is open only while this holds for the controller of the rule ("during any turn you attacked with a
+    /// token, you may play that card"); always when absent.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub when: Option<Condition>,
 }
 
 /// Which mana may pay for a cast through a permission.

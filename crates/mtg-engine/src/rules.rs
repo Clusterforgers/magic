@@ -17,6 +17,7 @@ use mtg_cards::keyword::Keyword;
 use mtg_cards::modify::{Attacked, GameRule, ManaChange, Prohibited, SpendAs};
 use mtg_cards::refs::{Ref, Selector, ZoneKind};
 use mtg_cards::trigger::{ReplaceBy, ReplaceWhen, TriggerPattern};
+use mtg_cards::value::Condition;
 use mtg_core::ids::{EffectId, ObjectId, PlayerId};
 use mtg_core::mana::ManaCost;
 use serde::{Deserialize, Serialize};
@@ -189,6 +190,10 @@ pub enum Rule {
         #[serde(default, skip_serializing_if = "SpendAs::is_normal")]
         #[cfg_attr(feature = "ts", ts(optional, type = "unknown"))]
         spend_as: SpendAs,
+        /// The permission is open only while this holds for the controller of the rule; always when absent.
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        #[cfg_attr(feature = "ts", ts(optional, type = "unknown"))]
+        when: Option<Box<Condition>>,
     },
     /// Each owner may cast the exiled card paired with them for `cost` rather than its mana cost (CR 118.9, 601.2f), while it
     /// stays exiled.
@@ -537,6 +542,8 @@ pub(crate) struct Cast {
     pub(crate) additional: Option<Cost>,
     /// How the mana of a cast through it may be spent.
     pub(crate) spend_as: SpendAs,
+    /// The permission is open only while this holds for the controller.
+    pub(crate) when: Option<Condition>,
     /// The mana paid in place of the mana cost of the card.
     pub(crate) rather: Option<ManaCost>,
 }
@@ -551,6 +558,7 @@ impl Cast {
     /// Whether the permission lets `player` cast the card `card`, which is in its zone now.
     pub(crate) fn covers(&self, state: &GameState, player: PlayerId, card: &GameObject) -> bool {
         self.c11b_open(state)
+            && self.when_holds(state)
             && self.who.contains(&player)
             && self
                 .only
@@ -563,6 +571,15 @@ impl Cast {
                 || Scope::announcing(state, self.controller, self.source)
                     .selects(&self.what, card.reference())
                     .unwrap_or(false))
+    }
+
+    /// Whether the condition of the permission holds for its controller now; a condition that cannot be read does not.
+    fn when_holds(&self, state: &GameState) -> bool {
+        self.when.as_ref().is_none_or(|condition| {
+            Scope::announcing(state, self.controller, self.source)
+                .holds(condition)
+                .unwrap_or(false)
+        })
     }
 
     /// Whether a permission that works once each turn is open: it is its controller's turn and no spell was cast through
@@ -693,6 +710,7 @@ impl RulesInForce {
                 once: false,
                 additional: None,
                 spend_as: SpendAs::Normal,
+                when: None,
                 rather: None,
             });
         }
@@ -790,6 +808,7 @@ impl RulesInForce {
                 once,
                 additional,
                 spend_as,
+                when,
             } => {
                 if let Some(source) = source {
                     self.casts.push(Cast {
@@ -805,6 +824,7 @@ impl RulesInForce {
                         once: *once,
                         additional: additional.as_deref().cloned(),
                         spend_as: *spend_as,
+                        when: when.as_deref().cloned(),
                         rather: None,
                     });
                 }
@@ -825,6 +845,7 @@ impl RulesInForce {
                             once: false,
                             additional: None,
                             spend_as: SpendAs::Normal,
+                            when: None,
                             rather: Some(cost.clone()),
                         });
                     }
@@ -1030,6 +1051,7 @@ pub(crate) fn lower_rule(scope: &Scope<'_>, wanted: &GameRule) -> Result<Rule, R
             once: permission.once,
             additional: permission.additional.clone().map(Box::new),
             spend_as: permission.spend_as,
+            when: permission.when.clone().map(Box::new),
         },
         GameRule::NextSpell { what, benefit } => next_spell(scope, what, benefit)?,
         GameRule::MayCastRather { only, cost } => may_cast_rather(scope, only, cost)?,
@@ -2016,6 +2038,7 @@ mod tests {
             once: false,
             additional: None,
             spend_as: SpendAs::Normal,
+            when: None,
         }
     }
 
@@ -2037,6 +2060,28 @@ mod tests {
         let object = game.object(named[card].id).unwrap();
         assert_eq!(permission.covers(&game, player, object), covered);
         assert_eq!(permission.plays(&game, player, object), covered);
+    }
+
+    #[rstest]
+    #[case::while_it_holds(Condition::YourTurn, true)]
+    #[case::while_it_fails(Condition::Not(Box::new(Condition::YourTurn)), false)]
+    fn a_permission_with_a_condition_covers_only_while_it_holds(
+        #[case] when: Condition,
+        #[case] covered: bool,
+    ) {
+        let mut game = game(Vec::new());
+        let wolf = exiled(&mut game, "Wolf");
+        let mut rule = permission(Some(vec![wolf]), false);
+        if let Rule::MayCast { when: slot, .. } = &mut rule {
+            *slot = Some(Box::new(when));
+        }
+        put_in_force(&mut game, rule);
+        let [permission] = cast_permissions(&game) else {
+            panic!("one permission");
+        };
+        let mine = game.turn().active() == permission.controller;
+        let object = game.object(wolf.id).unwrap();
+        assert_eq!(permission.covers(&game, ME, object), covered == mine);
     }
 
     #[test]

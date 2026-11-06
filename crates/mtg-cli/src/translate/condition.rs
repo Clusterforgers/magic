@@ -28,6 +28,18 @@ pub const KEYS: [&str; 17] = [
     "Condition",
 ];
 
+/// The keys of the `CheckSVar$` checks alone.
+pub const CHECK_KEYS: [&str; 8] = [
+    "CheckSVar",
+    "SVarCompare",
+    "CheckSecondSVar",
+    "SecondSVarCompare",
+    "CheckThirdSVar",
+    "ThirdSVarCompare",
+    "CheckFourthSVar",
+    "FourthSVarCompare",
+];
+
 /// A comparison word (`GE2`, `EQ0`, `LTX`) as the DSL's operator and amount.
 pub(super) fn comparison(ctx: &Ctx, word: &str) -> Tr<(&'static str, Value)> {
     let Some(op) = word.get(..2).and_then(cmp) else {
