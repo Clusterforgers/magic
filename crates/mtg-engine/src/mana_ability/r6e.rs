@@ -134,7 +134,10 @@ fn a_depletion_land_is_sacrificed_when_its_last_counter_is_removed(
 
 #[test]
 fn a_depletion_land_without_counters_is_not_offered() {
-    assert!(source(&game(2, DEPLETION, &depletion(), 0, Vec::new())).is_empty());
+    assert_eq!(
+        source(&game(2, DEPLETION, &depletion(), 0, Vec::new())).len(),
+        0
+    );
 }
 
 #[rstest]

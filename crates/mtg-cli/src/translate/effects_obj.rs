@@ -155,9 +155,11 @@ fn r6e_chosen(ctx: &Ctx, p: &Params) -> Vec<u8> {
         "RememberTargets",
         "AlwaysRemember",
     ];
-    if p.get("Defined") != Some("Targeted")
-        || p.has("ValidTgts")
-        || remembers.iter().any(|key| p.has(key))
+    // Looked at without marking the keys read: the line reads them itself when this is not its shape.
+    let peek = |key: &str| p.iter().find(|(k, _)| *k == key).map(|(_, v)| v);
+    if peek("Defined") != Some("Targeted")
+        || peek("ValidTgts").is_some()
+        || remembers.iter().any(|key| peek(key).is_some())
     {
         return Vec::new();
     }
@@ -172,6 +174,9 @@ fn r6e_chosen(ctx: &Ctx, p: &Params) -> Vec<u8> {
         chosen.push(index);
     }
     chosen.reverse();
+    if chosen.len() >= 2 {
+        p.get("Defined");
+    }
     chosen
 }
 
