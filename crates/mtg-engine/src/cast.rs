@@ -67,6 +67,11 @@ pub(crate) fn activation_events(
                     object: ability.object,
                 });
             }
+            if price.untap {
+                events.push(Event::PermanentUntapped {
+                    object: ability.object,
+                });
+            }
             // The other parts of the cost, in the order it prints them, with the objects the player picked for them.
             let mut picks = choices.cost_picks().iter();
             let mut kinds = choices.cost_kinds().iter();
@@ -374,7 +379,10 @@ pub(crate) fn pay_answer(
             &|option, taken| mana_ability::activation(state, player, option, taken),
         )?;
         return Ok(match outcome {
-            Outcome::Events(events) => Outcome::Assisted(events),
+            Outcome::Events(mut events) => {
+                mana_ability::r5g_distinct(state, &mut events);
+                Outcome::Assisted(events)
+            }
             other => other,
         });
     }
@@ -391,7 +399,8 @@ pub(crate) fn pay_answer(
         &|option, taken| mana_ability::activation(state, player, option, taken),
     )?;
     Ok(match outcome {
-        Outcome::Events(events) => {
+        Outcome::Events(mut events) => {
+            mana_ability::r5g_distinct(state, &mut events);
             let mut events = parts::mill::in_turn(state, player, events);
             record_sources(state, &mut events);
             // The mana a cast spends can set off an ability as the spell is cast.

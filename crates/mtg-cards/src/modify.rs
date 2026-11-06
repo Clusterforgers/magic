@@ -627,6 +627,9 @@ pub enum GameRule {
     },
     /// The card can be a player's commander (CR 903.3), in every zone; the rule is written without `from`.
     CanBeCommander,
+    /// A deck can hold any number of cards with the card's name (CR 100.2a); it changes nothing in a game, and the rule is
+    /// written without `from`.
+    AnyNumberInDeck,
     /// The next spell the rule's controller casts that `what` selects gets the benefit, and the rule ends with that cast
     /// ("the next creature spell you cast this turn costs {1} less"); with the duration `UntilEndOfTurn` it also ends with
     /// the turn. `what` names the cards, not the stack object (no `Spell`).
@@ -876,6 +879,7 @@ mod tests {
         r#"{"AdditionalLandPlays":{"who":"EachPlayer","count":2}}"#
     )]
     #[case(GameRule::CanBeCommander, r#""CanBeCommander""#)]
+    #[case(GameRule::AnyNumberInDeck, r#""AnyNumberInDeck""#)]
     #[case(
         GameRule::GraveyardCardsUntargetable,
         r#""GraveyardCardsUntargetable""#

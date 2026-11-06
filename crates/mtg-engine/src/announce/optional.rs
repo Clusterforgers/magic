@@ -162,6 +162,7 @@ fn read_cost(printed: Printed) -> Optional {
 /// hold counters, or an X, is not paid for a spell; a repeated cost asks its picks again for each payment.
 pub(super) fn payable(price: &Price) -> bool {
     !price.tap
+        && !price.untap
         && !price.moves_source()
         && price.x == 0
         && price

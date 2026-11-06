@@ -110,6 +110,19 @@ fn is_fixed(item: &CostItem) -> bool {
     }
 }
 
+/// Whether an amount is one fixed number or another by a condition ("two cards if you're the monarch, one otherwise"),
+/// which reads the same whoever pays.
+fn r5g_fixed_by_condition(amount: &Amount) -> bool {
+    match amount {
+        Amount::When {
+            then, otherwise, ..
+        } => [then, otherwise]
+            .iter()
+            .all(|branch| matches!(***branch, Amount::Fixed(number) if number >= 0)),
+        _ => false,
+    }
+}
+
 /// Whether the amount of a part of a cost is the X announced.
 fn amount_is_x(item: &CostItem) -> bool {
     match item {
@@ -1185,14 +1198,22 @@ impl<'a> Walker<'a> {
     }
 
     /// The cost of an `Effect::Pay`: life of a counted amount ("pay that much life") is counted as the effect
-    /// resolves (`Effect.Pay.Counted`); every other part is named as in any cost.
-    fn c6_eg_paid_cost(&mut self, cost: &Cost) {
+    /// resolves (`Effect.Pay.Counted`), and so is a counted discard the controller pays ("you may discard your hand") or
+    /// one only a condition counts ("discard two cards if you're the monarch"): the count is the controller's, so a
+    /// count another payer would read differently ("unless its controller discards their hand") stays unpaid. Every other
+    /// part is named as in any cost.
+    fn c6_eg_paid_cost(&mut self, cost: &Cost, who: &Ref) {
         let counted: Vec<(usize, &Amount)> = cost
             .0
             .iter()
             .enumerate()
             .filter_map(|(i, item)| match item {
                 CostItem::PayLife(amount) if !is_fixed(item) => Some((i, amount)),
+                CostItem::Discard { count, .. }
+                    if !is_fixed(item) && (*who == Ref::You || r5g_fixed_by_condition(count)) =>
+                {
+                    Some((i, count))
+                }
                 _ => None,
             })
             .collect();
@@ -1201,7 +1222,10 @@ impl<'a> Walker<'a> {
         }
         let mut fixed = cost.clone();
         for (i, _) in &counted {
-            fixed.0[*i] = CostItem::PayLife(Amount::Fixed(0));
+            match &mut fixed.0[*i] {
+                CostItem::Discard { count, .. } => *count = Amount::Fixed(1),
+                item => *item = CostItem::PayLife(Amount::Fixed(0)),
+            }
         }
         self.cost(&fixed);
         self.uses("Effect", "Pay.Counted");
@@ -1215,6 +1239,10 @@ impl<'a> Walker<'a> {
             self.at(format!("[{i}]"), |w| {
                 if !matches!(item, CostItem::OneOf(_)) {
                     w.uses("Cost", &tag_of(item));
+                }
+                // `{Q}` untaps the source of an activated ability; no other cost has one to untap.
+                if matches!(item, CostItem::Untap) && !w.activated_cost {
+                    w.uses("Cost", "Untap.Elsewhere");
                 }
                 if !is_fixed(item) {
                     let activated = if w.activated_cost { ".Activated" } else { "" };
@@ -3353,6 +3381,9 @@ impl Walker<'_> {
                 if matches!(rule, GameRule::CanBeCommander) {
                     w.problem("a card can be a commander by a static ability, not by an effect");
                 }
+                if matches!(rule, GameRule::AnyNumberInDeck) {
+                    w.problem("a deck holds any number of a card by a static ability, not by an effect");
+                }
                 if matches!(rule, GameRule::CountersRemain) {
                     w.problem("counters remain on a card by a static ability, not by an effect");
                 }
@@ -3462,7 +3493,7 @@ impl Walker<'_> {
                 w.at("who", |w| w.reference(who, Kind::Player));
                 let saved = w.x_free;
                 w.x_free |= announces_x(cost);
-                w.at("cost", |w| w.c6_eg_paid_cost(cost));
+                w.at("cost", |w| w.c6_eg_paid_cost(cost, who));
                 w.x_free = saved;
                 w.at("times", |w| w.amount(times));
                 w.payment_of_the_source(cost);
@@ -4031,7 +4062,7 @@ impl Walker<'_> {
                 }
             }),
             GameRule::PlayersHave { who, .. } => self.at(tag, |w| w.reference(who, Kind::Player)),
-            GameRule::CanBeCommander => {}
+            GameRule::CanBeCommander | GameRule::AnyNumberInDeck => {}
             GameRule::GraveyardCardsUntargetable
             | GameRule::CantLoseGame { .. }
             | GameRule::CantCastSpells { .. }
@@ -4163,6 +4194,9 @@ impl Walker<'_> {
             ZoneKind::Graveyard | ZoneKind::Exile if c8_eg_itself => {}
             _ if matches!(rule, GameRule::CanBeCommander) => self.at("from", |w| {
                 w.problem("a card can be a commander in every zone: write the rule without `from`");
+            }),
+            _ if matches!(rule, GameRule::AnyNumberInDeck) => self.at("from", |w| {
+                w.problem("a deck rule holds outside the game: write the rule without `from`");
             }),
             _ => self.at("from", |w| {
                 w.problem(

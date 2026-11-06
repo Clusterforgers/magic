@@ -112,6 +112,7 @@ mod prevention;
 mod pronouns;
 mod r5b_performed;
 mod r5c_order;
+mod r5g_lines;
 mod random_moves;
 mod render;
 mod repeat;
@@ -192,6 +193,7 @@ pub use equip_options::equip_line;
 pub use group_phrases::{all_groups, subject_group};
 pub use levels::block as level_block;
 pub use levels::{Plan as BlockPlan, given as keyword_grant, plan as block_plan, without_header};
+pub use r5g_lines::{escalate_cost, escalate_reads, forecast_lines, reinforce_line};
 pub use render::{
     ability as render_ability, mode as render_mode, variants as render_variants, written_variants,
 };

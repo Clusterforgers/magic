@@ -18,6 +18,7 @@ use crate::definition::{AbilityDef, CardDefinition, Layout, ManaAbility, ManualC
 use crate::effect::{Effect, Produce};
 use crate::keyword::Keyword;
 use crate::mana::ManaCostX;
+use crate::modify::Modification;
 use crate::refs::{Ref, Selector, ZoneKind};
 use crate::spend::{SpendOn, WhenSpent};
 use crate::support::{
@@ -554,16 +555,31 @@ impl ManaShape<'_> {
 
 /// Whether `effect` is one a mana ability may run after its mana: it asks nothing of anyone and touches the
 /// controller or the source alone ("deals 1 damage to you", "draw a card", "you lose 1 life", "put a charge counter on
-/// this artifact").
+/// this artifact"), changes the life of a group of players no one chooses ("each opponent gains 1 life"), changes the
+/// source without a choice or sets up a delayed trigger.
 fn needs_no_answer(effect: &Effect) -> bool {
     match effect {
-        Effect::Draw { who, .. } | Effect::LoseLife { who, .. } | Effect::GainLife { who, .. } => {
-            *who == Ref::You
+        Effect::Draw { who, .. } => *who == Ref::You,
+        Effect::LoseLife { who, .. } | Effect::GainLife { who, .. } => {
+            matches!(who, Ref::You | Ref::Opponents | Ref::EachPlayer)
         }
         Effect::DealDamage { source, to, .. } => {
             *to == Ref::You && source.as_ref().is_none_or(|source| *source == Ref::This)
         }
         Effect::PutCounters { on, .. } => *on == Ref::This,
+        // "This land doesn't untap during your next untap step": a change of the source that asks for no choice.
+        Effect::Continuous { affected, mods, .. } => {
+            *affected == Ref::This
+                && !mods.iter().any(|modification| {
+                    matches!(
+                        modification,
+                        Modification::AddProtectionFromChosenColor
+                            | Modification::AddProtectionFromChosenCardType
+                    )
+                })
+        }
+        // "Draw a card at the beginning of the next turn's upkeep": what it does waits for its own trigger.
+        Effect::DelayedTrigger { .. } => true,
         _ => false,
     }
 }
@@ -604,20 +620,33 @@ fn is_x_counters(item: &CostItem) -> bool {
     )
 }
 
+/// Whether one mana of a fixed type is added X times ("Remove any number of storage counters from this land: Add {C} for
+/// each storage counter removed this way"): X mana, as the X of the cost.
+fn r5g_x_times(produces: &ManaProduced<'_>, times: &Amount) -> bool {
+    *times == Amount::X && matches!(produces, ManaProduced::Fixed { count: 1, .. })
+}
+
 /// Whether the X of the cost is the X of the mana and nothing else binds it.
-fn x_binds(pays: &[&CostItem], picks: &[&CostItem], produces: &ManaProduced<'_>) -> bool {
+fn x_binds(
+    pays: &[&CostItem],
+    picks: &[&CostItem],
+    produces: &ManaProduced<'_>,
+    times: &Amount,
+) -> bool {
     let x_paid = pays
         .iter()
         .chain(picks)
         .filter(|item| is_x_counters(item))
         .count();
-    let x_added = usize::from(matches!(
-        produces,
-        ManaProduced::AnyCombination {
-            count: Amount::X,
-            ..
-        } | ManaProduced::AnyColor(Amount::X)
-    ));
+    let x_added = usize::from(
+        matches!(
+            produces,
+            ManaProduced::AnyCombination {
+                count: Amount::X,
+                ..
+            } | ManaProduced::AnyColor(Amount::X)
+        ) || r5g_x_times(produces, times),
+    );
     x_paid == x_added
 }
 
@@ -711,7 +740,7 @@ pub fn mana_shape(ability: &Ability) -> Option<ManaShape<'_>> {
             return None;
         }
     }
-    if !x_binds(&pays, &picks, &produces) {
+    if !x_binds(&pays, &picks, &produces, times) {
         return None;
     }
     // A cost of mana alone ends the loop of using it again: each use spends mana from the pool.

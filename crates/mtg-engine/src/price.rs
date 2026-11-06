@@ -31,6 +31,8 @@ pub(crate) enum Leaves {
 pub(crate) struct Price {
     /// The source is tapped.
     pub(crate) tap: bool,
+    /// The source is untapped (`{Q}`, CR 107.6): only an ability of a tapped permanent pays it.
+    pub(crate) untap: bool,
     /// What happens to the source.
     pub(crate) leaves: Leaves,
     /// Every mana part together, without its `{X}`; `None` for a cost without mana.
@@ -114,6 +116,10 @@ impl Price {
         if let Some(part) = price.parts.first() {
             return Err(part.name());
         }
+        // Only an activated ability untaps its source as a cost.
+        if price.untap {
+            return Err("Cost.Untap");
+        }
         if price.x > 0 {
             return Err("Cost.Mana.X");
         }
@@ -167,6 +173,7 @@ impl Price {
     /// creatures and artifacts that help pay it.
     fn read(cost: &Cost, waterbend_ok: bool) -> Result<Price, &'static str> {
         let mut tap = false;
+        let mut untap = false;
         let mut leaves = Leaves::Stays;
         let mut symbols = Vec::new();
         let mut mana = false;
@@ -190,6 +197,7 @@ impl Price {
             }
             match item {
                 CostItem::Tap => tap = true,
+                CostItem::Untap => untap = true,
                 CostItem::Changed { .. } => changes.push(item.clone()),
                 CostItem::Waterbend(_) if !waterbend_ok => return Err(unpaid(item)),
                 CostItem::Waterbend(number) => {
@@ -210,6 +218,7 @@ impl Price {
         }
         Ok(Price {
             tap,
+            untap,
             leaves,
             mana: mana.then(|| ManaCost::from_symbols(symbols)),
             x,

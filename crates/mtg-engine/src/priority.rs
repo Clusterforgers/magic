@@ -193,7 +193,9 @@ fn can_activate(
     };
     // A player who does not control the permanent can neither tap it nor give it up as a cost (CR 602.2).
     let foreign = controller_of_object(state, object) != player;
-    if rules.is_mana_ability() || (foreign && (price.tap || price.leaves != Leaves::Stays)) {
+    if rules.is_mana_ability()
+        || (foreign && (price.tap || price.untap || price.leaves != Leaves::Stays))
+    {
         return false;
     }
     if !leaves_from_here(state, player, object, price.leaves) {
@@ -222,6 +224,17 @@ fn can_activate(
         let sick = keywords::summoning_sick(state, object.id())
             && characteristics(state, object.id()).is_some_and(|c| c.is_creature());
         if permanent.tapped() || sick {
+            return false;
+        }
+    }
+    if price.untap {
+        let Some(permanent) = object.permanent() else {
+            return false;
+        };
+        // {Q} pays only for a tapped permanent, and a creature waits out summoning sickness for it too (CR 302.6).
+        let sick = keywords::summoning_sick(state, object.id())
+            && characteristics(state, object.id()).is_some_and(|c| c.is_creature());
+        if !permanent.tapped() || sick || price.tap {
             return false;
         }
     }

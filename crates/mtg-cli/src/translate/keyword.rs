@@ -273,8 +273,7 @@ fn landwalk(word: &str) -> Tr<Value> {
 }
 
 /// Rules about building a deck: they belong to deck validation and change nothing about play.
-const DECK_RULES: [&str; 3] = [
-    "A deck can have any number of cards named CARDNAME.",
+const DECK_RULES: [&str; 2] = [
     "Your minimum deck size is reduced by five.",
     "Your deck can't have basic land cards.",
 ];
@@ -291,6 +290,9 @@ pub fn keyword_abilities(ctx: &mut Ctx, body: &str) -> Vec<Tr<Value>> {
     // The deck check reads this rule from the card; it works from the command zone and changes nothing in play.
     if body.trim() == "CARDNAME can be your commander." {
         return vec![Ok(json!({"Rule": {"rule": "CanBeCommander"}}))];
+    }
+    if body.trim() == "A deck can have any number of cards named CARDNAME." {
+        return vec![Ok(json!({"Rule": {"rule": "AnyNumberInDeck"}}))];
     }
     if let Some(quirks) = combat_quirks(body.trim()) {
         return quirks.iter().map(|quirk| Ok(combat_rule(quirk))).collect();
