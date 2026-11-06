@@ -341,7 +341,16 @@ mod tests {
             r#"{{"Search":{{"filter":{BASIC_LAND},"count":{{"min":0,"max":3}}{flag},"as":"found"}}}}"#
         ));
         let decision = asked(run_with(&game, Vec::new(), &effect).unwrap());
-        let cards = options_of(&decision).from.clone();
+        let options = options_of(&decision);
+        // The client is told, and the most is the number of names on offer.
+        assert_eq!(options.one_per_name, distinct);
+        assert_eq!(options.max, if distinct { 2 } else { 3 });
+        let cards = options.from.clone();
+        let cards = if distinct {
+            one_per_name(&game, cards)
+        } else {
+            cards
+        };
         let journal = vec![(ME, Choice::Cards(cards))];
         let (_, found) = done(run_with(&game, journal, &effect).unwrap());
         let names: Vec<String> = found
