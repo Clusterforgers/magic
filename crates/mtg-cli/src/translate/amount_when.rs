@@ -19,6 +19,8 @@ pub fn when(ctx: &Ctx, base: &str) -> Option<Tr<Value>> {
     let (word, branches) = base.split_once('.')?;
     let condition = match word {
         "Kicked" => json!("Kicked"),
+        // The gift was promised: one when its caster promised it, else none.
+        "PromisedGift" => json!({"Compare": {"left": "Promised", "op": "Ge", "right": 1}}),
         "Bargained" | "Teamwork" => json!("AdditionalCostPaid"),
         "Monarch" => json!({"Monarch": "You"}),
         "Morbid" => {
