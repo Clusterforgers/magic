@@ -1,42 +1,4 @@
 {
   "source": "forge",
-  "oracle_matches": true,
-  "lines": [
-    {
-      "face": 0,
-      "tag": "A",
-      "text": "CARDNAME deals 1 damage to target creature. Any player may activate this ability but only as a sorcery.",
-      "abilities": [],
-      "gap": "key:DealDamage.Activator"
-    },
-    {
-      "face": 0,
-      "tag": "T",
-      "text": "When there are no creatures on the battlefield, sacrifice CARDNAME.",
-      "abilities": [
-        0
-      ],
-      "gap": null
-    }
-  ],
-  "proof": {
-    "marks": [
-      {
-        "face": 0,
-        "span": {
-          "start": 0,
-          "end": 75
-        },
-        "mark": "Auto"
-      },
-      {
-        "face": 0,
-        "span": {
-          "start": 76,
-          "end": 192
-        },
-        "mark": "ByHand"
-      }
-    ]
-  }
+  "oracle_matches": true
 }

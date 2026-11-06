@@ -1,0 +1,31 @@
+{
+  "oracle_id": "711cd80d-c58d-4c2a-87db-d2e4c75f60d3",
+  "name": "Ertai's Familiar",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Ertai's Familiar",
+      "oracle_fingerprint": "b5e9768f71fa1c531e25ce0c548ce423",
+      "abilities": [
+        { "Keyword": "Phasing" },
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                { "PhasedOut": { "what": ["This"] } },
+                { "ZoneChange": { "what": ["This"], "from": "Battlefield" } }
+              ]
+            },
+            "effects": [{ "Mill": { "count": 3 } }]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 221, "end": 280 }
+          }
+        }
+      ]
+    }
+  ]
+}

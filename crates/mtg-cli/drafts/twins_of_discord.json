@@ -1,16 +1,83 @@
 {
   "oracle_id": "4a8f2104-57ec-4b23-9857-f26afa5cbcfe",
   "name": "Twins of Discord",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Twins of Discord",
       "oracle_fingerprint": "4da899f78d51f8a25ac8d3f1b3679a72",
       "abilities": [
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 0, "end": 121 }
+          "Triggered": {
+            "when": {
+              "GroupAttacks": { "what": [{ "Type": "Creature" }, { "ControlledBy": "You" }] }
+            },
+            "effects": [
+              {
+                "Either": {
+                  "first": [
+                    {
+                      "Continuous": {
+                        "affected": {
+                          "Each": [
+                            { "Type": "Creature" },
+                            {
+                              "Test": {
+                                "left": { "Stat": { "of": "Candidate", "stat": "ManaValue" } },
+                                "op": "Ne",
+                                "right": {
+                                  "Times": {
+                                    "by": 2,
+                                    "of": {
+                                      "Half": {
+                                        "of": { "Stat": { "of": "Candidate", "stat": "ManaValue" } },
+                                        "up": false
+                                      }
+                                    }
+                                  }
+                                }
+                              }
+                            }
+                          ]
+                        },
+                        "mods": ["CantBlock"],
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ],
+                  "second": [
+                    {
+                      "Continuous": {
+                        "affected": {
+                          "Each": [
+                            { "Type": "Creature" },
+                            {
+                              "Test": {
+                                "left": { "Stat": { "of": "Candidate", "stat": "ManaValue" } },
+                                "op": "Eq",
+                                "right": {
+                                  "Times": {
+                                    "by": 2,
+                                    "of": {
+                                      "Half": {
+                                        "of": { "Stat": { "of": "Candidate", "stat": "ManaValue" } },
+                                        "up": false
+                                      }
+                                    }
+                                  }
+                                }
+                              }
+                            }
+                          ]
+                        },
+                        "mods": ["CantBlock"],
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
           }
         },
         {

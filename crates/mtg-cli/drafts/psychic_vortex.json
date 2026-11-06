@@ -1,0 +1,23 @@
+{
+  "oracle_id": "451e35dd-e0b5-4157-8511-bacb315e19bd",
+  "name": "Psychic Vortex",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Psychic Vortex",
+      "oracle_fingerprint": "94e74b17f19df1af119bd0476ac33933",
+      "abilities": [
+        { "Keyword": { "CumulativeUpkeep": [{ "Draw": 1 }] } },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "effects": [
+              { "Sacrifice": { "filter": [{ "Type": "Land" }] } },
+              { "Discard": { "count": { "Count": [{ "In": "Hand" }, { "OwnedBy": "You" }] } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

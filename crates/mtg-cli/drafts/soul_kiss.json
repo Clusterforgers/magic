@@ -1,0 +1,29 @@
+{
+  "oracle_id": "8ea941aa-ee0c-4830-912a-0c672546aa0c",
+  "name": "Soul Kiss",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Soul Kiss",
+      "oracle_fingerprint": "39e0917d25c13ba98c2a423e78ee8f50",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{B}" }, { "PayLife": 1 }],
+            "limit": { "TimesPerTurn": 3 },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "Attached",
+                  "mods": [{ "ModifyPT": { "power": 2, "toughness": 2 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

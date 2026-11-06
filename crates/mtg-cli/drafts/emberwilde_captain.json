@@ -1,0 +1,40 @@
+{
+  "oracle_id": "4f4ec0fa-fcaf-4dc2-9c67-ee7881f5f77d",
+  "name": "Emberwilde Captain",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Emberwilde Captain",
+      "oracle_fingerprint": "445325d91cad38e57ef7d30d09db70ce",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "BecomeMonarch": {} }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "GroupAttacksAt": {
+                "what": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }],
+                "at": "You"
+              }
+            },
+            "if": { "AtTrigger": { "Monarch": "You" } },
+            "effects": [
+              {
+                "DealDamage": {
+                  "to": { "ControllerOf": "Triggering" },
+                  "amount": {
+                    "Count": [{ "OwnedBy": { "ControllerOf": "Triggering" } }, { "In": "Hand" }]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

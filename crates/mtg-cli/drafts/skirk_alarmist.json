@@ -1,0 +1,51 @@
+{
+  "oracle_id": "a7d20fb0-005b-4bcc-9592-cdbd3fbdd43a",
+  "name": "Skirk Alarmist",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Skirk Alarmist",
+      "oracle_fingerprint": "e66902205435c083afdb8035e9ac7e75",
+      "abilities": [
+        { "Keyword": "Haste" },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }, "FaceDown"]
+                }
+              }
+            ],
+            "effects": [
+              { "TurnFaceUp": { "what": { "Target": 0 } } },
+              {
+                "RepeatEach": {
+                  "over": { "Target": 0 },
+                  "as": "pumped",
+                  "effects": [
+                    {
+                      "DelayedTrigger": {
+                        "when": { "StepBegins": { "step": "End" } },
+                        "effects": [
+                          {
+                            "Sacrifice": {
+                              "who": { "ControllerOf": { "Bound": "pumped" } },
+                              "filter": [{ "Is": { "Bound": "pumped" } }],
+                              "count": { "Count": [{ "Is": { "Bound": "pumped" } }] }
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

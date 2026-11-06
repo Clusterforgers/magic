@@ -1,7 +1,7 @@
 {
   "oracle_id": "37df5ade-6a21-4b0c-89f8-e2e917589a8d",
   "name": "Dawn of a New Age",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Dawn of a New Age",
@@ -19,9 +19,67 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 81, "end": 271 }
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "effects": [
+              {
+                "RememberValue": {
+                  "value": {
+                    "When": {
+                      "condition": {
+                        "Compare": {
+                          "left": { "Counters": { "on": "This", "counter": { "Other": "hope" } } },
+                          "op": "Ge",
+                          "right": 1
+                        }
+                      },
+                      "then": 1,
+                      "otherwise": { "Counters": { "on": "This", "counter": { "Other": "hope" } } }
+                    }
+                  },
+                  "slot": "remembered_number"
+                }
+              },
+              { "RemoveCounters": { "from": "This", "counter": { "Other": "hope" } } },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "Remembered": { "on": "This", "slot": "remembered_number" } },
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [{ "Draw": {} }]
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": "This",
+                      "selector": [{ "Not": { "HasCounter": { "Other": "hope" } } }],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [{ "Sacrifice": { "filter": ["This"] } }]
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": "This",
+                      "selector": [{ "Not": { "HasCounter": { "Other": "hope" } } }],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [{ "GainLife": { "amount": 4 } }]
+                }
+              }
+            ]
           }
         }
       ]

@@ -1,0 +1,59 @@
+{
+  "source": "forge",
+  "oracle_matches": true,
+  "lines": [
+    {
+      "face": 0,
+      "tag": "K",
+      "text": "Ward:2",
+      "abilities": [
+        0
+      ],
+      "gap": null
+    },
+    {
+      "face": 0,
+      "tag": "A",
+      "text": "Draft a card from CARDNAME's spellbook.",
+      "abilities": [],
+      "gap": "effect:Draft"
+    },
+    {
+      "face": 0,
+      "tag": "S",
+      "text": "CARDNAME crews Vehicles as though its power were 2 greater.",
+      "abilities": [
+        1
+      ],
+      "gap": null
+    }
+  ],
+  "proof": {
+    "marks": [
+      {
+        "face": 0,
+        "span": {
+          "start": 0,
+          "end": 8
+        },
+        "mark": "Auto"
+      },
+      {
+        "face": 0,
+        "span": {
+          "start": 9,
+          "end": 82
+        },
+        "mark": "ByHand"
+      },
+      {
+        "face": 0,
+        "span": {
+          "start": 83,
+          "end": 152
+        },
+        "mark": "Auto"
+      }
+    ]
+  }
+}

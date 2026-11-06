@@ -1,0 +1,85 @@
+{
+  "oracle_id": "8f5902bf-4bc4-4d0c-84ea-a425307a4eb2",
+  "name": "Bucolic Ranch",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Bucolic Ranch",
+      "oracle_fingerprint": "ff5d4e80a1a5eaf6d45fc292470fc4ce",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Colorless"] } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [
+              {
+                "AddMana": {
+                  "mana": { "AnyColor": 1 },
+                  "only": [{ "Spell": { "subtypes": ["Mount"] } }]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{3}" }, "Tap"],
+            "effects": [
+              { "LookAtTop": { "as": "top" } },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "In": "Library" },
+                      { "Is": { "Bound": "top" } },
+                      { "Subtype": "Mount" }
+                    ]
+                  },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "revealed2"
+                }
+              },
+              { "Reveal": { "what": { "Bound": "revealed2" } } },
+              {
+                "Move": { "what": { "Bound": "revealed2" }, "to": "Hand", "as": "revealed2_moved" }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Bound": "revealed2_moved" },
+                      "selector": [],
+                      "op": "Eq",
+                      "right": 0
+                    }
+                  },
+                  "then": [
+                    {
+                      "May": {
+                        "effects": [
+                          {
+                            "Move": {
+                              "what": {
+                                "Each": [{ "In": "Library" }, { "OwnedBy": "You" }, "TopOfLibrary"]
+                              },
+                              "to": { "Library": { "place": "Bottom" } }
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

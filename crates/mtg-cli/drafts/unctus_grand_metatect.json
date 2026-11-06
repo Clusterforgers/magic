@@ -1,0 +1,66 @@
+{
+  "oracle_id": "54c18f09-5c5a-46e7-9f66-ff91bc12537c",
+  "name": "Unctus, Grand Metatect",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Unctus, Grand Metatect",
+      "oracle_fingerprint": "2e1c4a5e1a2710dced90493196032f60",
+      "abilities": [
+        {
+          "Static": {
+            "affected": {
+              "Each": [
+                { "Type": "Creature" },
+                "Other",
+                { "Color": "Blue" },
+                { "ControlledBy": "You" }
+              ]
+            },
+            "mods": [
+              {
+                "GrantAbility": {
+                  "Triggered": {
+                    "when": { "Tapped": { "what": ["This"] } },
+                    "effects": [{ "Draw": {} }, { "Discard": {} }]
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Static": {
+            "affected": {
+              "Each": [
+                { "Type": "Creature" },
+                { "Type": "Artifact" },
+                "Other",
+                { "ControlledBy": "You" }
+              ]
+            },
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{U/P}",
+            "timing": "Sorcery",
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "AddColors": ["Blue"] }, { "AddType": "Artifact" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

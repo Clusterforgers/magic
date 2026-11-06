@@ -1,7 +1,7 @@
 {
   "oracle_id": "ada3c285-3449-4037-8b44-42e128456a65",
   "name": "Genju of the Cedars",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Genju of the Cedars",
@@ -9,9 +9,22 @@
       "abilities": [
         { "Keyword": { "Enchant": [{ "Subtype": "Forest" }] } },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 15, "end": 110 }
+          "Activated": {
+            "cost": "{2}",
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "Attached",
+                  "mods": [
+                    { "SetPT": { "power": 4, "toughness": 4 } },
+                    { "AddColors": ["Green"] },
+                    { "AddSubtype": "Spirit" },
+                    { "AddType": "Creature" }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
           }
         },
         {

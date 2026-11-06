@@ -1,0 +1,42 @@
+{
+  "oracle_id": "855e200e-5375-4aac-b1f7-5113162e7e14",
+  "name": "Tidal Control",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Tidal Control",
+      "oracle_fingerprint": "5b0878483f836edaf9656d5d3a5f07ea",
+      "abilities": [
+        { "Keyword": { "CumulativeUpkeep": "{2}" } },
+        {
+          "Activated": {
+            "cost": "{2}",
+            "by": "Anyone",
+            "targets": [
+              {
+                "what": {
+                  "Object": ["Spell", { "AnyOf": [{ "Color": "Green" }, { "Color": "Red" }] }]
+                }
+              }
+            ],
+            "effects": [{ "Counter": { "what": { "Target": 0 } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "PayLife": 2 }],
+            "by": "Anyone",
+            "targets": [
+              {
+                "what": {
+                  "Object": ["Spell", { "AnyOf": [{ "Color": "Green" }, { "Color": "Red" }] }]
+                }
+              }
+            ],
+            "effects": [{ "Counter": { "what": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

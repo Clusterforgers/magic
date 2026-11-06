@@ -1,0 +1,45 @@
+{
+  "oracle_id": "e2962883-6daf-4a84-af73-917afc73092c",
+  "name": "Shorikai, Genesis Engine",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Shorikai, Genesis Engine",
+      "oracle_fingerprint": "948cf9296c72fd78a690be3efbf9b0ca",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{1}" }, "Tap"],
+            "effects": [
+              { "Draw": { "count": 2 } },
+              { "Discard": {} },
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Pilot",
+                      "types": ["Creature"],
+                      "subtypes": ["Pilot"],
+                      "power": 1,
+                      "toughness": 1,
+                      "abilities": [
+                        {
+                          "Rule": {
+                            "rule": {
+                              "Combat": { "who": "This", "quirk": { "TapPower": { "Plus": 2 } } }
+                            }
+                          }
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Crew": 8 } }
+      ]
+    }
+  ]
+}

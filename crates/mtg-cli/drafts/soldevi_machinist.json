@@ -1,0 +1,26 @@
+{
+  "oracle_id": "06600efe-1718-4cc1-b1c0-59c82e2efd73",
+  "name": "Soldevi Machinist",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Soldevi Machinist",
+      "oracle_fingerprint": "f6cd4d49c65fb97fb4170e48118cbd58",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [
+              {
+                "AddMana": {
+                  "mana": { "Fixed": ["Colorless", "Colorless"] },
+                  "only": [{ "Ability": { "types": ["Artifact"], "facts": ["OnBattlefield"] } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,69 @@
+{
+  "oracle_id": "32438050-5ae7-4c19-bcaf-5a07a673e0e0",
+  "name": "Reef Roads",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Reef Roads",
+      "oracle_fingerprint": "ae8663209e9ab7ea130354e4ee3f5b1f",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": "Tapped",
+            "condition": {
+              "Not": {
+                "Compare": {
+                  "left": {
+                    "Count": [
+                      { "AnyOf": [{ "Subtype": "Mount" }, { "Subtype": "Vehicle" }] },
+                      { "ControlledBy": "You" }
+                    ]
+                  },
+                  "op": "Ge",
+                  "right": 1
+                }
+              }
+            }
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Blue"] } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{1}{U}" }, "Tap", "SacrificeSelf"],
+            "timing": "Sorcery",
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Pilot",
+                      "types": ["Creature"],
+                      "subtypes": ["Pilot"],
+                      "power": 1,
+                      "toughness": 1,
+                      "abilities": [
+                        {
+                          "Rule": {
+                            "rule": {
+                              "Combat": { "who": "This", "quirk": { "TapPower": { "Plus": 2 } } }
+                            }
+                          }
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

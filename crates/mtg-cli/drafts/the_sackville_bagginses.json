@@ -1,0 +1,42 @@
+{
+  "oracle_id": "e3a665f9-6e51-4e0d-923b-e9552d5978a4",
+  "name": "The Sackville-Bagginses",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "The Sackville-Bagginses",
+      "oracle_fingerprint": "3900c372a7502baa6e97925d3f4c8884",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": [
+                    {
+                      "Sacrifice": {
+                        "filter": [
+                          { "AnyOf": [{ "Type": "Artifact" }, { "Type": "Creature" }] },
+                          "Other"
+                        ]
+                      }
+                    }
+                  ],
+                  "paid": [{ "Draw": {} }, { "CreateToken": { "token": { "Named": "treasure" } } }]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Sacrificed": { "what": ["Token", { "ControlledBy": "You" }], "by": "You" } },
+            "targets": [{ "what": "Opponent" }],
+            "effects": [{ "LoseLife": { "who": { "Target": 0 }, "amount": 1 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

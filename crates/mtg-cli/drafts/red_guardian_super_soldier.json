@@ -1,0 +1,31 @@
+{
+  "oracle_id": "e85567e8-1102-4d44-a15b-d5f1fdef8465",
+  "name": "Red Guardian, Super-Soldier",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Red Guardian, Super-Soldier",
+      "oracle_fingerprint": "39b8a9fc752175d18171463417a7ab15",
+      "abilities": [
+        { "Keyword": "Flash" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Type": "Creature" },
+                    { "ControlledBy": "Opponents" },
+                    { "DidThisTurn": { "event": "Damaged" } }
+                  ]
+                }
+              }
+            ],
+            "effects": [{ "Destroy": { "what": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

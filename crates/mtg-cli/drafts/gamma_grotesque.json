@@ -1,0 +1,45 @@
+{
+  "oracle_id": "b92b4894-0786-49a7-8003-d99393f080d4",
+  "name": "Gamma Grotesque",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Gamma Grotesque",
+      "oracle_fingerprint": "7b9f462f987be3166c0ef6e323154ce8",
+      "abilities": [
+        { "Keyword": "Vigilance" },
+        {
+          "Activated": {
+            "cost": [
+              { "Mana": "{4}{G}{G}" },
+              {
+                "Changed": {
+                  "change": "Reduce",
+                  "mana": "{2}{G}",
+                  "condition": {
+                    "Compare": {
+                      "left": { "Count": ["This", "EnteredThisTurn"] },
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  }
+                }
+              }
+            ],
+            "limit": "OncePerGame",
+            "effects": [
+              { "PutCounters": { "on": "This", "counter": "+1/+1", "count": 3 } },
+              {
+                "Draw": {
+                  "count": {
+                    "Count": [{ "Type": "Creature" }, { "ControlledBy": "You" }, "HasAnyCounter"]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

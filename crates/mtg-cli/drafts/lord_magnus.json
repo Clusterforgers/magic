@@ -1,0 +1,34 @@
+{
+  "oracle_id": "59258149-1c18-421b-b940-d0aa29da572a",
+  "name": "Lord Magnus",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Lord Magnus",
+      "oracle_fingerprint": "eda1a083c08fb6156ff0a1e7a53350e2",
+      "abilities": [
+        { "Keyword": "FirstStrike" },
+        {
+          "Rule": {
+            "rule": {
+              "Combat": {
+                "who": { "Each": [{ "HasKeyword": { "Landwalk": [{ "Subtype": "Plains" }] } }] },
+                "quirk": { "IgnoreLandwalk": [{ "Subtype": "Plains" }] }
+              }
+            }
+          }
+        },
+        {
+          "Rule": {
+            "rule": {
+              "Combat": {
+                "who": { "Each": [{ "HasKeyword": { "Landwalk": [{ "Subtype": "Forest" }] } }] },
+                "quirk": { "IgnoreLandwalk": [{ "Subtype": "Forest" }] }
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,45 @@
+{
+  "oracle_id": "c38efbe5-7ace-41fa-b874-72e3702a833c",
+  "name": "Stone-Tongue Basilisk",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Stone-Tongue Basilisk",
+      "oracle_fingerprint": "405bd77c57b88703df7a1fc4352145c5",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "DealsDamage": {
+                "source": ["This"],
+                "to": { "Each": [{ "Type": "Creature" }] },
+                "combat": true
+              }
+            },
+            "effects": [
+              { "Bind": { "what": "Triggering", "as": "event" } },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "EndCombat" } },
+                  "effects": [{ "Destroy": { "what": { "Bound": "event" } } }]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Rule": {
+            "rule": { "Combat": { "who": "This", "quirk": { "MustBeBlocked": "Every" } } },
+            "condition": {
+              "Compare": {
+                "left": { "Count": [{ "In": "Graveyard" }, { "OwnedBy": "You" }] },
+                "op": "Ge",
+                "right": 7
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

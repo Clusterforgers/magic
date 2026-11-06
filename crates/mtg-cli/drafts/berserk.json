@@ -1,0 +1,70 @@
+{
+  "oracle_id": "8b67d192-9a05-4a47-82ae-5fc4b7834d88",
+  "name": "Berserk",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Berserk",
+      "oracle_fingerprint": "ba05bf3a83ab478b6607dfb8ddc0ff63",
+      "abilities": [
+        {
+          "CastOnly": {
+            "condition": {
+              "Any": [
+                { "Step": "Upkeep" },
+                { "Step": "Draw" },
+                { "Step": "Main1" },
+                { "Step": "BeginCombat" },
+                { "Step": "DeclareAttackers" },
+                { "Step": "DeclareBlockers" }
+              ]
+            }
+          }
+        },
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    {
+                      "ModifyPT": {
+                        "power": { "Stat": { "of": { "Target": 0 }, "stat": "Power" } },
+                        "toughness": 0
+                      }
+                    },
+                    { "AddKeyword": "Trample" }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              { "Bind": { "what": { "Target": 0 }, "as": "target" } },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "End" } },
+                  "effects": [
+                    {
+                      "If": {
+                        "condition": {
+                          "CountOf": {
+                            "subject": { "Bound": "target" },
+                            "selector": ["AttackedThisTurn"],
+                            "op": "Ge",
+                            "right": 1
+                          }
+                        },
+                        "then": [{ "Destroy": { "what": { "Bound": "target" } } }]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

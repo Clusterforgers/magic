@@ -1,0 +1,33 @@
+{
+  "oracle_id": "52791629-0f22-4023-bb04-c829d1600568",
+  "name": "Lord Jyscal Guado",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Lord Jyscal Guado",
+      "oracle_fingerprint": "56d1cd227920eaf60c223ab5fb420979",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End" } },
+            "if": {
+              "Compare": {
+                "left": {
+                  "Tally": {
+                    "event": "CountersPut",
+                    "who": "You",
+                    "filter": [{ "Type": "Creature" }]
+                  }
+                },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "effects": [{ "CreateToken": { "token": { "Named": "clue" } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,58 @@
+{
+  "oracle_id": "65d8b481-ebe9-4029-98a8-dd4693340bff",
+  "name": "Cloudspire Coordinator",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Cloudspire Coordinator",
+      "oracle_fingerprint": "35dfc2abcfcbd2bb02610cd5cbeaf0e2",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "Scry": { "count": 2 } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Pilot",
+                      "types": ["Creature"],
+                      "subtypes": ["Pilot"],
+                      "power": 1,
+                      "toughness": 1,
+                      "abilities": [
+                        {
+                          "Rule": {
+                            "rule": {
+                              "Combat": { "who": "This", "quirk": { "TapPower": { "Plus": 2 } } }
+                            }
+                          }
+                        }
+                      ]
+                    }
+                  },
+                  "count": {
+                    "Tally": {
+                      "event": "Entered",
+                      "who": "EachPlayer",
+                      "filter": [
+                        { "AnyOf": [{ "Subtype": "Mount" }, { "Subtype": "Vehicle" }] },
+                        { "ControlledBy": "You" }
+                      ]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

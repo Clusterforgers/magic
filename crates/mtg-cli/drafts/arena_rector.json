@@ -1,0 +1,42 @@
+{
+  "oracle_id": "6a23963c-21dc-4d21-8d28-5abad7f859a1",
+  "name": "Arena Rector",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Arena Rector",
+      "oracle_fingerprint": "eccf1948ce0f41e169949ccdb469a3a1",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": [
+                    {
+                      "ExileFromGraveyard": {
+                        "filter": [{ "Is": { "Arrived": { "of": "This", "zone": "Graveyard" } } }],
+                        "any_player": true
+                      }
+                    }
+                  ],
+                  "paid": [
+                    {
+                      "Search": {
+                        "filter": [{ "Type": "Planeswalker" }, { "OwnedBy": "You" }],
+                        "as": "found"
+                      }
+                    },
+                    { "Move": { "what": { "Bound": "found" }, "to": { "Battlefield": {} } } },
+                    { "Shuffle": {} }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

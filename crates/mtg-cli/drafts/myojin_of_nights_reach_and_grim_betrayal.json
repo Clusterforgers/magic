@@ -36,7 +36,21 @@
               {
                 "Move": {
                   "what": {
-                    "Each": [{ "Type": "Creature" }, "EnteredThisTurn", { "In": "Graveyard" }]
+                    "Each": [
+                      { "Type": "Creature" },
+                      {
+                        "AnyOf": [
+                          { "ArrivedFrom": "Battlefield" },
+                          { "ArrivedFrom": "Hand" },
+                          { "ArrivedFrom": "Library" },
+                          { "ArrivedFrom": "Graveyard" },
+                          { "ArrivedFrom": "Stack" },
+                          { "ArrivedFrom": "Exile" },
+                          { "ArrivedFrom": "Command" }
+                        ]
+                      },
+                      { "In": "Graveyard" }
+                    ]
                   },
                   "to": { "Battlefield": { "under": "You" } }
                 }

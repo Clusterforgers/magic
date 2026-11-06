@@ -1,0 +1,55 @@
+{
+  "oracle_id": "e9db02fb-78e2-44b3-9e1b-ef0148234337",
+  "name": "Goham Djinn",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Goham Djinn",
+      "oracle_fingerprint": "f20141929db66f2fb1446c002fe40153",
+      "abilities": [
+        { "Activated": { "cost": "{1}{B}", "effects": [{ "Regenerate": { "what": "This" } }] } },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "ModifyPT": { "power": -2, "toughness": -2 } }],
+            "condition": {
+              "Matches": {
+                "subject": "This",
+                "selector": [
+                  {
+                    "Test": {
+                      "left": { "Count": [{ "Color": "Black" }] },
+                      "op": "Ge",
+                      "right": { "Count": [{ "Color": "White" }] }
+                    }
+                  },
+                  {
+                    "Test": {
+                      "left": { "Count": [{ "Color": "Black" }] },
+                      "op": "Ge",
+                      "right": { "Count": [{ "Color": "Blue" }] }
+                    }
+                  },
+                  {
+                    "Test": {
+                      "left": { "Count": [{ "Color": "Black" }] },
+                      "op": "Ge",
+                      "right": { "Count": [{ "Color": "Red" }] }
+                    }
+                  },
+                  {
+                    "Test": {
+                      "left": { "Count": [{ "Color": "Black" }] },
+                      "op": "Ge",
+                      "right": { "Count": [{ "Color": "Green" }] }
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

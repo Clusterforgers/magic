@@ -1,0 +1,35 @@
+{
+  "oracle_id": "3b64051e-d320-4991-bc9e-6e1435a23c17",
+  "name": "Saproling Cluster",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Saproling Cluster",
+      "oracle_fingerprint": "9e90d7032097d6a65a94246fed2f9ee5",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{1}" }, { "Discard": {} }],
+            "by": "Anyone",
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Saproling",
+                      "colors": ["Green"],
+                      "types": ["Creature"],
+                      "subtypes": ["Saproling"],
+                      "power": 1,
+                      "toughness": 1
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,54 @@
+{
+  "oracle_id": "008cb342-79f5-4df6-a6b7-0e9e22ed693f",
+  "name": "Coalition Relic",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Coalition Relic",
+      "oracle_fingerprint": "32404a8940b4e06067b6671216e251eb",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "AnyColor": 1 } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "PutCounters": { "on": "This", "counter": "charge" } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Main1", "whose": "You" } },
+            "effects": [
+              {
+                "RememberValue": {
+                  "value": { "Counters": { "on": "This", "counter": "charge" } },
+                  "slot": "remembered_number"
+                }
+              },
+              {
+                "RemoveCounters": {
+                  "from": "This",
+                  "counter": "charge",
+                  "count": { "Counters": { "on": "This", "counter": "charge" } }
+                }
+              },
+              {
+                "AddMana": {
+                  "mana": {
+                    "AnyCombination": {
+                      "count": { "Remembered": { "on": "This", "slot": "remembered_number" } }
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,47 @@
+{
+  "oracle_id": "3848ad74-8ee7-4546-9394-30db88e1d1e6",
+  "name": "Rasaad yn Bashir",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Rasaad yn Bashir",
+      "oracle_fingerprint": "8d8cc491ee4d106d648c50e4e2f0a2c3",
+      "abilities": [
+        { "Rule": { "rule": { "ToughnessAssignsDamage": "You" } } },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "if": { "Initiative": "You" },
+            "effects": [
+              {
+                "RepeatEach": {
+                  "over": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                  "as": "doubled",
+                  "effects": [
+                    {
+                      "Continuous": {
+                        "affected": { "Bound": "doubled" },
+                        "mods": [
+                          {
+                            "ModifyPT": {
+                              "power": 0,
+                              "toughness": {
+                                "Stat": { "of": { "Bound": "doubled" }, "stat": "Toughness" }
+                              }
+                            }
+                          }
+                        ],
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": "ChooseABackground" }
+      ]
+    }
+  ]
+}

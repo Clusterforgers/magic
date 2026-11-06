@@ -1,0 +1,35 @@
+{
+  "oracle_id": "82d58f2d-66a4-4154-9826-01ca8e8d32d0",
+  "name": "Land's Edge",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Land's Edge",
+      "oracle_fingerprint": "45a6dc7f0b06bf60475c7650b77a67d3",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Discard": {} }],
+            "by": "Anyone",
+            "targets": [
+              { "what": { "Either": ["Player", { "Object": [{ "Type": "Planeswalker" }] }] } }
+            ],
+            "effects": [
+              {
+                "DealDamage": {
+                  "to": { "Target": 0 },
+                  "amount": {
+                    "Times": {
+                      "by": 2,
+                      "of": { "CountOf": { "of": "Paid", "filter": [{ "Type": "Land" }] } }
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

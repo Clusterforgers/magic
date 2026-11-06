@@ -1,0 +1,35 @@
+{
+  "oracle_id": "7cd8b017-8d59-4b55-bb9a-8d8e492ef1ac",
+  "name": "Moon-Circuit Hacker",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Moon-Circuit Hacker",
+      "oracle_fingerprint": "bf1bbd7a9610aa7ef70c060be61c09e0",
+      "abilities": [
+        { "Keyword": { "Ninjutsu": "{U}" } },
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": ["This"], "to": "EachPlayer", "combat": true } },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": [{ "Draw": 1 }],
+                  "paid": [
+                    {
+                      "Discard": {
+                        "count": {
+                          "CountOf": { "of": "Dealer", "filter": [{ "Not": "EnteredThisTurn" }] }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,44 @@
+{
+  "oracle_id": "09342fd7-3dad-431e-8b87-de8a9287e757",
+  "name": "Fractal Harness",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Fractal Harness",
+      "oracle_fingerprint": "a2faef32c88ec91237ea988eb8e61171",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Fractal",
+                      "colors": ["Green", "Blue"],
+                      "types": ["Creature"],
+                      "subtypes": ["Fractal"],
+                      "power": 0,
+                      "toughness": 0
+                    }
+                  },
+                  "as": "token"
+                }
+              },
+              { "PutCounters": { "on": { "Bound": "token" }, "counter": "+1/+1", "count": "X" } },
+              { "Attach": { "what": "This", "to": { "Bound": "token" } } }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": [{ "Is": "Attached" }] } },
+            "effects": [{ "MultiplyCounters": { "on": "Triggering", "counter": "+1/+1" } }]
+          }
+        },
+        { "Keyword": { "Equip": "{2}" } }
+      ]
+    }
+  ]
+}

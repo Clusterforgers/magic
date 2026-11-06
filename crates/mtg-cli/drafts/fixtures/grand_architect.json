@@ -1,0 +1,142 @@
+{
+  "object": "card",
+  "id": "14ce909d-a53e-4711-a9fd-b110433d460f",
+  "oracle_id": "7af1d7f9-058a-4ccb-96b7-fc391b615c09",
+  "multiverse_ids": [
+    489726
+  ],
+  "mtgo_id": 82140,
+  "tcgplayer_id": 218629,
+  "cardmarket_id": 484364,
+  "name": "Grand Architect",
+  "lang": "en",
+  "released_at": "2020-08-07",
+  "uri": "https://api.scryfall.com/cards/14ce909d-a53e-4711-a9fd-b110433d460f",
+  "scryfall_uri": "https://scryfall.com/card/2xm/53/grand-architect?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T08:09:57Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/1/4/14ce909d-a53e-4711-a9fd-b110433d460f.jpg?1783930197",
+    "normal": "https://cards.scryfall.io/normal/front/1/4/14ce909d-a53e-4711-a9fd-b110433d460f.jpg?1783930197",
+    "large": "https://cards.scryfall.io/large/front/1/4/14ce909d-a53e-4711-a9fd-b110433d460f.jpg?1783930197",
+    "png": "https://cards.scryfall.io/png/front/1/4/14ce909d-a53e-4711-a9fd-b110433d460f.png?1783930197",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/1/4/14ce909d-a53e-4711-a9fd-b110433d460f.jpg?1783930197",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/1/4/14ce909d-a53e-4711-a9fd-b110433d460f.jpg?1783930197",
+    "thumb": "https://cards.scryfall.io/thumb/front/1/4/14ce909d-a53e-4711-a9fd-b110433d460f.webp?1783930197",
+    "grid": "https://cards.scryfall.io/grid/front/1/4/14ce909d-a53e-4711-a9fd-b110433d460f.webp?1783930197",
+    "display": "https://cards.scryfall.io/display/front/1/4/14ce909d-a53e-4711-a9fd-b110433d460f.webp?1783930197",
+    "art": "https://cards.scryfall.io/art/front/1/4/14ce909d-a53e-4711-a9fd-b110433d460f.webp?1783930197",
+    "crop": "https://cards.scryfall.io/crop/front/1/4/14ce909d-a53e-4711-a9fd-b110433d460f.webp?1783930197",
+    "jpeg": "https://cards.scryfall.io/normal/front/1/4/14ce909d-a53e-4711-a9fd-b110433d460f.jpg?1783930197"
+  },
+  "mana_cost": "{1}{U}{U}",
+  "cmc": 3.0,
+  "type_line": "Creature — Vedalken Artificer",
+  "oracle_text": "Other blue creatures you control get +1/+1.\n{U}: Target artifact creature becomes blue until end of turn.\nTap an untapped blue creature you control: Add {C}{C}. Spend this mana only to cast artifact spells or activate abilities of artifacts.",
+  "power": "1",
+  "toughness": "3",
+  "colors": [
+    "U"
+  ],
+  "color_identity": [
+    "U"
+  ],
+  "keywords": [],
+  "produced_mana": [
+    "C"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": true,
+  "variation": false,
+  "set_id": "372dafe8-b5d1-4b81-998f-3ae96b59498a",
+  "set": "2xm",
+  "set_name": "Double Masters",
+  "set_type": "masters",
+  "set_uri": "https://api.scryfall.com/sets/372dafe8-b5d1-4b81-998f-3ae96b59498a",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3A2xm&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/2xm?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/14ce909d-a53e-4711-a9fd-b110433d460f/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A7af1d7f9-058a-4ccb-96b7-fc391b615c09&unique=prints",
+  "collector_number": "53",
+  "digital": false,
+  "rarity": "rare",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Steven Belledin",
+  "artist_ids": [
+    "f07d73b9-52a0-4fe5-858b-61f7b42174a5"
+  ],
+  "illustration_id": "d9a4227f-222c-4703-b023-471a79e42355",
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 7331,
+  "penny_rank": 3091,
+  "preview": {
+    "source": "Louis-Samuel Deltour",
+    "source_uri": "https://twitter.com/LWIDELTOUW/status/1286402008870785033",
+    "previewed_at": "2020-07-23"
+  },
+  "prices": {
+    "usd": "0.90",
+    "usd_foil": "1.13",
+    "usd_etched": null,
+    "eur": "0.63",
+    "eur_foil": "0.87",
+    "tix": "0.02"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=489726&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DGrand%2BArchitect",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DGrand%2BArchitect",
+    "edhrec": "https://edhrec.com/route/?cc=Grand+Architect"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F218629%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=484364&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/82140?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

@@ -1,0 +1,40 @@
+{
+  "oracle_id": "7c59ad65-ad1f-4dc4-bcf2-ea6b2b48fad8",
+  "name": "Infinite Hourglass",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Infinite Hourglass",
+      "oracle_fingerprint": "e10e0ef4aa2065ba96e0df48d807976e",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [{ "PutCounters": { "on": "This", "counter": { "Other": "time" } } }]
+          }
+        },
+        {
+          "Static": {
+            "affected": { "Each": [{ "Type": "Creature" }] },
+            "mods": [
+              {
+                "ModifyPT": {
+                  "power": { "Counters": { "on": "This", "counter": { "Other": "time" } } },
+                  "toughness": 0
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{3}",
+            "condition": { "Step": "Upkeep" },
+            "by": "Anyone",
+            "effects": [{ "RemoveCounters": { "from": "This", "counter": { "Other": "time" } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

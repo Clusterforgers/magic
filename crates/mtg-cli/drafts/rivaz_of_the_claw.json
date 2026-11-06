@@ -29,7 +29,8 @@
                 "from": "Graveyard",
                 "once": true
               }
-            }
+            },
+            "condition": "YourTurn"
           }
         },
         {

@@ -1,7 +1,7 @@
 {
   "oracle_id": "a11d890e-38d4-467c-bc04-948979c142e0",
   "name": "Marit Lage's Slumber",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Marit Lage's Slumber",
@@ -34,9 +34,41 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 84, "end": 300 }
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "if": {
+              "Compare": {
+                "left": { "Count": [{ "Supertype": "Snow" }, { "ControlledBy": "You" }] },
+                "op": "Ge",
+                "right": 10
+              }
+            },
+            "effects": [
+              { "Sacrifice": { "filter": ["This"] } },
+              {
+                "If": {
+                  "condition": "Performed",
+                  "then": [
+                    {
+                      "CreateToken": {
+                        "token": {
+                          "Custom": {
+                            "name": "Marit Lage",
+                            "colors": ["Black"],
+                            "supertypes": ["Legendary"],
+                            "types": ["Creature"],
+                            "subtypes": ["Avatar"],
+                            "power": 20,
+                            "toughness": 20,
+                            "abilities": [{ "Keyword": "Flying" }, { "Keyword": "Indestructible" }]
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
           }
         }
       ]

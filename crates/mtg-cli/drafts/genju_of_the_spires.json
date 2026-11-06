@@ -1,7 +1,7 @@
 {
   "oracle_id": "c040882e-48ba-469e-9fc6-02e8b68dd58c",
   "name": "Genju of the Spires",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Genju of the Spires",
@@ -9,9 +9,22 @@
       "abilities": [
         { "Keyword": { "Enchant": [{ "Subtype": "Mountain" }] } },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 17, "end": 112 }
+          "Activated": {
+            "cost": "{2}",
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "Attached",
+                  "mods": [
+                    { "SetPT": { "power": 6, "toughness": 1 } },
+                    { "AddColors": ["Red"] },
+                    { "AddSubtype": "Spirit" },
+                    { "AddType": "Creature" }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
           }
         },
         {

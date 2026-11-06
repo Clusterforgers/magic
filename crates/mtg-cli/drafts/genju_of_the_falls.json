@@ -1,7 +1,7 @@
 {
   "oracle_id": "c546747a-1935-4c59-a45f-cad7da41fe38",
   "name": "Genju of the Falls",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Genju of the Falls",
@@ -9,9 +9,23 @@
       "abilities": [
         { "Keyword": { "Enchant": [{ "Subtype": "Island" }] } },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 15, "end": 121 }
+          "Activated": {
+            "cost": "{2}",
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "Attached",
+                  "mods": [
+                    { "SetPT": { "power": 3, "toughness": 2 } },
+                    { "AddColors": ["Blue"] },
+                    { "AddSubtype": "Spirit" },
+                    { "AddType": "Creature" },
+                    { "AddKeyword": "Flying" }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
           }
         },
         {

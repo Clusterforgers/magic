@@ -30,49 +30,24 @@
             "when": { "Chapter": { "number": 3 } },
             "effects": [
               {
-                "Let": {
-                  "as": "power",
-                  "amount": { "Half": { "of": { "Life": "You" }, "up": true } }
-                }
-              },
-              {
-                "Let": {
-                  "as": "toughness2",
-                  "amount": { "Half": { "of": { "Life": "You" }, "up": true } }
-                }
-              },
-              {
                 "CreateToken": {
                   "token": {
-                    "Custom": {
-                      "name": "Nightmare Horror",
-                      "colors": ["Black"],
-                      "types": ["Creature"],
-                      "subtypes": ["Nightmare", "Horror"],
-                      "power": 0,
-                      "toughness": 0
-                    }
-                  },
-                  "as": "token3"
-                }
-              },
-              {
-                "Continuous": {
-                  "affected": { "Bound": "token3" },
-                  "mods": [
-                    {
-                      "SetPT": {
-                        "power": { "Bound": "power" },
-                        "toughness": { "Bound": "toughness2" }
+                    "Sized": {
+                      "size": { "Half": { "of": { "Life": "You" }, "up": true } },
+                      "token": {
+                        "name": "Nightmare Horror",
+                        "colors": ["Black"],
+                        "types": ["Creature"],
+                        "subtypes": ["Nightmare", "Horror"]
                       }
                     }
-                  ],
-                  "duration": "Forever"
+                  },
+                  "as": "token"
                 }
               },
               {
                 "DealDamage": {
-                  "source": { "Bound": "token3" },
+                  "source": { "Bound": "token" },
                   "to": "You",
                   "amount": { "Half": { "of": { "Life": "You" }, "up": true } }
                 }

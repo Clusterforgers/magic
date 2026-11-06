@@ -1,0 +1,37 @@
+{
+  "oracle_id": "710f1f8a-e5f7-4889-9f12-2611f42d5c73",
+  "name": "Rune-Tail, Kitsune Ascendant // Rune-Tail's Essence",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Rune-Tail, Kitsune Ascendant",
+      "oracle_fingerprint": "c2106f718647a7b2f08e9320dd5c10dc",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "State": {
+                "condition": { "Compare": { "left": { "Life": "You" }, "op": "Ge", "right": 30 } }
+              }
+            },
+            "effects": [{ "Flip": { "what": "This" } }]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Rune-Tail's Essence",
+      "oracle_fingerprint": "35858cb895f914f1100f7edf9f2ef96f",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": {
+              "Damage": { "to": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } }
+            },
+            "by": "Prevent"
+          }
+        }
+      ]
+    }
+  ]
+}

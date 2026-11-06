@@ -1,0 +1,49 @@
+{
+  "oracle_id": "101f06f8-7980-41d1-98fa-3cb959380737",
+  "name": "Rootcoil Creeper",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Rootcoil Creeper",
+      "oracle_fingerprint": "b640f9d991aa97f7491ded7160c23c77",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "AnyColor": 1 } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [
+              {
+                "AddMana": {
+                  "mana": { "AnyColor": 2 },
+                  "only": [{ "Spell": { "facts": ["FromGraveyard"] } }]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{U}{G}" }, "Tap", "ExileSelf"],
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "HasKeywordNamed": "Flashback" },
+                    { "OwnedBy": "You" },
+                    { "In": "Exile" }
+                  ]
+                }
+              }
+            ],
+            "effects": [{ "Move": { "what": { "Target": 0 }, "to": "Hand" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

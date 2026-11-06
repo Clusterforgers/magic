@@ -1,0 +1,39 @@
+{
+  "oracle_id": "28264920-9d14-4661-83b8-56f950fbff39",
+  "name": "Su-Chi Cave Guard",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Su-Chi Cave Guard",
+      "oracle_fingerprint": "ddce9353c93c28f6e3b2a632be4361f1",
+      "abilities": [
+        { "Keyword": "Vigilance" },
+        { "Keyword": { "Ward": "{4}" } },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } },
+            "effects": [
+              {
+                "AddMana": {
+                  "mana": {
+                    "Fixed": [
+                      "Colorless",
+                      "Colorless",
+                      "Colorless",
+                      "Colorless",
+                      "Colorless",
+                      "Colorless",
+                      "Colorless",
+                      "Colorless"
+                    ]
+                  },
+                  "lasts": "Turn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

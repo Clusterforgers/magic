@@ -1,0 +1,136 @@
+{
+  "object": "card",
+  "id": "4aa7d91b-cfbb-4da0-97fa-3c0a15f1dbb9",
+  "oracle_id": "d66e89a3-d582-4867-899c-f560b8a5b973",
+  "multiverse_ids": [
+    29731
+  ],
+  "mtgo_id": 17181,
+  "mtgo_foil_id": 17182,
+  "tcgplayer_id": 9668,
+  "cardmarket_id": 2354,
+  "name": "Soul Scourge",
+  "lang": "en",
+  "released_at": "2002-02-04",
+  "uri": "https://api.scryfall.com/cards/4aa7d91b-cfbb-4da0-97fa-3c0a15f1dbb9",
+  "scryfall_uri": "https://scryfall.com/card/tor/85/soul-scourge?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T12:19:12Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/4/a/4aa7d91b-cfbb-4da0-97fa-3c0a15f1dbb9.jpg?1783945152",
+    "normal": "https://cards.scryfall.io/normal/front/4/a/4aa7d91b-cfbb-4da0-97fa-3c0a15f1dbb9.jpg?1783945152",
+    "large": "https://cards.scryfall.io/large/front/4/a/4aa7d91b-cfbb-4da0-97fa-3c0a15f1dbb9.jpg?1783945152",
+    "png": "https://cards.scryfall.io/png/front/4/a/4aa7d91b-cfbb-4da0-97fa-3c0a15f1dbb9.png?1783945152",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/4/a/4aa7d91b-cfbb-4da0-97fa-3c0a15f1dbb9.jpg?1783945152",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/4/a/4aa7d91b-cfbb-4da0-97fa-3c0a15f1dbb9.jpg?1783945152",
+    "thumb": "https://cards.scryfall.io/thumb/front/4/a/4aa7d91b-cfbb-4da0-97fa-3c0a15f1dbb9.webp?1783945152",
+    "grid": "https://cards.scryfall.io/grid/front/4/a/4aa7d91b-cfbb-4da0-97fa-3c0a15f1dbb9.webp?1783945152",
+    "display": "https://cards.scryfall.io/display/front/4/a/4aa7d91b-cfbb-4da0-97fa-3c0a15f1dbb9.webp?1783945152",
+    "art": "https://cards.scryfall.io/art/front/4/a/4aa7d91b-cfbb-4da0-97fa-3c0a15f1dbb9.webp?1783945152",
+    "crop": "https://cards.scryfall.io/crop/front/4/a/4aa7d91b-cfbb-4da0-97fa-3c0a15f1dbb9.webp?1783945152",
+    "jpeg": "https://cards.scryfall.io/normal/front/4/a/4aa7d91b-cfbb-4da0-97fa-3c0a15f1dbb9.jpg?1783945152"
+  },
+  "mana_cost": "{4}{B}",
+  "cmc": 5.0,
+  "type_line": "Creature — Nightmare Horror",
+  "oracle_text": "Flying\nWhen this creature enters, target player loses 3 life.\nWhen this creature leaves the battlefield, that player gains 3 life.",
+  "power": "3",
+  "toughness": "2",
+  "colors": [
+    "B"
+  ],
+  "color_identity": [
+    "B"
+  ],
+  "keywords": [
+    "Flying"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "legal",
+    "predh": "legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "e0b3fda1-a6ca-4996-849b-08b463d39484",
+  "set": "tor",
+  "set_name": "Torment",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/e0b3fda1-a6ca-4996-849b-08b463d39484",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Ator&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/tor?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/4aa7d91b-cfbb-4da0-97fa-3c0a15f1dbb9/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Ad66e89a3-d582-4867-899c-f560b8a5b973&unique=prints",
+  "collector_number": "85",
+  "digital": false,
+  "rarity": "common",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Carl Critchlow",
+  "artist_ids": [
+    "17948f16-611a-44b8-8d10-9895a0bdfff1"
+  ],
+  "illustration_id": "d953ac29-a6ca-42bb-8edc-7a8da8529c87",
+  "border_color": "black",
+  "frame": "1997",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 30929,
+  "penny_rank": 18006,
+  "prices": {
+    "usd": "0.12",
+    "usd_foil": "0.33",
+    "usd_etched": null,
+    "eur": "0.08",
+    "eur_foil": "0.31",
+    "tix": "0.04"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=29731&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DSoul%2BScourge",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DSoul%2BScourge",
+    "edhrec": "https://edhrec.com/route/?cc=Soul+Scourge"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F9668%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=2354&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/17181?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

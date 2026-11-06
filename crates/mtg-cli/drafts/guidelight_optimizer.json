@@ -1,0 +1,26 @@
+{
+  "oracle_id": "045488b3-0206-4dcd-91ab-59ec542f06c0",
+  "name": "Guidelight Optimizer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Guidelight Optimizer",
+      "oracle_fingerprint": "9c1b87ee9a09e4ed1094afd8b570f4e5",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [
+              {
+                "AddMana": {
+                  "mana": { "Fixed": ["Blue"] },
+                  "only": [{ "Spell": { "types": ["Artifact"] } }, { "Ability": {} }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

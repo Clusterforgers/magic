@@ -1,7 +1,7 @@
 {
   "oracle_id": "7ddd84d2-1a6d-43f5-a42d-3c66eee5f7e5",
   "name": "Born to Drive",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Born to Drive",
@@ -34,9 +34,34 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 135, "end": 287 }
+          "Activated": {
+            "cost": [{ "Mana": "{2}{W}" }, "DiscardSelf"],
+            "from": "Hand",
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Pilot",
+                      "types": ["Creature"],
+                      "subtypes": ["Pilot"],
+                      "power": 1,
+                      "toughness": 1,
+                      "abilities": [
+                        {
+                          "Rule": {
+                            "rule": {
+                              "Combat": { "who": "This", "quirk": { "TapPower": { "Plus": 2 } } }
+                            }
+                          }
+                        }
+                      ]
+                    }
+                  },
+                  "count": 2
+                }
+              }
+            ]
           }
         }
       ]

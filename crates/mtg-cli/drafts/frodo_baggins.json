@@ -1,0 +1,46 @@
+{
+  "oracle_id": "d4dd6edf-1e9e-46fa-92b5-5df9aa0e4338",
+  "name": "Frodo Baggins",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Frodo Baggins",
+      "oracle_fingerprint": "d50a54c9612809ba00ada829621825d0",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [
+                  {
+                    "AnyOf": [
+                      "This",
+                      {
+                        "Not": {
+                          "AnyOf": [
+                            { "Not": { "Type": "Creature" } },
+                            { "Not": "Other" },
+                            { "Not": { "Supertype": "Legendary" } },
+                            { "Not": { "ControlledBy": "You" } }
+                          ]
+                        }
+                      }
+                    ]
+                  }
+                ],
+                "to": "Battlefield"
+              }
+            },
+            "effects": [{ "RingTempts": {} }]
+          }
+        },
+        {
+          "Rule": {
+            "rule": { "Combat": { "who": "This", "quirk": { "MustBeBlocked": "AtLeastOne" } } },
+            "condition": { "Matches": { "subject": "This", "selector": ["RingBearer"] } }
+          }
+        }
+      ]
+    }
+  ]
+}

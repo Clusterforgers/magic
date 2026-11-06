@@ -1,0 +1,37 @@
+{
+  "oracle_id": "ff1ddf25-df25-4733-b9f1-236ad5a08782",
+  "name": "Ultron's Auxiliary",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ultron's Auxiliary",
+      "oracle_fingerprint": "6a6b4b20c495601db00221b77db9ca3a",
+      "abilities": [
+        { "Keyword": "Menace" },
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                {
+                  "ZoneChange": {
+                    "what": [{ "Type": "Artifact" }, "Other", { "OwnedBy": "You" }],
+                    "from": "Battlefield",
+                    "to": "Graveyard"
+                  }
+                },
+                {
+                  "ZoneChangeExcept": {
+                    "what": [{ "Type": "Artifact" }, { "Not": "Token" }, { "OwnedBy": "You" }],
+                    "except": "Battlefield",
+                    "to": "Graveyard"
+                  }
+                }
+              ]
+            },
+            "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

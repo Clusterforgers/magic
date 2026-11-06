@@ -1,0 +1,25 @@
+{
+  "oracle_id": "1fcec3b2-47ba-4c56-9ce1-a4807e8ad262",
+  "name": "Break Open",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Break Open",
+      "oracle_fingerprint": "2510eccd3c3f1e8c050b87560009bb28",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "Type": "Creature" }, "FaceDown", { "ControlledBy": "Opponents" }]
+                }
+              }
+            ],
+            "effects": [{ "TurnFaceUp": { "what": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

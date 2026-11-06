@@ -1,0 +1,60 @@
+{
+  "oracle_id": "5945306d-e792-4eae-999b-dfb44b10f062",
+  "name": "Fire Lord Ozai",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Fire Lord Ozai",
+      "oracle_fingerprint": "700b1ba78acfb5c86e51e5907f2f3cd0",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "Sacrifice": {
+                        "filter": [{ "Type": "Creature" }, "Other"],
+                        "as": "sacrificed"
+                      }
+                    },
+                    {
+                      "If": {
+                        "condition": {
+                          "Compare": {
+                            "left": { "Bound": "sacrificed~moved" },
+                            "op": "Ge",
+                            "right": 1
+                          }
+                        },
+                        "then": [
+                          {
+                            "AddMana": {
+                              "mana": { "Fixed": ["Red"] },
+                              "times": {
+                                "Stat": { "of": { "Bound": "sacrificed" }, "stat": "Power" }
+                              },
+                              "lasts": "Combat"
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 203, "end": 335 }
+          }
+        }
+      ]
+    }
+  ]
+}

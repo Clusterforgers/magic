@@ -1,0 +1,29 @@
+{
+  "oracle_id": "37f5d022-2989-4b44-9bca-dc6b606afe10",
+  "name": "Retaliate",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Retaliate",
+      "oracle_fingerprint": "63246c53b954fb6066ed2b347228030e",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Destroy": {
+                  "what": {
+                    "Each": [
+                      { "Type": "Creature" },
+                      { "DidThisTurn": { "event": "Damaged", "to": "You" } }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

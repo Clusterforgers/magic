@@ -1,0 +1,23 @@
+{
+  "oracle_id": "6a7d6bb7-d6ad-48a4-8923-4083e0c90786",
+  "name": "Deadfall",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Deadfall",
+      "oracle_fingerprint": "b188d3667aa193c48d7bb794e47f3db3",
+      "abilities": [
+        {
+          "Rule": {
+            "rule": {
+              "Combat": {
+                "who": { "Each": [{ "HasKeyword": { "Landwalk": [{ "Subtype": "Forest" }] } }] },
+                "quirk": { "IgnoreLandwalk": [{ "Subtype": "Forest" }] }
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

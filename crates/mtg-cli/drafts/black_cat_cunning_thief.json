@@ -16,7 +16,7 @@
               {
                 "Choose": {
                   "from": { "Each": [{ "In": "Library" }, { "Is": { "Bound": "top" } }] },
-                  "count": { "min": 0, "max": 2 },
+                  "count": { "min": 2, "max": 2 },
                   "as": "kept2"
                 }
               },

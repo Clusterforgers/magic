@@ -1,0 +1,54 @@
+{
+  "oracle_id": "fef502af-6e79-4c55-a86a-b45adb3fc64a",
+  "name": "Plague Boiler",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Plague Boiler",
+      "oracle_fingerprint": "3756192628e1b4c4714bcabfc93a2fb9",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [{ "PutCounters": { "on": "This", "counter": { "Other": "plague" } } }]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 72, "end": 156 }
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "State": {
+                "condition": {
+                  "Compare": {
+                    "left": {
+                      "Count": [
+                        "This",
+                        { "CounterCount": { "kind": { "Other": "plague" }, "op": "Ge", "to": 3 } }
+                      ]
+                    },
+                    "op": "Ge",
+                    "right": 1
+                  }
+                }
+              }
+            },
+            "effects": [
+              { "Sacrifice": { "filter": ["This"] } },
+              {
+                "If": {
+                  "condition": "Performed",
+                  "then": [{ "Destroy": { "what": { "Each": [{ "Not": { "Type": "Land" } }] } } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

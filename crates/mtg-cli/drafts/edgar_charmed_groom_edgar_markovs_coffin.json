@@ -1,7 +1,7 @@
 {
   "oracle_id": "96cb97ca-4ce0-4d33-86fb-4db4ce1956be",
   "name": "Edgar, Charmed Groom // Edgar Markov's Coffin",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Edgar, Charmed Groom",
@@ -28,9 +28,79 @@
       "oracle_fingerprint": "da02dd14d352224e5f951570f0fc728e",
       "abilities": [
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 0, "end": 250 }
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Vampire",
+                      "colors": ["White", "Black"],
+                      "types": ["Creature"],
+                      "subtypes": ["Vampire"],
+                      "power": 1,
+                      "toughness": 1,
+                      "abilities": [{ "Keyword": "Lifelink" }]
+                    }
+                  }
+                }
+              },
+              { "PutCounters": { "on": "This", "counter": { "Other": "bloodline" } } },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": {
+                        "Count": [
+                          "This",
+                          {
+                            "CounterCount": {
+                              "kind": { "Other": "bloodline" },
+                              "op": "Ge",
+                              "to": 3
+                            }
+                          }
+                        ]
+                      },
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [
+                    {
+                      "RememberValue": {
+                        "value": {
+                          "Counters": { "on": "This", "counter": { "Other": "bloodline" } }
+                        },
+                        "slot": "remembered_number"
+                      }
+                    },
+                    {
+                      "RemoveCounters": {
+                        "from": "This",
+                        "counter": { "Other": "bloodline" },
+                        "count": {
+                          "Counters": { "on": "This", "counter": { "Other": "bloodline" } }
+                        }
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "Remembered": { "on": "This", "slot": "remembered_number" } },
+                      "op": "Ge",
+                      "right": 3
+                    }
+                  },
+                  "then": [{ "Transform": { "what": "This" } }]
+                }
+              }
+            ]
           }
         }
       ]

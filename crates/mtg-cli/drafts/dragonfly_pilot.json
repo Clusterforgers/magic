@@ -1,0 +1,24 @@
+{
+  "oracle_id": "1d5f2d48-621f-4104-90b6-41bf31606265",
+  "name": "Dragonfly Pilot",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dragonfly Pilot",
+      "oracle_fingerprint": "2d3639be4a7f1f2a2d74b40cde12a495",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "Conjure": { "name": "Dragonfly Suit", "zone": "Hand" } }]
+          }
+        },
+        {
+          "Rule": {
+            "rule": { "Combat": { "who": "This", "quirk": { "TapPower": { "Plus": 2 } } } }
+          }
+        }
+      ]
+    }
+  ]
+}

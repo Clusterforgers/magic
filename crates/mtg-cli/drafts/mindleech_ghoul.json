@@ -1,0 +1,37 @@
+{
+  "oracle_id": "e0f47fe2-9e97-400e-98c1-a80ca8be66f3",
+  "name": "Mindleech Ghoul",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mindleech Ghoul",
+      "oracle_fingerprint": "49594b3b670f4edc60108d81934c5534",
+      "abilities": [
+        { "Keyword": "Exploit" },
+        {
+          "Triggered": {
+            "when": { "Exploits": { "what": ["This"] } },
+            "effects": [
+              {
+                "RepeatEach": {
+                  "over": "Opponents",
+                  "as": "player",
+                  "effects": [
+                    {
+                      "Choose": {
+                        "who": { "Bound": "player" },
+                        "from": { "Each": [{ "In": "Hand" }, { "OwnedBy": { "Bound": "player" } }] },
+                        "as": "picked2"
+                      }
+                    },
+                    { "Exile": { "what": { "Bound": "picked2" } } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

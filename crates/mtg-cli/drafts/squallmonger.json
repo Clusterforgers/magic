@@ -1,0 +1,28 @@
+{
+  "oracle_id": "50bf5af6-50d7-4dea-936e-508e24db0a03",
+  "name": "Squallmonger",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Squallmonger",
+      "oracle_fingerprint": "c06953df38d171daec443fea1285bb7b",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{2}",
+            "by": "Anyone",
+            "effects": [
+              {
+                "DealDamage": {
+                  "to": { "Each": [{ "Type": "Creature" }, { "HasKeyword": "Flying" }] },
+                  "amount": 1
+                }
+              },
+              { "DealDamage": { "to": "EachPlayer", "amount": 1 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

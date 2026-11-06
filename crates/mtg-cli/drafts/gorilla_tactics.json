@@ -1,7 +1,7 @@
 {
   "oracle_id": "f0616b31-6f05-4056-b96c-559ca4ca085a",
   "name": "Gorilla Tactics",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Gorilla Tactics",
@@ -28,9 +28,27 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 43, "end": 172 }
+          "Triggered": {
+            "when": {
+              "Caused": { "inner": { "Discarded": { "what": ["This"] } }, "by": "Opponents" }
+            },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Gorilla",
+                      "colors": ["Green"],
+                      "types": ["Creature"],
+                      "subtypes": ["Gorilla"],
+                      "power": 2,
+                      "toughness": 2
+                    }
+                  },
+                  "count": 2
+                }
+              }
+            ]
           }
         }
       ]

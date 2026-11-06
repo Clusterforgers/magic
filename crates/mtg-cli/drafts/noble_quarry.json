@@ -1,0 +1,28 @@
+{
+  "oracle_id": "d549abd0-fea5-417f-93f9-255cb87ec989",
+  "name": "Noble Quarry",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Noble Quarry",
+      "oracle_fingerprint": "2fd00730a69e6f7b16a97c7c91a8857e",
+      "abilities": [
+        { "Keyword": { "Bestow": "{5}{G}" } },
+        {
+          "Rule": { "rule": { "Combat": { "who": "This", "quirk": { "MustBeBlocked": "Every" } } } }
+        },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }]
+          }
+        },
+        {
+          "Rule": {
+            "rule": { "Combat": { "who": "Attached", "quirk": { "MustBeBlocked": "Every" } } }
+          }
+        }
+      ]
+    }
+  ]
+}

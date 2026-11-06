@@ -1,7 +1,7 @@
 {
   "oracle_id": "789964f5-79c5-4329-b68f-b15b0d54b0b2",
   "name": "Sarulf, Realm Eater",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Sarulf, Realm Eater",
@@ -20,9 +20,55 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 119, "end": 352 }
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "if": {
+              "Compare": {
+                "left": { "Counters": { "on": "This", "counter": "+1/+1" } },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "RememberValue": {
+                        "value": { "Counters": { "on": "This", "counter": "+1/+1" } },
+                        "slot": "remembered_number"
+                      }
+                    },
+                    {
+                      "RemoveCounters": {
+                        "from": "This",
+                        "counter": "+1/+1",
+                        "count": { "Counters": { "on": "This", "counter": "+1/+1" } }
+                      }
+                    },
+                    {
+                      "Exile": {
+                        "what": {
+                          "Each": [
+                            { "Not": { "Type": "Land" } },
+                            "Other",
+                            {
+                              "Compare": {
+                                "stat": "ManaValue",
+                                "op": "Le",
+                                "to": {
+                                  "Remembered": { "on": "This", "slot": "remembered_number" }
+                                }
+                              }
+                            }
+                          ]
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
           }
         }
       ]

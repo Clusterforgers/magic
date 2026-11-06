@@ -1,0 +1,41 @@
+{
+  "oracle_id": "58c8bf6a-1b13-4c90-9e0b-24fb687f1e13",
+  "name": "Iron Fist, Hero for Hire",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Iron Fist, Hero for Hire",
+      "oracle_fingerprint": "beeddec1dc8a1a0948018c11667ae011",
+      "abilities": [
+        { "Keyword": "Trample" },
+        { "Keyword": "Prowess" },
+        {
+          "Activated": {
+            "cost": [
+              { "Mana": "{7}{R}" },
+              {
+                "Changed": {
+                  "change": "Reduce",
+                  "mana": "{1}{R}",
+                  "condition": {
+                    "Compare": {
+                      "left": { "Count": ["This", "EnteredThisTurn"] },
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  }
+                }
+              }
+            ],
+            "limit": "OncePerGame",
+            "targets": [{ "what": "AnyTarget", "bounds": { "min": 0, "max": 5 }, "divide": 5 }],
+            "effects": [
+              { "DealDamage": { "to": { "Target": 0 }, "amount": "Divided" } },
+              { "PutCounters": { "on": "This", "counter": "+1/+1", "count": 5 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

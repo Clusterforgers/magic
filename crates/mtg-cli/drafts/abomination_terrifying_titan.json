@@ -1,0 +1,45 @@
+{
+  "oracle_id": "72101185-4336-480a-b4d7-f8ceb0007a51",
+  "name": "Abomination, Terrifying Titan",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Abomination, Terrifying Titan",
+      "oracle_fingerprint": "bb8bdf0af7316de277eb7cccaf9e3e4f",
+      "abilities": [
+        { "Keyword": "Trample" },
+        {
+          "Activated": {
+            "cost": [
+              { "Mana": "{5}{R/G}{R/G}" },
+              {
+                "Changed": {
+                  "change": "Reduce",
+                  "mana": "{3}{R/G}",
+                  "condition": {
+                    "Compare": {
+                      "left": { "Count": ["This", "EnteredThisTurn"] },
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  }
+                }
+              }
+            ],
+            "limit": "OncePerGame",
+            "targets": [
+              {
+                "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }] },
+                "bounds": { "min": 0, "max": 1 }
+              }
+            ],
+            "effects": [
+              { "PutCounters": { "on": "This", "counter": "+1/+1" } },
+              { "Fight": { "what": "This", "with": { "Target": 0 } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,47 @@
+{
+  "oracle_id": "1f0b3549-2d24-49e8-85bc-55e3a5e5f6b8",
+  "name": "Chaotic Strike",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Chaotic Strike",
+      "oracle_fingerprint": "f9f1ff8a8443a05b6728a6a2b10ffc91",
+      "abilities": [
+        {
+          "CastOnly": {
+            "condition": {
+              "Any": [
+                { "Step": "DeclareBlockers" },
+                { "Step": "FirstStrikeDamage" },
+                { "Step": "CombatDamage" },
+                { "Step": "EndCombat" }
+              ]
+            }
+          }
+        },
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "FlipCoin": {
+                  "win": [
+                    {
+                      "Continuous": {
+                        "affected": { "Target": 0 },
+                        "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }],
+                        "duration": "UntilEndOfTurn"
+                      }
+                    },
+                    { "Draw": {} }
+                  ],
+                  "lose": [{ "Draw": {} }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

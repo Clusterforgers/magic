@@ -1,0 +1,48 @@
+{
+  "oracle_id": "daec03b6-e3f8-4e44-9766-c64dc23fa3dc",
+  "name": "Gideon's Triumph",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Gideon's Triumph",
+      "oracle_fingerprint": "f8171f007a5b50692439fb61d9b61117",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              {
+                "Sacrifice": {
+                  "who": { "Target": 0 },
+                  "filter": [
+                    { "Type": "Creature" },
+                    { "AnyOf": ["AttackedThisTurn", { "DidThisTurn": { "event": "Blocked" } }] }
+                  ],
+                  "count": {
+                    "When": {
+                      "condition": {
+                        "Compare": {
+                          "left": {
+                            "Count": [
+                              { "Type": "Planeswalker" },
+                              { "Subtype": "Gideon" },
+                              { "ControlledBy": "You" }
+                            ]
+                          },
+                          "op": "Ge",
+                          "right": 1
+                        }
+                      },
+                      "then": 2,
+                      "otherwise": 1
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,41 @@
+{
+  "oracle_id": "38e7be61-944e-46f2-be76-fde8b0c19905",
+  "name": "Ordeal of Thassa",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ordeal of Thassa",
+      "oracle_fingerprint": "ce55f5438263b0e11fed19989abeaac8",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": [{ "Is": "Attached" }] } },
+            "effects": [
+              { "PutCounters": { "on": "Triggering", "counter": "+1/+1" } },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": "Triggering",
+                      "selector": [{ "CounterCount": { "kind": "+1/+1", "op": "Ge", "to": 3 } }],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [{ "Sacrifice": { "filter": ["This"] } }]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Sacrificed": { "what": ["This"], "by": "You" } },
+            "effects": [{ "Draw": { "count": 2 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

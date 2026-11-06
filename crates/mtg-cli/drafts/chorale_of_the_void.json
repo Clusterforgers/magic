@@ -1,0 +1,46 @@
+{
+  "oracle_id": "cd50bff0-c461-4023-b62a-6746eaaeab0e",
+  "name": "Chorale of the Void",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Chorale of the Void",
+      "oracle_fingerprint": "4db77c8e5e0b38dece2a2d01206c240d",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": [{ "Is": "Attached" }] } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Type": "Creature" },
+                    { "OwnedBy": "Defending" },
+                    { "In": "Graveyard" }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "Move": {
+                  "what": { "Target": 0 },
+                  "to": { "Battlefield": { "tapped": true, "under": "You" } },
+                  "as": "moved"
+                }
+              },
+              { "JoinAttack": { "what": { "Bound": "moved" } } }
+            ]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 187, "end": 339 }
+          }
+        }
+      ]
+    }
+  ]
+}

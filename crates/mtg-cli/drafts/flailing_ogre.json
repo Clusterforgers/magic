@@ -1,0 +1,43 @@
+{
+  "oracle_id": "e81fe764-8b26-40b3-8e17-741ab5e231b4",
+  "name": "Flailing Ogre",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Flailing Ogre",
+      "oracle_fingerprint": "e23b994e8b7371cb67b56aa6a7a04786",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{1}",
+            "by": "Anyone",
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{1}",
+            "by": "Anyone",
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "ModifyPT": { "power": -1, "toughness": -1 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

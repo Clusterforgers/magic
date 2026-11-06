@@ -1,0 +1,29 @@
+{
+  "oracle_id": "e503a4f2-a785-4e7a-89a7-a9b24fb98831",
+  "name": "Ifh-Bíff Efreet",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ifh-Bíff Efreet",
+      "oracle_fingerprint": "73b54b290958c9eddb55d35d915e92d6",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Activated": {
+            "cost": "{G}",
+            "by": "Anyone",
+            "effects": [
+              {
+                "DealDamage": {
+                  "to": { "Each": [{ "Type": "Creature" }, { "HasKeyword": "Flying" }] },
+                  "amount": 1
+                }
+              },
+              { "DealDamage": { "to": "EachPlayer", "amount": 1 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

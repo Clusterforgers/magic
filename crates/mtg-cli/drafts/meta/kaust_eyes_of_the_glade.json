@@ -1,0 +1,42 @@
+{
+  "source": "forge",
+  "oracle_matches": true,
+  "lines": [
+    {
+      "face": 0,
+      "tag": "A",
+      "text": "Turn target face-down attacking creature you control face up.",
+      "abilities": [
+        0
+      ],
+      "gap": null
+    },
+    {
+      "face": 0,
+      "tag": "T",
+      "text": "Whenever a creature you control that was turned face up this turn deals combat damage to a player, draw a card.",
+      "abilities": [],
+      "gap": "valid:turnedFaceUpThisTurn"
+    }
+  ],
+  "proof": {
+    "marks": [
+      {
+        "face": 0,
+        "span": {
+          "start": 0,
+          "end": 111
+        },
+        "mark": "ByHand"
+      },
+      {
+        "face": 0,
+        "span": {
+          "start": 112,
+          "end": 178
+        },
+        "mark": "Auto"
+      }
+    ]
+  }
+}

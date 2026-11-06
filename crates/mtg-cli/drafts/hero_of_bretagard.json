@@ -1,16 +1,36 @@
 {
   "oracle_id": "83f1408e-8270-49b4-9d3f-eacfd3645543",
   "name": "Hero of Bretagard",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Hero of Bretagard",
       "oracle_fingerprint": "aeeb76911f880f1bb3b921c43c525a81",
       "abilities": [
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 0, "end": 193 }
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                {
+                  "Batch": {
+                    "ZoneChange": { "what": [{ "OwnedBy": "You" }], "from": "Hand", "to": "Exile" }
+                  }
+                },
+                {
+                  "Caused": {
+                    "inner": {
+                      "Batch": {
+                        "ZoneChange": { "what": [], "from": "Battlefield", "to": "Exile" }
+                      }
+                    },
+                    "by": "You"
+                  }
+                }
+              ]
+            },
+            "effects": [
+              { "PutCounters": { "on": "This", "counter": "+1/+1", "count": "Triggering" } }
+            ]
           }
         },
         {

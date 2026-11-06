@@ -1,0 +1,41 @@
+{
+  "oracle_id": "a6861402-4819-4d85-8b60-677471f40d7d",
+  "name": "Ordeal of Heliod",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ordeal of Heliod",
+      "oracle_fingerprint": "56deca81ee52ded43de7b0d6442cf840",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": [{ "Is": "Attached" }] } },
+            "effects": [
+              { "PutCounters": { "on": "Triggering", "counter": "+1/+1" } },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": "Triggering",
+                      "selector": [{ "CounterCount": { "kind": "+1/+1", "op": "Ge", "to": 3 } }],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [{ "Sacrifice": { "filter": ["This"] } }]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Sacrificed": { "what": ["This"], "by": "You" } },
+            "effects": [{ "GainLife": { "amount": 10 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

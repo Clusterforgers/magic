@@ -1,0 +1,29 @@
+{
+  "oracle_id": "e75bec5c-538d-44ce-a6c7-85580d04fac8",
+  "name": "Chandra's Embercat",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Chandra's Embercat",
+      "oracle_fingerprint": "355cc49dc8c079dccc5456d6ff443d28",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [
+              {
+                "AddMana": {
+                  "mana": { "Fixed": ["Red"] },
+                  "only": [
+                    { "Spell": { "subtypes": ["Elemental"] } },
+                    { "Spell": { "types": ["Planeswalker"], "subtypes": ["Chandra"] } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

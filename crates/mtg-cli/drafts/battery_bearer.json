@@ -1,0 +1,49 @@
+{
+  "oracle_id": "de6fd93e-16d8-4855-a655-1cc0755c5d15",
+  "name": "Battery Bearer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Battery Bearer",
+      "oracle_fingerprint": "35068b43d924042852dad5de4328c641",
+      "abilities": [
+        {
+          "Static": {
+            "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+            "mods": [
+              {
+                "GrantAbility": {
+                  "Activated": {
+                    "cost": ["Tap"],
+                    "effects": [
+                      {
+                        "AddMana": {
+                          "mana": { "Fixed": ["Colorless"] },
+                          "only": [{ "Spell": { "types": ["Artifact"] } }, { "Ability": {} }]
+                        }
+                      }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "SpellCast": {
+                "what": [
+                  { "Type": "Artifact" },
+                  { "Compare": { "stat": "ManaValue", "op": "Ge", "to": 6 } }
+                ],
+                "by": "You"
+              }
+            },
+            "effects": [{ "Draw": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

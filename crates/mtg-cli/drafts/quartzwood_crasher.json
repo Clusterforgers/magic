@@ -24,36 +24,20 @@
               }
             },
             "effects": [
-              { "Let": { "as": "power", "amount": "Triggering" } },
-              { "Let": { "as": "toughness2", "amount": "Triggering" } },
               {
                 "CreateToken": {
                   "token": {
-                    "Custom": {
-                      "name": "Dinosaur Beast",
-                      "colors": ["Green"],
-                      "types": ["Creature"],
-                      "subtypes": ["Dinosaur", "Beast"],
-                      "power": 0,
-                      "toughness": 0,
-                      "abilities": [{ "Keyword": "Trample" }]
-                    }
-                  },
-                  "as": "token3"
-                }
-              },
-              {
-                "Continuous": {
-                  "affected": { "Bound": "token3" },
-                  "mods": [
-                    {
-                      "SetPT": {
-                        "power": { "Bound": "power" },
-                        "toughness": { "Bound": "toughness2" }
+                    "Sized": {
+                      "size": "Triggering",
+                      "token": {
+                        "name": "Dinosaur Beast",
+                        "colors": ["Green"],
+                        "types": ["Creature"],
+                        "subtypes": ["Dinosaur", "Beast"],
+                        "abilities": [{ "Keyword": "Trample" }]
                       }
                     }
-                  ],
-                  "duration": "Forever"
+                  }
                 }
               }
             ]

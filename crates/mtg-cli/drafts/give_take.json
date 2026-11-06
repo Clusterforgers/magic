@@ -1,0 +1,54 @@
+{
+  "oracle_id": "67a82d5e-a9dc-4e8c-9d23-c6d6aa1e57d1",
+  "name": "Give // Take",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Give",
+      "oracle_fingerprint": "5b37257cb9143f3e64b488555cd73463",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              { "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1", "count": 3 } }
+            ]
+          }
+        },
+        { "Keyword": "Fuse" }
+      ]
+    },
+    {
+      "name": "Take",
+      "oracle_fingerprint": "db2167fe80db03a65604e54b25a3f3da",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } }
+            ],
+            "effects": [
+              {
+                "RememberValue": {
+                  "value": { "Counters": { "on": { "Target": 0 }, "counter": "+1/+1" } },
+                  "slot": "remembered_number"
+                }
+              },
+              {
+                "RemoveCounters": {
+                  "from": { "Target": 0 },
+                  "counter": "+1/+1",
+                  "count": { "Counters": { "on": { "Target": 0 }, "counter": "+1/+1" } }
+                }
+              },
+              {
+                "Draw": { "count": { "Remembered": { "on": "This", "slot": "remembered_number" } } }
+              }
+            ]
+          }
+        },
+        { "Keyword": "Fuse" }
+      ]
+    }
+  ]
+}

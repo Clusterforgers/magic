@@ -1,0 +1,50 @@
+{
+  "oracle_id": "de75e5dd-8a52-406c-b55c-96d686885500",
+  "name": "Castle Garenbrig",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Castle Garenbrig",
+      "oracle_fingerprint": "3aa7fb992d1eed81ab5ee800b64e87fd",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": "Tapped",
+            "condition": {
+              "Not": {
+                "Compare": {
+                  "left": { "Count": [{ "Subtype": "Forest" }, { "ControlledBy": "You" }] },
+                  "op": "Ge",
+                  "right": 1
+                }
+              }
+            }
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Green"] } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{2}{G}{G}" }, "Tap"],
+            "effects": [
+              {
+                "AddMana": {
+                  "mana": { "Fixed": ["Green", "Green", "Green", "Green", "Green", "Green"] },
+                  "only": [
+                    { "Spell": { "types": ["Creature"] } },
+                    { "Ability": { "types": ["Creature"], "facts": ["OnBattlefield"] } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

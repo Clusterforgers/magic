@@ -1,0 +1,40 @@
+{
+  "oracle_id": "770b2097-5178-42d2-be6c-393b4bfe3727",
+  "name": "Steelswarm Operator",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Steelswarm Operator",
+      "oracle_fingerprint": "82cc82688a7b32ea07cc9c13397aeae7",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [
+              {
+                "AddMana": {
+                  "mana": { "Fixed": ["Blue"] },
+                  "only": [{ "Spell": { "types": ["Artifact"] } }]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [
+              {
+                "AddMana": {
+                  "mana": { "Fixed": ["Blue", "Blue"] },
+                  "only": [{ "Ability": { "types": ["Artifact"] } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

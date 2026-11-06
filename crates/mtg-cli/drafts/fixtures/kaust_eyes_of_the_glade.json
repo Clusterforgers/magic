@@ -1,0 +1,140 @@
+{
+  "object": "card",
+  "id": "648c15d1-a2a2-4f59-9b0a-5448be3e990f",
+  "oracle_id": "af78c13f-67f8-42bf-b012-482a48af4f31",
+  "multiverse_ids": [
+    649907
+  ],
+  "mtgo_id": 122860,
+  "tcgplayer_id": 532995,
+  "cardmarket_id": 751062,
+  "name": "Kaust, Eyes of the Glade",
+  "lang": "en",
+  "released_at": "2024-02-09",
+  "uri": "https://api.scryfall.com/cards/648c15d1-a2a2-4f59-9b0a-5448be3e990f",
+  "scryfall_uri": "https://scryfall.com/card/mkc/1/kaust-eyes-of-the-glade?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T03:24:16Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/6/4/648c15d1-a2a2-4f59-9b0a-5448be3e990f.jpg?1783913056",
+    "normal": "https://cards.scryfall.io/normal/front/6/4/648c15d1-a2a2-4f59-9b0a-5448be3e990f.jpg?1783913056",
+    "large": "https://cards.scryfall.io/large/front/6/4/648c15d1-a2a2-4f59-9b0a-5448be3e990f.jpg?1783913056",
+    "png": "https://cards.scryfall.io/png/front/6/4/648c15d1-a2a2-4f59-9b0a-5448be3e990f.png?1783913056",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/6/4/648c15d1-a2a2-4f59-9b0a-5448be3e990f.jpg?1783913056",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/6/4/648c15d1-a2a2-4f59-9b0a-5448be3e990f.jpg?1783913056",
+    "thumb": "https://cards.scryfall.io/thumb/front/6/4/648c15d1-a2a2-4f59-9b0a-5448be3e990f.webp?1783913056",
+    "grid": "https://cards.scryfall.io/grid/front/6/4/648c15d1-a2a2-4f59-9b0a-5448be3e990f.webp?1783913056",
+    "display": "https://cards.scryfall.io/display/front/6/4/648c15d1-a2a2-4f59-9b0a-5448be3e990f.webp?1783913056",
+    "art": "https://cards.scryfall.io/art/front/6/4/648c15d1-a2a2-4f59-9b0a-5448be3e990f.webp?1783913056",
+    "crop": "https://cards.scryfall.io/crop/front/6/4/648c15d1-a2a2-4f59-9b0a-5448be3e990f.webp?1783913056",
+    "jpeg": "https://cards.scryfall.io/normal/front/6/4/648c15d1-a2a2-4f59-9b0a-5448be3e990f.jpg?1783913056"
+  },
+  "mana_cost": "{R/W}{G}",
+  "cmc": 2.0,
+  "type_line": "Legendary Creature — Dryad Detective",
+  "oracle_text": "Whenever a creature you control that was turned face up this turn deals combat damage to a player, draw a card.\n{T}: Turn target face-down attacking creature you control face up.",
+  "power": "2",
+  "toughness": "2",
+  "colors": [
+    "G",
+    "R",
+    "W"
+  ],
+  "color_identity": [
+    "G",
+    "R",
+    "W"
+  ],
+  "keywords": [],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": false,
+  "finishes": [
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "286c37ca-ba65-4d3e-8c5d-d1878d88fd95",
+  "set": "mkc",
+  "set_name": "Murders at Karlov Manor Commander",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/286c37ca-ba65-4d3e-8c5d-d1878d88fd95",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Amkc&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/mkc?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/648c15d1-a2a2-4f59-9b0a-5448be3e990f/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Aaf78c13f-67f8-42bf-b012-482a48af4f31&unique=prints",
+  "collector_number": "1",
+  "digital": false,
+  "rarity": "mythic",
+  "flavor_text": "If you think you're being watched, you're probably right.",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Volkan Baǵa",
+  "artist_ids": [
+    "93bec3c0-0260-4d31-8064-5d01efb4153f"
+  ],
+  "illustration_id": "8c870969-6abc-47a2-be70-397285dfe6b8",
+  "border_color": "black",
+  "frame": "2015",
+  "frame_effects": [
+    "legendary"
+  ],
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "edhrec_rank": 17259,
+  "prices": {
+    "usd": null,
+    "usd_foil": "0.26",
+    "usd_etched": null,
+    "eur": null,
+    "eur_foil": "0.24",
+    "tix": "0.53"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=649907&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DKaust%252C%2BEyes%2Bof%2Bthe%2BGlade",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DKaust%252C%2BEyes%2Bof%2Bthe%2BGlade",
+    "edhrec": "https://edhrec.com/route/?cc=Kaust%2C+Eyes+of+the+Glade"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F532995%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=751062&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/122860?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

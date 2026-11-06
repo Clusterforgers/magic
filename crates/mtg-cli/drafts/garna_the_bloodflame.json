@@ -18,7 +18,17 @@
                     "Each": [
                       { "Type": "Creature" },
                       { "OwnedBy": "You" },
-                      "EnteredThisTurn",
+                      {
+                        "AnyOf": [
+                          { "ArrivedFrom": "Battlefield" },
+                          { "ArrivedFrom": "Hand" },
+                          { "ArrivedFrom": "Library" },
+                          { "ArrivedFrom": "Graveyard" },
+                          { "ArrivedFrom": "Stack" },
+                          { "ArrivedFrom": "Exile" },
+                          { "ArrivedFrom": "Command" }
+                        ]
+                      },
                       { "In": "Graveyard" }
                     ]
                   },

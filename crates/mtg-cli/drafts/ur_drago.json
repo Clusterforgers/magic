@@ -1,0 +1,24 @@
+{
+  "oracle_id": "537162d5-a2c2-4ad4-9fae-d2ec7a269dcc",
+  "name": "Ur-Drago",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ur-Drago",
+      "oracle_fingerprint": "aebdee871d88aea44d63f1ba9a31b7b2",
+      "abilities": [
+        { "Keyword": "FirstStrike" },
+        {
+          "Rule": {
+            "rule": {
+              "Combat": {
+                "who": { "Each": [{ "HasKeyword": { "Landwalk": [{ "Subtype": "Swamp" }] } }] },
+                "quirk": { "IgnoreLandwalk": [{ "Subtype": "Swamp" }] }
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

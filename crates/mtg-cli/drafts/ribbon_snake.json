@@ -1,0 +1,29 @@
+{
+  "oracle_id": "98b53af9-af1b-4d5d-ae5a-bd444c1339d2",
+  "name": "Ribbon Snake",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ribbon Snake",
+      "oracle_fingerprint": "957116d04d108b123b7b57a378226bb9",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Activated": {
+            "cost": "{2}",
+            "by": "Anyone",
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "RemoveKeyword": "Flying" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,91 @@
+{
+  "oracle_id": "df54b79d-f31d-4582-86c0-1d34ec77be0f",
+  "name": "Does Machines",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Does Machines",
+      "oracle_fingerprint": "2442bc757203440a4aaf408d6b41e006",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              { "Mill": { "count": 2 } },
+              { "Draw": { "count": 2 } },
+              { "Discard": { "count": 2 } }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{1}{U}",
+            "timing": "Sorcery",
+            "condition": { "Level": { "of": "This", "op": "Eq", "level": 1 } },
+            "effects": [{ "BecomeLevel": { "level": 2 } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "BecomesLevel": { "what": ["This"], "level": 2 } },
+            "if": { "Level": { "of": "This", "op": "Ge", "level": 2 } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "Type": "Artifact" }, { "OwnedBy": "You" }, { "In": "Graveyard" }]
+                },
+                "bounds": { "min": 0, "max": 2 }
+              }
+            ],
+            "effects": [{ "Move": { "what": { "Target": 0 }, "to": "Hand" } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{4}{U}",
+            "timing": "Sorcery",
+            "condition": { "Level": { "of": "This", "op": "Eq", "level": 2 } },
+            "effects": [{ "BecomeLevel": { "level": 3 } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "BeginCombat", "whose": "You" } },
+            "if": { "Level": { "of": "This", "op": "Ge", "level": 3 } },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Artifact" }, { "ControlledBy": "You" }] } }
+            ],
+            "effects": [
+              { "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1", "count": 3 } },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Target": 0 },
+                      "selector": [{ "Not": { "Type": "Creature" } }],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [
+                    {
+                      "Continuous": {
+                        "affected": { "Target": 0 },
+                        "mods": [
+                          { "SetPT": { "power": 0, "toughness": 0 } },
+                          { "AddSubtype": "Robot" },
+                          { "AddType": "Creature" }
+                        ],
+                        "duration": "Forever"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

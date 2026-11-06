@@ -1,0 +1,68 @@
+{
+  "source": "forge",
+  "oracle_matches": true,
+  "lines": [
+    {
+      "face": 0,
+      "tag": "K",
+      "text": "Phasing",
+      "abilities": [
+        0
+      ],
+      "gap": null
+    },
+    {
+      "face": 0,
+      "tag": "A",
+      "text": "Until your next upkeep, CARDNAME can't phase out.",
+      "abilities": [],
+      "gap": "duration:UntilYourNextUpkeep"
+    },
+    {
+      "face": 0,
+      "tag": "T",
+      "text": "When CARDNAME phases out or leaves the battlefield, mill three cards.",
+      "abilities": [
+        1
+      ],
+      "gap": null
+    },
+    {
+      "face": 0,
+      "tag": "T",
+      "text": "When CARDNAME phases out or leaves the battlefield, mill three cards.",
+      "abilities": [
+        1
+      ],
+      "gap": null
+    }
+  ],
+  "proof": {
+    "marks": [
+      {
+        "face": 0,
+        "span": {
+          "start": 0,
+          "end": 145
+        },
+        "mark": "Auto"
+      },
+      {
+        "face": 0,
+        "span": {
+          "start": 146,
+          "end": 220
+        },
+        "mark": "Auto"
+      },
+      {
+        "face": 0,
+        "span": {
+          "start": 221,
+          "end": 280
+        },
+        "mark": "ByHand"
+      }
+    ]
+  }
+}

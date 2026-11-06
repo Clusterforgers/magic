@@ -1,0 +1,30 @@
+{
+  "oracle_id": "e29350cd-c6ff-454d-a1fc-0c1bb60047b1",
+  "name": "Giltspire Avenger",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Giltspire Avenger",
+      "oracle_fingerprint": "9fee5b3b38c46ce28d19a9cbafb583d3",
+      "abilities": [
+        { "Keyword": "Exalted" },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Type": "Creature" },
+                    { "DidThisTurn": { "event": "Damaged", "to": "You" } }
+                  ]
+                }
+              }
+            ],
+            "effects": [{ "Destroy": { "what": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

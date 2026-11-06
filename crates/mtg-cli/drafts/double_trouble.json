@@ -1,0 +1,41 @@
+{
+  "oracle_id": "2ef063d2-8702-43a3-a7d0-fc255f8512d3",
+  "name": "Double Trouble",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Double Trouble",
+      "oracle_fingerprint": "e9dec1d171f281ac19b3579882aaba6c",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "RepeatEach": {
+                  "over": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                  "as": "doubled",
+                  "effects": [
+                    {
+                      "Continuous": {
+                        "affected": { "Bound": "doubled" },
+                        "mods": [
+                          {
+                            "ModifyPT": {
+                              "power": { "Stat": { "of": { "Bound": "doubled" }, "stat": "Power" } },
+                              "toughness": 0
+                            }
+                          }
+                        ],
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

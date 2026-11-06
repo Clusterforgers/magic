@@ -1,0 +1,30 @@
+{
+  "oracle_id": "5d9431de-7cf0-43d4-9b86-e0ef4a7756f9",
+  "name": "Mangara's Blessing",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mangara's Blessing",
+      "oracle_fingerprint": "6dfd8516a3dc18fa97929349e7440962",
+      "abilities": [
+        { "Spell": { "effects": [{ "GainLife": { "amount": 5 } }] } },
+        {
+          "Triggered": {
+            "when": {
+              "Caused": { "inner": { "Discarded": { "what": ["This"] } }, "by": "Opponents" }
+            },
+            "effects": [
+              { "GainLife": { "amount": 2 } },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "End" } },
+                  "effects": [{ "Move": { "what": "This", "to": "Hand" } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

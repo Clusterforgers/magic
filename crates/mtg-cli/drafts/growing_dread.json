@@ -1,7 +1,7 @@
 {
   "oracle_id": "aa1d8bfa-729a-4e10-8069-57a1d4f4392b",
   "name": "Growing Dread",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Growing Dread",
@@ -20,9 +20,9 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 257, "end": 322 }
+          "Triggered": {
+            "when": { "Caused": { "inner": { "TurnedFaceUp": { "what": [] } }, "by": "You" } },
+            "effects": [{ "PutCounters": { "on": "Triggering", "counter": "+1/+1" } }]
           }
         }
       ]

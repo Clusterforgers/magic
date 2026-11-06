@@ -1,0 +1,129 @@
+{
+  "object": "card",
+  "id": "b401d253-4e51-42db-91cc-ac8cc3d06ae6",
+  "oracle_id": "42c7e933-f169-444b-917d-b4dca918d989",
+  "multiverse_ids": [
+    2811
+  ],
+  "tcgplayer_id": 3426,
+  "cardmarket_id": 7610,
+  "name": "Puppet Master",
+  "lang": "en",
+  "released_at": "1995-07-01",
+  "uri": "https://api.scryfall.com/cards/b401d253-4e51-42db-91cc-ac8cc3d06ae6",
+  "scryfall_uri": "https://scryfall.com/card/chr/23/puppet-master?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T12:56:11Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/b/4/b401d253-4e51-42db-91cc-ac8cc3d06ae6.jpg?1783947371",
+    "normal": "https://cards.scryfall.io/normal/front/b/4/b401d253-4e51-42db-91cc-ac8cc3d06ae6.jpg?1783947371",
+    "large": "https://cards.scryfall.io/large/front/b/4/b401d253-4e51-42db-91cc-ac8cc3d06ae6.jpg?1783947371",
+    "png": "https://cards.scryfall.io/png/front/b/4/b401d253-4e51-42db-91cc-ac8cc3d06ae6.png?1783947371",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/b/4/b401d253-4e51-42db-91cc-ac8cc3d06ae6.jpg?1783947371",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/b/4/b401d253-4e51-42db-91cc-ac8cc3d06ae6.jpg?1783947371",
+    "thumb": "https://cards.scryfall.io/thumb/front/b/4/b401d253-4e51-42db-91cc-ac8cc3d06ae6.webp?1783947371",
+    "grid": "https://cards.scryfall.io/grid/front/b/4/b401d253-4e51-42db-91cc-ac8cc3d06ae6.webp?1783947371",
+    "display": "https://cards.scryfall.io/display/front/b/4/b401d253-4e51-42db-91cc-ac8cc3d06ae6.webp?1783947371",
+    "art": "https://cards.scryfall.io/art/front/b/4/b401d253-4e51-42db-91cc-ac8cc3d06ae6.webp?1783947371",
+    "crop": "https://cards.scryfall.io/crop/front/b/4/b401d253-4e51-42db-91cc-ac8cc3d06ae6.webp?1783947371",
+    "jpeg": "https://cards.scryfall.io/normal/front/b/4/b401d253-4e51-42db-91cc-ac8cc3d06ae6.jpg?1783947371"
+  },
+  "mana_cost": "{U}{U}{U}",
+  "cmc": 3.0,
+  "type_line": "Enchantment — Aura",
+  "oracle_text": "Enchant creature\nWhen enchanted creature dies, return that card to its owner's hand. If that card is returned to its owner's hand this way, you may pay {U}{U}{U}. If you do, return this card to its owner's hand.",
+  "colors": [
+    "U"
+  ],
+  "color_identity": [
+    "U"
+  ],
+  "keywords": [
+    "Enchant"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "legal",
+    "premodern": "legal",
+    "predh": "legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": true,
+  "variation": false,
+  "set_id": "985eab7d-655a-4cb0-ba74-d48c8dcfb3d4",
+  "set": "chr",
+  "set_name": "Chronicles",
+  "set_type": "masters",
+  "set_uri": "https://api.scryfall.com/sets/985eab7d-655a-4cb0-ba74-d48c8dcfb3d4",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Achr&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/chr?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/b401d253-4e51-42db-91cc-ac8cc3d06ae6/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A42c7e933-f169-444b-917d-b4dca918d989&unique=prints",
+  "collector_number": "23",
+  "digital": false,
+  "rarity": "uncommon",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Sandra Everingham",
+  "artist_ids": [
+    "8a8ac2c8-84c9-4274-9960-a19a97f0bde5"
+  ],
+  "illustration_id": "c5632aa9-2c6e-4c41-ae07-f653d99d17c2",
+  "border_color": "white",
+  "frame": "1993",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 29266,
+  "prices": {
+    "usd": "0.20",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "0.14",
+    "eur_foil": null,
+    "tix": null
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=2811&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DPuppet%2BMaster",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DPuppet%2BMaster",
+    "edhrec": "https://edhrec.com/route/?cc=Puppet+Master"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F3426%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=7610&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards?affiliate_id=scryfall&data%5Bsearch%5D=Puppet+Master&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

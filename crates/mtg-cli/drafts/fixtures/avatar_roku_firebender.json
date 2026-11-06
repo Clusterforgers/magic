@@ -1,0 +1,144 @@
+{
+  "object": "card",
+  "id": "b1fced2b-eba2-4e70-8f1c-6d3c973b6a8d",
+  "oracle_id": "9eb9e4c1-fabf-45ff-a584-fbe4b94fb41c",
+  "multiverse_ids": [],
+  "resource_id": "19BEA96E638D3D3232F3F2879CDE19CAD801731DCC6DB954CABE62F92D846558",
+  "mtgo_id": 145622,
+  "arena_id": 98257,
+  "tcgplayer_id": 660565,
+  "cardmarket_id": 855794,
+  "name": "Avatar Roku, Firebender",
+  "lang": "en",
+  "released_at": "2025-11-21",
+  "uri": "https://api.scryfall.com/cards/b1fced2b-eba2-4e70-8f1c-6d3c973b6a8d",
+  "scryfall_uri": "https://scryfall.com/card/tle/112/avatar-roku-firebender?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T01:07:04Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/b/1/b1fced2b-eba2-4e70-8f1c-6d3c973b6a8d.jpg?1783904824",
+    "normal": "https://cards.scryfall.io/normal/front/b/1/b1fced2b-eba2-4e70-8f1c-6d3c973b6a8d.jpg?1783904824",
+    "large": "https://cards.scryfall.io/large/front/b/1/b1fced2b-eba2-4e70-8f1c-6d3c973b6a8d.jpg?1783904824",
+    "png": "https://cards.scryfall.io/png/front/b/1/b1fced2b-eba2-4e70-8f1c-6d3c973b6a8d.png?1783904824",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/b/1/b1fced2b-eba2-4e70-8f1c-6d3c973b6a8d.jpg?1783904824",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/b/1/b1fced2b-eba2-4e70-8f1c-6d3c973b6a8d.jpg?1783904824",
+    "thumb": "https://cards.scryfall.io/thumb/front/b/1/b1fced2b-eba2-4e70-8f1c-6d3c973b6a8d.webp?1783904824",
+    "grid": "https://cards.scryfall.io/grid/front/b/1/b1fced2b-eba2-4e70-8f1c-6d3c973b6a8d.webp?1783904824",
+    "display": "https://cards.scryfall.io/display/front/b/1/b1fced2b-eba2-4e70-8f1c-6d3c973b6a8d.webp?1783904824",
+    "art": "https://cards.scryfall.io/art/front/b/1/b1fced2b-eba2-4e70-8f1c-6d3c973b6a8d.webp?1783904824",
+    "crop": "https://cards.scryfall.io/crop/front/b/1/b1fced2b-eba2-4e70-8f1c-6d3c973b6a8d.webp?1783904824",
+    "jpeg": "https://cards.scryfall.io/normal/front/b/1/b1fced2b-eba2-4e70-8f1c-6d3c973b6a8d.jpg?1783904824"
+  },
+  "mana_cost": "{3}{R}{R}{R}",
+  "cmc": 6.0,
+  "type_line": "Legendary Creature — Human Avatar",
+  "oracle_text": "Whenever a player attacks, add six {R}. Until end of combat, you don't lose this mana as steps end.\n{R}{R}{R}: Target creature gets +3/+0 until end of turn.",
+  "power": "6",
+  "toughness": "6",
+  "colors": [
+    "R"
+  ],
+  "color_identity": [
+    "R"
+  ],
+  "keywords": [],
+  "produced_mana": [
+    "R"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "arena",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "a75e6ceb-d62c-4063-8e96-f269e3a0b025",
+  "set": "tle",
+  "set_name": "Avatar: The Last Airbender Eternal",
+  "set_type": "eternal",
+  "set_uri": "https://api.scryfall.com/sets/a75e6ceb-d62c-4063-8e96-f269e3a0b025",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Atle&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/tle?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/b1fced2b-eba2-4e70-8f1c-6d3c973b6a8d/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A9eb9e4c1-fabf-45ff-a584-fbe4b94fb41c&unique=prints",
+  "collector_number": "112",
+  "digital": false,
+  "rarity": "mythic",
+  "watermark": "firenation",
+  "flavor_text": "\"Make sense of our past, Aang, and you will bring peace, and restore balance to the world.\"",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Toni Infante",
+  "artist_ids": [
+    "958bbc4a-3420-439a-b261-c988b8e4b580"
+  ],
+  "illustration_id": "6f4cdb53-d4d0-436f-b687-569c7dbc2b26",
+  "border_color": "black",
+  "frame": "2015",
+  "frame_effects": [
+    "legendary"
+  ],
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "promo_types": [
+    "universesbeyond"
+  ],
+  "edhrec_rank": 4770,
+  "prices": {
+    "usd": "11.67",
+    "usd_foil": "12.46",
+    "usd_etched": null,
+    "eur": "15.32",
+    "eur_foil": "16.93",
+    "tix": "1.79"
+  },
+  "related_uris": {
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DAvatar%2BRoku%252C%2BFirebender",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DAvatar%2BRoku%252C%2BFirebender",
+    "edhrec": "https://edhrec.com/route/?cc=Avatar+Roku%2C+Firebender"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F660565%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=855794&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/145622?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

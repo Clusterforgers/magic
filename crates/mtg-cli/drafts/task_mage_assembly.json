@@ -1,7 +1,7 @@
 {
   "oracle_id": "dfbbfbe1-d6c1-4b5b-8d09-949d70b9ff42",
   "name": "Task Mage Assembly",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Task Mage Assembly",
@@ -24,9 +24,12 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 76, "end": 192 }
+          "Activated": {
+            "cost": "{2}",
+            "timing": "Sorcery",
+            "by": "Anyone",
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 1 } }]
           }
         }
       ]

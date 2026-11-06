@@ -1,0 +1,25 @@
+{
+  "oracle_id": "87f22ec6-6668-4e15-b38c-fa1ac0292c6b",
+  "name": "Predatory Impetus",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Predatory Impetus",
+      "oracle_fingerprint": "9bcdeafd4b7e4dbb0eb5f253f0487c2e",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "ModifyPT": { "power": 3, "toughness": 3 } }, "Goaded"]
+          }
+        },
+        {
+          "Rule": {
+            "rule": { "Combat": { "who": "Attached", "quirk": { "MustBeBlocked": "AtLeastOne" } } }
+          }
+        }
+      ]
+    }
+  ]
+}

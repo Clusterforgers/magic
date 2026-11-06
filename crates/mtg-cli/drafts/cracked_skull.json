@@ -1,0 +1,36 @@
+{
+  "oracle_id": "4415b65d-5473-4b19-94f7-e5cf4ce64d5e",
+  "name": "Cracked Skull",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Cracked Skull",
+      "oracle_fingerprint": "9828e736caa286731bc049e25d63a4a3",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              {
+                "Discard": {
+                  "who": { "Target": 0 },
+                  "filter": [{ "Not": { "Type": "Land" } }],
+                  "by": "You",
+                  "optional": true
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 141, "end": 193 }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -14,7 +14,7 @@
         },
         {
           "Triggered": {
-            "when": { "DealsDamage": { "source": [], "to": "This" } },
+            "when": { "Batch": { "DealsDamage": { "source": [], "to": "This" } } },
             "effects": [
               {
                 "AddMana": { "mana": { "Fixed": ["Red"] }, "times": "Triggering", "lasts": "Turn" }

@@ -1,0 +1,60 @@
+{
+  "oracle_id": "c1a7d108-8073-42a5-ade0-a0643d078268",
+  "name": "Ashnod's Intervention",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ashnod's Intervention",
+      "oracle_fingerprint": "a67f12922b41dc18588648a14380cfa8",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "ModifyPT": { "power": 2, "toughness": 0 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    {
+                      "GrantAbility": {
+                        "Triggered": {
+                          "when": {
+                            "AnyOf": [
+                              {
+                                "ZoneChange": {
+                                  "what": ["This"],
+                                  "from": "Battlefield",
+                                  "to": "Graveyard"
+                                }
+                              },
+                              {
+                                "ZoneChange": {
+                                  "what": ["This"],
+                                  "from": "Battlefield",
+                                  "to": "Exile"
+                                }
+                              }
+                            ]
+                          },
+                          "effects": [{ "Move": { "what": "Triggering", "to": "Hand" } }]
+                        }
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,53 @@
+{
+  "oracle_id": "aaf46eaf-2e01-46ac-b79d-6b70739d11c2",
+  "name": "Back on Track",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Back on Track",
+      "oracle_fingerprint": "6871cb5cddbec1bf4da70c6cc2583b9b",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "AnyOf": [{ "Type": "Creature" }, { "Subtype": "Vehicle" }] },
+                    { "OwnedBy": "You" },
+                    { "In": "Graveyard" }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              { "Move": { "what": { "Target": 0 }, "to": { "Battlefield": {} } } },
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Pilot",
+                      "types": ["Creature"],
+                      "subtypes": ["Pilot"],
+                      "power": 1,
+                      "toughness": 1,
+                      "abilities": [
+                        {
+                          "Rule": {
+                            "rule": {
+                              "Combat": { "who": "This", "quirk": { "TapPower": { "Plus": 2 } } }
+                            }
+                          }
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

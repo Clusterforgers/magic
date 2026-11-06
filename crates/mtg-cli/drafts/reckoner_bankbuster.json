@@ -1,0 +1,68 @@
+{
+  "oracle_id": "b6be94dc-7162-4887-b959-3bda709724eb",
+  "name": "Reckoner Bankbuster",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Reckoner Bankbuster",
+      "oracle_fingerprint": "e7987cd1b4a928b54490d00225b29a74",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "WithCounters": { "counter": "charge", "count": 3 } }
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{2}" }, "Tap", { "RemoveCounters": { "counter": "charge" } }],
+            "effects": [
+              { "Draw": {} },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": "This",
+                      "selector": [{ "Not": { "HasCounter": "charge" } }],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [
+                    { "CreateToken": { "token": { "Named": "treasure" } } },
+                    {
+                      "CreateToken": {
+                        "token": {
+                          "Custom": {
+                            "name": "Pilot",
+                            "types": ["Creature"],
+                            "subtypes": ["Pilot"],
+                            "power": 1,
+                            "toughness": 1,
+                            "abilities": [
+                              {
+                                "Rule": {
+                                  "rule": {
+                                    "Combat": {
+                                      "who": "This",
+                                      "quirk": { "TapPower": { "Plus": 2 } }
+                                    }
+                                  }
+                                }
+                              }
+                            ]
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Crew": 3 } }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,80 @@
+{
+  "oracle_id": "66944a11-40a1-4f3a-9f83-52324e0edfef",
+  "name": "Arahbo, Roar of the World",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Arahbo, Roar of the World",
+      "oracle_fingerprint": "cdd021cd9511ade109b4af23b75c45b2",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "BeginCombat", "whose": "You" } },
+            "if": { "Compare": { "left": { "Count": ["This"] }, "op": "Ge", "right": 1 } },
+            "targets": [
+              { "what": { "Object": [{ "Subtype": "Cat" }, { "ControlledBy": "You" }, "Other"] } }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "ModifyPT": { "power": 3, "toughness": 3 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "BeginCombat", "whose": "You" } },
+            "from": "Command",
+            "targets": [
+              { "what": { "Object": [{ "Subtype": "Cat" }, { "ControlledBy": "You" }, "Other"] } }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "ModifyPT": { "power": 3, "toughness": 3 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "Attacks": { "what": [{ "Subtype": "Cat" }, "Other", { "ControlledBy": "You" }] }
+            },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": "{1}{W}{G}",
+                  "paid": [
+                    {
+                      "Continuous": {
+                        "affected": "Triggering",
+                        "mods": [
+                          {
+                            "ModifyPT": {
+                              "power": { "Stat": { "of": "Triggering", "stat": "Power" } },
+                              "toughness": { "Stat": { "of": "Triggering", "stat": "Power" } }
+                            }
+                          },
+                          { "AddKeyword": "Trample" }
+                        ],
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

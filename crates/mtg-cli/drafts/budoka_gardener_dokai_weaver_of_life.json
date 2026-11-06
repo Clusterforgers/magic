@@ -45,44 +45,18 @@
             "cost": [{ "Mana": "{4}{G}{G}" }, "Tap"],
             "effects": [
               {
-                "Let": {
-                  "as": "power",
-                  "amount": { "Count": [{ "Type": "Land" }, { "ControlledBy": "You" }] }
-                }
-              },
-              {
-                "Let": {
-                  "as": "toughness2",
-                  "amount": { "Count": [{ "Type": "Land" }, { "ControlledBy": "You" }] }
-                }
-              },
-              {
                 "CreateToken": {
                   "token": {
-                    "Custom": {
-                      "name": "Elemental",
-                      "colors": ["Green"],
-                      "types": ["Creature"],
-                      "subtypes": ["Elemental"],
-                      "power": 0,
-                      "toughness": 0
-                    }
-                  },
-                  "as": "token3"
-                }
-              },
-              {
-                "Continuous": {
-                  "affected": { "Bound": "token3" },
-                  "mods": [
-                    {
-                      "SetPT": {
-                        "power": { "Bound": "power" },
-                        "toughness": { "Bound": "toughness2" }
+                    "Sized": {
+                      "size": { "Count": [{ "Type": "Land" }, { "ControlledBy": "You" }] },
+                      "token": {
+                        "name": "Elemental",
+                        "colors": ["Green"],
+                        "types": ["Creature"],
+                        "subtypes": ["Elemental"]
                       }
                     }
-                  ],
-                  "duration": "Forever"
+                  }
                 }
               }
             ]

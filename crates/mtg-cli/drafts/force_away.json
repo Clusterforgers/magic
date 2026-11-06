@@ -1,0 +1,39 @@
+{
+  "oracle_id": "4770ec88-bc7b-457e-8f67-ae46e2cf4caa",
+  "name": "Force Away",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Force Away",
+      "oracle_fingerprint": "06b5b2c0f9dd545d918f50dd4e91e31d",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              { "Move": { "what": { "Target": 0 }, "to": "Hand" } },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": {
+                        "Count": [
+                          { "Type": "Creature" },
+                          { "ControlledBy": "You" },
+                          { "Compare": { "stat": "Power", "op": "Ge", "to": 4 } }
+                        ]
+                      },
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [{ "Pay": { "cost": [{ "Draw": 1 }], "paid": [{ "Discard": {} }] } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

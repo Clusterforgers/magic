@@ -1,0 +1,89 @@
+{
+  "oracle_id": "ae27fa09-ab73-44b4-8e86-44d626ec221d",
+  "name": "Zimone's Hypothesis",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Zimone's Hypothesis",
+      "oracle_fingerprint": "cb9be03668a1866948a9a6c7a2b98aaa",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    { "Choose": { "from": { "Each": [{ "Type": "Creature" }] }, "as": "card" } },
+                    { "PutCounters": { "on": { "Bound": "card" }, "counter": "+1/+1" } }
+                  ]
+                }
+              },
+              {
+                "Either": {
+                  "first": [
+                    {
+                      "Move": {
+                        "what": {
+                          "Each": [
+                            { "Type": "Creature" },
+                            {
+                              "Test": {
+                                "left": { "Stat": { "of": "Candidate", "stat": "Power" } },
+                                "op": "Ne",
+                                "right": {
+                                  "Times": {
+                                    "by": 2,
+                                    "of": {
+                                      "Half": {
+                                        "of": { "Stat": { "of": "Candidate", "stat": "Power" } },
+                                        "up": false
+                                      }
+                                    }
+                                  }
+                                }
+                              }
+                            }
+                          ]
+                        },
+                        "to": "Hand"
+                      }
+                    }
+                  ],
+                  "second": [
+                    {
+                      "Move": {
+                        "what": {
+                          "Each": [
+                            { "Type": "Creature" },
+                            {
+                              "Test": {
+                                "left": { "Stat": { "of": "Candidate", "stat": "Power" } },
+                                "op": "Eq",
+                                "right": {
+                                  "Times": {
+                                    "by": 2,
+                                    "of": {
+                                      "Half": {
+                                        "of": { "Stat": { "of": "Candidate", "stat": "Power" } },
+                                        "up": false
+                                      }
+                                    }
+                                  }
+                                }
+                              }
+                            }
+                          ]
+                        },
+                        "to": "Hand"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

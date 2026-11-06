@@ -19,44 +19,19 @@
             "effects": [
               { "Exile": { "what": { "Target": 0 }, "as": "exiled" } },
               {
-                "Let": {
-                  "as": "power2",
-                  "amount": { "Stat": { "of": { "Bound": "exiled" }, "stat": "Power" } }
-                }
-              },
-              {
-                "Let": {
-                  "as": "toughness3",
-                  "amount": { "Stat": { "of": { "Bound": "exiled" }, "stat": "Toughness" } }
-                }
-              },
-              {
                 "CreateToken": {
                   "token": {
-                    "Custom": {
-                      "name": "Zombie",
-                      "colors": ["Black"],
-                      "types": ["Creature"],
-                      "subtypes": ["Zombie"],
-                      "power": 0,
-                      "toughness": 0
-                    }
-                  },
-                  "as": "token4"
-                }
-              },
-              {
-                "Continuous": {
-                  "affected": { "Bound": "token4" },
-                  "mods": [
-                    {
-                      "SetPT": {
-                        "power": { "Bound": "power2" },
-                        "toughness": { "Bound": "toughness3" }
+                    "Sized": {
+                      "size": { "Stat": { "of": { "Bound": "exiled" }, "stat": "Power" } },
+                      "toughness": { "Stat": { "of": { "Bound": "exiled" }, "stat": "Toughness" } },
+                      "token": {
+                        "name": "Zombie",
+                        "colors": ["Black"],
+                        "types": ["Creature"],
+                        "subtypes": ["Zombie"]
                       }
                     }
-                  ],
-                  "duration": "Forever"
+                  }
                 }
               }
             ]

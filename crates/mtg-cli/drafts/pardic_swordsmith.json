@@ -1,0 +1,27 @@
+{
+  "oracle_id": "946d770f-0a59-415b-b334-8f7353b96046",
+  "name": "Pardic Swordsmith",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Pardic Swordsmith",
+      "oracle_fingerprint": "9c0987540bb3550d8a17cdb4f1ee1002",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{R}" }, { "DiscardRandom": 1 }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "ModifyPT": { "power": 2, "toughness": 0 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

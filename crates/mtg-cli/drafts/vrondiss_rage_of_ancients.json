@@ -1,7 +1,7 @@
 {
   "oracle_id": "2160c837-342b-409f-a1db-0ec5ac023ccf",
   "name": "Vrondiss, Rage of Ancients",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Vrondiss, Rage of Ancients",
@@ -43,9 +43,9 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 159, "end": 241 }
+          "Triggered": {
+            "when": { "DiceRolled": { "who": "You" } },
+            "effects": [{ "May": { "effects": [{ "DealDamage": { "to": "This", "amount": 1 } }] } }]
           }
         }
       ]

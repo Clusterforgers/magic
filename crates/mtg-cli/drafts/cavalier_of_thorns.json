@@ -1,0 +1,57 @@
+{
+  "oracle_id": "96b909ab-55f1-4cde-a675-2504de3da772",
+  "name": "Cavalier of Thorns",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Cavalier of Thorns",
+      "oracle_fingerprint": "3f7f0850d51029c83785a6311fdaf9bc",
+      "abilities": [
+        { "Keyword": "Reach" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              { "LookAtTop": { "count": 5, "as": "top" } },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [{ "In": "Library" }, { "Is": { "Bound": "top" } }, { "Type": "Land" }]
+                  },
+                  "as": "kept2"
+                }
+              },
+              { "Move": { "what": { "Bound": "kept2" }, "to": { "Battlefield": {} } } },
+              { "Move": { "what": { "Bound": "top" }, "to": "Graveyard" } }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } },
+            "targets": [
+              { "what": { "Object": [{ "OwnedBy": "You" }, "Other", { "In": "Graveyard" }] } }
+            ],
+            "effects": [
+              {
+                "Pay": {
+                  "cost": [
+                    {
+                      "ExileFromGraveyard": {
+                        "filter": [{ "Is": { "Arrived": { "of": "This", "zone": "Graveyard" } } }],
+                        "any_player": true
+                      }
+                    }
+                  ],
+                  "paid": [
+                    { "Move": { "what": { "Target": 0 }, "to": { "Library": { "place": "Top" } } } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

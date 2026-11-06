@@ -1,0 +1,29 @@
+{
+  "oracle_id": "4aedbbaf-b6ae-4bf0-84eb-31b0b28cfdfa",
+  "name": "Lurker",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Lurker",
+      "oracle_fingerprint": "3aa1ae90f2690a93b123bcd839be3493",
+      "abilities": [
+        {
+          "Rule": {
+            "rule": {
+              "Cant": {
+                "who": {
+                  "Each": [
+                    "This",
+                    { "Not": "AttackedThisTurn" },
+                    { "Not": { "DidThisTurn": { "event": "Blocked" } } }
+                  ]
+                },
+                "action": { "BeTargeted": ["Spell"] }
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

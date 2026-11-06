@@ -1,0 +1,48 @@
+{
+  "oracle_id": "c3a8cc79-3771-484d-84dd-1a97f8bd12c2",
+  "name": "Hercules, Prince of Power",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Hercules, Prince of Power",
+      "oracle_fingerprint": "72137b760cbd83e2594ecc981ff6e9b5",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [
+              { "Mana": "{4}{G}" },
+              {
+                "Changed": {
+                  "change": "Reduce",
+                  "mana": "{2}{G}",
+                  "condition": {
+                    "Compare": {
+                      "left": { "Count": ["This", "EnteredThisTurn"] },
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  }
+                }
+              }
+            ],
+            "limit": "OncePerGame",
+            "effects": [
+              { "PutCounters": { "on": "This", "counter": "+1/+1" } },
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [
+                    { "AddKeyword": "Vigilance" },
+                    { "AddKeyword": "Indestructible" },
+                    { "AddKeyword": "Haste" }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,82 @@
+{
+  "oracle_id": "17c4807c-158e-4a86-90f1-d8fb2ebe892a",
+  "name": "Ajani's Last Stand",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ajani's Last Stand",
+      "oracle_fingerprint": "8ec58c71284875c555ba37c05da95897",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [
+                  { "AnyOf": [{ "Type": "Creature" }, { "Type": "Planeswalker" }] },
+                  { "ControlledBy": "You" }
+                ],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": ["SacrificeSelf"],
+                  "paid": [
+                    {
+                      "CreateToken": {
+                        "token": {
+                          "Custom": {
+                            "name": "Avatar",
+                            "colors": ["White"],
+                            "types": ["Creature"],
+                            "subtypes": ["Avatar"],
+                            "power": 4,
+                            "toughness": 4,
+                            "abilities": [{ "Keyword": "Flying" }]
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "Caused": { "inner": { "Discarded": { "what": ["This"] } }, "by": "Opponents" }
+            },
+            "if": {
+              "Compare": {
+                "left": { "Count": [{ "Subtype": "Plains" }, { "ControlledBy": "You" }] },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Avatar",
+                      "colors": ["White"],
+                      "types": ["Creature"],
+                      "subtypes": ["Avatar"],
+                      "power": 4,
+                      "toughness": 4,
+                      "abilities": [{ "Keyword": "Flying" }]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

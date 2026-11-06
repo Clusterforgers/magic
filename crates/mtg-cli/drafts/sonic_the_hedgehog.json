@@ -1,7 +1,7 @@
 {
   "oracle_id": "b07a7b00-9394-48a9-a597-17f391495909",
   "name": "Sonic the Hedgehog",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Sonic the Hedgehog",
@@ -28,9 +28,22 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 129, "end": 229 }
+          "Triggered": {
+            "when": {
+              "Batch": {
+                "DealsDamage": {
+                  "source": [],
+                  "to": {
+                    "Each": [
+                      { "Type": "Creature" },
+                      { "ControlledBy": "You" },
+                      { "AnyOf": [{ "HasKeyword": "Flash" }, { "HasKeyword": "Haste" }] }
+                    ]
+                  }
+                }
+              }
+            },
+            "effects": [{ "CreateToken": { "token": { "Named": "treasure" }, "tapped": true } }]
           }
         }
       ]

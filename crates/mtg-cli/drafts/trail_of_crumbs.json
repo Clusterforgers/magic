@@ -1,0 +1,68 @@
+{
+  "oracle_id": "185d6356-8f8d-4b32-8259-b4eb0a95866c",
+  "name": "Trail of Crumbs",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Trail of Crumbs",
+      "oracle_fingerprint": "bc503f544374580c33c929fdb68e7d6a",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "CreateToken": { "token": { "Named": "food" } } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "Sacrificed": {
+                "what": [{ "Subtype": "Food" }, { "ControlledBy": "You" }],
+                "by": "You"
+              }
+            },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": "{1}",
+                  "paid": [
+                    { "LookAtTop": { "count": 2, "as": "top" } },
+                    {
+                      "Choose": {
+                        "from": {
+                          "Each": [
+                            { "In": "Library" },
+                            { "Is": { "Bound": "top" } },
+                            {
+                              "AnyOf": [
+                                { "Type": "Artifact" },
+                                { "Type": "Battle" },
+                                { "Type": "Creature" },
+                                { "Type": "Enchantment" },
+                                { "Type": "Land" },
+                                { "Type": "Planeswalker" }
+                              ]
+                            }
+                          ]
+                        },
+                        "count": { "min": 0, "max": 1 },
+                        "as": "kept2"
+                      }
+                    },
+                    { "Move": { "what": { "Bound": "kept2" }, "to": "Hand" } },
+                    {
+                      "Move": {
+                        "what": { "Bound": "top" },
+                        "to": { "Library": { "place": "Bottom", "order": "Chosen" } }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -34,7 +34,16 @@
           "Spell": {
             "targets": [
               { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } },
-              { "what": "AnyTarget" }
+              {
+                "what": {
+                  "Either": [
+                    "Player",
+                    { "Object": [{ "Type": "Creature" }, { "Not": { "Is": { "Target": 0 } } }] },
+                    { "Object": [{ "Type": "Planeswalker" }, { "Not": { "Is": { "Target": 0 } } }] },
+                    { "Object": [{ "Type": "Battle" }, { "Not": { "Is": { "Target": 0 } } }] }
+                  ]
+                }
+              }
             ],
             "effects": [
               {

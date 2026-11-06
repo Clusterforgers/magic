@@ -1,0 +1,27 @@
+{
+  "oracle_id": "137e0ad2-e10a-4327-86a3-5ac7bc7fc469",
+  "name": "Raging Spirit",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Raging Spirit",
+      "oracle_fingerprint": "140caf7ac7c09936e2dbbc0b868076c6",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{2}",
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "AddColors": [] }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

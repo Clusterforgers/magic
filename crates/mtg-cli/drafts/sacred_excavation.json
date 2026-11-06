@@ -1,0 +1,35 @@
+{
+  "oracle_id": "5d8ff6a0-7037-4231-b6a9-ad97260bb267",
+  "name": "Sacred Excavation",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sacred Excavation",
+      "oracle_fingerprint": "8cecc9a42b6af2606acb739ed9474c2f",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "OwnedBy": "You" },
+                    {
+                      "AnyOf": [
+                        { "HasKeywordNamed": "Cycling" },
+                        { "HasKeywordNamed": "Typecycling" }
+                      ]
+                    },
+                    { "In": "Graveyard" }
+                  ]
+                },
+                "bounds": { "min": 0, "max": 2 }
+              }
+            ],
+            "effects": [{ "Move": { "what": { "Target": 0 }, "to": "Hand" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

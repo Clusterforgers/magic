@@ -1,0 +1,38 @@
+{
+  "oracle_id": "693ddb18-00d2-4784-90a0-701a64195034",
+  "name": "Laquatus's Champion",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Laquatus's Champion",
+      "oracle_fingerprint": "1d516b5115e92db92cf8c09951cb6227",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              { "LoseLife": { "who": { "Target": 0 }, "amount": 6 } },
+              { "Forget": { "slot": "remembered" } },
+              { "Remember": { "what": { "Target": 0 }, "slot": "remembered" } }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield" } },
+            "effects": [
+              {
+                "GainLife": {
+                  "who": { "Remembered": { "on": "This", "slot": "remembered" } },
+                  "amount": 6
+                }
+              }
+            ]
+          }
+        },
+        { "Activated": { "cost": "{B}", "effects": [{ "Regenerate": { "what": "This" } }] } }
+      ]
+    }
+  ]
+}

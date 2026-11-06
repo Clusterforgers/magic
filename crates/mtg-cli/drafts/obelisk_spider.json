@@ -1,7 +1,7 @@
 {
   "oracle_id": "f7289e62-ce5e-4f11-8d64-9fb62531b578",
   "name": "Obelisk Spider",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Obelisk Spider",
@@ -21,9 +21,21 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 102, "end": 208 }
+          "Triggered": {
+            "when": {
+              "Caused": {
+                "inner": {
+                  "Batch": {
+                    "CountersPut": { "what": [{ "Type": "Creature" }], "counter": "-1/-1" }
+                  }
+                },
+                "by": "You"
+              }
+            },
+            "effects": [
+              { "LoseLife": { "who": "Opponents", "amount": 1 } },
+              { "GainLife": { "amount": 1 } }
+            ]
           }
         }
       ]

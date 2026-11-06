@@ -1,0 +1,61 @@
+{
+  "oracle_id": "8d3d5e87-8b12-4549-a46e-70a103dbcf44",
+  "name": "Blood Frenzy",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Blood Frenzy",
+      "oracle_fingerprint": "f75199fb429cd0f359712c2bc825bcc1",
+      "abilities": [
+        {
+          "CastOnly": {
+            "condition": {
+              "Any": [
+                { "Step": "Upkeep" },
+                { "Step": "Draw" },
+                { "Step": "Main1" },
+                { "Step": "BeginCombat" },
+                { "Step": "DeclareAttackers" },
+                { "Step": "DeclareBlockers" }
+              ]
+            }
+          }
+        },
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "Type": "Creature" }, { "AnyOf": ["Attacking", "Blocking"] }]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "ModifyPT": { "power": 4, "toughness": 0 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "RepeatEach": {
+                  "over": { "Target": 0 },
+                  "as": "pumped",
+                  "effects": [
+                    {
+                      "DelayedTrigger": {
+                        "when": { "StepBegins": { "step": "End" } },
+                        "effects": [{ "Destroy": { "what": { "Bound": "pumped" } } }]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

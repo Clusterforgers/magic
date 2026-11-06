@@ -1,0 +1,29 @@
+{
+  "oracle_id": "0a73b4da-9b5c-480e-b58b-6a82a52ea71e",
+  "name": "Vintara Elephant",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Vintara Elephant",
+      "oracle_fingerprint": "12b09bbfe1a5fc4d81ec472709a56757",
+      "abilities": [
+        { "Keyword": "Trample" },
+        {
+          "Activated": {
+            "cost": "{3}",
+            "by": "Anyone",
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "RemoveKeyword": "Trample" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

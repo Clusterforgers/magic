@@ -1,0 +1,51 @@
+{
+  "oracle_id": "eab4241d-a0d8-4914-85a4-56bc4ff718f2",
+  "name": "Gemini Engine",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Gemini Engine",
+      "oracle_fingerprint": "5fc5bf6167333aad55bff07d497bb2ca",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Sized": {
+                      "size": { "Stat": { "of": "This", "stat": "Power" } },
+                      "toughness": { "Stat": { "of": "This", "stat": "Toughness" } },
+                      "token": {
+                        "name": "Twin",
+                        "types": ["Artifact", "Creature"],
+                        "subtypes": ["Construct"]
+                      }
+                    }
+                  },
+                  "attacking": true,
+                  "as": "token"
+                }
+              },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "EndCombat" } },
+                  "effects": [
+                    {
+                      "Sacrifice": {
+                        "who": { "ControllerOf": { "Bound": "token" } },
+                        "filter": [{ "Is": { "Bound": "token" } }],
+                        "count": { "Count": [{ "Is": { "Bound": "token" } }] }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

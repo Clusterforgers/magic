@@ -1,0 +1,27 @@
+{
+  "oracle_id": "c4984e18-9caf-4dd0-9c24-e60ccb27e2a0",
+  "name": "Shizuko, Caller of Autumn",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Shizuko, Caller of Autumn",
+      "oracle_fingerprint": "447f938636ba53e4d8bb31d9c7e5fa25",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep" } },
+            "effects": [
+              {
+                "AddMana": {
+                  "who": "Triggering",
+                  "mana": { "Fixed": ["Green", "Green", "Green"] },
+                  "lasts": "Turn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

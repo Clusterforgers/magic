@@ -13,33 +13,13 @@
             "when": { "StepBegins": { "step": "BeginCombat" } },
             "effects": [
               {
-                "May": {
+                "Pay": {
                   "who": "Opponents",
-                  "effects": [
-                    {
-                      "Sacrifice": {
-                        "who": "Opponents",
-                        "filter": [{ "Type": "Creature" }],
-                        "as": "sacrificed"
-                      }
-                    }
+                  "cost": [{ "Sacrifice": { "filter": [{ "Type": "Creature" }] } }],
+                  "paid": [
+                    { "Tap": { "what": "This" } },
+                    { "PutCounters": { "on": "This", "counter": "+1/+1" } }
                   ]
-                }
-              },
-              {
-                "If": {
-                  "condition": {
-                    "Compare": { "left": { "Bound": "sacrificed~moved" }, "op": "Ge", "right": 1 }
-                  },
-                  "then": [{ "Tap": { "what": "This" } }]
-                }
-              },
-              {
-                "If": {
-                  "condition": {
-                    "Compare": { "left": { "Bound": "sacrificed~moved" }, "op": "Ge", "right": 1 }
-                  },
-                  "then": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }]
                 }
               }
             ]

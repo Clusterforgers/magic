@@ -1,0 +1,82 @@
+{
+  "oracle_id": "766c2c67-d1ee-44ff-b9bb-355361646ef1",
+  "name": "Warlock Class",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Warlock Class",
+      "oracle_fingerprint": "2d8ddbe2a7e3d3141cbadda77a652a7e",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "if": {
+              "Compare": {
+                "left": {
+                  "Tally": {
+                    "event": "Died",
+                    "who": "EachPlayer",
+                    "filter": [{ "Type": "Creature" }]
+                  }
+                },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "effects": [{ "LoseLife": { "who": "Opponents", "amount": 1 } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{1}{B}",
+            "timing": "Sorcery",
+            "condition": { "Level": { "of": "This", "op": "Eq", "level": 1 } },
+            "effects": [{ "BecomeLevel": { "level": 2 } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "BecomesLevel": { "what": ["This"], "level": 2 } },
+            "if": { "Level": { "of": "This", "op": "Ge", "level": 2 } },
+            "effects": [
+              { "LookAtTop": { "count": 3, "as": "top" } },
+              { "Choose": { "from": { "Bound": "top" }, "as": "kept2", "rest_as": "rest3" } },
+              { "Move": { "what": { "Bound": "kept2" }, "to": "Hand" } },
+              { "Move": { "what": { "Bound": "rest3" }, "to": "Graveyard" } }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{6}{B}",
+            "timing": "Sorcery",
+            "condition": { "Level": { "of": "This", "op": "Eq", "level": 2 } },
+            "effects": [{ "BecomeLevel": { "level": 3 } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "if": { "Level": { "of": "This", "op": "Ge", "level": 3 } },
+            "effects": [
+              {
+                "RepeatEach": {
+                  "over": "Opponents",
+                  "as": "each",
+                  "effects": [
+                    {
+                      "LoseLife": {
+                        "who": { "Bound": "each" },
+                        "amount": { "Tallied": { "who": { "Bound": "each" }, "what": "LifeLost" } }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

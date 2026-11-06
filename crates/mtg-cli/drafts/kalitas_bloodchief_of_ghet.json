@@ -20,46 +20,21 @@
                   },
                   "then": [
                     {
-                      "Let": {
-                        "as": "power2",
-                        "amount": { "Stat": { "of": { "Bound": "destroyed" }, "stat": "Power" } }
-                      }
-                    },
-                    {
-                      "Let": {
-                        "as": "toughness3",
-                        "amount": {
-                          "Stat": { "of": { "Bound": "destroyed" }, "stat": "Toughness" }
-                        }
-                      }
-                    },
-                    {
                       "CreateToken": {
                         "token": {
-                          "Custom": {
-                            "name": "Vampire",
-                            "colors": ["Black"],
-                            "types": ["Creature"],
-                            "subtypes": ["Vampire"],
-                            "power": 0,
-                            "toughness": 0
-                          }
-                        },
-                        "as": "token4"
-                      }
-                    },
-                    {
-                      "Continuous": {
-                        "affected": { "Bound": "token4" },
-                        "mods": [
-                          {
-                            "SetPT": {
-                              "power": { "Bound": "power2" },
-                              "toughness": { "Bound": "toughness3" }
+                          "Sized": {
+                            "size": { "Stat": { "of": { "Bound": "destroyed" }, "stat": "Power" } },
+                            "toughness": {
+                              "Stat": { "of": { "Bound": "destroyed" }, "stat": "Toughness" }
+                            },
+                            "token": {
+                              "name": "Vampire",
+                              "colors": ["Black"],
+                              "types": ["Creature"],
+                              "subtypes": ["Vampire"]
                             }
                           }
-                        ],
-                        "duration": "Forever"
+                        }
                       }
                     }
                   ]

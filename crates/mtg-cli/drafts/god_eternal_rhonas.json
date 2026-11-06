@@ -1,0 +1,50 @@
+{
+  "oracle_id": "fc4f2cdb-966c-4576-8b37-b3d138f5710e",
+  "name": "God-Eternal Rhonas",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "God-Eternal Rhonas",
+      "oracle_fingerprint": "cd9c9499ae2d6158125f99a6eb2b539e",
+      "abilities": [
+        { "Keyword": "Deathtouch" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "RepeatEach": {
+                  "over": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }, "Other"] },
+                  "as": "doubled",
+                  "effects": [
+                    {
+                      "Continuous": {
+                        "affected": { "Bound": "doubled" },
+                        "mods": [
+                          {
+                            "ModifyPT": {
+                              "power": { "Stat": { "of": { "Bound": "doubled" }, "stat": "Power" } },
+                              "toughness": 0
+                            }
+                          },
+                          { "AddKeyword": "Vigilance" }
+                        ],
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 164, "end": 295 }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,24 @@
+{
+  "oracle_id": "3b2206ed-55e9-4735-b969-59d9e089bb10",
+  "name": "Tempting Licid",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Tempting Licid",
+      "oracle_fingerprint": "7797a13fbd06ef8ac1c23e16113d7804",
+      "abilities": [
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 0, "end": 163 }
+          }
+        },
+        {
+          "Rule": {
+            "rule": { "Combat": { "who": "Attached", "quirk": { "MustBeBlocked": "Every" } } }
+          }
+        }
+      ]
+    }
+  ]
+}

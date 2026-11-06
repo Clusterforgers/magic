@@ -1,0 +1,59 @@
+{
+  "oracle_id": "7af1d7f9-058a-4ccb-96b7-fc391b615c09",
+  "name": "Grand Architect",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Grand Architect",
+      "oracle_fingerprint": "875204e07fd25b090ba1ea56031c6eec",
+      "abilities": [
+        {
+          "Static": {
+            "affected": {
+              "Each": [
+                { "Type": "Creature" },
+                { "Color": "Blue" },
+                "Other",
+                { "ControlledBy": "You" }
+              ]
+            },
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{U}",
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }, { "Type": "Artifact" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "SetColors": ["Blue"] }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [
+              { "TapPermanents": { "filter": [{ "Type": "Creature" }, { "Color": "Blue" }] } }
+            ],
+            "effects": [
+              {
+                "AddMana": {
+                  "mana": { "Fixed": ["Colorless", "Colorless"] },
+                  "only": [
+                    { "Spell": { "types": ["Artifact"] } },
+                    { "Ability": { "types": ["Artifact"], "facts": ["OnBattlefield"] } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

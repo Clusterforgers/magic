@@ -1,0 +1,32 @@
+{
+  "oracle_id": "834554f6-3b65-44fd-b1d1-8495b740dbfc",
+  "name": "Interpret the Signs",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Interpret the Signs",
+      "oracle_fingerprint": "d865f3fff6377f5b8f80239b6f1910d3",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "Scry": { "count": 3 } },
+              { "LookAtTop": { "as": "top" } },
+              { "Reveal": { "what": { "Bound": "top" } } },
+              {
+                "Draw": {
+                  "count": {
+                    "Total": {
+                      "of": [{ "In": "Library" }, { "OwnedBy": "You" }, "TopOfLibrary"],
+                      "stat": "ManaValue"
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

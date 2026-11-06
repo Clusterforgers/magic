@@ -1,7 +1,7 @@
 {
   "oracle_id": "ff4297d3-3d96-4bd6-a606-1bdc20a6df2b",
   "name": "Aether Storm",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Aether Storm",
@@ -18,9 +18,10 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 31, "end": 131 }
+          "Activated": {
+            "cost": [{ "PayLife": 4 }],
+            "by": "Anyone",
+            "effects": [{ "Destroy": { "what": "This", "regenerate": false } }]
           }
         }
       ]

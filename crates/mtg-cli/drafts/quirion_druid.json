@@ -1,0 +1,32 @@
+{
+  "oracle_id": "cdc0621a-5a88-46a0-90fa-87ba1e7e1eb2",
+  "name": "Quirion Druid",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Quirion Druid",
+      "oracle_fingerprint": "8c4ea8fe0f7f33bbe87e65fb8e221407",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{G}" }, "Tap"],
+            "targets": [{ "what": { "Object": [{ "Type": "Land" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    { "SetPT": { "power": 2, "toughness": 2 } },
+                    { "AddColors": ["Green"] },
+                    { "AddType": "Creature" }
+                  ],
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

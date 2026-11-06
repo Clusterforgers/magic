@@ -1,0 +1,69 @@
+{
+  "oracle_id": "d4e4c8a5-e97b-4295-a403-d17834f73502",
+  "name": "Foul Roads",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Foul Roads",
+      "oracle_fingerprint": "02c878f2d0513a4e1307b1d0b95f7f56",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": "Tapped",
+            "condition": {
+              "Not": {
+                "Compare": {
+                  "left": {
+                    "Count": [
+                      { "AnyOf": [{ "Subtype": "Mount" }, { "Subtype": "Vehicle" }] },
+                      { "ControlledBy": "You" }
+                    ]
+                  },
+                  "op": "Ge",
+                  "right": 1
+                }
+              }
+            }
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Black"] } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{1}{B}" }, "Tap", "SacrificeSelf"],
+            "timing": "Sorcery",
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Pilot",
+                      "types": ["Creature"],
+                      "subtypes": ["Pilot"],
+                      "power": 1,
+                      "toughness": 1,
+                      "abilities": [
+                        {
+                          "Rule": {
+                            "rule": {
+                              "Combat": { "who": "This", "quirk": { "TapPower": { "Plus": 2 } } }
+                            }
+                          }
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

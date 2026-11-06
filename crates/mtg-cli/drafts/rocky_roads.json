@@ -1,0 +1,69 @@
+{
+  "oracle_id": "a659c29f-aaca-44c5-8426-cdafcb195f86",
+  "name": "Rocky Roads",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Rocky Roads",
+      "oracle_fingerprint": "bd5ba229801b01d0fa5cbcc9569f2d5b",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": "Tapped",
+            "condition": {
+              "Not": {
+                "Compare": {
+                  "left": {
+                    "Count": [
+                      { "AnyOf": [{ "Subtype": "Mount" }, { "Subtype": "Vehicle" }] },
+                      { "ControlledBy": "You" }
+                    ]
+                  },
+                  "op": "Ge",
+                  "right": 1
+                }
+              }
+            }
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Red"] } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{1}{R}" }, "Tap", "SacrificeSelf"],
+            "timing": "Sorcery",
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Pilot",
+                      "types": ["Creature"],
+                      "subtypes": ["Pilot"],
+                      "power": 1,
+                      "toughness": 1,
+                      "abilities": [
+                        {
+                          "Rule": {
+                            "rule": {
+                              "Combat": { "who": "This", "quirk": { "TapPower": { "Plus": 2 } } }
+                            }
+                          }
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

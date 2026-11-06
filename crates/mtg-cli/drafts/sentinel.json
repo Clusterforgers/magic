@@ -1,0 +1,43 @@
+{
+  "oracle_id": "c30e8efb-d097-4388-8d5c-1037ccc29fba",
+  "name": "Sentinel",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sentinel",
+      "oracle_fingerprint": "87652e558976886ca6e2ea2554794b2d",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{0}",
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Type": "Creature" },
+                    { "AnyOf": [{ "BlockedBy": "This" }, { "Blocks": "This" }] }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [
+                    {
+                      "SetToughness": {
+                        "Sum": [{ "Stat": { "of": { "Target": 0 }, "stat": "Power" } }, 1]
+                      }
+                    }
+                  ],
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

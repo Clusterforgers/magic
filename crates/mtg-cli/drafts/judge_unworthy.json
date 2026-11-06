@@ -1,0 +1,48 @@
+{
+  "oracle_id": "9d687287-7b3f-48c8-b5df-0d7550b9ad66",
+  "name": "Judge Unworthy",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Judge Unworthy",
+      "oracle_fingerprint": "f2b8edbade4b6ff318634856a3f6c672",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "Type": "Creature" }, { "AnyOf": ["Attacking", "Blocking"] }]
+                }
+              }
+            ],
+            "effects": [
+              { "Scry": { "count": 3 } },
+              { "LookAtTop": { "as": "top" } },
+              { "Choose": { "from": { "Bound": "top" }, "as": "kept2", "rest_as": "rest3" } },
+              { "Reveal": { "what": { "Bound": "top" } } },
+              { "Move": { "what": { "Bound": "kept2" }, "to": { "Library": { "place": "Top" } } } },
+              {
+                "Move": {
+                  "what": { "Bound": "rest3" },
+                  "to": { "Library": { "place": "Bottom", "order": "Chosen" } }
+                }
+              },
+              {
+                "DealDamage": {
+                  "to": { "Target": 0 },
+                  "amount": {
+                    "Total": {
+                      "of": [{ "In": "Library" }, { "OwnedBy": "You" }, "TopOfLibrary"],
+                      "stat": "ManaValue"
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

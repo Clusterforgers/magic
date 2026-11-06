@@ -1,7 +1,7 @@
 {
   "oracle_id": "7100fe0c-1c2a-461a-83b3-684d44279081",
   "name": "Wolverine, Claws Out",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Wolverine, Claws Out",
@@ -9,9 +9,24 @@
       "abilities": [
         { "Rule": { "rule": { "Combat": { "who": "This", "quirk": "AssignsAsUnblocked" } } } },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 78, "end": 152 }
+          "Triggered": {
+            "when": { "Attacks": { "what": [{ "Subtype": "Mutant" }, { "ControlledBy": "You" }] } },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "Triggering",
+                  "mods": [
+                    {
+                      "ModifyPT": {
+                        "power": { "Stat": { "of": "Triggering", "stat": "Power" } },
+                        "toughness": 0
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
           }
         }
       ]

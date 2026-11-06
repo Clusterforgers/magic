@@ -1,0 +1,19 @@
+{
+  "oracle_id": "da350f46-6d6e-4257-8f4f-77769c442d0c",
+  "name": "Spiritual Focus",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Spiritual Focus",
+      "oracle_fingerprint": "8526baa1e0288a8a8e7f6d2df33044c0",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Caused": { "inner": { "Discarded": { "by": "You" } }, "by": "Opponents" } },
+            "effects": [{ "GainLife": { "amount": 2 } }, { "May": { "effects": [{ "Draw": {} }] } }]
+          }
+        }
+      ]
+    }
+  ]
+}

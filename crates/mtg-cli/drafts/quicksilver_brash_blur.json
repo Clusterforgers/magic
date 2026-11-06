@@ -1,0 +1,40 @@
+{
+  "oracle_id": "b76ce131-e51a-445e-8216-00df5904ab93",
+  "name": "Quicksilver, Brash Blur",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Quicksilver, Brash Blur",
+      "oracle_fingerprint": "3fa06f6afc09f61a57422a893184cff8",
+      "abilities": [
+        "OpeningHand",
+        { "Keyword": "Haste" },
+        {
+          "Activated": {
+            "cost": [
+              { "Mana": "{4}{R}" },
+              {
+                "Changed": {
+                  "change": "Reduce",
+                  "mana": "{R}",
+                  "condition": {
+                    "Compare": {
+                      "left": { "Count": ["This", "EnteredThisTurn"] },
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  }
+                }
+              }
+            ],
+            "limit": "OncePerGame",
+            "effects": [
+              { "PutCounters": { "on": "This", "counter": "+1/+1" } },
+              { "PutCounters": { "on": "This", "counter": { "Other": "double strike" } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

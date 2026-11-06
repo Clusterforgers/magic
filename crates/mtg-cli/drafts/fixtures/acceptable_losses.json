@@ -1,0 +1,132 @@
+{
+  "object": "card",
+  "id": "9082bfb8-0ab0-4378-976d-a2c9d3c35a5e",
+  "oracle_id": "2b6d95b5-0680-43ae-9ff3-8e287a9eb837",
+  "multiverse_ids": [
+    30692
+  ],
+  "mtgo_id": 16711,
+  "mtgo_foil_id": 16712,
+  "tcgplayer_id": 9447,
+  "cardmarket_id": 2584,
+  "name": "Acceptable Losses",
+  "lang": "en",
+  "released_at": "2001-10-01",
+  "uri": "https://api.scryfall.com/cards/9082bfb8-0ab0-4378-976d-a2c9d3c35a5e",
+  "scryfall_uri": "https://scryfall.com/card/ody/172/acceptable-losses?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T12:20:36Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/9/0/9082bfb8-0ab0-4378-976d-a2c9d3c35a5e.jpg?1783945236",
+    "normal": "https://cards.scryfall.io/normal/front/9/0/9082bfb8-0ab0-4378-976d-a2c9d3c35a5e.jpg?1783945236",
+    "large": "https://cards.scryfall.io/large/front/9/0/9082bfb8-0ab0-4378-976d-a2c9d3c35a5e.jpg?1783945236",
+    "png": "https://cards.scryfall.io/png/front/9/0/9082bfb8-0ab0-4378-976d-a2c9d3c35a5e.png?1783945236",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/9/0/9082bfb8-0ab0-4378-976d-a2c9d3c35a5e.jpg?1783945236",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/9/0/9082bfb8-0ab0-4378-976d-a2c9d3c35a5e.jpg?1783945236",
+    "thumb": "https://cards.scryfall.io/thumb/front/9/0/9082bfb8-0ab0-4378-976d-a2c9d3c35a5e.webp?1783945236",
+    "grid": "https://cards.scryfall.io/grid/front/9/0/9082bfb8-0ab0-4378-976d-a2c9d3c35a5e.webp?1783945236",
+    "display": "https://cards.scryfall.io/display/front/9/0/9082bfb8-0ab0-4378-976d-a2c9d3c35a5e.webp?1783945236",
+    "art": "https://cards.scryfall.io/art/front/9/0/9082bfb8-0ab0-4378-976d-a2c9d3c35a5e.webp?1783945236",
+    "crop": "https://cards.scryfall.io/crop/front/9/0/9082bfb8-0ab0-4378-976d-a2c9d3c35a5e.webp?1783945236",
+    "jpeg": "https://cards.scryfall.io/normal/front/9/0/9082bfb8-0ab0-4378-976d-a2c9d3c35a5e.jpg?1783945236"
+  },
+  "mana_cost": "{3}{R}",
+  "cmc": 4.0,
+  "type_line": "Sorcery",
+  "oracle_text": "As an additional cost to cast this spell, discard a card at random.\nAcceptable Losses deals 5 damage to target creature.",
+  "colors": [
+    "R"
+  ],
+  "color_identity": [
+    "R"
+  ],
+  "keywords": [],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "legal",
+    "predh": "legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "b0d90d2d-494a-4224-bfa0-36ce5ee281b1",
+  "set": "ody",
+  "set_name": "Odyssey",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/b0d90d2d-494a-4224-bfa0-36ce5ee281b1",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Aody&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/ody?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/9082bfb8-0ab0-4378-976d-a2c9d3c35a5e/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A2b6d95b5-0680-43ae-9ff3-8e287a9eb837&unique=prints",
+  "collector_number": "172",
+  "digital": false,
+  "rarity": "common",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Mike Ploog",
+  "artist_ids": [
+    "4a9465c4-1545-4ab6-91e7-60252b90bed4"
+  ],
+  "illustration_id": "2fc5a61e-7569-4253-809f-a32768d83f13",
+  "border_color": "black",
+  "frame": "1997",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 29274,
+  "penny_rank": 14023,
+  "prices": {
+    "usd": "0.09",
+    "usd_foil": "0.60",
+    "usd_etched": null,
+    "eur": "0.06",
+    "eur_foil": "0.70",
+    "tix": "0.06"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=30692&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DAcceptable%2BLosses",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DAcceptable%2BLosses",
+    "edhrec": "https://edhrec.com/route/?cc=Acceptable+Losses"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F9447%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=2584&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/16711?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

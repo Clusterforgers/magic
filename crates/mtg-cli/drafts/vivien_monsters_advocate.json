@@ -1,0 +1,109 @@
+{
+  "oracle_id": "7256b03e-4fd5-4a0a-9b20-7b88870edfec",
+  "name": "Vivien, Monsters' Advocate",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Vivien, Monsters' Advocate",
+      "oracle_fingerprint": "6db5b91206c59a8623163b866cd4c7a7",
+      "abilities": [
+        { "Rule": { "rule": { "LookAtTopAnyTime": "You" } } },
+        {
+          "Rule": {
+            "rule": {
+              "MayCast": { "what": [{ "Type": "Creature" }, "TopOfLibrary"], "from": "Library" }
+            }
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Plus": 1 },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Beast",
+                      "colors": ["Green"],
+                      "types": ["Creature"],
+                      "subtypes": ["Beast"],
+                      "power": 3,
+                      "toughness": 3
+                    }
+                  },
+                  "as": "token"
+                }
+              },
+              {
+                "Either": {
+                  "first": [
+                    {
+                      "PutCounters": {
+                        "on": { "Bound": "token" },
+                        "counter": { "Other": "vigilance" }
+                      }
+                    }
+                  ],
+                  "second": [
+                    {
+                      "Either": {
+                        "first": [
+                          {
+                            "PutCounters": {
+                              "on": { "Bound": "token" },
+                              "counter": { "Other": "reach" }
+                            }
+                          }
+                        ],
+                        "second": [
+                          {
+                            "PutCounters": {
+                              "on": { "Bound": "token" },
+                              "counter": { "Other": "trample" }
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Minus": 2 },
+            "effects": [
+              {
+                "DelayedTrigger": {
+                  "when": { "SpellCast": { "what": [{ "Type": "Creature" }], "by": "You" } },
+                  "this_turn": true,
+                  "effects": [
+                    {
+                      "Search": {
+                        "filter": [
+                          { "Type": "Creature" },
+                          {
+                            "Compare": {
+                              "stat": "ManaValue",
+                              "op": "Lt",
+                              "to": { "Stat": { "of": "Triggering", "stat": "ManaValue" } }
+                            }
+                          }
+                        ],
+                        "as": "found"
+                      }
+                    },
+                    { "Move": { "what": { "Bound": "found" }, "to": { "Battlefield": {} } } },
+                    { "Shuffle": {} }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

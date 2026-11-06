@@ -1,0 +1,34 @@
+{
+  "oracle_id": "80c2784b-f27d-4a51-9380-171eb32b961d",
+  "name": "Inspired Tethermage",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Inspired Tethermage",
+      "oracle_fingerprint": "05a0ffc8e2dccaa08c94521b7af9389b",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "Caused": {
+                "inner": {
+                  "Batch": {
+                    "CountersPut": { "what": [{ "Type": "Planeswalker" }], "counter": "loyalty" }
+                  }
+                },
+                "by": "You"
+              }
+            },
+            "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 103, "end": 297 }
+          }
+        }
+      ]
+    }
+  ]
+}

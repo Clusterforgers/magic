@@ -1,0 +1,28 @@
+{
+  "oracle_id": "bf526a0d-65cc-445f-b2b8-19a2cfdd836b",
+  "name": "Sewer Rats",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sewer Rats",
+      "oracle_fingerprint": "2b2ab46bdbbd156b4b40dfb74a8bd40b",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{B}" }, { "PayLife": 1 }],
+            "limit": { "TimesPerTurn": 3 },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "ModifyPT": { "power": 1, "toughness": 0 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

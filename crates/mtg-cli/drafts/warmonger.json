@@ -1,0 +1,28 @@
+{
+  "oracle_id": "bae92332-1a0b-476b-8719-190e8d8cc03a",
+  "name": "Warmonger",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Warmonger",
+      "oracle_fingerprint": "7e266a329db017d3d70bb339f00b4465",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{2}",
+            "by": "Anyone",
+            "effects": [
+              {
+                "DealDamage": {
+                  "to": { "Each": [{ "Type": "Creature" }, { "Not": { "HasKeyword": "Flying" } }] },
+                  "amount": 1
+                }
+              },
+              { "DealDamage": { "to": "EachPlayer", "amount": 1 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

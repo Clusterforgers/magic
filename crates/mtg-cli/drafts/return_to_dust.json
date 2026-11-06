@@ -1,0 +1,37 @@
+{
+  "oracle_id": "3029df1d-d02a-4fed-8ab4-000a2096f823",
+  "name": "Return to Dust",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Return to Dust",
+      "oracle_fingerprint": "c8e51ffa66bf00e95de7228d2f46ae1a",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "AnyOf": [{ "Type": "Artifact" }, { "Type": "Enchantment" }] }]
+                },
+                "bounds": {
+                  "min": 1,
+                  "max": {
+                    "When": {
+                      "condition": {
+                        "All": ["YourTurn", { "Any": [{ "Step": "Main1" }, { "Step": "Main2" }] }]
+                      },
+                      "then": 2,
+                      "otherwise": 1
+                    }
+                  }
+                }
+              }
+            ],
+            "effects": [{ "Exile": { "what": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

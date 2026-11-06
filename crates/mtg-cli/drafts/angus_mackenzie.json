@@ -1,0 +1,37 @@
+{
+  "oracle_id": "d5e6ac6b-5786-4d98-8037-0867e365fc93",
+  "name": "Angus Mackenzie",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Angus Mackenzie",
+      "oracle_fingerprint": "7d946bf4621e0dce58f3562f0e89c6d1",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{W}{U}{G}" }, "Tap"],
+            "condition": {
+              "Any": [
+                { "Step": "Upkeep" },
+                { "Step": "Draw" },
+                { "Step": "Main1" },
+                { "Step": "BeginCombat" },
+                { "Step": "DeclareAttackers" },
+                { "Step": "DeclareBlockers" }
+              ]
+            },
+            "effects": [
+              {
+                "Shield": {
+                  "when": { "Damage": { "combat": true } },
+                  "by": "Prevent",
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

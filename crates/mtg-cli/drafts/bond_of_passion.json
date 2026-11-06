@@ -9,7 +9,19 @@
       "abilities": [
         {
           "Spell": {
-            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }, { "what": "AnyTarget" }],
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }] } },
+              {
+                "what": {
+                  "Either": [
+                    "Player",
+                    { "Object": [{ "Type": "Creature" }, { "Not": { "Is": { "Target": 0 } } }] },
+                    { "Object": [{ "Type": "Planeswalker" }, { "Not": { "Is": { "Target": 0 } } }] },
+                    { "Object": [{ "Type": "Battle" }, { "Not": { "Is": { "Target": 0 } } }] }
+                  ]
+                }
+              }
+            ],
             "effects": [
               {
                 "Continuous": {

@@ -1,0 +1,26 @@
+{
+  "oracle_id": "90b98aa7-c8d0-4853-887c-164f8160c3f3",
+  "name": "Ixidor, Reality Sculptor",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ixidor, Reality Sculptor",
+      "oracle_fingerprint": "80b1437bd840e7c6029732d6df44561c",
+      "abilities": [
+        {
+          "Static": {
+            "affected": { "Each": [{ "Type": "Creature" }, "FaceDown"] },
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{2}{U}",
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }, "FaceDown"] } }],
+            "effects": [{ "TurnFaceUp": { "what": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

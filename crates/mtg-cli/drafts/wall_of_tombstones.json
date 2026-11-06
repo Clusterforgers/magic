@@ -1,0 +1,43 @@
+{
+  "oracle_id": "2412a8a2-d028-44f1-8979-add9ec953759",
+  "name": "Wall of Tombstones",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Wall of Tombstones",
+      "oracle_fingerprint": "c1d42c59425e7734c99f7b48f140a29e",
+      "abilities": [
+        { "Keyword": "Defender" },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [
+                    {
+                      "SetToughness": {
+                        "Sum": [
+                          {
+                            "Count": [
+                              { "Type": "Creature" },
+                              { "OwnedBy": "You" },
+                              { "In": "Graveyard" }
+                            ]
+                          },
+                          1
+                        ]
+                      }
+                    }
+                  ],
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

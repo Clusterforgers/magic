@@ -1,0 +1,72 @@
+{
+  "oracle_id": "a86710da-e498-4ca1-832c-8ba4abd6fa46",
+  "name": "Spellpyre Phoenix",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Spellpyre Phoenix",
+      "oracle_fingerprint": "041f535dc381b21f3c96517203b81f79",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    {
+                      "AnyOf": [
+                        {
+                          "Not": {
+                            "AnyOf": [
+                              { "Not": { "Type": "Instant" } },
+                              { "Not": { "HasKeywordNamed": "Cycling" } }
+                            ]
+                          }
+                        },
+                        {
+                          "Not": {
+                            "AnyOf": [
+                              { "Not": { "Type": "Instant" } },
+                              { "Not": { "HasKeywordNamed": "Typecycling" } }
+                            ]
+                          }
+                        },
+                        {
+                          "Not": {
+                            "AnyOf": [
+                              { "Not": { "Type": "Sorcery" } },
+                              { "Not": { "HasKeywordNamed": "Cycling" } }
+                            ]
+                          }
+                        },
+                        {
+                          "Not": {
+                            "AnyOf": [
+                              { "Not": { "Type": "Sorcery" } },
+                              { "Not": { "HasKeywordNamed": "Typecycling" } }
+                            ]
+                          }
+                        }
+                      ]
+                    },
+                    { "OwnedBy": "You" },
+                    { "In": "Graveyard" }
+                  ]
+                }
+              }
+            ],
+            "effects": [{ "Move": { "what": { "Target": 0 }, "to": "Hand" } }]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 137, "end": 265 }
+          }
+        }
+      ]
+    }
+  ]
+}

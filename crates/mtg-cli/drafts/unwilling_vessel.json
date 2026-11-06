@@ -34,36 +34,20 @@
           "Triggered": {
             "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } },
             "effects": [
-              { "Let": { "as": "power", "amount": { "AnyCounters": "This" } } },
-              { "Let": { "as": "toughness2", "amount": { "AnyCounters": "This" } } },
               {
                 "CreateToken": {
                   "token": {
-                    "Custom": {
-                      "name": "Spirit",
-                      "colors": ["Blue"],
-                      "types": ["Creature"],
-                      "subtypes": ["Spirit"],
-                      "power": 0,
-                      "toughness": 0,
-                      "abilities": [{ "Keyword": "Flying" }]
-                    }
-                  },
-                  "as": "token3"
-                }
-              },
-              {
-                "Continuous": {
-                  "affected": { "Bound": "token3" },
-                  "mods": [
-                    {
-                      "SetPT": {
-                        "power": { "Bound": "power" },
-                        "toughness": { "Bound": "toughness2" }
+                    "Sized": {
+                      "size": { "AnyCounters": "This" },
+                      "token": {
+                        "name": "Spirit",
+                        "colors": ["Blue"],
+                        "types": ["Creature"],
+                        "subtypes": ["Spirit"],
+                        "abilities": [{ "Keyword": "Flying" }]
                       }
                     }
-                  ],
-                  "duration": "Forever"
+                  }
                 }
               }
             ]

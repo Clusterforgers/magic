@@ -1,0 +1,16 @@
+{
+  "oracle_id": "b42bdf54-9055-405c-87e6-0912dbe2bd68",
+  "name": "Giant Ox",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Giant Ox",
+      "oracle_fingerprint": "f89a6a0479aea60e778b719951b20129",
+      "abilities": [
+        {
+          "Rule": { "rule": { "Combat": { "who": "This", "quirk": { "TapPower": "Toughness" } } } }
+        }
+      ]
+    }
+  ]
+}

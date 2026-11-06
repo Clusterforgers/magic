@@ -1,0 +1,46 @@
+{
+  "oracle_id": "16cb916d-bb19-42ec-9a01-969e9d067b40",
+  "name": "Symmetry Sage",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Symmetry Sage",
+      "oracle_fingerprint": "e35eb3cc17da3d5ab5688c1548de5692",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                {
+                  "SpellCast": {
+                    "what": [{ "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] }],
+                    "by": "You"
+                  }
+                },
+                {
+                  "SpellCopied": {
+                    "what": [{ "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] }],
+                    "by": "You"
+                  }
+                }
+              ]
+            },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "SetPower": 2 }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,57 @@
+{
+  "oracle_id": "32d666ff-4d6b-4c60-8d3d-5bdae2d475fa",
+  "name": "Candlekeep Inspiration",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Candlekeep Inspiration",
+      "oracle_fingerprint": "15518133c336c3032d19e46cbbe66b6c",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                  "mods": [
+                    {
+                      "SetPT": {
+                        "power": {
+                          "Count": [
+                            {
+                              "AnyOf": [
+                                { "Type": "Instant" },
+                                { "Type": "Sorcery" },
+                                "HasAdventure"
+                              ]
+                            },
+                            { "OwnedBy": "You" },
+                            { "AnyOf": [{ "In": "Exile" }, { "In": "Graveyard" }] }
+                          ]
+                        },
+                        "toughness": {
+                          "Count": [
+                            {
+                              "AnyOf": [
+                                { "Type": "Instant" },
+                                { "Type": "Sorcery" },
+                                "HasAdventure"
+                              ]
+                            },
+                            { "OwnedBy": "You" },
+                            { "AnyOf": [{ "In": "Exile" }, { "In": "Graveyard" }] }
+                          ]
+                        }
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

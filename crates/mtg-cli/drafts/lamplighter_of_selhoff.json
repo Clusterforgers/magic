@@ -1,0 +1,26 @@
+{
+  "oracle_id": "a88c5540-a242-49bc-a725-39b9fda085c3",
+  "name": "Lamplighter of Selhoff",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Lamplighter of Selhoff",
+      "oracle_fingerprint": "72fc500d3491a44ada9b9babbed5ce7f",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "if": {
+              "Compare": {
+                "left": { "Count": [{ "Subtype": "Zombie" }, "Other", { "ControlledBy": "You" }] },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "effects": [{ "Pay": { "cost": [{ "Draw": 1 }], "paid": [{ "Discard": {} }] } }]
+          }
+        }
+      ]
+    }
+  ]
+}

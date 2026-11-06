@@ -1,0 +1,59 @@
+{
+  "oracle_id": "da4cab2d-0068-440f-ba7c-f2d4e5fa976e",
+  "name": "Aleatory",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Aleatory",
+      "oracle_fingerprint": "3aeaecdad314d93f8bcfaa06b1f5b6ee",
+      "abilities": [
+        {
+          "CastOnly": {
+            "condition": {
+              "Any": [
+                { "Step": "DeclareBlockers" },
+                { "Step": "FirstStrikeDamage" },
+                { "Step": "CombatDamage" },
+                { "Step": "EndCombat" }
+              ]
+            }
+          }
+        },
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "FlipCoin": {
+                  "win": [
+                    {
+                      "Continuous": {
+                        "affected": { "Target": 0 },
+                        "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }],
+                        "duration": "UntilEndOfTurn"
+                      }
+                    },
+                    {
+                      "DelayedTrigger": {
+                        "when": { "StepBegins": { "step": "Upkeep" } },
+                        "effects": [{ "Draw": {} }]
+                      }
+                    }
+                  ],
+                  "lose": [
+                    {
+                      "DelayedTrigger": {
+                        "when": { "StepBegins": { "step": "Upkeep" } },
+                        "effects": [{ "Draw": {} }]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

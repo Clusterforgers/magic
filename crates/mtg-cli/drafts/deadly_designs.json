@@ -1,0 +1,52 @@
+{
+  "oracle_id": "293c6f8f-9e6b-4267-a15d-1d5ce95fb5b4",
+  "name": "Deadly Designs",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Deadly Designs",
+      "oracle_fingerprint": "a119570b83b878cddbfb44e00e0cfeb9",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{2}",
+            "by": "Anyone",
+            "effects": [{ "PutCounters": { "on": "This", "counter": { "Other": "plot" } } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "State": {
+                "condition": {
+                  "Compare": {
+                    "left": {
+                      "Count": [
+                        "This",
+                        { "CounterCount": { "kind": { "Other": "plot" }, "op": "Ge", "to": 5 } }
+                      ]
+                    },
+                    "op": "Ge",
+                    "right": 1
+                  }
+                }
+              }
+            },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }] }, "bounds": { "min": 0, "max": 2 } }
+            ],
+            "effects": [
+              { "Sacrifice": { "filter": ["This"] } },
+              {
+                "If": {
+                  "condition": "Performed",
+                  "then": [{ "Destroy": { "what": { "Target": 0 } } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

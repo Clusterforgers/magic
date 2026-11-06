@@ -1,0 +1,63 @@
+{
+  "oracle_id": "9076a886-efe0-4c99-8661-f0fd7a7b3129",
+  "name": "Paramecia Coloniex",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Paramecia Coloniex",
+      "oracle_fingerprint": "f8c023e8444b21754ef99e508f4ca64f",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "Mill": { "count": 3 } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": [
+                    {
+                      "ExileFromGraveyard": {
+                        "filter": [{ "Is": { "Arrived": { "of": "This", "zone": "Graveyard" } } }],
+                        "any_player": true
+                      }
+                    }
+                  ],
+                  "paid": [
+                    {
+                      "Reflexive": {
+                        "targets": [
+                          {
+                            "what": {
+                              "Object": [
+                                { "Type": "Creature" },
+                                { "OwnedBy": "You" },
+                                { "In": "Graveyard" }
+                              ]
+                            }
+                          }
+                        ],
+                        "effects": [
+                          {
+                            "Move": {
+                              "what": { "Target": 0 },
+                              "to": { "Library": { "place": "Top" } }
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

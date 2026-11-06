@@ -44,44 +44,18 @@
                     {
                       "effects": [
                         {
-                          "Let": {
-                            "as": "power2",
-                            "amount": { "Count": [{ "Type": "Land" }, { "ControlledBy": "You" }] }
-                          }
-                        },
-                        {
-                          "Let": {
-                            "as": "toughness3",
-                            "amount": { "Count": [{ "Type": "Land" }, { "ControlledBy": "You" }] }
-                          }
-                        },
-                        {
                           "CreateToken": {
                             "token": {
-                              "Custom": {
-                                "name": "Elemental",
-                                "colors": ["Green"],
-                                "types": ["Creature"],
-                                "subtypes": ["Elemental"],
-                                "power": 0,
-                                "toughness": 0
-                              }
-                            },
-                            "as": "token4"
-                          }
-                        },
-                        {
-                          "Continuous": {
-                            "affected": { "Bound": "token4" },
-                            "mods": [
-                              {
-                                "SetPT": {
-                                  "power": { "Bound": "power2" },
-                                  "toughness": { "Bound": "toughness3" }
+                              "Sized": {
+                                "size": { "Count": [{ "Type": "Land" }, { "ControlledBy": "You" }] },
+                                "token": {
+                                  "name": "Elemental",
+                                  "colors": ["Green"],
+                                  "types": ["Creature"],
+                                  "subtypes": ["Elemental"]
                                 }
                               }
-                            ],
-                            "duration": "Forever"
+                            }
                           }
                         }
                       ]

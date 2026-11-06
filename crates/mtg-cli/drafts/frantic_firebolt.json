@@ -1,0 +1,39 @@
+{
+  "oracle_id": "f1882cc8-c81a-4131-b639-1bd6e083f8ba",
+  "name": "Frantic Firebolt",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Frantic Firebolt",
+      "oracle_fingerprint": "ba4fea8c93b9ff593df36df2347df409",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "DealDamage": {
+                  "to": { "Target": 0 },
+                  "amount": {
+                    "Sum": [
+                      {
+                        "Count": [
+                          {
+                            "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }, "HasAdventure"]
+                          },
+                          { "OwnedBy": "You" },
+                          { "In": "Graveyard" }
+                        ]
+                      },
+                      2
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

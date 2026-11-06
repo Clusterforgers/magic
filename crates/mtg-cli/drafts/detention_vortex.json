@@ -1,0 +1,33 @@
+{
+  "oracle_id": "5383a1c1-662f-46fe-a0e5-0f38efe1a37a",
+  "name": "Detention Vortex",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Detention Vortex",
+      "oracle_fingerprint": "08dbf3dfc5bd7d554c26a82dfae21581",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Not": { "Type": "Land" } }] } },
+        { "Static": { "affected": "Attached", "mods": ["CantAttack", "CantBlock"] } },
+        {
+          "Activated": {
+            "cost": "{3}",
+            "timing": "Sorcery",
+            "by": "Opponents",
+            "effects": [{ "Destroy": { "what": "This" } }]
+          }
+        },
+        {
+          "Rule": {
+            "rule": {
+              "Cant": {
+                "who": "EachPlayer",
+                "action": { "ActivateKind": { "kind": "Every", "sources": [{ "Is": "Attached" }] } }
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

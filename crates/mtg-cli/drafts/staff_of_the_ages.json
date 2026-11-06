@@ -1,0 +1,23 @@
+{
+  "oracle_id": "86af21ba-58ad-45e8-a316-5411c870e415",
+  "name": "Staff of the Ages",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Staff of the Ages",
+      "oracle_fingerprint": "8a123a31d9a47a9c2726e4803552e57a",
+      "abilities": [
+        {
+          "Rule": {
+            "rule": {
+              "Combat": {
+                "who": { "Each": [{ "Type": "Creature" }] },
+                "quirk": "IgnoreAllLandwalk"
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

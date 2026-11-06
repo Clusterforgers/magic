@@ -1,0 +1,24 @@
+{
+  "oracle_id": "c4272676-a38a-4b23-988e-9cdb2feb46c1",
+  "name": "Interface Ace",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Interface Ace",
+      "oracle_fingerprint": "0b55af38b5eef8fb6d0d5417013aaa75",
+      "abilities": [
+        {
+          "Rule": { "rule": { "Combat": { "who": "This", "quirk": { "TapPower": "Toughness" } } } }
+        },
+        {
+          "Triggered": {
+            "when": { "Tapped": { "what": ["This"] } },
+            "if": { "AtTrigger": "YourTurn" },
+            "limit": "OncePerTurn",
+            "effects": [{ "Untap": { "what": "This" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

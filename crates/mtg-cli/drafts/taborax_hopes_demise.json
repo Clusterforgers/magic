@@ -1,0 +1,62 @@
+{
+  "oracle_id": "955abada-aba2-41c2-96ff-58e3679ad7e5",
+  "name": "Taborax, Hope's Demise",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Taborax, Hope's Demise",
+      "oracle_fingerprint": "ad2a235640a5adaf3edc6dc9ce9b21e6",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "AddKeyword": "Lifelink" }],
+            "condition": {
+              "Matches": {
+                "subject": "This",
+                "selector": [{ "CounterCount": { "kind": "+1/+1", "op": "Ge", "to": 5 } }]
+              }
+            }
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [
+                  { "Type": "Creature" },
+                  { "Not": "Token" },
+                  "Other",
+                  { "ControlledBy": "You" }
+                ],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "effects": [
+              { "PutCounters": { "on": "This", "counter": "+1/+1" } },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": "Triggering",
+                      "selector": [{ "Subtype": "Cleric" }],
+                      "op": "Eq",
+                      "right": 1
+                    }
+                  },
+                  "then": [
+                    {
+                      "Pay": { "cost": [{ "Draw": 1 }], "paid": [{ "LoseLife": { "amount": 1 } }] }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

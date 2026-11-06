@@ -1,7 +1,7 @@
 {
   "oracle_id": "f6c9c0e6-b851-4ede-8d7a-190c7cfd9051",
   "name": "Genju of the Fens",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Genju of the Fens",
@@ -9,9 +9,38 @@
       "abilities": [
         { "Keyword": { "Enchant": [{ "Subtype": "Swamp" }] } },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 14, "end": 164 }
+          "Activated": {
+            "cost": "{2}",
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "Attached",
+                  "mods": [
+                    { "SetPT": { "power": 2, "toughness": 2 } },
+                    { "AddColors": ["Black"] },
+                    { "AddSubtype": "Spirit" },
+                    { "AddType": "Creature" },
+                    {
+                      "GrantAbility": {
+                        "Activated": {
+                          "cost": "{B}",
+                          "effects": [
+                            {
+                              "Continuous": {
+                                "affected": "This",
+                                "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }],
+                                "duration": "UntilEndOfTurn"
+                              }
+                            }
+                          ]
+                        }
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
           }
         },
         {

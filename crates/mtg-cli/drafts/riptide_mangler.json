@@ -1,0 +1,28 @@
+{
+  "oracle_id": "d5a4edda-fb04-43fa-8e0e-cc9f19b0776b",
+  "name": "Riptide Mangler",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Riptide Mangler",
+      "oracle_fingerprint": "dec2b08fbce8cbdcd749094996520820",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{1}{U}",
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "SetPower": { "Stat": { "of": { "Target": 0 }, "stat": "Power" } } }],
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

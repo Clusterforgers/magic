@@ -1,0 +1,52 @@
+{
+  "oracle_id": "bc8802db-8c94-4eb4-817f-5f4f5408b7a4",
+  "name": "Karn, Legacy Reforged",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Karn, Legacy Reforged",
+      "oracle_fingerprint": "fad1638f7a1ced4a4162adc3069f7d79",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              {
+                "SetPT": {
+                  "power": {
+                    "Greatest": {
+                      "of": [{ "Type": "Artifact" }, { "ControlledBy": "You" }],
+                      "stat": "ManaValue"
+                    }
+                  },
+                  "toughness": {
+                    "Greatest": {
+                      "of": [{ "Type": "Artifact" }, { "ControlledBy": "You" }],
+                      "stat": "ManaValue"
+                    }
+                  }
+                }
+              }
+            ],
+            "defining": true
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [
+              {
+                "AddMana": {
+                  "mana": { "Fixed": ["Colorless"] },
+                  "times": { "Count": [{ "Type": "Artifact" }, { "ControlledBy": "You" }] },
+                  "only": [{ "Spell": { "types": ["Artifact"] } }, { "Ability": {} }],
+                  "lasts": "Turn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

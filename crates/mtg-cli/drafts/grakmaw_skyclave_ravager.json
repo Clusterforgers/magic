@@ -35,44 +35,18 @@
             "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } },
             "effects": [
               {
-                "Let": {
-                  "as": "power",
-                  "amount": { "Counters": { "on": "This", "counter": "+1/+1" } }
-                }
-              },
-              {
-                "Let": {
-                  "as": "toughness2",
-                  "amount": { "Counters": { "on": "This", "counter": "+1/+1" } }
-                }
-              },
-              {
                 "CreateToken": {
                   "token": {
-                    "Custom": {
-                      "name": "Hydra",
-                      "colors": ["Black", "Green"],
-                      "types": ["Creature"],
-                      "subtypes": ["Hydra"],
-                      "power": 0,
-                      "toughness": 0
-                    }
-                  },
-                  "as": "token3"
-                }
-              },
-              {
-                "Continuous": {
-                  "affected": { "Bound": "token3" },
-                  "mods": [
-                    {
-                      "SetPT": {
-                        "power": { "Bound": "power" },
-                        "toughness": { "Bound": "toughness2" }
+                    "Sized": {
+                      "size": { "Counters": { "on": "This", "counter": "+1/+1" } },
+                      "token": {
+                        "name": "Hydra",
+                        "colors": ["Black", "Green"],
+                        "types": ["Creature"],
+                        "subtypes": ["Hydra"]
                       }
                     }
-                  ],
-                  "duration": "Forever"
+                  }
                 }
               }
             ]

@@ -17,7 +17,6 @@
                   "from": {
                     "Each": [{ "In": "Library" }, { "Is": { "Bound": "top" } }, { "Type": "Land" }]
                   },
-                  "count": { "min": 0, "max": 1 },
                   "as": "kept2"
                 }
               },

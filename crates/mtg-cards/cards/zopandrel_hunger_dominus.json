@@ -1,0 +1,56 @@
+{
+  "oracle_id": "b168e4e6-f572-4d9f-b98f-95b2611354cb",
+  "name": "Zopandrel, Hunger Dominus",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Zopandrel, Hunger Dominus",
+      "oracle_fingerprint": "690d5f01ff4d66d725b24906c114e23a",
+      "abilities": [
+        { "Keyword": "Reach" },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "BeginCombat" } },
+            "effects": [
+              {
+                "RepeatEach": {
+                  "over": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                  "as": "doubled",
+                  "effects": [
+                    {
+                      "Continuous": {
+                        "affected": { "Bound": "doubled" },
+                        "mods": [
+                          {
+                            "ModifyPT": {
+                              "power": { "Stat": { "of": { "Bound": "doubled" }, "stat": "Power" } },
+                              "toughness": {
+                                "Stat": { "of": { "Bound": "doubled" }, "stat": "Toughness" }
+                              }
+                            }
+                          }
+                        ],
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [
+              { "Mana": "{G/P}{G/P}" },
+              { "Sacrifice": { "filter": [{ "Type": "Creature" }, "Other"], "count": 2 } }
+            ],
+            "effects": [
+              { "PutCounters": { "on": "This", "counter": { "Other": "indestructible" } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,7 +1,7 @@
 {
   "oracle_id": "8331d2ff-3729-4014-8dcb-278644d2632a",
   "name": "Séance Board",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Séance Board",
@@ -27,9 +27,23 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 111, "end": 274 }
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [
+              {
+                "AddMana": {
+                  "mana": {
+                    "AnyColor": { "Counters": { "on": "This", "counter": { "Other": "soul" } } }
+                  },
+                  "only": [
+                    { "Spell": { "types": ["Instant"] } },
+                    { "Spell": { "types": ["Sorcery"] } },
+                    { "Spell": { "subtypes": ["Demon"] } },
+                    { "Spell": { "subtypes": ["Spirit"] } }
+                  ]
+                }
+              }
+            ]
           }
         }
       ]

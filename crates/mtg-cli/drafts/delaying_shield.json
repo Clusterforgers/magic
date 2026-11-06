@@ -1,7 +1,7 @@
 {
   "oracle_id": "e03b553a-3d0d-453e-ad3e-f7d4b9fb2624",
   "name": "Delaying Shield",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Delaying Shield",
@@ -24,9 +24,40 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 91, "end": 252 }
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "if": {
+              "Compare": {
+                "left": { "Count": ["This", { "HasCounter": { "Other": "delay" } }] },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "effects": [
+              {
+                "RememberValue": {
+                  "value": { "Counters": { "on": "This", "counter": { "Other": "delay" } } },
+                  "slot": "remembered_number"
+                }
+              },
+              {
+                "RemoveCounters": {
+                  "from": "This",
+                  "counter": { "Other": "delay" },
+                  "count": { "Counters": { "on": "This", "counter": { "Other": "delay" } } }
+                }
+              },
+              {
+                "RepeatWhile": {
+                  "condition": { "Compare": { "left": 0, "op": "Eq", "right": 0 } },
+                  "effects": [
+                    { "Pay": { "cost": "{1}{W}", "unpaid": [{ "LoseLife": { "amount": 1 } }] } }
+                  ],
+                  "most": 1000,
+                  "times": { "Remembered": { "on": "This", "slot": "remembered_number" } }
+                }
+              }
+            ]
           }
         }
       ]

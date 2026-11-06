@@ -1,0 +1,48 @@
+{
+  "oracle_id": "a3023de2-61e7-4f46-aa4a-09d08ee7d939",
+  "name": "Valor's Flagship",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Valor's Flagship",
+      "oracle_fingerprint": "fe0e49ec223c1fbe9f2b700834a49207",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": "FirstStrike" },
+        { "Keyword": "Lifelink" },
+        { "Keyword": { "Crew": 3 } },
+        { "Keyword": { "Cycling": "{X}{2}{W}" } },
+        {
+          "Triggered": {
+            "when": { "Cycled": { "what": ["This"] } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Pilot",
+                      "types": ["Creature"],
+                      "subtypes": ["Pilot"],
+                      "power": 1,
+                      "toughness": 1,
+                      "abilities": [
+                        {
+                          "Rule": {
+                            "rule": {
+                              "Combat": { "who": "This", "quirk": { "TapPower": { "Plus": 2 } } }
+                            }
+                          }
+                        }
+                      ]
+                    }
+                  },
+                  "count": "X"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

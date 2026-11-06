@@ -13,45 +13,19 @@
             "effects": [
               { "Destroy": { "what": { "Each": [{ "Subtype": "Reflection" }] } } },
               {
-                "Let": {
-                  "as": "power",
-                  "amount": { "Stat": { "of": "Triggering", "stat": "ManaValue" } }
-                }
-              },
-              {
-                "Let": {
-                  "as": "toughness2",
-                  "amount": { "Stat": { "of": "Triggering", "stat": "ManaValue" } }
-                }
-              },
-              {
                 "CreateToken": {
                   "who": "Triggering",
                   "token": {
-                    "Custom": {
-                      "name": "Reflection",
-                      "colors": ["White"],
-                      "types": ["Creature"],
-                      "subtypes": ["Reflection"],
-                      "power": 0,
-                      "toughness": 0
-                    }
-                  },
-                  "as": "token3"
-                }
-              },
-              {
-                "Continuous": {
-                  "affected": { "Bound": "token3" },
-                  "mods": [
-                    {
-                      "SetPT": {
-                        "power": { "Bound": "power" },
-                        "toughness": { "Bound": "toughness2" }
+                    "Sized": {
+                      "size": { "Stat": { "of": "Triggering", "stat": "ManaValue" } },
+                      "token": {
+                        "name": "Reflection",
+                        "colors": ["White"],
+                        "types": ["Creature"],
+                        "subtypes": ["Reflection"]
                       }
                     }
-                  ],
-                  "duration": "Forever"
+                  }
                 }
               }
             ]

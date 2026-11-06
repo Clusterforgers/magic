@@ -1,0 +1,49 @@
+{
+  "oracle_id": "d06d7065-27e5-4119-a226-6f6d990d72c7",
+  "name": "Goliath, Mass Manipulator",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Goliath, Mass Manipulator",
+      "oracle_fingerprint": "230e8c218a7d5e7325a5bf27b2e7115c",
+      "abilities": [
+        { "Keyword": "Reach" },
+        {
+          "Activated": {
+            "cost": [
+              { "Mana": "{4}{G}" },
+              {
+                "Changed": {
+                  "change": "Reduce",
+                  "mana": "{1}{G}",
+                  "condition": {
+                    "Compare": {
+                      "left": { "Count": ["This", "EnteredThisTurn"] },
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  }
+                }
+              }
+            ],
+            "limit": "OncePerGame",
+            "effects": [
+              { "PutCounters": { "on": "This", "counter": "+1/+1", "count": 2 } },
+              {
+                "Draw": {
+                  "count": {
+                    "Count": [
+                      { "Type": "Creature" },
+                      { "Compare": { "stat": "Power", "op": "Ge", "to": 4 } },
+                      { "ControlledBy": "You" }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

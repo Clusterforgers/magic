@@ -1,0 +1,35 @@
+{
+  "oracle_id": "fd66aa66-75a2-41b6-8d57-dc4b9c221ccb",
+  "name": "Spear of Heliod",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Spear of Heliod",
+      "oracle_fingerprint": "fa9a7f1d1aac56d8368f158d55830237",
+      "abilities": [
+        {
+          "Static": {
+            "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{1}{W}{W}" }, "Tap"],
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Type": "Creature" },
+                    { "DidThisTurn": { "event": "Damaged", "to": "You" } }
+                  ]
+                }
+              }
+            ],
+            "effects": [{ "Destroy": { "what": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -16,41 +16,20 @@
         {
           "Spell": {
             "effects": [
-              { "Let": { "as": "power", "amount": { "Stat": { "of": "Paid", "stat": "Power" } } } },
-              {
-                "Let": {
-                  "as": "toughness2",
-                  "amount": { "Stat": { "of": "Paid", "stat": "Power" } }
-                }
-              },
               {
                 "CreateToken": {
                   "token": {
-                    "Custom": {
-                      "name": "Zombie",
-                      "colors": ["Blue", "Black"],
-                      "types": ["Creature"],
-                      "subtypes": ["Zombie"],
-                      "power": 0,
-                      "toughness": 0,
-                      "abilities": [{ "Keyword": "Menace" }]
-                    }
-                  },
-                  "as": "token3"
-                }
-              },
-              {
-                "Continuous": {
-                  "affected": { "Bound": "token3" },
-                  "mods": [
-                    {
-                      "SetPT": {
-                        "power": { "Bound": "power" },
-                        "toughness": { "Bound": "toughness2" }
+                    "Sized": {
+                      "size": { "Stat": { "of": "Paid", "stat": "Power" } },
+                      "token": {
+                        "name": "Zombie",
+                        "colors": ["Blue", "Black"],
+                        "types": ["Creature"],
+                        "subtypes": ["Zombie"],
+                        "abilities": [{ "Keyword": "Menace" }]
                       }
                     }
-                  ],
-                  "duration": "Forever"
+                  }
                 }
               }
             ]

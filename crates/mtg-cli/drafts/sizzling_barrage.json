@@ -1,0 +1,25 @@
+{
+  "oracle_id": "26a55f91-91a1-4a1e-86fe-6551fd64ea87",
+  "name": "Sizzling Barrage",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sizzling Barrage",
+      "oracle_fingerprint": "a3bbfce36ba970f3e8baa13495a24321",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "Type": "Creature" }, { "DidThisTurn": { "event": "Blocked" } }]
+                }
+              }
+            ],
+            "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 4 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

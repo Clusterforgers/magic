@@ -1,0 +1,62 @@
+{
+  "oracle_id": "016718df-2eb5-499f-adea-18231c0375b3",
+  "name": "Hurl into History",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Hurl into History",
+      "oracle_fingerprint": "4b46e02faf3ec35ca257a1b4aa15aa69",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": ["Spell", { "AnyOf": [{ "Type": "Artifact" }, { "Type": "Creature" }] }]
+                }
+              }
+            ],
+            "effects": [
+              { "Counter": { "what": { "Target": 0 } } },
+              {
+                "RememberValue": {
+                  "value": { "Stat": { "of": { "Target": 0 }, "stat": "ManaValue" } },
+                  "slot": "remembered_number"
+                }
+              },
+              {
+                "ExileUntil": {
+                  "filter": [
+                    { "Not": { "Type": "Land" } },
+                    {
+                      "Compare": {
+                        "stat": "ManaValue",
+                        "op": "Le",
+                        "to": { "Remembered": { "on": "This", "slot": "remembered_number" } }
+                      }
+                    }
+                  ],
+                  "as": "found",
+                  "exiled_as": "exiled"
+                }
+              },
+              {
+                "CastFromZone": {
+                  "what": { "Bound": "found" },
+                  "free": true,
+                  "otherwise": [{ "Move": { "what": { "Bound": "found" }, "to": "Hand" } }]
+                }
+              },
+              {
+                "Move": {
+                  "what": { "Bound": "exiled" },
+                  "to": { "Library": { "place": "Bottom", "order": "Random" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

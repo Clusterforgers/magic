@@ -45,81 +45,38 @@
                   },
                   "then": [
                     {
-                      "Let": {
-                        "as": "power",
-                        "amount": {
-                          "Total": {
-                            "of": [
-                              { "Is": { "Remembered": { "on": "This", "slot": "remembered" } } },
-                              {
-                                "AnyOf": [
-                                  { "In": "Battlefield" },
-                                  { "In": "Hand" },
-                                  { "In": "Library" },
-                                  { "In": "Graveyard" },
-                                  { "In": "Exile" },
-                                  { "In": "Stack" }
-                                ]
-                              }
-                            ],
-                            "stat": "ManaValue"
-                          }
-                        }
-                      }
-                    },
-                    {
-                      "Let": {
-                        "as": "toughness2",
-                        "amount": {
-                          "Total": {
-                            "of": [
-                              { "Is": { "Remembered": { "on": "This", "slot": "remembered" } } },
-                              {
-                                "AnyOf": [
-                                  { "In": "Battlefield" },
-                                  { "In": "Hand" },
-                                  { "In": "Library" },
-                                  { "In": "Graveyard" },
-                                  { "In": "Exile" },
-                                  { "In": "Stack" }
-                                ]
-                              }
-                            ],
-                            "stat": "ManaValue"
-                          }
-                        }
-                      }
-                    },
-                    {
                       "CreateToken": {
                         "who": {
                           "OwnerOf": { "Remembered": { "on": "This", "slot": "remembered" } }
                         },
                         "token": {
-                          "Custom": {
-                            "name": "Illusion",
-                            "colors": ["Blue"],
-                            "types": ["Creature"],
-                            "subtypes": ["Illusion"],
-                            "power": 0,
-                            "toughness": 0
-                          }
-                        },
-                        "as": "token3"
-                      }
-                    },
-                    {
-                      "Continuous": {
-                        "affected": { "Bound": "token3" },
-                        "mods": [
-                          {
-                            "SetPT": {
-                              "power": { "Bound": "power" },
-                              "toughness": { "Bound": "toughness2" }
+                          "Sized": {
+                            "size": {
+                              "Total": {
+                                "of": [
+                                  { "Is": { "Remembered": { "on": "This", "slot": "remembered" } } },
+                                  {
+                                    "AnyOf": [
+                                      { "In": "Battlefield" },
+                                      { "In": "Hand" },
+                                      { "In": "Library" },
+                                      { "In": "Graveyard" },
+                                      { "In": "Exile" },
+                                      { "In": "Stack" }
+                                    ]
+                                  }
+                                ],
+                                "stat": "ManaValue"
+                              }
+                            },
+                            "token": {
+                              "name": "Illusion",
+                              "colors": ["Blue"],
+                              "types": ["Creature"],
+                              "subtypes": ["Illusion"]
                             }
                           }
-                        ],
-                        "duration": "Forever"
+                        }
                       }
                     }
                   ]

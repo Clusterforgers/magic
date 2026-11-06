@@ -1,0 +1,34 @@
+{
+  "oracle_id": "ae198ce9-097b-4204-b599-12bdb36f5195",
+  "name": "Summary Judgment",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Summary Judgment",
+      "oracle_fingerprint": "4196122db96db09a2d44cab487eaa348",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }, "Tapped"] } }],
+            "effects": [
+              {
+                "DealDamage": {
+                  "to": { "Target": 0 },
+                  "amount": {
+                    "When": {
+                      "condition": {
+                        "All": ["YourTurn", { "Any": [{ "Step": "Main1" }, { "Step": "Main2" }] }]
+                      },
+                      "then": 5,
+                      "otherwise": 3
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

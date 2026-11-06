@@ -1,0 +1,26 @@
+{
+  "oracle_id": "ead1accc-b90e-424a-a55f-2f4771726ce1",
+  "name": "Shipwreck Looter",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Shipwreck Looter",
+      "oracle_fingerprint": "ccdd7268722a88f39703e15cee1f771a",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "if": {
+              "Compare": {
+                "left": { "Tallied": { "who": "You", "what": "Attackers" } },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "effects": [{ "Pay": { "cost": [{ "Draw": 1 }], "paid": [{ "Discard": {} }] } }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,52 @@
+{
+  "oracle_id": "c396db03-bf11-4e20-b630-4f9aa8fd78da",
+  "name": "The Mightstone and Weakstone",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "The Mightstone and Weakstone",
+      "oracle_fingerprint": "7f0c009a7216fa3dce253f87d08d3eb3",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Modal": {
+                  "modes": [
+                    { "effects": [{ "Draw": { "count": 2 } }] },
+                    {
+                      "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+                      "effects": [
+                        {
+                          "Continuous": {
+                            "affected": { "Target": 0 },
+                            "mods": [{ "ModifyPT": { "power": -5, "toughness": -5 } }],
+                            "duration": "UntilEndOfTurn"
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [
+              {
+                "AddMana": {
+                  "mana": { "Fixed": ["Colorless", "Colorless"] },
+                  "only": [{ "Spell": { "types": ["Artifact"] } }, { "Ability": {} }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

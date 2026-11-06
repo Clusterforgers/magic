@@ -1,0 +1,21 @@
+{
+  "oracle_id": "7c25470c-7be0-495c-b756-6a4fc230d660",
+  "name": "Wandermare",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Wandermare",
+      "oracle_fingerprint": "fc9370a2c006c4869a7ae8f729b58a7d",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "SpellCast": { "what": [{ "Type": "Creature" }, "HasAdventure"], "by": "You" }
+            },
+            "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

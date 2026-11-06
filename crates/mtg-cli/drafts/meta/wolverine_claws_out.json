@@ -1,42 +1,4 @@
 {
   "source": "forge",
-  "oracle_matches": true,
-  "lines": [
-    {
-      "face": 0,
-      "tag": "T",
-      "text": "Whenever a Mutant you control attacks, double its power until end of turn.",
-      "abilities": [],
-      "gap": "amount:Double-of-several"
-    },
-    {
-      "face": 0,
-      "tag": "S",
-      "text": "You may have NICKNAME assign his combat damage as though he weren't blocked.",
-      "abilities": [
-        0
-      ],
-      "gap": null
-    }
-  ],
-  "proof": {
-    "marks": [
-      {
-        "face": 0,
-        "span": {
-          "start": 0,
-          "end": 77
-        },
-        "mark": "Auto"
-      },
-      {
-        "face": 0,
-        "span": {
-          "start": 78,
-          "end": 152
-        },
-        "mark": "ByHand"
-      }
-    ]
-  }
+  "oracle_matches": true
 }

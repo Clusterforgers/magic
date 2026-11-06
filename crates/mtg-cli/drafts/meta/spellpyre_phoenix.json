@@ -1,0 +1,59 @@
+{
+  "source": "forge",
+  "oracle_matches": true,
+  "lines": [
+    {
+      "face": 0,
+      "tag": "K",
+      "text": "Flying",
+      "abilities": [
+        0
+      ],
+      "gap": null
+    },
+    {
+      "face": 0,
+      "tag": "T",
+      "text": "When CARDNAME enters, you may return target instant or sorcery card with a cycling ability from your graveyard to your hand.",
+      "abilities": [
+        1
+      ],
+      "gap": null
+    },
+    {
+      "face": 0,
+      "tag": "T",
+      "text": "At the beginning of each end step, if you cycled two or more cards this turn, return CARDNAME from your graveyard to your hand.",
+      "abilities": [],
+      "gap": "amount:Count$ThisTurnActivated_Activated"
+    }
+  ],
+  "proof": {
+    "marks": [
+      {
+        "face": 0,
+        "span": {
+          "start": 0,
+          "end": 6
+        },
+        "mark": "Auto"
+      },
+      {
+        "face": 0,
+        "span": {
+          "start": 7,
+          "end": 136
+        },
+        "mark": "Auto"
+      },
+      {
+        "face": 0,
+        "span": {
+          "start": 137,
+          "end": 265
+        },
+        "mark": "ByHand"
+      }
+    ]
+  }
+}

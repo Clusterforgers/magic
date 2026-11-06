@@ -1,7 +1,7 @@
 {
   "oracle_id": "2ff470ee-4532-4ded-a684-a2c0d1253fb3",
   "name": "Sash and Waistcoat, Unmen",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Sash and Waistcoat, Unmen",
@@ -24,9 +24,11 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 94, "end": 344 }
+          "Activated": {
+            "cost": "{3}",
+            "timing": "Sorcery",
+            "by": "Anyone",
+            "effects": [{ "Manifest": {} }]
           }
         }
       ]

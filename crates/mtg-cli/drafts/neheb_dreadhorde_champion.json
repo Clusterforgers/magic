@@ -1,0 +1,85 @@
+{
+  "oracle_id": "ed8e9a2e-5fb8-4f39-b954-dbcbc96d909f",
+  "name": "Neheb, Dreadhorde Champion",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Neheb, Dreadhorde Champion",
+      "oracle_fingerprint": "22706712509f9b3eb625a2ca4d93969f",
+      "abilities": [
+        { "Keyword": "Trample" },
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                { "DealsDamage": { "source": ["This"], "to": "EachPlayer", "combat": true } },
+                {
+                  "DealsDamage": {
+                    "source": ["This"],
+                    "to": { "Each": [{ "Type": "Planeswalker" }] },
+                    "combat": true
+                  }
+                }
+              ]
+            },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "Discard": {
+                        "count": { "Count": [{ "In": "Hand" }, { "OwnedBy": "You" }] },
+                        "optional": true,
+                        "as": "discarded"
+                      }
+                    },
+                    {
+                      "Draw": {
+                        "count": {
+                          "Count": [
+                            { "Is": { "Bound": "discarded" } },
+                            {
+                              "AnyOf": [
+                                { "In": "Battlefield" },
+                                { "In": "Hand" },
+                                { "In": "Library" },
+                                { "In": "Graveyard" },
+                                { "In": "Exile" },
+                                { "In": "Stack" }
+                              ]
+                            }
+                          ]
+                        }
+                      }
+                    },
+                    {
+                      "AddMana": {
+                        "mana": { "Fixed": ["Red"] },
+                        "times": {
+                          "Count": [
+                            { "Is": { "Bound": "discarded" } },
+                            {
+                              "AnyOf": [
+                                { "In": "Battlefield" },
+                                { "In": "Hand" },
+                                { "In": "Library" },
+                                { "In": "Graveyard" },
+                                { "In": "Exile" },
+                                { "In": "Stack" }
+                              ]
+                            }
+                          ]
+                        },
+                        "lasts": "Turn"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,46 @@
+{
+  "oracle_id": "8ea607cd-c14b-4bb1-aba1-c5cdc397a825",
+  "name": "Crater Elemental",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Crater Elemental",
+      "oracle_fingerprint": "e71a25884e15f6d1d160abff663b209c",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{R}" }, "Tap", "SacrificeSelf"],
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 4 } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{2}{R}",
+            "condition": {
+              "Compare": {
+                "left": {
+                  "Total": {
+                    "of": [{ "Type": "Creature" }, { "ControlledBy": "You" }],
+                    "stat": "Power"
+                  }
+                },
+                "op": "Ge",
+                "right": 8
+              }
+            },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "SetPower": 8 }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

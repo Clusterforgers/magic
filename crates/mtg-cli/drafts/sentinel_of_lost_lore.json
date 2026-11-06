@@ -1,0 +1,70 @@
+{
+  "oracle_id": "683775ac-481e-4c26-ab2f-5d2813af0268",
+  "name": "Sentinel of Lost Lore",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sentinel of Lost Lore",
+      "oracle_fingerprint": "9f27df4d9250e7d4edd46849cdaa4d83",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Modal": {
+                  "choose": { "min": 1, "max": 3 },
+                  "modes": [
+                    {
+                      "targets": [
+                        {
+                          "what": {
+                            "Object": ["HasAdventure", { "OwnedBy": "You" }, { "In": "Exile" }]
+                          }
+                        }
+                      ],
+                      "effects": [{ "Move": { "what": { "Target": 0 }, "to": "Hand" } }]
+                    },
+                    {
+                      "targets": [
+                        {
+                          "what": {
+                            "Object": [
+                              "HasAdventure",
+                              { "Not": { "OwnedBy": "You" } },
+                              { "In": "Exile" }
+                            ]
+                          }
+                        }
+                      ],
+                      "effects": [
+                        {
+                          "Move": {
+                            "what": { "Target": 0 },
+                            "to": { "Library": { "place": "Bottom" } }
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "targets": [{ "what": "Player" }],
+                      "effects": [
+                        {
+                          "Exile": {
+                            "what": {
+                              "Each": [{ "In": "Graveyard" }, { "OwnedBy": { "Target": 0 } }]
+                            }
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

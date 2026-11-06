@@ -1,0 +1,36 @@
+{
+  "oracle_id": "1eaa37a3-8769-4213-bcd5-39bcf4771273",
+  "name": "Casey Jones, Asphalt Hooligan",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Casey Jones, Asphalt Hooligan",
+      "oracle_fingerprint": "7aeeab89ee00c29d945949ea8c97c36b",
+      "abilities": [
+        { "Keyword": "DoubleStrike" },
+        {
+          "Activated": {
+            "cost": "{4}",
+            "by": "Anyone",
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [
+                    {
+                      "ModifyPT": {
+                        "power": { "Stat": { "of": "This", "stat": "Power" } },
+                        "toughness": 0
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

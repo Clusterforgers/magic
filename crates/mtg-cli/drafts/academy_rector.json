@@ -1,0 +1,42 @@
+{
+  "oracle_id": "e3c85068-b4b6-40b9-a16c-5c3b2d059ec4",
+  "name": "Academy Rector",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Academy Rector",
+      "oracle_fingerprint": "6378268a785d0d2dd2af3f01a2534d25",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": [
+                    {
+                      "ExileFromGraveyard": {
+                        "filter": [{ "Is": { "Arrived": { "of": "This", "zone": "Graveyard" } } }],
+                        "any_player": true
+                      }
+                    }
+                  ],
+                  "paid": [
+                    {
+                      "Search": {
+                        "filter": [{ "Type": "Enchantment" }, { "OwnedBy": "You" }],
+                        "as": "found"
+                      }
+                    },
+                    { "Move": { "what": { "Bound": "found" }, "to": { "Battlefield": {} } } },
+                    { "Shuffle": {} }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

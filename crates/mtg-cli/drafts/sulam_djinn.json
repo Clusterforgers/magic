@@ -1,0 +1,55 @@
+{
+  "oracle_id": "01e311d2-8fe6-4e64-9575-3ef266985f0b",
+  "name": "Sulam Djinn",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sulam Djinn",
+      "oracle_fingerprint": "a77042390cce40fc6e4f2247cecf0d51",
+      "abilities": [
+        { "Keyword": "Trample" },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "ModifyPT": { "power": -2, "toughness": -2 } }],
+            "condition": {
+              "Matches": {
+                "subject": "This",
+                "selector": [
+                  {
+                    "Test": {
+                      "left": { "Count": [{ "Color": "Green" }] },
+                      "op": "Ge",
+                      "right": { "Count": [{ "Color": "White" }] }
+                    }
+                  },
+                  {
+                    "Test": {
+                      "left": { "Count": [{ "Color": "Green" }] },
+                      "op": "Ge",
+                      "right": { "Count": [{ "Color": "Blue" }] }
+                    }
+                  },
+                  {
+                    "Test": {
+                      "left": { "Count": [{ "Color": "Green" }] },
+                      "op": "Ge",
+                      "right": { "Count": [{ "Color": "Black" }] }
+                    }
+                  },
+                  {
+                    "Test": {
+                      "left": { "Count": [{ "Color": "Green" }] },
+                      "op": "Ge",
+                      "right": { "Count": [{ "Color": "Red" }] }
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

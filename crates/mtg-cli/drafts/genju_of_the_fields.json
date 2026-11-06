@@ -1,7 +1,7 @@
 {
   "oracle_id": "5cd35d18-115b-4d7c-8d05-3d4c8303f46e",
   "name": "Genju of the Fields",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Genju of the Fields",
@@ -9,9 +9,30 @@
       "abilities": [
         { "Keyword": { "Enchant": [{ "Subtype": "Plains" }] } },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 15, "end": 191 }
+          "Activated": {
+            "cost": "{2}",
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "Attached",
+                  "mods": [
+                    { "SetPT": { "power": 2, "toughness": 5 } },
+                    { "AddColors": ["White"] },
+                    { "AddSubtype": "Spirit" },
+                    { "AddType": "Creature" },
+                    {
+                      "GrantAbility": {
+                        "Triggered": {
+                          "when": { "Batch": { "DealsDamage": { "source": ["This"] } } },
+                          "effects": [{ "GainLife": { "amount": "Triggering" } }]
+                        }
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
           }
         },
         {

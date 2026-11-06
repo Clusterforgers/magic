@@ -1,0 +1,69 @@
+{
+  "oracle_id": "561af57d-d43d-4d98-9ef6-18a0843f22ae",
+  "name": "Defend the Rider",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Defend the Rider",
+      "oracle_fingerprint": "a750c08b7e7120538842c5869310f5d6",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Modal": {
+                  "modes": [
+                    {
+                      "targets": [{ "what": { "Object": [{ "ControlledBy": "You" }] } }],
+                      "effects": [
+                        {
+                          "Continuous": {
+                            "affected": { "Target": 0 },
+                            "mods": [
+                              { "AddKeyword": "Hexproof" },
+                              { "AddKeyword": "Indestructible" }
+                            ],
+                            "duration": "UntilEndOfTurn"
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "effects": [
+                        {
+                          "CreateToken": {
+                            "token": {
+                              "Custom": {
+                                "name": "Pilot",
+                                "types": ["Creature"],
+                                "subtypes": ["Pilot"],
+                                "power": 1,
+                                "toughness": 1,
+                                "abilities": [
+                                  {
+                                    "Rule": {
+                                      "rule": {
+                                        "Combat": {
+                                          "who": "This",
+                                          "quirk": { "TapPower": { "Plus": 2 } }
+                                        }
+                                      }
+                                    }
+                                  }
+                                ]
+                              }
+                            }
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

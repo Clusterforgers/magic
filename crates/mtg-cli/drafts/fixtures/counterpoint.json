@@ -1,0 +1,133 @@
+{
+  "object": "card",
+  "id": "b74caf65-1e6c-444e-9121-906ba7e8ea20",
+  "oracle_id": "dad4af15-5b26-417d-a41b-29e671e878f4",
+  "multiverse_ids": [
+    649979
+  ],
+  "mtgo_id": 122836,
+  "tcgplayer_id": 535714,
+  "cardmarket_id": 753276,
+  "name": "Counterpoint",
+  "lang": "en",
+  "released_at": "2024-02-09",
+  "uri": "https://api.scryfall.com/cards/b74caf65-1e6c-444e-9121-906ba7e8ea20",
+  "scryfall_uri": "https://scryfall.com/card/mkc/41/counterpoint?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T03:24:01Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/b/7/b74caf65-1e6c-444e-9121-906ba7e8ea20.jpg?1783913041",
+    "normal": "https://cards.scryfall.io/normal/front/b/7/b74caf65-1e6c-444e-9121-906ba7e8ea20.jpg?1783913041",
+    "large": "https://cards.scryfall.io/large/front/b/7/b74caf65-1e6c-444e-9121-906ba7e8ea20.jpg?1783913041",
+    "png": "https://cards.scryfall.io/png/front/b/7/b74caf65-1e6c-444e-9121-906ba7e8ea20.png?1783913041",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/b/7/b74caf65-1e6c-444e-9121-906ba7e8ea20.jpg?1783913041",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/b/7/b74caf65-1e6c-444e-9121-906ba7e8ea20.jpg?1783913041",
+    "thumb": "https://cards.scryfall.io/thumb/front/b/7/b74caf65-1e6c-444e-9121-906ba7e8ea20.webp?1783913041",
+    "grid": "https://cards.scryfall.io/grid/front/b/7/b74caf65-1e6c-444e-9121-906ba7e8ea20.webp?1783913041",
+    "display": "https://cards.scryfall.io/display/front/b/7/b74caf65-1e6c-444e-9121-906ba7e8ea20.webp?1783913041",
+    "art": "https://cards.scryfall.io/art/front/b/7/b74caf65-1e6c-444e-9121-906ba7e8ea20.webp?1783913041",
+    "crop": "https://cards.scryfall.io/crop/front/b/7/b74caf65-1e6c-444e-9121-906ba7e8ea20.webp?1783913041",
+    "jpeg": "https://cards.scryfall.io/normal/front/b/7/b74caf65-1e6c-444e-9121-906ba7e8ea20.jpg?1783913041"
+  },
+  "mana_cost": "{3}{U}{B}",
+  "cmc": 5.0,
+  "type_line": "Instant",
+  "oracle_text": "Counter target spell. You may cast a creature, instant, sorcery, or planeswalker spell from your graveyard with mana value less than or equal to that spell's mana value without paying its mana cost.",
+  "colors": [
+    "B",
+    "U"
+  ],
+  "color_identity": [
+    "B",
+    "U"
+  ],
+  "keywords": [],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "286c37ca-ba65-4d3e-8c5d-d1878d88fd95",
+  "set": "mkc",
+  "set_name": "Murders at Karlov Manor Commander",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/286c37ca-ba65-4d3e-8c5d-d1878d88fd95",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Amkc&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/mkc?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/b74caf65-1e6c-444e-9121-906ba7e8ea20/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Adad4af15-5b26-417d-a41b-29e671e878f4&unique=prints",
+  "collector_number": "41",
+  "digital": false,
+  "rarity": "rare",
+  "flavor_text": "\"Nice theory, but I'm going to have to poke some holes in it.\"",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Brian Valeza",
+  "artist_ids": [
+    "bb2a9339-bbe4-445f-9736-3c43379ee076"
+  ],
+  "illustration_id": "621754ea-f004-47ca-bdee-eaf422930286",
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "edhrec_rank": 9761,
+  "prices": {
+    "usd": "0.37",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "0.38",
+    "eur_foil": null,
+    "tix": "1.05"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=649979&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DCounterpoint",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DCounterpoint",
+    "edhrec": "https://edhrec.com/route/?cc=Counterpoint"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F535714%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=753276&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/122836?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

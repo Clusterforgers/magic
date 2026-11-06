@@ -11,35 +11,19 @@
           "Triggered": {
             "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
             "effects": [
-              { "Let": { "as": "power", "amount": "X" } },
-              { "Let": { "as": "toughness2", "amount": "X" } },
               {
                 "CreateToken": {
                   "token": {
-                    "Custom": {
-                      "name": "Treefolk",
-                      "colors": ["Green"],
-                      "types": ["Creature"],
-                      "subtypes": ["Treefolk"],
-                      "power": 0,
-                      "toughness": 0
-                    }
-                  },
-                  "as": "token3"
-                }
-              },
-              {
-                "Continuous": {
-                  "affected": { "Bound": "token3" },
-                  "mods": [
-                    {
-                      "SetPT": {
-                        "power": { "Bound": "power" },
-                        "toughness": { "Bound": "toughness2" }
+                    "Sized": {
+                      "size": "X",
+                      "token": {
+                        "name": "Treefolk",
+                        "colors": ["Green"],
+                        "types": ["Creature"],
+                        "subtypes": ["Treefolk"]
                       }
                     }
-                  ],
-                  "duration": "Forever"
+                  }
                 }
               }
             ]

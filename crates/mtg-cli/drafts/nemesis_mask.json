@@ -1,0 +1,19 @@
+{
+  "oracle_id": "34062d79-457f-4af3-b9c6-cab2e4d17581",
+  "name": "Nemesis Mask",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Nemesis Mask",
+      "oracle_fingerprint": "9745df474e025ca1c0461161d20a16cd",
+      "abilities": [
+        {
+          "Rule": {
+            "rule": { "Combat": { "who": "Attached", "quirk": { "MustBeBlocked": "Every" } } }
+          }
+        },
+        { "Keyword": { "Equip": "{3}" } }
+      ]
+    }
+  ]
+}

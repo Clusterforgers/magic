@@ -1,0 +1,23 @@
+{
+  "oracle_id": "6d03297b-fa54-438e-99c8-37f92163aeff",
+  "name": "Crevasse",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Crevasse",
+      "oracle_fingerprint": "4cc2859b7206139cfb3def3f592676b3",
+      "abilities": [
+        {
+          "Rule": {
+            "rule": {
+              "Combat": {
+                "who": { "Each": [{ "HasKeyword": { "Landwalk": [{ "Subtype": "Mountain" }] } }] },
+                "quirk": { "IgnoreLandwalk": [{ "Subtype": "Mountain" }] }
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

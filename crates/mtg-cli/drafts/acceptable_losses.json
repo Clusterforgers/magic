@@ -1,0 +1,20 @@
+{
+  "oracle_id": "2b6d95b5-0680-43ae-9ff3-8e287a9eb837",
+  "name": "Acceptable Losses",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Acceptable Losses",
+      "oracle_fingerprint": "314b13b616760fcf6b1a75abcaf5ec6a",
+      "abilities": [
+        { "AdditionalCost": { "cost": [{ "DiscardRandom": 1 }], "required": true } },
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 5 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

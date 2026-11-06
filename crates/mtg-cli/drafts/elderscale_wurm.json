@@ -1,0 +1,22 @@
+{
+  "oracle_id": "1e81454a-ce30-4e41-9d09-3256ae30efc2",
+  "name": "Elderscale Wurm",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Elderscale Wurm",
+      "oracle_fingerprint": "e2a1e8b2339616d53ba69a511a28fc83",
+      "abilities": [
+        { "Keyword": "Trample" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "if": { "Compare": { "left": { "Life": "You" }, "op": "Lt", "right": 7 } },
+            "effects": [{ "SetLife": { "amount": 7 } }]
+          }
+        },
+        { "Rule": { "rule": { "LifeFloor": { "who": "You", "floor": 7 } } } }
+      ]
+    }
+  ]
+}

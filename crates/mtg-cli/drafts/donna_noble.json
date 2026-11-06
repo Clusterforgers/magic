@@ -1,0 +1,45 @@
+{
+  "oracle_id": "0d6e76aa-2966-48b7-be4e-2d3e2cc94fc1",
+  "name": "Donna Noble",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Donna Noble",
+      "oracle_fingerprint": "cad3b3fc133f00f30729133c32c274ce",
+      "abilities": [
+        { "Keyword": "Soulbond" },
+        {
+          "Triggered": {
+            "when": {
+              "Batch": {
+                "DealsDamage": {
+                  "source": [],
+                  "to": {
+                    "Each": [
+                      {
+                        "AnyOf": [
+                          "This",
+                          {
+                            "Not": {
+                              "AnyOf": [
+                                { "Not": { "Type": "Creature" } },
+                                { "Not": { "PairedWith": "This" } }
+                              ]
+                            }
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                }
+              }
+            },
+            "targets": [{ "what": "Opponent" }],
+            "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": "Triggering" } }]
+          }
+        },
+        { "Keyword": "DoctorsCompanion" }
+      ]
+    }
+  ]
+}

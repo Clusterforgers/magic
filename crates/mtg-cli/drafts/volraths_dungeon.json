@@ -1,0 +1,39 @@
+{
+  "oracle_id": "a8b968ea-76f3-4ee7-9d53-d251d8a9faf6",
+  "name": "Volrath's Dungeon",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Volrath's Dungeon",
+      "oracle_fingerprint": "63549d002e21b6a015dc718002c59023",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "PayLife": 5 }],
+            "condition": "YourTurn",
+            "by": "Anyone",
+            "effects": [{ "Destroy": { "what": "This" } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Discard": {} }],
+            "timing": "Sorcery",
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              {
+                "Choose": {
+                  "who": { "Target": 0 },
+                  "from": { "Each": [{ "In": "Hand" }, { "OwnedBy": { "Target": 0 } }] },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "picked"
+                }
+              },
+              { "Move": { "what": { "Bound": "picked" }, "to": { "Library": { "place": "Top" } } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

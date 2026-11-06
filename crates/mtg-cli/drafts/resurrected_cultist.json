@@ -1,0 +1,35 @@
+{
+  "oracle_id": "8b6d37a7-a88e-45dd-b45e-642a44caaf05",
+  "name": "Resurrected Cultist",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Resurrected Cultist",
+      "oracle_fingerprint": "cd21f24f8562ce22442490356b40d733",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{2}{B}{B}",
+            "timing": "Sorcery",
+            "condition": {
+              "Compare": {
+                "left": { "CardTypes": [{ "In": "Graveyard" }, { "OwnedBy": "You" }] },
+                "op": "Ge",
+                "right": 4
+              }
+            },
+            "from": "Graveyard",
+            "effects": [
+              {
+                "Move": {
+                  "what": "This",
+                  "to": { "Battlefield": { "counters": [[{ "Other": "finality" }, 1]] } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

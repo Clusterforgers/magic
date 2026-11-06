@@ -1,0 +1,25 @@
+{
+  "oracle_id": "31284a0b-9bd5-4186-bd27-6b16a3597e27",
+  "name": "Deathless Pilot",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Deathless Pilot",
+      "oracle_fingerprint": "5a27ea8c7a2bfa3a80a7c6642964cda1",
+      "abilities": [
+        {
+          "Rule": {
+            "rule": { "Combat": { "who": "This", "quirk": { "TapPower": { "Plus": 2 } } } }
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{3}{B}",
+            "from": "Graveyard",
+            "effects": [{ "Move": { "what": "This", "to": "Hand" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

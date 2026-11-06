@@ -1,0 +1,28 @@
+{
+  "oracle_id": "b5b46c99-1cc1-465a-a831-3fd6665ef560",
+  "name": "Canyon Drake",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Canyon Drake",
+      "oracle_fingerprint": "3dd8fa6fa3af91cced171611a64cf0a2",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{1}" }, { "DiscardRandom": 1 }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "ModifyPT": { "power": 2, "toughness": 0 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

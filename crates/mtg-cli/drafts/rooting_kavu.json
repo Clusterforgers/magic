@@ -1,0 +1,46 @@
+{
+  "oracle_id": "e7438616-cc42-4a6d-a7e3-5856cb0782fa",
+  "name": "Rooting Kavu",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Rooting Kavu",
+      "oracle_fingerprint": "e3ca5e2578ca3518f575041ca39d98a8",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": [
+                    {
+                      "ExileFromGraveyard": {
+                        "filter": [{ "Is": { "Arrived": { "of": "This", "zone": "Graveyard" } } }],
+                        "any_player": true
+                      }
+                    }
+                  ],
+                  "paid": [
+                    {
+                      "Move": {
+                        "what": {
+                          "Each": [
+                            { "Type": "Creature" },
+                            { "OwnedBy": "You" },
+                            { "In": "Graveyard" }
+                          ]
+                        },
+                        "to": { "Library": { "place": "Shuffled" } }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

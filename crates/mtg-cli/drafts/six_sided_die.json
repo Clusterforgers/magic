@@ -1,0 +1,70 @@
+{
+  "oracle_id": "82185e99-903d-4b18-8ff9-fb4f95ff17fc",
+  "name": "Six-Sided Die",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Six-Sided Die",
+      "oracle_fingerprint": "e4dca2ea565fc47222f0a624cbe47b2e",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "RollDice": {
+                  "sides": 6,
+                  "results": [
+                    {
+                      "from": 1,
+                      "to": 1,
+                      "effects": [
+                        {
+                          "Continuous": {
+                            "affected": { "Target": 0 },
+                            "mods": [{ "SetToughness": 1 }],
+                            "duration": "UntilEndOfTurn"
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "from": 2,
+                      "to": 2,
+                      "effects": [
+                        { "PutCounters": { "on": { "Target": 0 }, "counter": "-1/-1", "count": 2 } }
+                      ]
+                    },
+                    {
+                      "from": 3,
+                      "to": 3,
+                      "effects": [
+                        { "DealDamage": { "to": { "Target": 0 }, "amount": 3 } },
+                        { "GainLife": { "amount": 3 } }
+                      ]
+                    },
+                    {
+                      "from": 4,
+                      "to": 4,
+                      "effects": [
+                        {
+                          "Continuous": {
+                            "affected": { "Target": 0 },
+                            "mods": [{ "ModifyPT": { "power": -4, "toughness": -4 } }],
+                            "duration": "UntilEndOfTurn"
+                          }
+                        }
+                      ]
+                    },
+                    { "from": 5, "to": 5, "effects": [{ "Destroy": { "what": { "Target": 0 } } }] },
+                    { "from": 6, "to": 6, "effects": [{ "Exile": { "what": { "Target": 0 } } }] }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

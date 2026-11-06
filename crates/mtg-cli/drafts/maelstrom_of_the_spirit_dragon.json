@@ -1,0 +1,45 @@
+{
+  "oracle_id": "49e9fba7-8465-4bbb-95db-73a7e149f494",
+  "name": "Maelstrom of the Spirit Dragon",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Maelstrom of the Spirit Dragon",
+      "oracle_fingerprint": "13bbc37163601f296021d6d851aa97b0",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Colorless"] } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [
+              {
+                "AddMana": {
+                  "mana": { "AnyColor": 1 },
+                  "only": [
+                    { "Spell": { "subtypes": ["Dragon"] } },
+                    { "Spell": { "subtypes": ["Omen"] } }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{4}" }, "Tap", "SacrificeSelf"],
+            "effects": [
+              { "Search": { "filter": [{ "Subtype": "Dragon" }], "reveal": true, "as": "found" } },
+              { "Move": { "what": { "Bound": "found" }, "to": "Hand" } },
+              { "Shuffle": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

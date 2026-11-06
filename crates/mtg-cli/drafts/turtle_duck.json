@@ -1,0 +1,27 @@
+{
+  "oracle_id": "e93782e3-1b93-459a-a7de-06c3b6591e6f",
+  "name": "Turtle-Duck",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Turtle-Duck",
+      "oracle_fingerprint": "fe529cdb53fbd317bbeb95e2f11e7b23",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{3}",
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "SetPower": 4 }, { "AddKeyword": "Trample" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,27 @@
+{
+  "oracle_id": "503928cd-1abd-44cd-92c3-6dc19bb07f78",
+  "name": "Hydraulic Helper",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Hydraulic Helper",
+      "oracle_fingerprint": "3cb436271297969787453b1eaae7f9aa",
+      "abilities": [
+        { "Keyword": "Defender" },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [
+              {
+                "AddMana": {
+                  "mana": { "Fixed": ["Blue"] },
+                  "only": [{ "Spell": { "types": ["Artifact"] } }, { "Ability": {} }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

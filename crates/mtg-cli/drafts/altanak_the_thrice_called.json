@@ -11,7 +11,13 @@
         {
           "Triggered": {
             "when": {
-              "BecomesTarget": { "what": ["This"], "by": [{ "ControlledBy": "Opponents" }] }
+              "BecomesTarget": {
+                "what": ["This"],
+                "by": [
+                  { "AnyOf": ["Spell", { "Ability": "Activated" }, { "Ability": "Triggered" }] },
+                  { "ControlledBy": "Opponents" }
+                ]
+              }
             },
             "effects": [{ "Draw": {} }]
           }

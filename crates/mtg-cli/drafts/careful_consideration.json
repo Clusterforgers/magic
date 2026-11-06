@@ -1,0 +1,35 @@
+{
+  "oracle_id": "2b34b361-7b0e-4464-874c-ceb501bc5ecc",
+  "name": "Careful Consideration",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Careful Consideration",
+      "oracle_fingerprint": "912d5969bc3512473efbb3f8bc5991e4",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              { "Draw": { "who": { "Target": 0 }, "count": 4 } },
+              {
+                "Discard": {
+                  "who": { "Target": 0 },
+                  "count": {
+                    "When": {
+                      "condition": {
+                        "All": ["YourTurn", { "Any": [{ "Step": "Main1" }, { "Step": "Main2" }] }]
+                      },
+                      "then": 2,
+                      "otherwise": 3
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
