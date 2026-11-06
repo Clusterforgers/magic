@@ -233,6 +233,9 @@ fn remembered_static(
         }
         "AssignNoCombatDamage" if on_remembered("ValidCard") => Ok(vec![json!({"Rule": {
             "rule": {"Combat": {"who": who, "quirk": "AssignsNoCombatDamage"}}, "duration": duration}})]),
+        "CantRegenerate" if on_remembered("ValidCard") => Ok(vec![
+            json!({"Rule": {"rule": {"CantBeRegenerated": who}, "duration": duration}}),
+        ]),
         "MustBlock" if on_remembered("ValidCreature") => Ok(vec![
             json!({"Rule": {"rule": {"MustBlock": who}, "duration": duration}}),
         ]),

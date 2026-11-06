@@ -536,6 +536,8 @@ pub enum GameRule {
     },
     /// The spells can't be countered.
     CantBeCountered(Ref),
+    /// The permanents can't be regenerated (CR 701.19c): a regeneration shield does nothing to their destruction.
+    CantBeRegenerated(Ref),
     /// The players can't gain life.
     CantGainLife(Ref),
     /// Damage dealt to the players causes no loss of life: it is still dealt, and every other effect of it happens.

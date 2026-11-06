@@ -1332,7 +1332,11 @@ impl Pass<'_> {
 
     /// The regeneration shield that replaces the destruction the item is, as the only effect that applies to it.
     fn regeneration_candidate(&self, item: &Item) -> Option<Candidate> {
-        let shield = self.regeneration_of(destroyed(item)?)?;
+        let object = destroyed(item)?;
+        if crate::rules::cant_be_regenerated(self.state, object) {
+            return None;
+        }
+        let shield = self.regeneration_of(object)?;
         Some(Candidate {
             origin: Origin::Shield(shield.id),
             object: shield.source?,

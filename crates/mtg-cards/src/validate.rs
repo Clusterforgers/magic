@@ -3893,6 +3893,7 @@ impl Walker<'_> {
             GameRule::MustAttack(who)
             | GameRule::MustBlock(who)
             | GameRule::CantBeCountered(who)
+            | GameRule::CantBeRegenerated(who)
             | GameRule::Combat { who, .. } => self.at(tag, |w| w.reference(who, Kind::Object)),
             GameRule::MustBlockAttacker { .. } | GameRule::IgnoreHexproof { .. } => {
                 self.at(tag, |w| w.targeting_rule(rule));

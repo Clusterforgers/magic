@@ -822,6 +822,30 @@ fn a_death_by_state_based_actions_is_regenerated_when_it_is_a_destruction(
     assert_eq!(result.first() != Some(&died), replaced);
 }
 
+#[rstest]
+fn a_permanent_that_cant_be_regenerated_ignores_its_shield(#[values(2, 3, 4)] seats: usize) {
+    // CR 701.19c: a regeneration shield does nothing to the destruction of a permanent that can't be regenerated.
+    let mut table = game(seats, Vec::new());
+    let rule = regenerates(&table, "Bear0");
+    begin(&mut table, "Bear0", rule);
+    let named = table.object(id(&table, "Bear0")).unwrap().reference();
+    begin(&mut table, "Bear1", Rule::CantBeRegenerated(vec![named]));
+    let moved = destroy(&table, "Bear0", ZoneCause::Destroyed);
+    assert_eq!(run(&table, std::slice::from_ref(&moved)), [moved]);
+}
+
+#[test]
+fn cant_be_regenerated_covers_only_the_permanents_it_names() {
+    let mut table = game(2, Vec::new());
+    let rule = regenerates(&table, "Bear1");
+    begin(&mut table, "Bear1", rule);
+    let named = table.object(id(&table, "Bear0")).unwrap().reference();
+    begin(&mut table, "Bear0", Rule::CantBeRegenerated(vec![named]));
+    let bear = id(&table, "Bear1");
+    let result = run(&table, &[destroy(&table, "Bear1", ZoneCause::Destroyed)]);
+    assert_eq!(result.first(), Some(&Event::Regenerated { object: bear }));
+}
+
 #[test]
 fn one_shield_is_used_by_one_destruction_and_two_by_two() {
     let mut table = game(2, Vec::new());

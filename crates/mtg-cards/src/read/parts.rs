@@ -276,6 +276,9 @@ pub(super) fn rule(ctx: &Ctx, rule: &GameRule) -> String {
         ),
         GameRule::Combat { who, quirk } => combat_quirk(&phrase::who(ctx, who), quirk),
         GameRule::CantBeCountered(who) => format!("{} can't be countered", phrase::who(ctx, who)),
+        GameRule::CantBeRegenerated(who) => {
+            format!("{} can't be regenerated", phrase::who(ctx, who))
+        }
         GameRule::CantGainLife(who) => format!("{} can't gain life", phrase::who(ctx, who)),
         GameRule::CantDraw(who) => format!("{} can't draw cards", phrase::who(ctx, who)),
         GameRule::CantSearch(who) => format!("{} can't search libraries", phrase::who(ctx, who)),
