@@ -48,8 +48,12 @@ pub fn add(ability: &Ability, texts: &mut Vec<String>) {
     // Two rows may meet in one wording ("an additional" bonus counted in words), so the rows run over their own output once.
     let first = rewritten(texts, source);
     let second = rewritten(&first, source);
+    if first.is_empty() && second.is_empty() {
+        return;
+    }
+    let mut seen: std::collections::HashSet<String> = texts.iter().cloned().collect();
     for text in first.into_iter().chain(second) {
-        if !texts.contains(&text) {
+        if seen.insert(text.clone()) {
             texts.push(text);
         }
     }

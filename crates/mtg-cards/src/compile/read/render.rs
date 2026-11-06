@@ -475,6 +475,11 @@ fn produced_wordings(texts: &mut Vec<String>) {
 /// and the wordings of the oracle text that no template reads ("you" after another player's event, "Then" opening a
 /// sentence, "deals damage equal to its power").
 pub fn written_variants(ability: &Ability) -> Vec<String> {
+    super::written_memo::written(ability, written_anew)
+}
+
+/// [`written_variants`] without the table of abilities written already.
+fn written_anew(ability: &Ability) -> Vec<String> {
     let texts = written_as_given(ability);
     if !texts.is_empty() {
         return texts;

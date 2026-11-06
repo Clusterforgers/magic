@@ -463,6 +463,7 @@ mod w9c_replaced;
 mod w9d_exert;
 mod where_x;
 mod written_effects;
+mod written_memo_bounds;
 mod x_after;
 mod zone_moves;
 // dk1a
