@@ -52,6 +52,7 @@ mod memory;
 pub mod needs;
 mod number;
 pub mod oracle;
+mod r6a;
 mod rebind;
 pub mod remember;
 pub mod replacements;

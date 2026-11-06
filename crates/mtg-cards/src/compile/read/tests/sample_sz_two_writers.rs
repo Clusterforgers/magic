@@ -118,7 +118,7 @@ fn a_token_may_be_created_in_the_sentence_of_the_step_before_it(
 #[case::another_step(
     r#"{"Destroy":{"what":"This"}}"#,
     "treasure",
-    "When ~ enters, destroy ~ and create a Treasure token."
+    "When ~ enters, exile ~ and create a Treasure token."
 )]
 fn a_token_joined_with_and_does_not_read_as_another_token_step_or_order(
     #[case] first: &str,
