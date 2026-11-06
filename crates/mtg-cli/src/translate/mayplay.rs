@@ -68,11 +68,13 @@ pub fn may_cast(ctx: &Ctx, p: &Params, only: Option<&Value>) -> Tr<Value> {
         }
         (None, valid) => {
             // A graveyard, hand or library is the player's own: the ownership is in `from`. Exile holds anyone's cards.
-            let what: Vec<Value> = selector_any(ctx, valid)?
+            let mut what: Vec<Value> = selector_any(ctx, valid)?
                 .into_iter()
                 .filter(|pred| from == "Exile" || *pred != json!({"OwnedBy": "You"}))
                 .filter(|pred| *pred != json!({"ControlledBy": "You"}))
                 .collect();
+            // A permanent card is not an instant or a sorcery.
+            what.extend(super::valid::permanent_card(valid)?);
             if !what.is_empty() {
                 permission["what"] = json!(what);
             }

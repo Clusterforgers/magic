@@ -213,6 +213,45 @@ pub(super) const ATOMS: &[Atom] = &[
         probe: "Lithomancer's Focus",
         lower: |_| one(json!("Colorless")),
     },
+    // The spell being cast is the card the ability belongs to (its own resolution or enters trigger): "another spell" is
+    // "not the source", so the word itself is "the source".
+    Atom {
+        word: "CastSaSource",
+        scopes: OBJECT,
+        reads_target: false,
+        probe: "Dream Thief",
+        lower: |ctx| match &ctx.trigger {
+            Some(shape) if shape.mode.starts_with("SpellCast") => {
+                unmapped("valid:CastSaSource-of-another-card")
+            }
+            _ => one(json!({"Not": "Other"})),
+        },
+    },
+    Atom {
+        word: "TopGraveyardCreature",
+        scopes: OBJECT,
+        reads_target: false,
+        probe: "Necratog",
+        lower: |_| Ok(vec![json!({"Type": "Creature"}), json!("TopOfGraveyard")]),
+    },
+    // The object is one the ability targets, read once they are chosen (`Creature.targetedBy` of the line's own spell).
+    Atom {
+        word: "targetedBy",
+        scopes: OBJECT,
+        reads_target: true,
+        probe: "Moment of Glory",
+        lower: |ctx| match ctx.targets.len() {
+            0 => unmapped("valid:targetedBy-without-a-target"),
+            count => {
+                let any: Vec<Value> = (0..count).map(|at| json!({"Is": {"Target": at}})).collect();
+                if count == 1 {
+                    Ok(any)
+                } else {
+                    one(json!({"AnyOf": any}))
+                }
+            }
+        },
+    },
     Atom {
         word: "equalPT",
         scopes: OBJECT,

@@ -17,6 +17,7 @@ pub fn chain(ctx: &mut Ctx, params: &Params) -> Tr<Vec<Value>> {
 
 /// The effects of a line and of the sub-abilities after it. A part that is not the ability itself (`top`) and has a cost
 /// is paid as it resolves: its effects and those after it happen if the cost is paid.
+#[allow(clippy::too_many_lines)] // the chain reader walks every kind of sub-ability link in one place
 pub fn chain_at(ctx: &mut Ctx, p: &Params, top: bool) -> Tr<Vec<Value>> {
     ctx.mark_parent();
     // A condition on a line that picks its own target reads that target, which the line declares only after it.
@@ -25,6 +26,7 @@ pub fn chain_at(ctx: &mut Ctx, p: &Params, top: bool) -> Tr<Vec<Value>> {
         .then(|| u8::try_from(ctx.targets.len()).ok())
         .flatten();
     ctx.coming = coming;
+    ctx.coming_player = matches!(p.get("ValidTgts"), Some("Player" | "Opponent"));
     let stated = prefixed(ctx, p);
     ctx.coming = None;
     let (condition, own) = stated?;
@@ -42,7 +44,8 @@ pub fn chain_at(ctx: &mut Ctx, p: &Params, top: bool) -> Tr<Vec<Value>> {
     };
     let before = (ctx.remembered.clone(), ctx.imprinted.clone());
     let excess = ctx.excess.clone();
-    let mut effects = line(ctx, &own.without(&unless_keys).without(spent))?;
+    let mut effects =
+        line_with_own_target(ctx, p, &own.without(&unless_keys).without(spent), coming)?;
     // A condition on the step that took the cards also covers the permission an `Effect` line gives for them: with nothing
     // taken the permission names nothing, so the lines that only hold it run inside the condition.
     let inside = condition.is_some()
@@ -385,6 +388,30 @@ fn api_of(params: &Params) -> Tr<&str> {
 }
 
 /// One line: its effects, with the objects it remembers or imprints bound (`memory::line`).
+/// The effects of a line whose words may read the target the line itself declares (`coming`); a word that read one the line
+/// never declared names nothing and is a gap.
+fn line_with_own_target(
+    ctx: &mut Ctx,
+    asked: &Params,
+    own: &Params,
+    coming: Option<u8>,
+) -> Tr<Vec<Value>> {
+    ctx.coming = coming;
+    ctx.coming_player = matches!(asked.get("ValidTgts"), Some("Player" | "Opponent"));
+    let ran = line(ctx, own);
+    ctx.coming = None;
+    ctx.coming_player = false;
+    let effects = ran?;
+    if let Some(index) = coming
+        && usize::from(index) >= ctx.targets.len()
+        && serde_json::to_string(&effects)
+            .is_ok_and(|text| text.contains(&json!({ "Target": index }).to_string()))
+    {
+        return unmapped("defined:Targeted-without-target");
+    }
+    Ok(effects)
+}
+
 fn line(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
     let api = api_of(p)?;
     super::memory::line(ctx, p, api, api_line)

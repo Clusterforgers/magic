@@ -37,6 +37,14 @@ fn unknown_trigger_mode_is_a_gap() {
     "SP$ Pump | ValidTgts$ Card | TgtZone$ Stack | TargetType$ Spell.OppCtrl | NumAtt$ +1",
     json!([{"ControlledBy": "Opponents"}, {"In": "Stack"}])
 )]
+#[case::battlefield_or_exile(
+    "SP$ Pump | ValidTgts$ Creature | TgtZone$ Battlefield,Exile | NumAtt$ +1",
+    json!([{"Type": "Creature"}, {"AnyOf": [{"In": "Battlefield"}, {"In": "Exile"}]}])
+)]
+#[case::battlefield_or_exile(
+    "SP$ Pump | ValidTgts$ Creature | TgtZone$ Battlefield,Exile | NumAtt$ +1",
+    json!([{"Type": "Creature"}, {"AnyOf": [{"In": "Battlefield"}, {"In": "Exile"}]}])
+)]
 fn a_target_zone_becomes_a_property_of_the_target(#[case] line: &str, #[case] selector: Value) {
     let found = first(line);
     assert_eq!(
@@ -55,7 +63,6 @@ fn a_target_zone_becomes_a_property_of_the_target(#[case] line: &str, #[case] se
 #[case::unknown_target_type(
     "SP$ Pump | ValidTgts$ Card | TgtZone$ Stack | TargetType$ Spell.singleTarget | NumAtt$ +1"
 )]
-#[case::mixed_with_open("SP$ Pump | ValidTgts$ Creature | TgtZone$ Battlefield,Exile | NumAtt$ +1")]
 fn a_target_zone_the_selector_cannot_state_stays_a_gap(#[case] line: &str) {
     assert!(gaps(&spell(line)).into_iter().next().is_some());
 }

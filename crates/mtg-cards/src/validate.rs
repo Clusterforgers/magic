@@ -597,6 +597,7 @@ impl<'a> Walker<'a> {
             Pred::HasAdventure => self.uses("Pred", "HasAdventure"),
             Pred::SingleTarget => self.uses("Pred", "SingleTarget"),
             Pred::BottomOfLibrary => self.uses("Pred", "BottomOfLibrary"),
+            Pred::TopOfGraveyard => self.uses("Pred", "TopOfGraveyard"),
             Pred::BlockedBy(who) => {
                 self.uses("Pred", "BlockedBy");
                 self.reference(who, Kind::Object);
@@ -714,6 +715,7 @@ impl<'a> Walker<'a> {
             | Pred::TopOfLibrary
             | Pred::HasAdventure
             | Pred::BottomOfLibrary
+            | Pred::TopOfGraveyard
             | Pred::BlockedBy(_)
             | Pred::Blocks(_)
             | Pred::TargetedBy(_)

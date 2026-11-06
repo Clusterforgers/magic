@@ -49,6 +49,16 @@ pub fn static_line(ctx: &mut Ctx, body: &str) -> Tr<Value> {
 pub fn static_lines(ctx: &mut Ctx, body: &str) -> Tr<Value> {
     ctx.reset();
     let all = Params::parse(body);
+    if let Some(split) = you_and_objects(&all) {
+        let mut out = Vec::new();
+        for part in split {
+            match static_lines(ctx, &part)? {
+                Value::Array(items) => out.extend(items),
+                one => out.push(one),
+            }
+        }
+        return Ok(Value::Array(out));
+    }
     if let Some(found) = super::statics_exert::exert(ctx, &all) {
         return found;
     }
@@ -88,6 +98,27 @@ pub fn static_lines(ctx: &mut Ctx, body: &str) -> Tr<Value> {
         }
     }
     Ok(ability)
+}
+
+/// A continuous line that affects "You" and other objects (`Affected$ You,Planeswalker.YouCtrl`) as one line for the player and
+/// one for the rest: the player is no object of a selector.
+fn you_and_objects(p: &Params) -> Option<Vec<String>> {
+    if p.get("Mode") != Some("Continuous") || p.has("AffectedDefined") || p.has("AffectedZone") {
+        return None;
+    }
+    let affected = p.get("Affected")?;
+    let (you, rest): (Vec<&str>, Vec<&str>) = affected.split(',').partition(|word| *word == "You");
+    if you.is_empty() || rest.is_empty() {
+        return None;
+    }
+    let line = |value: String| {
+        let body: Vec<String> = p
+            .iter()
+            .map(|(key, old)| format!("{key}$ {}", if key == "Affected" { &value } else { old }))
+            .collect();
+        body.join(" | ")
+    };
+    Some(vec![line("You".to_owned()), line(rest.join(","))])
 }
 
 /// The ability of a static line by its mode.

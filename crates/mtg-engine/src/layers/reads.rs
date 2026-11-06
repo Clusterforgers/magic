@@ -256,6 +256,7 @@ fn reads_of_pred(pred: &Pred) -> Traits {
         | Pred::CastWith(_)
         | Pred::TopOfLibrary
         | Pred::BottomOfLibrary
+        | Pred::TopOfGraveyard
         | Pred::Kicked
         | Pred::AdditionalCostPaid
         | Pred::Suspended => Traits::NONE,

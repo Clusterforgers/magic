@@ -1,5 +1,5 @@
 //! Goal: an amount that Forge names `AffectedX` is read from the object each change applies to, and a bare `You` among the
-//! objects a static line affects stays a gap rather than a creature subtype.
+//! objects a static line affects is a static of its own rather than a creature subtype.
 use rstest::rstest;
 
 use super::{abilities, gaps};
@@ -52,12 +52,20 @@ fn a_source_amount_keeps_this_as_the_source() {
 
 #[rstest]
 #[case::with_objects("You,Planeswalker.YouCtrl,Creature.YouCtrl+Other")]
-#[case::with_a_subtype("You,Human.YouCtrl")]
-fn a_player_among_the_objects_a_static_line_affects_is_a_gap(#[case] affected: &str) {
+fn a_player_among_the_objects_a_static_line_affects_is_a_static_of_its_own(#[case] affected: &str) {
     let script = format!(
         "Name:T\nTypes:Creature\nS:Mode$ Continuous | Affected$ {affected} | AddKeyword$ Hexproof\n"
     );
-    assert!(abilities(&script).is_empty(), "{:?}", abilities(&script));
+    let found = abilities(&script);
+    assert_eq!(found.len(), 2, "{found:?}");
+    assert_eq!(found[0]["Static"]["affected"], "You");
+    assert_ne!(found[1]["Static"]["affected"], "You");
+}
+
+#[test]
+fn a_player_beside_an_unknown_subtype_stays_a_gap() {
+    let script = "Name:T\nTypes:Creature\nS:Mode$ Continuous | Affected$ You,Human.YouCtrl | AddKeyword$ Hexproof\n";
+    assert_eq!(abilities(script).len(), 0);
 }
 
 #[test]

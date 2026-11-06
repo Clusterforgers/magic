@@ -378,6 +378,8 @@ pub enum Pred {
     TopOfLibrary,
     /// Is the bottom card of its owner's library.
     BottomOfLibrary,
+    /// Is the top card of its owner's graveyard.
+    TopOfGraveyard,
     /// Is an attacking creature blocked by one of the creatures the reference names.
     BlockedBy(Ref),
     /// Is a creature blocking one of the creatures the reference names.
@@ -613,6 +615,7 @@ mod tests {
     #[case::cast_with(Pred::CastWith(CastWay::Flashback), r#"{"CastWith":"Flashback"}"#)]
     #[case::top(Pred::TopOfLibrary, r#""TopOfLibrary""#)]
     #[case::bottom(Pred::BottomOfLibrary, r#""BottomOfLibrary""#)]
+    #[case::top_grave(Pred::TopOfGraveyard, r#""TopOfGraveyard""#)]
     #[case::blocked_by(Pred::BlockedBy(Ref::This), r#"{"BlockedBy":"This"}"#)]
     #[case::blocks(Pred::Blocks(Ref::This), r#"{"Blocks":"This"}"#)]
     #[case::targeted_by(Pred::TargetedBy(Ref::Triggering), r#"{"TargetedBy":"Triggering"}"#)]

@@ -36,6 +36,16 @@ pub fn property(ctx: &Ctx, prop: &str) -> Tr<Option<Vec<Value>>> {
         // Without an argument the property compares with the card the line belongs to.
         "sharesCreatureTypeWith" => return one(json!({"SharesSubtype": "This"})),
         "Outlaw" => return outlaw(ctx).map(Some),
+        // The player the source chose; outside the battlefield control is ownership.
+        "ChosenCtrl" | "ChosenOwn" => {
+            let who = super::valid::chosen_player(ctx, &format!("valid:{prop}-without-a-choice"))?;
+            let key = if prop == "ChosenCtrl" {
+                "ControlledBy"
+            } else {
+                "OwnedBy"
+            };
+            return one(json!({ key: who }));
+        }
         "IsRemembered" => return memory::is_in(ctx, Slot::Remembered).map(Some),
         "IsTriggerRemembered" => {
             return match &ctx.pinned {
@@ -78,6 +88,14 @@ pub fn property(ctx: &Ctx, prop: &str) -> Tr<Option<Vec<Value>>> {
     }
     if prop == "NotDefinedTargeted" {
         return one(json!({"Not": {"Is": objects(ctx.last_target()?)?}}));
+    }
+    // "That player or that planeswalker's controller": a player target is itself, an object target is controlled by one.
+    if prop == "ControlledBy TargetedOrController" {
+        let target = ctx.last_target()?;
+        return one(json!({"AnyOf": [
+            {"ControlledBy": target},
+            {"ControlledBy": {"ControllerOf": target}},
+        ]}));
     }
     if let Some(who) = prop.strip_prefix("ControlledBy ") {
         return one(json!({"ControlledBy": player_word(ctx, who)?}));

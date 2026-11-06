@@ -60,6 +60,16 @@ fn token(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
     Ok(created)
 }
 
+/// A token line whose owner is its own target ("target opponent creates a 4/4 Horror").
+fn owner_targeted(p: &Params) -> bool {
+    p.has("ValidTgts")
+        && !p.has("AttachedTo")
+        && matches!(
+            p.get("TokenOwner"),
+            Some("Targeted" | "TargetedPlayer" | "ThisTargetedPlayer")
+        )
+}
+
 fn token_create(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
     only(
         p,
@@ -155,7 +165,11 @@ fn token_of(ctx: &mut Ctx, p: &Params, script: &str) -> Tr<Vec<Value>> {
         token = json!({"Sized": size});
     }
     let count = amount(ctx, p.get("TokenAmount").unwrap_or("1"))?;
-    let who = defined(ctx, p.get("TokenOwner").unwrap_or("You"))?;
+    let who = if owner_targeted(p) {
+        super::valid::subject(ctx, p, "", None)?
+    } else {
+        defined(ctx, p.get("TokenOwner").unwrap_or("You"))?
+    };
     let mut create = json!({
         "who": who,
         "token": token,
@@ -497,7 +511,7 @@ fn spend_filter(restriction: &str) -> Tr<Value> {
 /// on a creature through the state-based actions (CR 704.5y).
 fn attached(ctx: &mut Ctx, p: &Params, create: &mut Value) -> Tr<Option<Value>> {
     let Some(word) = p.get("AttachedTo") else {
-        if p.has("ValidTgts") {
+        if p.has("ValidTgts") && !owner_targeted(p) {
             return unmapped("key:Token.ValidTgts");
         }
         return Ok(None);

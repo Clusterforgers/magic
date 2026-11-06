@@ -1494,6 +1494,7 @@ impl<'a> Scope<'a> {
             | Pred::CastWith(_)
             | Pred::TopOfLibrary
             | Pred::BottomOfLibrary
+            | Pred::TopOfGraveyard
             | Pred::BlockedBy(_)
             | Pred::Blocks(_)
             | Pred::TargetedBy(_)

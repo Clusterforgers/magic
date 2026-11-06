@@ -135,6 +135,8 @@ pub struct Ctx<'a> {
     pub scope: std::cell::Cell<super::filter::Scope>,
     /// The index of the target the line being translated is about to declare, for the condition it states ahead of its effect.
     pub coming: Option<u8>,
+    /// The target the line is about to declare is a player.
+    pub coming_player: bool,
     /// The latest target the ability had declared before the line being translated (`Defined$ ParentTarget`).
     pub parent_target: Option<u8>,
     /// The name the latest value chosen by the ability is bound to (`ChosenColor`, `ChosenType` after it).
@@ -189,6 +191,7 @@ impl<'a> Ctx<'a> {
             waterbend_ok: std::cell::Cell::new(false),
             scope: std::cell::Cell::new(super::filter::Scope::Object),
             coming: None,
+            coming_player: false,
             memory: super::memory::plan(face),
             pinned: None,
             delayed_remembered: None,
@@ -219,6 +222,7 @@ impl<'a> Ctx<'a> {
         self.counted.clear();
         self.scoped.clear();
         self.coming = None;
+        self.coming_player = false;
         self.parent_target = None;
         self.chosen = None;
         self.chosen_kind = None;
@@ -302,7 +306,10 @@ impl<'a> Ctx<'a> {
 
     /// The reference to the latest declared target ("Targeted" in a sub-ability).
     pub fn last_target(&self) -> Tr<Value> {
-        if let Some(index) = self.coming {
+        if let Some(index) = self
+            .coming
+            .filter(|_| self.scope.get() != super::filter::Scope::Targeting)
+        {
             return Ok(json!({ "Target": index }));
         }
         match u8::try_from(self.targets.len().saturating_sub(1)) {
@@ -313,6 +320,12 @@ impl<'a> Ctx<'a> {
 
     /// The reference to the latest declared target when it is a player (`TargetedPlayer`), else a gap.
     pub fn player_target(&self) -> Tr<Value> {
+        if self.coming.is_some()
+            && self.coming_player
+            && self.scope.get() != super::filter::Scope::Targeting
+        {
+            return self.last_target();
+        }
         let player = self
             .targets
             .last()
