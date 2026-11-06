@@ -303,6 +303,15 @@ fn one_shield(
             return unmapped("replacement:DamageDone-prevent-and-replace");
         }
         Some(name) if is_damage_scaling(ctx, name) => scaled(ctx, name)?,
+        Some(name) if super::replacements_damage_by::splits(ctx, name) => {
+            let recipient_remembered = p.get("ValidTarget").is_some_and(is_remembered);
+            super::replacements_damage_by::split_redirect(
+                ctx,
+                (&p, line),
+                name,
+                remembered.filter(|_| !recipient_remembered),
+            )?
+        }
         Some(name) => {
             let you = p.get("ValidTarget") == Some("You");
             super::replacements_damage_by::by(ctx, &p, name, you, true)?

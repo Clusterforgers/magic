@@ -80,19 +80,42 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         | ReplaceBy::Multiply(_)
         | ReplaceBy::Add(_)
         | ReplaceBy::Instead(_)
-        | ReplaceBy::InsteadNext(_),
+        | ReplaceBy::InsteadNext(_)
+        | ReplaceBy::RedirectUpTo { .. },
     ) = (when, by)
     else {
         return Err(ResolveError::Unsupported("Effect.Shield"));
     };
+    match damage_shield(cx, (to.as_ref(), source, *combat), by)? {
+        Some(shield) if shield.left != Some(0) => Ok(begin(
+            cx,
+            Rule::PreventDamage(Box::new(shield)),
+            duration.clone(),
+        )),
+        _ => Ok(Run::events(Vec::new())),
+    }
+}
+
+/// The shield over damage to the recipients `to` names now from the sources of the selector; none when it would
+/// redirect to nothing.
+fn damage_shield(
+    cx: &Cx<'_>,
+    (to, source, combat): (Option<&Ref>, &Selector, Option<bool>),
+    by: &ReplaceBy,
+) -> Result<Option<DamageShield>, ResolveError> {
     let once = matches!(by, ReplaceBy::PreventNext | ReplaceBy::InsteadNext(_));
     let instead = match by {
-        ReplaceBy::Multiply(_) | ReplaceBy::Add(_) | ReplaceBy::Instead(_) => Some(by.clone()),
+        ReplaceBy::Multiply(_)
+        | ReplaceBy::Add(_)
+        | ReplaceBy::Instead(_)
+        | ReplaceBy::RedirectUpTo { .. } => Some(by.clone()),
         ReplaceBy::InsteadNext(effects) => Some(ReplaceBy::Instead(effects.clone())),
         _ => None,
     };
     let (left, then) = match by {
-        ReplaceBy::PreventUpTo(most) => (Some(*most), Vec::new()),
+        ReplaceBy::PreventUpTo(most) | ReplaceBy::RedirectUpTo { most, .. } => {
+            (Some(*most), Vec::new())
+        }
         ReplaceBy::PreventAnd(then) => (None, then.clone()),
         _ => (None, Vec::new()),
     };
@@ -100,21 +123,26 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         None => None,
         Some(named) => Some(cx.scope.refs(named)?),
     };
+    // The new recipient of redirected damage is fixed as the shield begins (CR 611.2c); naming none, it redirects nothing.
+    let redirect = match by {
+        ReplaceBy::RedirectUpTo { to: named, .. } => match cx.scope.refs(named)?.first() {
+            Some(target) => Some(*target),
+            None => return Ok(None),
+        },
+        _ => None,
+    };
     let (from, source) = c9_fight_fixed_sources(cx, source)?;
-    let rule = Rule::PreventDamage(Box::new(DamageShield {
+    Ok(Some(DamageShield {
         to,
-        from,
         source,
-        combat: *combat,
+        from,
+        combat,
         left,
         then,
         once,
         instead,
-    }));
-    if left == Some(0) {
-        return Ok(Run::events(Vec::new()));
-    }
-    Ok(begin(cx, rule, duration.clone()))
+        redirect,
+    }))
 }
 
 /// Whether the selector names particular objects now (a target, what a spell damaged) rather than a kind of object.

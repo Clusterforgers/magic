@@ -1034,6 +1034,29 @@ describe('events with more than one shape', () => {
       ruleEffect({ BlockLimitEach: { most: 1, who: [1] } }, 'UntilEndOfCombat'),
       "Bo can't block with more than 1 creature until end of combat",
     ],
+    [
+      ruleEffect(
+        {
+          PreventDamage: {
+            to: null,
+            source: [],
+            combat: null,
+            left: 1,
+            once: false,
+            redirect: { Object: { id: 2, counter: 0 } },
+          },
+        },
+        'UntilEndOfTurn',
+      ),
+      'The next 1 damage is dealt to Hill Giant instead until end of turn',
+    ],
+    [
+      ruleEffect(
+        { PreventDamage: { to: null, source: [], combat: null, left: 3, once: false } },
+        'UntilEndOfTurn',
+      ),
+      'The next 3 damage is prevented until end of turn',
+    ],
   ])('says what a change to a rule does (%#)', (created, text) => {
     expect(say({ RuleCreated: { effect: created } })).toBe(text)
   })

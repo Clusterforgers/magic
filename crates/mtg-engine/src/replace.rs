@@ -646,7 +646,9 @@ fn applies_to(by: &ReplaceBy, unit: &Unit) -> bool {
         | ReplaceBy::Riot
         | ReplaceBy::AsCopy { .. } => matches!(unit, Unit::Enter { .. }),
         ReplaceBy::Instead(_) => !matches!(unit, Unit::Other),
-        ReplaceBy::InsteadNext(_) => matches!(unit, Unit::Damage { .. }),
+        ReplaceBy::InsteadNext(_) | ReplaceBy::RedirectUpTo { .. } => {
+            matches!(unit, Unit::Damage { .. })
+        }
     }
 }
 
@@ -1366,7 +1368,15 @@ impl Pass<'_> {
             {
                 continue;
             }
-            let by = if let Some(instead) = &shield.instead {
+            let by = if let Some(ReplaceBy::RedirectUpTo { most, to }) = &shield.instead {
+                match self.left.get(&effect.id) {
+                    Some(0) => continue,
+                    left => ReplaceBy::RedirectUpTo {
+                        most: left.copied().unwrap_or(*most),
+                        to: to.clone(),
+                    },
+                }
+            } else if let Some(instead) = &shield.instead {
                 instead.clone()
             } else {
                 match self.left.get(&effect.id) {
@@ -1890,6 +1900,9 @@ impl Pass<'_> {
             }
             (ReplaceBy::Instead(effects), _) => {
                 self.w5d_instead(at, candidate, effects, &unit, applied);
+            }
+            (ReplaceBy::RedirectUpTo { most, .. }, Unit::Damage { .. }) => {
+                self.r6f_redirect_up_to(at, candidate, *most, applied);
             }
             (ReplaceBy::Multiply(_) | ReplaceBy::Add(_), _) => {
                 self.scale(at, by, &applied);
@@ -3195,6 +3208,7 @@ mod shields;
 #[cfg(test)]
 mod umbra;
 
+mod r6f_redirect;
 mod w13a_moved;
 mod w5d_instead;
 

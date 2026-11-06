@@ -818,6 +818,7 @@ mod r5p5;
 mod r5p6;
 mod r5q1;
 mod r6e;
+mod r6f;
 mod r6p1;
 mod r6p2;
 mod r6p3;

@@ -179,3 +179,46 @@ fn shield_redirect(ctx: &Ctx, p: &Params, part: &Params) -> Tr<Value> {
         }
     }
 }
+
+/// Whether the `ReplaceWith$` part sends part of the damage elsewhere (`DB$ ReplaceSplitDamage`).
+pub fn splits(ctx: &Ctx, name: &str) -> bool {
+    ctx.svar(name)
+        .is_some_and(|text| Params::parse(text).get("DB") == Some("ReplaceSplitDamage"))
+}
+
+/// A shield that deals the next N damage to another player or permanent: "the next 1 damage that would be dealt to
+/// this creature this turn is dealt to target creature you control instead". `remembered` is what the `Effect` line
+/// targeted, when it is not the recipient the shield covers.
+pub fn split_redirect(
+    ctx: &Ctx,
+    (p, line): (&Params, &Params),
+    name: &str,
+    remembered: Option<&Value>,
+) -> Tr<Value> {
+    let Some(text) = ctx.svar(name) else {
+        return unmapped("svar:missing");
+    };
+    let part = Params::parse(text);
+    keys(&part, &["DamageTarget", "VarName"])?;
+    if line.has("EffectOwner") || part.get("DamageTarget") != p.get("DamageTarget") {
+        return unmapped("replacement:DamageDone-redirect-target");
+    }
+    let to = match (part.get("DamageTarget"), remembered) {
+        (Some("Remembered"), Some(who)) => who.clone(),
+        (Some("EffectSource"), _) => json!("This"),
+        (Some("You"), _) => json!("You"),
+        _ => return unmapped("replacement:DamageDone-redirect-target"),
+    };
+    let most = match part.get("VarName") {
+        None => 1,
+        Some(var) => ctx
+            .svar(var)
+            .and_then(|text| text.strip_prefix("Number$"))
+            .and_then(|number| number.parse::<u32>().ok())
+            .unwrap_or(0),
+    };
+    if most == 0 {
+        return unmapped("replacement:DamageDone-redirect-amount");
+    }
+    Ok(json!({"RedirectUpTo": {"most": most, "to": to}}))
+}

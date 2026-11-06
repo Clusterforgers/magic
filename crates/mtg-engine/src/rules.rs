@@ -341,6 +341,10 @@ pub struct DamageShield {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     #[cfg_attr(feature = "ts", ts(type = "unknown", optional))]
     pub instead: Option<mtg_cards::trigger::ReplaceBy>,
+    /// The player or object the damage it redirects is dealt to, fixed when it was made (`ReplaceBy::RedirectUpTo`).
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[cfg_attr(feature = "ts", ts(optional))]
+    pub redirect: Option<Target>,
 }
 
 impl DamageShield {
