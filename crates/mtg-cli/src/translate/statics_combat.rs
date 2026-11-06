@@ -54,6 +54,18 @@ fn block_limit(ctx: &Ctx, p: &Params) -> Tr<Value> {
 /// unless their controller pays for each of them (CR 508.1h).
 fn attack_tax(ctx: &Ctx, p: &Params) -> Tr<Value> {
     keys(p, "CantAttackUnless", &["ValidCard", "Target", "Cost"])?;
+    if !p.has("Target") {
+        let creature = match p.get("ValidCard") {
+            Some("Card.Self" | "Creature.Self") => Some("This"),
+            Some("Creature.AttachedBy" | "Creature.EnchantedBy" | "Creature.EquippedBy") => {
+                Some("Attached")
+            }
+            _ => None,
+        };
+        if let Some(creature) = creature {
+            return self_tax(ctx, p, creature);
+        }
+    }
     let attacked = match p.get("Target") {
         Some("You") => "Player",
         Some("Planeswalker.YouCtrl") => "Planeswalkers",
@@ -77,6 +89,21 @@ fn attack_tax(ctx: &Ctx, p: &Params) -> Tr<Value> {
         valid => tax["attackers"] = json!(selector_any(ctx, valid)?),
     }
     Ok(json!({"AttackTax": tax}))
+}
+
+/// `CantAttackUnless` on the card itself or the creature it is attached to (`creature` is its reference), with no player
+/// named: the creature costs the mana, once or for each of the amount an SVar counts, as it attacks anyone (CR 508.1h).
+fn self_tax(ctx: &Ctx, p: &Params, creature: &str) -> Tr<Value> {
+    let cost = p.get("Cost").unwrap_or_default();
+    let (mana, per) = if !cost.is_empty() && cost.bytes().all(|b| b.is_ascii_digit()) {
+        (format!("{{{cost}}}"), json!(1))
+    } else if ctx.svar(cost).is_some() {
+        ("{1}".to_owned(), super::amount::amount(ctx, cost)?)
+    } else {
+        return unmapped(format!("cost:Static.CantAttackUnless.{cost}"));
+    };
+    Ok(json!({"AttackTax": {
+        "who": "EachPlayer", "attacked": "Both", "attackers": [{"Is": creature}], "mana": mana, "per": per}}))
 }
 
 /// `CantPreventDamage`: damage from the sources `ValidSource$` names (all damage, or combat damage with `IsCombat$`)

@@ -61,6 +61,46 @@ fn a_card_played_during_a_turn_you_attacked_is_a_conditional_permission(
     assert!(text.contains(filter), "{text}");
 }
 
+#[rstest]
+#[case::enchanted(
+    "Creature.AttachedBy",
+    "Cost$ 3",
+    r#""mana":"{3}""#
+)]
+#[case::itself_per_counter(
+    "Card.Self",
+    "Cost$ Y\nSVar:Y:Count$CardCounters.P1P1",
+    r#""attackers":[{"Is":"This"}]"#
+)]
+fn a_creature_that_pays_to_attack_is_a_tax_on_itself(
+    #[case] valid: &str,
+    #[case] cost: &str,
+    #[case] part: &str,
+) {
+    let script = card(&format!(
+        "S:Mode$ CantAttackUnless | ValidCard$ {valid} | {cost}"
+    ));
+    let found = abilities(&script);
+    assert!(!found.is_empty(), "{:?}", gaps(&script));
+    let text = found[0].to_string();
+    assert!(text.contains(r#""AttackTax""#), "{text}");
+    assert!(text.contains(part), "{text}");
+}
+
+#[rstest]
+#[case::sacrifice("Cost$ Sac<1/Land>", "cost:Static.CantAttackUnless.Sac<1/Land>")]
+#[case::an_unknown_word("Cost$ Z", "cost:Static.CantAttackUnless.Z")]
+fn a_cost_it_cannot_charge_is_a_gap(#[case] cost: &str, #[case] gap: &str) {
+    let script = card(&format!(
+        "S:Mode$ CantAttackUnless | ValidCard$ Card.Self | {cost}"
+    ));
+    assert!(
+        gaps(&script).contains(&gap.to_owned()),
+        "{:?}",
+        gaps(&script)
+    );
+}
+
 const ALT: &str = "S:Mode$ AlternativeCost | ValidSA$ Spell | ValidCard$ Card.Self | ValidPlayer$ You | Cost$ 0 | EffectZone$ All";
 
 #[rstest]
