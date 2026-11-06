@@ -96,7 +96,7 @@ fn rename(value: &mut Value) -> bool {
 /// Replaces the binding name `from` by `to` under the keys of [`NAMES`].
 fn replace(value: &mut Value, from: &str, to: &str, named: bool) {
     match value {
-        Value::String(text) if named && text == from => *text = to.to_owned(),
+        Value::String(text) if named && text == from => to.clone_into(text),
         Value::Array(list) => list
             .iter_mut()
             .for_each(|item| replace(item, from, to, false)),
