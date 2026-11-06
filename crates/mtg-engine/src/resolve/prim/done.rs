@@ -29,6 +29,7 @@ fn reports(effect: &Effect) -> Reports {
         | Effect::Mill { .. }
         | Effect::Scry { .. }
         | Effect::Reveal { .. }
+        | Effect::LookAtHand { .. }
         | Effect::Search { .. }
         | Effect::Shuffle { .. }
         | Effect::Move { .. }

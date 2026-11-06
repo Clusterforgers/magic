@@ -1063,11 +1063,9 @@ fn change_zone_all(ctx: &mut Ctx, p: &Params, origin: &str, destination: &str) -
             "ValidTgts",
             "Defined",
             "UseAllOriginZones",
+            "RandomOrder",
         ],
     )?;
-    if origin == "Library" {
-        return unmapped("key:ChangeZoneAll.Origin=Library");
-    }
     // Every zone of the origin is emptied, which is what a move of all of them does anyway.
     match p.get("UseAllOriginZones") {
         None | Some("True") => {}
@@ -1084,7 +1082,7 @@ fn change_zone_all(ctx: &mut Ctx, p: &Params, origin: &str, destination: &str) -
     let mut filter = selector_in(ctx, p.get("ChangeType").unwrap_or("Card"), zone)?;
     if p.has("ValidTgts") && !of_target {
         // "Exile target player's graveyard": the cards of the zone that player owns.
-        if !matches!(origin, "Graveyard" | "Hand" | "Exile")
+        if !matches!(origin, "Graveyard" | "Hand" | "Exile" | "Library")
             || !matches!(p.get("ValidTgts"), Some("Player" | "Opponent"))
         {
             return unmapped("key:ChangeZoneAll.ValidTgts");
@@ -1093,7 +1091,7 @@ fn change_zone_all(ctx: &mut Ctx, p: &Params, origin: &str, destination: &str) -
         filter.push(json!({"OwnedBy": owner}));
     }
     if p.has("Defined") {
-        if p.has("ValidTgts") || !matches!(origin, "Graveyard" | "Hand" | "Exile") {
+        if p.has("ValidTgts") || !matches!(origin, "Graveyard" | "Hand" | "Exile" | "Library") {
             return unmapped("key:ChangeZoneAll.Defined");
         }
         filter.push(json!({"OwnedBy": zone_owner(ctx, p.get("Defined").unwrap_or_default())?}));

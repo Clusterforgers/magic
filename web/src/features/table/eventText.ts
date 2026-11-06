@@ -575,6 +575,7 @@ const PIPELINE = [
   'CardConjured',
   'Sought',
   'LibraryLooked',
+  'HandLooked',
   'CardsFound',
   'Scried',
   'Surveilled',
@@ -712,6 +713,11 @@ function describePipeline(event: PipelineEvent, n: EventNames, context?: EventCo
   if ('LibraryLooked' in event) {
     const { player, cards: looked } = event.LibraryLooked
     return line(`${n.seat(player)} looks at ${cards(looked.length)} of their library`)
+  }
+  if ('HandLooked' in event) {
+    const { player, of, cards: looked } = event.HandLooked
+    const whose = of === player ? 'their' : `${n.seat(of)}'s`
+    return line(`${n.seat(player)} looks at ${whose} hand: ${joinWords(looked.map(n.card))}`)
   }
   if ('CardsFound' in event) {
     return line(`${n.seat(event.CardsFound.player)} finds ${cards(event.CardsFound.cards.length)}`)
@@ -1065,6 +1071,11 @@ function describeHidden(event: HiddenEvent, n: EventNames): LogLine {
   if ('LibraryLooked' in event) {
     const { player, count } = event.LibraryLooked
     return line(`${n.seat(player)} looks at ${cards(count)} of their library`)
+  }
+  if ('HandLooked' in event) {
+    const { player, of, count } = event.HandLooked
+    const whose = of === player ? 'their' : `${n.seat(of)}'s`
+    return line(`${n.seat(player)} looks at ${cards(count)} of ${whose} hand`)
   }
   if ('CardsFound' in event)
     return line(`${n.seat(event.CardsFound.player)} finds ${cards(event.CardsFound.count)}`)

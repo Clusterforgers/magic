@@ -25,9 +25,17 @@ fn reveal_hand(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
     only(
         p,
         "RevealHand",
-        &["Defined", "ValidTgts", "RememberRevealed"],
+        &["Defined", "ValidTgts", "RememberRevealed", "Look"],
     )?;
     let who = subject(ctx, p, "You", None)?;
+    // Looking is private to the controller; revealing is public, so the two never mix.
+    match p.get("Look") {
+        None => {}
+        Some("True") if p.get("RememberRevealed").is_none() => {
+            return Ok(vec![json!({"LookAtHand": {"of": who}})]);
+        }
+        Some(_) => return unmapped("key:RevealHand.Look"),
+    }
     let hand = json!({"Each": [{"OwnedBy": who}, {"In": "Hand"}]});
     if p.get("RememberRevealed") != Some("True") {
         return Ok(vec![json!({"Reveal": {"what": hand}})]);

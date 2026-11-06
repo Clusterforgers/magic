@@ -2813,6 +2813,7 @@ impl Walker<'_> {
                     w.at("as", |w| w.bind(name, Kind::Object));
                 }
             }
+            Effect::LookAtHand { of } => w.at("of", |w| w.reference(of, Kind::Player)),
             Effect::Reveal { what }
             | Effect::Counter { what }
             | Effect::Untap { what }

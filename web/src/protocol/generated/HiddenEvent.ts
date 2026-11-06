@@ -77,6 +77,18 @@ player: PlayerId,
 /**
  * Cards looked at.
  */
+count: number, } } | { "HandLooked": { 
+/**
+ * Who looked.
+ */
+player: PlayerId, 
+/**
+ * Whose hand.
+ */
+of: PlayerId, 
+/**
+ * Cards looked at.
+ */
 count: number, } } | { "CardsFound": { 
 /**
  * Who searched.

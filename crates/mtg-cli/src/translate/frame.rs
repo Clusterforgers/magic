@@ -597,7 +597,14 @@ fn goes_in(
                 },
                 _ => return unmapped("key:ChangeZone.LibraryPosition"),
             };
-            Goes::To(json!({"Library": {"place": place}}))
+            // A random order is for cards put on the bottom together.
+            match p.get("RandomOrder") {
+                None | Some("False") => Goes::To(json!({"Library": {"place": place}})),
+                Some("True") if place == json!("Bottom") => {
+                    Goes::To(json!({"Library": {"place": place, "order": "Random"}}))
+                }
+                Some(_) => return unmapped("key:ChangeZone.RandomOrder"),
+            }
         }
         other => return unmapped(format!("zone:Destination={other}")),
     })

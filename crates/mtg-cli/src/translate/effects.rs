@@ -43,19 +43,20 @@ pub fn chain_at(ctx: &mut Ctx, p: &Params, top: bool) -> Tr<Vec<Value>> {
     let before = (ctx.remembered.clone(), ctx.imprinted.clone());
     let excess = ctx.excess.clone();
     let mut effects = line(ctx, &own.without(&unless_keys).without(spent))?;
-    // A name bound inside a condition or a "may" stays for the lines after it that count it or test that it holds something.
+    // A condition on the step that took the cards also covers the permission an `Effect` line gives for them: with nothing
+    // taken the permission names nothing, so the lines that only hold it run inside the condition.
+    let inside = condition.is_some()
+        && !p.has("UnlessCost")
+        && p.get("SubAbility")
+            .is_some_and(|name| holds_what_was_taken(ctx, name));
     if asks || condition.is_some() {
         ctx.excess = excess;
-        for (now, was) in [(&ctx.remembered, &before.0), (&ctx.imprinted, &before.1)] {
-            if now != was
-                && let Some(name) = now
-                    .as_ref()
-                    .and_then(|held| held.get("Bound"))
-                    .and_then(Value::as_str)
-            {
-                ctx.scoped.insert(name.to_owned());
-            }
-        }
+        scope_memory(
+            ctx,
+            &before,
+            p.get("ConditionDefined") == Some("Remembered") && inside,
+            inside,
+        );
     }
     if let (Some(index), Some(condition)) = (coming, &condition)
         && usize::from(index) >= ctx.targets.len()
@@ -76,6 +77,9 @@ pub fn chain_at(ctx: &mut Ctx, p: &Params, top: bool) -> Tr<Vec<Value>> {
         }
         None => Vec::new(),
     };
+    if inside {
+        effects.append(&mut rest);
+    }
     // A roll read only as a number: the lines after it run in its one row, where the result is known.
     if p.has("ResultSVar")
         && !rest.is_empty()
@@ -110,6 +114,59 @@ pub fn chain_at(ctx: &mut Ctx, p: &Params, top: bool) -> Tr<Vec<Value>> {
             Ok(vec![json!({"Pay": {"cost": cost, "paid": effects}})])
         }
         _ => Ok(effects),
+    }
+}
+
+/// What `Remembered` and `Imprinted` stand for after a step that sits inside a condition or a "may". A name the step bound
+/// stays for the lines after it that count it or test that it holds something (`scoped`), unless `inside`: the lines after
+/// run inside the condition, where the name is bound. Forge adds what a step remembers to what an earlier step remembered;
+/// a step that tests the earlier memory (`adds`) reads on, so the memory after it holds both ("one of those cards").
+fn scope_memory(ctx: &mut Ctx, before: &(Option<Value>, Option<Value>), adds: bool, inside: bool) {
+    if adds
+        && let (Some(earlier), Some(later)) = (&before.0, &ctx.remembered)
+        && earlier != later
+        && earlier.get("Bound").is_some()
+        && later.get("Bound").is_some()
+    {
+        let both = json!({"Each": [{"AnyOf": [{"Is": earlier}, {"Is": later}]}]});
+        ctx.remembered = Some(both);
+    }
+    for (now, was) in [(&ctx.remembered, &before.0), (&ctx.imprinted, &before.1)] {
+        if now != was
+            && !inside
+            && let Some(name) = now
+                .as_ref()
+                .and_then(|held| held.get("Bound"))
+                .and_then(Value::as_str)
+        {
+            ctx.scoped.insert(name.to_owned());
+        }
+    }
+}
+
+/// Whether the named part is an `Effect` line about the objects the step before it remembered, followed by nothing but the
+/// cleanup of that memory: it holds a permission or shield for those objects and has no other reach.
+fn holds_what_was_taken(ctx: &Ctx, name: &str) -> bool {
+    let Some(text) = ctx.svar(name) else {
+        return false;
+    };
+    let line = Params::parse(text);
+    if line.get("DB") != Some("Effect")
+        || !matches!(
+            line.get("RememberObjects"),
+            Some("Remembered" | "RememberedCard")
+        )
+        || line.has("ConditionDefined")
+        || line.has("ConditionPresent")
+    {
+        return false;
+    }
+    match line.get("SubAbility").and_then(|next| ctx.svar(next)) {
+        None => true,
+        Some(next) => {
+            let next = Params::parse(next);
+            next.get("DB") == Some("Cleanup") && !next.has("SubAbility")
+        }
     }
 }
 

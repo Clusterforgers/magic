@@ -21,6 +21,7 @@ import type { DelayedId } from "./DelayedId";
 import type { EffectId } from "./EffectId";
 import type { EmblemCreated } from "./EmblemCreated";
 import type { GameResult } from "./GameResult";
+import type { HandLooked } from "./HandLooked";
 import type { LeftToTable } from "./LeftToTable";
 import type { LibraryLooked } from "./LibraryLooked";
 import type { LossReason } from "./LossReason";
@@ -548,7 +549,7 @@ player: PlayerId,
 /**
  * How much, at least 1.
  */
-amount: number, } } | { "CountersChanged": CountersChanged } | { "TokenCreated": TokenCreated } | { "EmblemCreated": EmblemCreated } | { "LibraryLooked": LibraryLooked } | { "CardsFound": CardsFound } | { "Scried": Scried } | { "Surveilled": Surveilled } | { "Revealed": Revealed } | { "ChosenAtRandom": { 
+amount: number, } } | { "CountersChanged": CountersChanged } | { "TokenCreated": TokenCreated } | { "EmblemCreated": EmblemCreated } | { "LibraryLooked": LibraryLooked } | { "HandLooked": HandLooked } | { "CardsFound": CardsFound } | { "Scried": Scried } | { "Surveilled": Surveilled } | { "Revealed": Revealed } | { "ChosenAtRandom": { 
 /**
  * The cards picked.
  */

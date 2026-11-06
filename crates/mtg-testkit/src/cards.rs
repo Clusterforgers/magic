@@ -549,6 +549,19 @@ pub fn bottomer(name: &str) -> Arc<CardDefinition> {
     )
 }
 
+/// An instant for `{U}` with "Look at each opponent's hand."
+pub fn hand_peeker(name: &str) -> Arc<CardDefinition> {
+    Arc::new(
+        CardDefinition::new(name)
+            .with_type(CardType::Instant)
+            .with_mana_cost(cost(0, &[Color::Blue]))
+            .with_rules(Ability::Spell {
+                targets: Vec::new(),
+                effects: vec![Effect::LookAtHand { of: Ref::Opponents }],
+            }),
+    )
+}
+
 /// An instant for `{U}` with "Each player shuffles their library."
 pub fn stirrer(name: &str) -> Arc<CardDefinition> {
     Arc::new(

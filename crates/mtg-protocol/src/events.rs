@@ -93,6 +93,15 @@ pub enum HiddenEvent {
         /// Cards looked at.
         count: u32,
     },
+    /// A player looked at the hand of a player; which cards, only those two know.
+    HandLooked {
+        /// Who looked.
+        player: PlayerId,
+        /// Whose hand.
+        of: PlayerId,
+        /// Cards looked at.
+        count: u32,
+    },
     /// A player found cards by searching; which, only they know until they are revealed.
     CardsFound {
         /// Who searched.
@@ -297,6 +306,7 @@ fn redact(before: &GameState, event: &Event, viewer: PlayerId) -> Option<HiddenE
         }),
         // What the effects of spells and abilities make known: some of it is private to a player or to cards.
         Event::LibraryLooked(_)
+        | Event::HandLooked(_)
         | Event::CardsFound(_)
         | Event::Scried(_)
         | Event::Surveilled(_)
@@ -479,6 +489,14 @@ fn redact_effects(before: &GameState, event: &Event, viewer: PlayerId) -> Option
         Event::LibraryLooked(looked) if looked.player != viewer => {
             Some(HiddenEvent::LibraryLooked {
                 player: looked.player,
+                count: count(looked.cards.len()),
+            })
+        }
+        // The owner of a hand knows what is in it; nobody else learns it but the looker.
+        Event::HandLooked(looked) if looked.player != viewer && looked.of != viewer => {
+            Some(HiddenEvent::HandLooked {
+                player: looked.player,
+                of: looked.of,
                 count: count(looked.cards.len()),
             })
         }
@@ -875,7 +893,9 @@ mod tests {
     use mtg_engine::choose::{Choice, Choices, Target};
     use mtg_engine::counters::CountersChanged;
     use mtg_engine::events::{ResolutionOutcome, ZoneCause};
-    use mtg_engine::library::{CardsFound, LibraryLooked, Revealed, Scried, Surveilled};
+    use mtg_engine::library::{
+        CardsFound, HandLooked, LibraryLooked, Revealed, Scried, Surveilled,
+    };
     use mtg_engine::object::GameObject;
     use mtg_engine::snapshot::snapshot;
     use mtg_engine::tokens::TokenCreated;
@@ -920,6 +940,27 @@ mod tests {
     /// What `viewer` is told of `event`: `Err` with the hidden form, `Ok` when it is the event as logged.
     fn told(state: &GameState, event: &Event, viewer: PlayerId) -> Result<(), HiddenEvent> {
         redact(state, event, viewer).map_or(Ok(()), Err)
+    }
+
+    /// A look at a hand is told in full to the one who looked and to the owner of the hand; a bystander learns how many.
+    #[test]
+    fn a_look_at_a_hand_is_told_to_the_looker_and_the_owner_only() {
+        let t = table();
+        let looked = Event::HandLooked(HandLooked {
+            player: OTHER,
+            of: OWNER,
+            cards: vec![t.hand],
+        });
+        assert_eq!(told(&t.state, &looked, OTHER), Ok(()));
+        assert_eq!(told(&t.state, &looked, OWNER), Ok(()));
+        assert_eq!(
+            told(&t.state, &looked, PlayerId(2)),
+            Err(HiddenEvent::HandLooked {
+                player: OTHER,
+                of: OWNER,
+                count: 1
+            })
+        );
     }
 
     /// A memory names the cards it holds only to a viewer who can identify them all; others learn how many.
