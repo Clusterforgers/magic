@@ -1,0 +1,25 @@
+{
+  "oracle_id": "e3191093-1aaa-4002-a603-7c8d132b6a31",
+  "name": "Bannerhide Krushok",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Bannerhide Krushok",
+      "oracle_fingerprint": "fbebb4dc25c04821b179c8547a2501d7",
+      "abilities": [
+        { "Keyword": "Trample" },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{1}{G}" }, "DiscardSelf"],
+            "from": "Hand",
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              { "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1", "count": 2 } }
+            ]
+          }
+        },
+        { "Keyword": { "Scavenge": "{5}{G}{G}" } }
+      ]
+    }
+  ]
+}

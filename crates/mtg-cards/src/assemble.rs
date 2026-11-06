@@ -19,7 +19,7 @@ use crate::effect::{Effect, Produce};
 use crate::keyword::Keyword;
 use crate::mana::ManaCostX;
 use crate::modify::Modification;
-use crate::refs::{Ref, Selector, ZoneKind};
+use crate::refs::{Pred, Ref, Selector, ZoneKind};
 use crate::spend::{SpendOn, WhenSpent};
 use crate::support::{
     Caps, Clause, PrintedCard, PrintedFace, Support, SupportRecord, support, whole_text,
@@ -512,6 +512,9 @@ pub struct ManaShape<'a> {
     pub produces: ManaProduced<'a>,
     /// How many times.
     pub times: &'a Amount,
+    /// How many times more than `times` counts: the one of "X plus one" ("Add {B}, then add an additional {B} for each
+    /// charge counter removed this way").
+    pub extra: u32,
     /// The source is tapped.
     pub tap: bool,
     /// The source is sacrificed.
@@ -543,6 +546,7 @@ impl ManaShape<'_> {
         (matches!(self.produces, ManaProduced::Fixed { count: 1, .. })
             || matches!(self.produces, ManaProduced::AnyColor(count) if count.is_one()))
             && self.times.is_one()
+            && self.extra == 0
             && self.then.is_empty()
             && self.before.is_empty()
             && self.pays.is_empty()
@@ -580,6 +584,17 @@ fn needs_no_answer(effect: &Effect) -> bool {
         }
         // "Draw a card at the beginning of the next turn's upkeep": what it does waits for its own trigger.
         Effect::DelayedTrigger { .. } => true,
+        // "If there are no depletion counters on this land, sacrifice it": a test of the state after the cost is paid.
+        Effect::If {
+            then, otherwise, ..
+        } => then.iter().chain(otherwise).all(needs_no_answer),
+        // The source alone is one permanent, so its sacrifice asks no choice.
+        Effect::Sacrifice {
+            who: Ref::You,
+            filter,
+            count,
+            bind: None,
+        } => *filter == Selector(vec![Pred::This]) && count.is_one(),
         _ => false,
     }
 }
@@ -729,6 +744,7 @@ pub fn mana_shape(ability: &Ability) -> Option<ManaShape<'_>> {
     if !lasts.is_step() {
         return None;
     }
+    let (times, extra, then) = r6e_x_plus(mana, times, then);
     let produces = ManaProduced::of(mana)?;
     // A combination keeps one source for each way to pick it, so it is added once and there are not too many ways.
     if let ManaProduced::AnyCombination { count, among } = &produces {
@@ -762,6 +778,7 @@ pub fn mana_shape(ability: &Ability) -> Option<ManaShape<'_>> {
         .then_some(ManaShape {
             produces,
             times,
+            extra,
             tap,
             sacrifice,
             mana: cost_mana.unwrap_or_default(),
@@ -774,6 +791,43 @@ pub fn mana_shape(ability: &Ability) -> Option<ManaShape<'_>> {
             only,
             when_spent: when_spent.as_deref(),
         })
+}
+
+/// "X plus one" of one mana: `times` of X plus a fixed number ("Add an amount of {C} equal to X plus one"), or one mana
+/// then the same mana X times ("Add {B}, then add an additional {B} for each charge counter removed this way"), as X and
+/// the fixed number, with the effects after them. Any other mana is `times` as written, none more.
+fn r6e_x_plus<'a>(
+    mana: &Produce,
+    times: &'a Amount,
+    then: &'a [Effect],
+) -> (&'a Amount, u32, &'a [Effect]) {
+    if let Amount::Sum(parts) = times
+        && let [x @ Amount::X, Amount::Fixed(more)] | [Amount::Fixed(more), x @ Amount::X] =
+            parts.as_slice()
+        && let Ok(more) = u32::try_from(*more)
+        && more > 0
+    {
+        return (x, more, then);
+    }
+    if times.is_one()
+        && let [
+            Effect::AddMana {
+                who: Ref::You,
+                mana: again,
+                times: x @ Amount::X,
+                only,
+                lasts,
+                when_spent: None,
+            },
+            rest @ ..,
+        ] = then
+        && again == mana
+        && only.is_empty()
+        && lasts.is_step()
+    {
+        return (x, 1, rest);
+    }
+    (times, 0, then)
 }
 
 /// The effects of a mana ability split before its mana: "Put a charge counter on this artifact. Add X mana ..., where
@@ -1639,6 +1693,30 @@ mod tests {
     )]
     #[case::exiling_an_uncounted_number_of_cards_from_the_hand(
         r#"{"Activated":{"cost":[{"ExileFromHand":{"filter":[],"count":{"Count":[]}}}],"effects":[{"AddMana":{"mana":{"AnyColor":1}}}]}}"#,
+        Some("Ability.ManaAbility.Other")
+    )]
+    #[case::r6e_battery(
+        r#"{"Activated":{"cost":["Tap",{"RemoveCounters":{"count":"X","counter":"charge"}}],"effects":[{"AddMana":{"mana":{"Fixed":["Black"]}}},{"AddMana":{"mana":{"Fixed":["Black"]},"times":"X"}}]}}"#,
+        Some("Ability.ManaAbility.Complex")
+    )]
+    #[case::r6e_battery_of_two_types(
+        r#"{"Activated":{"cost":["Tap",{"RemoveCounters":{"count":"X","counter":"charge"}}],"effects":[{"AddMana":{"mana":{"Fixed":["Black"]}}},{"AddMana":{"mana":{"Fixed":["Red"]},"times":"X"}}]}}"#,
+        Some("Ability.ManaAbility.Other")
+    )]
+    #[case::r6e_x_plus_one(
+        r#"{"Activated":{"cost":["Tap",{"RemoveCounters":{"count":"X","counter":"charge"}}],"effects":[{"AddMana":{"mana":{"Fixed":["Colorless"]},"times":{"Sum":["X",1]}}}]}}"#,
+        Some("Ability.ManaAbility.Complex")
+    )]
+    #[case::r6e_x_plus_one_of_any_color(
+        r#"{"Activated":{"cost":["Tap",{"RemoveCounters":{"count":"X","counter":"charge"}}],"effects":[{"AddMana":{"mana":{"AnyColor":1},"times":{"Sum":["X",1]}}}]}}"#,
+        Some("Ability.ManaAbility.Other")
+    )]
+    #[case::r6e_depletion(
+        r#"{"Activated":{"cost":["Tap",{"RemoveCounters":{"counter":{"Other":"depletion"}}}],"effects":[{"AddMana":{"mana":{"Fixed":["Black","Black"]}}},{"If":{"condition":{"Compare":{"left":{"Count":["This",{"Not":{"HasCounter":{"Other":"depletion"}}}]},"op":"Ge","right":1}},"then":[{"Sacrifice":{"filter":["This"]}}]}}]}}"#,
+        Some("Ability.ManaAbility.Complex")
+    )]
+    #[case::r6e_sacrificing_a_chosen_permanent(
+        r#"{"Activated":{"cost":["Tap"],"effects":[{"AddMana":{"mana":{"Fixed":["Black"]}}},{"If":{"condition":"YourTurn","then":[{"Sacrifice":{"filter":[{"Type":"Creature"}]}}]}}]}}"#,
         Some("Ability.ManaAbility.Other")
     )]
     #[case::not_a_mana_ability(r#"{"Activated":{"cost":["Tap"],"effects":[{"Draw":{}}]}}"#, None)]

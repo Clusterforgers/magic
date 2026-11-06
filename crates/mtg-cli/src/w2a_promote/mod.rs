@@ -292,7 +292,13 @@ const W2A_FIXTURES: &str = "tests/fixtures/corpus";
 pub fn w2a_decide(basis: &W2aBasis, files: &[(PathBuf, String)]) -> Vec<W2aDecision> {
     let mut by_slug: BTreeMap<String, &PrintedCard> = BTreeMap::new();
     for card in basis.cards {
-        by_slug.entry(slug(&card.name)).or_insert(card);
+        let key = slug(&card.name);
+        if by_slug
+            .get(&key)
+            .is_none_or(|kept| crate::translate::stored::plainer(&card.name, &kept.name))
+        {
+            by_slug.insert(key, card);
+        }
     }
     let mut promoted = BTreeSet::new();
     let mut decisions = Vec::new();

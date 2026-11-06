@@ -10,8 +10,8 @@ use serde_json::Value;
 use mtg_cards::ability::Ability;
 use mtg_cards::card::{Card, ImplStatus};
 use mtg_cards::compile::{
-    ClauseKind, Compiled, compile, equip_line, own_names, same_text, static_pair_texts,
-    written_variants,
+    ClauseKind, Compiled, compile, equip_line, escalate_cost, escalate_reads, forecast_lines,
+    own_names, reinforce_line, same_text, static_pair_texts, written_variants,
 };
 use mtg_cards::load::Library;
 use mtg_cards::support::PrintedCard;
@@ -266,6 +266,38 @@ fn equip_options_are_written(
     Some(count)
 }
 
+/// Whether a Reinforce or Forecast ability (an activated ability from the hand) is written as a keyword line of its face;
+/// `None` when the ability is not one.
+fn hand_keyword_is_written(
+    printed: &PrintedCard,
+    compiled: &Compiled,
+    face: usize,
+    ability: &Ability,
+) -> Option<()> {
+    let mut written = forecast_lines(ability, written_variants);
+    written.extend(reinforce_line(ability));
+    if written.is_empty() {
+        return None;
+    }
+    let lines: Vec<&str> = compiled
+        .clauses
+        .iter()
+        .filter(|clause| {
+            clause.face == face
+                && matches!(clause.kind, ClauseKind::Keyword | ClauseKind::Activated)
+        })
+        .map(|clause| without_ability_word(&clause.text))
+        .collect();
+    assert!(
+        lines.iter().any(|text| written
+            .iter()
+            .any(|line| same_text(without_ability_word(line), text))),
+        "{}: none of {written:?} is in {lines:?}",
+        printed.name
+    );
+    Some(())
+}
+
 /// Every spell, triggered or mana ability of a hand-written file that the renderer can write is
 /// written as the text of the card: the clauses of its kind, on the same face.
 #[test]
@@ -286,6 +318,21 @@ fn the_renderer_writes_the_hand_written_abilities_as_the_cards_text() {
                 skip_next = count == 2;
                 rendered += count;
                 continue;
+            }
+            // Reinforce and Forecast are one keyword line of the card.
+            if hand_keyword_is_written(&printed, &compiled, face, ability).is_some() {
+                rendered += 1;
+                continue;
+            }
+            // Escalate is a keyword line beside the modes of the spell.
+            if let Some(cost) = escalate_cost(ability) {
+                assert!(
+                    compiled.clauses.iter().any(|clause| clause.face == face
+                        && clause.kind == ClauseKind::Keyword
+                        && escalate_reads(&clause.text, cost)),
+                    "{}: no Escalate line for {cost:?}",
+                    printed.name
+                );
             }
             // Two statics under one condition are one sentence of the card.
             if let Some(&(same, second)) = listed.get(at + 1) {

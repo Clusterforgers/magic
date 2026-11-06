@@ -18,6 +18,17 @@ use crate::compile::names_of;
 use crate::coverage::precon_cards;
 use crate::error::CliError;
 
+/// Whether `name` has fewer punctuation marks than `kept`, so it keeps a slug they share ("Lava Axe" over the Spell
+/// commander "Lava, Axe"): the plainer name is the one a Forge script and a proposal file carry.
+pub fn plainer(name: &str, kept: &str) -> bool {
+    let marks = |name: &str| {
+        name.chars()
+            .filter(|c| !c.is_alphanumeric() && *c != ' ')
+            .count()
+    };
+    marks(name) < marks(kept)
+}
+
 /// The stored cards by slug, with what is needed to tell what the rules of the corpus and the compiler already give.
 pub struct Stored {
     cards: BTreeMap<String, PrintedCard>,
@@ -36,10 +47,16 @@ impl Stored {
         })?;
         let printed = stored_cards(db).await?;
         let names = names_of(&printed);
-        let cards = printed
-            .into_iter()
-            .map(|card| (slug(&card.name), card))
-            .collect();
+        let mut cards: BTreeMap<String, PrintedCard> = BTreeMap::new();
+        for card in printed {
+            let key = slug(&card.name);
+            if cards
+                .get(&key)
+                .is_none_or(|kept| !plainer(&kept.name, &card.name))
+            {
+                cards.insert(key, card);
+            }
+        }
         let caps = mtg_engine::caps();
         let precons = if precons {
             let (cards, _) = precon_cards(db, None).await?;

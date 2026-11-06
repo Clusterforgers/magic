@@ -71,6 +71,19 @@ fn clauses_of(paired: &Paired, face: usize, abilities: usize) -> Vec<Vec<usize>>
             slot.push(at);
         }
     }
+    // A clause records one ability; another ability read by the same clause ("I, II — ...") is found by its place.
+    let places = paired.places.get(face).map_or(&[][..], Vec::as_slice);
+    for (ability, slot) in of.iter_mut().enumerate() {
+        let Some(Some(start)) = places.get(ability) else {
+            continue;
+        };
+        if !slot.is_empty() {
+            continue;
+        }
+        slot.extend(paired.clauses.iter().position(|clause| {
+            clause.face == face && clause.span.start == *start && covering(&clause.state).is_some()
+        }));
+    }
     of
 }
 

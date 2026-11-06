@@ -1,0 +1,86 @@
+{
+  "oracle_id": "a3570093-3c16-42e7-a83d-2ff611a891b5",
+  "name": "Roar of Endless Song",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Roar of Endless Song",
+      "oracle_fingerprint": "e6a888fb0a4323441ad50ed7829c14b8",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 1 } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Elephant",
+                      "colors": ["Green"],
+                      "types": ["Creature"],
+                      "subtypes": ["Elephant"],
+                      "power": 5,
+                      "toughness": 5
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 2 } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Elephant",
+                      "colors": ["Green"],
+                      "types": ["Creature"],
+                      "subtypes": ["Elephant"],
+                      "power": 5,
+                      "toughness": 5
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 3 } },
+            "effects": [
+              {
+                "RepeatEach": {
+                  "over": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                  "as": "doubled",
+                  "effects": [
+                    {
+                      "Continuous": {
+                        "affected": { "Bound": "doubled" },
+                        "mods": [
+                          {
+                            "ModifyPT": {
+                              "power": { "Stat": { "of": { "Bound": "doubled" }, "stat": "Power" } },
+                              "toughness": {
+                                "Stat": { "of": { "Bound": "doubled" }, "stat": "Toughness" }
+                              }
+                            }
+                          }
+                        ],
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
