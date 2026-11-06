@@ -43,6 +43,7 @@ mod mana_plan;
 mod mana_repeat;
 #[cfg(test)]
 mod mana_repeat_tests;
+mod mana_replace;
 mod mana_snow;
 #[cfg(test)]
 mod mana_snow_tests;

@@ -952,6 +952,17 @@ describe('events with more than one shape', () => {
       'Radiation makes Ana gain life rather than lose life',
     ],
     [
+      ruleEffect(
+        { MayCastRather: { casts: [[1, { id: 4, counter: 0 }]], cost: [{ Generic: 2 }] } },
+        'Forever',
+      ),
+      'Bo may cast Lightning Bolt for a different cost',
+    ],
+    [
+      ruleEffect({ ManaProduced: { what: [], who: [0, 1], change: { Times: 2 } } }, 'UntilEndOfTurn'),
+      'Taps for mana by Ana and Bo produce changed mana until end of turn',
+    ],
+    [
       ruleEffect({ CantDraw: [1] }, 'UntilYourNextTurn'),
       "Bo can't draw cards until their controller's next turn",
     ],

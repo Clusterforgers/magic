@@ -271,7 +271,7 @@ fn listed(state: &GameState, player: PlayerId, id: ObjectId) -> Vec<Way> {
     let by_permission: Vec<&Cast> = permissions
         .iter()
         .copied()
-        .filter(|permission| !permission.free && permission.from == Some(zone_kind(zone)))
+        .filter(|permission| permission.adds_to_printed(zone_kind(zone)))
         .collect();
     let added = if own {
         Some(Added::default())
@@ -293,6 +293,7 @@ fn listed(state: &GameState, player: PlayerId, id: ObjectId) -> Vec<Way> {
             printed,
         ));
     }
+    ways.extend(rather_way(&permissions, instant));
     let free_permissions = permissions
         .iter()
         .copied()
@@ -390,6 +391,21 @@ const fn way_label(way: CastWay) -> &'static str {
 
 /// The way of casting a card without paying its mana cost (CR 118.9): no mana, and the other parts and the cost increases of
 /// the cast stay.
+/// The way to cast for the mana cost a permission puts in place of the printed one (airbend).
+fn rather_way(permissions: &[&Cast], instant: bool) -> Option<Way> {
+    let cost = permissions
+        .iter()
+        .find_map(|permission| permission.rather.as_ref())?;
+    Some(Way {
+        alternative: Some(CastWay::Alternative),
+        label: format!("Cast for {cost}"),
+        mana: Some(cost.clone()),
+        instant,
+        variant: 0,
+        parts: Vec::new(),
+    })
+}
+
 fn free_way(instant: bool) -> Way {
     Way {
         alternative: Some(CastWay::Free),

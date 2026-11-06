@@ -36,6 +36,7 @@ pub fn effects(ctx: &mut Ctx, p: &Params, api: &str) -> Tr<Vec<Value>> {
         "TapAll" => one(all_of(ctx, p, "Tap")),
         "UntapAll" => one(all_of(ctx, p, "Untap")),
         "Sacrifice" => one(sacrifice(ctx, p)),
+        "Airbend" => airbend(ctx, p),
         "Fight" => one(fight(ctx, p)),
         "GainControl" => gain_control(ctx, p),
         other => unmapped(format!("effect:{other}")),
@@ -56,6 +57,27 @@ pub fn duration(word: Option<&str>) -> Tr<&'static str> {
         Some("UntilUntaps") => Ok("WhileSourceTapped"),
         Some(other) => unmapped(format!("duration:{other}")),
     }
+}
+
+/// `Airbend`: exile the objects, which their owners may cast for {2} rather than their mana costs while they stay exiled.
+fn airbend(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
+    only(
+        p,
+        "Airbend",
+        &["ValidTgts", "Defined", "TargetMin", "TargetMax"],
+    )?;
+    // A spell on the stack is exiled from the stack, which no effect of the engine does for an airbend yet.
+    if p.get("ValidTgts")
+        .is_some_and(|valid| valid.contains("inZoneStack"))
+        || p.get("TgtZone").is_some()
+    {
+        return unmapped("key:Airbend.TgtZone");
+    }
+    let what = subject(ctx, p, "", None)?;
+    Ok(vec![
+        json!({"Exile": {"what": what, "as": "airbent"}}),
+        json!({"Rule": {"rule": {"MayCastRather": {"only": {"Bound": "airbent"}, "cost": "{2}"}}, "duration": "Forever"}}),
+    ])
 }
 
 fn simple(ctx: &mut Ctx, p: &Params, api: &str, verb: &str) -> Tr<Value> {

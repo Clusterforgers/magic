@@ -21,7 +21,7 @@ use crate::events::Event;
 use crate::faces;
 use crate::keywords;
 use crate::loyalty;
-use crate::mana::{ManaOption, ManaPool, can_afford};
+use crate::mana::{ManaOption, ManaPool, can_afford, can_afford_with};
 use crate::mana_ability;
 use crate::manual;
 use crate::object::GameObject;
@@ -238,7 +238,8 @@ fn can_activate(
             .life()
             .saturating_sub(i32::try_from(price.life()).unwrap_or(i32::MAX));
         let spend = Spend::for_ability(state, object.id(), price.x > 0);
-        if !can_afford(mana, seat.mana(), &sources, life, &spend) {
+        let helpers = waterbend_help(state, player, object.id(), &price, &claimed);
+        if !can_afford_with(mana, seat.mana(), &sources, helpers.help(), life, &spend) {
             return false;
         }
     }
@@ -249,6 +250,25 @@ fn can_activate(
                     && price.at(x).claimed(state, player, object.id()).is_some()
                     && can_pay_x(state, player, object, &price, &claimed, x))
         })
+}
+
+/// What may help pay the waterbend part of the price of an ability of `source`: the artifacts and creatures the cost does not
+/// take, nothing for a price without one.
+fn waterbend_help(
+    state: &GameState,
+    player: PlayerId,
+    source: ObjectId,
+    price: &Price,
+    claimed: &[ObjectId],
+) -> crate::help::Offered {
+    if price.waterbend == 0 {
+        return crate::help::Offered::default();
+    }
+    let mut barred = claimed.to_vec();
+    if price.tap || price.moves_source() {
+        barred.push(source);
+    }
+    crate::help::waterbend(state, player, &barred)
 }
 
 /// Whether `player` can pay the mana that cost modifiers add to a loyalty ability (CR 606.4, 601.2f), if any do.

@@ -14,7 +14,7 @@ use std::sync::OnceLock;
 use mtg_cards::ability::Ability;
 use mtg_cards::cost::Cost;
 use mtg_cards::keyword::Keyword;
-use mtg_cards::modify::{Attacked, GameRule, Prohibited, SpendAs};
+use mtg_cards::modify::{Attacked, GameRule, ManaChange, Prohibited, SpendAs};
 use mtg_cards::refs::{Ref, Selector, ZoneKind};
 use mtg_cards::trigger::{ReplaceBy, ReplaceWhen, TriggerPattern};
 use mtg_core::ids::{EffectId, ObjectId, PlayerId};
@@ -116,6 +116,17 @@ pub enum Rule {
         #[cfg_attr(feature = "ts", ts(type = "unknown"))]
         keyword: Keyword,
     },
+    /// The mana the permanents the selector picks add as the players tap them for mana changes (CR 106.6, 614.1).
+    ManaProduced {
+        /// The permanents, judged as they are tapped.
+        #[cfg_attr(feature = "ts", ts(type = "unknown"))]
+        what: Selector,
+        /// The players whose taps are changed.
+        who: Vec<PlayerId>,
+        /// The change.
+        #[cfg_attr(feature = "ts", ts(type = "unknown"))]
+        change: ManaChange,
+    },
     /// The players can't draw cards.
     CantDraw(Vec<PlayerId>),
     /// The players can't search libraries.
@@ -178,6 +189,14 @@ pub enum Rule {
         #[serde(default, skip_serializing_if = "SpendAs::is_normal")]
         #[cfg_attr(feature = "ts", ts(optional, type = "unknown"))]
         spend_as: SpendAs,
+    },
+    /// Each owner may cast the exiled card paired with them for `cost` rather than its mana cost (CR 118.9, 601.2f), while it
+    /// stays exiled.
+    MayCastRather {
+        /// The owner of each card and the card, as it was named when the rule began.
+        casts: Vec<(PlayerId, ObjectRef)>,
+        /// The mana paid in place of the mana cost.
+        cost: ManaCost,
     },
     /// A triggered ability of a permanent the rule's controller controls triggers an additional time when the event
     /// the pattern describes causes it.
@@ -409,6 +428,21 @@ pub(crate) struct Again {
     pub(crate) cause: Option<TriggerPattern>,
 }
 
+/// A change to the mana of a tap that a permanent in play or an effect has in force.
+#[derive(Debug, Clone)]
+pub(crate) struct ManaRule {
+    /// The player who controls the rule.
+    pub(crate) controller: PlayerId,
+    /// The permanent or effect that has the rule.
+    pub(crate) source: ObjectRef,
+    /// The players whose taps are changed.
+    pub(crate) who: Vec<PlayerId>,
+    /// The permanents tapped that it covers.
+    pub(crate) what: Selector,
+    /// The change.
+    pub(crate) change: ManaChange,
+}
+
 /// The rules in force in a state.
 #[derive(Debug, Default)]
 pub(crate) struct RulesInForce {
@@ -426,6 +460,8 @@ pub(crate) struct RulesInForce {
     player_keywords: Vec<(PlayerId, Keyword)>,
     no_draw: BTreeSet<PlayerId>,
     no_search: BTreeSet<PlayerId>,
+    /// The changes to the mana of a tap.
+    pub(crate) mana: Vec<ManaRule>,
     vote_again: BTreeSet<PlayerId>,
     skip_extra_turns: BTreeSet<PlayerId>,
     reveal_top: BTreeSet<PlayerId>,
@@ -490,9 +526,17 @@ pub(crate) struct Cast {
     pub(crate) additional: Option<Cost>,
     /// How the mana of a cast through it may be spent.
     pub(crate) spend_as: SpendAs,
+    /// The mana paid in place of the mana cost of the card.
+    pub(crate) rather: Option<ManaCost>,
 }
 
 impl Cast {
+    /// Whether a cast through the permission from `zone` is for the printed mana cost, with what the permission adds: not a free
+    /// cast and not one for another mana cost.
+    pub(crate) fn adds_to_printed(&self, zone: ZoneKind) -> bool {
+        !self.free && self.rather.is_none() && self.from == Some(zone)
+    }
+
     /// Whether the permission lets `player` cast the card `card`, which is in its zone now.
     pub(crate) fn covers(&self, state: &GameState, player: PlayerId, card: &GameObject) -> bool {
         self.c11b_open(state)
@@ -638,6 +682,7 @@ impl RulesInForce {
                 once: false,
                 additional: None,
                 spend_as: SpendAs::Normal,
+                rather: None,
             });
         }
     }
@@ -683,6 +728,17 @@ impl RulesInForce {
                 .extend(who.iter().map(|player| (*player, keyword.clone()))),
             Rule::CantDraw(players) => self.no_draw.extend(players),
             Rule::CantSearch(players) => self.no_search.extend(players),
+            Rule::ManaProduced { what, who, change } => {
+                if let Some(source) = source {
+                    self.mana.push(ManaRule {
+                        controller,
+                        source,
+                        who: who.clone(),
+                        what: what.clone(),
+                        change: *change,
+                    });
+                }
+            }
             Rule::VoteAgain(players) => self.vote_again.extend(players),
             Rule::SkipExtraTurns(players) => self.skip_extra_turns.extend(players),
             Rule::RevealTop(players) => self.reveal_top.extend(players),
@@ -738,7 +794,29 @@ impl RulesInForce {
                         once: *once,
                         additional: additional.as_deref().cloned(),
                         spend_as: *spend_as,
+                        rather: None,
                     });
+                }
+            }
+            Rule::MayCastRather { casts, cost } => {
+                if let Some(source) = source {
+                    for (owner, card) in casts {
+                        self.casts.push(Cast {
+                            controller,
+                            source,
+                            who: vec![*owner],
+                            what: Selector::default(),
+                            from: Some(ZoneKind::Exile),
+                            free: false,
+                            flash: false,
+                            only: Some(vec![*card]),
+                            play: false,
+                            once: false,
+                            additional: None,
+                            spend_as: SpendAs::Normal,
+                            rather: Some(cost.clone()),
+                        });
+                    }
                 }
             }
             Rule::NextSpell { what, benefit } => {
@@ -758,6 +836,22 @@ impl RulesInForce {
             | Rule::ToughnessAssignsDamage(_) => self.w17b.w17b_put(rule),
         }
     }
+}
+
+/// The exiled cards `only` names, each with its owner, to be cast for `cost` rather than their mana costs.
+fn may_cast_rather(
+    scope: &Scope<'_>,
+    only: &Ref,
+    cost: &mtg_cards::mana::ManaCostX,
+) -> Result<Rule, ResolveError> {
+    let casts = w17b_rule_objects(scope, only, Zone::Exile)?
+        .into_iter()
+        .filter_map(|named| Some((scope.state.object(named.id)?.owner(), named)))
+        .collect();
+    Ok(Rule::MayCastRather {
+        casts,
+        cost: cost.rest().clone(),
+    })
 }
 
 /// The benefit of a `NextSpell` rule with the times of a cost change counted now.
@@ -902,6 +996,11 @@ pub(crate) fn lower_rule(scope: &Scope<'_>, wanted: &GameRule) -> Result<Rule, R
         },
         GameRule::CantDraw(who) => Rule::CantDraw(scope.players(who)?),
         GameRule::CantSearch(who) => Rule::CantSearch(scope.players(who)?),
+        GameRule::ManaProduced { what, who, change } => Rule::ManaProduced {
+            what: what.clone(),
+            who: scope.players(who)?,
+            change: *change,
+        },
         GameRule::VoteAgain(who) => Rule::VoteAgain(scope.players(who)?),
         GameRule::SkipExtraTurns(who) => Rule::SkipExtraTurns(scope.players(who)?),
         GameRule::RevealTop(who) => Rule::RevealTop(scope.players(who)?),
@@ -922,6 +1021,7 @@ pub(crate) fn lower_rule(scope: &Scope<'_>, wanted: &GameRule) -> Result<Rule, R
             spend_as: permission.spend_as,
         },
         GameRule::NextSpell { what, benefit } => next_spell(scope, what, benefit)?,
+        GameRule::MayCastRather { only, cost } => may_cast_rather(scope, only, cost)?,
         GameRule::TriggerAgain { cause, source } => Rule::TriggerAgain {
             cause: cause.clone().map(Box::new),
             source: source.clone(),
@@ -1019,6 +1119,7 @@ pub(crate) fn names_nothing(rule: &Rule) -> bool {
         | Rule::SkipDrawStep(players)
         | Rule::NoLegendRule(players)
         | Rule::NoMaxHandSize(players) => players.is_empty(),
+        Rule::MayCastRather { casts, .. } => casts.is_empty(),
         Rule::MaxHandSize(sizes) => sizes.is_empty(),
         Rule::UntapDuring { whose, .. } => whose.is_empty(),
         Rule::AttackLimitAt { at, .. } => at.is_empty(),
@@ -1026,7 +1127,9 @@ pub(crate) fn names_nothing(rule: &Rule) -> bool {
         Rule::MayCast { who, only, .. } => {
             who.is_empty() || only.as_ref().is_some_and(Vec::is_empty)
         }
-        Rule::BlockLimitEach { who, .. } | Rule::PlayersHave { who, .. } => who.is_empty(),
+        Rule::BlockLimitEach { who, .. }
+        | Rule::PlayersHave { who, .. }
+        | Rule::ManaProduced { who, .. } => who.is_empty(),
         Rule::Cant { who, .. } => who.is_empty(),
         Rule::TriggerAgain { .. }
         | Rule::NextSpell { .. }
@@ -1149,6 +1252,7 @@ static NONE: RulesInForce = RulesInForce {
     player_keywords: Vec::new(),
     no_draw: BTreeSet::new(),
     no_search: BTreeSet::new(),
+    mana: Vec::new(),
     vote_again: BTreeSet::new(),
     skip_extra_turns: BTreeSet::new(),
     reveal_top: BTreeSet::new(),
@@ -1509,7 +1613,7 @@ pub(crate) fn c11b_once_source(
     let zone = crate::resolve::zone_kind(from);
     let covering: Vec<&Cast> = cast_permissions(state)
         .iter()
-        .filter(|cast| !cast.free && cast.from == Some(zone) && cast.covers(state, player, card))
+        .filter(|cast| cast.adds_to_printed(zone) && cast.covers(state, player, card))
         .collect();
     if covering.iter().any(|cast| !cast.once) {
         return None;

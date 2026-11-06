@@ -102,6 +102,7 @@ fn is_fixed(item: &CostItem) -> bool {
         | CostItem::RevealFromHand { count, .. }
         | CostItem::ReturnToHand { count, .. }
         | CostItem::Behold { count, .. }
+        | CostItem::ExiledToGraveyard { count, .. }
         | CostItem::ToLibrary { count, .. } => fixed(count),
         _ => true,
     }
@@ -130,6 +131,7 @@ fn amount_is_x(item: &CostItem) -> bool {
         | CostItem::RevealFromHand { count, .. }
         | CostItem::ReturnToHand { count, .. }
         | CostItem::Behold { count, .. }
+        | CostItem::ExiledToGraveyard { count, .. }
         | CostItem::ToLibrary { count, .. } => *count == Amount::X,
         _ => false,
     }
@@ -1229,6 +1231,7 @@ impl<'a> Walker<'a> {
                     | CostItem::RevealFromHand { filter, count }
                     | CostItem::ReturnToHand { filter, count }
                     | CostItem::Behold { filter, count }
+                    | CostItem::ExiledToGraveyard { filter, count }
                     | CostItem::ToLibrary { filter, count, .. }
                     | CostItem::Craft { filter, count, .. } => {
                         w.at("filter", |w| w.selector(filter));
@@ -1259,6 +1262,7 @@ impl<'a> Walker<'a> {
                     | CostItem::DiscardSelf
                     | CostItem::Unattach
                     | CostItem::CollectEvidence(_)
+                    | CostItem::Waterbend(_)
                     | CostItem::Forage => {}
                 }
             });
@@ -1495,9 +1499,11 @@ impl<'a> Walker<'a> {
                     | CostItem::CollectEvidence(_)
                     | CostItem::Blight(_)
                     | CostItem::Behold { .. }
+                    | CostItem::ExiledToGraveyard { .. }
                     | CostItem::ToLibrary { .. }
                     | CostItem::Craft { .. }
                     | CostItem::Forage
+                    | CostItem::Waterbend(_)
             ) {
                 self.uses(kind, &format!("{prefix}.{}", tag_of(item)));
             }
@@ -3959,9 +3965,6 @@ impl Walker<'_> {
                 }
             }),
             GameRule::PlayersHave { who, .. } => self.at(tag, |w| w.reference(who, Kind::Player)),
-            GameRule::NextSpell { what, .. } => {
-                self.at(tag, |w| w.at("what", |w| w.selector(what)));
-            }
             GameRule::CanBeCommander => {}
             GameRule::GraveyardCardsUntargetable
             | GameRule::CantLoseGame { .. }
@@ -3975,6 +3978,9 @@ impl Walker<'_> {
             GameRule::TriggerAgain { .. }
             | GameRule::NoLegendRule(_)
             | GameRule::MaxHandSize { .. }
+            | GameRule::NextSpell { .. }
+            | GameRule::MayCastRather { .. }
+            | GameRule::ManaProduced { .. }
             | GameRule::UntapDuring { .. } => self.rule_option(&tag, rule),
         }
     }
@@ -3995,6 +4001,19 @@ impl Walker<'_> {
                 self.scope = saved;
             }
             GameRule::NoLegendRule(who) => self.at(tag, |w| w.reference(who, Kind::Player)),
+            GameRule::NextSpell { what, .. } => {
+                self.at(tag, |w| w.at("what", |w| w.selector(what)));
+            }
+            GameRule::MayCastRather { only, .. } => {
+                self.at(tag, |w| w.reference(only, Kind::Object));
+            }
+            GameRule::ManaProduced { what, who, change } => self.at(tag, |w| {
+                w.at("what", |w| w.selector(what));
+                w.at("who", |w| w.reference(who, Kind::Player));
+                if matches!(change, crate::modify::ManaChange::Times(0)) {
+                    w.problem("a mana multiplier is at least one");
+                }
+            }),
             GameRule::MaxHandSize { who, size } => self.at(tag, |w| {
                 w.at("who", |w| w.reference(who, Kind::Player));
                 w.at("size", |w| w.amount(size));
@@ -4348,6 +4367,7 @@ fn picks(cost: &Cost) -> bool {
                 | CostItem::CollectEvidence(_)
                 | CostItem::Blight(_)
                 | CostItem::Behold { .. }
+                | CostItem::ExiledToGraveyard { .. }
                 | CostItem::ToLibrary { .. }
                 | CostItem::Craft { .. }
                 | CostItem::Forage

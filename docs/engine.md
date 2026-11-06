@@ -209,6 +209,9 @@ Rules that change how the game is played rather than the objects in it (`Effect:
 - Declarations that do only what the rules require: `AttackOptions::required_attack` and `BlockOptions::required_blocks`, which the bots, the server's clock fallback and the testkit's passive seats use.
 - The top card of a library whose owner plays with it revealed (`GameState::revealed_top`) is shown to every seat; `Rule::LookAtTop` makes it known to its owner alone.
 - A life total that can't change (`GameRule::LifeTotalCantChange`, CR 119.7) stops gain, loss, lifelink and mana burn.
+- `GameRule::ManaProduced` (`mana_replace.rs`) changes the mana of a tap (CR 106.6): `ManaChange` sets the type, sets one mana of a type, multiplies, or converts one type. It rewrites the options `mana_ability::options` offers after the triggered mana abilities fold in, so the payment planner and the activation agree; it never uses the stack.
+- `GameRule::MayCastRather` gives the owner of each exiled card a cast for another mana cost (airbend): the way replaces the mana cost (`CastWay::Alternative`), and the card is cast for no other cost.
+- A waterbend cost (`CostItem::Waterbend`) is generic mana that untapped artifacts and creatures help pay as improvise does (`help::waterbend`); only the cost of an activated ability offers the helpers, any other use is an unpaid part.
 
 ## Phasing
 

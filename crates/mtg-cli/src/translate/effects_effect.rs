@@ -80,6 +80,18 @@ pub fn effects(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
     {
         return super::replacements::stays_tapped(ctx, p);
     }
+    if let Some(name) = p
+        .get("ReplacementEffects")
+        .filter(|name| !name.contains(','))
+        .filter(|_| !p.has("RememberObjects") && !p.has("ValidTgts") && !p.has("StaticAbilities"))
+        .map(str::trim)
+        .filter(|name| {
+            ctx.sub(name)
+                .is_ok_and(|sub| sub.get("Event") == Some("ProduceMana"))
+        })
+    {
+        return super::replacements_mana::effect(ctx, p, name);
+    }
     if p.has("ReplacementEffects") {
         let remembered = super::replacements_damage::remembered_of(ctx, p)?;
         let mut out = ambient_with(ctx, p, remembered.as_ref())?;

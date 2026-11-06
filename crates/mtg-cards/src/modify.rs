@@ -4,6 +4,7 @@ use std::sync::Arc;
 
 use mtg_core::card::{CardType, Subtype, Supertype};
 use mtg_core::color::Color;
+use mtg_core::mana::ManaType;
 use serde::{Deserialize, Serialize};
 
 use crate::ability::{Ability, ActivationKind};
@@ -651,6 +652,14 @@ pub enum GameRule {
     /// Counters remain on the card as it moves to any zone other than a hand or a library (CR 122.2); the card reads it
     /// in every zone, so the rule is written without `from`.
     CountersRemain,
+    /// The owner of each exiled card `only` names may cast it for `cost` rather than its mana cost, while it stays exiled
+    /// (airbend: CR 118.9).
+    MayCastRather {
+        /// The exiled cards, named when the rule begins.
+        only: Ref,
+        /// The mana paid in place of the mana cost.
+        cost: ManaCostX,
+    },
     /// The subjects `who` names (players or objects) can't do what `action` names: it is not offered, and an effect that
     /// would have it done does nothing.
     Cant {
@@ -658,6 +667,34 @@ pub enum GameRule {
         who: Ref,
         /// What they can't do.
         action: Prohibited,
+    },
+    /// The mana the permanents `what` selects add as they are tapped for mana, when a player in `who` taps them, changes as
+    /// `change` says (CR 614.1, 106.6): "If a land is tapped for mana, it produces {B} instead of any other type and amount."
+    ManaProduced {
+        /// The permanents, judged as they are tapped.
+        what: Selector,
+        /// The players whose taps are changed.
+        who: Ref,
+        /// The change.
+        change: ManaChange,
+    },
+}
+
+/// How a `GameRule::ManaProduced` changes the mana of a tap.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
+pub enum ManaChange {
+    /// Every mana is of this type instead of any other type, in the same amount.
+    OnlyType(ManaType),
+    /// One mana of this type instead of any other type and amount.
+    One(ManaType),
+    /// As many times as much mana.
+    Times(u32),
+    /// Mana of the first type is of the second instead.
+    Convert {
+        /// The type that changes.
+        from: ManaType,
+        /// The type it becomes.
+        to: ManaType,
     },
 }
 

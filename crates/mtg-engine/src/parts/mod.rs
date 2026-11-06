@@ -18,6 +18,7 @@ mod evidence;
 mod exile;
 mod exile_hand;
 mod exile_top;
+mod exiled;
 mod forage;
 mod life;
 pub(crate) mod mill;
@@ -81,6 +82,8 @@ pub(crate) enum Kind {
     Forage,
     /// Permanents the payer controls and/or cards in their graveyard are exiled (craft, CR 702.167).
     Craft,
+    /// A card in exile, of any owner, goes to its owner's graveyard.
+    ExiledToGraveyard,
 }
 
 /// A part of the cost that takes objects the player picks.
@@ -156,6 +159,7 @@ const fn counted(item: &CostItem) -> &'static str {
         CostItem::ExileTop(_) => "Cost.ExileTop.Counted",
         CostItem::Blight(_) => "Cost.Blight.Counted",
         CostItem::Behold { .. } => "Cost.Behold.Counted",
+        CostItem::ExiledToGraveyard { .. } => "Cost.ExiledToGraveyard.Counted",
         CostItem::ToLibrary { .. } => "Cost.ToLibrary.Counted",
         CostItem::RemoveCounters { .. } => "Cost.RemoveCounters.Counted",
         CostItem::PutCounters { .. } => "Cost.PutCounters.Counted",
@@ -266,6 +270,9 @@ fn read_more(item: &CostItem) -> Result<Option<(Part, bool)>, &'static str> {
             )
         }
         CostItem::Behold { filter, count } => pick(Kind::Behold, filter, count, item)?,
+        CostItem::ExiledToGraveyard { filter, count } => {
+            pick(Kind::ExiledToGraveyard, filter, count, item)?
+        }
         CostItem::ToLibrary {
             from,
             filter,
@@ -501,6 +508,7 @@ impl Part {
                 Kind::ToLibrary(..) => "Cost.ToLibrary",
                 Kind::Forage => "Cost.Forage",
                 Kind::Craft => "Cost.Craft",
+                Kind::ExiledToGraveyard => "Cost.ExiledToGraveyard",
                 Kind::ExileHand => "Cost.ExileFromHand",
                 Kind::Reveal => "Cost.RevealFromHand",
                 Kind::Tap => "Cost.TapPermanents",
@@ -685,6 +693,7 @@ pub(crate) fn photographed(
                 | Kind::Evidence
                 | Kind::Forage
                 | Kind::Craft
+                | Kind::ExiledToGraveyard
                 | Kind::ExileHand
                 | Kind::Reveal
         ) {
@@ -776,6 +785,7 @@ impl Pick {
             Kind::ToLibrary(from, _) => to_library::candidates(payer, from, &self.filter),
             Kind::Forage => forage::candidates(payer),
             Kind::Craft => exile::craft_candidates(payer, &self.filter),
+            Kind::ExiledToGraveyard => exiled::candidates(payer, &self.filter),
         };
         // A prohibition keeps an object out of the cost it forbids (`prohibit.rs`).
         found.retain(|id| match self.kind {
@@ -881,6 +891,7 @@ impl Pick {
             }
             Kind::Forage => forage::text(),
             Kind::Craft => exile::craft_text(&self.filter, self.count),
+            Kind::ExiledToGraveyard => exiled::text(self.count),
         }
     }
 
@@ -922,6 +933,7 @@ impl Pick {
             Kind::ExileAny | Kind::Evidence => exile::event(state, object),
             Kind::Behold => behold::event(state, player, object),
             Kind::Forage => forage::event(state, object),
+            Kind::ExiledToGraveyard => exiled::event(state, object),
             Kind::Blight(_) | Kind::ToLibrary(..) => None,
         }
     }

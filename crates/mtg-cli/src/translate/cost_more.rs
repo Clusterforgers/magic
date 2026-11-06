@@ -31,6 +31,19 @@ pub fn item(ctx: &Ctx, head: &str, fields: &[&str]) -> Option<Tr<Value>> {
             Err(_) => unmapped("cost:CollectEvidence-X"),
         },
         "Behold" => filtered(ctx, "Behold", number, what),
+        "Waterbend" => match number.parse::<u32>() {
+            Ok(n) if n > 0 && ctx.waterbend_ok.get() => Ok(json!({ "Waterbend": n })),
+            Ok(_) => unmapped("cost:Waterbend-outside-an-ability"),
+            Err(_) => unmapped("cost:Waterbend-X"),
+        },
+        // Only an effect that resolves links the card it exiles to its source; a replacement ("exile it instead") does not.
+        "ExiledMoveToGrave"
+            if what.contains("ExiledWithSource")
+                && ctx.oracle.to_lowercase().contains("exile it instead") =>
+        {
+            unmapped("cost:ExiledMoveToGrave-linked-by-a-replacement")
+        }
+        "ExiledMoveToGrave" => filtered(ctx, "ExiledToGraveyard", number, what),
         "untapYType" => filtered(ctx, "UntapPermanents", number, what),
         "AddCounter" if fields.len() == 2 => put_counters(ctx, number, what),
         "SubCounter" if fields.len() >= 3 => remove_from(ctx, number, what, fields[2]),
