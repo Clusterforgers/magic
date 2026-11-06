@@ -383,6 +383,7 @@ const fn way_label(way: CastWay) -> &'static str {
         CastWay::Surge => "Surge",
         CastWay::WebSlinging => "Web-slinging",
         CastWay::Impending => "Impending",
+        CastWay::Sneak => "Sneak",
         _ => "Alternative cost",
     }
 }
@@ -506,6 +507,7 @@ fn keyword_way(
             in_hand && state.opponent_lost_life(player),
         ),
         Keyword::Awaken { cost, .. } => (CastWay::Awaken, "Awaken", cost, in_hand),
+        Keyword::Prototype { cost, .. } => (CastWay::Prototype, "Prototype", cost, in_hand),
         Keyword::Morph(_) | Keyword::Megamorph(_) | Keyword::Disguise(_) if in_hand => {
             return Some(face_down_way(instant));
         }
@@ -534,6 +536,7 @@ fn keyword_way(
             | CastWay::Spectacle
             | CastWay::Mayhem
             | CastWay::Mutate
+            | CastWay::Prototype
     ) {
         cast_cost(cost)?
     } else {

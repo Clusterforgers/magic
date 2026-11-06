@@ -14,10 +14,17 @@ fn creature(lines: &str) -> String {
 #[case::surge("K:Surge:3 R R", "Surge", 1)]
 #[case::web("K:Web-slinging:2 W", "WebSlinging", 1)]
 #[case::impending("K:Impending:3:2 U U", "Impending", 3)]
+#[case::prototype("K:Prototype:1 U U:2:1", "Prototype", 1)]
+#[case::sneak("K:Sneak:W B", "Sneak", 2)]
 fn keyword_alt_costs(#[case] line: &str, #[case] way: &str, #[case] count: usize) {
     let found = abilities(&creature(line));
     assert_eq!(found.len(), count);
-    assert_eq!(found[0]["AltCast"]["way"], json!(way));
+    assert_eq!(
+        found[0]["AltCast"]["way"].as_str().or(found[0]["Keyword"]
+            .as_object()
+            .and_then(|k| k.keys().next().map(String::as_str))),
+        Some(way)
+    );
     assert!(
         found
             .iter()

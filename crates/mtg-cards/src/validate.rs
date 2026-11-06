@@ -1662,6 +1662,7 @@ impl<'a> Walker<'a> {
             | Keyword::Foretell(cost)
             | Keyword::Plot(cost)
             | Keyword::Awaken { cost, .. }
+            | Keyword::Prototype { cost, .. }
             | Keyword::Suspend { cost, .. } => {
                 self.at("cost", |w| w.cost(cost));
                 // Only mana is paid for these: a part that takes objects, life or counters is not.

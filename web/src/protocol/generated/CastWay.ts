@@ -3,4 +3,4 @@
 /**
  * The alternative cost a spell is cast for (CR 118.9): what a permanent and its abilities remember of how it was cast.
  */
-export type CastWay = "Flashback" | "Evoke" | "Overload" | "Madness" | "Miracle" | "Suspend" | "Foretold" | "Plotted" | "Escape" | "Dash" | "Bestow" | "Blitz" | "Prowl" | "Spectacle" | "Mayhem" | "Disturb" | "Awaken" | "JumpStart" | "Retrace" | "FaceDown" | "Mutate" | "Warp" | "Surge" | "WebSlinging" | "Impending" | "Free" | "Emerge" | "Harmonize" | "Alternative";
+export type CastWay = "Flashback" | "Evoke" | "Overload" | "Madness" | "Miracle" | "Suspend" | "Foretold" | "Plotted" | "Escape" | "Dash" | "Bestow" | "Blitz" | "Prowl" | "Spectacle" | "Mayhem" | "Disturb" | "Awaken" | "JumpStart" | "Retrace" | "FaceDown" | "Mutate" | "Warp" | "Surge" | "WebSlinging" | "Prototype" | "Impending" | "Free" | "Emerge" | "Harmonize" | "Alternative";

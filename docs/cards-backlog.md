@@ -34,8 +34,6 @@ Ordered by scripts freed per piece (`mtg-cli translate-forge`, `forge-check`). `
 - [ ] (fe1u) One-shot skips for `Prohibited::SkipTurn` and `SkipStep` ("skip your next turn", "skip your next draw step": a rule used up by its skip, a duration `NextTurn`) and the manual panel (`manual.rs`), which bypasses prohibitions, obeying `Cant`; `prohibit.rs`, `steps.rs`, `manual.rs`, `modify.rs`
 - [ ] (fe1v) `Effect::RemoveDamage` with an amount (`DamageRemoved` carries the amount) and `ExchangeLife` with a creature's toughness; frees the remaining `fe1n` scripts; `resolve/prim/fe1n_damage.rs`, `fe1n_life.rs`
 - [ ] (fg3u) `translate-forge` mappers for the choices that persist past one ability (`ChosenAs`, `ChosenName`, `Chosen`, the `Choose` enters kinds, `ChooseNumber`, `ChoosePlayer`) and the `Remember*` params; `mtg-cli`
-- [ ] (fe1ma) Sneak: an `AltCast` in the declare blockers step whose cost returns an unblocked attacker, the permanent entering tapped and attacking; Anticausal Vestige family; `ways.rs` timing, `announce`
-- [ ] (fe1mb) Prototype: an `AltCast` whose spell and permanent have the prototype mana cost, colours and power/toughness (CR 718); `characteristics`
 - [ ] (fe1mc) More Than Meets the Eye: an `AltCast` for the converted cost that casts the card transformed (`Effect::CastFromZone.transformed`)
 - [ ] (fe1md) Freerunning: the condition "a player was dealt combat damage this turn by an Assassin or a commander you controlled"; `CombatHit` gets a commander flag, read through a `TurnTally`
 - [ ] (fe1me) Offering: an `AltCast` with flash whose cost sacrifices a creature of the type and is reduced by its mana cost (the emerge reduction in `c9_emerge_ways.rs`)

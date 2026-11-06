@@ -309,6 +309,15 @@ pub enum Keyword {
         /// The alternative cost.
         cost: Cost,
     },
+    /// Prototype with its cost and size (CR 702.160): the permanent spell may be cast from a hand for the cost, with that mana cost, its colours and that power and toughness; it keeps them as a permanent.
+    Prototype {
+        /// The alternative mana cost, which is also the mana cost of the prototyped spell and permanent.
+        cost: Cost,
+        /// The power of the prototyped permanent.
+        power: i32,
+        /// The toughness of the prototyped permanent.
+        toughness: i32,
+    },
     /// Gravestorm (CR 702.69): when the spell is cast, its caster copies it for each permanent put into a graveyard from the battlefield this turn.
     Gravestorm,
     /// Sunburst (CR 702.44): the permanent enters with a +1/+1 counter (a charge counter unless it is a creature) for each color of mana spent to cast it.
@@ -512,6 +521,7 @@ impl Keyword {
         "Scavenge",
         "Transmute",
         "Awaken",
+        "Prototype",
         "Gravestorm",
         "Sunburst",
         "Afterlife",
@@ -687,6 +697,7 @@ impl Keyword {
             Keyword::Scavenge(_) => "Scavenge",
             Keyword::Transmute(_) => "Transmute",
             Keyword::Awaken { .. } => "Awaken",
+            Keyword::Prototype { .. } => "Prototype",
             Keyword::Gravestorm => "Gravestorm",
             Keyword::Sunburst => "Sunburst",
             Keyword::UmbraArmor => "Umbra armor",
@@ -902,6 +913,11 @@ mod tests {
             Keyword::Awaken {
                 count: 3,
                 cost: Cost::default(),
+            },
+            Keyword::Prototype {
+                cost: Cost::default(),
+                power: 2,
+                toughness: 1,
             },
             Keyword::Gravestorm,
             Keyword::Sunburst,

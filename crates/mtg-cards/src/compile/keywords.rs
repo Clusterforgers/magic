@@ -400,6 +400,7 @@ pub fn read(item: &str) -> Option<Keyword> {
         "scavenge" => spell_cost(rest).map(Keyword::Scavenge),
         "transmute" => spell_cost(rest).map(Keyword::Transmute),
         "awaken" => awaken(rest),
+        "prototype" => prototype(rest),
         "escape" => spell_cost(rest).map(Keyword::Escape),
         "dash" => spell_cost(rest).map(Keyword::Dash),
         "bestow" => spell_cost(rest).map(Keyword::Bestow),
@@ -858,6 +859,17 @@ fn awaken(rest: &str) -> Option<Keyword> {
     })
 }
 
+/// `{1}{U}{U} \u{2014} 2/1`: the prototype mana cost and the power and toughness.
+fn prototype(rest: &str) -> Option<Keyword> {
+    let (price, size) = rest.split_once('\u{2014}')?;
+    let (power, toughness) = size.trim().trim_end_matches('.').split_once('/')?;
+    Some(Keyword::Prototype {
+        cost: cost(price.trim())?,
+        power: power.trim().parse().ok()?,
+        toughness: toughness.trim().parse().ok()?,
+    })
+}
+
 /// `4—{U}`: the time counters and the mana cost.
 fn suspend(rest: &str) -> Option<Keyword> {
     let (time, price) = rest.split_once('\u{2014}')?;
@@ -1260,6 +1272,7 @@ mod tests {
     #[case::scavenge_free("Scavenge {0}", Keyword::Scavenge(mana("{0}")))]
     #[case::transmute("Transmute {1}{U}{U}", Keyword::Transmute(mana("{1}{U}{U}")))]
     #[case::awaken("Awaken 3\u{2014}{4}{U}", Keyword::Awaken { count: 3, cost: mana("{4}{U}") })]
+    #[case::prototype("Prototype {1}{U}{U} \u{2014} 2/1", Keyword::Prototype { cost: mana("{1}{U}{U}"), power: 2, toughness: 1 })]
     #[case::awaken_big("Awaken 6\u{2014}{6}{U}{U}{U}", Keyword::Awaken { count: 6, cost: mana("{6}{U}{U}{U}") })]
     #[case::gravestorm("Gravestorm", Keyword::Gravestorm)]
     #[case::sunburst("Sunburst", Keyword::Sunburst)]
@@ -1691,6 +1704,7 @@ mod tests {
             "Scavenge {1}",
             "Transmute {1}{U}{U}",
             "Awaken 3\u{2014}{4}{U}",
+            "Prototype {1}{U}{U} \u{2014} 2/1",
             "Gravestorm",
             "Sunburst",
             "Dash {1}",

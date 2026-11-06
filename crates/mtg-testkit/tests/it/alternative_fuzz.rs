@@ -54,7 +54,9 @@ fn bot_games_with_alternative_costs_keep_every_invariant_and_use_each_way() {
                             CastWay::Free => "free",
                             CastWay::Emerge => "emerge",
                             CastWay::Harmonize => "harmonize",
-                            CastWay::Warp
+                            CastWay::Sneak
+                            | CastWay::Prototype
+                            | CastWay::Warp
                             | CastWay::Surge
                             | CastWay::WebSlinging
                             | CastWay::Impending

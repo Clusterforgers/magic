@@ -5,11 +5,14 @@ use std::hash::{Hash, Hasher};
 use std::sync::Arc;
 
 use mtg_cards::CardDefinition;
+use mtg_cards::ability::Ability;
+use mtg_cards::cost::CostItem;
 use mtg_cards::definition::Layout;
+use mtg_cards::keyword::Keyword;
 use mtg_cards::value::{CastWay, CounterKind};
 use mtg_core::card::{CardType, CardTypes};
 use mtg_core::ids::{ObjectId, PlayerId};
-use mtg_core::mana::ManaType;
+use mtg_core::mana::{ManaCost, ManaType};
 use serde::{Deserialize, Serialize};
 
 use crate::abilities::AbilityObject;
@@ -628,10 +631,40 @@ impl GameObject {
         }
     }
 
+    /// The prototype form of a card cast for its prototype cost (CR 718.3): its mana cost, power and toughness, which the
+    /// spell and the permanent have in place of the printed ones. A copy has the form of the card it copies.
+    pub fn prototype(&self) -> Option<(&ManaCost, i32, i32)> {
+        if self.cast_way() != Some(CastWay::Prototype) {
+            return None;
+        }
+        self.card().rules.iter().find_map(|rule| match &**rule {
+            Ability::Keyword(Keyword::Prototype {
+                cost,
+                power,
+                toughness,
+            }) => cost.0.iter().find_map(|part| match part {
+                CostItem::Mana(mana) => Some((mana.rest(), *power, *toughness)),
+                _ => None,
+            }),
+            _ => None,
+        })
+    }
+
+    /// The mana cost of the face in use: the prototype cost for a prototyped spell or permanent.
+    pub fn mana_cost(&self) -> Option<&ManaCost> {
+        match self.prototype() {
+            Some((cost, _, _)) => Some(cost),
+            None => self.card().mana_cost.as_ref(),
+        }
+    }
+
     /// The printed mana value of the face in use, without the X of a spell on the stack. A transforming double-faced
     /// permanent with its back face up has the mana value of its front face (CR 712.8e); a copy of that face has the
     /// back face's own, which is 0 (CR 707.8).
     pub fn mana_value(&self) -> u32 {
+        if let Some((cost, _, _)) = self.prototype() {
+            return cost.mana_value();
+        }
         let whole = self.whole_card();
         if whole.layout == Layout::Transform && self.face().is_some() {
             whole.mana_value()

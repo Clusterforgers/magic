@@ -648,6 +648,7 @@ const RUNS: &[&str] = &[
     "Keyword.Scavenge",
     "Keyword.Transmute",
     "Keyword.Awaken",
+    "Keyword.Prototype",
     "Keyword.Gravestorm",
     "Keyword.Sunburst",
     "Keyword.Afterlife",
@@ -1257,6 +1258,7 @@ mod tests {
     #[case::scavenge("Keyword.Scavenge", true)]
     #[case::transmute("Keyword.Transmute", true)]
     #[case::awaken("Keyword.Awaken", true)]
+    #[case::prototype("Keyword.Prototype", true)]
     #[case::gravestorm("Keyword.Gravestorm", true)]
     #[case::sunburst("Keyword.Sunburst", true)]
     #[case::afterlife("Keyword.Afterlife", true)]
