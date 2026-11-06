@@ -42,8 +42,8 @@
                   "affected": {
                     "Each": [
                       { "Type": "Creature" },
-                      { "HasKeyword": "Flying" },
-                      { "ControlledBy": "You" }
+                      { "ControlledBy": "You" },
+                      { "HasKeyword": "Flying" }
                     ]
                   },
                   "mods": [{ "ModifyPT": { "power": 5, "toughness": 5 } }],

@@ -36,7 +36,7 @@
                   "token": {
                     "Custom": {
                       "name": "Elf Knight",
-                      "colors": ["White", "Green"],
+                      "colors": ["Green", "White"],
                       "types": ["Creature"],
                       "subtypes": ["Elf", "Knight"],
                       "power": 2,

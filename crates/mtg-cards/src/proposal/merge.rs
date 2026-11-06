@@ -71,6 +71,24 @@ fn clauses_of(paired: &Paired, face: usize, abilities: usize) -> Vec<Vec<usize>>
             slot.push(at);
         }
     }
+    // The second of two statics read as one sentence stands for the clause of the first (`static_pairs`).
+    let places = paired.places.get(face).map_or(&[][..], Vec::as_slice);
+    for ability in 1..abilities.min(places.len()) {
+        let Some(place) = places[ability] else {
+            continue;
+        };
+        let shared = paired.clauses.iter().position(|clause| {
+            clause.face == face
+                && clause.kind == crate::compile::ClauseKind::Static
+                && clause.span.start == place
+                && covering(&clause.state) == Some(ability - 1)
+        });
+        if let Some(at) = shared
+            && of[ability].is_empty()
+        {
+            of[ability].push(at);
+        }
+    }
     of
 }
 
