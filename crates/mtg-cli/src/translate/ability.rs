@@ -104,9 +104,15 @@ fn spell(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
         1 => when.pop(),
         _ => Some(json!({ "All": when })),
     };
-    let p = &p
-        .without(&ACTIVATION_WORDS)
-        .without(&["PlayerTurn", "CheckSVar", "SVarCompare"]);
+    let p = &p.without(&ACTIVATION_WORDS).without(&[
+        "PlayerTurn",
+        "CheckSVar",
+        "SVarCompare",
+        "CheckSecondSVar",
+        "SecondSVarCompare",
+        "CheckThirdSVar",
+        "ThirdSVarCompare",
+    ]);
     let effects = chain(ctx, p)?;
     let mut ability = json!({ "effects": effects });
     if !ctx.targets.is_empty() {

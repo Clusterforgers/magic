@@ -288,6 +288,11 @@ pub(super) fn rule(ctx: &Ctx, rule: &GameRule) -> String {
             phrase::who(ctx, who),
             phrase::amount(ctx, size)
         ),
+        GameRule::HandSizeChange { who, by } => format!(
+            "{} has a maximum hand size changed by {}",
+            phrase::who(ctx, who),
+            phrase::amount(ctx, by)
+        ),
         GameRule::NoLegendRule(who) => format!(
             "the legend rule does not apply to {}",
             phrase::who(ctx, who)

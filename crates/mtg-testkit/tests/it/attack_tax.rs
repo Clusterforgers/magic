@@ -530,3 +530,40 @@ fn the_options_name_what_each_attack_costs(
     assert!(json.contains("\"tax\""), "{json}");
     Ok(())
 }
+
+/// A 1/1 that can't attack unless its controller pays {2}: a tax on itself alone.
+fn toll_creature() -> Arc<CardDefinition> {
+    let tax = r#"{"Rule":{"rule":{"AttackTax":{"who":"EachPlayer","attacked":"Both","attackers":[{"Is":"This"}],"mana":"{2}"}}}}"#;
+    Arc::new(
+        CardDefinition::new("Toll Creature")
+            .with_type(CardType::Creature)
+            .with_power_toughness(1, 1)
+            .with_rules(serde_json::from_str::<Ability>(tax).unwrap()),
+    )
+}
+
+#[rstest]
+#[case::the_creature_itself("Toll Creature", 2)]
+#[case::another_creature_is_free("A", 0)]
+fn a_tax_on_one_creature_is_paid_by_it_alone(
+    #[values(2, 3, 4)] seats: usize,
+    #[case] attacker: &str,
+    #[case] paid: usize,
+) -> Result<(), ScriptError> {
+    let mut mine = creatures(&["A"]);
+    mine.push(ready(toll_creature()));
+    mine.extend(lands(2, plains));
+    let mut driver = Driver::from_scenario(
+        Scenario::new(seats)
+            .at(2, 0, Step::DeclareAttackers)
+            .battlefield(0, mine),
+    )?;
+    declare(&mut driver, &[attacker], 1)?;
+    if paid > 0 {
+        driver.expect_decision(0, "pay-mana")?;
+        pay_auto(&mut driver)?;
+    }
+    assert!(declared(&driver));
+    assert_eq!(tapped(&driver, "Plains"), paid);
+    Ok(())
+}

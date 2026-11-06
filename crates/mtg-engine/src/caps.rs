@@ -342,6 +342,7 @@ const RUNS: &[&str] = &[
     "Rule.RevealTop",
     "Rule.NoMaxHandSize",
     "Rule.MaxHandSize",
+    "Rule.HandSizeChange",
     "Rule.NoLegendRule",
     "Rule.UntapDuring",
     "Rule.SkipDrawStep",
@@ -911,6 +912,7 @@ mod tests {
     #[case::a_revealed_top("Rule.RevealTop", true)]
     #[case::no_maximum_hand_size("Rule.NoMaxHandSize", true)]
     #[case::a_set_maximum_hand_size("Rule.MaxHandSize", true)]
+    #[case::a_changed_maximum_hand_size("Rule.HandSizeChange", true)]
     #[case::no_legend_rule("Rule.NoLegendRule", true)]
     #[case::untapping_in_other_steps("Rule.UntapDuring", true)]
     #[case::no_draw_step("Rule.SkipDrawStep", true)]

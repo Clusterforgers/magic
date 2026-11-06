@@ -27,6 +27,7 @@ pub(super) fn add(ability: &Ability, texts: &mut Vec<String>) {
         once,
         additional,
         spend_as,
+        when,
     } = permission;
     if *who != Ref::You
         || !spend_as.is_normal()
@@ -37,6 +38,7 @@ pub(super) fn add(ability: &Ability, texts: &mut Vec<String>) {
         || *play
         || *once
         || additional.is_some()
+        || when.is_some()
     {
         return;
     }

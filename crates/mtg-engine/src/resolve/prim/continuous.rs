@@ -128,7 +128,10 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
                     state.next_timestamp + made,
                 )
                 .from_source(cx.scope.source)
-                .begun(cx.controller(), state.turn().number()),
+                .begun(
+                    cx.controller(),
+                    crate::effects::began_turn(state, duration, cx.controller()),
+                ),
             ),
         });
     }

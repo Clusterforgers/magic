@@ -581,6 +581,7 @@ fn game_rule() -> impl Strategy<Value = GameRule> {
                     once: false,
                     additional: None,
                     spend_as: mtg_cards::modify::SpendAs::Normal,
+                    when: None,
                 })
             }),
         (trigger_pattern(), proptest::option::of(selector())).prop_map(|(cause, source)| {

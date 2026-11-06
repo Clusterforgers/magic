@@ -205,6 +205,8 @@ pub enum Duration {
     UntilEndOfCombat,
     /// Until the controller's next turn begins.
     UntilYourNextTurn,
+    /// Until the controller's next end step begins: the one of this turn when it has not begun yet (CR 513).
+    UntilYourNextEndStep,
     /// Until the end of the controller's next turn.
     UntilEndOfYourNextTurn,
     /// For as long as the source stays on the battlefield.
@@ -267,6 +269,10 @@ pub struct CastPermission {
     /// How the mana of a cast through it may be spent: as mana of any color or of any type ("spend mana as though it were mana of any color").
     #[serde(default, skip_serializing_if = "SpendAs::is_normal")]
     pub spend_as: SpendAs,
+    /// The permission is open only while this holds for the controller of the rule ("during any turn you attacked with a
+    /// token, you may play that card"); always when absent.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub when: Option<Condition>,
 }
 
 /// Which mana may pay for a cast through a permission.
@@ -584,6 +590,14 @@ pub enum GameRule {
         who: Ref,
         /// The cards they may keep at cleanup.
         size: Amount,
+    },
+    /// The players' maximum hand size grows by `by` (shrinks when negative), after any size that is set (CR 402.2): "your maximum
+    /// hand size is reduced by three".
+    HandSizeChange {
+        /// The players.
+        who: Ref,
+        /// The cards added to the size; removed when negative.
+        by: Amount,
     },
     /// The legend rule (CR 704.5j) does not apply to the legendary permanents of the players.
     NoLegendRule(Ref),

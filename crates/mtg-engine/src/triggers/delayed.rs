@@ -136,6 +136,11 @@ impl Delayed {
             Duration::UntilYourNextTurn | Duration::UntilEndOfYourNextTurn => {
                 turn.number() != self.turn && turn.active() == self.controller
             }
+            Duration::UntilYourNextEndStep => {
+                turn.number() != self.turn
+                    && turn.active() == self.controller
+                    && turn.step() >= Step::End
+            }
             Duration::WhileSourceOnBattlefield => !state.object(self.source.id).is_some_and(|o| {
                 o.counter() == self.source.counter && o.zone().is_permanent_zone()
             }),
