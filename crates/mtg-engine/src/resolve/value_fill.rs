@@ -36,7 +36,7 @@ impl Scope<'_> {
                 };
                 self.amount_of(branch, share)
             }
-            Amount::ManaSpent { of, from } => Ok(self.spent_of(*of, from.as_ref())),
+            Amount::ManaSpent { of, from } => Ok(self.spent_of(*of, from.as_deref())),
             Amount::ManaColors(who) => self.pooled_colors(who),
             Amount::ManaInPool(who) => self.pooled(who),
             Amount::MostCommon { of, stat } => self.most_common(of, *stat),

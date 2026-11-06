@@ -579,7 +579,7 @@ pub enum Amount {
         /// The type counted; all mana when none.
         of: Option<ManaType>,
         /// The kind of source the mana came from; any source when none.
-        from: Option<SpendFilter>,
+        from: Option<Box<SpendFilter>>,
     },
     /// How many different colors of mana the players the reference names hold in their pools, all together.
     ManaColors(Ref),
@@ -745,7 +745,7 @@ enum Tagged {
     ManaSpent {
         of: Option<ManaType>,
         #[serde(default)]
-        from: Option<SpendFilter>,
+        from: Option<Box<SpendFilter>>,
     },
     ManaColors(Ref),
     MostCommon {
@@ -960,6 +960,8 @@ impl From<Tagged> for Amount {
 }
 
 impl Serialize for Amount {
+    // One arm for each variant of the amount.
+    #[allow(clippy::too_many_lines)]
     fn serialize<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
         match self {
             Amount::Fixed(n) => serializer.serialize_i32(*n),
@@ -1042,7 +1044,7 @@ impl Serialize for Amount {
             .serialize(serializer),
             Amount::ManaSpent { of, from } => TaggedRef::ManaSpent {
                 of: *of,
-                from: from.as_ref(),
+                from: from.as_deref(),
             }
             .serialize(serializer),
             Amount::ManaColors(who) => TaggedRef::ManaColors(who).serialize(serializer),
