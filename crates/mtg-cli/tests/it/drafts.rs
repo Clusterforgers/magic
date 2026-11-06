@@ -13,7 +13,7 @@ use std::path::{Path, PathBuf};
 use mtg_cards::builtin;
 use mtg_cards::card::Card;
 use mtg_cards::load::{canonical, slug, unwhole};
-use mtg_cards::proposal::{Verdict, check};
+use mtg_cards::proposal::{Verdict, check, check_exact};
 use mtg_cards::support::read_hash;
 use mtg_cards::validate::named_cards;
 use mtg_cards::{Caps, PrintedCard};
@@ -256,8 +256,14 @@ fn every_draft_is_a_whole_unchecked_card_in_canonical_form_that_fits_its_record(
             )),
             Some(other) => problems.push(format!("{slug}: {}", other.reason())),
         }
-        let report = check(&item.text, &item.printed, library, &names, &caps);
         let trusted = meta.source.as_deref() == Some("forge") && meta.oracle_matches;
+        // A Forge draft is judged as written, as `promote --draft` and the offer judge it: a repair would change it.
+        let judge = if meta.source.as_deref() == Some("forge") {
+            check_exact
+        } else {
+            check
+        };
+        let report = judge(&item.text, &item.printed, library, &names, &caps);
         match report.verdict() {
             // A proved partial draft is accepted as `Partial`; the proof carries it.
             Verdict::Accepted if proof.is_some() => {}
