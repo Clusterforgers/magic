@@ -907,6 +907,10 @@ describe('events with more than one shape', () => {
       "Grizzly Bears and Hill Giant get +3/+3 until their controller's next turn",
     ],
     [
+      effect(objects(2), { Goaded: { by: 1 } }, 'UntilYourNextEndStep'),
+      "Hill Giant is goaded until their controller's next end step",
+    ],
+    [
       effect(objects(2), { Goaded: { by: 1 } }, 'UntilYourNextTurn'),
       "Hill Giant is goaded until their controller's next turn",
     ],
