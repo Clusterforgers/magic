@@ -9,6 +9,7 @@ use super::effects::chain_at;
 use super::valid::selector_any;
 use crate::forge::script::Params;
 
+mod champion;
 mod equip;
 mod extra;
 mod more;
@@ -293,6 +294,9 @@ pub fn keyword_abilities(ctx: &mut Ctx, body: &str) -> Vec<Tr<Value>> {
     if let Some(forms) = super::effects_r2h::keyword_forms(ctx, body) {
         return forms;
     }
+    if let Some(types) = body.strip_prefix("Champion:") {
+        return vec![champion::champion(ctx, types)];
+    }
     if body.starts_with("Equip:") && body.contains('$') {
         let fields: Vec<&str> = body.split(':').collect();
         return equip::equip_with(ctx, &fields);
@@ -378,7 +382,9 @@ pub fn keyword_ability(ctx: &mut Ctx, body: &str) -> Tr<Value> {
             json!({"WithCounters": {"counter": kind, "count": amount(ctx, count)?}})
         }
         ["ETBReplacement", "Other", name] => choice(ctx, name)?,
-        ["ETBReplacement", "Other", name, "Mandatory", "", valid] if valid.starts_with("Card.Self+") => {
+        ["ETBReplacement", "Other", name, "Mandatory", "", valid]
+            if valid.starts_with("Card.Self+") =>
+        {
             return super::enters_with::self_enters(ctx, name, valid);
         }
         ["ETBReplacement", "Other", name, "Mandatory", zone, valid] if !valid.contains("Self") => {

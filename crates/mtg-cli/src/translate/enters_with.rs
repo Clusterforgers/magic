@@ -76,7 +76,10 @@ pub fn self_enters(ctx: &mut Ctx, name: &str, valid: &str) -> Tr<Value> {
                 let Some(kind) = p.get("CounterType").and_then(counter_kind) else {
                     return unmapped("keyword:ETBReplacement-counter-kind");
                 };
-                counter = Some((json!(kind), amount(ctx, p.get("CounterNum").unwrap_or("1"))?));
+                counter = Some((
+                    json!(kind),
+                    amount(ctx, p.get("CounterNum").unwrap_or("1"))?,
+                ));
             }
             Some("Animate") if p.get("Duration") == Some("Permanent") => {
                 if let Some(words) = p.get("Keywords") {

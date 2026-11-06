@@ -77,6 +77,30 @@ fn each_kicker_of_two_has_its_own_entering() {
 }
 
 #[rstest]
+#[case::one_type("Goblin", json!([{"Subtype": "Goblin"}, "Other", {"ControlledBy": "You"}]))]
+#[case::any_creature("Creature", json!([{"Type": "Creature"}, "Other", {"ControlledBy": "You"}]))]
+fn champion_exiles_another_creature_or_is_sacrificed(#[case] types: &str, #[case] choices: Value) {
+    let text =
+        format!("Name:Test Mob\nTypes:Creature Goblin\nManaCost:3 B\nPT:3/3\nK:Champion:{types}\n");
+    assert_eq!(gaps(&text), Vec::<String>::new());
+    assert_eq!(
+        abilities(&text),
+        vec![json!({"Triggered": {
+            "when": {"ZoneChange": {"what": ["This"], "to": "Battlefield"}},
+            "effects": [
+                {"Choose": {"from": {"Each": choices}, "count": {"min": 0, "max": 1}, "as": "champion"}},
+                {"Exile": {"what": {"Bound": "champion"}, "duration": "WhileSourceOnBattlefield"}},
+                {"If": {"condition": {"Not": "Performed"}, "then": [{"Sacrifice": {"filter": ["This"]}}]}}]}})]
+    );
+}
+
+#[test]
+fn champion_of_an_unknown_type_is_a_gap() {
+    let text = "Name:Test Mob\nTypes:Creature Goblin\nPT:3/3\nK:Champion:Zorp\n";
+    assert_eq!(gaps(text), vec!["keyword:Champion-type".to_owned()]);
+}
+
+#[rstest]
 #[case::kicker_out_of_range("Card.Self+kicked 3", "keyword:ETBReplacement-kicker-number")]
 #[case::another_way("Card.Self+foretold", "keyword:ETBReplacement-shape")]
 fn entering_with_gaps(#[case] valid: &str, #[case] gap: &str) {
