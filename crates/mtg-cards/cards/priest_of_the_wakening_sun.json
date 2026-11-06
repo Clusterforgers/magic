@@ -24,8 +24,8 @@
           "Activated": {
             "cost": [{ "Mana": "{3}{W}{W}" }, "SacrificeSelf"],
             "effects": [
-              { "Search": { "filter": [{ "Subtype": "Dinosaur" }], "reveal": true, "as": "found" } },
-              { "Move": { "what": { "Bound": "found" }, "to": "Hand" } },
+              { "Search": { "filter": [{ "Subtype": "Dinosaur" }], "reveal": true, "as": "card" } },
+              { "Move": { "what": { "Bound": "card" }, "to": "Hand" } },
               { "Shuffle": {} }
             ]
           }

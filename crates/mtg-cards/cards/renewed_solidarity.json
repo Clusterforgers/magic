@@ -16,7 +16,7 @@
         {
           "Static": {
             "affected": {
-              "Each": [{ "Type": "Creature" }, "ChosenSubtype", { "ControlledBy": "You" }]
+              "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }, "ChosenSubtype"]
             },
             "mods": [{ "ModifyPT": { "power": 1, "toughness": 0 } }]
           }
