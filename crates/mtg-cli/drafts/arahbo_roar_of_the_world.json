@@ -27,24 +27,6 @@
         },
         {
           "Triggered": {
-            "when": { "StepBegins": { "step": "BeginCombat", "whose": "You" } },
-            "from": "Command",
-            "targets": [
-              { "what": { "Object": [{ "Subtype": "Cat" }, { "ControlledBy": "You" }, "Other"] } }
-            ],
-            "effects": [
-              {
-                "Continuous": {
-                  "affected": { "Target": 0 },
-                  "mods": [{ "ModifyPT": { "power": 3, "toughness": 3 } }],
-                  "duration": "UntilEndOfTurn"
-                }
-              }
-            ]
-          }
-        },
-        {
-          "Triggered": {
             "when": {
               "Attacks": { "what": [{ "Subtype": "Cat" }, "Other", { "ControlledBy": "You" }] }
             },
@@ -69,6 +51,24 @@
                       }
                     }
                   ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "BeginCombat", "whose": "You" } },
+            "from": "Command",
+            "targets": [
+              { "what": { "Object": [{ "Subtype": "Cat" }, { "ControlledBy": "You" }, "Other"] } }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "ModifyPT": { "power": 3, "toughness": 3 } }],
+                  "duration": "UntilEndOfTurn"
                 }
               }
             ]

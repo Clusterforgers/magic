@@ -34,7 +34,7 @@
         },
         {
           "Triggered": {
-            "when": { "Sacrificed": { "what": [{ "ControlledBy": "You" }], "by": "You" } },
+            "when": { "Sacrificed": { "what": [], "by": "You" } },
             "targets": [{ "what": "Opponent" }],
             "effects": [
               { "LoseLife": { "who": { "Target": 0 }, "amount": 1 } },

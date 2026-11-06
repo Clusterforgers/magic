@@ -16,7 +16,7 @@
         },
         {
           "Triggered": {
-            "when": { "Sacrificed": { "what": [{ "Subtype": "Clue" }, { "ControlledBy": "You" }] } },
+            "when": { "Sacrificed": { "what": [{ "Subtype": "Clue" }], "by": "You" } },
             "targets": [
               { "what": { "Object": [{ "Type": "Creature" }, "Other", { "ControlledBy": "You" }] } }
             ],

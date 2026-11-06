@@ -24,7 +24,7 @@
                   "mods": [
                     { "SetPT": { "power": 4, "toughness": 4 } },
                     { "SetColors": ["Black", "Green"] },
-                    { "AddSubtype": "Horror" },
+                    { "SetCreatureTypes": ["Horror"] },
                     { "AddType": "Creature" }
                   ],
                   "duration": "UntilEndOfTurn"

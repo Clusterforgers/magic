@@ -9,7 +9,7 @@
       "abilities": [
         {
           "Triggered": {
-            "when": { "Sacrificed": { "what": [{ "ControlledBy": "You" }], "by": "You" } },
+            "when": { "Sacrificed": { "what": [], "by": "You" } },
             "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }]
           }
         },

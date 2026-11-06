@@ -27,7 +27,7 @@
             "targets": [
               {
                 "what": {
-                  "Object": [{ "Type": "Creature" }, { "OwnedBy": "You" }, { "In": "Graveyard" }]
+                  "Object": [{ "Type": "Creature" }, { "In": "Graveyard" }, { "OwnedBy": "You" }]
                 }
               }
             ],
