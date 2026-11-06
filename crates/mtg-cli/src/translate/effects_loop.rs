@@ -80,7 +80,11 @@ pub fn choose_card(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
         ctx.remembered = Some(json!({ "Bound": bind }));
     }
     let mut effects = vec![effect];
-    if p.get("Reveal") == Some("True") {
+    // A title that says "to reveal" is the Oracle wording of a choice shown to the table, with or without `Reveal$`.
+    let titled = p
+        .get("ChoiceTitle")
+        .is_some_and(|title| title.to_lowercase().contains(" to reveal"));
+    if p.get("Reveal") == Some("True") || titled {
         effects.push(json!({"Reveal": {"what": {"Bound": bind}}}));
     }
     Ok(effects)

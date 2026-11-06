@@ -878,7 +878,8 @@ pub fn dig(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
         remember::bind_moved(ctx, &mut put, verb, stem);
     }
     effects.push(put);
-    if !(matches!(take, Take::All) && filter.is_none()) {
+    // Taking all of the cards that match "Card" leaves no rest; a move of the old ids would only chase cards already gone.
+    if !(matches!(take, Take::All) && matches!(filter, None | Some("Card"))) {
         effects.push(moves(&rest_ref, rest_to));
     }
     Ok(effects)
