@@ -178,6 +178,7 @@ mod decayed;
 mod defining;
 mod defining_fuzz;
 mod demonstrate;
+mod detain_play;
 mod determinism_replay;
 mod devour_casualty_offspring;
 mod devour_fuzz;

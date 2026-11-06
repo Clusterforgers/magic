@@ -33,8 +33,8 @@ fn detain(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
     Ok(vec![
         json!({"Continuous": {"affected": what, "mods": ["CantAttack", "CantBlock"],
             "duration": "UntilYourNextTurn"}}),
-        json!({"Rule": {"rule": {"Cant": {"who": "EachPlayer",
-            "action": {"ActivateKind": {"kind": "Every", "sources": [{"Is": what}]}}}}, "duration": "UntilYourNextTurn"}}),
+        json!({"Rule": {"rule": {"Cant": {"who": what,
+            "action": {"ActivateKind": {"kind": "Every", "sources": []}}}}, "duration": "UntilYourNextTurn"}}),
     ])
 }
 
