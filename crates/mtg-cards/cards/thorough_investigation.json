@@ -17,7 +17,7 @@
         },
         {
           "Triggered": {
-            "when": { "Sacrificed": { "what": [{ "Subtype": "Clue" }, { "ControlledBy": "You" }] } },
+            "when": { "Sacrificed": { "what": [{ "Subtype": "Clue" }], "by": "You" } },
             "effects": [{ "Venture": {} }]
           }
         }
