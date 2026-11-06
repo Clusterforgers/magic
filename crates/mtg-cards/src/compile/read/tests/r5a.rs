@@ -193,6 +193,24 @@ fn numbered_bindings_read_as_the_names_of_the_readers_only_when_renamed_alike(
     assert_eq!(written(&look(kept, rest, moved, order), LOOK), reads);
 }
 
+/// A −10 that puts a +1/+1 counter on each creature you control for each card of `kind` in your graveyard.
+fn counters_for_each(kind: &str) -> String {
+    format!(
+        r#"{{"Loyalty":{{"cost":{{"Minus":10}},"effects":[{{"PutCounters":{{"on":{{"Each":[{{"Type":"Creature"}},{{"ControlledBy":"You"}}]}},"counter":"+1/+1","count":{{"Count":[{{"Type":"{kind}"}},{{"OwnedBy":"You"}},{{"In":"Graveyard"}}]}}}}}}]}}}}"#
+    )
+}
+
+#[rstest]
+#[case::creature_cards("Creature", true)]
+#[case::land_cards("Land", false)]
+fn counters_for_each_creature_card_read_only_for_creature_cards(
+    #[case] kind: &str,
+    #[case] reads: bool,
+) {
+    let clause = "−10: For each creature card in your graveyard, put a +1/+1 counter on each creature you control.";
+    assert_eq!(written(&counters_for_each(kind), clause), reads);
+}
+
 /// Look at the top `count`, put one of them into the hand and the rest into the graveyard.
 fn look_and_mill(count: u32) -> String {
     format!(
