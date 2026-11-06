@@ -122,6 +122,19 @@ fn a_permission_for_what_a_conditional_step_took_runs_with_the_condition(#[case]
 }
 
 #[test]
+fn a_step_that_tests_the_earlier_memory_and_adds_to_it_leaves_both_in_the_memory() {
+    let script = spell(
+        "ChangeZone | Origin$ Battlefield | Destination$ Exile | Defined$ Self | RememberChanged$ True | SubAbility$ Top\nSVar:Top:DB$ Dig | DigNum$ 1 | ChangeNum$ All | DestinationZone$ Exile | RememberChanged$ True | ConditionDefined$ Remembered | ConditionPresent$ Card.Self | SubAbility$ Eff\nSVar:Eff:DB$ Effect | RememberObjects$ RememberedCard | StaticAbilities$ Play | ForgetOnMoved$ Exile | Duration$ UntilTheEndOfYourNextTurn\nSVar:Play:Mode$ Continuous | MayPlay$ True | Affected$ Card.IsRemembered | AffectedZone$ Exile",
+    );
+    assert_eq!(gaps(&script), Vec::<String>::new());
+    let written = effects(&script).to_string();
+    assert!(
+        written.contains(r#""AnyOf":[{"Is":{"Bound":"exiled"}},{"Is":{"Bound":"exiled2"}}]"#),
+        "{written}"
+    );
+}
+
+#[test]
 fn a_permission_after_an_unconditional_step_is_not_moved_into_a_condition() {
     let script = spell(
         "Dig | Defined$ You | DigNum$ 1 | ChangeNum$ All | DestinationZone$ Exile | RememberChanged$ True | SubAbility$ Eff\nSVar:Eff:DB$ Effect | RememberObjects$ RememberedCard | StaticAbilities$ Play | ForgetOnMoved$ Exile | Duration$ UntilTheEndOfYourNextTurn\nSVar:Play:Mode$ Continuous | MayPlay$ True | Affected$ Card.IsRemembered | AffectedZone$ Exile",
