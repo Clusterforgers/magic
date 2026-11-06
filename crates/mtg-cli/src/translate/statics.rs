@@ -677,30 +677,7 @@ fn cost_modifier(ctx: &Ctx, p: &Params, change: &str) -> Tr<Value> {
         // "Spells that target a tapped creature": the cost is judged with the targets the spell has announced.
         applies.push(json!({"Targeting": selector_any(ctx, target)?}));
     }
-    let mut conditions = Vec::new();
-    if p.get("ValidSpell") == Some("Spell.Bargain") {
-        // "Costs less if it is bargained": the spell reads what it announced.
-        if p.get("ValidCard") != Some("Card.Self") {
-            return unmapped("key:Static.CostModifier.ValidSpell=Spell.Bargain");
-        }
-        conditions.push(json!("AdditionalCostPaid"));
-    }
-    if let Some(name) = p.get("Condition") {
-        conditions.push(super::condition::named(name)?);
-    }
-    if p.get("OnlyFirstSpell") == Some("True") {
-        // "The first spell of that kind you cast each turn": none of that kind was cast before.
-        if activating.is_some() || p.get("ValidCard").is_none() || p.get("Activator") != Some("You")
-        {
-            return unmapped("key:Static.CostModifier.OnlyFirstSpell-shape");
-        }
-        let filter = selector_any(ctx, p.get("ValidCard").unwrap_or_default())?;
-        conditions.push(json!({"Compare": {
-            "left": {"Tally": {"event": "SpellCast", "who": "You", "filter": filter}},
-            "op": "Eq", "right": 0}}));
-    } else if p.has("OnlyFirstSpell") {
-        return unmapped("key:Static.CostModifier.OnlyFirstSpell-value");
-    }
+    let mut conditions = cost_conditions(ctx, p, activating.is_some())?;
     let mut built = modifier(ctx, p, change, &applies, mana_cost)?;
     if let Some(kind) = activating {
         built["CostModifier"]["activating"] = json!(kind);
@@ -714,6 +691,34 @@ fn cost_modifier(ctx: &Ctx, p: &Params, change: &str) -> Tr<Value> {
         built["CostModifier"]["least"] = json!(least);
     }
     Ok(built)
+}
+
+/// The conditions a cost modifier carries: bargain, a named condition and the first spell of a kind.
+fn cost_conditions(ctx: &Ctx, p: &Params, activating: bool) -> Tr<Vec<Value>> {
+    let mut conditions = Vec::new();
+    if p.get("ValidSpell") == Some("Spell.Bargain") {
+        // "Costs less if it is bargained": the spell reads what it announced.
+        if p.get("ValidCard") != Some("Card.Self") {
+            return unmapped("key:Static.CostModifier.ValidSpell=Spell.Bargain");
+        }
+        conditions.push(json!("AdditionalCostPaid"));
+    }
+    if let Some(name) = p.get("Condition") {
+        conditions.push(super::condition::named(name)?);
+    }
+    if p.get("OnlyFirstSpell") == Some("True") {
+        // "The first spell of that kind you cast each turn": none of that kind was cast before.
+        if activating || p.get("ValidCard").is_none() || p.get("Activator") != Some("You") {
+            return unmapped("key:Static.CostModifier.OnlyFirstSpell-shape");
+        }
+        let filter = selector_any(ctx, p.get("ValidCard").unwrap_or_default())?;
+        conditions.push(json!({"Compare": {
+            "left": {"Tally": {"event": "SpellCast", "who": "You", "filter": filter}},
+            "op": "Eq", "right": 0}}));
+    } else if p.has("OnlyFirstSpell") {
+        return unmapped("key:Static.CostModifier.OnlyFirstSpell-value");
+    }
+    Ok(conditions)
 }
 
 /// `MinMana$`: the least mana a reduction leaves.
