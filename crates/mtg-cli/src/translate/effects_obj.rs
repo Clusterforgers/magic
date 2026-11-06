@@ -156,12 +156,19 @@ fn destroy(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
             "RememberDestroyed",
             "RememberLKI",
             "RememberTargets",
+            "AlwaysRemember",
         ],
     )?;
     let what = subject(ctx, p, "", None)?;
     let regenerate = p.get("NoRegen") != Some("True");
     let mut effect = json!({"Destroy": {"what": what, "regenerate": regenerate}});
-    if remember::wanted(p, &["RememberDestroyed", "RememberLKI", "RememberTargets"]) {
+    // The target is remembered whether or not it is destroyed (a regenerated creature is still "that creature").
+    let remembers = remember::wanted(p, &["RememberDestroyed", "RememberLKI", "RememberTargets"]);
+    if p.get("AlwaysRemember") == Some("True") && p.has("ValidTgts") {
+        ctx.remembered = Some(what);
+        return Ok(effect);
+    }
+    if remembers {
         remember::bind_moved(ctx, &mut effect, "Destroy", "destroyed");
     }
     Ok(effect)

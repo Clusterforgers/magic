@@ -25,6 +25,7 @@ pub fn chain_at(ctx: &mut Ctx, p: &Params, top: bool) -> Tr<Vec<Value>> {
         .then(|| u8::try_from(ctx.targets.len()).ok())
         .flatten();
     ctx.coming = coming;
+    ctx.coming_player = matches!(p.get("ValidTgts"), Some("Player" | "Opponent"));
     let stated = prefixed(ctx, p);
     ctx.coming = None;
     let (condition, own) = stated?;
@@ -42,7 +43,20 @@ pub fn chain_at(ctx: &mut Ctx, p: &Params, top: bool) -> Tr<Vec<Value>> {
     };
     let before = (ctx.remembered.clone(), ctx.imprinted.clone());
     let excess = ctx.excess.clone();
-    let mut effects = line(ctx, &own.without(&unless_keys).without(spent))?;
+    ctx.coming = coming;
+    ctx.coming_player = matches!(p.get("ValidTgts"), Some("Player" | "Opponent"));
+    let ran = line(ctx, &own.without(&unless_keys).without(spent));
+    ctx.coming = None;
+    ctx.coming_player = false;
+    let mut effects = ran?;
+    // A word that read the line's own target before the line declared one names nothing.
+    if let Some(index) = coming
+        && usize::from(index) >= ctx.targets.len()
+        && serde_json::to_string(&effects)
+            .is_ok_and(|text| text.contains(&json!({ "Target": index }).to_string()))
+    {
+        return unmapped("defined:Targeted-without-target");
+    }
     // A condition on the step that took the cards also covers the permission an `Effect` line gives for them: with nothing
     // taken the permission names nothing, so the lines that only hold it run inside the condition.
     let inside = condition.is_some()

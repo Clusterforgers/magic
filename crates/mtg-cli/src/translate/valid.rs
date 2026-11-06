@@ -600,7 +600,7 @@ pub fn defined(ctx: &Ctx, word: &str) -> Tr<Value> {
         "TopOfLibrary" => {
             Ok(json!({"Each": [{"In": "Library"}, {"OwnedBy": "You"}, "TopOfLibrary"]}))
         }
-        "Targeted" | "TargetedPlayer" | "TargetedCard" => ctx.last_target(),
+        "Targeted" | "TargetedPlayer" | "TargetedCard" | "ThisTargetedCard" => ctx.last_target(),
         "ParentTarget" => ctx.parent(),
         "TargetedController" => controller(ctx.last_target()?),
         "TargetedOwner" => Ok(json!({ "OwnerOf": ctx.last_target()? })),

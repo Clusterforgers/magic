@@ -48,6 +48,10 @@ impl Scope<'_> {
             Pred::Unblocked => self.state.combat().is_unblocked(self.state, reference.id),
             Pred::TopOfLibrary => self.fe1a_library_end(reference, seen, true),
             Pred::BottomOfLibrary => self.fe1a_library_end(reference, seen, false),
+            Pred::TopOfGraveyard => {
+                matches!(seen.zone, Zone::Graveyard(_))
+                    && self.state.zone(seen.zone).last() == Some(&reference.id)
+            }
             Pred::BlockedBy(named) => {
                 let blockers = self.objects(named)?;
                 self.state.combat().attackers().iter().any(|attacker| {

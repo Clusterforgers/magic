@@ -187,6 +187,19 @@ fn only_the_ends_of_a_library_are_its_top_and_bottom(#[values(2, 3, 4)] seats: u
 }
 
 #[rstest]
+fn only_the_last_card_of_a_graveyard_is_its_top(#[values(2, 3, 4)] seats: usize) {
+    let mut game = table(seats);
+    assert!(!holds(&game, Pred::TopOfGraveyard, "Bear"));
+    moved(&mut game, "Bear", Zone::Battlefield, Zone::Graveyard(ME));
+    assert!(holds(&game, Pred::TopOfGraveyard, "Bear"));
+    moved(&mut game, "Owl", Zone::Battlefield, Zone::Graveyard(ME));
+    assert!(holds(&game, Pred::TopOfGraveyard, "Owl"));
+    assert!(!holds(&game, Pred::TopOfGraveyard, "Bear"));
+    // A library card is no graveyard card.
+    assert!(!holds(&game, Pred::TopOfGraveyard, "Guest 0"));
+}
+
+#[rstest]
 #[case::blocked(true)]
 #[case::unblocked(false)]
 fn blocked_by_and_blocks_pair_an_attacker_with_its_blockers(

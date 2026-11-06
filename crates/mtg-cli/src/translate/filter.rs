@@ -228,6 +228,31 @@ pub(super) const ATOMS: &[Atom] = &[
         },
     },
     Atom {
+        word: "TopGraveyardCreature",
+        scopes: OBJECT,
+        reads_target: false,
+        probe: "Necratog",
+        lower: |_| Ok(vec![json!({"Type": "Creature"}), json!("TopOfGraveyard")]),
+    },
+    // The object is one the ability targets, read once they are chosen (`Creature.targetedBy` of the line's own spell).
+    Atom {
+        word: "targetedBy",
+        scopes: OBJECT,
+        reads_target: true,
+        probe: "Moment of Glory",
+        lower: |ctx| match ctx.targets.len() {
+            0 => unmapped("valid:targetedBy-without-a-target"),
+            count => {
+                let any: Vec<Value> = (0..count).map(|at| json!({"Is": {"Target": at}})).collect();
+                if count == 1 {
+                    Ok(any)
+                } else {
+                    one(json!({"AnyOf": any}))
+                }
+            }
+        },
+    },
+    Atom {
         word: "equalPT",
         scopes: OBJECT,
         reads_target: false,
