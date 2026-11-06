@@ -277,6 +277,10 @@ pub(super) fn texts(condition: &Condition) -> Vec<String> {
     if let Some(text) = super::w21a_atoms::w21a_condition_text(left, *op, number) {
         return vec![text];
     }
+    let r6d = super::r6d_facts::texts(left, *op, number);
+    if !r6d.is_empty() {
+        return r6d;
+    }
     let counted = |pattern: &dyn Fn(&str) -> String| -> Vec<String> {
         quantity_texts(number)
             .iter()

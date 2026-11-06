@@ -1148,6 +1148,9 @@ pub fn condition_text(condition: &Condition) -> Option<String> {
     if let Some(fact) = super::facts::texts(condition).into_iter().next() {
         return Some(fact);
     }
+    if let Some(kind) = super::r6d_kind::own_text(condition) {
+        return Some(kind);
+    }
     if let Some(control) = super::statics::control_texts(condition).into_iter().next() {
         return Some(control);
     }
