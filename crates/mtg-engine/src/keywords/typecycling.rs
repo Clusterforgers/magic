@@ -40,6 +40,7 @@ impl KeywordRules for Typecycling {
                     filter: find.clone(),
                     count: Bounds::default(),
                     reveal: true,
+                    distinct: false,
                     bind: FOUND.into(),
                 },
                 Effect::Move {

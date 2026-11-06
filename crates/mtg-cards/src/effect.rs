@@ -405,6 +405,9 @@ pub enum Effect {
         /// The cards are revealed.
         #[serde(default, skip_serializing_if = "is_false")]
         reveal: bool,
+        /// The cards found have different names ("up to three Aura cards with different names").
+        #[serde(default, skip_serializing_if = "is_false")]
+        distinct: bool,
         /// The name the found cards are bound to.
         #[serde(rename = "as")]
         bind: String,
@@ -1727,15 +1730,15 @@ mod tests {
         r#"{"Move":{"what":{"Bound":"land"},"to":{"Battlefield":{"tapped":true}}}}"#
     )]
     #[case::search(
-        Effect::Search { who: Ref::You, of: None, zone: ZoneKind::Library, also: Vec::new(), filter: Selector(vec![Pred::Supertype(mtg_core::card::Supertype::Basic)]), count: Bounds::default(), reveal: false, bind: "land".into() },
+        Effect::Search { who: Ref::You, of: None, zone: ZoneKind::Library, also: Vec::new(), filter: Selector(vec![Pred::Supertype(mtg_core::card::Supertype::Basic)]), count: Bounds::default(), reveal: false, distinct: false, bind: "land".into() },
         r#"{"Search":{"filter":[{"Supertype":"Basic"}],"as":"land"}}"#
     )]
     #[case::search_of_several_zones(
-        Effect::Search { who: Ref::You, of: None, zone: ZoneKind::Library, also: vec![ZoneKind::Hand, ZoneKind::Graveyard], filter: Selector(vec![Pred::Subtype(mtg_core::card::Subtype("Rune".into()))]), count: Bounds::default(), reveal: false, bind: "rune".into() },
+        Effect::Search { who: Ref::You, of: None, zone: ZoneKind::Library, also: vec![ZoneKind::Hand, ZoneKind::Graveyard], filter: Selector(vec![Pred::Subtype(mtg_core::card::Subtype("Rune".into()))]), count: Bounds::default(), reveal: false, distinct: false, bind: "rune".into() },
         r#"{"Search":{"also":["Hand","Graveyard"],"filter":[{"Subtype":"Rune"}],"as":"rune"}}"#
     )]
     #[case::search_of_another_player(
-        Effect::Search { who: Ref::You, of: Some(Ref::Opponents), zone: ZoneKind::Library, also: Vec::new(), filter: Selector(vec![]), count: Bounds::default(), reveal: false, bind: "it".into() },
+        Effect::Search { who: Ref::You, of: Some(Ref::Opponents), zone: ZoneKind::Library, also: Vec::new(), filter: Selector(vec![]), count: Bounds::default(), reveal: false, distinct: false, bind: "it".into() },
         r#"{"Search":{"of":"Opponents","filter":[],"as":"it"}}"#
     )]
     #[case::conjure(

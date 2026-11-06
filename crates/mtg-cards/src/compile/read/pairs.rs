@@ -77,6 +77,7 @@ pub(super) fn searches(
         filter,
         count,
         reveal,
+        distinct: false,
         bind,
     };
     let (filter, count, bind) = first;

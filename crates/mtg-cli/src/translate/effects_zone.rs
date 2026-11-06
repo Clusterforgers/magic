@@ -391,6 +391,7 @@ const SEARCHED: Verb = Verb {
         "OriginAlternative",
         "NoLooking",
         "Reorder",
+        "DifferentNames",
     ],
 };
 
@@ -649,6 +650,11 @@ fn search(ctx: &mut Ctx, p: &Params, destination: &str) -> Tr<Vec<Value>> {
     let count = frame::count(ctx, p, &SEARCHED)?;
     if !count.is_one {
         find["count"] = json!({"min": 0, "max": count.max});
+    }
+    match p.get("DifferentNames") {
+        None => {}
+        Some("True") => find["distinct"] = json!(true),
+        Some(_) => return unmapped("key:ChangeZone.Search.DifferentNames"),
     }
     let revealed_by_words = p.get("Reorder").is_some() && says_reveal(p);
     if p.get("Reveal") == Some("True")

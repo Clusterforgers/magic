@@ -46,6 +46,7 @@ impl KeywordRules for PartnerWith {
                             filter: Selector(vec![Pred::Named(name.clone())]),
                             count: Bounds::default(),
                             reveal: false,
+                            distinct: false,
                             bind: "partner".into(),
                         },
                         Effect::Move {

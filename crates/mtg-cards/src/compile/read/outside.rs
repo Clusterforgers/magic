@@ -58,6 +58,7 @@ pub(super) fn sequence(effects: &[Effect]) -> Option<(String, usize)> {
             filter,
             count,
             reveal,
+            distinct: false,
             bind,
         },
         Effect::Move {

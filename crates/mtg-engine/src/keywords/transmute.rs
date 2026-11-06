@@ -51,6 +51,7 @@ impl KeywordRules for Transmute {
                     }]),
                     count: Bounds::default(),
                     reveal: true,
+                    distinct: false,
                     bind: FOUND.into(),
                 },
                 Effect::Move {

@@ -816,6 +816,7 @@ fn leaf_effect() -> impl Strategy<Value = Effect> {
                     filter,
                     count,
                     reveal,
+                    distinct: false,
                     bind
                 }
             ),

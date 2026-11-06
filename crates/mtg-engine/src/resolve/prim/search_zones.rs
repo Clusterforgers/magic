@@ -73,6 +73,7 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         filter,
         count,
         reveal,
+        distinct,
         bind,
     } = effect
     else {
@@ -134,6 +135,11 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
                 Ok(cards) => cards,
                 Err(stop) => return Stop::settle(Err(stop)),
             }
+        };
+        let cards = if *distinct {
+            super::search::one_per_name(state, cards)
+        } else {
+            cards
         };
         found.extend(
             cards
