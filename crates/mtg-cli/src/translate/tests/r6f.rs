@@ -107,7 +107,7 @@ fn ward(protection: &str) -> String {
 fn protection_that_does_not_remove_its_aura_is_a_gap(#[case] protection: &str, #[case] gap: bool) {
     let found = gaps(&ward(protection));
     assert_eq!(
-        found.contains(&"keyword:Protection-with-an-exception".to_owned()),
+        found.contains(&"keyword:Protection-with-exception".to_owned()),
         gap,
         "{found:?}"
     );
