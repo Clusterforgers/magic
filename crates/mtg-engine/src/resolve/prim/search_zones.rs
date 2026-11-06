@@ -125,14 +125,19 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
             .iter()
             .any(|kind| matches!(kind, ZoneKind::Library | ZoneKind::Hand));
         let fewest = if hidden { 0 } else { required };
-        let take = most.min(matches.len());
+        let offered = if *distinct {
+            crate::choose::names_among(state, &matches)
+        } else {
+            matches.len()
+        };
+        let take = most.min(offered);
         let cards = if take == 0 {
             Vec::new()
         } else if matches.len() <= fewest {
             matches
         } else {
             let text = wording::search_zones(&searched, filter, required, most);
-            match asked.cards(player, matches, (fewest, take.max(fewest)), text) {
+            match asked.cards_named(player, matches, (fewest, take.max(fewest)), text, *distinct) {
                 Ok(cards) => cards,
                 Err(stop) => return Stop::settle(Err(stop)),
             }

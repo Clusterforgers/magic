@@ -199,6 +199,9 @@ pub(crate) fn handle(
             table_cards(state, options, &choice)
         }
         (DecisionKind::ChooseCards(options), Answer::ChooseCards(choice)) => {
+            if options.one_per_name {
+                choose::check_card_names(state, &choice.0)?;
+            }
             let outcome = choose::cards_answer(player, options, choice, pending.is_some())?;
             if let (Outcome::Cards(cards), Some(pending)) = (&outcome, pending) {
                 pending.check_picked(state, cards)?;

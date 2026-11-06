@@ -407,6 +407,7 @@ fn settle<'a>(
                 return Ok(Settled::Ask(Decision {
                     player,
                     kind: DecisionKind::ChooseCards(CardsOptions {
+                        one_per_name: false,
                         source,
                         from: candidates,
                         min,

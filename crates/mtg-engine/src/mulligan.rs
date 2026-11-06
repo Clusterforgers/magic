@@ -118,6 +118,7 @@ pub(crate) fn scry_decision(state: &GameState, player: PlayerId) -> Option<Decis
     Some(Decision {
         player,
         kind: DecisionKind::ChooseCards(CardsOptions {
+            one_per_name: false,
             source: top,
             from: vec![top],
             min: 0,
@@ -219,6 +220,7 @@ pub(crate) fn seat_decision(state: &GameState, player: PlayerId) -> Option<Decis
             }
             let from = opening_cards(state, player);
             DecisionKind::ChooseCards(CardsOptions {
+                one_per_name: false,
                 source: *from.first()?,
                 max: u32::try_from(from.len()).unwrap_or(u32::MAX),
                 from,

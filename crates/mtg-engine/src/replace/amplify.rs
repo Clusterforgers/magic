@@ -53,6 +53,7 @@ impl Pass<'_> {
                     return Ok(Applied::Ask(Decision {
                         player: controller,
                         kind: DecisionKind::ChooseCards(CardsOptions {
+                            one_per_name: false,
                             source: candidate.object.id,
                             max: u32::try_from(options.len()).unwrap_or(u32::MAX),
                             from: options,

@@ -35,6 +35,10 @@ pub struct CardsOptions {
     #[serde(default, skip_serializing_if = "std::ops::Not::not")]
     #[cfg_attr(feature = "ts", ts(as = "Option<bool>", optional))]
     pub can_cancel: bool,
+    /// No two cards chosen may share a name ("with different names", CR 201.3).
+    #[serde(default, skip_serializing_if = "std::ops::Not::not")]
+    #[cfg_attr(feature = "ts", ts(as = "Option<bool>", optional))]
+    pub one_per_name: bool,
 }
 
 /// The cards chosen.
@@ -64,6 +68,32 @@ pub(crate) fn check(options: &CardsOptions, cards: &[ObjectId]) -> Result<(), Il
         expected: usize::try_from(expected).unwrap_or(usize::MAX),
         got: cards.len(),
     })
+}
+
+/// How many different names the cards carry.
+pub(crate) fn names_among(state: &crate::state::GameState, cards: &[ObjectId]) -> usize {
+    let mut seen: Vec<&str> = Vec::new();
+    for id in cards {
+        if let Some(object) = state.object(*id) {
+            let name = object.card().name.as_str();
+            if !seen.contains(&name) {
+                seen.push(name);
+            }
+        }
+    }
+    seen.len()
+}
+
+/// Checks that no two of the cards share a name.
+pub(crate) fn check_names(
+    state: &crate::state::GameState,
+    cards: &[ObjectId],
+) -> Result<(), IllegalAnswer> {
+    if names_among(state, cards) == cards.len() {
+        Ok(())
+    } else {
+        Err(IllegalAnswer::Duplicate("card name"))
+    }
 }
 
 /// Checks the answer against the options it answers. Cards chosen while a spell or ability is announced are kept for
@@ -119,6 +149,7 @@ pub(crate) fn pick_cards(cx: &Cx<'_>, choosers: &[Chooser]) -> Result<Picked, Re
     let selections: Vec<Selection> = choosers
         .iter()
         .map(|chooser| Selection {
+            one_per_name: false,
             player: chooser.player,
             from: chooser.from.clone(),
             min: chooser.take,
@@ -132,6 +163,8 @@ pub(crate) fn pick_cards(cx: &Cx<'_>, choosers: &[Chooser]) -> Result<Picked, Re
 /// One player who takes between `min` and `max` of the cards in a list, and what the choice is for.
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub(crate) struct Selection {
+    /// No two cards taken may share a name; the most is then the number of names on offer.
+    pub(crate) one_per_name: bool,
     /// Who chooses; any seat.
     pub(crate) player: PlayerId,
     /// The cards they may take.
@@ -155,7 +188,12 @@ pub(crate) fn pick_selections(
     let mut answers = cx.journal().iter();
     let mut taken = Vec::with_capacity(selections.len());
     for selection in selections {
-        let most = selection.max.min(selection.from.len());
+        let offered = if selection.one_per_name {
+            names_among(cx.state(), &selection.from)
+        } else {
+            selection.from.len()
+        };
+        let most = selection.max.min(offered);
         if most == 0 {
             taken.push((selection.player, Vec::new()));
         } else if selection.from.len() <= selection.min {
@@ -168,6 +206,7 @@ pub(crate) fn pick_selections(
                 max: u32::try_from(most).unwrap_or(u32::MAX),
                 text: selection.text.clone(),
                 can_cancel: false,
+                one_per_name: selection.one_per_name,
             };
             match answers.next() {
                 None => {
@@ -218,6 +257,7 @@ mod tests {
 
     fn options(from: &[u64], min: u32, max: u32) -> CardsOptions {
         CardsOptions {
+            one_per_name: false,
             source: ObjectId(99),
             from: ids(from),
             min,
@@ -341,6 +381,7 @@ mod tests {
             Picked::Ask(Decision {
                 player: ME,
                 kind: DecisionKind::ChooseCards(CardsOptions {
+                    one_per_name: false,
                     source: game.zone(Zone::Battlefield)[0],
                     from: hand(&game, ME),
                     min: 2,

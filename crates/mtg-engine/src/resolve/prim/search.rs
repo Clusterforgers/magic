@@ -133,6 +133,7 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         matches.sort_unstable();
         searches.push((player, place));
         selections.push(Selection {
+            one_per_name: *distinct,
             player,
             from: matches,
             min: fewest,

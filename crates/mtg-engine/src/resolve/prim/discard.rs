@@ -53,6 +53,7 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
                     None => wording::discard(take),
                 };
                 Ok(Selection {
+                    one_per_name: false,
                     player: chooser.unwrap_or(*player),
                     min: if *optional { 0 } else { take },
                     max: take,
@@ -264,6 +265,7 @@ mod tests {
             Decision {
                 player: ME,
                 kind: DecisionKind::ChooseCards(CardsOptions {
+                    one_per_name: false,
                     source: game.zone(Zone::Battlefield)[0],
                     from: hand(&game, ME),
                     min: 1,

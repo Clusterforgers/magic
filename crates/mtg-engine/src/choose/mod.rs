@@ -47,6 +47,8 @@ pub use yes_no::{YesNoChoice, YesNoOptions};
 
 pub(crate) use ask::{Questions, Stop};
 pub(crate) use cards::check as check_cards;
+pub(crate) use cards::check_names as check_card_names;
+pub(crate) use cards::names_among;
 pub(crate) use cards::{Chooser, Picked, Selection, pick_cards, pick_selections};
 pub(crate) use mode::{
     C11dOnce, Modal, announceable, announced_specs, enough_modes, every_mode_is_legal, modal_of,

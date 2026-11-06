@@ -94,6 +94,7 @@ pub(super) fn run(ctx: &Ctx<'_>, work: &mut Work<'_>) -> Option<Next> {
         }
         let (min, max) = pick.bounds(candidates.len());
         return Some(ctx.ask(DecisionKind::ChooseCards(CardsOptions {
+            one_per_name: false,
             source: ctx.source,
             from: candidates,
             min,

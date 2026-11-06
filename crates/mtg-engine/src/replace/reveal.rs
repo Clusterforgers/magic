@@ -73,6 +73,7 @@ impl Pass<'_> {
             None => Ok(Asked::Ask(Decision {
                 player: controller,
                 kind: DecisionKind::ChooseCards(CardsOptions {
+                    one_per_name: false,
                     source,
                     from: options.to_vec(),
                     min: 1,

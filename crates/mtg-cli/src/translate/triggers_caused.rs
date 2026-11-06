@@ -22,7 +22,7 @@ const MODES: [(&str, &str); 9] = [
 /// The pattern of a line with a cause word, `None` for a line without one.
 pub fn pattern(ctx: &Ctx, p: &Params, mode: &str) -> Option<Tr<Value>> {
     let (_, key) = MODES.iter().find(|(known, _)| *known == mode)?;
-    let word = p.get(key)?;
+    let word = p.get(key).or_else(|| you_put(p, mode))?;
     let Ok(by) = players(word) else {
         return Some(unmapped(format!("key:Trigger.{mode}.{key}={word}")));
     };
@@ -35,6 +35,17 @@ pub fn pattern(ctx: &Ctx, p: &Params, mode: &str) -> Option<Tr<Value>> {
         caused["by"] = json!(by);
     }
     Some(Ok(json!({ "Caused": caused })))
+}
+
+/// "Whenever you put one or more time counters": the script names no cause (`CounterAddedOnce` without `ValidSource$`), the
+/// printed words do, and counters an opponent puts do not count (Kate Stewart).
+fn you_put<'a>(p: &'a Params, mode: &str) -> Option<&'a str> {
+    let counters = matches!(
+        mode,
+        "CounterAdded" | "CounterAddedOnce" | "CounterPlayerAddedAll"
+    );
+    let text = p.get("TriggerDescription")?.to_lowercase();
+    (counters && text.contains("whenever you put ")).then_some("You")
 }
 
 /// The players a cause word names: `Ok(None)` for any, `Err` for a word that names the cause some other way. The spell or

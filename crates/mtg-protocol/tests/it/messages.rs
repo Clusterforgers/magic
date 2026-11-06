@@ -421,6 +421,7 @@ fn pipeline_decision_kinds() -> Vec<DecisionKind> {
             can_cancel: true,
         }),
         DecisionKind::ChooseCards(CardsOptions {
+            one_per_name: false,
             source: b,
             from: vec![a, b],
             min: 1,

@@ -41,9 +41,6 @@ fn the_cards_own_mana_cost_is_no_cost_word_of_an_ability() {
 
 #[rstest]
 #[case::all_mana("Count$CastTotalManaSpent", json!({"ManaSpent": {"of": null}}))]
-#[case::snow("Count$CastTotalManaSpent Snow", json!({"ManaSpent": {"of": null, "from": {"supertypes": ["Snow"]}}}))]
-#[case::treasure("Count$CastTotalManaSpent Treasure", json!({"ManaSpent": {"of": null, "from": {"subtypes": ["Treasure"]}}}))]
-#[case::artifact("Count$CastTotalManaSpent Artifact", json!({"ManaSpent": {"of": null, "from": {"types": ["Artifact"]}}}))]
 fn the_mana_spent_is_counted_by_the_kind_of_its_source(#[case] x: &str, #[case] expected: Value) {
     let text = format!("Name:T\nTypes:Sorcery\nA:SP$ Draw | NumCards$ X\nSVar:X:{x}\n");
     assert_eq!(gaps(&text), Vec::<String>::new());

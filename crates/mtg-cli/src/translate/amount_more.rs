@@ -24,9 +24,10 @@ pub fn count(ctx: &Ctx, base: &str) -> Option<Tr<Value>> {
         "CreaturesAttackedThisTurn" if !rest.is_empty() => attacked_this_turn(ctx, rest),
         "Converge" if rest.is_empty() => Ok(json!("ColorsSpent")),
         "CastTotalManaSpent" if rest.is_empty() => Ok(json!({"ManaSpent": {"of": null}})),
-        // The mana the sources of that kind supplied ("mana from a Treasure"); the kinds are the properties a restriction reads.
+        // "Mana from a Treasure": the pool keeps no source for mana that was added before the cast, so a Treasure tapped
+        // ahead would count none (CR 106.4). A named gap until the pool keeps the source kind of each mana.
         "CastTotalManaSpent" => match super::spend_uses::filter(ctx, rest, false) {
-            Some(from) => Ok(json!({"ManaSpent": {"of": null, "from": from}})),
+            Some(_) => unmapped("amount:Count$CastTotalManaSpent-pool-mana"),
             None => unmapped("amount:Count$CastTotalManaSpent-source"),
         },
         "YourStartingLife" if rest.is_empty() => Ok(json!({"StartingLife": "You"})),

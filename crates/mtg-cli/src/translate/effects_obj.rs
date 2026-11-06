@@ -837,6 +837,10 @@ fn animate(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
             "AtEOT",
         ],
     )?;
+    // Effects change permanents only (the layers read nothing else): "target spell becomes red" would change nothing.
+    if p.get("TgtZone").is_some_and(|zone| zone.contains("Stack")) {
+        return unmapped("key:Animate.TgtZone=Stack");
+    }
     let duration = duration(p.get("Duration"))?;
     // `AnimateAll` names the objects by a valid-string.
     let affected = match p.get("ValidCards") {

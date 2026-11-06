@@ -74,6 +74,7 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         let selections: Vec<Selection> = choosers
             .iter()
             .map(|player| Selection {
+                one_per_name: false,
                 player: *player,
                 from: ids.clone(),
                 min,
