@@ -545,7 +545,14 @@ fn record_sources(state: &GameState, events: &mut [Event]) {
             break;
         }
         left -= 1;
-        let traits = crate::spend::traits_of(state, *source);
+        // Only the kind of the source is kept: its types, supertypes and subtypes, which a filter of sources reads.
+        let full = crate::spend::traits_of(state, *source);
+        let traits = mtg_cards::spend::SpendTraits {
+            types: full.types,
+            supertypes: full.supertypes,
+            subtypes: full.subtypes,
+            ..Default::default()
+        };
         match from.iter_mut().find(|known| known.traits == traits) {
             Some(known) => known.count += 1,
             None => from.push(mtg_cards::spend::SpentFrom { traits, count: 1 }),
