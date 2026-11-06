@@ -419,6 +419,15 @@ fn counted_text(condition: &Condition, number: u32, words: &str) -> Vec<String> 
     let Condition::Compare { left, op, .. } = condition else {
         return Vec::new();
     };
+    // The cards of your graveyard in either order of their two predicates (r5b).
+    let reordered;
+    let left = match left {
+        Amount::Count(of) => {
+            reordered = Amount::Count(graveyard_first(of));
+            &reordered
+        }
+        _ => left,
+    };
     match (left, op) {
         (Amount::CardTypes(of), Cmp::Ge) if *of == graveyard_cards() => vec![format!(
             "there are {words} or more card types among cards in your graveyard"
@@ -477,4 +486,14 @@ pub(super) fn none_texts(condition: &Condition) -> Vec<String> {
         .map(|group| format!("you control no {group}"))
         .into_iter()
         .collect()
+}
+
+/// The selector with "in a graveyard" and "you own" first, as [`graveyard_cards`] says them, when it has both (r5b).
+fn graveyard_first(of: &Selector) -> Selector {
+    let base = graveyard_cards();
+    if !base.0.iter().all(|pred| of.0.contains(pred)) {
+        return of.clone();
+    }
+    let rest = of.0.iter().filter(|pred| !base.0.contains(pred)).cloned();
+    Selector(base.0.iter().cloned().chain(rest).collect())
 }
