@@ -102,6 +102,7 @@ pub(crate) fn cast_cost_counting(
 fn cast_cost_x(cost: &mtg_cards::cost::Cost, counted: bool) -> Option<(ManaCost, Vec<Part>, u32)> {
     let price = Price::announced(cost).ok()?;
     let unpaid = price.tap
+        || price.untap
         || price.moves_source()
         || !price.changes.is_empty()
         || (price.mana.is_none() && price.parts.is_empty())

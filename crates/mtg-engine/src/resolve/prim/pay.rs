@@ -282,6 +282,10 @@ fn source_leaves(state: &GameState, source: ObjectId, leaves: Leaves) -> Option<
 /// has a part that counts X is refused by name.
 fn price_of(cost: &Cost) -> Result<Price, ResolveError> {
     let price = Price::announced(cost).map_err(ResolveError::Unsupported)?;
+    // Only an activated ability untaps its source as a cost.
+    if price.untap {
+        return Err(ResolveError::Unsupported("Cost.Untap"));
+    }
     match price.leaves {
         // A resolution has no hand to discard the source from.
         Leaves::Discarded => return Err(ResolveError::Unsupported("Effect.Pay.DiscardSelf")),

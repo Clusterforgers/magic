@@ -1,4 +1,4 @@
-//! Goal: each capability the engine lists is named by the rule that uses it, and the games that fire it live in `did_triggers` and `opening_hand`; a capability the engine cannot pay stays unlisted.
+//! Goal: each capability the engine lists is named by the rule that uses it, and the games that fire it live in `did_triggers` and `opening_hand`; the untap symbol is paid (its games live in `r5g`).
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
 use mtg_cards::ability::Ability;
@@ -20,7 +20,7 @@ use rstest::rstest;
 #[case::untapping_the_source_as_a_cost(
     r#"{"Activated":{"cost":["Untap"],"effects":[{"Draw":{}}]}}"#,
     "Cost.Untap",
-    false
+    true
 )]
 fn a_listed_capability_is_named_by_its_rule(
     #[case] rule: &str,

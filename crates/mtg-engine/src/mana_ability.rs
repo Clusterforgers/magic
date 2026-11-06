@@ -232,11 +232,17 @@ fn rule_mana(state: &GameState, player: PlayerId, id: ObjectId, printed: usize) 
                     .map(|(take, _)| u32::try_from(take.from.len()).unwrap_or(u32::MAX)),
             )
             .min();
-        let times = counting
-            .amount(shape.times)
-            .ok()
-            .and_then(|times| u32::try_from(times).ok())
-            .unwrap_or(0);
+        // "Add {C} for each storage counter removed this way": the mana is added once for each X the cost can pay.
+        let x_times = *shape.times == mtg_cards::value::Amount::X;
+        let times = if x_times {
+            1
+        } else {
+            counting
+                .amount(shape.times)
+                .ok()
+                .and_then(|times| u32::try_from(times).ok())
+                .unwrap_or(0)
+        };
         // "Add {G}. If you control four or more creatures, add {G}{G} instead.": the branch that holds now.
         let mut produces = shape.produces;
         while let ManaProduced::Instead {
@@ -257,6 +263,10 @@ fn rule_mana(state: &GameState, player: PlayerId, id: ObjectId, printed: usize) 
         }
         // Each way to add the mana, as the types one addition makes.
         let additions: Vec<Vec<ManaType>> = match produces {
+            ManaProduced::Fixed { mana, count } if x_times => (1..=x_most
+                .map_or(0, |most| usize::try_from(most).unwrap_or(0).min(VARIANTS)))
+                .map(|x| vec![mana; x * count as usize])
+                .collect(),
             ManaProduced::Fixed { mana, count } => vec![vec![mana; count as usize]],
             ManaProduced::Mixed(list) => vec![list.to_vec()],
             ManaProduced::AnyColor(count) => {
@@ -573,6 +583,29 @@ pub(crate) fn activation(
         events.extend(run_inline(state, player, object, shape.then)?);
     }
     Ok(events)
+}
+
+/// Gives each continuous effect and delayed trigger that one payment's events create an id and a timestamp of its own, in
+/// order: every mana ability of the payment is worked out from the same state, so two sources that each set up an effect
+/// ("this land doesn't untap during your next untap step") would otherwise name the same one.
+pub(crate) fn r5g_distinct(state: &GameState, events: &mut [Event]) {
+    let (mut effect, mut stamp, mut delayed) =
+        (state.next_effect, state.next_timestamp, state.next_delayed);
+    for event in events {
+        match event {
+            Event::EffectCreated { effect: made } => {
+                made.id = mtg_core::ids::EffectId(effect);
+                made.timestamp = stamp;
+                effect += 1;
+                stamp += 1;
+            }
+            Event::DelayedTriggerCreated(created) => {
+                created.id = crate::triggers::DelayedId(delayed);
+                delayed += 1;
+            }
+            _ => {}
+        }
+    }
 }
 
 #[cfg(test)]

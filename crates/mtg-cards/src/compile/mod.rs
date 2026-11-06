@@ -32,8 +32,9 @@ pub(crate) use keywords::split_items;
 pub use read::subtypes::creature_types;
 pub use read::{
     BlockPlan, all_groups, block_plan, champion_line, die_row, die_row_texts, equip_line,
-    keyword_grant, render_ability, render_cost, render_mode, render_variants, same_text,
-    static_pair_texts, subject_group, target_phrases, without_header, written_variants,
+    escalate_cost, escalate_reads, forecast_lines, keyword_grant, reinforce_line, render_ability,
+    render_cost, render_mode, render_variants, same_text, static_pair_texts, subject_group,
+    target_phrases, without_header, written_variants,
 };
 
 /// Reads a dungeon room's text as a clause of this kind, with no face of its own.

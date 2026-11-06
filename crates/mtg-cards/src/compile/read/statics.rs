@@ -521,6 +521,13 @@ pub(super) fn one_kind(r: &mut Reader<'_>) -> Option<Selector> {
 fn rule(r: &mut Reader<'_>) -> Option<Ability> {
     let rule = if r.words("play with the top card of your library revealed") {
         GameRule::RevealTop(Ref::You)
+    } else if r
+        .attempt(|r| {
+            (r.words("a deck can have any number of cards named") && r.source()).then_some(())
+        })
+        .is_some()
+    {
+        GameRule::AnyNumberInDeck
     } else if let Some(rule) = r.attempt(super::w17b_statics::w17b_read) {
         rule
     } else if let Some(rule) = r.attempt(player_rule) {
@@ -1620,6 +1627,9 @@ fn rule_texts(rule: &GameRule, condition: Option<&Condition>, from: ZoneKind) ->
         ) => super::w17b_statics::w17b_texts(rule),
         (GameRule::CanBeCommander, ZoneKind::Battlefield) => {
             vec!["~ can be your commander".to_owned()]
+        }
+        (GameRule::AnyNumberInDeck, ZoneKind::Battlefield) => {
+            vec!["A deck can have any number of cards named ~".to_owned()]
         }
         (GameRule::MustAttack(who), ZoneKind::Battlefield) => each_combat(who, "attack"),
         (GameRule::MustBlock(who), ZoneKind::Battlefield) => each_combat(who, "block"),

@@ -197,11 +197,13 @@ impl<'a> Pairer<'a> {
         self.alt_keywords();
         self.equip_options();
         self.champions();
+        self.r5g_hand_keywords();
         self.static_pairs();
         self.exact();
         self.blocks();
         self.leftovers();
         self.tables();
+        self.r5g_escalate();
         let face = self.face;
         Paired {
             clauses: self
@@ -338,6 +340,44 @@ impl<'a> Pairer<'a> {
                 self.find_text(&[ClauseKind::Keyword, ClauseKind::Static], &[line], false)
             {
                 self.settle(at, slot, ClauseState::Reads { ability: at });
+            }
+        }
+    }
+
+    /// Reinforce and Forecast: the activated ability from the hand that the keyword means stands for its line.
+    fn r5g_hand_keywords(&mut self) {
+        let abilities = self.abilities;
+        for (at, ability) in abilities.iter().enumerate() {
+            if self.taken[at] {
+                continue;
+            }
+            let mut lines = crate::compile::forecast_lines(ability, written_variants);
+            lines.extend(crate::compile::reinforce_line(ability));
+            if lines.is_empty() {
+                continue;
+            }
+            let kinds = [ClauseKind::Keyword, ClauseKind::Activated];
+            if let Some(slot) = self.find_text(&kinds, &lines, false) {
+                self.settle(at, slot, ClauseState::Reads { ability: at });
+            }
+        }
+    }
+
+    /// Escalate: the keyword line of a modal spell reads as the cost it adds for each mode beyond the first, beside the
+    /// clause the spell stands for.
+    fn r5g_escalate(&mut self) {
+        for (at, ability) in self.abilities.iter().enumerate() {
+            let (Some(cost), Some(_)) = (crate::compile::escalate_cost(ability), self.slot_of[at])
+            else {
+                continue;
+            };
+            let found = self.slots.iter().position(|slot| {
+                slot.state.is_none()
+                    && slot.clause.kind == ClauseKind::Keyword
+                    && crate::compile::escalate_reads(slot.text, cost)
+            });
+            if let Some(slot) = found {
+                self.slots[slot].state = Some(ClauseState::Reads { ability: at });
             }
         }
     }

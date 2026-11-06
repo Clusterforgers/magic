@@ -109,6 +109,7 @@ const RUNS: &[&str] = &[
     "Amount.Distinct",
     "Amount.DieResult",
     "Cost.Tap",
+    "Cost.Untap",
     "Cost.Mana",
     "Cost.Mana.X",
     "Cost.Loyalty.X",
@@ -205,6 +206,7 @@ const RUNS: &[&str] = &[
     "Effect.Destroy",
     "Effect.Exile",
     "Effect.Sacrifice",
+    "Effect.SacrificeUpTo",
     "Effect.Counter",
     "Effect.DealDamage",
     "Effect.DealDamage.Excess",
@@ -695,6 +697,7 @@ const RUNS: &[&str] = &[
     "Condition.InCombat",
     "Condition.FirstCombat",
     "Rule.CanBeCommander",
+    "Rule.AnyNumberInDeck",
     "Pred.Modified",
     "Pred.RingBearer",
     "Pred.HasAdventure",
@@ -1167,7 +1170,8 @@ mod tests {
     #[case::caused_triggers("Trigger.Caused", true)]
     #[case::r3p1_actions_taken_by_a_player("Trigger.Did", true)]
     #[case::r3p1_beginning_the_game_on_the_battlefield("Ability.OpeningHand", true)]
-    #[case::r3p1_untapping_the_source_as_a_cost("Cost.Untap", false)]
+    #[case::r3p1_untapping_the_source_as_a_cost("Cost.Untap", true)]
+    #[case::r5g_sacrificing_any_number("Effect.SacrificeUpTo", true)]
     #[case::event_amounts("Amount.Triggering", true)]
     #[case::if_you_do("Condition.Performed", true)]
     #[case::a_chosen_word("Condition.ChosenWord", true)]
@@ -1190,6 +1194,7 @@ mod tests {
     #[case::looking_at_the_top_any_time("Rule.LookAtTopAnyTime", true)]
     #[case::additional_land_plays("Rule.AdditionalLandPlays", true)]
     #[case::commander_eligibility("Rule.CanBeCommander", true)]
+    #[case::r5g_any_number_in_a_deck("Rule.AnyNumberInDeck", true)]
     #[case::w17b_untargetable_graveyards("Rule.GraveyardCardsUntargetable", true)]
     #[case::w17b_cant_lose("Rule.CantLoseGame", true)]
     #[case::w17b_cant_cast("Rule.CantCastSpells", true)]

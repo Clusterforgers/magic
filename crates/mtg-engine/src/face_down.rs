@@ -126,7 +126,12 @@ fn keyword_cost(card: &CardDefinition) -> Option<(ManaCost, bool)> {
             _ => return None,
         };
         let price = Price::of(cost).ok()?;
-        if price.tap || price.moves_source() || price.x > 0 || !price.parts.is_empty() {
+        if price.tap
+            || price.untap
+            || price.moves_source()
+            || price.x > 0
+            || !price.parts.is_empty()
+        {
             return None;
         }
         Some((price.mana?, megamorph))

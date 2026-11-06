@@ -193,7 +193,9 @@ fn can_activate(
     };
     // A player who does not control the permanent can neither tap it nor give it up as a cost (CR 602.2).
     let foreign = controller_of_object(state, object) != player;
-    if rules.is_mana_ability() || (foreign && (price.tap || price.leaves != Leaves::Stays)) {
+    if rules.is_mana_ability()
+        || (foreign && (price.tap || price.untap || price.leaves != Leaves::Stays))
+    {
         return false;
     }
     if !leaves_from_here(state, player, object, price.leaves) {
@@ -214,16 +216,8 @@ fn can_activate(
     {
         return false;
     }
-    if price.tap {
-        let Some(permanent) = object.permanent() else {
-            return false;
-        };
-        // Only creatures are subject to summoning sickness for {T} abilities (CR 302.6).
-        let sick = keywords::summoning_sick(state, object.id())
-            && characteristics(state, object.id()).is_some_and(|c| c.is_creature());
-        if permanent.tapped() || sick {
-            return false;
-        }
+    if !source_turns(state, object, &price) {
+        return false;
     }
     if let Some(mana) =
         crate::c11a_less::c11a_mana(state, player, (object.id(), address, rules), &price)
@@ -251,6 +245,25 @@ fn can_activate(
                     && price.at(x).claimed(state, player, object.id()).is_some()
                     && can_pay_x(state, player, object, &price, &claimed, x))
         })
+}
+
+/// Whether the source can be tapped (`{T}`) or untapped (`{Q}`) as the price asks: a permanent in the other state, and a
+/// creature free of summoning sickness (CR 302.6); a price with neither asks nothing of it.
+fn source_turns(state: &GameState, object: &GameObject, price: &Price) -> bool {
+    if !price.tap && !price.untap {
+        return true;
+    }
+    let Some(permanent) = object.permanent() else {
+        return false;
+    };
+    let sick = keywords::summoning_sick(state, object.id())
+        && characteristics(state, object.id()).is_some_and(|c| c.is_creature());
+    let ready = if price.untap {
+        permanent.tapped() && !price.tap
+    } else {
+        !permanent.tapped()
+    };
+    ready && !sick
 }
 
 /// What may help pay the waterbend part of the price of an ability of `source`: the artifacts and creatures the cost does not
