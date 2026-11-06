@@ -12,14 +12,20 @@ pub(super) fn variants(ability: &Ability, written: fn(&Ability) -> Vec<String>) 
     let Ok(mut value) = serde_json::to_value(ability) else {
         return Vec::new();
     };
-    if !rewrite(&mut value) {
+    let targets = value
+        .as_object()
+        .and_then(|map| map.values().next())
+        .and_then(|kind| kind.get("targets"))
+        .cloned()
+        .unwrap_or_else(|| json!([]));
+    if !rewrite(&mut value, &targets) {
         return Vec::new();
     }
     serde_json::from_value::<Ability>(value).map_or_else(|_| Vec::new(), |normal| written(&normal))
 }
 
 /// Rewrites every effect list of the ability; whether one changed.
-fn rewrite(value: &mut Value) -> bool {
+fn rewrite(value: &mut Value, targets: &Value) -> bool {
     let mut changed = false;
     match value {
         Value::Object(map) => {
@@ -27,14 +33,14 @@ fn rewrite(value: &mut Value) -> bool {
                 if key == "effects"
                     && let Value::Array(list) = inner
                 {
-                    changed |= rewrite_list(list);
+                    changed |= rewrite_list(list, targets);
                 }
-                changed |= rewrite(inner);
+                changed |= rewrite(inner, targets);
             }
         }
         Value::Array(list) => {
             for inner in list {
-                changed |= rewrite(inner);
+                changed |= rewrite(inner, targets);
             }
         }
         _ => {}
@@ -43,7 +49,7 @@ fn rewrite(value: &mut Value) -> bool {
 }
 
 /// `[May [.., step], If]` and `May [.., step, If]` over the name the step binds.
-fn rewrite_list(list: &mut Vec<Value>) -> bool {
+fn rewrite_list(list: &mut Vec<Value>, targets: &Value) -> bool {
     let mut changed = false;
     // The `If` last inside a `May`, right after the step: moved after the `May`.
     for at in 0..list.len() {
@@ -53,7 +59,7 @@ fn rewrite_list(list: &mut Vec<Value>) -> bool {
         let [.., taken, asked] = inner.as_slice() else {
             continue;
         };
-        if performed(taken, asked).is_some() {
+        if performed(taken, asked, targets).is_some() {
             let Some(moved) = inner.pop() else { continue };
             list.insert(at + 1, moved);
             changed = true;
@@ -67,7 +73,10 @@ fn rewrite_list(list: &mut Vec<Value>) -> bool {
             step = Some(last);
             continue;
         }
-        let Some(condition) = step.as_ref().and_then(|step| performed(step, effect)) else {
+        let Some(condition) = step
+            .as_ref()
+            .and_then(|step| performed(step, effect, targets))
+        else {
             step = None;
             continue;
         };
@@ -98,7 +107,7 @@ fn may_last(value: &Value) -> Option<Value> {
 const STEPS: [&str; 4] = ["Sacrifice", "Discard", "Exile", "Mill"];
 
 /// `"Performed"` or `{"Not":"Performed"}` when the `If` asks whether the step took anything, with no `otherwise`.
-fn performed(step: &Value, branch: &Value) -> Option<Value> {
+fn performed(step: &Value, branch: &Value, targets: &Value) -> Option<Value> {
     let (verb, body) = step.as_object()?.iter().next()?;
     STEPS.contains(&verb.as_str()).then_some(())?;
     let name = body.get("as").or_else(|| body.get("bind"))?.as_str()?;
@@ -111,10 +120,16 @@ fn performed(step: &Value, branch: &Value) -> Option<Value> {
         return None;
     }
     let condition = branch.get("condition")?;
-    // One thing taken: a step of the default count, or the exile of one target.
+    // One thing taken: a step of the default count, or the exile of a target spec that takes at most one.
     let single = if verb == "Exile" {
         body.get("what")
-            .is_some_and(|what| what.get("Target").is_some())
+            .and_then(|what| what.get("Target"))
+            .and_then(Value::as_u64)
+            .and_then(|index| targets.get(usize::try_from(index).ok()?))
+            .is_some_and(|spec| {
+                spec.get("bounds")
+                    .is_none_or(|bounds| bounds.get("max") == Some(&json!(1)))
+            })
     } else {
         body.get("count").is_none()
     };
