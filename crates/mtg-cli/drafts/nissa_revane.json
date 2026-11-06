@@ -11,7 +11,24 @@
           "Loyalty": {
             "cost": { "Plus": 1 },
             "effects": [
-              { "Search": { "filter": [{ "Named": "Nissa's Chosen" }], "as": "found" } },
+              {
+                "Search": {
+                  "filter": [
+                    { "Named": "Nissa's Chosen" },
+                    {
+                      "AnyOf": [
+                        { "Type": "Artifact" },
+                        { "Type": "Battle" },
+                        { "Type": "Creature" },
+                        { "Type": "Enchantment" },
+                        { "Type": "Land" },
+                        { "Type": "Planeswalker" }
+                      ]
+                    }
+                  ],
+                  "as": "found"
+                }
+              },
               { "Move": { "what": { "Bound": "found" }, "to": { "Battlefield": {} } } },
               { "Shuffle": {} }
             ]

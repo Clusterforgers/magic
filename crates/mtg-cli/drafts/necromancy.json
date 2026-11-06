@@ -1,0 +1,59 @@
+{
+  "oracle_id": "699b192c-f3f2-4ac5-9ca9-e35bcf08ad8a",
+  "name": "Necromancy",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Necromancy",
+      "oracle_fingerprint": "a28f0f691f532b7b6d3ff0d7fa962b63",
+      "abilities": [
+        { "Keyword": "FlashSacrifice" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "if": { "Compare": { "left": { "Count": ["This"] }, "op": "Ge", "right": 1 } },
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }, { "In": "Graveyard" }] } }],
+            "effects": [
+              {
+                "Move": {
+                  "what": { "Target": 0 },
+                  "to": { "Battlefield": { "under": "You" } },
+                  "as": "moved"
+                }
+              },
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [
+                    { "AddSubtype": "Aura" },
+                    {
+                      "AddKeyword": {
+                        "Enchant": [{ "Type": "Creature" }, { "Is": { "Bound": "moved" } }]
+                      }
+                    }
+                  ],
+                  "duration": "Forever"
+                }
+              },
+              { "Attach": { "what": "This", "to": { "Bound": "moved" } } },
+              {
+                "DelayedTrigger": {
+                  "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield" } },
+                  "effects": [
+                    {
+                      "Sacrifice": {
+                        "who": { "ControllerOf": { "Bound": "moved" } },
+                        "filter": [{ "Is": { "Bound": "moved" } }],
+                        "count": { "Count": [{ "Is": { "Bound": "moved" } }] }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

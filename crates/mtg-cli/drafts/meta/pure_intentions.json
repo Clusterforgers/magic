@@ -1,0 +1,42 @@
+{
+  "source": "forge",
+  "oracle_matches": true,
+  "lines": [
+    {
+      "face": 0,
+      "tag": "A",
+      "text": "Whenever a spell or ability an opponent controls causes you to discard cards this turn, return those cards from your graveyard to your hand.",
+      "abilities": [],
+      "gap": "defined:TriggeredCards"
+    },
+    {
+      "face": 0,
+      "tag": "T",
+      "text": "When a spell or ability an opponent controls causes you to discard CARDNAME, return CARDNAME from your graveyard to your hand at the beginning of the next end step.",
+      "abilities": [
+        0
+      ],
+      "gap": null
+    }
+  ],
+  "proof": {
+    "marks": [
+      {
+        "face": 0,
+        "span": {
+          "start": 0,
+          "end": 140
+        },
+        "mark": "ByHand"
+      },
+      {
+        "face": 0,
+        "span": {
+          "start": 141,
+          "end": 307
+        },
+        "mark": "Auto"
+      }
+    ]
+  }
+}

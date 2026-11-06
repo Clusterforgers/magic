@@ -1,0 +1,29 @@
+{
+  "oracle_id": "67c4b1d5-757c-46cf-8bb1-9889d9ed1a1f",
+  "name": "Slaughter Pact",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Slaughter Pact",
+      "oracle_fingerprint": "5e77cf78bd7dbc42dd26434f0ecfe217",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "Not": { "Color": "Black" } }] } }
+            ],
+            "effects": [
+              { "Destroy": { "what": { "Target": 0 } } },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+                  "effects": [{ "Pay": { "cost": "{2}{B}", "unpaid": [{ "LoseGame": {} }] } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

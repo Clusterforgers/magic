@@ -1,0 +1,34 @@
+{
+  "oracle_id": "782dcbc4-5a11-42f5-b8d9-4572e36d45b3",
+  "name": "Summoner's Pact",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Summoner's Pact",
+      "oracle_fingerprint": "087a05a9bb2dcb8945e78279f4745440",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Search": {
+                  "filter": [{ "Type": "Creature" }, { "Color": "Green" }, { "OwnedBy": "You" }],
+                  "reveal": true,
+                  "as": "found"
+                }
+              },
+              { "Move": { "what": { "Bound": "found" }, "to": "Hand" } },
+              { "Shuffle": {} },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+                  "effects": [{ "Pay": { "cost": "{2}{G}{G}", "unpaid": [{ "LoseGame": {} }] } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,26 @@
+{
+  "oracle_id": "a61ceda1-5993-479e-945f-15753eeb7049",
+  "name": "Tainted Aether",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Tainted Aether",
+      "oracle_fingerprint": "b7ddf95866c8ca712d40181129f921d5",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": [{ "Type": "Creature" }], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Sacrifice": {
+                  "who": { "ControllerOf": "Triggering" },
+                  "filter": [{ "AnyOf": [{ "Type": "Creature" }, { "Type": "Land" }] }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

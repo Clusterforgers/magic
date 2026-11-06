@@ -1,0 +1,142 @@
+{
+  "object": "card",
+  "id": "084275b3-4a51-46dc-adbc-e2d0a59d3545",
+  "oracle_id": "c0d20e66-deb6-4a20-a2c1-8a79514e3792",
+  "multiverse_ids": [],
+  "resource_id": "97991643B4306CD701EC326587981581D4D58A35CCA572C77536F945953A9AAF",
+  "mtgo_id": 151879,
+  "arena_id": 105725,
+  "tcgplayer_id": 697379,
+  "cardmarket_id": 892177,
+  "name": "Black Tom Cassidy",
+  "lang": "en",
+  "released_at": "2026-06-26",
+  "uri": "https://api.scryfall.com/cards/084275b3-4a51-46dc-adbc-e2d0a59d3545",
+  "scryfall_uri": "https://scryfall.com/card/msc/715/black-tom-cassidy?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T00:37:20Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/0/8/084275b3-4a51-46dc-adbc-e2d0a59d3545.jpg?1783903040",
+    "normal": "https://cards.scryfall.io/normal/front/0/8/084275b3-4a51-46dc-adbc-e2d0a59d3545.jpg?1783903040",
+    "large": "https://cards.scryfall.io/large/front/0/8/084275b3-4a51-46dc-adbc-e2d0a59d3545.jpg?1783903040",
+    "png": "https://cards.scryfall.io/png/front/0/8/084275b3-4a51-46dc-adbc-e2d0a59d3545.png?1783903040",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/0/8/084275b3-4a51-46dc-adbc-e2d0a59d3545.jpg?1783903040",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/0/8/084275b3-4a51-46dc-adbc-e2d0a59d3545.jpg?1783903040",
+    "thumb": "https://cards.scryfall.io/thumb/front/0/8/084275b3-4a51-46dc-adbc-e2d0a59d3545.webp?1783903040",
+    "grid": "https://cards.scryfall.io/grid/front/0/8/084275b3-4a51-46dc-adbc-e2d0a59d3545.webp?1783903040",
+    "display": "https://cards.scryfall.io/display/front/0/8/084275b3-4a51-46dc-adbc-e2d0a59d3545.webp?1783903040",
+    "art": "https://cards.scryfall.io/art/front/0/8/084275b3-4a51-46dc-adbc-e2d0a59d3545.webp?1783903040",
+    "crop": "https://cards.scryfall.io/crop/front/0/8/084275b3-4a51-46dc-adbc-e2d0a59d3545.webp?1783903040",
+    "jpeg": "https://cards.scryfall.io/normal/front/0/8/084275b3-4a51-46dc-adbc-e2d0a59d3545.jpg?1783903040"
+  },
+  "mana_cost": "{1}{G}",
+  "cmc": 2.0,
+  "type_line": "Legendary Creature — Mutant Villain",
+  "oracle_text": "{T}: Add {G}. If you control another Mutant, you gain 1 life.",
+  "power": "1",
+  "toughness": "3",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [],
+  "produced_mana": [
+    "G"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo",
+    "arena"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "9d739461-c5ac-43a1-af41-3d5a585b5c8d",
+  "set": "msc",
+  "set_name": "Marvel Super Heroes Commander",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/9d739461-c5ac-43a1-af41-3d5a585b5c8d",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Amsc&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/msc?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/084275b3-4a51-46dc-adbc-e2d0a59d3545/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Ac0d20e66-deb6-4a20-a2c1-8a79514e3792&unique=prints",
+  "collector_number": "715",
+  "digital": false,
+  "rarity": "common",
+  "flavor_text": "\"I talk to the dirt and the dirt talks back. And you listen to Black Tom—the dirt knows everything.\"",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Raoul Vitale",
+  "artist_ids": [
+    "c7c15d49-f84b-4d98-9a34-e80e8347b756"
+  ],
+  "illustration_id": "dec07f71-e701-46a9-8cac-1e8174ca821d",
+  "border_color": "black",
+  "frame": "2015",
+  "frame_effects": [
+    "legendary"
+  ],
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "promo_types": [
+    "universesbeyond"
+  ],
+  "edhrec_rank": 21117,
+  "prices": {
+    "usd": "0.30",
+    "usd_foil": "0.33",
+    "usd_etched": null,
+    "eur": "0.15",
+    "eur_foil": "0.24",
+    "tix": "0.44"
+  },
+  "related_uris": {
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DBlack%2BTom%2BCassidy",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DBlack%2BTom%2BCassidy",
+    "edhrec": "https://edhrec.com/route/?cc=Black+Tom+Cassidy"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F697379%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=892177&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/151879?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

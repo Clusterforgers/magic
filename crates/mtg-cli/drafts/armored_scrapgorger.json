@@ -1,0 +1,43 @@
+{
+  "oracle_id": "0d3a4db2-df79-4946-8f87-b174cf9c293c",
+  "name": "Armored Scrapgorger",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Armored Scrapgorger",
+      "oracle_fingerprint": "c6bfca76f54990032fd5c694e5adccbf",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "ModifyPT": { "power": 3, "toughness": 0 } }],
+            "condition": {
+              "Matches": {
+                "subject": "This",
+                "selector": [
+                  { "CounterCount": { "kind": { "Other": "oil" }, "op": "Ge", "to": 3 } }
+                ]
+              }
+            }
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "AnyColor": 1 } } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Tapped": { "what": ["This"] } },
+            "targets": [{ "what": { "Object": [{ "In": "Graveyard" }] } }],
+            "effects": [
+              { "Exile": { "what": { "Target": 0 } } },
+              { "PutCounters": { "on": "This", "counter": { "Other": "oil" } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

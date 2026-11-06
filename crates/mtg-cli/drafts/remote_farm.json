@@ -1,0 +1,43 @@
+{
+  "oracle_id": "2c38f4c7-1b3f-42b4-a175-edab7acd6cc6",
+  "name": "Remote Farm",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Remote Farm",
+      "oracle_fingerprint": "7b2d15680318da4d2d14f948e17b8654",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": {
+              "WithCounters": { "counter": { "Other": "depletion" }, "count": 2, "tapped": true }
+            }
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap", { "RemoveCounters": { "counter": { "Other": "depletion" } } }],
+            "effects": [
+              { "AddMana": { "mana": { "Fixed": ["White", "White"] } } },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": {
+                        "Count": ["This", { "Not": { "HasCounter": { "Other": "depletion" } } }]
+                      },
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [{ "Sacrifice": { "filter": ["This"] } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

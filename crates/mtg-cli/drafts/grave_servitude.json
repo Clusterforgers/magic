@@ -1,0 +1,21 @@
+{
+  "oracle_id": "6f54e7ea-bb87-4ce0-96b6-4fc82605ed2a",
+  "name": "Grave Servitude",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Grave Servitude",
+      "oracle_fingerprint": "5e2428fd2999fc8a5d2941cc51bcbaae",
+      "abilities": [
+        { "Keyword": "FlashSacrifice" },
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "ModifyPT": { "power": 3, "toughness": -1 } }, { "SetColors": ["Black"] }]
+          }
+        }
+      ]
+    }
+  ]
+}

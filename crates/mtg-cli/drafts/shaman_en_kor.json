@@ -1,0 +1,61 @@
+{
+  "oracle_id": "4d9d5dbb-25ab-41a5-a277-3ee5f9ef579b",
+  "name": "Shaman en-Kor",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Shaman en-Kor",
+      "oracle_fingerprint": "d25d878f646aefaa39e8640ed64f3b17",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{0}",
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } }
+            ],
+            "effects": [
+              {
+                "Shield": {
+                  "when": { "Damage": { "to": "This" } },
+                  "by": { "RedirectUpTo": { "most": 1, "to": { "Target": 0 } } },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{1}{W}",
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "AnyOf": [{ "In": "Battlefield" }, { "In": "Stack" }, { "In": "Command" }] }
+                    ]
+                  },
+                  "as": "source"
+                }
+              },
+              {
+                "Shield": {
+                  "when": {
+                    "Damage": { "to": { "Target": 0 }, "source": [{ "Is": { "Bound": "source" } }] }
+                  },
+                  "by": {
+                    "InsteadNext": [
+                      { "DealDamage": { "source": "Dealer", "to": "This", "amount": "Triggering" } }
+                    ]
+                  },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

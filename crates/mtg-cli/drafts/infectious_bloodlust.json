@@ -14,6 +14,7 @@
             "mods": [{ "ModifyPT": { "power": 2, "toughness": 1 } }, { "AddKeyword": "Haste" }]
           }
         },
+        { "Rule": { "rule": { "MustAttack": "Attached" } } },
         {
           "Triggered": {
             "when": {
@@ -41,8 +42,7 @@
               }
             ]
           }
-        },
-        { "Rule": { "rule": { "MustAttack": "Attached" } } }
+        }
       ]
     }
   ]

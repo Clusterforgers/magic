@@ -1,0 +1,43 @@
+{
+  "oracle_id": "e4e6e796-39ce-4a63-8c61-c7c956d75d78",
+  "name": "Saprazzan Skerry",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Saprazzan Skerry",
+      "oracle_fingerprint": "8cccd25d6bf63c613acae2d6e338d43b",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": {
+              "WithCounters": { "counter": { "Other": "depletion" }, "count": 2, "tapped": true }
+            }
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap", { "RemoveCounters": { "counter": { "Other": "depletion" } } }],
+            "effects": [
+              { "AddMana": { "mana": { "Fixed": ["Blue", "Blue"] } } },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": {
+                        "Count": ["This", { "Not": { "HasCounter": { "Other": "depletion" } } }]
+                      },
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [{ "Sacrifice": { "filter": ["This"] } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

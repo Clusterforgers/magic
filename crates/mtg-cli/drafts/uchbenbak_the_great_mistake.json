@@ -1,0 +1,52 @@
+{
+  "oracle_id": "36bfcc4a-7f66-4649-ab6b-18d360299d46",
+  "name": "Uchbenbak, the Great Mistake",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Uchbenbak, the Great Mistake",
+      "oracle_fingerprint": "507efb47dd56c689f2c14eb2031afb7a",
+      "abilities": [
+        { "Keyword": "Vigilance" },
+        { "Keyword": "Menace" },
+        {
+          "Activated": {
+            "cost": "{4}{U}{B}",
+            "timing": "Sorcery",
+            "condition": {
+              "Compare": {
+                "left": {
+                  "Count": [
+                    { "OwnedBy": "You" },
+                    {
+                      "AnyOf": [
+                        { "Type": "Artifact" },
+                        { "Type": "Battle" },
+                        { "Type": "Creature" },
+                        { "Type": "Enchantment" },
+                        { "Type": "Land" },
+                        { "Type": "Planeswalker" }
+                      ]
+                    },
+                    { "In": "Graveyard" }
+                  ]
+                },
+                "op": "Ge",
+                "right": 8
+              }
+            },
+            "from": "Graveyard",
+            "effects": [
+              {
+                "Move": {
+                  "what": "This",
+                  "to": { "Battlefield": { "counters": [[{ "Other": "finality" }, 1]] } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -10,12 +10,6 @@
         { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
         { "Static": { "affected": "Attached", "mods": ["CantAttack", "CantBlock"] } },
         {
-          "Triggered": {
-            "when": { "StepBegins": { "step": "Upkeep", "whose": { "ControllerOf": "Attached" } } },
-            "effects": [{ "LoseLife": { "who": "Triggering", "amount": 1 } }]
-          }
-        },
-        {
           "Rule": {
             "rule": {
               "Cant": {
@@ -28,6 +22,12 @@
                 }
               }
             }
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": { "ControllerOf": "Attached" } } },
+            "effects": [{ "LoseLife": { "who": "Triggering", "amount": 1 } }]
           }
         }
       ]
