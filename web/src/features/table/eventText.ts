@@ -253,7 +253,10 @@ function describeRule(effect: RuleEffect, n: EventNames): string {
     what = `Damage can't reduce ${seats(rule.LifeFloor.players)} below ${rule.LifeFloor.floor} life`
   else if ('RadiationGainsLife' in rule)
     what = `Radiation makes ${seats(rule.RadiationGainsLife)} gain life rather than lose life`
-  else if ('ManaProduced' in rule) what = `Taps for mana by ${seats(rule.ManaProduced.who)} produce changed mana`
+  else if ('MayCastRather' in rule)
+    what = `${seats(rule.MayCastRather.casts.map(([owner]) => owner))} may cast ${named(rule.MayCastRather.casts.map(([, card]) => card))} for a different cost`
+  else if ('ManaProduced' in rule)
+    what = `Taps for mana by ${seats(rule.ManaProduced.who)} produce changed mana`
   else if ('CantDraw' in rule) what = `${seats(rule.CantDraw)} can't draw cards`
   else if ('CantSearch' in rule) what = `${seats(rule.CantSearch)} can't search libraries`
   else if ('VoteAgain' in rule) what = `${seats(rule.VoteAgain)} may vote an additional time`

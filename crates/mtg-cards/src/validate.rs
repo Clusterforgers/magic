@@ -3968,6 +3968,9 @@ impl Walker<'_> {
             | GameRule::CantCastSpells { .. }
             | GameRule::ToughnessAssignsDamage(_)
             | GameRule::CountersRemain => self.w17b_rule(&tag, rule),
+            GameRule::MayCastRather { only, .. } => {
+                self.at(tag, |w| w.reference(only, Kind::Object))
+            }
             GameRule::ManaProduced { what, who, change } => self.at(tag, |w| {
                 w.at("what", |w| w.selector(what));
                 w.at("who", |w| w.reference(who, Kind::Player));

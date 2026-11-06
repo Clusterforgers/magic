@@ -948,9 +948,13 @@ describe('events with more than one shape', () => {
     ],
     [
       ruleEffect(
-        { ManaProduced: { what: [], who: [0, 1], change: { Times: 2 } } },
-        'UntilEndOfTurn',
+        { MayCastRather: { casts: [[1, { id: 4, counter: 0 }]], cost: [{ Generic: 2 }] } },
+        'Forever',
       ),
+      'Bo may cast Lightning Bolt for a different cost',
+    ],
+    [
+      ruleEffect({ ManaProduced: { what: [], who: [0, 1], change: { Times: 2 } } }, 'UntilEndOfTurn'),
       'Taps for mana by Ana and Bo produce changed mana until end of turn',
     ],
     [

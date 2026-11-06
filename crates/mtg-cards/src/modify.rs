@@ -652,6 +652,14 @@ pub enum GameRule {
     /// Counters remain on the card as it moves to any zone other than a hand or a library (CR 122.2); the card reads it
     /// in every zone, so the rule is written without `from`.
     CountersRemain,
+    /// The owner of each exiled card `only` names may cast it for `cost` rather than its mana cost, while it stays exiled
+    /// (airbend: CR 118.9).
+    MayCastRather {
+        /// The exiled cards, named when the rule begins.
+        only: Ref,
+        /// The mana paid in place of the mana cost.
+        cost: ManaCostX,
+    },
     /// The subjects `who` names (players or objects) can't do what `action` names: it is not offered, and an effect that
     /// would have it done does nothing.
     Cant {

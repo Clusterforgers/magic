@@ -2,6 +2,7 @@
 import type { AttackTarget } from "./AttackTarget";
 import type { AttackTax } from "./AttackTax";
 import type { DamageShield } from "./DamageShield";
+import type { ManaCost } from "./ManaCost";
 import type { ObjectRef } from "./ObjectRef";
 import type { PlayerId } from "./PlayerId";
 import type { Target } from "./Target";
@@ -134,7 +135,15 @@ additional?: unknown,
 /**
  * How the mana of a cast through it may be spent.
  */
-spend_as?: unknown, } } | { "TriggerAgain": { 
+spend_as?: unknown, } } | { "MayCastRather": { 
+/**
+ * The owner of each card and the card, as it was named when the rule began.
+ */
+casts: Array<[PlayerId, ObjectRef]>, 
+/**
+ * The mana paid in place of the mana cost.
+ */
+cost: ManaCost, } } | { "TriggerAgain": { 
 /**
  * The event that causes the trigger; every event when absent.
  */

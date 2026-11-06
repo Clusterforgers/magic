@@ -271,7 +271,11 @@ fn listed(state: &GameState, player: PlayerId, id: ObjectId) -> Vec<Way> {
     let by_permission: Vec<&Cast> = permissions
         .iter()
         .copied()
-        .filter(|permission| !permission.free && permission.from == Some(zone_kind(zone)))
+        .filter(|permission| {
+            !permission.free
+                && permission.rather.is_none()
+                && permission.from == Some(zone_kind(zone))
+        })
         .collect();
     let added = if own {
         Some(Added::default())
@@ -292,6 +296,20 @@ fn listed(state: &GameState, player: PlayerId, id: ObjectId) -> Vec<Way> {
             },
             printed,
         ));
+    }
+    // A permission to cast for another mana cost (airbend): the way replaces the mana cost.
+    if let Some(cost) = permissions
+        .iter()
+        .find_map(|permission| permission.rather.as_ref())
+    {
+        ways.push(Way {
+            alternative: Some(CastWay::Alternative),
+            label: format!("Cast for {cost}"),
+            mana: Some(cost.clone()),
+            instant,
+            variant: 0,
+            parts: Vec::new(),
+        });
     }
     let free_permissions = permissions
         .iter()

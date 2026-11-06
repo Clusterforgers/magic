@@ -100,3 +100,31 @@ fn waterbend_anywhere_else_stays_a_gap(#[case] lines: &str) {
     assert!(abilities(&text).is_empty(), "{:?}", abilities(&text));
     assert!(!gaps(&text).is_empty());
 }
+
+#[rstest]
+#[case::a_target(
+    "T:Mode$ ChangesZone | Origin$ Any | Destination$ Battlefield | ValidCard$ Card.Self | Execute$ TrigAir | TriggerDescription$ x\nSVar:TrigAir:DB$ Airbend | ValidTgts$ Creature.Other | TgtPrompt$ Select another target creature",
+    json!({"Object": [{"Type": "Creature"}, "Other"]})
+)]
+fn airbend_exiles_and_lets_the_owner_cast_for_two(#[case] lines: &str, #[case] filter: Value) {
+    let text = creature(lines);
+    let found = abilities(&text);
+    assert!(!found.is_empty(), "{:?}", gaps(&text));
+    let trigger = &found[0]["Triggered"];
+    assert_eq!(trigger["targets"][0]["what"], filter);
+    assert_eq!(
+        trigger["effects"],
+        json!([
+            {"Exile": {"as": "airbent", "what": {"Target": 0}}},
+            {"Rule": {"duration": "Forever", "rule": {"MayCastRather": {"cost": "{2}", "only": {"Bound": "airbent"}}}}}
+        ])
+    );
+}
+
+#[test]
+fn airbending_a_spell_stays_a_gap() {
+    let text = creature(
+        "T:Mode$ ChangesZone | Origin$ Any | Destination$ Battlefield | ValidCard$ Card.Self | Execute$ TrigAir | TriggerDescription$ x\nSVar:TrigAir:DB$ Airbend | ValidTgts$ Creature.Other,Card.inZoneStack | TgtZone$ Battlefield,Stack | TargetMin$ 0",
+    );
+    assert!(abilities(&text).is_empty(), "{:?}", abilities(&text));
+}
