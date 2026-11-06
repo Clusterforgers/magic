@@ -11,8 +11,8 @@
           "CostModifier": {
             "applies_to": [
               "Spell",
-              { "Type": "Creature" },
               { "Color": "Blue" },
+              { "Type": "Creature" },
               { "ControlledBy": "You" }
             ],
             "change": "Reduce",
