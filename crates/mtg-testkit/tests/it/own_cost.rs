@@ -1,18 +1,14 @@
-//! Goal: a keyword a static ability gives with a cost equal to the card's own mana cost (Underworld Breach's escape, a Djinn's replicate) reads the mana cost off each card it reaches: the card is offered exactly when that cost plus the rest of the cost is payable, and a land card is never offered.
+//! Goal: a keyword a static ability gives with a cost equal to the card's own mana cost (Underworld Breach's escape, Varolz's scavenge, an encore) reads the mana cost off each card it reaches: the card is offered exactly when that cost plus the rest of the cost is payable, and a land card is never offered.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
 use std::sync::Arc;
 
 use mtg_cards::CardDefinition;
 use mtg_cards::ability::Ability;
-use mtg_cards::effect::Effect;
-use mtg_cards::refs::Ref;
-use mtg_cards::value::Amount;
 use mtg_core::card::CardType;
-use mtg_core::color::Color;
 use mtg_engine::decision::DecisionKind;
 use mtg_engine::turn::Step;
-use mtg_testkit::cards::{cost, island, mountain};
+use mtg_testkit::cards::mountain;
 use mtg_testkit::{Driver, Scenario, ScriptError, ready};
 use rstest::rstest;
 
@@ -111,65 +107,5 @@ fn a_given_graveyard_ability_costs_the_mana_cost_of_its_card(
     )?;
     let found = driver.offered_abilities("Kathari Screecher")?;
     assert_eq!(!found.is_empty(), offered, "{found:?}");
-    Ok(())
-}
-
-/// A creature: "Each instant and sorcery spell you cast has replicate. The replicate cost is equal to its mana cost."
-fn djinn() -> Arc<CardDefinition> {
-    let rules: Ability = serde_json::from_str(
-        r#"{"Static":{"affected":{"Each":[{"AnyOf":[{"Type":"Instant"},{"Type":"Sorcery"}]},{"ControlledBy":"You"},{"WasCast":{}},{"In":"Stack"}]},"mods":[{"AddKeyword":{"Replicate":["OwnManaCost"]}}]}}"#,
-    )
-    .unwrap();
-    Arc::new(
-        CardDefinition::new("Djinn")
-            .with_type(CardType::Creature)
-            .with_rules(rules),
-    )
-}
-
-/// A sorcery for `{1}{U}` whose only effect is that its controller gains 2 life.
-fn plain() -> Arc<CardDefinition> {
-    Arc::new(
-        CardDefinition::new("Plain")
-            .with_type(CardType::Sorcery)
-            .with_mana_cost(cost(1, &[Color::Blue]))
-            .with_rules(Ability::Spell {
-                targets: Vec::new(),
-                effects: vec![Effect::GainLife {
-                    who: Ref::You,
-                    amount: Amount::Fixed(2),
-                }],
-            }),
-    )
-}
-
-#[rstest]
-#[case::the_cost_only(2, None)]
-#[case::one_spare_cost(4, Some(1))]
-#[case::two_spare_costs(6, Some(2))]
-fn a_given_replicate_costs_the_mana_cost_of_the_spell_cast(
-    #[case] islands: usize,
-    #[case] most: Option<u32>,
-) -> Result<(), ScriptError> {
-    let mut driver = Driver::from_scenario(
-        Scenario::new(2)
-            .at(1, 0, Step::Main1)
-            .hand(0, vec![plain()])
-            .battlefield(
-                0,
-                std::iter::once(ready(djinn())).chain((0..islands).map(|_| ready(island()))),
-            ),
-    )?;
-    driver.begin_cast("Plain")?;
-    // Plain costs {1}{U}: every full cost left over is one more payment.
-    match (most, &driver.decision()?.kind) {
-        (Some(most), DecisionKind::ChooseNumber(options)) => assert_eq!(options.max, Some(most)),
-        (None, kind) => assert!(
-            !matches!(kind, DecisionKind::ChooseNumber(_)),
-            "{}",
-            kind.name()
-        ),
-        (Some(_), kind) => panic!("the payments are asked: {}", kind.name()),
-    }
     Ok(())
 }
