@@ -807,6 +807,7 @@ mod r4p4;
 mod r4p5;
 mod r5d;
 mod r5e;
+mod r5f;
 mod r5p1;
 mod r5p2;
 mod r5p3;

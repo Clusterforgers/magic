@@ -7,6 +7,9 @@ use mtg_cards::CardDefinition;
 use mtg_cards::ability::Ability;
 use mtg_core::card::CardType;
 use mtg_core::color::Color;
+use mtg_core::mana::ManaType;
+use mtg_engine::decision::{Answer, DecisionKind, PayChoice};
+use mtg_engine::mana::Payment;
 use mtg_engine::replay;
 use mtg_engine::turn::Step;
 use mtg_testkit::cards::{cost, island};
@@ -65,6 +68,53 @@ fn the_mana_of_a_treasure_is_counted_for_the_spell_and_for_its_permanent(
     )?;
     let before = life(&driver);
     driver.cast_tapping("Hexer", paying)?;
+    while !driver.state().stack().is_empty() {
+        driver.pass()?;
+    }
+    assert_eq!(life(&driver) - before, gained);
+    let state = replay(driver.engine().setup(), driver.engine().events()).unwrap();
+    assert_eq!(state.state_hash(), driver.state().state_hash());
+    Ok(())
+}
+
+#[rstest]
+#[case::treasure_tapped_ahead("Treasure", 1)]
+#[case::island_tapped_ahead("Island", 0)]
+fn mana_in_the_pool_keeps_the_kind_of_its_source_until_a_spell_spends_it(
+    #[case] ahead: &str,
+    #[case] gained: i32,
+    #[values(2, 3, 4)] seats: usize,
+) -> Result<(), ScriptError> {
+    let mut driver = Driver::from_scenario(
+        Scenario::new(seats)
+            .at(1, 0, Step::Main1)
+            .hand(0, vec![hexer()])
+            .battlefield(0, [ready(treasure()), ready(island()), ready(island())]),
+    )?;
+    let before = life(&driver);
+    driver.tap_for_mana_of(ahead, ManaType::Blue)?;
+    let pool = driver
+        .state()
+        .player(mtg_core::ids::PlayerId(0))
+        .unwrap()
+        .mana()
+        .clone();
+    assert_eq!(pool.sources().len(), 1);
+    driver.begin_cast("Hexer")?;
+    let DecisionKind::PayMana(options) = &driver.decision()?.kind else {
+        panic!("a payment is asked");
+    };
+    let island = options
+        .sources
+        .iter()
+        .find(|o| driver.state().object(o.source.object).unwrap().card().name == "Island")
+        .unwrap()
+        .source;
+    driver.answer(Answer::PayMana(PayChoice::Manual(Payment {
+        pool: vec![ManaType::Blue],
+        taps: vec![island],
+        ..Payment::default()
+    })))?;
     while !driver.state().stack().is_empty() {
         driver.pass()?;
     }

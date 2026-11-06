@@ -203,6 +203,7 @@ export type { PermanentView } from "./PermanentView";
 export type { PlayerForecast } from "./PlayerForecast";
 export type { PlayerId } from "./PlayerId";
 export type { PlayerView } from "./PlayerView";
+export type { Pooled } from "./Pooled";
 export type { PreconBoard } from "./PreconBoard";
 export type { PreconCardView } from "./PreconCardView";
 export type { PreconErrorCode } from "./PreconErrorCode";

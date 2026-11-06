@@ -986,11 +986,12 @@ pub fn condition(r: &mut Reader<'_>) -> Option<Condition> {
 }
 
 /// The alternative costs a permanent or spell can be asked about: "its prowl cost was paid".
-const PAID_WAYS: [(&str, CastWay); 5] = [
+const PAID_WAYS: [(&str, CastWay); 6] = [
     ("prowl", CastWay::Prowl),
     ("emerge", CastWay::Emerge),
     ("mayhem", CastWay::Mayhem),
     ("spectacle", CastWay::Spectacle),
+    ("freerunning", CastWay::Freerunning),
     ("madness", CastWay::Madness),
 ];
 

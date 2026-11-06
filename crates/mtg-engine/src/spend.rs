@@ -153,6 +153,17 @@ impl Spend {
     }
 }
 
+/// The kind of a mana source that a filter of sources reads: its types, supertypes and subtypes as the game sees it now.
+pub(crate) fn source_kind(state: &GameState, id: ObjectId) -> SpendTraits {
+    let full = traits_of(state, id);
+    SpendTraits {
+        types: full.types,
+        supertypes: full.supertypes,
+        subtypes: full.subtypes,
+        ..SpendTraits::default()
+    }
+}
+
 /// What a restriction reads of the object: its types, supertypes, subtypes and number of colors as the game sees it now.
 pub(crate) fn traits_of(state: &GameState, id: ObjectId) -> SpendTraits {
     let (Some(object), Some(chars)) = (state.object(id), characteristics(state, id)) else {

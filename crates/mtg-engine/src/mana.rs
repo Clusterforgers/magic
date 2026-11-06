@@ -13,7 +13,7 @@
 use std::cmp::Reverse;
 use std::collections::BTreeMap;
 
-use mtg_cards::spend::{ManaLasts, SpendOn};
+use mtg_cards::spend::{ManaLasts, SpendOn, SpendTraits};
 use mtg_core::ids::ObjectId;
 use mtg_core::mana::{ManaCost, ManaSymbol, ManaType, PHYREXIAN_LIFE};
 use serde::{Deserialize, Serialize};
@@ -42,6 +42,23 @@ pub struct ManaPool {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     #[cfg_attr(feature = "ts", ts(as = "Option<Kept>", optional))]
     kept: Option<Box<Kept>>,
+    /// Of `counts`, the mana whose source is known, oldest first, so a spell counts "mana from a Treasure" tapped before it
+    /// was cast (CR 106.4); a public fact, like the pool.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[cfg_attr(feature = "ts", ts(as = "Option<Vec<Pooled>>", optional))]
+    // Boxed so a decision that holds a pool stays small.
+    #[allow(clippy::box_collection)]
+    sources: Option<Box<Vec<Pooled>>>,
+}
+
+/// One mana in a pool and what made it: the kind of its source as the mana was added.
+#[derive(Debug, Clone, PartialEq, Eq, Hash, Serialize, Deserialize)]
+#[cfg_attr(feature = "ts", derive(ts_rs::TS))]
+pub struct Pooled {
+    /// The type of the mana.
+    pub mana: ManaType,
+    /// The source's types, supertypes and subtypes.
+    pub from: SpendTraits,
 }
 
 /// The mana of a pool without a restriction that stays past the end of the step, by type in the order of `ManaPool.counts`.
@@ -91,6 +108,27 @@ impl ManaPool {
         self.counts[mana.index()] += 1;
     }
 
+    /// The mana without a restriction whose source is known, oldest first.
+    pub fn sources(&self) -> &[Pooled] {
+        self.sources.as_deref().map_or(&[], Vec::as_slice)
+    }
+
+    /// [`ManaPool::add_restricted`] that also notes the kind of the source of mana that may be spent on anything.
+    pub(crate) fn add_from(
+        &mut self,
+        mana: ManaType,
+        only: Vec<SpendOn>,
+        lasts: ManaLasts,
+        from: Option<SpendTraits>,
+    ) {
+        if let (true, Some(from)) = (only.is_empty(), from) {
+            self.sources
+                .get_or_insert_with(Box::default)
+                .push(Pooled { mana, from });
+        }
+        self.add_restricted(mana, only, lasts);
+    }
+
     /// The mana without a restriction that outlasts the step, if any.
     pub fn kept(&self) -> Option<&Kept> {
         self.kept.as_deref()
@@ -123,11 +161,22 @@ impl ManaPool {
 
     /// Removes one `mana` that may be spent on anything, the mana that goes soonest first; false (and no change) if there is none.
     pub(crate) fn spend(&mut self, mana: ManaType) -> bool {
+        let had = self.get(mana) > 0;
+        self.spend_noting(mana);
+        had
+    }
+
+    /// [`ManaPool::spend`] that tells the kind of the source of the mana spent: mana with a known source goes first, so a
+    /// spell that asks where its mana came from sees it. `None` when there is no such mana or its source is not known.
+    pub(crate) fn spend_noting(&mut self, mana: ManaType) -> Option<SpendTraits> {
         let at = mana.index();
-        let Some(left) = self.counts[at].checked_sub(1) else {
-            return false;
-        };
+        let left = self.counts[at].checked_sub(1)?;
         self.counts[at] = left;
+        let from = self.sources.as_mut().and_then(|held| {
+            let at = held.iter().position(|unit| unit.mana == mana)?;
+            Some(held.remove(at).from)
+        });
+        self.tidy_sources();
         if let Some(kept) = self.kept.as_mut() {
             if kept.combat_end[at] + kept.turn_end[at] > left {
                 if kept.combat_end[at] > 0 {
@@ -138,7 +187,28 @@ impl ManaPool {
             }
             self.tidy_kept();
         }
-        true
+        from
+    }
+
+    /// Keeps no more known sources of a type than the pool holds of it, the newest, and drops the record once it is empty.
+    fn tidy_sources(&mut self) {
+        let Some(held) = self.sources.as_mut() else {
+            return;
+        };
+        for mana in ManaType::ALL {
+            let have = usize::try_from(self.counts[mana.index()]).unwrap_or(usize::MAX);
+            let mut noted = held.iter().filter(|unit| unit.mana == mana).count();
+            held.retain(|unit| {
+                if unit.mana != mana || noted <= have {
+                    return true;
+                }
+                noted -= 1;
+                false
+            });
+        }
+        if held.is_empty() {
+            self.sources = None;
+        }
     }
 
     /// The pool without the restricted units at these places.
@@ -192,6 +262,7 @@ impl ManaPool {
         }
         self.kept = Some(Box::new(left));
         self.tidy_kept();
+        self.tidy_sources();
         if let Some(units) = self.restricted.as_mut() {
             units.retain(|unit| unit.lasts > through);
             if units.is_empty() {

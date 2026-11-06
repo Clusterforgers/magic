@@ -475,6 +475,8 @@ impl<'a> Walker<'a> {
         }
     }
 
+    // One arm for each kind of reference.
+    #[allow(clippy::too_many_lines)]
     fn reference(&mut self, r: &Ref, want: Kind) {
         match r {
             Ref::You
@@ -487,6 +489,7 @@ impl<'a> Walker<'a> {
             | Ref::Attacked
             | Ref::MostLife
             | Ref::ActivePlayer
+            | Ref::Chooser
             | Ref::Defending => {
                 self.expect(Kind::Player, want);
             }
@@ -1678,6 +1681,7 @@ impl<'a> Walker<'a> {
             | Keyword::Disturb(cost)
             | Keyword::Emerge(cost)
             | Keyword::Harmonize(cost)
+            | Keyword::Freerunning(cost)
             | Keyword::Spectacle(cost) => {
                 self.at("cost", |w| w.cost(cost));
                 self.parts_a_spell_cost_does_not_pay("Keyword", "Cost", cost, false);
@@ -2409,6 +2413,7 @@ impl Walker<'_> {
             | Ref::Attacked
             | Ref::MostLife
             | Ref::ActivePlayer
+            | Ref::Chooser
             | Ref::Defending
             | Ref::TriggeringPlayer
             | Ref::ControllerOf(_)

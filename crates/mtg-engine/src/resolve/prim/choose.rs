@@ -15,7 +15,8 @@ use crate::wording;
 /// names, and the choice is bound to `as`; what was not chosen is bound to `rest_as` when it has a name. Players are
 /// chosen one at a time from a `ChooseOption` (a defending player, an opponent), objects from a `ChooseCards`. A
 /// player with nothing to choose between (the only opponent, or as many candidates as they must take) is not asked.
-/// Several players who choose each choose from the same set, and what they chose is bound together.
+/// Several players who choose each choose from the same set, or each from their own when `from` names `Ref::Chooser`
+/// ("each player chooses a creature they control"), and what they chose is bound together.
 pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
     let Effect::Choose {
         who,
@@ -27,13 +28,13 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
     else {
         return Err(wrong_effect("Choose"));
     };
-    let candidates = cx.scope.refs(from)?;
     let choosers: Vec<PlayerId> = cx
         .scope
         .players(who)?
         .into_iter()
         .filter(|player| cx.state().is_alive(*player))
         .collect();
+    let (candidates, own) = candidates_of(cx, from, &choosers)?;
     let total = candidates.len();
     let min = at_most(cx, &count.min, total)?;
     let most = match &count.max {
@@ -69,19 +70,8 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
                 .collect(),
         }
     } else if players.is_empty() {
-        let ids: Vec<ObjectId> = objects.iter().map(|o| o.id).collect();
         let text = wording::choose_objects(from, min, most);
-        let selections: Vec<Selection> = choosers
-            .iter()
-            .map(|player| Selection {
-                one_per_name: false,
-                player: *player,
-                from: ids.clone(),
-                min,
-                max: most,
-                text: text.clone(),
-            })
-            .collect();
+        let selections = selections(&choosers, &own, (min, most), &text);
         match pick_selections(cx, &selections)? {
             Picked::Ask(decision) => return Ok(Run::Ask(decision)),
             Picked::Done(taken) => taken
@@ -117,6 +107,66 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         snapshots: Vec::new(),
         next: Next::Sibling,
     })
+}
+
+/// The choice of objects each chooser makes among their own candidates, as many as they have when they have fewer.
+fn selections(
+    choosers: &[PlayerId],
+    own: &[Vec<Target>],
+    (min, most): (usize, usize),
+    text: &str,
+) -> Vec<Selection> {
+    choosers
+        .iter()
+        .zip(own)
+        .map(|(player, mine)| {
+            let ids: Vec<ObjectId> = mine
+                .iter()
+                .filter_map(|t| t.object())
+                .map(|o| o.id)
+                .collect();
+            let low = min.min(ids.len());
+            Selection {
+                one_per_name: false,
+                player: *player,
+                max: most.min(ids.len()).max(low),
+                min: low,
+                from: ids,
+                text: text.to_owned(),
+            }
+        })
+        .collect()
+}
+
+/// What `from` names for each chooser, read with `Ref::Chooser` naming them, and all of it together in the order first
+/// named; with no chooser, what it names with nobody choosing. Without `Ref::Chooser` every chooser has the same set.
+fn candidates_of(
+    cx: &Cx<'_>,
+    from: &mtg_cards::refs::Ref,
+    choosers: &[PlayerId],
+) -> Result<(Vec<Target>, Vec<Vec<Target>>), ResolveError> {
+    if choosers.is_empty() {
+        return Ok((cx.scope.refs(from)?, Vec::new()));
+    }
+    let mut own = Vec::with_capacity(choosers.len());
+    for player in choosers {
+        let before = cx.scope.chooser.replace(Some(*player));
+        let found = cx.scope.refs(from);
+        cx.scope.chooser.set(before);
+        own.push(found?);
+    }
+    let all = if own.iter().all(|mine| *mine == own[0]) {
+        own[0].clone()
+    } else {
+        let mut all: Vec<Target> = Vec::new();
+        for target in own.iter().flatten() {
+            if !all.contains(target) {
+                all.push(*target);
+            }
+        }
+        all
+    };
+    Ok((all, own))
 }
 
 /// The amount as a count, no more than `total`.

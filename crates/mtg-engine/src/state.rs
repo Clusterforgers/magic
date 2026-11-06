@@ -220,6 +220,8 @@ pub(crate) struct CombatHit {
     pub(crate) types: Vec<Subtype>,
     /// It had every creature type (changeling).
     pub(crate) every_type: bool,
+    /// It was a commander (freerunning, CR 702.173a).
+    pub(crate) commander: bool,
 }
 
 /// The state of one game; a pure fold of events over the initial setup.
@@ -684,6 +686,15 @@ impl GameState {
         })
     }
 
+    /// Whether a creature `player` controlled dealt combat damage to a player this turn and was an Assassin or a commander:
+    /// the condition of freerunning (CR 702.173a).
+    pub(crate) fn freerunning_open(&self, player: PlayerId) -> bool {
+        self.tallies.hits.iter().any(|hit| {
+            hit.controller == player
+                && (hit.commander || hit.every_type || hit.types.iter().any(|t| t.0 == "Assassin"))
+        })
+    }
+
     /// Whether a loyalty ability of the planeswalker `permanent` has been activated this turn (CR 606.3).
     pub(crate) fn loyalty_spent(&self, permanent: ObjectRef) -> bool {
         self.loyalty_used.contains(&permanent)
@@ -1013,6 +1024,7 @@ mod tests {
             controller: PlayerId::from_index(hit_by),
             types: subtypes(creature_types),
             every_type: creature_has_every_type,
+            commander: false,
         });
         let found = game.dealt_combat_damage_with(
             PlayerId::from_index(caster),

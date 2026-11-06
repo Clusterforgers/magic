@@ -673,6 +673,7 @@ const RUNS: &[&str] = &[
     "Keyword.Phasing",
     "Amount.Devoured",
     "Keyword.Spectacle",
+    "Keyword.Freerunning",
     "Keyword.UmbraArmor",
     "Keyword.Cipher",
     "Keyword.Graft",
@@ -1296,6 +1297,7 @@ mod tests {
     #[case::horsemanship("Keyword.Horsemanship", true)]
     #[case::phasing("Keyword.Phasing", true)]
     #[case::spectacle("Keyword.Spectacle", true)]
+    #[case::freerunning("Keyword.Freerunning", true)]
     #[case::umbra_armor("Keyword.UmbraArmor", true)]
     #[case::cipher("Keyword.Cipher", true)]
     #[case::graft("Keyword.Graft", true)]

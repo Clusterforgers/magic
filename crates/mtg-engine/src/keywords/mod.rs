@@ -539,9 +539,10 @@ fn rules_of_later(keyword: &Keyword) -> &'static dyn KeywordRules {
         Keyword::Afterlife(_) => &afterlife::Afterlife,
         Keyword::Horsemanship => &horsemanship::Horsemanship,
         Keyword::Phasing => &w7e_phasing::Phasing,
-        Keyword::Spectacle(_) | Keyword::Assist | Keyword::Prototype { .. } => {
-            &spectacle::Spectacle
-        }
+        Keyword::Spectacle(_)
+        | Keyword::Freerunning(_)
+        | Keyword::Assist
+        | Keyword::Prototype { .. } => &spectacle::Spectacle,
         Keyword::Craft(_) => &craft::Craft,
         Keyword::UmbraArmor => &umbra_armor::UmbraArmor,
         Keyword::Cipher => &cipher::Cipher,
@@ -940,6 +941,7 @@ mod tests {
             Keyword::Horsemanship,
             Keyword::Phasing,
             Keyword::Spectacle(cost()),
+            Keyword::Freerunning(cost()),
             Keyword::UmbraArmor,
             Keyword::Cipher,
             Keyword::Graft(2),
@@ -1100,6 +1102,7 @@ mod tests {
         "Keyword.Horsemanship",
         "Keyword.Phasing",
         "Keyword.Spectacle",
+        "Keyword.Freerunning",
         "Keyword.UmbraArmor",
         "Keyword.Cipher",
         "Keyword.Graft",
@@ -1294,6 +1297,7 @@ mod tests {
     #[case::horsemanship(Keyword::Horsemanship, Hooks::none())]
     #[case::phasing(Keyword::Phasing, Hooks::none())]
     #[case::spectacle(Keyword::Spectacle(Cost::mana("{1}{B}".parse().unwrap())), Hooks::none())]
+    #[case::freerunning(Keyword::Freerunning(Cost::mana("{1}{B}".parse().unwrap())), Hooks::none())]
     #[case::assist(Keyword::Assist, Hooks::none())]
     #[case::craft(Keyword::Craft(Cost::mana("{2}{B}".parse().unwrap())), Hooks { abilities: 1, ..Hooks::none() })]
     #[case::prototype(Keyword::Prototype { cost: Cost::mana("{1}{U}{U}".parse().unwrap()), power: 2, toughness: 1 }, Hooks::none())]

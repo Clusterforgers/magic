@@ -104,6 +104,8 @@ pub enum CastWay {
     Prowl,
     /// Spectacle (CR 702.137): a spell cast from a hand for its spectacle cost, which its abilities read as "if its spectacle cost was paid".
     Spectacle,
+    /// Freerunning (CR 702.173): a spell cast from a hand for its freerunning cost, which its abilities read as "if its freerunning cost was paid".
+    Freerunning,
     /// Mayhem (CR 702.190): a spell cast from a graveyard for its mayhem cost, which its abilities read as "if its mayhem cost was paid".
     Mayhem,
     /// Disturb (CR 702.146): the back face of a transforming double-faced card cast from a graveyard for its disturb cost, which its abilities read as "if its disturb cost was paid"; exiled when it leaves the stack.
@@ -574,7 +576,7 @@ pub enum Amount {
         otherwise: Box<Amount>,
     },
     /// How much mana was spent to cast the spell the source is or came from: of the one type, or of all types when none is named,
-    /// and only the mana of sources of that kind when one is ("mana from a Treasure"; mana already in the pool has no source).
+    /// and only the mana of sources of that kind when one is ("mana from a Treasure", tapped before the cast or during it).
     ManaSpent {
         /// The type counted; all mana when none.
         of: Option<ManaType>,
@@ -1259,6 +1261,7 @@ mod tests {
     #[case::blitz(CastWay::Blitz, true)]
     #[case::prowl(CastWay::Prowl, true)]
     #[case::spectacle(CastWay::Spectacle, true)]
+    #[case::freerunning(CastWay::Freerunning, true)]
     #[case::prototype(CastWay::Prototype, true)]
     #[case::mayhem(CastWay::Mayhem, true)]
     #[case::disturb(CastWay::Disturb, true)]
