@@ -48,6 +48,16 @@ pub fn choose_card(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
             let who = defined(ctx, "Remembered")?;
             filter.push(json!({"ControlledBy": who}));
         }
+        // "Each player chooses a creature they control": each chooser among their own; a card in a hand or a graveyard is
+        // its owner's. A random pick has no chooser.
+        Some("Chooser") if p.get("AtRandom") != Some("True") => {
+            let whose = match p.get("ChoiceZone") {
+                None | Some("Battlefield") => "ControlledBy",
+                Some("Hand" | "Graveyard") => "OwnedBy",
+                Some(_) => return unmapped("key:ChooseCard.ControlledByPlayer=Chooser-zone"),
+            };
+            filter.push(json!({ whose: "Chooser" }));
+        }
         Some(other) => return unmapped(format!("key:ChooseCard.ControlledByPlayer={other}")),
         None => {}
     }

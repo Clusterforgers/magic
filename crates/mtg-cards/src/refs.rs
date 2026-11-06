@@ -111,6 +111,9 @@ pub enum Ref {
     MostLife,
     /// The player whose turn it is; nobody once they have left the game.
     ActivePlayer,
+    /// The player making the choice of an `Effect::Choose` whose candidates are worked out for each chooser ("each player
+    /// chooses a creature they control"); nobody anywhere else.
+    Chooser,
     /// The result an earlier step bound with `as`.
     Bound(String),
     /// The objects picked for the cost of the ability ("the creature tapped to pay it"): their characteristics are those they

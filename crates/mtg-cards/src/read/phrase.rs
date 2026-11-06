@@ -60,6 +60,7 @@ pub(super) fn who(ctx: &Ctx, reference: &Ref) -> String {
         Ref::Attacked => "the attacked player".to_owned(),
         Ref::MostLife => "the player with the most life".to_owned(),
         Ref::ActivePlayer => "the active player".to_owned(),
+        Ref::Chooser => "the player choosing".to_owned(),
         Ref::Bound(name) => format!("\u{201c}{name}\u{201d}"),
         Ref::Paid => "what was paid".to_owned(),
         Ref::Affected => "the object it applies to".to_owned(),

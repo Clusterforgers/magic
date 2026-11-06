@@ -110,6 +110,8 @@ pub struct Scope<'a> {
     pub(crate) affected: Option<(ObjectRef, &'a std::cell::Cell<bool>)>,
     /// The object a `Pred::Test` is judging (`Ref::Candidate`).
     pub(crate) candidate: std::cell::Cell<Option<ObjectRef>>,
+    /// The player whose candidates an `Effect::Choose` is working out (`Ref::Chooser`).
+    pub(crate) chooser: std::cell::Cell<Option<PlayerId>>,
     /// The spell or ability that caused the events a trigger is being matched against (`TriggerPattern::Caused`).
     pub(crate) caused: Option<crate::triggers::CausedBy>,
     /// The permanent whose static ability gave the running ability to its source (`Ref::Granter`).
@@ -276,6 +278,7 @@ impl<'a> Scope<'a> {
             cast_targets: None,
             affected: None,
             candidate: std::cell::Cell::new(None),
+            chooser: std::cell::Cell::new(None),
             caused: None,
             granter: None,
         }
@@ -912,6 +915,8 @@ impl<'a> Scope<'a> {
                 read.set(true);
                 vec![Target::Object(object)]
             }
+            // Nobody outside the candidates of a choice made by each player.
+            Ref::Chooser => self.chooser.get().map(Target::Player).into_iter().collect(),
             Ref::Candidate => {
                 let object = self.candidate.get().ok_or_else(|| {
                     ResolveError::Invalid("there is no candidate object here".into())

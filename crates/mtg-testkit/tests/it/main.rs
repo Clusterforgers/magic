@@ -95,6 +95,7 @@ mod checkpoint;
 mod choice_fuzz;
 mod choose_cards;
 mod choose_decisions;
+mod chooser_own;
 mod chosen_color_lands;
 mod chosen_player;
 mod chosen_values;
