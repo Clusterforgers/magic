@@ -2207,12 +2207,16 @@ fn delayed(
 }
 
 /// Whether [`detect`] reads the state before `events`: only a move out of the battlefield, a death, a discard, a change
-/// of day or night (which was something else before), an arrival on the battlefield and a
+/// of day or night (which was something else before), damage to a player (a life floor cuts the life it takes), an arrival on the battlefield and a
 /// spell or ability that ends without resolving look back at it. Any other batch is judged by the state after it
 /// alone, which saves copying the whole state for it.
 pub(crate) fn needs_before(events: &[Event]) -> bool {
     events.iter().any(|event| match event {
-        Event::CreatureDied { .. }
+        Event::DamageDealt {
+            target: DamageTarget::Player(_),
+            ..
+        }
+        | Event::CreatureDied { .. }
         | Event::CardDiscarded { .. }
         | Event::DayNightChanged { .. }
         | Event::PermanentPhasedOut { .. }
@@ -2226,11 +2230,6 @@ pub(crate) fn needs_before(events: &[Event]) -> bool {
         Event::ZoneChanged { from, to, .. } => {
             *from == Zone::Battlefield || *to == Zone::Battlefield
         }
-        // A life floor leaves damage to a player taking less life than it deals, judged from the life before the batch.
-        Event::DamageDealt {
-            target: DamageTarget::Player(_),
-            ..
-        } => true,
         Event::ResolutionEnded { outcome, .. } => *outcome != ResolutionOutcome::Resolved,
         _ => false,
     })

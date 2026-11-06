@@ -113,7 +113,8 @@ pub const ACTIONS: &[Entry] = &[
     Entry {
         name: "endure",
         template: r#"[{"If":{"condition":{"Compare":{"left":{"Count":[{"Is":$ON},{"In":"Battlefield"}]},"op":"Ge","right":1}},
-            "then":[{"PutCounters":{"on":$ON,"counter":"+1/+1","count":$N}}],
+            "then":[{"Either":{"first":[{"PutCounters":{"on":$ON,"counter":"+1/+1","count":$N}}],
+              "second":[{"CreateToken":{"token":{"Sized":{"size":$N,"token":{"name":"Spirit","colors":["White"],"types":["Creature"],"subtypes":["Spirit"]}}}}}]}}],
             "otherwise":[{"CreateToken":{"token":{"Sized":{"size":$N,"token":{"name":"Spirit","colors":["White"],"types":["Creature"],"subtypes":["Spirit"]}}}}}]}}]"#,
     },
     Entry {

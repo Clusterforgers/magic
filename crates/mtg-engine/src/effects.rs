@@ -559,8 +559,12 @@ impl ContinuousEffect {
     }
 }
 
-/// Moves the effects that name the spell `entered` was on the stack to the permanent it became (CR 400.7, 608.3).
-pub(crate) fn follow_spell(effects: &mut [ContinuousEffect], entered: ObjectRef) {
+/// When a permanent spell has resolved (`resolved`), moves the effects that name it to the permanent it became: it is the
+/// same object for what was done to it on the stack (CR 400.7, 608.3).
+pub(crate) fn follow_spell(effects: &mut [ContinuousEffect], entered: ObjectRef, resolved: bool) {
+    if !resolved {
+        return;
+    }
     let spell = ObjectRef {
         id: entered.id,
         counter: entered.counter.saturating_sub(1),

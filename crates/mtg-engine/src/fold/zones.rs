@@ -114,11 +114,8 @@ pub(super) fn move_object(
     crate::w17b_statics::w17b_restore_counters(object, w17b_kept);
     let (owner, token) = (object.owner, object.kind == ObjectKind::Token);
     let entered = object.reference();
-    if from == Zone::Stack && to == Zone::Battlefield {
-        // A resolving permanent spell is the permanent it becomes for what was done to it on the stack (CR 400.7, 608.3):
-        // an effect that named the spell names the permanent.
-        crate::effects::follow_spell(&mut state.effects, entered);
-    }
+    let resolved = from == Zone::Stack && to == Zone::Battlefield;
+    crate::effects::follow_spell(&mut state.effects, entered, resolved);
     if to == Zone::Battlefield {
         state.tally_object(entered, None, Tally::Entered);
     }
