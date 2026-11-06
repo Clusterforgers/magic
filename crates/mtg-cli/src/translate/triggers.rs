@@ -63,7 +63,8 @@ pub fn triggered(ctx: &mut Ctx, body: &str) -> Tr<Value> {
     let about_a_player = when
         .as_object()
         .and_then(|map| map.values().next())
-        .is_some_and(|inner| inner.get("what").is_none());
+        .is_some_and(|inner| inner.get("what").is_none())
+        && !damages_an_object(&when);
     if about_a_player
         && json!(effects)
             .to_string()
@@ -115,6 +116,14 @@ pub fn triggered(ctx: &mut Ctx, body: &str) -> Tr<Value> {
         }
     }
     Ok(ability)
+}
+
+/// Damage to a permanent: the event's subject is the permanent that was damaged (a player recipient is a player).
+fn damages_an_object(when: &Value) -> bool {
+    let Some(to) = when.get("DealsDamage").and_then(|inner| inner.get("to")) else {
+        return false;
+    };
+    to.get("Each").is_some() || matches!(to.as_str(), Some("This" | "Attached"))
 }
 
 /// `IsPresent$ Card.StrictlySelf | PresentZone$ Command` beside `TriggerZones$ Command` (an Eminence ability): the card is in
