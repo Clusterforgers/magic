@@ -80,7 +80,7 @@ fn names_in(driver: &Driver, zone: Zone) -> Vec<String> {
         .state()
         .zone(zone)
         .iter()
-        .map(|id| name_of(&driver, *id).to_owned())
+        .map(|id| name_of(driver, *id))
         .collect()
 }
 
@@ -131,7 +131,7 @@ fn squirrels(driver: &Driver, seat: usize) -> usize {
         .state()
         .zone(Zone::Battlefield)
         .iter()
-        .filter(|id| name_of(&driver, **id) == "Squirrel")
+        .filter(|id| name_of(driver, **id) == "Squirrel")
         .filter(|id| driver.state().object(**id).unwrap().controller() == pid(seat))
         .count()
 }
