@@ -485,10 +485,14 @@ pub fn written_variants(ability: &Ability) -> Vec<String> {
             }
         }
     }
-    if !texts.is_empty() {
-        return texts;
+    if let Some(ordered) = super::r5a_order::canonical(ability) {
+        for text in written_as_given(&ordered) {
+            if !texts.contains(&text) {
+                texts.push(text);
+            }
+        }
     }
-    super::r5a_order::canonical(ability).map_or(texts, |ordered| written_as_given(&ordered))
+    texts
 }
 
 /// Every wording of an ability, its selectors in the order given.
