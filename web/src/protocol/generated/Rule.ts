@@ -59,7 +59,7 @@ most: number,
 /**
  * The players whose blocks it limits.
  */
-who: Array<PlayerId>, } } | { "CantBeCountered": Array<ObjectRef> } | { "CantGainLife": Array<PlayerId> } | { "NoLifeLossFromDamage": Array<PlayerId> } | { "LifeFloor": { 
+who: Array<PlayerId>, } } | { "CantBeCountered": Array<ObjectRef> } | { "CantBeRegenerated": Array<ObjectRef> } | { "CantGainLife": Array<PlayerId> } | { "NoLifeLossFromDamage": Array<PlayerId> } | { "LifeFloor": { 
 /**
  * The players.
  */
