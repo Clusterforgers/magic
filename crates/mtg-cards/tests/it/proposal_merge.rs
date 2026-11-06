@@ -140,3 +140,30 @@ mod refusal {
         }
     }
 }
+
+mod shared_sentence {
+    //! Goal: the second of two abilities read as one sentence (`static_pairs`) keeps that sentence in a merge, so the
+    //! merge loses neither the ability nor the clause.
+    use mtg_cards::proposal::refusal;
+    use rstest::rstest;
+
+    use super::*;
+
+    #[rstest]
+    #[case::arrest("Arrest")]
+    #[case::aether_tunnel("Aether Tunnel")]
+    fn the_second_ability_of_a_sentence_stays(#[case] name: &str) {
+        let library = Corpus::repo().library();
+        let cards = printed();
+        let names: BTreeSet<String> = cards.iter().map(|c| c.name.to_lowercase()).collect();
+        let printed = cards.iter().find(|c| c.name == name).unwrap();
+        let by_hand = library.card(&printed.oracle_id).unwrap();
+        let text = serde_json::to_string(by_hand).unwrap();
+        let caps = Caps::everything();
+        let proposal = check(&text, printed, &library, &names, &caps);
+        let merged = merge(&proposal, printed, &library, &names, &caps).unwrap();
+        assert_eq!(refusal(&proposal, &merged), None, "{name}");
+        let card = merged.rules.unwrap();
+        assert_eq!(card.faces[0].abilities.len(), 3, "{name}");
+    }
+}
