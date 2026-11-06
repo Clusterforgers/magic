@@ -328,6 +328,7 @@ mod r5c;
 mod r5e_writers;
 mod r5g_lines;
 mod r6d;
+mod r6f_flash_sacrifice;
 mod removal_and_return;
 mod repeats;
 mod replacement_writers;

@@ -433,6 +433,9 @@ pub struct GameObject {
     /// The kind of zone the spell was cast from and the player who cast it; it stays with the permanent the spell becomes and
     /// a zone change from anywhere else clears it.
     pub(crate) cast: Option<(mtg_cards::refs::ZoneKind, PlayerId)>,
+    /// The spell was cast at a time its caster couldn't have cast a sorcery (`Condition::CastOffSorceryTiming`); it stays
+    /// with the permanent the spell becomes as `cast` does.
+    pub(crate) off_sorcery_timing: bool,
     pub(crate) kind: ObjectKind,
     pub(crate) choices: Choices,
     pub(crate) ability: Option<Box<AbilityObject>>,
@@ -488,6 +491,7 @@ impl GameObject {
             monarch_wait: None,
             cast_from_hand: false,
             cast_from_graveyard: false,
+            off_sorcery_timing: false,
             cast: None,
             kind: ObjectKind::Card,
             choices: Choices::default(),
@@ -525,6 +529,7 @@ impl GameObject {
             monarch_wait: None,
             cast_from_hand: false,
             cast_from_graveyard: false,
+            off_sorcery_timing: false,
             cast: None,
             kind: ObjectKind::Ability,
             choices,
@@ -745,7 +750,13 @@ impl GameObject {
         self.cast_from_graveyard = false;
         if !(from == crate::zones::Zone::Stack && to == crate::zones::Zone::Battlefield) {
             self.cast = None;
+            self.off_sorcery_timing = false;
         }
+    }
+
+    /// Whether the spell was cast at a time its caster couldn't have cast a sorcery; kept by the permanent it becomes.
+    pub const fn cast_off_sorcery_timing(&self) -> bool {
+        self.off_sorcery_timing
     }
 
     /// The kind of zone the spell was cast from and who cast it; kept by the permanent it becomes.
@@ -860,6 +871,7 @@ impl PartialEq for GameObject {
             && self.cast_from_hand == other.cast_from_hand
             && self.cast_from_graveyard == other.cast_from_graveyard
             && self.cast == other.cast
+            && self.off_sorcery_timing == other.off_sorcery_timing
             && self.counter == other.counter
             && self.kind == other.kind
             && self.choices == other.choices
@@ -901,6 +913,9 @@ impl Hash for GameObject {
         }
         if let Some(cast) = self.cast {
             cast.hash(state);
+        }
+        if self.off_sorcery_timing {
+            "off sorcery timing".hash(state);
         }
         self.counter.hash(state);
         self.kind.hash(state);

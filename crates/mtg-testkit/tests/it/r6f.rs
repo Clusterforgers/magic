@@ -1,4 +1,4 @@
-//! Goal: the engine pieces of round 6 builder f play at 2 to 4 seats: a shield that redirects the next N damage sends that much of each event to the recipient it fixed, keeps the rest with the first recipient and is used up across events, and redirects nothing to a recipient that is gone.
+//! Goal: the engine pieces of round 6 builder f play at 2 to 4 seats: a shield that redirects the next N damage sends that much of each event to the recipient it fixed, keeps the rest with the first recipient and is used up across events, redirects nothing to a recipient that is gone, and a flash enchantment cast off sorcery timing (in answer to an ability, in the end step) is sacrificed at the next cleanup step while one cast in a main phase on an empty stack stays.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
 use crate::common;
@@ -10,11 +10,13 @@ use mtg_cards::ability::Ability;
 use mtg_core::card::CardType;
 use mtg_engine::Answer;
 use mtg_engine::decision::{DecisionKind, PayChoice};
+use mtg_engine::turn::Step;
+use mtg_engine::zones::Zone;
 use mtg_testkit::cards::{cost, free_creature};
 use mtg_testkit::{Driver, Scenario, ScriptError, ready};
 use rstest::rstest;
 
-use common::pid;
+use common::{names, pid};
 
 fn rules(json: &str) -> Ability {
     serde_json::from_str(json).unwrap()
@@ -138,5 +140,61 @@ fn a_recipient_that_left_takes_nothing_and_the_damage_stays(
     driver.cast_at("Second", &[kor])?;
     settle(&mut driver)?;
     assert_eq!(damage(&driver, "Kor"), 2);
+    Ok(())
+}
+
+/// When the flash enchantment is cast in turn 1.
+#[derive(Debug, Clone, Copy)]
+enum When {
+    /// In the first main phase with an empty stack: a sorcery could be cast.
+    MainPhase,
+    /// In the first main phase in answer to an ability on the stack.
+    InAnswer,
+    /// In the end step.
+    EndStep,
+}
+
+#[rstest]
+fn a_flash_enchantment_cast_off_sorcery_timing_is_sacrificed_at_the_next_cleanup(
+    #[values(2, 3, 4)] seats: usize,
+    #[values(When::MainPhase, When::InAnswer, When::EndStep)] when: When,
+) -> Result<(), ScriptError> {
+    let climb = with_rules(
+        CardDefinition::new("Climb")
+            .with_type(CardType::Enchantment)
+            .with_mana_cost(cost(0, &[])),
+        &[r#"{"Keyword":"FlashSacrifice"}"#],
+    );
+    let gadget = with_rules(
+        CardDefinition::new("Gadget").with_type(CardType::Artifact),
+        &[r#"{"Activated":{"cost":"{0}","effects":[{"GainLife":{"amount":1}}]}}"#],
+    );
+    let mut driver = Driver::from_scenario(
+        Scenario::new(seats)
+            .battlefield(0, [ready(gadget)])
+            .hand(0, [climb]),
+    )?;
+    match when {
+        When::MainPhase => {}
+        When::InAnswer => {
+            driver.begin_activation("Gadget")?;
+            if matches!(driver.decision()?.kind, DecisionKind::PayMana(_)) {
+                driver.answer(Answer::PayMana(PayChoice::Auto))?;
+            }
+        }
+        When::EndStep => driver.pass_until(Step::End)?,
+    }
+    driver.cast("Climb")?;
+    settle(&mut driver)?;
+    let climb = driver.id_of("Climb")?;
+    assert_eq!(
+        driver.state().object(climb).unwrap().zone(),
+        Zone::Battlefield
+    );
+    driver.idle_until(2, Step::Upkeep)?;
+    let sacrificed = !matches!(when, When::MainPhase);
+    let in_zone = |zone| names(driver.state(), zone).contains(&"Climb".to_owned());
+    assert_eq!(in_zone(Zone::Graveyard(pid(0))), sacrificed, "{when:?}");
+    assert_eq!(in_zone(Zone::Battlefield), !sacrificed, "{when:?}");
     Ok(())
 }

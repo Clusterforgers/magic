@@ -366,6 +366,9 @@ pub enum Keyword {
         #[serde(default, skip_serializing_if = "std::ops::Not::not")]
         once_per_turn: bool,
     },
+    /// "You may cast this as though it had flash. If you cast it any time a sorcery couldn't have been cast, the
+    /// controller of the permanent it becomes sacrifices it at the beginning of the next cleanup step."
+    FlashSacrifice,
     /// A keyword the macro table expands into abilities of existing nodes (`macros::KEYWORDS`), with its number (0 for a keyword that prints none).
     Macro {
         /// The name in the table.
@@ -550,6 +553,7 @@ impl Keyword {
         "Harmonize",
         "Read ahead",
         "Exert",
+        "Flash, sacrificed at cleanup",
         "Macro",
     ];
 
@@ -734,6 +738,7 @@ impl Keyword {
             Keyword::Harmonize(_) => "Harmonize",
             Keyword::ReadAhead => "Read ahead",
             Keyword::Exert { .. } => "Exert",
+            Keyword::FlashSacrifice => "Flash, sacrificed at cleanup",
             Keyword::Macro { .. } => "Macro",
             // The keywords before it are named by `name`; the test of the names lists every variant.
             _ => "",
@@ -976,6 +981,7 @@ mod tests {
             Keyword::Exert {
                 once_per_turn: true,
             },
+            Keyword::FlashSacrifice,
             Keyword::Macro {
                 name: "bushido".to_owned(),
                 amount: 2,

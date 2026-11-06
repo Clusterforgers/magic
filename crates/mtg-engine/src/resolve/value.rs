@@ -2148,6 +2148,15 @@ impl<'a> Scope<'a> {
             .map_or(0, |source| payments(source.card(), self.paid_costs(), kind))
     }
 
+    /// Whether the spell the source is, or the permanent it became, was cast off sorcery timing, while it is still the
+    /// object named.
+    fn off_sorcery_timing(&self) -> bool {
+        self.state
+            .object(self.source.id)
+            .filter(|source| source.counter() == self.source.counter)
+            .is_some_and(GameObject::cast_off_sorcery_timing)
+    }
+
     /// The alternative cost the spell was cast for: what the spell or ability announced, else what the spell its source is
     /// or came from was cast for while that is still the object named.
     fn cast_way(&self) -> Option<CastWay> {
@@ -2295,6 +2304,7 @@ impl<'a> Scope<'a> {
                 self.payments(OptionalKind::Additional) + self.payments(OptionalKind::Gift) > 0
             }
             Condition::CastWith(way) => self.cast_way() == Some(*way),
+            Condition::CastOffSorceryTiming => self.off_sorcery_timing(),
             Condition::ManaSpent(mana) => self.mana_spent().contains(mana),
             Condition::ChosenWord { name, word } => {
                 matches!(self.chosen_value(name), Some(Chosen::Word(chosen)) if chosen == word)

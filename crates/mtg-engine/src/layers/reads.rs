@@ -424,6 +424,7 @@ pub(crate) fn reads_of_condition(condition: &Condition) -> Traits {
         | Condition::KickedWith(_)
         | Condition::AdditionalCostPaid
         | Condition::CastWith(_)
+        | Condition::CastOffSorceryTiming
         | Condition::ManaSpent(_)
         | Condition::IsDay
         | Condition::IsNight

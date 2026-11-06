@@ -119,6 +119,7 @@ mod r6d_done;
 mod r6d_facts;
 mod r6d_heads;
 mod r6d_kind;
+mod r6f_flash_sacrifice;
 mod random_moves;
 mod render;
 mod repeat;

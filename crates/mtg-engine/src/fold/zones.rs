@@ -351,6 +351,9 @@ fn spell_cast(
     }
     // The tax counts casts from the command zone (CR 903.8).
     state.commanders.cast(object, from);
+    // Read before the spell joins the stack; a spell cast while another resolves is cast off sorcery timing.
+    let off_sorcery_timing =
+        !crate::priority::sorcery_timing(state, player) || state.resolving().is_some();
     move_object(state, object, Zone::Stack, Placement::Top)?;
     set_controller(state, object, player);
     let instant_or_sorcery = state.objects.get(&object).is_some_and(|spell| {
@@ -373,6 +376,7 @@ fn spell_cast(
         spell.cast_from_hand = matches!(from, Zone::Hand(_));
         spell.cast_from_graveyard = matches!(from, Zone::Graveyard(_));
         spell.cast = Some((crate::resolve::zone_kind(from), player));
+        spell.off_sorcery_timing = off_sorcery_timing;
         if choices.way == Some(CastWay::FaceDown) {
             spell.face_down = Some(FaceDown::cast_as(&spell.def));
         }
