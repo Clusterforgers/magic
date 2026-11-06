@@ -84,6 +84,24 @@ fn counters_a_player_puts_on_a_creature_are_a_caused_batch(
 }
 
 #[rstest]
+#[case::per_source("PerSource", true)]
+#[case::per_target("PerTarget", true)]
+#[case::unknown("PerBatch", false)]
+fn a_damage_replacement_reads_the_execute_mode_of_its_batch(
+    #[case] mode: &str,
+    #[case] read: bool,
+) {
+    let (json, found) = card(
+        "Creature Hydra",
+        &format!(
+            "PT:1/1\nR:Event$ DamageDone | ActiveZones$ Battlefield | ValidTarget$ Card.Self | ValidSource$ Creature | IsCombat$ True | ReplaceWith$ C | PreventionEffect$ True | AlwaysReplace$ True | ExecuteMode$ {mode}\nSVar:C:DB$ PutCounter | Defined$ Self | CounterType$ P1P1 | CounterNum$ 1"
+        ),
+    );
+    assert_eq!(found.is_empty(), read, "{found:?}");
+    assert_eq!(json.contains("PreventAnd"), read, "{json}");
+}
+
+#[rstest]
 #[case::yours("SpellAbility.YouCtrl", true)]
 #[case::an_opponents("SpellAbility.OppCtrl", false)]
 fn valiant_counts_the_first_targeting_by_a_source_you_control(

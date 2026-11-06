@@ -8,7 +8,8 @@ use super::effects_obj::duration;
 use super::valid::{selector_any, source_any, subject};
 use crate::forge::script::Params;
 
-const KEYS: [&str; 11] = [
+const KEYS: [&str; 12] = [
+    "ExecuteMode",
     "AlwaysReplace",
     "PreventionEffect",
     "DamageTarget",
@@ -55,6 +56,13 @@ fn read_keys(p: &Params, static_line: bool) -> Tr<()> {
     check_keys(p, "Replacement.DamageDone", &KEYS, |_, _| false)?;
     if p.has("DamageTarget") && !p.has("ReplaceWith") {
         return unmapped("key:Replacement.DamageDone.DamageTarget");
+    }
+    // The batch of damage is one event for each source or each recipient; the engine applies the replacement to each damage
+    // event, and the amounts add up the same.
+    if let Some(mode) = p.get("ExecuteMode")
+        && !matches!(mode, "PerSource" | "PerTarget")
+    {
+        return unmapped(format!("key:Replacement.DamageDone.ExecuteMode={mode}"));
     }
     let prevents = p.get("Prevent") == Some("True");
     let replaces = p.has("ReplaceWith");
