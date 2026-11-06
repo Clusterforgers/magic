@@ -5,19 +5,18 @@
 pub(super) fn add(texts: &mut Vec<String>) {
     let found: Vec<String> = texts
         .iter()
-        .filter(|text| !text.contains("may tap or untap"))
+        .filter(|text| text.contains("ap or untap ") && !text.contains("may tap or untap"))
         .map(|text| {
-            text.replace(": Tap or untap ", ": You may tap or untap ")
+            let said = text
+                .replace(": Tap or untap ", ": You may tap or untap ")
                 .replace(", tap or untap ", ", you may tap or untap ")
-                .replace(", then tap or untap ", ", then you may tap or untap ")
+                .replace(", then tap or untap ", ", then you may tap or untap ");
+            match said.strip_prefix("Tap or untap ") {
+                Some(rest) => format!("You may tap or untap {rest}"),
+                None => said,
+            }
         })
-        .chain(
-            texts
-                .iter()
-                .filter_map(|text| text.strip_prefix("Tap or untap "))
-                .map(|rest| format!("You may tap or untap {rest}")),
-        )
-        .filter(|text| !texts.contains(text))
+        .filter(|text| text.contains("may tap or untap"))
         .collect();
     texts.extend(found);
 }
