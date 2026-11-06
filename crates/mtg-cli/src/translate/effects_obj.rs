@@ -20,6 +20,7 @@ pub fn effects(ctx: &mut Ctx, p: &Params, api: &str) -> Tr<Vec<Value>> {
         "DamageResolve" => damage_resolve(p),
         "PutCounterAll" => one(put_counter_all(ctx, p)),
         "RemoveCounterAll" => one(remove_counter_all(ctx, p)),
+        "AddOrRemoveCounter" => one(add_or_remove_counter(ctx, p)),
         "Counter" => counter(ctx, p),
         "PreventDamage" => one(prevent_damage(ctx, p)),
         "Pump" => pump(ctx, p),
@@ -275,6 +276,43 @@ fn put_counter_all(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
     Ok(
         json!({"PutCounters": {"on": {"Each": frame::all_matching(ctx, p, "PutCounterAll", valid)?}, "counter": kind, "count": count}}),
     )
+}
+
+/// `AddOrRemoveCounter`: the controller puts counters of a kind on the object or takes them off ("put a plague counter on
+/// it or remove one from it"); with `Optional$` the controller may do neither.
+fn add_or_remove_counter(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
+    only(
+        p,
+        "AddOrRemoveCounter",
+        &[
+            "CounterType",
+            "CounterNum",
+            "Defined",
+            "ValidTgts",
+            "TargetMin",
+            "TargetMax",
+            "Optional",
+            "DefinedPlayer",
+        ],
+    )?;
+    let Some(kind) = p.get("CounterType").and_then(kind_word) else {
+        return unmapped("key:AddOrRemoveCounter.CounterType");
+    };
+    let on = subject(ctx, p, "Self", None)?;
+    let count = amount(ctx, p.get("CounterNum").unwrap_or("1"))?;
+    let put = json!({"PutCounters": {"on": on, "counter": kind, "count": count}});
+    let take = json!({"RemoveCounters": {"from": on, "counter": kind, "count": count}});
+    let mut options = vec![json!([put]), json!([take])];
+    match p.get("Optional") {
+        None | Some("False") => {}
+        Some("True") => options.push(json!([])),
+        Some(_) => return unmapped("key:AddOrRemoveCounter.Optional"),
+    }
+    let mut choice = json!({"OneOf": {"options": options}});
+    if let Some(word) = p.get("DefinedPlayer") {
+        choice["OneOf"]["who"] = defined(ctx, word)?;
+    }
+    Ok(choice)
 }
 
 /// `RemoveCounterAll`: counters off every battlefield object that matches, every kind, every counter of one kind, or a

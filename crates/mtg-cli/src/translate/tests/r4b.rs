@@ -81,6 +81,33 @@ fn dig_multiple_takes_one_card_for_each_alternative(
 }
 
 #[rstest]
+#[case::the_source_itself(
+    "AddOrRemoveCounter | Defined$ Self | CounterType$ PLAGUE | CounterNum$ 1",
+    json!({"OneOf": {"options": [
+        [{"PutCounters": {"on": "This", "counter": {"Other": "plague"}}}],
+        [{"RemoveCounters": {"from": "This", "counter": {"Other": "plague"}}}]]}})
+)]
+#[case::optional(
+    "AddOrRemoveCounter | Defined$ Self | CounterType$ DOOM | Optional$ True",
+    json!({"OneOf": {"options": [
+        [{"PutCounters": {"on": "This", "counter": {"Other": "doom"}}}],
+        [{"RemoveCounters": {"from": "This", "counter": {"Other": "doom"}}}],
+        []]}})
+)]
+fn add_or_remove_counter_is_a_choice_of_putting_or_taking(#[case] line: &str, #[case] node: Value) {
+    assert_eq!(effects(&spell(line)), json!([node]));
+}
+
+#[rstest]
+#[case::each_kind(
+    "AddOrRemoveCounter | ValidTgts$ Permanent | EachExistingCounter$ True | CounterNum$ 1",
+    "key:AddOrRemoveCounter.EachExistingCounter"
+)]
+fn add_or_remove_counter_leaves_what_it_cannot_read_a_gap(#[case] line: &str, #[case] gap: &str) {
+    assert!(gaps(&spell(line)).contains(&gap.to_owned()));
+}
+
+#[rstest]
 #[case::not_optional(
     "DigMultiple | DigNum$ 4 | ChangeValid$ Creature,Land",
     "key:DigMultiple.Optional-absent"
