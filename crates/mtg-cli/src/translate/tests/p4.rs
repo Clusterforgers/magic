@@ -325,7 +325,6 @@ fn a_unique_target_that_could_be_a_player_stays_a_gap(#[case] first: &str, #[cas
 #[rstest]
 #[case::twice_a_game("GameActivationLimit$ 2")]
 #[case::exhaust_false("Exhaust$ False")]
-#[case::exhaust_beside_two_a_turn("Exhaust$ True | ActivationLimit$ 2")]
 fn a_game_limit_the_table_does_not_know_stays_a_gap(#[case] keys: &str) {
     let text = format!("Name:T\nTypes:Creature Elf\nA:AB$ Draw | Cost$ 1 | NumCards$ 1 | {keys}\n");
     assert!(gaps(&text).into_iter().next().is_some());

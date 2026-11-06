@@ -1999,7 +1999,7 @@ fn object_triggers(
                 }
             }
             if *limit == Some(Limit::OncePerTurn)
-                && (state.limit_spent(source, address.source, address.ability)
+                && (state.limit_spent(Limit::OncePerTurn, source, address.source, address.ability)
                     || !used
                         .limits
                         .insert((source, address.source, address.ability)))
@@ -2929,6 +2929,7 @@ mod tests {
                     timing: mtg_cards::ability::Timing::Instant,
                     condition: None,
                     limit: None,
+                    by: mtg_cards::ability::Activators::Controller,
                     from: ZoneKind::Battlefield,
                     targets: vec![TargetSpec {
                         what: Targetable::AnyTarget,
@@ -3026,7 +3027,12 @@ mod tests {
             &post,
             &[Event::AbilityTriggered(Box::new(found[0].clone()))],
         );
-        assert!(spent.limit_spent(found[0].source, found[0].origin, found[0].ability));
+        assert!(spent.limit_spent(
+            Limit::OncePerTurn,
+            found[0].source,
+            found[0].origin,
+            found[0].ability
+        ));
         let next = fold(
             &spent,
             &[Event::TurnBegan {
@@ -3036,7 +3042,12 @@ mod tests {
             }],
         );
         assert!(
-            !next.limit_spent(found[0].source, found[0].origin, found[0].ability),
+            !next.limit_spent(
+                Limit::OncePerTurn,
+                found[0].source,
+                found[0].origin,
+                found[0].ability
+            ),
             "the new turn gives it back"
         );
     }

@@ -107,6 +107,7 @@ fn an_activated_ability_is_counted_when_the_bots_use_it() {
         timing: mtg_cards::ability::Timing::default(),
         condition: None,
         limit: None,
+        by: mtg_cards::ability::Activators::Controller,
         from: mtg_cards::refs::ZoneKind::Battlefield,
         targets: Vec::new(),
         effects: vec![gain_life(1)],

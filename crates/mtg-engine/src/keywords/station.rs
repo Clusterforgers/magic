@@ -30,6 +30,7 @@ impl KeywordRules for Station {
             timing: Timing::Sorcery,
             condition: None,
             limit: None,
+            by: mtg_cards::ability::Activators::Controller,
             from: ZoneKind::Battlefield,
             targets: Vec::new(),
             effects: vec![Effect::PutCounters {

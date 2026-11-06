@@ -158,6 +158,7 @@ pub fn split_pinger(name: &str) -> Arc<CardDefinition> {
                 timing: Timing::Instant,
                 condition: None,
                 limit: None,
+                by: mtg_cards::ability::Activators::Controller,
                 from: ZoneKind::Battlefield,
                 targets: vec![divided(2)],
                 effects: vec![share_damage()],

@@ -71,6 +71,7 @@ fn tap_for_mana(produces: ManaType) -> Arc<Ability> {
         timing: Timing::default(),
         condition: None,
         limit: None,
+        by: mtg_cards::ability::Activators::Controller,
         from: ZoneKind::default(),
         targets: Vec::new(),
         effects: vec![Effect::AddMana {
@@ -119,6 +120,15 @@ pub(crate) fn definition_works_elsewhere(definition: &CardDefinition) -> bool {
         } => elsewhere(rules) || !crate::layers::zone_named(selector).is_battlefield(),
         other => elsewhere(other),
     })
+}
+
+/// Whether a card with this definition prints an activated ability that players other than its controller may activate
+/// (`GameState::possible`).
+pub(crate) fn definition_lets_others_activate(definition: &CardDefinition) -> bool {
+    definition
+        .rules
+        .iter()
+        .any(|rules| matches!(&**rules, Ability::Activated { by, .. } if !by.is_controller()))
 }
 
 /// The abilities that the keywords printed on `object`, which is not on the battlefield, add and that work from the
@@ -626,6 +636,7 @@ mod tests {
             timing: Timing::Instant,
             condition: None,
             limit: None,
+            by: mtg_cards::ability::Activators::Controller,
             from: ZoneKind::Battlefield,
             targets: Vec::new(),
             effects: gain(),

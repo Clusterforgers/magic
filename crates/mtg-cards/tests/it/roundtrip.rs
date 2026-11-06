@@ -507,6 +507,7 @@ fn granted() -> impl Strategy<Value = Ability> {
             },
             condition: None,
             limit: None,
+            by: mtg_cards::ability::Activators::Controller,
             from: ZoneKind::Battlefield,
             targets: Vec::new(),
             effects: gain(),
@@ -1220,6 +1221,7 @@ fn ability() -> impl Strategy<Value = Ability> {
                 },
                 condition: None,
                 limit,
+                by: mtg_cards::ability::Activators::Controller,
                 from,
                 targets,
                 effects

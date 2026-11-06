@@ -286,6 +286,7 @@ fn tap_ability(timing: Timing, targets: Vec<TargetSpec>, effects: Vec<Effect>) -
         timing,
         condition: None,
         limit: None,
+        by: mtg_cards::ability::Activators::Controller,
         from: ZoneKind::Battlefield,
         targets,
         effects,

@@ -46,6 +46,7 @@ fn activation(cost: &Cost) -> Ability {
         timing: Timing::Sorcery,
         condition: None,
         limit: None,
+        by: mtg_cards::ability::Activators::Controller,
         from: ZoneKind::Graveyard,
         targets: Vec::new(),
         effects: vec![

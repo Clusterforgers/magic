@@ -9,7 +9,7 @@
 use std::sync::Arc;
 
 use mtg_cards::AbilityDef;
-use mtg_cards::ability::Ability;
+use mtg_cards::ability::{Ability, Limit};
 use mtg_cards::assemble::{ManaProduced, mana_shape};
 use mtg_core::card::CardType;
 use mtg_core::ids::{ObjectId, PlayerId};
@@ -181,7 +181,14 @@ fn rule_mana(state: &GameState, player: PlayerId, id: ObjectId, printed: usize) 
         {
             continue;
         }
-        if shape.once && state.limit_spent(object.reference(), address.source, address.ability) {
+        if shape.once
+            && state.limit_spent(
+                Limit::OncePerTurn,
+                object.reference(),
+                address.source,
+                address.ability,
+            )
+        {
             continue;
         }
         let pays = parts_of(&shape.pays);

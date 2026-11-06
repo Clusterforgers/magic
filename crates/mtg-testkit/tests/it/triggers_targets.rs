@@ -249,6 +249,7 @@ fn an_activated_ability_limited_to_once_each_turn_is_offered_once_and_again_next
             timing: Timing::Instant,
             condition: None,
             limit: None,
+            by: mtg_cards::ability::Activators::Controller,
             from: ZoneKind::Battlefield,
             targets: Vec::new(),
             effects: vec![draw(1)],

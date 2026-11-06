@@ -272,6 +272,7 @@ fn thumper() -> Arc<CardDefinition> {
                 timing: Timing::Instant,
                 condition: None,
                 limit: None,
+                by: mtg_cards::ability::Activators::Controller,
                 from: ZoneKind::Battlefield,
                 targets: vec![TargetSpec {
                     what: Targetable::AnyTarget,

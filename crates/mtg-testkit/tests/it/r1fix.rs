@@ -27,6 +27,7 @@ fn free(targets: &str, steps: &str) -> Ability {
         timing: Timing::Instant,
         condition: None,
         limit: None,
+        by: mtg_cards::ability::Activators::Controller,
         from: ZoneKind::Battlefield,
         targets: serde_json::from_str::<Vec<TargetSpec>>(targets).unwrap(),
         effects: effects(steps),

@@ -3,7 +3,7 @@
 use std::collections::BTreeSet;
 use std::sync::Arc;
 
-use mtg_cards::ability::{Ability, LoyaltyCost, Timing};
+use mtg_cards::ability::{Ability, Activators, LoyaltyCost, Timing};
 use mtg_cards::value::CounterKind;
 use mtg_core::card::CardType;
 use mtg_core::ids::{ObjectId, PlayerId};
@@ -182,13 +182,17 @@ fn can_activate(
     if *from != zone_kind(object.zone()) {
         return false;
     }
-    if limit.is_some() && state.limit_spent(object.reference(), address.source, address.ability) {
+    if let Some(limit) = limit
+        && state.limit_spent(*limit, object.reference(), address.source, address.ability)
+    {
         return false;
     }
     let Ok(price) = Price::announced_in(cost, state, player, object.id()) else {
         return false;
     };
-    if rules.is_mana_ability() {
+    // A player who does not control the permanent can neither tap it nor give it up as a cost (CR 602.2).
+    let foreign = controller_of_object(state, object) != player;
+    if rules.is_mana_ability() || (foreign && (price.tap || price.leaves != Leaves::Stays)) {
         return false;
     }
     if !leaves_from_here(state, player, object, price.leaves) {
@@ -318,11 +322,21 @@ pub(crate) fn other_abilities(state: &GameState, player: PlayerId) -> Vec<Abilit
         let Some(object) = state.object(id) else {
             continue;
         };
-        if controller_of_object(state, object) != player {
+        let controller = controller_of_object(state, object);
+        if controller != player && !state.possible.others_activate {
             continue;
         }
         for (address, rules) in abilities_of(state, id) {
-            if can_activate(state, player, object, address, &rules) {
+            let by = match &*rules {
+                Ability::Activated { by, .. } => *by,
+                _ => Activators::Controller,
+            };
+            let allowed = match by {
+                Activators::Controller => controller == player,
+                Activators::Anyone => true,
+                Activators::Opponents => controller != player,
+            };
+            if allowed && can_activate(state, player, object, address, &rules) {
                 found.push(address);
             }
         }

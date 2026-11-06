@@ -141,7 +141,15 @@ pub struct Activation {
 }
 
 /// The keys of [`activation_words`].
-pub const ACTIVATION_WORDS: [&str; 3] = ["ActivationPhases", "Boast", "Forecast"];
+pub const ACTIVATION_WORDS: [&str; 7] = [
+    "ActivationPhases",
+    "Boast",
+    "Forecast",
+    "ActivationFirstCombat",
+    "ActivationAfterBlockers",
+    "OpponentTurn",
+    "Activation",
+];
 
 /// The phases of an activation (`ActivationPhases$`), boast ("only if this creature attacked this turn and only once each
 /// turn") and forecast ("from your hand, during your upkeep, once each turn").
@@ -149,6 +157,22 @@ pub fn activation_words(p: &Params) -> Tr<Activation> {
     let mut out = Activation::default();
     if let Some(text) = p.get("ActivationPhases") {
         out.conditions.push(in_phases(text)?);
+    }
+    // The phases already say when; an extra combat is not told apart (the oracle words are "before attackers are declared").
+    for word in ["ActivationFirstCombat", "ActivationAfterBlockers"] {
+        match p.get(word) {
+            None => {}
+            Some("True") if p.has("ActivationPhases") => {}
+            Some(other) => return unmapped(format!("key:{word}={other}")),
+        }
+    }
+    match p.get("OpponentTurn") {
+        None => {}
+        Some("True") => out.conditions.push(json!({"Not": "YourTurn"})),
+        Some(other) => return unmapped(format!("key:OpponentTurn={other}")),
+    }
+    if let Some(name) = p.get("Activation") {
+        out.conditions.push(super::condition::named(name)?);
     }
     match p.get("Boast") {
         None => {}

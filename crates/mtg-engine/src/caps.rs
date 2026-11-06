@@ -26,6 +26,7 @@ const RUNS: &[&str] = &[
     "Ability.Triggered",
     "Ability.Loyalty",
     "Ability.Limit",
+    "Ability.By",
     "Ability.From",
     "Ability.Sorcery",
     "Ability.Condition",
@@ -768,6 +769,7 @@ mod tests {
     #[case::paying_life("Cost.PayLife", true)]
     #[case::paying_a_counted_amount_of_life("Cost.PayLife.Counted", false)]
     #[case::once_a_turn("Ability.Limit", true)]
+    #[case::other_activators("Ability.By", true)]
     #[case::other_zones("Ability.From", true)]
     #[case::sorcery_timing("Ability.Sorcery", true)]
     #[case::activation_conditions("Ability.Condition", true)]

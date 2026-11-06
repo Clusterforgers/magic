@@ -3535,6 +3535,9 @@ impl Walker<'_> {
         ) {
             self.uses("Ability", "Condition");
         }
+        if matches!(ability, Ability::Activated { by, .. } if !by.is_controller()) {
+            self.uses("Ability", "By");
+        }
         let (limit, from) = match ability {
             Ability::Activated { limit, from, .. } | Ability::Triggered { limit, from, .. } => {
                 (limit.is_some(), !from.is_battlefield())

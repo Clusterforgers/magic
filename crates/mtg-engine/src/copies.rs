@@ -477,6 +477,9 @@ pub(crate) fn note_definition(state: &mut GameState, definition: &CardDefinition
     if crate::ability_reader::definition_works_elsewhere(definition) {
         state.possible.elsewhere = true;
     }
+    if crate::ability_reader::definition_lets_others_activate(definition) {
+        state.possible.others_activate = true;
+    }
 }
 
 /// Whether the object may be copied: an object of the game that is not an ability. A double-faced permanent is copied

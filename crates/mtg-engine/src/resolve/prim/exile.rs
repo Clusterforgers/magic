@@ -162,6 +162,7 @@ mod tests {
                     timing: mtg_cards::ability::Timing::Instant,
                     condition: None,
                     limit: None,
+                    by: mtg_cards::ability::Activators::Controller,
                     from: mtg_cards::refs::ZoneKind::Battlefield,
                     targets: Vec::new(),
                     effects: Vec::new(),

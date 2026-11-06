@@ -767,6 +767,7 @@ mod r1g;
 mod r1h;
 mod r2a;
 mod r2b;
+mod r2d;
 mod r2f;
 mod r3p2;
 mod r3p3;

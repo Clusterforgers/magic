@@ -543,6 +543,16 @@ impl GameState {
         })
     }
 
+    /// Whether some card has an activated ability that players other than its controller may activate.
+    fn others_may_activate(&self) -> bool {
+        self.objects().any(|object| {
+            object
+                .def
+                .each_face()
+                .any(crate::ability_reader::definition_lets_others_activate)
+        })
+    }
+
     /// Whether any card of the game can trigger something or has a static ability, which the state then watches for.
     fn note_what_cards_can_do(&mut self) {
         let triggers = self.objects().any(|object| {
@@ -573,6 +583,7 @@ impl GameState {
                 .any(crate::ability_reader::definition_works_elsewhere)
         });
         self.possible.elsewhere = elsewhere;
+        self.possible.others_activate = self.others_may_activate();
         let states = self.objects().any(|object| {
             object
                 .def

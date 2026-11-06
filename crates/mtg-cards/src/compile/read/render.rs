@@ -112,7 +112,7 @@ use super::triggers::{
     leaves_itself, pattern_text, targeted_itself,
 };
 use super::where_x;
-use crate::ability::{Ability, Limit, Timing};
+use crate::ability::{Ability, Activators, Limit, Timing};
 use crate::compile::classify;
 use crate::cost::Cost;
 use crate::effect::{Destination, Effect, Mode, Order, Place, Produce, TokenRef};
@@ -695,6 +695,7 @@ fn ability_texts(ability: &Ability) -> Vec<String> {
             timing,
             condition,
             limit,
+            by: Activators::Controller,
             from: from @ (ZoneKind::Battlefield | ZoneKind::Graveyard),
             targets,
             effects,
@@ -1578,6 +1579,17 @@ fn restriction_texts(timing: Timing, limit: Option<Limit>) -> Vec<String> {
             "Activate only as a sorcery and only once each turn.".to_owned(),
             "Activate only once each turn and only as a sorcery.".to_owned(),
         ],
+        (timing, Some(Limit::TimesPerTurn(most))) => {
+            let times = match most {
+                2 => "twice".to_owned(),
+                n => format!("{n} times"),
+            };
+            let lead = match timing {
+                Timing::Sorcery => "Activate only as a sorcery and no more than",
+                Timing::Instant => "Activate no more than",
+            };
+            vec![format!("{lead} {times} each turn.")]
+        }
     }
 }
 
