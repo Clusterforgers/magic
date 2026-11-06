@@ -64,6 +64,12 @@ const TAILS: &[(&str, &str, &str)] = &[
         "Enchanted creature ",
         "its activated abilities can't be activated",
     ),
+    // Faith's Fetters: the attached permanent is the subject of its own activations, mana abilities aside.
+    (
+        r#"{"Rule":{"rule":{"Cant":{"action":{"Activate":[]},"who":{"Each":[{"Is":"Attached"}]}}}}}"#,
+        "",
+        "its activated abilities can't be activated unless they're mana abilities",
+    ),
     // Indrik Umbra
     (
         r#"{"Rule":{"rule":{"Combat":{"quirk":{"MustBeBlocked":"Every"},"who":"Attached"}}}}"#,
@@ -85,6 +91,10 @@ pub(super) fn r6b_texts(first: &Ability, second: &Ability) -> Vec<String> {
     else {
         return Vec::new();
     };
+    // Only a static ability or a rule says something more of the attached permanent.
+    if !matches!(second, Ability::Static { .. } | Ability::Rule { .. }) {
+        return Vec::new();
+    }
     let second_value = serde_json::to_value(second).ok();
     let row = |json: &str| serde_json::from_str::<serde_json::Value>(json).ok() == second_value;
     let back_row = BACKS

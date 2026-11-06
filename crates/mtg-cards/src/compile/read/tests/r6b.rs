@@ -51,6 +51,19 @@ const BY_TOUGHNESS: &str =
 )]
 // Only the activations of the attached permanent.
 #[case::of_every_permanent(CANT_ATTACK_OR_BLOCK, &NO_ACTIVATIONS.replace(r#","sources":[{"Is":"Attached"}]"#, ""), ARREST_TEXT, false)]
+#[case::fetters(
+    CANT_ATTACK_OR_BLOCK,
+    r#"{"Rule":{"rule":{"Cant":{"action":{"Activate":[]},"who":{"Each":[{"Is":"Attached"}]}}}}}"#,
+    "Enchanted permanent can't attack or block, and its activated abilities can't be activated unless they're mana abilities.",
+    true
+)]
+// Every player kept from activating abilities is not the attached permanent's own abilities.
+#[case::fetters_every_player(
+    CANT_ATTACK_OR_BLOCK,
+    r#"{"Rule":{"rule":{"Cant":{"action":{"Activate":[]},"who":"EachPlayer"}}}}"#,
+    "Enchanted permanent can't attack or block, and its activated abilities can't be activated unless they're mana abilities.",
+    false
+)]
 #[case::unblockable(
     BONUS,
     UNBLOCKABLE,

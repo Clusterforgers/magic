@@ -61,6 +61,9 @@ pub(super) fn add(ability: &Ability, texts: &mut Vec<String>) {
         found.extend(pair_swaps(text));
         found.extend(enchanted_object(ability, text));
     }
+    if found.is_empty() {
+        return;
+    }
     let mut seen: std::collections::HashSet<String> = texts.iter().cloned().collect();
     for text in found {
         if seen.insert(text.clone()) {
@@ -446,7 +449,8 @@ fn enchanted_object(ability: &Ability, text: &str) -> Option<String> {
     if !matches!(
         ability,
         Ability::Triggered { .. } | Ability::Activated { .. }
-    ) {
+    ) || !text.contains("ap enchanted creature")
+    {
         return None;
     }
     let mut said = text.to_owned();
