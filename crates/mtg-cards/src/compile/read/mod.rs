@@ -118,6 +118,8 @@ mod r5g_lines;
 mod r6a_effects;
 mod r6a_more;
 mod r6a_wordings;
+mod r6b_pairs;
+mod r6b_wordings;
 mod r6c_pairs;
 mod r6c_wordings;
 mod r6d_done;

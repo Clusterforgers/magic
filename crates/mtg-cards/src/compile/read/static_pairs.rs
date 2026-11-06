@@ -50,6 +50,10 @@ pub fn texts(first: &Ability, second: &Ability) -> Vec<String> {
     if !attacking.is_empty() {
         return attacking;
     }
+    let attached = super::r6b_pairs::r6b_texts(first, second);
+    if !attached.is_empty() {
+        return attached;
+    }
     let chosen = super::c4_chosen_pairs::texts(first, second);
     if !chosen.is_empty() {
         return chosen;
