@@ -1,0 +1,43 @@
+{
+  "oracle_id": "6db51087-6995-4ed4-978a-3d17d60019af",
+  "name": "Blood Aspirant",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Blood Aspirant",
+      "oracle_fingerprint": "3cad738747fc7f2d96a358c490dc110c",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Sacrificed": { "what": [], "by": "You" } },
+            "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [
+              { "Mana": "{1}{R}" },
+              "Tap",
+              {
+                "Sacrifice": {
+                  "filter": [{ "AnyOf": [{ "Type": "Creature" }, { "Type": "Enchantment" }] }]
+                }
+              }
+            ],
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              { "DealDamage": { "to": { "Target": 0 }, "amount": 1 } },
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": ["CantBlock"],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

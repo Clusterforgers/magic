@@ -615,6 +615,7 @@ Gilt-Leaf Palace
 Ginger, Queen of Sweets
 Girder Goons
 Gisa and Geralf
+Glassworks // Shattered Yard
 Glimpse of Freedom
 Glint-Sleeve Artisan
 Glissa Sunslayer
@@ -1220,6 +1221,7 @@ Rite of Replication
 River of Tears
 Riveteers Overlook
 Riveteers Requisitioner
+Roaring Furnace // Steaming Sauna
 Rob the Archives
 Rocksteady, Mutant Marauder
 Rogue Refiner

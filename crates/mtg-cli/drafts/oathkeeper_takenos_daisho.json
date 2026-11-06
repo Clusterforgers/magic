@@ -15,12 +15,6 @@
         },
         {
           "Triggered": {
-            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } },
-            "effects": [{ "Exile": { "what": "Attached" } }]
-          }
-        },
-        {
-          "Triggered": {
             "when": {
               "ZoneChange": {
                 "what": [{ "Is": "Attached" }],
@@ -47,6 +41,12 @@
                 }
               }
             ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } },
+            "effects": [{ "Exile": { "what": "Attached" } }]
           }
         },
         { "Keyword": { "Equip": "{2}" } }

@@ -1,0 +1,40 @@
+{
+  "oracle_id": "9b21e056-57e7-4e39-b2b4-2fdf8719d0d2",
+  "name": "Sefris of the Hidden Ways",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sefris of the Hidden Ways",
+      "oracle_fingerprint": "900a4fc4492bd65a77de71056fca26c4",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "Batch": {
+                "ZoneChange": {
+                  "what": [{ "Type": "Creature" }, { "OwnedBy": "You" }, { "Not": "Token" }],
+                  "to": "Graveyard"
+                }
+              }
+            },
+            "limit": "OncePerTurn",
+            "effects": [{ "Venture": {} }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "CompletedDungeon": { "who": "You" } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "Type": "Creature" }, { "In": "Graveyard" }, { "OwnedBy": "You" }]
+                }
+              }
+            ],
+            "effects": [{ "Move": { "what": { "Target": 0 }, "to": { "Battlefield": {} } } }]
+          }
+        }
+      ]
+    }
+  ]
+}
