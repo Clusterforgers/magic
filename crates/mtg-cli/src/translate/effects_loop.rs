@@ -94,6 +94,7 @@ pub fn repeat_each(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
         &[
             "RepeatPlayers",
             "RepeatCards",
+            "DefinedCards",
             "Zone",
             "RepeatSubAbility",
             "DamageMap",
@@ -101,7 +102,16 @@ pub fn repeat_each(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
             "UseImprinted",
         ],
     )?;
+    // The tables only gather the moves and the damage of the passes for the triggers that read them as one batch.
+    for table in ["ChangeZoneTable", "DamageMap"] {
+        if p.get(table).is_some_and(|word| word != "True") {
+            return unmapped(format!("key:RepeatEach.{table}"));
+        }
+    }
+    let bind = ctx.fresh("each");
+    let mut before_move = None;
     let over = match (p.get("RepeatPlayers"), p.get("RepeatCards")) {
+        (None, None) if p.has("DefinedCards") => defined_cards(ctx, p, &bind, &mut before_move)?,
         (None, Some(valid)) => json!({"Each": selector_in(ctx, valid, p.get("Zone"))?}),
         (Some(_), Some(_)) => return unmapped("key:RepeatEach.RepeatPlayers+RepeatCards"),
         (players, None) => match players {
@@ -115,7 +125,6 @@ pub fn repeat_each(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
     let Some(sub) = p.get("RepeatSubAbility") else {
         return unmapped("key:RepeatEach.no-RepeatSubAbility");
     };
-    let bind = ctx.fresh("each");
     // `UseImprinted$` names the one the pass is for `Imprinted`, so `Remembered` keeps what it held before the loop.
     let held = json!({ "Bound": bind });
     let imprint = p.get("UseImprinted") == Some("True");
@@ -125,12 +134,45 @@ pub fn repeat_each(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
     } else {
         ctx.remembered = Some(held);
     }
+    if let Some(before) = before_move {
+        ctx.moved_from.insert(bind.clone(), before);
+    }
     let part = ctx.sub(sub)?;
     let effects = chain_at(ctx, &part, false);
+    ctx.moved_from.remove(&bind);
     (ctx.remembered, ctx.imprinted) = (outer, outer_imprinted);
     Ok(vec![
         json!({"RepeatEach": {"over": over, "as": bind, "effects": effects?}}),
     ])
+}
+
+/// `DefinedCards$` of a `RepeatEach`: the objects an earlier step named, one pass for each. `before_move` is set to how a
+/// pass reads the one it is for as it was before the step that moved it (its controller is the last known one, CR 400.7):
+/// a target a step moved is still named by its old reference, what a step bound is the object it became.
+fn defined_cards(ctx: &Ctx, p: &Params, each: &str, before_move: &mut Option<Value>) -> Tr<Value> {
+    let word = p.get("DefinedCards").unwrap_or_default();
+    let list = match word {
+        "Targeted" => ctx.last_target()?,
+        "DirectRemembered" | "Remembered" | "RememberedCard" => {
+            super::memory::slot_ref(ctx, super::memory::Slot::Remembered)
+                .map_or_else(|| unmapped("defined:Remembered-without-a-change"), Ok)?
+        }
+        "Imprinted" => super::memory::imprinted(ctx)?,
+        other => return unmapped(format!("key:RepeatEach.DefinedCards={other}")),
+    };
+    let moved = list
+        .get("Bound")
+        .and_then(Value::as_str)
+        .is_some_and(|name| ctx.counted.contains(name));
+    if list.get("Target").is_some() {
+        *before_move = Some(json!({ "Bound": each }));
+    } else if moved {
+        *before_move = Some(json!({"Departed": {"Bound": each}}));
+    }
+    Ok(match p.get("Zone") {
+        None => list,
+        Some(zone) => json!({"Each": [{"Is": list}, {"In": zone}]}),
+    })
 }
 
 /// `ImmediateTrigger`: a reflexive trigger that runs the named ability with targets of its own. `RememberObjects$` names

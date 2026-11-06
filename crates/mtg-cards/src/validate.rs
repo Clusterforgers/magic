@@ -559,7 +559,7 @@ impl<'a> Walker<'a> {
                 self.expect(Kind::Player, want);
                 self.at("of", |w| w.reference(inner, Kind::Object));
             }
-            Ref::Arrived { of, .. } => {
+            Ref::Arrived { of, .. } | Ref::Departed(of) => {
                 self.expect(Kind::Object, want);
                 self.at("of", |w| w.reference(of, Kind::Object));
             }
@@ -2371,6 +2371,7 @@ impl Walker<'_> {
             | Ref::Attached
             | Ref::Paid
             | Ref::Arrived { .. }
+            | Ref::Departed(_)
             | Ref::Each(_) => Kind::Object,
             Ref::Target(index) => self
                 .scope

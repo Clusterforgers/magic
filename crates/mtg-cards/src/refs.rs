@@ -132,6 +132,10 @@ pub enum Ref {
         /// The zone it must be in now.
         zone: ZoneKind,
     },
+    /// The objects `of` names as they were before they last moved (CR 400.7, 608.2h): "its controller" over permanents
+    /// an earlier step destroyed reads the controller they had. Each is named by what it was, as the resolution saw it
+    /// leave; one with no such record (it moved twice, or came from a hidden zone) is nobody.
+    Departed(Box<Ref>),
     /// Every object matching the selector when the effect runs.
     Each(Selector),
 }

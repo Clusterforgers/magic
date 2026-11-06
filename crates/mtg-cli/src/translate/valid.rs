@@ -577,6 +577,7 @@ pub fn defined(ctx: &Ctx, word: &str) -> Tr<Value> {
             |name| Ok(json!({"Bound": name})),
         ),
         "RememberedController" => super::memory::remembered_controller(ctx),
+        "ImprintedController" => super::memory::imprinted_controller(ctx),
         "DelayTriggerRemembered" | "DelayTriggerRememberedLKI" | "DelayedTriggerRemembered"
             if ctx.delayed_remembered.is_some() =>
         {

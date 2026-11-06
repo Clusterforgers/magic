@@ -286,14 +286,24 @@ pub fn remembered_matching(ctx: &Ctx, filter: &str) -> Tr<Value> {
 /// (CR 400.7) whose controller is its owner, so the reading is of the target the step named, which keeps the controller
 /// it last had; a name the translator cannot trace back to a target stays a gap.
 pub fn remembered_controller(ctx: &Ctx) -> Tr<Value> {
-    if ctx
-        .remembered
-        .as_ref()
-        .is_some_and(|held| is_scoped(ctx, held))
-    {
-        return unmapped("defined:RememberedController");
+    controller_in(ctx, Slot::Remembered)
+}
+
+/// `ImprintedController`: the same reading for the objects the imprint slot holds.
+pub fn imprinted_controller(ctx: &Ctx) -> Tr<Value> {
+    controller_in(ctx, Slot::Imprinted)
+}
+
+fn controller_in(ctx: &Ctx, slot: Slot) -> Tr<Value> {
+    let held = match slot {
+        Slot::Remembered => &ctx.remembered,
+        Slot::Imprinted => &ctx.imprinted,
+    };
+    let word = format!("{}Controller", slot.word());
+    if held.as_ref().is_some_and(|held| is_scoped(ctx, held)) {
+        return unmapped(format!("defined:{word}"));
     }
-    let before = match &ctx.remembered {
+    let before = match held {
         Some(Value::Object(map)) if map.len() == 1 => {
             match map.get("Bound").and_then(Value::as_str) {
                 Some(name) => ctx.moved_from.get(name).cloned(),
@@ -304,7 +314,7 @@ pub fn remembered_controller(ctx: &Ctx) -> Tr<Value> {
     };
     match before {
         Some(what) => Ok(json!({"ControllerOf": what})),
-        None => unmapped("defined:RememberedController"),
+        None => unmapped(format!("defined:{word}")),
     }
 }
 
