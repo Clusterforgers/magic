@@ -146,6 +146,35 @@ fn all_of(ctx: &mut Ctx, p: &Params, verb: &str) -> Tr<Value> {
     Ok(json!({ verb: {"what": {"Each": frame::all_matching(ctx, p, verb, valid)?}} }))
 }
 
+/// The indices of the last targets of the ability when a line that declares none reads `Defined$ Targeted` and each of
+/// them was declared by a line that only chooses it; empty otherwise.
+fn r6e_chosen(ctx: &Ctx, p: &Params) -> Vec<u8> {
+    let remembers = [
+        "RememberDestroyed",
+        "RememberLKI",
+        "RememberTargets",
+        "AlwaysRemember",
+    ];
+    if p.get("Defined") != Some("Targeted")
+        || p.has("ValidTgts")
+        || remembers.iter().any(|key| p.has(key))
+    {
+        return Vec::new();
+    }
+    let mut chosen = Vec::new();
+    for (index, spec) in ctx.targets.iter().enumerate().rev() {
+        let Ok(index) = u8::try_from(index) else {
+            break;
+        };
+        if !ctx.r6e_selected.contains(&(index, spec.clone())) {
+            break;
+        }
+        chosen.push(index);
+    }
+    chosen.reverse();
+    chosen
+}
+
 fn destroy(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
     only(
         p,
@@ -162,8 +191,17 @@ fn destroy(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
             "AlwaysRemember",
         ],
     )?;
-    let what = subject(ctx, p, "", None)?;
     let regenerate = p.get("NoRegen") != Some("True");
+    let chosen = r6e_chosen(ctx, p);
+    if chosen.len() >= 2 {
+        // "Destroy target creature and target land": each target the lines before only chose, together.
+        let each: Vec<Value> = chosen
+            .iter()
+            .map(|index| json!({"Destroy": {"what": {"Target": index}, "regenerate": regenerate}}))
+            .collect();
+        return Ok(json!({"Together": {"effects": each}}));
+    }
+    let what = subject(ctx, p, "", None)?;
     let mut effect = json!({"Destroy": {"what": what, "regenerate": regenerate}});
     // The target is remembered whether or not it is destroyed (a regenerated creature is still "that creature").
     let remembers = remember::wanted(p, &["RememberDestroyed", "RememberLKI", "RememberTargets"]);
@@ -676,6 +714,13 @@ fn pump(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
         Some(zone) => return unmapped(format!("key:Pump.PumpZone={zone}")),
     }
     if selects_only {
+        if p.has("ValidTgts")
+            && let Some(spec) = ctx.targets.last()
+            && let Ok(index) = u8::try_from(ctx.targets.len() - 1)
+        {
+            let spec = spec.clone();
+            ctx.r6e_selected.push((index, spec));
+        }
         return Ok(Vec::new());
     }
     let mut effects = Vec::new();

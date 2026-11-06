@@ -87,7 +87,7 @@ pub fn classify(text: &str, spell: bool) -> ClauseKind {
         .unwrap_or(head);
     if is_loyalty(body) {
         ClauseKind::Loyalty
-    } else if is_triggered(body) && !(spell && body.starts_with("When you next cast ")) {
+    } else if is_triggered(body) && !(spell && r6e_delayed(body)) {
         // A spell that sets up a delayed trigger ("When you next cast an instant spell this turn, copy it") is its effect.
         ClauseKind::Triggered
     } else if is_activated(body) {
@@ -104,6 +104,17 @@ pub fn classify(text: &str, spell: bool) -> ClauseKind {
     } else {
         ClauseKind::Static
     }
+}
+
+/// Whether a trigger line of a spell is a delayed trigger the spell sets up: "When you next cast ...", a trigger event
+/// limited to this turn ("Whenever a creature blocks this turn, ...") or the next upkeep ("At the beginning of your next
+/// upkeep, pay {2}{B}. If you don't, you lose the game.").
+fn r6e_delayed(body: &str) -> bool {
+    let event = body.split_once(", ").map_or(body, |(event, _)| event);
+    body.starts_with("When you next cast ")
+        || body.starts_with("At the beginning of your next ")
+        || body.starts_with("At the beginning of the next ")
+        || event.ends_with(" this turn")
 }
 
 /// Whether the characters can be those of an ability word: letters, a space, an apostrophe, a hyphen, "!", the card's
@@ -134,6 +145,12 @@ fn t16a_flavour_name(word: &str) -> bool {
         })
 }
 
+/// Whether the word is the ability word Descend with its number ("Descend 4", CR 207.2c).
+fn r6e_descend(word: &str) -> bool {
+    word.strip_prefix("Descend ")
+        .is_some_and(|number| !number.is_empty() && number.chars().all(|c| c.is_ascii_digit()))
+}
+
 /// The byte length of an ability word and its dash ("Landfall — "), when the line starts with one. Any name of up to
 /// forty characters is one, known or not ("Genomic Enhancement — "): it is flavor and the line reads without it.
 pub(super) fn ability_word_len(line: &str) -> Option<usize> {
@@ -145,7 +162,7 @@ pub(super) fn ability_word_len(line: &str) -> Option<usize> {
         .next()
         .is_some_and(|c| c.is_uppercase() || c == '~')
         && word.chars().count() <= 40
-        && (w20b_ability_letters(word) || t16a_flavour_name(word))
+        && (w20b_ability_letters(word) || t16a_flavour_name(word) || r6e_descend(word))
         && !word.starts_with("Choose");
     let end = at + DASH.len();
     (is_word && end < line.len()).then_some(end)

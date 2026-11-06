@@ -144,6 +144,9 @@ pub struct Ctx<'a> {
     pub coming_player: bool,
     /// The latest target the ability had declared before the line being translated (`Defined$ ParentTarget`).
     pub parent_target: Option<u8>,
+    /// The targets declared by lines that only choose them (a `Pump` with nothing to pump), as their index and spec: a later
+    /// `Defined$ Targeted` destroy reads them all ("Destroy target creature and target land").
+    pub r6e_selected: Vec<(u8, Value)>,
     /// The name the latest value chosen by the ability is bound to (`ChosenColor`, `ChosenType` after it).
     pub chosen: Option<String>,
     /// What kind of value `chosen` holds (`Color`, `CreatureType`, `LandType`, `CardType`), none for a name.
@@ -205,6 +208,7 @@ impl<'a> Ctx<'a> {
             pinned: None,
             delayed_remembered: None,
             parent_target: None,
+            r6e_selected: Vec::new(),
             chosen: None,
             chosen_kind: None,
             chosen_card: None,
