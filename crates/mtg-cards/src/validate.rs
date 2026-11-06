@@ -512,9 +512,11 @@ impl<'a> Walker<'a> {
                     }
                 }
             }
-            Ref::Triggering => {
+            Ref::Triggering | Ref::TriggeringFirst => {
                 if !self.scope.in_trigger {
-                    self.problem("`Triggering` is only valid in a triggered ability");
+                    self.problem(
+                        "`Triggering` and `TriggeringFirst` are only valid in a triggered ability",
+                    );
                 }
             }
             Ref::TriggeringPlayer => {
@@ -522,11 +524,6 @@ impl<'a> Walker<'a> {
                     self.problem("`TriggeringPlayer` is only valid in a triggered ability");
                 }
                 self.expect(Kind::Player, want);
-            }
-            Ref::TriggeringFirst => {
-                if !self.scope.in_trigger {
-                    self.problem("`TriggeringFirst` is only valid in a triggered ability");
-                }
             }
             Ref::Against => {
                 if !self.scope.in_trigger {
@@ -3348,17 +3345,11 @@ impl Walker<'_> {
                         | ReplaceBy::Instead(_)
                         | ReplaceBy::InsteadNext(_),
                     )
+                    // A death or a counter sent elsewhere, and a class of moves judged as each happens (`Rule::Replaces`).
                     | (
-                        ReplaceWhen::ZoneChange {
-                            from: Some(ZoneKind::Battlefield | ZoneKind::Stack),
-                            to: Some(ZoneKind::Graveyard),
-                            ..
-                        }
-                        | ReplaceWhen::Countered { .. },
+                        ReplaceWhen::ZoneChange { .. } | ReplaceWhen::Countered { .. },
                         ReplaceBy::MoveTo(_),
                     )
-                    // A class of events, judged as each happens (`Rule::Replaces`).
-                    | (ReplaceWhen::ZoneChange { .. }, ReplaceBy::MoveTo(_))
                     | (ReplaceWhen::Enters { .. }, ReplaceBy::Tapped) => {}
                     _ => w.uses("Effect", &format!("Shield.{}", tag_of(when))),
                 }
