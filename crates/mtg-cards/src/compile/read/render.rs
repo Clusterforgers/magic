@@ -114,7 +114,7 @@ use super::triggers::{
 use super::where_x;
 use crate::ability::{Ability, Activators, Limit, Timing};
 use crate::compile::classify;
-use crate::cost::Cost;
+use crate::cost::{Cost, CostItem};
 use crate::effect::{Destination, Effect, Mode, Order, Place, Produce, TokenRef};
 use crate::modify::{Duration, Modification};
 use crate::refs::{Bounds, Pred, Ref, Selector, TargetSpec, Targetable, ZoneKind};
@@ -503,6 +503,7 @@ fn written_as_given(ability: &Ability) -> Vec<String> {
     super::shortened::add(&mut texts);
     oracle_only::add(ability, &mut texts);
     done_once_kept(ability, &mut texts);
+    texts.extend(super::r5b_performed::variants(ability, written_variants));
     texts
 }
 
@@ -834,7 +835,25 @@ pub(super) fn alternatives(targets: &[TargetSpec], effects: &[Effect]) -> Vec<Ve
             at_random: *at_random,
             once: (*once_each_turn, *once_ever),
         };
-        return choices::texts(choose, modes, flags, all_if.as_ref())
+        let one = Bounds::default();
+        // "choose one. If ..., you may choose both instead.": one, or every mode while the condition holds (r5b).
+        let (choose, all_if) = match (&choose.max, all_if) {
+            (
+                Some(Amount::When {
+                    condition,
+                    then,
+                    otherwise,
+                }),
+                None,
+            ) if choose.min.is_one()
+                && otherwise.is_one()
+                && **then == Amount::Fixed(i32::try_from(modes.len()).unwrap_or(0)) =>
+            {
+                (&one, Some(&**condition))
+            }
+            _ => (choose, all_if.as_ref()),
+        };
+        return choices::texts(choose, modes, flags, all_if)
             .into_iter()
             .chain(either::texts(choose, modes).into_iter().filter(|_| !repeat))
             .map(|text| vec![text])
@@ -2363,6 +2382,26 @@ impl Writer<'_> {
         Some(format!("remove {} from combat", self.object(what)?))
     }
 
+    /// {1} paid X times is "{X}" (r5b).
+    fn r5b_x_payment(&mut self, effect: &Effect) -> Option<String> {
+        let Effect::Pay {
+            who,
+            cost,
+            times: Amount::X,
+            paid,
+            unpaid,
+        } = effect
+        else {
+            return None;
+        };
+        let [CostItem::Mana(mana)] = cost.0.as_slice() else {
+            return None;
+        };
+        (mana.to_string() == "{1}").then_some(())?;
+        let x = Cost(vec![CostItem::Mana("{X}".parse().ok()?)]);
+        self.w20c_payment(who, &x, paid, unpaid)
+    }
+
     fn other_effect(&mut self, effect: &Effect) -> Option<String> {
         if let Effect::Continuous {
             affected,
@@ -2374,6 +2413,7 @@ impl Writer<'_> {
             return self.r5c_held_down(affected);
         }
         self.graveyard_exile(effect)
+            .or_else(|| self.r5b_x_payment(effect))
             .or_else(|| self.library_exile(effect))
             .or_else(|| self.exiled(effect))
             .or_else(|| self.left_combat(effect))

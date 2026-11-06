@@ -110,6 +110,7 @@ mod player_keywords;
 mod prepare;
 mod prevention;
 mod pronouns;
+mod r5b_performed;
 mod r5c_order;
 mod random_moves;
 mod render;
