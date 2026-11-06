@@ -53,6 +53,8 @@ const THIS_ABILITY_BECOMES_ONLY: &str =
 const C7_UNTAP_ONLY: &str =
     "only a permanent that doesn't untap waits for its controller's next untap step";
 
+const SKIP_ONLY: &str = "only the rule that a player skips a turn lasts until the turn is skipped";
+
 /// The name of an enum value as serde writes it (`DealDamage`), for naming primitives.
 /// Whether the replacement prevents only part of the damage, or only the next of it.
 fn prevents_in_part(by: &ReplaceBy) -> bool {
@@ -3288,6 +3290,9 @@ impl Walker<'_> {
                 if *duration == Duration::NextUntapStep {
                     w.problem(C7_UNTAP_ONLY);
                 }
+                if *duration == Duration::UntilTurnSkipped {
+                    w.problem(SKIP_ONLY);
+                }
             }
             Effect::Rule { rule, duration } => w.at("rule", |w| {
                 if matches!(duration, Duration::WhileHasCounter(_)) {
@@ -3303,6 +3308,9 @@ impl Walker<'_> {
                 }
                 if *duration == Duration::NextUntapStep {
                     w.problem(C7_UNTAP_ONLY);
+                }
+                if *duration == Duration::UntilTurnSkipped && !matches!(rule, GameRule::Cant { action: Prohibited::SkipTurn, .. }) {
+                    w.problem(SKIP_ONLY);
                 }
                 if matches!(rule, GameRule::CanBeCommander) {
                     w.problem("a card can be a commander by a static ability, not by an effect");
@@ -3340,6 +3348,9 @@ impl Walker<'_> {
                 }
                 if *duration == Duration::NextUntapStep {
                     w.problem(C7_UNTAP_ONLY);
+                }
+                if *duration == Duration::UntilTurnSkipped {
+                    w.problem(SKIP_ONLY);
                 }
                 w.at("when", |w| w.replace_when(when));
                 w.at("by", |w| w.replace_by(when, by));

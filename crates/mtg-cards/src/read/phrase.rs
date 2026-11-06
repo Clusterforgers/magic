@@ -532,6 +532,7 @@ pub(super) fn duration(value: &Duration) -> String {
         Duration::WhileSourceTapped => "while this stays tapped".to_owned(),
         Duration::UntilOpponentBecomesMonarch => "until an opponent becomes the monarch".to_owned(),
         Duration::NextUntapStep => "until the next untap step".to_owned(),
+        Duration::UntilTurnSkipped => "until the turn is skipped".to_owned(),
         Duration::WhileHasCounter(counter) => {
             format!("while it has a {} counter", counter_text(counter))
         }

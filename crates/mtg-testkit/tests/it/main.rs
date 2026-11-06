@@ -418,6 +418,7 @@ mod r1fix;
 mod r2e_cost_parts;
 mod r4_audit;
 mod r4b_dig;
+mod r4b_skip;
 mod r6q1_face_down_cost;
 mod r7p3_next_spell;
 mod r8p2_enters;

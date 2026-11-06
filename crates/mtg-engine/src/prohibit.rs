@@ -316,6 +316,29 @@ pub fn skips_turn(state: &GameState, player: PlayerId) -> bool {
     forbidden(state, Doing::SkipTurn { player })
 }
 
+/// The rules that make `player` skip one turn and end with it, oldest first: the turn skipped uses up the first (CR 614.10).
+pub(crate) fn skipped_turn_rules(
+    state: &GameState,
+    player: PlayerId,
+) -> Vec<mtg_core::ids::EffectId> {
+    let mut found: Vec<_> = state
+        .rule_effects()
+        .iter()
+        .filter(|effect| {
+            effect.duration == mtg_cards::modify::Duration::UntilTurnSkipped
+                && effect.is_active(state)
+        })
+        .filter(|effect| {
+            matches!(&effect.rule, crate::rules::Rule::Cant { who, action }
+                if **action == Prohibited::SkipTurn && covers(who, Some(player), None))
+        })
+        .map(|effect| effect.id)
+        .collect();
+    found.sort();
+    found.truncate(1);
+    found
+}
+
 /// Whether the object `object` can be sacrificed by `player`, as the candidates of a cost and the choices of an effect
 /// ask.
 pub(crate) fn may_sacrifice(state: &GameState, player: PlayerId, object: ObjectId) -> bool {

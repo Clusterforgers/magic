@@ -58,6 +58,19 @@ fn incubate(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
     Ok(json!({"Incubate": {"who": who, "count": count}}))
 }
 
+/// `SkipTurn`: each turn is one rule that the player skips a turn and ends with the turn it skips (CR 614.10).
+pub fn skip_turn(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
+    let mut read = TARGETING.to_vec();
+    read.push("NumTurns");
+    only(p, "SkipTurn", &read)?;
+    let who = subject(ctx, p, "You", None)?;
+    let Ok(turns) = p.get("NumTurns").unwrap_or("1").parse::<usize>() else {
+        return unmapped("key:SkipTurn.NumTurns");
+    };
+    let rule = json!({"Rule": {"rule": {"Cant": {"who": who, "action": "SkipTurn"}}, "duration": "UntilTurnSkipped"}});
+    Ok(vec![rule; turns])
+}
+
 fn add_turn(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
     let mut read = TARGETING.to_vec();
     read.push("NumTurns");

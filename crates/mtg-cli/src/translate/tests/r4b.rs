@@ -108,6 +108,15 @@ fn add_or_remove_counter_leaves_what_it_cannot_read_a_gap(#[case] line: &str, #[
 }
 
 #[rstest]
+#[case::one_turn("SkipTurn | Defined$ You | NumTurns$ 1", 1)]
+#[case::two_turns("SkipTurn | Defined$ You | NumTurns$ 2", 2)]
+fn skip_turn_is_a_rule_for_each_turn_skipped(#[case] line: &str, #[case] turns: usize) {
+    let rule = json!({"Rule": {
+        "rule": {"Cant": {"who": "You", "action": "SkipTurn"}}, "duration": "UntilTurnSkipped"}});
+    assert_eq!(effects(&spell(line)), json!(vec![rule; turns]));
+}
+
+#[rstest]
 #[case::not_optional(
     "DigMultiple | DigNum$ 4 | ChangeValid$ Creature,Land",
     "key:DigMultiple.Optional-absent"
