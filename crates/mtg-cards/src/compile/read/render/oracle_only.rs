@@ -192,7 +192,6 @@ mod put_into;
 mod put_into_graveyard;
 mod put_that_card;
 mod quote_commas;
-mod r4h_champion;
 mod regen_this_way;
 mod repeat_modes;
 mod return_damager;
@@ -870,7 +869,6 @@ fn add_sz3(ability: &Ability, texts: &mut Vec<String>) {
     at_least::add(ability, texts);
     attach_it::add(ability, texts);
     battalion::add(ability, texts);
-    r4h_champion::add(ability, texts);
     cast_free::add(ability, texts);
     cast_from_hand::add(ability, texts);
     choice_keywords::add(ability, texts);

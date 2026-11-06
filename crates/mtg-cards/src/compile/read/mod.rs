@@ -57,6 +57,7 @@ mod c8_kwq_abilities;
 mod c9_fight_double;
 mod card_grants;
 mod cast;
+mod champion;
 mod chance;
 mod changes;
 mod chapters;
@@ -180,6 +181,7 @@ mod w9d_exert;
 mod where_x;
 mod zone_moves;
 
+pub use champion::champion_line;
 pub use chance::{add_row as add_die_row, die_row, ends_in_roll, row_texts as die_row_texts};
 pub use chapters::block as chapter_block;
 pub use class::block as class_block;

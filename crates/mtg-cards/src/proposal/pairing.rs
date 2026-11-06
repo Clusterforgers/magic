@@ -196,6 +196,7 @@ impl<'a> Pairer<'a> {
         self.keywords();
         self.alt_keywords();
         self.equip_options();
+        self.champions();
         self.static_pairs();
         self.exact();
         self.blocks();
@@ -319,6 +320,24 @@ impl<'a> Pairer<'a> {
                 self.taken[later] = true;
                 self.slot_of[later] = Some(slot);
                 self.places[later] = Some(self.slots[slot].clause.span.start);
+            }
+        }
+    }
+
+    /// Champion: the trigger that exiles a creature or sacrifices the champion stands for the keyword line.
+    fn champions(&mut self) {
+        let abilities = self.abilities;
+        for (at, ability) in abilities.iter().enumerate() {
+            if self.taken[at] {
+                continue;
+            }
+            let Some(line) = crate::compile::champion_line(ability) else {
+                continue;
+            };
+            if let Some(slot) =
+                self.find_text(&[ClauseKind::Keyword, ClauseKind::Static], &[line], false)
+            {
+                self.settle(at, slot, ClauseState::Reads { ability: at });
             }
         }
     }

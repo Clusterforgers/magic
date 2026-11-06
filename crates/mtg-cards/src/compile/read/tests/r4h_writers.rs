@@ -1,10 +1,8 @@
 //! Goal: the writers of round 4 builder h word an ability as the card prints it, and only the data that means it.
 use super::*;
 
-fn written(json: &str, clause: &str) -> bool {
-    written_variants(&ability(json))
-        .iter()
-        .any(|wording| same_text(wording, clause))
+fn line(json: &str, clause: &str) -> bool {
+    crate::compile::champion_line(&ability(json)).is_some_and(|line| same_text(&line, clause))
 }
 
 fn champion(choices: &str, then: &str) -> String {
@@ -51,7 +49,7 @@ const SACRIFICE: &str = r#"{"Sacrifice":{"filter":["This"]}}"#;
 )]
 #[case::not_yours(r#"[{"Subtype":"Goblin"},"Other"]"#, "Champion a Goblin", false)]
 fn champion_line(#[case] choices: &str, #[case] clause: &str, #[case] reads: bool) {
-    assert_eq!(written(&champion(choices, SACRIFICE), clause), reads);
+    assert_eq!(line(&champion(choices, SACRIFICE), clause), reads);
 }
 
 fn equip(cost: &str, more: &str) -> String {
@@ -100,5 +98,5 @@ fn a_trigger_that_does_not_sacrifice_is_no_champion() {
         r#"[{"Subtype":"Goblin"},"Other",{"ControlledBy":"You"}]"#,
         "",
     );
-    assert!(!written(&json, "Champion a Goblin"));
+    assert!(!line(&json, "Champion a Goblin"));
 }

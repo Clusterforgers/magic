@@ -55,21 +55,15 @@ fn with_article(word: &str) -> String {
     format!("{article} {word}")
 }
 
-/// Adds the keyword line of a champion trigger.
-pub(super) fn add(ability: &Ability, texts: &mut Vec<String>) {
-    let Ok(value) = serde_json::to_value(ability) else {
-        return;
-    };
-    let Some(words) = words(&value) else {
-        return;
-    };
-    let Some((first, rest)) = words.split_first() else {
-        return;
-    };
+/// The keyword line of a champion trigger ("Champion a Goblin or Shaman"); `None` for any other ability.
+pub fn champion_line(ability: &Ability) -> Option<String> {
+    let value = serde_json::to_value(ability).ok()?;
+    let words = words(&value)?;
+    let (first, rest) = words.split_first()?;
     let mut line = format!("Champion {}", with_article(first));
     for word in rest {
         line.push_str(" or ");
         line.push_str(word);
     }
-    texts.push(line);
+    Some(line)
 }
