@@ -8,7 +8,8 @@ use super::effects_obj::duration;
 use super::valid::{selector_any, source_any, subject};
 use crate::forge::script::Params;
 
-const KEYS: [&str; 11] = [
+const KEYS: [&str; 12] = [
+    "ExecuteMode",
     "AlwaysReplace",
     "PreventionEffect",
     "DamageTarget",
@@ -52,9 +53,22 @@ fn chosen_source(word: &str) -> bool {
 
 /// The `Event$ DamageDone` keys all of which are understood, with the zone the line is active in.
 fn read_keys(p: &Params, static_line: bool) -> Tr<()> {
-    check_keys(p, "Replacement.DamageDone", &KEYS, |_, _| false)?;
+    // A line that stays on a permanent may hold while a condition does (a turn, a permanent present).
+    let mut keys = KEYS.to_vec();
+    if static_line {
+        keys.extend(super::condition::KEYS);
+        keys.push("PlayerTurn");
+    }
+    check_keys(p, "Replacement.DamageDone", &keys, |_, _| false)?;
     if p.has("DamageTarget") && !p.has("ReplaceWith") {
         return unmapped("key:Replacement.DamageDone.DamageTarget");
+    }
+    // The batch of damage is one event for each source or each recipient; the engine applies the replacement to each damage
+    // event, and the amounts add up the same.
+    if let Some(mode) = p.get("ExecuteMode")
+        && !matches!(mode, "PerSource" | "PerTarget")
+    {
+        return unmapped(format!("key:Replacement.DamageDone.ExecuteMode={mode}"));
     }
     let prevents = p.get("Prevent") == Some("True");
     let replaces = p.has("ReplaceWith");
@@ -110,9 +124,22 @@ pub fn static_prevention(ctx: &Ctx, p: &Params) -> Tr<Vec<Value>> {
         Some(name) => super::replacements_damage_by::by(ctx, p, name, you, false)?,
     };
     // A list of one player and one permanent word names disjoint recipients, so one replacement for each is exact.
+    let mut gates = Vec::new();
+    match p.get("PlayerTurn") {
+        None => {}
+        Some("True") => gates.push(json!("YourTurn")),
+        Some("False") => gates.push(json!({"Not": "YourTurn"})),
+        Some(other) => return unmapped(format!("key:Replacement.DamageDone.PlayerTurn={other}")),
+    }
+    gates.extend(super::condition::condition(ctx, p)?);
+    let condition = super::condition::single(gates);
     let mut out = Vec::new();
     for recipient in recipients(ctx, p.get("ValidTarget"))? {
-        out.push(static_replacement(ctx, p, recipient, &by)?);
+        let mut replacement = static_replacement(ctx, p, recipient, &by)?;
+        if let Some(found) = &condition {
+            replacement["Replacement"]["condition"] = found.clone();
+        }
+        out.push(replacement);
     }
     Ok(out)
 }

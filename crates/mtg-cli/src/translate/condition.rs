@@ -8,7 +8,7 @@ use super::valid::{cmp, defined, selector_any, selector_in};
 use crate::forge::script::Params;
 
 /// The keys this module reads.
-pub const KEYS: [&str; 11] = [
+pub const KEYS: [&str; 12] = [
     "IsPresent",
     "PresentDefined",
     "PresentZone",
@@ -18,6 +18,7 @@ pub const KEYS: [&str; 11] = [
     "PresentZone2",
     "PresentCompare2",
     "CheckSVar",
+    "CheckOnTriggeredCard",
     "SVarCompare",
     "Condition",
 ];
@@ -47,6 +48,24 @@ pub fn condition(ctx: &Ctx, p: &Params) -> Tr<Option<Value>> {
     all.extend(super::header::trigger_gates(p)?);
     all.extend(super::header::trigger_state(ctx, p)?);
     Ok(single(all))
+}
+
+/// `CheckOnTriggeredCard$ X GT1` of a trigger line: a count compared, whose words (`CardController`) name the card the
+/// trigger is about. The pattern is read first, because those words need it; `None` without the key.
+pub fn on_triggered_card(ctx: &Ctx, p: &Params) -> Tr<Option<Value>> {
+    let Some(check) = p.get("CheckOnTriggeredCard") else {
+        return Ok(None);
+    };
+    let Some((name, compare)) = check.split_once(' ') else {
+        return unmapped("key:Trigger.CheckOnTriggeredCard");
+    };
+    if p.has("CheckSVar") || p.has("SVarCompare") {
+        return unmapped("key:Trigger.CheckOnTriggeredCard");
+    }
+    let (op, right) = comparison(ctx, compare)?;
+    Ok(Some(
+        json!({"Compare": {"left": amount(ctx, name)?, "op": op, "right": right}}),
+    ))
 }
 
 /// `CheckSVar$` with its `SVarCompare$`: a count compared (at least 1 by default), `None` without the word.
@@ -146,7 +165,7 @@ fn counted(
 }
 
 /// The conditions together: none, the one, or all of them.
-fn single(mut all: Vec<Value>) -> Option<Value> {
+pub(super) fn single(mut all: Vec<Value>) -> Option<Value> {
     match all.len() {
         0 => None,
         1 => all.pop(),

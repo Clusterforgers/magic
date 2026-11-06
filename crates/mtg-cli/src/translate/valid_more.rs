@@ -60,7 +60,9 @@ pub fn property(ctx: &Ctx, prop: &str) -> Tr<Option<Vec<Value>>> {
         }
         _ => {}
     }
-    if let Some(zone) = prop.strip_prefix("inZone")
+    if let Some(zone) = prop
+        .strip_prefix("inZone")
+        .or_else(|| prop.strip_prefix("inRealZone"))
         && ZONES.contains(&zone)
     {
         return one(json!({"In": zone}));
@@ -143,6 +145,9 @@ fn player_word(ctx: &Ctx, word: &str) -> Tr<Value> {
         "DefendingPlayer" | "TriggeredDefendingPlayer" => Ok(json!("Defending")),
         "TargetedPlayer" => ctx.player_target(),
         // The player a damage trigger names (`ValidTarget$ Player`): the one the creatures are read for.
+        "CardController" => {
+            super::triggered::resolve(ctx.trigger.as_ref(), "TriggeredCardController")
+        }
         other if super::triggered::is_word(other) => {
             super::triggered::resolve(ctx.trigger.as_ref(), other)
         }

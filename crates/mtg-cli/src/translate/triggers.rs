@@ -9,7 +9,8 @@ use super::valid::selector_any;
 use crate::forge::script::Params;
 
 /// The keys every trigger line may carry besides its mode's own.
-const COMMON: [&str; 6] = [
+const COMMON: [&str; 7] = [
+    "ResolvedLimit",
     "ActivationLimit",
     "Mode",
     "Execute",
@@ -49,6 +50,10 @@ pub fn triggered(ctx: &mut Ctx, body: &str) -> Tr<Value> {
         pattern: super::triggered::key_of(&when),
         arrives: super::triggered::arrival(&when),
     });
+    let intervening = match super::condition::on_triggered_card(ctx, &all)? {
+        Some(found) => super::condition::single(intervening.into_iter().chain([found]).collect()),
+        None => intervening,
+    };
     let from = match p.get("TriggerZones") {
         None | Some("Battlefield") => None,
         Some(zone @ ("Graveyard" | "Hand" | "Exile" | "Library" | "Command")) => Some(zone),
@@ -63,7 +68,8 @@ pub fn triggered(ctx: &mut Ctx, body: &str) -> Tr<Value> {
     let about_a_player = when
         .as_object()
         .and_then(|map| map.values().next())
-        .is_some_and(|inner| inner.get("what").is_none());
+        .is_some_and(|inner| inner.get("what").is_none())
+        && !damages_an_object(&when);
     if about_a_player
         && json!(effects)
             .to_string()
@@ -97,10 +103,8 @@ pub fn triggered(ctx: &mut Ctx, body: &str) -> Tr<Value> {
     if let Some(condition) = intervening {
         ability["if"] = condition;
     }
-    match p.get("ActivationLimit") {
-        None => {}
-        Some("1") => ability["limit"] = json!("OncePerTurn"),
-        Some(other) => return unmapped(format!("key:Trigger.ActivationLimit={other}")),
+    if let Some(limit) = once_a_turn(&p)? {
+        ability["limit"] = limit;
     }
     if !ctx.targets.is_empty() {
         ability["targets"] = Value::Array(ctx.targets.clone());
@@ -115,6 +119,30 @@ pub fn triggered(ctx: &mut Ctx, body: &str) -> Tr<Value> {
         }
     }
     Ok(ability)
+}
+
+/// The limit a line states: `ActivationLimit$ 1` ("triggers only once each turn"), or `ResolvedLimit$ 1` ("do this only once
+/// each turn"), which limits what happens, not the triggering. The engine spends the limit as the ability triggers: the same
+/// unless the first one is stifled, which a limit of 1 cannot tell apart from one that resolved.
+fn once_a_turn(p: &Params) -> Tr<Option<Value>> {
+    let once = Some(json!("OncePerTurn"));
+    match (p.get("ActivationLimit"), p.get("ResolvedLimit")) {
+        (None, None) => Ok(None),
+        (Some("1"), None) | (None, Some("1")) => Ok(once),
+        (Some(other), _) if other != "1" => {
+            unmapped(format!("key:Trigger.ActivationLimit={other}"))
+        }
+        (_, Some(other)) => unmapped(format!("key:Trigger.ResolvedLimit={other}")),
+        (Some(_), None) => Ok(once),
+    }
+}
+
+/// Damage to a permanent: the event's subject is the permanent that was damaged (a player recipient is a player).
+fn damages_an_object(when: &Value) -> bool {
+    let Some(to) = when.get("DealsDamage").and_then(|inner| inner.get("to")) else {
+        return false;
+    };
+    to.get("Each").is_some() || matches!(to.as_str(), Some("This" | "Attached"))
 }
 
 /// `IsPresent$ Card.StrictlySelf | PresentZone$ Command` beside `TriggerZones$ Command` (an Eminence ability): the card is in

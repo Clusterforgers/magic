@@ -7,7 +7,9 @@ use super::ctx::{Ctx, Tr, unmapped};
 use crate::forge::script::Params;
 
 /// The modes whose events a spell or ability can cause, with the key that names the cause.
-const MODES: [(&str, &str); 7] = [
+const MODES: [(&str, &str); 9] = [
+    ("Taps", "ValidPlayer"),
+    ("CounterPlayerAddedAll", "ValidSource"),
     ("CounterAdded", "ValidSource"),
     ("CounterAddedOnce", "ValidSource"),
     ("Discarded", "ValidCause"),

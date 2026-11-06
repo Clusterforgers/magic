@@ -67,7 +67,11 @@ enum Word {
 /// The word's kind and whether it names that object's controller; none for a word this module does not know.
 fn kind(word: &str) -> Option<(Word, bool)> {
     Some(match word {
-        "TriggeredCard" | "TriggeredCardLKICopy" | "TriggeredNewCardLKICopy" => (Word::Card, false),
+        "TriggeredCard"
+        | "TriggeredCardLKICopy"
+        | "TriggeredNewCardLKICopy"
+        | "ReplacedCard"
+        | "ReplacedCardLKI" => (Word::Card, false),
         "TriggeredCardController" => (Word::Card, true),
         "TriggeredCardOwner" => (Word::Owner, true),
         "TriggeredActivator" => (Word::Activator, false),

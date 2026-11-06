@@ -49,8 +49,34 @@ fn ability_cast(ctx: &Ctx, p: &Params) -> Tr<Value> {
     let Some(word) = p.get("ValidSA") else {
         return unmapped("key:Trigger.AbilityCast.ValidSA-missing");
     };
-    activation_word(word, "AbilityCast")?;
-    activation(ctx, p)
+    // A loyalty ability is an activated ability of a planeswalker (CR 606.1): the source is a planeswalker, and no mana
+    // ability is one. `+OppCtrl` is an ability an opponent activates.
+    let loyalty = match word {
+        "Activated.Loyalty" => Some(false),
+        "Activated.Loyalty+OppCtrl" => Some(true),
+        _ => None,
+    };
+    let Some(opponent) = loyalty else {
+        activation_word(word, "AbilityCast")?;
+        return activation(ctx, p);
+    };
+    let mut found = activation(ctx, p)?;
+    let node = &mut found["Did"];
+    let walker = json!({"Type": "Planeswalker"});
+    match node.get_mut("what").and_then(Value::as_array_mut) {
+        Some(what) if !what.contains(&walker) => what.push(walker),
+        Some(_) => {}
+        None => node["what"] = json!([walker]),
+    }
+    if opponent {
+        if node.get("who").is_some() {
+            return unmapped(
+                "key:Trigger.AbilityCast.ValidSA=Activated.Loyalty+OppCtrl-and-player",
+            );
+        }
+        node["who"] = json!("Opponents");
+    }
+    Ok(found)
 }
 
 /// "Whenever you cast a spell or activate an ability": either event triggers it alone.

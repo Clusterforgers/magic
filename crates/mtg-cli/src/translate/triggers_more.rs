@@ -136,7 +136,7 @@ fn becomes_target(ctx: &Ctx, p: &Params) -> Tr<Value> {
     keys(
         p,
         "BecomesTarget",
-        &["ValidTarget", "ValidSource", "FirstTime"],
+        &["ValidTarget", "ValidSource", "FirstTime", "Valiant"],
     )?;
     // The pattern holds objects: a player that becomes a target is another event.
     if p.get("ValidTarget").is_some_and(|valid| {
@@ -152,17 +152,36 @@ fn becomes_target(ctx: &Ctx, p: &Params) -> Tr<Value> {
         Some(valid) => super::valid::source_any(ctx, valid)?,
         None => Vec::new(),
     };
-    // The turn's count of targetings counts every source, so only a line with no source word can ask for the first.
-    if p.get("FirstTime") == Some("True") && !by.is_empty() {
+    // The engine counts a turn's targetings of the object for the controller of the source when the pattern names one
+    // ("a spell or ability you control"), and for every source when it names none; any other source word cannot ask for
+    // the first.
+    let mine = by.len() == 2
+        && by.contains(&json!({"ControlledBy": "You"}))
+        && by
+            .iter()
+            .any(|pred| pred.get("AnyOf").is_some_and(only_what_targets));
+    let valiant = p.get("Valiant") == Some("True");
+    if (valiant || p.get("FirstTime") == Some("True")) && !by.is_empty() && !mine {
         return unmapped("key:Trigger.BecomesTarget.FirstTime-with-source");
     }
-    super::triggers::first_time(p, json!({"BecomesTarget": {"what": what, "by": by}}))
+    let pattern = json!({"BecomesTarget": {"what": what, "by": by}});
+    if valiant {
+        return Ok(json!({"Nth": {"event": pattern, "nth": 1}}));
+    }
+    super::triggers::first_time(p, pattern)
+}
+
+/// Whether the alternatives are every kind of source that targets (a spell, an activated or a triggered ability).
+fn only_what_targets(alternatives: &Value) -> bool {
+    *alternatives == json!(["Spell", {"Ability": "Activated"}, {"Ability": "Triggered"}])
 }
 
 /// `CounterAdded` and `CounterRemoved` of the kind `CounterType$` names.
 pub(super) fn counters(ctx: &Ctx, p: &Params, variant: &str) -> Tr<Value> {
-    keys(p, "Counter", &["ValidCard", "CounterType"])?;
-    let what = selector_any(ctx, p.get("ValidCard").unwrap_or("Permanent"))?;
+    keys(p, "Counter", &["ValidCard", "ValidObject", "CounterType"])?;
+    // `ValidObject$` is what a player puts counters on (`CounterPlayerAddedAll`).
+    let valid = p.get("ValidCard").or_else(|| p.get("ValidObject"));
+    let what = selector_any(ctx, valid.unwrap_or("Permanent"))?;
     let mut pattern = json!({ "what": what });
     if let Some(kind) = p.get("CounterType") {
         let Some(kind) = super::amount::counter_kind(kind) else {
