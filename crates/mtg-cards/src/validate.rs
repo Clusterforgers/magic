@@ -488,7 +488,7 @@ impl<'a> Walker<'a> {
             | Ref::Defending => {
                 self.expect(Kind::Player, want);
             }
-            Ref::This | Ref::Attached => self.expect(Kind::Object, want),
+            Ref::This | Ref::Attached | Ref::Granter => self.expect(Kind::Object, want),
             Ref::Remembered { on, .. } => {
                 self.reference(on, Kind::Object);
                 self.expect(Kind::Either, want);
@@ -2381,6 +2381,7 @@ impl Walker<'_> {
             | Ref::This
             | Ref::Dealer
             | Ref::Attached
+            | Ref::Granter
             | Ref::Paid
             | Ref::Arrived { .. }
             | Ref::Departed(_)

@@ -90,6 +90,9 @@ pub enum Ref {
     Against,
     /// What the source is attached to ("enchanted creature", "equipped creature").
     Attached,
+    /// The permanent whose static ability gave the source the ability being run ("this Equipment", "this Aura" in the
+    /// words the Equipment gives the creature); nobody for an ability the source has of its own, or once that permanent has left the battlefield.
+    Granter,
     /// The player the source is attached to ("enchanted player").
     AttachedPlayer,
     /// The monarch ("the monarch"); nobody while no player is the monarch.

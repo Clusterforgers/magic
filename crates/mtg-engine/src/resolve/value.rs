@@ -112,6 +112,8 @@ pub struct Scope<'a> {
     pub(crate) candidate: std::cell::Cell<Option<ObjectRef>>,
     /// The spell or ability that caused the events a trigger is being matched against (`TriggerPattern::Caused`).
     pub(crate) caused: Option<crate::triggers::CausedBy>,
+    /// The permanent whose static ability gave the running ability to its source (`Ref::Granter`).
+    pub(crate) granter: Option<ObjectId>,
 }
 
 /// The targets a spell being cast has chosen so far (CR 601.2c).
@@ -275,6 +277,7 @@ impl<'a> Scope<'a> {
             affected: None,
             candidate: std::cell::Cell::new(None),
             caused: None,
+            granter: None,
         }
     }
 
@@ -947,6 +950,13 @@ impl<'a> Scope<'a> {
             Ref::AttachedPlayer => state
                 .player_host_of(self.source.id)
                 .map(Target::Player)
+                .into_iter()
+                .collect(),
+            Ref::Granter => self
+                .granter
+                .and_then(|id| state.object(id))
+                .filter(|object| object.zone() == Zone::Battlefield)
+                .map(|object| Target::Object(object.reference()))
                 .into_iter()
                 .collect(),
             Ref::Monarch => state.monarch().map(Target::Player).into_iter().collect(),
