@@ -89,6 +89,9 @@ fn champion_exiles_another_creature_or_is_sacrificed(#[case] types: &str, #[case
             "when": {"ZoneChange": {"what": ["This"], "to": "Battlefield"}},
             "effects": [
                 {"Choose": {"from": {"Each": choices}, "count": {"min": 0, "max": 1}, "as": "champion"}},
+                {"If": {"condition": {"Compare": {
+                    "left": {"Count": [{"Is": "This"}, {"In": "Battlefield"}]}, "op": "Eq", "right": 0}},
+                    "then": [{"Exile": {"what": {"Bound": "champion"}}}]}},
                 {"Exile": {"what": {"Bound": "champion"}, "duration": "WhileSourceOnBattlefield"}},
                 {"If": {"condition": {"Not": "Performed"}, "then": [{"Sacrifice": {"filter": ["This"]}}]}}]}})]
     );
