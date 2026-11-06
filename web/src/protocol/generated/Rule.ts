@@ -183,7 +183,15 @@ countered?: boolean,
 /**
  * A card named in another zone is covered as the spell it becomes when cast, one zone change on (CR 400.7).
  */
-cast?: boolean, } } | "GraveyardCardsUntargetable" | { "CantLoseGame": { 
+cast?: boolean, } } | { "Replaces": { 
+/**
+ * The event it replaces.
+ */
+when: unknown, 
+/**
+ * What happens instead.
+ */
+by: unknown, } } | "GraveyardCardsUntargetable" | { "CantLoseGame": { 
 /**
  * The players who can't lose.
  */
