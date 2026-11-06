@@ -1,0 +1,56 @@
+{
+  "oracle_id": "5dc34e93-97e3-434b-9f12-f45c6d556f13",
+  "name": "Rampage of the Clans",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Rampage of the Clans",
+      "oracle_fingerprint": "efa6791bda3f38ac8b88c5932878db67",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Destroy": {
+                  "what": {
+                    "Each": [{ "AnyOf": [{ "Type": "Artifact" }, { "Type": "Enchantment" }] }]
+                  },
+                  "as": "destroyed"
+                }
+              },
+              {
+                "Together": {
+                  "effects": [
+                    {
+                      "RepeatEach": {
+                        "over": { "Bound": "destroyed" },
+                        "as": "each2",
+                        "effects": [
+                          {
+                            "CreateToken": {
+                              "who": { "ControllerOf": { "Departed": { "Bound": "each2" } } },
+                              "token": {
+                                "Custom": {
+                                  "name": "Centaur",
+                                  "colors": ["Green"],
+                                  "types": ["Creature"],
+                                  "subtypes": ["Centaur"],
+                                  "power": 3,
+                                  "toughness": 3
+                                }
+                              }
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

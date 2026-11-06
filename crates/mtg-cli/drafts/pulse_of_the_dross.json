@@ -1,0 +1,48 @@
+{
+  "oracle_id": "95846070-7b35-4689-a56c-5b32b6264013",
+  "name": "Pulse of the Dross",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Pulse of the Dross",
+      "oracle_fingerprint": "216b6c07588f92e8fc595912c5d4585c",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              {
+                "Choose": {
+                  "who": { "Target": 0 },
+                  "from": { "Each": [{ "In": "Hand" }, { "OwnedBy": { "Target": 0 } }] },
+                  "count": { "min": 3, "max": 3 },
+                  "as": "shown"
+                }
+              },
+              { "Reveal": { "what": { "Bound": "shown" } } },
+              {
+                "Discard": {
+                  "who": { "Target": 0 },
+                  "filter": [{ "Is": { "Bound": "shown" } }],
+                  "by": "You"
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "Count": [{ "OwnedBy": { "Target": 0 } }, { "In": "Hand" }] },
+                      "op": "Gt",
+                      "right": { "Count": [{ "OwnedBy": "You" }, { "In": "Hand" }] }
+                    }
+                  },
+                  "then": [{ "Move": { "what": "This", "to": "Hand" } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,104 @@
+{
+  "oracle_id": "813c19f5-3580-488d-9eee-c7a563def532",
+  "name": "Gideon Blackblade",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Gideon Blackblade",
+      "oracle_fingerprint": "197282424432811821fdb5d18265e5bf",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              { "SetPT": { "power": 4, "toughness": 4 } },
+              { "AddKeyword": "Indestructible" },
+              { "AddType": "Creature" },
+              { "AddSubtype": "Human" },
+              { "AddSubtype": "Soldier" }
+            ],
+            "condition": "YourTurn"
+          }
+        },
+        {
+          "Replacement": {
+            "when": { "Damage": { "to": "This" } },
+            "by": "Prevent",
+            "condition": "YourTurn"
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Plus": 1 },
+            "targets": [
+              {
+                "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }, "Other"] },
+                "bounds": { "min": 0, "max": 1 }
+              }
+            ],
+            "effects": [
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Target": 0 },
+                      "selector": [],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [
+                    {
+                      "Either": {
+                        "first": [
+                          {
+                            "Continuous": {
+                              "affected": { "Target": 0 },
+                              "mods": [{ "AddKeyword": "Vigilance" }],
+                              "duration": "UntilEndOfTurn"
+                            }
+                          }
+                        ],
+                        "second": [
+                          {
+                            "Either": {
+                              "first": [
+                                {
+                                  "Continuous": {
+                                    "affected": { "Target": 0 },
+                                    "mods": [{ "AddKeyword": "Lifelink" }],
+                                    "duration": "UntilEndOfTurn"
+                                  }
+                                }
+                              ],
+                              "second": [
+                                {
+                                  "Continuous": {
+                                    "affected": { "Target": 0 },
+                                    "mods": [{ "AddKeyword": "Indestructible" }],
+                                    "duration": "UntilEndOfTurn"
+                                  }
+                                }
+                              ]
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Minus": 6 },
+            "targets": [{ "what": { "Object": [{ "Not": { "Type": "Land" } }] } }],
+            "effects": [{ "Exile": { "what": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

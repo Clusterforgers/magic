@@ -1,0 +1,46 @@
+{
+  "oracle_id": "dac9bbfc-62e9-42a9-8ad6-2530ba47b990",
+  "name": "Kashi-Tribe Elite",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Kashi-Tribe Elite",
+      "oracle_fingerprint": "e5aac379b90cd5bdb4bff2c4f6dd3217",
+      "abilities": [
+        {
+          "Static": {
+            "affected": {
+              "Each": [
+                { "Subtype": "Snake" },
+                { "Supertype": "Legendary" },
+                { "ControlledBy": "You" }
+              ]
+            },
+            "mods": [{ "AddKeyword": "Shroud" }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "DealsDamage": {
+                "source": ["This"],
+                "to": { "Each": [{ "Type": "Creature" }] },
+                "combat": true
+              }
+            },
+            "effects": [
+              { "Tap": { "what": "Triggering" } },
+              {
+                "Continuous": {
+                  "affected": "Triggering",
+                  "mods": ["DoesntUntap"],
+                  "duration": "NextUntapStep"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

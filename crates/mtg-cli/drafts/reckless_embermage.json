@@ -12,8 +12,14 @@
             "cost": "{1}{R}",
             "targets": [{ "what": "AnyTarget" }],
             "effects": [
-              { "DealDamage": { "to": { "Target": 0 }, "amount": 1 } },
-              { "DealDamage": { "to": "This", "amount": 1 } }
+              {
+                "Together": {
+                  "effects": [
+                    { "DealDamage": { "to": { "Target": 0 }, "amount": 1 } },
+                    { "DealDamage": { "to": "This", "amount": 1 } }
+                  ]
+                }
+              }
             ]
           }
         }

@@ -1,0 +1,155 @@
+{
+  "oracle_id": "dd06c11c-c4fd-414e-ac63-5556f31491f5",
+  "name": "Rowan, Scholar of Sparks // Will, Scholar of Frost",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Rowan, Scholar of Sparks",
+      "oracle_fingerprint": "9f6367297bfb549939d5c016a7a88c1f",
+      "abilities": [
+        {
+          "CostModifier": {
+            "applies_to": [
+              "Spell",
+              { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] },
+              { "ControlledBy": "You" }
+            ],
+            "change": "Reduce",
+            "mana": "{1}"
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Plus": 1 },
+            "effects": [
+              {
+                "DealDamage": {
+                  "to": "Opponents",
+                  "amount": {
+                    "When": {
+                      "condition": {
+                        "Compare": {
+                          "left": { "Tallied": { "who": "You", "what": "Drawn" } },
+                          "op": "Ge",
+                          "right": 3
+                        }
+                      },
+                      "then": 3,
+                      "otherwise": 1
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Minus": 4 },
+            "effects": [
+              {
+                "CreateEmblem": {
+                  "abilities": [
+                    {
+                      "Triggered": {
+                        "when": {
+                          "SpellCast": {
+                            "what": [{ "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] }],
+                            "by": "You"
+                          }
+                        },
+                        "effects": [
+                          {
+                            "Pay": {
+                              "cost": "{2}",
+                              "paid": [
+                                { "CopySpell": { "what": "Triggering", "new_targets": true } }
+                              ]
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Will, Scholar of Frost",
+      "oracle_fingerprint": "014e6ce8462597da1da8a7506a55f527",
+      "abilities": [
+        {
+          "CostModifier": {
+            "applies_to": [
+              "Spell",
+              { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] },
+              { "ControlledBy": "You" }
+            ],
+            "change": "Reduce",
+            "mana": "{1}"
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Plus": 1 },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }] }, "bounds": { "min": 0, "max": 1 } }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "SetPT": { "power": 0, "toughness": 2 } }],
+                  "duration": "UntilYourNextTurn"
+                }
+              }
+            ]
+          }
+        },
+        { "Loyalty": { "cost": { "Minus": 3 }, "effects": [{ "Draw": { "count": 2 } }] } },
+        {
+          "Loyalty": {
+            "cost": { "Minus": 7 },
+            "targets": [{ "what": { "Object": [] }, "bounds": { "min": 0, "max": 5 } }],
+            "effects": [
+              { "Exile": { "what": { "Target": 0 }, "as": "exiled" } },
+              {
+                "Together": {
+                  "effects": [
+                    {
+                      "RepeatEach": {
+                        "over": { "Bound": "exiled" },
+                        "as": "each2",
+                        "effects": [
+                          {
+                            "CreateToken": {
+                              "who": { "ControllerOf": { "Departed": { "Bound": "each2" } } },
+                              "token": {
+                                "Custom": {
+                                  "name": "Elemental",
+                                  "colors": ["Blue", "Red"],
+                                  "types": ["Creature"],
+                                  "subtypes": ["Elemental"],
+                                  "power": 4,
+                                  "toughness": 4
+                                }
+                              }
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

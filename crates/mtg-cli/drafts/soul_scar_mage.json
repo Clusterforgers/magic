@@ -1,0 +1,30 @@
+{
+  "oracle_id": "009240f3-b7f8-4cbe-a3e9-974da66fb62c",
+  "name": "Soul-Scar Mage",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Soul-Scar Mage",
+      "oracle_fingerprint": "4e035b0f60df907e50bc5a01d3668bb0",
+      "abilities": [
+        { "Keyword": "Prowess" },
+        {
+          "Replacement": {
+            "when": {
+              "Damage": {
+                "to": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }] },
+                "source": [{ "ControlledBy": "You" }],
+                "combat": false
+              }
+            },
+            "by": {
+              "Instead": [
+                { "PutCounters": { "on": "Triggering", "counter": "-1/-1", "count": "Triggering" } }
+              ]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

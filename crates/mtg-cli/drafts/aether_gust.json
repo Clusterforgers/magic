@@ -1,0 +1,80 @@
+{
+  "oracle_id": "ecf1e378-d6bc-4ee0-800e-eb8a955d781f",
+  "name": "Aether Gust",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Aether Gust",
+      "oracle_fingerprint": "574ea35bb5c5674c151c40f80731900a",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    {
+                      "AnyOf": [
+                        {
+                          "Not": {
+                            "AnyOf": [{ "Not": { "In": "Stack" } }, { "Not": { "Color": "Red" } }]
+                          }
+                        },
+                        {
+                          "Not": {
+                            "AnyOf": [{ "Not": { "In": "Stack" } }, { "Not": { "Color": "Green" } }]
+                          }
+                        },
+                        {
+                          "Not": {
+                            "AnyOf": [
+                              { "Not": { "Color": "Red" } },
+                              { "Not": { "In": "Battlefield" } }
+                            ]
+                          }
+                        },
+                        {
+                          "Not": {
+                            "AnyOf": [
+                              { "Not": { "Color": "Green" } },
+                              { "Not": { "In": "Battlefield" } }
+                            ]
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "ChooseValue": {
+                  "who": { "OwnerOf": { "Target": 0 } },
+                  "kind": { "Options": ["Top", "Bottom"] },
+                  "as": "way"
+                }
+              },
+              {
+                "If": {
+                  "condition": { "ChosenWord": { "name": "way", "word": "Bottom" } },
+                  "then": [
+                    {
+                      "Move": {
+                        "what": { "Target": 0 },
+                        "to": { "Library": { "place": "Bottom" } }
+                      }
+                    }
+                  ],
+                  "otherwise": [
+                    { "Move": { "what": { "Target": 0 }, "to": { "Library": { "place": "Top" } } } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

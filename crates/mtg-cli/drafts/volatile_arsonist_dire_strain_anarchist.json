@@ -21,9 +21,15 @@
               }
             ],
             "effects": [
-              { "DealDamage": { "to": { "Target": 0 }, "amount": 1 } },
-              { "DealDamage": { "to": { "Target": 1 }, "amount": 1 } },
-              { "DealDamage": { "to": { "Target": 2 }, "amount": 1 } }
+              {
+                "Together": {
+                  "effects": [
+                    { "DealDamage": { "to": { "Target": 0 }, "amount": 1 } },
+                    { "DealDamage": { "to": { "Target": 1 }, "amount": 1 } },
+                    { "DealDamage": { "to": { "Target": 2 }, "amount": 1 } }
+                  ]
+                }
+              }
             ]
           }
         },
@@ -48,9 +54,15 @@
               }
             ],
             "effects": [
-              { "DealDamage": { "to": { "Target": 0 }, "amount": 2 } },
-              { "DealDamage": { "to": { "Target": 1 }, "amount": 2 } },
-              { "DealDamage": { "to": { "Target": 2 }, "amount": 2 } }
+              {
+                "Together": {
+                  "effects": [
+                    { "DealDamage": { "to": { "Target": 0 }, "amount": 2 } },
+                    { "DealDamage": { "to": { "Target": 1 }, "amount": 2 } },
+                    { "DealDamage": { "to": { "Target": 2 }, "amount": 2 } }
+                  ]
+                }
+              }
             ]
           }
         },

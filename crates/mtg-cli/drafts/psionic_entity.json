@@ -12,8 +12,14 @@
             "cost": ["Tap"],
             "targets": [{ "what": "AnyTarget" }],
             "effects": [
-              { "DealDamage": { "to": { "Target": 0 }, "amount": 2 } },
-              { "DealDamage": { "to": "This", "amount": 3 } }
+              {
+                "Together": {
+                  "effects": [
+                    { "DealDamage": { "to": { "Target": 0 }, "amount": 2 } },
+                    { "DealDamage": { "to": "This", "amount": 3 } }
+                  ]
+                }
+              }
             ]
           }
         }

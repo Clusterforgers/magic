@@ -1,7 +1,7 @@
 {
   "oracle_id": "76771cd1-6b74-49bb-9421-8845fe344567",
   "name": "Way of the Paradox",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Way of the Paradox",
@@ -58,9 +58,14 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 223, "end": 323 }
+          "Triggered": {
+            "when": {
+              "Did": { "action": "Activated", "who": "You", "what": [{ "Type": "Planeswalker" }] }
+            },
+            "effects": [
+              { "GainLife": { "amount": 1 } },
+              { "Rule": { "rule": { "AdditionalLandPlays": {} }, "duration": "UntilEndOfTurn" } }
+            ]
           }
         }
       ]

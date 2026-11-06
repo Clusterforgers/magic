@@ -1,0 +1,26 @@
+{
+  "oracle_id": "7ca54a23-f8eb-4982-b4ee-7392e2f2a1b3",
+  "name": "Martyrs of Korlis",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Martyrs of Korlis",
+      "oracle_fingerprint": "fd5baa6c2752577c0609bbd7f6b47c59",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Damage": { "to": "You", "source": [{ "Type": "Artifact" }] } },
+            "by": {
+              "Instead": [
+                { "DealDamage": { "source": "Dealer", "to": "This", "amount": "Triggering" } }
+              ]
+            },
+            "condition": {
+              "Compare": { "left": { "Count": ["This", "Untapped"] }, "op": "Ge", "right": 1 }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

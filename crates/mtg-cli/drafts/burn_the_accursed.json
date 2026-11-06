@@ -11,21 +11,27 @@
           "Spell": {
             "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
             "effects": [
-              { "DealDamage": { "to": { "Target": 0 }, "amount": 5 } },
               {
-                "Shield": {
-                  "when": {
-                    "ZoneChange": {
-                      "what": [{ "Is": { "Target": 0 } }, { "Type": "Creature" }],
-                      "from": "Battlefield",
-                      "to": "Graveyard"
-                    }
-                  },
-                  "by": { "MoveTo": "Exile" },
-                  "duration": "UntilEndOfTurn"
+                "Together": {
+                  "effects": [
+                    { "DealDamage": { "to": { "Target": 0 }, "amount": 5 } },
+                    {
+                      "Shield": {
+                        "when": {
+                          "ZoneChange": {
+                            "what": [{ "Is": { "Target": 0 } }, { "Type": "Creature" }],
+                            "from": "Battlefield",
+                            "to": "Graveyard"
+                          }
+                        },
+                        "by": { "MoveTo": "Exile" },
+                        "duration": "UntilEndOfTurn"
+                      }
+                    },
+                    { "DealDamage": { "to": { "ControllerOf": { "Target": 0 } }, "amount": 2 } }
+                  ]
                 }
-              },
-              { "DealDamage": { "to": { "ControllerOf": { "Target": 0 } }, "amount": 2 } }
+              }
             ]
           }
         }

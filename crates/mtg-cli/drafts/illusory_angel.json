@@ -1,0 +1,33 @@
+{
+  "oracle_id": "6ee32b5e-3b29-47ff-87f8-913ec05f6b2f",
+  "name": "Illusory Angel",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Illusory Angel",
+      "oracle_fingerprint": "52820f8e226417c05f7f39fec3240af1",
+      "abilities": [
+        {
+          "CastOnly": {
+            "condition": {
+              "Not": {
+                "Compare": {
+                  "left": {
+                    "Tally": {
+                      "event": "SpellCast",
+                      "who": "EachPlayer",
+                      "filter": [{ "ControlledBy": "You" }]
+                    }
+                  },
+                  "op": "Le",
+                  "right": 0
+                }
+              }
+            }
+          }
+        },
+        { "Keyword": "Flying" }
+      ]
+    }
+  ]
+}

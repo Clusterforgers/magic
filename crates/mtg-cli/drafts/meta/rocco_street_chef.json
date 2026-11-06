@@ -1,0 +1,49 @@
+{
+  "source": "forge",
+  "oracle_matches": true,
+  "lines": [
+    {
+      "face": 0,
+      "tag": "T",
+      "text": "At the beginning of your end step, each player exiles the top card of their library. Until your next end step, each player may play the card they exiled this way.",
+      "abilities": [
+        0
+      ],
+      "gap": null
+    },
+    {
+      "face": 0,
+      "tag": "T",
+      "text": "Whenever a player plays a land from exile or casts a spell from exile, you put a +1/+1 counter on target creature and create a Food token.",
+      "abilities": [],
+      "gap": "key:Trigger.LandPlayed.Origin"
+    },
+    {
+      "face": 0,
+      "tag": "T",
+      "text": "Whenever a player plays a land from exile or casts a spell from exile, you put a +1/+1 counter on target creature and create a Food token.",
+      "abilities": [],
+      "gap": "key:Trigger.LandPlayed.Origin"
+    }
+  ],
+  "proof": {
+    "marks": [
+      {
+        "face": 0,
+        "span": {
+          "start": 0,
+          "end": 162
+        },
+        "mark": "Auto"
+      },
+      {
+        "face": 0,
+        "span": {
+          "start": 163,
+          "end": 376
+        },
+        "mark": "ByHand"
+      }
+    ]
+  }
+}

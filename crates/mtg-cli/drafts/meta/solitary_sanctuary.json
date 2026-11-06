@@ -1,42 +1,4 @@
 {
   "source": "forge",
-  "oracle_matches": true,
-  "lines": [
-    {
-      "face": 0,
-      "tag": "T",
-      "text": "When CARDNAME enters, tap target creature an opponent controls and put a stun counter on it. (If a permanent with a stun counter would become untapped, remove one from it instead.)",
-      "abilities": [
-        0
-      ],
-      "gap": null
-    },
-    {
-      "face": 0,
-      "tag": "T",
-      "text": "Whenever you tap an untapped creature an opponent controls, put a +1/+1 counter on target creature you control.",
-      "abilities": [],
-      "gap": "key:Trigger.Tapped.ValidPlayer"
-    }
-  ],
-  "proof": {
-    "marks": [
-      {
-        "face": 0,
-        "span": {
-          "start": 0,
-          "end": 188
-        },
-        "mark": "Auto"
-      },
-      {
-        "face": 0,
-        "span": {
-          "start": 189,
-          "end": 300
-        },
-        "mark": "ByHand"
-      }
-    ]
-  }
+  "oracle_matches": true
 }

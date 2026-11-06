@@ -1,0 +1,15 @@
+{
+  "oracle_id": "e5106a2d-caca-4519-a1a1-eabaec4005df",
+  "name": "Thought Devourer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Thought Devourer",
+      "oracle_fingerprint": "1b2c0affe1839c6bfb1a356bbfc4cc9e",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Rule": { "rule": { "HandSizeChange": { "who": "You", "by": -4 } } } }
+      ]
+    }
+  ]
+}

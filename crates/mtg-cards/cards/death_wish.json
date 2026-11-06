@@ -1,0 +1,23 @@
+{
+  "oracle_id": "ff0ca1a4-da67-407c-a5c0-998a35eb7d8d",
+  "name": "Death Wish",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Death Wish",
+      "oracle_fingerprint": "bd680675c4457ff2e8ed9a6cb91fd07f",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "Search": { "zone": "Outside", "filter": [{ "OwnedBy": "You" }], "as": "found" } },
+              { "Move": { "what": { "Bound": "found" }, "to": "Hand" } },
+              { "LoseLife": { "amount": { "Half": { "of": { "Life": "You" }, "up": true } } } },
+              { "Exile": { "what": "This" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

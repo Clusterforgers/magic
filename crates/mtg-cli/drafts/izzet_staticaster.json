@@ -14,16 +14,22 @@
             "cost": ["Tap"],
             "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
             "effects": [
-              { "DealDamage": { "to": { "Target": 0 }, "amount": 1 } },
               {
-                "DealDamage": {
-                  "to": {
-                    "Each": [
-                      { "SharesName": { "Target": 0 } },
-                      { "Not": { "Is": { "Target": 0 } } }
-                    ]
-                  },
-                  "amount": 1
+                "Together": {
+                  "effects": [
+                    { "DealDamage": { "to": { "Target": 0 }, "amount": 1 } },
+                    {
+                      "DealDamage": {
+                        "to": {
+                          "Each": [
+                            { "SharesName": { "Target": 0 } },
+                            { "Not": { "Is": { "Target": 0 } } }
+                          ]
+                        },
+                        "amount": 1
+                      }
+                    }
+                  ]
                 }
               }
             ]

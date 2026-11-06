@@ -12,17 +12,23 @@
             "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
             "effects": [
               { "Rule": { "rule": { "DamageCantBePrevented": {} }, "duration": "UntilEndOfTurn" } },
-              { "DealDamage": { "to": { "Target": 0 }, "amount": "X" } },
               {
-                "DealDamage": {
-                  "to": {
-                    "Each": [
-                      { "Type": "Creature" },
-                      { "Not": { "Is": { "Target": 0 } } },
-                      { "ControlledBy": { "ControllerOf": { "Target": 0 } } }
-                    ]
-                  },
-                  "amount": 1
+                "Together": {
+                  "effects": [
+                    { "DealDamage": { "to": { "Target": 0 }, "amount": "X" } },
+                    {
+                      "DealDamage": {
+                        "to": {
+                          "Each": [
+                            { "Type": "Creature" },
+                            { "Not": { "Is": { "Target": 0 } } },
+                            { "ControlledBy": { "ControllerOf": { "Target": 0 } } }
+                          ]
+                        },
+                        "amount": 1
+                      }
+                    }
+                  ]
                 }
               }
             ]

@@ -1,0 +1,35 @@
+{
+  "oracle_id": "92f2a27d-3ec6-445c-9962-96b099f793ee",
+  "name": "Mercurial Kite",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mercurial Kite",
+      "oracle_fingerprint": "a3c3f1984b74d18426af2dceca38efb6",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": {
+              "DealsDamage": {
+                "source": ["This"],
+                "to": { "Each": [{ "Type": "Creature" }] },
+                "combat": true
+              }
+            },
+            "effects": [
+              { "Tap": { "what": "Triggering" } },
+              {
+                "Continuous": {
+                  "affected": "Triggering",
+                  "mods": ["DoesntUntap"],
+                  "duration": "NextUntapStep"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

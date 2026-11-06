@@ -1,0 +1,33 @@
+{
+  "oracle_id": "d2043685-f091-444f-9c35-d238afa24d7b",
+  "name": "Uncage the Menagerie",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Uncage the Menagerie",
+      "oracle_fingerprint": "226a15e89279e73beaeb9f3cd8ffada6",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Search": {
+                  "filter": [
+                    { "Type": "Creature" },
+                    { "Compare": { "stat": "ManaValue", "op": "Eq", "to": "X" } }
+                  ],
+                  "count": { "min": 0, "max": "X" },
+                  "reveal": true,
+                  "distinct": true,
+                  "as": "found"
+                }
+              },
+              { "Move": { "what": { "Bound": "found" }, "to": "Hand" } },
+              { "Shuffle": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

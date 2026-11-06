@@ -1,0 +1,41 @@
+{
+  "oracle_id": "c0abbed2-d213-47ef-8d6c-4a21efb9a55f",
+  "name": "Fae of Wishes // Granted",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Fae of Wishes",
+      "oracle_fingerprint": "c2d3593eb81ef6ba2d218a1ba212f4a9",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{1}{U}" }, { "Discard": { "count": 2 } }],
+            "effects": [{ "Move": { "what": "This", "to": "Hand" } }]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Granted",
+      "oracle_fingerprint": "25efc22e68d36d920b749e48da8f48dc",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Search": {
+                  "zone": "Outside",
+                  "filter": [{ "Not": { "Type": "Creature" } }, { "OwnedBy": "You" }],
+                  "reveal": true,
+                  "as": "found"
+                }
+              },
+              { "Move": { "what": { "Bound": "found" }, "to": "Hand" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

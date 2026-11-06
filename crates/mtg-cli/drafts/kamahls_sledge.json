@@ -11,18 +11,26 @@
           "Spell": {
             "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
             "effects": [
-              { "DealDamage": { "to": { "Target": 0 }, "amount": 4 } },
               {
-                "If": {
-                  "condition": {
-                    "Compare": {
-                      "left": { "Count": [{ "In": "Graveyard" }, { "OwnedBy": "You" }] },
-                      "op": "Ge",
-                      "right": 7
+                "Together": {
+                  "effects": [
+                    { "DealDamage": { "to": { "Target": 0 }, "amount": 4 } },
+                    {
+                      "If": {
+                        "condition": {
+                          "Compare": {
+                            "left": { "Count": [{ "In": "Graveyard" }, { "OwnedBy": "You" }] },
+                            "op": "Ge",
+                            "right": 7
+                          }
+                        },
+                        "then": [
+                          {
+                            "DealDamage": { "to": { "ControllerOf": { "Target": 0 } }, "amount": 4 }
+                          }
+                        ]
+                      }
                     }
-                  },
-                  "then": [
-                    { "DealDamage": { "to": { "ControllerOf": { "Target": 0 } }, "amount": 4 } }
                   ]
                 }
               }

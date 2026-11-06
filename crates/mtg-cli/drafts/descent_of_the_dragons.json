@@ -1,0 +1,56 @@
+{
+  "oracle_id": "d32c6f64-c4b0-4451-8986-a0abc1fc2bb3",
+  "name": "Descent of the Dragons",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Descent of the Dragons",
+      "oracle_fingerprint": "c5274250225e59297d60c08dcb9f60bf",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": { "Object": [{ "Type": "Creature" }] },
+                "bounds": { "min": 0, "max": { "Count": [{ "Type": "Creature" }] } }
+              }
+            ],
+            "effects": [
+              { "Destroy": { "what": { "Target": 0 }, "as": "destroyed" } },
+              {
+                "Together": {
+                  "effects": [
+                    {
+                      "RepeatEach": {
+                        "over": { "Bound": "destroyed" },
+                        "as": "each2",
+                        "effects": [
+                          {
+                            "CreateToken": {
+                              "who": { "ControllerOf": { "Departed": { "Bound": "each2" } } },
+                              "token": {
+                                "Custom": {
+                                  "name": "Dragon",
+                                  "colors": ["Red"],
+                                  "types": ["Creature"],
+                                  "subtypes": ["Dragon"],
+                                  "power": 4,
+                                  "toughness": 4,
+                                  "abilities": [{ "Keyword": "Flying" }]
+                                }
+                              }
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

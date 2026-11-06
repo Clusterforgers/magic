@@ -1,0 +1,63 @@
+{
+  "oracle_id": "565ba85c-bad8-4cbd-a2ff-b4384b886308",
+  "name": "Sudden Setback",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sudden Setback",
+      "oracle_fingerprint": "d4445c9623778bd88f73dd5a55b65694",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    {
+                      "AnyOf": [
+                        {
+                          "Not": {
+                            "AnyOf": [
+                              { "Not": { "Not": { "Type": "Land" } } },
+                              { "Not": { "In": "Battlefield" } }
+                            ]
+                          }
+                        },
+                        { "In": "Stack" }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "ChooseValue": {
+                  "who": { "OwnerOf": { "Target": 0 } },
+                  "kind": { "Options": ["Top", "Bottom"] },
+                  "as": "way"
+                }
+              },
+              {
+                "If": {
+                  "condition": { "ChosenWord": { "name": "way", "word": "Bottom" } },
+                  "then": [
+                    {
+                      "Move": {
+                        "what": { "Target": 0 },
+                        "to": { "Library": { "place": "Bottom" } }
+                      }
+                    }
+                  ],
+                  "otherwise": [
+                    { "Move": { "what": { "Target": 0 }, "to": { "Library": { "place": "Top" } } } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

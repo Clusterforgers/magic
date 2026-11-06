@@ -11,16 +11,22 @@
           "Spell": {
             "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
             "effects": [
-              { "DealDamage": { "to": { "Target": 0 }, "amount": 4 } },
               {
-                "DealDamage": {
-                  "to": {
-                    "Each": [
-                      { "SharesName": { "Target": 0 } },
-                      { "Not": { "Is": { "Target": 0 } } }
-                    ]
-                  },
-                  "amount": 4
+                "Together": {
+                  "effects": [
+                    { "DealDamage": { "to": { "Target": 0 }, "amount": 4 } },
+                    {
+                      "DealDamage": {
+                        "to": {
+                          "Each": [
+                            { "SharesName": { "Target": 0 } },
+                            { "Not": { "Is": { "Target": 0 } } }
+                          ]
+                        },
+                        "amount": 4
+                      }
+                    }
+                  ]
                 }
               }
             ]

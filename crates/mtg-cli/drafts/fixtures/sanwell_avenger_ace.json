@@ -1,0 +1,131 @@
+{
+  "object": "card",
+  "id": "70cb4359-8e57-4d1a-bf1f-c188555376ce",
+  "oracle_id": "4884ad6c-2290-44fc-ab9e-6e6b75b2d69a",
+  "multiverse_ids": [
+    588400
+  ],
+  "mtgo_id": 105218,
+  "tcgplayer_id": 452334,
+  "cardmarket_id": 682693,
+  "name": "Sanwell, Avenger Ace",
+  "lang": "en",
+  "released_at": "2022-11-18",
+  "uri": "https://api.scryfall.com/cards/70cb4359-8e57-4d1a-bf1f-c188555376ce",
+  "scryfall_uri": "https://scryfall.com/card/brc/5/sanwell-avenger-ace?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T05:15:24Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/7/0/70cb4359-8e57-4d1a-bf1f-c188555376ce.jpg?1783919724",
+    "normal": "https://cards.scryfall.io/normal/front/7/0/70cb4359-8e57-4d1a-bf1f-c188555376ce.jpg?1783919724",
+    "large": "https://cards.scryfall.io/large/front/7/0/70cb4359-8e57-4d1a-bf1f-c188555376ce.jpg?1783919724",
+    "png": "https://cards.scryfall.io/png/front/7/0/70cb4359-8e57-4d1a-bf1f-c188555376ce.png?1783919724",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/7/0/70cb4359-8e57-4d1a-bf1f-c188555376ce.jpg?1783919724",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/7/0/70cb4359-8e57-4d1a-bf1f-c188555376ce.jpg?1783919724",
+    "thumb": "https://cards.scryfall.io/thumb/front/7/0/70cb4359-8e57-4d1a-bf1f-c188555376ce.webp?1783919724",
+    "grid": "https://cards.scryfall.io/grid/front/7/0/70cb4359-8e57-4d1a-bf1f-c188555376ce.webp?1783919724",
+    "display": "https://cards.scryfall.io/display/front/7/0/70cb4359-8e57-4d1a-bf1f-c188555376ce.webp?1783919724",
+    "art": "https://cards.scryfall.io/art/front/7/0/70cb4359-8e57-4d1a-bf1f-c188555376ce.webp?1783919724",
+    "crop": "https://cards.scryfall.io/crop/front/7/0/70cb4359-8e57-4d1a-bf1f-c188555376ce.webp?1783919724",
+    "jpeg": "https://cards.scryfall.io/normal/front/7/0/70cb4359-8e57-4d1a-bf1f-c188555376ce.jpg?1783919724"
+  },
+  "mana_cost": "{1}{W}",
+  "cmc": 2.0,
+  "type_line": "Legendary Creature — Human Pilot",
+  "oracle_text": "As long as an artifact creature you control is attacking, prevent all damage that would be dealt to Sanwell.\nWhenever Sanwell becomes tapped, exile the top six cards of your library. You may cast a Vehicle or artifact creature spell from among them. Then put the rest on the bottom of your library in a random order.",
+  "power": "3",
+  "toughness": "1",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": [],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "81d56780-1efc-4487-9803-43d634ca13d0",
+  "set": "brc",
+  "set_name": "The Brothers' War Commander",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/81d56780-1efc-4487-9803-43d634ca13d0",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Abrc&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/brc?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/70cb4359-8e57-4d1a-bf1f-c188555376ce/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A4884ad6c-2290-44fc-ab9e-6e6b75b2d69a&unique=prints",
+  "collector_number": "5",
+  "digital": false,
+  "rarity": "rare",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Josu Hernaiz",
+  "artist_ids": [
+    "74246024-92b4-43d0-a5af-a3f9f2a35d5f"
+  ],
+  "illustration_id": "7072cefd-2b85-407e-a14e-bcaa24b42d37",
+  "border_color": "black",
+  "frame": "1997",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "edhrec_rank": 10880,
+  "prices": {
+    "usd": "0.35",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "0.18",
+    "eur_foil": null,
+    "tix": "0.35"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=588400&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DSanwell%252C%2BAvenger%2BAce",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DSanwell%252C%2BAvenger%2BAce",
+    "edhrec": "https://edhrec.com/route/?cc=Sanwell%2C+Avenger+Ace"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F452334%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=682693&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/105218?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

@@ -19,8 +19,14 @@
             "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
             "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
             "effects": [
-              { "DealDamage": { "to": { "Target": 0 }, "amount": 2 } },
-              { "DealDamage": { "to": { "ControllerOf": { "Target": 0 } }, "amount": 2 } }
+              {
+                "Together": {
+                  "effects": [
+                    { "DealDamage": { "to": { "Target": 0 }, "amount": 2 } },
+                    { "DealDamage": { "to": { "ControllerOf": { "Target": 0 } }, "amount": 2 } }
+                  ]
+                }
+              }
             ]
           }
         }

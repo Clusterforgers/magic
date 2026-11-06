@@ -1,0 +1,127 @@
+{
+  "object": "card",
+  "id": "3c46d040-58c2-4f7a-8b66-fea33fcb0e11",
+  "oracle_id": "fad1562d-0ab9-4a3f-b80a-476d8132f66d",
+  "multiverse_ids": [
+    3926
+  ],
+  "tcgplayer_id": 2276,
+  "cardmarket_id": 9476,
+  "name": "Mind Bomb",
+  "lang": "en",
+  "released_at": "1997-03-24",
+  "uri": "https://api.scryfall.com/cards/3c46d040-58c2-4f7a-8b66-fea33fcb0e11",
+  "scryfall_uri": "https://scryfall.com/card/5ed/105/mind-bomb?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T12:49:05Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/3/c/3c46d040-58c2-4f7a-8b66-fea33fcb0e11.jpg?1783946945",
+    "normal": "https://cards.scryfall.io/normal/front/3/c/3c46d040-58c2-4f7a-8b66-fea33fcb0e11.jpg?1783946945",
+    "large": "https://cards.scryfall.io/large/front/3/c/3c46d040-58c2-4f7a-8b66-fea33fcb0e11.jpg?1783946945",
+    "png": "https://cards.scryfall.io/png/front/3/c/3c46d040-58c2-4f7a-8b66-fea33fcb0e11.png?1783946945",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/3/c/3c46d040-58c2-4f7a-8b66-fea33fcb0e11.jpg?1783946945",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/3/c/3c46d040-58c2-4f7a-8b66-fea33fcb0e11.jpg?1783946945",
+    "thumb": "https://cards.scryfall.io/thumb/front/3/c/3c46d040-58c2-4f7a-8b66-fea33fcb0e11.webp?1783946945",
+    "grid": "https://cards.scryfall.io/grid/front/3/c/3c46d040-58c2-4f7a-8b66-fea33fcb0e11.webp?1783946945",
+    "display": "https://cards.scryfall.io/display/front/3/c/3c46d040-58c2-4f7a-8b66-fea33fcb0e11.webp?1783946945",
+    "art": "https://cards.scryfall.io/art/front/3/c/3c46d040-58c2-4f7a-8b66-fea33fcb0e11.webp?1783946945",
+    "crop": "https://cards.scryfall.io/crop/front/3/c/3c46d040-58c2-4f7a-8b66-fea33fcb0e11.webp?1783946945",
+    "jpeg": "https://cards.scryfall.io/normal/front/3/c/3c46d040-58c2-4f7a-8b66-fea33fcb0e11.jpg?1783946945"
+  },
+  "mana_cost": "{U}",
+  "cmc": 1.0,
+  "type_line": "Sorcery",
+  "oracle_text": "Each player may discard up to three cards. Mind Bomb deals damage to each player equal to 3 minus the number of cards they discarded this way.",
+  "colors": [
+    "U"
+  ],
+  "color_identity": [
+    "U"
+  ],
+  "keywords": [],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "legal",
+    "premodern": "legal",
+    "predh": "legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": true,
+  "variation": false,
+  "set_id": "5afd2f4b-8309-4f45-a2b2-3785018474cb",
+  "set": "5ed",
+  "set_name": "Fifth Edition",
+  "set_type": "core",
+  "set_uri": "https://api.scryfall.com/sets/5afd2f4b-8309-4f45-a2b2-3785018474cb",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3A5ed&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/5ed?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/3c46d040-58c2-4f7a-8b66-fea33fcb0e11/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Afad1562d-0ab9-4a3f-b80a-476d8132f66d&unique=prints",
+  "collector_number": "105",
+  "digital": false,
+  "rarity": "uncommon",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Mark Tedin",
+  "artist_ids": [
+    "9ee9a9cc-c09e-486f-918b-69f80cbc4188"
+  ],
+  "illustration_id": "2a4288cc-ac34-46ed-be0f-2fda3bcc72e6",
+  "border_color": "white",
+  "frame": "1997",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 18108,
+  "prices": {
+    "usd": "0.42",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "0.21",
+    "eur_foil": null,
+    "tix": null
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=3926&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DMind%2BBomb",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DMind%2BBomb",
+    "edhrec": "https://edhrec.com/route/?cc=Mind+Bomb"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F2276%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=9476&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards?affiliate_id=scryfall&data%5Bsearch%5D=Mind+Bomb&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

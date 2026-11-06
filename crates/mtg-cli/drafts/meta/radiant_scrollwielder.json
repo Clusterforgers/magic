@@ -1,42 +1,4 @@
 {
   "source": "forge",
-  "oracle_matches": true,
-  "lines": [
-    {
-      "face": 0,
-      "tag": "T",
-      "text": "At the beginning of your upkeep, exile an instant or sorcery card at random from your graveyard. You may cast it this turn. If a spell cast this way would be put into your graveyard, exile it instead.",
-      "abilities": [],
-      "gap": "key:ChangeZone.Choose.DefinedPlayer"
-    },
-    {
-      "face": 0,
-      "tag": "S",
-      "text": "Instant and sorcery spells you control have lifelink.",
-      "abilities": [
-        0
-      ],
-      "gap": null
-    }
-  ],
-  "proof": {
-    "marks": [
-      {
-        "face": 0,
-        "span": {
-          "start": 0,
-          "end": 53
-        },
-        "mark": "Auto"
-      },
-      {
-        "face": 0,
-        "span": {
-          "start": 54,
-          "end": 254
-        },
-        "mark": "ByHand"
-      }
-    ]
-  }
+  "oracle_matches": true
 }

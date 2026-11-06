@@ -1,0 +1,43 @@
+{
+  "oracle_id": "61b6b1d1-4350-41c1-ac47-835b2831f24a",
+  "name": "Jeskai Revelation",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Jeskai Revelation",
+      "oracle_fingerprint": "a93c74e8362b6c77efcbfd9793396c67",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "AnyOf": [{ "In": "Battlefield" }, { "In": "Stack" }] }] } },
+              { "what": "AnyTarget" }
+            ],
+            "effects": [
+              { "Move": { "what": { "Target": 0 }, "to": "Hand" } },
+              { "DealDamage": { "to": { "Target": 1 }, "amount": 4 } },
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Monk",
+                      "colors": ["White"],
+                      "types": ["Creature"],
+                      "subtypes": ["Monk"],
+                      "power": 1,
+                      "toughness": 1,
+                      "abilities": [{ "Keyword": "Prowess" }]
+                    }
+                  },
+                  "count": 2
+                }
+              },
+              { "Draw": { "count": 2 } },
+              { "GainLife": { "amount": 4 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

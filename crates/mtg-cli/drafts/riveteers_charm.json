@@ -1,0 +1,87 @@
+{
+  "oracle_id": "54e1b7f3-096a-4eb0-bcce-cce036d6cbe5",
+  "name": "Riveteers Charm",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Riveteers Charm",
+      "oracle_fingerprint": "47b0be159e83021aa326eb5ce9dc8917",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Modal": {
+                  "modes": [
+                    {
+                      "targets": [{ "what": "Opponent" }],
+                      "effects": [
+                        {
+                          "Sacrifice": {
+                            "who": { "Target": 0 },
+                            "filter": [
+                              { "AnyOf": [{ "Type": "Creature" }, { "Type": "Planeswalker" }] },
+                              {
+                                "Compare": {
+                                  "stat": "ManaValue",
+                                  "op": "Eq",
+                                  "to": {
+                                    "Greatest": {
+                                      "of": [
+                                        {
+                                          "AnyOf": [
+                                            { "Type": "Creature" },
+                                            { "Type": "Planeswalker" }
+                                          ]
+                                        },
+                                        { "ControlledBy": { "Target": 0 } }
+                                      ],
+                                      "stat": "ManaValue"
+                                    }
+                                  }
+                                }
+                              }
+                            ]
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "effects": [
+                        { "ExileTop": { "count": 3, "as": "exiled" } },
+                        {
+                          "Rule": {
+                            "rule": {
+                              "MayCast": {
+                                "from": "Exile",
+                                "only": { "Bound": "exiled" },
+                                "play": true
+                              }
+                            },
+                            "duration": "UntilYourNextEndStep"
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "targets": [{ "what": "Player" }],
+                      "effects": [
+                        {
+                          "Exile": {
+                            "what": {
+                              "Each": [{ "In": "Graveyard" }, { "OwnedBy": { "Target": 0 } }]
+                            }
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,30 @@
+{
+  "oracle_id": "93637599-d9b4-4f7e-a5c0-5a92656e941e",
+  "name": "Yasmin Khan",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Yasmin Khan",
+      "oracle_fingerprint": "5895643ffa6e3942321a77257d9ff985",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [
+              { "ExileTop": { "as": "exiled" } },
+              {
+                "Rule": {
+                  "rule": {
+                    "MayCast": { "from": "Exile", "only": { "Bound": "exiled" }, "play": true }
+                  },
+                  "duration": "UntilYourNextEndStep"
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": "DoctorsCompanion" }
+      ]
+    }
+  ]
+}

@@ -1,7 +1,7 @@
 {
   "oracle_id": "176f5ba8-6e7b-4234-a298-b6164f51656f",
   "name": "Inti, Seneschal of the Sun",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Inti, Seneschal of the Sun",
@@ -39,9 +39,19 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 144, "end": 268 }
+          "Triggered": {
+            "when": { "Batch": { "Discarded": { "by": "You" } } },
+            "effects": [
+              { "ExileTop": { "as": "exiled" } },
+              {
+                "Rule": {
+                  "rule": {
+                    "MayCast": { "from": "Exile", "only": { "Bound": "exiled" }, "play": true }
+                  },
+                  "duration": "UntilYourNextEndStep"
+                }
+              }
+            ]
           }
         }
       ]

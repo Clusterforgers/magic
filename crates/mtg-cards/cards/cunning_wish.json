@@ -1,0 +1,29 @@
+{
+  "oracle_id": "bdf80a55-b524-4d17-9be8-a0005403a0e7",
+  "name": "Cunning Wish",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Cunning Wish",
+      "oracle_fingerprint": "00e431bec7843b36a805043ad630e3b8",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Search": {
+                  "zone": "Outside",
+                  "filter": [{ "Type": "Instant" }, { "OwnedBy": "You" }],
+                  "reveal": true,
+                  "as": "found"
+                }
+              },
+              { "Move": { "what": { "Bound": "found" }, "to": "Hand" } },
+              { "Exile": { "what": "This" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

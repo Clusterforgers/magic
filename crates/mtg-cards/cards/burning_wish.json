@@ -1,0 +1,29 @@
+{
+  "oracle_id": "13a884b5-8970-4d71-9082-a8b6c8db9a01",
+  "name": "Burning Wish",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Burning Wish",
+      "oracle_fingerprint": "a33f46d61e148f01aa88c6555d65189c",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Search": {
+                  "zone": "Outside",
+                  "filter": [{ "Type": "Sorcery" }, { "OwnedBy": "You" }],
+                  "reveal": true,
+                  "as": "found"
+                }
+              },
+              { "Move": { "what": { "Bound": "found" }, "to": "Hand" } },
+              { "Exile": { "what": "This" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

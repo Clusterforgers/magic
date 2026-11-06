@@ -1,0 +1,130 @@
+{
+  "object": "card",
+  "id": "315b5a40-5566-4b08-8f2b-1e171aeb4b2d",
+  "oracle_id": "f497e9a5-0ad3-4aec-8422-14be8e0dba4c",
+  "multiverse_ids": [],
+  "name": "Mjölnir, Storm Hammer",
+  "lang": "en",
+  "released_at": "2026-11-02",
+  "uri": "https://api.scryfall.com/cards/315b5a40-5566-4b08-8f2b-1e171aeb4b2d",
+  "scryfall_uri": "https://scryfall.com/card/slc/62/mj%C3%B6lnir-storm-hammer?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-10-16T12:39:34Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/3/1/315b5a40-5566-4b08-8f2b-1e171aeb4b2d.jpg?1792154374",
+    "normal": "https://cards.scryfall.io/normal/front/3/1/315b5a40-5566-4b08-8f2b-1e171aeb4b2d.jpg?1792154374",
+    "large": "https://cards.scryfall.io/large/front/3/1/315b5a40-5566-4b08-8f2b-1e171aeb4b2d.jpg?1792154374",
+    "png": "https://cards.scryfall.io/png/front/3/1/315b5a40-5566-4b08-8f2b-1e171aeb4b2d.png?1792154374",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/3/1/315b5a40-5566-4b08-8f2b-1e171aeb4b2d.jpg?1792154374",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/3/1/315b5a40-5566-4b08-8f2b-1e171aeb4b2d.jpg?1792154374",
+    "thumb": "https://cards.scryfall.io/thumb/front/3/1/315b5a40-5566-4b08-8f2b-1e171aeb4b2d.webp?1792154374",
+    "grid": "https://cards.scryfall.io/grid/front/3/1/315b5a40-5566-4b08-8f2b-1e171aeb4b2d.webp?1792154374",
+    "display": "https://cards.scryfall.io/display/front/3/1/315b5a40-5566-4b08-8f2b-1e171aeb4b2d.webp?1792154374",
+    "art": "https://cards.scryfall.io/art/front/3/1/315b5a40-5566-4b08-8f2b-1e171aeb4b2d.webp?1792154374",
+    "crop": "https://cards.scryfall.io/crop/front/3/1/315b5a40-5566-4b08-8f2b-1e171aeb4b2d.webp?1792154374",
+    "jpeg": "https://cards.scryfall.io/normal/front/3/1/315b5a40-5566-4b08-8f2b-1e171aeb4b2d.jpg?1792154374"
+  },
+  "mana_cost": "{4}",
+  "cmc": 4.0,
+  "type_line": "Legendary Artifact — Equipment",
+  "oracle_text": "When Mjölnir enters, attach it to target legendary creature you control.\nWhenever equipped creature attacks, tap target creature defending player controls and put a stun counter on it. Then Mjölnir deals damage to each opponent equal to the number of tapped creatures that opponent controls.\nEquip {4}",
+  "colors": [],
+  "color_identity": [],
+  "keywords": [
+    "Equip"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": true,
+  "variation": false,
+  "set_id": "8224dce1-ca9c-45af-ac77-78bfc6042ae2",
+  "set": "slc",
+  "set_name": "Secret Lair Countdown",
+  "set_type": "box",
+  "set_uri": "https://api.scryfall.com/sets/8224dce1-ca9c-45af-ac77-78bfc6042ae2",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Aslc&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/slc?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/315b5a40-5566-4b08-8f2b-1e171aeb4b2d/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Af497e9a5-0ad3-4aec-8422-14be8e0dba4c&unique=prints",
+  "collector_number": "62",
+  "digital": false,
+  "rarity": "rare",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Jeffrey Alan Love",
+  "artist_ids": [
+    "0440370d-9463-43c3-8847-0ecba13b9179"
+  ],
+  "illustration_id": "1945d158-5c3a-4a55-aa11-547a82e7cba6",
+  "border_color": "borderless",
+  "frame": "2015",
+  "frame_effects": [
+    "inverted",
+    "legendary"
+  ],
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "promo_types": [
+    "universesbeyond"
+  ],
+  "edhrec_rank": 3225,
+  "penny_rank": 15132,
+  "prices": {
+    "usd": null,
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": null,
+    "eur_foil": null,
+    "tix": null
+  },
+  "related_uris": {
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DMj%25C3%25B6lnir%252C%2BStorm%2BHammer",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DMj%25C3%25B6lnir%252C%2BStorm%2BHammer",
+    "edhrec": "https://edhrec.com/route/?cc=Mj%C3%B6lnir%2C+Storm+Hammer"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fmagic%2Fproduct%3FproductLineName%3Dmagic%26q%3DMj%25C3%25B6lnir%252C%2BStorm%2BHammer%26view%3Dgrid",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products/Search?referrer=scryfall&searchString=Mj%C3%B6lnir%2C+Storm+Hammer&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards?affiliate_id=scryfall&data%5Bsearch%5D=Mj%C3%B6lnir%2C+Storm+Hammer&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

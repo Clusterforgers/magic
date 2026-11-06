@@ -1,0 +1,37 @@
+{
+  "oracle_id": "07e5f59e-3a98-4e01-a368-0be60e0463ba",
+  "name": "Acquisitions Expert",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Acquisitions Expert",
+      "oracle_fingerprint": "de0f95b5718d69fbe072604a31b8df69",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              {
+                "Choose": {
+                  "who": { "Target": 0 },
+                  "from": { "Each": [{ "In": "Hand" }, { "OwnedBy": { "Target": 0 } }] },
+                  "count": { "min": { "Party": "You" }, "max": { "Party": "You" } },
+                  "as": "shown"
+                }
+              },
+              { "Reveal": { "what": { "Bound": "shown" } } },
+              {
+                "Discard": {
+                  "who": { "Target": 0 },
+                  "filter": [{ "Is": { "Bound": "shown" } }],
+                  "by": "You"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

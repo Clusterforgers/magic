@@ -1,0 +1,36 @@
+{
+  "oracle_id": "2dc6da5d-c4d1-4f2c-8f46-11a935bc0044",
+  "name": "Blackmail",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Blackmail",
+      "oracle_fingerprint": "d642f930bd6ac68c08c2c769aee8211a",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              {
+                "Choose": {
+                  "who": { "Target": 0 },
+                  "from": { "Each": [{ "In": "Hand" }, { "OwnedBy": { "Target": 0 } }] },
+                  "count": { "min": 3, "max": 3 },
+                  "as": "shown"
+                }
+              },
+              { "Reveal": { "what": { "Bound": "shown" } } },
+              {
+                "Discard": {
+                  "who": { "Target": 0 },
+                  "filter": [{ "Is": { "Bound": "shown" } }],
+                  "by": "You"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,42 +1,4 @@
 {
   "source": "forge",
-  "oracle_matches": true,
-  "lines": [
-    {
-      "face": 0,
-      "tag": "T",
-      "text": "Whenever you attack, you may discard a card. When you do, put a +1/+1 counter on target attacking creature. It gains trample until end of turn.",
-      "abilities": [
-        0
-      ],
-      "gap": null
-    },
-    {
-      "face": 0,
-      "tag": "T",
-      "text": "Whenever you discard one or more cards, exile the top card of your library. You may play that card until your next end step.",
-      "abilities": [],
-      "gap": "duration:UntilYourNextEndStep"
-    }
-  ],
-  "proof": {
-    "marks": [
-      {
-        "face": 0,
-        "span": {
-          "start": 0,
-          "end": 143
-        },
-        "mark": "Auto"
-      },
-      {
-        "face": 0,
-        "span": {
-          "start": 144,
-          "end": 268
-        },
-        "mark": "ByHand"
-      }
-    ]
-  }
+  "oracle_matches": true
 }

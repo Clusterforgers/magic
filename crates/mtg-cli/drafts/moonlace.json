@@ -1,0 +1,29 @@
+{
+  "oracle_id": "52d4dc8a-2799-4b4e-9c20-f14bb75c2279",
+  "name": "Moonlace",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Moonlace",
+      "oracle_fingerprint": "758af2b2bf1c79771e9c9413066d9dcc",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "AnyOf": [{ "In": "Stack" }, { "In": "Battlefield" }] }] } }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "SetColors": [] }],
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

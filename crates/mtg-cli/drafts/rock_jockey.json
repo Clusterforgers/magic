@@ -1,0 +1,40 @@
+{
+  "oracle_id": "09fff6a3-6a54-4101-a587-55d7113b9639",
+  "name": "Rock Jockey",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Rock Jockey",
+      "oracle_fingerprint": "57658fe20082f7cee86e0dc53a883468",
+      "abilities": [
+        {
+          "CastOnly": {
+            "condition": {
+              "Not": {
+                "Compare": {
+                  "left": { "Tallied": { "who": "You", "what": "LandsPlayed" } },
+                  "op": "Ge",
+                  "right": 1
+                }
+              }
+            }
+          }
+        },
+        {
+          "Rule": {
+            "rule": { "Cant": { "who": "You", "action": "PlayLand" } },
+            "condition": {
+              "Compare": {
+                "left": {
+                  "Tally": { "event": "SpellCast", "who": "EachPlayer", "filter": ["This"] }
+                },
+                "op": "Ge",
+                "right": 1
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}
