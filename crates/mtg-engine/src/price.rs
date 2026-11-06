@@ -411,6 +411,7 @@ mod tests {
             Price::of(&cost(json)),
             Ok(Price {
                 tap,
+                untap: false,
                 leaves: if sacrifice {
                     Leaves::Sacrificed
                 } else {

@@ -70,6 +70,23 @@ fn a_reinforce_line_is_written_for_the_ability_it_means(
     );
 }
 
+#[rstest]
+#[case::any_number("A deck can have any number of cards named ~.", true)]
+#[case::up_to_seven("A deck can have up to seven cards named ~.", false)]
+#[case::another_name("A deck can have any number of cards named Island.", false)]
+fn the_deck_rule_reads_and_writes_back(#[case] text: &str, #[case] reads: bool) {
+    let read = clause(text, ClauseKind::Static, false);
+    let rule = ability(r#"{"Rule":{"rule":"AnyNumberInDeck"}}"#);
+    assert_eq!(read.as_ref() == Some(&rule), reads, "{read:?}");
+    if reads {
+        assert!(
+            written_variants(&rule)
+                .iter()
+                .any(|written| same_text(written, text))
+        );
+    }
+}
+
 fn forecast(condition: &str, cost: &str, more: &str) -> String {
     format!(
         r#"{{"Activated":{{"condition":{condition},"cost":{cost},"effects":[{{"Continuous":{{"affected":{{"Target":0}},"duration":"UntilEndOfTurn","mods":[{{"ModifyPT":{{"power":1,"toughness":1}}}}]}}}}],{more}"targets":[{{"what":{{"Object":[{{"Type":"Creature"}}]}}}}]}}}}"#

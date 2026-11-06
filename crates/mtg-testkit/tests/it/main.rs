@@ -426,6 +426,7 @@ mod r4a_tribute;
 mod r4b_dig;
 mod r4b_skip;
 mod r4f_stack_move;
+mod r5g;
 mod r6q1_face_down_cost;
 mod r7p3_next_spell;
 mod r8p2_enters;
