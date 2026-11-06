@@ -180,6 +180,12 @@ pub fn player_amount(head: &str, what: &str, who: &Value) -> Option<Tr<Value>> {
         ("PlayerCountPropertyYou", "LifeLostThisTurn") => tallied("LifeLost"),
         ("PlayerCountPropertyYou", "LandsPlayed") => tallied("LandsPlayed"),
         ("PlayerCountPropertyYou", "SacrificedThisTurn") => tallied("Sacrificed"),
+        // The creatures that attacked the player in this combat: one or more means the player has been attacked.
+        ("PlayerCountPropertyYou", "HasPropertyBeenAttackedThisCombat") => Ok(json!({"Tally": {
+            "event": "Attacked",
+            "who": "EachPlayer",
+            "filter": [{"DidThisTurn": {"event": "Attacked", "to": who, "combat": true}}],
+        }})),
         _ => return None,
     })
 }

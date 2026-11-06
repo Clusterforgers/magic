@@ -201,6 +201,11 @@ fn event_amount(ctx: &Ctx, expression: &str) -> Tr<Option<Value>> {
             };
         }
         "TriggerObjectsAttackers" | "TriggeredDefendingPlayer" => return attacks(ctx, head, what),
+        "DungeonsCompleted" if what == "Amount" => {
+            return Ok(Some(
+                json!({"Tallied": {"who": "You", "what": "DungeonsCompleted"}}),
+            ));
+        }
         "PlayerCountOpponents" | "PlayerCountRegisteredOpponents" | "PlayerCountPlayers" => {
             let who = if head == "PlayerCountPlayers" {
                 "EachPlayer"

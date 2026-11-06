@@ -28,6 +28,11 @@ pub(super) fn move_object(
         return Err(invalid(format!("zone {to:?} does not exist")));
     }
     let (was_creature, w14b_phyrexian) = w14b_dying_kind(state, id, to);
+    let left_nonland = state
+        .object(id)
+        .is_some_and(|object| object.zone() == Zone::Battlefield)
+        && crate::characteristics::characteristics(state, id)
+            .is_some_and(|chars| !chars.types.contains(CardType::Land));
     log_death(state, id, to);
     // A permanent that enters takes the next timestamp, which its static abilities carry (CR 613.7).
     let timestamp = state.next_timestamp;
@@ -118,6 +123,9 @@ pub(super) fn move_object(
         state.tally_object(entered, None, Tally::Entered);
     }
     w21a_tally_graveyards(state, (from, to), (owner, controlled_by), entered);
+    if left_nonland && to != Zone::Battlefield {
+        state.tally(controlled_by, Tally::NonlandLeft);
+    }
     if from == Zone::Battlefield && matches!(to, Zone::Graveyard(_)) {
         state.tally(owner, Tally::Graved);
         if was_creature {
@@ -282,6 +290,9 @@ fn spell_cast(
     choices: &Choices,
 ) -> Result<(), EngineError> {
     state.tally(player, Tally::Cast);
+    if choices.way == Some(CastWay::Warp) {
+        state.tally(player, Tally::Warped);
+    }
     let mana = u32::try_from(choices.spent().len()).unwrap_or(u32::MAX);
     state.tally_by(player, Tally::W9aSpellMana, mana);
     for target in choices.targeted_objects() {

@@ -137,6 +137,10 @@ pub(crate) enum Tally {
     W21aLeftGraveyard,
     /// A permanent that left the battlefield for any zone (counted for the player who controlled it as it left).
     PermanentsLeftUnder,
+    /// A nonland permanent that left the battlefield for any zone (counted for the player who controlled it as it left).
+    NonlandLeft,
+    /// A spell cast with warp (counted for its caster).
+    Warped,
     /// A card put into a graveyard from the battlefield (counted for the card as it lies there).
     W21aGraved,
     /// An object that moved into the zone it lies in from a zone of the kind (counted for the object as it lies there).

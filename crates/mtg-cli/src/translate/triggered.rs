@@ -198,7 +198,8 @@ pub fn resolve(shape: Option<&Shape>, word: &str) -> Tr<Value> {
             "Triggering"
         }
         Word::Source if mode == "DamageDone" => "Dealer",
-        Word::Target if mode == "DamageDone" => "Triggering",
+        // A batch of damage holds what was hurt: the one player of a trigger, or the creatures dealt damage together.
+        Word::Target if matches!(mode, "DamageDone" | "DamageDoneOnce") => "Triggering",
         _ => return gap(),
     };
     let object = matches!(what, Word::Card | Word::Attacker | Word::Owner);

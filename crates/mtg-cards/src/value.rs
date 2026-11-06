@@ -322,6 +322,13 @@ pub enum TurnTally {
     Surveilled,
     /// The permanents the player sacrificed this turn, each once, as the player who controlled it.
     Sacrificed,
+    /// The dungeons the player has completed this game (CR 309.7), each completion once; not reset by the turn.
+    DungeonsCompleted,
+    /// The nonland permanents that left the battlefield for any zone while the players read controlled them (void).
+    /// Added up over the players.
+    NonlandPermanentsLeft,
+    /// The spells the player cast with warp this turn (void). Added up over the players.
+    SpellsWarped,
 }
 
 /// A kind of event the game logs for the turn with the object it was about, which `Amount::Tally` filters and counts.
