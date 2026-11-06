@@ -155,10 +155,11 @@ fn becomes_target(ctx: &Ctx, p: &Params) -> Tr<Value> {
     // The engine counts a turn's targetings of the object for the controller of the source when the pattern names one
     // ("a spell or ability you control"), and for every source when it names none; any other source word cannot ask for
     // the first.
-    let mine = by.contains(&json!({"ControlledBy": "You"}))
-        && by.iter().all(|pred| {
-            pred.get("ControlledBy").is_some() || pred.get("AnyOf").is_some_and(only_what_targets)
-        });
+    let mine = by.len() == 2
+        && by.contains(&json!({"ControlledBy": "You"}))
+        && by
+            .iter()
+            .any(|pred| pred.get("AnyOf").is_some_and(only_what_targets));
     let valiant = p.get("Valiant") == Some("True");
     if (valiant || p.get("FirstTime") == Some("True")) && !by.is_empty() && !mine {
         return unmapped("key:Trigger.BecomesTarget.FirstTime-with-source");

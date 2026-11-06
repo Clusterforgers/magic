@@ -21,9 +21,9 @@ fn activations(#[case] line: &str, #[case] when: Value) {
 }
 
 #[rstest]
-#[case::loyalty(
-    "Mode$ AbilityCast | ValidActivatingPlayer$ You | ValidSA$ Activated.Loyalty",
-    "key:Trigger.AbilityCast.ValidSA=Activated.Loyalty"
+#[case::loyalty_paid_with_counters(
+    "Mode$ AbilityCast | ValidActivatingPlayer$ You | ValidSA$ Activated.Loyalty+CountersRemovedToPayGE2",
+    "key:Trigger.AbilityCast.ValidSA=Activated.Loyalty+CountersRemovedToPayGE2"
 )]
 #[case::with_mana_abilities(
     "Mode$ AbilityCast | ValidSA$ Activated",

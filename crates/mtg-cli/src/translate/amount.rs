@@ -259,9 +259,11 @@ fn event_amount(ctx: &Ctx, expression: &str) -> Tr<Option<Value>> {
                 None => unmapped(format!("amount:{head}${what}")),
             };
         }
+        // The card a zone-change replacement is about, read as the trigger of a move reads its card.
+        "ReplacedCard" | "ReplacedCardLKI" if ctx.trigger.is_some() => {
+            super::triggered::resolve(ctx.trigger.as_ref(), head)?
+        }
         "TriggeredCard"
-        | "ReplacedCard"
-        | "ReplacedCardLKI"
         | "TriggeredCardLKICopy"
         | "TriggeredNewCardLKICopy"
         | "TriggeredAttacker"
