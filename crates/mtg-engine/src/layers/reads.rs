@@ -261,6 +261,7 @@ fn reads_of_pred(pred: &Pred) -> Traits {
         | Pred::TopOfLibrary
         | Pred::BottomOfLibrary
         | Pred::TopOfGraveyard
+        | Pred::TopCreatureOfGraveyard
         | Pred::Kicked
         | Pred::AdditionalCostPaid
         | Pred::Suspended => Traits::NONE,

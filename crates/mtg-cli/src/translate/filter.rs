@@ -232,7 +232,7 @@ pub(super) const ATOMS: &[Atom] = &[
         scopes: OBJECT,
         reads_target: false,
         probe: "Necratog",
-        lower: |_| Ok(vec![json!({"Type": "Creature"}), json!("TopOfGraveyard")]),
+        lower: |_| Ok(vec![json!("TopCreatureOfGraveyard")]),
     },
     // The object is one the ability targets, read once they are chosen (`Creature.targetedBy` of the line's own spell).
     Atom {

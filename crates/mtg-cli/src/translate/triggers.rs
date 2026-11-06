@@ -103,6 +103,15 @@ pub fn triggered(ctx: &mut Ctx, body: &str) -> Tr<Value> {
     if let Some(condition) = intervening {
         ability["if"] = condition;
     }
+    // The engine spends the limit as the ability triggers; a limit on what resolves must not be used up by a declined "may"
+    // or an unpaid cost, so only a mandatory effect keeps it.
+    let rendered = json!(effects).to_string();
+    let optional = p.get("OptionalDecider").is_some()
+        || rendered.contains("\"May\":")
+        || rendered.contains("\"Pay\":");
+    if p.get("ResolvedLimit").is_some() && optional {
+        return unmapped("key:Trigger.ResolvedLimit-optional");
+    }
     if let Some(limit) = once_a_turn(&p)? {
         ability["limit"] = limit;
     }

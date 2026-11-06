@@ -76,6 +76,10 @@ pub fn property(ctx: &Ctx, prop: &str) -> Tr<Option<Vec<Value>>> {
         .or_else(|| prop.strip_prefix("inRealZone"))
         && ZONES.contains(&zone)
     {
+        // A card on the stack is a spell; `In: Stack` would also take abilities (CR 112.1).
+        if zone == "Stack" {
+            return one(json!("Spell"));
+        }
         return one(json!({"In": zone}));
     }
     if let Some(found) = shares(ctx, prop)? {

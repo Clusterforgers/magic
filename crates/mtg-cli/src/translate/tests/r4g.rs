@@ -187,7 +187,7 @@ fn do_this_only_once_each_turn_limits_the_ability_to_one_a_turn(
     let (json, found) = card(
         "Enchantment",
         &format!(
-            "T:Mode$ ChangesZone | Origin$ Any | Destination$ Battlefield | ValidCard$ Card.token+YouCtrl | TriggerZones$ Battlefield | Execute$ D | OptionalDecider$ You | ResolvedLimit$ {limit}\nSVar:D:DB$ Draw | Defined$ You"
+            "T:Mode$ ChangesZone | Origin$ Any | Destination$ Battlefield | ValidCard$ Card.token+YouCtrl | TriggerZones$ Battlefield | Execute$ D | ResolvedLimit$ {limit}\nSVar:D:DB$ Draw | Defined$ You"
         ),
     );
     assert_eq!(found.is_empty(), read, "{found:?}");

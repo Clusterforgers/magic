@@ -617,8 +617,14 @@ pub fn defined(ctx: &Ctx, word: &str) -> Tr<Value> {
         | "DelayedTriggerRemembered"
         | "RememberedLKI"
         | "RememberedCard"
-        | "Player.IsRemembered"
         | "Remembered" => super::memory::remembered(ctx),
+        "Player.IsRemembered" => {
+            let held = super::memory::remembered(ctx)?;
+            if super::memory::mixes_the_player(ctx, &held) {
+                return unmapped("defined:Player.IsRemembered-after-a-remembered-change");
+            }
+            Ok(held)
+        }
         word if super::triggered::is_word(word) => {
             super::triggered::resolve(ctx.trigger.as_ref(), word)
         }

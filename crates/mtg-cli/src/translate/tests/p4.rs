@@ -35,7 +35,7 @@ fn unknown_trigger_mode_is_a_gap() {
 )]
 #[case::spell_of_an_opponent(
     "SP$ Pump | ValidTgts$ Card | TgtZone$ Stack | TargetType$ Spell.OppCtrl | NumAtt$ +1",
-    json!([{"ControlledBy": "Opponents"}, {"In": "Stack"}])
+    json!([{"ControlledBy": "Opponents"}, "Spell"])
 )]
 #[case::battlefield_or_exile(
     "SP$ Pump | ValidTgts$ Creature | TgtZone$ Battlefield,Exile | NumAtt$ +1",

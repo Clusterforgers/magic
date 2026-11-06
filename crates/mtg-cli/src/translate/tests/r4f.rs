@@ -96,7 +96,7 @@ fn a_spell_or_a_permanent_is_one_target_in_two_zones() {
     assert!(gaps(script).is_empty(), "{:?}", gaps(script));
     let ability = abilities(script).remove(0);
     let what = &ability["Spell"]["targets"][0]["what"]["Object"][0]["AnyOf"];
-    assert_eq!(what[1], json!({"In": "Stack"}));
+    assert_eq!(what[1], json!("Spell"));
     assert!(what[0].to_string().contains("Battlefield"));
 }
 

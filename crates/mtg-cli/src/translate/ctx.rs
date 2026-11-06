@@ -109,6 +109,9 @@ pub struct Ctx<'a> {
     pub targets: Vec<Value>,
     /// The objects the latest zone change moved (`RememberChanged$`), which `Defined$ Remembered` names later.
     pub remembered: Option<Value>,
+    /// The loop variable of the enclosing `RepeatEach` over players: Forge remembers the player there, and later
+    /// `Remember*` steps add to that set, which this reader keeps apart.
+    pub player_loop: Option<String>,
     /// The objects the latest `Imprint*` step moved, which `Defined$ Imprinted` names later.
     pub imprinted: Option<Value>,
     /// For a name a step bound to what it moved, the reference the step named them by: they are other objects now (CR 400.7)
@@ -187,6 +190,7 @@ impl<'a> Ctx<'a> {
             world,
             targets: Vec::new(),
             remembered: None,
+            player_loop: None,
             imprinted: None,
             moved_from: BTreeMap::new(),
             counted: std::collections::BTreeSet::new(),

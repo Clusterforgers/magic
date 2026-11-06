@@ -244,12 +244,23 @@ pub fn remembered_total(ctx: &Ctx, what: &str) -> Tr<Value> {
     Ok(json!({"Total": {"of": [{"Is": held}, {"AnyOf": zones}], "stat": stat}}))
 }
 
+/// Whether a slot read inside a loop over players holds something other than the player of the pass: Forge's set then
+/// holds the player and what the later steps remembered (Mind Bomb counts one more than the cards it discarded).
+pub fn mixes_the_player(ctx: &Ctx, held: &Value) -> bool {
+    ctx.player_loop
+        .as_ref()
+        .is_some_and(|name| held != &json!({ "Bound": name }))
+}
+
 /// `Remembered$Amount`: how many objects the slot holds. They sit in the zone the step put them in (CR 400.7), which the
 /// selector does not know, so it looks in every zone.
 pub fn remembered_count(ctx: &Ctx) -> Tr<Value> {
     let Some(held) = slot_ref_loose(ctx, Slot::Remembered) else {
         return unmapped("amount:Remembered-without-a-change");
     };
+    if mixes_the_player(ctx, &held) {
+        return unmapped("amount:Remembered-player-and-cards");
+    }
     // A token a step moved is gone, so the engine keeps the number the step moved (CR 111.7, 400.7).
     if let Some(name) = held
         .get("Bound")

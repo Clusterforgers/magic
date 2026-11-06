@@ -388,6 +388,8 @@ pub enum Pred {
     BottomOfLibrary,
     /// Is the top card of its owner's graveyard.
     TopOfGraveyard,
+    /// Is the topmost creature card of its owner's graveyard.
+    TopCreatureOfGraveyard,
     /// Is an attacking creature blocked by one of the creatures the reference names.
     BlockedBy(Ref),
     /// Is a creature blocking one of the creatures the reference names.
