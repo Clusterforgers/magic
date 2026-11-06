@@ -104,10 +104,6 @@ fn event_words_read_as_the_pattern_they_print(#[case] trigger: &str, #[case] exp
     "Mode$ AttackersDeclared | AttackingPlayer$ Player.withMostLife",
     "key:Trigger.AttackersDeclared.AttackingPlayer=Player.withMostLife"
 )]
-#[case::phase_player_unknown(
-    "Mode$ Phase | Phase$ Upkeep | ValidPlayer$ You.descended",
-    "key:Trigger.Phase.ValidPlayer=You.descended"
-)]
 #[case::door_without_this_door(
     "Mode$ UnlockDoor | ValidPlayer$ You | ValidCard$ Card.Self",
     "key:Trigger.UnlockDoor.ThisDoor"

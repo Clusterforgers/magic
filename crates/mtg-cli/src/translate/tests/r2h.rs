@@ -179,7 +179,7 @@ fn detain_stops_attack_block_and_activation_until_the_next_turn() {
     );
     assert_eq!(
         effects[1]["Rule"]["rule"]["Cant"],
-        json!({"who": {"Target": 0}, "action": {"ActivateKind": {"kind": "Every", "sources": []}}})
+        json!({"who": {"Target": 0}, "action": {"ActivateKind": {"kind": "Every"}}})
     );
 }
 

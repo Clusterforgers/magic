@@ -64,7 +64,7 @@ fn the_chosen_value_is_set_by_name(
 )]
 #[case::color_added_not_set(
     "ChooseColor",
-    "Animate | Defined$ Self | Colors$ ChosenColor",
+    "Animate | Defined$ Self | Colors$ ChosenColor | SpellDescription$ It becomes the chosen color in addition to its other colors.",
     "key:Animate.Colors-added"
 )]
 fn a_choice_of_another_kind_is_a_gap(

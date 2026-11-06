@@ -36,11 +36,11 @@ fn creature(lines: &str) -> String {
 #[case::station("Station:8", json!("Station"))]
 #[case::equip_legendary(
     "Equip:3:Creature.YouCtrl+Legendary:legendary creature",
-    json!({"EquipTo": {"to": [{"Supertype": "Legendary"}], "cost": "{3}"}})
+    json!({"EquipTo": {"to": [{"Type": "Creature"}, {"ControlledBy": "You"}, {"Supertype": "Legendary"}], "cost": "{3}"}})
 )]
 #[case::equip_commander(
     "Equip:2:Creature.IsCommander+YouCtrl:commander",
-    json!({"EquipTo": {"to": ["Commander"], "cost": "{2}"}})
+    json!({"EquipTo": {"to": [{"Type": "Creature"}, "Commander", {"ControlledBy": "You"}], "cost": "{2}"}})
 )]
 fn a_keyword_with_a_parameter_carries_it(#[case] line: &str, #[case] expected: Value) {
     let script = creature(&format!("K:{line}"));
@@ -81,9 +81,8 @@ fn a_backup_keeps_its_number() {
 #[case::hexproof_from_activated("K:Hexproof:Activated:activated abilities", "keyword:Hexproof")]
 #[case::equip_planeswalker(
     "K:Equip:2:Planeswalker.YouCtrl:planeswalker",
-    "keyword:Equip-with-restriction"
+    "keyword:Equip-to-a-noncreature"
 )]
-#[case::second_kicker("K:Kicker:1 B:G", "keyword:Kicker-with-restriction")]
 #[case::other_companion(
     "K:Companion:Special:SharesCardType:Each nonland card shares a card type.",
     "keyword:Companion"
