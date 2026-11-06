@@ -500,6 +500,9 @@ fn craft_is_not_offered_without_a_material_or_at_instant_speed(
     #[values(2, 3, 4)] seats: usize,
 ) -> Result<(), ScriptError> {
     let driver = Driver::from_scenario(craft_table(seats, 0, 0))?;
-    assert!(driver.offered_abilities("Relic Engine")?.is_empty());
+    assert_eq!(
+        driver.offered_abilities("Relic Engine")?,
+        Vec::<usize>::new()
+    );
     Ok(())
 }

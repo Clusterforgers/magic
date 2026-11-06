@@ -103,9 +103,9 @@ pub(super) fn run(ctx: &Ctx<'_>, work: &mut Work<'_>) -> Option<Next> {
             text: "Choose a player to help pay for it (assist).".to_owned(),
         })));
     };
-    let Some((helper, can)) = pick.checked_sub(1).and_then(|at| helpers.get(at).copied()) else {
-        return None;
-    };
+    let (helper, can) = pick
+        .checked_sub(1)
+        .and_then(|at| helpers.get(at).copied())?;
     let Some(amount) = work.done.assist_amount else {
         return Some(Next::Ask(Decision {
             player: helper,

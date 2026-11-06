@@ -913,7 +913,7 @@ impl Pick {
         match self.kind {
             Kind::Sacrifice => sacrifice::event(state, object),
             Kind::Discard => Some(discard::event(player, object)),
-            Kind::Exile | Kind::ExileHand => exile_hand::event(state, object),
+            Kind::Exile | Kind::ExileHand | Kind::Craft => exile_hand::event(state, object),
             Kind::Reveal => Some(reveal::event(player, object)),
             Kind::Tap | Kind::TapPower => Some(tap::event(object)),
             Kind::Return => bounce::event(state, object),
@@ -922,7 +922,6 @@ impl Pick {
             Kind::ExileAny | Kind::Evidence => exile::event(state, object),
             Kind::Behold => behold::event(state, player, object),
             Kind::Forage => forage::event(state, object),
-            Kind::Craft => exile_hand::event(state, object),
             Kind::Blight(_) | Kind::ToLibrary(..) => None,
         }
     }

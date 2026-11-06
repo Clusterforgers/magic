@@ -539,10 +539,10 @@ fn rules_of_later(keyword: &Keyword) -> &'static dyn KeywordRules {
         Keyword::Afterlife(_) => &afterlife::Afterlife,
         Keyword::Horsemanship => &horsemanship::Horsemanship,
         Keyword::Phasing => &w7e_phasing::Phasing,
-        Keyword::Spectacle(_) => &spectacle::Spectacle,
-        Keyword::Assist => &spectacle::Spectacle,
+        Keyword::Spectacle(_) | Keyword::Assist | Keyword::Prototype { .. } => {
+            &spectacle::Spectacle
+        }
         Keyword::Craft(_) => &craft::Craft,
-        Keyword::Prototype { .. } => &spectacle::Spectacle,
         Keyword::UmbraArmor => &umbra_armor::UmbraArmor,
         Keyword::Cipher => &cipher::Cipher,
         Keyword::Graft(_) => &graft::Graft,

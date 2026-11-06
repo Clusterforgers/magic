@@ -438,6 +438,8 @@ fn w14c_printed_alternative(
 }
 
 /// The alternative cost the keyword gives the card `id` for casting it where it is, when it gives one.
+// One arm for each keyword that gives an alternative cost.
+#[allow(clippy::too_many_lines)]
 fn keyword_way(
     state: &GameState,
     player: PlayerId,
