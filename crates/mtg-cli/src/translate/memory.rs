@@ -68,6 +68,8 @@ pub struct Entered {
     pub subtype: bool,
     /// A card name.
     pub name: bool,
+    /// A player (an opponent, or any player).
+    pub player: bool,
 }
 
 impl Plan {
@@ -186,7 +188,7 @@ pub fn is_scoped(ctx: &Ctx, held: &Value) -> bool {
 /// a "may" reads as empty when that part did not run.
 pub fn slot_ref_loose(ctx: &Ctx, slot: Slot) -> Option<Value> {
     let bound = match slot {
-        Slot::Remembered => ctx.remembered.clone(),
+        Slot::Remembered => ctx.remembered.clone().or_else(|| ctx.pinned.clone()),
         Slot::Imprinted => ctx.imprinted.clone(),
     };
     bound.or_else(|| {
@@ -443,6 +445,7 @@ pub fn line(
                 return unmapped("key:RememberTargets-without-targets");
             }
             line = line.without(&[key]);
+            line = own_target_words(&line);
             acted.push(*slot);
         } else if *slot == Slot::Imprinted {
             return unmapped(format!("key:{api}.{key}"));
@@ -554,6 +557,25 @@ fn rename(p: &Params, from: &str, to: &str) -> Params {
     Params::parse(&body.join(" | "))
 }
 
+/// A line that remembers its own targets reads them as `Remembered` in its other words (`Creature.blockingRemembered`), which
+/// resolve after the targets are chosen: the words name the target.
+fn own_target_words(p: &Params) -> Params {
+    let body: Vec<String> = p
+        .iter()
+        .map(|(key, value)| {
+            let value = if matches!(key, "ValidCards" | "ValidCreatures" | "Defined") {
+                value
+                    .replace("blockingRemembered", "blockingTargeted")
+                    .replace("blockedByRemembered", "blockedByTargeted")
+            } else {
+                value.to_owned()
+            };
+            format!("{key}$ {value}")
+        })
+        .collect();
+    Params::parse(&body.join(" | "))
+}
+
 /// The step that makes the source remember `what`: objects or players.
 fn remember_step(what: &Value, slot: Slot) -> Value {
     json!({"Remember": {"what": what, "slot": slot.name()}})
@@ -625,6 +647,7 @@ fn entering(face: &Face, plan: &mut Plan) {
             (Some("ChooseColor"), None) => plan.entered.color = true,
             (Some("ChooseType"), Some("Creature")) => plan.entered.subtype = true,
             (Some("NameCard"), _) => plan.entered.name = true,
+            (Some("ChoosePlayer"), _) => plan.entered.player = true,
             _ => {}
         }
     }

@@ -82,6 +82,17 @@ fn property(ctx: &Ctx, prop: &str) -> Tr<Vec<Value>> {
                 None => unmapped("valid:ChosenCard-without-a-choice"),
             };
         }
+        // The player the source chose; outside the battlefield control is ownership.
+        "ChosenCtrl" => {
+            return one(
+                json!({"ControlledBy": chosen_player(ctx, &format!("valid:{prop}-without-a-choice"))?}),
+            );
+        }
+        "ChosenOwn" => {
+            return one(
+                json!({"OwnedBy": chosen_player(ctx, &format!("valid:{prop}-without-a-choice"))?}),
+            );
+        }
         "ChosenColor" | "ChosenType" => {
             return match &ctx.chosen {
                 Some(name) => one(json!({"ChosenAs": name})),
@@ -226,6 +237,10 @@ fn base(ctx: &Ctx, word: &str) -> Tr<Vec<Value>> {
 
 /// The negation of the predicates of one property (`!token`); several predicates are negated by De Morgan: some of them fails.
 fn negated(preds: Vec<Value>) -> Tr<Value> {
+    // `!CastSaSource`: not the source itself is `Other`.
+    if preds == [json!({"Not": "Other"})] {
+        return Ok(json!("Other"));
+    }
     let mut fails: Vec<Value> = preds
         .into_iter()
         .map(|pred| json!({ "Not": pred }))
@@ -420,11 +435,20 @@ pub fn selector_any(ctx: &Ctx, spec: &str) -> Tr<Vec<Value>> {
         .cloned()
         .collect();
     let mut different = Vec::new();
+    // An alternative with no zone beside alternatives that name another zone (`TgtZone$ Stack,Battlefield`) is the table.
+    let zoned = lists.iter().any(|list| {
+        list.iter()
+            .any(|pred| pred.get("In").is_some() && !common.contains(pred))
+    });
     for list in &lists {
         let rest: Vec<&Value> = list.iter().filter(|pred| !common.contains(pred)).collect();
         match rest.as_slice() {
             [one] => different.push((*one).clone()),
-            [] => return unmapped("valid:or-with-open-alternative"),
+            [] if zoned && !common.iter().any(|pred| pred.get("In").is_some()) => {
+                different.push(json!({"In": "Battlefield"}));
+            }
+            // An alternative with only the shared predicates holds the others: the union is the shared predicates.
+            [] => return Ok(common),
             // A conjunction as one alternative, by De Morgan: not any of the negations.
             many => {
                 let negated: Vec<Value> = many.iter().map(|pred| json!({"Not": pred})).collect();
@@ -435,7 +459,7 @@ pub fn selector_any(ctx: &Ctx, spec: &str) -> Tr<Vec<Value>> {
     // The choice stands where the first alternative has its own predicate.
     let any = json!({"AnyOf": different});
     let mut placed = false;
-    Ok(lists[0]
+    let mut out: Vec<Value> = lists[0]
         .iter()
         .filter_map(|pred| {
             if common.contains(pred) {
@@ -447,7 +471,11 @@ pub fn selector_any(ctx: &Ctx, spec: &str) -> Tr<Vec<Value>> {
                 Some(any.clone())
             }
         })
-        .collect())
+        .collect();
+    if !placed {
+        out.push(any);
+    }
+    Ok(out)
 }
 
 /// A card outside the battlefield is its owner's: control in a valid-string becomes ownership.
@@ -469,9 +497,6 @@ pub fn permanent_card(spec: &str) -> Tr<Option<Value>> {
     if permanents == 0 {
         return Ok(None);
     }
-    if permanents != spec.split(',').count() {
-        return unmapped("valid:Permanent-card-beside-other-alternatives");
-    }
     let types = [
         "Artifact",
         "Battle",
@@ -480,6 +505,17 @@ pub fn permanent_card(spec: &str) -> Tr<Option<Value>> {
         "Land",
         "Planeswalker",
     ];
+    // A permanent type beside "permanent" is inside it.
+    let inside = spec
+        .split(',')
+        .filter(|alternative| {
+            let base = alternative.trim().split('.').next().unwrap_or_default();
+            types.contains(&base)
+        })
+        .count();
+    if permanents + inside != spec.split(',').count() {
+        return unmapped("valid:Permanent-card-beside-other-alternatives");
+    }
     let any: Vec<Value> = types.iter().map(|name| json!({"Type": name})).collect();
     Ok(Some(json!({"AnyOf": any})))
 }
@@ -572,10 +608,11 @@ pub fn defined(ctx: &Ctx, word: &str) -> Tr<Value> {
         "Enchanted" | "Equipped" => Ok(json!("Attached")),
         "EnchantedController" | "EquippedController" => controller(json!("Attached")),
         "EnchantedPlayer" | "Player.EnchantedBy" => Ok(json!("AttachedPlayer")),
-        "ChosenCard" | "ChosenPlayer" => ctx.chosen_card.as_ref().map_or_else(
+        "ChosenCard" => ctx.chosen_card.as_ref().map_or_else(
             || unmapped("defined:ChosenCard-without-a-choice"),
             |name| Ok(json!({"Bound": name})),
         ),
+        "ChosenPlayer" => chosen_player(ctx, "defined:ChosenCard-without-a-choice"),
         "RememberedController" => super::memory::remembered_controller(ctx),
         "ImprintedController" => super::memory::imprinted_controller(ctx),
         "DelayTriggerRemembered" | "DelayTriggerRememberedLKI" | "DelayedTriggerRemembered"
@@ -776,4 +813,15 @@ fn targeted_base(ctx: &Ctx, props: &str) -> Tr<(Vec<Value>, Vec<String>)> {
         }
     }
     Ok((preds, rest))
+}
+
+/// The player the line or the source chose: a name an earlier step bound, else the one the source chose as it entered.
+fn chosen_player(ctx: &Ctx, gap: &str) -> Tr<Value> {
+    if let Some(name) = &ctx.chosen_card {
+        return Ok(json!({"Bound": name}));
+    }
+    if ctx.memory.entered.player {
+        return Ok(json!("Chosen"));
+    }
+    unmapped(gap)
 }

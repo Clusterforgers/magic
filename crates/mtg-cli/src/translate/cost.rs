@@ -169,6 +169,7 @@ fn item(ctx: &Ctx, word: &str) -> Tr<Value> {
         "ExileCtrlOrGrave" => zone_cost(ctx, "Craft", number, what),
         "Return" if on_self => Ok(json!({"ReturnToHand": {"filter": ["This"]}})),
         "Return" => zone_cost(ctx, "ReturnToHand", number, what),
+        "Reveal" if on_self => zone_cost(ctx, "RevealFromHand", number, "Card.Self"),
         "Reveal" => zone_cost(ctx, "RevealFromHand", number, what),
         "tapXType" => zone_cost(
             ctx,

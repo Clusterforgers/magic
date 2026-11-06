@@ -77,6 +77,14 @@ pub fn property(ctx: &Ctx, prop: &str) -> Tr<Option<Vec<Value>>> {
     if prop == "NotDefinedTargeted" {
         return one(json!({"Not": {"Is": objects(ctx.last_target()?)?}}));
     }
+    // "That player or that planeswalker's controller": a player target is itself, an object target is controlled by one.
+    if prop == "ControlledBy TargetedOrController" {
+        let target = ctx.last_target()?;
+        return one(json!({"AnyOf": [
+            {"ControlledBy": target},
+            {"ControlledBy": {"ControllerOf": target}},
+        ]}));
+    }
     if let Some(who) = prop.strip_prefix("ControlledBy ") {
         return one(json!({"ControlledBy": player_word(ctx, who)?}));
     }

@@ -213,6 +213,20 @@ pub(super) const ATOMS: &[Atom] = &[
         probe: "Lithomancer's Focus",
         lower: |_| one(json!("Colorless")),
     },
+    // The spell being cast is the card the ability belongs to (its own resolution or enters trigger): "another spell" is
+    // "not the source", so the word itself is "the source".
+    Atom {
+        word: "CastSaSource",
+        scopes: OBJECT,
+        reads_target: false,
+        probe: "Dream Thief",
+        lower: |ctx| match &ctx.trigger {
+            Some(shape) if shape.mode.starts_with("SpellCast") => {
+                unmapped("valid:CastSaSource-of-another-card")
+            }
+            _ => one(json!({"Not": "Other"})),
+        },
+    },
     Atom {
         word: "equalPT",
         scopes: OBJECT,
