@@ -161,12 +161,14 @@ impl ManaPool {
 
     /// Removes one `mana` that may be spent on anything, the mana that goes soonest first; false (and no change) if there is none.
     pub(crate) fn spend(&mut self, mana: ManaType) -> bool {
-        self.spend_noting(mana).is_some()
+        let had = self.get(mana) > 0;
+        self.spend_noting(mana);
+        had
     }
 
     /// [`ManaPool::spend`] that tells the kind of the source of the mana spent: mana with a known source goes first, so a
-    /// spell that asks where its mana came from sees it. `None` when there is no such mana, `Some(None)` for no known source.
-    pub(crate) fn spend_noting(&mut self, mana: ManaType) -> Option<Option<SpendTraits>> {
+    /// spell that asks where its mana came from sees it. `None` when there is no such mana or its source is not known.
+    pub(crate) fn spend_noting(&mut self, mana: ManaType) -> Option<SpendTraits> {
         let at = mana.index();
         let left = self.counts[at].checked_sub(1)?;
         self.counts[at] = left;
@@ -185,7 +187,7 @@ impl ManaPool {
             }
             self.tidy_kept();
         }
-        Some(from)
+        from
     }
 
     /// Keeps no more known sources of a type than the pool holds of it, the newest, and drops the record once it is empty.

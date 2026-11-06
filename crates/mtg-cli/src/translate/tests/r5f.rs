@@ -20,7 +20,7 @@ fn freerunning_is_read_with_its_cost(#[case] line: &str, #[case] expected: Value
 #[rstest]
 #[case::no_cost("Freerunning")]
 fn freerunning_without_a_cost_stays_a_gap(#[case] line: &str) {
-    assert!(!gaps(&keyword(line)).is_empty());
+    assert_ne!(gaps(&keyword(line)), Vec::<String>::new());
 }
 
 fn choose(extra: &str) -> String {

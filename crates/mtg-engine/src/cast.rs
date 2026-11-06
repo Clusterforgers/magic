@@ -609,7 +609,7 @@ fn record_sources(state: &GameState, events: &mut [Event]) {
                     pool.spend_restricted(unit);
                 }
                 for m in plain {
-                    let Some(Some(traits)) = pool.spend_noting(m) else {
+                    let Some(traits) = pool.spend_noting(m) else {
                         continue;
                     };
                     if at != last {

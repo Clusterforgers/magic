@@ -30,8 +30,9 @@ fn spending_takes_the_mana_with_a_known_source_first() {
     let mut held = pool(ManaLasts::Step);
     assert_eq!(held.sources().len(), 1);
     assert_eq!(held.spend_noting(Red), None);
-    assert_eq!(held.spend_noting(Blue), Some(Some(treasure())));
-    assert_eq!(held.spend_noting(Blue), Some(None));
+    assert_eq!(held.spend_noting(Blue), Some(treasure()));
+    assert_eq!(held.spend_noting(Blue), None);
+    assert!(!held.spend(Blue));
     assert_eq!(held, ManaPool::default());
 }
 
@@ -48,5 +49,5 @@ fn emptying_drops_the_sources_of_the_mana_that_went(#[case] lasts: ManaLasts, #[
 fn restricted_mana_keeps_no_source() {
     let mut held = ManaPool::default();
     held.add_from(Blue, vec![SpendOn::Snow], ManaLasts::Step, Some(treasure()));
-    assert!(held.sources().is_empty());
+    assert_eq!(held.sources(), &[]);
 }

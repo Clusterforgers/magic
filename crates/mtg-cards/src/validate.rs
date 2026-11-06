@@ -475,6 +475,8 @@ impl<'a> Walker<'a> {
         }
     }
 
+    // One arm for each kind of reference.
+    #[allow(clippy::too_many_lines)]
     fn reference(&mut self, r: &Ref, want: Kind) {
         match r {
             Ref::You

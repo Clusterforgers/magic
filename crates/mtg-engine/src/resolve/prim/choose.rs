@@ -71,27 +71,7 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         }
     } else if players.is_empty() {
         let text = wording::choose_objects(from, min, most);
-        // Each chooser picks among their own candidates, as many as they have when they have fewer.
-        let selections: Vec<Selection> = choosers
-            .iter()
-            .zip(&own)
-            .map(|(player, mine)| {
-                let ids: Vec<ObjectId> = mine
-                    .iter()
-                    .filter_map(|t| t.object())
-                    .map(|o| o.id)
-                    .collect();
-                let low = min.min(ids.len());
-                Selection {
-                    one_per_name: false,
-                    player: *player,
-                    max: most.min(ids.len()).max(low),
-                    min: low,
-                    from: ids,
-                    text: text.clone(),
-                }
-            })
-            .collect();
+        let selections = selections(&choosers, &own, (min, most), &text);
         match pick_selections(cx, &selections)? {
             Picked::Ask(decision) => return Ok(Run::Ask(decision)),
             Picked::Done(taken) => taken
@@ -127,6 +107,35 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         snapshots: Vec::new(),
         next: Next::Sibling,
     })
+}
+
+/// The choice of objects each chooser makes among their own candidates, as many as they have when they have fewer.
+fn selections(
+    choosers: &[PlayerId],
+    own: &[Vec<Target>],
+    (min, most): (usize, usize),
+    text: &str,
+) -> Vec<Selection> {
+    choosers
+        .iter()
+        .zip(own)
+        .map(|(player, mine)| {
+            let ids: Vec<ObjectId> = mine
+                .iter()
+                .filter_map(|t| t.object())
+                .map(|o| o.id)
+                .collect();
+            let low = min.min(ids.len());
+            Selection {
+                one_per_name: false,
+                player: *player,
+                max: most.min(ids.len()).max(low),
+                min: low,
+                from: ids,
+                text: text.to_owned(),
+            }
+        })
+        .collect()
 }
 
 /// What `from` names for each chooser, read with `Ref::Chooser` naming them, and all of it together in the order first
