@@ -19,6 +19,7 @@ pub fn effects(ctx: &mut Ctx, p: &Params, api: &str) -> Tr<Vec<Value>> {
         "DamageAll" => damage_all(ctx, p),
         "DamageResolve" => damage_resolve(p),
         "PutCounterAll" => one(put_counter_all(ctx, p)),
+        "RemoveCounterAll" => one(remove_counter_all(ctx, p)),
         "Counter" => counter(ctx, p),
         "PreventDamage" => one(prevent_damage(ctx, p)),
         "Pump" => pump(ctx, p),
@@ -274,6 +275,38 @@ fn put_counter_all(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
     Ok(
         json!({"PutCounters": {"on": {"Each": frame::all_matching(ctx, p, "PutCounterAll", valid)?}, "counter": kind, "count": count}}),
     )
+}
+
+/// `RemoveCounterAll`: counters off every battlefield object that matches, every kind, every counter of one kind, or a
+/// number of them from each.
+fn remove_counter_all(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
+    only(
+        p,
+        "RemoveCounterAll",
+        &[
+            "ValidCards",
+            "CounterType",
+            "CounterNum",
+            "AllCounters",
+            "AllCounterTypes",
+            "ValidTgts",
+        ],
+    )?;
+    let valid = p.get("ValidCards").unwrap_or_default();
+    let from = json!({"Each": frame::all_matching(ctx, p, "RemoveCounterAll", valid)?});
+    if p.get("AllCounterTypes") == Some("True") {
+        return Ok(json!({"RemoveAllCounters": {"from": from}}));
+    }
+    let Some(kind) = p.get("CounterType").and_then(kind_word) else {
+        return unmapped("key:RemoveCounterAll.CounterType");
+    };
+    // A line with no count takes every counter of the kind (Corrosion).
+    let every = p.get("AllCounters") == Some("True");
+    let Some(number) = p.get("CounterNum").filter(|_| !every) else {
+        return Ok(json!({"RemoveAllCounters": {"from": from, "counter": kind}}));
+    };
+    let count = amount(ctx, number)?;
+    Ok(json!({"RemoveCounters": {"from": from, "counter": kind, "count": count}}))
 }
 
 /// `TargetValidTargeting$` of a `Counter`: the spell or ability has a target the words name (`You`, `Player`, or objects on

@@ -1819,9 +1819,13 @@ impl Writer<'_> {
                     self.counter_place(from, true)?
                 )
             }
-            Effect::RemoveAllCounters { from } => {
+            Effect::RemoveAllCounters { from, counter } => {
+                let kind = match counter {
+                    Some(counter) => format!("{} ", counters::kind_text(counter)?),
+                    None => String::new(),
+                };
                 format!(
-                    "remove all counters from {}",
+                    "remove all {kind}counters from {}",
                     self.counter_place(from, true)?
                 )
             }
