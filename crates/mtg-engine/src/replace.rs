@@ -632,6 +632,9 @@ fn applies_to(by: &ReplaceBy, unit: &Unit) -> bool {
         }
         ReplaceBy::Tapped
         | ReplaceBy::WithCounters { .. }
+        | ReplaceBy::WithCountersAnd { .. }
+        | ReplaceBy::Tribute(_)
+        | ReplaceBy::Amplify(_)
         | ReplaceBy::MayWithCounters { .. }
         | ReplaceBy::Choose(_)
         | ReplaceBy::PayLifeOrTapped(_)
@@ -1624,6 +1627,9 @@ impl Pass<'_> {
                             ReplaceBy::Tapped
                                 | ReplaceBy::Choose(_)
                                 | ReplaceBy::WithCounters { .. }
+                                | ReplaceBy::WithCountersAnd { .. }
+                                | ReplaceBy::Tribute(_)
+                                | ReplaceBy::Amplify(_)
                                 | ReplaceBy::MayWithCounters { .. }
                                 | ReplaceBy::Devour { .. }
                                 | ReplaceBy::Riot
@@ -1946,6 +1952,9 @@ impl Pass<'_> {
         match by {
             ReplaceBy::Devour { .. } => self.devour(at, candidate, by, object, controller, applied),
             ReplaceBy::Riot => self.riot(at, object, controller, applied),
+            ReplaceBy::Amplify(per) => {
+                self.amplify(at, candidate, (object, controller), *per, applied)
+            }
             ReplaceBy::RevealOrTapped(of) => {
                 self.reveal_or_tapped(at, candidate, of, (object, controller), applied)
             }
@@ -2479,6 +2488,21 @@ impl Pass<'_> {
                 self.enter_with_counters(at, candidate, object, counter, count, &applied)?;
                 if *and_tapped {
                     tapped(self, at);
+                }
+            }
+            ReplaceBy::WithCountersAnd {
+                counter,
+                count,
+                mods,
+            } => {
+                self.enter_with_counters(at, candidate, object, counter, count, &applied)?;
+                self.enter_with_changes(at, object, controller, mods, &applied)?;
+            }
+            ReplaceBy::Tribute(count) => {
+                if let Asked::Ask(decision) =
+                    self.tribute(at, candidate, object, controller, *count, &applied)?
+                {
+                    return Ok(Applied::Ask(decision));
                 }
             }
             ReplaceBy::MayWithCounters { counter, count } => {
@@ -3133,7 +3157,10 @@ mod dredge;
 
 mod reveal;
 
+mod amplify;
+mod changes;
 mod riot;
+mod tribute;
 
 mod w13b_tapped_for_counters;
 

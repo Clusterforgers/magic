@@ -831,6 +831,22 @@ pub enum ReplaceBy {
         #[serde(default, skip_serializing_if = "is_false")]
         tapped: bool,
     },
+    /// The permanent enters with counters as `WithCounters` says, and has these changes for as long as it stays on the
+    /// battlefield ("enters with two +1/+1 counters on it and with first strike").
+    WithCountersAnd {
+        /// The kind of counter.
+        counter: CounterKind,
+        /// How many.
+        count: Amount,
+        /// What it gets besides: a keyword or an ability.
+        mods: Vec<Modification>,
+    },
+    /// Amplify N (CR 702.38): as the permanent enters, its controller reveals any number of creature cards from their hand that
+    /// share a creature type with it, and it enters with N +1/+1 counters for each.
+    Amplify(u32),
+    /// Tribute N (CR 702.104): as the permanent enters, an opponent of its controller chosen by the controller may put N +1/+1
+    /// counters on it; it remembers whether they did as a number (1 paid, 0 not) that `Amount::Chosen` reads.
+    Tribute(u32),
     /// The permanent enters with these counters when its controller says yes as it enters ("You may have this creature enter with a +1/+1 counter on it"); asked like the payment of `PayLifeOrTapped`.
     MayWithCounters {
         /// The kind of counter.

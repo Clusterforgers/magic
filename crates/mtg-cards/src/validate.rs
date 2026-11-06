@@ -2294,6 +2294,23 @@ impl Walker<'_> {
 
     /// The exceptions of a copy effect are changes to its copiable values; a modification that is not one waits.
     /// The exceptions of a copy that is not a permanent becoming a copy: keeping its own ability is not played there.
+    /// A permanent that enters with counters and with a keyword or an ability (`ReplaceBy::WithCountersAnd`).
+    fn enters_with_changes(&mut self, enters: bool, count: &Amount, given: &[Modification]) {
+        if !enters {
+            self.problem("`WithCountersAnd` replaces an `Enters`");
+        }
+        self.at("count", |w| w.amount(count));
+        if given.iter().any(|given| {
+            !matches!(
+                given,
+                Modification::AddKeyword(_) | Modification::GrantAbility(_)
+            )
+        }) {
+            self.problem("a permanent enters with a keyword or an ability only");
+        }
+        self.at("mods", |w| w.mods(given));
+    }
+
     fn copy_exceptions_new_object(&mut self, except: &[Modification]) {
         if except.contains(&Modification::ThisAbility) {
             self.problem(THIS_ABILITY_BECOMES_ONLY);
@@ -4244,11 +4261,16 @@ impl Walker<'_> {
                 }
                 self.at("count", |w| w.amount(count));
             }
+            ReplaceBy::WithCountersAnd {
+                count, mods: given, ..
+            } => self.enters_with_changes(enters, count, given),
             ReplaceBy::Tapped
             | ReplaceBy::Choose(_)
             | ReplaceBy::PayLifeOrTapped(_)
             | ReplaceBy::TappedForCounters { .. }
             | ReplaceBy::RevealOrTapped(_)
+            | ReplaceBy::Tribute(_)
+            | ReplaceBy::Amplify(_)
             | ReplaceBy::MayWithCounters { .. }
             | ReplaceBy::Riot
             | ReplaceBy::DayIfNeither

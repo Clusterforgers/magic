@@ -93,6 +93,8 @@ pub fn subtypes_of(types: &str) -> Vec<String> {
 pub struct Ctx<'a> {
     /// The named parts of the face.
     pub svars: &'a BTreeMap<String, String>,
+    /// The bodies of the `K:` lines of the face.
+    pub keywords: &'a [String],
     /// The `Types:` line of the face.
     pub types: &'a str,
     /// Forge's rendering of the card's text, only to tell two spellings of the same rule apart.
@@ -171,6 +173,7 @@ impl<'a> Ctx<'a> {
     pub fn new(face: &'a Face, world: &'a World) -> Ctx<'a> {
         Ctx {
             svars: &face.svars,
+            keywords: &face.keywords,
             types: &face.types,
             oracle: &face.oracle,
             mana_cost: &face.mana_cost,

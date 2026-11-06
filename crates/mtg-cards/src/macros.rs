@@ -95,6 +95,14 @@ pub const KEYWORDS: &[Entry] = &[
              "mods":[{"ModifyPT":{"power":{"Times":{"by":$N,"of":{"Sum":[{"Count":[{"Blocks":"This"}]},-1]}}},"toughness":{"Times":{"by":$N,"of":{"Sum":[{"Count":[{"Blocks":"This"}]},-1]}}}}}],"duration":"UntilEndOfTurn"}}]}}]}}]"#,
     },
     Entry {
+        name: "amplify",
+        template: r#"[{"Replacement":{"when":{"Enters":{"what":["This"]}},"by":{"Amplify":$N}}}]"#,
+    },
+    Entry {
+        name: "tribute",
+        template: r#"[{"Replacement":{"when":{"Enters":{"what":["This"]}},"by":{"Tribute":$N}}}]"#,
+    },
+    Entry {
         name: "enlist",
         template: r#"[{"Triggered":{"when":{"Attacks":{"what":["This"]}},"effects":[{"May":{"effects":[
              {"Choose":{"from":{"Each":[{"Type":"Creature"},{"ControlledBy":"You"},"Untapped",{"Not":"Attacking"},{"Not":{"HasKeyword":{"Macro":{"name":"enlist","amount":0}}}},{"Not":"SummoningSick"}]},"as":"enlisted"}},
@@ -236,6 +244,8 @@ mod tests {
     #[case::firebending("firebending", 2)]
     #[case::soulshift("soulshift", 3)]
     #[case::bloodthirst("bloodthirst", 2)]
+    #[case::amplify("amplify", 3)]
+    #[case::tribute("tribute", 2)]
     fn a_keyword_carries_its_number(#[case] name: &str, #[case] amount: u32) {
         let json = serde_json::to_string(&keyword_abilities(name, amount).unwrap()).unwrap();
         assert!(json.contains(&amount.to_string()), "{json}");

@@ -9,8 +9,11 @@ use super::effects::chain_at;
 use super::valid::selector_any;
 use crate::forge::script::Params;
 
+mod champion;
+mod equip;
 mod extra;
 mod more;
+mod tribute;
 
 /// The DSL name of a keyword that has no parameter.
 pub fn keyword_name(word: &str) -> Option<&'static str> {
@@ -292,6 +295,16 @@ pub fn keyword_abilities(ctx: &mut Ctx, body: &str) -> Vec<Tr<Value>> {
     if let Some(forms) = super::effects_r2h::keyword_forms(ctx, body) {
         return forms;
     }
+    if let Some(count) = body.strip_prefix("Tribute:") {
+        return tribute::tribute(ctx, count);
+    }
+    if let Some(types) = body.strip_prefix("Champion:") {
+        return vec![champion::champion(ctx, types)];
+    }
+    if body.starts_with("Equip:") && body.contains('$') {
+        let fields: Vec<&str> = body.split(':').collect();
+        return equip::equip_with(ctx, &fields);
+    }
     match body.strip_prefix("Chapter:") {
         Some(rest) => chapters(ctx, rest),
         None => super::keyword_alt::alt_keyword(body)
@@ -373,6 +386,11 @@ pub fn keyword_ability(ctx: &mut Ctx, body: &str) -> Tr<Value> {
             json!({"WithCounters": {"counter": kind, "count": amount(ctx, count)?}})
         }
         ["ETBReplacement", "Other", name] => choice(ctx, name)?,
+        ["ETBReplacement", "Other", name, "Mandatory", "", valid]
+            if valid.starts_with("Card.Self+") =>
+        {
+            return super::enters_with::self_enters(ctx, name, valid);
+        }
         ["ETBReplacement", "Other", name, "Mandatory", zone, valid] if !valid.contains("Self") => {
             return extra::others(ctx, name, zone, valid);
         }

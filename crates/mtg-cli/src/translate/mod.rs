@@ -36,6 +36,7 @@ mod effects_verbs4;
 mod effects_verbs5;
 pub mod effects_vote;
 pub mod effects_zone;
+mod enters_with;
 pub mod filter;
 pub mod forget;
 pub mod frame;
