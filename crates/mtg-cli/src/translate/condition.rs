@@ -8,7 +8,7 @@ use super::valid::{cmp, defined, selector_any, selector_in};
 use crate::forge::script::Params;
 
 /// The keys this module reads.
-pub const KEYS: [&str; 11] = [
+pub const KEYS: [&str; 17] = [
     "IsPresent",
     "PresentDefined",
     "PresentZone",
@@ -19,6 +19,12 @@ pub const KEYS: [&str; 11] = [
     "PresentCompare2",
     "CheckSVar",
     "SVarCompare",
+    "CheckSecondSVar",
+    "SecondSVarCompare",
+    "CheckThirdSVar",
+    "ThirdSVarCompare",
+    "CheckFourthSVar",
+    "FourthSVarCompare",
     "Condition",
 ];
 
@@ -51,16 +57,25 @@ pub fn condition(ctx: &Ctx, p: &Params) -> Tr<Option<Value>> {
 
 /// `CheckSVar$` with its `SVarCompare$`: a count compared (at least 1 by default), `None` without the word.
 pub fn check_svar(ctx: &Ctx, p: &Params) -> Tr<Option<Value>> {
-    let Some(name) = p.get("CheckSVar") else {
-        if p.has("SVarCompare") {
-            return unmapped("key:Condition.SVarCompareWithoutCheckSVar");
-        }
-        return Ok(None);
-    };
-    let (op, right) = comparison(ctx, p.get("SVarCompare").unwrap_or("GE1"))?;
-    Ok(Some(
-        json!({"Compare": {"left": amount(ctx, name)?, "op": op, "right": right}}),
-    ))
+    // The first check, then the second to fourth that a line states in order ("a Forest and an Island").
+    let rounds = [
+        ("CheckSVar", "SVarCompare"),
+        ("CheckSecondSVar", "SecondSVarCompare"),
+        ("CheckThirdSVar", "ThirdSVarCompare"),
+        ("CheckFourthSVar", "FourthSVarCompare"),
+    ];
+    let mut all = Vec::new();
+    for (key, compare) in rounds {
+        let Some(name) = p.get(key) else {
+            if p.has(compare) {
+                return unmapped("key:Condition.SVarCompareWithoutCheckSVar");
+            }
+            continue;
+        };
+        let (op, right) = comparison(ctx, p.get(compare).unwrap_or("GE1"))?;
+        all.push(json!({"Compare": {"left": amount(ctx, name)?, "op": op, "right": right}}));
+    }
+    Ok(single(all))
 }
 
 /// The condition of one `IsPresent` clause (`suffix` is empty for the first and `2` for the second), `None` without one.

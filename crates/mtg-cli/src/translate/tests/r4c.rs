@@ -40,3 +40,28 @@ fn a_line_it_cannot_state_is_a_gap(#[case] lines: &str, #[case] gap: &str) {
         gaps(&card(lines))
     );
 }
+
+const ALT: &str = "S:Mode$ AlternativeCost | ValidSA$ Spell | ValidCard$ Card.Self | ValidPlayer$ You | Cost$ 0 | EffectZone$ All";
+
+#[rstest]
+#[case::both_checks(
+    "| CheckSVar$ X | CheckSecondSVar$ Y\nSVar:X:Count$Valid Creature.OppCtrl\nSVar:Y:Count$Valid Creature.YouCtrl",
+    2
+)]
+#[case::one_check("| CheckSVar$ X\nSVar:X:Count$Valid Creature.OppCtrl", 1)]
+fn a_second_check_joins_the_first(#[case] tail: &str, #[case] checks: usize) {
+    let script = card(&format!("{ALT} {tail}"));
+    let found = abilities(&script);
+    assert_eq!(found.len(), 1, "{:?}", gaps(&script));
+    let text = found[0].to_string();
+    assert_eq!(text.matches("\"Compare\"").count(), checks, "{text}");
+    assert_eq!(text.contains("\"All\""), checks == 2, "{text}");
+}
+
+#[test]
+fn a_second_compare_without_its_check_is_a_gap() {
+    let script = card(&format!(
+        "{ALT} | CheckSVar$ X | SecondSVarCompare$ GE2\nSVar:X:Count$Valid Creature.OppCtrl"
+    ));
+    assert!(gaps(&script).contains(&"key:Condition.SVarCompareWithoutCheckSVar".to_owned()));
+}
