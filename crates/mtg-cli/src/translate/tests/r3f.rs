@@ -79,3 +79,24 @@ fn an_effect_that_replaces_produced_mana_for_a_turn_is_a_timed_rule() {
         json!({"OnlyType": "Colorless"})
     );
 }
+
+#[rstest]
+#[case::alone("Waterbend<3>", json!([{"Waterbend": 3}]))]
+#[case::with_the_tap("Waterbend<3> T", json!([{"Waterbend": 3}, "Tap"]))]
+fn waterbend_is_a_cost_of_an_activated_ability(#[case] cost: &str, #[case] expected: Value) {
+    let text = creature(&format!("A:AB$ Draw | Cost$ {cost} | NumCards$ 1"));
+    let found = abilities(&text);
+    assert!(!found.is_empty(), "{:?}", gaps(&text));
+    assert_eq!(found[0]["Activated"]["cost"], expected);
+}
+
+#[rstest]
+#[case::x("A:AB$ Draw | Cost$ Waterbend<X> | NumCards$ 1\nSVar:X:Count$xPaid")]
+#[case::in_a_trigger(
+    "T:Mode$ Phase | Phase$ Upkeep | ValidPlayer$ You | Execute$ TrigDraw\nSVar:TrigDraw:AB$ Draw | Cost$ Waterbend<2> | NumCards$ 1"
+)]
+fn waterbend_anywhere_else_stays_a_gap(#[case] lines: &str) {
+    let text = creature(lines);
+    assert!(abilities(&text).is_empty(), "{:?}", abilities(&text));
+    assert!(!gaps(&text).is_empty());
+}

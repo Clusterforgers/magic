@@ -53,6 +53,9 @@ pub(super) fn of(ctx: &Ctx<'_>, choices: &Choices) -> Option<Total> {
     let mana = c9_emerge_reduce::c9_emerge_reduce(ctx, choices, mana);
     let help = match ctx.what {
         What::Spell(spell) => help::offered(ctx.state, ctx.player, *spell, &printed.taken),
+        What::Ability(_) if printed.waterbend => {
+            help::waterbend(ctx.state, ctx.player, &printed.taken)
+        }
         _ => Offered::default(),
     };
     Some(Total {
@@ -74,6 +77,8 @@ struct Printed {
     life: u32,
     /// The objects the other parts sacrifice, tap, return or exile: no source of mana and no helper.
     taken: Vec<ObjectId>,
+    /// The cost holds a waterbend part: artifacts and creatures may tap to pay for it.
+    waterbend: bool,
 }
 
 impl Printed {
@@ -83,6 +88,7 @@ impl Printed {
             sources,
             life,
             taken: Vec::new(),
+            waterbend: false,
         }
     }
 }
@@ -134,7 +140,15 @@ fn printed(ctx: &Ctx<'_>, choices: &Choices) -> Option<Printed> {
                     (ability.object, *ability, rules),
                     &price,
                 );
-                Some(Printed::new(mana, sources, life))
+                let mut printed = Printed::new(mana, sources, life);
+                if price.waterbend > 0 {
+                    printed.waterbend = true;
+                    printed.taken = picked;
+                    if price.tap || price.moves_source() {
+                        printed.taken.push(ability.object);
+                    }
+                }
+                Some(printed)
             }
             // A loyalty cost is counters; only what a cost modifier adds is mana.
             rules @ Ability::Loyalty { .. } => {

@@ -160,6 +160,7 @@ const RUNS: &[&str] = &[
     "Cost.Behold",
     "Cost.ToLibrary",
     "Cost.Forage",
+    "Cost.Waterbend",
     "Cost.ExiledToGraveyard",
     "Cost.DamageToYou.Counted.Activated",
     "Cost.ExileTop.Counted.Activated",

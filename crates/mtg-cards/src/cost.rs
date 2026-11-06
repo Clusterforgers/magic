@@ -191,6 +191,9 @@ pub enum CostItem {
         #[serde(default, skip_serializing_if = "std::ops::Not::not")]
         bottom: bool,
     },
+    /// Waterbend (Avatar): that much generic mana, which the payer may pay in part by tapping untapped artifacts and creatures
+    /// they control, each paying {1}.
+    Waterbend(u32),
     /// Forage (Bloomburrow): exile three cards from the payer's graveyard or sacrifice a Food they control.
     Forage,
     /// One of these costs, chosen by the caster as the spell is announced ("discard a card or pay 3 life"): the only item of
@@ -361,6 +364,7 @@ mod tests {
     #[case::evidence(Cost(vec![CostItem::CollectEvidence(6)]), r#"[{"CollectEvidence":6}]"#)]
     #[case::blight(Cost(vec![CostItem::Blight(Amount::Fixed(1))]), r#"[{"Blight":1}]"#)]
     #[case::forage(Cost(vec![CostItem::Forage]), r#"["Forage"]"#)]
+    #[case::waterbend(Cost(vec![CostItem::Waterbend(3)]), r#"[{"Waterbend":3}]"#)]
     #[case::exiled_to_graveyard(
         Cost(vec![CostItem::ExiledToGraveyard { filter: Selector(vec![Pred::OwnedBy(Ref::Opponents)]), count: Amount::Fixed(2) }]),
         r#"[{"ExiledToGraveyard":{"filter":[{"OwnedBy":"Opponents"}],"count":2}}]"#

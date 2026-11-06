@@ -90,6 +90,14 @@ pub fn cost(ctx: &Ctx, text: &str) -> Tr<Value> {
     found
 }
 
+/// The cost of an activated ability: `cost`, where a waterbend part is also read.
+pub fn activated(ctx: &Ctx, text: &str) -> Tr<Value> {
+    ctx.waterbend_ok.set(true);
+    let found = cost(ctx, text);
+    ctx.waterbend_ok.set(false);
+    found
+}
+
 fn cost_items(ctx: &Ctx, text: &str) -> Tr<Value> {
     let mut mana = String::new();
     let mut items = Vec::new();

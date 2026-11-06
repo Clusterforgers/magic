@@ -139,7 +139,7 @@ fn activated(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
         }
         return loyalty_ability(p, text, &effects, &targets);
     }
-    let mut cost_items = cost(ctx, text)?;
+    let mut cost_items = super::cost::activated(ctx, text)?;
     let mut changes: Vec<Value> = reduce_cost(ctx, p)?.into_iter().collect();
     if power_up {
         changes.push(power_up_discount(ctx)?);

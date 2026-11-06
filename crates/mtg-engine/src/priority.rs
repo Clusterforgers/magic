@@ -21,7 +21,7 @@ use crate::events::Event;
 use crate::faces;
 use crate::keywords;
 use crate::loyalty;
-use crate::mana::{ManaOption, ManaPool, can_afford};
+use crate::mana::{ManaOption, ManaPool, can_afford, can_afford_with};
 use crate::mana_ability;
 use crate::manual;
 use crate::object::GameObject;
@@ -238,7 +238,16 @@ fn can_activate(
             .life()
             .saturating_sub(i32::try_from(price.life()).unwrap_or(i32::MAX));
         let spend = Spend::for_ability(state, object.id(), price.x > 0);
-        if !can_afford(mana, seat.mana(), &sources, life, &spend) {
+        let helpers = if price.waterbend > 0 {
+            let mut barred = claimed.clone();
+            if price.tap || price.moves_source() {
+                barred.push(object.id());
+            }
+            crate::help::waterbend(state, player, &barred)
+        } else {
+            crate::help::Offered::default()
+        };
+        if !can_afford_with(mana, seat.mana(), &sources, helpers.help(), life, &spend) {
             return false;
         }
     }

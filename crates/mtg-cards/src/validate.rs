@@ -1259,6 +1259,7 @@ impl<'a> Walker<'a> {
                     | CostItem::DiscardSelf
                     | CostItem::Unattach
                     | CostItem::CollectEvidence(_)
+                    | CostItem::Waterbend(_)
                     | CostItem::Forage => {}
                 }
             });
@@ -1498,6 +1499,7 @@ impl<'a> Walker<'a> {
                     | CostItem::ExiledToGraveyard { .. }
                     | CostItem::ToLibrary { .. }
                     | CostItem::Forage
+                    | CostItem::Waterbend(_)
             ) {
                 self.uses(kind, &format!("{prefix}.{}", tag_of(item)));
             }

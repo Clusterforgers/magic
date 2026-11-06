@@ -224,6 +224,18 @@ pub(crate) fn offered(
     offer.without(taken)
 }
 
+/// What may help pay a waterbend cost (Avatar): the untapped artifacts and creatures `player` controls, each paying {1} as an
+/// improvising artifact does, except the objects in `taken`, which the rest of the cost taps or gives up.
+pub(crate) fn waterbend(state: &GameState, player: PlayerId, taken: &[ObjectId]) -> Offered {
+    Offered {
+        improvise: untapped(state, player, |id, chars| {
+            (chars.is_creature() || chars.types.contains(CardType::Artifact)).then_some(id)
+        }),
+        ..Offered::default()
+    }
+    .without(taken)
+}
+
 /// Checks the helpers a payment names against the offer: each creature, artifact and card is offered once, no longer tapped or gone
 /// (`unusable`), a creature pays only a colour it is, and no creature is also tapped for mana (`tapped_for_mana`).
 pub(crate) fn check(

@@ -31,6 +31,11 @@ pub fn item(ctx: &Ctx, head: &str, fields: &[&str]) -> Option<Tr<Value>> {
             Err(_) => unmapped("cost:CollectEvidence-X"),
         },
         "Behold" => filtered(ctx, "Behold", number, what),
+        "Waterbend" => match number.parse::<u32>() {
+            Ok(n) if n > 0 && ctx.waterbend_ok.get() => Ok(json!({ "Waterbend": n })),
+            Ok(_) => unmapped("cost:Waterbend-outside-an-ability"),
+            Err(_) => unmapped("cost:Waterbend-X"),
+        },
         "ExiledMoveToGrave" => filtered(ctx, "ExiledToGraveyard", number, what),
         "untapYType" => filtered(ctx, "UntapPermanents", number, what),
         "AddCounter" if fields.len() == 2 => put_counters(ctx, number, what),

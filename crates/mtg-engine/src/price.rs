@@ -4,7 +4,7 @@
 use mtg_cards::cost::{Cost, CostItem};
 use mtg_cards::value::Amount;
 use mtg_core::ids::{ObjectId, PlayerId};
-use mtg_core::mana::ManaCost;
+use mtg_core::mana::{ManaCost, ManaSymbol};
 
 use crate::mana::{ManaOption, reserve_energy};
 use crate::parts::{Part, Payer};
@@ -37,6 +37,8 @@ pub(crate) struct Price {
     pub(crate) mana: Option<ManaCost>,
     /// How many `{X}` the mana parts hold; each costs X generic mana once X is announced.
     pub(crate) x: u32,
+    /// How much of the mana is a waterbend cost: artifacts and creatures tapped may pay for it, each {1} (Avatar).
+    pub(crate) waterbend: u32,
     /// The other parts, in the order the cost prints them: life, counters removed, the objects the player picks.
     pub(crate) parts: Vec<Part>,
     /// The parts are paid for a spell being cast: the card itself is never picked for them.
@@ -69,6 +71,7 @@ const fn unpaid(item: &CostItem) -> &'static str {
         CostItem::Behold { .. } => "Cost.Behold",
         CostItem::ToLibrary { .. } => "Cost.ToLibrary",
         CostItem::Forage => "Cost.Forage",
+        CostItem::Waterbend(_) => "Cost.Waterbend",
         CostItem::ExiledToGraveyard { .. } => "Cost.ExiledToGraveyard",
         CostItem::RemoveCounters { .. } => "Cost.RemoveCounters",
         CostItem::PutCounters { .. } => "Cost.PutCounters",
@@ -110,6 +113,9 @@ impl Price {
         if price.x > 0 {
             return Err("Cost.Mana.X");
         }
+        if price.waterbend > 0 {
+            return Err("Cost.Waterbend");
+        }
         if !price.changes.is_empty() {
             return Err("Cost.Changed");
         }
@@ -143,17 +149,24 @@ impl Price {
                 }
             }
         }
-        Price::announced(&settled)
+        Price::read(&settled, true)
     }
 
     /// The price of the cost of an ability as it is announced, with the `{X}` it holds counted for the announcement
     /// to ask; the name of the first part the engine does not pay otherwise.
     pub(crate) fn announced(cost: &Cost) -> Result<Price, &'static str> {
+        Price::read(cost, false)
+    }
+
+    /// [`Self::announced`], with a waterbend part read only for the cost of an activated ability: nothing else offers the
+    /// creatures and artifacts that help pay it.
+    fn read(cost: &Cost, waterbend_ok: bool) -> Result<Price, &'static str> {
         let mut tap = false;
         let mut leaves = Leaves::Stays;
         let mut symbols = Vec::new();
         let mut mana = false;
         let mut x = 0u32;
+        let mut waterbend = 0u32;
         let mut parts = Vec::new();
         let mut changes = Vec::new();
         for item in &cost.0 {
@@ -173,6 +186,12 @@ impl Price {
             match item {
                 CostItem::Tap => tap = true,
                 CostItem::Changed { .. } => changes.push(item.clone()),
+                CostItem::Waterbend(_) if !waterbend_ok => return Err(unpaid(item)),
+                CostItem::Waterbend(number) => {
+                    mana = true;
+                    waterbend = waterbend.saturating_add(*number);
+                    symbols.push(ManaSymbol::Generic(*number));
+                }
                 CostItem::Mana(part) => {
                     mana = true;
                     x = x.saturating_add(u32::from(part.x()));
@@ -189,6 +208,7 @@ impl Price {
             leaves,
             mana: mana.then(|| ManaCost::from_symbols(symbols)),
             x,
+            waterbend,
             parts,
             casting: false,
             changes,
@@ -382,6 +402,7 @@ mod tests {
                 },
                 mana: mana(expected),
                 x: 0,
+                waterbend: 0,
                 parts: Vec::new(),
                 casting: false,
                 changes: Vec::new(),
