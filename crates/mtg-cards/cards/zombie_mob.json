@@ -27,7 +27,7 @@
               {
                 "Exile": {
                   "what": {
-                    "Each": [{ "Type": "Creature" }, { "OwnedBy": "You" }, { "In": "Graveyard" }]
+                    "Each": [{ "Type": "Creature" }, { "In": "Graveyard" }, { "OwnedBy": "You" }]
                   }
                 }
               }

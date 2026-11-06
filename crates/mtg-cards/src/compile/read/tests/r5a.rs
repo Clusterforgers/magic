@@ -192,3 +192,20 @@ fn numbered_bindings_read_as_the_names_of_the_readers_only_when_renamed_alike(
 ) {
     assert_eq!(written(&look(kept, rest, moved, order), LOOK), reads);
 }
+
+/// Look at the top `count`, put one of them into the hand and the rest into the graveyard.
+fn look_and_mill(count: u32) -> String {
+    format!(
+        r#"{{"Spell":{{"effects":[{{"LookAtTop":{{"as":"top","count":{count}}}}},{{"Choose":{{"as":"kept","from":{{"Bound":"top"}},"rest_as":"rest"}}}},{{"Move":{{"to":"Hand","what":{{"Bound":"kept"}}}}}},{{"Move":{{"to":"Graveyard","what":{{"Bound":"rest"}}}}}}]}}}}"#
+    )
+}
+
+#[rstest]
+#[case::two(2, "two", true)]
+#[case::three(3, "three", false)]
+fn of_two_cards_the_rest_is_the_other(#[case] count: u32, #[case] word: &str, #[case] reads: bool) {
+    let clause = format!(
+        "Look at the top {word} cards of your library. Put one of them into your hand and the other into your graveyard."
+    );
+    assert_eq!(written(&look_and_mill(count), &clause), reads);
+}

@@ -12,16 +12,10 @@
             "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
             "effects": [
               {
-                "Search": {
-                  "filter": [{ "Type": "Land" }, { "Supertype": "Basic" }],
-                  "as": "found"
-                }
+                "Search": { "filter": [{ "Supertype": "Basic" }, { "Type": "Land" }], "as": "land" }
               },
               {
-                "Move": {
-                  "what": { "Bound": "found" },
-                  "to": { "Battlefield": { "tapped": true } }
-                }
+                "Move": { "what": { "Bound": "land" }, "to": { "Battlefield": { "tapped": true } } }
               },
               { "Shuffle": {} }
             ]
