@@ -29,10 +29,18 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
                 to: Some(ZoneKind::Graveyard),
             },
             ReplaceBy::MoveTo(to),
-        ) => Some((what, to, false)),
+        ) if names_objects(what) => Some((what, to, false)),
         (ReplaceWhen::Countered { what }, ReplaceBy::MoveTo(to)) => Some((what, to, true)),
         _ => None,
     };
+    // A class of events (every creature that dies this turn, every card put into a graveyard) is judged as each happens.
+    if covered.is_none() && is_class_shield(when, by) {
+        let rule = Rule::Replaces {
+            when: when.clone(),
+            by: by.clone(),
+        };
+        return Ok(begin(cx, rule, duration.clone()));
+    }
     if let Some((what, to, countered)) = covered {
         let objects = cx
             .scope
@@ -94,6 +102,22 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         return Ok(Run::events(Vec::new()));
     }
     Ok(begin(cx, rule, duration.clone()))
+}
+
+/// Whether the selector names particular objects now (a target, what a spell damaged) rather than a kind of object.
+fn names_objects(what: &Selector) -> bool {
+    what.0
+        .iter()
+        .any(|pred| matches!(pred, Pred::Is(_) | Pred::SameCard(_) | Pred::DamagedBy(_)))
+}
+
+/// Whether the shield replaces a class of zone changes or entries, judged when each happens.
+fn is_class_shield(when: &ReplaceWhen, by: &ReplaceBy) -> bool {
+    match (when, by) {
+        (ReplaceWhen::ZoneChange { what, .. }, ReplaceBy::MoveTo(_)) => !names_objects(what),
+        (ReplaceWhen::Enters { what }, ReplaceBy::Tapped) => !names_objects(what),
+        _ => false,
+    }
 }
 
 /// The rule of a shield begins for its duration, unless it names nothing.

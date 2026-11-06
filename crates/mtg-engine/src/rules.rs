@@ -16,7 +16,7 @@ use mtg_cards::cost::Cost;
 use mtg_cards::keyword::Keyword;
 use mtg_cards::modify::{Attacked, GameRule, Prohibited, SpendAs};
 use mtg_cards::refs::{Ref, Selector, ZoneKind};
-use mtg_cards::trigger::TriggerPattern;
+use mtg_cards::trigger::{ReplaceBy, ReplaceWhen, TriggerPattern};
 use mtg_core::ids::{EffectId, ObjectId, PlayerId};
 use mtg_core::mana::ManaCost;
 use serde::{Deserialize, Serialize};
@@ -223,6 +223,16 @@ pub enum Rule {
         #[serde(default, skip_serializing_if = "std::ops::Not::not")]
         #[cfg_attr(feature = "ts", ts(as = "Option<bool>", optional))]
         countered: bool,
+    },
+    /// A shield over any event of a kind, judged when the event would happen: "if a creature would die this turn, exile it
+    /// instead", "permanents enter tapped this turn". The controller and source of the effect that made it read its references.
+    Replaces {
+        /// The event it replaces.
+        #[cfg_attr(feature = "ts", ts(type = "unknown"))]
+        when: ReplaceWhen,
+        /// What happens instead.
+        #[cfg_attr(feature = "ts", ts(type = "unknown"))]
+        by: ReplaceBy,
     },
     /// Cards in graveyards can't be the targets of spells or abilities (CR 115.4).
     GraveyardCardsUntargetable,
@@ -739,7 +749,10 @@ impl RulesInForce {
                 who, action, controller, source,
             )),
             // Shields are read by the replacement step from the rule changes themselves.
-            Rule::PreventDamage(_) | Rule::Regenerate(_) | Rule::DiesInstead { .. } => {}
+            Rule::PreventDamage(_)
+            | Rule::Regenerate(_)
+            | Rule::DiesInstead { .. }
+            | Rule::Replaces { .. } => {}
             Rule::GraveyardCardsUntargetable
             | Rule::CantLoseGame { .. }
             | Rule::CantCastSpells { .. }
@@ -1027,6 +1040,7 @@ pub(crate) fn names_nothing(rule: &Rule) -> bool {
                 || shield.from.as_ref().is_some_and(Vec::is_empty)
         }
         Rule::DiesInstead { objects, .. } => objects.is_empty(),
+        Rule::Replaces { .. } => false,
         Rule::GraveyardCardsUntargetable
         | Rule::CantLoseGame { .. }
         | Rule::CantCastSpells { .. }
@@ -1225,7 +1239,10 @@ pub(crate) fn fold_created(state: &mut GameState, effect: &RuleEffect) -> Result
     state.next_effect = state.next_effect.max(effect.id.0 + 1);
     if matches!(
         effect.rule,
-        Rule::PreventDamage(_) | Rule::Regenerate(_) | Rule::DiesInstead { .. }
+        Rule::PreventDamage(_)
+            | Rule::Regenerate(_)
+            | Rule::DiesInstead { .. }
+            | Rule::Replaces { .. }
     ) {
         state.possible.replacements = true;
     }

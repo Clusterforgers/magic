@@ -384,7 +384,10 @@ fn shields_of(state: &GameState) -> Vec<RuleEffect> {
         .filter(|effect| {
             matches!(
                 effect.rule,
-                Rule::PreventDamage(_) | Rule::Regenerate(_) | Rule::DiesInstead { .. }
+                Rule::PreventDamage(_)
+                    | Rule::Regenerate(_)
+                    | Rule::DiesInstead { .. }
+                    | Rule::Replaces { .. }
             ) && effect.source.is_some()
                 && effect.is_active(state)
         })
@@ -827,14 +830,24 @@ impl Pass<'_> {
     }
 
     /// Whether the effect replaces this event.
-    #[allow(clippy::too_many_lines)]
     fn matches(
         &self,
         source: &Source,
         when: &ReplaceWhen,
         unit: &Unit,
     ) -> Result<bool, EngineError> {
-        let scope = Scope::announcing(self.state, source.controller, source.object);
+        self.matches_for((source.controller, source.object), when, unit)
+    }
+
+    /// Whether the effect of this controller and source object replaces this event.
+    #[allow(clippy::too_many_lines)]
+    fn matches_for(
+        &self,
+        (controller, object): (PlayerId, ObjectRef),
+        when: &ReplaceWhen,
+        unit: &Unit,
+    ) -> Result<bool, EngineError> {
+        let scope = Scope::announcing(self.state, controller, object);
         Ok(match (when, unit) {
             (ReplaceWhen::TokenCreation { controller, .. }, Unit::Tokens { controller: made }) => {
                 scope.players(controller)?.contains(made)
@@ -1041,6 +1054,7 @@ impl Pass<'_> {
         }
         if !unpreventable {
             found.extend(self.shield_candidates(slot, &unit)?);
+            found.extend(self.replaces_candidates(slot, &unit)?);
         }
         if matches!(&unit, Unit::Move { .. }) {
             found.extend(self.move_rule_candidates(slot));
@@ -1361,6 +1375,31 @@ impl Pass<'_> {
                 object: maker,
                 controller: effect.controller,
                 action: Action::Replace(by),
+                is_self: false,
+            });
+        }
+        Ok(found)
+    }
+
+    /// The shields over any event of a kind (`Rule::Replaces`) that cover this event, each once.
+    fn replaces_candidates(&self, slot: &Slot, unit: &Unit) -> Result<Vec<Candidate>, EngineError> {
+        let mut found = Vec::new();
+        for effect in &self.shields {
+            let (Rule::Replaces { when, by }, Some(maker)) = (&effect.rule, effect.source) else {
+                continue;
+            };
+            let origin = Origin::Shield(effect.id);
+            if slot.applied.contains(&origin)
+                || !applies_to(by, unit)
+                || !self.matches_for((effect.controller, maker), when, unit)?
+            {
+                continue;
+            }
+            found.push(Candidate {
+                origin,
+                object: maker,
+                controller: effect.controller,
+                action: Action::Replace(by.clone()),
                 is_self: false,
             });
         }
@@ -3102,6 +3141,8 @@ mod w13b_tapped_for_counters;
 mod c6_blk_draw_step;
 
 mod c7_untap_dies;
+#[cfg(test)]
+mod r3d_replaces;
 
 mod finality;
 

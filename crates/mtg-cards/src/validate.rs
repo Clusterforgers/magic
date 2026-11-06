@@ -3349,7 +3349,10 @@ impl Walker<'_> {
                         }
                         | ReplaceWhen::Countered { .. },
                         ReplaceBy::MoveTo(_),
-                    ) => {}
+                    )
+                    // A class of events, judged as each happens (`Rule::Replaces`).
+                    | (ReplaceWhen::ZoneChange { .. }, ReplaceBy::MoveTo(_))
+                    | (ReplaceWhen::Enters { .. }, ReplaceBy::Tapped) => {}
                     _ => w.uses("Effect", &format!("Shield.{}", tag_of(when))),
                 }
             }

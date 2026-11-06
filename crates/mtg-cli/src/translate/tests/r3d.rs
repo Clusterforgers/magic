@@ -115,6 +115,44 @@ fn a_characteristic_defining_line_defines_colors_and_types(#[case] mod_: &str, #
     );
 }
 
+#[rstest]
+#[case::creatures_die(
+    "Event$ Moved | ValidLKI$ Creature | Origin$ Battlefield | Destination$ Graveyard | ReplaceWith$ Exile",
+    "DB$ ChangeZone | Defined$ ReplacedCard | Origin$ Battlefield | Destination$ Exile",
+    &[r#""from":"Battlefield""#, r#""MoveTo":"Exile""#]
+)]
+#[case::cards_buried_from_anywhere(
+    "Event$ Moved | ActiveZones$ Command | Destination$ Graveyard | ValidCard$ Card.!token+YouOwn | ReplaceWith$ Exile",
+    "DB$ ChangeZone | Defined$ ReplacedCard | Origin$ All | Destination$ Exile",
+    &[r#""to":"Graveyard""#, r#""Not":"Token""#, r#""MoveTo":"Exile""#]
+)]
+#[case::enter_tapped(
+    "Event$ Moved | ValidCard$ Permanent | Destination$ Battlefield | ReplaceWith$ Exile | ReplacementResult$ Updated",
+    "DB$ Tap | ETB$ True | Defined$ ReplacedCard",
+    &[r#""by":"Tapped""#, r#""Enters""#]
+)]
+fn a_class_of_moves_replaced_this_turn_is_a_shield(
+    #[case] replacement: &str,
+    #[case] instead: &str,
+    #[case] has: &[&str],
+) {
+    let text = format!(
+        "Name:Subject\nTypes:Instant\nA:SP$ Effect | ReplacementEffects$ Rep | SpellDescription$ Test.\nSVar:Rep:{replacement}\nSVar:Exile:{instead}\n"
+    );
+    let json = serde_json::to_string(&Value::Array(abilities(&text))).unwrap();
+    assert!(gaps(&text).is_empty(), "gaps: {:?}", gaps(&text));
+    assert!(json.contains(r#""Shield""#), "{json}");
+    for word in has {
+        assert!(json.contains(word), "{word} missing in {json}");
+    }
+}
+
+#[test]
+fn a_move_replaced_for_particular_cards_stays_a_gap() {
+    let text = "Name:Subject\nTypes:Instant\nA:SP$ Effect | ReplacementEffects$ Rep | SpellDescription$ Test.\nSVar:Rep:Event$ Moved | ValidCard$ Card.IsRemembered | Origin$ Stack | Destination$ Graveyard | ReplaceWith$ Exile\nSVar:Exile:DB$ ChangeZone | Defined$ ReplacedCard | Origin$ All | Destination$ Exile\n";
+    assert_eq!(gaps(text), ["replacement:Moved-shield-objects"]);
+}
+
 #[test]
 fn a_conditional_characteristic_defining_line_stays_a_gap() {
     let line = "S:Mode$ Continuous | CharacteristicDefining$ True | Affected$ Card.Self | SetColor$ All | IsPresent$ Creature.YouCtrl | Description$ Test.";
