@@ -657,6 +657,7 @@ fn discard(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
             "AnyNumber",
             "Optional",
             "UnlessType",
+            "RevealNumber",
         ],
     )?;
     let whole_hand = p.get("Mode") == Some("Hand");
@@ -676,6 +677,19 @@ fn discard(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
     };
     if whole_hand && (p.has("DiscardValid") || p.has("NumCards")) {
         return unmapped("key:Discard.Mode=Hand+count");
+    }
+    // "Reveals N cards from their hand, you choose one": only the plain form, a count of one.
+    if p.has("RevealNumber")
+        && (!reveal_choose
+            || look_only
+            || p.get("Mode") != Some("RevealYouChoose")
+            || p.has("Optional")
+            || p.has("UnlessType")
+            || p.has("RememberDiscarded")
+            || p.has("AnyNumber")
+            || !matches!(p.get("NumCards"), None | Some("1")))
+    {
+        return unmapped("key:Discard.RevealNumber");
     }
     let filter = match p.get("DiscardValid") {
         None | Some("Card") => None,
@@ -745,8 +759,25 @@ fn discard(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
     if text.contains("look at") && !text.contains("reveal") {
         return Ok(vec![discard]);
     }
+    if let Some(shown) = p.get("RevealNumber") {
+        return reveal_some(ctx, shown, who, discard);
+    }
     let hand = json!({"Reveal": {"what": {"Each": [{"OwnedBy": who}, {"In": "Hand"}]}}});
     Ok(vec![hand, discard])
+}
+
+/// "Target player reveals N cards from their hand. You choose one of them. That player discards that card": the player
+/// picks and shows the cards, then the discard is limited to them. A hand of fewer shows what it has.
+fn reveal_some(ctx: &mut Ctx, shown: &str, who: Value, mut discard: Value) -> Tr<Vec<Value>> {
+    let count = amount(ctx, shown)?;
+    let bind = ctx.fresh("shown");
+    let hand = vec![json!({"In": "Hand"}), json!({"OwnedBy": who})];
+    discard["Discard"]["filter"] = json!([{"Is": {"Bound": bind}}]);
+    Ok(vec![
+        json!({"Choose": {"who": who, "from": {"Each": hand}, "count": {"min": count, "max": count}, "as": bind}}),
+        json!({"Reveal": {"what": {"Bound": bind}}}),
+        discard,
+    ])
 }
 
 /// "Discard two cards unless you discard a creature card": the player may instead pay one matching card. Only a plain
