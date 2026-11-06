@@ -210,6 +210,7 @@ const KEYWORDS: &[(&str, Params)] = &[
     ("soulshift", Params::Number),
     ("toxic", Params::Number),
     ("tribute", Params::Number),
+    ("teamwork", Params::Number),
     ("vanishing", Params::W15bNumberOrNone),
     ("devour", Params::Counted),
     ("frenzy", Params::Number),
@@ -356,7 +357,37 @@ pub fn read_all(item: &str) -> Option<Vec<Keyword>> {
         let qualities = protections(found.rest)?;
         return Some(qualities.into_iter().map(Keyword::Protection).collect());
     }
+    if found.name == "hexproof from" && plausible(found.params, found.rest) {
+        let qualities = hexproof_qualities(found.rest)?;
+        return Some(qualities.into_iter().map(Keyword::HexproofFrom).collect());
+    }
     read(item).map(|keyword| vec![keyword])
+}
+
+/// The qualities of a hexproof: "black", "monocolored", "instants", or a list ("artifacts, creatures, and
+/// enchantments") that is one hexproof for each.
+fn hexproof_qualities(rest: &str) -> Option<Vec<Selector>> {
+    let lower = rest.trim_end_matches('.').to_ascii_lowercase();
+    lower
+        .replace(", and ", ", ")
+        .replace(" and ", ", ")
+        .split(", ")
+        .map(hexproof_quality)
+        .collect()
+}
+
+/// The sources one word of a hexproof names; `quality` words, "each color", "monocolored" and "instants".
+fn hexproof_quality(word: &str) -> Option<Selector> {
+    match word {
+        "each color" => Some(each_color()),
+        "monocolored" => Some(Selector(vec![Pred::Compare {
+            stat: StatKind::Colors,
+            op: Cmp::Eq,
+            to: Amount::Fixed(1),
+        }])),
+        "instants" => Some(Selector(vec![Pred::Type(CardType::Instant)])),
+        other => quality(other),
+    }
 }
 
 /// The keyword an item names, when the DSL declares it and its parameter reads; `None` leaves the
@@ -440,6 +471,10 @@ pub fn read(item: &str) -> Option<Keyword> {
         "partner with" => Some(Keyword::PartnerWith(rest.to_owned())),
         "partner" if rest.starts_with('\u{2014}') => partner_group(rest),
         "protection" => protection(rest).map(Keyword::Protection),
+        "hexproof from" => match hexproof_qualities(rest)?.as_slice() {
+            [only] => Some(Keyword::HexproofFrom(only.clone())),
+            _ => None,
+        },
         "companion" => companion(rest),
         "toxic" => positive(rest).map(Keyword::Toxic),
         "annihilator" => positive(rest).map(Keyword::Annihilator),
@@ -982,7 +1017,19 @@ mod tests {
         Keyword::Protection(Selector(vec![pred]))
     }
 
+    fn hexproof_of(kind: CardType) -> Keyword {
+        Keyword::HexproofFrom(Selector(vec![Pred::Type(kind)]))
+    }
+
     #[rstest]
+    #[case::hexproof_list(
+        "Hexproof from artifacts, creatures, and enchantments",
+        &[hexproof_of(CardType::Artifact), hexproof_of(CardType::Creature), hexproof_of(CardType::Enchantment)]
+    )]
+    #[case::hexproof_pair(
+        "Hexproof from artifacts and creatures",
+        &[hexproof_of(CardType::Artifact), hexproof_of(CardType::Creature)]
+    )]
     #[case::one_colour("Protection from white", &[protects(Pred::Color(Color::White))])]
     #[case::two_colours(
         "Protection from white and from blue",
@@ -1115,6 +1162,14 @@ mod tests {
     #[case::lowercase_delve("delve", Keyword::Delve)]
     #[case::hexproof("Hexproof", Keyword::Hexproof)]
     #[case::shroud("Shroud", Keyword::Shroud)]
+    #[case::hexproof_from_a_colour("Hexproof from black", Keyword::HexproofFrom(Selector(vec![Pred::Color(Color::Black)])))]
+    #[case::hexproof_from_lowercase("hexproof from planeswalkers", Keyword::HexproofFrom(Selector(vec![Pred::Type(CardType::Planeswalker)])))]
+    #[case::hexproof_from_instants("hexproof from instants", Keyword::HexproofFrom(Selector(vec![Pred::Type(CardType::Instant)])))]
+    #[case::hexproof_from_each_color(
+        "Hexproof from each color",
+        Keyword::HexproofFrom(each_color())
+    )]
+    #[case::hexproof_from_monocolored("Hexproof from monocolored", Keyword::HexproofFrom(Selector(vec![Pred::Compare { stat: StatKind::Colors, op: Cmp::Eq, to: Amount::Fixed(1) }])))]
     #[case::protection_from_a_colour("Protection from white", Keyword::Protection(Selector(vec![Pred::Color(Color::White)])))]
     #[case::protection_from_a_colour_in_lowercase("protection from red", Keyword::Protection(Selector(vec![Pred::Color(Color::Red)])))]
     #[case::protection_from_colorless("Protection from colorless", Keyword::Protection(Selector(vec![Pred::Colorless])))]
@@ -1521,7 +1576,7 @@ mod tests {
     #[case::equip_for_a_made_up_type("Equip Banana {2}")]
     #[case::equip_for_two_types("Equip Shaman, Warlock, or Wizard {2}")]
     #[case::equip_without_a_cost("Equip legendary creature")]
-    #[case::hexproof_from("Hexproof from white")]
+    #[case::hexproof_from_something_else("Hexproof from banana")]
     #[case::protection_from_a_pair("Protection from red and from blue")]
     #[case::protection_from_a_subtype("Protection from Vampires")]
     #[case::protection_without_a_quality("Protection from")]
