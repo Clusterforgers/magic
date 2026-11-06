@@ -203,9 +203,10 @@ pub(crate) fn reads_of_ref(reference: &Ref) -> Traits {
         | Ref::Candidate
         | Ref::Paid => Traits::NONE,
         Ref::Remembered { on, .. } => reads_of_ref(on),
-        Ref::ControllerOf(inner) => Traits::CONTROL.or(reads_of_ref(inner)),
+        Ref::ControllerOf(inner) | Ref::OrController(inner) => {
+            Traits::CONTROL.or(reads_of_ref(inner))
+        }
         Ref::OwnerOf(inner) => reads_of_ref(inner),
-        Ref::OrController(inner) => Traits::CONTROL.or(reads_of_ref(inner)),
         Ref::Arrived { of, .. } | Ref::Departed(of) => reads_of_ref(of),
         Ref::Each(selector) => reads_of_selector(selector),
     }

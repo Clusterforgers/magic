@@ -952,13 +952,7 @@ impl<'a> Scope<'a> {
                 .map(Target::Player)
                 .into_iter()
                 .collect(),
-            Ref::Granter => self
-                .granter
-                .and_then(|id| state.object(id))
-                .filter(|object| object.zone() == Zone::Battlefield)
-                .map(|object| Target::Object(object.reference()))
-                .into_iter()
-                .collect(),
+            Ref::Granter => self.granter_on_battlefield(),
             Ref::Monarch => state.monarch().map(Target::Player).into_iter().collect(),
             Ref::Promised => self.promised().map(Target::Player).into_iter().collect(),
             Ref::Chosen => self
@@ -1112,6 +1106,16 @@ impl<'a> Scope<'a> {
             }
         }
         Ok(seats)
+    }
+
+    /// The permanent whose static ability gave the running ability, while it is on the battlefield.
+    fn granter_on_battlefield(&self) -> Vec<Target> {
+        self.granter
+            .and_then(|id| self.state.object(id))
+            .filter(|object| object.zone() == Zone::Battlefield)
+            .map(|object| Target::Object(object.reference()))
+            .into_iter()
+            .collect()
     }
 
     /// The players `inner` names, and the controllers of the objects it names.

@@ -133,3 +133,58 @@ fn a_cost_that_sacrifices_the_granter_takes_the_equipment_and_not_the_creature()
     );
     Ok(())
 }
+
+const MAY_BREAK: &str = r#"{"Activated":{"cost":["Tap"],"effects":[{"Pay":{"cost":[{"Sacrifice":{"filter":[{"Is":"Granter"}]}}],"paid":[{"GainLife":{"amount":3}}],"unpaid":[]}}]}}"#;
+
+/// An Equipment: "Equipped creature has '{T}: You may sacrifice this Equipment. If you do, you gain 3 life.'"
+fn pay_stick() -> Arc<CardDefinition> {
+    Arc::new(
+        CardDefinition::new("Pay Stick")
+            .with_type(CardType::Artifact)
+            .with_subtype("Equipment")
+            .with_mana_cost(cost(1, &[]))
+            .with_rules(rules(&format!(
+                r#"{{"Static":{{"affected":"Attached","mods":[{{"GrantAbility":{MAY_BREAK}}}]}}}}"#
+            ))),
+    )
+}
+
+#[rstest]
+#[case::yes(true)]
+#[case::no(false)]
+fn paying_with_the_granter_in_the_middle_of_a_resolution_sacrifices_the_equipment_only_on_yes(
+    #[case] yes: bool,
+) -> Result<(), ScriptError> {
+    let mut driver = Driver::from_scenario(
+        Scenario::new(2)
+            .battlefield(
+                0,
+                vec![ready(bear()), attached_to(ready(pay_stick()), 0, 0)],
+            )
+            .at(1, 0, Step::Main1),
+    )?;
+    let life = driver.state().player(crate::common::pid(0)).unwrap().life();
+    driver.begin_activation("Grizzly Bears")?;
+    for _ in 0..20 {
+        if driver.state().stack().is_empty() && driver.state().resolving().is_none() {
+            break;
+        }
+        if matches!(
+            driver.decision()?.kind,
+            mtg_engine::decision::DecisionKind::YesNo(_)
+        ) {
+            driver.answer(mtg_engine::decision::Answer::YesNo(
+                mtg_engine::choose::YesNoChoice(yes),
+            ))?;
+        } else {
+            driver.answer_passively()?;
+        }
+    }
+    assert_eq!(driver.id_of("Pay Stick").is_err(), yes);
+    assert!(driver.id_of("Grizzly Bears").is_ok());
+    assert_eq!(
+        driver.state().player(crate::common::pid(0)).unwrap().life(),
+        life + if yes { 3 } else { 0 }
+    );
+    Ok(())
+}

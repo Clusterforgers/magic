@@ -412,6 +412,7 @@ mod tests {
                 parts: Vec::new(),
                 casting: false,
                 changes: Vec::new(),
+                granter: None,
             })
         );
     }
@@ -537,7 +538,7 @@ mod tests {
     ) {
         let game = state(vec![vec![], vec![]], vec![vec![], vec![]]);
         let cost = cost(json);
-        let result = Price::announced_in(&cost, &game, PlayerId(0), ObjectId(0));
+        let result = Price::announced_in(&cost, &game, PlayerId(0), ObjectId(0), None);
         assert_eq!(result.is_ok(), priced, "{result:?}");
     }
 }

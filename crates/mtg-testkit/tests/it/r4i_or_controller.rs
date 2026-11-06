@@ -56,8 +56,8 @@ fn the_damage_goes_to_the_player_or_to_the_controller_of_the_planeswalker(
         }
         driver.answer_passively()?;
     }
-    for seat in 0..seats {
-        let lost = before[seat] - life(&driver, seat);
+    for (seat, was) in before.iter().enumerate() {
+        let lost = was - life(&driver, seat);
         assert_eq!(lost, if seat == victim { 3 } else { 0 }, "seat {seat}");
     }
     Ok(())

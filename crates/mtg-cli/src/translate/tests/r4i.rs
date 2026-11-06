@@ -81,7 +81,7 @@ fn may_flash_cost_is_a_way_to_cast_for_the_cost_and_the_extra(
             "{found}"
         );
     } else {
-        assert!(!gaps(&text).is_empty());
+        assert_eq!(gaps(&text), vec!["keyword:MayFlashCost-cost".to_owned()]);
     }
 }
 

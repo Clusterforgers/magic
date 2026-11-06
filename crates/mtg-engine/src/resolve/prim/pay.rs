@@ -68,7 +68,10 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
             snapshots: Vec::new(),
         });
     }
-    let template = price_of(&repeated(&c6_eg_counted(cx, cost)?, times))?;
+    let template = Price {
+        granter: cx.scope.granter,
+        ..price_of(&repeated(&c6_eg_counted(cx, cost)?, times))?
+    };
     // The source is lost once; a cost that loses it several times over is not one payment.
     if times > 1 && template.moves_source() {
         return Err(ResolveError::Unsupported(leaving_name(template.leaves)));
@@ -377,7 +380,7 @@ fn settle<'a>(
             player,
             source,
             barred: &barred,
-            granter: None,
+            granter: price.granter,
         });
         // Too few cards, or too little power or mana value among them (a pick by total).
         if pick.short(state, &candidates) {
