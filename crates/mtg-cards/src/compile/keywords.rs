@@ -156,6 +156,7 @@ const KEYWORDS: &[(&str, Params)] = &[
     ("replicate", Params::Cost),
     ("scavenge", Params::Cost),
     ("spectacle", Params::Cost),
+    ("freerunning", Params::Cost),
     ("surge", Params::Cost),
     ("unearth", Params::Cost),
     ("awaken", Params::Cost),
@@ -444,6 +445,7 @@ pub fn read(item: &str) -> Option<Keyword> {
         "emerge" => spell_cost(rest).map(Keyword::Emerge),
         "harmonize" => spell_cost(rest).map(Keyword::Harmonize),
         "spectacle" => spell_cost(rest).map(Keyword::Spectacle),
+        "freerunning" => spell_cost(rest).map(Keyword::Freerunning),
         "afterlife" => positive(rest).map(Keyword::Afterlife),
         "ninjutsu" => cost(rest).map(Keyword::Ninjutsu),
         "echo" => spell_cost(rest).map(Keyword::Echo),
@@ -1406,6 +1408,7 @@ mod tests {
         Keyword::Harmonize(mana("{X}{G}{G}{G}{G}"))
     )]
     #[case::spectacle("Spectacle {1}{B}", Keyword::Spectacle(mana("{1}{B}")))]
+    #[case::freerunning("Freerunning {1}{B}", Keyword::Freerunning(mana("{1}{B}")))]
     #[case::spectacle_hybrid("spectacle {B/R}{B/R}", Keyword::Spectacle(mana("{B/R}{B/R}")))]
     #[case::afterlife("Afterlife 1", Keyword::Afterlife(1))]
     #[case::afterlife_three("afterlife 3", Keyword::Afterlife(3))]
@@ -1828,6 +1831,7 @@ mod tests {
             "Horsemanship",
             "Phasing",
             "Spectacle {B}",
+            "Freerunning {B}",
             "Demonstrate",
             "Bargain",
             "Conspire",

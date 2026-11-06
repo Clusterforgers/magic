@@ -168,7 +168,7 @@ fn damage_player(
 }
 
 /// Notes that the creature `source` dealt combat damage to a player, with its controller and creature types as they are now
-/// (prowl, CR 702.76a).
+/// and whether it is a commander (prowl, CR 702.76a; freerunning, CR 702.173a).
 fn record_hit(state: &mut GameState, source: mtg_core::ids::ObjectId) {
     let Some(controller) = crate::characteristics::controller_of(state, source) else {
         return;
@@ -178,6 +178,7 @@ fn record_hit(state: &mut GameState, source: mtg_core::ids::ObjectId) {
         controller,
         types,
         every_type,
+        commander: state.is_commander(source),
     });
 }
 

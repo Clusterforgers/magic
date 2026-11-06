@@ -334,6 +334,9 @@ pub enum Keyword {
     Phasing,
     /// Spectacle with its cost (CR 702.137): an alternative cost to cast the card from a hand when an opponent lost life this turn.
     Spectacle(Cost),
+    /// Freerunning with its cost (CR 702.173): an alternative cost to cast the card from a hand when its caster dealt combat damage
+    /// to a player this turn with an Assassin or a commander.
+    Freerunning(Cost),
     /// Umbra armor (CR 702.89): if the creature this Aura enchants would be destroyed, instead all damage is removed from it and this Aura is destroyed.
     UmbraArmor,
     /// Cipher (CR 702.99): as the spell resolves, its controller may exile it encoded on a creature they control; whenever that creature deals combat damage to a player, its controller may cast a copy of the encoded card without paying its mana cost, until the card leaves exile or the creature leaves the battlefield.
@@ -534,6 +537,7 @@ impl Keyword {
         "Horsemanship",
         "Phasing",
         "Spectacle",
+        "Freerunning",
         "Umbra armor",
         "Cipher",
         "Graft",
@@ -718,6 +722,7 @@ impl Keyword {
             Keyword::Horsemanship => "Horsemanship",
             Keyword::Phasing => "Phasing",
             Keyword::Spectacle(_) => "Spectacle",
+            Keyword::Freerunning(_) => "Freerunning",
             Keyword::Cipher => "Cipher",
             Keyword::Graft(_) => "Graft",
             Keyword::Afflict(_) => "Afflict",
@@ -956,6 +961,7 @@ mod tests {
             Keyword::Horsemanship,
             Keyword::Phasing,
             Keyword::Spectacle(Cost::default()),
+            Keyword::Freerunning(Cost::default()),
             Keyword::UmbraArmor,
             Keyword::Cipher,
             Keyword::Graft(2),

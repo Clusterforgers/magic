@@ -175,6 +175,10 @@ export const CASTING: readonly Entry[] = [
     'You may cast this spell for its prowl cost if you dealt combat damage to a player this turn with a creature that shares a type with it.',
   ],
   [
+    'Freerunning',
+    'You may cast this spell for its freerunning cost if you dealt combat damage to a player this turn with an Assassin or commander.',
+  ],
+  [
     'Unearth',
     'Pay the unearth cost: return this card from your graveyard to the battlefield. It gains haste. Exile it at the beginning of the next end step or if it would leave.',
   ],

@@ -524,6 +524,13 @@ fn keyword_way(
             cost,
             in_hand && state.opponent_lost_life(player),
         ),
+        // Open from a hand in a turn in which an Assassin or a commander of the caster dealt combat damage to a player (CR 702.173a).
+        Keyword::Freerunning(cost) => (
+            CastWay::Freerunning,
+            "Freerunning",
+            cost,
+            in_hand && state.freerunning_open(player),
+        ),
         Keyword::Awaken { cost, .. } => (CastWay::Awaken, "Awaken", cost, in_hand),
         Keyword::Prototype { cost, .. } => (CastWay::Prototype, "Prototype", cost, in_hand),
         Keyword::Morph(_) | Keyword::Megamorph(_) | Keyword::Disguise(_) if in_hand => {
@@ -552,6 +559,7 @@ fn keyword_way(
             | CastWay::Blitz
             | CastWay::Prowl
             | CastWay::Spectacle
+            | CastWay::Freerunning
             | CastWay::Mayhem
             | CastWay::Mutate
             | CastWay::Prototype

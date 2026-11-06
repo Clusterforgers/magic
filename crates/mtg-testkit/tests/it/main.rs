@@ -238,6 +238,7 @@ mod format_hooks;
 mod free_cast_fuzz;
 mod free_casts;
 mod free_loops;
+mod freerunning;
 mod fuse;
 mod fuzz_games;
 mod gap_fuzz;
