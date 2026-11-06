@@ -61,6 +61,7 @@ mod replacements_moved;
 mod replacements_phase;
 mod replacements_token;
 pub mod report;
+mod spend_uses;
 pub mod statics;
 pub mod statics_again;
 pub mod statics_alt;

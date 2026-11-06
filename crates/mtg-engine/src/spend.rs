@@ -119,9 +119,13 @@ impl Spend {
 
     /// Activating an ability of `source`; `has_x` when its cost has {X}.
     pub fn for_ability(state: &GameState, source: ObjectId, has_x: bool) -> Self {
+        let mut traits = traits_of(state, source);
+        traits.on_battlefield = state
+            .object(source)
+            .is_some_and(|object| matches!(object.zone(), Zone::Battlefield));
         Spend {
             kind: SpendKind::Ability,
-            traits: traits_of(state, source),
+            traits,
             has_x,
         }
     }

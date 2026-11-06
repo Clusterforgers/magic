@@ -98,6 +98,10 @@ pub fn chain_at(ctx: &mut Ctx, p: &Params, top: bool) -> Tr<Vec<Value>> {
     effects.extend(rest);
     let effects = super::any_player::pay_for_any(effects)?;
     match p.get("Cost") {
+        Some(text) if !top && text.starts_with("Mandatory ") => Ok(super::cost_more::mandatory(
+            &text["Mandatory ".len()..],
+            &effects,
+        )?),
         Some(text) if !top => {
             let cost = super::cost::cost(ctx, text)?;
             if let Some((verb, taken)) = taken_read_after(&cost, &effects) {

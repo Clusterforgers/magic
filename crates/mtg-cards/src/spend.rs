@@ -63,6 +63,8 @@ pub enum SpendFact {
     FromGraveyard,
     /// It shares a creature type with a commander of the caster ("a creature spell that shares a creature type with your commander").
     SharesCommanderType,
+    /// The source of the ability is on the battlefield ("abilities of artifacts on the battlefield").
+    OnBattlefield,
 }
 
 #[allow(clippy::trivially_copy_pass_by_ref)]
@@ -123,6 +125,10 @@ pub struct SpendTraits {
     #[serde(default, skip_serializing_if = "is_false")]
     #[cfg_attr(feature = "ts", ts(as = "Option<bool>", optional))]
     pub shares_commander_type: bool,
+    /// The source of the ability is on the battlefield.
+    #[serde(default, skip_serializing_if = "is_false")]
+    #[cfg_attr(feature = "ts", ts(as = "Option<bool>", optional))]
+    pub on_battlefield: bool,
 }
 
 impl SpendFilter {
@@ -167,6 +173,7 @@ impl SpendFilter {
                 SpendFact::NotOwned => traits.not_owned,
                 SpendFact::FromGraveyard => traits.from_graveyard,
                 SpendFact::SharesCommanderType => traits.shares_commander_type,
+                SpendFact::OnBattlefield => traits.on_battlefield,
             })
     }
 }

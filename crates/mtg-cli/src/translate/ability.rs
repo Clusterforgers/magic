@@ -28,7 +28,7 @@ pub fn ability_line(ctx: &mut Ctx, body: &str) -> Tr<Vec<Value>> {
 
 /// The cost a spell pays besides its mana cost, as the `AdditionalCost` ability that states it. The mana of the cost must
 /// be the card's own: another amount is an alternative cost.
-fn additional_cost(ctx: &Ctx, text: &str) -> Tr<Option<Value>> {
+pub(super) fn additional_cost(ctx: &Ctx, text: &str) -> Tr<Option<Value>> {
     let words = super::cost::parts(text);
     let mana: Vec<&str> = words
         .iter()

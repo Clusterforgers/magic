@@ -149,6 +149,14 @@ fn item(ctx: &Ctx, word: &str) -> Tr<Value> {
         "Discard" => discard(ctx, number, what),
         "Exile" | "ExileFromGrave" if on_self => Ok(json!("ExileSelf")),
         "ExileFromGrave" => zone_cost(ctx, "ExileFromGraveyard", number, what),
+        // "Exile it" in a death trigger: the card the permanent became, in whichever graveyard it went to.
+        "ExileAnyGrave" if number == "1" && what == "Card.TriggeredNewCard" => {
+            let card = super::triggered::remembered_by_event(
+                ctx.trigger.as_ref(),
+                what.split('.').nth(1).unwrap_or_default(),
+            )?;
+            Ok(json!({"ExileFromGraveyard": {"filter": [{"Is": card}], "any_player": true}}))
+        }
         "ExileFromHand" => zone_cost(ctx, "ExileFromHand", number, what),
         "Return" if on_self => Ok(json!({"ReturnToHand": {"filter": ["This"]}})),
         "Return" => zone_cost(ctx, "ReturnToHand", number, what),
@@ -239,9 +247,8 @@ fn other_if_worded(ctx: &Ctx, verb: &str, number: &str, what: &str) -> Tr<String
 }
 
 fn discard(ctx: &Ctx, number: &str, what: &str) -> Tr<Value> {
-    // Paying at random picks the cards without the payer: the cost has no such pick.
     if what == "Random" {
-        return unmapped("cost:Discard-random");
+        return super::cost_more::random(number);
     }
     // "Hand" discards the whole hand whatever the number says: the count is the hand size.
     if what == "Hand" {

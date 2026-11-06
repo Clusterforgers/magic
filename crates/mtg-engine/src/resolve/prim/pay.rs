@@ -159,6 +159,11 @@ fn repeated(cost: &Cost, times: usize) -> Cost {
                 CostItem::Mana(_) => vec![item.clone(); times],
                 CostItem::PayLife(amount) => vec![CostItem::PayLife(times_over(amount))],
                 CostItem::PayEnergy(amount) => vec![CostItem::PayEnergy(times_over(amount))],
+                // The library and the hand must hold the cards of every payment at once.
+                CostItem::Draw(amount) => vec![CostItem::Draw(times_over(amount))],
+                CostItem::DiscardRandom(amount) => {
+                    vec![CostItem::DiscardRandom(times_over(amount))]
+                }
                 CostItem::RemoveCounters {
                     counter,
                     count,
@@ -1104,5 +1109,18 @@ mod tests {
             said(run_with(&game, &[], &pay)),
             Said::Declines(0, "Pay {X}{G}?".into())
         );
+    }
+
+    #[rstest::rstest]
+    #[case::draw(r#"[{"Draw":1}]"#, r#"[{"Draw":3}]"#)]
+    #[case::draw_two(r#"[{"Draw":2}]"#, r#"[{"Draw":6}]"#)]
+    #[case::discard_at_random(r#"[{"DiscardRandom":1}]"#, r#"[{"DiscardRandom":3}]"#)]
+    fn a_cost_paid_several_times_asks_for_all_the_cards_at_once(
+        #[case] once: &str,
+        #[case] thrice: &str,
+    ) {
+        let once: Cost = serde_json::from_str(once).unwrap();
+        let thrice: Cost = serde_json::from_str(thrice).unwrap();
+        assert_eq!(repeated(&once, 3), thrice);
     }
 }

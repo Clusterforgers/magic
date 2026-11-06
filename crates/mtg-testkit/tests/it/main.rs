@@ -413,6 +413,7 @@ mod pump_spells;
 mod r1a_spend;
 mod r1c;
 mod r1fix;
+mod r2e_cost_parts;
 mod r4_audit;
 mod r6q1_face_down_cost;
 mod r7p3_next_spell;

@@ -23,6 +23,7 @@ pub fn item(ctx: &Ctx, head: &str, fields: &[&str]) -> Option<Tr<Value>> {
     Some(match head {
         "Exert" if on_self && number == "1" => Ok(json!("Exert")),
         "Blight" => amount(ctx, number).map(|n| json!({ "Blight": n })),
+        "Draw" if what == "You" => fixed(number).map(|n| json!({ "Draw": n })),
         "DamageYou" => amount(ctx, number).map(|n| json!({ "DamageToYou": n })),
         "ExileFromTop" if what == "Card" => amount(ctx, number).map(|n| json!({ "ExileTop": n })),
         "CollectEvidence" => match number.parse::<u32>() {
@@ -36,6 +37,34 @@ pub fn item(ctx: &Ctx, head: &str, fields: &[&str]) -> Option<Tr<Value>> {
         "RemoveAnyCounter" => remove_among(ctx, number, what, fields.get(2).copied()),
         _ => return None,
     })
+}
+
+/// Discarding cards at random: the engine picks them from the hand with its random source.
+pub fn random(number: &str) -> Tr<Value> {
+    fixed(number).map(|n| json!({ "DiscardRandom": n }))
+}
+
+/// `Cost$ Mandatory Sac<1/CARDNAME>`: the source is sacrificed without a choice, and the effects follow if it was
+/// ("Sacrifice it. If you do, ...").
+pub fn mandatory(cost: &str, effects: &[Value]) -> Tr<Vec<Value>> {
+    if !matches!(
+        cost,
+        "Sac<1/CARDNAME>" | "Sac<1/CARDNAME/this artifact>" | "Sac<1/CARDNAME/this creature>"
+    ) {
+        return unmapped("cost:Mandatory");
+    }
+    Ok(vec![
+        json!({"Sacrifice": {"filter": ["This"]}}),
+        json!({"If": {"condition": "Performed", "then": effects}}),
+    ])
+}
+
+/// A fixed count: a counted draw or discard is paid by the engine only for a number.
+fn fixed(number: &str) -> Tr<u32> {
+    match number.parse::<u32>() {
+        Ok(n) if n > 0 => Ok(n),
+        _ => unmapped("cost:counted-draw-or-discard"),
+    }
 }
 
 fn filtered(ctx: &Ctx, variant: &str, number: &str, what: &str) -> Tr<Value> {

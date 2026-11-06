@@ -616,8 +616,14 @@ fn cost_modifier(ctx: &Ctx, p: &Params, change: &str) -> Tr<Value> {
             "Relative",
             "OnlyFirstSpell",
             "Condition",
+            "Cost",
         ],
     )?;
+    let mana_cost = match cost_key(ctx, p, change)? {
+        CostKey::Own(ability) => return Ok(ability),
+        CostKey::Mana(mana) => Some(mana),
+        CostKey::None => None,
+    };
     let activating = activation_kind(p)?;
     if activating.is_none() && p.get("Type") != Some("Spell") {
         return unmapped("static:CostModifier-Type");
@@ -681,7 +687,7 @@ fn cost_modifier(ctx: &Ctx, p: &Params, change: &str) -> Tr<Value> {
     } else if p.has("OnlyFirstSpell") {
         return unmapped("key:Static.CostModifier.OnlyFirstSpell-value");
     }
-    let mut built = modifier(ctx, p, change, &applies)?;
+    let mut built = modifier(ctx, p, change, &applies, mana_cost)?;
     if let Some(kind) = activating {
         built["CostModifier"]["activating"] = json!(kind);
     }
@@ -690,18 +696,89 @@ fn cost_modifier(ctx: &Ctx, p: &Params, change: &str) -> Tr<Value> {
         1 => built["CostModifier"]["condition"] = conditions.remove(0),
         _ => built["CostModifier"]["condition"] = json!({"All": conditions}),
     }
-    if let Some(least) = p.get("MinMana") {
-        let Ok(least) = least.parse::<u32>() else {
-            return unmapped("key:Static.CostModifier.MinMana-not-a-number");
-        };
+    if let Some(least) = least_mana(p)? {
         built["CostModifier"]["least"] = json!(least);
     }
     Ok(built)
 }
 
+/// `MinMana$`: the least mana a reduction leaves.
+fn least_mana(p: &Params) -> Tr<Option<u32>> {
+    match p.get("MinMana").map(str::parse::<u32>) {
+        None => Ok(None),
+        Some(Ok(least)) => Ok(Some(least)),
+        Some(Err(_)) => unmapped("key:Static.CostModifier.MinMana-not-a-number"),
+    }
+}
+
+/// What `Cost$` of a cost modifier line is.
+enum CostKey<'a> {
+    /// The line has none.
+    None,
+    /// Mana: the same as `Amount$` of an increase.
+    Mana(&'a str),
+    /// The spell's own additional cost, as the ability that states it.
+    Own(Value),
+}
+
+/// Reads `Cost$` of a cost modifier line: mana of an increase, or the spell's own additional cost.
+fn cost_key<'a>(ctx: &Ctx, p: &'a Params, change: &str) -> Tr<CostKey<'a>> {
+    let Some(text) = p.get("Cost") else {
+        return Ok(CostKey::None);
+    };
+    if !super::cost::parts(text)
+        .iter()
+        .all(|word| super::cost::is_mana(word))
+    {
+        return additional_cost_line(ctx, p, change).map(CostKey::Own);
+    }
+    if change != "Increase" || p.has("Amount") {
+        return unmapped("key:Static.CostModifier.Cost-with-Amount");
+    }
+    Ok(CostKey::Mana(text))
+}
+
+/// "As an additional cost to cast this spell, ...": a `RaiseCost` of the spell itself by a cost that is not mana. A cost the
+/// caster may pay or skip is not this, and neither is a cost of other spells.
+fn additional_cost_line(ctx: &Ctx, p: &Params, change: &str) -> Tr<Value> {
+    let own = p.get("ValidCard") == Some("Card.Self")
+        && matches!(p.get("Activator"), None | Some("You"))
+        && p.get("Type") == Some("Spell")
+        && change == "Increase"
+        && ![
+            "Amount",
+            "ValidTarget",
+            "ValidSpell",
+            "Condition",
+            "Relative",
+            "MinMana",
+            "Color",
+        ]
+        .iter()
+        .any(|key| p.has(key))
+        && matches!(p.get("EffectZone"), None | Some("All"))
+        && p.get("AffectedZone").is_none();
+    let optional = p
+        .get("Description")
+        .is_some_and(|text| text.contains("you may"));
+    if !own || optional {
+        return unmapped("key:Static.CostModifier.Cost");
+    }
+    match super::ability::additional_cost(ctx, p.get("Cost").unwrap_or_default())? {
+        Some(ability) => Ok(ability),
+        None => unmapped("key:Static.CostModifier.Cost"),
+    }
+}
+
 /// The `CostModifier` ability for the amount of mana a line changes by.
-fn modifier(ctx: &Ctx, p: &Params, change: &str, applies: &[Value]) -> Tr<Value> {
-    let amount = p.get("Amount").unwrap_or_default();
+fn modifier(
+    ctx: &Ctx,
+    p: &Params,
+    change: &str,
+    applies: &[Value],
+    mana_cost: Option<&str>,
+) -> Tr<Value> {
+    let amount = mana_cost.or(p.get("Amount")).unwrap_or_default();
     // `Color$` names the one colour whose symbols the change adds or removes, `Amount$` how many.
     // "{U} (or {1}) less" takes a coloured symbol when the cost has one and generic mana when it has not, which a
     // reduction of one symbol does not say.

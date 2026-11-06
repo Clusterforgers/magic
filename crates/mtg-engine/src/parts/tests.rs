@@ -452,6 +452,8 @@ fn a_counter_of_any_kind_takes_the_kind_chosen(
 #[case::damage(r#"{"DamageToYou":3}"#, "Cost.DamageToYou")]
 #[case::unattach(r#""Unattach""#, "Cost.Unattach")]
 #[case::exile_top(r#"{"ExileTop":2}"#, "Cost.ExileTop")]
+#[case::draw(r#"{"Draw":2}"#, "Cost.Draw")]
+#[case::discard_random(r#"{"DiscardRandom":1}"#, "Cost.DiscardRandom")]
 #[case::evidence(r#"{"CollectEvidence":4}"#, "Cost.CollectEvidence")]
 #[case::blight(r#"{"Blight":1}"#, "Cost.Blight")]
 #[case::behold(r#"{"Behold":{"filter":[]}}"#, "Cost.Behold")]
@@ -468,9 +470,53 @@ fn the_new_parts_are_read_and_named(#[case] json: &str, #[case] name: &str) {
 #[rstest]
 #[case::damage(r#"{"DamageToYou":{"Life":"You"}}"#, "Cost.DamageToYou.Counted")]
 #[case::exile_top(r#"{"ExileTop":{"Life":"You"}}"#, "Cost.ExileTop.Counted")]
+#[case::draw(r#"{"Draw":{"Life":"You"}}"#, "Cost.Draw.Counted")]
+#[case::discard_random(r#"{"DiscardRandom":{"Life":"You"}}"#, "Cost.DiscardRandom.Counted")]
 #[case::blight(r#"{"Blight":{"Life":"You"}}"#, "Cost.Blight.Counted")]
 #[case::blight_x(r#"{"Blight":"X"}"#, "Cost.Blight.Counted")]
 #[case::library_zone(r#"{"ToLibrary":{"from":"Exile","filter":[]}}"#, "Cost.ToLibrary.Zone")]
 fn the_new_parts_name_what_they_cannot_count(#[case] json: &str, #[case] name: &str) {
     assert_eq!(Part::read(&item(json)), Err(name));
+}
+
+#[rstest]
+#[case::draw_one(r#"{"Draw":1}"#, true)]
+#[case::draw_the_whole_library(r#"{"Draw":5}"#, true)]
+#[case::draw_more_than_the_library_holds(r#"{"Draw":6}"#, false)]
+#[case::discard_one_at_random(r#"{"DiscardRandom":1}"#, true)]
+#[case::discard_the_whole_hand(r#"{"DiscardRandom":2}"#, true)]
+#[case::discard_more_than_the_hand_holds(r#"{"DiscardRandom":3}"#, false)]
+fn a_draw_or_random_discard_is_payable_only_with_the_cards(#[case] json: &str, #[case] ok: bool) {
+    let game = game();
+    assert_eq!(part(json).payable(&payer(&game, &[]), &[]).is_some(), ok);
+}
+
+#[test]
+fn a_draw_is_paid_by_drawing_the_top_cards() {
+    let game = game();
+    let events = part(r#"{"Draw":2}"#).events(&game, ME, named(&game, "Source"), &[]);
+    assert_eq!(events.len(), 2);
+    assert!(
+        events
+            .iter()
+            .all(|event| matches!(event, Event::CardDrawn { player, .. } if *player == ME))
+    );
+}
+
+#[test]
+fn a_random_discard_logs_its_pick_before_the_discard_and_takes_a_card_of_the_hand() {
+    let game = game();
+    let source = named(&game, "Source");
+    let events = part(r#"{"DiscardRandom":1}"#).events(&game, ME, source, &[]);
+    let [
+        Event::ChosenAtRandom { cards },
+        Event::CardDiscarded { player, object },
+    ] = events.as_slice()
+    else {
+        panic!("a pick and a discard: {events:?}");
+    };
+    assert_eq!((cards.as_slice(), *player), ([*object].as_slice(), ME));
+    assert!(game.zone(Zone::Hand(ME)).contains(object));
+    let again = part(r#"{"DiscardRandom":1}"#).events(&game, ME, source, &[]);
+    assert_eq!(events, again, "the same state picks the same card");
 }

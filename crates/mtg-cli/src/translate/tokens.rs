@@ -302,6 +302,9 @@ fn mana(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
             "AddsNoCounter",
             "Defined",
             "ValidTgts",
+            "PersistentMana",
+            "CombatMana",
+            "TriggersWhenSpent",
         ],
     )?;
     let produced = p.get("Produced").unwrap_or_default();
@@ -356,7 +359,13 @@ fn mana(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
     let mut only = Vec::new();
     let restriction = p.get("RestrictValid");
     if let Some(restriction) = restriction {
-        only.push(json!({ "Spell": spend_filter(restriction)? }));
+        match spend_filter(restriction) {
+            Ok(filter) => only.push(json!({ "Spell": filter })),
+            Err(gap) => match super::spend_uses::uses(ctx, restriction) {
+                Ok(uses) if p.get("AddsNoCounter").is_none() => only.extend(uses),
+                _ => return Err(gap),
+            },
+        }
     }
     // "That spell can't be countered": a rider on the spells the mana may pay for (`!Permanent` is the instant or sorcery spells).
     match p.get("AddsNoCounter") {
@@ -370,8 +379,18 @@ fn mana(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
         }
         Some(other) => return unmapped(format!("key:Mana.AddsNoCounter={other}")),
     }
+    if let Some(name) = p.get("TriggersWhenSpent") {
+        only.extend(super::spend_uses::when_spent(ctx, name)?);
+    }
     if !only.is_empty() {
         effect["only"] = json!(only);
+    }
+    // "Until end of turn, you don't lose this mana as steps and phases end" (or "as steps end" for combat).
+    match (flag(p, "PersistentMana")?, flag(p, "CombatMana")?) {
+        (false, false) => {}
+        (true, false) => effect["lasts"] = json!("Turn"),
+        (false, true) => effect["lasts"] = json!("Combat"),
+        (true, true) => return unmapped("key:Mana.PersistentMana+CombatMana"),
     }
     Ok(json!({ "AddMana": effect }))
 }
