@@ -1,0 +1,40 @@
+{
+  "oracle_id": "7e0d2965-bbcd-4214-b1b6-c0d2601ce078",
+  "name": "Roil Elemental",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Roil Elemental",
+      "oracle_fingerprint": "49d6f0ab23b8f88801231e3f9f40c111",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Land" }, { "ControlledBy": "You" }],
+                "to": "Battlefield"
+              }
+            },
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "Continuous": {
+                        "affected": { "Target": 0 },
+                        "mods": [{ "SetController": "You" }],
+                        "duration": "WhileYouControlSource"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

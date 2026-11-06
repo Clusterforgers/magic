@@ -1,0 +1,27 @@
+{
+  "oracle_id": "701c8624-70d8-49df-84b1-d7b2a8e83552",
+  "name": "Child of the Volcano",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Child of the Volcano",
+      "oracle_fingerprint": "b0f028fc558abe7d9697a65d45b3bccc",
+      "abilities": [
+        { "Keyword": "Trample" },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "if": {
+              "Compare": {
+                "left": { "Tallied": { "who": "You", "what": "Descended" } },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

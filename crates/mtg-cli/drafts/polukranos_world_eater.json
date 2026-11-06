@@ -1,0 +1,47 @@
+{
+  "oracle_id": "ecbf5560-853a-43a9-bf70-ac8d403b0ce8",
+  "name": "Polukranos, World Eater",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Polukranos, World Eater",
+      "oracle_fingerprint": "9b10046fe6eaaea18ef89b86a52bb1a5",
+      "abilities": [
+        { "Activated": { "cost": "{X}{X}{G}", "effects": [{ "Monstrosity": { "count": "X" } }] } },
+        {
+          "Triggered": {
+            "when": { "BecomesMonstrous": { "what": ["This"] } },
+            "targets": [
+              {
+                "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }] },
+                "bounds": {
+                  "min": 0,
+                  "max": { "Count": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }] }
+                },
+                "divide": "X"
+              }
+            ],
+            "effects": [
+              { "DealDamage": { "to": { "Target": 0 }, "amount": "Divided" } },
+              {
+                "RepeatEach": {
+                  "over": { "Target": 0 },
+                  "as": "damager",
+                  "effects": [
+                    {
+                      "DealDamage": {
+                        "source": { "Bound": "damager" },
+                        "to": "This",
+                        "amount": { "Stat": { "of": { "Bound": "damager" }, "stat": "Power" } }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,53 @@
+{
+  "oracle_id": "52e77cc3-f8e9-4a20-811b-fe1e46a96ad7",
+  "name": "Walk-In Closet // Forgotten Cellar",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Walk-In Closet",
+      "oracle_fingerprint": "94b5f718890741a3be44b6f17fd3c8a4",
+      "abilities": [
+        {
+          "Rule": {
+            "rule": {
+              "MayCast": { "what": [{ "Type": "Land" }], "from": "Graveyard", "play": true }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Forgotten Cellar",
+      "oracle_fingerprint": "a3e4d76f10a8d231589ab08c7dc52129",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "DoorUnlocked": { "who": "You", "door": 0 } },
+            "effects": [
+              {
+                "Rule": {
+                  "rule": {
+                    "MayCast": { "what": [{ "Not": { "Type": "Land" } }], "from": "Graveyard" }
+                  },
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "Shield": {
+                  "when": {
+                    "ZoneChange": {
+                      "what": [{ "Not": "Token" }, { "OwnedBy": "You" }],
+                      "to": "Graveyard"
+                    }
+                  },
+                  "by": { "MoveTo": "Exile" },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,25 @@
+{
+  "oracle_id": "e0587218-206e-41ed-af3c-f06b7a668e90",
+  "name": "Ritual of Subdual",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ritual of Subdual",
+      "oracle_fingerprint": "4ee3cca5edd00e0474ad524ed0fc583a",
+      "abilities": [
+        { "Keyword": { "CumulativeUpkeep": "{2}" } },
+        {
+          "Rule": {
+            "rule": {
+              "ManaProduced": {
+                "what": [{ "Type": "Land" }],
+                "who": "EachPlayer",
+                "change": { "OnlyType": "Colorless" }
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,23 @@
+{
+  "oracle_id": "520b2799-66bd-40bf-9bc0-9cd3aed321f5",
+  "name": "Watery Grasp",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Watery Grasp",
+      "oracle_fingerprint": "40f3d5946315fe9b1933fc7e2a20fc44",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        { "Static": { "affected": "Attached", "mods": ["DoesntUntap"] } },
+        {
+          "Activated": {
+            "cost": [{ "Waterbend": 5 }],
+            "effects": [
+              { "Move": { "what": "Attached", "to": { "Library": { "place": "Shuffled" } } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

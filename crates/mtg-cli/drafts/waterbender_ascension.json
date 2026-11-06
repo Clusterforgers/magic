@@ -1,7 +1,7 @@
 {
   "oracle_id": "aeddfdc2-149b-4703-ba57-8d844b25ef08",
   "name": "Waterbender Ascension",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Waterbender Ascension",
@@ -34,9 +34,18 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 169, "end": 333 }
+          "Activated": {
+            "cost": [{ "Waterbend": 4 }],
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": ["CantBeBlocked"],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
           }
         }
       ]

@@ -1,0 +1,145 @@
+{
+  "object": "card",
+  "id": "33063d26-37f7-4e35-8da2-5770dfabdc41",
+  "oracle_id": "ed43f1f9-ef96-47bc-8a54-e59154319f9d",
+  "multiverse_ids": [],
+  "resource_id": "235E867FCD069B4C7EDF663236945CD94EA3EDC7DAAA0CC156AB0D5FE1C5CA94",
+  "mtgo_id": 142787,
+  "arena_id": 96661,
+  "tcgplayer_id": 642986,
+  "cardmarket_id": 834677,
+  "name": "Alpharael, Stonechosen",
+  "lang": "en",
+  "released_at": "2025-08-01",
+  "uri": "https://api.scryfall.com/cards/33063d26-37f7-4e35-8da2-5770dfabdc41",
+  "scryfall_uri": "https://scryfall.com/card/eoe/87/alpharael-stonechosen?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T01:26:11Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/3/3/33063d26-37f7-4e35-8da2-5770dfabdc41.jpg?1783905971",
+    "normal": "https://cards.scryfall.io/normal/front/3/3/33063d26-37f7-4e35-8da2-5770dfabdc41.jpg?1783905971",
+    "large": "https://cards.scryfall.io/large/front/3/3/33063d26-37f7-4e35-8da2-5770dfabdc41.jpg?1783905971",
+    "png": "https://cards.scryfall.io/png/front/3/3/33063d26-37f7-4e35-8da2-5770dfabdc41.png?1783905971",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/3/3/33063d26-37f7-4e35-8da2-5770dfabdc41.jpg?1783905971",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/3/3/33063d26-37f7-4e35-8da2-5770dfabdc41.jpg?1783905971",
+    "thumb": "https://cards.scryfall.io/thumb/front/3/3/33063d26-37f7-4e35-8da2-5770dfabdc41.webp?1783905971",
+    "grid": "https://cards.scryfall.io/grid/front/3/3/33063d26-37f7-4e35-8da2-5770dfabdc41.webp?1783905971",
+    "display": "https://cards.scryfall.io/display/front/3/3/33063d26-37f7-4e35-8da2-5770dfabdc41.webp?1783905971",
+    "art": "https://cards.scryfall.io/art/front/3/3/33063d26-37f7-4e35-8da2-5770dfabdc41.webp?1783905971",
+    "crop": "https://cards.scryfall.io/crop/front/3/3/33063d26-37f7-4e35-8da2-5770dfabdc41.webp?1783905971",
+    "jpeg": "https://cards.scryfall.io/normal/front/3/3/33063d26-37f7-4e35-8da2-5770dfabdc41.jpg?1783905971"
+  },
+  "mana_cost": "{3}{B}{B}",
+  "cmc": 5.0,
+  "type_line": "Legendary Creature — Human Cleric",
+  "oracle_text": "Ward—Discard a card at random.\nVoid — Whenever Alpharael attacks, if a nonland permanent left the battlefield this turn or a spell was warped this turn, defending player loses half their life, rounded up.",
+  "power": "3",
+  "toughness": "3",
+  "colors": [
+    "B"
+  ],
+  "color_identity": [
+    "B"
+  ],
+  "keywords": [
+    "Ward",
+    "Void"
+  ],
+  "legalities": {
+    "standard": "legal",
+    "future": "legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "arena",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "452951cf-378b-4472-b7fe-572fe2af2ac0",
+  "set": "eoe",
+  "set_name": "Edge of Eternities",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/452951cf-378b-4472-b7fe-572fe2af2ac0",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Aeoe&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/eoe?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/33063d26-37f7-4e35-8da2-5770dfabdc41/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Aed43f1f9-ef96-47bc-8a54-e59154319f9d&unique=prints",
+  "collector_number": "87",
+  "digital": false,
+  "rarity": "mythic",
+  "flavor_text": "\"All things end. I'd rather embrace that truth than the fantasy of eternal light.\"",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Kieran Yanner",
+  "artist_ids": [
+    "aa7e89ed-d294-4633-9057-ce04dacfcfa4"
+  ],
+  "illustration_id": "07125a68-e839-486f-a292-23faa4318cc2",
+  "border_color": "black",
+  "frame": "2015",
+  "frame_effects": [
+    "legendary"
+  ],
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 10620,
+  "preview": {
+    "source": "Ben Bateman",
+    "source_uri": "https://www.tiktok.com/@benbatemanmtg/video/7525454789447109918",
+    "previewed_at": "2025-07-10"
+  },
+  "prices": {
+    "usd": "0.38",
+    "usd_foil": "0.53",
+    "usd_etched": null,
+    "eur": "0.52",
+    "eur_foil": "0.70",
+    "tix": "0.06"
+  },
+  "related_uris": {
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DAlpharael%252C%2BStonechosen",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DAlpharael%252C%2BStonechosen",
+    "edhrec": "https://edhrec.com/route/?cc=Alpharael%2C+Stonechosen"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F642986%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=834677&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/142787?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

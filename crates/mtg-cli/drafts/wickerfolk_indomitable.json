@@ -1,0 +1,32 @@
+{
+  "oracle_id": "730d02c7-2f8a-47d3-99f0-e4ada7f6255c",
+  "name": "Wickerfolk Indomitable",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Wickerfolk Indomitable",
+      "oracle_fingerprint": "48c0b8988347db0843a2217759a9ef45",
+      "abilities": [
+        {
+          "Rule": {
+            "rule": {
+              "MayCast": {
+                "what": ["This"],
+                "from": "Graveyard",
+                "additional": [
+                  { "PayLife": 2 },
+                  {
+                    "Sacrifice": {
+                      "filter": [{ "AnyOf": [{ "Type": "Artifact" }, { "Type": "Creature" }] }]
+                    }
+                  }
+                ]
+              }
+            },
+            "from": "Graveyard"
+          }
+        }
+      ]
+    }
+  ]
+}

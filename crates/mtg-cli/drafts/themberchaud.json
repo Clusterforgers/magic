@@ -1,0 +1,50 @@
+{
+  "oracle_id": "a422a5b0-1aff-4d07-bcc5-edfbda09dc44",
+  "name": "Themberchaud",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Themberchaud",
+      "oracle_fingerprint": "e970e35ec10373340aa30f99ea3f98d3",
+      "abilities": [
+        { "Keyword": "Trample" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "DealDamage": {
+                  "to": {
+                    "Each": [{ "Type": "Creature" }, "Other", { "Not": { "HasKeyword": "Flying" } }]
+                  },
+                  "amount": { "Count": [{ "Subtype": "Mountain" }, { "ControlledBy": "You" }] }
+                }
+              },
+              {
+                "DealDamage": {
+                  "to": "EachPlayer",
+                  "amount": { "Count": [{ "Subtype": "Mountain" }, { "ControlledBy": "You" }] }
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Exert": {} } },
+        {
+          "Triggered": {
+            "when": { "Did": { "action": "Exerted", "what": ["This"] } },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "AddKeyword": "Flying" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

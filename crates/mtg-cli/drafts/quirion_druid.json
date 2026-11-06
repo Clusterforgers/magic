@@ -17,7 +17,7 @@
                   "affected": { "Target": 0 },
                   "mods": [
                     { "SetPT": { "power": 2, "toughness": 2 } },
-                    { "AddColors": ["Green"] },
+                    { "SetColors": ["Green"] },
                     { "AddType": "Creature" }
                   ],
                   "duration": "Forever"

@@ -1,0 +1,23 @@
+{
+  "oracle_id": "c111703f-e37a-4eaf-b6e1-708a448e61aa",
+  "name": "Ragged Veins",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ragged Veins",
+      "oracle_fingerprint": "d0990a664d723b7b9e96cb9b4545df8b",
+      "abilities": [
+        { "Keyword": "Flash" },
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Triggered": {
+            "when": { "Batch": { "DealsDamage": { "source": [], "to": "Attached" } } },
+            "effects": [
+              { "LoseLife": { "who": { "ControllerOf": "Triggering" }, "amount": "Triggering" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,55 @@
+{
+  "oracle_id": "e7b78acd-5288-4528-97a8-a5b43de90bf5",
+  "name": "Diviner of Victory // Unwind History",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Diviner of Victory",
+      "oracle_fingerprint": "673a71b0203dfddac37c2d4e742a0ef4",
+      "abilities": [
+        { "Replacement": { "when": { "Enters": { "what": ["This"] } }, "by": "EntersPrepared" } },
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                { "Did": { "action": "Scried", "who": "You" } },
+                { "Did": { "action": "Surveilled", "who": "You" } }
+              ]
+            },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Unwind History",
+      "oracle_fingerprint": "f1567d6f476670eb9dbb9bf29b9c2ac1",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Type": "Creature" },
+                    { "ControlledBy": "Opponents" },
+                    { "Compare": { "stat": "ManaValue", "op": "Le", "to": 3 } }
+                  ]
+                }
+              }
+            ],
+            "effects": [{ "Move": { "what": { "Target": 0 }, "to": "Hand" } }, { "Surveil": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

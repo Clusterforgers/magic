@@ -1,0 +1,28 @@
+{
+  "oracle_id": "e6f379ad-96b1-46c3-bbc6-a8cb57156a7f",
+  "name": "Ruin-Lurker Bat",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ruin-Lurker Bat",
+      "oracle_fingerprint": "46664ca5203c3284cfd9eee3c605c54d",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": "Lifelink" },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "if": {
+              "Compare": {
+                "left": { "Tallied": { "who": "You", "what": "Descended" } },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "effects": [{ "Scry": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

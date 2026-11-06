@@ -1,0 +1,70 @@
+{
+  "oracle_id": "5faa9e54-1cc4-48c0-bbfa-a495087c36d6",
+  "name": "Zimone's Experiment",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Zimone's Experiment",
+      "oracle_fingerprint": "f4accc741e6ca4c0eb8c2736d3ebc7fd",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "LookAtTop": { "count": 5, "as": "top" } },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "AnyOf": [{ "Type": "Creature" }, { "Type": "Land" }] },
+                      { "Is": { "Bound": "top" } },
+                      { "In": "Library" }
+                    ]
+                  },
+                  "count": { "min": 0, "max": 2 },
+                  "as": "card2"
+                }
+              },
+              { "Reveal": { "what": { "Bound": "card2" } } },
+              {
+                "Move": {
+                  "what": {
+                    "Each": [
+                      { "Is": { "Bound": "top" } },
+                      { "Not": { "Is": { "Bound": "card2" } } },
+                      { "In": "Library" }
+                    ]
+                  },
+                  "to": { "Library": { "place": "Bottom", "order": "Random" } }
+                }
+              },
+              {
+                "Move": {
+                  "what": {
+                    "Each": [
+                      { "Type": "Land" },
+                      { "Is": { "Bound": "card2" } },
+                      { "In": "Library" }
+                    ]
+                  },
+                  "to": { "Battlefield": { "tapped": true } }
+                }
+              },
+              {
+                "Move": {
+                  "what": {
+                    "Each": [
+                      { "Type": "Creature" },
+                      { "Is": { "Bound": "card2" } },
+                      { "In": "Library" }
+                    ]
+                  },
+                  "to": "Hand"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

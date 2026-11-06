@@ -1,0 +1,51 @@
+{
+  "oracle_id": "55df6fa3-3d24-46d5-b325-099336c3f0fd",
+  "name": "Lavinia of the Tenth",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Lavinia of the Tenth",
+      "oracle_fingerprint": "ecc824b470de40dc9e55219069099a08",
+      "abilities": [
+        { "Keyword": { "Protection": [{ "Color": "Red" }] } },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": {
+                    "Each": [
+                      { "ControlledBy": "Opponents" },
+                      { "Not": { "Type": "Land" } },
+                      { "Compare": { "stat": "ManaValue", "op": "Le", "to": 4 } }
+                    ]
+                  },
+                  "mods": ["CantAttack", "CantBlock"],
+                  "duration": "UntilYourNextTurn"
+                }
+              },
+              {
+                "Rule": {
+                  "rule": {
+                    "Cant": {
+                      "who": {
+                        "Each": [
+                          { "ControlledBy": "Opponents" },
+                          { "Not": { "Type": "Land" } },
+                          { "Compare": { "stat": "ManaValue", "op": "Le", "to": 4 } }
+                        ]
+                      },
+                      "action": { "ActivateKind": { "kind": "Every" } }
+                    }
+                  },
+                  "duration": "UntilYourNextTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

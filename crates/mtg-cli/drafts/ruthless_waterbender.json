@@ -1,0 +1,28 @@
+{
+  "oracle_id": "100771fd-07db-47be-ada3-935dc918fa33",
+  "name": "Ruthless Waterbender",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ruthless Waterbender",
+      "oracle_fingerprint": "eb84a9b0c7c41b42d67c18988ca8d899",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Waterbend": 2 }],
+            "condition": "YourTurn",
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

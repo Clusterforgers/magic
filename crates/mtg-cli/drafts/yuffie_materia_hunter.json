@@ -1,0 +1,44 @@
+{
+  "oracle_id": "acdcbb49-9d71-4c36-8ccb-650fb11c3a58",
+  "name": "Yuffie, Materia Hunter",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Yuffie, Materia Hunter",
+      "oracle_fingerprint": "d1900cc8945d0108a47c15cb6ffe3d5b",
+      "abilities": [
+        { "Keyword": { "Ninjutsu": "{1}{R}" } },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Artifact" }, { "Not": { "Type": "Creature" } }] } }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "SetController": "You" }],
+                  "duration": "WhileYouControlSource"
+                }
+              },
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "Choose": {
+                        "from": { "Each": [{ "Subtype": "Equipment" }, { "ControlledBy": "You" }] },
+                        "as": "attach"
+                      }
+                    },
+                    { "Attach": { "what": { "Bound": "attach" }, "to": "This" } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

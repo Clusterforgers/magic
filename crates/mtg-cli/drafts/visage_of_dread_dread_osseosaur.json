@@ -1,0 +1,57 @@
+{
+  "oracle_id": "7cad43df-31c9-47b5-bc05-4a0f6544b396",
+  "name": "Visage of Dread // Dread Osseosaur",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Visage of Dread",
+      "oracle_fingerprint": "661b12abc4c32312e8d25ad078eb494e",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              {
+                "Reveal": { "what": { "Each": [{ "OwnedBy": { "Target": 0 } }, { "In": "Hand" }] } }
+              },
+              {
+                "Discard": {
+                  "who": { "Target": 0 },
+                  "filter": [{ "AnyOf": [{ "Type": "Artifact" }, { "Type": "Creature" }] }],
+                  "by": "You"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Keyword": {
+            "Craft": [
+              { "Mana": "{5}{B}" },
+              { "Craft": { "filter": [{ "Type": "Creature" }, "Other"], "count": 2 } }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Dread Osseosaur",
+      "oracle_fingerprint": "b1a66e2f32e0cb39fb10f6037fef7bff",
+      "abilities": [
+        { "Keyword": "Menace" },
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+                { "Attacks": { "what": ["This"] } }
+              ]
+            },
+            "effects": [{ "May": { "effects": [{ "Mill": { "count": 2 } }] } }]
+          }
+        }
+      ]
+    }
+  ]
+}

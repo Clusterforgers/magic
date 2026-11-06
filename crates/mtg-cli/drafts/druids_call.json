@@ -1,0 +1,37 @@
+{
+  "oracle_id": "e71f4fe8-2ecd-450b-8c41-5e38d749f59d",
+  "name": "Druid's Call",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Druid's Call",
+      "oracle_fingerprint": "eb104f1db695c2772bb846de9edde13b",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Triggered": {
+            "when": { "Batch": { "DealsDamage": { "source": [], "to": "Attached" } } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "who": { "ControllerOf": "Triggering" },
+                  "token": {
+                    "Custom": {
+                      "name": "Squirrel",
+                      "colors": ["Green"],
+                      "types": ["Creature"],
+                      "subtypes": ["Squirrel"],
+                      "power": 1,
+                      "toughness": 1
+                    }
+                  },
+                  "count": "Triggering"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

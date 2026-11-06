@@ -1,0 +1,71 @@
+{
+  "oracle_id": "b368121b-9984-4a01-8d35-d1e4a8a87539",
+  "name": "Planar Genesis",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Planar Genesis",
+      "oracle_fingerprint": "671b9d9e488d36eec07ddccc75730793",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "LookAtTop": { "count": 4, "as": "top" } },
+              {
+                "Choose": {
+                  "from": { "Each": [{ "Is": { "Bound": "top" } }, { "In": "Library" }] },
+                  "as": "card2"
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Bound": "top" },
+                      "selector": [{ "Type": "Land" }, { "Is": { "Bound": "card2" } }],
+                      "op": "Eq",
+                      "right": 1
+                    }
+                  },
+                  "then": [
+                    {
+                      "May": {
+                        "effects": [
+                          {
+                            "Move": {
+                              "what": { "Bound": "card2" },
+                              "to": { "Battlefield": { "tapped": true } }
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Bound": "top" },
+                      "selector": [{ "Is": { "Bound": "card2" } }, { "In": "Battlefield" }],
+                      "op": "Eq",
+                      "right": 0
+                    }
+                  },
+                  "then": [{ "Move": { "what": { "Bound": "card2" }, "to": "Hand" } }]
+                }
+              },
+              {
+                "Move": {
+                  "what": { "Each": [{ "Is": { "Bound": "top" } }, { "In": "Library" }] },
+                  "to": { "Library": { "place": "Bottom", "order": "Random" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

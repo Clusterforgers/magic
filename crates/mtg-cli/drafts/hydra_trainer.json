@@ -1,0 +1,37 @@
+{
+  "oracle_id": "c428cbe2-17fd-4bd2-9810-de2561519f14",
+  "name": "Hydra Trainer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Hydra Trainer",
+      "oracle_fingerprint": "b1eb7974eda76637bbafcde3a515ef13",
+      "abilities": [
+        { "Keyword": { "Exert": {} } },
+        {
+          "Triggered": {
+            "when": { "Did": { "action": "Exerted", "what": ["This"] } },
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    {
+                      "ModifyPT": {
+                        "power": { "AnyCounters": { "Each": [{ "ControlledBy": "You" }] } },
+                        "toughness": { "AnyCounters": { "Each": [{ "ControlledBy": "You" }] } }
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        { "Activated": { "cost": "{2}{G}", "effects": [{ "Adapt": { "count": 2 } }] } }
+      ]
+    }
+  ]
+}

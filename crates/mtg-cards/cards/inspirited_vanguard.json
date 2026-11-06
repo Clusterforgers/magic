@@ -1,0 +1,79 @@
+{
+  "oracle_id": "db756a16-3db6-4bde-bbc2-ecee3ee9d9d3",
+  "name": "Inspirited Vanguard",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Inspirited Vanguard",
+      "oracle_fingerprint": "cb1fdf64b470b75d7e6932c50d456abf",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+                { "Attacks": { "what": ["This"] } }
+              ]
+            },
+            "effects": [
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "Count": [{ "Is": "This" }, { "In": "Battlefield" }] },
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [
+                    {
+                      "Either": {
+                        "first": [
+                          { "PutCounters": { "on": "This", "counter": "+1/+1", "count": 2 } }
+                        ],
+                        "second": [
+                          {
+                            "CreateToken": {
+                              "token": {
+                                "Sized": {
+                                  "size": 2,
+                                  "token": {
+                                    "name": "Spirit",
+                                    "colors": ["White"],
+                                    "types": ["Creature"],
+                                    "subtypes": ["Spirit"]
+                                  }
+                                }
+                              }
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ],
+                  "otherwise": [
+                    {
+                      "CreateToken": {
+                        "token": {
+                          "Sized": {
+                            "size": 2,
+                            "token": {
+                              "name": "Spirit",
+                              "colors": ["White"],
+                              "types": ["Creature"],
+                              "subtypes": ["Spirit"]
+                            }
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

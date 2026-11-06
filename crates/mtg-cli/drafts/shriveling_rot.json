@@ -1,0 +1,70 @@
+{
+  "oracle_id": "9ce8691a-d9e2-45b2-bda0-2c3891b55307",
+  "name": "Shriveling Rot",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Shriveling Rot",
+      "oracle_fingerprint": "7c8d21d8c0c414353c897e685a10a2f4",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Modal": {
+                  "modes": [
+                    {
+                      "effects": [
+                        {
+                          "DelayedTrigger": {
+                            "when": {
+                              "Batch": {
+                                "DealsDamage": {
+                                  "source": [],
+                                  "to": { "Each": [{ "Type": "Creature" }] }
+                                }
+                              }
+                            },
+                            "once": false,
+                            "this_turn": true,
+                            "effects": [{ "Destroy": { "what": "Triggering" } }]
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "effects": [
+                        {
+                          "DelayedTrigger": {
+                            "when": {
+                              "ZoneChange": {
+                                "what": [{ "Type": "Creature" }],
+                                "from": "Battlefield",
+                                "to": "Graveyard"
+                              }
+                            },
+                            "once": false,
+                            "this_turn": true,
+                            "effects": [
+                              {
+                                "LoseLife": {
+                                  "who": { "ControllerOf": "Triggering" },
+                                  "amount": { "Stat": { "of": "Triggering", "stat": "Toughness" } }
+                                }
+                              }
+                            ]
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Entwine": "{2}{B}" } }
+      ]
+    }
+  ]
+}

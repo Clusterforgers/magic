@@ -1,0 +1,83 @@
+{
+  "oracle_id": "3ee451e7-2b2f-4ce7-af96-540bba555c60",
+  "name": "King of the Oathbreakers",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "King of the Oathbreakers",
+      "oracle_fingerprint": "5294a3ef7a4c4f49b936dac3d33485cb",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": {
+              "BecomesTarget": {
+                "what": [
+                  {
+                    "AnyOf": [
+                      "This",
+                      {
+                        "Not": {
+                          "AnyOf": [
+                            { "Not": { "Subtype": "Spirit" } },
+                            { "Not": { "ControlledBy": "You" } },
+                            { "Not": "Other" },
+                            { "Not": { "In": "Battlefield" } }
+                          ]
+                        }
+                      }
+                    ]
+                  }
+                ],
+                "by": ["Spell"]
+              }
+            },
+            "effects": [{ "PhaseOut": { "what": "TriggeringFirst" } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "PhasedIn": {
+                "what": [
+                  {
+                    "AnyOf": [
+                      "This",
+                      {
+                        "Not": {
+                          "AnyOf": [
+                            { "Not": { "Subtype": "Spirit" } },
+                            { "Not": { "ControlledBy": "You" } },
+                            { "Not": "Other" }
+                          ]
+                        }
+                      }
+                    ]
+                  }
+                ]
+              }
+            },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Spirit",
+                      "colors": ["White"],
+                      "types": ["Creature"],
+                      "subtypes": ["Spirit"],
+                      "power": 1,
+                      "toughness": 1,
+                      "abilities": [{ "Keyword": "Flying" }]
+                    }
+                  },
+                  "tapped": true
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

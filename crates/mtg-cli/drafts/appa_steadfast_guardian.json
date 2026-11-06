@@ -1,0 +1,63 @@
+{
+  "oracle_id": "03c141ca-11e4-4927-a6bd-980ee1203c73",
+  "name": "Appa, Steadfast Guardian",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Appa, Steadfast Guardian",
+      "oracle_fingerprint": "a6af9764f48be519e895b269d667523d",
+      "abilities": [
+        { "Keyword": "Flash" },
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "Not": { "Type": "Land" } }, "Other", { "ControlledBy": "You" }]
+                },
+                "bounds": {
+                  "min": 0,
+                  "max": {
+                    "Count": [{ "Not": { "Type": "Land" } }, "Other", { "ControlledBy": "You" }]
+                  }
+                }
+              }
+            ],
+            "effects": [
+              { "Exile": { "what": { "Target": 0 }, "as": "airbent" } },
+              {
+                "Rule": {
+                  "rule": { "MayCastRather": { "only": { "Bound": "airbent" }, "cost": "{2}" } },
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "what": [{ "WasCast": { "from": "Exile" } }], "by": "You" } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Ally",
+                      "colors": ["White"],
+                      "types": ["Creature"],
+                      "subtypes": ["Ally"],
+                      "power": 1,
+                      "toughness": 1
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,51 @@
+{
+  "oracle_id": "14247820-5ecb-40bd-8dee-0625cc745ec2",
+  "name": "Nissa's Judgment",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Nissa's Judgment",
+      "oracle_fingerprint": "2a2c0e9bc9333392ce9d12c3876fd41e",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": { "Object": [{ "Type": "Creature" }, "Other"] },
+                "bounds": { "min": 0, "max": 2 }
+              },
+              {
+                "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }] },
+                "bounds": { "min": 0, "max": 1 }
+              }
+            ],
+            "effects": [
+              { "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1" } },
+              {
+                "RepeatEach": {
+                  "over": {
+                    "Each": [
+                      { "Type": "Creature" },
+                      { "ControlledBy": "You" },
+                      { "HasCounter": "+1/+1" }
+                    ]
+                  },
+                  "as": "damager",
+                  "effects": [
+                    {
+                      "DealDamage": {
+                        "source": { "Bound": "damager" },
+                        "to": { "Target": 1 },
+                        "amount": { "Stat": { "of": { "Bound": "damager" }, "stat": "Power" } }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

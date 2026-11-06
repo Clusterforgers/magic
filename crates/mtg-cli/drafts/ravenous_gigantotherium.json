@@ -1,0 +1,44 @@
+{
+  "oracle_id": "022624eb-c9d7-4110-bcc3-465c8d48fcd7",
+  "name": "Ravenous Gigantotherium",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ravenous Gigantotherium",
+      "oracle_fingerprint": "a663067058b317a8e1a41f114ddb9041",
+      "abilities": [
+        { "Keyword": { "Devour": { "counters": 3, "of": [{ "Type": "Creature" }] } } },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              {
+                "what": { "Object": [{ "Type": "Creature" }] },
+                "bounds": { "min": 0, "max": { "Stat": { "of": "This", "stat": "Power" } } },
+                "divide": { "Stat": { "of": "This", "stat": "Power" } }
+              }
+            ],
+            "effects": [
+              { "DealDamage": { "to": { "Target": 0 }, "amount": "Divided" } },
+              {
+                "RepeatEach": {
+                  "over": { "Target": 0 },
+                  "as": "damager",
+                  "effects": [
+                    {
+                      "DealDamage": {
+                        "source": { "Bound": "damager" },
+                        "to": "This",
+                        "amount": { "Stat": { "of": { "Bound": "damager" }, "stat": "Power" } }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

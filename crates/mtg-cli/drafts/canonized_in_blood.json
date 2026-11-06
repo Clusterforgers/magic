@@ -1,0 +1,51 @@
+{
+  "oracle_id": "d491995f-e9b2-4187-852c-8a4c2495eaca",
+  "name": "Canonized in Blood",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Canonized in Blood",
+      "oracle_fingerprint": "6deab88994575b2fe6429e2e56bd9724",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "if": {
+              "Compare": {
+                "left": { "Tallied": { "who": "You", "what": "Descended" } },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } }
+            ],
+            "effects": [{ "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1" } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{5}{B}{B}" }, "SacrificeSelf"],
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Vampire Demon",
+                      "colors": ["White", "Black"],
+                      "types": ["Creature"],
+                      "subtypes": ["Vampire", "Demon"],
+                      "power": 4,
+                      "toughness": 3,
+                      "abilities": [{ "Keyword": "Flying" }]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

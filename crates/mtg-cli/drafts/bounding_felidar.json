@@ -1,0 +1,34 @@
+{
+  "oracle_id": "b00f316d-7c82-40e6-80e5-9f36434590a3",
+  "name": "Bounding Felidar",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Bounding Felidar",
+      "oracle_fingerprint": "1886ec6da17c500da6b1d0faee778e73",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This", { "HasKeyword": "Saddled" }] } },
+            "effects": [
+              {
+                "PutCounters": {
+                  "on": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }, "Other"] },
+                  "counter": "+1/+1"
+                }
+              },
+              {
+                "GainLife": {
+                  "amount": {
+                    "Count": [{ "Type": "Creature" }, { "ControlledBy": "You" }, "Other"]
+                  }
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Saddle": 2 } }
+      ]
+    }
+  ]
+}

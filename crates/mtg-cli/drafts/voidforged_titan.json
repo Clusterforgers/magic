@@ -1,0 +1,51 @@
+{
+  "oracle_id": "f7afe534-fbb0-4f8b-9e98-aa49d4005465",
+  "name": "Voidforged Titan",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Voidforged Titan",
+      "oracle_fingerprint": "47d168e3b51d8521454c69598147ab46",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "if": {
+              "Compare": {
+                "left": {
+                  "When": {
+                    "condition": {
+                      "Any": [
+                        {
+                          "Compare": {
+                            "left": {
+                              "Tallied": { "who": "EachPlayer", "what": "NonlandPermanentsLeft" }
+                            },
+                            "op": "Ge",
+                            "right": 1
+                          }
+                        },
+                        {
+                          "Compare": {
+                            "left": { "Tallied": { "who": "EachPlayer", "what": "SpellsWarped" } },
+                            "op": "Ge",
+                            "right": 1
+                          }
+                        }
+                      ]
+                    },
+                    "then": 1,
+                    "otherwise": 0
+                  }
+                },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "effects": [{ "Draw": {} }, { "LoseLife": { "amount": 1 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

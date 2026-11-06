@@ -1,7 +1,7 @@
 {
   "oracle_id": "835c195a-8c35-4076-896d-8d2972cac270",
   "name": "The End",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "The End",
@@ -16,9 +16,85 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 67, "end": 322 }
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "AnyOf": [{ "Type": "Creature" }, { "Type": "Planeswalker" }] }]
+                }
+              }
+            ],
+            "effects": [
+              { "Exile": { "what": { "Target": 0 } } },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "SharesName": { "Target": 0 } },
+                      { "In": "Graveyard" },
+                      { "OwnedBy": { "ControllerOf": { "Target": 0 } } }
+                    ]
+                  },
+                  "count": {
+                    "min": 0,
+                    "max": {
+                      "Count": [
+                        { "In": "Graveyard" },
+                        { "OwnedBy": { "ControllerOf": { "Target": 0 } } }
+                      ]
+                    }
+                  },
+                  "as": "picked"
+                }
+              },
+              { "Exile": { "what": { "Bound": "picked" } } },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "SharesName": { "Target": 0 } },
+                      { "In": "Hand" },
+                      { "OwnedBy": { "ControllerOf": { "Target": 0 } } }
+                    ]
+                  },
+                  "count": {
+                    "min": 0,
+                    "max": {
+                      "Count": [
+                        { "In": "Hand" },
+                        { "OwnedBy": { "ControllerOf": { "Target": 0 } } }
+                      ]
+                    }
+                  },
+                  "as": "picked2"
+                }
+              },
+              { "Exile": { "what": { "Bound": "picked2" }, "as": "exiled3" } },
+              {
+                "Search": {
+                  "of": { "ControllerOf": { "Target": 0 } },
+                  "filter": [{ "SharesName": { "Target": 0 } }],
+                  "count": {
+                    "min": 0,
+                    "max": {
+                      "Count": [
+                        { "In": "Library" },
+                        { "OwnedBy": { "ControllerOf": { "Target": 0 } } }
+                      ]
+                    }
+                  },
+                  "as": "found4"
+                }
+              },
+              { "Exile": { "what": { "Bound": "found4" } } },
+              { "Shuffle": { "who": { "ControllerOf": { "Target": 0 } } } },
+              {
+                "Draw": {
+                  "who": { "ControllerOf": { "Target": 0 } },
+                  "count": { "Bound": "exiled3~moved" }
+                }
+              }
+            ]
           }
         }
       ]

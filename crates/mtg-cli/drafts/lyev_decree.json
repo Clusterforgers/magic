@@ -1,0 +1,43 @@
+{
+  "oracle_id": "ace64875-ca4b-45c7-8b46-29ef2f2629dd",
+  "name": "Lyev Decree",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Lyev Decree",
+      "oracle_fingerprint": "03664093cde47e036892cb889d23cb58",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }] },
+                "bounds": { "min": 0, "max": 2 }
+              }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": ["CantAttack", "CantBlock"],
+                  "duration": "UntilYourNextTurn"
+                }
+              },
+              {
+                "Rule": {
+                  "rule": {
+                    "Cant": {
+                      "who": { "Target": 0 },
+                      "action": { "ActivateKind": { "kind": "Every" } }
+                    }
+                  },
+                  "duration": "UntilYourNextTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

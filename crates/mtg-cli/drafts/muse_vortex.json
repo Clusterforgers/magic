@@ -1,0 +1,61 @@
+{
+  "oracle_id": "0b65dc8d-a8bf-4fa1-a44e-6a3782d18c0f",
+  "name": "Muse Vortex",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Muse Vortex",
+      "oracle_fingerprint": "3ad1b4950e6b648c5cdac345aefb8b1c",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "ExileTop": { "count": "X", "as": "exiled" } },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "Is": { "Bound": "exiled" } },
+                      { "OwnedBy": "You" },
+                      { "In": "Exile" },
+                      { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] },
+                      { "Compare": { "stat": "ManaValue", "op": "Le", "to": "X" } }
+                    ]
+                  },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "picked2"
+                }
+              },
+              { "CastFromZone": { "what": { "Bound": "picked2" }, "free": true } },
+              {
+                "Move": {
+                  "what": {
+                    "Each": [
+                      { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] },
+                      { "Is": { "Bound": "exiled" } },
+                      { "OwnedBy": "You" },
+                      { "In": "Exile" }
+                    ]
+                  },
+                  "to": "Hand"
+                }
+              },
+              {
+                "Move": {
+                  "what": {
+                    "Each": [
+                      { "Is": { "Bound": "exiled" } },
+                      { "OwnedBy": "You" },
+                      { "In": "Exile" }
+                    ]
+                  },
+                  "to": { "Library": { "place": "Bottom", "order": "Random" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

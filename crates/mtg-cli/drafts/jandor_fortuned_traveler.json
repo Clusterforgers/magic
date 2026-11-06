@@ -1,7 +1,7 @@
 {
   "oracle_id": "8c05de43-6f9e-46c1-bc01-551a7fc570d0",
   "name": "Jandor, Fortuned Traveler",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Jandor, Fortuned Traveler",
@@ -27,9 +27,27 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 274, "end": 389 }
+          "Triggered": {
+            "when": {
+              "Attacks": {
+                "what": [
+                  { "Type": "Creature" },
+                  { "HasKeyword": "Saddled" },
+                  { "ControlledBy": "You" }
+                ]
+              }
+            },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "Triggering",
+                  "mods": [{ "ModifyPT": { "power": 2, "toughness": 2 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              { "Draw": {} },
+              { "CreateToken": { "token": { "Named": "food" } } }
+            ]
           }
         }
       ]

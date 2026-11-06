@@ -1,0 +1,61 @@
+{
+  "oracle_id": "57f6a8c2-9d84-4640-9b92-8b8611e05773",
+  "name": "Rilsa Rael, Kingpin",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Rilsa Rael, Kingpin",
+      "oracle_fingerprint": "50de7bb2812ddd1e50ca54b732f0213f",
+      "abilities": [
+        { "Keyword": "Deathtouch" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "TakeInitiative": {} }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "GroupAttacks": { "what": [{ "Type": "Creature" }, { "ControlledBy": "You" }] }
+            },
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }, "Attacking"] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "AddKeyword": "Deathtouch" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "Tallied": { "who": "You", "what": "DungeonsCompleted" } },
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [
+                    {
+                      "Continuous": {
+                        "affected": { "Target": 0 },
+                        "mods": [
+                          { "ModifyPT": { "power": 5, "toughness": 0 } },
+                          { "AddKeyword": "FirstStrike" },
+                          { "AddKeyword": "Menace" }
+                        ],
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

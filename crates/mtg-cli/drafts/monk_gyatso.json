@@ -1,0 +1,44 @@
+{
+  "oracle_id": "ff92fa60-f0fe-496e-8155-d9d6f5af651b",
+  "name": "Monk Gyatso",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Monk Gyatso",
+      "oracle_fingerprint": "5072e2ed0171f8dc9947ce071f05a653",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "BecomesTarget": {
+                "what": [
+                  { "Type": "Creature" },
+                  "Other",
+                  { "ControlledBy": "You" },
+                  { "In": "Battlefield" }
+                ]
+              }
+            },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    { "Exile": { "what": "TriggeringFirst", "as": "airbent" } },
+                    {
+                      "Rule": {
+                        "rule": {
+                          "MayCastRather": { "only": { "Bound": "airbent" }, "cost": "{2}" }
+                        },
+                        "duration": "Forever"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

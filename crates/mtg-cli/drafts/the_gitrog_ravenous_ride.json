@@ -1,0 +1,96 @@
+{
+  "oracle_id": "7739311a-682b-48a6-8db2-c07f44141751",
+  "name": "The Gitrog, Ravenous Ride",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "The Gitrog, Ravenous Ride",
+      "oracle_fingerprint": "e5388a96f034707344999f4db0730956",
+      "abilities": [
+        { "Keyword": "Trample" },
+        { "Keyword": "Haste" },
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": ["This"], "to": "EachPlayer", "combat": true } },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "Sacrifice": {
+                        "filter": [{ "Type": "Creature" }, { "Saddled": "This" }],
+                        "as": "sacrificed2"
+                      }
+                    },
+                    {
+                      "If": {
+                        "condition": {
+                          "Compare": {
+                            "left": { "Bound": "sacrificed2~moved" },
+                            "op": "Ge",
+                            "right": 1
+                          }
+                        },
+                        "then": [
+                          {
+                            "Draw": {
+                              "count": {
+                                "Stat": { "of": { "Bound": "sacrificed2" }, "stat": "Power" }
+                              }
+                            }
+                          },
+                          {
+                            "If": {
+                              "condition": {
+                                "CountOf": {
+                                  "subject": { "Bound": "sacrificed2" },
+                                  "selector": [],
+                                  "op": "Ge",
+                                  "right": 1
+                                }
+                              },
+                              "then": [
+                                {
+                                  "Choose": {
+                                    "from": {
+                                      "Each": [
+                                        { "Type": "Land" },
+                                        { "In": "Hand" },
+                                        { "OwnedBy": "You" }
+                                      ]
+                                    },
+                                    "count": {
+                                      "min": 0,
+                                      "max": {
+                                        "Stat": {
+                                          "of": { "Bound": "sacrificed2" },
+                                          "stat": "Power"
+                                        }
+                                      }
+                                    },
+                                    "as": "picked"
+                                  }
+                                },
+                                {
+                                  "Move": {
+                                    "what": { "Bound": "picked" },
+                                    "to": { "Battlefield": { "tapped": true } }
+                                  }
+                                }
+                              ]
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Saddle": 1 } }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,46 @@
+{
+  "oracle_id": "6a51bb21-0c01-4ad8-99d7-17685db90b69",
+  "name": "The Last Ronin's Technique",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "The Last Ronin's Technique",
+      "oracle_fingerprint": "2a7a6641f5eec41ad5c879666648d7ee",
+      "abilities": [
+        {
+          "AltCast": {
+            "way": "Sneak",
+            "cost": [
+              { "Mana": "{1}{W}" },
+              {
+                "ReturnToHand": {
+                  "filter": [
+                    "Attacking",
+                    "Unblocked",
+                    { "Type": "Creature" },
+                    { "ControlledBy": "You" }
+                  ]
+                }
+              }
+            ],
+            "condition": { "Step": "DeclareBlockers" },
+            "flash": true
+          }
+        },
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": "Tapped",
+            "condition": { "CastWith": "Sneak" }
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 145, "end": 274 }
+          }
+        }
+      ]
+    }
+  ]
+}

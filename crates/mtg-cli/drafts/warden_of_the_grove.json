@@ -1,0 +1,96 @@
+{
+  "oracle_id": "13bf8103-3db3-4ee6-a6bb-441aabfd9e41",
+  "name": "Warden of the Grove",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Warden of the Grove",
+      "oracle_fingerprint": "23d47a2db3f4083250bf32f75023a48c",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [
+                  { "Type": "Creature" },
+                  { "ControlledBy": "You" },
+                  { "Not": "Token" },
+                  "Other"
+                ],
+                "to": "Battlefield"
+              }
+            },
+            "effects": [
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "Count": [{ "Is": "Triggering" }, { "In": "Battlefield" }] },
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [
+                    {
+                      "Either": {
+                        "first": [
+                          {
+                            "PutCounters": {
+                              "on": "Triggering",
+                              "counter": "+1/+1",
+                              "count": { "AnyCounters": "This" }
+                            }
+                          }
+                        ],
+                        "second": [
+                          {
+                            "CreateToken": {
+                              "token": {
+                                "Sized": {
+                                  "size": { "AnyCounters": "This" },
+                                  "token": {
+                                    "name": "Spirit",
+                                    "colors": ["White"],
+                                    "types": ["Creature"],
+                                    "subtypes": ["Spirit"]
+                                  }
+                                }
+                              }
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ],
+                  "otherwise": [
+                    {
+                      "CreateToken": {
+                        "token": {
+                          "Sized": {
+                            "size": { "AnyCounters": "This" },
+                            "token": {
+                              "name": "Spirit",
+                              "colors": ["White"],
+                              "types": ["Creature"],
+                              "subtypes": ["Spirit"]
+                            }
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

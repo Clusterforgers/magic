@@ -1,0 +1,69 @@
+{
+  "oracle_id": "d0372cde-bf30-4a1b-93bb-9ff4ac1c116d",
+  "name": "Overwrite the Multiverse",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Overwrite the Multiverse",
+      "oracle_fingerprint": "33f5ee6ac991ffab7d20226b43f24384",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "Exile": { "what": { "Each": [{ "Type": "Creature" }] }, "as": "exiled" } },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": {
+                        "Count": [{ "Subtype": "Jace" }, "Token", { "ControlledBy": "You" }]
+                      },
+                      "op": "Lt",
+                      "right": 1
+                    }
+                  },
+                  "then": [
+                    {
+                      "CreateToken": {
+                        "token": {
+                          "Custom": {
+                            "name": "Jace",
+                            "colors": ["Blue"],
+                            "types": ["Planeswalker"],
+                            "subtypes": ["Jace"],
+                            "abilities": [
+                              {
+                                "Loyalty": {
+                                  "cost": { "Minus": 1 },
+                                  "effects": [{ "Surveil": {} }]
+                                }
+                              },
+                              { "Loyalty": { "cost": { "Minus": 3 }, "effects": [{ "Draw": {} }] } }
+                            ]
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "Choose": {
+                  "from": { "Each": [{ "Subtype": "Jace" }, "Token", { "ControlledBy": "You" }] },
+                  "as": "jace"
+                }
+              },
+              {
+                "PutCounters": {
+                  "on": { "Bound": "jace" },
+                  "counter": "loyalty",
+                  "count": { "Bound": "exiled~moved" }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

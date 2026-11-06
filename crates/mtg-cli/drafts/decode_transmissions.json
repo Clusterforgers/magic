@@ -1,0 +1,104 @@
+{
+  "oracle_id": "42510758-6167-420b-bb70-65f914b7a259",
+  "name": "Decode Transmissions",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Decode Transmissions",
+      "oracle_fingerprint": "987897cf160fe147e5621a11ffae8337",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "Draw": { "count": 2 } },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": {
+                        "When": {
+                          "condition": {
+                            "Any": [
+                              {
+                                "Compare": {
+                                  "left": {
+                                    "Tallied": {
+                                      "who": "EachPlayer",
+                                      "what": "NonlandPermanentsLeft"
+                                    }
+                                  },
+                                  "op": "Ge",
+                                  "right": 1
+                                }
+                              },
+                              {
+                                "Compare": {
+                                  "left": {
+                                    "Tallied": { "who": "EachPlayer", "what": "SpellsWarped" }
+                                  },
+                                  "op": "Ge",
+                                  "right": 1
+                                }
+                              }
+                            ]
+                          },
+                          "then": 1,
+                          "otherwise": 0
+                        }
+                      },
+                      "op": "Eq",
+                      "right": 0
+                    }
+                  },
+                  "then": [{ "LoseLife": { "amount": 2 } }]
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": {
+                        "When": {
+                          "condition": {
+                            "Any": [
+                              {
+                                "Compare": {
+                                  "left": {
+                                    "Tallied": {
+                                      "who": "EachPlayer",
+                                      "what": "NonlandPermanentsLeft"
+                                    }
+                                  },
+                                  "op": "Ge",
+                                  "right": 1
+                                }
+                              },
+                              {
+                                "Compare": {
+                                  "left": {
+                                    "Tallied": { "who": "EachPlayer", "what": "SpellsWarped" }
+                                  },
+                                  "op": "Ge",
+                                  "right": 1
+                                }
+                              }
+                            ]
+                          },
+                          "then": 1,
+                          "otherwise": 0
+                        }
+                      },
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [{ "LoseLife": { "who": "Opponents", "amount": 2 } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

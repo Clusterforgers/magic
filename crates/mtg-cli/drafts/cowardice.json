@@ -1,0 +1,21 @@
+{
+  "oracle_id": "2692dd66-c200-4d0b-9427-30deaa2342ab",
+  "name": "Cowardice",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Cowardice",
+      "oracle_fingerprint": "fe53e79f4cb5c70e904fae72e45fc73f",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "BecomesTarget": { "what": [{ "Type": "Creature" }, { "In": "Battlefield" }] }
+            },
+            "effects": [{ "Move": { "what": "TriggeringFirst", "to": "Hand" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

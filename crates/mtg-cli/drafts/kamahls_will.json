@@ -1,0 +1,96 @@
+{
+  "oracle_id": "a32860dd-e8df-4a3c-bdc2-948dcd07cf9a",
+  "name": "Kamahl's Will",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Kamahl's Will",
+      "oracle_fingerprint": "5bc4d61e4fb3dc71e4017194f01f0bd9",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Modal": {
+                  "choose": {
+                    "min": 1,
+                    "max": {
+                      "When": {
+                        "condition": {
+                          "Compare": {
+                            "left": { "Count": ["Commander", { "ControlledBy": "You" }] },
+                            "op": "Ge",
+                            "right": 1
+                          }
+                        },
+                        "then": 2,
+                        "otherwise": 1
+                      }
+                    }
+                  },
+                  "modes": [
+                    {
+                      "targets": [
+                        {
+                          "what": { "Object": [{ "Type": "Land" }, { "ControlledBy": "You" }] },
+                          "bounds": {
+                            "min": 0,
+                            "max": { "Count": [{ "Type": "Land" }, { "ControlledBy": "You" }] }
+                          }
+                        }
+                      ],
+                      "effects": [
+                        {
+                          "Continuous": {
+                            "affected": { "Target": 0 },
+                            "mods": [
+                              { "SetPT": { "power": 1, "toughness": 1 } },
+                              { "AddSubtype": "Elemental" },
+                              { "AddType": "Creature" },
+                              { "AddKeyword": "Vigilance" },
+                              { "AddKeyword": "Indestructible" },
+                              { "AddKeyword": "Haste" }
+                            ],
+                            "duration": "UntilEndOfTurn"
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "targets": [
+                        {
+                          "what": {
+                            "Object": [{ "Type": "Creature" }, { "Not": { "ControlledBy": "You" } }]
+                          }
+                        }
+                      ],
+                      "effects": [
+                        {
+                          "RepeatEach": {
+                            "over": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                            "as": "damager",
+                            "effects": [
+                              {
+                                "DealDamage": {
+                                  "source": { "Bound": "damager" },
+                                  "to": { "Target": 0 },
+                                  "amount": {
+                                    "Stat": { "of": { "Bound": "damager" }, "stat": "Power" }
+                                  }
+                                }
+                              }
+                            ]
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,64 @@
+{
+  "oracle_id": "e06007cf-dc6e-4b50-93d5-9a7c8ee9c023",
+  "name": "Nine-Fingers Keene",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Nine-Fingers Keene",
+      "oracle_fingerprint": "871de64fc79068f0fd43e7058ec8a310",
+      "abilities": [
+        { "Keyword": "Menace" },
+        { "Keyword": { "Ward": [{ "PayLife": 9 }] } },
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": ["This"], "to": "EachPlayer", "combat": true } },
+            "effects": [
+              { "LookAtTop": { "count": 9, "as": "top" } },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "Subtype": "Gate" },
+                      { "Is": { "Bound": "top" } },
+                      { "In": "Library" }
+                    ]
+                  },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "card2"
+                }
+              },
+              { "Move": { "what": { "Bound": "card2" }, "to": { "Battlefield": {} } } },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "Count": [{ "Subtype": "Gate" }, { "ControlledBy": "You" }] },
+                      "op": "Ge",
+                      "right": 9
+                    }
+                  },
+                  "then": [
+                    {
+                      "Move": {
+                        "what": { "Each": [{ "Is": { "Bound": "top" } }, { "In": "Library" }] },
+                        "to": "Hand"
+                      }
+                    }
+                  ],
+                  "otherwise": [
+                    {
+                      "Move": {
+                        "what": { "Each": [{ "Is": { "Bound": "top" } }, { "In": "Library" }] },
+                        "to": { "Library": { "place": "Bottom", "order": "Random" } }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,28 @@
+{
+  "oracle_id": "5ec4f81e-ede4-4d45-b768-16583f6f5b8d",
+  "name": "Count Nefaria",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Count Nefaria",
+      "oracle_fingerprint": "f5df368c9ad2459149624511879a957c",
+      "abilities": [
+        {
+          "CostModifier": {
+            "applies_to": ["This"],
+            "change": "Reduce",
+            "mana": "{3}",
+            "condition": {
+              "Compare": {
+                "left": { "Tallied": { "who": "You", "what": "Sacrificed" } },
+                "op": "Ge",
+                "right": 1
+              }
+            }
+          }
+        },
+        { "Keyword": "Flying" }
+      ]
+    }
+  ]
+}

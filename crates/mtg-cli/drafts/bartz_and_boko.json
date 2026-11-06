@@ -1,0 +1,39 @@
+{
+  "oracle_id": "2d995c47-e548-4fc4-9182-fef46af20ca5",
+  "name": "Bartz and Boko",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Bartz and Boko",
+      "oracle_fingerprint": "4bbe9bfc2a78ac328c3f3efd7d2d86f9",
+      "abilities": [
+        { "Keyword": { "Affinity": [{ "Subtype": "Bird" }] } },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }] } }
+            ],
+            "effects": [
+              {
+                "RepeatEach": {
+                  "over": { "Each": [{ "Subtype": "Bird" }, "Other", { "ControlledBy": "You" }] },
+                  "as": "damager",
+                  "effects": [
+                    {
+                      "DealDamage": {
+                        "source": { "Bound": "damager" },
+                        "to": { "Target": 0 },
+                        "amount": { "Stat": { "of": { "Bound": "damager" }, "stat": "Power" } }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

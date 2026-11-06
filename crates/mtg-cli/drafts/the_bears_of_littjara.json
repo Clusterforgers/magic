@@ -1,0 +1,106 @@
+{
+  "oracle_id": "697f3fd9-1577-4f69-bdf8-db1f673d3505",
+  "name": "The Bears of Littjara",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "The Bears of Littjara",
+      "oracle_fingerprint": "0190a7803ec7e2d7d94e0c271cfdf5a5",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 1 } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Shapeshifter",
+                      "colors": ["Blue"],
+                      "types": ["Creature"],
+                      "subtypes": ["Shapeshifter"],
+                      "power": 2,
+                      "toughness": 2,
+                      "abilities": [{ "Keyword": "Changeling" }]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 2 } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Type": "Creature" },
+                    { "Subtype": "Shapeshifter" },
+                    { "ControlledBy": "You" }
+                  ]
+                },
+                "bounds": {
+                  "min": 0,
+                  "max": {
+                    "Count": [
+                      { "Type": "Creature" },
+                      { "Subtype": "Shapeshifter" },
+                      { "ControlledBy": "You" }
+                    ]
+                  }
+                }
+              }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "SetPT": { "power": 4, "toughness": 4 } }],
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 3 } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "AnyOf": [{ "Type": "Creature" }, { "Type": "Planeswalker" }] }]
+                },
+                "bounds": { "min": 0, "max": 1 }
+              }
+            ],
+            "effects": [
+              {
+                "RepeatEach": {
+                  "over": {
+                    "Each": [
+                      { "Type": "Creature" },
+                      { "ControlledBy": "You" },
+                      { "Compare": { "stat": "Power", "op": "Ge", "to": 4 } }
+                    ]
+                  },
+                  "as": "damager",
+                  "effects": [
+                    {
+                      "DealDamage": {
+                        "source": { "Bound": "damager" },
+                        "to": { "Target": 0 },
+                        "amount": { "Stat": { "of": { "Bound": "damager" }, "stat": "Power" } }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,67 @@
+{
+  "oracle_id": "7fd8a508-335c-4d5a-9916-23bf26dfff38",
+  "name": "Svella, Ice Shaper",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Svella, Ice Shaper",
+      "oracle_fingerprint": "81d390e2b5a38dfa2e0cb8ba2599bfaf",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{3}" }, "Tap"],
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Icy Manalith",
+                      "supertypes": ["Snow"],
+                      "types": ["Artifact"],
+                      "abilities": [
+                        {
+                          "Activated": {
+                            "cost": ["Tap"],
+                            "effects": [{ "AddMana": { "mana": { "AnyColor": 1 } } }]
+                          }
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{6}{R}{G}" }, "Tap"],
+            "effects": [
+              { "LookAtTop": { "count": 4, "as": "top" } },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "Is": { "Bound": "top" } },
+                      { "Not": { "Type": "Land" } },
+                      { "In": "Library" }
+                    ]
+                  },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "picked2"
+                }
+              },
+              { "CastFromZone": { "what": { "Bound": "picked2" }, "free": true } },
+              {
+                "Move": {
+                  "what": { "Each": [{ "Is": { "Bound": "top" } }, { "In": "Library" }] },
+                  "to": { "Library": { "place": "Bottom", "order": "Random" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

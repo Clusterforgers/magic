@@ -14,7 +14,7 @@
               {
                 "Continuous": {
                   "affected": "This",
-                  "mods": [{ "AddColors": [] }],
+                  "mods": [{ "SetColors": [] }],
                   "duration": "UntilEndOfTurn"
                 }
               }

@@ -1,0 +1,142 @@
+{
+  "object": "card",
+  "id": "527e930b-b233-432c-a0dc-73c68ea3f686",
+  "oracle_id": "c03ca2e6-fcce-4018-952f-1c451ab92cfd",
+  "multiverse_ids": [],
+  "resource_id": "BE51F311B98CBCA48F7D989C4B8AADE21B3877DDB60AF958B542D280FC7AE0D0",
+  "mtgo_id": 150603,
+  "tcgplayer_id": 697611,
+  "cardmarket_id": 891848,
+  "name": "Dragon Man, Reformed Robot",
+  "lang": "en",
+  "released_at": "2026-06-26",
+  "uri": "https://api.scryfall.com/cards/527e930b-b233-432c-a0dc-73c68ea3f686",
+  "scryfall_uri": "https://scryfall.com/card/msc/82/dragon-man-reformed-robot?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T00:41:11Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/5/2/527e930b-b233-432c-a0dc-73c68ea3f686.jpg?1783903271",
+    "normal": "https://cards.scryfall.io/normal/front/5/2/527e930b-b233-432c-a0dc-73c68ea3f686.jpg?1783903271",
+    "large": "https://cards.scryfall.io/large/front/5/2/527e930b-b233-432c-a0dc-73c68ea3f686.jpg?1783903271",
+    "png": "https://cards.scryfall.io/png/front/5/2/527e930b-b233-432c-a0dc-73c68ea3f686.png?1783903271",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/5/2/527e930b-b233-432c-a0dc-73c68ea3f686.jpg?1783903271",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/5/2/527e930b-b233-432c-a0dc-73c68ea3f686.jpg?1783903271",
+    "thumb": "https://cards.scryfall.io/thumb/front/5/2/527e930b-b233-432c-a0dc-73c68ea3f686.webp?1783903271",
+    "grid": "https://cards.scryfall.io/grid/front/5/2/527e930b-b233-432c-a0dc-73c68ea3f686.webp?1783903271",
+    "display": "https://cards.scryfall.io/display/front/5/2/527e930b-b233-432c-a0dc-73c68ea3f686.webp?1783903271",
+    "art": "https://cards.scryfall.io/art/front/5/2/527e930b-b233-432c-a0dc-73c68ea3f686.webp?1783903271",
+    "crop": "https://cards.scryfall.io/crop/front/5/2/527e930b-b233-432c-a0dc-73c68ea3f686.webp?1783903271",
+    "jpeg": "https://cards.scryfall.io/normal/front/5/2/527e930b-b233-432c-a0dc-73c68ea3f686.jpg?1783903271"
+  },
+  "mana_cost": "{2}{W}{U}",
+  "cmc": 4.0,
+  "type_line": "Legendary Artifact Creature — Dragon Robot",
+  "oracle_text": "Flying\nDragon Man's power is equal to the greatest mana value among noncreature permanents you control and noncreature cards in your graveyard.\nYou may cast this card from your graveyard by discarding a card in addition to paying its other costs.",
+  "power": "*",
+  "toughness": "5",
+  "colors": [
+    "U",
+    "W"
+  ],
+  "color_identity": [
+    "U",
+    "W"
+  ],
+  "keywords": [
+    "Flying"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "9d739461-c5ac-43a1-af41-3d5a585b5c8d",
+  "set": "msc",
+  "set_name": "Marvel Super Heroes Commander",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/9d739461-c5ac-43a1-af41-3d5a585b5c8d",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Amsc&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/msc?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/527e930b-b233-432c-a0dc-73c68ea3f686/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Ac03ca2e6-fcce-4018-952f-1c451ab92cfd&unique=prints",
+  "collector_number": "82",
+  "digital": false,
+  "rarity": "rare",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Gintas Galvanauskas",
+  "artist_ids": [
+    "14072144-bba7-4730-8f99-f75bcd4b24a2"
+  ],
+  "illustration_id": "6529feec-37cc-4fac-9922-6916d2b355e4",
+  "border_color": "black",
+  "frame": "2015",
+  "frame_effects": [
+    "legendary"
+  ],
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "promo_types": [
+    "surgefoil",
+    "universesbeyond"
+  ],
+  "edhrec_rank": 23726,
+  "prices": {
+    "usd": "0.28",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "0.19",
+    "eur_foil": null,
+    "tix": "0.32"
+  },
+  "related_uris": {
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DDragon%2BMan%252C%2BReformed%2BRobot",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DDragon%2BMan%252C%2BReformed%2BRobot",
+    "edhrec": "https://edhrec.com/route/?cc=Dragon+Man%2C+Reformed+Robot"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F697611%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=891848&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/150603?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

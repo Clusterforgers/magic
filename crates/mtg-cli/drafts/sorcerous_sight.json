@@ -1,0 +1,19 @@
+{
+  "oracle_id": "20370c3b-231f-4d9d-8b6e-f1eb25fa4b5d",
+  "name": "Sorcerous Sight",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sorcerous Sight",
+      "oracle_fingerprint": "1112991bac7079dde7461756baef30c6",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Opponent" }],
+            "effects": [{ "LookAtHand": { "of": { "Target": 0 } } }, { "Draw": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

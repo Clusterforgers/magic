@@ -1,0 +1,19 @@
+{
+  "oracle_id": "8b610f8f-c8dd-4eeb-bc6e-3bc706d5f63e",
+  "name": "Nyxbloom Ancient",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Nyxbloom Ancient",
+      "oracle_fingerprint": "2704c2be80e0d424ced0149f6e1f2cb8",
+      "abilities": [
+        { "Keyword": "Trample" },
+        {
+          "Rule": {
+            "rule": { "ManaProduced": { "what": [], "who": "You", "change": { "Times": 3 } } }
+          }
+        }
+      ]
+    }
+  ]
+}

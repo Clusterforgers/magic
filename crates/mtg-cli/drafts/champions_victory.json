@@ -1,0 +1,43 @@
+{
+  "oracle_id": "8df38d95-1707-4f83-9d64-41f0be2a3b3b",
+  "name": "Champion's Victory",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Champion's Victory",
+      "oracle_fingerprint": "136c9ee002f648debeaebb6e7510bc31",
+      "abilities": [
+        {
+          "CastOnly": {
+            "condition": {
+              "All": [
+                { "Step": "DeclareAttackers" },
+                {
+                  "Compare": {
+                    "left": {
+                      "Tally": {
+                        "event": "Attacked",
+                        "who": "EachPlayer",
+                        "filter": [
+                          { "DidThisTurn": { "event": "Attacked", "to": "You", "combat": true } }
+                        ]
+                      }
+                    },
+                    "op": "Ge",
+                    "right": 1
+                  }
+                }
+              ]
+            }
+          }
+        },
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }, "Attacking"] } }],
+            "effects": [{ "Move": { "what": { "Target": 0 }, "to": "Hand" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

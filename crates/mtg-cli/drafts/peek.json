@@ -1,0 +1,19 @@
+{
+  "oracle_id": "873abbf4-c9b5-4b8f-8cd0-613cf3b9b1d5",
+  "name": "Peek",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Peek",
+      "oracle_fingerprint": "b9b6ebee42d17e858cbf4e3d46522294",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Player" }],
+            "effects": [{ "LookAtHand": { "of": { "Target": 0 } } }, { "Draw": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

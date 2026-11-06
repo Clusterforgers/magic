@@ -1,0 +1,22 @@
+{
+  "oracle_id": "44e8d51e-0885-49df-a77c-cf4a88e41bc1",
+  "name": "Horobi, Death's Wail",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Horobi, Death's Wail",
+      "oracle_fingerprint": "8522a3e85f6090893bb74bbab40e2890",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": {
+              "BecomesTarget": { "what": [{ "Type": "Creature" }, { "In": "Battlefield" }] }
+            },
+            "effects": [{ "Destroy": { "what": "TriggeringFirst" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

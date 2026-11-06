@@ -1,0 +1,42 @@
+{
+  "oracle_id": "788d3cfa-7706-4728-9c48-cf7bc963d002",
+  "name": "Skycoach Conductor // All Aboard",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Skycoach Conductor",
+      "oracle_fingerprint": "df3cdf85832d828dd1878723b1d1462d",
+      "abilities": [
+        { "Keyword": "Flash" },
+        { "Keyword": "Flying" },
+        { "Keyword": "Vigilance" },
+        { "Replacement": { "when": { "Enters": { "what": ["This"] } }, "by": "EntersPrepared" } }
+      ]
+    },
+    {
+      "name": "All Aboard",
+      "oracle_fingerprint": "8f0cc45dcf55431dac393979dda26a0c",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Type": "Creature" },
+                    { "Not": { "Subtype": "Pilot" } },
+                    { "ControlledBy": "You" }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              { "Exile": { "what": { "Target": 0 }, "as": "exiled" } },
+              { "Move": { "what": { "Bound": "exiled" }, "to": { "Battlefield": {} } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

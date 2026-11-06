@@ -1,0 +1,12 @@
+{
+  "oracle_id": "6517edb3-30e2-40ba-b6e4-4554b4bbb342",
+  "name": "Ali from Cairo",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ali from Cairo",
+      "oracle_fingerprint": "79d4441f9eb1b86019ffda9afda3420a",
+      "abilities": [{ "Rule": { "rule": { "LifeFloor": { "who": "You", "floor": 1 } } } }]
+    }
+  ]
+}

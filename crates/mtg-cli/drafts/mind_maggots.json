@@ -1,0 +1,56 @@
+{
+  "oracle_id": "fcaa5a54-eb73-4d78-96a3-826d1902f642",
+  "name": "Mind Maggots",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mind Maggots",
+      "oracle_fingerprint": "3af4d8a3670d6df027185ecd56d7a9cb",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Discard": {
+                  "count": {
+                    "Count": [{ "In": "Hand" }, { "OwnedBy": "You" }, { "Type": "Creature" }]
+                  },
+                  "filter": [{ "Type": "Creature" }],
+                  "optional": true,
+                  "as": "discarded"
+                }
+              },
+              {
+                "PutCounters": {
+                  "on": "This",
+                  "counter": "+1/+1",
+                  "count": {
+                    "Times": {
+                      "by": 2,
+                      "of": {
+                        "Count": [
+                          { "Is": { "Bound": "discarded" } },
+                          {
+                            "AnyOf": [
+                              { "In": "Battlefield" },
+                              { "In": "Hand" },
+                              { "In": "Library" },
+                              { "In": "Graveyard" },
+                              { "In": "Exile" },
+                              { "In": "Stack" }
+                            ]
+                          }
+                        ]
+                      }
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,94 @@
+{
+  "oracle_id": "2dfdd358-e3cd-4bf5-871b-37689b7951e9",
+  "name": "Master's Guide-Mural // Master's Manufactory",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Master's Guide-Mural",
+      "oracle_fingerprint": "f7c38eedb47dc0dff5727a4e4dc99b14",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Golem",
+                      "colors": ["White", "Blue"],
+                      "types": ["Artifact", "Creature"],
+                      "subtypes": ["Golem"],
+                      "power": 4,
+                      "toughness": 4
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Keyword": {
+            "Craft": [
+              { "Mana": "{4}{W}{W}{U}" },
+              { "Craft": { "filter": [{ "Type": "Artifact" }, "Other"] } }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Master's Manufactory",
+      "oracle_fingerprint": "b6479e053d3698c021a8b4e80ca12463",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "condition": {
+              "Compare": {
+                "left": {
+                  "Tally": {
+                    "event": "Entered",
+                    "who": "EachPlayer",
+                    "filter": [
+                      {
+                        "AnyOf": [
+                          "This",
+                          {
+                            "Not": {
+                              "AnyOf": [{ "Not": { "Type": "Artifact" } }, { "Not": "Other" }]
+                            }
+                          }
+                        ]
+                      },
+                      { "ControlledBy": "You" }
+                    ]
+                  }
+                },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Golem",
+                      "colors": ["White", "Blue"],
+                      "types": ["Artifact", "Creature"],
+                      "subtypes": ["Golem"],
+                      "power": 4,
+                      "toughness": 4
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

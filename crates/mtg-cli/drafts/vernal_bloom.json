@@ -1,0 +1,19 @@
+{
+  "oracle_id": "238b270c-152a-48e5-a955-65f5cb80c174",
+  "name": "Vernal Bloom",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Vernal Bloom",
+      "oracle_fingerprint": "af7f5fac9a9ac663a6b34de1fc7082d6",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "TappedForMana": { "what": [{ "Subtype": "Forest" }] } },
+            "effects": [{ "AddMana": { "who": "Triggering", "mana": { "Fixed": ["Green"] } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

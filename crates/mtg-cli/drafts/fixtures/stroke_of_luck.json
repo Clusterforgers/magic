@@ -1,0 +1,121 @@
+{
+  "object": "card",
+  "id": "f9d4c08d-a6c6-4ece-9a37-e74eecd08eb3",
+  "oracle_id": "88260cfe-5520-497a-8712-c83ea098a866",
+  "multiverse_ids": [
+    574262
+  ],
+  "arena_id": 81258,
+  "name": "Stroke of Luck",
+  "lang": "en",
+  "released_at": "2022-07-07",
+  "uri": "https://api.scryfall.com/cards/f9d4c08d-a6c6-4ece-9a37-e74eecd08eb3",
+  "scryfall_uri": "https://scryfall.com/card/hbg/48/stroke-of-luck?utm_source=api",
+  "layout": "normal",
+  "highres_image": false,
+  "image_status": "lowres",
+  "image_updated_at": "2026-07-13T05:55:08Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/f/9/f9d4c08d-a6c6-4ece-9a37-e74eecd08eb3.jpg?1783922108",
+    "normal": "https://cards.scryfall.io/normal/front/f/9/f9d4c08d-a6c6-4ece-9a37-e74eecd08eb3.jpg?1783922108",
+    "large": "https://cards.scryfall.io/large/front/f/9/f9d4c08d-a6c6-4ece-9a37-e74eecd08eb3.jpg?1783922108",
+    "png": "https://cards.scryfall.io/png/front/f/9/f9d4c08d-a6c6-4ece-9a37-e74eecd08eb3.png?1783922108",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/f/9/f9d4c08d-a6c6-4ece-9a37-e74eecd08eb3.jpg?1783922108",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/f/9/f9d4c08d-a6c6-4ece-9a37-e74eecd08eb3.jpg?1783922108",
+    "thumb": "https://cards.scryfall.io/thumb/front/f/9/f9d4c08d-a6c6-4ece-9a37-e74eecd08eb3.webp?1783922108",
+    "grid": "https://cards.scryfall.io/grid/front/f/9/f9d4c08d-a6c6-4ece-9a37-e74eecd08eb3.webp?1783922108",
+    "display": "https://cards.scryfall.io/display/front/f/9/f9d4c08d-a6c6-4ece-9a37-e74eecd08eb3.webp?1783922108",
+    "art": "https://cards.scryfall.io/art/front/f/9/f9d4c08d-a6c6-4ece-9a37-e74eecd08eb3.webp?1783922108",
+    "crop": "https://cards.scryfall.io/crop/front/f/9/f9d4c08d-a6c6-4ece-9a37-e74eecd08eb3.webp?1783922108",
+    "jpeg": "https://cards.scryfall.io/normal/front/f/9/f9d4c08d-a6c6-4ece-9a37-e74eecd08eb3.jpg?1783922108"
+  },
+  "mana_cost": "{1}{B}",
+  "cmc": 2.0,
+  "type_line": "Sorcery",
+  "oracle_text": "Look at the top four cards of your library. Choose one of them and put all cards with the same name as the chosen card from among them into your hand. You lose 1 life for each card put into your hand this way. Put the rest on the bottom of your library in a random order.",
+  "colors": [
+    "B"
+  ],
+  "color_identity": [
+    "B"
+  ],
+  "keywords": [],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "not_legal",
+    "pauper": "not_legal",
+    "vintage": "not_legal",
+    "penny": "not_legal",
+    "commander": "not_legal",
+    "oathbreaker": "not_legal",
+    "standardbrawl": "not_legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "not_legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "arena"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "35528ede-7870-4598-a2ee-7f3d6464a74b",
+  "set": "hbg",
+  "set_name": "Alchemy Horizons: Baldur's Gate",
+  "set_type": "alchemy",
+  "set_uri": "https://api.scryfall.com/sets/35528ede-7870-4598-a2ee-7f3d6464a74b",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Ahbg&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/hbg?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/f9d4c08d-a6c6-4ece-9a37-e74eecd08eb3/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A88260cfe-5520-497a-8712-c83ea098a866&unique=prints",
+  "collector_number": "48",
+  "digital": true,
+  "rarity": "rare",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Forrest Imel",
+  "artist_ids": [
+    "64fc383d-de34-4151-87d6-27b82e58086e"
+  ],
+  "illustration_id": "7a81081e-2205-4c46-b6c4-e0f12a33e5c8",
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "arena",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "prices": {
+    "usd": null,
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": null,
+    "eur_foil": null,
+    "tix": null
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=574262&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DStroke%2Bof%2BLuck",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DStroke%2Bof%2BLuck",
+    "edhrec": "https://edhrec.com/route/?cc=Stroke+of+Luck"
+  }
+}

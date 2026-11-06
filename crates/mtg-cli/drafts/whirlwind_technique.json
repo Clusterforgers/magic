@@ -1,0 +1,32 @@
+{
+  "oracle_id": "a4477852-66eb-4a54-b4c1-760cbf624f82",
+  "name": "Whirlwind Technique",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Whirlwind Technique",
+      "oracle_fingerprint": "bf9f1d9b51df458f25eea4683b4a822e",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": "Player" },
+              { "what": { "Object": [{ "Type": "Creature" }] }, "bounds": { "min": 0, "max": 2 } }
+            ],
+            "effects": [
+              { "Draw": { "who": { "Target": 0 }, "count": 2 } },
+              { "Discard": { "who": { "Target": 0 } } },
+              { "Exile": { "what": { "Target": 1 }, "as": "airbent" } },
+              {
+                "Rule": {
+                  "rule": { "MayCastRather": { "only": { "Bound": "airbent" }, "cost": "{2}" } },
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

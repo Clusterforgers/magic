@@ -1,0 +1,68 @@
+{
+  "oracle_id": "c03ca2e6-fcce-4018-952f-1c451ab92cfd",
+  "name": "Dragon Man, Reformed Robot",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dragon Man, Reformed Robot",
+      "oracle_fingerprint": "7e663b31b1d1d8f7ec2c06ab714e08f7",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              {
+                "SetPT": {
+                  "power": {
+                    "Greatest": {
+                      "of": [
+                        {
+                          "AnyOf": [
+                            {
+                              "Not": {
+                                "AnyOf": [
+                                  { "Not": { "Not": { "Type": "Creature" } } },
+                                  { "Not": { "ControlledBy": "You" } },
+                                  { "Not": { "In": "Battlefield" } }
+                                ]
+                              }
+                            },
+                            {
+                              "Not": {
+                                "AnyOf": [
+                                  { "Not": { "Not": { "Type": "Creature" } } },
+                                  { "Not": { "OwnedBy": "You" } },
+                                  { "Not": { "In": "Graveyard" } }
+                                ]
+                              }
+                            }
+                          ]
+                        }
+                      ],
+                      "stat": "ManaValue"
+                    }
+                  },
+                  "toughness": 5
+                }
+              }
+            ],
+            "defining": true
+          }
+        },
+        {
+          "Rule": {
+            "rule": {
+              "MayCast": {
+                "what": ["This"],
+                "from": "Graveyard",
+                "additional": [{ "Discard": {} }]
+              }
+            },
+            "from": "Graveyard"
+          }
+        }
+      ]
+    }
+  ]
+}

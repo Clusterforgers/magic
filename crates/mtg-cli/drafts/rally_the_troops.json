@@ -1,0 +1,46 @@
+{
+  "oracle_id": "555927b3-bbc8-48b7-9a04-e8ebaabccf3e",
+  "name": "Rally the Troops",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Rally the Troops",
+      "oracle_fingerprint": "002a61e946a96a512401735d6524bdf7",
+      "abilities": [
+        {
+          "CastOnly": {
+            "condition": {
+              "All": [
+                { "Step": "DeclareAttackers" },
+                {
+                  "Compare": {
+                    "left": {
+                      "Tally": {
+                        "event": "Attacked",
+                        "who": "EachPlayer",
+                        "filter": [
+                          { "DidThisTurn": { "event": "Attacked", "to": "You", "combat": true } }
+                        ]
+                      }
+                    },
+                    "op": "Ge",
+                    "right": 1
+                  }
+                }
+              ]
+            }
+          }
+        },
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Untap": { "what": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

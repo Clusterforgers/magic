@@ -1,0 +1,133 @@
+{
+  "object": "card",
+  "id": "1aeb39c9-7853-4032-882a-83d4863dcbc5",
+  "oracle_id": "8162730e-2573-4bc0-827f-5b7b3dbf3bff",
+  "multiverse_ids": [
+    25561
+  ],
+  "mtgo_id": 15910,
+  "mtgo_foil_id": 15911,
+  "tcgplayer_id": 3114,
+  "cardmarket_id": 2863,
+  "name": "Telepathic Spies",
+  "lang": "en",
+  "released_at": "2001-04-11",
+  "uri": "https://api.scryfall.com/cards/1aeb39c9-7853-4032-882a-83d4863dcbc5",
+  "scryfall_uri": "https://scryfall.com/card/7ed/101/telepathic-spies?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T12:25:27Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/1/a/1aeb39c9-7853-4032-882a-83d4863dcbc5.jpg?1783945527",
+    "normal": "https://cards.scryfall.io/normal/front/1/a/1aeb39c9-7853-4032-882a-83d4863dcbc5.jpg?1783945527",
+    "large": "https://cards.scryfall.io/large/front/1/a/1aeb39c9-7853-4032-882a-83d4863dcbc5.jpg?1783945527",
+    "png": "https://cards.scryfall.io/png/front/1/a/1aeb39c9-7853-4032-882a-83d4863dcbc5.png?1783945527",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/1/a/1aeb39c9-7853-4032-882a-83d4863dcbc5.jpg?1783945527",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/1/a/1aeb39c9-7853-4032-882a-83d4863dcbc5.jpg?1783945527",
+    "thumb": "https://cards.scryfall.io/thumb/front/1/a/1aeb39c9-7853-4032-882a-83d4863dcbc5.webp?1783945527",
+    "grid": "https://cards.scryfall.io/grid/front/1/a/1aeb39c9-7853-4032-882a-83d4863dcbc5.webp?1783945527",
+    "display": "https://cards.scryfall.io/display/front/1/a/1aeb39c9-7853-4032-882a-83d4863dcbc5.webp?1783945527",
+    "art": "https://cards.scryfall.io/art/front/1/a/1aeb39c9-7853-4032-882a-83d4863dcbc5.webp?1783945527",
+    "crop": "https://cards.scryfall.io/crop/front/1/a/1aeb39c9-7853-4032-882a-83d4863dcbc5.webp?1783945527",
+    "jpeg": "https://cards.scryfall.io/normal/front/1/a/1aeb39c9-7853-4032-882a-83d4863dcbc5.jpg?1783945527"
+  },
+  "mana_cost": "{2}{U}",
+  "cmc": 3.0,
+  "type_line": "Creature — Human Wizard",
+  "oracle_text": "When this creature enters, look at target opponent's hand.",
+  "power": "2",
+  "toughness": "2",
+  "colors": [
+    "U"
+  ],
+  "color_identity": [
+    "U"
+  ],
+  "keywords": [],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "legal",
+    "predh": "legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": true,
+  "variation": false,
+  "set_id": "230f38aa-9511-4db8-a3aa-aeddbc3f7bb9",
+  "set": "7ed",
+  "set_name": "Seventh Edition",
+  "set_type": "core",
+  "set_uri": "https://api.scryfall.com/sets/230f38aa-9511-4db8-a3aa-aeddbc3f7bb9",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3A7ed&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/7ed?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/1aeb39c9-7853-4032-882a-83d4863dcbc5/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A8162730e-2573-4bc0-827f-5b7b3dbf3bff&unique=prints",
+  "collector_number": "101",
+  "digital": false,
+  "rarity": "common",
+  "flavor_text": "Most spies sneak into enemy camps. These spies sneak into enemy minds.",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Jim Nelson",
+  "artist_ids": [
+    "aa9f64d1-29e1-4c82-877e-44c18183f40b"
+  ],
+  "illustration_id": "c74ddd8f-2c39-4060-b680-0fbb451a2411",
+  "border_color": "white",
+  "frame": "1997",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 30595,
+  "prices": {
+    "usd": "0.07",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "0.11",
+    "eur_foil": null,
+    "tix": "0.09"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=25561&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DTelepathic%2BSpies",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DTelepathic%2BSpies",
+    "edhrec": "https://edhrec.com/route/?cc=Telepathic+Spies"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F3114%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=2863&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/15910?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

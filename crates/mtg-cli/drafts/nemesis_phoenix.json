@@ -1,0 +1,36 @@
+{
+  "oracle_id": "bd0dcb8c-d550-4034-8597-0aba6f6e3b3f",
+  "name": "Nemesis Phoenix",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Nemesis Phoenix",
+      "oracle_fingerprint": "756e8b959674490473cdfb5d3a646c64",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Activated": {
+            "cost": "{2}{R}",
+            "condition": {
+              "All": [
+                { "Compare": { "left": { "Players": "Attacked" }, "op": "Ge", "right": 2 } },
+                { "Step": "DeclareAttackers" }
+              ]
+            },
+            "from": "Graveyard",
+            "effects": [
+              {
+                "Move": {
+                  "what": "This",
+                  "to": { "Battlefield": { "tapped": true } },
+                  "as": "moved"
+                }
+              },
+              { "JoinAttack": { "what": { "Bound": "moved" } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

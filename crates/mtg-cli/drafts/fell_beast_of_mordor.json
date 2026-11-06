@@ -1,0 +1,35 @@
+{
+  "oracle_id": "3b64e0a8-7d11-41c5-b439-edec19928b7d",
+  "name": "Fell Beast of Mordor",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Fell Beast of Mordor",
+      "oracle_fingerprint": "1e4fcba4af748e892e9ae3fd114f3287",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": { "Devour": { "counters": 1, "of": [{ "Type": "Creature" }] } } },
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+                { "Attacks": { "what": ["This"] } }
+              ]
+            },
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              {
+                "LoseLife": {
+                  "who": { "Target": 0 },
+                  "amount": { "Counters": { "on": "This", "counter": "+1/+1" } }
+                }
+              },
+              { "GainLife": { "amount": { "Counters": { "on": "This", "counter": "+1/+1" } } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

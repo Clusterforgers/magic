@@ -1,0 +1,139 @@
+{
+  "object": "card",
+  "id": "88df246f-708b-4fbb-94e4-6df9471e626e",
+  "oracle_id": "facc2d6f-3f28-4b87-b643-44fdf939a2b5",
+  "multiverse_ids": [
+    643208
+  ],
+  "mtgo_id": 120929,
+  "tcgplayer_id": 531110,
+  "cardmarket_id": 748554,
+  "name": "Mindleech Mass",
+  "lang": "en",
+  "released_at": "2024-01-12",
+  "uri": "https://api.scryfall.com/cards/88df246f-708b-4fbb-94e4-6df9471e626e",
+  "scryfall_uri": "https://scryfall.com/card/rvr/201/mindleech-mass?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T03:28:02Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/8/8/88df246f-708b-4fbb-94e4-6df9471e626e.jpg?1783913282",
+    "normal": "https://cards.scryfall.io/normal/front/8/8/88df246f-708b-4fbb-94e4-6df9471e626e.jpg?1783913282",
+    "large": "https://cards.scryfall.io/large/front/8/8/88df246f-708b-4fbb-94e4-6df9471e626e.jpg?1783913282",
+    "png": "https://cards.scryfall.io/png/front/8/8/88df246f-708b-4fbb-94e4-6df9471e626e.png?1783913282",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/8/8/88df246f-708b-4fbb-94e4-6df9471e626e.jpg?1783913282",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/8/8/88df246f-708b-4fbb-94e4-6df9471e626e.jpg?1783913282",
+    "thumb": "https://cards.scryfall.io/thumb/front/8/8/88df246f-708b-4fbb-94e4-6df9471e626e.webp?1783913282",
+    "grid": "https://cards.scryfall.io/grid/front/8/8/88df246f-708b-4fbb-94e4-6df9471e626e.webp?1783913282",
+    "display": "https://cards.scryfall.io/display/front/8/8/88df246f-708b-4fbb-94e4-6df9471e626e.webp?1783913282",
+    "art": "https://cards.scryfall.io/art/front/8/8/88df246f-708b-4fbb-94e4-6df9471e626e.webp?1783913282",
+    "crop": "https://cards.scryfall.io/crop/front/8/8/88df246f-708b-4fbb-94e4-6df9471e626e.webp?1783913282",
+    "jpeg": "https://cards.scryfall.io/normal/front/8/8/88df246f-708b-4fbb-94e4-6df9471e626e.jpg?1783913282"
+  },
+  "mana_cost": "{5}{U}{B}{B}",
+  "cmc": 8.0,
+  "type_line": "Creature — Horror",
+  "oracle_text": "Trample\nWhenever this creature deals combat damage to a player, you may look at that player's hand. If you do, you may cast a spell from among those cards without paying its mana cost.",
+  "power": "6",
+  "toughness": "6",
+  "colors": [
+    "B",
+    "U"
+  ],
+  "color_identity": [
+    "B",
+    "U"
+  ],
+  "keywords": [
+    "Trample"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": true,
+  "variation": false,
+  "set_id": "fed2c8cd-ab92-44f6-808a-41e7809bcfe2",
+  "set": "rvr",
+  "set_name": "Ravnica Remastered",
+  "set_type": "masters",
+  "set_uri": "https://api.scryfall.com/sets/fed2c8cd-ab92-44f6-808a-41e7809bcfe2",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Arvr&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/rvr?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/88df246f-708b-4fbb-94e4-6df9471e626e/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Afacc2d6f-3f28-4b87-b643-44fdf939a2b5&unique=prints",
+  "collector_number": "201",
+  "digital": false,
+  "rarity": "rare",
+  "watermark": "dimir",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Kev Walker",
+  "artist_ids": [
+    "f366a0ee-a0cd-466d-ba6a-90058c7a31a6"
+  ],
+  "illustration_id": "0c6fd070-492e-4e14-8a6c-53bdbb725bb4",
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 7472,
+  "penny_rank": 15121,
+  "prices": {
+    "usd": "0.57",
+    "usd_foil": "2.65",
+    "usd_etched": null,
+    "eur": "0.54",
+    "eur_foil": "0.48",
+    "tix": "0.02"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=643208&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DMindleech%2BMass",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DMindleech%2BMass",
+    "edhrec": "https://edhrec.com/route/?cc=Mindleech+Mass"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F531110%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=748554&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/120929?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

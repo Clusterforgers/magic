@@ -1,0 +1,41 @@
+{
+  "oracle_id": "afc1c443-93e3-4ef4-a404-1d9fc13e0b02",
+  "name": "Safana, Calimport Cutthroat",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Safana, Calimport Cutthroat",
+      "oracle_fingerprint": "c4043b6a1799837d2c85f5f2b8cd1175",
+      "abilities": [
+        { "Keyword": "Menace" },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "if": { "Initiative": "You" },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": { "Named": "treasure" },
+                  "count": {
+                    "When": {
+                      "condition": {
+                        "Compare": {
+                          "left": { "Tallied": { "who": "You", "what": "DungeonsCompleted" } },
+                          "op": "Ge",
+                          "right": 1
+                        }
+                      },
+                      "then": 3,
+                      "otherwise": 1
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": "ChooseABackground" }
+      ]
+    }
+  ]
+}

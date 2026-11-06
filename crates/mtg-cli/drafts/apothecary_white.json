@@ -1,0 +1,52 @@
+{
+  "oracle_id": "7bf8bb41-6f46-492c-b6cf-5cfb29f973a4",
+  "name": "Apothecary White",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Apothecary White",
+      "oracle_fingerprint": "42306332dad75c4205fff0046334d0b9",
+      "abilities": [
+        { "Keyword": "Vigilance" },
+        {
+          "Triggered": {
+            "when": {
+              "GroupAttacks": { "what": [{ "Type": "Creature" }, { "ControlledBy": "You" }] }
+            },
+            "effects": [
+              {
+                "CreateToken": { "token": { "Named": "food" }, "count": { "Players": "Attacked" } }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [
+              { "Mana": "{W}" },
+              "Tap",
+              { "TapPermanents": { "filter": [{ "Subtype": "Food" }], "count": "X" } }
+            ],
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Human",
+                      "colors": ["White"],
+                      "types": ["Creature"],
+                      "subtypes": ["Human"],
+                      "power": 1,
+                      "toughness": 1
+                    }
+                  },
+                  "count": "X"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

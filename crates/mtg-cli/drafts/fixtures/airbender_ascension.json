@@ -1,0 +1,141 @@
+{
+  "object": "card",
+  "id": "99a90d13-891c-45cc-b1d5-6080ebae5862",
+  "oracle_id": "c4d2fdf9-637d-4e97-ae33-45f2d27bf8cd",
+  "multiverse_ids": [],
+  "resource_id": "0B3BF3F624E41943D09670B9B0D360BACAB45D49DA085FC5F764E84E219956D1",
+  "mtgo_id": 144488,
+  "arena_id": 97279,
+  "tcgplayer_id": 660496,
+  "cardmarket_id": 855697,
+  "name": "Airbender Ascension",
+  "lang": "en",
+  "released_at": "2025-11-21",
+  "uri": "https://api.scryfall.com/cards/99a90d13-891c-45cc-b1d5-6080ebae5862",
+  "scryfall_uri": "https://scryfall.com/card/tla/6/airbender-ascension?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T01:10:06Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/9/9/99a90d13-891c-45cc-b1d5-6080ebae5862.jpg?1783905006",
+    "normal": "https://cards.scryfall.io/normal/front/9/9/99a90d13-891c-45cc-b1d5-6080ebae5862.jpg?1783905006",
+    "large": "https://cards.scryfall.io/large/front/9/9/99a90d13-891c-45cc-b1d5-6080ebae5862.jpg?1783905006",
+    "png": "https://cards.scryfall.io/png/front/9/9/99a90d13-891c-45cc-b1d5-6080ebae5862.png?1783905006",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/9/9/99a90d13-891c-45cc-b1d5-6080ebae5862.jpg?1783905006",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/9/9/99a90d13-891c-45cc-b1d5-6080ebae5862.jpg?1783905006",
+    "thumb": "https://cards.scryfall.io/thumb/front/9/9/99a90d13-891c-45cc-b1d5-6080ebae5862.webp?1783905006",
+    "grid": "https://cards.scryfall.io/grid/front/9/9/99a90d13-891c-45cc-b1d5-6080ebae5862.webp?1783905006",
+    "display": "https://cards.scryfall.io/display/front/9/9/99a90d13-891c-45cc-b1d5-6080ebae5862.webp?1783905006",
+    "art": "https://cards.scryfall.io/art/front/9/9/99a90d13-891c-45cc-b1d5-6080ebae5862.webp?1783905006",
+    "crop": "https://cards.scryfall.io/crop/front/9/9/99a90d13-891c-45cc-b1d5-6080ebae5862.webp?1783905006",
+    "jpeg": "https://cards.scryfall.io/normal/front/9/9/99a90d13-891c-45cc-b1d5-6080ebae5862.jpg?1783905006"
+  },
+  "mana_cost": "{1}{W}",
+  "cmc": 2.0,
+  "type_line": "Enchantment",
+  "oracle_text": "When this enchantment enters, airbend up to one target creature.\nWhenever a creature you control enters, put a quest counter on this enchantment.\nAt the beginning of your end step, if this enchantment has four or more quest counters on it, exile up to one target creature you control, then return it to the battlefield under its owner's control.",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": [
+    "Airbend"
+  ],
+  "legalities": {
+    "standard": "legal",
+    "future": "legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "arena",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "118f7e64-5caa-4cb7-99a8-184f4d3a7422",
+  "set": "tla",
+  "set_name": "Avatar: The Last Airbender",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/118f7e64-5caa-4cb7-99a8-184f4d3a7422",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Atla&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/tla?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/99a90d13-891c-45cc-b1d5-6080ebae5862/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Ac4d2fdf9-637d-4e97-ae33-45f2d27bf8cd&unique=prints",
+  "collector_number": "6",
+  "digital": false,
+  "rarity": "rare",
+  "watermark": "airnomads",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Shiren",
+  "artist_ids": [
+    "21c7279b-f378-43d2-b369-c3a7d1435106"
+  ],
+  "illustration_id": "b51a58da-5d72-4860-bef2-ba9569e6f51a",
+  "border_color": "black",
+  "frame": "2015",
+  "frame_effects": [
+    "enchantment"
+  ],
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "promo_types": [
+    "universesbeyond"
+  ],
+  "edhrec_rank": 2276,
+  "penny_rank": 822,
+  "prices": {
+    "usd": "1.63",
+    "usd_foil": "1.93",
+    "usd_etched": null,
+    "eur": "1.30",
+    "eur_foil": "1.56",
+    "tix": "0.02"
+  },
+  "related_uris": {
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DAirbender%2BAscension",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DAirbender%2BAscension",
+    "edhrec": "https://edhrec.com/route/?cc=Airbender+Ascension"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F660496%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=855697&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/144488?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

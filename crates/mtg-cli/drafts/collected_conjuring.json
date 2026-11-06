@@ -1,0 +1,54 @@
+{
+  "oracle_id": "a0a79e9e-38cb-45d8-a7ec-7cf10ef7e5fc",
+  "name": "Collected Conjuring",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Collected Conjuring",
+      "oracle_fingerprint": "1ebbec8b678800d308d17d5a06855f8b",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "ExileTop": { "count": 6, "as": "exiled" } },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "Is": { "Bound": "exiled" } },
+                      { "OwnedBy": "You" },
+                      { "In": "Exile" },
+                      { "Type": "Sorcery" },
+                      { "Compare": { "stat": "ManaValue", "op": "Le", "to": 3 } }
+                    ]
+                  },
+                  "count": { "min": 0, "max": 2 },
+                  "as": "picked2"
+                }
+              },
+              {
+                "RepeatEach": {
+                  "over": { "Bound": "picked2" },
+                  "as": "card3",
+                  "effects": [{ "CastFromZone": { "what": { "Bound": "card3" }, "free": true } }]
+                }
+              },
+              {
+                "Move": {
+                  "what": {
+                    "Each": [
+                      { "Is": { "Bound": "exiled" } },
+                      { "OwnedBy": "You" },
+                      { "In": "Exile" }
+                    ]
+                  },
+                  "to": { "Library": { "place": "Bottom", "order": "Random" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,42 @@
+{
+  "oracle_id": "8c95230b-7a4a-4293-ab5f-2070d951082b",
+  "name": "Rhonas's Stalwart",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Rhonas's Stalwart",
+      "oracle_fingerprint": "4170ee0da5b41efd19fec9f0a4ea7946",
+      "abilities": [
+        { "Keyword": { "Exert": {} } },
+        {
+          "Triggered": {
+            "when": { "Did": { "action": "Exerted", "what": ["This"] } },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [
+                    {
+                      "CantBeBlockedBy": [
+                        { "Type": "Creature" },
+                        { "Compare": { "stat": "Power", "op": "Le", "to": 2 } }
+                      ]
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

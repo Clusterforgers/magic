@@ -1,7 +1,7 @@
 {
   "oracle_id": "8345eb05-c04e-4c1d-9776-5ab7d91a7842",
   "name": "Rev, Tithe Extractor",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Rev, Tithe Extractor",
@@ -25,9 +25,33 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 73, "end": 399 }
+          "Triggered": {
+            "when": {
+              "Batch": {
+                "DealsDamage": {
+                  "source": [{ "Type": "Creature" }, { "ControlledBy": "You" }],
+                  "to": "EachPlayer",
+                  "combat": true
+                }
+              }
+            },
+            "effects": [
+              { "CreateToken": { "token": { "Named": "treasure" } } },
+              { "LookAtTop": { "who": "Triggering", "as": "top" } },
+              { "ExileHidden": { "what": { "Bound": "top" }, "held": true, "as": "exiled4" } },
+              {
+                "Rule": {
+                  "rule": {
+                    "MayCast": {
+                      "what": [{ "Not": { "Type": "Land" } }],
+                      "from": "Exile",
+                      "only": { "Bound": "exiled4" }
+                    }
+                  },
+                  "duration": "Forever"
+                }
+              }
+            ]
           }
         }
       ]

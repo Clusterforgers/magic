@@ -1,0 +1,29 @@
+{
+  "oracle_id": "ff1dd9c1-d1e5-49dd-b8b2-df3e4a41d3e5",
+  "name": "Skitterbeam Battalion",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Skitterbeam Battalion",
+      "oracle_fingerprint": "58a9dc445b6cdd8610a4e73825c6f737",
+      "abilities": [
+        { "Keyword": { "Prototype": { "cost": "{3}{R}{R}", "power": 2, "toughness": 2 } } },
+        { "Keyword": "Trample" },
+        { "Keyword": "Haste" },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": ["This", { "WasCast": { "by": "You" } }],
+                "to": "Battlefield"
+              }
+            },
+            "effects": [
+              { "CreateToken": { "token": { "CopyOf": { "of": "Triggering" } }, "count": 2 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

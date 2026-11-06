@@ -1,0 +1,56 @@
+{
+  "oracle_id": "b03a9d03-4853-4856-8cfa-ad4085e0e3e3",
+  "name": "Tajuru Paragon",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Tajuru Paragon",
+      "oracle_fingerprint": "6274b0bcb7efa9bb393ce7806a0f9eb4",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              { "AddSubtype": "Cleric" },
+              { "AddSubtype": "Rogue" },
+              { "AddSubtype": "Warrior" },
+              { "AddSubtype": "Wizard" }
+            ],
+            "defining": true
+          }
+        },
+        { "Keyword": { "Kicker": "{3}" } },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This", "Kicked"], "to": "Battlefield" } },
+            "effects": [
+              { "LookAtTop": { "count": 6, "as": "top" } },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "In": "Library" },
+                      { "Is": { "Bound": "top" } },
+                      { "Type": "Creature" },
+                      { "SharesSubtype": "This" }
+                    ]
+                  },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "kept2"
+                }
+              },
+              { "Reveal": { "what": { "Bound": "top" } } },
+              { "Move": { "what": { "Bound": "kept2" }, "to": "Hand" } },
+              {
+                "Move": {
+                  "what": { "Bound": "top" },
+                  "to": { "Library": { "place": "Bottom", "order": "Random" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

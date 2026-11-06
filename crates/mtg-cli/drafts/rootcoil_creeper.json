@@ -20,7 +20,7 @@
               {
                 "AddMana": {
                   "mana": { "AnyColor": 2 },
-                  "only": [{ "Spell": { "facts": ["FromGraveyard"] } }]
+                  "only": [{ "Spell": { "facts": ["FromYourGraveyard"] } }]
                 }
               }
             ]

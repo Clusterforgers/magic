@@ -1,0 +1,92 @@
+{
+  "oracle_id": "e8ecec61-cc47-4051-a599-0e7470764488",
+  "name": "Violent Echoes",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Violent Echoes",
+      "oracle_fingerprint": "c9080a8ae05e2ee237dcaadb72b2dc91",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "AnyOf": [{ "Type": "Creature" }, { "Type": "Planeswalker" }] }]
+                }
+              }
+            ],
+            "effects": [
+              { "DealDamage": { "to": { "Target": 0 }, "amount": 6, "excess": { "as": "excess" } } },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": { "left": { "Bound": "excess" }, "op": "Ge", "right": 1 }
+                  },
+                  "then": [
+                    {
+                      "If": {
+                        "condition": {
+                          "Compare": {
+                            "left": {
+                              "Count": [{ "Subtype": "Jace" }, "Token", { "ControlledBy": "You" }]
+                            },
+                            "op": "Lt",
+                            "right": 1
+                          }
+                        },
+                        "then": [
+                          {
+                            "CreateToken": {
+                              "token": {
+                                "Custom": {
+                                  "name": "Jace",
+                                  "colors": ["Blue"],
+                                  "types": ["Planeswalker"],
+                                  "subtypes": ["Jace"],
+                                  "abilities": [
+                                    {
+                                      "Loyalty": {
+                                        "cost": { "Minus": 1 },
+                                        "effects": [{ "Surveil": {} }]
+                                      }
+                                    },
+                                    {
+                                      "Loyalty": {
+                                        "cost": { "Minus": 3 },
+                                        "effects": [{ "Draw": {} }]
+                                      }
+                                    }
+                                  ]
+                                }
+                              }
+                            }
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "Choose": {
+                        "from": {
+                          "Each": [{ "Subtype": "Jace" }, "Token", { "ControlledBy": "You" }]
+                        },
+                        "as": "jace"
+                      }
+                    },
+                    {
+                      "PutCounters": {
+                        "on": { "Bound": "jace" },
+                        "counter": "loyalty",
+                        "count": { "Bound": "excess" }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

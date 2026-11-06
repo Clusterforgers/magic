@@ -1,0 +1,22 @@
+{
+  "oracle_id": "dcd41ed1-4a12-416b-8ba0-51a9c0927ddb",
+  "name": "Binding Agony",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Binding Agony",
+      "oracle_fingerprint": "d74cd48c2484cec8e98b80f7f8904690",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Triggered": {
+            "when": { "Batch": { "DealsDamage": { "source": [], "to": "Attached" } } },
+            "effects": [
+              { "DealDamage": { "to": { "ControllerOf": "Triggering" }, "amount": "Triggering" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

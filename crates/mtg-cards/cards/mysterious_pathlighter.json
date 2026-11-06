@@ -1,0 +1,24 @@
+{
+  "oracle_id": "fe87e290-8e9d-4269-ad1f-bb31e6eeb7da",
+  "name": "Mysterious Pathlighter",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mysterious Pathlighter",
+      "oracle_fingerprint": "738895600cb7a87e7f4faf64cdcb947d",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Replacement": {
+            "when": {
+              "Enters": {
+                "what": [{ "Type": "Creature" }, { "ControlledBy": "You" }, "HasAdventure"]
+              }
+            },
+            "by": { "WithCounters": { "counter": "+1/+1", "count": 1 } }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,35 @@
+{
+  "oracle_id": "172b94a0-2801-4623-aed8-902591c2d591",
+  "name": "Doom Weaver",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Doom Weaver",
+      "oracle_fingerprint": "4e7c8e7fb1966471747ac3c79965c931",
+      "abilities": [
+        { "Keyword": "Reach" },
+        { "Keyword": "Soulbond" },
+        {
+          "Static": {
+            "affected": { "Each": [{ "AnyOf": ["This", { "PairedWith": "This" }] }] },
+            "mods": [
+              {
+                "GrantAbility": {
+                  "Triggered": {
+                    "when": {
+                      "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" }
+                    },
+                    "effects": [
+                      { "Draw": { "count": { "Stat": { "of": "This", "stat": "Power" } } } }
+                    ]
+                  }
+                }
+              }
+            ],
+            "condition": { "Matches": { "subject": "This", "selector": ["Paired"] } }
+          }
+        }
+      ]
+    }
+  ]
+}

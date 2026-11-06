@@ -1,0 +1,43 @@
+{
+  "oracle_id": "570de99a-7c65-4052-bc4b-cfb8caef40b3",
+  "name": "Robe of the Archmagi",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Robe of the Archmagi",
+      "oracle_fingerprint": "e46add797a16a6e609cf8acc357e23c9",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "DealsDamage": {
+                "source": [{ "Type": "Creature" }, { "Is": "Attached" }],
+                "to": "EachPlayer",
+                "combat": true
+              }
+            },
+            "effects": [{ "Draw": { "count": "Triggering" } }]
+          }
+        },
+        { "Keyword": { "Equip": "{4}" } },
+        {
+          "Keyword": {
+            "EquipTo": {
+              "to": [
+                { "ControlledBy": "You" },
+                {
+                  "AnyOf": [
+                    { "Subtype": "Shaman" },
+                    { "Subtype": "Warlock" },
+                    { "Subtype": "Wizard" }
+                  ]
+                }
+              ],
+              "cost": "{1}"
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,7 +1,7 @@
 {
   "oracle_id": "4415b65d-5473-4b19-94f7-e5cf4ce64d5e",
   "name": "Cracked Skull",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Cracked Skull",
@@ -25,9 +25,9 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 141, "end": 193 }
+          "Triggered": {
+            "when": { "Batch": { "DealsDamage": { "source": [], "to": "Attached" } } },
+            "effects": [{ "Destroy": { "what": "Triggering" } }]
           }
         }
       ]

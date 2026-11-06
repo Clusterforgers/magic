@@ -1,0 +1,39 @@
+{
+  "oracle_id": "eff0a1ad-ecc6-416f-a4ae-96b26cd8a905",
+  "name": "The Elderspell",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "The Elderspell",
+      "oracle_fingerprint": "48919e7f10dd9034d7126bd24f7315b8",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": { "Object": [{ "Type": "Planeswalker" }] },
+                "bounds": { "min": 0, "max": { "Count": [{ "Type": "Planeswalker" }] } }
+              }
+            ],
+            "effects": [
+              { "Destroy": { "what": { "Target": 0 }, "as": "destroyed" } },
+              {
+                "Choose": {
+                  "from": { "Each": [{ "Type": "Planeswalker" }, { "ControlledBy": "You" }] },
+                  "as": "card2"
+                }
+              },
+              {
+                "PutCounters": {
+                  "on": { "Bound": "card2" },
+                  "counter": "loyalty",
+                  "count": { "Times": { "by": 2, "of": { "Bound": "destroyed~moved" } } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

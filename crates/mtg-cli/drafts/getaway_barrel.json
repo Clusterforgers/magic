@@ -1,0 +1,41 @@
+{
+  "oracle_id": "7ddbf891-7f80-44e9-b94c-70c1da0b91ed",
+  "name": "Getaway Barrel",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Getaway Barrel",
+      "oracle_fingerprint": "0dffba87ebf279ad4c9be27e428e26fe",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } },
+            "effects": [
+              { "LookAtTop": { "count": 13, "as": "top" } },
+              { "Reveal": { "what": { "Bound": "top" } } },
+              {
+                "ChooseAtRandom": {
+                  "from": {
+                    "Each": [
+                      { "Type": "Creature" },
+                      { "Is": { "Bound": "top" } },
+                      { "In": "Library" }
+                    ]
+                  },
+                  "as": "card2"
+                }
+              },
+              { "Move": { "what": { "Bound": "card2" }, "to": { "Battlefield": {} } } },
+              {
+                "Move": {
+                  "what": { "Each": [{ "Is": { "Bound": "top" } }, { "In": "Library" }] },
+                  "to": { "Library": { "place": "Bottom", "order": "Random" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -37,20 +37,20 @@
                               "mods": [{ "ModifyPT": { "power": 2, "toughness": 1 } }],
                               "duration": "UntilEndOfTurn"
                             }
+                          },
+                          {
+                            "Rule": {
+                              "rule": {
+                                "MayCast": {
+                                  "from": "Exile",
+                                  "only": { "Bound": "exiled" },
+                                  "play": true
+                                }
+                              },
+                              "duration": "UntilEndOfTurn"
+                            }
                           }
                         ]
-                      }
-                    },
-                    {
-                      "Rule": {
-                        "rule": {
-                          "MayCast": {
-                            "from": "Exile",
-                            "only": { "Bound": "exiled" },
-                            "play": true
-                          }
-                        },
-                        "duration": "UntilEndOfTurn"
                       }
                     }
                   ]

@@ -1,0 +1,88 @@
+{
+  "oracle_id": "191e003f-1a78-4d85-9c70-2ae132a5f9cc",
+  "name": "Aphelia, Viper Whisperer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Aphelia, Viper Whisperer",
+      "oracle_fingerprint": "eca7608e6669e9e7631eaecc1c8b9816",
+      "abilities": [
+        { "Keyword": "Deathtouch" },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": "{1}{B/G}",
+                  "paid": [
+                    {
+                      "CreateToken": {
+                        "token": {
+                          "Custom": {
+                            "name": "Snake",
+                            "colors": ["Black"],
+                            "types": ["Creature"],
+                            "subtypes": ["Snake"],
+                            "power": 1,
+                            "toughness": 1,
+                            "abilities": [{ "Keyword": "Deathtouch" }]
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{4}{B}",
+            "effects": [
+              {
+                "DelayedTrigger": {
+                  "when": {
+                    "Batch": {
+                      "DealsDamage": {
+                        "source": [
+                          {
+                            "AnyOf": [
+                              { "Subtype": "Gorgon" },
+                              {
+                                "Not": {
+                                  "AnyOf": [
+                                    { "Not": { "Type": "Creature" } },
+                                    { "Not": { "Subtype": "Snake" } }
+                                  ]
+                                }
+                              }
+                            ]
+                          },
+                          { "ControlledBy": "You" }
+                        ],
+                        "to": "EachPlayer",
+                        "combat": true
+                      }
+                    }
+                  },
+                  "once": false,
+                  "this_turn": true,
+                  "effects": [
+                    {
+                      "LoseLife": {
+                        "who": "Triggering",
+                        "amount": { "Half": { "of": { "Life": "Triggering" }, "up": true } }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

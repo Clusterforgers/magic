@@ -1,0 +1,42 @@
+{
+  "oracle_id": "64acb083-a0a3-46ec-9c93-b2ac36878703",
+  "name": "Water Tribe Rallier",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Water Tribe Rallier",
+      "oracle_fingerprint": "8e82b65bd6558126523be65c9496431a",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Waterbend": 5 }],
+            "effects": [
+              { "LookAtTop": { "count": 4, "as": "top" } },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "In": "Library" },
+                      { "Is": { "Bound": "top" } },
+                      { "Type": "Creature" },
+                      { "Compare": { "stat": "Power", "op": "Le", "to": 3 } }
+                    ]
+                  },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "kept2"
+                }
+              },
+              { "Move": { "what": { "Bound": "kept2" }, "to": "Hand" } },
+              {
+                "Move": {
+                  "what": { "Bound": "top" },
+                  "to": { "Library": { "place": "Bottom", "order": "Random" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

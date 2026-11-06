@@ -1,0 +1,76 @@
+{
+  "oracle_id": "532f3f03-37af-46b6-bafb-031e9a3df056",
+  "name": "Lost Legacy",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Lost Legacy",
+      "oracle_fingerprint": "b3df1c1e85cb2d97731e605f31f87f17",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              {
+                "ChooseValue": {
+                  "kind": {
+                    "CardName": [{ "Not": { "Type": "Land" } }, { "Not": { "Type": "Artifact" } }]
+                  },
+                  "as": "name"
+                }
+              },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "ChosenAs": "name" },
+                      { "In": "Hand" },
+                      { "OwnedBy": { "Target": 0 } }
+                    ]
+                  },
+                  "count": {
+                    "min": 0,
+                    "max": { "Count": [{ "In": "Hand" }, { "OwnedBy": { "Target": 0 } }] }
+                  },
+                  "as": "picked2"
+                }
+              },
+              { "Exile": { "what": { "Bound": "picked2" }, "as": "exiled3" } },
+              {
+                "Search": {
+                  "of": { "Target": 0 },
+                  "filter": [{ "ChosenAs": "name" }],
+                  "count": {
+                    "min": 0,
+                    "max": { "Count": [{ "In": "Library" }, { "OwnedBy": { "Target": 0 } }] }
+                  },
+                  "as": "found4"
+                }
+              },
+              { "Exile": { "what": { "Bound": "found4" } } },
+              { "Shuffle": { "who": { "Target": 0 } } },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "ChosenAs": "name" },
+                      { "In": "Graveyard" },
+                      { "OwnedBy": { "Target": 0 } }
+                    ]
+                  },
+                  "count": {
+                    "min": 0,
+                    "max": { "Count": [{ "In": "Graveyard" }, { "OwnedBy": { "Target": 0 } }] }
+                  },
+                  "as": "picked5"
+                }
+              },
+              { "Exile": { "what": { "Bound": "picked5" } } },
+              { "Draw": { "who": { "Target": 0 }, "count": { "Bound": "exiled3~moved" } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

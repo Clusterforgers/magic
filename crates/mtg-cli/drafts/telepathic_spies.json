@@ -1,0 +1,20 @@
+{
+  "oracle_id": "8162730e-2573-4bc0-827f-5b7b3dbf3bff",
+  "name": "Telepathic Spies",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Telepathic Spies",
+      "oracle_fingerprint": "a81b2425951e2cd0fe083e6ee6126579",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [{ "what": "Opponent" }],
+            "effects": [{ "LookAtHand": { "of": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

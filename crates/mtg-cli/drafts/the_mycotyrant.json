@@ -1,0 +1,85 @@
+{
+  "oracle_id": "b69bbb8d-7f8c-45d6-983a-759b5fce6ebd",
+  "name": "The Mycotyrant",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "The Mycotyrant",
+      "oracle_fingerprint": "c438012da3988012580228adad0daa62",
+      "abilities": [
+        { "Keyword": "Trample" },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              {
+                "SetPT": {
+                  "power": {
+                    "Count": [
+                      {
+                        "AnyOf": [
+                          {
+                            "Not": {
+                              "AnyOf": [
+                                { "Not": { "Type": "Creature" } },
+                                { "Not": { "Subtype": "Fungus" } }
+                              ]
+                            }
+                          },
+                          { "Subtype": "Saproling" }
+                        ]
+                      },
+                      { "ControlledBy": "You" }
+                    ]
+                  },
+                  "toughness": {
+                    "Count": [
+                      {
+                        "AnyOf": [
+                          {
+                            "Not": {
+                              "AnyOf": [
+                                { "Not": { "Type": "Creature" } },
+                                { "Not": { "Subtype": "Fungus" } }
+                              ]
+                            }
+                          },
+                          { "Subtype": "Saproling" }
+                        ]
+                      },
+                      { "ControlledBy": "You" }
+                    ]
+                  }
+                }
+              }
+            ],
+            "defining": true
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Fungus",
+                      "colors": ["Black"],
+                      "types": ["Creature"],
+                      "subtypes": ["Fungus"],
+                      "power": 1,
+                      "toughness": 1,
+                      "abilities": [{ "Static": { "affected": "This", "mods": ["CantBlock"] } }]
+                    }
+                  },
+                  "count": { "Tallied": { "who": "You", "what": "Descended" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

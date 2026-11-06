@@ -1,0 +1,141 @@
+{
+  "object": "card",
+  "id": "42ca7f13-df00-4904-a7be-44f94272bfee",
+  "oracle_id": "95892392-2ed3-4c1a-bbaa-4083f526769c",
+  "multiverse_ids": [
+    667655
+  ],
+  "mtgo_id": 128096,
+  "tcgplayer_id": 556343,
+  "cardmarket_id": 775458,
+  "name": "Shay Cormac",
+  "lang": "en",
+  "released_at": "2024-07-05",
+  "uri": "https://api.scryfall.com/cards/42ca7f13-df00-4904-a7be-44f94272bfee",
+  "scryfall_uri": "https://scryfall.com/card/acr/65/shay-cormac?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T02:49:27Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/4/2/42ca7f13-df00-4904-a7be-44f94272bfee.jpg?1783910967",
+    "normal": "https://cards.scryfall.io/normal/front/4/2/42ca7f13-df00-4904-a7be-44f94272bfee.jpg?1783910967",
+    "large": "https://cards.scryfall.io/large/front/4/2/42ca7f13-df00-4904-a7be-44f94272bfee.jpg?1783910967",
+    "png": "https://cards.scryfall.io/png/front/4/2/42ca7f13-df00-4904-a7be-44f94272bfee.png?1783910967",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/4/2/42ca7f13-df00-4904-a7be-44f94272bfee.jpg?1783910967",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/4/2/42ca7f13-df00-4904-a7be-44f94272bfee.jpg?1783910967",
+    "thumb": "https://cards.scryfall.io/thumb/front/4/2/42ca7f13-df00-4904-a7be-44f94272bfee.webp?1783910967",
+    "grid": "https://cards.scryfall.io/grid/front/4/2/42ca7f13-df00-4904-a7be-44f94272bfee.webp?1783910967",
+    "display": "https://cards.scryfall.io/display/front/4/2/42ca7f13-df00-4904-a7be-44f94272bfee.webp?1783910967",
+    "art": "https://cards.scryfall.io/art/front/4/2/42ca7f13-df00-4904-a7be-44f94272bfee.webp?1783910967",
+    "crop": "https://cards.scryfall.io/crop/front/4/2/42ca7f13-df00-4904-a7be-44f94272bfee.webp?1783910967",
+    "jpeg": "https://cards.scryfall.io/normal/front/4/2/42ca7f13-df00-4904-a7be-44f94272bfee.jpg?1783910967"
+  },
+  "mana_cost": "{W}{B}",
+  "cmc": 2.0,
+  "type_line": "Legendary Creature — Human Knight Rogue",
+  "oracle_text": "{1}: Permanents your opponents control lose hexproof, indestructible, protection, shroud, and ward until end of turn.\nWhenever a creature an opponent controls becomes the target of a spell or ability you control, put a bounty counter on that creature.\nWhenever a creature with a bounty counter on it dies, put two +1/+1 counters on Shay Cormac.",
+  "power": "1",
+  "toughness": "1",
+  "colors": [
+    "B",
+    "W"
+  ],
+  "color_identity": [
+    "B",
+    "W"
+  ],
+  "keywords": [],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "54b67b0b-cd3f-4e0d-ac25-fef5d966409b",
+  "set": "acr",
+  "set_name": "Assassin's Creed",
+  "set_type": "draft_innovation",
+  "set_uri": "https://api.scryfall.com/sets/54b67b0b-cd3f-4e0d-ac25-fef5d966409b",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Aacr&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/acr?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/42ca7f13-df00-4904-a7be-44f94272bfee/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A95892392-2ed3-4c1a-bbaa-4083f526769c&unique=prints",
+  "collector_number": "65",
+  "digital": false,
+  "rarity": "uncommon",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Axel Sauerwald",
+  "artist_ids": [
+    "ce5cbff7-7a24-4125-b485-f835185a9fec"
+  ],
+  "illustration_id": "2b8c8e46-96d2-4743-bce7-0b8d63dd8e86",
+  "border_color": "black",
+  "frame": "2015",
+  "frame_effects": [
+    "legendary"
+  ],
+  "security_stamp": "triangle",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "promo_types": [
+    "universesbeyond"
+  ],
+  "edhrec_rank": 4125,
+  "prices": {
+    "usd": "0.34",
+    "usd_foil": "0.36",
+    "usd_etched": null,
+    "eur": "0.20",
+    "eur_foil": "0.21",
+    "tix": "0.36"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=667655&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DShay%2BCormac",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DShay%2BCormac",
+    "edhrec": "https://edhrec.com/route/?cc=Shay+Cormac"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F556343%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=775458&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/128096?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

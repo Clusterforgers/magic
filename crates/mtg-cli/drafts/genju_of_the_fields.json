@@ -17,7 +17,7 @@
                   "affected": "Attached",
                   "mods": [
                     { "SetPT": { "power": 2, "toughness": 5 } },
-                    { "AddColors": ["White"] },
+                    { "SetColors": ["White"] },
                     { "AddSubtype": "Spirit" },
                     { "AddType": "Creature" },
                     {

@@ -1,0 +1,75 @@
+{
+  "oracle_id": "65a7fb13-77b9-44ea-9e0e-34daef82eb69",
+  "name": "Krumar Initiate",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Krumar Initiate",
+      "oracle_fingerprint": "c256538851a2b16d628583873cb09fc4",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{X}{B}" }, "Tap", { "PayLife": "X" }],
+            "timing": "Sorcery",
+            "effects": [
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "Count": [{ "Is": "This" }, { "In": "Battlefield" }] },
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [
+                    {
+                      "Either": {
+                        "first": [
+                          { "PutCounters": { "on": "This", "counter": "+1/+1", "count": "X" } }
+                        ],
+                        "second": [
+                          {
+                            "CreateToken": {
+                              "token": {
+                                "Sized": {
+                                  "size": "X",
+                                  "token": {
+                                    "name": "Spirit",
+                                    "colors": ["White"],
+                                    "types": ["Creature"],
+                                    "subtypes": ["Spirit"]
+                                  }
+                                }
+                              }
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ],
+                  "otherwise": [
+                    {
+                      "CreateToken": {
+                        "token": {
+                          "Sized": {
+                            "size": "X",
+                            "token": {
+                              "name": "Spirit",
+                              "colors": ["White"],
+                              "types": ["Creature"],
+                              "subtypes": ["Spirit"]
+                            }
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

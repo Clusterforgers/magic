@@ -1,0 +1,46 @@
+{
+  "oracle_id": "4d5fd9f0-ecb3-4b91-ae55-f02336d7cf37",
+  "name": "Rangers of Ithilien",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Rangers of Ithilien",
+      "oracle_fingerprint": "d20c05d04384b6c6408410bc09451f85",
+      "abilities": [
+        { "Keyword": "Vigilance" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Type": "Creature" },
+                    {
+                      "Compare": {
+                        "stat": "Power",
+                        "op": "Lt",
+                        "to": { "Stat": { "of": "This", "stat": "Power" } }
+                      }
+                    }
+                  ]
+                },
+                "bounds": { "min": 0, "max": 1 }
+              }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "SetController": "You" }],
+                  "duration": "WhileYouControlSource"
+                }
+              },
+              { "RingTempts": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

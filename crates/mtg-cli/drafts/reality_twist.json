@@ -1,0 +1,58 @@
+{
+  "oracle_id": "2c6f9fdb-ee27-4cd8-9d4d-1ea8b2830f73",
+  "name": "Reality Twist",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Reality Twist",
+      "oracle_fingerprint": "12d18eee4c55c0d7d33d798d158b8f5e",
+      "abilities": [
+        { "Keyword": { "CumulativeUpkeep": "{1}{U}{U}" } },
+        {
+          "Rule": {
+            "rule": {
+              "ManaProduced": {
+                "what": [{ "Subtype": "Plains" }],
+                "who": "EachPlayer",
+                "change": { "OnlyType": "Red" }
+              }
+            }
+          }
+        },
+        {
+          "Rule": {
+            "rule": {
+              "ManaProduced": {
+                "what": [{ "Subtype": "Swamp" }],
+                "who": "EachPlayer",
+                "change": { "OnlyType": "Green" }
+              }
+            }
+          }
+        },
+        {
+          "Rule": {
+            "rule": {
+              "ManaProduced": {
+                "what": [{ "Subtype": "Mountain" }],
+                "who": "EachPlayer",
+                "change": { "OnlyType": "White" }
+              }
+            }
+          }
+        },
+        {
+          "Rule": {
+            "rule": {
+              "ManaProduced": {
+                "what": [{ "Subtype": "Forest" }],
+                "who": "EachPlayer",
+                "change": { "OnlyType": "Black" }
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

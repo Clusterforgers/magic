@@ -1,0 +1,64 @@
+{
+  "oracle_id": "ab1379b7-0016-4d2a-a83b-952666e43b89",
+  "name": "Hymn of the Faller",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Hymn of the Faller",
+      "oracle_fingerprint": "4bafca1a194a8643a183aa078831aff8",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "Surveil": {} },
+              { "Draw": {} },
+              { "LoseLife": { "amount": 1 } },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": {
+                        "When": {
+                          "condition": {
+                            "Any": [
+                              {
+                                "Compare": {
+                                  "left": {
+                                    "Tallied": {
+                                      "who": "EachPlayer",
+                                      "what": "NonlandPermanentsLeft"
+                                    }
+                                  },
+                                  "op": "Ge",
+                                  "right": 1
+                                }
+                              },
+                              {
+                                "Compare": {
+                                  "left": {
+                                    "Tallied": { "who": "EachPlayer", "what": "SpellsWarped" }
+                                  },
+                                  "op": "Ge",
+                                  "right": 1
+                                }
+                              }
+                            ]
+                          },
+                          "then": 1,
+                          "otherwise": 0
+                        }
+                      },
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [{ "Draw": {} }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

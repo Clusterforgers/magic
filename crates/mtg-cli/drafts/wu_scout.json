@@ -1,0 +1,21 @@
+{
+  "oracle_id": "ef577d7d-7a24-4bd3-b86b-f69e37bb2ce7",
+  "name": "Wu Scout",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Wu Scout",
+      "oracle_fingerprint": "c14161b71dc5a66a84d1594f12c6d91b",
+      "abilities": [
+        { "Keyword": "Horsemanship" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [{ "what": "Opponent" }],
+            "effects": [{ "LookAtHand": { "of": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

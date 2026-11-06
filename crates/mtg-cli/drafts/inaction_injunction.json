@@ -1,0 +1,41 @@
+{
+  "oracle_id": "6f6bb2dd-c888-43bd-b9ef-8bd451ab669b",
+  "name": "Inaction Injunction",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Inaction Injunction",
+      "oracle_fingerprint": "a252c948c269660e05bd6772a6d1fff9",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }] } }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": ["CantAttack", "CantBlock"],
+                  "duration": "UntilYourNextTurn"
+                }
+              },
+              {
+                "Rule": {
+                  "rule": {
+                    "Cant": {
+                      "who": { "Target": 0 },
+                      "action": { "ActivateKind": { "kind": "Every" } }
+                    }
+                  },
+                  "duration": "UntilYourNextTurn"
+                }
+              },
+              { "Draw": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,143 @@
+{
+  "object": "card",
+  "id": "4811072d-fac0-40dd-a5cf-9694d51b12cf",
+  "oracle_id": "e3431dae-969c-4896-9f9e-a80e7bec4bdf",
+  "multiverse_ids": [],
+  "resource_id": "47D3ECE48D75ACB3648776D829E299CEEC7BD2333F2529E3EB0E2A48A4475BDF",
+  "mtgo_id": 144500,
+  "arena_id": 97285,
+  "tcgplayer_id": 661938,
+  "cardmarket_id": 858171,
+  "name": "Avatar's Wrath",
+  "lang": "en",
+  "released_at": "2025-11-21",
+  "uri": "https://api.scryfall.com/cards/4811072d-fac0-40dd-a5cf-9694d51b12cf",
+  "scryfall_uri": "https://scryfall.com/card/tla/12/avatars-wrath?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T01:10:02Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/4/8/4811072d-fac0-40dd-a5cf-9694d51b12cf.jpg?1783905002",
+    "normal": "https://cards.scryfall.io/normal/front/4/8/4811072d-fac0-40dd-a5cf-9694d51b12cf.jpg?1783905002",
+    "large": "https://cards.scryfall.io/large/front/4/8/4811072d-fac0-40dd-a5cf-9694d51b12cf.jpg?1783905002",
+    "png": "https://cards.scryfall.io/png/front/4/8/4811072d-fac0-40dd-a5cf-9694d51b12cf.png?1783905002",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/4/8/4811072d-fac0-40dd-a5cf-9694d51b12cf.jpg?1783905002",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/4/8/4811072d-fac0-40dd-a5cf-9694d51b12cf.jpg?1783905002",
+    "thumb": "https://cards.scryfall.io/thumb/front/4/8/4811072d-fac0-40dd-a5cf-9694d51b12cf.webp?1783905002",
+    "grid": "https://cards.scryfall.io/grid/front/4/8/4811072d-fac0-40dd-a5cf-9694d51b12cf.webp?1783905002",
+    "display": "https://cards.scryfall.io/display/front/4/8/4811072d-fac0-40dd-a5cf-9694d51b12cf.webp?1783905002",
+    "art": "https://cards.scryfall.io/art/front/4/8/4811072d-fac0-40dd-a5cf-9694d51b12cf.webp?1783905002",
+    "crop": "https://cards.scryfall.io/crop/front/4/8/4811072d-fac0-40dd-a5cf-9694d51b12cf.webp?1783905002",
+    "jpeg": "https://cards.scryfall.io/normal/front/4/8/4811072d-fac0-40dd-a5cf-9694d51b12cf.jpg?1783905002"
+  },
+  "mana_cost": "{2}{W}{W}",
+  "cmc": 4.0,
+  "type_line": "Sorcery",
+  "oracle_text": "Choose up to one target creature, then airbend all other creatures. (Exile them. While each one is exiled, its owner may cast it for {2} rather than its mana cost.)\nUntil your next turn, your opponents can't cast spells from anywhere other than their hands.\nExile Avatar's Wrath.",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": [
+    "Airbend"
+  ],
+  "legalities": {
+    "standard": "legal",
+    "future": "legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "arena",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "118f7e64-5caa-4cb7-99a8-184f4d3a7422",
+  "set": "tla",
+  "set_name": "Avatar: The Last Airbender",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/118f7e64-5caa-4cb7-99a8-184f4d3a7422",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Atla&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/tla?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/4811072d-fac0-40dd-a5cf-9694d51b12cf/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Ae3431dae-969c-4896-9f9e-a80e7bec4bdf&unique=prints",
+  "collector_number": "12",
+  "digital": false,
+  "rarity": "rare",
+  "watermark": "airnomads",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Ainezu",
+  "artist_ids": [
+    "18adcc99-e358-42d8-9c60-58aa461d2677"
+  ],
+  "illustration_id": "6e478042-fd41-441b-ab04-7004f4e5353d",
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "promo_types": [
+    "universesbeyond"
+  ],
+  "edhrec_rank": 1533,
+  "penny_rank": 2258,
+  "preview": {
+    "source": "Wizards of the Coast",
+    "source_uri": "https://x.com/wizards_magicFR/status/1984274163679277488",
+    "previewed_at": "2025-10-31"
+  },
+  "prices": {
+    "usd": "3.87",
+    "usd_foil": "4.87",
+    "usd_etched": null,
+    "eur": "3.92",
+    "eur_foil": "4.55",
+    "tix": "0.02"
+  },
+  "related_uris": {
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DAvatar%2527s%2BWrath",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DAvatar%2527s%2BWrath",
+    "edhrec": "https://edhrec.com/route/?cc=Avatar%27s+Wrath"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F661938%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=858171&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/144500?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

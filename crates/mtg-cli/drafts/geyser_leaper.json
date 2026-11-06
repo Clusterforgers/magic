@@ -1,0 +1,20 @@
+{
+  "oracle_id": "dfdcb451-a597-46fe-893c-49e6dbda5f71",
+  "name": "Geyser Leaper",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Geyser Leaper",
+      "oracle_fingerprint": "334dfb9aadb6c570d7bbeebef808e652",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Activated": {
+            "cost": [{ "Waterbend": 4 }],
+            "effects": [{ "Draw": {} }, { "Discard": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

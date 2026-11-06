@@ -1,0 +1,26 @@
+{
+  "oracle_id": "8b69da01-3ba5-4a61-9e26-e879b6d8b63e",
+  "name": "Goblin Blast-Runner",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Goblin Blast-Runner",
+      "oracle_fingerprint": "16f1a59114bff78e56279082484ae8b6",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "ModifyPT": { "power": 2, "toughness": 0 } }, { "AddKeyword": "Menace" }],
+            "condition": {
+              "Compare": {
+                "left": { "Tallied": { "who": "You", "what": "Sacrificed" } },
+                "op": "Ge",
+                "right": 1
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

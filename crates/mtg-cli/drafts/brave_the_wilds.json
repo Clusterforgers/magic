@@ -1,0 +1,61 @@
+{
+  "oracle_id": "49d189dd-9ce7-434f-931b-7110cd5255e7",
+  "name": "Brave the Wilds",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Brave the Wilds",
+      "oracle_fingerprint": "140461a3787f0c479fc47cc4cd1abe2b",
+      "abilities": [
+        { "Keyword": "Bargain" },
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": { "Object": [{ "Type": "Land" }, { "ControlledBy": "You" }] },
+                "bounds": {
+                  "min": {
+                    "When": { "condition": "AdditionalCostPaid", "then": 1, "otherwise": 0 }
+                  },
+                  "max": {
+                    "When": { "condition": "AdditionalCostPaid", "then": 1, "otherwise": 0 }
+                  }
+                }
+              }
+            ],
+            "effects": [
+              {
+                "If": {
+                  "condition": "AdditionalCostPaid",
+                  "then": [
+                    {
+                      "Continuous": {
+                        "affected": { "Target": 0 },
+                        "mods": [
+                          { "SetPT": { "power": 3, "toughness": 3 } },
+                          { "AddSubtype": "Elemental" },
+                          { "AddType": "Creature" },
+                          { "AddKeyword": "Haste" }
+                        ],
+                        "duration": "Forever"
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "Search": {
+                  "filter": [{ "Type": "Land" }, { "Supertype": "Basic" }],
+                  "reveal": true,
+                  "as": "found"
+                }
+              },
+              { "Move": { "what": { "Bound": "found" }, "to": "Hand" } },
+              { "Shuffle": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,56 @@
+{
+  "oracle_id": "f3176779-74f7-4136-a701-438feeead7a0",
+  "name": "Aang, Airbending Master",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Aang, Airbending Master",
+      "oracle_fingerprint": "e999a4a7bf3fef69fde64c17284f27c7",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }, "Other"] } }],
+            "effects": [
+              { "Exile": { "what": { "Target": 0 }, "as": "airbent" } },
+              {
+                "Rule": {
+                  "rule": { "MayCastRather": { "only": { "Bound": "airbent" }, "cost": "{2}" } },
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 139, "end": 249 }
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Ally",
+                      "colors": ["White"],
+                      "types": ["Creature"],
+                      "subtypes": ["Ally"],
+                      "power": 1,
+                      "toughness": 1
+                    }
+                  },
+                  "count": { "Counters": { "on": "You", "counter": { "Other": "experience" } } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

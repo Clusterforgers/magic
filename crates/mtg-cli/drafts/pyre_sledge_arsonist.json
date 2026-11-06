@@ -1,0 +1,27 @@
+{
+  "oracle_id": "7f42a05c-9e6d-4cbc-92f1-4433cd22f149",
+  "name": "Pyre-Sledge Arsonist",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Pyre-Sledge Arsonist",
+      "oracle_fingerprint": "17e9aa74b1907c315859e8318e0cca18",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{1}" }, "Tap"],
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [
+              {
+                "DealDamage": {
+                  "to": { "Target": 0 },
+                  "amount": { "Tallied": { "who": "You", "what": "Sacrificed" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,33 @@
+{
+  "oracle_id": "9c6a6332-37f0-4d7d-a86f-478cf0eeec91",
+  "name": "Prison Break",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Prison Break",
+      "oracle_fingerprint": "73bb0071312402dcb3f1eb89d67128cc",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "Type": "Creature" }, { "OwnedBy": "You" }, { "In": "Graveyard" }]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "Move": {
+                  "what": { "Target": 0 },
+                  "to": { "Battlefield": { "counters": [["+1/+1", 1]] } }
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Mayhem": "{3}{B}" } }
+      ]
+    }
+  ]
+}

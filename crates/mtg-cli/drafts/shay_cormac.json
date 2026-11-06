@@ -1,0 +1,55 @@
+{
+  "oracle_id": "95892392-2ed3-4c1a-bbaa-4083f526769c",
+  "name": "Shay Cormac",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Shay Cormac",
+      "oracle_fingerprint": "fd81294e25de26b57884772d0255f8b5",
+      "abilities": [
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 0, "end": 117 }
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "BecomesTarget": {
+                "what": [
+                  { "Type": "Creature" },
+                  { "ControlledBy": "Opponents" },
+                  { "In": "Battlefield" }
+                ],
+                "by": [
+                  { "AnyOf": ["Spell", { "Ability": "Activated" }, { "Ability": "Triggered" }] },
+                  { "ControlledBy": "You" }
+                ]
+              }
+            },
+            "effects": [
+              { "PutCounters": { "on": "TriggeringFirst", "counter": { "Other": "bounty" } } }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [
+                  { "Type": "Creature" },
+                  { "ControlledBy": "Opponents" },
+                  { "HasCounter": { "Other": "bounty" } }
+                ],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1", "count": 2 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,44 @@
+{
+  "oracle_id": "cba0eae3-73ea-4ea9-87bf-1015e490da90",
+  "name": "Azorius Justiciar",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Azorius Justiciar",
+      "oracle_fingerprint": "b811aa7e08247734d04b58e3bb741bb8",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              {
+                "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }] },
+                "bounds": { "min": 0, "max": 2 }
+              }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": ["CantAttack", "CantBlock"],
+                  "duration": "UntilYourNextTurn"
+                }
+              },
+              {
+                "Rule": {
+                  "rule": {
+                    "Cant": {
+                      "who": { "Target": 0 },
+                      "action": { "ActivateKind": { "kind": "Every" } }
+                    }
+                  },
+                  "duration": "UntilYourNextTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

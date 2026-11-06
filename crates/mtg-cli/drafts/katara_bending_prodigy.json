@@ -1,7 +1,7 @@
 {
   "oracle_id": "55adde23-c818-40fe-9bba-123de93568a5",
   "name": "Katara, Bending Prodigy",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Katara, Bending Prodigy",
@@ -16,12 +16,7 @@
             "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }]
           }
         },
-        {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 84, "end": 217 }
-          }
-        }
+        { "Activated": { "cost": [{ "Waterbend": 6 }], "effects": [{ "Draw": {} }] } }
       ]
     }
   ]

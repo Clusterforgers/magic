@@ -1,0 +1,133 @@
+{
+  "object": "card",
+  "id": "5edddcbb-0e01-4473-b7a8-1e59cf7ee506",
+  "oracle_id": "fb5ec55d-4a35-432a-be6e-c295f1b2e603",
+  "multiverse_ids": [
+    202412
+  ],
+  "mtgo_id": 38858,
+  "mtgo_foil_id": 38859,
+  "name": "Naked Singularity",
+  "lang": "en",
+  "released_at": "2011-01-10",
+  "uri": "https://api.scryfall.com/cards/5edddcbb-0e01-4473-b7a8-1e59cf7ee506",
+  "scryfall_uri": "https://scryfall.com/card/me4/216/naked-singularity?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T11:16:51Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/5/e/5edddcbb-0e01-4473-b7a8-1e59cf7ee506.jpg?1783941411",
+    "normal": "https://cards.scryfall.io/normal/front/5/e/5edddcbb-0e01-4473-b7a8-1e59cf7ee506.jpg?1783941411",
+    "large": "https://cards.scryfall.io/large/front/5/e/5edddcbb-0e01-4473-b7a8-1e59cf7ee506.jpg?1783941411",
+    "png": "https://cards.scryfall.io/png/front/5/e/5edddcbb-0e01-4473-b7a8-1e59cf7ee506.png?1783941411",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/5/e/5edddcbb-0e01-4473-b7a8-1e59cf7ee506.jpg?1783941411",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/5/e/5edddcbb-0e01-4473-b7a8-1e59cf7ee506.jpg?1783941411",
+    "thumb": "https://cards.scryfall.io/thumb/front/5/e/5edddcbb-0e01-4473-b7a8-1e59cf7ee506.webp?1783941411",
+    "grid": "https://cards.scryfall.io/grid/front/5/e/5edddcbb-0e01-4473-b7a8-1e59cf7ee506.webp?1783941411",
+    "display": "https://cards.scryfall.io/display/front/5/e/5edddcbb-0e01-4473-b7a8-1e59cf7ee506.webp?1783941411",
+    "art": "https://cards.scryfall.io/art/front/5/e/5edddcbb-0e01-4473-b7a8-1e59cf7ee506.webp?1783941411",
+    "crop": "https://cards.scryfall.io/crop/front/5/e/5edddcbb-0e01-4473-b7a8-1e59cf7ee506.webp?1783941411",
+    "jpeg": "https://cards.scryfall.io/normal/front/5/e/5edddcbb-0e01-4473-b7a8-1e59cf7ee506.jpg?1783941411"
+  },
+  "mana_cost": "{5}",
+  "cmc": 5.0,
+  "type_line": "Artifact",
+  "oracle_text": "Cumulative upkeep {3} (At the beginning of your upkeep, put an age counter on this permanent, then sacrifice it unless you pay its upkeep cost for each age counter on it.)\nIf tapped for mana, Plains produce {R}, Islands produce {G}, Swamps produce {W}, Mountains produce {U}, and Forests produce {B} instead of any other type.",
+  "colors": [],
+  "color_identity": [
+    "B",
+    "G",
+    "R",
+    "U",
+    "W"
+  ],
+  "keywords": [
+    "Cumulative upkeep"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "legal",
+    "predh": "legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": true,
+  "variation": false,
+  "set_id": "d38a13b7-6615-4c89-be7d-3b4eaacf1875",
+  "set": "me4",
+  "set_name": "Masters Edition IV",
+  "set_type": "masters",
+  "set_uri": "https://api.scryfall.com/sets/d38a13b7-6615-4c89-be7d-3b4eaacf1875",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Ame4&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/me4?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/5edddcbb-0e01-4473-b7a8-1e59cf7ee506/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Afb5ec55d-4a35-432a-be6e-c295f1b2e603&unique=prints",
+  "collector_number": "216",
+  "digital": true,
+  "rarity": "rare",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Mark Tedin",
+  "artist_ids": [
+    "9ee9a9cc-c09e-486f-918b-69f80cbc4188"
+  ],
+  "illustration_id": "1540abb7-c5c2-4b13-b7d1-274235b22175",
+  "border_color": "black",
+  "frame": "1997",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 24411,
+  "penny_rank": 17573,
+  "prices": {
+    "usd": null,
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": null,
+    "eur_foil": null,
+    "tix": "0.02"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=202412&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DNaked%2BSingularity",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DNaked%2BSingularity",
+    "edhrec": "https://edhrec.com/route/?cc=Naked+Singularity"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fmagic%2Fproduct%3FproductLineName%3Dmagic%26q%3DNaked%2BSingularity%26view%3Dgrid",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products/Search?referrer=scryfall&searchString=Naked+Singularity&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/38858?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

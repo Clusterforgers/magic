@@ -1,0 +1,43 @@
+{
+  "oracle_id": "a1ed0f7e-56c3-4866-89c4-77b81a952955",
+  "name": "Remove",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Remove",
+      "oracle_fingerprint": "136c9ee002f648debeaebb6e7510bc31",
+      "abilities": [
+        {
+          "CastOnly": {
+            "condition": {
+              "All": [
+                { "Step": "DeclareAttackers" },
+                {
+                  "Compare": {
+                    "left": {
+                      "Tally": {
+                        "event": "Attacked",
+                        "who": "EachPlayer",
+                        "filter": [
+                          { "DidThisTurn": { "event": "Attacked", "to": "You", "combat": true } }
+                        ]
+                      }
+                    },
+                    "op": "Ge",
+                    "right": 1
+                  }
+                }
+              ]
+            }
+          }
+        },
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }, "Attacking"] } }],
+            "effects": [{ "Move": { "what": { "Target": 0 }, "to": "Hand" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

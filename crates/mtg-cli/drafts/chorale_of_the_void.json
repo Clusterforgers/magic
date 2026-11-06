@@ -1,7 +1,7 @@
 {
   "oracle_id": "cd50bff0-c461-4023-b62a-6746eaaeab0e",
   "name": "Chorale of the Void",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Chorale of the Void",
@@ -35,9 +35,52 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 187, "end": 339 }
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "effects": [
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": {
+                        "When": {
+                          "condition": {
+                            "Any": [
+                              {
+                                "Compare": {
+                                  "left": {
+                                    "Tallied": {
+                                      "who": "EachPlayer",
+                                      "what": "NonlandPermanentsLeft"
+                                    }
+                                  },
+                                  "op": "Ge",
+                                  "right": 1
+                                }
+                              },
+                              {
+                                "Compare": {
+                                  "left": {
+                                    "Tallied": { "who": "EachPlayer", "what": "SpellsWarped" }
+                                  },
+                                  "op": "Ge",
+                                  "right": 1
+                                }
+                              }
+                            ]
+                          },
+                          "then": 0,
+                          "otherwise": 1
+                        }
+                      },
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [{ "Sacrifice": { "filter": ["This"] } }]
+                }
+              }
+            ]
           }
         }
       ]

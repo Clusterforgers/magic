@@ -1,0 +1,25 @@
+{
+  "oracle_id": "dd821fca-79a0-48a9-b1cf-5a496bc04f65",
+  "name": "Infernal Darkness",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Infernal Darkness",
+      "oracle_fingerprint": "d157425bc867c4210da832f1c84d98c2",
+      "abilities": [
+        { "Keyword": { "CumulativeUpkeep": [{ "Mana": "{B}" }, { "PayLife": 1 }] } },
+        {
+          "Rule": {
+            "rule": {
+              "ManaProduced": {
+                "what": [{ "Type": "Land" }],
+                "who": "EachPlayer",
+                "change": { "OnlyType": "Black" }
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,7 +1,7 @@
 {
   "oracle_id": "470ec98e-120c-446d-ade6-7d80aa836b55",
   "name": "Aetherworks Marvel",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Aetherworks Marvel",
@@ -20,9 +20,25 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 91, "end": 280 }
+          "Activated": {
+            "cost": ["Tap", { "PayEnergy": 6 }],
+            "effects": [
+              { "LookAtTop": { "count": 6, "as": "top" } },
+              {
+                "Choose": {
+                  "from": { "Each": [{ "Is": { "Bound": "top" } }, { "In": "Library" }] },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "picked2"
+                }
+              },
+              { "CastFromZone": { "what": { "Bound": "picked2" }, "free": true } },
+              {
+                "Move": {
+                  "what": { "Each": [{ "Is": { "Bound": "top" } }, { "In": "Library" }] },
+                  "to": { "Library": { "place": "Bottom", "order": "Random" } }
+                }
+              }
+            ]
           }
         }
       ]

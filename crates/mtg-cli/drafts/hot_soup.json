@@ -1,0 +1,28 @@
+{
+  "oracle_id": "a853e48b-1e15-4492-a5b4-9924b1a4cf9a",
+  "name": "Hot Soup",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Hot Soup",
+      "oracle_fingerprint": "5c353e7cccec24a81c8ccb906d60366e",
+      "abilities": [
+        { "Static": { "affected": "Attached", "mods": ["CantBeBlocked"] } },
+        {
+          "Triggered": {
+            "when": {
+              "Batch": {
+                "DealsDamage": {
+                  "source": [],
+                  "to": { "Each": [{ "Type": "Creature" }, { "Is": "Attached" }] }
+                }
+              }
+            },
+            "effects": [{ "Destroy": { "what": "Triggering" } }]
+          }
+        },
+        { "Keyword": { "Equip": "{3}" } }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,67 @@
+{
+  "oracle_id": "f0d1636e-6f80-44fe-869a-1749ab249815",
+  "name": "Molten Collapse",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Molten Collapse",
+      "oracle_fingerprint": "a9b98db42eb85f65684c03323421c487",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Modal": {
+                  "choose": {
+                    "min": 1,
+                    "max": {
+                      "When": {
+                        "condition": {
+                          "Compare": {
+                            "left": { "Tallied": { "who": "You", "what": "Descended" } },
+                            "op": "Ge",
+                            "right": 1
+                          }
+                        },
+                        "then": 2,
+                        "otherwise": 1
+                      }
+                    }
+                  },
+                  "modes": [
+                    {
+                      "targets": [
+                        {
+                          "what": {
+                            "Object": [
+                              { "AnyOf": [{ "Type": "Creature" }, { "Type": "Planeswalker" }] }
+                            ]
+                          }
+                        }
+                      ],
+                      "effects": [{ "Destroy": { "what": { "Target": 0 } } }]
+                    },
+                    {
+                      "targets": [
+                        {
+                          "what": {
+                            "Object": [
+                              { "Not": { "Type": "Creature" } },
+                              { "Not": { "Type": "Land" } },
+                              { "Compare": { "stat": "ManaValue", "op": "Le", "to": 1 } }
+                            ]
+                          }
+                        }
+                      ],
+                      "effects": [{ "Destroy": { "what": { "Target": 0 } } }]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

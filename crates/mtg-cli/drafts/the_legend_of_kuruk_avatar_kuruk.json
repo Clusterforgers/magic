@@ -1,7 +1,7 @@
 {
   "oracle_id": "201b8936-18f4-4881-a1d4-c308cf3832bf",
   "name": "The Legend of Kuruk // Avatar Kuruk",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "The Legend of Kuruk",
@@ -76,9 +76,10 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 141, "end": 348 }
+          "Activated": {
+            "cost": [{ "Waterbend": 20 }],
+            "limit": "OncePerGame",
+            "effects": [{ "ExtraTurn": {} }]
           }
         }
       ]

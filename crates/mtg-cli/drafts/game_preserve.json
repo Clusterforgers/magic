@@ -1,0 +1,47 @@
+{
+  "oracle_id": "409e0a43-0e85-47ea-9d40-de0860b12952",
+  "name": "Game Preserve",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Game Preserve",
+      "oracle_fingerprint": "5b3aab27894692e21d78c19b7a61b8be",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [
+              { "LookAtTop": { "who": "EachPlayer", "as": "top" } },
+              { "Reveal": { "what": { "Bound": "top" } } },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": {
+                        "Count": [
+                          { "Not": { "Type": "Creature" } },
+                          { "Is": { "Bound": "top" } },
+                          { "In": "Library" }
+                        ]
+                      },
+                      "op": "Eq",
+                      "right": 0
+                    }
+                  },
+                  "then": [
+                    {
+                      "Move": {
+                        "what": { "Each": ["TopOfLibrary", { "In": "Library" }] },
+                        "to": { "Battlefield": {} }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

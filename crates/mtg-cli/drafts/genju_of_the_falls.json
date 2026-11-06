@@ -17,7 +17,7 @@
                   "affected": "Attached",
                   "mods": [
                     { "SetPT": { "power": 3, "toughness": 2 } },
-                    { "AddColors": ["Blue"] },
+                    { "SetColors": ["Blue"] },
                     { "AddSubtype": "Spirit" },
                     { "AddType": "Creature" },
                     { "AddKeyword": "Flying" }

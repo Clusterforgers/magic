@@ -1,0 +1,104 @@
+{
+  "oracle_id": "e5e19326-3e90-439c-a3b2-749d43a1af0c",
+  "name": "Tragic Trajectory",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Tragic Trajectory",
+      "oracle_fingerprint": "53cf3e446f73bdab24d99d1f48101bf2",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    {
+                      "ModifyPT": {
+                        "power": {
+                          "Times": {
+                            "by": -1,
+                            "of": {
+                              "When": {
+                                "condition": {
+                                  "Any": [
+                                    {
+                                      "Compare": {
+                                        "left": {
+                                          "Tallied": {
+                                            "who": "EachPlayer",
+                                            "what": "NonlandPermanentsLeft"
+                                          }
+                                        },
+                                        "op": "Ge",
+                                        "right": 1
+                                      }
+                                    },
+                                    {
+                                      "Compare": {
+                                        "left": {
+                                          "Tallied": { "who": "EachPlayer", "what": "SpellsWarped" }
+                                        },
+                                        "op": "Ge",
+                                        "right": 1
+                                      }
+                                    }
+                                  ]
+                                },
+                                "then": 10,
+                                "otherwise": 2
+                              }
+                            }
+                          }
+                        },
+                        "toughness": {
+                          "Times": {
+                            "by": -1,
+                            "of": {
+                              "When": {
+                                "condition": {
+                                  "Any": [
+                                    {
+                                      "Compare": {
+                                        "left": {
+                                          "Tallied": {
+                                            "who": "EachPlayer",
+                                            "what": "NonlandPermanentsLeft"
+                                          }
+                                        },
+                                        "op": "Ge",
+                                        "right": 1
+                                      }
+                                    },
+                                    {
+                                      "Compare": {
+                                        "left": {
+                                          "Tallied": { "who": "EachPlayer", "what": "SpellsWarped" }
+                                        },
+                                        "op": "Ge",
+                                        "right": 1
+                                      }
+                                    }
+                                  ]
+                                },
+                                "then": 10,
+                                "otherwise": 2
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,156 @@
+{
+  "object": "card",
+  "id": "b9700b3c-c309-4305-8761-3cf3ec902639",
+  "oracle_id": "860add4f-8fe4-4441-b394-f3a48d610b90",
+  "multiverse_ids": [
+    442119
+  ],
+  "mtgo_id": 67174,
+  "mtgo_foil_id": 67175,
+  "tcgplayer_id": 161527,
+  "cardmarket_id": 319249,
+  "name": "Fortune Thief",
+  "lang": "en",
+  "released_at": "2018-03-16",
+  "uri": "https://api.scryfall.com/cards/b9700b3c-c309-4305-8761-3cf3ec902639",
+  "scryfall_uri": "https://scryfall.com/card/a25/130/fortune-thief?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T09:32:29Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/b/9/b9700b3c-c309-4305-8761-3cf3ec902639.jpg?1783935149",
+    "normal": "https://cards.scryfall.io/normal/front/b/9/b9700b3c-c309-4305-8761-3cf3ec902639.jpg?1783935149",
+    "large": "https://cards.scryfall.io/large/front/b/9/b9700b3c-c309-4305-8761-3cf3ec902639.jpg?1783935149",
+    "png": "https://cards.scryfall.io/png/front/b/9/b9700b3c-c309-4305-8761-3cf3ec902639.png?1783935149",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/b/9/b9700b3c-c309-4305-8761-3cf3ec902639.jpg?1783935149",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/b/9/b9700b3c-c309-4305-8761-3cf3ec902639.jpg?1783935149",
+    "thumb": "https://cards.scryfall.io/thumb/front/b/9/b9700b3c-c309-4305-8761-3cf3ec902639.webp?1783935149",
+    "grid": "https://cards.scryfall.io/grid/front/b/9/b9700b3c-c309-4305-8761-3cf3ec902639.webp?1783935149",
+    "display": "https://cards.scryfall.io/display/front/b/9/b9700b3c-c309-4305-8761-3cf3ec902639.webp?1783935149",
+    "art": "https://cards.scryfall.io/art/front/b/9/b9700b3c-c309-4305-8761-3cf3ec902639.webp?1783935149",
+    "crop": "https://cards.scryfall.io/crop/front/b/9/b9700b3c-c309-4305-8761-3cf3ec902639.webp?1783935149",
+    "jpeg": "https://cards.scryfall.io/normal/front/b/9/b9700b3c-c309-4305-8761-3cf3ec902639.jpg?1783935149"
+  },
+  "mana_cost": "{4}{R}",
+  "cmc": 5.0,
+  "type_line": "Creature — Human Rogue",
+  "oracle_text": "Damage that would reduce your life total to less than 1 reduces it to 1 instead.\nMorph {R}{R} (You may cast this card face down as a 2/2 creature for {3}. Turn it face up any time for its morph cost.)",
+  "power": "0",
+  "toughness": "1",
+  "colors": [
+    "R"
+  ],
+  "color_identity": [
+    "R"
+  ],
+  "keywords": [
+    "Morph"
+  ],
+  "all_parts": [
+    {
+      "object": "related_card",
+      "id": "b9700b3c-c309-4305-8761-3cf3ec902639",
+      "component": "combo_piece",
+      "name": "Fortune Thief",
+      "type_line": "Creature — Human Rogue",
+      "uri": "https://api.scryfall.com/cards/b9700b3c-c309-4305-8761-3cf3ec902639"
+    },
+    {
+      "object": "related_card",
+      "id": "cd0b42a0-5e08-406d-82b0-be5f72870c47",
+      "component": "combo_piece",
+      "name": "Morph",
+      "type_line": "Creature",
+      "uri": "https://api.scryfall.com/cards/cd0b42a0-5e08-406d-82b0-be5f72870c47"
+    }
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": true,
+  "variation": false,
+  "set_id": "41ee6e2f-69b3-4c53-8a8e-960f5e974cfc",
+  "set": "a25",
+  "set_name": "Masters 25",
+  "set_type": "masters",
+  "set_uri": "https://api.scryfall.com/sets/41ee6e2f-69b3-4c53-8a8e-960f5e974cfc",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Aa25&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/a25?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/b9700b3c-c309-4305-8761-3cf3ec902639/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A860add4f-8fe4-4441-b394-f3a48d610b90&unique=prints",
+  "collector_number": "130",
+  "digital": false,
+  "rarity": "rare",
+  "watermark": "set",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Christopher Moeller",
+  "artist_ids": [
+    "21e10012-06ae-44f2-b38d-3824dd2e73d4"
+  ],
+  "illustration_id": "5c386d3d-98bf-4124-9c1e-33c4e159e074",
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 13389,
+  "penny_rank": 10168,
+  "prices": {
+    "usd": "0.46",
+    "usd_foil": "0.95",
+    "usd_etched": null,
+    "eur": "0.42",
+    "eur_foil": "0.70",
+    "tix": "0.02"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=442119&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DFortune%2BThief",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DFortune%2BThief",
+    "edhrec": "https://edhrec.com/route/?cc=Fortune+Thief"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F161527%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=319249&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/67174?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

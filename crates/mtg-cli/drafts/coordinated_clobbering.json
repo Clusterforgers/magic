@@ -1,0 +1,44 @@
+{
+  "oracle_id": "b2b65b17-1fb4-42d6-9c6a-376d3f18851b",
+  "name": "Coordinated Clobbering",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Coordinated Clobbering",
+      "oracle_fingerprint": "985eaf81646a9f1e7143d368e7a28c58",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "Type": "Creature" }, "Untapped", { "ControlledBy": "You" }]
+                },
+                "bounds": { "min": 1, "max": 2 }
+              },
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }] } }
+            ],
+            "effects": [
+              { "Tap": { "what": { "Target": 0 } } },
+              {
+                "RepeatEach": {
+                  "over": { "Target": 0 },
+                  "as": "damager",
+                  "effects": [
+                    {
+                      "DealDamage": {
+                        "source": { "Bound": "damager" },
+                        "to": { "Target": 1 },
+                        "amount": { "Stat": { "of": { "Bound": "damager" }, "stat": "Power" } }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

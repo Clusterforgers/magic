@@ -1,0 +1,26 @@
+{
+  "oracle_id": "97607bf5-ca7b-4b1b-963e-390faf6e413e",
+  "name": "Enterprising Scallywag",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Enterprising Scallywag",
+      "oracle_fingerprint": "bc106aad464a5a4ece3aa978f1a122fb",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "if": {
+              "Compare": {
+                "left": { "Tallied": { "who": "You", "what": "Descended" } },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "effects": [{ "CreateToken": { "token": { "Named": "treasure" } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

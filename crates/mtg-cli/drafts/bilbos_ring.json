@@ -20,7 +20,14 @@
             "effects": [{ "Draw": {} }, { "LoseLife": { "amount": 1 } }]
           }
         },
-        { "Keyword": { "EquipTo": { "to": [{ "Subtype": "Halfling" }], "cost": "{1}" } } },
+        {
+          "Keyword": {
+            "EquipTo": {
+              "to": [{ "Subtype": "Halfling" }, { "ControlledBy": "You" }],
+              "cost": "{1}"
+            }
+          }
+        },
         { "Keyword": { "Equip": "{4}" } }
       ]
     }

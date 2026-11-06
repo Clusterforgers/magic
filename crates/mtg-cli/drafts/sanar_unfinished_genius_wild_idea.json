@@ -43,10 +43,10 @@
                 "Search": {
                   "filter": [{ "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] }],
                   "reveal": true,
-                  "as": "card"
+                  "as": "found"
                 }
               },
-              { "Move": { "what": { "Bound": "card" }, "to": "Hand" } },
+              { "Move": { "what": { "Bound": "found" }, "to": "Hand" } },
               { "Shuffle": {} }
             ]
           }

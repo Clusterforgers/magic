@@ -1,0 +1,32 @@
+{
+  "oracle_id": "76703951-f42f-4e1d-af51-e1e06a89bd5e",
+  "name": "Wild Defiance",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Wild Defiance",
+      "oracle_fingerprint": "d28db1b1159ab6c85a76e4fba9ad6d12",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "BecomesTarget": {
+                "what": [{ "Type": "Creature" }, { "ControlledBy": "You" }, { "In": "Battlefield" }],
+                "by": [{ "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] }]
+              }
+            },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "TriggeringFirst",
+                  "mods": [{ "ModifyPT": { "power": 3, "toughness": 3 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,63 @@
+{
+  "oracle_id": "6aad6906-96ec-4994-bfc3-9a76f893bc8c",
+  "name": "Armored Kincaller",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Armored Kincaller",
+      "oracle_fingerprint": "05bb81e2c7d07218ad9a82d0a4635040",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [{ "Subtype": "Dinosaur" }, { "In": "Hand" }, { "OwnedBy": "You" }]
+                  },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "revealed"
+                }
+              },
+              { "Reveal": { "what": { "Bound": "revealed" } } },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": {
+                        "Sum": [
+                          {
+                            "Count": [
+                              { "Is": { "Bound": "revealed" } },
+                              {
+                                "AnyOf": [
+                                  { "In": "Battlefield" },
+                                  { "In": "Hand" },
+                                  { "In": "Library" },
+                                  { "In": "Graveyard" },
+                                  { "In": "Exile" },
+                                  { "In": "Stack" }
+                                ]
+                              }
+                            ]
+                          },
+                          {
+                            "Count": [{ "Subtype": "Dinosaur" }, "Other", { "ControlledBy": "You" }]
+                          }
+                        ]
+                      },
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [{ "GainLife": { "amount": 3 } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,46 @@
+{
+  "oracle_id": "7644148f-3b26-447d-9f52-28c94c111b69",
+  "name": "Rootwire Amalgam",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Rootwire Amalgam",
+      "oracle_fingerprint": "8efce59abf1f0e9ffd20f8ee70ef1ea1",
+      "abilities": [
+        { "Keyword": { "Prototype": { "cost": "{1}{G}", "power": 2, "toughness": 3 } } },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{3}{G}{G}" }, "SacrificeSelf"],
+            "timing": "Sorcery",
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Sized": {
+                      "size": {
+                        "Times": { "by": 3, "of": { "Stat": { "of": "This", "stat": "Power" } } }
+                      },
+                      "token": {
+                        "name": "Golem",
+                        "types": ["Artifact", "Creature"],
+                        "subtypes": ["Golem"]
+                      }
+                    }
+                  },
+                  "as": "token"
+                }
+              },
+              {
+                "Continuous": {
+                  "affected": { "Bound": "token" },
+                  "mods": [{ "AddKeyword": "Haste" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

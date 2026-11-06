@@ -1,0 +1,43 @@
+{
+  "oracle_id": "6783c46d-e4e5-4b43-9d97-6eae8aab4cb9",
+  "name": "Living Inferno",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Living Inferno",
+      "oracle_fingerprint": "498800b7e06b2b0b35d6f8e56ebd6b83",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "targets": [
+              {
+                "what": { "Object": [{ "Type": "Creature" }] },
+                "bounds": { "min": 0, "max": { "Stat": { "of": "This", "stat": "Power" } } },
+                "divide": { "Stat": { "of": "This", "stat": "Power" } }
+              }
+            ],
+            "effects": [
+              { "DealDamage": { "to": { "Target": 0 }, "amount": "Divided" } },
+              {
+                "RepeatEach": {
+                  "over": { "Target": 0 },
+                  "as": "damager",
+                  "effects": [
+                    {
+                      "DealDamage": {
+                        "source": { "Bound": "damager" },
+                        "to": "This",
+                        "amount": { "Stat": { "of": { "Bound": "damager" }, "stat": "Power" } }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

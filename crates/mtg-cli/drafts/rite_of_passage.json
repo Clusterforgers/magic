@@ -1,0 +1,26 @@
+{
+  "oracle_id": "4b8d7d30-a97f-4169-a860-02783ca622ea",
+  "name": "Rite of Passage",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Rite of Passage",
+      "oracle_fingerprint": "15d4ec371f8857dd316ec310a9036875",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "Batch": {
+                "DealsDamage": {
+                  "source": [],
+                  "to": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] }
+                }
+              }
+            },
+            "effects": [{ "PutCounters": { "on": "Triggering", "counter": "+1/+1" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

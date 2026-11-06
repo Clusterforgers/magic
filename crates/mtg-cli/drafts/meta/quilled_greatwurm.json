@@ -1,0 +1,59 @@
+{
+  "source": "forge",
+  "oracle_matches": true,
+  "lines": [
+    {
+      "face": 0,
+      "tag": "K",
+      "text": "Trample",
+      "abilities": [
+        0
+      ],
+      "gap": null
+    },
+    {
+      "face": 0,
+      "tag": "T",
+      "text": "Whenever a creature you control deals combat damage during your turn, put that many +1/+1 counters on it. (It must survive to get the counters.)",
+      "abilities": [],
+      "gap": "defined:TriggeredSourceLKICopy-in-DamageDealtOnce"
+    },
+    {
+      "face": 0,
+      "tag": "S",
+      "text": "You may cast this card from your graveyard by removing six counters from among creatures you control in addition to paying its other costs.",
+      "abilities": [
+        1
+      ],
+      "gap": null
+    }
+  ],
+  "proof": {
+    "marks": [
+      {
+        "face": 0,
+        "span": {
+          "start": 0,
+          "end": 7
+        },
+        "mark": "Auto"
+      },
+      {
+        "face": 0,
+        "span": {
+          "start": 8,
+          "end": 152
+        },
+        "mark": "ByHand"
+      },
+      {
+        "face": 0,
+        "span": {
+          "start": 153,
+          "end": 292
+        },
+        "mark": "Auto"
+      }
+    ]
+  }
+}

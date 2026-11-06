@@ -1,0 +1,36 @@
+{
+  "oracle_id": "961f1883-2f97-4249-90f9-416279d7a9dd",
+  "name": "Yue, the Moon Spirit",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Yue, the Moon Spirit",
+      "oracle_fingerprint": "f0342294458b08d0a010b6eca7a8385a",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": "Vigilance" },
+        {
+          "Activated": {
+            "cost": [{ "Waterbend": 5 }, "Tap"],
+            "effects": [
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "In": "Hand" },
+                      { "Not": { "Type": "Creature" } },
+                      { "OwnedBy": "You" }
+                    ]
+                  },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "picked"
+                }
+              },
+              { "CastFromZone": { "what": { "Bound": "picked" }, "free": true } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

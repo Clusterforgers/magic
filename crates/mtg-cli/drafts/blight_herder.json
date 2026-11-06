@@ -1,0 +1,51 @@
+{
+  "oracle_id": "3159d289-b822-4657-919a-d712623e622e",
+  "name": "Blight Herder",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Blight Herder",
+      "oracle_fingerprint": "7a3a2220e33d94e54820510e1832f7ef",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "what": ["This"] } },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": [
+                    { "ExiledToGraveyard": { "filter": [{ "OwnedBy": "Opponents" }], "count": 2 } }
+                  ],
+                  "paid": [
+                    {
+                      "CreateToken": {
+                        "token": {
+                          "Custom": {
+                            "name": "Eldrazi Scion",
+                            "types": ["Creature"],
+                            "subtypes": ["Eldrazi", "Scion"],
+                            "power": 1,
+                            "toughness": 1,
+                            "abilities": [
+                              {
+                                "Activated": {
+                                  "cost": ["SacrificeSelf"],
+                                  "effects": [{ "AddMana": { "mana": { "Fixed": ["Colorless"] } } }]
+                                }
+                              }
+                            ]
+                          }
+                        },
+                        "count": 3
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

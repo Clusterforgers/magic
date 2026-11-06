@@ -1,0 +1,76 @@
+{
+  "oracle_id": "24fd1f47-bb15-45c6-a7b1-ba8eb3bb8b1d",
+  "name": "Vaan, Street Thief",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Vaan, Street Thief",
+      "oracle_fingerprint": "583f216c90ab61bddb8bd819d29e1a38",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "Batch": {
+                "DealsDamage": {
+                  "source": [
+                    {
+                      "AnyOf": [
+                        { "Subtype": "Scout" },
+                        { "Subtype": "Pirate" },
+                        { "Subtype": "Rogue" }
+                      ]
+                    },
+                    { "ControlledBy": "You" }
+                  ],
+                  "to": "EachPlayer",
+                  "combat": true
+                }
+              }
+            },
+            "effects": [
+              { "ExileTop": { "who": "Triggering", "as": "exiled" } },
+              { "CastFromZone": { "what": { "Bound": "exiled" } } },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Bound": "exiled" },
+                      "selector": [],
+                      "op": "Gt",
+                      "right": 0
+                    }
+                  },
+                  "then": [{ "CreateToken": { "token": { "Named": "treasure" } } }]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "what": [{ "Not": { "OwnedBy": "You" } }], "by": "You" } },
+            "effects": [
+              {
+                "PutCounters": {
+                  "on": {
+                    "Each": [
+                      {
+                        "AnyOf": [
+                          { "Subtype": "Scout" },
+                          { "Subtype": "Pirate" },
+                          { "Subtype": "Rogue" }
+                        ]
+                      },
+                      { "ControlledBy": "You" }
+                    ]
+                  },
+                  "counter": "+1/+1"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

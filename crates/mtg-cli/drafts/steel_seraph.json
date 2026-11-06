@@ -1,0 +1,62 @@
+{
+  "oracle_id": "7ff8940f-d798-41eb-b82e-a1eba2163fe7",
+  "name": "Steel Seraph",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Steel Seraph",
+      "oracle_fingerprint": "5ec8620598c08e261a36f787d5582d30",
+      "abilities": [
+        { "Keyword": { "Prototype": { "cost": "{1}{W}{W}", "power": 3, "toughness": 3 } } },
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "BeginCombat", "whose": "You" } },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } }
+            ],
+            "effects": [
+              {
+                "Either": {
+                  "first": [
+                    {
+                      "Continuous": {
+                        "affected": { "Target": 0 },
+                        "mods": [{ "AddKeyword": "Flying" }],
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ],
+                  "second": [
+                    {
+                      "Either": {
+                        "first": [
+                          {
+                            "Continuous": {
+                              "affected": { "Target": 0 },
+                              "mods": [{ "AddKeyword": "Vigilance" }],
+                              "duration": "UntilEndOfTurn"
+                            }
+                          }
+                        ],
+                        "second": [
+                          {
+                            "Continuous": {
+                              "affected": { "Target": 0 },
+                              "mods": [{ "AddKeyword": "Lifelink" }],
+                              "duration": "UntilEndOfTurn"
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

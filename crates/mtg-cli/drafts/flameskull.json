@@ -1,0 +1,60 @@
+{
+  "oracle_id": "f3d935cd-d582-464a-a13b-bb84a53da4a1",
+  "name": "Flameskull",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Flameskull",
+      "oracle_fingerprint": "637f60baafb3ad72559c5438407d7d40",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Static": { "affected": "This", "mods": ["CantBlock"] } },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } },
+            "effects": [
+              { "Exile": { "what": "This", "as": "exiled" } },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Bound": "exiled" },
+                      "selector": ["This"],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [
+                    { "ExileTop": { "as": "exiled2" } },
+                    {
+                      "Rule": {
+                        "rule": {
+                          "MayCast": {
+                            "from": "Exile",
+                            "only": {
+                              "Each": [
+                                {
+                                  "AnyOf": [
+                                    { "Is": { "Bound": "exiled" } },
+                                    { "Is": { "Bound": "exiled2" } }
+                                  ]
+                                }
+                              ]
+                            },
+                            "play": true,
+                            "once": true
+                          }
+                        },
+                        "duration": "UntilEndOfYourNextTurn"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

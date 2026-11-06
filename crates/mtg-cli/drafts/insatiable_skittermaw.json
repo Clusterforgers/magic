@@ -1,0 +1,52 @@
+{
+  "oracle_id": "69a68dec-4b01-4528-81fc-a3c5f5097f72",
+  "name": "Insatiable Skittermaw",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Insatiable Skittermaw",
+      "oracle_fingerprint": "9af078bcd394b488e120d79d1af403de",
+      "abilities": [
+        { "Keyword": "Menace" },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "if": {
+              "Compare": {
+                "left": {
+                  "When": {
+                    "condition": {
+                      "Any": [
+                        {
+                          "Compare": {
+                            "left": {
+                              "Tallied": { "who": "EachPlayer", "what": "NonlandPermanentsLeft" }
+                            },
+                            "op": "Ge",
+                            "right": 1
+                          }
+                        },
+                        {
+                          "Compare": {
+                            "left": { "Tallied": { "who": "EachPlayer", "what": "SpellsWarped" } },
+                            "op": "Ge",
+                            "right": 1
+                          }
+                        }
+                      ]
+                    },
+                    "then": 1,
+                    "otherwise": 0
+                  }
+                },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

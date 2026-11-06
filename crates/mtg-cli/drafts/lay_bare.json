@@ -1,0 +1,22 @@
+{
+  "oracle_id": "4d3ac460-79ac-4eef-9446-1b9fe0261556",
+  "name": "Lay Bare",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Lay Bare",
+      "oracle_fingerprint": "4bff5293e6f2cfa6ccf95ea35c628665",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": ["Spell"] } }],
+            "effects": [
+              { "Counter": { "what": { "Target": 0 } } },
+              { "LookAtHand": { "of": { "ControllerOf": { "Target": 0 } } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

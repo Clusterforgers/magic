@@ -1,0 +1,52 @@
+{
+  "oracle_id": "c8b3a070-408e-4a8f-8597-6476eeec0a5f",
+  "name": "Heartwood Crafter // Soul Tether",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Heartwood Crafter",
+      "oracle_fingerprint": "a29ac6554e083cf00e6f439545d6bd60",
+      "abilities": [
+        { "Replacement": { "when": { "Enters": { "what": ["This"] } }, "by": "EntersPrepared" } },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 112, "end": 181 }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Soul Tether",
+      "oracle_fingerprint": "b591a091646e071b853c1fd461e4ae0d",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Heartwood",
+                      "colors": ["Red", "Green"],
+                      "types": ["Artifact"],
+                      "subtypes": ["Heartwood"],
+                      "abilities": [
+                        {
+                          "Activated": {
+                            "cost": ["Tap"],
+                            "effects": [{ "AddMana": { "mana": { "OneOf": ["Red", "Green"] } } }]
+                          }
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

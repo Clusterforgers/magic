@@ -1,0 +1,28 @@
+{
+  "oracle_id": "8cf88fa8-2f47-4125-a59d-9c2b2d4765a7",
+  "name": "Flexible Waterbender",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Flexible Waterbender",
+      "oracle_fingerprint": "c14da46a23cd9304f6685a97b8c21f8b",
+      "abilities": [
+        { "Keyword": "Vigilance" },
+        {
+          "Activated": {
+            "cost": [{ "Waterbend": 3 }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "SetPT": { "power": 5, "toughness": 2 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

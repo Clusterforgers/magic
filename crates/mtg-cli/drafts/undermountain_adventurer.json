@@ -1,0 +1,45 @@
+{
+  "oracle_id": "2e5e0abd-38a6-46ca-b922-556db52f1332",
+  "name": "Undermountain Adventurer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Undermountain Adventurer",
+      "oracle_fingerprint": "93c4d27a07f8d40bc19e50e9d67052a9",
+      "abilities": [
+        { "Keyword": "Vigilance" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "TakeInitiative": {} }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [
+              {
+                "AddMana": {
+                  "mana": { "Fixed": ["Green"] },
+                  "times": {
+                    "When": {
+                      "condition": {
+                        "Compare": {
+                          "left": { "Tallied": { "who": "You", "what": "DungeonsCompleted" } },
+                          "op": "Ge",
+                          "right": 1
+                        }
+                      },
+                      "then": 6,
+                      "otherwise": 2
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,55 @@
+{
+  "oracle_id": "4b803bf2-025a-4bf6-9d3c-a28d714b4781",
+  "name": "Kellan's Lightblades",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Kellan's Lightblades",
+      "oracle_fingerprint": "938e351617101a652dd9fce0407da5f7",
+      "abilities": [
+        { "Keyword": "Bargain" },
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "Type": "Creature" }, { "AnyOf": ["Attacking", "Blocking"] }]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": {
+                        "When": { "condition": "AdditionalCostPaid", "then": 1, "otherwise": 0 }
+                      },
+                      "op": "Eq",
+                      "right": 0
+                    }
+                  },
+                  "then": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 3 } }]
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": {
+                        "When": { "condition": "AdditionalCostPaid", "then": 1, "otherwise": 0 }
+                      },
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [{ "Destroy": { "what": { "Target": 0 } } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

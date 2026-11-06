@@ -1,0 +1,67 @@
+{
+  "oracle_id": "d60c8cfe-435c-419e-a44b-b47d49d1afef",
+  "name": "Precipitous Drop",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Precipitous Drop",
+      "oracle_fingerprint": "fe581bcd0fb7ca54324292f7fa08d212",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "Venture": {} }]
+          }
+        },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [
+              {
+                "ModifyPT": {
+                  "power": {
+                    "Times": {
+                      "by": -1,
+                      "of": {
+                        "When": {
+                          "condition": {
+                            "Compare": {
+                              "left": { "Tallied": { "who": "You", "what": "DungeonsCompleted" } },
+                              "op": "Ge",
+                              "right": 1
+                            }
+                          },
+                          "then": 5,
+                          "otherwise": 2
+                        }
+                      }
+                    }
+                  },
+                  "toughness": {
+                    "Times": {
+                      "by": -1,
+                      "of": {
+                        "When": {
+                          "condition": {
+                            "Compare": {
+                              "left": { "Tallied": { "who": "You", "what": "DungeonsCompleted" } },
+                              "op": "Ge",
+                              "right": 1
+                            }
+                          },
+                          "then": 5,
+                          "otherwise": 2
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

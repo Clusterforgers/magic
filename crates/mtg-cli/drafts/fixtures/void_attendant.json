@@ -1,0 +1,157 @@
+{
+  "object": "card",
+  "id": "b3ccc905-bd43-4925-8eb9-fb9abcc81e29",
+  "oracle_id": "34f3ec68-871f-4b94-b497-04f71aea88c9",
+  "multiverse_ids": [
+    658656
+  ],
+  "mtgo_id": 124883,
+  "tcgplayer_id": 545559,
+  "cardmarket_id": 764768,
+  "name": "Void Attendant",
+  "lang": "en",
+  "released_at": "2024-04-19",
+  "uri": "https://api.scryfall.com/cards/b3ccc905-bd43-4925-8eb9-fb9abcc81e29",
+  "scryfall_uri": "https://scryfall.com/card/otc/212/void-attendant?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T03:05:05Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/b/3/b3ccc905-bd43-4925-8eb9-fb9abcc81e29.jpg?1783911905",
+    "normal": "https://cards.scryfall.io/normal/front/b/3/b3ccc905-bd43-4925-8eb9-fb9abcc81e29.jpg?1783911905",
+    "large": "https://cards.scryfall.io/large/front/b/3/b3ccc905-bd43-4925-8eb9-fb9abcc81e29.jpg?1783911905",
+    "png": "https://cards.scryfall.io/png/front/b/3/b3ccc905-bd43-4925-8eb9-fb9abcc81e29.png?1783911905",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/b/3/b3ccc905-bd43-4925-8eb9-fb9abcc81e29.jpg?1783911905",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/b/3/b3ccc905-bd43-4925-8eb9-fb9abcc81e29.jpg?1783911905",
+    "thumb": "https://cards.scryfall.io/thumb/front/b/3/b3ccc905-bd43-4925-8eb9-fb9abcc81e29.webp?1783911905",
+    "grid": "https://cards.scryfall.io/grid/front/b/3/b3ccc905-bd43-4925-8eb9-fb9abcc81e29.webp?1783911905",
+    "display": "https://cards.scryfall.io/display/front/b/3/b3ccc905-bd43-4925-8eb9-fb9abcc81e29.webp?1783911905",
+    "art": "https://cards.scryfall.io/art/front/b/3/b3ccc905-bd43-4925-8eb9-fb9abcc81e29.webp?1783911905",
+    "crop": "https://cards.scryfall.io/crop/front/b/3/b3ccc905-bd43-4925-8eb9-fb9abcc81e29.webp?1783911905",
+    "jpeg": "https://cards.scryfall.io/normal/front/b/3/b3ccc905-bd43-4925-8eb9-fb9abcc81e29.jpg?1783911905"
+  },
+  "mana_cost": "{2}{G}",
+  "cmc": 3.0,
+  "type_line": "Creature — Eldrazi Processor",
+  "oracle_text": "Devoid (This card has no color.)\n{1}{G}, Put a card an opponent owns from exile into that player's graveyard: Create a 1/1 colorless Eldrazi Scion creature token. It has \"Sacrifice this token: Add {C}.\"",
+  "power": "2",
+  "toughness": "3",
+  "colors": [],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [
+    "Devoid"
+  ],
+  "produced_mana": [
+    "C"
+  ],
+  "all_parts": [
+    {
+      "object": "related_card",
+      "id": "2213bedb-1a83-4fd1-bea3-55b8956d6ecf",
+      "component": "token",
+      "name": "Eldrazi Scion",
+      "type_line": "Token Creature — Eldrazi Scion",
+      "uri": "https://api.scryfall.com/cards/2213bedb-1a83-4fd1-bea3-55b8956d6ecf"
+    },
+    {
+      "object": "related_card",
+      "id": "b3ccc905-bd43-4925-8eb9-fb9abcc81e29",
+      "component": "combo_piece",
+      "name": "Void Attendant",
+      "type_line": "Creature — Eldrazi Processor",
+      "uri": "https://api.scryfall.com/cards/b3ccc905-bd43-4925-8eb9-fb9abcc81e29"
+    }
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": true,
+  "variation": false,
+  "set_id": "d6548798-0c10-4509-b71a-2d8b1d14665a",
+  "set": "otc",
+  "set_name": "Outlaws of Thunder Junction Commander",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/d6548798-0c10-4509-b71a-2d8b1d14665a",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Aotc&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/otc?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/b3ccc905-bd43-4925-8eb9-fb9abcc81e29/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A34f3ec68-871f-4b94-b497-04f71aea88c9&unique=prints",
+  "collector_number": "212",
+  "digital": false,
+  "rarity": "uncommon",
+  "flavor_text": "The Eldrazi don't merely extinguish life—they supplant it.",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Viktor Titov",
+  "artist_ids": [
+    "2270c0b0-afb4-42b0-bcb6-25fe4ad6eef2"
+  ],
+  "illustration_id": "edda6fd8-4aea-47a2-bbbc-12ea6aae2260",
+  "border_color": "black",
+  "frame": "2015",
+  "frame_effects": [
+    "devoid"
+  ],
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "edhrec_rank": 18889,
+  "penny_rank": 10424,
+  "prices": {
+    "usd": "0.30",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "0.13",
+    "eur_foil": null,
+    "tix": "0.05"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=658656&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DVoid%2BAttendant",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DVoid%2BAttendant",
+    "edhrec": "https://edhrec.com/route/?cc=Void+Attendant"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F545559%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=764768&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/124883?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

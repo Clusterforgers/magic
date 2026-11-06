@@ -1,0 +1,31 @@
+{
+  "oracle_id": "b1a0e129-27f0-4a09-b00d-497e18777306",
+  "name": "Abhorrent Oculus",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Abhorrent Oculus",
+      "oracle_fingerprint": "38fe51d1567714531f9ab3535cb0eb59",
+      "abilities": [
+        {
+          "AdditionalCost": {
+            "cost": [{ "ExileFromGraveyard": { "filter": [], "count": 6 } }],
+            "required": true
+          }
+        },
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "Opponents" } },
+            "effects": [
+              { "LookAtTop": { "count": 2, "as": "looked" } },
+              { "Choose": { "from": { "Bound": "looked" }, "as": "kept2", "rest_as": "rest3" } },
+              { "Move": { "what": { "Bound": "rest3" }, "to": "Graveyard" } },
+              { "Manifest": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

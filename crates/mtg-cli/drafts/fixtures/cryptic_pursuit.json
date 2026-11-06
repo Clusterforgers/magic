@@ -1,0 +1,156 @@
+{
+  "object": "card",
+  "id": "a9cab677-6065-46d4-bc00-10e32de1aed7",
+  "oracle_id": "214cfbc8-369e-4035-9b65-80d0e0024889",
+  "multiverse_ids": [
+    598184
+  ],
+  "tcgplayer_id": 269228,
+  "cardmarket_id": 652464,
+  "name": "Cryptic Pursuit",
+  "lang": "en",
+  "released_at": "2022-04-29",
+  "uri": "https://api.scryfall.com/cards/a9cab677-6065-46d4-bc00-10e32de1aed7",
+  "scryfall_uri": "https://scryfall.com/card/ncc/70/cryptic-pursuit?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T06:15:51Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/a/9/a9cab677-6065-46d4-bc00-10e32de1aed7.jpg?1783923351",
+    "normal": "https://cards.scryfall.io/normal/front/a/9/a9cab677-6065-46d4-bc00-10e32de1aed7.jpg?1783923351",
+    "large": "https://cards.scryfall.io/large/front/a/9/a9cab677-6065-46d4-bc00-10e32de1aed7.jpg?1783923351",
+    "png": "https://cards.scryfall.io/png/front/a/9/a9cab677-6065-46d4-bc00-10e32de1aed7.png?1783923351",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/a/9/a9cab677-6065-46d4-bc00-10e32de1aed7.jpg?1783923351",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/a/9/a9cab677-6065-46d4-bc00-10e32de1aed7.jpg?1783923351",
+    "thumb": "https://cards.scryfall.io/thumb/front/a/9/a9cab677-6065-46d4-bc00-10e32de1aed7.webp?1783923351",
+    "grid": "https://cards.scryfall.io/grid/front/a/9/a9cab677-6065-46d4-bc00-10e32de1aed7.webp?1783923351",
+    "display": "https://cards.scryfall.io/display/front/a/9/a9cab677-6065-46d4-bc00-10e32de1aed7.webp?1783923351",
+    "art": "https://cards.scryfall.io/art/front/a/9/a9cab677-6065-46d4-bc00-10e32de1aed7.webp?1783923351",
+    "crop": "https://cards.scryfall.io/crop/front/a/9/a9cab677-6065-46d4-bc00-10e32de1aed7.webp?1783923351",
+    "jpeg": "https://cards.scryfall.io/normal/front/a/9/a9cab677-6065-46d4-bc00-10e32de1aed7.jpg?1783923351"
+  },
+  "mana_cost": "{2}{U}{R}",
+  "cmc": 4.0,
+  "type_line": "Enchantment",
+  "oracle_text": "Whenever you cast an instant or sorcery spell from your hand, manifest the top card of your library. (Put that card onto the battlefield face down as a 2/2 creature. Turn it face up any time for its mana cost if it's a creature card.)\nWhenever a face-down creature you control dies, exile it if it's an instant or sorcery card. You may cast that card until the end of your next turn.",
+  "colors": [
+    "R",
+    "U"
+  ],
+  "color_identity": [
+    "R",
+    "U"
+  ],
+  "keywords": [
+    "Manifest"
+  ],
+  "all_parts": [
+    {
+      "object": "related_card",
+      "id": "bfffeceb-b3a6-4d0a-88bb-6386eccbfa8f",
+      "component": "combo_piece",
+      "name": "Cryptic Pursuit",
+      "type_line": "Enchantment",
+      "uri": "https://api.scryfall.com/cards/bfffeceb-b3a6-4d0a-88bb-6386eccbfa8f"
+    },
+    {
+      "object": "related_card",
+      "id": "942bf431-20dc-400c-9402-cf59be52f6bb",
+      "component": "combo_piece",
+      "name": "Manifest",
+      "type_line": "Creature",
+      "uri": "https://api.scryfall.com/cards/942bf431-20dc-400c-9402-cf59be52f6bb"
+    }
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "c51de34b-d4d6-4179-a432-573744ded119",
+  "set": "ncc",
+  "set_name": "New Capenna Commander",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/c51de34b-d4d6-4179-a432-573744ded119",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Ancc&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/ncc?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/a9cab677-6065-46d4-bc00-10e32de1aed7/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A214cfbc8-369e-4035-9b65-80d0e0024889&unique=prints",
+  "collector_number": "70",
+  "digital": false,
+  "rarity": "rare",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Marc Simonetti",
+  "artist_ids": [
+    "8089db55-5105-47b0-8c64-f320e08c97f0"
+  ],
+  "illustration_id": "c0e45b18-6eeb-4af1-b50a-58aebf9babc8",
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "edhrec_rank": 15911,
+  "preview": {
+    "source": "Wargamer",
+    "source_uri": "https://www.wargamer.com/magic-the-gathering/streets-of-new-capenna-commander-deck-maestros-massacre-reveal",
+    "previewed_at": "2022-04-18"
+  },
+  "prices": {
+    "usd": "0.26",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "0.18",
+    "eur_foil": null,
+    "tix": null
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=598184&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DCryptic%2BPursuit",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DCryptic%2BPursuit",
+    "edhrec": "https://edhrec.com/route/?cc=Cryptic+Pursuit"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F269228%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=652464&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards?affiliate_id=scryfall&data%5Bsearch%5D=Cryptic+Pursuit&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

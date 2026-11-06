@@ -1,0 +1,28 @@
+{
+  "oracle_id": "4b216b4d-f9cb-4ce2-af70-c91eef3db083",
+  "name": "Helbrute",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Helbrute",
+      "oracle_fingerprint": "3324598275a2f2951983ca87d7631ca4",
+      "abilities": [
+        { "Keyword": "Haste" },
+        {
+          "Rule": {
+            "rule": {
+              "MayCast": {
+                "what": ["This"],
+                "from": "Graveyard",
+                "additional": [
+                  { "ExileFromGraveyard": { "filter": [{ "Type": "Creature" }, "Other"] } }
+                ]
+              }
+            },
+            "from": "Graveyard"
+          }
+        }
+      ]
+    }
+  ]
+}

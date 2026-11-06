@@ -1,0 +1,58 @@
+{
+  "oracle_id": "fa1ed9fa-5f77-4f7d-bab0-47c719cdc5bc",
+  "name": "Spring-Loaded Sawblades // Bladewheel Chariot",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Spring-Loaded Sawblades",
+      "oracle_fingerprint": "195895aa1edb3b495b06ee0d6c2652c1",
+      "abilities": [
+        { "Keyword": "Flash" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "Type": "Creature" }, "Tapped", { "ControlledBy": "Opponents" }]
+                }
+              }
+            ],
+            "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 5 } }]
+          }
+        },
+        {
+          "Keyword": {
+            "Craft": [
+              { "Mana": "{3}{W}" },
+              { "Craft": { "filter": [{ "Type": "Artifact" }, "Other"] } }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Bladewheel Chariot",
+      "oracle_fingerprint": "f06ed6f35e77290a9e2217716ca3a64f",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [
+              { "TapPermanents": { "filter": [{ "Type": "Artifact" }, "Other"], "count": 2 } }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "AddType": "Artifact" }, { "AddType": "Creature" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Crew": 1 } }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,50 @@
+{
+  "oracle_id": "ff0ab867-b710-4b1a-baed-95fc3cf68f79",
+  "name": "Valakut Awakening // Valakut Stoneforge",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Valakut Awakening",
+      "oracle_fingerprint": "3c2f6114112d40c941fe1112980e1999",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Choose": {
+                  "from": { "Each": [{ "In": "Hand" }, { "OwnedBy": "You" }] },
+                  "count": {
+                    "min": 0,
+                    "max": { "Count": [{ "OwnedBy": "You" }, { "In": "Hand" }] }
+                  },
+                  "as": "picked"
+                }
+              },
+              {
+                "Move": {
+                  "what": { "Bound": "picked" },
+                  "to": { "Library": { "place": "Bottom" } },
+                  "as": "moved2"
+                }
+              },
+              { "Draw": { "count": { "Sum": [{ "Bound": "moved2~moved" }, 1] } } }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Valakut Stoneforge",
+      "oracle_fingerprint": "aad25bbf4a7e696d08cc648a99f38094",
+      "abilities": [
+        { "Replacement": { "when": { "Enters": { "what": ["This"] } }, "by": "Tapped" } },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Red"] } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

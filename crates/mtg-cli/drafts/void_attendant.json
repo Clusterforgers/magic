@@ -1,0 +1,45 @@
+{
+  "oracle_id": "34f3ec68-871f-4b94-b497-04f71aea88c9",
+  "name": "Void Attendant",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Void Attendant",
+      "oracle_fingerprint": "4270f89d29c1fed3b05a473ffd229e66",
+      "abilities": [
+        { "Keyword": "Devoid" },
+        {
+          "Activated": {
+            "cost": [
+              { "Mana": "{1}{G}" },
+              { "ExiledToGraveyard": { "filter": [{ "OwnedBy": "Opponents" }] } }
+            ],
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Eldrazi Scion",
+                      "types": ["Creature"],
+                      "subtypes": ["Eldrazi", "Scion"],
+                      "power": 1,
+                      "toughness": 1,
+                      "abilities": [
+                        {
+                          "Activated": {
+                            "cost": ["SacrificeSelf"],
+                            "effects": [{ "AddMana": { "mana": { "Fixed": ["Colorless"] } } }]
+                          }
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

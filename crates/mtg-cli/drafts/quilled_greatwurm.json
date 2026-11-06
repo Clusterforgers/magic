@@ -1,0 +1,34 @@
+{
+  "oracle_id": "01635d21-aeda-4754-9d94-68fcd0cd6556",
+  "name": "Quilled Greatwurm",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Quilled Greatwurm",
+      "oracle_fingerprint": "509aaed57b850c5cda137ede97b61302",
+      "abilities": [
+        { "Keyword": "Trample" },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 8, "end": 152 }
+          }
+        },
+        {
+          "Rule": {
+            "rule": {
+              "MayCast": {
+                "what": ["This"],
+                "from": "Graveyard",
+                "additional": [
+                  { "RemoveCountersAmong": { "count": 6, "from": [{ "Type": "Creature" }] } }
+                ]
+              }
+            },
+            "from": "Graveyard"
+          }
+        }
+      ]
+    }
+  ]
+}

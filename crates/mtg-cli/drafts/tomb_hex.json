@@ -1,0 +1,80 @@
+{
+  "oracle_id": "4b3bc59c-5439-4ec8-b25e-7493fa1cd3fd",
+  "name": "Tomb Hex",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Tomb Hex",
+      "oracle_fingerprint": "96de0c07ca791efef0179d80ee11668e",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    {
+                      "ModifyPT": {
+                        "power": {
+                          "Times": {
+                            "by": -1,
+                            "of": {
+                              "When": {
+                                "condition": {
+                                  "Compare": {
+                                    "left": {
+                                      "Tally": {
+                                        "event": "Entered",
+                                        "who": "You",
+                                        "filter": [{ "Type": "Land" }]
+                                      }
+                                    },
+                                    "op": "Ge",
+                                    "right": 1
+                                  }
+                                },
+                                "then": 4,
+                                "otherwise": 2
+                              }
+                            }
+                          }
+                        },
+                        "toughness": {
+                          "Times": {
+                            "by": -1,
+                            "of": {
+                              "When": {
+                                "condition": {
+                                  "Compare": {
+                                    "left": {
+                                      "Tally": {
+                                        "event": "Entered",
+                                        "who": "You",
+                                        "filter": [{ "Type": "Land" }]
+                                      }
+                                    },
+                                    "op": "Ge",
+                                    "right": 1
+                                  }
+                                },
+                                "then": 4,
+                                "otherwise": 2
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

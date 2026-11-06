@@ -1,0 +1,50 @@
+{
+  "oracle_id": "4f429b99-6aca-409f-9d2e-5743d81f1f22",
+  "name": "Tomb of Horrors Adventurer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Tomb of Horrors Adventurer",
+      "oracle_fingerprint": "ce48b09cf5b7259a83eb9bbb3fe421f3",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "TakeInitiative": {} }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "Nth": {
+                "event": { "SpellCast": { "what": [{ "ControlledBy": "You" }], "by": "You" } },
+                "nth": 2
+              }
+            },
+            "effects": [
+              {
+                "CopySpell": {
+                  "what": "Triggering",
+                  "count": {
+                    "When": {
+                      "condition": {
+                        "Compare": {
+                          "left": { "Tallied": { "who": "You", "what": "DungeonsCompleted" } },
+                          "op": "Ge",
+                          "right": 1
+                        }
+                      },
+                      "then": 2,
+                      "otherwise": 1
+                    }
+                  },
+                  "new_targets": true
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

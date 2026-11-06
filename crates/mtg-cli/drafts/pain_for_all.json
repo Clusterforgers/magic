@@ -1,0 +1,39 @@
+{
+  "oracle_id": "4eedf21c-0ad1-48da-a9fe-2ffdbf8371e9",
+  "name": "Pain for All",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Pain for All",
+      "oracle_fingerprint": "ab53774a56e762acf4a919ba511e0bf3",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [{ "what": { "Object": [{ "Not": { "Is": "Attached" } }] } }],
+            "effects": [
+              {
+                "DealDamage": {
+                  "source": "Attached",
+                  "to": { "Target": 0 },
+                  "amount": { "Stat": { "of": "Attached", "stat": "Power" } }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Batch": { "DealsDamage": { "source": [], "to": "Attached" } } },
+            "effects": [
+              {
+                "DealDamage": { "source": "Triggering", "to": "Opponents", "amount": "Triggering" }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

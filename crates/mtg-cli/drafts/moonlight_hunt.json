@@ -1,0 +1,44 @@
+{
+  "oracle_id": "f38a6cb4-79dd-4c12-9896-8c6655e275f8",
+  "name": "Moonlight Hunt",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Moonlight Hunt",
+      "oracle_fingerprint": "acb865b7bf62930c9ccb3d03ad6f8807",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": { "Object": [{ "Type": "Creature" }, { "Not": { "ControlledBy": "You" } }] }
+              }
+            ],
+            "effects": [
+              {
+                "RepeatEach": {
+                  "over": {
+                    "Each": [
+                      { "AnyOf": [{ "Subtype": "Wolf" }, { "Subtype": "Werewolf" }] },
+                      { "ControlledBy": "You" }
+                    ]
+                  },
+                  "as": "damager",
+                  "effects": [
+                    {
+                      "DealDamage": {
+                        "source": { "Bound": "damager" },
+                        "to": { "Target": 0 },
+                        "amount": { "Stat": { "of": { "Bound": "damager" }, "stat": "Power" } }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

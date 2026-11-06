@@ -1,0 +1,27 @@
+{
+  "oracle_id": "851333be-d7d5-472a-95cb-0a28da09ce24",
+  "name": "Clairvoyance",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Clairvoyance",
+      "oracle_fingerprint": "dfe136ab35bee839704d4e9aacea2128",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              { "LookAtHand": { "of": { "Target": 0 } } },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "Upkeep" } },
+                  "effects": [{ "Draw": {} }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

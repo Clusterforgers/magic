@@ -1,0 +1,60 @@
+{
+  "oracle_id": "78bac92f-333f-4c43-bccf-03c3772ee99b",
+  "name": "Corpses of the Lost",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Corpses of the Lost",
+      "oracle_fingerprint": "8ce2052d95efefc58e74111a480fbcbf",
+      "abilities": [
+        {
+          "Static": {
+            "affected": { "Each": [{ "Subtype": "Skeleton" }, { "ControlledBy": "You" }] },
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 0 } }, { "AddKeyword": "Haste" }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Skeleton Pirate",
+                      "colors": ["Black"],
+                      "types": ["Creature"],
+                      "subtypes": ["Skeleton", "Pirate"],
+                      "power": 2,
+                      "toughness": 2
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "if": {
+              "Compare": {
+                "left": { "Tallied": { "who": "You", "what": "Descended" } },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": [{ "PayLife": 1 }],
+                  "paid": [{ "Move": { "what": "This", "to": "Hand" } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

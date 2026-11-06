@@ -1,0 +1,132 @@
+{
+  "object": "card",
+  "id": "aeb282bb-d0b8-4822-8197-ff0523549309",
+  "oracle_id": "78e3a3c3-3091-46ab-a47a-86b7db68ced4",
+  "multiverse_ids": [
+    21302
+  ],
+  "mtgo_id": 13995,
+  "mtgo_foil_id": 13996,
+  "tcgplayer_id": 7196,
+  "cardmarket_id": 11759,
+  "name": "Pale Moon",
+  "lang": "en",
+  "released_at": "2000-02-14",
+  "uri": "https://api.scryfall.com/cards/aeb282bb-d0b8-4822-8197-ff0523549309",
+  "scryfall_uri": "https://scryfall.com/card/nem/36/pale-moon?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T12:30:34Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/a/e/aeb282bb-d0b8-4822-8197-ff0523549309.jpg?1783945834",
+    "normal": "https://cards.scryfall.io/normal/front/a/e/aeb282bb-d0b8-4822-8197-ff0523549309.jpg?1783945834",
+    "large": "https://cards.scryfall.io/large/front/a/e/aeb282bb-d0b8-4822-8197-ff0523549309.jpg?1783945834",
+    "png": "https://cards.scryfall.io/png/front/a/e/aeb282bb-d0b8-4822-8197-ff0523549309.png?1783945834",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/a/e/aeb282bb-d0b8-4822-8197-ff0523549309.jpg?1783945834",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/a/e/aeb282bb-d0b8-4822-8197-ff0523549309.jpg?1783945834",
+    "thumb": "https://cards.scryfall.io/thumb/front/a/e/aeb282bb-d0b8-4822-8197-ff0523549309.webp?1783945834",
+    "grid": "https://cards.scryfall.io/grid/front/a/e/aeb282bb-d0b8-4822-8197-ff0523549309.webp?1783945834",
+    "display": "https://cards.scryfall.io/display/front/a/e/aeb282bb-d0b8-4822-8197-ff0523549309.webp?1783945834",
+    "art": "https://cards.scryfall.io/art/front/a/e/aeb282bb-d0b8-4822-8197-ff0523549309.webp?1783945834",
+    "crop": "https://cards.scryfall.io/crop/front/a/e/aeb282bb-d0b8-4822-8197-ff0523549309.webp?1783945834",
+    "jpeg": "https://cards.scryfall.io/normal/front/a/e/aeb282bb-d0b8-4822-8197-ff0523549309.jpg?1783945834"
+  },
+  "mana_cost": "{1}{U}",
+  "cmc": 2.0,
+  "type_line": "Instant",
+  "oracle_text": "Until end of turn, if a player taps a nonbasic land for mana, it produces colorless mana instead of any other type.",
+  "colors": [
+    "U"
+  ],
+  "color_identity": [
+    "U"
+  ],
+  "keywords": [],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "legal",
+    "predh": "legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "fa5d1fdb-f781-473d-b14d-50396d40d43f",
+  "set": "nem",
+  "set_name": "Nemesis",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/fa5d1fdb-f781-473d-b14d-50396d40d43f",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Anem&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/nem?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/aeb282bb-d0b8-4822-8197-ff0523549309/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A78e3a3c3-3091-46ab-a47a-86b7db68ced4&unique=prints",
+  "collector_number": "36",
+  "digital": false,
+  "rarity": "rare",
+  "flavor_text": "Denizens of Rath had never seen the moon before. It was a symbol of change, not constancy.",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Pete Venters",
+  "artist_ids": [
+    "d54c4a1a-c0c5-4834-84db-125d341f3ad8"
+  ],
+  "illustration_id": "245f77f1-2626-421e-90a2-36645fcdaac0",
+  "border_color": "black",
+  "frame": "1997",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 27941,
+  "prices": {
+    "usd": "0.47",
+    "usd_foil": "4.10",
+    "usd_etched": null,
+    "eur": "0.50",
+    "eur_foil": "5.26",
+    "tix": "0.14"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=21302&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DPale%2BMoon",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DPale%2BMoon",
+    "edhrec": "https://edhrec.com/route/?cc=Pale+Moon"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F7196%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=11759&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/13995?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

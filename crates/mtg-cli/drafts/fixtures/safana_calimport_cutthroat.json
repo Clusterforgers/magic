@@ -1,0 +1,162 @@
+{
+  "object": "card",
+  "id": "e9367f66-6556-459c-a43d-5ba7a84b568d",
+  "oracle_id": "afc1c443-93e3-4ef4-a404-1d9fc13e0b02",
+  "multiverse_ids": [
+    563026
+  ],
+  "mtgo_id": 100304,
+  "tcgplayer_id": 272740,
+  "cardmarket_id": 659231,
+  "name": "Safana, Calimport Cutthroat",
+  "lang": "en",
+  "released_at": "2022-06-10",
+  "uri": "https://api.scryfall.com/cards/e9367f66-6556-459c-a43d-5ba7a84b568d",
+  "scryfall_uri": "https://scryfall.com/card/clb/143/safana-calimport-cutthroat?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T06:05:56Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/e/9/e9367f66-6556-459c-a43d-5ba7a84b568d.jpg?1783922756",
+    "normal": "https://cards.scryfall.io/normal/front/e/9/e9367f66-6556-459c-a43d-5ba7a84b568d.jpg?1783922756",
+    "large": "https://cards.scryfall.io/large/front/e/9/e9367f66-6556-459c-a43d-5ba7a84b568d.jpg?1783922756",
+    "png": "https://cards.scryfall.io/png/front/e/9/e9367f66-6556-459c-a43d-5ba7a84b568d.png?1783922756",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/e/9/e9367f66-6556-459c-a43d-5ba7a84b568d.jpg?1783922756",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/e/9/e9367f66-6556-459c-a43d-5ba7a84b568d.jpg?1783922756",
+    "thumb": "https://cards.scryfall.io/thumb/front/e/9/e9367f66-6556-459c-a43d-5ba7a84b568d.webp?1783922756",
+    "grid": "https://cards.scryfall.io/grid/front/e/9/e9367f66-6556-459c-a43d-5ba7a84b568d.webp?1783922756",
+    "display": "https://cards.scryfall.io/display/front/e/9/e9367f66-6556-459c-a43d-5ba7a84b568d.webp?1783922756",
+    "art": "https://cards.scryfall.io/art/front/e/9/e9367f66-6556-459c-a43d-5ba7a84b568d.webp?1783922756",
+    "crop": "https://cards.scryfall.io/crop/front/e/9/e9367f66-6556-459c-a43d-5ba7a84b568d.webp?1783922756",
+    "jpeg": "https://cards.scryfall.io/normal/front/e/9/e9367f66-6556-459c-a43d-5ba7a84b568d.jpg?1783922756"
+  },
+  "mana_cost": "{2}{B}",
+  "cmc": 3.0,
+  "type_line": "Legendary Creature — Human Rogue",
+  "oracle_text": "Menace\nAt the beginning of your end step, if you have the initiative, create a Treasure token. Create three of those tokens instead if you've completed a dungeon.\nChoose a Background (You can have a Background as a second commander.)",
+  "power": "3",
+  "toughness": "2",
+  "colors": [
+    "B"
+  ],
+  "color_identity": [
+    "B"
+  ],
+  "keywords": [
+    "Choose a background",
+    "Treasure",
+    "Menace"
+  ],
+  "all_parts": [
+    {
+      "object": "related_card",
+      "id": "770b988d-4f31-4746-8c23-4ed8d9a6b393",
+      "component": "token",
+      "name": "Treasure",
+      "type_line": "Token Artifact — Treasure",
+      "uri": "https://api.scryfall.com/cards/770b988d-4f31-4746-8c23-4ed8d9a6b393"
+    },
+    {
+      "object": "related_card",
+      "id": "bb19fe09-d1d9-40bc-9af7-b19d129f5519",
+      "component": "combo_piece",
+      "name": "Safana, Calimport Cutthroat",
+      "type_line": "Legendary Creature — Human Rogue",
+      "uri": "https://api.scryfall.com/cards/bb19fe09-d1d9-40bc-9af7-b19d129f5519"
+    }
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "5e4c3fe8-fd57-4b20-ad56-c03790a16cea",
+  "set": "clb",
+  "set_name": "Commander Legends: Battle for Baldur's Gate",
+  "set_type": "draft_innovation",
+  "set_uri": "https://api.scryfall.com/sets/5e4c3fe8-fd57-4b20-ad56-c03790a16cea",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Aclb&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/clb?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/e9367f66-6556-459c-a43d-5ba7a84b568d/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Aafc1c443-93e3-4ef4-a404-1d9fc13e0b02&unique=prints",
+  "collector_number": "143",
+  "digital": false,
+  "rarity": "uncommon",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Wisnu Tan",
+  "artist_ids": [
+    "f2d36cdd-a4e9-43ba-b2ad-9d514f6706d4"
+  ],
+  "illustration_id": "a1597a48-0110-4bc2-9fc2-92c78b6f0aa4",
+  "border_color": "black",
+  "frame": "2015",
+  "frame_effects": [
+    "legendary"
+  ],
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 11011,
+  "preview": {
+    "source": "Landfall TV",
+    "source_uri": "https://www.youtube.com/watch?v=JSAErPpMxfY",
+    "previewed_at": "2022-05-17"
+  },
+  "prices": {
+    "usd": "0.22",
+    "usd_foil": "0.25",
+    "usd_etched": null,
+    "eur": "0.09",
+    "eur_foil": "0.23",
+    "tix": "0.15"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=563026&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DSafana%252C%2BCalimport%2BCutthroat",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DSafana%252C%2BCalimport%2BCutthroat",
+    "edhrec": "https://edhrec.com/route/?cc=Safana%2C+Calimport+Cutthroat"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F272740%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=659231&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/100304?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

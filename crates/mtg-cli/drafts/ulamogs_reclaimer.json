@@ -1,0 +1,38 @@
+{
+  "oracle_id": "137de343-e3d0-4ccb-b8fc-680024387367",
+  "name": "Ulamog's Reclaimer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ulamog's Reclaimer",
+      "oracle_fingerprint": "1995ef22cb32a93722081c5ca68eadd6",
+      "abilities": [
+        { "Keyword": "Devoid" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] },
+                    { "OwnedBy": "You" },
+                    { "In": "Graveyard" }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "Pay": {
+                  "cost": [{ "ExiledToGraveyard": { "filter": [{ "OwnedBy": "Opponents" }] } }],
+                  "paid": [{ "Move": { "what": { "Target": 0 }, "to": "Hand" } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

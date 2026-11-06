@@ -1,0 +1,88 @@
+{
+  "oracle_id": "a06a5a46-612e-4cd2-8a21-3857ace4b1f9",
+  "name": "Hamza, Might of the Yathan",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Hamza, Might of the Yathan",
+      "oracle_fingerprint": "415ef11ca76a02fbc557d40d836aae99",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "TurnedFaceUp": { "what": [{ "Type": "Creature" }, { "ControlledBy": "You" }] }
+            },
+            "effects": [
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "Count": [{ "Is": "Triggering" }, { "In": "Battlefield" }] },
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [
+                    {
+                      "Either": {
+                        "first": [
+                          {
+                            "PutCounters": {
+                              "on": "Triggering",
+                              "counter": "+1/+1",
+                              "count": { "Stat": { "of": "Triggering", "stat": "Toughness" } }
+                            }
+                          }
+                        ],
+                        "second": [
+                          {
+                            "CreateToken": {
+                              "token": {
+                                "Sized": {
+                                  "size": { "Stat": { "of": "Triggering", "stat": "Toughness" } },
+                                  "token": {
+                                    "name": "Spirit",
+                                    "colors": ["White"],
+                                    "types": ["Creature"],
+                                    "subtypes": ["Spirit"]
+                                  }
+                                }
+                              }
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ],
+                  "otherwise": [
+                    {
+                      "CreateToken": {
+                        "token": {
+                          "Sized": {
+                            "size": { "Stat": { "of": "Triggering", "stat": "Toughness" } },
+                            "token": {
+                              "name": "Spirit",
+                              "colors": ["White"],
+                              "types": ["Creature"],
+                              "subtypes": ["Spirit"]
+                            }
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 103, "end": 187 }
+          }
+        }
+      ]
+    }
+  ]
+}

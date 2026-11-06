@@ -13,7 +13,18 @@
             "mods": [{ "AddKeyword": { "Ward": "{2}" } }, { "AddSubtype": "Assassin" }]
           }
         },
-        { "Keyword": { "EquipTo": { "to": [{ "Supertype": "Legendary" }], "cost": "{1}" } } },
+        {
+          "Keyword": {
+            "EquipTo": {
+              "to": [
+                { "Type": "Creature" },
+                { "Supertype": "Legendary" },
+                { "ControlledBy": "You" }
+              ],
+              "cost": "{1}"
+            }
+          }
+        },
         { "Keyword": { "Equip": "{3}" } },
         { "Static": { "affected": "Attached", "mods": ["CantBeBlocked"] } }
       ]

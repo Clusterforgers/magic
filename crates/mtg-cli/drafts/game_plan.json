@@ -1,0 +1,28 @@
+{
+  "oracle_id": "02746b0e-3ef9-46c0-9517-6c52c2905d0b",
+  "name": "Game Plan",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Game Plan",
+      "oracle_fingerprint": "7ac68ff409c286de9f7500aa67dc91bc",
+      "abilities": [
+        { "Keyword": "Assist" },
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Move": {
+                  "what": { "Each": [{ "AnyOf": [{ "In": "Hand" }, { "In": "Graveyard" }] }] },
+                  "to": { "Library": { "place": "Shuffled" } }
+                }
+              },
+              { "Draw": { "who": "EachPlayer", "count": 7 } },
+              { "Exile": { "what": "This" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

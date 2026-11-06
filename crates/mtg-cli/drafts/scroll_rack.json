@@ -31,12 +31,6 @@
               },
               {
                 "Move": {
-                  "what": { "Bound": "top3" },
-                  "to": { "Library": { "place": "Bottom", "order": "Chosen" } }
-                }
-              },
-              {
-                "Move": {
                   "what": { "Each": [{ "Is": { "Bound": "exiled2" } }, { "In": "Exile" }] },
                   "to": { "Library": { "place": "Top" } }
                 }

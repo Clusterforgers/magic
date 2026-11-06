@@ -1,0 +1,25 @@
+{
+  "oracle_id": "99f9a4c8-b59f-4a41-8577-6c1e4684b240",
+  "name": "Worship",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Worship",
+      "oracle_fingerprint": "e9a2bd5123c837fee44714559f560756",
+      "abilities": [
+        {
+          "Rule": {
+            "rule": { "LifeFloor": { "who": "You", "floor": 1 } },
+            "condition": {
+              "Compare": {
+                "left": { "Count": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                "op": "Ge",
+                "right": 1
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

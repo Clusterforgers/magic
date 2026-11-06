@@ -1,0 +1,80 @@
+{
+  "oracle_id": "f7d52eac-edc9-464b-a163-07c136aa6e4c",
+  "name": "Elegy Acolyte",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Elegy Acolyte",
+      "oracle_fingerprint": "bc115b1f6ee6d06dd394ccc3f90940dd",
+      "abilities": [
+        { "Keyword": "Lifelink" },
+        {
+          "Triggered": {
+            "when": {
+              "Batch": {
+                "DealsDamage": {
+                  "source": [{ "Type": "Creature" }, { "ControlledBy": "You" }],
+                  "to": "EachPlayer",
+                  "combat": true
+                }
+              }
+            },
+            "effects": [{ "Draw": {} }, { "LoseLife": { "amount": 1 } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "if": {
+              "Compare": {
+                "left": {
+                  "When": {
+                    "condition": {
+                      "Any": [
+                        {
+                          "Compare": {
+                            "left": {
+                              "Tallied": { "who": "EachPlayer", "what": "NonlandPermanentsLeft" }
+                            },
+                            "op": "Ge",
+                            "right": 1
+                          }
+                        },
+                        {
+                          "Compare": {
+                            "left": { "Tallied": { "who": "EachPlayer", "what": "SpellsWarped" } },
+                            "op": "Ge",
+                            "right": 1
+                          }
+                        }
+                      ]
+                    },
+                    "then": 1,
+                    "otherwise": 0
+                  }
+                },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Robot",
+                      "types": ["Artifact", "Creature"],
+                      "subtypes": ["Robot"],
+                      "power": 2,
+                      "toughness": 2
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

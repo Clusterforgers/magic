@@ -1,0 +1,79 @@
+{
+  "oracle_id": "67dbc5dd-6d05-43e7-83f7-70e10eb54807",
+  "name": "Sarkhan the Masterless",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sarkhan the Masterless",
+      "oracle_fingerprint": "176c90d5acc6e638fcd85e01e751b800",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "AttacksPlayerOrPlaneswalker": { "what": [{ "Type": "Creature" }], "at": "You" }
+            },
+            "effects": [
+              {
+                "RepeatEach": {
+                  "over": { "Each": [{ "Subtype": "Dragon" }, { "ControlledBy": "You" }] },
+                  "as": "damager",
+                  "effects": [
+                    {
+                      "DealDamage": {
+                        "source": { "Bound": "damager" },
+                        "to": "Triggering",
+                        "amount": 1
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Plus": 1 },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Type": "Planeswalker" }, { "ControlledBy": "You" }] },
+                  "mods": [
+                    { "SetPT": { "power": 4, "toughness": 4 } },
+                    { "SetColors": ["Red"] },
+                    { "SetCreatureTypes": ["Dragon"] },
+                    { "SetTypes": ["Creature"] },
+                    { "AddKeyword": "Flying" }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Minus": 3 },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Dragon",
+                      "colors": ["Red"],
+                      "types": ["Creature"],
+                      "subtypes": ["Dragon"],
+                      "power": 4,
+                      "toughness": 4,
+                      "abilities": [{ "Keyword": "Flying" }]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

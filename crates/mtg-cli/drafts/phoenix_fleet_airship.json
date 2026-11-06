@@ -1,7 +1,7 @@
 {
   "oracle_id": "6ffe71c0-acb5-4ba9-8c2f-719330e1ea69",
   "name": "Phoenix Fleet Airship",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Phoenix Fleet Airship",
@@ -9,9 +9,16 @@
       "abilities": [
         { "Keyword": "Flying" },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 7, "end": 128 }
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "if": {
+              "Compare": {
+                "left": { "Tallied": { "who": "You", "what": "Sacrificed" } },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "effects": [{ "CreateToken": { "token": { "CopyOf": { "of": "This" } } } }]
           }
         },
         {
