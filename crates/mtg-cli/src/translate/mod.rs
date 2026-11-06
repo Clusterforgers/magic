@@ -71,6 +71,7 @@ pub mod statics_again;
 pub mod statics_alt;
 pub mod statics_cant;
 pub mod statics_cast;
+pub mod statics_castonly;
 pub mod statics_combat;
 pub mod statics_defender;
 pub mod statics_exert;

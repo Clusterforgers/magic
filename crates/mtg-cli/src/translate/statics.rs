@@ -63,6 +63,9 @@ pub fn static_lines(ctx: &mut Ctx, body: &str) -> Tr<Value> {
         other => other,
     };
     let p = strip(&all);
+    if let Some(found) = super::statics_castonly::cast_only(&p, condition.as_ref()) {
+        return found;
+    }
     let mut ability = match super::statics_rules::rule(ctx, &p) {
         Some(found) => found?,
         None => by_mode(ctx, &p)?,
