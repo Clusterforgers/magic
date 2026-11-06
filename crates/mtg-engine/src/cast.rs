@@ -278,7 +278,10 @@ fn payment_events(
     let mut announced = announced;
     for event in &mut announced {
         if let Event::SpellCast { choices, .. } = event {
-            choices.spent = (!spent.mana.is_empty()).then(|| Box::new(spent.mana.clone()));
+            // The mana a helper paid with assist was spent to cast it too (CR 702.132a, 601.2h).
+            let mut all = choices.spent.take().map(|held| *held).unwrap_or_default();
+            all.extend(spent.mana.iter().copied());
+            choices.spent = (!all.is_empty()).then(|| Box::new(all));
         }
     }
     events.extend(announced);
@@ -348,6 +351,27 @@ pub(crate) fn pay_answer(
     choice: PayChoice,
     pending: Option<&Pending>,
 ) -> Result<Outcome, EngineError> {
+    // The helper of an assist pays its share when asked, before and apart from the caster's payment (CR 702.132a).
+    if let Some(Pending {
+        what: What::Spell(_),
+        player: caster,
+        ..
+    }) = pending
+        && *caster != player
+    {
+        let outcome = pay_with(
+            player,
+            options,
+            &unusable(state, player, options),
+            choice,
+            Vec::new(),
+            &|option, taken| mana_ability::activation(state, player, option, taken),
+        )?;
+        return Ok(match outcome {
+            Outcome::Events(events) => Outcome::Assisted(events),
+            other => other,
+        });
+    }
     let announced = match choice {
         PayChoice::Cancel => Vec::new(),
         _ => announcement(state, player, pending)?,
@@ -481,14 +505,11 @@ fn announcement(
             },
         ) => {
             // The player who helps with assist pays first, in the same batch as the caster's payment (CR 702.132a).
-            let helped = match pending.done.assist_paid {
-                Some((helper, amount)) => {
-                    crate::announce::assist::events(state, *spell, helper, amount)
-                        .ok_or_else(unexpected)?
-                }
-                None => Vec::new(),
+            let helped = match (pending.done.assist_paid, &pending.done.assist_events) {
+                (Some(_), Some(events)) => events.clone(),
+                _ => Vec::new(),
             };
-            let cast = spell_events(
+            let mut cast = spell_events(
                 state,
                 player,
                 *spell,
@@ -498,6 +519,21 @@ fn announcement(
             )
             .map(|events| unpreparing(state, *spell, events))
             .ok_or_else(unexpected)?;
+            let given: Vec<mtg_core::mana::ManaType> = helped
+                .iter()
+                .filter_map(|event| match event {
+                    Event::ManaSpent { mana, .. } => Some(mana.clone()),
+                    _ => None,
+                })
+                .flatten()
+                .collect();
+            if !given.is_empty() {
+                for event in &mut cast {
+                    if let Event::SpellCast { choices, .. } = event {
+                        choices.spent = Some(Box::new(given.clone()));
+                    }
+                }
+            }
             Ok(helped.into_iter().chain(cast).collect())
         }
         Some(Pending {
@@ -533,28 +569,6 @@ pub(crate) fn pay_choice(
     pay_with(player, options, tapped, choice, announced, &|option, _| {
         Ok(tap_events(player, option))
     })
-}
-
-/// The events of `player` paying the cost of `options` with the payment the engine picks, and nothing else: the help
-/// another player gives with assist.
-pub(crate) fn auto_pay_events(
-    state: &GameState,
-    player: PlayerId,
-    options: &PayOptions,
-) -> Option<Vec<Event>> {
-    let outcome = pay_with(
-        player,
-        options,
-        &unusable(state, player, options),
-        PayChoice::Auto,
-        Vec::new(),
-        &|option, taken| mana_ability::activation(state, player, option, taken),
-    )
-    .ok()?;
-    match outcome {
-        Outcome::Events(events) => Some(events),
-        _ => None,
-    }
 }
 
 /// [`pay_choice`] with the events of using each mana source given by `activate`.

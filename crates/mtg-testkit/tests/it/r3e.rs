@@ -1,4 +1,4 @@
-//! Goal: the mechanics added in round 3e play as the Comprehensive Rules say: craft (CR 702.167) exiles this permanent and the materials from the battlefield and the graveyard and returns the card transformed; assist (CR 702.132) lets another player pay generic mana of the cost, asked of that player with a default of nothing; prototype (CR 702.160, 718) gives the spell and the permanent the prototype mana cost, colours, power and toughness, only when cast for the prototype cost; sneak is cast in the declare blockers step by returning an unblocked attacker and the creature enters tapped and attacking what that attacker attacked, replaying to the same state; at 2 to 4 seats.
+//! Goal: the mechanics added in round 3e play as the Comprehensive Rules say: craft (CR 702.167) exiles this permanent and the materials from the battlefield and the graveyard and returns the card transformed; assist (CR 702.132) lets another player pay generic mana of the cost, asked of that player with a default of nothing and paid from the sources that player picks, the mana counting as spent to cast the spell; prototype (CR 702.160, 718) gives the spell and the permanent the prototype mana cost, colours, power and toughness, only when cast for the prototype cost; sneak is cast in the declare blockers step by returning an unblocked attacker and the creature enters tapped and attacking what that attacker attacked, replaying to the same state; at 2 to 4 seats.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
 use std::sync::Arc;
@@ -20,7 +20,7 @@ use mtg_core::mana::ManaCost;
 use mtg_engine::PresetPermanent;
 use mtg_engine::choose::NumberChoice;
 use mtg_engine::combat::AttackTarget;
-use mtg_engine::decision::{Answer, DecisionKind};
+use mtg_engine::decision::{Answer, DecisionKind, PayChoice, PayOptions};
 use mtg_engine::turn::Step;
 use mtg_engine::zones::Zone;
 use mtg_testkit::cards::{forest, mountain, swamp};
@@ -292,6 +292,16 @@ fn untapped_lands(driver: &Driver, seat: usize) -> usize {
 
 /// Casts the giant, answering the assist questions with `helper` (0 is no one, 1 the first helper) and `amount`.
 fn cast_assisted(driver: &mut Driver, helper: usize, amount: u32) -> Result<(), ScriptError> {
+    cast_assisted_with(driver, helper, amount, |_| PayChoice::Auto)
+}
+
+/// [`cast_assisted`] with the helper paying as `payment` says for the options they are offered.
+fn cast_assisted_with(
+    driver: &mut Driver,
+    helper: usize,
+    amount: u32,
+    payment: impl Fn(&PayOptions) -> PayChoice,
+) -> Result<(), ScriptError> {
     driver.begin_cast("Helped Giant")?;
     for _ in 0..10 {
         let decision = driver.decision()?;
@@ -306,6 +316,12 @@ fn cast_assisted(driver: &mut Driver, helper: usize, amount: u32) -> Result<(), 
                 assert_eq!(decision.player, pid(1), "the helper is asked");
                 assert!(!options.can_cancel, "the helper cannot back the cast out");
                 driver.answer(Answer::ChooseNumber(NumberChoice::Number(amount)))?;
+            }
+            DecisionKind::PayMana(options) if decision.player != pid(0) => {
+                assert!(!options.can_cancel, "the helper cannot back the cast out");
+                assert_eq!(options.cost.generic(), amount);
+                let choice = payment(options);
+                driver.answer(Answer::PayMana(choice))?;
             }
             DecisionKind::PayMana(_) => break,
             _ => {
@@ -344,6 +360,64 @@ fn the_caster_pays_what_the_helper_does_not(
     assert!(on_battlefield(driver.state(), "Helped Giant").is_some());
     assert_eq!(5 - untapped_lands(&driver, 0), caster_taps);
     assert_eq!(4 - untapped_lands(&driver, 1), amount as usize);
+    Ok(())
+}
+
+/// Seat 0 holds the giant and controls five Swamps; seat 1 controls two Forests and two Mountains.
+fn mixed_table(seats: usize) -> Scenario {
+    let mut helper = lands(2, forest);
+    helper.extend(lands(2, mountain));
+    (0..seats).fold(
+        Scenario::new(seats)
+            .at(1, 0, Step::Main1)
+            .hand(0, [helped_giant()])
+            .battlefield(0, lands(5, swamp))
+            .battlefield(1, helper),
+        |scenario, seat| scenario.library(seat, (0..8).map(|_| forest())),
+    )
+}
+
+fn tapped_of(driver: &Driver, seat: usize, name: &str) -> usize {
+    driver
+        .state()
+        .zone(Zone::Battlefield)
+        .iter()
+        .filter_map(|id| driver.state().object(*id))
+        .filter(|o| o.controller() == pid(seat) && o.card().name == name)
+        .filter(|o| {
+            o.permanent()
+                .is_some_and(mtg_engine::object::PermanentState::tapped)
+        })
+        .count()
+}
+
+#[rstest]
+fn the_helper_chooses_which_sources_pay_and_the_mana_counts_as_spent_to_cast_it(
+    #[values(2, 3, 4)] seats: usize,
+) -> Result<(), ScriptError> {
+    // CR 702.132a, 601.2h: the helper pays with the Mountains they pick, and red is among the mana spent to cast it.
+    let mut driver = Driver::from_scenario(mixed_table(seats))?;
+    cast_assisted_with(&mut driver, 1, 2, |options| {
+        let taps = options
+            .sources
+            .iter()
+            .filter(|o| o.produces == mtg_core::mana::ManaType::Red)
+            .map(|o| o.source)
+            .collect();
+        PayChoice::Manual(mtg_engine::mana::Payment {
+            taps,
+            ..mtg_engine::mana::Payment::default()
+        })
+    })?;
+    let id = on_battlefield(driver.state(), "Helped Giant").unwrap();
+    assert_eq!(tapped_of(&driver, 1, "Mountain"), 2, "the picked sources");
+    assert_eq!(tapped_of(&driver, 1, "Forest"), 0);
+    let spent = driver.state().object(id).unwrap().mana_spent().to_vec();
+    let red = spent
+        .iter()
+        .filter(|m| **m == mtg_core::mana::ManaType::Red)
+        .count();
+    assert_eq!((red, spent.len()), (2, 5), "{spent:?}");
     Ok(())
 }
 

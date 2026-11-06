@@ -2,9 +2,11 @@
 //! generic mana of its total cost.
 //!
 //! The step comes after the total cost is known. The caster is asked which player (or no one) and that player how much;
-//! the amount comes off the generic mana the caster pays. The helper's mana is spent with the caster's payment, in the
-//! same batch of events, so nothing is paid while the cast can still be backed out of. The helper's question cannot be
-//! backed out of and its default is to pay nothing, so a seat that does not answer holds the cast up only for its clock.
+//! the amount comes off the generic mana the caster pays. The helper then pays it with a payment decision of their own,
+//! choosing their sources; its events wait in the announcement and are spent with the caster's payment, in the same
+//! batch, so nothing is paid while the cast can still be backed out of. The helper's questions cannot be backed out of
+//! and default to paying nothing and to the engine's own payment, so a seat that does not answer holds the cast up only
+//! for its clock. The mana counts as spent to cast the spell (CR 601.2h).
 
 use mtg_cards::keyword::Keyword;
 use mtg_core::ids::{ObjectId, PlayerId};
@@ -14,7 +16,6 @@ use super::modifiers::reduced;
 use super::{Ctx, Next, What, Work};
 use crate::choose::{ChoiceOption, NumberOptions, OptionOptions};
 use crate::decision::{Decision, DecisionKind};
-use crate::events::Event;
 use crate::help::Offered;
 use crate::mana::can_afford;
 use crate::priority::mana_options;
@@ -123,20 +124,29 @@ pub(super) fn run(ctx: &Ctx<'_>, work: &mut Work<'_>) -> Option<Next> {
     };
     let amount = amount.min(can);
     if amount > 0 {
+        // The helper chooses which of their sources pay (CR 702.132a); the question has the normal clock, and its
+        // default is the engine's own payment.
+        if work.done.assist_events.is_none() {
+            let options = payment(ctx.state, *spell, helper, amount)?;
+            return Some(Next::Ask(Decision {
+                player: helper,
+                kind: DecisionKind::PayMana(options),
+            }));
+        }
         total.mana = Some(reduced(cost, &generic(amount)));
         work.done.assist_paid = Some((helper, amount));
     }
     None
 }
 
-/// The events of the helper paying for the spell: the payment the engine picks from the helper's own mana.
-pub(crate) fn events(
+/// The helper's payment decision for `amount` generic mana of the spell; it cannot be taken back.
+fn payment(
     state: &GameState,
     spell: ObjectId,
     helper: PlayerId,
     amount: u32,
-) -> Option<Vec<Event>> {
-    let options = crate::cast::payment_decision(
+) -> Option<crate::decision::PayOptions> {
+    crate::cast::payment_decision(
         state,
         helper,
         spell,
@@ -146,6 +156,5 @@ pub(crate) fn events(
         Spend::for_spell(state, spell, helper, false),
         false,
         0,
-    )?;
-    crate::cast::auto_pay_events(state, helper, &options)
+    )
 }
