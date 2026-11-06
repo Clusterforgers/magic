@@ -59,7 +59,8 @@ fn rewrite_list(list: &mut Vec<Value>, targets: &Value) -> bool {
         let [.., taken, asked] = inner.as_slice() else {
             continue;
         };
-        if performed(taken, asked, targets).is_some() {
+        // Only "If you do": a count of none inside the "may" asks about an accepted step that took nothing, not a refusal.
+        if performed(taken, asked, targets) == Some(json!("Performed")) {
             let Some(moved) = inner.pop() else { continue };
             list.insert(at + 1, moved);
             changed = true;

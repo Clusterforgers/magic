@@ -299,7 +299,7 @@ pub(super) fn texts(condition: &Condition) -> Vec<String> {
         (
             Amount::Tallied {
                 who: Ref::You,
-                what: TurnTally::LifeGained,
+                what: TurnTally::LifeGained | TurnTally::LifeGainedTotal,
             },
             Cmp::Ge,
         ) if number == 1 => vec!["you gained life this turn".to_owned()],

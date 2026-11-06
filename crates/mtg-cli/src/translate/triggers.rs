@@ -79,6 +79,14 @@ pub fn triggered(ctx: &mut Ctx, body: &str) -> Tr<Value> {
     }
     // Paying a cost is a choice already: no "you may" beside "you may pay".
     let pays = matches!(effects.as_slice(), [only] if only.get("Pay").is_some());
+    // "you may search" printed with no decider in the script: the search would be forced.
+    if p.get("OptionalDecider").is_none()
+        && p.get("TriggerDescription")
+            .is_some_and(|text| text.contains("you may search"))
+        && !json!(effects).to_string().contains("\"May\":")
+    {
+        return unmapped("trigger:may-search-without-decider");
+    }
     match p.get("OptionalDecider") {
         None => {}
         Some("You" | "TriggeredCardController") if pays => {}

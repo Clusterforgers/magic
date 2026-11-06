@@ -36,3 +36,65 @@ const DISCIPLE: &str = r#"{"Triggered":{"effects":[{"May":{"effects":[{"Sacrific
 fn fix8_a_sacrificed_creature_is_named_as_sacrificed(#[case] clause: &str, #[case] reads: bool) {
     assert_eq!(written(DISCIPLE, clause), reads);
 }
+
+const MOSEO: &str = r#"{"Triggered":{"effects":[{"Move":{"to":{"Battlefield":{}},"what":{"Target":0}}}],"if":{"Compare":{"left":{"Tallied":{"what":"LifeGainedTotal","who":"You"}},"op":"Ge","right":1}},"targets":[{"bounds":{"max":1,"min":0},"what":{"Object":[{"Type":"Creature"},{"Compare":{"op":"Le","stat":"ManaValue","to":{"Tallied":{"what":"LifeGainedTotal","who":"You"}}}},{"OwnedBy":"You"},{"In":"Graveyard"}]}}],"when":{"StepBegins":{"step":"End","whose":"You"}}}}"#;
+const MOSEO_TAIL: &str = "return up to one target creature card with mana value X or less from your graveyard to the battlefield, where X is the amount of life you gained this turn.";
+
+#[rstest]
+#[case::gained_life("if you gained life this turn", true)]
+// The life gained stands in for the hand only inside "where X is".
+#[case::hand_count("if you have 1 or more cards in hand", false)]
+#[case::hand_words("if you have one or more cards in hand", false)]
+fn fix8_life_gained_is_not_read_as_cards_in_hand(#[case] condition: &str, #[case] reads: bool) {
+    let clause = format!("At the beginning of your end step, {condition}, {MOSEO_TAIL}");
+    assert_eq!(
+        written(MOSEO, &clause),
+        reads,
+        "{:?}",
+        written_variants(&ability(MOSEO))
+    );
+}
+
+const TAP_OR_UNTAP: &str = r#"{"Activated":{"cost":[{"Mana":"{U}"},"Tap"],"effects":[{"TapOrUntap":{"what":{"Target":0}}}],"targets":[{"what":{"Object":[{"Type":"Creature"}]}}]}}"#;
+
+#[rstest]
+#[case::plain(TAP_OR_UNTAP, "{U}, {T}: Tap or untap target creature.", true)]
+#[case::may(TAP_OR_UNTAP, "{U}, {T}: You may tap or untap target creature.", true)]
+// A tap alone has a real "may": the rule without it reads Differs.
+#[case::tap_may_dropped(&TAP_OR_UNTAP.replace("TapOrUntap", "Tap"), "{U}, {T}: You may tap target creature.", false)]
+#[case::other_target(&TAP_OR_UNTAP.replace("Creature", "Artifact"), "{U}, {T}: You may tap or untap target creature.", false)]
+fn fix8_a_tap_or_untap_may_be_said_with_may(
+    #[case] json: &str,
+    #[case] clause: &str,
+    #[case] reads: bool,
+) {
+    assert_eq!(
+        written(json, clause),
+        reads,
+        "{:?}",
+        written_variants(&ability(json))
+    );
+}
+
+const NONE_INSIDE: &str = r#"{"Triggered":{"effects":[{"May":{"effects":[{"Sacrifice":{"as":"sacrificed","filter":[{"Type":"Creature"}]}},{"If":{"condition":{"CountOf":{"op":"Eq","right":0,"selector":[{"Type":"Creature"}],"subject":{"Bound":"sacrificed"}}},"then":[{"RemoveCounters":{"counter":"+1/+1","from":"This"}}]}}]}}],"when":{"StepBegins":{"step":"Upkeep","whose":"You"}}}}"#;
+
+#[rstest]
+// "None taken" inside the "may" asks about an accepted step, not about a refusal.
+#[case::none_is_not_dont(
+    NONE_INSIDE,
+    "At the beginning of your upkeep, you may sacrifice a creature. If you don't, remove a +1/+1 counter from ~.",
+    false
+)]
+#[case::one_inside_is_do(&NONE_INSIDE.replace(r#""op":"Eq","right":0"#, r#""op":"Eq","right":1"#), "At the beginning of your upkeep, you may sacrifice a creature. If you do, remove a +1/+1 counter from ~.", true)]
+fn fix8_only_if_you_do_leaves_the_may(
+    #[case] json: &str,
+    #[case] clause: &str,
+    #[case] reads: bool,
+) {
+    assert_eq!(
+        written(json, clause),
+        reads,
+        "{:?}",
+        written_variants(&ability(json))
+    );
+}
