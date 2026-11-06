@@ -44,6 +44,27 @@ fn an_object_effect_on_damage_to_a_player_stays_a_gap() {
 }
 
 #[rstest]
+#[case::life("DB$ GainLife | LifeAmount$ 2", r#"{"GainLife":{"amount":2}}"#)]
+#[case::power_counters(
+    "DB$ PutCounter | CounterType$ P1P1 | CounterNum$ X | Defined$ Self\nSVar:X:ReplacedCardLKI$CardPower",
+    r#""stat":"Power""#
+)]
+fn exiling_instead_runs_what_follows_in_its_place(#[case] rest: &str, #[case] expected: &str) {
+    let (json, found) = card(
+        "Enchantment",
+        &format!(
+            "R:Event$ Moved | ActiveZones$ Battlefield | Origin$ Battlefield | Destination$ Graveyard | ValidLKI$ Creature.OppCtrl | ReplaceWith$ Ex\nSVar:Ex:DB$ ChangeZone | Origin$ Battlefield | Destination$ Exile | Defined$ ReplacedCard | SubAbility$ Rest\nSVar:Rest:{rest}"
+        ),
+    );
+    assert!(found.is_empty(), "{found:?}");
+    assert!(
+        json.contains(r#""Instead":[{"Exile":{"what":"Triggering"}},"#),
+        "{json}"
+    );
+    assert!(json.contains(expected), "{json}");
+}
+
+#[rstest]
 #[case::yours("SpellAbility.YouCtrl", true)]
 #[case::an_opponents("SpellAbility.OppCtrl", false)]
 fn valiant_counts_the_first_targeting_by_a_source_you_control(

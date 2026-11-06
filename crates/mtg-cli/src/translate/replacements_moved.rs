@@ -5,6 +5,7 @@ use serde_json::{Value, json};
 
 use super::condition::prefixed;
 use super::ctx::{Ctx, Tr, check_keys, unmapped};
+use super::effects::chain_at;
 use super::valid::selector_any;
 use crate::forge::script::Params;
 
@@ -35,9 +36,62 @@ pub fn others(ctx: &mut Ctx, p: &Params, line_condition: Option<&Value>) -> Tr<V
     }
     match p.get("Destination") {
         Some("Battlefield") => enter_tapped(p, &part, &what),
+        Some("Graveyard") if part.has("SubAbility") => exiled_and(ctx, p, &part, &what),
         Some("Graveyard") => exiled_instead(p, &part, &what),
         _ => unmapped("replacement:Moved-shape"),
     }
+}
+
+/// "If a creature an opponent controls would die, exile it instead and create a Zombie": the exile and what follows it are
+/// the effects that happen instead (CR 614.1a); the card is read as it was on the battlefield.
+fn exiled_and(ctx: &mut Ctx, p: &Params, part: &Params, what: &[Value]) -> Tr<Value> {
+    check_keys(
+        part,
+        "Replacement",
+        &[
+            "DB",
+            "Hidden",
+            "Origin",
+            "Destination",
+            "Defined",
+            "SubAbility",
+        ],
+        |_, _| false,
+    )?;
+    let moves = part.get("DB") == Some("ChangeZone")
+        && matches!(part.get("Hidden"), None | Some("True"))
+        && part.get("Destination") == Some("Exile")
+        && matches!(part.get("Origin"), Some("All" | "Battlefield"))
+        && part.get("Defined") == Some("ReplacedCard");
+    if !moves || p.get("Origin") != Some("Battlefield") {
+        return unmapped("replacement:Moved-not-an-exile");
+    }
+    let Some(next) = part.get("SubAbility") else {
+        return unmapped("replacement:Moved-not-an-exile");
+    };
+    ctx.trigger = Some(super::triggered::Shape {
+        mode: "ChangesZone".to_owned(),
+        itself: false,
+        by: false,
+        to_player: false,
+        pattern: "ZoneChange".to_owned(),
+        arrives: None,
+    });
+    let rest = ctx.sub(next).and_then(|sub| chain_at(ctx, &sub, false));
+    ctx.trigger = None;
+    let mut effects = vec![json!({"Exile": {"what": "Triggering"}})];
+    for effect in rest? {
+        // "When you do" with nothing to choose happens at once: the replacement has no later point to wait for.
+        match effect.get("Reflexive") {
+            Some(inner) if inner.get("targets").is_none() => {
+                effects.extend(inner["effects"].as_array().cloned().unwrap_or_default());
+            }
+            Some(_) => return unmapped("replacement:Moved-reflexive-targets"),
+            None => effects.push(effect),
+        }
+    }
+    let pattern = json!({"what": what, "from": "Battlefield", "to": "Graveyard"});
+    Ok(json!({"Replacement": {"when": {"ZoneChange": pattern}, "by": {"Instead": effects}}}))
 }
 
 /// "Creatures your opponents control enter tapped": the entering permanent is tapped.
