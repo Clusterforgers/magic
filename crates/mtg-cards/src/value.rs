@@ -574,7 +574,7 @@ pub enum Amount {
         otherwise: Box<Amount>,
     },
     /// How much mana was spent to cast the spell the source is or came from: of the one type, or of all types when none is named,
-    /// and only the mana of sources of that kind when one is ("mana from a Treasure"; mana already in the pool has no source).
+    /// and only the mana of sources of that kind when one is ("mana from a Treasure", tapped before the cast or during it).
     ManaSpent {
         /// The type counted; all mana when none.
         of: Option<ManaType>,

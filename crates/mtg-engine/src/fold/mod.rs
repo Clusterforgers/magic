@@ -455,9 +455,10 @@ fn apply_misc(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
             mana,
             only,
             lasts,
-            ..
+            source,
         } => {
-            pool_mut(state, *player)?.add_restricted(*mana, only.clone(), *lasts);
+            let from = source.map(|id| crate::spend::source_kind(state, id));
+            pool_mut(state, *player)?.add_from(*mana, only.clone(), *lasts, from);
             reset_passes(state);
         }
         Event::ManaSpent {

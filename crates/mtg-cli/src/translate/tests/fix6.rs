@@ -1,4 +1,4 @@
-//! Goal: the shapes the fix pass 6 found wrong are read to the rules the words say or stay named gaps: counters "you put" are caused by you, a colour change of a spell on the stack and mana counted by its source kind are gaps.
+//! Goal: the shapes the fix pass 6 found wrong are read to the rules the words say or stay named gaps: counters "you put" are caused by you, a colour change of a spell on the stack and mana counted by a source kind the reader does not know are gaps.
 use rstest::rstest;
 
 use super::{abilities, gaps};
@@ -45,22 +45,11 @@ fn a_colour_change_of_a_spell_is_a_gap(#[case] line: &str, #[case] gap: bool) {
 }
 
 #[rstest]
-#[case::treasure(
-    "Count$CastTotalManaSpent Treasure",
-    "amount:Count$CastTotalManaSpent-pool-mana"
-)]
-#[case::snow(
-    "Count$CastTotalManaSpent Snow",
-    "amount:Count$CastTotalManaSpent-pool-mana"
-)]
 #[case::unknown(
     "Count$CastTotalManaSpent Wibble",
     "amount:Count$CastTotalManaSpent-source"
 )]
-fn mana_counted_by_source_is_a_gap_while_the_pool_keeps_no_source(
-    #[case] x: &str,
-    #[case] gap: &str,
-) {
+fn mana_counted_by_an_unknown_source_kind_is_a_gap(#[case] x: &str, #[case] gap: &str) {
     let text = format!("Name:T\nTypes:Sorcery\nA:SP$ Draw | NumCards$ X\nSVar:X:{x}\n");
     assert_eq!(gaps(&text), vec![gap.to_owned()]);
 }

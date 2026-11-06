@@ -47,6 +47,8 @@ mod mana_replace;
 mod mana_snow;
 #[cfg(test)]
 mod mana_snow_tests;
+#[cfg(test)]
+mod mana_sources_tests;
 mod mana_takes;
 mod mulligan;
 mod parts;

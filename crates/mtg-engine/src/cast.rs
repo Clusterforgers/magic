@@ -564,40 +564,64 @@ fn announcement(
     }
 }
 
-/// Gives the spell the payment casts the sources of the mana it spends, in the order they added it (CR 601.2h): what each
-/// was as it paid, and how much of its mana was spent. Mana that was already in the pool has no source here.
+/// Gives the spell the payment casts the sources of the mana it spends (CR 601.2h): what each was as it made the mana, and
+/// how much of its mana was spent. The payment is played out on a copy of the pool, which keeps the source of mana added
+/// before the cast; only the last spending is the spell's, the earlier ones pay for mana abilities.
 fn record_sources(state: &GameState, events: &mut [Event]) {
-    let mut left: usize = events
-        .iter()
-        .map(|event| match event {
-            Event::ManaSpent { mana, .. } => mana.len(),
-            _ => 0,
-        })
-        .sum();
+    let Some((last, player)) =
+        events
+            .iter()
+            .enumerate()
+            .rev()
+            .find_map(|(at, event)| match event {
+                Event::ManaSpent { player, .. } => Some((at, *player)),
+                _ => None,
+            })
+    else {
+        return;
+    };
+    let Some(mut pool) = state.player(player).map(|held| held.mana().clone()) else {
+        return;
+    };
     let mut from: Vec<mtg_cards::spend::SpentFrom> = Vec::new();
-    for event in events.iter() {
-        let Event::ManaAdded {
-            source: Some(source),
-            ..
-        } = event
-        else {
-            continue;
-        };
-        if left == 0 {
-            break;
-        }
-        left -= 1;
-        // Only the kind of the source is kept: its types, supertypes and subtypes, which a filter of sources reads.
-        let full = crate::spend::traits_of(state, *source);
-        let traits = mtg_cards::spend::SpendTraits {
-            types: full.types,
-            supertypes: full.supertypes,
-            subtypes: full.subtypes,
-            ..Default::default()
-        };
-        match from.iter_mut().find(|known| known.traits == traits) {
-            Some(known) => known.count += 1,
-            None => from.push(mtg_cards::spend::SpentFrom { traits, count: 1 }),
+    for (at, event) in events.iter().enumerate() {
+        match event {
+            Event::ManaAdded {
+                player: to,
+                mana,
+                source,
+                only,
+                lasts,
+            } if *to == player => {
+                let kind = source.map(|id| crate::spend::source_kind(state, id));
+                pool.add_from(*mana, only.clone(), *lasts, kind);
+            }
+            Event::ManaSpent {
+                player: by,
+                mana,
+                restricted,
+            } if *by == player => {
+                let mut plain = mana.clone();
+                for unit in restricted {
+                    if let Some(at) = plain.iter().position(|m| *m == unit.mana) {
+                        plain.remove(at);
+                    }
+                    pool.spend_restricted(unit);
+                }
+                for m in plain {
+                    let Some(Some(traits)) = pool.spend_noting(m) else {
+                        continue;
+                    };
+                    if at != last {
+                        continue;
+                    }
+                    match from.iter_mut().find(|known| known.traits == traits) {
+                        Some(known) => known.count += 1,
+                        None => from.push(mtg_cards::spend::SpentFrom { traits, count: 1 }),
+                    }
+                }
+            }
+            _ => {}
         }
     }
     if from.is_empty() {
