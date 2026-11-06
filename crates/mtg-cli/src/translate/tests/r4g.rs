@@ -126,6 +126,25 @@ fn activating_a_loyalty_ability_is_activating_an_ability_of_a_planeswalker(
     assert!(json.contains(expected), "{json}");
 }
 
+#[rstest]
+#[case::during_your_turn("| PlayerTurn$ True", r#""condition":"YourTurn""#)]
+#[case::during_theirs("| PlayerTurn$ False", r#""condition":{"Not":"YourTurn"}"#)]
+#[case::while_untapped("| IsPresent$ Card.Self+untapped", r#""condition":{"Compare""#)]
+fn a_prevention_that_stays_on_a_permanent_holds_while_its_condition_does(
+    #[case] gate: &str,
+    #[case] expected: &str,
+) {
+    let (json, found) = card(
+        "Creature Wall",
+        &format!(
+            "PT:0/4\nR:Event$ DamageDone | Prevent$ True | ValidTarget$ Card.Self {gate} | Description$ x"
+        ),
+    );
+    assert!(found.is_empty(), "{found:?}");
+    assert!(json.contains(r#""by":"Prevent""#), "{json}");
+    assert!(json.contains(expected), "{json}");
+}
+
 #[test]
 fn a_count_checked_on_the_triggered_card_reads_that_cards_controller() {
     let (json, found) = card(
