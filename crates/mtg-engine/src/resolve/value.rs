@@ -986,6 +986,7 @@ impl<'a> Scope<'a> {
             Ref::Departed(of) => self.departed_of(of)?,
             Ref::ControllerOf(inner) => self.seats_of(inner, |seen| seen.controller)?,
             Ref::OwnerOf(inner) => self.seats_of(inner, |seen| seen.owner)?,
+            Ref::OrController(inner) => self.players_or_controllers(inner)?,
             Ref::Each(selector) => self
                 .matching(selector)?
                 .into_iter()
@@ -1108,6 +1109,23 @@ impl<'a> Scope<'a> {
                 if !seats.contains(&player) {
                     seats.push(player);
                 }
+            }
+        }
+        Ok(seats)
+    }
+
+    /// The players `inner` names, and the controllers of the objects it names.
+    fn players_or_controllers(&self, inner: &Ref) -> Result<Vec<Target>, ResolveError> {
+        let mut seats = Vec::new();
+        for named in self.refs(inner)? {
+            let player = match named {
+                Target::Player(player) => Some(player),
+                Target::Object(object) => self.seen(object).map(|seen| seen.controller),
+            };
+            if let Some(player) = player.map(Target::Player)
+                && !seats.contains(&player)
+            {
+                seats.push(player);
             }
         }
         Ok(seats)

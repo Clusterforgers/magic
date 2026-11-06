@@ -67,6 +67,7 @@ pub(super) fn who(ctx: &Ctx, reference: &Ref) -> String {
         Ref::Remembered { on, slot } => format!("what {} remembers as {slot}", who(ctx, on)),
         Ref::ControllerOf(inner) => format!("the controller of {}", who(ctx, inner)),
         Ref::OwnerOf(inner) => format!("the owner of {}", who(ctx, inner)),
+        Ref::OrController(inner) => format!("{} or its controller", who(ctx, inner)),
         Ref::Arrived { of, .. } => format!("the card {} became", who(ctx, of)),
         Ref::Departed(of) => format!("{} as it was", who(ctx, of)),
         Ref::Each(selector) => format!("each {}", self::selector(ctx, selector)),

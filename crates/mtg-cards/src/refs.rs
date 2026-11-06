@@ -132,6 +132,9 @@ pub enum Ref {
     ControllerOf(Box<Ref>),
     /// The owner of the referenced object.
     OwnerOf(Box<Ref>),
+    /// The player the reference names, or the controller of the object it names ("target player or planeswalker" read as
+    /// that player or that planeswalker's controller).
+    OrController(Box<Ref>),
     /// The object an object named one zone change ago has become, when it is now in this zone ("return it to the battlefield"
     /// after it died): the same card one incarnation on (CR 400.7). Nobody when it moved twice, moved elsewhere or is gone.
     Arrived {

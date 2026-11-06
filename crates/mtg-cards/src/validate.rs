@@ -561,6 +561,10 @@ impl<'a> Walker<'a> {
                 self.expect(Kind::Player, want);
                 self.at("of", |w| w.reference(inner, Kind::Object));
             }
+            Ref::OrController(inner) => {
+                self.expect(Kind::Player, want);
+                self.at("of", |w| w.reference(inner, Kind::Either));
+            }
             Ref::Arrived { of, .. } | Ref::Departed(of) => {
                 self.expect(Kind::Object, want);
                 self.at("of", |w| w.reference(of, Kind::Object));
@@ -2375,6 +2379,7 @@ impl Walker<'_> {
             | Ref::Defending
             | Ref::TriggeringPlayer
             | Ref::ControllerOf(_)
+            | Ref::OrController(_)
             | Ref::OwnerOf(_) => Kind::Player,
             Ref::Affected
             | Ref::Candidate

@@ -55,3 +55,22 @@ fn other_uses_of_the_host_stay_gaps(#[case] line: &str) {
     };
     assert!(!gaps(&text).is_empty(), "{:?}", abilities(&text));
 }
+
+#[rstest]
+#[case::defined(
+    "A:SP$ DealDamage | ValidTgts$ Player,Planeswalker | NumDmg$ 2 | SubAbility$ D\nSVar:D:DB$ Draw | Defined$ TargetedOrController | NumCards$ 1"
+)]
+#[case::valid(
+    "A:SP$ DamageAll | ValidTgts$ Player,Planeswalker | NumDmg$ 2 | ValidCards$ Creature.ControlledBy TargetedOrController"
+)]
+fn a_player_or_the_controller_of_the_target_is_one_reference(#[case] lines: &str) {
+    let text = format!("Name:T\nTypes:Sorcery\n{lines}\n");
+    assert!(gaps(&text).is_empty(), "{:?}", gaps(&text));
+    assert!(
+        serde_json::to_string(&abilities(&text))
+            .unwrap()
+            .contains(&json!({"OrController": {"Target": 0}}).to_string()),
+        "{:?}",
+        abilities(&text)
+    );
+}

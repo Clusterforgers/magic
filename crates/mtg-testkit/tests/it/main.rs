@@ -636,5 +636,6 @@ mod r3f_exiled;
 mod r3f_mana;
 mod r3f_waterbend;
 mod r4i_granter;
+mod r4i_or_controller;
 mod ring;
 mod target_reductions;
