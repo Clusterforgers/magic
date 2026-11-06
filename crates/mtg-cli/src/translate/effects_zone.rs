@@ -17,6 +17,12 @@ pub fn effects(ctx: &mut Ctx, p: &Params, api: &str) -> Tr<Vec<Value>> {
     }
     let origin = if api == "ChangeZone" && p.get("Origin") == Some("Stack") {
         "Stack"
+    } else if api == "ChangeZone"
+        && p.get("Origin") == Some("Battlefield,Stack")
+        && p.has("ValidTgts")
+    {
+        // "Target spell or permanent": the target string says which zone each alternative is in (`Card.inZoneStack`).
+        "Battlefield"
     } else if api == "ChangeZone" && p.get("Origin") == Some("All") && named_objects(p) {
         // The named objects are moved from wherever they are now; a zone is no filter on them.
         "All"
