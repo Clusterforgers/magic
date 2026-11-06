@@ -276,6 +276,8 @@ pub(crate) struct Done {
     pub(crate) assist_pick: Option<usize>,
     /// How much generic mana the helper chose to pay.
     pub(crate) assist_amount: Option<u32>,
+    /// The events of the helper's own payment of that mana, chosen by the helper.
+    pub(crate) assist_events: Option<Vec<Event>>,
     /// The helper and the generic mana they pay, once the step has taken it off the cost.
     pub(crate) assist_paid: Option<(PlayerId, u32)>,
     /// How many target specifications have their division settled.
@@ -461,7 +463,9 @@ impl Pending {
         let wanted = match answered {
             Answered::Modes(_) => Phase::Modes,
             Answered::Way(_) if self.done.asked == Some(Phase::Face) => Phase::Face,
-            Answered::Way(_) | Answered::Number(_) if self.done.asked == Some(Phase::Assist) => {
+            Answered::Way(_) | Answered::Number(_) | Answered::Assisted(_)
+                if self.done.asked == Some(Phase::Assist) =>
+            {
                 Phase::Assist
             }
             // The X of a counted part is asked while the parts are, before the picks that depend on it, and a choice of
@@ -482,6 +486,7 @@ impl Pending {
             Answered::Number(_) => Phase::X,
             Answered::Costs(_) => Phase::Optional,
             Answered::Division(_) => Phase::Division,
+            Answered::Assisted(_) => Phase::Assist,
         };
         let costs_again = matches!(answered, Answered::Costs(_)) && self.done.repeated.is_some();
         if self.done.asked != Some(wanted) || costs_again {
@@ -497,6 +502,7 @@ impl Pending {
             }
             Answered::Way(pick) if wanted == Phase::Face => self.done.face_picked = Some(pick),
             Answered::Way(pick) if wanted == Phase::Assist => self.done.assist_pick = Some(pick),
+            Answered::Assisted(events) => self.done.assist_events = Some(events),
             Answered::Number(amount) if wanted == Phase::Assist => {
                 self.done.assist_amount = Some(amount);
             }
@@ -553,6 +559,8 @@ pub(crate) enum Answered {
     Cards(Vec<ObjectId>),
     /// The shares of the next amount to divide.
     Division(Vec<(Target, u32)>),
+    /// The events of the helper's payment with assist.
+    Assisted(Vec<Event>),
 }
 
 /// What the cast or activation needs next.

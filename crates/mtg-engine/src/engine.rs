@@ -500,6 +500,7 @@ impl Engine {
             Outcome::Costs(costs) => self.announced(Answered::Costs(costs)),
             Outcome::Cards(cards) => self.announced(Answered::Cards(cards)),
             Outcome::Division(shares) => self.announced(Answered::Division(shares)),
+            Outcome::Assisted(events) => self.announced(Answered::Assisted(events)),
             Outcome::CancelCast => {
                 self.pending = None;
                 Ok(())

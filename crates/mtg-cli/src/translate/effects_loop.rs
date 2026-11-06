@@ -106,9 +106,10 @@ pub fn repeat_each(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
             "UseImprinted",
         ],
     )?;
-    // The tables only gather the moves and the damage of the passes for the triggers that read them as one batch.
+    // The tables gather the moves and the damage of the passes for the triggers that read them as one batch (CR 603.2),
+    // and the passes resolve one after the other: such a repeat is not offered.
     for table in ["ChangeZoneTable", "DamageMap"] {
-        if p.get(table).is_some_and(|word| word != "True") {
+        if p.has(table) {
             return unmapped(format!("key:RepeatEach.{table}"));
         }
     }

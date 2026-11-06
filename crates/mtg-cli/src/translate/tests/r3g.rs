@@ -1,6 +1,6 @@
 //! Goal: `RepeatEach` over `DefinedCards$` reads the objects an earlier step named, each pass reads "its controller" as the
 //! controller the object had before it moved (CR 400.7, 608.2h), and a pass whose permanent did not reach the graveyard
-//! does nothing; a list the translator cannot trace stays a named gap.
+//! does nothing; a list the translator cannot trace, and a table of the passes that one batch would read, stay named gaps.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
 use std::sync::Arc;
@@ -18,9 +18,9 @@ use rstest::rstest;
 
 use super::{abilities, gaps};
 
-const RAMPAGE: &str = "Name:Rampage\nTypes:Sorcery\nManaCost:R\nA:SP$ DestroyAll | ValidCards$ Artifact,Enchantment | RememberDestroyed$ True | SubAbility$ DBRepeat\nSVar:DBRepeat:DB$ RepeatEach | UseImprinted$ True | DefinedCards$ DirectRemembered | RepeatSubAbility$ DBToken | SubAbility$ DBCleanup | ChangeZoneTable$ True\nSVar:DBToken:DB$ Token | TokenOwner$ ImprintedController | TokenScript$ w_1_1_soldier\nSVar:DBCleanup:DB$ Cleanup | ClearRemembered$ True\n";
+const RAMPAGE: &str = "Name:Rampage\nTypes:Sorcery\nManaCost:R\nA:SP$ DestroyAll | ValidCards$ Artifact,Enchantment | RememberDestroyed$ True | SubAbility$ DBRepeat\nSVar:DBRepeat:DB$ RepeatEach | UseImprinted$ True | DefinedCards$ DirectRemembered | RepeatSubAbility$ DBToken | SubAbility$ DBCleanup\nSVar:DBToken:DB$ Token | TokenOwner$ ImprintedController | TokenScript$ w_1_1_soldier\nSVar:DBCleanup:DB$ Cleanup | ClearRemembered$ True\n";
 
-const TERASTODON: &str = "Name:Tera\nTypes:Sorcery\nManaCost:R\nA:SP$ Destroy | TargetMin$ 0 | TargetMax$ 3 | ValidTgts$ Permanent.nonCreature | SubAbility$ MakeTokens\nSVar:MakeTokens:DB$ RepeatEach | RepeatSubAbility$ DBToken | DefinedCards$ Targeted | ChangeZoneTable$ True\nSVar:DBToken:DB$ Token | ConditionDefined$ Remembered | ConditionPresent$ Card.inRealZoneGraveyard | TokenScript$ w_1_1_soldier | TokenOwner$ RememberedController\n";
+const TERASTODON: &str = "Name:Tera\nTypes:Sorcery\nManaCost:R\nA:SP$ Destroy | TargetMin$ 0 | TargetMax$ 3 | ValidTgts$ Permanent.nonCreature | SubAbility$ MakeTokens\nSVar:MakeTokens:DB$ RepeatEach | RepeatSubAbility$ DBToken | DefinedCards$ Targeted\nSVar:DBToken:DB$ Token | ConditionDefined$ Remembered | ConditionPresent$ Card.inRealZoneGraveyard | TokenScript$ w_1_1_soldier | TokenOwner$ RememberedController\n";
 
 fn card(script: &str, kind: CardType) -> Arc<CardDefinition> {
     let name = script
@@ -202,4 +202,25 @@ fn a_card_from_outside_the_game_is_found_nowhere_in_a_game_without_a_sideboard()
         zone_of(&driver, "Peek"),
         mtg_engine::zones::Zone::Graveyard(PlayerId(0))
     );
+}
+
+#[rstest]
+#[case::the_zone_change_table(" | ChangeZoneTable$ True", "key:RepeatEach.ChangeZoneTable")]
+#[case::the_damage_map(" | DamageMap$ True", "key:RepeatEach.DamageMap")]
+fn a_table_of_the_passes_stays_a_gap_until_the_passes_make_one_batch(
+    #[case] flag: &str,
+    #[case] gap: &str,
+) {
+    // CR 603.2: a "one or more" trigger fires once for what the whole repeat did, not once for each pass; the engine
+    // resolves the passes one after the other, so the shape is not offered.
+    let script = RAMPAGE.replace(
+        "RepeatSubAbility$ DBToken",
+        &format!("RepeatSubAbility$ DBToken{flag}"),
+    );
+    assert!(
+        gaps(&script).iter().any(|found| found == gap),
+        "{:?}",
+        gaps(&script)
+    );
+    assert!(gaps(RAMPAGE).is_empty(), "{:?}", gaps(RAMPAGE));
 }

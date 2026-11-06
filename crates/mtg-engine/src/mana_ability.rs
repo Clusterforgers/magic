@@ -471,8 +471,9 @@ pub(crate) fn options(state: &GameState, player: PlayerId) -> Vec<ManaOption> {
             }
         }
     }
-    let found = mana_bonus::fold(state, player, found);
-    crate::mana_replace::fold(state, player, found)
+    // The replacement comes first: the mana a triggered mana ability adds is not mana the permanent produced (CR 605.1b).
+    let found = crate::mana_replace::fold(state, player, found);
+    mana_bonus::fold(state, player, found)
 }
 
 /// The state after the effects a mana ability runs before its mana (CR 605.3b: in the order written), or `None` when

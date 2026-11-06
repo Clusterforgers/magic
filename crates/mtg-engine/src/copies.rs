@@ -511,7 +511,18 @@ pub(crate) fn copiable_values(
             (Some(merged), None) => merged.top().card(),
             (None, None) => object.card(),
         };
-        return may_be_copied(object).then(|| printed.copiable());
+        // A prototyped permanent or spell has its prototype values as copiable values (CR 718.3c).
+        let prototyped = object.copy_effect().is_none()
+            && object.merged().is_none()
+            && object.prototype().is_some();
+        return may_be_copied(object).then(|| {
+            let values = printed.copiable();
+            if prototyped {
+                crate::object::with_prototype_values(values)
+            } else {
+                values
+            }
+        });
     }
     let shot = shot.filter(|shot| shot.reference() == reference)?;
     if let Some(copy) = &shot.copy {
@@ -528,8 +539,16 @@ pub(crate) fn copiable_values(
         .source_object(reference.id)
         .filter(|card| card.kind() != ObjectKind::Ability)?;
     let whole = card.whole_card();
-    Some(whole.face(shot.face.unwrap_or(0)).copiable())
+    let values = whole.face(shot.face.unwrap_or(0)).copiable();
+    Some(if shot.way == Some(mtg_cards::value::CastWay::Prototype) {
+        crate::object::with_prototype_values(values)
+    } else {
+        values
+    })
 }
+
+#[cfg(test)]
+mod prototype_tests;
 
 #[cfg(test)]
 mod tests {

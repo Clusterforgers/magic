@@ -54,6 +54,8 @@ pub(crate) enum Outcome {
     Cards(Vec<ObjectId>),
     /// This is how the next amount to divide of the cast or activation in progress is shared among its targets.
     Division(Vec<(Target, u32)>),
+    /// These are the events of the helper's payment for the assist of the spell in progress.
+    Assisted(Vec<Event>),
     /// Abandon the cast or activation in progress.
     CancelCast,
     /// Remove the triggered ability being put on the stack, whose controller chose no target (CR 603.3d).
