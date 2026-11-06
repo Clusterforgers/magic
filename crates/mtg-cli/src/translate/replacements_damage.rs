@@ -336,6 +336,8 @@ pub fn remembered_of(ctx: &mut Ctx, line: &Params) -> Tr<Option<Value>> {
         Some("Remembered" | "RememberedCard") => {
             Ok(Some(super::valid::defined(ctx, "Remembered")?))
         }
+        // The card an earlier step of the ability chose.
+        Some("ChosenCard") => Ok(Some(super::valid::defined(ctx, "ChosenCard")?)),
         Some(word) if super::triggered::is_word(word) => Ok(Some(
             super::triggered::remembered_by_event(ctx.trigger.as_ref(), word)?,
         )),

@@ -107,6 +107,18 @@ fn add_or_remove_counter_leaves_what_it_cannot_read_a_gap(#[case] line: &str, #[
     assert!(gaps(&spell(line)).contains(&gap.to_owned()));
 }
 
+#[test]
+fn a_shield_of_the_card_an_earlier_step_chose_names_the_chosen_card() {
+    let script = "Name:T\nTypes:Enchantment\nA:AB$ ChooseCard | Cost$ Sac<1/CARDNAME> | Choices$ Creature | Mandatory$ True | SubAbility$ DBEffect\nSVar:DBEffect:DB$ Effect | ReplacementEffects$ R | RememberObjects$ ChosenCard | ExileOnMoved$ Battlefield\nSVar:R:Event$ DamageDone | IsCombat$ True | ValidSource$ Card.IsRemembered | Prevent$ True\n";
+    assert_eq!(gaps(script), Vec::<String>::new());
+    let found = abilities(script);
+    let effects = found[0]["Activated"]["effects"].as_array().unwrap();
+    assert_eq!(
+        effects[1]["Shield"]["when"],
+        json!({"Damage": {"combat": true, "source": [{"Is": {"Bound": "card"}}]}})
+    );
+}
+
 #[rstest]
 #[case::each_player(
     "Radiation | Defined$ Player | Num$ 4",
