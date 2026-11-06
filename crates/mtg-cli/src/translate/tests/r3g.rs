@@ -181,3 +181,25 @@ fn a_card_cast_with_a_remembered_permission_is_exiled_instead_of_put_into_the_gr
     settle(&mut driver);
     assert_eq!(zone_of(&driver, "Peek"), mtg_engine::zones::Zone::Exile);
 }
+
+const WISH: &str = "Name:Wish\nTypes:Sorcery\nManaCost:R\nA:SP$ ChangeZone | Reveal$ True | Origin$ Sideboard | Destination$ Hand | ChangeType$ Sorcery.YouOwn | ChangeNum$ 1 | SubAbility$ DBChange | Hidden$ True\nSVar:DBChange:DB$ ChangeZone | Origin$ Stack | Destination$ Exile\n";
+
+#[test]
+fn a_card_from_outside_the_game_is_found_nowhere_in_a_game_without_a_sideboard() {
+    // CR 400.10 and the owner's ruling: Commander has no sideboard, so the wish finds nothing and the game goes on.
+    let scenario = Scenario::new(2)
+        .at(1, 0, Step::Main1)
+        .hand(0, [card(WISH, CardType::Sorcery)])
+        .graveyard(0, [card(PEEK, CardType::Sorcery)])
+        .battlefield(0, [ready(mountain())]);
+    let mut driver = Driver::from_scenario(scenario).unwrap();
+    driver.begin_cast("Wish").unwrap();
+    driver.pay_tapping(&["Mountain"], 0).unwrap();
+    driver.pass().unwrap();
+    settle(&mut driver);
+    assert_eq!(zone_of(&driver, "Wish"), mtg_engine::zones::Zone::Exile);
+    assert_eq!(
+        zone_of(&driver, "Peek"),
+        mtg_engine::zones::Zone::Graveyard(PlayerId(0))
+    );
+}

@@ -100,6 +100,7 @@ mod mana_trigger;
 mod manifest;
 mod mass_moves;
 mod modal;
+mod outside;
 mod pairs;
 mod pay_phrases;
 mod payments;

@@ -19,7 +19,7 @@ fn zone_of(kind: ZoneKind, player: PlayerId) -> Option<Zone> {
         ZoneKind::Library => Some(Zone::Library(player)),
         ZoneKind::Graveyard => Some(Zone::Graveyard(player)),
         ZoneKind::Exile => Some(Zone::Exile),
-        ZoneKind::Battlefield | ZoneKind::Stack | ZoneKind::Command => None,
+        ZoneKind::Battlefield | ZoneKind::Stack | ZoneKind::Command | ZoneKind::Outside => None,
     }
 }
 

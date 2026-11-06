@@ -20,9 +20,11 @@ pub(super) fn zone_of(kind: ZoneKind, player: PlayerId) -> Result<Zone, ResolveE
         ZoneKind::Hand => Ok(Zone::Hand(player)),
         ZoneKind::Graveyard => Ok(Zone::Graveyard(player)),
         ZoneKind::Exile => Ok(Zone::Exile),
-        ZoneKind::Battlefield | ZoneKind::Stack | ZoneKind::Command => Err(ResolveError::Invalid(
-            format!("a search of {kind:?} is not a search the rules know"),
-        )),
+        ZoneKind::Battlefield | ZoneKind::Stack | ZoneKind::Command | ZoneKind::Outside => {
+            Err(ResolveError::Invalid(format!(
+                "a search of {kind:?} is not a search the rules know"
+            )))
+        }
     }
 }
 
@@ -50,6 +52,15 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
     };
     if !also.is_empty() {
         return super::search_zones::run(cx, effect);
+    }
+    // Nothing is outside a Commander game, so the search finds nothing and asks nothing.
+    if *zone == ZoneKind::Outside {
+        return Ok(Run::Done {
+            events: Vec::new(),
+            bound: vec![(bind.clone(), Vec::new())],
+            snapshots: Vec::new(),
+            next: Next::Sibling,
+        });
     }
     let state = cx.state();
     let most = match &count.max {

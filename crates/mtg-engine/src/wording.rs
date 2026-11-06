@@ -74,6 +74,7 @@ fn zone_phrase(kind: ZoneKind, yours: bool) -> String {
         ZoneKind::Library => ("library", "a"),
         ZoneKind::Graveyard => ("graveyard", "a"),
         ZoneKind::Command => ("command zone", "a"),
+        ZoneKind::Outside => return "outside the game".to_owned(),
     };
     format!("in {} {place}", if yours { "your" } else { owner })
 }
@@ -957,6 +958,7 @@ fn search_place(zone: ZoneKind) -> &'static str {
         ZoneKind::Battlefield => "the battlefield",
         ZoneKind::Stack => "the stack",
         ZoneKind::Command => "your command zone",
+        ZoneKind::Outside => "outside the game",
     }
 }
 

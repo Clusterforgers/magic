@@ -30,6 +30,8 @@ pub enum ZoneKind {
     Exile,
     /// The command zone.
     Command,
+    /// Outside the game (a sideboard): a Commander game has none, so nothing is ever found there.
+    Outside,
 }
 
 impl ZoneKind {

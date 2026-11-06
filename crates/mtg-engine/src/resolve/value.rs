@@ -1219,6 +1219,8 @@ impl<'a> Scope<'a> {
                 ZoneKind::Exile => zones.push(Zone::Exile),
                 ZoneKind::Command => zones.extend(seats().map(Zone::Command)),
                 ZoneKind::Battlefield => zones.push(Zone::Battlefield),
+                // No object is ever outside the game (a Commander game has no sideboard).
+                ZoneKind::Outside => {}
             }
         }
         zones

@@ -367,6 +367,7 @@ pub(super) fn zone_text(zone: ZoneKind) -> &'static str {
         ZoneKind::Stack => "the stack",
         ZoneKind::Exile => "exile",
         ZoneKind::Command => "the command zone",
+        ZoneKind::Outside => "outside the game",
     }
 }
 
