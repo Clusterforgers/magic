@@ -18,6 +18,7 @@ use crate::state::{GameState, Tally};
 use crate::zones::{Placement, Zone};
 
 /// Moves `id` to `to`, creating or dropping permanent state and leaving combat as needed.
+#[allow(clippy::too_many_lines)]
 pub(super) fn move_object(
     state: &mut GameState,
     id: ObjectId,
