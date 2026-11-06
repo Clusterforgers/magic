@@ -19,7 +19,6 @@ pub(super) fn phrase(cost: &Cost) -> Option<String> {
             let sacrificed = costs::text(&Cost(vec![sacrifice.clone()]))?;
             Some(format!("pay {mana} and {}", lower(&sacrificed)?))
         }
-        [CostItem::ReturnToHand { .. }] => lower(&costs::text(cost)?),
         // The counters come off the card itself: "remove a +1/+1 counter from it".
         [CostItem::RemoveCounters { .. }] => {
             Some(lower(&costs::text(cost)?)?.replace(" from ~", " from it"))
@@ -48,7 +47,8 @@ pub(super) fn phrase(cost: &Cost) -> Option<String> {
             }
             | CostItem::Mill(Amount::Fixed(1..))
             | CostItem::ExileFromHand { .. }
-            | CostItem::RevealFromHand { .. },
+            | CostItem::RevealFromHand { .. }
+            | CostItem::ReturnToHand { .. },
         ] => lower(&costs::text(cost)?),
         _ => None,
     }

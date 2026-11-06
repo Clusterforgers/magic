@@ -2283,19 +2283,6 @@ impl Writer<'_> {
                 paid,
                 unpaid,
             } if times.is_one() => self.w20c_payment(who, cost, paid, unpaid)?,
-            // {1} paid X times is "{X}" (r5b).
-            Effect::Pay {
-                who,
-                cost,
-                times: Amount::X,
-                paid,
-                unpaid,
-            } if cost.0.len() == 1
-                && matches!(&cost.0[0], CostItem::Mana(mana) if mana.to_string() == "{1}") =>
-            {
-                let x = Cost(vec![CostItem::Mana("{X}".parse().ok()?)]);
-                self.w20c_payment(who, &x, paid, unpaid)?
-            }
             _ => return self.other_effect(effect),
         })
     }
@@ -2355,8 +2342,29 @@ impl Writer<'_> {
         Some(format!("remove {} from combat", self.object(what)?))
     }
 
+    /// {1} paid X times is "{X}" (r5b).
+    fn r5b_x_payment(&mut self, effect: &Effect) -> Option<String> {
+        let Effect::Pay {
+            who,
+            cost,
+            times: Amount::X,
+            paid,
+            unpaid,
+        } = effect
+        else {
+            return None;
+        };
+        let [CostItem::Mana(mana)] = cost.0.as_slice() else {
+            return None;
+        };
+        (mana.to_string() == "{1}").then_some(())?;
+        let x = Cost(vec![CostItem::Mana("{X}".parse().ok()?)]);
+        self.w20c_payment(who, &x, paid, unpaid)
+    }
+
     fn other_effect(&mut self, effect: &Effect) -> Option<String> {
         self.graveyard_exile(effect)
+            .or_else(|| self.r5b_x_payment(effect))
             .or_else(|| self.library_exile(effect))
             .or_else(|| self.exiled(effect))
             .or_else(|| self.left_combat(effect))

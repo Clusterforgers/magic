@@ -50,28 +50,28 @@ fn rewrite_list(list: &mut Vec<Value>) -> bool {
         let Some(inner) = may_effects(&mut list[at]) else {
             continue;
         };
-        let [.., step, last] = inner.as_slice() else {
+        let [.., taken, asked] = inner.as_slice() else {
             continue;
         };
-        if performed(step, last).is_some() {
-            let Some(last) = inner.pop() else { continue };
-            list.insert(at + 1, last);
+        if performed(taken, asked).is_some() {
+            let Some(moved) = inner.pop() else { continue };
+            list.insert(at + 1, moved);
             changed = true;
             break;
         }
     }
     // The step of the `May` before, kept across the `If`s that follow it ("If you do, S. If you don't, T.").
     let mut step = None;
-    for at in 0..list.len() {
-        if let Some(last) = may_last(&list[at]) {
+    for effect in list.iter_mut() {
+        if let Some(last) = may_last(effect) {
             step = Some(last);
             continue;
         }
-        let Some(condition) = step.as_ref().and_then(|step| performed(step, &list[at])) else {
+        let Some(condition) = step.as_ref().and_then(|step| performed(step, effect)) else {
             step = None;
             continue;
         };
-        list[at]["If"]["condition"] = condition;
+        effect["If"]["condition"] = condition;
         changed = true;
     }
     changed
@@ -124,11 +124,10 @@ fn performed(step: &Value, branch: &Value) -> Option<Value> {
         let same_kind = selector == &json!([]) || Some(selector) == body.get("filter");
         same_kind.then_some(())?;
         did(count.get("op")?, count.get("right")?, single)?
-    } else if let Some(compare) = condition.get("Compare") {
+    } else {
+        let compare = condition.get("Compare")?;
         (compare.get("left")? == &json!({ "Bound": format!("{name}~moved") })).then_some(())?;
         did(compare.get("op")?, compare.get("right")?, single)?
-    } else {
-        return None;
     };
     Some(if did {
         json!("Performed")
