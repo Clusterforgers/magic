@@ -1,8 +1,10 @@
 //! Who caused the events of a batch: the controller of the spell or ability behind them, derived at detection with no field on any event.
 
+use mtg_cards::value::CounterKind;
 use mtg_core::ids::PlayerId;
 
 use crate::characteristics::controller_of;
+use crate::choose::Target;
 use crate::events::Event;
 use crate::object::ObjectRef;
 use crate::state::GameState;
@@ -67,6 +69,20 @@ pub(crate) fn cause_of(pre: &GameState, events: &[Event], post: &GameState) -> O
             Some(CausedBy {
                 player,
                 object: Some(object),
+            })
+        }
+        // CR 714.3b: the turn-based lore counter of a Saga is put by the Saga's controller.
+        Event::CountersChanged(changed) if changed.delta > 0 => {
+            let Target::Object(saga) = changed.on else {
+                return None;
+            };
+            if changed.counter != CounterKind::lore() {
+                return None;
+            }
+            let player = controller_of(post, saga.id).or_else(|| controller_of(pre, saga.id))?;
+            Some(CausedBy {
+                player,
+                object: Some(saga),
             })
         }
         _ => None,

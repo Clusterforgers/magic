@@ -15,6 +15,20 @@ fn card(types: &str, lines: &str) -> (String, Vec<String>) {
 }
 
 #[rstest]
+fn casey_and_raph_is_a_gap_for_its_player_duration_and_its_different_players() {
+    let (_, found) = card(
+        "Legendary Creature Turtle",
+        "PT:4/4\nT:Mode$ ChangesZone | Origin$ Any | Destination$ Battlefield | ValidCard$ Card.Self | Execute$ TrigCharm\nSVar:TrigCharm:DB$ Charm | MinCharmNum$ 1 | CharmNum$ 2 | Choices$ DBExile,DBToken\nSVar:DBExile:DB$ Dig | ValidTgts$ Player | DigNum$ 1 | ChangeNum$ All | DestinationZone$ Exile | RememberChanged$ True | SubAbility$ DBEffect\nSVar:DBEffect:DB$ Effect | StaticAbilities$ CRPlay | EffectOwner$ RememberedOwner | Duration$ UntilYourNextEndStep | ExileOnMoved$ Exile | RememberObjects$ Remembered | SubAbility$ DBCleanup\nSVar:DBCleanup:DB$ Cleanup | ClearRemembered$ True\nSVar:CRPlay:Mode$ Continuous | Affected$ Card.IsRemembered | MayPlay$ True | MayPlayWithoutManaCost$ True | AffectedZone$ Exile\nSVar:DBToken:DB$ Token | ValidTgts$ Player | TargetUnique$ True | TokenOwner$ ThisTargetedPlayer | TokenAmount$ 2 | TokenScript$ c_a_treasure_sac",
+    );
+    assert!(
+        found
+            .iter()
+            .any(|gap| gap.contains("EffectOwner-with-a-turn-duration")),
+        "{found:?}"
+    );
+}
+
+#[rstest]
 #[case::mind_bomb(
     "DB$ Discard | Defined$ Player.IsRemembered | NumCards$ 2 | Mode$ TgtChoose | RememberDiscarded$ True | SubAbility$ DBDamage\nSVar:DBDamage:DB$ DealDamage | Defined$ Player.IsRemembered | NumDmg$ 3 | SubAbility$ DBCleanup\nSVar:DBCleanup:DB$ Cleanup | ClearRemembered$ True",
     false
