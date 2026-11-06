@@ -101,7 +101,7 @@ fn tribute_asks_an_opponent_and_triggers_when_unpaid() {
     assert_eq!(gaps(text), Vec::<String>::new());
     assert_eq!(
         found[0],
-        json!({"Replacement": {"when": {"Enters": {"what": ["This"]}}, "by": {"Tribute": 2}}})
+        json!({"Keyword": {"Macro": {"name": "tribute", "amount": 2}}})
     );
     assert_eq!(
         found[1]["Triggered"]["if"],
@@ -127,9 +127,7 @@ fn amplify_enters_with_counters_for_the_cards_revealed(
     match counters {
         Some(count) => assert_eq!(
             abilities(&text),
-            vec![
-                json!({"Replacement": {"when": {"Enters": {"what": ["This"]}}, "by": {"Amplify": count}}})
-            ]
+            vec![json!({"Keyword": {"Macro": {"name": "amplify", "amount": count}}})]
         ),
         None => assert_eq!(gaps(&text), vec!["keyword:Amplify-shape".to_owned()]),
     }
@@ -145,6 +143,15 @@ fn tribute_without_a_number_is_a_gap() {
 fn champion_of_an_unknown_type_is_a_gap() {
     let text = "Name:Test Mob\nTypes:Creature Goblin\nPT:3/3\nK:Champion:Zorp\n";
     assert_eq!(gaps(text), vec!["keyword:Champion-type".to_owned()]);
+}
+
+#[test]
+fn an_escaped_permanent_reading_the_cards_exiled_for_escape_is_a_gap() {
+    let text = "Name:Test Robber\nTypes:Creature Rogue\nPT:2/2\nK:ETBReplacement:Other:DBAnimate:Mandatory::Card.Self+escaped\nSVar:DBAnimate:DB$ Animate | Triggers$ Dmg | Duration$ Permanent\nSVar:Dmg:Mode$ DamageDone | ValidSource$ Card.Self | ValidTarget$ Player | CombatDamage$ True | Execute$ Cast | TriggerZones$ Battlefield\nSVar:Cast:DB$ Play | ValidZone$ Exile | Valid$ Card.ExiledWithSource | ValidSA$ Spell | WithoutManaCost$ True | Optional$ True\n";
+    assert_eq!(
+        gaps(text),
+        vec!["keyword:ETBReplacement-escape-exiled-cards".to_owned()]
+    );
 }
 
 #[rstest]

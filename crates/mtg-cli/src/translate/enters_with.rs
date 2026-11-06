@@ -93,6 +93,10 @@ pub fn self_enters(ctx: &mut Ctx, name: &str, valid: &str) -> Tr<Value> {
         }
         next = p.get("SubAbility").map(str::to_owned);
     }
+    // The cards an escape exiles as a cost are not linked to the permanent, so a granted ability that reads them finds none.
+    if when.get("CastWith").is_some() && json!(mods).to_string().contains("ExiledWith") {
+        return unmapped("keyword:ETBReplacement-escape-exiled-cards");
+    }
     let (kind, count) = counter.unwrap_or_else(|| (json!("+1/+1"), json!(0)));
     let by = if mods.is_empty() {
         json!({"WithCounters": {"counter": kind, "count": count}})

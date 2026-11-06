@@ -295,12 +295,6 @@ pub fn keyword_abilities(ctx: &mut Ctx, body: &str) -> Vec<Tr<Value>> {
     if let Some(forms) = super::effects_r2h::keyword_forms(ctx, body) {
         return forms;
     }
-    if let Some(count) = body.strip_prefix("Amplify:") {
-        return vec![count.parse::<u32>().ok().filter(|count| *count > 0).map_or_else(
-            || unmapped("keyword:Amplify-shape"),
-            |count| Ok(json!({"Replacement": {"when": {"Enters": {"what": ["This"]}}, "by": {"Amplify": count}}})),
-        )];
-    }
     if let Some(count) = body.strip_prefix("Tribute:") {
         return tribute::tribute(ctx, count);
     }

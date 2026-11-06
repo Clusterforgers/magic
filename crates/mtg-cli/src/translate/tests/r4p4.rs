@@ -90,7 +90,7 @@ fn equip_labels_and_subtype_shorthand(#[case] line: &str, #[case] expected: Valu
 
 #[rstest]
 #[case::planeswalker("K:Equip:1:Planeswalker.YouCtrl:planeswalker")]
-#[case::a_cost_change("K:Equip:3:::ReduceCost$ Y:This ability costs {1} less")]
+#[case::a_fixed_cost_change("K:Equip:3:::ReduceCost$ 1:This ability costs {1} less")]
 fn other_equip_restrictions_stay_gaps(#[case] line: &str) {
     assert!(
         gaps(&creature_with(line))

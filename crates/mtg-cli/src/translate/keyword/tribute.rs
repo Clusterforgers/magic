@@ -11,8 +11,9 @@ pub fn tribute(ctx: &mut Ctx, count: &str) -> Vec<Tr<Value>> {
     let Ok(count) = count.parse::<u32>() else {
         return vec![unmapped("keyword:Tribute-shape")];
     };
-    let mut found = vec![Ok(json!({"Replacement": {
-        "when": {"Enters": {"what": ["This"]}}, "by": {"Tribute": count}}}))];
+    let mut found = vec![Ok(
+        json!({"Keyword": {"Macro": {"name": "tribute", "amount": count}}}),
+    )];
     if ctx.svar("TrigNotTribute").is_some() {
         found.push(crate::translate::card::audited_one(|| unpaid(ctx)));
     }
