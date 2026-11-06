@@ -50,6 +50,10 @@ pub fn triggered(ctx: &mut Ctx, body: &str) -> Tr<Value> {
         pattern: super::triggered::key_of(&when),
         arrives: super::triggered::arrival(&when),
     });
+    let intervening = match super::condition::on_triggered_card(ctx, &all)? {
+        Some(found) => super::condition::single(intervening.into_iter().chain([found]).collect()),
+        None => intervening,
+    };
     let from = match p.get("TriggerZones") {
         None | Some("Battlefield") => None,
         Some(zone @ ("Graveyard" | "Hand" | "Exile" | "Library" | "Command")) => Some(zone),

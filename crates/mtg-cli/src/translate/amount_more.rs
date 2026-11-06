@@ -53,7 +53,14 @@ pub fn count(ctx: &Ctx, base: &str) -> Option<Tr<Value>> {
         _ if word.starts_with("YourCounters") && rest.is_empty() => your_counters(word),
         "Valid" | "ValidGraveyard" | "ValidHand" | "ValidExile" | "ValidLibrary"
         | "ValidBattlefield" => valid_count(ctx, word, rest),
-        _ if word.starts_with("ThisTurnEntered_") => entered_this_turn(ctx, word),
+        _ if word.starts_with("ThisTurnEntered_") => entered_this_turn(
+            ctx,
+            &if rest.is_empty() {
+                word.to_owned()
+            } else {
+                format!("{word} {rest}")
+            },
+        ),
         _ if word.starts_with("Devotion.") || word.starts_with("DevotionDual.") => devotion(word),
         _ => return None,
     })

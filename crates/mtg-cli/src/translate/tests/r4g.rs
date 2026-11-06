@@ -126,6 +126,22 @@ fn activating_a_loyalty_ability_is_activating_an_ability_of_a_planeswalker(
     assert!(json.contains(expected), "{json}");
 }
 
+#[test]
+fn a_count_checked_on_the_triggered_card_reads_that_cards_controller() {
+    let (json, found) = card(
+        "Creature Gnome",
+        "PT:1/1\nT:Mode$ ChangesZone | Origin$ Any | Destination$ Battlefield | ValidCard$ Land.OppCtrl | CheckOnTriggeredCard$ X GT1 | TriggerZones$ Battlefield | Execute$ D\nSVar:D:DB$ DealDamage | NumDmg$ 3 | Defined$ TriggeredCardController\nSVar:X:Count$ThisTurnEntered_Battlefield_Land.ControlledBy CardController",
+    );
+    assert!(found.is_empty(), "{found:?}");
+    assert!(
+        json.contains(
+            r#""if":{"Compare":{"left":{"Tally":{"event":"Entered","filter":[{"Type":"Land"},{"ControlledBy":{"ControllerOf":"Triggering"}}]"#
+        ),
+        "{json}"
+    );
+    assert!(json.contains(r#""op":"Gt","right":1"#), "{json}");
+}
+
 #[rstest]
 #[case::once("1", true)]
 #[case::twice("2", false)]

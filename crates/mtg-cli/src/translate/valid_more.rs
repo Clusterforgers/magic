@@ -145,6 +145,9 @@ fn player_word(ctx: &Ctx, word: &str) -> Tr<Value> {
         "DefendingPlayer" | "TriggeredDefendingPlayer" => Ok(json!("Defending")),
         "TargetedPlayer" => ctx.player_target(),
         // The player a damage trigger names (`ValidTarget$ Player`): the one the creatures are read for.
+        "CardController" => {
+            super::triggered::resolve(ctx.trigger.as_ref(), "TriggeredCardController")
+        }
         other if super::triggered::is_word(other) => {
             super::triggered::resolve(ctx.trigger.as_ref(), other)
         }
