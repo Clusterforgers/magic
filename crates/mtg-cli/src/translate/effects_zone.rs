@@ -866,6 +866,20 @@ fn sentence_allows_none(oracle: &str) -> bool {
     true
 }
 
+/// Whether the Oracle text reveals the card taken from among the cards looked at ("You may reveal a creature card from
+/// among them and put it into your hand").
+fn r5a_reveals_taken(oracle: &str) -> bool {
+    let text = oracle.replace("\\n", "\n").to_lowercase();
+    let Some(start) = text.find("look at the top") else {
+        return false;
+    };
+    let line = text[start..].split('\n').next().unwrap_or_default();
+    line.split(". ")
+        .skip(1)
+        .take(2)
+        .any(|sentence| sentence.contains("reveal ") && sentence.contains("from among"))
+}
+
 /// `Dig`: look at the top cards, take some, put the rest somewhere ("look at the top four cards of your library; you may
 /// reveal a creature card from among them and put it into your hand; put the rest on the bottom in any order").
 pub fn dig(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
@@ -937,6 +951,16 @@ pub fn dig(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
         effects.push(json!({ "Choose": choose }));
         json!({ "Bound": kept })
     };
+    // "You may reveal a creature card from among them and put it into your hand": the card taken is shown.
+    if filter.is_some()
+        && !hidden
+        && matches!(&to, Goes::To(zone) if *zone == json!("Hand"))
+        && p.get("Reveal") != Some("True")
+        && p.get("NoReveal") != Some("True")
+        && r5a_reveals_taken(ctx.oracle)
+    {
+        effects.push(json!({"Reveal": {"what": moved.clone()}}));
+    }
     if p.get("Reveal") == Some("True") {
         // "Reveal the top X cards" shows every card dug, not only the ones taken.
         effects.push(json!({"Reveal": {"what": from_top}}));

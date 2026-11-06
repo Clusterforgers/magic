@@ -470,6 +470,15 @@ fn produced_wordings(texts: &mut Vec<String>) {
 /// and the wordings of the oracle text that no template reads ("you" after another player's event, "Then" opening a
 /// sentence, "deals damage equal to its power").
 pub fn written_variants(ability: &Ability) -> Vec<String> {
+    let texts = written_as_given(ability);
+    if !texts.is_empty() {
+        return texts;
+    }
+    super::r5a_order::canonical(ability).map_or(texts, |ordered| written_as_given(&ordered))
+}
+
+/// The wordings of [`written_variants`] with the selectors in the order the rule gives them.
+fn written_as_given(ability: &Ability) -> Vec<String> {
     if let Some(texts) = super::w20b_reflexive::w20b_variants(ability, written_variants) {
         return texts;
     }
@@ -482,6 +491,7 @@ pub fn written_variants(ability: &Ability) -> Vec<String> {
     twins::add(ability, &mut texts);
     super::shortened::add(&mut texts);
     oracle_only::add(ability, &mut texts);
+    super::r5a_wordings::add(&mut texts);
     texts
 }
 
