@@ -556,7 +556,7 @@ fn record_sources(state: &GameState, events: &mut [Event]) {
     }
     for event in events.iter_mut() {
         if let Event::SpellCast { choices, .. } = event {
-            choices.spent_from = Some(Box::new(from.clone()));
+            choices.cost_taken.get_or_insert_with(Box::default).sources = from.clone();
         }
     }
 }

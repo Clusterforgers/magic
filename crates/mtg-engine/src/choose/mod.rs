@@ -148,14 +148,6 @@ pub struct Choices {
         ts(as = "Option<Vec<mtg_core::mana::ManaType>>", optional)
     )]
     pub spent: Option<Box<Vec<mtg_core::mana::ManaType>>>,
-    /// The sources of that mana and how much of it each supplied, for "mana from a Treasure was spent"; the mana already in
-    /// the pool when the spell was cast has no source and is not listed.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    #[cfg_attr(
-        feature = "ts",
-        ts(as = "Option<Vec<mtg_cards::spend::SpentFrom>>", optional)
-    )]
-    pub spent_from: Option<Box<Vec<mtg_cards::spend::SpentFrom>>>,
     /// What the cost of an ability or a spell took: the objects picked and how the ones that left were.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     #[cfg_attr(feature = "ts", ts(optional))]
@@ -186,6 +178,14 @@ pub struct CostTaken {
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     #[cfg_attr(feature = "ts", ts(as = "Option<Vec<CounterKind>>", optional))]
     pub kinds: Vec<CounterKind>,
+    /// The sources of the mana spent to cast the spell and how much of it each supplied, for "mana from a Treasure was
+    /// spent"; the mana already in the pool when the spell was cast has no source and is not listed.
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[cfg_attr(
+        feature = "ts",
+        ts(as = "Option<Vec<mtg_cards::spend::SpentFrom>>", optional)
+    )]
+    pub sources: Vec<mtg_cards::spend::SpentFrom>,
 }
 
 /// Whether a count is 0, so serialization can leave it out.
@@ -202,7 +202,9 @@ impl Choices {
 
     /// The sources of the mana spent to cast the spell.
     pub fn spent_from(&self) -> &[mtg_cards::spend::SpentFrom] {
-        self.spent_from.as_deref().map_or(&[], Vec::as_slice)
+        self.cost_taken
+            .as_deref()
+            .map_or(&[], |taken| &taken.sources)
     }
 
     /// The permanents and cards picked for the parts of the cost that take them, one list for each such part.

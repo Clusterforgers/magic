@@ -2,7 +2,6 @@
 import type { CastWay } from "./CastWay";
 import type { CostTaken } from "./CostTaken";
 import type { ManaType } from "./ManaType";
-import type { SpentFrom } from "./SpentFrom";
 import type { Target } from "./Target";
 
 /**
@@ -50,11 +49,6 @@ face?: number,
  * spell and from the permanent it becomes; empty for a spell cast without paying mana and for an ability.
  */
 spent?: Array<ManaType>, 
-/**
- * The sources of that mana and how much of it each supplied, for "mana from a Treasure was spent"; the mana already in
- * the pool when the spell was cast has no source and is not listed.
- */
-spent_from?: Array<SpentFrom>, 
 /**
  * What the cost of an ability or a spell took: the objects picked and how the ones that left were.
  */

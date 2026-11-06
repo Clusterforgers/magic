@@ -1438,6 +1438,10 @@ fn w2f_cost_taken(
         shots: vec![shot],
         variant: 1,
         kinds: vec![mtg_cards::value::CounterKind::Other("shield".into())],
+        sources: vec![mtg_cards::spend::SpentFrom {
+            traits: mtg_cards::spend::SpendTraits::default(),
+            count: 2,
+        }],
     }
 }
 
@@ -1461,7 +1465,6 @@ fn pipeline_events() -> Vec<Event> {
         way: Some(mtg_cards::value::CastWay::Evoke),
         face: Some(1),
         spent: Some(Box::new(vec![ManaType::Red, ManaType::Green])),
-        spent_from: None,
         cost_taken: Some(Box::new(w2f_cost_taken(a, b, shot.clone()))),
     };
     vec![
