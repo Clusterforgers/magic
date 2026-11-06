@@ -1033,6 +1033,7 @@ pub(crate) fn names_nothing(rule: &Rule) -> bool {
         | Rule::NextSpell { .. }
         | Rule::DamageCantBePrevented { .. }
         | Rule::Regenerate(_)
+        | Rule::Replaces { .. }
         | Rule::AttackLimit(_)
         | Rule::BlockLimit(_) => false,
         Rule::PreventDamage(shield) => {
@@ -1040,7 +1041,6 @@ pub(crate) fn names_nothing(rule: &Rule) -> bool {
                 || shield.from.as_ref().is_some_and(Vec::is_empty)
         }
         Rule::DiesInstead { objects, .. } => objects.is_empty(),
-        Rule::Replaces { .. } => false,
         Rule::GraveyardCardsUntargetable
         | Rule::CantLoseGame { .. }
         | Rule::CantCastSpells { .. }

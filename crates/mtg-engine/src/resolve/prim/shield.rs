@@ -114,8 +114,8 @@ fn names_objects(what: &Selector) -> bool {
 /// Whether the shield replaces a class of zone changes or entries, judged when each happens.
 fn is_class_shield(when: &ReplaceWhen, by: &ReplaceBy) -> bool {
     match (when, by) {
-        (ReplaceWhen::ZoneChange { what, .. }, ReplaceBy::MoveTo(_)) => !names_objects(what),
-        (ReplaceWhen::Enters { what }, ReplaceBy::Tapped) => !names_objects(what),
+        (ReplaceWhen::ZoneChange { what, .. }, ReplaceBy::MoveTo(_))
+        | (ReplaceWhen::Enters { what }, ReplaceBy::Tapped) => !names_objects(what),
         _ => false,
     }
 }

@@ -171,5 +171,5 @@ fn the_first_thing_a_trigger_is_about_is_one_object_not_all_of_them() {
     assert_eq!(scope.refs(&Ref::Triggering).unwrap().len(), 3);
     let empty = Cause::default();
     let scope = Scope::triggered(&game, ME, bear, &empty);
-    assert!(scope.refs(&Ref::TriggeringFirst).unwrap().is_empty());
+    assert_eq!(scope.refs(&Ref::TriggeringFirst).unwrap().len(), 0);
 }

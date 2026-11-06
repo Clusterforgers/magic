@@ -1054,7 +1054,6 @@ impl Pass<'_> {
         }
         if !unpreventable {
             found.extend(self.shield_candidates(slot, &unit)?);
-            found.extend(self.replaces_candidates(slot, &unit)?);
         }
         if matches!(&unit, Unit::Move { .. }) {
             found.extend(self.move_rule_candidates(slot));
@@ -1345,10 +1344,10 @@ impl Pass<'_> {
 
     /// The prevention shields that cover the damage the slot holds and have not been applied to it.
     fn shield_candidates(&self, slot: &Slot, unit: &Unit) -> Result<Vec<Candidate>, EngineError> {
+        let mut found = self.replaces_candidates(slot, unit)?;
         let Unit::Damage { source, target } = unit else {
-            return Ok(Vec::new());
+            return Ok(found);
         };
-        let mut found = Vec::new();
         for effect in &self.shields {
             let origin = Origin::Shield(effect.id);
             let (Rule::PreventDamage(shield), Some(maker)) = (&effect.rule, effect.source) else {

@@ -18,6 +18,7 @@ use crate::state::{GameState, Tally};
 use crate::zones::{Placement, Zone};
 
 /// Moves `id` to `to`, creating or dropping permanent state and leaving combat as needed.
+#[allow(clippy::too_many_lines)]
 pub(super) fn move_object(
     state: &mut GameState,
     id: ObjectId,
@@ -28,11 +29,7 @@ pub(super) fn move_object(
         return Err(invalid(format!("zone {to:?} does not exist")));
     }
     let (was_creature, w14b_phyrexian) = w14b_dying_kind(state, id, to);
-    let left_nonland = state
-        .object(id)
-        .is_some_and(|object| object.zone() == Zone::Battlefield)
-        && crate::characteristics::characteristics(state, id)
-            .is_some_and(|chars| !chars.types.contains(CardType::Land));
+    tally_nonland_leaving(state, id, to);
     log_death(state, id, to);
     // A permanent that enters takes the next timestamp, which its static abilities carry (CR 613.7).
     let timestamp = state.next_timestamp;
@@ -123,9 +120,6 @@ pub(super) fn move_object(
         state.tally_object(entered, None, Tally::Entered);
     }
     w21a_tally_graveyards(state, (from, to), (owner, controlled_by), entered);
-    if left_nonland && to != Zone::Battlefield {
-        state.tally(controlled_by, Tally::NonlandLeft);
-    }
     if from == Zone::Battlefield && matches!(to, Zone::Graveyard(_)) {
         state.tally(owner, Tally::Graved);
         if was_creature {
@@ -208,6 +202,22 @@ fn w14b_dying_kind(state: &GameState, id: ObjectId, to: Zone) -> (bool, bool) {
         chars.types.contains(CardType::Creature),
         chars.has_subtype(&printed, &phyrexian),
     )
+}
+
+/// Counts a nonland permanent about to leave the battlefield for `to` for the player who controls it (void).
+fn tally_nonland_leaving(state: &mut GameState, id: ObjectId, to: Zone) {
+    let Some(controller) = state
+        .object(id)
+        .filter(|object| object.zone() == Zone::Battlefield)
+        .map(GameObject::controller)
+    else {
+        return;
+    };
+    let nonland = crate::characteristics::characteristics(state, id)
+        .is_some_and(|chars| !chars.types.contains(CardType::Land));
+    if nonland && to != Zone::Battlefield {
+        state.tally(controller, Tally::NonlandLeft);
+    }
 }
 
 /// Counts a creature put into a graveyard from the battlefield for its owner, and for the player who controlled it.
