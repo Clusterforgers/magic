@@ -142,6 +142,8 @@ pub enum Rule {
     NoMaxHandSize(Vec<PlayerId>),
     /// The players' maximum hand size is this many cards (CR 402.2).
     MaxHandSize(Vec<(PlayerId, u32)>),
+    /// The players' maximum hand size changes by this many cards, after any size that is set (CR 402.2).
+    HandSizeChange(Vec<(PlayerId, i64)>),
     /// The legend rule does not apply to the players' permanents (CR 704.5j).
     NoLegendRule(Vec<PlayerId>),
     /// The permanents the selector picks that the rule's controller controls untap during the untap steps of the players
@@ -487,6 +489,7 @@ pub(crate) struct RulesInForce {
     extra_lands: BTreeMap<PlayerId, u32>,
     again: Vec<Again>,
     max_hand: BTreeMap<PlayerId, u32>,
+    hand_change: BTreeMap<PlayerId, i64>,
     no_legend: BTreeSet<PlayerId>,
     untap_during: Vec<UntapDuring>,
     unpreventable: Vec<Unpreventable>,
@@ -653,6 +656,11 @@ impl RulesInForce {
                     self.max_hand.insert(*player, least);
                 }
             }
+            Rule::HandSizeChange(changes) => {
+                for (player, by) in changes {
+                    *self.hand_change.entry(*player).or_insert(0) += by;
+                }
+            }
             Rule::NoLegendRule(players) => self.no_legend.extend(players),
             Rule::TriggerAgain {
                 cause,
@@ -772,7 +780,10 @@ impl RulesInForce {
             Rule::SkipExtraTurns(players) => self.skip_extra_turns.extend(players),
             Rule::RevealTop(players) => self.reveal_top.extend(players),
             Rule::NoMaxHandSize(players) => self.no_hand_limit.extend(players),
-            Rule::MaxHandSize(_) | Rule::NoLegendRule(_) | Rule::UntapDuring { .. } => {
+            Rule::MaxHandSize(_)
+            | Rule::HandSizeChange(_)
+            | Rule::NoLegendRule(_)
+            | Rule::UntapDuring { .. } => {
                 self.put_option(rule, controller, source);
             }
             Rule::SkipDrawStep(players) => self.skip_draw.extend(players),
@@ -1059,9 +1070,10 @@ pub(crate) fn lower_rule(scope: &Scope<'_>, wanted: &GameRule) -> Result<Rule, R
             cause: cause.clone().map(Box::new),
             source: source.clone(),
         },
-        GameRule::MaxHandSize { .. } | GameRule::NoLegendRule(_) | GameRule::UntapDuring { .. } => {
-            lower_option(scope, wanted)?
-        }
+        GameRule::MaxHandSize { .. }
+        | GameRule::HandSizeChange { .. }
+        | GameRule::NoLegendRule(_)
+        | GameRule::UntapDuring { .. } => lower_option(scope, wanted)?,
         GameRule::LookAtTopAnyTime(who) => Rule::LookAtTop(scope.players(who)?),
         GameRule::NoMaxHandSize(who) => Rule::NoMaxHandSize(scope.players(who)?),
         GameRule::SkipDrawStep(who) => Rule::SkipDrawStep(scope.players(who)?),
@@ -1100,6 +1112,16 @@ fn lower_option(scope: &Scope<'_>, wanted: &GameRule) -> Result<Rule, ResolveErr
                     .players(who)?
                     .into_iter()
                     .map(|player| (player, size))
+                    .collect(),
+            )
+        }
+        GameRule::HandSizeChange { who, by } => {
+            let by = scope.amount(by)?;
+            Rule::HandSizeChange(
+                scope
+                    .players(who)?
+                    .into_iter()
+                    .map(|player| (player, by))
                     .collect(),
             )
         }
@@ -1154,6 +1176,7 @@ pub(crate) fn names_nothing(rule: &Rule) -> bool {
         | Rule::NoMaxHandSize(players) => players.is_empty(),
         Rule::MayCastRather { casts, .. } => casts.is_empty(),
         Rule::MaxHandSize(sizes) => sizes.is_empty(),
+        Rule::HandSizeChange(changes) => changes.is_empty(),
         Rule::UntapDuring { whose, .. } => whose.is_empty(),
         Rule::AttackLimitAt { at, .. } => at.is_empty(),
         Rule::AdditionalLandPlays(plays) => plays.iter().all(|(_, count)| *count == 0),
@@ -1295,6 +1318,7 @@ static NONE: RulesInForce = RulesInForce {
     extra_lands: BTreeMap::new(),
     again: Vec::new(),
     max_hand: BTreeMap::new(),
+    hand_change: BTreeMap::new(),
     no_legend: BTreeSet::new(),
     untap_during: Vec::new(),
     unpreventable: Vec::new(),
@@ -1662,11 +1686,17 @@ pub(crate) fn attack_taxes(state: &GameState) -> &[Taxing] {
 /// The maximum hand size of `player` under the rules in force, `base` when no rule sets one: the one place cleanup reads
 /// it, beside `no_max_hand_size`.
 pub(crate) fn max_hand_size(state: &GameState, player: PlayerId, base: usize) -> usize {
-    state
+    let set = state
         .rules()
         .max_hand
         .get(&player)
-        .map_or(base, |size| usize::try_from(*size).unwrap_or(usize::MAX))
+        .map_or(base, |size| usize::try_from(*size).unwrap_or(usize::MAX));
+    let change = state.rules().hand_change.get(&player).copied().unwrap_or(0);
+    let size = i64::try_from(set)
+        .unwrap_or(i64::MAX)
+        .saturating_add(change)
+        .max(0);
+    usize::try_from(size).unwrap_or(usize::MAX)
 }
 
 /// Whether the legend rule does not apply to the permanents `player` controls: the one place the state-based actions

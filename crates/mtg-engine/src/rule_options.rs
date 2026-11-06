@@ -103,6 +103,12 @@ fn permanents_untap_in_the_untap_steps_of_the_players_the_rule_names(
 #[case::another_players_size_is_ignored(&[r#"{"MaxHandSize":{"who":"Opponents","size":1}}"#], 9, 2)]
 #[case::no_maximum_beats_a_size(&[r#"{"MaxHandSize":{"who":"You","size":1}}"#, r#"{"NoMaxHandSize":"You"}"#], 9, 0)]
 #[case::zero(&[r#"{"MaxHandSize":{"who":"You","size":0}}"#], 3, 3)]
+#[case::a_bigger_hand(&[r#"{"HandSizeChange":{"who":"You","by":2}}"#], 9, 0)]
+#[case::a_smaller_hand(&[r#"{"HandSizeChange":{"who":"You","by":-3}}"#], 9, 5)]
+#[case::changes_add_up(&[r#"{"HandSizeChange":{"who":"You","by":-3}}"#, r#"{"HandSizeChange":{"who":"You","by":-2}}"#], 9, 7)]
+#[case::another_players_change_is_ignored(&[r#"{"HandSizeChange":{"who":"Opponents","by":-3}}"#], 9, 2)]
+#[case::after_a_set_size(&[r#"{"MaxHandSize":{"who":"You","size":4}}"#, r#"{"HandSizeChange":{"who":"You","by":1}}"#], 9, 4)]
+#[case::never_below_zero(&[r#"{"HandSizeChange":{"who":"You","by":-20}}"#], 3, 3)]
 fn the_maximum_hand_size_in_force_sets_how_many_cards_cleanup_discards(
     #[case] rules: &[&str],
     #[case] hand: usize,

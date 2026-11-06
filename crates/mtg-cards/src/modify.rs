@@ -591,6 +591,14 @@ pub enum GameRule {
         /// The cards they may keep at cleanup.
         size: Amount,
     },
+    /// The players' maximum hand size grows by `by` (shrinks when negative), after any size that is set (CR 402.2): "your maximum
+    /// hand size is reduced by three".
+    HandSizeChange {
+        /// The players.
+        who: Ref,
+        /// The cards added to the size; removed when negative.
+        by: Amount,
+    },
     /// The legend rule (CR 704.5j) does not apply to the legendary permanents of the players.
     NoLegendRule(Ref),
     /// The permanents the selector picks that the rule's controller controls untap during the untap step of each of the

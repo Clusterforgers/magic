@@ -118,6 +118,22 @@ fn an_exiled_card_is_played_for_the_duration_the_line_names(
     }
 }
 
+#[rstest]
+#[case::more("You", "2", r#"{"HandSizeChange":{"by":2,"who":"You"}}"#)]
+#[case::fewer("Opponent", "-3", r#"{"HandSizeChange":{"by":-3,"who":"Opponents"}}"#)]
+fn a_changed_maximum_hand_size_is_a_rule(
+    #[case] affected: &str,
+    #[case] by: &str,
+    #[case] rule: &str,
+) {
+    let script = card(&format!(
+        "S:Mode$ Continuous | Affected$ {affected} | RaiseMaxHandSize$ {by}"
+    ));
+    let found = abilities(&script);
+    assert!(!found.is_empty(), "{:?}", gaps(&script));
+    assert_eq!(found[0]["Rule"]["rule"].to_string(), rule);
+}
+
 const ALT: &str = "S:Mode$ AlternativeCost | ValidSA$ Spell | ValidCard$ Card.Self | ValidPlayer$ You | Cost$ 0 | EffectZone$ All";
 
 #[rstest]

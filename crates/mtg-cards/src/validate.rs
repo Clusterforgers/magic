@@ -3886,6 +3886,7 @@ impl Walker<'_> {
 
     /// A rule of the game names what it is about: players or objects, and for the one that triggers again the event that
     /// causes the trigger, which is judged without a target, a triggering event or a name bound earlier.
+    #[allow(clippy::too_many_lines)]
     fn rule(&mut self, rule: &GameRule) {
         let tag = tag_of(rule);
         self.uses("Rule", &tag);
@@ -3982,6 +3983,7 @@ impl Walker<'_> {
             GameRule::TriggerAgain { .. }
             | GameRule::NoLegendRule(_)
             | GameRule::MaxHandSize { .. }
+            | GameRule::HandSizeChange { .. }
             | GameRule::NextSpell { .. }
             | GameRule::MayCastRather { .. }
             | GameRule::ManaProduced { .. }
@@ -4021,6 +4023,10 @@ impl Walker<'_> {
             GameRule::MaxHandSize { who, size } => self.at(tag, |w| {
                 w.at("who", |w| w.reference(who, Kind::Player));
                 w.at("size", |w| w.amount(size));
+            }),
+            GameRule::HandSizeChange { who, by } => self.at(tag, |w| {
+                w.at("who", |w| w.reference(who, Kind::Player));
+                w.at("by", |w| w.amount(by));
             }),
             GameRule::UntapDuring { what, whose } => self.at(tag, |w| {
                 w.at("what", |w| w.selector(what));
