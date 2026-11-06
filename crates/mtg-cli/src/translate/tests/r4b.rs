@@ -108,6 +108,20 @@ fn add_or_remove_counter_leaves_what_it_cannot_read_a_gap(#[case] line: &str, #[
 }
 
 #[rstest]
+#[case::each_player(
+    "Radiation | Defined$ Player | Num$ 4",
+    json!({"PutCounters": {"on": "EachPlayer", "counter": {"Other": "rad"}, "count": 4}})
+)]
+#[case::you("Radiation | Defined$ You | Num$ 2", json!({"PutCounters": {"on": "You", "counter": {"Other": "rad"}, "count": 2}}))]
+#[case::opponents(
+    "Radiation | Defined$ Opponent | Num$ 1",
+    json!({"PutCounters": {"on": "Opponents", "counter": {"Other": "rad"}}})
+)]
+fn radiation_puts_rad_counters_on_players(#[case] line: &str, #[case] node: Value) {
+    assert_eq!(effects(&spell(line)), json!([node]));
+}
+
+#[rstest]
 #[case::one_turn("SkipTurn | Defined$ You | NumTurns$ 1", 1)]
 #[case::two_turns("SkipTurn | Defined$ You | NumTurns$ 2", 2)]
 fn skip_turn_is_a_rule_for_each_turn_skipped(#[case] line: &str, #[case] turns: usize) {
