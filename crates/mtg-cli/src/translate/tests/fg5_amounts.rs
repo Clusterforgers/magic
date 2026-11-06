@@ -97,8 +97,8 @@ fn game_facts_and_player_counts(#[case] svars: &str, #[case] expected: Value) {
     "valid:tokenMadeUp"
 )]
 #[case::spent_of_a_kind(
-    "SVar:X:Count$CastTotalManaSpent Treasure",
-    "amount:Count$CastTotalManaSpent"
+    "SVar:X:Count$CastTotalManaSpent Wibble",
+    "amount:Count$CastTotalManaSpent-source"
 )]
 #[case::highest_of_the_opponents(
     "SVar:X:PlayerCountOpponents$HighestValid Land.OppCtrl",
