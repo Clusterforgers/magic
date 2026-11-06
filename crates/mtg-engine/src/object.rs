@@ -436,6 +436,33 @@ pub struct GameObject {
     pub(crate) stack_copy: Option<ObjectRef>,
 }
 
+/// The prototype form a card prints (CR 718.3): its mana cost, power and toughness.
+pub(crate) fn prototype_form(card: &CardDefinition) -> Option<(&ManaCost, i32, i32)> {
+    crate::ability_reader::printed_rules(card).find_map(|rule| match &**rule {
+        Ability::Keyword(Keyword::Prototype {
+            cost,
+            power,
+            toughness,
+        }) => cost.0.iter().find_map(|part| match part {
+            CostItem::Mana(mana) => Some((mana.rest(), *power, *toughness)),
+            _ => None,
+        }),
+        _ => None,
+    })
+}
+
+/// The copiable values of a card cast with its prototype: the prototype's mana cost, power and toughness in place of the
+/// printed ones (CR 718.3c). Colors follow the cost unless an indicator sets them.
+pub(crate) fn with_prototype_values(mut values: CardDefinition) -> CardDefinition {
+    if let Some((cost, power, toughness)) = prototype_form(&values) {
+        let cost = cost.clone();
+        values.mana_cost = Some(cost);
+        values.power = Some(power);
+        values.toughness = Some(toughness);
+    }
+    values
+}
+
 impl GameObject {
     pub(crate) fn new(id: ObjectId, owner: PlayerId, def: Arc<CardDefinition>, zone: Zone) -> Self {
         GameObject {
@@ -637,17 +664,7 @@ impl GameObject {
         if self.cast_way() != Some(CastWay::Prototype) {
             return None;
         }
-        crate::ability_reader::printed_rules(self.card()).find_map(|rule| match &**rule {
-            Ability::Keyword(Keyword::Prototype {
-                cost,
-                power,
-                toughness,
-            }) => cost.0.iter().find_map(|part| match part {
-                CostItem::Mana(mana) => Some((mana.rest(), *power, *toughness)),
-                _ => None,
-            }),
-            _ => None,
-        })
+        prototype_form(self.card())
     }
 
     /// The mana cost of the face in use: the prototype cost for a prototyped spell or permanent.
