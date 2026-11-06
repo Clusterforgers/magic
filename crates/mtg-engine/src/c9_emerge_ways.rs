@@ -143,6 +143,7 @@ pub(crate) fn c9_emerge_most(
         player,
         source: id,
         barred: &[],
+        granter: None,
     };
     pick.candidates(&owner)
         .into_iter()

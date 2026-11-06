@@ -51,6 +51,7 @@ fn property(ctx: &Ctx, prop: &str) -> Tr<Vec<Value>> {
         "YouOwn" => return one(json!({"OwnedBy": "You"})),
         "OppOwn" => return one(json!({"OwnedBy": "Opponents"})),
         "Other" | "StrictlyOther" => return one(json!("Other")),
+        "NotDefinedOriginalHost" if ctx.granted => return one(json!({"Not": {"Is": "Granter"}})),
         "Self" | "StrictlySelf" => return one(json!("This")),
         "tapped" | "Tapped" => return one(json!("Tapped")),
         "untapped" | "Untapped" => return one(json!("Untapped")),
@@ -570,6 +571,7 @@ pub fn defined(ctx: &Ctx, word: &str) -> Tr<Value> {
         "TargetedOwner" => Ok(json!({ "OwnerOf": ctx.last_target()? })),
         "RememberedOwner" => Ok(json!({ "OwnerOf": super::memory::remembered(ctx)? })),
         "Enchanted" | "Equipped" => Ok(json!("Attached")),
+        "OriginalHost" if ctx.granted => Ok(json!("Granter")),
         "EnchantedController" | "EquippedController" => controller(json!("Attached")),
         "EnchantedPlayer" | "Player.EnchantedBy" => Ok(json!("AttachedPlayer")),
         "ChosenCard" | "ChosenPlayer" => ctx.chosen_card.as_ref().map_or_else(

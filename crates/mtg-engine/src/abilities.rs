@@ -66,6 +66,14 @@ impl AbilitySource {
     pub const fn is_printed(&self) -> bool {
         matches!(self, AbilitySource::Printed)
     }
+
+    /// The permanent whose static ability gave the ability (`Ref::Granter`), when a static did.
+    pub const fn granter(&self) -> Option<ObjectId> {
+        match self {
+            AbilitySource::Granted(Grant::Static { source, .. }) => Some(*source),
+            _ => None,
+        }
+    }
 }
 
 /// An ability of an object, named by the object, where the ability comes from and an index.

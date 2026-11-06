@@ -34,7 +34,7 @@ pub(crate) use prim::lower;
 pub use value::{Bindings, ResolveError, Scope};
 pub(crate) use value::{CastTargets, zone_kind};
 
-use crate::abilities::{AbilityObject, AbilityRef, AbilitySource, Grant};
+use crate::abilities::{AbilityObject, AbilityRef};
 use crate::ability_reader::abilities_of;
 use crate::announce::Pending;
 use crate::choose::{Choice, Target, announced_specs, targets_before};
@@ -314,10 +314,7 @@ fn scope_of<'a>(
         affected: None,
         candidate: std::cell::Cell::new(None),
         caused: None,
-        granter: ability.and_then(|a| match a.origin() {
-            AbilitySource::Granted(Grant::Static { source, .. }) => Some(source),
-            _ => None,
-        }),
+        granter: ability.and_then(|a| a.origin().granter()),
     }
 }
 

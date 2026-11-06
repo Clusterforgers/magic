@@ -45,6 +45,8 @@ pub(crate) struct Price {
     pub(crate) casting: bool,
     /// The changes the ability prints of its own cost (`CostItem::Changed`), applied to the mana as it is activated.
     pub(crate) changes: Vec<CostItem>,
+    /// The permanent whose static ability gave the ability this pays for (`Ref::Granter`).
+    pub(crate) granter: Option<ObjectId>,
 }
 
 /// The name `Caps` gives a cost part, for the parts the engine does not pay.
@@ -130,6 +132,7 @@ impl Price {
         state: &GameState,
         player: PlayerId,
         source: ObjectId,
+        granter: Option<ObjectId>,
     ) -> Result<Price, &'static str> {
         let mut settled = cost.clone();
         if let Some(object) = state.object(source) {
@@ -150,7 +153,7 @@ impl Price {
                 }
             }
         }
-        Price::read(&settled, true)
+        Price::read(&settled, true).map(|price| Price { granter, ..price })
     }
 
     /// The price of the cost of an ability as it is announced, with the `{X}` it holds counted for the announcement
@@ -213,6 +216,7 @@ impl Price {
             parts,
             casting: false,
             changes,
+            granter: None,
         })
     }
 
@@ -292,6 +296,7 @@ impl Price {
                 player,
                 source,
                 barred: &barred,
+                granter: self.granter,
             };
             taken.push(part.payable(&owner, &spare)?);
         }

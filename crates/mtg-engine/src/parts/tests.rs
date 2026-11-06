@@ -70,6 +70,7 @@ fn payer<'a>(game: &'a GameState, barred: &'a [ObjectId]) -> Payer<'a> {
         player: ME,
         source: named(game, "Source"),
         barred,
+        granter: None,
     }
 }
 

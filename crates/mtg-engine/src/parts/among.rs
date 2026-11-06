@@ -69,6 +69,7 @@ pub(super) fn events(
         player,
         source,
         barred: &[],
+        granter: None,
     };
     let mut left = count;
     let mut events = Vec::new();

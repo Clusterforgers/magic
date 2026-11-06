@@ -377,6 +377,7 @@ fn settle<'a>(
             player,
             source,
             barred: &barred,
+            granter: None,
         });
         // Too few cards, or too little power or mana value among them (a pick by total).
         if pick.short(state, &candidates) {

@@ -187,7 +187,8 @@ fn can_activate(
     {
         return false;
     }
-    let Ok(price) = Price::announced_in(cost, state, player, object.id()) else {
+    let Ok(price) = Price::announced_in(cost, state, player, object.id(), address.source.granter())
+    else {
         return false;
     };
     // A player who does not control the permanent can neither tap it nor give it up as a cost (CR 602.2).

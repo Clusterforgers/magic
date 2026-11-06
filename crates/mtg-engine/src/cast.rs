@@ -52,9 +52,15 @@ pub(crate) fn activation_events(
     let mut shots = Vec::new();
     match &*rules {
         Ability::Activated { cost, .. } => {
-            let price = Price::announced_in(cost, state, player, ability.object)
-                .ok()?
-                .at(choices.x.unwrap_or(0));
+            let price = Price::announced_in(
+                cost,
+                state,
+                player,
+                ability.object,
+                ability.source.granter(),
+            )
+            .ok()?
+            .at(choices.x.unwrap_or(0));
             shots = parts::photographed(state, &price.parts, choices.cost_picks());
             if price.tap {
                 events.push(Event::PermanentTapped {

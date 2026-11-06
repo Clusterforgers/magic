@@ -68,11 +68,11 @@ fn the_counter_goes_on_the_equipment_that_gave_the_ability(
     } else {
         ("Born Ticker", vec![ready(born_ticker())])
     };
-    let mut driver = Driver::from_scenario(
-        Scenario::new(2)
-            .battlefield(0, battlefield)
-            .at(1, 0, Step::Main1),
-    )?;
+    let mut driver = Driver::from_scenario(Scenario::new(2).battlefield(0, battlefield).at(
+        1,
+        0,
+        Step::Main1,
+    ))?;
     driver.begin_activation(host)?;
     for _ in 0..20 {
         if driver.state().stack().is_empty() && driver.state().resolving().is_none() {
@@ -85,5 +85,51 @@ fn the_counter_goes_on_the_equipment_that_gave_the_ability(
     if equipped {
         assert_eq!(counters(&driver, driver.id_of("Tally Stick")?), 1);
     }
+    Ok(())
+}
+
+const BREAK: &str = r#"{"Activated":{"cost":[{"Sacrifice":{"filter":[{"Is":"Granter"}]}}],"effects":[{"GainLife":{"amount":3}}]}}"#;
+
+/// An Equipment: "Equipped creature has 'Sacrifice this Equipment: You gain 3 life.'"
+fn breakable_stick() -> Arc<CardDefinition> {
+    Arc::new(
+        CardDefinition::new("Breakable Stick")
+            .with_type(CardType::Artifact)
+            .with_subtype("Equipment")
+            .with_mana_cost(cost(1, &[]))
+            .with_rules(rules(&format!(
+                r#"{{"Static":{{"affected":"Attached","mods":[{{"GrantAbility":{BREAK}}}]}}}}"#
+            ))),
+    )
+}
+
+#[test]
+fn a_cost_that_sacrifices_the_granter_takes_the_equipment_and_not_the_creature()
+-> Result<(), ScriptError> {
+    let mut driver = Driver::from_scenario(
+        Scenario::new(2)
+            .battlefield(
+                0,
+                vec![ready(bear()), attached_to(ready(breakable_stick()), 0, 0)],
+            )
+            .at(1, 0, Step::Main1),
+    )?;
+    let life = driver.state().player(crate::common::pid(0)).unwrap().life();
+    driver.begin_activation("Grizzly Bears")?;
+    for _ in 0..20 {
+        if driver.state().stack().is_empty() && driver.state().resolving().is_none() {
+            break;
+        }
+        driver.answer_passively()?;
+    }
+    assert!(
+        driver.id_of("Breakable Stick").is_err(),
+        "the Equipment was sacrificed"
+    );
+    assert!(driver.id_of("Grizzly Bears").is_ok(), "the creature stays");
+    assert_eq!(
+        driver.state().player(crate::common::pid(0)).unwrap().life(),
+        life + 3
+    );
     Ok(())
 }

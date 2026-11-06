@@ -738,6 +738,8 @@ pub(crate) struct Payer<'a> {
     pub(crate) source: ObjectId,
     /// What cannot be picked.
     pub(crate) barred: &'a [ObjectId],
+    /// The permanent whose static ability gave the ability being paid for (`Ref::Granter`).
+    pub(crate) granter: Option<ObjectId>,
 }
 
 impl Payer<'_> {
@@ -751,7 +753,10 @@ impl Payer<'_> {
         let Some(source) = self.state.object(self.source) else {
             return Vec::new();
         };
-        let scope = Scope::announcing(self.state, self.player, source.reference());
+        let scope = Scope {
+            granter: self.granter,
+            ..Scope::announcing(self.state, self.player, source.reference())
+        };
         from.filter(|id| !self.barred.contains(id) && keep(*id))
             .filter(|id| {
                 self.state.object(*id).is_some_and(|object| {

@@ -157,6 +157,8 @@ pub struct Ctx<'a> {
     pub extra_mode_cost: Option<String>,
     /// What the trigger line being translated is about, for its `Triggered*` words.
     pub trigger: Option<super::triggered::Shape>,
+    /// The ability being translated is one a static ability gives (`AddAbility$`): `OriginalHost` is the card with that static.
+    pub granted: bool,
     binds: usize,
     depth: usize,
 }
@@ -196,6 +198,7 @@ impl<'a> Ctx<'a> {
             excess: None,
             number: None,
             vote_num: None,
+            granted: false,
             modal_keyword: None,
             extra_mode_cost: None,
             trigger: None,

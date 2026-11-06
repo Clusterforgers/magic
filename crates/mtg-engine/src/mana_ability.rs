@@ -70,6 +70,7 @@ fn takes_of(
         player,
         source,
         barred,
+        granter: None,
     };
     picks
         .iter()
@@ -197,6 +198,7 @@ fn rule_mana(state: &GameState, player: PlayerId, id: ObjectId, printed: usize) 
             player,
             source: id,
             barred: &[],
+            granter: None,
         };
         if pays.iter().any(|part| part.payable(&owner, &[]).is_none()) {
             continue;

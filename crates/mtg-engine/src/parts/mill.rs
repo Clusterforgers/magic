@@ -85,6 +85,7 @@ mod tests {
             player: ME,
             source: state.zone(Zone::Battlefield)[0],
             barred: &[],
+            granter: None,
         }
     }
 
