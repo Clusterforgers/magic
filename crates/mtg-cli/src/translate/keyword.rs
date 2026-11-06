@@ -283,6 +283,10 @@ pub fn keyword_abilities(ctx: &mut Ctx, body: &str) -> Vec<Tr<Value>> {
     if DECK_RULES.contains(&body.trim()) {
         return Vec::new();
     }
+    // The deck check reads this rule from the card; it works from the command zone and changes nothing in play.
+    if body.trim() == "CARDNAME can be your commander." {
+        return vec![Ok(json!({"Rule": {"rule": "CanBeCommander"}}))];
+    }
     if let Some(quirks) = combat_quirks(body.trim()) {
         return quirks.iter().map(|quirk| Ok(combat_rule(quirk))).collect();
     }
