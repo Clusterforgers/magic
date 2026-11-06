@@ -26,7 +26,7 @@
                         {
                           "Not": {
                             "AnyOf": [
-                              { "Not": { "In": "Stack" } },
+                              { "Not": "Spell" },
                               { "Not": { "Compare": { "stat": "ManaValue", "op": "Ge", "to": 1 } } }
                             ]
                           }

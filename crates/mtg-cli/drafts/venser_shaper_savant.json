@@ -11,9 +11,7 @@
         {
           "Triggered": {
             "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
-            "targets": [
-              { "what": { "Object": [{ "AnyOf": [{ "In": "Battlefield" }, { "In": "Stack" }] }] } }
-            ],
+            "targets": [{ "what": { "Object": [{ "AnyOf": [{ "In": "Battlefield" }, "Spell"] }] } }],
             "effects": [{ "Move": { "what": { "Target": 0 }, "to": "Hand" } }]
           }
         }

@@ -9,9 +9,7 @@
       "abilities": [
         {
           "Activated": {
-            "cost": [
-              { "ExileFromGraveyard": { "filter": [{ "Type": "Creature" }, "TopOfGraveyard"] } }
-            ],
+            "cost": [{ "ExileFromGraveyard": { "filter": ["TopCreatureOfGraveyard"] } }],
             "effects": [
               {
                 "Continuous": {

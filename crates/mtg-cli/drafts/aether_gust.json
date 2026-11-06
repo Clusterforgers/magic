@@ -15,15 +15,9 @@
                   "Object": [
                     {
                       "AnyOf": [
+                        { "Not": { "AnyOf": [{ "Not": "Spell" }, { "Not": { "Color": "Red" } }] } },
                         {
-                          "Not": {
-                            "AnyOf": [{ "Not": { "In": "Stack" } }, { "Not": { "Color": "Red" } }]
-                          }
-                        },
-                        {
-                          "Not": {
-                            "AnyOf": [{ "Not": { "In": "Stack" } }, { "Not": { "Color": "Green" } }]
-                          }
+                          "Not": { "AnyOf": [{ "Not": "Spell" }, { "Not": { "Color": "Green" } }] }
                         },
                         {
                           "Not": {
