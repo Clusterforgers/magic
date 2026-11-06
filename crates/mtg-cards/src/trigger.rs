@@ -841,6 +841,9 @@ pub enum ReplaceBy {
         /// What it gets besides: a keyword or an ability.
         mods: Vec<Modification>,
     },
+    /// Amplify N (CR 702.38): as the permanent enters, its controller reveals any number of creature cards from their hand that
+    /// share a creature type with it, and it enters with N +1/+1 counters for each.
+    Amplify(u32),
     /// Tribute N (CR 702.104): as the permanent enters, an opponent of its controller chosen by the controller may put N +1/+1
     /// counters on it; it remembers whether they did as a number (1 paid, 0 not) that `Amount::Chosen` reads.
     Tribute(u32),

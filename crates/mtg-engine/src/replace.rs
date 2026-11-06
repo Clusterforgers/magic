@@ -634,6 +634,7 @@ fn applies_to(by: &ReplaceBy, unit: &Unit) -> bool {
         | ReplaceBy::WithCounters { .. }
         | ReplaceBy::WithCountersAnd { .. }
         | ReplaceBy::Tribute(_)
+        | ReplaceBy::Amplify(_)
         | ReplaceBy::MayWithCounters { .. }
         | ReplaceBy::Choose(_)
         | ReplaceBy::PayLifeOrTapped(_)
@@ -1628,6 +1629,7 @@ impl Pass<'_> {
                                 | ReplaceBy::WithCounters { .. }
                                 | ReplaceBy::WithCountersAnd { .. }
                                 | ReplaceBy::Tribute(_)
+                                | ReplaceBy::Amplify(_)
                                 | ReplaceBy::MayWithCounters { .. }
                                 | ReplaceBy::Devour { .. }
                                 | ReplaceBy::Riot
@@ -1950,6 +1952,9 @@ impl Pass<'_> {
         match by {
             ReplaceBy::Devour { .. } => self.devour(at, candidate, by, object, controller, applied),
             ReplaceBy::Riot => self.riot(at, object, controller, applied),
+            ReplaceBy::Amplify(per) => {
+                self.amplify(at, candidate, (object, controller), *per, applied)
+            }
             ReplaceBy::RevealOrTapped(of) => {
                 self.reveal_or_tapped(at, candidate, of, (object, controller), applied)
             }
@@ -3152,6 +3157,7 @@ mod dredge;
 
 mod reveal;
 
+mod amplify;
 mod changes;
 mod riot;
 mod tribute;

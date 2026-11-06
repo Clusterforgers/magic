@@ -10,7 +10,7 @@ fn equipment(line: &str) -> String {
     format!("Name:Test Blade\nTypes:Artifact Equipment\nManaCost:2\n{line}\n")
 }
 
-fn attach(cost: Value, limit: bool) -> Value {
+fn attach(cost: &Value, limit: bool) -> Value {
     let mut found = json!({"Activated": {"cost": cost, "timing": "Sorcery",
         "targets": [{"what": {"Object": [{"Type": "Creature"}, {"ControlledBy": "You"}]}}],
         "effects": [{"Attach": {"what": "This", "to": {"Target": 0}}}]}});
@@ -26,7 +26,7 @@ fn attach(cost: Value, limit: bool) -> Value {
 fn equip_options(#[case] line: &str, #[case] cost: Value, #[case] limit: bool) {
     let text = equipment(line);
     assert_eq!(gaps(&text), Vec::<String>::new());
-    assert_eq!(abilities(&text)[0], attach(cost, limit));
+    assert_eq!(abilities(&text)[0], attach(&cost, limit));
 }
 
 #[test]
@@ -34,7 +34,7 @@ fn equip_with_a_second_cost_is_two_abilities() {
     let found = abilities(&equipment("K:Equip:2:::AlternateCost$ B"));
     assert_eq!(
         found,
-        vec![attach(json!("{2}"), false), attach(json!("{B}"), false)]
+        vec![attach(&json!("{2}"), false), attach(&json!("{B}"), false)]
     );
 }
 
@@ -53,7 +53,7 @@ const LANCER: &str = "Name:Test Lancer\nTypes:Creature Human Knight\nManaCost:2 
 
 const VOLVER: &str = "Name:Test Volver\nTypes:Creature Volver\nManaCost:3 G\nPT:2/2\nK:Kicker:1 U:B\nK:ETBReplacement:Other:Strength:Mandatory::Card.Self+kicked 1\nK:ETBReplacement:Other:Pumped:Mandatory::Card.Self+kicked 2\nSVar:Strength:DB$ PutCounter | Defined$ Self | CounterType$ P1P1 | CounterNum$ 2 | ETB$ True | SubAbility$ Launch\nSVar:Launch:DB$ Animate | Defined$ Self | Keywords$ Flying | Duration$ Permanent\nSVar:Pumped:DB$ PutCounter | Defined$ Self | CounterType$ P1P1 | CounterNum$ 1 | ETB$ True\n";
 
-fn replacement(when: Value, by: Value) -> Value {
+fn replacement(when: &Value, by: &Value) -> Value {
     json!({"Replacement": {"when": {"Enters": {"what": ["This"]}}, "by": by, "condition": when}})
 }
 
@@ -62,7 +62,7 @@ fn a_kicked_permanent_enters_with_counters_and_a_keyword() {
     let by = json!({"WithCountersAnd": {"counter": "+1/+1", "count": 2,
         "mods": [{"AddKeyword": "FirstStrike"}]}});
     assert_eq!(gaps(LANCER), Vec::<String>::new());
-    assert!(abilities(LANCER).contains(&replacement(json!("Kicked"), by)));
+    assert!(abilities(LANCER).contains(&replacement(&json!("Kicked"), &by)));
 }
 
 #[test]
@@ -72,8 +72,8 @@ fn each_kicker_of_two_has_its_own_entering() {
     let second = json!({"WithCounters": {"counter": "+1/+1", "count": 1}});
     let found = abilities(VOLVER);
     assert_eq!(gaps(VOLVER), Vec::<String>::new());
-    assert!(found.contains(&replacement(json!({"KickedWith": "{1}{U}"}), first)));
-    assert!(found.contains(&replacement(json!({"KickedWith": "{B}"}), second)));
+    assert!(found.contains(&replacement(&json!({"KickedWith": "{1}{U}"}), &first)));
+    assert!(found.contains(&replacement(&json!({"KickedWith": "{B}"}), &second)));
 }
 
 #[rstest]
@@ -111,6 +111,28 @@ fn tribute_asks_an_opponent_and_triggers_when_unpaid() {
         found[1]["Triggered"]["when"],
         json!({"ZoneChange": {"what": ["This"], "to": "Battlefield"}})
     );
+}
+
+#[rstest]
+#[case::one("1", Some(1))]
+#[case::three("3", Some(3))]
+#[case::zero("0", None)]
+#[case::x("X", None)]
+fn amplify_enters_with_counters_for_the_cards_revealed(
+    #[case] number: &str,
+    #[case] counters: Option<u32>,
+) {
+    let text =
+        format!("Name:Test Warhawk\nTypes:Creature Bird Soldier\nPT:2/2\nK:Amplify:{number}\n");
+    match counters {
+        Some(count) => assert_eq!(
+            abilities(&text),
+            vec![
+                json!({"Replacement": {"when": {"Enters": {"what": ["This"]}}, "by": {"Amplify": count}}})
+            ]
+        ),
+        None => assert_eq!(gaps(&text), vec!["keyword:Amplify-shape".to_owned()]),
+    }
 }
 
 #[test]

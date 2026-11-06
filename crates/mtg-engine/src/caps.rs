@@ -576,6 +576,7 @@ const RUNS: &[&str] = &[
     "ReplaceBy.WithCounters",
     "ReplaceBy.WithCountersAnd",
     "ReplaceBy.Tribute",
+    "ReplaceBy.Amplify",
     "ReplaceBy.MayWithCounters",
     "ReplaceBy.Choose",
     "ReplaceBy.PayLifeOrTapped",
@@ -834,6 +835,7 @@ mod tests {
     #[case::entering_with_counters("ReplaceBy.WithCounters", true)]
     #[case::entering_with_counters_and_a_change("ReplaceBy.WithCountersAnd", true)]
     #[case::tribute("ReplaceBy.Tribute", true)]
+    #[case::amplify("ReplaceBy.Amplify", true)]
     #[case::entering_with_counters_by_choice("ReplaceBy.MayWithCounters", true)]
     #[case::choosing_as_it_enters("ReplaceBy.Choose", true)]
     #[case::paying_life_or_entering_tapped("ReplaceBy.PayLifeOrTapped", true)]

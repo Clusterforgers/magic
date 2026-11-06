@@ -417,6 +417,7 @@ mod r1c;
 mod r1fix;
 mod r2e_cost_parts;
 mod r4_audit;
+mod r4a_amplify;
 mod r4a_champion;
 mod r4a_enters_with;
 mod r4a_tribute;
