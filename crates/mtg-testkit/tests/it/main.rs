@@ -650,6 +650,7 @@ mod r4i_can_enchant;
 mod r4i_granter;
 mod r4i_may_flash;
 mod r4i_or_controller;
+mod r5e_done_once;
 mod ring;
 mod target_reductions;
 mod together_batch;

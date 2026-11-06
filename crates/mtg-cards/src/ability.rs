@@ -57,6 +57,20 @@ pub enum Limit {
     OncePerGame,
     /// This many times each turn (a limit of 2 or 3, CR 602.5b).
     TimesPerTurn(u32),
+    /// "Do this only once each turn" on a trigger whose first step is optional: spent only when that step is done.
+    OncePerTurnDone,
+}
+
+impl Limit {
+    /// The limit of a triggered ability whose first step is a choice ("you may", "you may pay"): "do this only once
+    /// each turn" counts the times it is done; the same limit on a step that is always done is a plain once each turn.
+    pub fn done_once(effects: &[crate::effect::Effect]) -> Self {
+        use crate::effect::Effect;
+        match effects.first() {
+            Some(Effect::May { .. } | Effect::Pay { .. }) => Limit::OncePerTurnDone,
+            _ => Limit::OncePerTurn,
+        }
+    }
 }
 
 /// The loyalty cost of a planeswalker ability (CR 606.4).

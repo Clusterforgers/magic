@@ -30,7 +30,7 @@ use mtg_core::ids::{ObjectId, PlayerId};
 
 pub(crate) use inline::{run_inline, w5d_run_instead};
 pub use left::LeftToTable;
-pub(crate) use prim::lower;
+pub(crate) use prim::{first_step_done, lower};
 pub use value::{Bindings, ResolveError, Scope};
 pub(crate) use value::{CastTargets, zone_kind};
 
@@ -464,6 +464,17 @@ fn run_step(
             object: object.id(),
             outcome: ResolutionOutcome::Lapsed,
         }]));
+    }
+    // "Do this only once each turn": once it was done this turn, the ability does nothing.
+    if resolving.position == START
+        && let Ability::Triggered {
+            limit: Some(limit @ mtg_cards::ability::Limit::OncePerTurnDone),
+            ..
+        } = rules
+        && let Some(ability) = object.ability()
+        && state.limit_spent(*limit, ability.source(), ability.origin(), ability.index())
+    {
+        return Ok(Progress::Done(finish(state, object)));
     }
     // CR 702.131a: an instant or sorcery spell with ascend gives the blessing before any of its effects.
     if resolving.position == START

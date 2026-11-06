@@ -27,7 +27,7 @@ const MASSACRE_WURM: &str = r#"{"Triggered":{"when":{"ZoneChange":{"what":[{"Typ
 const RESCUE: &str = r#"{"Triggered":{"when":{"ZoneChange":{"what":["This"],"to":"Battlefield"}},"targets":[{"what":{"Object":[{"AnyOf":[{"Type":"Artifact"},{"Type":"Creature"}]},"Other",{"ControlledBy":"You"}]},"bounds":{"min":0,"max":1}}],"effects":[{"Move":{"what":{"Target":0},"to":"Hand"}},{"If":{"condition":{"Matches":{"subject":{"Target":0},"selector":[{"Type":"Artifact"}]}},"then":[{"PutCounters":{"on":"This","counter":"+1/+1"}}]}}]}}"#;
 
 /// "Whenever you gain life, you may put that many +1/+1 counters on each creature you control. Do this only once each turn."
-const NYKTHOS_PARAGON: &str = r#"{"Triggered":{"when":{"LifeGained":{"who":"You"}},"limit":"OncePerTurn","effects":[{"May":{"effects":[{"PutCounters":{"on":{"Each":[{"Type":"Creature"},{"ControlledBy":"You"}]},"counter":"+1/+1","count":"Triggering"}}]}}]}}"#;
+const NYKTHOS_PARAGON: &str = r#"{"Triggered":{"when":{"LifeGained":{"who":"You"}},"limit":"OncePerTurnDone","effects":[{"May":{"effects":[{"PutCounters":{"on":{"Each":[{"Type":"Creature"},{"ControlledBy":"You"}]},"counter":"+1/+1","count":"Triggering"}}]}}]}}"#;
 
 /// "When ~ enters, sacrifice it unless you return another creature you control to its owner's hand."
 const QUICKLING: &str = r#"{"Triggered":{"when":{"ZoneChange":{"what":["This"],"to":"Battlefield"}},"effects":[{"Pay":{"cost":[{"ReturnToHand":{"filter":["Other",{"Type":"Creature"}]}}],"unpaid":[{"Sacrifice":{"filter":["This"]}}]}}]}}"#;

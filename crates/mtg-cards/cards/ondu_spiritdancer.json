@@ -15,7 +15,7 @@
                 "to": "Battlefield"
               }
             },
-            "limit": "OncePerTurn",
+            "limit": "OncePerTurnDone",
             "effects": [
               {
                 "May": {

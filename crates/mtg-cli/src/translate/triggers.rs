@@ -103,16 +103,7 @@ pub fn triggered(ctx: &mut Ctx, body: &str) -> Tr<Value> {
     if let Some(condition) = intervening {
         ability["if"] = condition;
     }
-    // The engine spends the limit as the ability triggers; a limit on what resolves must not be used up by a declined "may"
-    // or an unpaid cost, so only a mandatory effect keeps it.
-    let rendered = json!(effects).to_string();
-    let optional = p.get("OptionalDecider").is_some()
-        || rendered.contains("\"May\":")
-        || rendered.contains("\"Pay\":");
-    if p.get("ResolvedLimit").is_some() && optional {
-        return unmapped("key:Trigger.ResolvedLimit-optional");
-    }
-    if let Some(limit) = once_a_turn(&p)? {
+    if let Some(limit) = limit(&p, &effects)? {
         ability["limit"] = limit;
     }
     if !ctx.targets.is_empty() {
@@ -128,6 +119,26 @@ pub fn triggered(ctx: &mut Ctx, body: &str) -> Tr<Value> {
         }
     }
     Ok(ability)
+}
+
+/// The limit of a trigger. A limit on what resolves after a choice ("you may ... Do this only once each turn") is spent as
+/// the choice is done (`OncePerTurnDone`), so a declined "may" or an unpaid cost does not use it up; a choice later than the
+/// first step stays a gap.
+fn limit(p: &Params, effects: &[Value]) -> Tr<Option<Value>> {
+    let rendered = json!(effects).to_string();
+    let optional = p.get("OptionalDecider").is_some()
+        || rendered.contains("\"May\":")
+        || rendered.contains("\"Pay\":");
+    if p.get("ResolvedLimit").is_none() || !optional {
+        return once_a_turn(p);
+    }
+    let chosen_first = effects
+        .first()
+        .is_some_and(|first| first.get("May").is_some() || first.get("Pay").is_some());
+    if !chosen_first || p.get("ResolvedLimit") != Some("1") || p.has("ActivationLimit") {
+        return unmapped("key:Trigger.ResolvedLimit-optional");
+    }
+    Ok(Some(json!("OncePerTurnDone")))
 }
 
 /// The limit a line states: `ActivationLimit$ 1` ("triggers only once each turn"), or `ResolvedLimit$ 1` ("do this only once

@@ -15,7 +15,7 @@
                 "counter": "+1/+1"
               }
             },
-            "limit": "OncePerTurn",
+            "limit": "OncePerTurnDone",
             "effects": [{ "May": { "effects": [{ "Draw": { "count": "Triggering" } }] } }]
           }
         }

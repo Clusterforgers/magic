@@ -49,7 +49,7 @@ pub(super) fn add(ability: &Ability, texts: &mut Vec<String>) {
         return;
     };
     let once = match limit {
-        Some(Limit::OncePerTurn) => " Do this only once each turn.",
+        Some(Limit::OncePerTurn | Limit::OncePerTurnDone) => " Do this only once each turn.",
         Some(Limit::OncePerGame) => " Do this only once.",
         Some(Limit::TimesPerTurn(_)) => return,
         None => "",

@@ -550,7 +550,7 @@ impl GameState {
     ) -> bool {
         let key = (source, origin, ability);
         match limit {
-            Limit::OncePerTurn => self.limits_spent.insert(key),
+            Limit::OncePerTurn | Limit::OncePerTurnDone => self.limits_spent.insert(key),
             Limit::OncePerGame => self.game_limits_spent.insert(key),
             Limit::TimesPerTurn(most) => {
                 let used = self.tallies.limit_uses.entry(key).or_insert(0);

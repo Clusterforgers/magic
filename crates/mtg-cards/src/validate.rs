@@ -9,7 +9,7 @@ use serde::Serialize;
 
 use mtg_core::card::Subtype;
 
-use crate::ability::{Ability, LoyaltyCost, Timing};
+use crate::ability::{Ability, Limit, LoyaltyCost, Timing};
 use crate::assemble::{MANA_WAYS, PLAIN_MANA_ABILITY, mana_shape, plain_mana_ability};
 use crate::card::{Card, Face, ImplStatus, TokenSpec};
 use crate::cost::{Cost, CostItem};
@@ -3634,6 +3634,19 @@ impl Walker<'_> {
         };
         if limit {
             self.uses("Ability", "Limit");
+        }
+        // The limit counted as a choice is done needs a triggered ability whose first step is that choice.
+        let counted_done = match ability {
+            Ability::Triggered {
+                limit: Some(Limit::OncePerTurnDone),
+                effects,
+                ..
+            } => Limit::done_once(effects) != Limit::OncePerTurnDone,
+            Ability::Activated { limit, .. } => *limit == Some(Limit::OncePerTurnDone),
+            _ => false,
+        };
+        if counted_done {
+            self.problem("\"do this only once each turn\" counts a first step that is a choice");
         }
         if from {
             self.uses("Ability", "From");

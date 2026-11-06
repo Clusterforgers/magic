@@ -2004,6 +2004,17 @@ fn object_triggers(
                     continue;
                 }
             }
+            // "Do this only once each turn" triggers each time until it was done; one done this turn would do nothing.
+            if *limit == Some(Limit::OncePerTurnDone)
+                && state.limit_spent(
+                    Limit::OncePerTurnDone,
+                    source,
+                    address.source,
+                    address.ability,
+                )
+            {
+                continue;
+            }
             if *limit == Some(Limit::OncePerTurn)
                 && (state.limit_spent(Limit::OncePerTurn, source, address.source, address.ability)
                     || !used

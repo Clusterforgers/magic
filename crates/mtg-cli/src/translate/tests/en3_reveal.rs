@@ -53,8 +53,8 @@ fn a_reveal_maps_to_the_nodes_that_show_the_cards(#[case] line: &str, #[case] no
     "Reveal | Defined$ Opponent | RevealValid$ Creature",
     "key:Reveal.Defined"
 )]
-#[case::another_players_cards(
-    "Reveal | ValidTgts$ Opponent | RevealValid$ Creature",
+#[case::a_target_that_is_no_player(
+    "Reveal | ValidTgts$ Creature | RevealValid$ Creature",
     "key:Reveal.ValidTgts"
 )]
 #[case::a_bare_subtype("Reveal | RevealValid$ Dragon | Optional$ True", "valid-base:Dragon")]

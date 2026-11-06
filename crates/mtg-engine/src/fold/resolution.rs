@@ -1,6 +1,6 @@
 //! Folding abilities on the stack and the journal of a resolution.
 
-use mtg_cards::ability::Ability;
+use mtg_cards::ability::{Ability, Limit};
 use mtg_core::ids::ObjectId;
 
 use super::zones::move_object;
@@ -70,6 +70,7 @@ pub(super) fn apply(state: &mut GameState, event: &Event) -> Result<(), EngineEr
             bound,
             snapshots,
         } => {
+            spend_when_done(state, bound);
             let resolving = resolving_mut(state)?;
             resolving.position.clone_from(position);
             for (name, targets) in bound {
@@ -129,6 +130,37 @@ fn renews(old: &[Target], new: &[Target]) -> bool {
             }
             (old, new) => old == new,
         })
+}
+
+/// "Do this only once each turn": the limit of the resolving triggered ability is spent when its first step, a choice,
+/// was done.
+fn spend_when_done(state: &mut GameState, bound: &[(String, Vec<Target>)]) {
+    let first = crate::resolve::first_step_done();
+    if !bound
+        .iter()
+        .any(|(name, who)| *name == first && !who.is_empty())
+    {
+        return;
+    }
+    let Some(ability) = state
+        .resolving
+        .as_ref()
+        .and_then(|resolving| state.objects.get(&resolving.object))
+        .and_then(|object| object.ability())
+    else {
+        return;
+    };
+    let counted = matches!(
+        ability.rules(),
+        Ability::Triggered {
+            limit: Some(Limit::OncePerTurnDone),
+            ..
+        }
+    );
+    let key = (ability.source(), ability.origin(), ability.index());
+    if counted {
+        state.spend_limit(Limit::OncePerTurnDone, key.0, key.1, key.2);
+    }
 }
 
 fn resolving_mut(state: &mut GameState) -> Result<&mut Resolving, EngineError> {

@@ -77,7 +77,7 @@ fn source_restriction(ctx: &Ctx, choices: &str) -> Tr<Vec<Value>> {
 }
 
 /// `Reveal` with `Random$ True`: one card of the hand of the player `Defined$` names, picked at random and shown.
-fn reveal_at_random(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
+fn reveal_at_random(ctx: &mut Ctx, p: &Params, target: Option<Value>) -> Tr<Vec<Value>> {
     if [
         "RevealValid",
         "RevealDefined",
@@ -90,7 +90,18 @@ fn reveal_at_random(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
     {
         return unmapped("key:Reveal.Random+shape");
     }
-    let who = defined(ctx, p.get("Defined").unwrap_or("You"))?;
+    // "Look at a card at random in target player's hand" shows the card to its controller alone, which a reveal does not.
+    if ctx
+        .oracle
+        .to_lowercase()
+        .contains("look at a card at random")
+    {
+        return unmapped("key:Reveal.Random-look");
+    }
+    let who = match target {
+        Some(target) => target,
+        None => defined(ctx, p.get("Defined").unwrap_or("You"))?,
+    };
     // One card among every hand would not be one player's card.
     if matches!(who.as_str(), Some("EachPlayer" | "Opponents")) {
         return unmapped("key:Reveal.Random+group");
@@ -121,13 +132,28 @@ fn reveal(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
             "RememberRevealed",
             "Random",
             "NumCards",
+            "ValidTgts",
         ],
     )?;
+    // "Target player reveals ... from their hand": the target reveals, and picks what to reveal.
+    let target = match p.get("ValidTgts") {
+        None => None,
+        Some("Player" | "Opponent" | "Player.Opponent")
+            if !p.has("Defined") && !p.has("TargetMin") && !p.has("TargetMax") =>
+        {
+            Some(super::valid::subject(ctx, p, "You", None)?)
+        }
+        Some(_) => return unmapped("key:Reveal.ValidTgts"),
+    };
     if p.get("Random") == Some("True") {
-        return reveal_at_random(ctx, p);
+        return reveal_at_random(ctx, p, target);
     }
     if p.get("Defined").is_some_and(|who| who != "You") {
         return unmapped("key:Reveal.Defined");
+    }
+    // "Target opponent chooses cards from their hand. Look at those cards": only the controller sees them.
+    if target.is_some() && ctx.oracle.to_lowercase().contains("look at those cards") {
+        return unmapped("key:Reveal.ValidTgts-look");
     }
     let remember = p.get("RememberRevealed") == Some("True");
     if p.get("RevealDefined") == Some("Self") {
@@ -142,8 +168,12 @@ fn reveal(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
     let spec = p.get("RevealValid").unwrap_or("Card");
     let most = amount(ctx, p.get("NumCards").unwrap_or("1"))?;
     let mut filter = selector_in(ctx, spec, Some("Hand"))?;
-    if !filter.iter().any(|pred| pred.get("OwnedBy").is_some()) {
-        filter.push(json!({"OwnedBy": "You"}));
+    let owned = filter.iter().any(|pred| pred.get("OwnedBy").is_some());
+    if target.is_some() && owned {
+        return unmapped("key:Reveal.ValidTgts-with-an-owner");
+    }
+    if !owned {
+        filter.push(json!({"OwnedBy": target.clone().unwrap_or_else(|| json!("You"))}));
     }
     let count = match (
         p.get("AnyNumber") == Some("True"),
@@ -157,8 +187,9 @@ fn reveal(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
     if remember {
         ctx.remembered = Some(json!({ "Bound": bind }));
     }
-    Ok(vec![
-        json!({"Choose": {"from": {"Each": filter}, "count": count, "as": bind}}),
-        json!({"Reveal": {"what": {"Bound": bind}}}),
-    ])
+    let mut choose = json!({"Choose": {"from": {"Each": filter}, "count": count, "as": bind}});
+    if let Some(target) = target {
+        choose["Choose"]["who"] = target;
+    }
+    Ok(vec![choose, json!({"Reveal": {"what": {"Bound": bind}}})])
 }
