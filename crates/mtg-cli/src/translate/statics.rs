@@ -596,7 +596,7 @@ fn activation_kind(p: &Params) -> Tr<Option<&'static str>> {
         };
     }
     match spell {
-        None => Ok(None),
+        None | Some("Spell.Bargain") => Ok(None),
         Some("Activated.Equip") => Ok(Some("Equip")),
         Some("Activated.Cycling") => Ok(Some("Cycling")),
         Some("Activated.!ManaAbility") => Ok(Some("Any")),
@@ -678,6 +678,13 @@ fn cost_modifier(ctx: &Ctx, p: &Params, change: &str) -> Tr<Value> {
         applies.push(json!({"Targeting": selector_any(ctx, target)?}));
     }
     let mut conditions = Vec::new();
+    if p.get("ValidSpell") == Some("Spell.Bargain") {
+        // "Costs less if it is bargained": the spell reads what it announced.
+        if p.get("ValidCard") != Some("Card.Self") {
+            return unmapped("key:Static.CostModifier.ValidSpell=Spell.Bargain");
+        }
+        conditions.push(json!("AdditionalCostPaid"));
+    }
     if let Some(name) = p.get("Condition") {
         conditions.push(super::condition::named(name)?);
     }

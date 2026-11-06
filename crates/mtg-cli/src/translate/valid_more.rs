@@ -26,6 +26,7 @@ pub fn property(ctx: &Ctx, prop: &str) -> Tr<Option<Vec<Value>>> {
     let one = |value: Value| Ok(Some(vec![value]));
     match prop {
         "kicked" => return one(json!("Kicked")),
+        "bargained" | "Teamwork" => return one(json!("AdditionalCostPaid")),
         "ActivePlayerCtrl" => return one(json!({"ControlledBy": "ActivePlayer"})),
         "ActivePlayerOwn" => return one(json!({"OwnedBy": "ActivePlayer"})),
         "attackedThisTurn" => return one(json!("AttackedThisTurn")),

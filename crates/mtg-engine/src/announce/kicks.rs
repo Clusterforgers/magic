@@ -312,6 +312,43 @@ fn the_spell_remembers_what_it_paid_while_it_is_on_the_stack_and_the_permanent_a
     assert_eq!(read(&game, gone.reference()), (false, 0));
 }
 
+#[rstest]
+#[case::not_bargained(&[], false)]
+#[case::bargained(&[0], true)]
+fn a_bargained_spell_and_its_permanent_hold_the_additional_cost_predicate(
+    #[case] paid: &[usize],
+    #[case] bargained: bool,
+) {
+    let mut game = table(creature(vec![Keyword::Bargain]), 0);
+    let card = game.zone(Zone::Hand(SEAT))[0];
+    let holds = |game: &GameState| {
+        let object = game.object(card).unwrap().reference();
+        let scope = Scope::announcing(game, SEAT, object);
+        let by_pred = scope
+            .selects(&Selector(vec![Pred::AdditionalCostPaid]), object)
+            .unwrap();
+        assert_eq!(
+            by_pred,
+            scope.holds(&Condition::AdditionalCostPaid).unwrap()
+        );
+        by_pred
+    };
+    assert!(!holds(&game));
+    let choices = Choices {
+        optional_costs: paid.to_vec(),
+        ..Choices::default()
+    };
+    let cast = Event::SpellCast {
+        player: SEAT,
+        object: card,
+        choices,
+    };
+    apply_event(&mut game, &cast).unwrap();
+    assert_eq!(holds(&game), bargained);
+    apply_event(&mut game, &Event::SpellResolved { object: card }).unwrap();
+    assert_eq!(holds(&game), bargained);
+}
+
 #[test]
 fn an_instant_that_resolves_forgets_what_it_paid() {
     let mut game = table(instant("{1}", vec![KICKER()]), 0);

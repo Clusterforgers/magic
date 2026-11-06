@@ -28,6 +28,7 @@ mod effects_game;
 pub mod effects_loop;
 mod effects_next_spell;
 pub mod effects_obj;
+mod effects_r2h;
 mod effects_verbs;
 mod effects_verbs2;
 mod effects_verbs3;

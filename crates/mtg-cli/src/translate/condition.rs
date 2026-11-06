@@ -40,6 +40,10 @@ pub fn condition(ctx: &Ctx, p: &Params) -> Tr<Option<Value>> {
     if let Some(name) = p.get("Condition") {
         all.push(named(name)?);
     }
+    // "At the beginning of your end step, if you descended this turn": the phase trigger names the player with a property.
+    if p.get("ValidPlayer") == Some("You.descended") {
+        all.push(json!({"Compare": {"left": {"Tallied": {"who": "You", "what": "Descended"}}, "op": "Ge", "right": 1}}));
+    }
     all.extend(super::header::trigger_gates(p)?);
     all.extend(super::header::trigger_state(ctx, p)?);
     Ok(single(all))
@@ -87,6 +91,16 @@ fn present(ctx: &Ctx, p: &Params, suffix: &str) -> Tr<Option<Value>> {
         return Ok(Some(
             json!({"Compare": {"left": "Promised", "op": op, "right": right}}),
         ));
+    }
+    // The spell itself on the stack: cast with its additional cost paid (teamwork, bargain).
+    if matches!(valid, "Card.Self+Teamwork" | "Card.Self+bargained")
+        && matches!(zone, None | Some("Stack"))
+    {
+        return match compare.unwrap_or("GE1") {
+            "GE1" => Ok(Some(json!("AdditionalCostPaid"))),
+            "EQ0" => Ok(Some(json!({"Not": "AdditionalCostPaid"}))),
+            other => unmapped(format!("compare:{other}")),
+        };
     }
     let player = match p.get("PresentPlayer") {
         None => false,
@@ -250,6 +264,7 @@ pub fn named(name: &str) -> Tr<Value> {
         "PlayerTurn" => json!("YourTurn"),
         "NotPlayerTurn" => json!({"Not": "YourTurn"}),
         "Kicked" => json!("Kicked"),
+        "Bargain" => json!("AdditionalCostPaid"),
         "Blessing" => json!({"CitysBlessing": "You"}),
         "Monarch" => json!({"Monarch": "You"}),
         "Night" => json!("IsNight"),

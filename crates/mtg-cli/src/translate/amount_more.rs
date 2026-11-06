@@ -37,6 +37,9 @@ pub fn count(ctx: &Ctx, base: &str) -> Option<Tr<Value>> {
         }
         // All the mana in your pool; the mana of one color is a different count and stays a gap.
         "ManaPool:All" if rest.is_empty() => Ok(json!({"ManaInPool": "You"})),
+        "YouDescendedThisTurn" if rest.is_empty() => {
+            Ok(json!({"Tallied": {"who": "You", "what": "Descended"}}))
+        }
         // The cards that left your graveyard this turn; another filter would count other cards.
         "LeftGraveyardThisTurn" if rest == "Card.YouOwn" => {
             Ok(json!({"Tallied": {"who": "You", "what": "CardsLeftGraveyard"}}))

@@ -72,6 +72,12 @@ impl Scope<'_> {
             Pred::Kicked => Self::fe1a_cast_object(seen).is_some_and(|card| {
                 payments(card.card(), card.paid_costs(), OptionalKind::Kicker) > 0
             }),
+            Pred::AdditionalCostPaid => Self::fe1a_cast_object(seen).is_some_and(|card| {
+                let paid = card.paid_costs();
+                payments(card.card(), paid, OptionalKind::Additional)
+                    + payments(card.card(), paid, OptionalKind::Gift)
+                    > 0
+            }),
             Pred::GreatestAmong { stat, group } => self.fe1a_greatest(*stat, group, seen, false)?,
             // Like `HasKeyword`, an object that changed zones has the keywords its snapshot holds.
             Pred::HasKeywordNamed(name) => match seen.keywords {
