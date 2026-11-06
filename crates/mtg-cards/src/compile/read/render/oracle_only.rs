@@ -338,6 +338,7 @@ mod t20c_pay;
 mod t20c_rule;
 // r5b
 mod fix8_tap_or_untap;
+mod fix9_wordings;
 mod r5b_flow;
 
 use crate::ability::Ability;
@@ -449,6 +450,7 @@ pub(super) fn add(ability: &Ability, texts: &mut Vec<String>) {
     // r5b
     r5b_flow::add(ability, texts);
     fix8_tap_or_untap::add(texts);
+    fix9_wordings::add(ability, texts);
 }
 
 /// Adds the wordings of continuous effects and static grants the stored local-model proposals hit (t17b): durations of

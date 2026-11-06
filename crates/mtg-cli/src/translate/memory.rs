@@ -472,6 +472,17 @@ pub fn line(
         } else {
             return unmapped(format!("key:{api}.{}-without-an-object", slot.name()));
         };
+        ctx.damaged = match (api, *slot) {
+            ("DealDamage", Slot::Remembered) => {
+                let source = match p.get("DamageSource") {
+                    None | Some("Self") => json!("This"),
+                    Some(word) => defined(ctx, word)?,
+                };
+                Some((what.clone(), source))
+            }
+            (_, Slot::Remembered) => None,
+            (_, Slot::Imprinted) => ctx.damaged.take(),
+        };
         set(ctx, *slot, Some(what));
     }
     for slot in &moved {

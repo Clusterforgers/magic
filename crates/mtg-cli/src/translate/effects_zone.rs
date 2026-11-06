@@ -682,8 +682,9 @@ fn search(ctx: &mut Ctx, p: &Params, destination: &str) -> Tr<Vec<Value>> {
         return unmapped("key:ChangeZone.Search.Reorder");
     }
     // "Permanent" in one alternative only (`Permanent.Snow,Legendary,Saga`) would be dropped from it: refuse the mixture.
-    super::valid::permanent_card(p.get("ChangeType").unwrap_or("Card"))?;
-    let filter = selector_any(ctx, p.get("ChangeType").unwrap_or("Card"))?;
+    let mut filter = selector_any(ctx, p.get("ChangeType").unwrap_or("Card"))?;
+    // A card in a library is a permanent card when it has a permanent type (a Kindred sorcery is not one).
+    super::valid::fix9_permanent_card(p.get("ChangeType").unwrap_or("Card"), &mut filter)?;
     let filter_is_open = filter.is_empty();
     let bind = ctx.fresh("found");
     let mut find = json!({"filter": filter, "as": bind});

@@ -639,6 +639,17 @@ impl GameState {
         }
     }
 
+    /// Whether `source`, named before its one move to a zone off the battlefield and the stack, dealt damage to `victim`
+    /// this turn as the card it became: a source sacrificed to pay for its own ability deals that ability's damage from
+    /// there ("Sacrifice this: it deals 3 damage to target creature. If a Werewolf is dealt damage this way, ...").
+    pub(crate) fn damaged_by_departed(&self, victim: ObjectRef, source: ObjectRef) -> bool {
+        self.object(source.id).is_some_and(|now| {
+            now.counter() == source.counter + 1
+                && !matches!(now.zone(), Zone::Battlefield | Zone::Stack)
+                && self.damaged_by(victim, now.reference())
+        })
+    }
+
     /// Whether `source` dealt damage to `victim` this turn.
     pub(crate) fn damaged_by(&self, victim: ObjectRef, source: ObjectRef) -> bool {
         self.tallies.damaged_by.contains(&(victim, source))

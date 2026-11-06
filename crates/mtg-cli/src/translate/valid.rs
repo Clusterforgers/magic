@@ -510,6 +510,32 @@ pub fn permanent_card(spec: &str) -> Tr<Option<Value>> {
     Ok(Some(json!({"AnyOf": any})))
 }
 
+/// "Creature card of the chosen type" printed where the script says any card of it (`Card.ChosenType`): a Kindred card
+/// of that type is no creature card, so the creature type joins the predicates.
+fn fix9_creature_of_chosen_type(ctx: &Ctx, spec: &str, preds: &mut Vec<Value>) {
+    let printed = [
+        "creature card of the chosen type",
+        "creature cards of the chosen type",
+    ]
+    .iter()
+    .any(|words| ctx.oracle.contains(words));
+    let untyped = !preds.iter().any(|pred| pred.get("Type").is_some());
+    if printed && untyped && spec.split(',').count() == 1 && spec.starts_with("Card.ChosenType") {
+        preds.insert(0, json!({"Type": "Creature"}));
+    }
+}
+
+/// Adds "a card of a permanent type" to the predicates of a `Permanent` spec that names no card type of its own.
+pub fn fix9_permanent_card(spec: &str, preds: &mut Vec<Value>) -> Tr<()> {
+    let typed = preds
+        .iter()
+        .any(|pred| pred.get("Type").is_some() || pred.get("AnyOf").is_some());
+    if !typed {
+        preds.extend(permanent_card(spec)?);
+    }
+    Ok(())
+}
+
 /// "Put there this turn" outside the battlefield: `EnteredThisTurn` tallies only arrivals on the battlefield, so a card in
 /// another zone is selected by its latest arrival from any zone.
 fn arrived_outside(preds: &mut [Value]) {
@@ -531,6 +557,7 @@ fn arrived_outside(preds: &mut [Value]) {
 pub fn selector_in(ctx: &Ctx, spec: &str, zone: Option<&str>) -> Tr<Vec<Value>> {
     let spec = &commas(spec);
     let mut preds = selector_any(ctx, spec)?;
+    fix9_creature_of_chosen_type(ctx, spec, &mut preds);
     if !matches!(zone, None | Some("Battlefield"))
         && let Some(any) = permanent_card(spec)?
     {

@@ -129,6 +129,9 @@ pub struct Ctx<'a> {
     pub pinned: Option<Value>,
     /// What `DelayTriggerRemembered` names in the steps of a delayed trigger: the name its setup bound.
     pub delayed_remembered: Option<Value>,
+    /// What a line that deals damage remembered (`RememberDamaged$`) and the source of that damage: a condition on it asks
+    /// that the source really dealt it damage, which a prevention stops.
+    pub damaged: Option<(Value, Value)>,
     /// A cost is being translated: the engine checks a cost against no target specification, so the count grammar
     /// reads no target there.
     pub in_cost: std::cell::Cell<bool>,
@@ -207,6 +210,7 @@ impl<'a> Ctx<'a> {
             memory: super::memory::plan(face),
             pinned: None,
             delayed_remembered: None,
+            damaged: None,
             parent_target: None,
             r6e_selected: Vec::new(),
             chosen: None,
@@ -231,6 +235,7 @@ impl<'a> Ctx<'a> {
     pub fn reset(&mut self) {
         self.targets.clear();
         self.remembered = None;
+        self.damaged = None;
         self.imprinted = None;
         self.moved_from.clear();
         self.counted.clear();
