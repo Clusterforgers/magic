@@ -7,6 +7,7 @@ use mtg_cards::CardDefinition;
 use mtg_cards::ability::Ability;
 use mtg_engine::choose::CardsChoice;
 use mtg_engine::decision::{Answer, DecisionKind};
+use mtg_engine::effects::{Duration, Modification};
 use mtg_engine::zones::Zone;
 use mtg_testkit::cards::{free_creature, plains};
 use mtg_testkit::{Driver, Scenario, ready};
@@ -101,6 +102,33 @@ fn declining_sacrifices_the_champion(#[values(2, 3)] seats: usize) {
         Zone::Graveyard(mtg_core::ids::PlayerId(0))
     ));
     assert!(in_zone(&driver, "Goblin", Zone::Battlefield));
+}
+
+#[rstest]
+fn the_exiled_creature_returns_when_the_champion_leaves(#[values(2, 3, 4)] seats: usize) {
+    let mut driver = table(seats, true);
+    assert!(cast(&mut driver));
+    let goblin = driver.id_of("Goblin").unwrap();
+    driver
+        .answer(Answer::ChooseCards(CardsChoice(vec![goblin])))
+        .unwrap();
+    settle(&mut driver);
+    assert!(in_zone(&driver, "Goblin", Zone::Exile));
+    let mob = driver.id_of("Mob").unwrap();
+    driver
+        .add_effect(
+            driver.on(mob),
+            Modification::ModifyPowerToughness {
+                power: 0,
+                toughness: -3,
+            },
+            Duration::UntilEndOfTurn,
+        )
+        .unwrap();
+    settle(&mut driver);
+    assert!(!in_zone(&driver, "Mob", Zone::Battlefield));
+    assert!(in_zone(&driver, "Goblin", Zone::Battlefield));
+    assert!(!in_zone(&driver, "Goblin", Zone::Exile));
 }
 
 #[rstest]
