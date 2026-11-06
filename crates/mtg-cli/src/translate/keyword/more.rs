@@ -23,6 +23,8 @@ pub fn special(ctx: &Ctx, text: &str) -> Option<Tr<Value>> {
         ["Gift"] => gift(ctx),
         ["Backup", count, part] => backup(ctx, count, part),
         ["Station", number] => station(number),
+        ["Devour", count] | ["Devour", count, _] => devour(count, fields.get(2).copied()),
+        ["Awaken", count, price] => awaken(ctx, count, price),
         ["Equip", price, valid] | ["Equip", price, valid, _] if !valid.is_empty() => {
             equip_to(ctx, price, valid)
         }
@@ -86,6 +88,32 @@ fn backup(ctx: &Ctx, count: &str, part: &str) -> Tr<Value> {
     }
 }
 
+/// `Devour:2`, `Devour:3:Land`: the counters for each permanent sacrificed and what may be sacrificed; a count that is not a number
+/// (`X`) stays a gap.
+fn devour(count: &str, of: Option<&str>) -> Tr<Value> {
+    let of = match of {
+        None => json!({"Type": "Creature"}),
+        Some("Artifact") => json!({"Type": "Artifact"}),
+        Some("Land") => json!({"Type": "Land"}),
+        Some("Food") => json!({"Subtype": "Food"}),
+        Some(_) => return unmapped("keyword:Devour-kind"),
+    };
+    match count.parse::<u32>() {
+        Ok(counters) if counters > 0 => Ok(json!({"Devour": {"counters": counters, "of": [of]}})),
+        _ => unmapped("keyword:Devour-shape"),
+    }
+}
+
+/// `Awaken:3:4 U`: the counters and the alternative cost.
+fn awaken(ctx: &Ctx, count: &str, price: &str) -> Tr<Value> {
+    match count.parse::<u32>() {
+        Ok(count) if count > 0 => {
+            Ok(json!({"Awaken": {"count": count, "cost": cost(ctx, price)?}}))
+        }
+        _ => unmapped("keyword:Awaken-shape"),
+    }
+}
+
 /// `Station:8`: the threshold is also on the card's `STATION` lines, which carry it.
 fn station(number: &str) -> Tr<Value> {
     match number.parse::<u32>() {
@@ -109,9 +137,24 @@ fn equip_to(ctx: &Ctx, price: &str, valid: &str) -> Tr<Value> {
         _ => None,
     };
     let valid = spelled.as_deref().unwrap_or(valid);
-    // Alternatives ("Shaman, Warlock, or Wizard") would need an either-or of selectors.
+    // Alternatives ("Shaman, Warlock, or Wizard") are creature types of the creatures you control.
     if valid.contains(',') {
-        return unmapped("keyword:Equip-with-restriction");
+        let kinds: Option<Vec<Value>> = valid
+            .split(',')
+            .map(|alternative| {
+                let kind = alternative.strip_prefix("Creature.YouCtrl+")?;
+                ctx.world
+                    .subtypes
+                    .contains(kind)
+                    .then(|| json!({"Subtype": kind}))
+            })
+            .collect();
+        return match kinds {
+            Some(kinds) => {
+                Ok(json!({"EquipTo": {"to": [{"AnyOf": kinds}], "cost": cost(ctx, price)?}}))
+            }
+            None => unmapped("keyword:Equip-with-restriction"),
+        };
     }
     let Some(rest) = valid.strip_prefix("Creature.") else {
         return unmapped("keyword:Equip-with-restriction");

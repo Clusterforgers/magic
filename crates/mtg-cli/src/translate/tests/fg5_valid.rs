@@ -56,7 +56,7 @@ fn properties_map(#[case] spec: &str, #[case] expected: Value) {
 }
 
 #[rstest]
-#[case::saddled("Card.Self+IsSaddled", "valid:IsSaddled")]
+#[case::unknown_state("Card.Self+IsBogus", "valid:IsBogus")]
 #[case::controlled_by_a_card(
     "Creature.ControlledBy TriggeredTarget",
     "defined:TriggeredTarget-in-no-trigger"

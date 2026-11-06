@@ -50,6 +50,11 @@ pub fn static_lines(ctx: &mut Ctx, body: &str) -> Tr<Value> {
     ctx.reset();
     let all = Params::parse(body);
     let condition = condition(ctx, &all)?;
+    let condition = match (condition, all.get("Affected")) {
+        (Some(earlier), Some(word)) if is_pair(word) => Some(json!({"All": [earlier, paired()]})),
+        (None, Some(word)) if is_pair(word) => Some(paired()),
+        (other, _) => other,
+    };
     let condition = match condition {
         Some(found) if all.get("AffectedZone") == Some("Stack") => Some(before_itself(found)),
         other => other,
@@ -180,6 +185,7 @@ fn zoned(ctx: &Ctx, valid: &str, zone: Option<&str>) -> Tr<Value> {
 
 fn affected_valid(ctx: &Ctx, word: &str) -> Tr<Value> {
     match word {
+        word if is_pair(word) => Ok(pair()),
         "Card.Self" | "Creature.Self" => Ok(json!("This")),
         "Card.EnchantedBy" | "Creature.EnchantedBy" | "Card.EquippedBy" | "Creature.EquippedBy" => {
             Ok(json!("Attached"))
@@ -187,6 +193,23 @@ fn affected_valid(ctx: &Ctx, word: &str) -> Tr<Value> {
         "You" | "Player" | "Opponent" => unmapped(format!("static-affected:{word}")),
         valid => Ok(json!({"Each": selector_any(ctx, valid)?})),
     }
+}
+
+/// The creature with soulbond and the one it is paired with: `Affected$` of a soulbond line.
+fn is_pair(word: &str) -> bool {
+    matches!(
+        word,
+        "Creature.PairedWith,Creature.Self+Paired" | "Creature.PairedWith,Card.Self+Paired"
+    )
+}
+
+fn pair() -> Value {
+    json!({"Each": [{"AnyOf": ["This", {"PairedWith": "This"}]}]})
+}
+
+/// The condition of a soulbond line: the card itself is paired.
+fn paired() -> Value {
+    json!({"Matches": {"subject": "This", "selector": ["Paired"]}})
 }
 
 /// The keys a continuous static line reads.
