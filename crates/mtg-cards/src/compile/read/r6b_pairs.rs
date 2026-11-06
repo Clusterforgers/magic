@@ -111,6 +111,10 @@ pub(super) fn r6b_texts(first: &Ability, second: &Ability) -> Vec<String> {
         });
         for back in said.chain(back_row) {
             texts.push(format!("{subject}{front} and {back}."));
+            // Two statics apply together, in either order: "can't be blocked and has shroud".
+            if matches!(second, Ability::Static { .. }) && !front.contains(" and ") {
+                texts.push(format!("{subject}{back} and {front}."));
+            }
             // "gets +2/+2 and has vigilance" with a third part is a list: "gets +2/+2, has vigilance, and ...".
             if let Some((head, last)) = front.rsplit_once(" and ")
                 && !head.contains(" and ")

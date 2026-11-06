@@ -220,6 +220,77 @@ fn r6b_oracle_wordings_read_back(#[case] json: &str, #[case] clause: &str, #[cas
     );
 }
 
+const PLAGUE: &str = r#"{"Static":{"affected":{"Each":[{"Type":"Creature"},"ChosenSubtype",{"ControlledBy":"Opponents"}]},"mods":[{"ModifyPT":{"power":-1,"toughness":-1}}]}}"#;
+const SPITTING: &str = r#"{"Static":{"affected":{"Each":[{"Type":"Creature"},{"HasCounter":"-1/-1"},{"ControlledBy":"Opponents"}]},"mods":["CantBlock"]}}"#;
+const CLOCK: &str = r#"{"Activated":{"cost":"{2}{U}","effects":[{"PutCounters":{"counter":{"Other":"hour"},"on":"This"}}]}}"#;
+const ELF_KNIGHT: &str = r#"{"Activated":{"cost":[{"Mana":"{5}{W}"},"Tap"],"effects":[{"CreateToken":{"token":{"Custom":{"abilities":[{"Keyword":"Vigilance"}],"colors":["White","Green"],"name":"Elf Knight","power":2,"subtypes":["Elf","Knight"],"toughness":2,"types":["Creature"]}}}}]}}"#;
+const SIEGEMASTER: &str = r#"{"Static":{"affected":{"Each":[{"AnyOf":[{"Subtype":"Goblin"},{"Subtype":"Orc"}]},{"ControlledBy":"You"},"Other"]},"mods":[{"AddKeyword":"Trample"}]}}"#;
+const CHANTER: &str = r#"{"Activated":{"cost":"{5}{W}","effects":[{"Continuous":{"affected":"This","duration":"UntilEndOfTurn","mods":[{"AddKeyword":"Lifelink"},{"AddKeyword":"Vigilance"}]}}]}}"#;
+const STOP_COLD: &str = r#"{"Triggered":{"effects":[{"Tap":{"what":"Attached"}}],"when":{"ZoneChange":{"to":"Battlefield","what":["This"]}}}}"#;
+const HARRIER: &str = r#"{"Activated":{"cost":[{"Mana":"{W}"},"Tap",{"Discard":{}}],"effects":[{"CreateToken":{"token":{"Custom":{"abilities":[{"Activated":{"cost":[{"Mana":"{W}"},"Tap"],"effects":[{"Tap":{"what":{"Target":0}}}],"targets":[{"what":{"Object":[{"Type":"Creature"}]}}]}}],"colors":["White"],"name":"Goldmeadow Harrier","power":1,"subtypes":["Kithkin","Soldier"],"toughness":1,"types":["Creature"]}}}}]}}"#;
+const HARRIER_TEXT: &str = "{W}, {T}, Discard a card: Create a 1/1 white Kithkin Soldier creature token named Goldmeadow Harrier. It has \"{W}, {T}: Tap target creature.\"";
+
+#[rstest]
+#[case::chosen_type_first(
+    PLAGUE,
+    "Creatures of the chosen type your opponents control get -1/-1.",
+    true
+)]
+#[case::chosen_type_yours(&PLAGUE.replace("Opponents", "You"), "Creatures of the chosen type your opponents control get -1/-1.", false)]
+#[case::opponents_first(
+    SPITTING,
+    "Creatures your opponents control with -1/-1 counters on them can't block.",
+    true
+)]
+#[case::opponents_first_plus(&SPITTING.replace(r#""HasCounter":"-1/-1""#, r#""HasCounter":"+1/+1""#), "Creatures your opponents control with -1/-1 counters on them can't block.", false)]
+#[case::an_hour(CLOCK, "{2}{U}: Put an hour counter on ~.", true)]
+#[case::an_hour_two(&CLOCK.replace(r#""counter""#, r#""count":2,"counter""#), "{2}{U}: Put an hour counter on ~.", false)]
+#[case::colors_swapped(
+    ELF_KNIGHT,
+    "{5}{W}, {T}: Create a 2/2 green and white Elf Knight creature token with vigilance.",
+    true
+)]
+#[case::colors_one(&ELF_KNIGHT.replace(r#"["White","Green"]"#, r#"["Green"]"#), "{5}{W}, {T}: Create a 2/2 green and white Elf Knight creature token with vigilance.", false)]
+#[case::subtypes_swapped(SIEGEMASTER, "Other Orcs and Goblins you control have trample.", true)]
+#[case::subtypes_not_other(&SIEGEMASTER.replace(r#","Other""#, ""), "Other Orcs and Goblins you control have trample.", false)]
+#[case::keywords_swapped(
+    CHANTER,
+    "{5}{W}: ~ gains vigilance and lifelink until end of turn.",
+    true
+)]
+#[case::keywords_one(&CHANTER.replace(r#"{"AddKeyword":"Lifelink"},"#, ""), "{5}{W}: ~ gains vigilance and lifelink until end of turn.", false)]
+#[case::tap_enchanted_permanent(STOP_COLD, "When ~ enters, tap enchanted permanent.", true)]
+#[case::untap_enchanted_permanent(&STOP_COLD.replace(r#"{"Tap""#, r#"{"Untap""#), "When ~ enters, tap enchanted permanent.", false)]
+#[case::named_token_has(HARRIER, HARRIER_TEXT, true)]
+#[case::named_token_untaps(&HARRIER.replace(r#"[{"Tap":{"what":{"Target":0}}}]"#, r#"[{"Untap":{"what":{"Target":0}}}]"#), HARRIER_TEXT, false)]
+fn r6b_lists_and_names_read_back(#[case] json: &str, #[case] clause: &str, #[case] reads: bool) {
+    assert_eq!(
+        written(json, clause),
+        reads,
+        "{clause}: {:?}",
+        written_variants(&ability(json))
+    );
+}
+
+#[rstest]
+#[case::either_order(
+    r#"{"Static":{"affected":"Attached","mods":[{"AddKeyword":"Shroud"}]}}"#,
+    "Enchanted creature can't be blocked and has shroud.",
+    true
+)]
+#[case::either_order_hexproof(
+    r#"{"Static":{"affected":"Attached","mods":[{"AddKeyword":"Hexproof"}]}}"#,
+    "Enchanted creature can't be blocked and has shroud.",
+    false
+)]
+fn r6b_two_statics_of_the_attached_permanent_in_either_order(
+    #[case] first: &str,
+    #[case] clause: &str,
+    #[case] reads: bool,
+) {
+    assert_eq!(paired(first, UNBLOCKABLE, clause), reads, "{clause}");
+}
+
 #[test]
 #[ignore = "probe"]
 fn zz_probe() {

@@ -9,8 +9,9 @@ use crate::ability::{Ability, Limit};
 use crate::refs::Ref;
 
 /// The qualifiers a selector may say before or after "you control"; a qualifier ends where "you control" begins.
-const QUALIFIERS: [&str; 3] = [
+const QUALIFIERS: [&str; 4] = [
     " with ",
+    " without ",
     " of the chosen type",
     " that entered the battlefield this turn",
 ];
@@ -56,6 +57,9 @@ pub(super) fn add(ability: &Ability, texts: &mut Vec<String>) {
         found.extend(keyword_pairs(text));
         found.extend(loses_first(text));
         found.extend(noun_is_condition(ability, text));
+        found.extend(an_hour(text));
+        found.extend(pair_swaps(text));
+        found.extend(enchanted_object(ability, text));
     }
     let mut seen: std::collections::HashSet<String> = texts.iter().cloned().collect();
     for text in found {
@@ -65,28 +69,80 @@ pub(super) fn add(ability: &Ability, texts: &mut Vec<String>) {
     }
 }
 
-/// "creatures with flying you control" said as "creatures you control with flying": a selector is a conjunction.
-fn you_control_first(text: &str) -> Option<String> {
-    let at = text.find(" you control")?;
-    let before = &text[..at];
-    let start = QUALIFIERS
-        .iter()
-        .filter_map(|qualifier| {
-            let from = before.rfind(qualifier)?;
-            // "of the chosen type" and "that entered ..." end where "you control" begins.
-            (qualifier.starts_with(" with ") || before.ends_with(qualifier)).then_some(from)
-        })
-        .min()?;
-    let qualifier = &before[start..];
-    if qualifier.contains(['"', ',', '.', ':']) || qualifier.contains(" you") {
-        return None;
+/// "creatures with flying you control" said as "creatures you control with flying", and "creatures your opponents control
+/// of the chosen type" as "creatures of the chosen type your opponents control": a selector is a conjunction.
+fn you_control_first(text: &str) -> Vec<String> {
+    let mut found = Vec::new();
+    for controller in CONTROLLERS {
+        let Some(at) = text.find(controller) else {
+            continue;
+        };
+        let (before, after) = (&text[..at], &text[at + controller.len()..]);
+        // The qualifier before the controller.
+        let start = QUALIFIERS
+            .iter()
+            .filter_map(|qualifier| {
+                let from = before.rfind(qualifier)?;
+                // "of the chosen type" and "that entered ..." end where the controller begins.
+                (qualifier.starts_with(" with") || before.ends_with(qualifier)).then_some(from)
+            })
+            .min();
+        if let Some(start) = start
+            && plain_qualifier(&before[start..])
+        {
+            found.push(format!(
+                "{}{controller}{}{after}",
+                &before[..start],
+                &before[start..]
+            ));
+        }
+        // The qualifier after the controller, up to the verb or the end of the phrase.
+        let Some(qualifier) = QUALIFIERS.iter().find(|qualifier| {
+            after.starts_with(qualifier.trim_end())
+                && after[qualifier.trim_end().len()..].starts_with([' ', '.', ','])
+        }) else {
+            continue;
+        };
+        let end = if qualifier.starts_with(" with") {
+            QUALIFIED_ENDS
+                .iter()
+                .filter_map(|word| after.find(word))
+                .min()
+        } else {
+            Some(qualifier.trim_end().len())
+        };
+        if let Some(end) = end
+            && plain_qualifier(&after[..end])
+        {
+            found.push(format!(
+                "{before}{}{controller}{}",
+                &after[..end],
+                &after[end..]
+            ));
+        }
     }
-    Some(format!(
-        "{}{}{qualifier}{}",
-        &before[..start],
-        " you control",
-        &text[at + " you control".len()..]
-    ))
+    found
+}
+
+/// The controllers a selector names last.
+const CONTROLLERS: [&str; 2] = [" you control", " your opponents control"];
+
+/// The words that end a "with" qualifier said after the controller: the verb of the sentence.
+const QUALIFIED_ENDS: [&str; 7] = [
+    " get ", " gets ", " have ", " has ", " can't ", " gain ", " gains ",
+];
+
+/// Whether a qualifier is one phrase: no quote, clause break or player of its own.
+fn plain_qualifier(qualifier: &str) -> bool {
+    const VERBS: [&str; 22] = [
+        "can't", "can", "get", "gets", "gain", "gains", "has", "have", "deal", "deals", "attack",
+        "attacks", "block", "blocks", "is", "are", "become", "becomes", "lose", "loses", "target",
+        "each",
+    ];
+    !qualifier.contains(['"', ',', '.', ':'])
+        && !qualifier.contains(" you")
+        && !qualifier.is_empty()
+        && !qualifier.split(' ').any(|word| VERBS.contains(&word))
 }
 
 /// "creature that's white or black" said as "white or black creature".
@@ -184,18 +240,26 @@ fn still_a_land(text: &str) -> Option<String> {
 
 /// A token with a quoted ability said in a sentence of its own: "Create a white Avatar creature token. It has "..."."
 fn token_has(text: &str) -> Option<String> {
-    let at = text.find(" token with \"")?;
-    let named = text[..at].rfind("Create a").map(|start| &text[start..at])?;
-    if named.contains(['.', '"']) || !text.ends_with("\".") && !text.ends_with('"') {
+    let at = text.find(" with \"")?;
+    let token = text[..at].rfind(" token")?;
+    // The token, or the token and its name: "token named Goldmeadow Harrier".
+    let name = &text[token + " token".len()..at];
+    if !(name.is_empty() || name.starts_with(" named ")) || name.contains(['.', '"', ',']) {
         return None;
     }
-    let quoted = &text[at + " token with ".len()..];
+    let made = text[..token]
+        .rfind("Create a")
+        .map(|start| &text[start..token])?;
+    if made.contains(['.', '"']) || !text.ends_with("\".") && !text.ends_with('"') {
+        return None;
+    }
+    let quoted = &text[at + " with ".len()..];
     let quoted = quoted.strip_suffix('.').unwrap_or(quoted);
     // One quoted ability that runs to the end of the text.
     if quoted.matches('"').count() != 2 {
         return None;
     }
-    Some(format!("{}. It has {quoted}", &text[..at + " token".len()]))
+    Some(format!("{}. It has {quoted}", &text[..at]))
 }
 
 /// "All creatures can't block." said as "Creatures can't block.": a static ability of every creature.
@@ -299,6 +363,100 @@ fn bare_color(text: &str) -> Option<String> {
         text.contains(&written)
             .then(|| text.replacen(&written, &format!(" becomes {color} until end of turn"), 1))
     })
+}
+
+/// "a hour counter" said with the article of the vowel sound: "an hour counter".
+fn an_hour(text: &str) -> Option<String> {
+    text.contains(" a hour counter")
+        .then(|| text.replace(" a hour counter", " an hour counter"))
+}
+
+/// Two parts of one list in the other order, the same list: "white and green" as "green and white", "Goblins and Orcs"
+/// as "Orcs and Goblins", "gains lifelink and vigilance" as "gains vigilance and lifelink", "get +X/+X and gain flying"
+/// as "gain flying and get +X/+X".
+fn pair_swaps(text: &str) -> Vec<String> {
+    let mut found = Vec::new();
+    for (at, _) in text.match_indices(" and ") {
+        let before = &text[..at];
+        let after = &text[at + " and ".len()..];
+        let left_start = before.rfind(' ').map_or(0, |space| space + 1);
+        let left = &before[left_start..];
+        let right = after.split([' ', '.', ',']).next().unwrap_or_default();
+        let rest = &after[right.len()..];
+        let head = &before[..left_start];
+        let colors = COLORS.contains(&left) && COLORS.contains(&right);
+        // Two subtypes before "you control": "Other Orcs and Goblins you control".
+        let capital = |word: &str| {
+            word.len() > 1
+                && word.starts_with(|c: char| c.is_ascii_uppercase())
+                && word.ends_with('s')
+                && word.chars().all(|c| c.is_ascii_alphabetic())
+        };
+        let subtypes = capital(left) && capital(right) && rest.starts_with(" you control");
+        let keywords = head.ends_with("gains ") || head.ends_with("gain ");
+        let plain = |word: &str| !word.is_empty() && word.chars().all(|c| c.is_ascii_lowercase());
+        if colors
+            || subtypes
+            || (keywords
+                && plain(left)
+                && plain(right)
+                && KEYWORDS.contains(&left)
+                && KEYWORDS.contains(&right))
+        {
+            found.push(format!("{head}{right} and {left}{rest}"));
+        }
+    }
+    // "get +X/+X and gain flying" as "gain flying and get +X/+X".
+    if let Some(at) = text.find(" get +")
+        && let Some(gain) = text[at..].find(" and gain ")
+    {
+        let stats = &text[at + " get ".len()..at + gain];
+        let tail = &text[at + gain + " and gain ".len()..];
+        let keyword = tail.split([' ', '.', ',']).next().unwrap_or_default();
+        if !stats.contains(' ') && KEYWORDS.contains(&keyword) {
+            found.push(format!(
+                "{} gain {keyword} and get {stats}{}",
+                &text[..at],
+                &tail[keyword.len()..]
+            ));
+        }
+    }
+    found
+}
+
+/// The one-word keywords a pair of keywords is swapped in.
+const KEYWORDS: [&str; 12] = [
+    "flying",
+    "vigilance",
+    "lifelink",
+    "trample",
+    "haste",
+    "reach",
+    "deathtouch",
+    "menace",
+    "indestructible",
+    "hexproof",
+    "defender",
+    "shroud",
+];
+
+/// "tap enchanted creature" said as "tap enchanted permanent" in an ability of an Aura: the noun repeats what the Aura
+/// enchants.
+fn enchanted_object(ability: &Ability, text: &str) -> Option<String> {
+    if !matches!(
+        ability,
+        Ability::Triggered { .. } | Ability::Activated { .. }
+    ) {
+        return None;
+    }
+    let mut said = text.to_owned();
+    for verb in ["tap", "untap", "Tap", "Untap"] {
+        said = said.replace(
+            &format!("{verb} enchanted creature"),
+            &format!("{verb} enchanted permanent"),
+        );
+    }
+    (said != text).then_some(said)
 }
 
 /// "creature or artifact" said as "artifact or creature": either type.
