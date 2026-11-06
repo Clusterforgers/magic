@@ -514,9 +514,7 @@ impl<'a> Walker<'a> {
             }
             Ref::Triggering | Ref::TriggeringFirst => {
                 if !self.scope.in_trigger {
-                    self.problem(
-                        "`Triggering` and `TriggeringFirst` are only valid in a triggered ability",
-                    );
+                    self.problem("`Triggering` is only valid in a triggered ability");
                 }
             }
             Ref::TriggeringPlayer => {
