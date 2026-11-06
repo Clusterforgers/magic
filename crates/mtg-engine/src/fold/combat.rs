@@ -127,18 +127,26 @@ fn damage_player(
     if in_combat && amount > 0 {
         record_hit(state, source);
     }
+    let loses_life = !matches!(form, DamageForm::Infect | DamageForm::NoLifeLoss);
+    // The damage is dealt in full; a life floor only changes the life lost (CR 120.3a, 614.1).
+    let lost = if loses_life {
+        let before = player_mut(state, id)?.life;
+        let wanted = i32::try_from(amount).unwrap_or(i32::MAX);
+        match crate::rules::damage_life_floor(state, id) {
+            Some(floor) if before >= floor => wanted.min(before.saturating_sub(floor)),
+            _ => wanted,
+        }
+    } else {
+        0
+    };
     if amount > 0 {
         state.tally_by(id, Tally::Hurt, amount);
-        if !matches!(form, DamageForm::Infect | DamageForm::NoLifeLoss) {
-            state.tally_loss(id, amount);
+        if lost > 0 {
+            state.tally_loss(id, u32::try_from(lost).unwrap_or(0));
         }
     }
     let player = player_mut(state, id)?;
-    if !matches!(form, DamageForm::Infect | DamageForm::NoLifeLoss) {
-        player.life = player
-            .life
-            .saturating_sub(i32::try_from(amount).unwrap_or(i32::MAX));
-    }
+    player.life = player.life.saturating_sub(lost);
     let poison = match form {
         DamageForm::Infect => amount.saturating_add(toxic),
         _ => toxic,

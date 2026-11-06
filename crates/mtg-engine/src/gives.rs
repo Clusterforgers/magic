@@ -91,6 +91,8 @@ impl Gives {
                 self.set = Some((*power, *toughness));
                 return;
             }
+            // A base power or toughness set alone shows no mark of its own.
+            Modification::SetPower(_) | Modification::SetToughness(_) => return,
             Modification::AddKeyword(keyword) => {
                 if !self.keywords.contains(keyword) {
                     self.keywords.push(keyword.clone());
@@ -121,7 +123,7 @@ impl Gives {
             | Modification::SetCreatureTypes(_)
             | Modification::SetLandTypes(_)
             | Modification::AddAllCreatureTypes => GivenRule::ChangeTypes,
-            Modification::SetColors(_) => GivenRule::SetColors,
+            Modification::SetColors(_) | Modification::AddColors(_) => GivenRule::SetColors,
             Modification::Goaded { .. } => GivenRule::Goaded,
         };
         self.rule(rule);

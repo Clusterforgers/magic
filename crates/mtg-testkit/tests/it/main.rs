@@ -626,5 +626,6 @@ mod r1g_taken_names;
 mod r2a_adventure;
 mod r2a_doubling;
 mod r2d;
+mod r2g_combat;
 mod ring;
 mod target_reductions;

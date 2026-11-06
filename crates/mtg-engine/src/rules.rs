@@ -97,6 +97,13 @@ pub enum Rule {
     CantGainLife(Vec<PlayerId>),
     /// Damage dealt to the players causes no loss of life.
     NoLifeLossFromDamage(Vec<PlayerId>),
+    /// Damage can't take the life total of the players below the floor while it is at least that much (CR 614.1, 120.3a).
+    LifeFloor {
+        /// The players.
+        players: Vec<PlayerId>,
+        /// The life total damage leaves them at least at.
+        floor: i32,
+    },
     /// The players gain life rather than lose life from radiation.
     RadiationGainsLife(Vec<PlayerId>),
     /// The players' life totals can't change (CR 119.7, 119.8).
@@ -403,6 +410,7 @@ pub(crate) struct RulesInForce {
     uncounterable: BTreeSet<ObjectId>,
     no_life_gain: BTreeSet<PlayerId>,
     no_damage_loss: BTreeSet<PlayerId>,
+    life_floors: BTreeMap<PlayerId, i32>,
     radiation_gains: BTreeSet<PlayerId>,
     no_life_change: BTreeSet<PlayerId>,
     player_keywords: Vec<(PlayerId, Keyword)>,
@@ -653,6 +661,12 @@ impl RulesInForce {
             Rule::CantBeCountered(named) => self.uncounterable.extend(ids(named)),
             Rule::CantGainLife(players) => self.no_life_gain.extend(players),
             Rule::NoLifeLossFromDamage(players) => self.no_damage_loss.extend(players),
+            Rule::LifeFloor { players, floor } => {
+                for player in players {
+                    let held = self.life_floors.entry(*player).or_insert(*floor);
+                    *held = (*held).max(*floor);
+                }
+            }
             Rule::RadiationGainsLife(players) => self.radiation_gains.extend(players),
             Rule::LifeTotalCantChange(players) => self.no_life_change.extend(players),
             Rule::PlayersHave { who, keyword } => self
@@ -821,6 +835,7 @@ pub(crate) fn lower_objects(scope: &Scope<'_>, who: &Ref) -> Result<Vec<ObjectRe
 
 /// What the data's references name in `scope`, as the engine plays the rule: the permanents, the spells or the players.
 /// A rule the engine does not play refuses by name.
+#[allow(clippy::too_many_lines)] // one arm for every rule
 pub(crate) fn lower_rule(scope: &Scope<'_>, wanted: &GameRule) -> Result<Rule, ResolveError> {
     let objects = |who: &Ref, zone: Zone| w17b_rule_objects(scope, who, zone);
     Ok(match wanted {
@@ -863,6 +878,10 @@ pub(crate) fn lower_rule(scope: &Scope<'_>, wanted: &GameRule) -> Result<Rule, R
         GameRule::CantBeCountered(who) => Rule::CantBeCountered(objects(who, Zone::Stack)?),
         GameRule::CantGainLife(who) => Rule::CantGainLife(scope.players(who)?),
         GameRule::NoLifeLossFromDamage(who) => Rule::NoLifeLossFromDamage(scope.players(who)?),
+        GameRule::LifeFloor { who, floor } => Rule::LifeFloor {
+            players: scope.players(who)?,
+            floor: *floor,
+        },
         GameRule::RadiationGainsLife(who) => Rule::RadiationGainsLife(scope.players(who)?),
         GameRule::LifeTotalCantChange(who) => Rule::LifeTotalCantChange(scope.players(who)?),
         GameRule::PlayersHave { who, keyword } => Rule::PlayersHave {
@@ -974,7 +993,8 @@ pub(crate) fn names_nothing(rule: &Rule) -> bool {
         Rule::IgnoreHexproof {
             by, what, players, ..
         } => by.is_empty() || (what.is_empty() && players.is_empty()),
-        Rule::CantGainLife(players)
+        Rule::LifeFloor { players, .. }
+        | Rule::CantGainLife(players)
         | Rule::NoLifeLossFromDamage(players)
         | Rule::RadiationGainsLife(players)
         | Rule::LifeTotalCantChange(players)
@@ -1109,6 +1129,7 @@ static NONE: RulesInForce = RulesInForce {
     uncounterable: BTreeSet::new(),
     no_life_gain: BTreeSet::new(),
     no_damage_loss: BTreeSet::new(),
+    life_floors: BTreeMap::new(),
     radiation_gains: BTreeSet::new(),
     no_life_change: BTreeSet::new(),
     player_keywords: Vec::new(),
@@ -1355,6 +1376,11 @@ pub fn cant_gain_life(state: &GameState, player: PlayerId) -> bool {
 /// this rule.
 pub fn life_total_cant_change(state: &GameState, player: PlayerId) -> bool {
     state.rules().no_life_change.contains(&player)
+}
+
+/// The life total damage can't take `player` below, if a rule sets one: the one place the damage events read this rule.
+pub(crate) fn damage_life_floor(state: &GameState, player: PlayerId) -> Option<i32> {
+    state.rules().life_floors.get(&player).copied()
 }
 
 /// Whether damage dealt to `player` causes no loss of life: the one place the damage events read this rule.

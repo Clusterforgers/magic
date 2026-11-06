@@ -261,6 +261,11 @@ fn parse_pt(pt: &str) -> Tr<(i32, i32)> {
 }
 
 fn colors_of(colors: &str) -> Tr<Value> {
+    match colors.trim() {
+        "colorless" => return Ok(json!([])),
+        "all" => return Ok(json!(["White", "Blue", "Black", "Red", "Green"])),
+        _ => {}
+    }
     let mut out = Vec::new();
     for word in colors.split(',') {
         out.push(match word.trim() {

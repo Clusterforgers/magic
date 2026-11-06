@@ -190,7 +190,7 @@ fn affected_valid(ctx: &Ctx, word: &str) -> Tr<Value> {
 }
 
 /// The keys a continuous static line reads.
-const CONTINUOUS: [&str; 30] = [
+const CONTINUOUS: [&str; 31] = [
     "Goad",
     "RemoveCardTypes",
     "RemoveLandTypes",
@@ -221,6 +221,7 @@ const CONTINUOUS: [&str; 30] = [
     "GainControl",
     "AddType",
     "SetColor",
+    "AddColor",
 ];
 
 /// The amount of a power or toughness change; one named `AffectedX` is worked out for each object the line affects.
@@ -319,6 +320,12 @@ fn continuous(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
     }
     if let Some(colors) = p.get("SetColor") {
         mods.push(json!({"SetColors": color_set(colors)?}));
+    }
+    if let Some(colors) = p.get("AddColor") {
+        if colors == "Colorless" {
+            return unmapped("key:Static.Continuous.AddColor=Colorless");
+        }
+        mods.push(json!({"AddColors": color_set(colors)?}));
     }
     let remove = p.get("RemoveCreatureTypes") == Some("True");
     let (remove_cards, remove_lands) = (

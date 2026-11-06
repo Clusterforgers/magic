@@ -10,7 +10,7 @@ import type { Subtype } from "./Subtype";
 /**
  * What an effect changes.
  */
-export type Modification = { "AddType": CardType } | { "RemoveType": CardType } | { "SetTypes": CardTypes } | { "AddSubtype": Subtype } | { "SetCreatureTypes": Array<Subtype> } | { "SetLandTypes": Array<Subtype> } | "AddAllCreatureTypes" | { "SetColors": ColorSet } | { "AddKeyword": unknown } | { "RemoveKeyword": unknown } | { "LockKeyword": unknown } | { "GrantAbility": unknown } | { "GainAbilities": Array<Borrowed> } | "LoseAbilities" | { "SetController": PlayerId } | { "SetPowerToughness": { 
+export type Modification = { "AddType": CardType } | { "RemoveType": CardType } | { "SetTypes": CardTypes } | { "AddSubtype": Subtype } | { "SetCreatureTypes": Array<Subtype> } | { "SetLandTypes": Array<Subtype> } | "AddAllCreatureTypes" | { "SetColors": ColorSet } | { "AddColors": ColorSet } | { "AddKeyword": unknown } | { "RemoveKeyword": unknown } | { "LockKeyword": unknown } | { "GrantAbility": unknown } | { "GainAbilities": Array<Borrowed> } | "LoseAbilities" | { "SetController": PlayerId } | { "SetPowerToughness": { 
 /**
  * New power.
  */
@@ -18,7 +18,7 @@ power: number,
 /**
  * New toughness.
  */
-toughness: number, } } | { "ModifyPowerToughness": { 
+toughness: number, } } | { "SetPower": number } | { "SetToughness": number } | { "ModifyPowerToughness": { 
 /**
  * Power delta.
  */

@@ -862,6 +862,12 @@ pub(crate) fn sacrifice(filter: &Selector, count: usize) -> String {
     format!("Sacrifice {count} {}.", join(&plural(&head), &tail))
 }
 
+/// "Sacrifice up to 3 lands.": the question of a sacrifice that may stop short.
+pub(crate) fn sacrifice_up_to(filter: &Selector, count: usize) -> String {
+    let (head, tail) = phrase(filter);
+    format!("Sacrifice up to {count} {}.", join(&plural(&head), &tail))
+}
+
 /// `count` of what `filter` describes, with `place` after them: "a creature you control", "2 creatures you control".
 fn counted(filter: &Selector, count: usize, extra: &str) -> String {
     let (head, tail) = phrase(filter);

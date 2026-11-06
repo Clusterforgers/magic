@@ -125,7 +125,12 @@ fn activated(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
     let p = &p.without(&ACTIVATION_WORDS);
     let game_limited = once_a_game(p)?;
     let by = activator_word(p)?;
-    let p = &p.without(&["Exhaust", "GameActivationLimit"]);
+    let power_up = match p.get("PowerUp") {
+        None => false,
+        Some("True") => true,
+        Some(_) => return unmapped("key:AB.PowerUp"),
+    };
+    let p = &p.without(&["Exhaust", "GameActivationLimit", "PowerUp"]);
     let effects = chain(ctx, &p.without(&["ReduceCost", "Activator"]))?;
     let targets = ctx.targets.clone();
     if p.get("Planeswalker") == Some("True") {
@@ -135,7 +140,11 @@ fn activated(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
         return loyalty_ability(p, text, &effects, &targets);
     }
     let mut cost_items = cost(ctx, text)?;
-    if let Some(less) = reduce_cost(ctx, p)? {
+    let mut changes: Vec<Value> = reduce_cost(ctx, p)?.into_iter().collect();
+    if power_up {
+        changes.push(power_up_discount(ctx)?);
+    }
+    for less in changes {
         cost_items = match cost_items {
             Value::String(mana) => json!([{ "Mana": mana }, less]),
             Value::Array(mut items) => {
@@ -179,7 +188,7 @@ fn activated(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
         Some(other) => return unmapped(format!("key:AB.ActivationLimit={other}")),
     }
     // Once a game is stricter than once a turn, so it replaces it.
-    if game_limited {
+    if game_limited || power_up {
         ability["limit"] = json!("OncePerGame");
     }
     match (p.get("ActivationZone"), words.from) {
@@ -231,6 +240,22 @@ fn reduce_cost(ctx: &Ctx, p: &Params) -> Tr<Option<Value>> {
     Ok(Some(
         json!({"Changed": {"change": "Reduce", "mana": "{1}", "per": per}}),
     ))
+}
+
+/// The discount of a power-up ability: the permanent's own mana cost comes off the cost while it entered this turn.
+fn power_up_discount(ctx: &Ctx) -> Tr<Value> {
+    let mana: String = ctx
+        .mana_cost
+        .split_whitespace()
+        .map(super::cost::symbol)
+        .collect();
+    if mana.is_empty() {
+        return unmapped("key:AB.PowerUp.no-mana-cost");
+    }
+    Ok(
+        json!({"Changed": {"change": "Reduce", "mana": mana, "condition":
+        {"Compare": {"left": {"Count": ["This", "EnteredThisTurn"]}, "op": "Ge", "right": 1}}}}),
+    )
 }
 
 /// Whether the line is used once each game: `GameActivationLimit$ 1`, or `Exhaust$ True` ("activate each exhaust ability

@@ -1373,6 +1373,7 @@ fn is_imperative(effect: &Effect) -> bool {
                 | Effect::MultiplyCounters { .. }
                 | Effect::Transform { .. }
                 | Effect::Flip { .. }
+                | Effect::TurnFaceUp { .. }
                 | Effect::CopySpell { .. }
         )
 }
@@ -2512,6 +2513,7 @@ impl Writer<'_> {
             } => format!("attach ~ to {}", self.object(to)?),
             Effect::Transform { what } => format!("transform {}", self.object(what)?),
             Effect::Flip { what } => format!("flip {}", self.object(what)?),
+            Effect::TurnFaceUp { what } => format!("turn {} face up", self.object(what)?),
             Effect::Prepare { .. } => super::prepare::becomes_prepared_text(effect)?,
             Effect::If {
                 condition: Condition::Not(_),

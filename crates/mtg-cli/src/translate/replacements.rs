@@ -28,6 +28,12 @@ pub fn replacement_lines(ctx: &mut Ctx, body: &str) -> Tr<Vec<Value>> {
         }
         return super::replacements_damage::static_prevention(ctx, &p);
     }
+    if all.get("Event") == Some("LifeReduced") {
+        ctx.reset();
+        let (condition, p) = prefixed(ctx, &all)?;
+        return super::replacements_life::life_reduced(ctx, &p, condition.as_ref())
+            .map(|ability| vec![ability]);
+    }
     single(ctx, body).map(|ability| vec![ability])
 }
 

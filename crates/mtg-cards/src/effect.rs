@@ -587,6 +587,20 @@ pub enum Effect {
         #[serde(rename = "as", default, skip_serializing_if = "Option::is_none")]
         bind: Option<String>,
     },
+    /// The player sacrifices as many permanents they control that match as they choose, up to the count ("sacrifice any
+    /// number of lands"); none is allowed.
+    SacrificeUpTo {
+        /// Who sacrifices.
+        #[serde(default = "Ref::you", skip_serializing_if = "Ref::is_you")]
+        who: Ref,
+        /// Which permanents may be chosen.
+        filter: Selector,
+        /// The most.
+        count: Amount,
+        /// The name the objects are bound to, as the objects they become, for the steps after it.
+        #[serde(rename = "as", default, skip_serializing_if = "Option::is_none")]
+        bind: Option<String>,
+    },
     /// Counters spells or abilities (CR 701.6).
     Counter {
         /// What is countered.
@@ -760,6 +774,11 @@ pub enum Effect {
     /// Flips flip cards (CR 710): a flip card on the battlefield becomes its bottom half and stays so until it leaves.
     Flip {
         /// What flips.
+        what: Ref,
+    },
+    /// Turns face-down permanents face up (CR 702.37e, 708.8); a permanent that is face up already is passed over.
+    TurnFaceUp {
+        /// What is turned.
         what: Ref,
     },
     /// Makes prepare cards on the battlefield prepared: while one is, its controller may cast a copy of its spell face and doing so unprepares it. A permanent that is prepared already, is no prepare card or is not on the battlefield is passed over.

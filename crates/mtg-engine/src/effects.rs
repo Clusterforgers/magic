@@ -118,6 +118,8 @@ pub enum Modification {
     AddAllCreatureTypes,
     /// Replaces the colors (layer 5).
     SetColors(ColorSet),
+    /// Adds colours to the ones it has (layer 5).
+    AddColors(ColorSet),
     /// Adds a keyword ability (layer 6); `keywords_of` reads it and `characteristics` leaves it alone.
     AddKeyword(#[cfg_attr(feature = "ts", ts(type = "unknown"))] Keyword),
     /// Removes a keyword ability (layer 6), printed or granted before it; `keywords_of` reads it.
@@ -142,6 +144,10 @@ pub enum Modification {
         /// New toughness.
         toughness: i32,
     },
+    /// Sets the power alone (layer 7b).
+    SetPower(i32),
+    /// Sets the toughness alone (layer 7b).
+    SetToughness(i32),
     /// Adds to power and toughness (layer 7c).
     ModifyPowerToughness {
         /// Power delta.
@@ -221,14 +227,16 @@ impl Modification {
             | Modification::SetCreatureTypes(_)
             | Modification::SetLandTypes(_)
             | Modification::AddAllCreatureTypes => Layer::Type,
-            Modification::SetColors(_) => Layer::Color,
+            Modification::SetColors(_) | Modification::AddColors(_) => Layer::Color,
             Modification::AddKeyword(_)
             | Modification::LockKeyword(_)
             | Modification::RemoveKeyword(_)
             | Modification::GrantAbility(_)
             | Modification::GainAbilities(_)
             | Modification::LoseAbilities => Layer::Ability,
-            Modification::SetPowerToughness { .. } => Layer::PtSet,
+            Modification::SetPowerToughness { .. }
+            | Modification::SetPower(_)
+            | Modification::SetToughness(_) => Layer::PtSet,
             Modification::ModifyPowerToughness { .. } => Layer::PtModify,
             Modification::SwitchPowerToughness => Layer::PtSwitch,
             Modification::CantAttack
@@ -287,11 +295,18 @@ impl Modification {
             }
             Modification::AddAllCreatureTypes => chars.all_creature_types = true,
             Modification::SetColors(colors) => chars.colors = *colors,
+            Modification::AddColors(colors) => {
+                chars.colors = colors
+                    .iter()
+                    .fold(chars.colors, mtg_core::color::ColorSet::with);
+            }
             Modification::LoseAbilities => chars.abilities.clear(),
             Modification::SetPowerToughness { power, toughness } => {
                 chars.power = Some(*power);
                 chars.toughness = Some(*toughness);
             }
+            Modification::SetPower(power) => chars.power = Some(*power),
+            Modification::SetToughness(toughness) => chars.toughness = Some(*toughness),
             Modification::ModifyPowerToughness { power, toughness } => {
                 chars.power = chars.power.map(|p| p.saturating_add(*power));
                 chars.toughness = chars.toughness.map(|t| t.saturating_add(*toughness));

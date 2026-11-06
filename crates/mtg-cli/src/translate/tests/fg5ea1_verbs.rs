@@ -57,7 +57,10 @@ fn a_verb_maps_to_its_node(#[case] line: &str, #[case] node: Value) {
     "Branch | BranchConditionSVar$ N | FalseSubAbility$ Lose",
     "key:Branch.shape"
 )]
-#[case::set_state_face_up("SetState | Defined$ Self | Mode$ TurnFaceUp", "key:SetState.Mode")]
+#[case::set_state_unspecialize(
+    "SetState | Defined$ Self | Mode$ Unspecialize",
+    "key:SetState.Mode"
+)]
 fn a_form_beyond_the_node_stays_a_gap(#[case] line: &str, #[case] gap: &str) {
     let script = spell(line);
     assert_eq!(abilities(&script), Vec::<Value>::new(), "{script}");

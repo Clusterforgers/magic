@@ -33,6 +33,10 @@ pub enum Modification {
         /// New toughness.
         toughness: Amount,
     },
+    /// Sets the power alone (layer 7b): "has base power 0".
+    SetPower(Amount),
+    /// Sets the toughness alone (layer 7b).
+    SetToughness(Amount),
     /// Switches power and toughness (layer 7d).
     SwitchPT,
     /// Adds a card type (layer 4).
@@ -65,6 +69,8 @@ pub enum Modification {
     AddAllCreatureTypes,
     /// Replaces the colors (layer 5).
     SetColors(Vec<Color>),
+    /// Adds these colors to the ones it has (layer 5): "is a black Zombie in addition to its other colors".
+    AddColors(Vec<Color>),
     /// Makes the color the resolution chose under this name the only color (layer 5): "becomes the color of your choice".
     /// Only an effect of a spell or ability has it, never a static ability.
     SetColorsChosen(String),
@@ -156,7 +162,9 @@ impl Modification {
             | Modification::SetLandTypesChosen(_)
             | Modification::SetCreatureTypesChosen(_)
             | Modification::AddAllCreatureTypes => Some("4"),
-            Modification::SetColors(_) | Modification::SetColorsChosen(_) => Some("5"),
+            Modification::SetColors(_)
+            | Modification::AddColors(_)
+            | Modification::SetColorsChosen(_) => Some("5"),
             Modification::AddKeyword(_)
             | Modification::AddProtectionFromChosenColor
             | Modification::AddProtectionFromChosenCardType
@@ -165,7 +173,9 @@ impl Modification {
             | Modification::GrantAbility(_)
             | Modification::GainAbilitiesOf(_)
             | Modification::LoseAbilities => Some("6"),
-            Modification::SetPT { .. } => Some("7b"),
+            Modification::SetPT { .. }
+            | Modification::SetPower(_)
+            | Modification::SetToughness(_) => Some("7b"),
             Modification::ModifyPT { .. } => Some("7c"),
             Modification::SwitchPT => Some("7d"),
             Modification::CantAttack
@@ -304,7 +314,7 @@ pub enum Blocking {
 
 /// What a `GameRule::Combat` says of creatures: a permission, or a limit on a declaration that is not a plain
 /// requirement.
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Eq, Hash, Serialize, Deserialize)]
 pub enum CombatQuirk {
     /// They can't attack unless another creature attacks too (CR 506.5).
     CantAttackAlone,
@@ -325,6 +335,23 @@ pub enum CombatQuirk {
     AssignsByToughness,
     /// They must be blocked if able: a requirement on the block declaration (CR 509.1c).
     MustBeBlocked(Blocking),
+    /// They can be blocked as though they did not have the landwalk ability the selector names (CR 702.14).
+    IgnoreLandwalk(Selector),
+    /// They can be blocked as though they did not have any landwalk ability.
+    IgnoreAllLandwalk,
+    /// They can block creatures with landwalk as though those did not have it.
+    BlockIgnoringLandwalk,
+    /// Tapped to crew or saddle, they count for another amount than their power.
+    TapPower(TapPowerAs),
+}
+
+/// What a creature counts for when it is tapped to crew or saddle.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
+pub enum TapPowerAs {
+    /// Its toughness rather than its power.
+    Toughness,
+    /// Its power, this much greater.
+    Plus(u32),
 }
 
 /// What a `GameRule::Cant` forbids its subjects. A subject is covered when it is the object an action is about or the
@@ -512,6 +539,14 @@ pub enum GameRule {
     CantGainLife(Ref),
     /// Damage dealt to the players causes no loss of life: it is still dealt, and every other effect of it happens.
     NoLifeLossFromDamage(Ref),
+    /// Damage that would reduce the life total of the players to less than `floor` reduces it to `floor` instead, while it is
+    /// `floor` or more: the damage is dealt in full and only the life lost changes.
+    LifeFloor {
+        /// The players.
+        who: Ref,
+        /// The life total damage can't take them below.
+        floor: i32,
+    },
     /// The players gain life rather than lose life from radiation (CR 725.2): the life the rad rule would make them lose.
     RadiationGainsLife(Ref),
     /// The players' life totals can't change (CR 119.7, 119.8): they gain and lose no life, pay no life and have no life

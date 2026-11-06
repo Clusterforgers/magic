@@ -52,13 +52,15 @@ pub(crate) fn writes(modification: &Modification) -> Traits {
         | Modification::AddAllCreatureTypes => Traits::SUBTYPES,
         // The land loses its abilities with its land types.
         Modification::SetLandTypes(_) => Traits::SUBTYPES.or(Traits::KEYWORDS).or(Traits::RULES),
-        Modification::SetColors(_) => Traits::COLORS,
+        Modification::SetColors(_) | Modification::AddColors(_) => Traits::COLORS,
         Modification::AddKeyword(_)
         | Modification::RemoveKeyword(_)
         | Modification::LockKeyword(_) => Traits::KEYWORDS,
         Modification::LoseAbilities => Traits::KEYWORDS.or(Traits::RULES),
         Modification::SetController(_) => Traits::CONTROL,
         Modification::SetPowerToughness { .. }
+        | Modification::SetPower(_)
+        | Modification::SetToughness(_)
         | Modification::ModifyPowerToughness { .. }
         | Modification::SwitchPowerToughness => Traits::POWER.or(Traits::TOUGHNESS),
         // An ability that is given adds effects (the pass finds them as they come) and changes none that exist.
@@ -92,7 +94,7 @@ pub(crate) fn writes_of_wanted(wanted: &Wanted) -> Traits {
             Traits::SUBTYPES.or(Traits::KEYWORDS).or(Traits::RULES)
         }
         Wanted::SetCreatureTypesChosen(_) => Traits::SUBTYPES,
-        Wanted::SetColors(_) | Wanted::SetColorsChosen(_) => Traits::COLORS,
+        Wanted::SetColors(_) | Wanted::AddColors(_) | Wanted::SetColorsChosen(_) => Traits::COLORS,
         Wanted::AddKeyword(_)
         | Wanted::AddProtectionFromChosenColor
         | Wanted::AddProtectionFromChosenCardType
@@ -100,9 +102,11 @@ pub(crate) fn writes_of_wanted(wanted: &Wanted) -> Traits {
         | Wanted::LockKeyword(_) => Traits::KEYWORDS,
         Wanted::LoseAbilities => Traits::KEYWORDS.or(Traits::RULES),
         Wanted::SetController(_) => Traits::CONTROL,
-        Wanted::SetPT { .. } | Wanted::ModifyPT { .. } | Wanted::SwitchPT => {
-            Traits::POWER.or(Traits::TOUGHNESS)
-        }
+        Wanted::SetPT { .. }
+        | Wanted::SetPower(_)
+        | Wanted::SetToughness(_)
+        | Wanted::ModifyPT { .. }
+        | Wanted::SwitchPT => Traits::POWER.or(Traits::TOUGHNESS),
         Wanted::GrantAbility(_)
         | Wanted::GainAbilitiesOf(_)
         | Wanted::RemoveSupertype(_)
@@ -130,6 +134,7 @@ pub(crate) fn reads_of_modification(wanted: &Wanted) -> Traits {
         Wanted::ModifyPT { power, toughness } | Wanted::SetPT { power, toughness } => {
             reads_of_amount(power).or(reads_of_amount(toughness))
         }
+        Wanted::SetPower(value) | Wanted::SetToughness(value) => reads_of_amount(value),
         Wanted::SetController(who) | Wanted::GainAbilitiesOf(who) => reads_of_ref(who),
         Wanted::CantBeBlockedBy(blockers) | Wanted::CanBlockOnly(blockers) => {
             reads_of_selector(blockers)
@@ -150,6 +155,7 @@ pub(crate) fn reads_of_modification(wanted: &Wanted) -> Traits {
         | Wanted::SetColorsChosen(_)
         | Wanted::AddAllCreatureTypes
         | Wanted::SetColors(_)
+        | Wanted::AddColors(_)
         | Wanted::AddKeyword(_)
         | Wanted::AddProtectionFromChosenColor
         | Wanted::AddProtectionFromChosenCardType
