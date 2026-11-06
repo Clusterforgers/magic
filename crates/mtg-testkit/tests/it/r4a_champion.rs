@@ -15,6 +15,7 @@ use rstest::rstest;
 
 const TRIGGER: &str = r#"{"Triggered":{"when":{"ZoneChange":{"what":["This"],"to":"Battlefield"}},"effects":[
 {"Choose":{"from":{"Each":[{"Subtype":"Goblin"},"Other",{"ControlledBy":"You"}]},"count":{"min":0,"max":1},"as":"champion"}},
+{"If":{"condition":{"Compare":{"left":{"Count":[{"Is":"This"},{"In":"Battlefield"}]},"op":"Eq","right":0}},"then":[{"Exile":{"what":{"Bound":"champion"}}}]}},
 {"Exile":{"what":{"Bound":"champion"},"duration":"WhileSourceOnBattlefield"}},
 {"If":{"condition":{"Not":"Performed"},"then":[{"Sacrifice":{"filter":["This"]}}]}}]}}"#;
 
@@ -129,6 +130,49 @@ fn the_exiled_creature_returns_when_the_champion_leaves(#[values(2, 3, 4)] seats
     assert!(!in_zone(&driver, "Mob", Zone::Battlefield));
     assert!(in_zone(&driver, "Goblin", Zone::Battlefield));
     assert!(!in_zone(&driver, "Goblin", Zone::Exile));
+}
+
+#[rstest]
+fn a_champion_gone_before_its_trigger_resolves_still_exiles_the_creature_for_good(
+    #[values(2, 3, 4)] seats: usize,
+) {
+    // The old ruling: the exile is part of the enters trigger, the return a separate one that found nothing to return.
+    let mut driver = table(seats, true);
+    driver.cast("Mob").unwrap();
+    for _ in 0..16 {
+        if driver.state().stack().len() == 1 && in_zone(&driver, "Mob", Zone::Battlefield) {
+            break;
+        }
+        driver.pass().unwrap();
+    }
+    let mob = driver.id_of("Mob").unwrap();
+    driver
+        .add_effect(
+            driver.on(mob),
+            Modification::ModifyPowerToughness {
+                power: 0,
+                toughness: -3,
+            },
+            Duration::UntilEndOfTurn,
+        )
+        .unwrap();
+    for _ in 0..16 {
+        if matches!(
+            driver.decision().unwrap().kind,
+            DecisionKind::ChooseCards(_)
+        ) {
+            break;
+        }
+        driver.pass().unwrap();
+    }
+    assert!(!in_zone(&driver, "Mob", Zone::Battlefield));
+    let goblin = driver.id_of("Goblin").unwrap();
+    driver
+        .answer(Answer::ChooseCards(CardsChoice(vec![goblin])))
+        .unwrap();
+    settle(&mut driver);
+    assert!(in_zone(&driver, "Goblin", Zone::Exile));
+    assert!(!in_zone(&driver, "Goblin", Zone::Battlefield));
 }
 
 #[rstest]
