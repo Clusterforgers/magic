@@ -111,7 +111,13 @@ fn performed(step: &Value, branch: &Value) -> Option<Value> {
         return None;
     }
     let condition = branch.get("condition")?;
-    let single = body.get("count").is_none();
+    // One thing taken: a step of the default count, or the exile of one target.
+    let single = if verb == "Exile" {
+        body.get("what")
+            .is_some_and(|what| what.get("Target").is_some())
+    } else {
+        body.get("count").is_none()
+    };
     let did = if let Some(count) = condition.get("CountOf") {
         (count.get("subject")? == &json!({ "Bound": name })).then_some(())?;
         let selector = count.get("selector")?;

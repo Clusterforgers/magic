@@ -116,6 +116,8 @@ const IMP_TEXT: &str = "When this creature enters, you may exile target creature
 #[case::other_binding(&CROVAX.replace(r#""subject":{"Bound":"sacrificed"}}},"then":[{"PutCounters""#, r#""subject":{"Bound":"other"}}},"then":[{"PutCounters""#), CROVAX_TEXT, false)]
 // Counting two or more is not "you do".
 #[case::two_or_more(&IMP.replace(r#""op":"Eq","right":1"#, r#""op":"Ge","right":2"#), IMP_TEXT, false)]
+// Exactly one of a group exiled is not "you do".
+#[case::one_of_a_group(&IMP.replace(r#""what":{"Target":0}"#, r#""what":{"Each":[{"Type":"Creature"},{"In":"Graveyard"}]}"#), "When this creature enters, you may exile all creature cards from all graveyards. If you do, you gain 2 life.", false)]
 // The "may" dropped: the exile always happens.
 #[case::may_dropped(r#"{"Triggered":{"effects":[{"Exile":{"as":"exiled","what":{"Target":0}}},{"If":{"condition":{"Compare":{"left":{"Bound":"exiled~moved"},"op":"Eq","right":1}},"then":[{"GainLife":{"amount":2}}]}}],"targets":[{"what":{"Object":[{"Type":"Creature"},{"In":"Graveyard"}]}}],"when":{"ZoneChange":{"to":"Battlefield","what":["This"]}}}}"#, IMP_TEXT, false)]
 // The sacrifice's kind differs from the kind counted: not the same question.
