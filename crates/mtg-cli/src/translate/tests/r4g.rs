@@ -146,6 +146,19 @@ fn a_prevention_that_stays_on_a_permanent_holds_while_its_condition_does(
 }
 
 #[test]
+fn tapping_a_creature_yourself_is_tapping_it_by_a_spell_or_ability_you_control() {
+    let (json, found) = card(
+        "Creature Yeti",
+        "PT:2/2\nT:Mode$ Taps | ValidCard$ Creature.OppCtrl | ValidPlayer$ You | TriggerZones$ Battlefield | Execute$ P\nSVar:P:DB$ Pump | NumAtt$ +2 | NumDef$ +1 | Defined$ Self",
+    );
+    assert!(found.is_empty(), "{found:?}");
+    assert!(
+        json.contains(r#""Caused":{"by":"You","inner":{"Tapped""#),
+        "{json}"
+    );
+}
+
+#[test]
 fn a_count_checked_on_the_triggered_card_reads_that_cards_controller() {
     let (json, found) = card(
         "Creature Gnome",
