@@ -10,7 +10,7 @@
         {
           "Spell": {
             "targets": [
-              { "what": { "Object": [{ "AnyOf": [{ "In": "Battlefield" }, { "In": "Stack" }] }] } },
+              { "what": { "Object": [{ "AnyOf": [{ "In": "Battlefield" }, "Spell"] }] } },
               { "what": "AnyTarget" }
             ],
             "effects": [

@@ -27,7 +27,7 @@
                         {
                           "Not": {
                             "AnyOf": [
-                              { "Not": { "In": "Stack" } },
+                              { "Not": "Spell" },
                               { "Not": { "ControlledBy": "Opponents" } }
                             ]
                           }

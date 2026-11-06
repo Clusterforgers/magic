@@ -1,0 +1,57 @@
+{
+  "oracle_id": "9e76d56a-67b6-4bd9-8f2d-3328d18a2880",
+  "name": "Fire Nation Salvagers",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Fire Nation Salvagers",
+      "oracle_fingerprint": "2009030c9add33e900f3e71b15c2b39d",
+      "abilities": [
+        { "Keyword": "Menace" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "AnyOf": [{ "Type": "Creature" }, { "Subtype": "Vehicle" }] },
+                    { "ControlledBy": "You" }
+                  ]
+                }
+              }
+            ],
+            "effects": [{ "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1" } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "Batch": {
+                "DealsDamage": {
+                  "source": [{ "Type": "Creature" }, { "ControlledBy": "You" }, "HasAnyCounter"],
+                  "to": "EachPlayer",
+                  "combat": true
+                }
+              }
+            },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "AnyOf": [{ "Type": "Creature" }, { "Subtype": "Vehicle" }] },
+                    { "In": "Graveyard" },
+                    { "OwnedBy": "Triggering" }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              { "Move": { "what": { "Target": 0 }, "to": { "Battlefield": { "under": "You" } } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -17,8 +17,7 @@
                 "Move": {
                   "what": {
                     "Each": [
-                      { "Type": "Creature" },
-                      "TopOfGraveyard",
+                      "TopCreatureOfGraveyard",
                       { "In": "Graveyard" },
                       { "OwnedBy": { "Target": 0 } }
                     ]

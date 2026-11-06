@@ -1,0 +1,67 @@
+{
+  "oracle_id": "e310ab58-180e-4840-bc8d-9f9b06f1b478",
+  "name": "Hallowed Haunting",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Hallowed Haunting",
+      "oracle_fingerprint": "52b2e998a81f0fb70b743a963514e44e",
+      "abilities": [
+        {
+          "Static": {
+            "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+            "mods": [{ "AddKeyword": "Flying" }, { "AddKeyword": "Vigilance" }],
+            "condition": {
+              "Compare": {
+                "left": { "Count": [{ "Type": "Enchantment" }, { "ControlledBy": "You" }] },
+                "op": "Ge",
+                "right": 7
+              }
+            }
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "what": [{ "Type": "Enchantment" }], "by": "You" } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Spirit Cleric",
+                      "colors": ["White"],
+                      "types": ["Creature"],
+                      "subtypes": ["Spirit", "Cleric"],
+                      "power": 0,
+                      "toughness": 0,
+                      "abilities": [
+                        {
+                          "Static": {
+                            "affected": "This",
+                            "mods": [
+                              {
+                                "SetPT": {
+                                  "power": {
+                                    "Count": [{ "Subtype": "Spirit" }, { "ControlledBy": "You" }]
+                                  },
+                                  "toughness": {
+                                    "Count": [{ "Subtype": "Spirit" }, { "ControlledBy": "You" }]
+                                  }
+                                }
+                              }
+                            ],
+                            "defining": true
+                          }
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,42 @@
+{
+  "oracle_id": "448f5c55-7334-4fa4-9d90-0e57bae19444",
+  "name": "Mist Dragon",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mist Dragon",
+      "oracle_fingerprint": "c025ef8fb1f7b9ea143dc1b7fa16e4d6",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{0}",
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "AddKeyword": "Flying" }],
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{0}",
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "RemoveKeyword": "Flying" }],
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        },
+        { "Activated": { "cost": "{3}{U}{U}", "effects": [{ "PhaseOut": { "what": "This" } }] } }
+      ]
+    }
+  ]
+}

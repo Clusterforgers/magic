@@ -1,0 +1,26 @@
+{
+  "oracle_id": "915d70ac-46ce-41d0-a137-f17e7aaea87d",
+  "name": "Wanderbrine Trapper",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Wanderbrine Trapper",
+      "oracle_fingerprint": "d21d5b3cffcf3f7050217fdbcdc03f10",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [
+              { "Mana": "{1}" },
+              "Tap",
+              { "TapPermanents": { "filter": [{ "Type": "Creature" }, "Other"] } }
+            ],
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }] } }
+            ],
+            "effects": [{ "Tap": { "what": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

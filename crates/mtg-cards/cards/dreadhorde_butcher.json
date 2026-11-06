@@ -1,0 +1,45 @@
+{
+  "oracle_id": "d254514b-0688-4f05-9473-3090a2ce7ced",
+  "name": "Dreadhorde Butcher",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dreadhorde Butcher",
+      "oracle_fingerprint": "3be8c99d27b5ebf25e96c24bca08185e",
+      "abilities": [
+        { "Keyword": "Haste" },
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                { "DealsDamage": { "source": ["This"], "to": "EachPlayer", "combat": true } },
+                {
+                  "DealsDamage": {
+                    "source": ["This"],
+                    "to": { "Each": [{ "Type": "Planeswalker" }] },
+                    "combat": true
+                  }
+                }
+              ]
+            },
+            "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } },
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [
+              {
+                "DealDamage": {
+                  "to": { "Target": 0 },
+                  "amount": { "Stat": { "of": "This", "stat": "Power" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

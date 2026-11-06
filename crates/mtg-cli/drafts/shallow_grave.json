@@ -15,8 +15,7 @@
                   "from": {
                     "Each": [
                       { "Type": "Creature" },
-                      { "Type": "Creature" },
-                      "TopOfGraveyard",
+                      "TopCreatureOfGraveyard",
                       { "OwnedBy": "You" },
                       { "In": "Graveyard" }
                     ]

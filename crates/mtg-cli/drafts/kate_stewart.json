@@ -10,11 +10,16 @@
         {
           "Triggered": {
             "when": {
-              "Batch": {
-                "CountersPut": {
-                  "what": [{ "ControlledBy": "You" }, { "In": "Battlefield" }],
-                  "counter": { "Other": "time" }
-                }
+              "Caused": {
+                "inner": {
+                  "Batch": {
+                    "CountersPut": {
+                      "what": [{ "ControlledBy": "You" }, { "In": "Battlefield" }],
+                      "counter": { "Other": "time" }
+                    }
+                  }
+                },
+                "by": "You"
               }
             },
             "effects": [

@@ -13,11 +13,7 @@
             "effects": [
               {
                 "Pay": {
-                  "cost": [
-                    {
-                      "ExileFromGraveyard": { "filter": [{ "Type": "Creature" }, "TopOfGraveyard"] }
-                    }
-                  ],
+                  "cost": [{ "ExileFromGraveyard": { "filter": ["TopCreatureOfGraveyard"] } }],
                   "unpaid": [{ "Sacrifice": { "filter": ["This"] } }]
                 }
               }
