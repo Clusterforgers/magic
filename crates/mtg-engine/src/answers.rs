@@ -122,6 +122,24 @@ fn mode_checked(
     Ok(outcome)
 }
 
+/// The answer to a choice of cards: among the cards offered, in the bounds, and with no two of a name when the options say so.
+fn cards_checked(
+    state: &GameState,
+    pending: Option<&Pending>,
+    player: mtg_core::ids::PlayerId,
+    options: &choose::CardsOptions,
+    choice: choose::CardsChoice,
+) -> Result<Outcome, EngineError> {
+    if options.one_per_name {
+        choose::check_card_names(state, &choice.0)?;
+    }
+    let outcome = choose::cards_answer(player, options, choice, pending.is_some())?;
+    if let (Outcome::Cards(cards), Some(pending)) = (&outcome, pending) {
+        pending.check_picked(state, cards)?;
+    }
+    Ok(outcome)
+}
+
 /// Checks `answer` against `decision`; the result is only built from legal options.
 ///
 /// `pending` is the cast or activation in progress, whose announcements its payment puts on the spell or ability;
@@ -199,14 +217,7 @@ pub(crate) fn handle(
             table_cards(state, options, &choice)
         }
         (DecisionKind::ChooseCards(options), Answer::ChooseCards(choice)) => {
-            if options.one_per_name {
-                choose::check_card_names(state, &choice.0)?;
-            }
-            let outcome = choose::cards_answer(player, options, choice, pending.is_some())?;
-            if let (Outcome::Cards(cards), Some(pending)) = (&outcome, pending) {
-                pending.check_picked(state, cards)?;
-            }
-            Ok(outcome)
+            cards_checked(state, pending, player, options, choice)
         }
         (DecisionKind::OrderCards(o), Answer::OrderCards(c)) => choose::order_answer(player, o, c),
         (DecisionKind::Scry(o), Answer::Scry(c)) => choose::scry_answer(player, o, c),
