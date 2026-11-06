@@ -162,7 +162,7 @@ fn a_summoning_sick_creature_cannot_pay_an_untap_cost(
         ..PresetPermanent::new(creature)
     };
     let driver = Driver::from_scenario(Scenario::new(seats).battlefield(0, [preset]))?;
-    assert!(driver.offered_abilities("Pixie")?.is_empty());
+    assert_eq!(driver.offered_abilities("Pixie")?, Vec::<usize>::new());
     Ok(())
 }
 
