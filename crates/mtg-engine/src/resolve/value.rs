@@ -922,6 +922,10 @@ impl<'a> Scope<'a> {
                 .cause
                 .map(|cause| cause.subjects.clone())
                 .ok_or_else(|| ResolveError::Invalid("there is no triggering event".into()))?,
+            Ref::TriggeringFirst => self
+                .cause
+                .map(|cause| cause.subjects.first().copied().into_iter().collect())
+                .ok_or_else(|| ResolveError::Invalid("there is no triggering event".into()))?,
             Ref::TriggeringPlayer => self
                 .cause
                 .map(|cause| {

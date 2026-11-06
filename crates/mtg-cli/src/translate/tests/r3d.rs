@@ -59,6 +59,12 @@ fn a_batch_of_damage_names_what_it_hurt(
     "PlayerCountPropertyYou$HasPropertyBeenAttackedThisCombat",
     &[r#""Attacked""#, r#""combat":true"#, r#""to":"You""#]
 )]
+#[case::sacrificed_a_permanent(
+    "PlayerCountPropertyYou$SacrificedThisTurn Permanent",
+    &[r#""what":"Sacrificed""#]
+)]
+#[case::opponents_attacked("PlayerCountPropertyYou$OpponentsAttackedThisCombat", &[r#"{"Players":"Attacked"}"#])]
+#[case::landfall("Count$Landfall.4.2", &[r#""Entered""#, r#"{"Type":"Land"}"#, r#""then":4"#])]
 fn a_history_fact_is_read_as_its_tally(#[case] expression: &str, #[case] has: &[&str]) {
     let lines = format!(
         "A:SP$ DealDamage | ValidTgts$ Any | NumDmg$ X | SpellDescription$ Test.\nSVar:X:{expression}"
@@ -80,6 +86,27 @@ fn only_if_you_were_attacked_this_step_is_a_cast_restriction() {
         json.contains(r#""CastOnly""#) && json.contains("DeclareAttackers"),
         "{json}"
     );
+}
+
+#[rstest]
+#[case::target_of_a_spell_or_ability(
+    "Defined$ TriggeredTargetController",
+    r#""ControllerOf":"TriggeringFirst""#
+)]
+#[case::controller_of_the_source(
+    "Defined$ TriggeredSourceController",
+    r#""ControllerOf":"Dealer""#
+)]
+fn a_targeting_names_what_was_targeted_and_what_targets_it(
+    #[case] defined: &str,
+    #[case] has: &str,
+) {
+    let lines = format!(
+        "T:Mode$ BecomesTarget | ValidTarget$ Creature.OppCtrl | ValidSource$ SpellAbility.YouCtrl | Execute$ Go | TriggerDescription$ Test.\nSVar:Go:DB$ Draw | {defined}"
+    );
+    let (json, gaps) = creature(&lines);
+    assert!(gaps.is_empty(), "gaps: {gaps:?}");
+    assert!(json.contains(has), "{has} missing in {json}");
 }
 
 #[rstest]

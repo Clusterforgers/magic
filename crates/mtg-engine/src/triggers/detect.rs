@@ -1385,8 +1385,10 @@ fn becomes_target(
         Target::Object(targeting),
         Target::Player(controller_of(state, caster)?),
     ];
-    (scope.selects(what, *targeted).ok()? && scope.selects(by, targeting).ok()?)
-        .then(|| cause(state, subjects))
+    (scope.selects(what, *targeted).ok()? && scope.selects(by, targeting).ok()?).then(|| Cause {
+        source: Some(targeting),
+        ..cause(state, subjects)
+    })
 }
 
 /// What `pattern` finds in the player actions of a game: a venture, a die roll, a crime and the mana spent in a turn.
@@ -2905,6 +2907,11 @@ mod tests {
                 Target::Player(ME)
             ],
             "what was targeted, what targets it and who controls that"
+        );
+        assert_eq!(
+            found[0].cause.source.map(|source| source.id),
+            Some(reference(&post, "Spell").id),
+            "the dealer is what targets it"
         );
         assert_eq!(
             fire(&pre, &[cast(&pre, ME, "Spell", vec![at("Ogre")])]).1,

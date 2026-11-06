@@ -26,6 +26,10 @@ pub fn when(ctx: &Ctx, base: &str) -> Option<Tr<Value>> {
         "Blessing" => json!({"CitysBlessing": "You"}),
         "StartingPlayer" => json!({"StartingPlayer": "You"}),
         "Night" => json!("IsNight"),
+        // Landfall: a land entered the battlefield under your control this turn.
+        "Landfall" => {
+            json!({"Compare": {"left": {"Tally": {"event": "Entered", "who": "You", "filter": [{"Type": "Land"}]}}, "op": "Ge", "right": 1}})
+        }
         // An instant resolves in the phase it was cast in, so the phase now is the phase it was cast in.
         "IfCastInOwnMainPhase" => {
             json!({"All": ["YourTurn", {"Any": [{"Step": "Main1"}, {"Step": "Main2"}]}]})

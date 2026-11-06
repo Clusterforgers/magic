@@ -11,7 +11,8 @@ use mtg_core::ids::{ObjectId, PlayerId};
 use rstest::rstest;
 
 use super::apply_event;
-use crate::choose::Choices;
+use crate::abilities::Cause;
+use crate::choose::{Choices, Target};
 use crate::combat::AttackTarget;
 use crate::events::{Event, ZoneCause};
 use crate::fixtures::{creature, state};
@@ -154,4 +155,21 @@ fn a_player_has_been_attacked_only_by_creatures_that_attacked_them_this_combat()
     // A later combat phase starts afresh.
     fold(&mut game, &[begin]);
     assert_eq!(attacked_you(&game, FOE), 0);
+}
+
+#[test]
+fn the_first_thing_a_trigger_is_about_is_one_object_not_all_of_them() {
+    let game = table();
+    let bear = game.object(id(&game, "Bear")).unwrap().reference();
+    let object = |name: &str| Target::Object(game.object(id(&game, name)).unwrap().reference());
+    let cause = Cause {
+        subjects: vec![object("Bear"), object("Ogre"), Target::Player(FOE)],
+        ..Cause::default()
+    };
+    let scope = Scope::triggered(&game, ME, bear, &cause);
+    assert_eq!(scope.refs(&Ref::TriggeringFirst).unwrap(), [object("Bear")]);
+    assert_eq!(scope.refs(&Ref::Triggering).unwrap().len(), 3);
+    let empty = Cause::default();
+    let scope = Scope::triggered(&game, ME, bear, &empty);
+    assert!(scope.refs(&Ref::TriggeringFirst).unwrap().is_empty());
 }

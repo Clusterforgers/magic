@@ -523,6 +523,11 @@ impl<'a> Walker<'a> {
                 }
                 self.expect(Kind::Player, want);
             }
+            Ref::TriggeringFirst => {
+                if !self.scope.in_trigger {
+                    self.problem("`TriggeringFirst` is only valid in a triggered ability");
+                }
+            }
             Ref::Against => {
                 if !self.scope.in_trigger {
                     self.problem("`Against` is only valid in a triggered ability");
@@ -2379,7 +2384,9 @@ impl Walker<'_> {
                 .get(usize::from(*index))
                 .map_or(Kind::Either, |t| t.0),
             Ref::Bound(name) => self.scope.lookup(name).unwrap_or(Kind::Either),
-            Ref::Triggering | Ref::Against | Ref::Remembered { .. } => Kind::Either,
+            Ref::Triggering | Ref::TriggeringFirst | Ref::Against | Ref::Remembered { .. } => {
+                Kind::Either
+            }
         }
     }
 
