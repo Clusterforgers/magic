@@ -41,7 +41,7 @@ fn a_colour_change_of_a_spell_is_a_gap(#[case] line: &str, #[case] gap: bool) {
     } else {
         Vec::new()
     };
-    assert_eq!(gaps(&text), expected);
+    assert_eq!(gaps(&text), expected, "{:?}", abilities(&text));
 }
 
 #[rstest]

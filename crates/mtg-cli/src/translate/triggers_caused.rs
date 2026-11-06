@@ -22,7 +22,14 @@ const MODES: [(&str, &str); 9] = [
 /// The pattern of a line with a cause word, `None` for a line without one.
 pub fn pattern(ctx: &Ctx, p: &Params, mode: &str) -> Option<Tr<Value>> {
     let (_, key) = MODES.iter().find(|(known, _)| *known == mode)?;
-    let word = p.get(key).or_else(|| you_put(p, mode))?;
+    let written = p.get(key);
+    let word = written.or_else(|| you_put(p, mode))?;
+    // The words stand for the cause only once: the inner pattern must not read them again.
+    let key: &str = if written.is_some() {
+        key
+    } else {
+        "TriggerDescription"
+    };
     let Ok(by) = players(word) else {
         return Some(unmapped(format!("key:Trigger.{mode}.{key}={word}")));
     };

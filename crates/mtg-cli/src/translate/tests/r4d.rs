@@ -12,7 +12,7 @@ fn card(types: &str, lines: &str) -> String {
 #[rstest]
 #[case::table_beside_stack(
     "Instant",
-    "A:SP$ Animate | Colors$ Red | OverwriteColors$ True | ValidTgts$ Card | TgtZone$ Stack,Battlefield | Duration$ Permanent",
+    "A:SP$ Destroy | ValidTgts$ Card | TgtZone$ Stack,Battlefield",
     r#"{"AnyOf":[{"In":"Stack"},{"In":"Battlefield"}]}"#
 )]
 #[case::table_beside_graveyard(

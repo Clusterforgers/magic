@@ -106,10 +106,12 @@ fn an_aura_that_could_enchant_the_source_is_one_predicate() {
 fn a_player_or_the_controller_of_the_target_is_one_reference(#[case] lines: &str) {
     let text = format!("Name:T\nTypes:Sorcery\n{lines}\n");
     assert!(gaps(&text).is_empty(), "{:?}", gaps(&text));
+    // A filter reads the player or the controller as two tests of the controller; a reference as `OrController`.
+    let written = serde_json::to_string(&abilities(&text)).unwrap();
     assert!(
-        serde_json::to_string(&abilities(&text))
-            .unwrap()
-            .contains(&json!({"OrController": {"Target": 0}}).to_string()),
+        written.contains(&json!({"OrController": {"Target": 0}}).to_string())
+            || written
+                .contains(&json!({"ControlledBy": {"ControllerOf": {"Target": 0}}}).to_string()),
         "{:?}",
         abilities(&text)
     );
