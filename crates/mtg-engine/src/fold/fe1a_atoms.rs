@@ -186,6 +186,38 @@ fn only_the_ends_of_a_library_are_its_top_and_bottom(#[values(2, 3, 4)] seats: u
     );
 }
 
+/// The topmost creature card, even with a noncreature card above it.
+#[rstest]
+fn the_top_creature_card_skips_noncreature_cards_above_it(#[values(2, 3, 4)] seats: usize) {
+    let spell = Arc::new(CardDefinition::new("Bolt").with_type(CardType::Instant));
+    let hands = (0..seats)
+        .map(|s| {
+            if s == 0 {
+                vec![creature("Rat", 1, 1), spell.clone()]
+            } else {
+                Vec::new()
+            }
+        })
+        .collect();
+    let fields = (0..seats)
+        .map(|s| {
+            let mut cards = vec![creature(&format!("Guest {s}"), 2, 2)];
+            if s == 0 {
+                cards.push(creature("Bear", 3, 3));
+            }
+            cards
+        })
+        .collect();
+    let mut game = state(hands, fields);
+    moved(&mut game, "Bear", Zone::Battlefield, Zone::Graveyard(ME));
+    moved(&mut game, "Rat", Zone::Hand(ME), Zone::Graveyard(ME));
+    moved(&mut game, "Bolt", Zone::Hand(ME), Zone::Graveyard(ME));
+    assert!(holds(&game, Pred::TopCreatureOfGraveyard, "Rat"));
+    assert!(!holds(&game, Pred::TopCreatureOfGraveyard, "Bear"));
+    assert!(!holds(&game, Pred::TopCreatureOfGraveyard, "Bolt"));
+    assert!(!holds(&game, Pred::TopOfGraveyard, "Rat"));
+}
+
 #[rstest]
 fn only_the_last_card_of_a_graveyard_is_its_top(#[values(2, 3, 4)] seats: usize) {
     let mut game = table(seats);

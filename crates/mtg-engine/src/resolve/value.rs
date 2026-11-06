@@ -1530,6 +1530,7 @@ impl<'a> Scope<'a> {
             | Pred::TopOfLibrary
             | Pred::BottomOfLibrary
             | Pred::TopOfGraveyard
+            | Pred::TopCreatureOfGraveyard
             | Pred::BlockedBy(_)
             | Pred::Blocks(_)
             | Pred::TargetedBy(_)

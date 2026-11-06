@@ -25,6 +25,11 @@ pub fn champion(ctx: &Ctx, types: &str) -> Tr<Value> {
         "when": {"ZoneChange": {"what": ["This"], "to": "Battlefield"}},
         "effects": [
             {"Choose": {"from": {"Each": choices}, "count": {"min": 0, "max": 1}, "as": "champion"}},
+            // A champion gone before this resolves has nothing to return the card: it stays exiled (the return is a separate
+            // ability that found nothing). The exile below then passes over the card already moved.
+            {"If": {"condition": {"Compare": {
+                "left": {"Count": [{"Is": "This"}, {"In": "Battlefield"}]}, "op": "Eq", "right": 0}},
+                "then": [{"Exile": {"what": {"Bound": "champion"}}}]}},
             {"Exile": {"what": {"Bound": "champion"}, "duration": "WhileSourceOnBattlefield"}},
             {"If": {"condition": {"Not": "Performed"}, "then": [{"Sacrifice": {"filter": ["This"]}}]}}]}}))
 }

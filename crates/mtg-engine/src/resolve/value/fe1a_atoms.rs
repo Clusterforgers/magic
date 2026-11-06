@@ -4,6 +4,7 @@
 use mtg_cards::keyword::Keyword;
 use mtg_cards::refs::{Pred, Ref, Selector, ZoneKind};
 use mtg_cards::value::StatKind;
+use mtg_core::card::CardType;
 
 use super::{ResolveError, Scope, Seen, zone_kind};
 use crate::announce::payments;
@@ -52,6 +53,7 @@ impl Scope<'_> {
                 matches!(seen.zone, Zone::Graveyard(_))
                     && self.state.zone(seen.zone).last() == Some(&reference.id)
             }
+            Pred::TopCreatureOfGraveyard => self.top_creature_of_graveyard(reference, seen)?,
             Pred::BlockedBy(named) => {
                 let blockers = self.objects(named)?;
                 self.state.combat().attackers().iter().any(|attacker| {
@@ -149,6 +151,27 @@ impl Scope<'_> {
         let cards = self.state.zone(seen.zone);
         let end = if top { cards.last() } else { cards.first() };
         end == Some(&reference.id)
+    }
+
+    /// Whether the object is the topmost creature card of the graveyard it is in.
+    fn top_creature_of_graveyard(
+        &self,
+        reference: ObjectRef,
+        seen: &Seen<'_>,
+    ) -> Result<bool, ResolveError> {
+        if !matches!(seen.zone, Zone::Graveyard(_)) {
+            return Ok(false);
+        }
+        let creature = Selector(vec![Pred::Type(CardType::Creature)]);
+        for id in self.state.zone(seen.zone).iter().rev() {
+            let Some(object) = self.state.object(*id) else {
+                continue;
+            };
+            if self.selects(&creature, object.reference())? {
+                return Ok(*id == reference.id);
+            }
+        }
+        Ok(false)
     }
 
     /// Whether the object is a target of a spell or ability on the stack that the reference names.

@@ -45,6 +45,14 @@ pub fn effects(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
         None | Some("You") => None,
         Some(word) => Some(defined(ctx, word)?),
     };
+    // "Your next end step" is the end step of the effect's owner, which the engine's duration reads as the controller's.
+    if owner.is_some()
+        && p.get("Duration").is_some_and(|word| {
+            word.starts_with("UntilYour") || word.starts_with("UntilTheEndOfYour")
+        })
+    {
+        return unmapped("key:Effect.EffectOwner-with-a-turn-duration");
+    }
     let remembering = p.has("RememberObjects") || p.has("ValidTgts");
     if owner.is_some()
         && (p.has("Triggers")

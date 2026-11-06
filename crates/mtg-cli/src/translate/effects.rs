@@ -883,6 +883,10 @@ fn charm(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
     let mut modes = Vec::new();
     for name in choices.split(',') {
         let part = ctx.sub(name)?;
+        // The target of a later mode differs from the earlier modes' (Casey & Raph): the engine's targeting is per mode.
+        if part.get("TargetUnique") == Some("True") && !modes.is_empty() {
+            return unmapped("key:Charm.DifferentPlayerPerMode");
+        }
         mode_costs.push(
             part.get("ModeCost")
                 .map(|cost| cost_of(ctx, cost))

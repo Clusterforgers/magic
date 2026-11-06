@@ -140,7 +140,12 @@ pub fn repeat_each(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
         ctx.moved_from.insert(bind.clone(), before);
     }
     let part = ctx.sub(sub)?;
+    let outer_loop = ctx.player_loop.take();
+    if p.has("RepeatPlayers") && !imprint {
+        ctx.player_loop = Some(bind.clone());
+    }
     let effects = chain_at(ctx, &part, false);
+    ctx.player_loop = outer_loop;
     ctx.moved_from.remove(&bind);
     (ctx.remembered, ctx.imprinted) = (outer, outer_imprinted);
     let repeat = json!({"RepeatEach": {"over": over, "as": bind, "effects": effects?}});

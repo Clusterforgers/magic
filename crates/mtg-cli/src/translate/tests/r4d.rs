@@ -13,7 +13,7 @@ fn card(types: &str, lines: &str) -> String {
 #[case::table_beside_stack(
     "Instant",
     "A:SP$ Destroy | ValidTgts$ Card | TgtZone$ Stack,Battlefield",
-    r#"{"AnyOf":[{"In":"Stack"},{"In":"Battlefield"}]}"#
+    r#"{"AnyOf":["Spell",{"In":"Battlefield"}]}"#
 )]
 #[case::table_beside_graveyard(
     "Planeswalker",
@@ -58,7 +58,7 @@ fn card(types: &str, lines: &str) -> String {
 #[case::top_creature_of_the_graveyard(
     "Creature",
     "A:AB$ Pump | Cost$ ExileFromGrave<1/Card.TopGraveyardCreature> | NumAtt$ +2 | NumDef$ +2",
-    r#""TopOfGraveyard""#
+    r#""TopCreatureOfGraveyard""#
 )]
 #[case::targeted_by_the_spell(
     "Instant",
