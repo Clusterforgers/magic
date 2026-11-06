@@ -336,6 +336,8 @@ fn mana(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
                 None => return unmapped("key:Mana.Produced=Combo"),
             }
         }
+        // "Add {W}{W}, {W}{B}, or {B}{B}" and "X mana in any combination of {R} and/or {G}": each mana picks its own type.
+        ["Combo", rest @ ..] if rest.len() > 1 => combination(ctx, rest, times)?,
         fixed if !fixed.is_empty() && fixed.iter().all(|w| mana_type(w).is_some()) => {
             fixed_mana(ctx, fixed, times)?
         }
@@ -398,6 +400,15 @@ fn mana(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
         (true, true) => return unmapped("key:Mana.PersistentMana+CombatMana"),
     }
     Ok(json!({ "AddMana": effect }))
+}
+
+/// Each of `times` mana picks its own type among the listed ones.
+fn combination(ctx: &Ctx, words: &[&str], times: &str) -> Tr<Value> {
+    let types: Option<Vec<&str>> = words.iter().map(|w| mana_type(w)).collect();
+    let Some(among) = types else {
+        return unmapped("key:Mana.Produced=Combo");
+    };
+    Ok(json!({"mana": {"AnyCombination": {"count": amount(ctx, times)?, "among": among}}}))
 }
 
 /// `ManaReflected`: one mana of a type (or colour) that the permanents it names could produce.

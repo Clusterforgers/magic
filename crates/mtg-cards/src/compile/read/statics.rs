@@ -1562,8 +1562,8 @@ pub(super) fn single_texts(selector: &Selector) -> Vec<String> {
 
 fn rule_texts(rule: &GameRule, condition: Option<&Condition>, from: ZoneKind) -> Vec<String> {
     // Only a card that casts itself from its graveyard words a condition here; the others are said without one.
-    if from == ZoneKind::Graveyard {
-        return super::c8_eg_cast_itself::c8_eg_texts(rule, condition);
+    if matches!(from, ZoneKind::Graveyard | ZoneKind::Exile) {
+        return super::c8_eg_cast_itself::c8_eg_texts(rule, condition, from);
     }
     if let Some(condition) = condition {
         return super::w14a_limits::w14a_limit_while_texts(rule, condition);

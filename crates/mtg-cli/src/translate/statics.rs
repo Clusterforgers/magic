@@ -49,6 +49,9 @@ pub fn static_line(ctx: &mut Ctx, body: &str) -> Tr<Value> {
 pub fn static_lines(ctx: &mut Ctx, body: &str) -> Tr<Value> {
     ctx.reset();
     let all = Params::parse(body);
+    if let Some(found) = super::statics_exert::exert(ctx, &all) {
+        return found;
+    }
     let condition = condition(ctx, &all)?;
     let condition = match (condition, all.get("Affected")) {
         (Some(earlier), Some(word)) if is_pair(word) => Some(json!({"All": [earlier, paired()]})),
@@ -94,7 +97,11 @@ fn by_mode(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
     }
     Ok(match p.get("Mode").unwrap_or_default() {
         "Continuous" if p.has("MayPlay") => {
-            json!({"Rule": {"rule": super::mayplay::may_cast(ctx, p, None)?}})
+            let mut rule = json!({"Rule": {"rule": super::mayplay::may_cast(ctx, p, None)?}});
+            if let Some(zone) = super::mayplay::effect_zone(p)? {
+                rule["Rule"]["from"] = json!(zone);
+            }
+            rule
         }
         "Continuous" => continuous(ctx, p)?,
         "CantAttack" => restriction(ctx, p, &["CantAttack"])?,

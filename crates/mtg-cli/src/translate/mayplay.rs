@@ -34,8 +34,12 @@ pub fn may_cast(ctx: &Ctx, p: &Params, only: Option<&Value>) -> Tr<Value> {
         Some(other) => return unmapped(format!("zone:MayPlay.AffectedZone={other}")),
         None => return unmapped("key:Static.MayPlay.no-AffectedZone"),
     };
-    if !matches!(p.get("EffectZone"), None | Some("Battlefield")) && only.is_none() {
-        return unmapped("key:Static.MayPlay.EffectZone");
+    let own_zone = effect_zone(p);
+    if only.is_none() && own_zone?.is_some() {
+        let itself = matches!(p.get("Affected"), Some("Card.Self" | "Card.Self+nonLand"));
+        if !itself || p.get("EffectZone") != p.get("AffectedZone") {
+            return unmapped("key:Static.MayPlay.EffectZone");
+        }
     }
     let mut permission = json!({ "from": from });
     let affected = p.get("Affected").unwrap_or("Card");
@@ -237,4 +241,14 @@ fn valid_sa(ctx: &Ctx, text: Option<&str>) -> Tr<(bool, Vec<Value>)> {
         return unmapped("key:Play.ValidSA");
     }
     Ok((true, selector_any(ctx, &alternatives.join(","))?))
+}
+
+/// The zone a `MayPlay` static works from when the card itself carries it (`EffectZone$ Graveyard`); `None` on the battlefield.
+pub fn effect_zone(p: &Params) -> Tr<Option<&'static str>> {
+    match p.get("EffectZone") {
+        None | Some("Battlefield") => Ok(None),
+        Some("Graveyard") => Ok(Some("Graveyard")),
+        Some("Exile") => Ok(Some("Exile")),
+        Some(_) => unmapped("key:Static.MayPlay.EffectZone"),
+    }
 }

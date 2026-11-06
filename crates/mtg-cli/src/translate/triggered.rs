@@ -156,6 +156,10 @@ pub fn resolve(shape: Option<&Shape>, word: &str) -> Tr<Value> {
     };
     let mode = shape.mode.as_str();
     let did = holds(mode);
+    // A mana ability's event names the player who tapped the permanent, who controls it.
+    if mode == "TapsForMana" && matches!(what, Word::Card) && controller {
+        return Ok(json!("Triggering"));
+    }
     let reference = match what {
         Word::Owner if ONE_OBJECT.contains(&mode) => "Triggering",
         // An activation holds the player and the permanent; the player alone is "that player".

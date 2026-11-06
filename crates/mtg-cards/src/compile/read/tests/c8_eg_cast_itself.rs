@@ -1,4 +1,4 @@
-//! Goal: a card's permission to cast itself from its graveyard reads with and without its condition and the costs it adds,
+//! Goal: a card's permission to cast itself from its graveyard or from exile reads with and without its condition and the costs it adds,
 //! writes back as the same text, and a near-miss (another zone, another object, another player, a cost the reader does not
 //! word) stays unread.
 use rstest::rstest;
@@ -9,8 +9,18 @@ use crate::modify::GameRule;
 use crate::refs::ZoneKind;
 use crate::value::Amount;
 
+/// The zone each wording works from.
+fn zone_of(text: &str) -> ZoneKind {
+    if text.contains("from exile") {
+        ZoneKind::Exile
+    } else {
+        ZoneKind::Graveyard
+    }
+}
+
 #[rstest]
 #[case::always("You may cast this card from your graveyard.")]
+#[case::from_exile("You may cast this card from exile.")]
 #[case::as_long_as("You may cast this card from your graveyard as long as you control a Zombie.")]
 #[case::gained_life("You may cast this card from your graveyard if you gained life this turn.")]
 #[case::life_and_a_card(
@@ -36,7 +46,7 @@ fn c8_eg_reads_and_writes_back(#[case] text: &str) {
     let Ability::Rule { from, .. } = read else {
         panic!("{text}: {read:?}");
     };
-    assert_eq!(from, ZoneKind::Graveyard, "{text}");
+    assert_eq!(from, zone_of(text), "{text}");
 }
 
 #[rstest]
@@ -64,7 +74,6 @@ fn the_added_costs_are_the_permissions_additional_cost(
 }
 
 #[rstest]
-#[case::exile("You may cast this card from exile.")]
 #[case::other_cards("You may cast creature cards from your graveyard.")]
 #[case::opponent("Each opponent may cast this card from your graveyard.")]
 #[case::without_the_closing_words(

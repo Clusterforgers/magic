@@ -1068,7 +1068,7 @@ fn gather(state: &GameState) -> RulesInForce {
         return found;
     }
     // A rule that a permanent has works from the battlefield, one a spell has for itself from the stack, and a card's
-    // permission to cast itself from its owner's graveyard (CR 601.2a, 113.6) from there.
+    // permission to cast itself from its owner's graveyard or from exile (CR 601.2a, 113.6) from there.
     let graveyards = state
         .players()
         .iter()
@@ -1076,6 +1076,7 @@ fn gather(state: &GameState) -> RulesInForce {
     for (zone, from) in [
         (Zone::Battlefield, ZoneKind::Battlefield),
         (Zone::Stack, ZoneKind::Stack),
+        (Zone::Exile, ZoneKind::Exile),
     ]
     .into_iter()
     .chain(graveyards)
