@@ -1,0 +1,62 @@
+{
+  "oracle_id": "d334717a-f3a8-4ffa-bdc9-44ae7bdcc772",
+  "name": "Toggo, Goblin Weaponsmith",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Toggo, Goblin Weaponsmith",
+      "oracle_fingerprint": "20f332e0a8f486bd33d40d05ee737808",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Land" }, { "ControlledBy": "You" }],
+                "to": "Battlefield"
+              }
+            },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Rock",
+                      "types": ["Artifact"],
+                      "subtypes": ["Equipment"],
+                      "abilities": [
+                        { "Keyword": { "Equip": "{1}" } },
+                        {
+                          "Static": {
+                            "affected": "Attached",
+                            "mods": [
+                              {
+                                "GrantAbility": {
+                                  "Activated": {
+                                    "cost": [
+                                      { "Mana": "{1}" },
+                                      "Tap",
+                                      { "Sacrifice": { "filter": [{ "Is": "Granter" }] } }
+                                    ],
+                                    "targets": [{ "what": "AnyTarget" }],
+                                    "effects": [
+                                      { "DealDamage": { "to": { "Target": 0 }, "amount": 2 } }
+                                    ]
+                                  }
+                                }
+                              }
+                            ]
+                          }
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": "Partner" }
+      ]
+    }
+  ]
+}

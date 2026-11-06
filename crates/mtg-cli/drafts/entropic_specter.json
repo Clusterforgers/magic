@@ -1,0 +1,40 @@
+{
+  "oracle_id": "a9c44443-85c7-4d0a-82ab-36137151e4e5",
+  "name": "Entropic Specter",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Entropic Specter",
+      "oracle_fingerprint": "24bf0f6db6d829714792e51648def7a1",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "Choose": "Opponent" }
+          }
+        },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              {
+                "SetPT": {
+                  "power": { "Count": [{ "OwnedBy": "Chosen" }, { "In": "Hand" }] },
+                  "toughness": { "Count": [{ "OwnedBy": "Chosen" }, { "In": "Hand" }] }
+                }
+              }
+            ],
+            "defining": true
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": ["This"], "to": "EachPlayer" } },
+            "effects": [{ "Discard": { "who": "Triggering" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

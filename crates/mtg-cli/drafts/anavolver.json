@@ -1,0 +1,50 @@
+{
+  "oracle_id": "03a4cbe2-cf35-4c2c-b035-666f994ffd09",
+  "name": "Anavolver",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Anavolver",
+      "oracle_fingerprint": "c58e17cb90c2a5b2a74b66056c946b68",
+      "abilities": [
+        { "Keyword": { "Kicker": "{1}{U}" } },
+        { "Keyword": { "Kicker": "{B}" } },
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": {
+              "WithCountersAnd": {
+                "counter": "+1/+1",
+                "count": 2,
+                "mods": [{ "AddKeyword": "Flying" }]
+              }
+            },
+            "condition": { "KickedWith": "{1}{U}" }
+          }
+        },
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": {
+              "WithCountersAnd": {
+                "counter": "+1/+1",
+                "count": 1,
+                "mods": [
+                  {
+                    "GrantAbility": {
+                      "Activated": {
+                        "cost": [{ "PayLife": 3 }],
+                        "effects": [{ "Regenerate": { "what": "This" } }]
+                      }
+                    }
+                  }
+                ]
+              }
+            },
+            "condition": { "KickedWith": "{B}" }
+          }
+        }
+      ]
+    }
+  ]
+}

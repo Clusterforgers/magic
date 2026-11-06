@@ -1,0 +1,38 @@
+{
+  "oracle_id": "39d250a0-3605-4372-ad9d-bea7fa9308b0",
+  "name": "Unforgiving Overtake",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Unforgiving Overtake",
+      "oracle_fingerprint": "041f6ef9ac1468304ea592907f091514",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "AnyOf": [{ "Type": "Creature" }, { "Subtype": "Vehicle" }] }]
+                }
+              }
+            ],
+            "effects": [
+              { "Destroy": { "what": { "Target": 0 } } },
+              { "LoseLife": { "who": { "ControllerOf": { "Target": 0 } }, "amount": 2 } }
+            ]
+          }
+        },
+        {
+          "CostModifier": {
+            "applies_to": ["This"],
+            "change": "Reduce",
+            "mana": "{1}",
+            "per": {
+              "When": { "condition": { "StartingPlayer": "You" }, "then": 0, "otherwise": 1 }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

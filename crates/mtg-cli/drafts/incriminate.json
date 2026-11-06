@@ -1,0 +1,36 @@
+{
+  "oracle_id": "d8b59cc3-766f-4350-971f-edf721fcc5be",
+  "name": "Incriminate",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Incriminate",
+      "oracle_fingerprint": "ef0f7b99dfaa5f6cc6b403d0fa6425ab",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Together": {
+                    "what": { "Object": [{ "Type": "Creature" }] },
+                    "rule": "SameController"
+                  }
+                },
+                "bounds": { "min": 2, "max": 2 }
+              }
+            ],
+            "effects": [
+              {
+                "Sacrifice": {
+                  "who": { "ControllerOf": { "Target": 0 } },
+                  "filter": [{ "Is": { "Target": 0 } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

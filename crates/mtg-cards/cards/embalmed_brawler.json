@@ -1,0 +1,24 @@
+{
+  "oracle_id": "42e95ad5-c10a-46fe-ab97-c7a734138586",
+  "name": "Embalmed Brawler",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Embalmed Brawler",
+      "oracle_fingerprint": "785ef4fad6535ce3370360cc52a1a767",
+      "abilities": [
+        { "Keyword": { "Macro": { "name": "amplify", "amount": 1 } } },
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [{ "Attacks": { "what": ["This"] } }, { "Blocks": { "what": ["This"] } }]
+            },
+            "effects": [
+              { "LoseLife": { "amount": { "Counters": { "on": "This", "counter": "+1/+1" } } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

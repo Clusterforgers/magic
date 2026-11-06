@@ -1,0 +1,53 @@
+{
+  "oracle_id": "f78db9ad-d4a3-4e49-a76e-bd31124b7837",
+  "name": "Kagha, Shadow Archdruid",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Kagha, Shadow Archdruid",
+      "oracle_fingerprint": "44801bbeff983bab82f81d1bccb287ff",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "AddKeyword": "Deathtouch" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              { "Mill": { "count": 2 } }
+            ]
+          }
+        },
+        {
+          "Rule": {
+            "rule": {
+              "MayCast": {
+                "what": [
+                  { "ArrivedFrom": "Library" },
+                  {
+                    "AnyOf": [
+                      { "Type": "Artifact" },
+                      { "Type": "Battle" },
+                      { "Type": "Creature" },
+                      { "Type": "Enchantment" },
+                      { "Type": "Land" },
+                      { "Type": "Planeswalker" }
+                    ]
+                  }
+                ],
+                "from": "Graveyard",
+                "play": true,
+                "once": true
+              }
+            },
+            "condition": "YourTurn"
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,30 @@
+{
+  "oracle_id": "ee1d97e9-847d-4295-a9c1-7ce8006fb0bd",
+  "name": "Thunder Brute",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Thunder Brute",
+      "oracle_fingerprint": "1021de17733fd83a84581dff01b3b7fe",
+      "abilities": [
+        { "Keyword": "Trample" },
+        { "Keyword": { "Macro": { "name": "tribute", "amount": 3 } } },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "if": { "Compare": { "left": "Chosen", "op": "Eq", "right": 0 } },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "AddKeyword": "Haste" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

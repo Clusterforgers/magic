@@ -1,0 +1,38 @@
+{
+  "oracle_id": "6a3dee57-9912-4c51-872e-2ec47acdaf52",
+  "name": "Changeling Berserker",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Changeling Berserker",
+      "oracle_fingerprint": "f5a8ceecd89cab59f7d7c99a4df04a70",
+      "abilities": [
+        { "Keyword": "Changeling" },
+        { "Keyword": "Haste" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Choose": {
+                  "from": { "Each": [{ "Type": "Creature" }, "Other", { "ControlledBy": "You" }] },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "champion"
+                }
+              },
+              {
+                "Exile": { "what": { "Bound": "champion" }, "duration": "WhileSourceOnBattlefield" }
+              },
+              {
+                "If": {
+                  "condition": { "Not": "Performed" },
+                  "then": [{ "Sacrifice": { "filter": ["This"] } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

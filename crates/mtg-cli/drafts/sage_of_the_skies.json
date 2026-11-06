@@ -1,0 +1,34 @@
+{
+  "oracle_id": "cfc7cef7-0a95-49f8-970f-abff2cacd82d",
+  "name": "Sage of the Skies",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sage of the Skies",
+      "oracle_fingerprint": "4e2741c5613a1a1134ee20cf2381f77d",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "what": ["This"] } },
+            "if": {
+              "Compare": {
+                "left": {
+                  "Tally": {
+                    "event": "SpellCast",
+                    "who": "EachPlayer",
+                    "filter": [{ "ControlledBy": "You" }, "Other"]
+                  }
+                },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "effects": [{ "CopySpell": { "what": "Triggering" } }]
+          }
+        },
+        { "Keyword": "Flying" },
+        { "Keyword": "Lifelink" }
+      ]
+    }
+  ]
+}

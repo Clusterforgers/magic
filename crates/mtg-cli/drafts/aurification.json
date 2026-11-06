@@ -1,7 +1,7 @@
 {
   "oracle_id": "3d98a656-1737-486f-9b25-449b7c871d1f",
   "name": "Aurification",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Aurification",
@@ -25,9 +25,16 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 207, "end": 297 }
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield" } },
+            "effects": [
+              {
+                "RemoveAllCounters": {
+                  "from": { "Each": [{ "Type": "Creature" }] },
+                  "counter": { "Other": "gold" }
+                }
+              }
+            ]
           }
         }
       ]

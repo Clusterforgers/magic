@@ -1,0 +1,33 @@
+{
+  "oracle_id": "f90b2cc6-9edb-4666-849a-7c1f6d669daa",
+  "name": "Hotheaded Giant",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Hotheaded Giant",
+      "oracle_fingerprint": "8e71b39b0ce97c5f6172ba4a19b954e8",
+      "abilities": [
+        { "Keyword": "Haste" },
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "WithCounters": { "counter": "-1/-1", "count": 2 } },
+            "condition": {
+              "Compare": {
+                "left": {
+                  "Tally": {
+                    "event": "SpellCast",
+                    "who": "EachPlayer",
+                    "filter": [{ "Color": "Red" }, "Other", { "ControlledBy": "You" }]
+                  }
+                },
+                "op": "Eq",
+                "right": 0
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

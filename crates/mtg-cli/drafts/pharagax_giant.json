@@ -1,0 +1,21 @@
+{
+  "oracle_id": "69a134f2-c0c4-496f-b354-8325437af8ca",
+  "name": "Pharagax Giant",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Pharagax Giant",
+      "oracle_fingerprint": "0f26919526caa1aa3358373ec2e4b15f",
+      "abilities": [
+        { "Keyword": { "Macro": { "name": "tribute", "amount": 2 } } },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "if": { "Compare": { "left": "Chosen", "op": "Eq", "right": 0 } },
+            "effects": [{ "DealDamage": { "to": "Opponents", "amount": 5 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

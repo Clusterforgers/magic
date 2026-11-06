@@ -1,0 +1,24 @@
+{
+  "oracle_id": "52d1d575-3e7f-4df1-8c89-aee0cac03aca",
+  "name": "Rakdos's Return",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Rakdos's Return",
+      "oracle_fingerprint": "c2fa563d67cf29f33781af12d1bc31bc",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Either": ["Opponent", { "Object": [{ "Type": "Planeswalker" }] }] } }
+            ],
+            "effects": [
+              { "DealDamage": { "to": { "Target": 0 }, "amount": "X" } },
+              { "Discard": { "who": { "OrController": { "Target": 0 } }, "count": "X" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,30 @@
+{
+  "oracle_id": "1610875f-48da-490c-a371-c439dc36f533",
+  "name": "Barrow Ghoul",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Barrow Ghoul",
+      "oracle_fingerprint": "c60a0c1aecd3d569e04f1539f21914b3",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": [
+                    {
+                      "ExileFromGraveyard": { "filter": [{ "Type": "Creature" }, "TopOfGraveyard"] }
+                    }
+                  ],
+                  "unpaid": [{ "Sacrifice": { "filter": ["This"] } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

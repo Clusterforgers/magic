@@ -1,0 +1,64 @@
+{
+  "oracle_id": "8cb36a67-9206-4665-a03f-64f52ba559c4",
+  "name": "Into the Flood Maw",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Into the Flood Maw",
+      "oracle_fingerprint": "4b0cd29b42079d65eac82a07e07e58fc",
+      "abilities": [
+        { "Keyword": { "Gift": "TappedFish" } },
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }] },
+                "bounds": {
+                  "min": {
+                    "When": {
+                      "condition": { "Compare": { "left": "Promised", "op": "Ge", "right": 1 } },
+                      "then": 0,
+                      "otherwise": 1
+                    }
+                  },
+                  "max": {
+                    "When": {
+                      "condition": { "Compare": { "left": "Promised", "op": "Ge", "right": 1 } },
+                      "then": 0,
+                      "otherwise": 1
+                    }
+                  }
+                }
+              },
+              {
+                "what": {
+                  "Object": [{ "Not": { "Type": "Land" } }, { "ControlledBy": "Opponents" }]
+                },
+                "bounds": {
+                  "min": {
+                    "When": {
+                      "condition": { "Compare": { "left": "Promised", "op": "Ge", "right": 1 } },
+                      "then": 1,
+                      "otherwise": 0
+                    }
+                  },
+                  "max": {
+                    "When": {
+                      "condition": { "Compare": { "left": "Promised", "op": "Ge", "right": 1 } },
+                      "then": 1,
+                      "otherwise": 0
+                    }
+                  }
+                }
+              }
+            ],
+            "effects": [
+              { "Move": { "what": { "Target": 0 }, "to": "Hand" } },
+              { "Move": { "what": { "Target": 1 }, "to": "Hand" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

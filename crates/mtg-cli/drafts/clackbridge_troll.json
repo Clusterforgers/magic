@@ -1,0 +1,57 @@
+{
+  "oracle_id": "9c2f25af-0b16-488d-9249-026a84bdb27f",
+  "name": "Clackbridge Troll",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Clackbridge Troll",
+      "oracle_fingerprint": "f85fb9ebb0f8c4df214c582c9d1c6dd5",
+      "abilities": [
+        { "Keyword": "Trample" },
+        { "Keyword": "Haste" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              {
+                "CreateToken": {
+                  "who": { "Target": 0 },
+                  "token": {
+                    "Custom": {
+                      "name": "Goat",
+                      "colors": ["White"],
+                      "types": ["Creature"],
+                      "subtypes": ["Goat"],
+                      "power": 0,
+                      "toughness": 1
+                    }
+                  },
+                  "count": 3
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "BeginCombat", "whose": "You" } },
+            "effects": [
+              {
+                "Pay": {
+                  "who": "Opponents",
+                  "cost": [{ "Sacrifice": { "filter": [{ "Type": "Creature" }] } }],
+                  "paid": [
+                    { "Tap": { "what": "This" } },
+                    { "GainLife": { "amount": 3 } },
+                    { "Draw": {} }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

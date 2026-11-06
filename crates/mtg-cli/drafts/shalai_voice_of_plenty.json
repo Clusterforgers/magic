@@ -1,0 +1,44 @@
+{
+  "oracle_id": "a0c47ab6-dfb4-46ee-a3f7-9e1521b4bb4b",
+  "name": "Shalai, Voice of Plenty",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Shalai, Voice of Plenty",
+      "oracle_fingerprint": "49da82575504d0f1ba3cfdc8292a041b",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Static": { "affected": "You", "mods": [{ "AddKeyword": "Hexproof" }] } },
+        {
+          "Activated": {
+            "cost": "{4}{G}{G}",
+            "effects": [
+              {
+                "PutCounters": {
+                  "on": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                  "counter": "+1/+1"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Static": {
+            "affected": {
+              "Each": [
+                {
+                  "AnyOf": [
+                    { "Type": "Planeswalker" },
+                    { "Not": { "AnyOf": [{ "Not": { "Type": "Creature" } }, { "Not": "Other" }] } }
+                  ]
+                },
+                { "ControlledBy": "You" }
+              ]
+            },
+            "mods": [{ "AddKeyword": "Hexproof" }]
+          }
+        }
+      ]
+    }
+  ]
+}

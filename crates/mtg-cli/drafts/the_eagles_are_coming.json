@@ -1,0 +1,73 @@
+{
+  "oracle_id": "169a4a77-12ff-4997-9550-bdcd456aa2f7",
+  "name": "The Eagles Are Coming!",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "The Eagles Are Coming!",
+      "oracle_fingerprint": "e7a4798daee937a0badb01e628b9993f",
+      "abilities": [
+        { "Keyword": { "Kicker": "{2}{W}{W}" } },
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": { "Object": [{ "Type": "Creature" }, { "OwnedBy": "You" }] },
+                "bounds": {
+                  "min": { "When": { "condition": "Kicked", "then": 0, "otherwise": 1 } },
+                  "max": {
+                    "When": {
+                      "condition": "Kicked",
+                      "then": { "Count": [{ "Type": "Creature" }, { "OwnedBy": "You" }] },
+                      "otherwise": 1
+                    }
+                  }
+                }
+              }
+            ],
+            "effects": [
+              { "Move": { "what": { "Target": 0 }, "to": "Hand", "as": "moved" } },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "Upkeep" } },
+                  "effects": [
+                    {
+                      "CreateToken": {
+                        "token": {
+                          "Custom": {
+                            "name": "Bird Soldier",
+                            "colors": ["White"],
+                            "types": ["Creature"],
+                            "subtypes": ["Bird", "Soldier"],
+                            "power": 4,
+                            "toughness": 4,
+                            "abilities": [{ "Keyword": "Flying" }]
+                          }
+                        },
+                        "count": {
+                          "Count": [
+                            { "Is": { "Bound": "moved" } },
+                            {
+                              "AnyOf": [
+                                { "In": "Battlefield" },
+                                { "In": "Hand" },
+                                { "In": "Library" },
+                                { "In": "Graveyard" },
+                                { "In": "Exile" },
+                                { "In": "Stack" }
+                              ]
+                            }
+                          ]
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

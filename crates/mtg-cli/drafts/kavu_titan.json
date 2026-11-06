@@ -1,0 +1,27 @@
+{
+  "oracle_id": "df166d0e-f944-404d-83b9-8cf53e220774",
+  "name": "Kavu Titan",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Kavu Titan",
+      "oracle_fingerprint": "1c92836008b9415b4cc88f3ad61bd90a",
+      "abilities": [
+        { "Keyword": { "Kicker": "{2}{G}" } },
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": {
+              "WithCountersAnd": {
+                "counter": "+1/+1",
+                "count": 3,
+                "mods": [{ "AddKeyword": "Trample" }]
+              }
+            },
+            "condition": "Kicked"
+          }
+        }
+      ]
+    }
+  ]
+}

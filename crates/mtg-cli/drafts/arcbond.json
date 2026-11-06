@@ -1,0 +1,49 @@
+{
+  "oracle_id": "01790829-cc03-430f-a899-2f274b7dbf62",
+  "name": "Arcbond",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Arcbond",
+      "oracle_fingerprint": "333f1a3d09d723c29210ee43c9afc455",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "DelayedTrigger": {
+                  "when": {
+                    "Batch": {
+                      "DealsDamage": { "source": [], "to": { "Each": [{ "Is": { "Target": 0 } }] } }
+                    }
+                  },
+                  "once": false,
+                  "this_turn": true,
+                  "effects": [
+                    {
+                      "DealDamage": {
+                        "source": { "Target": 0 },
+                        "to": {
+                          "Each": [{ "Type": "Creature" }, { "Not": { "Is": { "Target": 0 } } }]
+                        },
+                        "amount": "Triggering"
+                      }
+                    },
+                    {
+                      "DealDamage": {
+                        "source": { "Target": 0 },
+                        "to": "EachPlayer",
+                        "amount": "Triggering"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

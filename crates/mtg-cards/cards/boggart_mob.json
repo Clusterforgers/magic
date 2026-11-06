@@ -1,0 +1,69 @@
+{
+  "oracle_id": "f5e2da6c-35fa-4f46-bfae-8ac8907c8300",
+  "name": "Boggart Mob",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Boggart Mob",
+      "oracle_fingerprint": "8efa0c2d08737ef41c1de25b2465a474",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Choose": {
+                  "from": { "Each": [{ "Subtype": "Goblin" }, "Other", { "ControlledBy": "You" }] },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "champion"
+                }
+              },
+              {
+                "Exile": { "what": { "Bound": "champion" }, "duration": "WhileSourceOnBattlefield" }
+              },
+              {
+                "If": {
+                  "condition": { "Not": "Performed" },
+                  "then": [{ "Sacrifice": { "filter": ["This"] } }]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "DealsDamage": {
+                "source": [{ "Subtype": "Goblin" }, { "ControlledBy": "You" }],
+                "to": "EachPlayer",
+                "combat": true
+              }
+            },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "CreateToken": {
+                        "token": {
+                          "Custom": {
+                            "name": "Goblin Rogue",
+                            "colors": ["Black"],
+                            "types": ["Creature"],
+                            "subtypes": ["Goblin", "Rogue"],
+                            "power": 1,
+                            "toughness": 1
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

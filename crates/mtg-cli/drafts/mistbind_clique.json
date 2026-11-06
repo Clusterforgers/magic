@@ -1,0 +1,44 @@
+{
+  "oracle_id": "d1946f91-0653-4647-b3de-95d78b9597c4",
+  "name": "Mistbind Clique",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Mistbind Clique",
+      "oracle_fingerprint": "9f7bb06120346cf9f0e5011949eb0564",
+      "abilities": [
+        { "Keyword": "Flash" },
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Choose": {
+                  "from": { "Each": [{ "Subtype": "Faerie" }, "Other", { "ControlledBy": "You" }] },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "champion"
+                }
+              },
+              {
+                "Exile": { "what": { "Bound": "champion" }, "duration": "WhileSourceOnBattlefield" }
+              },
+              {
+                "If": {
+                  "condition": { "Not": "Performed" },
+                  "then": [{ "Sacrifice": { "filter": ["This"] } }]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 181, "end": 266 }
+          }
+        }
+      ]
+    }
+  ]
+}

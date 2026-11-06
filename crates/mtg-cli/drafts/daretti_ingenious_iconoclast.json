@@ -1,0 +1,72 @@
+{
+  "oracle_id": "add0f7e7-8990-4fd1-8ac7-8115f7802912",
+  "name": "Daretti, Ingenious Iconoclast",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Daretti, Ingenious Iconoclast",
+      "oracle_fingerprint": "74db3e21d54b4e4c66a218ed76e1d178",
+      "abilities": [
+        {
+          "Loyalty": {
+            "cost": { "Plus": 1 },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Construct",
+                      "types": ["Artifact", "Creature"],
+                      "subtypes": ["Construct"],
+                      "power": 1,
+                      "toughness": 1,
+                      "abilities": [{ "Keyword": "Defender" }]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Minus": 1 },
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "AnyOf": [{ "Type": "Artifact" }, { "Type": "Creature" }] }]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "Pay": {
+                  "cost": [{ "Sacrifice": { "filter": [{ "Type": "Artifact" }] } }],
+                  "paid": [{ "Destroy": { "what": { "Target": 0 } } }]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Minus": 6 },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Type": "Artifact" },
+                    { "AnyOf": [{ "In": "Battlefield" }, { "In": "Graveyard" }] }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              { "CreateToken": { "token": { "CopyOf": { "of": { "Target": 0 } } }, "count": 3 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

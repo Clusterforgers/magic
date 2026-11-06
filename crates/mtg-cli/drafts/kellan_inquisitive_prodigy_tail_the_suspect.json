@@ -1,0 +1,53 @@
+{
+  "oracle_id": "2f2d75a0-d751-4c74-b357-8f92a992447f",
+  "name": "Kellan, Inquisitive Prodigy // Tail the Suspect",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Kellan, Inquisitive Prodigy",
+      "oracle_fingerprint": "c34458b3c807c1c062af8aefffd36dbe",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": "Vigilance" },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Artifact" }] }, "bounds": { "min": 0, "max": 1 } }
+            ],
+            "effects": [
+              { "Destroy": { "what": { "Target": 0 } } },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Target": 0 },
+                      "selector": [{ "ControlledBy": "You" }],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [{ "Draw": {} }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Tail the Suspect",
+      "oracle_fingerprint": "0d23b07c5853d7edea249faf802ae084",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "CreateToken": { "token": { "Named": "clue" } } },
+              { "Rule": { "rule": { "AdditionalLandPlays": {} }, "duration": "UntilEndOfTurn" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

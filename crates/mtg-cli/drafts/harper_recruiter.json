@@ -1,0 +1,90 @@
+{
+  "oracle_id": "9ecbc7de-9399-42f4-9c39-b9255080f48c",
+  "name": "Harper Recruiter",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Harper Recruiter",
+      "oracle_fingerprint": "6455f06c840f0cf9da71d89ce8b79e03",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [
+              { "LookAtTop": { "count": 4, "as": "top" } },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "In": "Library" },
+                      { "Is": { "Bound": "top" } },
+                      { "Subtype": "Cleric" }
+                    ]
+                  },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "kept2"
+                }
+              },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "In": "Library" },
+                      { "Is": { "Bound": "top" } },
+                      { "Subtype": "Rogue" },
+                      { "Not": { "Is": { "Bound": "kept2" } } }
+                    ]
+                  },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "kept3"
+                }
+              },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "In": "Library" },
+                      { "Is": { "Bound": "top" } },
+                      { "Subtype": "Warrior" },
+                      { "Not": { "Is": { "Bound": "kept2" } } },
+                      { "Not": { "Is": { "Bound": "kept3" } } }
+                    ]
+                  },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "kept4"
+                }
+              },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "In": "Library" },
+                      { "Is": { "Bound": "top" } },
+                      { "Subtype": "Wizard" },
+                      { "Not": { "Is": { "Bound": "kept2" } } },
+                      { "Not": { "Is": { "Bound": "kept3" } } },
+                      { "Not": { "Is": { "Bound": "kept4" } } }
+                    ]
+                  },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "kept5"
+                }
+              },
+              { "Move": { "what": { "Bound": "kept2" }, "to": "Hand" } },
+              { "Move": { "what": { "Bound": "kept3" }, "to": "Hand" } },
+              { "Move": { "what": { "Bound": "kept4" }, "to": "Hand" } },
+              { "Move": { "what": { "Bound": "kept5" }, "to": "Hand" } },
+              {
+                "Move": {
+                  "what": { "Bound": "top" },
+                  "to": { "Library": { "place": "Bottom", "order": "Random" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,37 @@
+{
+  "oracle_id": "4c9a38f8-8fcb-45f9-8b70-e54298c7b485",
+  "name": "Ancient Animus",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ancient Animus",
+      "oracle_fingerprint": "de9bf293ece439e4402af0b2af0f4bce",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } },
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }] } }
+            ],
+            "effects": [
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Target": 0 },
+                      "selector": [{ "Supertype": "Legendary" }],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [{ "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1" } }]
+                }
+              },
+              { "Fight": { "what": { "Target": 0 }, "with": { "Target": 1 } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

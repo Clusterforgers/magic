@@ -1,0 +1,27 @@
+{
+  "oracle_id": "c51078d9-a53a-49ae-9658-2bc00cce2b81",
+  "name": "Wire Surgeons",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Wire Surgeons",
+      "oracle_fingerprint": "5796baecdf505f970eb0cedf9475aa73",
+      "abilities": [
+        { "Keyword": "Fear" },
+        {
+          "Static": {
+            "affected": {
+              "Each": [
+                { "Type": "Creature" },
+                { "Type": "Artifact" },
+                { "OwnedBy": "You" },
+                { "In": "Graveyard" }
+              ]
+            },
+            "mods": [{ "AddKeyword": { "Encore": ["OwnManaCost"] } }]
+          }
+        }
+      ]
+    }
+  ]
+}

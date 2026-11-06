@@ -1,0 +1,22 @@
+{
+  "oracle_id": "f24fc213-6341-482c-a056-946d0f1dd76b",
+  "name": "Young Deathclaws",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Young Deathclaws",
+      "oracle_fingerprint": "14dd69fa4780c399db98f1aa9bb7d22d",
+      "abilities": [
+        { "Keyword": "Menace" },
+        {
+          "Static": {
+            "affected": {
+              "Each": [{ "Type": "Creature" }, { "OwnedBy": "You" }, { "In": "Graveyard" }]
+            },
+            "mods": [{ "AddKeyword": { "Scavenge": ["OwnManaCost"] } }]
+          }
+        }
+      ]
+    }
+  ]
+}

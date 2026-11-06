@@ -1,0 +1,52 @@
+{
+  "oracle_id": "43a2bd01-3fce-4191-a08a-1e379c7770b0",
+  "name": "Rakdos Riteknife",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Rakdos Riteknife",
+      "oracle_fingerprint": "b70fba27fa4c5be4b2492268a4ebeb09",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [
+              {
+                "ModifyPT": {
+                  "power": { "Counters": { "on": "This", "counter": { "Other": "blood" } } },
+                  "toughness": 0
+                }
+              },
+              {
+                "GrantAbility": {
+                  "Activated": {
+                    "cost": ["Tap", { "Sacrifice": { "filter": [{ "Type": "Creature" }] } }],
+                    "effects": [
+                      { "PutCounters": { "on": "Granter", "counter": { "Other": "blood" } } }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{B}{R}" }, "SacrificeSelf"],
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              {
+                "Sacrifice": {
+                  "who": { "Target": 0 },
+                  "filter": [],
+                  "count": { "Counters": { "on": "This", "counter": { "Other": "blood" } } }
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Equip": "{2}" } }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,116 @@
+{
+  "oracle_id": "781162c4-9c0f-436c-b9a5-214e60e009e4",
+  "name": "Niko Aris",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Niko Aris",
+      "oracle_fingerprint": "40bc6af1ac317ce5833efbb562c43e42",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Shard",
+                      "types": ["Enchantment"],
+                      "subtypes": ["Shard"],
+                      "abilities": [
+                        {
+                          "Activated": {
+                            "cost": [{ "Mana": "{2}" }, "SacrificeSelf"],
+                            "effects": [{ "Scry": {} }, { "Draw": {} }]
+                          }
+                        }
+                      ]
+                    }
+                  },
+                  "count": "X"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Plus": 1 },
+            "targets": [
+              {
+                "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                "bounds": { "min": 0, "max": 1 }
+              }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": ["CantBeBlocked"],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "DelayedTrigger": {
+                  "when": {
+                    "Batch": {
+                      "DealsDamage": {
+                        "source": [{ "Type": "Creature" }, { "Is": { "Target": 0 } }]
+                      }
+                    }
+                  },
+                  "once": false,
+                  "this_turn": true,
+                  "effects": [{ "Move": { "what": { "Target": 0 }, "to": "Hand" } }]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Minus": 1 },
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }, "Tapped"] } }],
+            "effects": [
+              {
+                "DealDamage": {
+                  "to": { "Target": 0 },
+                  "amount": {
+                    "Times": { "by": 2, "of": { "Tallied": { "who": "You", "what": "Drawn" } } }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Minus": 1 },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Shard",
+                      "types": ["Enchantment"],
+                      "subtypes": ["Shard"],
+                      "abilities": [
+                        {
+                          "Activated": {
+                            "cost": [{ "Mana": "{2}" }, "SacrificeSelf"],
+                            "effects": [{ "Scry": {} }, { "Draw": {} }]
+                          }
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

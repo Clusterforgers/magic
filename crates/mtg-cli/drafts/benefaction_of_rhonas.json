@@ -1,0 +1,51 @@
+{
+  "oracle_id": "02da2cbf-50d6-4c37-8a9f-40db1f7954be",
+  "name": "Benefaction of Rhonas",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Benefaction of Rhonas",
+      "oracle_fingerprint": "4ec954b8dac2b60d9aef270a92cf1435",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "LookAtTop": { "count": 5, "as": "top" } },
+              { "Reveal": { "what": { "Bound": "top" } } },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "In": "Library" },
+                      { "Is": { "Bound": "top" } },
+                      { "Type": "Creature" }
+                    ]
+                  },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "kept2"
+                }
+              },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "In": "Library" },
+                      { "Is": { "Bound": "top" } },
+                      { "Type": "Enchantment" },
+                      { "Not": { "Is": { "Bound": "kept2" } } }
+                    ]
+                  },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "kept3"
+                }
+              },
+              { "Move": { "what": { "Bound": "kept2" }, "to": "Hand" } },
+              { "Move": { "what": { "Bound": "kept3" }, "to": "Hand" } },
+              { "Move": { "what": { "Bound": "top" }, "to": "Graveyard" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

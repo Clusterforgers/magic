@@ -1,0 +1,36 @@
+{
+  "oracle_id": "1e3b97d2-8fda-4510-9697-f36ca9ca2ab0",
+  "name": "Lim-Dûl's Cohort",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Lim-Dûl's Cohort",
+      "oracle_fingerprint": "5ffa80df98648d393d81d87115a2fdcf",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "BecomesBlocked": { "what": [{ "Type": "Creature" }], "by": ["This"] } },
+            "effects": [
+              {
+                "Rule": {
+                  "rule": { "CantBeRegenerated": "Triggering" },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "BecomesBlocked": { "what": ["This"], "by": [{ "Type": "Creature" }] } },
+            "effects": [
+              {
+                "Rule": { "rule": { "CantBeRegenerated": "Dealer" }, "duration": "UntilEndOfTurn" }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

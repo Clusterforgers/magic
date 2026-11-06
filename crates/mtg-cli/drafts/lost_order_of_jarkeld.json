@@ -1,0 +1,37 @@
+{
+  "oracle_id": "75f047dc-4a51-494d-8765-fa7502d1fd06",
+  "name": "Lost Order of Jarkeld",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Lost Order of Jarkeld",
+      "oracle_fingerprint": "caef21e9afb74e765b6f50e6040640a0",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "Choose": "Opponent" }
+          }
+        },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              {
+                "SetPT": {
+                  "power": {
+                    "Sum": [{ "Count": [{ "Type": "Creature" }, { "ControlledBy": "Chosen" }] }, 1]
+                  },
+                  "toughness": {
+                    "Sum": [{ "Count": [{ "Type": "Creature" }, { "ControlledBy": "Chosen" }] }, 1]
+                  }
+                }
+              }
+            ],
+            "defining": true
+          }
+        }
+      ]
+    }
+  ]
+}

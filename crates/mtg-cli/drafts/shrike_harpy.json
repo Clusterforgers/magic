@@ -1,0 +1,25 @@
+{
+  "oracle_id": "9c38b337-487c-4cef-843b-b0a2ed3f1b27",
+  "name": "Shrike Harpy",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Shrike Harpy",
+      "oracle_fingerprint": "c5174e771273e7260499e0d01ef1a2fc",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": { "Macro": { "name": "tribute", "amount": 2 } } },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "if": { "Compare": { "left": "Chosen", "op": "Eq", "right": 0 } },
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              { "Sacrifice": { "who": { "Target": 0 }, "filter": [{ "Type": "Creature" }] } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

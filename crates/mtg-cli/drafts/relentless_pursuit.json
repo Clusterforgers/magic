@@ -1,0 +1,51 @@
+{
+  "oracle_id": "d39c378b-f0a2-400f-af40-a632e24b6d72",
+  "name": "Relentless Pursuit",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Relentless Pursuit",
+      "oracle_fingerprint": "f9f4a0f5d6fa53c4dc5c6e717e0b6552",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "LookAtTop": { "count": 4, "as": "top" } },
+              { "Reveal": { "what": { "Bound": "top" } } },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "In": "Library" },
+                      { "Is": { "Bound": "top" } },
+                      { "Type": "Creature" }
+                    ]
+                  },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "kept2"
+                }
+              },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "In": "Library" },
+                      { "Is": { "Bound": "top" } },
+                      { "Type": "Land" },
+                      { "Not": { "Is": { "Bound": "kept2" } } }
+                    ]
+                  },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "kept3"
+                }
+              },
+              { "Move": { "what": { "Bound": "kept2" }, "to": "Hand" } },
+              { "Move": { "what": { "Bound": "kept3" }, "to": "Hand" } },
+              { "Move": { "what": { "Bound": "top" }, "to": "Graveyard" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

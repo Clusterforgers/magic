@@ -1,0 +1,40 @@
+{
+  "oracle_id": "2fd61c9f-44d2-48d7-a271-8e4208407cca",
+  "name": "Oblivion Stone",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Oblivion Stone",
+      "oracle_fingerprint": "f64db97f02e956a512bd72f6938e5a95",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{4}" }, "Tap"],
+            "targets": [{ "what": { "Object": [] } }],
+            "effects": [
+              { "PutCounters": { "on": { "Target": 0 }, "counter": { "Other": "fate" } } }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{5}" }, "Tap", "SacrificeSelf"],
+            "effects": [
+              {
+                "Destroy": {
+                  "what": {
+                    "Each": [
+                      { "Not": { "Type": "Land" } },
+                      { "Not": { "HasCounter": { "Other": "fate" } } }
+                    ]
+                  }
+                }
+              },
+              { "RemoveAllCounters": { "from": { "Each": [] }, "counter": { "Other": "fate" } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,33 @@
+{
+  "oracle_id": "f1072af9-9e6f-45ce-8c4b-8e678e7da8ce",
+  "name": "Fanatic of Xenagos",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Fanatic of Xenagos",
+      "oracle_fingerprint": "85d92ca1d908bb05d1f6e8aad9093a50",
+      "abilities": [
+        { "Keyword": "Trample" },
+        { "Keyword": { "Macro": { "name": "tribute", "amount": 1 } } },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "if": { "Compare": { "left": "Chosen", "op": "Eq", "right": 0 } },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [
+                    { "ModifyPT": { "power": 1, "toughness": 1 } },
+                    { "AddKeyword": "Haste" }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

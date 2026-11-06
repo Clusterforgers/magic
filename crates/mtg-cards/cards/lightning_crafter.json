@@ -1,0 +1,49 @@
+{
+  "oracle_id": "d0f81e9c-b890-4fa1-9f7e-868dff33b6a7",
+  "name": "Lightning Crafter",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Lightning Crafter",
+      "oracle_fingerprint": "250816c4d3e6cff8be84741f1b4c4af6",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "AnyOf": [{ "Subtype": "Goblin" }, { "Subtype": "Shaman" }] },
+                      "Other",
+                      { "ControlledBy": "You" }
+                    ]
+                  },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "champion"
+                }
+              },
+              {
+                "Exile": { "what": { "Bound": "champion" }, "duration": "WhileSourceOnBattlefield" }
+              },
+              {
+                "If": {
+                  "condition": { "Not": "Performed" },
+                  "then": [{ "Sacrifice": { "filter": ["This"] } }]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 3 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

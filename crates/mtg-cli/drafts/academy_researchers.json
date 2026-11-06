@@ -1,0 +1,40 @@
+{
+  "oracle_id": "df2d2c52-475b-4057-9cf8-7886700f0fae",
+  "name": "Academy Researchers",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Academy Researchers",
+      "oracle_fingerprint": "2b6a095be9f1fbc6b5ed55608e657335",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "Subtype": "Aura" },
+                      "CanEnchantSource",
+                      { "In": "Hand" },
+                      { "OwnedBy": "You" }
+                    ]
+                  },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "picked"
+                }
+              },
+              {
+                "Move": {
+                  "what": { "Bound": "picked" },
+                  "to": { "BattlefieldAttached": { "to": "This" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

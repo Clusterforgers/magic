@@ -1,0 +1,44 @@
+{
+  "oracle_id": "9355db6e-d8eb-43be-9c1d-04f1806dc366",
+  "name": "Lock and Load",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Lock and Load",
+      "oracle_fingerprint": "07c050bdff9582e9aa0eeec115cda47e",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "Draw": {} },
+              {
+                "Draw": {
+                  "count": {
+                    "Tally": {
+                      "event": "SpellCast",
+                      "who": "EachPlayer",
+                      "filter": [
+                        {
+                          "AnyOf": [
+                            { "Type": "Instant" },
+                            {
+                              "Not": {
+                                "AnyOf": [{ "Not": { "Type": "Sorcery" } }, { "Not": "Other" }]
+                              }
+                            }
+                          ]
+                        },
+                        { "ControlledBy": "You" }
+                      ]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Plot": "{3}{U}" } }
+      ]
+    }
+  ]
+}

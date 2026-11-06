@@ -1,0 +1,29 @@
+{
+  "oracle_id": "f86b8c03-9f1e-4d42-ac45-907c46e9e1c0",
+  "name": "Waterspout Elemental",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Waterspout Elemental",
+      "oracle_fingerprint": "bfb3d4502440ec08dc53ce870d3b12c0",
+      "abilities": [
+        { "Keyword": { "Kicker": "{U}" } },
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This", "Kicked"], "to": "Battlefield" } },
+            "effects": [
+              { "Move": { "what": { "Each": [{ "Type": "Creature" }, "Other"] }, "to": "Hand" } },
+              {
+                "Rule": {
+                  "rule": { "Cant": { "who": "You", "action": "SkipTurn" } },
+                  "duration": "UntilTurnSkipped"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

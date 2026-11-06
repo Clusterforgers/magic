@@ -1,0 +1,37 @@
+{
+  "oracle_id": "d3ce7c83-986f-410a-ae00-6c1c1f918a2b",
+  "name": "Thunder Salvo",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Thunder Salvo",
+      "oracle_fingerprint": "a5cb85866093c918f74f38c89e08c404",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "DealDamage": {
+                  "to": { "Target": 0 },
+                  "amount": {
+                    "Sum": [
+                      {
+                        "Tally": {
+                          "event": "SpellCast",
+                          "who": "EachPlayer",
+                          "filter": [{ "ControlledBy": "You" }, "Other"]
+                        }
+                      },
+                      2
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

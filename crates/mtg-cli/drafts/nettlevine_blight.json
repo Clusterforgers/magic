@@ -1,0 +1,43 @@
+{
+  "oracle_id": "11132bbe-985d-44fa-a5b4-4b4e0dc3a7cf",
+  "name": "Nettlevine Blight",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Nettlevine Blight",
+      "oracle_fingerprint": "f48f4bbe421a8369a16fea4c74d639ad",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "AnyOf": [{ "Type": "Creature" }, { "Type": "Land" }] }] } },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [
+              {
+                "GrantAbility": {
+                  "Triggered": {
+                    "when": { "StepBegins": { "step": "End", "whose": "You" } },
+                    "effects": [
+                      { "Sacrifice": { "filter": ["This"] } },
+                      {
+                        "Choose": {
+                          "from": {
+                            "Each": [
+                              { "AnyOf": [{ "Type": "Creature" }, { "Type": "Land" }] },
+                              { "ControlledBy": "You" }
+                            ]
+                          },
+                          "as": "attach"
+                        }
+                      },
+                      { "Attach": { "what": "Granter", "to": { "Bound": "attach" } } }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

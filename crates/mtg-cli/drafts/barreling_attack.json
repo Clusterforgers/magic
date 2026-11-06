@@ -1,0 +1,54 @@
+{
+  "oracle_id": "f44eab45-8ff9-40eb-9919-28fe5203fc48",
+  "name": "Barreling Attack",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Barreling Attack",
+      "oracle_fingerprint": "975050055254ba1c542879a3c7c1b4b0",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "AddKeyword": "Trample" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "DelayedTrigger": {
+                  "when": { "BecomesBlocked": { "what": [{ "Is": { "Target": 0 } }] } },
+                  "once": false,
+                  "this_turn": true,
+                  "effects": [
+                    {
+                      "Continuous": {
+                        "affected": { "Target": 0 },
+                        "mods": [
+                          {
+                            "ModifyPT": {
+                              "power": {
+                                "Count": [{ "Type": "Creature" }, { "Blocks": "Triggering" }]
+                              },
+                              "toughness": {
+                                "Count": [{ "Type": "Creature" }, { "Blocks": "Triggering" }]
+                              }
+                            }
+                          }
+                        ],
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

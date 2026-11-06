@@ -1,0 +1,130 @@
+{
+  "object": "card",
+  "id": "87e060d7-42ed-49ab-bc5c-2f3210cbd0d1",
+  "oracle_id": "bcb2f489-9d58-424d-96c1-a124a8d25a14",
+  "multiverse_ids": [
+    3335
+  ],
+  "mtgo_id": 6943,
+  "mtgo_foil_id": 6944,
+  "tcgplayer_id": 5049,
+  "cardmarket_id": 8115,
+  "name": "Energy Vortex",
+  "lang": "en",
+  "released_at": "1996-10-08",
+  "uri": "https://api.scryfall.com/cards/87e060d7-42ed-49ab-bc5c-2f3210cbd0d1",
+  "scryfall_uri": "https://scryfall.com/card/mir/64/energy-vortex?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T12:51:51Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/8/7/87e060d7-42ed-49ab-bc5c-2f3210cbd0d1.jpg?1783947111",
+    "normal": "https://cards.scryfall.io/normal/front/8/7/87e060d7-42ed-49ab-bc5c-2f3210cbd0d1.jpg?1783947111",
+    "large": "https://cards.scryfall.io/large/front/8/7/87e060d7-42ed-49ab-bc5c-2f3210cbd0d1.jpg?1783947111",
+    "png": "https://cards.scryfall.io/png/front/8/7/87e060d7-42ed-49ab-bc5c-2f3210cbd0d1.png?1783947111",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/8/7/87e060d7-42ed-49ab-bc5c-2f3210cbd0d1.jpg?1783947111",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/8/7/87e060d7-42ed-49ab-bc5c-2f3210cbd0d1.jpg?1783947111",
+    "thumb": "https://cards.scryfall.io/thumb/front/8/7/87e060d7-42ed-49ab-bc5c-2f3210cbd0d1.webp?1783947111",
+    "grid": "https://cards.scryfall.io/grid/front/8/7/87e060d7-42ed-49ab-bc5c-2f3210cbd0d1.webp?1783947111",
+    "display": "https://cards.scryfall.io/display/front/8/7/87e060d7-42ed-49ab-bc5c-2f3210cbd0d1.webp?1783947111",
+    "art": "https://cards.scryfall.io/art/front/8/7/87e060d7-42ed-49ab-bc5c-2f3210cbd0d1.webp?1783947111",
+    "crop": "https://cards.scryfall.io/crop/front/8/7/87e060d7-42ed-49ab-bc5c-2f3210cbd0d1.webp?1783947111",
+    "jpeg": "https://cards.scryfall.io/normal/front/8/7/87e060d7-42ed-49ab-bc5c-2f3210cbd0d1.jpg?1783947111"
+  },
+  "mana_cost": "{3}{U}{U}",
+  "cmc": 5.0,
+  "type_line": "Enchantment",
+  "oracle_text": "As this enchantment enters, choose an opponent.\nAt the beginning of your upkeep, remove all vortex counters from this enchantment.\nAt the beginning of the chosen player's upkeep, this enchantment deals 3 damage to that player unless they pay {1} for each vortex counter on this enchantment.\n{X}: Put X vortex counters on this enchantment. Activate only during your upkeep.",
+  "colors": [
+    "U"
+  ],
+  "color_identity": [
+    "U"
+  ],
+  "keywords": [],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "legal",
+    "predh": "legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": true,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "5f06acf3-8123-4a78-b2e7-089b0b775a4a",
+  "set": "mir",
+  "set_name": "Mirage",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/5f06acf3-8123-4a78-b2e7-089b0b775a4a",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Amir&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/mir?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/87e060d7-42ed-49ab-bc5c-2f3210cbd0d1/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Abcb2f489-9d58-424d-96c1-a124a8d25a14&unique=prints",
+  "collector_number": "64",
+  "digital": false,
+  "rarity": "rare",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Tom Wänerstrand",
+  "artist_ids": [
+    "c4e0aa7c-a008-4d71-80ce-d5a1ca0b251b"
+  ],
+  "illustration_id": "43f1b7cc-362c-43c4-8236-a39a6a9facf9",
+  "border_color": "black",
+  "frame": "1997",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 28838,
+  "prices": {
+    "usd": "0.84",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "0.88",
+    "eur_foil": null,
+    "tix": "0.02"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=3335&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DEnergy%2BVortex",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DEnergy%2BVortex",
+    "edhrec": "https://edhrec.com/route/?cc=Energy+Vortex"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F5049%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=8115&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/6943?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

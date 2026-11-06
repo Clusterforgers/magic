@@ -1,0 +1,58 @@
+{
+  "oracle_id": "cbbad3da-695e-4527-9678-0942f3751287",
+  "name": "Jaya Ballard, Task Mage",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Jaya Ballard, Task Mage",
+      "oracle_fingerprint": "73c61e4dfe4ed2ff9b3c5f4598092117",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{R}" }, "Tap", { "Discard": {} }],
+            "targets": [{ "what": { "Object": [{ "Color": "Blue" }] } }],
+            "effects": [{ "Destroy": { "what": { "Target": 0 } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{1}{R}" }, "Tap", { "Discard": {} }],
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [
+              { "DealDamage": { "to": { "Target": 0 }, "amount": 3 } },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Target": 0 },
+                      "selector": [{ "Type": "Creature" }],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [
+                    {
+                      "Rule": {
+                        "rule": { "CantBeRegenerated": { "Target": 0 } },
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{5}{R}{R}" }, "Tap", { "Discard": {} }],
+            "effects": [
+              { "DealDamage": { "to": { "Each": [{ "Type": "Creature" }] }, "amount": 6 } },
+              { "DealDamage": { "to": "EachPlayer", "amount": 6 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

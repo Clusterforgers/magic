@@ -1,0 +1,39 @@
+{
+  "oracle_id": "55be0fd0-b371-4b9e-920f-3123bb37a1e0",
+  "name": "Dream Thief",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dream Thief",
+      "oracle_fingerprint": "695fbd461cd46072f5134ffc275f5019",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": {
+                        "Tally": {
+                          "event": "SpellCast",
+                          "who": "EachPlayer",
+                          "filter": ["Other", { "Color": "Blue" }, { "ControlledBy": "You" }]
+                        }
+                      },
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [{ "Draw": {} }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

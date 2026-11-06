@@ -1,0 +1,36 @@
+{
+  "oracle_id": "6125f993-970c-469a-b557-23d4dc6684f4",
+  "name": "Public Execution",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Public Execution",
+      "oracle_fingerprint": "9ac6492fadcefd8d803512f89d0a81ef",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }] } }
+            ],
+            "effects": [
+              { "Destroy": { "what": { "Target": 0 } } },
+              {
+                "Continuous": {
+                  "affected": {
+                    "Each": [
+                      { "Type": "Creature" },
+                      { "ControlledBy": { "ControllerOf": { "Target": 0 } } },
+                      { "Not": { "Is": { "Target": 0 } } }
+                    ]
+                  },
+                  "mods": [{ "ModifyPT": { "power": -2, "toughness": 0 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

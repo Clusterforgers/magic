@@ -1,0 +1,50 @@
+{
+  "oracle_id": "3d39db09-67b7-4a4e-9667-4e1b806f51a5",
+  "name": "Moment of Glory",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Moment of Glory",
+      "oracle_fingerprint": "852c536db43cd31a6e6013ffcf4c18e1",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } }
+            ],
+            "effects": [
+              { "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1" } },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": "This",
+                      "selector": [{ "WasCast": { "from": "Graveyard" } }],
+                      "op": "Eq",
+                      "right": 1
+                    }
+                  },
+                  "then": [
+                    {
+                      "PutCounters": {
+                        "on": {
+                          "Each": [
+                            { "Type": "Creature" },
+                            { "ControlledBy": "You" },
+                            { "Not": { "Is": { "Target": 0 } } }
+                          ]
+                        },
+                        "counter": "+1/+1"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Flashback": "{4}{W}" } }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,34 @@
+{
+  "oracle_id": "de7839fb-7040-48ab-a6d4-d1952972943d",
+  "name": "Black Vise",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Black Vise",
+      "oracle_fingerprint": "9e4f7b739ddbdf9044804ae35f455c12",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "Choose": "Opponent" }
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "Chosen" } },
+            "effects": [
+              {
+                "DealDamage": {
+                  "to": "Chosen",
+                  "amount": {
+                    "Sum": [{ "Count": [{ "OwnedBy": "Chosen" }, { "In": "Hand" }] }, -4]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

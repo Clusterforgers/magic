@@ -1,7 +1,7 @@
 {
   "oracle_id": "4230c7a3-4591-411e-afab-d2bfb58446de",
   "name": "Phantasmal Sphere",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Phantasmal Sphere",
@@ -24,9 +24,28 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 156, "end": 324 }
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield" } },
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              {
+                "CreateToken": {
+                  "who": { "Target": 0 },
+                  "token": {
+                    "Sized": {
+                      "size": { "Counters": { "on": "This", "counter": "+1/+1" } },
+                      "token": {
+                        "name": "Orb",
+                        "colors": ["Blue"],
+                        "types": ["Creature"],
+                        "subtypes": ["Orb"],
+                        "abilities": [{ "Keyword": "Flying" }]
+                      }
+                    }
+                  }
+                }
+              }
+            ]
           }
         }
       ]

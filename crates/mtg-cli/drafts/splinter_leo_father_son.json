@@ -1,0 +1,64 @@
+{
+  "oracle_id": "c01095ba-b9c9-44e0-97d1-35cc47c4ed04",
+  "name": "Splinter & Leo, Father & Son",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Splinter & Leo, Father & Son",
+      "oracle_fingerprint": "ab4415c1b1c180ad2780ce5961d4b148",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Modal": {
+                  "choose": { "min": 1, "max": 2 },
+                  "modes": [
+                    {
+                      "targets": [{ "what": "Player" }],
+                      "effects": [
+                        {
+                          "CreateToken": {
+                            "who": { "Target": 0 },
+                            "token": {
+                              "Custom": {
+                                "name": "Mutant",
+                                "colors": ["Red"],
+                                "types": ["Creature"],
+                                "subtypes": ["Mutant"],
+                                "power": 2,
+                                "toughness": 2
+                              }
+                            }
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "targets": [{ "what": "Player" }],
+                      "effects": [
+                        {
+                          "PutCounters": {
+                            "on": {
+                              "Each": [
+                                { "Type": "Creature" },
+                                "Other",
+                                { "ControlledBy": { "Target": 0 } }
+                              ]
+                            },
+                            "counter": "+1/+1"
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,134 @@
+{
+  "object": "card",
+  "id": "140cd8bd-b74d-4cb1-b78f-8de3cbd878ff",
+  "oracle_id": "5b27b794-580c-472d-b63e-99b271eb115d",
+  "multiverse_ids": [
+    607113
+  ],
+  "mtgo_id": 109998,
+  "arena_id": 84349,
+  "tcgplayer_id": 491247,
+  "cardmarket_id": 704781,
+  "name": "Wicked Slumber",
+  "lang": "en",
+  "released_at": "2023-04-21",
+  "uri": "https://api.scryfall.com/cards/140cd8bd-b74d-4cb1-b78f-8de3cbd878ff",
+  "scryfall_uri": "https://scryfall.com/card/mom/84/wicked-slumber?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T04:30:23Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/1/4/140cd8bd-b74d-4cb1-b78f-8de3cbd878ff.jpg?1783917023",
+    "normal": "https://cards.scryfall.io/normal/front/1/4/140cd8bd-b74d-4cb1-b78f-8de3cbd878ff.jpg?1783917023",
+    "large": "https://cards.scryfall.io/large/front/1/4/140cd8bd-b74d-4cb1-b78f-8de3cbd878ff.jpg?1783917023",
+    "png": "https://cards.scryfall.io/png/front/1/4/140cd8bd-b74d-4cb1-b78f-8de3cbd878ff.png?1783917023",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/1/4/140cd8bd-b74d-4cb1-b78f-8de3cbd878ff.jpg?1783917023",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/1/4/140cd8bd-b74d-4cb1-b78f-8de3cbd878ff.jpg?1783917023",
+    "thumb": "https://cards.scryfall.io/thumb/front/1/4/140cd8bd-b74d-4cb1-b78f-8de3cbd878ff.webp?1783917023",
+    "grid": "https://cards.scryfall.io/grid/front/1/4/140cd8bd-b74d-4cb1-b78f-8de3cbd878ff.webp?1783917023",
+    "display": "https://cards.scryfall.io/display/front/1/4/140cd8bd-b74d-4cb1-b78f-8de3cbd878ff.webp?1783917023",
+    "art": "https://cards.scryfall.io/art/front/1/4/140cd8bd-b74d-4cb1-b78f-8de3cbd878ff.webp?1783917023",
+    "crop": "https://cards.scryfall.io/crop/front/1/4/140cd8bd-b74d-4cb1-b78f-8de3cbd878ff.webp?1783917023",
+    "jpeg": "https://cards.scryfall.io/normal/front/1/4/140cd8bd-b74d-4cb1-b78f-8de3cbd878ff.jpg?1783917023"
+  },
+  "mana_cost": "{3}{U}",
+  "cmc": 4.0,
+  "type_line": "Instant",
+  "oracle_text": "Convoke (Your creatures can help cast this spell. Each creature you tap while casting this spell pays for {1} or one mana of that creature's color.)\nTap up to two target creatures. Put a stun counter on either of them. Then put a stun counter on either of them. (If a permanent with a stun counter would become untapped, remove one from it instead.)",
+  "colors": [
+    "U"
+  ],
+  "color_identity": [
+    "U"
+  ],
+  "keywords": [
+    "Convoke"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "arena",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "392f7315-dc53-40a3-a2cc-5482dbd498b3",
+  "set": "mom",
+  "set_name": "March of the Machine",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/392f7315-dc53-40a3-a2cc-5482dbd498b3",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Amom&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/mom?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/140cd8bd-b74d-4cb1-b78f-8de3cbd878ff/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A5b27b794-580c-472d-b63e-99b271eb115d&unique=prints",
+  "collector_number": "84",
+  "digital": false,
+  "rarity": "uncommon",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Anato Finnstark",
+  "artist_ids": [
+    "05d233e7-4958-4f79-83e6-f9bf8b6ff78e"
+  ],
+  "illustration_id": "0f722e22-cfce-4265-9fc0-58d6cfae3ef0",
+  "border_color": "black",
+  "frame": "2015",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 15499,
+  "prices": {
+    "usd": "0.25",
+    "usd_foil": "0.29",
+    "usd_etched": null,
+    "eur": "0.12",
+    "eur_foil": "0.12",
+    "tix": "0.03"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=607113&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DWicked%2BSlumber",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DWicked%2BSlumber",
+    "edhrec": "https://edhrec.com/route/?cc=Wicked+Slumber"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F491247%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=704781&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/109998?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

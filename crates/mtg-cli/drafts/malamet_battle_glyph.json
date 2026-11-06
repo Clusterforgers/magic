@@ -1,0 +1,39 @@
+{
+  "oracle_id": "483a0caa-e912-41e9-aaa3-bcea9369ec06",
+  "name": "Malamet Battle Glyph",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Malamet Battle Glyph",
+      "oracle_fingerprint": "3227ad920fcef6ebf54de2af8fc58a02",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } },
+              {
+                "what": { "Object": [{ "Type": "Creature" }, { "Not": { "ControlledBy": "You" } }] }
+              }
+            ],
+            "effects": [
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Target": 0 },
+                      "selector": [{ "Type": "Creature" }, "EnteredThisTurn"],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [{ "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1" } }]
+                }
+              },
+              { "Fight": { "what": { "Target": 0 }, "with": { "Target": 1 } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,33 @@
+{
+  "oracle_id": "7996904a-1d7c-4d95-8fd8-431272c7c7e0",
+  "name": "Fulgent Distraction",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Fulgent Distraction",
+      "oracle_fingerprint": "82725d28aba967f5daed11fa1933aa98",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }] }, "bounds": { "min": 2, "max": 2 } }
+            ],
+            "effects": [
+              { "Tap": { "what": { "Target": 0 } } },
+              {
+                "Unattach": {
+                  "what": {
+                    "Each": [
+                      { "Subtype": "Equipment" },
+                      { "AttachedTo": { "Each": [{ "Is": { "Target": 0 } }] } }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

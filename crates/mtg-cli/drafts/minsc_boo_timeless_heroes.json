@@ -1,0 +1,124 @@
+{
+  "oracle_id": "3a310554-3f69-4158-bb94-9d6965c7125a",
+  "name": "Minsc & Boo, Timeless Heroes",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Minsc & Boo, Timeless Heroes",
+      "oracle_fingerprint": "e3601bdf06002d0df827907ace42bbd4",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+                { "StepBegins": { "step": "Upkeep", "whose": "You" } }
+              ]
+            },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "CreateToken": {
+                        "token": {
+                          "Custom": {
+                            "name": "Boo",
+                            "colors": ["Red"],
+                            "supertypes": ["Legendary"],
+                            "types": ["Creature"],
+                            "subtypes": ["Hamster"],
+                            "power": 1,
+                            "toughness": 1,
+                            "abilities": [{ "Keyword": "Trample" }, { "Keyword": "Haste" }]
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Plus": 1 },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Type": "Creature" },
+                    { "AnyOf": [{ "HasKeyword": "Trample" }, { "HasKeyword": "Haste" }] }
+                  ]
+                },
+                "bounds": { "min": 0, "max": 1 }
+              }
+            ],
+            "effects": [
+              { "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1", "count": 3 } }
+            ]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Minus": 2 },
+            "effects": [
+              { "Sacrifice": { "filter": [{ "Type": "Creature" }], "as": "sacrificed" } },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Bound": "sacrificed" },
+                      "selector": [{ "Type": "Creature" }],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [
+                    { "Bind": { "what": { "Bound": "sacrificed" }, "as": "when2" } },
+                    {
+                      "Reflexive": {
+                        "targets": [{ "what": "AnyTarget" }],
+                        "effects": [
+                          {
+                            "DealDamage": {
+                              "to": { "Target": 0 },
+                              "amount": { "Stat": { "of": { "Bound": "when2" }, "stat": "Power" } }
+                            }
+                          },
+                          {
+                            "If": {
+                              "condition": {
+                                "CountOf": {
+                                  "subject": { "Bound": "when2" },
+                                  "selector": [{ "Subtype": "Hamster" }],
+                                  "op": "Ge",
+                                  "right": 1
+                                }
+                              },
+                              "then": [
+                                {
+                                  "Draw": {
+                                    "count": {
+                                      "Stat": { "of": { "Bound": "when2" }, "stat": "Power" }
+                                    }
+                                  }
+                                }
+                              ]
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        { "Rule": { "rule": "CanBeCommander" } }
+      ]
+    }
+  ]
+}

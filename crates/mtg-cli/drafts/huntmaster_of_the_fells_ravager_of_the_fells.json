@@ -1,7 +1,7 @@
 {
   "oracle_id": "582328cd-660d-47a4-bb23-e91e80b9a907",
   "name": "Huntmaster of the Fells // Ravager of the Fells",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Huntmaster of the Fells",
@@ -35,9 +35,12 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 134, "end": 225 }
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep" } },
+            "if": {
+              "Compare": { "left": { "CastLastTurn": "EachPlayer" }, "op": "Eq", "right": 0 }
+            },
+            "effects": [{ "Transform": { "what": "This" } }]
           }
         }
       ]
@@ -48,15 +51,44 @@
       "abilities": [
         { "Keyword": "Trample" },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 8, "end": 219 }
+          "Triggered": {
+            "when": { "Did": { "action": "Transformed", "what": ["This"] } },
+            "targets": [
+              { "what": { "Either": ["Opponent", { "Object": [{ "Type": "Planeswalker" }] }] } },
+              {
+                "what": {
+                  "Object": [
+                    { "Type": "Creature" },
+                    {
+                      "AnyOf": [
+                        { "ControlledBy": { "Target": 0 } },
+                        { "ControlledBy": { "ControllerOf": { "Target": 0 } } }
+                      ]
+                    }
+                  ]
+                },
+                "bounds": { "min": 0, "max": 1 }
+              }
+            ],
+            "effects": [
+              {
+                "Together": {
+                  "effects": [
+                    { "DealDamage": { "to": { "Target": 0 }, "amount": 2 } },
+                    { "DealDamage": { "to": { "Target": 1 }, "amount": 2 } }
+                  ]
+                }
+              }
+            ]
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 220, "end": 324 }
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep" } },
+            "if": {
+              "Compare": { "left": { "CastLastTurn": "EachPlayer" }, "op": "Ge", "right": 2 }
+            },
+            "effects": [{ "Transform": { "what": "This" } }]
           }
         }
       ]

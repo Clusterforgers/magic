@@ -1,0 +1,49 @@
+{
+  "oracle_id": "04fd8c1f-80e5-4b3d-b63e-7af6ccafbbaa",
+  "name": "Wildfire Howl",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Wildfire Howl",
+      "oracle_fingerprint": "0b164299c14af2185ed0708df1fcc52f",
+      "abilities": [
+        { "Keyword": { "Gift": "Card" } },
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": "AnyTarget",
+                "bounds": {
+                  "min": {
+                    "When": {
+                      "condition": { "Compare": { "left": "Promised", "op": "Ge", "right": 1 } },
+                      "then": 1,
+                      "otherwise": 0
+                    }
+                  },
+                  "max": {
+                    "When": {
+                      "condition": { "Compare": { "left": "Promised", "op": "Ge", "right": 1 } },
+                      "then": 1,
+                      "otherwise": 0
+                    }
+                  }
+                }
+              }
+            ],
+            "effects": [
+              {
+                "Together": {
+                  "effects": [
+                    { "DealDamage": { "to": { "Target": 0 }, "amount": 1 } },
+                    { "DealDamage": { "to": { "Each": [{ "Type": "Creature" }] }, "amount": 2 } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

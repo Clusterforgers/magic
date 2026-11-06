@@ -1,0 +1,63 @@
+{
+  "oracle_id": "d4d27fef-e86b-4dd3-a15e-a0db8d0725ee",
+  "name": "Wren's Run Packmaster",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Wren's Run Packmaster",
+      "oracle_fingerprint": "908578e97d5932ef224c78f93e550928",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Choose": {
+                  "from": { "Each": [{ "Subtype": "Elf" }, "Other", { "ControlledBy": "You" }] },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "champion"
+                }
+              },
+              {
+                "Exile": { "what": { "Bound": "champion" }, "duration": "WhileSourceOnBattlefield" }
+              },
+              {
+                "If": {
+                  "condition": { "Not": "Performed" },
+                  "then": [{ "Sacrifice": { "filter": ["This"] } }]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{2}{G}",
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Wolf",
+                      "colors": ["Green"],
+                      "types": ["Creature"],
+                      "subtypes": ["Wolf"],
+                      "power": 2,
+                      "toughness": 2
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Static": {
+            "affected": { "Each": [{ "Subtype": "Wolf" }, { "ControlledBy": "You" }] },
+            "mods": [{ "AddKeyword": "Deathtouch" }]
+          }
+        }
+      ]
+    }
+  ]
+}

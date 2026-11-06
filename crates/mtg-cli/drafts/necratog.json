@@ -1,0 +1,29 @@
+{
+  "oracle_id": "9f820f1e-3cd1-4a3e-8d00-194c8a80b296",
+  "name": "Necratog",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Necratog",
+      "oracle_fingerprint": "9f8a08266a9257edace6f9cda3a273c9",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [
+              { "ExileFromGraveyard": { "filter": [{ "Type": "Creature" }, "TopOfGraveyard"] } }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "ModifyPT": { "power": 2, "toughness": 2 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

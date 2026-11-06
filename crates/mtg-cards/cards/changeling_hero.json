@@ -1,0 +1,38 @@
+{
+  "oracle_id": "fc893d4a-debd-4df0-ae83-d3ebd2f0fefe",
+  "name": "Changeling Hero",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Changeling Hero",
+      "oracle_fingerprint": "65c3cdc11125c0a06f17d25a46723d1b",
+      "abilities": [
+        { "Keyword": "Changeling" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Choose": {
+                  "from": { "Each": [{ "Type": "Creature" }, "Other", { "ControlledBy": "You" }] },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "champion"
+                }
+              },
+              {
+                "Exile": { "what": { "Bound": "champion" }, "duration": "WhileSourceOnBattlefield" }
+              },
+              {
+                "If": {
+                  "condition": { "Not": "Performed" },
+                  "then": [{ "Sacrifice": { "filter": ["This"] } }]
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": "Lifelink" }
+      ]
+    }
+  ]
+}

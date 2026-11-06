@@ -1,0 +1,46 @@
+{
+  "oracle_id": "c6ad434b-6e34-439b-8046-f0047c06e371",
+  "name": "Skyshroud War Beast",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Skyshroud War Beast",
+      "oracle_fingerprint": "2959b1612cc7735ae7f565349aaaa8d2",
+      "abilities": [
+        { "Keyword": "Trample" },
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "Choose": "Opponent" }
+          }
+        },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              {
+                "SetPT": {
+                  "power": {
+                    "Count": [
+                      { "Type": "Land" },
+                      { "Not": { "Supertype": "Basic" } },
+                      { "ControlledBy": "Chosen" }
+                    ]
+                  },
+                  "toughness": {
+                    "Count": [
+                      { "Type": "Land" },
+                      { "Not": { "Supertype": "Basic" } },
+                      { "ControlledBy": "Chosen" }
+                    ]
+                  }
+                }
+              }
+            ],
+            "defining": true
+          }
+        }
+      ]
+    }
+  ]
+}

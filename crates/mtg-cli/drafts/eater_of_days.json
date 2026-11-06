@@ -1,0 +1,34 @@
+{
+  "oracle_id": "205f6384-7203-42ed-bc0f-8803cf1f4514",
+  "name": "Eater of Days",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Eater of Days",
+      "oracle_fingerprint": "1f2899d690097698486a7da169bb6990",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": "Trample" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Rule": {
+                  "rule": { "Cant": { "who": "You", "action": "SkipTurn" } },
+                  "duration": "UntilTurnSkipped"
+                }
+              },
+              {
+                "Rule": {
+                  "rule": { "Cant": { "who": "You", "action": "SkipTurn" } },
+                  "duration": "UntilTurnSkipped"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

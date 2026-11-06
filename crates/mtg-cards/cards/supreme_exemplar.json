@@ -1,0 +1,39 @@
+{
+  "oracle_id": "bb9ed5c8-0437-4705-9133-9863786e6af8",
+  "name": "Supreme Exemplar",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Supreme Exemplar",
+      "oracle_fingerprint": "9550886eff969c9745e8a999c736548f",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [{ "Subtype": "Elemental" }, "Other", { "ControlledBy": "You" }]
+                  },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "champion"
+                }
+              },
+              {
+                "Exile": { "what": { "Bound": "champion" }, "duration": "WhileSourceOnBattlefield" }
+              },
+              {
+                "If": {
+                  "condition": { "Not": "Performed" },
+                  "then": [{ "Sacrifice": { "filter": ["This"] } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,36 @@
+{
+  "oracle_id": "7fe9d30f-c778-4769-a3ae-3cb48cd23e07",
+  "name": "Mistmoon Griffin",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mistmoon Griffin",
+      "oracle_fingerprint": "7dd805cb98c51f564be8894e9c8e39c5",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } },
+            "effects": [
+              { "Exile": { "what": "This" } },
+              {
+                "Move": {
+                  "what": {
+                    "Each": [
+                      { "Type": "Creature" },
+                      { "OwnedBy": "You" },
+                      { "Type": "Creature" },
+                      "TopOfGraveyard",
+                      { "In": "Graveyard" }
+                    ]
+                  },
+                  "to": { "Battlefield": {} }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

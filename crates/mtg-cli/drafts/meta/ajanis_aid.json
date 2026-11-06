@@ -1,42 +1,4 @@
 {
   "source": "forge",
-  "oracle_matches": true,
-  "lines": [
-    {
-      "face": 0,
-      "tag": "A",
-      "text": "Prevent all combat damage a creature of your choice would deal this turn.",
-      "abilities": [],
-      "gap": "key:Effect.RememberObjects=ChosenCard"
-    },
-    {
-      "face": 0,
-      "tag": "T",
-      "text": "When CARDNAME enters, you may search your library and/or graveyard for a card named Ajani, Valiant Protector, reveal it, and put it into your hand. If you search your library this way, shuffle.",
-      "abilities": [
-        0
-      ],
-      "gap": null
-    }
-  ],
-  "proof": {
-    "marks": [
-      {
-        "face": 0,
-        "span": {
-          "start": 0,
-          "end": 201
-        },
-        "mark": "Auto"
-      },
-      {
-        "face": 0,
-        "span": {
-          "start": 202,
-          "end": 303
-        },
-        "mark": "ByHand"
-      }
-    ]
-  }
+  "oracle_matches": true
 }

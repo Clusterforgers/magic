@@ -1,0 +1,65 @@
+{
+  "oracle_id": "6556c4c0-b10d-4208-821b-0c0a49abd188",
+  "name": "Wandering Archaic // Explore the Vastlands",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Wandering Archaic",
+      "oracle_fingerprint": "4102481bc3caf0801360674893741221",
+      "abilities": [
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 0, "end": 154 }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Explore the Vastlands",
+      "oracle_fingerprint": "ef7928535984aed82bcd1a4f73236e8c",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "LookAtTop": { "who": "EachPlayer", "count": 5, "as": "top" } },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [{ "In": "Library" }, { "Is": { "Bound": "top" } }, { "Type": "Land" }]
+                  },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "kept2"
+                }
+              },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "In": "Library" },
+                      { "Is": { "Bound": "top" } },
+                      "Spell",
+                      { "Not": { "Subtype": "Aura" } },
+                      { "Not": { "Is": { "Bound": "kept2" } } }
+                    ]
+                  },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "kept3"
+                }
+              },
+              { "Move": { "what": { "Bound": "kept2" }, "to": "Hand" } },
+              { "Move": { "what": { "Bound": "kept3" }, "to": "Hand" } },
+              {
+                "Move": {
+                  "what": { "Bound": "top" },
+                  "to": { "Library": { "place": "Bottom", "order": "Random" } }
+                }
+              },
+              { "GainLife": { "who": "EachPlayer", "amount": 3 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,59 @@
+{
+  "oracle_id": "ae2c89c2-66d6-484a-a176-9ea19e00f445",
+  "name": "Chandra, Pyrogenius",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Chandra, Pyrogenius",
+      "oracle_fingerprint": "c0c7733553c1b01b78ca7963b969a93c",
+      "abilities": [
+        {
+          "Loyalty": {
+            "cost": { "Plus": 2 },
+            "effects": [{ "DealDamage": { "to": "Opponents", "amount": 2 } }]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Minus": 3 },
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 4 } }]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Minus": 10 },
+            "targets": [
+              { "what": { "Either": ["Player", { "Object": [{ "Type": "Planeswalker" }] }] } }
+            ],
+            "effects": [
+              {
+                "Together": {
+                  "effects": [
+                    { "DealDamage": { "to": { "Target": 0 }, "amount": 6 } },
+                    {
+                      "DealDamage": {
+                        "to": {
+                          "Each": [
+                            { "Type": "Creature" },
+                            {
+                              "AnyOf": [
+                                { "ControlledBy": { "Target": 0 } },
+                                { "ControlledBy": { "ControllerOf": { "Target": 0 } } }
+                              ]
+                            }
+                          ]
+                        },
+                        "amount": 6
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

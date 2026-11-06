@@ -1,0 +1,21 @@
+{
+  "oracle_id": "8c5298da-6759-444e-8870-6c96d226c940",
+  "name": "Zombie Scavengers",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Zombie Scavengers",
+      "oracle_fingerprint": "2d4bd70d0054f697bd8868d9b74bf186",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [
+              { "ExileFromGraveyard": { "filter": [{ "Type": "Creature" }, "TopOfGraveyard"] } }
+            ],
+            "effects": [{ "Regenerate": { "what": "This" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

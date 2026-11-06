@@ -1,0 +1,28 @@
+{
+  "oracle_id": "d6667a93-c706-451f-a83d-ffe5b9b9e53e",
+  "name": "Rage of Purphoros",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Rage of Purphoros",
+      "oracle_fingerprint": "83185e1b813f694474e27e92bbd459ca",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              { "DealDamage": { "to": { "Target": 0 }, "amount": 4 } },
+              {
+                "Rule": {
+                  "rule": { "CantBeRegenerated": { "Target": 0 } },
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              { "Scry": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

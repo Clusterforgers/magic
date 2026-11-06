@@ -1,0 +1,50 @@
+{
+  "oracle_id": "639d16ed-daa4-4c8d-8550-5c9a29f4d9fe",
+  "name": "Necravolver",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Necravolver",
+      "oracle_fingerprint": "9786872f2667462658dbf69bec3ca678",
+      "abilities": [
+        { "Keyword": { "Kicker": "{1}{G}" } },
+        { "Keyword": { "Kicker": "{W}" } },
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": {
+              "WithCountersAnd": {
+                "counter": "+1/+1",
+                "count": 2,
+                "mods": [{ "AddKeyword": "Trample" }]
+              }
+            },
+            "condition": { "KickedWith": "{1}{G}" }
+          }
+        },
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": {
+              "WithCountersAnd": {
+                "counter": "+1/+1",
+                "count": 1,
+                "mods": [
+                  {
+                    "GrantAbility": {
+                      "Triggered": {
+                        "when": { "Batch": { "DealsDamage": { "source": ["This"] } } },
+                        "effects": [{ "GainLife": { "amount": "Triggering" } }]
+                      }
+                    }
+                  }
+                ]
+              }
+            },
+            "condition": { "KickedWith": "{W}" }
+          }
+        }
+      ]
+    }
+  ]
+}

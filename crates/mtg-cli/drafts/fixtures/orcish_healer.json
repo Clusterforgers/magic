@@ -1,0 +1,135 @@
+{
+  "object": "card",
+  "id": "7ff511f3-416e-4919-acd6-fd8183bf5c60",
+  "oracle_id": "9b7a0c9d-1045-4fc0-b5e3-18616106da08",
+  "multiverse_ids": [
+    2644
+  ],
+  "mtgo_id": 24447,
+  "tcgplayer_id": 4826,
+  "cardmarket_id": 6420,
+  "name": "Orcish Healer",
+  "lang": "en",
+  "released_at": "1995-06-03",
+  "uri": "https://api.scryfall.com/cards/7ff511f3-416e-4919-acd6-fd8183bf5c60",
+  "scryfall_uri": "https://scryfall.com/card/ice/208/orcish-healer?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T12:58:04Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/7/f/7ff511f3-416e-4919-acd6-fd8183bf5c60.jpg?1783947484",
+    "normal": "https://cards.scryfall.io/normal/front/7/f/7ff511f3-416e-4919-acd6-fd8183bf5c60.jpg?1783947484",
+    "large": "https://cards.scryfall.io/large/front/7/f/7ff511f3-416e-4919-acd6-fd8183bf5c60.jpg?1783947484",
+    "png": "https://cards.scryfall.io/png/front/7/f/7ff511f3-416e-4919-acd6-fd8183bf5c60.png?1783947484",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/7/f/7ff511f3-416e-4919-acd6-fd8183bf5c60.jpg?1783947484",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/7/f/7ff511f3-416e-4919-acd6-fd8183bf5c60.jpg?1783947484",
+    "thumb": "https://cards.scryfall.io/thumb/front/7/f/7ff511f3-416e-4919-acd6-fd8183bf5c60.webp?1783947484",
+    "grid": "https://cards.scryfall.io/grid/front/7/f/7ff511f3-416e-4919-acd6-fd8183bf5c60.webp?1783947484",
+    "display": "https://cards.scryfall.io/display/front/7/f/7ff511f3-416e-4919-acd6-fd8183bf5c60.webp?1783947484",
+    "art": "https://cards.scryfall.io/art/front/7/f/7ff511f3-416e-4919-acd6-fd8183bf5c60.webp?1783947484",
+    "crop": "https://cards.scryfall.io/crop/front/7/f/7ff511f3-416e-4919-acd6-fd8183bf5c60.webp?1783947484",
+    "jpeg": "https://cards.scryfall.io/normal/front/7/f/7ff511f3-416e-4919-acd6-fd8183bf5c60.jpg?1783947484"
+  },
+  "mana_cost": "{R}{R}",
+  "cmc": 2.0,
+  "type_line": "Creature — Orc Cleric",
+  "oracle_text": "{R}{R}, {T}: Target creature can't be regenerated this turn.\n{B}{B}{R}, {T}: Regenerate target black or green creature.\n{R}{G}{G}, {T}: Regenerate target black or green creature.",
+  "power": "1",
+  "toughness": "1",
+  "colors": [
+    "R"
+  ],
+  "color_identity": [
+    "B",
+    "G",
+    "R"
+  ],
+  "keywords": [
+    "Regenerate"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "legal",
+    "predh": "legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "b0e08eea-5c01-4406-a6e2-dcd09c5e5b67",
+  "set": "ice",
+  "set_name": "Ice Age",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/b0e08eea-5c01-4406-a6e2-dcd09c5e5b67",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Aice&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/ice?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/7ff511f3-416e-4919-acd6-fd8183bf5c60/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A9b7a0c9d-1045-4fc0-b5e3-18616106da08&unique=prints",
+  "collector_number": "208",
+  "digital": false,
+  "rarity": "uncommon",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Quinton Hoover",
+  "artist_ids": [
+    "1a2db619-92a5-431a-822b-101cdcc5bd5d"
+  ],
+  "illustration_id": "e50504ee-b443-446b-8ef1-a8b482761ed7",
+  "border_color": "black",
+  "frame": "1993",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 32179,
+  "prices": {
+    "usd": "0.23",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "0.40",
+    "eur_foil": null,
+    "tix": "0.13"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=2644&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DOrcish%2BHealer",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DOrcish%2BHealer",
+    "edhrec": "https://edhrec.com/route/?cc=Orcish+Healer"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F4826%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=6420&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/24447?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

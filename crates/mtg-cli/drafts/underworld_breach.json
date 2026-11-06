@@ -1,0 +1,36 @@
+{
+  "oracle_id": "27e0948b-9916-473b-8d8c-a51bdfbc7457",
+  "name": "Underworld Breach",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Underworld Breach",
+      "oracle_fingerprint": "ed4f723cebff38400da3443f2d4294da",
+      "abilities": [
+        {
+          "Static": {
+            "affected": {
+              "Each": [{ "OwnedBy": "You" }, { "Not": { "Type": "Land" } }, { "In": "Graveyard" }]
+            },
+            "mods": [
+              {
+                "AddKeyword": {
+                  "Escape": [
+                    "OwnManaCost",
+                    { "ExileFromGraveyard": { "filter": ["Other"], "count": 3 } }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End" } },
+            "effects": [{ "Sacrifice": { "filter": ["This"] } }]
+          }
+        }
+      ]
+    }
+  ]
+}

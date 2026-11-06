@@ -1,0 +1,48 @@
+{
+  "oracle_id": "d3a6bff6-ea85-4e8a-b256-7427d15326b6",
+  "name": "Touch of Moonglove",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Touch of Moonglove",
+      "oracle_fingerprint": "8261db6ff0e8b852d9dc9ace81dd8fec",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    { "ModifyPT": { "power": 1, "toughness": 0 } },
+                    { "AddKeyword": "Deathtouch" }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "DelayedTrigger": {
+                  "when": {
+                    "ZoneChange": {
+                      "what": [{ "Type": "Creature" }, { "DamagedBy": { "Target": 0 } }],
+                      "from": "Battlefield",
+                      "to": "Graveyard"
+                    }
+                  },
+                  "once": false,
+                  "this_turn": true,
+                  "effects": [
+                    { "LoseLife": { "who": { "ControllerOf": "Triggering" }, "amount": 2 } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

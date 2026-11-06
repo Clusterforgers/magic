@@ -1,0 +1,50 @@
+{
+  "oracle_id": "9431c81f-7b71-4c5d-a63c-1b5aba03601b",
+  "name": "Degavolver",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Degavolver",
+      "oracle_fingerprint": "9b6081237517e0f477fe4fe7f4310b28",
+      "abilities": [
+        { "Keyword": { "Kicker": "{1}{B}" } },
+        { "Keyword": { "Kicker": "{R}" } },
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": {
+              "WithCountersAnd": {
+                "counter": "+1/+1",
+                "count": 2,
+                "mods": [
+                  {
+                    "GrantAbility": {
+                      "Activated": {
+                        "cost": [{ "PayLife": 3 }],
+                        "effects": [{ "Regenerate": { "what": "This" } }]
+                      }
+                    }
+                  }
+                ]
+              }
+            },
+            "condition": { "KickedWith": "{1}{B}" }
+          }
+        },
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": {
+              "WithCountersAnd": {
+                "counter": "+1/+1",
+                "count": 1,
+                "mods": [{ "AddKeyword": "FirstStrike" }]
+              }
+            },
+            "condition": { "KickedWith": "{R}" }
+          }
+        }
+      ]
+    }
+  ]
+}

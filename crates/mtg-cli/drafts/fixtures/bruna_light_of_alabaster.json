@@ -1,0 +1,139 @@
+{
+  "object": "card",
+  "id": "58c56bad-68ed-4328-a7ea-c528b58dc2fd",
+  "oracle_id": "e8f213eb-58db-4fab-bd0b-2acfd0a86ac3",
+  "multiverse_ids": [
+    451125
+  ],
+  "tcgplayer_id": 171037,
+  "cardmarket_id": 361784,
+  "name": "Bruna, Light of Alabaster",
+  "lang": "en",
+  "released_at": "2018-08-10",
+  "uri": "https://api.scryfall.com/cards/58c56bad-68ed-4328-a7ea-c528b58dc2fd",
+  "scryfall_uri": "https://scryfall.com/card/c18/170/bruna-light-of-alabaster?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T09:18:00Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/5/8/58c56bad-68ed-4328-a7ea-c528b58dc2fd.jpg?1783934280",
+    "normal": "https://cards.scryfall.io/normal/front/5/8/58c56bad-68ed-4328-a7ea-c528b58dc2fd.jpg?1783934280",
+    "large": "https://cards.scryfall.io/large/front/5/8/58c56bad-68ed-4328-a7ea-c528b58dc2fd.jpg?1783934280",
+    "png": "https://cards.scryfall.io/png/front/5/8/58c56bad-68ed-4328-a7ea-c528b58dc2fd.png?1783934280",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/5/8/58c56bad-68ed-4328-a7ea-c528b58dc2fd.jpg?1783934280",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/5/8/58c56bad-68ed-4328-a7ea-c528b58dc2fd.jpg?1783934280",
+    "thumb": "https://cards.scryfall.io/thumb/front/5/8/58c56bad-68ed-4328-a7ea-c528b58dc2fd.webp?1783934280",
+    "grid": "https://cards.scryfall.io/grid/front/5/8/58c56bad-68ed-4328-a7ea-c528b58dc2fd.webp?1783934280",
+    "display": "https://cards.scryfall.io/display/front/5/8/58c56bad-68ed-4328-a7ea-c528b58dc2fd.webp?1783934280",
+    "art": "https://cards.scryfall.io/art/front/5/8/58c56bad-68ed-4328-a7ea-c528b58dc2fd.webp?1783934280",
+    "crop": "https://cards.scryfall.io/crop/front/5/8/58c56bad-68ed-4328-a7ea-c528b58dc2fd.webp?1783934280",
+    "jpeg": "https://cards.scryfall.io/normal/front/5/8/58c56bad-68ed-4328-a7ea-c528b58dc2fd.jpg?1783934280"
+  },
+  "mana_cost": "{3}{W}{W}{U}",
+  "cmc": 6.0,
+  "type_line": "Legendary Creature — Angel",
+  "oracle_text": "Flying, vigilance\nWhenever Bruna attacks or blocks, you may attach to it any number of Auras on the battlefield and you may put onto the battlefield attached to it any number of Aura cards that could enchant it from your graveyard and/or hand.",
+  "power": "5",
+  "toughness": "5",
+  "colors": [
+    "U",
+    "W"
+  ],
+  "color_identity": [
+    "U",
+    "W"
+  ],
+  "keywords": [
+    "Flying",
+    "Vigilance"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": true,
+  "variation": false,
+  "set_id": "06ce6bc2-85cd-4cca-85b1-8c620d3e0902",
+  "set": "c18",
+  "set_name": "Commander 2018",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/06ce6bc2-85cd-4cca-85b1-8c620d3e0902",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Ac18&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/c18?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/58c56bad-68ed-4328-a7ea-c528b58dc2fd/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Ae8f213eb-58db-4fab-bd0b-2acfd0a86ac3&unique=prints",
+  "collector_number": "170",
+  "digital": false,
+  "rarity": "mythic",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Winona Nelson",
+  "artist_ids": [
+    "e45fe8d3-75d6-42c9-a2df-e945ad81ea27"
+  ],
+  "illustration_id": "467aa396-f9ac-4939-bb7c-37b3412cdf6d",
+  "border_color": "black",
+  "frame": "2015",
+  "frame_effects": [
+    "legendary"
+  ],
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "edhrec_rank": 11027,
+  "penny_rank": 11771,
+  "prices": {
+    "usd": "0.61",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "0.68",
+    "eur_foil": null,
+    "tix": null
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=451125&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DBruna%252C%2BLight%2Bof%2BAlabaster",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DBruna%252C%2BLight%2Bof%2BAlabaster",
+    "edhrec": "https://edhrec.com/route/?cc=Bruna%2C+Light+of+Alabaster"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F171037%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=361784&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards?affiliate_id=scryfall&data%5Bsearch%5D=Bruna%2C+Light+of+Alabaster&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

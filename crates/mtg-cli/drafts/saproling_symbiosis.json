@@ -1,0 +1,35 @@
+{
+  "oracle_id": "69d22037-fbf7-44d2-81a7-7ce8e32f06ec",
+  "name": "Saproling Symbiosis",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Saproling Symbiosis",
+      "oracle_fingerprint": "c56178c94d3fd94319a10c3e115215b0",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Saproling",
+                      "colors": ["Green"],
+                      "types": ["Creature"],
+                      "subtypes": ["Saproling"],
+                      "power": 1,
+                      "toughness": 1
+                    }
+                  },
+                  "count": { "Count": [{ "Type": "Creature" }, { "ControlledBy": "You" }] }
+                }
+              }
+            ]
+          }
+        },
+        { "AltCast": { "way": "Alternative", "cost": "{5}{G}", "flash": true } }
+      ]
+    }
+  ]
+}

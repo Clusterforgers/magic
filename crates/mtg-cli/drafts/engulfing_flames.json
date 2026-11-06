@@ -1,0 +1,28 @@
+{
+  "oracle_id": "88f935ee-7dbb-4c27-8485-f56b4193fa11",
+  "name": "Engulfing Flames",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Engulfing Flames",
+      "oracle_fingerprint": "66f6c8f8fde8de9ab4029deecaac2f5a",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              { "DealDamage": { "to": { "Target": 0 }, "amount": 1 } },
+              {
+                "Rule": {
+                  "rule": { "CantBeRegenerated": { "Target": 0 } },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Flashback": "{3}{R}" } }
+      ]
+    }
+  ]
+}

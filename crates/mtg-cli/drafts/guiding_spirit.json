@@ -1,0 +1,35 @@
+{
+  "oracle_id": "c474b52f-2f50-416e-b6c2-07043c7b339d",
+  "name": "Guiding Spirit",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Guiding Spirit",
+      "oracle_fingerprint": "f66aae71c49b21ce94bc6207c3c72ad6",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              {
+                "Move": {
+                  "what": {
+                    "Each": [
+                      { "Type": "Creature" },
+                      "TopOfGraveyard",
+                      { "In": "Graveyard" },
+                      { "OwnedBy": { "Target": 0 } }
+                    ]
+                  },
+                  "to": { "Library": { "place": "Top" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

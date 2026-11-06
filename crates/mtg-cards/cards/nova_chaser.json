@@ -1,0 +1,39 @@
+{
+  "oracle_id": "997f5847-04c2-498a-a294-d3355fbb7424",
+  "name": "Nova Chaser",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Nova Chaser",
+      "oracle_fingerprint": "7a13cce0b27268853fe8c5e090b66fd1",
+      "abilities": [
+        { "Keyword": "Trample" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [{ "Subtype": "Elemental" }, "Other", { "ControlledBy": "You" }]
+                  },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "champion"
+                }
+              },
+              {
+                "Exile": { "what": { "Bound": "champion" }, "duration": "WhileSourceOnBattlefield" }
+              },
+              {
+                "If": {
+                  "condition": { "Not": "Performed" },
+                  "then": [{ "Sacrifice": { "filter": ["This"] } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

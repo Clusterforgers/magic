@@ -1,0 +1,375 @@
+{
+  "oracle_id": "f93fa6ec-1f13-4109-aa60-11e148f7ba88",
+  "name": "Super-Adaptoid",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Super-Adaptoid",
+      "oracle_fingerprint": "9d00deb0f40e5b35730ec1c73c351787",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              {
+                "SetPT": {
+                  "power": {
+                    "Count": [
+                      { "Type": "Creature" },
+                      { "Supertype": "Legendary" },
+                      { "ControlledBy": "You" }
+                    ]
+                  },
+                  "toughness": 2
+                }
+              }
+            ],
+            "defining": true
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+                { "Attacks": { "what": ["This"] } }
+              ]
+            },
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }, "Other"] } }],
+            "effects": [
+              {
+                "If": {
+                  "condition": {
+                    "All": [
+                      {
+                        "Compare": {
+                          "left": {
+                            "Count": [
+                              { "Type": "Creature" },
+                              { "Is": { "Target": 0 } },
+                              { "HasKeyword": "Haste" }
+                            ]
+                          },
+                          "op": "Ge",
+                          "right": 1
+                        }
+                      },
+                      {
+                        "Compare": {
+                          "left": { "Count": ["This", { "Not": { "HasKeyword": "Haste" } }] },
+                          "op": "Ge",
+                          "right": 1
+                        }
+                      }
+                    ]
+                  },
+                  "then": [{ "PutCounters": { "on": "This", "counter": { "Other": "haste" } } }]
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "All": [
+                      {
+                        "Compare": {
+                          "left": {
+                            "Count": [
+                              { "Type": "Creature" },
+                              { "Is": { "Target": 0 } },
+                              { "HasKeyword": "Flying" }
+                            ]
+                          },
+                          "op": "Ge",
+                          "right": 1
+                        }
+                      },
+                      {
+                        "Compare": {
+                          "left": { "Count": ["This", { "Not": { "HasKeyword": "Flying" } }] },
+                          "op": "Ge",
+                          "right": 1
+                        }
+                      }
+                    ]
+                  },
+                  "then": [{ "PutCounters": { "on": "This", "counter": { "Other": "flying" } } }]
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "All": [
+                      {
+                        "Compare": {
+                          "left": {
+                            "Count": [
+                              { "Type": "Creature" },
+                              { "Is": { "Target": 0 } },
+                              { "HasKeyword": "FirstStrike" }
+                            ]
+                          },
+                          "op": "Ge",
+                          "right": 1
+                        }
+                      },
+                      {
+                        "Compare": {
+                          "left": { "Count": ["This", { "Not": { "HasKeyword": "FirstStrike" } }] },
+                          "op": "Ge",
+                          "right": 1
+                        }
+                      }
+                    ]
+                  },
+                  "then": [
+                    { "PutCounters": { "on": "This", "counter": { "Other": "first strike" } } }
+                  ]
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "All": [
+                      {
+                        "Compare": {
+                          "left": {
+                            "Count": [
+                              { "Type": "Creature" },
+                              { "Is": { "Target": 0 } },
+                              { "HasKeyword": "DoubleStrike" }
+                            ]
+                          },
+                          "op": "Ge",
+                          "right": 1
+                        }
+                      },
+                      {
+                        "Compare": {
+                          "left": { "Count": ["This", { "Not": { "HasKeyword": "DoubleStrike" } }] },
+                          "op": "Ge",
+                          "right": 1
+                        }
+                      }
+                    ]
+                  },
+                  "then": [
+                    { "PutCounters": { "on": "This", "counter": { "Other": "double strike" } } }
+                  ]
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "All": [
+                      {
+                        "Compare": {
+                          "left": {
+                            "Count": [
+                              { "Type": "Creature" },
+                              { "Is": { "Target": 0 } },
+                              { "HasKeyword": "Deathtouch" }
+                            ]
+                          },
+                          "op": "Ge",
+                          "right": 1
+                        }
+                      },
+                      {
+                        "Compare": {
+                          "left": { "Count": ["This", { "Not": { "HasKeyword": "Deathtouch" } }] },
+                          "op": "Ge",
+                          "right": 1
+                        }
+                      }
+                    ]
+                  },
+                  "then": [
+                    { "PutCounters": { "on": "This", "counter": { "Other": "deathtouch" } } }
+                  ]
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "All": [
+                      {
+                        "Compare": {
+                          "left": {
+                            "Count": [
+                              { "Type": "Creature" },
+                              { "Is": { "Target": 0 } },
+                              { "HasKeyword": "Indestructible" }
+                            ]
+                          },
+                          "op": "Ge",
+                          "right": 1
+                        }
+                      },
+                      {
+                        "Compare": {
+                          "left": {
+                            "Count": ["This", { "Not": { "HasKeyword": "Indestructible" } }]
+                          },
+                          "op": "Ge",
+                          "right": 1
+                        }
+                      }
+                    ]
+                  },
+                  "then": [
+                    { "PutCounters": { "on": "This", "counter": { "Other": "indestructible" } } }
+                  ]
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "All": [
+                      {
+                        "Compare": {
+                          "left": {
+                            "Count": [
+                              { "Type": "Creature" },
+                              { "Is": { "Target": 0 } },
+                              { "HasKeyword": "Lifelink" }
+                            ]
+                          },
+                          "op": "Ge",
+                          "right": 1
+                        }
+                      },
+                      {
+                        "Compare": {
+                          "left": { "Count": ["This", { "Not": { "HasKeyword": "Lifelink" } }] },
+                          "op": "Ge",
+                          "right": 1
+                        }
+                      }
+                    ]
+                  },
+                  "then": [{ "PutCounters": { "on": "This", "counter": { "Other": "lifelink" } } }]
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "All": [
+                      {
+                        "Compare": {
+                          "left": {
+                            "Count": [
+                              { "Type": "Creature" },
+                              { "Is": { "Target": 0 } },
+                              { "HasKeyword": "Menace" }
+                            ]
+                          },
+                          "op": "Ge",
+                          "right": 1
+                        }
+                      },
+                      {
+                        "Compare": {
+                          "left": { "Count": ["This", { "Not": { "HasKeyword": "Menace" } }] },
+                          "op": "Ge",
+                          "right": 1
+                        }
+                      }
+                    ]
+                  },
+                  "then": [{ "PutCounters": { "on": "This", "counter": { "Other": "menace" } } }]
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "All": [
+                      {
+                        "Compare": {
+                          "left": {
+                            "Count": [
+                              { "Type": "Creature" },
+                              { "Is": { "Target": 0 } },
+                              { "HasKeyword": "Reach" }
+                            ]
+                          },
+                          "op": "Ge",
+                          "right": 1
+                        }
+                      },
+                      {
+                        "Compare": {
+                          "left": { "Count": ["This", { "Not": { "HasKeyword": "Reach" } }] },
+                          "op": "Ge",
+                          "right": 1
+                        }
+                      }
+                    ]
+                  },
+                  "then": [{ "PutCounters": { "on": "This", "counter": { "Other": "reach" } } }]
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "All": [
+                      {
+                        "Compare": {
+                          "left": {
+                            "Count": [
+                              { "Type": "Creature" },
+                              { "Is": { "Target": 0 } },
+                              { "HasKeyword": "Trample" }
+                            ]
+                          },
+                          "op": "Ge",
+                          "right": 1
+                        }
+                      },
+                      {
+                        "Compare": {
+                          "left": { "Count": ["This", { "Not": { "HasKeyword": "Trample" } }] },
+                          "op": "Ge",
+                          "right": 1
+                        }
+                      }
+                    ]
+                  },
+                  "then": [{ "PutCounters": { "on": "This", "counter": { "Other": "trample" } } }]
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "All": [
+                      {
+                        "Compare": {
+                          "left": {
+                            "Count": [
+                              { "Type": "Creature" },
+                              { "Is": { "Target": 0 } },
+                              { "HasKeyword": "Vigilance" }
+                            ]
+                          },
+                          "op": "Ge",
+                          "right": 1
+                        }
+                      },
+                      {
+                        "Compare": {
+                          "left": { "Count": ["This", { "Not": { "HasKeyword": "Vigilance" } }] },
+                          "op": "Ge",
+                          "right": 1
+                        }
+                      }
+                    ]
+                  },
+                  "then": [{ "PutCounters": { "on": "This", "counter": { "Other": "vigilance" } } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

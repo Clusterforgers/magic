@@ -1,0 +1,85 @@
+{
+  "oracle_id": "7cf1fa2e-1572-4d9d-8e93-e49016b34458",
+  "name": "Estrid, the Masked",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Estrid, the Masked",
+      "oracle_fingerprint": "ae686f3e4c84419691f6d6126afedb66",
+      "abilities": [
+        {
+          "Loyalty": {
+            "cost": { "Plus": 2 },
+            "effects": [
+              {
+                "Untap": {
+                  "what": {
+                    "Each": [{ "HasAttached": [{ "Subtype": "Aura" }] }, { "ControlledBy": "You" }]
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Minus": 1 },
+            "targets": [{ "what": { "Object": ["Other"] } }],
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Mask",
+                      "colors": ["White"],
+                      "types": ["Enchantment"],
+                      "subtypes": ["Aura"],
+                      "abilities": [{ "Keyword": { "Enchant": [] } }, { "Keyword": "UmbraArmor" }]
+                    }
+                  },
+                  "as": "token"
+                }
+              },
+              { "Attach": { "what": { "Bound": "token" }, "to": { "Target": 0 } } }
+            ]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Minus": 7 },
+            "effects": [
+              { "Mill": { "count": 7 } },
+              {
+                "Move": {
+                  "what": {
+                    "Each": [
+                      { "Type": "Enchantment" },
+                      { "Not": { "Subtype": "Aura" } },
+                      { "OwnedBy": "You" },
+                      { "In": "Graveyard" }
+                    ]
+                  },
+                  "to": { "Battlefield": {} }
+                }
+              },
+              {
+                "Move": {
+                  "what": {
+                    "Each": [
+                      { "Type": "Enchantment" },
+                      { "Subtype": "Aura" },
+                      { "OwnedBy": "You" },
+                      { "In": "Graveyard" }
+                    ]
+                  },
+                  "to": { "Battlefield": {} }
+                }
+              }
+            ]
+          }
+        },
+        { "Rule": { "rule": "CanBeCommander" } }
+      ]
+    }
+  ]
+}

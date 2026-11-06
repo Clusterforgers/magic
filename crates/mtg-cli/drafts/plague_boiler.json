@@ -1,7 +1,7 @@
 {
   "oracle_id": "fef502af-6e79-4c55-a86a-b45adb3fc64a",
   "name": "Plague Boiler",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Plague Boiler",
@@ -14,9 +14,18 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 72, "end": 156 }
+          "Activated": {
+            "cost": "{1}{B}{G}",
+            "effects": [
+              {
+                "OneOf": {
+                  "options": [
+                    [{ "PutCounters": { "on": "This", "counter": { "Other": "plague" } } }],
+                    [{ "RemoveCounters": { "from": "This", "counter": { "Other": "plague" } } }]
+                  ]
+                }
+              }
+            ]
           }
         },
         {

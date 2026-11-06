@@ -1,0 +1,66 @@
+{
+  "oracle_id": "14c3e48b-4c4e-4787-8c50-0e3aee19aa23",
+  "name": "Aerith Rescue Mission",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Aerith Rescue Mission",
+      "oracle_fingerprint": "296e50861de1f1e9bbdb6c03ab682b22",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Modal": {
+                  "modes": [
+                    {
+                      "effects": [
+                        {
+                          "CreateToken": {
+                            "token": {
+                              "Custom": {
+                                "name": "Hero",
+                                "types": ["Creature"],
+                                "subtypes": ["Hero"],
+                                "power": 1,
+                                "toughness": 1
+                              }
+                            },
+                            "count": 3
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "targets": [
+                        {
+                          "what": { "Object": [{ "Type": "Creature" }] },
+                          "bounds": { "min": 0, "max": 3 }
+                        }
+                      ],
+                      "effects": [
+                        { "Tap": { "what": { "Target": 0 } } },
+                        {
+                          "Choose": {
+                            "from": { "Each": [{ "Type": "Creature" }, { "Is": { "Target": 0 } }] },
+                            "as": "card"
+                          }
+                        },
+                        {
+                          "PutCounters": {
+                            "on": { "Bound": "card" },
+                            "counter": { "Other": "stun" }
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

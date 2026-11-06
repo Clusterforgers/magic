@@ -1,0 +1,37 @@
+{
+  "oracle_id": "0503fc7e-6819-4979-b0df-7de23de4558b",
+  "name": "Oracle of Bones",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Oracle of Bones",
+      "oracle_fingerprint": "fb9326d851e0f281237cf7c26cb7e0c3",
+      "abilities": [
+        { "Keyword": "Haste" },
+        { "Keyword": { "Macro": { "name": "tribute", "amount": 2 } } },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "if": { "Compare": { "left": "Chosen", "op": "Eq", "right": 0 } },
+            "effects": [
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "OwnedBy": "You" },
+                      { "In": "Hand" },
+                      { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] }
+                    ]
+                  },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "picked"
+                }
+              },
+              { "CastFromZone": { "what": { "Bound": "picked" }, "free": true } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

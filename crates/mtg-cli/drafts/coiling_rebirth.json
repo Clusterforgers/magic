@@ -1,0 +1,71 @@
+{
+  "oracle_id": "27a91ebd-39f4-432d-b6cc-cd86b4a3979a",
+  "name": "Coiling Rebirth",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Coiling Rebirth",
+      "oracle_fingerprint": "64cd8d84569de76525006faaa75ccf50",
+      "abilities": [
+        { "Keyword": { "Gift": "Card" } },
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "Type": "Creature" }, { "OwnedBy": "You" }, { "In": "Graveyard" }]
+                }
+              }
+            ],
+            "effects": [
+              { "Move": { "what": { "Target": 0 }, "to": { "Battlefield": {} }, "as": "moved" } },
+              {
+                "If": {
+                  "condition": {
+                    "All": [
+                      {
+                        "CountOf": {
+                          "subject": { "Bound": "moved" },
+                          "selector": [{ "Not": { "Supertype": "Legendary" } }],
+                          "op": "Ge",
+                          "right": 1
+                        }
+                      },
+                      {
+                        "Compare": {
+                          "left": {
+                            "When": {
+                              "condition": {
+                                "Compare": { "left": "Promised", "op": "Ge", "right": 1 }
+                              },
+                              "then": 1,
+                              "otherwise": 0
+                            }
+                          },
+                          "op": "Ge",
+                          "right": 1
+                        }
+                      }
+                    ]
+                  },
+                  "then": [
+                    {
+                      "CreateToken": {
+                        "token": {
+                          "CopyOf": {
+                            "of": { "Bound": "moved" },
+                            "except": [{ "SetPT": { "power": 1, "toughness": 1 } }]
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,52 @@
+{
+  "oracle_id": "ac5d5133-6f5c-43b7-82da-24802246e5a4",
+  "name": "Heliod's Punishment",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Heliod's Punishment",
+      "oracle_fingerprint": "265d3a937186eb1d26193952ade94f40",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "WithCounters": { "counter": { "Other": "task" }, "count": 4 } }
+          }
+        },
+        { "Static": { "affected": "Attached", "mods": ["CantAttack", "CantBlock"] } },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [
+              "LoseAbilities",
+              {
+                "GrantAbility": {
+                  "Activated": {
+                    "cost": ["Tap"],
+                    "effects": [
+                      { "RemoveCounters": { "from": "Granter", "counter": { "Other": "task" } } },
+                      {
+                        "If": {
+                          "condition": {
+                            "CountOf": {
+                              "subject": "Granter",
+                              "selector": [{ "Not": { "HasCounter": { "Other": "task" } } }],
+                              "op": "Ge",
+                              "right": 1
+                            }
+                          },
+                          "then": [{ "Destroy": { "what": "Granter" } }]
+                        }
+                      }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

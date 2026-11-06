@@ -1,0 +1,32 @@
+{
+  "oracle_id": "fb1a6986-39f7-4592-9039-7e30f5ccd009",
+  "name": "Mystical Tether",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mystical Tether",
+      "oracle_fingerprint": "c2245bef59dd69eaa030bb4a215b1cdf",
+      "abilities": [
+        { "AltCast": { "way": "Alternative", "cost": "{4}{W}", "flash": true } },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "AnyOf": [{ "Type": "Artifact" }, { "Type": "Creature" }] },
+                    { "ControlledBy": "Opponents" }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              { "Exile": { "what": { "Target": 0 }, "duration": "WhileSourceOnBattlefield" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

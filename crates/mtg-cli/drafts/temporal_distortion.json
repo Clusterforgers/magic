@@ -1,7 +1,7 @@
 {
   "oracle_id": "b0a16783-31c2-4b2a-835d-774dc385f99a",
   "name": "Temporal Distortion",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Temporal Distortion",
@@ -24,9 +24,16 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 173, "end": 282 }
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep" } },
+            "effects": [
+              {
+                "RemoveAllCounters": {
+                  "from": { "Each": [{ "ControlledBy": "ActivePlayer" }] },
+                  "counter": { "Other": "hourglass" }
+                }
+              }
+            ]
           }
         }
       ]

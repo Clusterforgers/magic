@@ -1,0 +1,80 @@
+{
+  "oracle_id": "3ddde895-12aa-488a-94fb-27a1064bdb72",
+  "name": "Nevinyrral, Urborg Tyrant",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Nevinyrral, Urborg Tyrant",
+      "oracle_fingerprint": "2ffb146ec44dc56e8f354c15a852f623",
+      "abilities": [
+        { "Keyword": { "HexproofFrom": [{ "Type": "Artifact" }] } },
+        { "Keyword": { "HexproofFrom": [{ "Type": "Creature" }] } },
+        { "Keyword": { "HexproofFrom": [{ "Type": "Enchantment" }] } },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Zombie",
+                      "colors": ["Black"],
+                      "types": ["Creature"],
+                      "subtypes": ["Zombie"],
+                      "power": 2,
+                      "toughness": 2
+                    }
+                  },
+                  "count": {
+                    "Tally": {
+                      "event": "Died",
+                      "who": "EachPlayer",
+                      "filter": [{ "Type": "Creature" }]
+                    }
+                  },
+                  "tapped": true
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": "{1}",
+                  "paid": [
+                    {
+                      "Reflexive": {
+                        "effects": [
+                          {
+                            "Destroy": {
+                              "what": {
+                                "Each": [
+                                  {
+                                    "AnyOf": [
+                                      { "Type": "Artifact" },
+                                      { "Type": "Creature" },
+                                      { "Type": "Enchantment" }
+                                    ]
+                                  }
+                                ]
+                              }
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

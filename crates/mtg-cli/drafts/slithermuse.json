@@ -1,0 +1,50 @@
+{
+  "oracle_id": "4b6512aa-535e-4edf-8797-43df2b8463de",
+  "name": "Slithermuse",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Slithermuse",
+      "oracle_fingerprint": "8b1f079b927d0c684661eec87504f454",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield" } },
+            "effects": [
+              { "Choose": { "from": "Opponents", "as": "player" } },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "Count": [{ "OwnedBy": { "Bound": "player" } }, { "In": "Hand" }] },
+                      "op": "Gt",
+                      "right": { "Count": [{ "OwnedBy": "You" }, { "In": "Hand" }] }
+                    }
+                  },
+                  "then": [
+                    {
+                      "Draw": {
+                        "count": {
+                          "Sum": [
+                            { "Count": [{ "OwnedBy": { "Bound": "player" } }, { "In": "Hand" }] },
+                            {
+                              "Times": {
+                                "by": -1,
+                                "of": { "Count": [{ "OwnedBy": "You" }, { "In": "Hand" }] }
+                              }
+                            }
+                          ]
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Evoke": "{3}{U}" } }
+      ]
+    }
+  ]
+}

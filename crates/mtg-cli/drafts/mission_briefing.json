@@ -1,0 +1,58 @@
+{
+  "oracle_id": "c3a68018-9eff-47e6-a612-182886d28fe3",
+  "name": "Mission Briefing",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mission Briefing",
+      "oracle_fingerprint": "0f1fadf83ad5425a60ca283f773dc433",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "Surveil": { "count": 2 } },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] },
+                      { "OwnedBy": "You" },
+                      { "In": "Graveyard" }
+                    ]
+                  },
+                  "as": "card"
+                }
+              },
+              {
+                "Rule": {
+                  "rule": {
+                    "MayCast": {
+                      "what": [{ "Not": { "Type": "Land" } }],
+                      "from": "Graveyard",
+                      "only": { "Bound": "card" },
+                      "play": true
+                    }
+                  },
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "Shield": {
+                  "when": {
+                    "ZoneChange": {
+                      "what": [{ "Is": { "Bound": "card" } }],
+                      "from": "Stack",
+                      "to": "Graveyard"
+                    }
+                  },
+                  "by": { "MoveTo": "Exile" },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,22 @@
+{
+  "oracle_id": "2341b59b-ce46-4efe-be94-c3851d3cd9e8",
+  "name": "Nessian Demolok",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Nessian Demolok",
+      "oracle_fingerprint": "d43a0f9a30d95e7917625604dd9cade7",
+      "abilities": [
+        { "Keyword": { "Macro": { "name": "tribute", "amount": 3 } } },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "if": { "Compare": { "left": "Chosen", "op": "Eq", "right": 0 } },
+            "targets": [{ "what": { "Object": [{ "Not": { "Type": "Creature" } }] } }],
+            "effects": [{ "Destroy": { "what": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

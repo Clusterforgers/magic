@@ -1,0 +1,54 @@
+{
+  "oracle_id": "92d6af2f-728e-4e41-87cb-5c90878a2f2f",
+  "name": "Disintegrate",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Disintegrate",
+      "oracle_fingerprint": "7120f0ef2825344b95984f36381a2ad4",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [
+              { "DealDamage": { "to": { "Target": 0 }, "amount": "X" } },
+              {
+                "Shield": {
+                  "when": {
+                    "ZoneChange": {
+                      "what": [{ "Is": { "Target": 0 } }, { "Type": "Creature" }],
+                      "from": "Battlefield",
+                      "to": "Graveyard"
+                    }
+                  },
+                  "by": { "MoveTo": "Exile" },
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Target": 0 },
+                      "selector": [{ "Type": "Creature" }],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [
+                    {
+                      "Rule": {
+                        "rule": { "CantBeRegenerated": { "Target": 0 } },
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

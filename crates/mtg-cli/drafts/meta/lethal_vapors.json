@@ -1,42 +1,4 @@
 {
   "source": "forge",
-  "oracle_matches": true,
-  "lines": [
-    {
-      "face": 0,
-      "tag": "A",
-      "text": "Destroy CARDNAME. You skip your next turn. Any player may activate this ability.",
-      "abilities": [],
-      "gap": "key:Destroy.Activator"
-    },
-    {
-      "face": 0,
-      "tag": "T",
-      "text": "Whenever a creature enters, destroy it.",
-      "abilities": [
-        0
-      ],
-      "gap": null
-    }
-  ],
-  "proof": {
-    "marks": [
-      {
-        "face": 0,
-        "span": {
-          "start": 0,
-          "end": 39
-        },
-        "mark": "Auto"
-      },
-      {
-        "face": 0,
-        "span": {
-          "start": 40,
-          "end": 133
-        },
-        "mark": "ByHand"
-      }
-    ]
-  }
+  "oracle_matches": true
 }

@@ -1,0 +1,29 @@
+{
+  "oracle_id": "9f5277e8-1cbe-478c-a8bc-ac028f13305e",
+  "name": "Harbinger of the Tides",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Harbinger of the Tides",
+      "oracle_fingerprint": "0cec07734db5c9e2c5841b889fcc340b",
+      "abilities": [
+        { "AltCast": { "way": "Alternative", "cost": "{2}{U}{U}", "flash": true } },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }, "Tapped"]
+                }
+              }
+            ],
+            "effects": [
+              { "May": { "effects": [{ "Move": { "what": { "Target": 0 }, "to": "Hand" } }] } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

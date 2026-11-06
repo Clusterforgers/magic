@@ -1,0 +1,46 @@
+{
+  "oracle_id": "d895df97-e7e7-4f15-a79b-0ce8f1a252d3",
+  "name": "Spare Dagger",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Spare Dagger",
+      "oracle_fingerprint": "137a4dda8af697e450031b3f4e871651",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [
+              { "ModifyPT": { "power": 1, "toughness": 0 } },
+              {
+                "GrantAbility": {
+                  "Triggered": {
+                    "when": { "Attacks": { "what": ["This"] } },
+                    "effects": [
+                      {
+                        "Pay": {
+                          "cost": [{ "Sacrifice": { "filter": [{ "Is": "Granter" }] } }],
+                          "paid": [
+                            {
+                              "Reflexive": {
+                                "targets": [{ "what": "AnyTarget" }],
+                                "effects": [
+                                  { "DealDamage": { "to": { "Target": 0 }, "amount": 1 } }
+                                ]
+                              }
+                            }
+                          ]
+                        }
+                      }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Equip": "{1}" } }
+      ]
+    }
+  ]
+}

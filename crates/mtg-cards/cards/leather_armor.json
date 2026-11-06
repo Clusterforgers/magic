@@ -1,0 +1,33 @@
+{
+  "oracle_id": "7a6ce270-c261-422f-845f-11c22602a274",
+  "name": "Leather Armor",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Leather Armor",
+      "oracle_fingerprint": "abb40aeb8ffd1e0f66e3de75ffe44924",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [
+              { "ModifyPT": { "power": 0, "toughness": 1 } },
+              { "AddKeyword": { "Ward": "{1}" } }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{0}",
+            "timing": "Sorcery",
+            "limit": "OncePerTurn",
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } }
+            ],
+            "effects": [{ "Attach": { "what": "This", "to": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,34 @@
+{
+  "oracle_id": "72d3b499-dbff-4631-b6e3-0a292b39d527",
+  "name": "Horn of Plenty",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Horn of Plenty",
+      "oracle_fingerprint": "f6c549e6295c21200a698cc416a04283",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "SpellCast": {} },
+            "effects": [
+              {
+                "Pay": {
+                  "who": "Triggering",
+                  "cost": "{1}",
+                  "paid": [
+                    {
+                      "DelayedTrigger": {
+                        "when": { "StepBegins": { "step": "End" } },
+                        "effects": [{ "Draw": { "who": "Triggering" } }]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,61 @@
+{
+  "oracle_id": "c65c4d01-29da-47e6-993c-a265cf1f198c",
+  "name": "Long River Lurker",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Long River Lurker",
+      "oracle_fingerprint": "6d80b38fc83da60869b090eb06a83562",
+      "abilities": [
+        { "Keyword": { "Ward": "{1}" } },
+        {
+          "Static": {
+            "affected": { "Each": [{ "Subtype": "Frog" }, { "ControlledBy": "You" }, "Other"] },
+            "mods": [{ "AddKeyword": { "Ward": "{1}" } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": ["CantBeBlocked"],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "DelayedTrigger": {
+                  "when": {
+                    "Batch": {
+                      "DealsDamage": {
+                        "source": [{ "Type": "Creature" }, { "Is": { "Target": 0 } }],
+                        "combat": true
+                      }
+                    }
+                  },
+                  "once": false,
+                  "this_turn": true,
+                  "effects": [
+                    {
+                      "May": {
+                        "effects": [
+                          { "Exile": { "what": { "Target": 0 }, "as": "exiled" } },
+                          { "Move": { "what": { "Bound": "exiled" }, "to": { "Battlefield": {} } } }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

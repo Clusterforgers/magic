@@ -1,0 +1,27 @@
+{
+  "oracle_id": "cc87a268-253b-4377-bdc5-474940de8878",
+  "name": "Furnace Brood",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Furnace Brood",
+      "oracle_fingerprint": "2e8999e6805b3883b5a9eef249f8d9f6",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{R}",
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Rule": {
+                  "rule": { "CantBeRegenerated": { "Target": 0 } },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

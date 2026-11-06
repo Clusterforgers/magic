@@ -1,0 +1,60 @@
+{
+  "oracle_id": "850e2dbd-b904-41b9-8ffe-0aa562837bde",
+  "name": "Sandstone Oracle",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sandstone Oracle",
+      "oracle_fingerprint": "164a12a315dd3502bc9b21874417ca30",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              { "Choose": { "from": "Opponents", "as": "player" } },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": {
+                        "Sum": [
+                          { "Count": [{ "OwnedBy": { "Bound": "player" } }, { "In": "Hand" }] },
+                          {
+                            "Times": {
+                              "by": -1,
+                              "of": { "Count": [{ "OwnedBy": "You" }, { "In": "Hand" }] }
+                            }
+                          }
+                        ]
+                      },
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [
+                    {
+                      "Draw": {
+                        "count": {
+                          "Sum": [
+                            { "Count": [{ "OwnedBy": { "Bound": "player" } }, { "In": "Hand" }] },
+                            {
+                              "Times": {
+                                "by": -1,
+                                "of": { "Count": [{ "OwnedBy": "You" }, { "In": "Hand" }] }
+                              }
+                            }
+                          ]
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,41 @@
+{
+  "oracle_id": "bfd614d5-4c7f-416b-9cb2-bb167c0893a0",
+  "name": "Elenda, Saint of Dusk",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Elenda, Saint of Dusk",
+      "oracle_fingerprint": "e38f119d1e2855428aee34ebda16b94b",
+      "abilities": [
+        { "Keyword": "Lifelink" },
+        { "Keyword": { "HexproofFrom": [{ "Type": "Instant" }] } },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }, { "AddKeyword": "Menace" }],
+            "condition": {
+              "Compare": {
+                "left": { "Life": "You" },
+                "op": "Gt",
+                "right": { "StartingLife": "You" }
+              }
+            }
+          }
+        },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "ModifyPT": { "power": 5, "toughness": 5 } }],
+            "condition": {
+              "Compare": {
+                "left": { "Life": "You" },
+                "op": "Ge",
+                "right": { "Sum": [{ "StartingLife": "You" }, 10] }
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

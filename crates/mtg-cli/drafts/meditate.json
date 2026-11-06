@@ -1,0 +1,26 @@
+{
+  "oracle_id": "f79f84c9-2023-4348-863b-a3b4bc382904",
+  "name": "Meditate",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Meditate",
+      "oracle_fingerprint": "c473f4c311f1283fdd83d814efa698d5",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "Draw": { "count": 4 } },
+              {
+                "Rule": {
+                  "rule": { "Cant": { "who": "You", "action": "SkipTurn" } },
+                  "duration": "UntilTurnSkipped"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,7 +1,7 @@
 {
   "oracle_id": "3d3fd8a2-78d4-4f52-8fcd-0c6fa93f0043",
   "name": "Corrosion",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Corrosion",
@@ -67,9 +67,11 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 418, "end": 509 }
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield" } },
+            "effects": [
+              { "RemoveAllCounters": { "from": { "Each": [] }, "counter": { "Other": "rust" } } }
+            ]
           }
         }
       ]

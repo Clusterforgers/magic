@@ -1,7 +1,7 @@
 {
   "oracle_id": "7cf29c48-ba07-4af3-b846-7f81046f4059",
   "name": "Mine Layer",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Mine Layer",
@@ -25,9 +25,16 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 118, "end": 201 }
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield" } },
+            "effects": [
+              {
+                "RemoveAllCounters": {
+                  "from": { "Each": [{ "Type": "Land" }] },
+                  "counter": { "Other": "mine" }
+                }
+              }
+            ]
           }
         }
       ]

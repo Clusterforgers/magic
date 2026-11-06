@@ -1,0 +1,41 @@
+{
+  "oracle_id": "3ae86510-f828-48f8-adab-759df4b5544e",
+  "name": "Cetavolver",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Cetavolver",
+      "oracle_fingerprint": "6e86258ec0ab7ac4c63cf37015d9a9e8",
+      "abilities": [
+        { "Keyword": { "Kicker": "{1}{R}" } },
+        { "Keyword": { "Kicker": "{G}" } },
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": {
+              "WithCountersAnd": {
+                "counter": "+1/+1",
+                "count": 2,
+                "mods": [{ "AddKeyword": "FirstStrike" }]
+              }
+            },
+            "condition": { "KickedWith": "{1}{R}" }
+          }
+        },
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": {
+              "WithCountersAnd": {
+                "counter": "+1/+1",
+                "count": 1,
+                "mods": [{ "AddKeyword": "Trample" }]
+              }
+            },
+            "condition": { "KickedWith": "{G}" }
+          }
+        }
+      ]
+    }
+  ]
+}

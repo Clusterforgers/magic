@@ -1,7 +1,7 @@
 {
   "oracle_id": "9fe9650d-6c9b-4988-9ea4-79ba0d55a77b",
   "name": "Lethal Vapors",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Lethal Vapors",
@@ -14,9 +14,18 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 40, "end": 133 }
+          "Activated": {
+            "cost": "{0}",
+            "by": "Anyone",
+            "effects": [
+              { "Destroy": { "what": "This" } },
+              {
+                "Rule": {
+                  "rule": { "Cant": { "who": "You", "action": "SkipTurn" } },
+                  "duration": "UntilTurnSkipped"
+                }
+              }
+            ]
           }
         }
       ]

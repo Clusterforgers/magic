@@ -1,0 +1,54 @@
+{
+  "oracle_id": "59b02ca7-e7bd-4820-ac32-87ea1a8c64c0",
+  "name": "Corpse Dance",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Corpse Dance",
+      "oracle_fingerprint": "bed83af87df37a1fb2ddac0a6a41517b",
+      "abilities": [
+        { "Keyword": { "Buyback": "{2}" } },
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "Type": "Creature" },
+                      { "Type": "Creature" },
+                      "TopOfGraveyard",
+                      { "OwnedBy": "You" },
+                      { "In": "Graveyard" }
+                    ]
+                  },
+                  "as": "picked"
+                }
+              },
+              {
+                "Move": {
+                  "what": { "Bound": "picked" },
+                  "to": { "Battlefield": {} },
+                  "as": "moved2"
+                }
+              },
+              {
+                "Continuous": {
+                  "affected": { "Bound": "moved2" },
+                  "mods": [{ "AddKeyword": "Haste" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "End" } },
+                  "effects": [{ "Exile": { "what": { "Bound": "moved2" } } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

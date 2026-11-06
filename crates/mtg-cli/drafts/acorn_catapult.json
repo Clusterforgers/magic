@@ -1,0 +1,37 @@
+{
+  "oracle_id": "56d13879-2dc5-4d84-918b-4bd1a5fc2a33",
+  "name": "Acorn Catapult",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Acorn Catapult",
+      "oracle_fingerprint": "a7a0e45487c7ce2bb302d420e718d762",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{1}" }, "Tap"],
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [
+              { "DealDamage": { "to": { "Target": 0 }, "amount": 1 } },
+              {
+                "CreateToken": {
+                  "who": { "OrController": { "Target": 0 } },
+                  "token": {
+                    "Custom": {
+                      "name": "Squirrel",
+                      "colors": ["Green"],
+                      "types": ["Creature"],
+                      "subtypes": ["Squirrel"],
+                      "power": 1,
+                      "toughness": 1
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

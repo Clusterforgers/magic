@@ -1,0 +1,52 @@
+{
+  "oracle_id": "03e356ae-f1e8-4730-8d2b-b9e2f32db915",
+  "name": "Mind Spiral",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mind Spiral",
+      "oracle_fingerprint": "e44d5fa5701c1aab1447fbc7508e26cb",
+      "abilities": [
+        { "Keyword": { "Gift": "TappedFish" } },
+        {
+          "Spell": {
+            "targets": [
+              { "what": "Player" },
+              {
+                "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }] },
+                "bounds": {
+                  "min": {
+                    "When": {
+                      "condition": { "Compare": { "left": "Promised", "op": "Ge", "right": 1 } },
+                      "then": 1,
+                      "otherwise": 0
+                    }
+                  },
+                  "max": {
+                    "When": {
+                      "condition": { "Compare": { "left": "Promised", "op": "Ge", "right": 1 } },
+                      "then": 1,
+                      "otherwise": 0
+                    }
+                  }
+                }
+              }
+            ],
+            "effects": [
+              { "Draw": { "who": { "Target": 0 }, "count": 3 } },
+              { "Tap": { "what": { "Target": 1 } } },
+              {
+                "If": {
+                  "condition": { "Compare": { "left": "Promised", "op": "Eq", "right": 1 } },
+                  "then": [
+                    { "PutCounters": { "on": { "Target": 1 }, "counter": { "Other": "stun" } } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,37 @@
+{
+  "oracle_id": "8d01c85c-5f83-4514-b81c-4165051d5722",
+  "name": "Unstable Hulk",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Unstable Hulk",
+      "oracle_fingerprint": "1cfc9d461a20fce668fc850b074f4d7a",
+      "abilities": [
+        { "Keyword": { "Morph": "{3}{R}{R}" } },
+        {
+          "Triggered": {
+            "when": { "TurnedFaceUp": { "what": ["This"] } },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [
+                    { "ModifyPT": { "power": 6, "toughness": 6 } },
+                    { "AddKeyword": "Trample" }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "Rule": {
+                  "rule": { "Cant": { "who": "You", "action": "SkipTurn" } },
+                  "duration": "UntilTurnSkipped"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

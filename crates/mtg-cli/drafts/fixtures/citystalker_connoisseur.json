@@ -1,0 +1,133 @@
+{
+  "object": "card",
+  "id": "5fdeb07f-0e77-4636-b607-ad874d85d502",
+  "oracle_id": "d4b9f9c2-f78e-4f1f-b189-81c84a9013a9",
+  "multiverse_ids": [
+    548253
+  ],
+  "arena_id": 79932,
+  "name": "Citystalker Connoisseur",
+  "lang": "en",
+  "released_at": "2021-12-09",
+  "uri": "https://api.scryfall.com/cards/5fdeb07f-0e77-4636-b607-ad874d85d502",
+  "scryfall_uri": "https://scryfall.com/card/ymid/27/citystalker-connoisseur?utm_source=api",
+  "layout": "normal",
+  "highres_image": false,
+  "image_status": "lowres",
+  "image_updated_at": "2026-07-13T06:35:51Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/5/f/5fdeb07f-0e77-4636-b607-ad874d85d502.jpg?1783924551",
+    "normal": "https://cards.scryfall.io/normal/front/5/f/5fdeb07f-0e77-4636-b607-ad874d85d502.jpg?1783924551",
+    "large": "https://cards.scryfall.io/large/front/5/f/5fdeb07f-0e77-4636-b607-ad874d85d502.jpg?1783924551",
+    "png": "https://cards.scryfall.io/png/front/5/f/5fdeb07f-0e77-4636-b607-ad874d85d502.png?1783924551",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/5/f/5fdeb07f-0e77-4636-b607-ad874d85d502.jpg?1783924551",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/5/f/5fdeb07f-0e77-4636-b607-ad874d85d502.jpg?1783924551",
+    "thumb": "https://cards.scryfall.io/thumb/front/5/f/5fdeb07f-0e77-4636-b607-ad874d85d502.webp?1783924551",
+    "grid": "https://cards.scryfall.io/grid/front/5/f/5fdeb07f-0e77-4636-b607-ad874d85d502.webp?1783924551",
+    "display": "https://cards.scryfall.io/display/front/5/f/5fdeb07f-0e77-4636-b607-ad874d85d502.webp?1783924551",
+    "art": "https://cards.scryfall.io/art/front/5/f/5fdeb07f-0e77-4636-b607-ad874d85d502.webp?1783924551",
+    "crop": "https://cards.scryfall.io/crop/front/5/f/5fdeb07f-0e77-4636-b607-ad874d85d502.webp?1783924551",
+    "jpeg": "https://cards.scryfall.io/normal/front/5/f/5fdeb07f-0e77-4636-b607-ad874d85d502.jpg?1783924551"
+  },
+  "mana_cost": "{3}{B}",
+  "cmc": 4.0,
+  "type_line": "Creature — Vampire",
+  "oracle_text": "Deathtouch\nWhen this creature enters, target opponent discards a nonland card with the greatest mana value among cards in their hand. Create a Blood token.",
+  "power": "3",
+  "toughness": "3",
+  "colors": [
+    "B"
+  ],
+  "color_identity": [
+    "B"
+  ],
+  "keywords": [
+    "Deathtouch"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "not_legal",
+    "pauper": "not_legal",
+    "vintage": "not_legal",
+    "penny": "not_legal",
+    "commander": "not_legal",
+    "oathbreaker": "not_legal",
+    "standardbrawl": "not_legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "not_legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "arena"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "8a673262-8745-452d-820a-03d5c4a4f135",
+  "set": "ymid",
+  "set_name": "Alchemy: Innistrad",
+  "set_type": "alchemy",
+  "set_uri": "https://api.scryfall.com/sets/8a673262-8745-452d-820a-03d5c4a4f135",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Aymid&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/ymid?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/5fdeb07f-0e77-4636-b607-ad874d85d502/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Ad4b9f9c2-f78e-4f1f-b189-81c84a9013a9&unique=prints",
+  "collector_number": "27",
+  "digital": true,
+  "rarity": "rare",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Aurore Folny",
+  "artist_ids": [
+    "02f6cdda-7a80-4184-853d-20b28d580868"
+  ],
+  "illustration_id": "6d35f663-c903-4591-8149-2c04471a39a1",
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "arena",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "promo_types": [
+    "alchemy"
+  ],
+  "preview": {
+    "source": "Numot The Nummy",
+    "source_uri": "",
+    "previewed_at": "2021-12-06"
+  },
+  "prices": {
+    "usd": null,
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": null,
+    "eur_foil": null,
+    "tix": null
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=548253&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DCitystalker%2BConnoisseur",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DCitystalker%2BConnoisseur",
+    "edhrec": "https://edhrec.com/route/?cc=Citystalker+Connoisseur"
+  }
+}

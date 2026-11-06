@@ -1,0 +1,52 @@
+{
+  "oracle_id": "342daae1-f7f0-4bce-94bc-e9bdce53e48e",
+  "name": "Dark Dabbling",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dark Dabbling",
+      "oracle_fingerprint": "0e73e7861ea6048487a3b073a794a00f",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              { "Regenerate": { "what": { "Target": 0 } } },
+              { "Draw": {} },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": {
+                        "Count": [
+                          { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] },
+                          { "OwnedBy": "You" },
+                          { "In": "Graveyard" }
+                        ]
+                      },
+                      "op": "Ge",
+                      "right": 2
+                    }
+                  },
+                  "then": [
+                    {
+                      "Regenerate": {
+                        "what": {
+                          "Each": [
+                            { "Type": "Creature" },
+                            { "ControlledBy": "You" },
+                            { "Not": { "Is": { "Target": 0 } } }
+                          ]
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

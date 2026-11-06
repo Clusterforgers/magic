@@ -1,0 +1,35 @@
+{
+  "oracle_id": "0eafe734-19f2-492d-bfc2-d0c75ece45b2",
+  "name": "Ghastly Remains",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ghastly Remains",
+      "oracle_fingerprint": "7619846f94dfcba87353330a6262298d",
+      "abilities": [
+        { "Keyword": { "Macro": { "name": "amplify", "amount": 1 } } },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "if": {
+              "Compare": {
+                "left": { "Count": ["This", { "In": "Graveyard" }, { "OwnedBy": "You" }] },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "from": "Graveyard",
+            "effects": [
+              {
+                "Pay": {
+                  "cost": "{B}{B}{B}",
+                  "paid": [{ "Move": { "what": "This", "to": "Hand" } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,7 +1,7 @@
 {
   "oracle_id": "33005c63-fe9f-4051-b781-eacf1ca5eec6",
   "name": "Sporogenesis",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Sporogenesis",
@@ -51,9 +51,16 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 231, "end": 323 }
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield" } },
+            "effects": [
+              {
+                "RemoveAllCounters": {
+                  "from": { "Each": [{ "Type": "Creature" }] },
+                  "counter": { "Other": "fungus" }
+                }
+              }
+            ]
           }
         }
       ]

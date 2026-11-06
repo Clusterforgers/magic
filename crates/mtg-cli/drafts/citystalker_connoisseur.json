@@ -1,0 +1,43 @@
+{
+  "oracle_id": "d4b9f9c2-f78e-4f1f-b189-81c84a9013a9",
+  "name": "Citystalker Connoisseur",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Citystalker Connoisseur",
+      "oracle_fingerprint": "6a2e4d16ff4a66babc215d8f97068a24",
+      "abilities": [
+        { "Keyword": "Deathtouch" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              {
+                "Discard": {
+                  "who": { "Target": 0 },
+                  "filter": [
+                    { "Not": { "Type": "Land" } },
+                    {
+                      "Compare": {
+                        "stat": "ManaValue",
+                        "op": "Eq",
+                        "to": {
+                          "Greatest": {
+                            "of": [{ "OwnedBy": { "Target": 0 } }, { "In": "Hand" }],
+                            "stat": "ManaValue"
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              },
+              { "CreateToken": { "token": { "Named": "blood" } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

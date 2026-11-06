@@ -1,7 +1,7 @@
 {
   "oracle_id": "b3779fbe-7701-433b-afad-bebd6096a3c8",
   "name": "Ajani's Aid",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Ajani's Aid",
@@ -15,27 +15,18 @@
                 "May": {
                   "effects": [
                     {
-                      "May": {
-                        "effects": [
-                          {
-                            "Search": {
-                              "also": ["Graveyard"],
-                              "filter": [
-                                { "OwnedBy": "You" },
-                                { "Named": "Ajani, Valiant Protector" }
-                              ],
-                              "reveal": true,
-                              "as": "found"
-                            }
-                          },
-                          { "Move": { "what": { "Bound": "found" }, "to": "Hand" } },
-                          {
-                            "If": {
-                              "condition": { "Searched": { "zone": "Library" } },
-                              "then": [{ "Shuffle": {} }]
-                            }
-                          }
-                        ]
+                      "Search": {
+                        "also": ["Graveyard"],
+                        "filter": [{ "OwnedBy": "You" }, { "Named": "Ajani, Valiant Protector" }],
+                        "reveal": true,
+                        "as": "found"
+                      }
+                    },
+                    { "Move": { "what": { "Bound": "found" }, "to": "Hand" } },
+                    {
+                      "If": {
+                        "condition": { "Searched": { "zone": "Library" } },
+                        "then": [{ "Shuffle": {} }]
                       }
                     }
                   ]
@@ -45,9 +36,20 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 202, "end": 303 }
+          "Activated": {
+            "cost": ["SacrificeSelf"],
+            "effects": [
+              { "Choose": { "from": { "Each": [{ "Type": "Creature" }] }, "as": "card" } },
+              {
+                "Shield": {
+                  "when": {
+                    "Damage": { "source": [{ "Is": { "Bound": "card" } }], "combat": true }
+                  },
+                  "by": "Prevent",
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
           }
         }
       ]

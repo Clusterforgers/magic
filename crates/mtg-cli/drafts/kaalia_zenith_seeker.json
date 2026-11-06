@@ -1,0 +1,74 @@
+{
+  "oracle_id": "6307ec34-bef6-4ac6-a363-f9bef0d03b3b",
+  "name": "Kaalia, Zenith Seeker",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Kaalia, Zenith Seeker",
+      "oracle_fingerprint": "56bc766fcced6cde58d001f4001ac30c",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": "Vigilance" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              { "LookAtTop": { "count": 6, "as": "top" } },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "In": "Library" },
+                      { "Is": { "Bound": "top" } },
+                      { "Subtype": "Angel" }
+                    ]
+                  },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "kept2"
+                }
+              },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "In": "Library" },
+                      { "Is": { "Bound": "top" } },
+                      { "Subtype": "Demon" },
+                      { "Not": { "Is": { "Bound": "kept2" } } }
+                    ]
+                  },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "kept3"
+                }
+              },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "In": "Library" },
+                      { "Is": { "Bound": "top" } },
+                      { "Subtype": "Dragon" },
+                      { "Not": { "Is": { "Bound": "kept2" } } },
+                      { "Not": { "Is": { "Bound": "kept3" } } }
+                    ]
+                  },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "kept4"
+                }
+              },
+              { "Move": { "what": { "Bound": "kept2" }, "to": "Hand" } },
+              { "Move": { "what": { "Bound": "kept3" }, "to": "Hand" } },
+              { "Move": { "what": { "Bound": "kept4" }, "to": "Hand" } },
+              {
+                "Move": {
+                  "what": { "Bound": "top" },
+                  "to": { "Library": { "place": "Bottom", "order": "Random" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

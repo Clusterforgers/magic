@@ -1,0 +1,59 @@
+{
+  "oracle_id": "4c0fa2f9-721e-45ac-ad74-68ad2523c658",
+  "name": "Unstoppable Ash",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Unstoppable Ash",
+      "oracle_fingerprint": "e0b6e54cc0af120391db5150216e4cdb",
+      "abilities": [
+        { "Keyword": "Trample" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "AnyOf": [{ "Subtype": "Treefolk" }, { "Subtype": "Warrior" }] },
+                      "Other",
+                      { "ControlledBy": "You" }
+                    ]
+                  },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "champion"
+                }
+              },
+              {
+                "Exile": { "what": { "Bound": "champion" }, "duration": "WhileSourceOnBattlefield" }
+              },
+              {
+                "If": {
+                  "condition": { "Not": "Performed" },
+                  "then": [{ "Sacrifice": { "filter": ["This"] } }]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "BecomesBlocked": { "what": [{ "Type": "Creature" }, { "ControlledBy": "You" }] }
+            },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "Triggering",
+                  "mods": [{ "ModifyPT": { "power": 0, "toughness": 5 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

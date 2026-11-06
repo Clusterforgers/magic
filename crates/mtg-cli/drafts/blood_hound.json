@@ -1,7 +1,7 @@
 {
   "oracle_id": "ace532a3-fa6e-479d-b169-1fb24c3d0f8c",
   "name": "Blood Hound",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Blood Hound",
@@ -22,9 +22,11 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 85, "end": 165 }
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "effects": [
+              { "RemoveAllCounters": { "from": { "Each": ["This"] }, "counter": "+1/+1" } }
+            ]
           }
         }
       ]

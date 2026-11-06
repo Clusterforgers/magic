@@ -1,0 +1,53 @@
+{
+  "oracle_id": "9843d8a6-bcbf-40c2-8c41-316e97db9c62",
+  "name": "Shallow Grave",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Shallow Grave",
+      "oracle_fingerprint": "25a75abaa00e557c129627ced5d71540",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "Type": "Creature" },
+                      { "Type": "Creature" },
+                      "TopOfGraveyard",
+                      { "OwnedBy": "You" },
+                      { "In": "Graveyard" }
+                    ]
+                  },
+                  "as": "picked"
+                }
+              },
+              {
+                "Move": {
+                  "what": { "Bound": "picked" },
+                  "to": { "Battlefield": {} },
+                  "as": "moved2"
+                }
+              },
+              {
+                "Continuous": {
+                  "affected": { "Bound": "moved2" },
+                  "mods": [{ "AddKeyword": "Haste" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "End" } },
+                  "effects": [{ "Exile": { "what": { "Bound": "moved2" } } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

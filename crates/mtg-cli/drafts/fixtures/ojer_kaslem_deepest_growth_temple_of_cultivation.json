@@ -1,0 +1,185 @@
+{
+  "object": "card",
+  "id": "0cbc43a3-8cba-4988-9de1-c89aedd79ada",
+  "oracle_id": "eda11077-b2ce-408b-b982-def2da8fe599",
+  "multiverse_ids": [
+    636922,
+    636923
+  ],
+  "mtgo_id": 118240,
+  "arena_id": 87362,
+  "tcgplayer_id": 525620,
+  "cardmarket_id": 744039,
+  "name": "Ojer Kaslem, Deepest Growth // Temple of Cultivation",
+  "lang": "en",
+  "released_at": "2023-11-17",
+  "uri": "https://api.scryfall.com/cards/0cbc43a3-8cba-4988-9de1-c89aedd79ada",
+  "scryfall_uri": "https://scryfall.com/card/lci/204/ojer-kaslem-deepest-growth-temple-of-cultivation?utm_source=api",
+  "layout": "transform",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T03:35:44Z",
+  "cmc": 5.0,
+  "type_line": "Legendary Creature — God // Land",
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [
+    "Transform",
+    "Trample"
+  ],
+  "produced_mana": [
+    "G"
+  ],
+  "card_faces": [
+    {
+      "object": "card_face",
+      "name": "Ojer Kaslem, Deepest Growth",
+      "mana_cost": "{3}{G}{G}",
+      "type_line": "Legendary Creature — God",
+      "oracle_text": "Trample\nWhenever Ojer Kaslem deals combat damage to a player, reveal that many cards from the top of your library. You may put a creature card and/or a land card from among them onto the battlefield. Put the rest on the bottom in a random order.\nWhen Ojer Kaslem dies, return it to the battlefield tapped and transformed under its owner's control.",
+      "colors": [
+        "G"
+      ],
+      "power": "6",
+      "toughness": "5",
+      "artist": "Ryan Pancoast",
+      "artist_id": "89cc9475-dda2-4d13-bf88-54b92867a25c",
+      "illustration_id": "24797e2a-3b81-4ee1-83b2-c5d158f4ec9c",
+      "image_uris": {
+        "small": "https://cards.scryfall.io/small/front/0/c/0cbc43a3-8cba-4988-9de1-c89aedd79ada.jpg?1783913744",
+        "normal": "https://cards.scryfall.io/normal/front/0/c/0cbc43a3-8cba-4988-9de1-c89aedd79ada.jpg?1783913744",
+        "large": "https://cards.scryfall.io/large/front/0/c/0cbc43a3-8cba-4988-9de1-c89aedd79ada.jpg?1783913744",
+        "png": "https://cards.scryfall.io/png/front/0/c/0cbc43a3-8cba-4988-9de1-c89aedd79ada.png?1783913744",
+        "art_crop": "https://cards.scryfall.io/art_crop/front/0/c/0cbc43a3-8cba-4988-9de1-c89aedd79ada.jpg?1783913744",
+        "border_crop": "https://cards.scryfall.io/border_crop/front/0/c/0cbc43a3-8cba-4988-9de1-c89aedd79ada.jpg?1783913744",
+        "thumb": "https://cards.scryfall.io/thumb/front/0/c/0cbc43a3-8cba-4988-9de1-c89aedd79ada.webp?1783913744",
+        "grid": "https://cards.scryfall.io/grid/front/0/c/0cbc43a3-8cba-4988-9de1-c89aedd79ada.webp?1783913744",
+        "display": "https://cards.scryfall.io/display/front/0/c/0cbc43a3-8cba-4988-9de1-c89aedd79ada.webp?1783913744",
+        "art": "https://cards.scryfall.io/art/front/0/c/0cbc43a3-8cba-4988-9de1-c89aedd79ada.webp?1783913744",
+        "crop": "https://cards.scryfall.io/crop/front/0/c/0cbc43a3-8cba-4988-9de1-c89aedd79ada.webp?1783913744",
+        "jpeg": "https://cards.scryfall.io/normal/front/0/c/0cbc43a3-8cba-4988-9de1-c89aedd79ada.jpg?1783913744"
+      }
+    },
+    {
+      "object": "card_face",
+      "name": "Temple of Cultivation",
+      "mana_cost": "",
+      "type_line": "Land",
+      "oracle_text": "(Transforms from Ojer Kaslem, Deepest Growth.)\n{T}: Add {G}.\n{2}{G}, {T}: Transform this land. Activate only if you control ten or more permanents and only as a sorcery.",
+      "colors": [],
+      "flavor_text": "Chimil gave the Oltec sacred lands. Ojer Kaslem brought them to life.",
+      "artist": "Ryan Pancoast",
+      "artist_id": "89cc9475-dda2-4d13-bf88-54b92867a25c",
+      "illustration_id": "bf18bf5f-768d-4dc0-b73e-381ff57bb7fc",
+      "image_uris": {
+        "small": "https://cards.scryfall.io/small/back/0/c/0cbc43a3-8cba-4988-9de1-c89aedd79ada.jpg?1783913744",
+        "normal": "https://cards.scryfall.io/normal/back/0/c/0cbc43a3-8cba-4988-9de1-c89aedd79ada.jpg?1783913744",
+        "large": "https://cards.scryfall.io/large/back/0/c/0cbc43a3-8cba-4988-9de1-c89aedd79ada.jpg?1783913744",
+        "png": "https://cards.scryfall.io/png/back/0/c/0cbc43a3-8cba-4988-9de1-c89aedd79ada.png?1783913744",
+        "art_crop": "https://cards.scryfall.io/art_crop/back/0/c/0cbc43a3-8cba-4988-9de1-c89aedd79ada.jpg?1783913744",
+        "border_crop": "https://cards.scryfall.io/border_crop/back/0/c/0cbc43a3-8cba-4988-9de1-c89aedd79ada.jpg?1783913744",
+        "thumb": "https://cards.scryfall.io/thumb/back/0/c/0cbc43a3-8cba-4988-9de1-c89aedd79ada.webp?1783913744",
+        "grid": "https://cards.scryfall.io/grid/back/0/c/0cbc43a3-8cba-4988-9de1-c89aedd79ada.webp?1783913744",
+        "display": "https://cards.scryfall.io/display/back/0/c/0cbc43a3-8cba-4988-9de1-c89aedd79ada.webp?1783913744",
+        "art": "https://cards.scryfall.io/art/back/0/c/0cbc43a3-8cba-4988-9de1-c89aedd79ada.webp?1783913744",
+        "crop": "https://cards.scryfall.io/crop/back/0/c/0cbc43a3-8cba-4988-9de1-c89aedd79ada.webp?1783913744",
+        "jpeg": "https://cards.scryfall.io/normal/back/0/c/0cbc43a3-8cba-4988-9de1-c89aedd79ada.jpg?1783913744"
+      }
+    }
+  ],
+  "legalities": {
+    "standard": "legal",
+    "future": "legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "arena",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "70169a6e-89d1-4a3a-aef7-3152958d55ac",
+  "set": "lci",
+  "set_name": "The Lost Caverns of Ixalan",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/70169a6e-89d1-4a3a-aef7-3152958d55ac",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Alci&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/lci?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/0cbc43a3-8cba-4988-9de1-c89aedd79ada/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Aeda11077-b2ce-408b-b982-def2da8fe599&unique=prints",
+  "collector_number": "204",
+  "digital": false,
+  "rarity": "mythic",
+  "artist": "Ryan Pancoast",
+  "artist_ids": [
+    "89cc9475-dda2-4d13-bf88-54b92867a25c"
+  ],
+  "border_color": "black",
+  "frame": "2015",
+  "frame_effects": [
+    "legendary"
+  ],
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 2051,
+  "penny_rank": 5215,
+  "preview": {
+    "source": "Star City Games",
+    "source_uri": "https://articles.starcitygames.com/magic-the-gathering/meet-green-mythic-rare-god-from-mtgs-the-lost-caverns-of-ixalan/",
+    "previewed_at": "2023-10-31"
+  },
+  "prices": {
+    "usd": "8.30",
+    "usd_foil": "8.43",
+    "usd_etched": null,
+    "eur": "6.19",
+    "eur_foil": "6.71",
+    "tix": "0.02"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=636922&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DOjer%2BKaslem%252C%2BDeepest%2BGrowth%2B%252F%252F%2BTemple%2Bof%2BCultivation",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DOjer%2BKaslem%252C%2BDeepest%2BGrowth%2B%252F%252F%2BTemple%2Bof%2BCultivation",
+    "edhrec": "https://edhrec.com/route/?cc=Ojer+Kaslem%2C+Deepest+Growth"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F525620%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=744039&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/118240?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

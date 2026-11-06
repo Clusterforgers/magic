@@ -1,0 +1,31 @@
+{
+  "oracle_id": "eda09ed4-7509-4d1e-b169-2b7c1c87e936",
+  "name": "Dark Knight's Greatsword",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dark Knight's Greatsword",
+      "oracle_fingerprint": "91c102015983bf75b7c07ce004dd3fd6",
+      "abilities": [
+        { "Keyword": "JobSelect" },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "ModifyPT": { "power": 3, "toughness": 0 } }, { "AddSubtype": "Knight" }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "PayLife": 3 }],
+            "timing": "Sorcery",
+            "limit": "OncePerTurn",
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } }
+            ],
+            "effects": [{ "Attach": { "what": "This", "to": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}
