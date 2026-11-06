@@ -466,6 +466,7 @@ const RUNS: &[&str] = &[
     "Keyword.Hexproof",
     "Keyword.Shroud",
     "Keyword.Protection",
+    "Keyword.HexproofFrom",
     "Keyword.Prowess",
     "Keyword.BattleCry",
     "Keyword.Ward",
@@ -876,6 +877,7 @@ mod tests {
     #[case::protection_from_a_chosen_card_type("Mod.AddProtectionFromChosenCardType", true)]
     #[case::shroud("Keyword.Shroud", true)]
     #[case::protection("Keyword.Protection", true)]
+    #[case::hexproof_from("Keyword.HexproofFrom", true)]
     #[case::setting_power_and_toughness("Mod.SetPT", true)]
     #[case::switching_power_and_toughness("Mod.SwitchPT", true)]
     #[case::types("Mod.AddType", true)]

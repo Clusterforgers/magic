@@ -195,6 +195,8 @@ impl<'a> Pairer<'a> {
         self.manual();
         self.keywords();
         self.alt_keywords();
+        self.equip_options();
+        self.champions();
         self.static_pairs();
         self.exact();
         self.blocks();
@@ -311,6 +313,54 @@ impl<'a> Pairer<'a> {
                 continue;
             }
             let Some(slot) = self.find_text(&[ClauseKind::Keyword], &[line], false) else {
+                continue;
+            };
+            self.settle(at, slot, ClauseState::Reads { ability: at });
+            for later in at + 1..at + count {
+                self.taken[later] = true;
+                self.slot_of[later] = Some(slot);
+                self.places[later] = Some(self.slots[slot].clause.span.start);
+            }
+        }
+    }
+
+    /// Champion: the trigger that exiles a creature or sacrifices the champion stands for the keyword line.
+    fn champions(&mut self) {
+        let abilities = self.abilities;
+        for (at, ability) in abilities.iter().enumerate() {
+            if self.taken[at] {
+                continue;
+            }
+            let Some(line) = crate::compile::champion_line(ability) else {
+                continue;
+            };
+            if let Some(slot) =
+                self.find_text(&[ClauseKind::Keyword, ClauseKind::Static], &[line], false)
+            {
+                self.settle(at, slot, ClauseState::Reads { ability: at });
+            }
+        }
+    }
+
+    /// Equip with an option: the activated abilities that attach the Equipment stand for the one line of the text.
+    fn equip_options(&mut self) {
+        let abilities = self.abilities;
+        for at in 0..abilities.len() {
+            if self.taken[at] {
+                continue;
+            }
+            let Some((line, count)) = crate::compile::equip_line(&abilities[at..]) else {
+                continue;
+            };
+            if (at..at + count).any(|each| self.taken[each]) {
+                continue;
+            }
+            let kinds = [
+                ClauseKind::Keyword,
+                ClauseKind::Static,
+                ClauseKind::Activated,
+            ];
+            let Some(slot) = self.find_text(&kinds, &[line], false) else {
                 continue;
             };
             self.settle(at, slot, ClauseState::Reads { ability: at });

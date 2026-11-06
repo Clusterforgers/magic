@@ -977,6 +977,7 @@ mod tests {
         "Keyword.Defender",
         "Keyword.Indestructible",
         "Keyword.Hexproof",
+        "Keyword.HexproofFrom",
         "Keyword.Shroud",
         "Keyword.Protection",
         "Keyword.Prowess",

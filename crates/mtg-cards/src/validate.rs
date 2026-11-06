@@ -1051,7 +1051,7 @@ impl<'a> Walker<'a> {
     /// `Performed`: "if you do" of the effect just before its `If`.
     fn performed(&mut self) {
         self.uses("Condition", "Performed");
-        // The engine knows whether a `May` was accepted, whether a `CastFromZone` cast or played the card and whether a `Sacrifice` or a `RemoveCounters` took something; any other effect before it waits.
+        // The engine knows whether a `May` was accepted, whether a `CastFromZone` cast or played the card and whether a `Sacrifice`, an `Exile` or a `RemoveCounters` took something; any other effect before it waits.
         if !self.after_may {
             self.uses("Condition", "Performed.Other");
         }
@@ -2542,6 +2542,7 @@ impl Walker<'_> {
                     list.get(i - 1),
                     Some(
                         Effect::May { .. }
+                            | Effect::Exile { .. }
                             | Effect::CastFromZone { .. }
                             | Effect::Sacrifice { .. }
                             | Effect::SacrificeUpTo { .. }
@@ -4673,6 +4674,12 @@ pub(crate) fn check_printed(
 /// `Manual` clause names it in that face's printed text (a typecycling or landwalk form).
 fn has_keyword(card: &Card, printed: &PrintedCard, keyword: &str, granted: &[Keyword]) -> bool {
     granted.iter().any(|k| lists(k, keyword))
+        // Equip with an option is the attach abilities, which the equip line of the text stands for.
+        || (keyword.eq_ignore_ascii_case("Equip")
+            && card.faces.iter().any(|face| {
+                (0..face.abilities.len())
+                    .any(|at| crate::compile::equip_line(&face.abilities[at..]).is_some())
+            }))
         || card.abilities().any(|(face, ability)| match ability {
             Ability::Keyword(k) => lists(k, keyword),
             ability if mentions_keyword(ability, keyword) => true,

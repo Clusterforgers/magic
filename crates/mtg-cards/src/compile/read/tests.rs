@@ -321,6 +321,7 @@ mod prevention;
 mod pump_wordings;
 mod put_back;
 mod r3g_outside;
+mod r4h_writers;
 mod removal_and_return;
 mod repeats;
 mod replacement_writers;
