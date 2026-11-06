@@ -127,6 +127,23 @@ fn activating_a_loyalty_ability_is_activating_an_ability_of_a_planeswalker(
 }
 
 #[rstest]
+#[case::once("1", true)]
+#[case::twice("2", false)]
+fn do_this_only_once_each_turn_limits_the_ability_to_one_a_turn(
+    #[case] limit: &str,
+    #[case] read: bool,
+) {
+    let (json, found) = card(
+        "Enchantment",
+        &format!(
+            "T:Mode$ ChangesZone | Origin$ Any | Destination$ Battlefield | ValidCard$ Card.token+YouCtrl | TriggerZones$ Battlefield | Execute$ D | OptionalDecider$ You | ResolvedLimit$ {limit}\nSVar:D:DB$ Draw | Defined$ You"
+        ),
+    );
+    assert_eq!(found.is_empty(), read, "{found:?}");
+    assert_eq!(json.contains(r#""limit":"OncePerTurn""#), read, "{json}");
+}
+
+#[rstest]
 #[case::yours("SpellAbility.YouCtrl", true)]
 #[case::an_opponents("SpellAbility.OppCtrl", false)]
 fn valiant_counts_the_first_targeting_by_a_source_you_control(

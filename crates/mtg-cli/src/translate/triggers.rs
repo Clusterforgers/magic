@@ -9,7 +9,8 @@ use super::valid::selector_any;
 use crate::forge::script::Params;
 
 /// The keys every trigger line may carry besides its mode's own.
-const COMMON: [&str; 6] = [
+const COMMON: [&str; 7] = [
+    "ResolvedLimit",
     "ActivationLimit",
     "Mode",
     "Execute",
@@ -102,6 +103,15 @@ pub fn triggered(ctx: &mut Ctx, body: &str) -> Tr<Value> {
         None => {}
         Some("1") => ability["limit"] = json!("OncePerTurn"),
         Some(other) => return unmapped(format!("key:Trigger.ActivationLimit={other}")),
+    }
+    // "Do this only once each turn" limits what happens, not the triggering. The engine spends the limit as the ability
+    // triggers: the same unless the first one is stifled, which a limit of 1 cannot tell apart from one that resolved.
+    match p.get("ResolvedLimit") {
+        None => {}
+        Some("1") if p.get("ActivationLimit").is_none() => {
+            ability["limit"] = json!("OncePerTurn");
+        }
+        Some(other) => return unmapped(format!("key:Trigger.ResolvedLimit={other}")),
     }
     if !ctx.targets.is_empty() {
         ability["targets"] = Value::Array(ctx.targets.clone());
