@@ -707,6 +707,7 @@ mod gn2_play;
 mod ledger;
 mod macro_keywords;
 mod r1a;
+mod r3c;
 #[rstest]
 #[case::if_tapped_on_activation(
     "Name:T\nTypes:Creature Elf\nA:AB$ Draw | Cost$ 0 | IsPresent$ Card.Self+tapped\n",

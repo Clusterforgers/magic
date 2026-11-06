@@ -100,6 +100,6 @@ mod tests {
         let Ok(Run::Done { events, .. }) = run(&cx, &effect) else {
             panic!("a look at a hand finishes");
         };
-        assert!(events.is_empty());
+        assert_eq!(events.len(), 0);
     }
 }

@@ -53,10 +53,9 @@ pub fn chain_at(ctx: &mut Ctx, p: &Params, top: bool) -> Tr<Vec<Value>> {
                     .as_ref()
                     .and_then(|held| held.get("Bound"))
                     .and_then(Value::as_str)
+                && ctx.scoped.insert(name.to_owned())
             {
-                if ctx.scoped.insert(name.to_owned()) {
-                    newly_scoped.push(name.to_owned());
-                }
+                newly_scoped.push(name.to_owned());
             }
         }
     }

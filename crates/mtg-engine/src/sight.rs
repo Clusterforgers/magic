@@ -365,6 +365,32 @@ mod tests {
     }
 
     #[test]
+    fn a_hand_looked_at_is_known_to_the_looker_alone() {
+        let mut game = state(
+            vec![
+                vec![],
+                vec![creature("A", 1, 1), creature("B", 2, 2)],
+                vec![],
+            ],
+            vec![vec![creature("Source", 1, 1)], vec![], vec![]],
+        );
+        let source = game.zone(Zone::Battlefield)[0];
+        game.resolving = Some(Resolving::begin(source));
+        let cards = game.zone(Zone::Hand(PlayerId(1))).to_vec();
+        let looked = Event::HandLooked(crate::library::HandLooked {
+            player: PlayerId(2),
+            of: PlayerId(1),
+            cards: cards.clone(),
+        });
+        apply_event(&mut game, &looked).unwrap();
+        for card in &cards {
+            assert_eq!(who_sees(&game, *card), [2]);
+        }
+        game.resolving = None;
+        assert_eq!(who_sees(&game, cards[0]), Vec::<usize>::new());
+    }
+
+    #[test]
     fn a_card_that_changed_zones_is_another_object_and_not_known() {
         let mut game = game();
         let card = top(&game, 1, 1)[0];
