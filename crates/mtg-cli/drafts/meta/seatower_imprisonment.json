@@ -1,0 +1,68 @@
+{
+  "source": "forge",
+  "oracle_matches": true,
+  "lines": [
+    {
+      "face": 0,
+      "tag": "K",
+      "text": "Enchant:Creature.YouDontCtrl,Planeswalker.YouDontCtrl:creature or planeswalker you don't control",
+      "abilities": [
+        0
+      ],
+      "gap": null
+    },
+    {
+      "face": 0,
+      "tag": "T",
+      "text": "When CARDNAME enters, conjure a card named Soldiers of the Watch onto the battlefield.",
+      "abilities": [],
+      "gap": "zone:MakeCard.Battlefield"
+    },
+    {
+      "face": 0,
+      "tag": "S",
+      "text": "Enchanted permanent can't attack or block and its activated abilities can't be activated.",
+      "abilities": [
+        1
+      ],
+      "gap": null
+    },
+    {
+      "face": 0,
+      "tag": "S",
+      "text": "Enchanted permanent can't attack or block and its activated abilities can't be activated.",
+      "abilities": [
+        2
+      ],
+      "gap": null
+    }
+  ],
+  "proof": {
+    "marks": [
+      {
+        "face": 0,
+        "span": {
+          "start": 0,
+          "end": 50
+        },
+        "mark": "Auto"
+      },
+      {
+        "face": 0,
+        "span": {
+          "start": 51,
+          "end": 145
+        },
+        "mark": "ByHand"
+      },
+      {
+        "face": 0,
+        "span": {
+          "start": 146,
+          "end": 236
+        },
+        "mark": "Auto"
+      }
+    ]
+  }
+}

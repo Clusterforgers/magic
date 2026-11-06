@@ -1,0 +1,27 @@
+{
+  "oracle_id": "f3e213a4-ba5a-468a-93b3-c0a34e1bd725",
+  "name": "Pact of Negation",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Pact of Negation",
+      "oracle_fingerprint": "56d2b1afac11196834b9b4d5039541de",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": ["Spell"] } }],
+            "effects": [
+              { "Counter": { "what": { "Target": 0 } } },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+                  "effects": [{ "Pay": { "cost": "{3}{U}{U}", "unpaid": [{ "LoseGame": {} }] } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

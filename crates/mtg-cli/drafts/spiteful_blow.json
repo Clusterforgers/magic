@@ -1,0 +1,31 @@
+{
+  "oracle_id": "25a20f94-1703-4bcd-862d-f2db7014ba90",
+  "name": "Spiteful Blow",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Spiteful Blow",
+      "oracle_fingerprint": "ef405643bc9490eae1f2178715b25703",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }] } },
+              { "what": { "Object": [{ "Type": "Land" }] } }
+            ],
+            "effects": [
+              {
+                "Together": {
+                  "effects": [
+                    { "Destroy": { "what": { "Target": 0 } } },
+                    { "Destroy": { "what": { "Target": 1 } } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

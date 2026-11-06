@@ -10,6 +10,21 @@
         { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
         { "Static": { "affected": "Attached", "mods": ["CantAttack", "CantBlock"] } },
         {
+          "Rule": {
+            "rule": {
+              "Cant": {
+                "who": "EachPlayer",
+                "action": {
+                  "ActivateKind": {
+                    "kind": "Every",
+                    "sources": [{ "Type": "Creature" }, { "Is": "Attached" }]
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
           "Triggered": {
             "when": { "StepBegins": { "step": "End" } },
             "if": {
@@ -26,21 +41,6 @@
               }
             },
             "effects": [{ "Destroy": { "what": "This" } }]
-          }
-        },
-        {
-          "Rule": {
-            "rule": {
-              "Cant": {
-                "who": "EachPlayer",
-                "action": {
-                  "ActivateKind": {
-                    "kind": "Every",
-                    "sources": [{ "Type": "Creature" }, { "Is": "Attached" }]
-                  }
-                }
-              }
-            }
           }
         }
       ]

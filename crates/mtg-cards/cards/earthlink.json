@@ -1,0 +1,40 @@
+{
+  "oracle_id": "c6e4a5c6-3c9b-49d5-8288-1be46be657dc",
+  "name": "Earthlink",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Earthlink",
+      "oracle_fingerprint": "b90a6dc05a218a2fd4de86f0e1d2e2e3",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [
+              { "Pay": { "cost": "{2}", "unpaid": [{ "Sacrifice": { "filter": ["This"] } }] } }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Creature" }],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "effects": [
+              {
+                "Sacrifice": {
+                  "who": { "ControllerOf": "Triggering" },
+                  "filter": [{ "Type": "Land" }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

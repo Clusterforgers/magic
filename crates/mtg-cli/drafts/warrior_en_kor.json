@@ -1,0 +1,30 @@
+{
+  "oracle_id": "1245b165-e26f-4839-8468-2e95148fc6f6",
+  "name": "Warrior en-Kor",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Warrior en-Kor",
+      "oracle_fingerprint": "acbd95562d6c8cd26bf11d1a4fc030d6",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{0}",
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } }
+            ],
+            "effects": [
+              {
+                "Shield": {
+                  "when": { "Damage": { "to": "This" } },
+                  "by": { "RedirectUpTo": { "most": 1, "to": { "Target": 0 } } },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

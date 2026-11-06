@@ -1,0 +1,28 @@
+{
+  "oracle_id": "79e91e8a-cee7-411b-b0a3-d3383c0d4a43",
+  "name": "Blue Mana Battery",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Blue Mana Battery",
+      "oracle_fingerprint": "31068fe09c8e30abaa6f64be1c80795a",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{2}" }, "Tap"],
+            "effects": [{ "PutCounters": { "on": "This", "counter": "charge" } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap", { "RemoveCounters": { "counter": "charge", "count": "X" } }],
+            "effects": [
+              { "AddMana": { "mana": { "Fixed": ["Blue"] } } },
+              { "AddMana": { "mana": { "Fixed": ["Blue"] }, "times": "X" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

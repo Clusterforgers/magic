@@ -1,0 +1,57 @@
+{
+  "source": "forge",
+  "oracle_matches": true,
+  "lines": [
+    {
+      "face": 0,
+      "tag": "A",
+      "text": "Add {R}{R}{R}.",
+      "abilities": [],
+      "gap": "valid:MayPlay-Affected-with-remembered"
+    },
+    {
+      "face": 0,
+      "tag": "A",
+      "text": "Create a token that's a copy of target creature you control, except it has haste and \"At the beginning of the end step, sacrifice this token.\"",
+      "abilities": [],
+      "gap": "key:CopyPermanent.AtEOTTrig"
+    },
+    {
+      "face": 0,
+      "tag": "A",
+      "text": "NICKNAME deals 8 damage divided as you choose among any number of target creatures and/or planeswalkers.",
+      "abilities": [
+        0
+      ],
+      "gap": null
+    }
+  ],
+  "proof": {
+    "marks": [
+      {
+        "face": 0,
+        "span": {
+          "start": 0,
+          "end": 107
+        },
+        "mark": "ByHand"
+      },
+      {
+        "face": 0,
+        "span": {
+          "start": 108,
+          "end": 254
+        },
+        "mark": "ByHand"
+      },
+      {
+        "face": 0,
+        "span": {
+          "start": 255,
+          "end": 362
+        },
+        "mark": "Auto"
+      }
+    ]
+  }
+}

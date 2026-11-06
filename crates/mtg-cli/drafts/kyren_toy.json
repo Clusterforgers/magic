@@ -1,0 +1,27 @@
+{
+  "oracle_id": "f1a0d112-9e1b-4354-bd7f-0051bff8f904",
+  "name": "Kyren Toy",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Kyren Toy",
+      "oracle_fingerprint": "70f7e29180bd85f73aed44e60ded3c84",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{1}" }, "Tap"],
+            "effects": [{ "PutCounters": { "on": "This", "counter": "charge" } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap", { "RemoveCounters": { "counter": "charge", "count": "X" } }],
+            "effects": [
+              { "AddMana": { "mana": { "Fixed": ["Colorless"] }, "times": { "Sum": ["X", 1] } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

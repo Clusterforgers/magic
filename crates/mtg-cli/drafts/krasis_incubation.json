@@ -1,0 +1,36 @@
+{
+  "oracle_id": "66e2e816-5197-4151-a6c0-352c34c2eec7",
+  "name": "Krasis Incubation",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Krasis Incubation",
+      "oracle_fingerprint": "7b96f6ed3bde494727c13d485fdf1dfe",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        { "Static": { "affected": "Attached", "mods": ["CantAttack", "CantBlock"] } },
+        {
+          "Rule": {
+            "rule": {
+              "Cant": {
+                "who": "EachPlayer",
+                "action": {
+                  "ActivateKind": {
+                    "kind": "Every",
+                    "sources": [{ "Type": "Creature" }, { "Is": "Attached" }]
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 107, "end": 201 }
+          }
+        }
+      ]
+    }
+  ]
+}

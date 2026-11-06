@@ -10,19 +10,6 @@
         { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
         { "Static": { "affected": "Attached", "mods": ["CantAttack", "CantBlock"] } },
         {
-          "Triggered": {
-            "when": {
-              "ZoneChange": {
-                "what": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }],
-                "to": "Battlefield"
-              }
-            },
-            "effects": [
-              { "May": { "effects": [{ "Attach": { "what": "This", "to": "Triggering" } }] } }
-            ]
-          }
-        },
-        {
           "Rule": {
             "rule": {
               "Cant": {
@@ -35,6 +22,19 @@
                 }
               }
             }
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }],
+                "to": "Battlefield"
+              }
+            },
+            "effects": [
+              { "May": { "effects": [{ "Attach": { "what": "This", "to": "Triggering" } }] } }
+            ]
           }
         }
       ]

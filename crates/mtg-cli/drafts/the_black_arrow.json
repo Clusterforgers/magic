@@ -19,7 +19,11 @@
                   "condition": {
                     "CountOf": {
                       "subject": { "Target": 0 },
-                      "selector": [{ "Subtype": "Dragon" }, { "Is": { "Target": 0 } }],
+                      "selector": [
+                        { "Subtype": "Dragon" },
+                        { "Is": { "Target": 0 } },
+                        { "DamagedBy": "This" }
+                      ],
                       "op": "Ge",
                       "right": 1
                     }

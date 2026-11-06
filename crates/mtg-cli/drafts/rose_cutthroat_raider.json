@@ -1,0 +1,26 @@
+{
+  "oracle_id": "5a721c27-3e02-4f60-995e-b29d678d93b3",
+  "name": "Rose, Cutthroat Raider",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Rose, Cutthroat Raider",
+      "oracle_fingerprint": "50b4ab56c8fd009a8c2d18c003e41933",
+      "abilities": [
+        { "Keyword": "FirstStrike" },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 13, "end": 280 }
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Sacrificed": { "what": [{ "Subtype": "Junk" }, { "ControlledBy": "You" }] } },
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Red"] } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

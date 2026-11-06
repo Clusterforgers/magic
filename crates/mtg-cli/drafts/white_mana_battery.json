@@ -1,0 +1,28 @@
+{
+  "oracle_id": "cf58682f-c305-4803-b54b-37f0841788e9",
+  "name": "White Mana Battery",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "White Mana Battery",
+      "oracle_fingerprint": "4554a907cbde7abbdc30e78eb4fbedc4",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{2}" }, "Tap"],
+            "effects": [{ "PutCounters": { "on": "This", "counter": "charge" } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap", { "RemoveCounters": { "counter": "charge", "count": "X" } }],
+            "effects": [
+              { "AddMana": { "mana": { "Fixed": ["White"] } } },
+              { "AddMana": { "mana": { "Fixed": ["White"] }, "times": "X" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

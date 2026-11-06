@@ -1,0 +1,26 @@
+{
+  "oracle_id": "b4d19e3a-c2f8-4503-bcfa-1b46bde972e5",
+  "name": "Afterburner Expert",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Afterburner Expert",
+      "oracle_fingerprint": "aa2aa8583e096ed596c9afe700fc6f43",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{2}{G}{G}",
+            "limit": "OncePerGame",
+            "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1", "count": 2 } }]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 105, "end": 203 }
+          }
+        }
+      ]
+    }
+  ]
+}

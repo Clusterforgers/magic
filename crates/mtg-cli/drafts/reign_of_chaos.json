@@ -1,0 +1,57 @@
+{
+  "oracle_id": "436b5989-9b8c-4e03-a82e-046837c891ca",
+  "name": "Reign of Chaos",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Reign of Chaos",
+      "oracle_fingerprint": "21b1a874e67eb10039cf651c62aceb6e",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Modal": {
+                  "modes": [
+                    {
+                      "targets": [
+                        { "what": { "Object": [{ "Subtype": "Plains" }] } },
+                        { "what": { "Object": [{ "Type": "Creature" }, { "Color": "White" }] } }
+                      ],
+                      "effects": [
+                        {
+                          "Together": {
+                            "effects": [
+                              { "Destroy": { "what": { "Target": 0 } } },
+                              { "Destroy": { "what": { "Target": 1 } } }
+                            ]
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "targets": [
+                        { "what": { "Object": [{ "Subtype": "Island" }] } },
+                        { "what": { "Object": [{ "Type": "Creature" }, { "Color": "Blue" }] } }
+                      ],
+                      "effects": [
+                        {
+                          "Together": {
+                            "effects": [
+                              { "Destroy": { "what": { "Target": 0 } } },
+                              { "Destroy": { "what": { "Target": 1 } } }
+                            ]
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,31 @@
+{
+  "oracle_id": "f066174a-a959-4365-920f-c04506d94a5a",
+  "name": "Spirit en-Kor",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Spirit en-Kor",
+      "oracle_fingerprint": "84f06ab6b42ebc9f4c64ef94bf667aaa",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Activated": {
+            "cost": "{0}",
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } }
+            ],
+            "effects": [
+              {
+                "Shield": {
+                  "when": { "Damage": { "to": "This" } },
+                  "by": { "RedirectUpTo": { "most": 1, "to": { "Target": 0 } } },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

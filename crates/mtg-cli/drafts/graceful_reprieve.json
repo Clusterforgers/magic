@@ -1,0 +1,33 @@
+{
+  "oracle_id": "76cef1af-ff7e-4eab-9be6-81ba6049d222",
+  "name": "Graceful Reprieve",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Graceful Reprieve",
+      "oracle_fingerprint": "bf3c14f4aa48e4e406ee6d9cb5322341",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "DelayedTrigger": {
+                  "when": {
+                    "ZoneChange": {
+                      "what": [{ "Is": { "Target": 0 } }],
+                      "from": "Battlefield",
+                      "to": "Graveyard"
+                    }
+                  },
+                  "this_turn": true,
+                  "effects": [{ "Move": { "what": "Triggering", "to": { "Battlefield": {} } } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

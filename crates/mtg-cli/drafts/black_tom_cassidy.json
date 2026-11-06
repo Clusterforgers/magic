@@ -1,0 +1,35 @@
+{
+  "oracle_id": "c0d20e66-deb6-4a20-a2c1-8a79514e3792",
+  "name": "Black Tom Cassidy",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Black Tom Cassidy",
+      "oracle_fingerprint": "d73a1d1707bb60dc67f2f661e9ea0442",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [
+              { "AddMana": { "mana": { "Fixed": ["Green"] } } },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": {
+                        "Count": [{ "Subtype": "Mutant" }, "Other", { "ControlledBy": "You" }]
+                      },
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [{ "GainLife": { "amount": 1 } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

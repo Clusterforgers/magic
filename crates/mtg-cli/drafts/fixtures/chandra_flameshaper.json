@@ -1,0 +1,157 @@
+{
+  "object": "card",
+  "id": "a22d21ec-0fb3-4574-a803-6442ec13167e",
+  "oracle_id": "818f908c-9af6-4edc-bb0e-193bc830e2e4",
+  "multiverse_ids": [
+    679158
+  ],
+  "resource_id": "B2DB34E523215A38297EF7C77C6E76B3DB1BF8285E4B905236F460F6C43E7230",
+  "mtgo_id": 133730,
+  "arena_id": 93794,
+  "tcgplayer_id": 589441,
+  "cardmarket_id": 795111,
+  "name": "Chandra, Flameshaper",
+  "lang": "en",
+  "released_at": "2024-11-15",
+  "uri": "https://api.scryfall.com/cards/a22d21ec-0fb3-4574-a803-6442ec13167e",
+  "scryfall_uri": "https://scryfall.com/card/fdn/81/chandra-flameshaper?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T02:18:25Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/a/2/a22d21ec-0fb3-4574-a803-6442ec13167e.jpg?1783909105",
+    "normal": "https://cards.scryfall.io/normal/front/a/2/a22d21ec-0fb3-4574-a803-6442ec13167e.jpg?1783909105",
+    "large": "https://cards.scryfall.io/large/front/a/2/a22d21ec-0fb3-4574-a803-6442ec13167e.jpg?1783909105",
+    "png": "https://cards.scryfall.io/png/front/a/2/a22d21ec-0fb3-4574-a803-6442ec13167e.png?1783909105",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/a/2/a22d21ec-0fb3-4574-a803-6442ec13167e.jpg?1783909105",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/a/2/a22d21ec-0fb3-4574-a803-6442ec13167e.jpg?1783909105",
+    "thumb": "https://cards.scryfall.io/thumb/front/a/2/a22d21ec-0fb3-4574-a803-6442ec13167e.webp?1783909105",
+    "grid": "https://cards.scryfall.io/grid/front/a/2/a22d21ec-0fb3-4574-a803-6442ec13167e.webp?1783909105",
+    "display": "https://cards.scryfall.io/display/front/a/2/a22d21ec-0fb3-4574-a803-6442ec13167e.webp?1783909105",
+    "art": "https://cards.scryfall.io/art/front/a/2/a22d21ec-0fb3-4574-a803-6442ec13167e.webp?1783909105",
+    "crop": "https://cards.scryfall.io/crop/front/a/2/a22d21ec-0fb3-4574-a803-6442ec13167e.webp?1783909105",
+    "jpeg": "https://cards.scryfall.io/normal/front/a/2/a22d21ec-0fb3-4574-a803-6442ec13167e.jpg?1783909105"
+  },
+  "mana_cost": "{5}{R}{R}",
+  "cmc": 7.0,
+  "type_line": "Legendary Planeswalker — Chandra",
+  "oracle_text": "+2: Add {R}{R}{R}. Exile the top three cards of your library. Choose one. You may play that card this turn.\n+1: Create a token that's a copy of target creature you control, except it has haste and \"At the beginning of the end step, sacrifice this token.\"\n−4: Chandra deals 8 damage divided as you choose among any number of target creatures and/or planeswalkers.",
+  "loyalty": "6",
+  "colors": [
+    "R"
+  ],
+  "color_identity": [
+    "R"
+  ],
+  "keywords": [],
+  "produced_mana": [
+    "R"
+  ],
+  "all_parts": [
+    {
+      "object": "related_card",
+      "id": "cd73be04-3ec2-4ea3-8d93-47fa39aaeed8",
+      "component": "combo_piece",
+      "name": "Chandra, Flameshaper",
+      "type_line": "Legendary Planeswalker — Chandra",
+      "uri": "https://api.scryfall.com/cards/cd73be04-3ec2-4ea3-8d93-47fa39aaeed8"
+    },
+    {
+      "object": "related_card",
+      "id": "fc586e46-b7d0-4c84-8678-3542cd390de1",
+      "component": "token",
+      "name": "Copy",
+      "type_line": "Token",
+      "uri": "https://api.scryfall.com/cards/fc586e46-b7d0-4c84-8678-3542cd390de1"
+    }
+  ],
+  "legalities": {
+    "standard": "legal",
+    "future": "legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "arena",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "a7ecb771-d1b6-4dec-8cf5-8d45179f21e0",
+  "set": "fdn",
+  "set_name": "Foundations",
+  "set_type": "core",
+  "set_uri": "https://api.scryfall.com/sets/a7ecb771-d1b6-4dec-8cf5-8d45179f21e0",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Afdn&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/fdn?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/a22d21ec-0fb3-4574-a803-6442ec13167e/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A818f908c-9af6-4edc-bb0e-193bc830e2e4&unique=prints",
+  "collector_number": "81",
+  "digital": false,
+  "rarity": "mythic",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Mark Winters",
+  "artist_ids": [
+    "3d8a379d-f4e8-440d-99d5-5ec107757348"
+  ],
+  "illustration_id": "cbef1ef8-5b39-4d2c-8a7d-aa309f786ad6",
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 5716,
+  "penny_rank": 8699,
+  "prices": {
+    "usd": "1.14",
+    "usd_foil": "1.14",
+    "usd_etched": null,
+    "eur": "1.03",
+    "eur_foil": "1.29",
+    "tix": "0.02"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=679158&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DChandra%252C%2BFlameshaper",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DChandra%252C%2BFlameshaper",
+    "edhrec": "https://edhrec.com/route/?cc=Chandra%2C+Flameshaper"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F589441%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=795111&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/133730?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

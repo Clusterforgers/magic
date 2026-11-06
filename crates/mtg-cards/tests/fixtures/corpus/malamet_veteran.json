@@ -1,0 +1,138 @@
+{
+  "object": "card",
+  "id": "4b9b16b3-1cbd-4b63-85b2-e4053dfc1e93",
+  "oracle_id": "25a9c864-59c6-4230-a234-bf78bf1ef24c",
+  "multiverse_ids": [
+    636919
+  ],
+  "mtgo_id": 118234,
+  "arena_id": 87359,
+  "tcgplayer_id": 526276,
+  "cardmarket_id": 744037,
+  "name": "Malamet Veteran",
+  "lang": "en",
+  "released_at": "2023-11-17",
+  "uri": "https://api.scryfall.com/cards/4b9b16b3-1cbd-4b63-85b2-e4053dfc1e93",
+  "scryfall_uri": "https://scryfall.com/card/lci/201/malamet-veteran?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T03:35:43Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/4/b/4b9b16b3-1cbd-4b63-85b2-e4053dfc1e93.jpg?1783913743",
+    "normal": "https://cards.scryfall.io/normal/front/4/b/4b9b16b3-1cbd-4b63-85b2-e4053dfc1e93.jpg?1783913743",
+    "large": "https://cards.scryfall.io/large/front/4/b/4b9b16b3-1cbd-4b63-85b2-e4053dfc1e93.jpg?1783913743",
+    "png": "https://cards.scryfall.io/png/front/4/b/4b9b16b3-1cbd-4b63-85b2-e4053dfc1e93.png?1783913743",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/4/b/4b9b16b3-1cbd-4b63-85b2-e4053dfc1e93.jpg?1783913743",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/4/b/4b9b16b3-1cbd-4b63-85b2-e4053dfc1e93.jpg?1783913743",
+    "thumb": "https://cards.scryfall.io/thumb/front/4/b/4b9b16b3-1cbd-4b63-85b2-e4053dfc1e93.webp?1783913743",
+    "grid": "https://cards.scryfall.io/grid/front/4/b/4b9b16b3-1cbd-4b63-85b2-e4053dfc1e93.webp?1783913743",
+    "display": "https://cards.scryfall.io/display/front/4/b/4b9b16b3-1cbd-4b63-85b2-e4053dfc1e93.webp?1783913743",
+    "art": "https://cards.scryfall.io/art/front/4/b/4b9b16b3-1cbd-4b63-85b2-e4053dfc1e93.webp?1783913743",
+    "crop": "https://cards.scryfall.io/crop/front/4/b/4b9b16b3-1cbd-4b63-85b2-e4053dfc1e93.webp?1783913743",
+    "jpeg": "https://cards.scryfall.io/normal/front/4/b/4b9b16b3-1cbd-4b63-85b2-e4053dfc1e93.jpg?1783913743"
+  },
+  "mana_cost": "{4}{G}",
+  "cmc": 5.0,
+  "type_line": "Creature — Cat Warrior",
+  "oracle_text": "Trample\nDescend 4 — Whenever this creature attacks, if there are four or more permanent cards in your graveyard, put a +1/+1 counter on target creature.",
+  "power": "5",
+  "toughness": "4",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [
+    "Descend",
+    "Trample"
+  ],
+  "legalities": {
+    "standard": "legal",
+    "future": "legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "arena",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "70169a6e-89d1-4a3a-aef7-3152958d55ac",
+  "set": "lci",
+  "set_name": "The Lost Caverns of Ixalan",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/70169a6e-89d1-4a3a-aef7-3152958d55ac",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Alci&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/lci?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/4b9b16b3-1cbd-4b63-85b2-e4053dfc1e93/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A25a9c864-59c6-4230-a234-bf78bf1ef24c&unique=prints",
+  "collector_number": "201",
+  "digital": false,
+  "rarity": "common",
+  "flavor_text": "The mightiest Malamet warriors train as titan-killers, elite champions capable of facing down the caverns' most fearsome beasts.",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Steve Prescott",
+  "artist_ids": [
+    "a1139fb8-41f5-4a9e-9a74-f662e1a23b35"
+  ],
+  "illustration_id": "d29da679-9504-441a-abfe-65f6066e9444",
+  "border_color": "black",
+  "frame": "2015",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 20278,
+  "prices": {
+    "usd": "0.19",
+    "usd_foil": "0.14",
+    "usd_etched": null,
+    "eur": "0.03",
+    "eur_foil": "0.06",
+    "tix": "0.03"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=636919&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DMalamet%2BVeteran",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DMalamet%2BVeteran",
+    "edhrec": "https://edhrec.com/route/?cc=Malamet+Veteran"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F526276%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=744037&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/118234?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

@@ -1,0 +1,47 @@
+{
+  "oracle_id": "933fe6e5-8d00-4411-aa54-7780382c1ea6",
+  "name": "Leonardo, Cutting Edge",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Leonardo, Cutting Edge",
+      "oracle_fingerprint": "09d6f108bf46585efce48b734f0af0ee",
+      "abilities": [
+        {
+          "AltCast": {
+            "way": "Sneak",
+            "cost": [
+              { "Mana": "{W}" },
+              {
+                "ReturnToHand": {
+                  "filter": [
+                    "Attacking",
+                    "Unblocked",
+                    { "Type": "Creature" },
+                    { "ControlledBy": "You" }
+                  ]
+                }
+              }
+            ],
+            "condition": { "Step": "DeclareBlockers" },
+            "flash": true
+          }
+        },
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": "Tapped",
+            "condition": { "CastWith": "Sneak" }
+          }
+        },
+        { "Keyword": "Lifelink" },
+        {
+          "Triggered": {
+            "when": { "LifeGained": { "who": "You" } },
+            "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,32 @@
+{
+  "oracle_id": "c640350b-16a5-4227-87fa-8b24fdb367c7",
+  "name": "Axelrod Gunnarson",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Axelrod Gunnarson",
+      "oracle_fingerprint": "b8232ba7b778e3af38c9a1da5e4a0297",
+      "abilities": [
+        { "Keyword": "Trample" },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Creature" }, { "DamagedBy": "This" }],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "targets": [
+              { "what": { "Either": ["Player", { "Object": [{ "Type": "Planeswalker" }] }] } }
+            ],
+            "effects": [
+              { "GainLife": { "amount": 1 } },
+              { "DealDamage": { "to": { "Target": 0 }, "amount": 1 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

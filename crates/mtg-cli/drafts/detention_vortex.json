@@ -10,14 +10,6 @@
         { "Keyword": { "Enchant": [{ "Not": { "Type": "Land" } }] } },
         { "Static": { "affected": "Attached", "mods": ["CantAttack", "CantBlock"] } },
         {
-          "Activated": {
-            "cost": "{3}",
-            "timing": "Sorcery",
-            "by": "Opponents",
-            "effects": [{ "Destroy": { "what": "This" } }]
-          }
-        },
-        {
           "Rule": {
             "rule": {
               "Cant": {
@@ -25,6 +17,14 @@
                 "action": { "ActivateKind": { "kind": "Every", "sources": [{ "Is": "Attached" }] } }
               }
             }
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{3}",
+            "timing": "Sorcery",
+            "by": "Opponents",
+            "effects": [{ "Destroy": { "what": "This" } }]
           }
         }
       ]

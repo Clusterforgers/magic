@@ -1,0 +1,68 @@
+{
+  "source": "forge",
+  "oracle_matches": true,
+  "lines": [
+    {
+      "face": 0,
+      "tag": "K",
+      "text": "Enchant:Creature",
+      "abilities": [
+        0
+      ],
+      "gap": null
+    },
+    {
+      "face": 0,
+      "tag": "T",
+      "text": "When this Aura enters, tap enchanted creature. It becomes unprepared.",
+      "abilities": [],
+      "gap": "key:AlterAttribute.Activate"
+    },
+    {
+      "face": 0,
+      "tag": "S",
+      "text": "Enchanted creature loses all abilities and doesn't untap during its controller's untap step.",
+      "abilities": [
+        1
+      ],
+      "gap": null
+    },
+    {
+      "face": 0,
+      "tag": "R",
+      "text": "Enchanted creature doesn't untap during its controller's untap step.",
+      "abilities": [
+        2
+      ],
+      "gap": null
+    }
+  ],
+  "proof": {
+    "marks": [
+      {
+        "face": 0,
+        "span": {
+          "start": 0,
+          "end": 16
+        },
+        "mark": "Auto"
+      },
+      {
+        "face": 0,
+        "span": {
+          "start": 17,
+          "end": 86
+        },
+        "mark": "ByHand"
+      },
+      {
+        "face": 0,
+        "span": {
+          "start": 87,
+          "end": 179
+        },
+        "mark": "Auto"
+      }
+    ]
+  }
+}

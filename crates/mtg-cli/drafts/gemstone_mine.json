@@ -1,0 +1,41 @@
+{
+  "oracle_id": "0c828f10-4775-492f-9224-1e2814ad2cad",
+  "name": "Gemstone Mine",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Gemstone Mine",
+      "oracle_fingerprint": "debdbfcc7543eb979ecb9384d9819c4b",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "WithCounters": { "counter": { "Other": "mining" }, "count": 3 } }
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap", { "RemoveCounters": { "counter": { "Other": "mining" } } }],
+            "effects": [
+              { "AddMana": { "mana": { "AnyColor": 1 } } },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": {
+                        "Count": ["This", { "Not": { "HasCounter": { "Other": "mining" } } }]
+                      },
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [{ "Sacrifice": { "filter": ["This"] } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

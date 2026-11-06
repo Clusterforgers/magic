@@ -1,0 +1,133 @@
+{
+  "object": "card",
+  "id": "5a73db23-727f-4d63-97d7-2ca542276722",
+  "oracle_id": "be83a518-cfab-46b1-9fe9-7e3d54311c37",
+  "multiverse_ids": [
+    4550
+  ],
+  "mtgo_id": 9421,
+  "tcgplayer_id": 6039,
+  "cardmarket_id": 8672,
+  "name": "Goblin Grenadiers",
+  "lang": "en",
+  "released_at": "1997-06-09",
+  "uri": "https://api.scryfall.com/cards/5a73db23-727f-4d63-97d7-2ca542276722",
+  "scryfall_uri": "https://scryfall.com/card/wth/104/goblin-grenadiers?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T12:45:26Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/5/a/5a73db23-727f-4d63-97d7-2ca542276722.jpg?1783946726",
+    "normal": "https://cards.scryfall.io/normal/front/5/a/5a73db23-727f-4d63-97d7-2ca542276722.jpg?1783946726",
+    "large": "https://cards.scryfall.io/large/front/5/a/5a73db23-727f-4d63-97d7-2ca542276722.jpg?1783946726",
+    "png": "https://cards.scryfall.io/png/front/5/a/5a73db23-727f-4d63-97d7-2ca542276722.png?1783946726",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/5/a/5a73db23-727f-4d63-97d7-2ca542276722.jpg?1783946726",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/5/a/5a73db23-727f-4d63-97d7-2ca542276722.jpg?1783946726",
+    "thumb": "https://cards.scryfall.io/thumb/front/5/a/5a73db23-727f-4d63-97d7-2ca542276722.webp?1783946726",
+    "grid": "https://cards.scryfall.io/grid/front/5/a/5a73db23-727f-4d63-97d7-2ca542276722.webp?1783946726",
+    "display": "https://cards.scryfall.io/display/front/5/a/5a73db23-727f-4d63-97d7-2ca542276722.webp?1783946726",
+    "art": "https://cards.scryfall.io/art/front/5/a/5a73db23-727f-4d63-97d7-2ca542276722.webp?1783946726",
+    "crop": "https://cards.scryfall.io/crop/front/5/a/5a73db23-727f-4d63-97d7-2ca542276722.webp?1783946726",
+    "jpeg": "https://cards.scryfall.io/normal/front/5/a/5a73db23-727f-4d63-97d7-2ca542276722.jpg?1783946726"
+  },
+  "mana_cost": "{3}{R}",
+  "cmc": 4.0,
+  "type_line": "Creature — Goblin",
+  "oracle_text": "Whenever this creature attacks and isn't blocked, you may sacrifice it. If you do, destroy target creature and target land.",
+  "power": "2",
+  "toughness": "2",
+  "colors": [
+    "R"
+  ],
+  "color_identity": [
+    "R"
+  ],
+  "keywords": [],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "legal",
+    "predh": "legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "700997ac-add2-4ce2-992e-5efa0fdfc0e9",
+  "set": "wth",
+  "set_name": "Weatherlight",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/700997ac-add2-4ce2-992e-5efa0fdfc0e9",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Awth&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/wth?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/5a73db23-727f-4d63-97d7-2ca542276722/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Abe83a518-cfab-46b1-9fe9-7e3d54311c37&unique=prints",
+  "collector_number": "104",
+  "digital": false,
+  "rarity": "uncommon",
+  "flavor_text": "For once, Squee realized, *he* wasn't the dumb one.",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Dan Frazier",
+  "artist_ids": [
+    "059bba56-5feb-42e4-8c2e-e2f1e6ba11f9"
+  ],
+  "illustration_id": "4e38bcd4-417a-42fc-89d6-ebf5b3f2ad4e",
+  "border_color": "black",
+  "frame": "1997",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 25910,
+  "penny_rank": 15869,
+  "prices": {
+    "usd": "0.30",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "0.22",
+    "eur_foil": null,
+    "tix": "0.05"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=4550&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DGoblin%2BGrenadiers",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DGoblin%2BGrenadiers",
+    "edhrec": "https://edhrec.com/route/?cc=Goblin+Grenadiers"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F6039%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=8672&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/9421?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

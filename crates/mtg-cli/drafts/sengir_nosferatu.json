@@ -31,11 +31,7 @@
                               {
                                 "Choose": {
                                   "from": {
-                                    "Each": [
-                                      { "Named": "Sengir Nosferatu" },
-                                      { "In": "Exile" },
-                                      { "OwnedBy": "You" }
-                                    ]
+                                    "Each": [{ "Named": "Sengir Nosferatu" }, { "In": "Exile" }]
                                   },
                                   "count": { "min": 0, "max": 1 },
                                   "as": "picked"

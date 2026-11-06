@@ -21,6 +21,7 @@
             "mods": [{ "ModifyPT": { "power": 3, "toughness": 3 } }]
           }
         },
+        { "Static": { "affected": "Attached", "mods": ["DoesntUntap"] } },
         {
           "Triggered": {
             "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
@@ -65,8 +66,7 @@
             ]
           }
         },
-        { "Keyword": { "Equip": "{3}" } },
-        { "Static": { "affected": "Attached", "mods": ["DoesntUntap"] } }
+        { "Keyword": { "Equip": "{3}" } }
       ]
     }
   ]

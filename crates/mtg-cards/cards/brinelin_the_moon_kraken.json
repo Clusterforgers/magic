@@ -1,0 +1,33 @@
+{
+  "oracle_id": "1f00edd6-4321-48a1-9053-77c77b922aeb",
+  "name": "Brinelin, the Moon Kraken",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Brinelin, the Moon Kraken",
+      "oracle_fingerprint": "b3e537d9a1237bf5c7a6d86810c2d36c",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+                {
+                  "SpellCast": {
+                    "what": [{ "Compare": { "stat": "ManaValue", "op": "Ge", "to": 6 } }],
+                    "by": "You"
+                  }
+                }
+              ]
+            },
+            "targets": [{ "what": { "Object": [{ "Not": { "Type": "Land" } }] } }],
+            "effects": [
+              { "May": { "effects": [{ "Move": { "what": { "Target": 0 }, "to": "Hand" } }] } }
+            ]
+          }
+        },
+        { "Keyword": "Partner" }
+      ]
+    }
+  ]
+}
