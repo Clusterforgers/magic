@@ -102,6 +102,7 @@ fn is_fixed(item: &CostItem) -> bool {
         | CostItem::RevealFromHand { count, .. }
         | CostItem::ReturnToHand { count, .. }
         | CostItem::Behold { count, .. }
+        | CostItem::ExiledToGraveyard { count, .. }
         | CostItem::ToLibrary { count, .. } => fixed(count),
         _ => true,
     }
@@ -130,6 +131,7 @@ fn amount_is_x(item: &CostItem) -> bool {
         | CostItem::RevealFromHand { count, .. }
         | CostItem::ReturnToHand { count, .. }
         | CostItem::Behold { count, .. }
+        | CostItem::ExiledToGraveyard { count, .. }
         | CostItem::ToLibrary { count, .. } => *count == Amount::X,
         _ => false,
     }
@@ -1227,6 +1229,7 @@ impl<'a> Walker<'a> {
                     | CostItem::RevealFromHand { filter, count }
                     | CostItem::ReturnToHand { filter, count }
                     | CostItem::Behold { filter, count }
+                    | CostItem::ExiledToGraveyard { filter, count }
                     | CostItem::ToLibrary { filter, count, .. } => {
                         w.at("filter", |w| w.selector(filter));
                         w.at("count", |w| w.amount(count));
@@ -1492,6 +1495,7 @@ impl<'a> Walker<'a> {
                     | CostItem::CollectEvidence(_)
                     | CostItem::Blight(_)
                     | CostItem::Behold { .. }
+                    | CostItem::ExiledToGraveyard { .. }
                     | CostItem::ToLibrary { .. }
                     | CostItem::Forage
             ) {
@@ -4342,6 +4346,7 @@ fn picks(cost: &Cost) -> bool {
                 | CostItem::CollectEvidence(_)
                 | CostItem::Blight(_)
                 | CostItem::Behold { .. }
+                | CostItem::ExiledToGraveyard { .. }
                 | CostItem::ToLibrary { .. }
                 | CostItem::Forage
         ),

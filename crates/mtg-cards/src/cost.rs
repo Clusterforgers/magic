@@ -169,6 +169,15 @@ pub enum CostItem {
         #[serde(default = "Amount::one", skip_serializing_if = "Amount::is_one")]
         count: Amount,
     },
+    /// Put cards that match from exile into their owners' graveyards ("Put two cards your opponents own from exile into
+    /// their owners' graveyards"): exiled cards of any owner.
+    ExiledToGraveyard {
+        /// Which exiled cards may be chosen.
+        filter: Selector,
+        /// How many.
+        #[serde(default = "Amount::one", skip_serializing_if = "Amount::is_one")]
+        count: Amount,
+    },
     /// Put cards the payer picks from one of their zones (hand, graveyard or battlefield) into their library.
     ToLibrary {
         /// The zone the cards come from.
@@ -231,6 +240,7 @@ impl CostItem {
             | CostItem::RevealFromHand { count, .. }
             | CostItem::ReturnToHand { count, .. }
             | CostItem::Behold { count, .. }
+            | CostItem::ExiledToGraveyard { count, .. }
             | CostItem::ToLibrary { count, .. } => Some(count),
             _ => None,
         }
@@ -267,6 +277,7 @@ impl Cost {
             | CostItem::RevealFromHand { count, .. }
             | CostItem::ReturnToHand { count, .. }
             | CostItem::Behold { count, .. }
+            | CostItem::ExiledToGraveyard { count, .. }
             | CostItem::ToLibrary { count, .. } => *count == Amount::X,
             CostItem::OneOf(costs) => costs.iter().any(Cost::has_x),
             _ => false,
@@ -316,7 +327,7 @@ mod tests {
     use mtg_core::card::CardType;
     use rstest::rstest;
 
-    use crate::refs::Pred;
+    use crate::refs::{Pred, Ref};
 
     fn mana(text: &str) -> CostItem {
         CostItem::Mana(text.parse().unwrap())
@@ -350,6 +361,10 @@ mod tests {
     #[case::evidence(Cost(vec![CostItem::CollectEvidence(6)]), r#"[{"CollectEvidence":6}]"#)]
     #[case::blight(Cost(vec![CostItem::Blight(Amount::Fixed(1))]), r#"[{"Blight":1}]"#)]
     #[case::forage(Cost(vec![CostItem::Forage]), r#"["Forage"]"#)]
+    #[case::exiled_to_graveyard(
+        Cost(vec![CostItem::ExiledToGraveyard { filter: Selector(vec![Pred::OwnedBy(Ref::Opponents)]), count: Amount::Fixed(2) }]),
+        r#"[{"ExiledToGraveyard":{"filter":[{"OwnedBy":"Opponents"}],"count":2}}]"#
+    )]
     #[case::behold(
         Cost(vec![CostItem::Behold { filter: Selector(vec![Pred::Type(CardType::Creature)]), count: Amount::one() }]),
         r#"[{"Behold":{"filter":[{"Type":"Creature"}]}}]"#
