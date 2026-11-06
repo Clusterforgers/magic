@@ -461,6 +461,7 @@ mod spectacle_fuzz;
 mod spell_copies;
 mod spell_copies_fuzz;
 mod spell_fuzz;
+mod spell_gains_follow;
 mod spell_targets;
 mod spell_x_costs;
 mod spender_restrictions;

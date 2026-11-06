@@ -559,6 +559,21 @@ impl ContinuousEffect {
     }
 }
 
+/// Moves the effects that name the spell `entered` was on the stack to the permanent it became (CR 400.7, 608.3).
+pub(crate) fn follow_spell(effects: &mut [ContinuousEffect], entered: ObjectRef) {
+    let spell = ObjectRef {
+        id: entered.id,
+        counter: entered.counter.saturating_sub(1),
+    };
+    for effect in effects {
+        if let Selector::Objects(named) = &mut effect.selector {
+            for reference in named.iter_mut().filter(|r| **r == spell) {
+                *reference = entered;
+            }
+        }
+    }
+}
+
 #[cfg(test)]
 mod tests {
     //! Goal: an effect applies while its duration lasts and no longer, each duration ends by its own rule (end of turn by the cleanup step's event, end of combat by the step, "your next turn" by the controller's turn, "while the source stays" by that very object, for ever not at all), and an effect that names objects is spent when none of them is the object it named.

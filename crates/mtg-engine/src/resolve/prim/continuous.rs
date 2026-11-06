@@ -59,7 +59,8 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         .scope
         .live_objects(affected)?
         .into_iter()
-        .filter(|object| object.zone() == Zone::Battlefield)
+        // A spell on the stack counts: what it gains stays with the permanent it becomes (CR 608.3, `follow_spell`).
+        .filter(|object| matches!(object.zone(), Zone::Battlefield | Zone::Stack))
         .map(GameObject::reference)
         .collect();
     if named.is_empty() {
