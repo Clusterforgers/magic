@@ -549,6 +549,13 @@ fn color_set(text: &str) -> Tr<Vec<&str>> {
 
 /// `AddAbility$` and `AddTrigger$`: the named parts, translated, as abilities the affected objects gain.
 fn granted(ctx: &mut Ctx, names: &str, trigger: bool) -> Tr<Vec<Value>> {
+    let before = std::mem::replace(&mut ctx.granted, true);
+    let mods = granted_parts(ctx, names, trigger);
+    ctx.granted = before;
+    mods
+}
+
+fn granted_parts(ctx: &mut Ctx, names: &str, trigger: bool) -> Tr<Vec<Value>> {
     let mut mods = Vec::new();
     for name in names.split('&').map(str::trim) {
         let Some(text) = ctx.svar(name) else {

@@ -293,6 +293,9 @@ pub fn keyword_abilities(ctx: &mut Ctx, body: &str) -> Vec<Tr<Value>> {
     if let Some(rules) = super::keyword_prevent::prevent_keyword(body) {
         return rules.into_iter().map(Ok).collect();
     }
+    if let Some(extra) = body.trim().strip_prefix("MayFlashCost:") {
+        return vec![super::keyword_alt::may_flash_cost(ctx.mana_cost, extra)];
+    }
     if let Some(levels) = super::keyword_class::class_level(ctx, body) {
         return levels;
     }

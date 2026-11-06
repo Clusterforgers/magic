@@ -44,8 +44,14 @@ pub(crate) fn loyalty_mana(
     player: PlayerId,
     (source, address, rules): (ObjectId, AbilityRef, &Ability),
 ) -> Option<(ManaCost, Price)> {
-    let price =
-        Price::announced_in(&mtg_cards::cost::Cost(Vec::new()), state, player, source).ok()?;
+    let price = Price::announced_in(
+        &mtg_cards::cost::Cost(Vec::new()),
+        state,
+        player,
+        source,
+        None,
+    )
+    .ok()?;
     let total = crate::activation_kind::modified(state, source, address, rules, ManaCost::ZERO);
     (total != ManaCost::ZERO).then_some((total, price))
 }

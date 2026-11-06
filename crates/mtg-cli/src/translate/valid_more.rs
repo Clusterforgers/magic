@@ -28,6 +28,7 @@ pub fn property(ctx: &Ctx, prop: &str) -> Tr<Option<Vec<Value>>> {
         "kicked" => return one(json!("Kicked")),
         "bargained" | "Teamwork" => return one(json!("AdditionalCostPaid")),
         "ActivePlayerCtrl" => return one(json!({"ControlledBy": "ActivePlayer"})),
+        "CanEnchantSource" => return one(json!("CanEnchantSource")),
         "ActivePlayerOwn" => return one(json!({"OwnedBy": "ActivePlayer"})),
         "attackedThisTurn" => return one(json!("AttackedThisTurn")),
         "DefenderCtrl" => return one(json!({"ControlledBy": "Defending"})),
@@ -162,6 +163,7 @@ fn player_word(ctx: &Ctx, word: &str) -> Tr<Value> {
         "You" => Ok(json!("You")),
         "DefendingPlayer" | "TriggeredDefendingPlayer" => Ok(json!("Defending")),
         "TargetedPlayer" => ctx.player_target(),
+        "TargetedOrController" => Ok(json!({"OrController": ctx.last_target()?})),
         // The player a damage trigger names (`ValidTarget$ Player`): the one the creatures are read for.
         "CardController" => {
             super::triggered::resolve(ctx.trigger.as_ref(), "TriggeredCardController")

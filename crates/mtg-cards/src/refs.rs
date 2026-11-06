@@ -90,6 +90,9 @@ pub enum Ref {
     Against,
     /// What the source is attached to ("enchanted creature", "equipped creature").
     Attached,
+    /// The permanent whose static ability gave the source the ability being run ("this Equipment", "this Aura" in the
+    /// words the Equipment gives the creature); nobody for an ability the source has of its own, or once that permanent has left the battlefield.
+    Granter,
     /// The player the source is attached to ("enchanted player").
     AttachedPlayer,
     /// The monarch ("the monarch"); nobody while no player is the monarch.
@@ -129,6 +132,9 @@ pub enum Ref {
     ControllerOf(Box<Ref>),
     /// The owner of the referenced object.
     OwnerOf(Box<Ref>),
+    /// The player the reference names, or the controller of the object it names ("target player or planeswalker" read as
+    /// that player or that planeswalker's controller).
+    OrController(Box<Ref>),
     /// The object an object named one zone change ago has become, when it is now in this zone ("return it to the battlefield"
     /// after it died): the same card one incarnation on (CR 400.7). Nobody when it moved twice, moved elsewhere or is gone.
     Arrived {
@@ -195,6 +201,8 @@ pub enum Pred {
     SharesType(Ref),
     /// Shares a color with one of the objects the reference names ("that shares a color with it").
     SharesColor(Ref),
+    /// Is an Aura card that could enchant the source ("an Aura card in your hand that could enchant this creature", CR 303.4).
+    CanEnchantSource,
     /// Has {X} in its mana cost ("a spell with {X} in its mana cost", CR 107.3).
     XInCost,
     /// Has a mana cost of exactly that many generic mana and nothing else ("with mana cost {1}"): `{0}` is a cost, no cost

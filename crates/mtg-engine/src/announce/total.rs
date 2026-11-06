@@ -125,9 +125,15 @@ fn printed(ctx: &Ctx<'_>, choices: &Choices) -> Option<Printed> {
         What::Ability(ability) => match ctx.ability? {
             rules @ Ability::Activated { cost, .. } => {
                 let x = choices.x.unwrap_or(0);
-                let price = Price::announced_in(cost, ctx.state, ctx.player, ability.object)
-                    .ok()?
-                    .at(x);
+                let price = Price::announced_in(
+                    cost,
+                    ctx.state,
+                    ctx.player,
+                    ability.object,
+                    ability.source.granter(),
+                )
+                .ok()?
+                .at(x);
                 let mut sources = price.sources(ctx.state, ctx.player, ability.object);
                 // What the cost sacrifices, taps or returns is not there to tap for mana.
                 let picked: Vec<ObjectId> =

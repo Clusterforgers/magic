@@ -112,6 +112,8 @@ pub struct Scope<'a> {
     pub(crate) candidate: std::cell::Cell<Option<ObjectRef>>,
     /// The spell or ability that caused the events a trigger is being matched against (`TriggerPattern::Caused`).
     pub(crate) caused: Option<crate::triggers::CausedBy>,
+    /// The permanent whose static ability gave the running ability to its source (`Ref::Granter`).
+    pub(crate) granter: Option<ObjectId>,
 }
 
 /// The targets a spell being cast has chosen so far (CR 601.2c).
@@ -275,6 +277,7 @@ impl<'a> Scope<'a> {
             affected: None,
             candidate: std::cell::Cell::new(None),
             caused: None,
+            granter: None,
         }
     }
 
@@ -949,6 +952,7 @@ impl<'a> Scope<'a> {
                 .map(Target::Player)
                 .into_iter()
                 .collect(),
+            Ref::Granter => self.granter_on_battlefield(),
             Ref::Monarch => state.monarch().map(Target::Player).into_iter().collect(),
             Ref::Promised => self.promised().map(Target::Player).into_iter().collect(),
             Ref::Chosen => self
@@ -976,6 +980,7 @@ impl<'a> Scope<'a> {
             Ref::Departed(of) => self.departed_of(of)?,
             Ref::ControllerOf(inner) => self.seats_of(inner, |seen| seen.controller)?,
             Ref::OwnerOf(inner) => self.seats_of(inner, |seen| seen.owner)?,
+            Ref::OrController(inner) => self.players_or_controllers(inner)?,
             Ref::Each(selector) => self
                 .matching(selector)?
                 .into_iter()
@@ -1098,6 +1103,33 @@ impl<'a> Scope<'a> {
                 if !seats.contains(&player) {
                     seats.push(player);
                 }
+            }
+        }
+        Ok(seats)
+    }
+
+    /// The permanent whose static ability gave the running ability, while it is on the battlefield.
+    fn granter_on_battlefield(&self) -> Vec<Target> {
+        self.granter
+            .and_then(|id| self.state.object(id))
+            .filter(|object| object.zone() == Zone::Battlefield)
+            .map(|object| Target::Object(object.reference()))
+            .into_iter()
+            .collect()
+    }
+
+    /// The players `inner` names, and the controllers of the objects it names.
+    fn players_or_controllers(&self, inner: &Ref) -> Result<Vec<Target>, ResolveError> {
+        let mut seats = Vec::new();
+        for named in self.refs(inner)? {
+            let player = match named {
+                Target::Player(player) => Some(player),
+                Target::Object(object) => self.seen(object).map(|seen| seen.controller),
+            };
+            if let Some(player) = player.map(Target::Player)
+                && !seats.contains(&player)
+            {
+                seats.push(player);
             }
         }
         Ok(seats)
@@ -1387,6 +1419,9 @@ impl<'a> Scope<'a> {
             Pred::This => reference.id == self.source.id,
             Pred::Other => reference.id != self.source.id,
             Pred::Is(named) => self.objects(named)?.contains(&reference),
+            Pred::CanEnchantSource => {
+                crate::attach::legal_host_entering(state, reference.id, self.source.id)
+            }
             Pred::SharesSubtype(named) => self.shares_subtype(named, seen)?,
             Pred::SharesName(_)
             | Pred::SharesType(_)

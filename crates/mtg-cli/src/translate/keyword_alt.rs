@@ -64,6 +64,25 @@ fn abilities(way: CastWay, count: Option<&str>, cost_text: &str) -> Vec<Tr<Value
         .collect()
 }
 
+/// `MayFlashCost:2`: the card may be cast as though it had flash if the caster pays the mana more (CR 601.3b, 118.8): a
+/// way to cast it at instant speed for its own mana cost and the extra mana.
+pub fn may_flash_cost(printed: &str, extra: &str) -> Tr<Value> {
+    // An alternative way holds no {X} in the engine: such a card would never be offered at instant speed.
+    let Some(total) = mana(&format!("{printed} {extra}"))
+        .filter(|_| !printed.is_empty() && !printed.contains('X'))
+    else {
+        return unmapped("keyword:MayFlashCost-cost");
+    };
+    let ability = Ability::AltCast {
+        way: CastWay::Alternative,
+        cost: Some(Cost::mana(total)),
+        from: mtg_cards::refs::ZoneKind::Hand,
+        condition: None,
+        flash: true,
+    };
+    serde_json::to_value(ability).or_else(|_| unmapped("keyword:MayFlashCost"))
+}
+
 /// `Prototype:1 U U:2:1`: the prototype mana cost, then the power and toughness.
 fn prototype(cost_text: Option<&str>, size: Option<&str>) -> Tr<Value> {
     let (Some(text), Some(size)) = (cost_text, size) else {

@@ -335,6 +335,7 @@ fn scope_of<'a>(
         affected: None,
         candidate: std::cell::Cell::new(None),
         caused: None,
+        granter: ability.and_then(|a| a.origin().granter()),
     }
 }
 

@@ -147,6 +147,13 @@ fn item(ctx: &Ctx, word: &str) -> Tr<Value> {
     let on_self = matches!(what, "CARDNAME" | "NICKNAME" | "Card.Self");
     match head {
         "Sac" if on_self => Ok(json!("SacrificeSelf")),
+        // The Equipment that gave the creature the ability, not the creature that has it.
+        "Sac" if what == "OriginalHost" && ctx.granted && number == "1" => {
+            Ok(json!({"Sacrifice": {"filter": [{"Is": "Granter"}]}}))
+        }
+        "SubCounter" if ctx.granted && inner.contains("OriginalHost") => {
+            unmapped("cost:SubCounter-from-OriginalHost")
+        }
         "Sac" => Ok(
             json!({"Sacrifice": {"filter": selector_any(ctx, &other_if_worded(ctx, "sacrifice", number, what)?)?, "count": amount(ctx, number)?}}),
         ),

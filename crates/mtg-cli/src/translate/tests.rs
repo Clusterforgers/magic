@@ -796,6 +796,7 @@ mod r4d;
 mod r4f2;
 mod r4g;
 mod r4h;
+mod r4i;
 mod r4p1;
 mod r4p2;
 mod r4p3;

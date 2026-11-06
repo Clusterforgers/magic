@@ -28,12 +28,16 @@ pub(super) fn read(
     rules: Option<&Ability>,
 ) -> Option<Box<Price>> {
     match (what, rules?) {
-        (What::Ability(ability), Ability::Activated { cost, .. }) => {
-            Price::announced_in(cost, state, player, ability.object)
-                .ok()
-                .filter(|price| !price.parts.is_empty())
-                .map(Box::new)
-        }
+        (What::Ability(ability), Ability::Activated { cost, .. }) => Price::announced_in(
+            cost,
+            state,
+            player,
+            ability.object,
+            ability.source.granter(),
+        )
+        .ok()
+        .filter(|price| !price.parts.is_empty())
+        .map(Box::new),
         _ => None,
     }
 }
@@ -77,6 +81,7 @@ pub(super) fn run(ctx: &Ctx<'_>, work: &mut Work<'_>) -> Option<Next> {
             player: ctx.player,
             source: ctx.source,
             barred: &barred,
+            granter: price.granter,
         });
         if pick.short(ctx.state, &candidates) {
             return Some(Next::Drop);
@@ -115,6 +120,7 @@ pub(super) fn most(ctx: &Ctx<'_>, choices: &Choices) -> Option<u32> {
                 player: ctx.player,
                 source: ctx.source,
                 barred: &barred,
+                granter: price.granter,
             })
         })
         .min()

@@ -57,7 +57,14 @@ impl XCost {
             }
             What::Ability(ability) => match rules? {
                 Ability::Activated { cost, .. } => {
-                    let price = Price::announced_in(cost, state, player, ability.object).ok()?;
+                    let price = Price::announced_in(
+                        cost,
+                        state,
+                        player,
+                        ability.object,
+                        ability.source.granter(),
+                    )
+                    .ok()?;
                     if price.x == 0 && price.counted() {
                         return Some(XCost::Parts);
                     }

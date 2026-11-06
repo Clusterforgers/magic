@@ -490,7 +490,7 @@ impl<'a> Walker<'a> {
             | Ref::Defending => {
                 self.expect(Kind::Player, want);
             }
-            Ref::This | Ref::Attached => self.expect(Kind::Object, want),
+            Ref::This | Ref::Attached | Ref::Granter => self.expect(Kind::Object, want),
             Ref::Remembered { on, .. } => {
                 self.reference(on, Kind::Object);
                 self.expect(Kind::Either, want);
@@ -562,6 +562,10 @@ impl<'a> Walker<'a> {
             Ref::ControllerOf(inner) | Ref::OwnerOf(inner) => {
                 self.expect(Kind::Player, want);
                 self.at("of", |w| w.reference(inner, Kind::Object));
+            }
+            Ref::OrController(inner) => {
+                self.expect(Kind::Player, want);
+                self.at("of", |w| w.reference(inner, Kind::Either));
             }
             Ref::Arrived { of, .. } | Ref::Departed(of) => {
                 self.expect(Kind::Object, want);
@@ -764,6 +768,7 @@ impl<'a> Walker<'a> {
             | Pred::HasCounter(_)
             | Pred::HasAnyCounter
             | Pred::ChosenColor
+            | Pred::CanEnchantSource
             | Pred::XInCost
             | Pred::GenericCost(_)
             | Pred::Goaded
@@ -2399,12 +2404,14 @@ impl Walker<'_> {
             | Ref::Defending
             | Ref::TriggeringPlayer
             | Ref::ControllerOf(_)
+            | Ref::OrController(_)
             | Ref::OwnerOf(_) => Kind::Player,
             Ref::Affected
             | Ref::Candidate
             | Ref::This
             | Ref::Dealer
             | Ref::Attached
+            | Ref::Granter
             | Ref::Paid
             | Ref::Arrived { .. }
             | Ref::Departed(_)
