@@ -50,12 +50,12 @@ fn a_merged_saga_keeps_every_chapter_of_a_line_of_several() {
         };
         let card = merged.rules.unwrap();
         tried += 1;
-        assert_eq!(
-            chapters(card.abilities().map(|(_, a)| a)),
-            chapters(by_hand.abilities().map(|(_, a)| a)),
-            "{}",
-            printed.name
-        );
+        // Every chapter is kept; the merge may list them in another order than the card file.
+        let mut merged_chapters = chapters(card.abilities().map(|(_, a)| a));
+        let mut file_chapters = chapters(by_hand.abilities().map(|(_, a)| a));
+        merged_chapters.sort_unstable();
+        file_chapters.sort_unstable();
+        assert_eq!(merged_chapters, file_chapters, "{}", printed.name);
     }
     assert!(tried >= 1, "no Saga with a line of several chapters merged");
 }
