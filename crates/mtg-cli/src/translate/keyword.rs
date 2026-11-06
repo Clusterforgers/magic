@@ -9,6 +9,7 @@ use super::effects::chain_at;
 use super::valid::selector_any;
 use crate::forge::script::Params;
 
+mod equip;
 mod extra;
 mod more;
 
@@ -291,6 +292,10 @@ pub fn keyword_abilities(ctx: &mut Ctx, body: &str) -> Vec<Tr<Value>> {
     }
     if let Some(forms) = super::effects_r2h::keyword_forms(ctx, body) {
         return forms;
+    }
+    if body.starts_with("Equip:") && body.contains('$') {
+        let fields: Vec<&str> = body.split(':').collect();
+        return equip::equip_with(ctx, &fields);
     }
     match body.strip_prefix("Chapter:") {
         Some(rest) => chapters(ctx, rest),
