@@ -271,6 +271,16 @@ fn dispatch(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         Effect::DelayedTrigger { .. } => delayed_trigger::run(cx, effect),
         Effect::Reflexive { .. } => reflexive::run(cx, effect),
         Effect::If { .. } => if_then::run(cx, effect),
+        Effect::Together { effects } => Ok(Run::Done {
+            events: Vec::new(),
+            bound: Vec::new(),
+            snapshots: Vec::new(),
+            next: if effects.is_empty() {
+                crate::resolve::Next::Sibling
+            } else {
+                crate::resolve::Next::Enter(0)
+            },
+        }),
         Effect::May { .. } => may::run(cx, effect),
         Effect::Pay { .. } => pay::run(cx, effect),
         Effect::Modal { .. } => modal::run(cx, effect),
@@ -331,7 +341,7 @@ mod tests {
         {"Shield":{"when":{"Damage":{}},"by":"Prevent","duration":"UntilEndOfTurn"}},
         {"DelayedTrigger":{"when":{"StepBegins":{"step":"Upkeep","whose":"You"}},"effects":[]}},
         {"Reflexive":{"effects":[]}},
-        {"If":{"condition":"YourTurn","then":[]}}, {"May":{"effects":[]}}, {"Pay":{"cost":"{1}"}},
+        {"If":{"condition":"YourTurn","then":[]}}, {"May":{"effects":[]}}, {"Together":{"effects":[]}}, {"Pay":{"cost":"{1}"}},
         {"Modal":{"modes":[]}}, {"RepeatEach":{"over":"EachPlayer","as":"each","effects":[{"Draw":{}}]}},
         {"RollDice":{"sides":6,"results":[{"from":1,"effects":[]}]}}, {"FlipCoin":{"win":[]}}, {"Clash":{}},
         {"Vote":{"options":{"Named":["time","knowledge"]}}}, {"Planechase":{"act":"Planeswalk"}},
@@ -356,7 +366,7 @@ mod tests {
     #[test]
     fn the_capabilities_name_exactly_the_effects_that_run() {
         let effects: Vec<Effect> = serde_json::from_str(EFFECTS).unwrap();
-        assert_eq!(effects.len(), 110, "one sample for each variant of Effect");
+        assert_eq!(effects.len(), 111, "one sample for each variant of Effect");
         let game = state(
             vec![vec![], vec![]],
             vec![vec![creature("Bear", 2, 2)], vec![]],
@@ -490,6 +500,7 @@ mod tests {
         "Effect.Reflexive",
         "Effect.If",
         "Effect.May",
+        "Effect.Together",
         "Effect.Pay",
         "Effect.Modal",
         "Effect.RepeatEach",

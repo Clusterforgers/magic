@@ -45,7 +45,8 @@ fn branches<'a>(effect: &'a Effect, chosen: &[usize]) -> Vec<&'a [Effect]> {
         Effect::If {
             then, otherwise, ..
         } => vec![then, otherwise],
-        Effect::May { effects, .. }
+        Effect::Together { effects }
+        | Effect::May { effects, .. }
         | Effect::RepeatEach { effects, .. }
         | Effect::RepeatWhile { effects, .. } => vec![effects],
         Effect::Pay { paid, unpaid, .. } => vec![paid, unpaid],
@@ -79,6 +80,35 @@ pub(crate) fn effect_at<'a>(
         list = branches(effect, chosen).get(branch).copied()?;
         path = deeper;
     }
+}
+
+/// Whether `position` is inside a `Together` batch: in its body, not at the effect itself nor past it.
+pub(crate) fn inside_together(root: &[Effect], chosen: &[usize], position: &[usize]) -> bool {
+    let mut list = root;
+    let mut path = position;
+    while let Some((&index, rest)) = path.split_first() {
+        let Some(effect) = list.get(index) else {
+            return false;
+        };
+        if rest.is_empty() {
+            return false;
+        }
+        if matches!(effect, Effect::Together { .. }) {
+            return true;
+        }
+        let Some((&branch, deeper)) = rest.split_first() else {
+            return false;
+        };
+        if deeper.is_empty() && branch == NEXT_PASS && loops(effect) {
+            return false;
+        }
+        let Some(inner) = branches(effect, chosen).get(branch).copied() else {
+            return false;
+        };
+        list = inner;
+        path = deeper;
+    }
+    false
 }
 
 /// The place among the modes chosen of the mode the position is inside, if it is inside a `Modal`.

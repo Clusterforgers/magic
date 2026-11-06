@@ -17,7 +17,7 @@ pub fn effects(ctx: &mut Ctx, p: &Params, api: &str) -> Tr<Vec<Value>> {
         "Destroy" => one(destroy(ctx, p)),
         "DestroyAll" => one(destroy_all(ctx, p)),
         "DamageAll" => damage_all(ctx, p),
-        "DamageResolve" => damage_resolve(p),
+        "DamageResolve" => damage_resolve(ctx, p),
         "PutCounterAll" => one(put_counter_all(ctx, p)),
         "Counter" => counter(ctx, p),
         "PreventDamage" => one(prevent_damage(ctx, p)),
@@ -203,10 +203,48 @@ pub fn damage_map(p: &Params) -> Tr<()> {
     }
 }
 
-/// The `DamageResolve` that ends a damage map: its damage was dealt by the lines before it.
-fn damage_resolve(p: &Params) -> Tr<Vec<Value>> {
+/// The `DamageResolve` that ends a damage map: its damage was dealt by the lines before it. Inside a chain it leaves a
+/// mark that the line that began the chain turns into the end of its batch (`batch_damage`).
+fn damage_resolve(ctx: &Ctx, p: &Params) -> Tr<Vec<Value>> {
     only(p, "DamageResolve", &[])?;
-    Ok(Vec::new())
+    Ok(if ctx.damage_open {
+        vec![json!({DAMAGE_END: true})]
+    } else {
+        Vec::new()
+    })
+}
+
+const DAMAGE_END: &str = "~DamageResolve";
+
+/// Wraps the steps of a damage map chain, up to its end mark, in one `Together` batch, and drops every end mark.
+pub fn batch_damage(mut effects: Vec<Value>) -> Vec<Value> {
+    let end = effects.iter().position(|e| e.get(DAMAGE_END).is_some());
+    let tail = end.map(|at| {
+        let tail = effects.split_off(at + 1);
+        effects.pop();
+        tail
+    });
+    let mut out = match tail {
+        Some(_) => vec![json!({"Together": {"effects": effects}})],
+        None => effects,
+    };
+    out.extend(tail.unwrap_or_default());
+    for effect in &mut out {
+        strip_end(effect);
+    }
+    out.retain(|e| e.get(DAMAGE_END).is_none());
+    out
+}
+
+fn strip_end(value: &mut Value) {
+    match value {
+        Value::Array(items) => {
+            items.retain(|e| e.get(DAMAGE_END).is_none());
+            items.iter_mut().for_each(strip_end);
+        }
+        Value::Object(fields) => fields.values_mut().for_each(strip_end),
+        _ => {}
+    }
 }
 
 fn damage_all(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {

@@ -106,13 +106,10 @@ pub fn repeat_each(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
             "UseImprinted",
         ],
     )?;
-    // The tables gather the moves and the damage of the passes for the triggers that read them as one batch (CR 603.2),
-    // and the passes resolve one after the other: such a repeat is not offered.
-    for table in ["ChangeZoneTable", "DamageMap"] {
-        if p.has(table) {
-            return unmapped(format!("key:RepeatEach.{table}"));
-        }
-    }
+    // The tables gather the moves and the damage of all passes for the triggers that read them as one batch.
+    let together = ["ChangeZoneTable", "DamageMap"]
+        .iter()
+        .any(|table| p.get(table) == Some("True"));
     let bind = ctx.fresh("each");
     let mut before_move = None;
     let over = match (p.get("RepeatPlayers"), p.get("RepeatCards")) {
@@ -146,9 +143,12 @@ pub fn repeat_each(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
     let effects = chain_at(ctx, &part, false);
     ctx.moved_from.remove(&bind);
     (ctx.remembered, ctx.imprinted) = (outer, outer_imprinted);
-    Ok(vec![
-        json!({"RepeatEach": {"over": over, "as": bind, "effects": effects?}}),
-    ])
+    let repeat = json!({"RepeatEach": {"over": over, "as": bind, "effects": effects?}});
+    Ok(vec![if together {
+        json!({"Together": {"effects": [repeat]}})
+    } else {
+        repeat
+    }])
 }
 
 /// `DefinedCards$` of a `RepeatEach`: the objects an earlier step named, one pass for each. `before_move` is set to how a

@@ -555,6 +555,7 @@ fn block(ctx: &Ctx, effect: &Effect, depth: u8, out: &mut Vec<Step>) -> bool {
                 list(ctx, otherwise, depth + 1, out);
             }
         }
+        Effect::Together { effects } => list(ctx, effects, depth, out),
         Effect::May { who, effects } => {
             out.push(Step::new(depth, format!("{} may:", phrase::who(ctx, who))));
             list(ctx, effects, depth + 1, out);

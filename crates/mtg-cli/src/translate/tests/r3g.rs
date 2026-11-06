@@ -203,24 +203,3 @@ fn a_card_from_outside_the_game_is_found_nowhere_in_a_game_without_a_sideboard()
         mtg_engine::zones::Zone::Graveyard(PlayerId(0))
     );
 }
-
-#[rstest]
-#[case::the_zone_change_table(" | ChangeZoneTable$ True", "key:RepeatEach.ChangeZoneTable")]
-#[case::the_damage_map(" | DamageMap$ True", "key:RepeatEach.DamageMap")]
-fn a_table_of_the_passes_stays_a_gap_until_the_passes_make_one_batch(
-    #[case] flag: &str,
-    #[case] gap: &str,
-) {
-    // CR 603.2: a "one or more" trigger fires once for what the whole repeat did, not once for each pass; the engine
-    // resolves the passes one after the other, so the shape is not offered.
-    let script = RAMPAGE.replace(
-        "RepeatSubAbility$ DBToken",
-        &format!("RepeatSubAbility$ DBToken{flag}"),
-    );
-    assert!(
-        gaps(&script).iter().any(|found| found == gap),
-        "{:?}",
-        gaps(&script)
-    );
-    assert!(gaps(RAMPAGE).is_empty(), "{:?}", gaps(RAMPAGE));
-}

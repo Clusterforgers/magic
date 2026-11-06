@@ -70,13 +70,16 @@ pub fn chain_at(ctx: &mut Ctx, p: &Params, top: bool) -> Tr<Vec<Value>> {
         let who = may_decider(ctx, p)?;
         effects = super::frame::ask(effects, &who);
     }
-    let mut rest = match p.get("SubAbility") {
-        Some(name) => {
-            let next = ctx.sub(name)?;
-            chain_at(ctx, &next, false)?
-        }
-        None => Vec::new(),
+    // A damage map chain is one batch from its first line to its `DamageResolve` (CR 603.2c).
+    let was_open = ctx.damage_open;
+    let opens = p.get("DamageMap") == Some("True") && !was_open && !p.has("RepeatSubAbility");
+    ctx.damage_open = was_open || opens;
+    let rest = match p.get("SubAbility") {
+        Some(name) => ctx.sub(name).and_then(|next| chain_at(ctx, &next, false)),
+        None => Ok(Vec::new()),
     };
+    ctx.damage_open = was_open;
+    let mut rest = rest?;
     if inside {
         effects.append(&mut rest);
     }
@@ -101,6 +104,11 @@ pub fn chain_at(ctx: &mut Ctx, p: &Params, top: bool) -> Tr<Vec<Value>> {
     }
     effects.extend(rest);
     let effects = super::any_player::pay_for_any(effects)?;
+    let effects = if opens {
+        super::effects_obj::batch_damage(effects)
+    } else {
+        effects
+    };
     match p.get("Cost") {
         Some(text) if !top && text.starts_with("Mandatory ") => Ok(super::cost_more::mandatory(
             &text["Mandatory ".len()..],

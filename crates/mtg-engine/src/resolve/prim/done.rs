@@ -120,7 +120,7 @@ fn reports(effect: &Effect) -> Reports {
         #[rustfmt::skip]
         Effect::LookAtTop { .. } | Effect::Choose { .. } | Effect::ChooseAtRandom { .. } | Effect::Encode { .. }
         | Effect::Remember { .. } | Effect::Forget { .. } | Effect::RememberValue { .. } | Effect::DelayedTrigger { .. } | Effect::Reflexive { .. }
-        | Effect::If { .. } | Effect::Modal { .. } | Effect::RepeatEach { .. } | Effect::RollDice { .. }
+        | Effect::If { .. } | Effect::Modal { .. } | Effect::RepeatEach { .. } | Effect::Together { .. } | Effect::RollDice { .. }
         | Effect::FlipCoin { .. } | Effect::Clash { .. } | Effect::Vote { .. } | Effect::VillainousChoice { .. }
         | Effect::ChooseValue { .. } | Effect::Let { .. } | Effect::Bind { .. } | Effect::RepeatWhile { .. } | Effect::SeparatePiles { .. }
         | Effect::Either { .. } | Effect::OneOf { .. } => Reports::Nothing,
