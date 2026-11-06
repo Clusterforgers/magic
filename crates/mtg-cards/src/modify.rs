@@ -205,6 +205,8 @@ pub enum Duration {
     UntilEndOfCombat,
     /// Until the controller's next turn begins.
     UntilYourNextTurn,
+    /// Until the controller's next end step begins: the one of this turn when it has not begun yet (CR 513).
+    UntilYourNextEndStep,
     /// Until the end of the controller's next turn.
     UntilEndOfYourNextTurn,
     /// For as long as the source stays on the battlefield.

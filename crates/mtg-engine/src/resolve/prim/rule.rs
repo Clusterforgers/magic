@@ -26,7 +26,7 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
             duration: duration.clone(),
             source: Some(cx.scope.source),
             controller: cx.controller(),
-            turn: state.turn().number(),
+            turn: crate::effects::began_turn(state, duration, cx.controller()),
         }),
     }]))
 }

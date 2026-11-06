@@ -526,6 +526,7 @@ pub(super) fn duration(value: &Duration) -> String {
         Duration::UntilEndOfTurn => "until end of turn".to_owned(),
         Duration::UntilEndOfCombat => "until end of combat".to_owned(),
         Duration::UntilYourNextTurn => "until your next turn".to_owned(),
+        Duration::UntilYourNextEndStep => "until your next end step".to_owned(),
         Duration::UntilEndOfYourNextTurn => "until the end of your next turn".to_owned(),
         Duration::WhileSourceOnBattlefield => "while this stays on the battlefield".to_owned(),
         Duration::WhileYouControlSource => "while you control this".to_owned(),

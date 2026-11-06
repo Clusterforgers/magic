@@ -361,6 +361,19 @@ pub(crate) fn without(types: CardTypes, ty: CardType) -> CardTypes {
         .collect()
 }
 
+/// The turn number an effect of `duration` that `controller` controls records as it begins now: the current turn, but for
+/// "until your next end step" begun before the end step of the controller's own turn the one before, so that the end step of
+/// this turn is the one it lasts until.
+pub(crate) fn began_turn(state: &GameState, duration: &Duration, controller: PlayerId) -> u32 {
+    let turn = state.turn();
+    let before_end = turn.active() == controller && turn.step() < Step::End;
+    if *duration == Duration::UntilYourNextEndStep && before_end {
+        turn.number().saturating_sub(1)
+    } else {
+        turn.number()
+    }
+}
+
 /// Whether an effect of a spell or ability that `controller` controlled, made by `source` in turn `began`, still lasts
 /// in `state` by its duration (CR 611.2): the one rule for the durations of continuous effects and of rules.
 pub(crate) fn lasts(
@@ -377,6 +390,13 @@ pub(crate) fn lasts(
         // `NextUntapStep` ends with the untap step that the permanent it holds down would untap in (`c7_untap`).
         Duration::UntilEndOfTurn | Duration::Forever | Duration::NextUntapStep => true,
         Duration::UntilEndOfYourNextTurn => state.is_alive(controller),
+        // Begun before the end step of its controller's own turn, it carries the turn before (`began_turn`), so that end step ends it.
+        Duration::UntilYourNextEndStep => {
+            state.is_alive(controller)
+                && !(turn.number() > began
+                    && turn.active() == controller
+                    && turn.step() >= Step::End)
+        }
         Duration::UntilEndOfCombat => turn.number() == began && turn.step() <= Step::EndCombat,
         Duration::UntilYourNextTurn => {
             state.is_alive(controller) && !(turn.number() != began && turn.active() == controller)
@@ -667,6 +687,33 @@ mod tests {
     ) {
         let mut game = game();
         let effect = effect(&game, duration, ME);
+        at(&mut game, now.0, now.1, now.2);
+        assert_eq!(effect.is_active(&game), active);
+    }
+
+    #[rstest]
+    #[case::before_the_end_step_of_your_turn(
+        (3, ME, Step::Main1), (3, ME, Step::Main2), true
+    )]
+    #[case::until_that_end_step((3, ME, Step::Main1), (3, ME, Step::End), false)]
+    #[case::not_back_in_that_turn((3, ME, Step::Main1), (3, ME, Step::Cleanup), false)]
+    #[case::begun_in_the_end_step_it_waits_for_the_next_one(
+        (3, ME, Step::End), (3, ME, Step::Cleanup), true
+    )]
+    #[case::then_through_the_other_turn((3, ME, Step::End), (4, FOE, Step::End), true)]
+    #[case::before_the_next_end_step((3, ME, Step::End), (5, ME, Step::Main1), true)]
+    #[case::the_next_end_step((3, ME, Step::End), (5, ME, Step::End), false)]
+    #[case::begun_in_another_turn_through_it((4, FOE, Step::Main1), (4, FOE, Step::End), true)]
+    #[case::begun_in_another_turn_to_your_end_step((4, FOE, Step::Main1), (5, ME, Step::End), false)]
+    fn until_your_next_end_step_is_the_first_end_step_of_yours_after_it_begins(
+        #[case] began: (u32, PlayerId, Step),
+        #[case] now: (u32, PlayerId, Step),
+        #[case] active: bool,
+    ) {
+        let mut game = game();
+        at(&mut game, began.0, began.1, began.2);
+        let turn = began_turn(&game, &Duration::UntilYourNextEndStep, ME);
+        let effect = effect(&game, Duration::UntilYourNextEndStep, ME).begun(ME, turn);
         at(&mut game, now.0, now.1, now.2);
         assert_eq!(effect.is_active(&game), active);
     }

@@ -97,6 +97,27 @@ fn a_cost_it_cannot_charge_is_a_gap(#[case] cost: &str, #[case] gap: &str) {
     );
 }
 
+#[rstest]
+#[case::next_end_step("UntilYourNextEndStep", Some(r#""duration":"UntilYourNextEndStep""#))]
+#[case::next_turn("UntilYourNextTurn", Some(r#""duration":"UntilYourNextTurn""#))]
+#[case::unknown("UntilSomeday", None)]
+fn an_exiled_card_is_played_for_the_duration_the_line_names(
+    #[case] duration: &str,
+    #[case] found: Option<&str>,
+) {
+    let script = card(&format!(
+        "A:SP$ Dig | DigNum$ 1 | ChangeNum$ All | DestinationZone$ Exile | RememberChanged$ True | SubAbility$ DBEffect\nSVar:DBEffect:DB$ Effect | StaticAbilities$ STPlay | RememberObjects$ Remembered | Duration$ {duration} | SubAbility$ DBCleanup | ForgetOnMoved$ Exile\nSVar:STPlay:Mode$ Continuous | MayPlay$ True | Affected$ Card.IsRemembered | AffectedZone$ Exile\nSVar:DBCleanup:DB$ Cleanup | ClearRemembered$ True"
+    ));
+    let text = abilities(&script)
+        .first()
+        .map(ToString::to_string)
+        .unwrap_or_default();
+    match found {
+        Some(word) => assert!(text.contains(word), "{text} {:?}", gaps(&script)),
+        None => assert!(gaps(&script).contains(&format!("duration:{duration}"))),
+    }
+}
+
 const ALT: &str = "S:Mode$ AlternativeCost | ValidSA$ Spell | ValidCard$ Card.Self | ValidPlayer$ You | Cost$ 0 | EffectZone$ All";
 
 #[rstest]
