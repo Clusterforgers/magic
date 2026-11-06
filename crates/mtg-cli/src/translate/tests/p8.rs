@@ -200,10 +200,19 @@ fn an_opening_hand_word_the_node_cannot_say_stays_a_named_gap(
 }
 
 #[rstest]
-#[case("A deck can have any number of cards named CARDNAME.")]
 #[case("Your minimum deck size is reduced by five.")]
 fn a_deck_building_rule_adds_no_ability_and_no_gap(#[case] line: &str) {
     let script = creature(&format!("K:{line}"));
     assert_eq!(abilities(&script), Vec::<Value>::new());
+    assert_eq!(gaps(&script), Vec::<String>::new());
+}
+
+#[test]
+fn any_number_of_cards_named_is_a_deck_rule_without_a_gap() {
+    let script = creature("K:A deck can have any number of cards named CARDNAME.");
+    assert_eq!(
+        abilities(&script),
+        vec![serde_json::json!({"Rule": {"rule": "AnyNumberInDeck"}})]
+    );
     assert_eq!(gaps(&script), Vec::<String>::new());
 }
