@@ -9,6 +9,7 @@ use super::effects::chain_at;
 use super::valid::selector_any;
 use crate::forge::script::Params;
 
+mod extra;
 mod more;
 
 /// The DSL name of a keyword that has no parameter.
@@ -89,7 +90,8 @@ pub fn keyword_name(word: &str) -> Option<&'static str> {
 }
 
 /// Keywords with one cost: the Forge word and the DSL variant.
-const COSTED: [(&str, &str); 42] = [
+const COSTED: [(&str, &str); 43] = [
+    ("Mayhem", "Mayhem"),
     ("Disturb", "Disturb"),
     ("Harmonize", "Harmonize"),
     ("Offspring", "Offspring"),
@@ -367,6 +369,9 @@ pub fn keyword_ability(ctx: &mut Ctx, body: &str) -> Tr<Value> {
             json!({"WithCounters": {"counter": kind, "count": amount(ctx, count)?}})
         }
         ["ETBReplacement", "Other", name] => choice(ctx, name)?,
+        ["ETBReplacement", "Other", name, "Mandatory", zone, valid] if !valid.contains("Self") => {
+            return extra::others(ctx, name, zone, valid);
+        }
         ["ETBReplacement", "Copy", name, "Optional"] => {
             super::effects_copy::enters_as_copy(ctx, name)?
         }
@@ -419,8 +424,14 @@ fn choice(ctx: &Ctx, name: &str) -> Tr<Value> {
     };
     match (part.get("DB"), part.get("Type"), part.get("Choices")) {
         (Some("ChooseColor"), None, None) => {
-            hints_only(&["DB", "Defined"])?;
-            Ok(json!({"Choose": "Color"}))
+            hints_only(&["DB", "Defined", "Exclude"])?;
+            match part.get("Exclude") {
+                None => Ok(json!({"Choose": "Color"})),
+                Some(color) => match excluded_color(color) {
+                    Some(color) => Ok(json!({"Choose": {"ColorOtherThan": color}})),
+                    None => unmapped("key:ETBReplacement.Exclude"),
+                },
+            }
         }
         (Some("ChooseType"), Some("Creature"), None) => {
             hints_only(&["DB", "Defined", "Type"])?;
@@ -435,8 +446,17 @@ fn choice(ctx: &Ctx, name: &str) -> Tr<Value> {
             }
         }
         (Some("NameCard"), _, None) => super::memory::name_choice(&part),
+        (Some("AlterAttribute"), _, _) => extra::prepared(&part),
         (api, _, _) => unmapped(format!("keyword:ETBReplacement-{}", api.unwrap_or("?"))),
     }
+}
+
+/// The DSL name of the color `Exclude$` names.
+fn excluded_color(word: &str) -> Option<&'static str> {
+    ["white", "blue", "black", "red", "green"]
+        .iter()
+        .position(|known| *known == word)
+        .map(|at| ["White", "Blue", "Black", "Red", "Green"][at])
 }
 
 /// The condition field of an `etbCounter` line (the field after the count; the next one is the description): none for

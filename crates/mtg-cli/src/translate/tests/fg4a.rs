@@ -62,7 +62,7 @@ fn selector_atoms_map(#[case] script: &str, #[case] expected: Value) {
 #[case::wrong_cast_zone("Creature.wasCastFromTheirMind")]
 #[case::unknown_cast_suffix("Creature.wasCastFromNowhere")]
 #[case::every_zone_at_once("Creature.YouOwn | AffectedZone$ All")]
-#[case::saddled_is_a_condition("Creature.IsSaddled")]
+#[case::unknown_state("Creature.IsBogus")]
 fn atoms_outside_the_nodes_stay_gaps(#[case] valid: &str) {
     let script = format!(
         "Name:T\nTypes:Creature Elf\nS:Mode$ Continuous | Affected$ {valid} | AddPower$ 1\n"

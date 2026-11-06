@@ -13,6 +13,8 @@ pub fn count(ctx: &Ctx, base: &str) -> Option<Tr<Value>> {
         "Domain" if rest.is_empty() => Ok(json!({"Distinct": {
             "of": [{"Type": "Land"}, {"ControlledBy": "You"}], "stat": "BasicLandTypes"}})),
         "ResolvedThisTurn" if rest.is_empty() => Ok(json!("ResolvedThisTurn")),
+        // The permanents this one sacrificed as it entered (devour); another filter would count other cards.
+        "Devoured" if rest == "Card" => Ok(json!("Devoured")),
         // The number an earlier step of the ability remembered; the size of a number is the number.
         "RememberedNumber" | "RememberedSize" if rest.is_empty() => {
             return super::number::read(ctx).map(Ok);
