@@ -482,7 +482,22 @@ pub fn written_variants(ability: &Ability) -> Vec<String> {
     twins::add(ability, &mut texts);
     super::shortened::add(&mut texts);
     oracle_only::add(ability, &mut texts);
+    done_once_kept(ability, &mut texts);
     texts
+}
+
+/// "Do this only once each turn" after a choice counts the times it is done (`Limit::done_once`): a trigger that spends its
+/// limit as it triggers does not say it.
+fn done_once_kept(ability: &Ability, texts: &mut Vec<String>) {
+    if let Ability::Triggered {
+        limit: Some(limit),
+        effects,
+        ..
+    } = ability
+        && *limit != Limit::done_once(effects)
+    {
+        texts.retain(|text| !text.contains("o this only once each turn"));
+    }
 }
 
 /// The wordings of an ability the card has in its graveyard: it returns itself "from your graveyard to your hand", and
@@ -661,7 +676,7 @@ fn ability_texts(ability: &Ability) -> Vec<String> {
         Ability::Triggered {
             when,
             intervening_if,
-            limit: limit @ (None | Some(Limit::OncePerTurn)),
+            limit: limit @ (None | Some(Limit::OncePerTurn | Limit::OncePerTurnDone)),
             from,
             targets,
             effects,
@@ -1190,7 +1205,10 @@ fn closed(sentences: &[String], capital_first: bool) -> Vec<String> {
 /// The sentences after the event of a triggered ability, and the one about how often it triggers.
 fn triggered_tail(sentences: &[String], limit: Option<Limit>) -> Vec<String> {
     let mut tail = closed(sentences, false);
-    tail.extend(limit.map(|_| "This ability triggers only once each turn.".to_owned()));
+    tail.extend(limit.map(|limit| match limit {
+        Limit::OncePerTurnDone => "Do this only once each turn.".to_owned(),
+        _ => "This ability triggers only once each turn.".to_owned(),
+    }));
     tail
 }
 
@@ -1580,6 +1598,8 @@ fn restriction_texts(timing: Timing, limit: Option<Limit>) -> Vec<String> {
             "Activate only as a sorcery and only once each turn.".to_owned(),
             "Activate only once each turn and only as a sorcery.".to_owned(),
         ],
+        // A limit counted as a triggered ability's choice is done, which no activation has.
+        (_, Some(Limit::OncePerTurnDone)) => Vec::new(),
         (timing, Some(Limit::TimesPerTurn(most))) => {
             let times = match most {
                 2 => "twice".to_owned(),

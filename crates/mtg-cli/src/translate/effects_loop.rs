@@ -252,6 +252,12 @@ pub fn peek_and_reveal(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
     if matches!(who.as_str(), Some("EachPlayer" | "Opponents")) && p.has("RevealValid") {
         return unmapped("key:PeekAndReveal.Defined+RevealValid");
     }
+    // "Reveal the top card" without a look first: the same cards are seen when all of them are revealed.
+    match p.get("NoPeek") {
+        None => {}
+        Some("True") if !p.has("RevealValid") && p.get("NoReveal").is_none() => {}
+        Some(_) => return unmapped("key:PeekAndReveal.NoPeek-with-a-pick"),
+    }
     let top = ctx.fresh("top");
     let from_top = json!({ "Bound": top });
     let count = amount(ctx, p.get("PeekAmount").unwrap_or("1"))?;

@@ -1252,12 +1252,26 @@ fn gain_control(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
         Some("LeavesPlay") => "WhileSourceOnBattlefield",
         Some(other) => return unmapped(format!("key:GainControl.LoseControl={other}")),
     };
-    let affected = match p.get("AllValid") {
-        Some(valid) => json!({"Each": group_of_player(ctx, p, valid)?}),
-        None => objects(subject(ctx, p, "", None)?)?,
+    // A target player with a `Defined$` object: the target takes control of that object ("target opponent gains control
+    // of ~"); a `Defined$` beside a target object names that target again.
+    let mut target_player = None;
+    let affected = match (p.get("AllValid"), p.get("Defined")) {
+        (Some(valid), _) => json!({"Each": group_of_player(ctx, p, valid)?}),
+        (None, Some(word)) if p.has("ValidTgts") => {
+            let spec = super::valid::target_spec(ctx, p, None)?;
+            let player = matches!(spec["what"].as_str(), Some("Player" | "Opponent"));
+            let target = ctx.target(spec)?;
+            if player {
+                target_player = Some(target);
+            } else if !word.starts_with("Targeted") && !word.starts_with("ThisTargeted") {
+                return unmapped(format!("key:GainControl.Defined={word}-beside-a-target"));
+            }
+            objects(defined(ctx, word)?)?
+        }
+        (None, _) => objects(subject(ctx, p, "", None)?)?,
     };
     let controller = match p.get("NewController") {
-        None => json!("You"),
+        None => target_player.unwrap_or_else(|| json!("You")),
         Some(word) => match defined(ctx, word)? {
             // One player takes control; a group has no single new controller.
             group if matches!(group.as_str(), Some("Opponents" | "EachPlayer")) => {

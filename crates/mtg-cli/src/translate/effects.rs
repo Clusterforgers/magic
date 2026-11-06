@@ -609,8 +609,20 @@ fn excess_part(ctx: &mut Ctx, p: &Params) -> Tr<Option<ExcessPart>> {
     Ok(Some((json!({"as": bound}), Some((svar.to_owned(), bound)))))
 }
 
-/// The player of a line: its target or `Defined$` word, `You` when it has neither.
+/// The player of a line: its target or `Defined$` word, `You` when it has neither. A line with both chooses its target
+/// and acts on the `Defined$` player, as Forge does ("If target opponent has more cards in hand than you, draw ...").
 fn player(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
+    if p.has("ValidTgts")
+        && let Some(word) = p.get("Defined")
+    {
+        let spec = super::valid::target_spec(ctx, p, None)?;
+        let target = ctx.target(spec)?;
+        // `ThisTargetedPlayer` is the target of this very line.
+        if word == "ThisTargetedPlayer" {
+            return Ok(target);
+        }
+        return super::valid::defined(ctx, word);
+    }
     subject(ctx, p, "You", None)
 }
 

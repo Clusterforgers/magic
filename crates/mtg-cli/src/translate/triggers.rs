@@ -109,10 +109,16 @@ pub fn triggered(ctx: &mut Ctx, body: &str) -> Tr<Value> {
     let optional = p.get("OptionalDecider").is_some()
         || rendered.contains("\"May\":")
         || rendered.contains("\"Pay\":");
+    // A limit on a first step that is a choice is spent as the choice is done (`Limit::OncePerTurnDone`).
+    let chosen_first = effects
+        .first()
+        .is_some_and(|first| first.get("May").is_some() || first.get("Pay").is_some());
     if p.get("ResolvedLimit").is_some() && optional {
-        return unmapped("key:Trigger.ResolvedLimit-optional");
-    }
-    if let Some(limit) = once_a_turn(&p)? {
+        if !chosen_first || p.get("ResolvedLimit") != Some("1") || p.has("ActivationLimit") {
+            return unmapped("key:Trigger.ResolvedLimit-optional");
+        }
+        ability["limit"] = json!("OncePerTurnDone");
+    } else if let Some(limit) = once_a_turn(&p)? {
         ability["limit"] = limit;
     }
     if !ctx.targets.is_empty() {

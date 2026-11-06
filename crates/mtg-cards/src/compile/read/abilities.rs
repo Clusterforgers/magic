@@ -30,12 +30,18 @@ fn at_restriction(r: &mut Reader<'_>) -> bool {
         .is_some()
 }
 
-/// "This ability triggers only once each turn." after the effects of a triggered ability.
-fn once_each_turn(r: &mut Reader<'_>) -> Option<Limit> {
+/// "This ability triggers only once each turn." after the effects of a triggered ability, or "Do this only once each
+/// turn.", which after a choice counts the times it is done (`Limit::done_once`).
+fn once_each_turn(r: &mut Reader<'_>, effects: &[Effect]) -> Option<Limit> {
     r.attempt(|r| {
-        (r.words(ONCE_EACH_TURN) || r.words(super::w13b_mill_rad::W13B_DO_THIS_ONCE))
-            .then_some(())?;
-        r.sentence_end().then_some(Limit::OncePerTurn)
+        let limit = if r.words(ONCE_EACH_TURN) {
+            Limit::OncePerTurn
+        } else if r.words(super::w13b_mill_rad::W13B_DO_THIS_ONCE) {
+            Limit::done_once(effects)
+        } else {
+            return None;
+        };
+        r.sentence_end().then_some(limit)
     })
 }
 
@@ -181,7 +187,7 @@ pub fn triggered(r: &mut Reader<'_>) -> Option<Ability> {
         None => sentences(r, true)?,
     };
     let effects = super::c10_pa_monstrous::c10_pa_put_in(r, effects, monstrous);
-    let limit = once_each_turn(r);
+    let limit = once_each_turn(r, &effects);
     // A card cycled is in its owner's graveyard when its own ability triggers, and a card that returns itself from the
     // graveyard has its ability there.
     let from = if triggers::cast_itself(&when) {

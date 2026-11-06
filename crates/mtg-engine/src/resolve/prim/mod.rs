@@ -37,6 +37,11 @@ mod unattach;
 mod w2d_villainous;
 mod w6e_exchange;
 pub(crate) use continuous::lower;
+
+/// The name under which the first step of a resolution binds whether it was done ("you may ...", "you may pay ...").
+pub(crate) fn first_step_done() -> String {
+    may::performed_name(&[0])
+}
 mod c6_kw_exploit;
 mod c6_kw_renown;
 mod counter;
