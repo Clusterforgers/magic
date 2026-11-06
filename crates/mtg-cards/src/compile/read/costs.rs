@@ -445,7 +445,10 @@ fn item_text(item: &CostItem) -> Option<String> {
             from: Some(from),
         } => {
             let mut said = from.clone();
-            said.0.push(Pred::ControlledBy(Ref::You));
+            // The payer's own permanents, said once whether or not the filter names the controller.
+            if !said.0.contains(&Pred::ControlledBy(Ref::You)) {
+                said.0.push(Pred::ControlledBy(Ref::You));
+            }
             format!(
                 "Remove {} from {}",
                 w2f_text(counter.as_ref(), count)?,

@@ -115,6 +115,8 @@ mod r5a_wordings;
 mod r5b_performed;
 mod r5c_order;
 mod r5g_lines;
+mod r6b_pairs;
+mod r6b_wordings;
 mod random_moves;
 mod render;
 mod repeat;

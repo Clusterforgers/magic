@@ -555,8 +555,9 @@ fn names_text(pred: &Pred) -> Option<(u8, String)> {
         Pred::Subtype(Subtype(name)) => Some((1, name.clone())),
         Pred::Type(kind) => Some((2, type_name(*kind).to_owned())),
         Pred::AnyOf(list) => {
-            let permanents: Vec<Pred> = PERMANENTS.iter().map(|kind| Pred::Type(*kind)).collect();
-            if *list == permanents {
+            // The permanent types in any order are one alternative.
+            let permanent = |kind: &CardType| list.contains(&Pred::Type(*kind));
+            if list.len() == PERMANENTS.len() && PERMANENTS.iter().all(permanent) {
                 return Some((2, "permanent".to_owned()));
             }
             let names: Option<Vec<(u8, String)>> = list.iter().map(names_text).collect();

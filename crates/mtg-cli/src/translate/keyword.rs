@@ -183,6 +183,11 @@ pub fn keyword_value(ctx: &Ctx, text: &str) -> Tr<Value> {
         return Ok(json!({ variant: number }));
     }
     let second = fields.next();
+    // A protection that spares a source ("This effect doesn't remove this Aura", `Card.CardUID_HostCardUID`) has no
+    // exception in the keyword: dropping it would knock the Aura off.
+    if name == "Protection" && fields.next().is_some() {
+        return unmapped("keyword:Protection-with-exception");
+    }
     if mtg_cards::macros::is_keyword(name) {
         return macro_keyword(name, first, second, fields.next());
     }
