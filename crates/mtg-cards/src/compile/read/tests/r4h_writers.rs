@@ -54,6 +54,46 @@ fn champion_line(#[case] choices: &str, #[case] clause: &str, #[case] reads: boo
     assert_eq!(written(&champion(choices, SACRIFICE), clause), reads);
 }
 
+fn equip(cost: &str, more: &str) -> String {
+    format!(
+        r#"{{"Activated":{{"cost":{cost},{more}"effects":[{{"Attach":{{"to":{{"Target":0}},"what":"This"}}}}],"targets":[{{"what":{{"Object":[{{"Type":"Creature"}},{{"ControlledBy":"You"}}]}}}}],"timing":"Sorcery"}}}}"#
+    )
+}
+
+fn equip_text(abilities: &[String]) -> Option<(String, usize)> {
+    let abilities: Vec<Ability> = abilities.iter().map(|json| ability(json)).collect();
+    crate::compile::equip_line(&abilities)
+}
+
+const ONCE: &str = r#""limit":"OncePerTurn","#;
+const LESS: &str = r#"[{"Mana":"{3}"},{"Changed":{"change":"Reduce","mana":"{1}","per":{"Count":[{"Subtype":"Equipment"},{"ControlledBy":"You"},"Other"]}}}]"#;
+const FEW: &str = r#"[{"Mana":"{2}"},{"Changed":{"change":"Reduce","mana":"{1}","per":{"When":{"condition":{"Compare":{"left":{"Count":[{"OwnedBy":"You"},{"In":"Hand"}]},"op":"Le","right":1}},"otherwise":0,"then":2}}}}]"#;
+
+#[rstest]
+#[case::mana_or_mana(&[equip(r#""{2}""#, ""), equip(r#""{B}""#, "")], "Equip {2} or {B}", 2)]
+#[case::mana_or_discard(&[equip(r#""{3}""#, ""), equip(r#"[{"Discard":{}}]"#, "")], "Equip\u{2014}Pay {3} or discard a card.", 2)]
+#[case::life_once(&[equip(r#"[{"PayLife":3}]"#, ONCE)], "Equip\u{2014}Pay 3 life. Activate only once each turn.", 1)]
+#[case::free_once(&[equip(r#""{0}""#, ONCE)], "Equip {0}. Activate only once each turn.", 1)]
+#[case::sacrifice_once(
+    &[equip(r#"[{"Sacrifice":{"filter":["Other",{"Not":{"Type":"Land"}}]}}]"#, ONCE)],
+    "Equip\u{2014}Sacrifice another nonland permanent. Activate only once each turn.",
+    1
+)]
+#[case::per_equipment(&[equip(LESS, "")], "Equip {3}. This ability costs {1} less to activate for each other Equipment you control.", 1)]
+#[case::few_cards(&[equip(FEW, "")], "Equip {2}. This ability costs {2} less to activate if you have one or fewer cards in hand.", 1)]
+fn equip_options_line(#[case] abilities: &[String], #[case] line: &str, #[case] count: usize) {
+    assert_eq!(equip_text(abilities), Some((line.to_owned(), count)));
+}
+
+#[rstest]
+#[case::plain(&[equip(r#""{2}""#, "")])]
+#[case::other_target(&[equip(r#""{2}""#, ONCE).replace("\"Type\":\"Creature\"", "\"Type\":\"Artifact\"")])]
+#[case::two_ways_with_a_limit(&[equip(r#""{2}""#, ONCE), equip(r#""{B}""#, ONCE)])]
+#[case::reduction_by_one_not_the_count(&[equip(LESS, "").replace("\"Other\"", "\"Tapped\"")])]
+fn equip_options_not_a_line(#[case] abilities: &[String]) {
+    assert_eq!(equip_text(abilities), None);
+}
+
 #[test]
 fn a_trigger_that_does_not_sacrifice_is_no_champion() {
     let json = champion(
