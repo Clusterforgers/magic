@@ -92,7 +92,11 @@ fn by_mode(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
     }
     Ok(match p.get("Mode").unwrap_or_default() {
         "Continuous" if p.has("MayPlay") => {
-            json!({"Rule": {"rule": super::mayplay::may_cast(ctx, p, None)?}})
+            let mut rule = json!({"Rule": {"rule": super::mayplay::may_cast(ctx, p, None)?}});
+            if let Some(zone) = super::mayplay::effect_zone(p)? {
+                rule["Rule"]["from"] = json!(zone);
+            }
+            rule
         }
         "Continuous" => continuous(ctx, p)?,
         "CantAttack" => restriction(ctx, p, &["CantAttack"])?,

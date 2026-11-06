@@ -18,6 +18,9 @@ pub fn ability_line(ctx: &mut Ctx, body: &str) -> Tr<Vec<Value>> {
         if ctx.is_aura() && p.get("SP") == Some("Attach") {
             return Ok(Vec::new());
         }
+        if p.get("SP") == Some("PermanentCreature") {
+            return permanent_spell(ctx, &p);
+        }
         return spell(ctx, &p);
     }
     if p.has("AB") {
@@ -52,6 +55,16 @@ pub(super) fn additional_cost(ctx: &Ctx, text: &str) -> Tr<Option<Value>> {
     Ok(Some(
         json!({"AdditionalCost": {"cost": items, "required": true}}),
     ))
+}
+
+/// A creature spell's own line (`SP$ PermanentCreature`): it has no effect to resolve, only the cost beyond its mana cost.
+fn permanent_spell(ctx: &Ctx, p: &Params) -> Tr<Vec<Value>> {
+    super::ctx::check_keys(p, "PermanentCreature", &["SP", "Cost"], |_, _| false)?;
+    let extra = match p.get("Cost") {
+        Some(text) => additional_cost(ctx, text)?,
+        None => None,
+    };
+    Ok(extra.into_iter().collect())
 }
 
 /// The keys only an activated ability has.

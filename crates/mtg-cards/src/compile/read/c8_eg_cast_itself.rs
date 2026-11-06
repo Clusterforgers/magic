@@ -9,11 +9,16 @@ use crate::modify::{CastPermission, GameRule};
 use crate::refs::{Pred, Ref, Selector, ZoneKind};
 use crate::value::Condition;
 
-/// "You may cast this card from your graveyard[ by paying C in addition to paying its other costs][ as long as C| if C]".
+/// "You may cast this card from your graveyard or from exile[ by paying C in addition to paying its other costs][ as long as C| if C]".
 pub fn c8_eg_cast_itself(r: &mut Reader<'_>) -> Option<Ability> {
     r.need("you may cast")?;
     r.source().then_some(())?;
-    r.need("from your graveyard")?;
+    let zone = if r.words("from exile") {
+        ZoneKind::Exile
+    } else {
+        r.need("from your graveyard")?;
+        ZoneKind::Graveyard
+    };
     let additional = if r.word("by") {
         Some(super::dk1d_by_paying::read(r)?)
     } else {
@@ -27,18 +32,18 @@ pub fn c8_eg_cast_itself(r: &mut Reader<'_>) -> Option<Ability> {
         None
     };
     Some(Ability::Rule {
-        rule: GameRule::MayCast(c8_eg_permission(additional)),
+        rule: GameRule::MayCast(c8_eg_permission(additional, zone)),
         condition,
-        from: ZoneKind::Graveyard,
+        from: zone,
     })
 }
 
 /// The permission the reader gives: the card itself, cast by its owner from the graveyard, for the costs added.
-fn c8_eg_permission(additional: Option<Cost>) -> CastPermission {
+fn c8_eg_permission(additional: Option<Cost>, zone: ZoneKind) -> CastPermission {
     CastPermission {
         who: Ref::You,
         what: Selector(vec![Pred::This]),
-        from: Some(ZoneKind::Graveyard),
+        from: Some(zone),
         free: false,
         flash: false,
         only: None,
@@ -50,14 +55,18 @@ fn c8_eg_permission(additional: Option<Cost>) -> CastPermission {
 }
 
 /// The wordings of a rule `c8_eg_cast_itself` reads, none for another rule.
-pub fn c8_eg_texts(rule: &GameRule, condition: Option<&Condition>) -> Vec<String> {
+pub fn c8_eg_texts(rule: &GameRule, condition: Option<&Condition>, zone: ZoneKind) -> Vec<String> {
     let GameRule::MayCast(permission) = rule else {
         return Vec::new();
     };
-    if *permission != c8_eg_permission(permission.additional.clone()) {
+    if *permission != c8_eg_permission(permission.additional.clone(), zone) {
         return Vec::new();
     }
-    let mut base = "You may cast ~ from your graveyard".to_owned();
+    let mut base = match zone {
+        ZoneKind::Exile => "You may cast ~ from exile",
+        _ => "You may cast ~ from your graveyard",
+    }
+    .to_owned();
     if let Some(cost) = &permission.additional {
         let Some(paying) = super::dk1d_by_paying::text(cost) else {
             return Vec::new();
