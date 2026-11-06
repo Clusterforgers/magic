@@ -20,7 +20,9 @@ fn add_property(ctx: &Ctx, filter: &mut Value, word: &str, ability: bool) -> boo
         "hasXCost" => fact(filter, "XInCost"),
         "sharesCreatureTypeWith Commander" => fact(filter, "SharesCommanderType"),
         "YouDontOwn" => fact(filter, "NotOwned"),
-        "wasCastFromYourGraveyard" | "wasCastFromGraveyard" => fact(filter, "FromGraveyard"),
+        "wasCastFromYourGraveyard" => fact(filter, "FromYourGraveyard"),
+        "wasCastFromGraveyard" => fact(filter, "FromGraveyard"),
+        "wasCastFromGraveyard" => fact(filter, "FromGraveyard"),
         "inZoneBattlefield" if ability => fact(filter, "OnBattlefield"),
         "cmcGE5" => filter["min_value"] = json!(5),
         _ => {

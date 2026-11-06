@@ -952,11 +952,15 @@ fn about_players_and_permanents(
             if let DamageTarget::Player(player) = target
                 && !matches!(form, DamageForm::Infect | DamageForm::NoLifeLoss)
             {
-                found.push(Happened::LifeLost {
-                    player: *player,
-                    amount: *amount,
-                    nth: loss_ordinal(look, *player, *amount),
-                });
+                // A life floor lets damage take less life than it deals (CR 614.1): the trigger sees the life lost.
+                let lost = super::life_floor::damage_lost(look.pre, look.earlier, *player, *amount);
+                if lost > 0 || *amount == 0 {
+                    found.push(Happened::LifeLost {
+                        player: *player,
+                        amount: lost,
+                        nth: loss_ordinal(look, *player, lost),
+                    });
+                }
             }
         }
         Event::LifeGained { player, amount } => found.push(Happened::LifeGained {
@@ -2222,6 +2226,11 @@ pub(crate) fn needs_before(events: &[Event]) -> bool {
         Event::ZoneChanged { from, to, .. } => {
             *from == Zone::Battlefield || *to == Zone::Battlefield
         }
+        // A life floor leaves damage to a player taking less life than it deals, judged from the life before the batch.
+        Event::DamageDealt {
+            target: DamageTarget::Player(_),
+            ..
+        } => true,
         Event::ResolutionEnded { outcome, .. } => *outcome != ResolutionOutcome::Resolved,
         _ => false,
     })

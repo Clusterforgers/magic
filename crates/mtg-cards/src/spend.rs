@@ -61,6 +61,8 @@ pub enum SpendFact {
     NotOwned,
     /// It is cast from a graveyard ("a spell from your graveyard").
     FromGraveyard,
+    /// It is cast from its caster's own graveyard ("a spell from your graveyard"); a card always goes to its owner's graveyard.
+    FromYourGraveyard,
     /// It shares a creature type with a commander of the caster ("a creature spell that shares a creature type with your commander").
     SharesCommanderType,
     /// The source of the ability is on the battlefield ("abilities of artifacts on the battlefield").
@@ -172,6 +174,7 @@ impl SpendFilter {
                 SpendFact::XInCost => traits.x_in_cost,
                 SpendFact::NotOwned => traits.not_owned,
                 SpendFact::FromGraveyard => traits.from_graveyard,
+                SpendFact::FromYourGraveyard => traits.from_graveyard && !traits.not_owned,
                 SpendFact::SharesCommanderType => traits.shares_commander_type,
                 SpendFact::OnBattlefield => traits.on_battlefield,
             })
@@ -375,6 +378,23 @@ mod tests {
     #[case::owned(r#"{"facts":["NotOwned"]}"#, 0, false, false, false, false)]
     #[case::from_a_graveyard(r#"{"facts":["FromGraveyard"]}"#, 0, false, false, true, true)]
     #[case::from_a_hand(r#"{"facts":["FromGraveyard"]}"#, 0, false, false, false, false)]
+    #[case::from_your_graveyard(r#"{"facts":["FromYourGraveyard"]}"#, 0, false, false, true, true)]
+    #[case::from_an_opponents_graveyard(
+        r#"{"facts":["FromYourGraveyard"]}"#,
+        0,
+        false,
+        true,
+        true,
+        false
+    )]
+    #[case::from_a_hand_not_a_graveyard(
+        r#"{"facts":["FromYourGraveyard"]}"#,
+        0,
+        false,
+        false,
+        false,
+        false
+    )]
     #[case::every_part(
         r#"{"min_value":3,"facts":["NotOwned","FromGraveyard"]}"#,
         3,

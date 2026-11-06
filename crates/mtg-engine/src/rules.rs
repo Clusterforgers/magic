@@ -1379,7 +1379,7 @@ pub fn life_total_cant_change(state: &GameState, player: PlayerId) -> bool {
 }
 
 /// The life total damage can't take `player` below, if a rule sets one: the one place the damage events read this rule.
-pub(crate) fn damage_life_floor(state: &GameState, player: PlayerId) -> Option<i32> {
+pub fn damage_life_floor(state: &GameState, player: PlayerId) -> Option<i32> {
     state.rules().life_floors.get(&player).copied()
 }
 

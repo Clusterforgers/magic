@@ -118,7 +118,7 @@ fn qualifiers(r: &mut Reader<'_>, filter: &mut SpendFilter) {
         } else if r.words("you don't own") {
             filter.facts.push(SpendFact::NotOwned);
         } else if r.words("from your graveyard") {
-            filter.facts.push(SpendFact::FromGraveyard);
+            filter.facts.push(SpendFact::FromYourGraveyard);
         } else {
             return;
         }
@@ -328,7 +328,8 @@ fn qualifier_text(filter: &SpendFilter) -> String {
         text.push_str(match fact {
             SpendFact::XInCost => " with {X} in their mana costs",
             SpendFact::NotOwned => " you don't own",
-            SpendFact::FromGraveyard => " from your graveyard",
+            SpendFact::FromGraveyard => " from a graveyard",
+            SpendFact::FromYourGraveyard => " from your graveyard",
             SpendFact::SharesCommanderType => " that shares a creature type with your commander",
             SpendFact::OnBattlefield => " on the battlefield",
         });

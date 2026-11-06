@@ -295,6 +295,7 @@ mod level_up;
 mod library_effects;
 mod library_fuzz;
 mod lieutenants;
+mod life_floor_triggers;
 mod lifecycle_keywords_fuzz;
 mod lifelink_combat;
 mod lifted_gates;

@@ -293,6 +293,16 @@ pub fn remembered_controller(ctx: &Ctx) -> Tr<Value> {
     {
         return unmapped("defined:RememberedController");
     }
+    // "For each permanent exiled this way, its controller": one answer per object that really moved, which a target
+    // set per player cannot give (a commander sent to the command zone is not exiled, yet its controller would draw).
+    let per_player = |target: &Value| {
+        target
+            .get("Target")
+            .and_then(Value::as_u64)
+            .and_then(|at| usize::try_from(at).ok())
+            .and_then(|at| ctx.targets.get(at))
+            .is_some_and(|spec| spec["what"].get("PerPlayer").is_some())
+    };
     let before = match &ctx.remembered {
         Some(Value::Object(map)) if map.len() == 1 => {
             match map.get("Bound").and_then(Value::as_str) {
@@ -302,6 +312,9 @@ pub fn remembered_controller(ctx: &Ctx) -> Tr<Value> {
         }
         _ => None,
     };
+    if before.as_ref().is_some_and(per_player) {
+        return unmapped("defined:RememberedController-of-a-target-per-player");
+    }
     match before {
         Some(what) => Ok(json!({"ControllerOf": what})),
         None => unmapped("defined:RememberedController"),

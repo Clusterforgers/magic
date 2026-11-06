@@ -22,8 +22,7 @@ pub fn effects(ctx: &mut Ctx, p: &Params, api: &str) -> Option<Tr<Vec<Value>>> {
     })
 }
 
-/// `Detain`: until the controller's next turn the objects can't attack or block and their abilities can't be activated
-/// (mana abilities stay, as `Prohibited::Activate` leaves them).
+/// `Detain`: until the controller's next turn the objects can't attack or block and their abilities can't be activated, mana abilities included (CR 701.35a).
 fn detain(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
     only(
         p,
@@ -35,7 +34,7 @@ fn detain(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
         json!({"Continuous": {"affected": what, "mods": ["CantAttack", "CantBlock"],
             "duration": "UntilYourNextTurn"}}),
         json!({"Rule": {"rule": {"Cant": {"who": "EachPlayer",
-            "action": {"Activate": [{"Is": what}]}}}, "duration": "UntilYourNextTurn"}}),
+            "action": {"ActivateKind": {"kind": "Every", "sources": [{"Is": what}]}}}}, "duration": "UntilYourNextTurn"}}),
     ])
 }
 
