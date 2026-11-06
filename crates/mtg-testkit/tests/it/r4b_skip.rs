@@ -69,7 +69,7 @@ fn each_rule_skips_one_turn_of_the_player_and_ends(
         .filter(|event| matches!(event, Event::RuleExpired { .. }))
         .count();
     assert_eq!(expired, rules);
-    assert!(driver.state().rule_effects().is_empty());
+    assert_eq!(driver.state().rule_effects().len(), 0);
     let replayed = replay(&setup, driver.engine().events()).unwrap();
     assert_eq!(replayed.state_hash(), driver.engine().state_hash());
     Ok(())

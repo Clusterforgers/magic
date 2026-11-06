@@ -47,11 +47,11 @@ fn dryad() -> Arc<CardDefinition> {
     )
 }
 
-fn table(top: Vec<Arc<CardDefinition>>, seats: usize) -> Scenario {
+fn table(top: &[Arc<CardDefinition>], seats: usize) -> Scenario {
     let rest = || (0..6).map(|_| forest()).collect::<Vec<_>>();
     (0..seats)
         .fold(Scenario::new(seats), |scenario, seat| {
-            let mut library = if seat == 0 { top.clone() } else { Vec::new() };
+            let mut library = if seat == 0 { top.to_vec() } else { Vec::new() };
             library.extend(rest());
             scenario.library(seat, library)
         })
@@ -125,8 +125,8 @@ fn a_card_is_taken_for_each_alternative(
         forest(),
         forest(),
     ];
-    let setup = table(top.clone(), seats).setup().unwrap();
-    let mut driver = Driver::from_scenario(table(top, seats))?;
+    let setup = table(&top, seats).setup().unwrap();
+    let mut driver = Driver::from_scenario(table(&top, seats))?;
     run(&mut driver, take)?;
     assert_eq!(hand(&driver), taken);
     let replayed = replay(&setup, driver.engine().events()).unwrap();
@@ -145,7 +145,7 @@ fn one_card_does_not_count_for_two_alternatives(
         burn("Bolt2", 1),
         burn("Bolt3", 1),
     ];
-    let mut driver = Driver::from_scenario(table(top, seats))?;
+    let mut driver = Driver::from_scenario(table(&top, seats))?;
     let asked = run(&mut driver, true)?;
     assert_eq!((hand(&driver), asked), (vec!["Dryad".to_owned()], 1));
     Ok(())

@@ -3894,6 +3894,7 @@ impl Walker<'_> {
 
     /// A rule of the game names what it is about: players or objects, and for the one that triggers again the event that
     /// causes the trigger, which is judged without a target, a triggering event or a name bound earlier.
+    #[allow(clippy::too_many_lines)]
     fn rule(&mut self, rule: &GameRule) {
         let tag = tag_of(rule);
         self.uses("Rule", &tag);
