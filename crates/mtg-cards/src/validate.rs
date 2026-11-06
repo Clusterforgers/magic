@@ -3966,6 +3966,13 @@ impl Walker<'_> {
             | GameRule::CantCastSpells { .. }
             | GameRule::ToughnessAssignsDamage(_)
             | GameRule::CountersRemain => self.w17b_rule(&tag, rule),
+            GameRule::ManaProduced { what, who, change } => self.at(tag, |w| {
+                w.at("what", |w| w.selector(what));
+                w.at("who", |w| w.reference(who, Kind::Player));
+                if matches!(change, crate::modify::ManaChange::Times(0)) {
+                    w.problem("a mana multiplier is at least one");
+                }
+            }),
             GameRule::Cant { who, action } => self.at(tag, |w| {
                 w.at("who", |w| w.reference(who, Kind::Either));
                 w.cant_action(action);

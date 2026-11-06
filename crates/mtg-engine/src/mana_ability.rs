@@ -471,7 +471,8 @@ pub(crate) fn options(state: &GameState, player: PlayerId) -> Vec<ManaOption> {
             }
         }
     }
-    mana_bonus::fold(state, player, found)
+    let found = mana_bonus::fold(state, player, found);
+    crate::mana_replace::fold(state, player, found)
 }
 
 /// The state after the effects a mana ability runs before its mana (CR 605.3b: in the order written), or `None` when

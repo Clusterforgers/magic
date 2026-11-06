@@ -14,7 +14,7 @@ use std::sync::OnceLock;
 use mtg_cards::ability::Ability;
 use mtg_cards::cost::Cost;
 use mtg_cards::keyword::Keyword;
-use mtg_cards::modify::{Attacked, GameRule, Prohibited, SpendAs};
+use mtg_cards::modify::{Attacked, GameRule, ManaChange, Prohibited, SpendAs};
 use mtg_cards::refs::{Ref, Selector, ZoneKind};
 use mtg_cards::trigger::TriggerPattern;
 use mtg_core::ids::{EffectId, ObjectId, PlayerId};
@@ -115,6 +115,17 @@ pub enum Rule {
         /// The keyword they have.
         #[cfg_attr(feature = "ts", ts(type = "unknown"))]
         keyword: Keyword,
+    },
+    /// The mana the permanents the selector picks add as the players tap them for mana changes (CR 106.6, 614.1).
+    ManaProduced {
+        /// The permanents, judged as they are tapped.
+        #[cfg_attr(feature = "ts", ts(type = "unknown"))]
+        what: Selector,
+        /// The players whose taps are changed.
+        who: Vec<PlayerId>,
+        /// The change.
+        #[cfg_attr(feature = "ts", ts(type = "unknown"))]
+        change: ManaChange,
     },
     /// The players can't draw cards.
     CantDraw(Vec<PlayerId>),
@@ -399,6 +410,21 @@ pub(crate) struct Again {
     pub(crate) cause: Option<TriggerPattern>,
 }
 
+/// A change to the mana of a tap that a permanent in play or an effect has in force.
+#[derive(Debug, Clone)]
+pub(crate) struct ManaRule {
+    /// The player who controls the rule.
+    pub(crate) controller: PlayerId,
+    /// The permanent or effect that has the rule.
+    pub(crate) source: ObjectRef,
+    /// The players whose taps are changed.
+    pub(crate) who: Vec<PlayerId>,
+    /// The permanents tapped that it covers.
+    pub(crate) what: Selector,
+    /// The change.
+    pub(crate) change: ManaChange,
+}
+
 /// The rules in force in a state.
 #[derive(Debug, Default)]
 pub(crate) struct RulesInForce {
@@ -416,6 +442,8 @@ pub(crate) struct RulesInForce {
     player_keywords: Vec<(PlayerId, Keyword)>,
     no_draw: BTreeSet<PlayerId>,
     no_search: BTreeSet<PlayerId>,
+    /// The changes to the mana of a tap.
+    pub(crate) mana: Vec<ManaRule>,
     vote_again: BTreeSet<PlayerId>,
     skip_extra_turns: BTreeSet<PlayerId>,
     reveal_top: BTreeSet<PlayerId>,
@@ -674,6 +702,17 @@ impl RulesInForce {
                 .extend(who.iter().map(|player| (*player, keyword.clone()))),
             Rule::CantDraw(players) => self.no_draw.extend(players),
             Rule::CantSearch(players) => self.no_search.extend(players),
+            Rule::ManaProduced { what, who, change } => {
+                if let Some(source) = source {
+                    self.mana.push(ManaRule {
+                        controller,
+                        source,
+                        who: who.clone(),
+                        what: what.clone(),
+                        change: *change,
+                    });
+                }
+            }
             Rule::VoteAgain(players) => self.vote_again.extend(players),
             Rule::SkipExtraTurns(players) => self.skip_extra_turns.extend(players),
             Rule::RevealTop(players) => self.reveal_top.extend(players),
@@ -890,6 +929,11 @@ pub(crate) fn lower_rule(scope: &Scope<'_>, wanted: &GameRule) -> Result<Rule, R
         },
         GameRule::CantDraw(who) => Rule::CantDraw(scope.players(who)?),
         GameRule::CantSearch(who) => Rule::CantSearch(scope.players(who)?),
+        GameRule::ManaProduced { what, who, change } => Rule::ManaProduced {
+            what: what.clone(),
+            who: scope.players(who)?,
+            change: *change,
+        },
         GameRule::VoteAgain(who) => Rule::VoteAgain(scope.players(who)?),
         GameRule::SkipExtraTurns(who) => Rule::SkipExtraTurns(scope.players(who)?),
         GameRule::RevealTop(who) => Rule::RevealTop(scope.players(who)?),
@@ -1007,6 +1051,7 @@ pub(crate) fn names_nothing(rule: &Rule) -> bool {
         | Rule::SkipDrawStep(players)
         | Rule::NoLegendRule(players)
         | Rule::NoMaxHandSize(players) => players.is_empty(),
+        Rule::ManaProduced { who, .. } => who.is_empty(),
         Rule::MaxHandSize(sizes) => sizes.is_empty(),
         Rule::UntapDuring { whose, .. } => whose.is_empty(),
         Rule::AttackLimitAt { at, .. } => at.is_empty(),
@@ -1135,6 +1180,7 @@ static NONE: RulesInForce = RulesInForce {
     player_keywords: Vec::new(),
     no_draw: BTreeSet::new(),
     no_search: BTreeSet::new(),
+    mana: Vec::new(),
     vote_again: BTreeSet::new(),
     skip_extra_turns: BTreeSet::new(),
     reveal_top: BTreeSet::new(),

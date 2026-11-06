@@ -327,6 +327,7 @@ const RUNS: &[&str] = &[
     "Rule.NoLifeLossFromDamage",
     "Rule.LifeFloor",
     "Rule.RadiationGainsLife",
+    "Rule.ManaProduced",
     "Rule.LifeTotalCantChange",
     "Rule.PlayersHave",
     "Rule.CantDraw",
@@ -893,6 +894,7 @@ mod tests {
     #[case::no_life_gain("Rule.CantGainLife", true)]
     #[case::no_life_loss_from_damage("Rule.NoLifeLossFromDamage", true)]
     #[case::radiation_gains_life("Rule.RadiationGainsLife", true)]
+    #[case::mana_produced("Rule.ManaProduced", true)]
     #[case::no_drawing("Rule.CantDraw", true)]
     #[case::no_searching("Rule.CantSearch", true)]
     #[case::a_revealed_top("Rule.RevealTop", true)]

@@ -4,6 +4,7 @@ use std::sync::Arc;
 
 use mtg_core::card::{CardType, Subtype, Supertype};
 use mtg_core::color::Color;
+use mtg_core::mana::ManaType;
 use serde::{Deserialize, Serialize};
 
 use crate::ability::{Ability, ActivationKind};
@@ -658,6 +659,34 @@ pub enum GameRule {
         who: Ref,
         /// What they can't do.
         action: Prohibited,
+    },
+    /// The mana the permanents `what` selects add as they are tapped for mana, when a player in `who` taps them, changes as
+    /// `change` says (CR 614.1, 106.6): "If a land is tapped for mana, it produces {B} instead of any other type and amount."
+    ManaProduced {
+        /// The permanents, judged as they are tapped.
+        what: Selector,
+        /// The players whose taps are changed.
+        who: Ref,
+        /// The change.
+        change: ManaChange,
+    },
+}
+
+/// How a `GameRule::ManaProduced` changes the mana of a tap.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
+pub enum ManaChange {
+    /// Every mana is of this type instead of any other type, in the same amount.
+    OnlyType(ManaType),
+    /// One mana of this type instead of any other type and amount.
+    One(ManaType),
+    /// As many times as much mana.
+    Times(u32),
+    /// Mana of the first type is of the second instead.
+    Convert {
+        /// The type that changes.
+        from: ManaType,
+        /// The type it becomes.
+        to: ManaType,
     },
 }
 

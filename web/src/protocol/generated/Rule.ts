@@ -74,7 +74,19 @@ who: Array<PlayerId>,
 /**
  * The keyword they have.
  */
-keyword: unknown, } } | { "CantDraw": Array<PlayerId> } | { "CantSearch": Array<PlayerId> } | { "VoteAgain": Array<PlayerId> } | { "SkipExtraTurns": Array<PlayerId> } | { "RevealTop": Array<PlayerId> } | { "NoMaxHandSize": Array<PlayerId> } | { "MaxHandSize": Array<[PlayerId, number]> } | { "NoLegendRule": Array<PlayerId> } | { "UntapDuring": { 
+keyword: unknown, } } | { "ManaProduced": { 
+/**
+ * The permanents, judged as they are tapped.
+ */
+what: unknown, 
+/**
+ * The players whose taps are changed.
+ */
+who: Array<PlayerId>, 
+/**
+ * The change.
+ */
+change: unknown, } } | { "CantDraw": Array<PlayerId> } | { "CantSearch": Array<PlayerId> } | { "VoteAgain": Array<PlayerId> } | { "SkipExtraTurns": Array<PlayerId> } | { "RevealTop": Array<PlayerId> } | { "NoMaxHandSize": Array<PlayerId> } | { "MaxHandSize": Array<[PlayerId, number]> } | { "NoLegendRule": Array<PlayerId> } | { "UntapDuring": { 
 /**
  * The permanents, judged when the step untaps.
  */

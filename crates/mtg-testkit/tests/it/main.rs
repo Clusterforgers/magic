@@ -628,5 +628,6 @@ mod r2a_doubling;
 mod r2d;
 mod r2g_combat;
 mod r3f_exiled;
+mod r3f_mana;
 mod ring;
 mod target_reductions;

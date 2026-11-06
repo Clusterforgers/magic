@@ -58,6 +58,7 @@ pub mod replacements_damage_by;
 mod replacements_enter;
 mod replacements_life;
 mod replacements_loss;
+mod replacements_mana;
 mod replacements_moved;
 mod replacements_phase;
 mod replacements_token;

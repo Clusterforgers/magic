@@ -61,6 +61,9 @@ fn single(ctx: &mut Ctx, body: &str) -> Tr<Value> {
             _ => super::replacements_counter::add_counter(ctx, &p),
         };
     }
+    if event == "ProduceMana" {
+        return super::replacements_mana::produce_mana(ctx, &p, line_condition.as_ref());
+    }
     if event == "Untap" {
         return doesnt_untap(ctx, &p);
     }
