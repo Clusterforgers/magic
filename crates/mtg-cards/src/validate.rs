@@ -1254,6 +1254,7 @@ impl<'a> Walker<'a> {
                         }
                     }
                     CostItem::Mana(_)
+                    | CostItem::OwnManaCost
                     | CostItem::Tap
                     | CostItem::Exert
                     | CostItem::Untap

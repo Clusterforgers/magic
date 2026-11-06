@@ -8,9 +8,11 @@ use super::ctx::{Ctx, Tr, unmapped};
 use super::valid::selector_any;
 
 /// A cost word without brackets.
-pub fn bare(word: &str) -> Option<Value> {
+pub fn bare(ctx: &Ctx, word: &str) -> Option<Value> {
     match word {
         "Forage" => Some(json!("Forage")),
+        // The card's own mana cost, read off each card a static ability gives the keyword to.
+        "CardManaCost" if ctx.own_cost_ok.get() => Some(json!("OwnManaCost")),
         _ => None,
     }
 }

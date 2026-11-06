@@ -162,6 +162,8 @@ pub(crate) struct Held {
     counter_keywords: Vec<(Keyword, u64)>,
     /// The keywords it can't have or gain any more (a lock): a later effect that adds one adds nothing.
     locked: Vec<Keyword>,
+    /// The mana cost its card prints, which a keyword given "equal to its mana cost" reads.
+    own_cost: Option<mtg_core::mana::ManaCost>,
     /// The effects that changed it.
     pub(crate) applied: Vec<Applied>,
 }
@@ -202,6 +204,7 @@ impl Held {
             keywords,
             counter_keywords: Vec::new(),
             locked: Vec::new(),
+            own_cost: object.mana_cost().cloned(),
             applied: Vec::new(),
         }
     }
@@ -263,6 +266,9 @@ impl Held {
         match modification {
             Modification::SetController(player) => self.controller = *player,
             Modification::AddKeyword(keyword) => {
+                let own = self.own_cost.clone().unwrap_or_default();
+                let read = keyword.clone().with_own_mana_cost(&own);
+                let keyword = &read;
                 if self.locked.contains(keyword) {
                     return;
                 }

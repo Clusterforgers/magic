@@ -317,7 +317,10 @@ fn continuous(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
         ("RemoveKeyword", "RemoveKeyword"),
     ] {
         if let Some(keywords) = p.get(key) {
-            for keyword in keyword_list(ctx, keywords)? {
+            ctx.own_cost_ok.set(variant == "AddKeyword");
+            let found = keyword_list(ctx, keywords);
+            ctx.own_cost_ok.set(false);
+            for keyword in found? {
                 mods.push(json!({ variant: keyword }));
             }
         }

@@ -216,6 +216,11 @@ fn costed(ctx: &Ctx, name: &str, variant: &str, cost_text: &str, rest: Option<&s
     if rest.is_some_and(|text| text.contains("ReduceCost$")) {
         return unmapped(format!("keyword:{name}-with-reduction"));
     }
+    // Only the graveyard abilities read the cost off the card they are given to; an optional cost of a spell being cast
+    // (replicate) and an alternative cost of a hand spell (emerge) are read from the printed card.
+    if cost_text.contains("CardManaCost") && !matches!(name, "Escape" | "Scavenge" | "Encore") {
+        return unmapped("cost:CardManaCost");
+    }
     Ok(json!({ variant: cost(ctx, cost_text)? }))
 }
 
