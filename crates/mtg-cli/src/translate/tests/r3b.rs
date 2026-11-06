@@ -131,7 +131,7 @@ fn another_word_for_the_tapped_permanent_stays_a_gap(#[case] word: &str) {
     let text = format!(
         "Name:T\nTypes:Enchantment\nT:Mode$ TapsForMana | ValidCard$ Forest | Execute$ Mana | Static$ True | TriggerZones$ Battlefield\nSVar:Mana:DB$ Mana | Produced$ G | Amount$ 1 | Defined$ {word}\n"
     );
-    assert!(!gaps(&text).is_empty());
+    assert_eq!(gaps(&text).len(), 1, "{:?}", gaps(&text));
 }
 
 fn creature_line(cost: &str) -> String {
