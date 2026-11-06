@@ -75,6 +75,7 @@ pub(crate) fn decision(state: &GameState) -> Option<Decision> {
     Some(Decision {
         player: group.player,
         kind: DecisionKind::ChooseCards(CardsOptions {
+            one_per_name: false,
             source,
             from: group.permanents,
             min: 1,

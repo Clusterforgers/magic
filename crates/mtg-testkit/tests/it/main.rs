@@ -631,6 +631,7 @@ mod alt_cast;
 mod dk1f_cards;
 mod dk1f_pippin;
 mod dk1f_suppression_ray;
+mod fix6_last_known;
 mod mana_any_shape;
 mod mana_ban;
 mod poisoned_defender;

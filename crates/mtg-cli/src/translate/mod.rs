@@ -139,6 +139,8 @@ pub async fn translate_forge(
     let mut funnel = Funnel::default();
     let popularity = Popularity::from_cache(cache).ok();
     let mut index = String::from("slug\tname\ttranslated\ttoday\n");
+    // Offered cards whose clauses have no read-back writer: the offer trusts their translation.
+    let mut trusted = String::from("slug\tunwritten constructs\n");
     let mut cards = String::from("slug\tname\ttranslated\ttoday\toracle_matches\tgaps\toffered\n");
     for script in &scripts {
         if !wanted.is_empty() && !selected(script, &wanted) {
@@ -186,9 +188,12 @@ pub async fn translate_forge(
         let offered = match (&stored, state) {
             (Some(stored), "whole") => {
                 let text = serde_json::to_string(&card.proposal()).unwrap_or_default();
-                stored
-                    .offered(&stem, &text)
-                    .map_or("", |yes| if yes { "true" } else { "false" })
+                stored.offer(&stem, &text).map_or("", |(yes, unwritten)| {
+                    if yes && !unwritten.is_empty() {
+                        let _ = writeln!(trusted, "{stem}\t{}", unwritten.join("; "));
+                    }
+                    if yes { "true" } else { "false" }
+                })
             }
             _ => "",
         };
@@ -209,6 +214,9 @@ pub async fn translate_forge(
     write_file(&out_dir.join("engine-needs.tsv"), &funnel.engine_needs())?;
     write_file(&out_dir.join("translate-index.tsv"), &index)?;
     write_file(&out_dir.join("translate-cards.tsv"), &cards)?;
+    if stored.is_some() {
+        write_file(&out_dir.join("translate-trusted.tsv"), &trusted)?;
+    }
     if let Some(lines) = stored.as_ref().and_then(Stored::precon_lines) {
         write_file(&out_dir.join("precon-today.tsv"), &lines)?;
     }

@@ -220,6 +220,7 @@ mod tests {
             Decision {
                 player: ME,
                 kind: DecisionKind::ChooseCards(CardsOptions {
+                    one_per_name: false,
                     source: named(&game, "Source"),
                     from: vec![named(&game, "Wolf"), named(&game, "Bear")],
                     min: 0,

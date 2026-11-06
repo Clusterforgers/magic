@@ -40,6 +40,7 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         .into_iter()
         .filter(|player| state.is_alive(*player))
         .map(|player| Selection {
+            one_per_name: false,
             player,
             from: matching
                 .iter()
@@ -210,6 +211,7 @@ mod tests {
         assert_eq!(
             decision.kind,
             DecisionKind::ChooseCards(CardsOptions {
+                one_per_name: false,
                 source: named(&game, "Source"),
                 from: vec![
                     named(&game, "Bear"),

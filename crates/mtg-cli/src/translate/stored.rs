@@ -115,12 +115,22 @@ impl Stored {
     /// Whether `promote --draft` would take the proposal (without the smoke gate): the exact check gives a whole
     /// rules file the engine runs as `Verified`.
     pub fn offered(&self, slug: &str, proposal: &str) -> Option<bool> {
+        self.offer(slug, proposal).map(|(yes, _)| yes)
+    }
+
+    /// Whether the proposal is offered, with the constructs of its clauses that have no read-back writer: the offer trusts
+    /// the translation for them, because the draft path takes an unchecked verdict of a Forge script that matches the text.
+    pub fn offer(&self, slug: &str, proposal: &str) -> Option<(bool, Vec<String>)> {
         let printed = self.cards.get(slug)?;
         let report = check_exact(proposal, printed, self.library, &self.names, &self.caps);
+        let unwritten: Vec<String> = report.unwritten().map(str::to_owned).collect();
         let (Some(record), Some(rules)) = (report.support, report.rules) else {
-            return Some(false);
+            return Some((false, unwritten));
         };
-        Some(unwhole(&rules).is_none() && record.support == Support::Verified)
+        Some((
+            unwhole(&rules).is_none() && record.support == Support::Verified,
+            unwritten,
+        ))
     }
 
     /// What the corpus or the compiler makes of the card today: `corpus-verified`, `compiled-verified`, `partial`,

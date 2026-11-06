@@ -171,6 +171,7 @@ mod tests {
             Decision {
                 player: ME,
                 kind: DecisionKind::ChooseCards(CardsOptions {
+                    one_per_name: false,
                     source: game.zone(Zone::Battlefield)[0],
                     from: top(&game, ME, 3),
                     min: 0,

@@ -90,6 +90,7 @@ fn untap_step(state: &GameState) -> Progress {
         (Some(player), Some(&source)) => Progress::Decide(Decision {
             player,
             kind: DecisionKind::ChooseCards(CardsOptions {
+                one_per_name: false,
                 source,
                 max: u32::try_from(optional.len()).unwrap_or(u32::MAX),
                 from: optional,

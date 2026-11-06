@@ -829,6 +829,7 @@ mod tests {
 
     fn cards(count: usize, min: u32, max: u32) -> DecisionKind {
         DecisionKind::ChooseCards(CardsOptions {
+            one_per_name: false,
             source: ObjectId(1),
             from: offered(count),
             min,
