@@ -28,6 +28,7 @@ pub fn property(ctx: &Ctx, prop: &str) -> Tr<Option<Vec<Value>>> {
         "kicked" => return one(json!("Kicked")),
         "bargained" | "Teamwork" => return one(json!("AdditionalCostPaid")),
         "ActivePlayerCtrl" => return one(json!({"ControlledBy": "ActivePlayer"})),
+        "CanEnchantSource" => return one(json!("CanEnchantSource")),
         "ActivePlayerOwn" => return one(json!({"OwnedBy": "ActivePlayer"})),
         "attackedThisTurn" => return one(json!("AttackedThisTurn")),
         "DefenderCtrl" => return one(json!({"ControlledBy": "Defending"})),

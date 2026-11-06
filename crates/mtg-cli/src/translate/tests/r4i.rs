@@ -57,6 +57,46 @@ fn other_uses_of_the_host_stay_gaps(#[case] line: &str) {
 }
 
 #[rstest]
+#[case::plain("{1}{R}", "2", true)]
+#[case::with_x("{X}{R}", "2", true)]
+#[case::not_mana(
+    "{1}{R}",
+    "tapXType<3/Creature.withFlying/creatures with flying>",
+    false
+)]
+fn may_flash_cost_is_a_way_to_cast_for_the_cost_and_the_extra(
+    #[case] printed: &str,
+    #[case] extra: &str,
+    #[case] mana: bool,
+) {
+    let words = printed.replace("}{", " ").replace(['{', '}'], "");
+    let text = format!(
+        "Name:T\nManaCost:{words}\nTypes:Sorcery\nK:MayFlashCost:{extra}\nA:SP$ GainLife | LifeAmount$ 2\n"
+    );
+    if mana {
+        assert!(gaps(&text).is_empty(), "{:?}", gaps(&text));
+        let found = serde_json::to_string(&abilities(&text)).unwrap();
+        assert!(
+            found.contains("AltCast") && found.contains("\"flash\":true"),
+            "{found}"
+        );
+    } else {
+        assert!(!gaps(&text).is_empty());
+    }
+}
+
+#[test]
+fn an_aura_that_could_enchant_the_source_is_one_predicate() {
+    let text = "Name:T\nTypes:Creature Human\nPT:1/1\nT:Mode$ ChangesZone | Origin$ Any | Destination$ Battlefield | ValidCard$ Card.Self | Execute$ Go | TriggerDescription$ x\nSVar:Go:DB$ ChangeZone | Origin$ Hand | Destination$ Battlefield | ChangeType$ Aura.CanEnchantSource | AttachedTo$ Self\n";
+    assert!(gaps(text).is_empty(), "{:?}", gaps(text));
+    assert!(
+        serde_json::to_string(&abilities(text))
+            .unwrap()
+            .contains("CanEnchantSource")
+    );
+}
+
+#[rstest]
 #[case::defined(
     "A:SP$ DealDamage | ValidTgts$ Player,Planeswalker | NumDmg$ 2 | SubAbility$ D\nSVar:D:DB$ Draw | Defined$ TargetedOrController | NumCards$ 1"
 )]

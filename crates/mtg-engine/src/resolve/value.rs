@@ -1415,6 +1415,9 @@ impl<'a> Scope<'a> {
             Pred::This => reference.id == self.source.id,
             Pred::Other => reference.id != self.source.id,
             Pred::Is(named) => self.objects(named)?.contains(&reference),
+            Pred::CanEnchantSource => {
+                crate::attach::legal_host_entering(state, reference.id, self.source.id)
+            }
             Pred::SharesSubtype(named) => self.shares_subtype(named, seen)?,
             Pred::SharesName(_)
             | Pred::SharesType(_)
