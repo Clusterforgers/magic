@@ -109,6 +109,7 @@ fn offered(options: &PriorityOptions) -> BTreeSet<ObjectId> {
         .chain(options.faces.iter().map(|face| &face.card))
         .chain(&options.suspendable)
         .chain(&options.foretellable)
+        .chain(&options.plottable)
         .copied()
         .collect()
 }
@@ -226,6 +227,23 @@ fn check_game(setup: GameSetup, seed: u64, players: usize) -> Result<(), String>
         apply_answer(&mut engine, &decision, answer).map_err(|error| error.to_string())?;
     }
     Ok(())
+}
+
+/// Seed 4480833978398789509 of the command-zone fuzz left a plottable Plan the Heist neither offered nor explained: the
+/// check did not count `plottable` as offered.
+#[test]
+fn a_card_that_can_only_be_plotted_is_offered_not_explained() {
+    let lands = vec![forest(), forest(), forest(), island()];
+    let driver = table(Step::Main1, vec![card("Plan the Heist")], lands, Vec::new());
+    assert_eq!(options(&driver).plottable.len(), 1);
+    assert_eq!(reason_of(&driver, "Plan the Heist"), None);
+    let driver = table(
+        Step::Main1,
+        vec![card("Plan the Heist")],
+        vec![forest()],
+        Vec::new(),
+    );
+    assert_eq!(reason_of(&driver, "Plan the Heist"), Some(Unplayable::Mana));
 }
 
 proptest! {
