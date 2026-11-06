@@ -12,7 +12,7 @@
             "when": {
               "ZoneChange": { "what": ["Token", { "ControlledBy": "You" }], "to": "Battlefield" }
             },
-            "limit": "OncePerTurn",
+            "limit": "OncePerTurnDone",
             "effects": [
               {
                 "May": {

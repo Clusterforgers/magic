@@ -242,12 +242,20 @@ pub fn peek_and_reveal(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
             "NoPeek",
             "NoReveal",
             "Defined",
+            "ValidTgts",
         ],
     )?;
-    // Every player named reveals their own top cards; a pick among them is one player's.
-    let who = match p.get("Defined") {
-        None | Some("You") => json!("You"),
-        Some(word) => defined(ctx, word)?,
+    // Every player named reveals their own top cards; a pick among them is one player's. "Look at the top card of
+    // target player's library": the controller looks at the target's library.
+    let who = match (p.get("ValidTgts"), p.get("Defined")) {
+        (None, None | Some("You")) => json!("You"),
+        (None, Some(word)) => defined(ctx, word)?,
+        (Some("Player" | "Opponent" | "Player.Opponent"), None)
+            if !p.has("RevealValid") && !p.has("TargetMin") && !p.has("TargetMax") =>
+        {
+            subject(ctx, p, "You", None)?
+        }
+        (Some(_), _) => return unmapped("key:PeekAndReveal.ValidTgts"),
     };
     if matches!(who.as_str(), Some("EachPlayer" | "Opponents")) && p.has("RevealValid") {
         return unmapped("key:PeekAndReveal.Defined+RevealValid");
