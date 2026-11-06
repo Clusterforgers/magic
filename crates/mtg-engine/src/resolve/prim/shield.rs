@@ -33,10 +33,23 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         (ReplaceWhen::Countered { what }, ReplaceBy::MoveTo(to)) => Some((what, to, true)),
         _ => None,
     };
+
     if let Some((what, to, countered)) = covered {
+        let cast = matches!(
+            when,
+            ReplaceWhen::ZoneChange {
+                from: Some(ZoneKind::Stack),
+                ..
+            }
+        );
+        // A selector looks on the battlefield or the stack, so a card named from its graveyard or exile is read by its name.
+        let named = match what.0.as_slice() {
+            [Pred::Is(named)] => named.clone(),
+            _ => Ref::Each(what.clone()),
+        };
         let objects = cx
             .scope
-            .live_objects(&Ref::Each(what.clone()))?
+            .live_objects(&named)?
             .into_iter()
             .map(GameObject::reference)
             .collect();
@@ -46,6 +59,7 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
                 objects,
                 to: *to,
                 countered,
+                cast,
             },
             duration.clone(),
         ));

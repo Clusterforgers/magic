@@ -10,7 +10,7 @@ use mtg_cards::ability::Ability;
 use mtg_core::card::CardType;
 use mtg_core::color::Color;
 use mtg_core::ids::PlayerId;
-use mtg_engine::decision::DecisionKind;
+use mtg_engine::decision::{Answer, DecisionKind, PayChoice};
 use mtg_engine::turn::Step;
 use mtg_testkit::cards::{cost, mountain};
 use mtg_testkit::{Driver, Scenario, ready};
@@ -139,4 +139,45 @@ fn a_list_the_translator_cannot_trace_stays_a_gap(#[case] script: &str, #[case] 
         "{:?}",
         gaps(script)
     );
+}
+
+const SINS: &str = "Name:Sins\nTypes:Sorcery\nManaCost:R\nA:SP$ Effect | ValidTgts$ Instant.YouCtrl,Sorcery.YouCtrl | TgtZone$ Graveyard | RememberObjects$ Targeted | StaticAbilities$ Play | SubAbility$ DBEffect | ExileOnMoved$ Graveyard\nSVar:Play:Mode$ Continuous | MayPlay$ True | MayPlayWithoutManaCost$ True | Affected$ Card.IsRemembered | AffectedZone$ Graveyard\nSVar:DBEffect:DB$ Effect | RememberObjects$ Targeted | ExileOnMoved$ Stack | ReplacementEffects$ ReplaceGraveyard | SubAbility$ DBChange\nSVar:ReplaceGraveyard:Event$ Moved | ValidCard$ Card.IsRemembered | Origin$ Stack | Destination$ Graveyard | ReplaceWith$ MoveExile\nSVar:MoveExile:DB$ ChangeZone | Defined$ ReplacedCard | Origin$ Stack | Destination$ Exile\nSVar:DBChange:DB$ ChangeZone | Origin$ Stack | Destination$ Exile\n";
+
+const PEEK: &str = "Name:Peek\nTypes:Sorcery\nManaCost:R\nA:SP$ Draw | NumCards$ 1\n";
+
+fn zone_of(driver: &Driver, name: &str) -> mtg_engine::zones::Zone {
+    driver
+        .state()
+        .objects()
+        .find(|o| o.card().name == name)
+        .unwrap()
+        .zone()
+}
+
+#[test]
+fn a_card_cast_with_a_remembered_permission_is_exiled_instead_of_put_into_the_graveyard() {
+    // CR 614.1a, 400.7: the shield was made for the card in the graveyard and covers the spell it becomes when cast.
+    let scenario = Scenario::new(2)
+        .at(1, 0, Step::Main1)
+        .hand(0, [card(SINS, CardType::Sorcery)])
+        .graveyard(0, [card(PEEK, CardType::Sorcery)])
+        .battlefield(0, [ready(mountain())]);
+    let mut driver = Driver::from_scenario(scenario).unwrap();
+    driver.begin_cast("Sins").unwrap();
+    let id = driver
+        .state()
+        .objects()
+        .find(|o| o.card().name == "Peek")
+        .unwrap()
+        .id();
+    let peek = mtg_engine::choose::Target::Object(driver.state().object(id).unwrap().reference());
+    driver.choose_targets(&[peek]).unwrap();
+    driver.pay_tapping(&["Mountain"], 0).unwrap();
+    driver.pass().unwrap();
+    settle(&mut driver);
+    driver.begin_cast("Peek").unwrap();
+    driver.answer(Answer::PayMana(PayChoice::Auto)).unwrap();
+    driver.pass().unwrap();
+    settle(&mut driver);
+    assert_eq!(zone_of(&driver, "Peek"), mtg_engine::zones::Zone::Exile);
 }

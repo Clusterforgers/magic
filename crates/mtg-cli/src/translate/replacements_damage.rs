@@ -215,6 +215,9 @@ fn one_shield(
     remembered: Option<&Value>,
 ) -> Tr<Vec<Value>> {
     let p = ctx.sub(name)?;
+    if p.get("Event") == Some("Moved") {
+        return super::replacements_shield_moved::shield(ctx, line, &p, remembered);
+    }
     if p.get("Event") != Some("DamageDone") {
         return unmapped(format!(
             "replacement:{}",
