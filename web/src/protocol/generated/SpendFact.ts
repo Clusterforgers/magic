@@ -3,4 +3,4 @@
 /**
  * A fact about a spell that a restriction reads.
  */
-export type SpendFact = "XInCost" | "NotOwned" | "FromGraveyard" | "SharesCommanderType" | "OnBattlefield";
+export type SpendFact = "XInCost" | "NotOwned" | "FromGraveyard" | "FromYourGraveyard" | "SharesCommanderType" | "OnBattlefield";

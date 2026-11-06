@@ -49,6 +49,7 @@ const FACTS: Record<SpendFact, string> = {
   XInCost: 'with {X} in its cost',
   NotOwned: 'you do not own',
   FromGraveyard: 'cast from a graveyard',
+  FromYourGraveyard: 'cast from your graveyard',
   SharesCommanderType: 'that shares a creature type with your commander',
   OnBattlefield: 'on the battlefield',
 }

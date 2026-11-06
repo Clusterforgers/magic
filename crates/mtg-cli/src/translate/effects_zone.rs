@@ -492,6 +492,15 @@ fn battlefield_owner(p: &Params, who: &Parties, filter: &mut Vec<Value>) -> Tr<(
     Ok(())
 }
 
+/// Whether the card's text lets the player choose nothing ("may", "up to", "any number").
+fn allows_none(ctx: &Ctx, p: &Params) -> bool {
+    let text = p
+        .get("SpellDescription")
+        .unwrap_or(ctx.oracle)
+        .to_lowercase();
+    text.contains(" may ") || text.contains("up to") || text.contains("any number")
+}
+
 /// A card of the player's own hand, graveyard or exile, or a permanent, that a player picks and moves ("put a creature card
 /// from your hand onto the battlefield"): a choice among the matching cards, then the move.
 fn choose_and_move(ctx: &mut Ctx, p: &Params, origin: &str, destination: &str) -> Tr<Vec<Value>> {
@@ -514,7 +523,17 @@ fn choose_and_move(ctx: &mut Ctx, p: &Params, origin: &str, destination: &str) -
     } else {
         filter.push(json!({"OwnedBy": owner}));
     }
-    let count = frame::count(ctx, p, &PICKED)?;
+    let mut count = frame::count(ctx, p, &PICKED)?;
+    // "Target player puts a card from their hand on top of their library": a chosen single card is not optional unless the
+    // card says "may" or "up to" (Forge leaves the minimum off); the engine clamps it to the cards there are.
+    if origin == "Hand"
+        && count.is_one
+        && !frame::is_optional(p)
+        && !p.has("Mandatory")
+        && !allows_none(ctx, p)
+    {
+        count.min = json!(1);
+    }
     let bind = ctx.fresh("picked");
     let chosen = json!({ "Bound": bind });
     let choose = if p.get("AtRandom") == Some("True") {

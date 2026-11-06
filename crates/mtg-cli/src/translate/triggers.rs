@@ -407,6 +407,7 @@ fn phase(p: &Params) -> Tr<Value> {
     let whose = match p.get("ValidPlayer") {
         // Forge scripts "the end step" (every player's) with `ValidPlayer$ You`; the print has no "your".
         Some("You") if prints_every_end_step(p) => json!("EachPlayer"),
+        Some("You.descended") => json!("You"),
         word => match player_ref(word) {
             Ok(found) => found,
             Err(_) => {

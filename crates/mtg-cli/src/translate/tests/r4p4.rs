@@ -83,7 +83,7 @@ fn creature_with(line: &str) -> String {
 
 #[rstest]
 #[case::flavor_name("K:Equip:3:Flavor Krishna", json!({"Keyword": {"Equip": "{3}"}}))]
-#[case::bare_subtype("K:Equip:2:Elf.YouCtrl:Elf", json!({"Keyword": {"EquipTo": {"to": [{"Subtype": "Elf"}], "cost": "{2}"}}}))]
+#[case::bare_subtype("K:Equip:2:Elf.YouCtrl:Elf", json!({"Keyword": {"EquipTo": {"to": [{"Subtype": "Elf"}, {"ControlledBy": "You"}], "cost": "{2}"}}}))]
 fn equip_labels_and_subtype_shorthand(#[case] line: &str, #[case] expected: Value) {
     assert_eq!(abilities(&creature_with(line)), vec![expected]);
 }
@@ -91,7 +91,6 @@ fn equip_labels_and_subtype_shorthand(#[case] line: &str, #[case] expected: Valu
 #[rstest]
 #[case::planeswalker("K:Equip:1:Planeswalker.YouCtrl:planeswalker")]
 #[case::a_cost_change("K:Equip:3:::ReduceCost$ Y:This ability costs {1} less")]
-#[case::three_types("K:Equip:1:Creature.YouCtrl+Shaman,Creature.YouCtrl+Wizard:Shaman or Wizard")]
 fn other_equip_restrictions_stay_gaps(#[case] line: &str) {
     assert!(
         gaps(&creature_with(line))

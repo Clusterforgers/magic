@@ -25,6 +25,7 @@ mod detect_except;
 mod detect_nth;
 #[cfg(test)]
 mod detect_turn_nth;
+mod life_floor;
 mod queue;
 mod reads_x;
 mod state;

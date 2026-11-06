@@ -360,7 +360,7 @@ fn spend_filter() -> impl Strategy<Value = SpendFilter> {
                 select(vec![
                     SpendFact::XInCost,
                     SpendFact::NotOwned,
-                    SpendFact::FromGraveyard,
+                    SpendFact::FromYourGraveyard,
                     SpendFact::SharesCommanderType,
                 ]),
                 0..3,

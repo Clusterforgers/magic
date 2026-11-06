@@ -351,6 +351,9 @@ fn api_line(ctx: &mut Ctx, p: &Params, api: &str) -> Tr<Vec<Value>> {
     if let Some(found) = super::effects_verbs5::effects(ctx, p, api) {
         return found;
     }
+    if let Some(found) = super::effects_r2h::effects(ctx, p, api) {
+        return found;
+    }
     match api {
         "DealDamage" => {
             deal_damage(ctx, p).and_then(|node| super::effects_obj::with_dies_shield(ctx, p, node))

@@ -132,8 +132,8 @@ fn damage_player(
     let lost = if loses_life {
         let before = player_mut(state, id)?.life;
         let wanted = i32::try_from(amount).unwrap_or(i32::MAX);
-        match crate::rules::damage_life_floor(state, id) {
-            Some(floor) if before >= floor => wanted.min(before.saturating_sub(floor)),
+        match crate::rules::damage_life_floor(state, id, before) {
+            Some(floor) => wanted.min(before.saturating_sub(floor)),
             _ => wanted,
         }
     } else {

@@ -36,7 +36,7 @@ use super::{abilities, gaps, normal};
         {"Move": {"what": {"Bound": "card"}, "to": "Hand"}}]}})
 )]
 #[case::put_a_creature_from_the_hand_onto_the_battlefield(
-    "Name:T\nTypes:Sorcery\nA:SP$ ChangeZone | Origin$ Hand | Destination$ Battlefield | ChangeType$ Creature\n",
+    "Name:T\nTypes:Sorcery\nA:SP$ ChangeZone | Origin$ Hand | Destination$ Battlefield | ChangeType$ Creature | SpellDescription$ You may put a creature card from your hand onto the battlefield.\n",
     json!({"Spell": {"effects": [
         {"Choose": {"from": {"Each": [{"Type": "Creature"}, {"In": "Hand"}, {"OwnedBy": "You"}]}, "count": {"min": 0, "max": 1}, "as": "picked"}},
         {"Move": {"what": {"Bound": "picked"}, "to": {"Battlefield": {}}}}]}})

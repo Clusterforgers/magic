@@ -18,6 +18,7 @@ use crate::state::{GameState, Tally};
 use crate::zones::{Placement, Zone};
 
 /// Moves `id` to `to`, creating or dropping permanent state and leaving combat as needed.
+#[allow(clippy::too_many_lines)]
 pub(super) fn move_object(
     state: &mut GameState,
     id: ObjectId,
@@ -114,6 +115,8 @@ pub(super) fn move_object(
     crate::w17b_statics::w17b_restore_counters(object, w17b_kept);
     let (owner, token) = (object.owner, object.kind == ObjectKind::Token);
     let entered = object.reference();
+    let resolved = from == Zone::Stack && to == Zone::Battlefield;
+    crate::effects::follow_spell(&mut state.effects, entered, resolved);
     if to == Zone::Battlefield {
         state.tally_object(entered, None, Tally::Entered);
     }
@@ -158,6 +161,22 @@ fn w21a_tally_graveyards(
     }
     if from == Zone::Battlefield && matches!(to, Zone::Graveyard(_)) {
         state.tally_object(card, None, Tally::W21aGraved);
+    }
+    let permanent_card = state.object(card.id).is_some_and(|object| {
+        object.kind() != ObjectKind::Token
+            && [
+                CardType::Artifact,
+                CardType::Battle,
+                CardType::Creature,
+                CardType::Enchantment,
+                CardType::Land,
+                CardType::Planeswalker,
+            ]
+            .iter()
+            .any(|kind| object.base_types().contains(*kind))
+    });
+    if permanent_card && matches!(to, Zone::Graveyard(_)) {
+        state.tally(owner, Tally::Descended);
     }
     state.tally_object(
         card,

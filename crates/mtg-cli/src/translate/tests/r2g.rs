@@ -35,8 +35,12 @@ fn a_power_up_ability_of_a_card_without_a_mana_cost_stays_a_gap() {
 
 #[rstest]
 #[case::an_animate_adds_the_color(
-    "Name:Subject\nTypes:Creature Faerie\nA:AB$ Animate | Cost$ U | ValidTgts$ Permanent | Colors$ Blue | SpellDescription$ x\n",
+    "Name:Subject\nTypes:Creature Faerie\nA:AB$ Animate | Cost$ U | ValidTgts$ Permanent | Colors$ Blue | SpellDescription$ Target permanent becomes blue in addition to its other colors.\n",
     "AddColors"
+)]
+#[case::an_animate_without_the_addition_sets_it(
+    "Name:Subject\nTypes:Creature Faerie\nA:AB$ Animate | Cost$ U | ValidTgts$ Permanent | Colors$ Blue | SpellDescription$ Target land becomes a blue creature.\n",
+    "SetColors"
 )]
 #[case::an_animate_that_overwrites_sets_it(
     "Name:Subject\nTypes:Creature Faerie\nA:AB$ Animate | Cost$ U | ValidTgts$ Permanent | Colors$ Blue | OverwriteColors$ True | SpellDescription$ x\n",

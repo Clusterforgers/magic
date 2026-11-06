@@ -952,11 +952,15 @@ fn about_players_and_permanents(
             if let DamageTarget::Player(player) = target
                 && !matches!(form, DamageForm::Infect | DamageForm::NoLifeLoss)
             {
-                found.push(Happened::LifeLost {
-                    player: *player,
-                    amount: *amount,
-                    nth: loss_ordinal(look, *player, *amount),
-                });
+                // A life floor lets damage take less life than it deals (CR 614.1): the trigger sees the life lost.
+                let lost = super::life_floor::damage_lost(look.pre, look.earlier, *player, *amount);
+                if lost > 0 || *amount == 0 {
+                    found.push(Happened::LifeLost {
+                        player: *player,
+                        amount: lost,
+                        nth: loss_ordinal(look, *player, lost),
+                    });
+                }
             }
         }
         Event::LifeGained { player, amount } => found.push(Happened::LifeGained {
@@ -2203,12 +2207,16 @@ fn delayed(
 }
 
 /// Whether [`detect`] reads the state before `events`: only a move out of the battlefield, a death, a discard, a change
-/// of day or night (which was something else before), an arrival on the battlefield and a
+/// of day or night (which was something else before), damage to a player (a life floor cuts the life it takes), an arrival on the battlefield and a
 /// spell or ability that ends without resolving look back at it. Any other batch is judged by the state after it
 /// alone, which saves copying the whole state for it.
 pub(crate) fn needs_before(events: &[Event]) -> bool {
     events.iter().any(|event| match event {
-        Event::CreatureDied { .. }
+        Event::DamageDealt {
+            target: DamageTarget::Player(_),
+            ..
+        }
+        | Event::CreatureDied { .. }
         | Event::CardDiscarded { .. }
         | Event::DayNightChanged { .. }
         | Event::PermanentPhasedOut { .. }
