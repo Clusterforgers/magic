@@ -263,10 +263,13 @@ fn rule_mana(state: &GameState, player: PlayerId, id: ObjectId, printed: usize) 
         }
         // Each way to add the mana, as the types one addition makes.
         let additions: Vec<Vec<ManaType>> = match produces {
-            ManaProduced::Fixed { mana, count } if x_times => (1..=x_most
-                .map_or(0, |most| usize::try_from(most).unwrap_or(0).min(VARIANTS)))
-                .map(|x| vec![mana; x * count as usize])
-                .collect(),
+            // "X plus one" adds its one even for X = 0.
+            ManaProduced::Fixed { mana, count } if x_times => x_most.map_or(Vec::new(), |most| {
+                let extra = shape.extra as usize;
+                (usize::from(extra == 0)..=usize::try_from(most).unwrap_or(0).min(VARIANTS))
+                    .map(|x| vec![mana; (x + extra) * count as usize])
+                    .collect()
+            }),
             ManaProduced::Fixed { mana, count } => vec![vec![mana; count as usize]],
             ManaProduced::Mixed(list) => vec![list.to_vec()],
             ManaProduced::AnyColor(count) => {
@@ -506,6 +509,15 @@ fn c8_time_ahead(
     Some(after)
 }
 
+/// The state after `events`, or `None` when one of them cannot be applied.
+fn r6e_after(state: &GameState, events: &[Event]) -> Option<GameState> {
+    let mut after = state.clone();
+    for event in events {
+        crate::fold::apply_event(&mut after, event).ok()?;
+    }
+    Some(after)
+}
+
 /// The events of `player` using the mana ability `option` stands for: the payment of its cost (life, energy, counters,
 /// the tap and the sacrifice), the mana added to their pool, and what it does besides (a painland's damage, an egg's
 /// draw), all at once (CR 605.3b).
@@ -535,7 +547,8 @@ pub(crate) fn activation(
         .iter()
         .flat_map(|mana| &mana.options)
         .find(|o| o.source.object == id && o.source.ability == base)
-        .map_or(0, |o| u32::try_from(o.made().len()).unwrap_or(0));
+        .map_or(0, |o| u32::try_from(o.made().len()).unwrap_or(0))
+        .saturating_sub(shape.as_ref().map_or(0, |shape| shape.extra));
     let mut events = Vec::new();
     if let Some(rule) = rule.as_ref().filter(|rule| rule.once) {
         // A use is logged for the limit; no ability goes on the stack.
@@ -580,7 +593,14 @@ pub(crate) fn activation(
         lasts: mtg_cards::spend::ManaLasts::Step,
     }));
     if let Some(shape) = shape {
-        events.extend(run_inline(state, player, object, shape.then)?);
+        // What it does besides reads the state after the cost is paid (CR 602.2): a depletion land is sacrificed once
+        // its last counter is removed. The sacrificed source is read where it was, as before.
+        let paid = (!shape.sacrifice && !shape.then.is_empty())
+            .then(|| r6e_after(state, &events))
+            .flatten();
+        let now = paid.as_ref().unwrap_or(state);
+        let object = now.object(id).unwrap_or(object);
+        events.extend(run_inline(now, player, object, shape.then)?);
     }
     Ok(events)
 }
@@ -614,6 +634,8 @@ mod c8_time_counted;
 mod combos;
 #[cfg(test)]
 mod counted;
+#[cfg(test)]
+mod r6e;
 #[cfg(test)]
 mod replaced;
 
