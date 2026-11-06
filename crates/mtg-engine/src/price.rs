@@ -266,7 +266,8 @@ impl Price {
         picked: &[Vec<ObjectId>],
     ) -> Vec<ObjectId> {
         let mut barred: Vec<ObjectId> = picked.iter().flatten().copied().collect();
-        if self.casting || self.moves_source() || (self.tap && part.taps()) {
+        // A source the price untaps is untapped by its own symbol, so no other part takes it.
+        if self.casting || self.moves_source() || self.untap || (self.tap && part.taps()) {
             barred.push(source);
         }
         barred

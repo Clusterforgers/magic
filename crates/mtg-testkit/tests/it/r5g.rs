@@ -123,6 +123,32 @@ fn an_untap_cost_is_offered_for_a_tapped_source_only_and_untaps_it(
 }
 
 #[rstest]
+fn the_untapped_source_is_not_one_of_the_permanents_its_cost_untaps(
+    #[values(2, 3, 4)] seats: usize,
+    #[values(true, false)] another: bool,
+) -> Result<(), ScriptError> {
+    let burr = artifact(
+        "Burr",
+        &[
+            r#"{"Activated":{"cost":["Untap",{"UntapPermanents":{"filter":[{"Type":"Artifact"},{"ControlledBy":"You"}]}}],"effects":[{"GainLife":{"amount":1}}]}}"#,
+        ],
+    );
+    let mut field = vec![tapped(burr)];
+    if another {
+        field.push(tapped(artifact("Cog", &[])));
+    }
+    let mut driver = Driver::from_scenario(Scenario::new(seats).battlefield(0, field))?;
+    assert_eq!(!driver.offered_abilities("Burr")?.is_empty(), another);
+    if another {
+        driver.begin_activation("Burr")?;
+        settle(&mut driver, true, &|_, from| from.to_vec())?;
+        assert!(!is_tapped(&driver, "Burr") && !is_tapped(&driver, "Cog"));
+        assert_eq!(driver.state().player(pid(0)).unwrap().life(), 21);
+    }
+    Ok(())
+}
+
+#[rstest]
 fn a_summoning_sick_creature_cannot_pay_an_untap_cost(
     #[values(2, 4)] seats: usize,
 ) -> Result<(), ScriptError> {
