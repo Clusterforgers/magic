@@ -1,4 +1,4 @@
-//! Goal: round 6 builder f translates the shield that deals the next N damage to another player or permanent instead to a fixed redirect of that amount (to the target, the card itself or you), and leaves a split of a shared or divided shield, an imprinted recipient, a recipient that is also the covered one and an amount that is no number gaps.
+//! Goal: round 6 builder f translates the shield that deals the next N damage to another player or permanent instead to a fixed redirect of that amount (to the target, the card itself or you), and leaves a split of a shared or divided shield, an imprinted recipient, a recipient that is also the covered one and an amount that is no number gaps; protection that does not remove its own Aura is a gap.
 use rstest::rstest;
 use serde_json::{Value, json};
 
@@ -90,5 +90,25 @@ fn a_split_the_shield_cannot_fix_is_a_gap(
         gaps(&shield_card(line, replacement, part)).contains(&gap.to_owned()),
         "{:?}",
         gaps(&shield_card(line, replacement, part))
+    );
+}
+
+/// An Aura that gives the creature it enchants protection, with Forge's exception for the Aura itself or without.
+fn ward(protection: &str) -> String {
+    format!(
+        "Name:W\nTypes:Enchantment Aura\nK:Enchant:Creature\nS:Mode$ Continuous | AffectedDefined$ Enchanted | Affected$ Creature | AddKeyword$ {protection} | Description$ x\n"
+    )
+}
+
+#[rstest]
+#[case::the_aura_excepted("Protection:Card.White:white:Card.CardUID_HostCardUID", true)]
+#[case::auras_excepted("Protection:Card.nonColorless:each color:Aura", true)]
+#[case::no_exception("Protection:Card.White:white", false)]
+fn protection_that_does_not_remove_its_aura_is_a_gap(#[case] protection: &str, #[case] gap: bool) {
+    let found = gaps(&ward(protection));
+    assert_eq!(
+        found.contains(&"keyword:Protection-with-an-exception".to_owned()),
+        gap,
+        "{found:?}"
     );
 }

@@ -187,6 +187,10 @@ pub fn keyword_value(ctx: &Ctx, text: &str) -> Tr<Value> {
     if mtg_cards::macros::is_keyword(name) {
         return macro_keyword(name, first, second, fields.next());
     }
+    // "This effect doesn't remove this Aura": the engine would drop the Aura that gives the protection (CR 303.4d).
+    if name == "Protection" && fields.next().is_some() {
+        return unmapped("keyword:Protection-with-an-exception");
+    }
     other_keyword(ctx, name, first, second)
 }
 
