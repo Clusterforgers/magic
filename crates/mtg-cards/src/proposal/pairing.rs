@@ -122,7 +122,7 @@ fn bare(keyword: &Keyword) -> Keyword {
             count: *count,
             abilities: Vec::new(),
         },
-        other => other.clone(),
+        other => super::r6c_bare::canonical(other),
     }
 }
 

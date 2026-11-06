@@ -54,6 +54,12 @@ pub fn texts(first: &Ability, second: &Ability) -> Vec<String> {
     if !chosen.is_empty() {
         return chosen;
     }
+    if let Some(one) = super::r6c_pairs::merged(first, second) {
+        let written = super::render::written_variants(&one);
+        if !written.is_empty() {
+            return written;
+        }
+    }
     let (
         Ability::Static {
             affected: Ref::This,

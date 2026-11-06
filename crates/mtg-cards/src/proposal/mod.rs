@@ -11,6 +11,7 @@ mod complete;
 mod merge;
 mod pairing;
 pub mod partial;
+mod r6c_bare;
 mod render;
 mod repair;
 
