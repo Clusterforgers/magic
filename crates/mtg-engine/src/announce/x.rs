@@ -154,6 +154,12 @@ pub(crate) fn payable(
         return false;
     };
     let cost = &*cost;
+    let alone = pays;
+    // A spell with assist may be paid for with the help of another player (CR 702.132a).
+    let pays = |total: &ManaCost| {
+        alone(total)
+            || super::assist::helped(state, player, id, total).is_some_and(|less| alone(&less))
+    };
     let rules = spell_ability(state, id)
         .map(|(_, rules)| rules)
         .filter(|rules| targets_read_x(rules));

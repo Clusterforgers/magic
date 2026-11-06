@@ -129,6 +129,7 @@ const KEYWORDS: &[(&str, Params)] = &[
     ("conspire", Params::None),
     ("dethrone", Params::None),
     ("gravestorm", Params::None),
+    ("assist", Params::None),
     ("provoke", Params::None),
     ("double team", Params::None),
     ("compleated", Params::None),
@@ -677,6 +678,7 @@ fn plain(name: &str) -> Option<Keyword> {
         "cascade" => Keyword::Cascade,
         "storm" => Keyword::Storm,
         "gravestorm" => Keyword::Gravestorm,
+        "assist" => Keyword::Assist,
         "sunburst" => Keyword::Sunburst,
         "demonstrate" => Keyword::Demonstrate,
         "bargain" => Keyword::Bargain,
@@ -1275,6 +1277,7 @@ mod tests {
     #[case::prototype("Prototype {1}{U}{U} \u{2014} 2/1", Keyword::Prototype { cost: mana("{1}{U}{U}"), power: 2, toughness: 1 })]
     #[case::awaken_big("Awaken 6\u{2014}{6}{U}{U}{U}", Keyword::Awaken { count: 6, cost: mana("{6}{U}{U}{U}") })]
     #[case::gravestorm("Gravestorm", Keyword::Gravestorm)]
+    #[case::assist("Assist", Keyword::Assist)]
     #[case::sunburst("Sunburst", Keyword::Sunburst)]
     #[case::eternalize_with_a_life_cost(
         "Eternalize—Pay 3 life.",
@@ -1705,6 +1708,7 @@ mod tests {
             "Transmute {1}{U}{U}",
             "Awaken 3\u{2014}{4}{U}",
             "Prototype {1}{U}{U} \u{2014} 2/1",
+            "Assist",
             "Gravestorm",
             "Sunburst",
             "Dash {1}",

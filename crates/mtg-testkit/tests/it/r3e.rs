@@ -1,4 +1,4 @@
-//! Goal: the mechanics added in round 3e play as the Comprehensive Rules say: prototype (CR 702.160, 718) gives the spell and the permanent the prototype mana cost, colours, power and toughness, only when cast for the prototype cost; sneak is cast in the declare blockers step by returning an unblocked attacker and the creature enters tapped and attacking what that attacker attacked, replaying to the same state; at 2 to 4 seats.
+//! Goal: the mechanics added in round 3e play as the Comprehensive Rules say: assist (CR 702.132) lets another player pay generic mana of the cost, asked of that player with a default of nothing; prototype (CR 702.160, 718) gives the spell and the permanent the prototype mana cost, colours, power and toughness, only when cast for the prototype cost; sneak is cast in the declare blockers step by returning an unblocked attacker and the creature enters tapped and attacking what that attacker attacked, replaying to the same state; at 2 to 4 seats.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
 use std::sync::Arc;
@@ -15,6 +15,7 @@ use mtg_core::card::CardType;
 use mtg_core::color::Color;
 use mtg_core::mana::ManaCost;
 use mtg_engine::PresetPermanent;
+use mtg_engine::choose::NumberChoice;
 use mtg_engine::combat::AttackTarget;
 use mtg_engine::decision::{Answer, DecisionKind};
 use mtg_engine::turn::Step;
@@ -247,5 +248,143 @@ fn sneak_is_not_offered_outside_the_declare_blockers_step(
     let mut driver = Driver::from_scenario(sneak_table(seats, vec![ready(swamp())]))?;
     driver.idle_until(1, Step::Main1)?;
     assert!(!offered(&driver, "Sneaky Rogue")?);
+    Ok(())
+}
+
+// Assist (CR 702.132): another player pays generic mana of the spell.
+
+/// A 4/4 for {4}{B} with assist.
+fn helped_giant() -> Arc<CardDefinition> {
+    Arc::new(
+        CardDefinition::new("Helped Giant")
+            .with_type(CardType::Creature)
+            .with_mana_cost(ManaCost::parse("{4}{B}").unwrap())
+            .with_power_toughness(4, 4)
+            .with_rules(Ability::Keyword(Keyword::Assist)),
+    )
+}
+
+/// Seat 0 holds the giant and controls `mine` Swamps; seat 1 controls `theirs` Forests.
+fn assist_table(seats: usize, mine: usize, theirs: usize) -> Scenario {
+    (0..seats).fold(
+        Scenario::new(seats)
+            .at(1, 0, Step::Main1)
+            .hand(0, [helped_giant()])
+            .battlefield(0, lands(mine, swamp))
+            .battlefield(1, lands(theirs, forest)),
+        |scenario, seat| scenario.library(seat, (0..8).map(|_| forest())),
+    )
+}
+
+fn untapped_lands(driver: &Driver, seat: usize) -> usize {
+    driver
+        .state()
+        .zone(Zone::Battlefield)
+        .iter()
+        .filter_map(|id| driver.state().object(*id))
+        .filter(|o| o.controller() == pid(seat) && o.card().name != "Helped Giant")
+        .filter(|o| o.permanent().is_some_and(|p| !p.tapped()))
+        .count()
+}
+
+/// Casts the giant, answering the assist questions with `helper` (0 is no one, 1 the first helper) and `amount`.
+fn cast_assisted(driver: &mut Driver, helper: usize, amount: u32) -> Result<(), ScriptError> {
+    driver.begin_cast("Helped Giant")?;
+    for _ in 0..10 {
+        let decision = driver.decision()?;
+        match &decision.kind {
+            DecisionKind::ChooseOption(_) => {
+                assert_eq!(decision.player, pid(0));
+                driver.answer(Answer::ChooseOption(mtg_engine::choose::OptionChoice(
+                    helper,
+                )))?;
+            }
+            DecisionKind::ChooseNumber(options) => {
+                assert_eq!(decision.player, pid(1), "the helper is asked");
+                assert!(!options.can_cancel, "the helper cannot back the cast out");
+                driver.answer(Answer::ChooseNumber(NumberChoice::Number(amount)))?;
+            }
+            DecisionKind::PayMana(_) => break,
+            _ => {
+                driver.answer_passively()?;
+            }
+        }
+    }
+    pay(driver)?;
+    settle(driver)
+}
+
+#[rstest]
+fn the_helper_pays_generic_mana_and_the_caster_the_rest(
+    #[values(2, 3, 4)] seats: usize,
+) -> Result<(), ScriptError> {
+    let mut driver = Driver::from_scenario(assist_table(seats, 1, 4))?;
+    cast_assisted(&mut driver, 1, 4)?;
+    assert!(on_battlefield(driver.state(), "Helped Giant").is_some());
+    assert_eq!(untapped_lands(&driver, 1), 0, "the helper paid four");
+    assert_eq!(untapped_lands(&driver, 0), 0, "the caster paid the black");
+    let replayed = mtg_engine::replay(driver.engine().setup(), driver.engine().events()).unwrap();
+    assert_eq!(replayed.state_hash(), driver.state().state_hash());
+    Ok(())
+}
+
+#[rstest]
+#[case::two_of_four(2, 3)]
+#[case::none(0, 5)]
+fn the_caster_pays_what_the_helper_does_not(
+    #[case] amount: u32,
+    #[case] caster_taps: usize,
+    #[values(2, 3, 4)] seats: usize,
+) -> Result<(), ScriptError> {
+    let mut driver = Driver::from_scenario(assist_table(seats, 5, 4))?;
+    cast_assisted(&mut driver, 1, amount)?;
+    assert!(on_battlefield(driver.state(), "Helped Giant").is_some());
+    assert_eq!(5 - untapped_lands(&driver, 0), caster_taps);
+    assert_eq!(4 - untapped_lands(&driver, 1), amount as usize);
+    Ok(())
+}
+
+#[rstest]
+fn no_one_is_a_choice_and_the_cast_goes_on(
+    #[values(2, 3, 4)] seats: usize,
+) -> Result<(), ScriptError> {
+    let mut driver = Driver::from_scenario(assist_table(seats, 5, 4))?;
+    cast_assisted(&mut driver, 0, 0)?;
+    assert!(on_battlefield(driver.state(), "Helped Giant").is_some());
+    assert_eq!(untapped_lands(&driver, 1), 4);
+    Ok(())
+}
+
+#[rstest]
+fn an_idle_helper_pays_nothing_by_default(
+    #[values(2, 3, 4)] seats: usize,
+) -> Result<(), ScriptError> {
+    let mut driver = Driver::from_scenario(assist_table(seats, 5, 4))?;
+    driver.begin_cast("Helped Giant")?;
+    driver.answer(Answer::ChooseOption(mtg_engine::choose::OptionChoice(1)))?;
+    let asked = driver.decision()?;
+    assert_eq!(asked.player, pid(1));
+    // The default of a seat whose clock ran out: the lowest number.
+    let DecisionKind::ChooseNumber(options) = &asked.kind else {
+        panic!("the helper is asked a number");
+    };
+    driver.answer(Answer::ChooseNumber(NumberChoice::Number(options.min)))?;
+    pay(&mut driver)?;
+    settle(&mut driver)?;
+    assert_eq!(untapped_lands(&driver, 1), 4);
+    assert_eq!(untapped_lands(&driver, 0), 0);
+    Ok(())
+}
+
+#[rstest]
+#[case::with_a_helper(4, true)]
+#[case::nobody_has_mana(0, false)]
+fn a_spell_the_caster_cannot_pay_alone_is_offered_when_a_player_can_help(
+    #[case] theirs: usize,
+    #[case] offered_now: bool,
+    #[values(2, 3, 4)] seats: usize,
+) -> Result<(), ScriptError> {
+    let driver = Driver::from_scenario(assist_table(seats, 1, theirs))?;
+    assert_eq!(offered(&driver, "Helped Giant")?, offered_now);
     Ok(())
 }

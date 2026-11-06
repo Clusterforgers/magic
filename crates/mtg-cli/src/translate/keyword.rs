@@ -75,6 +75,7 @@ pub fn keyword_name(word: &str) -> Option<&'static str> {
         "Exploit" => "Exploit",
         "Soulbond" => "Soulbond",
         "Gravestorm" => "Gravestorm",
+        "Assist" => "Assist",
         "Sunburst" => "Sunburst",
         "Demonstrate" => "Demonstrate",
         "Read ahead" => "ReadAhead",
