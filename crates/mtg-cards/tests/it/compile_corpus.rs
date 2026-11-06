@@ -10,7 +10,8 @@ use serde_json::Value;
 use mtg_cards::ability::Ability;
 use mtg_cards::card::{Card, ImplStatus};
 use mtg_cards::compile::{
-    ClauseKind, Compiled, compile, own_names, same_text, static_pair_texts, written_variants,
+    ClauseKind, Compiled, compile, equip_line, own_names, same_text, static_pair_texts,
+    written_variants,
 };
 use mtg_cards::load::Library;
 use mtg_cards::support::PrintedCard;
@@ -231,6 +232,40 @@ fn without_numerals(text: &str) -> &str {
     }
 }
 
+/// When the abilities from the first one on are equip abilities with an option (a price, a limit, a reduction), the one
+/// keyword line of the card they stand for is among the clauses of the face: how many abilities the line takes.
+fn equip_options_are_written(
+    printed: &PrintedCard,
+    compiled: &Compiled,
+    listed: &[(usize, &Ability)],
+) -> Option<usize> {
+    let face = listed.first()?.0;
+    let rest: Vec<Ability> = listed
+        .iter()
+        .take_while(|(same, _)| *same == face)
+        .map(|(_, each)| (*each).clone())
+        .collect();
+    let (line, count) = equip_line(&rest)?;
+    let lines: Vec<&str> = compiled
+        .clauses
+        .iter()
+        .filter(|clause| {
+            clause.face == face
+                && matches!(
+                    clause.kind,
+                    ClauseKind::Keyword | ClauseKind::Static | ClauseKind::Activated
+                )
+        })
+        .map(|clause| without_ability_word(&clause.text))
+        .collect();
+    assert!(
+        lines.iter().any(|text| same_text(&line, text)),
+        "{}: {line:?} is not in {lines:?}",
+        printed.name
+    );
+    Some(count)
+}
+
 /// Every spell, triggered or mana ability of a hand-written file that the renderer can write is
 /// written as the text of the card: the clauses of its kind, on the same face.
 #[test]
@@ -243,6 +278,13 @@ fn the_renderer_writes_the_hand_written_abilities_as_the_cards_text() {
         let mut skip_next = false;
         for (at, &(face, ability)) in listed.iter().enumerate() {
             if std::mem::take(&mut skip_next) {
+                continue;
+            }
+            // Equip abilities with an option (a price, a limit, a reduction) are one keyword line of the card.
+            if let Some(count) = equip_options_are_written(&printed, &compiled, &listed[at..]) {
+                // The line takes two abilities at most (`equip_line` refuses more).
+                skip_next = count == 2;
+                rendered += count;
                 continue;
             }
             // Two statics under one condition are one sentence of the card.
