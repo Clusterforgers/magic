@@ -34,7 +34,8 @@ pub fn may_cast(ctx: &Ctx, p: &Params, only: Option<&Value>) -> Tr<Value> {
         Some(other) => return unmapped(format!("zone:MayPlay.AffectedZone={other}")),
         None => return unmapped("key:Static.MayPlay.no-AffectedZone"),
     };
-    if only.is_none() && effect_zone(p)?.is_some() {
+    let own_zone = effect_zone(p);
+    if only.is_none() && own_zone?.is_some() {
         let itself = matches!(p.get("Affected"), Some("Card.Self" | "Card.Self+nonLand"));
         if !itself || p.get("EffectZone") != p.get("AffectedZone") {
             return unmapped("key:Static.MayPlay.EffectZone");
