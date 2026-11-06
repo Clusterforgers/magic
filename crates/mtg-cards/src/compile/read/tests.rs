@@ -327,6 +327,7 @@ mod r5b_writers;
 mod r5c;
 mod r5e_writers;
 mod r5g_lines;
+mod r6d;
 mod removal_and_return;
 mod repeats;
 mod replacement_writers;

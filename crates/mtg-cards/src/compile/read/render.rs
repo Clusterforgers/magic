@@ -492,6 +492,12 @@ pub fn written_variants(ability: &Ability) -> Vec<String> {
             }
         }
     }
+    if texts.is_empty() {
+        texts = super::r6d_heads::normal(ability).map_or_else(
+            || super::r6d_heads::cast_wordings(ability, written_variants),
+            |normal| written_variants(&normal),
+        );
+    }
     texts
 }
 
@@ -976,7 +982,11 @@ fn wording_choices(effects: &[Effect]) -> Vec<Wording> {
     let conditions = effects
         .iter()
         .filter_map(|effect| match effect {
-            Effect::If { condition, .. } => Some(conditional::condition_texts(condition).len()),
+            Effect::If { condition, .. } => Some(
+                conditional::condition_texts(condition)
+                    .len()
+                    .max(super::r6d_kind::all_texts(condition).len()),
+            ),
             _ => None,
         })
         .max()
@@ -2625,7 +2635,8 @@ impl Writer<'_> {
                 then,
                 otherwise,
             } if otherwise.is_empty() => {
-                let texts = conditional::condition_texts(condition);
+                let texts = super::r6d_kind::texts(condition, self.targets)
+                    .unwrap_or_else(|| conditional::condition_texts(condition));
                 let text = texts.get(self.condition).or(texts.first())?;
                 format!("if {text}, {}", self.consequence(condition, then)?)
             }

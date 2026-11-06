@@ -71,13 +71,16 @@ fn rewrite_list(list: &mut Vec<Value>, targets: &Value) -> bool {
     let mut step = None;
     for effect in list.iter_mut() {
         if let Some(last) = may_last(effect) {
-            step = Some(last);
+            step = Some((last, false));
             continue;
         }
-        let Some(condition) = step
-            .as_ref()
-            .and_then(|step| performed(step, effect, targets))
-        else {
+        if let Some(last) = super::r6d_done::mandatory(effect) {
+            step = Some((last, true));
+            continue;
+        }
+        let Some(condition) = step.as_ref().and_then(|(step, must)| {
+            super::r6d_done::kept(*must, performed(step, effect, targets)?)
+        }) else {
             step = None;
             continue;
         };
@@ -105,7 +108,7 @@ fn may_last(value: &Value) -> Option<Value> {
 }
 
 /// The steps whose binding counts what they took away.
-const STEPS: [&str; 4] = ["Sacrifice", "Discard", "Exile", "Mill"];
+pub(super) const STEPS: [&str; 4] = ["Sacrifice", "Discard", "Exile", "Mill"];
 
 /// `"Performed"` or `{"Not":"Performed"}` when the `If` asks whether the step took anything, with no `otherwise`.
 fn performed(step: &Value, branch: &Value, targets: &Value) -> Option<Value> {
