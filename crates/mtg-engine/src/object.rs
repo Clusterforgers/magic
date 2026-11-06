@@ -637,7 +637,7 @@ impl GameObject {
         if self.cast_way() != Some(CastWay::Prototype) {
             return None;
         }
-        self.card().rules.iter().find_map(|rule| match &**rule {
+        crate::ability_reader::printed_rules(self.card()).find_map(|rule| match &**rule {
             Ability::Keyword(Keyword::Prototype {
                 cost,
                 power,
