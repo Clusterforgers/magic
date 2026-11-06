@@ -512,6 +512,7 @@ fn written_as_given(ability: &Ability) -> Vec<String> {
     done_once_kept(ability, &mut texts);
     texts.extend(super::r5b_performed::variants(ability, written_variants));
     super::r5a_wordings::add(&mut texts);
+    super::r6c_wordings::add(ability, &mut texts);
     texts
 }
 
