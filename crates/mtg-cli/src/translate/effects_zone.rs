@@ -569,6 +569,22 @@ fn from_any_graveyard(ctx: &Ctx, p: &Params) -> bool {
         && !text.contains("your graveyard")
 }
 
+/// Whether the card's text takes a card from exile ("an exiled card", "a card in exile") without saying whose ("you
+/// own", "that player owns"): exile is shared, so it is any player's card.
+fn from_any_exile(ctx: &Ctx, p: &Params) -> bool {
+    let text = p
+        .get("SpellDescription")
+        .or_else(|| p.get("StackDescription"))
+        .unwrap_or(ctx.oracle)
+        .to_lowercase();
+    ["exiled card", "in exile", "from exile"]
+        .iter()
+        .any(|words| text.contains(words))
+        && !["you own", "they own", " owns ", "your exile"]
+            .iter()
+            .any(|words| text.contains(words))
+}
+
 /// A card of the player's own hand, graveyard or exile, or a permanent, that a player picks and moves ("put a creature card
 /// from your hand onto the battlefield"): a choice among the matching cards, then the move.
 fn choose_and_move(ctx: &mut Ctx, p: &Params, origin: &str, destination: &str) -> Tr<Vec<Value>> {
@@ -588,6 +604,8 @@ fn choose_and_move(ctx: &mut Ctx, p: &Params, origin: &str, destination: &str) -
         }
     } else if origin == "Exile" && filter.iter().any(|pred| pred.get("ExiledWith").is_some()) {
         // Exile is shared: a card exiled with this is named by that, whoever owns it.
+    } else if origin == "Exile" && !p.has("DefinedPlayer") && from_any_exile(ctx, p) {
+        // "an exiled card named ~": any card in exile when the text names no owner.
     } else if origin == "Graveyard" && !p.has("DefinedPlayer") && from_any_graveyard(ctx, p) {
         // "a creature card from a graveyard": Forge picks among every graveyard when no player is defined.
     } else {
