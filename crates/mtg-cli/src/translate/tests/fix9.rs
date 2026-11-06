@@ -5,6 +5,21 @@ use rstest::rstest;
 
 use super::{abilities, gaps};
 
+#[test]
+fn a_searched_permanent_beside_other_alternatives_stays_a_gap() {
+    // Search for Glory names "a snow permanent card, a legendary card, or a Saga card"; an instant stands in for the others.
+    let (_, found) = card(
+        "Sorcery",
+        "A:SP$ ChangeZone | Origin$ Library | Destination$ Hand | ChangeType$ Permanent.Snow,Instant | ChangeNum$ 1",
+    );
+    assert!(
+        found
+            .iter()
+            .any(|g| g.contains("Permanent-card-beside-other-alternatives")),
+        "{found:?}"
+    );
+}
+
 /// The translation of a card with the given header and lines as compact JSON, and its gaps.
 fn card(types: &str, lines: &str) -> (String, Vec<String>) {
     let text = format!("Name:Subject\nTypes:{types}\n{lines}\n");

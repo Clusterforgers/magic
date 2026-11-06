@@ -527,11 +527,17 @@ fn fix9_creature_of_chosen_type(ctx: &Ctx, spec: &str, preds: &mut Vec<Value>) {
 
 /// Adds "a card of a permanent type" to the predicates of a `Permanent` spec that names no card type of its own.
 pub fn fix9_permanent_card(spec: &str, preds: &mut Vec<Value>) -> Tr<()> {
-    let typed = preds
-        .iter()
-        .any(|pred| pred.get("Type").is_some() || pred.get("AnyOf").is_some());
+    let permanent = permanent_card(spec)?;
+    let is_type = |pred: &Value| pred.get("Type").is_some();
+    let typed = preds.iter().any(|pred| {
+        is_type(pred)
+            || pred
+                .get("AnyOf")
+                .and_then(Value::as_array)
+                .is_some_and(|any| any.iter().all(is_type))
+    });
     if !typed {
-        preds.extend(permanent_card(spec)?);
+        preds.extend(permanent);
     }
     Ok(())
 }

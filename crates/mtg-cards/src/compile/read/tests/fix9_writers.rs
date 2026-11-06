@@ -7,6 +7,16 @@ fn written(json: &str, clause: &str) -> bool {
         .any(|wording| same_text(wording, clause))
 }
 
+const WARGATE: &str = r#"{"Spell":{"effects":[{"Search":{"as":"found","filter":[{"Compare":{"op":"Le","stat":"ManaValue","to":"X"}},{"AnyOf":[{"Type":"Artifact"},{"Type":"Battle"},{"Type":"Creature"},{"Type":"Enchantment"},{"Type":"Land"},{"Type":"Planeswalker"}]}]}},{"Move":{"to":{"Battlefield":{}},"what":{"Bound":"found"}}},{"Shuffle":{}}]}}"#;
+const WARGATE_TEXT: &str = "Search your library for a permanent card with mana value X or less, put it onto the battlefield, then shuffle.";
+
+#[rstest]
+#[case::six_types(WARGATE, true)]
+#[case::no_land(&WARGATE.replace(r#"{"Type":"Land"},"#, ""), false)]
+fn fix9_a_searched_permanent_card_takes_its_article(#[case] json: &str, #[case] reads: bool) {
+    assert_eq!(written(json, WARGATE_TEXT), reads);
+}
+
 const DESCEND: &str = r#"{"Static":{"affected":"This","condition":{"Compare":{"left":{"Count":[{"OwnedBy":"You"},{"AnyOf":[{"Type":"Artifact"},{"Type":"Battle"},{"Type":"Creature"},{"Type":"Enchantment"},{"Type":"Land"},{"Type":"Planeswalker"}]},{"In":"Graveyard"}]},"op":"Ge","right":4}},"mods":[{"AddKeyword":"Flying"}]}}"#;
 const DESCEND_TEXT: &str =
     "As long as there are 4 or more permanent cards in your graveyard, ~ has flying.";

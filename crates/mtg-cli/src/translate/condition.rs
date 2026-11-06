@@ -240,8 +240,10 @@ fn of_defined(
         None => (valid, None),
     };
     let mut selector = selector_in(ctx, valid, None)?;
-    // The named objects may be cards in any zone: "if it was a permanent card" is a card of a permanent type.
-    super::valid::fix9_permanent_card(valid, &mut selector)?;
+    // Remembered objects may be cards in any zone: "if it was a permanent card" is a card of a permanent type.
+    if matches!(word, "Remembered" | "RememberedLKI") {
+        super::valid::fix9_permanent_card(valid, &mut selector)?;
+    }
     let subject = match word {
         "Remembered" | "RememberedLKI" => {
             super::memory::slot_ref_loose(ctx, super::memory::Slot::Remembered)

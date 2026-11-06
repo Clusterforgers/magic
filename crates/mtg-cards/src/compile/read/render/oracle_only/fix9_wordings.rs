@@ -3,8 +3,12 @@
 
 use crate::ability::Ability;
 
-/// The six permanent types as the renderers list them, singular and plural, and the one noun the cards print.
-const FIX9_PERMANENT: [(&str, &str); 2] = [
+/// The six permanent types as the renderers list them, with its article, plural and singular, and the one noun the cards print.
+const FIX9_PERMANENT: [(&str, &str); 3] = [
+    (
+        "an artifact, battle, creature, enchantment, land, or planeswalker card",
+        "a permanent card",
+    ),
     (
         "artifact, battle, creature, enchantment, land, or planeswalker cards",
         "permanent cards",
@@ -25,7 +29,7 @@ const FIX9_EXCESS_TEXT: &str = " Excess damage is dealt to that creature's contr
 pub(super) fn add(ability: &Ability, texts: &mut Vec<String>) {
     let mut said: Vec<String> = texts
         .iter()
-        .filter(|text| text.contains(FIX9_PERMANENT[1].0))
+        .filter(|text| text.contains(FIX9_PERMANENT[2].0))
         .map(|text| {
             FIX9_PERMANENT
                 .iter()
