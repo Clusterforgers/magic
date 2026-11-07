@@ -85,6 +85,7 @@ mod evasion;
 mod event_wordings;
 mod exiled_kind;
 mod facts;
+mod fix16_kicked;
 mod flicker;
 mod g10c_facts;
 mod g10c_wordings;

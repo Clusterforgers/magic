@@ -1027,13 +1027,7 @@ fn w17b_rule_objects(
     zone: Zone,
 ) -> Result<Vec<ObjectRef>, ResolveError> {
     let named = if matches!(who, Ref::Attached) {
-        scope
-            .state
-            .host_of(scope.source.id)
-            .and_then(|host| scope.state.object(host))
-            .map(GameObject::reference)
-            .into_iter()
-            .collect()
+        scope.host().into_iter().collect()
     } else {
         scope.objects(who)?
     };

@@ -743,6 +743,59 @@ pub fn objects(reference: Value) -> Tr<Value> {
     Ok(reference)
 }
 
+/// The valid-string of a target as Oracle reads it, and whether the target is "from your graveyard" when the script
+/// takes it from any graveyard; a mana value the script does not check is a gap.
+fn fix16_oracle_target<'a>(
+    ctx: &Ctx,
+    params: &Params,
+    zone: Option<&str>,
+    valid: &'a str,
+) -> Tr<(&'a str, bool)> {
+    let printed = ctx.printed.as_deref().unwrap_or_default();
+    let oracle = ctx.oracle.to_lowercase();
+    // A script that says "target player" where Oracle says "target opponent" (Dread Rider) follows Oracle.
+    let valid = if valid == "Player"
+        && printed.contains("target player ")
+        && !oracle.contains(printed)
+        && oracle.contains(&printed.replace("target player ", "target opponent "))
+    {
+        "Opponent"
+    } else {
+        valid
+    };
+    // "with mana value X or less" that the script does not check (Stir the Grave).
+    if !valid.contains("cmcLE") && lacks_mana_value(printed, valid) {
+        return unmapped("target:script-lacks-mana-value");
+    }
+    // A target "from your graveyard" the script takes from any graveyard (Hana Kami).
+    let own_graveyard = zone == Some("Graveyard")
+        && !params.has("TargetsWithDefinedController")
+        && printed.contains("target ")
+        && printed.matches("graveyard").count() == 1
+        && printed.contains("from your graveyard")
+        && ![
+            "You", "Opp", "Defined", "Targeted", "Other", "Owner", "Ctrl",
+        ]
+        .iter()
+        .any(|word| valid.contains(word));
+    Ok((valid, own_graveyard))
+}
+
+/// Whether the printed text says "target <type> card with mana value X or less" of the type `valid` names, so a script
+/// without `cmcLE` would take any mana value.
+fn lacks_mana_value(printed: &str, valid: &str) -> bool {
+    let noun = valid
+        .split(['.', '+', ','])
+        .next()
+        .unwrap_or_default()
+        .to_lowercase();
+    !noun.is_empty()
+        && printed
+            .split("target ")
+            .skip(1)
+            .any(|phrase| phrase.starts_with(&format!("{noun} card with mana value x or less")))
+}
+
 /// The target specification `ValidTgts$` and its bounds stand for, as the DSL writes it.
 pub fn target_spec(ctx: &Ctx, params: &Params, zone: Option<&str>) -> Tr<Value> {
     let valid = params.get("ValidTgts").unwrap_or_default();
@@ -755,11 +808,18 @@ pub fn target_spec(ctx: &Ctx, params: &Params, zone: Option<&str>) -> Tr<Value> 
     } else {
         valid
     };
+    let (valid, own_graveyard) = fix16_oracle_target(ctx, params, zone, valid)?;
     // A target being chosen reads no other target of its line (`filter::Scope::Targeting`).
     let before = ctx.scope.replace(super::filter::Scope::Targeting);
     let what = target_what(ctx, valid, zone);
     ctx.scope.set(before);
     let mut what = what?;
+    if own_graveyard
+        && let Some(Value::Array(selector)) = what.get_mut("Object")
+        && !selector.iter().any(|pred| pred.get("OwnedBy").is_some())
+    {
+        selector.push(json!({"OwnedBy": "You"}));
+    }
     // Outside the battlefield the controller is the owner ("from your graveyard"), which the text states in its own words.
     if matches!(zone, None | Some("Battlefield"))
         && super::any_player::narrows_target(ctx.oracle, valid)

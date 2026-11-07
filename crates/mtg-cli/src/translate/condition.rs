@@ -133,6 +133,14 @@ pub fn check_svar(ctx: &Ctx, p: &Params) -> Tr<Option<Value>> {
         }
         let (op, right) = comparison(ctx, p.get(compare).unwrap_or("GE1"))?;
         let left = amount(ctx, name)?;
+        // "attacked with three or more Merfolk" (Deepway Navigator): the tally counts every attacker.
+        let printed = p.get("Description").unwrap_or_default();
+        if left == json!({"Tallied": {"what": "Attackers", "who": "You"}})
+            && printed.contains("attacked with ")
+            && !printed.contains(" or more creatures")
+        {
+            return unmapped("condition:attackers-of-a-type");
+        }
         all.push(
             settled(&left, op, &right)
                 .unwrap_or_else(|| json!({"Compare": {"left": left, "op": op, "right": right}})),
@@ -189,6 +197,14 @@ fn present(ctx: &Ctx, p: &Params, suffix: &str) -> Tr<Option<Value>> {
         }
         return Ok(None);
     };
+    // Radiant Essence's script counts creatures where its static says "controls a black permanent".
+    let printed = p.get("Description").unwrap_or_default();
+    let permanent = valid
+        .strip_prefix("Creature.")
+        .filter(|_| printed.contains(" controls a ") && printed.ends_with(" permanent."))
+        .filter(|_| !printed.to_lowercase().contains("creature"))
+        .map(|rest| format!("Permanent.{rest}"));
+    let valid = permanent.as_deref().unwrap_or(valid);
     if defined_word.is_some() && p.has("PresentPlayer") {
         return unmapped("key:Condition.PresentPlayerWithDefined");
     }

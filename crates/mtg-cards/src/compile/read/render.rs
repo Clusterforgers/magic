@@ -188,6 +188,12 @@ pub fn variants(ability: &Ability) -> Vec<String> {
     if let Some(texts) = super::w20b_reflexive::w20b_variants(ability, variants) {
         return texts;
     }
+    if let Some(texts) = super::fix16_kicked::fix16_kicked_variants(ability, variants) {
+        return texts;
+    }
+    if let Some(texts) = super::fix16_kicked::fix16_each_target_variants(ability, variants) {
+        return texts;
+    }
     if let Some(texts) = super::c11a_ability_less::c11a_variants(ability) {
         return texts;
     }

@@ -135,8 +135,12 @@ fn untap_up_to(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
     let filter = selector_any(ctx, kind)?;
     let max = amount(ctx, count)?;
     let bind = ctx.fresh("untap");
-    let mut choose =
-        json!({"Choose": {"from": {"Each": filter}, "count": {"min": 0, "max": max}, "as": bind}});
+    // Forge marks "untaps a land" (Rising Waters) `UntapUpTo$` too: only Oracle's "up to" lets the player take fewer.
+    let text = ctx.oracle.to_lowercase();
+    let exact =
+        text.contains("untap") && !text.contains("untap up to") && !text.contains("untaps up to");
+    let min = if exact { max.clone() } else { json!(0) };
+    let mut choose = json!({"Choose": {"from": {"Each": filter}, "count": {"min": min, "max": max}, "as": bind}});
     if who != json!("You") {
         choose["Choose"]["who"] = who;
     }

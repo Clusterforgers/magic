@@ -1053,12 +1053,7 @@ impl<'a> Scope<'a> {
                 .ok_or_else(|| ResolveError::Invalid("there is no triggering event".into()))?,
             Ref::Dealer => self.dealer(),
             Ref::Against => self.against(),
-            Ref::Attached => state
-                .host_of(self.source.id)
-                .and_then(|host| state.object(host))
-                .map(|host| Target::Object(host.reference()))
-                .into_iter()
-                .collect(),
+            Ref::Attached => self.host().map(Target::Object).into_iter().collect(),
             Ref::AttachedPlayer => state
                 .player_host_of(self.source.id)
                 .map(Target::Player)
@@ -1259,6 +1254,27 @@ impl<'a> Scope<'a> {
             }
         }
         Ok(seats)
+    }
+
+    /// What the source is attached to: its host now, or, once the source has left (an Aura sacrificed to pay for its
+    /// ability), the host its last known information names while that is still the same permanent (CR 112.7a, 400.7).
+    pub(crate) fn host(&self) -> Option<ObjectRef> {
+        let state = self.state;
+        if let Some(host) = state.host_of(self.source.id) {
+            return state.object(host).map(GameObject::reference);
+        }
+        let gone = state
+            .object(self.source.id)
+            .is_none_or(|object| object.counter() != self.source.counter);
+        let host = (self.snapshots.iter())
+            .filter(|shot| gone && shot.reference() == self.source)
+            .find_map(|shot| shot.host)?;
+        state
+            .object(host.id)
+            .is_some_and(|object| {
+                object.counter() == host.counter && object.zone() == Zone::Battlefield
+            })
+            .then_some(host)
     }
 
     /// The permanent whose static ability gave the running ability, while it is on the battlefield.

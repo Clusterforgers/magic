@@ -197,6 +197,13 @@ pub fn defined_word(ctx: &Ctx, word: &str) -> Tr<Value> {
         "Imprinted" | "Player.IsImprinted" => memory::imprinted(ctx),
         // The controller of the card the ability belongs to, who need not be the player who activated it.
         "SourceController" => Ok(json!({"ControllerOf": "This"})),
+        // The Onslaught Crowns: "enchanted creature and other creatures that share a creature type with it", read
+        // once the Crown is sacrificed (the engine names its host by last known information).
+        "AttachedBy Sacrificed & Valid Creature.sharesCreatureTypeWith AttachedBy Sacrificed" => {
+            Ok(json!({
+                "Each": [{"Type": "Creature"}, {"AnyOf": [{"Is": "Attached"}, {"SharesSubtype": "Attached"}]}]
+            }))
+        }
         _ => unmapped(format!("defined:{word}")),
     }
 }

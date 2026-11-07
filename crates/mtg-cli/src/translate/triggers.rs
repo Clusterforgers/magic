@@ -163,6 +163,16 @@ fn printed_more(p: &Params, effects: &[Value]) -> Tr<()> {
     {
         return unmapped("trigger:may-put-counters-without-decider");
     }
+    // "you may gain control of target artifact" (Kukemssa Pirates), "you may have target land become a Plains"
+    // (Graceful Antelope): a script with no decider would force them.
+    if p.get("OptionalDecider").is_none()
+        && p.get("TriggerDescription").is_some_and(|text| {
+            text.contains(", you may gain control of target")
+                || text.contains(", you may have target")
+        })
+    {
+        return unmapped("trigger:may-target-without-decider");
+    }
     if p.get("Mode") == Some("SpellCast")
         && p.get("ValidCard")
             .is_some_and(|valid| valid.starts_with("Card.YouCtrl"))

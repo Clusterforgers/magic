@@ -84,4 +84,9 @@ convoked?: Array<ObjectRef>,
  * The face of a card with several faces it was in use as (the back face of a transformed permanent); left out for
  * the card as a whole.
  */
-face?: number, };
+face?: number, 
+/**
+ * The permanent it was attached to, as the object it was then: what "enchanted creature" names once the Aura has
+ * left (CR 112.7a, 608.2h).
+ */
+host?: ObjectRef, };

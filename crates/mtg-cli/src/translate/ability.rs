@@ -192,7 +192,11 @@ fn activated(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
         1 => ability["condition"] = conditions.remove(0),
         _ => ability["condition"] = json!({ "All": conditions }),
     }
-    if p.get("SorcerySpeed") == Some("True") {
+    // Some scripts print "Activate only as a sorcery." without `SorcerySpeed$` (Mindwhip Sliver's granted ability).
+    let printed_sorcery = p
+        .get("SpellDescription")
+        .is_some_and(|text| text.trim_end().ends_with(". Activate only as a sorcery."));
+    if p.get("SorcerySpeed") == Some("True") || printed_sorcery {
         ability["timing"] = json!("Sorcery");
     }
     if let Some(by) = by {
