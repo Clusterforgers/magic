@@ -467,7 +467,8 @@ pub(crate) fn options(state: &GameState, player: PlayerId) -> Vec<ManaOption> {
         };
         let sick = chars.is_creature() && keywords::summoning_sick(state, id);
         let can_tap = !perm.tapped() && !sick;
-        if can_tap {
+        // Only a permanent with a mana ability reads the tax; a walk of the battlefield for every permanent is quadratic.
+        if can_tap && !chars.abilities.is_empty() {
             let tax =
                 crate::activation_kind::mana_modified(state, id, mtg_core::mana::ManaCost::ZERO);
             for (ability, def) in chars.abilities.iter().enumerate() {
@@ -642,6 +643,8 @@ mod counted;
 mod r6e;
 #[cfg(test)]
 mod replaced;
+#[cfg(test)]
+mod walks;
 
 #[cfg(test)]
 mod tests {
