@@ -184,7 +184,8 @@ impl Writer<'_> {
     }
 
     /// "Counter target spell. If that spell is countered this way, exile it instead of putting it into its owner's
-    /// graveyard": the shield on the spell and the counter, and the number of effects they take.
+    /// graveyard": the shield on the spell and the counter, and the number of effects they take. A name for the spell countered
+    /// ("if that spell is countered this way" read on) is no word of its own.
     pub(super) fn r7d_countered_exiled(&mut self, effects: &[Effect]) -> Option<(String, usize)> {
         let [
             Effect::Shield {
@@ -195,9 +196,9 @@ impl Writer<'_> {
                 by: ReplaceBy::MoveTo(ZoneKind::Exile),
                 duration: Duration::UntilEndOfTurn,
             },
-            counter @ Effect::Counter {
+            Effect::Counter {
                 what: Ref::Target(0),
-                bind: None,
+                bind: _,
             },
             ..,
         ] = effects
@@ -209,7 +210,10 @@ impl Writer<'_> {
         {
             return None;
         }
-        let countered = self.effect(counter)?;
+        let countered = self.effect(&Effect::Counter {
+            what: Ref::Target(0),
+            bind: None,
+        })?;
         Some((
             format!(
                 "{countered}. If that spell is countered this way, exile it instead of putting it into its owner's graveyard"
