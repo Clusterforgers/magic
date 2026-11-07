@@ -192,6 +192,8 @@ struct Pairer<'a> {
     creature_at: Option<i32>,
     /// The names the face calls itself by, which the clauses show as `~` (also inside the name of a token).
     names: Vec<String>,
+    /// "a Dragon was beheld" or "evidence was collected": the words for the paid additional cost of the face.
+    beheld: Option<String>,
     slots: Vec<Slot<'a>>,
     taken: Vec<bool>,
     slot_of: Vec<Option<usize>>,
@@ -211,6 +213,7 @@ impl<'a> Pairer<'a> {
             abilities,
             creature_at,
             names,
+            beheld: super::e15c_beheld::paid_words(abilities),
             slots: clauses
                 .iter()
                 .map(|&clause| Slot {
@@ -285,6 +288,13 @@ impl<'a> Pairer<'a> {
         }
         if let Some(unworded) = r7c_unworded(text) {
             return self.same(variant, &unworded);
+        }
+        if let Some(plain) = self
+            .beheld
+            .as_deref()
+            .and_then(|words| super::e15c_beheld::unpaid_words(text, words))
+        {
+            return self.same(variant, &plain);
         }
         let mut shown = variant.to_owned();
         for name in &self.names {

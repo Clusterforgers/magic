@@ -162,6 +162,7 @@ fn by_mode(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
         "ReduceCost" => cost_modifier(ctx, p, "Reduce")?,
         "RaiseCost" => cost_modifier(ctx, p, "Increase")?,
         "AlternativeCost" => super::statics_alt::alternative_cost(ctx, p)?,
+        "OptionalCost" => super::statics_alt::optional_cost(ctx, p)?,
         other => return unmapped(format!("static:{other}")),
     })
 }
@@ -295,8 +296,9 @@ fn paired() -> Value {
 }
 
 /// The keys a continuous static line reads.
-const CONTINUOUS: [&str; 33] = [
+const CONTINUOUS: [&str; 34] = [
     "Goad",
+    "RemoveType",
     "AddReplacementEffect",
     "CantHaveKeyword",
     "RemoveCardTypes",
@@ -475,6 +477,15 @@ fn continuous(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
         p.get("RemoveCardTypes") == Some("True"),
         p.get("RemoveLandTypes") == Some("True"),
     );
+    // "Isn't a creature" (the Theros gods): only a card type goes; a supertype or subtype taken away has no modification.
+    if let Some(removed) = p.get("RemoveType") {
+        for word in removed.split(',').map(str::trim) {
+            if !super::ctx::CARD_TYPES.contains(&word) {
+                return unmapped("key:Static.Continuous.RemoveType");
+            }
+            mods.push(json!({ "RemoveType": word }));
+        }
+    }
     match p.get("AddType") {
         Some(types) => mods.extend(added_types(ctx, types, remove)?),
         None if remove => mods.push(json!({"SetCreatureTypes": []})),

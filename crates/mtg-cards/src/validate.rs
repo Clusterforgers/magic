@@ -1347,7 +1347,7 @@ impl<'a> Walker<'a> {
                     | CostItem::UntapPermanents { filter, count }
                     | CostItem::RevealFromHand { filter, count }
                     | CostItem::ReturnToHand { filter, count }
-                    | CostItem::Behold { filter, count }
+                    | CostItem::Behold { filter, count, .. }
                     | CostItem::ExiledToGraveyard { filter, count }
                     | CostItem::ToLibrary { filter, count, .. }
                     | CostItem::Craft { filter, count, .. } => {

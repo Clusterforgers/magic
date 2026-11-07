@@ -904,9 +904,7 @@ fn ability_texts(ability: &Ability) -> Vec<String> {
             targets,
             effects,
         } => loyalty::texts(*cost, targets, effects),
-        Ability::AdditionalCost { cost, required } => costs::additional_text(cost, *required)
-            .into_iter()
-            .collect(),
+        Ability::AdditionalCost { cost, required } => costs::additional_texts(cost, *required),
         _ => statics::texts(ability),
     }
 }

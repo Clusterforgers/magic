@@ -172,6 +172,13 @@ fn read_expression(ctx: &Ctx, expression: &str) -> Tr<Value> {
     if let Ok(number) = expression.parse::<i32>() {
         return Ok(json!(number));
     }
+    // "If evidence was collected": one when the spell's optional collect-evidence cost was paid, else none. The cards
+    // collected are not counted, so only that wording reads it.
+    if matches!(expression, "Collected$Amount" | "CastSA>Collected$Amount")
+        && ctx.oracle.contains("evidence was collected")
+    {
+        return Ok(json!({"When": {"condition": "AdditionalCostPaid", "then": 1, "otherwise": 0}}));
+    }
     if let Some(rest) = expression.strip_prefix("Number$") {
         let (number, steps) = rest.split_once('/').unwrap_or((rest, ""));
         let Ok(number) = number.trim().parse::<i32>() else {

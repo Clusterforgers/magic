@@ -21,7 +21,8 @@ pub fn when(ctx: &Ctx, base: &str) -> Option<Tr<Value>> {
         "Kicked" => json!("Kicked"),
         // The gift was promised: one when its caster promised it, else none.
         "PromisedGift" => json!({"Compare": {"left": "Promised", "op": "Ge", "right": 1}}),
-        "Bargained" | "Teamwork" => json!("AdditionalCostPaid"),
+        // `OptionalGenericCostPaid`: the optional additional cost of the spell's own `OptionalCost` line was paid.
+        "Bargained" | "Teamwork" | "OptionalGenericCostPaid" => json!("AdditionalCostPaid"),
         "Monarch" => json!({"Monarch": "You"}),
         "Morbid" => {
             json!({"Compare": {"left": {"Tallied": {"who": "EachPlayer", "what": "CreaturesDied"}}, "op": "Ge", "right": 1}})

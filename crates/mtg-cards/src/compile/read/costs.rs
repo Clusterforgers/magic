@@ -673,8 +673,20 @@ pub(super) fn lowered(text: &str) -> String {
         .unwrap_or_default()
 }
 
+/// The sentences an additional cost is written as: the cost's own words, and "blight N" for a blight alone (CR 701.66).
+pub(super) fn additional_texts(cost: &Cost, required: bool) -> Vec<String> {
+    let mut out: Vec<String> = additional_text(cost, required).into_iter().collect();
+    if let [CostItem::Blight(Amount::Fixed(count @ 1..))] = cost.0.as_slice() {
+        let may = if required { "" } else { "you may " };
+        out.push(format!(
+            "As an additional cost to cast ~, {may}blight {count}."
+        ));
+    }
+    out
+}
+
 /// The sentence an additional cost is written as; `None` for a cost the readers do not write.
-pub(super) fn additional_text(cost: &Cost, required: bool) -> Option<String> {
+fn additional_text(cost: &Cost, required: bool) -> Option<String> {
     let body = if let [CostItem::Mana(mana)] = cost.0.as_slice() {
         // The reader takes a cost of mana alone only after "you may".
         (!required).then(|| format!("pay {mana}"))?
