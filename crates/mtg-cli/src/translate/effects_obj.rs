@@ -18,7 +18,7 @@ pub fn effects(ctx: &mut Ctx, p: &Params, api: &str) -> Tr<Vec<Value>> {
         "DestroyAll" => one(destroy_all(ctx, p)),
         "DamageAll" => damage_all(ctx, p),
         "DamageResolve" => damage_resolve(ctx, p),
-        "PutCounterAll" => one(put_counter_all(ctx, p)),
+        "PutCounterAll" => put_counter_all(ctx, p),
         "RemoveCounterAll" => one(remove_counter_all(ctx, p)),
         "AddOrRemoveCounter" => one(add_or_remove_counter(ctx, p)),
         "Counter" => counter(ctx, p),
@@ -372,21 +372,50 @@ fn damage_all(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
     Ok(effects)
 }
 
-/// `PutCounterAll`: counters on every object that matches.
-fn put_counter_all(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
+/// `PutCounterAll`: counters on every object that matches. `CounterType2$` is a second put after the first: its own
+/// number (`CounterNum2$`, else the first one) on the same objects, or on those `ValidCards2$` matches ("a +1/+1 counter on each
+/// creature you control and a loyalty counter on each other planeswalker you control").
+fn put_counter_all(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
     only(
         p,
         "PutCounterAll",
-        &["ValidCards", "CounterType", "CounterNum", "ValidTgts"],
+        &[
+            "ValidCards",
+            "CounterType",
+            "CounterNum",
+            "ValidTgts",
+            "CounterType2",
+            "CounterNum2",
+            "ValidCards2",
+        ],
     )?;
     let Some(kind) = p.get("CounterType").and_then(kind_word) else {
         return unmapped("key:PutCounterAll.CounterType");
     };
     let valid = p.get("ValidCards").unwrap_or_default();
     let count = amount(ctx, p.get("CounterNum").unwrap_or("1"))?;
-    Ok(
-        json!({"PutCounters": {"on": {"Each": frame::all_matching(ctx, p, "PutCounterAll", valid)?}, "counter": kind, "count": count}}),
-    )
+    let on = json!({"Each": frame::all_matching(ctx, p, "PutCounterAll", valid)?});
+    let mut effects = vec![json!({"PutCounters": {"on": on, "counter": kind, "count": count}})];
+    let Some(second) = p.get("CounterType2") else {
+        if p.has("CounterNum2") || p.has("ValidCards2") {
+            return unmapped("key:PutCounterAll.CounterType2");
+        }
+        return Ok(effects);
+    };
+    let Some(kind) = kind_word(second) else {
+        return unmapped("key:PutCounterAll.CounterType2");
+    };
+    let count = amount(
+        ctx,
+        p.get("CounterNum2").or(p.get("CounterNum")).unwrap_or("1"),
+    )?;
+    let on = match p.get("ValidCards2") {
+        None => on,
+        Some(_) if p.has("ValidTgts") => return unmapped("key:PutCounterAll.ValidCards2"),
+        Some(valid) => json!({"Each": super::valid::selector_any(ctx, valid)?}),
+    };
+    effects.push(json!({"PutCounters": {"on": on, "counter": kind, "count": count}}));
+    Ok(effects)
 }
 
 /// `AddOrRemoveCounter`: the controller puts counters of a kind on the object or takes them off ("put a plague counter on
@@ -1205,6 +1234,8 @@ fn put_counter(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
             "CounterTypes",
             "DividedAsYouChoose",
             "CounterNumPerDefined",
+            "ChoiceAmount",
+            "MinChoiceAmount",
         ],
     )?;
     if let Some(name) = p.get("CounterNumPerDefined") {
@@ -1237,15 +1268,29 @@ fn put_counter(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
         return Ok(effects);
     }
     // `Choices$` is a pick made as the effect resolves, from the objects that match, with no targets.
+    // `ChoiceAmount$` is how many are picked, `MinChoiceAmount$` the fewest (else as many): "each of up to two Soldiers
+    // you control", "choose four nonenchantment permanents you don't control". `Defined$ ChosenCard` names the pick.
+    if (p.has("ChoiceAmount") || p.has("MinChoiceAmount"))
+        && (!p.has("Choices") || p.has("DividedAsYouChoose"))
+    {
+        return unmapped("key:PutCounter.ChoiceAmount");
+    }
     let on = match p.get("Choices") {
-        Some(_) if p.has("ValidTgts") || p.has("Defined") => {
+        Some(_)
+            if p.has("ValidTgts") || p.get("Defined").is_some_and(|word| word != "ChosenCard") =>
+        {
             return unmapped("key:PutCounter.Choices-with-a-target");
         }
         Some(valid) => {
             let from = json!({"Each": selector_in(ctx, valid, None)?});
             let bind = ctx.fresh("card");
+            let max = amount(ctx, p.get("ChoiceAmount").unwrap_or("1"))?;
+            let min = match p.get("MinChoiceAmount") {
+                Some(word) => amount(ctx, word)?,
+                None => max.clone(),
+            };
             effects.push(json!({"Choose": {
-                "who": "You", "from": from, "count": {"min": 1, "max": 1}, "as": bind}}));
+                "who": "You", "from": from, "count": {"min": min, "max": max}, "as": bind}}));
             json!({ "Bound": bind })
         }
         None => subject(ctx, p, "Self", None)?,
