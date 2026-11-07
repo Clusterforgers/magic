@@ -220,6 +220,9 @@ Rules that change how the game is played rather than the objects in it (`Effect:
 - `Ref::OrController(r)` is the player `r` names, or the controller of the permanent it names ("target player or planeswalker", then "that player or that planeswalker's controller").
 - `Pred::CanEnchantSource` holds for an Aura (or Equipment) card that `attach::legal_host_entering` lets attach to the source.
 - "You may cast this as though it had flash if you pay {N} more" is an `AltCast` (`CastWay::Alternative`, `flash`) for the printed cost plus {N}; a printed {X} has no such way.
+- A morph, megamorph or disguise cost may have fixed parts beyond mana (discard, reveal, return, sacrifice, life): turning face up asks their picks as a special action before the mana (`announce/turn_up.rs`); the permanent never pays for itself.
+- `ReplaceBy::PayOrGraveyard` (Mox Diamond, Lotus Vale) takes one sacrifice or discard as the permanent would enter, or puts it into its owner's graveyard; an unpaid land play still counts (`ZoneCause::LandPlayed`).
+- `CostItem::Unattach` in an ability an Equipment or Aura gives unattaches the giver; `CostItem::XAtLeast` ("X can't be 0") bounds the X of an activated ability from below, in the offer and in the announcement.
 - A waterbend cost (`CostItem::Waterbend`) is generic mana that untapped artifacts and creatures help pay as improvise does (`help::waterbend`); only the cost of an activated ability offers the helpers, any other use is an unpaid part.
 
 ## Phasing

@@ -572,6 +572,7 @@ const BECAUSE: Record<
   Foretold: 'is foretold',
   Plotted: 'is plotted',
   Adventure: 'is exiled on an adventure',
+  LandPlayed: 'is played and put into the graveyard',
 }
 
 /** The words for a cause that carries a player or a permanent. */
