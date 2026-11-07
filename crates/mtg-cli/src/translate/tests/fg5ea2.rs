@@ -116,9 +116,9 @@ fn a_verb_maps_to_its_node(#[case] line: &str, #[case] node: Value) {
     "CopySpellAbility | Defined$ TriggeredSpellAbility",
     "key:CopySpellAbility.Defined"
 )]
-#[case::choose_player_random(
-    "ChoosePlayer | Defined$ You | Choices$ Player | Random$ True",
-    "key:ChoosePlayer.Random"
+#[case::choose_player_from_a_filter(
+    "ChoosePlayer | Defined$ You | Choices$ Player.Opponent+!EnchantedBy | Random$ True",
+    "key:ChoosePlayer.Choices"
 )]
 #[case::choose_targeted_player(
     "ChoosePlayer | Defined$ You | Choices$ ThisTargetedPlayer | ValidTgts$ Player",
