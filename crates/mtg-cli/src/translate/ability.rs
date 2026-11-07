@@ -128,7 +128,8 @@ fn spell(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
         "CheckThirdSVar",
         "ThirdSVarCompare",
     ]);
-    let effects = chain(ctx, p)?;
+    let mut effects = chain(ctx, p)?;
+    exile_self_first(p, &mut effects);
     // A spell whose line does nothing (its abilities are all keywords, as on a cascade spell) has no spell ability to resolve.
     if effects.is_empty() && ctx.targets.is_empty() && extra.is_none() && only.is_none() {
         return Ok(Vec::new());
@@ -141,6 +142,23 @@ fn spell(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
     out.extend(only.map(|condition| json!({"CastOnly": {"condition": condition}})));
     out.push(json!({ "Spell": ability }));
     Ok(out)
+}
+
+/// "Exile ~. Each player discards their hand, ...": a spell whose text opens with exiling itself does that first, where
+/// the script chains the exile after another step (Ill-Gotten Gains). The step reads no earlier step, so moving it keeps
+/// every other step's meaning.
+fn exile_self_first(p: &Params, effects: &mut Vec<Value>) {
+    let opens = p
+        .get("SpellDescription")
+        .is_some_and(|text| text.starts_with("Exile CARDNAME.") || text.starts_with("Exile ~."));
+    let exile_self = json!({"Exile": {"what": "This"}});
+    if opens
+        && let Some(at) = effects.iter().position(|step| *step == exile_self)
+        && at > 0
+    {
+        let step = effects.remove(at);
+        effects.insert(0, step);
+    }
 }
 
 fn activated(ctx: &mut Ctx, p: &Params) -> Tr<Value> {

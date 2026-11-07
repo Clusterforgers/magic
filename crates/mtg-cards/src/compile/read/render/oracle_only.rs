@@ -339,6 +339,7 @@ mod t20a_greatest;
 mod t20c_pay;
 mod t20c_rule;
 // r5b
+mod fix20_each_then;
 mod fix8_tap_or_untap;
 mod fix9_wordings;
 mod r5b_flow;
@@ -455,6 +456,7 @@ pub(super) fn add(ability: &Ability, texts: &mut Vec<String>) {
     // r5b
     r5b_flow::add(ability, texts);
     fix8_tap_or_untap::add(texts);
+    fix20_each_then::add(texts);
     add_latest(ability, texts);
 }
 
