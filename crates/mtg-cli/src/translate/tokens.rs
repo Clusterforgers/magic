@@ -355,6 +355,10 @@ fn mana(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
             "PersistentMana",
             "CombatMana",
             "TriggersWhenSpent",
+            "AddsCounters",
+            "AddsKeywords",
+            "AddsKeywordsValid",
+            "AddsKeywordsUntil",
         ],
     )?;
     let produced = p.get("Produced").unwrap_or_default();
@@ -435,6 +439,7 @@ fn mana(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
     if let Some(name) = p.get("TriggersWhenSpent") {
         only.extend(super::spend_uses::when_spent(ctx, name)?);
     }
+    only.extend(super::spend_uses::enters_bonus(ctx, p)?);
     if !only.is_empty() {
         effect["only"] = json!(only);
     }

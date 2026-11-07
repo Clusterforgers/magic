@@ -7,7 +7,8 @@ use mtg_core::card::{CardType, Subtype, Supertype};
 use super::selectors::{card_type, plural_subtype, subtype, type_name};
 use super::subtypes::plural_subtype as plural_name;
 use super::tokens::Reader;
-use crate::spend::{ManaLasts, SpendFact, SpendFilter, SpendOn};
+use crate::keyword::Keyword;
+use crate::spend::{EntersBonus, ManaLasts, SpendFact, SpendFilter, SpendOn};
 
 const LEAD: &str = "spend this mana only";
 
@@ -377,6 +378,10 @@ fn plain_kind_text(filter: &SpendFilter) -> Option<String> {
             Some(format!("legendary {}", kind_words(types)))
         }
         ([], [], [], true) => Some("multicolored ".into()),
+        // "a multicolored creature spell".
+        (types, [], [], true) if !types.is_empty() => {
+            Some(format!("multicolored {}", kind_words(types)))
+        }
         (types, [], [], false) if !types.is_empty() => Some(kind_words(types)),
         _ => None,
     }
@@ -452,6 +457,7 @@ fn one_spell_text(filter: &SpendFilter) -> Option<String> {
 /// The sentence the uses are written as, with its capital and no period; `None` for uses the readers do not write.
 pub(super) fn text(only: &[SpendOn]) -> Option<String> {
     Some(match only {
+        [SpendOn::Enters(bonus)] => enters_text(bonus)?,
         [SpendOn::CostWithX] => "Spend this mana only on costs that contain {X}".to_owned(),
         [SpendOn::Ability(filter)] if *filter == SpendFilter::default() => {
             "Spend this mana only to activate abilities".to_owned()
@@ -508,6 +514,36 @@ pub(super) fn text(only: &[SpendOn]) -> Option<String> {
     })
 }
 
+/// The sentence of a rider that gives the spell's permanent counters or haste: "If that mana is spent on a creature
+/// spell, it gains haste until end of turn"; `None` for more than one counter, both at once, or another keyword.
+fn enters_text(bonus: &EntersBonus) -> Option<String> {
+    let spell = one_spell_text(&bonus.spell)?;
+    let gets = match (bonus.counters, &bonus.keyword) {
+        (1, None) => "that creature enters with an additional +1/+1 counter on it".to_owned(),
+        (0, Some(Keyword::Haste)) if bonus.this_turn => {
+            "it gains haste until end of turn".to_owned()
+        }
+        (0, Some(Keyword::Haste)) => "it gains haste".to_owned(),
+        _ => return None,
+    };
+    Some(format!("If that mana is spent on {spell}, {gets}"))
+}
+
+/// The other wordings of a rider's sentence: "any of that mana" for mana of several, "this mana", and "spent to cast".
+fn enters_forms(text: &str) -> Vec<String> {
+    let Some(rest) = text.strip_prefix("If that mana is spent on ") else {
+        return Vec::new();
+    };
+    let mut found = Vec::new();
+    for subject in ["that mana", "any of that mana", "this mana"] {
+        for verb in ["spent on", "spent to cast"] {
+            found.push(format!("If {subject} is {verb} {rest}"));
+        }
+    }
+    found.remove(0);
+    found
+}
+
 /// The sources whose abilities are paid for, as the plural names them: "Elves", "artifacts"; `None` for a kind that
 /// has a subtype with a card type, a filter of other parts, or none.
 fn plural_sources(spell: &SpendFilter) -> Option<String> {
@@ -549,6 +585,17 @@ pub(super) fn singular(text: &str) -> Option<String> {
 /// ("or activate an ability of a Hero source", "or to activate abilities of Heroes", "or activate abilities of Elemental
 /// sources").
 pub(super) fn more(text: &str) -> Vec<String> {
+    if text.contains("If that mana is spent on ") {
+        return text
+            .split_once("If that mana")
+            .map(|(head, _)| head)
+            .map_or_else(Vec::new, |head| {
+                enters_forms(&text[head.len()..])
+                    .into_iter()
+                    .map(|form| format!("{head}{form}"))
+                    .collect()
+            });
+    }
     let mut forms = vec![text.to_owned()];
     forms.extend(singular(text));
     let mut found: Vec<String> = forms[1..].to_vec();

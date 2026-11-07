@@ -24,12 +24,15 @@ const spell = (traits: Partial<PaySpend['traits']> = {}, has_x = false): PaySpen
 const ability: PaySpend = { kind: 'Ability', traits: { types: CREATURE, colors: 0 } }
 const onSpell = (filter: SpendFilter): SpendOn => ({ Spell: filter })
 const RIDER = { When: {} } as unknown as SpendOn
+const ENTERS: SpendOn = { Enters: { spell: { types: ['Creature'] }, keyword: 'Haste', this_turn: true } }
 
 describe('spendAllows', () => {
   it.each<[string, PaySpend | undefined, SpendOn[] | undefined, boolean]>([
     ['no restriction', undefined, undefined, true],
     ['an empty list', spell(), [], true],
     ['a rider alone limits nothing', undefined, [RIDER], true],
+    ['an enters bonus alone limits nothing', undefined, [ENTERS], true],
+    ['an enters bonus with a use keeps the use', ability, [ENTERS, onSpell({})], false],
     ['creature spells pay a creature spell', spell(), [onSpell({ types: ['Creature'] })], true],
     [
       'creature spells do not pay an instant',

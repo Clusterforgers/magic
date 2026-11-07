@@ -265,6 +265,31 @@ pub enum SpendOn {
     Uncounterable(SpendFilter),
     /// Not a restriction: the mana came from a snow source, so it pays for `{S}` (CR 107.4h) and counts as snow mana spent.
     Snow,
+    /// Not a restriction: a spell of the kind that this mana is spent on enters with more counters or gains a keyword
+    /// ("If that mana is spent on a creature spell, it gains haste until end of turn").
+    Enters(Box<EntersBonus>),
+}
+
+/// What a permanent spell gets when mana with the rider is spent to cast it: additional +1/+1 counters as it enters
+/// (CR 614.1c) and a keyword once it is on the battlefield.
+#[derive(Debug, Clone, PartialEq, Eq, Hash, Serialize, Deserialize)]
+#[cfg_attr(feature = "ts", derive(ts_rs::TS))]
+#[serde(deny_unknown_fields)]
+pub struct EntersBonus {
+    /// The spells the mana must pay for.
+    pub spell: SpendFilter,
+    /// The additional +1/+1 counters it enters with, for each such mana spent.
+    #[serde(default, skip_serializing_if = "is_zero")]
+    #[cfg_attr(feature = "ts", ts(as = "Option<u32>", optional))]
+    pub counters: u32,
+    /// The keyword the permanent gains.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[cfg_attr(feature = "ts", ts(type = "unknown", optional))]
+    pub keyword: Option<crate::keyword::Keyword>,
+    /// The keyword lasts until end of turn; left out means for as long as the permanent stays.
+    #[serde(default, skip_serializing_if = "is_false")]
+    #[cfg_attr(feature = "ts", ts(as = "Option<bool>", optional))]
+    pub this_turn: bool,
 }
 
 /// What happens when a mana is spent to cast a spell of some kind: a triggered ability of the permanent that added the
@@ -302,8 +327,16 @@ impl SpendOn {
     pub const fn restricts(&self) -> bool {
         !matches!(
             self,
-            SpendOn::When(_) | SpendOn::Uncounterable(_) | SpendOn::Snow
+            SpendOn::When(_) | SpendOn::Uncounterable(_) | SpendOn::Snow | SpendOn::Enters(_)
         )
+    }
+
+    /// The riders among `only` that change the permanent a spell becomes.
+    pub fn enters_bonuses(only: &[SpendOn]) -> impl Iterator<Item = &EntersBonus> {
+        only.iter().filter_map(|on| match on {
+            SpendOn::Enters(bonus) => Some(&**bonus),
+            _ => None,
+        })
     }
 
     /// How many of `spent` carry the snow rider.
@@ -340,6 +373,10 @@ impl SpendOn {
             SpendOn::When(rider) => rider.entry(chosen, rider.source)?,
             SpendOn::Uncounterable(filter) => SpendOn::Uncounterable(filter.resolved(chosen)?),
             SpendOn::Snow => SpendOn::Snow,
+            SpendOn::Enters(bonus) => SpendOn::Enters(Box::new(EntersBonus {
+                spell: bonus.spell.resolved(chosen)?,
+                ..(**bonus).clone()
+            })),
         })
     }
 

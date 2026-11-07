@@ -8,11 +8,13 @@
 use mtg_cards::refs::{Pred, Ref, Selector};
 use mtg_cards::spend::{SpendOn, WhenSpent};
 use mtg_cards::trigger::TriggerPattern;
-use mtg_core::ids::{EffectId, PlayerId};
+use mtg_cards::value::CounterKind;
+use mtg_core::ids::{EffectId, ObjectId, PlayerId};
 
 use crate::choose::Target;
+use crate::counters::CountersChanged;
 use crate::decision::PayOptions;
-use crate::effects::Duration;
+use crate::effects::{ContinuousEffect, Duration, Modification, Selector as Affected};
 use crate::events::Event;
 use crate::object::ObjectRef;
 use crate::rules::{Rule, RuleEffect};
@@ -62,12 +64,20 @@ pub(crate) fn created(
             Event::DelayedTriggerCreated(Box::new(created))
         })
         .collect();
-    out.extend(uncounterable(
+    let shields = uncounterable(state, player, options, events, spell.reference());
+    let taken = events
+        .iter()
+        .filter(|event| matches!(event, Event::RuleCreated { .. }))
+        .count()
+        + shields.len();
+    out.extend(shields);
+    out.extend(enters_with(
         state,
         player,
         options,
         events,
         spell.reference(),
+        taken,
     ));
     out
 }
@@ -139,4 +149,107 @@ fn delayed(
         targets: Vec::new(),
         bindings: vec![(SPELL.to_owned(), vec![Target::Object(spell)])],
     })
+}
+
+/// A rule for each mana spent on a spell of its rider's kind that changes the permanent the spell becomes ("that creature
+/// enters with an additional +1/+1 counter on it", "it gains haste until end of turn"); numbered after the rules `taken`
+/// already makes.
+fn enters_with(
+    state: &GameState,
+    player: PlayerId,
+    options: &PayOptions,
+    events: &[Event],
+    spell: ObjectRef,
+    taken: usize,
+) -> Vec<Event> {
+    let spell = ObjectRef {
+        counter: spell.counter + 1,
+        ..spell
+    };
+    events
+        .iter()
+        .filter_map(|event| match event {
+            Event::ManaSpent { restricted, .. } => Some(restricted),
+            _ => None,
+        })
+        .flatten()
+        .flat_map(|unit| SpendOn::enters_bonuses(&unit.only))
+        .filter(|bonus| bonus.spell.holds(&options.spend.traits))
+        .enumerate()
+        .map(|(at, bonus)| Event::RuleCreated {
+            effect: Box::new(RuleEffect {
+                id: EffectId(state.next_effect + u64::try_from(taken + at).unwrap_or(0)),
+                rule: Rule::EntersWith {
+                    spell,
+                    counters: bonus.counters,
+                    keyword: bonus.keyword.clone(),
+                    this_turn: bonus.this_turn,
+                },
+                duration: Duration::UntilEndOfTurn,
+                source: Some(spell),
+                controller: player,
+                turn: state.turn().number(),
+            }),
+        })
+        .collect()
+}
+
+/// What the spell `id` gets as it resolves into a permanent from the riders of the mana spent to cast it: its
+/// additional +1/+1 counters, proposed with the move (CR 614.1c), and the keywords it gains on the battlefield.
+pub(crate) fn entering(state: &GameState, id: ObjectId) -> Vec<Event> {
+    let Some(object) = state.object(id) else {
+        return Vec::new();
+    };
+    let on_stack = object.reference();
+    let permanent = ObjectRef {
+        counter: on_stack.counter + 1,
+        ..on_stack
+    };
+    let mut events = Vec::new();
+    let mut counters = 0u32;
+    let mut made = 0u64;
+    for effect in state.rule_effects() {
+        let Rule::EntersWith {
+            spell,
+            counters: more,
+            keyword,
+            this_turn,
+        } = &effect.rule
+        else {
+            continue;
+        };
+        if *spell != on_stack {
+            continue;
+        }
+        counters = counters.saturating_add(*more);
+        if let Some(keyword) = keyword {
+            let gained = ContinuousEffect::new(
+                EffectId(state.next_effect + made),
+                Affected::Objects(vec![permanent]),
+                Modification::AddKeyword(keyword.clone()),
+                if *this_turn {
+                    Duration::UntilEndOfTurn
+                } else {
+                    Duration::Forever
+                },
+                state.next_timestamp + made,
+            )
+            .begun(effect.controller, state.turn().number());
+            made += 1;
+            events.push(Event::EffectCreated {
+                effect: gained.into(),
+            });
+        }
+    }
+    if counters > 0 {
+        events.insert(
+            0,
+            Event::CountersChanged(CountersChanged {
+                on: Target::Object(permanent),
+                counter: CounterKind::PlusOnePlusOne,
+                delta: i32::try_from(counters).unwrap_or(i32::MAX),
+            }),
+        );
+    }
+    events
 }
