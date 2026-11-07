@@ -47,6 +47,7 @@ const SOURCE_NOUNS: [&str; 19] = [
 
 /// The text with its whitespace collapsed and the card's names ("this creature") written as `~`.
 pub fn canonical(text: &str) -> String {
+    let text = &super::d14_wordings::normal(text);
     let words: Vec<&str> = text.split_whitespace().collect();
     let mut out: Vec<String> = Vec::with_capacity(words.len());
     let mut at = 0;
