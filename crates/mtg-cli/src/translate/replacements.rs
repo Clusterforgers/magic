@@ -44,46 +44,17 @@ fn single(ctx: &mut Ctx, body: &str) -> Tr<Value> {
     let event = p.get("Event").unwrap_or_default();
     // "If it was kicked, it enters with ...": the card itself, and the replacement applies only to a kicked spell.
     let kicked_self = event == "Moved" && p.get("ValidCard") == Some("Card.Self+kicked");
-    if kicked_self && line_condition.is_none() && animates(ctx, &p) {
-        return kicked_with_changes(ctx, &p);
-    }
     if kicked_self {
         if line_condition.is_some() {
             return unmapped("key:Replacement.two-conditions");
         }
+        if animates(ctx, &p) {
+            return kicked_with_changes(ctx, &p);
+        }
         line_condition = Some(json!("Kicked"));
     }
-    if matches!(event, "Counter" | "Draw" | "GainLife" | "AddCounter") {
-        if line_condition.is_some() {
-            return unmapped(format!("key:Replacement.{event}.condition"));
-        }
-        return match event {
-            "Counter" => super::replacements_counter::counter(ctx, &p),
-            "Draw" => super::replacements_counter::draw(ctx, &p),
-            "GainLife" => super::replacements_counter::gain_life(ctx, &p),
-            _ => super::replacements_counter::add_counter(ctx, &p),
-        };
-    }
-    if event == "ProduceMana" {
-        return super::replacements_mana::produce_mana(ctx, &p, line_condition.as_ref());
-    }
-    if event == "Untap" {
-        return doesnt_untap(ctx, &p);
-    }
-    if event == "BeginPhase" {
-        return super::replacements_phase::skip_step(&p, line_condition.as_ref());
-    }
-    if event == "GameLoss" {
-        return super::replacements_loss::game_loss(ctx, &p, line_condition.as_ref());
-    }
-    if event == "CreateToken" {
-        if line_condition.is_some() {
-            return unmapped("key:Replacement.CreateToken.condition");
-        }
-        return super::replacements_token::create_token(ctx, &p);
-    }
     if event != "Moved" {
-        return unmapped(format!("replacement:{event}"));
+        return not_moved(ctx, &p, event, line_condition.as_ref());
     }
     let read = [
         "Event",
@@ -142,6 +113,25 @@ fn single(ctx: &mut Ctx, body: &str) -> Tr<Value> {
         _ => return unmapped("key:Replacement.two-conditions"),
     }
     Ok(json!({ "Replacement": ability }))
+}
+
+/// A replacement line of an event other than a zone move.
+fn not_moved(ctx: &mut Ctx, p: &Params, event: &str, condition: Option<&Value>) -> Tr<Value> {
+    match event {
+        "Counter" | "Draw" | "GainLife" | "AddCounter" | "CreateToken" if condition.is_some() => {
+            unmapped(format!("key:Replacement.{event}.condition"))
+        }
+        "Counter" => super::replacements_counter::counter(ctx, p),
+        "Draw" => super::replacements_counter::draw(ctx, p),
+        "GainLife" => super::replacements_counter::gain_life(ctx, p),
+        "AddCounter" => super::replacements_counter::add_counter(ctx, p),
+        "ProduceMana" => super::replacements_mana::produce_mana(ctx, p, condition),
+        "Untap" => doesnt_untap(ctx, p),
+        "BeginPhase" => super::replacements_phase::skip_step(p, condition),
+        "GameLoss" => super::replacements_loss::game_loss(ctx, p, condition),
+        "CreateToken" => super::replacements_token::create_token(ctx, p),
+        _ => unmapped(format!("replacement:{event}")),
+    }
 }
 
 /// Whether the chain the line replaces with gives the permanent something for good (`Animate`), read as the
