@@ -69,6 +69,7 @@ fn outcome(text: &str) -> Result<String, String> {
 #[case::attacked_with_creatures(DEEPWAY.replace("{kind}", "creatures"), Ok(r#""what":"Attackers""#))]
 #[case::unchecked_mana_value(STIR.replace("{valid}", "Creature.YouCtrl"), Err("target:script-lacks-mana-value"))]
 #[case::checked_mana_value(STIR.replace("{valid}", "Creature.YouCtrl+cmcLEX"), Ok(r#""ManaValue""#))]
+#[case::other_target_noun(STIR.replace("{valid}", "Artifact.YouCtrl"), Ok(r#"{"Type":"Artifact"}"#))]
 #[case::your_graveyard(HANA.replace("{whose}", "your graveyard"), Ok(r#"{"In":"Graveyard"},{"OwnedBy":"You"}"#))]
 #[case::a_graveyard(HANA.replace("{whose}", "a graveyard"), Ok(r#""what":{"Object":[{"Type":"Creature"},{"In":"Graveyard"}]}"#))]
 #[case::oracle_opponent(RIDER.replace("{who}", "opponent"), Ok(r#""targets":[{"what":"Opponent"}]"#))]
@@ -83,7 +84,13 @@ fn fix16_a_script_that_says_less_follows_oracle(
 ) {
     let got = outcome(&text);
     match (expected, &got) {
-        (Ok(part), Ok(rules)) => assert!(rules.contains(part), "{rules}"),
+        (Ok(part), Ok(rules)) => {
+            assert!(rules.contains(part), "{rules}");
+            assert!(
+                !rules.contains(r#"{"OwnedBy":"You"},{"OwnedBy":"You"}"#),
+                "{rules}"
+            );
+        }
         (Err("no timing"), Ok(rules)) => assert!(!rules.contains("timing"), "{rules}"),
         (Err(gap), Err(found)) => assert!(found.contains(gap), "{found}"),
         _ => panic!("{expected:?}: {got:?}"),

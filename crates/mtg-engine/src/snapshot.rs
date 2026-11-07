@@ -160,7 +160,7 @@ pub fn snapshot(state: &GameState, id: ObjectId) -> Option<Snapshot> {
             .then(|| {
                 object
                     .permanent()
-                    .and_then(|permanent| permanent.attached_to())
+                    .and_then(crate::object::PermanentState::attached_to)
             })
             .flatten(),
     })
