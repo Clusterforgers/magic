@@ -110,6 +110,12 @@ fn single(modification: &Modification, _last: bool, plural: bool) -> Vec<String>
                 format!("{is} {noun} in addition to {its} other creature types"),
             ]
         }
+        // The type chosen is a creature type.
+        Modification::AddChosenSubtype => vec![
+            format!("{is} the chosen type in addition to {its} other types"),
+            format!("{is} the chosen creature type in addition to {its} other types"),
+        ],
+        Modification::SetChosenColor => vec![format!("{is} the chosen color")],
         Modification::Goaded => vec![format!("{is} goaded")],
         Modification::CantBeBlockedBy(blockers) => phrase_text(blockers, Form::All)
             .map(|group| format!("can't be blocked by {group}"))

@@ -30,7 +30,7 @@ const CARD_TYPES: [&str; 8] = [
 
 /// The exceptions of a copy (CR 707.9b) the keys of a `Clone` line stand for. `this_ability` says whether the line may
 /// keep the ability it is part of (`GainThisAbility$`).
-fn exceptions(ctx: &Ctx, p: &Params, this_ability: bool) -> Tr<Vec<Value>> {
+fn exceptions(ctx: &mut Ctx, p: &Params, this_ability: bool) -> Tr<Vec<Value>> {
     let mut mods = Vec::new();
     if let Some(name) = p.get("NewName") {
         mods.push(json!({ "SetName": name }));
@@ -77,6 +77,37 @@ fn exceptions(ctx: &Ctx, p: &Params, this_ability: bool) -> Tr<Vec<Value>> {
         }
         mods.push(json!("ThisAbility"));
     }
+    mods.extend(granted_exceptions(ctx, p)?);
+    Ok(mods)
+}
+
+/// `AddTriggers$`, `AddAbilities$` and `AddStaticAbilities$` of a copy: "except it has '<ability>'", each named part an
+/// ability the copiable values gain (CR 707.9a), written in the order the card words them (triggered, activated, static).
+/// `AddSVars$` only hands the copy the parts these abilities use, which the translation holds already.
+pub(super) fn granted_exceptions(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
+    // Each ability is a line of its own: its targets are not those of the ability that makes the copy.
+    ctx.nested(None, |ctx| granted_parts(ctx, p))
+}
+
+fn granted_parts(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
+    let mut mods = Vec::new();
+    // The parts are the copy's in Forge only; the abilities below are translated with them inline.
+    p.has("AddSVars");
+    for (key, trigger) in [("AddTriggers", true), ("AddAbilities", false)] {
+        if let Some(names) = p.get(key) {
+            mods.extend(super::statics::granted(
+                ctx,
+                &names.replace(',', "&"),
+                trigger,
+            )?);
+        }
+    }
+    if let Some(names) = p.get("AddStaticAbilities") {
+        let before = std::mem::replace(&mut ctx.granted, true);
+        let found = super::statics::granted_statics(ctx, &names.replace(',', "&"));
+        ctx.granted = before;
+        mods.extend(found?);
+    }
     Ok(mods)
 }
 
@@ -85,7 +116,11 @@ fn keyword_list_of(ctx: &Ctx, words: &str) -> Tr<Vec<Value>> {
 }
 
 /// The keys a `Clone` line may have, besides the exceptions.
-const CLONE_KEYS: [&str; 19] = [
+const CLONE_KEYS: [&str; 23] = [
+    "AddTriggers",
+    "AddAbilities",
+    "AddStaticAbilities",
+    "AddSVars",
     "ChoiceZone",
     "CloneTarget",
     "Defined",
@@ -164,11 +199,11 @@ fn clone(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
 }
 
 /// `K:ETBReplacement:Copy:<part>:Optional`: the permanent may enter as a copy of a permanent `Choices$` names.
-pub fn enters_as_copy(ctx: &Ctx, name: &str) -> Tr<Value> {
-    let Some(text) = ctx.svar(name) else {
+pub fn enters_as_copy(ctx: &mut Ctx, name: &str) -> Tr<Value> {
+    let Some(text) = ctx.svar(name).map(str::to_owned) else {
         return unmapped("svar:missing");
     };
-    let p = Params::parse(text);
+    let p = Params::parse(&text);
     if p.get("DB") != Some("Clone") {
         return unmapped("keyword:ETBReplacement-Copy-part");
     }

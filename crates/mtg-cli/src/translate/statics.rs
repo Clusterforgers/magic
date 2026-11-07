@@ -283,8 +283,9 @@ fn paired() -> Value {
 }
 
 /// The keys a continuous static line reads.
-const CONTINUOUS: [&str; 31] = [
+const CONTINUOUS: [&str; 32] = [
     "Goad",
+    "CantHaveKeyword",
     "RemoveCardTypes",
     "RemoveLandTypes",
     "CanBlockAmount",
@@ -400,6 +401,9 @@ fn continuous(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
             }
         }
     }
+    if let Some(words) = p.get("CantHaveKeyword") {
+        locked(&mut mods, p.get("RemoveKeyword"), words)?;
+    }
     if let Some(word) = p.get("AddHiddenKeyword") {
         // Only the combat restrictions have a modification; any other hidden keyword is another rule.
         match word.trim_end_matches('.') {
@@ -426,8 +430,11 @@ fn continuous(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
         Some("You") => mods.push(json!({"SetController": "You"})),
         Some(other) => return unmapped(format!("key:Static.Continuous.GainControl={other}")),
     }
-    if let Some(colors) = p.get("SetColor") {
-        mods.push(json!({"SetColors": color_set(colors)?}));
+    match p.get("SetColor") {
+        // The colour the card's controller chose as it entered.
+        Some("ChosenColor") if ctx.memory.entered.color => mods.push(json!("SetChosenColor")),
+        Some(colors) => mods.push(json!({"SetColors": color_set(colors)?})),
+        None => {}
     }
     if let Some(colors) = p.get("AddColor") {
         if colors == "Colorless" {
@@ -588,11 +595,39 @@ fn combat_quirk(word: &str) -> Option<Value> {
     })
 }
 
-/// `AddType$ Artifact & Zombie`: the card types and subtypes a static line adds.
+/// `CantHaveKeyword$` with the same keywords in `RemoveKeyword$`: "lose trample and can't have or gain trample", so each
+/// `RemoveKeyword` of the line becomes a `LockKeyword`. A keyword it can't have but does not lose stays a gap.
+fn locked(mods: &mut [Value], removed: Option<&str>, words: &str) -> Tr<()> {
+    let sorted = |text: &str| {
+        let mut list: Vec<String> = text.split('&').map(|word| word.trim().to_owned()).collect();
+        list.sort();
+        list
+    };
+    if removed.map(sorted) != Some(sorted(words)) {
+        return unmapped("key:Static.Continuous.CantHaveKeyword-without-RemoveKeyword");
+    }
+    for modification in mods.iter_mut() {
+        if let Some(keyword) = modification.get("RemoveKeyword").cloned() {
+            *modification = json!({ "LockKeyword": keyword });
+        }
+    }
+    Ok(())
+}
+
+/// The five basic land types in the order the rules list them: `AllBasicLandType` adds each.
+const BASIC_LAND_TYPES: [&str; 5] = ["Plains", "Island", "Swamp", "Mountain", "Forest"];
+
+/// `AddType$ Artifact & Zombie`: the card types and subtypes a static line adds; `AllBasicLandType` is the five basic
+/// land types ("every basic land type in addition to its other types").
 fn added_types(ctx: &Ctx, text: &str, replacing: bool) -> Tr<Vec<Value>> {
     let (mut mods, mut subtypes) = (Vec::new(), Vec::new());
     for word in text.split('&').map(str::trim) {
-        if super::ctx::CARD_TYPES.contains(&word) {
+        if word == "AllBasicLandType" && !replacing {
+            mods.extend(BASIC_LAND_TYPES.map(|name| json!({ "AddSubtype": name })));
+        } else if word == "ChosenType" && !replacing && ctx.memory.entered.subtype {
+            // The creature type the card's controller chose as it entered.
+            mods.push(json!("AddChosenSubtype"));
+        } else if super::ctx::CARD_TYPES.contains(&word) {
             mods.push(json!({"AddType": word}));
         } else if ctx.world.subtypes.contains(word) {
             subtypes.push(word);
@@ -632,7 +667,7 @@ fn color_set(text: &str) -> Tr<Vec<&str>> {
 }
 
 /// `AddAbility$` and `AddTrigger$`: the named parts, translated, as abilities the affected objects gain.
-fn granted(ctx: &mut Ctx, names: &str, trigger: bool) -> Tr<Vec<Value>> {
+pub(super) fn granted(ctx: &mut Ctx, names: &str, trigger: bool) -> Tr<Vec<Value>> {
     let before = std::mem::replace(&mut ctx.granted, true);
     let mods = granted_parts(ctx, names, trigger);
     ctx.granted = before;
@@ -1029,7 +1064,7 @@ fn half_stats(
 
 /// `AddStaticAbility$`: the named `S:` parts as static abilities the affected objects gain. Only a static (not a rule or a
 /// cost modifier) and one that gives nothing in turn can be granted.
-fn granted_statics(ctx: &mut Ctx, names: &str) -> Tr<Vec<Value>> {
+pub(super) fn granted_statics(ctx: &mut Ctx, names: &str) -> Tr<Vec<Value>> {
     let mut mods = Vec::new();
     for name in names.split('&').map(str::trim) {
         let Some(text) = ctx.svar(name) else {

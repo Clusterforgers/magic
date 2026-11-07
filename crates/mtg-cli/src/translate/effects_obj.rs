@@ -912,6 +912,20 @@ fn pump_all(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
     Ok(effects)
 }
 
+/// How long an animation lasts. Forge ends "for as long as you control ~" when the host leaves; it also ends when another
+/// player gains control of it (CR 611.2b). A card that says both that and "remains on the battlefield" stays a gap.
+fn animate_duration(ctx: &Ctx, p: &Params) -> Tr<&'static str> {
+    let duration = duration(p.get("Duration"))?;
+    let oracle = ctx.oracle.to_lowercase();
+    if duration != "WhileSourceOnBattlefield" || !oracle.contains("for as long as you control") {
+        return Ok(duration);
+    }
+    if oracle.contains("remains on the battlefield") {
+        return unmapped("key:Animate.Duration-while-you-control-or-remains");
+    }
+    Ok("WhileYouControlSource")
+}
+
 /// `Animate`: the object becomes something else for a while ("becomes a 4/4 Elemental creature with flying").
 fn animate(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
     only(
@@ -940,6 +954,7 @@ fn animate(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
             "TargetMin",
             "TargetMax",
             "AtEOT",
+            "HiddenKeywords",
         ],
     )?;
     // Effects change permanents only (the layers read nothing else): "target spell becomes red" would change nothing.
@@ -951,7 +966,7 @@ fn animate(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
     {
         return unmapped("key:Animate.TgtZone=Stack");
     }
-    let duration = duration(p.get("Duration"))?;
+    let duration = animate_duration(ctx, p)?;
     // `AnimateAll` names the objects by a valid-string.
     let affected = match p.get("ValidCards") {
         // "creatures target player controls": Forge narrows the group to the target's at run time, the selector would not.
@@ -1004,6 +1019,7 @@ fn animate(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
         }
     }
     mods.extend(super::effects_animate::abilities(ctx, p)?);
+    mods.extend(super::effects_animate::restrictions(p)?);
     if mods.is_empty() {
         return unmapped("key:Animate.nothing");
     }

@@ -418,10 +418,15 @@ fn and_or(text: &str) -> Vec<String> {
 }
 
 /// "you may it deals 2 damage" is "you may have it deal 2 damage", and "you may they discard a card" is "you may have
-/// that player discard a card": a step of another subject than "you" after "you may" takes "have" and the bare verb.
+/// that player discard a card", and "you may ~ becomes a copy" is "you may have ~ become a copy": a step of another subject
+/// than "you" after "you may" takes "have" and the bare verb.
 fn may_have(text: &str) -> Vec<String> {
     let mut out = Vec::new();
-    for (written, named) in [("you may it ", "it"), ("you may they ", "that player")] {
+    for (written, named) in [
+        ("you may it ", "it"),
+        ("you may ~ ", "~"),
+        ("you may they ", "that player"),
+    ] {
         let Some(at) = text.find(written) else {
             continue;
         };
@@ -429,10 +434,10 @@ fn may_have(text: &str) -> Vec<String> {
         let Some((verb, tail)) = rest.split_once(' ') else {
             continue;
         };
-        let bare = if named == "it" {
-            verb.strip_suffix('s')
-        } else {
+        let bare = if named == "that player" {
             Some(verb)
+        } else {
+            verb.strip_suffix('s')
         };
         if let Some(bare) = bare
             && bare.chars().all(|c| c.is_ascii_lowercase())

@@ -138,6 +138,22 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
     Ok(Run::events(events))
 }
 
+/// What a static ability makes of the value its source chose as it entered: the creature type it adds or the colour it
+/// sets. A source that chose nothing of the kind gives no modification.
+fn entered(scope: &Scope<'_>, wanted: &Wanted) -> Result<Modification, ResolveError> {
+    match (wanted, scope.entered_choice()) {
+        (Wanted::AddChosenSubtype, Some(Chosen::CreatureType(kind))) => {
+            Ok(Modification::AddSubtype(kind.clone()))
+        }
+        (Wanted::SetChosenColor, Some(Chosen::Color(color))) => {
+            Ok(Modification::SetColors(std::iter::once(*color).collect()))
+        }
+        _ => Err(ResolveError::Invalid(
+            "the source chose no value of the kind".into(),
+        )),
+    }
+}
+
 /// The keyword with the colour, creature type or land type the source chose as it entered written into a protection
 /// quality or a landwalk: the holder of a granted keyword (an Aura's host, a creature of a lord) made no choice, so "the
 /// chosen color" is fixed by the source that grants it.
@@ -237,6 +253,7 @@ pub(crate) fn lower(scope: &Scope<'_>, wanted: &Wanted) -> Result<Modification, 
             Some(Chosen::CreatureType(kind)) => Modification::SetCreatureTypes(vec![kind.clone()]),
             _ => return Err(ResolveError::Invalid("no creature type was chosen".into())),
         },
+        Wanted::AddChosenSubtype | Wanted::SetChosenColor => entered(scope, wanted)?,
         Wanted::SetColors(colors) => Modification::SetColors(colors.iter().copied().collect()),
         Wanted::AddColors(colors) => Modification::AddColors(colors.iter().copied().collect()),
         Wanted::AddKeyword(keyword) => Modification::AddKeyword(chosen_in(scope, keyword)),

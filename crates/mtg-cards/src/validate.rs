@@ -1826,6 +1826,13 @@ impl<'a> Walker<'a> {
                     self.problem("a limit on blockers needs a count of at least one");
                 }
             }
+            Modification::AddChosenSubtype | Modification::SetChosenColor => {
+                if !self.scope.in_static {
+                    self.problem(
+                        "the choice the source made as it entered is read by its static ability only",
+                    );
+                }
+            }
             Modification::SwitchPT
             | Modification::AddType(_)
             | Modification::RemoveType(_)
@@ -5574,6 +5581,14 @@ mod tests {
     #[case::from_the_stack_for_another_spell(
         r#"{"Rule":{"rule":{"CantBeCountered":{"Each":["Spell"]}},"from":"Stack"}}"#,
         "abilities[0].Rule.from: a rule works from the battlefield"
+    )]
+    #[case::the_entered_type_in_an_effect(
+        r#"{"Spell":{"effects":[{"Continuous":{"affected":"This","mods":["AddChosenSubtype"],"duration":"UntilEndOfTurn"}}]}}"#,
+        "the choice the source made as it entered is read by its static ability only"
+    )]
+    #[case::the_entered_colour_in_an_effect(
+        r#"{"Spell":{"effects":[{"Continuous":{"affected":"This","mods":["SetChosenColor"],"duration":"UntilEndOfTurn"}}]}}"#,
+        "the choice the source made as it entered is read by its static ability only"
     )]
     #[case::a_rule_is_not_granted(
         r#"{"Static":{"affected":"This","mods":[{"GrantAbility":{"Rule":{"rule":{"CantDraw":"You"}}}}]}}"#,
