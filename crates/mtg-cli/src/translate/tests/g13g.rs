@@ -53,7 +53,7 @@ fn g13g_rules(#[case] line: &str, #[case] expected: Option<Value>) {
             assert!(gaps(&text).is_empty(), "{:?}", gaps(&text));
             assert_eq!(abilities(&text), vec![rule]);
         }
-        None => assert!(!gaps(&text).is_empty()),
+        None => assert!(!gaps(&text).is_empty(), "{text}"),
     }
 }
 
@@ -101,6 +101,6 @@ fn g13g_life_gain_is_prevented(#[case] line: &str, #[case] expected: Option<Valu
             assert!(gaps(&text).is_empty(), "{:?}", gaps(&text));
             assert_eq!(abilities(&text), vec![replacement]);
         }
-        None => assert!(!gaps(&text).is_empty()),
+        None => assert!(!gaps(&text).is_empty(), "{text}"),
     }
 }
