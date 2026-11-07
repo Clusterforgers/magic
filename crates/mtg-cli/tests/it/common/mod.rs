@@ -228,14 +228,27 @@ pub async fn printed_named(db: &mtg_db::Database, name: &str) -> mtg_cards::Prin
     mtg_cli::coverage::printed_card(&card)
 }
 
-/// Stores a whole draft of the single-faced card `name` that casts like Lightning Bolt, written for the text the card has
-/// now, as its current draft, and returns its key. The embedded corpus has the rules it copies.
+/// Stores a whole draft of the single-faced card `name` that casts like Char, written for the text the card has
+/// now, as its current draft, and returns its key. A card with rules text first gets Char's text under its own
+/// name, so the draft reads back as the card; a card without (a basic land) keeps its text. The embedded corpus has the
+/// rules it copies.
 pub async fn store_draft(db: &mtg_db::Database, name: &str) -> mtg_db::DraftKey {
+    let first = printed_named(db, name).await;
+    if mtg_cards::support::has_rules_text(&first.faces[0].oracle_text) {
+        sqlx::query(
+            "UPDATE cards SET faces = jsonb_set(faces, '{0,oracle_text}', to_jsonb($2::text)) WHERE name = $1",
+        )
+        .bind(name)
+        .bind(format!("{name} deals 4 damage to any target and 2 damage to you."))
+        .execute(db.pool())
+        .await
+        .unwrap_or_else(|e| panic!("the text of {name} is set: {e}"));
+    }
     let printed = printed_named(db, name).await;
     let library = mtg_cards::builtin::library().unwrap_or_else(|e| panic!("{e}"));
     let mut card = library
-        .card_by_name("Lightning Bolt")
-        .unwrap_or_else(|| panic!("the corpus has Lightning Bolt"))
+        .card_by_name("Char")
+        .unwrap_or_else(|| panic!("the corpus has Char"))
         .clone();
     card.oracle_id = printed.oracle_id.clone();
     card.name = printed.name.clone();
