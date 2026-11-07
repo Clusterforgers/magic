@@ -1357,6 +1357,33 @@ impl Take {
     }
 }
 
+/// Where a `DigUntil` puts the revealed cards (`RevealedDestination$`, `RevealedLibraryPosition$`).
+fn revealed_to(p: &Params) -> Tr<Goes> {
+    let order = if p.get("RevealRandomOrder") == Some("True") {
+        "Random"
+    } else {
+        "Chosen"
+    };
+    Ok(
+        match (
+            p.get("RevealedDestination"),
+            p.get("RevealedLibraryPosition"),
+        ) {
+            // Forge puts the rest on the bottom when no place is named.
+            (Some("Library"), Some("-1") | None) => {
+                Goes::To(json!({"Library": {"place": "Bottom", "order": order}}))
+            }
+            (Some("Library"), Some("0")) => Goes::To(json!({"Library": {"place": "Top"}})),
+            (Some("Graveyard"), _) => Goes::To(json!("Graveyard")),
+            (Some("Hand"), _) => Goes::To(json!("Hand")),
+            (Some("Exile"), _) => Goes::Exile,
+            (other, _) => {
+                return unmapped(format!("key:DigUntil.RevealedDestination={other:?}"));
+            }
+        },
+    )
+}
+
 /// `DigUntil`: reveal cards until some match, the match goes to one place and the revealed cards to another.
 pub fn dig_until(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
     only(
@@ -1421,25 +1448,7 @@ pub fn dig_until(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
     if p.get("RememberFound") == Some("True") {
         ctx.remembered = Some(json!({ "Bound": found }));
     }
-    let order = if p.get("RevealRandomOrder") == Some("True") {
-        "Random"
-    } else {
-        "Chosen"
-    };
-    let rest_to = match (
-        p.get("RevealedDestination"),
-        p.get("RevealedLibraryPosition"),
-    ) {
-        // Forge puts the rest on the bottom when no place is named.
-        (Some("Library"), Some("-1") | None) => {
-            Goes::To(json!({"Library": {"place": "Bottom", "order": order}}))
-        }
-        (Some("Library"), Some("0")) => Goes::To(json!({"Library": {"place": "Top"}})),
-        (Some("Graveyard"), _) => Goes::To(json!("Graveyard")),
-        (Some("Hand"), _) => Goes::To(json!("Hand")),
-        (Some("Exile"), _) => Goes::Exile,
-        (other, _) => return unmapped(format!("key:DigUntil.RevealedDestination={other:?}")),
-    };
+    let rest_to = revealed_to(p)?;
     let optional = p.get("OptionalFoundMove") == Some("True");
     if optional && (find.get("count").is_some() || found_to.is_none()) {
         // "Put any number of those": a choice among several found cards, not one "may".

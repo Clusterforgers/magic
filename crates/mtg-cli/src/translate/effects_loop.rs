@@ -580,7 +580,13 @@ pub fn repeat(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
     ctx.remembered = outer;
     let effects = effects?;
     if let Some(check) = check.transpose()?.flatten() {
-        return repeat_checked(p, effects, check);
+        // "If you have fewer than seven cards in hand, repeat this process": the check comes before the next pass,
+        // which a script written as a do-while does once too often.
+        let said = p.get("StackDescription").or(p.get("SpellDescription"));
+        if said.is_some_and(|text| text.starts_with("If ")) {
+            return unmapped("key:Repeat.check-first");
+        }
+        return repeat_checked(p, &effects, &check);
     }
     let Some(max) = p.get("MaxRepeat") else {
         return unmapped("key:Repeat.no-MaxRepeat");
@@ -623,17 +629,13 @@ fn repeat_check(ctx: &Ctx, p: &Params) -> Tr<Option<Value>> {
     super::condition::condition(ctx, &Params::parse(&renamed.join(" | ")))
 }
 
-/// A checked repeat: the body once, then a [`MOST_PASSES`]-bounded loop of it while the check holds; `MaxRepeat$` counts
-/// the first pass.
-fn repeat_checked(p: &Params, effects: Vec<Value>, check: Value) -> Tr<Vec<Value>> {
+/// A checked repeat: the body once, then again while the check holds, at most `MaxRepeat$` (or [`MOST_PASSES`]) passes.
+fn repeat_checked(p: &Params, effects: &[Value], check: &Value) -> Tr<Vec<Value>> {
     let most = match p.get("MaxRepeat").map(str::parse::<u32>) {
         None => MOST_PASSES,
-        Some(Ok(n)) if (1..=MOST_PASSES).contains(&n) => n - 1,
+        Some(Ok(n)) if (1..=MOST_PASSES).contains(&n) => n,
         Some(_) => return unmapped("key:Repeat.MaxRepeat-with-a-check"),
     };
-    let mut all = effects.clone();
-    if most > 0 {
-        all.push(json!({"RepeatWhile": {"condition": check, "effects": effects, "most": most}}));
-    }
-    Ok(all)
+    Ok(vec![json!({"RepeatWhile": {
+        "condition": check, "effects": effects, "most": most, "at_least_once": true}})])
 }

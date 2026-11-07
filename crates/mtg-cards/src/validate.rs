@@ -2556,9 +2556,18 @@ impl Walker<'_> {
         self.effect_list_with("effects", effects, false, Some((bind, kind)));
     }
 
-    /// `RepeatWhile`: a condition read before each pass and a body of at least one effect, with a bound on the passes.
-    fn repeat_while(&mut self, condition: &Condition, effects: &[Effect], most: u32) {
-        self.at("condition", |w| w.condition(condition));
+    /// `RepeatWhile`: a condition read before each pass (after it, seeing what the pass bound, with `at_least_once`) and
+    /// a body of at least one effect, with a bound on the passes.
+    fn repeat_while(
+        &mut self,
+        condition: &Condition,
+        effects: &[Effect],
+        most: u32,
+        at_least_once: bool,
+    ) {
+        if !at_least_once {
+            self.at("condition", |w| w.condition(condition));
+        }
         if effects.is_empty() {
             self.problem("a repeat with nothing to do");
         }
@@ -2568,7 +2577,13 @@ impl Walker<'_> {
                 crate::effect::MOST_PASSES
             ));
         }
-        self.effect_list("effects", effects, false);
+        if at_least_once {
+            self.effect_list_open("effects", effects, false, None);
+            self.at("condition", |w| w.condition(condition));
+            self.scope.names.pop();
+        } else {
+            self.effect_list("effects", effects, false);
+        }
     }
 
     /// `RollDice`: a die of at least two faces and rows that each hold a range of totals; several dice only for a choice
@@ -2656,6 +2671,18 @@ impl Walker<'_> {
         top: bool,
         pass: Option<(&str, Kind)>,
     ) {
+        self.effect_list_open(field, list, top, pass);
+        self.scope.names.pop();
+    }
+
+    /// [`Self::effect_list_with`] with the scope of the names the list binds left open, for what reads them after it.
+    fn effect_list_open(
+        &mut self,
+        field: &str,
+        list: &[Effect],
+        top: bool,
+        pass: Option<(&str, Kind)>,
+    ) {
         self.scope.names.push(BTreeMap::new());
         if let Some((name, kind)) = pass {
             self.at("as", |w| w.bind(name, kind));
@@ -2679,7 +2706,6 @@ impl Walker<'_> {
             self.at(format!("{field}[{i}]"), |w| w.effect(effect, only));
         }
         (self.after, self.after_may) = saved;
-        self.scope.names.pop();
     }
 
     /// The rider of mana that sets something off when it is spent to cast a spell: the player's own mana, a kind of spell
@@ -3303,8 +3329,9 @@ impl Walker<'_> {
                 effects,
                 most,
                 times,
+                at_least_once,
             } => {
-                w.repeat_while(condition, effects, *most);
+                w.repeat_while(condition, effects, *most, *at_least_once);
                 if let Some(times) = times {
                     w.at("times", |w| w.amount(times));
                 }
