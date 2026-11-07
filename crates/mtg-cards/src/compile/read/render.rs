@@ -28,6 +28,8 @@ mod flicker_targets;
 mod free_casts;
 mod from_graveyard;
 mod g10d_colors;
+mod g11b_redirect;
+mod g11b_unpreventable;
 mod g8e_prevent;
 mod graveyards;
 mod group_becomes;
@@ -46,6 +48,9 @@ mod otherwise;
 mod player_events;
 mod populated;
 mod put_onto;
+mod r11w_batch;
+mod r11w_leaves;
+mod r11w_returned_as;
 mod r7d;
 mod r9w_dread;
 mod r9w_manifest;
@@ -128,6 +133,7 @@ use crate::refs::{Bounds, Pred, Ref, Selector, TargetSet, TargetSpec, Targetable
 use crate::spend::{ManaLasts, SpendOn};
 use crate::trigger::TriggerPattern;
 use crate::value::{Amount, Condition, CounterKind};
+use g11b_unpreventable::is as unpreventable;
 
 /// "draws a card for each card in your hand" is also "draws X cards, where X is the number of cards in your hand".
 fn where_x_draws(texts: &[String]) -> Vec<String> {
@@ -503,6 +509,14 @@ pub fn written_variants(ability: &Ability) -> Vec<String> {
 /// [`written_variants`] without the table of abilities written already.
 fn written_anew(ability: &Ability) -> Vec<String> {
     let mut texts = written_ordered(ability);
+    // A batch reads as its steps; the plain ability has no batch left, so this recurses once.
+    if let Some(plain) = r11w_batch::flat_ability(ability) {
+        for text in written_variants(&plain) {
+            if !texts.contains(&text) {
+                texts.push(text);
+            }
+        }
+    }
     // "S1. If C, instead S2." for a step and its replacement (r7c); the twin has no pair left, so this recurses once.
     if let Some(joined) = super::r7c_when::r7c_instead(ability) {
         for text in written_variants(&joined) {
@@ -562,6 +576,8 @@ fn written_as_given(ability: &Ability) -> Vec<String> {
     super::r7e_events::r7e_add(ability, &mut texts);
     those::add(ability, &mut texts);
     together::add(&mut texts);
+    r11w_batch::add(&mut texts);
+    r11w_batch::add_players(&mut texts);
     and_lists::add(ability, &mut texts);
     twins::add(ability, &mut texts);
     super::shortened::add(&mut texts);
@@ -581,6 +597,8 @@ fn written_as_given(ability: &Ability) -> Vec<String> {
         }
     }
     super::r7b_wordings::add(ability, &mut texts);
+    r11w_batch::add_any_other(ability, &mut texts);
+    super::r11w_tallies::add(&mut texts);
     texts
 }
 
@@ -892,6 +910,13 @@ pub(super) fn alternatives(targets: &[TargetSpec], effects: &[Effect]) -> Vec<Ve
     if effects.is_empty() {
         return Vec::new();
     }
+    if let Some(implied) = g11b_unpreventable::implied(effects) {
+        return alternatives(targets, &implied);
+    }
+    // A batch only makes its steps one event for the triggers that look at them: it reads as its steps.
+    if let Some(steps) = r11w_batch::flat(effects) {
+        return alternatives(targets, &steps);
+    }
     if targets.len() > 1 {
         return multi::alternatives(targets, effects);
     }
@@ -1024,6 +1049,7 @@ fn wording_choices(effects: &[Effect]) -> Vec<Wording> {
                     | Amount::Party(_)
                     | Amount::Times { .. }
                     | Amount::Tallied { .. }
+                    | Amount::Tally { .. }
                     | Amount::Distinct { .. }
                     | Amount::CommanderCasts(_),
                 ..
@@ -1203,7 +1229,8 @@ fn written(
             }
             group => sentences.push(
                 writer
-                    .damage_group(group)
+                    .r11w_damage_pair(group)
+                    .or_else(|| writer.damage_group(group))
                     .or_else(|| writer.mana_group(group))
                     .or_else(|| writer.compound(group))?,
             ),
@@ -2330,12 +2357,14 @@ impl Writer<'_> {
     /// An effect as a sentence without its first capital and its period.
     fn effect(&mut self, effect: &Effect) -> Option<String> {
         Some(match effect {
+            Effect::DealDamage { .. } if unpreventable(effect) => self.g11b_hard(effect)?,
             Effect::CopySpell { .. } | Effect::CopyAbility { .. } | Effect::BecomeCopy { .. } => {
                 self.copy_effect(effect)?
             }
             Effect::DelayedTrigger {
                 this_turn: true, ..
-            } => super::w2g_next_cast::w2g_next_cast_text(effect)?,
+            } => super::w2g_next_cast::w2g_next_cast_text(effect)
+                .or_else(|| self.r11w_leaves_this_turn(effect))?,
             Effect::Scry { who: Ref::You, .. }
             | Effect::Draw { who: Ref::You, .. }
             | Effect::Mill { who: Ref::You, .. }
@@ -2535,6 +2564,7 @@ impl Writer<'_> {
             .or_else(|| self.r7d_blocks_source(effect))
             .or_else(|| self.r7d_while_tapped(effect))
             .or_else(|| self.e10b_sealed(effect))
+            .or_else(|| r11w_batch::each_player_damage(effect))
     }
 
     /// An exile face down that no player may look at (CR 406.3) reads as the same exile with "face down" after it: "exile
@@ -2722,7 +2752,8 @@ impl Writer<'_> {
             } => format!("{} explores", self.object(what)?),
             Effect::Connive {
                 what: what @ (Ref::This | Ref::Target(0) | Ref::Convoked),
-            } => format!("{} connives", self.object(what)?),
+                count,
+            } => format!("{} connives{}", self.object(what)?, connive_count(count)?),
             Effect::PhaseOut {
                 what,
                 duration,
@@ -3208,6 +3239,7 @@ impl Writer<'_> {
                 source: None,
                 to,
                 amount,
+                unpreventable: false,
                 ..
             } = effect
             else {
@@ -3272,6 +3304,13 @@ impl Writer<'_> {
             Ref::You => Some("you".to_owned()),
             Ref::Triggering => Some("that player".to_owned()),
             Ref::Each(selector) => Some(format!("each {}", phrase_text(selector, Form::Each)?)),
+            // The opponents but the one the trigger is about.
+            Ref::PlayersWhere { who, test }
+                if **who == Ref::Opponents
+                    && **test == Condition::Not(Box::new(Condition::Among(Ref::Triggering))) =>
+            {
+                Some("each other opponent".to_owned())
+            }
             _ => None,
         }
     }
@@ -3430,4 +3469,13 @@ pub(super) fn while_held(when: &TriggerPattern) -> bool {
         when,
         TriggerPattern::DealsDamage { .. } | TriggerPattern::Batch(_) | TriggerPattern::AnyOf(_)
     )
+}
+
+/// The count after "connives": nothing for one, " X" for X (the where-X writer adds what X is).
+fn connive_count(count: &Amount) -> Option<&'static str> {
+    match count {
+        Amount::Fixed(1) => Some(""),
+        Amount::X => Some(" X"),
+        _ => None,
+    }
 }

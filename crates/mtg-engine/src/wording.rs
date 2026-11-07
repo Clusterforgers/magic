@@ -634,14 +634,23 @@ fn clause(pattern: &TriggerPattern) -> (String, bool) {
             };
             (format!("{} {moves}", subject(what)), false)
         }
-        TriggerPattern::Drew { who: by, what } => {
+        TriggerPattern::Drew {
+            who: by,
+            what,
+            first_in_draw_step,
+        } => {
             let (name, s) = who(by);
             let card = if what.is_empty() {
                 "a card".to_owned()
             } else {
                 subject(what)
             };
-            (format!("{name} draw{s} {card}"), false)
+            let step = match first_in_draw_step {
+                Some(true) => " first in a draw step",
+                Some(false) => " other than the first in a draw step",
+                None => "",
+            };
+            (format!("{name} draw{s} {card}{step}"), false)
         }
         TriggerPattern::Discarded { what, by } => {
             let (name, s) = who(by);

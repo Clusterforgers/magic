@@ -83,6 +83,7 @@ fn hit(game: &GameState, source: &str, to: &str, amount: u32) -> Event {
         deathtouch: false,
         form: crate::combat::DamageForm::Normal,
         toxic: 0,
+        unpreventable: false,
     }
 }
 

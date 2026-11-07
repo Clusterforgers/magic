@@ -20,7 +20,7 @@ const GUARD: &str = "A:AB$ Pump | Cost$ T | NumAtt$ +2 | ValidTgts$ Creature | S
 #[rstest]
 #[case::sacrifice_the_source(
     "SVar:Sac:DB$ SacrificeAll | Defined$ EffectSource",
-    json!({"Sacrifice": {"filter": [{"Is": "This"}], "who": {"ControllerOf": "This"}}})
+    json!({"Sacrifice": {"filter": ["This"]}})
 )]
 #[case::counter_on_the_source(
     "SVar:Sac:DB$ PutCounter | Defined$ EffectSource | CounterType$ P1P1 | CounterNum$ 1",

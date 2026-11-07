@@ -254,6 +254,8 @@ pub struct FaceOption {
 /// Options while paying for a spell.
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 #[cfg_attr(feature = "ts", derive(ts_rs::TS))]
+// Each flag is a separate fact of the wire form the client reads by name.
+#[allow(clippy::struct_excessive_bools)]
 pub struct PayOptions {
     /// The spell being cast.
     pub spell: ObjectId,
@@ -279,6 +281,10 @@ pub struct PayOptions {
     #[serde(default, skip_serializing_if = "std::ops::Not::not")]
     #[cfg_attr(feature = "ts", ts(as = "Option<bool>", optional))]
     pub attack: bool,
+    /// Whether the payment is the tax on a block being declared (CR 509.1d); cancelling returns to the declaration.
+    #[serde(default, skip_serializing_if = "std::ops::Not::not")]
+    #[cfg_attr(feature = "ts", ts(as = "Option<bool>", optional))]
+    pub block: bool,
     /// The payer's life total.
     pub life: i32,
     /// The most life this payment may take: 2 for each Phyrexian symbol in the cost, within the life total (CR 119.4).

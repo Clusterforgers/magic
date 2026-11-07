@@ -1186,6 +1186,9 @@ pub enum Condition {
     YourTurn,
     /// The player the reference names (all of them when it names several) took the first turn of the game.
     StartingPlayer(Ref),
+    /// "You" are one of the players the reference names: inside a `PlayersWhere` test, the player tested ("each other
+    /// opponent" is each opponent not among "that player").
+    Among(Ref),
     /// A player the reference names (any of them when it names several) searched their own zone of that kind earlier in
     /// this resolution, whether or not they found a card ("If you search your library this way, shuffle").
     Searched {

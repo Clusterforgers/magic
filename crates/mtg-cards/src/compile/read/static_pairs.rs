@@ -46,6 +46,10 @@ pub fn texts(first: &Ability, second: &Ability) -> Vec<String> {
     if !otherwise.is_empty() {
         return otherwise;
     }
+    let taxes = super::g11c_taxes::g11c_pair_texts(first, second);
+    if !taxes.is_empty() {
+        return taxes;
+    }
     let attacking = super::attack_pairs::texts(first, second);
     if !attacking.is_empty() {
         return attacking;

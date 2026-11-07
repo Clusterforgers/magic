@@ -36,7 +36,7 @@ fn a_damage_trigger_reads_the_player_it_names(#[case] valid: &str, #[case] expec
 }
 
 #[rstest]
-#[case::more_lands("Player.withMoreLandsThanYou", "player:Player.withMoreLandsThanYou")]
+#[case::more_life("Player.withMoreLifeThanYou", "player:Player.withMoreLifeThanYou")]
 #[case::dealt_damage(
     "Player.wasDealtDamageThisTurnBySource",
     "player:Player.wasDealtDamageThisTurnBySource"

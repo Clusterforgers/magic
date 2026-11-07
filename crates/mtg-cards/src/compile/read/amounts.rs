@@ -310,6 +310,7 @@ pub fn for_each_text(counted: &Amount) -> Option<String> {
             counter,
         } => super::w13b_mill_rad::w13b_you_have_text(counter)?,
         Amount::Tallied { .. } => defining::died_text(counted, true)?,
+        Amount::Tally { .. } => super::r11w_tallies::each(counted)?,
         Amount::Destroyed(_) | Amount::Exiled(_) => {
             super::w2c_counts::w2c_destroyed_each_text(counted)?
         }

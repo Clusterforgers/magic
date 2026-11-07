@@ -37,6 +37,7 @@ pub(super) fn text(targets: &[TargetSpec], effects: &[Effect]) -> Option<String>
                         of: Ref::Target(0),
                         stat: StatKind::Power,
                     },
+                unpreventable: false,
                 ..
             },
         ] => Some(format!(

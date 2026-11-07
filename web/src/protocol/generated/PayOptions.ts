@@ -43,6 +43,10 @@ can_cancel: boolean,
  */
 attack?: boolean, 
 /**
+ * Whether the payment is the tax on a block being declared (CR 509.1d); cancelling returns to the declaration.
+ */
+block?: boolean, 
+/**
  * The payer's life total.
  */
 life: number, 

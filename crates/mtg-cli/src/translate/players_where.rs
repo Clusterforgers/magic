@@ -24,8 +24,49 @@ fn plain(word: &str) -> Option<Value> {
         // Corrupted: three or more poison counters (CR 702.181 reminder text).
         "IsCorrupted" => json!({"Compare": {
             "left": {"Counters": {"on": "You", "counter": "poison"}}, "op": "Ge", "right": 3}}),
-        _ => return None,
+        _ => return than_you(word),
     })
+}
+
+/// The permanents of a type `who` controls, counted.
+fn controlled(kind: &str, who: &str) -> Value {
+    json!({"Count": [{"Type": kind}, {"ControlledBy": who}]})
+}
+
+/// A comparison with the player who asks ("who controls more lands than you", "fewer creatures than you", "at least two
+/// more lands than you"), written for the player tested as "you" and the asker as `Asker`; `None` for another word.
+fn than_you(word: &str) -> Option<Value> {
+    let rest = word.strip_suffix("ThanYou")?;
+    let (op, more, rest) = if let Some(rest) = rest.strip_prefix("withMore") {
+        ("Gt", 0, rest)
+    } else if let Some(rest) = rest.strip_prefix("hasFewer") {
+        ("Lt", 0, rest.strip_suffix("InPlay")?)
+    } else {
+        let rest = rest.strip_prefix("withAtLeast")?;
+        let at = rest.find(|c: char| !c.is_ascii_digit())?;
+        let more = rest[..at].parse::<u32>().ok().filter(|n| *n >= 1)?;
+        let rest = rest[at..].strip_prefix("More")?;
+        // "At least one more" is "more".
+        if more == 1 {
+            ("Gt", 0, rest)
+        } else {
+            ("Ge", more, rest)
+        }
+    };
+    let kind = match rest {
+        "Lands" => "Land",
+        "Creatures" => "Creature",
+        "Artifacts" => "Artifact",
+        "Enchantments" => "Enchantment",
+        _ => return None,
+    };
+    let theirs = controlled(kind, "Asker");
+    let right = if more == 0 {
+        theirs
+    } else {
+        json!({"Sum": [theirs, more]})
+    };
+    Some(json!({"Compare": {"left": controlled(kind, "You"), "op": op, "right": right}}))
 }
 
 /// The condition a player property states, written for "you" (`HasCardsInGraveyard_Instant,Sorcery_GE1` counts the
