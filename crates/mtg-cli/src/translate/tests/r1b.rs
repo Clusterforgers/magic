@@ -110,7 +110,7 @@ fn a_counter_can_ask_what_the_spell_targets(#[case] words: &str, #[case] pred: V
 
 #[rstest]
 #[case::spell_with_abilities_and_control("Spell,Activated.YouCtrl", "Card")]
-#[case::unknown_qualifier("Spell.nonCreature", "Card")]
+#[case::unknown_kind("Static", "Card")]
 #[case::ability_of_a_type("Activated", "Creature")]
 fn a_counter_kind_it_cannot_state_stays_a_gap(#[case] kinds: &str, #[case] valid: &str) {
     let script = spell(&format!(
