@@ -57,8 +57,8 @@ pub(super) fn one_per_name(state: &crate::state::GameState, cards: Vec<ObjectId>
 /// Each player the effect names who is still in the game, in turn order, searches their zone for the cards that match
 /// the filter and chooses between `count.min` and `count.max` of them; the cards chosen of all the players are bound to
 /// the name. The searcher alone is asked and sees the matches, so nobody else learns what the zone holds. A hidden zone
-/// does not have to give up what it holds (CR 701.23b), so in a library or a hand the fewest is 0 and a player may find
-/// none even when cards match; a public zone gives up as many as `count.min` asks. Nothing matching is no question.
+/// does not have to give up cards of a stated quality (CR 701.23b), so in a library or a hand the fewest is 0 and a player
+/// may find none even when cards match; a public zone, or a search for any cards, gives up as many as `count.min` asks. Nothing matching is no question.
 /// Everyone chooses before anything is logged. Each search is one `CardsFound`, private to the searcher whether
 /// or not a card was found, and the cards are revealed to every seat in one `Revealed` after it when the effect says so.
 /// A player who can't search libraries does not search one.
@@ -87,7 +87,8 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         Some(amount) => usize::try_from(cx.scope.amount(amount)?.max(0)).unwrap_or(usize::MAX),
     };
     let required = usize::try_from(cx.scope.amount(&count.min)?.max(0)).unwrap_or(usize::MAX);
-    let fewest = if matches!(zone, ZoneKind::Library | ZoneKind::Hand) {
+    // Only cards of a stated quality may stay hidden (CR 701.23b): "search your library for three cards" finds three.
+    let fewest = if matches!(zone, ZoneKind::Library | ZoneKind::Hand) && !filter.is_empty() {
         0
     } else {
         required
@@ -132,11 +133,12 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         // By id, which says nothing of where the cards lie in the library.
         matches.sort_unstable();
         searches.push((player, place));
+        let found = fewest.min(matches.len());
         selections.push(Selection {
             one_per_name: *distinct,
             player,
             from: matches,
-            min: fewest,
+            min: found,
             max: most.max(fewest),
             text: text.clone(),
         });
@@ -297,7 +299,6 @@ mod tests {
     #[case::any_number(BASIC_LAND, r#","count":{"min":0,"max":null}"#, &["Forest", "Island", "Forest"], 3, "Search your library for any number of basic land cards.")]
     #[case::a_land_type(r#"[{"AnyOf":[{"Subtype":"Forest"},{"Subtype":"Island"}]}]"#, "", &["Forest", "Island", "Forest", "Stomping Ground"], 1, "Search your library for a Forest or Island card.")]
     #[case::a_name(r#"[{"Named":"Wolf"}]"#, "", &["Wolf"], 1, "Search your library for a card named Wolf.")]
-    #[case::any_card("[]", "", &["Forest", "Island", "Forest", "Wolf", "Stomping Ground"], 1, "Search your library for a card.")]
     fn the_searcher_is_asked_for_the_matches_alone_and_may_find_none(
         #[case] filter: &str,
         #[case] count: &str,
@@ -462,6 +463,26 @@ mod tests {
             2,
             "the cards of both players are bound together"
         );
+    }
+
+    /// A search for any cards has no stated quality to hide (CR 701.23b): the searcher finds as many as asked.
+    #[rstest]
+    #[case::a_card("", 1, 1)]
+    #[case::three_cards(r#","count":{"min":3,"max":3}"#, 3, 3)]
+    #[case::up_to_three_cards(r#","count":{"min":0,"max":3}"#, 0, 3)]
+    fn a_search_for_any_cards_finds_as_many_as_asked(
+        #[case] count: &str,
+        #[case] min: u32,
+        #[case] max: u32,
+    ) {
+        let game = game();
+        let effect = search(&format!(
+            r#"{{"Search":{{"filter":[]{count},"as":"found"}}}}"#
+        ));
+        let decision = asked(run_with(&game, Vec::new(), &effect).unwrap());
+        let options = options_of(&decision);
+        assert_eq!(options.from.len(), 5);
+        assert_eq!((options.min, options.max), (min, max));
     }
 
     /// The graveyard of seat 0 holds two Forests and an Elf.

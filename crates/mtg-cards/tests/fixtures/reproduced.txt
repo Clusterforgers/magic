@@ -194,6 +194,7 @@ Brightstone Ritual
 Brigid's Command
 Brimaz, Blight of Oreskos
 Brimstone Vandal
+Brinelin, the Moon Kraken
 Brion Stoutarm
 Brokers Hideout
 Bronzeplate Boar
@@ -548,6 +549,7 @@ Flameblast Dragon
 Flamebraider
 Flamekin Village
 Flamerush Rider
+Flaring Cinder
 Flatline
 Flawless Maneuver
 Fleecemane Lion
@@ -889,6 +891,7 @@ Ludevic's Test Subject // Ludevic's Abomination
 Lumen-Class Frigate
 Lurching Rotbeast
 M'Baku, Jabari Chieftain
+MACH-1, Swooping Scoundrel
 Machine God's Effigy
 Maestros Theater
 Mage Hunter
@@ -953,6 +956,7 @@ Migratory Greathorn
 Migratory Route
 Millikin
 Mind Flayer
+Mindless Conscription
 Mindlock Orb
 Ministrant of Obligation
 Mirari
@@ -1000,6 +1004,7 @@ Nantuko Husk
 Nantuko Vigilante
 Nardole, Resourceful Cyborg
 Nature's Embrace
+Necklace of Girion
 Necroplasm
 Necropolis Regent
 Necroskitter
@@ -1560,6 +1565,7 @@ Tireless Hauler // Dire-Strain Brawler
 Tireless Tracker
 Titania, Nature's Force
 Titania, Proud Pummeler
+Titans' Vanguard
 Tithe Drinker
 Tithebearer Giant
 Tivash, Gloom Summoner
@@ -1611,6 +1617,7 @@ Unite the Coalition
 Universal Automaton
 Universal Surveillance
 Unstable Molecule Suit
+Up the Beanstalk
 Urabrask the Hidden
 Urza's Incubator
 Urza's Mine

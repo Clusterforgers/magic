@@ -539,6 +539,7 @@ fn written_as_given(ability: &Ability) -> Vec<String> {
     let mut texts = variants(ability);
     texts.extend(where_x::equal_to_wordings(ability));
     event_wordings::add(ability, &mut texts);
+    super::r7e_events::r7e_add(ability, &mut texts);
     those::add(ability, &mut texts);
     together::add(&mut texts);
     and_lists::add(ability, &mut texts);
@@ -2774,7 +2775,12 @@ impl Writer<'_> {
         match (paid, unpaid) {
             ([], [inner]) => {
                 let happens = self.effect(inner)?;
-                let payer = self.player(who)?;
+                // The players are asked in turn until one pays: "unless any player pays".
+                let payer = if *who == Ref::EachPlayer {
+                    "any player".to_owned()
+                } else {
+                    self.player(who)?
+                };
                 let unless = payments::unless_text(&payer, who, cost)
                     .or_else(|| payments::unless_sacrifice_text(who, cost))?;
                 Some(format!("{happens} {unless}"))

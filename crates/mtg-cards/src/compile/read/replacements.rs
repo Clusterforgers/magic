@@ -297,6 +297,12 @@ fn zone_change(
     let Some(subject) = subject else {
         return Vec::new();
     };
+    // What you own takes in your tokens too: "If a card or token would be put into your graveyard from anywhere".
+    let subjects = if what.0 == [Pred::OwnedBy(Ref::You)] && to == Some(ZoneKind::Graveyard) {
+        vec![subject, "a card or token".to_owned()]
+    } else {
+        vec![subject]
+    };
     let events: Vec<String> = match (from, to) {
         (None, Some(ZoneKind::Graveyard)) => {
             vec![format!("be put into {owner} from anywhere")]
@@ -318,7 +324,11 @@ fn zone_change(
                 .into_iter()
                 .map(move |then| (event.clone(), then))
         })
-        .map(|(event, then)| format!("if {subject} would {event}, {then}"))
+        .flat_map(|(event, then)| {
+            subjects
+                .iter()
+                .map(move |subject| format!("if {subject} would {event}, {then}"))
+        })
         .collect()
 }
 

@@ -201,6 +201,15 @@ fn refinement(ctx: &Ctx, p: &Params, subject: &Value) -> Tr<Option<Value>> {
         && p.get("AffectedDefined") == Some("Enchanted")
         && p.get("Description")
             .is_some_and(|text| text.starts_with("As long as enchanted permanent is a creature"));
+    // Any other keyword grant to a creature from an Aura that may enchant a noncreature has no condition to write.
+    if valid == "Creature"
+        && !creature_condition
+        && p.get("AffectedDefined") == Some("Enchanted")
+        && p.has("AddKeyword")
+        && enchants_a_noncreature(ctx)
+    {
+        return unmapped("key:Static.Continuous.creature-of-an-enchanted-permanent");
+    }
     if matches!(valid, "Creature" | "Card" | "Permanent") && !creature_condition {
         return Ok(None);
     }
@@ -211,6 +220,19 @@ fn refinement(ctx: &Ctx, p: &Params, subject: &Value) -> Tr<Option<Value>> {
     Ok(Some(
         json!({"Matches": {"subject": subject, "selector": selector}}),
     ))
+}
+
+/// Whether the face's `K:Enchant:` line lets the Aura enchant something other than a creature ("Enchant permanent"); a
+/// Vehicle counts as a creature, as the Auras that enchant one make it a creature.
+fn enchants_a_noncreature(ctx: &Ctx) -> bool {
+    ctx.keywords.iter().any(|keyword| {
+        keyword.strip_prefix("Enchant:").is_some_and(|rest| {
+            let kinds = rest.split(':').next().unwrap_or_default();
+            kinds
+                .split(',')
+                .any(|kind| !kind.starts_with("Creature") && kind != "Vehicle")
+        })
+    })
 }
 
 /// The objects of a valid-string in the zone `AffectedZone$` names: a single zone other than the battlefield, whose cards

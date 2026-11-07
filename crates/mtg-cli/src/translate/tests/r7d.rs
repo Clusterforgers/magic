@@ -11,6 +11,7 @@ use super::{abilities, gaps};
     "As long as enchanted permanent is a creature, it has lifelink.",
     Some(json!({"Matches": {"subject": "Attached", "selector": [{"Type": "Creature"}]}}))
 )]
+// Without the condition in the text the grant has nothing to write it with: a gap.
 #[case::enchanted_creature("Enchanted creature has lifelink.", None)]
 fn r7d_an_aura_of_any_permanent_states_the_creature_condition(
     #[case] description: &str,
@@ -19,6 +20,13 @@ fn r7d_an_aura_of_any_permanent_states_the_creature_condition(
     let text = format!(
         "Name:T\nTypes:Enchantment Aura\nK:Enchant:Permanent\nS:Mode$ Continuous | AffectedDefined$ Enchanted | Affected$ Creature | AddKeyword$ Lifelink | Description$ {description}\n"
     );
+    if condition.is_none() {
+        assert_eq!(
+            gaps(&text),
+            vec!["key:Static.Continuous.creature-of-an-enchanted-permanent".to_owned()]
+        );
+        return;
+    }
     assert_eq!(gaps(&text), Vec::<String>::new());
     let found = abilities(&text)
         .into_iter()

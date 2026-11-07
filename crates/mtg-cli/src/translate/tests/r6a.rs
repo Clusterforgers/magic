@@ -42,8 +42,17 @@ fn r6a_a_printed_may_over_one_step_asks(
     let (json, found) = card(&format!(
         "{UPKEEP}{decider} | TriggerDescription$ At the beginning of your upkeep, {printed}\nSVar:Trig:DB$ PutCounter | Defined$ Self | CounterType$ P1P1 | CounterNum$ 1"
     ));
-    assert!(found.is_empty(), "{found:?}");
-    assert_eq!(json.contains("\"May\""), asks, "{json}");
+    // A "you may put" the trigger cannot ask for (it covers a later sentence only) is a gap, not a forced counter.
+    let forced = !asks && decider.is_empty() && printed.contains("you may put");
+    let expected: Vec<String> = if forced {
+        vec!["trigger:may-put-counters-without-decider".to_owned()]
+    } else {
+        Vec::new()
+    };
+    assert_eq!(found, expected, "{json}");
+    if !forced {
+        assert_eq!(json.contains("\"May\""), asks, "{json}");
+    }
 }
 
 const ENTERS: &str = "T:Mode$ ChangesZone | Origin$ Any | Destination$ Battlefield | ValidCard$ Card.Self | Execute$ Trig";

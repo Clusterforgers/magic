@@ -266,6 +266,18 @@ fn equip_options_are_written(
     Some(count)
 }
 
+/// Escalate is a keyword line beside the modes of the spell: an Escalate ability has one on its face.
+fn assert_escalate_line(name: &str, compiled: &Compiled, face: usize, ability: &Ability) {
+    if let Some(cost) = escalate_cost(ability) {
+        assert!(
+            compiled.clauses.iter().any(|clause| clause.face == face
+                && clause.kind == ClauseKind::Keyword
+                && escalate_reads(&clause.text, cost)),
+            "{name}: no Escalate line for {cost:?}"
+        );
+    }
+}
+
 /// Whether a Reinforce or Forecast ability (an activated ability from the hand) is written as a keyword line of its face;
 /// `None` when the ability is not one.
 fn hand_keyword_is_written(
@@ -308,6 +320,8 @@ fn the_renderer_writes_the_hand_written_abilities_as_the_cards_text() {
         let by_hand = library.card(&printed.oracle_id).unwrap();
         let listed: Vec<(usize, &Ability)> = by_hand.abilities().collect();
         let mut skip_next = false;
+        // The first static of a pair was printed apart from the second, so the second needs its own line too.
+        let mut pair_apart = false;
         for (at, &(face, ability)) in listed.iter().enumerate() {
             if std::mem::take(&mut skip_next) {
                 continue;
@@ -324,38 +338,37 @@ fn the_renderer_writes_the_hand_written_abilities_as_the_cards_text() {
                 rendered += 1;
                 continue;
             }
-            // Escalate is a keyword line beside the modes of the spell.
-            if let Some(cost) = escalate_cost(ability) {
-                assert!(
-                    compiled.clauses.iter().any(|clause| clause.face == face
-                        && clause.kind == ClauseKind::Keyword
-                        && escalate_reads(&clause.text, cost)),
-                    "{}: no Escalate line for {cost:?}",
-                    printed.name
-                );
-            }
-            // Two statics with one subject may be one sentence of the card; printed as two sentences, each
-            // is checked on its own below.
+            assert_escalate_line(&printed.name, &compiled, face, ability);
+            // Two statics with one subject may be one sentence of the card; printed as two sentences (Air Bladder),
+            // each must be written as its own line below.
+            let own_line = std::mem::take(&mut pair_apart);
             if let Some(&(same, second)) = listed.get(at + 1) {
                 let pair = static_pair_texts(ability, second);
-                let lines: Vec<&str> = compiled
-                    .clauses
-                    .iter()
-                    .filter(|clause| clause.face == face && clause.kind == ClauseKind::Static)
-                    .map(|clause| without_numerals(without_ability_word(&clause.text)))
-                    .collect();
-                if same == face
-                    && lines
+                if same == face && !pair.is_empty() {
+                    let lines: Vec<&str> = compiled
+                        .clauses
+                        .iter()
+                        .filter(|clause| clause.face == face && clause.kind == ClauseKind::Static)
+                        .map(|clause| without_numerals(without_ability_word(&clause.text)))
+                        .collect();
+                    if lines
                         .iter()
                         .any(|text| pair.iter().any(|written| same_text(written, text)))
-                {
-                    skip_next = true;
-                    rendered += 2;
-                    continue;
+                    {
+                        skip_next = true;
+                        rendered += 2;
+                        continue;
+                    }
+                    pair_apart = true;
                 }
             }
             let written = written_variants(ability);
             if written.is_empty() {
+                assert!(
+                    !own_line && !pair_apart,
+                    "{}: a static of a pair printed apart has no wording of its own: {ability:?}",
+                    printed.name
+                );
                 continue;
             }
             // The spell ability is the spell lines of the face, or its list of modes.
