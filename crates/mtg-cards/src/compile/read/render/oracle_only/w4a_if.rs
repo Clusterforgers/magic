@@ -97,7 +97,7 @@ fn w4a_substitute(text: &str, number: i32, alternatives: &[String], after: bool)
         let mut out = Vec::new();
         for alternative in alternatives {
             out.push(format!("{head}{}.{tail}", capitalize(alternative)));
-            if after && alternative.starts_with("if ") {
+            if after && (alternative.starts_with("if ") || alternative.contains(" unless ")) {
                 out.push(format!("{head}Then {alternative}.{tail}"));
             }
         }
@@ -143,6 +143,12 @@ fn w4a_if_texts(ability: &Ability, i: usize) -> Vec<String> {
         }
     }
     if otherwise.is_empty() {
+        // "E unless C": the step when the condition that does not hold does not hold either (r7c).
+        for unless in super::r7c_conditions::r7c_unless_texts(condition) {
+            for then in thens.iter().filter(|then| !then.contains(". ")) {
+                out.push(format!("{then} unless {unless}"));
+            }
+        }
         return out;
     }
     let others = w4a_steps_texts(ability, i, otherwise);

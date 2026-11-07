@@ -150,6 +150,7 @@ fn a_card_calling_itself_this_creature_reads_as_the_source() {
 mod dk1d_spells;
 mod fix8_writers;
 mod fix9_writers;
+mod r7c_writers;
 mod r7d;
 
 mod actions;

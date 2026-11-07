@@ -332,6 +332,14 @@ fn judge_draft(
         Verdict::Accepted if proof.is_some() => {}
         Verdict::Unchecked => {}
         Verdict::Mismatch if trusted => {}
+        // A draft that names a card without a corpus file cannot join the corpus, whose cards name corpus cards only.
+        Verdict::Accepted
+            if mtg_cli::w2a_promote::w2a_names_outside(
+                library,
+                &item.card,
+                &item.printed,
+                &mtg_cli::w2a_promote::w2a_corpus_names(library),
+            ) => {}
         Verdict::Accepted => problems.push(format!(
             "{slug}: the checker accepts it now: promote it as a corpus card and delete the draft"
         )),
