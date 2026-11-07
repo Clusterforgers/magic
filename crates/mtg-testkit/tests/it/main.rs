@@ -630,6 +630,7 @@ mod dk1c5_rooms;
 mod dk1e_announcing;
 mod dk1e_deck;
 // t20c
+mod g9a_caster_graveyard;
 mod t20c_pay_cards;
 
 // dk1f

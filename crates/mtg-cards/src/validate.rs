@@ -681,11 +681,14 @@ impl<'a> Walker<'a> {
             Pred::ControlledBy(r) | Pred::OwnedBy(r) | Pred::AttackingPlayer(r) => {
                 self.reference(r, Kind::Player);
             }
+            // The objects a share names are read with the object tested as `Candidate`.
+            Pred::SharesName(r) | Pred::SharesType(r) | Pred::SharesColor(r) => {
+                self.scope.tests += 1;
+                self.reference(r, Kind::Object);
+                self.scope.tests -= 1;
+            }
             Pred::Is(r)
             | Pred::SharesSubtype(r)
-            | Pred::SharesName(r)
-            | Pred::SharesType(r)
-            | Pred::SharesColor(r)
             | Pred::ExiledWith(r)
             | Pred::EncodedWith(r)
             | Pred::Crewed(r)

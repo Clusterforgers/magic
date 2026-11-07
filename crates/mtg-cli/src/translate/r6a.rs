@@ -17,11 +17,16 @@ pub fn printed(
     effects: Vec<Value>,
     targets: &[Value],
 ) -> Tr<Vec<Value>> {
-    // "you may search" printed with no decider in the script: the search would be forced.
+    // "you may search" printed with no decider in the script: the search would be forced. When the search opens the
+    // effect ("When ~ enters, you may search ..."), everything after it follows the search, so the whole effect asks:
+    // declining skips the shuffle too.
     if !decider
         && description.is_some_and(|text| text.contains("you may search"))
         && !json!(effects).to_string().contains("\"May\":")
     {
+        if g9a_search_opens(description) {
+            return Ok(super::frame::ask(effects, &json!("You")));
+        }
         return unmapped("trigger:may-search-without-decider");
     }
     if unfiltered_own_target(description, targets) {
@@ -81,6 +86,23 @@ fn printed_may_step(description: Option<&str>, effects: &[Value]) -> bool {
         && !serde_json::to_string(effects)
             .unwrap_or_default()
             .contains("\"May\":")
+}
+
+/// Whether the printed effect opens with "you may search": the words before it are the trigger alone (one clause, no
+/// other choice).
+fn g9a_search_opens(description: Option<&str>) -> bool {
+    let Some(text) = description.map(without_reminder) else {
+        return false;
+    };
+    text.split_once(", you may search ")
+        .is_some_and(|(head, _)| {
+            !head.contains("may")
+                && !head.contains(". ")
+                && !head.contains(", ")
+                && ["When", "Whenever", "At "]
+                    .iter()
+                    .any(|word| head.starts_with(word))
+        })
 }
 
 /// Whether the card prints "target creature you control" while no target of the translation is narrowed by controller.
