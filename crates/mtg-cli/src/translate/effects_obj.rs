@@ -952,7 +952,16 @@ fn animate(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
     {
         return unmapped("key:Animate.TgtZone=Stack");
     }
-    let duration = duration(p.get("Duration"))?;
+    let mut duration = duration(p.get("Duration"))?;
+    // Forge ends "for as long as you control ~" when the host leaves; it also ends when another player gains control of it
+    // (CR 611.2b).
+    let oracle = ctx.oracle.to_lowercase();
+    if duration == "WhileSourceOnBattlefield" && oracle.contains("for as long as you control") {
+        if oracle.contains("remains on the battlefield") {
+            return unmapped("key:Animate.Duration-while-you-control-or-remains");
+        }
+        duration = "WhileYouControlSource";
+    }
     // `AnimateAll` names the objects by a valid-string.
     let affected = match p.get("ValidCards") {
         // "creatures target player controls": Forge narrows the group to the target's at run time, the selector would not.

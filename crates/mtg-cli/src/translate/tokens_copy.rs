@@ -40,22 +40,13 @@ pub fn copy_permanent(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
             "AddAbilities",
             "AddStaticAbilities",
             "AddSVars",
+            "Choices",
+            "ChoiceTitle",
         ],
     )?;
     let remember = flag(p, "RememberTokens")?;
     let mut effects = Vec::new();
-    let of = if flag(p, "Populate")? {
-        if p.has("Defined") || p.has("ValidTgts") {
-            return unmapped("key:CopyPermanent.Populate-with-subject");
-        }
-        // Populate (CR 701.36): one creature token the player controls is chosen and copied.
-        let chosen = ctx.fresh("populated");
-        effects.push(json!({"Choose": {
-            "from": {"Each": [{"Type": "Creature"}, "Token", {"ControlledBy": "You"}]}, "as": chosen}}));
-        json!({ "Bound": chosen })
-    } else {
-        objects(subject(ctx, p, "", None)?)?
-    };
+    let of = copied(ctx, p, &mut effects)?;
     let count = amount(ctx, p.get("NumCopies").unwrap_or("1"))?;
     let mut except = exceptions(ctx, p)?;
     let temporary = temporary_keywords(ctx, p)?;
@@ -121,6 +112,34 @@ fn temporary_keywords(ctx: &Ctx, p: &Params) -> Tr<Option<Vec<Value>>> {
         (Some(_), Some("EOT")) => pumped(ctx, p).map(Some),
         (Some(_), Some(other)) => unmapped(format!("key:CopyPermanent.PumpDuration={other}")),
     }
+}
+
+/// What the token copies: the subject of the line, the creature token populate chooses, or the one permanent `Choices$`
+/// names that the player chooses ("a copy of a nonlegendary enchantment you control"); a choice among a subject stays a
+/// gap. A step that chooses goes into `effects`.
+fn copied(ctx: &mut Ctx, p: &Params, effects: &mut Vec<Value>) -> Tr<Value> {
+    let subject_named = p.has("Defined") || p.has("ValidTgts");
+    if flag(p, "Populate")? {
+        if subject_named {
+            return unmapped("key:CopyPermanent.Populate-with-subject");
+        }
+        // Populate (CR 701.36): one creature token the player controls is chosen and copied.
+        let chosen = ctx.fresh("populated");
+        effects.push(json!({"Choose": {
+            "from": {"Each": [{"Type": "Creature"}, "Token", {"ControlledBy": "You"}]}, "as": chosen}}));
+        return Ok(json!({ "Bound": chosen }));
+    }
+    let Some(choices) = p.get("Choices") else {
+        return objects(subject(ctx, p, "", None)?);
+    };
+    if subject_named {
+        return unmapped("key:CopyPermanent.Choices-of-a-subject");
+    }
+    p.has("ChoiceTitle");
+    let chosen = ctx.fresh("copied");
+    effects.push(json!({"Choose": {
+        "from": {"Each": super::valid::selector_any(ctx, choices)?}, "as": chosen}}));
+    Ok(json!({ "Bound": chosen }))
 }
 
 /// The changes written into the copy.

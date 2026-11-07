@@ -434,10 +434,10 @@ fn may_have(text: &str) -> Vec<String> {
         let Some((verb, tail)) = rest.split_once(' ') else {
             continue;
         };
-        let bare = if named != "that player" {
-            verb.strip_suffix('s')
-        } else {
+        let bare = if named == "that player" {
             Some(verb)
+        } else {
+            verb.strip_suffix('s')
         };
         if let Some(bare) = bare
             && bare.chars().all(|c| c.is_ascii_lowercase())

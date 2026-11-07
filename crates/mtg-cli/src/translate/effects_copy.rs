@@ -85,6 +85,11 @@ fn exceptions(ctx: &mut Ctx, p: &Params, this_ability: bool) -> Tr<Vec<Value>> {
 /// ability the copiable values gain (CR 707.9a), written in the order the card words them (triggered, activated, static).
 /// `AddSVars$` only hands the copy the parts these abilities use, which the translation holds already.
 pub(super) fn granted_exceptions(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
+    // Each ability is a line of its own: its targets are not those of the ability that makes the copy.
+    ctx.nested(None, |ctx| granted_parts(ctx, p))
+}
+
+fn granted_parts(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
     let mut mods = Vec::new();
     // The parts are the copy's in Forge only; the abilities below are translated with them inline.
     p.has("AddSVars");

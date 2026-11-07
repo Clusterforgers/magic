@@ -87,14 +87,13 @@ pub(crate) fn writes_of_wanted(wanted: &Wanted) -> Traits {
         Wanted::AddType(_) | Wanted::RemoveType(_) | Wanted::SetTypes(_) => {
             Traits::TYPES.or(Traits::SUBTYPES)
         }
-        Wanted::AddSubtype(_)
-        | Wanted::SetCreatureTypes(_)
-        | Wanted::AddAllCreatureTypes
-        | Wanted::AddChosenSubtype => Traits::SUBTYPES,
+        Wanted::AddSubtype(_) | Wanted::SetCreatureTypes(_) | Wanted::AddAllCreatureTypes => {
+            Traits::SUBTYPES
+        }
         Wanted::SetLandTypes(_) | Wanted::SetLandTypesChosen(_) => {
             Traits::SUBTYPES.or(Traits::KEYWORDS).or(Traits::RULES)
         }
-        Wanted::SetCreatureTypesChosen(_) => Traits::SUBTYPES,
+        Wanted::SetCreatureTypesChosen(_) | Wanted::AddChosenSubtype => Traits::SUBTYPES,
         Wanted::SetColors(_)
         | Wanted::AddColors(_)
         | Wanted::SetColorsChosen(_)

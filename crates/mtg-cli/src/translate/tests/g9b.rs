@@ -154,3 +154,91 @@ fn an_animation_restricts_combat(#[case] word: &str, #[case] mods: Option<Value>
         ),
     }
 }
+
+const FIGHT: &str = "SVar:TrigFight:Mode$ ChangesZone | Origin$ Any | Destination$ Battlefield | ValidCard$ Card.Self | Execute$ TrigFightBis | TriggerDescription$ When CARDNAME enters, it fights up to one target creature you don't control.\nSVar:TrigFightBis:DB$ Fight | Defined$ TriggeredCardLKICopy | ValidTgts$ Creature.YouDontCtrl | TargetMin$ 0 | TargetMax$ 1\n";
+
+#[test]
+fn the_ability_a_token_copy_gains_keeps_its_targets_apart() {
+    let script = format!(
+        "Name:T\nTypes:Sorcery\nA:SP$ CopyPermanent | ValidTgts$ Creature.YouCtrl | AddTriggers$ TrigFight | AddSVars$ TrigFight,TrigFightBis\n{FIGHT}"
+    );
+    let spell = &abilities(&script)[0]["Spell"];
+    assert_eq!(
+        spell["targets"],
+        json!([{"what": {"Object": [{"Type": "Creature"}, {"ControlledBy": "You"}]}}]),
+        "{:?}",
+        gaps(&script)
+    );
+    let granted =
+        &spell["effects"][0]["CreateToken"]["token"]["CopyOf"]["except"][0]["GrantAbility"];
+    assert_eq!(
+        granted["Triggered"]["targets"][0]["bounds"],
+        json!({"min": 0, "max": 1})
+    );
+}
+
+#[rstest]
+#[case::chosen_permanent("Choices$ Enchantment.nonLegendary+YouCtrl", None)]
+#[case::chosen_among_a_subject(
+    "Defined$ Remembered | Choices$ Card",
+    Some("key:CopyPermanent.Choices-of-a-subject")
+)]
+fn a_token_copies_a_chosen_permanent(#[case] keys: &str, #[case] gap: Option<&str>) {
+    let script = format!("Name:T\nTypes:Sorcery\nA:SP$ CopyPermanent | {keys}\n");
+    match gap {
+        None => {
+            let effects = &abilities(&script)[0]["Spell"]["effects"];
+            let name = effects[0]["Choose"]["as"].clone();
+            assert_eq!(
+                effects[0]["Choose"]["from"],
+                json!({"Each": [{"Type": "Enchantment"}, {"Not": {"Supertype": "Legendary"}}, {"ControlledBy": "You"}]}),
+                "{:?}",
+                gaps(&script)
+            );
+            assert_eq!(
+                effects[1]["CreateToken"]["token"]["CopyOf"]["of"],
+                json!({ "Bound": name })
+            );
+        }
+        Some(gap) => assert!(
+            gaps(&script).iter().any(|found| found == gap),
+            "{:?}",
+            gaps(&script)
+        ),
+    }
+}
+
+#[rstest]
+#[case::while_you_control(
+    "That creature can't attack or block for as long as you control T.",
+    Some("WhileYouControlSource")
+)]
+#[case::while_it_remains(
+    "For as long as T remains on the battlefield, that creature can't attack or block.",
+    Some("WhileSourceOnBattlefield")
+)]
+#[case::both(
+    "For as long as T remains on the battlefield, that creature can't block. That creature can't attack for as long as you control T.",
+    None
+)]
+fn an_animation_until_the_host_leaves_follows_the_oracle(
+    #[case] oracle: &str,
+    #[case] duration: Option<&str>,
+) {
+    let script = format!(
+        "Name:T\nTypes:Sorcery\nA:SP$ Animate | ValidTgts$ Creature | HiddenKeywords$ CARDNAME can't attack or block. | Duration$ UntilHostLeavesPlay\nOracle:{oracle}\n"
+    );
+    match duration {
+        Some(duration) => assert_eq!(
+            abilities(&script)[0]["Spell"]["effects"][0]["Continuous"]["duration"],
+            json!(duration),
+            "{:?}",
+            gaps(&script)
+        ),
+        None => assert!(
+            gaps(&script)
+                .iter()
+                .any(|gap| gap == "key:Animate.Duration-while-you-control-or-remains")
+        ),
+    }
+}
