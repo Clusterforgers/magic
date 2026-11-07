@@ -463,6 +463,11 @@ impl RuleEffect {
             }
             Rule::Combat { creatures, .. } => creatures.iter().all(gone),
             Rule::Regenerate(named) => gone(named),
+            // A prohibition about objects alone ends once each has become a new object (CR 400.7).
+            Rule::Cant { who, .. } => who.iter().all(|subject| match subject {
+                Target::Object(named) => gone(named),
+                Target::Player(_) => false,
+            }),
             Rule::PreventDamage(shield) => shield.spent(state),
             _ => false,
         }
@@ -1027,13 +1032,7 @@ fn w17b_rule_objects(
     zone: Zone,
 ) -> Result<Vec<ObjectRef>, ResolveError> {
     let named = if matches!(who, Ref::Attached) {
-        scope
-            .state
-            .host_of(scope.source.id)
-            .and_then(|host| scope.state.object(host))
-            .map(GameObject::reference)
-            .into_iter()
-            .collect()
+        scope.host().into_iter().collect()
     } else {
         scope.objects(who)?
     };
@@ -1182,10 +1181,13 @@ pub(crate) fn lower_rule(scope: &Scope<'_>, wanted: &GameRule) -> Result<Rule, R
         }
         // Eligibility is read from the definition when a seat is checked (`CardDefinition::can_be_commander`); no
         // rule is ever in force and an effect cannot start one.
-        GameRule::Cant { who, action } => Rule::Cant {
-            who: scope.refs(who)?,
-            action: Box::new(action.clone()),
-        },
+        GameRule::Cant { who, action } => {
+            let (who, action) = crate::cant_named::lower(scope, scope.refs(who)?, action)?;
+            Rule::Cant {
+                who,
+                action: Box::new(action),
+            }
+        }
         GameRule::CanBeCommander => return Err(ResolveError::Unsupported("Rule.CanBeCommander")),
         // The deck check reads it from the card; nothing changes in a game.
         GameRule::AnyNumberInDeck => return Err(ResolveError::Unsupported("Rule.AnyNumberInDeck")),

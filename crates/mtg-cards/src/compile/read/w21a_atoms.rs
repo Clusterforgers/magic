@@ -240,12 +240,32 @@ pub(super) fn w21a_suffix_text(pred: &Pred, form: Form) -> Option<String> {
         Pred::ChosenColor => "of the chosen color".to_owned(),
         Pred::GravedThisTurn => W21A_GRAVED.to_owned(),
         Pred::TargetsPlayer(Ref::You) => "that targets you".to_owned(),
+        Pred::TargetsPlayer(Ref::Opponents) => "that targets an opponent".to_owned(),
+        Pred::AttackingAlone if !form.plural() => "that's attacking alone".to_owned(),
         Pred::Targeting(objects) if objects.0 == [Pred::This] => "that targets ~".to_owned(),
-        Pred::Targeting(objects) => format!("that targets {}", w21a_a(objects)?),
+        Pred::Targeting(objects) => {
+            format!("that targets {}", w21a_a(&g13a_in_play(objects, form))?)
+        }
         Pred::AnyOf(any) => match any.as_slice() {
             [Pred::TargetsPlayer(Ref::You), Pred::Targeting(objects)] => {
-                format!("that targets you or {}", w21a_a(objects)?)
+                format!(
+                    "that targets you or {}",
+                    w21a_a(&g13a_in_play(objects, form))?
+                )
             }
+            [
+                Pred::TargetsPlayer(Ref::Opponents),
+                Pred::Targeting(objects),
+            ] => {
+                format!(
+                    "that targets an opponent or {}",
+                    w21a_a(&g13a_in_play(objects, form))?
+                )
+            }
+            [
+                Pred::AttackingPlayer(Ref::You),
+                Pred::AttackingPlaneswalkerOf(Ref::You),
+            ] if !form.plural() => "that's attacking you or a planeswalker you control".to_owned(),
             _ => return None,
         },
         Pred::Not(inner) if **inner == Pred::HasAnyCounter => {
@@ -262,6 +282,24 @@ pub(super) fn w21a_suffix_text(pred: &Pred, form: Form) -> Option<String> {
         }
         _ => return None,
     })
+}
+
+/// The targeted objects without an `In(Battlefield)` that their controller already says: "a creature you control" is
+/// one on the battlefield. Only the singular "a spell that targets": the plural wording keeps the selector as it is.
+fn g13a_in_play(objects: &Selector, form: Form) -> Selector {
+    let controlled = !form.plural()
+        && objects
+            .0
+            .iter()
+            .any(|pred| matches!(pred, Pred::ControlledBy(_)));
+    Selector(
+        objects
+            .0
+            .iter()
+            .filter(|pred| !(controlled && **pred == Pred::In(ZoneKind::Battlefield)))
+            .cloned()
+            .collect(),
+    )
 }
 
 /// "a creature you control": a singular phrase with its article.

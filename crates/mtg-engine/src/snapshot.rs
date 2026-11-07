@@ -97,6 +97,11 @@ pub struct Snapshot {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     #[cfg_attr(feature = "ts", ts(skip))]
     pub mutations: Option<u32>,
+    /// The permanent it was attached to, as the object it was then: what "enchanted creature" names once the Aura has
+    /// left (CR 112.7a, 608.2h).
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[cfg_attr(feature = "ts", ts(optional))]
+    pub host: Option<ObjectRef>,
 }
 
 impl Snapshot {
@@ -151,6 +156,13 @@ pub fn snapshot(state: &GameState, id: ObjectId) -> Option<Snapshot> {
             None => cards.shared(),
         }),
         mutations: object.merged().map(crate::merged::Merged::mutations),
+        host: (object.zone() == Zone::Battlefield)
+            .then(|| {
+                object
+                    .permanent()
+                    .and_then(crate::object::PermanentState::attached_to)
+            })
+            .flatten(),
     })
 }
 

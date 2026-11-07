@@ -11,7 +11,8 @@ use crate::forge::script::Params;
 
 /// The `Replacement` ability of a `Moved` line whose `ValidCard$` is not the card itself.
 pub fn others(ctx: &mut Ctx, p: &Params, line_condition: Option<&Value>) -> Tr<Value> {
-    if line_condition.is_some() {
+    // Only the permanents that enter tapped or untapped may wait for a condition of the source.
+    if line_condition.is_some() && p.get("Destination") != Some("Battlefield") {
         return unmapped("key:Replacement.Moved.condition");
     }
     if p.get("ActiveZones") != Some("Battlefield") {
@@ -35,7 +36,13 @@ pub fn others(ctx: &mut Ctx, p: &Params, line_condition: Option<&Value>) -> Tr<V
         return unmapped("key:Replacement.Moved.condition");
     }
     match p.get("Destination") {
-        Some("Battlefield") => enter_tapped(p, &part, &what),
+        Some("Battlefield") => {
+            let mut found = enter_tapped(p, &part, &what)?;
+            if let Some(condition) = line_condition {
+                found["Replacement"]["condition"] = condition.clone();
+            }
+            Ok(found)
+        }
         Some("Graveyard") if part.has("SubAbility") => exiled_and(ctx, p, &part, &what),
         Some("Graveyard") => exiled_instead(p, &part, &what),
         _ => unmapped("replacement:Moved-shape"),
@@ -76,6 +83,8 @@ fn exiled_and(ctx: &mut Ctx, p: &Params, part: &Params, what: &[Value]) -> Tr<Va
         to_player: false,
         pattern: "ZoneChange".to_owned(),
         arrives: None,
+        targeting: None,
+        destination: None,
     });
     let rest = ctx.sub(next).and_then(|sub| chain_at(ctx, &sub, false));
     ctx.trigger = None;

@@ -671,6 +671,7 @@ impl<'a> Walker<'a> {
             Pred::Modified => self.uses("Pred", "Modified"),
             Pred::RingBearer => self.uses("Pred", "RingBearer"),
             Pred::FaceDown => self.uses("Pred", "FaceDown"),
+            Pred::SpentFrom { .. } => self.uses("Pred", "SpentFrom"),
             Pred::TargetsPlayer(who) => {
                 self.uses("Pred", "TargetsPlayer");
                 self.at("TargetsPlayer", |w| w.reference(who, Kind::Player));
@@ -684,7 +685,11 @@ impl<'a> Walker<'a> {
     fn pred(&mut self, pred: &Pred) {
         match pred {
             Pred::Subtype(subtype) => self.known_subtype(subtype),
-            Pred::ControlledBy(r) | Pred::OwnedBy(r) | Pred::AttackingPlayer(r) => {
+            Pred::ControlledBy(r)
+            | Pred::OwnedBy(r)
+            | Pred::AttackingPlayer(r)
+            | Pred::AttackingPlaneswalkerOf(r)
+            | Pred::AttackingPlayerOrPlaneswalker(r) => {
                 self.reference(r, Kind::Player);
             }
             // The objects a share names are read with the object tested as `Candidate`.
@@ -743,6 +748,7 @@ impl<'a> Walker<'a> {
             | Pred::RingBearer
             | Pred::FaceDown
             | Pred::TargetsPlayer(_)
+            | Pred::SpentFrom { .. }
             | Pred::GravedThisTurn
             | Pred::ArrivedFrom(_) => {
                 self.w21a_pred(pred);
@@ -798,6 +804,7 @@ impl<'a> Walker<'a> {
             | Pred::DamagedThisTurn
             | Pred::AttackedThisTurn
             | Pred::Attacking
+            | Pred::AttackingAlone
             | Pred::Blocking
             | Pred::Unblocked
             | Pred::HasCounter(_)
@@ -863,6 +870,14 @@ impl<'a> Walker<'a> {
         }
     }
 
+    /// The two amounts of a quotient or a difference, each a share when the whole is.
+    fn g13a_two(&mut self, sharing: bool, of: &Amount, by: &Amount) {
+        self.amounting = Amounting::of(sharing);
+        self.at("of", |w| w.amount(of));
+        self.amounting = Amounting::of(sharing);
+        self.at("by", |w| w.amount(by));
+    }
+
     fn amount(&mut self, amount: &Amount) {
         // Only the amount of damage or counters, or a sum or even share made of it, can be a recipient's share.
         let sharing = std::mem::take(&mut self.amounting) == Amounting::Shared;
@@ -896,6 +911,9 @@ impl<'a> Walker<'a> {
             Amount::Times { of, .. } | Amount::Half { of, .. } => {
                 self.amounting = Amounting::of(sharing);
                 self.at("of", |w| w.amount(of));
+            }
+            Amount::Quotient { of, by, .. } | Amount::Difference(of, by) => {
+                self.g13a_two(sharing, of, by);
             }
             Amount::Divided => {
                 if !sharing {
@@ -1038,6 +1056,8 @@ impl<'a> Walker<'a> {
             | Amount::AnyCounters(_)
             | Amount::Sum(_)
             | Amount::Product(_)
+            | Amount::Quotient { .. }
+            | Amount::Difference(..)
             | Amount::Times { .. }
             | Amount::Half { .. }
             | Amount::Divided

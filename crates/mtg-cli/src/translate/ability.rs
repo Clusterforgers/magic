@@ -115,6 +115,10 @@ fn spell(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
         "ThirdSVarCompare",
     ]);
     let effects = chain(ctx, p)?;
+    // A spell whose line does nothing (its abilities are all keywords, as on a cascade spell) has no spell ability to resolve.
+    if effects.is_empty() && ctx.targets.is_empty() && extra.is_none() && only.is_none() {
+        return Ok(Vec::new());
+    }
     let mut ability = json!({ "effects": effects });
     if !ctx.targets.is_empty() {
         ability["targets"] = Value::Array(ctx.targets.clone());
@@ -192,7 +196,11 @@ fn activated(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
         1 => ability["condition"] = conditions.remove(0),
         _ => ability["condition"] = json!({ "All": conditions }),
     }
-    if p.get("SorcerySpeed") == Some("True") {
+    // Some scripts print "Activate only as a sorcery." without `SorcerySpeed$` (Mindwhip Sliver's granted ability).
+    let printed_sorcery = p
+        .get("SpellDescription")
+        .is_some_and(|text| text.trim_end().ends_with(". Activate only as a sorcery."));
+    if p.get("SorcerySpeed") == Some("True") || printed_sorcery {
         ability["timing"] = json!("Sorcery");
     }
     if let Some(by) = by {

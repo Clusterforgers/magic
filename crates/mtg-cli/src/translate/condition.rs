@@ -8,7 +8,8 @@ use super::valid::{cmp, defined, selector_any, selector_in};
 use crate::forge::script::Params;
 
 /// The keys this module reads.
-pub const KEYS: [&str; 18] = [
+pub const KEYS: [&str; 19] = [
+    "TopCardOfLibraryIs",
     "IsPresent",
     "PresentDefined",
     "PresentZone",
@@ -58,6 +59,9 @@ pub fn condition(ctx: &Ctx, p: &Params) -> Tr<Option<Value>> {
     all.extend(check_svar(ctx, p)?);
     if let Some(name) = p.get("Condition") {
         all.push(named(name)?);
+    }
+    if let Some(valid) = p.get("TopCardOfLibraryIs") {
+        all.push(top_card_is(ctx, valid)?);
     }
     // "At the beginning of your end step, if you descended this turn": the phase trigger names the player with a property.
     if p.get("ValidPlayer") == Some("You.descended") {
@@ -133,6 +137,14 @@ pub fn check_svar(ctx: &Ctx, p: &Params) -> Tr<Option<Value>> {
         }
         let (op, right) = comparison(ctx, p.get(compare).unwrap_or("GE1"))?;
         let left = amount(ctx, name)?;
+        // "attacked with three or more Merfolk" (Deepway Navigator): the tally counts every attacker.
+        let printed = p.get("Description").unwrap_or_default();
+        if left == json!({"Tallied": {"what": "Attackers", "who": "You"}})
+            && printed.contains("attacked with ")
+            && !printed.contains(" or more creatures")
+        {
+            return unmapped("condition:attackers-of-a-type");
+        }
         all.push(
             settled(&left, op, &right)
                 .unwrap_or_else(|| json!({"Compare": {"left": left, "op": op, "right": right}})),
@@ -189,6 +201,14 @@ fn present(ctx: &Ctx, p: &Params, suffix: &str) -> Tr<Option<Value>> {
         }
         return Ok(None);
     };
+    // Radiant Essence's script counts creatures where its static says "controls a black permanent".
+    let printed = p.get("Description").unwrap_or_default();
+    let permanent = valid
+        .strip_prefix("Creature.")
+        .filter(|_| printed.contains(" controls a ") && printed.ends_with(" permanent."))
+        .filter(|_| !printed.to_lowercase().contains("creature"))
+        .map(|rest| format!("Permanent.{rest}"));
+    let valid = permanent.as_deref().unwrap_or(valid);
     if defined_word.is_some() && p.has("PresentPlayer") {
         return unmapped("key:Condition.PresentPlayerWithDefined");
     }
@@ -264,7 +284,7 @@ pub(super) fn single(mut all: Vec<Value>) -> Option<Value> {
     }
 }
 
-/// "How many of the objects `word` names are `valid`", compared (`ConditionDefined$ Remembered`): their zone is ignored.
+/// "How many of the objects `word` names are `valid`", compared (`ConditionDefined$ Remembered`): in the zone, when one is named.
 fn of_defined(
     ctx: &Ctx,
     word: &str,
@@ -272,9 +292,6 @@ fn of_defined(
     compare: Option<&str>,
     zone: Option<&str>,
 ) -> Tr<Value> {
-    if zone.is_some() {
-        return unmapped("key:Condition.PresentZoneWithDefined");
-    }
     let (op, right) = comparison(ctx, compare.unwrap_or("GE1"))?;
     // "Card.inRealZoneGraveyard": the object the named one became in that zone (CR 400.7), one move on.
     let (valid, arrived) = match valid
@@ -287,7 +304,10 @@ fn of_defined(
         Some(_) => return unmapped("key:Condition.inRealZone"),
         None => (valid, None),
     };
-    let mut selector = selector_in(ctx, valid, None)?;
+    if zone.is_some() && arrived.is_some() {
+        return unmapped("key:Condition.PresentZoneWithDefined");
+    }
+    let mut selector = selector_in(ctx, valid, zone)?;
     // Remembered objects may be cards in any zone: "if it was a permanent card" is a card of a permanent type.
     if matches!(word, "Remembered" | "RememberedLKI") {
         super::valid::fix9_permanent_card(valid, &mut selector)?;
@@ -348,9 +368,16 @@ pub fn prefixed(ctx: &Ctx, p: &Params) -> Tr<(Option<Value>, Params)> {
         let keys: Vec<&str> = PREFIXED.iter().map(|(from, _)| *from).collect();
         return Ok((None, p.without(&keys)));
     }
+    // "If a black card was milled this way" is at least one: Forge writes `EQ1`, which two black cards would fail.
+    let at_least = p.has("ConditionPresent") && says_a_was(ctx.oracle);
     let mut renamed: Vec<String> = PREFIXED
         .iter()
-        .filter_map(|(from, to)| p.get(from).map(|value| format!("{to}$ {value}")))
+        .filter_map(|(from, to)| {
+            p.get(from).map(|value| match (*from, value) {
+                ("ConditionCompare", "EQ1") if at_least => format!("{to}$ GE1"),
+                _ => format!("{to}$ {value}"),
+            })
+        })
         .collect();
     // "If none is present": the same clause compared with zero.
     if let Some(valid) = p.get("ConditionNotPresent") {
@@ -366,6 +393,19 @@ pub fn prefixed(ctx: &Ctx, p: &Params) -> Tr<(Option<Value>, Params)> {
         .collect();
     all.extend(super::header::gate_conditions(ctx, p)?);
     Ok((single(all), p.without(&keys)))
+}
+
+/// Whether a sentence of the Oracle text asks whether "a" card or permanent was acted on this way ("if a black card was
+/// milled this way"), with no "exactly" or "only" that would make the count exact.
+fn says_a_was(oracle: &str) -> bool {
+    oracle.split(['.', '\n']).any(|sentence| {
+        let s = sentence.to_lowercase();
+        (s.contains("if a ") || s.contains("if an "))
+            && (s.contains(" was ") || s.contains(" were "))
+            && s.contains("this way")
+            && !s.contains("exactly")
+            && !s.contains("only")
+    })
 }
 
 /// A condition under which a permanent enters tapped, as the DSL states it: "unless it holds" (`Not(Compare Ge n)`) for
@@ -424,6 +464,8 @@ pub fn named(name: &str) -> Tr<Value> {
         "NoOpponentHasMoreLifeThanAttacked" => {
             json!({"Compare": {"left": {"Life": "Against"}, "op": "Ge", "right": {"HighestLife": "Opponents"}}})
         }
+        // Fateful hour: you have 5 or less life.
+        "FatefulHour" => json!({"Compare": {"left": {"Life": "You"}, "op": "Le", "right": 5}}),
         "Metalcraft" => {
             let artifacts = vec![json!({"Type": "Artifact"}), json!({"ControlledBy": "You"})];
             json!({"Compare": {"left": {"Count": artifacts}, "op": "Ge", "right": 3}})
@@ -466,4 +508,15 @@ pub fn strip(p: &Params) -> Params {
     keys.extend(super::header::gate_words(p));
     keys.extend(super::header::state_words(p));
     p.without(&keys)
+}
+
+/// `TopCardOfLibraryIs$ <valid>`: the top card of your library matches ("As long as the top card of your library is black").
+fn top_card_is(ctx: &Ctx, valid: &str) -> Tr<Value> {
+    let mut top = vec![
+        json!({"In": "Library"}),
+        json!({"OwnedBy": "You"}),
+        json!("TopOfLibrary"),
+    ];
+    top.extend(selector_any(ctx, valid)?);
+    Ok(json!({"Compare": {"left": {"Count": top}, "op": "Ge", "right": 1}}))
 }

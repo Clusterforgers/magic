@@ -46,6 +46,8 @@ impl World {
             subtypes.extend(known_subtypes(&face.types));
             names.insert(face.name.clone());
         }
+        // Creature types that no script's own type line names: a land becomes one.
+        subtypes.extend(ONLY_BECOMES.iter().map(|word| (*word).to_owned()));
         World {
             subtypes,
             tokens,
@@ -54,6 +56,9 @@ impl World {
         }
     }
 }
+
+/// Creature types a card only becomes ("becomes a 3/3 Llama creature"), so that no type line of the checkout names them.
+const ONLY_BECOMES: [&str; 2] = ["Blinkmoth", "Llama"];
 
 /// The card types a `Types:` line may start with.
 pub const CARD_TYPES: [&str; 11] = [
@@ -144,6 +149,8 @@ pub struct Ctx<'a> {
     /// A cost is being translated: the engine checks a cost against no target specification, so the count grammar
     /// reads no target there.
     pub in_cost: std::cell::Cell<bool>,
+    /// A target bound or a divided total is being read: the spell is being cast, so "as you cast" counts read live.
+    pub as_cast: std::cell::Cell<bool>,
     /// The cost being read is that of an activated ability, the one place a waterbend cost has its helpers.
     pub waterbend_ok: std::cell::Cell<bool>,
     /// A keyword a static ability gives may cost "equal to its mana cost" (`CardManaCost`).
@@ -228,6 +235,7 @@ impl<'a> Ctx<'a> {
             counted: std::collections::BTreeSet::new(),
             scoped: std::collections::BTreeSet::new(),
             in_cost: std::cell::Cell::new(false),
+            as_cast: std::cell::Cell::new(false),
             waterbend_ok: std::cell::Cell::new(false),
             own_cost_ok: std::cell::Cell::new(false),
             scope: std::cell::Cell::new(super::filter::Scope::Object),
@@ -443,7 +451,8 @@ const COMMON: [&str; 11] = [
 /// Whether a key is only text for people or a hint for Forge's computer player.
 pub fn is_hint(key: &str) -> bool {
     const SUFFIXES: [&str; 4] = ["Description", "Desc", "Prompt", "Title"];
-    const EXACT: [&str; 12] = [
+    const EXACT: [&str; 14] = [
+        "PromptToSkipOptionalAbility",
         "Image",
         "AILogic",
         "AIPreference",
@@ -456,6 +465,7 @@ pub fn is_hint(key: &str) -> bool {
         "Secondary",
         "IsCurse",
         "TriggerDescription",
+        "LockInText",
     ];
     EXACT.contains(&key)
         || SUFFIXES.iter().any(|suffix| key.ends_with(suffix))

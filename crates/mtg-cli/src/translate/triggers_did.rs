@@ -72,7 +72,34 @@ pub fn pattern(ctx: &Ctx, p: &Params, mode: &str) -> Option<Tr<Value>> {
     if mode == "AttackerBlockedByCreature" {
         return Some(blocked_by(ctx, p));
     }
+    // "Whenever an opponent searches their library": a search of the player's own library only.
+    if mode == "SearchedLibrary" && p.get("SearchOwnLibrary") == Some("True") {
+        let line = p.without(&["SearchOwnLibrary"]);
+        return Some(did(
+            ctx,
+            &line,
+            mode,
+            "SearchedOwnLibrary",
+            Player("ValidPlayer"),
+        ));
+    }
     let (_, action, subject) = MODES.iter().find(|(name, ..)| *name == mode)?;
+    if let Some(origin) = p.get("Origin") {
+        let line = p.without(&["Origin"]);
+        return Some(
+            super::triggers_g13c::g13c_origin(mode, origin).and_then(|from| {
+                let mut found = did(ctx, &line, mode, action, *subject)?;
+                if let Some(node) = found.get_mut("Did") {
+                    let mut what = node.get("what").cloned().unwrap_or_else(|| json!([]));
+                    if let Some(list) = what.as_array_mut() {
+                        list.push(from);
+                    }
+                    node["what"] = what;
+                }
+                Ok(found)
+            }),
+        );
+    }
     Some(did(ctx, p, mode, action, *subject))
 }
 

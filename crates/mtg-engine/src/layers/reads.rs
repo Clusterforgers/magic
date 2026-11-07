@@ -256,6 +256,7 @@ fn reads_of_pred(pred: &Pred) -> Traits {
         | Pred::DamagedThisTurn
         | Pred::AttackedThisTurn
         | Pred::Attacking
+        | Pred::AttackingAlone
         | Pred::Blocking
         | Pred::Unblocked
         | Pred::In(_)
@@ -270,6 +271,7 @@ fn reads_of_pred(pred: &Pred) -> Traits {
         | Pred::Named(_)
         | Pred::ChosenName
         | Pred::FaceDown
+        | Pred::SpentFrom { .. }
         | Pred::GravedThisTurn
         | Pred::ArrivedFrom(_)
         | Pred::CastWith(_)
@@ -297,6 +299,8 @@ fn reads_of_pred(pred: &Pred) -> Traits {
         | Pred::TargetsPlayer(who)
         | Pred::OwnedBy(who)
         | Pred::AttackingPlayer(who)
+        | Pred::AttackingPlaneswalkerOf(who)
+        | Pred::AttackingPlayerOrPlaneswalker(who)
         | Pred::ExiledWith(who)
         | Pred::EncodedWith(who)
         | Pred::Crewed(who)
@@ -390,6 +394,9 @@ pub(crate) fn reads_of_amount(amount: &Amount) -> Traits {
         Amount::CountOf { of, filter } => reads_of_ref(of).or(reads_of_selector(filter)),
         Amount::EvenShare(total) => reads_of_amount(total),
         Amount::Times { of, .. } | Amount::Half { of, .. } => reads_of_amount(of),
+        Amount::Quotient { of, by, .. } | Amount::Difference(of, by) => {
+            reads_of_amount(of).or(reads_of_amount(by))
+        }
         Amount::Devotion(_) => Traits::CONTROL,
         Amount::Greatest { of, stat }
         | Amount::Total { of, stat }

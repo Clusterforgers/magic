@@ -620,6 +620,9 @@ pub fn selector_in(ctx: &Ctx, spec: &str, zone: Option<&str>) -> Tr<Vec<Value>> 
     if !matches!(zone, None | Some("Battlefield")) {
         arrived_outside(&mut preds);
     }
+    if !matches!(zone, None | Some("Battlefield" | "Stack")) {
+        spell_card(&mut preds);
+    }
     match zone {
         None | Some("Battlefield") => {}
         Some(zone @ ("Graveyard" | "Hand" | "Library" | "Exile" | "Command")) => {
@@ -644,6 +647,15 @@ pub fn selector_in(ctx: &Ctx, spec: &str, zone: Option<&str>) -> Tr<Vec<Value>> 
     Ok(preds)
 }
 
+/// A card outside the stack is no spell: "Spell.!Aura" there is an instant or sorcery card.
+pub fn spell_card(preds: &mut Vec<Value>) {
+    let aura = json!({"Not": {"Subtype": "Aura"}});
+    if preds.contains(&json!("Spell")) && preds.contains(&aura) {
+        preds.retain(|pred| *pred != json!("Spell") && *pred != aura);
+        preds.push(json!({"AnyOf": [{"Type": "Instant"}, {"Type": "Sorcery"}]}));
+    }
+}
+
 /// The reference a `Defined$` word stands for.
 pub fn defined(ctx: &Ctx, word: &str) -> Tr<Value> {
     if let Some(spec) = word.trim().strip_prefix("Valid ") {
@@ -666,6 +678,24 @@ pub fn defined(ctx: &Ctx, word: &str) -> Tr<Value> {
         )
     {
         return Ok(json!({"Each": [{"Is": ctx.last_target()?}, {"Type": kind}]}));
+    }
+    // `Targeted.Vampire`, `Targeted.powerLE0`: the target while the valid-string selects it as the line resolves.
+    if let Some(spec) = word.trim().strip_prefix("Targeted.")
+        && !spec.contains("Targeted")
+    {
+        let mut each = vec![json!({"Is": ctx.last_target()?})];
+        each.extend(selector_any(ctx, &format!("Card.{spec}"))?);
+        return Ok(json!({ "Each": each }));
+    }
+    if word.trim() == "TriggeredSpellAbilityTargets"
+        && let Some(targeting) = ctx
+            .trigger
+            .as_ref()
+            .and_then(|shape| shape.targeting.clone())
+    {
+        let mut each = vec![json!({"TargetedBy": "Triggering"})];
+        each.extend(targeting);
+        return Ok(json!({ "Each": each }));
     }
     let controller = |inner: Value| Ok(json!({ "ControllerOf": inner }));
     match word.trim() {
@@ -743,6 +773,59 @@ pub fn objects(reference: Value) -> Tr<Value> {
     Ok(reference)
 }
 
+/// The valid-string of a target as Oracle reads it, and whether the target is "from your graveyard" when the script
+/// takes it from any graveyard; a mana value the script does not check is a gap.
+fn fix16_oracle_target<'a>(
+    ctx: &Ctx,
+    params: &Params,
+    zone: Option<&str>,
+    valid: &'a str,
+) -> Tr<(&'a str, bool)> {
+    let printed = ctx.printed.as_deref().unwrap_or_default();
+    let oracle = ctx.oracle.to_lowercase();
+    // A script that says "target player" where Oracle says "target opponent" (Dread Rider) follows Oracle.
+    let valid = if valid == "Player"
+        && printed.contains("target player ")
+        && !oracle.contains(printed)
+        && oracle.contains(&printed.replace("target player ", "target opponent "))
+    {
+        "Opponent"
+    } else {
+        valid
+    };
+    // "with mana value X or less" that the script does not check (Stir the Grave).
+    if !valid.contains("cmcLE") && lacks_mana_value(printed, valid) {
+        return unmapped("target:script-lacks-mana-value");
+    }
+    // A target "from your graveyard" the script takes from any graveyard (Hana Kami).
+    let own_graveyard = zone == Some("Graveyard")
+        && !params.has("TargetsWithDefinedController")
+        && printed.contains("target ")
+        && printed.matches("graveyard").count() == 1
+        && printed.contains("from your graveyard")
+        && ![
+            "You", "Opp", "Defined", "Targeted", "Other", "Owner", "Ctrl",
+        ]
+        .iter()
+        .any(|word| valid.contains(word));
+    Ok((valid, own_graveyard))
+}
+
+/// Whether the printed text says "target <type> card with mana value X or less" of the type `valid` names, so a script
+/// without `cmcLE` would take any mana value.
+fn lacks_mana_value(printed: &str, valid: &str) -> bool {
+    let noun = valid
+        .split(['.', '+', ','])
+        .next()
+        .unwrap_or_default()
+        .to_lowercase();
+    !noun.is_empty()
+        && printed
+            .split("target ")
+            .skip(1)
+            .any(|phrase| phrase.starts_with(&format!("{noun} card with mana value x or less")))
+}
+
 /// The target specification `ValidTgts$` and its bounds stand for, as the DSL writes it.
 pub fn target_spec(ctx: &Ctx, params: &Params, zone: Option<&str>) -> Tr<Value> {
     let valid = params.get("ValidTgts").unwrap_or_default();
@@ -755,11 +838,18 @@ pub fn target_spec(ctx: &Ctx, params: &Params, zone: Option<&str>) -> Tr<Value> 
     } else {
         valid
     };
+    let (valid, own_graveyard) = fix16_oracle_target(ctx, params, zone, valid)?;
     // A target being chosen reads no other target of its line (`filter::Scope::Targeting`).
     let before = ctx.scope.replace(super::filter::Scope::Targeting);
     let what = target_what(ctx, valid, zone);
     ctx.scope.set(before);
     let mut what = what?;
+    if own_graveyard
+        && let Some(Value::Array(selector)) = what.get_mut("Object")
+        && !selector.iter().any(|pred| pred.get("OwnedBy").is_some())
+    {
+        selector.push(json!({"OwnedBy": "You"}));
+    }
     // Outside the battlefield the controller is the owner ("from your graveyard"), which the text states in its own words.
     if matches!(zone, None | Some("Battlefield"))
         && super::any_player::narrows_target(ctx.oracle, valid)
@@ -810,6 +900,25 @@ pub fn target_spec(ctx: &Ctx, params: &Params, zone: Option<&str>) -> Tr<Value> 
     let min = params.get("TargetMin");
     let max = params.get("TargetMax");
     let mut spec = json!({ "what": what });
+    ctx.as_cast.set(true);
+    let read = cast_time_amounts(ctx, params, min, max, &mut spec);
+    ctx.as_cast.set(false);
+    read?;
+    if valid.starts_with(super::header::FOR_EACH) {
+        // `per_player_targets` took the "up to one each" bounds off the line; the engine reads min 0 as up to one of each.
+        spec["bounds"] = json!({"min": 0, "max": 1});
+    }
+    Ok(spec)
+}
+
+/// The target bounds and the divided total of a target specification, which the engine reads as the spell is cast.
+fn cast_time_amounts(
+    ctx: &Ctx,
+    params: &Params,
+    min: Option<&str>,
+    max: Option<&str>,
+    spec: &mut Value,
+) -> Tr<()> {
     if min.is_some() || max.is_some() {
         let min = bound(ctx, min.unwrap_or("1"))?;
         let max = bound(ctx, max.unwrap_or("1"))?;
@@ -817,14 +926,10 @@ pub fn target_spec(ctx: &Ctx, params: &Params, zone: Option<&str>) -> Tr<Value> 
             spec["bounds"] = json!({"min": min, "max": max});
         }
     }
-    if valid.starts_with(super::header::FOR_EACH) {
-        // `per_player_targets` took the "up to one each" bounds off the line; the engine reads min 0 as up to one of each.
-        spec["bounds"] = json!({"min": 0, "max": 1});
-    }
     if let Some(total) = params.get("DividedAsYouChoose") {
         spec["divide"] = amount(ctx, total)?;
     }
-    Ok(spec)
+    Ok(())
 }
 
 /// `TargetingPlayer$`: "target creature of an opponent's choice", "... of that player's choice". The player who chooses
@@ -858,6 +963,7 @@ fn restrict_to_controller(ctx: &Ctx, word: &str, zone: Option<&str>, what: &mut 
         "TriggeredCardController"
         | "TriggeredTarget"
         | "TriggeredDefendingPlayer"
+        | "TriggeredAttackedTarget"
         | "TriggeredPlayer"
         | "TriggeredSourceController" => defined(ctx, word)?,
         "ParentTarget" if super::frame::parent_is_player(ctx) => ctx.parent()?,

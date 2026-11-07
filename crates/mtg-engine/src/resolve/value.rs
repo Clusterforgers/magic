@@ -445,10 +445,12 @@ impl<'a> Scope<'a> {
             | TurnTally::PhyrexiansDiedUnder
             | TurnTally::PermanentsLeftUnder
             | TurnTally::NonlandPermanentsLeft
+            | TurnTally::CreaturesLeftUnder
             | TurnTally::SpellsWarped
             | TurnTally::CardsLeftGraveyard => {
                 let kind = match what {
                     TurnTally::NonlandPermanentsLeft => Tally::NonlandLeft,
+                    TurnTally::CreaturesLeftUnder => Tally::CreaturesLeftUnder,
                     TurnTally::SpellsWarped => Tally::Warped,
                     TurnTally::PermanentsLeftUnder => Tally::PermanentsLeftUnder,
                     TurnTally::CardsLeftGraveyard => Tally::W21aLeftGraveyard,
@@ -1053,12 +1055,7 @@ impl<'a> Scope<'a> {
                 .ok_or_else(|| ResolveError::Invalid("there is no triggering event".into()))?,
             Ref::Dealer => self.dealer(),
             Ref::Against => self.against(),
-            Ref::Attached => state
-                .host_of(self.source.id)
-                .and_then(|host| state.object(host))
-                .map(|host| Target::Object(host.reference()))
-                .into_iter()
-                .collect(),
+            Ref::Attached => self.host().map(Target::Object).into_iter().collect(),
             Ref::AttachedPlayer => state
                 .player_host_of(self.source.id)
                 .map(Target::Player)
@@ -1259,6 +1256,27 @@ impl<'a> Scope<'a> {
             }
         }
         Ok(seats)
+    }
+
+    /// What the source is attached to: its host now, or, once the source has left (an Aura sacrificed to pay for its
+    /// ability), the host its last known information names while that is still the same permanent (CR 112.7a, 400.7).
+    pub(crate) fn host(&self) -> Option<ObjectRef> {
+        let state = self.state;
+        if let Some(host) = state.host_of(self.source.id) {
+            return state.object(host).map(GameObject::reference);
+        }
+        let gone = state
+            .object(self.source.id)
+            .is_none_or(|object| object.counter() != self.source.counter);
+        let host = (self.snapshots.iter())
+            .filter(|shot| gone && shot.reference() == self.source)
+            .find_map(|shot| shot.host)?;
+        state
+            .object(host.id)
+            .is_some_and(|object| {
+                object.counter() == host.counter && object.zone() == Zone::Battlefield
+            })
+            .then_some(host)
     }
 
     /// The permanent whose static ability gave the running ability, while it is on the battlefield.
@@ -1681,11 +1699,15 @@ impl<'a> Scope<'a> {
             Pred::Modified
             | Pred::RingBearer
             | Pred::FaceDown
+            | Pred::SpentFrom { .. }
             | Pred::TargetsPlayer(_)
             | Pred::GravedThisTurn
             | Pred::ArrivedFrom(_) => self.w21a_pred(pred, reference, seen)?,
             Pred::Attacking
             | Pred::AttackingPlayer(_)
+            | Pred::AttackingPlaneswalkerOf(_)
+            | Pred::AttackingAlone
+            | Pred::AttackingPlayerOrPlaneswalker(_)
             | Pred::Blocking
             | Pred::Unblocked
             | Pred::WasCast { .. }
@@ -1843,6 +1865,17 @@ impl<'a> Scope<'a> {
             Amount::Half { of, up } => {
                 let whole = self.amount_of(of, share)?.max(0);
                 if *up { (whole + 1) / 2 } else { whole / 2 }
+            }
+            Amount::Quotient { of, by, up } => {
+                let whole = self.amount_of(of, share)?.max(0);
+                match self.amount_of(by, share)? {
+                    by if by <= 0 => 0,
+                    by if *up => (whole + by - 1) / by,
+                    by => whole / by,
+                }
+            }
+            Amount::Difference(left, right) => {
+                (self.amount_of(left, share)? - self.amount_of(right, share)?).abs()
             }
             Amount::Divided => {
                 let share = share.ok_or(ResolveError::Unsupported(OUTSIDE_A_DIVISION))?;

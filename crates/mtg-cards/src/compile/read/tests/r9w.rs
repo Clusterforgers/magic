@@ -182,6 +182,38 @@ fn rule(rule: &str) -> String {
     r#"{"who":"EachPlayer","action":{"Trigger":{"ZoneChange":{"to":"Battlefield","what":[{"Type":"Creature"}]}}}}"#,
     "Creatures entering don't cause abilities to trigger."
 )]
+#[case::opponents_target(
+    r#"{"who":"Attached","action":{"BeTargeted":[{"ControlledBy":"Opponents"}]}}"#,
+    "Enchanted creature can't be the target of spells or abilities your opponents control."
+)]
+#[case::opponents_spells_of_colors(
+    r#"{"who":"This","action":{"BeTargeted":[{"AnyOf":[{"Color":"Black"},{"Color":"Red"}]},"Spell",{"ControlledBy":"Opponents"}]}}"#,
+    "This creature can't be the target of black or red spells your opponents control."
+)]
+#[case::cant_be_equipped(
+    r#"{"who":"This","action":{"BeAttachedBy":[{"Subtype":"Equipment"}]}}"#,
+    "This creature can't be equipped."
+)]
+#[case::other_auras(
+    r#"{"who":"Attached","action":{"BeAttachedBy":[{"Subtype":"Aura"},"Other"]}}"#,
+    "Enchanted creature can't be enchanted by other Auras."
+)]
+#[case::attached_only_to_the_tough(
+    r#"{"who":{"Each":[{"Type":"Creature"},{"Compare":{"stat":"Toughness","op":"Lt","to":4}}]},"action":{"BeAttachedBy":["This"]}}"#,
+    "This creature can be attached only to a creature with toughness 4 or greater."
+)]
+#[case::poisoned(
+    r#"{"who":"This","action":{"Attack":{"unless":{"Compare":{"left":{"Counters":{"on":"You","counter":"poison"}},"op":"Ge","right":1}}}}}"#,
+    "This creature can't attack unless defending player is poisoned."
+)]
+#[case::full_graveyard(
+    r#"{"who":"This","action":{"Attack":{"unless":{"Compare":{"left":{"Count":[{"OwnedBy":"You"},{"In":"Graveyard"}]},"op":"Ge","right":7}}}}}"#,
+    "This creature can't attack unless defending player has seven or more cards in their graveyard."
+)]
+#[case::more_creatures(
+    r#"{"who":"This","action":{"Attack":{"unless":{"Compare":{"left":{"Count":[{"Type":"Creature"},{"ControlledBy":"You"}]},"op":"Lt","right":{"Count":[{"Type":"Creature"},{"ControlledBy":{"ControllerOf":"This"}}]}}}}}}"#,
+    "This creature can't attack unless you control more creatures than defending player."
+)]
 fn r9w_prohibitions_write_back(#[case] cant: &str, #[case] clause: &str) {
     let json = rule(cant);
     assert!(
@@ -223,6 +255,38 @@ fn r9w_prohibitions_write_back(#[case] cant: &str, #[case] clause: &str) {
 #[case::their_draw(
     r#"{"who":"Opponents","action":{"SkipStep":"Draw"}}"#,
     "Skip your draw step."
+)]
+#[case::any_source_targets(
+    r#"{"who":"Attached","action":{"BeTargeted":[]}}"#,
+    "Enchanted creature can't be the target of spells or abilities your opponents control."
+)]
+#[case::abilities_too(
+    r#"{"who":"This","action":{"BeTargeted":[{"AnyOf":[{"Color":"Black"},{"Color":"Red"}]},{"ControlledBy":"Opponents"}]}}"#,
+    "This creature can't be the target of black or red spells your opponents control."
+)]
+#[case::any_aura(
+    r#"{"who":"Attached","action":{"BeAttachedBy":[{"Subtype":"Aura"}]}}"#,
+    "Enchanted creature can't be enchanted by other Auras."
+)]
+#[case::equipped_by_any(
+    r#"{"who":"This","action":{"BeAttachedBy":[]}}"#,
+    "This creature can't be equipped."
+)]
+#[case::power_not_toughness(
+    r#"{"who":{"Each":[{"Type":"Creature"},{"Compare":{"stat":"Power","op":"Lt","to":4}}]},"action":{"BeAttachedBy":["This"]}}"#,
+    "This creature can be attached only to a creature with toughness 4 or greater."
+)]
+#[case::six_cards(
+    r#"{"who":"This","action":{"Attack":{"unless":{"Compare":{"left":{"Count":[{"OwnedBy":"You"},{"In":"Graveyard"}]},"op":"Ge","right":6}}}}}"#,
+    "This creature can't attack unless defending player has seven or more cards in their graveyard."
+)]
+#[case::fewer_lands(
+    r#"{"who":"This","action":{"Attack":{"unless":{"Compare":{"left":{"Count":[{"Type":"Land"},{"ControlledBy":"You"}]},"op":"Lt","right":{"Count":[{"Type":"Land"},{"ControlledBy":{"ControllerOf":"This"}}]}}}}}}"#,
+    "This creature can't attack unless you control more creatures than defending player."
+)]
+#[case::the_other_way(
+    r#"{"who":"This","action":{"Attack":{"unless":{"Compare":{"left":{"Count":[{"Type":"Creature"},{"ControlledBy":{"ControllerOf":"This"}}]},"op":"Lt","right":{"Count":[{"Type":"Creature"},{"ControlledBy":"You"}]}}}}}}"#,
+    "This creature can't attack unless you control more creatures than defending player."
 )]
 fn r9w_prohibitions_of_another_meaning_differ(#[case] cant: &str, #[case] clause: &str) {
     assert!(!written(&rule(cant), clause), "{clause}");

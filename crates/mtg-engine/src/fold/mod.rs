@@ -12,6 +12,10 @@ mod entered;
 #[cfg(test)]
 mod fe1a_atoms;
 #[cfg(test)]
+mod g13a_atoms;
+#[cfg(test)]
+mod g13b_left;
+#[cfg(test)]
 mod g8a_faces;
 mod opening;
 #[cfg(test)]

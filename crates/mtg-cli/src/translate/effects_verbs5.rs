@@ -36,6 +36,12 @@ fn poison(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
     let Some(num) = p.get("Num") else {
         return unmapped("key:Poison.no-Num");
     };
+    // `Num$ -X` takes poison counters away ("loses all poison counters"); a negative put would put none.
+    if let Some(taken) = num.strip_prefix('-') {
+        let count = amount(ctx, taken)?;
+        let from = subject(ctx, p, "You", None)?;
+        return Ok(json!({"RemoveCounters": {"from": from, "counter": "poison", "count": count}}));
+    }
     let count = amount(ctx, num)?;
     let on = subject(ctx, p, "You", None)?;
     Ok(json!({"PutCounters": {"on": on, "counter": "poison", "count": count}}))

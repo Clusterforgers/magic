@@ -147,7 +147,7 @@ fn the_copy_is_controlled_by_the_named_player(#[case] who: &str, #[case] expecte
 #[test]
 fn another_copy_controller_is_a_gap() {
     assert!(
-        gaps(&copier("TargetedOrController"))
+        gaps(&copier("Opponent"))
             .iter()
             .any(|g| g == "key:CopySpellAbility.Controller")
     );

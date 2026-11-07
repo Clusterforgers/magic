@@ -73,12 +73,12 @@ fn r6a_a_printed_own_target_left_open_is_a_gap(#[case] valid: &str, #[case] gap:
     );
 }
 
-const DRAGON: &str = "T:Mode$ Attacks | ValidCard$ Creature.Other+YouCtrl | TriggerZones$ Battlefield | Execute$ Trig";
+const DRAGON: &str = "T:Mode$ ChangesZone | Destination$ Battlefield | ValidCard$ Creature.Other+YouCtrl | TriggerZones$ Battlefield | Execute$ Trig";
 
 #[rstest]
 #[case::from_the_card("", true)]
-#[case::from_the_attacker(" | DamageSource$ TriggeredAttacker", false)]
-// The card itself: "Whenever CARDNAME attacks, it deals" is the card dealing.
+#[case::from_the_creature(" | DamageSource$ TriggeredCard", false)]
+// The card itself: "Whenever CARDNAME enters, it deals" is the card dealing.
 #[case::the_card_attacks(" | DamageSource$ Self", false)]
 fn r6a_a_printed_it_deals_from_the_card_is_a_gap(#[case] source: &str, #[case] gap: bool) {
     let subject = if source.contains("Self") {
@@ -88,7 +88,7 @@ fn r6a_a_printed_it_deals_from_the_card_is_a_gap(#[case] source: &str, #[case] g
     };
     let source = source.replace(" | DamageSource$ Self", "");
     let (_, found) = card(&format!(
-        "{DRAGON} | TriggerDescription$ Whenever {subject} attacks, it deals 2 damage to any target.\nSVar:Trig:DB$ DealDamage | ValidTgts$ Any | NumDmg$ 2{source}"
+        "{DRAGON} | TriggerDescription$ Whenever {subject} enters, it deals 2 damage to any target.\nSVar:Trig:DB$ DealDamage | ValidTgts$ Any | NumDmg$ 2{source}"
     ));
     assert_eq!(
         found

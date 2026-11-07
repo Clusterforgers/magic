@@ -42,10 +42,6 @@ fn blocked_by_patterns(#[case] line: &str, #[case] pattern: Value) {
     "Mode$ Countered | ValidCard$ Card | ValidCause$ Card.Self",
     "key:Trigger.Countered.ValidCause"
 )]
-#[case::own_library(
-    "Mode$ SearchedLibrary | ValidPlayer$ You | SearchOwnLibrary$ True",
-    "key:Trigger.SearchedLibrary.SearchOwnLibrary"
-)]
 #[case::result(
     "Mode$ RolledDie | ValidPlayer$ You | ValidResult$ 6",
     "key:Trigger.RolledDie.ValidResult"

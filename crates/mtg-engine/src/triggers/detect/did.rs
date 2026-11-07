@@ -101,6 +101,13 @@ pub(super) fn did_happened(
         }
         Event::CardsFound(found_cards) if matches!(found_cards.zone, Zone::Library(_)) => {
             found.push(did(Action::SearchedLibrary, Some(found_cards.player), None));
+            if found_cards.zone == Zone::Library(found_cards.player) {
+                found.push(did(
+                    Action::SearchedOwnLibrary,
+                    Some(found_cards.player),
+                    None,
+                ));
+            }
         }
         Event::LibraryShuffled { player, .. } => {
             found.push(did(Action::Shuffled, Some(*player), None));

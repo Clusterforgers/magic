@@ -20,6 +20,9 @@ pub fn rule(ctx: &Ctx, p: &Params) -> Option<Tr<Value>> {
     let found = match mode {
         "CantGainLife" => players(p, mode, "ValidPlayer").map(|who| json!({"CantGainLife": who})),
         "CantDraw" => players(p, mode, "ValidPlayer").map(|who| json!({"CantDraw": who})),
+        "CantChangeLife" => {
+            players(p, mode, "ValidPlayer").map(|who| json!({"LifeTotalCantChange": who}))
+        }
         "CantPlayLand" => players(p, mode, "Player").map(|who| cant(&who, &json!("PlayLand"))),
         "CantPutCounter" => put_counter(ctx, p),
         "CantSacrifice" => {
@@ -29,6 +32,8 @@ pub fn rule(ctx: &Ctx, p: &Params) -> Option<Tr<Value>> {
             objects(ctx, p, mode, "ValidCard").map(|who| cant(&who, &json!("Transform")))
         }
         "CantTarget" => cant_target(ctx, p),
+        "CantAttach" => cant_attach(ctx, p),
+        "AttackRestrict" => attack_restrict(p),
         "Panharmonicon" => super::statics_again::again(ctx, p),
         "CombatDamageToughness" => toughness_damage(ctx, p),
         "AssignNoCombatDamage" => {
@@ -47,10 +52,12 @@ pub fn rule(ctx: &Ctx, p: &Params) -> Option<Tr<Value>> {
         "CanBlockIfShadow" => block_shadow(ctx, p),
         "TapPowerValue" => tap_power_value(ctx, p),
         "IgnoreLegendRule" => ignore_legend_rule(p, mode),
+        "CountersRemain" => counters_remain(p),
         "UntapOtherPlayer" => untap_other_players(ctx, p),
         "Continuous" if p.has("SetMaxHandSize") => hand_size(ctx, p),
         "Continuous" if p.has("RaiseMaxHandSize") => hand_size_change(ctx, p),
         "Continuous" if p.has("AdjustLandPlays") => land_plays(ctx, p),
+        "Continuous" if p.get("AddKeyword") == Some("CantSearchLibrary") => cant_search(p),
         "Continuous" if p.has("MayLookAt") && !p.has("MayPlay") => super::statics_look::look(p),
         _ => return None,
     };
@@ -148,7 +155,11 @@ fn put_counter(ctx: &Ctx, p: &Params) -> Tr<Value> {
 
 /// `CantTarget`: the objects can't be the target of spells and abilities from the sources `ValidSource$` names.
 fn cant_target(ctx: &Ctx, p: &Params) -> Tr<Value> {
-    keys(p, "CantTarget", &["ValidTarget", "ValidSource", "ValidSA"])?;
+    keys(
+        p,
+        "CantTarget",
+        &["ValidTarget", "ValidSource", "ValidSA", "Activator"],
+    )?;
     let Some(target) = p.get("ValidTarget") else {
         return unmapped("key:Static.CantTarget.no-ValidTarget");
     };
@@ -165,7 +176,41 @@ fn cant_target(ctx: &Ctx, p: &Params) -> Tr<Value> {
         Some("Spell") => sources.push(json!("Spell")),
         Some(_) => return unmapped("key:Static.CantTarget.ValidSA"),
     }
+    // "Spells or abilities your opponents control": the source of a spell or ability is controlled by its controller. It
+    // is no hexproof, whose opponents are those of the permanent's controller (CR 702.11b).
+    match p.get("Activator") {
+        None => {}
+        Some("Opponent") => sources.push(json!({"ControlledBy": "Opponents"})),
+        Some(other) => return unmapped(format!("key:Static.CantTarget.Activator={other}")),
+    }
     Ok(cant(&who, &json!({"BeTargeted": sources})))
+}
+
+/// `CantAttach`: the `ValidCard$` attachments can't be attached to the `Target$` permanents ("enchanted creature can't be
+/// enchanted by other Auras", "~ can be attached only to a creature with toughness 4 or greater").
+fn cant_attach(ctx: &Ctx, p: &Params) -> Tr<Value> {
+    keys(p, "CantAttach", &["ValidCard", "Target"])?;
+    let (Some(attachment), Some(host)) = (p.get("ValidCard"), p.get("Target")) else {
+        return unmapped("key:Static.CantAttach.ValidCard-and-Target");
+    };
+    let who = object_word(ctx, host)?;
+    Ok(cant(
+        &who,
+        &json!({"BeAttachedBy": selector_any(ctx, attachment)?}),
+    ))
+}
+
+/// `AttackRestrict`: no more than `MaxAttackers$` creatures can attack you each combat (CR 508.1c); a limit on the whole
+/// declaration or at other defenders is another rule.
+fn attack_restrict(p: &Params) -> Tr<Value> {
+    keys(p, "AttackRestrict", &["MaxAttackers", "ValidDefender"])?;
+    if p.get("ValidDefender") != Some("You") {
+        return unmapped("key:Static.AttackRestrict.ValidDefender");
+    }
+    match p.get("MaxAttackers").and_then(|n| n.parse::<u32>().ok()) {
+        Some(most) if most >= 1 => Ok(json!({"AttackLimitAt": {"most": most, "at": "You"}})),
+        _ => unmapped("key:Static.AttackRestrict.MaxAttackers"),
+    }
 }
 
 fn untap_other_players(ctx: &Ctx, p: &Params) -> Tr<Value> {
@@ -329,6 +374,51 @@ fn assign_as_unblocked(ctx: &Ctx, p: &Params) -> Tr<Value> {
         return unmapped("key:Static.AssignCombatDamageAsUnblocked.no-ValidCard");
     };
     Ok(combat(&object_word(ctx, word)?, "AssignsAsUnblocked"))
+}
+
+/// `CountersRemain`: the card keeps its counters as it moves to any zone but a hand or a library.
+fn counters_remain(p: &Params) -> Tr<Value> {
+    check_keys(
+        p,
+        "Static.CountersRemain",
+        &["ValidCard", "EffectZone"],
+        |key, _| key == "Mode",
+    )?;
+    if p.get("ValidCard") != Some("Card.Self") || p.get("EffectZone") != Some("All") {
+        return unmapped("key:Static.CountersRemain.shape");
+    }
+    Ok(json!("CountersRemain"))
+}
+
+/// `Affected$ Player` with `AddKeyword$ CantSearchLibrary`: the players named can't search libraries.
+fn cant_search(p: &Params) -> Tr<Value> {
+    keys(p, "Continuous", &["Affected", "AddKeyword"])?;
+    match p.get("Affected") {
+        Some(word @ ("Player" | "Opponent")) => Ok(json!({"CantSearch": player_word(Some(word))?})),
+        _ => unmapped("static-affected:CantSearchLibrary"),
+    }
+}
+
+/// `BeginTurn` replacement of extra turns: "if a player would begin an extra turn, that player skips that turn instead".
+pub fn skip_extra_turns(p: &Params) -> Tr<Value> {
+    check_keys(
+        p,
+        "Replacement.BeginTurn",
+        &["Event", "ActiveZones", "ValidPlayer", "ExtraTurn", "Skip"],
+        |_, _| false,
+    )?;
+    if p.get("ExtraTurn") != Some("True")
+        || p.get("Skip") != Some("True")
+        || p.get("ActiveZones") != Some("Battlefield")
+    {
+        return unmapped("replacement:BeginTurn");
+    }
+    let who = match p.get("ValidPlayer") {
+        None => "EachPlayer",
+        Some("Opponent") => "Opponents",
+        Some(_) => return unmapped("replacement:BeginTurn-player"),
+    };
+    Ok(json!({"Rule": {"rule": {"SkipExtraTurns": who}}}))
 }
 
 /// `IgnoreLegendRule`: the legend rule stops for every player, or for the controller when `ValidCard$` is "permanents you

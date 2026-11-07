@@ -301,6 +301,13 @@ fn merged_trigger(ctx: &mut Ctx, group: &[&String]) -> Tr<Vec<Value>> {
     for body in group {
         abilities.push(triggered(ctx, body)?);
     }
+    let description = group
+        .first()
+        .map(|body| crate::forge::script::Params::parse(body))
+        .and_then(|line| line.get("TriggerDescription").map(str::to_owned));
+    if super::triggers_g13c::g13c_settle(&mut abilities, description.as_deref()) {
+        return Ok(abilities);
+    }
     if differ_only_in_zone(&abilities) {
         return Ok(abilities);
     }

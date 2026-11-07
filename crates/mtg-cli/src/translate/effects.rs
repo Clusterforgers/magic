@@ -327,6 +327,10 @@ fn may_decider(ctx: &Ctx, p: &Params) -> Tr<Value> {
         other => other,
     };
     let who = match decider {
+        // "Target opponent may draw": the player the line targets decides.
+        Some("Opponent") if matches!(p.get("ValidTgts"), Some("Opponent" | "Player.Opponent")) => {
+            ctx.last_target()?
+        }
         Some(word) => match defined(ctx, word)? {
             group if matches!(group.as_str(), Some("Opponents" | "EachPlayer")) => {
                 return unmapped(format!("key:May.OptionalDecider={word}"));
@@ -361,12 +365,27 @@ fn unless_pays(
         Some(other) => return unmapped(format!("key:Unless.UnlessResolveSubs={other}")),
     };
     let who = match p.get("UnlessPayer") {
-        None if api_of(p)? == "Counter" => json!({ "ControllerOf": ctx.last_target()? }),
+        // "Unless its controller pays": the controller of the object the line targets.
+        None if api_of(p)? == "Counter" || p.has("ValidTgts") => {
+            json!({ "ControllerOf": ctx.last_target()? })
+        }
+        None if p.get("Defined") == Some("TargetedController") => {
+            defined(ctx, "TargetedController")?
+        }
         None => return unmapped("key:Unless.no-UnlessPayer"),
+        // The controller of the object this very line targets ("counter target spell unless its controller pays").
+        Some("ThisTargetedController") if p.has("ValidTgts") => {
+            json!({ "ControllerOf": ctx.last_target()? })
+        }
         // A group ("unless any player pays") is asked in turn order until one pays; every seat gets the normal clock and an
         // unanswered question is a no.
         Some(word) => defined(ctx, word)?,
     };
+    // `Mandatory` only says the payer must pay what an earlier choice allowed: the amount is below what they hold.
+    let unless = unless
+        .strip_prefix("Mandatory ")
+        .filter(|_| switched)
+        .unwrap_or(unless);
     let (cost, times) = unless_cost(ctx, unless)?;
     let (mut paid, mut unpaid) = (Vec::new(), Vec::new());
     if switched {
@@ -532,7 +551,7 @@ fn api_line(ctx: &mut Ctx, p: &Params, api: &str) -> Tr<Vec<Value>> {
         "Scry" => one(scry(ctx, p)),
         "Surveil" => one(count_verb(ctx, p, "Surveil", "Amount")),
         "Proliferate" => one(proliferate(p)),
-        "Cleanup" => cleanup(p),
+        "Cleanup" => cleanup(ctx, p),
         "Effect" => effects_effect::effects(ctx, p),
         "RepeatEach" => effects_loop::repeat_each(ctx, p),
         "Repeat" => effects_loop::repeat(ctx, p),
@@ -557,10 +576,10 @@ fn api_line(ctx: &mut Ctx, p: &Params, api: &str) -> Tr<Vec<Value>> {
         "CopyPermanent" => super::tokens_copy::copy_permanent(ctx, p),
         "Destroy" | "DestroyAll" | "Counter" | "Pump" | "PumpAll" | "PutCounter"
         | "RemoveCounter" | "Tap" | "Untap" | "TapAll" | "UntapAll" | "Sacrifice"
-        | "Regenerate" | "Fight" | "Airbend" | "GainControl" | "DamageAll" | "Animate"
-        | "PreventDamage" | "DamageResolve" | "PutCounterAll" | "RemoveCounterAll"
-        | "AddOrRemoveCounter" | "AnimateAll" | "Debuff" | "Protection" | "ProtectionAll"
-        | "AlterAttribute" => effects_obj::effects(ctx, p, api),
+        | "Regenerate" | "Fight" | "Airbend" | "GainControl" | "GainControlVariant"
+        | "DamageAll" | "Animate" | "PreventDamage" | "DamageResolve" | "PutCounterAll"
+        | "RemoveCounterAll" | "AddOrRemoveCounter" | "AnimateAll" | "Debuff" | "Protection"
+        | "ProtectionAll" | "AlterAttribute" => effects_obj::effects(ctx, p, api),
         "ChangeZone" | "ChangeZoneAll" => effects_zone::effects(ctx, p, api),
         "Token" | "Mana" | "ManaReflected" | "Investigate" => tokens::effects(ctx, p, api),
         other => unmapped(format!("effect:{other}")),
@@ -568,7 +587,11 @@ fn api_line(ctx: &mut Ctx, p: &Params, api: &str) -> Tr<Vec<Value>> {
 }
 
 /// `Cleanup`: bookkeeping of remembered objects, which the translator does not use.
-fn cleanup(p: &Params) -> Tr<Vec<Value>> {
+fn cleanup(ctx: &Ctx, p: &Params) -> Tr<Vec<Value>> {
+    // The color this ability chose is read by name in its own steps, so there is nothing left to clear.
+    if p.has("ClearChosenColor") && ctx.chosen_kind != Some("Color") {
+        return unmapped("key:Cleanup.ClearChosenColor");
+    }
     only(
         p,
         "Cleanup",
@@ -579,6 +602,7 @@ fn cleanup(p: &Params) -> Tr<Vec<Value>> {
             "ClearChosenCard",
             "ClearNamedCard",
             "ClearChosenPlayer",
+            "ClearChosenColor",
         ],
     )?;
     Ok(Vec::new())
@@ -769,10 +793,18 @@ fn draw(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
     match p.get("Upto") {
         None => Ok(vec![draw]),
         Some("True") => {
-            if matches!(who.as_str(), Some("Opponents" | "EachPlayer")) {
-                return unmapped("key:Draw.Upto.group");
-            }
             let bind = ctx.fresh("number");
+            if matches!(who.as_str(), Some("Opponents" | "EachPlayer")) {
+                // Each of the players picks their own number, in turn order.
+                let each = ctx.fresh("player");
+                let one = json!({ "Bound": each });
+                draw["Draw"]["who"] = one.clone();
+                draw["Draw"]["count"] = json!({"ChosenAs": bind});
+                let choose = json!({"ChooseValue": {"who": one, "kind": {"Number": [0, count]}, "as": bind}});
+                return Ok(vec![
+                    json!({"RepeatEach": {"over": who, "as": each, "effects": [choose, draw]}}),
+                ]);
+            }
             draw["Draw"]["count"] = json!({"ChosenAs": bind});
             Ok(vec![
                 json!({"ChooseValue": {"who": who, "kind": {"Number": [0, count]}, "as": bind}}),
@@ -962,8 +994,16 @@ fn unless_discard(
 
 /// `Mill`, naming the cards milled for `RememberMilled`.
 fn mill(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
+    // A mode of choosing the milled cards, and showing them to the table, change nothing of what a mill does.
+    if !matches!(p.get("Mode"), None | Some("TgtChoose")) {
+        return unmapped("key:Mill.Mode");
+    }
+    if !matches!(p.get("ShowMilledCards"), None | Some("True")) {
+        return unmapped("key:Mill.ShowMilledCards");
+    }
     let milled = remember::wanted(p, &["RememberMilled"]);
-    let mut effect = count_verb(ctx, &p.without(&["RememberMilled"]), "Mill", "NumCards")?;
+    let plain = p.without(&["RememberMilled", "Mode", "ShowMilledCards"]);
+    let mut effect = count_verb(ctx, &plain, "Mill", "NumCards")?;
     if milled {
         remember::bind_moved(ctx, &mut effect, "Mill", "milled");
     }
@@ -1187,7 +1227,18 @@ fn delayed_node(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
         }) {
             return unmapped(format!("key:DelayedTrigger.RememberObjects={other}"));
         }
-        (delayed_step(p)?, false)
+        // "If those cards remain exiled": the move from exile that the trigger runs finds nothing else.
+        let present = p.get("IsPresent") == Some("Card.IsTriggerRemembered")
+            && p.get("PresentZone") == Some("Exile")
+            && ctx
+                .svar(execute)
+                .is_some_and(|part| Params::parse(part).get("Origin") == Some("Exile"));
+        let step = if present {
+            p.without(&["IsPresent", "PresentZone"])
+        } else {
+            p.clone()
+        };
+        (delayed_step(&step)?, false)
     } else {
         // The ability's own keys are not part of the event.
         let event = p.without(&[
@@ -1214,6 +1265,8 @@ fn delayed_node(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
         to_player: false,
         pattern: super::triggered::key_of(&when),
         arrives: None,
+        targeting: None,
+        destination: None,
     });
     let outer = std::mem::replace(&mut ctx.trigger, shape);
     let declared = ctx.targets.len();
@@ -1254,6 +1307,8 @@ fn delayed_step(p: &Params) -> Tr<Value> {
     let whose = match p.get("ValidPlayer") {
         None | Some("Player") => "EachPlayer",
         Some("You") => "You",
+        // A blocker blocks on an opponent's turn, so the end of that combat is the one an opponent's end of combat names.
+        Some("Opponent") if p.get("Phase") == Some("EndCombat") => "EachPlayer",
         Some(other) => return unmapped(format!("key:DelayedTrigger.ValidPlayer={other}")),
     };
     Ok(json!({"StepBegins": {"step": step, "whose": whose}}))

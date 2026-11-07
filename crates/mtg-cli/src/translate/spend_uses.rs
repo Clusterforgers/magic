@@ -4,6 +4,11 @@ use serde_json::{Value, json};
 
 use super::ctx::{CARD_TYPES, Ctx, SUPERTYPES, Tr, unmapped};
 
+/// The mana value `cmcGE4` asks for at least.
+fn min_value(word: &str) -> Option<u32> {
+    word.strip_prefix("cmcGE")?.parse().ok().filter(|n| *n > 0)
+}
+
 /// One property of a spell or ability source, as a part of the filter it is added to.
 fn add_property(ctx: &Ctx, filter: &mut Value, word: &str, ability: bool) -> bool {
     let push = |filter: &mut Value, key: &str, item: Value| {
@@ -23,7 +28,7 @@ fn add_property(ctx: &Ctx, filter: &mut Value, word: &str, ability: bool) -> boo
         "wasCastFromYourGraveyard" => fact(filter, "FromYourGraveyard"),
         "wasCastFromGraveyard" => fact(filter, "FromGraveyard"),
         "inZoneBattlefield" if ability => fact(filter, "OnBattlefield"),
-        "cmcGE5" => filter["min_value"] = json!(5),
+        _ if min_value(word).is_some() => filter["min_value"] = json!(min_value(word)),
         _ => {
             if let Some(rest) = word.strip_prefix("non")
                 && CARD_TYPES.contains(&rest)
@@ -162,6 +167,8 @@ pub fn when_spent(ctx: &mut Ctx, name: &str) -> Tr<Vec<Value>> {
             to_player: false,
             pattern: "SpellCast".to_owned(),
             arrives: None,
+            targeting: None,
+            destination: None,
         });
         let effects = super::effects::chain_at(ctx, &part, false)?;
         if ctx.targets.is_empty() {

@@ -8,7 +8,7 @@ use super::detect;
 use super::detect_events::{FOE, ME, board, id};
 use crate::choose::Target;
 use crate::events::{Event, ZoneCause};
-use crate::library::{Scried, Surveilled};
+use crate::library::{CardsFound, Scried, Surveilled};
 use crate::player::LossReason;
 use crate::state::GameState;
 use crate::zones::Zone;
@@ -81,6 +81,25 @@ fn shuffled(_: &GameState, player: PlayerId, _: ObjectId) -> Vec<Event> {
         player,
         order: Vec::new(),
     }]
+}
+
+/// A search of the player's own library.
+fn searched_own(_: &GameState, player: PlayerId, _: ObjectId) -> Vec<Event> {
+    vec![Event::CardsFound(CardsFound {
+        player,
+        zone: Zone::Library(player),
+        cards: Vec::new(),
+    })]
+}
+
+/// A search of the other seat's library.
+fn searched_other(_: &GameState, player: PlayerId, _: ObjectId) -> Vec<Event> {
+    let other = if player == ME { FOE } else { ME };
+    vec![Event::CardsFound(CardsFound {
+        player,
+        zone: Zone::Library(other),
+        cards: Vec::new(),
+    })]
 }
 
 fn lost(_: &GameState, player: PlayerId, _: ObjectId) -> Vec<Event> {
@@ -194,6 +213,34 @@ fn count(pre: &GameState, events: &[Event]) -> Vec<crate::triggers::Triggered> {
 )]
 #[case::surveilled(r#"{"action":"Surveilled"}"#, surveilled, FOE, "Bear", 1)]
 #[case::shuffled(r#"{"action":"Shuffled","who":"Opponents"}"#, shuffled, FOE, "Bear", 1)]
+#[case::searched_their_library(
+    r#"{"action":"SearchedOwnLibrary","who":"Opponents"}"#,
+    searched_own,
+    FOE,
+    "Bear",
+    1
+)]
+#[case::searched_another_library(
+    r#"{"action":"SearchedOwnLibrary","who":"Opponents"}"#,
+    searched_other,
+    FOE,
+    "Bear",
+    0
+)]
+#[case::searched_another_library_is_a_search(
+    r#"{"action":"SearchedLibrary","who":"Opponents"}"#,
+    searched_other,
+    FOE,
+    "Bear",
+    1
+)]
+#[case::exiled_from_the_battlefield(
+    r#"{"action":"Exiled","what":[{"In":"Battlefield"}]}"#,
+    exiled,
+    FOE,
+    "Ogre",
+    1
+)]
 #[case::lost_the_game(r#"{"action":"LostGame","who":"Opponents"}"#, lost, FOE, "Bear", 1)]
 #[case::i_lost_the_game(r#"{"action":"LostGame","who":"Opponents"}"#, lost, ME, "Bear", 0)]
 #[case::destroyed(

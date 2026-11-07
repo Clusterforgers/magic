@@ -608,10 +608,16 @@ fn change_zone(ctx: &mut Ctx, p: &Params, origin: &str, destination: &str) -> Tr
     {
         return unmapped("key:ChangeZone.ShuffleNonMandatory");
     }
-    // A target is one object: `ChangeNum$ 1` says so again; any other count, or one beside target bounds, is not read.
+    // A target is one object: `ChangeNum$ 1` says so again, and so does it of the one card an event names; any other count,
+    // or one beside target bounds, is not read.
+    let one_named = !p.has("ValidTgts")
+        && matches!(
+            p.get("Defined"),
+            Some("TriggeredCard" | "TriggeredNewCardLKICopy")
+        );
     if p.has("ChangeNum")
         && (p.get("ChangeNum") != Some("1")
-            || !p.has("ValidTgts")
+            || !(p.has("ValidTgts") || one_named)
             || p.has("TargetMax")
             || p.has("TargetMin"))
     {
@@ -896,12 +902,18 @@ fn search(ctx: &mut Ctx, p: &Params, destination: &str) -> Tr<Vec<Value>> {
     if p.get("Reorder").is_some_and(|word| word != "True") {
         return unmapped("key:ChangeZone.Search.Reorder");
     }
+    let change_type = p.get("ChangeType").unwrap_or("Card");
+    // "A Forest card and a Plains card" (`EACH Forest & Plains`): one search for each, a card found never found again.
+    let (change_type, others) = match change_type.strip_prefix("EACH ") {
+        Some(each) => g13a_each(ctx, p, each)?,
+        None => (change_type, Vec::new()),
+    };
     // "Permanent" in one alternative only (`Permanent.Snow,Legendary,Saga`) would be dropped from it: refuse the mixture
     // before the selector names another missing word.
-    super::valid::permanent_card(p.get("ChangeType").unwrap_or("Card"))?;
-    let mut filter = selector_any(ctx, p.get("ChangeType").unwrap_or("Card"))?;
+    super::valid::permanent_card(change_type)?;
+    let mut filter = selector_any(ctx, change_type)?;
     // A card in a library is a permanent card when it has a permanent type (a Kindred sorcery is not one).
-    super::valid::fix9_permanent_card(p.get("ChangeType").unwrap_or("Card"), &mut filter)?;
+    super::valid::fix9_permanent_card(change_type, &mut filter)?;
     let filter_is_open = filter.is_empty();
     let bind = ctx.fresh("found");
     let mut find = json!({"filter": filter, "as": bind});
@@ -949,7 +961,27 @@ fn search(ctx: &mut Ctx, p: &Params, destination: &str) -> Tr<Vec<Value>> {
     if p.has("NoShuffle") && p.get("RememberChanged") == Some("True") && had_memory {
         return unmapped("key:ChangeZone.Search.NoShuffle-twice");
     }
-    let search = json!({ "Search": find });
+    let mut searches = vec![json!({ "Search": find.clone() })];
+    let mut founds = vec![found.clone()];
+    for other in others {
+        if p.get("RememberChanged") == Some("True")
+            || destination == "Library"
+            || alternative.is_some()
+        {
+            return unmapped("key:ChangeZone.Search.EACH-shape");
+        }
+        let mut preds = other;
+        for earlier in &founds {
+            preds.push(json!({"Not": {"Is": earlier}}));
+        }
+        let bind = ctx.fresh("found");
+        let mut next = find.clone();
+        next["filter"] = json!(preds);
+        next["as"] = json!(bind);
+        searches.push(json!({ "Search": next }));
+        founds.push(json!({ "Bound": bind }));
+    }
+    let search = searches.remove(0);
     // "Search, reveal, then do something with those cards": the cards stay in the library and the steps after read them.
     let stays = destination == "Library"
         && alternative.is_none()
@@ -963,7 +995,12 @@ fn search(ctx: &mut Ctx, p: &Params, destination: &str) -> Tr<Vec<Value>> {
     if places.second.is_some() && p.get("RememberChanged") == Some("True") {
         return unmapped("key:ChangeZone.Search.DestinationAlternative-with-memory");
     }
-    let put = frame::place(ctx, &found, places);
+    let mut put = frame::place(ctx, &found, places);
+    // Each card of a search for one of each goes the same way.
+    for found in founds.iter().skip(1) {
+        let places = frame::places(ctx, p, destination, true)?;
+        put.extend(frame::place(ctx, found, places));
+    }
     // Searching only another zone leaves the library as it was: "if you search your library this way, shuffle".
     let shuffle = if alternative.is_some() {
         json!({"If": {"condition": {"Searched": {"zone": "Library"}}, "then": [{"Shuffle": {}}]}})
@@ -976,6 +1013,7 @@ fn search(ctx: &mut Ctx, p: &Params, destination: &str) -> Tr<Vec<Value>> {
         json!({"Shuffle": {"who": seat.acts.clone()}})
     };
     let mut effects = vec![search];
+    effects.extend(searches);
     match (destination, shuffles) {
         // The shuffle comes first when the card goes back on top: "then shuffle and put that card on top".
         ("Library", _) => {
@@ -995,6 +1033,27 @@ fn search(ctx: &mut Ctx, p: &Params, destination: &str) -> Tr<Vec<Value>> {
         }
         None => effects,
     })
+}
+
+/// The alternatives of `EACH A & B & C`, one card of each: the first, read by the search as its type, and the filters
+/// of the others. Each finds one card, so a count or "different names" is a gap.
+fn g13a_each<'a>(ctx: &Ctx, p: &Params, each: &'a str) -> Tr<(&'a str, Vec<Vec<Value>>)> {
+    let shape = p.get("ChangeNum").is_none_or(|n| n == "1") && !p.has("DifferentNames");
+    let mut alternatives = each.split(" & ").map(str::trim);
+    let (Some(first), true) = (alternatives.next(), shape) else {
+        return unmapped("key:ChangeZone.Search.EACH-shape");
+    };
+    let mut others = Vec::new();
+    for alternative in alternatives {
+        super::valid::permanent_card(alternative)?;
+        let mut filter = selector_any(ctx, alternative)?;
+        super::valid::fix9_permanent_card(alternative, &mut filter)?;
+        others.push(filter);
+    }
+    if others.is_empty() {
+        return unmapped("key:ChangeZone.Search.EACH-shape");
+    }
+    Ok((first, others))
 }
 
 /// Whether the printed description of a search says the cards are revealed.
@@ -1061,7 +1120,11 @@ fn zone_owner(ctx: &Ctx, word: &str) -> Tr<Value> {
 }
 
 /// The keys of a `Dig` line that are read.
-const DIG_KEYS: [&str; 22] = [
+const DIG_KEYS: [&str; 26] = [
+    "ChangeType",
+    "Choser",
+    "NoLooking",
+    "Attacking",
     "DigNum",
     "RememberRevealed",
     "ChangeNum",
@@ -1134,6 +1197,7 @@ fn r5a_reveals_taken(oracle: &str) -> bool {
 
 /// `Dig`: look at the top cards, take some, put the rest somewhere ("look at the top four cards of your library; you may
 /// reveal a creature card from among them and put it into your hand; put the rest on the bottom in any order").
+#[allow(clippy::too_many_lines)]
 pub fn dig(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
     only(p, "Dig", &DIG_KEYS)?;
     let revealing = revealing(p)?;
@@ -1142,6 +1206,15 @@ pub fn dig(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
     }
     let hide = face_down(p)?;
     let hidden = hide != Hide::No;
+    // `ChangeType$ Card` is `ChangeValid$ Card` written with the other key: any card, as a dig without a filter.
+    if p.get("ChangeType").is_some_and(|kind| kind != "Card") {
+        return unmapped("key:Dig.ChangeType");
+    }
+    // Only whether the script shows the cards to the player: the dig below looks at them either way.
+    let _ = p.get("NoLooking");
+    // The script of an attacking dig may reveal where the printed text only looks.
+    let reveals = p.get("Reveal") == Some("True")
+        && (!p.has("Attacking") || ctx.oracle.to_lowercase().contains("reveal"));
     let who = subject(ctx, p, "You", None)?;
     let count = amount(ctx, p.get("DigNum").unwrap_or("1"))?;
     // "Exile the top card of your library face down": nobody looks at it, the exiler neither.
@@ -1156,7 +1229,14 @@ pub fn dig(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
     let kept = ctx.fresh("kept");
     let rest = ctx.fresh("rest");
     let from_top = json!({ "Bound": top });
-    let take = Take::of(ctx, p)?;
+    let mut take = Take::of(ctx, p)?;
+    // One card looked at: "all of them, if you may" is taking up to one.
+    if matches!(take, Take::All)
+        && p.get("Optional") == Some("True")
+        && p.get("DigNum").is_none_or(|n| n == "1")
+    {
+        take = Take::Count(1);
+    }
     let filter = p.get("ChangeValid");
     let may =
         p.get("Optional") == Some("True") || (filter.is_some() && sentence_allows_none(ctx.oracle));
@@ -1207,6 +1287,10 @@ pub fn dig(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
     let moved = if matches!(take, Take::All) {
         matching
     } else {
+        if let Some((pick, chooser)) = dig_chooser(ctx, p, &who)? {
+            effects.extend(pick);
+            choose["who"] = chooser;
+        }
         effects.push(json!({ "Choose": choose }));
         json!({ "Bound": kept })
     };
@@ -1214,13 +1298,13 @@ pub fn dig(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
     if filter.is_some()
         && !hidden
         && matches!(&to, Goes::To(zone) if *zone == json!("Hand"))
-        && p.get("Reveal") != Some("True")
+        && !reveals
         && p.get("NoReveal") != Some("True")
         && r5a_reveals_taken(ctx.oracle)
     {
         effects.push(json!({"Reveal": {"what": moved.clone()}}));
     }
-    if p.get("Reveal") == Some("True") {
+    if reveals {
         // "Reveal the top X cards" shows every card dug, not only the ones taken.
         effects.push(json!({"Reveal": {"what": from_top}}));
     }
@@ -1239,7 +1323,42 @@ pub fn dig(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
     let all_taken = matches!(take, Take::All) && matches!(filter, None | Some("Card"));
     let rest = (!all_taken).then(|| moves(&rest_ref, rest_to));
     effects.extend(remember_revealed(ctx, revealing, put, rest));
+    // "Onto the battlefield tapped and attacking": the card taken joins the attack (CR 508.4).
+    if p.has("Attacking") {
+        if hidden
+            || !matches!(take, Take::Count(1))
+            || p.get("DestinationZone") != Some("Battlefield")
+        {
+            return unmapped("key:Dig.Attacking-shape");
+        }
+        super::frame::enters_attacking(ctx, p, &mut effects)?;
+        // What the later lines call "it" is the permanent that entered, not the card it was in the library (CR 400.7).
+        if p.get("RememberChanged") == Some("True") {
+            let moved = effects
+                .iter()
+                .find_map(|step| step.get("Move")?.get("as")?.as_str().map(str::to_owned));
+            ctx.remembered = moved.map(|name| json!({ "Bound": name }));
+        }
+    }
     Ok(effects)
+}
+
+/// `Choser$` of a `Dig`: the player who picks among the cards looked at, with the step that names them when it is "an
+/// opponent" (the controller picks which one on resolution); `None` when it is the player the dig is for.
+fn dig_chooser(ctx: &mut Ctx, p: &Params, who: &Value) -> Tr<Option<(Vec<Value>, Value)>> {
+    let Some(word) = p.get("Choser") else {
+        return Ok(None);
+    };
+    match word {
+        "Player.Opponent" | "Opponent" if *who == json!("You") => {
+            let opponent = ctx.fresh("opponent");
+            let pick = json!({"Choose": {"who": "You", "from": "Opponents", "as": opponent}});
+            Ok(Some((vec![pick], json!({ "Bound": opponent }))))
+        }
+        "Targeted" if p.has("ValidTgts") => Ok(Some((Vec::new(), who.clone()))),
+        word if p.get("Defined") == Some(word) => Ok(Some((Vec::new(), who.clone()))),
+        _ => unmapped("key:Dig.Choser"),
+    }
 }
 
 /// `RememberRevealed$` of a `Dig`: "the cards revealed this way", every card dug, as each is after its move. Only a dig that
@@ -1296,6 +1415,8 @@ fn exile_top(ctx: &mut Ctx, p: &Params, who: &Value, count: &Value, hide: Hide) 
     // A card exiled face up is seen by every player, so `Reveal$` adds nothing. It is read here, not left to whether the
     // face-down test happened to look at it: the verdict must not hang on the order of those reads.
     let _ = p.get("Reveal");
+    // Nothing is left to put back, so how the rest is ordered says nothing.
+    let _ = p.get("SkipReorder");
     let exiled = ctx.fresh("exiled");
     if p.get("RememberChanged") == Some("True") {
         ctx.remembered = Some(json!({ "Bound": exiled }));
@@ -1430,6 +1551,7 @@ fn every_revealed(ctx: &Ctx) -> Tr<bool> {
 }
 
 /// `DigUntil`: reveal cards until some match, the match goes to one place and the revealed cards to another.
+#[allow(clippy::too_many_lines)]
 pub fn dig_until(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
     only(
         p,
@@ -1450,6 +1572,8 @@ pub fn dig_until(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
             "RememberRevealed",
             "ValidDescription",
             "OptionalFoundMove",
+            "Attacking",
+            "Optional",
         ],
     )?;
     // Forge remembers every card revealed, the one found included; where the found card goes elsewhere, "the cards
@@ -1526,13 +1650,30 @@ pub fn dig_until(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
         super::remember::bind_moved(ctx, &mut rest, verb, "revealed");
     }
     effects.push(rest);
+    if p.has("Attacking") {
+        // The one card found joins the attack (CR 508.4); a count or a found card with no move is not that shape.
+        if find.get("count").is_some()
+            || optional
+            || p.get("FoundDestination") != Some("Battlefield")
+        {
+            return unmapped("key:DigUntil.Attacking-shape");
+        }
+        super::frame::enters_attacking(ctx, p, &mut effects)?;
+    }
     if p.get("Shuffle") == Some("True") {
         // The player whose library was revealed shuffles it.
         let mut shuffle = json!({"Shuffle": {}});
         if who != json!("You") {
-            shuffle["Shuffle"]["who"] = who;
+            shuffle["Shuffle"]["who"] = who.clone();
         }
         effects.push(shuffle);
+    }
+    // "You may reveal cards ...": declining does none of it, the shuffle included.
+    if p.get("Optional") == Some("True") {
+        if optional {
+            return unmapped("key:DigUntil.Optional-with-OptionalFoundMove");
+        }
+        return Ok(super::frame::ask(effects, &who));
     }
     Ok(effects)
 }

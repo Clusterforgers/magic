@@ -129,7 +129,9 @@ fn judged_host(state: &GameState, attachment: ObjectId, host: ObjectId, in_play:
         Some(Kind::Fortification) => host_chars.types.contains(CardType::Land),
         None => false,
     };
-    allowed && !protects_host(state, attachment, host)
+    allowed
+        && !protects_host(state, attachment, host)
+        && !crate::prohibit::attach_banned(state, attachment, target.reference())
 }
 
 /// Whether the enchant ability of `id` is "enchant opponent" (`true`) or "enchant player" (`false`); `None` for an object
@@ -533,7 +535,7 @@ mod player_tests;
 
 #[cfg(test)]
 mod tests {
-    //! Goal: an attachment is legal exactly where its kind allows (an Aura where its enchant ability does and never on itself or when it is a creature, an Equipment on a creature when it is none, a Fortification on a land), becoming attached sets the host and gives the attachment the next timestamp while becoming unattached clears the host and refuses what is not attached, the state-based actions put an Aura attached to nothing or to what it may not enchant into its owner's graveyard and take an Equipment, a Fortification or any other permanent off what it may not be attached to, an Aura card targets through its enchant ability and no other card does, and an Aura entering without being cast may enchant the permanents its ability allows.
+    //! Goal: an attachment is legal exactly where its kind allows (an Aura where its enchant ability does and never on itself or when it is a creature, an Equipment on a creature when it is none, a Fortification on a land), becoming attached sets the host and gives the attachment the next timestamp while becoming unattached clears the host and refuses what is not attached, the state-based actions put an Aura attached to nothing or to what it may not enchant into its owner's graveyard and take an Equipment, a Fortification or any other permanent off what it may not be attached to, an Aura card targets through its enchant ability and no other card does, and an Aura entering without being cast may enchant the permanents its ability allows, and an attachment a rule bans from its host may not be attached there.
     use std::sync::Arc;
 
     use mtg_cards::ability::Ability;
@@ -782,6 +784,56 @@ mod tests {
             .map(|(name, put)| ((*name).to_owned(), *put))
             .collect();
         assert_eq!(actions(&attached), expected);
+    }
+
+    /// Seat 0: a Warden creature whose rule bans the attachments `banned` selects from it, the Halo Aura and the Blade
+    /// Equipment, both attached to the Warden.
+    fn banned_from_warden(banned: &str) -> GameState {
+        let rule = format!(
+            r#"{{"Rule":{{"rule":{{"Cant":{{"who":"This","action":{{"BeAttachedBy":{banned}}}}}}}}}}}"#
+        );
+        let mut game = setup(
+            vec![vec![], vec![]],
+            vec![
+                vec![
+                    card("Warden", &[CardType::Creature], "", &[&rule]),
+                    card("Halo", &[CardType::Enchantment], "Aura", &[ON_CREATURES]),
+                    card("Blade", &[CardType::Artifact], "Equipment", &[]),
+                ],
+                vec![],
+            ],
+        );
+        for place in [1, 2] {
+            let preset = &mut game.players[0].battlefield[place];
+            *preset = PresetPermanent {
+                attached_to: Some((0, 0)),
+                ..preset.clone()
+            };
+        }
+        GameState::from_setup(&game).unwrap()
+    }
+
+    #[rstest]
+    #[case::a_banned_aura_goes_to_the_graveyard(r#"[{"Subtype":"Aura"}]"#, &[("Halo", true)], (false, true))]
+    #[case::a_banned_equipment_comes_off(r#"[{"Subtype":"Equipment"}]"#, &[("Blade", false)], (true, false))]
+    #[case::every_attachment(r"[]", &[("Blade", false), ("Halo", true)], (false, false))]
+    fn an_attachment_a_rule_bans_from_its_host_is_attached_illegally(
+        #[case] banned: &str,
+        #[case] expected: &[(&str, bool)],
+        #[case] legal: (bool, bool),
+    ) {
+        let game = banned_from_warden(banned);
+        let expected: Vec<(String, bool)> = expected
+            .iter()
+            .map(|(name, put)| ((*name).to_owned(), *put))
+            .collect();
+        assert_eq!(done_to(&game), expected);
+        let warden = id(&game, "Warden");
+        let hosts = (
+            legal_host(&game, id(&game, "Halo"), warden),
+            legal_host(&game, id(&game, "Blade"), warden),
+        );
+        assert_eq!(hosts, legal);
     }
 
     fn role(name: &str) -> Arc<CardDefinition> {

@@ -41,6 +41,7 @@ pub fn effects(ctx: &mut Ctx, p: &Params, api: &str) -> Tr<Vec<Value>> {
         "Airbend" => airbend(ctx, p),
         "Fight" => one(fight(ctx, p)),
         "GainControl" => gain_control(ctx, p),
+        "GainControlVariant" => gain_control_to_owners(ctx, p),
         other => unmapped(format!("effect:{other}")),
     }
 }
@@ -52,7 +53,8 @@ pub fn duration(word: Option<&str>) -> Tr<&'static str> {
         None | Some("EOT" | "EndOfTurn" | "UntilHostLeavesPlayOrEOT") => Ok("UntilEndOfTurn"),
         Some("Permanent") => Ok("Forever"),
         Some("UntilEndOfCombat") => Ok("UntilEndOfCombat"),
-        Some("UntilYourNextTurn") => Ok("UntilYourNextTurn"),
+        // No player gets priority between the start of the turn and its upkeep, so the two ends are the same to play.
+        Some("UntilYourNextTurn" | "UntilYourNextUpkeep") => Ok("UntilYourNextTurn"),
         Some("UntilYourNextEndStep") => Ok("UntilYourNextEndStep"),
         Some("UntilTheEndOfYourNextTurn") => Ok("UntilEndOfYourNextTurn"),
         Some("UntilHostLeavesPlay" | "AsLongAsInPlay") => Ok("WhileSourceOnBattlefield"),
@@ -84,8 +86,18 @@ fn airbend(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
 }
 
 fn simple(ctx: &mut Ctx, p: &Params, api: &str, verb: &str) -> Tr<Value> {
-    only(p, api, &["ValidTgts", "Defined", "TargetMin", "TargetMax"])?;
+    only(
+        p,
+        api,
+        &["ValidTgts", "Defined", "TargetMin", "TargetMax", "Radiance"],
+    )?;
     let what = subject(ctx, p, "Self", None)?;
+    if p.get("Radiance") == Some("True") && verb == "Untap" {
+        return Ok(json!({ verb: {"what": radiance(&what)?} }));
+    }
+    if p.has("Radiance") {
+        return unmapped(format!("key:{api}.Radiance"));
+    }
     Ok(json!({ verb: {"what": what} }))
 }
 
@@ -135,8 +147,12 @@ fn untap_up_to(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
     let filter = selector_any(ctx, kind)?;
     let max = amount(ctx, count)?;
     let bind = ctx.fresh("untap");
-    let mut choose =
-        json!({"Choose": {"from": {"Each": filter}, "count": {"min": 0, "max": max}, "as": bind}});
+    // Forge marks "untaps a land" (Rising Waters) `UntapUpTo$` too: only Oracle's "up to" lets the player take fewer.
+    let text = ctx.oracle.to_lowercase();
+    let exact =
+        text.contains("untap") && !text.contains("untap up to") && !text.contains("untaps up to");
+    let min = if exact { max.clone() } else { json!(0) };
+    let mut choose = json!({"Choose": {"from": {"Each": filter}, "count": {"min": min, "max": max}, "as": bind}});
     if who != json!("You") {
         choose["Choose"]["who"] = who;
     }
@@ -149,7 +165,9 @@ fn all_of(ctx: &mut Ctx, p: &Params, verb: &str) -> Tr<Value> {
     if verb == "Tap" {
         only(p, verb, &["ValidCards", "ValidTgts", "RememberTapped"])?;
     } else {
-        only(p, verb, &["ValidCards", "ValidTgts"])?;
+        // Who untaps (`ControllerUntaps$`) changes nothing: an untap makes no choice.
+        only(p, verb, &["ValidCards", "ValidTgts", "ControllerUntaps"])?;
+        let _ = p.has("ControllerUntaps");
     }
     let valid = p.get("ValidCards").unwrap_or_default();
     let mut effect = json!({ verb: {"what": {"Each": frame::all_matching(ctx, p, verb, valid)?}} });
@@ -697,9 +715,12 @@ fn prevent_damage(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
 fn hidden(word: &str) -> Option<Vec<Value>> {
     let word = word.trim_end_matches('.');
     Some(match word {
-        "HIDDEN CARDNAME can't block" => vec![json!("CantBlock")],
-        "HIDDEN CARDNAME can't attack" => vec![json!("CantAttack")],
-        "HIDDEN CARDNAME can't attack or block" => vec![json!("CantAttack"), json!("CantBlock")],
+        // The visible keyword says the same as the hidden one.
+        "HIDDEN CARDNAME can't block" | "CARDNAME can't block" => vec![json!("CantBlock")],
+        "HIDDEN CARDNAME can't attack" | "CARDNAME can't attack" => vec![json!("CantAttack")],
+        "HIDDEN CARDNAME can't attack or block" | "CARDNAME can't attack or block" => {
+            vec![json!("CantAttack"), json!("CantBlock")]
+        }
         "HIDDEN CARDNAME's power and toughness are switched" => vec![json!("SwitchPT")],
         DOESNT_UNTAP => vec![json!("DoesntUntap")],
         _ => return None,
@@ -724,11 +745,14 @@ fn pump_duration(p: &Params) -> Tr<&'static str> {
     unmapped("keyword:HIDDEN-doesnt-untap-shape")
 }
 
-/// A pump amount: `Double` adds the object's own value as the effect begins, so it needs one object to read.
+/// A pump amount: `Double` adds the object's own value as the effect begins and `Triple` twice that, so it needs one
+/// object to read.
 fn pump_amount(ctx: &Ctx, text: &str, single: Option<&Value>, stat: &str) -> Tr<Value> {
-    if text != "Double" {
-        return amount(ctx, text);
-    }
+    let factor = match text {
+        "Double" => 1,
+        "Triple" => 2,
+        _ => return amount(ctx, text),
+    };
     match single {
         Some(of)
             if of == "This"
@@ -736,7 +760,12 @@ fn pump_amount(ctx: &Ctx, text: &str, single: Option<&Value>, stat: &str) -> Tr<
                 || of.get("Target").is_some()
                 || of.get("Bound").is_some() =>
         {
-            Ok(json!({"Stat": {"of": of, "stat": stat}}))
+            let own = json!({"Stat": {"of": of, "stat": stat}});
+            Ok(if factor == 1 {
+                own
+            } else {
+                json!({"Times": {"by": factor, "of": own}})
+            })
         }
         _ => unmapped("amount:Double-of-several"),
     }
@@ -745,6 +774,7 @@ fn pump_amount(ctx: &Ctx, text: &str, single: Option<&Value>, stat: &str) -> Tr<
 /// The modifications of a pump line: power and toughness, then keywords.
 fn pump_mods(ctx: &Ctx, p: &Params, single: Option<&Value>) -> Tr<Vec<Value>> {
     let mut mods = Vec::new();
+    let mut named_choice = false;
     if p.has("NumAtt") || p.has("NumDef") {
         let power = pump_amount(ctx, p.get("NumAtt").unwrap_or("0"), single, "Power")?;
         let toughness = pump_amount(ctx, p.get("NumDef").unwrap_or("0"), single, "Toughness")?;
@@ -755,14 +785,36 @@ fn pump_mods(ctx: &Ctx, p: &Params, single: Option<&Value>) -> Tr<Vec<Value>> {
             if super::statics_combat::is_rule_word(word) {
                 continue;
             }
-            match hidden(word) {
-                Some(found) => mods.extend(found),
-                None => mods.push(json!({ "AddKeyword": keyword_value(ctx, word)? })),
+            if let Some(found) = hidden(word) {
+                mods.extend(found);
+            } else if let Some(chosen) = chosen_keyword(ctx, p, word) {
+                named_choice = true;
+                mods.push(json!({ "AddKeyword": chosen }));
+            } else {
+                mods.push(json!({ "AddKeyword": keyword_value(ctx, word)? }));
             }
         }
     }
+    if p.has("DefinedKW") && !named_choice {
+        return unmapped("key:Pump.DefinedKW");
+    }
     mods.extend(super::statics_combat::block_capacity(p)?);
     Ok(mods)
+}
+
+/// `KW$ Hexproof:ChosenColor` and `KW$ Landwalk:ChosenType` with `DefinedKW$` naming the same choice: the keyword of the
+/// color or land type the ability chose before.
+fn chosen_keyword(ctx: &Ctx, p: &Params, word: &str) -> Option<Value> {
+    let defined = p.get("DefinedKW")?;
+    let chosen = json!({ "ChosenAs": ctx.chosen.as_ref()? });
+    Some(match (word, defined, ctx.chosen_kind) {
+        ("Hexproof:ChosenColor", "ChosenColor", Some("Color")) => json!({"HexproofFrom": [chosen]}),
+        ("Landwalk:ChosenType", "ChosenType", Some("LandType")) => json!({"Landwalk": [chosen]}),
+        ("Landwalk:ChosenType.Snow:Snow ChosenType", "ChosenType", Some("LandType")) => {
+            json!({"Landwalk": [chosen, {"Supertype": "Snow"}]})
+        }
+        _ => return None,
+    })
 }
 
 /// The effects of the hidden keywords of a pump line that are rules, not changes to the object: "must be blocked if able"
@@ -777,35 +829,63 @@ fn hidden_effects(p: &Params, affected: &Value, duration: &str) -> Tr<Vec<Value>
         .map(|found| found.concat())
 }
 
+/// The keys a `Pump` line reads.
+const PUMP_KEYS: [&str; 21] = [
+    "OptionQuestion",
+    "Optional",
+    "Radiance",
+    "ValidCard",
+    "DefinedKW",
+    "NumAtt",
+    "NumDef",
+    "KW",
+    "KWChoice",
+    "Defined",
+    "ValidTgts",
+    "Duration",
+    "IsCurse",
+    "TargetMin",
+    "TargetMax",
+    "RememberObjects",
+    "PumpZone",
+    "AtEOT",
+    "ReplaceDyingDefined",
+    "CanBlockAmount",
+    "CanBlockAny",
+];
+
+/// `Radiance$ True` (an ability word): the target creature and each other creature that shares a color with it, as the
+/// effect resolves.
+fn radiance(target: &Value) -> Tr<Value> {
+    if target.get("Target").is_none() {
+        return unmapped("key:Pump.Radiance");
+    }
+    Ok(json!({"Each": [
+        {"AnyOf": [{"Is": target}, {"SharesColor": target}]},
+        {"Type": "Creature"},
+    ]}))
+}
+
 fn pump(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
-    only(
-        p,
-        "Pump",
-        &[
-            "NumAtt",
-            "NumDef",
-            "KW",
-            "KWChoice",
-            "Defined",
-            "ValidTgts",
-            "Duration",
-            "IsCurse",
-            "TargetMin",
-            "TargetMax",
-            "RememberObjects",
-            "PumpZone",
-            "AtEOT",
-            "ReplaceDyingDefined",
-            "CanBlockAmount",
-            "CanBlockAny",
-        ],
-    )?;
+    only(p, "Pump", &PUMP_KEYS)?;
+    // A line with no parameter at all ("SP$ Pump" on a spell whose abilities are all keywords) does nothing when it resolves.
+    if !PUMP_KEYS.iter().any(|key| p.has(key)) {
+        return Ok(Vec::new());
+    }
+    // `ValidCard$ Card.Self` names the source, the default of a line without a target.
+    if p.has("ValidCard") && (p.get("ValidCard") != Some("Card.Self") || p.has("Defined")) {
+        return unmapped("key:Pump.ValidCard");
+    }
     let duration = pump_duration(p)?;
     let subject = subject(ctx, p, "Self", None)?;
     if let Some(found) = player_keywords(p, &subject, duration) {
         return found;
     }
-    let affected = objects(subject)?;
+    let affected = if p.get("Radiance") == Some("True") {
+        radiance(&subject)?
+    } else {
+        objects(subject)?
+    };
     remember_objects(ctx, p)?;
     // A pump that only chooses a target ("target creature you control deals damage ... to target creature") or only
     // remembers objects changes nothing itself; the part after it uses them.
@@ -869,7 +949,9 @@ fn pump(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
         effects.push(pump_at_eot(ctx, word, &affected)?);
     }
     effects.extend(dies_shield(ctx, p)?);
-    Ok(effects)
+    // The question text asked of the player belongs to the "may" the line already carries.
+    let _ = p.has("OptionQuestion");
+    super::frame::optional(p, "Pump", effects, &json!("You"))
 }
 
 /// "You gain hexproof until end of turn": a pump of players that only gives keywords a player can have (hexproof, shroud) is
@@ -975,6 +1057,7 @@ fn pump_all(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
         &[
             "ValidTgts",
             "NumAtt",
+            "Defined",
             "NumDef",
             "KW",
             "ValidCards",
@@ -984,7 +1067,24 @@ fn pump_all(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
     )?;
     let duration = pump_duration(p)?;
     let valid = p.get("ValidCards").unwrap_or_default();
-    let affected = json!({"Each": group_of_player(ctx, p, valid)?});
+    let group = match p.get("Defined") {
+        None => group_of_player(ctx, p, valid)?,
+        // The creatures of the player an earlier line targeted.
+        // Only when the card says those very creatures ("Those creatures don't untap"): the line's group is what it names.
+        Some("Targeted")
+            if !p.has("ValidTgts")
+                && ctx.oracle.to_lowercase().contains(&format!(
+                    "those {}s ",
+                    valid.split('.').next().unwrap_or_default().to_lowercase()
+                )) =>
+        {
+            let mut preds = selector_any(ctx, valid)?;
+            preds.push(json!({"ControlledBy": ctx.player_target()?}));
+            preds
+        }
+        Some(_) => return unmapped("key:PumpAll.Defined"),
+    };
+    let affected = json!({"Each": group});
     let mods = pump_mods(ctx, p, None)?;
     let rules = hidden_effects(p, &affected, duration)?;
     if mods.is_empty() && rules.is_empty() {
@@ -1055,39 +1155,49 @@ fn of_target_player(ctx: &mut Ctx, p: &Params, valid: &str) -> Tr<Value> {
     Ok(json!({ "Each": selector }))
 }
 
+const ANIMATE_KEYS: [&str; 27] = [
+    "Defined",
+    "ValidTgts",
+    "Types",
+    "Power",
+    "Toughness",
+    "Colors",
+    "OverwriteColors",
+    "Keywords",
+    "RemoveKeywords",
+    "RemoveAllAbilities",
+    "Triggers",
+    "Abilities",
+    "staticAbilities",
+    "Replacements",
+    "RemoveCreatureTypes",
+    "RemoveCardTypes",
+    "RemoveLandTypes",
+    "RemoveTypes",
+    "AddAllCreatureTypes",
+    "ValidCards",
+    "Duration",
+    "TargetMin",
+    "TargetMax",
+    "AtEOT",
+    "HiddenKeywords",
+    "LeaveBattlefield",
+    "sVars",
+];
+
 fn animate(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
-    only(
-        p,
-        "Animate",
-        &[
-            "Defined",
-            "ValidTgts",
-            "Types",
-            "Power",
-            "Toughness",
-            "Colors",
-            "OverwriteColors",
-            "Keywords",
-            "RemoveKeywords",
-            "RemoveAllAbilities",
-            "Triggers",
-            "Abilities",
-            "staticAbilities",
-            "Replacements",
-            "RemoveCreatureTypes",
-            "RemoveCardTypes",
-            "RemoveLandTypes",
-            "AddAllCreatureTypes",
-            "ValidCards",
-            "Duration",
-            "TargetMin",
-            "TargetMax",
-            "AtEOT",
-            "HiddenKeywords",
-        ],
-    )?;
+    only(p, "Animate", &ANIMATE_KEYS)?;
     if spell_change_beyond_colors(p) {
         return unmapped("key:Animate.TgtZone=Stack");
+    }
+    // `sVars$ XMustAttack` only hints the computer player to attack with the creature.
+    if let Some(names) = p.get("sVars")
+        && !names.split(',').map(str::trim).all(|name| {
+            ctx.svar(name)
+                .is_some_and(|text| text.trim() == "SVar:MustAttack:True")
+        })
+    {
+        return unmapped("key:Animate.sVars");
     }
     let duration = animate_duration(ctx, p)?;
     // `AnimateAll` names the objects by a valid-string.
@@ -1146,8 +1256,22 @@ fn animate(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
     if mods.is_empty() {
         return unmapped("key:Animate.nothing");
     }
+    let rules = super::effects_animate::rule_effects(p, &affected, duration)?;
     let mut effects =
         vec![json!({"Continuous": {"affected": affected, "mods": mods, "duration": duration}})];
+    effects.extend(rules);
+    // "If it would leave the battlefield, exile it instead of putting it anywhere else": a replacement for that object.
+    match p.get("LeaveBattlefield") {
+        None => {}
+        Some("Exile") if duration == "Forever" && !p.has("ValidCards") => {
+            let what = json!([{"Is": affected}]);
+            effects.push(json!({"Shield": {
+                "when": {"ZoneChange": {"what": what, "from": "Battlefield"}},
+                "by": {"MoveTo": "Exile"},
+                "duration": "Forever"}}));
+        }
+        Some(_) => return unmapped("key:Animate.LeaveBattlefield"),
+    }
     if let Some(word) = p.get("AtEOT") {
         if p.has("ValidCards") {
             return unmapped("key:Animate.AtEOT-of-a-group");
@@ -1159,6 +1283,9 @@ fn animate(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
 
 /// Colours as the DSL names them; `Colorless` names none, so setting it gives the empty set (CR 105.2c).
 pub fn color_names(colors: &str) -> Tr<Vec<&'static str>> {
+    if colors.trim() == "All" {
+        return Ok(vec!["White", "Blue", "Black", "Red", "Green"]);
+    }
     colors
         .split(',')
         .filter(|word| word.trim() != "Colorless")
@@ -1178,6 +1305,23 @@ pub fn color_names(colors: &str) -> Tr<Vec<&'static str>> {
 /// `RemoveCardTypes$` makes the card types the line names the only ones (it needs `Types$`), `RemoveLandTypes$` the basic
 /// land types it names the only land types, and `AddAllCreatureTypes$` adds every creature type.
 fn type_mods(ctx: &Ctx, p: &Params) -> Tr<Vec<Value>> {
+    let mut mods = type_mods_set(ctx, p)?;
+    // `RemoveTypes$ Artifact`: "isn't an artifact". Only card types go: taking a subtype away has no modification.
+    if let Some(removed) = p.get("RemoveTypes") {
+        if p.get("RemoveCardTypes") == Some("True") {
+            return unmapped("key:Animate.RemoveTypes");
+        }
+        for word in removed.split(',').map(str::trim) {
+            if !super::ctx::CARD_TYPES.contains(&word) {
+                return unmapped("key:Animate.RemoveTypes");
+            }
+            mods.push(json!({"RemoveType": word}));
+        }
+    }
+    Ok(mods)
+}
+
+fn type_mods_set(ctx: &Ctx, p: &Params) -> Tr<Vec<Value>> {
     const BASIC_LAND_TYPES: [&str; 5] = ["Plains", "Island", "Swamp", "Mountain", "Forest"];
     let (remove_cards, remove_lands) = (
         p.get("RemoveCardTypes") == Some("True"),
@@ -1630,6 +1774,28 @@ fn fight(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
     let what = defined(ctx, p.get("Defined").unwrap_or_default())?;
     let with = subject(ctx, p, "", None)?;
     Ok(json!({"Fight": {"what": what, "with": with}}))
+}
+
+/// `GainControlVariant` with `ChangeController$ CardOwner` ("each player gains control of all creatures they own"): for
+/// each player, the matching objects the player owns come under their control for good.
+fn gain_control_to_owners(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
+    only(p, "GainControlVariant", &["AllValid", "ChangeController"])?;
+    let (Some(valid), Some("CardOwner")) = (p.get("AllValid"), p.get("ChangeController")) else {
+        return unmapped("key:GainControlVariant.ChangeController");
+    };
+    let owner = ctx.fresh("owner");
+    let held = json!({ "Bound": owner });
+    let mut group = selector_any(ctx, valid)?;
+    group.push(json!({"OwnedBy": held}));
+    Ok(vec![json!({"RepeatEach": {
+        "over": "EachPlayer",
+        "as": owner,
+        "effects": [{"Continuous": {
+            "affected": {"Each": group},
+            "mods": [{"SetController": held}],
+            "duration": "Forever",
+        }}],
+    }})])
 }
 
 fn gain_control(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {

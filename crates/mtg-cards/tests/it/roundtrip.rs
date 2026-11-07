@@ -609,6 +609,7 @@ fn prohibited() -> impl Strategy<Value = Prohibited> {
         Just(Prohibited::PutCounterOf(
             mtg_cards::value::CounterKind::lore()
         )),
+        selector().prop_map(Prohibited::BeAttachedBy),
         Just(Prohibited::Attach),
         Just(Prohibited::Discard),
         Just(Prohibited::Exile),

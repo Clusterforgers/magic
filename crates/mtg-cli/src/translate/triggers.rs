@@ -82,6 +82,10 @@ pub fn triggered(ctx: &mut Ctx, body: &str) -> Tr<Value> {
         }),
         pattern: super::triggered::key_of(&when),
         arrives: super::triggered::arrival(&when),
+        targeting: super::triggered::targeting(&when),
+        destination: when
+            .get("ZoneChange")
+            .and_then(|change| change.get("to")?.as_str().map(str::to_owned)),
     });
     let intervening = match super::condition::on_triggered_card(ctx, &all)? {
         Some(found) => super::condition::single(intervening.into_iter().chain([found]).collect()),
@@ -114,7 +118,7 @@ pub fn triggered(ctx: &mut Ctx, body: &str) -> Tr<Value> {
     let pays = matches!(effects.as_slice(), [only] if only.get("Pay").is_some());
     let decider = p.get("OptionalDecider").is_some();
     let printed = p.get("TriggerDescription");
-    effects = super::r6a::printed(printed, (decider, pays), itself, effects, &ctx.targets)?;
+    effects = super::r6a::printed(printed, (decider, pays), &when, effects, &ctx.targets)?;
     printed_more(&p, &effects)?;
     effects = decided(ctx, &p, &when, (pays, itself), effects)?;
     if let Some(found) = &intervening
@@ -162,6 +166,16 @@ fn printed_more(p: &Params, effects: &[Value]) -> Tr<()> {
         && matches!(effects, [only] if only.get("PutCounters").is_some())
     {
         return unmapped("trigger:may-put-counters-without-decider");
+    }
+    // "you may gain control of target artifact" (Kukemssa Pirates), "you may have target land become a Plains"
+    // (Graceful Antelope): a script with no decider would force them.
+    if p.get("OptionalDecider").is_none()
+        && p.get("TriggerDescription").is_some_and(|text| {
+            text.contains(", you may gain control of target")
+                || text.contains(", you may have target")
+        })
+    {
+        return unmapped("trigger:may-target-without-decider");
     }
     if p.get("Mode") == Some("SpellCast")
         && p.get("ValidCard")
@@ -380,6 +394,9 @@ pub fn delayed_when(ctx: &Ctx, p: &Params) -> Tr<(Value, bool)> {
 
 pub(super) fn pattern(ctx: &Ctx, p: &Params) -> Tr<Value> {
     let mode = p.get("Mode").unwrap_or_default();
+    if let Some(found) = super::triggers_g13c::pattern(ctx, p, mode) {
+        return found;
+    }
     if let Some(found) = super::triggers_caused::pattern(ctx, p, mode) {
         return found;
     }
@@ -445,8 +462,19 @@ fn changes_zone(ctx: &Ctx, p: &Params) -> Tr<Value> {
         (None, _) | (Some("TriggeredCardController"), Some("Battlefield")) => {}
         _ => return unmapped("key:Trigger.ChangesZone.TriggerController"),
     }
-    let what = selector_any(ctx, p.get("ValidCard").unwrap_or("Card"))?;
+    let mut what = selector_any(ctx, p.get("ValidCard").unwrap_or("Card"))?;
     let (origins, destinations) = (zone_list(p, "Origin")?, zone_list(p, "Destination")?);
+    // "Enters from your graveyard": Forge names the zone alone, Oracle its owner too.
+    let yours = json!({"OwnedBy": "You"});
+    if origins == [Some("Graveyard")]
+        && destinations == [Some("Battlefield")]
+        && !p.get("ValidCard").is_some_and(|v| v.contains("Own"))
+        && p.get("TriggerDescription")
+            .is_some_and(|d| d.contains("from your graveyard"))
+        && !what.contains(&yours)
+    {
+        what.push(yours);
+    }
     // Every zone but the battlefield, to one: "put into a graveyard from anywhere other than the battlefield".
     if let ([_, _, ..], [Some(to)]) = (origins.as_slice(), destinations.as_slice())
         && origins.len() == 5
@@ -619,7 +647,13 @@ fn card_and_player(ctx: &Ctx, valid: &str) -> Tr<(Vec<Value>, Option<&'static st
 
 /// `Discarded` and `Cycled`: a card is discarded or cycled, by a player or as itself.
 fn card_event(ctx: &Ctx, p: &Params, variant: &str) -> Tr<Value> {
-    keys(p, variant, &["ValidCard"])?;
+    let p = &super::triggers_g13c::g13c_own_discard(p, variant);
+    let read: &[&str] = if variant == "Discarded" {
+        &["ValidCard", "ValidPlayer"]
+    } else {
+        &["ValidCard"]
+    };
+    keys(p, variant, read)?;
     let (what, by) = card_and_player(ctx, p.get("ValidCard").unwrap_or("Card"))?;
     let mut pattern = json!({});
     if !what.is_empty() {
@@ -627,6 +661,12 @@ fn card_event(ctx: &Ctx, p: &Params, variant: &str) -> Tr<Value> {
     }
     if let Some(by) = by {
         pattern["by"] = json!(by);
+    }
+    if let Some(word) = p.get("ValidPlayer") {
+        if pattern.get("by").is_some() {
+            return unmapped(format!("key:Trigger.{variant}.ValidPlayer-and-card-owner"));
+        }
+        pattern["by"] = player_ref(Some(word))?;
     }
     Ok(json!({ variant: pattern }))
 }
@@ -640,8 +680,25 @@ fn attackers_declared(ctx: &Ctx, p: &Params) -> Tr<Value> {
     keys(
         p,
         "AttackersDeclared",
-        &["AttackingPlayer", "ValidAttackers", "ValidAttackersAmount"],
+        &[
+            "AttackingPlayer",
+            "ValidAttackers",
+            "ValidAttackersAmount",
+            "AttackedTarget",
+        ],
     )?;
+    // "Whenever an opponent attacks you and/or one or more planeswalkers you control", "whenever one or more of your
+    // opponents are attacked": once for the declaration, with the attackers of those players (and planeswalkers).
+    let attacked = match p.get("AttackedTarget") {
+        None => None,
+        Some("You,Planeswalker.YouCtrl") => Some(json!({"AttackingPlayerOrPlaneswalker": "You"})),
+        Some("Opponent") => Some(json!({"AttackingPlayer": "Opponents"})),
+        Some(other) => {
+            return unmapped(format!(
+                "key:Trigger.AttackersDeclared.AttackedTarget={other}"
+            ));
+        }
+    };
     let word = p.get("AttackingPlayer");
     let Ok(by) = player_ref(word) else {
         return unmapped(format!(
@@ -655,6 +712,7 @@ fn attackers_declared(ctx: &Ctx, p: &Params) -> Tr<Value> {
     if by != "EachPlayer" && !what.contains(&own) {
         what.push(own);
     }
+    what.extend(attacked);
     let mut pattern = json!({ "what": what });
     match p.get("ValidAttackersAmount") {
         None => {}
@@ -733,16 +791,41 @@ fn spell_cast(ctx: &Ctx, p: &Params) -> Tr<Value> {
     }
     // "Whenever you cast a spell that targets a creature you control": one of its targets matches.
     if let Some(valid) = p.get("TargetsValid") {
-        let targeted = selector_any(ctx, valid)?;
+        let targeting = g13a_targeting(ctx, valid)?;
         match pattern.get_mut("what").and_then(Value::as_array_mut) {
-            Some(what) => what.push(json!({ "Targeting": targeted })),
-            None => pattern["what"] = json!([{ "Targeting": targeted }]),
+            Some(what) => what.push(targeting),
+            None => pattern["what"] = json!([targeting]),
         }
     }
     if by != "You" {
         super::triggers_g9a::g9a_caster_graveyard(&mut pattern);
     }
     super::triggers_more::nth_spell(p, json!({ "SpellCast": pattern }))
+}
+
+/// What a spell that triggers by its targets targets (`TargetsValid$`): objects that match, and the players of `You`,
+/// `Opponent` and `Player` among the alternatives ("a spell that targets an opponent or a creature an opponent controls").
+fn g13a_targeting(ctx: &Ctx, valid: &str) -> Tr<Value> {
+    let mut players = Vec::new();
+    let mut objects = Vec::new();
+    for alternative in valid.split(',').map(str::trim) {
+        match alternative {
+            "You" => players.push(json!({"TargetsPlayer": "You"})),
+            "Opponent" => players.push(json!({"TargetsPlayer": "Opponents"})),
+            "Player" => players.push(json!({"TargetsPlayer": "EachPlayer"})),
+            object => objects.push(object),
+        }
+    }
+    if players.is_empty() {
+        return Ok(json!({ "Targeting": selector_any(ctx, valid)? }));
+    }
+    if !objects.is_empty() {
+        players.push(json!({ "Targeting": selector_any(ctx, &objects.join(","))? }));
+    }
+    Ok(match <[Value; 1]>::try_from(players) {
+        Ok([only]) => only,
+        Err(several) => json!({ "AnyOf": several }),
+    })
 }
 
 /// A permanent is sacrificed, by a player.

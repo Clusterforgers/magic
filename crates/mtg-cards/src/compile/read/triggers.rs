@@ -1610,15 +1610,8 @@ pub fn pattern_text(pattern: &TriggerPattern) -> Option<String> {
             .or_else(|| batch_text(inner))
             .or_else(|| super::r7e_events::r7e_player_batch(inner)),
         TriggerPattern::GroupAttacks { what, at_least } => {
-            let count = if *at_least == 1 {
-                "one"
-            } else {
-                count_word(*at_least)?
-            };
-            Some(format!(
-                "Whenever {count} or more {} attack",
-                phrase_text(what, Form::All)?
-            ))
+            super::g13d_attacked::g13d_attacked_text(&what.0, *at_least)
+                .or_else(|| group_attacks_text(what, *at_least))
         }
         TriggerPattern::AnyOf(patterns) => super::g9c_blocks::g9c_shared_text(patterns)
             .or_else(|| super::w2e_copied::w2e_cast_or_copy_text(patterns))
@@ -1633,6 +1626,19 @@ pub fn pattern_text(pattern: &TriggerPattern) -> Option<String> {
             about(&what, &[verb])
         }
     }
+}
+
+/// "Whenever one or more creatures you control attack", "Whenever two or more Knights attack".
+fn group_attacks_text(what: &Selector, at_least: u32) -> Option<String> {
+    let count = if at_least == 1 {
+        "one"
+    } else {
+        count_word(at_least)?
+    };
+    Some(format!(
+        "Whenever {count} or more {} attack",
+        phrase_text(what, Form::All)?
+    ))
 }
 
 /// "Whenever you cycle a card", "Whenever a player cycles another card" and "When you cycle ~".

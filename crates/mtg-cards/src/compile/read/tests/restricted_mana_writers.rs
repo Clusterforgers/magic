@@ -109,6 +109,14 @@ fn another_use_is_not_the_text(#[case] only: &str, #[case] text: &str) {
     r#"[{"Spell":{"min_value":5}},{"Spell":{"facts":["XInCost"]}}]"#,
     "{T}: Add one mana of any color. Spend this mana only to cast spells with mana value 5 or greater or spells with {X} in their mana costs."
 )]
+#[case::helga(
+    r#"[{"Spell":{"types":["Creature"],"min_value":4}},{"Spell":{"types":["Creature"],"facts":["XInCost"]}}]"#,
+    "{T}: Add one mana of any color. Spend this mana only to cast creature spells with mana value 4 or greater or creature spells with {X} in their mana costs."
+)]
+#[case::ashling_rimebound(
+    r#"[{"Spell":{"min_value":4}}]"#,
+    "{T}: Add one mana of any color. Spend this mana only to cast spells with mana value 4 or greater."
+)]
 #[case::thieving_varmint(
     r#"[{"Spell":{"facts":["NotOwned"]}}]"#,
     "{T}: Add one mana of any color. Spend this mana only to cast spells you don't own."
