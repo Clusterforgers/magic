@@ -19,6 +19,7 @@ const UNTAP: &str =
 #[case::a_land("you untap a land you control.", false)]
 #[case::up_to("Untap up to one land you control.", true)]
 #[case::player_up_to("that player untaps up to one land.", true)]
+#[case::no_text("", true)]
 fn fix16_untap_up_to_follows_oracle(#[case] oracle: &str, #[case] fewer: bool) {
     let text = format!(
         "Name:T\nManaCost:U\nTypes:Enchantment\nT:Mode$ Phase | Phase$ Upkeep | ValidPlayer$ You | TriggerZones$ Battlefield | Execute$ TrigUntap | TriggerDescription$ x\n{UNTAP}\nOracle:{oracle}\n"
