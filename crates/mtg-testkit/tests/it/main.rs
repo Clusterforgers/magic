@@ -194,6 +194,7 @@ mod e10b_sealed;
 mod e14b_pay_or_graveyard;
 mod e14b_turn_up_parts;
 mod e14b_unattach_granter;
+mod e14b_x_at_least;
 mod elimination;
 mod embalm;
 mod en3_source;

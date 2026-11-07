@@ -198,6 +198,8 @@ pub enum CostItem {
     /// Waterbend (Avatar): that much generic mana, which the payer may pay in part by tapping untapped artifacts and creatures
     /// they control, each paying {1}.
     Waterbend(u32),
+    /// The X announced for the cost is at least this much ("X can't be 0"); pays nothing itself.
+    XAtLeast(u32),
     /// Forage (Bloomburrow): exile three cards from the payer's graveyard or sacrifice a Food they control.
     Forage,
     /// Craft materials (CR 702.167): exile permanents the payer controls and/or cards in their graveyard that match, other than the source.

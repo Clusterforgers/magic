@@ -126,6 +126,8 @@ fn item(ctx: &Ctx, word: &str) -> Tr<Value> {
     match word {
         "T" => return Ok(json!("Tap")),
         "Q" => return Ok(json!("Untap")),
+        // "X can't be 0."
+        "XMin1" => return Ok(json!({"XAtLeast": 1})),
         _ => {}
     }
     if let Some(found) = super::cost_more::bare(ctx, word) {

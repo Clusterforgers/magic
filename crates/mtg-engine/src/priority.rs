@@ -238,13 +238,17 @@ fn can_activate(
             return false;
         }
     }
-    announceable(state, player, object.id(), rules)
-        && some_x_has_targets(state, player, object.id(), rules, |x| {
-            x == 0
-                || ((price.x > 0 || price.counted())
-                    && price.at(x).claimed(state, player, object.id()).is_some()
-                    && can_pay_x(state, player, object, &price, &claimed, x))
-        })
+    let affords = |x: u32| {
+        x == 0
+            || ((price.x > 0 || price.counted())
+                && price.at(x).claimed(state, player, object.id()).is_some()
+                && can_pay_x(state, player, object, &price, &claimed, x))
+    };
+    // "X can't be 0": the least X must be paid for.
+    let least = crate::announce::least_of(cost);
+    (least == 0 || affords(least))
+        && announceable(state, player, object.id(), rules)
+        && some_x_has_targets(state, player, object.id(), rules, affords)
 }
 
 /// Whether the source can be tapped (`{T}`) or untapped (`{Q}`) as the price asks: a permanent in the other state, and a

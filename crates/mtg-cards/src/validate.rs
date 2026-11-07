@@ -1366,6 +1366,15 @@ impl<'a> Walker<'a> {
                     | CostItem::CollectEvidence(_)
                     | CostItem::Waterbend(_)
                     | CostItem::Forage => {}
+                    CostItem::XAtLeast(least) => {
+                        if *least == 0 {
+                            w.problem("an X of at least 0 is any X");
+                        }
+                        // The least X is announced for an activated ability only.
+                        if !w.activated_cost {
+                            w.uses("Cost", "XAtLeast.Elsewhere");
+                        }
+                    }
                 }
             });
         }
