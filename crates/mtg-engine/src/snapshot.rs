@@ -102,6 +102,10 @@ pub struct Snapshot {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     #[cfg_attr(feature = "ts", ts(optional))]
     pub host: Option<ObjectRef>,
+    /// Whether it was suspected (CR 701.60): "if the sacrificed creature was suspected" reads it after it has left.
+    #[serde(default, skip_serializing_if = "std::ops::Not::not")]
+    #[cfg_attr(feature = "ts", ts(skip))]
+    pub suspected: bool,
 }
 
 impl Snapshot {
@@ -163,6 +167,9 @@ pub fn snapshot(state: &GameState, id: ObjectId) -> Option<Snapshot> {
                     .and_then(crate::object::PermanentState::attached_to)
             })
             .flatten(),
+        suspected: object
+            .permanent()
+            .is_some_and(crate::object::PermanentState::suspected),
     })
 }
 

@@ -1,4 +1,4 @@
-//! Goal: pack e14d's mechanics play whole at tables of two, three and four seats: recruit draws, discards and makes a Human Soldier only for a nonland discard; protection with an exception keeps the Auras it spares attached while plain protection removes even its own Aura; a suspected creature has menace and is not offered as a blocker.
+//! Goal: pack e14d's mechanics play whole at tables of two, three and four seats: recruit draws, discards and makes a Human Soldier only for a nonland discard; protection with an exception keeps the Auras it spares attached while plain protection removes even its own Aura; a suspected creature has menace and is not offered as a blocker, and a creature card returned to the battlefield is suspected as the permanent it became.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
 use std::cell::RefCell;
@@ -213,5 +213,35 @@ fn a_suspected_creature_has_menace_and_cant_block(
     assert_eq!(offered.take(), Some(vec!["Guard".to_owned()]));
     let wall = driver.id_of("Wall")?;
     assert!(keywords_of(driver.state(), wall).contains(&&Keyword::Menace));
+    Ok(())
+}
+
+#[rstest]
+fn a_creature_returned_to_the_battlefield_is_the_one_suspected(
+    #[values(2, 3, 4)] seats: usize,
+) -> Result<(), ScriptError> {
+    // "Return target creature card from your graveyard to the battlefield. Suspect it." (It Doesn't Add Up)
+    let spell: Ability = serde_json::from_str(
+        r#"{"Spell":{"targets":[{"what":{"Object":[{"Type":"Creature"},{"OwnedBy":"You"},{"In":"Graveyard"}]}}],"effects":[{"Move":{"to":{"Battlefield":{}},"what":{"Target":0}}},{"Suspect":{"what":{"Target":0}}}]}}"#,
+    )
+    .unwrap();
+    let doubt = Arc::new(
+        CardDefinition::new("Doubt")
+            .with_type(CardType::Sorcery)
+            .with_mana_cost(ManaCost::parse("{0}").unwrap())
+            .with_rules(spell),
+    );
+    let scenario = table(seats, vec![], &[free_creature("Wall", 0, 4)])
+        .hand(0, vec![doubt])
+        .graveyard(0, vec![free_creature("Bear", 2, 2)]);
+    let mut driver = Driver::from_scenario(scenario)?;
+    let bear = driver.state().zone(Zone::Graveyard(pid(0)))[0];
+    let named = driver.state().object(bear).unwrap().reference();
+    driver.cast_at("Doubt", &[Target::Object(named)])?;
+    crate::macro_keywords::fight_on(&mut driver, Step::Main1)?;
+    let bear = driver.id_of("Bear")?;
+    let held = driver.state().object(bear).unwrap().permanent().unwrap();
+    assert!(held.suspected());
+    assert!(keywords_of(driver.state(), bear).contains(&&Keyword::Menace));
     Ok(())
 }

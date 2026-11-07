@@ -41,3 +41,55 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         .collect();
     Ok(Run::events(events))
 }
+
+#[cfg(test)]
+mod tests {
+    //! Goal: a suspected permanent reads as suspected while it is there and, once it has left, as its snapshot holds it; the fold refuses a permanent suspected twice or unsuspected while it is not.
+    use mtg_cards::refs::{Pred, Selector};
+    use mtg_core::ids::PlayerId;
+    use rstest::rstest;
+
+    use crate::events::Event;
+    use crate::fixtures::{creature, state};
+    use crate::fold::apply_event;
+    use crate::resolve::Scope;
+    use crate::snapshot::snapshot;
+    use crate::zones::Zone;
+
+    #[rstest]
+    fn the_sacrificed_creature_reads_as_it_was(#[values(true, false)] suspected: bool) {
+        let mut game = state(
+            vec![vec![], vec![]],
+            vec![vec![creature("Bear", 2, 2)], vec![]],
+        );
+        let bear = game.zone(Zone::Battlefield)[0];
+        if suspected {
+            apply_event(&mut game, &Event::Suspected { object: bear }).unwrap();
+        }
+        let named = game.object(bear).unwrap().reference();
+        let is = Selector(vec![Pred::Suspected]);
+        let live = Scope::announcing(&game, PlayerId(0), named);
+        assert_eq!(live.selects(&is, named).unwrap(), suspected);
+        let shot = snapshot(&game, bear).unwrap();
+        let gone = game.objects.get_mut(&bear).unwrap();
+        gone.counter += 1;
+        gone.zone = Zone::Graveyard(PlayerId(0));
+        let mut scope = Scope::announcing(&game, PlayerId(0), named);
+        scope.snapshots = vec![&shot];
+        assert_eq!(scope.selects(&is, named).unwrap(), suspected);
+    }
+
+    #[test]
+    fn the_fold_refuses_what_cannot_change() {
+        let mut game = state(
+            vec![vec![], vec![]],
+            vec![vec![creature("Bear", 2, 2)], vec![]],
+        );
+        let bear = game.zone(Zone::Battlefield)[0];
+        assert!(apply_event(&mut game, &Event::Unsuspected { object: bear }).is_err());
+        apply_event(&mut game, &Event::Suspected { object: bear }).unwrap();
+        assert!(apply_event(&mut game, &Event::Suspected { object: bear }).is_err());
+        apply_event(&mut game, &Event::Unsuspected { object: bear }).unwrap();
+        assert!(!game.object(bear).unwrap().permanent().unwrap().suspected());
+    }
+}
