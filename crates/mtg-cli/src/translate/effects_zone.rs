@@ -1144,6 +1144,7 @@ fn r5a_reveals_taken(oracle: &str) -> bool {
 
 /// `Dig`: look at the top cards, take some, put the rest somewhere ("look at the top four cards of your library; you may
 /// reveal a creature card from among them and put it into your hand; put the rest on the bottom in any order").
+#[allow(clippy::too_many_lines)]
 pub fn dig(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
     only(p, "Dig", &DIG_KEYS)?;
     let revealing = revealing(p)?;
@@ -1160,7 +1161,7 @@ pub fn dig(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
     let _ = p.get("NoLooking");
     // The script of an attacking dig may reveal where the printed text only looks.
     let reveals = p.get("Reveal") == Some("True")
-        && !(p.has("Attacking") && !ctx.oracle.to_lowercase().contains("reveal"));
+        && (!p.has("Attacking") || ctx.oracle.to_lowercase().contains("reveal"));
     let who = subject(ctx, p, "You", None)?;
     let count = amount(ctx, p.get("DigNum").unwrap_or("1"))?;
     // "Exile the top card of your library face down": nobody looks at it, the exiler neither.
@@ -1497,6 +1498,7 @@ fn every_revealed(ctx: &Ctx) -> Tr<bool> {
 }
 
 /// `DigUntil`: reveal cards until some match, the match goes to one place and the revealed cards to another.
+#[allow(clippy::too_many_lines)]
 pub fn dig_until(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
     only(
         p,
