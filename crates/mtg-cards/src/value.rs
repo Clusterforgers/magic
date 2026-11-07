@@ -331,6 +331,12 @@ pub enum TurnTally {
     Sacrificed,
     /// The permanent cards put into the player's graveyard from anywhere this turn (descended, CR 702.188 of the Lost Caverns rules); a token is no card.
     Descended,
+    /// The damage dealt this turn, after prevention, to the objects the reference names, as the objects they were then (a
+    /// creature that died since counts what it was dealt before it died), and to the players it names; added up.
+    DamageDealtTo,
+    /// The crimes the player committed this turn (CR 700.13): each spell they cast and each ability they put on the stack
+    /// that targets an opponent, something an opponent controls or a card in an opponent's graveyard, once.
+    Crimes,
     /// The dungeons the player has completed this game (CR 309.7), each completion once; not reset by the turn.
     DungeonsCompleted,
     /// The nonland permanents that left the battlefield for any zone while the players read controlled them (void).
@@ -362,6 +368,9 @@ pub enum TallyEvent {
     /// Counters were put on a permanent or a card in exile by a spell or ability (the object; an amount counts the
     /// counters put, for the player who controlled the spell or ability).
     CountersPut,
+    /// +1/+1 counters were put on a permanent or a card in exile by a spell or ability, as for `CountersPut`; an amount
+    /// counts the +1/+1 counters put.
+    PlusOneCountersPut,
 }
 
 /// Which result of the latest die roll an amount reads.
@@ -473,6 +482,9 @@ pub enum Amount {
     /// The life the players lost to the effects of the spell or ability that is resolving ("you gain life equal to the
     /// life lost this way"): the amounts of its `LifeLost` events so far.
     LifeLostThisWay,
+    /// The damage the resolving spell or ability has dealt so far, after prevention, to every player and object together
+    /// ("you gain life equal to the damage dealt this way"); zero outside a resolution.
+    DamageDealtThisWay,
     /// How many permanents the resolving spell or ability has destroyed so far that matched the selector as they last
     /// existed ("for each creature destroyed this way", "creatures you controlled that were destroyed this way"); tokens
     /// count, and a permanent regenerated or indestructible was not destroyed.
@@ -698,6 +710,7 @@ enum Tagged {
     HighestLife(Ref),
     LowestHand(Ref),
     LifeLostThisWay,
+    DamageDealtThisWay,
     Destroyed(Selector),
     Exiled(Selector),
     PhasedOut(Selector),
@@ -816,6 +829,7 @@ enum TaggedRef<'a> {
     HighestLife(&'a Ref),
     LowestHand(&'a Ref),
     LifeLostThisWay,
+    DamageDealtThisWay,
     Destroyed(&'a Selector),
     Exiled(&'a Selector),
     PhasedOut(&'a Selector),
@@ -912,6 +926,7 @@ impl From<Tagged> for Amount {
             Tagged::HighestLife(who) => Amount::HighestLife(who),
             Tagged::LowestHand(who) => Amount::LowestHand(who),
             Tagged::LifeLostThisWay => Amount::LifeLostThisWay,
+            Tagged::DamageDealtThisWay => Amount::DamageDealtThisWay,
             Tagged::Distinct { of, stat } => Amount::Distinct { of, stat },
             Tagged::Destroyed(of) => Amount::Destroyed(of),
             Tagged::Exiled(of) => Amount::Exiled(of),
@@ -995,6 +1010,7 @@ impl Serialize for Amount {
             Amount::HighestLife(who) => TaggedRef::HighestLife(who).serialize(serializer),
             Amount::LowestHand(who) => TaggedRef::LowestHand(who).serialize(serializer),
             Amount::LifeLostThisWay => TaggedRef::LifeLostThisWay.serialize(serializer),
+            Amount::DamageDealtThisWay => TaggedRef::DamageDealtThisWay.serialize(serializer),
             Amount::Distinct { of, stat } => {
                 TaggedRef::Distinct { of, stat: *stat }.serialize(serializer)
             }
@@ -1317,6 +1333,7 @@ mod tests {
     #[case::highest_life(Amount::HighestLife(Ref::Opponents), r#"{"HighestLife":"Opponents"}"#)]
     #[case::lowest_hand(Amount::LowestHand(Ref::EachPlayer), r#"{"LowestHand":"EachPlayer"}"#)]
     #[case::life_lost_this_way(Amount::LifeLostThisWay, r#""LifeLostThisWay""#)]
+    #[case::damage_dealt_this_way(Amount::DamageDealtThisWay, r#""DamageDealtThisWay""#)]
     #[case::destroyed_this_way(Amount::Destroyed(Selector(vec![Pred::Type(CardType::Creature)])), r#"{"Destroyed":[{"Type":"Creature"}]}"#)]
     #[case::exiled_this_way(Amount::Exiled(Selector(vec![Pred::Type(CardType::Creature)])), r#"{"Exiled":[{"Type":"Creature"}]}"#)]
     #[case::distinct(Amount::Distinct { of: Selector(vec![Pred::Type(CardType::Creature)]), stat: StatKind::Power }, r#"{"Distinct":{"of":[{"Type":"Creature"}],"stat":"Power"}}"#)]

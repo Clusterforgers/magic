@@ -279,6 +279,10 @@ pub(super) fn texts(condition: &Condition) -> Vec<String> {
     {
         return vec![text];
     }
+    let g10c = super::g10c_facts::texts(left, *op, number);
+    if !g10c.is_empty() {
+        return g10c;
+    }
     let r6d = super::r6d_facts::texts(left, *op, number);
     if !r6d.is_empty() {
         return r6d;

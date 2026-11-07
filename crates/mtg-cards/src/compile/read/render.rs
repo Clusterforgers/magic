@@ -3000,6 +3000,11 @@ impl Writer<'_> {
                 format!("life equal to its {}", stat_name(*stat)?)
             }
             Amount::LifeLostThisWay => "life equal to the life lost this way".to_owned(),
+            Amount::DamageDealtThisWay => "life equal to the damage dealt this way".to_owned(),
+            Amount::Tallied {
+                who: Ref::Target(0),
+                what: crate::value::TurnTally::DamageTaken,
+            } => "life equal to the damage already dealt to that player this turn".to_owned(),
             Amount::Half { of, up } => {
                 let Amount::Life(whose) = of.as_ref() else {
                     return None;

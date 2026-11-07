@@ -592,6 +592,17 @@ pub(super) fn life(r: &mut Reader<'_>) -> Option<Amount> {
         if r.words("the life lost this way") {
             return Some(Amount::LifeLostThisWay);
         }
+        if r.words("the damage dealt this way") {
+            return Some(Amount::DamageDealtThisWay);
+        }
+        let one_player = r.targets.len() == 1
+            && matches!(r.targets[0].what, Targetable::Player | Targetable::Opponent);
+        if one_player && r.words("the damage already dealt to that player this turn") {
+            return Some(Amount::Tallied {
+                who: Ref::Target(0),
+                what: crate::value::TurnTally::DamageTaken,
+            });
+        }
         return r.attempt(its_stat).or_else(|| defining::value(r));
     }
     let amount = points(r)?;

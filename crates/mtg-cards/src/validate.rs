@@ -839,6 +839,7 @@ impl<'a> Walker<'a> {
         match amount {
             Amount::LowestHand(who) => self.player_amount("LowestHand", who),
             Amount::DieResult(_) => self.uses("Amount", "DieResult"),
+            Amount::DamageDealtThisWay => self.uses("Amount", "DamageDealtThisWay"),
             _ => self.uses("Amount", "LifeLostThisWay"),
         }
     }
@@ -848,6 +849,9 @@ impl<'a> Walker<'a> {
         if what == TurnTally::CountersPut {
             self.uses("Amount", "Tallied");
             self.at("Tallied", |w| w.reference(who, Kind::Object));
+        } else if what == TurnTally::DamageDealtTo {
+            self.uses("Amount", "Tallied");
+            self.at("Tallied", |w| w.reference(who, Kind::Either));
         } else {
             self.player_amount("Tallied", who);
         }
@@ -937,7 +941,10 @@ impl<'a> Walker<'a> {
             Amount::Players(who) => self.player_amount("Players", who),
             Amount::HighestLife(who) => self.player_amount("HighestLife", who),
             Amount::LowestLife(who) => self.player_amount("LowestLife", who),
-            Amount::LowestHand(_) | Amount::LifeLostThisWay | Amount::DieResult(_) => {
+            Amount::LowestHand(_)
+            | Amount::LifeLostThisWay
+            | Amount::DamageDealtThisWay
+            | Amount::DieResult(_) => {
                 self.hand_or_life_lost(amount);
             }
             Amount::Kicks | Amount::Promised | Amount::Devoured => self.paid_amount(amount),
@@ -1040,6 +1047,7 @@ impl<'a> Walker<'a> {
             | Amount::HighestLife(_)
             | Amount::LowestHand(_)
             | Amount::LifeLostThisWay
+            | Amount::DamageDealtThisWay
             | Amount::Destroyed(_)
             | Amount::Exiled(_)
             | Amount::PhasedOut(_)

@@ -27,6 +27,10 @@ pub fn when(ctx: &Ctx, base: &str) -> Option<Tr<Value>> {
             json!({"Compare": {"left": {"Tallied": {"who": "EachPlayer", "what": "CreaturesDied"}}, "op": "Ge", "right": 1}})
         }
         "Blessing" => json!({"CitysBlessing": "You"}),
+        // You committed a crime this turn (CR 700.13).
+        "CommittedCrimeThisTurn" => {
+            json!({"Compare": {"left": {"Tallied": {"who": "You", "what": "Crimes"}}, "op": "Ge", "right": 1}})
+        }
         "StartingPlayer" => json!({"StartingPlayer": "You"}),
         "Night" => json!("IsNight"),
         // Landfall: a land entered the battlefield under your control this turn.

@@ -376,6 +376,10 @@ pub(super) fn targeted_amount(head: &str, what: &str, of: &Value) -> Tr<Value> {
         "CardManaCost" => "ManaValue",
         "CardNumColors" => "Colors",
         "CastTotalManaSpent" => "ManaSpent",
+        // The damage dealt to it this turn, as the object it was: a creature that died counts what it was dealt.
+        "TotalDamageReceivedThisTurn" => {
+            return Ok(json!({"Tallied": {"who": of, "what": "DamageDealtTo"}}));
+        }
         other => return unmapped(format!("amount:{head}${other}")),
     };
     Ok(json!({"Stat": {"of": of, "stat": stat}}))

@@ -276,6 +276,7 @@ mod fights;
 mod fix10;
 mod flicker;
 mod for_each;
+mod g10c_writers;
 mod g8c_writers;
 mod g8e_writers;
 mod g9a_writers;

@@ -103,6 +103,7 @@ const RUNS: &[&str] = &[
     "Amount.HighestLife",
     "Amount.LowestHand",
     "Amount.LifeLostThisWay",
+    "Amount.DamageDealtThisWay",
     "Amount.Destroyed",
     "Amount.Exiled",
     "Amount.PhasedOut",
@@ -1292,6 +1293,7 @@ mod tests {
     #[case::the_highest_life_total("Amount.HighestLife", true)]
     #[case::the_fewest_cards_in_a_hand("Amount.LowestHand", true)]
     #[case::the_life_lost_this_way("Amount.LifeLostThisWay", true)]
+    #[case::the_damage_dealt_this_way("Amount.DamageDealtThisWay", true)]
     #[case::c11e_a_die_result("Amount.DieResult", true)]
     #[case::c11e_a_roll_trigger("Trigger.DiceRolled", true)]
     #[case::myriad("Keyword.Myriad", true)]

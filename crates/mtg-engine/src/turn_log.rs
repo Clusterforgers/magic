@@ -81,7 +81,10 @@ impl GameState {
 
 /// The kinds that count what they carry (damage, counters) instead of events.
 const fn weighs(event: TallyEvent) -> bool {
-    matches!(event, TallyEvent::Damaged | TallyEvent::CountersPut)
+    matches!(
+        event,
+        TallyEvent::Damaged | TallyEvent::CountersPut | TallyEvent::PlusOneCountersPut
+    )
 }
 
 /// Whether the kind is one of the turn's records rather than of the snapshot log.
@@ -93,6 +96,7 @@ pub(crate) const fn is_record(event: TallyEvent) -> bool {
             | TallyEvent::Blocked
             | TallyEvent::Activated
             | TallyEvent::CountersPut
+            | TallyEvent::PlusOneCountersPut
     )
 }
 
@@ -123,6 +127,20 @@ impl Scope<'_> {
                         .as_ref()
                         .is_none_or(|to| record.other.is_some_and(|other| to.contains(&other)))
             })
+    }
+
+    /// The damage dealt this turn to the players and objects named, as the objects were when it was dealt.
+    pub(crate) fn g10c_damage_to(&self, to: &[Target]) -> i64 {
+        self.state
+            .tallies
+            .records
+            .iter()
+            .filter(|record| {
+                record.event == TallyEvent::Damaged
+                    && record.other.is_some_and(|other| to.contains(&other))
+            })
+            .map(|record| i64::from(record.amount))
+            .sum()
     }
 
     /// The records of the kind this turn that count for the players and whose object the filter selects: events counted,

@@ -23,10 +23,15 @@ pub(super) fn add(ability: &Ability, texts: &mut Vec<String>) {
     let json = serde_json::to_string(ability).unwrap_or_default();
     let cant = matches!(ability, Ability::Static { .. })
         && (json.contains("\"CantAttack\"") || json.contains("\"CantBlock\""));
+    let unblockable =
+        matches!(ability, Ability::Static { .. }) && json.contains("\"CantBeBlocked\"");
     let mut found: Vec<String> = Vec::new();
     for text in texts.iter() {
         if cant {
             found.extend(cant_unless(text));
+        }
+        if unblockable {
+            found.extend(super::g10c_wordings::unblockable_if(text));
         }
         found.extend(cost_if(text));
         found.extend(mana_colors(text));

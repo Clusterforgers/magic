@@ -169,6 +169,8 @@ pub(crate) enum Tally {
     Sacrificed,
     /// A permanent card put into a graveyard from anywhere (counted for its owner).
     Descended,
+    /// A crime committed (CR 700.13), once for each spell or ability (counted for the player who committed it).
+    G10cCrimes,
     /// A token created (counted for the player who controls it).
     Tokens,
     /// A kind of counter put on a permanent or a card in exile, once for each event (counted for the object).
