@@ -46,13 +46,21 @@ pub(super) fn origin(cx: &Cx<'_>) -> Result<Origin, ResolveError> {
         crate::abilities::AbilityObject::index,
     );
     // What a step did belongs to the resolution that ran it: the delayed trigger reads its own steps by position.
-    let bindings = cx
+    let mut bindings: Vec<(String, Vec<Target>)> = cx
         .resolving
         .bindings()
         .iter()
         .filter(|(name, _)| !name.starts_with("?performed"))
         .map(|(name, targets)| (name.clone(), targets.clone()))
         .collect();
+    // The numbers `Let` kept travel as names too, so the trigger reads them as the setup fixed them.
+    if let Some(resolving) = state.resolving.as_ref() {
+        bindings.extend(
+            resolving.lets.iter().map(|(name, value)| {
+                (format!("{}{value}:{name}", crate::resolve::LET), Vec::new())
+            }),
+        );
+    }
     Ok(Origin {
         source,
         snapshot,

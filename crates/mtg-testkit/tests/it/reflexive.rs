@@ -187,3 +187,26 @@ fn the_targets_are_chosen_when_the_trigger_goes_on_the_stack() -> Result<(), Scr
     );
     Ok(())
 }
+
+/// "Note how many creatures you control, sacrifice one. When you do, target opponent loses that much life": the trigger
+/// reads the number as it was kept, not as it is once the sacrifice is done, at every table size.
+#[rstest]
+#[case::two_seats(2, 2)]
+#[case::four_seats(4, 3)]
+fn the_trigger_reads_the_number_its_setup_kept(
+    #[case] seats: usize,
+    #[case] creatures: usize,
+) -> Result<(), ScriptError> {
+    let first = r#"[{"Let":{"as":"n","amount":{"Count":[{"Type":"Creature"},{"ControlledBy":"You"}]}}},{"Sacrifice":{"filter":[{"Type":"Creature"}]}}]"#;
+    let then = r#"[{"LoseLife":{"who":{"Target":0},"amount":{"Bound":"n"}}}]"#;
+    let mut mine = vec![ready(rig(first, OPPONENT, then))];
+    mine.extend((0..creatures).map(|at| ready(free_creature(&format!("Fodder {at}"), 1, 1))));
+    let scenario = || Scenario::new(seats).battlefield(0, mine.clone());
+    let mut driver = Driver::from_scenario(scenario())?;
+    play(&mut driver, true)?;
+    let lost = i32::try_from(creatures).unwrap();
+    driver.expect_life(1, 20 - lost)?;
+    let replayed = replay(&scenario().setup().unwrap(), driver.engine().events()).unwrap();
+    assert_eq!(replayed.state_hash(), driver.state().state_hash());
+    Ok(())
+}

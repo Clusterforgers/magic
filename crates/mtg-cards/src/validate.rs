@@ -3466,6 +3466,7 @@ impl Walker<'_> {
                 // The trigger has targets of its own and sees the names this resolution has bound.
                 let mut inner = Scope::new(targets, true);
                 inner.names.clone_from(&w.scope.names);
+                inner.numbers.clone_from(&w.scope.numbers);
                 let saved = std::mem::replace(&mut w.scope, inner);
                 w.body_checks(targets, effects, false);
                 w.scope = saved;
@@ -5108,6 +5109,21 @@ mod tests {
             refused,
             "{found:?}"
         );
+    }
+
+    /// A reflexive trigger sees the numbers its resolution kept, as it sees the names it bound.
+    #[rstest]
+    #[case::kept_before(r#"[{"Let":{"as":"n","amount":2}},{"Reflexive":{"effects":[{"GainLife":{"amount":{"Bound":"n"}}}]}}]"#, 0)]
+    #[case::never_kept(
+        r#"[{"Reflexive":{"effects":[{"GainLife":{"amount":{"Bound":"n"}}}]}}]"#,
+        1
+    )]
+    fn g8b_a_reflexive_trigger_reads_a_number_kept_before_it(
+        #[case] effects: &str,
+        #[case] found: usize,
+    ) {
+        let json = format!(r#"{{"Spell":{{"effects":{effects}}}}}"#);
+        assert_eq!(problems(&json).len(), found, "{json}");
     }
 
     #[test]
