@@ -135,3 +135,27 @@ fn an_optional_move_of_several_found_cards_is_a_gap() {
     );
     assert_eq!(gaps(&script), ["key:DigUntil.OptionalFoundMove"]);
 }
+
+fn draw_cost(count: &str) -> String {
+    format!(
+        "Name:T\nTypes:Creature\nPT:2/2\nT:Mode$ ChangesZone | Origin$ Any | Destination$ Battlefield | ValidCard$ Card.Self | Execute$ TrigDraw | OptionalDecider$ You | TriggerDescription$ x\nSVar:TrigDraw:AB$ Discard | Cost$ Draw<{count}/You> | Defined$ You | NumCards$ 2 | Mode$ TgtChoose\nSVar:X:Count$CardPower\n"
+    )
+}
+
+/// A counted draw paid on resolution ("you may draw cards equal to its power; if you do, discard two") is a draw of that
+/// count; a fixed count stays a number and nought stays a gap.
+#[rstest]
+#[case::counted("X", json!({"Stat": {"of": "This", "stat": "Power"}}))]
+#[case::fixed("2", json!(2))]
+fn a_counted_draw_cost_is_paid_as_it_resolves(#[case] count: &str, #[case] drawn: Value) {
+    let found = abilities(&draw_cost(count));
+    assert_eq!(found.len(), 1, "{:?}", gaps(&draw_cost(count)));
+    let text = found[0].to_string();
+    let want = json!({"Pay": {"cost": [{"Draw": drawn}], "paid": [{"Discard": {"count": 2}}]}});
+    assert!(text.contains(&want.to_string()), "{text}");
+}
+
+#[test]
+fn a_draw_cost_of_nought_is_a_gap() {
+    assert_eq!(gaps(&draw_cost("0")), ["cost:counted-draw-or-discard"]);
+}

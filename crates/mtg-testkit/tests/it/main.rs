@@ -247,7 +247,7 @@ mod freerunning;
 mod fuse;
 mod fuzz_games;
 mod g10d_spell_costs;
-mod g12d_do_while;
+mod g12d;
 mod gap_fuzz;
 mod gift;
 mod gift_fuzz;
