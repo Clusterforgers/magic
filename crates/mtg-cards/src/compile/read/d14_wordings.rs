@@ -1,15 +1,9 @@
-//! Wordings of one meaning that the oracle text and the writers say differently (d14 triage of the `Differs` clauses): the
-//! name of a mode, the possessive of "owner", "until end of turn, whenever", "any number of target" and "add an
-//! additional". Both sides of a comparison are normalized, so a rule of another meaning still differs.
+//! Wordings of one meaning that the oracle text and the writers say differently (d14 triage of the `Differs` clauses):
+//! "until end of turn, whenever", "any number of target" and "add an additional". Both sides of a comparison are normalized, so a rule of another meaning still differs.
 
 /// The text with each of the wordings below written one way.
 pub(super) fn normal(text: &str) -> String {
-    let mut text = mode_names(text);
-    for (from, to) in OWNERS {
-        if text.contains(from) {
-            text = text.replace(from, to);
-        }
-    }
+    let mut text = text.to_owned();
     if text.contains("add an additional {") {
         text = text.replace("add an additional {", "add {");
     }
@@ -20,48 +14,6 @@ pub(super) fn normal(text: &str) -> String {
         text = any;
     }
     text
-}
-
-/// The possessive of "owner" in the places a card goes: "to their owners' hands" and "to its owner's hand" name the owner.
-const OWNERS: &[(&str, &str)] = &[
-    ("owners' hands", "owner's hand"),
-    ("owner's hands", "owner's hand"),
-    ("owners'", "owner's"),
-    ("their owner's", "its owner's"),
-];
-
-/// A mode line without its name: "• Charge Them — Creatures you control get +2/+0" is flavor before the dash (CR 207.2c
-/// names ability words; the names of modes are the same kind of label).
-fn mode_names(text: &str) -> String {
-    if !text.contains("\n• ") && !text.starts_with("• ") {
-        return text.to_owned();
-    }
-    let lines: Vec<String> = text
-        .split('\n')
-        .map(|line| match line.strip_prefix("• ") {
-            Some(rest) => match rest.split_once(" \u{2014} ") {
-                Some((name, body)) if is_name(name) => format!("• {body}"),
-                _ => line.to_owned(),
-            },
-            None => line.to_owned(),
-        })
-        .collect();
-    lines.join("\n")
-}
-
-/// Whether the words before a dash are a title: capitalized words, at most five, no digits, symbols or punctuation but
-/// an apostrophe or a comma.
-fn is_name(name: &str) -> bool {
-    let words: Vec<&str> = name.split(' ').collect();
-    words.len() <= 5
-        && words.iter().enumerate().all(|(at, word)| {
-            let small = at > 0 && matches!(*word, "of" | "the" | "a" | "to" | "and" | "in" | "for");
-            let capital = word.chars().next().is_some_and(char::is_uppercase);
-            (small || capital)
-                && word
-                    .chars()
-                    .all(|c| c.is_alphabetic() || matches!(c, '\'' | ',' | '-'))
-        })
 }
 
 /// "Until end of turn, whenever you cast a spell, copy it." as "Whenever you cast a spell this turn, copy it.": the
