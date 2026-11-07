@@ -224,6 +224,18 @@ fn numeric_property(ctx: &Ctx, prop: &str) -> Tr<Option<Vec<Value>>> {
             json!({"Compare": {"stat": "ManaSpent", "op": op, "to": bound}}),
         ]));
     }
+    // `totalPT_LE5`: its power and toughness added together ("with total power and toughness 5 or less").
+    if let Some(rest) = prop.strip_prefix("totalPT_")
+        && let Some((op, bound)) = rest.get(..2).and_then(cmp).zip(rest.get(2..))
+        && !bound.is_empty()
+        && bound.chars().all(|c| c.is_ascii_alphanumeric())
+    {
+        let stat = |kind: &str| json!({"Stat": {"of": "Candidate", "stat": kind}});
+        let total = json!({"Sum": [stat("Power"), stat("Toughness")]});
+        return Ok(Some(vec![
+            json!({"Test": {"left": total, "op": op, "right": amount(ctx, bound)?}}),
+        ]));
+    }
     let Some((stat, rest)) = [
         ("power", "Power"),
         ("toughness", "Toughness"),
