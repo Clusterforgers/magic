@@ -2,7 +2,7 @@
 //! 115.3) and "up to three target creature cards with total mana value 3 or less" (a total over the chosen set).
 
 use super::selectors::{Form, phrase_text, spec_text};
-use crate::refs::{Bounds, Selector, TargetSpec, Targetable};
+use crate::refs::{Bounds, Selector, TargetSet, TargetSpec, Targetable};
 use crate::value::Amount;
 
 /// "Another target", "another target player", "another target creature": none of the earlier targets.
@@ -18,8 +18,31 @@ pub(super) fn another_text(what: &Targetable) -> Option<String> {
     })
 }
 
-/// The targets of `what` within the bounds of `spec`, then "with total mana value 3 (or X) or less".
-pub(super) fn total_text(spec: &TargetSpec, what: &Targetable, most: &Amount) -> Option<String> {
+/// Whether the specification has a most for the total mana value of its targets.
+pub(super) fn is_total(spec: &TargetSpec) -> bool {
+    matches!(
+        &spec.what,
+        Targetable::Together {
+            rule: TargetSet::TotalManaValueAtMost(_),
+            ..
+        }
+    )
+}
+
+/// The words of a specification with a most for the total mana value: the targets within its bounds, then "with total
+/// mana value 3 (or X) or less"; `None` when they cannot be said or for any other specification.
+pub(super) fn total_text(spec: &TargetSpec) -> Option<String> {
+    let Targetable::Together {
+        what,
+        rule: TargetSet::TotalManaValueAtMost(most),
+    } = &spec.what
+    else {
+        return None;
+    };
+    total_words(spec, what, most)
+}
+
+fn total_words(spec: &TargetSpec, what: &Targetable, most: &Amount) -> Option<String> {
     let most = match most {
         Amount::Fixed(n) => n.to_string(),
         Amount::X => "X".to_owned(),

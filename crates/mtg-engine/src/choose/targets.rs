@@ -371,15 +371,14 @@ pub(crate) fn options_for(
     earlier: Option<&[Vec<Target>]>,
 ) -> Option<TargetOptions> {
     let relaxed;
-    let spec = match earlier {
-        Some(_) => spec,
-        None => {
-            relaxed = TargetSpec {
-                what: without_earlier_reads(&spec.what),
-                ..spec.clone()
-            };
-            &relaxed
-        }
+    let spec = if earlier.is_some() {
+        spec
+    } else {
+        relaxed = TargetSpec {
+            what: without_earlier_reads(&spec.what),
+            ..spec.clone()
+        };
+        &relaxed
     };
     let legal = legal_for(
         state,

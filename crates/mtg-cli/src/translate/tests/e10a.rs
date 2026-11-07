@@ -8,9 +8,10 @@ use serde_json::{Value, json};
 use super::{abilities, gaps};
 
 fn spell(lines: &[&str]) -> String {
+    use std::fmt::Write;
     let mut script = format!("Name:T\nTypes:Sorcery\nA:SP$ {}\n", lines[0]);
     for (at, line) in lines.iter().enumerate().skip(1) {
-        script.push_str(&format!("SVar:S{at}:DB$ {line}\n"));
+        let _ = writeln!(script, "SVar:S{at}:DB$ {line}");
     }
     script
 }

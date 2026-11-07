@@ -13,7 +13,7 @@ use mtg_core::color::Color;
 
 use super::amounts::{count_word, number_word, stat_name};
 use super::counters;
-use super::e10a_targets::{another_text, total_text};
+use super::e10a_targets::{another_text, is_total, total_text};
 use super::subtypes::{plural_subtype as plural_subtype_word, singular_subtype};
 use super::tokens::Reader;
 use super::w6d_shares;
@@ -21,7 +21,7 @@ use crate::compile::keywords;
 use crate::cost::{Cost, CostItem};
 use crate::keyword::Keyword;
 use crate::modify::Modification;
-use crate::refs::{Bounds, Pred, Ref, Selector, TargetSet, TargetSpec, Targetable, ZoneKind};
+use crate::refs::{Bounds, Pred, Ref, Selector, TargetSpec, Targetable, ZoneKind};
 use crate::value::{Amount, Cmp, CounterKind, StatKind};
 
 const COLORS: [(&str, Color); 5] = [
@@ -1855,12 +1855,8 @@ pub fn spec_text(spec: &TargetSpec) -> Option<String> {
             Targetable::Another { what, .. } => return another_text(what),
         });
     }
-    if let Targetable::Together {
-        what,
-        rule: TargetSet::TotalManaValueAtMost(most),
-    } = &spec.what
-    {
-        return total_text(spec, what, most);
+    if is_total(spec) {
+        return total_text(spec);
     }
     let Targetable::Object(selector) = &spec.what else {
         return None;
