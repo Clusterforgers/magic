@@ -113,7 +113,10 @@ fn the_cards_exiled_with_it_come_back_after_it_leaves(
     }
     settle(&mut driver)?;
     assert_eq!(hand(&driver), SECRETS);
-    assert!(driver.state().zone(Zone::Exile).is_empty());
+    assert_eq!(
+        driver.state().zone(Zone::Exile),
+        &[] as &[mtg_core::ids::ObjectId]
+    );
     let state = replay(driver.engine().setup(), driver.engine().events()).unwrap();
     assert_eq!(state.state_hash(), driver.state().state_hash());
     Ok(())

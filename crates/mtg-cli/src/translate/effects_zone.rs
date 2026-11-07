@@ -1079,11 +1079,7 @@ pub fn dig(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
         && p.get("DestinationZone") == Some("Exile")
         && !p.has("ChangeValid")
     {
-        let mut exile = exile_top(ctx, p, &who, &count);
-        if hide == Hide::Sealed {
-            exile["ExileTop"]["sealed"] = json!(true);
-        }
-        return Ok(vec![exile]);
+        return Ok(vec![exile_top(ctx, p, &who, &count, hide)]);
     }
     let top = ctx.fresh("top");
     let kept = ctx.fresh("kept");
@@ -1176,13 +1172,17 @@ pub fn dig(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
     Ok(effects)
 }
 
-/// Every card looked at is exiled: the impulse shape.
-fn exile_top(ctx: &mut Ctx, p: &Params, who: &Value, count: &Value) -> Value {
+/// Every card looked at is exiled: the impulse shape, face down for no player to look at when `hide` seals them.
+fn exile_top(ctx: &mut Ctx, p: &Params, who: &Value, count: &Value, hide: Hide) -> Value {
     let exiled = ctx.fresh("exiled");
     if p.get("RememberChanged") == Some("True") {
         ctx.remembered = Some(json!({ "Bound": exiled }));
     }
-    json!({"ExileTop": {"who": who, "count": count, "as": exiled}})
+    let mut exile = json!({"ExileTop": {"who": who, "count": count, "as": exiled}});
+    if hide == Hide::Sealed {
+        exile["ExileTop"]["sealed"] = json!(true);
+    }
+    exile
 }
 
 /// Where a `Dig` puts the cards it takes and the rest.
@@ -1455,13 +1455,16 @@ enum Hide {
 /// `ExileFaceDown$ True` on a `Dig`: the cards taken lie face down in exile; their exiler may look at them with
 /// `WithMayLook$ True`, and no player may without it.
 fn face_down(p: &Params) -> Tr<Hide> {
-    let exiles = p.get("DestinationZone") == Some("Exile")
-        && p.get("DestinationZone2") != Some("Exile")
-        && p.get("Reveal") != Some("True");
+    // Read only for a face-down line: a face-up one reads its other keys where it uses them.
+    let exiles = || {
+        p.get("DestinationZone") == Some("Exile")
+            && p.get("DestinationZone2") != Some("Exile")
+            && p.get("Reveal") != Some("True")
+    };
     match (p.get("ExileFaceDown"), p.get("WithMayLook")) {
         (None, None) => Ok(Hide::No),
-        (Some("True"), Some("True")) if exiles => Ok(Hide::Held),
-        (Some("True"), None) if exiles => Ok(Hide::Sealed),
+        (Some("True"), Some("True")) if exiles() => Ok(Hide::Held),
+        (Some("True"), None) if exiles() => Ok(Hide::Sealed),
         (Some("True"), Some("True")) => unmapped("key:Dig.ExileFaceDown-destination"),
         (Some("True"), _) => unmapped("key:Dig.ExileFaceDown"),
         _ => unmapped("key:Dig.WithMayLook"),

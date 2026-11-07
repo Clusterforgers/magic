@@ -1240,10 +1240,7 @@ pub(crate) fn names_nothing(rule: &Rule) -> bool {
         Rule::UntapDuring { whose, .. } => whose.is_empty(),
         Rule::AttackLimitAt { at, .. } => at.is_empty(),
         Rule::AdditionalLandPlays(plays) => plays.iter().all(|(_, count)| *count == 0),
-        Rule::LookAtExiled { who, only, .. } => {
-            who.is_empty() || only.as_ref().is_some_and(Vec::is_empty)
-        }
-        Rule::MayCast { who, only, .. } => {
+        Rule::LookAtExiled { who, only, .. } | Rule::MayCast { who, only, .. } => {
             who.is_empty() || only.as_ref().is_some_and(Vec::is_empty)
         }
         Rule::BlockLimitEach { who, .. }
@@ -2625,6 +2622,6 @@ mod tests {
         assert_eq!(sees(&game), expected);
         // The grant ends with the holder: the card is sealed for every seat again.
         leaves(&mut game, "Holder");
-        assert!(sees(&game).is_empty());
+        assert_eq!(sees(&game), Vec::<usize>::new());
     }
 }
