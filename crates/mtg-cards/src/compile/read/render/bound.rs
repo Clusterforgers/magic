@@ -33,6 +33,8 @@ impl Writer<'_> {
             .or_else(|| self.exile_and_maybe_return(effects))
             .or_else(|| Writer::return_itself_later(effects))
             .or_else(|| self.exile_chosen_from_graveyard(effects))
+            .or_else(|| self.r11w_removed_makes(effects))
+            .or_else(|| self.r11w_returned_as(effects))
     }
 
     /// The creation and the sentence that acts on its tokens, and the number of effects they cover.

@@ -1152,6 +1152,8 @@ mod r6b;
 mod r7b;
 // r9w
 mod r9w;
+// r11w
+mod r11w;
 // e10c
 mod e10c_writers;
 mod g10d_writers;

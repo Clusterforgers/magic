@@ -327,6 +327,9 @@ pub(super) fn value_text(amount: &Amount) -> Option<String> {
 }
 
 pub(super) fn counting_text(amount: &Amount) -> Option<String> {
+    if let Some(text) = super::r11w_tallies::said(amount) {
+        return Some(text);
+    }
     match amount {
         Amount::Players(Ref::PlayersWhere { .. }) => super::r9w_players::r9w_number_texts(amount)
             .into_iter()
