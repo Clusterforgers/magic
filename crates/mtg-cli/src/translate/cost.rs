@@ -151,6 +151,8 @@ fn item(ctx: &Ctx, word: &str) -> Tr<Value> {
         "Sac" if what == "OriginalHost" && ctx.granted && number == "1" => {
             Ok(json!({"Sacrifice": {"filter": [{"Is": "Granter"}]}}))
         }
+        // "Equipped creature has '{T}, Unattach Shuriken: ...'": the Equipment that gave the ability lets go.
+        "Unattach" if number == "OriginalHost" && ctx.granted => Ok(json!("Unattach")),
         "SubCounter" if ctx.granted && inner.contains("OriginalHost") => {
             unmapped("cost:SubCounter-from-OriginalHost")
         }

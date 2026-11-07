@@ -156,7 +156,8 @@ pub enum CostItem {
     },
     /// The source deals damage to the payer ("{CARDNAME} deals 2 damage to you").
     DamageToYou(Amount),
-    /// Unattach the source, an Equipment or Aura attached to a permanent (CR 701.3d).
+    /// Unattach the source, an Equipment or Aura attached to a permanent (CR 701.3d); in an ability an Equipment or Aura
+    /// gives the permanent it is attached to, that Equipment or Aura ("{T}, Unattach Shuriken: ...").
     Unattach,
     /// Exile the top cards of the payer's library face up.
     ExileTop(Amount),

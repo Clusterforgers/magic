@@ -81,7 +81,12 @@ pub(crate) fn activation_events(
                 } else {
                     &[]
                 };
-                events.extend(part.w2f_events(state, (player, ability.object), picked, &mut kinds));
+                // An ability an Equipment or Aura gives unattaches that Equipment or Aura ("{T}, Unattach Shuriken").
+                let from = match (part, ability.source.granter()) {
+                    (Part::Unattach, Some(granter)) => granter,
+                    _ => ability.object,
+                };
+                events.extend(part.w2f_events(state, (player, from), picked, &mut kinds));
                 if let Part::Counters { counter, count } = part {
                     parts::after_removal(&mut before.counters, counter, *count);
                 }

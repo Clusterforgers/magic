@@ -212,10 +212,14 @@ fn exile(r: &mut Reader<'_>) -> Option<CostItem> {
     })
 }
 
-/// "Reveal a creature card from your hand", "Reveal a Giant card from your hand": the card stays in the hand.
+/// "Reveal a creature card from your hand", "Reveal a Giant card from your hand", the morph cost "Reveal a white card in
+/// your hand": the card stays in the hand.
 fn reveal(r: &mut Reader<'_>) -> Option<CostItem> {
     let (form, count) = how_many(r)?;
-    let mut filter = phrase(r, form)?;
+    // A count reads "in your hand" where a subject reads "from your hand".
+    let mut filter = r
+        .attempt(|r| phrase(r, form))
+        .or_else(|| phrase(r, Form::Count))?;
     without(&mut filter, &Pred::In(ZoneKind::Hand))?;
     without(&mut filter, &Pred::OwnedBy(Ref::You))?;
     Some(CostItem::RevealFromHand {
@@ -224,15 +228,21 @@ fn reveal(r: &mut Reader<'_>) -> Option<CostItem> {
     })
 }
 
-/// "Return a land you control to its owner's hand".
+/// "Return a land you control to its owner's hand", "Return two Islands you control to their owner's hand".
 fn bounce(r: &mut Reader<'_>) -> Option<CostItem> {
-    (r.word("a") || r.word("an")).then_some(())?;
-    let mut filter = phrase(r, Form::Subject)?;
+    let (form, count) = how_many(r)?;
+    (count != Amount::X).then_some(())?;
+    let mut filter = phrase(r, form)?;
     without(&mut filter, &Pred::ControlledBy(Ref::You))?;
-    r.words("to its owner's hand").then_some(())?;
+    let owner = if count == Amount::one() {
+        "to its owner's hand"
+    } else {
+        "to their owner's hand"
+    };
+    r.words(owner).then_some(())?;
     Some(CostItem::ReturnToHand {
         filter: kinds_only(filter)?,
-        count: Amount::one(),
+        count,
     })
 }
 
