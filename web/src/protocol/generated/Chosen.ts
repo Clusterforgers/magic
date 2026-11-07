@@ -8,4 +8,4 @@ import type { Subtype } from "./Subtype";
  * What the controller of a permanent chose as it entered the battlefield, which the permanent remembers for its
  * abilities to read (CR 614.1c).
  */
-export type Chosen = { "Color": Color } | { "CreatureType": Subtype } | { "LandType": Subtype } | { "Player": PlayerId } | { "CardType": CardType } | { "Name": string } | { "Number": number } | { "Word": string } | { "Chapter": number };
+export type Chosen = { "Color": Color } | { "Colors": Array<Color> } | { "CreatureType": Subtype } | { "LandType": Subtype } | { "Player": PlayerId } | { "CardType": CardType } | { "Name": string } | { "Number": number } | { "Word": string } | { "Chapter": number };

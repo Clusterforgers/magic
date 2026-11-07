@@ -175,7 +175,19 @@ what: unknown,
 /**
  * What the spell gets; a cost change counts its times (`per`) as a fixed number.
  */
-benefit: unknown, } } | { "DamageCantBePrevented": { 
+benefit: unknown, } } | { "SpellCost": { 
+/**
+ * The spells, judged as they are cast.
+ */
+applies_to: unknown, 
+/**
+ * More or less.
+ */
+change: unknown, 
+/**
+ * The mana added or removed.
+ */
+mana: unknown, } } | { "DamageCantBePrevented": { 
 /**
  * The sources, judged when the damage would be dealt.
  */

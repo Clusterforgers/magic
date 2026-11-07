@@ -153,7 +153,10 @@ fn activated(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
     let p = &p.without(&["Exhaust", "GameActivationLimit", "PowerUp"]);
     let effects = chain(ctx, &p.without(&["ReduceCost", "Activator"]))?;
     let targets = ctx.targets.clone();
-    if p.get("Planeswalker") == Some("True") {
+    // Three scripts write the flag in lower case (Kiora, Behemoth Beckoner); Forge reads it either way.
+    if p.get("Planeswalker")
+        .is_some_and(|flag| flag.eq_ignore_ascii_case("true"))
+    {
         if when.is_some() || !words.conditions.is_empty() {
             return unmapped("key:Loyalty.condition");
         }

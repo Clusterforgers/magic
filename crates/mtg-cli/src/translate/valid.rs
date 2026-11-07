@@ -746,6 +746,12 @@ pub fn target_spec(ctx: &Ctx, params: &Params, zone: Option<&str>) -> Tr<Value> 
     {
         return unmapped("target:script-narrower-than-oracle");
     }
+    if matches!(zone, None | Some("Battlefield"))
+        && !params.has("TargetsWithDefinedController")
+        && super::any_player::widens_target(ctx.oracle, valid)
+    {
+        return unmapped("target:script-wider-than-oracle");
+    }
     if let Some(word) = params.get("TargetsWithDefinedController") {
         restrict_to_controller(ctx, word, zone, &mut what)?;
     }

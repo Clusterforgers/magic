@@ -27,6 +27,7 @@ mod exiled_until;
 mod flicker_targets;
 mod free_casts;
 mod from_graveyard;
+mod g10d_colors;
 mod g8e_prevent;
 mod graveyards;
 mod group_becomes;
@@ -452,6 +453,8 @@ pub fn variants(ability: &Ability) -> Vec<String> {
     let more = super::w11a_joins::w11a_wordings(&texts);
     texts.extend(more);
     let more = super::w8b_then::w8b_then_wordings(&texts);
+    texts.extend(more);
+    let more = super::g10d_spell_costs::g10d_spell_cost_wordings(&texts);
     texts.extend(more);
     let more = super::leave_combat::wordings(&texts);
     texts.extend(more);
@@ -1160,9 +1163,8 @@ fn written(
             .or_else(|| writer.exile_kind(&effects[start..]))
             .or_else(|| writer.w2d_villainous(&effects[start..]))
             .or_else(|| writer.chance(&effects[start..]))
-            .or_else(|| w15c_clash::w15c_clash(&effects[start..]))
-            .or_else(|| writer.w11c_clash(&effects[start..]))
-            .or_else(|| writer.w9b_clash(&effects[start..]))
+            .or_else(|| writer.clashes(&effects[start..]))
+            .or_else(|| writer.g10d_colors(&effects[start..]))
             .or_else(|| instead::pair(targets, &effects[start..], wording))
         {
             unsplit(mask, start, used)?;
@@ -2959,6 +2961,7 @@ impl Writer<'_> {
             .or_else(|| lands::effect_text(effect))
             .or_else(|| super::attack_tax::effect_text(effect))
             .or_else(|| super::w14a_limits::w14a_block_limit_each_text(effect))
+            .or_else(|| super::g10d_spell_costs::g10d_spell_cost_text(effect))
             .or_else(|| super::w14a_wanderer::w14a_keep_one_text(effect))
             .or_else(|| super::c7_untap::c7_untap_dies_text(effect))
             .or_else(|| super::turns::effect_text(effect, None))

@@ -30,6 +30,12 @@ pub fn continuous_statics(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
             out.push(json!({"Rule": {"rule": rule, "duration": duration}}));
             continue;
         }
+        if let Some(cost) = line.get("CostModifier") {
+            out.push(
+                json!({"Rule": {"rule": {"SpellCost": spell_cost(cost)?}, "duration": duration}}),
+            );
+            continue;
+        }
         let Some(inner) = line.get("Static").and_then(Value::as_object) else {
             return unmapped("effect:Effect-static-not-a-continuous-change");
         };
@@ -42,6 +48,31 @@ pub fn continuous_statics(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
         out.push(json!({"Continuous": {"affected": affected, "mods": mods, "duration": duration}}));
     }
     Ok(out)
+}
+
+/// A cost modifier of other spells by fixed mana ("artifact spells you cast this turn cost {1} less to cast") as the
+/// parts of `GameRule::SpellCost`; one with a count, a condition, a floor or about abilities stays a gap.
+fn spell_cost(cost: &Value) -> Tr<Value> {
+    let Some(parts) = cost.as_object() else {
+        return unmapped("effect:Effect-static-cost-shape");
+    };
+    if parts
+        .keys()
+        .any(|key| !matches!(key.as_str(), "applies_to" | "change" | "mana"))
+    {
+        return unmapped("effect:Effect-static-cost-with-options");
+    }
+    let (Some(applies_to), Some(change), Some(mana)) = (
+        parts.get("applies_to"),
+        parts.get("change"),
+        parts.get("mana"),
+    ) else {
+        return unmapped("effect:Effect-static-cost-shape");
+    };
+    if applies_to.get(0) != Some(&json!("Spell")) || mana.as_str().is_none_or(|m| m.contains('X')) {
+        return unmapped("effect:Effect-static-cost-of-itself");
+    }
+    Ok(json!({"applies_to": applies_to, "change": change, "mana": mana}))
 }
 
 /// The triggers `Triggers$` names as delayed triggers that fire every time for the effect's duration; `remembered` is

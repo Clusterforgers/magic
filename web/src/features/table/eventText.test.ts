@@ -1042,6 +1042,13 @@ describe('events with more than one shape', () => {
       'Triggered abilities trigger an additional time',
     ],
     [
+      ruleEffect(
+        { SpellCost: { applies_to: ['Spell'], change: 'Increase', mana: '{1}' } },
+        'UntilYourNextTurn',
+      ),
+      "Some spells cost {1} more to cast until their controller's next turn",
+    ],
+    [
       ruleEffect({ BlockLimitEach: { most: 1, who: [1] } }, 'UntilEndOfCombat'),
       "Bo can't block with more than 1 creature until end of combat",
     ],
@@ -1089,6 +1096,12 @@ describe('the choice a permanent enters with', () => {
     [
       { Entered: { object: 3, tapped: false, controller: 0, chosen: { Color: 'Red' } } },
       "Forest enters under Ana's control, choosing red",
+    ],
+    [
+      {
+        Entered: { object: 3, tapped: false, controller: 0, chosen: { Colors: ['Red', 'Green'] } },
+      },
+      "Forest enters under Ana's control, choosing red and green",
     ],
     [
       { Entered: { object: 3, tapped: false, controller: 0, chosen: { Player: 1 } } },

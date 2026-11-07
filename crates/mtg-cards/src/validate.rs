@@ -1654,10 +1654,14 @@ impl<'a> Walker<'a> {
                 self.problem(format!("{name} needs a number of at least 1"));
             }
             None => self.problem(format!("`{name}` is not a keyword macro")),
+            // The abilities have a scope of their own: a granted "bushido 1" leaves the targets of the ability that
+            // grants it as used as they were.
             Some(abilities) => {
+                let saved = std::mem::take(&mut self.scope);
                 for ability in &abilities {
                     self.ability(ability);
                 }
+                self.scope = saved;
             }
         }
     }
@@ -4140,6 +4144,7 @@ impl Walker<'_> {
             | GameRule::MaxHandSize { .. }
             | GameRule::HandSizeChange { .. }
             | GameRule::NextSpell { .. }
+            | GameRule::SpellCost { .. }
             | GameRule::MayCastRather { .. }
             | GameRule::ManaProduced { .. }
             | GameRule::UntapDuring { .. } => self.rule_option(&tag, rule),
@@ -4165,6 +4170,17 @@ impl Walker<'_> {
             GameRule::NextSpell { what, .. } => {
                 self.at(tag, |w| w.at("what", |w| w.selector(what)));
             }
+            GameRule::SpellCost {
+                applies_to, mana, ..
+            } => self.at(tag, |w| {
+                w.at("applies_to", |w| w.selector(applies_to));
+                if applies_to.0.first() != Some(&crate::refs::Pred::Spell) {
+                    w.problem("a spell cost rule selects spells: `Spell` comes first");
+                }
+                if mana.has_x() || mana.rest().symbols().is_empty() {
+                    w.problem("a spell cost rule changes the cost by fixed mana");
+                }
+            }),
             GameRule::MayCastRather { only, .. } => {
                 self.at(tag, |w| w.reference(only, Kind::Object));
             }
@@ -5125,6 +5141,31 @@ mod tests {
         #[case] expected: usize,
     ) {
         assert_eq!(problems(ability).len(), expected, "{ability}");
+    }
+
+    #[rstest]
+    #[case::a_granted_macro_keeps_its_target(
+        r#"{"Activated":{"cost":"{1}","targets":[{"what":{"Object":[{"Type":"Creature"}]}}],"effects":[{"Continuous":{"affected":{"Target":0},"duration":"UntilEndOfTurn","mods":[{"AddKeyword":{"Macro":{"amount":1,"name":"bushido"}}}]}}]}}"#,
+        0
+    )]
+    #[case::a_target_used_by_nothing(
+        r#"{"Activated":{"cost":"{1}","targets":[{"what":{"Object":[{"Type":"Creature"}]}}],"effects":[{"Continuous":{"affected":"This","duration":"UntilEndOfTurn","mods":[{"AddKeyword":{"Macro":{"amount":1,"name":"bushido"}}}]}}]}}"#,
+        1
+    )]
+    #[case::a_spell_cost(
+        r#"{"Spell":{"effects":[{"Rule":{"rule":{"SpellCost":{"applies_to":["Spell",{"ControlledBy":"Opponents"}],"change":"Increase","mana":"{1}"}},"duration":"UntilYourNextTurn"}}]}}"#,
+        0
+    )]
+    #[case::a_spell_cost_of_no_spells(
+        r#"{"Spell":{"effects":[{"Rule":{"rule":{"SpellCost":{"applies_to":[{"Type":"Creature"}],"change":"Increase","mana":"{1}"}},"duration":"UntilEndOfTurn"}}]}}"#,
+        1
+    )]
+    #[case::a_spell_cost_by_x(
+        r#"{"Spell":{"effects":[{"Rule":{"rule":{"SpellCost":{"applies_to":["Spell"],"change":"Reduce","mana":"{X}"}},"duration":"UntilEndOfTurn"}}]}}"#,
+        1
+    )]
+    fn g10d_granted_macros_and_spell_costs(#[case] ability: &str, #[case] expected: usize) {
+        assert_eq!(problems(ability).len(), expected, "{:?}", problems(ability));
     }
 
     #[rstest]

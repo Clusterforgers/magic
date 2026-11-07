@@ -236,6 +236,18 @@ pub enum Rule {
         #[cfg_attr(feature = "ts", ts(type = "unknown"))]
         benefit: mtg_cards::modify::SpellBenefit,
     },
+    /// The spells `applies_to` selects cost `mana` more or less to cast (CR 601.2f); "you" is the rule's controller.
+    SpellCost {
+        /// The spells, judged as they are cast.
+        #[cfg_attr(feature = "ts", ts(type = "unknown"))]
+        applies_to: Selector,
+        /// More or less.
+        #[cfg_attr(feature = "ts", ts(type = "unknown"))]
+        change: mtg_cards::ability::CostChange,
+        /// The mana added or removed.
+        #[cfg_attr(feature = "ts", ts(type = "unknown"))]
+        mana: mtg_cards::mana::ManaCostX,
+    },
     /// Damage from the sources can't be prevented (CR 614.17); every source when the selector is empty.
     DamageCantBePrevented {
         /// The sources, judged when the damage would be dealt.
@@ -914,8 +926,9 @@ impl RulesInForce {
             Rule::Cant { who, action } => self.cants.push(crate::prohibit::Banned::new(
                 who, action, controller, source,
             )),
-            // Shields are read by the replacement step from the rule changes themselves.
-            Rule::PreventDamage(_)
+            // Shields are read by the replacement step, and spell costs by the cost step, from the rule changes themselves.
+            Rule::SpellCost { .. }
+            | Rule::PreventDamage(_)
             | Rule::Regenerate(_)
             | Rule::DiesInstead { .. }
             | Rule::Replaces { .. } => {}
@@ -1114,6 +1127,15 @@ pub(crate) fn lower_rule(scope: &Scope<'_>, wanted: &GameRule) -> Result<Rule, R
             when: permission.when.clone().map(Box::new),
         },
         GameRule::NextSpell { what, benefit } => next_spell(scope, what, benefit)?,
+        GameRule::SpellCost {
+            applies_to,
+            change,
+            mana,
+        } => Rule::SpellCost {
+            applies_to: applies_to.clone(),
+            change: *change,
+            mana: mana.clone(),
+        },
         GameRule::MayCastRather { only, cost } => may_cast_rather(scope, only, cost)?,
         GameRule::TriggerAgain { cause, source } => Rule::TriggerAgain {
             cause: cause.clone().map(Box::new),
@@ -1249,6 +1271,7 @@ pub(crate) fn names_nothing(rule: &Rule) -> bool {
         Rule::Cant { who, .. } => who.is_empty(),
         Rule::TriggerAgain { .. }
         | Rule::NextSpell { .. }
+        | Rule::SpellCost { .. }
         | Rule::DamageCantBePrevented { .. }
         | Rule::Regenerate(_)
         | Rule::Replaces { .. }
@@ -1477,17 +1500,23 @@ pub(crate) fn fold_created(state: &mut GameState, effect: &RuleEffect) -> Result
     ) {
         state.possible.protection = true;
     }
-    if matches!(
-        effect.rule,
-        Rule::NextSpell {
-            benefit: mtg_cards::modify::SpellBenefit::Cost { .. },
-            ..
-        }
-    ) {
+    if changes_costs(effect) {
         state.possible.costs = true;
     }
     state.rule_effects.push(effect.clone());
     Ok(())
+}
+
+/// Whether a rule in force changes the costs of spells (`GameState::possible`): a cost change of the next spell or of
+/// every matching spell for a time.
+pub(crate) const fn changes_costs(effect: &RuleEffect) -> bool {
+    matches!(
+        effect.rule,
+        Rule::NextSpell {
+            benefit: mtg_cards::modify::SpellBenefit::Cost { .. },
+            ..
+        } | Rule::SpellCost { .. }
+    )
 }
 
 /// Folds `ShieldUsed`: the shield prevents no more than `left`.

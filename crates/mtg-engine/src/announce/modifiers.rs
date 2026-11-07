@@ -155,7 +155,56 @@ fn gathered(state: &GameState, spell: ObjectId, caster: PlayerId) -> Vec<Modifie
     }
     found.extend(given_affinity(state, spell, caster));
     found.extend(next_spell_costs(state, spell, caster));
+    found.extend(spell_cost_rules(state, spell));
     found
+}
+
+/// The cost changes of the `SpellCost` rules in force: each one is a modifier of its controller, whatever the caster.
+fn spell_cost_rules(state: &GameState, spell: ObjectId) -> Vec<Modifier> {
+    let Some(target) = state
+        .object(spell)
+        .map(crate::object::GameObject::reference)
+    else {
+        return Vec::new();
+    };
+    state
+        .rule_effects
+        .iter()
+        .filter(|effect| state.is_alive(effect.controller))
+        .filter_map(|effect| {
+            let Rule::SpellCost {
+                applies_to,
+                change,
+                mana,
+            } = &effect.rule
+            else {
+                return None;
+            };
+            // The spell or permanent that made the rule may be gone (a sorcery in the graveyard is a new object); the
+            // rule still reads "you" as its controller.
+            let source = effect
+                .source
+                .filter(|source| {
+                    state
+                        .object(source.id)
+                        .is_some_and(|object| object.reference() == *source)
+                })
+                .unwrap_or(target);
+            Some(Modifier {
+                source,
+                controller: effect.controller,
+                ability: Arc::new(Ability::CostModifier {
+                    applies_to: applies_to.clone(),
+                    change: *change,
+                    mana: mana.clone(),
+                    per: mtg_cards::value::Amount::one(),
+                    condition: None,
+                    activating: None,
+                    least: 0,
+                }),
+            })
+        })
+        .collect()
 }
 
 /// The cost changes of the `NextSpell` rules in force for `caster`: each one is a modifier of the spell it selects.

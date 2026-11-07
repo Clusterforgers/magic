@@ -18,7 +18,7 @@ use crate::format::{ExtraZone, FormatRules, RuleSet};
 use crate::layers::LayersCache;
 use crate::object::{Chosen, Designations, GameObject, ObjectRef, PermanentState};
 use crate::player::{MulliganStatus, Player};
-use crate::rules::RulesCache;
+use crate::rules::{RulesCache, changes_costs};
 use crate::state::{GameState, Possible, Stage, Tallies};
 use crate::turn::{Step, TurnState};
 use crate::zones::{Zone, Zones};
@@ -629,7 +629,8 @@ impl GameState {
                 .each_face()
                 .any(crate::ability_reader::definition_has_cost_modifier)
         });
-        self.possible.costs = costs;
+        // A rule in force that changes costs counts too, as it did when it began.
+        self.possible.costs = costs || self.rule_effects.iter().any(changes_costs);
         let replacements = self.objects().any(|object| {
             object
                 .def

@@ -65,6 +65,8 @@ pub struct ObjectRef {
 pub enum Chosen {
     /// A colour.
     Color(mtg_core::color::Color),
+    /// One or more colours, in the order they were chosen.
+    Colors(Vec<mtg_core::color::Color>),
     /// A creature type.
     CreatureType(mtg_core::card::Subtype),
     /// A land type, which a landwalk the source grants names (CR 702.14).

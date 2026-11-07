@@ -58,6 +58,7 @@ const quiet = (text: string): LogLine => ({ text, minor: true })
 function chosenWords(chosen: Chosen, n: EventNames): string {
   if ('Chapter' in chosen) return `, reading ahead to chapter ${chosen.Chapter}`
   if ('Color' in chosen) return `, choosing ${chosen.Color.toLowerCase()}`
+  if ('Colors' in chosen) return `, choosing ${joinWords(chosen.Colors.map((color) => color.toLowerCase()))}`
   if ('Player' in chosen) return `, choosing ${n.seat(chosen.Player)}`
   if ('LandType' in chosen) return `, choosing ${chosen.LandType}`
   if ('CardType' in chosen) return `, choosing ${chosen.CardType.toLowerCase()}`
@@ -281,6 +282,9 @@ function describeRule(effect: RuleEffect, n: EventNames): string {
   else if ('BlockLimitEach' in rule) {
     const { most, who } = rule.BlockLimitEach
     what = `${seats(who)} can't block with more than ${most} ${most === 1 ? 'creature' : 'creatures'}`
+  } else if ('SpellCost' in rule) {
+    const { change, mana } = rule.SpellCost
+    what = `Some spells cost ${String(mana)} ${change === 'Reduce' ? 'less' : 'more'} to cast`
   } else what = 'Triggered abilities trigger an additional time'
   return `${what}${durationWords(duration, source, n)}`
 }

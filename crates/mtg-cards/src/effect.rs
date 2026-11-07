@@ -279,6 +279,8 @@ pub enum VoteFor {
 pub enum ValueKind {
     /// A colour.
     Color,
+    /// One or more colours ("the color or colors of your choice"), each at most once.
+    Colors,
     /// A creature type.
     CreatureType,
     /// A card type.

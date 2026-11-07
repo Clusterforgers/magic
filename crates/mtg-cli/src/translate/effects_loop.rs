@@ -429,8 +429,15 @@ pub fn roll_dice(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
 
 /// `ChooseColor` and `ChooseType`: the chooser picks a value that the later lines of the ability read as the chosen one.
 pub fn choose_value(ctx: &mut Ctx, p: &Params, api: &str) -> Tr<Vec<Value>> {
-    only(p, api, &["Defined", "Type"])?;
+    only(p, api, &["Defined", "Type", "OrColors"])?;
+    let or_colors = match (api, p.get("OrColors")) {
+        (_, None) => false,
+        ("ChooseColor", Some("True")) => true,
+        (_, Some(other)) => return unmapped(format!("key:{api}.OrColors={other}")),
+    };
     let kind = match (api, p.get("Type")) {
+        // "The color or colors of your choice": a later line must read the whole set.
+        ("ChooseColor", None) if or_colors => "Colors",
         ("ChooseColor", None) => "Color",
         ("ChooseType", Some("Creature")) => "CreatureType",
         ("ChooseType", Some("Card")) => "CardType",

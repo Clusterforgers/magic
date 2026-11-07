@@ -1930,6 +1930,9 @@ impl<'a> Scope<'a> {
         };
         match chosen {
             Chosen::Color(color) => seen.chars.colors.contains(*color),
+            Chosen::Colors(colors) => colors
+                .iter()
+                .any(|color| seen.chars.colors.contains(*color)),
             Chosen::CreatureType(subtype) | Chosen::LandType(subtype) => has_subtype(subtype),
             Chosen::CardType(kind) => seen.chars.types.contains(*kind),
             Chosen::Name(name) => seen.card.is_some_and(|c| c.card().name == *name),

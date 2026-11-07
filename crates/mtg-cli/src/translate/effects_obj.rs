@@ -1006,7 +1006,7 @@ fn animate(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
             mods.push(json!({"AddColors": color_names(colors)?}));
         } else if colors == "ChosenColor" {
             match (ctx.chosen_kind, ctx.chosen.as_ref()) {
-                (Some("Color"), Some(name)) => mods.push(json!({"SetColorsChosen": name})),
+                (Some("Color" | "Colors"), Some(n)) => mods.push(json!({"SetColorsChosen": n})),
                 _ => return unmapped("key:Animate.Colors=ChosenColor"),
             }
         } else {
