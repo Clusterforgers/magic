@@ -77,7 +77,7 @@ fn exiled_and(ctx: &mut Ctx, p: &Params, part: &Params, what: &[Value]) -> Tr<Va
         pattern: "ZoneChange".to_owned(),
         arrives: None,
         targeting: None,
-        enters: false,
+        destination: None,
     });
     let rest = ctx.sub(next).and_then(|sub| chain_at(ctx, &sub, false));
     ctx.trigger = None;

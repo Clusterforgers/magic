@@ -23,8 +23,8 @@ pub struct Shape {
     pub arrives: Option<String>,
     /// What a spell of a cast pattern targets (`TargetsValid$`): "those creatures" are its targets that match.
     pub targeting: Option<Vec<Value>>,
-    /// The pattern is a permanent entering the battlefield from anywhere.
-    pub enters: bool,
+    /// The zone the event object moved to (`Battlefield` for a permanent entering), when the pattern is a zone change.
+    pub destination: Option<String>,
 }
 
 /// The zone a permanent that left the battlefield by this pattern arrived in, when the pattern names one.

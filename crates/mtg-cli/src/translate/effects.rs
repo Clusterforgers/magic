@@ -1219,7 +1219,7 @@ fn delayed_node(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
         pattern: super::triggered::key_of(&when),
         arrives: None,
         targeting: None,
-        enters: false,
+        destination: None,
     });
     let outer = std::mem::replace(&mut ctx.trigger, shape);
     let declared = ctx.targets.len();
