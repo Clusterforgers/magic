@@ -529,6 +529,7 @@ const BECAUSE: Record<
     ZoneCause,
     | { Hideaway: unknown }
     | { Held: unknown }
+    | { Sealed: unknown }
     | { ExiledUntil: unknown }
     | { ExiledUntilMonarch: unknown }
     | { Encoded: unknown }
@@ -553,7 +554,7 @@ const BECAUSE: Record<
 
 /** The words for a cause that carries a player or a permanent. */
 function objectCause(cause: Extract<ZoneCause, object>): string {
-  if ('Hideaway' in cause || 'Held' in cause) return 'is exiled face down'
+  if ('Hideaway' in cause || 'Held' in cause || 'Sealed' in cause) return 'is exiled face down'
   if ('Encoded' in cause) return 'is exiled encoded on a creature'
   if ('Manifested' in cause) return 'is manifested'
   if ('Cloaked' in cause) return 'is cloaked'

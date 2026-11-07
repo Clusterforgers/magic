@@ -1041,6 +1041,11 @@ pub enum ZoneCause {
         /// The player who exiled it and may look at it.
         looker: PlayerId,
     },
+    /// It was exiled face down by an effect of the source `by`, and no player may look at it (CR 406.3).
+    Sealed {
+        /// The source of the effect.
+        by: ObjectRef,
+    },
     /// It was exiled until the permanent `by` leaves the battlefield (CR 610.3): it returns once that permanent is gone.
     ExiledUntil {
         /// The permanent whose leaving returns it.
@@ -1077,6 +1082,7 @@ impl ZoneCause {
             ZoneCause::Foretold => Some(FaceDown::Foretold { turn }),
             ZoneCause::Hideaway { by } => Some(FaceDown::Hideaway { by }),
             ZoneCause::Held { by, looker } => Some(FaceDown::Held { by, looker }),
+            ZoneCause::Sealed { by } => Some(FaceDown::Sealed { by }),
             ZoneCause::Manifested { .. } => Some(FaceDown::Manifest),
             ZoneCause::Cloaked { .. } => Some(FaceDown::Cloak),
             _ => None,

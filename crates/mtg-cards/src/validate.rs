@@ -2856,7 +2856,10 @@ impl Walker<'_> {
                     w.at("as", |w| w.bind_kept(name, Kind::Object));
                 }
             }
-            Effect::LookAtTop { who, count, bind } | Effect::ExileTop { who, count, bind } => {
+            Effect::LookAtTop { who, count, bind }
+            | Effect::ExileTop {
+                who, count, bind, ..
+            } => {
                 w.at("who", |w| w.reference(who, Kind::Player));
                 w.at("count", |w| w.amount(count));
                 w.at("as", |w| w.bind(bind, Kind::Object));
@@ -2912,7 +2915,15 @@ impl Walker<'_> {
                     w.uses("Exile", &format!("Duration.{}", tag_of(duration)));
                 }
             }
-            Effect::ExileHidden { what, bind, .. } => {
+            Effect::ExileHidden {
+                what,
+                bind,
+                held,
+                sealed,
+            } => {
+                if *held && *sealed {
+                    w.problem("a card exiled face down is held by a player or sealed, not both");
+                }
                 w.at("what", |w| w.reference(what, Kind::Object));
                 if let Some(name) = bind {
                     w.at("as", |w| w.bind_moved(name));
@@ -4086,6 +4097,13 @@ impl Walker<'_> {
             | GameRule::SkipDrawStep(who)
             | GameRule::NoMaxHandSize(who) => self.at(tag, |w| w.reference(who, Kind::Player)),
             GameRule::MayCast(permission) => self.at(tag, |w| w.cast_permission(permission)),
+            GameRule::LookAtExiled { who, what, only } => self.at(tag, |w| {
+                w.at("who", |w| w.reference(who, Kind::Player));
+                w.at("what", |w| w.selector(what));
+                if let Some(only) = only {
+                    w.at("only", |w| w.reference(only, Kind::Object));
+                }
+            }),
             GameRule::AdditionalLandPlays { who, count } => self.at(tag, |w| {
                 w.at("who", |w| w.reference(who, Kind::Player));
                 w.at("count", |w| w.amount(count));

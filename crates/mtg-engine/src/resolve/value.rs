@@ -1392,7 +1392,10 @@ impl<'a> Scope<'a> {
             return Ok(false);
         };
         let sources = self.objects(named)?;
-        if let Some(FaceDown::Hideaway { by } | FaceDown::Held { by, .. }) = card.face_down() {
+        if let Some(
+            FaceDown::Hideaway { by } | FaceDown::Held { by, .. } | FaceDown::Sealed { by },
+        ) = card.face_down()
+        {
             return Ok(sources.contains(&by));
         }
         Ok(sources.into_iter().any(|source| {

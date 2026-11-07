@@ -25,7 +25,11 @@ by: ObjectRef,
 /**
  * The player who exiled it and may look at it.
  */
-looker: PlayerId, } } | { "ExiledUntil": { 
+looker: PlayerId, } } | { "Sealed": { 
+/**
+ * The source of the effect.
+ */
+by: ObjectRef, } } | { "ExiledUntil": { 
 /**
  * The permanent whose leaving returns it.
  */

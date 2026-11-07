@@ -409,6 +409,17 @@ const MORE: [Event, string][] = [
     {
       ZoneChanged: {
         object: 3,
+        from: { Library: 0 },
+        to: 'Exile',
+        cause: { Sealed: { by: { id: 9, counter: 1 } } },
+      },
+    },
+    'Forest is exiled face down',
+  ],
+  [
+    {
+      ZoneChanged: {
+        object: 3,
         from: 'Battlefield',
         to: 'Exile',
         cause: { ExiledUntil: { by: { id: 9, counter: 1 } } },

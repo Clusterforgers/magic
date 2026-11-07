@@ -537,13 +537,17 @@ pub enum Effect {
         bind: Option<String>,
     },
     /// Exiles objects face down, linked to the source of the effect: the permanent hides them (hideaway, CR 702.75a), or,
-    /// with `held`, the player whose effect it is alone looks at them for as long as they lie in exile.
+    /// with `held`, the player whose effect it is alone looks at them for as long as they lie in exile, or, with `sealed`,
+    /// no player does.
     ExileHidden {
         /// What is exiled face down.
         what: Ref,
         /// Only the player whose effect it is looks at them, whatever becomes of the source (not hideaway).
         #[serde(default, skip_serializing_if = "std::ops::Not::not")]
         held: bool,
+        /// No player looks at them (CR 406.3) unless a rule grants a look; never with `held`.
+        #[serde(default, skip_serializing_if = "std::ops::Not::not")]
+        sealed: bool,
         /// The name the cards exiled are bound to, as the objects they become in exile (CR 400.7).
         #[serde(rename = "as", default, skip_serializing_if = "Option::is_none")]
         bind: Option<String>,
@@ -1012,7 +1016,8 @@ pub enum Effect {
         /// The name every card revealed, the matching ones included, is bound to.
         revealed_as: String,
     },
-    /// The player exiles cards from the top of their library, face up (CR 406.3) and binds them.
+    /// The player exiles cards from the top of their library, face up (CR 406.3), or face down for no player to look at
+    /// with `sealed`, and binds them.
     ExileTop {
         /// Whose library.
         #[serde(default = "Ref::you", skip_serializing_if = "Ref::is_you")]
@@ -1023,6 +1028,9 @@ pub enum Effect {
         /// The name the cards exiled are bound to, each as the object it becomes in exile.
         #[serde(rename = "as")]
         bind: String,
+        /// The cards lie face down and no player may look at them (CR 406.3).
+        #[serde(default, skip_serializing_if = "std::ops::Not::not")]
+        sealed: bool,
     },
     /// The player may cast a card during the resolution, without waiting for priority (CR 608.2g); `otherwise` is
     /// done when they do not.
@@ -1651,6 +1659,7 @@ pub fn impulse(count: Amount, duration: Duration) -> Vec<Effect> {
             who: Ref::You,
             count,
             bind: IMPULSE.to_owned(),
+            sealed: false,
         },
         Effect::Rule {
             rule: GameRule::MayCast(CastPermission {
@@ -1699,6 +1708,7 @@ pub fn hideaway(count: Amount) -> Vec<Effect> {
         Effect::ExileHidden {
             what: Ref::Bound(HIDDEN.to_owned()),
             held: false,
+            sealed: false,
             bind: None,
         },
         Effect::Move {

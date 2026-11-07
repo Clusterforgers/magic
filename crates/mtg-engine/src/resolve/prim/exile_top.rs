@@ -1,4 +1,4 @@
-//! `Effect::ExileTop`: cards are exiled from the top of a library, face up, and named for the steps after it (CR 406.3).
+//! `Effect::ExileTop`: cards are exiled from the top of a library, face up or, when `sealed`, face down for no player to look at, and named for the steps after it (CR 406.3).
 
 use mtg_cards::effect::Effect;
 
@@ -11,11 +11,17 @@ use crate::resolve::{Cx, Next, ResolveError, Run};
 use crate::zones::Zone;
 
 /// Each player the effect names who is in the game exiles `count` cards from the top of their library, the top card
-/// first, face up (exile is open to every seat). A library shorter than the count is exiled whole and an empty one
+/// first, face up (exile is open to every seat), or face down and linked to the source when `sealed`. A library shorter than the count is exiled whole and an empty one
 /// exiles nothing. The cards are bound to the name as the objects they become in exile (CR 400.7), whether or not
 /// anything was exiled.
 pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
-    let Effect::ExileTop { who, count, bind } = effect else {
+    let Effect::ExileTop {
+        who,
+        count,
+        bind,
+        sealed,
+    } = effect
+    else {
         return Err(wrong_effect("ExileTop"));
     };
     let wanted = usize::try_from(cx.scope.amount(count)?.max(0)).unwrap_or(usize::MAX);
@@ -34,7 +40,13 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
                 object: id,
                 from: Zone::Library(owner),
                 to: Zone::Exile,
-                cause: ZoneCause::Exiled,
+                cause: if *sealed {
+                    ZoneCause::Sealed {
+                        by: cx.scope.source,
+                    }
+                } else {
+                    ZoneCause::Exiled
+                },
             });
             exiled.push(Target::Object(ObjectRef {
                 id,
@@ -171,5 +183,32 @@ mod tests {
         );
         assert_eq!(moves(&events, FOE), top(&game, FOE, 2));
         assert_eq!(bound.len(), 2);
+    }
+
+    #[test]
+    fn a_sealed_exile_lays_the_cards_face_down_for_no_seat_linked_to_the_source() {
+        let mut game = game();
+        let source = game
+            .object(game.zone(Zone::Battlefield)[0])
+            .unwrap()
+            .reference();
+        let (events, bound) = exiled(
+            &game,
+            r#"{"ExileTop":{"count":2,"as":"top","sealed":true}}"#,
+        );
+        assert_eq!(bound.len(), 2);
+        for event in &events {
+            assert!(matches!(
+                event,
+                Event::ZoneChanged { cause: ZoneCause::Sealed { by }, .. } if *by == source
+            ));
+            crate::fold::apply_event(&mut game, event).unwrap();
+        }
+        for target in &bound {
+            let Target::Object(card) = target else {
+                panic!("a card is bound")
+            };
+            assert!(!game.may_look_at(ME, card.id) && !game.may_look_at(FOE, card.id));
+        }
     }
 }

@@ -595,6 +595,19 @@ pub enum GameRule {
     MayCast(CastPermission),
     /// The players may look at the top card of their own library any time; no one else sees it.
     LookAtTopAnyTime(Ref),
+    /// The players may look at the cards in exile the selector picks that lie face down (CR 406.3): "You may look at the
+    /// cards exiled with ~".
+    LookAtExiled {
+        /// The players who may look; the controller of the rule when absent.
+        #[serde(default = "Ref::you", skip_serializing_if = "Ref::is_you")]
+        who: Ref,
+        /// The cards they may look at; every face-down card in exile when empty.
+        #[serde(default, skip_serializing_if = "Selector::is_empty")]
+        what: Selector,
+        /// Only the objects the reference names when the rule begins, as the objects they are then (CR 400.7).
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        only: Option<Ref>,
+    },
     /// The players have no maximum hand size (CR 402.2).
     NoMaxHandSize(Ref),
     /// The players' maximum hand size is `size` (CR 402.2): the least of the sizes in force.
