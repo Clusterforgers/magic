@@ -90,6 +90,8 @@ pub fn subtypes_of(types: &str) -> Vec<String> {
 }
 
 /// The translation of one face.
+// Each flag is a separate fact about the part being translated.
+#[allow(clippy::struct_excessive_bools)]
 pub struct Ctx<'a> {
     /// The named parts of the face.
     pub svars: &'a BTreeMap<String, String>,
@@ -185,6 +187,8 @@ pub struct Ctx<'a> {
     pub granted: bool,
     /// The printed text of the ability line being translated (`SpellDescription$`, `TriggerDescription$`), lower case.
     pub printed: Option<String>,
+    /// The part being translated belongs to an `Effect` object's delayed trigger: `EffectSource` is the card whose ability made it.
+    pub effect_source: bool,
     binds: usize,
     depth: usize,
 }
@@ -236,6 +240,7 @@ impl<'a> Ctx<'a> {
             vote_num: None,
             granted: false,
             printed: None,
+            effect_source: false,
             modal_keyword: None,
             extra_mode_cost: None,
             trigger: None,

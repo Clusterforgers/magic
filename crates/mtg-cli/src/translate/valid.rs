@@ -70,6 +70,7 @@ fn property(ctx: &Ctx, prop: &str) -> Tr<Vec<Value>> {
         "Other" | "StrictlyOther" => return one(json!("Other")),
         "NotDefinedOriginalHost" if ctx.granted => return one(json!({"Not": {"Is": "Granter"}})),
         "Self" | "StrictlySelf" => return one(json!("This")),
+        "EffectSource" if ctx.effect_source => return one(json!("This")),
         "tapped" | "Tapped" => return one(json!("Tapped")),
         "untapped" | "Untapped" => return one(json!("Untapped")),
         "attacking" => return one(json!("Attacking")),
@@ -665,7 +666,9 @@ pub fn defined(ctx: &Ctx, word: &str) -> Tr<Value> {
         "Opponent" | "Player.Opponent" | "Player.Other" => Ok(json!("Opponents")),
         "Player" => Ok(json!("EachPlayer")),
         "Self" | "Card.Self" => Ok(json!("This")),
+        "EffectSource" | "Card.EffectSource" if ctx.effect_source => Ok(json!("This")),
         "Sacrificed" | "Discarded" => Ok(json!("Paid")),
+        "Convoked" => Ok(json!("Convoked")),
         "Exiled" => super::cost::exiled_paid(ctx, "defined"),
         // The cards this permanent exiled and that are still in exile.
         "ExiledWith" => Ok(json!({"Each": [{"ExiledWith": "This"}, {"In": "Exile"}]})),

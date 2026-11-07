@@ -188,6 +188,11 @@ pub struct CostTaken {
         ts(as = "Option<Vec<mtg_cards::spend::SpentFrom>>", optional)
     )]
     pub sources: Vec<mtg_cards::spend::SpentFrom>,
+    /// The creatures tapped to help cast the spell with convoke, as they were then (CR 702.51): "each creature that
+    /// convoked it" reads them.
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[cfg_attr(feature = "ts", ts(as = "Option<Vec<ObjectRef>>", optional))]
+    pub convoked: Vec<ObjectRef>,
 }
 
 /// Whether a count is 0, so serialization can leave it out.
@@ -207,6 +212,13 @@ impl Choices {
         self.cost_taken
             .as_deref()
             .map_or(&[], |taken| &taken.sources)
+    }
+
+    /// The creatures that convoked the spell (CR 702.51).
+    pub fn convoked(&self) -> &[ObjectRef] {
+        self.cost_taken
+            .as_deref()
+            .map_or(&[], |taken| &taken.convoked)
     }
 
     /// The permanents and cards picked for the parts of the cost that take them, one list for each such part.

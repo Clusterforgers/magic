@@ -207,7 +207,8 @@ pub(crate) fn reads_of_ref(reference: &Ref) -> Traits {
         | Ref::Bound(_)
         | Ref::Affected
         | Ref::Candidate
-        | Ref::Paid => Traits::NONE,
+        | Ref::Paid
+        | Ref::Convoked => Traits::NONE,
         Ref::Remembered { on, .. } => reads_of_ref(on),
         Ref::ControllerOf(inner) | Ref::OrController(inner) => {
             Traits::CONTROL.or(reads_of_ref(inner))

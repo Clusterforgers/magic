@@ -119,6 +119,9 @@ pub enum Ref {
     /// The objects picked for the cost of the ability ("the creature tapped to pay it"): their characteristics are those they
     /// have as the ability resolves, and none is named when the cost picks nothing.
     Paid,
+    /// The creatures tapped to help cast the spell the source is or became, with convoke (CR 702.51): "each creature that
+    /// convoked it"; none for a spell cast without convoking and once a creature has changed zones.
+    Convoked,
     /// The object a static ability's change applies to, worked out for each such object ("for each other creature that shares a type with it").
     Affected,
     /// The object a `Pred::Test` is judging: "a creature you control with power greater than its base power".
