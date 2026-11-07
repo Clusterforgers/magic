@@ -59,7 +59,11 @@ export function fitsTotal(
 }
 
 /** "Total mana value 2 of at most 3." for a prompt with a total; empty without one. */
-export function totalWords(legal: readonly Target[], rule: TotalRule | undefined, chosen: readonly Target[]): string {
+export function totalWords(
+  legal: readonly Target[],
+  rule: TotalRule | undefined,
+  chosen: readonly Target[],
+): string {
   if (rule === undefined) return ''
   return `Total mana value ${chosenTotal(legal, rule, chosen)} of at most ${rule.most}.`
 }
