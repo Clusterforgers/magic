@@ -532,6 +532,11 @@ fn written_as_given(ability: &Ability) -> Vec<String> {
     super::r6c_wordings::add(ability, &mut texts);
     super::r6b_wordings::add(ability, &mut texts);
     super::r7d_statics::wordings(&mut texts);
+    for text in super::r7d_statics::creature_attached(ability, written_variants) {
+        if !texts.contains(&text) {
+            texts.push(text);
+        }
+    }
     texts
 }
 

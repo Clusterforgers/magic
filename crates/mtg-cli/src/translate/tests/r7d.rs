@@ -1,9 +1,31 @@
 //! Goal: the shield that exiles a target that would die names the kinds the target may be: a creature, or a creature or
-//! planeswalker (CR 700.4), so a planeswalker target that would die is exiled too.
+//! planeswalker (CR 700.4), so a planeswalker target that would die is exiled too; an Aura that may enchant a noncreature
+//! permanent grants only while that permanent is a creature.
 use rstest::rstest;
 use serde_json::{Value, json};
 
 use super::{abilities, gaps};
+
+#[rstest]
+#[case::enchanted_permanent(
+    "As long as enchanted permanent is a creature, it has lifelink.",
+    Some(json!({"Matches": {"subject": "Attached", "selector": [{"Type": "Creature"}]}}))
+)]
+#[case::enchanted_creature("Enchanted creature has lifelink.", None)]
+fn r7d_an_aura_of_any_permanent_states_the_creature_condition(
+    #[case] description: &str,
+    #[case] condition: Option<Value>,
+) {
+    let text = format!(
+        "Name:T\nTypes:Enchantment Aura\nK:Enchant:Permanent\nS:Mode$ Continuous | AffectedDefined$ Enchanted | Affected$ Creature | AddKeyword$ Lifelink | Description$ {description}\n"
+    );
+    assert_eq!(gaps(&text), Vec::<String>::new());
+    let found = abilities(&text)
+        .into_iter()
+        .find_map(|ability| ability.get("Static").cloned())
+        .unwrap_or_default();
+    assert_eq!(found.get("condition").cloned(), condition, "{found}");
+}
 
 #[rstest]
 #[case::creature("Creature", json!({"Type": "Creature"}))]

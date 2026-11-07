@@ -222,3 +222,19 @@ fn zz_probe() {
         }
     }
 }
+
+const TORMENT: &str = r#"{"Static":{"affected":"Attached","condition":{"Matches":{"selector":[{"Type":"Creature"}],"subject":"Attached"}},"mods":[{"ModifyPT":{"power":-1,"toughness":-1}},"CantBlock"]}}"#;
+const TORMENT_TEXT: &str =
+    "As long as enchanted permanent is a creature, it gets -1/-1 and can't block.";
+
+#[rstest]
+#[case::creature_condition(TORMENT, true)]
+// Without the condition the static reaches a noncreature permanent (r6 audit F1).
+#[case::no_condition(&TORMENT.replace(r#""condition":{"Matches":{"selector":[{"Type":"Creature"}],"subject":"Attached"}},"#, ""), false)]
+#[case::other_condition(&TORMENT.replace(r#"{"Type":"Creature"}"#, r#"{"Type":"Artifact"}"#), false)]
+fn r7d_the_creature_condition_of_the_attached_permanent_is_said_first(
+    #[case] json: &str,
+    #[case] reads: bool,
+) {
+    assert_eq!(written(json, TORMENT_TEXT), reads, "{json}");
+}
