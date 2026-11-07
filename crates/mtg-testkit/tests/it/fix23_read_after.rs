@@ -1,4 +1,4 @@
-//! Goal: what an effect reads after an earlier step of its own resolution plays as printed at two to four seats: the counters of a permanent the ability exiled first are its last known counters (Sphere of Annihilation), and the result of a die is the number rolled, with only the rows it falls in taken (Adorable Kitten, Dissatisfied Customer).
+//! Goal: what an effect reads after an earlier step of its own resolution plays as printed at two to four seats: the counters of a permanent the ability exiled first are its last known counters (Sphere of Annihilation), and the result of a die is the number rolled, with only the rows it falls in taken and kept by a bonus after the resolution (Adorable Kitten, Dissatisfied Customer, Painiac).
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
 use std::sync::Arc;
@@ -6,22 +6,40 @@ use std::sync::Arc;
 use mtg_cards::CardDefinition;
 use mtg_cards::ability::Ability;
 use mtg_cards::value::CounterKind;
+use mtg_engine::characteristics;
 use mtg_engine::decision::DecisionKind;
 use mtg_engine::events::Event;
 use mtg_testkit::scenario::with_counters;
-use mtg_testkit::trigger_cards::artifact_with;
+use mtg_testkit::trigger_cards::creature_with;
 use mtg_testkit::{Driver, Scenario, ScriptError, ready};
 use rstest::rstest;
 
 use crate::common::pid;
 
-/// An artifact whose one ability taps it for the effects, as the card DSL writes them.
+/// A 1/1 creature whose one ability taps it for the effects, as the card DSL writes them.
 fn rig(effects: &str) -> Arc<CardDefinition> {
     let ability: Ability = serde_json::from_str(&format!(
         r#"{{"Activated":{{"cost":["Tap"],"effects":{effects}}}}}"#
     ))
     .unwrap();
-    artifact_with("Rig", vec![ability])
+    creature_with("Rig", vec![ability])
+}
+
+/// The one die rolled this game.
+fn rolled(driver: &Driver) -> i32 {
+    let rolled: Vec<u32> = driver
+        .engine()
+        .events()
+        .iter()
+        .filter_map(|event| match event {
+            Event::DieRolled { result, .. } => Some(*result),
+            _ => None,
+        })
+        .collect();
+    let [rolled] = rolled[..] else {
+        panic!("one die: {rolled:?}");
+    };
+    i32::try_from(rolled).unwrap()
 }
 
 /// Activates the rig and passes until its ability has resolved.
@@ -82,20 +100,27 @@ fn the_result_of_the_die_is_the_number_rolled(
         .battlefield(0, vec![ready(rig(effects))]);
     let mut driver = Driver::from_scenario(scenario)?;
     activate(&mut driver)?;
-    let rolled: Vec<u32> = driver
-        .engine()
-        .events()
-        .iter()
-        .filter_map(|event| match event {
-            Event::DieRolled { result, .. } => Some(*result),
-            _ => None,
-        })
-        .collect();
-    let [rolled] = rolled[..] else {
-        panic!("one die: {rolled:?}");
-    };
-    let rolled = i32::try_from(rolled).unwrap();
+    let rolled = rolled(&driver);
     assert!((1..=6).contains(&rolled));
     assert_eq!(life(&driver), 20 + change(rolled));
+    Ok(())
+}
+
+/// Painiac: "roll a six-sided die. This creature gets +X/+0 until end of turn, where X is the result."
+const PAINIAC: &str = r#"[{"RollDice":{"sides":6,"results":[{"from":1,"effects":[{"Continuous":{"affected":"This","duration":"UntilEndOfTurn","mods":[{"ModifyPT":{"power":{"DieResult":"Only"},"toughness":0}}]}}]}]}}]"#;
+
+#[rstest]
+fn a_bonus_of_the_result_keeps_the_number_rolled_after_the_resolution(
+    #[values(2, 3, 4)] seats: usize,
+    #[values(1, 2, 3, 4, 5, 6)] seed: u64,
+) -> Result<(), ScriptError> {
+    let scenario = Scenario::new(seats)
+        .seed(seed)
+        .battlefield(0, vec![ready(rig(PAINIAC))]);
+    let mut driver = Driver::from_scenario(scenario)?;
+    activate(&mut driver)?;
+    let id = driver.id_of("Rig")?;
+    let power = characteristics(driver.state(), id).unwrap().power.unwrap();
+    assert_eq!(power, 1 + rolled(&driver));
     Ok(())
 }

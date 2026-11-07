@@ -113,10 +113,11 @@ pub fn widens_target(oracle: &str, valid: &str) -> bool {
         .skip(1)
         .filter_map(|phrase| {
             let words: Vec<&str> = phrase.split_whitespace().take(lead + 3).collect();
-            let at = words
-                .iter()
-                .take(lead + 1)
-                .position(|word| word.trim_end_matches([',', '.', ':', ';']) == noun)?;
+            let at = words.iter().take(lead + 1).position(|word| {
+                let word = word.trim_end_matches([',', '.', ':', ';']);
+                // "two other target creatures" is a phrase of the type too.
+                word == noun || word.strip_suffix('s') == Some(noun.as_str())
+            })?;
             Some(words[at..].to_vec())
         })
         .collect();

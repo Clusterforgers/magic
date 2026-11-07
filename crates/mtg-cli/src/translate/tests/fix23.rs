@@ -73,6 +73,11 @@ fn a_name_after_an_object_argument_names_the_outer_object(
     "Target blocking creature you control gets +2/+2 until end of turn.",
     false
 )]
+#[case::other_targets_in_the_plural(
+    "Creature",
+    "Target creature you control deals damage equal to its power to each of two other target creatures.",
+    false
+)]
 fn a_target_limited_to_your_permanents_behind_an_adjective_stays_a_gap(
     #[case] valid: &str,
     #[case] oracle: &str,
