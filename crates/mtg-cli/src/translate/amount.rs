@@ -268,11 +268,31 @@ fn event_amount(ctx: &Ctx, expression: &str) -> Tr<Option<Value>> {
             } else {
                 "Opponents"
             };
-            if what == "HighestLifeLostThisTurn" {
-                return Ok(Some(json!({"Tallied": {"who": who, "what": "LifeLost"}})));
+            // "Each creature that attacked this turn": every attacking creature of every player.
+            if what == "AttackersDeclared" && who == "EachPlayer" {
+                return Ok(Some(
+                    json!({"Tally": {"event": "Attacked", "who": who, "filter": []}}),
+                ));
+            }
+            // The cards in all their hands together.
+            if what == "CardsInHand" {
+                return Ok(Some(json!({"Count": [{"In": "Hand"}, {"OwnedBy": who}]})));
+            }
+            let tally = match what {
+                "HighestLifeLostThisTurn" => Some("LifeLost"),
+                "HighestCardsDrawn" => Some("Drawn"),
+                "LifeGainedThisTurn" => Some("LifeGainedTotal"),
+                "CardsDiscardedThisTurn" if who == "EachPlayer" => Some("Discarded"),
+                _ => None,
+            };
+            if let Some(tally) = tally {
+                return Ok(Some(json!({"Tallied": {"who": who, "what": tally}})));
             }
             // "The number of opponents who lost life this turn": the players of the group with the property.
-            if let Some(prop) = what.strip_prefix("HasProperty") {
+            if let Some(prop) = what
+                .strip_prefix("HasProperty")
+                .or_else(|| what.starts_with("Condition").then_some(what))
+            {
                 if prop == "isMonarch" && who == "EachPlayer" {
                     return Ok(Some(json!({"Players": "Monarch"})));
                 }

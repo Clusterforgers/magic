@@ -69,11 +69,67 @@ fn than_you(word: &str) -> Option<Value> {
     Some(json!({"Compare": {"left": controlled(kind, "You"), "op": op, "right": right}}))
 }
 
+/// `GE2 SpellsCastThisTurn`: the player's own count of something this turn compared with a number.
+fn counted(ctx: &Ctx, word: &str) -> Option<Tr<Value>> {
+    let (head, what) = word.split_once(' ')?;
+    let at = head.find(|c: char| c.is_ascii_digit())?;
+    let op = match &head[..at] {
+        "GE" => "Ge",
+        "GT" => "Gt",
+        "LE" => "Le",
+        "LT" => "Lt",
+        "EQ" => "Eq",
+        _ => return None,
+    };
+    let right = head[at..].parse::<u32>().ok()?;
+    let tallied = |what: &str| Ok(json!({"Tallied": {"who": "You", "what": what}}));
+    let left = match what {
+        "SpellsCastThisTurn" => tallied("SpellsCast"),
+        "CardsDiscardedThisTurn" => tallied("Discarded"),
+        "CardsDrawn" => tallied("Drawn"),
+        other if other.starts_with("ThisTurnEntered_") => {
+            super::amount_more::entered_this_turn(ctx, other)
+        }
+        _ => return None,
+    };
+    Some(left.map(|left| json!({"Compare": {"left": left, "op": op, "right": right}})))
+}
+
+/// The cards in a player's hand, as an amount.
+fn hand(who: &str) -> Value {
+    json!({"Count": [{"In": "Hand"}, {"OwnedBy": who}]})
+}
+
+/// Hand-size properties: `HasCardsInHand_Card_GTY` (more cards in hand than the asker) and `_LE<n>` (at most n cards).
+fn hand_size(word: &str) -> Option<Value> {
+    let rest = word.strip_prefix("HasCardsInHand_Card_")?;
+    if rest == "GTY" {
+        return Some(json!({"Compare": {"left": hand("You"), "op": "Gt", "right": hand("Asker")}}));
+    }
+    let most = rest.strip_prefix("LE")?.parse::<u32>().ok()?;
+    Some(json!({"Compare": {"left": hand("You"), "op": "Le", "right": most}}))
+}
+
 /// The condition a player property states, written for "you" (`HasCardsInGraveyard_Instant,Sorcery_GE1` counts the
 /// cards of the types the player owns there); `None` for a word the table lacks.
 pub fn property(ctx: &Ctx, word: &str) -> Option<Tr<Value>> {
     if let Some(found) = plain(word) {
         return Some(Ok(found));
+    }
+    if let Some(found) = hand_size(word) {
+        return Some(Ok(found));
+    }
+    if let Some(rest) = word.strip_prefix("Condition") {
+        return counted(ctx, rest);
+    }
+    if let Some(kind) = word.strip_prefix("controlsCreature.powerGE")
+        && let Ok(least) = kind.parse::<u32>()
+    {
+        let spec = format!("Creature.powerGE{least}+YouCtrl");
+        return Some(
+            selector_in(ctx, &spec, None)
+                .map(|of| json!({"Compare": {"left": {"Count": of}, "op": "Ge", "right": 1}})),
+        );
     }
     let (zone, rest) = [
         ("Graveyard", "HasCardsInGraveyard_"),

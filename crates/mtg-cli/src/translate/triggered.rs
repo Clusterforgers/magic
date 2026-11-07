@@ -202,7 +202,7 @@ pub fn resolve(shape: Option<&Shape>, word: &str) -> Tr<Value> {
         Word::Attacker
             if matches!(
                 mode,
-                "Attacks" | "AttackerBlocked" | "AttackerBlockedByCreature"
+                "Attacks" | "AttackerBlocked" | "AttackerBlockedByCreature" | "AttackerUnblocked"
             ) =>
         {
             "Triggering"
@@ -212,6 +212,8 @@ pub fn resolve(shape: Option<&Shape>, word: &str) -> Tr<Value> {
         Word::Blocker if shape.pattern == "Blocks" && !shape.itself => "Dealer",
         Word::Attacker if shape.pattern == "Blocks" => "Against",
         Word::Defender if shape.pattern == "Attacks" => "Against",
+        // The player an attacker went at: the attacked player is its defending player.
+        Word::Defender if shape.pattern == "AttacksPlayer" => return Ok(json!("Defending")),
         Word::AttackedTarget if shape.pattern == "GroupAttacksAt" => "Against",
         Word::Attackers if matches!(shape.pattern.as_str(), "GroupAttacks" | "GroupAttacksAt") => {
             "Triggering"

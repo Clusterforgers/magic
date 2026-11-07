@@ -81,6 +81,11 @@ fn property(ctx: &Ctx, prop: &str) -> Tr<Vec<Value>> {
         "MultiColor" => return one(json!({"Compare": {"stat": "Colors", "op": "Ge", "to": 2}})),
         "EnchantedBy" | "EquippedBy" | "AttachedBy" => return one(json!({"Is": "Attached"})),
         "IsCommander" => return one(json!("Commander")),
+        // The creature whose attack triggered the ability.
+        "TriggeredAttacker" | "TriggeredAttackerLKICopy" if ctx.trigger.is_some() => {
+            let attacker = super::triggered::resolve(ctx.trigger.as_ref(), prop)?;
+            return one(json!({"Is": attacker}));
+        }
         // Attached to the object the line is about: its source.
         "Attached" => return one(json!({"AttachedTo": "This"})),
         // A permanent card outside the battlefield; on the battlefield every object is one.
@@ -670,6 +675,19 @@ pub fn spell_card(preds: &mut Vec<Value>) {
 
 /// The reference a `Defined$` word stands for.
 pub fn defined(ctx: &Ctx, word: &str) -> Tr<Value> {
+    // "Destroy that creature and this": two objects named side by side are the objects either one stands for.
+    if let Some((first, second)) = word.trim().split_once(" & ")
+        && !second.contains(" & ")
+        && [first, second].iter().all(|part| {
+            super::triggered::is_word(part) || matches!(part.trim(), "Self" | "Targeted")
+        })
+    {
+        let (first, second) = (defined(ctx, first)?, defined(ctx, second)?);
+        if super::valid_atoms::is_player(&first) || super::valid_atoms::is_player(&second) {
+            return unmapped(format!("defined:{word}"));
+        }
+        return Ok(json!({"Each": [{"AnyOf": [{"Is": first}, {"Is": second}]}]}));
+    }
     if let Some(spec) = word.trim().strip_prefix("Valid ") {
         return Ok(json!({"Each": selector_any(ctx, spec)?}));
     }
@@ -764,7 +782,9 @@ pub fn defined(ctx: &Ctx, word: &str) -> Tr<Value> {
         word if super::triggered::is_word(word) => {
             super::triggered::resolve(ctx.trigger.as_ref(), word)
         }
-        "DefendingPlayer" | "TriggeredDefendingPlayer" => Ok(json!("Defending")),
+        "DefendingPlayer" | "TriggeredDefendingPlayer" | "Spawner>TriggeredDefendingPlayer" => {
+            Ok(json!("Defending"))
+        }
         other => super::valid_more::defined_word(ctx, other),
     }
 }

@@ -665,7 +665,7 @@ fn card_event(ctx: &Ctx, p: &Params, variant: &str) -> Tr<Value> {
     let read: &[&str] = if variant == "Discarded" {
         &["ValidCard", "ValidPlayer"]
     } else {
-        &["ValidCard"]
+        &["ValidCard", "ValidPlayer", "FirstTime"]
     };
     keys(p, variant, read)?;
     let (what, by) = card_and_player(ctx, p.get("ValidCard").unwrap_or("Card"))?;
@@ -682,7 +682,7 @@ fn card_event(ctx: &Ctx, p: &Params, variant: &str) -> Tr<Value> {
         }
         pattern["by"] = player_ref(Some(word))?;
     }
-    Ok(json!({ variant: pattern }))
+    first_time(p, json!({ variant: pattern }))
 }
 
 /// "Whenever you attack" and "whenever you attack with two or more creatures".
@@ -750,6 +750,8 @@ pub(super) fn player_ref(word: Option<&str>) -> Tr<Value> {
         // Teams do not exist at our tables: the other players are the opponents.
         Some("Opponent" | "Player.Opponent" | "Player.Other") => Ok(json!("Opponents")),
         Some("Player.EnchantedBy") => Ok(json!("AttachedPlayer")),
+        Some("Player.isMonarch") => Ok(json!("Monarch")),
+        Some("Player.withMostLife") => Ok(json!("MostLife")),
         Some("Player.EnchantedController") => Ok(json!({"ControllerOf": "Attached"})),
         Some("Player.Chosen") => Ok(json!("Chosen")),
         Some("Player.TriggeredDefendingPlayer" | "TriggeredDefendingPlayer") => {
@@ -869,7 +871,8 @@ fn drawn(p: &Params) -> Tr<Value> {
     // `ValidPlayer$` names who draws, `ValidCard$` names the card drawn and so who owns it; the two are not given together.
     let who = match (p.get("ValidCard"), p.get("ValidPlayer")) {
         (Some("Card.YouOwn" | "Card.YouCtrl"), None) => "You",
-        (Some("Card.OppOwn"), None) => "Opponents",
+        (Some("Card.OppOwn" | "Card.OppCtrl"), None) => "Opponents",
+        (Some("Card.OwnedBy Player.EnchantedBy"), None) => "AttachedPlayer",
         (None | Some("Card"), None) => "EachPlayer",
         (None, Some(word)) => match player_ref(Some(word)) {
             Ok(found) if found == "You" => "You",

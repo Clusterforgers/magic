@@ -104,6 +104,7 @@ fn player_word(word: Option<&str>) -> Tr<Value> {
         None | Some("Player") => Ok(json!("EachPlayer")),
         Some("You") => Ok(json!("You")),
         Some("Opponent" | "Player.Opponent") => Ok(json!("Opponents")),
+        Some("Player.EnchantedBy") => Ok(json!("AttachedPlayer")),
         Some(other) => super::players_where::word(other)
             .map_or_else(|| unmapped(format!("static-affected:{other}")), Ok),
     }
