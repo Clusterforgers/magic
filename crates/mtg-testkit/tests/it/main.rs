@@ -227,6 +227,7 @@ mod fight;
 mod fight_fuzz;
 mod fight_targets;
 mod filter_lands;
+mod fix10_damage_once;
 mod fix7;
 mod flip;
 mod flip_fuzz;

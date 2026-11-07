@@ -60,11 +60,11 @@ use super::*;
 )]
 #[case::dealt_damage(
     "Whenever ~ is dealt damage, draw a card.",
-    r#"{"Triggered":{"when":{"DealsDamage":{"source":[],"to":"This"}},"effects":[{"Draw":{}}]}}"#
+    r#"{"Triggered":{"when":{"Batch":{"DealsDamage":{"source":[],"to":"This"}}},"effects":[{"Draw":{}}]}}"#
 )]
 #[case::first_dealt_damage(
     "Whenever ~ is dealt damage for the first time each turn, draw a card.",
-    r#"{"Triggered":{"when":{"Nth":{"event":{"DealsDamage":{"source":[],"to":"This"}},"nth":1}},"effects":[{"Draw":{}}]}}"#
+    r#"{"Triggered":{"when":{"Nth":{"event":{"Batch":{"DealsDamage":{"source":[],"to":"This"}}},"nth":1}},"effects":[{"Draw":{}}]}}"#
 )]
 #[case::a_creature_dealt_damage(
     "Whenever a creature you control is dealt damage, draw a card.",

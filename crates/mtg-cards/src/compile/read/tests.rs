@@ -270,6 +270,7 @@ mod exile_bounce_shrink;
 mod exile_while;
 mod exiled_kind;
 mod fights;
+mod fix10;
 mod flicker;
 mod for_each;
 mod goad;

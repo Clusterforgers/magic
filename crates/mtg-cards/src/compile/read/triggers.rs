@@ -124,6 +124,18 @@ pub fn event_creature(pattern: &TriggerPattern) -> Option<Ref> {
         {
             return Some(Ref::Triggering);
         }
+        // "Whenever equipped creature is dealt damage, it deals that much damage": the creature dealt the damage.
+        TriggerPattern::Batch(inner)
+            if matches!(
+                &**inner,
+                TriggerPattern::DealsDamage {
+                    to: Some(Ref::Attached),
+                    ..
+                }
+            ) =>
+        {
+            return Some(Ref::Attached);
+        }
         _ => return None,
     };
     if what.0 == [Pred::This] {
@@ -803,17 +815,7 @@ fn verb(r: &mut Reader<'_>, what: &Selector) -> Option<TriggerPattern> {
     } else if r.words("becomes the target of a spell or ability") {
         return becomes_target(r, what);
     } else if r.words("is dealt damage") {
-        let to = match what.0.as_slice() {
-            [Pred::This] => Ref::This,
-            [Pred::Is(Ref::Attached)] => Ref::Attached,
-            _ => Ref::Each(what.clone()),
-        };
-        let damaged = TriggerPattern::DealsDamage {
-            source: Selector::default(),
-            to: Some(to),
-            combat: None,
-        };
-        return Some(first_time(r, damaged));
+        return dealt_damage(r, what);
     } else if r.word("blocks") {
         return Some(TriggerPattern::Blocks { what: what.clone() });
     } else if r.words("becomes blocked") {
@@ -866,7 +868,7 @@ fn verb(r: &mut Reader<'_>, what: &Selector) -> Option<TriggerPattern> {
             to: subject(r)?,
         });
     } else if r.word("deals") {
-        return damage_dealt(r, what);
+        return deals_damage(r, what);
     } else {
         return None;
     };
@@ -913,6 +915,41 @@ fn first_time(r: &mut Reader<'_>, event: TriggerPattern) -> TriggerPattern {
         },
         None => event,
     }
+}
+
+/// "is dealt damage": one object is dealt damage once for all the damage dealt to it at the same time, from any number
+/// of sources (the batch, of which only the first of a turn is counted); a group per source and creature.
+fn dealt_damage(r: &mut Reader<'_>, what: &Selector) -> Option<TriggerPattern> {
+    let to = match what.0.as_slice() {
+        [Pred::This] => Ref::This,
+        [Pred::Is(Ref::Attached)] => Ref::Attached,
+        _ => Ref::Each(what.clone()),
+    };
+    let one = !matches!(&to, Ref::Each(group) if !super::r7e_events::one_object(group));
+    let damaged = TriggerPattern::DealsDamage {
+        source: Selector::default(),
+        to: Some(to),
+        combat: None,
+    };
+    if !one {
+        return Some(first_time(r, damaged));
+    }
+    match first_time(r, TriggerPattern::Batch(Box::new(damaged))) {
+        TriggerPattern::Nth { nth, .. } if nth != 1 => None,
+        counted => Some(counted),
+    }
+}
+
+/// "deals damage": one object deals damage once for all the damage it deals at the same time, to any number of
+/// recipients (the batch), unless the recipient is named.
+fn deals_damage(r: &mut Reader<'_>, what: &Selector) -> Option<TriggerPattern> {
+    let dealt = damage_dealt(r, what)?;
+    if matches!(&dealt, TriggerPattern::DealsDamage { to: None, .. })
+        && super::r7e_events::one_object(what)
+    {
+        return Some(TriggerPattern::Batch(Box::new(dealt)));
+    }
+    Some(dealt)
 }
 
 /// What follows "deals": "combat damage to a player", "damage to an opponent", "noncombat damage".
@@ -1251,8 +1288,17 @@ pub(super) fn player_verb(by: &Ref, verb: &str) -> Option<String> {
 /// The words of a creature that becomes blocked by any creature.
 const BLOCKED: &str = "becomes blocked";
 
-/// The subject of a pattern that is about one thing happening to it, and what happens.
+/// The subject of a pattern that is about one thing happening to it, and what happens. The damage one object is dealt
+/// or deals in one event has no such words: the singular wording is the batch's (`r7e_events`).
 pub(super) fn happening(pattern: &TriggerPattern) -> Option<(Selector, String)> {
+    if super::r7e_events::fix10_one_object_event(pattern) {
+        return None;
+    }
+    one_happening(pattern)
+}
+
+/// The subject and the verb of `happening`.
+fn one_happening(pattern: &TriggerPattern) -> Option<(Selector, String)> {
     let said = |what: &Selector, verb: &str| Some((what.clone(), verb.to_owned()));
     match pattern {
         TriggerPattern::ZoneChange { what, from, to } => {
@@ -1544,6 +1590,9 @@ pub fn pattern_text(pattern: &TriggerPattern) -> Option<String> {
             .or_else(|| super::w6e_control::w6e_joined_step(patterns))
             .or_else(|| super::r7e_events::r7e_any_of(patterns)),
         _ => {
+            if let Some(each) = super::r7e_events::fix10_each_source(pattern) {
+                return Some(each);
+            }
             let (what, verb) = happening(pattern)?;
             about(&what, &[verb])
         }
@@ -1639,6 +1688,11 @@ fn nth_text(event: &TriggerPattern, nth: u32) -> Option<String> {
         | TriggerPattern::Surveilled { .. } => {
             let counted = pattern_text(event)?;
             return Some(format!("{counted} for the {ordinal} time each turn"));
+        }
+        // The damage of one batch is one time, and the engine counts only the first batch of a turn.
+        TriggerPattern::Batch(inner) if nth == 1 => {
+            let counted = super::r7e_events::r7e_one_object_damage(inner)?;
+            return Some(format!("{counted} for the first time each turn"));
         }
         // The counters of one batch are one time: the first counter put in the turn is the one that counts.
         TriggerPattern::CountersPut { counter: None, .. } => {

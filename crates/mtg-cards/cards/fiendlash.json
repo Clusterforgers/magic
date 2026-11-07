@@ -15,7 +15,7 @@
         },
         {
           "Triggered": {
-            "when": { "DealsDamage": { "source": [], "to": "Attached" } },
+            "when": { "Batch": { "DealsDamage": { "source": [], "to": "Attached" } } },
             "targets": [
               { "what": { "Either": ["Player", { "Object": [{ "Type": "Planeswalker" }] }] } }
             ],

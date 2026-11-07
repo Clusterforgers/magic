@@ -12,7 +12,7 @@
         { "Static": { "affected": "You", "mods": [{ "AddKeyword": "Hexproof" }] } },
         {
           "Triggered": {
-            "when": { "DealsDamage": { "source": [], "to": "This" } },
+            "when": { "Batch": { "DealsDamage": { "source": [], "to": "This" } } },
             "effects": [{ "GainLife": { "amount": "Triggering" } }]
           }
         }
