@@ -535,6 +535,25 @@ pub enum GameRule {
         #[serde(default = "Amount::one", skip_serializing_if = "Amount::is_one")]
         per: Amount,
     },
+    /// Creatures can't block unless their controller pays the mana or life for each of them as blockers are declared
+    /// (CR 509.1d): the declaration is made only with the payment.
+    BlockTax {
+        /// The blocking creatures it taxes, judged when blockers are declared; every creature when empty.
+        #[serde(default, skip_serializing_if = "Selector::is_empty")]
+        blockers: Selector,
+        /// The attackers whose blockers it taxes, judged the same way; every attacker when empty.
+        #[serde(default, skip_serializing_if = "Selector::is_empty")]
+        attackers: Selector,
+        /// The mana each taxed creature costs, once for each of `per`; no `{X}`.
+        #[serde(default, skip_serializing_if = "no_mana")]
+        mana: ManaCostX,
+        /// The life each taxed creature costs, once for each of `per`.
+        #[serde(default, skip_serializing_if = "crate::spend::is_zero")]
+        life: u32,
+        /// How many times the cost is paid for each creature, counted when the rule began or the state last changed.
+        #[serde(default = "Amount::one", skip_serializing_if = "Amount::is_one")]
+        per: Amount,
+    },
     /// No more than this many creatures can attack each combat: a restriction on the whole declaration (CR 508.1c).
     AttackLimit(u32),
     /// No more than `most` creatures can attack each player or planeswalker `at` names each combat ("no more than two
@@ -848,6 +867,16 @@ mod tests {
             per: Amount::Fixed(2),
         },
         r#"{"AttackTax":{"who":"Opponents","attacked":"Both","attackers":[{"Type":"Creature"}],"mana":"{W/P}","per":2}}"#
+    )]
+    #[case(
+        GameRule::BlockTax {
+            blockers: Selector::this(),
+            attackers: Selector::default(),
+            mana: "{2}".parse().unwrap(),
+            life: 0,
+            per: Amount::Fixed(1),
+        },
+        r#"{"BlockTax":{"blockers":["This"],"mana":"{2}"}}"#
     )]
     #[case(
         GameRule::DamageCantBePrevented { source: Selector::default(), combat: None },

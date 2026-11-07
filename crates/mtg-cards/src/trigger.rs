@@ -224,6 +224,10 @@ pub enum TriggerPattern {
         /// The card drawn ("when you draw this card"); any card when empty.
         #[serde(default, skip_serializing_if = "Selector::is_empty")]
         what: Selector,
+        /// Only the first card the player draws in each of their draw steps (`true`), or every card but that one
+        /// (`false`, "except the first one they draw in each of their draw steps"); any card when absent.
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        first_in_draw_step: Option<bool>,
     },
     /// A player discards a card.
     Discarded {

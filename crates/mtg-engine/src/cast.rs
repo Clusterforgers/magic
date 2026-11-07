@@ -188,6 +188,7 @@ pub(crate) fn payment_decision(
         spend: Box::new(spend),
         can_cancel,
         attack: false,
+        block: false,
         life,
         max_life: max_life_payment(&cost, life),
         cost,
@@ -581,6 +582,10 @@ fn announcement(
             ..
         }) => Ok(crate::attack_tax::made(state, player, attackers, exert)),
         Some(Pending {
+            what: What::Block(blocks),
+            ..
+        }) => Ok(crate::block_tax::made(state, player, blocks)),
+        Some(Pending {
             what: What::Trigger(_),
             ..
         })
@@ -763,6 +768,7 @@ mod tests {
             spend: Box::new(Spend::other()),
             can_cancel,
             attack: false,
+            block: false,
             life,
             max_life: max_life_payment(&cost, life),
             cost,

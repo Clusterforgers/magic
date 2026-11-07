@@ -322,6 +322,7 @@ const RUNS: &[&str] = &[
     "Rule.MustAttack",
     "Rule.MustAttackPlayers",
     "Rule.AttackTax",
+    "Rule.BlockTax",
     "Rule.AttackLimit",
     "Rule.AttackLimitAt",
     "Rule.BlockLimit",
@@ -1341,6 +1342,7 @@ mod tests {
     #[case::saving_by_umbra_armor("ReplaceBy.UmbraArmor", true)]
     #[case::pairing_attackers_with_players("Rule.MustAttackPlayers", true)]
     #[case::taxing_attackers("Rule.AttackTax", true)]
+    #[case::taxing_blockers("Rule.BlockTax", true)]
     #[case::w8a_attack_limit("Rule.AttackLimit", true)]
     #[case::w10a_attack_limit_at("Rule.AttackLimitAt", true)]
     #[case::w8a_block_limit("Rule.BlockLimit", true)]

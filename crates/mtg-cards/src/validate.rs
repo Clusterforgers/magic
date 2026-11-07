@@ -2082,7 +2082,7 @@ impl<'a> Walker<'a> {
             | TriggerPattern::W11cCrime { who } => {
                 self.at("who", |w| w.reference(who, Kind::Player));
             }
-            TriggerPattern::Drew { who, what } | TriggerPattern::Did { who, what, .. } => {
+            TriggerPattern::Drew { who, what, .. } | TriggerPattern::Did { who, what, .. } => {
                 self.at("who", |w| w.reference(who, Kind::Player));
                 self.at("what", |w| w.selector(what));
             }
@@ -4124,6 +4124,25 @@ impl Walker<'_> {
                 if mana.has_x() {
                     w.at("mana", |w| {
                         w.problem("an attack tax is fixed mana, repeated by `per`, not an {X}");
+                    });
+                }
+            }),
+            GameRule::BlockTax {
+                blockers,
+                attackers,
+                mana,
+                life,
+                per,
+            } => self.at(tag, |w| {
+                w.at("blockers", |w| w.selector(blockers));
+                w.at("attackers", |w| w.selector(attackers));
+                w.at("per", |w| w.amount(per));
+                if mana.rest().symbols().is_empty() && !mana.has_x() && *life == 0 {
+                    w.problem("a block tax costs mana, life or both");
+                }
+                if mana.has_x() {
+                    w.at("mana", |w| {
+                        w.problem("a block tax is fixed mana, repeated by `per`, not an {X}");
                     });
                 }
             }),

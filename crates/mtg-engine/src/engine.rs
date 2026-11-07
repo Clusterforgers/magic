@@ -461,6 +461,10 @@ impl Engine {
                 self.pending = Some(Pending::new(player, What::Attack(attackers, exert)));
                 Ok(())
             }
+            Outcome::BeginBlock(blocks) => {
+                self.pending = Some(Pending::new(player, What::Block(blocks)));
+                Ok(())
+            }
             Outcome::BeginActivation(ability) => {
                 self.pending = Some(Pending::new(player, What::Ability(ability)));
                 Ok(())
@@ -733,7 +737,7 @@ impl Engine {
             }
             (What::Spell(card), None) => *card,
             (What::Ability(ability), None) => ability.object,
-            (What::Trigger(_) | What::Attack(..), None) => return Ok(()),
+            (What::Trigger(_) | What::Attack(..) | What::Block(_), None) => return Ok(()),
         };
         let reason = pending.done.rewound.unwrap_or(Unplayable::Restricted);
         self.commit(vec![Event::AnnouncementRewound {

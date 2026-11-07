@@ -655,7 +655,13 @@ fn trigger_pattern() -> impl Strategy<Value = TriggerPattern> {
             }),
         reference().prop_map(|who| TriggerPattern::LifeGained { who }),
         reference().prop_map(|who| TriggerPattern::LifeLost { who }),
-        (reference(), selector()).prop_map(|(who, what)| TriggerPattern::Drew { who, what }),
+        (reference(), selector(), proptest::option::of(any::<bool>())).prop_map(
+            |(who, what, first_in_draw_step)| TriggerPattern::Drew {
+                who,
+                what,
+                first_in_draw_step
+            }
+        ),
         (selector(), reference()).prop_map(|(what, by)| TriggerPattern::Discarded { what, by }),
         selector().prop_map(|what| TriggerPattern::Tapped { what }),
         (selector(), reference()).prop_map(|(what, by)| TriggerPattern::TappedForMana { what, by }),

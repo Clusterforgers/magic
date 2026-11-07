@@ -551,10 +551,12 @@ pub(crate) fn block_options(state: &GameState, player: PlayerId) -> BlockOptions
         .filter(|attacker| blockable_together(*attacker))
         .filter_map(|attacker| Some((attacker, blocker_limits(state, attacker).1?)))
         .collect();
-    let (must_be_blocked, forced) = name_requirements(state, &mut blockers);
+    let (mut must_be_blocked, forced) = name_requirements(state, &mut blockers);
     let cant_alone = cant_block_alone_of(state, &blockers);
+    crate::block_tax::unbind_attackers(state, &blockers, &mut must_be_blocked);
     let required = blockers
         .iter()
+        .filter(|option| !crate::block_tax::costs_to_block(state, option))
         .map(|option| option.object)
         .filter(|object| {
             forced.contains(object)

@@ -28,6 +28,7 @@ impl KeywordRules for Miracle {
                 event: Box::new(TriggerPattern::Drew {
                     who: Ref::You,
                     what: Selector::this(),
+                    first_in_draw_step: None,
                 }),
                 nth: 1,
             },

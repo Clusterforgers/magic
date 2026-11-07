@@ -112,11 +112,12 @@ enum Happened {
         amount: u32,
         nth: u32,
     },
-    /// A player drew `card`, the `nth` of their turn.
+    /// A player drew `card`, the `nth` of their turn and the `in_draw_step`th of their own draw step (0 outside it).
     Drew {
         player: PlayerId,
         card: ObjectId,
         nth: u32,
+        in_draw_step: u32,
     },
     /// A permanent became tapped.
     Tapped { object: ObjectId },
@@ -672,7 +673,7 @@ fn w9a_expended(
 /// that follow it in the batch (`later`).
 fn ordinal(post: &GameState, later: &[Event], player: PlayerId, kind: Tally) -> u32 {
     let same = |event: &Event| match (kind, event) {
-        (Tally::Drawn, Event::CardDrawn { player: who, .. })
+        (Tally::Drawn | Tally::C6BlkDrawStepDrawn, Event::CardDrawn { player: who, .. })
         | (Tally::Cast, Event::SpellCast { player: who, .. })
         | (Tally::Gained, Event::LifeGained { player: who, .. })
         | (Tally::Cycled, Event::Cycled { player: who, .. })
@@ -712,6 +713,16 @@ fn ordinal(post: &GameState, later: &[Event], player: PlayerId, kind: Tally) -> 
     let after = post.tallied(player, kind);
     after
         .saturating_sub(u32::try_from(later.iter().filter(|e| same(e)).count()).unwrap_or(u32::MAX))
+}
+
+/// Which card of the draw step under way a draw by `player` is, when it is their own draw step (CR 504.1); 0 otherwise.
+fn draw_step_ordinal(look: Look<'_>, player: PlayerId) -> u32 {
+    if look.post.turn().step() != crate::turn::Step::Draw
+        || look.post.active_player() != Some(player)
+    {
+        return 0;
+    }
+    ordinal(look.post, look.later, player, Tally::C6BlkDrawStepDrawn)
 }
 
 /// Which time of the turn a loss of `amount` life is for `player`; none for a loss of nothing, which the turn does not count.
@@ -1004,6 +1015,7 @@ fn about_players_and_permanents(
             player: *player,
             card: *object,
             nth: ordinal(look.post, look.later, *player, Tally::Drawn),
+            in_draw_step: draw_step_ordinal(look, *player),
         }),
         Event::PermanentTapped { object } => {
             tapped.push(*object);
@@ -1479,6 +1491,7 @@ fn matching_player_action(
 /// the player who tapped for mana alone, so that damage to "that player" hits no creature that dealt it or land that was
 /// tapped; the player and the card of a discard and of a cycling; the blocker and the attacker; the attachment and what
 /// it is attached to.
+#[allow(clippy::too_many_lines)]
 fn matching_event(
     pattern: &TriggerPattern,
     happened: &Happened,
@@ -1554,10 +1567,23 @@ fn matching_event(
         | (TriggerPattern::Surveilled { who }, Happened::Surveilled { player, .. })
         | (TriggerPattern::Bolstered { who }, Happened::Bolstered { player }) => by(who, player)
             .then(|| counted(state, vec![Target::Player(*player)], happened.amount())),
-        (TriggerPattern::Drew { who, what }, Happened::Drew { player, card, .. }) => {
+        (
+            TriggerPattern::Drew {
+                who,
+                what,
+                first_in_draw_step,
+            },
+            Happened::Drew {
+                player,
+                card,
+                in_draw_step,
+                ..
+            },
+        ) => {
             // The card is read where the batch left it: in the hand it was drawn into, or wherever an effect sent it since.
             let drawn = object(*card)?;
-            (by(who, player) && picks(what, drawn)?)
+            let step = first_in_draw_step.is_none_or(|first| first == (*in_draw_step == 1));
+            (step && by(who, player) && picks(what, drawn)?)
                 .then(|| counted(state, vec![Target::Player(*player)], happened.amount()))
         }
         (
