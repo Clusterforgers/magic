@@ -135,7 +135,7 @@ fn the_graveyard_count_is_of_the_cards_the_player_owns_there() {
 }
 
 #[rstest]
-#[case::more_lands("PlayerCountOpponents$HasPropertywithMoreLandsThanYou")]
+#[case::more_life("PlayerCountOpponents$HasPropertywithMoreLifeThanYou")]
 #[case::combat_damage("PlayerCountOpponents$HasPropertywasDealtCombatDamageThisTurn")]
 #[case::monarch_among_opponents("PlayerCountOpponents$HasPropertyisMonarch")]
 #[case::no_least("PlayerCountPlayers$HasPropertyHasCardsInGraveyard_Card_GE0")]
