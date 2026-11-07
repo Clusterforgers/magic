@@ -1,5 +1,5 @@
 //! Effects on players and the game that map onto existing nodes: poison counters, the fog shield, skipped steps,
-//! sacrificing named objects, earthbend and discover.
+//! sacrificing named objects, earthbend, recruit and discover.
 
 use mtg_cards::effect::{Effect, discover};
 use mtg_cards::macros;
@@ -22,6 +22,7 @@ pub fn effects(ctx: &mut Ctx, p: &Params, api: &str) -> Option<Tr<Vec<Value>>> {
         "SacrificeAll" => sacrifice_all(ctx, p).map(|node| vec![node]),
         "Earthbend" => earthbend(ctx, p),
         "Discover" => discover_cards(ctx, p),
+        "Recruit" => recruit(p),
         _ => return None,
     })
 }
@@ -157,6 +158,15 @@ fn earthbend(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
     let on: Ref = from_value(on, "Earthbend")?;
     let Some(effects) = macros::action_effects_of("earthbend", &count, &on) else {
         return unmapped("effect:Earthbend");
+    };
+    to_values(&effects)
+}
+
+/// `Recruit`: the steps of the keyword action, for the ability's controller.
+fn recruit(p: &Params) -> Tr<Vec<Value>> {
+    only(p, "Recruit", &[])?;
+    let Some(effects) = macros::action_effects("recruit", 0, &Ref::You) else {
+        return unmapped("effect:Recruit");
     };
     to_values(&effects)
 }
