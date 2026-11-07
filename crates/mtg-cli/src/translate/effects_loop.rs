@@ -552,21 +552,45 @@ pub fn two_piles(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
     Ok(effects)
 }
 
-/// `Repeat` with a fixed number of passes (`MaxRepeat`): the body again and again, at most that many times; any other
-/// end (a check on a remembered value, a player's choice) is a gap, so a loop always has a defined end.
+/// `Repeat` with a fixed number of passes (`MaxRepeat`): the body again and again, at most that many times. With a check
+/// (`RepeatCheckSVar$`, `RepeatPresent$`) the body is done once and then again while the check holds, as Forge's
+/// do-while does, still never more than [`MOST_PASSES`] times; a player's choice to go on is a gap.
 pub fn repeat(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
-    only(p, "Repeat", &["RepeatSubAbility", "MaxRepeat"])?;
+    only(
+        p,
+        "Repeat",
+        &[
+            "RepeatSubAbility",
+            "MaxRepeat",
+            "RepeatCheckSVar",
+            "RepeatSVarCompare",
+            "RepeatPresent",
+            "RepeatDefined",
+            "RepeatCompare",
+        ],
+    )?;
     let Some(sub) = p.get("RepeatSubAbility") else {
         return unmapped("key:Repeat.no-RepeatSubAbility");
-    };
-    let Some(max) = p.get("MaxRepeat") else {
-        return unmapped("key:Repeat.no-MaxRepeat");
     };
     let outer = ctx.remembered.clone();
     let part = ctx.sub(sub)?;
     let effects = chain_at(ctx, &part, false);
+    // The check is read after the body, which it follows, so it sees what the body remembers.
+    let check = effects.is_ok().then(|| repeat_check(ctx, p));
     ctx.remembered = outer;
     let effects = effects?;
+    if let Some(check) = check.transpose()?.flatten() {
+        // "If you have fewer than seven cards in hand, repeat this process": the check comes before the next pass,
+        // which a script written as a do-while does once too often.
+        let said = p.get("StackDescription").or(p.get("SpellDescription"));
+        if said.is_some_and(|text| text.starts_with("If ")) {
+            return unmapped("key:Repeat.check-first");
+        }
+        return repeat_checked(p, &effects, &check);
+    }
+    let Some(max) = p.get("MaxRepeat") else {
+        return unmapped("key:Repeat.no-MaxRepeat");
+    };
     let mut repeat =
         json!({"condition": {"Compare": {"left": 0, "op": "Eq", "right": 0}}, "effects": effects});
     match max.parse::<u32>() {
@@ -578,4 +602,40 @@ pub fn repeat(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
         }
     }
     Ok(vec![json!({"RepeatWhile": repeat})])
+}
+
+/// The check that ends a `Repeat`: a count compared (`RepeatCheckSVar$`, at least 1 by default) and a presence
+/// (`RepeatPresent$` among `RepeatDefined$`), all of them holding; `None` without either.
+fn repeat_check(ctx: &Ctx, p: &Params) -> Tr<Option<Value>> {
+    if p.has("RepeatSVarCompare") && !p.has("RepeatCheckSVar") {
+        return unmapped("key:Repeat.RepeatSVarCompare");
+    }
+    if (p.has("RepeatDefined") || p.has("RepeatCompare")) && !p.has("RepeatPresent") {
+        return unmapped("key:Repeat.RepeatDefined");
+    }
+    let renamed: Vec<String> = [
+        ("RepeatCheckSVar", "CheckSVar"),
+        ("RepeatSVarCompare", "SVarCompare"),
+        ("RepeatPresent", "IsPresent"),
+        ("RepeatDefined", "PresentDefined"),
+        ("RepeatCompare", "PresentCompare"),
+    ]
+    .iter()
+    .filter_map(|(from, to)| p.get(from).map(|value| format!("{to}$ {value}")))
+    .collect();
+    if renamed.is_empty() {
+        return Ok(None);
+    }
+    super::condition::condition(ctx, &Params::parse(&renamed.join(" | ")))
+}
+
+/// A checked repeat: the body once, then again while the check holds, at most `MaxRepeat$` (or [`MOST_PASSES`]) passes.
+fn repeat_checked(p: &Params, effects: &[Value], check: &Value) -> Tr<Vec<Value>> {
+    let most = match p.get("MaxRepeat").map(str::parse::<u32>) {
+        None => MOST_PASSES,
+        Some(Ok(n)) if (1..=MOST_PASSES).contains(&n) => n,
+        Some(_) => return unmapped("key:Repeat.MaxRepeat-with-a-check"),
+    };
+    Ok(vec![json!({"RepeatWhile": {
+        "condition": check, "effects": effects, "most": most, "at_least_once": true}})])
 }

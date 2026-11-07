@@ -124,19 +124,23 @@ fn tap(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
     Ok(vec![pick, effect])
 }
 
-/// `Untap` with `UntapUpTo$`: the controller picks up to `Amount$` permanents of `UntapType$` and untaps them.
+/// `Untap` with `UntapUpTo$`: the controller, or the player `Defined$` names, picks up to `Amount$` permanents of
+/// `UntapType$` and untaps them.
 fn untap_up_to(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
-    only(p, "Untap", &["UntapUpTo", "UntapType", "Amount"])?;
+    only(p, "Untap", &["UntapUpTo", "UntapType", "Amount", "Defined"])?;
     let (Some(kind), Some(count)) = (p.get("UntapType"), p.get("Amount")) else {
         return unmapped("key:Untap.UntapUpTo-without-type");
     };
+    let who = subject(ctx, p, "You", None)?;
     let filter = selector_any(ctx, kind)?;
     let max = amount(ctx, count)?;
     let bind = ctx.fresh("untap");
-    Ok(vec![
-        json!({"Choose": {"from": {"Each": filter}, "count": {"min": 0, "max": max}, "as": bind}}),
-        json!({"Untap": {"what": {"Bound": bind}}}),
-    ])
+    let mut choose =
+        json!({"Choose": {"from": {"Each": filter}, "count": {"min": 0, "max": max}, "as": bind}});
+    if who != json!("You") {
+        choose["Choose"]["who"] = who;
+    }
+    Ok(vec![choose, json!({"Untap": {"what": {"Bound": bind}}})])
 }
 
 /// `TapAll`, `UntapAll`: the verb on every object the valid-string names.

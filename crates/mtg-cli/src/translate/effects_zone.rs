@@ -1357,6 +1357,33 @@ impl Take {
     }
 }
 
+/// Where a `DigUntil` puts the revealed cards (`RevealedDestination$`, `RevealedLibraryPosition$`).
+fn revealed_to(p: &Params) -> Tr<Goes> {
+    let order = if p.get("RevealRandomOrder") == Some("True") {
+        "Random"
+    } else {
+        "Chosen"
+    };
+    Ok(
+        match (
+            p.get("RevealedDestination"),
+            p.get("RevealedLibraryPosition"),
+        ) {
+            // Forge puts the rest on the bottom when no place is named.
+            (Some("Library"), Some("-1") | None) => {
+                Goes::To(json!({"Library": {"place": "Bottom", "order": order}}))
+            }
+            (Some("Library"), Some("0")) => Goes::To(json!({"Library": {"place": "Top"}})),
+            (Some("Graveyard"), _) => Goes::To(json!("Graveyard")),
+            (Some("Hand"), _) => Goes::To(json!("Hand")),
+            (Some("Exile"), _) => Goes::Exile,
+            (other, _) => {
+                return unmapped(format!("key:DigUntil.RevealedDestination={other:?}"));
+            }
+        },
+    )
+}
+
 /// `DigUntil`: reveal cards until some match, the match goes to one place and the revealed cards to another.
 pub fn dig_until(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
     only(
@@ -1377,6 +1404,7 @@ pub fn dig_until(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
             "RememberFound",
             "RememberRevealed",
             "ValidDescription",
+            "OptionalFoundMove",
         ],
     )?;
     // Forge remembers every card revealed, the one found included; where the found card goes elsewhere, "the cards
@@ -1391,9 +1419,13 @@ pub fn dig_until(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
     let who = subject(ctx, p, "You", None)?;
     let found = ctx.fresh("found");
     let revealed = ctx.fresh("revealed");
+    let valid = p.get("Valid").unwrap_or("Card");
+    let mut filter = selector_any(ctx, valid)?;
+    // A permanent card in a library is one of a permanent type, not an instant or sorcery.
+    filter.extend(super::valid::permanent_card(valid)?);
     let mut find = json!({
         "who": who,
-        "filter": selector_any(ctx, p.get("Valid").unwrap_or("Card"))?,
+        "filter": filter,
         "as": found,
         "revealed_as": revealed,
     });
@@ -1416,26 +1448,21 @@ pub fn dig_until(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
     if p.get("RememberFound") == Some("True") {
         ctx.remembered = Some(json!({ "Bound": found }));
     }
-    let order = if p.get("RevealRandomOrder") == Some("True") {
-        "Random"
-    } else {
-        "Chosen"
-    };
-    let rest_to = match (
-        p.get("RevealedDestination"),
-        p.get("RevealedLibraryPosition"),
-    ) {
-        (Some("Library"), Some("-1")) => {
-            Goes::To(json!({"Library": {"place": "Bottom", "order": order}}))
-        }
-        (Some("Library"), Some("0")) => Goes::To(json!({"Library": {"place": "Top"}})),
-        (Some("Graveyard"), _) => Goes::To(json!("Graveyard")),
-        (Some("Exile"), _) => Goes::Exile,
-        (other, _) => return unmapped(format!("key:DigUntil.RevealedDestination={other:?}")),
-    };
+    let rest_to = revealed_to(p)?;
+    let optional = p.get("OptionalFoundMove") == Some("True");
+    if optional && (find.get("count").is_some() || found_to.is_none()) {
+        // "Put any number of those": a choice among several found cards, not one "may".
+        return unmapped("key:DigUntil.OptionalFoundMove");
+    }
+    let who = find["who"].clone();
     let mut effects = vec![json!({ "RevealUntil": find })];
     if let Some(found_to) = found_to {
-        effects.push(moves(&json!({"Bound": found}), found_to));
+        let found_move = moves(&json!({"Bound": found}), found_to);
+        if optional {
+            effects.extend(super::frame::ask(vec![found_move], &who));
+        } else {
+            effects.push(found_move);
+        }
     }
     let mut rest = moves(&json!({"Bound": revealed}), rest_to);
     if remembers {
@@ -1449,7 +1476,12 @@ pub fn dig_until(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
     }
     effects.push(rest);
     if p.get("Shuffle") == Some("True") {
-        effects.push(json!({"Shuffle": {}}));
+        // The player whose library was revealed shuffles it.
+        let mut shuffle = json!({"Shuffle": {}});
+        if who != json!("You") {
+            shuffle["Shuffle"]["who"] = who;
+        }
+        effects.push(shuffle);
     }
     Ok(effects)
 }

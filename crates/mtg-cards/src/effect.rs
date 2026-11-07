@@ -1169,7 +1169,8 @@ pub enum Effect {
         /// The creatures.
         what: Ref,
     },
-    /// Does `effects` again and again while `condition` holds, read before each pass, and at most `most` times.
+    /// Does `effects` again and again while `condition` holds, read before each pass (after the first with
+    /// `at_least_once`), and at most `most` times.
     RepeatWhile {
         /// What must hold for a pass to begin.
         condition: Condition,
@@ -1180,6 +1181,9 @@ pub enum Effect {
         /// A second bound, an amount read before each pass ("X times"); no bound but `most` when absent.
         #[serde(default, skip_serializing_if = "Option::is_none")]
         times: Option<Amount>,
+        /// The first pass begins without reading `condition`: the body is done at least once (a do-while).
+        #[serde(default, skip_serializing_if = "std::ops::Not::not")]
+        at_least_once: bool,
     },
     /// `who` separates the objects `what` names into two piles (CR 700.3), then `chooser` chooses one pile: that pile is
     /// bound as `chosen_as`, the other as `rest_as`.
@@ -1852,7 +1856,7 @@ mod tests {
     #[case::exchange_life(Effect::ExchangeLife { who: Ref::You, with: Ref::Opponents }, r#"{"ExchangeLife":{"with":"Opponents"}}"#)]
     #[case::remove_damage(Effect::RemoveDamage { what: Ref::This }, r#"{"RemoveDamage":{"what":"This"}}"#)]
     #[case::repeat_while(
-        Effect::RepeatWhile { condition: Condition::YourTurn, effects: vec![Effect::Draw { bind: None, who: Ref::You, count: Amount::one() }], most: 3, times: None },
+        Effect::RepeatWhile { condition: Condition::YourTurn, effects: vec![Effect::Draw { bind: None, who: Ref::You, count: Amount::one() }], most: 3, times: None, at_least_once: false },
         r#"{"RepeatWhile":{"condition":"YourTurn","effects":[{"Draw":{}}],"most":3}}"#
     )]
     #[case::separate_piles(

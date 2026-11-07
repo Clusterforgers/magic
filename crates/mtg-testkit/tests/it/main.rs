@@ -250,6 +250,7 @@ mod fuzz_games;
 mod g10d_spell_costs;
 mod g12b_copy_kinds;
 mod g12b_counters_of;
+mod g12d;
 mod gap_fuzz;
 mod gift;
 mod gift_fuzz;
