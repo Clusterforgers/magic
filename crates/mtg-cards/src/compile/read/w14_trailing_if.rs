@@ -10,13 +10,25 @@ const COMMAS: usize = 3;
 pub(super) fn add(texts: &mut Vec<String>) {
     let found: Vec<String> = texts
         .iter()
-        .flat_map(|text| trailing(text).into_iter().chain(sentence_then(text)))
+        .flat_map(|text| {
+            trailing(text)
+                .into_iter()
+                .chain(sentence_then(text))
+                .chain(single_may(text))
+        })
         .collect();
     for text in found {
         if !texts.contains(&text) {
             texts.push(text);
         }
     }
+}
+
+/// A "may" asked twice, once by the player's option and once by the pick that may take none, as one: "you may you may put" as
+/// "you may put".
+fn single_may(text: &str) -> Option<String> {
+    text.contains("you may you may ")
+        .then(|| text.replace("you may you may ", "you may "))
 }
 
 /// The text with one ", then " as a sentence end and "Then": "Mill two cards, then return a card." as "Mill two cards. Then return a card.".
@@ -84,7 +96,7 @@ mod tests {
     //! is: a condition that holds an "instead", an "otherwise" or a quoted ability stays as it was.
     use rstest::rstest;
 
-    use super::{sentence_then, trailing};
+    use super::{sentence_then, single_may, trailing};
 
     #[rstest]
     #[case::alone("If it has mana value 3 or less, exile target creature.", &["Exile target creature if it has mana value 3 or less."])]
@@ -113,6 +125,16 @@ mod tests {
         if wanted.is_empty() {
             assert!(found.is_empty(), "{text}: {found:?}");
         }
+    }
+
+    #[rstest]
+    #[case::twice(
+        "When ~ enters, you may you may put a land.",
+        Some("When ~ enters, you may put a land.")
+    )]
+    #[case::once("When ~ enters, you may put a land.", None)]
+    fn a_may_asked_twice_is_one(#[case] text: &str, #[case] wanted: Option<&str>) {
+        assert_eq!(single_may(text).as_deref(), wanted);
     }
 
     #[rstest]

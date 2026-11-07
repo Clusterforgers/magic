@@ -404,3 +404,29 @@ fn w14_a_condition_before_or_after_its_effect(
 ) {
     assert_eq!(written(&json, clause), reads, "{json}");
 }
+
+fn grazer(count: &str, to: &str) -> String {
+    format!(
+        r#"{{"Triggered":{{"when":{{"ZoneChange":{{"what":["This"],"to":"Battlefield"}}}},"effects":[{{"May":{{"effects":[{{"Choose":{{"from":{{"Each":[{{"In":"Hand"}},{{"OwnedBy":"You"}},{{"Type":"Land"}}]}},"as":"land"{count}}}}},{{"Move":{{"what":{{"Bound":"land"}},"to":{to}}}}}]}}}}]}}}}"#
+    )
+}
+
+const GRAZER_TEXT: &str = "When this creature enters, you may put a land card from your hand onto the battlefield tapped.";
+
+#[rstest]
+#[case::pick_and_option(grazer(OPTIONAL, BF_TAPPED), GRAZER_TEXT, true)]
+#[case::option_only(grazer("", BF_TAPPED), GRAZER_TEXT, true)]
+#[case::untapped_rule(grazer(OPTIONAL, BF), GRAZER_TEXT, false)]
+#[case::no_option_in_text(
+    grazer(OPTIONAL, BF_TAPPED),
+    "When this creature enters, put a land card from your hand onto the battlefield tapped.",
+    false
+)]
+#[case::to_hand(grazer(OPTIONAL, r#""Hand""#), GRAZER_TEXT, false)]
+fn w14_an_option_and_a_pick_that_may_take_none(
+    #[case] json: String,
+    #[case] clause: &str,
+    #[case] reads: bool,
+) {
+    assert_eq!(written(&json, clause), reads, "{json}");
+}
