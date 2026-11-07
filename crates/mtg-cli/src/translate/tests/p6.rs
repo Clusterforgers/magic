@@ -257,7 +257,9 @@ fn a_static_effect_is_a_forever_continuous_over_the_moved_object(
 }
 
 #[rstest]
-#[case::adds_a_color("SVar:Animate:Mode$ Continuous | AddType$ Zombie | AddColor$ Black")]
+#[case::adds_a_chosen_color(
+    "SVar:Animate:Mode$ Continuous | AddType$ Zombie | AddColor$ ChosenColor"
+)]
 #[case::takes_abilities_away(
     "SVar:Animate:Mode$ Continuous | AddType$ Artifact | RemoveAllAbilities$ True"
 )]

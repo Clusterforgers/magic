@@ -212,8 +212,8 @@ pub(super) fn added_types(list: &str) -> Vec<Value> {
 }
 
 /// The modifications of the static the `StaticEffect$` `SVar` names ("It's a 1/1 Spirit creature with flying in addition to
-/// its other types"): types added, a fixed power and toughness, a color and keywords. A word that takes something away or
-/// adds a color stays a gap.
+/// its other types"): types added, a fixed power and toughness, a color set or added and keywords. A word that takes
+/// something away stays a gap.
 fn static_effect_mods(ctx: &mut Ctx, name: &str) -> Tr<Vec<Value>> {
     let part = ctx.sub(name)?;
     check_keys(
@@ -227,6 +227,7 @@ fn static_effect_mods(ctx: &mut Ctx, name: &str) -> Tr<Vec<Value>> {
             "SetToughness",
             "AddKeyword",
             "SetColor",
+            "AddColor",
             "RemoveCardTypes",
         ],
         |_, _| false,
@@ -269,6 +270,13 @@ fn static_effect_mods(ctx: &mut Ctx, name: &str) -> Tr<Vec<Value>> {
         }
         mods.push(json!({ "SetColors": [color] }));
     }
+    // "A black Zombie in addition to its other colors and types": the color joins the ones it has (layer 5).
+    if let Some(color) = part.get("AddColor") {
+        if !matches!(color, "White" | "Blue" | "Black" | "Red" | "Green") {
+            return unmapped("key:ChangeZone.StaticEffect=color");
+        }
+        mods.push(json!({ "AddColors": [color] }));
+    }
     if let Some(words) = part.get("AddKeyword") {
         for keyword in keyword_list(ctx, words)? {
             mods.push(json!({ "AddKeyword": keyword }));
@@ -307,6 +315,23 @@ fn with_static_effect(
         "mods": mods,
         "duration": "Forever",
     }}));
+    Ok(())
+}
+
+/// `AtEOT$` on a move to the battlefield ("Sacrifice it at the beginning of the next end step"): a delayed trigger that
+/// acts on exactly the objects the move put there, as the objects they became (CR 400.7).
+fn at_end_step(ctx: &mut Ctx, p: &Params, destination: &str, effects: &mut Vec<Value>) -> Tr<()> {
+    let Some(word) = p.get("AtEOT") else {
+        return Ok(());
+    };
+    if destination != "Battlefield" || effects.len() != 1 {
+        return unmapped("key:ChangeZone.AtEOT");
+    }
+    let moved = frame::moved_name(ctx, effects, "Move", "moved", "key:ChangeZone.AtEOT")?;
+    effects.push(super::tokens_copy::at_eot(
+        word,
+        &json!({ "Bound": moved }),
+    )?);
     Ok(())
 }
 
@@ -353,6 +378,8 @@ const NAMED: Verb = Verb {
         "Duration",
         "Hidden",
         "ThisDefinedAndTgts",
+        "AtEOT",
+        "ShuffleNonMandatory",
     ],
 };
 
@@ -378,6 +405,7 @@ const PICKED: Verb = Verb {
         "RememberChanged",
         "Reorder",
         "StaticEffect",
+        "Duration",
     ],
 };
 
@@ -426,6 +454,16 @@ fn moved_objects(ctx: &mut Ctx, p: &Params, origin: &str) -> Tr<Vec<Value>> {
 
 fn change_zone(ctx: &mut Ctx, p: &Params, origin: &str, destination: &str) -> Tr<Vec<Value>> {
     NAMED.admit(p)?;
+    // "You may shuffle up to four target cards into your library": no shuffle when nothing was chosen, which is what a
+    // shuffle-in of no cards does.
+    if p.has("ShuffleNonMandatory")
+        && (p.get("ShuffleNonMandatory") != Some("True")
+            || destination != "Library"
+            || p.get("Shuffle") != Some("True")
+            || p.get("TargetMin") != Some("0"))
+    {
+        return unmapped("key:ChangeZone.ShuffleNonMandatory");
+    }
     // A target is one object: `ChangeNum$ 1` says so again; any other count, or one beside target bounds, is not read.
     if p.has("ChangeNum")
         && (p.get("ChangeNum") != Some("1")
@@ -468,6 +506,9 @@ fn change_zone(ctx: &mut Ctx, p: &Params, origin: &str, destination: &str) -> Tr
     }
     if !two_ways {
         with_static_effect(ctx, p, destination, &mut effects)?;
+        at_end_step(ctx, p, destination, &mut effects)?;
+    } else if p.has("AtEOT") {
+        return unmapped("key:ChangeZone.AtEOT-with-two-ways");
     }
     enters_as_said(ctx, p, destination, &mut effects)?;
     if !frame::is_optional(p) {
@@ -638,6 +679,19 @@ fn choose_and_move(ctx: &mut Ctx, p: &Params, origin: &str, destination: &str) -
         return unmapped("key:ChangeZone.Choose.DestinationAlternative-with-memory");
     }
     let mut moved = frame::place(ctx, &chosen, places);
+    match p.get("Duration") {
+        None => {}
+        // "Exile any number of creatures you control until ~ leaves the battlefield": each returns when the source goes.
+        Some("UntilHostLeavesPlay")
+            if origin == "Battlefield"
+                && who.each.is_none()
+                && moved.len() == 1
+                && moved[0].get("Exile").is_some() =>
+        {
+            moved[0]["Exile"]["duration"] = json!("WhileSourceOnBattlefield");
+        }
+        Some(_) => return unmapped("key:ChangeZone.Choose.Duration"),
+    }
     if remembers && let Some(step) = moved.first_mut() {
         bind_moved(ctx, step);
     }
@@ -1200,6 +1254,7 @@ fn change_zone_all(ctx: &mut Ctx, p: &Params, origin: &str, destination: &str) -
             "Defined",
             "UseAllOriginZones",
             "RandomOrder",
+            "Duration",
         ],
     )?;
     // Every zone of the origin is emptied, which is what a move of all of them does anyway.
@@ -1233,6 +1288,14 @@ fn change_zone_all(ctx: &mut Ctx, p: &Params, origin: &str, destination: &str) -
         filter.push(json!({"OwnedBy": zone_owner(ctx, p.get("Defined").unwrap_or_default())?}));
     }
     let mut effect = moves(&json!({ "Each": filter }), goes(ctx, p, destination)?);
+    match p.get("Duration") {
+        None => {}
+        // "Exile all artifacts your opponents control until ~ leaves the battlefield": each returns when the source goes.
+        Some("UntilHostLeavesPlay") if origin == "Battlefield" && effect.get("Exile").is_some() => {
+            effect["Exile"]["duration"] = json!("WhileSourceOnBattlefield");
+        }
+        Some(_) => return unmapped("key:ChangeZoneAll.Duration"),
+    }
     if remember::wanted(p, &["RememberChanged"]) {
         let (verb, stem) = if effect.get("Exile").is_some() {
             ("Exile", "exiled")
@@ -1245,21 +1308,35 @@ fn change_zone_all(ctx: &mut Ctx, p: &Params, origin: &str, destination: &str) -
 }
 
 /// `RearrangeTopOfLibrary`: the controller looks at the top cards of a library and puts them back on top in the order
-/// they choose. A shuffle option or a second player who orders stays a gap.
+/// they choose. With `MayShuffle$` the controller may then have that library shuffled ("You may shuffle", "You may have
+/// that player shuffle"). A second player who orders stays a gap.
 pub fn rearrange_top(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
     only(
         p,
         "RearrangeTopOfLibrary",
-        &["Defined", "NumCards", "ValidTgts", "TargetMin", "TargetMax"],
+        &[
+            "Defined",
+            "NumCards",
+            "ValidTgts",
+            "TargetMin",
+            "TargetMax",
+            "MayShuffle",
+        ],
     )?;
     let who = subject(ctx, p, "You", None)?;
     let count = amount(ctx, p.get("NumCards").unwrap_or("1"))?;
     let top = ctx.fresh("top");
-    Ok(vec![
+    let mut effects = vec![
         json!({"LookAtTop": {"who": who, "count": count, "as": top}}),
         json!({"Move": {"what": {"Bound": top},
             "to": {"Library": {"place": "Top", "order": "Chosen"}}}}),
-    ])
+    ];
+    match p.get("MayShuffle") {
+        None => {}
+        Some("True") => effects.push(json!({"May": {"effects": [{"Shuffle": {"who": who}}]}})),
+        Some(_) => return unmapped("key:RearrangeTopOfLibrary.MayShuffle"),
+    }
+    Ok(effects)
 }
 
 /// `ExileFaceDown$ True` on a `Dig`: the cards taken lie face down in exile and their exiler may look at them. A face-down

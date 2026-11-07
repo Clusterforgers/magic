@@ -206,6 +206,7 @@ mod c5_sz_writers;
 mod c6_af_writers;
 mod c6_au_dead;
 mod g9b;
+mod g9d_writers;
 // dk1b
 mod c6_blk_aura;
 mod c6_blk_draws;

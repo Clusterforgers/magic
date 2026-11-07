@@ -1170,8 +1170,12 @@ fn put_counter(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
             "TargetMax",
             "CounterTypes",
             "DividedAsYouChoose",
+            "CounterNumPerDefined",
         ],
     )?;
+    if let Some(name) = p.get("CounterNumPerDefined") {
+        return per_object_counters(ctx, p, name);
+    }
     // `CounterTypes$` is every kind in the list at once ("a flying counter and a lifelink counter"); `CounterType$` a list is a choice.
     let all_kinds = p.has("CounterTypes");
     if all_kinds && (p.has("CounterType") || p.has("DividedAsYouChoose")) {
@@ -1227,6 +1231,76 @@ fn put_counter(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
         effects.push(either(puts)?);
     }
     Ok(effects)
+}
+
+/// `CounterNumPerDefined$ X`: "put a number of +1/+1 counters on each other creature you control equal to that creature's
+/// toughness". Each object named gets its own number, read of that object: a loop over them, fixed as it begins, in which
+/// the card the count reads (`Count$Card...`) is the object of the pass. One kind and a count of the card alone are read;
+/// anything else stays a gap.
+fn per_object_counters(ctx: &mut Ctx, p: &Params, name: &str) -> Tr<Vec<Value>> {
+    if p.has("Choices")
+        || p.has("CounterNum")
+        || p.has("DividedAsYouChoose")
+        || p.has("CounterTypes")
+    {
+        return unmapped("key:PutCounter.CounterNumPerDefined");
+    }
+    let Some(kind) = p.get("CounterType").and_then(kind_word) else {
+        return unmapped("key:PutCounter.CounterType");
+    };
+    let script = ctx.svar(name).unwrap_or_default().to_owned();
+    let card_only = script
+        .split(['/', '.'])
+        .filter(|part| part.starts_with("Count$"))
+        .all(|part| {
+            matches!(
+                part,
+                "Count$CardToughness"
+                    | "Count$CardPower"
+                    | "Count$CardBasePower"
+                    | "Count$CardNumColors"
+            )
+        });
+    if !script.starts_with("Count$Card") || !card_only {
+        return unmapped("key:PutCounter.CounterNumPerDefined");
+    }
+    // `Defined$ Targeted` beside the target says the target again.
+    let over = if p.get("Defined") == Some("Targeted") && p.has("ValidTgts") {
+        subject(ctx, &p.without(&["Defined"]), "Self", None)?
+    } else {
+        subject(ctx, p, "Self", None)?
+    };
+    let count = amount(ctx, name)?;
+    let each = ctx.fresh("each");
+    let count = g9d_of_each(count, &json!({ "Bound": each }));
+    Ok(vec![
+        json!({"RepeatEach": {"over": over, "as": each, "effects": [
+        {"PutCounters": {"on": {"Bound": each}, "counter": kind, "count": count}}]}}),
+    ])
+}
+
+/// The count with every object it reads of the source (`This`) read of `each` instead.
+fn g9d_of_each(count: Value, each: &Value) -> Value {
+    match count {
+        Value::Object(map) => Value::Object(
+            map.into_iter()
+                .map(|(key, value)| {
+                    if key == "of" && value == json!("This") {
+                        (key, each.clone())
+                    } else {
+                        (key, g9d_of_each(value, each))
+                    }
+                })
+                .collect(),
+        ),
+        Value::Array(items) => Value::Array(
+            items
+                .into_iter()
+                .map(|item| g9d_of_each(item, each))
+                .collect(),
+        ),
+        other => other,
+    }
 }
 
 /// The kinds a `CounterType$` lists: one is the counter put, several are the controller's choice of one.
