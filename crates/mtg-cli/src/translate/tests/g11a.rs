@@ -210,3 +210,30 @@ fn a_scry_optional_of_another_word_stays_a_gap() {
     let (_, found) = card("Sorcery", &format!("{SCRY} | Optional$ False"), "");
     assert_eq!(found, ["key:Scry.Optional=False"]);
 }
+
+#[test]
+fn the_controller_of_a_target_sacrifices_it() {
+    let (json, found) = card(
+        "Sorcery",
+        "A:SP$ SacrificeAll | Defined$ Targeted | ValidTgts$ Creature | TgtPrompt$ Select target creature",
+        "Target creature's controller sacrifices it.",
+    );
+    assert!(found.is_empty(), "{found:?}");
+    let effect =
+        r#"{"Sacrifice":{"filter":[{"Is":{"Target":0}}],"who":{"ControllerOf":{"Target":0}}}}"#;
+    assert!(json.contains(effect), "{json}");
+    assert!(
+        json.contains(r#""targets":[{"what":{"Object":[{"Type":"Creature"}]}}]"#),
+        "{json}"
+    );
+}
+
+#[test]
+fn a_sacrifice_of_targets_by_a_valid_string_stays_a_gap() {
+    let (_, found) = card(
+        "Sorcery",
+        "A:SP$ SacrificeAll | ValidCards$ Creature | ValidTgts$ Player",
+        "",
+    );
+    assert_eq!(found, ["key:SacrificeAll.ValidTgts"]);
+}

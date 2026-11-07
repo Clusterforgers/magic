@@ -2435,7 +2435,15 @@ impl<'a> Scope<'a> {
             Condition::IsNight => self.state.day_night() == Some(DayNight::Night),
             Condition::NeitherDayNorNight => self.state.day_night().is_none(),
             Condition::YourTurn => self.state.turn().active() == self.controller,
-            Condition::Among(who) => self.players(who)?.contains(&self.controller),
+            // The reference is the asking ability's: a target is judged for the asker, not the player tested.
+            Condition::Among(who) => {
+                let asking = Scope {
+                    controller: self.asker.unwrap_or(self.controller),
+                    asker: None,
+                    ..self.clone()
+                };
+                asking.players(who)?.contains(&self.controller)
+            }
             Condition::StartingPlayer(who) => {
                 let first = self.state.first_player();
                 let named = self.players(who)?;
