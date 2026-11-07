@@ -166,7 +166,7 @@ fn a_defined_keyword_with_nothing_chosen_is_a_gap() {
         "Creature Lizard",
         "A:AB$ Pump | Cost$ 1 | Defined$ Self | KW$ Hexproof:ChosenColor | DefinedKW$ ChosenColor",
     );
-    assert!(!found.is_empty());
+    assert_eq!(found, vec!["valid-base:ChosenColor".to_owned()]);
 }
 
 #[test]
@@ -208,7 +208,7 @@ fn a_mandatory_payment_that_is_not_switched_is_still_a_gap() {
         "Creature Elephant",
         "T:Mode$ ChangesZone | Origin$ Any | Destination$ Battlefield | ValidCard$ Card.Self | Execute$ Check | TriggerDescription$ When this enters, pay {E}{E}.\nSVar:Check:DB$ Pump | UnlessCost$ Mandatory PayEnergy<2> | UnlessPayer$ You",
     );
-    assert!(!found.is_empty());
+    assert_eq!(found, vec!["cost:Mandatory".to_owned()]);
 }
 
 #[rstest]

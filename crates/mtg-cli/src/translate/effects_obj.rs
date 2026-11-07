@@ -1138,40 +1138,38 @@ fn of_target_player(ctx: &mut Ctx, p: &Params, valid: &str) -> Tr<Value> {
     Ok(json!({ "Each": selector }))
 }
 
+const ANIMATE_KEYS: [&str; 27] = [
+    "Defined",
+    "ValidTgts",
+    "Types",
+    "Power",
+    "Toughness",
+    "Colors",
+    "OverwriteColors",
+    "Keywords",
+    "RemoveKeywords",
+    "RemoveAllAbilities",
+    "Triggers",
+    "Abilities",
+    "staticAbilities",
+    "Replacements",
+    "RemoveCreatureTypes",
+    "RemoveCardTypes",
+    "RemoveLandTypes",
+    "RemoveTypes",
+    "AddAllCreatureTypes",
+    "ValidCards",
+    "Duration",
+    "TargetMin",
+    "TargetMax",
+    "AtEOT",
+    "HiddenKeywords",
+    "LeaveBattlefield",
+    "sVars",
+];
+
 fn animate(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
-    only(
-        p,
-        "Animate",
-        &[
-            "Defined",
-            "ValidTgts",
-            "Types",
-            "Power",
-            "Toughness",
-            "Colors",
-            "OverwriteColors",
-            "Keywords",
-            "RemoveKeywords",
-            "RemoveAllAbilities",
-            "Triggers",
-            "Abilities",
-            "staticAbilities",
-            "Replacements",
-            "RemoveCreatureTypes",
-            "RemoveCardTypes",
-            "RemoveLandTypes",
-            "RemoveTypes",
-            "AddAllCreatureTypes",
-            "ValidCards",
-            "Duration",
-            "TargetMin",
-            "TargetMax",
-            "AtEOT",
-            "HiddenKeywords",
-            "LeaveBattlefield",
-            "sVars",
-        ],
-    )?;
+    only(p, "Animate", &ANIMATE_KEYS)?;
     if spell_change_beyond_colors(p) {
         return unmapped("key:Animate.TgtZone=Stack");
     }

@@ -273,7 +273,7 @@ fn worded_by_cost(ctx: &Ctx) -> String {
             let plain = token.chars().all(|c| c.is_ascii_digit())
                 || matches!(token, "W" | "U" | "B" | "R" | "G" | "C");
             if plain {
-                symbols.push_str(&format!("{{{}}}", token.to_lowercase()));
+                symbols.push_str(&["{", &token.to_lowercase(), "}"].concat());
             } else if token != "T" {
                 return None;
             }

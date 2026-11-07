@@ -30,6 +30,8 @@ pub fn effects(ctx: &mut Ctx, p: &Params, api: &str) -> Tr<Vec<Value>> {
             );
         }
         "ManaReflected" => reflected(ctx, p)?,
+        // Forge pays no cost of a sub-ability line (`DB$`): a `Cost$` there repeats the cost of the ability it belongs to.
+        _ if p.has("DB") && p.has("Cost") => return unmapped("key:Mana.Cost-on-a-sub-ability"),
         _ => mana(ctx, p)?,
     };
     Ok(vec![effect])
@@ -340,10 +342,6 @@ fn mana_type(word: &str) -> Option<&'static str> {
 }
 
 fn mana(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
-    // Forge pays no cost of a sub-ability line (`DB$`): a `Cost$` there repeats the cost of the ability it belongs to.
-    if p.has("DB") && p.has("Cost") {
-        return unmapped("key:Mana.Cost-on-a-sub-ability");
-    }
     only(
         p,
         "Mana",
