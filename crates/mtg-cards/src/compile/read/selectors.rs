@@ -1837,6 +1837,10 @@ pub fn spec_text(spec: &TargetSpec) -> Option<String> {
                 {
                     "target opponent or planeswalker".to_owned()
                 }
+                // Any permanent or any player: the ones that can hold counters.
+                [Targetable::Object(any), Targetable::Player] if any.0.is_empty() => {
+                    "target permanent or player".to_owned()
+                }
                 // Objects of different kinds: "target artifact, enchantment, or creature with power 4 or greater".
                 [_, _, ..] => either_objects(kinds)?,
                 _ => return None,

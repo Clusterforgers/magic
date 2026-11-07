@@ -1541,6 +1541,7 @@ fn is_imperative(effect: &Effect) -> bool {
                 | Effect::RemoveAllCounters { .. }
                 | Effect::MoveCounters { .. }
                 | Effect::MultiplyCounters { .. }
+                | Effect::PutCountersOf { .. }
                 | Effect::Transform { .. }
                 | Effect::Flip { .. }
                 | Effect::TurnFaceUp { .. }
@@ -2045,6 +2046,26 @@ impl Writer<'_> {
                     }
                 }
             }
+            // "put its counters on target creature you control"; "for each kind of counter on target permanent or
+            // player, give that permanent or player another counter of that kind".
+            Effect::PutCountersOf { on, of, each } => match (each, on, of) {
+                (None, on, of) => {
+                    let whose = match of {
+                        Ref::This => "~'s",
+                        Ref::Triggering => "its",
+                        _ => return None,
+                    };
+                    format!("put {whose} counters on {}", self.counter_place(on, false)?)
+                }
+                (Some(Amount::Fixed(1)), Ref::Target(0), Ref::Target(0)) if self.single(on) => {
+                    let target = self.name_target()?;
+                    let noun = target.strip_prefix("target ")?.to_owned();
+                    format!(
+                        "for each kind of counter on {target}, give that {noun} another counter of that kind"
+                    )
+                }
+                _ => return None,
+            },
             Effect::MoveCounters {
                 from,
                 to,
@@ -2412,7 +2433,8 @@ impl Writer<'_> {
             | Effect::RemoveCounters { .. }
             | Effect::RemoveAllCounters { .. }
             | Effect::MoveCounters { .. }
-            | Effect::MultiplyCounters { .. } => self.counters(effect)?,
+            | Effect::MultiplyCounters { .. }
+            | Effect::PutCountersOf { .. } => self.counters(effect)?,
             Effect::CreateToken { .. } => self.created(effect)?,
             Effect::DealDamage {
                 amount: Amount::Divided,

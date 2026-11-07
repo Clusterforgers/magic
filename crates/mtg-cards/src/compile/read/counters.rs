@@ -180,7 +180,7 @@ pub fn additional_text(counter: &CounterKind, number: i32) -> Option<String> {
 }
 
 /// The object counters are on, leave or go onto: "~" or one target.
-fn place(r: &mut Reader<'_>) -> Option<Ref> {
+pub(super) fn place(r: &mut Reader<'_>) -> Option<Ref> {
     if r.source() || (r.it == Some(Ref::This) && r.word("it")) {
         Some(Ref::This)
     } else if r.it == Some(Ref::Triggering) && r.word("it") {
