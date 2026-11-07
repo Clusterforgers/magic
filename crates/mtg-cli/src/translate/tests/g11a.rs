@@ -1,5 +1,6 @@
 //! Goal: round 11 pack g11a reads players who control more, fewer or at least N more permanents of a type than the
-//! player who asks (`Ref::Asker`), as a count, a static's players and a trigger's player, and leaves other words a gap by name.
+//! player who asks (`Ref::Asker`), as a count, a static's players and a trigger's player, a goad for the rest of the game or while the source
+//! stays, connive N and an optional scry, and leaves other words a gap by name.
 #![allow(clippy::unwrap_used)]
 
 use rstest::rstest;
@@ -117,4 +118,28 @@ fn a_static_names_the_opponents_with_more_lands() {
 fn another_comparison_stays_a_gap(#[case] amount: &str, #[case] gap: &str) {
     let (_, found) = card("Creature Elf", &format!("{DRAW}{amount}"), "");
     assert_eq!(found, [gap]);
+}
+
+const GOAD: &str = "A:SP$ Goad | ValidTgts$ Creature | TgtPrompt$ Select target creature";
+
+#[rstest]
+#[case::next_turn("", r#"{"Goad":{"what":{"Target":0}}}"#)]
+#[case::rest_of_the_game(
+    " | Duration$ Permanent",
+    r#"{"Continuous":{"affected":{"Target":0},"duration":"Forever","mods":["Goaded"]}}"#
+)]
+#[case::while_on_the_battlefield(
+    " | Duration$ AsLongAsInPlay",
+    r#"{"Continuous":{"affected":{"Target":0},"duration":"WhileSourceOnBattlefield","mods":["Goaded"]}}"#
+)]
+fn a_goad_lasts_its_duration(#[case] duration: &str, #[case] effect: &str) {
+    let (json, found) = card("Sorcery", &format!("{GOAD}{duration}"), "");
+    assert!(found.is_empty(), "{found:?}");
+    assert!(json.contains(effect), "{json}");
+}
+
+#[test]
+fn a_goad_of_another_duration_stays_a_gap() {
+    let (_, found) = card("Sorcery", &format!("{GOAD} | Duration$ UntilUntaps"), "");
+    assert_eq!(found, ["key:Goad.Duration=UntilUntaps"]);
 }
