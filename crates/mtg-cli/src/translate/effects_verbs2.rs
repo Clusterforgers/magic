@@ -52,16 +52,26 @@ fn part(ctx: &mut Ctx, name: &str) -> Tr<Vec<Value>> {
 /// two parts chosen by the controller are an `Either`, any other choice a `OneOf`.
 fn generic_choice(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
     only(p, "GenericChoice", &["Choices", "Defined", "ValidTgts"])?;
-    // A target is declared for the parts to read; without `Defined$ You` Forge lets the target choose, which is not read.
+    // A target is declared for the parts to read; without `Defined$` the targeted player chooses ("target opponent may
+    // have you draw three cards").
+    let mut chooser = None;
     if p.has("ValidTgts") {
-        if p.get("Defined") != Some("You") {
-            return unmapped("key:GenericChoice.ValidTgts-chooser");
+        let target = subject(ctx, p, "You", None)?;
+        match p.get("Defined") {
+            Some("You") => {}
+            None if p.get("ValidTgts").is_some_and(|valid| {
+                matches!(valid, "Opponent" | "Player" | "Player.Opponent")
+            }) =>
+            {
+                chooser = Some(target);
+            }
+            _ => return unmapped("key:GenericChoice.ValidTgts-chooser"),
         }
-        subject(ctx, p, "You", None)?;
     }
-    let who = match p.get("Defined") {
-        None | Some("You") => json!("You"),
-        Some(word) => match defined(ctx, word)? {
+    let who = match (chooser, p.get("Defined")) {
+        (Some(target), _) => target,
+        (None, None | Some("You")) => json!("You"),
+        (None, Some(word)) => match defined(ctx, word)? {
             // Exactly one player chooses: for a group Forge asks each in turn, which is not one choice.
             group if matches!(group.as_str(), Some("Opponents" | "EachPlayer")) => {
                 return unmapped(format!("key:GenericChoice.Defined={word}"));

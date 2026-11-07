@@ -279,9 +279,10 @@ fn a_moved_replacement_of_other_cards_acts_while_its_source_is_on_the_battlefiel
     EXILE,
     "key:Replacement.Moved.Origin"
 )]
-#[case::untapped_instead(
+// An untap that is not part of the entering.
+#[case::untapped_after(
     "Event$ Moved | ValidCard$ Land.YouCtrl | Destination$ Battlefield | ReplaceWith$ ETBTapped | ReplacementResult$ Updated | ActiveZones$ Battlefield",
-    "SVar:ETBTapped:DB$ Untap | ETB$ True | Defined$ ReplacedCard\n",
+    "SVar:ETBTapped:DB$ Untap | Defined$ ReplacedCard\n",
     "replacement:Moved-not-an-entering-effect"
 )]
 fn a_moved_replacement_beyond_the_shape_stays_a_gap(

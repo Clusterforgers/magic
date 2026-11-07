@@ -69,12 +69,17 @@ fn attack_tax(ctx: &Ctx, p: &Params) -> Tr<Value> {
         }
     }
     let attacked = match p.get("Target") {
+        // No one named: the creatures can't attack anyone unless the tax is paid ("creatures can't attack unless ...").
+        None if p.get("ValidCard") == Some("Creature") => "Both",
         Some("You") => "Player",
         Some("Planeswalker.YouCtrl") => "Planeswalkers",
         Some("You,Planeswalker.YouCtrl") => "Both",
         _ => return unmapped("key:Static.CantAttackUnless.Target"),
     };
     let mut tax = json!({"attacked": attacked});
+    if !p.has("Target") {
+        tax["who"] = json!("EachPlayer");
+    }
     match p.get("Cost").unwrap_or_default() {
         "PayLife<2>" => tax["life"] = json!(2),
         "WP" => tax["mana"] = json!("{W/P}"),
