@@ -501,6 +501,7 @@ pub(super) fn imperative(r: &mut Reader<'_>) -> Option<Effect> {
         "amass" => Effect::Amass {
             subtype: Subtype(super::selectors::plural_subtype(r)?),
             count: points(r)?,
+            bind: None,
         },
         "sacrifice" => itself_sacrificed(r, who)?,
         "draw" => Effect::Draw {
@@ -1255,7 +1256,7 @@ fn removal(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
         "tap" => Effect::Tap { what, bind: None },
         "untap" => Effect::Untap { what },
         "regenerate" => Effect::Regenerate { what },
-        _ => Effect::Counter { what },
+        _ => Effect::Counter { what, bind: None },
     }])
 }
 

@@ -64,6 +64,7 @@ impl Writer<'_> {
             Effect::Attach {
                 what: Ref::This,
                 to,
+                bind: None,
             } if *to == it => "attach ~ to that creature".to_owned(),
             Effect::PutCounters { on, counter, count } if *on == it => {
                 format!("put {} on that creature", counters::text(counter, count)?)

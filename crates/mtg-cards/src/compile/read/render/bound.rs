@@ -70,6 +70,7 @@ impl Writer<'_> {
             Effect::Attach {
                 what: Ref::This,
                 to,
+                bind: None,
             } if *to == tokens() && one => Some(("attach ~ to it".to_owned(), 1)),
             Effect::Continuous {
                 affected,

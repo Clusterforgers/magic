@@ -50,6 +50,7 @@ impl Writer<'_> {
                 Effect::Attach {
                     what: Ref::This,
                     to,
+                    bind: None,
                 },
                 ..,
             ] if *to == it => Some((vec![format!("{put}, then attach ~ to it")], 2)),
@@ -59,6 +60,7 @@ impl Writer<'_> {
                 Effect::Attach {
                     what: Ref::This,
                     to,
+                    bind: None,
                 },
                 ..,
             ] if *to == it => {

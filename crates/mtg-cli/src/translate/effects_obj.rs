@@ -545,8 +545,15 @@ fn counter(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
             "Destination",
             "Defined",
             "TargetValidTargeting",
+            "RememberCountered",
         ],
     )?;
+    // "If that spell is countered this way": the spells the step countered, as the cards they became.
+    let remembers = remember::wanted(p, &["RememberCountered"]);
+    // Forge remembers the source of a countered ability, which our name does not hold.
+    if remembers && p.get("TargetType").is_some_and(|kinds| kinds != "Spell") {
+        return unmapped("key:Counter.RememberCountered-of-an-ability");
+    }
     // A countered spell goes to its owner's graveyard; exile instead is a shield on the spell, set before it is countered. It
     // applies to a counter that works only: a spell that can't be countered resolves as it does.
     let exiled = match p.get("Destination") {
@@ -562,7 +569,11 @@ fn counter(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
             .is_some_and(|shape| shape.mode == "SpellCast");
         return match word {
             "TriggeredSpellAbility" | "TriggeredCard" if cast_trigger && !p.has("ValidTgts") => {
-                Ok(json!({"Counter": {"what": "Triggering"}}))
+                let mut node = json!({"Counter": {"what": "Triggering"}});
+                if remembers {
+                    remember::bind_moved(ctx, &mut node, "Counter", "countered");
+                }
+                Ok(node)
             }
             _ => unmapped("key:Counter.Defined"),
         }
@@ -582,7 +593,11 @@ fn counter(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
             "when": {"Countered": {"what": [{"Is": what}, "Spell"]}},
             "by": {"MoveTo": "Exile"}, "duration": "UntilEndOfTurn"}}));
     }
-    effects.push(json!({"Counter": {"what": what}}));
+    let mut node = json!({"Counter": {"what": what}});
+    if remembers {
+        remember::bind_moved(ctx, &mut node, "Counter", "countered");
+    }
+    effects.push(node);
     Ok(effects)
 }
 
@@ -1533,8 +1548,14 @@ pub fn attach(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
             "Optional",
             "Choices",
             "ChoiceTitle",
+            "RememberAttached",
         ],
     )?;
+    let remembers = remember::wanted(p, &["RememberAttached"]);
+    // Forge adds each attachment to what earlier steps remembered, which a choice that excludes the remembered reads.
+    if remembers && p.get("Choices").is_some_and(|c| c.contains("Remembered")) {
+        return unmapped("key:Attach.RememberAttached-with-remembered-choices");
+    }
     let object = p.get("Object");
     if object.is_some_and(|word| word.starts_with("Valid ")) {
         return unmapped("key:Attach.Object-all");
@@ -1559,7 +1580,11 @@ pub fn attach(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
     } else {
         attach_ends(ctx, p, object)?
     };
-    effects.push(json!({"Attach": {"what": what, "to": to}}));
+    let mut node = json!({"Attach": {"what": what, "to": to}});
+    if remembers {
+        remember::bind_moved(ctx, &mut node, "Attach", "attached");
+    }
+    effects.push(node);
     if p.get("Optional") == Some("True") {
         effects = super::frame::ask(effects, &json!("You"));
     }

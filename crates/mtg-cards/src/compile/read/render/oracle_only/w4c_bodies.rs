@@ -249,7 +249,8 @@ fn counter_targeting(ability: &Ability, steps: &[Effect]) -> Option<String> {
     matches!(
         steps,
         [Effect::Counter {
-            what: Ref::Triggering
+            what: Ref::Triggering,
+            bind: None,
         }]
     )
     .then(|| "counter that spell or ability".to_owned())

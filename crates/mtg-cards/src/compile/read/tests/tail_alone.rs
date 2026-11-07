@@ -102,7 +102,8 @@ fn an_equipment_attaches_itself_as_it_enters(#[case] text: &str) {
         effects,
         vec![Effect::Attach {
             what: Ref::This,
-            to: Ref::Target(0)
+            to: Ref::Target(0),
+            bind: None
         }],
         "{text}"
     );

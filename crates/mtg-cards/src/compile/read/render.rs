@@ -1793,6 +1793,15 @@ fn at_random(random: bool) -> &'static str {
     if random { " at random" } else { "" }
 }
 
+/// "amass Orcs 2".
+fn amass_text(subtype: &mtg_core::card::Subtype, count: &Amount) -> Option<String> {
+    Some(format!(
+        "amass {} {}",
+        plural_subtype(&subtype.0),
+        points_text(count)?
+    ))
+}
+
 /// Writes effects in order, remembering whether the clause's target has been named yet.
 struct Writer<'a> {
     targets: &'a [TargetSpec],
@@ -2290,7 +2299,7 @@ impl Writer<'_> {
                 format!("{} fights {}", self.object(what)?, self.object(with)?)
             }
             Effect::Regenerate { what } => format!("regenerate {}", self.object(what)?),
-            Effect::Counter { what } => format!("counter {}", self.object(what)?),
+            Effect::Counter { what, bind: None } => format!("counter {}", self.object(what)?),
             _ => return None,
         })
     }
@@ -2701,11 +2710,11 @@ impl Writer<'_> {
             Effect::Monstrosity { count } => format!("monstrosity {}", points_text(count)?),
             Effect::Adapt { count } => format!("adapt {}", points_text(count)?),
             Effect::Bolster { count } => format!("bolster {}", points_text(count)?),
-            Effect::Amass { subtype, count } => format!(
-                "amass {} {}",
-                plural_subtype(&subtype.0),
-                points_text(count)?
-            ),
+            Effect::Amass {
+                subtype,
+                count,
+                bind: None,
+            } => amass_text(subtype, count)?,
             Effect::Explore {
                 what: what @ (Ref::This | Ref::Target(0)),
             } => format!("{} explores", self.object(what)?),
@@ -2720,6 +2729,7 @@ impl Writer<'_> {
             Effect::Attach {
                 what: Ref::This,
                 to: to @ Ref::Target(0),
+                bind: None,
             } => format!("attach ~ to {}", self.object(to)?),
             Effect::Transform { what } => format!("transform {}", self.object(what)?),
             Effect::Flip { what } => format!("flip {}", self.object(what)?),

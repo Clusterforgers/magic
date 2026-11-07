@@ -1,21 +1,48 @@
 //! `Effect::Attach`: Auras, Equipment and Fortifications are attached to an object (CR 701.3).
 
 use mtg_cards::effect::Effect;
+use mtg_cards::refs::Ref;
 
 use super::wrong_effect;
 use crate::attach::{legal_host, legal_player_host};
+use crate::choose::Target;
 use crate::events::Event;
-use crate::resolve::{Cx, ResolveError, Run};
+use crate::resolve::{Cx, Next, ResolveError, Run};
 use crate::zones::Zone;
 
 /// Each permanent `what` names that is still the object named and may be attached to the first permanent `to` names moves
 /// onto it, all together, in the order the reference lists them. One that may not be attached there stays where it is
 /// (CR 701.3b), one already attached there is not attached again (CR 701.3c), and naming no permanent to attach to attaches
-/// nothing.
+/// nothing. With an `as` name the permanents that became attached are bound.
 pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
-    let Effect::Attach { what, to } = effect else {
+    let Effect::Attach { what, to, bind } = effect else {
         return Err(wrong_effect("Attach"));
     };
+    let events = attached(cx, what, to)?;
+    let Some(name) = bind else {
+        return Ok(Run::events(events));
+    };
+    // What became attached keeps its object: attaching is no zone change.
+    let state = cx.state();
+    let became: Vec<Target> = events
+        .iter()
+        .filter_map(|event| match event {
+            Event::Attached { object, .. } | Event::AttachedToPlayer { object, .. } => state
+                .object(*object)
+                .map(|live| Target::Object(live.reference())),
+            _ => None,
+        })
+        .collect();
+    Ok(Run::Done {
+        events,
+        bound: vec![(name.clone(), became)],
+        snapshots: Vec::new(),
+        next: Next::Sibling,
+    })
+}
+
+/// The attach events of [`run`].
+fn attached(cx: &Cx<'_>, what: &Ref, to: &Ref) -> Result<Vec<Event>, ResolveError> {
     let state = cx.state();
     let Some(host) = cx
         .scope
@@ -25,7 +52,7 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
     else {
         // A player named instead of a permanent: only an Aura that enchants players may go there.
         let Some(player) = cx.scope.players(to)?.first().copied() else {
-            return Ok(Run::events(Vec::new()));
+            return Ok(Vec::new());
         };
         let events = cx
             .scope
@@ -40,7 +67,7 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
                 player,
             })
             .collect();
-        return Ok(Run::events(events));
+        return Ok(events);
     };
     let events = cx
         .scope
@@ -55,12 +82,12 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
             to: host.id(),
         })
         .collect();
-    Ok(Run::events(events))
+    Ok(events)
 }
 
 #[cfg(test)]
 mod tests {
-    //! Goal: an attach moves each attachment it names onto the permanent it names when that permanent may hold it (an Aura what its enchant ability allows, an Equipment a creature, a Fortification a land), and leaves alone one that may not, one already attached there, an object that has left and a name that repeats; it changes nothing but the attachments, binds nothing, and refuses another effect by name.
+    //! Goal: an attach moves each attachment it names onto the permanent it names when that permanent may hold it (an Aura what its enchant ability allows, an Equipment a creature, a Fortification a land), and leaves alone one that may not, one already attached there, an object that has left and a name that repeats; it changes nothing but the attachments, binds what became attached under an `as` name and nothing without one, and refuses another effect by name.
     use std::sync::Arc;
 
     use mtg_cards::CardDefinition;
@@ -219,6 +246,26 @@ mod tests {
         .unwrap();
         // Halo starts on the Bear; Rune may not enchant a creature.
         assert_eq!(attached(run, &game), []);
+    }
+
+    #[rstest]
+    #[case::both_onto_a_creature(r#"{"Bound":"h"}"#, &["Halo", "Blade"])]
+    #[case::neither_onto_a_land(r#"{"Each":[{"Named":"Forest"}]}"#, &[])]
+    #[case::the_aura_stays_on_its_host(r#"{"Each":[{"Named":"Bear"}]}"#, &["Blade"])]
+    fn a_named_attach_binds_what_became_attached(#[case] to: &str, #[case] expected: &[&str]) {
+        let game = game();
+        let effect: Effect = serde_json::from_str(&format!(
+            r#"{{"Attach":{{"what":{{"Bound":"a"}},"to":{to},"as":"it"}}}}"#
+        ))
+        .unwrap();
+        let Run::Done { bound, .. } = attach(&game, &effect).unwrap() else {
+            panic!("an attach asks nothing");
+        };
+        let expected: Vec<Target> = expected
+            .iter()
+            .map(|name| Target::Object(game.object(id(&game, name)).unwrap().reference()))
+            .collect();
+        assert_eq!(bound, vec![("it".to_owned(), expected)]);
     }
 
     #[test]

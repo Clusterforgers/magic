@@ -2962,6 +2962,12 @@ impl Walker<'_> {
                     w.at("as", |w| w.bind_moved(name));
                 }
             }
+            Effect::Counter { what, bind } => {
+                w.at("what", |w| w.reference(what, Kind::Object));
+                if let Some(name) = bind {
+                    w.at("as", |w| w.bind(name, Kind::Object));
+                }
+            }
             Effect::Tap { what, bind } => {
                 w.at("what", |w| w.reference(what, Kind::Object));
                 if let Some(name) = bind {
@@ -2970,7 +2976,6 @@ impl Walker<'_> {
             }
             Effect::LookAtHand { of } => w.at("of", |w| w.reference(of, Kind::Player)),
             Effect::Reveal { what }
-            | Effect::Counter { what }
             | Effect::Untap { what }
             | Effect::TapOrUntap { what }
             | Effect::Transform { what }
@@ -3006,8 +3011,13 @@ impl Walker<'_> {
                 w.at("who", |w| w.reference(who, Kind::Player));
                 w.at("count", |w| w.amount(count));
             }
-            Effect::Amass { count, .. }
-            | Effect::Monstrosity { count }
+            Effect::Amass { count, bind, .. } => {
+                w.at("count", |w| w.amount(count));
+                if let Some(name) = bind {
+                    w.at("as", |w| w.bind(name, Kind::Object));
+                }
+            }
+            Effect::Monstrosity { count }
             | Effect::Renown { count }
             | Effect::Adapt { count }
             | Effect::Fabricate { count }
@@ -3129,9 +3139,12 @@ impl Walker<'_> {
                 w.at("count", |w| w.amount(count));
                 w.at("as", |w| w.bind(bind, Kind::Object));
             }
-            Effect::Attach { what, to } => {
+            Effect::Attach { what, to, bind } => {
                 w.at("what", |w| w.reference(what, Kind::Object));
                 w.at("to", |w| w.reference(to, Kind::Object));
+                if let Some(name) = bind {
+                    w.at("as", |w| w.bind(name, Kind::Object));
+                }
             }
             Effect::Unattach { what } | Effect::JoinAttack { what } => {
                 w.at("what", |w| w.reference(what, Kind::Object));

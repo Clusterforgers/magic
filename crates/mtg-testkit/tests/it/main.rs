@@ -645,6 +645,7 @@ mod fix6_last_known;
 mod fix9_damaged;
 mod g10a_convoked;
 mod g10a_effect_source;
+mod g10b_remember;
 mod g9c_shadow;
 mod mana_any_shape;
 mod mana_ban;
