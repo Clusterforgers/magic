@@ -213,32 +213,31 @@ enum Count {
     All,
 }
 
+/// The keys of a `Play` line.
+const PLAY_KEYS: [&str; 17] = [
+    "Defined",
+    "Valid",
+    "ValidZone",
+    "Optional",
+    "WithoutManaCost",
+    "ValidSA",
+    "Amount",
+    "Controller",
+    "CopyCard",
+    "RememberPlayed",
+    "ValidTgts",
+    "TargetMin",
+    "TargetMax",
+    "ReplaceGraveyard",
+    "AllowRepeats",
+    "ReplaceGraveyardValid",
+    "PlayCost",
+];
+
 /// `Play`: the player may cast (or play) the cards `Defined$` names or `Valid$` selects in `ValidZone$`, up to `Amount$` of
 /// them, for free when `WithoutManaCost$` says so; `CopyCard$` casts a copy of each card in exile.
 pub fn play(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
-    only(
-        p,
-        "Play",
-        &[
-            "Defined",
-            "Valid",
-            "ValidZone",
-            "Optional",
-            "WithoutManaCost",
-            "ValidSA",
-            "Amount",
-            "Controller",
-            "CopyCard",
-            "RememberPlayed",
-            "ValidTgts",
-            "TargetMin",
-            "TargetMax",
-            "ReplaceGraveyard",
-            "AllowRepeats",
-            "ReplaceGraveyardValid",
-            "PlayCost",
-        ],
-    )?;
+    only(p, "Play", &PLAY_KEYS)?;
     if p.get("Optional") != Some("True") {
         return unmapped("key:Play.Optional");
     }

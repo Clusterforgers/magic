@@ -130,18 +130,8 @@ fn copy_spell(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
     if p.get("NonLegendary") == Some("True") {
         copy["except"] = json!([{"RemoveSupertype": "Legendary"}]);
     }
-    if let Some(valid) = p.get("CopyForEachCanTarget") {
-        // "Copy that spell for each other creature it could target. Each copy targets a different one of those creatures."
-        if p.has("Amount") || p.has("MayChooseTarget") {
-            return unmapped("key:CopySpellAbility.CopyForEachCanTarget-with-a-count");
-        }
-        // "The copy targets that token": only one is named, so only one is copied.
-        if p.get("ChooseOnlyOne") == Some("True") && valid != "Permanent.IsRemembered" {
-            return unmapped("key:CopySpellAbility.ChooseOnlyOne");
-        }
-        copy["each_target"] = json!(selector_any(ctx, valid)?);
-    } else if p.has("ChooseOnlyOne") {
-        return unmapped("key:CopySpellAbility.ChooseOnlyOne");
+    if let Some(each) = each_target(ctx, p)? {
+        copy["each_target"] = each;
     }
     if let Some(color) = p.get("SetColor") {
         if !matches!(color, "White" | "Blue" | "Black" | "Red" | "Green") {
@@ -159,6 +149,25 @@ fn copy_spell(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
         may["who"] = who.clone();
     }
     Ok(json!({"May": may}))
+}
+
+/// `CopyForEachCanTarget$`: "copy that spell for each other creature it could target. Each copy targets a different one of
+/// those creatures." The selector of the objects; `None` without the key.
+fn each_target(ctx: &Ctx, p: &Params) -> Tr<Option<Value>> {
+    let Some(valid) = p.get("CopyForEachCanTarget") else {
+        if p.has("ChooseOnlyOne") {
+            return unmapped("key:CopySpellAbility.ChooseOnlyOne");
+        }
+        return Ok(None);
+    };
+    if p.has("Amount") || p.has("MayChooseTarget") {
+        return unmapped("key:CopySpellAbility.CopyForEachCanTarget-with-a-count");
+    }
+    // "The copy targets that token": only one is named, so only one is copied.
+    if p.get("ChooseOnlyOne") == Some("True") && valid != "Permanent.IsRemembered" {
+        return unmapped("key:CopySpellAbility.ChooseOnlyOne");
+    }
+    Ok(Some(json!(selector_any(ctx, valid)?)))
 }
 
 /// "Copy that ability" after an activation: the ability on the stack the activation put there (`Dealer`), never its source.

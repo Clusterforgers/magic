@@ -74,7 +74,7 @@ fn each_other_legal_target_gets_a_copy(
             state
                 .object(**id)
                 .and_then(|o| o.permanent())
-                .is_some_and(|p| p.tapped())
+                .is_some_and(mtg_engine::object::PermanentState::tapped)
         })
         .count();
     assert_eq!(count, tapped(seats));
