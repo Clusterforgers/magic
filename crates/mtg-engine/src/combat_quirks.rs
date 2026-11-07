@@ -68,7 +68,7 @@ impl QuirkRules {
         }
     }
 
-    fn has(&self, id: ObjectId, wanted: impl Fn(&CombatQuirk) -> bool) -> bool {
+    pub(crate) fn has(&self, id: ObjectId, wanted: impl Fn(&CombatQuirk) -> bool) -> bool {
         self.quirks
             .get(&id)
             .is_some_and(|held| held.iter().any(wanted))

@@ -539,6 +539,12 @@ fn combat_quirk(who: &str, quirk: &CombatQuirk) -> String {
         CombatQuirk::BlockIgnoringLandwalk => {
             format!("{who} can block creatures with landwalk as though they didn't have it")
         }
+        CombatQuirk::BlockAsThoughShadow => {
+            format!("{who} can block creatures with shadow as though they had shadow")
+        }
+        CombatQuirk::BlockIgnoringShadow => {
+            format!("{who} can block creatures with shadow as though they didn't have shadow")
+        }
     }
 }
 

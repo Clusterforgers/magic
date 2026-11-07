@@ -44,6 +44,7 @@ pub fn rule(ctx: &Ctx, p: &Params) -> Option<Tr<Value>> {
         }
         "IgnoreHexproof" => ignore_hexproof(ctx, p),
         "IgnoreLandWalk" => ignore_landwalk(ctx, p),
+        "CanBlockIfShadow" => block_shadow(ctx, p),
         "TapPowerValue" => tap_power_value(ctx, p),
         "IgnoreLegendRule" => ignore_legend_rule(p, mode),
         "UntapOtherPlayer" => untap_other_players(ctx, p),
@@ -65,6 +66,28 @@ fn keys(p: &Params, mode: &str, read: &[&str]) -> Tr<()> {
     check_keys(p, &format!("Static.{mode}"), read, |key, value| {
         key == "Mode" || (key == "EffectZone" && value == "Battlefield")
     })
+}
+
+/// `CanBlockIfShadow`: the `ValidBlocker$` creatures can block creatures with shadow "as though it had shadow" or "as
+/// though they didn't have shadow", as the description says; any other wording is a gap.
+fn block_shadow(ctx: &Ctx, p: &Params) -> Tr<Value> {
+    keys(p, "CanBlockIfShadow", &["ValidAttacker", "ValidBlocker"])?;
+    if p.get("ValidAttacker") != Some("Creature.withShadow") {
+        return unmapped("key:Static.CanBlockIfShadow.ValidAttacker");
+    }
+    let text = p.get("Description").unwrap_or_default();
+    let quirk = if text.contains("as though they didn't have shadow") {
+        "BlockIgnoringShadow"
+    } else if text.contains("as though it had shadow") || text.contains("as though they had shadow")
+    {
+        "BlockAsThoughShadow"
+    } else {
+        return unmapped("key:Static.CanBlockIfShadow.Description");
+    };
+    let Some(word) = p.get("ValidBlocker") else {
+        return unmapped("key:Static.CanBlockIfShadow.ValidBlocker");
+    };
+    Ok(combat(&object_word(ctx, word)?, quirk))
 }
 
 /// The players a word names, as a reference.

@@ -102,3 +102,36 @@ fn a_block_of_a_kind_reads_back(#[case] json: String, #[case] clause: &str, #[ca
         written_variants(&ability(&json))
     );
 }
+fn shadow(quirk: &str, who: &str) -> String {
+    format!(r#"{{"Rule":{{"rule":{{"Combat":{{"quirk":"{quirk}","who":{who}}}}}}}}}"#)
+}
+
+#[rstest]
+#[case::as_though_it_had(
+    shadow("BlockAsThoughShadow", r#""This""#),
+    "This creature can block creatures with shadow as though it had shadow.",
+    true
+)]
+#[case::as_though_they_had_none(
+    shadow("BlockIgnoringShadow", r#""This""#),
+    "This creature can block creatures with shadow as though they didn't have shadow.",
+    true
+)]
+#[case::other_quirk(
+    shadow("BlockAsThoughShadow", r#""This""#),
+    "This creature can block creatures with shadow as though they didn't have shadow.",
+    false
+)]
+#[case::other_creature(
+    shadow("BlockAsThoughShadow", r#""Attached""#),
+    "This creature can block creatures with shadow as though it had shadow.",
+    false
+)]
+fn a_block_of_shadow_reads_back(#[case] json: String, #[case] clause: &str, #[case] reads: bool) {
+    assert_eq!(
+        written(&json, clause),
+        reads,
+        "{:?}",
+        written_variants(&ability(&json))
+    );
+}

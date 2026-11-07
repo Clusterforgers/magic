@@ -103,3 +103,41 @@ fn g9c_a_must_block_of_another_attacker_word_is_a_gap() {
         gaps(&text)
     );
 }
+
+fn shadow_wall(blocker: &str, description: &str) -> String {
+    format!(
+        "Name:T\nTypes:Creature Wall\nPT:0/4\nS:Mode$ CanBlockIfShadow | ValidAttacker$ Creature.withShadow | ValidBlocker$ {blocker} | Description$ {description}\n"
+    )
+}
+
+#[rstest]
+#[case::as_though_it_had(
+    "Card.Self",
+    "This creature can block creatures with shadow as though it had shadow.",
+    Some(json!({"Combat": {"who": "This", "quirk": "BlockAsThoughShadow"}}))
+)]
+#[case::as_though_they_had_none(
+    "Creature.EnchantedBy",
+    "Enchanted creature can block creatures with shadow as though they didn't have shadow.",
+    Some(json!({"Combat": {"who": "Attached", "quirk": "BlockIgnoringShadow"}}))
+)]
+#[case::another_wording("Card.Self", "This creature can block shadow creatures.", None)]
+fn g9c_a_block_of_shadow_follows_its_wording(
+    #[case] blocker: &str,
+    #[case] description: &str,
+    #[case] rule: Option<Value>,
+) {
+    let text = shadow_wall(blocker, description);
+    let Some(rule) = rule else {
+        assert!(
+            gaps(&text)
+                .iter()
+                .any(|gap| gap == "key:Static.CanBlockIfShadow.Description"),
+            "{:?}",
+            gaps(&text)
+        );
+        return;
+    };
+    assert_eq!(gaps(&text), Vec::<String>::new());
+    assert_eq!(abilities(&text)[0]["Rule"]["rule"], rule);
+}

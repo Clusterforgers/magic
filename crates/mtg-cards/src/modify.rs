@@ -351,6 +351,10 @@ pub enum CombatQuirk {
     IgnoreAllLandwalk,
     /// They can block creatures with landwalk as though those did not have it.
     BlockIgnoringLandwalk,
+    /// They can block creatures with shadow as though they had shadow (CR 702.28).
+    BlockAsThoughShadow,
+    /// They can block creatures with shadow as though those did not have shadow (CR 702.28).
+    BlockIgnoringShadow,
     /// Tapped to crew or saddle, they count for another amount than their power.
     TapPower(TapPowerAs),
 }
