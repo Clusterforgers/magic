@@ -858,6 +858,7 @@ fn restrict_to_controller(ctx: &Ctx, word: &str, zone: Option<&str>, what: &mut 
         "TriggeredCardController"
         | "TriggeredTarget"
         | "TriggeredDefendingPlayer"
+        | "TriggeredAttackedTarget"
         | "TriggeredPlayer"
         | "TriggeredSourceController" => defined(ctx, word)?,
         "ParentTarget" if super::frame::parent_is_player(ctx) => ctx.parent()?,

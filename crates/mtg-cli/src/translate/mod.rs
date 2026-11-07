@@ -25,6 +25,7 @@ pub mod effects_copy;
 mod effects_dig;
 mod effects_digital;
 pub mod effects_effect;
+pub mod effects_effect_combat;
 pub mod effects_emblem;
 mod effects_game;
 pub mod effects_loop;

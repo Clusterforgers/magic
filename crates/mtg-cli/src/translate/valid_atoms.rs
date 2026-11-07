@@ -204,6 +204,10 @@ pub fn argument(ctx: &Ctx, prop: &str) -> Tr<Option<Vec<Value>>> {
         }
         "attacking" => match defined(ctx, arg) {
             Ok(who) if is_player(&who) => one(json!({"AttackingPlayer": who})),
+            // The player one group of attackers attacks: a trigger reads it only when the group attacks a player.
+            Ok(who) if arg.trim() == "TriggeredAttackedTarget" => {
+                one(json!({"AttackingPlayer": who}))
+            }
             _ => unmapped(format!("valid:attacking {arg}")),
         },
         "ControlledBy" | "OwnedBy" => {

@@ -20,6 +20,9 @@ pub fn rule(ctx: &Ctx, p: &Params) -> Option<Tr<Value>> {
     let found = match mode {
         "CantGainLife" => players(p, mode, "ValidPlayer").map(|who| json!({"CantGainLife": who})),
         "CantDraw" => players(p, mode, "ValidPlayer").map(|who| json!({"CantDraw": who})),
+        "CantChangeLife" => {
+            players(p, mode, "ValidPlayer").map(|who| json!({"LifeTotalCantChange": who}))
+        }
         "CantPlayLand" => players(p, mode, "Player").map(|who| cant(&who, &json!("PlayLand"))),
         "CantPutCounter" => put_counter(ctx, p),
         "CantSacrifice" => {
@@ -148,7 +151,11 @@ fn put_counter(ctx: &Ctx, p: &Params) -> Tr<Value> {
 
 /// `CantTarget`: the objects can't be the target of spells and abilities from the sources `ValidSource$` names.
 fn cant_target(ctx: &Ctx, p: &Params) -> Tr<Value> {
-    keys(p, "CantTarget", &["ValidTarget", "ValidSource", "ValidSA"])?;
+    keys(
+        p,
+        "CantTarget",
+        &["ValidTarget", "ValidSource", "ValidSA", "Activator"],
+    )?;
     let Some(target) = p.get("ValidTarget") else {
         return unmapped("key:Static.CantTarget.no-ValidTarget");
     };
@@ -164,6 +171,13 @@ fn cant_target(ctx: &Ctx, p: &Params) -> Tr<Value> {
         None => {}
         Some("Spell") => sources.push(json!("Spell")),
         Some(_) => return unmapped("key:Static.CantTarget.ValidSA"),
+    }
+    // "Spells or abilities your opponents control": the source of a spell or ability is controlled by its controller. It
+    // is no hexproof, whose opponents are those of the permanent's controller (CR 702.11b).
+    match p.get("Activator") {
+        None => {}
+        Some("Opponent") => sources.push(json!({"ControlledBy": "Opponents"})),
+        Some(other) => return unmapped(format!("key:Static.CantTarget.Activator={other}")),
     }
     Ok(cant(&who, &json!({"BeTargeted": sources})))
 }
