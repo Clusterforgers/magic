@@ -263,8 +263,9 @@ pub enum Rule {
     /// A regeneration shield (CR 701.19): the next time the permanent would be destroyed, it regenerates instead.
     Regenerate(ObjectRef),
     /// A shield over deaths (CR 614): each of the permanents or spells, fixed when it was made, that would go from the
-    /// battlefield or the stack to a graveyard goes to the zone instead ("if that creature would die this turn, exile it
-    /// instead", "if that spell would be put into your graveyard, exile it instead").
+    /// battlefield or the stack to a graveyard, or with `leaves` from the battlefield to any other zone, goes to the zone
+    /// instead ("if that creature would die this turn, exile it instead", "if it would leave the battlefield, exile it
+    /// instead").
     DiesInstead {
         /// The permanents and spells it covers.
         objects: Vec<ObjectRef>,
@@ -279,6 +280,10 @@ pub enum Rule {
         #[serde(default, skip_serializing_if = "std::ops::Not::not")]
         #[cfg_attr(feature = "ts", ts(as = "Option<bool>", optional))]
         cast: bool,
+        /// It covers any move from the battlefield ("if it would leave the battlefield"), not only one to a graveyard.
+        #[serde(default, skip_serializing_if = "std::ops::Not::not")]
+        #[cfg_attr(feature = "ts", ts(as = "Option<bool>", optional))]
+        leaves: bool,
     },
     /// A shield over any event of a kind, judged when the event would happen: "if a creature would die this turn, exile it
     /// instead", "permanents enter tapped this turn". The controller and source of the effect that made it read its references.

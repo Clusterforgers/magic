@@ -21,7 +21,7 @@ use crate::modify::{CastPermission, Duration, GameRule, Modification, Prohibited
 use crate::refs::{Bounds, Pred, Ref, Selector, TargetSet, TargetSpec, Targetable, ZoneKind};
 use crate::spend::{SpendOn, WhenSpent};
 use crate::support::{PrintedCard, PrintedFace, oracle_fingerprint};
-use crate::trigger::{ReplaceBy, ReplaceWhen, Step, TriggerPattern};
+use crate::trigger::{ReplaceBy, ReplaceWhen, ShieldShape, Step, TriggerPattern};
 use crate::value::CastWay;
 use crate::value::{Amount, Condition, TurnTally};
 
@@ -3603,29 +3603,9 @@ impl Walker<'_> {
                 }
                 w.at("when", |w| w.replace_when(when));
                 w.at("by", |w| w.replace_by(when, by));
-                // The engine makes shields of damage prevention and of a death sent elsewhere; any other waits.
-                match (when, by) {
-                    (
-                        ReplaceWhen::Damage { .. },
-                        ReplaceBy::Prevent
-                        | ReplaceBy::PreventNext
-                        | ReplaceBy::PreventUpTo(_)
-                        | ReplaceBy::PreventCounted(_)
-                        | ReplaceBy::PreventAnd(_)
-                        | ReplaceBy::Multiply(_)
-                        | ReplaceBy::Add(_)
-                        | ReplaceBy::Instead(_)
-                        | ReplaceBy::InsteadNext(_)
-                        | ReplaceBy::RedirectUpTo { .. }
-                        | ReplaceBy::Redirect { .. },
-                    )
-                    // A death or a counter sent elsewhere, and a class of moves judged as each happens (`Rule::Replaces`).
-                    | (
-                        ReplaceWhen::ZoneChange { .. } | ReplaceWhen::Countered { .. },
-                        ReplaceBy::MoveTo(_) | ReplaceBy::IntoLibrary { .. },
-                    )
-                    | (ReplaceWhen::Enters { .. }, ReplaceBy::Tapped) => {}
-                    _ => w.uses("Effect", &format!("Shield.{}", tag_of(when))),
+                // The engine plays the shields of `ShieldShape` alone; any other waits.
+                if ShieldShape::of(when, by).is_none() {
+                    w.uses("Effect", &format!("Shield.{}", tag_of(when)));
                 }
             }
             Effect::DelayedTrigger { when, effects, .. } => {
