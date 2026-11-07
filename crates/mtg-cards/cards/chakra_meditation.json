@@ -15,8 +15,8 @@
                 "what": {
                   "Object": [
                     { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] },
-                    { "OwnedBy": "You" },
-                    { "In": "Graveyard" }
+                    { "In": "Graveyard" },
+                    { "OwnedBy": "You" }
                   ]
                 },
                 "bounds": { "min": 0, "max": 1 }

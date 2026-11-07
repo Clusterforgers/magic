@@ -9,7 +9,7 @@
       "abilities": [
         {
           "Static": {
-            "affected": { "Each": [{ "Subtype": "Elf" }, { "ControlledBy": "You" }, "Other"] },
+            "affected": { "Each": [{ "Subtype": "Elf" }, "Other", { "ControlledBy": "You" }] },
             "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }]
           }
         },
