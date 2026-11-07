@@ -25,11 +25,7 @@ fn e15a_granted(ability: &Ability) -> Option<&Ability> {
     let own = match from {
         ZoneKind::Battlefield => *affected == Ref::This,
         ZoneKind::Graveyard => {
-            *affected
-                == Ref::Each(Selector(vec![
-                    Pred::This,
-                    Pred::In(ZoneKind::Graveyard),
-                ]))
+            *affected == Ref::Each(Selector(vec![Pred::This, Pred::In(ZoneKind::Graveyard)]))
         }
         _ => false,
     };
@@ -98,7 +94,10 @@ fn e15a_bodies(granted: &Ability, write: fn(&Ability) -> Vec<String>) -> Vec<Str
 
 /// Reads a granted static that has no reading alone ("This creature has double strike.") under the stand-in condition,
 /// then takes the condition away again; `None` unless it reads as a static under exactly that condition.
-pub(super) fn e15a_read_body(body: &str, read: impl Fn(&str) -> Option<Ability>) -> Option<Ability> {
+pub(super) fn e15a_read_body(
+    body: &str,
+    read: impl Fn(&str) -> Option<Ability>,
+) -> Option<Ability> {
     let mut lowered = body.chars();
     let first = lowered.next()?;
     let text = format!("{STAND_IN}{}{}", first.to_lowercase(), lowered.as_str());
@@ -134,10 +133,7 @@ pub(super) fn e15a_wrap(granted: Ability) -> Ability {
     let from = granted_zone(&granted);
     let affected = match from {
         ZoneKind::Battlefield => Ref::This,
-        zone => Ref::Each(Selector(vec![
-            Pred::This,
-            Pred::In(zone),
-        ])),
+        zone => Ref::Each(Selector(vec![Pred::This, Pred::In(zone)])),
     };
     Ability::Static {
         affected,
@@ -181,11 +177,24 @@ mod tests {
 
     #[rstest]
     #[case::a_keyword(DOUBLE_STRIKE, "Max speed \u{2014} This creature has double strike.")]
-    #[case::a_trigger(MILL, "Max speed \u{2014} Whenever you draw a card, each opponent mills two cards.")]
-    #[case::from_the_graveyard(DRAW_FROM_GRAVEYARD, "Max speed \u{2014} {3}, Exile this card from your graveyard: Draw a card.")]
-    #[case::a_tap_ability(TAP_FOR_HASTE, "Max speed \u{2014} {T}: Target creature gains haste until end of turn.")]
+    #[case::a_trigger(
+        MILL,
+        "Max speed \u{2014} Whenever you draw a card, each opponent mills two cards."
+    )]
+    #[case::from_the_graveyard(
+        DRAW_FROM_GRAVEYARD,
+        "Max speed \u{2014} {3}, Exile this card from your graveyard: Draw a card."
+    )]
+    #[case::a_tap_ability(
+        TAP_FOR_HASTE,
+        "Max speed \u{2014} {T}: Target creature gains haste until end of turn."
+    )]
     fn a_max_speed_static_is_written_as_the_card_words_it(#[case] json: &str, #[case] text: &str) {
-        assert!(writes(json, text), "{text}: {:?}", written_variants(&ability(json)));
+        assert!(
+            writes(json, text),
+            "{text}: {:?}",
+            written_variants(&ability(json))
+        );
     }
 
     #[rstest]
@@ -196,15 +205,24 @@ mod tests {
     #[case::no_condition(&DOUBLE_STRIKE.replace(r#""condition":{"MaxSpeed":"You"},"#, ""), "Max speed \u{2014} This creature has double strike.")]
     #[case::another_object(&DOUBLE_STRIKE.replace(r#""affected":"This","condition""#, r#""affected":{"Each":[{"Type":"Creature"},{"ControlledBy":"You"}]},"condition""#), "Max speed \u{2014} This creature has double strike.")]
     #[case::granted_from_the_battlefield(&DRAW_FROM_GRAVEYARD.replace(r#","from":"Graveyard","mods""#, r#","mods""#), "Max speed \u{2014} {3}, Exile this card from your graveyard: Draw a card.")]
-    #[case::two_cards(MILL, "Max speed \u{2014} Whenever you draw a card, each opponent mills a card.")]
+    #[case::two_cards(
+        MILL,
+        "Max speed \u{2014} Whenever you draw a card, each opponent mills a card."
+    )]
     fn another_static_is_not_the_text(#[case] json: &str, #[case] text: &str) {
         assert!(!writes(json, text), "{text}");
     }
 
     #[rstest]
     #[case::a_keyword(DOUBLE_STRIKE, "Max speed \u{2014} This creature has double strike.")]
-    #[case::a_trigger(MILL, "Max speed \u{2014} Whenever you draw a card, each opponent mills two cards.")]
-    #[case::from_the_graveyard(DRAW_FROM_GRAVEYARD, "Max speed \u{2014} {3}, Exile this card from your graveyard: Draw a card.")]
+    #[case::a_trigger(
+        MILL,
+        "Max speed \u{2014} Whenever you draw a card, each opponent mills two cards."
+    )]
+    #[case::from_the_graveyard(
+        DRAW_FROM_GRAVEYARD,
+        "Max speed \u{2014} {3}, Exile this card from your graveyard: Draw a card."
+    )]
     fn the_reader_reads_the_static_back(#[case] json: &str, #[case] text: &str) {
         let read = crate::compile::read::clause(text, crate::compile::ClauseKind::Static, false);
         assert_eq!(read, Some(ability(json)), "{text}");
@@ -213,7 +231,13 @@ mod tests {
     #[test]
     fn the_words_are_no_other_kind_of_clause() {
         let text = "Max speed \u{2014} {T}: Draw a card.";
-        assert_eq!(crate::compile::classify_clause(text, false), crate::compile::ClauseKind::Static);
-        assert_eq!(crate::compile::read::clause(text, crate::compile::ClauseKind::Activated, false), None);
+        assert_eq!(
+            crate::compile::classify_clause(text, false),
+            crate::compile::ClauseKind::Static
+        );
+        assert_eq!(
+            crate::compile::read::clause(text, crate::compile::ClauseKind::Activated, false),
+            None
+        );
     }
 }

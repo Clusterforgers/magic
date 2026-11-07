@@ -7,11 +7,11 @@ use mtg_cards::CardDefinition;
 use mtg_cards::ability::Ability;
 use mtg_cards::keyword::Keyword;
 use mtg_core::card::CardType;
+use mtg_core::color::Color;
 use mtg_core::ids::PlayerId;
 use mtg_engine::keywords::keywords_of;
 use mtg_engine::turn::Step;
 use mtg_engine::{characteristics, replay};
-use mtg_core::color::Color;
 use mtg_testkit::cards::{burn, cost, free_creature, mountain};
 use mtg_testkit::{Driver, Scenario, ScriptError, ready};
 use rstest::rstest;
@@ -128,7 +128,13 @@ fn speed_starts_rises_once_a_turn_and_grants_at_max(#[case] seats: usize) {
     resolve(&mut driver).unwrap();
     let after: Vec<i32> = driver.state().players().iter().map(|p| p.life()).collect();
     assert_eq!(after[0], before[0]);
-    assert!(after.iter().zip(&before).skip(1).all(|(now, was)| *now == was - 2));
+    assert!(
+        after
+            .iter()
+            .zip(&before)
+            .skip(1)
+            .all(|(now, was)| *now == was - 2)
+    );
     let state = replay(driver.engine().setup(), driver.engine().events()).unwrap();
     assert_eq!(state.state_hash(), driver.state().state_hash());
 }

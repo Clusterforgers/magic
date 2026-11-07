@@ -154,7 +154,13 @@ mod tests {
     #[test]
     fn start_your_engines_gives_speed_one_once() {
         let mut game = state(vec![vec![], vec![]], vec![vec![racer(), racer()], vec![]]);
-        assert_eq!(sync(&game), [Event::SpeedChanged { player: ME, speed: 1 }]);
+        assert_eq!(
+            sync(&game),
+            [Event::SpeedChanged {
+                player: ME,
+                speed: 1
+            }]
+        );
         settle(&mut game);
         assert_eq!((game.speed(ME), game.speed(FOE)), (1, 0));
         assert_eq!(sync(&game), []);
@@ -162,7 +168,10 @@ mod tests {
 
     #[test]
     fn a_permanent_without_the_keyword_gives_no_speed() {
-        let game = state(vec![vec![], vec![]], vec![vec![creature("Bear", 2, 2)], vec![]]);
+        let game = state(
+            vec![vec![], vec![]],
+            vec![vec![creature("Bear", 2, 2)], vec![]],
+        );
         assert_eq!(sync(&game), []);
     }
 
@@ -208,7 +217,14 @@ mod tests {
     #[test]
     fn speed_gained_after_the_loss_does_not_rise_that_turn() {
         let mut game = state(vec![vec![], vec![]], vec![vec![racer()], vec![]]);
-        apply_event(&mut game, &Event::LifeLost { player: FOE, amount: 2 }).unwrap();
+        apply_event(
+            &mut game,
+            &Event::LifeLost {
+                player: FOE,
+                amount: 2,
+            },
+        )
+        .unwrap();
         settle(&mut game);
         assert_eq!(game.speed(ME), 1);
     }

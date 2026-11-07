@@ -109,6 +109,7 @@ const PUBLIC: Record<VariantName<Event>, [Event, string]> = {
   ],
   Clashed: [{ Clashed: { player: 1, opponent: 2, won: false } }, 'Bo loses a clash with Cy'],
   CitysBlessingGained: [{ CitysBlessingGained: { player: 1 } }, "Bo gets the city's blessing"],
+  SpeedChanged: [{ SpeedChanged: { player: 1, speed: 2 } }, "Bo's speed becomes 2"],
   RingTempted: [
     { RingTempted: { player: 1, level: 2, bearer: 3 } },
     'The Ring tempts Bo (level 2) and chooses Forest as their Ring-bearer',

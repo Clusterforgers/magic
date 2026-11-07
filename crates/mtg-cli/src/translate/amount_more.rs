@@ -240,7 +240,9 @@ pub fn player_amount(head: &str, what: &str, who: &Value) -> Option<Tr<Value>> {
         }
         // The opponents the player's creatures attacked in this combat, directly or through a planeswalker.
         // One when the player has max speed, else none.
-        ("PlayerCountPropertyYou", "HasPropertyMaxSpeed") => Ok(json!({"Players": {"PlayersWhere": {"who": who, "test": {"MaxSpeed": "You"}}}})),
+        ("PlayerCountPropertyYou", "HasPropertyMaxSpeed") => {
+            Ok(json!({"Players": {"PlayersWhere": {"who": who, "test": {"MaxSpeed": "You"}}}}))
+        }
         ("PlayerCountPropertyYou", "OpponentsAttackedThisCombat") => {
             Ok(json!({"Players": "Attacked"}))
         }
