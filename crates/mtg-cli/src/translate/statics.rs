@@ -809,7 +809,9 @@ fn activation_kind(p: &Params) -> Tr<Option<&'static str>> {
     let spell = p.get("ValidSpell");
     if p.get("Type") == Some("Ability") {
         return match spell {
-            None | Some("Activated.!ManaAbility") => Ok(Some("Any")),
+            // "Activated abilities" are mana abilities too (CR 605.1a); Forge names the others `Activated.!ManaAbility`.
+            None => Ok(Some("Every")),
+            Some("Activated.!ManaAbility") => Ok(Some("Any")),
             Some(other) => unmapped(format!("key:Static.CostModifier.ValidSpell={other}")),
         };
     }
