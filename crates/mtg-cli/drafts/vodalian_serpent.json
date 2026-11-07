@@ -1,0 +1,41 @@
+{
+  "oracle_id": "c39c1604-3bae-454d-9985-85101e51ec6e",
+  "name": "Vodalian Serpent",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Vodalian Serpent",
+      "oracle_fingerprint": "c8cfc9c55408772436d3907711f0fcd3",
+      "abilities": [
+        { "Keyword": { "Kicker": "{2}" } },
+        {
+          "Rule": {
+            "rule": {
+              "Cant": {
+                "who": "This",
+                "action": {
+                  "Attack": {
+                    "unless": {
+                      "Compare": {
+                        "left": { "Count": [{ "Subtype": "Island" }, { "ControlledBy": "You" }] },
+                        "op": "Ge",
+                        "right": 1
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "WithCounters": { "counter": "+1/+1", "count": 4 } },
+            "condition": "Kicked"
+          }
+        }
+      ]
+    }
+  ]
+}

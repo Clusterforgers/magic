@@ -1,0 +1,38 @@
+{
+  "oracle_id": "c2e68ac5-cfff-4b76-8062-25a82fdf9a5c",
+  "name": "Liliana's Triumph",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Liliana's Triumph",
+      "oracle_fingerprint": "586cd4820c9d6f40f0110e2f71d87654",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "Sacrifice": { "who": "Opponents", "filter": [{ "Type": "Creature" }] } },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": {
+                        "Count": [
+                          { "Type": "Planeswalker" },
+                          { "Subtype": "Liliana" },
+                          { "ControlledBy": "You" }
+                        ]
+                      },
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [{ "Discard": { "who": "Opponents" } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

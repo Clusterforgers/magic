@@ -1,0 +1,42 @@
+{
+  "oracle_id": "a9a35c77-637f-4d56-afa2-6c8a4ded4838",
+  "name": "Stinging Cave Crawler",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Stinging Cave Crawler",
+      "oracle_fingerprint": "4af90a46d8e5a49b480f35fc9db5c9ed",
+      "abilities": [
+        { "Keyword": "Deathtouch" },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "if": {
+              "Compare": {
+                "left": {
+                  "Count": [
+                    { "OwnedBy": "You" },
+                    {
+                      "AnyOf": [
+                        { "Type": "Artifact" },
+                        { "Type": "Battle" },
+                        { "Type": "Creature" },
+                        { "Type": "Enchantment" },
+                        { "Type": "Land" },
+                        { "Type": "Planeswalker" }
+                      ]
+                    },
+                    { "In": "Graveyard" }
+                  ]
+                },
+                "op": "Ge",
+                "right": 4
+              }
+            },
+            "effects": [{ "Draw": {} }, { "LoseLife": { "amount": 1 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

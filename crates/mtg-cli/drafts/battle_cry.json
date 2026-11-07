@@ -1,0 +1,46 @@
+{
+  "oracle_id": "b92afdba-5aea-42c8-bdd8-6ba5ff6cba4f",
+  "name": "Battle Cry",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Battle Cry",
+      "oracle_fingerprint": "113821e5713d716b17481a758a045686",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Untap": {
+                  "what": {
+                    "Each": [
+                      { "Type": "Creature" },
+                      { "Color": "White" },
+                      { "ControlledBy": "You" }
+                    ]
+                  }
+                }
+              },
+              {
+                "DelayedTrigger": {
+                  "when": { "Blocks": { "what": [] } },
+                  "once": false,
+                  "this_turn": true,
+                  "effects": [
+                    {
+                      "Continuous": {
+                        "affected": "Dealer",
+                        "mods": [{ "ModifyPT": { "power": 0, "toughness": 1 } }],
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

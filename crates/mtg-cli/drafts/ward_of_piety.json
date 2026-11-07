@@ -1,0 +1,31 @@
+{
+  "oracle_id": "0fe4767b-2023-49fc-bc93-b73b43f70b76",
+  "name": "Ward of Piety",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ward of Piety",
+      "oracle_fingerprint": "e5d1ca5ad4bb30bb5e43645301c065f1",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Activated": {
+            "cost": "{1}{W}",
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [
+              {
+                "Shield": {
+                  "when": {
+                    "Damage": { "to": { "Each": [{ "Type": "Creature" }, { "Is": "Attached" }] } }
+                  },
+                  "by": { "RedirectUpTo": { "most": 1, "to": { "Target": 0 } } },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

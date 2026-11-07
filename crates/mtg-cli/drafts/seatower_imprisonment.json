@@ -1,0 +1,38 @@
+{
+  "oracle_id": "7fb675e7-1fca-4b51-9629-ac2ed4dca217",
+  "name": "Seatower Imprisonment",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Seatower Imprisonment",
+      "oracle_fingerprint": "96cad6d1d55c86c1de759d85dfc99969",
+      "abilities": [
+        {
+          "Keyword": {
+            "Enchant": [
+              { "AnyOf": [{ "Type": "Creature" }, { "Type": "Planeswalker" }] },
+              { "Not": { "ControlledBy": "You" } }
+            ]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 51, "end": 145 }
+          }
+        },
+        { "Static": { "affected": "Attached", "mods": ["CantAttack", "CantBlock"] } },
+        {
+          "Rule": {
+            "rule": {
+              "Cant": {
+                "who": "EachPlayer",
+                "action": { "ActivateKind": { "kind": "Every", "sources": [{ "Is": "Attached" }] } }
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

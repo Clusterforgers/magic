@@ -1,0 +1,38 @@
+{
+  "oracle_id": "7d84e667-2f14-437c-be4f-161b98d59341",
+  "name": "Vassal's Duty",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Vassal's Duty",
+      "oracle_fingerprint": "721e6c7c082f8f020c24ccad69df0292",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{1}",
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Type": "Creature" },
+                    { "Supertype": "Legendary" },
+                    { "ControlledBy": "You" }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "Shield": {
+                  "when": { "Damage": { "to": { "Target": 0 } } },
+                  "by": { "RedirectUpTo": { "most": 1, "to": "You" } },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

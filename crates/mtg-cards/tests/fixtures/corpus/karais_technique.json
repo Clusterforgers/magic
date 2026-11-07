@@ -1,0 +1,138 @@
+{
+  "object": "card",
+  "id": "037fe188-3355-4724-b2eb-e2448fc55607",
+  "oracle_id": "e53fb128-bf90-4af6-b998-ef9c250001cb",
+  "multiverse_ids": [],
+  "resource_id": "54EF8150DDF44185D32E8C5CFB0B94B954DC39A952DD015A6459A5CECFAA1EDB",
+  "mtgo_id": 147927,
+  "arena_id": 100609,
+  "tcgplayer_id": 680312,
+  "cardmarket_id": 873944,
+  "name": "Karai's Technique",
+  "lang": "en",
+  "released_at": "2026-03-06",
+  "uri": "https://api.scryfall.com/cards/037fe188-3355-4724-b2eb-e2448fc55607",
+  "scryfall_uri": "https://scryfall.com/card/tmt/152/karais-technique?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T00:54:35Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/0/3/037fe188-3355-4724-b2eb-e2448fc55607.jpg?1783904075",
+    "normal": "https://cards.scryfall.io/normal/front/0/3/037fe188-3355-4724-b2eb-e2448fc55607.jpg?1783904075",
+    "large": "https://cards.scryfall.io/large/front/0/3/037fe188-3355-4724-b2eb-e2448fc55607.jpg?1783904075",
+    "png": "https://cards.scryfall.io/png/front/0/3/037fe188-3355-4724-b2eb-e2448fc55607.png?1783904075",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/0/3/037fe188-3355-4724-b2eb-e2448fc55607.jpg?1783904075",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/0/3/037fe188-3355-4724-b2eb-e2448fc55607.jpg?1783904075",
+    "thumb": "https://cards.scryfall.io/thumb/front/0/3/037fe188-3355-4724-b2eb-e2448fc55607.webp?1783904075",
+    "grid": "https://cards.scryfall.io/grid/front/0/3/037fe188-3355-4724-b2eb-e2448fc55607.webp?1783904075",
+    "display": "https://cards.scryfall.io/display/front/0/3/037fe188-3355-4724-b2eb-e2448fc55607.webp?1783904075",
+    "art": "https://cards.scryfall.io/art/front/0/3/037fe188-3355-4724-b2eb-e2448fc55607.webp?1783904075",
+    "crop": "https://cards.scryfall.io/crop/front/0/3/037fe188-3355-4724-b2eb-e2448fc55607.webp?1783904075",
+    "jpeg": "https://cards.scryfall.io/normal/front/0/3/037fe188-3355-4724-b2eb-e2448fc55607.jpg?1783904075"
+  },
+  "mana_cost": "{1}{W}{B}",
+  "cmc": 3.0,
+  "type_line": "Sorcery",
+  "oracle_text": "Sneak {W}{B} (You may cast this spell for {W}{B} if you also return an unblocked attacker you control to hand during the declare blockers step.)\nChoose one or both —\n• Target creature gets +3/+3 until end of turn.\n• Target creature gets -3/-3 until end of turn.",
+  "colors": [
+    "B",
+    "W"
+  ],
+  "color_identity": [
+    "B",
+    "W"
+  ],
+  "keywords": [
+    "Sneak"
+  ],
+  "legalities": {
+    "standard": "legal",
+    "future": "legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "arena",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "03990f52-1d8a-4ce8-828a-c9bf633f0de6",
+  "set": "tmt",
+  "set_name": "Teenage Mutant Ninja Turtles",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/03990f52-1d8a-4ce8-828a-c9bf633f0de6",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Atmt&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/tmt?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/037fe188-3355-4724-b2eb-e2448fc55607/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Ae53fb128-bf90-4af6-b998-ef9c250001cb&unique=prints",
+  "collector_number": "152",
+  "digital": false,
+  "rarity": "uncommon",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Mathias Kollros",
+  "artist_ids": [
+    "2ae0dd12-047c-4efb-80d7-bccc3bac5fba"
+  ],
+  "illustration_id": "8bce11b0-a60b-4ac4-968c-3fb8c963b03e",
+  "border_color": "black",
+  "frame": "2015",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "promo_types": [
+    "universesbeyond"
+  ],
+  "edhrec_rank": 17600,
+  "penny_rank": 7094,
+  "prices": {
+    "usd": "0.18",
+    "usd_foil": "0.24",
+    "usd_etched": null,
+    "eur": "0.04",
+    "eur_foil": "0.18",
+    "tix": "0.03"
+  },
+  "related_uris": {
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DKarai%2527s%2BTechnique",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DKarai%2527s%2BTechnique",
+    "edhrec": "https://edhrec.com/route/?cc=Karai%27s+Technique"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F680312%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=873944&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/147927?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

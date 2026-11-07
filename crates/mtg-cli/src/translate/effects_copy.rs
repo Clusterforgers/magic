@@ -179,6 +179,10 @@ pub fn enters_as_copy(ctx: &Ctx, name: &str) -> Tr<Value> {
     if p.has("Defined") || p.has("ValidTgts") || p.has("Duration") || p.has("Optional") {
         return unmapped("key:Clone.replacement-shape");
     }
+    // The replacement is the copy alone: a later step (Spark Double's extra counter) would be dropped.
+    if p.has("SubAbility") {
+        return unmapped("key:Clone.replacement-SubAbility");
+    }
     let Some(choices) = p.get("Choices") else {
         return unmapped("key:Clone.no-Choices");
     };

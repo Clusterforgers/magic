@@ -1,0 +1,30 @@
+{
+  "oracle_id": "1636c4d2-f699-4af7-8508-dbce2f0b7b52",
+  "name": "Countryside Crusher",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Countryside Crusher",
+      "oracle_fingerprint": "804baa82b6c361e934cb19c258ac62f5",
+      "abilities": [
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 0, "end": 142 }
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Land" }, { "Not": "Token" }, { "OwnedBy": "You" }],
+                "to": "Graveyard"
+              }
+            },
+            "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

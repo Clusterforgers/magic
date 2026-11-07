@@ -23,7 +23,7 @@
                   "condition": {
                     "CountOf": {
                       "subject": { "Target": 0 },
-                      "selector": [{ "Not": { "Color": "Red" } }],
+                      "selector": [{ "Not": { "Color": "Red" } }, { "DamagedBy": "This" }],
                       "op": "Ge",
                       "right": 1
                     }

@@ -1,0 +1,22 @@
+{
+  "oracle_id": "15fee0bd-ede2-4f65-a9a1-2da4623679d5",
+  "name": "Aether Figment",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Aether Figment",
+      "oracle_fingerprint": "8843f57cfaf4b3149e62988c381344ea",
+      "abilities": [
+        { "Keyword": { "Kicker": "{3}" } },
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "WithCounters": { "counter": "+1/+1", "count": 2 } },
+            "condition": "Kicked"
+          }
+        },
+        { "Static": { "affected": "This", "mods": ["CantBeBlocked"] } }
+      ]
+    }
+  ]
+}

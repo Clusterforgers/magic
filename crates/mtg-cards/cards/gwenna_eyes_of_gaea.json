@@ -1,0 +1,46 @@
+{
+  "oracle_id": "7d95e72a-461e-4993-a190-847466a4b17c",
+  "name": "Gwenna, Eyes of Gaea",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Gwenna, Eyes of Gaea",
+      "oracle_fingerprint": "38b42d78b7809203caa30b80f5af6f67",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [
+              {
+                "AddMana": {
+                  "mana": { "AnyCombination": { "count": 2 } },
+                  "only": [
+                    { "Spell": { "types": ["Creature"] } },
+                    { "Ability": { "types": ["Creature"] } }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "SpellCast": {
+                "what": [
+                  { "Type": "Creature" },
+                  { "Compare": { "stat": "Power", "op": "Ge", "to": 5 } }
+                ],
+                "by": "You"
+              }
+            },
+            "effects": [
+              { "PutCounters": { "on": "This", "counter": "+1/+1" } },
+              { "Untap": { "what": "This" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

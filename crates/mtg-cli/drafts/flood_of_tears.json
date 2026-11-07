@@ -22,7 +22,20 @@
                   "condition": {
                     "CountOf": {
                       "subject": { "Bound": "moved" },
-                      "selector": [{ "Not": "Token" }, { "ControlledBy": "You" }],
+                      "selector": [
+                        { "Not": "Token" },
+                        { "ControlledBy": "You" },
+                        {
+                          "AnyOf": [
+                            { "Type": "Artifact" },
+                            { "Type": "Battle" },
+                            { "Type": "Creature" },
+                            { "Type": "Enchantment" },
+                            { "Type": "Land" },
+                            { "Type": "Planeswalker" }
+                          ]
+                        }
+                      ],
                       "op": "Ge",
                       "right": 4
                     }

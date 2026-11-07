@@ -1,0 +1,163 @@
+{
+  "object": "card",
+  "id": "f803a510-99fe-467a-be3b-9301497ec7ec",
+  "oracle_id": "5a721c27-3e02-4f60-995e-b29d678d93b3",
+  "multiverse_ids": [
+    652153
+  ],
+  "mtgo_id": 132381,
+  "tcgplayer_id": 539923,
+  "cardmarket_id": 758521,
+  "name": "Rose, Cutthroat Raider",
+  "lang": "en",
+  "released_at": "2024-03-08",
+  "uri": "https://api.scryfall.com/cards/f803a510-99fe-467a-be3b-9301497ec7ec",
+  "scryfall_uri": "https://scryfall.com/card/pip/66/rose-cutthroat-raider?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T03:13:21Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/f/8/f803a510-99fe-467a-be3b-9301497ec7ec.jpg?1783912401",
+    "normal": "https://cards.scryfall.io/normal/front/f/8/f803a510-99fe-467a-be3b-9301497ec7ec.jpg?1783912401",
+    "large": "https://cards.scryfall.io/large/front/f/8/f803a510-99fe-467a-be3b-9301497ec7ec.jpg?1783912401",
+    "png": "https://cards.scryfall.io/png/front/f/8/f803a510-99fe-467a-be3b-9301497ec7ec.png?1783912401",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/f/8/f803a510-99fe-467a-be3b-9301497ec7ec.jpg?1783912401",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/f/8/f803a510-99fe-467a-be3b-9301497ec7ec.jpg?1783912401",
+    "thumb": "https://cards.scryfall.io/thumb/front/f/8/f803a510-99fe-467a-be3b-9301497ec7ec.webp?1783912401",
+    "grid": "https://cards.scryfall.io/grid/front/f/8/f803a510-99fe-467a-be3b-9301497ec7ec.webp?1783912401",
+    "display": "https://cards.scryfall.io/display/front/f/8/f803a510-99fe-467a-be3b-9301497ec7ec.webp?1783912401",
+    "art": "https://cards.scryfall.io/art/front/f/8/f803a510-99fe-467a-be3b-9301497ec7ec.webp?1783912401",
+    "crop": "https://cards.scryfall.io/crop/front/f/8/f803a510-99fe-467a-be3b-9301497ec7ec.webp?1783912401",
+    "jpeg": "https://cards.scryfall.io/normal/front/f/8/f803a510-99fe-467a-be3b-9301497ec7ec.jpg?1783912401"
+  },
+  "mana_cost": "{2}{R}{R}",
+  "cmc": 4.0,
+  "type_line": "Legendary Artifact Creature — Robot",
+  "oracle_text": "First strike\nRaid — At end of combat on your turn, if you attacked this turn, create a Junk token for each opponent you attacked. (It's an artifact with \"{T}, Sacrifice this token: Exile the top card of your library. You may play that card this turn. Activate only as a sorcery.\")\nWhenever you sacrifice a Junk, add {R}.",
+  "power": "3",
+  "toughness": "2",
+  "colors": [
+    "R"
+  ],
+  "color_identity": [
+    "R"
+  ],
+  "keywords": [
+    "First strike",
+    "Raid"
+  ],
+  "produced_mana": [
+    "R"
+  ],
+  "all_parts": [
+    {
+      "object": "related_card",
+      "id": "caae2dad-2e81-46b3-8e2d-cf1980aeba3c",
+      "component": "combo_piece",
+      "name": "Rose, Cutthroat Raider",
+      "type_line": "Legendary Artifact Creature — Robot",
+      "uri": "https://api.scryfall.com/cards/caae2dad-2e81-46b3-8e2d-cf1980aeba3c"
+    },
+    {
+      "object": "related_card",
+      "id": "62c4a6f6-6425-4c0c-b35a-880fcab42aad",
+      "component": "token",
+      "name": "Junk",
+      "type_line": "Token Artifact — Junk",
+      "uri": "https://api.scryfall.com/cards/62c4a6f6-6425-4c0c-b35a-880fcab42aad"
+    }
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "d84d7a49-2ef4-4808-83b4-8c65b4aa0e2d",
+  "set": "pip",
+  "set_name": "Fallout",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/d84d7a49-2ef4-4808-83b4-8c65b4aa0e2d",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Apip&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/pip?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/f803a510-99fe-467a-be3b-9301497ec7ec/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A5a721c27-3e02-4f60-995e-b29d678d93b3&unique=prints",
+  "collector_number": "66",
+  "digital": false,
+  "rarity": "rare",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Zezhou Chen",
+  "artist_ids": [
+    "810677e5-a502-4c03-b726-78cd808a75d4"
+  ],
+  "illustration_id": "af89ff6f-3100-447d-92f0-b5dd390bcae5",
+  "border_color": "black",
+  "frame": "2015",
+  "frame_effects": [
+    "legendary"
+  ],
+  "security_stamp": "triangle",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "promo_types": [
+    "universesbeyond"
+  ],
+  "edhrec_rank": 4695,
+  "prices": {
+    "usd": "0.69",
+    "usd_foil": "2.82",
+    "usd_etched": null,
+    "eur": "1.17",
+    "eur_foil": "1.83",
+    "tix": "1.03"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=652153&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DRose%252C%2BCutthroat%2BRaider",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DRose%252C%2BCutthroat%2BRaider",
+    "edhrec": "https://edhrec.com/route/?cc=Rose%2C+Cutthroat+Raider"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F539923%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=758521&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/132381?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

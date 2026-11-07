@@ -1,0 +1,42 @@
+{
+  "source": "forge",
+  "oracle_matches": true,
+  "lines": [
+    {
+      "face": 0,
+      "tag": "T",
+      "text": "At the beginning of your upkeep, reveal the top card of your library. If it's a land card, put it into your graveyard and repeat this process.",
+      "abilities": [],
+      "gap": "key:Repeat.RepeatDefined"
+    },
+    {
+      "face": 0,
+      "tag": "T",
+      "text": "Whenever a land card is put into your graveyard from anywhere, put a +1/+1 counter on CARDNAME.",
+      "abilities": [
+        0
+      ],
+      "gap": null
+    }
+  ],
+  "proof": {
+    "marks": [
+      {
+        "face": 0,
+        "span": {
+          "start": 0,
+          "end": 142
+        },
+        "mark": "ByHand"
+      },
+      {
+        "face": 0,
+        "span": {
+          "start": 143,
+          "end": 243
+        },
+        "mark": "Auto"
+      }
+    ]
+  }
+}

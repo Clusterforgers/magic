@@ -1,0 +1,68 @@
+{
+  "source": "forge",
+  "oracle_matches": true,
+  "lines": [
+    {
+      "face": 0,
+      "tag": "K",
+      "text": "Enchant:Creature",
+      "abilities": [
+        0
+      ],
+      "gap": null
+    },
+    {
+      "face": 0,
+      "tag": "A",
+      "text": "Put two +1/+1 counters on enchanted creature.",
+      "abilities": [],
+      "gap": "defined:AttachedBy Returned"
+    },
+    {
+      "face": 0,
+      "tag": "S",
+      "text": "Enchanted creature can't attack or block and its activated abilities can't be activated.",
+      "abilities": [
+        1
+      ],
+      "gap": null
+    },
+    {
+      "face": 0,
+      "tag": "S",
+      "text": "Enchanted creature can't attack or block and its activated abilities can't be activated.",
+      "abilities": [
+        2
+      ],
+      "gap": null
+    }
+  ],
+  "proof": {
+    "marks": [
+      {
+        "face": 0,
+        "span": {
+          "start": 0,
+          "end": 16
+        },
+        "mark": "Auto"
+      },
+      {
+        "face": 0,
+        "span": {
+          "start": 17,
+          "end": 106
+        },
+        "mark": "Auto"
+      },
+      {
+        "face": 0,
+        "span": {
+          "start": 107,
+          "end": 201
+        },
+        "mark": "ByHand"
+      }
+    ]
+  }
+}

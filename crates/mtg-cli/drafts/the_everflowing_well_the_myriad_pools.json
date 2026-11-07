@@ -1,0 +1,65 @@
+{
+  "oracle_id": "1f57a9f1-6b95-4395-bdf0-c5289b786ab1",
+  "name": "The Everflowing Well // The Myriad Pools",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "The Everflowing Well",
+      "oracle_fingerprint": "bb05afb5fa3837cbc45dfa1bb595d9a5",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "Mill": { "count": 2 } }, { "Draw": { "count": 2 } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "if": {
+              "Compare": {
+                "left": {
+                  "Count": [
+                    { "OwnedBy": "You" },
+                    {
+                      "AnyOf": [
+                        { "Type": "Artifact" },
+                        { "Type": "Battle" },
+                        { "Type": "Creature" },
+                        { "Type": "Enchantment" },
+                        { "Type": "Land" },
+                        { "Type": "Planeswalker" }
+                      ]
+                    },
+                    { "In": "Graveyard" }
+                  ]
+                },
+                "op": "Ge",
+                "right": 8
+              }
+            },
+            "effects": [{ "Transform": { "what": "This" } }]
+          }
+        }
+      ]
+    },
+    {
+      "name": "The Myriad Pools",
+      "oracle_fingerprint": "f45893c892abfa1ed1d4bf772a238df6",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Blue"] } } }]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 54, "end": 223 }
+          }
+        }
+      ]
+    }
+  ]
+}

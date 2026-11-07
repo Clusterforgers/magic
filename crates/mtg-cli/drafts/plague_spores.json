@@ -1,0 +1,31 @@
+{
+  "oracle_id": "f79f5cb7-d238-41ab-85f0-eb21cc6bf561",
+  "name": "Plague Spores",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Plague Spores",
+      "oracle_fingerprint": "e394c76ea15afc2b3c32d6eee43bb6a4",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "Not": { "Color": "Black" } }] } },
+              { "what": { "Object": [{ "Type": "Land" }] } }
+            ],
+            "effects": [
+              {
+                "Together": {
+                  "effects": [
+                    { "Destroy": { "what": { "Target": 0 }, "regenerate": false } },
+                    { "Destroy": { "what": { "Target": 1 }, "regenerate": false } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

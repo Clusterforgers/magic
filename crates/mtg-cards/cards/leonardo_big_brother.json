@@ -1,0 +1,53 @@
+{
+  "oracle_id": "6496eea7-38f5-4428-a379-b08b0eeb5239",
+  "name": "Leonardo, Big Brother",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Leonardo, Big Brother",
+      "oracle_fingerprint": "a6b3e3fc290565d1c87d4e53bb9016cf",
+      "abilities": [
+        {
+          "AltCast": {
+            "way": "Sneak",
+            "cost": [
+              { "Mana": "{W}" },
+              {
+                "ReturnToHand": {
+                  "filter": [
+                    "Attacking",
+                    "Unblocked",
+                    { "Type": "Creature" },
+                    { "ControlledBy": "You" }
+                  ]
+                }
+              }
+            ],
+            "condition": { "Step": "DeclareBlockers" },
+            "flash": true
+          }
+        },
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": "Tapped",
+            "condition": { "CastWith": "Sneak" }
+          }
+        },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              {
+                "ModifyPT": {
+                  "power": { "Count": [{ "Type": "Creature" }, "Other", { "ControlledBy": "You" }] },
+                  "toughness": 0
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

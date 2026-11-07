@@ -8,7 +8,12 @@
 use super::subtypes::{creature_types, plural_subtype};
 
 /// The most wordings the rows add to the wordings of one ability: the rows chain, so a long text could multiply them.
-const LIMIT: usize = 64;
+const LIMIT: usize = 128;
+
+/// The most wordings one row adds, and adds for one given wording: a row early in the list never takes the room of the
+/// rows after it, and the first wordings never take the room of the others.
+const ROW_LIMIT: usize = 64;
+const PER_TEXT: usize = 6;
 
 /// The most wordings an ability may have for the rows to add theirs: a part of a joined static multiplies the wordings
 /// of the whole by its own.
@@ -38,7 +43,11 @@ pub(super) fn add(ability: &crate::ability::Ability, texts: &mut Vec<String>) {
         },
         one_duration,
         duration_first,
-        one_sentence,
+        if one_subject(ability) {
+            one_sentence
+        } else {
+            nothing
+        },
         your_choice,
         super::r7b_more::each_and,
         super::r7b_more::an_vowel,
@@ -52,14 +61,22 @@ pub(super) fn add(ability: &crate::ability::Ability, texts: &mut Vec<String>) {
     let mut seen: std::collections::HashSet<String> = texts.iter().cloned().collect();
     let mut added = 0;
     for row in rows {
-        let found: Vec<String> = texts.iter().flat_map(|text| row(text)).collect();
+        let found: Vec<String> = texts
+            .iter()
+            .flat_map(|text| row(text).into_iter().take(PER_TEXT))
+            .collect();
+        let mut own = 0;
         for text in found {
             if added >= LIMIT {
                 return;
             }
+            if own >= ROW_LIMIT {
+                break;
+            }
             if seen.insert(text.clone()) {
                 texts.push(text);
                 added += 1;
+                own += 1;
             }
         }
     }
@@ -324,7 +341,7 @@ pub(super) fn that_creature(text: &str) -> Vec<String> {
             &text[at + found.len()..]
         ));
     }
-    out.truncate(4);
+    out.truncate(2);
     out
 }
 
@@ -595,4 +612,22 @@ fn orders(count: usize) -> Vec<Vec<usize>> {
         ],
         _ => Vec::new(),
     }
+}
+
+/// No wording: a row left out for this ability.
+fn nothing(_: &str) -> Vec<String> {
+    Vec::new()
+}
+
+/// Whether the effects that last of an ability all change the same objects: "It gains" after "target creature gets" may
+/// be written for the card too, so only a rule of one subject joins two sentences of effects into one.
+fn one_subject(ability: &crate::ability::Ability) -> bool {
+    let mut affected = ability.effects().iter().filter_map(|effect| match effect {
+        crate::effect::Effect::Continuous { affected, .. } => Some(affected),
+        _ => None,
+    });
+    let Some(first) = affected.next() else {
+        return false;
+    };
+    affected.all(|other| other == first)
 }

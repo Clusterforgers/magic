@@ -1,0 +1,40 @@
+{
+  "oracle_id": "010ec11a-0484-486d-b7c0-de65593bf457",
+  "name": "Sanguine Indulgence",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sanguine Indulgence",
+      "oracle_fingerprint": "f87378b4d1c948f9ca778ac5f827fdcc",
+      "abilities": [
+        {
+          "CostModifier": {
+            "applies_to": ["This"],
+            "change": "Reduce",
+            "mana": "{3}",
+            "condition": {
+              "Compare": {
+                "left": { "Tallied": { "who": "You", "what": "LifeGainedTotal" } },
+                "op": "Ge",
+                "right": 3
+              }
+            }
+          }
+        },
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "Type": "Creature" }, { "In": "Graveyard" }, { "OwnedBy": "You" }]
+                },
+                "bounds": { "min": 0, "max": 2 }
+              }
+            ],
+            "effects": [{ "Move": { "what": { "Target": 0 }, "to": "Hand" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,29 @@
+{
+  "oracle_id": "e939ef5e-ebe1-48cd-9e9f-eb3fd516165c",
+  "name": "Wallop",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Wallop",
+      "oracle_fingerprint": "45df20c8c0cdb30e0545777d999ad52d",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Type": "Creature" },
+                    { "AnyOf": [{ "Color": "Blue" }, { "Color": "Black" }] },
+                    { "HasKeyword": "Flying" }
+                  ]
+                }
+              }
+            ],
+            "effects": [{ "Destroy": { "what": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

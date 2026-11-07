@@ -1,0 +1,27 @@
+{
+  "oracle_id": "61373613-9017-49ec-9d41-d076aeeff2c0",
+  "name": "Craving of Yeenoghu",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Craving of Yeenoghu",
+      "oracle_fingerprint": "fcd7fde1b0477c5f52f1ab890fd023f2",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "ModifyPT": { "power": 3, "toughness": 2 } }, { "AddKeyword": "Haste" }]
+          }
+        },
+        { "Rule": { "rule": { "MustAttack": "Attached" } } },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 104, "end": 314 }
+          }
+        }
+      ]
+    }
+  ]
+}

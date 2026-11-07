@@ -1,0 +1,28 @@
+{
+  "oracle_id": "b953d19f-6ba7-4aee-b353-c60dc9572610",
+  "name": "Green Mana Battery",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Green Mana Battery",
+      "oracle_fingerprint": "dcc525aeea9c2adfd20b64068374ca8e",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{2}" }, "Tap"],
+            "effects": [{ "PutCounters": { "on": "This", "counter": "charge" } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap", { "RemoveCounters": { "counter": "charge", "count": "X" } }],
+            "effects": [
+              { "AddMana": { "mana": { "Fixed": ["Green"] } } },
+              { "AddMana": { "mana": { "Fixed": ["Green"] }, "times": "X" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,28 @@
+{
+  "oracle_id": "8ceb295c-a611-4ac7-940b-557bf60f8a8b",
+  "name": "Red Mana Battery",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Red Mana Battery",
+      "oracle_fingerprint": "cc4474bfdc5efb5f7490a28e9910fc30",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{2}" }, "Tap"],
+            "effects": [{ "PutCounters": { "on": "This", "counter": "charge" } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap", { "RemoveCounters": { "counter": "charge", "count": "X" } }],
+            "effects": [
+              { "AddMana": { "mana": { "Fixed": ["Red"] } } },
+              { "AddMana": { "mana": { "Fixed": ["Red"] }, "times": "X" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

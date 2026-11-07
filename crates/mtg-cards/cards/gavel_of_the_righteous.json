@@ -1,0 +1,61 @@
+{
+  "oracle_id": "204a5616-9f19-4d4c-aeb0-d1ec486b9ace",
+  "name": "Gavel of the Righteous",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Gavel of the Righteous",
+      "oracle_fingerprint": "3726ed7be56c5a1dfb2251f73f44a9b6",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "BeginCombat", "whose": "You" } },
+            "effects": [{ "PutCounters": { "on": "This", "counter": "charge" } }]
+          }
+        },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [
+              {
+                "ModifyPT": {
+                  "power": { "AnyCounters": "This" },
+                  "toughness": { "AnyCounters": "This" }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "AddKeyword": "DoubleStrike" }],
+            "condition": {
+              "Compare": { "left": { "AnyCounters": "This" }, "op": "Ge", "right": 4 }
+            }
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{3}",
+            "timing": "Sorcery",
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } }
+            ],
+            "effects": [{ "Attach": { "what": "This", "to": { "Target": 0 } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "RemoveCounters": {} }],
+            "timing": "Sorcery",
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } }
+            ],
+            "effects": [{ "Attach": { "what": "This", "to": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}
