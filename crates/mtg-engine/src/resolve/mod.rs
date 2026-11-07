@@ -343,6 +343,7 @@ fn scope_of<'a>(
         chooser: std::cell::Cell::new(None),
         caused: None,
         granter: ability.and_then(|a| a.origin().granter()),
+        as_was: false,
     }
 }
 

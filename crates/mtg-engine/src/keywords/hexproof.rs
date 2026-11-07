@@ -310,6 +310,7 @@ mod tests {
                 chooser: std::cell::Cell::new(None),
                 caused: None,
                 granter: None,
+                as_was: false,
             };
             (
                 scope.all_targets_illegal(),

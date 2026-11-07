@@ -170,7 +170,7 @@ State is the fold of events; the engine is a pure function from state to `Progre
 
 ### Snapshots (last known information)
 
-`Snapshot` is built by `snapshot(state, id)` and kept in three places only: a stack ability (its source and, for a trigger, the objects of its cause, taken at detection, CR 603.10a), a resolution (every object a step moves off the battlefield or stack, carried by `StepDone`), and `Choices` (the value of X, which outlives the spell). `characteristics` has every continuous effect applied and `keywords` are those it had after layer 6. `Amount::Stat`, `Amount::Counters`, `ControllerOf`, `Matches`, `HasKeyword` and `HasCounter` read the live object when its counter matches and the snapshot otherwise.
+`Snapshot` is built by `snapshot(state, id)` and kept in these places only: a stack ability (its source and, for a trigger, the objects of its cause, taken at detection, CR 603.10a), a resolution (every object a step moves off the battlefield or stack, carried by `StepDone`), `Choices` (the value of X, which outlives the spell), and the turn's logs (the object of each logged event and of each record, which a `Tally` filter judges as it was then, CR 608.2h). `characteristics` has every continuous effect applied and `keywords` are those it had after layer 6. `Amount::Stat`, `Amount::Counters`, `ControllerOf`, `Matches`, `HasKeyword` and `HasCounter` read the live object when its counter matches and the snapshot otherwise.
 
 ## Triggers, replacement and layers
 
