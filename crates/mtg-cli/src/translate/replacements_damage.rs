@@ -59,6 +59,7 @@ fn read_keys(p: &Params, static_line: bool) -> Tr<()> {
     if static_line {
         keys.extend(super::condition::KEYS);
         keys.push("PlayerTurn");
+        keys.push("Hellbent");
     }
     check_keys(p, "Replacement.DamageDone", &keys, |_, _| false)?;
     if p.has("DamageTarget") && !p.has("ReplaceWith") {
@@ -73,9 +74,13 @@ fn read_keys(p: &Params, static_line: bool) -> Tr<()> {
     }
     let prevents = p.get("Prevent") == Some("True");
     let replaces = p.has("ReplaceWith");
-    let shield_prevention = p.get("PreventionEffect") == Some("True");
+    // "Prevent that damage and do this with it" is a prevention that also runs an effect with the amount.
+    let prevents_and = prevents && replaces;
+    let shield_prevention = p.get("PreventionEffect") == Some("True") || prevents_and;
     let instead_shield = replaces && !prevents && !static_line && !shield_prevention;
-    if !instead_shield && (prevents == replaces || (replaces && !static_line && !shield_prevention))
+    if !instead_shield
+        && ((prevents == replaces && !prevents_and)
+            || (replaces && !static_line && !shield_prevention))
     {
         return unmapped("replacement:DamageDone-not-a-prevention");
     }
@@ -131,6 +136,9 @@ pub fn static_prevention(ctx: &Ctx, p: &Params) -> Tr<Vec<Value>> {
         Some("True") => gates.push(json!("YourTurn")),
         Some("False") => gates.push(json!({"Not": "YourTurn"})),
         Some(other) => return unmapped(format!("key:Replacement.DamageDone.PlayerTurn={other}")),
+    }
+    if p.get("Hellbent") == Some("True") {
+        gates.push(super::condition::named("Hellbent")?);
     }
     gates.extend(super::condition::condition(ctx, p)?);
     let condition = super::condition::single(gates);
@@ -253,6 +261,12 @@ fn one_shield(
         let duration = duration(line.get("Duration"))?;
         return super::replacements_moved::shield(ctx, &p, duration);
     }
+    if p.get("Event") == Some("Counter") {
+        let duration = duration(line.get("Duration"))?;
+        return Ok(vec![super::replacements_counter::shield(
+            ctx, &p, duration,
+        )?]);
+    }
     if p.get("Event") != Some("DamageDone") {
         return unmapped(format!(
             "replacement:{}",
@@ -328,8 +342,9 @@ fn shield_by(ctx: &Ctx, (p, line): (&Params, &Params), remembered: Option<&Value
     let recipient_remembered = p.get("ValidTarget").is_some_and(is_remembered);
     Ok(match p.get("ReplaceWith") {
         None => json!("Prevent"),
-        Some(_) if p.get("Prevent") == Some("True") => {
-            return unmapped("replacement:DamageDone-prevent-and-replace");
+        Some(name) if p.get("Prevent") == Some("True") => {
+            let you = p.get("ValidTarget") == Some("You");
+            super::replacements_damage_by::by(ctx, p, name, you, true)?
         }
         Some(name) if is_damage_scaling(ctx, name) => scaled(ctx, name)?,
         Some(name) if super::replacements_damage_by::splits(ctx, name) => {

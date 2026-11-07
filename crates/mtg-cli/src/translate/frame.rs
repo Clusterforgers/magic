@@ -592,7 +592,10 @@ fn goes_in(
         "Library" => {
             let place = match (position, p.get("Shuffle"), searched) {
                 (_, Some("True"), false) | (None, Some("True"), _) => json!("Shuffled"),
+                // A search that returns the card to the library with no position puts it on top, after the shuffle. A later
+                // step that reads what it found is a gap: it may need cards an earlier step moved as well.
                 (Some("0"), ..) | (None, Some("False") | None, false) => json!("Top"),
+                (None, None, true) if !p.has("RememberChanged") => json!("Top"),
                 (Some("-1"), ..) => json!("Bottom"),
                 (Some(n), ..) => match n.parse::<u32>() {
                     Ok(below) if below >= 1 => json!({ "Below": below }),

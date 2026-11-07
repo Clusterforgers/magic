@@ -98,6 +98,20 @@ fn spell(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
     if words.once_per_turn || words.from.is_some() {
         return unmapped("key:Spell.Boast-or-Forecast");
     }
+    // "Cast this spell only if you control two or more Vampires": a presence check of the spell line is a casting condition.
+    let present = if p.has("IsPresent") && !p.has("CheckSVar") {
+        condition(ctx, p)?
+    } else {
+        None
+    };
+    let stripped;
+    let p = if present.is_some() {
+        stripped = strip(p);
+        &stripped
+    } else {
+        p
+    };
+    when.extend(present);
     when.extend(words.conditions);
     when.extend(super::condition::check_svar(ctx, p)?);
     let only = match when.len() {
