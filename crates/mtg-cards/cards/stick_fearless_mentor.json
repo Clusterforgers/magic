@@ -13,11 +13,11 @@
             "when": { "DealsDamage": { "source": [{ "ControlledBy": "You" }], "to": "You" } },
             "limit": "OncePerTurn",
             "effects": [
-              { "ExileTop": { "as": "exiled" } },
+              { "ExileTop": { "as": "impulse" } },
               {
                 "Rule": {
                   "rule": {
-                    "MayCast": { "from": "Exile", "only": { "Bound": "exiled" }, "play": true }
+                    "MayCast": { "from": "Exile", "only": { "Bound": "impulse" }, "play": true }
                   },
                   "duration": "UntilEndOfYourNextTurn"
                 }

@@ -15,13 +15,13 @@
                   "modes": [
                     {
                       "effects": [
-                        { "ExileTop": { "count": 2, "as": "exiled" } },
+                        { "ExileTop": { "count": 2, "as": "impulse" } },
                         {
                           "Rule": {
                             "rule": {
                               "MayCast": {
                                 "from": "Exile",
-                                "only": { "Bound": "exiled" },
+                                "only": { "Bound": "impulse" },
                                 "play": true
                               }
                             },

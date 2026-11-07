@@ -11,11 +11,11 @@
           "Triggered": {
             "when": { "DoorUnlocked": { "who": "You", "door": 0 } },
             "effects": [
-              { "ExileTop": { "count": 2, "as": "exiled" } },
+              { "ExileTop": { "count": 2, "as": "impulse" } },
               {
                 "Rule": {
                   "rule": {
-                    "MayCast": { "from": "Exile", "only": { "Bound": "exiled" }, "play": true }
+                    "MayCast": { "from": "Exile", "only": { "Bound": "impulse" }, "play": true }
                   },
                   "duration": "UntilEndOfYourNextTurn"
                 }
