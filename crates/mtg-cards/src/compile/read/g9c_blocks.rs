@@ -58,8 +58,24 @@ pub(super) fn g9c_shared_kind(found: &mut [TriggerPattern]) {
     }
 }
 
+/// The subject and verb of a block or of becoming blocked, of any creature or of a kind.
+pub(super) fn g9c_happening(pattern: &TriggerPattern) -> Option<(Selector, String)> {
+    let (what, verb) = match pattern {
+        TriggerPattern::Blocks { what, blocking } if blocking.0.is_empty() => {
+            (what, "blocks".to_owned())
+        }
+        TriggerPattern::Blocks { what, blocking } => (what, g9c_blocks_verb(blocking)?),
+        TriggerPattern::BecomesBlocked { what, by, .. } if by.0.is_empty() => {
+            (what, "becomes blocked".to_owned())
+        }
+        TriggerPattern::BecomesBlocked { what, by, once } => (what, g9c_blocked_verb(by, *once)?),
+        _ => return None,
+    };
+    Some((what.clone(), verb))
+}
+
 /// The verb of a block of a kind ("blocks one or more black creatures"); none without a kind.
-pub(super) fn g9c_blocks_verb(blocking: &Selector) -> Option<String> {
+fn g9c_blocks_verb(blocking: &Selector) -> Option<String> {
     Some(format!(
         "blocks one or more {}",
         phrase_text(blocking, Form::All)?
@@ -67,7 +83,7 @@ pub(super) fn g9c_blocks_verb(blocking: &Selector) -> Option<String> {
 }
 
 /// The verb of a block by a kind: "becomes blocked by an artifact creature", "becomes blocked by one or more Orcs".
-pub(super) fn g9c_blocked_verb(by: &Selector, once: bool) -> Option<String> {
+fn g9c_blocked_verb(by: &Selector, once: bool) -> Option<String> {
     if once {
         return Some(format!(
             "becomes blocked by one or more {}",

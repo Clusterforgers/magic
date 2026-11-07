@@ -5,6 +5,7 @@
 use super::amounts::{count_word, number_word};
 use super::batches;
 use super::counters;
+use super::g9c_blocks::g9c_happening;
 use super::selectors::{Form, phrase, phrase_text};
 use super::tokens::Reader;
 use crate::keyword::Keyword;
@@ -1252,9 +1253,6 @@ pub(super) fn player_verb(by: &Ref, verb: &str) -> Option<String> {
     })
 }
 
-/// The words of a creature that becomes blocked by any creature.
-const BLOCKED: &str = "becomes blocked";
-
 /// The subject of a pattern that is about one thing happening to it, and what happens.
 pub(super) fn happening(pattern: &TriggerPattern) -> Option<(Selector, String)> {
     let said = |what: &Selector, verb: &str| Some((what.clone(), verb.to_owned()));
@@ -1309,14 +1307,6 @@ pub(super) fn happening(pattern: &TriggerPattern) -> Option<(Selector, String)> 
         TriggerPattern::AttacksPlayerOrPlaneswalker { what, at: Ref::You } => {
             said(what, "attacks you or a planeswalker you control")
         }
-        TriggerPattern::Blocks { what, blocking } if blocking.0.is_empty() => said(what, "blocks"),
-        TriggerPattern::Blocks { what, blocking } => {
-            said(what, &super::g9c_blocks::g9c_blocks_verb(blocking)?)
-        }
-        TriggerPattern::BecomesBlocked { what, by, .. } if by.0.is_empty() => said(what, BLOCKED),
-        TriggerPattern::BecomesBlocked { what, by, once } => {
-            said(what, &super::g9c_blocks::g9c_blocked_verb(by, *once)?)
-        }
         TriggerPattern::Unblocked { what } => said(what, "attacks and isn't blocked"),
         TriggerPattern::Tapped { what } => said(what, "becomes tapped"),
         TriggerPattern::Untapped { what } => said(what, "becomes untapped"),
@@ -1362,7 +1352,7 @@ pub(super) fn happening(pattern: &TriggerPattern) -> Option<(Selector, String)> 
             &format!("deals {}", damage_text(*combat, to.as_ref())?),
         ),
         // An action of `Did`, or nothing.
-        _ => super::r7e_events::r7e_did_happening(pattern),
+        _ => g9c_happening(pattern).or_else(|| super::r7e_events::r7e_did_happening(pattern)),
     }
 }
 
