@@ -1,0 +1,31 @@
+{
+  "oracle_id": "8f504855-f3df-4284-a189-e799bcddf620",
+  "name": "Hydra Omnivore",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Hydra Omnivore",
+      "oracle_fingerprint": "de9193c5a227153a59154765c77c2e73",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": ["This"], "to": "Opponents", "combat": true } },
+            "effects": [
+              {
+                "DealDamage": {
+                  "to": {
+                    "PlayersWhere": {
+                      "who": "Opponents",
+                      "test": { "Not": { "Among": "Triggering" } }
+                    }
+                  },
+                  "amount": "Triggering"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

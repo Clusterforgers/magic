@@ -30,13 +30,7 @@
           "Triggered": {
             "when": { "BecomesTarget": { "what": ["This"], "by": ["Spell"] } },
             "effects": [
-              {
-                "Sacrifice": {
-                  "who": { "ControllerOf": "This" },
-                  "filter": [{ "Is": "This" }],
-                  "as": "sacrificed"
-                }
-              },
+              { "Sacrifice": { "filter": ["This"], "as": "sacrificed" } },
               {
                 "CreateToken": {
                   "token": {

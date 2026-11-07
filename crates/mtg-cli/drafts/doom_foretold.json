@@ -109,14 +109,7 @@
                       "right": 0
                     }
                   },
-                  "then": [
-                    {
-                      "Sacrifice": {
-                        "who": { "ControllerOf": "This" },
-                        "filter": [{ "Is": "This" }]
-                      }
-                    }
-                  ]
+                  "then": [{ "Sacrifice": { "filter": ["This"] } }]
                 }
               }
             ]

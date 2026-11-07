@@ -1,0 +1,28 @@
+{
+  "oracle_id": "fec51ab9-484f-46a8-b2b0-772a61d89e41",
+  "name": "Mirrorwood Treefolk",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mirrorwood Treefolk",
+      "oracle_fingerprint": "78e6eedfd297db573ac22fb2bb0f6b50",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{2}{W}{R}",
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [
+              {
+                "Shield": {
+                  "when": { "Damage": { "to": "This" } },
+                  "by": { "Redirect": { "to": { "Target": 0 }, "next": true } },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

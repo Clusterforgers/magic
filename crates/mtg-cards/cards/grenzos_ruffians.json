@@ -1,0 +1,32 @@
+{
+  "oracle_id": "3ed4ee5c-91da-41a3-894c-6181496ec955",
+  "name": "Grenzo's Ruffians",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Grenzo's Ruffians",
+      "oracle_fingerprint": "fc8129676a816e29fb08071ceb6543d3",
+      "abilities": [
+        { "Keyword": "Melee" },
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": ["This"], "to": "Opponents", "combat": true } },
+            "effects": [
+              {
+                "DealDamage": {
+                  "to": {
+                    "PlayersWhere": {
+                      "who": "Opponents",
+                      "test": { "Not": { "Among": "Triggering" } }
+                    }
+                  },
+                  "amount": "Triggering"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

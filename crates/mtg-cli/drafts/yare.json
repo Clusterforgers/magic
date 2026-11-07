@@ -1,0 +1,32 @@
+{
+  "oracle_id": "f0f24c6d-80fb-4e99-a74d-6ed9d349ed3d",
+  "name": "Yare",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Yare",
+      "oracle_fingerprint": "f07013256dc4ab77f19da00db622012e",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "Defending" }] } }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    { "ModifyPT": { "power": 3, "toughness": 0 } },
+                    { "BlocksAdditional": 2 }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

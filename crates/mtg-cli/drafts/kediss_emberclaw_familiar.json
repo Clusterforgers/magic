@@ -1,0 +1,39 @@
+{
+  "oracle_id": "d9c87cc2-943e-49b6-becc-748857549617",
+  "name": "Kediss, Emberclaw Familiar",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Kediss, Emberclaw Familiar",
+      "oracle_fingerprint": "3a046ad269e110664287e6d38c9d1b21",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "DealsDamage": {
+                "source": [{ "Type": "Creature" }, "Commander", { "ControlledBy": "You" }],
+                "to": "EachPlayer",
+                "combat": true
+              }
+            },
+            "effects": [
+              {
+                "DealDamage": {
+                  "source": "Dealer",
+                  "to": {
+                    "PlayersWhere": {
+                      "who": "Opponents",
+                      "test": { "Not": { "Among": "Triggering" } }
+                    }
+                  },
+                  "amount": "Triggering"
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": "Partner" }
+      ]
+    }
+  ]
+}

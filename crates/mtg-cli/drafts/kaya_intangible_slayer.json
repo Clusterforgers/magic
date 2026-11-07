@@ -1,0 +1,90 @@
+{
+  "oracle_id": "9260ae3d-59bf-4e46-a13e-930754c3f0d2",
+  "name": "Kaya, Intangible Slayer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Kaya, Intangible Slayer",
+      "oracle_fingerprint": "d12a39a07923aa5b9e251c8da110b335",
+      "abilities": [
+        { "Keyword": "Hexproof" },
+        {
+          "Loyalty": {
+            "cost": { "Plus": 2 },
+            "effects": [
+              { "LoseLife": { "who": "Opponents", "amount": 3 } },
+              { "GainLife": { "amount": 3 } }
+            ]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": "Zero",
+            "effects": [
+              { "Draw": { "count": 2 } },
+              {
+                "RepeatEach": {
+                  "over": "Opponents",
+                  "as": "scrier",
+                  "effects": [
+                    {
+                      "May": {
+                        "who": { "Bound": "scrier" },
+                        "effects": [{ "Scry": { "who": { "Bound": "scrier" } } }]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Minus": 3 },
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "AnyOf": [{ "Type": "Creature" }, { "Type": "Enchantment" }] }]
+                }
+              }
+            ],
+            "effects": [
+              { "Exile": { "what": { "Target": 0 }, "as": "exiled" } },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Bound": "exiled" },
+                      "selector": [{ "Not": { "Subtype": "Aura" } }],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [
+                    {
+                      "CreateToken": {
+                        "token": {
+                          "CopyOf": {
+                            "of": { "Bound": "exiled" },
+                            "except": [
+                              { "SetPT": { "power": 1, "toughness": 1 } },
+                              { "SetColors": ["White"] },
+                              { "AddType": "Creature" },
+                              { "AddSubtype": "Spirit" },
+                              { "AddKeyword": "Flying" }
+                            ]
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

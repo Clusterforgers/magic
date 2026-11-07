@@ -1,0 +1,76 @@
+{
+  "oracle_id": "7f0544e3-965f-4b12-baaf-d7dfea8d4d41",
+  "name": "Birth of the Imperium",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Birth of the Imperium",
+      "oracle_fingerprint": "0deaea8b51e51aff51611e3f005caf09",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 1 } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Astartes Warrior",
+                      "colors": ["White"],
+                      "types": ["Creature"],
+                      "subtypes": ["Astartes", "Warrior"],
+                      "power": 2,
+                      "toughness": 2,
+                      "abilities": [{ "Keyword": "Vigilance" }]
+                    }
+                  },
+                  "count": { "Players": "Opponents" }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 2 } },
+            "effects": [{ "Sacrifice": { "who": "Opponents", "filter": [{ "Type": "Creature" }] } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 3 } },
+            "effects": [
+              {
+                "Draw": {
+                  "count": {
+                    "Times": {
+                      "by": 2,
+                      "of": {
+                        "Players": {
+                          "PlayersWhere": {
+                            "who": "Opponents",
+                            "test": {
+                              "Compare": {
+                                "left": {
+                                  "Count": [{ "Type": "Creature" }, { "ControlledBy": "You" }]
+                                },
+                                "op": "Lt",
+                                "right": {
+                                  "Count": [{ "Type": "Creature" }, { "ControlledBy": "Asker" }]
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

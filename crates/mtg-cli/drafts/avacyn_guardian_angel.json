@@ -1,0 +1,53 @@
+{
+  "oracle_id": "6da0b6d2-3c5e-49ef-9264-076269c04744",
+  "name": "Avacyn, Guardian Angel",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Avacyn, Guardian Angel",
+      "oracle_fingerprint": "b025c398b369346cea5866d1712f74d7",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": "Vigilance" },
+        {
+          "Activated": {
+            "cost": "{1}{W}",
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }, "Other"] } }],
+            "effects": [
+              { "ChooseValue": { "kind": "Color", "as": "chosen" } },
+              {
+                "Shield": {
+                  "when": {
+                    "Damage": { "to": { "Target": 0 }, "source": [{ "ChosenAs": "chosen" }] }
+                  },
+                  "by": "Prevent",
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{5}{W}{W}",
+            "targets": [
+              { "what": { "Either": ["Player", { "Object": [{ "Type": "Planeswalker" }] }] } }
+            ],
+            "effects": [
+              { "ChooseValue": { "kind": "Color", "as": "chosen" } },
+              {
+                "Shield": {
+                  "when": {
+                    "Damage": { "to": { "Target": 0 }, "source": [{ "ChosenAs": "chosen" }] }
+                  },
+                  "by": "Prevent",
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

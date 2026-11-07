@@ -31,14 +31,7 @@
                   },
                   "once": false,
                   "this_turn": true,
-                  "effects": [
-                    {
-                      "Sacrifice": {
-                        "who": { "ControllerOf": "This" },
-                        "filter": [{ "Is": "This" }]
-                      }
-                    }
-                  ]
+                  "effects": [{ "Sacrifice": { "filter": ["This"] } }]
                 }
               }
             ]

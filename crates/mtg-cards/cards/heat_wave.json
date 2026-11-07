@@ -1,0 +1,31 @@
+{
+  "oracle_id": "d8f08699-6210-41c3-bfa0-c4b3bcbbaf1c",
+  "name": "Heat Wave",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Heat Wave",
+      "oracle_fingerprint": "bb251e03d470502ad60f2776c3c18e59",
+      "abilities": [
+        { "Keyword": { "CumulativeUpkeep": "{R}" } },
+        {
+          "Static": {
+            "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+            "mods": [{ "CantBeBlockedBy": [{ "Type": "Creature" }, { "Color": "Blue" }] }]
+          }
+        },
+        {
+          "Rule": {
+            "rule": {
+              "BlockTax": {
+                "blockers": [{ "Type": "Creature" }, { "Not": { "Color": "Blue" } }],
+                "attackers": [{ "Type": "Creature" }, { "ControlledBy": "You" }],
+                "life": 1
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}
