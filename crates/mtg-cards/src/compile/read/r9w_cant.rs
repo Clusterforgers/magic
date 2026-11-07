@@ -81,6 +81,11 @@ fn plain(who: &Ref, action: &Prohibited) -> Option<String> {
         Prohibited::BeTargeted(sources) if *who == Ref::This => {
             Some(format!("~ can't be the target of {}", targeted(sources)?))
         }
+        Prohibited::BeTargeted(sources) if *who == Ref::Attached => Some(format!(
+            "Enchanted creature can't be the target of {}",
+            targeted(sources)?
+        )),
+        Prohibited::BeAttachedBy(by) => attach_ban(who, by),
         Prohibited::BeTargeted(sources) => Some(format!(
             "{} can't be the targets of {}",
             group(who)?,
@@ -192,9 +197,91 @@ fn attack(unless: &Condition) -> Option<String> {
             (!rest.contains(&yours)).then_some(())?;
             format!("controls {}", subject_text(&Selector(rest))?)
         }
+        Condition::Compare {
+            left:
+                Amount::Counters {
+                    on: Ref::You,
+                    counter: CounterKind::Poison,
+                },
+            op: Cmp::Ge,
+            right: Amount::Fixed(1),
+        } if word == "unless" => "is poisoned".to_owned(),
+        Condition::Compare {
+            left: Amount::Count(of),
+            op: Cmp::Ge,
+            right: Amount::Fixed(least),
+        } if word == "unless"
+            && of.0
+                == [
+                    Pred::OwnedBy(Ref::You),
+                    Pred::In(crate::refs::ZoneKind::Graveyard),
+                ] =>
+        {
+            format!(
+                "has {} or more cards in their graveyard",
+                super::amounts::count_word(u32::try_from(*least).ok()?)?
+            )
+        }
+        Condition::Compare {
+            left: Amount::Count(theirs),
+            op: Cmp::Lt,
+            right: Amount::Count(yours),
+        } if word == "unless" => return more_than_defender(theirs, yours),
         _ => return None,
     };
     Some(format!("~ can't attack {word} defending player {fact}"))
+}
+
+/// "~ can't attack unless you control more creatures than defending player": the defending player's permanents of one
+/// type are fewer than those of the attacker's controller.
+fn more_than_defender(theirs: &Selector, yours: &Selector) -> Option<String> {
+    let [Pred::Type(kind), Pred::ControlledBy(Ref::You)] = theirs.0.as_slice() else {
+        return None;
+    };
+    let [Pred::Type(same), Pred::ControlledBy(Ref::ControllerOf(of))] = yours.0.as_slice() else {
+        return None;
+    };
+    let noun = match kind {
+        CardType::Creature => "creatures",
+        CardType::Land => "lands",
+        _ => return None,
+    };
+    (same == kind && **of == Ref::This)
+        .then(|| format!("~ can't attack unless you control more {noun} than defending player"))
+}
+
+/// "~ can't be equipped.", "Enchanted creature can't be enchanted by other Auras.", "~ can be attached only to a creature
+/// with toughness 4 or greater."
+fn attach_ban(who: &Ref, by: &Selector) -> Option<String> {
+    let aura = Pred::Subtype(mtg_core::card::Subtype("Aura".to_owned()));
+    let equipment = Pred::Subtype(mtg_core::card::Subtype("Equipment".to_owned()));
+    match (who, by.0.as_slice()) {
+        (Ref::This, [kind]) if *kind == equipment => Some("~ can't be equipped".to_owned()),
+        (Ref::Attached, [kind, Pred::Other]) if *kind == aura => {
+            Some("Enchanted creature can't be enchanted by other Auras".to_owned())
+        }
+        (Ref::Each(hosts), [Pred::This]) => match hosts.0.as_slice() {
+            [
+                Pred::Type(CardType::Creature),
+                Pred::Compare {
+                    stat,
+                    op: Cmp::Lt,
+                    to: Amount::Fixed(least),
+                },
+            ] => {
+                let stat = match stat {
+                    crate::value::StatKind::Power => "power",
+                    crate::value::StatKind::Toughness => "toughness",
+                    _ => return None,
+                };
+                Some(format!(
+                    "~ can be attached only to a creature with {stat} {least} or greater"
+                ))
+            }
+            _ => None,
+        },
+        _ => None,
+    }
 }
 
 /// "Skip your draw step.", "Players skip their untap steps."
@@ -276,6 +363,12 @@ fn targeted(sources: &Selector) -> Option<String> {
     };
     Some(match sources.0.as_slice() {
         [Pred::Spell] => "spells".to_owned(),
+        [Pred::ControlledBy(Ref::Opponents)] => {
+            "spells or abilities your opponents control".to_owned()
+        }
+        [kind, Pred::Spell, Pred::ControlledBy(Ref::Opponents)] => {
+            format!("{} spells your opponents control", kind_words(kind)?)
+        }
         [kind] => {
             let kind = color(kind)?;
             format!("{kind} spells or abilities from {kind} sources")

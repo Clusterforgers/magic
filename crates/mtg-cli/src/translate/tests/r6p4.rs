@@ -36,10 +36,7 @@ fn a_negation_and_properties_translate(#[case] word: &str) {
 }
 
 #[rstest]
-#[case::poison("IsPoisoned")]
-#[case::fewer("hasFewerCreaturesInPlayThanYou")]
 #[case::alternatives("controlsEnchantment,Permanent.enchanted")]
-#[case::graveyard("HasCardsInGraveyard_Card_GE7")]
 fn other_conditions_stay_gaps(#[case] word: &str) {
     let line = format!("Mode$ CantAttack | ValidCard$ Card.Self | UnlessDefender$ {word}");
     assert_eq!(

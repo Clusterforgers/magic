@@ -697,9 +697,12 @@ fn prevent_damage(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
 fn hidden(word: &str) -> Option<Vec<Value>> {
     let word = word.trim_end_matches('.');
     Some(match word {
-        "HIDDEN CARDNAME can't block" => vec![json!("CantBlock")],
-        "HIDDEN CARDNAME can't attack" => vec![json!("CantAttack")],
-        "HIDDEN CARDNAME can't attack or block" => vec![json!("CantAttack"), json!("CantBlock")],
+        // The visible keyword says the same as the hidden one.
+        "HIDDEN CARDNAME can't block" | "CARDNAME can't block" => vec![json!("CantBlock")],
+        "HIDDEN CARDNAME can't attack" | "CARDNAME can't attack" => vec![json!("CantAttack")],
+        "HIDDEN CARDNAME can't attack or block" | "CARDNAME can't attack or block" => {
+            vec![json!("CantAttack"), json!("CantBlock")]
+        }
         "HIDDEN CARDNAME's power and toughness are switched" => vec![json!("SwitchPT")],
         DOESNT_UNTAP => vec![json!("DoesntUntap")],
         _ => return None,

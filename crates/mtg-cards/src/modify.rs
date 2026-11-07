@@ -397,6 +397,9 @@ pub enum Prohibited {
     Trigger(TriggerPattern),
     /// Become attached, or have anything attached to them (CR 701.3).
     Attach,
+    /// Have the attachments the selector picks attached to them: such an attachment can't become attached, and one attached
+    /// already is attached illegally (CR 303.4d, 301.5c, 704.5m, 704.5n).
+    BeAttachedBy(Selector),
     /// Discard cards, or be discarded (CR 701.9).
     Discard,
     /// Be exiled (CR 406).

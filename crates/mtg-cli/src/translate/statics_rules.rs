@@ -32,6 +32,8 @@ pub fn rule(ctx: &Ctx, p: &Params) -> Option<Tr<Value>> {
             objects(ctx, p, mode, "ValidCard").map(|who| cant(&who, &json!("Transform")))
         }
         "CantTarget" => cant_target(ctx, p),
+        "CantAttach" => cant_attach(ctx, p),
+        "AttackRestrict" => attack_restrict(p),
         "Panharmonicon" => super::statics_again::again(ctx, p),
         "CombatDamageToughness" => toughness_damage(ctx, p),
         "AssignNoCombatDamage" => {
@@ -180,6 +182,33 @@ fn cant_target(ctx: &Ctx, p: &Params) -> Tr<Value> {
         Some(other) => return unmapped(format!("key:Static.CantTarget.Activator={other}")),
     }
     Ok(cant(&who, &json!({"BeTargeted": sources})))
+}
+
+/// `CantAttach`: the `ValidCard$` attachments can't be attached to the `Target$` permanents ("enchanted creature can't be
+/// enchanted by other Auras", "~ can be attached only to a creature with toughness 4 or greater").
+fn cant_attach(ctx: &Ctx, p: &Params) -> Tr<Value> {
+    keys(p, "CantAttach", &["ValidCard", "Target"])?;
+    let (Some(attachment), Some(host)) = (p.get("ValidCard"), p.get("Target")) else {
+        return unmapped("key:Static.CantAttach.ValidCard-and-Target");
+    };
+    let who = object_word(ctx, host)?;
+    Ok(cant(
+        &who,
+        &json!({"BeAttachedBy": selector_any(ctx, attachment)?}),
+    ))
+}
+
+/// `AttackRestrict`: no more than `MaxAttackers$` creatures can attack you each combat (CR 508.1c); a limit on the whole
+/// declaration or at other defenders is another rule.
+fn attack_restrict(p: &Params) -> Tr<Value> {
+    keys(p, "AttackRestrict", &["MaxAttackers", "ValidDefender"])?;
+    if p.get("ValidDefender") != Some("You") {
+        return unmapped("key:Static.AttackRestrict.ValidDefender");
+    }
+    match p.get("MaxAttackers").and_then(|n| n.parse::<u32>().ok()) {
+        Some(most) if most >= 1 => Ok(json!({"AttackLimitAt": {"most": most, "at": "You"}})),
+        _ => unmapped("key:Static.AttackRestrict.MaxAttackers"),
+    }
 }
 
 fn untap_other_players(ctx: &Ctx, p: &Params) -> Tr<Value> {

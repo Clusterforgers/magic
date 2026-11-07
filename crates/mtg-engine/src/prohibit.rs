@@ -183,6 +183,15 @@ fn applies(state: &GameState, ban: &Banned, doing: Doing) -> bool {
             };
             hosted || covers(who, holder(state, object), Some(object))
         }
+        (Prohibited::BeAttachedBy(by), Doing::Attach { object, to }) => {
+            let Target::Object(host) = to else {
+                return false;
+            };
+            covers(who, holder(state, host.id), Some(host.id))
+                && state
+                    .object(object)
+                    .is_some_and(|o| picks(state, ban, by, o.reference()))
+        }
         (Prohibited::Exile, Doing::Exile { object }) => covers(
             who,
             state.object(object).map(GameObject::owner),
@@ -290,6 +299,22 @@ pub(crate) fn forbidden(state: &GameState, doing: Doing) -> bool {
         .cants
         .iter()
         .any(|ban| applies(state, ban, doing.clone()))
+}
+
+/// Whether a rule in force keeps `attachment` from being attached to `host` (`Prohibited::BeAttachedBy`): read where an
+/// attachment's host is judged, so one attached already falls off by the state-based actions (CR 704.5m, 704.5n).
+pub(crate) fn attach_banned(state: &GameState, attachment: ObjectId, host: ObjectRef) -> bool {
+    state.rules().cants.iter().any(|ban| {
+        matches!(ban.action, Prohibited::BeAttachedBy(_))
+            && applies(
+                state,
+                ban,
+                Doing::Attach {
+                    object: attachment,
+                    to: Target::Object(host),
+                },
+            )
+    })
 }
 
 /// The prohibitions of triggers in force: the one place trigger detection reads them.
@@ -565,6 +590,21 @@ mod tests {
     #[case::attaching_it(r#"{"Cant":{"who":"You","action":"Attach"}}"#, "attach", true)]
     #[case::attaching_for_nobody_here(
         r#"{"Cant":{"who":{"Each":[{"Type":"Land"}]},"action":"Attach"}}"#,
+        "attach",
+        false
+    )]
+    #[case::attaching_that_to_it(
+        r#"{"Cant":{"who":{"Each":[{"Named":"Bear"}]},"action":{"BeAttachedBy":[{"Named":"Wolf"}]}}}"#,
+        "attach",
+        true
+    )]
+    #[case::attaching_another_to_it(
+        r#"{"Cant":{"who":{"Each":[{"Named":"Bear"}]},"action":{"BeAttachedBy":[{"Named":"Holder"}]}}}"#,
+        "attach",
+        false
+    )]
+    #[case::attaching_it_to_another_host(
+        r#"{"Cant":{"who":"You","action":{"BeAttachedBy":[]}}}"#,
         "attach",
         false
     )]
