@@ -58,7 +58,7 @@ fn g8c_the_mana_spent_to_cast_a_spell_is_the_condition_of_the_cast_trigger(
 ) {
     let text = cast_trigger(valid);
     let Some((op, right)) = expected else {
-        assert!(!gaps(&text).is_empty());
+        assert_ne!(gaps(&text), Vec::<String>::new());
         return;
     };
     assert_eq!(gaps(&text), Vec::<String>::new());
@@ -98,7 +98,7 @@ fn g8c_mana_of_a_type_spent_to_cast_the_card_is_its_condition(
 ) {
     let text = adamant(check);
     let Some(condition) = condition else {
-        assert!(!gaps(&text).is_empty());
+        assert_ne!(gaps(&text), Vec::<String>::new());
         return;
     };
     assert_eq!(gaps(&text), Vec::<String>::new());
@@ -158,7 +158,7 @@ fn g8c_the_revealed_card_is_what_the_cost_picked_when_it_picks_nothing_else(
 fn g8c_you_and_another_player_each_draw(#[case] line: &str, #[case] other: Option<Value>) {
     let text = format!("Name:T\nTypes:Creature\nPT:1/1\n{line}\n");
     let Some(other) = other else {
-        assert!(!gaps(&text).is_empty());
+        assert_ne!(gaps(&text), Vec::<String>::new());
         return;
     };
     assert_eq!(gaps(&text), Vec::<String>::new());
@@ -190,7 +190,7 @@ fn g8c_the_target_of_a_type_is_the_target_only_while_it_has_that_type(
         "Name:T\nTypes:Instant\nA:SP$ DealDamage | ValidTgts$ Any | NumDmg$ 2 | SubAbility$ DBPump\nSVar:DBPump:DB$ Pump | Defined$ {word} | KW$ Flying\n"
     );
     let Some(kind) = kind else {
-        assert!(!gaps(&text).is_empty());
+        assert_ne!(gaps(&text), Vec::<String>::new());
         return;
     };
     assert_eq!(gaps(&text), Vec::<String>::new());
@@ -214,7 +214,7 @@ fn g8c_a_counter_on_each_of_two_named_objects(
         "Name:T\nTypes:Creature\nPT:1/1\nT:Mode$ ChangesZone | Destination$ Battlefield | ValidCard$ Creature.Other+YouCtrl | TriggerZones$ Battlefield | Execute$ TrigPut | TriggerDescription$ Whenever another creature you control enters, put a +1/+1 counter on that creature and a +1/+1 counter on CARDNAME.\nSVar:TrigPut:DB$ PutCounter | Defined$ {word} | CounterType$ P1P1{more}\n"
     );
     let Some(on) = on else {
-        assert!(!gaps(&text).is_empty());
+        assert_ne!(gaps(&text), Vec::<String>::new());
         return;
     };
     assert_eq!(gaps(&text), Vec::<String>::new());
