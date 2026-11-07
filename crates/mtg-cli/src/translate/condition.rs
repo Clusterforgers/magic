@@ -264,7 +264,7 @@ pub(super) fn single(mut all: Vec<Value>) -> Option<Value> {
     }
 }
 
-/// "How many of the objects `word` names are `valid`", compared (`ConditionDefined$ Remembered`): their zone is ignored.
+/// "How many of the objects `word` names are `valid`", compared (`ConditionDefined$ Remembered`): in the zone, when one is named.
 fn of_defined(
     ctx: &Ctx,
     word: &str,
@@ -272,9 +272,6 @@ fn of_defined(
     compare: Option<&str>,
     zone: Option<&str>,
 ) -> Tr<Value> {
-    if zone.is_some() {
-        return unmapped("key:Condition.PresentZoneWithDefined");
-    }
     let (op, right) = comparison(ctx, compare.unwrap_or("GE1"))?;
     // "Card.inRealZoneGraveyard": the object the named one became in that zone (CR 400.7), one move on.
     let (valid, arrived) = match valid
@@ -287,7 +284,10 @@ fn of_defined(
         Some(_) => return unmapped("key:Condition.inRealZone"),
         None => (valid, None),
     };
-    let mut selector = selector_in(ctx, valid, None)?;
+    if zone.is_some() && arrived.is_some() {
+        return unmapped("key:Condition.PresentZoneWithDefined");
+    }
+    let mut selector = selector_in(ctx, valid, zone)?;
     // Remembered objects may be cards in any zone: "if it was a permanent card" is a card of a permanent type.
     if matches!(word, "Remembered" | "RememberedLKI") {
         super::valid::fix9_permanent_card(valid, &mut selector)?;

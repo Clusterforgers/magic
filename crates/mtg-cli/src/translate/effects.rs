@@ -367,6 +367,11 @@ fn unless_pays(
         // unanswered question is a no.
         Some(word) => defined(ctx, word)?,
     };
+    // `Mandatory` only says the payer must pay what an earlier choice allowed: the amount is below what they hold.
+    let unless = unless
+        .strip_prefix("Mandatory ")
+        .filter(|_| switched)
+        .unwrap_or(unless);
     let (cost, times) = unless_cost(ctx, unless)?;
     let (mut paid, mut unpaid) = (Vec::new(), Vec::new());
     if switched {
@@ -532,7 +537,7 @@ fn api_line(ctx: &mut Ctx, p: &Params, api: &str) -> Tr<Vec<Value>> {
         "Scry" => one(scry(ctx, p)),
         "Surveil" => one(count_verb(ctx, p, "Surveil", "Amount")),
         "Proliferate" => one(proliferate(p)),
-        "Cleanup" => cleanup(p),
+        "Cleanup" => cleanup(ctx, p),
         "Effect" => effects_effect::effects(ctx, p),
         "RepeatEach" => effects_loop::repeat_each(ctx, p),
         "Repeat" => effects_loop::repeat(ctx, p),
@@ -568,7 +573,11 @@ fn api_line(ctx: &mut Ctx, p: &Params, api: &str) -> Tr<Vec<Value>> {
 }
 
 /// `Cleanup`: bookkeeping of remembered objects, which the translator does not use.
-fn cleanup(p: &Params) -> Tr<Vec<Value>> {
+fn cleanup(ctx: &Ctx, p: &Params) -> Tr<Vec<Value>> {
+    // The color this ability chose is read by name in its own steps, so there is nothing left to clear.
+    if p.has("ClearChosenColor") && ctx.chosen_kind != Some("Color") {
+        return unmapped("key:Cleanup.ClearChosenColor");
+    }
     only(
         p,
         "Cleanup",
@@ -579,6 +588,7 @@ fn cleanup(p: &Params) -> Tr<Vec<Value>> {
             "ClearChosenCard",
             "ClearNamedCard",
             "ClearChosenPlayer",
+            "ClearChosenColor",
         ],
     )?;
     Ok(Vec::new())
@@ -970,8 +980,16 @@ fn unless_discard(
 
 /// `Mill`, naming the cards milled for `RememberMilled`.
 fn mill(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
+    // A mode of choosing the milled cards, and showing them to the table, change nothing of what a mill does.
+    if !matches!(p.get("Mode"), None | Some("TgtChoose")) {
+        return unmapped("key:Mill.Mode");
+    }
+    if !matches!(p.get("ShowMilledCards"), None | Some("True")) {
+        return unmapped("key:Mill.ShowMilledCards");
+    }
     let milled = remember::wanted(p, &["RememberMilled"]);
-    let mut effect = count_verb(ctx, &p.without(&["RememberMilled"]), "Mill", "NumCards")?;
+    let plain = p.without(&["RememberMilled", "Mode", "ShowMilledCards"]);
+    let mut effect = count_verb(ctx, &plain, "Mill", "NumCards")?;
     if milled {
         remember::bind_moved(ctx, &mut effect, "Mill", "milled");
     }

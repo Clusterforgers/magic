@@ -84,8 +84,18 @@ fn airbend(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
 }
 
 fn simple(ctx: &mut Ctx, p: &Params, api: &str, verb: &str) -> Tr<Value> {
-    only(p, api, &["ValidTgts", "Defined", "TargetMin", "TargetMax"])?;
+    only(
+        p,
+        api,
+        &["ValidTgts", "Defined", "TargetMin", "TargetMax", "Radiance"],
+    )?;
     let what = subject(ctx, p, "Self", None)?;
+    if p.get("Radiance") == Some("True") && verb == "Untap" {
+        return Ok(json!({ verb: {"what": radiance(&what)?} }));
+    }
+    if p.has("Radiance") {
+        return unmapped(format!("key:{api}.Radiance"));
+    }
     Ok(json!({ verb: {"what": what} }))
 }
 
@@ -747,6 +757,7 @@ fn pump_amount(ctx: &Ctx, text: &str, single: Option<&Value>, stat: &str) -> Tr<
 /// The modifications of a pump line: power and toughness, then keywords.
 fn pump_mods(ctx: &Ctx, p: &Params, single: Option<&Value>) -> Tr<Vec<Value>> {
     let mut mods = Vec::new();
+    let mut named_choice = false;
     if p.has("NumAtt") || p.has("NumDef") {
         let power = pump_amount(ctx, p.get("NumAtt").unwrap_or("0"), single, "Power")?;
         let toughness = pump_amount(ctx, p.get("NumDef").unwrap_or("0"), single, "Toughness")?;
@@ -757,14 +768,36 @@ fn pump_mods(ctx: &Ctx, p: &Params, single: Option<&Value>) -> Tr<Vec<Value>> {
             if super::statics_combat::is_rule_word(word) {
                 continue;
             }
-            match hidden(word) {
-                Some(found) => mods.extend(found),
-                None => mods.push(json!({ "AddKeyword": keyword_value(ctx, word)? })),
+            if let Some(found) = hidden(word) {
+                mods.extend(found);
+            } else if let Some(chosen) = chosen_keyword(ctx, p, word) {
+                named_choice = true;
+                mods.push(json!({ "AddKeyword": chosen }));
+            } else {
+                mods.push(json!({ "AddKeyword": keyword_value(ctx, word)? }));
             }
         }
     }
+    if p.has("DefinedKW") && !named_choice {
+        return unmapped("key:Pump.DefinedKW");
+    }
     mods.extend(super::statics_combat::block_capacity(p)?);
     Ok(mods)
+}
+
+/// `KW$ Hexproof:ChosenColor` and `KW$ Landwalk:ChosenType` with `DefinedKW$` naming the same choice: the keyword of the
+/// color or land type the ability chose before.
+fn chosen_keyword(ctx: &Ctx, p: &Params, word: &str) -> Option<Value> {
+    let defined = p.get("DefinedKW")?;
+    let chosen = json!({ "ChosenAs": ctx.chosen.as_ref()? });
+    Some(match (word, defined, ctx.chosen_kind) {
+        ("Hexproof:ChosenColor", "ChosenColor", Some("Color")) => json!({"HexproofFrom": [chosen]}),
+        ("Landwalk:ChosenType", "ChosenType", Some("LandType")) => json!({"Landwalk": [chosen]}),
+        ("Landwalk:ChosenType.Snow:Snow ChosenType", "ChosenType", Some("LandType")) => {
+            json!({"Landwalk": [chosen, {"Supertype": "Snow"}]})
+        }
+        _ => return None,
+    })
 }
 
 /// The effects of the hidden keywords of a pump line that are rules, not changes to the object: "must be blocked if able"
@@ -780,7 +813,10 @@ fn hidden_effects(p: &Params, affected: &Value, duration: &str) -> Tr<Vec<Value>
 }
 
 /// The keys a `Pump` line reads.
-const PUMP_KEYS: [&str; 16] = [
+const PUMP_KEYS: [&str; 19] = [
+    "Radiance",
+    "ValidCard",
+    "DefinedKW",
     "NumAtt",
     "NumDef",
     "KW",
@@ -799,18 +835,38 @@ const PUMP_KEYS: [&str; 16] = [
     "CanBlockAny",
 ];
 
+/// `Radiance$ True` (an ability word): the target creature and each other creature that shares a color with it, as the
+/// effect resolves.
+fn radiance(target: &Value) -> Tr<Value> {
+    if target.get("Target").is_none() {
+        return unmapped("key:Pump.Radiance");
+    }
+    Ok(json!({"Each": [
+        {"AnyOf": [{"Is": target}, {"SharesColor": target}]},
+        {"Type": "Creature"},
+    ]}))
+}
+
 fn pump(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
     only(p, "Pump", &PUMP_KEYS)?;
     // A line with no parameter at all ("SP$ Pump" on a spell whose abilities are all keywords) does nothing when it resolves.
     if !PUMP_KEYS.iter().any(|key| p.has(key)) {
         return Ok(Vec::new());
     }
+    // `ValidCard$ Card.Self` names the source, the default of a line without a target.
+    if p.has("ValidCard") && (p.get("ValidCard") != Some("Card.Self") || p.has("Defined")) {
+        return unmapped("key:Pump.ValidCard");
+    }
     let duration = pump_duration(p)?;
     let subject = subject(ctx, p, "Self", None)?;
     if let Some(found) = player_keywords(p, &subject, duration) {
         return found;
     }
-    let affected = objects(subject)?;
+    let affected = if p.get("Radiance") == Some("True") {
+        radiance(&subject)?
+    } else {
+        objects(subject)?
+    };
     remember_objects(ctx, p)?;
     // A pump that only chooses a target ("target creature you control deals damage ... to target creature") or only
     // remembers objects changes nothing itself; the part after it uses them.

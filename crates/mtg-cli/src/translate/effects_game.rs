@@ -14,7 +14,7 @@ pub fn effects(ctx: &mut Ctx, p: &Params, api: &str) -> Option<Tr<Vec<Value>>> {
         "SetLife" => set_life(ctx, p),
         "LosesGame" => player_verb(ctx, p, api, "LoseGame"),
         "WinsGame" => player_verb(ctx, p, api, "WinGame"),
-        "Shuffle" => player_verb(ctx, p, api, "Shuffle"),
+        "Shuffle" => return Some(shuffle(ctx, p)),
         "Venture" => venture(p),
         "EndTurn" => end_turn(p),
         "Amass" => amass(ctx, p),
@@ -34,6 +34,21 @@ fn player_verb(ctx: &mut Ctx, p: &Params, api: &str, variant: &str) -> Tr<Value>
     only(p, api, &TARGETING)?;
     let who = subject(ctx, p, "You", None)?;
     Ok(json!({ variant: {"who": who} }))
+}
+
+/// `Shuffle`: the player's library is shuffled, if the player the line names decides to when it is optional ("you may then
+/// have that player shuffle that library").
+fn shuffle(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
+    let mut read = TARGETING.to_vec();
+    read.push("Optional");
+    only(p, "Shuffle", &read)?;
+    let who = subject(ctx, p, "You", None)?;
+    super::frame::optional(
+        p,
+        "Shuffle",
+        vec![json!({"Shuffle": {"who": who}})],
+        &json!("You"),
+    )
 }
 
 /// A keyword action on an object: `what` is the target or `Defined$`, the card itself by default.
