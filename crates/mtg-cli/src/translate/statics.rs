@@ -505,7 +505,12 @@ fn continuous(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
             .filter_map(|m| m.get("AddSubtype").cloned())
             .collect();
         mods.retain(|m| !land(m));
-        mods.push(json!({ "SetLandTypes": kept }));
+        // "Enchanted land is the chosen type": the land types go first, then the chosen one is added (the changes
+        // apply in order).
+        match mods.iter().position(|m| m == "AddChosenSubtype") {
+            Some(at) if kept.is_empty() => mods.insert(at, json!({ "SetLandTypes": [] })),
+            _ => mods.push(json!({ "SetLandTypes": kept })),
+        }
     }
     if p.get("AddAllCreatureTypes") == Some("True") {
         mods.push(json!("AddAllCreatureTypes"));
@@ -669,7 +674,10 @@ fn added_types(ctx: &Ctx, text: &str, replacing: bool) -> Tr<Vec<Value>> {
                 .iter()
                 .filter(|name| !BASIC_LAND_TYPES.contains(name));
             mods.extend(others.map(|name| json!({ "AddSubtype": name })));
-        } else if word == "ChosenType" && !replacing && ctx.memory.entered.subtype {
+        } else if word == "ChosenType"
+            && !replacing
+            && (ctx.memory.entered.subtype || ctx.memory.entered.land_type)
+        {
             // The creature type the card's controller chose as it entered.
             mods.push(json!("AddChosenSubtype"));
         } else if super::ctx::CARD_TYPES.contains(&word) {

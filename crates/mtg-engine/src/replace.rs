@@ -3127,12 +3127,14 @@ impl Pass<'_> {
                         }
                         EntersChoice::CreatureType => "Choose a creature type.".to_owned(),
                         EntersChoice::LandType => "Choose a land type.".to_owned(),
+                        EntersChoice::BasicLandType => "Choose a basic land type.".to_owned(),
                         EntersChoice::Player => "Choose a player.".to_owned(),
                         EntersChoice::Opponent => "Choose an opponent.".to_owned(),
                         EntersChoice::Chapter => "Choose a chapter to start with.".to_owned(),
                         EntersChoice::CardName
                         | EntersChoice::NonlandCardName
-                        | EntersChoice::CardType => "Choose a card type.".to_owned(),
+                        | EntersChoice::CardType
+                        | EntersChoice::CardTypeOf(_) => "Choose a card type.".to_owned(),
                         EntersChoice::Number { .. } => String::new(),
                     };
                     return Ok(Asked::Ask(Decision {
@@ -3163,13 +3165,19 @@ impl Pass<'_> {
         Ok(Asked::Got(picked.and_then(|index| {
             match options[index].clone() {
                 ChoiceOption::Color(color) => Some(Chosen::Color(color)),
-                ChoiceOption::Label(name) if kind == EntersChoice::LandType => {
+                ChoiceOption::Label(name)
+                    if matches!(kind, EntersChoice::LandType | EntersChoice::BasicLandType) =>
+                {
                     Some(Chosen::LandType(Subtype(name)))
                 }
-                ChoiceOption::Label(name) if kind == EntersChoice::CardType => values::CARD_TYPES
-                    .into_iter()
-                    .find(|card_type| format!("{card_type:?}") == name)
-                    .map(Chosen::CardType),
+                ChoiceOption::Label(name)
+                    if matches!(kind, EntersChoice::CardType | EntersChoice::CardTypeOf(_)) =>
+                {
+                    values::CARD_TYPES
+                        .into_iter()
+                        .find(|card_type| format!("{card_type:?}") == name)
+                        .map(Chosen::CardType)
+                }
                 ChoiceOption::Label(name)
                     if matches!(kind, EntersChoice::CardName | EntersChoice::NonlandCardName) =>
                 {
@@ -3208,6 +3216,8 @@ impl Pass<'_> {
             EntersChoice::CreatureType => values::creature_types(),
             EntersChoice::LandType => values::land_types(),
             EntersChoice::CardType => values::card_types(),
+            EntersChoice::CardTypeOf(set) => values::card_types_of(set),
+            EntersChoice::BasicLandType => values::basic_land_types(),
             EntersChoice::CardName
             | EntersChoice::NonlandCardName
             | EntersChoice::Number { .. } => Vec::new(),

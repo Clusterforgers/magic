@@ -797,6 +797,10 @@ pub enum EntersChoice {
     NonlandCardName,
     /// A card type.
     CardType,
+    /// One of these card types ("choose artifact, creature, enchantment, instant, or sorcery").
+    CardTypeOf(mtg_core::card::CardTypes),
+    /// A basic land type (CR 205.3i: Plains, Island, Swamp, Mountain or Forest).
+    BasicLandType,
     /// A number from `min` to `max`.
     Number {
         /// The smallest number.

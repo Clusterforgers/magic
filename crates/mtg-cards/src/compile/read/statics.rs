@@ -315,6 +315,9 @@ fn as_entering(r: &mut Reader<'_>) -> Option<Ability> {
     if r.words("choose a land type") {
         return Some(replacement(ReplaceBy::Choose(EntersChoice::LandType), None));
     }
+    if let Some(kind) = super::e15b_entering::read_choose_type(r) {
+        return Some(replacement(ReplaceBy::Choose(kind), None));
+    }
     if r.words("choose a player") {
         return Some(replacement(ReplaceBy::Choose(EntersChoice::Player), None));
     }
@@ -1158,6 +1161,7 @@ fn cost_modifier_texts(
     let mut subjects = Vec::new();
     subjects.extend(cost_conditions::shared_subject_text(applies_to));
     subjects.extend(cost_conditions::cast_before_number(&subject));
+    subjects.extend(super::e15b_entering::cast_before_chosen(&subject));
     subjects.push(subject);
     subjects
         .into_iter()
@@ -1421,6 +1425,14 @@ fn entering_texts(by: &ReplaceBy, condition: Option<&Condition>) -> Vec<String> 
         (ReplaceBy::Choose(EntersChoice::Opponent), None) => {
             vec!["As ~ enters, choose an opponent".to_owned()]
         }
+        (
+            ReplaceBy::Choose(
+                kind @ (EntersChoice::CardType
+                | EntersChoice::BasicLandType
+                | EntersChoice::CardTypeOf(_)),
+            ),
+            None,
+        ) => super::e15b_entering::choose_type_texts(*kind),
         (ReplaceBy::PayLifeOrTapped(life), None) => vec![format!(
             "As ~ enters, you may pay {life} life. If you don't, it enters tapped"
         )],

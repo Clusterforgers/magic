@@ -56,6 +56,9 @@ fn single(ctx: &mut Ctx, body: &str) -> Tr<Value> {
     if event != "Moved" {
         return not_moved(ctx, &p, event, line_condition.as_ref());
     }
+    if let Some(found) = super::e15b_entering::day_if_neither(ctx, &p, line_condition.as_ref()) {
+        return found;
+    }
     let read = [
         "Event",
         "ValidCard",
@@ -325,7 +328,9 @@ fn pay_or_tapped(ctx: &Ctx, unless: &str) -> Tr<Value> {
             Err(_) => unmapped("key:Replacement.UnlessCost-life"),
         },
         "Reveal" if number == "1" => {
-            let mut selector = selector_any(ctx, what)?;
+            // `Reveal<1/Island;Mountain/Island or Mountain>`: the types, then the words a player reads.
+            let types = what.split('/').next().unwrap_or(what).replace(';', ",");
+            let mut selector = selector_any(ctx, &types)?;
             selector.push(json!({"In": "Hand"}));
             selector.push(json!({"OwnedBy": "You"}));
             Ok(json!({ "RevealOrTapped": selector }))

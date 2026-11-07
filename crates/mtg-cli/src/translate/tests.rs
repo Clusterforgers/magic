@@ -755,6 +755,7 @@ mod e14b;
 mod e14c;
 mod e14e;
 mod e14g;
+mod e15b;
 mod en4_counter;
 mod en4_cumulative;
 mod en4_look;

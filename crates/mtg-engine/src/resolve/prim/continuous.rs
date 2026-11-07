@@ -142,7 +142,7 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
 /// sets. A source that chose nothing of the kind gives no modification.
 fn entered(scope: &Scope<'_>, wanted: &Wanted) -> Result<Modification, ResolveError> {
     match (wanted, scope.entered_choice()) {
-        (Wanted::AddChosenSubtype, Some(Chosen::CreatureType(kind))) => {
+        (Wanted::AddChosenSubtype, Some(Chosen::CreatureType(kind) | Chosen::LandType(kind))) => {
             Ok(Modification::AddSubtype(kind.clone()))
         }
         (Wanted::SetChosenColor, Some(Chosen::Color(color))) => {
@@ -163,7 +163,10 @@ fn chosen_in(scope: &Scope<'_>, keyword: &Keyword) -> Keyword {
     };
     let fixed = |pred: &Pred| match (pred, chosen) {
         (Pred::ChosenColor, Chosen::Color(color)) => Pred::Color(*color),
-        (Pred::ChosenSubtype, Chosen::CreatureType(subtype)) => Pred::Subtype(subtype.clone()),
+        (Pred::ChosenSubtype, Chosen::CreatureType(subtype) | Chosen::LandType(subtype)) => {
+            Pred::Subtype(subtype.clone())
+        }
+        (Pred::ChosenSubtype, Chosen::CardType(kind)) => Pred::Type(*kind),
         _ => pred.clone(),
     };
     match (keyword, chosen) {

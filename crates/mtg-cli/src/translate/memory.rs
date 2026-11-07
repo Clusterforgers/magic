@@ -69,6 +69,10 @@ pub struct Entered {
     pub color: bool,
     /// A creature type.
     pub subtype: bool,
+    /// A land type or a basic land type.
+    pub land_type: bool,
+    /// A card type.
+    pub card_type: bool,
     /// A card name.
     pub name: bool,
     /// A player (an opponent, or any player).
@@ -684,7 +688,12 @@ fn remember_api(ctx: &mut Ctx, p: &Params, slot: Slot) -> Tr<Vec<Value>> {
 pub fn entered_with(ctx: &Ctx, prop: &str) -> Tr<Value> {
     let (made, pred) = match prop {
         "ChosenColor" => (ctx.memory.entered.color, "ChosenColor"),
-        "ChosenType" => (ctx.memory.entered.subtype, "ChosenSubtype"),
+        "ChosenType" => (
+            ctx.memory.entered.subtype
+                || ctx.memory.entered.land_type
+                || ctx.memory.entered.card_type,
+            "ChosenSubtype",
+        ),
         "NamedCard" => (ctx.memory.entered.name, "ChosenName"),
         _ => return unmapped(format!("valid:{prop}")),
     };
@@ -724,7 +733,12 @@ fn entering(face: &Face, plan: &mut Plan) {
         let part = Params::parse(text);
         match (part.get("DB"), part.get("Type")) {
             (Some("ChooseColor"), None) => plan.entered.color = true,
-            (Some("ChooseType"), Some("Creature")) => plan.entered.subtype = true,
+            (Some("ChooseType"), _) => match super::e15b_entering::chosen_kind(&part) {
+                Some("CreatureType") => plan.entered.subtype = true,
+                Some("LandType") => plan.entered.land_type = true,
+                Some(_) => plan.entered.card_type = true,
+                None => {}
+            },
             (Some("NameCard"), _) => plan.entered.name = true,
             (Some("ChoosePlayer"), _) => plan.entered.player = true,
             _ => {}
