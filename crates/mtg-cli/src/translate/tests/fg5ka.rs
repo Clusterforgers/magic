@@ -209,8 +209,8 @@ fn a_spell_cast_trigger_names_what_the_spell_targets(#[case] trigger: &str, #[ca
 }
 
 #[rstest]
-#[case::a_player_among_the_targets(
-    "Mode$ SpellCast | ValidCard$ Card | ValidActivatingPlayer$ You | TargetsValid$ You,Creature.YouCtrl+inZoneBattlefield"
+#[case::a_player_with_a_property_among_the_targets(
+    "Mode$ SpellCast | ValidCard$ Card | ValidActivatingPlayer$ You | TargetsValid$ Player.Opponent,Creature.YouCtrl+inZoneBattlefield"
 )]
 fn a_target_beyond_cards_stays_a_gap(#[case] trigger: &str) {
     let script = creature(trigger);

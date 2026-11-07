@@ -132,6 +132,10 @@ fn cast_trigger(more: &str) -> String {
     "TargetsValid$ Opponent,Creature.OppCtrl",
     r#"{"AnyOf":[{"TargetsPlayer":"Opponents"},{"Targeting":[{"Type":"Creature"},{"ControlledBy":"Opponents"}]}]}"#
 )]
+#[case::you_or_your_creature(
+    "TargetsValid$ You,Creature.YouCtrl+inZoneBattlefield",
+    r#"{"AnyOf":[{"TargetsPlayer":"You"},{"Targeting":[{"Type":"Creature"},{"ControlledBy":"You"},{"In":"Battlefield"}]}]}"#
+)]
 #[case::you_alone("TargetsValid$ You", r#"{"TargetsPlayer":"You"}"#)]
 #[case::any_player("TargetsValid$ Player", r#"{"TargetsPlayer":"EachPlayer"}"#)]
 #[case::objects_alone(
