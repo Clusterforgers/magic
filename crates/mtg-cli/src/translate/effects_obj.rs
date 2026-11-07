@@ -610,10 +610,14 @@ fn prevent_damage(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
     )?;
     let by = match p.get("Amount") {
         Some("All") => json!("Prevent"),
-        Some(text) => match amount(ctx, text)?.as_u64() {
-            Some(number) => json!({ "PreventUpTo": number }),
-            None => return unmapped("key:PreventDamage.Amount-count"),
-        },
+        Some(text) => {
+            let counted = amount(ctx, text)?;
+            match counted.as_u64() {
+                Some(number) => json!({ "PreventUpTo": number }),
+                // "the next X damage": the count is taken as the shield begins.
+                None => json!({ "PreventCounted": counted }),
+            }
+        }
         None => return unmapped("key:PreventDamage.no-Amount"),
     };
     let to = subject(ctx, p, "", None)?;

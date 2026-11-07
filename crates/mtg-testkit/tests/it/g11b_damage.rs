@@ -1,6 +1,6 @@
 //! Goal: the damage pack g11b plays as printed at tables of two to four seats: damage that can't be prevented passes a
-//! prevention effect on the creature and kills it, the same damage without the flag is prevented, and an unshielded
-//! creature dies either way.
+//! prevention effect on the creature and kills it, the same damage without the flag is prevented, an unshielded creature
+//! dies either way, and a shield of the next X damage prevents the number it counted as it began.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
 use std::sync::Arc;
@@ -101,5 +101,50 @@ fn damage_that_cant_be_prevented_passes_the_prevention(
     run(&mut driver, "Bolt", aim)?;
     let dead = names_in(&driver, Zone::Graveyard(pid(owner))).contains(&"Victim".to_owned());
     assert_eq!(dead, unpreventable || shield.is_none(), "{shield:?}");
+    Ok(())
+}
+
+/// A 1/1 Cleric.
+fn cleric() -> Arc<CardDefinition> {
+    Arc::new(
+        CardDefinition::new("Cleric")
+            .with_type(CardType::Creature)
+            .with_subtype("Cleric")
+            .with_power_toughness(1, 1),
+    )
+}
+
+/// Prevents the next X damage to target creature this turn, where X is the number of Clerics on the battlefield.
+const MEDIC: &str = r#"[{"Shield":{"by":{"PreventCounted":{"Count":[{"Subtype":"Cleric"}]}},"duration":"UntilEndOfTurn","when":{"Damage":{"to":{"Target":0}}}}}]"#;
+
+#[rstest]
+fn a_counted_shield_prevents_the_number_it_counts_as_it_begins(
+    #[values(2, 3, 4)] seats: usize,
+    #[values(0, 1, 2, 3)] clerics: usize,
+    #[values(true, false)] unpreventable: bool,
+) -> Result<(), ScriptError> {
+    let owner = seats - 1;
+    let flag = if unpreventable {
+        r#","unpreventable":true"#
+    } else {
+        ""
+    };
+    let bolt = format!(r#"[{{"DealDamage":{{"amount":5,"to":{{"Target":0}}{flag}}}}}]"#);
+    let mut mine = vec![
+        ready(rig("Medic", MEDIC, CREATURE)),
+        ready(rig("Bolt", &bolt, CREATURE)),
+    ];
+    mine.extend((0..clerics).map(|_| ready(cleric())));
+    let mut driver = Driver::from_scenario(
+        Scenario::new(seats)
+            .battlefield(0, mine)
+            .battlefield(owner, vec![ready(victim(None))]),
+    )?;
+    let aim = driver.target_named("Victim")?;
+    run(&mut driver, "Medic", aim)?;
+    run(&mut driver, "Bolt", aim)?;
+    // 5 damage to a 4/4: two prevented save it.
+    let dead = names_in(&driver, Zone::Graveyard(pid(owner))).contains(&"Victim".to_owned());
+    assert_eq!(dead, unpreventable || clerics < 2, "{clerics} clerics");
     Ok(())
 }

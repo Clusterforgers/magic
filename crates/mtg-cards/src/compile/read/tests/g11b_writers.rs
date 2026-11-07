@@ -1,6 +1,7 @@
 //! Goal: damage that can't be prevented reads back with "The damage can't be prevented." and, after "Damage can't be
 //! prevented this turn.", without it; plain damage with the sentence, the flag without it, and a rule for combat damage
-//! only that does not cover the damage do not read back.
+//! only that does not cover the damage do not read back; a shield of the next X damage reads back with its X and its
+//! count, and another count, a number or another recipient does not.
 use super::*;
 
 fn written(json: &str, clause: &str) -> bool {
@@ -45,4 +46,49 @@ fn damage_that_cant_be_prevented_reads_back(#[case] effects: &[&str], #[case] cl
 #[case::the_rule_after_the_damage(&[HARD, TURN], "~ deals 4 damage to target creature. Damage can't be prevented this turn.")]
 fn other_damage_does_not_read_back_as_it(#[case] effects: &[&str], #[case] clause: &str) {
     assert!(!written(&spell(effects), clause));
+}
+
+fn counted(amount: &str, to: &str) -> String {
+    format!(
+        r#"{{"Activated":{{"cost":["Tap"],"effects":[{{"Shield":{{"by":{{"PreventCounted":{amount}}},"duration":"UntilEndOfTurn","when":{{"Damage":{{"to":{to}}}}}}}}}],"targets":[{{"what":{{"Object":[{{"Type":"Creature"}}]}}}}]}}}}"#
+    )
+}
+
+const CLERICS: &str = r#"{"Count":[{"Subtype":"Cleric"}]}"#;
+const MEDIC: &str = "{T}: Prevent the next X damage that would be dealt to target creature this turn, where X is the number of Clerics on the battlefield.";
+
+#[rstest]
+#[case::the_count(CLERICS, MEDIC)]
+#[case::the_x_announced(
+    r#""X""#,
+    "{T}: Prevent the next X damage that would be dealt to target creature this turn."
+)]
+fn a_counted_shield_reads_back(#[case] amount: &str, #[case] clause: &str) {
+    let json = counted(amount, r#"{"Target":0}"#);
+    assert!(
+        written(&json, clause),
+        "{:?}",
+        written_variants(&ability(&json))
+    );
+}
+
+#[rstest]
+#[case::another_count(r#"{"Count":[{"Subtype":"Elf"}]}"#, r#"{"Target":0}"#, MEDIC)]
+#[case::a_number_in_the_words(
+    r#""X""#,
+    r#"{"Target":0}"#,
+    "{T}: Prevent the next 3 damage that would be dealt to target creature this turn."
+)]
+#[case::the_count_dropped(
+    CLERICS,
+    r#"{"Target":0}"#,
+    "{T}: Prevent the next X damage that would be dealt to target creature this turn."
+)]
+#[case::another_recipient(CLERICS, r#""You""#, MEDIC)]
+fn another_counted_shield_does_not_read_back(
+    #[case] amount: &str,
+    #[case] to: &str,
+    #[case] clause: &str,
+) {
+    assert!(!written(&counted(amount, to), clause));
 }

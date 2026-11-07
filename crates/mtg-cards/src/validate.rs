@@ -61,6 +61,7 @@ fn prevents_in_part(by: &ReplaceBy) -> bool {
     matches!(
         by,
         ReplaceBy::PreventUpTo(_)
+            | ReplaceBy::PreventCounted(_)
             | ReplaceBy::PreventHalf
             | ReplaceBy::PreventAllBut(_)
             | ReplaceBy::PreventNext
@@ -3532,6 +3533,7 @@ impl Walker<'_> {
                         ReplaceBy::Prevent
                         | ReplaceBy::PreventNext
                         | ReplaceBy::PreventUpTo(_)
+                        | ReplaceBy::PreventCounted(_)
                         | ReplaceBy::PreventAnd(_)
                         | ReplaceBy::Multiply(_)
                         | ReplaceBy::Add(_)
@@ -4414,7 +4416,10 @@ impl Walker<'_> {
     fn not_next_damage(&mut self, by: &ReplaceBy) {
         if matches!(
             by,
-            ReplaceBy::PreventNext | ReplaceBy::InsteadNext(_) | ReplaceBy::RedirectUpTo { .. }
+            ReplaceBy::PreventNext
+                | ReplaceBy::InsteadNext(_)
+                | ReplaceBy::RedirectUpTo { .. }
+                | ReplaceBy::PreventCounted(_)
         ) {
             self.problem("only a shield changes the next damage");
         }
@@ -4438,6 +4443,9 @@ impl Walker<'_> {
                 self.problem("a zone change has no number to change");
             }
             ReplaceBy::PreventUpTo(0) => self.problem("preventing nothing changes nothing"),
+            ReplaceBy::PreventCounted(amount) if matches!(when, ReplaceWhen::Damage { .. }) => {
+                self.at("PreventCounted", |w| w.amount(amount));
+            }
             ReplaceBy::Prevent if zone_move => {
                 self.problem("a zone change or an entering is not prevented");
             }

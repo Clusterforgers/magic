@@ -805,6 +805,9 @@ pub enum ReplaceBy {
     /// Up to this much of the damage is prevented (CR 615). In a shield it is the total the shield prevents ("the next
     /// 3 damage"); in a static ability it is the most each event loses.
     PreventUpTo(u32),
+    /// Up to this many of the damage in all, counted as the shield begins ("prevent the next X damage", CR 611.2c); only
+    /// a shield uses it.
+    PreventCounted(Amount),
     /// Half of the damage is prevented, rounded up (CR 615): "prevent half that damage, rounded up"; only a static ability uses it.
     PreventHalf,
     /// These effects happen instead.

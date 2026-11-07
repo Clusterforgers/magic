@@ -15,8 +15,8 @@ use crate::rules::{DamageShield, Rule, RuleEffect};
 
 /// A shield of damage prevention begins for the recipients its `to` names now, whatever their number (none named,
 /// none protected: nothing begins), and lasts for its duration. It prevents all the damage or, as `PreventUpTo`, that
-/// much in all. A shield over deaths covers the permanents its selector names now. Any other shield refuses by the name
-/// of its effect.
+/// much in all; `PreventCounted` counts that much as it begins. A shield over deaths covers the permanents its selector
+/// names now. Any other shield refuses by the name of its effect.
 pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
     let Effect::Shield { when, by, duration } = effect else {
         return Err(wrong_effect("Shield"));
@@ -76,6 +76,7 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         ReplaceBy::Prevent
         | ReplaceBy::PreventNext
         | ReplaceBy::PreventUpTo(_)
+        | ReplaceBy::PreventCounted(_)
         | ReplaceBy::PreventAnd(_)
         | ReplaceBy::Multiply(_)
         | ReplaceBy::Add(_)
@@ -115,6 +116,10 @@ fn damage_shield(
     let (left, then) = match by {
         ReplaceBy::PreventUpTo(most) | ReplaceBy::RedirectUpTo { most, .. } => {
             (Some(*most), Vec::new())
+        }
+        ReplaceBy::PreventCounted(amount) => {
+            let most = u32::try_from(cx.scope.amount(amount)?.max(0)).unwrap_or(u32::MAX);
+            (Some(most), Vec::new())
         }
         ReplaceBy::PreventAnd(then) => (None, then.clone()),
         _ => (None, Vec::new()),

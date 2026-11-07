@@ -1,5 +1,6 @@
 //! Goal: round 11 pack g11b reads the damage words of Forge scripts: damage that can't be prevented (`NoPrevention$`)
-//! keeps the flag on its damage, and an unknown value of it or a redirection limit beside it stays a gap.
+//! keeps the flag on its damage, "prevent the next X damage" counts X as the shield begins (`PreventCounted`), and an unknown
+//! value, a redirection limit and a divided prevention stay gaps.
 #![allow(clippy::unwrap_used)]
 
 use rstest::rstest;
@@ -59,6 +60,34 @@ fn reads(types: &str, lines: &str, expected: &[&str], absent: &[&str], gap: &str
     &[],
     &[],
     "NoRedirection"
+)]
+#[case::prevent_the_next_x(
+    "Instant",
+    "A:SP$ PreventDamage | ValidTgts$ Any | Amount$ X\nSVar:X:Count$xPaid",
+    &[r#"{"PreventCounted":"X"}"#],
+    &["PreventUpTo"],
+    ""
+)]
+#[case::prevent_a_count(
+    "Creature",
+    "A:AB$ PreventDamage | Cost$ T | ValidTgts$ Creature | Amount$ X\nSVar:X:Count$Valid Creature.YouCtrl",
+    &[r#"{"PreventCounted":{"Count":[{"Type":"Creature"},{"ControlledBy":"You"}]}}"#],
+    &[],
+    ""
+)]
+#[case::prevent_a_number(
+    "Instant",
+    "A:SP$ PreventDamage | ValidTgts$ Any | Amount$ 3",
+    &[r#"{"PreventUpTo":3}"#],
+    &["PreventCounted"],
+    ""
+)]
+#[case::prevent_divided_stays_a_gap(
+    "Instant",
+    "A:SP$ PreventDamage | ValidTgts$ Any | Amount$ 3 | TargetMin$ 0 | TargetMax$ 3 | DividedAsYouChoose$ 3",
+    &[],
+    &[],
+    "DividedAsYouChoose"
 )]
 fn damage_words(
     #[case] types: &str,

@@ -608,6 +608,8 @@ fn applies_to(by: &ReplaceBy, unit: &Unit) -> bool {
             matches!(unit, Unit::Damage { .. })
         }
         ReplaceBy::Dredge(_) => matches!(unit, Unit::Draw { .. }),
+        // Only a shield counts its amount, and it begins as `PreventUpTo`.
+        ReplaceBy::PreventCounted(_) => false,
         ReplaceBy::UmbraArmor => matches!(
             unit,
             Unit::Move {
