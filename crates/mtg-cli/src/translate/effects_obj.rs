@@ -940,6 +940,7 @@ fn animate(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
             "TargetMin",
             "TargetMax",
             "AtEOT",
+            "HiddenKeywords",
         ],
     )?;
     // Effects change permanents only (the layers read nothing else): "target spell becomes red" would change nothing.
@@ -1004,6 +1005,7 @@ fn animate(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
         }
     }
     mods.extend(super::effects_animate::abilities(ctx, p)?);
+    mods.extend(super::effects_animate::restrictions(p)?);
     if mods.is_empty() {
         return unmapped("key:Animate.nothing");
     }

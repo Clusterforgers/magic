@@ -1826,6 +1826,13 @@ impl<'a> Walker<'a> {
                     self.problem("a limit on blockers needs a count of at least one");
                 }
             }
+            Modification::AddChosenSubtype | Modification::SetChosenColor => {
+                if !self.scope.in_static {
+                    self.problem(
+                        "the choice the source made as it entered is read by its static ability only",
+                    );
+                }
+            }
             Modification::SwitchPT
             | Modification::AddType(_)
             | Modification::RemoveType(_)

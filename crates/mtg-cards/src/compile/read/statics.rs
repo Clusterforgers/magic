@@ -1774,7 +1774,9 @@ fn static_texts(
         && mods.iter().all(|m| {
             matches!(
                 m,
-                Modification::GrantAbility(_) | Modification::AddKeyword(_)
+                Modification::GrantAbility(_)
+                    | Modification::AddKeyword(_)
+                    | Modification::SetChosenColor
             )
         })
         && mods
@@ -1857,7 +1859,8 @@ pub(super) fn predicate_variants(
     itself: bool,
     conditional: bool,
 ) -> Vec<String> {
-    let mut written = if itself && !conditional && !chosen_protection(mods) {
+    let mut written = if itself && !conditional && !chosen_protection(mods) && !entered_choice(mods)
+    {
         Vec::new()
     } else {
         static_parts::predicates(mods, plural)
@@ -1888,6 +1891,17 @@ pub(super) fn predicate_variants(
 
 /// Whether the changes are protection from what the card's controller chose as it entered, which a card gives itself
 /// without a printed keyword line: "This creature has protection from the chosen color."
+/// Whether every modification reads what the source chose as it entered: "~ is the chosen color".
+fn entered_choice(mods: &[Modification]) -> bool {
+    !mods.is_empty()
+        && mods.iter().all(|modification| {
+            matches!(
+                modification,
+                Modification::AddChosenSubtype | Modification::SetChosenColor
+            )
+        })
+}
+
 fn chosen_protection(mods: &[Modification]) -> bool {
     !mods.is_empty()
         && mods.iter().all(|modification| {

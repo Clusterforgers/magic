@@ -237,6 +237,16 @@ pub(crate) fn lower(scope: &Scope<'_>, wanted: &Wanted) -> Result<Modification, 
             Some(Chosen::CreatureType(kind)) => Modification::SetCreatureTypes(vec![kind.clone()]),
             _ => return Err(ResolveError::Invalid("no creature type was chosen".into())),
         },
+        Wanted::AddChosenSubtype => match scope.entered_choice() {
+            Some(Chosen::CreatureType(kind)) => Modification::AddSubtype(kind.clone()),
+            _ => return Err(ResolveError::Invalid("no type was chosen".into())),
+        },
+        Wanted::SetChosenColor => match scope.entered_choice() {
+            Some(Chosen::Color(color)) => {
+                Modification::SetColors(std::iter::once(*color).collect())
+            }
+            _ => return Err(ResolveError::Invalid("no color was chosen".into())),
+        },
         Wanted::SetColors(colors) => Modification::SetColors(colors.iter().copied().collect()),
         Wanted::AddColors(colors) => Modification::AddColors(colors.iter().copied().collect()),
         Wanted::AddKeyword(keyword) => Modification::AddKeyword(chosen_in(scope, keyword)),

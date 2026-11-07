@@ -392,6 +392,7 @@ const RUNS: &[&str] = &[
     "Mod.RemoveSupertype",
     "Mod.AddSupertype",
     "Mod.SetName",
+    "Mod.ThisAbility",
     "Mod.AddSubtype",
     "Mod.SetCreatureTypes",
     "Mod.SetLandTypes",
@@ -401,6 +402,8 @@ const RUNS: &[&str] = &[
     "Mod.SetColorsChosen",
     "Mod.SetLandTypesChosen",
     "Mod.SetCreatureTypesChosen",
+    "Mod.AddChosenSubtype",
+    "Mod.SetChosenColor",
     "Mod.RemoveKeyword",
     "Mod.LockKeyword",
     "Mod.GrantAbility",
@@ -897,11 +900,14 @@ mod tests {
     #[case::added_supertypes("Mod.AddSupertype", true)]
     #[case::copy_names("Mod.SetName", true)]
     #[case::copy_keeps_this_ability("Copy.Except.ThisAbility", true)]
+    #[case::the_ability_kept_as_a_modification("Mod.ThisAbility", true)]
     #[case::subtypes("Mod.AddSubtype", true)]
     #[case::colours("Mod.SetColors", true)]
     #[case::chosen_colours("Mod.SetColorsChosen", true)]
     #[case::chosen_land_types("Mod.SetLandTypesChosen", true)]
     #[case::chosen_creature_types("Mod.SetCreatureTypesChosen", true)]
+    #[case::the_type_chosen_as_it_entered("Mod.AddChosenSubtype", true)]
+    #[case::the_color_chosen_as_it_entered("Mod.SetChosenColor", true)]
     #[case::granted_abilities("Mod.GrantAbility", true)]
     #[case::abilities_of_other_cards("Mod.GainAbilitiesOf", true)]
     #[case::lost_abilities("Mod.LoseAbilities", true)]

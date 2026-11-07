@@ -36,6 +36,10 @@ pub fn copy_permanent(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
             "RememberTokens",
             "Populate",
             "TokenAttacking",
+            "AddTriggers",
+            "AddAbilities",
+            "AddStaticAbilities",
+            "AddSVars",
         ],
     )?;
     let remember = flag(p, "RememberTokens")?;
@@ -60,6 +64,7 @@ pub fn copy_permanent(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
             except.push(json!({ "AddKeyword": keyword }));
         }
     }
+    except.extend(super::effects_copy::granted_exceptions(ctx, p)?);
     let mut spec = json!({"CopyOf": {"of": of}});
     if !except.is_empty() {
         spec["CopyOf"]["except"] = json!(except);
