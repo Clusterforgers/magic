@@ -129,6 +129,9 @@ pub fn triggered(ctx: &mut Ctx, body: &str) -> Tr<Value> {
         // is cast in response; the engine has no first-of-the-turn event across all players.
         return unmapped("trigger:SpellCast-exact-count-recheck");
     }
+    if p.has("ResolvedLimit") {
+        effects = fix19_cast_asked(&effects).unwrap_or(effects);
+    }
     let mut ability = json!({"when": when, "effects": effects});
     if let Some(zone) = from {
         ability["from"] = json!(zone);
@@ -186,6 +189,17 @@ fn printed_more(p: &Params, effects: &[Value]) -> Tr<()> {
         return unmapped("trigger:spell-you-control-printed-any-player");
     }
     Ok(())
+}
+
+/// "Do this only once each turn" counts the choices a `May` records, so effects that begin with a cast from a zone are
+/// wrapped in the caster's `May` again; none when they begin otherwise.
+fn fix19_cast_asked(effects: &[Value]) -> Option<Vec<Value>> {
+    let cast = effects.first()?.get("CastFromZone")?;
+    let mut may = json!({"May": {"effects": effects}});
+    if let Some(who) = cast.get("who").filter(|who| **who != json!("You")) {
+        may["May"]["who"] = who.clone();
+    }
+    Some(vec![may])
 }
 
 fn limit(p: &Params, effects: &[Value]) -> Tr<Option<Value>> {
