@@ -202,6 +202,51 @@ fn tokens_for_what_was_removed_read_back(
     );
 }
 
+const WHIPKEEPER: &str = r#"{"Activated":{"cost":["Tap"],"effects":[{"DealDamage":{"amount":{"Tallied":{"what":"DamageDealtTo","who":WHO}},"to":{"Target":0}}}],"targets":[{"what":{"Object":[{"Type":"Creature"}]}}]}}"#;
+const WHIPKEEPER_TEXT: &str = "{T}: This creature deals damage to target creature equal to the damage already dealt to it this turn.";
+const HORNBEETLE: &str = r#"{"Triggered":{"effects":[{"CreateToken":{"count":{"Tally":{"event":"PlusOneCountersPut","filter":FILTER,"who":"You"}},"token":{"Custom":{"colors":["Green"],"name":"Insect","power":1,"subtypes":["Insect"],"toughness":1,"types":["Creature"]}}}}],"when":{"StepBegins":{"step":"End","whose":"You"}}}}"#;
+const HORNBEETLE_TEXT: &str = "At the beginning of your end step, create a 1/1 green Insect creature token for each +1/+1 counter you've put on creatures under your control this turn.";
+const COLONY: &str = r#"{"Triggered":{"effects":[{"CreateToken":{"count":{"Tallied":{"what":"WHAT","who":"This"}},"token":{"Custom":{"colors":["Black"],"name":"Rat","power":1,"subtypes":["Rat"],"toughness":1,"types":["Creature"]}}}}],"when":{"ZoneChange":{"from":"Battlefield","to":"Graveyard","what":["This"]}}}}"#;
+const COLONY_TEXT: &str = "When this creature dies, create X 1/1 black Rat creature tokens, where X is the amount of damage dealt to it this turn.";
+
+#[rstest]
+#[case::whipkeeper(WHIPKEEPER.replace("WHO", r#"{"Target":0}"#), WHIPKEEPER_TEXT, true)]
+#[case::whipkeeper_own_damage(WHIPKEEPER.replace("WHO", r#""This""#), WHIPKEEPER_TEXT, false)]
+#[case::whipkeeper_damage_taken(
+    WHIPKEEPER.replace("WHO", r#"{"Target":0}"#).replace("DamageDealtTo", "DamageTaken"),
+    WHIPKEEPER_TEXT,
+    false
+)]
+#[case::hornbeetle(
+    HORNBEETLE.replace("FILTER", r#"[{"Type":"Creature"},{"ControlledBy":"You"}]"#),
+    HORNBEETLE_TEXT,
+    true
+)]
+#[case::hornbeetle_any_creature(
+    HORNBEETLE.replace("FILTER", r#"[{"Type":"Creature"}]"#),
+    HORNBEETLE_TEXT,
+    false
+)]
+#[case::hornbeetle_anyone(
+    HORNBEETLE.replace("FILTER", r#"[{"Type":"Creature"},{"ControlledBy":"You"}]"#).replace(r#""who":"You"}}"#, r#""who":"EachPlayer"}}"#),
+    HORNBEETLE_TEXT,
+    false
+)]
+#[case::colony(COLONY.replace("WHAT", "DamageDealtTo"), COLONY_TEXT, true)]
+#[case::colony_cards_graved(COLONY.replace("WHAT", "CardsGraved"), COLONY_TEXT, false)]
+fn facts_of_the_turn_as_amounts_read_back(
+    #[case] json: String,
+    #[case] clause: &str,
+    #[case] same: bool,
+) {
+    assert_eq!(
+        written(&json, clause),
+        same,
+        "{json}: {:?}",
+        written_variants(&ability(&json))
+    );
+}
+
 const GUARD: &str = r#"{"Activated":{"condition":"InCombat","cost":["Tap"],"effects":[{"Continuous":{"affected":{"Target":0},"duration":"UntilEndOfTurn","mods":[{"ModifyPT":{"power":2,"toughness":2}}]}},{"DelayedTrigger":{"effects":[{"Sacrifice":{"filter":["This"]}}],"once":false,"this_turn":true,"when":{"ZoneChange":{"from":"Battlefield","what":[{"Is":{"Target":0}}]}}}}],"targets":[{"what":{"Object":[{"Type":"Creature"}]}}]}}"#;
 const GUARD_TEXT: &str = "{T}: Target creature gets +2/+2 until end of turn. When that creature leaves the battlefield this turn, sacrifice this creature. Activate only during combat.";
 const SACRIFICE: &str = r#"{"Sacrifice":{"filter":["This"]}}"#;
