@@ -232,6 +232,96 @@ fn w15_also_deals(#[case] left: &str, #[case] right: &str, #[case] same: bool) {
 }
 
 #[rstest]
+#[case::support(
+    "At the beginning of combat on your turn, you may pay {3}{W}. If you do, support 2.",
+    "At the beginning of combat on your turn, you may pay {3}{W}. If you do, put a +1/+1 counter on each of up to two target other creatures.",
+    true
+)]
+#[case::support_three(
+    "At the beginning of combat on your turn, you may pay {3}{W}. If you do, support 2.",
+    "At the beginning of combat on your turn, you may pay {3}{W}. If you do, put a +1/+1 counter on each of up to three target other creatures.",
+    false
+)]
+#[case::other_counter(
+    "At the beginning of combat on your turn, you may pay {3}{W}. If you do, support 2.",
+    "At the beginning of combat on your turn, you may pay {3}{W}. If you do, put a -1/-1 counter on each of up to two target other creatures.",
+    false
+)]
+#[case::blight(
+    "As an additional cost to cast this spell, blight 1 or pay {3}.",
+    "As an additional cost to cast ~, put a -1/-1 counter on a creature you control or pay {3}.",
+    true
+)]
+#[case::blight_two(
+    "As an additional cost to cast this spell, blight 2 or pay {3}.",
+    "As an additional cost to cast ~, put two -1/-1 counters on a creature you control or pay {3}.",
+    true
+)]
+#[case::blight_for_one(
+    "As an additional cost to cast this spell, blight 2 or pay {3}.",
+    "As an additional cost to cast ~, put a -1/-1 counter on a creature you control or pay {3}.",
+    false
+)]
+#[case::blight_of_another_kind(
+    "As an additional cost to cast this spell, blight 1 or pay {3}.",
+    "As an additional cost to cast ~, put a +1/+1 counter on a creature you control or pay {3}.",
+    false
+)]
+fn w15_support_and_blight(#[case] left: &str, #[case] right: &str, #[case] same: bool) {
+    assert_eq!(same_text(left, right), same, "{right}");
+}
+
+#[rstest]
+#[case::adamant(
+    "Adamant — If at least three white mana was spent to cast this spell, this creature enters with a +1/+1 counter on it.",
+    "Adamant — ~ enters that has a +1/+1 counter on it if {W}{W}{W} was spent to cast it.",
+    true
+)]
+#[case::other_color(
+    "Adamant — If at least three white mana was spent to cast this spell, this creature enters with a +1/+1 counter on it.",
+    "Adamant — ~ enters that has a +1/+1 counter on it if {R}{R}{R} was spent to cast it.",
+    false
+)]
+#[case::other_counter(
+    "Adamant — If at least three white mana was spent to cast this spell, this creature enters with a +1/+1 counter on it.",
+    "Adamant — ~ enters that has two +1/+1 counters on it if {W}{W}{W} was spent to cast it.",
+    false
+)]
+#[case::fewer_mana(
+    "Adamant — If at least three white mana was spent to cast this spell, this creature enters with a +1/+1 counter on it.",
+    "Adamant — ~ enters that has a +1/+1 counter on it if {W}{W} was spent to cast it.",
+    false
+)]
+fn w15_adamant(#[case] left: &str, #[case] right: &str, #[case] same: bool) {
+    assert_eq!(same_text(left, right), same, "{right}");
+}
+
+#[rstest]
+#[case::sacrifice_it(
+    "{1}{R}, {T}, Remove two pressure counters from this land and sacrifice it: Create a 4/4 red Hellion creature token with haste.",
+    "{1}{R}, {T}, Remove two pressure counters from ~, Sacrifice it: Create a 4/4 red Hellion creature token with haste.",
+    true
+)]
+#[case::sacrifice_a_land(
+    "{1}{R}, {T}, Remove two pressure counters from this land and sacrifice it: Create a 4/4 red Hellion creature token with haste.",
+    "{1}{R}, {T}, Remove two pressure counters from ~, Sacrifice a land: Create a 4/4 red Hellion creature token with haste.",
+    false
+)]
+#[case::create_or_create(
+    "When this creature enters, create a Food token or a Treasure token.",
+    "When ~ enters, you create a Food token or create a Treasure token.",
+    true
+)]
+#[case::create_and_create(
+    "When this creature enters, create a Food token or a Treasure token.",
+    "When ~ enters, you create a Food token and create a Treasure token.",
+    false
+)]
+fn w15_small_words(#[case] left: &str, #[case] right: &str, #[case] same: bool) {
+    assert_eq!(same_text(left, right), same, "{right}");
+}
+
+#[rstest]
 #[case::lesser(
     "Whenever a nontoken creature you control dies, mill two cards. Then return a creature card with lesser mana value than the creature that died from your graveyard to your hand.",
     "Whenever a nontoken creature you control dies, mill two cards. Then return a creature card with mana value less than that creature's mana value from your graveyard to your hand.",
@@ -322,11 +412,7 @@ fn w15_either_kind(#[case] left: &str, #[case] right: &str, #[case] same: bool) 
 }
 
 #[rstest]
-#[case::ticket(
-    "{G}, {T}: You get {TK}.",
-    "{G}, {T}: You get a ticket counter.",
-    true
-)]
+#[case::ticket("{G}, {T}: You get {TK}.", "{G}, {T}: You get a ticket counter.", true)]
 #[case::two_tickets(
     "{G}, {T}: You get {TK}{TK}.",
     "{G}, {T}: You get a ticket counter.",
@@ -352,11 +438,17 @@ fn w15_either_kind(#[case] left: &str, #[case] right: &str, #[case] same: bool) 
     "At the beginning of combat on your turn, tap ~.",
     false
 )]
-#[case::plural_name(
-    "When ~ enter, draw a card.",
-    "When ~ enters, draw a card.",
+#[case::same_name(
+    "Whenever a player casts a spell, that player gains X life, where X is the number of cards in all graveyards with the same name as that spell.",
+    "Whenever a player casts a spell, that player gains X life, where X is the number of cards with the same name as that creature in all graveyards.",
     true
 )]
+#[case::same_name_in_a_hand(
+    "Whenever a player casts a spell, that player gains X life, where X is the number of cards in all graveyards with the same name as that spell.",
+    "Whenever a player casts a spell, that player gains X life, where X is the number of cards with the same name as that creature in your graveyard.",
+    false
+)]
+#[case::plural_name("When ~ enter, draw a card.", "When ~ enters, draw a card.", true)]
 fn w15_same_words(#[case] left: &str, #[case] right: &str, #[case] same: bool) {
     assert_eq!(same_text(left, right), same, "{right}");
 }

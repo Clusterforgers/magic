@@ -20,6 +20,9 @@ pub(super) fn normal(text: &str) -> String {
         same_words,
         costs_in_order,
         lesser_value,
+        counter_actions,
+        adamant,
+        small_words,
         for_each_count,
         either_kind,
         there_is_one,
@@ -87,7 +90,8 @@ fn sacrifice_any_number(text: &str) -> Option<String> {
 /// "Look at the top two cards of your library. Put one of them into your hand and the other on the bottom of your
 /// library." as "... and the rest on the bottom of your library in any order": one card is left, whatever its order.
 fn the_other_card(text: &str) -> Option<String> {
-    const LOOK: &str = "ook at the top two cards of your library. Put one of them into your hand and the ";
+    const LOOK: &str =
+        "ook at the top two cards of your library. Put one of them into your hand and the ";
     const OTHER: &str = "other on the bottom of your library";
     let at = text.find(LOOK)? + LOOK.len();
     let tail = text[at..].strip_prefix(OTHER)?;
@@ -146,9 +150,13 @@ fn any_other_in_a_graveyard(text: &str) -> Option<String> {
     const HEAD: &str = "enter as a copy of any other ";
     let at = text.find(HEAD)? + HEAD.len();
     let end = text[at..].find(['.', ','])? + at;
-    text[at..end]
-        .ends_with(" card in a graveyard")
-        .then(|| format!("{}enter as a copy of any {}", &text[..at - HEAD.len()], &text[at..]))
+    text[at..end].ends_with(" card in a graveyard").then(|| {
+        format!(
+            "{}enter as a copy of any {}",
+            &text[..at - HEAD.len()],
+            &text[at..]
+        )
+    })
 }
 
 /// "deals X damage divided as you choose among up to X targets" as "among any number of targets": each target takes at
@@ -194,7 +202,11 @@ fn attached_pair(text: &str) -> Option<String> {
 /// Words of one meaning: a ticket counter is {TK}, a player who is not the controller is an opponent, and the combat step
 /// of your turn is the beginning of combat on your turn.
 fn same_words(text: &str) -> Option<String> {
-    const PAIRS: [(&str, &str); 4] = [
+    const PAIRS: [(&str, &str); 5] = [
+        (
+            "cards with the same name as that creature in all graveyards",
+            "cards in all graveyards with the same name as that spell",
+        ),
         ("{TK}", "a ticket counter"),
         ("each other player", "each opponent"),
         (
@@ -227,6 +239,96 @@ fn costs_in_order(text: &str) -> Option<String> {
         &after[..end],
         &after[end..]
     ))
+}
+
+/// The number as the word the renderers write, for one to nine.
+fn number_word(digit: &str) -> Option<&'static str> {
+    [
+        "one", "two", "three", "four", "five", "six", "seven", "eight", "nine",
+    ]
+    .get(digit.parse::<usize>().ok()?.checked_sub(1)?)
+    .copied()
+}
+
+/// The keyword actions "support 2" and "blight 1" as the counters they put: "put a +1/+1 counter on each of up to two
+/// target other creatures" and "put a -1/-1 counter on a creature you control".
+fn counter_actions(text: &str) -> Option<String> {
+    let mut changed = text.to_owned();
+    for (keyword, make) in [
+        ("support ", true),
+        ("Support ", true),
+        ("blight ", false),
+        ("Blight ", false),
+    ] {
+        let Some(at) = changed.find(keyword) else {
+            continue;
+        };
+        let digit = &changed[at + keyword.len()..];
+        let digit = &digit[..digit
+            .find(|c: char| !c.is_ascii_digit())
+            .unwrap_or(digit.len())];
+        let Some(word) = number_word(digit) else {
+            continue;
+        };
+        let words = if make {
+            format!("put a +1/+1 counter on each of up to {word} target other creatures")
+        } else if word == "one" {
+            "put a -1/-1 counter on a creature you control".to_owned()
+        } else {
+            format!("put {word} -1/-1 counters on a creature you control")
+        };
+        let words = if keyword.starts_with('S') || keyword.starts_with('B') {
+            let mut chars = words.chars();
+            chars
+                .next()
+                .map(|first| first.to_uppercase().chain(chars).collect())
+                .unwrap_or_default()
+        } else {
+            words
+        };
+        changed = format!(
+            "{}{words}{}",
+            &changed[..at],
+            &changed[at + keyword.len() + digit.len()..]
+        );
+    }
+    (changed != text).then_some(changed)
+}
+
+/// "If at least three white mana was spent to cast this spell, this creature enters with a +1/+1 counter on it." as "~
+/// enters that has a +1/+1 counter on it if {W}{W}{W} was spent to cast it."
+fn adamant(text: &str) -> Option<String> {
+    const IF: &str = "If at least three ";
+    let at = text.find(IF)?;
+    let after = at + IF.len();
+    let (color, rest) = text[after..].split_once(" mana was spent to cast ")?;
+    let symbol = match color {
+        "white" => 'W',
+        "blue" => 'U',
+        "black" => 'B',
+        "red" => 'R',
+        "green" => 'G',
+        _ => return None,
+    };
+    let (_, rest) = rest.split_once(", ")?;
+    let (_, rest) = rest.split_once(" enters with ")?;
+    let end = rest.find('.').unwrap_or(rest.len());
+    Some(format!(
+        "{}~ enters that has {} if {{{symbol}}}{{{symbol}}}{{{symbol}}} was spent to cast it{}",
+        &text[..at],
+        &rest[..end],
+        &rest[end..]
+    ))
+}
+
+/// The wordings of a cost and a choice of two: "Remove two counters from ~ and sacrifice it:" as ", Sacrifice it:", "you
+/// create" as "create", and "create a Food token or create a Treasure token" as "create a Food token or a Treasure token".
+fn small_words(text: &str) -> Option<String> {
+    let changed = text
+        .replace(" and sacrifice it:", ", Sacrifice it:")
+        .replace(", you create ", ", create ")
+        .replace(" token or create a ", " token or a ");
+    (changed != text).then_some(changed)
 }
 
 /// "lesser mana value than the creature that died" as "mana value less than that creature's mana value".
@@ -273,7 +375,14 @@ fn for_each_count(text: &str) -> Option<String> {
 /// "or" and "and/or" between two kinds said one way, in the order of their names: "an artifact or enchantment card"
 /// and "an enchantment and/or artifact card" choose one card of either kind.
 fn either_kind(text: &str) -> Option<String> {
-    const NOUNS: [&str; 6] = ["card", "cards", "creature", "creatures", "permanent", "permanents"];
+    const NOUNS: [&str; 6] = [
+        "card",
+        "cards",
+        "creature",
+        "creatures",
+        "permanent",
+        "permanents",
+    ];
     let words: Vec<&str> = text.split(' ').collect();
     let mut out: Vec<String> = Vec::with_capacity(words.len());
     let mut at = 0;
@@ -282,7 +391,9 @@ fn either_kind(text: &str) -> Option<String> {
         if let [first, joint, second, noun] = words[at..].get(..4).unwrap_or_default()
             && matches!(*joint, "or" | "and/or")
             && NOUNS.contains(noun)
-            && ![first, second].iter().any(|word| word.contains(['.', ',', ':', '"']))
+            && ![first, second]
+                .iter()
+                .any(|word| word.contains(['.', ',', ':', '"']))
         {
             let (low, high) = if first.to_lowercase() <= second.to_lowercase() {
                 (first, second)
@@ -337,7 +448,11 @@ fn look_and_may_reveal(text: &str) -> Option<String> {
     let mut changed = text.to_owned();
     if let Some(at) = changed.find(" cards of your library and may reveal ") {
         let at = at + " cards of your library".len();
-        changed = format!("{}. You may reveal {}", &changed[..at], &changed[at + " and may reveal ".len()..]);
+        changed = format!(
+            "{}. You may reveal {}",
+            &changed[..at],
+            &changed[at + " and may reveal ".len()..]
+        );
     }
     changed = changed
         .replace(
