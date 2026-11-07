@@ -299,11 +299,16 @@ fn negated(preds: Vec<Value>) -> Tr<Value> {
 
 /// The properties of an alternative, split at `+`. A property with an object argument (`AttachedTo Creature.attacking`)
 /// takes the `+` parts after it: they belong to the object it names (`AttachedTo Creature.attacking+OppCtrl` is an Aura
-/// on an attacking creature an opponent controls).
+/// on an attacking creature an opponent controls). A name ends the argument: it names the object of the alternative
+/// (`Equipment.AttachedTo Creature.YouCtrl+namedGroom's Finery` is an Equipment named Groom's Finery attached to a creature
+/// you control).
 pub(super) fn split_properties(props: &str) -> Vec<String> {
     let mut out: Vec<String> = Vec::new();
     let mut greedy = false;
     for part in props.split('+').filter(|part| !part.is_empty()) {
+        if part.starts_with("named") {
+            greedy = false;
+        }
         match out.last_mut() {
             Some(last) if greedy => {
                 last.push('+');
@@ -575,6 +580,16 @@ pub fn permanent_card(spec: &str) -> Tr<Option<Value>> {
     Ok(Some(json!({"AnyOf": any})))
 }
 
+/// The selector of a spell a line targets on the stack: "permanent" is a permanent spell, not any spell
+/// (`Permanent.YouCtrl` is "target permanent spell you control").
+pub fn spell_selector(ctx: &Ctx, spec: &str) -> Tr<Vec<Value>> {
+    let mut preds = selector_any(ctx, spec)?;
+    if let Some(any) = permanent_card(spec)? {
+        preds.push(any);
+    }
+    Ok(preds)
+}
+
 /// "Creature card of the chosen type" printed where the script says any card of it (`Card.ChosenType`): a Kindred card
 /// of that type is no creature card, so the creature type joins the predicates.
 fn fix9_creature_of_chosen_type(ctx: &Ctx, spec: &str, preds: &mut Vec<Value>) {
@@ -586,6 +601,27 @@ fn fix9_creature_of_chosen_type(ctx: &Ctx, spec: &str, preds: &mut Vec<Value>) {
     .any(|words| ctx.oracle.contains(words));
     let untyped = !preds.iter().any(|pred| pred.get("Type").is_some());
     if printed && untyped && spec.split(',').count() == 1 && spec.starts_with("Card.ChosenType") {
+        preds.insert(0, json!({"Type": "Creature"}));
+    }
+}
+
+/// "Zombie creature spell" or "Zombie creature card" printed where the script names only the creature type (`Zombie`): a
+/// Kindred card of that type is no creature card, so the creature type joins the predicates.
+pub fn fix23_creature_of_subtype(ctx: &Ctx, preds: &mut Vec<Value>) {
+    if preds.iter().any(|pred| pred.get("Type").is_some()) {
+        return;
+    }
+    let subtypes: Vec<&str> = preds
+        .iter()
+        .filter_map(|pred| pred.get("Subtype").and_then(Value::as_str))
+        .collect();
+    let [subtype] = subtypes[..] else {
+        return;
+    };
+    let printed = ["spell", "card"]
+        .iter()
+        .any(|noun| ctx.oracle.contains(&format!("{subtype} creature {noun}")));
+    if printed {
         preds.insert(0, json!({"Type": "Creature"}));
     }
 }
@@ -629,6 +665,9 @@ pub fn selector_in(ctx: &Ctx, spec: &str, zone: Option<&str>) -> Tr<Vec<Value>> 
     let spec = &commas(spec);
     let mut preds = selector_any(ctx, spec)?;
     fix9_creature_of_chosen_type(ctx, spec, &mut preds);
+    if !matches!(zone, None | Some("Battlefield")) && spec.split(',').count() == 1 {
+        fix23_creature_of_subtype(ctx, &mut preds);
+    }
     if !matches!(zone, None | Some("Battlefield"))
         && let Some(any) = permanent_card(spec)?
     {

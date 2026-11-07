@@ -4,7 +4,7 @@ use serde_json::{Value, json};
 
 use super::amount::amount;
 use super::ctx::{Ctx, Tr, flag, only, unmapped};
-use super::valid::{defined, selector_any, subject};
+use super::valid::{defined, selector_any, spell_selector, subject};
 use crate::forge::script::Params;
 
 /// The effects of a verb this module reads; `None` for any other API.
@@ -90,7 +90,7 @@ fn copy_spell(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
         let valid: Vec<&str> = p.get("ValidTgts").unwrap_or_default().split(',').collect();
         let mut selector = vec![json!("Spell")];
         if valid != ["Card"] {
-            selector.extend(selector_any(ctx, &valid.join(","))?);
+            selector.extend(spell_selector(ctx, &valid.join(","))?);
         }
         ctx.target(json!({"what": {"Object": selector}}))?
     } else if p.get("Defined") == Some("TriggeredSpellAbility")

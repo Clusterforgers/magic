@@ -665,6 +665,7 @@ mod dk1f_pippin;
 mod dk1f_suppression_ray;
 mod e10a_earlier_targets;
 mod e14c_choices;
+mod fix23_read_after;
 mod fix6_last_known;
 mod fix9_damaged;
 mod g10a_convoked;

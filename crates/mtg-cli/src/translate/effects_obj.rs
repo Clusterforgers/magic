@@ -1235,13 +1235,15 @@ fn animate(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
     }
     if let Some(colors) = p.get("Colors") {
         // Forge adds the colors unless told to overwrite; Oracle "becomes a green creature" sets the color (CR 205.3,
-        // layer 5) and only "in addition to its other colors" adds.
+        // layer 5) and only "in addition to its other colors" (or "its other types and colors") adds.
         let text = p
             .get("SpellDescription")
             .unwrap_or(ctx.oracle)
             .to_lowercase();
         let adds = p.get("OverwriteColors") != Some("True")
-            && (text.contains("other colors") || text.contains("additional color"));
+            && ["other colors", "other types and colors", "additional color"]
+                .iter()
+                .any(|words| text.contains(words));
         if adds {
             if colors == "ChosenColor" {
                 return unmapped("key:Animate.Colors-added");

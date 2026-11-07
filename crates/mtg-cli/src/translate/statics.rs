@@ -84,6 +84,9 @@ pub fn static_lines(ctx: &mut Ctx, body: &str) -> Tr<Value> {
     if condition.is_some() && ability.pointer("/Static/defining").is_some() {
         return unmapped("key:Static.Continuous.defining-with-condition");
     }
+    // A permission used once a turn holds only on its controller's own turns: "your turn" adds nothing.
+    let once = ability.pointer("/Rule/rule/MayCast/once") == Some(&json!(true));
+    let condition = condition.filter(|found| !(once && *found == json!("YourTurn")));
     if let Some(condition) = condition {
         let parts = match &mut ability {
             Value::Array(items) => items.iter_mut().collect(),
