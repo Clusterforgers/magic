@@ -653,6 +653,7 @@ mod g10c_turn_facts;
 mod g11a_players;
 mod g11b_damage;
 mod g11c_taxes_draws;
+mod g12f_memory;
 mod g9c_shadow;
 mod mana_any_shape;
 mod mana_ban;

@@ -1847,6 +1847,10 @@ mod tests {
         Effect::RepeatEach { over: Ref::Opponents, bind: "foe".to_owned(), effects: vec![Effect::Draw { bind: None, who: Ref::Bound("foe".to_owned()), count: Amount::one() }] },
         r#"{"RepeatEach":{"over":"Opponents","as":"foe","effects":[{"Draw":{"who":{"Bound":"foe"}}}]}}"#
     )]
+    #[case::a_bind_that_adds(
+        Effect::Bind { what: Ref::Bound("pick".to_owned()), bind: "picks".to_owned(), adds: true },
+        r#"{"Bind":{"what":{"Bound":"pick"},"as":"picks","adds":true}}"#
+    )]
     #[case::roll_a_die_with_a_table(
         Effect::RollDice { who: Ref::You, sides: 20, dice: 1, choose: false, plus: Amount::Fixed(2), results: vec![DieRow { from: 1, to: Some(9), effects: vec![Effect::Shuffle { who: Ref::You }] }, DieRow { from: 10, to: None, effects: vec![Effect::Shuffle { who: Ref::You }] }] },
         r#"{"RollDice":{"sides":20,"plus":2,"results":[{"from":1,"to":9,"effects":[{"Shuffle":{}}]},{"from":10,"effects":[{"Shuffle":{}}]}]}}"#
