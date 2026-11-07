@@ -259,6 +259,7 @@ mod digital_wordings;
 mod dk1b_attached_writers;
 mod dk1c5_rooms;
 mod draws;
+mod e10a_writers;
 mod e10b_writers;
 mod each_pump;
 mod effect_writers;

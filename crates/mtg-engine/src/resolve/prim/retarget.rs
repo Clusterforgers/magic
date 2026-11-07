@@ -8,7 +8,7 @@ use mtg_core::ids::{ObjectId, PlayerId};
 
 use crate::abilities::Cause;
 use crate::choose::{
-    Choice, Choices, Target, TargetOptions, YesNoOptions, announced_specs, legal_from,
+    Choice, Choices, Target, TargetOptions, YesNoOptions, announced_specs, legal_from, spec_bases,
 };
 use crate::decision::{Decision, DecisionKind};
 use crate::object::ObjectRef;
@@ -88,6 +88,7 @@ pub(super) fn ask(
 ) -> Result<Retargeted, ResolveError> {
     let state = cx.state();
     let specs = announced_specs(original.ability, &original.choices.modes);
+    let bases = spec_bases(original.ability, &original.choices.modes);
     let mut changeable = Vec::new();
     let single = original.choices.targets.iter().flatten().count() == 1;
     for (at, spec) in specs.iter().enumerate() {
@@ -105,6 +106,7 @@ pub(super) fn ask(
             judged,
             original.cause,
             original.choices.x,
+            &original.choices.targets[bases.get(at).copied().unwrap_or(0).min(at)..at],
         );
         if way == Way::Another {
             legal.retain(|target| !kept.contains(target));
@@ -163,6 +165,7 @@ pub(super) fn ask(
                         triggered: false,
                         apart: Vec::new(),
                         together: None,
+                        total: None,
                     }),
                 }));
             }

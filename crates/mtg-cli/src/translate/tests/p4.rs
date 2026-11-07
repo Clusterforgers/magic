@@ -324,9 +324,21 @@ fn a_unique_target_with_nothing_before_it_adds_nothing() {
 #[case::player_after_player("Player", "Player | TargetUnique$ True")]
 #[case::any_after_any("Any", "Any | TargetUnique$ True")]
 #[case::player_alternative_after_any("Any", "Creature,Player | TargetUnique$ True")]
-#[case::unknown_value("Creature", "Creature | TargetUnique$ Maybe")]
-fn a_unique_target_that_could_be_a_player_stays_a_gap(#[case] first: &str, #[case] second: &str) {
-    assert!(gaps(&two_pumps(first, second)).into_iter().next().is_some());
+fn a_unique_target_that_could_be_a_player_leaves_out_the_earlier_ones(
+    #[case] first: &str,
+    #[case] second: &str,
+) {
+    let found = first_of(&two_pumps(first, second));
+    assert_eq!(
+        found["Spell"]["targets"][1]["what"]["Another"]["earlier"],
+        json!([0])
+    );
+}
+
+#[test]
+fn a_unique_value_the_table_does_not_know_stays_a_gap() {
+    let script = two_pumps("Creature", "Creature | TargetUnique$ Maybe");
+    assert!(gaps(&script).into_iter().next().is_some());
 }
 
 #[rstest]

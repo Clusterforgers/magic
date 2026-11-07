@@ -306,7 +306,7 @@ pub fn trigger_gates(p: &Params) -> Tr<Vec<Value>> {
 
 /// The line with some pairs replaced by new values and some dropped; the order of the keys stays.
 fn rebuilt(p: &Params, replace: &[(&str, String)], drop: &[&str]) -> Params {
-    let body: Vec<String> = p
+    let mut body: Vec<String> = p
         .iter()
         .filter(|(key, _)| !drop.contains(key))
         .map(|(key, value)| {
@@ -317,6 +317,12 @@ fn rebuilt(p: &Params, replace: &[(&str, String)], drop: &[&str]) -> Params {
             format!("{key}$ {value}")
         })
         .collect();
+    // A replacement for a key the line does not have is added to it.
+    for (name, new) in replace {
+        if peek(p, name).is_none() {
+            body.push(format!("{name}$ {new}"));
+        }
+    }
     Params::parse(&body.join(" | "))
 }
 
@@ -478,6 +484,10 @@ fn target_kinds(spec: &Value) -> (bool, bool) {
     }
 }
 
+/// The key `unique_targets` adds for a target that is none of the earlier ones by its whole kind: the indices of the
+/// earlier targets, which the target reader wraps around what it reads (`Another`).
+pub const ANOTHER_THAN: &str = "e10aAnotherThan";
+
 /// `TargetUnique$ True`: the targets of the line are none of those the earlier lines of the chain declared (CR 115.3 lets
 /// one object be chosen for two targets unless the card says "another"). Each object alternative of `ValidTgts$` gains a
 /// `NotTarget<n>` property for every earlier target that can be an object; a player alternative after a target that can
@@ -500,13 +510,23 @@ pub fn unique_targets(ctx: &Ctx, p: &Params) -> Tr<Option<Params>> {
         .filter(|(_, (objects, _))| *objects)
         .map(|(at, _)| format!("NotTarget{at}"))
         .collect();
+    // A player may be another target only by the whole kind: the targets of every earlier line are left out of it.
+    let player_kind = |alternative: &str| {
+        let base = alternative.split_once('.').map_or(alternative, |(b, _)| b);
+        matches!(base.trim(), "Any" | "Player" | "Opponent")
+    };
+    if valid.split(',').any(player_kind) && kinds.iter().any(|(_, players)| *players) {
+        let earlier: Vec<String> = (0..kinds.len()).map(|at| at.to_string()).collect();
+        return Ok(Some(rebuilt(
+            p,
+            &[(ANOTHER_THAN, earlier.join(","))],
+            &["TargetUnique"],
+        )));
+    }
     let mut out = Vec::new();
     for alternative in valid.split(',') {
         let base = alternative.split_once('.').map_or(alternative, |(b, _)| b);
         if matches!(base.trim(), "Any" | "Player" | "Opponent") {
-            if kinds.iter().any(|(_, players)| *players) {
-                return unmapped("key:TargetUnique=players");
-            }
             // "Any other target": a player, or a creature, planeswalker or battle that is none of the earlier targets.
             if base.trim() == "Any" && alternative.trim() == "Any" && !nots.is_empty() {
                 let others: Vec<String> = ["Creature", "Planeswalker", "Battle"]

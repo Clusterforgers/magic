@@ -224,12 +224,20 @@ fn kind_of(what: &Targetable) -> (String, String) {
         Targetable::Together { what, rule } => {
             let (head, tail) = kind_of(what);
             let rule = match rule {
-                TargetSet::SameController => "controlled by the same player",
-                TargetSet::DifferentControllers => "controlled by different players",
-                TargetSet::DifferentNames => "with different names",
-                TargetSet::DifferentManaValues => "with different mana values",
+                TargetSet::SameController => "controlled by the same player".to_owned(),
+                TargetSet::DifferentControllers => "controlled by different players".to_owned(),
+                TargetSet::DifferentNames => "with different names".to_owned(),
+                TargetSet::DifferentManaValues => "with different mana values".to_owned(),
+                TargetSet::TotalManaValueAtMost(Amount::Fixed(most)) => {
+                    format!("with total mana value {most} or less")
+                }
+                TargetSet::TotalManaValueAtMost(_) => "with total mana value X or less".to_owned(),
             };
-            (head, join(&tail, rule))
+            (head, join(&tail, &rule))
+        }
+        Targetable::Another { what, .. } => {
+            let (head, tail) = kind_of(what);
+            (format!("other {head}"), tail)
         }
         Targetable::Either(kinds) => (
             kinds
@@ -245,6 +253,16 @@ fn kind_of(what: &Targetable) -> (String, String) {
 /// A target specification in the words of a card: "target creature you control", "up to two target players",
 /// "any target".
 pub(crate) fn spec(spec: &TargetSpec) -> String {
+    if let Targetable::Another { what, .. } = &spec.what {
+        let inner = self::spec(&TargetSpec {
+            what: (**what).clone(),
+            ..spec.clone()
+        });
+        return match inner.strip_prefix("any ") {
+            Some(rest) => format!("another {rest}"),
+            None => inner.replacen("target", "other target", 1),
+        };
+    }
     let (head, tail) = kind_of(&spec.what);
     let any = matches!(spec.what, Targetable::AnyTarget);
     let one = |head: &str| {

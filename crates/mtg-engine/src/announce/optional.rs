@@ -363,6 +363,7 @@ fn targets_remain(ctx: &Ctx<'_>, choices: &Choices) -> bool {
                 choices.x,
                 &choices.optional_costs,
                 choices.way,
+                None,
             )
             .is_some()
         })

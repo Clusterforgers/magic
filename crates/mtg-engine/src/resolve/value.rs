@@ -93,6 +93,8 @@ pub struct Scope<'a> {
     pub(crate) specs: Vec<&'a TargetSpec>,
     /// How many of them come before the ones the running effect refers to: `Target(0)` is `specs[target_base]`.
     pub(crate) target_base: usize,
+    /// For each announced specification, how many come before the first of its mode (0 outside modal abilities).
+    pub(crate) spec_bases: Vec<usize>,
     pub(crate) bindings: &'a Bindings,
     pub(crate) snapshots: Vec<&'a Snapshot>,
     /// What earlier steps of this resolution moved away, as it was: a target among them stays named.
@@ -292,6 +294,7 @@ impl<'a> Scope<'a> {
             source,
             choices: &NO_CHOICES,
             specs: Vec::new(),
+            spec_bases: Vec::new(),
             target_base: 0,
             bindings: &NO_BINDINGS,
             snapshots: Vec::new(),
@@ -816,6 +819,11 @@ impl<'a> Scope<'a> {
     /// The targets chosen for the specification `index` (counted from the first) that are legal now, or that an earlier
     /// step of this resolution moved away.
     fn w7d_legal_now(&self, index: usize) -> Vec<Target> {
+        // While targets are announced there are no specifications to recheck: a filter that reads an earlier target
+        // reads it as chosen (CR 601.2c).
+        if self.specs.is_empty() {
+            return self.choices.targets.get(index).cloned().unwrap_or_default();
+        }
         let (Some(set), Some(spec)) = (self.choices.targets.get(index), self.specs.get(index))
         else {
             return Vec::new();
@@ -828,6 +836,7 @@ impl<'a> Scope<'a> {
             self.controller,
             self.cause,
             Some(self.x_value()),
+            self.earlier(index),
         );
         set.iter()
             .copied()
@@ -842,7 +851,9 @@ impl<'a> Scope<'a> {
             return Ok(Vec::new());
         };
         let mut what = &spec.what;
-        while let Targetable::Together { what: inner, .. } = what {
+        while let Targetable::Together { what: inner, .. }
+        | Targetable::Another { what: inner, .. } = what
+        {
             what = inner;
         }
         match what {
@@ -852,7 +863,7 @@ impl<'a> Scope<'a> {
             )),
             Targetable::Player => self.refs(&Ref::EachPlayer),
             Targetable::Opponent => self.refs(&Ref::Opponents),
-            Targetable::Together { .. } => {
+            Targetable::Together { .. } | Targetable::Another { .. } => {
                 Err(ResolveError::Unsupported("overload of a nested target"))
             }
             Targetable::AnyTarget | Targetable::Either(_) => Err(ResolveError::Unsupported(
@@ -879,7 +890,17 @@ impl<'a> Scope<'a> {
             self.controller,
             self.cause,
             Some(self.x_value()),
+            self.earlier(index),
         ))
+    }
+
+    /// The targets chosen before the specification `index` within its mode, which a filter of it reads as
+    /// `Target(0)` onwards.
+    fn earlier(&self, index: usize) -> &[Vec<Target>] {
+        let targets = &self.choices.targets;
+        let end = index.min(targets.len());
+        let base = self.spec_bases.get(index).copied().unwrap_or(0).min(end);
+        &targets[base..end]
     }
 
     /// Whether each chosen target is legal now, in the shape of `Choices::targets`; a target of no announced

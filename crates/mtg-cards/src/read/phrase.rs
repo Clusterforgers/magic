@@ -184,12 +184,22 @@ fn targetable(ctx: &Ctx, what: &Targetable, plural: bool) -> String {
             "{} {}",
             targetable(ctx, what, plural),
             match rule {
-                TargetSet::SameController => "controlled by the same player",
-                TargetSet::DifferentControllers => "controlled by different players",
-                TargetSet::DifferentNames => "with different names",
-                TargetSet::DifferentManaValues => "with different mana values",
+                TargetSet::SameController => "controlled by the same player".to_owned(),
+                TargetSet::DifferentControllers => "controlled by different players".to_owned(),
+                TargetSet::DifferentNames => "with different names".to_owned(),
+                TargetSet::DifferentManaValues => "with different mana values".to_owned(),
+                TargetSet::TotalManaValueAtMost(most) => {
+                    format!("with total mana value {} or less", amount(ctx, most))
+                }
             }
         ),
+        Targetable::Another { what, .. } => {
+            let inner = targetable(ctx, what, plural);
+            match inner.strip_prefix("target ") {
+                Some(rest) => format!("another target {rest}"),
+                None => format!("another {inner}"),
+            }
+        }
         Targetable::PerPlayer { players, what } => format!(
             "{} controlled by each of {}",
             noun(&selector(ctx, what)),

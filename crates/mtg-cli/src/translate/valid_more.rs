@@ -172,6 +172,11 @@ fn player_word(ctx: &Ctx, word: &str) -> Tr<Value> {
         "DefendingPlayer" | "TriggeredDefendingPlayer" => Ok(json!("Defending")),
         "TargetedPlayer" => ctx.player_target(),
         "TargetedOrController" => Ok(json!({"OrController": ctx.last_target()?})),
+        // An earlier target, read as chosen even by a later target's filter (CR 601.2c).
+        "ParentTarget" if super::frame::parent_is_player(ctx) => ctx.parent(),
+        "ParentTargetedController" if super::valid::parent_is_one_object(ctx) => {
+            Ok(json!({"ControllerOf": ctx.parent()?}))
+        }
         // The player a damage trigger names (`ValidTarget$ Player`): the one the creatures are read for.
         "CardController" => {
             super::triggered::resolve(ctx.trigger.as_ref(), "TriggeredCardController")

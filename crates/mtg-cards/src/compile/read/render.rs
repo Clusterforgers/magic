@@ -123,7 +123,7 @@ use crate::compile::classify;
 use crate::cost::{Cost, CostItem};
 use crate::effect::{Destination, Effect, Mode, Order, Place, Produce, TokenRef};
 use crate::modify::{Duration, Modification};
-use crate::refs::{Bounds, Pred, Ref, Selector, TargetSpec, Targetable, ZoneKind};
+use crate::refs::{Bounds, Pred, Ref, Selector, TargetSet, TargetSpec, Targetable, ZoneKind};
 use crate::spend::{ManaLasts, SpendOn};
 use crate::trigger::TriggerPattern;
 use crate::value::{Amount, Condition, CounterKind};
@@ -1839,7 +1839,14 @@ impl Writer<'_> {
 
     /// Whether the target is of this kind.
     fn target_is(&self, wanted: impl Fn(&Targetable) -> bool) -> bool {
-        self.targets.first().is_some_and(|spec| wanted(&spec.what))
+        // A most for the total mana value is a rule on the set (`name_target` words it), not on what each target is.
+        self.targets.first().is_some_and(|spec| match &spec.what {
+            Targetable::Together {
+                what,
+                rule: TargetSet::TotalManaValueAtMost(_),
+            } => wanted(what),
+            what => wanted(what),
+        })
     }
 
     /// Whether the reference is the one target and it is a card in the controller's graveyard.

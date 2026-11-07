@@ -39,7 +39,7 @@ pub(crate) use value::{CastTargets, zone_kind};
 use crate::abilities::{AbilityObject, AbilityRef};
 use crate::ability_reader::abilities_of;
 use crate::announce::Pending;
-use crate::choose::{Choice, Target, announced_specs, targets_before};
+use crate::choose::{Choice, Target, announced_specs, spec_bases, targets_before};
 use crate::decision::Decision;
 use crate::error::EngineError;
 use crate::events::{Event, ResolutionOutcome};
@@ -326,6 +326,7 @@ fn scope_of<'a>(
         source: ability.map_or_else(|| object.reference(), AbilityObject::source),
         choices: object.choices(),
         specs: announced_specs(rules, chosen),
+        spec_bases: spec_bases(rules, chosen),
         target_base,
         bindings: &resolving.bindings,
         snapshots,

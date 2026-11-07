@@ -296,6 +296,7 @@ mod tests {
                 source: reference,
                 choices: &choices,
                 specs: specs.iter().collect(),
+                spec_bases: Vec::new(),
                 target_base: 0,
                 departed: &[],
                 bindings: &bindings,

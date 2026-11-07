@@ -13,6 +13,7 @@ use mtg_core::color::Color;
 
 use super::amounts::{count_word, number_word, stat_name};
 use super::counters;
+use super::e10a_targets::{another_text, is_total, total_text};
 use super::subtypes::{plural_subtype as plural_subtype_word, singular_subtype};
 use super::tokens::Reader;
 use super::w6d_shares;
@@ -1851,7 +1852,11 @@ pub fn spec_text(spec: &TargetSpec) -> Option<String> {
                 }
             }
             Targetable::Together { .. } | Targetable::PerPlayer { .. } => return None,
+            Targetable::Another { what, .. } => return another_text(what),
         });
+    }
+    if is_total(spec) {
+        return total_text(spec);
     }
     let Targetable::Object(selector) = &spec.what else {
         return None;

@@ -1,16 +1,18 @@
-// Goal: the target prompt's words are right for every count the engine can ask (one, up to some, a range), every stage of the choice (nothing, too few, enough, full), every source (a spell, a triggered ability, one the view does not hold) and every place an object can be (battlefield, stack, a graveyard, hand, exile); equal targets share a key and a list holds each target once.
+// Goal: the target prompt's words are right for every count the engine can ask (one, up to some, a range), every stage of the choice (nothing, too few, enough, full), every source (a spell, a triggered ability, one the view does not hold) and every place an object can be (battlefield, stack, a graveyard, hand, exile); equal targets share a key and a list holds each target once; a most for the total mana value lets in only a target that keeps the chosen total within it.
 import { describe, expect, it } from 'vitest'
 import type { Target } from '@/protocol/generated'
 import { card } from '@/test-utils/cards'
 import {
   boundsWords,
   distinctTargets,
+  fitsTotal,
   objectWords,
   possessive,
   sameTarget,
   subjectWords,
   targetKey,
   targetsSentence,
+  totalWords,
 } from './targetText'
 
 const NAMES = ['Ana', 'Bo', 'Cy']
@@ -143,5 +145,25 @@ describe('targets', () => {
   it('are listed once each, in the order they first appear', () => {
     const list = [{ Player: 2 }, object(7), { Player: 2 }, object(3), object(7), object(7, 1)]
     expect(distinctTargets(list)).toEqual([{ Player: 2 }, object(7), object(3), object(7, 1)])
+  })
+})
+
+describe('a total mana value', () => {
+  const legal = [object(1), object(2), object(3)]
+  const rule = { most: 3, values: [1, 2, 3] }
+
+  it.each<[string, Target[], Target, boolean]>([
+    ['a first target that fits', [], object(3), true],
+    ['a second that keeps the total', [object(1)], object(2), true],
+    ['a second that goes over', [object(1)], object(3), false],
+    ['one already chosen, to take back', [object(1), object(2)], object(1), true],
+  ])('lets %s in or not', (_, chosen, target, fits) => {
+    expect(fitsTotal(legal, rule, chosen, target)).toBe(fits)
+  })
+
+  it('is told with the chosen total, and a prompt without one says nothing and takes anything', () => {
+    expect(totalWords(legal, rule, [object(1), object(2)])).toBe('Total mana value 3 of at most 3.')
+    expect(totalWords(legal, undefined, [object(1)])).toBe('')
+    expect(fitsTotal(legal, undefined, [object(3)], object(2))).toBe(true)
   })
 })

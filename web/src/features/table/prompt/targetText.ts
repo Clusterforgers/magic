@@ -29,6 +29,45 @@ export function boundsWords(min: number, max: number): string {
   return `${min} to ${countOf(max, 'target')}`
 }
 
+/** The mana values of `legal` targets may add up to at most `most` ("with total mana value 3 or less"). */
+export interface TotalRule {
+  most: number
+  /** The mana value of each legal target, in the order of `legal`. */
+  values: readonly number[]
+}
+
+/** The mana value of `target` under `rule`, 0 for one the rule does not list. */
+function totalOf(legal: readonly Target[], rule: TotalRule, target: Target): number {
+  const at = legal.findIndex((candidate) => sameTarget(candidate, target))
+  return at < 0 ? 0 : (rule.values[at] ?? 0)
+}
+
+/** The mana values of the chosen targets added up. */
+export function chosenTotal(legal: readonly Target[], rule: TotalRule, chosen: readonly Target[]): number {
+  return chosen.reduce((sum, target) => sum + totalOf(legal, rule, target), 0)
+}
+
+/** Whether `target` can join the chosen ones without their total going over the most; always without a rule. */
+export function fitsTotal(
+  legal: readonly Target[],
+  rule: TotalRule | undefined,
+  chosen: readonly Target[],
+  target: Target,
+): boolean {
+  if (rule === undefined || chosen.some((picked) => sameTarget(picked, target))) return true
+  return chosenTotal(legal, rule, chosen) + totalOf(legal, rule, target) <= rule.most
+}
+
+/** "Total mana value 2 of at most 3." for a prompt with a total; empty without one. */
+export function totalWords(
+  legal: readonly Target[],
+  rule: TotalRule | undefined,
+  chosen: readonly Target[],
+): string {
+  if (rule === undefined) return ''
+  return `Total mana value ${chosenTotal(legal, rule, chosen)} of at most ${rule.most}.`
+}
+
 /** What a prompt knows when it speaks about the targets chosen so far. */
 export interface TargetsAsked {
   /** Who asks: "Lightning Bolt" or "Mulldrifter's ability". */

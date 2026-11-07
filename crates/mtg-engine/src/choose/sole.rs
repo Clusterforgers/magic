@@ -109,6 +109,7 @@ mod tests {
             triggered: !can_cancel,
             apart: Vec::new(),
             together: None,
+            total: None,
         })
     }
 

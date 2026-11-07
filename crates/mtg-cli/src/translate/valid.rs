@@ -763,6 +763,21 @@ pub fn target_spec(ctx: &Ctx, params: &Params, zone: Option<&str>) -> Tr<Value> 
             Some(other) => return unmapped(format!("key:{key}={other}")),
         }
     }
+    // "With total mana value 3 or less": a most for the chosen set, objects only.
+    if let Some(most) = params.get("MaxTotalTargetCMC") {
+        if what.get("Object").is_none() {
+            return unmapped("key:MaxTotalTargetCMC-not-objects");
+        }
+        let most = amount(ctx, most)?;
+        what = json!({"Together": {"what": what, "rule": {"TotalManaValueAtMost": most}}});
+    }
+    if let Some(earlier) = params.get(super::header::ANOTHER_THAN) {
+        let earlier: Vec<u8> = earlier
+            .split(',')
+            .filter_map(|at| at.trim().parse().ok())
+            .collect();
+        what = json!({"Another": {"what": what, "earlier": earlier}});
+    }
     let min = params.get("TargetMin");
     let max = params.get("TargetMax");
     let mut spec = json!({ "what": what });
@@ -788,18 +803,19 @@ fn restrict_to_controller(ctx: &Ctx, word: &str, zone: Option<&str>, what: &mut 
     let Some(preds) = what.get_mut("Object").and_then(Value::as_array_mut) else {
         return unmapped("key:TargetsWithDefinedController-for-players");
     };
-    // An earlier target of the same spell is not yet chosen when the targets are offered: the engine cannot read it in a filter.
-    let who = if matches!(
-        word.trim(),
+    // An earlier target of the same spell is read as it was chosen (CR 601.2c): "target player shuffles up to three target
+    // cards from their graveyard", "another target creature that player controls".
+    let who = match word.trim() {
         "TriggeredCardController"
-            | "TriggeredTarget"
-            | "TriggeredDefendingPlayer"
-            | "TriggeredPlayer"
-            | "TriggeredSourceController"
-    ) {
-        defined(ctx, word)?
-    } else {
-        return unmapped(format!("key:TargetsWithDefinedController={word}"));
+        | "TriggeredTarget"
+        | "TriggeredDefendingPlayer"
+        | "TriggeredPlayer"
+        | "TriggeredSourceController" => defined(ctx, word)?,
+        "ParentTarget" if super::frame::parent_is_player(ctx) => ctx.parent()?,
+        "ParentTargetedController" if parent_is_one_object(ctx) => {
+            json!({"ControllerOf": ctx.parent()?})
+        }
+        _ => return unmapped(format!("key:TargetsWithDefinedController={word}")),
     };
     let key = if matches!(zone, None | Some("Battlefield")) {
         "ControlledBy"
@@ -808,6 +824,13 @@ fn restrict_to_controller(ctx: &Ctx, word: &str, zone: Option<&str>, what: &mut 
     };
     preds.push(json!({ key: who }));
     Ok(())
+}
+
+/// Whether the parent target is one object, never a player: "that creature's controller" names one player.
+pub fn parent_is_one_object(ctx: &Ctx) -> bool {
+    ctx.parent_target
+        .and_then(|at| ctx.targets.get(usize::from(at)))
+        .is_some_and(|spec| spec["what"].get("Object").is_some() && spec.get("bounds").is_none())
 }
 
 fn bound(ctx: &Ctx, text: &str) -> Tr<Value> {

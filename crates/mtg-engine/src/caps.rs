@@ -442,6 +442,8 @@ const RUNS: &[&str] = &[
     "Effect.RollDice",
     "Target.PerPlayer",
     "Target.Together",
+    "Target.TotalManaValue",
+    "Target.Another",
     "Effect.FlipCoin",
     "Effect.Clash",
     "Effect.Modal.AtRandom",

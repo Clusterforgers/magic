@@ -372,6 +372,7 @@ fn pipeline_decision_kinds() -> Vec<DecisionKind> {
             triggered: true,
             apart: Vec::new(),
             together: None,
+            total: None,
         }),
         DecisionKind::ChooseMode(ModeOptions {
             source: b,
@@ -1703,6 +1704,7 @@ fn the_new_decisions_and_answers_have_their_documented_wire_shape() {
             triggered: false,
             apart: Vec::new(),
             together: None,
+            total: None,
         }),
     };
     assert_eq!(
