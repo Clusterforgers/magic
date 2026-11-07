@@ -11,6 +11,11 @@ use mtg_core::card::Subtype;
 /// The basic land types, in the order the rules list them.
 const BASIC: [&str; 5] = ["Plains", "Island", "Swamp", "Mountain", "Forest"];
 
+/// Whether the subtype is a basic land type.
+pub(super) fn r9w_basic(kind: &Subtype) -> bool {
+    BASIC.contains(&kind.0.as_str())
+}
+
 /// "are Mountains" (the group's land types become that one) and "are every basic land type in addition to their other
 /// types", the part of a sentence after its subject.
 pub(super) fn mods(r: &mut Reader<'_>, plural: bool) -> Option<Vec<Modification>> {

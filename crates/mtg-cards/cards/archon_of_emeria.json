@@ -19,8 +19,8 @@
               "Enters": {
                 "what": [
                   { "Type": "Land" },
-                  { "ControlledBy": "Opponents" },
-                  { "Not": { "Supertype": "Basic" } }
+                  { "Not": { "Supertype": "Basic" } },
+                  { "ControlledBy": "Opponents" }
                 ]
               }
             },

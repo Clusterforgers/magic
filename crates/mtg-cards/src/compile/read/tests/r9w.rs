@@ -1,4 +1,4 @@
-//! Goal: the round 9 writers give the oracle wording of rules no template reads (the players a fact of the turn holds for, a spell cast out of its caster's turn, what a rule forbids, a manifest or cloak named "it", manifest dread, a shield of the next damage from a chosen source or redirected, and a countered spell's kept mana value), and a rule of another meaning (other players, other fact, other count, other zone, mana abilities kept or not) never reads back as the clause.
+//! Goal: the round 9 writers give the oracle wording of rules no template reads (the players a fact of the turn holds for, a spell cast out of its caster's turn, what a rule forbids, a manifest or cloak named "it", manifest dread, a shield of the next damage from a chosen source or redirected, and a countered spell's kept mana value), and a rule of another meaning (other players, other fact, other count, other zone, mana abilities kept or not) never reads back as the clause; "becomes an Island" reads as the land types it sets.
 use super::*;
 
 /// Whether some wording the checker accepts for the rules is the clause.
@@ -304,4 +304,13 @@ fn r9w_named_steps_write_back(#[case] json: &str, #[case] clause: &str) {
 )]
 fn r9w_named_steps_of_another_meaning_differ(#[case] json: &str, #[case] clause: &str) {
     assert!(!written(json, clause), "{clause}");
+}
+
+#[rstest]
+#[case::island(
+    "Target land becomes an Island until end of turn.",
+    r#"{"Spell":{"targets":[{"what":{"Object":[{"Type":"Land"}]}}],"effects":[{"Continuous":{"affected":{"Target":0},"mods":[{"SetLandTypes":["Island"]}],"duration":"UntilEndOfTurn"}}]}}"#
+)]
+fn r9w_a_basic_land_type_replaces_the_land_types(#[case] text: &str, #[case] json: &str) {
+    reads_as(text, ClauseKind::Spell, false, json);
 }

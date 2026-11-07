@@ -31,7 +31,7 @@
           "Static": {
             "affected": "This",
             "mods": [
-              { "CantBeBlockedBy": [{ "Type": "Creature" }, { "Not": { "Color": "Blue" } }] }
+              { "CantBeBlockedBy": [{ "Not": { "Color": "Blue" } }] }
             ]
           }
         },
