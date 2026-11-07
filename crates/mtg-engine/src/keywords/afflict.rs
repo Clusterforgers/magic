@@ -23,6 +23,7 @@ impl KeywordRules for Afflict {
             when: TriggerPattern::BecomesBlocked {
                 what: Selector::this(),
                 by: Selector::default(),
+                once: false,
             },
             intervening_if: None,
             limit: None,

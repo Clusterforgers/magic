@@ -37,7 +37,7 @@ pub(super) fn add(ability: &Ability, texts: &mut Vec<String>) {
 fn about_itself(pattern: &TriggerPattern) -> bool {
     match pattern {
         TriggerPattern::Tapped { what }
-        | TriggerPattern::Blocks { what }
+        | TriggerPattern::Blocks { what, .. }
         | TriggerPattern::BecomesBlocked { what, .. }
         | TriggerPattern::TappedForMana { what, .. } => what.0 == [Pred::This],
         TriggerPattern::AnyOf(events) => events.iter().all(about_itself),

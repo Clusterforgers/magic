@@ -82,7 +82,7 @@ pub fn event_creature(pattern: &TriggerPattern) -> Option<Ref> {
             to: Some(ZoneKind::Battlefield),
             ..
         } => (what, true),
-        TriggerPattern::Blocks { what } => (what, false),
+        TriggerPattern::Blocks { what, .. } => (what, false),
         // The card that dies, or is put into a graveyard, is "it" in what the card does about itself.
         TriggerPattern::ZoneChange {
             what,
@@ -139,7 +139,7 @@ pub fn event_subject(pattern: &TriggerPattern) -> Option<Ref> {
     let (TriggerPattern::Attacks { what }
     | TriggerPattern::BecomesBlocked { what, .. }
     | TriggerPattern::Unblocked { what }
-    | TriggerPattern::Blocks { what }
+    | TriggerPattern::Blocks { what, .. }
     | TriggerPattern::ZoneChange { what, .. }) = pattern
     else {
         return None;
@@ -731,6 +731,7 @@ pub(super) fn subject(r: &mut Reader<'_>) -> Option<Selector> {
 /// joined by "or".
 fn verbs(r: &mut Reader<'_>, what: &Selector) -> Option<TriggerPattern> {
     let mut found = verb_list(r, what)?;
+    super::g9c_blocks::g9c_shared_kind(&mut found);
     if found.len() == 1 {
         found.pop()
     } else if found
@@ -815,12 +816,9 @@ fn verb(r: &mut Reader<'_>, what: &Selector) -> Option<TriggerPattern> {
         };
         return Some(first_time(r, damaged));
     } else if r.word("blocks") {
-        return Some(TriggerPattern::Blocks { what: what.clone() });
+        return Some(super::g9c_blocks::g9c_blocks(r, what));
     } else if r.words("becomes blocked") {
-        return Some(TriggerPattern::BecomesBlocked {
-            what: what.clone(),
-            by: Selector::default(),
-        });
+        return Some(super::g9c_blocks::g9c_blocked(r, what));
     } else if r.words("becomes tapped") {
         return Some(TriggerPattern::Tapped { what: what.clone() });
     } else if r.words("phases out") || r.words("phase out") {
@@ -1311,8 +1309,14 @@ pub(super) fn happening(pattern: &TriggerPattern) -> Option<(Selector, String)> 
         TriggerPattern::AttacksPlayerOrPlaneswalker { what, at: Ref::You } => {
             said(what, "attacks you or a planeswalker you control")
         }
-        TriggerPattern::Blocks { what } => said(what, "blocks"),
-        TriggerPattern::BecomesBlocked { what, by } if by.0.is_empty() => said(what, BLOCKED),
+        TriggerPattern::Blocks { what, blocking } if blocking.0.is_empty() => said(what, "blocks"),
+        TriggerPattern::Blocks { what, blocking } => {
+            said(what, &super::g9c_blocks::g9c_blocks_verb(blocking)?)
+        }
+        TriggerPattern::BecomesBlocked { what, by, .. } if by.0.is_empty() => said(what, BLOCKED),
+        TriggerPattern::BecomesBlocked { what, by, once } => {
+            said(what, &super::g9c_blocks::g9c_blocked_verb(by, *once)?)
+        }
         TriggerPattern::Unblocked { what } => said(what, "attacks and isn't blocked"),
         TriggerPattern::Tapped { what } => said(what, "becomes tapped"),
         TriggerPattern::Untapped { what } => said(what, "becomes untapped"),
@@ -1545,7 +1549,8 @@ pub fn pattern_text(pattern: &TriggerPattern) -> Option<String> {
                 phrase_text(what, Form::All)?
             ))
         }
-        TriggerPattern::AnyOf(patterns) => super::w2e_copied::w2e_cast_or_copy_text(patterns)
+        TriggerPattern::AnyOf(patterns) => super::g9c_blocks::g9c_shared_text(patterns)
+            .or_else(|| super::w2e_copied::w2e_cast_or_copy_text(patterns))
             .or_else(|| any_of_text(patterns))
             .or_else(|| super::w6e_control::w6e_joined_step(patterns))
             .or_else(|| super::r7e_events::r7e_any_of(patterns)),

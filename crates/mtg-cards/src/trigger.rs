@@ -272,6 +272,10 @@ pub enum TriggerPattern {
     Blocks {
         /// The blocker.
         what: Selector,
+        /// Only when it blocks one or more attackers matching this (empty: any). With it the trigger happens once for
+        /// each such blocker, against the first such attacker it blocks.
+        #[serde(default, skip_serializing_if = "Selector::is_empty")]
+        blocking: Selector,
     },
     /// A creature matching the selector becomes blocked.
     BecomesBlocked {
@@ -280,6 +284,10 @@ pub enum TriggerPattern {
         /// Only when blocked by a creature matching this (empty: any blocker). With it the trigger happens once for each such blocker and `Ref::Dealer` names that blocker.
         #[serde(default, skip_serializing_if = "Selector::is_empty")]
         by: Selector,
+        /// With `by`: the trigger happens once when one or more of its blockers match ("becomes blocked by one or more
+        /// Orcs"), and names no blocker.
+        #[serde(default, skip_serializing_if = "crate::effect::is_false")]
+        once: bool,
     },
     /// A creature matching the selector attacks and isn't blocked: it is unblocked once its defending player has
     /// declared blockers (CR 509.1h).
@@ -937,11 +945,11 @@ mod tests {
         r#"{"SpellCast":{"by":"Opponents"}}"#
     )]
     #[case::blocked_by_any(
-        TriggerPattern::BecomesBlocked { what: Selector::this(), by: Selector::default() },
+        TriggerPattern::BecomesBlocked { what: Selector::this(), by: Selector::default(), once: false },
         r#"{"BecomesBlocked":{"what":["This"]}}"#
     )]
     #[case::blocked_by_a_kind(
-        TriggerPattern::BecomesBlocked { what: Selector::this(), by: Selector(vec![Pred::Token]) },
+        TriggerPattern::BecomesBlocked { what: Selector::this(), by: Selector(vec![Pred::Token]), once: false },
         r#"{"BecomesBlocked":{"what":["This"],"by":["Token"]}}"#
     )]
     #[case::a_state(
