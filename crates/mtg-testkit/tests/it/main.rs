@@ -276,6 +276,7 @@ mod g12b_counters_of;
 mod g12c_supertypes;
 mod g12d;
 mod g13d_attacked;
+mod g15s_vehicle_token;
 mod gap_fuzz;
 mod gift;
 mod gift_fuzz;

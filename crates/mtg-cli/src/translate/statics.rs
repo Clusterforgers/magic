@@ -1131,6 +1131,10 @@ fn modifier(
     };
     // A number or coloured symbols are the mana; a count (an `SVar`) is how many times {1} applies.
     if ctx.svar(amount).is_some() || amount.starts_with("Count$") {
+        // `Relative$ True` marks the amount as a count of times, which is what `per` says.
+        if p.get("Relative").is_some_and(|word| word != "True") {
+            return unmapped("key:Static.CostModifier.Relative");
+        }
         let per = super::amount::amount(ctx, amount)?;
         return Ok(
             json!({"CostModifier": {"applies_to": applies, "change": change, "mana": symbol, "per": per}}),

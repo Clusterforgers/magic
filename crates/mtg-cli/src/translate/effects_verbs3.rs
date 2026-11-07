@@ -27,6 +27,10 @@ fn reveal_hand(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
         "RevealHand",
         &["Defined", "ValidTgts", "RememberRevealed", "Look"],
     )?;
+    // With a target, `Defined$ Targeted` only repeats the target.
+    if p.has("ValidTgts") && !matches!(p.get("Defined"), None | Some("Targeted")) {
+        return unmapped("key:RevealHand.Defined");
+    }
     let who = subject(ctx, p, "You", None)?;
     // Looking is private to the controller; revealing is public, so the two never mix.
     match p.get("Look") {

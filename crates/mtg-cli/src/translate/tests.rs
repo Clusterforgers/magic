@@ -41,6 +41,10 @@ fn world() -> World {
             "Name:Zombie Token\nColors:blue,black\nTypes:Creature Zombie\nPT:*/*\nK:Menace\n",
         ),
         (
+            "c_3_2_a_vehicle_crew_1",
+            "Name:Vehicle Token\nTypes:Artifact Vehicle\nPT:3/2\nK:Crew:1\n",
+        ),
+        (
             "c_a_treasure_sac",
             "Name:Treasure Token\nTypes:Artifact Treasure\n",
         ),
@@ -803,6 +807,7 @@ mod g13h;
 mod g13i;
 mod g14s;
 mod g14t;
+mod g15s;
 mod g8a;
 mod g8c;
 mod g8d;
