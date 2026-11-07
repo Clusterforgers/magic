@@ -164,6 +164,9 @@ pub(crate) struct Held {
     locked: Vec<Keyword>,
     /// The mana cost its card prints, which a keyword given "equal to its mana cost" reads.
     own_cost: Option<mtg_core::mana::ManaCost>,
+    /// Whether it has the ability "This creature can't block" its suspected designation gives (CR 701.60c): an effect
+    /// that takes every ability away takes it too.
+    pub(crate) suspect_cant_block: bool,
     /// The effects that changed it.
     pub(crate) applied: Vec<Applied>,
 }
@@ -194,13 +197,11 @@ impl Held {
                 ));
             }
         }
-        // A suspected permanent has menace as long as it is suspected (CR 701.60c); its "can't block" is read by
-        // `characteristics::cant_block`.
-        if object
+        // A suspected permanent has menace and "This creature can't block" as long as it is suspected (CR 701.60c).
+        let suspected = object
             .permanent()
-            .is_some_and(crate::object::PermanentState::suspected)
-            && !keywords.contains(&Keyword::Menace)
-        {
+            .is_some_and(crate::object::PermanentState::suspected);
+        if suspected && !keywords.contains(&Keyword::Menace) {
             keywords.push(Keyword::Menace);
         }
         let chars = base(object);
@@ -214,6 +215,7 @@ impl Held {
             counter_keywords: Vec::new(),
             locked: Vec::new(),
             own_cost: object.mana_cost().cloned(),
+            suspect_cant_block: suspected,
             applied: Vec::new(),
         }
     }
@@ -314,6 +316,8 @@ impl Held {
             Modification::LoseAbilities | Modification::SetLandTypes(_) => {
                 self.keywords.clear();
                 self.abilities.clear();
+                // A land type that sets the land's abilities takes only those of its rules text (CR 305.7).
+                self.suspect_cant_block &= matches!(modification, Modification::SetLandTypes(_));
                 self.keep_newer_counter_keywords(stamp, |_| true);
             }
             Modification::GrantAbility(granted) => self.abilities.push(HeldAbility {

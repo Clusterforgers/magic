@@ -555,6 +555,7 @@ const BECAUSE: Record<
     | { ExiledUntil: unknown }
     | { ExiledUntilMonarch: unknown }
     | { Encoded: unknown }
+    | { Haunting: unknown }
     | { Manifested: unknown }
     | { Cloaked: unknown }
   >,
@@ -579,6 +580,7 @@ const BECAUSE: Record<
 function objectCause(cause: Extract<ZoneCause, object>): string {
   if ('Hideaway' in cause || 'Held' in cause || 'Sealed' in cause) return 'is exiled face down'
   if ('Encoded' in cause) return 'is exiled encoded on a creature'
+  if ('Haunting' in cause) return 'is exiled haunting a creature'
   if ('Manifested' in cause) return 'is manifested'
   if ('Cloaked' in cause) return 'is cloaked'
   return 'is exiled for a while'
@@ -845,6 +847,7 @@ function describePublic(event: Event, n: EventNames, context?: EventContext): Lo
   if ('Unprepared' in event) return line(`${n.card(event.Unprepared.object)} is no longer prepared`)
   if ('Suspected' in event) return line(`${n.card(event.Suspected.object)} becomes suspected`)
   if ('Unsuspected' in event) return line(`${n.card(event.Unsuspected.object)} is no longer suspected`)
+  if ('Solved' in event) return line(`${n.card(event.Solved.object)} is solved`)
   if ('BecameCopy' in event) {
     const { object, of } = event.BecameCopy
     return line(`${n.card(object)} becomes a copy of ${n.card(of.id)}`)

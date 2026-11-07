@@ -74,6 +74,7 @@ pub mod gift;
 mod graft;
 mod gravestorm;
 mod haste;
+mod haunt;
 mod hexproof;
 mod hideaway;
 mod horsemanship;
@@ -547,6 +548,7 @@ fn rules_of_later(keyword: &Keyword) -> &'static dyn KeywordRules {
         Keyword::Craft(_) => &craft::Craft,
         Keyword::UmbraArmor => &umbra_armor::UmbraArmor,
         Keyword::Cipher => &cipher::Cipher,
+        Keyword::Haunt => &haunt::Haunt,
         Keyword::Graft(_) => &graft::Graft,
         Keyword::Afflict(_) => &afflict::Afflict,
         Keyword::Replicate(_) => &replicate::Replicate,
@@ -950,6 +952,7 @@ mod tests {
             Keyword::Freerunning(cost()),
             Keyword::UmbraArmor,
             Keyword::Cipher,
+            Keyword::Haunt,
             Keyword::Graft(2),
             Keyword::Afflict(2),
             Keyword::Replicate(cost()),
@@ -1114,6 +1117,7 @@ mod tests {
         "Keyword.Freerunning",
         "Keyword.UmbraArmor",
         "Keyword.Cipher",
+        "Keyword.Haunt",
         "Keyword.Graft",
         "Keyword.Afflict",
         "Keyword.Replicate",
@@ -1264,6 +1268,7 @@ mod tests {
     #[case::dethrone(Keyword::Dethrone, Hooks { abilities: 1, ..Hooks::none() })]
     #[case::umbra_armor(Keyword::UmbraArmor, Hooks { abilities: 1, ..Hooks::none() })]
     #[case::cipher(Keyword::Cipher, Hooks { abilities: 1, ..Hooks::none() })]
+    #[case::haunt(Keyword::Haunt, Hooks { abilities: 2, ..Hooks::none() })]
     #[case::flash_sacrifice(Keyword::FlashSacrifice, Hooks { timing: true, abilities: 1, ..Hooks::none() })]
     #[case::graft(Keyword::Graft(2), Hooks { abilities: 2, ..Hooks::none() })]
     #[case::afflict(Keyword::Afflict(2), Hooks { abilities: 1, ..Hooks::none() })]

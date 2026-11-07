@@ -101,6 +101,7 @@ function faceOf(permanent: Groupable): string {
     (permanent.merged ?? []).map((part) => part.id),
     state?.prepared === true,
     state?.suspected === true,
+    state?.solved === true,
     state?.level ?? null,
     state?.phased_out === true,
   ])

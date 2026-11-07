@@ -2103,8 +2103,8 @@ fn protection(ctx: &mut Ctx, p: &Params, api: &str) -> Tr<Vec<Value>> {
     ])
 }
 
-/// `AlterAttribute`: a prepare card becomes prepared, a creature becomes suspected or no longer suspected
-/// (`Activate$ False`). The other attributes (solved, plotted, saddled) and unpreparing stay gaps named after the value.
+/// `AlterAttribute`: a prepare card becomes prepared, a Case becomes solved, a creature becomes suspected or no longer suspected
+/// (`Activate$ False`). The other attributes (plotted, saddled) and unpreparing stay gaps named after the value.
 fn alter_attribute(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
     only(
         p,
@@ -2116,6 +2116,7 @@ fn alter_attribute(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
         (Some("Prepared"), true) => "Prepare",
         (Some("Suspected"), true) => "Suspect",
         (Some("Suspected"), false) => "Unsuspect",
+        (Some("Solved"), true) => "Solve",
         (Some("Prepared"), false) => return unmapped("key:AlterAttribute.Activate"),
         (other, _) => {
             return unmapped(format!(

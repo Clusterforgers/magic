@@ -242,13 +242,14 @@ pub(crate) fn cant_be_turned_face_up(state: &GameState, id: ObjectId) -> bool {
     })
 }
 
-/// Whether an effect that applies to `id` says it can't block, or it is suspected (CR 701.60c): the one place the block
-/// rules read this restriction.
+/// Whether an effect that applies to `id` says it can't block, or it has the ability "This creature can't block" its
+/// suspected designation gives (CR 701.60c), which losing all abilities takes away: the one place the block rules read
+/// this restriction.
 pub(crate) fn cant_block(state: &GameState, id: ObjectId) -> bool {
     state
-        .object(id)
-        .and_then(GameObject::permanent)
-        .is_some_and(crate::object::PermanentState::suspected)
+        .layers()
+        .get(id)
+        .is_some_and(|held| held.suspect_cant_block)
         || restricted(state, id, |modification| {
             matches!(modification, Modification::CantBlock)
         })

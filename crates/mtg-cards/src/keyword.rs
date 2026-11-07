@@ -350,6 +350,8 @@ pub enum Keyword {
     UmbraArmor,
     /// Cipher (CR 702.99): as the spell resolves, its controller may exile it encoded on a creature they control; whenever that creature deals combat damage to a player, its controller may cast a copy of the encoded card without paying its mana cost, until the card leaves exile or the creature leaves the battlefield.
     Cipher,
+    /// Haunt (CR 702.55): when the creature dies, or the spell card is put into a graveyard after resolving, it is exiled haunting target creature; the card's "the creature it haunts dies" ability works from exile.
+    Haunt,
     /// Graft N (CR 702.58): it enters with N +1/+1 counters; whenever another creature enters, its controller may move a +1/+1 counter from it onto that creature.
     Graft(u32),
     /// Afflict N (CR 702.130): whenever the creature becomes blocked, the defending player loses N life.
@@ -553,6 +555,7 @@ impl Keyword {
         "Freerunning",
         "Umbra armor",
         "Cipher",
+        "Haunt",
         "Graft",
         "Afflict",
         "Replicate",
@@ -741,6 +744,7 @@ impl Keyword {
             Keyword::Spectacle(_) => "Spectacle",
             Keyword::Freerunning(_) => "Freerunning",
             Keyword::Cipher => "Cipher",
+            Keyword::Haunt => "Haunt",
             Keyword::Graft(_) => "Graft",
             Keyword::Afflict(_) => "Afflict",
             Keyword::Replicate(_) => "Replicate",
@@ -986,6 +990,7 @@ mod tests {
             Keyword::Freerunning(Cost::default()),
             Keyword::UmbraArmor,
             Keyword::Cipher,
+            Keyword::Haunt,
             Keyword::Graft(2),
             Keyword::Afflict(2),
             Keyword::Replicate(Cost::default()),

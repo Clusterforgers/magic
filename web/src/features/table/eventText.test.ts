@@ -76,6 +76,7 @@ const PUBLIC: Record<VariantName<Event>, [Event, string]> = {
   Unprepared: [{ Unprepared: { object: 3 } }, 'Forest is no longer prepared'],
   Suspected: [{ Suspected: { object: 3 } }, 'Forest becomes suspected'],
   Unsuspected: [{ Unsuspected: { object: 3 } }, 'Forest is no longer suspected'],
+  Solved: [{ Solved: { object: 3 } }, 'Forest is solved'],
   BecameCopy: [
     { BecameCopy: { object: 3, of: { id: 5, counter: 0 } } },
     'Forest becomes a copy of Serra Angel',
@@ -396,6 +397,17 @@ const MORE: [Event, string][] = [
   [
     { ZoneChanged: { object: 3, from: { Library: 1 }, to: 'Battlefield', cause: { Cloaked: { by: 0 } } } },
     'Forest is cloaked',
+  ],
+  [
+    {
+      ZoneChanged: {
+        object: 3,
+        from: { Graveyard: 0 },
+        to: 'Exile',
+        cause: { Haunting: { of: { id: 9, counter: 1 } } },
+      },
+    },
+    'Forest is exiled haunting a creature',
   ],
   [
     {

@@ -1560,6 +1560,13 @@ pub fn pattern_text(pattern: &TriggerPattern) -> Option<String> {
             w11d_dungeon_text(pattern)
         }
         TriggerPattern::DoorUnlocked { .. } => super::dk1c5_rooms::dk1c5_door_text(pattern),
+        TriggerPattern::ZoneChange {
+            what,
+            from: Some(ZoneKind::Battlefield),
+            to: Some(ZoneKind::Graveyard),
+        } if what.0 == [Pred::HauntedBy(Ref::This)] => {
+            Some("When the creature ~ haunts dies".to_owned())
+        }
         TriggerPattern::DayNightChanges { to } => Some(super::day_night::changes_text(*to)),
         TriggerPattern::Proliferated { who } => {
             Some(format!("Whenever {}", player_verb(who, "proliferate")?))

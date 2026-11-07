@@ -65,6 +65,7 @@ pub(super) fn move_object(
     (object.adventure, object.plotted) = (None, None);
     object.exiled_until = None;
     object.encoded_on = None;
+    object.haunting = None;
     object.monarch_wait = None;
     object.forget_cast(from, to);
     // What the spell paid for stays with the permanent it becomes, for its abilities to read.
@@ -506,6 +507,11 @@ pub(super) fn apply(state: &mut GameState, event: &Event) -> Result<(), EngineEr
                 && let Some(object) = state.objects.get_mut(object)
             {
                 object.encoded_on = Some(*by);
+            }
+            if let ZoneCause::Haunting { of } = cause
+                && let Some(object) = state.objects.get_mut(object)
+            {
+                object.haunting = Some(*of);
             }
             if let ZoneCause::ExiledUntilMonarch { by } = cause {
                 state.possible.linked_exile = true;

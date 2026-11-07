@@ -204,7 +204,7 @@ fn dispatch(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         Effect::Destroy { .. } => destroy::run(cx, effect),
         Effect::Exile { .. } => exile::run(cx, effect),
         Effect::ExileHidden { .. } => exile_hidden::run(cx, effect),
-        Effect::Encode { .. } => encode::run(cx, effect),
+        Effect::Encode { .. } | Effect::Haunt { .. } => encode::run(cx, effect),
         Effect::Remember { .. } | Effect::Forget { .. } | Effect::RememberValue { .. } => {
             remember::run(cx, effect)
         }
@@ -233,7 +233,9 @@ fn dispatch(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         Effect::Flip { .. } => flip::run(cx, effect),
         Effect::TurnFaceUp { .. } => turn_up::run(cx, effect),
         Effect::Prepare { .. } => prepare::run(cx, effect),
-        Effect::Suspect { .. } | Effect::Unsuspect { .. } => suspect::run(cx, effect),
+        Effect::Suspect { .. } | Effect::Unsuspect { .. } | Effect::Solve { .. } => {
+            suspect::run(cx, effect)
+        }
         Effect::Surveil { .. } => surveil::run(cx, effect),
         Effect::Proliferate { .. } => proliferate::run(cx, effect),
         Effect::Goad { .. } => goad::run(cx, effect),

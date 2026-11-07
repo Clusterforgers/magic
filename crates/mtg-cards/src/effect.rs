@@ -567,6 +567,14 @@ pub enum Effect {
         /// The creature it is encoded on.
         on: Ref,
     },
+    /// Exiles a card from a graveyard haunting a creature (haunt, CR 702.55a): it lies in exile linked to that creature
+    /// as it is now. Nothing happens when `what` is no card in a graveyard or `on` names no creature on the battlefield.
+    Haunt {
+        /// The card exiled.
+        what: Ref,
+        /// The creature it haunts.
+        on: Ref,
+    },
     /// The source remembers the objects `what` names in `slot` (Forge: Remember), added to what the slot holds. The memory
     /// belongs to the object that is the source of the ability, is part of the game state and ends when that object
     /// leaves its zone; `Ref::Remembered` reads it. An object that changes zones afterwards is another object and is no
@@ -837,6 +845,12 @@ pub enum Effect {
     /// Makes suspected permanents no longer suspected (CR 701.60d).
     Unsuspect {
         /// What stops being suspected.
+        what: Ref,
+    },
+    /// Solves Cases on the battlefield (CR 719.3): a solved Case stays solved until it leaves. One that is solved
+    /// already, is no Case or is not on the battlefield is passed over.
+    Solve {
+        /// What becomes solved.
         what: Ref,
     },
     /// The player surveils (CR 701.25): looks at the top cards of their library and puts any into the graveyard.

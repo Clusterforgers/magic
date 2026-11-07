@@ -72,6 +72,7 @@ fn kinds_of(ability: &Ability) -> &'static [ClauseKind] {
         | Ability::AltCast { .. }
         | Ability::CastOnly { .. }
         | Ability::OpeningHand
+        | Ability::OpeningReveal { .. }
         | Ability::CostModifier { .. } => &[ClauseKind::Static],
         Ability::Loyalty { .. } => &[ClauseKind::Loyalty],
         Ability::Activated { .. } => &[ClauseKind::Activated],
@@ -233,6 +234,7 @@ impl<'a> Pairer<'a> {
         self.champions();
         self.r5g_hand_keywords();
         self.static_pairs();
+        self.haunt_pairs();
         self.exact();
         self.blocks();
         self.leftovers();
@@ -458,6 +460,27 @@ impl<'a> Pairer<'a> {
                     Some(Ability::Keyword(found)) if bare(found) == bare(keyword)
                 ) && (offset == 0 || !self.taken[at + offset])
             })
+    }
+
+    /// A haunt creature's "When ~ enters or the creature it haunts dies, ..." is one sentence of two abilities: the
+    /// enters trigger and the same trigger from exile when the haunted creature dies (CR 702.55).
+    fn haunt_pairs(&mut self) {
+        let abilities = self.abilities;
+        for at in 1..abilities.len() {
+            if self.taken[at - 1] || self.taken[at] {
+                continue;
+            }
+            let written = haunt_pair_texts(&abilities[at - 1], &abilities[at]);
+            if written.is_empty() {
+                continue;
+            }
+            if let Some(slot) = self.find_text(&[ClauseKind::Triggered], &written, false) {
+                self.settle(at - 1, slot, ClauseState::Reads { ability: at - 1 });
+                self.taken[at] = true;
+                self.slot_of[at] = Some(slot);
+                self.places[at] = self.places[at - 1];
+            }
+        }
     }
 
     /// Two statics under one condition are one sentence of the card.
@@ -737,6 +760,46 @@ pub(super) fn unmatched(ability: &Ability, at: usize, wanted: &str, clause: &str
             construct: blame::construct(ability),
         },
     }
+}
+
+/// The sentence of a haunt creature's two abilities: `enters` is "When ~ enters, X" and `haunted` the same trigger from
+/// exile on "the creature it haunts dies"; none for any other pair.
+pub(crate) fn haunt_pair_texts(enters: &Ability, haunted: &Ability) -> Vec<String> {
+    let (
+        Ability::Triggered {
+            when: first,
+            intervening_if: None,
+            limit: None,
+            from: crate::refs::ZoneKind::Battlefield,
+            targets,
+            effects,
+        },
+        Ability::Triggered {
+            when: second,
+            intervening_if: None,
+            limit: None,
+            from: crate::refs::ZoneKind::Exile,
+            targets: other_targets,
+            effects: other_effects,
+        },
+    ) = (enters, haunted)
+    else {
+        return Vec::new();
+    };
+    let this = crate::refs::Selector::this();
+    let haunts = crate::refs::Selector(vec![crate::refs::Pred::HauntedBy(crate::refs::Ref::This)]);
+    let entering = matches!(first, TriggerPattern::ZoneChange { what, from: None, to: Some(crate::refs::ZoneKind::Battlefield) } if *what == this);
+    let dying = matches!(second, TriggerPattern::ZoneChange { what, from: Some(crate::refs::ZoneKind::Battlefield), to: Some(crate::refs::ZoneKind::Graveyard) } if *what == haunts);
+    if !entering || !dying || targets != other_targets || effects != other_effects {
+        return Vec::new();
+    }
+    written_variants(enters)
+        .into_iter()
+        .filter_map(|text| {
+            text.strip_prefix("When ~ enters, ")
+                .map(|rest| format!("When ~ enters or the creature it haunts dies, {rest}"))
+        })
+        .collect()
 }
 
 #[cfg(test)]

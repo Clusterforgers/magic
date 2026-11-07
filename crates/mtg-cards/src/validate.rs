@@ -708,6 +708,7 @@ impl<'a> Walker<'a> {
             | Pred::SharesSubtype(r)
             | Pred::ExiledWith(r)
             | Pred::EncodedWith(r)
+            | Pred::HauntedBy(r)
             | Pred::Crewed(r)
             | Pred::Saddled(r)
             | Pred::DamagedBy(r)
@@ -802,6 +803,7 @@ impl<'a> Walker<'a> {
             | Pred::Renowned
             | Pred::Prepared
             | Pred::Suspected
+            | Pred::Solved
             | Pred::DoubleFaced
             | Pred::Transformed
             | Pred::Paired
@@ -2077,6 +2079,7 @@ impl<'a> Walker<'a> {
         match pattern {
             TriggerPattern::ZoneChange { what, .. }
             | TriggerPattern::ZoneChangeExcept { what, .. }
+            | TriggerPattern::ResolvedToGraveyard { what }
             | TriggerPattern::Attacks { what }
             | TriggerPattern::AttacksAlone { what } => {
                 self.at("what", |w| w.selector(what));
@@ -3081,6 +3084,7 @@ impl Walker<'_> {
             | Effect::Prepare { what }
             | Effect::Suspect { what }
             | Effect::Unsuspect { what }
+            | Effect::Solve { what }
             | Effect::Goad { what }
             | Effect::Explore { what }
             => w.at("what", |w| w.reference(what, Kind::Object)),
@@ -3100,7 +3104,7 @@ impl Walker<'_> {
             }
             Effect::Remember { what, .. } => w.at("what", |w| w.reference(what, Kind::Either)),
             Effect::RememberValue { value, .. } => w.at("value", |w| w.amount(value)),
-            Effect::Encode { what, on } => {
+            Effect::Encode { what, on } | Effect::Haunt { what, on } => {
                 w.at("what", |w| w.reference(what, Kind::Object));
                 w.at("on", |w| w.reference(on, Kind::Object));
             }
@@ -4151,6 +4155,12 @@ impl Walker<'_> {
             alt @ Ability::AltCast { .. } => w.alt_cast(alt),
             Ability::CastOnly { condition } => w.w17c_cast_only(condition),
             Ability::OpeningHand => {}
+            Ability::OpeningReveal { when, effects } => {
+                w.at("when", |w| w.trigger_pattern(when));
+                let saved = std::mem::replace(&mut w.scope.in_trigger, true);
+                w.effect_list("effects", effects, false);
+                w.scope.in_trigger = saved;
+            }
             Ability::Keyword(keyword) => w.keyword_ability(keyword),
             Ability::Manual { reason, span } => {
                 if reason.trim().is_empty() {

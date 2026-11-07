@@ -105,6 +105,11 @@ pub fn amount(ctx: &Ctx, text: &str) -> Tr<Value> {
     {
         return negate(ctx, inner);
     }
+    // Forge sets this part to the life the latest loss of the ability took ("you gain life equal to the life lost this
+    // way"); its script value is a placeholder.
+    if text == "AFLifeLost" && ctx.svar(text).map(str::trim) == Some("Number$0") {
+        return Ok(json!("LifeLostThisWay"));
+    }
     if text == "VoteNum"
         && let Some(name) = &ctx.vote_num
     {

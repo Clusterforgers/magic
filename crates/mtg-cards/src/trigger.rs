@@ -78,6 +78,12 @@ pub enum TriggerPattern {
         #[serde(default, skip_serializing_if = "Option::is_none")]
         to: Option<ZoneKind>,
     },
+    /// A spell matching the selector resolved and its card was put into a graveyard ("when this spell card is put into a
+    /// graveyard after resolving", haunt CR 702.55a); a countered spell is not.
+    ResolvedToGraveyard {
+        /// The spell.
+        what: Selector,
+    },
     /// A creature matching the selector attacks.
     Attacks {
         /// The attacker.

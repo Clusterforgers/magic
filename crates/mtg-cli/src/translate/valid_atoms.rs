@@ -42,6 +42,7 @@ pub fn atom(prop: &str) -> Option<Vec<Value>> {
         "IsRenowned" => return one(json!("Renowned")),
         "IsPrepared" => return one(json!("Prepared")),
         "IsSuspected" => return one(json!("Suspected")),
+        "IsSolved" => return one(json!("Solved")),
         "Transformed" => return one(json!("Transformed")),
         "DoubleFaced" => return one(json!("DoubleFaced")),
         "IsSaddled" => return one(json!({"HasKeyword": "Saddled"})),

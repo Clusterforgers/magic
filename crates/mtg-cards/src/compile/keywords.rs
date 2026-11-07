@@ -755,6 +755,7 @@ fn plain(name: &str) -> Option<Keyword> {
         "dethrone" => Keyword::Dethrone,
         "umbra armor" => Keyword::UmbraArmor,
         "cipher" => Keyword::Cipher,
+        "haunt" => Keyword::Haunt,
         "exploit" => Keyword::Exploit,
         "soulbond" => Keyword::Soulbond,
         "extort" => Keyword::Extort,
@@ -1352,6 +1353,7 @@ mod tests {
     #[case::dethrone("dethrone", Keyword::Dethrone)]
     #[case::umbra_armor("Umbra armor", Keyword::UmbraArmor)]
     #[case::cipher("Cipher", Keyword::Cipher)]
+    #[case::haunt("Haunt", Keyword::Haunt)]
     #[case::graft("Graft 2", Keyword::Graft(2))]
     #[case::afflict("Afflict 3", Keyword::Afflict(3))]
     #[case::renown("Renown 2", Keyword::Renown(2))]
@@ -1853,6 +1855,7 @@ mod tests {
             "Improvise",
             "Affinity for artifacts",
             "Cipher",
+            "Haunt",
             "Graft 2",
             "Afflict 2",
             "Replicate {1}{R}",

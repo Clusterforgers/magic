@@ -181,6 +181,7 @@ fn fold_event(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
         Event::Unprepared { object } => set_prepared(state, *object, false),
         Event::Suspected { object } => set_suspected(state, *object, true),
         Event::Unsuspected { object } => set_suspected(state, *object, false),
+        Event::Solved { object } => set_solved(state, *object),
         Event::Crewed { .. } => tally_crewed(state, event),
         // The change follows as events of its own; the action restarts the round, so the other seats see it, and a look
         // by hand records what the seat learned.
@@ -804,6 +805,20 @@ fn set_suspected(state: &mut GameState, id: ObjectId, suspected: bool) -> Result
     }
     perm.designations.suspected = suspected;
     state.possible.suspected |= suspected;
+    Ok(())
+}
+
+/// A permanent becomes solved (CR 719.3): it was not, and it is a permanent.
+fn set_solved(state: &mut GameState, id: ObjectId) -> Result<(), EngineError> {
+    let perm = state
+        .objects
+        .get_mut(&id)
+        .and_then(|object| object.permanent.as_mut())
+        .ok_or_else(|| invalid(format!("{id:?} is not a permanent")))?;
+    if perm.designations.solved {
+        return Err(invalid(format!("{id:?} is solved already")));
+    }
+    perm.designations.solved = true;
     Ok(())
 }
 
