@@ -23,6 +23,9 @@ pub(super) fn combat_texts(rule: &GameRule) -> Vec<String> {
         CombatQuirk::MustBeBlocked(Blocking::Every) => "All creatures able to block ~ do so",
         CombatQuirk::MustBeBlocked(Blocking::AtLeastOne) => "~ must be blocked if able",
         CombatQuirk::AssignsNoCombatDamage => "~ assigns no combat damage",
+        CombatQuirk::AssignsAsUnblocked => {
+            "You may have ~ assign its combat damage as though it weren't blocked"
+        }
         _ => return Vec::new(),
     };
     vec![text.to_owned()]

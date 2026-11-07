@@ -8,7 +8,9 @@ use mtg_core::ids::ObjectId;
 use mtg_core::mana::ManaCost;
 
 use crate::abilities::AbilityRef;
-use crate::ability_reader::{abilities_of, definition_has_cost_modifier, keyword_adding};
+use crate::ability_reader::{
+    abilities_of, definition_has_cost_modifier, is_cost_modifier, keyword_adding, may_hold,
+};
 use crate::characteristics::controller_of_object;
 use crate::resolve::Scope;
 use crate::state::GameState;
@@ -64,7 +66,12 @@ pub(crate) fn modified(
         let Some(holder) = state.object(id) else {
             continue;
         };
-        if !definition_has_cost_modifier(holder.card()) {
+        if !may_hold(
+            state,
+            holder,
+            definition_has_cost_modifier,
+            is_cost_modifier,
+        ) {
             continue;
         }
         let controller = controller_of_object(state, holder);

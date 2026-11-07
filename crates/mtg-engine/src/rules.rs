@@ -22,7 +22,7 @@ use mtg_core::ids::{EffectId, ObjectId, PlayerId};
 use mtg_core::mana::ManaCost;
 use serde::{Deserialize, Serialize};
 
-use crate::ability_reader::{abilities_of, definition_has_rule};
+use crate::ability_reader::{abilities_of, definition_has_rule, is_rule, may_hold};
 use crate::characteristics::controller_of_object;
 use crate::choose::Target;
 use crate::combat::AttackTarget;
@@ -1273,8 +1273,7 @@ fn gather(state: &GameState) -> RulesInForce {
             let Some(object) = state.object(id).filter(|o| o.kind() != ObjectKind::Ability) else {
                 continue;
             };
-            // A rule can only be printed, so a card that prints none has none whatever the layers did.
-            if !definition_has_rule(object.card()) {
+            if !may_hold(state, object, definition_has_rule, is_rule) {
                 continue;
             }
             let controller = controller_of_object(state, object);

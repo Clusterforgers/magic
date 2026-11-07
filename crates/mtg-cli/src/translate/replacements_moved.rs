@@ -194,12 +194,60 @@ pub fn shield(ctx: &mut Ctx, p: &Params, duration: &str) -> Tr<Vec<Value>> {
     }})])
 }
 
+/// A `Moved` line of the card itself to a graveyard, or from the battlefield to anywhere; `None` for another move.
+pub fn self_moved(ctx: &mut Ctx, p: &Params, line_condition: Option<&Value>) -> Option<Tr<Value>> {
+    let dies =
+        p.get("Origin") == Some("Battlefield") && p.get("ActiveZones") == Some("Battlefield");
+    if p.get("Destination") == Some("Graveyard") && (!p.has("ActiveZones") || dies) {
+        return Some(self_to_graveyard(ctx, p, line_condition));
+    }
+    if dies && !p.has("Destination") {
+        return Some(self_leaves(ctx, p, line_condition));
+    }
+    None
+}
+
+/// "If this permanent would leave the battlefield, exile it instead": the move from the battlefield to any zone becomes
+/// a move to exile.
+pub fn self_leaves(ctx: &mut Ctx, p: &Params, line_condition: Option<&Value>) -> Tr<Value> {
+    if line_condition.is_some() {
+        return unmapped("key:Replacement.Moved.condition");
+    }
+    let Some(name) = p.get("ReplaceWith") else {
+        return unmapped("replacement:Moved-without-ReplaceWith");
+    };
+    let raw = ctx.sub(name)?;
+    let (part_condition, part) = prefixed(ctx, &raw)?;
+    if part_condition.is_some() {
+        return unmapped("key:Replacement.Moved.condition");
+    }
+    check_keys(
+        &part,
+        "Replacement",
+        &["DB", "Origin", "Destination", "Defined"],
+        |_, _| false,
+    )?;
+    let exiles = part.get("DB") == Some("ChangeZone")
+        && matches!(part.get("Origin"), Some("All" | "Battlefield"))
+        && part.get("Destination") == Some("Exile")
+        && part.get("Defined") == Some("ReplacedCard");
+    if !exiles {
+        return unmapped("replacement:Moved-not-an-exile");
+    }
+    Ok(json!({"Replacement": {
+        "when": {"ZoneChange": {"what": ["This"], "from": "Battlefield"}},
+        "by": {"MoveTo": "Exile"}}}))
+}
+
 /// "If this would be put into a graveyard from anywhere, exile it instead": the card itself, in every zone.
 pub fn self_to_graveyard(ctx: &mut Ctx, p: &Params, line_condition: Option<&Value>) -> Tr<Value> {
     if line_condition.is_some() {
         return unmapped("key:Replacement.Moved.condition");
     }
-    if p.has("Origin") {
+    // "If this creature would die": the line works from the battlefield and replaces the move from there alone.
+    let dies =
+        p.get("Origin") == Some("Battlefield") && p.get("ActiveZones") == Some("Battlefield");
+    if !dies && (p.has("Origin") || p.has("ActiveZones")) {
         return unmapped("key:Replacement.Moved.Origin");
     }
     let Some(name) = p.get("ReplaceWith") else {

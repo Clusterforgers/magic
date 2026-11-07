@@ -21,7 +21,9 @@ use mtg_core::ids::{ObjectId, PlayerId};
 use mtg_core::mana::{ManaCost, ManaSymbol};
 
 use super::{Ctx, What, targets};
-use crate::ability_reader::{abilities_of, definition_has_cost_modifier};
+use crate::ability_reader::{
+    abilities_of, definition_has_cost_modifier, is_cost_modifier, may_hold,
+};
 use crate::characteristics::controller_of_object;
 use crate::choose::Choices;
 use crate::keywords::affinity;
@@ -118,7 +120,12 @@ fn gathered(state: &GameState, spell: ObjectId, caster: PlayerId) -> Vec<Modifie
         else {
             continue;
         };
-        if !definition_has_cost_modifier(object.card()) {
+        if !may_hold(
+            state,
+            object,
+            definition_has_cost_modifier,
+            is_cost_modifier,
+        ) {
             continue;
         }
         let controller = if id == spell {

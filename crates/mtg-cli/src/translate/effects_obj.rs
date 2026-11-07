@@ -945,6 +945,7 @@ fn animate(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
             "Triggers",
             "Abilities",
             "staticAbilities",
+            "Replacements",
             "RemoveCreatureTypes",
             "RemoveCardTypes",
             "RemoveLandTypes",

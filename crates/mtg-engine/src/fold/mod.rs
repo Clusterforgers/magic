@@ -546,6 +546,12 @@ fn create_effect(
         if matches!(**granted, mtg_cards::ability::Ability::Replacement { .. }) {
             state.possible.replacements = true;
         }
+        if crate::ability_reader::is_rule(granted) {
+            state.rules_possible = true;
+        }
+        if crate::ability_reader::is_cost_modifier(granted) {
+            state.possible.costs = true;
+        }
         if triggers_something(granted) {
             state.triggers_possible = true;
         }
