@@ -26,13 +26,13 @@
                 "RevealUntil": {
                   "filter": [{ "Type": "Creature" }],
                   "as": "found",
-                  "revealed_as": "revealed2"
+                  "revealed_as": "revealed"
                 }
               },
               { "Move": { "what": { "Bound": "found" }, "to": "Hand" } },
               {
                 "Move": {
-                  "what": { "Bound": "revealed2" },
+                  "what": { "Bound": "revealed" },
                   "to": { "Library": { "place": "Bottom", "order": "Random" } }
                 }
               }

@@ -899,6 +899,13 @@ fn animate(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
     let duration = duration(p.get("Duration"))?;
     // `AnimateAll` names the objects by a valid-string.
     let affected = match p.get("ValidCards") {
+        // "creatures target player controls": Forge narrows the group to the target's at run time, the selector would not.
+        Some(_)
+            if p.get("ValidTgts")
+                .is_some_and(|valid| valid.contains("Player")) =>
+        {
+            return unmapped("key:AnimateAll.ValidTgts=Player");
+        }
         Some(valid) => json!({"Each": selector_any(ctx, valid)?}),
         None => objects(subject(ctx, p, "Self", None)?)?,
     };
