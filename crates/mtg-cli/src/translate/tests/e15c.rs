@@ -122,7 +122,7 @@ fn evidence_collected_is_the_paid_additional_cost(#[case] keys: &str, #[case] ex
 fn collected_cards_without_the_evidence_wording_stay_a_gap() {
     let rest = "A:SP$ Draw | NumCards$ 1 | SubAbility$ DBGain\nSVar:DBGain:DB$ GainLife | LifeAmount$ 2 | ConditionDefined$ Collected | ConditionPresent$ Card\nOracle:Draw a card. You gain 2 life for each card exiled this way.\n";
     let (_, found) = translated(&sorcery(&format!("{OWN} | Cost$ CollectEvidence<6>"), rest));
-    assert!(!found.is_empty());
+    assert!(!found.is_empty(), "{found:?}");
 }
 
 fn god(keys: &str) -> String {

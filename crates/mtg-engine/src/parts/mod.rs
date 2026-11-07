@@ -188,6 +188,19 @@ fn amount(amount: &Amount, item: &CostItem) -> Result<(u32, bool), &'static str>
     }
 }
 
+/// A behold, exiling what it beholds when the cost says so.
+fn behold_pick(item: &CostItem) -> Result<(Part, bool), &'static str> {
+    let CostItem::Behold {
+        filter,
+        count,
+        exile,
+    } = item
+    else {
+        return Err("Cost.Behold");
+    };
+    pick(Kind::Behold(*exile), filter, count, item)
+}
+
 fn pick(
     kind: Kind,
     filter: &Selector,
@@ -269,11 +282,7 @@ fn read_more(item: &CostItem) -> Result<Option<(Part, bool)>, &'static str> {
                 false,
             )
         }
-        CostItem::Behold {
-            filter,
-            count,
-            exile,
-        } => pick(Kind::Behold(*exile), filter, count, item)?,
+        CostItem::Behold { .. } => behold_pick(item)?,
         CostItem::ExiledToGraveyard { filter, count } => {
             pick(Kind::ExiledToGraveyard, filter, count, item)?
         }

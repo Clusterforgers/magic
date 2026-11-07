@@ -109,7 +109,8 @@ fn the_beheld_card_is_exiled_and_comes_back_when_the_champion_leaves(
     assert!(!names(driver.state(), Zone::Hand(pid(0))).contains(&"Goat".to_owned()));
     driver.begin_activation("Champion")?;
     settle(&mut driver)?;
-    assert!(names(driver.state(), Zone::Exile).is_empty());
+    let exiled = names(driver.state(), Zone::Exile);
+    assert!(exiled.is_empty(), "{exiled:?}");
     assert_eq!(names(driver.state(), Zone::Hand(pid(0))), ["Goat"]);
     Ok(())
 }
