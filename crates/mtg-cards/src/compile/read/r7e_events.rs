@@ -9,7 +9,7 @@ use super::selectors::{Form, phrase_text};
 use super::triggers::{happening, pattern_text, player_verb, subject_text};
 use crate::ability::Ability;
 use crate::did::Action;
-use crate::refs::{Pred, Ref, Selector};
+use crate::refs::{Pred, Ref, Selector, ZoneKind};
 use crate::trigger::TriggerPattern;
 use mtg_core::card::{CardType, Subtype};
 
@@ -169,6 +169,13 @@ fn player_action(action: Action, who: &Ref) -> Option<String> {
             Ref::You => "you shuffle your library".to_owned(),
             _ => format!("{} their library", player_verb(who, "shuffle")?),
         },
+        Action::SearchedOwnLibrary => match who {
+            Ref::You => "you search your library",
+            Ref::Opponents => "an opponent searches their library",
+            Ref::EachPlayer => "a player searches their library",
+            _ => return None,
+        }
+        .to_owned(),
         Action::LostGame => match who {
             Ref::You => return None,
             _ => format!("{} the game", player_verb(who, "lose")?),
@@ -191,11 +198,19 @@ fn land_played(what: &Selector) -> Option<String> {
         },
         None => Ref::EachPlayer,
     };
+    // "Whenever you play a land from exile": the land arrived on the battlefield from exile.
+    let from = match rest.last() {
+        Some(Pred::ArrivedFrom(ZoneKind::Exile)) => {
+            rest.pop();
+            " from exile"
+        }
+        _ => "",
+    };
     if rest.is_empty() || rest.contains(&Pred::Other) {
         return None;
     }
     Some(format!(
-        "{} {}",
+        "{} {}{from}",
         player_verb(&who, "play")?,
         subject_text(&Selector(rest))?
     ))
@@ -223,6 +238,14 @@ pub(super) fn r7e_did_text(pattern: &TriggerPattern) -> Option<String> {
     }
     if *action == Action::Transformed && what.0 == [Pred::This] {
         return Some("When ~ transforms into ~".to_owned());
+    }
+    if *action == Action::Exiled
+        && let [rest @ .., Pred::In(ZoneKind::Battlefield)] = what.0.as_slice()
+    {
+        return Some(format!(
+            "Whenever {} is exiled from the battlefield",
+            subject_text(&Selector(rest.to_vec()))?
+        ));
     }
     pattern_text(&as_pattern(*action, what)?)
 }
@@ -401,6 +424,9 @@ fn other_heads(when: &TriggerPattern) -> Vec<String> {
                     .map(str::to_owned),
                 );
             }
+        }
+        TriggerPattern::W15cClashWon { who: Ref::You } => {
+            heads.push("Whenever you clash and win".to_owned());
         }
         // The kicker of the spell cast cannot change, so the condition checked again on resolution is the same.
         TriggerPattern::SpellCast { what, by: Ref::You } if what.0 == [Pred::Kicked] => {

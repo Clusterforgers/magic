@@ -641,8 +641,8 @@ pub enum TriggerPattern {
     /// One or more events the pattern describes that happen together ("one or more creatures you control deal combat
     /// damage to a player", "one or more cards are put into your graveyard from your library"): the events of one
     /// batch (one damage step, one effect) trigger the ability once, for each player they are about when they are
-    /// about players. `Amount::Triggering` is how many events there were. It is the whole pattern of a triggered
-    /// ability, never part of an `AnyOf`.
+    /// about players. `Amount::Triggering` is how many events there were (the damage dealt for damage, the counters for
+    /// counters). It is the whole pattern of a triggered ability, never part of an `AnyOf`.
     Batch(Box<TriggerPattern>),
     /// The nth time in a turn that an event happens to a player ("whenever you draw your second card each turn",
     /// "when you cast your first spell each turn"): the turn's count of that kind of event by that player, which

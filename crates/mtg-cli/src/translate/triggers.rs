@@ -114,7 +114,7 @@ pub fn triggered(ctx: &mut Ctx, body: &str) -> Tr<Value> {
     let pays = matches!(effects.as_slice(), [only] if only.get("Pay").is_some());
     let decider = p.get("OptionalDecider").is_some();
     let printed = p.get("TriggerDescription");
-    effects = super::r6a::printed(printed, (decider, pays), itself, effects, &ctx.targets)?;
+    effects = super::r6a::printed(printed, (decider, pays), &when, effects, &ctx.targets)?;
     printed_more(&p, &effects)?;
     effects = decided(ctx, &p, &when, (pays, itself), effects)?;
     if let Some(found) = &intervening
@@ -380,6 +380,9 @@ pub fn delayed_when(ctx: &Ctx, p: &Params) -> Tr<(Value, bool)> {
 
 pub(super) fn pattern(ctx: &Ctx, p: &Params) -> Tr<Value> {
     let mode = p.get("Mode").unwrap_or_default();
+    if let Some(found) = super::triggers_g13c::pattern(ctx, p, mode) {
+        return found;
+    }
     if let Some(found) = super::triggers_caused::pattern(ctx, p, mode) {
         return found;
     }
@@ -619,7 +622,13 @@ fn card_and_player(ctx: &Ctx, valid: &str) -> Tr<(Vec<Value>, Option<&'static st
 
 /// `Discarded` and `Cycled`: a card is discarded or cycled, by a player or as itself.
 fn card_event(ctx: &Ctx, p: &Params, variant: &str) -> Tr<Value> {
-    keys(p, variant, &["ValidCard"])?;
+    let p = &super::triggers_g13c::g13c_own_discard(p, variant);
+    let read: &[&str] = if variant == "Discarded" {
+        &["ValidCard", "ValidPlayer"]
+    } else {
+        &["ValidCard"]
+    };
+    keys(p, variant, read)?;
     let (what, by) = card_and_player(ctx, p.get("ValidCard").unwrap_or("Card"))?;
     let mut pattern = json!({});
     if !what.is_empty() {
@@ -627,6 +636,12 @@ fn card_event(ctx: &Ctx, p: &Params, variant: &str) -> Tr<Value> {
     }
     if let Some(by) = by {
         pattern["by"] = json!(by);
+    }
+    if let Some(word) = p.get("ValidPlayer") {
+        if pattern.get("by").is_some() {
+            return unmapped(format!("key:Trigger.{variant}.ValidPlayer-and-card-owner"));
+        }
+        pattern["by"] = player_ref(Some(word))?;
     }
     Ok(json!({ variant: pattern }))
 }

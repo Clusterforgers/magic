@@ -1,19 +1,20 @@
 //! Printed trigger words a Forge script leaves out: a printed "you may" over the one step of a trigger whose script has
 //! no decider (the step becomes optional), and a printed "target creature you control" whose script targets any
 //! creature, or a printed "it deals" of another object whose script lets the card deal the damage (gaps: the script and
-//! the card disagree).
+//! the card disagree; the attacker of an attack trigger deals it).
 
 use serde_json::{Value, json};
 
 use super::ctx::{Tr, unmapped};
 
 /// The effects of a trigger with its printed words applied: a printed "you may" over the one step asks unless the
-/// script has a decider or a cost to pay (`(decider, pays)`); a printed "you may search" without a decider, a printed
-/// own target left open and a printed "it deals" from the card are gaps.
+/// script has a decider or a cost to pay (`(decider, pays)`); a printed "it deals" of the attacker the event (`when`) is
+/// about makes it the source; a printed "you may search" without a decider, a printed own target left open and any
+/// other printed "it deals" from the card are gaps.
 pub fn printed(
     description: Option<&str>,
     (decider, pays): (bool, bool),
-    itself: bool,
+    when: &Value,
     effects: Vec<Value>,
     targets: &[Value],
 ) -> Tr<Vec<Value>> {
@@ -32,9 +33,16 @@ pub fn printed(
     if unfiltered_own_target(description, targets) {
         return unmapped("trigger:printed-own-target-unfiltered");
     }
-    if !itself && other_deals_from_host(description, &effects) {
-        return unmapped("trigger:printed-it-deals-from-host");
-    }
+    let effects = if !super::triggers::is_about_itself(when)
+        && other_deals_from_host(description, &effects)
+    {
+        let Some(dealt) = g13c_dealt_by_the_attacker(when, &effects) else {
+            return unmapped("trigger:printed-it-deals-from-host");
+        };
+        dealt
+    } else {
+        effects
+    };
     Ok(
         if !decider && !pays && printed_may_step(description, &effects) {
             super::frame::ask(effects, &json!("You"))
@@ -129,11 +137,30 @@ fn other_deals_from_host(description: Option<&str>, effects: &[Value]) -> bool {
     let Some((head, step)) = text.split_once(", ") else {
         return false;
     };
-    let about_the_card = ["CARDNAME", "this ", "This ", "~"]
+    let about_the_card = ["CARDNAME", "NICKNAME", "this ", "This ", "~"]
         .iter()
         .any(|word| head.contains(word));
     !about_the_card
         && step.starts_with("it deals ")
         && json.contains("\"DealDamage\":")
         && !json.contains("\"source\":")
+}
+
+/// The one damage step of a trigger about an attacker ("Whenever a Dragon you control attacks, it deals 2 damage") or a
+/// blocked creature, with that creature as its source (`Triggering` is the attacker); `None` for any other shape.
+fn g13c_dealt_by_the_attacker(when: &Value, effects: &[Value]) -> Option<Vec<Value>> {
+    let about_an_attacker = ["Attacks", "BecomesBlocked"].iter().any(|key| {
+        when.get(key)
+            .is_some_and(|inner| inner.get("what").is_some())
+    });
+    let [only] = effects else {
+        return None;
+    };
+    let damage = only.get("DealDamage")?.as_object()?;
+    if !about_an_attacker || damage.contains_key("source") {
+        return None;
+    }
+    let mut damage = damage.clone();
+    damage.insert("source".to_owned(), json!("Triggering"));
+    Some(vec![json!({ "DealDamage": damage })])
 }
