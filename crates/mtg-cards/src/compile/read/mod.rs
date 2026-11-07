@@ -136,6 +136,8 @@ mod r7b_wordings;
 mod r7c_when;
 mod r7d_statics;
 mod r7e_events;
+mod r9w_cant;
+mod r9w_players;
 mod random_moves;
 mod render;
 mod repeat;

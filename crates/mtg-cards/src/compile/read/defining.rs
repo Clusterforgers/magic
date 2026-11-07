@@ -288,6 +288,10 @@ fn sentence(power: &Amount, toughness: &Amount) -> Option<String> {
 
 /// The wordings of a count: `value_text`, and the sum that begins with a number as a word ("one plus the number of ...").
 pub(super) fn value_texts(amount: &Amount) -> Vec<String> {
+    let players = super::r9w_players::r9w_number_texts(amount);
+    if !players.is_empty() {
+        return players;
+    }
     let Some(text) = value_text(amount) else {
         return Vec::new();
     };
@@ -324,6 +328,9 @@ pub(super) fn value_text(amount: &Amount) -> Option<String> {
 
 pub(super) fn counting_text(amount: &Amount) -> Option<String> {
     match amount {
+        Amount::Players(Ref::PlayersWhere { .. }) => super::r9w_players::r9w_number_texts(amount)
+            .into_iter()
+            .next(),
         Amount::DieResult(which) => Some(super::chance::c11e_result_text(*which).to_owned()),
         Amount::Tallied {
             who: Ref::You,

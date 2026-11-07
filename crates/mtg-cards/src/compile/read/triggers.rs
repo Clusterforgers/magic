@@ -1519,7 +1519,8 @@ pub fn pattern_text(pattern: &TriggerPattern) -> Option<String> {
             Some("When you cast ~".to_owned())
         }
         TriggerPattern::SpellCast { what, by } => super::r7e_events::r7e_cast_text(pattern)
-            .or_else(|| super::c4_cast_hand::cast_text(what, by)),
+            .or_else(|| super::c4_cast_hand::cast_text(what, by))
+            .or_else(|| super::r9w_players::r9w_cast_text(what, by)),
         TriggerPattern::Did { .. } => super::r7e_events::r7e_did_text(pattern),
         TriggerPattern::SpellCopied { what, by } => super::w2e_copied::w2e_copy_text(what, by),
         TriggerPattern::Sacrificed { what, by } => Some(format!(

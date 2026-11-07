@@ -9,7 +9,7 @@
       "abilities": [
         { "Keyword": "Flying" },
         { "Keyword": "Trample" },
-        { "Rule": { "rule": { "Cant": { "who": "You", "action": { "SkipStep": "Draw" } } } } },
+        { "Rule": { "rule": { "SkipDrawStep": "You" } } },
         {
           "Triggered": {
             "when": {

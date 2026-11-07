@@ -152,6 +152,14 @@ fn becomes_part(r: &mut Reader<'_>) -> Option<Vec<Modification>> {
     while let Some(name) = r.name() {
         types.push(Subtype(name.to_owned()));
     }
+    // A basic land type replaces the land's types (CR 305.7): "target land becomes an Island" (w9).
+    if found.is_none()
+        && types.len() == 1
+        && super::land_types::r9w_basic(&types[0])
+        && r.peek_word() != Some("with")
+    {
+        return Some(vec![Modification::SetLandTypes(types)]);
+    }
     // The data keeps the creature types before the colors, as the layers apply them.
     let mut mods = Vec::new();
     if !types.is_empty() {

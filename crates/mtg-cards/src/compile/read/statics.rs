@@ -1578,6 +1578,9 @@ fn rule_texts(rule: &GameRule, condition: Option<&Condition>, from: ZoneKind) ->
     if matches!(from, ZoneKind::Graveyard | ZoneKind::Exile) {
         return super::c8_eg_cast_itself::c8_eg_texts(rule, condition, from);
     }
+    if let (GameRule::Cant { who, action }, ZoneKind::Battlefield) = (rule, from) {
+        return super::r9w_cant::r9w_cant_texts(who, action, condition);
+    }
     if let Some(condition) = condition {
         return super::w14a_limits::w14a_limit_while_texts(rule, condition);
     }

@@ -25,6 +25,9 @@ impl Writer<'_> {
             return Some((sentences, 1 + used));
         }
         Writer::c6_blk_aura_manifest(effects)
+            .or_else(|| Writer::r9w_manifest_then(effects))
+            .or_else(|| Writer::r9w_dread(effects))
+            .or_else(|| self.r9w_shields(effects))
             .or_else(|| self.exile_and_return_later(effects))
             .or_else(|| self.exile_and_maybe_return(effects))
             .or_else(|| Writer::return_itself_later(effects))
