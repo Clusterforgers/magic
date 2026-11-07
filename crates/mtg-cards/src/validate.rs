@@ -671,6 +671,7 @@ impl<'a> Walker<'a> {
             Pred::Modified => self.uses("Pred", "Modified"),
             Pred::RingBearer => self.uses("Pred", "RingBearer"),
             Pred::FaceDown => self.uses("Pred", "FaceDown"),
+            Pred::SpentFrom { .. } => self.uses("Pred", "SpentFrom"),
             Pred::TargetsPlayer(who) => {
                 self.uses("Pred", "TargetsPlayer");
                 self.at("TargetsPlayer", |w| w.reference(who, Kind::Player));
@@ -743,6 +744,7 @@ impl<'a> Walker<'a> {
             | Pred::RingBearer
             | Pred::FaceDown
             | Pred::TargetsPlayer(_)
+            | Pred::SpentFrom { .. }
             | Pred::GravedThisTurn
             | Pred::ArrivedFrom(_) => {
                 self.w21a_pred(pred);

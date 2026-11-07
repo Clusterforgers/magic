@@ -723,6 +723,7 @@ const RUNS: &[&str] = &[
     "Pred.HasAdventure",
     "Pred.FaceDown",
     "Pred.TargetsPlayer",
+    "Pred.SpentFrom",
     "Pred.GravedThisTurn",
     "Pred.ArrivedFrom",
     "Pred.DidThisTurn",

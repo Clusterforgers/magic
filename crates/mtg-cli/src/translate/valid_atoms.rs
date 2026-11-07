@@ -9,6 +9,9 @@ use super::valid::{capitalize, defined, objects, selector_any};
 /// The predicates of a property such as `wasCastFromYourHandByYou` or `blockingSource`, when it is one of these.
 pub fn atom(prop: &str) -> Option<Vec<Value>> {
     let one = |value: Value| Some(vec![value]);
+    if let Some(from) = g13a_spent_from(prop) {
+        return one(from);
+    }
     match prop {
         "hasABasicLandType" => {
             let basic = ["Plains", "Island", "Swamp", "Mountain", "Forest"];
@@ -80,6 +83,22 @@ pub fn atom(prop: &str) -> Option<Vec<Value>> {
         return Some(vec![found]);
     }
     was_cast(prop.strip_prefix("wasCast")?)
+}
+
+/// `ManaFromTreasure`, `ManaFromCreature_3`: a spell cast with at least that much mana (one without a number) from
+/// sources of the kind.
+fn g13a_spent_from(prop: &str) -> Option<Value> {
+    let rest = prop.strip_prefix("ManaFrom")?;
+    let (kind, least) = match rest.split_once('_') {
+        Some((kind, least)) => (kind, least.parse::<u32>().ok()?),
+        None => (rest, 1),
+    };
+    let from = match kind {
+        "Treasure" => json!({"subtypes": ["Treasure"]}),
+        "Creature" | "Artifact" | "Land" => json!({"types": [kind]}),
+        _ => return None,
+    };
+    Some(json!({"SpentFrom": {"from": from, "least": least}}))
 }
 
 /// `DidThisTurn`: the object did the event in the turn's log (to whom, in this combat only).

@@ -240,11 +240,21 @@ pub(super) fn w21a_suffix_text(pred: &Pred, form: Form) -> Option<String> {
         Pred::ChosenColor => "of the chosen color".to_owned(),
         Pred::GravedThisTurn => W21A_GRAVED.to_owned(),
         Pred::TargetsPlayer(Ref::You) => "that targets you".to_owned(),
+        Pred::TargetsPlayer(Ref::Opponents) => "that targets an opponent".to_owned(),
         Pred::Targeting(objects) if objects.0 == [Pred::This] => "that targets ~".to_owned(),
-        Pred::Targeting(objects) => format!("that targets {}", w21a_a(objects)?),
+        Pred::Targeting(objects) => format!("that targets {}", w21a_a(&g13a_in_play(objects))?),
         Pred::AnyOf(any) => match any.as_slice() {
             [Pred::TargetsPlayer(Ref::You), Pred::Targeting(objects)] => {
-                format!("that targets you or {}", w21a_a(objects)?)
+                format!("that targets you or {}", w21a_a(&g13a_in_play(objects))?)
+            }
+            [
+                Pred::TargetsPlayer(Ref::Opponents),
+                Pred::Targeting(objects),
+            ] => {
+                format!(
+                    "that targets an opponent or {}",
+                    w21a_a(&g13a_in_play(objects))?
+                )
             }
             _ => return None,
         },
@@ -262,6 +272,23 @@ pub(super) fn w21a_suffix_text(pred: &Pred, form: Form) -> Option<String> {
         }
         _ => return None,
     })
+}
+
+/// The targeted objects without an `In(Battlefield)` that their controller already says: "a creature you control" is
+/// one on the battlefield.
+fn g13a_in_play(objects: &Selector) -> Selector {
+    let controlled = objects
+        .0
+        .iter()
+        .any(|pred| matches!(pred, Pred::ControlledBy(_)));
+    Selector(
+        objects
+            .0
+            .iter()
+            .filter(|pred| !(controlled && **pred == Pred::In(ZoneKind::Battlefield)))
+            .cloned()
+            .collect(),
+    )
 }
 
 /// "a creature you control": a singular phrase with its article.

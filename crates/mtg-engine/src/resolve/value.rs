@@ -1681,6 +1681,7 @@ impl<'a> Scope<'a> {
             Pred::Modified
             | Pred::RingBearer
             | Pred::FaceDown
+            | Pred::SpentFrom { .. }
             | Pred::TargetsPlayer(_)
             | Pred::GravedThisTurn
             | Pred::ArrivedFrom(_) => self.w21a_pred(pred, reference, seen)?,
