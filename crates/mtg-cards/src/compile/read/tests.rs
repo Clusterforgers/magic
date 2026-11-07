@@ -279,6 +279,7 @@ mod flicker;
 mod for_each;
 mod g10a_writers;
 mod g10b_writers;
+mod g10c_writers;
 mod g8c_writers;
 mod g8e_writers;
 mod g9a_writers;

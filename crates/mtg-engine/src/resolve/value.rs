@@ -397,6 +397,9 @@ impl<'a> Scope<'a> {
             TurnTally::Surveilled => Tally::Surveilled,
             TurnTally::Sacrificed => Tally::Sacrificed,
             TurnTally::Descended => Tally::Descended,
+            TurnTally::Crimes => Tally::G10cCrimes,
+            TurnTally::CardsGraved => Tally::G10cCardsGraved,
+            TurnTally::CreatureCardsGraved => Tally::G10cCreatureCardsGraved,
             TurnTally::DungeonsCompleted => {
                 let total: u32 = (self.players(who)?.into_iter())
                     .map(|player| self.state.w11d_completed(player))
@@ -441,6 +444,10 @@ impl<'a> Scope<'a> {
                     .map(|player| self.state.tallied(player, Tally::Lost))
                     .sum();
                 return Ok(i64::from(lost));
+            }
+            TurnTally::DamageDealtTo => {
+                let named = self.refs(who)?;
+                return Ok(self.g10c_damage_to(&named));
             }
             TurnTally::CountersPut => {
                 let counts = self.refs(who)?.into_iter().filter_map(|named| match named {
@@ -1802,6 +1809,7 @@ impl<'a> Scope<'a> {
             Amount::HighestLife(who) => self.lives(who)?.max().unwrap_or(i64::from(i32::MIN)),
             Amount::LowestHand(who) => self.lowest_hand(who)?,
             Amount::LifeLostThisWay => self.life_lost_this_way(),
+            Amount::DamageDealtThisWay => self.g10c_dealt_this_way(),
             Amount::Destroyed(of) => self.w2c_destroyed(of)?,
             Amount::Exiled(of) => self.w14b_exiled(of)?,
             Amount::PhasedOut(of) => self.w11b_phased(of)?,
@@ -2187,6 +2195,16 @@ impl<'a> Scope<'a> {
             .map(|player| i64::from(self.state.ruleset().starting_life(player)))
             .min()
             .unwrap_or(0))
+    }
+
+    /// The damage the resolving spell or ability has dealt so far; zero outside a resolution.
+    fn g10c_dealt_this_way(&self) -> i64 {
+        i64::from(
+            self.state
+                .resolving
+                .as_ref()
+                .map_or(0, |resolving| resolving.g10c_dealt),
+        )
     }
 
     fn life_lost_this_way(&self) -> i64 {

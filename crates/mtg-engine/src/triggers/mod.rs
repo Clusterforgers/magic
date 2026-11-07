@@ -59,6 +59,7 @@ pub use detect::detect;
 pub(crate) use detect::{needs_before, step_matches};
 pub use queue::PendingTrigger;
 pub(crate) use reads_x::read as x_read;
+pub(crate) use w11c_crime::g10c_note_crime;
 
 pub(crate) use delayed::{fold_created, fold_expired};
 pub(crate) use queue::{fold_ordered, fold_removed, fold_triggered, next as sweep, removing, take};

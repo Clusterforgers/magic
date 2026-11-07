@@ -86,6 +86,8 @@ mod event_wordings;
 mod exiled_kind;
 mod facts;
 mod flicker;
+mod g10c_facts;
+mod g10c_wordings;
 mod g10d_spell_costs;
 mod g8e_attached;
 mod g9a_blocks;

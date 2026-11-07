@@ -13,6 +13,19 @@ pub fn count(ctx: &Ctx, base: &str) -> Option<Tr<Value>> {
         "Domain" if rest.is_empty() => Ok(json!({"Distinct": {
             "of": [{"Type": "Land"}, {"ControlledBy": "You"}], "stat": "BasicLandTypes"}})),
         "ResolvedThisTurn" if rest.is_empty() => Ok(json!("ResolvedThisTurn")),
+        // Forge counts what the card dealt this turn; the Oracle words read what this resolution dealt.
+        "TotalDamageDoneByThisTurn"
+            if rest.is_empty() && ctx.oracle.contains("the damage dealt this way") =>
+        {
+            Ok(json!("DamageDealtThisWay"))
+        }
+        // "An opponent was dealt N or more damage this turn": the most damage any one opponent took.
+        "TotalDamageReceivedThisTurn" if rest.is_empty() => {
+            Ok(json!({"Tallied": {"who": "This", "what": "DamageDealtTo"}}))
+        }
+        "MaxOppDamageThisTurn" if rest.is_empty() => {
+            Ok(json!({"Tallied": {"who": "Opponents", "what": "DamageTaken"}}))
+        }
         // The permanents this one sacrificed as it entered (devour); another filter would count other cards.
         "Devoured" if rest == "Card" => Ok(json!("Devoured")),
         // The number an earlier step of the ability remembered; the size of a number is the number.
@@ -73,7 +86,7 @@ pub fn count(ctx: &Ctx, base: &str) -> Option<Tr<Value>> {
 }
 
 /// `CountersAddedThisTurn Any You Creature`: the counters of any kind that the players put this turn on the permanents the
-/// valid-string selects. A kind of counter is a different count and stays a gap.
+/// valid-string selects; `P1P1` counts the +1/+1 counters only, and another kind stays a gap.
 fn counters_added(ctx: &Ctx, rest: &str) -> Tr<Value> {
     let words: Vec<&str> = rest.split(' ').collect();
     let [kind, who, valid] = words[..] else {
@@ -85,11 +98,13 @@ fn counters_added(ctx: &Ctx, rest: &str) -> Tr<Value> {
         "Opponent" => "Opponents",
         _ => return unmapped("amount:Count$CountersAddedThisTurn"),
     };
-    if kind != "Any" {
-        return unmapped("amount:Count$CountersAddedThisTurn-of-a-kind");
-    }
+    let event = match kind {
+        "Any" => "CountersPut",
+        "P1P1" => "PlusOneCountersPut",
+        _ => return unmapped("amount:Count$CountersAddedThisTurn-of-a-kind"),
+    };
     let filter = selector_in(ctx, valid, None)?;
-    Ok(json!({"Tally": {"event": "CountersPut", "who": who, "filter": filter}}))
+    Ok(json!({"Tally": {"event": event, "who": who, "filter": filter}}))
 }
 
 /// `CreaturesAttackedThisTurn Creature.token`: the creatures the valid-string selects that were declared as attackers this
@@ -167,6 +182,16 @@ pub(super) fn reduced(word: &str, of: &[Value], reduce: &str) -> Tr<Value> {
 /// permanents that entered the battlefield, or went from it to a graveyard, this turn, as they were then.
 fn entered_this_turn(ctx: &Ctx, word: &str) -> Tr<Value> {
     let spec = word.strip_prefix("ThisTurnEntered_").unwrap_or_default();
+    // The cards put into a player's graveyard from anywhere, tokens excepted, counted for the owner.
+    let graved = match spec {
+        "Graveyard_Card.YouOwn+!token" => Some(("You", "CardsGraved")),
+        "Graveyard_Card.EnchantedPlayerOwn+!token" => Some(("AttachedPlayer", "CardsGraved")),
+        "Graveyard_Creature.YouOwn+!token" => Some(("You", "CreatureCardsGraved")),
+        _ => None,
+    };
+    if let Some((who, what)) = graved {
+        return Ok(json!({"Tallied": {"who": who, "what": what}}));
+    }
     let (event, valid) = if let Some(valid) = spec.strip_prefix("Battlefield_") {
         ("Entered", valid)
     } else if let Some(valid) = spec.strip_prefix("Graveyard_from_Battlefield_") {
@@ -201,6 +226,7 @@ pub fn player_amount(head: &str, what: &str, who: &Value) -> Option<Tr<Value>> {
         ("TargetedPlayer", "CardsInLibrary") => cards("Library"),
         ("TargetedPlayer", "CardsInGraveyard") => cards("Graveyard"),
         ("TargetedPlayer", "LifeTotal") => Ok(json!({"Life": who})),
+        ("TargetedPlayer", "DamageThisTurn") => tallied("DamageTaken"),
         ("PlayerCountPropertyYou", "CardsDiscardedThisTurn") => tallied("Discarded"),
         ("PlayerCountPropertyYou", "LifeLostThisTurn") => tallied("LifeLost"),
         ("PlayerCountPropertyYou", "LandsPlayed") => tallied("LandsPlayed"),

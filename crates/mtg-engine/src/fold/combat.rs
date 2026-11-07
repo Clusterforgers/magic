@@ -315,6 +315,9 @@ pub(super) fn apply(state: &mut GameState, event: &Event) -> Result<(), EngineEr
                     }
                 }
             };
+            if let Some(resolving) = state.resolving.as_mut() {
+                resolving.g10c_dealt = resolving.g10c_dealt.saturating_add(*amount);
+            }
             let dealer = crate::characteristics::controller_of(state, *source);
             state.record(TallyEvent::Damaged, dealer, (*source, Some(hit)), *amount);
         }

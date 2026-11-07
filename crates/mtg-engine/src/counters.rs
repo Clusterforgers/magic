@@ -78,6 +78,14 @@ pub(crate) fn fold(state: &mut GameState, event: &CountersChanged) -> Result<(),
                     (named.id, None),
                     event.delta.unsigned_abs(),
                 );
+                if event.counter == CounterKind::PlusOnePlusOne {
+                    state.record(
+                        mtg_cards::value::TallyEvent::PlusOneCountersPut,
+                        by,
+                        (named.id, None),
+                        event.delta.unsigned_abs(),
+                    );
+                }
             }
         }
         Target::Player(id) => {

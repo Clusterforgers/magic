@@ -78,6 +78,7 @@ pub fn apply_event(state: &mut GameState, event: &Event) -> Result<(), EngineErr
     w2c_note_destroyed(state, event);
     w14b_note_exiled(state, event);
     crate::memory::forget_object(state, event);
+    crate::triggers::g10c_note_crime(state, event);
     let folded = fold_event(state, event);
     // A read in the middle of the fold saw the state before the rest of the event: forget it.
     if changes_layers {

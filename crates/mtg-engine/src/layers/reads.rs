@@ -350,6 +350,7 @@ pub(crate) fn reads_of_amount(amount: &Amount) -> Traits {
         | Amount::ColorsSpent
         | Amount::PermanentsGraved
         | Amount::LifeLostThisWay
+        | Amount::DamageDealtThisWay
         | Amount::Destroyed(_)
         | Amount::Exiled(_)
         | Amount::PhasedOut(_)

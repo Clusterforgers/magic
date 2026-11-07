@@ -767,6 +767,7 @@ mod fix9;
 mod frame;
 mod g10a;
 mod g10b;
+mod g10c;
 mod g8a;
 mod g8c;
 mod g8d;
