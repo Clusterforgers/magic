@@ -1,0 +1,42 @@
+{
+  "oracle_id": "0e14940b-87e1-4139-8f30-3629b3ad3a59",
+  "name": "Shields Up!",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Shields Up!",
+      "oracle_fingerprint": "e6278a0fe54e316d9b7c30dfc4dc2575",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "AnyOf": [{ "Type": "Artifact" }, { "Type": "Creature" }] },
+                    { "ControlledBy": "You" }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "AddKeyword": "Hexproof" }, { "AddKeyword": "Indestructible" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "PutCounters": {
+                  "on": { "Each": [{ "Is": { "Target": 0 } }, { "Type": "Creature" }] },
+                  "counter": "+1/+1"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

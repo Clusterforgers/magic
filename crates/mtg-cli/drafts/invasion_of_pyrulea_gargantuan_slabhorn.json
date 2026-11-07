@@ -1,0 +1,57 @@
+{
+  "oracle_id": "323437f5-cc6c-4579-b591-499476dffb3c",
+  "name": "Invasion of Pyrulea // Gargantuan Slabhorn",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Invasion of Pyrulea",
+      "oracle_fingerprint": "06c610d953eb83090b9ae88b29aed667",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              { "Scry": { "count": 3 } },
+              { "LookAtTop": { "as": "top" } },
+              { "Reveal": { "what": { "Bound": "top" } } },
+              {
+                "Move": {
+                  "what": { "Each": [{ "In": "Library" }, { "Is": { "Bound": "top" } }] },
+                  "to": { "Library": { "place": "Top" } },
+                  "as": "moved4"
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Bound": "moved4" },
+                      "selector": [{ "AnyOf": [{ "Type": "Land" }, "DoubleFaced"] }],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [{ "Draw": {} }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Gargantuan Slabhorn",
+      "oracle_fingerprint": "af31ae8b37ec4c3a313eca68376c33be",
+      "abilities": [
+        { "Keyword": "Trample" },
+        { "Keyword": { "Ward": "{2}" } },
+        {
+          "Static": {
+            "affected": { "Each": ["Transformed", "Other", { "ControlledBy": "You" }] },
+            "mods": [{ "AddKeyword": "Trample" }, { "AddKeyword": { "Ward": "{2}" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,29 @@
+{
+  "oracle_id": "13ee85c3-a16a-41ac-bbaa-c7549c700a03",
+  "name": "Glistening Dawn",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Glistening Dawn",
+      "oracle_fingerprint": "f234b6d74b921eb5ed7996e8ca405caf",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Incubate": {
+                  "count": { "Count": [{ "Type": "Land" }, { "ControlledBy": "You" }] }
+                }
+              },
+              {
+                "Incubate": {
+                  "count": { "Count": [{ "Type": "Land" }, { "ControlledBy": "You" }] }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

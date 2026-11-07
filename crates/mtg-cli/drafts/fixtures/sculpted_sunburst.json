@@ -1,0 +1,135 @@
+{
+  "object": "card",
+  "id": "2d16d8fe-a770-4bbd-bf20-447c0165de5a",
+  "oracle_id": "aee0388f-544e-4c28-a34f-29cc0a97d424",
+  "multiverse_ids": [
+    562925
+  ],
+  "tcgplayer_id": 273332,
+  "cardmarket_id": 660816,
+  "name": "Sculpted Sunburst",
+  "lang": "en",
+  "released_at": "2022-06-10",
+  "uri": "https://api.scryfall.com/cards/2d16d8fe-a770-4bbd-bf20-447c0165de5a",
+  "scryfall_uri": "https://scryfall.com/card/clb/42/sculpted-sunburst?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T06:06:43Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/2/d/2d16d8fe-a770-4bbd-bf20-447c0165de5a.jpg?1783922803",
+    "normal": "https://cards.scryfall.io/normal/front/2/d/2d16d8fe-a770-4bbd-bf20-447c0165de5a.jpg?1783922803",
+    "large": "https://cards.scryfall.io/large/front/2/d/2d16d8fe-a770-4bbd-bf20-447c0165de5a.jpg?1783922803",
+    "png": "https://cards.scryfall.io/png/front/2/d/2d16d8fe-a770-4bbd-bf20-447c0165de5a.png?1783922803",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/2/d/2d16d8fe-a770-4bbd-bf20-447c0165de5a.jpg?1783922803",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/2/d/2d16d8fe-a770-4bbd-bf20-447c0165de5a.jpg?1783922803",
+    "thumb": "https://cards.scryfall.io/thumb/front/2/d/2d16d8fe-a770-4bbd-bf20-447c0165de5a.webp?1783922803",
+    "grid": "https://cards.scryfall.io/grid/front/2/d/2d16d8fe-a770-4bbd-bf20-447c0165de5a.webp?1783922803",
+    "display": "https://cards.scryfall.io/display/front/2/d/2d16d8fe-a770-4bbd-bf20-447c0165de5a.webp?1783922803",
+    "art": "https://cards.scryfall.io/art/front/2/d/2d16d8fe-a770-4bbd-bf20-447c0165de5a.webp?1783922803",
+    "crop": "https://cards.scryfall.io/crop/front/2/d/2d16d8fe-a770-4bbd-bf20-447c0165de5a.webp?1783922803",
+    "jpeg": "https://cards.scryfall.io/normal/front/2/d/2d16d8fe-a770-4bbd-bf20-447c0165de5a.jpg?1783922803"
+  },
+  "mana_cost": "{3}{W}{W}",
+  "cmc": 5.0,
+  "type_line": "Sorcery",
+  "oracle_text": "Choose a creature you control, then each opponent chooses a creature they control with equal or lesser power. If you chose a creature this way, exile each creature not chosen by any player this way.",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": [],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "5e4c3fe8-fd57-4b20-ad56-c03790a16cea",
+  "set": "clb",
+  "set_name": "Commander Legends: Battle for Baldur's Gate",
+  "set_type": "draft_innovation",
+  "set_uri": "https://api.scryfall.com/sets/5e4c3fe8-fd57-4b20-ad56-c03790a16cea",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Aclb&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/clb?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/2d16d8fe-a770-4bbd-bf20-447c0165de5a/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Aaee0388f-544e-4c28-a34f-29cc0a97d424&unique=prints",
+  "collector_number": "42",
+  "digital": false,
+  "rarity": "rare",
+  "flavor_text": "A searing light that spares only the chosen.",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Evyn Fong",
+  "artist_ids": [
+    "6777be9f-5724-4fdb-b6a0-a83f63efa4ca"
+  ],
+  "illustration_id": "631607c6-d591-4822-933a-0d77be11ea6c",
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 14658,
+  "preview": {
+    "source": "Wizards of the Coast",
+    "source_uri": "https://www.twitch.tv/videos/1309876135",
+    "previewed_at": "2022-05-26"
+  },
+  "prices": {
+    "usd": "0.22",
+    "usd_foil": "0.39",
+    "usd_etched": null,
+    "eur": "0.21",
+    "eur_foil": "0.36",
+    "tix": null
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=562925&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DSculpted%2BSunburst",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DSculpted%2BSunburst",
+    "edhrec": "https://edhrec.com/route/?cc=Sculpted+Sunburst"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F273332%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=660816&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards?affiliate_id=scryfall&data%5Bsearch%5D=Sculpted+Sunburst&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

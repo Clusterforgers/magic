@@ -1,7 +1,7 @@
 {
   "oracle_id": "f4ae18b5-2cf1-4720-8237-40a0c7b040ae",
   "name": "Soul Ransom",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Soul Ransom",
@@ -10,9 +10,13 @@
         { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
         { "Static": { "affected": "Attached", "mods": [{ "SetController": "You" }] } },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 49, "end": 174 }
+          "Activated": {
+            "cost": [{ "Discard": { "count": 2 } }],
+            "by": "Opponents",
+            "effects": [
+              { "Sacrifice": { "who": { "ControllerOf": "This" }, "filter": [{ "Is": "This" }] } },
+              { "Draw": { "who": { "ControllerOf": "This" }, "count": 2 } }
+            ]
           }
         }
       ]

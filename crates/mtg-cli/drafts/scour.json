@@ -1,0 +1,72 @@
+{
+  "oracle_id": "f18622da-81f3-4854-a1bb-8d658751d8db",
+  "name": "Scour",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Scour",
+      "oracle_fingerprint": "52ded21fbfd8d80c6df43330389bbdf9",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Enchantment" }] } }],
+            "effects": [
+              { "Exile": { "what": { "Target": 0 }, "as": "exiled" } },
+              {
+                "Exile": {
+                  "what": {
+                    "Each": [
+                      { "SharesName": { "Bound": "exiled" } },
+                      { "In": "Graveyard" },
+                      { "OwnedBy": { "ControllerOf": { "Target": 0 } } }
+                    ]
+                  }
+                }
+              },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "SharesName": { "Bound": "exiled" } },
+                      { "In": "Hand" },
+                      { "OwnedBy": { "ControllerOf": { "Target": 0 } } }
+                    ]
+                  },
+                  "count": {
+                    "min": 0,
+                    "max": {
+                      "Count": [
+                        { "In": "Hand" },
+                        { "OwnedBy": { "ControllerOf": { "Target": 0 } } }
+                      ]
+                    }
+                  },
+                  "as": "picked2"
+                }
+              },
+              { "Exile": { "what": { "Bound": "picked2" } } },
+              {
+                "Search": {
+                  "of": { "ControllerOf": { "Target": 0 } },
+                  "filter": [{ "SharesName": { "Bound": "exiled" } }],
+                  "count": {
+                    "min": 0,
+                    "max": {
+                      "Count": [
+                        { "In": "Library" },
+                        { "OwnedBy": { "ControllerOf": { "Target": 0 } } }
+                      ]
+                    }
+                  },
+                  "as": "found3"
+                }
+              },
+              { "Exile": { "what": { "Bound": "found3" } } },
+              { "Shuffle": { "who": { "ControllerOf": { "Target": 0 } } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

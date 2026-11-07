@@ -1,0 +1,26 @@
+{
+  "oracle_id": "e611a3e0-eb0e-466e-a771-51310eeb34cd",
+  "name": "Glorious End",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Glorious End",
+      "oracle_fingerprint": "6500d994fda8b8761cc458d21394165c",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              "EndTurn",
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "End", "whose": "You" } },
+                  "effects": [{ "LoseGame": { "who": { "ControllerOf": "This" } } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

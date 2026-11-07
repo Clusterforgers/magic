@@ -1,0 +1,159 @@
+{
+  "object": "card",
+  "id": "81836d7f-ba8d-4c52-8b1f-c86b422e23b5",
+  "oracle_id": "d099be2e-1879-4bb0-a27d-a386308387c0",
+  "multiverse_ids": [
+    605700
+  ],
+  "mtgo_id": 106899,
+  "tcgplayer_id": 478542,
+  "cardmarket_id": 693327,
+  "name": "Glissa's Retriever",
+  "lang": "en",
+  "released_at": "2023-02-10",
+  "uri": "https://api.scryfall.com/cards/81836d7f-ba8d-4c52-8b1f-c86b422e23b5",
+  "scryfall_uri": "https://scryfall.com/card/onc/18/glissas-retriever?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T04:49:17Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/8/1/81836d7f-ba8d-4c52-8b1f-c86b422e23b5.jpg?1783918157",
+    "normal": "https://cards.scryfall.io/normal/front/8/1/81836d7f-ba8d-4c52-8b1f-c86b422e23b5.jpg?1783918157",
+    "large": "https://cards.scryfall.io/large/front/8/1/81836d7f-ba8d-4c52-8b1f-c86b422e23b5.jpg?1783918157",
+    "png": "https://cards.scryfall.io/png/front/8/1/81836d7f-ba8d-4c52-8b1f-c86b422e23b5.png?1783918157",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/8/1/81836d7f-ba8d-4c52-8b1f-c86b422e23b5.jpg?1783918157",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/8/1/81836d7f-ba8d-4c52-8b1f-c86b422e23b5.jpg?1783918157",
+    "thumb": "https://cards.scryfall.io/thumb/front/8/1/81836d7f-ba8d-4c52-8b1f-c86b422e23b5.webp?1783918157",
+    "grid": "https://cards.scryfall.io/grid/front/8/1/81836d7f-ba8d-4c52-8b1f-c86b422e23b5.webp?1783918157",
+    "display": "https://cards.scryfall.io/display/front/8/1/81836d7f-ba8d-4c52-8b1f-c86b422e23b5.webp?1783918157",
+    "art": "https://cards.scryfall.io/art/front/8/1/81836d7f-ba8d-4c52-8b1f-c86b422e23b5.webp?1783918157",
+    "crop": "https://cards.scryfall.io/crop/front/8/1/81836d7f-ba8d-4c52-8b1f-c86b422e23b5.webp?1783918157",
+    "jpeg": "https://cards.scryfall.io/normal/front/8/1/81836d7f-ba8d-4c52-8b1f-c86b422e23b5.jpg?1783918157"
+  },
+  "mana_cost": "{5}{G}",
+  "cmc": 6.0,
+  "type_line": "Creature — Phyrexian Beast",
+  "oracle_text": "Haste, toxic 3 (Players dealt combat damage by this creature also get three poison counters.)\nThis creature can't be blocked by creatures with power 2 or less.\nCorrupted — When this creature dies, exile it. When you do, return up to X target cards from your graveyard to your hand, where X is the number of opponents who have three or more poison counters.",
+  "power": "6",
+  "toughness": "6",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [
+    "Toxic",
+    "Haste",
+    "Corrupted"
+  ],
+  "all_parts": [
+    {
+      "object": "related_card",
+      "id": "40255bfa-0004-45f1-a31b-17d385f09a95",
+      "component": "combo_piece",
+      "name": "Poison Counter",
+      "type_line": "Card",
+      "uri": "https://api.scryfall.com/cards/40255bfa-0004-45f1-a31b-17d385f09a95"
+    },
+    {
+      "object": "related_card",
+      "id": "a107f2ea-1888-4fc6-b7e9-005d5ba4ca8d",
+      "component": "combo_piece",
+      "name": "Glissa's Retriever",
+      "type_line": "Creature — Phyrexian Beast",
+      "uri": "https://api.scryfall.com/cards/a107f2ea-1888-4fc6-b7e9-005d5ba4ca8d"
+    }
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "8c5e86d4-ae2d-42f7-a0e5-0e4141eb953d",
+  "set": "onc",
+  "set_name": "Phyrexia: All Will Be One Commander",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/8c5e86d4-ae2d-42f7-a0e5-0e4141eb953d",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Aonc&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/onc?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/81836d7f-ba8d-4c52-8b1f-c86b422e23b5/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Ad099be2e-1879-4bb0-a27d-a386308387c0&unique=prints",
+  "collector_number": "18",
+  "digital": false,
+  "rarity": "rare",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Josu Hernaiz",
+  "artist_ids": [
+    "74246024-92b4-43d0-a5af-a3f9f2a35d5f"
+  ],
+  "illustration_id": "3597ae87-2657-4729-b66d-63a1428a4cd1",
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "edhrec_rank": 9753,
+  "preview": {
+    "source": "The Command Zone",
+    "source_uri": "https://www.youtube.com/watch?v=YreZouGlA4I",
+    "previewed_at": "2023-01-18"
+  },
+  "prices": {
+    "usd": "0.74",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "0.41",
+    "eur_foil": null,
+    "tix": "2.23"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=605700&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DGlissa%2527s%2BRetriever",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DGlissa%2527s%2BRetriever",
+    "edhrec": "https://edhrec.com/route/?cc=Glissa%27s+Retriever"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F478542%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=693327&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/106899?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

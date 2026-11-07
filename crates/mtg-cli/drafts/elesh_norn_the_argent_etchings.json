@@ -1,0 +1,119 @@
+{
+  "oracle_id": "650ed75c-20b0-45b8-a4d4-813e0369aaf1",
+  "name": "Elesh Norn // The Argent Etchings",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Elesh Norn",
+      "oracle_fingerprint": "8da8bebd570bad3b6141739fcd68e12b",
+      "abilities": [
+        { "Keyword": "Vigilance" },
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                { "DealsDamage": { "source": [{ "ControlledBy": "Opponents" }], "to": "You" } },
+                {
+                  "DealsDamage": {
+                    "source": [{ "ControlledBy": "Opponents" }],
+                    "to": { "Each": [{ "ControlledBy": "You" }] }
+                  }
+                }
+              ]
+            },
+            "effects": [
+              {
+                "Pay": {
+                  "who": { "ControllerOf": "Dealer" },
+                  "cost": "{1}",
+                  "unpaid": [{ "LoseLife": { "who": { "ControllerOf": "Dealer" }, "amount": 2 } }]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [
+              { "Mana": "{2}{W}" },
+              { "Sacrifice": { "filter": [{ "Type": "Creature" }, "Other"], "count": 3 } }
+            ],
+            "timing": "Sorcery",
+            "effects": [
+              { "Exile": { "what": "This", "as": "exiled" } },
+              {
+                "Move": {
+                  "what": { "Bound": "exiled" },
+                  "to": { "Battlefield": { "transformed": true } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "The Argent Etchings",
+      "oracle_fingerprint": "1abe29778de3a6cc53ec2c0df73fe654",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 1 } },
+            "effects": [
+              { "Incubate": { "count": 2 } },
+              { "Incubate": { "count": 2 } },
+              { "Incubate": { "count": 2 } },
+              { "Incubate": { "count": 2 } },
+              { "Incubate": { "count": 2 } },
+              {
+                "Transform": {
+                  "what": {
+                    "Each": [{ "Subtype": "Incubator" }, "Token", { "ControlledBy": "You" }]
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 2 } },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                  "mods": [
+                    { "ModifyPT": { "power": 1, "toughness": 1 } },
+                    { "AddKeyword": "DoubleStrike" }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 3 } },
+            "effects": [
+              {
+                "Destroy": {
+                  "what": {
+                    "Each": [
+                      { "Not": { "Type": "Artifact" } },
+                      { "Not": { "Type": "Land" } },
+                      { "Not": { "Subtype": "Phyrexian" } },
+                      "Other"
+                    ]
+                  }
+                }
+              },
+              { "Exile": { "what": "This", "as": "exiled" } },
+              { "Move": { "what": { "Bound": "exiled" }, "to": { "Battlefield": {} } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

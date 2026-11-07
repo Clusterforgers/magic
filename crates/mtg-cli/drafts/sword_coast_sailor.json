@@ -1,0 +1,43 @@
+{
+  "oracle_id": "71248bf6-a6a2-440e-9313-a7abce05a84b",
+  "name": "Sword Coast Sailor",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sword Coast Sailor",
+      "oracle_fingerprint": "34c5998a73dd3602e6650c5b1e011c7a",
+      "abilities": [
+        {
+          "Static": {
+            "affected": { "Each": [{ "Type": "Creature" }, "Commander", { "OwnedBy": "You" }] },
+            "mods": [
+              {
+                "GrantAbility": {
+                  "Triggered": {
+                    "when": { "AttacksPlayer": { "what": ["This"], "at": "EachPlayer" } },
+                    "if": {
+                      "Compare": {
+                        "left": { "Life": "Against" },
+                        "op": "Ge",
+                        "right": { "HighestLife": "Opponents" }
+                      }
+                    },
+                    "effects": [
+                      {
+                        "Continuous": {
+                          "affected": "This",
+                          "mods": ["CantBeBlocked"],
+                          "duration": "UntilEndOfTurn"
+                        }
+                      }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

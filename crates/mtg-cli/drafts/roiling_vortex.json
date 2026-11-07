@@ -1,0 +1,40 @@
+{
+  "oracle_id": "34f83b7a-45a7-40a8-abcb-31d7aae4cea1",
+  "name": "Roiling Vortex",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Roiling Vortex",
+      "oracle_fingerprint": "79b1e5cab157c260b0a5c79e3cb1c6c7",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep" } },
+            "effects": [{ "DealDamage": { "to": "Triggering", "amount": 1 } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "SpellCast": {} },
+            "if": {
+              "Compare": {
+                "left": { "Stat": { "of": "Triggering", "stat": "ManaSpent" } },
+                "op": "Eq",
+                "right": 0
+              }
+            },
+            "effects": [{ "DealDamage": { "to": "Triggering", "amount": 5 } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{R}",
+            "effects": [
+              { "Rule": { "rule": { "CantGainLife": "Opponents" }, "duration": "UntilEndOfTurn" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

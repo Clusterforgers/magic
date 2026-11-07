@@ -1,0 +1,38 @@
+{
+  "oracle_id": "937f0c60-003e-446d-8889-059f7b4a2dd6",
+  "name": "Charge of the Forever-Beast",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Charge of the Forever-Beast",
+      "oracle_fingerprint": "dbe60d0d5f48817cf2a712d1562ca3aa",
+      "abilities": [
+        {
+          "AdditionalCost": {
+            "cost": [{ "RevealFromHand": { "filter": [{ "Type": "Creature" }] } }],
+            "required": true
+          }
+        },
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "AnyOf": [{ "Type": "Creature" }, { "Type": "Planeswalker" }] }]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "DealDamage": {
+                  "to": { "Target": 0 },
+                  "amount": { "Stat": { "of": "Paid", "stat": "Power" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

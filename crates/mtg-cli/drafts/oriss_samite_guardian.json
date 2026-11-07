@@ -1,0 +1,34 @@
+{
+  "oracle_id": "8d6e0dab-400a-4761-8343-92c7eb7e8735",
+  "name": "Oriss, Samite Guardian",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Oriss, Samite Guardian",
+      "oracle_fingerprint": "1b9cc2d77a4077dda233e8da86a95192",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Shield": {
+                  "when": { "Damage": { "to": { "Target": 0 } } },
+                  "by": "Prevent",
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 74, "end": 237 }
+          }
+        }
+      ]
+    }
+  ]
+}

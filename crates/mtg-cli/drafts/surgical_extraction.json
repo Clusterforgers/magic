@@ -1,0 +1,84 @@
+{
+  "oracle_id": "3bfa088c-9a47-4123-aee5-4de44e355bef",
+  "name": "Surgical Extraction",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Surgical Extraction",
+      "oracle_fingerprint": "c509ed2df0dee99ac40ec01207f906d6",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "Not": { "Supertype": "Basic" } }, { "In": "Graveyard" }] } }
+            ],
+            "effects": [
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "SharesName": { "Target": 0 } },
+                      { "In": "Graveyard" },
+                      { "OwnedBy": { "ControllerOf": { "Target": 0 } } }
+                    ]
+                  },
+                  "count": {
+                    "min": 0,
+                    "max": {
+                      "Count": [
+                        { "In": "Graveyard" },
+                        { "OwnedBy": { "ControllerOf": { "Target": 0 } } }
+                      ]
+                    }
+                  },
+                  "as": "picked"
+                }
+              },
+              { "Exile": { "what": { "Bound": "picked" } } },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "SharesName": { "Target": 0 } },
+                      { "In": "Hand" },
+                      { "OwnedBy": { "ControllerOf": { "Target": 0 } } }
+                    ]
+                  },
+                  "count": {
+                    "min": 0,
+                    "max": {
+                      "Count": [
+                        { "In": "Hand" },
+                        { "OwnedBy": { "ControllerOf": { "Target": 0 } } }
+                      ]
+                    }
+                  },
+                  "as": "picked2"
+                }
+              },
+              { "Exile": { "what": { "Bound": "picked2" } } },
+              {
+                "Search": {
+                  "of": { "ControllerOf": { "Target": 0 } },
+                  "filter": [{ "SharesName": { "Target": 0 } }],
+                  "count": {
+                    "min": 0,
+                    "max": {
+                      "Count": [
+                        { "In": "Library" },
+                        { "OwnedBy": { "ControllerOf": { "Target": 0 } } }
+                      ]
+                    }
+                  },
+                  "as": "found3"
+                }
+              },
+              { "Exile": { "what": { "Bound": "found3" } } },
+              { "Shuffle": { "who": { "ControllerOf": { "Target": 0 } } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

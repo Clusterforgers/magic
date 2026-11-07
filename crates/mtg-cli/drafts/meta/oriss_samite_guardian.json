@@ -5,7 +5,7 @@
     {
       "face": 0,
       "tag": "A",
-      "text": "It deals damage equal to its power to target creature. Activate only as a sorcery.",
+      "text": "Prevent all damage that would be dealt to target creature this turn.",
       "abilities": [
         0
       ],
@@ -13,10 +13,10 @@
     },
     {
       "face": 0,
-      "tag": "T",
-      "text": "Whenever you cast a noncreature spell, if at least four mana was spent to cast it, put a +1/+1 counter on this creature.",
+      "tag": "A",
+      "text": "Target player can't cast spells this turn, and creatures that player controls can't attack this turn.",
       "abilities": [],
-      "gap": "valid:ManaSpent GE4"
+      "gap": "effect:Effect-static-CantAttack"
     }
   ],
   "proof": {
@@ -25,17 +25,17 @@
         "face": 0,
         "span": {
           "start": 0,
-          "end": 120
+          "end": 73
         },
-        "mark": "ByHand"
+        "mark": "Auto"
       },
       {
         "face": 0,
         "span": {
-          "start": 121,
-          "end": 243
+          "start": 74,
+          "end": 237
         },
-        "mark": "Auto"
+        "mark": "ByHand"
       }
     ]
   }

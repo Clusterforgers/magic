@@ -1,0 +1,87 @@
+{
+  "oracle_id": "f2ecb354-8f79-4c39-989e-7aa37ec75154",
+  "name": "Bomb Squad",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Bomb Squad",
+      "oracle_fingerprint": "e1694bd223597587ea56f4b0030dff1e",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              { "PutCounters": { "on": { "Target": 0 }, "counter": { "Other": "fuse" } } }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [
+              {
+                "PutCounters": {
+                  "on": { "Each": [{ "Type": "Creature" }, { "HasCounter": { "Other": "fuse" } }] },
+                  "counter": { "Other": "fuse" }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "State": {
+                "condition": {
+                  "Compare": {
+                    "left": {
+                      "Count": [
+                        { "Type": "Creature" },
+                        { "CounterCount": { "kind": { "Other": "fuse" }, "op": "Ge", "to": 4 } }
+                      ]
+                    },
+                    "op": "Ge",
+                    "right": 1
+                  }
+                }
+              }
+            },
+            "effects": [
+              {
+                "RepeatEach": {
+                  "over": {
+                    "Each": [
+                      { "Type": "Creature" },
+                      { "CounterCount": { "kind": { "Other": "fuse" }, "op": "Ge", "to": 4 } }
+                    ]
+                  },
+                  "as": "each",
+                  "effects": [
+                    {
+                      "RemoveCounters": {
+                        "from": { "Bound": "each" },
+                        "counter": { "Other": "fuse" },
+                        "count": {
+                          "Counters": { "on": { "Bound": "each" }, "counter": { "Other": "fuse" } }
+                        }
+                      }
+                    },
+                    { "Destroy": { "what": { "Bound": "each" } } },
+                    {
+                      "DealDamage": {
+                        "source": { "Bound": "each" },
+                        "to": { "ControllerOf": { "Bound": "each" } },
+                        "amount": 4
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

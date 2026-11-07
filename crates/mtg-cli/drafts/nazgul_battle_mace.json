@@ -1,0 +1,51 @@
+{
+  "oracle_id": "1ea3ba2d-e88f-4879-92f2-681637094b45",
+  "name": "Nazgûl Battle-Mace",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Nazgûl Battle-Mace",
+      "oracle_fingerprint": "7692460589576aecfbe34c7e45c432a0",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [
+              { "AddKeyword": "Menace" },
+              { "AddKeyword": "Deathtouch" },
+              { "AddKeyword": { "Annihilator": 1 } },
+              {
+                "GrantAbility": {
+                  "Triggered": {
+                    "when": {
+                      "Sacrificed": {
+                        "what": [{ "Not": "Token" }, { "ControlledBy": "Opponents" }]
+                      }
+                    },
+                    "effects": [
+                      {
+                        "Pay": {
+                          "who": "TriggeringPlayer",
+                          "cost": [{ "PayLife": 3 }],
+                          "unpaid": [
+                            {
+                              "Move": {
+                                "what": "Triggering",
+                                "to": { "Battlefield": { "under": "You" } }
+                              }
+                            }
+                          ]
+                        }
+                      }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Equip": "{3}" } }
+      ]
+    }
+  ]
+}

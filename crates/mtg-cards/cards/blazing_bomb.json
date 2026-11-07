@@ -1,16 +1,23 @@
 {
   "oracle_id": "088acd15-029b-4091-960a-d5060a364ca9",
   "name": "Blazing Bomb",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Blazing Bomb",
       "oracle_fingerprint": "dbb0378de59556477d06424458f01a9b",
       "abilities": [
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 0, "end": 120 }
+          "Triggered": {
+            "when": { "SpellCast": { "what": [{ "Not": { "Type": "Creature" } }], "by": "You" } },
+            "if": {
+              "Compare": {
+                "left": { "Stat": { "of": "Triggering", "stat": "ManaSpent" } },
+                "op": "Ge",
+                "right": 4
+              }
+            },
+            "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }]
           }
         },
         {

@@ -1,0 +1,21 @@
+{
+  "oracle_id": "fe540a23-0357-44fa-8e1c-0a5c2a04cb01",
+  "name": "Vengeful Tracker",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Vengeful Tracker",
+      "oracle_fingerprint": "0aaba1a8a83bbe56ee83c663ef786b3d",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "Sacrificed": { "what": [{ "Type": "Artifact" }, { "ControlledBy": "Opponents" }] }
+            },
+            "effects": [{ "DealDamage": { "to": "TriggeringPlayer", "amount": 2 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

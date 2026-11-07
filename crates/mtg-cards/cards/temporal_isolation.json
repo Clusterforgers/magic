@@ -1,0 +1,22 @@
+{
+  "oracle_id": "cb5ab978-d9b1-4f2f-bf3a-5e28e96b9e2e",
+  "name": "Temporal Isolation",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Temporal Isolation",
+      "oracle_fingerprint": "298471229b91945e0ccde43d196e84d2",
+      "abilities": [
+        { "Keyword": "Flash" },
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        { "Static": { "affected": "Attached", "mods": [{ "AddKeyword": "Shadow" }] } },
+        {
+          "Replacement": {
+            "when": { "Damage": { "source": [{ "Is": "Attached" }] } },
+            "by": "Prevent"
+          }
+        }
+      ]
+    }
+  ]
+}

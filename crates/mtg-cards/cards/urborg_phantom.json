@@ -1,0 +1,35 @@
+{
+  "oracle_id": "f8b5d2f4-58a8-408c-bb67-6b5f9ba5b678",
+  "name": "Urborg Phantom",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Urborg Phantom",
+      "oracle_fingerprint": "f913fbe273b991f8d2526c610c1f329a",
+      "abilities": [
+        { "Static": { "affected": "This", "mods": ["CantBlock"] } },
+        {
+          "Activated": {
+            "cost": "{U}",
+            "effects": [
+              {
+                "Shield": {
+                  "when": { "Damage": { "to": "This", "combat": true } },
+                  "by": "Prevent",
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "Shield": {
+                  "when": { "Damage": { "source": [{ "Is": "This" }], "combat": true } },
+                  "by": "Prevent",
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

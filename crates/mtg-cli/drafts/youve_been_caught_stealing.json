@@ -1,0 +1,58 @@
+{
+  "oracle_id": "750b61a1-7eb1-4ce2-8a56-fa63f8e48755",
+  "name": "You've Been Caught Stealing",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "You've Been Caught Stealing",
+      "oracle_fingerprint": "999fd5abff74146d0983aeb6b7b0fb22",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Modal": {
+                  "modes": [
+                    {
+                      "effects": [
+                        {
+                          "Rule": {
+                            "rule": { "MustBlock": { "Each": [{ "Type": "Creature" }] } },
+                            "duration": "UntilEndOfTurn"
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "effects": [
+                        {
+                          "CreateToken": {
+                            "token": { "Named": "treasure" },
+                            "count": {
+                              "Players": {
+                                "PlayersWhere": {
+                                  "who": "Opponents",
+                                  "test": {
+                                    "Compare": {
+                                      "left": { "Tallied": { "who": "You", "what": "DamageTaken" } },
+                                      "op": "Ge",
+                                      "right": 1
+                                    }
+                                  }
+                                }
+                              }
+                            }
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

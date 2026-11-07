@@ -1,0 +1,36 @@
+{
+  "oracle_id": "ff8fc718-6218-48f3-981d-c4d2bc468493",
+  "name": "Gnoll War Band",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Gnoll War Band",
+      "oracle_fingerprint": "6d68ef8a4206e0c328e7b81dcd5d7b65",
+      "abilities": [
+        {
+          "CostModifier": {
+            "applies_to": ["This"],
+            "change": "Reduce",
+            "mana": "{1}",
+            "per": {
+              "Players": {
+                "PlayersWhere": {
+                  "who": "Opponents",
+                  "test": {
+                    "Compare": {
+                      "left": { "Tallied": { "who": "You", "what": "DamageTaken" } },
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        { "Keyword": "Menace" },
+        { "Keyword": "Myriad" }
+      ]
+    }
+  ]
+}

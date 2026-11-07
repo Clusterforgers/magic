@@ -1,0 +1,51 @@
+{
+  "oracle_id": "face2dc0-37ba-4efe-b900-b5521567c943",
+  "name": "Starwinder",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Starwinder",
+      "oracle_fingerprint": "2d2c276981e5029a4e426888b73ca7d1",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "DealsDamage": {
+                "source": [{ "Type": "Creature" }, { "ControlledBy": "You" }],
+                "to": "EachPlayer",
+                "combat": true
+              }
+            },
+            "effects": [{ "May": { "effects": [{ "Draw": { "count": "Triggering" } }] } }]
+          }
+        },
+        { "AltCast": { "way": "Warp", "cost": "{2}{U}{U}" } },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "if": { "CastWith": "Warp" },
+            "effects": [
+              { "Choose": { "from": "This", "as": "warped" } },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "End" } },
+                  "effects": [
+                    { "Exile": { "what": { "Bound": "warped" }, "as": "warped_card" } },
+                    {
+                      "Rule": {
+                        "rule": {
+                          "MayCast": { "from": "Exile", "only": { "Bound": "warped_card" } }
+                        },
+                        "duration": "Forever"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

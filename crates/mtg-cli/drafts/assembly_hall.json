@@ -1,0 +1,38 @@
+{
+  "oracle_id": "8da9f975-519d-455a-80c1-2b468cad79a1",
+  "name": "Assembly Hall",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Assembly Hall",
+      "oracle_fingerprint": "5754163c4c0e7be12f640faa872f8d75",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{4}" }, "Tap"],
+            "effects": [
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [{ "Type": "Creature" }, { "In": "Hand" }, { "OwnedBy": "You" }]
+                  },
+                  "as": "revealed"
+                }
+              },
+              { "Reveal": { "what": { "Bound": "revealed" } } },
+              {
+                "Search": {
+                  "filter": [{ "SharesName": { "Bound": "revealed" } }],
+                  "reveal": true,
+                  "as": "found2"
+                }
+              },
+              { "Move": { "what": { "Bound": "found2" }, "to": "Hand" } },
+              { "Shuffle": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

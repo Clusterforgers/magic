@@ -22,21 +22,9 @@
                 "If": {
                   "condition": {
                     "Compare": {
-                      "left": {
-                        "When": {
-                          "condition": {
-                            "Compare": {
-                              "left": { "ManaSpent": { "of": "Green" } },
-                              "op": "Ge",
-                              "right": 3
-                            }
-                          },
-                          "then": 1,
-                          "otherwise": 0
-                        }
-                      },
+                      "left": { "ManaSpent": { "of": "Green" } },
                       "op": "Ge",
-                      "right": 1
+                      "right": 3
                     }
                   },
                   "then": [

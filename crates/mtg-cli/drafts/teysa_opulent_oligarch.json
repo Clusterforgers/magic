@@ -1,7 +1,7 @@
 {
   "oracle_id": "d4f5748f-bb0e-4c48-8802-45a7ad5a80a4",
   "name": "Teysa, Opulent Oligarch",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Teysa, Opulent Oligarch",
@@ -9,9 +9,29 @@
       "abilities": [
         { "Keyword": "Deathtouch" },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 11, "end": 100 }
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": { "Named": "clue" },
+                  "count": {
+                    "Players": {
+                      "PlayersWhere": {
+                        "who": "Opponents",
+                        "test": {
+                          "Compare": {
+                            "left": { "Tallied": { "who": "You", "what": "LifeLost" } },
+                            "op": "Ge",
+                            "right": 1
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            ]
           }
         },
         {

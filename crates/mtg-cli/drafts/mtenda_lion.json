@@ -1,0 +1,35 @@
+{
+  "oracle_id": "af029853-cfb0-403b-af51-141ba02ae2e4",
+  "name": "Mtenda Lion",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mtenda Lion",
+      "oracle_fingerprint": "27d4949ac57220b93db7931dcf1c6a95",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": [{ "Type": "Creature" }, "This"] } },
+            "effects": [
+              {
+                "Pay": {
+                  "who": "Defending",
+                  "cost": "{U}",
+                  "paid": [
+                    {
+                      "Shield": {
+                        "when": { "Damage": { "source": [{ "Is": "This" }], "combat": true } },
+                        "by": "Prevent",
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

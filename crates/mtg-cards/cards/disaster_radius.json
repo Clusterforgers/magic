@@ -1,0 +1,31 @@
+{
+  "oracle_id": "3322c865-bb2a-4201-9115-979883cd7894",
+  "name": "Disaster Radius",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Disaster Radius",
+      "oracle_fingerprint": "ffec75e3b947e0f68935b53ff81237d9",
+      "abilities": [
+        {
+          "AdditionalCost": {
+            "cost": [{ "RevealFromHand": { "filter": [{ "Type": "Creature" }] } }],
+            "required": true
+          }
+        },
+        {
+          "Spell": {
+            "effects": [
+              {
+                "DealDamage": {
+                  "to": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }] },
+                  "amount": { "Stat": { "of": "Paid", "stat": "ManaValue" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
