@@ -2991,8 +2991,13 @@ impl Walker<'_> {
                 w.at("who", |w| w.reference(who, Kind::Player));
                 w.at("count", |w| w.amount(count));
             }
-            Effect::Amass { count, .. }
-            | Effect::Monstrosity { count }
+            Effect::Amass { count, bind, .. } => {
+                w.at("count", |w| w.amount(count));
+                if let Some(name) = bind {
+                    w.at("as", |w| w.bind(name, Kind::Object));
+                }
+            }
+            Effect::Monstrosity { count }
             | Effect::Renown { count }
             | Effect::Adapt { count }
             | Effect::Fabricate { count }

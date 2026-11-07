@@ -501,6 +501,7 @@ pub(super) fn imperative(r: &mut Reader<'_>) -> Option<Effect> {
         "amass" => Effect::Amass {
             subtype: Subtype(super::selectors::plural_subtype(r)?),
             count: points(r)?,
+            bind: None,
         },
         "sacrifice" => itself_sacrificed(r, who)?,
         "draw" => Effect::Draw {

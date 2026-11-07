@@ -1,6 +1,7 @@
-//! Goal: a counter and an attach with an `as` name bind what they did at tables of two, three and four seats: the countered
-//! spell as the card it became (a later step returns it to its owner's hand) and none when the spell can't be countered,
-//! the Equipment that became attached and none when nothing could be attached, so "if you do" reads the outcome.
+//! Goal: a counter, an attach and an amass with an `as` name bind what they did at tables of two, three and four seats:
+//! the countered spell as the card it became (a later step returns it to its owner's hand) and none when the spell can't be
+//! countered, the Equipment that became attached and none when nothing could be attached, so "if you do" reads the
+//! outcome, and the amassed Army, made first or already there.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
 use crate::common;
@@ -136,5 +137,44 @@ fn if_you_do_reads_what_became_attached(
     assert_eq!(attached, drew);
     let hand = state.zone(Zone::Hand(pid(0))).len();
     assert_eq!(hand, usize::from(drew));
+    Ok(())
+}
+
+/// Amass Orcs 2, then draw cards equal to the amassed Army's power.
+fn muster() -> Arc<CardDefinition> {
+    spell(
+        "Muster",
+        CardType::Sorcery,
+        "[]",
+        r#"[{"Amass":{"subtype":"Orc","count":2,"as":"army"}},{"Draw":{"count":{"Stat":{"of":{"Bound":"army"},"stat":"Power"}}}}]"#,
+    )
+}
+
+#[rstest]
+#[case::the_token_made_first(false, 2)]
+#[case::the_army_already_there(true, 3)]
+fn the_amassed_army_is_the_one_that_got_the_counters(
+    #[case] has_army: bool,
+    #[case] drawn: usize,
+    #[values(2, 3, 4)] seats: usize,
+) -> Result<(), ScriptError> {
+    let army = Arc::new(
+        CardDefinition::new("Old Army")
+            .with_type(CardType::Creature)
+            .with_subtype("Army")
+            .with_power_toughness(1, 1),
+    );
+    let mut scenario = Scenario::new(seats)
+        .hand(0, [muster()])
+        .library(0, (0..5).map(|_| free_creature("Filler", 1, 1)));
+    if has_army {
+        scenario = scenario.battlefield(0, [ready(army)]);
+    }
+    let mut driver = Driver::from_scenario(scenario)?;
+    driver.cast("Muster")?;
+    while !driver.state().stack().is_empty() {
+        driver.pass()?;
+    }
+    assert_eq!(driver.state().zone(Zone::Hand(pid(0))).len(), drawn);
     Ok(())
 }

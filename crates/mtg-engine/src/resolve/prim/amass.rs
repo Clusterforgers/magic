@@ -28,12 +28,17 @@ use crate::tokens::TokenCreated;
 /// first: that is a step of its own that binds the token and runs the effect again (`Next::Again`), so the counters
 /// are put on a creature that is on the battlefield and a replacement effect sees them (Hardened Scales). With several
 /// Armies the player chooses one. When the token is not there on the rerun (its creation was replaced) the effect does
-/// nothing more. One `Amassed` follows the counters, even when there are none.
+/// nothing more. One `Amassed` follows the counters, even when there are none. With an `as` name the Army that got them is bound.
 pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
-    let Effect::Amass { subtype, count } = effect else {
+    let Effect::Amass {
+        subtype,
+        count,
+        bind,
+    } = effect
+    else {
         return Err(wrong_effect("Amass"));
     };
-    Stop::settle(amass(cx, subtype, count))
+    Stop::settle(amass(cx, subtype, count, bind.as_deref()))
 }
 
 fn army() -> Subtype {
@@ -45,7 +50,7 @@ fn marker(cx: &Cx<'_>) -> String {
     format!("amassed {:?}", cx.resolving.position)
 }
 
-fn amass(cx: &Cx<'_>, subtype: &Subtype, count: &Amount) -> Result<Run, Stop> {
+fn amass(cx: &Cx<'_>, subtype: &Subtype, count: &Amount, bind: Option<&str>) -> Result<Run, Stop> {
     let player = cx.controller();
     let selector = Selector(vec![
         Pred::Type(CardType::Creature),
@@ -62,7 +67,7 @@ fn amass(cx: &Cx<'_>, subtype: &Subtype, count: &Amount) -> Result<Run, Stop> {
     if armies.is_empty() {
         let created = cx.resolving.bindings.contains_key(&marker);
         return Ok(if created {
-            Run::events(Vec::new())
+            named(bind, Vec::new(), Vec::new())
         } else {
             create(cx, subtype, marker)
         });
@@ -111,7 +116,20 @@ fn amass(cx: &Cx<'_>, subtype: &Subtype, count: &Amount) -> Result<Run, Stop> {
         object: chosen.id,
         player,
     });
-    Ok(Run::events(events))
+    Ok(named(bind, events, vec![Target::Object(chosen)]))
+}
+
+/// The finished step, with the Army bound under the `as` name when there is one (none when no Army got the counters).
+fn named(bind: Option<&str>, events: Vec<Event>, army: Vec<Target>) -> Run {
+    let Some(name) = bind else {
+        return Run::events(events);
+    };
+    Run::Done {
+        events,
+        bound: vec![(name.to_owned(), army)],
+        snapshots: Vec::new(),
+        next: Next::Sibling,
+    }
 }
 
 /// The step that creates the 0/0 black Army token and binds it, then runs the effect again.
@@ -156,7 +174,7 @@ fn create(cx: &Cx<'_>, subtype: &Subtype, marker: String) -> Run {
 
 #[cfg(test)]
 mod tests {
-    //! Goal: an amass with no Army creates the black Army token of the subtype, binds it and asks to run again; with an Army (the only one, or the one chosen among several) it adds the subtype the Army lacks, the counters and one `Amassed`; it does nothing more when the token it made is not there; and it refuses another effect and an answer nobody asked for.
+    //! Goal: an amass with no Army creates the black Army token of the subtype, binds it and asks to run again; with an Army (the only one, or the one chosen among several) it adds the subtype the Army lacks, the counters and one `Amassed`; it does nothing more when the token it made is not there; with an `as` name it binds the Army that got the counters, or none; and it refuses another effect and an answer nobody asked for.
     use mtg_core::ids::{ObjectId, PlayerId};
     use rstest::rstest;
 
@@ -268,6 +286,32 @@ mod tests {
             })
             .collect();
         assert_eq!(words, expected);
+    }
+
+    #[rstest]
+    #[case::the_army_that_got_the_counters(false, 1)]
+    #[case::no_army_when_the_token_is_not_there(true, 0)]
+    fn a_named_amass_binds_the_army(#[case] token_gone: bool, #[case] held: usize) {
+        let game = game(usize::from(!token_gone));
+        let mut resolving = begun(&game);
+        if token_gone {
+            let name = marker(&Cx {
+                scope: Scope::announcing(&game, ME, game.objects().next().unwrap().reference()),
+                resolving: &resolving,
+            });
+            resolving.bindings.insert(name, Vec::new());
+        }
+        let json = r#"{"Amass":{"subtype":"Zombie","count":1,"as":"army"}}"#;
+        let Run::Done { bound, .. } = run_with(&game, &resolving, json).unwrap() else {
+            panic!("done");
+        };
+        let [(name, army)] = bound.as_slice() else {
+            panic!("one name: {bound:?}");
+        };
+        assert_eq!((name.as_str(), army.len()), ("army", held));
+        if let [Target::Object(army)] = army.as_slice() {
+            assert_eq!(game.object(army.id).unwrap().card().name, "Army 0");
+        }
     }
 
     #[test]

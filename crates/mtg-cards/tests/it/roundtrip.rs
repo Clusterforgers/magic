@@ -1021,10 +1021,15 @@ fn leaf_effect() -> impl Strategy<Value = Effect> {
             }),
         (reference(), reference()).prop_map(|(what, with)| Effect::Fight { what, with }),
         who().prop_map(|who| Effect::BecomeMonarch { who }),
-        (text(), amount()).prop_map(|(subtype, count)| Effect::Amass {
-            subtype: Subtype(subtype),
-            count
-        }),
+        (text(), amount(), proptest::option::of("[a-z]{1,6}")).prop_map(
+            |(subtype, count, bind)| {
+                Effect::Amass {
+                    subtype: Subtype(subtype),
+                    count,
+                    bind,
+                }
+            }
+        ),
         amount().prop_map(|count| Effect::Monstrosity { count }),
         (2u32..=3).prop_map(|level| Effect::BecomeLevel { level }),
         amount().prop_map(|count| Effect::Adapt { count }),

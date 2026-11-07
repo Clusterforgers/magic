@@ -66,10 +66,15 @@ fn end_turn(p: &Params) -> Tr<Value> {
 }
 
 fn amass(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
-    only(p, "Amass", &["Num", "Type"])?;
+    only(p, "Amass", &["Num", "Type", "RememberAmass"])?;
     let Some(kind) = p.get("Type") else {
         return super::ctx::unmapped("key:Amass.no-Type");
     };
     let count = amount(ctx, p.get("Num").unwrap_or("1"))?;
-    Ok(json!({"Amass": {"subtype": kind, "count": count}}))
+    let mut node = json!({"Amass": {"subtype": kind, "count": count}});
+    // "The amassed Army": the Army that got the counters.
+    if super::remember::wanted(p, &["RememberAmass"]) {
+        super::remember::bind_moved(ctx, &mut node, "Amass", "amassed");
+    }
+    Ok(node)
 }

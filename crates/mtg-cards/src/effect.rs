@@ -892,6 +892,9 @@ pub enum Effect {
         subtype: Subtype,
         /// How many +1/+1 counters.
         count: Amount,
+        /// The name the Army that got the counters is bound to, for the steps after it ("the amassed Army").
+        #[serde(rename = "as", default, skip_serializing_if = "Option::is_none")]
+        bind: Option<String>,
     },
     /// Each player named incubates (CR 701.53): they create an Incubator token with that many +1/+1 counters on it.
     Incubate {

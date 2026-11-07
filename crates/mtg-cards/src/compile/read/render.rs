@@ -2693,7 +2693,11 @@ impl Writer<'_> {
             Effect::Monstrosity { count } => format!("monstrosity {}", points_text(count)?),
             Effect::Adapt { count } => format!("adapt {}", points_text(count)?),
             Effect::Bolster { count } => format!("bolster {}", points_text(count)?),
-            Effect::Amass { subtype, count } => format!(
+            Effect::Amass {
+                subtype,
+                count,
+                bind: None,
+            } => format!(
                 "amass {} {}",
                 plural_subtype(&subtype.0),
                 points_text(count)?

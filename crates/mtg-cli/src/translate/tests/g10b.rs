@@ -65,6 +65,12 @@ fn reads(types: &str, lines: &str, expected: &[&str], gap: &str) {
     &[],
     "key:Attach.RememberAttached-with-remembered-choices"
 )]
+#[case::the_amassed_army(
+    "Sorcery",
+    "A:SP$ Amass | Type$ Orc | Num$ 2 | RememberAmass$ True | SubAbility$ D\nSVar:D:DB$ Draw | NumCards$ X\nSVar:X:Remembered$CardPower",
+    &[r#""as":"amassed""#, r#"{"Bound":"amassed"}"#],
+    ""
+)]
 #[case::sacrifice_all_then_that_many(
     "Sorcery",
     "A:SP$ SacrificeAll | ValidCards$ Creature.YouCtrl | RememberSacrificed$ True | SubAbility$ D\nSVar:D:DB$ Draw | NumCards$ X\nSVar:X:Remembered$Amount",
