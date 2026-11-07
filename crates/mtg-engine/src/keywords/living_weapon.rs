@@ -48,6 +48,7 @@ pub(super) fn enters_attached_to(token: TokenSpec) -> Ability {
             Effect::Attach {
                 what: Ref::This,
                 to: Ref::Bound("germ".into()),
+                bind: None,
             },
         ],
     }

@@ -641,6 +641,7 @@ mod dk1f_pippin;
 mod dk1f_suppression_ray;
 mod fix6_last_known;
 mod fix9_damaged;
+mod g10b_remember;
 mod g9c_shadow;
 mod mana_any_shape;
 mod mana_ban;

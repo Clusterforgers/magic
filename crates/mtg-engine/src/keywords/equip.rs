@@ -70,6 +70,7 @@ pub(super) fn attach_to_a_creature_you_control(
         effects: vec![Effect::Attach {
             what: Ref::This,
             to: Ref::Target(0),
+            bind: None,
         }],
     }
 }

@@ -617,6 +617,9 @@ pub enum Effect {
     Counter {
         /// What is countered.
         what: Ref,
+        /// The name the countered spells are bound to, as the cards they become, for the steps after it; abilities are not.
+        #[serde(rename = "as", default, skip_serializing_if = "Option::is_none")]
+        bind: Option<String>,
     },
     /// Deals damage.
     DealDamage {
@@ -763,6 +766,9 @@ pub enum Effect {
         what: Ref,
         /// The object they are attached to.
         to: Ref,
+        /// The name the permanents that became attached are bound to, for the steps after it.
+        #[serde(rename = "as", default, skip_serializing_if = "Option::is_none")]
+        bind: Option<String>,
     },
     /// Puts a creature that just entered the battlefield into combat, attacking the player or planeswalker the creature that the cost of the ability returned to its owner's hand was attacking (CR 702.49a), or, with no such cost, what its controller chooses among the defenders of their own attack (CR 508.4); it was never declared as an attacker.
     JoinAttack {
@@ -1876,7 +1882,7 @@ mod tests {
         r#"{"OneOf":{"options":[[],[]]}}"#
     )]
     #[case::attach_the_source_to_a_target(
-        Effect::Attach { what: Ref::This, to: Ref::Target(0) },
+        Effect::Attach { what: Ref::This, to: Ref::Target(0), bind: None },
         r#"{"Attach":{"what":"This","to":{"Target":0}}}"#
     )]
     #[case::unattach_the_source(Effect::Unattach { what: Ref::This }, r#"{"Unattach":{"what":"This"}}"#)]

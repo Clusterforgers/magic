@@ -63,6 +63,7 @@ pub fn attach(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
     Some(vec![Effect::Attach {
         what: Ref::This,
         to,
+        bind: None,
     }])
 }
 

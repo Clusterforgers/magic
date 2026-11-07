@@ -57,6 +57,7 @@ pub fn leak(name: &str, tax: u32) -> Arc<CardDefinition> {
                 Vec::new(),
                 vec![Effect::Counter {
                     what: Ref::Target(0),
+                    bind: None,
                 }],
             )],
         },

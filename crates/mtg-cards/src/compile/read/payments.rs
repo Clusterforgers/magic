@@ -110,7 +110,8 @@ pub fn unless(r: &mut Reader<'_>, unpaid: &[Effect]) -> Option<(Ref, Cost)> {
         let countered = matches!(
             unpaid,
             [Effect::Counter {
-                what: Ref::Target(0)
+                what: Ref::Target(0),
+                ..
             }]
         );
         countered.then(|| Ref::ControllerOf(Box::new(Ref::Target(0))))?

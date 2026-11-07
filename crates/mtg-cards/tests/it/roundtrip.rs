@@ -880,7 +880,8 @@ fn leaf_effect() -> impl Strategy<Value = Effect> {
             count,
             bind: None
         }),
-        reference().prop_map(|what| Effect::Counter { what }),
+        (reference(), proptest::option::of("[a-z]{1,6}"))
+            .prop_map(|(what, bind)| Effect::Counter { what, bind }),
     ];
     let part2 = prop_oneof![
         (proptest::option::of(reference()), reference(), amount()).prop_map(
@@ -973,7 +974,11 @@ fn leaf_effect() -> impl Strategy<Value = Effect> {
         reference().prop_map(|what| Effect::Tap { what, bind: None }),
         reference().prop_map(|what| Effect::Untap { what }),
         reference().prop_map(|what| Effect::TapOrUntap { what }),
-        (reference(), reference()).prop_map(|(what, to)| Effect::Attach { what, to }),
+        (reference(), reference()).prop_map(|(what, to)| Effect::Attach {
+            what,
+            to,
+            bind: None
+        }),
         reference().prop_map(|what| Effect::Transform { what }),
         who().prop_map(|who| Effect::WinGame { who }),
         (who(), amount()).prop_map(|(who, count)| Effect::Surveil { who, count }),

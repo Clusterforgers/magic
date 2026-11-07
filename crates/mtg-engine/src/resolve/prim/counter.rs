@@ -3,7 +3,9 @@
 use mtg_cards::effect::Effect;
 
 use super::wrong_effect;
+use crate::choose::Target;
 use crate::events::{Event, ResolutionOutcome};
+use crate::object::{ObjectKind, ObjectRef};
 use crate::resolve::{Cx, Next, ResolveError, Run};
 use crate::rules::cant_be_countered;
 use crate::snapshot::snapshot;
@@ -15,12 +17,13 @@ use crate::zones::Zone;
 /// resolving spell, an object that is not on the stack, one that has left it since it was named, a spell that can't be
 /// countered and a name that repeats are passed over.
 pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
-    let Effect::Counter { what } = effect else {
+    let Effect::Counter { what, bind } = effect else {
         return Err(wrong_effect("Counter"));
     };
     let state = cx.state();
     let mut events = Vec::new();
     let mut snapshots = Vec::new();
+    let mut countered = Vec::new();
     for object in cx.scope.live_objects(what)? {
         if object.zone() != Zone::Stack
             || object.id() == cx.resolving.object()
@@ -29,14 +32,25 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
             continue;
         }
         snapshots.extend(snapshot(state, object.id()));
+        // A countered spell leaves the stack once (CR 701.6a); an ability ceases to exist and names nothing.
+        if object.kind() != ObjectKind::Ability {
+            countered.push(Target::Object(ObjectRef {
+                id: object.id(),
+                counter: object.counter() + 1,
+            }));
+        }
         events.push(Event::ResolutionEnded {
             object: object.id(),
             outcome: ResolutionOutcome::Countered,
         });
     }
+    let bound = bind
+        .iter()
+        .map(|name| (name.clone(), countered.clone()))
+        .collect();
     Ok(Run::Done {
         events,
-        bound: Vec::new(),
+        bound,
         snapshots,
         next: Next::Sibling,
     })
@@ -44,7 +58,7 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
 
 #[cfg(test)]
 mod tests {
-    //! Goal: a counter ends each spell or ability on the stack that it names, all together, as countered and as it was; the resolving spell, objects that are not on the stack, names of objects that have left it and names that repeat are passed over; a chosen target is countered while it is a legal target, and once the events are folded a spell is in its owner's graveyard, an ability has ceased to exist and nothing else on the stack is disturbed.
+    //! Goal: a counter ends each spell or ability on the stack that it names, all together, as countered and as it was; the resolving spell, objects that are not on the stack, names of objects that have left it and names that repeat are passed over; a chosen target is countered while it is a legal target, and once the events are folded a spell is in its owner's graveyard, an ability has ceased to exist and nothing else on the stack is disturbed; with an `as` name the countered spells are bound as the cards they become and abilities are not.
     use std::sync::Arc;
 
     use mtg_cards::CardDefinition;
@@ -377,6 +391,40 @@ mod tests {
                 Vec::new()
             }
         );
+    }
+
+    #[rstest]
+    #[case::everything_on_the_stack(r#"[{"In":"Stack"}]"#, &["Bolt", "Shock", "Charm"])]
+    #[case::a_spell_by_name(r#"["Spell",{"Named":"Charm"}]"#, &["Charm"])]
+    #[case::an_ability_only(r#"[{"Ability":"Activated"}]"#, &[])]
+    fn a_named_counter_binds_the_spells_as_the_cards_they_become(
+        #[case] filter: &str,
+        #[case] expected: &[&str],
+    ) {
+        let game = stacked();
+        let counter = effect(&format!(
+            r#"{{"Counter":{{"what":{{"Each":{filter}}},"as":"it"}}}}"#
+        ));
+        let Run::Done { bound, .. } =
+            run_with(&game, &Bindings::new(), Vec::new(), &[], &counter).unwrap()
+        else {
+            panic!("the effect is done");
+        };
+        let [(name, held)] = bound.as_slice() else {
+            panic!("one name: {bound:?}");
+        };
+        assert_eq!(name, "it");
+        let expected: Vec<Target> = expected
+            .iter()
+            .map(|card| {
+                let now = named(&game, card);
+                Target::Object(ObjectRef {
+                    id: now.id,
+                    counter: now.counter + 1,
+                })
+            })
+            .collect();
+        assert_eq!(held, &expected, "spells as they become; an ability is gone");
     }
 
     #[test]

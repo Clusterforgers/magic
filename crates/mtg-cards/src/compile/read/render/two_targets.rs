@@ -21,6 +21,7 @@ pub(super) fn text(targets: &[TargetSpec], effects: &[Effect]) -> Option<String>
             Effect::Attach {
                 what: Ref::Target(0),
                 to: Ref::Target(1),
+                bind: None,
             },
         ] => Some(format!(
             "attach {} to {}",

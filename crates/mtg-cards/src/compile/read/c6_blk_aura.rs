@@ -35,6 +35,7 @@ pub fn c6_blk_aura_effects() -> Vec<Effect> {
         Effect::Attach {
             what: Ref::This,
             to: Ref::Bound(C6_BLK_MANIFESTED.to_owned()),
+            bind: None,
         },
     ]
 }

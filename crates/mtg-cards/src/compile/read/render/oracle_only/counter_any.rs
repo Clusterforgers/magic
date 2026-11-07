@@ -29,7 +29,8 @@ pub(super) fn add(ability: &Ability, texts: &mut Vec<String>) {
         && matches!(
             effects.as_slice(),
             [Effect::Counter {
-                what: Ref::Target(0)
+                what: Ref::Target(0),
+                bind: None,
             }]
         )
     {

@@ -197,6 +197,7 @@ impl Writer<'_> {
             },
             counter @ Effect::Counter {
                 what: Ref::Target(0),
+                bind: None,
             },
             ..,
         ] = effects

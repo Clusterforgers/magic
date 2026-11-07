@@ -2282,7 +2282,7 @@ impl Writer<'_> {
                 format!("{} fights {}", self.object(what)?, self.object(with)?)
             }
             Effect::Regenerate { what } => format!("regenerate {}", self.object(what)?),
-            Effect::Counter { what } => format!("counter {}", self.object(what)?),
+            Effect::Counter { what, bind: None } => format!("counter {}", self.object(what)?),
             _ => return None,
         })
     }
@@ -2712,6 +2712,7 @@ impl Writer<'_> {
             Effect::Attach {
                 what: Ref::This,
                 to: to @ Ref::Target(0),
+                bind: None,
             } => format!("attach ~ to {}", self.object(to)?),
             Effect::Transform { what } => format!("transform {}", self.object(what)?),
             Effect::Flip { what } => format!("flip {}", self.object(what)?),

@@ -1255,7 +1255,7 @@ fn removal(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
         "tap" => Effect::Tap { what, bind: None },
         "untap" => Effect::Untap { what },
         "regenerate" => Effect::Regenerate { what },
-        _ => Effect::Counter { what },
+        _ => Effect::Counter { what, bind: None },
     }])
 }
 

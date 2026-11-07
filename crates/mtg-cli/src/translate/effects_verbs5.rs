@@ -70,10 +70,23 @@ fn skip_phase(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
 
 /// `SacrificeAll` of named objects: their controller sacrifices each one. A valid-string of permanents stays a gap.
 fn sacrifice_all(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
-    only(p, "SacrificeAll", &["Defined", "Controller", "ValidCards"])?;
-    let Some(word) = p.get("Defined") else {
-        return sacrifice_group(ctx, p);
+    only(
+        p,
+        "SacrificeAll",
+        &["Defined", "Controller", "ValidCards", "RememberSacrificed"],
+    )?;
+    let mut node = match p.get("Defined") {
+        None => sacrifice_group(ctx, p)?,
+        Some(word) => sacrifice_named(ctx, p, word)?,
     };
+    if super::remember::wanted(p, &["RememberSacrificed"]) {
+        super::remember::bind_moved(ctx, &mut node, "Sacrifice", "sacrificed");
+    }
+    Ok(node)
+}
+
+/// `SacrificeAll` of the objects `word` names.
+fn sacrifice_named(ctx: &mut Ctx, p: &Params, word: &str) -> Tr<Value> {
     let object = defined(ctx, word)?;
     let who = match p.get("Controller") {
         None => json!({"ControllerOf": object}),

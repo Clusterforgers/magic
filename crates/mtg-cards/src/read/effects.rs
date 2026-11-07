@@ -337,10 +337,10 @@ fn permanents(ctx: &Ctx, effect: &Effect) -> Option<String> {
         Effect::Sacrifice {
             who, filter, count, ..
         } => act(ctx, who, "sacrifice", &sacrificed(ctx, count, filter)),
-        Effect::Counter { what } => format!("counter {}", phrase::who(ctx, what)),
+        Effect::Counter { what, .. } => format!("counter {}", phrase::who(ctx, what)),
         Effect::Tap { what, .. } => format!("tap {}", phrase::who(ctx, what)),
         Effect::Untap { what } => format!("untap {}", phrase::who(ctx, what)),
-        Effect::Attach { what, to } => format!(
+        Effect::Attach { what, to, .. } => format!(
             "attach {} to {}",
             phrase::who(ctx, what),
             phrase::who(ctx, to)

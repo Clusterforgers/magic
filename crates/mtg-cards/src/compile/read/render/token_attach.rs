@@ -21,6 +21,7 @@ impl Writer<'_> {
             Effect::Attach {
                 what: Ref::Target(0),
                 to,
+                bind: None,
             },
             ..,
         ] = effects

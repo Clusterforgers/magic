@@ -31,6 +31,7 @@ pub(super) fn add(ability: &Ability, texts: &mut Vec<String>) {
         Effect::Attach {
             what: Ref::Triggering,
             to: Ref::Target(0),
+            bind: None,
         },
     ] = inner.as_slice()
     else {
