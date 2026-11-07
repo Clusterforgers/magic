@@ -947,6 +947,74 @@ pub enum ReplaceBy {
     EntersPrepared,
 }
 
+/// The kinds of shield (`Effect::Shield`) the engine plays; the validator and the engine both read a shield by it.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum ShieldShape {
+    /// Objects named now that would go from the battlefield or the stack to a graveyard, or leave the battlefield, go
+    /// elsewhere (CR 614.1a, 611.2c).
+    Named {
+        /// It covers any move from the battlefield, not only one to a graveyard.
+        leaves: bool,
+    },
+    /// A spell named now that would be countered goes elsewhere.
+    Countered,
+    /// A class of moves or entries, judged as each happens.
+    Class,
+    /// Damage prevented, changed or redirected.
+    Damage,
+}
+
+impl ShieldShape {
+    /// The shape of a shield, or none when the engine plays no shield of this replacement.
+    #[must_use]
+    pub fn of(when: &ReplaceWhen, by: &ReplaceBy) -> Option<Self> {
+        match (when, by) {
+            (ReplaceWhen::ZoneChange { what, from, to }, ReplaceBy::MoveTo(_))
+                if names_objects(what) =>
+            {
+                match (from, to) {
+                    (Some(ZoneKind::Battlefield | ZoneKind::Stack), Some(ZoneKind::Graveyard)) => {
+                        Some(Self::Named { leaves: false })
+                    }
+                    (Some(ZoneKind::Battlefield), None) => Some(Self::Named { leaves: true }),
+                    _ => None,
+                }
+            }
+            (ReplaceWhen::Countered { .. }, ReplaceBy::MoveTo(_)) => Some(Self::Countered),
+            (ReplaceWhen::ZoneChange { what, .. }, ReplaceBy::MoveTo(_))
+            | (ReplaceWhen::Enters { what }, ReplaceBy::Tapped)
+                if !names_objects(what) =>
+            {
+                Some(Self::Class)
+            }
+            (
+                ReplaceWhen::Damage { .. },
+                ReplaceBy::Prevent
+                | ReplaceBy::PreventNext
+                | ReplaceBy::PreventUpTo(_)
+                | ReplaceBy::PreventCounted(_)
+                | ReplaceBy::PreventAnd(_)
+                | ReplaceBy::Multiply(_)
+                | ReplaceBy::Add(_)
+                | ReplaceBy::Instead(_)
+                | ReplaceBy::InsteadNext(_)
+                | ReplaceBy::RedirectUpTo { .. }
+                | ReplaceBy::Redirect { .. },
+            ) => Some(Self::Damage),
+            _ => None,
+        }
+    }
+}
+
+/// Whether the selector names particular objects now (a target, what a spell damaged) rather than a kind of object.
+#[must_use]
+pub fn names_objects(what: &Selector) -> bool {
+    use crate::refs::Pred;
+    what.0
+        .iter()
+        .any(|pred| matches!(pred, Pred::Is(_) | Pred::SameCard(_) | Pred::DamagedBy(_)))
+}
+
 #[cfg(test)]
 mod tests {
     //! Goal: patterns serialize compactly, leave out their defaults and refuse unknown fields.

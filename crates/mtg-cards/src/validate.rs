@@ -21,7 +21,7 @@ use crate::modify::{CastPermission, Duration, GameRule, Modification, Prohibited
 use crate::refs::{Bounds, Pred, Ref, Selector, TargetSet, TargetSpec, Targetable, ZoneKind};
 use crate::spend::{SpendOn, WhenSpent};
 use crate::support::{PrintedCard, PrintedFace, oracle_fingerprint};
-use crate::trigger::{ReplaceBy, ReplaceWhen, Step, TriggerPattern};
+use crate::trigger::{ReplaceBy, ReplaceWhen, ShieldShape, Step, TriggerPattern};
 use crate::value::CastWay;
 use crate::value::{Amount, Condition, TurnTally};
 
@@ -3316,6 +3316,12 @@ impl Walker<'_> {
                 when_spent,
             } => {
                 w.at("who", |w| w.reference(who, Kind::Player));
+                // Mana read from one player's game (their commander, their lands) is added for one player only.
+                if matches!(who, Ref::EachPlayer | Ref::Opponents)
+                    && let Some(tag) = fix19_per_player(mana)
+                {
+                    w.uses("Effect", &format!("AddMana.{tag}.Players"));
+                }
                 if only.iter().any(|on| matches!(on, SpendOn::Spell(f) | SpendOn::Ability(f) | SpendOn::Uncounterable(f) if f.types.iter().any(|t| f.without.contains(t)))) {
                     w.problem("a restriction names a card type it also excludes");
                 }
@@ -3603,29 +3609,9 @@ impl Walker<'_> {
                 }
                 w.at("when", |w| w.replace_when(when));
                 w.at("by", |w| w.replace_by(when, by));
-                // The engine makes shields of damage prevention and of a death sent elsewhere; any other waits.
-                match (when, by) {
-                    (
-                        ReplaceWhen::Damage { .. },
-                        ReplaceBy::Prevent
-                        | ReplaceBy::PreventNext
-                        | ReplaceBy::PreventUpTo(_)
-                        | ReplaceBy::PreventCounted(_)
-                        | ReplaceBy::PreventAnd(_)
-                        | ReplaceBy::Multiply(_)
-                        | ReplaceBy::Add(_)
-                        | ReplaceBy::Instead(_)
-                        | ReplaceBy::InsteadNext(_)
-                        | ReplaceBy::RedirectUpTo { .. }
-                        | ReplaceBy::Redirect { .. },
-                    )
-                    // A death or a counter sent elsewhere, and a class of moves judged as each happens (`Rule::Replaces`).
-                    | (
-                        ReplaceWhen::ZoneChange { .. } | ReplaceWhen::Countered { .. },
-                        ReplaceBy::MoveTo(_) | ReplaceBy::IntoLibrary { .. },
-                    )
-                    | (ReplaceWhen::Enters { .. }, ReplaceBy::Tapped) => {}
-                    _ => w.uses("Effect", &format!("Shield.{}", tag_of(when))),
+                // The engine plays the shields of `ShieldShape` alone; any other waits.
+                if ShieldShape::of(when, by).is_none() {
+                    w.uses("Effect", &format!("Shield.{}", tag_of(when)));
                 }
             }
             Effect::DelayedTrigger { when, effects, .. } => {
@@ -3681,6 +3667,15 @@ impl Walker<'_> {
                 w.x_free = saved;
                 w.at("times", |w| w.amount(times));
                 w.payment_of_the_source(cost);
+                // The source is lost once: the engine refuses a cost that loses it more than one time over.
+                if *times != Amount::one()
+                    && cost
+                        .0
+                        .iter()
+                        .any(|item| matches!(item, CostItem::SacrificeSelf | CostItem::ExileSelf))
+                {
+                    w.uses("Effect", "Pay.Times.SourceLeaves");
+                }
                 w.c11f_paid_x(cost, paid);
                 w.effect_list("unpaid", unpaid, false);
             }
@@ -4761,6 +4756,18 @@ fn announces_x(cost: &Cost) -> bool {
             .0
             .iter()
             .any(|item| matches!(item, CostItem::PayEnergy(Amount::X)))
+}
+
+/// The tag of mana read from one player's game (`CommanderIdentity`, `ProducedBy`), through `Instead` on either side.
+fn fix19_per_player(mana: &Produce) -> Option<&'static str> {
+    match mana {
+        Produce::CommanderIdentity(_) => Some("CommanderIdentity"),
+        Produce::ProducedBy { .. } => Some("ProducedBy"),
+        Produce::Instead { base, instead, .. } => {
+            fix19_per_player(base).or_else(|| fix19_per_player(instead))
+        }
+        _ => None,
+    }
 }
 
 /// Whether a cost has an `{X}` in its mana.

@@ -144,7 +144,7 @@ The rules of the data are in [cards-dsl.md](cards-dsl.md) (Triggers, replacement
 - `process` reads the replacement effects once for the batch (`gather`) and looks at each item in turn. The candidates that apply and have not been applied to the item are ordered by address; effects about their own object go first; one candidate is applied, more are asked. Applying changes the item or replaces it with new ones, which carry the effects already applied. Each `ReplacementCandidate` carries `text`, the words of its own effect.
 - A replacement of its own object's move to a graveyard with no `from` ("from anywhere") works in every zone (`ability_reader::works_anywhere`). `IntoLibrary` sends the object to its owner's library; a shuffle it adds has an empty order until `finish` folds the batch on a copy of the state and draws the order from the library as the events before it leave it.
 - Entering untapped is ordered after the effects that tap the entering permanent, which is the order its controller wants (CR 616.1).
-- Shields are `RuleEffect`s (`Rule::PreventDamage`, `Rule::Regenerate`, `Rule::DiesInstead`) made by `Effect::Shield` and `Effect::Regenerate`.
+- Shields are `RuleEffect`s (`Rule::PreventDamage`, `Rule::Regenerate`, `Rule::DiesInstead`) made by `Effect::Shield` and `Effect::Regenerate`. `ShieldShape` (mtg-cards) names the shields the engine plays; the validator makes every other shield a gap. `DiesInstead` with `leaves` covers any move of the named permanents off the battlefield.
 - The state-based checks of the testkit skip a decision of the step: the events it is about are not applied yet.
 
 ## Triggered abilities

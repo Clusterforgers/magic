@@ -239,6 +239,7 @@ mod fix14_shields;
 mod fix14_those_targets;
 mod fix16_sacrificed_aura;
 mod fix17_named_cant;
+mod fix19_leave_shield;
 mod fix7;
 mod flip;
 mod flip_fuzz;

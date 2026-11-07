@@ -3,7 +3,7 @@
 use mtg_cards::effect::Effect;
 use mtg_cards::modify::Duration;
 use mtg_cards::refs::{Pred, Ref, Selector, ZoneKind};
-use mtg_cards::trigger::{ReplaceBy, ReplaceWhen};
+use mtg_cards::trigger::{ReplaceBy, ReplaceWhen, ShieldShape};
 use mtg_core::ids::EffectId;
 
 use super::wrong_effect;
@@ -16,33 +16,33 @@ use crate::rules::{DamageShield, Rule, RuleEffect};
 
 /// A shield of damage prevention begins for the recipients its `to` names now, whatever their number (none named,
 /// none protected: nothing begins), and lasts for its duration. It prevents all the damage or, as `PreventUpTo`, that
-/// much in all; `PreventCounted` counts that much as it begins. A shield over deaths covers the permanents its selector
-/// names now. Any other shield refuses by the name of its effect.
+/// much in all; `PreventCounted` counts that much as it begins. A shield over deaths, or over leaving the battlefield,
+/// covers the permanents its selector names now. Any other shield refuses by the name of its effect (`ShieldShape`).
 pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
     let Effect::Shield { when, by, duration } = effect else {
         return Err(wrong_effect("Shield"));
     };
-    let covered = match (when, by) {
+    let shape = ShieldShape::of(when, by).ok_or(ResolveError::Unsupported("Effect.Shield"))?;
+    let covered = match (shape, when, by) {
         (
-            ReplaceWhen::ZoneChange {
-                what,
-                from: Some(ZoneKind::Battlefield | ZoneKind::Stack),
-                to: Some(ZoneKind::Graveyard),
-            },
+            ShieldShape::Named { leaves },
+            ReplaceWhen::ZoneChange { what, .. },
             ReplaceBy::MoveTo(to),
-        ) if names_objects(what) => Some((what, to, false)),
-        (ReplaceWhen::Countered { what }, ReplaceBy::MoveTo(to)) => Some((what, to, true)),
+        ) => Some((what, to, false, leaves)),
+        (ShieldShape::Countered, ReplaceWhen::Countered { what }, ReplaceBy::MoveTo(to)) => {
+            Some((what, to, true, false))
+        }
         _ => None,
     };
     // A class of events (every creature that dies this turn, every card put into a graveyard) is judged as each happens.
-    if covered.is_none() && is_class_shield(when, by) {
+    if shape == ShieldShape::Class {
         let rule = Rule::Replaces {
             when: when.clone(),
             by: by.clone(),
         };
         return Ok(begin(cx, rule, duration.clone()));
     }
-    if let Some((what, to, countered)) = covered {
+    if let Some((what, to, countered, leaves)) = covered {
         let cast = matches!(
             when,
             ReplaceWhen::ZoneChange {
@@ -68,6 +68,7 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
                 to: *to,
                 countered,
                 cast,
+                leaves,
             },
             duration.clone(),
         ));
@@ -169,13 +170,6 @@ fn damage_shield(
     }))
 }
 
-/// Whether the selector names particular objects now (a target, what a spell damaged) rather than a kind of object.
-fn names_objects(what: &Selector) -> bool {
-    what.0
-        .iter()
-        .any(|pred| matches!(pred, Pred::Is(_) | Pred::SameCard(_) | Pred::DamagedBy(_)))
-}
-
 /// Whether a kind of protected object reads the same after the resolution: its words name no target, binding or
 /// choice of the resolution, only characteristics, status and players the shield's controller can name later.
 fn judged_per_event(kind: &Selector) -> bool {
@@ -208,15 +202,6 @@ fn judged_per_event(kind: &Selector) -> bool {
         }
     }
     !kind.is_empty() && kind.0.iter().all(plain)
-}
-
-/// Whether the shield replaces a class of zone changes or entries, judged when each happens.
-fn is_class_shield(when: &ReplaceWhen, by: &ReplaceBy) -> bool {
-    match (when, by) {
-        (ReplaceWhen::ZoneChange { what, .. }, ReplaceBy::MoveTo(_))
-        | (ReplaceWhen::Enters { what }, ReplaceBy::Tapped) => !names_objects(what),
-        _ => false,
-    }
 }
 
 /// The rule of a shield begins for its duration, unless it names nothing.
