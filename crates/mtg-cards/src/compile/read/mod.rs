@@ -129,6 +129,7 @@ mod r6d_kind;
 mod r6f_flash_sacrifice;
 mod r7a_more;
 mod r7a_wordings;
+mod r7d_statics;
 mod random_moves;
 mod render;
 mod repeat;

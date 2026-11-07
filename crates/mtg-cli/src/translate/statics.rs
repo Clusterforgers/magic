@@ -195,7 +195,13 @@ fn refinement(ctx: &Ctx, p: &Params, subject: &Value) -> Tr<Option<Value>> {
     let (Some(_), Some(valid)) = (p.get("AffectedDefined"), p.get("Affected")) else {
         return Ok(None);
     };
-    if matches!(valid, "Creature" | "Card" | "Permanent") {
+    // An Aura that may enchant a noncreature permanent states the creature condition ("As long as enchanted permanent
+    // is a creature, it has lifelink"); on a creature-only Aura the type word adds none.
+    let creature_condition = valid == "Creature"
+        && p.get("AffectedDefined") == Some("Enchanted")
+        && p.get("Description")
+            .is_some_and(|text| text.starts_with("As long as enchanted permanent is a creature"));
+    if matches!(valid, "Creature" | "Card" | "Permanent") && !creature_condition {
         return Ok(None);
     }
     if p.has("AffectedZone") {

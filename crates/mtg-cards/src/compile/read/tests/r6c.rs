@@ -28,8 +28,7 @@ const WARLOCK: &str = r#"{"Static":{"affected":"This","mods":[{"CantBeBlockedBy"
 const RIDER: &str = r#"{"Static":{"affected":"This","defining":true,"mods":[{"SetPT":{"power":{"Sum":[{"Count":[{"Type":"Land"},{"ControlledBy":"You"}]},1]},"toughness":{"Sum":[{"Count":[{"Type":"Land"},{"ControlledBy":"You"}]},1]}}}]}}"#;
 const JAGGED: &str = r#"{"Spell":{"effects":[{"DealDamage":{"amount":3,"to":{"Target":0}}}],"targets":[{"bounds":{"max":2,"min":2},"what":{"Object":[{"Type":"Creature"}]}}]}}"#;
 const SPHERE: &str = r#"{"Replacement":{"by":{"PreventUpTo":2},"when":{"Damage":{"source":[{"Color":"Green"}],"to":"You"}}}}"#;
-const WAR_PAINT: &str =
-    r#"{"Static":{"affected":"Attached","mods":[{"ModifyPT":{"power":2,"toughness":1}}]}}"#;
+const WAR_PAINT: &str = r#"{"Static":{"affected":"Attached","condition":{"Matches":{"selector":[{"Type":"Creature"}],"subject":"Attached"}},"mods":[{"ModifyPT":{"power":2,"toughness":1}}]}}"#;
 const MATTOCK: &str = r#"{"Static":{"affected":"Attached","condition":{"Matches":{"selector":[{"Subtype":"Human"}],"subject":"Attached"}},"mods":[{"ModifyPT":{"power":1,"toughness":1}}]}}"#;
 const PUMP: &str = r#"{"Spell":{"effects":[{"Continuous":{"affected":{"Target":0},"duration":"UntilEndOfTurn","mods":[{"ModifyPT":{"power":2,"toughness":2}}]}}],"targets":[{"what":{"Object":[{"Type":"Creature"}]}}]}}"#;
 const ADEPT: &str = r#"{"Triggered":{"effects":[{"Continuous":{"affected":"This","duration":"UntilEndOfTurn","mods":[{"AddKeyword":"DoubleStrike"}]}}],"when":{"Nth":{"event":{"SpellCast":{"by":"You","what":[{"ControlledBy":"You"}]}},"nth":2}}}}"#;
@@ -175,6 +174,15 @@ fn an_oracle_wording_of_the_rule_reads_back(#[case] json: &str, #[case] clause: 
 #[case::the_card_itself(
     r#"{"Static":{"affected":"This","mods":[{"ModifyPT":{"power":2,"toughness":1}}]}}"#,
     "As long as enchanted permanent is a creature, it gets +2/+1."
+)]
+// The rule without the creature condition reaches a noncreature permanent too (r6 audit F1).
+#[case::no_creature_condition(
+    r#"{"Static":{"affected":"Attached","mods":[{"ModifyPT":{"power":2,"toughness":1}}]}}"#,
+    "As long as enchanted permanent is a creature, it gets +2/+1."
+)]
+#[case::no_creature_condition_grant(
+    r#"{"Static":{"affected":"Attached","mods":[{"AddKeyword":"Lifelink"}]}}"#,
+    "As long as enchanted permanent is a creature, it has lifelink."
 )]
 #[case::additional_alone(PUMP, "Target creature gets an additional +2/+2 until end of turn.")]
 #[case::until_your_next_turn(

@@ -1,0 +1,35 @@
+{
+  "oracle_id": "45e5135b-274c-46b4-8249-7e05e37aaff7",
+  "name": "Heroes for Hire",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Heroes for Hire",
+      "oracle_fingerprint": "09a21a01e43153bcf5e64644ba86b38b",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "CreateToken": { "token": { "Named": "treasure" }, "count": 3 } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Sacrifice": { "filter": [{ "Subtype": "Treasure" }] } }],
+            "effects": [
+              { "ExileTop": { "as": "impulse" } },
+              {
+                "Rule": {
+                  "rule": {
+                    "MayCast": { "from": "Exile", "only": { "Bound": "impulse" }, "play": true }
+                  },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

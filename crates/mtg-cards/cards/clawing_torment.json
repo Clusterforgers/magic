@@ -13,7 +13,10 @@
         {
           "Static": {
             "affected": "Attached",
-            "mods": [{ "ModifyPT": { "power": -1, "toughness": -1 } }, "CantBlock"]
+            "mods": [{ "ModifyPT": { "power": -1, "toughness": -1 } }, "CantBlock"],
+            "condition": {
+              "Matches": { "subject": "Attached", "selector": [{ "Type": "Creature" }] }
+            }
           }
         },
         {

@@ -25,6 +25,7 @@ fn duration_words(duration: &Duration) -> Option<&'static str> {
     match duration {
         Duration::UntilEndOfTurn => Some(END_OF_TURN),
         Duration::UntilYourNextTurn => Some(NEXT_TURN),
+        Duration::WhileSourceTapped => Some(super::render::WHILE_TAPPED),
         _ => None,
     }
 }

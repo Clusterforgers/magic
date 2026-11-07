@@ -1520,6 +1520,11 @@ pub(super) fn control_texts(condition: &Condition) -> Vec<String> {
             .into_iter()
             .map(|kind| format!("{verb} {kind}"))
             .collect(),
+        // r7d: one or more among the opponents' permanents is "an opponent controls a ...".
+        (Cmp::Ge, 1) => single_texts(&selector)
+            .into_iter()
+            .map(|kind| format!("an opponent controls {kind}"))
+            .collect(),
         (Cmp::Ge | Cmp::Le, 2..) | (Cmp::Le, 1) => {
             let (Some(words), Some(group)) =
                 (count_word(number), phrase_text(&selector, Form::All))
@@ -1626,6 +1631,7 @@ fn rule_texts(rule: &GameRule, condition: Option<&Condition>, from: ZoneKind) ->
             | GameRule::CountersRemain,
             ZoneKind::Battlefield,
         ) => super::w17b_statics::w17b_texts(rule),
+        (GameRule::Combat { .. }, ZoneKind::Battlefield) => super::r7d_statics::combat_texts(rule),
         (GameRule::CanBeCommander, ZoneKind::Battlefield) => {
             vec!["~ can be your commander".to_owned()]
         }

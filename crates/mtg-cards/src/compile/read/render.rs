@@ -44,6 +44,7 @@ mod otherwise;
 mod player_events;
 mod populated;
 mod put_onto;
+mod r7d;
 mod revealed;
 mod shuffled_in;
 mod stolen;
@@ -64,6 +65,7 @@ mod w2b_you_and;
 mod w2d_villainous;
 mod w6e_control;
 mod w9b_clash;
+pub(super) use r7d::WHILE_TAPPED;
 
 mod dk1d_gift_target;
 
@@ -530,6 +532,12 @@ fn written_as_given(ability: &Ability) -> Vec<String> {
     super::r6c_wordings::add(ability, &mut texts);
     super::r6b_wordings::add(ability, &mut texts);
     super::r7a_wordings::add(ability, &mut texts);
+    super::r7d_statics::wordings(&mut texts);
+    for text in super::r7d_statics::creature_attached(ability, written_variants) {
+        if !texts.contains(&text) {
+            texts.push(text);
+        }
+    }
     texts
 }
 
@@ -2457,6 +2465,10 @@ impl Writer<'_> {
             .or_else(|| self.control_for_good(effect))
             .or_else(|| self.w6e_exchanged(effect))
             .or_else(|| Self::w20c_owners(effect))
+            .or_else(|| self.r7d_combat(effect))
+            .or_else(|| self.r7d_die_exiled(effect))
+            .or_else(|| self.r7d_blocks_source(effect))
+            .or_else(|| self.r7d_while_tapped(effect))
     }
 
     /// The cast of the target during the resolution and the exile of that spell (`c11b_cast_target`).
@@ -2786,6 +2798,8 @@ impl Writer<'_> {
             .or_else(|| self.w6e_stolen(effects))
             .or_else(|| self.c10_uc_held(effects))
             .or_else(|| self.c7_untap_held(effects))
+            .or_else(|| self.r7d_countered_exiled(effects))
+            .or_else(|| self.r7d_tapped_held(effects))
             .or_else(|| self.taken_and_typed(effects))
             .or_else(|| self.af_steps(effects))
             .or_else(|| self.owner_shuffles(effects))
@@ -2978,6 +2992,9 @@ impl Writer<'_> {
     /// Several effects as one sentence, one clause for each run of effects of one player: "target opponent discards a
     /// card and loses 3 life", "you create a Wolf token and that player mills ten cards".
     fn compound(&mut self, group: &[Effect]) -> Option<String> {
+        if let Some(text) = self.r7d_changed_and_ruled(group) {
+            return Some(text);
+        }
         let mut clauses = Vec::new();
         let mut rest = group;
         while let Some(first) = rest.first() {
@@ -3199,6 +3216,15 @@ impl Writer<'_> {
         mods: &[Modification],
         duration: &Duration,
     ) -> Option<String> {
+        if let Some(sentence) = self.r7d_land_type(affected, mods, duration).or_else(|| {
+            self.r7d_blocks_source(&Effect::Continuous {
+                affected: affected.clone(),
+                mods: mods.to_vec(),
+                duration: duration.clone(),
+            })
+        }) {
+            return Some(sentence);
+        }
         if let Some(sentence) = self.switched(affected, mods, duration) {
             return Some(sentence);
         }
