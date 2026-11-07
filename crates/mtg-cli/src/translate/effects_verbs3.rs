@@ -3,7 +3,7 @@
 use serde_json::{Value, json};
 
 use super::amount::amount;
-use super::ctx::{Ctx, Tr, only, unmapped};
+use super::ctx::{Ctx, Tr, flag, only, unmapped};
 use super::valid::{defined, selector_any, subject};
 use crate::forge::script::Params;
 
@@ -140,7 +140,11 @@ fn copy_spell(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
 
 /// `ChoosePlayer`: the chooser picks one of the opponents or of all players; the later lines read it as `ChosenPlayer`.
 fn choose_player(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
-    only(p, "ChoosePlayer", &["Defined", "Choices", "ChoiceTitle"])?;
+    only(
+        p,
+        "ChoosePlayer",
+        &["Defined", "Choices", "ChoiceTitle", "Random"],
+    )?;
     let from = match p.get("Choices") {
         Some("Player.Opponent" | "Opponent" | "Player.Other") => json!("Opponents"),
         Some("Player") | None => json!("EachPlayer"),
@@ -149,6 +153,10 @@ fn choose_player(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
     let who = defined(ctx, p.get("Defined").unwrap_or("You"))?;
     let bind = ctx.fresh("player");
     ctx.chosen_card = Some(bind.clone());
+    // "Choose an opponent at random": the game picks, so who would choose does not matter.
+    if flag(p, "Random")? {
+        return Ok(json!({"ChooseAtRandom": {"from": from, "as": bind}}));
+    }
     Ok(json!({"Choose": {"who": who, "from": from, "as": bind}}))
 }
 

@@ -1,7 +1,7 @@
 //! `Effect::ChooseAtRandom`: cards of a public zone are picked at random and the pick is bound.
 
 use mtg_cards::effect::Effect;
-use mtg_core::ids::ObjectId;
+use mtg_core::ids::{ObjectId, PlayerId};
 
 use super::wrong_effect;
 use crate::choose::Target;
@@ -21,6 +21,9 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         return Err(wrong_effect("ChooseAtRandom"));
     };
     let candidates = cx.scope.refs(from)?;
+    if !candidates.is_empty() && candidates.iter().all(|target| target.player().is_some()) {
+        return Ok(e14c_players(cx, &candidates, count, bind)?);
+    }
     let mut cards: Vec<ObjectId> = Vec::with_capacity(candidates.len());
     for target in &candidates {
         let Some(object) = target.object() else {
@@ -64,6 +67,41 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
     Ok(Run::Done {
         events: vec![Event::ChosenAtRandom { cards }],
         bound: vec![(bind.clone(), chosen)],
+        snapshots: Vec::new(),
+        next: Next::Sibling,
+    })
+}
+
+/// Picks players at random ("choose an opponent at random"), the same way as cards: players are public, so the pick is
+/// logged as [`Event::PlayersChosenAtRandom`]. A player who has left the game is not named by the reference.
+fn e14c_players(
+    cx: &Cx<'_>,
+    candidates: &[Target],
+    count: &mtg_cards::value::Amount,
+    bind: &str,
+) -> Result<Run, ResolveError> {
+    let mut players: Vec<PlayerId> = candidates.iter().filter_map(|t| t.player()).collect();
+    let wanted = usize::try_from(cx.scope.amount(count)?.max(0)).unwrap_or(usize::MAX);
+    let picked = wanted.min(players.len());
+    if picked == 0 {
+        return Ok(Run::Done {
+            events: Vec::new(),
+            bound: vec![(bind.to_owned(), Vec::new())],
+            snapshots: Vec::new(),
+            next: Next::Sibling,
+        });
+    }
+    let state = cx.state();
+    GameRng::substream(state.seed, state.rng_index).shuffle(&mut players);
+    players.truncate(picked);
+    Ok(Run::Done {
+        events: vec![Event::PlayersChosenAtRandom {
+            players: players.clone(),
+        }],
+        bound: vec![(
+            bind.to_owned(),
+            players.into_iter().map(Target::Player).collect(),
+        )],
         snapshots: Vec::new(),
         next: Next::Sibling,
     })

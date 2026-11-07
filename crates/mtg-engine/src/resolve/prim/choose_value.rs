@@ -228,6 +228,17 @@ fn options(kind: &ValueKind) -> Vec<ChoiceOption> {
         ValueKind::CardType => values::card_types(),
         ValueKind::LandType => values::land_types(),
         ValueKind::Options(words) => words.iter().cloned().map(ChoiceOption::Label).collect(),
+        ValueKind::CardTypeOf(kinds) => values::CARD_TYPES
+            .iter()
+            .filter(|kind| kinds.contains(kind))
+            .map(|kind| ChoiceOption::Label(format!("{kind:?}")))
+            .collect(),
+        ValueKind::CreatureTypeExcept(left_out) => values::creature_types()
+            .into_iter()
+            .filter(|option| {
+                !matches!(option, ChoiceOption::Label(name) if left_out.contains(name))
+            })
+            .collect(),
         ValueKind::CardName(_) | ValueKind::Number(..) => Vec::new(),
     }
 }
@@ -237,7 +248,18 @@ fn question(kind: &ValueKind) -> String {
     match kind {
         ValueKind::Color | ValueKind::Colors => "Choose a color.".to_owned(),
         ValueKind::CreatureType => "Choose a creature type.".to_owned(),
+        ValueKind::CreatureTypeExcept(left_out) => {
+            format!("Choose a creature type other than {}.", left_out.join(" or "))
+        }
         ValueKind::CardType => "Choose a card type.".to_owned(),
+        ValueKind::CardTypeOf(kinds) => format!(
+            "Choose {}.",
+            kinds
+                .iter()
+                .map(|kind| format!("{kind:?}").to_lowercase())
+                .collect::<Vec<_>>()
+                .join(" or ")
+        ),
         ValueKind::LandType => "Choose a land type.".to_owned(),
         ValueKind::CardName(_) => "Choose a card name.".to_owned(),
         ValueKind::Options(words) => format!("Choose {}.", words.join(" or ")),
@@ -249,13 +271,14 @@ fn question(kind: &ValueKind) -> String {
 fn value(kind: &ValueKind, option: &ChoiceOption) -> Option<Chosen> {
     match (kind, option) {
         (ValueKind::Color, ChoiceOption::Color(color)) => Some(Chosen::Color(*color)),
-        (ValueKind::CreatureType, ChoiceOption::Label(name)) => {
-            Some(Chosen::CreatureType(Subtype(name.clone())))
-        }
+        (
+            ValueKind::CreatureType | ValueKind::CreatureTypeExcept(_),
+            ChoiceOption::Label(name),
+        ) => Some(Chosen::CreatureType(Subtype(name.clone()))),
         (ValueKind::LandType, ChoiceOption::Label(name)) => {
             Some(Chosen::LandType(Subtype(name.clone())))
         }
-        (ValueKind::CardType, ChoiceOption::Label(name)) => values::CARD_TYPES
+        (ValueKind::CardType | ValueKind::CardTypeOf(_), ChoiceOption::Label(name)) => values::CARD_TYPES
             .into_iter()
             .find(|card_type: &CardType| format!("{card_type:?}") == *name)
             .map(Chosen::CardType),

@@ -444,6 +444,8 @@ fn redact(before: &GameState, event: &Event, viewer: PlayerId) -> Option<HiddenE
         // A pick at random is of the cards of a public zone, which every seat sees, or of the cards a discard at
         // random then reveals.
         | Event::ChosenAtRandom { .. }
+        // Players are public.
+        | Event::PlayersChosenAtRandom { .. }
         | Event::Revealed(_) => None,
     }
 }

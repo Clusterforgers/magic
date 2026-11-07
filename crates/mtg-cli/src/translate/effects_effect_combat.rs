@@ -70,6 +70,12 @@ fn read(
                 vec![rule(json!({"MustAttackPlayers": {
                 "who": subject, "players": "You"}}))]
             }
+            // The source bound to attack the player chosen ("choose an opponent at random; it attacks that player
+            // this combat if able"): the pair of the one creature and that player.
+            Some("ChosenPlayer") if subject == json!("This") => {
+                let players = super::valid::defined(ctx, "ChosenPlayer")?;
+                vec![rule(json!({"MustAttackPlayers": {"who": subject, "players": players}}))]
+            }
             Some(other) => return unmapped(format!("key:Effect.static.MustAttack={other}")),
         },
         "CantAttack" => vec![held(json!(["CantAttack"]))],

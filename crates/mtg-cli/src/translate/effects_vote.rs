@@ -27,6 +27,9 @@ fn votes(name: &str) -> Value {
 
 /// `Vote` of every player on the named `Choices$`: the winner runs, or each choice runs by its votes.
 pub fn vote(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
+    if p.has("VoteCard") {
+        return e14c_vote_card(ctx, p);
+    }
     only(
         p,
         "Vote",
@@ -115,5 +118,51 @@ pub fn vote(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
         }
         _ => return unmapped("key:Vote.shape"),
     }
+    Ok(effects)
+}
+
+/// The name the objects with the most votes are bound to.
+const E14C_VOTED: &str = "voted";
+
+/// `Vote` of every player on an object `VoteCard$` matches, on the battlefield or in the `Zone$` named: the objects with
+/// the most votes, all of them when tied, are what `VoteSubAbility$` reads as `Remembered`. A vote for up to one, or one
+/// whose tally is read per object, stays a gap.
+fn e14c_vote_card(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
+    only(
+        p,
+        "Vote",
+        &[
+            "Defined",
+            "VoteCard",
+            "VoteMessage",
+            "VoteSubAbility",
+            "Zone",
+            "Secretly",
+        ],
+    )?;
+    if p.get("Defined") != Some("Player") {
+        return unmapped("key:Vote.Defined");
+    }
+    let (Some(valid), Some(then)) = (p.get("VoteCard"), p.get("VoteSubAbility")) else {
+        return unmapped("key:Vote.VoteCard-shape");
+    };
+    // The prompt shown while voting; the engine words its own.
+    let _ = p.get("VoteMessage");
+    let mut of = super::valid::selector_any(ctx, valid)?;
+    match p.get("Zone") {
+        None | Some("Battlefield") => of.push(json!({"In": "Battlefield"})),
+        Some("Graveyard") => of.push(json!({"In": "Graveyard"})),
+        Some(other) => return unmapped(format!("key:Vote.Zone={other}")),
+    }
+    let mut vote = json!({"options": {"Of": {"Each": of}}, "as": E14C_VOTED});
+    if p.get("Secretly") == Some("True") {
+        vote["secret"] = json!(true);
+    }
+    let part = ctx.sub(then)?;
+    let outer = ctx.remembered.replace(json!({"Bound": E14C_VOTED}));
+    let steps = chain_at(ctx, &part, false);
+    ctx.remembered = outer;
+    let mut effects = vec![json!({ "Vote": vote })];
+    effects.extend(steps?);
     Ok(effects)
 }

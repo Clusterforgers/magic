@@ -427,6 +427,7 @@ fn apply_misc(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
         | Event::Clashed { .. }
         | Event::Proliferated { .. } => {}
         Event::ChosenAtRandom { .. }
+        | Event::PlayersChosenAtRandom { .. }
         | Event::Sought { .. }
         | Event::DieRolled { .. }
         | Event::CoinFlipped { .. } => {

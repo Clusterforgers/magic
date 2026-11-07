@@ -1058,6 +1058,9 @@ fn charm(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
             "MinCharmNum",
             "ChoiceRestriction",
             "CanRepeatModes",
+            "Random",
+            "Chooser",
+            "Announce",
         ],
     )?;
     let keyword = ctx.modal_keyword.take();
@@ -1118,7 +1121,34 @@ fn charm(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
     if flag(p, "CanRepeatModes")? {
         modal["repeat"] = json!(true);
     }
+    e14c_charm_choice(p, &mut modal)?;
     Ok(json!({ "Modal": modal }))
+}
+
+/// Who picks the modes of a `Charm` and how: `Random$ True` lets the game pick one mode, `Chooser$ Opponent` gives the
+/// choice to an opponent, and `Announce$ X` names the X of the mana cost, which the announcement asks after the modes.
+/// A number of modes that reads X is chosen before X is known and stays a gap.
+fn e14c_charm_choice(p: &Params, modal: &mut Value) -> Tr<()> {
+    if flag(p, "Random")? {
+        if modal.get("choose").is_some() || modal.get("repeat").is_some() {
+            return unmapped("key:Charm.Random-count");
+        }
+        modal["at_random"] = json!(true);
+    }
+    match p.get("Chooser") {
+        None => {}
+        Some("Opponent") => modal["who"] = json!("Opponents"),
+        Some(other) => return unmapped(format!("key:Charm.Chooser={other}")),
+    }
+    match p.get("Announce") {
+        None => {}
+        Some("X")
+            if !["CharmNum", "MinCharmNum"]
+                .iter()
+                .any(|key| p.get(key) == Some("X")) => {}
+        Some(_) => return unmapped("key:Charm.Announce"),
+    }
+    Ok(())
 }
 
 /// The cost a mode adds: mana, or the items of a cost.

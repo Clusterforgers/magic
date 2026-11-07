@@ -464,6 +464,12 @@ impl<'a> Walker<'a> {
             ValueKind::Options(words) if words.len() < 2 => {
                 self.problem("a choice of words needs at least two");
             }
+            ValueKind::CardTypeOf(kinds) if kinds.len() < 2 => {
+                self.problem("a choice of card types needs at least two");
+            }
+            ValueKind::CreatureTypeExcept(left_out) if left_out.is_empty() => {
+                self.problem("a creature type other than none is any creature type");
+            }
             _ => {}
         }
     }
@@ -3217,9 +3223,14 @@ impl Walker<'_> {
                 w.at("as", |w| w.bind(bind, Kind::Value));
             }
             Effect::ChooseAtRandom { from, count, bind } => {
-                w.at("from", |w| w.reference(from, Kind::Object));
+                // A pick among players ("an opponent at random") binds players; any other binds objects.
+                let kind = match w.kind_of(from) {
+                    Kind::Player => Kind::Player,
+                    _ => Kind::Object,
+                };
+                w.at("from", |w| w.reference(from, kind));
                 w.at("count", |w| w.amount(count));
-                w.at("as", |w| w.bind(bind, Kind::Object));
+                w.at("as", |w| w.bind(bind, kind));
             }
             Effect::Attach { what, to, bind } => {
                 w.at("what", |w| w.reference(what, Kind::Object));
