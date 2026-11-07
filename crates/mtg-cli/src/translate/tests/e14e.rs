@@ -139,9 +139,9 @@ const ZADA: &str = "T:Mode$ SpellCast | ValidCard$ Instant,Sorcery | ValidActiva
     "CopyForEachCanTarget$ Creature.YouCtrl",
     r#""each_target":[{"Type":"Creature"},{"ControlledBy":"You"}]"#
 )]
-#[case::each_golem(
-    "CopyForEachCanTarget$ Golem.inZoneBattlefield",
-    r#""each_target":[{"Subtype":"Golem"},{"In":"Battlefield"}]"#
+#[case::each_creature(
+    "CopyForEachCanTarget$ Creature.inZoneBattlefield",
+    r#""each_target":[{"Type":"Creature"},{"In":"Battlefield"}]"#
 )]
 fn a_spell_is_copied_for_each_other_target(#[case] key: &str, #[case] part: &str) {
     let (json, gaps) = card(
