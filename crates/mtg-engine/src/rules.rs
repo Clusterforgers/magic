@@ -343,6 +343,11 @@ pub struct AttackTax {
 pub struct DamageShield {
     /// The players and objects it protects, fixed when it was made; anything when absent.
     pub to: Option<Vec<Target>>,
+    /// The kind of object it protects ("creatures you control"), judged when the damage would be dealt (CR 611.2c);
+    /// no limit when absent.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[cfg_attr(feature = "ts", ts(type = "unknown", optional))]
+    pub each: Option<Selector>,
     /// The sources of the damage it prevents, judged when the damage would be dealt; any source when empty.
     #[cfg_attr(feature = "ts", ts(type = "unknown"))]
     pub source: Selector,

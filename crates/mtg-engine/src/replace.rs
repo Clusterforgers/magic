@@ -1488,6 +1488,18 @@ impl Pass<'_> {
                 return Ok(false);
             }
         }
+        if let Some(each) = &shield.each {
+            let DamageTarget::Object(hit) = target else {
+                return Ok(false);
+            };
+            let (Some(maker), Some(reference)) = (effect.source, self.reference(hit)) else {
+                return Ok(false);
+            };
+            let scope = Scope::announcing(self.state, effect.controller, maker);
+            if !scope.selects(each, reference)? {
+                return Ok(false);
+            }
+        }
         if shield
             .from
             .as_ref()
