@@ -48,3 +48,55 @@ fn a_list_missing_a_pair_is_not_two_mana_of_different_colors() {
     );
     assert!(!writes(&json, "{T}: Add two mana of different colors."));
 }
+
+const ROOTS: &str = r#"{"Activated":{"cost":[{"PutCounters":{"counter":{"Other":"-0/-1"}}}],"effects":[{"AddMana":{"mana":{"Fixed":["Green"]}}}],"limit":"OncePerTurn"}}"#;
+const EXERT: &str =
+    r#"{"Activated":{"cost":["Tap","Exert"],"effects":[{"AddMana":{"mana":{"AnyColor":2}}}]}}"#;
+const CINDER: &str = r#"{"Activated":{"cost":"{1}","effects":[{"AddMana":{"mana":{"OneOf":["Black","Red"]}}}],"limit":{"TimesPerTurn":3}}}"#;
+
+#[rstest]
+#[case::wall_of_roots(
+    ROOTS,
+    "Put a -0/-1 counter on this creature: Add {G}. Activate only once each turn."
+)]
+#[case::oasis_ritualist(EXERT, "{T}, Exert this creature: Add two mana of any one color.")]
+#[case::manaforge_cinder(
+    CINDER,
+    "{1}: Add {B} or {R}. Activate no more than three times each turn."
+)]
+fn a_cost_on_the_source_and_a_limit_are_written_as_the_card_words_them(
+    #[case] json: &str,
+    #[case] text: &str,
+) {
+    assert!(
+        writes(json, text),
+        "{text}: {:?}",
+        render_variants(&ability(json))
+    );
+}
+
+#[rstest]
+#[case::wall_of_roots(
+    ROOTS,
+    "Put a -0/-1 counter on this creature: Add {G}. Activate only once each turn."
+)]
+#[case::oasis_ritualist(EXERT, "{T}, Exert this creature: Add two mana of any one color.")]
+fn a_cost_on_the_source_reads_back(#[case] json: &str, #[case] text: &str) {
+    reads_as(text, ClauseKind::Activated, false, json);
+}
+
+#[rstest]
+#[case::another_counter(
+    ROOTS,
+    "Put a -1/-1 counter on this creature: Add {G}. Activate only once each turn."
+)]
+#[case::no_limit(ROOTS, "Put a -0/-1 counter on this creature: Add {G}.")]
+#[case::no_exert(EXERT, "{T}: Add two mana of any one color.")]
+#[case::twice(CINDER, "{1}: Add {B} or {R}. Activate no more than twice each turn.")]
+#[case::digits(
+    CINDER,
+    "{1}: Add {B} or {R}. Activate no more than 3 times each turn."
+)]
+fn another_cost_or_limit_is_not_the_text(#[case] json: &str, #[case] text: &str) {
+    assert!(!writes(json, text), "{text}");
+}

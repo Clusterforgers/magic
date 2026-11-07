@@ -1777,7 +1777,9 @@ fn restriction_texts(timing: Timing, limit: Option<Limit>) -> Vec<String> {
         (timing, Some(Limit::TimesPerTurn(most))) => {
             let times = match most {
                 2 => "twice".to_owned(),
-                n => format!("{n} times"),
+                // "Activate no more than three times each turn."
+                n => count_word(n)
+                    .map_or_else(|| format!("{n} times"), |word| format!("{word} times")),
             };
             let lead = match timing {
                 Timing::Sorcery => "Activate only as a sorcery and no more than",

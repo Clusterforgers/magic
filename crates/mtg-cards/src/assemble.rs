@@ -525,8 +525,8 @@ pub struct ManaShape<'a> {
     pub pays: Vec<&'a CostItem>,
     /// What must hold to activate it.
     pub condition: Option<&'a Condition>,
-    /// It can be activated once each turn ("Activate only once each turn").
-    pub once: bool,
+    /// How often it can be activated: once each turn, a number of times each turn or once each game (exhaust).
+    pub limit: Option<Limit>,
     /// The parts of its cost that take other permanents the payer controls: tapping or sacrificing some number of them.
     pub picks: Vec<&'a CostItem>,
     /// What it does before adding mana: a counter put on the source, which the amount of mana may count.
@@ -552,7 +552,7 @@ impl ManaShape<'_> {
             && self.pays.is_empty()
             && self.mana.symbols().is_empty()
             && self.condition.is_none()
-            && !self.once
+            && self.limit.is_none()
             && self.picks.is_empty()
     }
 }
@@ -607,12 +607,14 @@ fn pays_with_activation(item: &CostItem) -> bool {
         CostItem::PayLife(amount)
         | CostItem::Mill(amount)
         | CostItem::PayEnergy(amount)
-        | CostItem::RemoveCounters { count: amount, .. } => {
+        | CostItem::RemoveCounters { count: amount, .. }
+        | CostItem::PutCounters { count: amount, .. } => {
             matches!(amount, Amount::Fixed(number) if *number > 0)
         }
         _ => false,
     };
-    fixed || is_x_counters(item)
+    // "Exert this creature": the source does not untap during its controller's next untap step.
+    fixed || is_x_counters(item) || matches!(item, CostItem::Exert)
 }
 
 /// Whether `item` removes X counters from the source or takes X permanents or cards.
@@ -765,7 +767,10 @@ pub fn mana_shape(ability: &Ability) -> Option<ManaShape<'_>> {
         .is_some_and(|cost| !cost.symbols().is_empty());
     let distinct = c8_time_distinct(then);
     (targets.is_empty()
-        && matches!(limit, None | Some(Limit::OncePerTurn))
+        && matches!(
+            limit,
+            None | Some(Limit::OncePerTurn | Limit::OncePerGame | Limit::TimesPerTurn(_))
+        )
         && (tap
             || sacrifice
             || !pays.is_empty()
@@ -784,7 +789,7 @@ pub fn mana_shape(ability: &Ability) -> Option<ManaShape<'_>> {
             mana: cost_mana.unwrap_or_default(),
             pays,
             condition: condition.as_ref(),
-            once: *limit == Some(Limit::OncePerTurn),
+            limit: *limit,
             picks,
             before,
             then,
@@ -1717,6 +1722,26 @@ mod tests {
     )]
     #[case::r6e_sacrificing_a_chosen_permanent(
         r#"{"Activated":{"cost":["Tap"],"effects":[{"AddMana":{"mana":{"Fixed":["Black"]}}},{"If":{"condition":"YourTurn","then":[{"Sacrifice":{"filter":[{"Type":"Creature"}]}}]}}]}}"#,
+        Some("Ability.ManaAbility.Other")
+    )]
+    #[case::e14a_a_counter_on_the_source(
+        r#"{"Activated":{"cost":[{"PutCounters":{"counter":{"Other":"-0/-1"}}}],"limit":"OncePerTurn","effects":[{"AddMana":{"mana":{"Fixed":["Green"]}}}]}}"#,
+        Some("Ability.ManaAbility.Complex")
+    )]
+    #[case::e14a_exerting_the_source(
+        r#"{"Activated":{"cost":["Tap","Exert"],"effects":[{"AddMana":{"mana":{"AnyColor":2}}}]}}"#,
+        Some("Ability.ManaAbility.Complex")
+    )]
+    #[case::e14a_three_times_each_turn(
+        r#"{"Activated":{"cost":"{1}","limit":{"TimesPerTurn":3},"effects":[{"AddMana":{"mana":{"OneOf":["Black","Red"]}}}]}}"#,
+        Some("Ability.ManaAbility.Complex")
+    )]
+    #[case::e14a_once_each_game(
+        r#"{"Activated":{"cost":[{"Mana":"{G}"},"Tap"],"limit":"OncePerGame","effects":[{"AddMana":{"mana":{"AnyColor":3}}}]}}"#,
+        Some("Ability.ManaAbility.Complex")
+    )]
+    #[case::e14a_a_discard_waits_for_a_choice(
+        r#"{"Activated":{"cost":[{"Discard":{}}],"effects":[{"AddMana":{"mana":{"Fixed":["Black"]}}}]}}"#,
         Some("Ability.ManaAbility.Other")
     )]
     #[case::not_a_mana_ability(r#"{"Activated":{"cost":["Tap"],"effects":[{"Draw":{}}]}}"#, None)]
