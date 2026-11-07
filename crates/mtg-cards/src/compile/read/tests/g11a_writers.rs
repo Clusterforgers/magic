@@ -1,4 +1,4 @@
-//! Goal: the round 11 writers give the oracle wording of the players who control more, fewer or at least N more permanents of a type than the player who asks, and a rule of another meaning (other comparison, other type, other margin, the asker swapped for "you") never reads back as the clause.
+//! Goal: the round 11 writers give the oracle wording of the players who control more, fewer or at least N more permanents of a type than the player who asks and a connive X, and a rule of another meaning (other comparison, other type, other margin, the asker swapped for "you", another connive count) never reads back as the clause.
 use super::*;
 
 /// Whether some wording the checker accepts for the rules is the clause.
@@ -65,5 +65,36 @@ fn g11a_than_you_writes_back(#[case] json: &str, #[case] clause: &str) {
 #[case::three_more(&entering_draw(&than_you("EachPlayer", "Land", "Ge", 3, "Asker")), TWO_MORE_LANDS)]
 #[case::strictly_two_more(&entering_draw(&than_you("EachPlayer", "Land", "Gt", 2, "Asker")), TWO_MORE_LANDS)]
 fn g11a_than_you_of_another_meaning_differs(#[case] json: &str, #[case] clause: &str) {
+    assert!(!written(json, clause), "{clause}");
+}
+
+/// "Whenever you attack, target attacking creature connives ..." with the count.
+fn raffine(count: &str) -> String {
+    format!(
+        r#"{{"Triggered":{{"effects":[{{"Connive":{{"count":{count},"what":{{"Target":0}}}}}}],"targets":[{{"what":{{"Object":[{{"Type":"Creature"}},"Attacking"]}}}}],"when":{{"GroupAttacks":{{"what":[{{"Type":"Creature"}},{{"ControlledBy":"You"}}]}}}}}}}}"#
+    )
+}
+
+const ATTACKERS: &str = r#"{"Count":[{"Type":"Creature"},"Attacking"]}"#;
+const CONNIVES_X: &str = "Whenever you attack, target attacking creature connives X, where X is the number of attacking creatures.";
+const CONNIVES: &str = "Whenever you attack, target attacking creature connives.";
+
+#[rstest]
+#[case::x(&raffine(ATTACKERS), CONNIVES_X)]
+#[case::once(&raffine("1"), CONNIVES)]
+fn g11a_connive_n_writes_back(#[case] json: &str, #[case] clause: &str) {
+    assert!(
+        written(json, clause),
+        "{clause}: {:?}",
+        written_variants(&ability(json))
+    );
+}
+
+#[rstest]
+#[case::once_for_x(&raffine("1"), CONNIVES_X)]
+#[case::twice_for_once(&raffine("2"), CONNIVES)]
+#[case::x_for_once(&raffine(ATTACKERS), CONNIVES)]
+#[case::other_count(&raffine(r#"{"Count":[{"Type":"Creature"},{"ControlledBy":"You"}]}"#), CONNIVES_X)]
+fn g11a_connive_of_another_count_differs(#[case] json: &str, #[case] clause: &str) {
     assert!(!written(json, clause), "{clause}");
 }

@@ -143,3 +143,46 @@ fn a_goad_of_another_duration_stays_a_gap() {
     let (_, found) = card("Sorcery", &format!("{GOAD} | Duration$ UntilUntaps"), "");
     assert_eq!(found, ["key:Goad.Duration=UntilUntaps"]);
 }
+
+#[rstest]
+#[case::once("", r#"{"Connive":{"what":{"Target":0}}}"#)]
+#[case::twice(" | ConniveNum$ 2", r#"{"Connive":{"count":2,"what":{"Target":0}}}"#)]
+#[case::x(
+    " | ConniveNum$ X\nSVar:X:Count$Valid Creature.attacking",
+    r#"{"Connive":{"count":{"Count":[{"Type":"Creature"},"Attacking"]},"what":{"Target":0}}}"#
+)]
+fn a_connive_draws_and_discards_its_number(#[case] num: &str, #[case] effect: &str) {
+    let (json, found) = card(
+        "Sorcery",
+        &format!("A:SP$ Connive | ValidTgts$ Creature | TgtPrompt$ Select target creature{num}"),
+        "",
+    );
+    assert!(found.is_empty(), "{found:?}");
+    assert!(json.contains(effect), "{json}");
+}
+
+const SCRY: &str = "A:SP$ Scry | ScryNum$ 1";
+const EACH_MAY: &str = r#"{"RepeatEach":{"as":"scrier","effects":[{"May":{"effects":[{"Scry":{"who":{"Bound":"scrier"}}}],"who":{"Bound":"scrier"}}}],"over":"#;
+
+#[rstest]
+#[case::you_must("", r#"[{"Scry":{}}]"#)]
+#[case::you_may(" | Optional$ True", r#"[{"May":{"effects":[{"Scry":{}}]}}]"#)]
+#[case::each_opponent_may(
+    " | Defined$ Opponent | Optional$ True",
+    &format!(r#"{EACH_MAY}"Opponents"}}}}]"#)
+)]
+#[case::each_player_may(
+    " | Defined$ Player | Optional$ True",
+    &format!(r#"{EACH_MAY}"EachPlayer"}}}}]"#)
+)]
+fn an_optional_scry_is_each_players_choice(#[case] keys: &str, #[case] effects: &str) {
+    let (json, found) = card("Sorcery", &format!("{SCRY}{keys}"), "");
+    assert!(found.is_empty(), "{found:?}");
+    assert!(json.contains(effects), "{json}");
+}
+
+#[test]
+fn a_scry_optional_of_another_word_stays_a_gap() {
+    let (_, found) = card("Sorcery", &format!("{SCRY} | Optional$ False"), "");
+    assert_eq!(found, ["key:Scry.Optional=False"]);
+}

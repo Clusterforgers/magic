@@ -2722,7 +2722,12 @@ impl Writer<'_> {
             } => format!("{} explores", self.object(what)?),
             Effect::Connive {
                 what: what @ (Ref::This | Ref::Target(0) | Ref::Convoked),
-            } => format!("{} connives", self.object(what)?),
+                count,
+            } => match count {
+                Amount::Fixed(1) => format!("{} connives", self.object(what)?),
+                Amount::X => format!("{} connives X", self.object(what)?),
+                _ => return None,
+            },
             Effect::PhaseOut {
                 what,
                 duration,

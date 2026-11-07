@@ -994,6 +994,9 @@ pub enum Effect {
     Connive {
         /// The creatures that connive.
         what: Ref,
+        /// How many cards each controller draws and then discards ("connives X", CR 701.50e); one when absent.
+        #[serde(default = "Amount::one", skip_serializing_if = "Amount::is_one")]
+        count: Amount,
     },
     /// The player exiles cards from the top of their library, face up one at a time, until one matches the filter
     /// (CR 702.85a, 701.57a); a library that runs out ends it with nothing found.

@@ -2998,8 +2998,11 @@ impl Walker<'_> {
             | Effect::Prepare { what }
             | Effect::Goad { what }
             | Effect::Explore { what }
-            | Effect::Connive { what }
             => w.at("what", |w| w.reference(what, Kind::Object)),
+            Effect::Connive { what, count } => {
+                w.at("what", |w| w.reference(what, Kind::Object));
+                w.at("count", |w| w.amount(count));
+            }
             Effect::Destroy { what, bind, .. } => {
                 w.at("what", |w| w.reference(what, Kind::Object));
                 if let Some(name) = bind {

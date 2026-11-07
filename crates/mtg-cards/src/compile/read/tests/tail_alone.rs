@@ -74,7 +74,14 @@ fn a_card_that_is_a_person_connives_as_he(#[case] text: &str) {
     let Ability::Triggered { effects, .. } = read else {
         panic!("not a trigger: {text}");
     };
-    assert_eq!(effects, vec![Effect::Connive { what: Ref::This }], "{text}");
+    assert_eq!(
+        effects,
+        vec![Effect::Connive {
+            what: Ref::This,
+            count: Amount::one()
+        }],
+        "{text}"
+    );
 }
 
 #[rstest]
