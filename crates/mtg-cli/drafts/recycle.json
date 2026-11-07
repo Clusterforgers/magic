@@ -7,6 +7,7 @@
       "name": "Recycle",
       "oracle_fingerprint": "b590a618b550d1e3883c3b8c5d6f7a09",
       "abilities": [
+        { "Rule": { "rule": { "Cant": { "who": "You", "action": { "SkipStep": "Draw" } } } } },
         { "Rule": { "rule": { "MaxHandSize": { "who": "You", "size": 2 } } } },
         {
           "Triggered": {
@@ -23,8 +24,7 @@
             },
             "effects": [{ "Draw": {} }]
           }
-        },
-        { "Rule": { "rule": { "Cant": { "who": "You", "action": { "SkipStep": "Draw" } } } } }
+        }
       ]
     }
   ]
