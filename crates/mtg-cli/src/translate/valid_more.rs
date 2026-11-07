@@ -123,6 +123,10 @@ fn shares(ctx: &Ctx, prop: &str) -> Tr<Option<Value>> {
         ("sharesCreatureTypeWith ", "SharesSubtype"),
     ] {
         if let Some(word) = prop.strip_prefix(head) {
+            // A name is compared with your graveyard too ("the same name as a card in your graveyard").
+            if pred == "SharesName" && word.trim() == "YourGraveyard" {
+                return Ok(Some(json!({ pred: name_pool(ctx, word)? })));
+            }
             return Ok(Some(json!({ pred: objects(defined(ctx, word)?)? })));
         }
     }

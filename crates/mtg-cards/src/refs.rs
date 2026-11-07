@@ -262,6 +262,8 @@ pub enum Pred {
     Monstrous,
     /// Is renowned (CR 702.112): a permanent on the battlefield that has become renowned since it entered.
     Renowned,
+    /// Is prepared: a permanent on the battlefield whose controller may cast a copy of the spell face of its card.
+    Prepared,
     /// Is paired with another creature (CR 702.95): a creature on the battlefield that a soulbond pairing holds.
     Paired,
     /// Is the creature paired with one of the objects the reference names (the partner: "each of those creatures" is `AnyOf` of `This` and `PairedWith(This)`).

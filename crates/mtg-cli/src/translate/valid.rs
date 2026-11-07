@@ -134,6 +134,13 @@ fn property(ctx: &Ctx, prop: &str) -> Tr<Vec<Value>> {
     {
         return one(json!({"HasKeywordNamed": name}));
     }
+    if let Some(word) = prop.strip_prefix("without")
+        && let Some(name) = mtg_cards::keyword::Keyword::NAMES
+            .iter()
+            .find(|name| name.eq_ignore_ascii_case(&spaced(word)))
+    {
+        return one(json!({"Not": {"HasKeywordNamed": name}}));
+    }
     if let Some(rest) = prop.strip_prefix("non")
         && ctx.world.subtypes.contains(&capitalize(rest))
     {

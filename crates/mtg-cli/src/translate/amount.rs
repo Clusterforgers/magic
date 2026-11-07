@@ -428,6 +428,10 @@ fn count_base(ctx: &Ctx, base: &str) -> Tr<Value> {
         "LifeOppsLostThisTurn" => Ok(tallied("Opponents", "LifeLost")),
         "OppLifeTotal" | "TargetedPlayerLife" => unmapped(format!("amount:Count${word}")),
         "TimesKicked" => Ok(json!("Kicks")),
+        // The cards merged under the permanent, less the one it was (CR 702.140).
+        "TimesMutated" => Ok(json!({"Mutations": "This"})),
+        // The number of colors of the card; an `AffectedX` reads the object the change applies to.
+        "CardNumColors" => Ok(stat_of_this("Colors")),
         "PlayerCountOpponents" => Ok(json!({"Players": "Opponents"})),
         "PlayerCountPlayers" => Ok(json!({"Players": "EachPlayer"})),
         other if other.starts_with("ThisTurnCast_") => this_turn_cast(ctx, other),

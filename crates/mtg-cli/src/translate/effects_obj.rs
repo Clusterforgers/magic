@@ -701,7 +701,11 @@ fn pump(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
         ],
     )?;
     let duration = pump_duration(p)?;
-    let affected = objects(subject(ctx, p, "Self", None)?)?;
+    let subject = subject(ctx, p, "Self", None)?;
+    if let Some(found) = player_keywords(p, &subject, duration) {
+        return found;
+    }
+    let affected = objects(subject)?;
     remember_objects(ctx, p)?;
     // A pump that only chooses a target ("target creature you control deals damage ... to target creature") or only
     // remembers objects changes nothing itself; the part after it uses them.
@@ -766,6 +770,45 @@ fn pump(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
     }
     effects.extend(dies_shield(ctx, p)?);
     Ok(effects)
+}
+
+/// "You gain hexproof until end of turn": a pump of players that only gives keywords a player can have (hexproof, shroud) is
+/// a rule for the duration; `None` for a pump of objects or one that changes more.
+fn player_keywords(p: &Params, subject: &Value, duration: &str) -> Option<Tr<Vec<Value>>> {
+    let player = match subject {
+        Value::String(word) => matches!(
+            word.as_str(),
+            "You" | "Opponents" | "EachPlayer" | "AttachedPlayer"
+        ),
+        Value::Object(map) => map.contains_key("ControllerOf") || map.contains_key("OwnerOf"),
+        _ => false,
+    };
+    let changes_more = [
+        "NumAtt",
+        "NumDef",
+        "KWChoice",
+        "AtEOT",
+        "ValidTgts",
+        "PumpZone",
+        "RememberObjects",
+        "CanBlockAmount",
+        "CanBlockAny",
+        "ReplaceDyingDefined",
+    ]
+    .iter()
+    .any(|key| p.has(key));
+    if !player || changes_more {
+        return None;
+    }
+    let keywords = p.get("KW")?;
+    let mut rules = Vec::new();
+    for word in keywords.split('&').map(str::trim) {
+        if !matches!(word, "Hexproof" | "Shroud") {
+            return Some(unmapped(format!("key:Pump.player-keyword-{word}")));
+        }
+        rules.push(json!({"Rule": {"rule": {"PlayersHave": {"who": subject, "keyword": word}}, "duration": duration}}));
+    }
+    Some(Ok(rules))
 }
 
 /// `KWChoice$`: the controller picks one keyword of the list as the effect resolves and the object gains it. A group of
