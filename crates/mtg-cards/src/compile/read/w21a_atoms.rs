@@ -243,10 +243,15 @@ pub(super) fn w21a_suffix_text(pred: &Pred, form: Form) -> Option<String> {
         Pred::TargetsPlayer(Ref::Opponents) => "that targets an opponent".to_owned(),
         Pred::AttackingAlone if !form.plural() => "that's attacking alone".to_owned(),
         Pred::Targeting(objects) if objects.0 == [Pred::This] => "that targets ~".to_owned(),
-        Pred::Targeting(objects) => format!("that targets {}", w21a_a(&g13a_in_play(objects))?),
+        Pred::Targeting(objects) => {
+            format!("that targets {}", w21a_a(&g13a_in_play(objects, form))?)
+        }
         Pred::AnyOf(any) => match any.as_slice() {
             [Pred::TargetsPlayer(Ref::You), Pred::Targeting(objects)] => {
-                format!("that targets you or {}", w21a_a(&g13a_in_play(objects))?)
+                format!(
+                    "that targets you or {}",
+                    w21a_a(&g13a_in_play(objects, form))?
+                )
             }
             [
                 Pred::TargetsPlayer(Ref::Opponents),
@@ -254,7 +259,7 @@ pub(super) fn w21a_suffix_text(pred: &Pred, form: Form) -> Option<String> {
             ] => {
                 format!(
                     "that targets an opponent or {}",
-                    w21a_a(&g13a_in_play(objects))?
+                    w21a_a(&g13a_in_play(objects, form))?
                 )
             }
             [
@@ -280,12 +285,13 @@ pub(super) fn w21a_suffix_text(pred: &Pred, form: Form) -> Option<String> {
 }
 
 /// The targeted objects without an `In(Battlefield)` that their controller already says: "a creature you control" is
-/// one on the battlefield.
-fn g13a_in_play(objects: &Selector) -> Selector {
-    let controlled = objects
-        .0
-        .iter()
-        .any(|pred| matches!(pred, Pred::ControlledBy(_)));
+/// one on the battlefield. Only the singular "a spell that targets": the plural wording keeps the selector as it is.
+fn g13a_in_play(objects: &Selector, form: Form) -> Selector {
+    let controlled = !form.plural()
+        && objects
+            .0
+            .iter()
+            .any(|pred| matches!(pred, Pred::ControlledBy(_)));
     Selector(
         objects
             .0
