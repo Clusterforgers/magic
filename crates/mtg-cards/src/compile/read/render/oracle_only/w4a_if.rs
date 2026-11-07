@@ -97,7 +97,7 @@ fn w4a_substitute(text: &str, number: i32, alternatives: &[String], after: bool)
         let mut out = Vec::new();
         for alternative in alternatives {
             out.push(format!("{head}{}.{tail}", capitalize(alternative)));
-            if after && alternative.starts_with("if ") {
+            if after && (alternative.starts_with("if ") || alternative.contains(" unless ")) {
                 out.push(format!("{head}Then {alternative}.{tail}"));
             }
         }

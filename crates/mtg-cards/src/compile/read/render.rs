@@ -480,6 +480,20 @@ pub fn written_variants(ability: &Ability) -> Vec<String> {
 
 /// [`written_variants`] without the table of abilities written already.
 fn written_anew(ability: &Ability) -> Vec<String> {
+    let mut texts = written_ordered(ability);
+    // "S1. If C, instead S2." for a step and its replacement (r7c); the twin has no pair left, so this recurses once.
+    if let Some(joined) = super::r7c_when::r7c_instead(ability) {
+        for text in written_variants(&joined) {
+            if !texts.contains(&text) {
+                texts.push(text);
+            }
+        }
+    }
+    texts
+}
+
+/// The wordings of the ability as given, else of its selectors in the readers' order and of its plain twins.
+fn written_ordered(ability: &Ability) -> Vec<String> {
     let texts = written_as_given(ability);
     if !texts.is_empty() {
         return texts;

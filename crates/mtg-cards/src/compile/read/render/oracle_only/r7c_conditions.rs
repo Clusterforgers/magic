@@ -18,7 +18,7 @@ fn color_word(mana: ManaType) -> Option<&'static str> {
         ManaType::Black => "black",
         ManaType::Red => "red",
         ManaType::Green => "green",
-        _ => return None,
+        ManaType::Colorless => return None,
     })
 }
 
@@ -36,10 +36,11 @@ pub(super) fn r7c_condition_texts(condition: &Condition) -> Vec<String> {
             "the gift wasn't promised".to_owned()
         }],
         Condition::Compare {
-            left: Amount::ManaSpent {
-                of: Some(mana),
-                from: None,
-            },
+            left:
+                Amount::ManaSpent {
+                    of: Some(mana),
+                    from: None,
+                },
             op: Cmp::Ge,
             right: Amount::Fixed(number),
         } => {

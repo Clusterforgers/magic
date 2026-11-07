@@ -104,7 +104,12 @@ fn r7c_unworded(text: &str) -> Option<String> {
     let mut out = String::with_capacity(text.len());
     let mut rest = text;
     let mut found = false;
-    while let Some(at) = rest.find(". ") {
+    // A sentence ends at ". ", or at ".\n" between the clauses of one ability.
+    while let Some(at) = [rest.find(". "), rest.find(".\n")]
+        .into_iter()
+        .flatten()
+        .min()
+    {
         let (head, after) = rest.split_at(at + 2);
         out.push_str(head);
         rest = after;
@@ -112,7 +117,10 @@ fn r7c_unworded(text: &str) -> Option<String> {
             continue;
         };
         let capital = word.chars().next().is_some_and(char::is_uppercase);
-        if capital && !word.contains(['~', ',', '.', ':', '\n', '"']) && word.split(' ').count() <= 3 {
+        if capital
+            && !word.contains(['~', ',', '.', ':', '\n', '"'])
+            && word.split(' ').count() <= 3
+        {
             rest = tail;
             found = true;
         }
@@ -826,5 +834,35 @@ mod c11g_stripped_tests {
     #[case::no_dash("Draw a card.", "Draw a card.")]
     fn c11g_only_a_leading_word_is_stripped(#[case] text: &str, #[case] kept: &str) {
         assert_eq!(stripped(text), kept);
+    }
+
+    #[rstest]
+    #[case::adamant(
+        "Draw three cards. Adamant \u{2014} If at least three blue mana was spent to cast this spell, scry 3.",
+        Some(
+            "Draw three cards. If at least three blue mana was spent to cast this spell, scry 3."
+        )
+    )]
+    #[case::two_words(
+        "Draw a card. Spell mastery \u{2014} If X, scry 1.",
+        Some("Draw a card. If X, scry 1.")
+    )]
+    #[case::next_clause(
+        "Draw a card.\nDelirium \u{2014} If X, scry 1.",
+        Some("Draw a card.\nIf X, scry 1.")
+    )]
+    #[case::leading_only("Raid \u{2014} When ~ enters, draw a card.", None)]
+    // A mode's name on a later line, or a dash inside a sentence, stays.
+    #[case::mode("Choose one \u{2014}\n\u{2022} Disarm \u{2014} Draw a card.", None)]
+    #[case::lowercase("Draw a card. then \u{2014} scry 1.", None)]
+    #[case::quoted("Draw a card. \"Hi \u{2014} there\"", None)]
+    fn r7c_ability_words_of_later_sentences_are_flavor(
+        #[case] text: &str,
+        #[case] unworded: Option<&str>,
+    ) {
+        assert_eq!(
+            crate::proposal::pairing::r7c_unworded(text).as_deref(),
+            unworded
+        );
     }
 }

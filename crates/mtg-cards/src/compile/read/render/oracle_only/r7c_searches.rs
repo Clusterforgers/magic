@@ -16,7 +16,10 @@ fn shuffle_if_searched() -> Value {
 fn plain_steps(steps: &mut [Value]) -> Option<()> {
     let at = steps.windows(3).position(|window| {
         let search = &window[0]["Search"];
-        let found = search.get("as").cloned().map(|bind| json!({ "Bound": bind }));
+        let found = search
+            .get("as")
+            .cloned()
+            .map(|bind| json!({ "Bound": bind }));
         search.get("also") == Some(&json!(["Graveyard"]))
             && search.get("zone").is_none()
             && search.get("who").is_none()
