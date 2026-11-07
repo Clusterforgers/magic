@@ -132,6 +132,11 @@ fn cant_be_activated(ctx: &Ctx, p: &Params, remembered: Option<&Value>) -> Tr<Va
         return Ok(cant(&who(p.get("Activator"), remembered)?, &action));
     }
     match p.get("Activator") {
+        // "Sources with the chosen name" are cards in every zone (cycling, unearth), so the name is judged on the
+        // source as it is activated, not on the permanents it names now.
+        None if sources.iter().any(|pred| pred == "ChosenName") => {
+            Ok(cant(&json!("EachPlayer"), &json!({"Activate": sources})))
+        }
         None => Ok(cant(&json!({"Each": sources}), &json!({"Activate": []}))),
         Some(word) => Ok(cant(
             &who(Some(word), remembered)?,
