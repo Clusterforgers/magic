@@ -79,11 +79,9 @@ fn a_selector_of_legendary_creatures_sees_the_given_supertype(
     assert_eq!(chars.supertypes.contains(&Supertype::Legendary), given);
     // The enchantment is not a creature, so it stays as it is.
     let proud = named(&driver, "Proud", Zone::Battlefield)[0];
-    assert!(
-        characteristics(driver.state(), proud)
-            .unwrap()
-            .supertypes
-            .is_empty()
+    assert_eq!(
+        characteristics(driver.state(), proud).unwrap().supertypes,
+        Vec::<Supertype>::new()
     );
 }
 

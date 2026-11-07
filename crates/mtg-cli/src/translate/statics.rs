@@ -870,10 +870,9 @@ fn cost_modifier(ctx: &Ctx, p: &Params, change: &str) -> Tr<Value> {
         ]));
     }
     let activating = activation_kind(p)?;
-    if activating.is_none()
-        && p.get("Type") != Some("Spell")
-        && !(p.get("ValidSpell") == Some("Spell") && !p.has("Type"))
-    {
+    // `ValidSpell$ Spell` without `Type$` names spells too.
+    let spells = p.get("Type") == Some("Spell") || p.get("ValidSpell") == Some("Spell");
+    if activating.is_none() && !spells {
         return unmapped("static:CostModifier-Type");
     }
     if !matches!(p.get("AffectedZone"), None | Some("Battlefield")) {
