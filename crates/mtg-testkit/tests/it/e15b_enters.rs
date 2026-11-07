@@ -18,7 +18,7 @@ use rstest::rstest;
 use serde_json::{Value, json};
 
 /// A land that asks for `choice` as it enters and has the static ability `rule`.
-fn chooser(choice: Value, rule: Value) -> Arc<CardDefinition> {
+fn chooser(choice: &Value, rule: &Value) -> Arc<CardDefinition> {
     let rules: Vec<Ability> = [
         json!({"Replacement": {"when": {"Enters": {"what": ["This"]}}, "by": {"Choose": choice}}}),
         json!({"Static": rule}),
@@ -96,7 +96,7 @@ fn a_basic_land_type_changes_the_lands(
 ) {
     let rule = json!({"affected": {"Each": [{"Type": "Land"}, {"ControlledBy": "You"}, {"Not": {"Named": "Chooser"}}]}, "mods": mods});
     let scenario = Scenario::new(seats)
-        .hand(0, vec![chooser(json!("BasicLandType"), rule)])
+        .hand(0, vec![chooser(&json!("BasicLandType"), &rule)])
         .battlefield(0, [ready(forest())]);
     let mut driver = Driver::from_scenario(scenario).unwrap();
     let offered = play_and_pick(&mut driver, "Island");
@@ -125,7 +125,7 @@ fn a_card_type_from_a_list_is_read_by_the_group(
     .collect();
     let rule = json!({"affected": {"Each": ["ChosenSubtype"]}, "mods": [{"AddKeyword": "Flying"}]});
     let scenario = Scenario::new(seats)
-        .hand(0, vec![chooser(json!({"CardTypeOf": set}), rule)])
+        .hand(0, vec![chooser(&json!({"CardTypeOf": set}), &rule)])
         .battlefield(0, [ready(bear()), ready(relic())]);
     let mut driver = Driver::from_scenario(scenario).unwrap();
     let offered = play_and_pick(&mut driver, pick);
@@ -177,7 +177,6 @@ fn a_counter_of_the_kind_chosen_as_it_enters(
                 driver
                     .answer(Answer::ChooseOption(OptionChoice(pick)))
                     .unwrap();
-                continue;
             }
             _ if driver.id_of("Nipper").is_ok() => break,
             _ => {

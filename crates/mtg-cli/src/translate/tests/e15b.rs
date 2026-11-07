@@ -6,7 +6,7 @@ use serde_json::{Value, json};
 
 use super::{abilities, gaps};
 
-fn enters(by: Value) -> Value {
+fn enters(by: &Value) -> Value {
     json!({"Replacement": {"when": {"Enters": {"what": ["This"]}}, "by": by}})
 }
 
@@ -20,9 +20,9 @@ fn the_day_it_brings(#[case] part: &str, #[case] read: bool) {
     let text = format!("Name:T\nTypes:Creature Human\nPT:1/1\n{DAY}{part}");
     if read {
         assert_eq!(gaps(&text), Vec::<String>::new());
-        assert_eq!(abilities(&text)[0], enters(json!("DayIfNeither")));
+        assert_eq!(abilities(&text)[0], enters(&json!("DayIfNeither")));
     } else {
-        assert!(!gaps(&text).is_empty());
+        assert_ne!(gaps(&text), Vec::<String>::new());
     }
 }
 
@@ -32,7 +32,7 @@ fn a_day_line_of_another_card_stays_a_gap() {
         "Name:T\nTypes:Creature Human\nPT:1/1\n{}SVar:DoDay:DB$ DayTime | Value$ Day\n",
         DAY.replace("Card.Self", "Creature.Other")
     );
-    assert!(!gaps(&text).is_empty());
+    assert_ne!(gaps(&text), Vec::<String>::new());
 }
 
 #[rstest]
@@ -49,9 +49,9 @@ fn a_reveal_or_it_enters_tapped(#[case] cost: &str, #[case] revealed: Option<Val
     match revealed {
         Some(of) => {
             assert_eq!(gaps(&text), Vec::<String>::new());
-            assert_eq!(abilities(&text)[0], enters(json!({"RevealOrTapped": of})));
+            assert_eq!(abilities(&text)[0], enters(&json!({"RevealOrTapped": of})));
         }
-        None => assert!(!gaps(&text).is_empty()),
+        None => assert_ne!(gaps(&text), Vec::<String>::new()),
     }
 }
 
@@ -80,7 +80,7 @@ fn a_type_chosen_as_it_enters(#[case] choose: &str, #[case] kind: Value) {
     let text = chooser(choose, FLYING);
     assert_eq!(gaps(&text), Vec::<String>::new());
     let found = abilities(&text);
-    assert_eq!(found[0], enters(json!({ "Choose": kind })));
+    assert_eq!(found[0], enters(&json!({ "Choose": kind })));
     assert_eq!(
         found[1],
         json!({"Static": {"affected": {"Each": [{"Type": "Creature"}, "ChosenSubtype"]}, "mods": [{"AddKeyword": "Flying"}]}})
@@ -93,7 +93,7 @@ fn a_type_chosen_as_it_enters(#[case] choose: &str, #[case] kind: Value) {
 #[case::basic_lands_but_some("Type$ Basic Land | InvalidTypes$ Mountain,Forest,Plains")]
 #[case::a_planeswalker_type("Type$ Planeswalker")]
 fn another_type_choice_stays_a_gap(#[case] choose: &str) {
-    assert!(!gaps(&chooser(choose, FLYING)).is_empty());
+    assert_ne!(gaps(&chooser(choose, FLYING)), Vec::<String>::new());
 }
 
 #[test]
@@ -121,7 +121,7 @@ fn landwalk_of_the_chosen_type(#[case] choose: &str, #[case] read: bool) {
             json!([{"AddKeyword": {"Landwalk": ["ChosenSubtype"]}}])
         );
     } else {
-        assert!(!gaps(&text).is_empty());
+        assert_ne!(gaps(&text), Vec::<String>::new());
     }
 }
 
@@ -139,10 +139,10 @@ fn a_counter_of_a_kind_chosen_as_it_enters(#[case] kinds: &str, #[case] read: Op
             assert_eq!(gaps(&text), Vec::<String>::new());
             assert_eq!(
                 abilities(&text)[0],
-                enters(json!({ "WithCounterOf": kinds }))
+                enters(&json!({ "WithCounterOf": kinds }))
             );
         }
-        None => assert!(!gaps(&text).is_empty()),
+        None => assert_ne!(gaps(&text), Vec::<String>::new()),
     }
 }
 
@@ -153,7 +153,7 @@ fn a_counter_choice_of_another_shape_stays_a_gap(#[case] extra: &str) {
     let text = format!(
         "Name:T\nTypes:Creature Elf\nPT:1/1\nK:ETBReplacement:Other:CounterChoice\nSVar:CounterChoice:DB$ PutCounter | ETB$ True | CounterType$ Menace,Deathtouch,Lifelink | {extra}\n"
     );
-    assert!(!gaps(&text).is_empty());
+    assert_ne!(gaps(&text), Vec::<String>::new());
 }
 
 #[rstest]
@@ -169,10 +169,10 @@ fn tapped_and_with_counters(#[case] defined: &str, #[case] read: bool) {
         assert_eq!(
             abilities(&text)[0],
             enters(
-                json!({"WithCounters": {"counter": {"Other": "coin"}, "count": 3, "tapped": true}})
+                &json!({"WithCounters": {"counter": {"Other": "coin"}, "count": 3, "tapped": true}})
             )
         );
     } else {
-        assert!(!gaps(&text).is_empty());
+        assert_ne!(gaps(&text), Vec::<String>::new());
     }
 }
