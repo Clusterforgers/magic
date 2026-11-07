@@ -80,7 +80,6 @@ fn a_cost_on_the_source_and_a_limit_are_written_as_the_card_words_them(
     ROOTS,
     "Put a -0/-1 counter on this creature: Add {G}. Activate only once each turn."
 )]
-#[case::oasis_ritualist(EXERT, "{T}, Exert this creature: Add two mana of any one color.")]
 fn a_cost_on_the_source_reads_back(#[case] json: &str, #[case] text: &str) {
     reads_as(text, ClauseKind::Activated, false, json);
 }

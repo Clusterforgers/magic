@@ -141,3 +141,11 @@ fn a_spell_on_the_stack_remembers_where_it_was_cast_from(
     assert_eq!(spend.allows(&only(SpendFact::NotFromHand)), not_from_hand);
     assert_eq!(spend.allows(&only(SpendFact::FromExile)), from_exile);
 }
+
+#[test]
+fn mana_for_other_costs_pays_neither_a_spell_nor_an_ability() {
+    let (_, spell) = spell_in(instant(&[Color::Red], Vec::new()), None);
+    let only = [SpendOn::OtherCosts];
+    assert!(Spend::other().allows(&only));
+    assert!(!spell.allows(&only));
+}

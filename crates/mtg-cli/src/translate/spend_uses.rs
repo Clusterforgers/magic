@@ -100,6 +100,7 @@ pub fn uses(ctx: &Ctx, restriction: &str) -> Tr<Vec<Value>> {
             return Ok(vec![
                 json!({"Spell": {"facts": ["NotFromHand"]}}),
                 json!({"Ability": {}}),
+                json!("OtherCosts"),
             ]);
         }
         _ => {}

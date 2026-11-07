@@ -154,6 +154,7 @@ impl Spend {
                     self.kind == SpendKind::Ability && filter.holds(&self.traits)
                 }
                 SpendOn::CostWithX => self.kind != SpendKind::Other && self.has_x,
+                SpendOn::OtherCosts => self.kind == SpendKind::Other,
                 // A rider limits nothing, so it neither allows nor refuses a payment.
                 SpendOn::When(_) | SpendOn::Uncounterable(_) | SpendOn::Snow => false,
             })

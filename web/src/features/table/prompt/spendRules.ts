@@ -84,6 +84,7 @@ export function spendAllows(spend: PaySpend | undefined, only: readonly SpendOn[
   return uses.some((on) => {
     if (on === 'Snow') return false
     if (on === 'CostWithX') return kind !== 'Other' && spend?.has_x === true
+    if (on === 'OtherCosts') return kind === 'Other'
     if ('Spell' in on) return kind === 'Spell' && traits !== undefined && filterHolds(on.Spell, traits)
     if ('Ability' in on) return kind === 'Ability' && traits !== undefined && filterHolds(on.Ability, traits)
     return false
@@ -94,6 +95,7 @@ export function spendAllows(spend: PaySpend | undefined, only: readonly SpendOn[
 export function useWords(on: SpendOn): string {
   if (on === 'Snow') return 'anything'
   if (on === 'CostWithX') return 'costs with {X}'
+  if (on === 'OtherCosts') return 'other costs'
   if ('Ability' in on) return 'abilities'
   if ('Spell' in on) {
     const { types = [], subtypes = [], colors = [] } = on.Spell

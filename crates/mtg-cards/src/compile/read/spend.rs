@@ -261,7 +261,11 @@ pub(super) fn only(r: &mut Reader<'_>) -> Option<Vec<SpendOn>> {
     r.attempt(|r| {
         r.punct('.').then_some(())?;
         if r.words("this mana can't be spent to cast spells from your hand") {
-            return Some(vec![SpendOn::Spell(not_from_hand()), SpendOn::abilities()]);
+            return Some(vec![
+                SpendOn::Spell(not_from_hand()),
+                SpendOn::abilities(),
+                SpendOn::OtherCosts,
+            ]);
         }
         r.need(LEAD)?;
         if r.words("on costs that contain") {
@@ -455,9 +459,11 @@ pub(super) fn text(only: &[SpendOn]) -> Option<String> {
         [SpendOn::Spell(filter)] => {
             format!("Spend this mana only to cast {}", spells_text(filter)?)
         }
-        [SpendOn::Spell(spell), SpendOn::Ability(source)]
-            if *source == SpendFilter::default() && *spell == not_from_hand() =>
-        {
+        [
+            SpendOn::Spell(spell),
+            SpendOn::Ability(source),
+            SpendOn::OtherCosts,
+        ] if *source == SpendFilter::default() && *spell == not_from_hand() => {
             NOT_FROM_HAND.to_owned()
         }
         // "Spend this mana only to cast a colorless spell or to activate an ability."

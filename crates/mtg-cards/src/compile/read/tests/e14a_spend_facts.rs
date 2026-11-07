@@ -24,7 +24,7 @@ const ELSEWHERE: &str = r#"[{"Spell":{"facts":["NotFromHand"]}}]"#;
 const DEVOID: &str = r#"[{"Spell":{"facts":["Devoid"]}}]"#;
 const FLASHBACK: &str = r#"[{"Spell":{"facts":["FromGraveyard","Flashback"]}}]"#;
 const OUTLAW: &str = r#"[{"Spell":{"subtypes":["Assassin","Mercenary","Pirate","Rogue","Warlock"]}},{"Ability":{"subtypes":["Assassin","Mercenary","Pirate","Rogue","Warlock"]}}]"#;
-const NOT_HAND: &str = r#"[{"Spell":{"facts":["NotFromHand"]}},{"Ability":{}}]"#;
+const NOT_HAND: &str = r#"[{"Spell":{"facts":["NotFromHand"]}},{"Ability":{}},"OtherCosts"]"#;
 
 const ADD: &str = "{T}: Add one mana of any color.";
 

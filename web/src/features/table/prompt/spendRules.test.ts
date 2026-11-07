@@ -86,6 +86,8 @@ describe('spendAllows', () => {
     ['a cost with X pays a spell with X', spell({}, true), ['CostWithX'], true],
     ['a cost with X pays an ability with X', { ...ability, has_x: true }, ['CostWithX'], true],
     ['a cost without X is not paid by it', spell(), ['CostWithX'], false],
+    ['other costs pay neither a spell nor an ability', undefined, ['OtherCosts'], true],
+    ['other costs do not pay a spell', spell(), ['OtherCosts'], false],
   ])('%s', (_name, spend, only, expected) => {
     expect(spendAllows(spend, only)).toBe(expected)
   })
@@ -94,6 +96,7 @@ describe('spendAllows', () => {
     [[onSpell({ types: ['Creature'] })], 'creature spells'],
     [[{ Ability: {} }], 'abilities'],
     [['CostWithX'], 'costs with {X}'],
+    [['OtherCosts'], 'other costs'],
     [[onSpell({ subtypes: ['Elf'] }), { Ability: {} }], 'elf spells or abilities'],
     [[RIDER], 'anything'],
   ])('words %j', (only, words) => {

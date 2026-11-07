@@ -39,7 +39,7 @@ fn uses(restriction: &str) -> (String, Vec<String>) {
 )]
 #[case::cant_cast_from_the_hand(
     "CantCastSpellFromHand",
-    r#"[{"Spell":{"facts":["NotFromHand"]}},{"Ability":{}}]"#
+    r#"[{"Spell":{"facts":["NotFromHand"]}},{"Ability":{}},"OtherCosts"]"#
 )]
 fn a_restriction_on_a_fact_of_the_spell_is_a_spend_fact(
     #[case] restriction: &str,

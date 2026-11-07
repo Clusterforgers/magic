@@ -253,6 +253,8 @@ pub enum SpendOn {
     Spell(SpendFilter),
     /// Activating an ability whose source is of the kind; a mana ability is not paid for, so none counts.
     Ability(SpendFilter),
+    /// Paying a cost that is neither a spell's nor an ability's ("unless its controller pays {2}", a ward cost).
+    OtherCosts,
     /// Paying a cost that has {X} in it, of a spell or of an ability.
     CostWithX,
     /// Not a restriction: the mana may be spent on anything, and spending it on a spell of the kind sets off the effects
@@ -334,6 +336,7 @@ impl SpendOn {
             SpendOn::Spell(filter) => SpendOn::Spell(filter.resolved(chosen)?),
             SpendOn::Ability(filter) => SpendOn::Ability(filter.resolved(chosen)?),
             SpendOn::CostWithX => SpendOn::CostWithX,
+            SpendOn::OtherCosts => SpendOn::OtherCosts,
             SpendOn::When(rider) => rider.entry(chosen, rider.source)?,
             SpendOn::Uncounterable(filter) => SpendOn::Uncounterable(filter.resolved(chosen)?),
             SpendOn::Snow => SpendOn::Snow,

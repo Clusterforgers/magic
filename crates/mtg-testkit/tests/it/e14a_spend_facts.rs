@@ -56,7 +56,7 @@ fn spell(colorless: bool, devoid: bool) -> Arc<CardDefinition> {
 
 const COLORLESS: &str = r#"[{"Spell":{"facts":["Colorless"]}}]"#;
 const DEVOID: &str = r#"[{"Spell":{"facts":["Devoid"]}}]"#;
-const ELSEWHERE: &str = r#"[{"Spell":{"facts":["NotFromHand"]}},{"Ability":{}}]"#;
+const ELSEWHERE: &str = r#"[{"Spell":{"facts":["NotFromHand"]}},{"Ability":{}},"OtherCosts"]"#;
 
 #[rstest]
 #[case::a_colorless_spell(2, COLORLESS, false, false, true)]

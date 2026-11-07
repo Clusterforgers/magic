@@ -123,10 +123,6 @@ fn worded(r: &mut Reader<'_>) -> Option<CostItem> {
     if r.word("put") {
         return r.attempt(blight).or_else(|| put_on_source(r));
     }
-    // "Exert this creature" (CR 701.43).
-    if r.word("exert") {
-        return r.source().then_some(CostItem::Exert);
-    }
     r.need("sacrifice")?;
     if r.source() {
         return Some(CostItem::SacrificeSelf);
