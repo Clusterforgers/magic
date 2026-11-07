@@ -61,6 +61,7 @@ fn hit(state: &GameState, source: &str, to: DamageTarget, amount: u32) -> Event 
         deathtouch: false,
         form: DamageForm::Normal,
         toxic: 0,
+        unpreventable: false,
     }
 }
 

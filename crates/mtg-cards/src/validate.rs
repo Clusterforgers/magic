@@ -61,6 +61,7 @@ fn prevents_in_part(by: &ReplaceBy) -> bool {
     matches!(
         by,
         ReplaceBy::PreventUpTo(_)
+            | ReplaceBy::PreventCounted(_)
             | ReplaceBy::PreventHalf
             | ReplaceBy::PreventAllBut(_)
             | ReplaceBy::PreventNext
@@ -505,6 +506,7 @@ impl<'a> Walker<'a> {
             | Ref::MostLife
             | Ref::ActivePlayer
             | Ref::Chooser
+            | Ref::Asker
             | Ref::Defending => {
                 self.expect(Kind::Player, want);
             }
@@ -1165,6 +1167,10 @@ impl<'a> Walker<'a> {
             Condition::StartingPlayer(who) => {
                 self.uses("Condition", "StartingPlayer");
                 self.at("StartingPlayer", |w| w.reference(who, Kind::Player));
+            }
+            Condition::Among(who) => {
+                self.uses("Condition", "Among");
+                self.at("Among", |w| w.reference(who, Kind::Player));
             }
             Condition::ChosenWord { name, .. } => {
                 self.uses("Condition", "ChosenWord");
@@ -2077,7 +2083,7 @@ impl<'a> Walker<'a> {
             | TriggerPattern::W11cCrime { who } => {
                 self.at("who", |w| w.reference(who, Kind::Player));
             }
-            TriggerPattern::Drew { who, what } | TriggerPattern::Did { who, what, .. } => {
+            TriggerPattern::Drew { who, what, .. } | TriggerPattern::Did { who, what, .. } => {
                 self.at("who", |w| w.reference(who, Kind::Player));
                 self.at("what", |w| w.selector(what));
             }
@@ -2510,6 +2516,7 @@ impl Walker<'_> {
             | Ref::MostLife
             | Ref::ActivePlayer
             | Ref::Chooser
+            | Ref::Asker
             | Ref::Defending
             | Ref::TriggeringPlayer
             | Ref::ControllerOf(_)
@@ -2996,8 +3003,11 @@ impl Walker<'_> {
             | Effect::Prepare { what }
             | Effect::Goad { what }
             | Effect::Explore { what }
-            | Effect::Connive { what }
             => w.at("what", |w| w.reference(what, Kind::Object)),
+            Effect::Connive { what, count } => {
+                w.at("what", |w| w.reference(what, Kind::Object));
+                w.at("count", |w| w.amount(count));
+            }
             Effect::Destroy { what, bind, .. } => {
                 w.at("what", |w| w.reference(what, Kind::Object));
                 if let Some(name) = bind {
@@ -3211,7 +3221,10 @@ impl Walker<'_> {
                     w.at("as", |w| w.bind_moved(name));
                 }
             }
-            Effect::DealDamage { source, to, amount, excess } => {
+            Effect::DealDamage { source, to, amount, excess, unpreventable } => {
+                if *unpreventable {
+                    w.uses("Effect", "DealDamage.Unpreventable");
+                }
                 if let Some(source) = source {
                     w.at("source", |w| w.reference(source, Kind::Object));
                 }
@@ -3529,12 +3542,14 @@ impl Walker<'_> {
                         ReplaceBy::Prevent
                         | ReplaceBy::PreventNext
                         | ReplaceBy::PreventUpTo(_)
+                        | ReplaceBy::PreventCounted(_)
                         | ReplaceBy::PreventAnd(_)
                         | ReplaceBy::Multiply(_)
                         | ReplaceBy::Add(_)
                         | ReplaceBy::Instead(_)
                         | ReplaceBy::InsteadNext(_)
-                        | ReplaceBy::RedirectUpTo { .. },
+                        | ReplaceBy::RedirectUpTo { .. }
+                        | ReplaceBy::Redirect { .. },
                     )
                     // A death or a counter sent elsewhere, and a class of moves judged as each happens (`Rule::Replaces`).
                     | (
@@ -4118,6 +4133,25 @@ impl Walker<'_> {
                     });
                 }
             }),
+            GameRule::BlockTax {
+                blockers,
+                attackers,
+                mana,
+                life,
+                per,
+            } => self.at(tag, |w| {
+                w.at("blockers", |w| w.selector(blockers));
+                w.at("attackers", |w| w.selector(attackers));
+                w.at("per", |w| w.amount(per));
+                if mana.rest().symbols().is_empty() && !mana.has_x() && *life == 0 {
+                    w.problem("a block tax costs mana, life or both");
+                }
+                if mana.has_x() {
+                    w.at("mana", |w| {
+                        w.problem("a block tax is fixed mana, repeated by `per`, not an {X}");
+                    });
+                }
+            }),
             GameRule::AttackLimitAt { most, at } => self.at(tag, |w| {
                 if *most == 0 {
                     w.problem("a limit on a declaration lets at least one creature in");
@@ -4407,11 +4441,27 @@ impl Walker<'_> {
         self.at("to", |w| w.reference(to, Kind::Either));
     }
 
+    /// The amount a shield counts as it begins, and the player or permanent a redirection of all the damage names; a
+    /// counted prevention of anything but damage is a problem `replace_by` names.
+    fn g11b_replace_by(&mut self, when: &ReplaceWhen, by: &ReplaceBy) {
+        match by {
+            ReplaceBy::PreventCounted(amount) if matches!(when, ReplaceWhen::Damage { .. }) => {
+                self.at("PreventCounted", |w| w.amount(amount));
+            }
+            ReplaceBy::Redirect { to, .. } => self.r6f_redirect(when, 1, to),
+            _ => {}
+        }
+    }
+
     /// A permanent's replacement is not a shield, so it cannot prevent just the next damage.
     fn not_next_damage(&mut self, by: &ReplaceBy) {
         if matches!(
             by,
-            ReplaceBy::PreventNext | ReplaceBy::InsteadNext(_) | ReplaceBy::RedirectUpTo { .. }
+            ReplaceBy::PreventNext
+                | ReplaceBy::InsteadNext(_)
+                | ReplaceBy::RedirectUpTo { .. }
+                | ReplaceBy::Redirect { .. }
+                | ReplaceBy::PreventCounted(_)
         ) {
             self.problem("only a shield changes the next damage");
         }
@@ -4419,6 +4469,7 @@ impl Walker<'_> {
 
     fn replace_by(&mut self, when: &ReplaceWhen, by: &ReplaceBy) {
         self.uses("ReplaceBy", &tag_of(by));
+        self.g11b_replace_by(when, by);
         let enters = matches!(when, ReplaceWhen::Enters { .. });
         let zone_move = matches!(
             when,

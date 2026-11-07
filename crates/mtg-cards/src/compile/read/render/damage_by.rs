@@ -13,6 +13,7 @@ impl Writer<'_> {
             source: Some(source),
             to,
             amount,
+            unpreventable: false,
             ..
         } = effect
         else {

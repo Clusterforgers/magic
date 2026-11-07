@@ -617,6 +617,7 @@ mod tests {
             auto_available,
             can_cancel,
             attack: false,
+            block: false,
             life: 20,
             max_life: 0,
             help: Box::default(),

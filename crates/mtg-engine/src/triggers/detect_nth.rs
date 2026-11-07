@@ -69,6 +69,7 @@ fn pinger(name: &str) -> Arc<CardDefinition> {
             }],
             effects: vec![Effect::DealDamage {
                 excess: None,
+                unpreventable: false,
                 source: None,
                 to: Ref::Target(0),
                 amount: Amount::Fixed(1),
@@ -388,6 +389,7 @@ fn hurt(pre: &GameState, source: &str, to: DamageTarget, amount: u32) -> Event {
         deathtouch: false,
         form: crate::combat::DamageForm::Normal,
         toxic: 0,
+        unpreventable: false,
     }
 }
 

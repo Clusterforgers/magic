@@ -124,6 +124,7 @@ fn damage_to_a_planeswalker_is_loyalty_lost_and_marks_nothing() {
         deathtouch: false,
         form: mtg_engine::combat::DamageForm::Normal,
         toxic: 0,
+        unpreventable: false,
     };
     mtg_engine::apply_event(&mut state, &damage).unwrap();
     for viewer in 0..2 {

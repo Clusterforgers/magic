@@ -273,6 +273,19 @@ pub(super) fn texts(condition: &Condition) -> Vec<String> {
     if *condition == Condition::YourTurn {
         return vec!["it's your turn".to_owned()];
     }
+    // "~ is attacking" counted: one or more of the card itself in that state is the card in it.
+    if let Condition::Compare {
+        left: Amount::Count(Selector(counted)),
+        op: Cmp::Ge,
+        right: Amount::Fixed(1),
+    } = condition
+        && let [Pred::This, state] = counted.as_slice()
+    {
+        return state_texts(&Condition::Matches {
+            subject: Ref::This,
+            selector: Selector(vec![state.clone()]),
+        });
+    }
     let own = [
         state_texts(condition),
         counters_texts(condition),

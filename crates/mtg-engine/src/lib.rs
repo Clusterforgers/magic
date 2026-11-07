@@ -11,6 +11,7 @@ mod answers;
 mod attach;
 mod attack_tax;
 pub mod battle;
+pub mod block_tax;
 mod c10_xp_copy_ends;
 mod c11a_less;
 mod c7_untap;

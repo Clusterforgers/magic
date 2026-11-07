@@ -139,8 +139,8 @@ fn near_misses_stay_with_the_table(#[case] text: &str) {
 }
 
 #[rstest]
-#[case::except_the_first(
-    "Whenever an opponent draws a card except the first one they draw in each of their draw steps, you gain 1 life."
+#[case::except_the_first_of_another_step(
+    "Whenever an opponent draws a card except the first one they draw in each of their upkeeps, you gain 1 life."
 )]
 #[case::an_amount_of_life("Whenever you gain 3 life, draw a card.")]
 #[case::a_kind_of_card("Whenever you discard a land card, draw a card.")]

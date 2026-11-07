@@ -21,6 +21,7 @@ export type { AuthErrorCode } from "./AuthErrorCode";
 export type { AutoChoices } from "./AutoChoices";
 export type { BecameCopy } from "./BecameCopy";
 export type { BlockOptions } from "./BlockOptions";
+export type { BlockTax } from "./BlockTax";
 export type { BlockerOption } from "./BlockerOption";
 export type { Borrowed } from "./Borrowed";
 export type { BottomOptions } from "./BottomOptions";

@@ -655,7 +655,13 @@ fn trigger_pattern() -> impl Strategy<Value = TriggerPattern> {
             }),
         reference().prop_map(|who| TriggerPattern::LifeGained { who }),
         reference().prop_map(|who| TriggerPattern::LifeLost { who }),
-        (reference(), selector()).prop_map(|(who, what)| TriggerPattern::Drew { who, what }),
+        (reference(), selector(), proptest::option::of(any::<bool>())).prop_map(
+            |(who, what, first_in_draw_step)| TriggerPattern::Drew {
+                who,
+                what,
+                first_in_draw_step
+            }
+        ),
         (selector(), reference()).prop_map(|(what, by)| TriggerPattern::Discarded { what, by }),
         selector().prop_map(|what| TriggerPattern::Tapped { what }),
         (selector(), reference()).prop_map(|(what, by)| TriggerPattern::TappedForMana { what, by }),
@@ -887,6 +893,7 @@ fn leaf_effect() -> impl Strategy<Value = Effect> {
         (proptest::option::of(reference()), reference(), amount()).prop_map(
             |(source, to, amount)| Effect::DealDamage {
                 excess: None,
+                unpreventable: false,
                 source,
                 to,
                 amount
@@ -1035,7 +1042,7 @@ fn leaf_effect() -> impl Strategy<Value = Effect> {
         amount().prop_map(|count| Effect::Adapt { count }),
         amount().prop_map(|count| Effect::Bolster { count }),
         reference().prop_map(|what| Effect::Explore { what }),
-        reference().prop_map(|what| Effect::Connive { what }),
+        (reference(), simple_amount()).prop_map(|(what, count)| Effect::Connive { what, count }),
         (who(), selector(), bound_name(), bound_name()).prop_map(
             |(who, filter, bind, exiled_as)| Effect::ExileUntil {
                 who,

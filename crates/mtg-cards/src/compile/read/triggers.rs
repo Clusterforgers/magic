@@ -562,16 +562,50 @@ fn draw_event(r: &mut Reader<'_>, by: Ref, whose: &str) -> Option<TriggerPattern
         let event = TriggerPattern::Drew {
             who: by,
             what: Selector::default(),
+            first_in_draw_step: None,
         };
         return Some(TriggerPattern::Nth {
             event: Box::new(event),
             nth,
         });
     }
-    r.need("a card")?;
+    let they = if whose == "your" { "you" } else { "they" };
+    // "your first card during each of your draw steps".
+    let first = if r.words(&format!(
+        "{whose} first card during each of {whose} draw steps"
+    )) {
+        Some(true)
+    } else {
+        r.need("a card")?;
+        // "except the first one they draw in each of their draw steps".
+        r.words(&format!(
+            "except the first one {they} draw in each of {whose} draw steps"
+        ))
+        .then_some(false)
+    };
     Some(TriggerPattern::Drew {
         who: by,
         what: Selector::default(),
+        first_in_draw_step: first,
+    })
+}
+
+/// "Whenever you draw a card", with the first card of each draw step or every other card when the pattern names one.
+fn draw_text(who: &Ref, first: Option<bool>) -> Option<String> {
+    let verb = player_verb(who, "draw")?;
+    let (they, whose) = if *who == Ref::You {
+        ("you", "your")
+    } else {
+        ("they", "their")
+    };
+    Some(match first {
+        None => format!("Whenever {verb} a card"),
+        Some(true) => {
+            format!("Whenever {verb} {whose} first card during each of {whose} draw steps")
+        }
+        Some(false) => format!(
+            "Whenever {verb} a card except the first one {they} draw in each of {whose} draw steps"
+        ),
     })
 }
 
@@ -1548,9 +1582,11 @@ pub fn pattern_text(pattern: &TriggerPattern) -> Option<String> {
         TriggerPattern::LifeLost { who } => {
             Some(format!("Whenever {} life", player_verb(who, "lose")?))
         }
-        TriggerPattern::Drew { who, what } if what.is_empty() => {
-            Some(format!("Whenever {} a card", player_verb(who, "draw")?))
-        }
+        TriggerPattern::Drew {
+            who,
+            what,
+            first_in_draw_step,
+        } if what.is_empty() => draw_text(who, *first_in_draw_step),
         TriggerPattern::Discarded { what, by } if what.is_empty() => {
             Some(format!("Whenever {} a card", player_verb(by, "discard")?))
         }
@@ -1663,7 +1699,11 @@ fn damaged_subject(to: &Ref) -> Option<Selector> {
 fn nth_text(event: &TriggerPattern, nth: u32) -> Option<String> {
     let ordinal = ORDINALS.get(usize::try_from(nth.checked_sub(1)?).ok()?)?;
     let (by, verb, noun) = match event {
-        TriggerPattern::Drew { who, what } if what.is_empty() => (who, "draw", "card"),
+        TriggerPattern::Drew {
+            who,
+            what,
+            first_in_draw_step: None,
+        } if what.is_empty() => (who, "draw", "card"),
         TriggerPattern::SpellCast { what, by } if what.is_empty() => (by, "cast", "spell"),
         // "Whenever you cast your fourth noncreature spell each turn".
         TriggerPattern::SpellCast { what, by } => {

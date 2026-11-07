@@ -1054,6 +1054,20 @@ describe('events with more than one shape', () => {
     ],
     [
       ruleEffect(
+        { BlockTax: { blockers: [], attackers: [], mana: [{ Generic: 2 }], life: 0 } },
+        'UntilEndOfTurn',
+      ),
+      "Some creatures can't block unless their controller pays {2} for each until end of turn",
+    ],
+    [
+      ruleEffect(
+        { AttackTax: { players: [1], attacked: 'Both', creatures: [], mana: [], life: 2 } },
+        'UntilYourNextTurn',
+      ),
+      "Creatures can't attack Bo unless their controller pays 2 life for each until their controller's next turn",
+    ],
+    [
+      ruleEffect(
         {
           PreventDamage: {
             to: null,

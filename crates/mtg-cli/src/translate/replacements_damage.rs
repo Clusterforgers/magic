@@ -31,6 +31,7 @@ fn is_remembered(word: &str) -> bool {
             "Card.IsRemembered"
                 | "Creature.IsRemembered"
                 | "Permanent.IsRemembered"
+                | "Planeswalker.IsRemembered"
                 | "Player.IsRemembered"
         )
     })
@@ -279,6 +280,19 @@ fn one_shield(
             };
             when.insert("source".into(), json!([{"Is": {"Bound": name}}]));
         }
+        // A colour or type the ability chose: the shield fixes the value as it begins.
+        (Some(word), _)
+            if (word.contains("ChosenColor") || word.contains("ChosenType"))
+                && !word.contains("Remembered")
+                && !word.contains("ChosenCard") =>
+        {
+            match source_any(ctx, word) {
+                Ok(source) => {
+                    when.insert("source".into(), json!(source));
+                }
+                Err(_) => return unmapped("replacement:DamageDone-shield-source"),
+            }
+        }
         (Some(word), _) if word.contains("Remembered") || word.contains("Chosen") => {
             return unmapped("replacement:DamageDone-shield-source");
         }
@@ -297,26 +311,7 @@ fn one_shield(
     if let Some(combat) = combat(&p)? {
         when.insert("combat".into(), json!(combat));
     }
-    let by = match p.get("ReplaceWith") {
-        None => json!("Prevent"),
-        Some(_) if p.get("Prevent") == Some("True") => {
-            return unmapped("replacement:DamageDone-prevent-and-replace");
-        }
-        Some(name) if is_damage_scaling(ctx, name) => scaled(ctx, name)?,
-        Some(name) if super::replacements_damage_by::splits(ctx, name) => {
-            let recipient_remembered = p.get("ValidTarget").is_some_and(is_remembered);
-            super::replacements_damage_by::split_redirect(
-                ctx,
-                (&p, line),
-                name,
-                remembered.filter(|_| !recipient_remembered),
-            )?
-        }
-        Some(name) => {
-            let you = p.get("ValidTarget") == Some("You");
-            super::replacements_damage_by::by(ctx, &p, name, you, true)?
-        }
-    };
+    let by = shield_by(ctx, (&p, line), remembered)?;
     let mut shields = Vec::new();
     for recipient in recipients {
         let mut when = when.clone();
@@ -326,6 +321,40 @@ fn one_shield(
         shields.push(json!({"Shield": {"when": {"Damage": when}, "by": by, "duration": duration}}));
     }
     Ok(shields)
+}
+
+/// What a shield does to the damage it covers: prevents it, scales it, or sends all or part of it elsewhere.
+fn shield_by(ctx: &Ctx, (p, line): (&Params, &Params), remembered: Option<&Value>) -> Tr<Value> {
+    let recipient_remembered = p.get("ValidTarget").is_some_and(is_remembered);
+    Ok(match p.get("ReplaceWith") {
+        None => json!("Prevent"),
+        Some(_) if p.get("Prevent") == Some("True") => {
+            return unmapped("replacement:DamageDone-prevent-and-replace");
+        }
+        Some(name) if is_damage_scaling(ctx, name) => scaled(ctx, name)?,
+        Some(name) if super::replacements_damage_by::splits(ctx, name) => {
+            super::replacements_damage_by::split_redirect(
+                ctx,
+                (p, line),
+                name,
+                remembered.filter(|_| !recipient_remembered),
+            )?
+        }
+        Some(name) => {
+            let redirect = super::replacements_damage_by::g11b_remembered_redirect(
+                ctx,
+                p,
+                name,
+                remembered.filter(|_| !recipient_remembered && !line.has("EffectOwner")),
+            )?;
+            if let Some(by) = redirect {
+                by
+            } else {
+                let you = p.get("ValidTarget") == Some("You");
+                super::replacements_damage_by::by(ctx, p, name, you, true)?
+            }
+        }
+    })
 }
 
 /// The recipients of a shield, one shield each: a player word, the source itself, or a group of permanents. A list is
