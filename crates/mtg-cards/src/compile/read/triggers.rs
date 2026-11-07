@@ -56,6 +56,9 @@ pub fn itself_acts(pattern: &TriggerPattern) -> bool {
             source.0 == [Pred::This] || *to == Some(Ref::This)
         }
         TriggerPattern::AnyOf(patterns) => patterns.iter().all(itself_acts),
+        // "Whenever ~ is dealt damage, it deals that much damage to any target", "When you do, it gets +1/+0".
+        TriggerPattern::Batch(inner) => itself_acts(inner),
+        TriggerPattern::Did { .. } => super::r7e_events::r7e_did_itself(pattern),
         _ => false,
     }
 }
@@ -1246,7 +1249,7 @@ pub(super) fn player_verb(by: &Ref, verb: &str) -> Option<String> {
 const BLOCKED: &str = "becomes blocked";
 
 /// The subject of a pattern that is about one thing happening to it, and what happens.
-fn happening(pattern: &TriggerPattern) -> Option<(Selector, String)> {
+pub(super) fn happening(pattern: &TriggerPattern) -> Option<(Selector, String)> {
     let said = |what: &Selector, verb: &str| Some((what.clone(), verb.to_owned()));
     match pattern {
         TriggerPattern::ZoneChange { what, from, to } => {
@@ -1345,6 +1348,7 @@ fn happening(pattern: &TriggerPattern) -> Option<(Selector, String)> {
             source,
             &format!("deals {}", damage_text(*combat, to.as_ref())?),
         ),
+        TriggerPattern::Did { .. } => super::r7e_events::r7e_did_happening(pattern),
         _ => None,
     }
 }
@@ -1456,7 +1460,9 @@ pub fn pattern_text(pattern: &TriggerPattern) -> Option<String> {
         TriggerPattern::SpellCast { what, by: Ref::You } if what.0 == [Pred::This] => {
             Some("When you cast ~".to_owned())
         }
-        TriggerPattern::SpellCast { what, by } => super::c4_cast_hand::cast_text(what, by),
+        TriggerPattern::SpellCast { what, by } => super::r7e_events::r7e_cast_text(pattern)
+            .or_else(|| super::c4_cast_hand::cast_text(what, by)),
+        TriggerPattern::Did { .. } => super::r7e_events::r7e_did_text(pattern),
         TriggerPattern::SpellCopied { what, by } => super::w2e_copied::w2e_copy_text(what, by),
         TriggerPattern::Sacrificed { what, by } => Some(format!(
             "Whenever {} {}",
@@ -1516,7 +1522,9 @@ pub fn pattern_text(pattern: &TriggerPattern) -> Option<String> {
             counter_text(what, counter.as_ref(), "removed from")
         }
         TriggerPattern::Nth { event, nth } => nth_text(event, *nth),
-        TriggerPattern::Batch(inner) => batch_text(inner),
+        TriggerPattern::Batch(inner) => {
+            super::r7e_events::r7e_one_object_damage(inner).or_else(|| batch_text(inner))
+        }
         TriggerPattern::GroupAttacks { what, at_least } => {
             let count = if *at_least == 1 {
                 "one"
@@ -1530,7 +1538,8 @@ pub fn pattern_text(pattern: &TriggerPattern) -> Option<String> {
         }
         TriggerPattern::AnyOf(patterns) => super::w2e_copied::w2e_cast_or_copy_text(patterns)
             .or_else(|| any_of_text(patterns))
-            .or_else(|| super::w6e_control::w6e_joined_step(patterns)),
+            .or_else(|| super::w6e_control::w6e_joined_step(patterns))
+            .or_else(|| super::r7e_events::r7e_any_of(patterns)),
         _ => {
             let (what, verb) = happening(pattern)?;
             about(&what, &[verb])
@@ -1543,7 +1552,10 @@ fn cycled_text(what: &Selector, by: &Ref) -> Option<String> {
     let card = match what.0.as_slice() {
         [] => "a card",
         [Pred::Other] => "another card",
-        [Pred::This] if *by == Ref::You => return Some("When you cycle ~".to_owned()),
+        // Only the owner cycles the card in their hand, so any player is you.
+        [Pred::This] if matches!(by, Ref::You | Ref::EachPlayer) => {
+            return Some("When you cycle ~".to_owned());
+        }
         _ => return None,
     };
     Some(format!("Whenever {} {card}", player_verb(by, "cycle")?))
