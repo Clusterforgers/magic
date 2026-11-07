@@ -673,6 +673,28 @@ fn applies_to(by: &ReplaceBy, unit: &Unit) -> bool {
     }
 }
 
+/// Whether the effect changes a part of the entering of its own: entering tapped or untapped, a choice made as it
+/// enters and the counters it enters with, so the order is not a choice (a Thriving land is tapped and asks for a color).
+const fn enters_apart(action: &Action) -> bool {
+    matches!(
+        action,
+        Action::Replace(
+            ReplaceBy::Tapped
+                | ReplaceBy::Untapped
+                | ReplaceBy::Choose(_)
+                | ReplaceBy::WithCounters { .. }
+                | ReplaceBy::WithCountersAnd { .. }
+                | ReplaceBy::Tribute(_)
+                | ReplaceBy::Amplify(_)
+                | ReplaceBy::MayWithCounters { .. }
+                | ReplaceBy::Devour { .. }
+                | ReplaceBy::Riot
+                | ReplaceBy::DayIfNeither
+                | ReplaceBy::EntersPrepared
+        )
+    )
+}
+
 /// What an effect does to the event.
 #[derive(Debug, Clone)]
 enum Action {
@@ -1664,27 +1686,7 @@ impl Pass<'_> {
                 let alike = pool
                     .iter()
                     .all(|c| matches!(c.action, Action::Replace(ReplaceBy::Prevent)));
-                // Entering tapped, a choice made as it enters and the counters it enters with each change a part of the
-                // entering of their own, so the order is not a choice (a Thriving land is tapped and asks for a color).
-                let apart = pool.iter().all(|c| {
-                    matches!(
-                        c.action,
-                        Action::Replace(
-                            ReplaceBy::Tapped
-                                | ReplaceBy::Untapped
-                                | ReplaceBy::Choose(_)
-                                | ReplaceBy::WithCounters { .. }
-                                | ReplaceBy::WithCountersAnd { .. }
-                                | ReplaceBy::Tribute(_)
-                                | ReplaceBy::Amplify(_)
-                                | ReplaceBy::MayWithCounters { .. }
-                                | ReplaceBy::Devour { .. }
-                                | ReplaceBy::Riot
-                                | ReplaceBy::DayIfNeither
-                                | ReplaceBy::EntersPrepared
-                        )
-                    )
-                });
+                let apart = pool.iter().all(|c| enters_apart(&c.action));
                 // Entering untapped comes last: its controller orders it after an effect that would tap the permanent,
                 // the order they choose (CR 616.1).
                 let last =
@@ -2538,20 +2540,16 @@ impl Pass<'_> {
         applied: Vec<Origin>,
     ) -> Result<Applied, EngineError> {
         let source = candidate.object.id;
-        let tapped = |step: &mut Pass<'_>, at: usize| {
+        let set_tapped = |step: &mut Pass<'_>, at: usize, to: bool| {
             let entered = step.entered_at(at, object, controller);
             if let Item::One(Event::Entered { tapped, .. }) = &mut step.slots[entered].item {
-                *tapped = true;
+                *tapped = to;
             }
         };
+        let tapped = |step: &mut Pass<'_>, at: usize| set_tapped(step, at, true);
         match by {
             ReplaceBy::Tapped => tapped(self, at),
-            ReplaceBy::Untapped => {
-                let entered = self.entered_at(at, object, controller);
-                if let Item::One(Event::Entered { tapped, .. }) = &mut self.slots[entered].item {
-                    *tapped = false;
-                }
-            }
+            ReplaceBy::Untapped => set_tapped(self, at, false),
             ReplaceBy::WithCounters {
                 counter,
                 count,

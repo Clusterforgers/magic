@@ -211,8 +211,8 @@ fn an_instant_that_resolves_is_shuffled_in(
     settle(&mut driver, None)?;
     let me = pid(0);
     assert!(names_in(&driver, Zone::Library(me)).contains(&"Fate".to_owned()));
-    assert!(names_in(&driver, Zone::Graveyard(me)).is_empty());
-    assert!(driver.state().stack().is_empty());
+    assert_eq!(names_in(&driver, Zone::Graveyard(me)), Vec::<String>::new());
+    assert_eq!(driver.state().stack().len(), 0);
     replays(&driver, &setup);
     Ok(())
 }
