@@ -22,7 +22,7 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
     };
     let candidates = cx.scope.refs(from)?;
     if !candidates.is_empty() && candidates.iter().all(|target| target.player().is_some()) {
-        return Ok(e14c_players(cx, &candidates, count, bind)?);
+        return e14c_players(cx, &candidates, count, bind);
     }
     let mut cards: Vec<ObjectId> = Vec::with_capacity(candidates.len());
     for target in &candidates {

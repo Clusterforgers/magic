@@ -133,22 +133,29 @@ pub fn vote(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
         }
         // "Each choice with the most votes or tied for most votes": a choice runs when no other got more votes.
         (false, false, None) if choices.len() >= 2 => {
-            for (index, choice) in choices.iter().enumerate() {
-                let most: Vec<Value> = choices
-                    .iter()
-                    .enumerate()
-                    .filter(|(other, _)| *other != index)
-                    .map(|(_, other)| {
-                        json!({"Compare": {
-                            "left": votes(&choice.name), "op": "Ge", "right": votes(&other.name),
-                        }})
-                    })
-                    .collect();
-                let steps = chain_at(ctx, &choice.part, false)?;
-                effects.push(json!({"If": {"condition": {"All": most}, "then": steps}}));
-            }
+            effects.extend(e14c_most_votes(ctx, &choices)?);
         }
         _ => return unmapped("key:Vote.shape"),
+    }
+    Ok(effects)
+}
+
+/// Each choice runs when no other choice got more votes than it.
+fn e14c_most_votes(ctx: &mut Ctx, choices: &[Choice]) -> Tr<Vec<Value>> {
+    let mut effects = Vec::new();
+    for (index, choice) in choices.iter().enumerate() {
+        let most: Vec<Value> = choices
+            .iter()
+            .enumerate()
+            .filter(|(other, _)| *other != index)
+            .map(|(_, other)| {
+                json!({"Compare": {
+                    "left": votes(&choice.name), "op": "Ge", "right": votes(&other.name),
+                }})
+            })
+            .collect();
+        let steps = chain_at(ctx, &choice.part, false)?;
+        effects.push(json!({"If": {"condition": {"All": most}, "then": steps}}));
     }
     Ok(effects)
 }
