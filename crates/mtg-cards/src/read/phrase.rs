@@ -61,6 +61,7 @@ pub(super) fn who(ctx: &Ctx, reference: &Ref) -> String {
         Ref::MostLife => "the player with the most life".to_owned(),
         Ref::ActivePlayer => "the active player".to_owned(),
         Ref::Chooser => "the player choosing".to_owned(),
+        Ref::Asker => "the player asking".to_owned(),
         Ref::Bound(name) => format!("\u{201c}{name}\u{201d}"),
         Ref::Paid => "what was paid".to_owned(),
         Ref::Convoked => "the creatures that convoked it".to_owned(),

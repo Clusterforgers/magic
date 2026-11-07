@@ -505,6 +505,7 @@ impl<'a> Walker<'a> {
             | Ref::MostLife
             | Ref::ActivePlayer
             | Ref::Chooser
+            | Ref::Asker
             | Ref::Defending => {
                 self.expect(Kind::Player, want);
             }
@@ -2510,6 +2511,7 @@ impl Walker<'_> {
             | Ref::MostLife
             | Ref::ActivePlayer
             | Ref::Chooser
+            | Ref::Asker
             | Ref::Defending
             | Ref::TriggeringPlayer
             | Ref::ControllerOf(_)

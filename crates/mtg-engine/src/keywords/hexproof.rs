@@ -308,6 +308,7 @@ mod tests {
                 affected: None,
                 candidate: std::cell::Cell::new(None),
                 chooser: std::cell::Cell::new(None),
+                asker: None,
                 caused: None,
                 granter: None,
             };

@@ -204,6 +204,7 @@ pub(crate) fn reads_of_ref(reference: &Ref) -> Traits {
         | Ref::MostLife
         | Ref::ActivePlayer
         | Ref::Chooser
+        | Ref::Asker
         | Ref::Bound(_)
         | Ref::Affected
         | Ref::Candidate

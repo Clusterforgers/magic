@@ -1,4 +1,4 @@
-//! Goal: `Ref::PlayersWhere` names the players of its group for whom the condition holds with each taken as "you", at three seats, and names nobody when it holds for none.
+//! Goal: `Ref::PlayersWhere` names the players of its group for whom the condition holds with each taken as "you", at three seats, names nobody when it holds for none, and keeps `Ref::Asker` the player whose ability asks.
 
 use std::sync::Arc;
 
@@ -67,4 +67,41 @@ fn the_players_of_the_group_for_whom_it_holds(
     #[case] expected: i64,
 ) {
     assert_eq!(count(seat, who, test), expected);
+}
+
+const MORE_THAN_ASKER: &str = r#"{"Compare":{"left":{"Count":[{"Type":"Creature"},{"ControlledBy":"You"}]},"op":"Gt","right":{"Count":[{"Type":"Creature"},{"ControlledBy":"Asker"}]}}}"#;
+const FEWER_THAN_ASKER: &str = r#"{"Compare":{"left":{"Count":[{"Type":"Creature"},{"ControlledBy":"You"}]},"op":"Lt","right":{"Count":[{"Type":"Creature"},{"ControlledBy":"Asker"}]}}}"#;
+const TWO_MORE_THAN_ASKER: &str = r#"{"Compare":{"left":{"Count":[{"Type":"Creature"},{"ControlledBy":"You"}]},"op":"Ge","right":{"Sum":[{"Count":[{"Type":"Creature"},{"ControlledBy":"Asker"}]},2]}}}"#;
+
+#[rstest]
+#[case::more_than_the_last_seat(2, "Opponents", MORE_THAN_ASKER, 2)]
+#[case::more_than_the_middle_seat(1, "Opponents", MORE_THAN_ASKER, 1)]
+#[case::nobody_has_more_than_the_first_seat(0, "EachPlayer", MORE_THAN_ASKER, 0)]
+#[case::fewer_than_the_first_seat(0, "Opponents", FEWER_THAN_ASKER, 2)]
+#[case::fewer_than_the_middle_seat(1, "Opponents", FEWER_THAN_ASKER, 1)]
+#[case::two_more_than_the_last_seat(2, "EachPlayer", TWO_MORE_THAN_ASKER, 1)]
+#[case::two_more_than_the_middle_seat(1, "EachPlayer", TWO_MORE_THAN_ASKER, 0)]
+fn the_asker_stays_the_player_whose_ability_asks(
+    #[case] seat: u64,
+    #[case] who: &str,
+    #[case] test: &str,
+    #[case] expected: i64,
+) {
+    assert_eq!(count(seat, who, test), expected);
+}
+
+#[rstest]
+#[case::first_seat(0, 2)]
+#[case::middle_seat(1, 1)]
+#[case::last_seat(2, 0)]
+fn the_asker_outside_a_test_is_the_controller(#[case] seat: u64, #[case] expected: i64) {
+    let game = game();
+    let source = game.objects.values().next().unwrap().reference();
+    let amount: Amount =
+        serde_json::from_str(r#"{"Count":[{"Type":"Creature"},{"ControlledBy":"Asker"}]}"#)
+            .unwrap();
+    let read = Scope::announcing(&game, PlayerId(seat), source)
+        .amount(&amount)
+        .unwrap();
+    assert_eq!(read, expected);
 }

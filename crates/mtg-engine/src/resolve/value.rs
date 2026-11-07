@@ -114,6 +114,8 @@ pub struct Scope<'a> {
     pub(crate) candidate: std::cell::Cell<Option<ObjectRef>>,
     /// The player whose candidates an `Effect::Choose` is working out (`Ref::Chooser`).
     pub(crate) chooser: std::cell::Cell<Option<PlayerId>>,
+    /// The player whose ability asks the `PlayersWhere` test being worked out (`Ref::Asker`).
+    pub(crate) asker: Option<PlayerId>,
     /// The spell or ability that caused the events a trigger is being matched against (`TriggerPattern::Caused`).
     pub(crate) caused: Option<crate::triggers::CausedBy>,
     /// The permanent whose static ability gave the running ability to its source (`Ref::Granter`).
@@ -306,6 +308,7 @@ impl<'a> Scope<'a> {
             affected: None,
             candidate: std::cell::Cell::new(None),
             chooser: std::cell::Cell::new(None),
+            asker: None,
             caused: None,
             granter: None,
         }
@@ -487,6 +490,7 @@ impl<'a> Scope<'a> {
         for player in self.players(who)? {
             let each = Scope {
                 controller: player,
+                asker: Some(self.controller),
                 ..self.clone()
             };
             if each.holds(test)? {
@@ -984,6 +988,7 @@ impl<'a> Scope<'a> {
             }
             // Nobody outside the candidates of a choice made by each player.
             Ref::Chooser => self.chooser.get().map(Target::Player).into_iter().collect(),
+            Ref::Asker => vec![Target::Player(self.asker.unwrap_or(self.controller))],
             Ref::Candidate => {
                 let object = self.candidate.get().ok_or_else(|| {
                     ResolveError::Invalid("there is no candidate object here".into())

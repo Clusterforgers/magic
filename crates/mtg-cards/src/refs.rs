@@ -114,6 +114,9 @@ pub enum Ref {
     /// The player making the choice of an `Effect::Choose` whose candidates are worked out for each chooser ("each player
     /// chooses a creature they control"); nobody anywhere else.
     Chooser,
+    /// Inside the test of a `PlayersWhere`, the player whose ability asks it, while "you" is the player tested ("an
+    /// opponent who controls more lands than you"); the controller everywhere else.
+    Asker,
     /// The result an earlier step bound with `as`.
     Bound(String),
     /// The objects picked for the cost of the ability ("the creature tapped to pay it"): their characteristics are those they

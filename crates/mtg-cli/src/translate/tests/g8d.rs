@@ -189,7 +189,7 @@ fn players_cast_only_during_their_own_turns() {
 
 #[rstest]
 #[case::another_group("Card.NonActive")]
-#[case::another_property("Player.withMoreLandsThanYou")]
+#[case::another_property("Player.withMoreLifeThanYou")]
 fn another_player_word_stays_a_gap(#[case] word: &str) {
     let (_, found) = card(
         "Creature Elf",
