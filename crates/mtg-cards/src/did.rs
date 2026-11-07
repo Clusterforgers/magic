@@ -25,6 +25,9 @@ pub enum Action {
     Surveilled,
     /// A player searched their library and found cards (CR 701.23).
     SearchedLibrary,
+    /// A player searched their own library ("whenever an opponent searches their library"); the search is also a
+    /// `SearchedLibrary`.
+    SearchedOwnLibrary,
     /// A library was shuffled; `who` is its owner.
     Shuffled,
     /// A door of a Room was unlocked (CR 709.5).
@@ -99,6 +102,7 @@ impl Action {
             Action::Scried => ("scry", "scries"),
             Action::Surveilled => ("surveil", "surveils"),
             Action::SearchedLibrary => ("search a library", "searches a library"),
+            Action::SearchedOwnLibrary => ("search your library", "searches their library"),
             Action::Shuffled => ("shuffle a library", "shuffles a library"),
             Action::Unlocked => ("unlock a door", "unlocks a door"),
             Action::FullyUnlocked => ("fully unlock a Room", "fully unlocks a Room"),

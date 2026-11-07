@@ -2036,6 +2036,10 @@ fn batch_causes<'a>(
         TriggerPattern::DealsDamage { to, .. } => Some(names_players(to.as_ref())),
         _ => None,
     };
+    let counters = matches!(
+        inner,
+        TriggerPattern::CountersPut { .. } | TriggerPattern::CountersRemoved { .. }
+    );
     let mut groups: Vec<(Vec<Target>, Cause)> = Vec::new();
     for member in members {
         let Some(found) = matching(inner, member, scope) else {
@@ -2051,8 +2055,13 @@ fn batch_causes<'a>(
                 .copied()
                 .collect()
         };
-        // The damage dealt together is one amount ("that damage"); any other batch counts its events.
-        let weight = if damage.is_some() { found.amount } else { 1 };
+        // The damage dealt together is one amount ("that damage") and the counters put together one number ("that many");
+        // any other batch counts its events.
+        let weight = if damage.is_some() || counters {
+            found.amount
+        } else {
+            1
+        };
         let at = groups.iter().position(|(key, _)| *key == players);
         let at = at.unwrap_or_else(|| {
             groups.push((players, Cause::default()));
