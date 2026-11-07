@@ -18,13 +18,14 @@ use crate::refs::{Pred, Ref, Selector, ZoneKind};
 use crate::value::{Amount, Cmp, Condition, CounterKind, StatKind};
 
 /// What a permanent can be that a condition names: "untapped", "tapped", "attacking", "blocking", "monstrous",
-/// "legendary" (a color is another).
-const STATES: [(&str, Pred); 6] = [
+/// "prepared", "legendary" (a color is another).
+const STATES: [(&str, Pred); 7] = [
     ("untapped", Pred::Untapped),
     ("tapped", Pred::Tapped),
     ("attacking", Pred::Attacking),
     ("blocking", Pred::Blocking),
     ("monstrous", Pred::Monstrous),
+    ("prepared", Pred::Prepared),
     ("legendary", Pred::Supertype(Supertype::Legendary)),
 ];
 
