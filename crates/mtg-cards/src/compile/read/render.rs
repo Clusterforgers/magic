@@ -559,6 +559,7 @@ fn written_as_given(ability: &Ability) -> Vec<String> {
             texts.push(text);
         }
     }
+    super::r7b_wordings::add(ability, &mut texts);
     texts
 }
 

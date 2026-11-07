@@ -31,7 +31,7 @@
             "targets": [
               {
                 "what": {
-                  "Object": [{ "Type": "Land" }, { "OwnedBy": "You" }, { "In": "Graveyard" }]
+                  "Object": [{ "Type": "Land" }, { "In": "Graveyard" }, { "OwnedBy": "You" }]
                 },
                 "bounds": { "min": 0, "max": 3 }
               }

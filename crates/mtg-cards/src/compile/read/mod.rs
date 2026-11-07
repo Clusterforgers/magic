@@ -129,6 +129,8 @@ mod r6d_kind;
 mod r6f_flash_sacrifice;
 mod r7a_more;
 mod r7a_wordings;
+mod r7b_more;
+mod r7b_wordings;
 mod r7c_when;
 mod r7d_statics;
 mod r7e_events;

@@ -24,7 +24,7 @@
                   "mods": [
                     { "SetPT": { "power": 3, "toughness": 4 } },
                     { "SetColors": ["Red", "Green"] },
-                    { "AddSubtype": "Dinosaur" },
+                    { "SetCreatureTypes": ["Dinosaur"] },
                     { "AddType": "Creature" }
                   ],
                   "duration": "UntilEndOfTurn"

@@ -27,9 +27,9 @@
             "affected": {
               "Each": [
                 { "Type": "Creature" },
-                { "HasKeyword": "Flying" },
                 "Other",
-                { "ControlledBy": "You" }
+                { "ControlledBy": "You" },
+                { "HasKeyword": "Flying" }
               ]
             },
             "mods": [{ "AddKeyword": "Indestructible" }]

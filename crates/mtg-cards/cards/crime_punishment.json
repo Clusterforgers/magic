@@ -14,8 +14,8 @@
                 "what": {
                   "Object": [
                     { "AnyOf": [{ "Type": "Creature" }, { "Type": "Enchantment" }] },
-                    { "OwnedBy": "Opponents" },
-                    { "In": "Graveyard" }
+                    { "In": "Graveyard" },
+                    { "OwnedBy": "Opponents" }
                   ]
                 }
               }

@@ -27,14 +27,6 @@
         },
         {
           "Triggered": {
-            "when": { "Chapter": { "number": 3 } },
-            "effects": [
-              { "Move": { "what": { "Each": [{ "Type": "Creature" }, "Tapped"] }, "to": "Hand" } }
-            ]
-          }
-        },
-        {
-          "Triggered": {
             "when": { "Chapter": { "number": 2 } },
             "targets": [
               { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }] } }
@@ -48,6 +40,14 @@
                   "duration": "WhileYouControlSource"
                 }
               }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 3 } },
+            "effects": [
+              { "Move": { "what": { "Each": [{ "Type": "Creature" }, "Tapped"] }, "to": "Hand" } }
             ]
           }
         }
