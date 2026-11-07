@@ -278,6 +278,7 @@ mod for_each;
 mod g8c_writers;
 mod g8e_writers;
 mod g9a_writers;
+mod e10a_writers;
 mod goad;
 mod granted_mana;
 mod granted_triggers;

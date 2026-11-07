@@ -459,7 +459,7 @@ impl Selector {
 }
 
 /// What the targets chosen for one specification must have in common or differ in.
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Eq, Hash, Serialize, Deserialize)]
 pub enum TargetSet {
     /// One player controls them all (owns them all, outside the battlefield).
     SameController,
@@ -469,6 +469,8 @@ pub enum TargetSet {
     DifferentNames,
     /// No two have one mana value.
     DifferentManaValues,
+    /// Their mana values add up to at most this ("with total mana value 3 or less").
+    TotalManaValueAtMost(Amount),
 }
 
 /// What a target can be.
@@ -499,6 +501,14 @@ pub enum Targetable {
         what: Box<Targetable>,
         /// What the chosen targets share or differ in.
         rule: TargetSet,
+    },
+    /// "Another target": what `what` allows except the targets chosen for the earlier specifications `earlier`,
+    /// players among them (CR 115.3).
+    Another {
+        /// What each may be.
+        what: Box<Targetable>,
+        /// The indices of the earlier specifications whose targets are left out.
+        earlier: Vec<u8>,
     },
 }
 

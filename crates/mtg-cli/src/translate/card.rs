@@ -423,9 +423,16 @@ fn has_unused_target(value: &Value) -> bool {
                     .filter(|(key, _)| key.as_str() != "targets")
                     .map(|(_, inner)| inner.to_string())
                     .collect();
+                // A later target's filter reads an earlier one: "target player shuffles up to three target cards
+                // from their graveyard".
+                let later = |at: usize| -> String {
+                    targets.iter().skip(at + 1).map(Value::to_string).collect()
+                };
                 let unused = (0..targets.len()).any(|at| {
-                    !rest.contains(&format!("{{\"Target\":{at}}}"))
+                    let name = format!("{{\"Target\":{at}}}");
+                    !rest.contains(&name)
                         && !rest.contains(&format!("\"TargetCount\":{at}"))
+                        && !later(at).contains(&name)
                 });
                 if unused {
                     return true;

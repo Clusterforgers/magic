@@ -433,12 +433,14 @@ pub fn is_hint(key: &str) -> bool {
 }
 
 /// The keys that restrict the targets of a line, which `target_spec` reads.
-pub const SET_KEYS: [&str; 5] = [
+pub const SET_KEYS: [&str; 7] = [
     "TargetsWithDefinedController",
     "TargetsWithSameController",
     "TargetsWithDifferentControllers",
     "TargetsWithDifferentNames",
     "TargetsWithDifferentCMC",
+    "MaxTotalTargetCMC",
+    super::header::ANOTHER_THAN,
 ];
 
 /// Refuses a key that the mapper of `api` does not read: a key that changes what the line does and is not understood

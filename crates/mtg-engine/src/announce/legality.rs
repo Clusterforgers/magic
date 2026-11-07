@@ -9,6 +9,7 @@ use crate::choose::{legal_for, without_earlier};
 pub(super) fn run(ctx: &Ctx<'_>, work: &mut Work<'_>) -> Option<Next> {
     let specs = targets::specs(ctx, work.choices);
     let chosen = &work.choices.targets;
+    let bases = targets::bases(ctx, work.choices, specs.len());
     let legal = chosen.len() == specs.len()
         && specs
             .iter()
@@ -22,6 +23,7 @@ pub(super) fn run(ctx: &Ctx<'_>, work: &mut Work<'_>) -> Option<Next> {
                     ctx.player,
                     ctx.cause(),
                     work.choices.x,
+                    &chosen[bases.get(at).copied().unwrap_or(0).min(at)..at],
                 );
                 without_earlier(spec, &chosen[..at], &mut legal);
                 picked.iter().all(|target| legal.contains(target))

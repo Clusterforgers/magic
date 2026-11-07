@@ -52,7 +52,7 @@ pub(crate) use cards::names_among;
 pub(crate) use cards::{Chooser, Picked, Selection, pick_cards, pick_selections};
 pub(crate) use mode::{
     C11dOnce, Modal, announceable, announced_specs, enough_modes, every_mode_is_legal, modal_of,
-    mode_options, targets_before,
+    mode_options, spec_bases, targets_before,
 };
 pub(crate) use option::{OptionChooser, Optioned, pick_options};
 pub(crate) use targets::{

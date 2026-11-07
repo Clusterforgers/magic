@@ -18,7 +18,7 @@ use crate::effect::{
 };
 use crate::keyword::Keyword;
 use crate::modify::{CastPermission, Duration, GameRule, Modification, Prohibited};
-use crate::refs::{Bounds, Pred, Ref, Selector, TargetSpec, Targetable, ZoneKind};
+use crate::refs::{Bounds, Pred, Ref, Selector, TargetSet, TargetSpec, Targetable, ZoneKind};
 use crate::spend::{SpendOn, WhenSpent};
 use crate::support::{PrintedCard, PrintedFace, oracle_fingerprint};
 use crate::trigger::{ReplaceBy, ReplaceWhen, Step, TriggerPattern};
@@ -207,7 +207,9 @@ fn kind_of_targetable(what: &Targetable) -> Kind {
     match what {
         Targetable::Player | Targetable::Opponent => Kind::Player,
         Targetable::Object(_) | Targetable::PerPlayer { .. } => Kind::Object,
-        Targetable::Together { what, .. } => kind_of_targetable(what),
+        Targetable::Together { what, .. } | Targetable::Another { what, .. } => {
+            kind_of_targetable(what)
+        }
         Targetable::AnyTarget | Targetable::Either(_) => Kind::Either,
     }
 }
@@ -2311,8 +2313,23 @@ impl Walker<'_> {
                 self.at("players", |w| w.reference(players, Kind::Player));
                 self.at("what", |w| w.selector(what));
             }
-            Targetable::Together { what, .. } => {
+            Targetable::Together { what, rule } => {
                 self.uses("Target", "Together");
+                if let TargetSet::TotalManaValueAtMost(most) = rule {
+                    self.uses("Target", "TotalManaValue");
+                    self.at("rule", |w| w.amount(most));
+                }
+                self.at("what", |w| w.targetable(what));
+            }
+            Targetable::Another { what, earlier } => {
+                self.uses("Target", "Another");
+                for index in earlier {
+                    if usize::from(*index) >= self.scope.targets.len() {
+                        self.problem(format!(
+                            "`Another` names target {index}, which does not exist"
+                        ));
+                    }
+                }
                 self.at("what", |w| w.targetable(what));
             }
             Targetable::AnyTarget | Targetable::Player | Targetable::Opponent => {}

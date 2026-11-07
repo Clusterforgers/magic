@@ -8,7 +8,9 @@ use mtg_cards::value::CastWay;
 
 use super::{Ctx, Next, What, Work, total};
 use crate::attach;
-use crate::choose::{Choices, Target, announced_specs, asks, options_for, without_earlier};
+use crate::choose::{
+    Choices, Target, announced_specs, asks, options_for, spec_bases, without_earlier,
+};
 use crate::decision::DecisionKind;
 
 /// The target specifications announced, in the order they are asked: an Aura spell's one, from its enchant ability
@@ -67,10 +69,22 @@ fn payable_targets(ctx: &Ctx<'_>, choices: &Choices, specs: usize, legal: &mut V
     });
 }
 
+/// For each of the `count` specifications, how many come before the first of its mode; all 0 for specifications that
+/// do not come from the ability's modes.
+pub(super) fn bases(ctx: &Ctx<'_>, choices: &Choices, count: usize) -> Vec<usize> {
+    let from_modes = ctx
+        .ability
+        .map(|ability| spec_bases(ability, &choices.modes))
+        .filter(|bases| bases.len() == count);
+    from_modes.unwrap_or_else(|| vec![0; count])
+}
+
 pub(super) fn run(ctx: &Ctx<'_>, work: &mut Work<'_>) -> Option<Next> {
     let specs = specs(ctx, work.choices);
+    let bases = bases(ctx, work.choices, specs.len());
     while work.choices.targets.len() < specs.len() {
         let index = work.choices.targets.len();
+        let base = bases.get(index).copied().unwrap_or(0).min(index);
         let Some(mut options) = options_for(
             ctx.state,
             ctx.source,
@@ -82,6 +96,7 @@ pub(super) fn run(ctx: &Ctx<'_>, work: &mut Work<'_>) -> Option<Next> {
             work.choices.x,
             &work.choices.optional_costs,
             work.choices.way,
+            Some(&work.choices.targets[base..index]),
         ) else {
             return Some(Next::Drop);
         };

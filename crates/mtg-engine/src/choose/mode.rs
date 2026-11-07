@@ -341,6 +341,20 @@ pub(crate) fn announced_specs<'a>(rules: &'a Ability, chosen: &[usize]) -> Vec<&
     }
 }
 
+/// For each announced target specification, how many come before the first of its mode: a filter of the specification
+/// reads `Target(0)` as that first one (0 for every specification outside a modal ability).
+pub(crate) fn spec_bases(rules: &Ability, chosen: &[usize]) -> Vec<usize> {
+    let Some(modal) = modal_of(rules) else {
+        return vec![0; rules.targets().len()];
+    };
+    let mut bases = Vec::new();
+    for mode in chosen.iter().filter_map(|index| modal.modes.get(*index)) {
+        let base = bases.len();
+        bases.extend(std::iter::repeat_n(base, mode.targets.len()));
+    }
+    bases
+}
+
 /// How many announced target specifications come before those of the `ordinal`-th mode chosen.
 pub(crate) fn targets_before(rules: &Ability, chosen: &[usize], ordinal: usize) -> usize {
     modal_of(rules).map_or(0, |modal| {

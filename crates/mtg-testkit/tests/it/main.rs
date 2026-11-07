@@ -638,6 +638,7 @@ mod alt_cast;
 mod dk1f_cards;
 mod dk1f_pippin;
 mod dk1f_suppression_ray;
+mod e10a_earlier_targets;
 mod fix6_last_known;
 mod fix9_damaged;
 mod mana_any_shape;
