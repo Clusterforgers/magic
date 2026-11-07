@@ -1,0 +1,19 @@
+{
+  "oracle_id": "b8181d53-1954-4f46-8670-8696440208e8",
+  "name": "Horn of Greed",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Horn of Greed",
+      "oracle_fingerprint": "ffcabda4fb0c279b92d6f2aa9c234a51",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Did": { "action": "PlayedLand", "what": [{ "Type": "Land" }] } },
+            "effects": [{ "Draw": { "who": "TriggeringPlayer" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

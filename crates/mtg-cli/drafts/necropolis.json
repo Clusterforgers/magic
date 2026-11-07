@@ -1,0 +1,28 @@
+{
+  "oracle_id": "c84adca4-19dd-432d-a363-e98d3b699af8",
+  "name": "Necropolis",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Necropolis",
+      "oracle_fingerprint": "bd2b4202da85b0c74218ae86d4385f64",
+      "abilities": [
+        { "Keyword": "Defender" },
+        {
+          "Activated": {
+            "cost": [{ "ExileFromGraveyard": { "filter": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "PutCounters": {
+                  "on": "This",
+                  "counter": { "Other": "+0/+1" },
+                  "count": { "Stat": { "of": "Paid", "stat": "ManaValue" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

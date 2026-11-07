@@ -1,0 +1,46 @@
+{
+  "oracle_id": "4306a9e5-6845-4fd4-96ad-8888147612aa",
+  "name": "Jolted Awake",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Jolted Awake",
+      "oracle_fingerprint": "6d067b6b15d573ba258fa51b1fcb7ba5",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "AnyOf": [{ "Type": "Artifact" }, { "Type": "Creature" }] },
+                    { "OwnedBy": "You" },
+                    { "In": "Graveyard" }
+                  ]
+                },
+                "bounds": { "min": 0, "max": 1 }
+              }
+            ],
+            "effects": [
+              {
+                "PutCounters": {
+                  "on": { "Target": 0 },
+                  "counter": { "Other": "energy" },
+                  "count": 2
+                }
+              },
+              {
+                "Pay": {
+                  "cost": [{ "PayEnergy": 1 }],
+                  "times": { "Stat": { "of": { "Target": 0 }, "stat": "ManaValue" } },
+                  "paid": [{ "Move": { "what": { "Target": 0 }, "to": { "Battlefield": {} } } }]
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Cycling": "{2}" } }
+      ]
+    }
+  ]
+}

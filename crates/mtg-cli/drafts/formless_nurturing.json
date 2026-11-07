@@ -1,0 +1,21 @@
+{
+  "oracle_id": "ddbe6d9b-ea69-449c-a765-b3c16ff60c08",
+  "name": "Formless Nurturing",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Formless Nurturing",
+      "oracle_fingerprint": "2c220be992a9c8ecd1b1e55f62e0e35a",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "Manifest": { "as": "manifest" } },
+              { "PutCounters": { "on": { "Bound": "manifest" }, "counter": "+1/+1" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,52 @@
+{
+  "oracle_id": "a12ac37d-02b8-4b6c-9595-74c42cfecb0a",
+  "name": "Candles of Leng",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Candles of Leng",
+      "oracle_fingerprint": "0cc3eb040ad6c0c1966389b481c8b201",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{4}" }, "Tap"],
+            "effects": [
+              { "LookAtTop": { "as": "top" } },
+              { "Reveal": { "what": { "Bound": "top" } } },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Bound": "top" },
+                      "selector": [
+                        { "SharesName": { "Each": [{ "In": "Graveyard" }, { "OwnedBy": "You" }] } }
+                      ],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [{ "Move": { "what": { "Bound": "top" }, "to": "Graveyard" } }]
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Bound": "top" },
+                      "selector": [
+                        { "SharesName": { "Each": [{ "In": "Graveyard" }, { "OwnedBy": "You" }] } }
+                      ],
+                      "op": "Eq",
+                      "right": 0
+                    }
+                  },
+                  "then": [{ "Draw": {} }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

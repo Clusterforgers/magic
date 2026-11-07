@@ -1,16 +1,25 @@
 {
   "oracle_id": "4052f710-6ba7-406f-8fb7-653a684a80e0",
   "name": "Progenitor Exarch",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Progenitor Exarch",
       "oracle_fingerprint": "2e8a585a34fca0a08a42dab156d84576",
       "abilities": [
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 0, "end": 208 }
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "RepeatWhile": {
+                  "condition": { "Compare": { "left": 0, "op": "Eq", "right": 0 } },
+                  "effects": [{ "Incubate": { "count": 3 } }],
+                  "most": 1000,
+                  "times": "X"
+                }
+              }
+            ]
           }
         },
         {

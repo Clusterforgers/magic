@@ -1,7 +1,7 @@
 {
   "oracle_id": "9cc91ac5-6f2b-4fc0-b810-cdc92eebe6de",
   "name": "Sygg, Wanderwine Wisdom // Sygg, Wanderbrine Shield",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Sygg, Wanderwine Wisdom",
@@ -68,9 +68,20 @@
       "abilities": [
         { "Static": { "affected": "This", "mods": ["CantBeBlocked"] } },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 23, "end": 170 }
+          "Triggered": {
+            "when": { "Did": { "action": "Transformed", "what": ["This"] } },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "AddKeyword": { "Protection": [{ "Not": "Colorless" }] } }],
+                  "duration": "UntilYourNextTurn"
+                }
+              }
+            ]
           }
         },
         {

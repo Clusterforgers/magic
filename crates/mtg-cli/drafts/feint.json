@@ -1,0 +1,48 @@
+{
+  "oracle_id": "1bb8fe05-abb3-40a8-9e80-5d99ed0e4284",
+  "name": "Feint",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Feint",
+      "oracle_fingerprint": "a8968741286d16fa625d3ca5c98235ef",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }, "Attacking"] } }],
+            "effects": [
+              {
+                "Tap": {
+                  "what": { "Each": [{ "Type": "Creature" }, { "Blocks": { "Target": 0 } }] }
+                }
+              },
+              {
+                "Shield": {
+                  "when": { "Damage": { "source": [{ "Is": { "Target": 0 } }], "combat": true } },
+                  "by": "Prevent",
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "Shield": {
+                  "when": {
+                    "Damage": {
+                      "source": [
+                        {
+                          "Is": { "Each": [{ "Type": "Creature" }, { "Blocks": { "Target": 0 } }] }
+                        }
+                      ],
+                      "combat": true
+                    }
+                  },
+                  "by": "Prevent",
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

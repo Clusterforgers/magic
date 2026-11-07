@@ -1,0 +1,79 @@
+{
+  "oracle_id": "c7cf9574-e2cf-4137-a224-73f76c5d11d7",
+  "name": "Blim, Comedic Genius",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Blim, Comedic Genius",
+      "oracle_fingerprint": "88ff60bbb2b33a5fc927c5e6560b28fc",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": ["This"], "to": "EachPlayer", "combat": true } },
+            "targets": [{ "what": { "Object": [{ "ControlledBy": "You" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "SetController": "Triggering" }],
+                  "duration": "Forever"
+                }
+              },
+              {
+                "RepeatEach": {
+                  "over": "EachPlayer",
+                  "as": "each",
+                  "effects": [
+                    {
+                      "LoseLife": {
+                        "who": { "Bound": "each" },
+                        "amount": {
+                          "Sum": [
+                            { "Count": [{ "ControlledBy": { "Bound": "each" } }] },
+                            {
+                              "Times": {
+                                "by": -1,
+                                "of": {
+                                  "Count": [
+                                    { "ControlledBy": { "Bound": "each" } },
+                                    { "OwnedBy": { "Bound": "each" } }
+                                  ]
+                                }
+                              }
+                            }
+                          ]
+                        }
+                      }
+                    },
+                    {
+                      "Discard": {
+                        "who": { "Bound": "each" },
+                        "count": {
+                          "Sum": [
+                            { "Count": [{ "ControlledBy": { "Bound": "each" } }] },
+                            {
+                              "Times": {
+                                "by": -1,
+                                "of": {
+                                  "Count": [
+                                    { "ControlledBy": { "Bound": "each" } },
+                                    { "OwnedBy": { "Bound": "each" } }
+                                  ]
+                                }
+                              }
+                            }
+                          ]
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,21 @@
+{
+  "oracle_id": "4e75fc29-68e3-41a9-9f59-adb4460663b2",
+  "name": "Fierce Invocation",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Fierce Invocation",
+      "oracle_fingerprint": "c0dd7543927cb6c5c20c32829dd4cecf",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "Manifest": { "as": "manifest" } },
+              { "PutCounters": { "on": { "Bound": "manifest" }, "counter": "+1/+1", "count": 2 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

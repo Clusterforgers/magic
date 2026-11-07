@@ -1,0 +1,45 @@
+{
+  "oracle_id": "b6f4b524-1081-4263-b7e4-9aee93131b31",
+  "name": "Ultros, Obnoxious Octopus",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ultros, Obnoxious Octopus",
+      "oracle_fingerprint": "3eab4c8ce4b2d62d6c7547bf7c003ee7",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "what": [{ "Not": { "Type": "Creature" } }], "by": "You" } },
+            "if": {
+              "Compare": {
+                "left": { "Stat": { "of": "Triggering", "stat": "ManaSpent" } },
+                "op": "Ge",
+                "right": 4
+              }
+            },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }] } }
+            ],
+            "effects": [
+              { "Tap": { "what": { "Target": 0 } } },
+              { "PutCounters": { "on": { "Target": 0 }, "counter": { "Other": "stun" } } }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "what": [{ "Not": { "Type": "Creature" } }], "by": "You" } },
+            "if": {
+              "Compare": {
+                "left": { "Stat": { "of": "Triggering", "stat": "ManaSpent" } },
+                "op": "Ge",
+                "right": 8
+              }
+            },
+            "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1", "count": 8 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,42 @@
+{
+  "oracle_id": "d72b57e5-1c6e-4f02-968f-7e2dd24f0d3c",
+  "name": "Boromir, Warden of the Tower",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Boromir, Warden of the Tower",
+      "oracle_fingerprint": "145c4038739036abaa28f92bc9e4036e",
+      "abilities": [
+        { "Keyword": "Vigilance" },
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "by": "Opponents" } },
+            "if": {
+              "Compare": {
+                "left": { "Stat": { "of": "Triggering", "stat": "ManaSpent" } },
+                "op": "Eq",
+                "right": 0
+              }
+            },
+            "effects": [{ "Counter": { "what": "Triggering" } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["SacrificeSelf"],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                  "mods": [{ "AddKeyword": "Indestructible" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              { "RingTempts": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

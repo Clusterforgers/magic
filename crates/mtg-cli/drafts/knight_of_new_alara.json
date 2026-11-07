@@ -1,0 +1,33 @@
+{
+  "oracle_id": "170856f4-7c9d-494b-9bae-20e4d9eba0da",
+  "name": "Knight of New Alara",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Knight of New Alara",
+      "oracle_fingerprint": "fdc0e40f5a119bfecfa661dab43d41e4",
+      "abilities": [
+        {
+          "Static": {
+            "affected": {
+              "Each": [
+                { "Type": "Creature" },
+                { "Compare": { "stat": "Colors", "op": "Ge", "to": 2 } },
+                "Other",
+                { "ControlledBy": "You" }
+              ]
+            },
+            "mods": [
+              {
+                "ModifyPT": {
+                  "power": { "Stat": { "of": "Affected", "stat": "Colors" } },
+                  "toughness": { "Stat": { "of": "Affected", "stat": "Colors" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,32 @@
+{
+  "oracle_id": "e8f755f7-ec93-4d2e-bffc-c719984fa13d",
+  "name": "Stingerquill Voxmancer // Vicious Verse",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Stingerquill Voxmancer",
+      "oracle_fingerprint": "1af9f794134a3322e556e08718142f19",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "if": { "Matches": { "subject": "This", "selector": [{ "Not": "Prepared" }] } },
+            "effects": [{ "Prepare": { "what": "This" } }]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Vicious Verse",
+      "oracle_fingerprint": "62aeb86d052314e98d45ca6a3deb2435",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Opponent" }],
+            "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 1 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,39 @@
+{
+  "oracle_id": "c116801e-9893-46e8-a967-352b5fa27e86",
+  "name": "Wumpus Aberration",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Wumpus Aberration",
+      "oracle_fingerprint": "2730bc67de33b2ef5fec54f6c85dd99f",
+      "abilities": [
+        { "Keyword": "Devoid" },
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "what": ["This"] } },
+            "if": { "Not": { "ManaSpent": "Colorless" } },
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              {
+                "Choose": {
+                  "who": { "Target": 0 },
+                  "from": {
+                    "Each": [
+                      { "Type": "Creature" },
+                      { "In": "Hand" },
+                      { "OwnedBy": { "Target": 0 } }
+                    ]
+                  },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "picked"
+                }
+              },
+              { "Move": { "what": { "Bound": "picked" }, "to": { "Battlefield": {} } } }
+            ]
+          }
+        },
+        { "Keyword": "Trample" }
+      ]
+    }
+  ]
+}

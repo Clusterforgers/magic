@@ -1,0 +1,49 @@
+{
+  "oracle_id": "add020f8-a6ae-4ce1-8d4e-f48f3fd14767",
+  "name": "Osgir, the Reconstructor",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Osgir, the Reconstructor",
+      "oracle_fingerprint": "7e7d816c6b75d246c08197912a16daad",
+      "abilities": [
+        { "Keyword": "Vigilance" },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{1}" }, { "Sacrifice": { "filter": [{ "Type": "Artifact" }] } }],
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "ModifyPT": { "power": 2, "toughness": 0 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [
+              { "Mana": "{X}" },
+              "Tap",
+              {
+                "ExileFromGraveyard": {
+                  "filter": [
+                    { "Type": "Artifact" },
+                    { "Compare": { "stat": "ManaValue", "op": "Eq", "to": "X" } }
+                  ]
+                }
+              }
+            ],
+            "timing": "Sorcery",
+            "effects": [{ "CreateToken": { "token": { "CopyOf": { "of": "Paid" } }, "count": 2 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

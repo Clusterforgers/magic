@@ -1,0 +1,159 @@
+{
+  "object": "card",
+  "id": "e777c383-161f-4a80-acb3-2a5c9ed5e927",
+  "oracle_id": "386a6fa7-db5b-4e82-bd25-fd86d910ed0c",
+  "multiverse_ids": [
+    696438
+  ],
+  "mtgo_id": 138501,
+  "tcgplayer_id": 624189,
+  "cardmarket_id": 818860,
+  "name": "Baral and Kari Zev",
+  "lang": "en",
+  "released_at": "2025-04-11",
+  "uri": "https://api.scryfall.com/cards/e777c383-161f-4a80-acb3-2a5c9ed5e927",
+  "scryfall_uri": "https://scryfall.com/card/tdc/282/baral-and-kari-zev?utm_source=api",
+  "layout": "normal",
+  "highres_image": false,
+  "image_status": "lowres",
+  "image_updated_at": "2026-07-13T01:43:53Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/e/7/e777c383-161f-4a80-acb3-2a5c9ed5e927.jpg?1783907033",
+    "normal": "https://cards.scryfall.io/normal/front/e/7/e777c383-161f-4a80-acb3-2a5c9ed5e927.jpg?1783907033",
+    "large": "https://cards.scryfall.io/large/front/e/7/e777c383-161f-4a80-acb3-2a5c9ed5e927.jpg?1783907033",
+    "png": "https://cards.scryfall.io/png/front/e/7/e777c383-161f-4a80-acb3-2a5c9ed5e927.png?1783907033",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/e/7/e777c383-161f-4a80-acb3-2a5c9ed5e927.jpg?1783907033",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/e/7/e777c383-161f-4a80-acb3-2a5c9ed5e927.jpg?1783907033",
+    "thumb": "https://cards.scryfall.io/thumb/front/e/7/e777c383-161f-4a80-acb3-2a5c9ed5e927.webp?1783907033",
+    "grid": "https://cards.scryfall.io/grid/front/e/7/e777c383-161f-4a80-acb3-2a5c9ed5e927.webp?1783907033",
+    "display": "https://cards.scryfall.io/display/front/e/7/e777c383-161f-4a80-acb3-2a5c9ed5e927.webp?1783907033",
+    "art": "https://cards.scryfall.io/art/front/e/7/e777c383-161f-4a80-acb3-2a5c9ed5e927.webp?1783907033",
+    "crop": "https://cards.scryfall.io/crop/front/e/7/e777c383-161f-4a80-acb3-2a5c9ed5e927.webp?1783907033",
+    "jpeg": "https://cards.scryfall.io/normal/front/e/7/e777c383-161f-4a80-acb3-2a5c9ed5e927.jpg?1783907033"
+  },
+  "mana_cost": "{1}{U}{R}",
+  "cmc": 3.0,
+  "type_line": "Legendary Creature — Human",
+  "oracle_text": "First strike, menace\nWhenever you cast your first instant or sorcery spell each turn, you may cast a spell with lesser mana value that shares a card type with it from your hand without paying its mana cost. If you don't, create First Mate Ragavan, a legendary 2/1 red Monkey Pirate creature token. It gains haste until end of turn.",
+  "power": "2",
+  "toughness": "4",
+  "colors": [
+    "R",
+    "U"
+  ],
+  "color_identity": [
+    "R",
+    "U"
+  ],
+  "keywords": [
+    "First strike",
+    "Menace"
+  ],
+  "all_parts": [
+    {
+      "object": "related_card",
+      "id": "e777c383-161f-4a80-acb3-2a5c9ed5e927",
+      "component": "combo_piece",
+      "name": "Baral and Kari Zev",
+      "type_line": "Legendary Creature — Human",
+      "uri": "https://api.scryfall.com/cards/e777c383-161f-4a80-acb3-2a5c9ed5e927"
+    },
+    {
+      "object": "related_card",
+      "id": "705adcf9-c15b-4f75-afae-939f59aeb308",
+      "component": "token",
+      "name": "First Mate Ragavan",
+      "type_line": "Token Legendary Creature — Monkey Pirate",
+      "uri": "https://api.scryfall.com/cards/705adcf9-c15b-4f75-afae-939f59aeb308"
+    }
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": true,
+  "variation": false,
+  "set_id": "bca9779c-0a0b-4ac1-8794-f3fc25549cf4",
+  "set": "tdc",
+  "set_name": "Tarkir: Dragonstorm Commander",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/bca9779c-0a0b-4ac1-8794-f3fc25549cf4",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Atdc&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/tdc?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/e777c383-161f-4a80-acb3-2a5c9ed5e927/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A386a6fa7-db5b-4e82-bd25-fd86d910ed0c&unique=prints",
+  "collector_number": "282",
+  "digital": false,
+  "rarity": "rare",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Fariba Khamseh",
+  "artist_ids": [
+    "f18a7bd6-4aca-4201-b2f5-942c28ee4f18"
+  ],
+  "illustration_id": "25bf206d-67b1-4d14-a0b3-d93c864ff354",
+  "border_color": "black",
+  "frame": "2015",
+  "frame_effects": [
+    "legendary"
+  ],
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "edhrec_rank": 7219,
+  "penny_rank": 5691,
+  "prices": {
+    "usd": "0.26",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "0.20",
+    "eur_foil": null,
+    "tix": "0.03"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=696438&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DBaral%2Band%2BKari%2BZev",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DBaral%2Band%2BKari%2BZev",
+    "edhrec": "https://edhrec.com/route/?cc=Baral+and+Kari+Zev"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F624189%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=818860&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/138501?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

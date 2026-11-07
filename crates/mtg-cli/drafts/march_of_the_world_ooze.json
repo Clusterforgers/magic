@@ -1,0 +1,44 @@
+{
+  "oracle_id": "a04696c4-4138-47e2-8da4-81d61748519f",
+  "name": "March of the World Ooze",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "March of the World Ooze",
+      "oracle_fingerprint": "298c319426d18eac425ce034ff1a098c",
+      "abilities": [
+        {
+          "Static": {
+            "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+            "mods": [{ "SetPT": { "power": 6, "toughness": 6 } }, { "AddSubtype": "Ooze" }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "SpellCast": {
+                "by": { "PlayersWhere": { "who": "Opponents", "test": { "Not": "YourTurn" } } }
+              }
+            },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Elephant",
+                      "colors": ["Green"],
+                      "types": ["Creature"],
+                      "subtypes": ["Elephant"],
+                      "power": 3,
+                      "toughness": 3
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

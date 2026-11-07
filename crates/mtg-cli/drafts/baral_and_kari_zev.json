@@ -1,0 +1,91 @@
+{
+  "oracle_id": "386a6fa7-db5b-4e82-bd25-fd86d910ed0c",
+  "name": "Baral and Kari Zev",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Baral and Kari Zev",
+      "oracle_fingerprint": "bc1f283fde6c5a25c58f93a6f5e00b07",
+      "abilities": [
+        { "Keyword": "FirstStrike" },
+        { "Keyword": "Menace" },
+        {
+          "Triggered": {
+            "when": {
+              "Nth": {
+                "event": {
+                  "SpellCast": {
+                    "what": [{ "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] }],
+                    "by": "You"
+                  }
+                },
+                "nth": 1
+              }
+            },
+            "effects": [
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "Not": { "Type": "Land" } },
+                      { "OwnedBy": "You" },
+                      { "SharesType": "Triggering" },
+                      { "In": "Hand" },
+                      {
+                        "Compare": {
+                          "stat": "ManaValue",
+                          "op": "Lt",
+                          "to": { "Stat": { "of": "Triggering", "stat": "ManaValue" } }
+                        }
+                      }
+                    ]
+                  },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "picked2"
+                }
+              },
+              { "CastFromZone": { "what": { "Bound": "picked2" }, "free": true, "as": "cast" } },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Bound": "cast" },
+                      "selector": [],
+                      "op": "Eq",
+                      "right": 0
+                    }
+                  },
+                  "then": [
+                    {
+                      "CreateToken": {
+                        "token": {
+                          "Custom": {
+                            "name": "First Mate Ragavan",
+                            "colors": ["Red"],
+                            "supertypes": ["Legendary"],
+                            "types": ["Creature"],
+                            "subtypes": ["Monkey"],
+                            "power": 2,
+                            "toughness": 1
+                          }
+                        },
+                        "as": "token3"
+                      }
+                    },
+                    {
+                      "Continuous": {
+                        "affected": { "Bound": "token3" },
+                        "mods": [{ "AddKeyword": "Haste" }],
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

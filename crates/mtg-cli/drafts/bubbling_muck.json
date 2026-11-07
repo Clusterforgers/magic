@@ -1,0 +1,29 @@
+{
+  "oracle_id": "3c7f2b29-9f42-41ab-a2d4-7a450fb0242d",
+  "name": "Bubbling Muck",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Bubbling Muck",
+      "oracle_fingerprint": "c29c734c3a598cd6e3da71b33aa9c50b",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "DelayedTrigger": {
+                  "when": { "TappedForMana": { "what": [{ "Subtype": "Swamp" }] } },
+                  "once": false,
+                  "this_turn": true,
+                  "effects": [
+                    { "AddMana": { "who": "Triggering", "mana": { "Fixed": ["Black"] } } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

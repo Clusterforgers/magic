@@ -1,0 +1,86 @@
+{
+  "oracle_id": "44412804-aa69-4e62-b118-123741d91914",
+  "name": "Rohgahh of Kher Keep",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Rohgahh of Kher Keep",
+      "oracle_fingerprint": "b077efcebc2025a4b8a4e65bcc7276ce",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": "{R}{R}{R}",
+                  "unpaid": [
+                    {
+                      "Tap": {
+                        "what": {
+                          "Each": [
+                            {
+                              "AnyOf": [
+                                "This",
+                                {
+                                  "Not": {
+                                    "AnyOf": [
+                                      { "Not": { "Type": "Creature" } },
+                                      { "Not": { "ControlledBy": "You" } },
+                                      { "Not": { "Named": "Kobolds of Kher Keep" } }
+                                    ]
+                                  }
+                                }
+                              ]
+                            }
+                          ]
+                        }
+                      }
+                    },
+                    { "Choose": { "from": "Opponents", "as": "player" } },
+                    {
+                      "Continuous": {
+                        "affected": {
+                          "Each": [
+                            {
+                              "AnyOf": [
+                                "This",
+                                {
+                                  "Not": {
+                                    "AnyOf": [
+                                      { "Not": { "Type": "Creature" } },
+                                      { "Not": { "ControlledBy": "You" } },
+                                      { "Not": { "Named": "Kobolds of Kher Keep" } }
+                                    ]
+                                  }
+                                }
+                              ]
+                            }
+                          ]
+                        },
+                        "mods": [{ "SetController": { "Bound": "player" } }],
+                        "duration": "Forever"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Static": {
+            "affected": {
+              "Each": [
+                { "Type": "Creature" },
+                { "ControlledBy": "You" },
+                { "Named": "Kobolds of Kher Keep" }
+              ]
+            },
+            "mods": [{ "ModifyPT": { "power": 2, "toughness": 2 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

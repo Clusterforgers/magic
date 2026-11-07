@@ -1,0 +1,36 @@
+{
+  "oracle_id": "5ff89859-ddfd-48e5-8423-57b3956173ac",
+  "name": "Dragonlord Kolaghan",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dragonlord Kolaghan",
+      "oracle_fingerprint": "47b519306028bca43f5b1a76ea29394e",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": "Haste" },
+        {
+          "Static": {
+            "affected": { "Each": [{ "Type": "Creature" }, "Other", { "ControlledBy": "You" }] },
+            "mods": [{ "AddKeyword": "Haste" }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "SpellCast": {
+                "what": [
+                  "Spell",
+                  { "AnyOf": [{ "Type": "Creature" }, { "Type": "Planeswalker" }] },
+                  { "SharesName": { "Each": [{ "In": "Graveyard" }, { "OwnedBy": "You" }] } }
+                ],
+                "by": "Opponents"
+              }
+            },
+            "effects": [{ "LoseLife": { "who": "Triggering", "amount": 10 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

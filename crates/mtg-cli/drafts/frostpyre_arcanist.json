@@ -1,0 +1,51 @@
+{
+  "oracle_id": "6bdb251b-51fe-46cc-8b40-540d081c9419",
+  "name": "Frostpyre Arcanist",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Frostpyre Arcanist",
+      "oracle_fingerprint": "42882dc2903bc2e83a91f86c1dc66d5d",
+      "abilities": [
+        {
+          "CostModifier": {
+            "applies_to": ["This"],
+            "change": "Reduce",
+            "mana": "{1}",
+            "condition": {
+              "Compare": {
+                "left": {
+                  "Count": [
+                    { "AnyOf": [{ "Subtype": "Giant" }, { "Subtype": "Wizard" }] },
+                    { "ControlledBy": "You" }
+                  ]
+                },
+                "op": "Ge",
+                "right": 1
+              }
+            }
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Search": {
+                  "filter": [
+                    { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] },
+                    { "SharesName": { "Each": [{ "In": "Graveyard" }, { "OwnedBy": "You" }] } }
+                  ],
+                  "reveal": true,
+                  "as": "found"
+                }
+              },
+              { "Move": { "what": { "Bound": "found" }, "to": "Hand" } },
+              { "Shuffle": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

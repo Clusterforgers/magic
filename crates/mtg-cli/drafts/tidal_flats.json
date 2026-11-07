@@ -1,0 +1,55 @@
+{
+  "oracle_id": "bf39d0f7-f689-45fd-b37b-12d1618fd6e7",
+  "name": "Tidal Flats",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Tidal Flats",
+      "oracle_fingerprint": "cdff9e9db06b77fd47b019ed4de39026",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{U}{U}",
+            "effects": [
+              {
+                "RepeatEach": {
+                  "over": {
+                    "Each": [
+                      { "Type": "Creature" },
+                      "Attacking",
+                      { "Not": { "HasKeyword": "Flying" } }
+                    ]
+                  },
+                  "as": "each",
+                  "effects": [
+                    {
+                      "Pay": {
+                        "who": { "ControllerOf": { "Bound": "each" } },
+                        "cost": "{1}",
+                        "unpaid": [
+                          {
+                            "Continuous": {
+                              "affected": {
+                                "Each": [
+                                  { "Type": "Creature" },
+                                  { "Blocks": { "Bound": "each" } },
+                                  { "ControlledBy": "You" }
+                                ]
+                              },
+                              "mods": [{ "AddKeyword": "FirstStrike" }],
+                              "duration": "UntilEndOfTurn"
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

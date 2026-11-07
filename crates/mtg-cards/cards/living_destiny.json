@@ -1,0 +1,26 @@
+{
+  "oracle_id": "ba7be3e9-d240-4fed-943d-a405409b13b5",
+  "name": "Living Destiny",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Living Destiny",
+      "oracle_fingerprint": "34e13046c17de2f61a5824751bdd7b9a",
+      "abilities": [
+        {
+          "AdditionalCost": {
+            "cost": [{ "RevealFromHand": { "filter": [{ "Type": "Creature" }] } }],
+            "required": true
+          }
+        },
+        {
+          "Spell": {
+            "effects": [
+              { "GainLife": { "amount": { "Stat": { "of": "Paid", "stat": "ManaValue" } } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
