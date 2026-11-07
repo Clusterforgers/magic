@@ -1258,8 +1258,9 @@ impl<'a> Walker<'a> {
         let mut fixed = cost.clone();
         for (i, _) in &counted {
             match &mut fixed.0[*i] {
-                CostItem::Discard { count, .. } => *count = Amount::Fixed(1),
-                CostItem::Draw(count) => *count = Amount::Fixed(1),
+                CostItem::Discard { count, .. } | CostItem::Draw(count) => {
+                    *count = Amount::Fixed(1);
+                }
                 item => *item = CostItem::PayLife(Amount::Fixed(0)),
             }
         }
