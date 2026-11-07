@@ -20,7 +20,7 @@ fn source_zones() -> Pred {
 
 /// "a source of your choice", "a black source of your choice", "an artifact source of your choice", "a source of your
 /// choice of the chosen color": the source chosen from the objects that can deal damage.
-fn chosen_source(from: &Ref) -> Option<String> {
+pub(super) fn chosen_source(from: &Ref) -> Option<String> {
     let Ref::Each(Selector(preds)) = from else {
         return None;
     };
@@ -120,7 +120,7 @@ impl Writer<'_> {
     }
 
     /// The card itself or the one target, as a redirection names it.
-    fn r9w_one(&mut self, what: &Ref) -> Option<String> {
+    pub(super) fn r9w_one(&mut self, what: &Ref) -> Option<String> {
         match what {
             Ref::This => Some("~".to_owned()),
             Ref::You => Some("you".to_owned()),

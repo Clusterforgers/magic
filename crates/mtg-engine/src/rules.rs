@@ -74,6 +74,8 @@ pub enum Rule {
     /// Creatures can't attack the players unless their controller pays for each of them as the attack is declared
     /// (CR 508.1h).
     AttackTax(AttackTax),
+    /// Creatures can't block unless their controller pays for each of them as blockers are declared (CR 509.1d).
+    BlockTax(crate::block_tax::BlockTax),
     /// No more than this many creatures can attack each combat (CR 508.1c).
     AttackLimit(u32),
     /// No more than `most` creatures can attack each of the players or planeswalkers each combat (CR 508.1c).
@@ -525,6 +527,7 @@ pub(crate) struct RulesInForce {
     unpreventable: Vec<Unpreventable>,
     casts: Vec<Cast>,
     taxes: Vec<Taxing>,
+    block_taxes: Vec<crate::block_tax::BlockTaxing>,
     looks: Vec<Look>,
     attack_limit: Option<u32>,
     attack_limit_at: BTreeMap<AttackTarget, u32>,
@@ -784,6 +787,11 @@ impl RulesInForce {
                 self.quirks.put(rule);
             }
             Rule::AttackTax(tax) => self.taxes.push(Taxing {
+                controller,
+                source,
+                tax: tax.clone(),
+            }),
+            Rule::BlockTax(tax) => self.block_taxes.push(crate::block_tax::BlockTaxing {
                 controller,
                 source,
                 tax: tax.clone(),
@@ -1079,6 +1087,7 @@ pub(crate) fn lower_rule(scope: &Scope<'_>, wanted: &GameRule) -> Result<Rule, R
                 life: life.saturating_mul(u32::try_from(times).unwrap_or(u32::MAX)),
             })
         }
+        GameRule::BlockTax { .. } => crate::block_tax::lower(scope, wanted)?,
         GameRule::AttackLimit(most) => Rule::AttackLimit(*most),
         GameRule::AttackLimitAt { most, at } => attack_limit_at(scope, *most, at)?,
         GameRule::BlockLimit(most) => Rule::BlockLimit(*most),
@@ -1232,6 +1241,7 @@ pub(crate) fn names_nothing(rule: &Rule) -> bool {
         Rule::AttackTax(tax) => {
             tax.players.is_empty() || (tax.mana.symbols().is_empty() && tax.life == 0)
         }
+        Rule::BlockTax(tax) => tax.mana.symbols().is_empty() && tax.life == 0,
         Rule::MustAttack(named)
         | Rule::MustBlock(named)
         | Rule::CantBeCountered(named)
@@ -1407,6 +1417,7 @@ static NONE: RulesInForce = RulesInForce {
     unpreventable: Vec::new(),
     casts: Vec::new(),
     taxes: Vec::new(),
+    block_taxes: Vec::new(),
     looks: Vec::new(),
     attack_limit: None,
     attack_limit_at: BTreeMap::new(),
@@ -1788,6 +1799,11 @@ pub(crate) fn c11b_once_source(
         return None;
     }
     covering.first().map(|cast| cast.source)
+}
+
+/// The taxes on blocking in force: the one place the block declaration reads this rule (`block_tax`).
+pub(crate) fn block_taxes(state: &GameState) -> &[crate::block_tax::BlockTaxing] {
+    &state.rules().block_taxes
 }
 
 /// The taxes on attacking in force: the one place the attack declaration reads this rule (`attack_tax`).

@@ -211,6 +211,7 @@ const RUNS: &[&str] = &[
     "Effect.Counter",
     "Effect.DealDamage",
     "Effect.DealDamage.Excess",
+    "Effect.DealDamage.Unpreventable",
     "Effect.GainLife",
     "Effect.LoseLife",
     "Effect.AddMana",
@@ -322,6 +323,7 @@ const RUNS: &[&str] = &[
     "Rule.MustAttack",
     "Rule.MustAttackPlayers",
     "Rule.AttackTax",
+    "Rule.BlockTax",
     "Rule.AttackLimit",
     "Rule.AttackLimitAt",
     "Rule.BlockLimit",
@@ -565,6 +567,7 @@ const RUNS: &[&str] = &[
     "Amount.ManaInPool",
     "Amount.Doors",
     "Condition.StartingPlayer",
+    "Condition.Among",
     "Ability.Replacement",
     "Ability.CostModifier",
     "ReplaceWhen.TokenCreation",
@@ -581,12 +584,14 @@ const RUNS: &[&str] = &[
     "ReplaceBy.Prevent",
     "ReplaceBy.PreventNext",
     "ReplaceBy.PreventUpTo",
+    "ReplaceBy.PreventCounted",
     "ReplaceBy.PreventHalf",
     "ReplaceBy.PreventRemovingCounter",
     "ReplaceBy.MoveTo",
     "ReplaceBy.Instead",
     "ReplaceBy.InsteadNext",
     "ReplaceBy.RedirectUpTo",
+    "ReplaceBy.Redirect",
     "ReplaceBy.PreventAnd",
     "ReplaceBy.PreventAllBut",
     "ReplaceBy.Tapped",
@@ -980,6 +985,7 @@ mod tests {
     #[case::turn_number("Amount.TurnNumber", true)]
     #[case::triggering_targets("Amount.TriggeringTargets", true)]
     #[case::starting_player("Condition.StartingPlayer", true)]
+    #[case::among_players("Condition.Among", true)]
     #[case::cast_for_a_way("Amount.CastWith", true)]
     #[case::colors_spent("Amount.ColorsSpent", true)]
     #[case::destroyed_this_way("Amount.Destroyed", true)]
@@ -1339,6 +1345,7 @@ mod tests {
     #[case::saving_by_umbra_armor("ReplaceBy.UmbraArmor", true)]
     #[case::pairing_attackers_with_players("Rule.MustAttackPlayers", true)]
     #[case::taxing_attackers("Rule.AttackTax", true)]
+    #[case::taxing_blockers("Rule.BlockTax", true)]
     #[case::w8a_attack_limit("Rule.AttackLimit", true)]
     #[case::w10a_attack_limit_at("Rule.AttackLimitAt", true)]
     #[case::w8a_block_limit("Rule.BlockLimit", true)]

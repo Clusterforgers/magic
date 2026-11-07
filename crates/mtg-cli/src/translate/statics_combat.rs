@@ -12,6 +12,7 @@ pub fn ability(ctx: &Ctx, p: &Params) -> Option<Tr<Value>> {
     Some(match p.get("Mode").unwrap_or_default() {
         "MinMaxBlocker" => block_limit(ctx, p),
         "CantAttackUnless" => attack_tax(ctx, p).map(|found| json!({"Rule": {"rule": found}})),
+        "CantBlockUnless" => block_tax(ctx, p).map(|found| json!({"Rule": {"rule": found}})),
         "CantPreventDamage" => no_prevention(ctx, p).map(|found| json!({"Rule": {"rule": found}})),
         _ => return None,
     })
@@ -80,6 +81,11 @@ fn attack_tax(ctx: &Ctx, p: &Params) -> Tr<Value> {
         digits if !digits.is_empty() && digits.bytes().all(|b| b.is_ascii_digit()) => {
             tax["mana"] = json!(format!("{{{digits}}}"));
         }
+        // "{X} for each creature ..., where X is the number of enchantments you control": {1} as many times.
+        counted if ctx.svar(counted).is_some() => {
+            tax["mana"] = json!("{1}");
+            tax["per"] = super::amount::amount(ctx, counted)?;
+        }
         other => return unmapped(format!("cost:Static.CantAttackUnless.{other}")),
     }
     match p.get("ValidCard").unwrap_or_default() {
@@ -105,6 +111,44 @@ fn self_tax(ctx: &Ctx, p: &Params, creature: &str) -> Tr<Value> {
     };
     Ok(json!({"AttackTax": {
         "who": "EachPlayer", "attacked": "Both", "attackers": [{"Is": creature}], "mana": mana, "per": per}}))
+}
+
+/// `CantBlockUnless`: the creatures `ValidCard$` names can't block the attackers `Attacker$` names (any creature or
+/// attacker when left out) unless their controller pays mana or life for each of them, once or for each of the amount
+/// an `SVar` counts (CR 509.1d).
+fn block_tax(ctx: &Ctx, p: &Params) -> Tr<Value> {
+    keys(p, "CantBlockUnless", &["ValidCard", "Attacker", "Cost"])?;
+    let selector = |key: &str| -> Tr<Value> {
+        Ok(match p.get(key).unwrap_or_default() {
+            "" | "Creature" => json!([]),
+            "Card.Self" | "Creature.Self" => json!(["This"]),
+            "Creature.AttachedBy" | "Creature.EnchantedBy" | "Creature.EquippedBy" => {
+                json!([{"Is": "Attached"}])
+            }
+            valid => json!(selector_any(ctx, valid)?),
+        })
+    };
+    let mut tax = json!({});
+    let blockers = selector("ValidCard")?;
+    if blockers != json!([]) {
+        tax["blockers"] = blockers;
+    }
+    let attackers = selector("Attacker")?;
+    if attackers != json!([]) {
+        tax["attackers"] = attackers;
+    }
+    match p.get("Cost").unwrap_or_default() {
+        "PayLife<1>" => tax["life"] = json!(1),
+        digits if !digits.is_empty() && digits.bytes().all(|b| b.is_ascii_digit()) => {
+            tax["mana"] = json!(format!("{{{digits}}}"));
+        }
+        counted if ctx.svar(counted).is_some() => {
+            tax["mana"] = json!("{1}");
+            tax["per"] = super::amount::amount(ctx, counted)?;
+        }
+        other => return unmapped(format!("cost:Static.CantBlockUnless.{other}")),
+    }
+    Ok(json!({"BlockTax": tax}))
 }
 
 /// `CantPreventDamage`: damage from the sources `ValidSource$` names (all damage, or combat damage with `IsCombat$`)

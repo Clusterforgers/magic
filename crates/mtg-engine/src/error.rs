@@ -248,6 +248,11 @@ pub enum IllegalAnswer {
         "the attack costs {0}, which you cannot pay with the mana you can tap. Change the attackers and try again"
     )]
     AttackUnaffordable(String),
+    /// The block costs more than its player can pay (CR 509.1d): an effect taxes the creatures that block.
+    #[error(
+        "the block costs {0}, which you cannot pay with the mana you can tap. Change the blockers and try again"
+    )]
+    BlockUnaffordable(String),
     /// The creatures tapped for a cost have less total power than it asks (crew).
     #[error("the creatures tapped have total power {got} but the cost asks {needed}")]
     TooLittlePower {

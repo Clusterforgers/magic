@@ -11,6 +11,7 @@ import type {
   Event,
   EventView,
   HiddenEvent,
+  ManaCost,
   ManualAction,
   ManualZone,
   Modification,
@@ -22,7 +23,7 @@ import type {
   Zone,
   ZoneCause,
 } from '@/protocol/generated'
-import { colorsInSet, counterName, manaLetter } from './cardModel'
+import { colorsInSet, costText, counterName, manaLetter } from './cardModel'
 import type { EventContext } from './eventContext'
 import { distinctTargets } from './prompt/targetText'
 import { sameHost } from '@/play/hosts'
@@ -234,6 +235,14 @@ function durationWords(
   return UNTIL[duration]
 }
 
+/** The price of one taxed creature: its mana, its life or both. */
+function taxPrice(mana: ManaCost, life: number): string {
+  const parts = [mana.length > 0 ? costText(mana) : '', life > 0 ? `${life} life` : ''].filter(
+    (part) => part !== '',
+  )
+  return parts.join(' and ')
+}
+
 /** What a change to a rule of the game says, for the players or cards it names. */
 function describeRule(effect: RuleEffect, n: EventNames): string {
   const { rule, duration, source } = effect
@@ -282,6 +291,12 @@ function describeRule(effect: RuleEffect, n: EventNames): string {
   else if ('BlockLimitEach' in rule) {
     const { most, who } = rule.BlockLimitEach
     what = `${seats(who)} can't block with more than ${most} ${most === 1 ? 'creature' : 'creatures'}`
+  } else if ('AttackTax' in rule) {
+    const { players, mana, life } = rule.AttackTax
+    what = `Creatures can't attack ${seats(players)} unless their controller pays ${taxPrice(mana, life)} for each`
+  } else if ('BlockTax' in rule) {
+    const { mana, life } = rule.BlockTax
+    what = `Some creatures can't block unless their controller pays ${taxPrice(mana, life)} for each`
   } else if ('SpellCost' in rule) {
     const { change, mana } = rule.SpellCost
     what = `Some spells cost ${String(mana)} ${change === 'Reduce' ? 'less' : 'more'} to cast`

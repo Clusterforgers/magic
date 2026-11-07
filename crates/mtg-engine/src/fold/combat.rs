@@ -298,6 +298,7 @@ pub(super) fn apply(state: &mut GameState, event: &Event) -> Result<(), EngineEr
             deathtouch,
             form,
             toxic,
+            ..
         } => {
             let hit = match target {
                 DamageTarget::Player(id) => {

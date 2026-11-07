@@ -635,6 +635,9 @@ pub enum Effect {
         /// What the damage beyond lethal does (CR 120.10); none when it is dealt as it is.
         #[serde(default, skip_serializing_if = "Option::is_none")]
         excess: Option<Excess>,
+        /// "The damage can't be prevented" (CR 614.17): no prevention effect applies to this damage.
+        #[serde(default, skip_serializing_if = "is_false")]
+        unpreventable: bool,
     },
     /// The player gains life.
     GainLife {
@@ -994,6 +997,9 @@ pub enum Effect {
     Connive {
         /// The creatures that connive.
         what: Ref,
+        /// How many cards each controller draws and then discards ("connives X", CR 701.50e); one when absent.
+        #[serde(default = "Amount::one", skip_serializing_if = "Amount::is_one")]
+        count: Amount,
     },
     /// The player exiles cards from the top of their library, face up one at a time, until one matches the filter
     /// (CR 702.85a, 701.57a); a library that runs out ends it with nothing found.
@@ -1746,7 +1752,7 @@ mod tests {
         r#"{"Draw":{"who":{"Target":0},"count":2}}"#
     )]
     #[case::bolt(
-        Effect::DealDamage { excess: None, source: None, to: Ref::Target(0), amount: Amount::Fixed(3) },
+        Effect::DealDamage { excess: None, source: None, to: Ref::Target(0), amount: Amount::Fixed(3), unpreventable: false },
         r#"{"DealDamage":{"to":{"Target":0},"amount":3}}"#
     )]
     #[case::wrath(

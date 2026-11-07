@@ -106,6 +106,7 @@ fn events(pre: &GameState, acts: &[Act]) -> Vec<Event> {
                 deathtouch: false,
                 form: DamageForm::Normal,
                 toxic: 0,
+                unpreventable: false,
             },
             Cycle(seat) => Event::Cycled {
                 player: player(seat),
@@ -285,6 +286,7 @@ fn damage_that_causes_no_life_loss_is_not_a_loss() {
         deathtouch: false,
         form,
         toxic: 0,
+        unpreventable: false,
     };
     assert_eq!(fired(&pre, &[hit(DamageForm::Infect)]), 0);
     assert_eq!(fired(&pre, &[hit(DamageForm::NoLifeLoss)]), 0);

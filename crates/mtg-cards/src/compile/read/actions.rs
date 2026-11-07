@@ -47,7 +47,10 @@ pub fn explore(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
 pub fn connive(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
     let what = creature(r)?;
     r.need("connives")?;
-    Some(vec![Effect::Connive { what }])
+    Some(vec![Effect::Connive {
+        what,
+        count: Amount::one(),
+    }])
 }
 
 /// "Attach it to target creature you control." (also "attach ~ to ..."): an Equipment or an Aura that enters attaches
@@ -133,6 +136,7 @@ pub fn bite(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
     is_on_the_battlefield(r, &hit).then_some(())?;
     Some(vec![Effect::DealDamage {
         excess: None,
+        unpreventable: false,
         source: Some(dealer.clone()),
         to: hit,
         amount: Amount::Stat {

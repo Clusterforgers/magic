@@ -109,6 +109,7 @@ pub(super) fn damage(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
         .into_iter()
         .map(|to| Effect::DealDamage {
             excess: None,
+            unpreventable: false,
             source: source.clone(),
             to,
             amount: amount.clone(),

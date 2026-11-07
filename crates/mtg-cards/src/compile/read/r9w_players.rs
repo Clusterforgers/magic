@@ -3,6 +3,8 @@
 //! more poison counters", "if an opponent was dealt damage this turn" and "a player ... if it's not their turn". No
 //! template reads them: only the proposal checker writes them.
 
+use mtg_core::card::CardType;
+
 use super::amounts::count_word;
 use crate::refs::{Pred, Ref, Selector, ZoneKind};
 use crate::value::{Amount, Cmp, Condition, CounterKind, TurnTally};
@@ -30,11 +32,60 @@ fn owned_in(selector: &Selector) -> Option<ZoneKind> {
     }
 }
 
+/// The plural noun of the permanents of a type `who` controls: `[Type kind, ControlledBy who]`.
+fn controlled(selector: &Selector, who: &Ref) -> Option<&'static str> {
+    let [Pred::Type(kind), Pred::ControlledBy(by)] = selector.0.as_slice() else {
+        return None;
+    };
+    (by == who).then_some(())?;
+    Some(match kind {
+        CardType::Land => "lands",
+        CardType::Creature => "creatures",
+        CardType::Artifact => "artifacts",
+        CardType::Enchantment => "enchantments",
+        _ => return None,
+    })
+}
+
+/// A comparison of the player tested with the player who asks: "who controls more lands than you", "who controls
+/// fewer creatures than you", "who controls at least two more lands than you".
+fn than_you(left: &Amount, op: Cmp, right: &Amount) -> Option<Fact> {
+    let Amount::Count(theirs) = left else {
+        return None;
+    };
+    let noun = controlled(theirs, &Ref::You)?;
+    let (mine, more) = match right {
+        Amount::Sum(parts) => match parts.as_slice() {
+            [Amount::Count(mine), Amount::Fixed(more)] => (mine, Some(*more)),
+            _ => return None,
+        },
+        Amount::Count(mine) => (mine, None),
+        _ => return None,
+    };
+    (controlled(mine, &Ref::Asker)? == noun).then_some(())?;
+    let how = match (op, more) {
+        (Cmp::Gt, None) => "more".to_owned(),
+        (Cmp::Lt, None) => "fewer".to_owned(),
+        (Cmp::Ge, Some(more)) => {
+            let more = u32::try_from(more).ok().filter(|more| *more >= 2)?;
+            format!("at least {} more", count_word(more)?)
+        }
+        _ => return None,
+    };
+    Some(Fact {
+        one: format!("who controls {how} {noun} than you"),
+        many: vec![format!("who control {how} {noun} than you")],
+    })
+}
+
 /// The fact the test states about the player "you" names.
 fn fact(test: &Condition) -> Option<Fact> {
     let Condition::Compare { left, op, right } = test else {
         return None;
     };
+    if let Some(found) = than_you(left, *op, right) {
+        return Some(found);
+    }
     if *op != Cmp::Ge {
         return None;
     }

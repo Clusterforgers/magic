@@ -235,6 +235,7 @@ pub fn one_target(what: Targetable) -> TargetSpec {
 pub fn damage(to: Ref, amount: i32) -> Effect {
     Effect::DealDamage {
         excess: None,
+        unpreventable: false,
         source: None,
         to,
         amount: Amount::Fixed(amount),

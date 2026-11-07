@@ -1651,7 +1651,12 @@ fn rule_texts(rule: &GameRule, condition: Option<&Condition>, from: ZoneKind) ->
             prevention::static_texts(source, *combat)
         }
         (GameRule::AttackTax { .. }, ZoneKind::Battlefield) => {
-            super::attack_tax::static_texts(rule)
+            let mut written = super::attack_tax::static_texts(rule);
+            written.extend(super::g11c_taxes::g11c_self_attack_texts(rule));
+            written
+        }
+        (GameRule::BlockTax { .. }, ZoneKind::Battlefield) => {
+            super::g11c_taxes::g11c_block_texts(rule)
         }
         (
             GameRule::AttackLimit(_) | GameRule::AttackLimitAt { .. } | GameRule::BlockLimit(_),

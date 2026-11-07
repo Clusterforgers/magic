@@ -608,6 +608,8 @@ fn applies_to(by: &ReplaceBy, unit: &Unit) -> bool {
             matches!(unit, Unit::Damage { .. })
         }
         ReplaceBy::Dredge(_) => matches!(unit, Unit::Draw { .. }),
+        // Only a shield counts its amount, and it begins as `PreventUpTo`.
+        ReplaceBy::PreventCounted(_) => false,
         ReplaceBy::UmbraArmor => matches!(
             unit,
             Unit::Move {
@@ -646,7 +648,7 @@ fn applies_to(by: &ReplaceBy, unit: &Unit) -> bool {
         | ReplaceBy::Riot
         | ReplaceBy::AsCopy { .. } => matches!(unit, Unit::Enter { .. }),
         ReplaceBy::Instead(_) => !matches!(unit, Unit::Other),
-        ReplaceBy::InsteadNext(_) | ReplaceBy::RedirectUpTo { .. } => {
+        ReplaceBy::InsteadNext(_) | ReplaceBy::RedirectUpTo { .. } | ReplaceBy::Redirect { .. } => {
             matches!(unit, Unit::Damage { .. })
         }
     }
@@ -961,6 +963,20 @@ impl Pass<'_> {
         })
     }
 
+    /// Whether the damage the slot holds can't be prevented: the damage itself says so, or a rule about its source does.
+    fn unpreventable(&self, slot: &Slot, unit: &Unit) -> bool {
+        matches!(
+            slot.item,
+            Item::One(Event::DamageDealt {
+                unpreventable: true,
+                ..
+            })
+        ) || matches!(
+            unit,
+            Unit::Damage { source, .. } if damage_cant_be_prevented(self.state, *source, self.combat_damage())
+        )
+    }
+
     /// The effects that apply to the item and have not been applied to it, in the order of their addresses.
     fn candidates(&self, at: usize) -> Result<Vec<Candidate>, EngineError> {
         let slot = &self.slots[at];
@@ -971,10 +987,7 @@ impl Pass<'_> {
         // A destruction is replaced by a regeneration shield before anything else applies to the permanent's move, but
         // for umbra armor, which is the other way to save it (CR 616.1).
         let regeneration = self.regeneration_candidate(&slot.item);
-        let unpreventable = matches!(
-            unit,
-            Unit::Damage { source, .. } if damage_cant_be_prevented(self.state, source, self.combat_damage())
-        );
+        let unpreventable = self.unpreventable(slot, &unit);
         if !unpreventable
             && let Unit::Damage { source, target } = &unit
             && let Some(protection) = self.protection_candidate(*source, *target)
@@ -1904,6 +1917,10 @@ impl Pass<'_> {
             (ReplaceBy::RedirectUpTo { most, .. }, Unit::Damage { .. }) => {
                 self.r6f_redirect_up_to(at, candidate, *most, applied);
             }
+            (ReplaceBy::Redirect { .. }, Unit::Damage { .. }) => {
+                self.end_once_shield(candidate);
+                self.r6f_redirect_up_to(at, candidate, u32::MAX, applied);
+            }
             (ReplaceBy::Multiply(_) | ReplaceBy::Add(_), _) => {
                 self.scale(at, by, &applied);
             }
@@ -2089,6 +2106,7 @@ impl Pass<'_> {
             deathtouch,
             form,
             toxic,
+            unpreventable,
         }) = self.slots[at].item.clone()
         else {
             self.slots[at].applied = applied;
@@ -2133,6 +2151,7 @@ impl Pass<'_> {
                     deathtouch,
                     form,
                     toxic,
+                    unpreventable,
                 }),
                 applied,
                 frozen: false,
@@ -2233,6 +2252,7 @@ impl Pass<'_> {
                 deathtouch,
                 form,
                 toxic,
+                unpreventable,
             }) => {
                 let now = more(amount);
                 self.follow_lifelink(at, source, amount, now);
@@ -2243,6 +2263,7 @@ impl Pass<'_> {
                     deathtouch,
                     form,
                     toxic,
+                    unpreventable,
                 })]
             }
             Item::One(Event::CountersChanged(CountersChanged { on, counter, delta })) => {

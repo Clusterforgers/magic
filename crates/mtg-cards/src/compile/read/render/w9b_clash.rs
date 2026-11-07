@@ -59,6 +59,7 @@ impl Writer<'_> {
                         source: None,
                         to: Ref::ControllerOf(target),
                         amount: Amount::Fixed(amount),
+                        unpreventable: false,
                         ..
                     },
                 ] if **target == Ref::Target(0) => {
