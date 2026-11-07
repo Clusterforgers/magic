@@ -506,6 +506,12 @@ fn written_anew(ability: &Ability) -> Vec<String> {
             |normal| written_variants(&normal),
         );
     }
+    // A condition held as a number is the condition (r7c); the twin has none left, so this recurses once.
+    if texts.is_empty()
+        && let Some(plain) = super::r7c_when::r7c_unwrapped(ability)
+    {
+        texts = written_variants(&plain);
+    }
     texts
 }
 

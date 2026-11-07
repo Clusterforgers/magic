@@ -114,6 +114,7 @@ mod r5a_order;
 mod r5a_wordings;
 mod r5b_performed;
 mod r5c_order;
+mod r7c_when;
 mod r5g_lines;
 mod r6a_effects;
 mod r6a_more;

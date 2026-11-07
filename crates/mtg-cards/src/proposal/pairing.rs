@@ -98,6 +98,29 @@ fn stripped(text: &str) -> &str {
     if ability_word || numerals { rest } else { text }
 }
 
+/// The clause without the ability words that open a later sentence ("Draw three cards. Adamant — If ..."), which are
+/// flavor too (CR 207.2c); `None` when it has none (r7c).
+fn r7c_unworded(text: &str) -> Option<String> {
+    let mut out = String::with_capacity(text.len());
+    let mut rest = text;
+    let mut found = false;
+    while let Some(at) = rest.find(". ") {
+        let (head, after) = rest.split_at(at + 2);
+        out.push_str(head);
+        rest = after;
+        let Some((word, tail)) = rest.split_once(" \u{2014} ") else {
+            continue;
+        };
+        let capital = word.chars().next().is_some_and(char::is_uppercase);
+        if capital && !word.contains(['~', ',', '.', ':', '\n', '"']) && word.split(' ').count() <= 3 {
+            rest = tail;
+            found = true;
+        }
+    }
+    out.push_str(rest);
+    found.then_some(out)
+}
+
 /// Whether a clause is a block that reads into several abilities, none of which the renderers write: a level of a
 /// leveler (`LEVEL 2-6`), of a Class (`{3}{U}: Level 2`) or of a Station (`8+ | Flying`).
 fn is_block(text: &str) -> bool {
@@ -249,6 +272,9 @@ impl<'a> Pairer<'a> {
     fn same(&self, variant: &str, text: &str) -> bool {
         if same_text(variant, text) {
             return true;
+        }
+        if let Some(unworded) = r7c_unworded(text) {
+            return self.same(variant, &unworded);
         }
         let mut shown = variant.to_owned();
         for name in &self.names {

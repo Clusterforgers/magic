@@ -143,6 +143,12 @@ fn w4a_if_texts(ability: &Ability, i: usize) -> Vec<String> {
         }
     }
     if otherwise.is_empty() {
+        // "E unless C": the step when the condition that does not hold does not hold either (r7c).
+        for unless in super::r7c_conditions::r7c_unless_texts(condition) {
+            for then in thens.iter().filter(|then| !then.contains(". ")) {
+                out.push(format!("{then} unless {unless}"));
+            }
+        }
         return out;
     }
     let others = w4a_steps_texts(ability, i, otherwise);

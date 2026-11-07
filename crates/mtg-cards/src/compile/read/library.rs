@@ -597,6 +597,9 @@ pub(super) fn filter_text(filter: &Selector, plural: bool) -> Option<String> {
             head.push(text);
         } else if matches!(pred, Pred::Compare { .. } | Pred::HasKeyword(_)) {
             tail.push(suffix_text(pred, Form::Subject)?);
+        } else if let Pred::Named(name) = pred {
+            // "a card named Avarax" (r7c); the name of the face itself reads as `~` in the clause.
+            tail.push(format!("named {name}"));
         } else {
             return None;
         }
