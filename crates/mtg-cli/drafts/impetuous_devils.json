@@ -1,7 +1,7 @@
 {
   "oracle_id": "01add64a-205d-4c0e-a393-89e7a1a0ea44",
   "name": "Impetuous Devils",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Impetuous Devils",
@@ -10,9 +10,22 @@
         { "Keyword": "Trample" },
         { "Keyword": "Haste" },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 15, "end": 125 }
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "targets": [
+              {
+                "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "Defending" }] },
+                "bounds": { "min": 0, "max": 1 }
+              }
+            ],
+            "effects": [
+              {
+                "Rule": {
+                  "rule": { "MustBlockAttacker": { "who": { "Target": 0 }, "attacker": "This" } },
+                  "duration": "UntilEndOfCombat"
+                }
+              }
+            ]
           }
         },
         {

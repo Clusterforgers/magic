@@ -1,0 +1,60 @@
+{
+  "oracle_id": "6f5d31d1-3493-4d1b-bbf9-1726e47507db",
+  "name": "Tower Above",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Tower Above",
+      "oracle_fingerprint": "0dc646e91c575342bcdbcf4f0eafc6b6",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    { "ModifyPT": { "power": 4, "toughness": 4 } },
+                    { "AddKeyword": "Trample" },
+                    { "AddKeyword": "Wither" }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    {
+                      "GrantAbility": {
+                        "Triggered": {
+                          "when": { "Attacks": { "what": [{ "Type": "Creature" }, "This"] } },
+                          "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+                          "effects": [
+                            {
+                              "Rule": {
+                                "rule": {
+                                  "MustBlockAttacker": {
+                                    "who": { "Target": 0 },
+                                    "attacker": "This"
+                                  }
+                                },
+                                "duration": "UntilEndOfTurn"
+                              }
+                            }
+                          ]
+                        }
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

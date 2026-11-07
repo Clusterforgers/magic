@@ -1,0 +1,25 @@
+{
+  "oracle_id": "eb4e9ce9-1917-46b1-b01c-645f5920ef9c",
+  "name": "Archetype of Finality",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Archetype of Finality",
+      "oracle_fingerprint": "c8dee647d6e058808c225c4286b401cc",
+      "abilities": [
+        {
+          "Static": {
+            "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+            "mods": [{ "AddKeyword": "Deathtouch" }]
+          }
+        },
+        {
+          "Static": {
+            "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }] },
+            "mods": [{ "LockKeyword": "Deathtouch" }]
+          }
+        }
+      ]
+    }
+  ]
+}

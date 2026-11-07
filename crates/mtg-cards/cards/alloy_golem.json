@@ -1,0 +1,17 @@
+{
+  "oracle_id": "410b7faf-365c-4b73-a64d-bddbe49cfded",
+  "name": "Alloy Golem",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Alloy Golem",
+      "oracle_fingerprint": "c67cd696a72392e406ea9f1b33d02ad4",
+      "abilities": [
+        {
+          "Replacement": { "when": { "Enters": { "what": ["This"] } }, "by": { "Choose": "Color" } }
+        },
+        { "Static": { "affected": "This", "mods": ["SetChosenColor"] } }
+      ]
+    }
+  ]
+}

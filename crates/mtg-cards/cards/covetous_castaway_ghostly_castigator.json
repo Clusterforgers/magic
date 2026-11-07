@@ -1,7 +1,7 @@
 {
   "oracle_id": "8f3e6554-eb8a-4096-81a3-2411186d9cb4",
   "name": "Covetous Castaway // Ghostly Castigator",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Covetous Castaway",
@@ -22,9 +22,17 @@
       "abilities": [
         { "Keyword": "Flying" },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 7, "end": 113 }
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              {
+                "what": { "Object": [{ "OwnedBy": "You" }, { "In": "Graveyard" }] },
+                "bounds": { "min": 0, "max": 3 }
+              }
+            ],
+            "effects": [
+              { "Move": { "what": { "Target": 0 }, "to": { "Library": { "place": "Shuffled" } } } }
+            ]
           }
         },
         {

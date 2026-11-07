@@ -1,0 +1,62 @@
+{
+  "oracle_id": "769748a8-d861-46f9-8fcd-18c3f0585bd6",
+  "name": "Torchling",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Torchling",
+      "oracle_fingerprint": "b29ed0b6abb8a45de4766a01e56311e7",
+      "abilities": [
+        { "Activated": { "cost": "{R}", "effects": [{ "Untap": { "what": "This" } }] } },
+        {
+          "Activated": {
+            "cost": "{R}",
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Rule": {
+                  "rule": { "MustBlockAttacker": { "who": { "Target": 0 }, "attacker": "This" } },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 87, "end": 158 }
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{1}",
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "ModifyPT": { "power": 1, "toughness": -1 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{1}",
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "ModifyPT": { "power": -1, "toughness": 1 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

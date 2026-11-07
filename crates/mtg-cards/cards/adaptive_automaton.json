@@ -1,0 +1,28 @@
+{
+  "oracle_id": "53c730c6-2f8c-4af8-b400-b9d573a71e60",
+  "name": "Adaptive Automaton",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Adaptive Automaton",
+      "oracle_fingerprint": "33da2e75686aa0cf32f6764acdcc106e",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "Choose": "CreatureType" }
+          }
+        },
+        { "Static": { "affected": "This", "mods": ["AddChosenSubtype"] } },
+        {
+          "Static": {
+            "affected": {
+              "Each": [{ "Type": "Creature" }, "Other", { "ControlledBy": "You" }, "ChosenSubtype"]
+            },
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

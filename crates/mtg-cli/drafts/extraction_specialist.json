@@ -1,0 +1,41 @@
+{
+  "oracle_id": "4164034a-5e59-4e40-a150-2c1000b0bd0d",
+  "name": "Extraction Specialist",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Extraction Specialist",
+      "oracle_fingerprint": "d854f6ad9d9656de258f0daaf556ffea",
+      "abilities": [
+        { "Keyword": "Lifelink" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Type": "Creature" },
+                    { "OwnedBy": "You" },
+                    { "Compare": { "stat": "ManaValue", "op": "Le", "to": 2 } },
+                    { "In": "Graveyard" }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              { "Move": { "what": { "Target": 0 }, "to": { "Battlefield": {} } } },
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": ["CantAttack", "CantBlock"],
+                  "duration": "WhileYouControlSource"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

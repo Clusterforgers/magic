@@ -1,0 +1,35 @@
+{
+  "oracle_id": "1f91297a-ec2b-4ea8-9198-aa1daac20ff8",
+  "name": "Metallic Mimic",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Metallic Mimic",
+      "oracle_fingerprint": "ed09712b5d254f65c7b48ee2fd519194",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "Choose": "CreatureType" }
+          }
+        },
+        { "Static": { "affected": "This", "mods": ["AddChosenSubtype"] } },
+        {
+          "Replacement": {
+            "when": {
+              "Enters": {
+                "what": [
+                  { "Type": "Creature" },
+                  "Other",
+                  { "ControlledBy": "You" },
+                  "ChosenSubtype"
+                ]
+              }
+            },
+            "by": { "WithCounters": { "counter": "+1/+1", "count": 1 } }
+          }
+        }
+      ]
+    }
+  ]
+}

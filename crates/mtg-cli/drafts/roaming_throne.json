@@ -1,0 +1,35 @@
+{
+  "oracle_id": "3640c29b-1534-4952-b297-619ade948431",
+  "name": "Roaming Throne",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Roaming Throne",
+      "oracle_fingerprint": "7bc787ba43ceedaa7261e6c4120045eb",
+      "abilities": [
+        { "Keyword": { "Ward": "{2}" } },
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "Choose": "CreatureType" }
+          }
+        },
+        { "Static": { "affected": "This", "mods": ["AddChosenSubtype"] } },
+        {
+          "Rule": {
+            "rule": {
+              "TriggerAgain": {
+                "source": [
+                  { "Type": "Creature" },
+                  "Other",
+                  { "ControlledBy": "You" },
+                  "ChosenSubtype"
+                ]
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

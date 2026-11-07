@@ -1,0 +1,31 @@
+{
+  "oracle_id": "b21c99b3-b975-4428-9c9a-326ded2fa8dc",
+  "name": "Temporary Lockdown",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Temporary Lockdown",
+      "oracle_fingerprint": "6935d174ec9b28cbb5b0883383cbf110",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Exile": {
+                  "what": {
+                    "Each": [
+                      { "Not": { "Type": "Land" } },
+                      { "Compare": { "stat": "ManaValue", "op": "Le", "to": 2 } }
+                    ]
+                  },
+                  "duration": "WhileSourceOnBattlefield"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,41 @@
+{
+  "oracle_id": "2f618a4a-8b76-4c87-baa7-fb6a17f6f51c",
+  "name": "Sunfrill Imitator",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sunfrill Imitator",
+      "oracle_fingerprint": "69b0efc33eab93f6fabcbef628185a89",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "Subtype": "Dinosaur" }, "Other", { "ControlledBy": "You" }]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "BecomeCopy": {
+                        "what": "This",
+                        "of": { "Target": 0 },
+                        "except": [{ "SetName": "Sunfrill Imitator" }, "ThisAbility"],
+                        "duration": "Forever"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

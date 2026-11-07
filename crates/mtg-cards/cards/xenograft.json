@@ -1,0 +1,25 @@
+{
+  "oracle_id": "76642e7a-3c8f-45b8-9cd7-dac8086bea87",
+  "name": "Xenograft",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Xenograft",
+      "oracle_fingerprint": "ca3545c8bafd34c974edc22fc684a140",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "Choose": "CreatureType" }
+          }
+        },
+        {
+          "Static": {
+            "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+            "mods": ["AddChosenSubtype"]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,7 +1,7 @@
 {
   "oracle_id": "d499e473-aed8-4c8b-8cf0-a43bcc5f40cf",
   "name": "Aurora Shifter",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Aurora Shifter",
@@ -22,9 +22,62 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 79, "end": 333 }
+          "Triggered": {
+            "when": { "StepBegins": { "step": "BeginCombat", "whose": "You" } },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": [{ "PayEnergy": 2 }],
+                  "paid": [
+                    {
+                      "Reflexive": {
+                        "targets": [
+                          {
+                            "what": {
+                              "Object": [{ "Type": "Creature" }, "Other", { "ControlledBy": "You" }]
+                            }
+                          }
+                        ],
+                        "effects": [
+                          {
+                            "BecomeCopy": {
+                              "what": "This",
+                              "of": { "Target": 0 },
+                              "except": [
+                                "ThisAbility",
+                                {
+                                  "GrantAbility": {
+                                    "Triggered": {
+                                      "when": {
+                                        "DealsDamage": {
+                                          "source": ["This"],
+                                          "to": "EachPlayer",
+                                          "combat": true
+                                        }
+                                      },
+                                      "effects": [
+                                        {
+                                          "PutCounters": {
+                                            "on": "You",
+                                            "counter": { "Other": "energy" },
+                                            "count": "Triggering"
+                                          }
+                                        }
+                                      ]
+                                    }
+                                  }
+                                }
+                              ],
+                              "duration": "Forever"
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
           }
         }
       ]

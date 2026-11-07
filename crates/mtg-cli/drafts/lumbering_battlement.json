@@ -1,0 +1,69 @@
+{
+  "oracle_id": "dcf7d099-a726-4388-9744-70d37c5ea860",
+  "name": "Lumbering Battlement",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Lumbering Battlement",
+      "oracle_fingerprint": "ff2795db21fb0b3a452f742579c773a6",
+      "abilities": [
+        { "Keyword": "Vigilance" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "Type": "Creature" },
+                      { "Not": "Token" },
+                      "Other",
+                      { "ControlledBy": "You" }
+                    ]
+                  },
+                  "count": {
+                    "min": 0,
+                    "max": {
+                      "Count": [
+                        { "Type": "Creature" },
+                        { "Not": "Token" },
+                        "Other",
+                        { "ControlledBy": "You" }
+                      ]
+                    }
+                  },
+                  "as": "picked"
+                }
+              },
+              { "Exile": { "what": { "Bound": "picked" }, "duration": "WhileSourceOnBattlefield" } }
+            ]
+          }
+        },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              {
+                "ModifyPT": {
+                  "power": {
+                    "Times": {
+                      "by": 2,
+                      "of": { "Count": [{ "ExiledWith": "This" }, { "In": "Exile" }] }
+                    }
+                  },
+                  "toughness": {
+                    "Times": {
+                      "by": 2,
+                      "of": { "Count": [{ "ExiledWith": "This" }, { "In": "Exile" }] }
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

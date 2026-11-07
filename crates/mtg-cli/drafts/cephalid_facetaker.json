@@ -1,0 +1,43 @@
+{
+  "oracle_id": "cfb41a2b-4d8b-47e3-a074-95a1bd502227",
+  "name": "Cephalid Facetaker",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Cephalid Facetaker",
+      "oracle_fingerprint": "c8cf39ba360435d97b72bb8bd2654a2e",
+      "abilities": [
+        { "Static": { "affected": "This", "mods": ["CantBeBlocked"] } },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "BeginCombat", "whose": "You" } },
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }, "Other"] } }],
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "BecomeCopy": {
+                        "what": "This",
+                        "of": { "Target": 0 },
+                        "except": [
+                          { "SetPT": { "power": 1, "toughness": 4 } },
+                          {
+                            "GrantAbility": {
+                              "Static": { "affected": "This", "mods": ["CantBeBlocked"] }
+                            }
+                          }
+                        ],
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

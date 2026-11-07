@@ -1,0 +1,47 @@
+{
+  "oracle_id": "d0e8d9f0-86e9-46b7-ba6f-2976ff9148d6",
+  "name": "Footsteps of the Goryo",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Footsteps of the Goryo",
+      "oracle_fingerprint": "a7cadccf6e827f9f7dc967d4c281167c",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "Type": "Creature" }, { "OwnedBy": "You" }, { "In": "Graveyard" }]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "Move": {
+                  "what": { "Target": 0 },
+                  "to": { "Battlefield": { "under": "You" } },
+                  "as": "moved"
+                }
+              },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "End" } },
+                  "effects": [
+                    {
+                      "Sacrifice": {
+                        "who": { "ControllerOf": { "Bound": "moved" } },
+                        "filter": [{ "Is": { "Bound": "moved" } }],
+                        "count": { "Count": [{ "Is": { "Bound": "moved" } }] }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

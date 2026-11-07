@@ -1,0 +1,25 @@
+{
+  "oracle_id": "79254223-3fa6-4b7c-8163-1e48bf5cb708",
+  "name": "Archetype of Endurance",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Archetype of Endurance",
+      "oracle_fingerprint": "3884faca7975d78503d1d38a43985948",
+      "abilities": [
+        {
+          "Static": {
+            "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+            "mods": [{ "AddKeyword": "Hexproof" }]
+          }
+        },
+        {
+          "Static": {
+            "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }] },
+            "mods": [{ "LockKeyword": "Hexproof" }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,154 @@
+{
+  "object": "card",
+  "id": "9e389269-deef-4c48-b6d1-c505bf7cc6b3",
+  "oracle_id": "21591447-c045-4317-8d0e-705627aa157b",
+  "multiverse_ids": [
+    634772
+  ],
+  "tcgplayer_id": 519266,
+  "cardmarket_id": 738623,
+  "name": "Coward // Killer",
+  "lang": "en",
+  "released_at": "2023-10-13",
+  "uri": "https://api.scryfall.com/cards/9e389269-deef-4c48-b6d1-c505bf7cc6b3",
+  "scryfall_uri": "https://scryfall.com/card/who/77/coward-killer?utm_source=api",
+  "layout": "split",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T03:50:57Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/9/e/9e389269-deef-4c48-b6d1-c505bf7cc6b3.jpg?1783914657",
+    "normal": "https://cards.scryfall.io/normal/front/9/e/9e389269-deef-4c48-b6d1-c505bf7cc6b3.jpg?1783914657",
+    "large": "https://cards.scryfall.io/large/front/9/e/9e389269-deef-4c48-b6d1-c505bf7cc6b3.jpg?1783914657",
+    "png": "https://cards.scryfall.io/png/front/9/e/9e389269-deef-4c48-b6d1-c505bf7cc6b3.png?1783914657",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/9/e/9e389269-deef-4c48-b6d1-c505bf7cc6b3.jpg?1783914657",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/9/e/9e389269-deef-4c48-b6d1-c505bf7cc6b3.jpg?1783914657",
+    "thumb": "https://cards.scryfall.io/thumb/front/9/e/9e389269-deef-4c48-b6d1-c505bf7cc6b3.webp?1783914657",
+    "grid": "https://cards.scryfall.io/grid/front/9/e/9e389269-deef-4c48-b6d1-c505bf7cc6b3.webp?1783914657",
+    "display": "https://cards.scryfall.io/display/front/9/e/9e389269-deef-4c48-b6d1-c505bf7cc6b3.webp?1783914657",
+    "art": "https://cards.scryfall.io/art/front/9/e/9e389269-deef-4c48-b6d1-c505bf7cc6b3.webp?1783914657",
+    "crop": "https://cards.scryfall.io/crop/front/9/e/9e389269-deef-4c48-b6d1-c505bf7cc6b3.webp?1783914657",
+    "jpeg": "https://cards.scryfall.io/normal/front/9/e/9e389269-deef-4c48-b6d1-c505bf7cc6b3.jpg?1783914657"
+  },
+  "mana_cost": "{1}{R} // {2}{R}{R}",
+  "cmc": 6.0,
+  "type_line": "Sorcery // Sorcery",
+  "colors": [
+    "R"
+  ],
+  "color_identity": [
+    "R"
+  ],
+  "keywords": [
+    "Time Travel"
+  ],
+  "card_faces": [
+    {
+      "object": "card_face",
+      "name": "Coward",
+      "mana_cost": "{1}{R}",
+      "type_line": "Sorcery",
+      "oracle_text": "Target creature can't block this turn and becomes a Coward in addition to its other types until end of turn.\nTime travel.",
+      "artist": "Bartek Fedyczak",
+      "artist_id": "70b1ba71-4ee1-4087-8a9e-ea919f20ebff",
+      "illustration_id": "a0afdbfe-47c7-4c4e-a1ed-d4fb1cfe0952"
+    },
+    {
+      "object": "card_face",
+      "name": "Killer",
+      "mana_cost": "{2}{R}{R}",
+      "type_line": "Sorcery",
+      "oracle_text": "Killer deals 3 damage to target creature and each other creature that shares a creature type with it.",
+      "artist": "Bartek Fedyczak",
+      "artist_id": "70b1ba71-4ee1-4087-8a9e-ea919f20ebff"
+    }
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "efdfdd99-cee7-4c11-a5e9-03d60f88bdd6",
+  "set": "who",
+  "set_name": "Doctor Who",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/efdfdd99-cee7-4c11-a5e9-03d60f88bdd6",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Awho&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/who?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/9e389269-deef-4c48-b6d1-c505bf7cc6b3/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A21591447-c045-4317-8d0e-705627aa157b&unique=prints",
+  "collector_number": "77",
+  "digital": false,
+  "rarity": "rare",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Bartek Fedyczak",
+  "artist_ids": [
+    "70b1ba71-4ee1-4087-8a9e-ea919f20ebff"
+  ],
+  "illustration_id": "a0afdbfe-47c7-4c4e-a1ed-d4fb1cfe0952",
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "triangle",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "promo_types": [
+    "universesbeyond"
+  ],
+  "edhrec_rank": 15696,
+  "prices": {
+    "usd": "0.21",
+    "usd_foil": "0.34",
+    "usd_etched": null,
+    "eur": "0.13",
+    "eur_foil": "0.25",
+    "tix": null
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=634772&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DCoward%2B%252F%252F%2BKiller",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DCoward%2B%252F%252F%2BKiller",
+    "edhrec": "https://edhrec.com/route/?cc=Coward+%2F%2F+Killer"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F519266%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=738623&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards?affiliate_id=scryfall&data%5Bsearch%5D=Coward+%2F%2F+Killer&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

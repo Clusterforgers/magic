@@ -1,0 +1,99 @@
+{
+  "oracle_id": "1a2ab12a-5778-40df-a2ec-2733a7121cb4",
+  "name": "Brenard, Ginger Sculptor",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Brenard, Ginger Sculptor",
+      "oracle_fingerprint": "a4459c105df5e5fcb1992acce549a51f",
+      "abilities": [
+        {
+          "Static": {
+            "affected": {
+              "Each": [
+                {
+                  "AnyOf": [
+                    {
+                      "Not": {
+                        "AnyOf": [
+                          { "Not": { "Type": "Creature" } },
+                          { "Not": { "Subtype": "Food" } }
+                        ]
+                      }
+                    },
+                    { "Subtype": "Golem" }
+                  ]
+                },
+                { "ControlledBy": "You" }
+              ]
+            },
+            "mods": [{ "ModifyPT": { "power": 2, "toughness": 2 } }, { "AddKeyword": "Trample" }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [
+                  { "Type": "Creature" },
+                  { "Not": "Token" },
+                  "Other",
+                  { "ControlledBy": "You" }
+                ],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    { "Exile": { "what": "Triggering", "as": "exiled" } },
+                    {
+                      "If": {
+                        "condition": {
+                          "CountOf": {
+                            "subject": { "Bound": "exiled" },
+                            "selector": [],
+                            "op": "Ge",
+                            "right": 1
+                          }
+                        },
+                        "then": [
+                          {
+                            "CreateToken": {
+                              "token": {
+                                "CopyOf": {
+                                  "of": "Triggering",
+                                  "except": [
+                                    { "SetPT": { "power": 1, "toughness": 1 } },
+                                    { "AddSubtype": "Food" },
+                                    { "AddSubtype": "Golem" },
+                                    { "AddType": "Artifact" },
+                                    { "AddType": "Creature" },
+                                    {
+                                      "GrantAbility": {
+                                        "Activated": {
+                                          "cost": [{ "Mana": "{2}" }, "Tap", "SacrificeSelf"],
+                                          "effects": [{ "GainLife": { "amount": 3 } }]
+                                        }
+                                      }
+                                    }
+                                  ]
+                                }
+                              }
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

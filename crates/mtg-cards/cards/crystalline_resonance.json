@@ -1,0 +1,35 @@
+{
+  "oracle_id": "93255c68-2ed1-499b-82c6-672823451ce9",
+  "name": "Crystalline Resonance",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Crystalline Resonance",
+      "oracle_fingerprint": "1dc1c4775a5a8c61719bc419d6ad64da",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Cycled": { "by": "You" } },
+            "targets": [{ "what": { "Object": ["Other"] } }],
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "BecomeCopy": {
+                        "what": "This",
+                        "of": { "Target": 0 },
+                        "except": ["ThisAbility"],
+                        "duration": "UntilYourNextTurn"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

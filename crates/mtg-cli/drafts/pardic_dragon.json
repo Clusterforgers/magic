@@ -1,0 +1,50 @@
+{
+  "oracle_id": "a4fa2afe-52fc-4ad0-a694-693cb9c88096",
+  "name": "Pardic Dragon",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Pardic Dragon",
+      "oracle_fingerprint": "9ddce4784c304eb3979e5c8b9676b85a",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Activated": {
+            "cost": "{R}",
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "ModifyPT": { "power": 1, "toughness": 0 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Suspend": { "time": 2, "cost": "{R}{R}" } } },
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "by": "Opponents" } },
+            "if": {
+              "Compare": {
+                "left": { "Count": ["Suspended", "This", { "In": "Exile" }] },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "from": "Exile",
+            "effects": [
+              {
+                "May": {
+                  "who": "Triggering",
+                  "effects": [{ "PutCounters": { "on": "This", "counter": { "Other": "time" } } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

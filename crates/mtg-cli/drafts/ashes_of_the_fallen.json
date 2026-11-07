@@ -1,0 +1,27 @@
+{
+  "oracle_id": "6437867b-a658-4a71-a8a5-0c5a782d1f84",
+  "name": "Ashes of the Fallen",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ashes of the Fallen",
+      "oracle_fingerprint": "62cf991f75a84bb97af6cbcf8f20ccc7",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "Choose": "CreatureType" }
+          }
+        },
+        {
+          "Static": {
+            "affected": {
+              "Each": [{ "Type": "Creature" }, { "OwnedBy": "You" }, { "In": "Graveyard" }]
+            },
+            "mods": ["AddChosenSubtype"]
+          }
+        }
+      ]
+    }
+  ]
+}

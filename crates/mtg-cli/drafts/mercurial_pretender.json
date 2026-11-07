@@ -1,0 +1,33 @@
+{
+  "oracle_id": "07d0bd24-7731-4abb-9dc6-912aa17943f2",
+  "name": "Mercurial Pretender",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mercurial Pretender",
+      "oracle_fingerprint": "29153ccd16f717d1dcded23f669afac6",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": {
+              "AsCopy": {
+                "of": [{ "Type": "Creature" }, { "ControlledBy": "You" }, "Other"],
+                "except": [
+                  {
+                    "GrantAbility": {
+                      "Activated": {
+                        "cost": "{2}{U}{U}",
+                        "effects": [{ "Move": { "what": "This", "to": "Hand" } }]
+                      }
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}
