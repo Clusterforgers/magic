@@ -189,6 +189,39 @@ fn remembered_static(
         return Ok(vec![rule]);
     }
     let who = &objects(who.clone())?;
+    // "You may look at that card for as long as it remains exiled", alone or beside the permission to play it.
+    if part.has("MayLookAt") && part.get("AffectedZone") == Some("Exile") {
+        let mut look =
+            super::statics_look::exiled(&part.without(&["Mode", "AffectedZone"]), Some(who))?;
+        // The effect's "you" is the player it belongs to.
+        if let Some(owner) = owner
+            && part.get("MayLookAt") == Some("You")
+        {
+            look["LookAtExiled"]["who"] = owner.clone();
+        }
+        let mut rules = vec![json!({"Rule": {"rule": look, "duration": duration}})];
+        if part.has("MayPlay") {
+            let rest = part.without(&["MayLookAt"]);
+            let when = super::condition::check_svar(ctx, &rest)?;
+            let rest = rest.without(&super::condition::CHECK_KEYS);
+            let mut rule = super::mayplay::may_cast(ctx, &rest, Some(who))?;
+            if let Some(when) = when {
+                rule["MayCast"]["when"] = when;
+            }
+            if let Some(owner) = owner {
+                rule["MayCast"]["who"] = owner.clone();
+            }
+            rules.insert(0, json!({"Rule": {"rule": rule, "duration": duration}}));
+        } else {
+            check_keys(
+                &part,
+                "Effect.static.MayLookAt",
+                &["Mode", "Affected", "AffectedZone", "MayLookAt"],
+                |_, _| false,
+            )?;
+        }
+        return Ok(rules);
+    }
     if part.has("MayPlay") {
         let when = super::condition::check_svar(ctx, &part)?;
         let part = part.without(&super::condition::CHECK_KEYS);

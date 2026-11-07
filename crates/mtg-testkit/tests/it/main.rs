@@ -189,6 +189,7 @@ mod discard_casts;
 mod divided_resolution;
 mod dredge;
 mod dredge_fuzz;
+mod e10b_sealed;
 mod elimination;
 mod embalm;
 mod en3_source;

@@ -123,8 +123,8 @@ fn dig_words(#[case] line: &str, #[case] has: &[&str]) {
 }
 
 #[rstest]
-#[case::face_down(
-    "A:SP$ Dig | DigNum$ 2 | ChangeNum$ 1 | DestinationZone$ Exile | ExileFaceDown$ True",
+#[case::face_down_to_hand(
+    "A:SP$ Dig | DigNum$ 2 | ChangeNum$ 1 | DestinationZone$ Hand | ExileFaceDown$ True",
     "key:Dig.ExileFaceDown"
 )]
 #[case::random_and_skip(

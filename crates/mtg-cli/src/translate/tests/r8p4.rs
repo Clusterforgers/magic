@@ -89,8 +89,8 @@ fn the_cards_taken_lie_face_down_in_exile(
 }
 
 #[rstest]
-#[case::nobody_looks(
-    "A:SP$ Dig | DigNum$ 3 | ChangeNum$ All | DestinationZone$ Exile | ExileFaceDown$ True",
+#[case::revealed_face_down(
+    "A:SP$ Dig | DigNum$ 3 | ChangeNum$ All | DestinationZone$ Exile | ExileFaceDown$ True | Reveal$ True",
     "key:Dig.ExileFaceDown"
 )]
 #[case::rest_face_down(
@@ -105,7 +105,7 @@ fn the_cards_taken_lie_face_down_in_exile(
     "A:SP$ Dig | DigNum$ 3 | ChangeNum$ 1 | WithMayLook$ True",
     "key:Dig.WithMayLook"
 )]
-fn a_face_down_exile_nobody_may_look_at_is_a_gap(#[case] line: &str, #[case] gap: &str) {
+fn a_face_down_shape_the_engine_cannot_say_is_a_gap(#[case] line: &str, #[case] gap: &str) {
     let found = gaps(&sorcery(line));
     assert!(found.iter().any(|found| found == gap), "{found:?}");
 }

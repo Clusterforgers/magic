@@ -351,6 +351,7 @@ const RUNS: &[&str] = &[
     "Rule.UntapDuring",
     "Rule.SkipDrawStep",
     "Rule.LookAtTopAnyTime",
+    "Rule.LookAtExiled",
     "Rule.AdditionalLandPlays",
     "Rule.TriggerAgain",
     "Rule.NextSpell",
@@ -1201,6 +1202,7 @@ mod tests {
     #[case::creatures_that_are_blocked_by_few("Mod.MaxBlockers", true)]
     #[case::goaded_creatures("Mod.Goaded", true)]
     #[case::looking_at_the_top_any_time("Rule.LookAtTopAnyTime", true)]
+    #[case::looking_at_face_down_cards_in_exile("Rule.LookAtExiled", true)]
     #[case::additional_land_plays("Rule.AdditionalLandPlays", true)]
     #[case::commander_eligibility("Rule.CanBeCommander", true)]
     #[case::r5g_any_number_in_a_deck("Rule.AnyNumberInDeck", true)]

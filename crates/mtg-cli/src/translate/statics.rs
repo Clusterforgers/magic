@@ -131,6 +131,18 @@ fn by_mode(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
         return found;
     }
     Ok(match p.get("Mode").unwrap_or_default() {
+        // "You may look at the cards exiled with ~, and you may play lands and cast spells from among them": the look
+        // and the permission are two rules of the same cards.
+        "Continuous"
+            if p.has("MayPlay") && p.has("MayLookAt") && p.get("AffectedZone") == Some("Exile") =>
+        {
+            let look = super::statics_look::exiled(p, None)?;
+            let play = by_mode(ctx, &p.without(&["MayLookAt"]))?;
+            if play.pointer("/Rule/from").is_some() {
+                return unmapped("key:Static.MayPlay.MayLookAt-EffectZone");
+            }
+            json!([play, {"Rule": {"rule": look}}])
+        }
         "Continuous" if p.has("MayPlay") => {
             let mut rule = json!({"Rule": {"rule": super::mayplay::may_cast(ctx, p, None)?}});
             if let Some(zone) = super::mayplay::effect_zone(p)? {
