@@ -764,7 +764,11 @@ fn sacrificed(ctx: &Ctx, p: &Params) -> Tr<Value> {
 }
 
 fn drawn(p: &Params) -> Tr<Value> {
-    keys(p, "Drawn", &["ValidCard", "ValidPlayer", "Number"])?;
+    keys(
+        p,
+        "Drawn",
+        &["ValidCard", "ValidPlayer", "Number", "FirstCardInDrawStep"],
+    )?;
     // `ValidPlayer$` names who draws, `ValidCard$` names the card drawn and so who owns it; the two are not given together.
     let who = match (p.get("ValidCard"), p.get("ValidPlayer")) {
         (Some("Card.YouOwn" | "Card.YouCtrl"), None) => "You",
@@ -778,7 +782,14 @@ fn drawn(p: &Params) -> Tr<Value> {
         },
         (Some(other), _) => return unmapped(format!("key:Trigger.Drawn.ValidCard={other}")),
     };
-    let drew = json!({"Drew": {"who": who}});
+    let mut drew = json!({"Drew": {"who": who}});
+    // "Except the first one they draw in each of their draw steps", "your first card during each of your draw steps".
+    match p.get("FirstCardInDrawStep") {
+        None => {}
+        Some("True") => drew["Drew"]["first_in_draw_step"] = json!(true),
+        Some("False") => drew["Drew"]["first_in_draw_step"] = json!(false),
+        Some(other) => return unmapped(format!("key:Trigger.Drawn.FirstCardInDrawStep={other}")),
+    }
     // "Your second card each turn".
     match p.get("Number").map(str::parse::<u32>) {
         None => Ok(drew),

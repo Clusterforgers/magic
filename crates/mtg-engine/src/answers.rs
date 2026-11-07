@@ -24,6 +24,8 @@ pub(crate) enum Outcome {
     BeginCast(ObjectId),
     /// This attack is declared once its cost is paid (CR 508.1h): the payment is decided next.
     BeginAttack(Vec<(ObjectId, AttackTarget)>, Vec<ObjectId>),
+    /// This block is declared once its cost is paid (CR 509.1d): the payment is decided next.
+    BeginBlock(Vec<(ObjectId, ObjectId)>),
     /// Start activating this ability; its announcement is decided next.
     BeginActivation(AbilityRef),
     /// Start suspending this card from the hand: the payment of its suspend cost is decided next.
@@ -173,10 +175,7 @@ pub(crate) fn handle(
         }
         (DecisionKind::DeclareBlockers(options), Answer::DeclareBlockers(blocks)) => {
             check_blockers(options, &blocks)?;
-            Ok(Outcome::Events(vec![Event::BlockersDeclared {
-                player,
-                blocks,
-            }]))
+            crate::block_tax::declare(state, player, blocks)
         }
         (DecisionKind::AssignDamage(options), Answer::AssignDamage(assignment)) => {
             Ok(assignment_answer(options, assignment)?)

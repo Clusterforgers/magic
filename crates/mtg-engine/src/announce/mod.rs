@@ -69,6 +69,8 @@ pub(crate) enum What {
     Trigger(Box<PendingTrigger>),
     /// An attack declared whose cost is not paid yet (CR 508.1h); only its payment is asked (`attack_tax`).
     Attack(Vec<(ObjectId, AttackTarget)>, Vec<ObjectId>),
+    /// A block declared whose cost is not paid yet (CR 509.1d); only its payment is asked (`block_tax`).
+    Block(Vec<(ObjectId, ObjectId)>),
 }
 
 /// One step of the announcement, named by the rule of CR 601.2 it carries out.
@@ -631,6 +633,7 @@ fn source_of(what: &What) -> ObjectId {
         What::Ability(ability) => ability.object,
         What::Trigger(waiting) => waiting.trigger.source.id,
         What::Attack(attackers, _) => attackers.first().map_or(ObjectId(0), |(object, _)| *object),
+        What::Block(blocks) => blocks.first().map_or(ObjectId(0), |(object, _)| *object),
     }
 }
 
@@ -643,7 +646,7 @@ fn rules_of(state: &GameState, what: &What) -> Option<Arc<Ability>> {
             .map(|(_, rules)| rules),
         What::Ability(address) => object.and_then(|_| ability_reader::ability(state, *address)),
         What::Trigger(waiting) => Some(Arc::clone(&waiting.rules)),
-        What::Attack(..) => None,
+        What::Attack(..) | What::Block(_) => None,
     }
 }
 
@@ -674,6 +677,9 @@ pub(crate) fn announce(state: &GameState, pending: &mut Pending) -> Next {
     }
     if let What::Attack(attackers, _) = what {
         return crate::attack_tax::next(state, *player, attackers);
+    }
+    if let What::Block(blocks) = what {
+        return crate::block_tax::next(state, *player, blocks);
     }
     if let Some(special) = special
         && let What::Spell(card) = what

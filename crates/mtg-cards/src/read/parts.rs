@@ -213,7 +213,18 @@ pub(super) fn trigger(ctx: &Ctx, when: &TriggerPattern) -> String {
         ),
         TriggerPattern::LifeGained { who } => phrase::verb(ctx, who, "gain", "life"),
         TriggerPattern::LifeLost { who } => phrase::verb(ctx, who, "lose", "life"),
-        TriggerPattern::Drew { who, .. } => phrase::verb(ctx, who, "draw", "a card"),
+        TriggerPattern::Drew {
+            who,
+            first_in_draw_step,
+            ..
+        } => {
+            let drew = phrase::verb(ctx, who, "draw", "a card");
+            match first_in_draw_step {
+                Some(true) => format!("{drew} first in a draw step"),
+                Some(false) => format!("{drew} other than the first in a draw step"),
+                None => drew,
+            }
+        }
         TriggerPattern::GroupAttacks { what, at_least } => {
             format!("{at_least} or more {} attack", phrase::selectors(ctx, what))
         }
