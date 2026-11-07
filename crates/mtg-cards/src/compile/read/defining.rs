@@ -515,6 +515,14 @@ pub(super) fn died_each(r: &mut Reader<'_>) -> Option<Amount> {
         TurnTally::CreaturesDied
     };
     r.word("creature").then_some(())?;
+    if what == TurnTally::CreaturesDied
+        && r.words("that left the battlefield under your control this turn")
+    {
+        return Some(Amount::Tallied {
+            who: Ref::You,
+            what: TurnTally::CreaturesLeftUnder,
+        });
+    }
     if r.words("that died under your control this turn") {
         return Some(Amount::Tallied {
             who: Ref::You,
@@ -535,6 +543,11 @@ pub(super) fn died_text(amount: &Amount, each: bool) -> Option<String> {
     };
     if let Some(text) = you_did_text(*what, each) {
         return (*who == Ref::You).then_some(text);
+    }
+    if *what == TurnTally::CreaturesLeftUnder {
+        let noun = if each { "creature" } else { "creatures" };
+        return (*who == Ref::You)
+            .then(|| format!("{noun} that left the battlefield under your control this turn"));
     }
     let kind = match what {
         TurnTally::CreaturesDied | TurnTally::CreaturesDiedUnder => "",

@@ -65,6 +65,10 @@ pub fn count(ctx: &Ctx, base: &str) -> Option<Tr<Value>> {
         "LeftGraveyardThisTurn" if rest == "Card.YouOwn" => {
             Ok(json!({"Tallied": {"who": "You", "what": "CardsLeftGraveyard"}}))
         }
+        // The creatures that left the battlefield under your control this turn, to any zone.
+        "LeftBattlefieldThisTurn" if rest == "Creature.YouCtrl" => {
+            Ok(json!({"Tallied": {"who": "You", "what": "CreaturesLeftUnder"}}))
+        }
         // The mana symbols of the color among the permanents you control: the devotion to the color.
         _ if word.starts_with("Chroma.") && rest.is_empty() => {
             devotion(&word.replacen("Chroma.", "Devotion.", 1))
@@ -256,9 +260,36 @@ pub fn dungeons(what: &str) -> Tr<Value> {
 }
 
 /// A number about the player `who` of an event or a target (`LifeTotal`, `CardsInHand`, `Counters.Poison`); the gap names `head`.
-pub fn player_stat(head: &str, what: &str, who: &Value) -> Tr<Value> {
+pub fn player_stat(ctx: &Ctx, head: &str, what: &str, who: &Value) -> Tr<Value> {
     if let Some(found) = player_amount("TargetedPlayer", what, who) {
         return found;
+    }
+    let tallied = |what: &str| Ok(json!({"Tallied": {"who": who, "what": what}}));
+    let (word, spec) = what.split_once(' ').unwrap_or((what, ""));
+    match (word, spec) {
+        ("CreaturesInPlay", "") => {
+            return Ok(json!({"Count": [{"Type": "Creature"}, {"ControlledBy": who}]}));
+        }
+        ("LandsInGraveyard", "") => {
+            return Ok(json!({"Count": [{"Type": "Land"}, {"In": "Graveyard"}, {"OwnedBy": who}]}));
+        }
+        ("DomainPlayer", "") => {
+            return Ok(json!({"Distinct": {
+                "of": [{"Type": "Land"}, {"ControlledBy": who}], "stat": "BasicLandTypes"}}));
+        }
+        ("CardsDrawn", "") => return tallied("Drawn"),
+        ("LifeLostThisTurn", "") => return tallied("LifeLost"),
+        ("CardsDiscardedThisTurn", "") => return tallied("Discarded"),
+        // The cards of the player that the selector names, written for "you" (`Valid Artifact.tapped+YouCtrl`).
+        ("Valid" | "ValidGraveyard", spec) if !spec.is_empty() => {
+            let zone = (word == "ValidGraveyard").then_some("Graveyard");
+            let of = selector_in(ctx, spec, zone)?;
+            if of.iter().any(|pred| pred.to_string().contains("Opponents")) {
+                return unmapped(format!("amount:{head}${word}-of-the-opponents"));
+            }
+            return Ok(json!({"Largest": {"who": who, "of": of}}));
+        }
+        _ => {}
     }
     match what.strip_prefix("Counters.") {
         Some(kind) => match super::amount::counter_kind(&kind.to_uppercase()) {

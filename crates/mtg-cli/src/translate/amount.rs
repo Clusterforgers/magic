@@ -137,6 +137,23 @@ fn negate(ctx: &Ctx, inner: &str) -> Tr<Value> {
 
 /// The amount of the value of a named part.
 fn expression_amount(ctx: &Ctx, expression: &str) -> Tr<Value> {
+    // "As you cast this spell": a bound or a divided total is read while the spell is cast (CR 601.2c-d), so the
+    // count then is the count as cast; read anywhere else it would be the count at resolution.
+    let as_cast = [
+        ("Count$LastStateBattlefieldWithFallback ", "Count$Valid "),
+        (
+            "Count$LastStateGraveyardWithFallback ",
+            "Count$ValidGraveyard ",
+        ),
+    ];
+    for (word, live) in as_cast {
+        if let Some(rest) = expression.trim().strip_prefix(word) {
+            if !ctx.as_cast.get() {
+                return unmapped(format!("amount:{}", word.trim_end()));
+            }
+            return expression_amount(ctx, &format!("{live}{rest}"));
+        }
+    }
     match read_expression(ctx, expression) {
         Ok(found) => Ok(found),
         // What the readers above leave as a gap, the grammar reads whole or names every word that stops it.
@@ -184,6 +201,19 @@ fn read_expression(ctx: &Ctx, expression: &str) -> Tr<Value> {
     }
     if let Some(rest) = expression.strip_prefix("Targeted$") {
         return targeted_amount("Targeted", rest, &ctx.last_target()?);
+    }
+    // The spell the line targets ("if that spell's mana value was 3 or less"), read as it last was on the stack.
+    if let Some(rest) = expression.strip_prefix("SpellTargeted$") {
+        // Forge reads zero for a target that is no spell, so a line that may target a permanent adds it to `Targeted$`.
+        let spell_only = ctx.targets.last().is_some_and(|spec| {
+            spec["what"]["Object"]
+                .as_array()
+                .is_some_and(|preds| preds.contains(&json!("Spell")))
+        });
+        if !spell_only {
+            return unmapped("amount:SpellTargeted");
+        }
+        return targeted_amount("SpellTargeted", rest, &ctx.last_target()?);
     }
     if let Some(rest) = expression.strip_prefix("ParentTargeted$") {
         return targeted_amount("ParentTargeted", rest, &ctx.parent()?);
@@ -281,11 +311,10 @@ fn event_amount(ctx: &Ctx, expression: &str) -> Tr<Option<Value>> {
         "PlayerCountRemembered" => {
             return super::amount_more::remembered_player(ctx, what).map(Some);
         }
-        "TargetedPlayer" => {
-            return match super::amount_more::player_amount(head, what, &ctx.player_target()?) {
-                Some(found) => found.map(Some),
-                None => unmapped(format!("amount:{head}${what}")),
-            };
+        // `ThisTargetedPlayer`: the player the line itself targets, which the line declares as its latest target.
+        "TargetedPlayer" | "ThisTargetedPlayer" => {
+            let who = ctx.player_target()?;
+            return super::amount_more::player_stat(ctx, head, what, &who).map(Some);
         }
         "TargetedController" | "TargetedOwner" => {
             let object = ctx.last_target()?;
@@ -294,18 +323,15 @@ fn event_amount(ctx: &Ctx, expression: &str) -> Tr<Option<Value>> {
             } else {
                 json!({"ControllerOf": object})
             };
-            return super::amount_more::player_stat(head, what, &who).map(Some);
+            return super::amount_more::player_stat(ctx, head, what, &who).map(Some);
         }
         "TriggeredTarget" if ctx.trigger.as_ref().is_some_and(|shape| shape.to_player) => {
             let who = super::triggered::resolve(ctx.trigger.as_ref(), head)?;
-            return super::amount_more::player_stat(head, what, &who).map(Some);
+            return super::amount_more::player_stat(ctx, head, what, &who).map(Some);
         }
         "TriggeredPlayer" | "TriggeredCardController" => {
             let who = super::triggered::resolve(ctx.trigger.as_ref(), head)?;
-            return match super::amount_more::player_amount("TargetedPlayer", what, &who) {
-                Some(found) => found.map(Some),
-                None => unmapped(format!("amount:{head}${what}")),
-            };
+            return super::amount_more::player_stat(ctx, head, what, &who).map(Some);
         }
         // The card a zone-change replacement is about, read as the trigger of a move reads its card.
         "ReplacedCard" | "ReplacedCardLKI" if ctx.trigger.is_some() => {
@@ -361,7 +387,7 @@ fn event_amount(ctx: &Ctx, expression: &str) -> Tr<Option<Value>> {
 /// The amounts of an attack: how many attackers a group holds, and a stat of the defending player.
 fn attacks(ctx: &Ctx, head: &str, what: &str) -> Tr<Option<Value>> {
     if head == "TriggeredDefendingPlayer" {
-        return super::amount_more::player_stat(head, what, &json!("Defending")).map(Some);
+        return super::amount_more::player_stat(ctx, head, what, &json!("Defending")).map(Some);
     }
     let group = ctx
         .trigger
@@ -393,6 +419,11 @@ pub(super) fn targeted_amount(head: &str, what: &str, of: &Value) -> Tr<Value> {
         "CardManaCost" => "ManaValue",
         "CardNumColors" => "Colors",
         "CastTotalManaSpent" => "ManaSpent",
+        // "Its power plus its toughness".
+        "CardSumPT" => {
+            let stat = |stat: &str| json!({"Stat": {"of": of, "stat": stat}});
+            return Ok(json!({"Sum": [stat("Power"), stat("Toughness")]}));
+        }
         // The damage dealt to it this turn, as the object it was: a creature that died counts what it was dealt.
         "TotalDamageReceivedThisTurn" => {
             return Ok(json!({"Tallied": {"who": of, "what": "DamageDealtTo"}}));

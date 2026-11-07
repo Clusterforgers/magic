@@ -363,6 +363,10 @@ fn unless_pays(
     let who = match p.get("UnlessPayer") {
         None if api_of(p)? == "Counter" => json!({ "ControllerOf": ctx.last_target()? }),
         None => return unmapped("key:Unless.no-UnlessPayer"),
+        // The controller of the object this very line targets ("counter target spell unless its controller pays").
+        Some("ThisTargetedController") if p.has("ValidTgts") => {
+            json!({ "ControllerOf": ctx.last_target()? })
+        }
         // A group ("unless any player pays") is asked in turn order until one pays; every seat gets the normal clock and an
         // unanswered question is a no.
         Some(word) => defined(ctx, word)?,
@@ -1214,6 +1218,8 @@ fn delayed_node(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
         to_player: false,
         pattern: super::triggered::key_of(&when),
         arrives: None,
+        targeting: None,
+        enters: false,
     });
     let outer = std::mem::replace(&mut ctx.trigger, shape);
     let declared = ctx.targets.len();

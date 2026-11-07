@@ -21,6 +21,10 @@ pub struct Shape {
     pub pattern: String,
     /// The zone the event object moved to from the battlefield (a death, a sacrifice, an exile): the card it became is there.
     pub arrives: Option<String>,
+    /// What a spell of a cast pattern targets (`TargetsValid$`): "those creatures" are its targets that match.
+    pub targeting: Option<Vec<Value>>,
+    /// The pattern is a permanent entering the battlefield from anywhere.
+    pub enters: bool,
 }
 
 /// The zone a permanent that left the battlefield by this pattern arrived in, when the pattern names one.
@@ -31,6 +35,13 @@ pub fn arrival(when: &Value) -> Option<String> {
     let change = when.get("ZoneChange")?;
     (change.get("from")? == "Battlefield").then_some(())?;
     change.get("to")?.as_str().map(str::to_owned)
+}
+
+/// What the spell of a cast pattern targets ("a spell that targets one or more creatures"), when the pattern says.
+pub fn targeting(when: &Value) -> Option<Vec<Value>> {
+    let what = when.get("SpellCast")?.get("what")?.as_array()?;
+    let found = what.iter().find_map(|pred| pred.get("Targeting"))?;
+    found.as_array().cloned()
 }
 
 /// The name of the pattern a trigger's `when` is.

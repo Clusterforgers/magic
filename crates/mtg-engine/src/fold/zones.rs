@@ -246,7 +246,7 @@ fn w14b_dying_kind(state: &GameState, id: ObjectId, to: Zone) -> (bool, bool) {
     )
 }
 
-/// Counts a nonland permanent about to leave the battlefield for `to` for the player who controls it (void).
+/// Counts a nonland permanent (void) and a creature about to leave the battlefield for `to` for the player who controls it.
 fn tally_nonland_leaving(state: &mut GameState, id: ObjectId, to: Zone) {
     let Some(controller) = state
         .object(id)
@@ -255,10 +255,16 @@ fn tally_nonland_leaving(state: &mut GameState, id: ObjectId, to: Zone) {
     else {
         return;
     };
-    let nonland = crate::characteristics::characteristics(state, id)
+    let chars = crate::characteristics::characteristics(state, id);
+    let nonland = chars
+        .as_ref()
         .is_some_and(|chars| !chars.types.contains(CardType::Land));
+    let creature = chars.is_some_and(|chars| chars.types.contains(CardType::Creature));
     if nonland && to != Zone::Battlefield {
         state.tally(controller, Tally::NonlandLeft);
+    }
+    if creature && to != Zone::Battlefield {
+        state.tally(controller, Tally::CreaturesLeftUnder);
     }
 }
 

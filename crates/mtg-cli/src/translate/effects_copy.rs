@@ -171,8 +171,15 @@ fn clone(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
     if p.has("ValidTgts") && p.has("Defined") {
         return unmapped("key:Clone.ValidTgts-and-Defined");
     }
+    // The creature whose entering triggered the ability is still on the battlefield as the trigger resolves, or gone; a
+    // card that moved to another zone would be copied as the card there, not as the creature it was.
+    let entered = ctx
+        .trigger
+        .as_ref()
+        .is_some_and(|shape| shape.mode == "ChangesZone" && !shape.itself && shape.enters);
     if let Some(word) = p.get("Defined")
         && !matches!(word, "Targeted" | "ParentTarget")
+        && !(entered && matches!(word, "TriggeredCard" | "TriggeredCardLKICopy"))
     {
         return unmapped(format!("defined:Clone.{word}"));
     }

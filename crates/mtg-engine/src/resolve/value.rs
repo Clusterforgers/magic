@@ -445,10 +445,12 @@ impl<'a> Scope<'a> {
             | TurnTally::PhyrexiansDiedUnder
             | TurnTally::PermanentsLeftUnder
             | TurnTally::NonlandPermanentsLeft
+            | TurnTally::CreaturesLeftUnder
             | TurnTally::SpellsWarped
             | TurnTally::CardsLeftGraveyard => {
                 let kind = match what {
                     TurnTally::NonlandPermanentsLeft => Tally::NonlandLeft,
+                    TurnTally::CreaturesLeftUnder => Tally::CreaturesLeftUnder,
                     TurnTally::SpellsWarped => Tally::Warped,
                     TurnTally::PermanentsLeftUnder => Tally::PermanentsLeftUnder,
                     TurnTally::CardsLeftGraveyard => Tally::W21aLeftGraveyard,

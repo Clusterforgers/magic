@@ -82,6 +82,10 @@ pub fn triggered(ctx: &mut Ctx, body: &str) -> Tr<Value> {
         }),
         pattern: super::triggered::key_of(&when),
         arrives: super::triggered::arrival(&when),
+        targeting: super::triggered::targeting(&when),
+        enters: when
+            .get("ZoneChange")
+            .is_some_and(|change| change.get("to") == Some(&json!("Battlefield"))),
     });
     let intervening = match super::condition::on_triggered_card(ctx, &all)? {
         Some(found) => super::condition::single(intervening.into_iter().chain([found]).collect()),

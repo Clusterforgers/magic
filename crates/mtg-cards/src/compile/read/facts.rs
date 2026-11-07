@@ -404,6 +404,15 @@ fn state_texts(left: &Amount, op: Cmp, number: u32) -> Vec<String> {
             .iter()
             .map(|n| format!("an opponent lost {n} or more life this turn"))
             .collect(),
+        (
+            Amount::Tallied {
+                who: Ref::You,
+                what: TurnTally::CreaturesLeftUnder,
+            },
+            Cmp::Ge,
+        ) if number == 1 => {
+            vec!["a creature left the battlefield under your control this turn".to_owned()]
+        }
         (Amount::Count(of), Cmp::Eq) if number == 0 && *of == every_hand() => {
             vec!["each player has no cards in hand".to_owned()]
         }

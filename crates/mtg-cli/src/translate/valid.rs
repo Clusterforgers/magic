@@ -667,6 +667,24 @@ pub fn defined(ctx: &Ctx, word: &str) -> Tr<Value> {
     {
         return Ok(json!({"Each": [{"Is": ctx.last_target()?}, {"Type": kind}]}));
     }
+    // `Targeted.Vampire`, `Targeted.powerLE0`: the target while the valid-string selects it as the line resolves.
+    if let Some(spec) = word.trim().strip_prefix("Targeted.")
+        && !spec.contains("Targeted")
+    {
+        let mut each = vec![json!({"Is": ctx.last_target()?})];
+        each.extend(selector_any(ctx, &format!("Card.{spec}"))?);
+        return Ok(json!({ "Each": each }));
+    }
+    if word.trim() == "TriggeredSpellAbilityTargets"
+        && let Some(targeting) = ctx
+            .trigger
+            .as_ref()
+            .and_then(|shape| shape.targeting.clone())
+    {
+        let mut each = vec![json!({"TargetedBy": "Triggering"})];
+        each.extend(targeting);
+        return Ok(json!({ "Each": each }));
+    }
     let controller = |inner: Value| Ok(json!({ "ControllerOf": inner }));
     match word.trim() {
         "You" => Ok(json!("You")),
@@ -810,6 +828,25 @@ pub fn target_spec(ctx: &Ctx, params: &Params, zone: Option<&str>) -> Tr<Value> 
     let min = params.get("TargetMin");
     let max = params.get("TargetMax");
     let mut spec = json!({ "what": what });
+    ctx.as_cast.set(true);
+    let read = cast_time_amounts(ctx, params, min, max, &mut spec);
+    ctx.as_cast.set(false);
+    read?;
+    if valid.starts_with(super::header::FOR_EACH) {
+        // `per_player_targets` took the "up to one each" bounds off the line; the engine reads min 0 as up to one of each.
+        spec["bounds"] = json!({"min": 0, "max": 1});
+    }
+    Ok(spec)
+}
+
+/// The target bounds and the divided total of a target specification, which the engine reads as the spell is cast.
+fn cast_time_amounts(
+    ctx: &Ctx,
+    params: &Params,
+    min: Option<&str>,
+    max: Option<&str>,
+    spec: &mut Value,
+) -> Tr<()> {
     if min.is_some() || max.is_some() {
         let min = bound(ctx, min.unwrap_or("1"))?;
         let max = bound(ctx, max.unwrap_or("1"))?;
@@ -817,14 +854,10 @@ pub fn target_spec(ctx: &Ctx, params: &Params, zone: Option<&str>) -> Tr<Value> 
             spec["bounds"] = json!({"min": min, "max": max});
         }
     }
-    if valid.starts_with(super::header::FOR_EACH) {
-        // `per_player_targets` took the "up to one each" bounds off the line; the engine reads min 0 as up to one of each.
-        spec["bounds"] = json!({"min": 0, "max": 1});
-    }
     if let Some(total) = params.get("DividedAsYouChoose") {
         spec["divide"] = amount(ctx, total)?;
     }
-    Ok(spec)
+    Ok(())
 }
 
 /// `TargetingPlayer$`: "target creature of an opponent's choice", "... of that player's choice". The player who chooses

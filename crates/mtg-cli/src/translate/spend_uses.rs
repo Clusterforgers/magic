@@ -162,6 +162,8 @@ pub fn when_spent(ctx: &mut Ctx, name: &str) -> Tr<Vec<Value>> {
             to_player: false,
             pattern: "SpellCast".to_owned(),
             arrives: None,
+            targeting: None,
+            enters: false,
         });
         let effects = super::effects::chain_at(ctx, &part, false)?;
         if ctx.targets.is_empty() {
