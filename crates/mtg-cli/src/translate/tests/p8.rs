@@ -133,7 +133,6 @@ fn returning_the_source_is_a_cost() {
     "A:AB$ Draw | Cost$ Mandatory Sac<1/CARDNAME> | NumCards$ 1",
     "cost:Mandatory"
 )]
-#[case::x_at_least_one("A:AB$ Draw | Cost$ XMin1 X T | NumCards$ 1", "cost:XMin1")]
 #[case::unless_y("K:Cycling:Y", "cost:Y")]
 fn a_word_that_changes_who_decides_stays_a_named_gap(#[case] lines: &str, #[case] gap: &str) {
     let script = creature(lines);

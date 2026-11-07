@@ -126,6 +126,8 @@ fn item(ctx: &Ctx, word: &str) -> Tr<Value> {
     match word {
         "T" => return Ok(json!("Tap")),
         "Q" => return Ok(json!("Untap")),
+        // "X can't be 0."
+        "XMin1" => return Ok(json!({"XAtLeast": 1})),
         _ => {}
     }
     if let Some(found) = super::cost_more::bare(ctx, word) {
@@ -151,6 +153,8 @@ fn item(ctx: &Ctx, word: &str) -> Tr<Value> {
         "Sac" if what == "OriginalHost" && ctx.granted && number == "1" => {
             Ok(json!({"Sacrifice": {"filter": [{"Is": "Granter"}]}}))
         }
+        // "Equipped creature has '{T}, Unattach Shuriken: ...'": the Equipment that gave the ability lets go.
+        "Unattach" if number == "OriginalHost" && ctx.granted => Ok(json!("Unattach")),
         "SubCounter" if ctx.granted && inner.contains("OriginalHost") => {
             unmapped("cost:SubCounter-from-OriginalHost")
         }

@@ -92,6 +92,11 @@ fn single(ctx: &mut Ctx, body: &str) -> Tr<Value> {
     if let Some(found) = super::replacements_moved::self_moved(ctx, &p, line_condition.as_ref()) {
         return found;
     }
+    if let Some(found) =
+        super::replacements_enter::e14b_pay_or_graveyard(ctx, &p, line_condition.as_ref())
+    {
+        return found;
+    }
     if p.has("ActiveZones") {
         return unmapped("key:Replacement.Moved.ActiveZones");
     }

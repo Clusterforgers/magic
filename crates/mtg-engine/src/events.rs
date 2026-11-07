@@ -1082,6 +1082,9 @@ pub enum ZoneCause {
     StateBased,
     /// It was discarded and a replacement effect sent it somewhere other than the graveyard (CR 701.9).
     Discarded,
+    /// It was played as its owner's land and a replacement effect put it here instead of onto the battlefield: the land
+    /// play is used (CR 305.2).
+    LandPlayed,
 }
 
 impl ZoneCause {

@@ -56,7 +56,7 @@ use anchor::Anchor;
 
 pub(crate) use modifiers::{c11a_reduced, cheapest, floored};
 pub(crate) use optional::{Optional, kicked_with, payments};
-pub(crate) use x::{XCost, payable, some_x_has_targets};
+pub(crate) use x::{XCost, least_of, payable, some_x_has_targets};
 
 /// What is being put on the stack.
 #[derive(Debug, Clone, PartialEq, Eq)]
@@ -688,7 +688,7 @@ pub(crate) fn announce(state: &GameState, pending: &mut Pending) -> Next {
             Special::Suspend => suspend::next(state, *player, *card),
             Special::Foretell => foretell::next(state, *player, *card),
             Special::Plot => plot::next(state, *player, *card),
-            Special::TurnFaceUp => turn_up::next(state, *player, *card),
+            Special::TurnFaceUp => turn_up::next(state, *player, *card, choices, done),
             Special::Companion => companion::next(state, *player, *card),
             Special::Unlock(door) => dk1c5_unlock::next(state, *player, *card, *door),
         };

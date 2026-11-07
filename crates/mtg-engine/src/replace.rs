@@ -661,6 +661,7 @@ fn applies_to(by: &ReplaceBy, unit: &Unit) -> bool {
         | ReplaceBy::PayLifeOrTapped(_)
         | ReplaceBy::TappedForCounters { .. }
         | ReplaceBy::RevealOrTapped(_)
+        | ReplaceBy::PayOrGraveyard { .. }
         | ReplaceBy::Devour { .. }
         | ReplaceBy::DayIfNeither
         | ReplaceBy::EntersPrepared
@@ -2034,6 +2035,10 @@ impl Pass<'_> {
             ReplaceBy::RevealOrTapped(of) => {
                 self.reveal_or_tapped(at, candidate, of, (object, controller), applied)
             }
+            ReplaceBy::PayOrGraveyard { cost, optional } => {
+                let paid = (cost, *optional);
+                self.e14b_pay_or_graveyard(at, candidate, paid, (object, controller), applied)
+            }
             ReplaceBy::TappedForCounters { counter, count } => {
                 let got = (counter, *count);
                 self.w13b_tapped_for_counters(at, candidate, got, (object, controller), applied)
@@ -3235,6 +3240,8 @@ fn zone_word(zone: Zone) -> &'static str {
 
 mod day;
 mod g12a_library;
+
+mod e14b_pay_or_graveyard;
 
 mod prepared;
 

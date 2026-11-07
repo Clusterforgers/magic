@@ -1372,6 +1372,15 @@ impl<'a> Walker<'a> {
                     | CostItem::CollectEvidence(_)
                     | CostItem::Waterbend(_)
                     | CostItem::Forage => {}
+                    CostItem::XAtLeast(least) => {
+                        if *least == 0 {
+                            w.problem("an X of at least 0 is any X");
+                        }
+                        // The least X is announced for an activated ability only.
+                        if !w.activated_cost {
+                            w.uses("Cost", "XAtLeast.Elsewhere");
+                        }
+                    }
                 }
             });
         }
@@ -1778,10 +1787,10 @@ impl<'a> Walker<'a> {
                 self.at("cost", |w| w.cost(cost));
                 self.parts_a_spell_cost_does_not_pay("Keyword", "Cost", cost, false);
             }
+            Keyword::Morph(cost) | Keyword::Megamorph(cost) | Keyword::Disguise(cost) => {
+                self.turn_up_cost(cost);
+            }
             Keyword::Multikicker(cost)
-            | Keyword::Morph(cost)
-            | Keyword::Megamorph(cost)
-            | Keyword::Disguise(cost)
             | Keyword::Overload(cost)
             | Keyword::Mutate(cost)
             | Keyword::Encore(cost)
@@ -4579,6 +4588,31 @@ impl Walker<'_> {
         }
     }
 
+    /// A morph, megamorph or disguise cost: turning face up pays its parts as a special action
+    /// (`Keyword.TurnUp.Cost.Discard`).
+    fn turn_up_cost(&mut self, cost: &Cost) {
+        self.at("cost", |w| w.cost(cost));
+        self.parts_that_need_an_announcement("Keyword", "TurnUp.Cost", cost);
+    }
+
+    /// "Pay this as it would enter, or it goes to the graveyard": one sacrifice or one discard as an `Enters` happens, and
+    /// a discard the player may decline, so the pace of a hidden hand shows nothing.
+    fn pay_or_graveyard(&mut self, enters: bool, cost: &Cost, optional: bool) {
+        if !enters {
+            self.problem("only an `Enters` event is paid for or put into a graveyard");
+        }
+        let fixed = |count: &Amount| matches!(count, Amount::Fixed(1..));
+        let one_pick = match &cost.0[..] {
+            [CostItem::Sacrifice { count, .. }] => fixed(count),
+            [CostItem::Discard { count, .. }] => fixed(count) && optional,
+            _ => false,
+        };
+        if !one_pick {
+            self.problem("an entering is paid for with one sacrifice or one optional discard");
+        }
+        self.at("cost", |w| w.cost(cost));
+    }
+
     fn replace_by(&mut self, when: &ReplaceWhen, by: &ReplaceBy) {
         self.uses("ReplaceBy", &tag_of(by));
         self.g11b_replace_by(when, by);
@@ -4652,6 +4686,9 @@ impl Walker<'_> {
                 self.problem("entering tapped for no counters is a plain choice");
             }
             ReplaceBy::RevealOrTapped(of) => self.at("of", |w| w.selector(of)),
+            ReplaceBy::PayOrGraveyard { cost, optional } => {
+                self.pay_or_graveyard(enters, cost, *optional);
+            }
             ReplaceBy::UmbraArmor if !matches!(when, ReplaceWhen::Destroyed { .. }) => {
                 self.problem("`UmbraArmor` replaces a `Destroyed`");
             }

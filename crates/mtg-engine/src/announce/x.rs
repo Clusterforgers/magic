@@ -248,21 +248,29 @@ struct Offer {
     except: Vec<u32>,
 }
 
-/// The least X the cost allows: craft takes at least as many materials as it names (CR 702.167a).
+/// The least X the cost allows: craft takes at least as many materials as it names (CR 702.167a), and a cost may say
+/// "X can't be 0".
 fn least_x(ctx: &Ctx<'_>) -> u32 {
     let Some(Ability::Activated { cost, .. }) = ctx.ability else {
         return 0;
     };
+    least_of(cost)
+}
+
+/// The least X the activated ability's `cost` allows (`least_x`).
+pub(crate) fn least_of(cost: &mtg_cards::cost::Cost) -> u32 {
     cost.0
         .iter()
-        .find_map(|item| match item {
+        .filter_map(|item| match item {
             CostItem::Craft {
                 count: Amount::X,
                 least,
                 ..
             } => Some(least.unwrap_or(1)),
+            CostItem::XAtLeast(least) => Some(*least),
             _ => None,
         })
+        .max()
         .unwrap_or(0)
 }
 
@@ -271,6 +279,9 @@ impl Offer {
     /// none. A target specification that does not read X is the same for every value.
     fn of(ctx: &Ctx<'_>, choices: &Choices, most: u32) -> Option<Offer> {
         let least = least_x(ctx);
+        if least > most {
+            return None;
+        }
         let specs = targets::specs(ctx, choices);
         if !specs.iter().any(reads_x) {
             return Some(Offer {

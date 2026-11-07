@@ -41,4 +41,4 @@ by: PlayerId, } } | { "Encoded": {
 /**
  * The creature it is encoded on.
  */
-by: ObjectRef, } } | "Adventure" | "Countered" | "Milled" | "StateBased" | "Discarded";
+by: ObjectRef, } } | "Adventure" | "Countered" | "Milled" | "StateBased" | "Discarded" | "LandPlayed";

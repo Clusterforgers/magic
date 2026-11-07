@@ -423,6 +423,20 @@ fn spell_cast(
     Ok(())
 }
 
+/// What a move for `cause` counts: a card milled, and a land played that a replacement put elsewhere than the
+/// battlefield, which still uses its owner's land play (CR 305.2).
+fn tally_moved(state: &mut GameState, cause: ZoneCause, object: ObjectId) {
+    if cause == ZoneCause::Milled {
+        w13b_tally_milled(state, object);
+    }
+    if cause == ZoneCause::LandPlayed
+        && let Some(owner) = state.objects.get(&object).map(GameObject::owner)
+    {
+        state.turn.lands_played += 1;
+        state.tally(owner, Tally::LandsPlayed);
+    }
+}
+
 pub(super) fn apply(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
     match event {
         Event::LandPlayed {
@@ -468,9 +482,7 @@ pub(super) fn apply(state: &mut GameState, event: &Event) -> Result<(), EngineEr
                 tally_discard(state, player, *object);
             }
             tally_sacrifice(state, (*cause, *from), before);
-            if *cause == ZoneCause::Milled {
-                w13b_tally_milled(state, *object);
-            }
+            tally_moved(state, *cause, *object);
             if *cause == ZoneCause::Plotted {
                 mark_plotted(state, *object);
             }

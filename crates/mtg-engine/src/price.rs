@@ -92,6 +92,7 @@ const fn unpaid(item: &CostItem) -> &'static str {
         CostItem::RevealFromHand { .. } => "Cost.RevealFromHand",
         CostItem::OneOf(_) => "Cost.OneOf",
         CostItem::Changed { .. } => "Cost.Changed",
+        CostItem::XAtLeast(_) => "Cost.XAtLeast",
     }
 }
 
@@ -202,6 +203,8 @@ impl Price {
                 CostItem::Tap => tap = true,
                 CostItem::Untap => untap = true,
                 CostItem::Changed { .. } => changes.push(item.clone()),
+                // The least X is read where X is announced (`announce/x.rs`).
+                CostItem::XAtLeast(_) => {}
                 CostItem::Waterbend(_) if !waterbend_ok => return Err(unpaid(item)),
                 CostItem::Waterbend(number) => {
                     mana = true;

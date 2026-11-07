@@ -1423,6 +1423,9 @@ fn entering_texts(by: &ReplaceBy, condition: Option<&Condition>) -> Vec<String> 
             "As ~ enters, you may pay {life} life. If you don't, it enters tapped"
         )],
         (ReplaceBy::RevealOrTapped(of), None) => reveal_texts(of),
+        (ReplaceBy::PayOrGraveyard { cost, optional }, None) => {
+            super::e14b_entering::pay_or_graveyard_texts(cost, *optional)
+        }
         (ReplaceBy::RevealOrTapped(of), Some(Condition::Not(held))) => {
             reveal_unless_texts(of, held)
         }
