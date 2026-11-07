@@ -910,6 +910,10 @@ fn cost_modifier(ctx: &Ctx, p: &Params, change: &str) -> Tr<Value> {
                 Some("Player.EnchantedBy") => {
                     selector.push(json!({"ControlledBy": "AttachedPlayer"}));
                 }
+                // "Except during its controller's turn": a spell its caster casts on another player's turn.
+                Some("Player.NonActive") => {
+                    selector.push(json!({"Not": {"ControlledBy": "ActivePlayer"}}));
+                }
                 Some("Player.Opponent" | "Opponent") => {
                     selector.push(json!({"ControlledBy": "Opponents"}));
                 }

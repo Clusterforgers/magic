@@ -257,13 +257,6 @@ pub struct Spent {
 
 /// The rider a snow source's mana carries (CR 107.4h): it pays for `{S}` and counts as snow mana spent.
 pub(crate) fn snow_rider(state: &GameState, source: ObjectId) -> Option<SpendOn> {
-    state
-        .object(source)
-        .filter(|object| {
-            object
-                .card()
-                .supertypes
-                .contains(&mtg_core::card::Supertype::Snow)
-        })
-        .map(|_| SpendOn::Snow)
+    crate::characteristics::has_supertype(state, source, mtg_core::card::Supertype::Snow)
+        .then_some(SpendOn::Snow)
 }
