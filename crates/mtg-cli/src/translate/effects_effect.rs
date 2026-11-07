@@ -11,6 +11,7 @@ use super::valid::{defined, objects, selector_any, subject};
 use crate::forge::script::Params;
 
 /// The effects of an `Effect` line.
+#[allow(clippy::too_many_lines)]
 pub fn effects(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
     only(
         p,
@@ -34,8 +35,21 @@ pub fn effects(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
             "ForgetOnCast",
             "EffectOwner",
             "SetChosenNumber",
+            "AtEOT",
         ],
     )?;
+    if p.has("AtEOT")
+        && [
+            "RememberObjects",
+            "ValidTgts",
+            "Triggers",
+            "ReplacementEffects",
+        ]
+        .iter()
+        .any(|key| p.has(key))
+    {
+        return unmapped("key:Effect.AtEOT");
+    }
     if let Some(out) = fixed_as_it_begins(ctx, p) {
         return out;
     }
@@ -112,7 +126,12 @@ pub fn effects(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
         return Ok(out);
     }
     if !p.has("RememberObjects") && !p.has("ValidTgts") {
-        return super::effects_ambient::continuous_statics(ctx, p);
+        let mut out = super::effects_ambient::continuous_statics(ctx, p)?;
+        // "Exile it at the beginning of the next end step": the clean-up of the source itself.
+        if let Some(word) = p.get("AtEOT") {
+            out.push(super::tokens_copy::at_eot(word, &json!("This"))?);
+        }
+        return Ok(out);
     }
     remembered_statics(ctx, p, owner.as_ref(), None)
 }
@@ -247,6 +266,7 @@ fn remembered_play(ctx: &mut Ctx, part: &Params, who: &Value, owner: Option<&Val
 }
 
 /// One static of an `Effect` line about the objects it remembers.
+#[allow(clippy::too_many_lines)]
 fn remembered_static(
     ctx: &mut Ctx,
     name: &str,
@@ -290,6 +310,11 @@ fn remembered_static(
         "AddType",
         "AddPower",
         "AddToughness",
+        "SetPower",
+        "SetToughness",
+        "SetColor",
+        "RemoveCreatureTypes",
+        "GainControl",
     ];
     // `ValidTarget$` and `Activator$` belong to a `CantTarget` line alone.
     let cant_target = part.get("Mode") == Some("CantTarget");
@@ -350,6 +375,10 @@ fn remembered_static(
             json!({"Rule": {"rule": {"MustAttack": who}, "duration": duration}}),
         ]),
         "Continuous" if on_remembered("Affected") => {
+            // The engine gives a shield counter no meaning, so a rule that waits on one would run without it.
+            if duration.to_string().contains("shield") {
+                return unmapped("key:Effect.static.shield-counter");
+            }
             let mods = pump_like(ctx, &part)?;
             Ok(vec![continuous(who, &mods, duration)])
         }
@@ -391,6 +420,41 @@ pub(super) fn remembered(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
     Ok(who)
 }
 
+/// `SetPower$` with `SetToughness$`: the base power and toughness; one alone is a gap.
+fn set_stats(ctx: &Ctx, part: &Params) -> Tr<Vec<Value>> {
+    match (part.get("SetPower"), part.get("SetToughness")) {
+        (None, None) => Ok(Vec::new()),
+        (Some(power), Some(toughness)) => {
+            let (power, toughness) = (amount(ctx, power)?, amount(ctx, toughness)?);
+            Ok(vec![
+                json!({"SetPT": {"power": power, "toughness": toughness}}),
+            ])
+        }
+        _ => unmapped("key:Effect.static.SetPower-alone"),
+    }
+}
+
+/// The types and the color of a continuous static line: `AddType$` (replacing the creature types with
+/// `RemoveCreatureTypes$`) and one `SetColor$`.
+fn set_types(part: &Params) -> Tr<Vec<Value>> {
+    let mut mods = super::effects_zone::added_types(part.get("AddType").unwrap_or_default());
+    if part.get("RemoveCreatureTypes") == Some("True") {
+        let kept: Vec<Value> = mods
+            .iter()
+            .filter_map(|m| m.get("AddSubtype").cloned())
+            .collect();
+        mods.retain(|m| m.get("AddSubtype").is_none());
+        mods.push(json!({ "SetCreatureTypes": kept }));
+    }
+    if let Some(color) = part.get("SetColor") {
+        if !matches!(color, "White" | "Blue" | "Black" | "Red" | "Green") {
+            return unmapped("key:Effect.static.SetColor");
+        }
+        mods.push(json!({ "SetColors": [color] }));
+    }
+    Ok(mods)
+}
+
 /// Power, toughness and keywords of a continuous static line.
 fn pump_like(ctx: &Ctx, part: &Params) -> Tr<Vec<Value>> {
     let mut mods = Vec::new();
@@ -399,9 +463,11 @@ fn pump_like(ctx: &Ctx, part: &Params) -> Tr<Vec<Value>> {
         let toughness = amount(ctx, part.get("AddToughness").unwrap_or("0"))?;
         mods.push(json!({"ModifyPT": {"power": power, "toughness": toughness}}));
     }
-    mods.extend(super::effects_zone::added_types(
-        part.get("AddType").unwrap_or_default(),
-    ));
+    mods.extend(set_stats(ctx, part)?);
+    mods.extend(set_types(part)?);
+    if part.get("GainControl") == Some("You") {
+        mods.push(json!({"SetController": "You"}));
+    }
     if let Some(keywords) = part.get("AddKeyword") {
         for keyword in keyword_list(ctx, keywords)? {
             mods.push(json!({ "AddKeyword": keyword }));

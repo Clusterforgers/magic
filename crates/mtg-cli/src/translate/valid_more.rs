@@ -204,6 +204,13 @@ pub fn defined_word(ctx: &Ctx, word: &str) -> Tr<Value> {
                 "Each": [{"Type": "Creature"}, {"AnyOf": [{"Is": "Attached"}, {"SharesSubtype": "Attached"}]}]
             }))
         }
+        // "Each opponent attacking that player" (the Curses): the opponents with a creature attacking the enchanted player.
+        "TriggeredAttackingPlayer.Opponent+controlsCreature.attacking Player.EnchantedBy" => {
+            let attackers = json!({"Count": [
+                {"Type": "Creature"}, {"ControlledBy": "You"}, {"AttackingPlayer": "AttachedPlayer"}]});
+            let test = json!({"Compare": {"left": attackers, "op": "Ge", "right": 1}});
+            Ok(super::players_where::players(&json!("Opponents"), &test))
+        }
         _ => unmapped(format!("defined:{word}")),
     }
 }
