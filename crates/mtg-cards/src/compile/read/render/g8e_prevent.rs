@@ -88,13 +88,9 @@ impl Writer<'_> {
         let [first, second, ..] = effects else {
             return None;
         };
-        let (to, Side::To, combat) = shield_side(first)? else {
-            return None;
-        };
-        let (by, Side::By, also) = shield_side(second)? else {
-            return None;
-        };
-        (to == by && combat == also).then_some(())?;
+        let (to, one, combat) = shield_side(first)?;
+        let (by, other, also) = shield_side(second)?;
+        (to == by && combat == also && one != other).then_some(())?;
         let object = self.g8e_object(to)?;
         Some((
             format!(
@@ -106,30 +102,55 @@ impl Writer<'_> {
     }
 }
 
-/// The Oracle wordings of a shield of the damage an object deals that the writers give in other words: "that would be
-/// dealt this turn by target creature" and "target creature would deal this turn" for "that would be dealt by target
-/// creature this turn".
+/// The Oracle wordings of a shield for the turn that the writers give in other words: "that would be dealt this turn by
+/// target creature" and "target creature would deal this turn" for "that would be dealt by target creature this turn",
+/// "that would be dealt this turn to" for "that would be dealt to ... this turn", "that creature" for the "it" of the
+/// target named before, and "it" for a "~" named before.
 pub fn g8e_wordings(texts: &mut Vec<String>) {
     let mut found = Vec::new();
     for text in texts.iter() {
-        for (start, _) in text.match_indices(" that would be dealt by ") {
-            let head = &text[..start];
-            let rest = &text[start + " that would be dealt by ".len()..];
-            let Some(end) = rest.find(" this turn") else {
-                continue;
-            };
-            let object = &rest[..end];
-            let tail = &rest[end + " this turn".len()..];
-            if object.contains([',', '.', ';', '"'])
-                || object.contains(" would ")
-                || !head.to_lowercase().ends_with("damage")
-            {
-                continue;
+        for side in ["by", "to"] {
+            let lead = format!(" that would be dealt {side} ");
+            for (start, _) in text.match_indices(&lead) {
+                let head = &text[..start];
+                let rest = &text[start + lead.len()..];
+                let Some(end) = rest.find(" this turn") else {
+                    continue;
+                };
+                let object = &rest[..end];
+                let tail = &rest[end + " this turn".len()..];
+                if object.contains([',', '.', ';', '"'])
+                    || object.contains(" would ")
+                    || object.starts_with("and ")
+                    || !head.to_lowercase().ends_with("damage")
+                {
+                    continue;
+                }
+                found.push(format!(
+                    "{head} that would be dealt this turn {side} {object}{tail}"
+                ));
+                if side == "by" {
+                    found.push(format!("{head} {object} would deal this turn{tail}"));
+                }
             }
-            found.push(format!(
-                "{head} that would be dealt this turn by {object}{tail}"
+        }
+        if text.contains(" dealt to and dealt by it this turn") {
+            found.push(text.replace(
+                " dealt to and dealt by it this turn",
+                " dealt to and dealt by that creature this turn",
             ));
-            found.push(format!("{head} {object} would deal this turn{tail}"));
+        }
+        // "it" names the "~" before only when no other object is named between them.
+        if let Some(at) = text.find(" would be dealt to ~ this turn")
+            && let Some(last) = text[..at].rfind('~')
+            && !text[last..at].contains("target")
+            && !text[last..at].contains("creature")
+        {
+            found.push(format!(
+                "{} would be dealt to it this turn{}",
+                &text[..at],
+                &text[at + " would be dealt to ~ this turn".len()..]
+            ));
         }
         for (start, _) in text.match_indices(" would deal this turn") {
             let head = &text[..start];

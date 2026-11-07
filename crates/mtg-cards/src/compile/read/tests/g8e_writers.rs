@@ -67,6 +67,25 @@ const SELF_BY: &str = r#"{"source":[{"Is":"This"}],"combat":true}"#;
     activated(&format!("{},{}", shield(SELF_TO), shield(SELF_BY))),
     "{U}: Prevent all combat damage that would be dealt to and dealt by ~ this turn."
 )]
+#[case::by_then_to_that_creature(
+    spell(&format!(
+        r#"{{"Untap":{{"what":{{"Target":0}}}}}},{},{}"#,
+        shield(BY_COMBAT),
+        shield(TO_COMBAT)
+    )),
+    "Untap target creature. Prevent all combat damage that would be dealt to and dealt by that creature this turn."
+)]
+#[case::this_turn_to(
+    spell(&shield(r#"{"to":{"Target":0}}"#)),
+    "Prevent all damage that would be dealt this turn to target creature."
+)]
+#[case::it_for_this(
+    format!(
+        r#"{{"Triggered":{{"when":{{"Attacks":{{"what":["This"]}}}},"effects":[{{"PutCounters":{{"counter":"+1/+1","on":"This"}}}},{}]}}}}"#,
+        shield(r#"{"to":"This"}"#)
+    ),
+    "Whenever ~ attacks, put a +1/+1 counter on ~ and prevent all damage that would be dealt to it this turn."
+)]
 #[case::aura_by(
     aura(r#"{"source":[{"Is":"Attached"}]}"#),
     "Prevent all damage that would be dealt by enchanted creature."
@@ -102,6 +121,21 @@ fn writes_the_oracle_wording(#[case] json: String, #[case] clause: &str) {
 )]
 #[case::one_side_for_both(
     activated(&shield(SELF_TO)),
+    "{U}: Prevent all combat damage that would be dealt to and dealt by ~ this turn."
+)]
+#[case::it_after_a_target(
+    format!(
+        r#"{{"Activated":{{"cost":["Tap"],"effects":[{{"DealDamage":{{"amount":1,"to":{{"Target":0}}}}}},{}],"targets":[{ONE}]}}}}"#,
+        shield(r#"{"to":"This"}"#)
+    ),
+    "{T}: ~ deals 1 damage to target creature. Prevent all damage that would be dealt to it this turn."
+)]
+#[case::pair_of_two_kinds(
+    activated(&format!(
+        "{},{}",
+        shield(SELF_TO),
+        shield(r#"{"source":[{"Is":"This"}]}"#)
+    )),
     "{U}: Prevent all combat damage that would be dealt to and dealt by ~ this turn."
 )]
 #[case::aura_to_for_by(

@@ -12,22 +12,22 @@ const BY: &str = "Prevent all damage that would be dealt by CARDNAME.";
 const COMBAT_BY: &str = "Prevent all combat damage that would be dealt by CARDNAME.";
 const BOTH: &str = "Prevent all combat damage that would be dealt to and dealt by CARDNAME.";
 
-fn shield(damage: Value) -> Value {
+fn shield(damage: &Value) -> Value {
     json!({"Shield": {"when": {"Damage": damage}, "by": "Prevent", "duration": "UntilEndOfTurn"}})
 }
 
-fn replacement(damage: Value) -> Value {
+fn replacement(damage: &Value) -> Value {
     json!({"Replacement": {"when": {"Damage": damage}, "by": "Prevent"}})
 }
 
 #[rstest]
-#[case::to(TO, vec![shield(json!({"to": {"Target": 0}}))])]
-#[case::combat_to(COMBAT_TO, vec![shield(json!({"to": {"Target": 0}, "combat": true}))])]
-#[case::by(BY, vec![shield(json!({"source": [{"Is": {"Target": 0}}]}))])]
-#[case::combat_by(COMBAT_BY, vec![shield(json!({"source": [{"Is": {"Target": 0}}], "combat": true}))])]
+#[case::to(TO, vec![shield(&json!({"to": {"Target": 0}}))])]
+#[case::combat_to(COMBAT_TO, vec![shield(&json!({"to": {"Target": 0}, "combat": true}))])]
+#[case::by(BY, vec![shield(&json!({"source": [{"Is": {"Target": 0}}]}))])]
+#[case::combat_by(COMBAT_BY, vec![shield(&json!({"source": [{"Is": {"Target": 0}}], "combat": true}))])]
 #[case::to_and_by(BOTH, vec![
-    shield(json!({"to": {"Target": 0}, "combat": true})),
-    shield(json!({"source": [{"Is": {"Target": 0}}], "combat": true})),
+    shield(&json!({"to": {"Target": 0}, "combat": true})),
+    shield(&json!({"source": [{"Is": {"Target": 0}}], "combat": true})),
 ])]
 fn a_pumped_prevention_is_a_shield_for_the_turn(#[case] word: &str, #[case] expected: Vec<Value>) {
     let script = format!("Name:T\nTypes:Instant\nA:SP$ Pump | ValidTgts$ Creature | KW$ {word}\n");
@@ -52,7 +52,7 @@ fn a_pumped_prevention_beside_a_change_follows_the_change() {
     );
     assert_eq!(
         effects[1],
-        shield(json!({"source": [{"Is": {"Target": 0}}], "combat": true}))
+        shield(&json!({"source": [{"Is": {"Target": 0}}], "combat": true}))
     );
 }
 
@@ -81,7 +81,7 @@ fn a_given_prevention_is_a_replacement_of_the_aura(#[case] word: &str, #[case] d
     let script = aura(&format!("AddKeyword$ {word}"));
     assert_eq!(
         abilities(&script)[1..],
-        [replacement(damage)],
+        [replacement(&damage)],
         "{:?}",
         gaps(&script)
     );
@@ -94,7 +94,7 @@ fn a_given_prevention_beside_a_keyword_is_a_second_ability() {
         abilities(&script)[1..],
         [
             json!({"Static": {"affected": "Attached", "mods": [{"AddKeyword": "Shadow"}]}}),
-            replacement(json!({"source": [{"Is": "Attached"}]}))
+            replacement(&json!({"source": [{"Is": "Attached"}]}))
         ],
         "{:?}",
         gaps(&script)

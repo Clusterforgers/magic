@@ -34,7 +34,7 @@ pub fn prevention(word: &str) -> Option<Prevention> {
 
 impl Prevention {
     /// The damage events prevented, as `ReplaceWhen::Damage` values: to the recipient `to`, and from the sources `from`.
-    pub fn events(self, to: &Value, from: Value) -> Vec<Value> {
+    pub fn events(self, to: &Value, from: &Value) -> Vec<Value> {
         let when = |mut damage: Value| {
             if let Some(combat) = self.combat {
                 damage["combat"] = json!(combat);
@@ -53,7 +53,7 @@ impl Prevention {
 
     /// The damage events prevented for the objects `affected` names: to them, and from them as they are now.
     pub fn events_of(self, affected: &Value) -> Vec<Value> {
-        self.events(affected, json!([{ "Is": affected }]))
+        self.events(affected, &json!([{ "Is": affected }]))
     }
 }
 
@@ -65,7 +65,7 @@ pub fn prevent_keyword(body: &str) -> Option<Vec<Value>> {
     let found = prevention(body)?;
     Some(
         found
-            .events(&json!("This"), json!(["This"]))
+            .events(&json!("This"), &json!(["This"]))
             .into_iter()
             .map(|when| json!({"Replacement": {"when": when, "by": "Prevent"}}))
             .collect(),
