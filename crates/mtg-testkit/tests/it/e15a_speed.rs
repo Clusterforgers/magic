@@ -123,10 +123,20 @@ fn speed_starts_rises_once_a_turn_and_grants_at_max(#[case] seats: usize) {
     assert_eq!(bear_power(&driver), 6);
     assert!(double_strike(&driver));
     // Seat 0 has max speed and is spared; every other seat takes 2.
-    let before: Vec<i32> = driver.state().players().iter().map(|p| p.life()).collect();
+    let before: Vec<i32> = driver
+        .state()
+        .players()
+        .iter()
+        .map(mtg_engine::player::Player::life)
+        .collect();
     driver.cast("Outpace").unwrap();
     resolve(&mut driver).unwrap();
-    let after: Vec<i32> = driver.state().players().iter().map(|p| p.life()).collect();
+    let after: Vec<i32> = driver
+        .state()
+        .players()
+        .iter()
+        .map(mtg_engine::player::Player::life)
+        .collect();
     assert_eq!(after[0], before[0]);
     assert!(
         after
@@ -145,10 +155,20 @@ fn speed_starts_rises_once_a_turn_and_grants_at_max(#[case] seats: usize) {
 fn without_max_speed_nothing_is_granted_and_everyone_takes_the_damage(#[case] seats: usize) {
     let mut driver = table(seats);
     assert!(!double_strike(&driver));
-    let before: Vec<i32> = driver.state().players().iter().map(|p| p.life()).collect();
+    let before: Vec<i32> = driver
+        .state()
+        .players()
+        .iter()
+        .map(mtg_engine::player::Player::life)
+        .collect();
     driver.cast("Outpace").unwrap();
     resolve(&mut driver).unwrap();
-    let after: Vec<i32> = driver.state().players().iter().map(|p| p.life()).collect();
+    let after: Vec<i32> = driver
+        .state()
+        .players()
+        .iter()
+        .map(mtg_engine::player::Player::life)
+        .collect();
     assert!(after.iter().zip(&before).all(|(now, was)| *now == was - 2));
     // Seat 1 lost life on seat 0's turn, so the speed rose; seat 0's own loss changed nothing more.
     assert_eq!(speed(&driver), 2);

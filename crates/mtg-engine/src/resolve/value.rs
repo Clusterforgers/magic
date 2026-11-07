@@ -2482,7 +2482,7 @@ impl<'a> Scope<'a> {
     }
 
     /// Whether a player `who` names holds the designation of the condition: has completed a dungeon, is the monarch,
-    /// was it as the turn began, has the initiative, or has the city's blessing.
+    /// was it as the turn began, has the initiative, has the city's blessing, or has max speed.
     fn w11d_designation(&self, condition: &Condition, who: &Ref) -> Result<bool, ResolveError> {
         let began = self.state.monarch_at_turn_start();
         Ok(self.players(who)?.iter().any(|player| match condition {
@@ -2491,6 +2491,7 @@ impl<'a> Scope<'a> {
             // One player at most is the monarch, so "an opponent is the monarch" holds when any of them is.
             Condition::Monarch(_) => self.state.monarch() == Some(*player),
             Condition::MonarchAtTurnStart(_) => began == Some(*player),
+            Condition::MaxSpeed(_) => self.state.has_max_speed(*player),
             _ => self.state.has_citys_blessing(*player),
         }))
     }
@@ -2565,11 +2566,8 @@ impl<'a> Scope<'a> {
             | Condition::Initiative(who)
             | Condition::Monarch(who)
             | Condition::MonarchAtTurnStart(who)
-            | Condition::CitysBlessing(who) => self.w11d_designation(condition, who)?,
-            Condition::MaxSpeed(who) => self
-                .players(who)?
-                .iter()
-                .any(|player| self.state.has_max_speed(*player)),
+            | Condition::CitysBlessing(who)
+            | Condition::MaxSpeed(who) => self.w11d_designation(condition, who)?,
             Condition::IsDay => self.state.day_night() == Some(DayNight::Day),
             Condition::IsNight => self.state.day_night() == Some(DayNight::Night),
             Condition::NeitherDayNorNight => self.state.day_night().is_none(),

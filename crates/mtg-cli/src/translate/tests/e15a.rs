@@ -76,5 +76,5 @@ fn a_speed_card_reads_without_a_gap_and_holds_its_fragment(
 #[test]
 fn the_highest_speed_stays_a_gap() {
     let text = "Name:Subject\nTypes:Sorcery\nA:SP$ Draw | NumCards$ X\nSVar:X:PlayerCountPlayers$HighestSpeed\nOracle:Draw cards.\n";
-    assert!(!gaps(&text.to_owned()).is_empty());
+    assert_ne!(gaps(text), Vec::<String>::new());
 }
