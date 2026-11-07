@@ -13,14 +13,14 @@ use crate::forge::script::Params;
 /// creature card with mana value 1, then do the same for 2 and 3"): every pick, wherever it is now. Only picks of
 /// `ChooseCard` lines that follow each other add up; anything else held (a loop's object or player, a pass of a loop that
 /// would add up over passes) keeps the line a gap.
-fn add_chosen(ctx: &Ctx, held: Value, before: Option<&str>, bind: &str) -> Tr<Value> {
+fn add_chosen(ctx: &Ctx, held: &Value, before: Option<&str>, bind: &str) -> Tr<Value> {
     let gap = || unmapped("key:ChooseCard.RememberChosen-with-remembered");
     let pick = json!({"Is": {"Bound": bind}});
-    let picks = match (&held, before) {
+    let picks = match (held, before) {
         (Value::Object(map), Some(name))
             if map.get("Bound").and_then(Value::as_str) == Some(name) =>
         {
-            vec![json!({"Is": held.clone()}), pick]
+            vec![json!({ "Is": held }), pick]
         }
         _ => match held.pointer("/Each/0/AnyOf").and_then(Value::as_array) {
             Some(earlier) if held.pointer("/Each/1") == Some(&chosen_zones()) => {
@@ -31,7 +31,7 @@ fn add_chosen(ctx: &Ctx, held: Value, before: Option<&str>, bind: &str) -> Tr<Va
             _ => return gap(),
         },
     };
-    if ctx.player_loop.is_some() || super::memory::is_scoped(ctx, &held) {
+    if ctx.player_loop.is_some() || super::memory::is_scoped(ctx, held) {
         return gap();
     }
     Ok(json!({"Each": [{"AnyOf": picks}, chosen_zones()]}))
@@ -127,7 +127,7 @@ pub fn choose_card(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
     if p.get("RememberChosen") == Some("True") {
         ctx.remembered = Some(match ctx.remembered.take() {
             None => json!({ "Bound": bind }),
-            Some(held) => add_chosen(ctx, held, before.as_deref(), &bind)?,
+            Some(held) => add_chosen(ctx, &held, before.as_deref(), &bind)?,
         });
     }
     let mut effects = vec![effect];

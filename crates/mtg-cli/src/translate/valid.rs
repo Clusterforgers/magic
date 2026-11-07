@@ -294,9 +294,9 @@ pub fn selector(ctx: &Ctx, spec: &str) -> Tr<Vec<Value>> {
     // Every unknown word of the alternative is reported, not only the first.
     let mut gaps = super::filter::Unknowns::default();
     let (mut preds, props) = if matches!(head, "Targeted" | "TargetedCard") {
-        targeted_base(objects(ctx.last_target()?)?, props)
+        targeted_base(&objects(ctx.last_target()?)?, props)
     } else if let Some(slot) = memory_head(head) {
-        targeted_base(objects(super::memory::held_objects(ctx, slot)?)?, props)
+        targeted_base(&objects(super::memory::held_objects(ctx, slot)?)?, props)
     } else {
         (gaps.take(base(ctx, head)), split_properties(props))
     };
@@ -881,7 +881,7 @@ fn memory_head(head: &str) -> Option<super::memory::Slot> {
 /// The base `Targeted` (or a memory) of a valid-string: the objects themselves, the cards that share a name with one of
 /// them (`sameName`, which leaves them out beside `Other`) or what is attached to them (`Attached`); the properties left
 /// apply to those objects.
-fn targeted_base(target: Value, props: &str) -> (Vec<Value>, Vec<String>) {
+fn targeted_base(target: &Value, props: &str) -> (Vec<Value>, Vec<String>) {
     let mut rest = split_properties(props);
     let mut take = |word: &str| {
         let found = rest.iter().any(|prop| prop == word);

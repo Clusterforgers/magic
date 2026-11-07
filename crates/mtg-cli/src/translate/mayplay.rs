@@ -182,14 +182,7 @@ pub fn play(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
         _ => return unmapped("key:Play.Defined-with-Valid"),
     };
     let free = p.get("WithoutManaCost") == Some("True");
-    // `RememberPlayed$` names the spell cast ("if you do"); a land played binds nothing, so only spells may be asked for.
-    let played = match p.get("RememberPlayed") {
-        None => None,
-        Some("True") if (spell_only || copy) && !matches!(count, Count::All | Count::Some(_)) => {
-            Some(ctx.fresh("cast"))
-        }
-        Some(_) => return unmapped("key:Play.RememberPlayed"),
-    };
+    let played = played_name(ctx, p, spell_only || copy, matches!(count, Count::One))?;
     let cast = |card: Value, ctx: &mut Ctx| -> Vec<Value> {
         let mut steps = Vec::new();
         let mut card = card;
@@ -233,6 +226,16 @@ pub fn play(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
     let inner = cast(json!({ "Bound": each }), ctx);
     steps.push(json!({"RepeatEach": {"over": over, "as": each, "effects": inner}}));
     Ok(steps)
+}
+
+/// `RememberPlayed$` of a `Play`: the name of the spell cast ("if you do"). A land played binds nothing and one name holds
+/// one spell, so only a single card cast as a spell may be asked for.
+fn played_name(ctx: &mut Ctx, p: &Params, spell: bool, one: bool) -> Tr<Option<String>> {
+    match p.get("RememberPlayed") {
+        None => Ok(None),
+        Some("True") if spell && one => Ok(Some(ctx.fresh("cast"))),
+        Some(_) => unmapped("key:Play.RememberPlayed"),
+    }
 }
 
 /// `ValidSA$` of a `Play`: whether only casting is allowed, and what the spell must be besides (`Spell.cmcLE4`,
