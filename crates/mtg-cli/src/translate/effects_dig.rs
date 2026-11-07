@@ -39,6 +39,10 @@ pub fn dig_multiple(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
     };
     let (to, rest_to) = dig_places(p)?;
     let who = subject(ctx, p, "You", None)?;
+    // Each choice below is the caster's: another player's look at their own cards is not read.
+    if who != json!("You") {
+        return unmapped("key:DigMultiple.Defined-not-you");
+    }
     let count = amount(ctx, p.get("DigNum").unwrap_or("1"))?;
     let top = ctx.fresh("top");
     let from_top = json!({ "Bound": top });
@@ -50,6 +54,7 @@ pub fn dig_multiple(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
     for alternative in valid.split(',') {
         let mut pool = vec![json!({"In": "Library"}), json!({"Is": from_top})];
         pool.extend(selector_any(ctx, alternative)?);
+        super::valid::spell_card(&mut pool);
         pool.extend(super::valid::permanent_card(alternative)?);
         // A card taken for an earlier alternative is not taken again.
         for earlier in &kept {

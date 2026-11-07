@@ -51,7 +51,11 @@ fn part(ctx: &mut Ctx, name: &str) -> Tr<Vec<Value>> {
 /// `GenericChoice`: the controller (or the one player `Defined$` names) chooses one of the parts as the effect resolves;
 /// two parts chosen by the controller are an `Either`, any other choice a `OneOf`.
 fn generic_choice(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
-    only(p, "GenericChoice", &["Choices", "Defined", "ValidTgts"])?;
+    only(
+        p,
+        "GenericChoice",
+        &["Choices", "Defined", "ValidTgts", "FallbackAbility"],
+    )?;
     // A target is declared for the parts to read; without `Defined$` the targeted player chooses ("target opponent may
     // have you draw three cards").
     let mut chooser = None;
@@ -82,6 +86,15 @@ fn generic_choice(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
     let names: Vec<&str> = p.get("Choices").unwrap_or_default().split(',').collect();
     if !(2..=MOST_OPTIONS).contains(&names.len()) {
         return unmapped("key:GenericChoice.Choices");
+    }
+    // The fallback is for a choice no one can make; a part that asks to pay (or lose the life) already covers that.
+    if p.has("FallbackAbility")
+        && !names.iter().all(|name| {
+            ctx.svar(name)
+                .is_some_and(|text| Params::parse(text).has("UnlessCost"))
+        })
+    {
+        return unmapped("key:GenericChoice.FallbackAbility");
     }
     let mut options = Vec::new();
     for name in names {

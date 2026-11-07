@@ -327,6 +327,10 @@ fn may_decider(ctx: &Ctx, p: &Params) -> Tr<Value> {
         other => other,
     };
     let who = match decider {
+        // "Target opponent may draw": the player the line targets decides.
+        Some("Opponent") if matches!(p.get("ValidTgts"), Some("Opponent" | "Player.Opponent")) => {
+            ctx.last_target()?
+        }
         Some(word) => match defined(ctx, word)? {
             group if matches!(group.as_str(), Some("Opponents" | "EachPlayer")) => {
                 return unmapped(format!("key:May.OptionalDecider={word}"));
@@ -361,7 +365,13 @@ fn unless_pays(
         Some(other) => return unmapped(format!("key:Unless.UnlessResolveSubs={other}")),
     };
     let who = match p.get("UnlessPayer") {
-        None if api_of(p)? == "Counter" => json!({ "ControllerOf": ctx.last_target()? }),
+        // "Unless its controller pays": the controller of the object the line targets.
+        None if api_of(p)? == "Counter" || p.has("ValidTgts") => {
+            json!({ "ControllerOf": ctx.last_target()? })
+        }
+        None if p.get("Defined") == Some("TargetedController") => {
+            defined(ctx, "TargetedController")?
+        }
         None => return unmapped("key:Unless.no-UnlessPayer"),
         // A group ("unless any player pays") is asked in turn order until one pays; every seat gets the normal clock and an
         // unanswered question is a no.
@@ -1187,7 +1197,18 @@ fn delayed_node(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
         }) {
             return unmapped(format!("key:DelayedTrigger.RememberObjects={other}"));
         }
-        (delayed_step(p)?, false)
+        // "If those cards remain exiled": the move from exile that the trigger runs finds nothing else.
+        let present = p.get("IsPresent") == Some("Card.IsTriggerRemembered")
+            && p.get("PresentZone") == Some("Exile")
+            && ctx
+                .svar(execute)
+                .is_some_and(|part| Params::parse(part).get("Origin") == Some("Exile"));
+        let step = if present {
+            p.without(&["IsPresent", "PresentZone"])
+        } else {
+            p.clone()
+        };
+        (delayed_step(&step)?, false)
     } else {
         // The ability's own keys are not part of the event.
         let event = p.without(&[
@@ -1254,6 +1275,8 @@ fn delayed_step(p: &Params) -> Tr<Value> {
     let whose = match p.get("ValidPlayer") {
         None | Some("Player") => "EachPlayer",
         Some("You") => "You",
+        // A blocker blocks on an opponent's turn, so the end of that combat is the one an opponent's end of combat names.
+        Some("Opponent") if p.get("Phase") == Some("EndCombat") => "EachPlayer",
         Some(other) => return unmapped(format!("key:DelayedTrigger.ValidPlayer={other}")),
     };
     Ok(json!({"StepBegins": {"step": step, "whose": whose}}))
