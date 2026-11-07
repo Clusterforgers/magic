@@ -95,7 +95,7 @@ fn an_opening_reveal_of_another_shape_is_a_gap(#[case] effect: &str, #[case] tri
     if effect.contains("Permanent") {
         text = text.replace(" | OneOff$ True", "");
     }
-    assert!(!gaps(&text).is_empty());
+    assert_ne!(gaps(&text), Vec::<String>::new());
 }
 
 fn turned_up(line: &str, part: &str) -> String {
@@ -142,7 +142,7 @@ fn turning_face_up_reads_as_counters_or_a_restriction(
     "SVar:Add:DB$ PutCounter | Defined$ Self | CounterNum$ 1 | CounterType$ P1P1\n"
 )]
 fn turning_face_up_of_another_shape_is_a_gap(#[case] line: &str, #[case] part: &str) {
-    assert!(!gaps(&turned_up(line, part)).is_empty());
+    assert_ne!(gaps(&turned_up(line, part)), Vec::<String>::new());
 }
 
 #[rstest]

@@ -438,6 +438,15 @@ fn tally_moved(state: &mut GameState, cause: ZoneCause, object: ObjectId) {
     }
 }
 
+/// A card exiled haunting a creature keeps the creature it haunts (CR 702.55a).
+fn link_haunting(state: &mut GameState, card: ObjectId, cause: &ZoneCause) {
+    if let ZoneCause::Haunting { of } = cause
+        && let Some(object) = state.objects.get_mut(&card)
+    {
+        object.haunting = Some(*of);
+    }
+}
+
 pub(super) fn apply(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
     match event {
         Event::LandPlayed {
@@ -508,11 +517,7 @@ pub(super) fn apply(state: &mut GameState, event: &Event) -> Result<(), EngineEr
             {
                 object.encoded_on = Some(*by);
             }
-            if let ZoneCause::Haunting { of } = cause
-                && let Some(object) = state.objects.get_mut(object)
-            {
-                object.haunting = Some(*of);
-            }
+            link_haunting(state, *object, cause);
             if let ZoneCause::ExiledUntilMonarch { by } = cause {
                 state.possible.linked_exile = true;
                 if let Some(object) = state.objects.get_mut(object) {

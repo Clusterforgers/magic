@@ -264,6 +264,14 @@ impl Held {
         }
     }
 
+    /// Takes every ability and keyword away; a land type that sets the abilities (`land`) takes only those of the rules
+    /// text, so the "can't block" of a suspected land creature stays (CR 305.7, 701.60c).
+    fn lose_abilities(&mut self, land: bool) {
+        self.keywords.clear();
+        self.abilities.clear();
+        self.suspect_cant_block &= land;
+    }
+
     /// Makes the change `modification` says, as the effect `origin` with the timestamp `stamp` gives it.
     fn change(&mut self, modification: &Modification, origin: Grant, stamp: u64) {
         // An ability that is a keyword gives the keyword, whichever way the effect words it.
@@ -314,10 +322,7 @@ impl Held {
             }
             // The land has no ability of its rules text any more (CR 305.7); a layer 6 effect can still give one.
             Modification::LoseAbilities | Modification::SetLandTypes(_) => {
-                self.keywords.clear();
-                self.abilities.clear();
-                // A land type that sets the land's abilities takes only those of its rules text (CR 305.7).
-                self.suspect_cant_block &= matches!(modification, Modification::SetLandTypes(_));
+                self.lose_abilities(matches!(modification, Modification::SetLandTypes(_)));
                 self.keep_newer_counter_keywords(stamp, |_| true);
             }
             Modification::GrantAbility(granted) => self.abilities.push(HeldAbility {

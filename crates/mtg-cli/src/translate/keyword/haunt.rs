@@ -21,7 +21,7 @@ pub fn haunt(ctx: &mut Ctx, name: &str) -> Vec<Tr<Value>> {
             triggered(
                 ctx,
                 name,
-                json!({"ZoneChange": {"what": ["This"], "to": "Battlefield"}}),
+                &json!({"ZoneChange": {"what": ["This"], "to": "Battlefield"}}),
                 None,
             )
         })
@@ -32,7 +32,7 @@ pub fn haunt(ctx: &mut Ctx, name: &str) -> Vec<Tr<Value>> {
     vec![
         Ok(json!({"Keyword": "Haunt"})),
         first,
-        audited_one(|| triggered(ctx, name, haunted, Some("Exile"))),
+        audited_one(|| triggered(ctx, name, &haunted, Some("Exile"))),
     ]
 }
 
@@ -44,7 +44,7 @@ fn effects(ctx: &mut Ctx, name: &str) -> Tr<(Vec<Value>, Vec<Value>)> {
     Ok((effects, ctx.targets.clone()))
 }
 
-fn triggered(ctx: &mut Ctx, name: &str, when: Value, from: Option<&str>) -> Tr<Value> {
+fn triggered(ctx: &mut Ctx, name: &str, when: &Value, from: Option<&str>) -> Tr<Value> {
     let (effects, targets) = effects(ctx, name)?;
     let mut ability = json!({"when": when, "effects": effects});
     if let Some(zone) = from {

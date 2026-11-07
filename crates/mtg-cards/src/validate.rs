@@ -4060,6 +4060,8 @@ impl Walker<'_> {
         }
     }
 
+    // One arm for each kind of ability.
+    #[allow(clippy::too_many_lines)]
     fn ability(&mut self, ability: &Ability) {
         let tag = tag_of(ability);
         if !matches!(ability, Ability::Keyword(_)) {
@@ -4155,12 +4157,7 @@ impl Walker<'_> {
             alt @ Ability::AltCast { .. } => w.alt_cast(alt),
             Ability::CastOnly { condition } => w.w17c_cast_only(condition),
             Ability::OpeningHand => {}
-            Ability::OpeningReveal { when, effects } => {
-                w.at("when", |w| w.trigger_pattern(when));
-                let saved = std::mem::replace(&mut w.scope.in_trigger, true);
-                w.effect_list("effects", effects, false);
-                w.scope.in_trigger = saved;
-            }
+            Ability::OpeningReveal { when, effects } => w.opening_reveal(when, effects),
             Ability::Keyword(keyword) => w.keyword_ability(keyword),
             Ability::Manual { reason, span } => {
                 if reason.trim().is_empty() {
@@ -4613,6 +4610,15 @@ impl Walker<'_> {
 
     /// A morph, megamorph or disguise cost: turning face up pays its parts as a special action
     /// (`Keyword.TurnUp.Cost.Discard`).
+    /// A card revealed from the opening hand: the pattern and effects of the delayed trigger it sets up, as those of a
+    /// triggered ability.
+    fn opening_reveal(&mut self, when: &TriggerPattern, effects: &[Effect]) {
+        self.at("when", |w| w.trigger_pattern(when));
+        let saved = std::mem::replace(&mut self.scope.in_trigger, true);
+        self.effect_list("effects", effects, false);
+        self.scope.in_trigger = saved;
+    }
+
     fn turn_up_cost(&mut self, cost: &Cost) {
         self.at("cost", |w| w.cost(cost));
         self.parts_that_need_an_announcement("Keyword", "TurnUp.Cost", cost);

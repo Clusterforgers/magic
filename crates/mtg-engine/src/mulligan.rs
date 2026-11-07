@@ -238,7 +238,7 @@ pub(crate) fn opening_answer(
     choice: &CardsChoice,
 ) -> Result<Outcome, EngineError> {
     check_cards(options, &choice.0)?;
-    let (revealed, played): (Vec<ObjectId>, Vec<ObjectId>) = choice
+    let (revealed, onto_battlefield): (Vec<ObjectId>, Vec<ObjectId>) = choice
         .0
         .iter()
         .partition(|card| reveal_ability(state, **card).is_some());
@@ -258,7 +258,7 @@ pub(crate) fn opening_answer(
     }
     events.push(Event::OpeningCardsPlayed {
         player,
-        cards: played,
+        cards: onto_battlefield,
     });
     Ok(Outcome::Events(events))
 }

@@ -1309,7 +1309,6 @@ pub(crate) fn names_nothing(rule: &Rule) -> bool {
         Rule::MaxHandSize(sizes) => sizes.is_empty(),
         Rule::HandSizeChange(changes) => changes.is_empty(),
         Rule::UntapDuring { whose, .. } => whose.is_empty(),
-        Rule::NoLegendRuleFor(_) => false,
         Rule::AttackLimitAt { at, .. } => at.is_empty(),
         Rule::AdditionalLandPlays(plays) => plays.iter().all(|(_, count)| *count == 0),
         Rule::LookAtExiled { who, only, .. } | Rule::MayCast { who, only, .. } => {
@@ -1326,7 +1325,8 @@ pub(crate) fn names_nothing(rule: &Rule) -> bool {
         | Rule::Regenerate(_)
         | Rule::Replaces { .. }
         | Rule::AttackLimit(_)
-        | Rule::BlockLimit(_) => false,
+        | Rule::BlockLimit(_)
+        | Rule::NoLegendRuleFor(_) => false,
         Rule::PreventDamage(shield) => {
             shield.to.as_ref().is_some_and(Vec::is_empty)
                 || shield.from.as_ref().is_some_and(Vec::is_empty)
