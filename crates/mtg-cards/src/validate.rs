@@ -1996,10 +1996,10 @@ impl<'a> Walker<'a> {
                 if matches!(
                     modification,
                     Modification::RemoveSupertype(_)
-                        | Modification::AddSupertype(_)
                         | Modification::SetName(_)
                         | Modification::ThisAbility
-                ) {
+                ) || matches!(modification, Modification::AddSupertype(_)) && !w.scope.in_static
+                {
                     w.problem("a supertype, a name or this ability changes only the copiable values of a copy (`except`)");
                 }
             });

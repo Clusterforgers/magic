@@ -1583,8 +1583,10 @@ impl<'a> Scope<'a> {
             Pred::Saddled(named) => self.crewed_by(named, true, reference)?,
             Pred::Type(card_type) => seen.chars.types.contains(*card_type),
             Pred::Supertype(supertype) => {
-                seen.card
-                    .is_some_and(|c| c.card().supertypes.contains(supertype))
+                seen.chars.supertypes.contains(supertype)
+                    || seen
+                        .card
+                        .is_some_and(|c| c.card().supertypes.contains(supertype))
                     || (*supertype == mtg_core::card::Supertype::Legendary
                         && seen.zone == Zone::Battlefield
                         && crate::ring::is_legendary_bearer(self.state, reference.id))

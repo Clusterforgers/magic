@@ -144,6 +144,9 @@ function modificationWords(modification: Modification, group: boolean, n: EventN
   if ('SetTypes' in modification) {
     return `${becomes} only ${joinWords(cardTypeNames(modification.SetTypes))}`
   }
+  if ('AddSupertype' in modification) {
+    return `${becomes} ${modification.AddSupertype.toLowerCase()} too`
+  }
   if ('AddSubtype' in modification) return `${becomes} ${modification.AddSubtype} too`
   if ('SetCreatureTypes' in modification) {
     return `${becomes} ${joinWords(modification.SetCreatureTypes)}`

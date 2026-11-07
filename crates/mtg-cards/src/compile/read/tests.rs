@@ -285,6 +285,7 @@ mod g10c_writers;
 mod g11b_writers;
 mod g11c_writers;
 mod g12b_writers;
+mod g12c_writers;
 mod g8c_writers;
 mod g8e_writers;
 mod g9a_writers;

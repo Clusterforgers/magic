@@ -335,6 +335,7 @@ impl Held {
             Modification::AddType(_)
             | Modification::RemoveType(_)
             | Modification::SetTypes(_)
+            | Modification::AddSupertype(_)
             | Modification::AddSubtype(_)
             | Modification::SetCreatureTypes(_)
             | Modification::AddAllCreatureTypes

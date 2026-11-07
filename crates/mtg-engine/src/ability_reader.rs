@@ -200,6 +200,14 @@ pub(crate) fn definition_has_static(definition: &CardDefinition) -> bool {
     })
 }
 
+/// Whether a card with this definition has a static ability that gives a supertype (CR 205.4).
+pub(crate) fn definition_gives_supertype(definition: &CardDefinition) -> bool {
+    definition.rules.iter().any(|rules| {
+        matches!(&**rules, Ability::Static { mods, .. }
+            if mods.iter().any(|given| matches!(given, WantedModification::AddSupertype(_))))
+    })
+}
+
 /// Whether a card with this definition prints a rule of the game as an ability or a static ability that grants one
 /// (`GameState::rules`).
 pub(crate) fn definition_has_rule(definition: &CardDefinition) -> bool {

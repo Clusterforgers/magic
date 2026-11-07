@@ -6,11 +6,12 @@ import type { ColorSet } from "./ColorSet";
 import type { ObjectRef } from "./ObjectRef";
 import type { PlayerId } from "./PlayerId";
 import type { Subtype } from "./Subtype";
+import type { Supertype } from "./Supertype";
 
 /**
  * What an effect changes.
  */
-export type Modification = { "AddType": CardType } | { "RemoveType": CardType } | { "SetTypes": CardTypes } | { "AddSubtype": Subtype } | { "SetCreatureTypes": Array<Subtype> } | { "SetLandTypes": Array<Subtype> } | "AddAllCreatureTypes" | { "SetColors": ColorSet } | { "AddColors": ColorSet } | { "AddKeyword": unknown } | { "RemoveKeyword": unknown } | { "LockKeyword": unknown } | { "GrantAbility": unknown } | { "GainAbilities": Array<Borrowed> } | "LoseAbilities" | { "SetController": PlayerId } | { "SetPowerToughness": { 
+export type Modification = { "AddType": CardType } | { "RemoveType": CardType } | { "SetTypes": CardTypes } | { "AddSupertype": Supertype } | { "AddSubtype": Subtype } | { "SetCreatureTypes": Array<Subtype> } | { "SetLandTypes": Array<Subtype> } | "AddAllCreatureTypes" | { "SetColors": ColorSet } | { "AddColors": ColorSet } | { "AddKeyword": unknown } | { "RemoveKeyword": unknown } | { "LockKeyword": unknown } | { "GrantAbility": unknown } | { "GainAbilities": Array<Borrowed> } | "LoseAbilities" | { "SetController": PlayerId } | { "SetPowerToughness": { 
 /**
  * New power.
  */
