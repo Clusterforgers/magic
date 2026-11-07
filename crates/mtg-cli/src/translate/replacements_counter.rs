@@ -210,3 +210,27 @@ pub fn add_counter(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
     }
     Ok(json!({"Replacement": {"when": {"CountersPut": when}, "by": by}}))
 }
+
+/// An `Event$ Counter` replacement named by an `Effect` line (`ReplacementEffects$`): "spells you control can't be
+/// countered this turn" is a rule of the effect's duration over the spells the line names.
+pub fn shield(ctx: &mut Ctx, p: &Params, duration: &str) -> Tr<Value> {
+    check_keys(
+        p,
+        "Replacement.Counter.shield",
+        &["Event", "Layer", "ValidSA"],
+        |_, _| false,
+    )?;
+    if p.get("Layer") != Some("CantHappen") {
+        return unmapped("replacement:Counter-instead");
+    }
+    let sa = p.get("ValidSA").unwrap_or_default();
+    if sa.is_empty()
+        || sa
+            .split(',')
+            .any(|one| one.split('.').next() != Some("Spell"))
+    {
+        return unmapped("replacement:Counter-abilities");
+    }
+    let preds = selector_any(ctx, sa)?;
+    Ok(json!({"Rule": {"rule": {"CantBeCountered": {"Each": preds}}, "duration": duration}}))
+}

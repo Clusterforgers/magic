@@ -13,7 +13,14 @@ pub fn skip_step(p: &Params, line_condition: Option<&Value>) -> Tr<Value> {
     check_keys(
         p,
         "Replacement.BeginPhase",
-        &["Event", "ActiveZones", "ValidPlayer", "Phase", "Skip"],
+        &[
+            "Event",
+            "ActiveZones",
+            "ValidPlayer",
+            "Phase",
+            "Skip",
+            "Hellbent",
+        ],
         |_, _| false,
     )?;
     if p.get("Skip") != Some("True") || p.get("ActiveZones") != Some("Battlefield") {
@@ -31,5 +38,12 @@ pub fn skip_step(p: &Params, line_condition: Option<&Value>) -> Tr<Value> {
         Some("Opponent") => "Opponents",
         Some(_) => return unmapped("key:Replacement.BeginPhase.ValidPlayer"),
     };
-    Ok(json!({"Rule": {"rule": {"Cant": {"who": who, "action": {"SkipStep": step}}}}}))
+    let mut rule = json!({"Rule": {"rule": {"Cant": {"who": who, "action": {"SkipStep": step}}}}});
+    // "Hellbent — skip your upkeep if you have no cards in hand": the rule holds while the condition does.
+    match p.get("Hellbent") {
+        None => {}
+        Some("True") => rule["Rule"]["condition"] = super::condition::named("Hellbent")?,
+        Some(_) => return unmapped("key:Replacement.BeginPhase.Hellbent"),
+    }
+    Ok(rule)
 }

@@ -191,6 +191,6 @@ fn a_step_is_skipped(#[case] who: &str, #[case] expected: &str) {
 
 #[test]
 fn a_skipped_step_with_a_condition_stays_a_gap() {
-    let text = "Name:T\nTypes:Enchantment\nR:Event$ BeginPhase | ActiveZones$ Battlefield | ValidPlayer$ You | Phase$ Upkeep | Skip$ True | Hellbent$ True\n";
+    let text = "Name:T\nTypes:Enchantment\nR:Event$ BeginPhase | ActiveZones$ Battlefield | ValidPlayer$ You | Phase$ Upkeep | Skip$ True | Delirium$ True\n";
     assert_eq!(abilities(text), Vec::<Value>::new());
 }

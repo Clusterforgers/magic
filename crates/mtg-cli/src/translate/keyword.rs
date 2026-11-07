@@ -169,6 +169,10 @@ pub fn keyword_value(ctx: &Ctx, text: &str) -> Tr<Value> {
     if let Some(found) = more::special(ctx, text) {
         return found;
     }
+    // Bare vanishing (a permanent that gains it, or counters from another source): no counters of its own.
+    if text == "Vanishing" {
+        return Ok(json!({"Vanishing": 0}));
+    }
     let mut fields = text.split(':');
     let name = fields.next().unwrap_or_default();
     let first = fields.next();

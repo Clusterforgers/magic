@@ -39,7 +39,7 @@ pub fn effects(ctx: &mut Ctx, p: &Params, api: &str) -> Tr<Vec<Value>> {
         "UntapAll" => one(all_of(ctx, p, "Untap")),
         "Sacrifice" => one(sacrifice(ctx, p)),
         "Airbend" => airbend(ctx, p),
-        "Fight" => one(fight(ctx, p)),
+        "Fight" => fight(ctx, p),
         "GainControl" => gain_control(ctx, p),
         "GainControlVariant" => gain_control_to_owners(ctx, p),
         other => unmapped(format!("effect:{other}")),
@@ -224,6 +224,7 @@ fn destroy(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
             "RememberDestroyed",
             "RememberLKI",
             "RememberTargets",
+            "Radiance",
             "AlwaysRemember",
         ],
     )?;
@@ -238,6 +239,11 @@ fn destroy(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
         return Ok(json!({"Together": {"effects": each}}));
     }
     let what = subject(ctx, p, "", None)?;
+    let what = match (p.get("Radiance"), p.get("ValidTgts")) {
+        (None, _) => what,
+        (Some("True"), Some(kind @ ("Enchantment" | "Artifact"))) => radiance_of(&what, kind)?,
+        _ => return unmapped("key:Destroy.Radiance"),
+    };
     let mut effect = json!({"Destroy": {"what": what, "regenerate": regenerate}});
     // The target is remembered whether or not it is destroyed (a regenerated creature is still "that creature").
     let remembers = remember::wanted(p, &["RememberDestroyed", "RememberLKI", "RememberTargets"]);
@@ -856,13 +862,18 @@ const PUMP_KEYS: [&str; 21] = [
 
 /// `Radiance$ True` (an ability word): the target creature and each other creature that shares a color with it, as the
 /// effect resolves.
-fn radiance(target: &Value) -> Tr<Value> {
+pub(super) fn radiance(target: &Value) -> Tr<Value> {
+    radiance_of(target, "Creature")
+}
+
+/// The same for permanents of another type ("destroy target enchantment and each other enchantment that shares a color").
+fn radiance_of(target: &Value, kind: &str) -> Tr<Value> {
     if target.get("Target").is_none() {
         return unmapped("key:Pump.Radiance");
     }
     Ok(json!({"Each": [
         {"AnyOf": [{"Is": target}, {"SharesColor": target}]},
-        {"Type": "Creature"},
+        {"Type": kind},
     ]}))
 }
 
@@ -1761,19 +1772,40 @@ fn sacrifice(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
     Ok(effect)
 }
 
-fn fight(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
+fn fight(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
     only(
         p,
         "Fight",
-        &["Defined", "ValidTgts", "TargetMin", "TargetMax"],
+        &[
+            "Defined",
+            "ValidTgts",
+            "TargetMin",
+            "TargetMax",
+            "Optional",
+            "ReplaceDyingDefined",
+        ],
     )?;
     if !p.has("ValidTgts") {
         return unmapped("key:Fight.shape");
     }
+    let may = match p.get("Optional") {
+        None | Some("False") => false,
+        Some("True") => true,
+        Some(_) => return unmapped("key:Fight.Optional"),
+    };
     // The fighter is named before the second creature is chosen: the card itself or the earlier target.
     let what = defined(ctx, p.get("Defined").unwrap_or_default())?;
     let with = subject(ctx, p, "", None)?;
-    Ok(json!({"Fight": {"what": what, "with": with}}))
+    let fight = json!({"Fight": {"what": what, "with": with}});
+    // The target is chosen when the ability goes on the stack; "you may have it fight" asks on resolution.
+    let mut effects = vec![if may {
+        json!({"May": {"effects": [fight]}})
+    } else {
+        fight
+    }];
+    // "If that creature would die this turn, exile it instead."
+    effects.extend(dies_shield(ctx, p)?);
+    Ok(effects)
 }
 
 /// `GainControlVariant` with `ChangeController$ CardOwner` ("each player gains control of all creatures they own"): for
@@ -1886,6 +1918,7 @@ pub fn attach(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
             "Object",
             "Optional",
             "Choices",
+            "Chooser",
             "ChoiceTitle",
             "RememberAttached",
         ],
@@ -1895,9 +1928,30 @@ pub fn attach(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
     if remembers && p.get("Choices").is_some_and(|c| c.contains("Remembered")) {
         return unmapped("key:Attach.RememberAttached-with-remembered-choices");
     }
+    // Who picks the host: the ability's controller, or the controller of the card that triggered it.
+    let chooser = match p.get("Chooser") {
+        None | Some("You") => json!("You"),
+        Some("TriggeredCardController") if p.has("Choices") => {
+            defined(ctx, "TriggeredCardController")?
+        }
+        Some(_) => return unmapped("key:Attach.Chooser"),
+    };
     let object = p.get("Object");
-    if object.is_some_and(|word| word.starts_with("Valid ")) {
-        return unmapped("key:Attach.Object-all");
+    if let Some(valid) = object.and_then(|word| word.strip_prefix("Valid ")) {
+        // "Attach all Equipment on the battlefield to it": a choice of how many ("any number of") is not all.
+        let (None, Some(host), false) = (
+            p.get("Optional"),
+            p.get("Defined"),
+            p.has("ValidTgts") || p.has("Choices"),
+        ) else {
+            return unmapped("key:Attach.Object-all");
+        };
+        let what = json!({"Each": selector_any(ctx, valid)?});
+        let mut node = json!({"Attach": {"what": what, "to": defined(ctx, host)?}});
+        if remembers {
+            remember::bind_moved(ctx, &mut node, "Attach", "attached");
+        }
+        return Ok(vec![node]);
     }
     let mut effects = Vec::new();
     let (what, to) = if let Some(choices) = p.get("Choices") {
@@ -1909,7 +1963,7 @@ pub fn attach(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
         let chosen = ctx.fresh("attach");
         let from = json!({"Each": selector_in(ctx, choices, None)?});
         effects.push(json!({"Choose": {
-            "who": "You", "from": from, "count": {"min": 1, "max": 1}, "as": chosen}}));
+            "who": chooser.clone(), "from": from, "count": {"min": 1, "max": 1}, "as": chosen}}));
         let bound = json!({ "Bound": chosen });
         match (object, p.get("Defined")) {
             (Some(word), None) => (defined(ctx, word)?, bound),
@@ -1925,7 +1979,7 @@ pub fn attach(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
     }
     effects.push(node);
     if p.get("Optional") == Some("True") {
-        effects = super::frame::ask(effects, &json!("You"));
+        effects = super::frame::ask(effects, &chooser);
     }
     Ok(effects)
 }
@@ -1993,6 +2047,7 @@ fn protection(ctx: &mut Ctx, p: &Params, api: &str) -> Tr<Vec<Value>> {
             "ValidCards",
             "TargetMin",
             "TargetMax",
+            "Radiance",
         ],
     )?;
     if !matches!(p.get("Choser"), None | Some("Controller")) {
@@ -2002,10 +2057,19 @@ fn protection(ctx: &mut Ctx, p: &Params, api: &str) -> Tr<Vec<Value>> {
     let affected = if api == "ProtectionAll" {
         let valid = p.get("ValidCards").unwrap_or_default();
         json!({"Each": selector_any(ctx, valid)?})
+    } else if p.get("Radiance") == Some("True") {
+        radiance(&subject(ctx, p, "Self", None)?)?
     } else {
         objects(subject(ctx, p, "Self", None)?)?
     };
     let mods = match (p.get("Gains"), p.get("Choices")) {
+        // "Gains$ ChosenColor" after a `ChooseColor` line: protection from the color the ability chose.
+        (Some("ChosenColor"), None) if ctx.chosen_kind == Some("Color") => {
+            let Some(chosen) = ctx.chosen.as_ref() else {
+                return unmapped("key:Protection.Gains=ChosenColor");
+            };
+            vec![json!({"AddKeyword": {"Protection": [{"ChosenAs": chosen}]}})]
+        }
         (Some("Choice"), Some("AnyColor")) => vec![json!("AddProtectionFromChosenColor")],
         (Some("Choice"), Some("CardType")) => vec![json!("AddProtectionFromChosenCardType")],
         (Some("Choice"), choices) => {
@@ -2015,7 +2079,15 @@ fn protection(ctx: &mut Ctx, p: &Params, api: &str) -> Tr<Vec<Value>> {
             let mut mods = Vec::new();
             for word in gains.split(',').map(str::trim) {
                 let color = ["white", "blue", "black", "red", "green"].contains(&word);
-                if !color {
+                let card_type = [
+                    "Artifact",
+                    "Enchantment",
+                    "Planeswalker",
+                    "Instant",
+                    "Sorcery",
+                ]
+                .contains(&word);
+                if !color && !card_type {
                     return unmapped(format!("key:Protection.Gains={gains}"));
                 }
                 let capital = word[..1].to_uppercase() + &word[1..];

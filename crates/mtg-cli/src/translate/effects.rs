@@ -636,10 +636,17 @@ fn deal_damage(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
             "ExcessDamageCondition",
             "ReplaceDyingDefined",
             "NoPrevention",
+            "Radiance",
         ],
     )?;
     super::effects_obj::damage_map(p)?;
     let to = subject(ctx, p, "Self", None)?;
+    // Radiance: the target creature and each other creature that shares a color with it, as the damage is dealt.
+    let to = if p.get("Radiance") == Some("True") {
+        super::effects_obj::radiance(&to)?
+    } else {
+        to
+    };
     let amount = if divided(p, "NumDmg")? {
         json!("Divided")
     } else {
