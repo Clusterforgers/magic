@@ -16,6 +16,9 @@ pub fn copy_permanent(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
         p,
         "CopyPermanent",
         &[
+            "AtEOTTrig",
+            "NewName",
+            "RemoveCardTypes",
             "Defined",
             "ValidTgts",
             "TargetMin",
@@ -71,6 +74,8 @@ pub fn copy_permanent(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
         Some(word @ ("TriggeredCardController" | "TargetedController" | "TargetedPlayer")) => {
             create["who"] = super::valid::defined(ctx, word)?;
         }
+        // "Each opponent creates a token that's a copy of it": the copy of a named object, not of a target.
+        Some("Opponent") if p.has("Defined") => create["who"] = json!("Opponents"),
         Some(other) => return unmapped(format!("key:CopyPermanent.Controller={other}")),
     }
     if temporary.is_none() && !p.has("AtEOT") && !remember {
@@ -90,7 +95,7 @@ pub fn copy_permanent(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
             .map(|keyword| json!({ "AddKeyword": keyword }))
             .collect();
         effects.push(json!({"Continuous": {
-            "affected": bound, "mods": mods, "duration": "UntilEndOfTurn"}}));
+            "affected": bound, "mods": mods, "duration": if p.get("PumpDuration") == Some("EOT") { "UntilEndOfTurn" } else { "UntilYourNextTurn" }}}));
     }
     if let Some(word) = p.get("AtEOT") {
         effects.push(at_eot(word, &bound)?);
@@ -109,7 +114,7 @@ fn temporary_keywords(ctx: &Ctx, p: &Params) -> Tr<Option<Vec<Value>>> {
     match (p.get("PumpKeywords"), p.get("PumpDuration")) {
         (_, None) => Ok(None),
         (None, Some(_)) => unmapped("key:CopyPermanent.PumpDuration-without-keywords"),
-        (Some(_), Some("EOT")) => pumped(ctx, p).map(Some),
+        (Some(_), Some("EOT" | "UntilYourNextTurn")) => pumped(ctx, p).map(Some),
         (Some(_), Some(other)) => unmapped(format!("key:CopyPermanent.PumpDuration={other}")),
     }
 }
@@ -148,6 +153,9 @@ fn copied(ctx: &mut Ctx, p: &Params, effects: &mut Vec<Value>) -> Tr<Value> {
 /// The changes written into the copy.
 fn exceptions(ctx: &Ctx, p: &Params) -> Tr<Vec<Value>> {
     let mut mods = Vec::new();
+    if let Some(name) = p.get("NewName") {
+        mods.push(json!({ "SetName": name }));
+    }
     match (p.get("SetPower"), p.get("SetToughness")) {
         (Some(power), Some(toughness)) => {
             let (power, toughness) = (amount(ctx, power)?, amount(ctx, toughness)?);
@@ -182,8 +190,30 @@ fn exceptions(ctx: &Ctx, p: &Params) -> Tr<Vec<Value>> {
             });
         }
     }
+    if flag(p, "RemoveCardTypes")? {
+        // The card types the line adds are the only ones left, and a creature type goes with the creature type (CR 205.1a).
+        let kept: Vec<Value> = mods
+            .iter()
+            .filter_map(|m| m.get("AddType").cloned())
+            .collect();
+        if kept.is_empty() || kept.contains(&json!("Creature")) {
+            return unmapped("key:CopyPermanent.RemoveCardTypes");
+        }
+        mods.retain(|m| m.get("AddType").is_none());
+        mods.push(json!({ "SetTypes": kept }));
+    }
     if flag(p, "NonLegendary")? {
         mods.push(json!({"RemoveSupertype": "Legendary"}));
+    }
+    // "Except it has 'At the beginning of the end step, sacrifice this token.'": the copy carries the trigger (CR 707.9a).
+    if let Some(word) = p.get("AtEOTTrig") {
+        let effect = match word {
+            "Sacrifice" => json!({"Sacrifice": {"filter": ["This"]}}),
+            "Exile" => json!({"Exile": {"what": "This"}}),
+            other => return unmapped(format!("key:CopyPermanent.AtEOTTrig={other}")),
+        };
+        mods.push(json!({"GrantAbility": {"Triggered": {
+            "when": {"StepBegins": {"step": "End"}}, "effects": [effect]}}}));
     }
     if let Some(keywords) = p.get("AddKeywords") {
         for keyword in keyword_list(ctx, keywords)? {

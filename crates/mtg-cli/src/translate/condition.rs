@@ -8,7 +8,8 @@ use super::valid::{cmp, defined, selector_any, selector_in};
 use crate::forge::script::Params;
 
 /// The keys this module reads.
-pub const KEYS: [&str; 18] = [
+pub const KEYS: [&str; 19] = [
+    "TopCardOfLibraryIs",
     "IsPresent",
     "PresentDefined",
     "PresentZone",
@@ -58,6 +59,9 @@ pub fn condition(ctx: &Ctx, p: &Params) -> Tr<Option<Value>> {
     all.extend(check_svar(ctx, p)?);
     if let Some(name) = p.get("Condition") {
         all.push(named(name)?);
+    }
+    if let Some(valid) = p.get("TopCardOfLibraryIs") {
+        all.push(top_card_is(ctx, valid)?);
     }
     // "At the beginning of your end step, if you descended this turn": the phase trigger names the player with a property.
     if p.get("ValidPlayer") == Some("You.descended") {
@@ -504,4 +508,15 @@ pub fn strip(p: &Params) -> Params {
     keys.extend(super::header::gate_words(p));
     keys.extend(super::header::state_words(p));
     p.without(&keys)
+}
+
+/// `TopCardOfLibraryIs$ <valid>`: the top card of your library matches ("As long as the top card of your library is black").
+fn top_card_is(ctx: &Ctx, valid: &str) -> Tr<Value> {
+    let mut top = vec![
+        json!({"In": "Library"}),
+        json!({"OwnedBy": "You"}),
+        json!("TopOfLibrary"),
+    ];
+    top.extend(selector_any(ctx, valid)?);
+    Ok(json!({"Compare": {"left": {"Count": top}, "op": "Ge", "right": 1}}))
 }
