@@ -555,6 +555,33 @@ fn moved_objects(ctx: &mut Ctx, p: &Params, origin: &str) -> Tr<Vec<Value>> {
     }
 }
 
+/// "If ..., exile it, then return it": a move from one named zone of what a step inside a condition or a "may" moved reads
+/// that step's name. When the step did not run, the name is unbound and the move moves nothing, as Forge's memory stays
+/// empty then.
+fn return_scoped<T>(ctx: &mut Ctx, p: &Params, run: impl FnOnce(&mut Ctx) -> Tr<T>) -> Tr<T> {
+    let name = ctx
+        .remembered
+        .as_ref()
+        .and_then(|held| held.get("Bound"))
+        .and_then(Value::as_str)
+        .map(str::to_owned);
+    let one_zone = p
+        .get("Origin")
+        .is_some_and(|zone| zone != "Any" && !zone.contains(','));
+    let Some(name) = name.filter(|name| {
+        one_zone
+            && p.get("Defined") == Some("Remembered")
+            && !p.has("ValidTgts")
+            && ctx.scoped.contains(name)
+    }) else {
+        return run(ctx);
+    };
+    ctx.scoped.remove(&name);
+    let out = run(ctx);
+    ctx.scoped.insert(name);
+    out
+}
+
 /// A name an earlier step moved onto the battlefield, kept to the zone the line moves from (`Origin$`): the engine binds
 /// the name again to the permanent that arrived (CR 400.7), and "otherwise, put it into your hand" must not take it.
 fn still_in(ctx: &Ctx, what: Value, origin: &str) -> Value {
@@ -605,7 +632,7 @@ fn change_zone(ctx: &mut Ctx, p: &Params, origin: &str, destination: &str) -> Tr
     {
         return unmapped("key:ChangeZone.Defined-with-memory");
     }
-    let whats: Vec<Value> = moved_objects(ctx, p, origin)?
+    let whats: Vec<Value> = return_scoped(ctx, p, |ctx| moved_objects(ctx, p, origin))?
         .into_iter()
         .map(|what| still_in(ctx, what, origin))
         .collect();

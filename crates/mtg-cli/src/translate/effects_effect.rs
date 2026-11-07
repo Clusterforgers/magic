@@ -33,8 +33,17 @@ pub fn effects(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
             "ForgetCounter",
             "ForgetOnCast",
             "EffectOwner",
+            "SetChosenNumber",
         ],
     )?;
+    // The number is fixed as the effect begins (CR 611.2c): its parts read the amount of the resolution that made it.
+    if let Some(word) = p.get("SetChosenNumber") {
+        let number = amount(ctx, word)?;
+        let before = ctx.set_number.replace(number);
+        let out = effects(ctx, &p.without(&["SetChosenNumber"]));
+        ctx.set_number = before;
+        return out;
+    }
     if p.has("ForgetOnCast") {
         return super::effects_next_spell::effects(ctx, p);
     }

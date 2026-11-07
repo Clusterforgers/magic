@@ -57,6 +57,8 @@ pub struct Plan {
     pub imprinted: bool,
     /// What the source chose as it entered.
     pub entered: Entered,
+    /// No line of the face writes `Remembered`: Forge's memory stays empty, so a step that only hands it on hands on nothing.
+    pub unwritten: bool,
 }
 
 /// The choices a permanent's controller made as it entered.
@@ -118,7 +120,8 @@ pub fn plan(face: &Face) -> Plan {
             .flat_map(|line| group(face, line))
             .any(|part| writes(&part, slot))
     };
-    plan.remembered &= written(Slot::Remembered);
+    plan.unwritten = !written(Slot::Remembered);
+    plan.remembered &= !plan.unwritten;
     plan.imprinted &= written(Slot::Imprinted);
     entering(face, &mut plan);
     plan

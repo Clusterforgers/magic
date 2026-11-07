@@ -167,6 +167,9 @@ pub struct Ctx<'a> {
     pub chosen_card: Option<String>,
     /// The name the latest number chosen by the ability is bound to (`ChosenNumber` after it).
     pub chosen_number: Option<String>,
+    /// The number an `Effect` line fixes with `SetChosenNumber$`, which `Count$ChosenNumber` reads in the parts it holds;
+    /// set only while that line is translated, so the statics and triggers it holds keep it through their own reset.
+    pub set_number: Option<Value>,
     /// The `SVar` a damage step's `ExcessSVar` sets and the number the step bound the excess damage to.
     pub excess: Option<(String, String)>,
     /// Whether a line with `DamageMap$` has begun a chain whose `DamageResolve` is still to come.
@@ -233,6 +236,7 @@ impl<'a> Ctx<'a> {
             chosen_kind: None,
             chosen_card: None,
             chosen_number: None,
+            set_number: None,
             die_result: None,
             excess: None,
             damage_open: false,

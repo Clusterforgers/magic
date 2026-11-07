@@ -261,7 +261,14 @@ pub fn immediate_trigger(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
     let mut out = Vec::new();
     let mut bound = None;
     if let Some(word) = p.get("RememberObjects") {
+        let loose = super::memory::slot_ref_loose(ctx, super::memory::Slot::Remembered)
+            .filter(|held| super::memory::is_scoped(ctx, held));
         let what = match word {
+            // "You may discard a card. When you do, ...": the trigger names what the step inside the "may" bound, which
+            // holds nothing when that step did not run.
+            "Remembered" | "RememberedCard" | "RememberedLKI" if loose.is_some() => {
+                loose.unwrap_or_default()
+            }
             // A target an earlier step moved is another object now (CR 400.7), so `Targeted` stays a gap.
             "Remembered" | "RememberedCard" | "RememberedLKI" | "ChosenCard" | "ChosenPlayer" => {
                 defined(ctx, word)?
