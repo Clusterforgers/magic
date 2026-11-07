@@ -193,7 +193,7 @@ fn once(rest: &str) -> bool {
 }
 
 /// "a creature with flying you control" as "a creature you control with flying".
-fn controller_first(text: &str) -> Vec<String> {
+pub(super) fn controller_first(text: &str) -> Vec<String> {
     let mut out = Vec::new();
     for controller in CONTROLLERS {
         for (end, _) in text.match_indices(controller) {
@@ -220,7 +220,7 @@ fn controller_first(text: &str) -> Vec<String> {
 }
 
 /// "a creature you control with flying" as "a creature with flying you control".
-fn controller_last(text: &str) -> Vec<String> {
+pub(super) fn controller_last(text: &str) -> Vec<String> {
     let mut out = Vec::new();
     for controller in CONTROLLERS {
         for (start, _) in text.match_indices(controller) {
