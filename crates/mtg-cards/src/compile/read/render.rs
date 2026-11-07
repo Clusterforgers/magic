@@ -48,6 +48,7 @@ mod put_onto;
 mod r7d;
 mod r9w_dread;
 mod r9w_manifest;
+mod r9w_shields;
 mod revealed;
 mod shuffled_in;
 mod stolen;

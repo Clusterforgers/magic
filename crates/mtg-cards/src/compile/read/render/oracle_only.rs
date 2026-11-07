@@ -259,6 +259,7 @@ mod w16a_entry_if;
 mod w16a_named_yours;
 // dk1b
 mod dk1b_attached;
+mod r9w_countered_value;
 mod w16a_owner;
 mod w16a_return_cost;
 mod w16a_state_trigger;
@@ -529,6 +530,7 @@ fn add_w8c(ability: &Ability, texts: &mut Vec<String>) {
     w8c_snow::add(ability, texts);
     w8c_damage_and::add(ability, texts);
     w8c_prevent_next::add(ability, texts);
+    r9w_countered_value::add(ability, texts);
     w8c_kind_controller::add(ability, texts);
     w8c_opponent_graveyard::add(ability, texts);
     w8c_on_top::add(ability, texts);
