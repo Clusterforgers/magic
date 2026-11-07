@@ -120,9 +120,45 @@ pub fn check_svar(ctx: &Ctx, p: &Params) -> Tr<Option<Value>> {
             continue;
         };
         let (op, right) = comparison(ctx, p.get(compare).unwrap_or("GE1"))?;
-        all.push(json!({"Compare": {"left": amount(ctx, name)?, "op": op, "right": right}}));
+        let left = amount(ctx, name)?;
+        all.push(
+            settled(&left, op, &right)
+                .unwrap_or_else(|| json!({"Compare": {"left": left, "op": op, "right": right}})),
+        );
     }
     Ok(single(all))
+}
+
+/// A choice of two numbers compared with a number (`Count$Adamant_2.White.2.0` at least 1) is its own condition when
+/// exactly one branch passes: the condition, or its negation.
+fn settled(left: &Value, op: &str, right: &Value) -> Option<Value> {
+    let when = left.get("When")?;
+    let (then, otherwise, right) = (
+        when.get("then")?.as_i64()?,
+        when.get("otherwise")?.as_i64()?,
+        right.as_i64()?,
+    );
+    let passes = |value: i64| match op {
+        "Ge" => value >= right,
+        "Le" => value <= right,
+        "Gt" => value > right,
+        "Lt" => value < right,
+        "Eq" => value == right,
+        "Ne" => value != right,
+        _ => false,
+    };
+    let condition = when.get("condition")?.clone();
+    // Only the mana spent to cast the spell: other choices keep the shape the read-back writers know.
+    let spent = condition.get("ManaSpent").is_some()
+        || condition.pointer("/Compare/left/ManaSpent").is_some();
+    if !spent {
+        return None;
+    }
+    match (passes(then), passes(otherwise)) {
+        (true, false) => Some(condition),
+        (false, true) => Some(json!({"Not": condition})),
+        _ => None,
+    }
 }
 
 /// The condition of one `IsPresent` clause (`suffix` is empty for the first and `2` for the second), `None` without one.

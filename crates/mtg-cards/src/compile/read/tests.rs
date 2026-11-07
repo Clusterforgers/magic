@@ -272,6 +272,7 @@ mod exiled_kind;
 mod fights;
 mod flicker;
 mod for_each;
+mod g8c_writers;
 mod goad;
 mod granted_mana;
 mod granted_triggers;

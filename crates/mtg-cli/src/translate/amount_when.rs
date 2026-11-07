@@ -13,7 +13,7 @@ pub fn when(ctx: &Ctx, base: &str) -> Option<Tr<Value>> {
     if let Some(rest) = base.strip_prefix("Compare ") {
         return Some(compare(ctx, rest));
     }
-    if let Some(rest) = base.strip_prefix("Adamant.") {
+    if let Some(rest) = base.strip_prefix("Adamant") {
         return Some(adamant(ctx, rest));
     }
     let (word, branches) = base.split_once('.')?;
@@ -62,16 +62,36 @@ pub fn when(ctx: &Ctx, base: &str) -> Option<Tr<Value>> {
     Some(branch(ctx, &condition, branches))
 }
 
-/// `White.1.0`: the amount when at least three mana of the color was spent to cast the spell (adamant), else the other.
+/// `.White.1.0`: the amount when at least three mana of the color was spent to cast the spell (adamant), else the other;
+/// `_2.White.2.0` names the least amount ("if {W}{W} was spent"), and `Colorless` counts {C}.
 fn adamant(ctx: &Ctx, rest: &str) -> Tr<Value> {
-    let Some((color, branches)) = rest.split_once('.') else {
-        return unmapped("amount:Count$Adamant-shape");
+    let shape = || unmapped("amount:Count$Adamant-shape");
+    let (least, rest) = if let Some(counted) = rest.strip_prefix('_') {
+        let Some((least, rest)) = counted.split_once('.') else {
+            return shape();
+        };
+        match least.parse::<u32>() {
+            Ok(least) if least > 0 => (least, rest),
+            _ => return shape(),
+        }
+    } else {
+        let Some(rest) = rest.strip_prefix('.') else {
+            return shape();
+        };
+        (3, rest)
     };
-    if !["White", "Blue", "Black", "Red", "Green"].contains(&color) {
+    let Some((color, branches)) = rest.split_once('.') else {
+        return shape();
+    };
+    if !["White", "Blue", "Black", "Red", "Green", "Colorless"].contains(&color) {
         return unmapped("amount:Count$Adamant-color");
     }
-    let spent = json!({"ManaSpent": {"of": color}});
-    let condition = json!({"Compare": {"left": spent, "op": "Ge", "right": 3}});
+    // One mana of the type is the plain fact "{C} was spent to cast it".
+    let condition = if least == 1 {
+        json!({ "ManaSpent": color })
+    } else {
+        json!({"Compare": {"left": {"ManaSpent": {"of": color}}, "op": "Ge", "right": least}})
+    };
     branch(ctx, &condition, branches)
 }
 
