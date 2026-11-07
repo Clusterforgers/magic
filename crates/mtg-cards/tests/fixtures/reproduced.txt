@@ -542,6 +542,7 @@ Finch Formation
 Fire-Lit Thicket
 Firestorm Hellkite
 Firmament Sage
+First Little Pig
 Fissure Vent
 Fists of Flame
 Flame Jab
@@ -749,6 +750,7 @@ Imposter Mech
 Impostor of the Sixth Pride
 Impulsive Pilferer
 Impulsivity
+In the Trenches
 Indulging Patrician
 Infectious Inquiry
 Inferno Project
