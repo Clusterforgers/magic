@@ -93,9 +93,9 @@ fn find(driver: &Driver, seat: usize, name: &str) -> Target {
     "A:SP$ GainLife | ValidTgts$ Player | LifeAmount$ 1 | SubAbility$ B\nSVar:B:DB$ ChangeZone | Origin$ Battlefield | Destination$ Hand | ValidTgts$ Creature | TargetsWithDefinedController$ Foo",
     &["key:TargetsWithDefinedController=Foo"]
 )]
-#[case::parent_target_is_engine_work(
+#[case::parent_target_is_read_as_chosen(
     "A:SP$ GainLife | ValidTgts$ Player | LifeAmount$ 1 | SubAbility$ B\nSVar:B:DB$ ChangeZone | Origin$ Battlefield | Destination$ Hand | ValidTgts$ Creature | TargetsWithDefinedController$ ParentTarget",
-    &["key:TargetsWithDefinedController=ParentTarget"]
+    &[]
 )]
 fn controller_restriction_words(#[case] body: &str, #[case] expected: &[&str]) {
     assert_eq!(gaps(&line(body)), expected);
