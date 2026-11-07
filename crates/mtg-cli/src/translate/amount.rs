@@ -174,6 +174,14 @@ fn read_expression(ctx: &Ctx, expression: &str) -> Tr<Value> {
     if let Some(amount) = event_amount(ctx, base)? {
         return apply_steps(ctx, amount, steps);
     }
+    // "The number of creatures that convoked it" (CR 702.51), the spell's or the permanent's it became.
+    if base == "Convoked$Amount" {
+        return apply_steps(
+            ctx,
+            json!({"CountOf": {"of": "Convoked", "filter": []}}),
+            steps,
+        );
+    }
     if let Some(rest) = expression.strip_prefix("Targeted$") {
         return targeted_amount("Targeted", rest, &ctx.last_target()?);
     }

@@ -112,6 +112,7 @@ pub(crate) fn fold(state: &mut GameState, event: &TokenCreated) -> Result<(), En
         face: None,
         spent: Vec::new(),
         spent_from: Vec::new(),
+        convoked: Vec::new(),
         copy: event.copy_of.map(|of| {
             crate::copies::CopyEffect::new(of, Arc::clone(&event.definition), state.next_timestamp)
         }),

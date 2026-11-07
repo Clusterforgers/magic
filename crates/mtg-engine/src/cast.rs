@@ -199,6 +199,9 @@ pub(crate) fn payment_decision(
 /// How a mana source is used when the game is not at hand: the source and the permanents its cost takes.
 type Activate<'a> = &'a dyn Fn(&ManaOption, &[Vec<ObjectId>]) -> Result<Vec<Event>, EngineError>;
 
+/// The object an id names now, which the payment records of what it tapped.
+type Refer<'a> = &'a dyn Fn(ObjectId) -> Option<crate::object::ObjectRef>;
+
 /// The offered permanents that are tapped (or gone) and the offered cards that left the graveyard in `state`; no payment may use them.
 fn unusable(state: &GameState, player: PlayerId, options: &PayOptions) -> Vec<ObjectId> {
     let tapped = |id: &ObjectId| {
@@ -253,6 +256,7 @@ fn payment_events(
     payment: &Payment,
     announced: Vec<Event>,
     activate: Activate<'_>,
+    refer: Refer<'_>,
 ) -> Result<Vec<Event>, EngineError> {
     let spent = check_payment_with(
         &options.cost,
@@ -293,6 +297,15 @@ fn payment_events(
             let mut all = choices.spent.take().map(|held| *held).unwrap_or_default();
             all.extend(spent.mana.iter().copied());
             choices.spent = (!all.is_empty()).then(|| Box::new(all));
+            // The spell remembers the creatures that convoked it, as they are now (CR 702.51).
+            let convoked: Vec<_> = payment
+                .convoke
+                .iter()
+                .filter_map(|convoked| refer(convoked.creature))
+                .collect();
+            if !convoked.is_empty() {
+                choices.cost_taken.get_or_insert_with(Box::default).convoked = convoked;
+            }
         }
     }
     events.extend(announced);
@@ -377,6 +390,7 @@ pub(crate) fn pay_answer(
             choice,
             Vec::new(),
             &|option, taken| mana_ability::activation(state, player, option, taken),
+            &|id| state.object(id).map(crate::object::GameObject::reference),
         )?;
         return Ok(match outcome {
             Outcome::Events(mut events) => {
@@ -397,6 +411,7 @@ pub(crate) fn pay_answer(
         choice,
         announced,
         &|option, taken| mana_ability::activation(state, player, option, taken),
+        &|id| state.object(id).map(crate::object::GameObject::reference),
     )?;
     Ok(match outcome {
         Outcome::Events(mut events) => {
@@ -656,9 +671,15 @@ pub(crate) fn pay_choice(
     choice: PayChoice,
     announced: Vec<Event>,
 ) -> Result<Outcome, EngineError> {
-    pay_with(player, options, tapped, choice, announced, &|option, _| {
-        Ok(tap_events(player, option))
-    })
+    pay_with(
+        player,
+        options,
+        tapped,
+        choice,
+        announced,
+        &|option, _| Ok(tap_events(player, option)),
+        &|id| Some(crate::object::ObjectRef { id, counter: 0 }),
+    )
 }
 
 /// [`pay_choice`] with the events of using each mana source given by `activate`.
@@ -669,6 +690,7 @@ fn pay_with(
     choice: PayChoice,
     announced: Vec<Event>,
     activate: Activate<'_>,
+    refer: Refer<'_>,
 ) -> Result<Outcome, EngineError> {
     let payment = match choice {
         PayChoice::Cancel if options.can_cancel => return Ok(Outcome::CancelCast),
@@ -695,7 +717,9 @@ fn pay_with(
         )
         .ok_or(IllegalAnswer::NotOffered("automatic payment"))?,
     };
-    let events = payment_events(player, options, tapped, &payment, announced, activate)?;
+    let events = payment_events(
+        player, options, tapped, &payment, announced, activate, refer,
+    )?;
     Ok(Outcome::Events(events))
 }
 

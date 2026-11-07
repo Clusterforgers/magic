@@ -1019,6 +1019,7 @@ impl<'a> Scope<'a> {
             // Validation proves a name is bound by an earlier step; only a declined or skipped branch leaves it unset.
             Ref::Bound(name) => self.bindings.get(name).cloned().unwrap_or_default(),
             Ref::Paid => self.paid(),
+            Ref::Convoked => self.convoked(),
             Ref::Remembered { on, slot } => self.remembered(on, slot)?,
             Ref::Arrived { of, zone } => self.arrived(of, *zone)?,
             Ref::Departed(of) => self.departed_of(of)?,
@@ -1085,6 +1086,27 @@ impl<'a> Scope<'a> {
             picked.into_iter().filter_map(named).collect()
         };
         refs.into_iter().map(Target::Object).collect()
+    }
+
+    /// The creatures that convoked the spell: what the spell recorded, else what the permanent its source is remembers while
+    /// it is still the object named, else its last-known information (CR 702.51). A creature that has changed zones since
+    /// is another object, which an effect on it finds gone.
+    fn convoked(&self) -> Vec<Target> {
+        let convoked = if self.choices.convoked().is_empty() {
+            self.state
+                .object(self.source.id)
+                .filter(|object| object.counter() == self.source.counter)
+                .map(|object| object.convoked().to_vec())
+                .filter(|convoked| !convoked.is_empty())
+                .or_else(|| {
+                    self.snapshot_of(self.source)
+                        .map(|shot| shot.convoked.clone())
+                })
+                .unwrap_or_default()
+        } else {
+            self.choices.convoked().to_vec()
+        };
+        convoked.into_iter().map(Target::Object).collect()
     }
 
     /// The player the attacking creature of the event, else the source, attacks or attacked when it left combat.

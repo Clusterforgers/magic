@@ -217,6 +217,8 @@ pub struct PermanentState {
     pub(crate) spent: Vec<ManaType>,
     /// The sources of that mana.
     pub(crate) spent_from: Vec<mtg_cards::spend::SpentFrom>,
+    /// The creatures that convoked the spell, which its enters triggers read (CR 702.51).
+    pub(crate) convoked: Vec<ObjectRef>,
     /// The copy effect that makes the permanent a copy of another object (CR 707): its copiable values replace the card's.
     pub(crate) copy: Option<CopyEffect>,
     /// The cards the permanent is made of once a mutating creature spell has merged with it (CR 729).
@@ -262,6 +264,7 @@ impl PermanentState {
             face,
             spent,
             spent_from,
+            convoked: Vec::new(),
             copy: None,
             merged: None,
             phased: PhasedState::default(),
@@ -615,6 +618,17 @@ impl GameObject {
             Some(permanent) => &permanent.spent_from,
             None if self.kind != ObjectKind::Ability && self.zone == Zone::Stack => {
                 self.choices.spent_from()
+            }
+            None => &[],
+        }
+    }
+
+    /// The creatures that convoked this card's spell, kept as [`GameObject::mana_spent`] keeps the mana (CR 702.51).
+    pub fn convoked(&self) -> &[ObjectRef] {
+        match &self.permanent {
+            Some(permanent) => &permanent.convoked,
+            None if self.kind != ObjectKind::Ability && self.zone == Zone::Stack => {
+                self.choices.convoked()
             }
             None => &[],
         }

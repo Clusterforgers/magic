@@ -71,6 +71,10 @@ pub struct Snapshot {
         ts(as = "Option<Vec<mtg_cards::spend::SpentFrom>>", optional)
     )]
     pub spent_from: Vec<mtg_cards::spend::SpentFrom>,
+    /// The creatures that convoked its spell (CR 702.51).
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[cfg_attr(feature = "ts", ts(as = "Option<Vec<ObjectRef>>", optional))]
+    pub convoked: Vec<ObjectRef>,
     /// The face of a card with several faces it was in use as (the back face of a transformed permanent); left out for
     /// the card as a whole.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -139,6 +143,7 @@ pub fn snapshot(state: &GameState, id: ObjectId) -> Option<Snapshot> {
         way: object.cast_way(),
         spent: object.mana_spent().to_vec(),
         spent_from: object.mana_spent_from().to_vec(),
+        convoked: object.convoked().to_vec(),
         face: object.face(),
         copy: copiable(object),
         merged: object.merged().map(|cards| match object.copy_effect() {

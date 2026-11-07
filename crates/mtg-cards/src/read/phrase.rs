@@ -63,6 +63,7 @@ pub(super) fn who(ctx: &Ctx, reference: &Ref) -> String {
         Ref::Chooser => "the player choosing".to_owned(),
         Ref::Bound(name) => format!("\u{201c}{name}\u{201d}"),
         Ref::Paid => "what was paid".to_owned(),
+        Ref::Convoked => "the creatures that convoked it".to_owned(),
         Ref::Affected => "the object it applies to".to_owned(),
         Ref::Candidate => "the object being judged".to_owned(),
         Ref::Remembered { on, slot } => format!("what {} remembers as {slot}", who(ctx, on)),

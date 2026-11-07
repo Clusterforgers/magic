@@ -63,7 +63,15 @@ pub fn delayed_triggers(ctx: &mut Ctx, p: &Params, remembered: Option<&Value>) -
         // `OneOff$ True` ("when you next cast ...") ends the trigger once it has triggered, as a boon does.
         let one_off = Params::parse(text).get("OneOff") == Some("True");
         let body = without_zones(text);
-        let line = ctx.nested(remembered.cloned(), |ctx| triggered(ctx, &body))?;
+        // `EffectSource` is the card whose ability made the effect, which is the delayed trigger's `This`; Forge's `Self`
+        // there is the effect object, so a trigger whose parts name it stays a gap.
+        let parts = reachable(ctx, text);
+        let sourced = parts.iter().any(|part| part.contains("EffectSource"))
+            && !parts.iter().any(|part| names_self(part));
+        let before = std::mem::replace(&mut ctx.effect_source, sourced);
+        let line = ctx.nested(remembered.cloned(), |ctx| triggered(ctx, &body));
+        ctx.effect_source = before;
+        let line = line?;
         let Some(inner) = line.get("Triggered").and_then(Value::as_object) else {
             return unmapped("effect:Effect-trigger-not-triggered");
         };
@@ -74,7 +82,9 @@ pub fn delayed_triggers(ctx: &mut Ctx, p: &Params, remembered: Option<&Value>) -
             return unmapped("effect:Effect-trigger-without-parts");
         };
         // "This" would be the Effect object in Forge, not the card whose ability made it.
-        if when.to_string().contains("\"This\"") || effects.to_string().contains("\"This\"") {
+        if !sourced
+            && (when.to_string().contains("\"This\"") || effects.to_string().contains("\"This\""))
+        {
             return unmapped("effect:Effect-trigger-about-the-source");
         }
         let boon = p.get("Boon") == Some("True") || one_off;
@@ -85,6 +95,39 @@ pub fn delayed_triggers(ctx: &mut Ctx, p: &Params, remembered: Option<&Value>) -
         out.push(json!({"DelayedTrigger": delayed}));
     }
     Ok(out)
+}
+
+/// `text` and the named parts it reaches through its values (`Execute$`, `SubAbility$`, a number's `SVar`), each once.
+fn reachable<'a>(ctx: &Ctx<'a>, text: &'a str) -> Vec<&'a str> {
+    let mut seen: Vec<String> = Vec::new();
+    let mut parts = vec![text];
+    let mut at = 0;
+    while let Some(&part) = parts.get(at) {
+        at += 1;
+        for (_, value) in Params::parse(part).iter() {
+            for word in value.split([',', ' ', '/', '.', '+', '$']) {
+                if let Some(found) = ctx.svar(word)
+                    && !seen.iter().any(|name| name == word)
+                {
+                    seen.push(word.to_owned());
+                    parts.push(found);
+                }
+            }
+        }
+    }
+    parts
+}
+
+/// Whether a part names its own host (`Self`, a `Count$Card...` of it), apart from its descriptions.
+fn names_self(part: &str) -> bool {
+    Params::parse(part).iter().any(|(key, value)| {
+        !key.ends_with("Description")
+            && !key.ends_with("Desc")
+            && (value.contains("Self")
+                || (key == "Count" && value.starts_with("Card"))
+                || value.contains("Count$Card")
+                || value.contains("CARDNAME"))
+    })
 }
 
 /// The trigger line without the zone it works from, which is the command zone for an `Effect`.

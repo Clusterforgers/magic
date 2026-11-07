@@ -1918,6 +1918,7 @@ impl Writer<'_> {
             Ref::Each(selector) if several => {
                 Some(format!("each {}", phrase_text(selector, Form::Each)?))
             }
+            Ref::Convoked if several => Some("each creature that convoked it".to_owned()),
             // Several targets: "each of up to three target creatures".
             Ref::Target(0) if several && self.are_permanents(place) => {
                 Some(format!("each of {}", self.name_target()?))
@@ -2702,7 +2703,7 @@ impl Writer<'_> {
                 what: what @ (Ref::This | Ref::Target(0)),
             } => format!("{} explores", self.object(what)?),
             Effect::Connive {
-                what: what @ (Ref::This | Ref::Target(0)),
+                what: what @ (Ref::This | Ref::Target(0) | Ref::Convoked),
             } => format!("{} connives", self.object(what)?),
             Effect::PhaseOut {
                 what,
@@ -3232,6 +3233,7 @@ impl Writer<'_> {
             Ref::Each(selector) => Some(format!("all {}", phrase_text(selector, Form::All)?)),
             Ref::This => Some("~".to_owned()),
             Ref::Attached => Some("enchanted creature".to_owned()),
+            Ref::Convoked => Some("each creature that convoked ~".to_owned()),
             _ => None,
         }
     }

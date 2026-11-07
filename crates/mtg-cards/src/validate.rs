@@ -506,7 +506,9 @@ impl<'a> Walker<'a> {
             | Ref::Defending => {
                 self.expect(Kind::Player, want);
             }
-            Ref::This | Ref::Attached | Ref::Granter => self.expect(Kind::Object, want),
+            Ref::This | Ref::Attached | Ref::Granter | Ref::Convoked => {
+                self.expect(Kind::Object, want);
+            }
             Ref::PlayersWhere { who, test } => {
                 self.reference(who, Kind::Player);
                 self.condition(test);
@@ -2492,6 +2494,7 @@ impl Walker<'_> {
             | Ref::Attached
             | Ref::Granter
             | Ref::Paid
+            | Ref::Convoked
             | Ref::Arrived { .. }
             | Ref::Departed(_)
             | Ref::Each(_) => Kind::Object,

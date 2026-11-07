@@ -1443,6 +1443,7 @@ fn w2f_cost_taken(
             traits: mtg_cards::spend::SpendTraits::default(),
             count: 2,
         }],
+        convoked: vec![mtg_engine::object::ObjectRef { id: a, counter: 1 }],
     }
 }
 
