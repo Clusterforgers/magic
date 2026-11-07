@@ -565,6 +565,7 @@ const RUNS: &[&str] = &[
     "Amount.ManaInPool",
     "Amount.Doors",
     "Condition.StartingPlayer",
+    "Condition.Among",
     "Ability.Replacement",
     "Ability.CostModifier",
     "ReplaceWhen.TokenCreation",
@@ -980,6 +981,7 @@ mod tests {
     #[case::turn_number("Amount.TurnNumber", true)]
     #[case::triggering_targets("Amount.TriggeringTargets", true)]
     #[case::starting_player("Condition.StartingPlayer", true)]
+    #[case::among_players("Condition.Among", true)]
     #[case::cast_for_a_way("Amount.CastWith", true)]
     #[case::colors_spent("Amount.ColorsSpent", true)]
     #[case::destroyed_this_way("Amount.Destroyed", true)]

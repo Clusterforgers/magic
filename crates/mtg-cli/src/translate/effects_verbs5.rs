@@ -73,8 +73,18 @@ fn sacrifice_all(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
     only(
         p,
         "SacrificeAll",
-        &["Defined", "Controller", "ValidCards", "RememberSacrificed"],
+        &[
+            "Defined",
+            "Controller",
+            "ValidCards",
+            "RememberSacrificed",
+            "ValidTgts",
+        ],
     )?;
+    // "Target creature's controller sacrifices it": only the target itself.
+    if p.has("ValidTgts") && p.get("Defined") != Some("Targeted") {
+        return unmapped("key:SacrificeAll.ValidTgts");
+    }
     let mut node = match p.get("Defined") {
         None => sacrifice_group(ctx, p)?,
         Some(word) => sacrifice_named(ctx, p, word)?,
@@ -87,7 +97,11 @@ fn sacrifice_all(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
 
 /// `SacrificeAll` of the objects `word` names.
 fn sacrifice_named(ctx: &mut Ctx, p: &Params, word: &str) -> Tr<Value> {
-    let object = defined(ctx, word)?;
+    let object = if p.has("ValidTgts") {
+        subject(ctx, p, "Self", None)?
+    } else {
+        defined(ctx, word)?
+    };
     let who = match p.get("Controller") {
         None => json!({"ControllerOf": object}),
         Some("You") => json!("You"),

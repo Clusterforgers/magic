@@ -47,7 +47,10 @@ pub fn explore(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
 pub fn connive(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
     let what = creature(r)?;
     r.need("connives")?;
-    Some(vec![Effect::Connive { what }])
+    Some(vec![Effect::Connive {
+        what,
+        count: Amount::one(),
+    }])
 }
 
 /// "Attach it to target creature you control." (also "attach ~ to ..."): an Equipment or an Aura that enters attaches

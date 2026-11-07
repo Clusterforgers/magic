@@ -2722,7 +2722,8 @@ impl Writer<'_> {
             } => format!("{} explores", self.object(what)?),
             Effect::Connive {
                 what: what @ (Ref::This | Ref::Target(0) | Ref::Convoked),
-            } => format!("{} connives", self.object(what)?),
+                count,
+            } => format!("{} connives{}", self.object(what)?, connive_count(count)?),
             Effect::PhaseOut {
                 what,
                 duration,
@@ -3272,6 +3273,13 @@ impl Writer<'_> {
             Ref::You => Some("you".to_owned()),
             Ref::Triggering => Some("that player".to_owned()),
             Ref::Each(selector) => Some(format!("each {}", phrase_text(selector, Form::Each)?)),
+            // The opponents but the one the trigger is about.
+            Ref::PlayersWhere { who, test }
+                if **who == Ref::Opponents
+                    && **test == Condition::Not(Box::new(Condition::Among(Ref::Triggering))) =>
+            {
+                Some("each other opponent".to_owned())
+            }
             _ => None,
         }
     }
@@ -3430,4 +3438,13 @@ pub(super) fn while_held(when: &TriggerPattern) -> bool {
         when,
         TriggerPattern::DealsDamage { .. } | TriggerPattern::Batch(_) | TriggerPattern::AnyOf(_)
     )
+}
+
+/// The count after "connives": nothing for one, " X" for X (the where-X writer adds what X is).
+fn connive_count(count: &Amount) -> Option<&'static str> {
+    match count {
+        Amount::Fixed(1) => Some(""),
+        Amount::X => Some(" X"),
+        _ => None,
+    }
 }

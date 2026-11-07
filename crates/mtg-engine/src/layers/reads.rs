@@ -204,6 +204,7 @@ pub(crate) fn reads_of_ref(reference: &Ref) -> Traits {
         | Ref::MostLife
         | Ref::ActivePlayer
         | Ref::Chooser
+        | Ref::Asker
         | Ref::Bound(_)
         | Ref::Affected
         | Ref::Candidate
@@ -451,6 +452,7 @@ pub(crate) fn reads_of_condition(condition: &Condition) -> Traits {
         | Condition::CompletedDungeon(who)
         | Condition::Initiative(who)
         | Condition::CitysBlessing(who)
+        | Condition::Among(who)
         | Condition::StartingPlayer(who)
         | Condition::Searched { who, .. } => reads_of_ref(who),
         Condition::Level { of, .. } => reads_of_ref(of),

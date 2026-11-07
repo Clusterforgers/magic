@@ -19,8 +19,8 @@ pub fn effects(ctx: &mut Ctx, p: &Params, api: &str) -> Option<Tr<Vec<Value>>> {
         "EndTurn" => end_turn(p),
         "Amass" => amass(ctx, p),
         "Play" => return Some(super::mayplay::play(ctx, p)),
-        "Connive" => object_verb(ctx, p, api, "Connive"),
-        "Goad" => object_verb(ctx, p, api, "Goad"),
+        "Connive" => connive(ctx, p),
+        "Goad" => goad(ctx, p),
         "RemoveFromCombat" => object_verb(ctx, p, api, "RemoveFromCombat"),
         _ => return None,
     };
@@ -41,6 +41,35 @@ fn object_verb(ctx: &mut Ctx, p: &Params, api: &str, variant: &str) -> Tr<Value>
     only(p, api, &TARGETING)?;
     let what = subject(ctx, p, "Self", None)?;
     Ok(json!({ variant: {"what": what} }))
+}
+
+/// `Connive`: the creatures connive, `ConniveNum$` times over ("connives X", CR 701.50e).
+fn connive(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
+    let mut read = TARGETING.to_vec();
+    read.push("ConniveNum");
+    only(p, "Connive", &read)?;
+    let what = subject(ctx, p, "Self", None)?;
+    let mut node = json!({"Connive": {"what": what}});
+    if let Some(count) = p.get("ConniveNum") {
+        node["Connive"]["count"] = amount(ctx, count)?;
+    }
+    Ok(node)
+}
+
+/// `Goad`: until the goader's next turn (CR 701.15); with `Duration$` ("goaded for the rest of the game", "for as long as
+/// ~ remains on the battlefield") the same continuous `Goaded` for that long.
+fn goad(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
+    let mut read = TARGETING.to_vec();
+    read.push("Duration");
+    only(p, "Goad", &read)?;
+    let what = subject(ctx, p, "Self", None)?;
+    let duration = match p.get("Duration") {
+        None => return Ok(json!({"Goad": {"what": what}})),
+        Some("Permanent") => "Forever",
+        Some("AsLongAsInPlay") => "WhileSourceOnBattlefield",
+        Some(other) => return super::ctx::unmapped(format!("key:Goad.Duration={other}")),
+    };
+    Ok(json!({"Continuous": {"affected": what, "mods": ["Goaded"], "duration": duration}}))
 }
 
 fn set_life(ctx: &mut Ctx, p: &Params) -> Tr<Value> {

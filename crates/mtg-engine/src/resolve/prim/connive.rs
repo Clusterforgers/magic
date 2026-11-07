@@ -17,22 +17,24 @@ use crate::wording;
 use crate::zones::Zone;
 
 /// Each creature the effect names connives in turn, once each. Its controller (as it was, when the creature has left
-/// the battlefield and the ability remembers it) draws a card and discards a card (asked only when the hand holds
-/// more than one), and a creature still on the battlefield gets a +1/+1 counter, as a proposed `CountersChanged` that a
-/// replacement effect sees, if the card discarded is not a land. The effect is one step: the card drawn is the top
-/// card of the library, so it can be among the cards discarded, unless a replacement effect changes the draw (a
-/// commander drawn, a draw that is replaced), when the discard chooses among the cards already in the hand. Each
-/// connive is a `Connived`, the draw, the `CardDiscarded` and the counter.
+/// the battlefield and the ability remembers it) draws N cards and discards N cards (asked only when the hand holds
+/// more than N; N is one unless the effect says more), and a creature still on the battlefield gets one +1/+1 counter
+/// for each nonland card discarded, as a proposed `CountersChanged` that a replacement effect sees. The effect is one
+/// step: the cards drawn are the top cards of the library, so they can be among the cards discarded, unless a
+/// replacement effect changes a draw (a commander drawn, a draw that is replaced), when the discard chooses among the
+/// cards already in the hand. Each connive is a `Connived`, the draws, the `CardDiscarded`s and the counters.
 pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
-    let Effect::Connive { what } = effect else {
+    let Effect::Connive { what, count } = effect else {
         return Err(wrong_effect("Connive"));
     };
     let conniving = actors(cx, what)?;
-    Stop::settle(connivances(cx, &conniving).map(Run::events))
+    let count = usize::try_from(cx.scope.amount(count)?.max(0)).unwrap_or(0);
+    Stop::settle(connivances(cx, &conniving, count).map(Run::events))
 }
 
-/// The events of each connive, asking in turn.
-fn connivances(cx: &Cx<'_>, conniving: &[Actor]) -> Result<Vec<Event>, Stop> {
+/// The events of each connive N, asking in turn: N draws, then N discards (all the hand when it holds no more), and a
+/// +1/+1 counter for each nonland card discarded (CR 701.50e).
+fn connivances(cx: &Cx<'_>, conniving: &[Actor], count: usize) -> Result<Vec<Event>, Stop> {
     let state = cx.state();
     let mut questions = Questions::new(cx);
     let mut events = Vec::new();
@@ -47,17 +49,21 @@ fn connivances(cx: &Cx<'_>, conniving: &[Actor]) -> Result<Vec<Event>, Stop> {
             object: actor.object,
             player,
         });
-        let nth = attempts.iter().filter(|who| **who == player).count() + 1;
-        attempts.push(player);
-        if let Some(event) = draw(state, player, nth).into_iter().nth(nth - 1) {
-            let unchanged = matches!(
-                process(state, vec![event.clone()], &[]),
-                Ok(Processed::Events(found)) if found == [event.clone()]
-            );
-            if let (true, Event::CardDrawn { object, .. }) = (unchanged, &event) {
-                drawn.push((player, *object));
+        // Past an empty library one more draw is all that matters (CR 704.5b).
+        let times = count.min(state.zone(Zone::Library(player)).len() + 1);
+        for _ in 0..times {
+            let nth = attempts.iter().filter(|who| **who == player).count() + 1;
+            attempts.push(player);
+            if let Some(event) = draw(state, player, nth).into_iter().nth(nth - 1) {
+                let unchanged = matches!(
+                    process(state, vec![event.clone()], &[]),
+                    Ok(Processed::Events(found)) if found == [event.clone()]
+                );
+                if let (true, Event::CardDrawn { object, .. }) = (unchanged, &event) {
+                    drawn.push((player, *object));
+                }
+                events.push(event);
             }
-            events.push(event);
         }
         let hand: Vec<ObjectId> = state
             .zone(Zone::Hand(player))
@@ -71,30 +77,32 @@ fn connivances(cx: &Cx<'_>, conniving: &[Actor]) -> Result<Vec<Event>, Stop> {
             )
             .filter(|card| !discarded.contains(card))
             .collect();
-        let chosen = match hand.len() {
-            0 => None,
-            1 => hand.first().copied(),
-            _ => questions
-                .cards(player, hand, (1, 1), wording::discard(1))?
-                .first()
-                .copied(),
+        let chosen = if count == 0 {
+            Vec::new()
+        } else if hand.len() <= count {
+            hand
+        } else {
+            questions.cards(player, hand, (count, count), wording::discard(count))?
         };
-        let Some(card) = chosen else {
-            continue;
-        };
-        discarded.push(card);
-        events.push(Event::CardDiscarded {
-            player,
-            object: card,
-        });
-        let land = state
-            .object(card)
-            .is_some_and(|object| object.base_types().contains(CardType::Land));
-        if let (false, Some(holder)) = (land, actor.permanent) {
+        let mut nonland = 0;
+        for card in chosen {
+            discarded.push(card);
+            events.push(Event::CardDiscarded {
+                player,
+                object: card,
+            });
+            if !state
+                .object(card)
+                .is_some_and(|object| object.base_types().contains(CardType::Land))
+            {
+                nonland += 1;
+            }
+        }
+        if let (true, Some(holder)) = (nonland > 0, actor.permanent) {
             events.push(Event::CountersChanged(CountersChanged {
                 on: Target::Object(holder),
                 counter: CounterKind::PlusOnePlusOne,
-                delta: 1,
+                delta: nonland,
             }));
         }
     }
@@ -104,7 +112,7 @@ fn connivances(cx: &Cx<'_>, conniving: &[Actor]) -> Result<Vec<Event>, Stop> {
 
 #[cfg(test)]
 mod tests {
-    //! Goal: a connive draws the top card of the controller's library and discards a card of their choice (asked only when the hand holds more than one, with the card just drawn among the choices), gives a creature still on the battlefield a +1/+1 counter when the card discarded is not a land, draws from an empty library as a draw does, takes the next card for the next creature of the same player, does nothing for a creature it cannot find, and refuses an answer it did not ask for.
+    //! Goal: a connive N (one unless said) draws N cards and discards N, a +1/+1 counter for each nonland among them; a connive draws the top card of the controller's library and discards a card of their choice (asked only when the hand holds more than one, with the card just drawn among the choices), gives a creature still on the battlefield a +1/+1 counter when the card discarded is not a land, draws from an empty library as a draw does, takes the next card for the next creature of the same player, does nothing for a creature it cannot find, and refuses an answer it did not ask for.
     use std::sync::Arc;
 
     use mtg_cards::CardDefinition;
@@ -299,5 +307,51 @@ mod tests {
         );
         let wolf = named(&game, "Wolf");
         assert!(run_with(&game, vec![(ME, Choice::Cards(vec![wolf]))], SOURCE).is_err());
+    }
+
+    fn conniving(count: u32) -> String {
+        format!(r#"{{"Connive":{{"what":"This","count":{count}}}}}"#)
+    }
+
+    #[rstest]
+    #[case::two_nonlands(2, vec![creature("Ogre", 3, 3), creature("Imp", 1, 1)], &["Source connives", "draws Ogre", "draws Imp", "discards Ogre", "discards Imp", "Source +2"])]
+    #[case::a_land_and_a_nonland(2, vec![creature("Ogre", 3, 3), forest()], &["Source connives", "draws Ogre", "draws Forest", "discards Ogre", "discards Forest", "Source +1"])]
+    #[case::past_the_library_one_draw_from_nothing(3, vec![creature("Ogre", 3, 3)], &["Source connives", "draws Ogre", "draws from nothing", "discards Ogre", "Source +1"])]
+    #[case::zero(0, vec![creature("Ogre", 3, 3)], &["Source connives"])]
+    fn connive_n_draws_and_discards_n_and_counts_each_nonland(
+        #[case] count: u32,
+        #[case] library: Vec<Arc<CardDefinition>>,
+        #[case] expected: &[&str],
+    ) {
+        let game = game(vec![], library, true);
+        let events = done(&game, run_with(&game, vec![], &conniving(count)).unwrap());
+        assert_eq!(events, expected);
+    }
+
+    #[test]
+    fn connive_n_asks_for_n_cards_when_the_hand_holds_more() {
+        let game = game(
+            vec![creature("Bear", 2, 2)],
+            vec![creature("Ogre", 3, 3), forest()],
+            true,
+        );
+        let options = asked(run_with(&game, vec![], &conniving(2)).unwrap());
+        assert_eq!((options.from.len(), options.min, options.max), (3, 2, 2));
+        let chosen = vec![named(&game, "Bear"), named(&game, "Ogre")];
+        let events = done(
+            &game,
+            run_with(&game, vec![(ME, Choice::Cards(chosen))], &conniving(2)).unwrap(),
+        );
+        assert_eq!(
+            events,
+            [
+                "Source connives",
+                "draws Ogre",
+                "draws Forest",
+                "discards Bear",
+                "discards Ogre",
+                "Source +2"
+            ]
+        );
     }
 }

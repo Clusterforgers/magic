@@ -505,6 +505,7 @@ impl<'a> Walker<'a> {
             | Ref::MostLife
             | Ref::ActivePlayer
             | Ref::Chooser
+            | Ref::Asker
             | Ref::Defending => {
                 self.expect(Kind::Player, want);
             }
@@ -1165,6 +1166,10 @@ impl<'a> Walker<'a> {
             Condition::StartingPlayer(who) => {
                 self.uses("Condition", "StartingPlayer");
                 self.at("StartingPlayer", |w| w.reference(who, Kind::Player));
+            }
+            Condition::Among(who) => {
+                self.uses("Condition", "Among");
+                self.at("Among", |w| w.reference(who, Kind::Player));
             }
             Condition::ChosenWord { name, .. } => {
                 self.uses("Condition", "ChosenWord");
@@ -2510,6 +2515,7 @@ impl Walker<'_> {
             | Ref::MostLife
             | Ref::ActivePlayer
             | Ref::Chooser
+            | Ref::Asker
             | Ref::Defending
             | Ref::TriggeringPlayer
             | Ref::ControllerOf(_)
@@ -2996,8 +3002,11 @@ impl Walker<'_> {
             | Effect::Prepare { what }
             | Effect::Goad { what }
             | Effect::Explore { what }
-            | Effect::Connive { what }
             => w.at("what", |w| w.reference(what, Kind::Object)),
+            Effect::Connive { what, count } => {
+                w.at("what", |w| w.reference(what, Kind::Object));
+                w.at("count", |w| w.amount(count));
+            }
             Effect::Destroy { what, bind, .. } => {
                 w.at("what", |w| w.reference(what, Kind::Object));
                 if let Some(name) = bind {
