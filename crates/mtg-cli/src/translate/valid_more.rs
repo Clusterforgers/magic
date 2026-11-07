@@ -183,10 +183,12 @@ fn player_word(ctx: &Ctx, word: &str) -> Tr<Value> {
     }
 }
 
-/// The reference of a `Defined$` word the table does not know; every word is still a gap.
+/// The reference of a `Defined$` word the table does not know: what the source imprinted or its controller, else a gap.
 pub fn defined_word(ctx: &Ctx, word: &str) -> Tr<Value> {
     match word {
         "Imprinted" | "Player.IsImprinted" => memory::imprinted(ctx),
+        // The controller of the card the ability belongs to, who need not be the player who activated it.
+        "SourceController" => Ok(json!({"ControllerOf": "This"})),
         _ => unmapped(format!("defined:{word}")),
     }
 }

@@ -756,6 +756,7 @@ mod fix7;
 mod fix8;
 mod fix9;
 mod frame;
+mod g8a;
 mod p1;
 mod p2;
 mod p3;

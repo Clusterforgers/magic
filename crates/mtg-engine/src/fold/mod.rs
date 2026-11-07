@@ -11,6 +11,8 @@ mod distinct_names;
 mod entered;
 #[cfg(test)]
 mod fe1a_atoms;
+#[cfg(test)]
+mod g8a_faces;
 mod opening;
 #[cfg(test)]
 mod p12_amounts;
