@@ -289,7 +289,14 @@ pub fn immediate_trigger(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
     let targets = std::mem::replace(&mut ctx.targets, outer);
     ctx.parent_target = parent;
     ctx.delayed_remembered = outer_delayed;
-    ctx.trigger_amount = outer_amount;
+    // The targets are chosen as the trigger goes on the stack, before its resolution holds the kept number.
+    if let Some(name) = std::mem::replace(&mut ctx.trigger_amount, outer_amount)
+        && Value::Array(targets.clone())
+            .to_string()
+            .contains(&json!({ "Bound": name }).to_string())
+    {
+        return unmapped("key:ImmediateTrigger.RememberSVarAmount-in-a-target");
+    }
     let mut reflexive = json!({"Reflexive": {"effects": effects?}});
     if !targets.is_empty() {
         reflexive["Reflexive"]["targets"] = Value::Array(targets);

@@ -192,6 +192,18 @@ fn a_reflexive_trigger_reads_the_number_kept(
     }
 }
 
+/// The targets of the trigger are chosen before its resolution holds the number, so a target that reads it is a gap.
+#[test]
+fn a_target_of_the_reflexive_trigger_cannot_read_the_number_kept() {
+    let lines = "A:SP$ ImmediateTrigger | RememberSVarAmount$ Y | Execute$ D\nSVar:D:DB$ Destroy | ValidTgts$ Artifact.cmcLEX\nSVar:X:Count$TriggerRememberAmount\nSVar:Y:Count$CardsInYourHand";
+    reads(
+        "Sorcery",
+        lines,
+        "",
+        "key:ImmediateTrigger.RememberSVarAmount-in-a-target",
+    );
+}
+
 #[rstest]
 #[case::power("Imprinted$CardPower", r#""stat":"Power""#)]
 #[case::matching("Imprinted$Valid Creature", r#"{"Type":"Creature"}"#)]
