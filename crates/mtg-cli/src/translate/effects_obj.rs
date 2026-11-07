@@ -53,7 +53,8 @@ pub fn duration(word: Option<&str>) -> Tr<&'static str> {
         None | Some("EOT" | "EndOfTurn" | "UntilHostLeavesPlayOrEOT") => Ok("UntilEndOfTurn"),
         Some("Permanent") => Ok("Forever"),
         Some("UntilEndOfCombat") => Ok("UntilEndOfCombat"),
-        Some("UntilYourNextTurn") => Ok("UntilYourNextTurn"),
+        // No player gets priority between the start of the turn and its upkeep, so the two ends are the same to play.
+        Some("UntilYourNextTurn" | "UntilYourNextUpkeep") => Ok("UntilYourNextTurn"),
         Some("UntilYourNextEndStep") => Ok("UntilYourNextEndStep"),
         Some("UntilTheEndOfYourNextTurn") => Ok("UntilEndOfYourNextTurn"),
         Some("UntilHostLeavesPlay" | "AsLongAsInPlay") => Ok("WhileSourceOnBattlefield"),

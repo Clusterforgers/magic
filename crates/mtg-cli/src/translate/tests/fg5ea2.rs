@@ -109,7 +109,7 @@ fn a_verb_maps_to_its_node(#[case] line: &str, #[case] node: Value) {
     "key:CopySpellAbility.TargetType"
 )]
 #[case::copy_other_controller(
-    "CopySpellAbility | ValidTgts$ Instant | TargetType$ Spell | Controller$ TargetedController",
+    "CopySpellAbility | ValidTgts$ Instant | TargetType$ Spell | Controller$ Opponent",
     "key:CopySpellAbility.Controller"
 )]
 #[case::copy_triggered_outside_a_cast(

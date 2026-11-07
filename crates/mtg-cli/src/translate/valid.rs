@@ -620,6 +620,9 @@ pub fn selector_in(ctx: &Ctx, spec: &str, zone: Option<&str>) -> Tr<Vec<Value>> 
     if !matches!(zone, None | Some("Battlefield")) {
         arrived_outside(&mut preds);
     }
+    if !matches!(zone, None | Some("Battlefield" | "Stack")) {
+        spell_card(&mut preds);
+    }
     match zone {
         None | Some("Battlefield") => {}
         Some(zone @ ("Graveyard" | "Hand" | "Library" | "Exile" | "Command")) => {
@@ -642,6 +645,15 @@ pub fn selector_in(ctx: &Ctx, spec: &str, zone: Option<&str>) -> Tr<Vec<Value>> 
         Some(other) => return unmapped(format!("zone:{other}")),
     }
     Ok(preds)
+}
+
+/// A card outside the stack is no spell: "Spell.!Aura" there is an instant or sorcery card.
+pub fn spell_card(preds: &mut Vec<Value>) {
+    let aura = json!({"Not": {"Subtype": "Aura"}});
+    if preds.contains(&json!("Spell")) && preds.contains(&aura) {
+        preds.retain(|pred| *pred != json!("Spell") && *pred != aura);
+        preds.push(json!({"AnyOf": [{"Type": "Instant"}, {"Type": "Sorcery"}]}));
+    }
 }
 
 /// The reference a `Defined$` word stands for.

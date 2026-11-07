@@ -68,7 +68,7 @@ fn play_words(#[case] lines: &str, #[case] has: &[&str], #[case] lacks: &[&str])
     "key:Play.CopyCard"
 )]
 #[case::spell_filter(
-    "DB$ Play | Defined$ Remembered | ValidSA$ Spell.cmcLE4 | Optional$ True",
+    "DB$ Play | Defined$ ChosenCard | ValidSA$ Spell.cmcLE4 | Optional$ True",
     "key:Play.Defined-with-ValidSA-filter"
 )]
 #[case::amount_variable(

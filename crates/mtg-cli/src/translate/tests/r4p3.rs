@@ -32,8 +32,8 @@ fn an_effect_about_its_host_lasts_until_the_end_of_the_turn(
     "static:NoSuchMode"
 )]
 #[case::a_duration_it_does_not_know(
-    "A:AB$ Effect | Cost$ W | StaticAbilities$ S | Duration$ UntilYourNextUpkeep\nSVar:S:Mode$ CanAttackDefender | ValidCard$ Card.EffectSource",
-    "duration:UntilYourNextUpkeep"
+    "A:AB$ Effect | Cost$ W | StaticAbilities$ S | Duration$ UntilTheEndOfYourNextUpkeep\nSVar:S:Mode$ CanAttackDefender | ValidCard$ Card.EffectSource",
+    "duration:UntilTheEndOfYourNextUpkeep"
 )]
 fn shapes_the_nodes_cannot_carry_stay_gaps(#[case] rest: &str, #[case] gap: &str) {
     let text = creature(rest);

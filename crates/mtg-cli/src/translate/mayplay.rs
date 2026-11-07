@@ -156,6 +156,31 @@ fn after_stack_is_redundant(p: &Params) -> bool {
         })
 }
 
+/// The name the spell cast by a `Play` with `ReplaceGraveyard$` is bound to.
+const CAST: &str = "cast";
+
+/// The shield that exiles the spell bound as [`CAST`] instead of putting it into a graveyard from the stack.
+fn exile_shield(only: &[Value]) -> Value {
+    let mut what = vec![json!({"In": "Stack"}), json!({"Is": {"Bound": CAST}})];
+    what.extend(only.iter().cloned());
+    json!({"Shield": {
+        "when": {"ZoneChange": {
+            "what": what,
+            "from": "Stack", "to": "Graveyard"}},
+        "by": {"MoveTo": "Exile"}, "duration": "Forever"}})
+}
+
+/// Whether the text says "less than" where a script says `cmcLE`: the script is the looser rule and is not read.
+fn strictly_less(oracle: &str) -> bool {
+    let text = oracle.to_lowercase();
+    text.contains("less than") && !text.contains("less than or equal")
+}
+
+/// Whether "otherwise" follows the cast: it may mean a spell too costly to cast, or one the player declined.
+fn says_otherwise(oracle: &str) -> bool {
+    oracle.to_lowercase().contains("otherwise")
+}
+
 /// How many of the cards a `Play` casts.
 enum Count {
     One,
@@ -183,24 +208,21 @@ pub fn play(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
             "ValidTgts",
             "TargetMin",
             "TargetMax",
+            "ReplaceGraveyard",
+            "AllowRepeats",
+            "ReplaceGraveyardValid",
         ],
     )?;
     if p.get("Optional") != Some("True") {
         return unmapped("key:Play.Optional");
     }
-    let count = match p.get("Amount") {
-        None | Some("1") => Count::One,
-        Some("All") => Count::All,
-        Some(n) => match n.parse::<u64>() {
-            Ok(n) if n >= 2 => Count::Some(n),
-            _ => return unmapped("key:Play.Amount"),
-        },
-    };
+    let count = play_count(p)?;
     let who = match p.get("Controller") {
         None | Some("You") => json!("You"),
         Some(word) => defined(ctx, word)?,
     };
     let (spell_only, spell_filter) = valid_sa(ctx, p.get("ValidSA"))?;
+    let spell_only = spell_only || targets_only_spells(p);
     let copy = match p.get("CopyCard") {
         None => false,
         // A named card is copied from where it lies (the cards a move to exile remembered).
@@ -209,7 +231,14 @@ pub fn play(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
     };
     let pool = play_pool(ctx, p, spell_filter)?;
     let free = p.get("WithoutManaCost") == Some("True");
-    let played = played_name(ctx, p, spell_only || copy, matches!(count, Count::One))?;
+    let exile = exile_instead(ctx, p, spell_only && !copy && matches!(count, Count::One))?;
+    let exile_after = exile.is_some();
+    let shield_only = exile.unwrap_or_default();
+    let played = if exile_after {
+        Some(CAST.to_owned())
+    } else {
+        played_name(ctx, p, spell_only || copy, matches!(count, Count::One))?
+    };
     let cast = |card: Value, ctx: &mut Ctx| -> Vec<Value> {
         let mut steps = Vec::new();
         let mut card = card;
@@ -232,8 +261,18 @@ pub fn play(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
         steps.push(json!({ "CastFromZone": effect }));
         steps
     };
+    // "Copy that card three times. You may cast the copies": one copy and one cast after the other.
+    if let (true, Count::Some(times)) = (copy && repeats_one_card(p), &count) {
+        let mut steps = Vec::new();
+        for _ in 0..*times {
+            steps.extend(cast(pool.clone(), ctx));
+        }
+        return Ok(steps);
+    }
     if matches!(count, Count::One) && (p.has("Defined") || p.has("ValidTgts")) {
-        return Ok(cast(pool, ctx));
+        let mut steps = cast(pool, ctx);
+        steps.extend(exile_after.then(|| exile_shield(&shield_only)));
+        return Ok(steps);
     }
     let (over, mut steps) = match count {
         Count::All => (pool, Vec::new()),
@@ -247,6 +286,7 @@ pub fn play(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
     };
     if matches!(count, Count::One) {
         steps.extend(cast(over, ctx));
+        steps.extend(exile_after.then(|| exile_shield(&shield_only)));
         return Ok(steps);
     }
     let each = ctx.fresh("card");
@@ -255,11 +295,76 @@ pub fn play(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
     Ok(steps)
 }
 
+/// Whether the line with `ReplaceGraveyard$` targets only instants and sorceries, which are cast whatever `ValidSA$` says.
+fn targets_only_spells(p: &Params) -> bool {
+    p.has("ReplaceGraveyard")
+        && p.get("ValidTgts").is_some_and(|tgts| {
+            tgts.split(',')
+                .all(|alt| alt.starts_with("Instant") || alt.starts_with("Sorcery"))
+        })
+}
+
+/// Whether the line copies the one card `Defined$` names again and again (`AllowRepeats$`).
+fn repeats_one_card(p: &Params) -> bool {
+    p.get("AllowRepeats") == Some("True")
+        && p.has("Defined")
+        && !p.has("Valid")
+        && !p.has("ValidZone")
+}
+
+/// How many of the cards a `Play` casts: `Amount$`.
+fn play_count(p: &Params) -> Tr<Count> {
+    Ok(match p.get("Amount") {
+        None | Some("1") => Count::One,
+        Some("All") => Count::All,
+        Some(n) => match n.parse::<u64>() {
+            Ok(n) if n >= 2 => Count::Some(n),
+            _ => return unmapped("key:Play.Amount"),
+        },
+    })
+}
+
+/// `ReplaceGraveyard$` of a `Play`: "if that spell would be put into a graveyard, exile it instead" is a shield over the one
+/// spell cast. The result holds the types `ReplaceGraveyardValid$` limits it to; `None` when the line has no such word.
+fn exile_instead(ctx: &Ctx, p: &Params, one_spell: bool) -> Tr<Option<Vec<Value>>> {
+    let Some(word) = p.get("ReplaceGraveyard") else {
+        return Ok(None);
+    };
+    // "From a graveyard" is any graveyard: a script that keeps to the caster's own cards reads narrower than the text.
+    let own_only = [p.get("Valid"), p.get("ValidTgts")]
+        .into_iter()
+        .flatten()
+        .any(|valid| valid.contains("YouOwn") || valid.contains("YouCtrl"));
+    if own_only && ctx.oracle.contains("from a graveyard") {
+        return unmapped("key:Play.graveyard-owner");
+    }
+    if word != "Exile" || !one_spell {
+        return unmapped("key:Play.ReplaceGraveyard");
+    }
+    match p.get("ReplaceGraveyardValid") {
+        Some(valid) => Ok(Some(selector_any(ctx, valid)?)),
+        None => Ok(Some(Vec::new())),
+    }
+}
+
 /// The cards a `Play` may cast: those `Defined$` names, its target, or those `Valid$` selects in `ValidZone$`, with the
 /// predicates of `ValidSA$`.
 fn play_pool(ctx: &mut Ctx, p: &Params, spell_filter: Vec<Value>) -> Tr<Value> {
     Ok(
         match (p.get("Defined"), p.get("Valid"), p.get("ValidZone")) {
+            // "Cast that card if its mana value is ..." after an exile: the remembered card in exile, kept when it passes.
+            (Some("Remembered"), None, None)
+                if !spell_filter.is_empty()
+                    && !strictly_less(ctx.oracle)
+                    && !says_otherwise(ctx.oracle) =>
+            {
+                let mut selector = vec![
+                    json!({"Is": defined(ctx, "Remembered")?}),
+                    json!({"In": "Exile"}),
+                ];
+                selector.extend(spell_filter);
+                json!({ "Each": selector })
+            }
             (Some(_), None, None) if !spell_filter.is_empty() => {
                 return unmapped("key:Play.Defined-with-ValidSA-filter");
             }

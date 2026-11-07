@@ -63,6 +63,9 @@ fn copy_spell(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
             "Amount",
             "Controller",
             "SetColor",
+            "Optional",
+            "UnlessAI",
+            "NonLegendary",
         ],
     )?;
     let who = match p.get("Controller") {
@@ -76,6 +79,8 @@ fn copy_spell(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
         {
             Some(json!("TriggeringPlayer"))
         }
+        // "That permanent's controller copies this spell": the player the target points to.
+        Some(word @ ("TargetedController" | "TargetedOrController")) => Some(defined(ctx, word)?),
         Some(_) => return unmapped("key:CopySpellAbility.Controller"),
     };
     let what = if p.has("ValidTgts") {
@@ -95,12 +100,16 @@ fn copy_spell(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
             .is_some_and(|shape| shape.mode == "SpellCast")
     {
         json!("Triggering")
+    } else if p.get("Defined") == Some("Parent") && ctx.trigger.is_none() {
+        json!("This")
+    } else if p.get("Defined") == Some("Targeted") && !p.has("ValidTgts") {
+        ctx.last_target()?
     } else {
         return unmapped("key:CopySpellAbility.Defined");
     };
     let mut copy = json!({"what": what});
-    if let Some(who) = who {
-        copy["who"] = who;
+    if let Some(who) = &who {
+        copy["who"] = who.clone();
     }
     if p.has("Amount") {
         copy["count"] = amount(ctx, p.get("Amount").unwrap_or("1"))?;
@@ -108,13 +117,25 @@ fn copy_spell(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
     if p.get("MayChooseTarget") == Some("True") {
         copy["new_targets"] = json!(true);
     }
+    if p.get("NonLegendary") == Some("True") {
+        copy["except"] = json!([{"RemoveSupertype": "Legendary"}]);
+    }
     if let Some(color) = p.get("SetColor") {
         if !matches!(color, "White" | "Blue" | "Black" | "Red" | "Green") {
             return unmapped("key:CopySpellAbility.SetColor");
         }
         copy["except"] = json!([{"SetColors": [color]}]);
     }
-    Ok(json!({"CopySpell": copy}))
+    let copy = json!({"CopySpell": copy});
+    if p.get("Optional") != Some("True") {
+        return Ok(copy);
+    }
+    // "May copy": the player who controls the copy decides.
+    let mut may = json!({"effects": [copy]});
+    if let Some(who) = &who {
+        may["who"] = who.clone();
+    }
+    Ok(json!({"May": may}))
 }
 
 /// `ChoosePlayer`: the chooser picks one of the opponents or of all players; the later lines read it as `ChosenPlayer`.
