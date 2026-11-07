@@ -86,6 +86,7 @@ mod facts;
 mod flicker;
 mod g8e_attached;
 mod g9a_blocks;
+mod g9c_blocks;
 mod group_copies;
 mod group_phrases;
 mod group_pump;

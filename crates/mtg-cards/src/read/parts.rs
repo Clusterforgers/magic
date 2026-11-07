@@ -168,13 +168,21 @@ pub(super) fn trigger(ctx: &Ctx, when: &TriggerPattern) -> String {
         TriggerPattern::AttacksAlone { what } => {
             format!("{} attacks alone", phrase::selector(ctx, what))
         }
-        TriggerPattern::Blocks { what } => format!("{} blocks", phrase::selector(ctx, what)),
-        TriggerPattern::BecomesBlocked { what, by } if by.0.is_empty() => {
+        TriggerPattern::Blocks { what, blocking } if blocking.0.is_empty() => {
+            format!("{} blocks", phrase::selector(ctx, what))
+        }
+        TriggerPattern::Blocks { what, blocking } => format!(
+            "{} blocks one or more {}",
+            phrase::selector(ctx, what),
+            phrase::selector(ctx, blocking)
+        ),
+        TriggerPattern::BecomesBlocked { what, by, .. } if by.0.is_empty() => {
             format!("{} becomes blocked", phrase::selector(ctx, what))
         }
-        TriggerPattern::BecomesBlocked { what, by } => format!(
-            "{} becomes blocked by {}",
+        TriggerPattern::BecomesBlocked { what, by, once } => format!(
+            "{} becomes blocked by {}{}",
             phrase::selector(ctx, what),
+            if *once { "one or more " } else { "" },
             phrase::selector(ctx, by)
         ),
         TriggerPattern::SpellCast { what, by } => {
@@ -530,6 +538,12 @@ fn combat_quirk(who: &str, quirk: &CombatQuirk) -> String {
         }
         CombatQuirk::BlockIgnoringLandwalk => {
             format!("{who} can block creatures with landwalk as though they didn't have it")
+        }
+        CombatQuirk::BlockAsThoughShadow => {
+            format!("{who} can block creatures with shadow as though they had shadow")
+        }
+        CombatQuirk::BlockIgnoringShadow => {
+            format!("{who} can block creatures with shadow as though they didn't have shadow")
         }
     }
 }

@@ -1,22 +1,17 @@
 //! The other creature of a block as a filter of a trigger (`ValidBlocked$` of `Blocks`, `ValidBlocker$` of
 //! `AttackerBlocked`): "blocks a creature with flying" once for each such attacker, "becomes blocked by an artifact
 //! creature" once for each such blocker (CR 509.3d), and "blocks or becomes blocked by one or more black creatures"
-//! once, with the other creature checked as it triggers.
+//! once (the filter of the event, read by `triggers`).
 
 use serde_json::{Value, json};
 
-use super::ctx::{Ctx, Tr, unmapped};
-use super::valid::selector_any;
+use super::ctx::{Tr, unmapped};
 use crate::forge::script::Params;
 
 /// The line with its other-creature filter read: a per-creature filter becomes the line of
-/// `AttackerBlockedByCreature` (one trigger for each pair), "one or more" is a condition checked as the ability
-/// triggers, and a filter of every creature drops. Other lines pass unchanged.
-pub fn g9a_block_filter(
-    ctx: &Ctx,
-    p: Params,
-    intervening: Option<Value>,
-) -> Tr<(Params, Option<Value>)> {
+/// `AttackerBlockedByCreature` (one trigger for each pair), "one or more" stays for `triggers` to read as a filter of the
+/// event, and a filter of every creature drops. Other lines pass unchanged.
+pub fn g9a_block_filter(p: Params, intervening: Option<Value>) -> Tr<(Params, Option<Value>)> {
     let (key, blocks) = match p.get("Mode") {
         Some("Blocks") => ("ValidBlocked", true),
         Some("AttackerBlocked") => ("ValidBlocker", false),
@@ -46,9 +41,9 @@ pub fn g9a_block_filter(
             intervening,
         ));
     }
-    let Some(who) = one_object(&subject) else {
+    if one_object(&subject).is_none() {
         return gap();
-    };
+    }
     if single {
         // One trigger for each pair: the attacker filter and the blocker filter of `AttackerBlockedByCreature`.
         let (attacker, blocker) = if blocks {
@@ -69,15 +64,8 @@ pub fn g9a_block_filter(
     if !text.contains("one or more") {
         return gap();
     }
-    let mut found = selector_any(ctx, &other)?;
-    found.push(json!({"AnyOf": [{"BlockedBy": who}, {"Blocks": who}]}));
-    let some =
-        json!({"AtTrigger": {"Compare": {"left": {"Count": found}, "op": "Ge", "right": 1}}});
-    let both = match intervening {
-        None => some,
-        Some(before) => json!({"All": [before, some]}),
-    };
-    Ok((p.without(&[key]), Some(both)))
+    // "One or more" stays a filter of the event: `Blocks` reads it as `blocking`, `AttackerBlocked` as `by` once.
+    Ok((p, intervening))
 }
 
 /// The Forge mode the gap names.

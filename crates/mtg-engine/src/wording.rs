@@ -736,14 +736,22 @@ fn clause(pattern: &TriggerPattern) -> (String, bool) {
             let (name, s) = who(by);
             (format!("{name} tap{s} {} for mana", subject(what)), false)
         }
-        TriggerPattern::Blocks { what } => {
-            (format!("{} blocks", subject(what)), what.0 == [Pred::This])
-        }
-        TriggerPattern::BecomesBlocked { what, by } => {
-            let blocker = if by.is_empty() {
+        TriggerPattern::Blocks { what, blocking } => {
+            let blocked = if blocking.is_empty() {
                 String::new()
             } else {
-                format!(" by {}", subject(by))
+                format!(" one or more {}", subject(blocking))
+            };
+            (
+                format!("{} blocks{blocked}", subject(what)),
+                what.0 == [Pred::This],
+            )
+        }
+        TriggerPattern::BecomesBlocked { what, by, once } => {
+            let blocker = match (by.is_empty(), once) {
+                (true, _) => String::new(),
+                (false, true) => format!(" by one or more {}", subject(by)),
+                (false, false) => format!(" by {}", subject(by)),
             };
             (
                 format!("{} becomes blocked{blocker}", subject(what)),

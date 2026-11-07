@@ -63,7 +63,7 @@ pub fn triggered(ctx: &mut Ctx, body: &str) -> Tr<Value> {
     let (p, intervening) = event_amount(p, intervening)?;
     let (p, intervening) = defender_poisoned(p, intervening);
     let (p, intervening) = kicked_with(ctx, p, intervening)?;
-    let (p, intervening) = super::triggers_g9a::g9a_block_filter(ctx, p, intervening)?;
+    let (p, intervening) = super::triggers_g9a::g9a_block_filter(p, intervening)?;
     let (when, intervening) = if p.get("Mode") == Some("Always") {
         state_when(ctx, &p, &all)?
     } else {
@@ -76,7 +76,7 @@ pub fn triggered(ctx: &mut Ctx, body: &str) -> Tr<Value> {
         itself,
         by: when
             .get("BecomesBlocked")
-            .is_some_and(|node| node.get("by").is_some()),
+            .is_some_and(|node| node.get("by").is_some() && node.get("once").is_none()),
         to_player: p.get("ValidTarget").is_some_and(|word| {
             word == "Player" || word.starts_with("Player.") || word == "Opponent"
         }),
@@ -413,7 +413,7 @@ pub(super) fn pattern(ctx: &Ctx, p: &Params) -> Tr<Value> {
         "Sacrificed" => sacrificed(ctx, p),
         "Taps" => what_trigger(ctx, p, "Tapped"),
         "Untaps" => what_trigger(ctx, p, "Untapped"),
-        "Blocks" => what_trigger(ctx, p, "Blocks"),
+        "Blocks" => blocks(ctx, p),
         "AttackerBlocked" => attacker_blocked(ctx, p),
         other => unmapped(format!("trigger:{other}")),
     }
@@ -816,12 +816,38 @@ fn attacker_blocked(ctx: &Ctx, p: &Params) -> Tr<Value> {
     let what = selector_any(ctx, p.get("ValidCard").unwrap_or("Card"))?;
     let mut node = json!({ "what": what });
     if let Some(valid) = p.get("ValidBlocker") {
-        if !attached_or_self(valid) {
+        // "By one or more Orcs" happens once; "by an artifact creature" is the pair line `triggers_g9a` made.
+        let one = attached_or_self(valid);
+        if !one && !one_or_more(p) {
             return unmapped("key:Trigger.BecomesBlocked.ValidBlocker");
         }
         node["by"] = json!(selector_any(ctx, valid)?);
+        if !one {
+            node["once"] = json!(true);
+        }
     }
     Ok(json!({ "BecomesBlocked": node }))
+}
+
+/// `Blocks` with `ValidBlocked$` left by `triggers_g9a`: a block of one or more attackers of a kind, once for each
+/// blocker.
+fn blocks(ctx: &Ctx, p: &Params) -> Tr<Value> {
+    keys(p, "Blocks", &["ValidCard", "ValidBlocked"])?;
+    let what = selector_any(ctx, p.get("ValidCard").unwrap_or("Card"))?;
+    let mut node = json!({ "what": what });
+    match p.get("ValidBlocked") {
+        None => {}
+        Some(valid) if one_or_more(p) => node["blocking"] = json!(selector_any(ctx, valid)?),
+        Some(_) => return unmapped("key:Trigger.Blocks.ValidBlocked"),
+    }
+    Ok(json!({ "Blocks": node }))
+}
+
+/// Whether the printed trigger says "one or more" of the creatures on the other side of the block.
+fn one_or_more(p: &Params) -> bool {
+    p.get("TriggerDescription").is_some_and(|text| {
+        text.contains("blocked by one or more") || text.contains("blocks one or more")
+    })
 }
 
 /// The effects with the line's optional decider asked: you, or the player of the event ("that creature's controller

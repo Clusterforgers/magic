@@ -753,6 +753,7 @@ Indulging Patrician
 Infectious Inquiry
 Inferno Project
 Infesting Radroach
+Infiltration Lens
 Inkwell Leviathan
 Insatiable Hemophage
 Inspired Skypainter // Maestro's Gift
@@ -1147,12 +1148,14 @@ Psychosis Crawler
 Pteramander
 Putrid Goblin
 Pygmy Kavu
+Pygmy Troll
 Pyreswipe Hawk
 Quantum Misalignment
 Quest for the Goblin Lord
 Questing Beast
 Quietus Spike
 Rabble Rousing
+Rabid Wolverines
 Radical Idea
 Raffine's Informant
 Rafter Demon
@@ -1199,6 +1202,7 @@ Replication Technique
 Rescue Skiff
 Reshape
 Resplendent Angel
+Retaliation
 Retreat to Coralhelm
 Revel Ruiner
 Revenge of Ravens
@@ -1645,6 +1649,7 @@ Verdant Confluence
 Vestige of Emrakul
 Vesuva
 Veteran's Powerblade
+Viashino Weaponsmith
 Vibranium Strike Gauntlets
 Village Pillagers
 Village Rites

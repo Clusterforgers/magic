@@ -143,7 +143,15 @@ enum Happened {
         attacker: ObjectId,
     },
     /// An attacker became blocked, once however many creatures block it.
-    BecameBlocked { attacker: ObjectId },
+    BecameBlocked {
+        attacker: ObjectId,
+        blockers: Vec<ObjectId>,
+    },
+    /// A creature was declared as a blocker, once however many attackers it blocks.
+    Blocking {
+        blocker: ObjectId,
+        attackers: Vec<ObjectId>,
+    },
     /// An attacker of the player who declared blockers was not blocked (CR 509.1h).
     Unblocked { attacker: ObjectId },
     /// A player copied a spell: the copy, on the stack under their control.
@@ -914,11 +922,28 @@ fn about_players_and_permanents(
                 attacker: *attacker,
             }));
             let mut blocked = Vec::new();
-            for (_, attacker) in blocks {
+            let mut blocking = Vec::new();
+            for (blocker, attacker) in blocks {
                 if !blocked.contains(attacker) {
                     blocked.push(*attacker);
                     found.push(Happened::BecameBlocked {
                         attacker: *attacker,
+                        blockers: blocks
+                            .iter()
+                            .filter(|(_, of)| of == attacker)
+                            .map(|(by, _)| *by)
+                            .collect(),
+                    });
+                }
+                if !blocking.contains(blocker) {
+                    blocking.push(*blocker);
+                    found.push(Happened::Blocking {
+                        blocker: *blocker,
+                        attackers: blocks
+                            .iter()
+                            .filter(|(by, _)| by == blocker)
+                            .map(|(_, of)| *of)
+                            .collect(),
                     });
                 }
             }
@@ -1735,7 +1760,9 @@ fn matching_permanents(
                 && picks(&Selector::this(), on)?)
             .then(|| counted(state, vec![Target::Object(on)], happened.amount()))
         }
-        (TriggerPattern::Blocks { what }, Happened::Blocked { blocker, attacker }) => {
+        (TriggerPattern::Blocks { what, blocking }, Happened::Blocked { blocker, attacker })
+            if blocking.is_empty() =>
+        {
             let (blocker, attacker) = (object(*blocker)?, object(*attacker)?);
             picks(what, blocker)?.then(|| Cause {
                 source: Some(blocker),
@@ -1746,20 +1773,61 @@ fn matching_permanents(
                 )
             })
         }
-        (TriggerPattern::BecomesBlocked { what, by }, Happened::Blocked { blocker, attacker })
-            if !by.is_empty() =>
+        (TriggerPattern::Blocks { what, blocking }, Happened::Blocking { blocker, attackers })
+            if !blocking.is_empty() =>
         {
+            let blocker = object(*blocker)?;
+            if !picks(what, blocker)? {
+                return None;
+            }
+            let mut first = None;
+            for attacker in attackers {
+                if let Some(attacker) = object(*attacker)
+                    && picks(blocking, attacker)?
+                {
+                    first = Some(attacker);
+                    break;
+                }
+            }
+            let attacker = first?;
+            Some(Cause {
+                source: Some(blocker),
+                against: Some(Target::Object(attacker)),
+                ..cause(
+                    state,
+                    vec![Target::Object(blocker), Target::Object(attacker)],
+                )
+            })
+        }
+        (
+            TriggerPattern::BecomesBlocked {
+                what,
+                by,
+                once: false,
+            },
+            Happened::Blocked { blocker, attacker },
+        ) if !by.is_empty() => {
             let (blocker, attacker) = (object(*blocker)?, object(*attacker)?);
             (picks(what, attacker)? && picks(by, blocker)?).then(|| Cause {
                 source: Some(blocker),
                 ..cause(state, vec![Target::Object(attacker)])
             })
         }
-        (TriggerPattern::BecomesBlocked { what, by }, Happened::BecameBlocked { attacker })
-            if by.is_empty() =>
-        {
+        (
+            TriggerPattern::BecomesBlocked { what, by, once },
+            Happened::BecameBlocked { attacker, blockers },
+        ) if by.is_empty() || *once => {
             let attacker = object(*attacker)?;
-            picks(what, attacker)?.then(|| cause(state, vec![Target::Object(attacker)]))
+            if !picks(what, attacker)? {
+                return None;
+            }
+            let mut matched = by.is_empty();
+            for blocker in blockers {
+                if !matched && let Some(blocker) = object(*blocker) {
+                    matched = picks(by, blocker)?;
+                }
+            }
+            matched.then(|| cause(state, vec![Target::Object(attacker)]))
         }
         (TriggerPattern::Unblocked { what }, Happened::Unblocked { attacker }) => {
             let attacker = object(*attacker)?;

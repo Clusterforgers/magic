@@ -5,6 +5,7 @@
 use super::amounts::{count_word, number_word};
 use super::batches;
 use super::counters;
+use super::g9c_blocks::g9c_happening;
 use super::selectors::{Form, phrase, phrase_text};
 use super::tokens::Reader;
 use crate::keyword::Keyword;
@@ -82,7 +83,7 @@ pub fn event_creature(pattern: &TriggerPattern) -> Option<Ref> {
             to: Some(ZoneKind::Battlefield),
             ..
         } => (what, true),
-        TriggerPattern::Blocks { what } => (what, false),
+        TriggerPattern::Blocks { what, .. } => (what, false),
         // The card that dies, or is put into a graveyard, is "it" in what the card does about itself.
         TriggerPattern::ZoneChange {
             what,
@@ -151,7 +152,7 @@ pub fn event_subject(pattern: &TriggerPattern) -> Option<Ref> {
     let (TriggerPattern::Attacks { what }
     | TriggerPattern::BecomesBlocked { what, .. }
     | TriggerPattern::Unblocked { what }
-    | TriggerPattern::Blocks { what }
+    | TriggerPattern::Blocks { what, .. }
     | TriggerPattern::ZoneChange { what, .. }) = pattern
     else {
         return None;
@@ -743,6 +744,7 @@ pub(super) fn subject(r: &mut Reader<'_>) -> Option<Selector> {
 /// joined by "or".
 fn verbs(r: &mut Reader<'_>, what: &Selector) -> Option<TriggerPattern> {
     let mut found = verb_list(r, what)?;
+    super::g9c_blocks::g9c_shared_kind(&mut found);
     if found.len() == 1 {
         found.pop()
     } else if found
@@ -817,12 +819,9 @@ fn verb(r: &mut Reader<'_>, what: &Selector) -> Option<TriggerPattern> {
     } else if r.words("is dealt damage") {
         return dealt_damage(r, what);
     } else if r.word("blocks") {
-        return Some(TriggerPattern::Blocks { what: what.clone() });
+        return Some(super::g9c_blocks::g9c_blocks(r, what));
     } else if r.words("becomes blocked") {
-        return Some(TriggerPattern::BecomesBlocked {
-            what: what.clone(),
-            by: Selector::default(),
-        });
+        return Some(super::g9c_blocks::g9c_blocked(r, what));
     } else if r.words("becomes tapped") {
         return Some(TriggerPattern::Tapped { what: what.clone() });
     } else if r.words("phases out") || r.words("phase out") {
@@ -1291,9 +1290,6 @@ pub(super) fn player_verb(by: &Ref, verb: &str) -> Option<String> {
     })
 }
 
-/// The words of a creature that becomes blocked by any creature.
-const BLOCKED: &str = "becomes blocked";
-
 /// The subject of a pattern that is about one thing happening to it, and what happens. The damage one object is dealt
 /// or deals in one event has no such words: the singular wording is the batch's (`r7e_events`).
 pub(super) fn happening(pattern: &TriggerPattern) -> Option<(Selector, String)> {
@@ -1357,8 +1353,6 @@ fn one_happening(pattern: &TriggerPattern) -> Option<(Selector, String)> {
         TriggerPattern::AttacksPlayerOrPlaneswalker { what, at: Ref::You } => {
             said(what, "attacks you or a planeswalker you control")
         }
-        TriggerPattern::Blocks { what } => said(what, "blocks"),
-        TriggerPattern::BecomesBlocked { what, by } if by.0.is_empty() => said(what, BLOCKED),
         TriggerPattern::Unblocked { what } => said(what, "attacks and isn't blocked"),
         TriggerPattern::Tapped { what } => said(what, "becomes tapped"),
         TriggerPattern::Untapped { what } => said(what, "becomes untapped"),
@@ -1404,7 +1398,7 @@ fn one_happening(pattern: &TriggerPattern) -> Option<(Selector, String)> {
             &format!("deals {}", damage_text(*combat, to.as_ref())?),
         ),
         // An action of `Did`, or nothing.
-        _ => super::r7e_events::r7e_did_happening(pattern),
+        _ => g9c_happening(pattern).or_else(|| super::r7e_events::r7e_did_happening(pattern)),
     }
 }
 
@@ -1509,18 +1503,13 @@ fn player_attack_text(pattern: &TriggerPattern) -> Option<String> {
 pub fn pattern_text(pattern: &TriggerPattern) -> Option<String> {
     match pattern {
         TriggerPattern::Exerted { what } => super::w9d_exert::w9d_event_text(what),
-        TriggerPattern::BecomesBlocked { by, .. } if !by.0.is_empty() => {
-            super::g9a_blocks::g9a_pair_text(pattern)
-        }
+        TriggerPattern::BecomesBlocked {
+            by, once: false, ..
+        } if !by.0.is_empty() => super::g9a_blocks::g9a_pair_text(pattern),
         TriggerPattern::StepBegins { step, whose } => {
             Some(format!("At the beginning of {}", step_text(*step, whose)?))
         }
-        TriggerPattern::SpellCast { what, by: Ref::You } if what.0 == [Pred::This] => {
-            Some("When you cast ~".to_owned())
-        }
-        TriggerPattern::SpellCast { what, by } => super::r7e_events::r7e_cast_text(pattern)
-            .or_else(|| super::c4_cast_hand::cast_text(what, by))
-            .or_else(|| super::r9w_players::r9w_cast_text(what, by)),
+        TriggerPattern::SpellCast { what, by } => spell_cast_text(pattern, what, by),
         TriggerPattern::Did { .. } => super::r7e_events::r7e_did_text(pattern),
         TriggerPattern::SpellCopied { what, by } => super::w2e_copied::w2e_copy_text(what, by),
         TriggerPattern::Sacrificed { what, by } => Some(format!(
@@ -1595,7 +1584,8 @@ pub fn pattern_text(pattern: &TriggerPattern) -> Option<String> {
                 phrase_text(what, Form::All)?
             ))
         }
-        TriggerPattern::AnyOf(patterns) => super::w2e_copied::w2e_cast_or_copy_text(patterns)
+        TriggerPattern::AnyOf(patterns) => super::g9c_blocks::g9c_shared_text(patterns)
+            .or_else(|| super::w2e_copied::w2e_cast_or_copy_text(patterns))
             .or_else(|| any_of_text(patterns))
             .or_else(|| super::w6e_control::w6e_joined_step(patterns))
             .or_else(|| super::r7e_events::r7e_any_of(patterns)),
@@ -1805,4 +1795,14 @@ fn about(what: &Selector, verbs: &[String]) -> Option<String> {
         subject_text(what)?,
         verbs.join(" or ")
     ))
+}
+
+/// The words of a cast trigger: "When you cast ~", or the first cast writer that words the pattern.
+fn spell_cast_text(pattern: &TriggerPattern, what: &Selector, by: &Ref) -> Option<String> {
+    if *by == Ref::You && what.0 == [Pred::This] {
+        return Some("When you cast ~".to_owned());
+    }
+    super::r7e_events::r7e_cast_text(pattern)
+        .or_else(|| super::c4_cast_hand::cast_text(what, by))
+        .or_else(|| super::r9w_players::r9w_cast_text(what, by))
 }

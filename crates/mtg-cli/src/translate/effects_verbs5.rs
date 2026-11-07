@@ -149,20 +149,53 @@ fn to_values(effects: &[Effect]) -> Tr<Vec<Value>> {
 
 /// `MustBlock` on a target: the creature blocks the source creature this turn if able (the requirement of Provoke).
 fn must_block(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
-    only(p, "MustBlock", &["ValidTgts", "Duration"])?;
+    only(
+        p,
+        "MustBlock",
+        &[
+            "ValidTgts",
+            "Duration",
+            "DefinedAttacker",
+            "TargetMin",
+            "TargetMax",
+        ],
+    )?;
     if !p.has("ValidTgts") {
         return unmapped("key:MustBlock.no-target");
     }
-    // The attacker is the source, which a trigger of another object's attack does not name.
-    if ctx
-        .trigger
-        .as_ref()
-        .is_some_and(|t| t.mode != "Attacks" || !t.itself)
-    {
-        return unmapped("key:MustBlock.attacker");
-    }
+    // Without `DefinedAttacker$` the attacker is the source itself, whatever the trigger.
+    let attacker = match p.get("DefinedAttacker") {
+        None => json!("This"),
+        Some("ParentTarget") => ctx.parent()?,
+        Some("TriggeredAttacker" | "TriggeredAttackerLKICopy")
+            if ctx.trigger.as_ref().is_some_and(|t| {
+                matches!(
+                    t.mode.as_str(),
+                    "Attacks" | "AttackerBlocked" | "AttackerUnblocked"
+                )
+            }) =>
+        {
+            json!("Triggering")
+        }
+        Some(other) => return unmapped(format!("key:MustBlock.DefinedAttacker={other}")),
+    };
     let duration = super::effects_obj::duration(p.get("Duration"))?;
-    let who = subject(ctx, p, "Self", None)?;
+    let who = if attacker.get("Target").is_some() {
+        // A creature can't block itself: the blocker is another target ("another target creature blocks it").
+        let mut spec = super::valid::target_spec(ctx, p, None)?;
+        let other = json!({"Not": {"Is": attacker}});
+        match spec
+            .pointer_mut("/what/Object")
+            .and_then(Value::as_array_mut)
+        {
+            Some(preds) if !preds.contains(&other) => preds.push(other),
+            Some(_) => {}
+            None => return unmapped("key:MustBlock.target-of-objects"),
+        }
+        ctx.target(spec)?
+    } else {
+        subject(ctx, p, "Self", None)?
+    };
     Ok(json!({"Rule": {
-        "rule": {"MustBlockAttacker": {"who": who, "attacker": "This"}}, "duration": duration}}))
+        "rule": {"MustBlockAttacker": {"who": who, "attacker": attacker}}, "duration": duration}}))
 }

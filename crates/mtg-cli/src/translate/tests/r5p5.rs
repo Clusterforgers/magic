@@ -135,13 +135,13 @@ fn a_must_block_ability_forces_a_block_of_the_source(
 )]
 #[case::attack_of_another(
     "T:Mode$ Attacks | ValidCard$ Creature.Other+YouCtrl | Execute$ Trig | TriggerZones$ Battlefield\n",
-    false
+    true
 )]
 #[case::damage(
     "T:Mode$ DamageDone | ValidSource$ Card.Self | Execute$ Trig | TriggerZones$ Battlefield\n",
-    false
+    true
 )]
-fn a_must_block_trigger_names_the_source_only_when_it_attacks(
+fn a_must_block_trigger_without_an_attacker_names_the_source(
     #[case] trigger: &str,
     #[case] reads: bool,
 ) {
@@ -155,8 +155,8 @@ fn a_must_block_trigger_names_the_source_only_when_it_attacks(
 
 #[rstest]
 #[case::attacker_named(
-    "DefinedAttacker$ ParentTarget | ValidTgts$ Creature",
-    "key:MustBlock.DefinedAttacker"
+    "DefinedAttacker$ Remembered | ValidTgts$ Creature",
+    "key:MustBlock.DefinedAttacker=Remembered"
 )]
 #[case::all(
     "ValidTgts$ Creature | BlockAllDefined$ True",

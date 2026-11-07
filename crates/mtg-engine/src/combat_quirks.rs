@@ -68,7 +68,7 @@ impl QuirkRules {
         }
     }
 
-    fn has(&self, id: ObjectId, wanted: impl Fn(&CombatQuirk) -> bool) -> bool {
+    pub(crate) fn has(&self, id: ObjectId, wanted: impl Fn(&CombatQuirk) -> bool) -> bool {
         self.quirks
             .get(&id)
             .is_some_and(|held| held.iter().any(wanted))
@@ -80,12 +80,13 @@ pub(crate) fn lower(scope: &Scope<'_>, wanted: &GameRule) -> Result<Rule, Resolv
     let objects = |who: &Ref| crate::rules::lower_objects(scope, who);
     let (by, what, players, shroud) = match wanted {
         GameRule::MustBlockAttacker { who, attacker } => {
+            // An attacker that is gone (a first target no longer legal) leaves nothing to block: a requirement of no one.
+            let Some(attacker) = objects(attacker)?.into_iter().next() else {
+                return Ok(Rule::MustBlock(Vec::new()));
+            };
             return Ok(Rule::MustBlockAttacker {
                 blockers: objects(who)?,
-                attacker: objects(attacker)?
-                    .into_iter()
-                    .next()
-                    .ok_or_else(|| ResolveError::Invalid("no attacker to block".into()))?,
+                attacker,
             });
         }
         GameRule::Combat { who, quirk } => {
@@ -943,6 +944,21 @@ mod tests {
                 blockers: vec![wolf],
                 attacker: wolf
             }
+        );
+    }
+
+    #[test]
+    fn a_block_of_an_attacker_that_is_gone_requires_nothing() {
+        let game = game();
+        let wolf = game.object(id(&game, "Wolf")).unwrap().reference();
+        let scope = Scope::announcing(&game, ME, wolf);
+        let wanted = GameRule::MustBlockAttacker {
+            who: Ref::This,
+            attacker: Ref::Target(0),
+        };
+        assert_eq!(
+            lower_rule(&scope, &wanted).unwrap(),
+            Rule::MustBlock(Vec::new())
         );
     }
 }

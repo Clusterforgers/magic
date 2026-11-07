@@ -2077,13 +2077,16 @@ impl<'a> Walker<'a> {
             | TriggerPattern::Untapped { what }
             | TriggerPattern::PhasedOut { what }
             | TriggerPattern::PhasedIn { what }
-            | TriggerPattern::Blocks { what }
             | TriggerPattern::Unblocked { what }
             | TriggerPattern::CountersPut { what, .. }
             | TriggerPattern::CountersRemoved { what, .. } => {
                 self.at("what", |w| w.selector(what));
             }
-            TriggerPattern::BecomesBlocked { what, by } => self.becomes_blocked(what, by),
+            TriggerPattern::Blocks { what, blocking } => {
+                self.at("what", |w| w.selector(what));
+                self.at("blocking", |w| w.selector(blocking));
+            }
+            TriggerPattern::BecomesBlocked { what, by, .. } => self.becomes_blocked(what, by),
             TriggerPattern::Attached { what, to } => self.w11b_attached(what, to),
             TriggerPattern::GroupAttacks { .. }
             | TriggerPattern::GroupAttacksAt { .. }

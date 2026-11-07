@@ -1,5 +1,5 @@
 //! Goal: the other creature of a block filters a trigger once per pair ("blocks a creature with flying", "becomes
-//! blocked by an artifact creature") or once with a condition as it triggers ("one or more black creatures"); a printed
+//! blocked by an artifact creature") or once as a filter of the block itself ("one or more black creatures"); a printed
 //! "you may search" opening the effect asks for the whole effect; a decider of the event's player asks that player; a
 //! "your graveyard" name pool of another player's cast is the caster's; other shapes stay named gaps.
 use rstest::rstest;
@@ -25,14 +25,6 @@ fn when_and_if(script: &str) -> (Value, Value) {
     )
 }
 
-fn some(kind: Value, who: &str) -> Value {
-    let mut found = kind;
-    if let Some(list) = found.as_array_mut() {
-        list.push(json!({"AnyOf": [{"BlockedBy": who}, {"Blocks": who}]}));
-    }
-    json!({"AtTrigger": {"Compare": {"left": {"Count": found}, "op": "Ge", "right": 1}}})
-}
-
 #[rstest]
 #[case::blocks_a_flyer(
     "T:Mode$ Blocks | ValidCard$ Card.Self | ValidBlocked$ Creature.withFlying | Execute$ TrigPump | TriggerDescription$ Whenever CARDNAME blocks a creature with flying, CARDNAME gets +2/+0 until end of turn.\n",
@@ -46,13 +38,16 @@ fn some(kind: Value, who: &str) -> Value {
 )]
 #[case::blocks_one_or_more(
     "T:Mode$ Blocks | ValidCard$ Card.Self | ValidBlocked$ Creature.Black | Execute$ TrigPump | TriggerDescription$ Whenever CARDNAME blocks one or more black creatures, CARDNAME gets +2/+0 until end of turn.\n",
-    json!({"Blocks": {"what": ["This"]}}),
-    some(json!([{"Type": "Creature"}, {"Color": "Black"}]), "This")
+    json!({"Blocks": {"what": ["This"], "blocking": [{"Type": "Creature"}, {"Color": "Black"}]}}),
+    Value::Null
 )]
 #[case::either_side(
     "T:Mode$ Blocks | ValidCard$ Card.Self | ValidBlocked$ Creature.Black | Execute$ TrigPump | TriggerDescription$ Whenever CARDNAME blocks or becomes blocked by one or more black creatures, CARDNAME gets +2/+0 until end of turn.\nT:Mode$ AttackerBlocked | ValidCard$ Card.Self | ValidBlocker$ Creature.Black | Execute$ TrigPump | Secondary$ True | TriggerDescription$ Whenever CARDNAME blocks or becomes blocked by one or more black creatures, CARDNAME gets +2/+0 until end of turn.\n",
-    json!({"AnyOf": [{"Blocks": {"what": ["This"]}}, {"BecomesBlocked": {"what": ["This"]}}]}),
-    some(json!([{"Type": "Creature"}, {"Color": "Black"}]), "This")
+    json!({"AnyOf": [
+        {"Blocks": {"what": ["This"], "blocking": [{"Type": "Creature"}, {"Color": "Black"}]}},
+        {"BecomesBlocked": {"what": ["This"], "by": [{"Type": "Creature"}, {"Color": "Black"}], "once": true}}
+    ]}),
+    Value::Null
 )]
 #[case::blocked_from_the_blockers_side(
     "T:Mode$ Blocks | ValidCard$ Creature | ValidBlocked$ Card.Self | Execute$ TrigPump | TriggerDescription$ Whenever CARDNAME becomes blocked, CARDNAME gets +2/+0 until end of turn.\n",
