@@ -16,6 +16,8 @@ fn spell(from: &str, count: &str, name: &str, to: &str) -> String {
 
 const OPTIONAL: &str = r#","count":{"max":1,"min":0}"#;
 const TWO: &str = r#","count":{"max":2,"min":2}"#;
+const UP_TO_TWO: &str = r#","count":{"max":2,"min":0}"#;
+const THREE: &str = r#","count":{"max":3,"min":3}"#;
 const MINE: &str = r#"[{"Type":"Creature"},{"ControlledBy":"You"}]"#;
 const THEIRS: &str = r#"[{"Type":"Creature"},{"ControlledBy":"Opponents"}]"#;
 const OTHER: &str = r#"["Other",{"Type":"Creature"},{"ControlledBy":"You"}]"#;
@@ -72,6 +74,31 @@ const TOP: &str = r#"{"Library":{"place":"Top"}}"#;
 #[case::another_is_not_a(
     spell(MINE, "", "picked", r#""Hand""#),
     "Return another creature you control to its owner's hand.",
+    false
+)]
+#[case::two(
+    spell(MINE, TWO, "picked", r#""Hand""#),
+    "Return two creatures you control to their owner's hand.",
+    true
+)]
+#[case::up_to_two(
+    spell(MINE, UP_TO_TWO, "picked", r#""Hand""#),
+    "Return up to two creatures you control to their owner's hand.",
+    true
+)]
+#[case::three_for_two(
+    spell(MINE, THREE, "picked", r#""Hand""#),
+    "Return two creatures you control to their owner's hand.",
+    false
+)]
+#[case::two_for_up_to_two(
+    spell(MINE, TWO, "picked", r#""Hand""#),
+    "Return up to two creatures you control to their owner's hand.",
+    false
+)]
+#[case::two_with_its(
+    spell(MINE, TWO, "picked", r#""Hand""#),
+    "Return two creatures you control to its owner's hand.",
     false
 )]
 fn w14_bounce_of_a_chosen_permanent(
@@ -138,6 +165,16 @@ fn w14_bounce_of_a_chosen_permanent(
     "You may put a land card from your hand onto the battlefield.",
     false
 )]
+#[case::any_number(
+    spell(HAND, r#","count":{"max":null,"min":0}"#, "picked", BF),
+    "Put any number of land cards from your hand onto the battlefield.",
+    true
+)]
+#[case::any_number_for_one(
+    spell(HAND, r#","count":{"max":null,"min":0}"#, "picked", BF),
+    "Put a land card from your hand onto the battlefield.",
+    false
+)]
 fn w14_put_onto_the_battlefield(#[case] json: String, #[case] clause: &str, #[case] reads: bool) {
     assert_eq!(written(&json, clause), reads, "{json}");
 }
@@ -191,6 +228,26 @@ fn w14_put_onto_the_battlefield(#[case] json: String, #[case] clause: &str, #[ca
 #[case::two_cards(
     spell(YARD, TWO, "picked", r#""Hand""#),
     "Return a creature card from your graveyard to your hand.",
+    false
+)]
+#[case::up_to_two(
+    spell(YARD, UP_TO_TWO, "picked", r#""Hand""#),
+    "Return up to two creature cards from your graveyard to your hand.",
+    true
+)]
+#[case::exactly_two(
+    spell(YARD, TWO, "picked", BF),
+    "Return two creature cards from your graveyard to the battlefield.",
+    true
+)]
+#[case::up_to_two_for_one(
+    spell(YARD, UP_TO_TWO, "picked", r#""Hand""#),
+    "Return a creature card from your graveyard to your hand.",
+    false
+)]
+#[case::three_for_two(
+    spell(YARD, THREE, "picked", r#""Hand""#),
+    "Return up to two creature cards from your graveyard to your hand.",
     false
 )]
 fn w14_return_from_the_graveyard(#[case] json: String, #[case] clause: &str, #[case] reads: bool) {

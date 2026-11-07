@@ -2,7 +2,7 @@
 //! choice of one card of the hand, bound, and the move of it), and a card of the graveyard returned to it: "return a
 //! creature card from your graveyard to the battlefield with a finality counter on it".
 
-use super::{Destination, Effect, Form, Writer, article, phrase_text};
+use super::{Destination, Effect, Writer};
 use crate::compile::read::counters;
 use crate::refs::{Ref, ZoneKind};
 use crate::value::Amount;
@@ -36,12 +36,11 @@ pub(super) fn put_onto_text(choose: &Effect, moved: &Effect) -> Option<String> {
     if bind != name || !counters.is_empty() || !super::hand_returns::in_your(from, ZoneKind::Hand) {
         return None;
     }
-    let may = super::hand_returns::may_choice(count)?;
-    let phrase = phrase_text(from, Form::Subject)?;
+    let q = super::hand_returns::quantity(count, from)?;
     let tapped = if *tapped { " tapped" } else { "" };
     Some(format!(
-        "{may}put {} {phrase} onto the battlefield{tapped}",
-        article(&phrase)
+        "{}put {} onto the battlefield{tapped}",
+        q.lead, q.noun
     ))
 }
 
@@ -92,19 +91,19 @@ pub(super) fn returned_to_battlefield_text(choose: &Effect, moved: &Effect) -> O
     if bind != name || !super::hand_returns::in_your(from, ZoneKind::Graveyard) {
         return None;
     }
-    let may = super::hand_returns::may_choice(count)?;
-    let phrase = phrase_text(from, Form::Subject)?;
+    let q = super::hand_returns::quantity(count, from)?;
     let tapped = if *tapped { " tapped" } else { "" };
     let with = match counters.as_slice() {
         [] => String::new(),
         [(kind, number)] => {
+            (!q.plural).then_some(())?;
             let counters = counters::text(kind, &Amount::Fixed(i32::try_from(*number).ok()?))?;
             format!(" with {counters} on it")
         }
         _ => return None,
     };
     Some(format!(
-        "{may}return {} {phrase} to the battlefield{tapped}{with}",
-        article(&phrase)
+        "{}return {} to the battlefield{tapped}{with}",
+        q.lead, q.noun
     ))
 }

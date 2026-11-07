@@ -1343,14 +1343,12 @@ fn returned_text(choose: &Effect, moved: &Effect) -> Option<String> {
             "you may return any number of {phrase} to their owner's hand"
         ));
     }
-    let may = hand_returns::may_choice(count)?;
-    let phrase = phrase_text(from, Form::Subject)?;
-    let article = if phrase.starts_with("another ") {
-        String::new()
-    } else {
-        format!("{} ", article(&phrase))
-    };
-    Some(format!("{may}return {article}{phrase} to its owner's hand"))
+    let q = hand_returns::quantity(count, from)?;
+    let owner = if q.plural { "their" } else { "its" };
+    Some(format!(
+        "{}return {} to {owner} owner's hand",
+        q.lead, q.noun
+    ))
 }
 
 /// The sentences with their capitals and periods; the first of a triggered ability follows the
