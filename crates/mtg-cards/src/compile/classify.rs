@@ -77,6 +77,13 @@ pub fn classify(text: &str, spell: bool) -> ClauseKind {
         return ClauseKind::Static;
     }
     let head = text.lines().next().unwrap_or_default();
+    // A cost change of the equip or cycling abilities a player activates opens with the keyword's name but is a rule.
+    if ((head.starts_with("Equip ") || head.starts_with("Cycling "))
+        && head.contains(" abilities you activate "))
+        || head.starts_with("Equip costs you pay ")
+    {
+        return ClauseKind::Static;
+    }
     if !text.contains('\n') && keywords::is_keyword_line(head) {
         return ClauseKind::Keyword;
     }
@@ -267,6 +274,17 @@ mod tests {
     )]
     #[case::list("Vigilance, deathtouch, haste", false, Keyword)]
     #[case::equip("Equip {1}", false, Keyword)]
+    #[case::equip_cost_change(
+        "Equip abilities you activate cost {1} less to activate.",
+        false,
+        Static
+    )]
+    #[case::equip_costs_you_pay("Equip costs you pay cost {1} less.", false, Static)]
+    #[case::cycling_cost_change(
+        "Cycling abilities you activate cost {2} less to activate.",
+        false,
+        Static
+    )]
     #[case::equip_with_a_colon_free_cost("Equip {1}", true, Keyword)]
     #[case::unread_keyword("Undying", false, Keyword)]
     #[case::level_up("Level up {1}{U}", false, Keyword)]

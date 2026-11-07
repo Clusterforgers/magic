@@ -390,9 +390,17 @@ fn chapter(ctx: &mut Ctx, number: usize, name: &str) -> Tr<Value> {
 pub fn keyword_ability(ctx: &mut Ctx, body: &str) -> Tr<Value> {
     ctx.reset();
     let fields: Vec<&str> = body.split(':').collect();
-    if let ["AlternateAdditionalCost", first, second] = fields.as_slice() {
-        let costs = [cost(ctx, first)?, cost(ctx, second)?];
+    if let ["AlternateAdditionalCost", first, second, rest @ ..] = fields.as_slice() {
+        let costs = [first, second]
+            .into_iter()
+            .chain(rest)
+            .map(|one| cost(ctx, one))
+            .collect::<Tr<Vec<Value>>>()?;
         return Ok(json!({"AdditionalCost": {"cost": [{"OneOf": costs}], "required": true}}));
+    }
+    // A single option is the additional cost itself.
+    if let ["AlternateAdditionalCost", only] = fields.as_slice() {
+        return Ok(json!({"AdditionalCost": {"cost": cost(ctx, only)?, "required": true}}));
     }
     if let ["MayEffectFromOpeningHand", "FromHand"] = fields.as_slice() {
         return opening_hand(ctx);

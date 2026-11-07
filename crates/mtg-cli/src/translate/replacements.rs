@@ -129,6 +129,7 @@ fn not_moved(ctx: &mut Ctx, p: &Params, event: &str, condition: Option<&Value>) 
         "Untap" => doesnt_untap(ctx, p),
         "BeginPhase" => super::replacements_phase::skip_step(p, condition),
         "GameLoss" => super::replacements_loss::game_loss(ctx, p, condition),
+        "BeginTurn" => super::statics_rules::skip_extra_turns(p),
         "CreateToken" => super::replacements_token::create_token(ctx, p),
         _ => unmapped(format!("replacement:{event}")),
     }
@@ -174,6 +175,9 @@ fn kicked_with_changes(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
 
 /// "Doesn't untap during its controller's untap step": the untap that can't happen.
 fn doesnt_untap(ctx: &Ctx, p: &Params) -> Tr<Value> {
+    // "...if you control a Reflection" (`IsPresent$`) is the condition of the static ability.
+    let held = super::condition::condition(ctx, p)?;
+    let p = &super::condition::strip(p);
     only_keys(
         p,
         &[
@@ -211,7 +215,11 @@ fn doesnt_untap(ctx: &Ctx, p: &Params) -> Tr<Value> {
         }
         _ => return unmapped("replacement:Untap-affected"),
     };
-    Ok(json!({"Static": {"affected": affected, "mods": ["DoesntUntap"]}}))
+    let mut ability = json!({"Static": {"affected": affected, "mods": ["DoesntUntap"]}});
+    if let Some(held) = held {
+        ability["Static"]["condition"] = held;
+    }
+    Ok(ability)
 }
 
 /// What the permanent does as it enters, from the part a replacement names.

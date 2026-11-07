@@ -93,6 +93,7 @@ mod g11c_taxes;
 mod g12b_copy_kinds;
 mod g12b_counters_of;
 mod g12f_taxes;
+mod g13g_activation_costs;
 mod g8e_attached;
 mod g9a_blocks;
 mod g9c_blocks;

@@ -47,10 +47,12 @@ pub fn rule(ctx: &Ctx, p: &Params) -> Option<Tr<Value>> {
         "CanBlockIfShadow" => block_shadow(ctx, p),
         "TapPowerValue" => tap_power_value(ctx, p),
         "IgnoreLegendRule" => ignore_legend_rule(p, mode),
+        "CountersRemain" => counters_remain(p),
         "UntapOtherPlayer" => untap_other_players(ctx, p),
         "Continuous" if p.has("SetMaxHandSize") => hand_size(ctx, p),
         "Continuous" if p.has("RaiseMaxHandSize") => hand_size_change(ctx, p),
         "Continuous" if p.has("AdjustLandPlays") => land_plays(ctx, p),
+        "Continuous" if p.get("AddKeyword") == Some("CantSearchLibrary") => cant_search(p),
         "Continuous" if p.has("MayLookAt") && !p.has("MayPlay") => super::statics_look::look(p),
         _ => return None,
     };
@@ -329,6 +331,51 @@ fn assign_as_unblocked(ctx: &Ctx, p: &Params) -> Tr<Value> {
         return unmapped("key:Static.AssignCombatDamageAsUnblocked.no-ValidCard");
     };
     Ok(combat(&object_word(ctx, word)?, "AssignsAsUnblocked"))
+}
+
+/// `CountersRemain`: the card keeps its counters as it moves to any zone but a hand or a library.
+fn counters_remain(p: &Params) -> Tr<Value> {
+    check_keys(
+        p,
+        "Static.CountersRemain",
+        &["ValidCard", "EffectZone"],
+        |key, _| key == "Mode",
+    )?;
+    if p.get("ValidCard") != Some("Card.Self") || p.get("EffectZone") != Some("All") {
+        return unmapped("key:Static.CountersRemain.shape");
+    }
+    Ok(json!("CountersRemain"))
+}
+
+/// `Affected$ Player` with `AddKeyword$ CantSearchLibrary`: the players named can't search libraries.
+fn cant_search(p: &Params) -> Tr<Value> {
+    keys(p, "Continuous", &["Affected", "AddKeyword"])?;
+    match p.get("Affected") {
+        Some(word @ ("Player" | "Opponent")) => Ok(json!({"CantSearch": player_word(Some(word))?})),
+        _ => unmapped("static-affected:CantSearchLibrary"),
+    }
+}
+
+/// `BeginTurn` replacement of extra turns: "if a player would begin an extra turn, that player skips that turn instead".
+pub fn skip_extra_turns(p: &Params) -> Tr<Value> {
+    check_keys(
+        p,
+        "Replacement.BeginTurn",
+        &["Event", "ActiveZones", "ValidPlayer", "ExtraTurn", "Skip"],
+        |_, _| false,
+    )?;
+    if p.get("ExtraTurn") != Some("True")
+        || p.get("Skip") != Some("True")
+        || p.get("ActiveZones") != Some("Battlefield")
+    {
+        return unmapped("replacement:BeginTurn");
+    }
+    let who = match p.get("ValidPlayer") {
+        None => "EachPlayer",
+        Some("Opponent") => "Opponents",
+        Some(_) => return unmapped("replacement:BeginTurn-player"),
+    };
+    Ok(json!({"Rule": {"rule": {"SkipExtraTurns": who}}}))
 }
 
 /// `IgnoreLegendRule`: the legend rule stops for every player, or for the controller when `ValidCard$` is "permanents you

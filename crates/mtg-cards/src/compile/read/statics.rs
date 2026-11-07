@@ -1331,9 +1331,15 @@ pub fn texts(ability: &Ability) -> Vec<String> {
             mana,
             per,
             condition,
-            activating: None,
+            activating,
             least: 0,
-        } => cost_modifier_texts(applies_to, *change, mana, per, condition.as_ref()),
+        } => match (activating, condition) {
+            (None, _) => cost_modifier_texts(applies_to, *change, mana, per, condition.as_ref()),
+            (Some(kind), None) => super::g13g_activation_costs::g13g_activation_texts(
+                *kind, applies_to, *change, mana, per,
+            ),
+            _ => Vec::new(),
+        },
         Ability::Replacement {
             when: ReplaceWhen::LifeGain { .. },
             ..

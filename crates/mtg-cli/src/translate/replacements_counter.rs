@@ -11,6 +11,9 @@ use crate::forge::script::Params;
 
 /// A `Counter` event line: the spell itself (from the stack) or the group of spells it names (from the battlefield).
 pub fn counter(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
+    // "Spell mastery — if there are two or more instant and/or sorcery cards in your graveyard" (`IsPresent$`) is the condition.
+    let held = super::condition::condition(ctx, p)?;
+    let p = &super::condition::strip(p);
     let read = ["Event", "Layer", "ValidSA", "ValidCard", "ActiveZones"];
     check_keys(p, "Replacement.Counter", &read, |_, _| false)?;
     if p.get("Layer") != Some("CantHappen") {
@@ -29,10 +32,17 @@ pub fn counter(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
         if zone.is_some() {
             return unmapped("replacement:Counter-zone");
         }
-        return Ok(json!({"Rule": {"rule": {"CantBeCountered": "This"}, "from": "Stack"}}));
+        let mut rule = json!({"Rule": {"rule": {"CantBeCountered": "This"}, "from": "Stack"}});
+        if let Some(held) = held {
+            rule["Rule"]["condition"] = held;
+        }
+        return Ok(rule);
     }
     if zone != Some("Battlefield") {
         return unmapped("replacement:Counter-zone");
+    }
+    if held.is_some() {
+        return unmapped("key:Replacement.Counter.condition");
     }
     // `ValidCard` is the countered card itself: it names the group only beside a plain `Spell`.
     let spec = match (p.get("ValidCard"), sa) {
@@ -78,12 +88,21 @@ fn part_change(ctx: &Ctx, amount: Option<&str>, what: &str) -> Tr<Value> {
 
 /// `Event$ GainLife`: a player gains twice that much, or that much plus a number.
 pub fn gain_life(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
-    let read = ["Event", "ValidPlayer", "ReplaceWith", "ActiveZones"];
+    let read = [
+        "Event",
+        "ValidPlayer",
+        "ReplaceWith",
+        "ActiveZones",
+        "Prevent",
+    ];
     check_keys(p, "Replacement.GainLife", &read, |_, _| false)?;
     if p.get("ActiveZones") != Some("Battlefield") {
         return unmapped("key:Replacement.GainLife.ActiveZones");
     }
     let who = player_ref(p.get("ValidPlayer"))?;
+    if p.get("Prevent") == Some("True") && !p.has("ReplaceWith") {
+        return Ok(json!({"Replacement": {"when": {"LifeGain": {"who": who}}, "by": "Prevent"}}));
+    }
     let Some(name) = p.get("ReplaceWith") else {
         return unmapped("replacement:GainLife-without-ReplaceWith");
     };
