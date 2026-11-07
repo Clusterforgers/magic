@@ -100,6 +100,13 @@ fn copy_spell(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
             .is_some_and(|shape| shape.mode == "SpellCast")
     {
         json!("Triggering")
+    } else if p.get("Defined") == Some("TriggeredSpellAbility")
+        && ctx
+            .trigger
+            .as_ref()
+            .is_some_and(|shape| shape.mode == "AbilityCast")
+    {
+        return copy_activated(ctx, p, who.is_some());
     } else if p.get("Defined") == Some("Parent") && ctx.trigger.is_none() {
         json!("This")
     } else if p.get("Defined") == Some("Targeted") && !p.has("ValidTgts") {
@@ -136,6 +143,27 @@ fn copy_spell(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
         may["who"] = who.clone();
     }
     Ok(json!({"May": may}))
+}
+
+/// "Copy that ability" after an activation: the ability on the stack the activation put there (`Dealer`), never its source.
+/// The copy is the trigger controller's; another controller, a spell's words and a may are gaps.
+fn copy_activated(ctx: &mut Ctx, p: &Params, other_controller: bool) -> Tr<Value> {
+    if other_controller {
+        return unmapped("key:CopySpellAbility.Controller-of-an-ability");
+    }
+    for key in ["NonLegendary", "SetColor", "Optional", "ValidTgts"] {
+        if p.has(key) {
+            return unmapped(format!("key:CopySpellAbility.{key}-of-an-ability"));
+        }
+    }
+    let mut copy = json!({"what": "Dealer"});
+    if p.has("Amount") {
+        copy["count"] = amount(ctx, p.get("Amount").unwrap_or("1"))?;
+    }
+    if p.get("MayChooseTarget") == Some("True") {
+        copy["new_targets"] = json!(true);
+    }
+    Ok(json!({ "CopyAbility": copy }))
 }
 
 /// `ChoosePlayer`: the chooser picks one of the opponents or of all players; the later lines read it as `ChosenPlayer`.

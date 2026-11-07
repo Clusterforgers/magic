@@ -7,7 +7,7 @@ use mtg_cards::trigger::TriggerPattern;
 use mtg_core::ids::{ObjectId, PlayerId};
 
 use super::{Happened, counted};
-use crate::abilities::{AbilityRef, Cause};
+use crate::abilities::{AbilityRef, AbilitySource, Cause};
 use crate::ability_reader;
 use crate::characteristics::controller_of;
 use crate::choose::Target;
@@ -22,7 +22,27 @@ const fn did(action: Action, player: Option<PlayerId>, object: Option<ObjectId>)
         action,
         player,
         object,
+        ability: None,
     }
+}
+
+/// The ability the activation of the `index`th ability of `source` from `origin` put on the stack: the newest such ability
+/// object on the stack after the batch.
+fn activated_on_stack(
+    post: &GameState,
+    source: ObjectId,
+    index: usize,
+    origin: AbilitySource,
+) -> Option<ObjectId> {
+    post.stack().iter().rev().copied().find(|id| {
+        post.object(*id)
+            .and_then(GameObject::ability)
+            .is_some_and(|ability| {
+                ability.source().id == source
+                    && ability.index() == index
+                    && ability.origin() == origin
+            })
+    })
 }
 
 /// The action a move between zones is, from its cause.
@@ -79,7 +99,12 @@ pub(super) fn did_happened(
                 source: *origin,
             };
             if !ability_reader::ability(pre, address).is_some_and(|rules| rules.is_mana_ability()) {
-                found.push(did(Action::Activated, Some(*player), Some(source.id)));
+                found.push(Happened::Did {
+                    action: Action::Activated,
+                    player: Some(*player),
+                    object: Some(source.id),
+                    ability: activated_on_stack(post, source.id, *ability, *origin),
+                });
             }
         }
         Event::AbilityTriggered(triggered) => found.push(did(
@@ -204,6 +229,7 @@ pub(super) fn matching_did(
             action: done,
             player,
             object,
+            ability,
         },
     ) = (pattern, happened)
     else {
@@ -228,7 +254,10 @@ pub(super) fn matching_did(
         .map(|player| Target::Player(*player))
         .collect();
     subjects.extend(reference.map(Target::Object));
-    Some(counted(state, subjects, 0))
+    let mut cause = counted(state, subjects, 0);
+    // "Copy that ability": the ability activated did it (`Ref::Dealer`), as the spell or ability that targets does.
+    cause.source = ability.and_then(|id| state.object(id).map(GameObject::reference));
+    Some(cause)
 }
 
 /// The permanents on the battlefield before and after the batch whose controller differs: the controller is the result
