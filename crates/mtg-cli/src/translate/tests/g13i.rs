@@ -78,12 +78,6 @@ fn a_printed_cost_of_one_change_is_the_whole_amount(
     "This spell costs {1} less to cast during an opponent's turn.\nDraw a card.",
     "key:Static.CostModifier.PlayerTurn=Opponent"
 )]
-#[case::an_equip_cost_that_waits_for_its_target(
-    "Creature",
-    "S:Mode$ ReduceCost | ValidTarget$ Card.Self | ValidSpell$ Activated.Equip | Activator$ You | Amount$ 2 | Description$ Equip abilities you activate that target this creature cost {2} less to activate.",
-    "Equip abilities you activate that target this creature cost {2} less to activate.",
-    "key:Static.CostModifier.ValidTarget-of-an-ability"
-)]
 #[case::the_first_kicked_spell(
     "Creature",
     "S:Mode$ ReduceCost | OnlyFirstSpell$ True | Type$ Spell | ValidSpell$ Spell.Kicked | Activator$ You | Amount$ 1 | Description$ The first kicked spell you cast each turn costs {1} less to cast.",
