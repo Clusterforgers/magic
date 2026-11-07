@@ -146,6 +146,10 @@ once?: boolean,
  */
 additional?: unknown, 
 /**
+ * What a cast through it pays rather than the mana cost; an amount in it counts the card cast.
+ */
+rather?: unknown, 
+/**
  * How the mana of a cast through it may be spent.
  */
 spend_as?: unknown, 

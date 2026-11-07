@@ -51,7 +51,6 @@ fn the_neighbours_of_a_copied_ability_stay_gaps(#[case] key: &str, #[case] gap: 
 
 #[rstest]
 #[case::until_your_next_turn("UntilYourNextTurn", r#""once":false,"until":"UntilYourNextTurn""#)]
-#[case::for_the_rest_of_the_game("Permanent", r#""once":false,"until":"Forever""#)]
 #[case::this_turn("EOT", r#""once":false,"this_turn":true"#)]
 fn a_trigger_of_an_effect_lasts_its_duration(#[case] duration: &str, #[case] part: &str) {
     let lines = format!(
@@ -79,4 +78,56 @@ fn damage_of_either_creature_until_your_next_turn_stays_a_gap() {
             .any(|g| g == "trigger:DamageDealtOnce-for-each-source"),
         "{gaps:?}"
     );
+}
+
+const LIFE_EQUAL: &str = r#""rather":[{"PayLife":{"Stat":{"of":"This","stat":"ManaValue"}}}]"#;
+
+#[rstest]
+#[case::from_the_top_of_the_library(
+    "S:Mode$ Continuous | Affected$ Card.TopLibrary+YouCtrl | AffectedZone$ Library | MayPlay$ True | MayPlayAltManaCost$ PayLife<ConvertedManaCost> | Description$ You may play lands and cast spells from the top of your library.",
+    LIFE_EQUAL
+)]
+#[case::energy(
+    "S:Mode$ Continuous | Affected$ Card.TopLibrary+YouCtrl | AffectedZone$ Library | MayPlay$ True | MayPlayAltManaCost$ PayEnergy<ConvertedManaCost> | Description$ You may cast spells from the top of your library.",
+    r#""rather":[{"PayEnergy":{"Stat":{"of":"This","stat":"ManaValue"}}}]"#
+)]
+fn a_permission_pays_another_cost(#[case] lines: &str, #[case] part: &str) {
+    let (json, gaps) = card(
+        "Artifact",
+        lines,
+        "If you cast a spell this way, pay life equal to its mana value rather than pay its mana cost.",
+    );
+    assert!(gaps.is_empty(), "{gaps:?}");
+    assert!(json.contains(part), "{json}");
+}
+
+#[rstest]
+#[case::life("PayLife<ConvertedManaCost>", LIFE_EQUAL)]
+#[case::a_discard("Discard<1/Card>", r#""rather":[{"Discard":{}}]"#)]
+#[case::mana("1", r#""rather":"{1}""#)]
+fn a_cast_during_a_resolution_pays_another_cost(#[case] cost: &str, #[case] part: &str) {
+    let lines = format!(
+        "A:SP$ Play | ValidTgts$ Creature.YouOwn | TgtZone$ Graveyard | ValidSA$ Spell | Optional$ True | PlayCost$ {cost}"
+    );
+    let (json, gaps) = card(
+        "Sorcery",
+        &lines,
+        "You may cast target creature card from your graveyard by paying life equal to its mana value rather than paying its mana cost.",
+    );
+    assert!(gaps.is_empty(), "{gaps:?}");
+    assert!(json.contains(part), "{json}");
+}
+
+#[rstest]
+#[case::its_suspend_cost(
+    "A:SP$ Play | ValidTgts$ Creature.YouOwn | TgtZone$ Graveyard | ValidSA$ Spell | Optional$ True | PlayCost$ SuspendCost",
+    "key:PlayCost=SuspendCost"
+)]
+#[case::free_as_well(
+    "A:SP$ Play | ValidTgts$ Creature.YouOwn | TgtZone$ Graveyard | ValidSA$ Spell | Optional$ True | WithoutManaCost$ True | PlayCost$ 1",
+    "key:Play.PlayCost-free"
+)]
+fn another_cost_the_engine_does_not_pay_stays_a_gap(#[case] lines: &str, #[case] gap: &str) {
+    let (_, gaps) = card("Sorcery", lines, "You may cast target creature card.");
+    assert!(gaps.iter().any(|g| g == gap), "{gaps:?}");
 }

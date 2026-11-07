@@ -23,6 +23,7 @@ pub fn c11b_cast_target(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
 /// The cast of the card `what` names, bound as `bind` when it is cast.
 fn c11b_cast(what: Ref, free: bool, bind: Option<String>) -> Effect {
     Effect::CastFromZone {
+        rather: None,
         who: Ref::You,
         what,
         free,

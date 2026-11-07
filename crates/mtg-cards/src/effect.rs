@@ -1077,6 +1077,10 @@ pub enum Effect {
         /// The alternative cost it is cast for (CR 118.9): `Madness` pays the madness cost of the card, `Suspend` pays nothing; the spell remembers it.
         #[serde(default, skip_serializing_if = "Option::is_none")]
         way: Option<CastWay>,
+        /// What it is cast for rather than its mana cost (CR 118.9): "by paying life equal to its mana value"; an amount in
+        /// it counts the card cast as `This`.
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        rather: Option<Cost>,
         /// The card is cast transformed: the spell is its back face (CR 712.4, 310.11b "cast it transformed").
         #[serde(default, skip_serializing_if = "is_false")]
         transformed: bool,
@@ -1651,6 +1655,7 @@ fn exile_cast_bottom(filter: Selector, otherwise: Vec<Effect>) -> Vec<Effect> {
             exiled_as: EXILED.to_owned(),
         },
         Effect::CastFromZone {
+            rather: None,
             who: Ref::You,
             what: Ref::Bound(FOUND.to_owned()),
             free: true,
@@ -1726,6 +1731,7 @@ pub fn impulse(count: Amount, duration: Duration) -> Vec<Effect> {
         },
         Effect::Rule {
             rule: GameRule::MayCast(CastPermission {
+                rather: None,
                 who: Ref::You,
                 what: Selector::default(),
                 from: Some(ZoneKind::Exile),

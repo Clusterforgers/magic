@@ -70,6 +70,7 @@ pub(super) fn add(ability: &Ability, texts: &mut Vec<String>) {
     let only_one = *first == Bounds::default() && *second == Bounds::default();
     let play = *permission
         == CastPermission {
+            rather: None,
             who: Ref::You,
             what: Selector::default(),
             from: Some(crate::refs::ZoneKind::Exile),

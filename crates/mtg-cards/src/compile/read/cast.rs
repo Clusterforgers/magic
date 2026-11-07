@@ -82,6 +82,7 @@ pub fn after_exiling(r: &mut Reader<'_>, effects: &mut Vec<Effect>) -> Option<()
             (r.word("it") || r.words("that card")).then_some(())?;
             r.need("without paying its mana cost")?;
             Effect::CastFromZone {
+                rather: None,
                 who: Ref::You,
                 what: Ref::Bound(FOUND.to_owned()),
                 free: true,
@@ -261,6 +262,7 @@ fn exiled_with_source() -> Ref {
 /// The player may play or cast the card at no cost, during the resolution.
 fn free_cast(what: Ref, play: bool) -> Effect {
     Effect::CastFromZone {
+        rather: None,
         who: Ref::You,
         what,
         free: true,
@@ -397,7 +399,7 @@ pub fn text(effect: &Effect) -> Option<String> {
                 points_text(count)?
             )
         }
-        Effect::CastFromZone {
+        Effect::CastFromZone { rather: None,
             who: Ref::You,
             what: Ref::Bound(name),
             free: true,
@@ -456,6 +458,7 @@ pub fn free_cast_from_hand(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
             rest_as: None,
         },
         Effect::CastFromZone {
+            rather: None,
             who: Ref::You,
             what: Ref::Bound(FROM_HAND.to_owned()),
             free: true,

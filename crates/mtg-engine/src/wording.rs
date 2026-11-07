@@ -1241,6 +1241,9 @@ pub(crate) fn cast(name: &str, free: bool, alternative: Option<(CastWay, &str)>)
     if let Some((way, cost)) = alternative {
         let way = match way {
             CastWay::Miracle => "miracle",
+            CastWay::Alternative => {
+                return format!("Cast {name} by paying {cost} rather than its mana cost?");
+            }
             _ => "madness",
         };
         format!("Cast {name} for its {way} cost {cost}?")

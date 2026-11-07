@@ -135,6 +135,7 @@ pub fn from_a_zone(r: &mut Reader<'_>) -> Option<Ability> {
     };
     Some(Ability::Rule {
         rule: GameRule::MayCast(CastPermission {
+            rather: None,
             who: Ref::You,
             what: lands,
             from: Some(from),
@@ -200,6 +201,7 @@ pub fn cast_from_the_top(r: &mut Reader<'_>) -> Option<Ability> {
     r.need("from the top of your library")?;
     Some(Ability::Rule {
         rule: GameRule::MayCast(CastPermission {
+            rather: None,
             who: Ref::You,
             what: Selector(kinds.to_vec()),
             from: Some(ZoneKind::Library),

@@ -80,7 +80,7 @@ fn spell_cost(cost: &Value) -> Tr<Value> {
 pub fn delayed_triggers(ctx: &mut Ctx, p: &Params, remembered: Option<&Value>) -> Tr<Vec<Value>> {
     let (this_turn, until) = match p.get("Duration") {
         None | Some("EOT") => (true, None),
-        Some("Permanent") => (false, Some("Forever")),
+        Some("Permanent") => (false, None),
         Some("UntilYourNextTurn") => (false, Some("UntilYourNextTurn")),
         Some(other) => return unmapped(format!("duration:{other}")),
     };
@@ -124,17 +124,13 @@ pub fn delayed_triggers(ctx: &mut Ctx, p: &Params, remembered: Option<&Value>) -
         if this_turn {
             delayed["this_turn"] = json!(true);
         }
-        // A trigger of a lasting effect that fires every time lasts as long as the effect; one that fires once waits
-        // until it does.
-        // "Whenever either of those creatures deals combat damage" triggers for each creature; a batch of damage triggers
-        // once for the players it hits.
-        if until == Some("UntilYourNextTurn") && when.pointer("/Batch/DealsDamage").is_some() {
-            return unmapped("trigger:DamageDealtOnce-for-each-source");
-        }
-        match until {
-            Some("Forever") if boon => {}
-            Some(until) => delayed["until"] = json!(until),
-            None => {}
+        if let Some(until) = until {
+            // "Whenever either of those creatures deals combat damage" triggers for each creature; a batch of damage
+            // triggers once for the players it hits.
+            if when.pointer("/Batch/DealsDamage").is_some() {
+                return unmapped("trigger:DamageDealtOnce-for-each-source");
+            }
+            delayed["until"] = json!(until);
         }
         out.push(json!({"DelayedTrigger": delayed}));
     }

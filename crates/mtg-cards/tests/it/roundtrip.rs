@@ -571,6 +571,7 @@ fn game_rule() -> impl Strategy<Value = GameRule> {
         )
             .prop_map(|(who, what, from, free, flash, only, play)| {
                 GameRule::MayCast(CastPermission {
+                    rather: None,
                     who,
                     what,
                     from,
@@ -1166,6 +1167,7 @@ fn effect() -> impl Strategy<Value = Effect> {
             )
                 .prop_map(|(who, what, free, play, otherwise, way)| {
                     Effect::CastFromZone {
+                        rather: None,
                         who,
                         what,
                         free,

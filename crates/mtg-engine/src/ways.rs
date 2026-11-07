@@ -294,7 +294,7 @@ fn listed(state: &GameState, player: PlayerId, id: ObjectId) -> Vec<Way> {
             printed,
         ));
     }
-    ways.extend(rather_way(&permissions, instant));
+    ways.extend(rather_way(state, player, card, &permissions, instant));
     let free_permissions = permissions
         .iter()
         .copied()
@@ -393,7 +393,19 @@ const fn way_label(way: CastWay) -> &'static str {
 /// The way of casting a card without paying its mana cost (CR 118.9): no mana, and the other parts and the cost increases of
 /// the cast stay.
 /// The way to cast for the mana cost a permission puts in place of the printed one (airbend).
-fn rather_way(permissions: &[&Cast], instant: bool) -> Option<Way> {
+fn rather_way(
+    state: &GameState,
+    player: PlayerId,
+    card: &GameObject,
+    permissions: &[&Cast],
+    instant: bool,
+) -> Option<Way> {
+    if let Some(cost) = permissions
+        .iter()
+        .find_map(|permission| permission.instead.as_ref())
+    {
+        return instead_way(state, player, card, cost, instant);
+    }
     let cost = permissions
         .iter()
         .find_map(|permission| permission.rather.as_ref())?;
@@ -404,6 +416,39 @@ fn rather_way(permissions: &[&Cast], instant: bool) -> Option<Way> {
         instant,
         variant: 0,
         parts: Vec::new(),
+    })
+}
+
+/// The way to cast `card` for `cost` rather than its mana cost (CR 118.9): "pay life equal to its mana value rather than
+/// pay its mana cost". Each amount of the cost is counted now with the card as `This`; a cost the engine cannot pay as a
+/// cast gives no way.
+pub(crate) fn instead_way(
+    state: &GameState,
+    player: PlayerId,
+    card: &GameObject,
+    cost: &Cost,
+    instant: bool,
+) -> Option<Way> {
+    let scope = Scope::announcing(state, player, card.reference());
+    let mut settled = cost.clone();
+    for item in &mut settled.0 {
+        let Some(amount) = item.amount_mut() else {
+            continue;
+        };
+        if matches!(amount, Amount::Fixed(_) | Amount::X) {
+            continue;
+        }
+        let number = i32::try_from(scope.amount(amount).ok()?.max(0)).ok()?;
+        *amount = Amount::Fixed(number);
+    }
+    let (mana, parts) = cast_cost(&settled)?;
+    Some(Way {
+        alternative: Some(CastWay::Alternative),
+        label: format!("Cast for {}", cost_words(&mana, &parts)),
+        mana: Some(mana),
+        instant,
+        variant: 0,
+        parts,
     })
 }
 
@@ -689,22 +734,27 @@ fn plotted_before_now(state: &GameState, player: PlayerId, id: ObjectId) -> bool
 /// The way `player` casts the card `id` when a resolution lets them (CR 608.2g): for its mana cost, or without paying it.
 /// A land cannot be cast, nor can a card that is on the battlefield or the stack. The way takes the required additional
 /// costs of the card.
-pub(crate) fn granted(
+pub(crate) fn granted_ways(
     state: &GameState,
+    player: PlayerId,
     id: ObjectId,
-    free: bool,
-    way: Option<CastWay>,
+    granted: &Granted,
 ) -> Vec<Way> {
-    with_required(state, id, granted_before_required(state, id, free, way))
+    with_required(
+        state,
+        id,
+        granted_before_required(state, player, id, granted),
+    )
 }
 
-/// The ways of [`granted`] before the required additional costs.
+/// The ways of [`granted`] before the required additional costs: a cost paid rather than the mana cost is the one way.
 fn granted_before_required(
     state: &GameState,
+    player: PlayerId,
     id: ObjectId,
-    free: bool,
-    way: Option<CastWay>,
+    granted: &Granted,
 ) -> Vec<Way> {
+    let (free, way) = (granted.free, granted.way);
     let Some(card) = state.object(id) else {
         return Vec::new();
     };
@@ -731,6 +781,11 @@ fn granted_before_required(
                 variant: 0,
                 parts,
             })
+            .into_iter()
+            .collect();
+    }
+    if let Some(cost) = &granted.rather {
+        return instead_way(state, player, card, cost, true)
             .into_iter()
             .collect();
     }
@@ -961,7 +1016,7 @@ pub(crate) fn grantable(
     state: &GameState,
     player: PlayerId,
     id: ObjectId,
-    (free, way, transformed): (bool, Option<CastWay>, bool),
+    granted: &Granted,
 ) -> bool {
     // Players cannot cast spells while a spell with split second is on the stack, whatever lets them (CR 702.61a, 101.2).
     if crate::keywords::split_second_on_stack(state)
@@ -970,22 +1025,12 @@ pub(crate) fn grantable(
         return false;
     }
     if faces::is_multi_face(state, id) {
-        return !faces::grantable_faces(
-            state,
-            player,
-            id,
-            Granted {
-                free,
-                way,
-                transformed,
-            },
-        )
-        .is_empty();
+        return !faces::grantable_faces(state, player, id, granted).is_empty();
     }
-    if transformed {
+    if granted.transformed {
         return false;
     }
-    grantable_as_is(state, player, id, free, way)
+    grantable_as_is(state, player, id, granted)
 }
 
 /// [`grantable`] for the card as it stands: a card with several faces is judged as the face it is in use as.
@@ -993,8 +1038,7 @@ pub(crate) fn grantable_as_is(
     state: &GameState,
     player: PlayerId,
     id: ObjectId,
-    free: bool,
-    way: Option<CastWay>,
+    granted: &Granted,
 ) -> bool {
     let Some(card) = state.object(id) else {
         return false;
@@ -1009,7 +1053,7 @@ pub(crate) fn grantable_as_is(
     let sources = for_card(state, &all, id);
     let spend = Spend::for_spell(state, id, player, card.card().x_in_cost > 0);
     let base = help::offered(state, player, id, &[]);
-    granted(state, id, free, way).iter().any(|way| {
+    granted_ways(state, player, id, granted).iter().any(|way| {
         let help = help_in(state, player, id, &base, &way.parts);
         announceable_in(state, player, id, way.alternative)
             && parts_payable(state, player, id, &way.parts)

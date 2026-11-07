@@ -202,6 +202,10 @@ pub enum Rule {
         #[serde(default, skip_serializing_if = "Option::is_none")]
         #[cfg_attr(feature = "ts", ts(optional, type = "unknown"))]
         additional: Option<Box<Cost>>,
+        /// What a cast through it pays rather than the mana cost; an amount in it counts the card cast.
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        #[cfg_attr(feature = "ts", ts(optional, type = "unknown"))]
+        rather: Option<Box<Cost>>,
         /// How the mana of a cast through it may be spent.
         #[serde(default, skip_serializing_if = "SpendAs::is_normal")]
         #[cfg_attr(feature = "ts", ts(optional, type = "unknown"))]
@@ -608,13 +612,15 @@ pub(crate) struct Cast {
     pub(crate) when: Option<Condition>,
     /// The mana paid in place of the mana cost of the card.
     pub(crate) rather: Option<ManaCost>,
+    /// What is paid in place of the mana cost of the card, its amounts counted for the card cast.
+    pub(crate) instead: Option<Cost>,
 }
 
 impl Cast {
     /// Whether a cast through the permission from `zone` is for the printed mana cost, with what the permission adds: not a free
     /// cast and not one for another mana cost.
     pub(crate) fn adds_to_printed(&self, zone: ZoneKind) -> bool {
-        !self.free && self.rather.is_none() && self.from == Some(zone)
+        !self.free && self.rather.is_none() && self.instead.is_none() && self.from == Some(zone)
     }
 
     /// Whether the permission lets `player` cast the card `card`, which is in its zone now.
@@ -779,6 +785,7 @@ impl RulesInForce {
                 spend_as: SpendAs::Normal,
                 when: None,
                 rather: None,
+                instead: None,
             });
         }
     }
@@ -894,6 +901,7 @@ impl RulesInForce {
                 play,
                 once,
                 additional,
+                rather,
                 spend_as,
                 when,
             } => {
@@ -913,6 +921,7 @@ impl RulesInForce {
                         spend_as: *spend_as,
                         when: when.as_deref().cloned(),
                         rather: None,
+                        instead: rather.as_deref().cloned(),
                     });
                 }
             }
@@ -934,6 +943,7 @@ impl RulesInForce {
                             spend_as: SpendAs::Normal,
                             when: None,
                             rather: Some(cost.clone()),
+                            instead: None,
                         });
                     }
                 }
@@ -1136,6 +1146,7 @@ pub(crate) fn lower_rule(scope: &Scope<'_>, wanted: &GameRule) -> Result<Rule, R
             play: permission.play,
             once: permission.once,
             additional: permission.additional.clone().map(Box::new),
+            rather: permission.rather.clone().map(Box::new),
             spend_as: permission.spend_as,
             when: permission.when.clone().map(Box::new),
         },
@@ -2193,6 +2204,7 @@ mod tests {
 
     fn permission(only: Option<Vec<ObjectRef>>, play: bool) -> Rule {
         Rule::MayCast {
+            rather: None,
             who: vec![ME],
             what: mtg_cards::refs::Selector::default(),
             from: Some(ZoneKind::Exile),

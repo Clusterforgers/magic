@@ -14,6 +14,7 @@ fn exiled() -> Ref {
 
 fn cast(play: bool) -> Effect {
     Effect::CastFromZone {
+        rather: None,
         who: Ref::You,
         what: exiled(),
         free: true,
