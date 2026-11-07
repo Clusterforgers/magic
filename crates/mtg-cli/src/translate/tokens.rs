@@ -370,10 +370,23 @@ fn mana(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
             json!({"mana": {"AnyCombination": {"count": amount(ctx, times)?}}})
         }
         ["Any"] | ["Combo", "Any"] => json!({"mana": {"AnyColor": amount(ctx, times)?}}),
+        // "Choose a color. Add an amount of mana of that color equal to your devotion to that color.": the colour is
+        // picked as the mana is added (`ability::e14g_devotion` drops the choice before it).
+        ["Chosen"]
+            if ctx.chosen_kind == Some("Color")
+                && ctx.svar(times) == Some("Count$Devotion.Chosen")
+                && !p.has("RestrictValid") =>
+        {
+            json!({"mana": "Devotion"})
+        }
         ["Chosen" | "ChosenColor"] => match times.parse::<u32>() {
             Ok(count) if count > 0 => json!({"mana": {"ChosenColor": count}}),
             _ => return unmapped("key:Mana.Produced=Chosen"),
         },
+        // "For each color among permanents you control, add one mana of that color."
+        ["Special", "EachColorAmong_Valid", valid] if times == "1" => {
+            json!({"mana": {"EachColorAmong": super::valid::selector_any(ctx, valid)?}})
+        }
         ["Combo", "ColorIdentity"] if times == "1" => json!({"mana": {"CommanderIdentity": 1}}),
         ["Combo", "AnyDifferent"] => two_different(p, times)?,
         ["Combo", color, "Chosen"] if times == "1" && mana_type(color).is_some() => {

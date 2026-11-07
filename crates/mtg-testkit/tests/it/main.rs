@@ -198,6 +198,7 @@ mod e14b_turn_up_parts;
 mod e14b_unattach_granter;
 mod e14b_x_at_least;
 mod e14d_mechanics;
+mod e14g_counted_mana;
 mod e14g_mana_riders;
 mod elimination;
 mod embalm;

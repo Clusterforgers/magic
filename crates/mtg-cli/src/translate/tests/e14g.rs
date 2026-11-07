@@ -61,3 +61,36 @@ fn a_rider_the_engine_cannot_give_stays_a_gap(#[case] keys: &str, #[case] gap: &
     let (_, found) = uses(keys);
     assert!(found.iter().any(|found| found == gap), "{found:?}");
 }
+
+const DEVOTION: &str = "A:AB$ ChooseColor | Cost$ T | SubAbility$ DBMana | SpellDescription$ Choose a color.\nSVar:DBMana:DB$ Mana | Produced$ Chosen | Amount$ X | SubAbility$ DBCleanup\nSVar:DBCleanup:DB$ Cleanup | ClearChosenColor$ True\n";
+
+#[rstest]
+#[case::each_color_among_your_permanents(
+    "A:AB$ Mana | Cost$ T | Produced$ Special EachColorAmong_Valid Permanent.YouCtrl\n",
+    r#"[{"AddMana":{"mana":{"EachColorAmong":[{"ControlledBy":"You"}]}}}]"#
+)]
+#[case::devotion_to_the_chosen_color(
+    &format!("{DEVOTION}SVar:X:Count$Devotion.Chosen\n"),
+    r#"[{"AddMana":{"mana":"Devotion"}}]"#
+)]
+fn mana_counted_from_the_game_is_one_mana_effect(#[case] lines: &str, #[case] expected: &str) {
+    let text = format!("Name:Subject\nTypes:Land\n{lines}");
+    let json = serde_json::to_value(abilities(&text)).unwrap();
+    assert!(gaps(&text).is_empty(), "{:?}", gaps(&text));
+    assert_eq!(
+        serde_json::to_string(&json[0]["Activated"]["effects"]).unwrap(),
+        expected
+    );
+}
+
+#[test]
+fn the_chosen_color_counted_another_way_stays_a_gap() {
+    let text = format!("Name:Subject\nTypes:Land\n{DEVOTION}SVar:X:Count$CardsInYourHand\n");
+    assert!(
+        gaps(&text)
+            .iter()
+            .any(|gap| gap == "key:Mana.Produced=Chosen"),
+        "{:?}",
+        gaps(&text)
+    );
+}

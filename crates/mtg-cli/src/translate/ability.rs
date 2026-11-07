@@ -143,6 +143,21 @@ fn spell(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
     Ok(out)
 }
 
+/// "Choose a color. Add an amount of mana of that color equal to your devotion to that color." is one mana ability that
+/// picks the colour as it adds the mana (Nykthos): the choice of a colour before the devotion mana is that pick.
+fn e14g_devotion(effects: Vec<Value>) -> Vec<Value> {
+    match effects.as_slice() {
+        [choose, add]
+            if choose.pointer("/ChooseValue/kind") == Some(&json!("Color"))
+                && choose.pointer("/ChooseValue/who") == Some(&json!("You"))
+                && add.pointer("/AddMana/mana") == Some(&json!("Devotion")) =>
+        {
+            vec![add.clone()]
+        }
+        _ => effects,
+    }
+}
+
 fn activated(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
     let Some(text) = p.get("Cost") else {
         return unmapped("line:AB-without-cost");
@@ -169,7 +184,7 @@ fn activated(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
         Some(_) => return unmapped("key:AB.PowerUp"),
     };
     let p = &p.without(&["Exhaust", "GameActivationLimit", "PowerUp"]);
-    let effects = chain(ctx, &p.without(&["ReduceCost", "Activator"]))?;
+    let effects = e14g_devotion(chain(ctx, &p.without(&["ReduceCost", "Activator"]))?);
     let targets = ctx.targets.clone();
     // Three scripts write the flag in lower case (Kiora, Behemoth Beckoner); Forge reads it either way.
     if p.get("Planeswalker")

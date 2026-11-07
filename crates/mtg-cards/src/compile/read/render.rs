@@ -1581,6 +1581,36 @@ fn is_imperative(effect: &Effect) -> bool {
         )
 }
 
+/// The sentences of mana counted from the game: "for each color among permanents you control, add one mana of that
+/// color", "choose a color. Add an amount of mana of that color equal to your devotion to that color"; `None` for any
+/// other mana or another kind of permanent.
+fn e14g_counted_mana(mana: &Produce) -> Option<String> {
+    match mana {
+        Produce::EachColorAmong(among) => {
+            let kind = match among.0.as_slice() {
+                [Pred::ControlledBy(Ref::You)] => "",
+                [
+                    Pred::ControlledBy(Ref::You),
+                    Pred::Compare {
+                        stat: StatKind::Colors,
+                        op: crate::value::Cmp::Eq,
+                        to: Amount::Fixed(1),
+                    },
+                ] => "monocolored ",
+                _ => return None,
+            };
+            Some(format!(
+                "for each color among {kind}permanents you control, add one mana of that color"
+            ))
+        }
+        Produce::Devotion => Some(
+            "choose a color. Add an amount of mana of that color equal to your devotion to that color"
+                .to_owned(),
+        ),
+        _ => None,
+    }
+}
+
 /// "{G}{G}", "one mana of any color": the mana an effect adds.
 /// "add {C}{C}" and, when the mana is restricted, the sentence that says what it may be spent on.
 fn add_text(
@@ -1590,6 +1620,10 @@ fn add_text(
     lasts: ManaLasts,
     also: &str,
 ) -> Option<String> {
+    if let Some(text) = e14g_counted_mana(mana) {
+        return (times.is_one() && only.is_empty() && lasts.is_step() && also.is_empty())
+            .then_some(text);
+    }
     // "Add {G}. If you control four or more creatures, add {G}{G} instead."
     if let Produce::Instead {
         base,
