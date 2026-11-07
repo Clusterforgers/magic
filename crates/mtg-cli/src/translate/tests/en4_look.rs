@@ -30,9 +30,9 @@ fn a_look_line_maps(#[case] line: &str, #[case] rule: Value) {
     "Affected$ Creature.faceDown+OppCtrl | AffectedZone$ Battlefield | MayLookAt$ You",
     "static:MayLookAt-zone"
 )]
-#[case::exiled(
-    "Affected$ Card.ExiledWithSource | AffectedZone$ Exile | MayLookAt$ You",
-    "static:MayLookAt-zone"
+#[case::exiled_by_another_kind(
+    "Affected$ Card.ExiledWithSource+Creature | AffectedZone$ Exile | MayLookAt$ You",
+    "static:MayLookAt-exiled-affected"
 )]
 #[case::everyone_looks(
     "Affected$ Card.TopLibrary | AffectedZone$ Library | MayLookAt$ You",

@@ -44,6 +44,7 @@ pub fn exile_top(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
         who: Ref::You,
         count,
         bind: IMPULSE.to_owned(),
+        sealed: false,
     }])
 }
 
@@ -368,8 +369,12 @@ pub fn text(effect: &Effect) -> Option<String> {
         Effect::ExileTop {
             who: Ref::You,
             count,
+            sealed,
             ..
-        } => format!("exile {} of your library", top_text(count)?),
+        } => {
+            let face = if *sealed { " face down" } else { "" };
+            format!("exile {} of your library{face}", top_text(count)?)
+        }
         Effect::ExileUntil {
             who: Ref::You,
             filter: Selector(preds),

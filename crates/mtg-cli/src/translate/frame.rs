@@ -397,8 +397,10 @@ pub fn ask(mut effects: Vec<Value>, who: &Value) -> Vec<Value> {
 pub enum Goes {
     /// Exiled.
     Exile,
-    /// Exiled face down, linked to the source (hideaway).
+    /// Exiled face down, and the player whose effect it is alone may look at them.
     Hidden,
+    /// Exiled face down, and no player may look at them (CR 406.3).
+    Sealed,
     /// To this destination.
     To(Value),
 }
@@ -688,6 +690,7 @@ pub fn moves(what: &Value, goes: Goes) -> Value {
     match goes {
         Goes::Exile => json!({"Exile": {"what": what}}),
         Goes::Hidden => json!({"ExileHidden": {"what": what, "held": true}}),
+        Goes::Sealed => json!({"ExileHidden": {"what": what, "sealed": true}}),
         Goes::To(to) => json!({"Move": {"what": what, "to": to}}),
     }
 }

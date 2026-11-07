@@ -22,4 +22,8 @@ by: ObjectRef,
 /**
  * The player who exiled it.
  */
-looker: PlayerId, } };
+looker: PlayerId, } } | { "Sealed": { 
+/**
+ * The source of the effect.
+ */
+by: ObjectRef, } };

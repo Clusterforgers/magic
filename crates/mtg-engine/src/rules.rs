@@ -161,6 +161,16 @@ pub enum Rule {
     SkipDrawStep(Vec<PlayerId>),
     /// The players may look at the top card of their library any time.
     LookAtTop(Vec<PlayerId>),
+    /// The players may look at the face-down cards in exile the selector picks (CR 406.3).
+    LookAtExiled {
+        /// The players who may look.
+        who: Vec<PlayerId>,
+        /// The cards, judged when a seat looks; every face-down card in exile when empty.
+        #[cfg_attr(feature = "ts", ts(type = "unknown"))]
+        what: Selector,
+        /// Only these objects, as they were named when the rule began; every card `what` selects when absent.
+        only: Option<Vec<ObjectRef>>,
+    },
     /// Each player may play this many lands more on each of their turns (CR 305.2).
     AdditionalLandPlays(Vec<(PlayerId, u32)>),
     /// The players may cast the cards the selector picks from a zone, without paying their mana costs or as though they
@@ -503,6 +513,7 @@ pub(crate) struct RulesInForce {
     unpreventable: Vec<Unpreventable>,
     casts: Vec<Cast>,
     taxes: Vec<Taxing>,
+    looks: Vec<Look>,
     attack_limit: Option<u32>,
     attack_limit_at: BTreeMap<AttackTarget, u32>,
     block_limit: Option<u32>,
@@ -522,6 +533,21 @@ pub(crate) struct Taxing {
     pub(crate) source: Option<ObjectRef>,
     /// The tax.
     pub(crate) tax: AttackTax,
+}
+
+/// A permission to look at face-down cards in exile, with whose it is.
+#[derive(Debug, Clone)]
+pub(crate) struct Look {
+    /// The controller of the effect or permanent that gives it, for the selector's "you".
+    controller: PlayerId,
+    /// The object that gives it.
+    source: ObjectRef,
+    /// The players who may look.
+    who: Vec<PlayerId>,
+    /// The cards they may look at; every face-down card in exile when empty.
+    what: Selector,
+    /// Only these objects; every card `what` selects when absent.
+    only: Option<Vec<ObjectRef>>,
 }
 
 /// A permission to cast cards, with whose it is.
@@ -797,6 +823,17 @@ impl RulesInForce {
             }
             Rule::SkipDrawStep(players) => self.skip_draw.extend(players),
             Rule::LookAtTop(players) => self.look_top.extend(players),
+            Rule::LookAtExiled { who, what, only } => {
+                if let Some(source) = source {
+                    self.looks.push(Look {
+                        controller,
+                        source,
+                        who: who.clone(),
+                        what: what.clone(),
+                        only: only.clone(),
+                    });
+                }
+            }
             Rule::AdditionalLandPlays(plays) => {
                 for (player, count) in plays {
                     let total = self.extra_lands.entry(*player).or_default();
@@ -1087,6 +1124,14 @@ pub(crate) fn lower_rule(scope: &Scope<'_>, wanted: &GameRule) -> Result<Rule, R
         | GameRule::NoLegendRule(_)
         | GameRule::UntapDuring { .. } => lower_option(scope, wanted)?,
         GameRule::LookAtTopAnyTime(who) => Rule::LookAtTop(scope.players(who)?),
+        GameRule::LookAtExiled { who, what, only } => Rule::LookAtExiled {
+            who: scope.players(who)?,
+            what: what.clone(),
+            only: only
+                .as_ref()
+                .map(|named| scope.objects(named))
+                .transpose()?,
+        },
         GameRule::NoMaxHandSize(who) => Rule::NoMaxHandSize(scope.players(who)?),
         GameRule::SkipDrawStep(who) => Rule::SkipDrawStep(scope.players(who)?),
         GameRule::AdditionalLandPlays { who, count } => {
@@ -1195,7 +1240,7 @@ pub(crate) fn names_nothing(rule: &Rule) -> bool {
         Rule::UntapDuring { whose, .. } => whose.is_empty(),
         Rule::AttackLimitAt { at, .. } => at.is_empty(),
         Rule::AdditionalLandPlays(plays) => plays.iter().all(|(_, count)| *count == 0),
-        Rule::MayCast { who, only, .. } => {
+        Rule::LookAtExiled { who, only, .. } | Rule::MayCast { who, only, .. } => {
             who.is_empty() || only.as_ref().is_some_and(Vec::is_empty)
         }
         Rule::BlockLimitEach { who, .. }
@@ -1340,6 +1385,7 @@ static NONE: RulesInForce = RulesInForce {
     unpreventable: Vec::new(),
     casts: Vec::new(),
     taxes: Vec::new(),
+    looks: Vec::new(),
     attack_limit: None,
     attack_limit_at: BTreeMap::new(),
     block_limit: None,
@@ -1667,6 +1713,23 @@ pub(crate) fn damage_cant_be_prevented(state: &GameState, dealer: ObjectId, comb
                         .unwrap_or(false)
                 }))
     })
+}
+
+/// Whether a rule in force lets `viewer` look at `card`, a face-down card in exile (CR 406.3): the one place the sight of
+/// a seat reads this rule.
+pub(crate) fn grants_look(state: &GameState, viewer: PlayerId, card: &GameObject) -> bool {
+    card.zone() == Zone::Exile
+        && state.rules().looks.iter().any(|look| {
+            look.who.contains(&viewer)
+                && look
+                    .only
+                    .as_ref()
+                    .is_none_or(|only| only.contains(&card.reference()))
+                && (look.what.is_empty()
+                    || Scope::announcing(state, look.controller, look.source)
+                        .selects(&look.what, card.reference())
+                        .unwrap_or(false))
+        })
 }
 
 /// The permissions to cast cards in force: the one place a cast reads them (`ways`).
@@ -2502,5 +2565,63 @@ mod tests {
         leaves(&mut game, "Holder");
         assert!(!holds(&game, Draw(ME)));
         assert!(holds(&copy, Draw(ME)), "the copy still has the holder");
+    }
+
+    /// Seat 0 controls the holder with the grant; the top card of seat 0's library is exiled face down sealed by `by`
+    /// (the holder, or another permanent when `by_holder` is false); returns the card.
+    fn sealed(game: &mut GameState, by_holder: bool) -> ObjectId {
+        let by = if by_holder {
+            game.zone(Zone::Battlefield)[0]
+        } else {
+            game.zone(Zone::Hand(ME))[0]
+        };
+        let by = game.object(by).unwrap().reference();
+        let card = *game.zone(Zone::Library(ME)).last().unwrap();
+        let seal = Event::ZoneChanged {
+            object: card,
+            from: Zone::Library(ME),
+            to: Zone::Exile,
+            cause: ZoneCause::Sealed { by },
+        };
+        apply_event(game, &seal).unwrap();
+        card
+    }
+
+    #[rstest]
+    #[case::no_grant(None, true, &[])]
+    #[case::you_look_at_what_it_exiled(Some("{}"), true, &[0])]
+    #[case::not_at_what_another_exiled(Some("{}"), false, &[])]
+    #[case::each_player(Some(r#"{"who":"EachPlayer"}"#), true, &[0, 1, 2, 3])]
+    #[case::opponents(Some(r#"{"who":"Opponents"}"#), true, &[1, 2, 3])]
+    fn a_sealed_card_is_looked_at_only_through_a_grant_while_the_grant_is_in_force(
+        #[values(2, 3, 4)] seats: usize,
+        #[case] grant: Option<&str>,
+        #[case] by_holder: bool,
+        #[case] lookers: &[usize],
+    ) {
+        let rules = grant
+            .map(|who| {
+                let mut rule: serde_json::Value = serde_json::from_str(who).unwrap();
+                rule["what"] = serde_json::json!([{"ExiledWith": "This"}]);
+                rule_ability(&format!(r#"{{"LookAtExiled":{rule}}}"#))
+            })
+            .into_iter()
+            .collect();
+        let mut game = table(seats, rules);
+        let card = sealed(&mut game, by_holder);
+        let sees = |game: &GameState| -> Vec<usize> {
+            (0..seats)
+                .filter(|seat| game.may_look_at(PlayerId::from_index(*seat), card))
+                .collect()
+        };
+        let expected: Vec<usize> = lookers
+            .iter()
+            .copied()
+            .filter(|seat| *seat < seats)
+            .collect();
+        assert_eq!(sees(&game), expected);
+        // The grant ends with the holder: the card is sealed for every seat again.
+        leaves(&mut game, "Holder");
+        assert_eq!(sees(&game), Vec::<usize>::new());
     }
 }

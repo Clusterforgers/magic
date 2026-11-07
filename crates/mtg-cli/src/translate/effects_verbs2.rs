@@ -141,5 +141,9 @@ fn set_state(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
         _ => return unmapped("key:SetState.Mode"),
     };
     let what = subject(ctx, p, "Self", None)?;
+    // The engine turns face-down permanents face up; a card turned face up in exile would stay hidden.
+    if node == "TurnFaceUp" && what.to_string().contains(r#"{"In":"Exile"}"#) {
+        return unmapped("key:SetState.TurnFaceUp-in-exile");
+    }
     Ok(json!({node: {"what": what}}))
 }

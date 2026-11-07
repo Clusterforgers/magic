@@ -117,6 +117,12 @@ pub enum FaceDown {
         /// The player who exiled it.
         looker: PlayerId,
     },
+    /// A card an effect exiled face down that no player may look at (CR 406.3): it keeps its own characteristics, and only
+    /// a rule that grants a look shows it.
+    Sealed {
+        /// The source of the effect.
+        by: ObjectRef,
+    },
 }
 
 impl FaceDown {
@@ -127,6 +133,7 @@ impl FaceDown {
         match self {
             FaceDown::Foretold { .. } | FaceDown::Hideaway { .. } => owner == viewer,
             FaceDown::Held { looker, .. } => looker == viewer,
+            FaceDown::Sealed { .. } => false,
             FaceDown::Morph | FaceDown::Disguise | FaceDown::Manifest | FaceDown::Cloak => {
                 controller == viewer
             }

@@ -2515,6 +2515,27 @@ impl Writer<'_> {
             .or_else(|| self.r7d_die_exiled(effect))
             .or_else(|| self.r7d_blocks_source(effect))
             .or_else(|| self.r7d_while_tapped(effect))
+            .or_else(|| self.e10b_sealed(effect))
+    }
+
+    /// An exile face down that no player may look at (CR 406.3) reads as the same exile with "face down" after it: "exile
+    /// all cards from your hand face down". A card hidden for a player to look at reads otherwise.
+    fn e10b_sealed(&mut self, effect: &Effect) -> Option<String> {
+        let Effect::ExileHidden {
+            what,
+            bind,
+            held: false,
+            sealed: true,
+        } = effect
+        else {
+            return None;
+        };
+        let plain = Effect::Exile {
+            what: what.clone(),
+            bind: bind.clone(),
+            duration: None,
+        };
+        Some(format!("{} face down", self.other_effect(&plain)?))
     }
 
     /// The cast of the target during the resolution and the exile of that spell (`c11b_cast_target`).

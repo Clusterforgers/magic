@@ -15,7 +15,8 @@ use crate::zones::Zone;
 
 impl GameState {
     /// Whether `viewer` may look at what the object is: anyone may unless it lies face down (CR 708), and then only
-    /// the player its kind of face-down names (CR 702.143a: the owner of a foretold card; CR 708.3: the controller of a face-down spell or permanent). This is the one rule the
+    /// the player its kind of face-down names (CR 702.143a: the owner of a foretold card; CR 708.3: the controller of a face-down spell or permanent), or a rule that grants a look at a face-down card in exile
+    /// (CR 406.3). This is the one rule the
     /// views, the log and the snapshots read for a face-down object.
     pub fn may_look_at(&self, viewer: PlayerId, id: ObjectId) -> bool {
         let Some(object) = self.object(id) else {
@@ -27,7 +28,7 @@ impl GameState {
                 object.owner(),
                 crate::characteristics::controller_of_object(self, object),
                 viewer,
-            )
+            ) || crate::rules::grants_look(self, viewer, object)
         })
     }
 

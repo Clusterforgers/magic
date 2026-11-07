@@ -95,7 +95,19 @@ what: unknown,
 /**
  * The players whose untap steps untap them.
  */
-whose: Array<PlayerId>, } } | { "SkipDrawStep": Array<PlayerId> } | { "LookAtTop": Array<PlayerId> } | { "AdditionalLandPlays": Array<[PlayerId, number]> } | { "MayCast": { 
+whose: Array<PlayerId>, } } | { "SkipDrawStep": Array<PlayerId> } | { "LookAtTop": Array<PlayerId> } | { "LookAtExiled": { 
+/**
+ * The players who may look.
+ */
+who: Array<PlayerId>, 
+/**
+ * The cards, judged when a seat looks; every face-down card in exile when empty.
+ */
+what: unknown, 
+/**
+ * Only these objects, as they were named when the rule began; every card `what` selects when absent.
+ */
+only: Array<ObjectRef> | null, } } | { "AdditionalLandPlays": Array<[PlayerId, number]> } | { "MayCast": { 
 /**
  * The players who may cast.
  */

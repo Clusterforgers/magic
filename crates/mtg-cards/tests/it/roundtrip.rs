@@ -860,10 +860,11 @@ fn leaf_effect() -> impl Strategy<Value = Effect> {
                 bind,
                 duration
             }),
-        reference().prop_map(|what| Effect::ExileHidden {
+        (reference(), any::<bool>()).prop_map(|(what, sealed)| Effect::ExileHidden {
             what,
             bind: None,
             held: false,
+            sealed,
         }),
         (reference(), reference()).prop_map(|(what, on)| Effect::Encode { what, on }),
         (reference(), "[a-z]{1,6}").prop_map(|(what, slot)| Effect::Remember { what, slot }),
@@ -1042,10 +1043,13 @@ fn leaf_effect() -> impl Strategy<Value = Effect> {
                 revealed_as
             }
         ),
-        (who(), amount(), bound_name()).prop_map(|(who, count, bind)| Effect::ExileTop {
-            who,
-            count,
-            bind
+        (who(), amount(), bound_name(), any::<bool>()).prop_map(|(who, count, bind, sealed)| {
+            Effect::ExileTop {
+                who,
+                count,
+                bind,
+                sealed,
+            }
         }),
         (
             who(),
