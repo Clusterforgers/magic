@@ -228,6 +228,30 @@ fn on_the_stack(pred: &Pred) -> bool {
     }
 }
 
+/// Whether `seen` is a double-faced card (CR 712.1), and with `back` a transforming one whose back face is up (CR 701.28):
+/// an ability or a permanent that is a copy is neither, and a face-down object shows no faces.
+fn double_faced(seen: &Seen<'_>, back: bool) -> bool {
+    use mtg_cards::definition::Layout;
+    let Some(card) = seen
+        .card
+        .filter(|card| card.kind != ObjectKind::Ability && card.face_down.is_none())
+    else {
+        return false;
+    };
+    let live = match seen.counters {
+        Counted::Live(held) => Some(held),
+        _ => None,
+    };
+    if live.is_some_and(|held| held.copy.is_some()) {
+        return false;
+    }
+    if back {
+        return card.def.layout == Layout::Transform
+            && live.is_some_and(|held| held.face.is_some());
+    }
+    matches!(card.def.layout, Layout::Transform | Layout::ModalDfc)
+}
+
 /// Whether `seen` is an ability on the stack of this kind.
 fn is_ability(seen: &Seen<'_>, kind: AbilityKind) -> bool {
     seen.zone == Zone::Stack
@@ -1481,6 +1505,9 @@ impl<'a> Scope<'a> {
             Pred::Untapped => seen.tapped == Some(false),
             Pred::Monstrous => matches!(seen.counters, Counted::Live(held) if held.monstrous()),
             Pred::Renowned => matches!(seen.counters, Counted::Live(held) if held.renowned()),
+            Pred::Prepared => matches!(seen.counters, Counted::Live(held) if held.prepared()),
+            Pred::DoubleFaced => double_faced(seen, false),
+            Pred::Transformed => double_faced(seen, true),
             Pred::EnteredThisTurn => state.object_tallied(reference, None, Tally::Entered) > 0,
             Pred::SummoningSick => crate::keywords::summoning_sick(state, reference.id),
             Pred::MilledThisTurn => state.object_tallied(reference, None, Tally::W13bMilled) > 0,

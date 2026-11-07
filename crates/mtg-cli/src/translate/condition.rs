@@ -119,6 +119,18 @@ pub fn check_svar(ctx: &Ctx, p: &Params) -> Tr<Option<Value>> {
             }
             continue;
         };
+        // `Count$ValidSelf <valid>` is one while the source matches, else zero: whether it matches.
+        if let Some(valid) = name.strip_prefix("Count$ValidSelf ")
+            && !valid.contains('$')
+        {
+            let matches = self_was_cast(ctx, valid)?;
+            match p.get(compare).unwrap_or("GE1") {
+                "GE1" => all.push(matches),
+                "EQ0" | "LT1" => all.push(json!({ "Not": matches })),
+                other => return unmapped(format!("key:Condition.ValidSelf-{other}")),
+            }
+            continue;
+        }
         let (op, right) = comparison(ctx, p.get(compare).unwrap_or("GE1"))?;
         let left = amount(ctx, name)?;
         all.push(
@@ -407,6 +419,10 @@ pub fn named(name: &str) -> Tr<Value> {
         "Void" => {
             let this_turn = |what: &str| json!({"Compare": {"left": {"Tallied": {"who": "EachPlayer", "what": what}}, "op": "Ge", "right": 1}});
             json!({"Any": [this_turn("NonlandPermanentsLeft"), this_turn("SpellsWarped")]})
+        }
+        // "If no opponent has more life than that player": the attacked player has at least the most life among the opponents.
+        "NoOpponentHasMoreLifeThanAttacked" => {
+            json!({"Compare": {"left": {"Life": "Against"}, "op": "Ge", "right": {"HighestLife": "Opponents"}}})
         }
         "Metalcraft" => {
             let artifacts = vec![json!({"Type": "Artifact"}), json!({"ControlledBy": "You"})];

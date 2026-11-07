@@ -62,6 +62,7 @@ pub fn triggered(ctx: &mut Ctx, body: &str) -> Tr<Value> {
     let (p, intervening) = during(strip(&all), intervening)?;
     let (p, intervening) = event_amount(p, intervening)?;
     let (p, intervening) = defender_poisoned(p, intervening);
+    let (p, intervening) = kicked_with(ctx, p, intervening)?;
     let (when, intervening) = if p.get("Mode") == Some("Always") {
         state_when(ctx, &p, &all)?
     } else {
@@ -314,6 +315,29 @@ fn defender_poisoned(p: Params, intervening: Option<Value>) -> (Params, Option<V
         Some(other) => json!({"All": [other, poisoned]}),
     };
     (p.without(&["DefendingPlayerPoisoned"]), Some(both))
+}
+
+/// "When this creature enters, if it was kicked with its {1}{B} kicker" (`ValidCard$ Card.Self+kicked 2`): the pattern is the
+/// card entering and the kicker paid is the intervening condition.
+fn kicked_with(ctx: &Ctx, p: Params, intervening: Option<Value>) -> Tr<(Params, Option<Value>)> {
+    let numbered = p
+        .get("ValidCard")
+        .is_some_and(|valid| valid.starts_with("Card.Self+kicked "));
+    if p.get("Mode") != Some("ChangesZone")
+        || p.get("Destination") != Some("Battlefield")
+        || !numbered
+    {
+        return Ok((p, intervening));
+    }
+    let kicked = super::enters_with::condition(ctx, p.get("ValidCard").unwrap_or_default())?;
+    let both = match intervening {
+        None => kicked,
+        Some(other) => json!({"All": [other, kicked]}),
+    };
+    Ok((
+        p.without(&["ValidCard"]).with("ValidCard", "Card.Self"),
+        Some(both),
+    ))
 }
 
 /// "When you control no Islands": a state trigger holds the line's condition as its pattern and has no intervening one.

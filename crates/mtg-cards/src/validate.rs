@@ -779,6 +779,9 @@ impl<'a> Walker<'a> {
             | Pred::Untapped
             | Pred::Monstrous
             | Pred::Renowned
+            | Pred::Prepared
+            | Pred::DoubleFaced
+            | Pred::Transformed
             | Pred::Paired
             | Pred::EnteredThisTurn
             | Pred::SummoningSick

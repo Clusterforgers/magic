@@ -271,6 +271,11 @@ fn asks_may(p: &Params) -> Tr<bool> {
 /// on an effect that acts on you. The sub-abilities after it are not part of the choice: they happen either way, as the Oracle text "You may X. Then Y" says.
 fn may_decider(ctx: &Ctx, p: &Params) -> Tr<Value> {
     let decider = p.get("OptionalDecider");
+    // A draw asks each player who draws (`OptionalDecider$ True`): the one the line names, else you.
+    let decider = match decider {
+        Some("True") if api_of(p)? == "Draw" => Some(p.get("Defined").unwrap_or("You")),
+        other => other,
+    };
     let who = match decider {
         Some(word) => match defined(ctx, word)? {
             group if matches!(group.as_str(), Some("Opponents" | "EachPlayer")) => {

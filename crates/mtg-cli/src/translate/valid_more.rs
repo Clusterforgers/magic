@@ -123,6 +123,10 @@ fn shares(ctx: &Ctx, prop: &str) -> Tr<Option<Value>> {
         ("sharesCreatureTypeWith ", "SharesSubtype"),
     ] {
         if let Some(word) = prop.strip_prefix(head) {
+            // A name is compared with your graveyard too ("the same name as a card in your graveyard").
+            if pred == "SharesName" && word.trim() == "YourGraveyard" {
+                return Ok(Some(json!({ pred: name_pool(ctx, word)? })));
+            }
             return Ok(Some(json!({ pred: objects(defined(ctx, word)?)? })));
         }
     }
@@ -179,10 +183,12 @@ fn player_word(ctx: &Ctx, word: &str) -> Tr<Value> {
     }
 }
 
-/// The reference of a `Defined$` word the table does not know; every word is still a gap.
+/// The reference of a `Defined$` word the table does not know: what the source imprinted or its controller, else a gap.
 pub fn defined_word(ctx: &Ctx, word: &str) -> Tr<Value> {
     match word {
         "Imprinted" | "Player.IsImprinted" => memory::imprinted(ctx),
+        // The controller of the card the ability belongs to, who need not be the player who activated it.
+        "SourceController" => Ok(json!({"ControllerOf": "This"})),
         _ => unmapped(format!("defined:{word}")),
     }
 }

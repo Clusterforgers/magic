@@ -12,7 +12,7 @@ use crate::translate::keyword::keyword_list;
 const LONGEST: usize = 4;
 
 /// The condition the valid-string names: kicked (with its first or second kicker) or escaped.
-fn condition(ctx: &Ctx, valid: &str) -> Tr<Value> {
+pub(super) fn condition(ctx: &Ctx, valid: &str) -> Tr<Value> {
     let Some(how) = valid.strip_prefix("Card.Self+") else {
         return unmapped("keyword:ETBReplacement-shape");
     };

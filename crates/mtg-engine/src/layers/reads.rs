@@ -235,6 +235,9 @@ fn reads_of_pred(pred: &Pred) -> Traits {
         | Pred::Untapped
         | Pred::Monstrous
         | Pred::Renowned
+        | Pred::Prepared
+        | Pred::DoubleFaced
+        | Pred::Transformed
         | Pred::Paired
         | Pred::EnteredThisTurn
         | Pred::SummoningSick

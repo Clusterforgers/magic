@@ -31,6 +31,9 @@ pub fn atom(prop: &str) -> Option<Vec<Value>> {
         "attackingYou" => return one(json!({"AttackingPlayer": "You"})),
         "IsMonstrous" => return one(json!("Monstrous")),
         "IsRenowned" => return one(json!("Renowned")),
+        "IsPrepared" => return one(json!("Prepared")),
+        "Transformed" => return one(json!("Transformed")),
+        "DoubleFaced" => return one(json!("DoubleFaced")),
         "IsSaddled" => return one(json!({"HasKeyword": "Saddled"})),
         "SaddledThisTurn" => return one(json!({"Saddled": "This"})),
         "faceDown" => return one(json!("FaceDown")),
@@ -44,12 +47,14 @@ pub fn atom(prop: &str) -> Option<Vec<Value>> {
         "milledThisTurn" => return one(json!("MilledThisTurn")),
         "withTypeCycling" => return one(json!({"HasKeywordNamed": "Typecycling"})),
         "MonoColor" => return one(compare("Colors", "Eq", 1)),
+        "AllColors" => return one(compare("Colors", "Eq", 5)),
         // How the spell was cast, for the ways the cast node has.
         "surged" => return one(json!({"CastWith": "Surge"})),
         "spectacle" => return one(json!({"CastWith": "Spectacle"})),
         "prowled" => return one(json!({"CastWith": "Prowl"})),
         "webSlinged" => return one(json!({"CastWith": "WebSlinging"})),
         "sneaked" => return one(json!({"CastWith": "Sneak"})),
+        "madness" => return one(json!({"CastWith": "Madness"})),
         _ => {}
     }
     if let Some(zone) = prop.strip_prefix("ThisTurnEnteredFrom_")

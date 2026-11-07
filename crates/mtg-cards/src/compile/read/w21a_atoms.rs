@@ -119,6 +119,9 @@ pub(super) fn w21a_adjective(word: &str) -> Option<Pred> {
     Some(match word {
         "modified" => Pred::Modified,
         "face-down" => Pred::FaceDown,
+        "transformed" => Pred::Transformed,
+        "double-faced" => Pred::DoubleFaced,
+        "prepared" => Pred::Prepared,
         "noncommander" => Pred::Not(Box::new(Pred::Commander)),
         _ => return None,
     })
@@ -130,6 +133,9 @@ pub(super) fn w21a_adjective_text(pred: &Pred) -> Option<String> {
         match pred {
             Pred::Modified => "modified",
             Pred::FaceDown => "face-down",
+            Pred::Transformed => "transformed",
+            Pred::DoubleFaced => "double-faced",
+            Pred::Prepared => "prepared",
             _ => return None,
         }
         .to_owned(),
