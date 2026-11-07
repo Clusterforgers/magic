@@ -3554,7 +3554,7 @@ impl Walker<'_> {
                     // A death or a counter sent elsewhere, and a class of moves judged as each happens (`Rule::Replaces`).
                     | (
                         ReplaceWhen::ZoneChange { .. } | ReplaceWhen::Countered { .. },
-                        ReplaceBy::MoveTo(_),
+                        ReplaceBy::MoveTo(_) | ReplaceBy::IntoLibrary { .. },
                     )
                     | (ReplaceWhen::Enters { .. }, ReplaceBy::Tapped) => {}
                     _ => w.uses("Effect", &format!("Shield.{}", tag_of(when))),
@@ -4506,6 +4506,14 @@ impl Walker<'_> {
                 }
                 if *cards == 0 {
                     self.problem("dredging no cards is drawing");
+                }
+            }
+            ReplaceBy::IntoLibrary { place, .. } => {
+                if !matches!(when, ReplaceWhen::ZoneChange { .. }) {
+                    self.problem("`IntoLibrary` replaces a `ZoneChange`");
+                }
+                if matches!(place, crate::effect::Place::Below(_)) {
+                    self.problem("`IntoLibrary` puts a card on top, on the bottom or shuffles it in");
                 }
             }
             ReplaceBy::MoveTo(_)

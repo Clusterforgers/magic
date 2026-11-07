@@ -121,15 +121,29 @@ fn exiled_instead(p: &Params, part: &Params, what: &[Value]) -> Tr<Value> {
     check_keys(
         part,
         "Replacement",
-        &["DB", "Hidden", "Origin", "Destination", "Defined"],
+        &[
+            "DB",
+            "Hidden",
+            "Origin",
+            "Destination",
+            "Defined",
+            "Reveal",
+            "Shuffle",
+            "LibraryPosition",
+        ],
         |_, _| false,
     )?;
     // A part that leaves the battlefield names it, which is what the replaced move is when the line says nothing.
     if part.get("Origin") == Some("Battlefield") {
         pattern["from"] = json!("Battlefield");
     }
+    let library = part.get("Destination") == Some("Library");
+    if !library && ["Reveal", "Shuffle", "LibraryPosition"].iter().any(|key| part.has(key)) {
+        return unmapped("replacement:Moved-not-an-exile");
+    }
     let to = match part.get("Destination") {
         Some("Exile") => "Exile",
+        Some("Library") => "Library",
         Some("Hand") if pattern.get("from").is_some() => "Hand",
         _ => return unmapped("replacement:Moved-not-an-exile"),
     };
@@ -140,7 +154,23 @@ fn exiled_instead(p: &Params, part: &Params, what: &[Value]) -> Tr<Value> {
     if !moves {
         return unmapped("replacement:Moved-not-an-exile");
     }
+    if library {
+        let reveal = part.get("Reveal") == Some("True");
+        let by = json!({"IntoLibrary": {"place": library_place(part)?, "reveal": reveal}});
+        return Ok(json!({"Replacement": {"when": {"ZoneChange": pattern}, "by": by}}));
+    }
     Ok(json!({"Replacement": {"when": {"ZoneChange": pattern}, "by": {"MoveTo": to}}}))
+}
+
+/// Where in the library a part puts the card: shuffled in, on top (`LibraryPosition$ 0`, the default) or on the bottom
+/// (`-1`).
+fn library_place(part: &Params) -> Tr<Value> {
+    match (part.get("Shuffle"), part.get("LibraryPosition")) {
+        (Some("True"), None) => Ok(json!("Shuffled")),
+        (None, None | Some("0")) => Ok(json!("Top")),
+        (None, Some("-1")) => Ok(json!("Bottom")),
+        _ => unmapped("key:Replacement.LibraryPosition"),
+    }
 }
 
 /// The shield an `Effect` line makes from an `Event$ Moved` replacement over a class of cards: those put into a graveyard
@@ -245,8 +275,10 @@ pub fn self_to_graveyard(ctx: &mut Ctx, p: &Params, line_condition: Option<&Valu
         return unmapped("key:Replacement.Moved.condition");
     }
     // "If this creature would die": the line works from the battlefield and replaces the move from there alone.
-    let dies =
-        p.get("Origin") == Some("Battlefield") && p.get("ActiveZones") == Some("Battlefield");
+    // A move from the battlefield is made by the card while it is there, so the line works there with or without
+    // `ActiveZones$`.
+    let dies = p.get("Origin") == Some("Battlefield")
+        && matches!(p.get("ActiveZones"), None | Some("Battlefield"));
     if !dies && (p.has("Origin") || p.has("ActiveZones")) {
         return unmapped("key:Replacement.Moved.Origin");
     }

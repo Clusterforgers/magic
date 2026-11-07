@@ -496,6 +496,19 @@ pub(super) fn replace_by(ctx: &Ctx, by: &ReplaceBy, depth: u8, out: &mut Vec<Ste
             depth,
             format!("it goes to {} instead", phrase::zone_text(*zone)),
         )),
+        ReplaceBy::IntoLibrary { place, reveal } => out.push(Step::new(
+            depth,
+            format!(
+                "{}it goes into its owner's library instead, {}",
+                if *reveal { "it is revealed and " } else { "" },
+                match place {
+                    crate::effect::Place::Top => "on top".to_owned(),
+                    crate::effect::Place::Bottom => "on the bottom".to_owned(),
+                    crate::effect::Place::Below(n) => format!("below the top {n}"),
+                    crate::effect::Place::Shuffled => "shuffled in".to_owned(),
+                }
+            ),
+        )),
         ReplaceBy::Instead(list) => {
             out.push(Step::new(depth, "instead:"));
             effects::list(ctx, list, depth + 1, out);

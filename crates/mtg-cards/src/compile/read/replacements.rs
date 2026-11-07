@@ -296,6 +296,31 @@ fn instead(by: &ReplaceBy) -> Vec<&'static str> {
     }
 }
 
+/// "Reveal ~ and shuffle it into its owner's library instead", "put it on top of its owner's library instead".
+fn into_library(what: &Selector, by: &ReplaceBy) -> Vec<String> {
+    let ReplaceBy::IntoLibrary { place, reveal } = by else {
+        return Vec::new();
+    };
+    let (verb, place) = match place {
+        crate::effect::Place::Top => ("put", "on top of its owner's library"),
+        crate::effect::Place::Bottom => ("put", "on the bottom of its owner's library"),
+        crate::effect::Place::Shuffled => ("shuffle", "into its owner's library"),
+        crate::effect::Place::Below(_) => return Vec::new(),
+    };
+    // The card itself is named again by its name or by "it"; a reveal names it first and "it" after.
+    let names: &[&str] = if what.0 == [Pred::This] { &["~", "it"] } else { &["it"] };
+    names
+        .iter()
+        .map(|named| {
+            if *reveal {
+                format!("reveal {named} and {verb} it {place} instead")
+            } else {
+                format!("{verb} {named} {place} instead")
+            }
+        })
+        .collect()
+}
+
 /// "If a creature you control would die, exile it instead."
 fn zone_change(
     what: &Selector,
@@ -327,7 +352,8 @@ fn zone_change(
         (None, Some(ZoneKind::Exile)) => vec!["be exiled".to_owned()],
         _ => Vec::new(),
     };
-    let mut thens = instead(by);
+    let mut thens: Vec<String> = instead(by).into_iter().map(str::to_owned).collect();
+    thens.extend(into_library(what, by));
     // A permanent that leaves goes to exile wherever it was going: "instead of putting it anywhere else".
     if (from, to, by)
         == (
@@ -336,11 +362,11 @@ fn zone_change(
             &ReplaceBy::MoveTo(ZoneKind::Exile),
         )
     {
-        thens.push("exile it instead of putting it anywhere else");
+        thens.push("exile it instead of putting it anywhere else".to_owned());
     }
     events
         .iter()
-        .flat_map(|event| thens.iter().map(move |then| (event.clone(), *then)))
+        .flat_map(|event| thens.iter().map(move |then| (event.clone(), then.clone())))
         .flat_map(|(event, then)| {
             subjects
                 .iter()
