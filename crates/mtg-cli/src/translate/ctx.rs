@@ -167,6 +167,9 @@ pub struct Ctx<'a> {
     pub chosen_card: Option<String>,
     /// The name the latest number chosen by the ability is bound to (`ChosenNumber` after it).
     pub chosen_number: Option<String>,
+    /// The card name the ability chose (the name of its `ChooseValue`) while an `Effect` line it holds is translated: the
+    /// statics and triggers of the effect read `NamedCard` as that choice through their own reset.
+    pub effect_name: Option<String>,
     /// For a bound name, the `Let` that kept how many objects it held when it was bound, which a count of it reads.
     pub kept_count: BTreeMap<String, String>,
     /// The name the picks of the passes of the repeat being translated gather into (`Bind` with `adds`).
@@ -242,6 +245,7 @@ impl<'a> Ctx<'a> {
             chosen_number: None,
             set_number: None,
             gathered: None,
+            effect_name: None,
             kept_count: BTreeMap::new(),
             die_result: None,
             excess: None,

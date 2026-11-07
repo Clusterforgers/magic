@@ -44,6 +44,18 @@ pub fn effects(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
         ctx.set_number = before;
         return out;
     }
+    // "Choose a card name. Until your next turn, spells with the chosen name can't be cast": the effect's parts read the
+    // name as the ability chose it, which the engine fixes as the rule begins.
+    if ctx.effect_name.is_none()
+        && !p.has("Triggers")
+        && !p.has("ReplacementEffects")
+        && let (Some(name), None) = (ctx.chosen.clone(), ctx.chosen_kind)
+    {
+        ctx.effect_name = Some(name);
+        let out = effects(ctx, p);
+        ctx.effect_name = None;
+        return out;
+    }
     if p.has("ForgetOnCast") {
         return super::effects_next_spell::effects(ctx, p);
     }
@@ -237,7 +249,11 @@ fn remembered_static(
         return unmapped("key:Effect.EffectOwner");
     }
     // A prohibition on the remembered players ("target player cannot cast spells this turn").
-    if let Some(found) = super::statics_cant::rule_for(ctx, &part, Some(who)) {
+    // "Its activated abilities can't be activated this turn": `Card.IsRemembered` names the remembered objects.
+    let before = ctx.pinned.replace(who.clone());
+    let found = super::statics_cant::rule_for(ctx, &part, Some(who));
+    ctx.pinned = before;
+    if let Some(found) = found {
         let mut rule = found?;
         rule["Rule"]["duration"] = duration.clone();
         return Ok(vec![rule]);
