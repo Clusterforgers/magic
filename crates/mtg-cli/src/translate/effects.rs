@@ -47,6 +47,7 @@ pub fn chain_at(ctx: &mut Ctx, p: &Params, top: bool) -> Tr<Vec<Value>> {
     let excess = ctx.excess.clone();
     let mut effects =
         line_with_own_target(ctx, p, &own.without(&unless_keys).without(spent), coming)?;
+    fix14_kicked_target(ctx, coming, condition.as_ref());
     // A condition on the step that took the cards also covers the permission an `Effect` line gives for them: with nothing
     // taken the permission names nothing, so the lines that only hold it run inside the condition.
     let inside = condition.is_some()
@@ -444,6 +445,25 @@ fn api_of(params: &Params) -> Tr<&str> {
 /// One line: its effects, with the objects it remembers or imprints bound (`memory::line`).
 /// The effects of a line whose words may read the target the line itself declares (`coming`); a word that read one the line
 /// never declared names nothing and is a gap.
+/// "If this spell was kicked, it deals 5 damage to target player": the target the kicked line declares is chosen only
+/// when the spell is kicked (CR 601.2c, 702.33d), so an unkicked spell has no target to lose.
+fn fix14_kicked_target(ctx: &mut Ctx, coming: Option<u8>, condition: Option<&Value>) {
+    let (Some(index), Some(condition)) = (coming, condition) else {
+        return;
+    };
+    if *condition != json!("Kicked") {
+        return;
+    }
+    let Some(spec) = ctx.targets.get_mut(usize::from(index)) else {
+        return;
+    };
+    if spec.get("bounds").is_some() {
+        return;
+    }
+    let kicked = json!({"When": {"condition": "Kicked", "then": 1, "otherwise": 0}});
+    spec["bounds"] = json!({"min": kicked, "max": kicked});
+}
+
 fn line_with_own_target(
     ctx: &mut Ctx,
     asked: &Params,
