@@ -1364,6 +1364,11 @@ pub enum Effect {
         /// Changes the copy has ("except that the copy is red").
         #[serde(default, skip_serializing_if = "Vec::is_empty")]
         except: Vec<Modification>,
+        /// In place of `count`, one copy of a spell with a single target for each other object this selects that the spell
+        /// could target, each copy targeting a different one ("copy that spell for each other Golem that spell could
+        /// target").
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        each_target: Option<Selector>,
     },
     /// Copies activated and triggered abilities on the stack (CR 707.10): each copy is put on the stack above the ability,
     /// not activated and not triggered, with the choices of the original.

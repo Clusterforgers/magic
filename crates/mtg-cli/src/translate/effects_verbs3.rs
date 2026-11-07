@@ -66,16 +66,19 @@ fn copy_spell(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
             "Optional",
             "UnlessAI",
             "NonLegendary",
+            "CopyForEachCanTarget",
+            "ChooseOnlyOne",
         ],
     )?;
     let who = match p.get("Controller") {
         None | Some("You") => None,
         // The player who cast the spell the trigger is about.
-        Some("TriggeredCardController" | "TriggeredActivator")
-            if ctx
-                .trigger
-                .as_ref()
-                .is_some_and(|shape| shape.mode == "SpellCast") =>
+        Some(
+            "TriggeredCardController" | "TriggeredActivator" | "TriggeredSpellAbilityController",
+        ) if ctx
+            .trigger
+            .as_ref()
+            .is_some_and(|shape| shape.mode == "SpellCast") =>
         {
             Some(json!("TriggeringPlayer"))
         }
@@ -127,6 +130,19 @@ fn copy_spell(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
     if p.get("NonLegendary") == Some("True") {
         copy["except"] = json!([{"RemoveSupertype": "Legendary"}]);
     }
+    if let Some(valid) = p.get("CopyForEachCanTarget") {
+        // "Copy that spell for each other creature it could target. Each copy targets a different one of those creatures."
+        if p.has("Amount") || p.has("MayChooseTarget") {
+            return unmapped("key:CopySpellAbility.CopyForEachCanTarget-with-a-count");
+        }
+        // "The copy targets that token": only one is named, so only one is copied.
+        if p.get("ChooseOnlyOne") == Some("True") && valid != "Permanent.IsRemembered" {
+            return unmapped("key:CopySpellAbility.ChooseOnlyOne");
+        }
+        copy["each_target"] = json!(selector_any(ctx, valid)?);
+    } else if p.has("ChooseOnlyOne") {
+        return unmapped("key:CopySpellAbility.ChooseOnlyOne");
+    }
     if let Some(color) = p.get("SetColor") {
         if !matches!(color, "White" | "Blue" | "Black" | "Red" | "Green") {
             return unmapped("key:CopySpellAbility.SetColor");
@@ -151,7 +167,14 @@ fn copy_activated(ctx: &mut Ctx, p: &Params, other_controller: bool) -> Tr<Value
     if other_controller {
         return unmapped("key:CopySpellAbility.Controller-of-an-ability");
     }
-    for key in ["NonLegendary", "SetColor", "Optional", "ValidTgts"] {
+    for key in [
+        "NonLegendary",
+        "SetColor",
+        "Optional",
+        "ValidTgts",
+        "CopyForEachCanTarget",
+        "ChooseOnlyOne",
+    ] {
         if p.has(key) {
             return unmapped(format!("key:CopySpellAbility.{key}-of-an-ability"));
         }

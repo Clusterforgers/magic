@@ -3499,11 +3499,18 @@ impl Walker<'_> {
                 what,
                 count,
                 except,
+                each_target,
                 ..
             } => {
                 w.at("what", |w| w.reference(what, Kind::Object));
                 w.at("count", |w| w.amount(count));
                 w.copy_exceptions_new_object(except);
+                if let Some(selector) = each_target {
+                    if !count.is_one() {
+                        w.problem("a copy for each other target is one copy for each, with no count of its own");
+                    }
+                    w.at("each_target", |w| w.selector(selector));
+                }
             }
             Effect::ChangeTargets { what, .. } => {
                 w.at("what", |w| w.reference(what, Kind::Object));

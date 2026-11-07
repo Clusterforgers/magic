@@ -1002,6 +1002,7 @@ fn leaf_effect() -> impl Strategy<Value = Effect> {
         )
             .prop_map(|(who, what, count, new_targets, except)| {
                 Effect::CopySpell {
+                    each_target: None,
                     who,
                     what,
                     count,

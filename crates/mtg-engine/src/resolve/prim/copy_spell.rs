@@ -28,6 +28,7 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         count,
         new_targets,
         except,
+        each_target,
     } = effect
     else {
         return Err(wrong_effect("CopySpell"));
@@ -54,6 +55,16 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
     let mut planned = Vec::new();
     for spell in &spells {
         let ability = rules(spell);
+        if let Some(selector) = each_target {
+            if let Some((_, ability)) = &ability {
+                planned.extend(
+                    each_target_choices(cx, player, spell, ability, selector)?
+                        .into_iter()
+                        .map(|choices| (*spell, choices)),
+                );
+            }
+            continue;
+        }
         for _ in 0..copies {
             // A permanent spell has no rules of a spell (an Aura asks for its host through its keyword): its copy
             // announces what it did.
@@ -107,4 +118,54 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         snapshots: Vec::new(),
         next: Next::Sibling,
     })
+}
+
+/// The choices of the copies of `spell` "for each other object `selector` names that the spell could target" (CR 707.10c):
+/// a spell with one target gets one copy for each such object other than that target, legal for the copy's controller
+/// `player`, and each copy targets a different one. A spell with no target or more than one gets none.
+fn each_target_choices(
+    cx: &Cx<'_>,
+    player: mtg_core::ids::PlayerId,
+    spell: &crate::object::GameObject,
+    ability: &mtg_cards::ability::Ability,
+    selector: &mtg_cards::refs::Selector,
+) -> Result<Vec<crate::choose::Choices>, ResolveError> {
+    use crate::choose::{Target, announced_specs, legal_from, spec_bases};
+    let state = cx.state();
+    let original = spell.choices();
+    if original.targets.iter().flatten().count() != 1 {
+        return Ok(Vec::new());
+    }
+    let Some(at) = original.targets.iter().position(|named| !named.is_empty()) else {
+        return Ok(Vec::new());
+    };
+    let specs = announced_specs(ability, &original.modes);
+    let bases = spec_bases(ability, &original.modes);
+    let Some(spec) = specs.get(at) else {
+        return Ok(Vec::new());
+    };
+    let legal = legal_from(
+        state,
+        spec,
+        spell.reference(),
+        &[],
+        player,
+        None,
+        original.x,
+        &original.targets[bases.get(at).copied().unwrap_or(0).min(at)..at],
+    );
+    let mut found = Vec::new();
+    for target in legal {
+        let Target::Object(object) = target else {
+            continue;
+        };
+        if original.targets[at].contains(&target) || !cx.scope.selects(selector, object)? {
+            continue;
+        }
+        let mut choices = original.clone();
+        choices.forget_cost_picks();
+        choices.targets[at] = vec![target];
+        found.push(choices);
+    }
+    Ok(found)
 }

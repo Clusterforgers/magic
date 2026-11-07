@@ -131,3 +131,38 @@ fn another_cost_the_engine_does_not_pay_stays_a_gap(#[case] lines: &str, #[case]
     let (_, gaps) = card("Sorcery", lines, "You may cast target creature card.");
     assert!(gaps.iter().any(|g| g == gap), "{gaps:?}");
 }
+
+const ZADA: &str = "T:Mode$ SpellCast | ValidCard$ Instant,Sorcery | ValidActivatingPlayer$ You | TargetsValid$ Card.Self | IsSingleTarget$ True | TriggerZones$ Battlefield | Execute$ TrigCopy | TriggerDescription$ x\nSVar:TrigCopy:DB$ CopySpellAbility | Defined$ TriggeredSpellAbility | Controller$ You";
+
+#[rstest]
+#[case::each_creature_you_control(
+    "CopyForEachCanTarget$ Creature.YouCtrl",
+    r#""each_target":[{"Type":"Creature"},{"ControlledBy":"You"}]"#
+)]
+#[case::each_golem(
+    "CopyForEachCanTarget$ Golem.inZoneBattlefield",
+    r#""each_target":[{"Subtype":"Golem"},{"In":"Battlefield"}]"#
+)]
+fn a_spell_is_copied_for_each_other_target(#[case] key: &str, #[case] part: &str) {
+    let (json, gaps) = card(
+        "Creature",
+        &format!("{ZADA} | {key}"),
+        "Whenever you cast an instant or sorcery spell that targets only this creature, copy that spell for each other creature you control that the spell could target. Each copy targets a different one of those creatures.",
+    );
+    assert!(gaps.is_empty(), "{gaps:?}");
+    assert!(json.contains(part), "{json}");
+}
+
+#[rstest]
+#[case::with_a_count(
+    "CopyForEachCanTarget$ Creature | Amount$ 2",
+    "key:CopySpellAbility.CopyForEachCanTarget-with-a-count"
+)]
+#[case::only_one_of_many(
+    "CopyForEachCanTarget$ Creature | ChooseOnlyOne$ True",
+    "key:CopySpellAbility.ChooseOnlyOne"
+)]
+fn the_neighbours_of_a_copy_for_each_target_stay_gaps(#[case] key: &str, #[case] gap: &str) {
+    let (_, gaps) = card("Creature", &format!("{ZADA} | {key}"), "x");
+    assert!(gaps.iter().any(|g| g == gap), "{gaps:?}");
+}
