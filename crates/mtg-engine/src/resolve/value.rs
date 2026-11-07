@@ -1874,6 +1874,11 @@ impl<'a> Scope<'a> {
                 .into_iter()
                 .map(|player| i64::from(self.state.commander_casts_by(player)))
                 .sum(),
+            Amount::Speed(who) => self
+                .players(who)?
+                .into_iter()
+                .map(|player| i64::from(self.state.speed(player)))
+                .sum(),
             Amount::Counters { on, counter } => self.counters_on(on, counter)?,
             Amount::AnyCounters(on) => self.c10_any_counters(on)?,
             Amount::Sum(parts) => {
@@ -2561,6 +2566,10 @@ impl<'a> Scope<'a> {
             | Condition::Monarch(who)
             | Condition::MonarchAtTurnStart(who)
             | Condition::CitysBlessing(who) => self.w11d_designation(condition, who)?,
+            Condition::MaxSpeed(who) => self
+                .players(who)?
+                .iter()
+                .any(|player| self.state.has_max_speed(*player)),
             Condition::IsDay => self.state.day_night() == Some(DayNight::Day),
             Condition::IsNight => self.state.day_night() == Some(DayNight::Night),
             Condition::NeitherDayNorNight => self.state.day_night().is_none(),

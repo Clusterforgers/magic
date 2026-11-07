@@ -89,6 +89,7 @@ pub mod caps;
 pub mod characteristics;
 pub mod choose;
 mod citys_blessing;
+pub mod speed;
 pub mod combat;
 pub mod companions;
 pub mod conjure;

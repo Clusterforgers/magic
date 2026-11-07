@@ -298,6 +298,8 @@ pub enum Keyword {
     Gift(GiftKind),
     /// For Mirrodin! (CR 702.163): when this Equipment enters, its controller creates a 2/2 red Rebel creature token, then attaches the Equipment to it.
     ForMirrodin,
+    /// Start your engines! (CR 702.179): its controller's speed becomes 1 if they have none; speed rises once on each of their turns when an opponent loses life, up to 4.
+    StartYourEngines,
     /// Job select: when this Equipment enters, its controller creates a 1/1 colorless Hero creature token, then attaches the Equipment to it.
     JobSelect,
     /// Equip with a restriction and its cost (CR 702.6): "[Cost]: Attach this permanent to target creature you control that `to` also names. Activate only as a sorcery" (Equip legendary creature, Equip commander, Equip Knight).
@@ -538,6 +540,7 @@ impl Keyword {
         "Hideaway",
         "Gift",
         "For Mirrodin!",
+        "Start your engines!",
         "Job select",
         "Equip to",
         "Scavenge",
@@ -722,6 +725,7 @@ impl Keyword {
             Keyword::Hideaway(_) => "Hideaway",
             Keyword::Gift(_) => "Gift",
             Keyword::ForMirrodin => "For Mirrodin!",
+            Keyword::StartYourEngines => "Start your engines!",
             Keyword::JobSelect => "Job select",
             Keyword::EquipTo { .. } => "Equip to",
             Keyword::Scavenge(_) => "Scavenge",
@@ -963,6 +967,7 @@ mod tests {
             Keyword::Hideaway(4),
             Keyword::Gift(GiftKind::Card),
             Keyword::ForMirrodin,
+            Keyword::StartYourEngines,
             Keyword::JobSelect,
             Keyword::EquipTo {
                 to: Box::default(),

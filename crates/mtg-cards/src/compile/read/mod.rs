@@ -202,6 +202,7 @@ mod w17b_statics;
 mod w17c_cast_only;
 mod w20a_look_pick;
 mod w20b_reflexive;
+mod e15a_max_speed;
 mod w20c_counter;
 mod w20c_owners;
 mod w20c_taken;
@@ -366,6 +367,19 @@ const MEANINGFUL_WORDS: [&str; 5] = [
 
 /// Reads a clause like `clause`, with what the face itself says (`Own`).
 pub fn clause_with(text: &str, kind: ClauseKind, x_free: bool, own: &Own) -> Option<Ability> {
+    if let Some(granted) = text.strip_prefix("Max speed \u{2014} ") {
+        let inner = classify::classify(granted, false);
+        if kind != ClauseKind::Static {
+            return None;
+        }
+        return clause_with(granted, inner, x_free, own)
+            .or_else(|| {
+                e15a_max_speed::e15a_read_body(granted, |body| {
+                    clause_with(body, inner, x_free, own)
+                })
+            })
+            .map(e15a_max_speed::e15a_wrap);
+    }
     let text = match kind {
         // An ability word is flavor: "Landfall — ", "Strive — ".
         ClauseKind::Triggered | ClauseKind::Static => {

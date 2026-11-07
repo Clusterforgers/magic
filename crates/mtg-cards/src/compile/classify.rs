@@ -77,6 +77,11 @@ pub fn classify(text: &str, spell: bool) -> ClauseKind {
         return ClauseKind::Static;
     }
     let head = text.lines().next().unwrap_or_default();
+    // "Max speed — A" grants A to its object while you have max speed (CR 702.179): a static ability.
+    if head.starts_with("Max speed \u{2014} ") {
+        return ClauseKind::Static;
+    }
+    let head = text.lines().next().unwrap_or_default();
     // A cost change of the equip or cycling abilities a player activates opens with the keyword's name but is a rule.
     if ((head.starts_with("Equip ") || head.starts_with("Cycling "))
         && head.contains(" abilities you activate "))

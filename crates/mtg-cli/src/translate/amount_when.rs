@@ -23,6 +23,7 @@ pub fn when(ctx: &Ctx, base: &str) -> Option<Tr<Value>> {
         "PromisedGift" => json!({"Compare": {"left": "Promised", "op": "Ge", "right": 1}}),
         "Bargained" | "Teamwork" => json!("AdditionalCostPaid"),
         "Monarch" => json!({"Monarch": "You"}),
+        "MaxSpeed" => json!({"MaxSpeed": "You"}),
         "Morbid" => {
             json!({"Compare": {"left": {"Tallied": {"who": "EachPlayer", "what": "CreaturesDied"}}, "op": "Ge", "right": 1}})
         }

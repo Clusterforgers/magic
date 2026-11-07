@@ -24,6 +24,9 @@ fn plain(word: &str) -> Option<Value> {
         // Corrupted: three or more poison counters (CR 702.181 reminder text).
         "IsCorrupted" => json!({"Compare": {
             "left": {"Counters": {"on": "You", "counter": "poison"}}, "op": "Ge", "right": 3}}),
+        // Max speed, a speed of 4 (CR 702.179), and its negation ("each player who doesn't have max speed").
+        "MaxSpeed" => json!({"MaxSpeed": "You"}),
+        "!MaxSpeed" => json!({"Not": {"MaxSpeed": "You"}}),
         _ => return than_you(word),
     })
 }

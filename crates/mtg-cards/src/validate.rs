@@ -911,6 +911,7 @@ impl<'a> Walker<'a> {
             Amount::Stat { of, .. } => self.at("of", |w| w.reference(of, Kind::Object)),
             Amount::Life(who) => self.reference(who, Kind::Player),
             Amount::CommanderCasts(who) => self.player_amount("CommanderCasts", who),
+            Amount::Speed(who) => self.player_amount("Speed", who),
             Amount::Counters { on, .. } | Amount::AnyCounters(on) => {
                 self.at("on", |w| w.reference(on, Kind::Either));
             }
@@ -1064,6 +1065,7 @@ impl<'a> Walker<'a> {
             | Amount::Stat { .. }
             | Amount::Life(_)
             | Amount::CommanderCasts(_)
+            | Amount::Speed(_)
             | Amount::Counters { .. }
             | Amount::AnyCounters(_)
             | Amount::Sum(_)
@@ -1228,6 +1230,10 @@ impl<'a> Walker<'a> {
             Condition::CitysBlessing(who) => {
                 self.uses("Condition", "CitysBlessing");
                 self.at("CitysBlessing", |w| w.reference(who, Kind::Player));
+            }
+            Condition::MaxSpeed(who) => {
+                self.uses("Condition", "MaxSpeed");
+                self.at("MaxSpeed", |w| w.reference(who, Kind::Player));
             }
             Condition::IsDay => self.uses("Condition", "IsDay"),
             Condition::IsNight => self.uses("Condition", "IsNight"),

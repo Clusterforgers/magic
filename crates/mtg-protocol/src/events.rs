@@ -414,6 +414,7 @@ fn redact(before: &GameState, event: &Event, viewer: PlayerId) -> Option<HiddenE
         | Event::DayNightChanged { .. }
         | Event::MonarchChanged { .. }
         | Event::CitysBlessingGained { .. }
+        | Event::SpeedChanged { .. }
         | Event::RingTempted { .. }
         | Event::RingBearerLost { .. }
         | Event::Learned { .. }
