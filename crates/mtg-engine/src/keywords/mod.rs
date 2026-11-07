@@ -989,6 +989,7 @@ mod tests {
         "Keyword.HexproofFrom",
         "Keyword.Shroud",
         "Keyword.Protection",
+        "Keyword.ProtectionSparing",
         "Keyword.Prowess",
         "Keyword.BattleCry",
         "Keyword.Ward",
