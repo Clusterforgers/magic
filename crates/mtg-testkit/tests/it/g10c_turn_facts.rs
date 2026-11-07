@@ -1,4 +1,4 @@
-//! Goal: the facts of round 10 pack g10c play whole at tables of two, three and four seats: a spell gains the damage it dealt this way and no more, a player who targets an opponent or what an opponent controls has committed a crime this turn and one who targets only their own has not, +1/+1 counters put this turn count apart from other counters, the damage a target player took this turn is theirs alone, and each log replays to the state it was played to.
+//! Goal: the facts of round 10 pack g10c play whole at tables of two, three and four seats: a spell gains the damage it dealt this way and no more, a player who targets an opponent or what an opponent controls has committed a crime this turn and one who targets only their own has not, +1/+1 counters put this turn count apart from other counters, the damage a target player took this turn is theirs alone, a creature that died counts the damage dealt to it this turn, a creature card put into a graveyard counts for its owner, and each log replays to the state it was played to.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
 use std::sync::Arc;
@@ -240,6 +240,40 @@ fn a_dead_creature_counts_the_damage_dealt_to_it_this_turn(
     }
     assert_eq!(on_battlefield(driver.state(), "Zubera"), None);
     assert_eq!(life(&driver, 0), start + gained);
+    replays(&driver, scenario());
+    Ok(())
+}
+
+#[rstest]
+#[case::your_creature_card("Wolf", Some(3))]
+#[case::an_opponents_creature_card("Ogre", Some(1))]
+fn a_creature_card_put_into_your_graveyard_counts_for_you(
+    #[values(2, 3, 4)] seats: usize,
+    #[case] victim: &str,
+    #[case] watched: Option<i32>,
+) -> Result<(), ScriptError> {
+    let graved = r#"{"Compare":{"left":{"Tallied":{"what":"CreatureCardsGraved","who":"You"}},"op":"Ge","right":1}}"#;
+    let kill = spell(
+        "Kill",
+        CardType::Instant,
+        r#"[{"what":{"Object":[{"Type":"Creature"}]}}]"#,
+        r#"[{"Destroy":{"what":{"Target":0}}}]"#,
+    );
+    let scenario = || {
+        Scenario::new(seats)
+            .hand(0, [kill.clone()])
+            .battlefield(
+                0,
+                [ready(watcher(graved)), ready(free_creature("Wolf", 2, 2))],
+            )
+            .battlefield(seats - 1, [ready(free_creature("Ogre", 2, 2))])
+    };
+    let mut driver = Driver::from_scenario(scenario())?;
+    let target = driver.target_named(victim)?;
+    driver.cast_at("Kill", &[target])?;
+    settle(&mut driver)?;
+    assert_eq!(on_battlefield(driver.state(), victim), None);
+    assert_eq!(power(&driver, "Watcher"), watched);
     replays(&driver, scenario());
     Ok(())
 }

@@ -182,6 +182,16 @@ pub(super) fn reduced(word: &str, of: &[Value], reduce: &str) -> Tr<Value> {
 /// permanents that entered the battlefield, or went from it to a graveyard, this turn, as they were then.
 fn entered_this_turn(ctx: &Ctx, word: &str) -> Tr<Value> {
     let spec = word.strip_prefix("ThisTurnEntered_").unwrap_or_default();
+    // The cards put into a player's graveyard from anywhere, tokens excepted, counted for the owner.
+    let graved = match spec {
+        "Graveyard_Card.YouOwn+!token" => Some(("You", "CardsGraved")),
+        "Graveyard_Card.EnchantedPlayerOwn+!token" => Some(("AttachedPlayer", "CardsGraved")),
+        "Graveyard_Creature.YouOwn+!token" => Some(("You", "CreatureCardsGraved")),
+        _ => None,
+    };
+    if let Some((who, what)) = graved {
+        return Ok(json!({"Tallied": {"who": who, "what": what}}));
+    }
     let (event, valid) = if let Some(valid) = spec.strip_prefix("Battlefield_") {
         ("Entered", valid)
     } else if let Some(valid) = spec.strip_prefix("Graveyard_from_Battlefield_") {

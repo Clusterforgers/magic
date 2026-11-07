@@ -185,6 +185,18 @@ fn w21a_tally_graveyards(
     if permanent_card && matches!(to, Zone::Graveyard(_)) {
         state.tally(owner, Tally::Descended);
     }
+    if matches!(to, Zone::Graveyard(_)) {
+        let card = state
+            .object(card.id)
+            .filter(|object| object.kind() != ObjectKind::Token);
+        if let Some(creature) = card.map(|object| object.base_types().contains(CardType::Creature))
+        {
+            state.tally(owner, Tally::G10cCardsGraved);
+            if creature {
+                state.tally(owner, Tally::G10cCreatureCardsGraved);
+            }
+        }
+    }
     state.tally_object(
         card,
         None,

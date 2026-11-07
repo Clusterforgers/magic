@@ -122,3 +122,29 @@ fn g10c_damage_dealt_to_it_writes_as_printed(#[case] json: String, #[case] reads
         "{found:?}"
     );
 }
+
+fn graved_end(what: &str, who: &str) -> String {
+    format!(
+        r#"{{"Triggered":{{"effects":[{{"Draw":{{}}}}],"if":{},"when":{{"StepBegins":{{"step":"End"}}}}}}}}"#,
+        compare(
+            &format!(r#"{{"Tallied":{{"what":"{what}","who":"{who}"}}}}"#),
+            1
+        )
+    )
+}
+
+const GRAVED: &str = "At the beginning of each end step, if a creature card was put into your graveyard from anywhere this turn, draw a card.";
+
+#[rstest]
+#[case::creature_card_to_yours(graved_end("CreatureCardsGraved", "You"), true)]
+#[case::any_card_is_not_a_creature_card(graved_end("CardsGraved", "You"), false)]
+#[case::an_opponents_graveyard(graved_end("CreatureCardsGraved", "Opponents"), false)]
+#[case::died_is_not_from_anywhere(graved_end("CreaturesDied", "You"), false)]
+fn g10c_creature_card_graved_writes_as_printed(#[case] json: String, #[case] reads: bool) {
+    let found = written_variants(&ability(&json));
+    assert_eq!(
+        found.iter().any(|w| same_text(w, GRAVED)),
+        reads,
+        "{found:?}"
+    );
+}

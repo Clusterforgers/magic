@@ -334,6 +334,10 @@ pub enum TurnTally {
     /// The damage dealt this turn, after prevention, to the objects the reference names, as the objects they were then (a
     /// creature that died since counts what it was dealt before it died), and to the players it names; added up.
     DamageDealtTo,
+    /// The cards put into the player's graveyard from anywhere this turn, each once; a token is no card.
+    CardsGraved,
+    /// The creature cards put into the player's graveyard from anywhere this turn, each once; a token is no card.
+    CreatureCardsGraved,
     /// The crimes the player committed this turn (CR 700.13): each spell they cast and each ability they put on the stack
     /// that targets an opponent, something an opponent controls or a card in an opponent's graveyard, once.
     Crimes,

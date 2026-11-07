@@ -45,6 +45,16 @@ const HURT_MOST: &str = r#"{"Tallied":{"what":"DamageTaken","who":"Opponents"}}"
     "Subject deals 3 damage to any target. You gain life equal to the damage dealt to Subject this turn.",
     r#"{"Tallied":{"what":"DamageDealtTo","who":"This"}}"#
 )]
+#[case::creature_cards_to_your_graveyard(
+    "Count$ThisTurnEntered_Graveyard_Creature.YouOwn+!token",
+    "Subject deals 3 damage to any target. You gain 1 life for each creature card put into your graveyard from anywhere this turn.",
+    r#"{"Tallied":{"what":"CreatureCardsGraved","who":"You"}}"#
+)]
+#[case::cards_to_the_enchanted_players_graveyard(
+    "Count$ThisTurnEntered_Graveyard_Card.EnchantedPlayerOwn+!token",
+    "Subject deals 3 damage to any target. You gain 1 life for each card put into enchanted player's graveyard from anywhere this turn.",
+    r#"{"Tallied":{"what":"CardsGraved","who":"AttachedPlayer"}}"#
+)]
 fn turn_facts_read_as_the_amount(#[case] count: &str, #[case] oracle: &str, #[case] amount: &str) {
     let (json, found) = card(&format!("{DRAIN}{count}"), oracle);
     assert!(found.is_empty(), "{found:?}");

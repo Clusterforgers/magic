@@ -395,6 +395,8 @@ impl<'a> Scope<'a> {
             TurnTally::Sacrificed => Tally::Sacrificed,
             TurnTally::Descended => Tally::Descended,
             TurnTally::Crimes => Tally::G10cCrimes,
+            TurnTally::CardsGraved => Tally::G10cCardsGraved,
+            TurnTally::CreatureCardsGraved => Tally::G10cCreatureCardsGraved,
             TurnTally::DungeonsCompleted => {
                 let total: u32 = (self.players(who)?.into_iter())
                     .map(|player| self.state.w11d_completed(player))
