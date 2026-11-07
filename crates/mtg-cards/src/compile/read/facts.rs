@@ -265,9 +265,6 @@ pub(super) fn texts(condition: &Condition) -> Vec<String> {
     let Condition::Compare { left, op, right } = condition else {
         return Vec::new();
     };
-    if let Some(text) = super::r9w_players::r9w_some_text(left, *op, right) {
-        return vec![text];
-    }
     let Amount::Fixed(number) = right else {
         return more_than_you(left, *op, right);
     };
@@ -277,7 +274,9 @@ pub(super) fn texts(condition: &Condition) -> Vec<String> {
     if *left == c10_any_noncreature_cast() && *op == Cmp::Ge && number == 1 {
         return vec![C10_ANY_NONCREATURE_CAST.to_owned()];
     }
-    if let Some(text) = super::w21a_atoms::w21a_condition_text(left, *op, number) {
+    if let Some(text) = super::w21a_atoms::w21a_condition_text(left, *op, number)
+        .or_else(|| super::r9w_players::r9w_some_text(left, *op, right))
+    {
         return vec![text];
     }
     let r6d = super::r6d_facts::texts(left, *op, number);
