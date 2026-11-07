@@ -355,40 +355,13 @@ fn mana(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
             "PersistentMana",
             "CombatMana",
             "TriggersWhenSpent",
+            "AddsCounters",
+            "AddsKeywords",
+            "AddsKeywordsValid",
+            "AddsKeywordsUntil",
         ],
     )?;
-    let produced = p.get("Produced").unwrap_or_default();
-    let times = p.get("Amount").unwrap_or("1");
-    let words: Vec<&str> = produced.split_whitespace().collect();
-    let mut effect = match words.as_slice() {
-        // "Any combination of colors" is not one color: only a single mana is the same thing.
-        ["Combo", "Any"] if times != "1" => {
-            json!({"mana": {"AnyCombination": {"count": amount(ctx, times)?}}})
-        }
-        ["Any"] | ["Combo", "Any"] => json!({"mana": {"AnyColor": amount(ctx, times)?}}),
-        ["Chosen" | "ChosenColor"] => match times.parse::<u32>() {
-            Ok(count) if count > 0 => json!({"mana": {"ChosenColor": count}}),
-            _ => return unmapped("key:Mana.Produced=Chosen"),
-        },
-        ["Combo", "ColorIdentity"] if times == "1" => json!({"mana": {"CommanderIdentity": 1}}),
-        ["Combo", "AnyDifferent"] => two_different(p, times)?,
-        ["Combo", color, "Chosen"] if times == "1" && mana_type(color).is_some() => {
-            json!({"mana": {"OrChosenColor": mana_type(color)}})
-        }
-        ["Combo", rest @ ..] if times == "1" && rest.len() > 1 => {
-            let types: Option<Vec<&str>> = rest.iter().map(|w| mana_type(w)).collect();
-            match types {
-                Some(types) => json!({"mana": {"OneOf": types}}),
-                None => return unmapped("key:Mana.Produced=Combo"),
-            }
-        }
-        // "Add {W}{W}, {W}{B}, or {B}{B}" and "X mana in any combination of {R} and/or {G}": each mana picks its own type.
-        ["Combo", rest @ ..] if rest.len() > 1 => combination(ctx, rest, times)?,
-        fixed if !fixed.is_empty() && fixed.iter().all(|w| mana_type(w).is_some()) => {
-            fixed_mana(ctx, fixed, times)?
-        }
-        _ => return unmapped("key:Mana.Produced"),
-    };
+    let mut effect = produced(ctx, p)?;
     // Whose pool: the player the line names (the default is the controller).
     if let Some(word) = p.get("Defined")
         && !matches!(
@@ -435,6 +408,7 @@ fn mana(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
     if let Some(name) = p.get("TriggersWhenSpent") {
         only.extend(super::spend_uses::when_spent(ctx, name)?);
     }
+    only.extend(super::spend_uses::enters_bonus(ctx, p)?);
     if !only.is_empty() {
         effect["only"] = json!(only);
     }
@@ -446,6 +420,55 @@ fn mana(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
         (true, true) => return unmapped("key:Mana.PersistentMana+CombatMana"),
     }
     Ok(json!({ "AddMana": effect }))
+}
+
+/// The `AddMana` body of the mana a `Mana` line produces (`Produced$` and `Amount$`), before whose pool and its uses.
+fn produced(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
+    let produced = p.get("Produced").unwrap_or_default();
+    let times = p.get("Amount").unwrap_or("1");
+    let words: Vec<&str> = produced.split_whitespace().collect();
+    Ok(match words.as_slice() {
+        // "Any combination of colors" is not one color: only a single mana is the same thing.
+        ["Combo", "Any"] if times != "1" => {
+            json!({"mana": {"AnyCombination": {"count": amount(ctx, times)?}}})
+        }
+        ["Any"] | ["Combo", "Any"] => json!({"mana": {"AnyColor": amount(ctx, times)?}}),
+        // "Choose a color. Add an amount of mana of that color equal to your devotion to that color.": the colour is
+        // picked as the mana is added (`ability::e14g_devotion` drops the choice before it).
+        ["Chosen"]
+            if ctx.chosen_kind == Some("Color")
+                && ctx.svar(times) == Some("Count$Devotion.Chosen")
+                && !p.has("RestrictValid") =>
+        {
+            json!({"mana": "Devotion"})
+        }
+        ["Chosen" | "ChosenColor"] => match times.parse::<u32>() {
+            Ok(count) if count > 0 => json!({"mana": {"ChosenColor": count}}),
+            _ => return unmapped("key:Mana.Produced=Chosen"),
+        },
+        // "For each color among permanents you control, add one mana of that color."
+        ["Special", "EachColorAmong_Valid", valid] if times == "1" => {
+            json!({"mana": {"EachColorAmong": super::valid::selector_any(ctx, valid)?}})
+        }
+        ["Combo", "ColorIdentity"] if times == "1" => json!({"mana": {"CommanderIdentity": 1}}),
+        ["Combo", "AnyDifferent"] => two_different(p, times)?,
+        ["Combo", color, "Chosen"] if times == "1" && mana_type(color).is_some() => {
+            json!({"mana": {"OrChosenColor": mana_type(color)}})
+        }
+        ["Combo", rest @ ..] if times == "1" && rest.len() > 1 => {
+            let types: Option<Vec<&str>> = rest.iter().map(|w| mana_type(w)).collect();
+            match types {
+                Some(types) => json!({"mana": {"OneOf": types}}),
+                None => return unmapped("key:Mana.Produced=Combo"),
+            }
+        }
+        // "Add {W}{W}, {W}{B}, or {B}{B}" and "X mana in any combination of {R} and/or {G}": each mana picks its own type.
+        ["Combo", rest @ ..] if rest.len() > 1 => combination(ctx, rest, times)?,
+        fixed if !fixed.is_empty() && fixed.iter().all(|w| mana_type(w).is_some()) => {
+            fixed_mana(ctx, fixed, times)?
+        }
+        _ => return unmapped("key:Mana.Produced"),
+    })
 }
 
 /// "Two mana of different colors"; a script that leaves the amount out says two in its description.

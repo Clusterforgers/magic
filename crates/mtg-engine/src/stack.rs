@@ -45,11 +45,13 @@ pub(crate) fn resolve_top(state: &GameState) -> Option<Vec<Event>> {
     })
 }
 
-/// A permanent spell resolving: the spell, then the loyalty counters a planeswalker and the lore counter a Saga enter with, and the host an Aura
+/// A permanent spell resolving: the spell, then the loyalty counters a planeswalker and the lore counter a Saga enter with, what the
+/// riders of the mana spent on it give it, and the host an Aura
 /// enters attached to (CR 303.4f).
 pub(crate) fn resolved(state: &GameState, id: ObjectId) -> Vec<Event> {
     let mut events = vec![Event::SpellResolved { object: id }];
     events.extend(entering_counters(state, id));
+    events.extend(crate::spend_rider::entering(state, id));
     events.extend(attach::entering(state, id));
     events
 }

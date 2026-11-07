@@ -2871,6 +2871,9 @@ impl Walker<'_> {
             Produce::ProducedBy { among, .. } => {
                 self.at("ProducedBy", |w| w.at("among", |w| w.selector(among)));
             }
+            Produce::EachColorAmong(among) => {
+                self.at("EachColorAmong", |w| w.selector(among));
+            }
             Produce::Instead {
                 base,
                 when,
@@ -2888,6 +2891,7 @@ impl Walker<'_> {
             | Produce::ChosenColor(_)
             | Produce::OrChosenColor(_)
             | Produce::CommanderIdentity(_)
+            | Produce::Devotion
             | Produce::OfTapped => {}
         }
         // Mana the engine adds without a choice is a primitive of its own; a choice of mana is not.
@@ -3413,6 +3417,9 @@ impl Walker<'_> {
                 }
                 if only.iter().any(SpendOn::restricts) {
                     w.uses("Effect", "AddMana.Restricted");
+                }
+                if SpendOn::enters_bonuses(only).next().is_some() {
+                    w.uses("Effect", "AddMana.Enters");
                 }
                 if SpendOn::uncounterable(only).next().is_some() {
                     w.uses("Effect", "AddMana.Uncounterable");
@@ -4885,6 +4892,8 @@ fn fix19_per_player(mana: &Produce) -> Option<&'static str> {
     match mana {
         Produce::CommanderIdentity(_) => Some("CommanderIdentity"),
         Produce::ProducedBy { .. } => Some("ProducedBy"),
+        Produce::EachColorAmong(_) => Some("EachColorAmong"),
+        Produce::Devotion => Some("Devotion"),
         Produce::Instead { base, instead, .. } => {
             fix19_per_player(base).or_else(|| fix19_per_player(instead))
         }

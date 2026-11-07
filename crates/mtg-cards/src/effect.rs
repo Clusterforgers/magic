@@ -161,6 +161,12 @@ pub enum Produce {
     },
     /// One mana of a type the permanent tapped for mana produced; only in a triggered mana ability (CR 605.1b).
     OfTapped,
+    /// One mana of each color among the objects the selector picks ("For each color among permanents you control, add
+    /// one mana of that color"); none while they have no color.
+    EachColorAmong(Selector),
+    /// Mana of one color chosen when added, as many as the controller's devotion to that color (CR 700.5): "Choose a
+    /// color. Add an amount of mana of that color equal to your devotion to that color."
+    Devotion,
     /// The first mana, or the second when the condition holds as the mana is added ("Add {G}. If you control four or more
     /// creatures, add {G}{G} instead."); neither is itself a replacement.
     Instead {

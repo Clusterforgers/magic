@@ -60,7 +60,23 @@ most: number,
 /**
  * The players whose blocks it limits.
  */
-who: Array<PlayerId>, } } | { "CantBeCountered": Array<ObjectRef> } | { "CantBeRegenerated": Array<ObjectRef> } | { "CantGainLife": Array<PlayerId> } | { "NoLifeLossFromDamage": Array<PlayerId> } | { "LifeFloor": { 
+who: Array<PlayerId>, } } | { "CantBeCountered": Array<ObjectRef> } | { "EntersWith": { 
+/**
+ * The spell, on the stack.
+ */
+spell: ObjectRef, 
+/**
+ * The additional +1/+1 counters it enters with.
+ */
+counters: number, 
+/**
+ * The keyword the permanent gains.
+ */
+keyword: unknown, 
+/**
+ * The keyword lasts until end of turn; otherwise while the permanent stays.
+ */
+this_turn: boolean, } } | { "CantBeRegenerated": Array<ObjectRef> } | { "CantGainLife": Array<PlayerId> } | { "NoLifeLossFromDamage": Array<PlayerId> } | { "LifeFloor": { 
 /**
  * The players.
  */

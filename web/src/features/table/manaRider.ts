@@ -21,8 +21,12 @@ const TYPES: readonly ManaType[] = ['White', 'Blue', 'Black', 'Red', 'Green', 'C
 const riderOf = (on: SpendOn): WhenSpent | undefined =>
   typeof on === 'object' && 'When' in on ? on.When : undefined
 
+/** Whether a use only marks the mana: a rider that sets something off or gives the spell's permanent counters or a keyword. */
+const marks = (on: SpendOn): boolean =>
+  riderOf(on) !== undefined || (typeof on === 'object' && 'Enters' in on)
+
 /** Whether the mana of this unit may pay for some things only: a use besides its riders. */
-export const limits = (unit: Restricted): boolean => unit.only.some((on) => riderOf(on) === undefined)
+export const limits = (unit: Restricted): boolean => unit.only.some((on) => !marks(on))
 
 /** Mana that carries a rider and no restriction: how many of a kind, and the riders it carries, each once. */
 export interface RiderMana {

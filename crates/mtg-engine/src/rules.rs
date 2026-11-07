@@ -96,6 +96,18 @@ pub enum Rule {
     },
     /// The spells can't be countered.
     CantBeCountered(Vec<ObjectRef>),
+    /// The spell enters with additional +1/+1 counters and gains a keyword: mana with such a rider was spent to cast it.
+    EntersWith {
+        /// The spell, on the stack.
+        spell: ObjectRef,
+        /// The additional +1/+1 counters it enters with.
+        counters: u32,
+        /// The keyword the permanent gains.
+        #[cfg_attr(feature = "ts", ts(type = "unknown"))]
+        keyword: Option<Keyword>,
+        /// The keyword lasts until end of turn; otherwise while the permanent stays.
+        this_turn: bool,
+    },
     /// The permanents can't be regenerated.
     CantBeRegenerated(Vec<ObjectRef>),
     /// The players can't gain life.
@@ -458,6 +470,7 @@ impl RuleEffect {
             | Rule::MayCast {
                 only: Some(named), ..
             } => named.iter().all(gone),
+            Rule::EntersWith { spell, .. } => gone(spell),
             Rule::DiesInstead { objects, cast, .. } => objects.iter().all(|named| {
                 // A card named in another zone is the spell on the stack one zone change on (CR 400.7).
                 let cast_now = *cast
@@ -959,8 +972,10 @@ impl RulesInForce {
             Rule::Cant { who, action } => self.cants.push(crate::prohibit::Banned::new(
                 who, action, controller, source,
             )),
-            // Shields are read by the replacement step, and spell costs by the cost step, from the rule changes themselves.
-            Rule::SpellCost { .. }
+            // Shields are read by the replacement step, spell costs by the cost step and the bonuses of a spell's mana
+            // where it resolves (`spend_rider::entering`), from the rule changes themselves.
+            Rule::EntersWith { .. }
+            | Rule::SpellCost { .. }
             | Rule::PreventDamage(_)
             | Rule::Regenerate(_)
             | Rule::DiesInstead { .. }
@@ -1269,6 +1284,9 @@ pub(crate) fn names_nothing(rule: &Rule) -> bool {
         | Rule::MustBlock(named)
         | Rule::CantBeCountered(named)
         | Rule::CantBeRegenerated(named) => named.is_empty(),
+        Rule::EntersWith {
+            counters, keyword, ..
+        } => *counters == 0 && keyword.is_none(),
         Rule::MustAttackPlayers(pairs) => pairs.is_empty(),
         Rule::MustBlockAttacker { blockers, .. } => blockers.is_empty(),
         Rule::Combat { creatures, .. } => creatures.is_empty(),

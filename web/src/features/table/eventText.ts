@@ -261,7 +261,18 @@ function describeRule(effect: RuleEffect, n: EventNames): string {
     ).join(', ')
   else if ('MustBlock' in rule) what = `${named(rule.MustBlock)} must block if able`
   else if ('CantBeCountered' in rule) what = `${named(rule.CantBeCountered)} can't be countered`
-  else if ('CantGainLife' in rule) what = `${seats(rule.CantGainLife)} can't gain life`
+  else if ('EntersWith' in rule) {
+    const { spell, counters, keyword, this_turn } = rule.EntersWith
+    const gets = [
+      counters > 0
+        ? `enters with ${counters} additional +1/+1 ${counters === 1 ? 'counter' : 'counters'}`
+        : '',
+      typeof keyword === 'string'
+        ? `gains ${keyword.toLowerCase()}${this_turn ? ' until end of turn' : ''}`
+        : '',
+    ].filter((part) => part !== '')
+    what = `${n.card(spell.id)} ${gets.join(' and ')}`
+  } else if ('CantGainLife' in rule) what = `${seats(rule.CantGainLife)} can't gain life`
   else if ('NoLifeLossFromDamage' in rule)
     what = `Damage doesn't cause ${seats(rule.NoLifeLossFromDamage)} to lose life`
   else if ('LifeFloor' in rule)

@@ -211,3 +211,64 @@ pub fn when_spent(ctx: &mut Ctx, name: &str) -> Tr<Vec<Value>> {
         .map(|spell| json!({"When": {"spell": spell, "effects": effects}}))
         .collect())
 }
+
+/// The spells of an `AddsCounters$` (`Card.Creature+MultiColor_P1P1_1`) and the counters they enter with.
+fn counters_bonus(ctx: &Ctx, counters: &str) -> Option<(Value, u32)> {
+    let [valid, "P1P1", count] = counters.split('_').collect::<Vec<_>>()[..] else {
+        return None;
+    };
+    let count = count.parse::<u32>().ok().filter(|count| *count > 0)?;
+    let properties = match valid.split_once('.') {
+        Some(("Card" | "Spell", rest)) => rest.to_owned(),
+        Some(("Creature", rest)) => format!("Creature+{rest}"),
+        None if valid == "Creature" => valid.to_owned(),
+        _ => return None,
+    };
+    Some((filter(ctx, &properties, false)?, count))
+}
+
+/// `AddsCounters$`/`AddsKeywords$`: what a permanent spell gets when the mana is spent to cast it ("that creature enters
+/// with an additional +1/+1 counter on it", "it gains haste until end of turn"); none without either key.
+pub fn enters_bonus(ctx: &Ctx, p: &crate::forge::script::Params) -> Tr<Option<Value>> {
+    let gap = |key: &str| unmapped(format!("key:Mana.{key}"));
+    let mut bonus = serde_json::Map::new();
+    let mut spell = None;
+    if let Some(counters) = p.get("AddsCounters") {
+        let Some((filter, count)) = counters_bonus(ctx, counters) else {
+            return gap("AddsCounters");
+        };
+        spell = Some(filter);
+        bonus.insert("counters".to_owned(), json!(count));
+    }
+    if let Some(keyword) = p.get("AddsKeywords") {
+        // A keyword that acts as the permanent enters (riot) would come too late once the permanent has entered.
+        if keyword != "Haste" || spell.is_some() {
+            return gap("AddsKeywords");
+        }
+        let Some(valid) = p
+            .get("AddsKeywordsValid")
+            .and_then(|valid| valid.strip_prefix("Spell."))
+        else {
+            return gap("AddsKeywordsValid");
+        };
+        let Some(kind) = filter(ctx, valid, false) else {
+            return gap("AddsKeywordsValid");
+        };
+        spell = Some(kind);
+        bonus.insert("keyword".to_owned(), json!(keyword));
+        match p.get("AddsKeywordsUntil") {
+            None => {}
+            Some("UntilEOT") => {
+                bonus.insert("this_turn".to_owned(), json!(true));
+            }
+            Some(_) => return gap("AddsKeywordsUntil"),
+        }
+    } else if p.has("AddsKeywordsValid") || p.has("AddsKeywordsUntil") {
+        return gap("AddsKeywords");
+    }
+    let Some(spell) = spell else {
+        return Ok(None);
+    };
+    bonus.insert("spell".to_owned(), spell);
+    Ok(Some(json!({ "Enters": bonus })))
+}

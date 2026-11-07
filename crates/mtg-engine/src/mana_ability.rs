@@ -23,7 +23,10 @@ use crate::events::{Event, ZoneCause};
 use crate::keywords;
 use crate::mana::{ManaOption, ManaSource, Take};
 use crate::mana_bonus;
-use crate::mana_kinds::{COLORS, combinations_of, identity_types, mana_of, producible_types};
+use crate::mana_kinds::{
+    COLORS, colors_among, combinations_of, devotion_lists, identity_types, mana_of,
+    producible_types,
+};
 use crate::object::{Chosen, PermanentState};
 use crate::parts::{Kind, Part, Payer, energy};
 use crate::resolve::{Scope, run_inline};
@@ -320,6 +323,16 @@ fn rule_mana(state: &GameState, player: PlayerId, id: ObjectId, printed: usize) 
                 }
                 types.into_iter().map(|t| vec![t]).collect()
             }
+            // "For each color among permanents you control, add one mana of that color": one way, all the colours.
+            ManaProduced::EachColorAmong(among) => {
+                let colors = colors_among(counting, among);
+                if colors.is_empty() {
+                    Vec::new()
+                } else {
+                    vec![colors]
+                }
+            }
+            ManaProduced::Devotion => devotion_lists(counting),
             ManaProduced::CommanderIdentity(count) => identity_types(state, player)
                 .into_iter()
                 .map(|t| vec![t; count as usize])

@@ -966,6 +966,20 @@ describe('events with more than one shape', () => {
       "Lightning Bolt can't be countered",
     ],
     [
+      ruleEffect(
+        { EntersWith: { spell: { id: 4, counter: 0 }, counters: 1, keyword: null, this_turn: false } },
+        'UntilEndOfTurn',
+      ),
+      'Lightning Bolt enters with 1 additional +1/+1 counter until end of turn',
+    ],
+    [
+      ruleEffect(
+        { EntersWith: { spell: { id: 4, counter: 0 }, counters: 0, keyword: 'Haste', this_turn: true } },
+        'Forever',
+      ),
+      'Lightning Bolt gains haste until end of turn',
+    ],
+    [
       ruleEffect({ LifeFloor: { players: [0], floor: 1 } }, 'Forever'),
       "Damage can't reduce Ana below 1 life",
     ],
