@@ -101,6 +101,13 @@ fn reads(types: &str, lines: &str, oracle: &str, expected: &[&str], gap: &str) {
     &[r#""adds":true"#, r#"{"Not":{"Is":{"Bound":"picks3"}}}"#],
     ""
 )]
+#[case::the_rest_of_what_opponents_chose_stays_a_gap(
+    "Creature",
+    "A:AB$ RepeatEach | Cost$ T | RepeatPlayers$ Player.Opponent | RepeatSubAbility$ C | SubAbility$ X\nSVar:C:DB$ ChooseCard | Defined$ Remembered | Amount$ 2 | Choices$ Card.RememberedPlayerCtrl | ChoiceZone$ Graveyard | RememberChosen$ True | Mandatory$ True\nSVar:X:DB$ ChangeZoneAll | Origin$ Graveyard | Destination$ Exile | ChangeType$ Card.!IsRemembered",
+    "{T}: Each opponent chooses two cards in their graveyard and exiles the rest.",
+    &[],
+    "key:ChooseCard.RememberChosen-of-some-players-read-as-the-rest"
+)]
 #[case::a_pick_read_again_in_its_pass_stays_a_gap(
     "Sorcery",
     "A:SP$ RepeatEach | RepeatPlayers$ Player | RepeatSubAbility$ C\nSVar:C:DB$ ChooseCard | Defined$ You | Choices$ Creature.RememberedPlayerCtrl | Mandatory$ True | RememberChosen$ True | SubAbility$ S\nSVar:S:DB$ Sacrifice | Defined$ Remembered",

@@ -232,6 +232,18 @@ pub fn repeat_each(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
     });
     (ctx.remembered, ctx.imprinted) = (outer, outer_imprinted);
     // The picks the passes gathered are what the slot holds after the repeat; one that held something before stays a gap.
+    // "Each opponent chooses two cards in their graveyard and exiles the rest": Forge reads "the rest" as every card not
+    // picked, the graveyard of a player who picked nothing included, so picks of some players read as the rest are a gap.
+    let some_players = p.get("RepeatPlayers") != Some("Player");
+    if into.is_some()
+        && some_players
+        && ctx
+            .svars
+            .values()
+            .any(|text| text.contains("!IsRemembered"))
+    {
+        return unmapped("key:ChooseCard.RememberChosen-of-some-players-read-as-the-rest");
+    }
     match into {
         Some((true, false)) if ctx.remembered.is_none() => ctx.remembered = gathered,
         Some((false, true)) if ctx.imprinted.is_none() => ctx.imprinted = gathered,
