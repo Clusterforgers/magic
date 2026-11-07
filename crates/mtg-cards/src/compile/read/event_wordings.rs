@@ -23,6 +23,8 @@ pub(super) fn add(ability: &Ability, texts: &mut Vec<String>) {
         texts.extend(spelled);
         let named = that_creature(texts);
         texts.extend(named);
+        let them = super::r9w_players::r9w_damage_them(texts);
+        texts.extend(them);
     }
     let sequenced = then_sentences(texts);
     texts.extend(sequenced);

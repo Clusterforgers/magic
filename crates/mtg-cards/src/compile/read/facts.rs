@@ -265,6 +265,9 @@ pub(super) fn texts(condition: &Condition) -> Vec<String> {
     let Condition::Compare { left, op, right } = condition else {
         return Vec::new();
     };
+    if let Some(text) = super::r9w_players::r9w_some_text(left, *op, right) {
+        return vec![text];
+    }
     let Amount::Fixed(number) = right else {
         return more_than_you(left, *op, right);
     };
