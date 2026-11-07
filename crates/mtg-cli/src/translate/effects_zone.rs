@@ -992,8 +992,9 @@ fn zone_owner(ctx: &Ctx, word: &str) -> Tr<Value> {
 }
 
 /// The keys of a `Dig` line that are read.
-const DIG_KEYS: [&str; 21] = [
+const DIG_KEYS: [&str; 22] = [
     "DigNum",
+    "RememberRevealed",
     "ChangeNum",
     "ChangeValid",
     "Optional",
@@ -1066,6 +1067,15 @@ fn r5a_reveals_taken(oracle: &str) -> bool {
 /// reveal a creature card from among them and put it into your hand; put the rest on the bottom in any order").
 pub fn dig(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
     only(p, "Dig", &DIG_KEYS)?;
+    // "The cards revealed this way": every card dug, as each is after its move.
+    let revealing = p.get("RememberRevealed") == Some("True");
+    if revealing
+        && (p.get("Reveal") != Some("True")
+            || p.get("RememberChanged") == Some("True")
+            || face_down(p)? != Hide::No)
+    {
+        return unmapped("key:Dig.RememberRevealed-shape");
+    }
     if p.get("NoReveal") == Some("True") && p.get("Reveal") == Some("True") {
         return unmapped("key:Dig.NoReveal-with-Reveal");
     }
@@ -1164,12 +1174,41 @@ pub fn dig(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
         };
         remember::bind_moved(ctx, &mut put, verb, stem);
     }
+    let mut names = Vec::new();
+    if revealing {
+        names.push(bind_revealed(ctx, &mut put));
+    }
     effects.push(put);
     // Taking all of the cards that match "Card" leaves no rest; a move of the old ids would only chase cards already gone.
     if !(matches!(take, Take::All) && matches!(filter, None | Some("Card"))) {
-        effects.push(moves(&rest_ref, rest_to));
+        let mut rest = moves(&rest_ref, rest_to);
+        if revealing {
+            names.push(bind_revealed(ctx, &mut rest));
+        }
+        effects.push(rest);
+    }
+    if revealing {
+        ctx.remembered = Some(match names.as_slice() {
+            [one] => json!({ "Bound": one }),
+            _ => {
+                json!({"Each": [{"AnyOf": names.iter().map(|n| json!({"Is": {"Bound": n}})).collect::<Vec<_>>()}]})
+            }
+        });
     }
     Ok(effects)
+}
+
+/// Names the cards a move of a `Dig` moved, as they become, and returns the name.
+fn bind_revealed(ctx: &mut Ctx, step: &mut Value) -> String {
+    let verb = if step.get("Exile").is_some() {
+        "Exile"
+    } else {
+        "Move"
+    };
+    remember::bind_moved(ctx, step, verb, "revealed");
+    ctx.counted
+        .remove(step[verb]["as"].as_str().unwrap_or_default());
+    step[verb]["as"].as_str().unwrap_or_default().to_owned()
 }
 
 /// Every card looked at is exiled: the impulse shape, face down for no player to look at when `hide` seals them.
@@ -1280,9 +1319,19 @@ pub fn dig_until(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
             "Tapped",
             "GainControl",
             "RememberFound",
+            "RememberRevealed",
             "ValidDescription",
         ],
     )?;
+    // Forge remembers every card revealed, the one found included; where the found card goes elsewhere, "the cards
+    // revealed this way" may mean the rest only (Spoils of the Vault), so only one destination for all is read.
+    let remembers = p.get("RememberRevealed") == Some("True");
+    if remembers && p.get("RememberFound") == Some("True") {
+        return unmapped("key:DigUntil.RememberRevealed-with-RememberFound");
+    }
+    if remembers && p.has("FoundDestination") {
+        return unmapped("key:DigUntil.RememberRevealed-with-a-found-destination");
+    }
     let who = subject(ctx, p, "You", None)?;
     let found = ctx.fresh("found");
     let revealed = ctx.fresh("revealed");
@@ -1332,7 +1381,17 @@ pub fn dig_until(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
     if let Some(found_to) = found_to {
         effects.push(moves(&json!({"Bound": found}), found_to));
     }
-    effects.push(moves(&json!({"Bound": revealed}), rest_to));
+    let mut rest = moves(&json!({"Bound": revealed}), rest_to);
+    if remembers {
+        // The cards as they are after the move, which the lines after it count.
+        let verb = if rest.get("Exile").is_some() {
+            "Exile"
+        } else {
+            "Move"
+        };
+        super::remember::bind_moved(ctx, &mut rest, verb, "revealed");
+    }
+    effects.push(rest);
     if p.get("Shuffle") == Some("True") {
         effects.push(json!({"Shuffle": {}}));
     }

@@ -1,6 +1,7 @@
-//! Goal: round 10 pack g10b binds what a counter, an attach and a sacrifice of named objects did ("if that spell is
-//! countered this way", "if you do"), so the lines after them read the outcome; a countered ability and a choice that
-//! excludes what was remembered stay gaps.
+//! Goal: round 10 pack g10b binds what a counter, an attach, an amass and a sacrifice of named objects did ("if that spell
+//! is countered this way", "if you do", "the amassed Army") and the cards a dig revealed as they are after their moves, so
+//! the lines after them read the outcome; a countered ability, a choice that excludes what was remembered and a found card
+//! that goes elsewhere stay gaps.
 #![allow(clippy::unwrap_used)]
 
 use rstest::rstest;
@@ -70,6 +71,30 @@ fn reads(types: &str, lines: &str, expected: &[&str], gap: &str) {
     "A:SP$ Amass | Type$ Orc | Num$ 2 | RememberAmass$ True | SubAbility$ D\nSVar:D:DB$ Draw | NumCards$ X\nSVar:X:Remembered$CardPower",
     &[r#""as":"amassed""#, r#"{"Bound":"amassed"}"#],
     ""
+)]
+#[case::revealed_until_a_land_all_to_the_bottom(
+    "Artifact",
+    "A:AB$ DigUntil | Cost$ T | Valid$ Land | RememberRevealed$ True | RevealedDestination$ Library | RevealedLibraryPosition$ -1 | SubAbility$ D\nSVar:D:DB$ DealDamage | ValidTgts$ Any | NumDmg$ X\nSVar:X:Remembered$Valid Card.nonLand",
+    &[r#"{"Move":{"as":"revealed3","#, r#"{"Is":{"Bound":"revealed3"}}"#, r#"{"Not":{"Type":"Land"}}"#],
+    ""
+)]
+#[case::the_found_card_goes_elsewhere(
+    "Sorcery",
+    "A:SP$ DigUntil | Valid$ Artifact | FoundDestination$ Battlefield | RevealedDestination$ Library | RevealedLibraryPosition$ -1 | RememberRevealed$ True | SubAbility$ D\nSVar:D:DB$ LoseLife | LifeAmount$ X\nSVar:X:Remembered$Amount",
+    &[],
+    "key:DigUntil.RememberRevealed-with-a-found-destination"
+)]
+#[case::the_top_card_revealed_and_kept(
+    "Sorcery",
+    "A:SP$ Dig | DigNum$ 1 | Reveal$ True | RememberRevealed$ True | DestinationZone$ Library | LibraryPosition$ 0 | SubAbility$ D\nSVar:D:DB$ Draw | ConditionDefined$ Remembered | ConditionPresent$ Creature",
+    &[r#"{"AnyOf":[{"Is":{"Bound":"revealed4"}},{"Is":{"Bound":"revealed5"}}]}"#],
+    ""
+)]
+#[case::dug_without_a_reveal(
+    "Sorcery",
+    "A:SP$ Dig | DigNum$ 1 | RememberRevealed$ True | DestinationZone$ Library | LibraryPosition$ 0",
+    &[],
+    "key:Dig.RememberRevealed-shape"
 )]
 #[case::sacrifice_all_then_that_many(
     "Sorcery",
