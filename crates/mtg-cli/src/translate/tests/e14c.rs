@@ -11,6 +11,7 @@ fn spell(line: &str) -> String {
          SVar:DBA:DB$ GainLife | LifeAmount$ 2 | SpellDescription$ Alpha\n\
          SVar:DBB:DB$ Draw | SpellDescription$ Beta\n\
          SVar:DBC:DB$ Draw | NumCards$ 2 | SpellDescription$ Gamma\n\
+         SVar:DBT:DB$ Draw | SubAbility$ DBA | SpellDescription$ Tee\n\
          SVar:DBP:DB$ LoseLife | ValidTgts$ Opponent | TargetUnique$ True | LifeAmount$ 2 | SpellDescription$ P\n\
          SVar:DBQ:DB$ Draw | ValidTgts$ Player | TargetUnique$ True | SpellDescription$ Q\n\
          SVar:DBR:DB$ Draw | ValidTgts$ Creature | TargetUnique$ True | SpellDescription$ R\n\
@@ -104,6 +105,10 @@ fn a_vote_on_objects_binds_the_most_voted(#[case] zone: &str, #[case] place: Val
     "key:Vote.VoteCard-shape"
 )]
 #[case::one_choice("Vote | Defined$ Player | Choices$ DBA", "key:Vote.shape")]
+#[case::a_choice_runs_another(
+    "Vote | Defined$ Player | Choices$ DBT,DBA | StoreVoteNum$ True",
+    "key:Vote.Choices-chained"
+)]
 #[case::sentence_name(
     "Vote | Defined$ Player | Choices$ DBA,DBLong",
     "key:Vote.Choices-name"

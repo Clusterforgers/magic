@@ -86,6 +86,10 @@ pub fn vote(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
     let each = p.get("EachVote") == Some("True");
     let tied = p.get("VoteTiedAbility");
     match (store, each, tied) {
+        // A choice whose later lines run another choice (Truth or Consequences) would run that one under its own votes.
+        _ if e14c_chains_into_choice(ctx, &choices, &ids) => {
+            return unmapped("key:Vote.Choices-chained");
+        }
         (true, false, None) => {
             for choice in &choices {
                 ctx.vote_num = Some(choice.name.clone());
@@ -147,6 +151,26 @@ pub fn vote(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
         _ => return unmapped("key:Vote.shape"),
     }
     Ok(effects)
+}
+
+/// Whether the `SubAbility$` lines after some choice name another choice of the vote; the walk stops after a few lines.
+fn e14c_chains_into_choice(ctx: &mut Ctx, choices: &[Choice], ids: &[String]) -> bool {
+    choices.iter().any(|choice| {
+        let mut next = choice.part.get("SubAbility").map(str::to_owned);
+        for _ in 0..16 {
+            let Some(name) = next.take() else {
+                return false;
+            };
+            if ids.contains(&name) {
+                return true;
+            }
+            next = ctx
+                .sub(&name)
+                .ok()
+                .and_then(|part| part.get("SubAbility").map(str::to_owned));
+        }
+        false
+    })
 }
 
 /// The name the objects with the most votes are bound to.
