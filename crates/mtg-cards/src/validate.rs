@@ -688,7 +688,8 @@ impl<'a> Walker<'a> {
             Pred::ControlledBy(r)
             | Pred::OwnedBy(r)
             | Pred::AttackingPlayer(r)
-            | Pred::AttackingPlaneswalkerOf(r) => {
+            | Pred::AttackingPlaneswalkerOf(r)
+            | Pred::AttackingPlayerOrPlaneswalker(r) => {
                 self.reference(r, Kind::Player);
             }
             // The objects a share names are read with the object tested as `Candidate`.

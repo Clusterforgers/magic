@@ -300,6 +300,7 @@ fn reads_of_pred(pred: &Pred) -> Traits {
         | Pred::OwnedBy(who)
         | Pred::AttackingPlayer(who)
         | Pred::AttackingPlaneswalkerOf(who)
+        | Pred::AttackingPlayerOrPlaneswalker(who)
         | Pred::ExiledWith(who)
         | Pred::EncodedWith(who)
         | Pred::Crewed(who)

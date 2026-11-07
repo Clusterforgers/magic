@@ -259,6 +259,7 @@ mod g12b_copy_kinds;
 mod g12b_counters_of;
 mod g12c_supertypes;
 mod g12d;
+mod g13d_attacked;
 mod gap_fuzz;
 mod gift;
 mod gift_fuzz;

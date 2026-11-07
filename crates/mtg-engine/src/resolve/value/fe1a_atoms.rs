@@ -47,6 +47,9 @@ impl Scope<'_> {
                 let attackers = self.state.combat().attackers();
                 attackers.len() == 1 && attackers.iter().all(|a| a.object() == reference.id)
             }
+            Pred::AttackingPlayerOrPlaneswalker(who) => {
+                self.g13d_attacking_player_or_planeswalker(who, reference)?
+            }
             Pred::Blocking => self
                 .state
                 .combat()
@@ -204,6 +207,21 @@ impl Scope<'_> {
             }
         }
         Ok(false)
+    }
+
+    /// Whether the creature attacks one of the players the reference names, or a planeswalker one of them controls. A
+    /// battle is attacked through its protector, not its controller (CR 506.2), so it does not count.
+    fn g13d_attacking_player_or_planeswalker(
+        &self,
+        who: &Ref,
+        reference: ObjectRef,
+    ) -> Result<bool, ResolveError> {
+        let players = self.players(who)?;
+        let at_player = self.state.combat().attackers().iter().any(|a| {
+            a.object() == reference.id
+                && matches!(a.target(), AttackTarget::Player(player) if players.contains(&player))
+        });
+        Ok(at_player || self.g13a_attacking_planeswalker_of(who, reference)?)
     }
 
     /// Whether the object is a target of a spell or ability on the stack that the reference names.

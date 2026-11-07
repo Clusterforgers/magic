@@ -268,6 +268,9 @@ fn remembered_static(
         rule["Rule"]["duration"] = duration.clone();
         return Ok(vec![rule]);
     }
+    if let Some(found) = super::effects_effect_combat::statics(ctx, &part, who, duration) {
+        return found;
+    }
     let who = &objects(who.clone())?;
     if part.has("MayLookAt") && part.get("AffectedZone") == Some("Exile") {
         return remembered_look(ctx, &part, who, duration, owner);

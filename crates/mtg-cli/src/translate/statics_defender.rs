@@ -41,6 +41,33 @@ fn defender_condition(ctx: &Ctx, word: &str) -> Tr<Value> {
     if word == "isMonarch" {
         return Ok(json!({"Monarch": "You"}));
     }
+    // "Unless defending player controls fewer creatures than you": "you" of the card is the controller of the attacker.
+    let fewer = match word {
+        "hasFewerCreaturesInPlayThanYou" => Some("Creature"),
+        "hasFewerLandsInPlayThanYou" => Some("Land"),
+        _ => None,
+    };
+    if let Some(kind) = fewer {
+        let count = |who: Value| json!({"Count": [{"Type": kind}, {"ControlledBy": who}]});
+        return Ok(json!({"Compare": {
+            "left": count(json!("You")),
+            "op": "Lt",
+            "right": count(json!({"ControllerOf": "This"})),
+        }}));
+    }
+    // "Unless defending player is poisoned": they have a poison counter (CR 122.1f).
+    if word == "IsPoisoned" {
+        return Ok(json!({"Compare": {
+            "left": {"Counters": {"on": "You", "counter": "poison"}}, "op": "Ge", "right": 1}}));
+    }
+    // "Unless defending player has seven or more cards in their graveyard".
+    if let Some(least) = word
+        .strip_prefix("HasCardsInGraveyard_Card_GE")
+        .and_then(|n| n.parse::<u32>().ok())
+    {
+        let selector = selector_in(ctx, "Card.YouOwn", Some("Graveyard"))?;
+        return Ok(json!({"Compare": {"left": {"Count": selector}, "op": "Ge", "right": least}}));
+    }
     let named = word
         .strip_prefix("controls")
         .filter(|kind| !kind.is_empty() && !kind.contains(','));

@@ -784,6 +784,7 @@ mod g12f;
 mod g13a;
 mod g13b;
 mod g13c;
+mod g13d;
 mod g8a;
 mod g8c;
 mod g8d;

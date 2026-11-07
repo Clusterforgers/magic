@@ -1707,6 +1707,7 @@ impl<'a> Scope<'a> {
             | Pred::AttackingPlayer(_)
             | Pred::AttackingPlaneswalkerOf(_)
             | Pred::AttackingAlone
+            | Pred::AttackingPlayerOrPlaneswalker(_)
             | Pred::Blocking
             | Pred::Unblocked
             | Pred::WasCast { .. }

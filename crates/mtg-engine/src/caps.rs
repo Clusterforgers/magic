@@ -375,6 +375,7 @@ const RUNS: &[&str] = &[
     "Rule.Cant.PutCounterOf",
     "Rule.Cant.Trigger",
     "Rule.Cant.Attach",
+    "Rule.Cant.BeAttachedBy",
     "Rule.Cant.Discard",
     "Rule.Cant.Exile",
     "Rule.Cant.Transform",
@@ -1116,6 +1117,7 @@ mod tests {
     #[case::cant_put_counter_of("Rule.Cant.PutCounterOf", true)]
     #[case::cant_trigger("Rule.Cant.Trigger", true)]
     #[case::cant_attach("Rule.Cant.Attach", true)]
+    #[case::cant_be_attached_by("Rule.Cant.BeAttachedBy", true)]
     #[case::cant_discard("Rule.Cant.Discard", true)]
     #[case::cant_exile("Rule.Cant.Exile", true)]
     #[case::cant_transform("Rule.Cant.Transform", true)]
