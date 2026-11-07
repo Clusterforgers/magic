@@ -1,0 +1,42 @@
+{
+  "oracle_id": "a42b567d-6bfc-49e7-8f91-917e2bb3046c",
+  "name": "Possessed Skaab",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Possessed Skaab",
+      "oracle_fingerprint": "f9661f57804ff3e6d13c68254b6a4b03",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    {
+                      "AnyOf": [
+                        { "Type": "Instant" },
+                        { "Type": "Sorcery" },
+                        { "Type": "Creature" }
+                      ]
+                    },
+                    { "In": "Graveyard" },
+                    { "OwnedBy": "You" }
+                  ]
+                }
+              }
+            ],
+            "effects": [{ "Move": { "what": { "Target": 0 }, "to": "Hand" } }]
+          }
+        },
+        {
+          "Replacement": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } },
+            "by": { "MoveTo": "Exile" }
+          }
+        }
+      ]
+    }
+  ]
+}

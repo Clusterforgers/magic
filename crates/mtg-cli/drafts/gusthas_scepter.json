@@ -1,0 +1,81 @@
+{
+  "oracle_id": "120e9013-b07b-49d9-8b86-f6c26315581d",
+  "name": "Gustha's Scepter",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Gustha's Scepter",
+      "oracle_fingerprint": "04dd3b2b59c9a06b5f735ca8eb836936",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [
+              {
+                "Choose": {
+                  "from": { "Each": [{ "In": "Hand" }, { "OwnedBy": "You" }] },
+                  "as": "picked"
+                }
+              },
+              { "ExileHidden": { "what": { "Bound": "picked" }, "sealed": true, "as": "exiled2" } },
+              { "Remember": { "what": { "Bound": "exiled2" }, "slot": "remembered" } },
+              {
+                "Rule": {
+                  "rule": {
+                    "LookAtExiled": { "what": [{ "In": "Exile" }], "only": { "Bound": "exiled2" } }
+                  },
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "Is": { "Remembered": { "on": "This", "slot": "remembered" } } },
+                      { "OwnedBy": "You" },
+                      { "ExiledWith": "This" },
+                      { "In": "Exile" }
+                    ]
+                  },
+                  "as": "picked"
+                }
+              },
+              { "Move": { "what": { "Bound": "picked" }, "to": "Hand" } }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                { "ZoneChange": { "what": ["This"], "from": "Battlefield" } },
+                { "Did": { "action": "ChangedController", "what": ["This"] } }
+              ]
+            },
+            "effects": [
+              {
+                "Move": {
+                  "what": {
+                    "Each": [
+                      { "Is": { "Remembered": { "on": "This", "slot": "remembered" } } },
+                      { "In": "Exile" }
+                    ]
+                  },
+                  "to": "Graveyard"
+                }
+              },
+              { "Forget": { "slot": "remembered" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,28 @@
+{
+  "oracle_id": "75e9ac31-5993-4039-93b2-9380ced2499a",
+  "name": "Memory's Journey",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Memory's Journey",
+      "oracle_fingerprint": "9864632d206dcbf2a685e71be600845a",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": "Player" },
+              {
+                "what": { "Object": [{ "In": "Graveyard" }, { "OwnedBy": { "Target": 0 } }] },
+                "bounds": { "min": 0, "max": 3 }
+              }
+            ],
+            "effects": [
+              { "Move": { "what": { "Target": 1 }, "to": { "Library": { "place": "Shuffled" } } } }
+            ]
+          }
+        },
+        { "Keyword": { "Flashback": "{G}" } }
+      ]
+    }
+  ]
+}

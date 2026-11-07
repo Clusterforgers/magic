@@ -1,0 +1,63 @@
+{
+  "oracle_id": "bd699cf8-56c7-4375-920e-8dd22c83a82c",
+  "name": "Kjeldoran Guard",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Kjeldoran Guard",
+      "oracle_fingerprint": "5705d3d1a68c6beac61d3add3ff1f9aa",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "condition": {
+              "All": [
+                {
+                  "Compare": {
+                    "left": {
+                      "Count": [
+                        { "Type": "Land" },
+                        { "Supertype": "Snow" },
+                        { "ControlledBy": "Defending" }
+                      ]
+                    },
+                    "op": "Eq",
+                    "right": 0
+                  }
+                },
+                "InCombat"
+              ]
+            },
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "DelayedTrigger": {
+                  "when": {
+                    "ZoneChange": { "what": [{ "Is": { "Target": 0 } }], "from": "Battlefield" }
+                  },
+                  "once": false,
+                  "this_turn": true,
+                  "effects": [
+                    {
+                      "Sacrifice": {
+                        "who": { "ControllerOf": "This" },
+                        "filter": [{ "Is": "This" }]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

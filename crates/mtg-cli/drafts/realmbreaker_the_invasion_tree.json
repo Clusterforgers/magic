@@ -1,0 +1,78 @@
+{
+  "oracle_id": "77398866-eebb-4091-b566-7726f8194a59",
+  "name": "Realmbreaker, the Invasion Tree",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Realmbreaker, the Invasion Tree",
+      "oracle_fingerprint": "878d40c2a83f4b7333be8171cb7b0e68",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{2}" }, "Tap"],
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              { "Mill": { "who": { "Target": 0 }, "count": 3 } },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "Type": "Land" },
+                      { "OwnedBy": { "Target": 0 } },
+                      { "In": "Graveyard" }
+                    ]
+                  },
+                  "as": "picked"
+                }
+              },
+              {
+                "Move": {
+                  "what": { "Bound": "picked" },
+                  "to": { "Battlefield": { "tapped": true, "under": "You" } },
+                  "as": "moved2"
+                }
+              },
+              {
+                "Continuous": {
+                  "affected": { "Bound": "moved2" },
+                  "mods": [
+                    {
+                      "GrantAbility": {
+                        "Replacement": {
+                          "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield" } },
+                          "by": { "MoveTo": "Exile" }
+                        }
+                      }
+                    }
+                  ],
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{10}" }, "Tap", "SacrificeSelf"],
+            "effects": [
+              {
+                "Search": {
+                  "filter": [{ "Subtype": "Praetor" }],
+                  "count": {
+                    "min": 0,
+                    "max": {
+                      "Count": [{ "Subtype": "Praetor" }, { "OwnedBy": "You" }, { "In": "Library" }]
+                    }
+                  },
+                  "as": "found"
+                }
+              },
+              { "Move": { "what": { "Bound": "found" }, "to": { "Battlefield": {} } } },
+              { "Shuffle": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

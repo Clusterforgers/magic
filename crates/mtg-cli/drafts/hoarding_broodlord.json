@@ -1,7 +1,7 @@
 {
   "oracle_id": "18e856b5-aab7-4802-8cec-1d44dd95d9f7",
   "name": "Hoarding Broodlord",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Hoarding Broodlord",
@@ -10,9 +10,29 @@
         { "Keyword": "Convoke" },
         { "Keyword": "Flying" },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 15, "end": 165 }
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              { "Search": { "filter": [], "as": "found" } },
+              { "ExileHidden": { "what": { "Bound": "found" }, "sealed": true, "as": "exiled2" } },
+              { "Shuffle": {} },
+              {
+                "Rule": {
+                  "rule": {
+                    "MayCast": { "from": "Exile", "only": { "Bound": "exiled2" }, "play": true }
+                  },
+                  "duration": "Forever"
+                }
+              },
+              {
+                "Rule": {
+                  "rule": {
+                    "LookAtExiled": { "what": [{ "In": "Exile" }], "only": { "Bound": "exiled2" } }
+                  },
+                  "duration": "Forever"
+                }
+              }
+            ]
           }
         },
         {

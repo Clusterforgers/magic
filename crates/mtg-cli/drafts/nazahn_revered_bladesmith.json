@@ -26,13 +26,8 @@
                   },
                   "then": [
                     { "Move": { "what": { "Bound": "found" }, "to": { "Battlefield": {} } } }
-                  ]
-                }
-              },
-              {
-                "Move": {
-                  "what": { "Each": [{ "Is": { "Bound": "found" } }, { "In": "Library" }] },
-                  "to": "Hand"
+                  ],
+                  "otherwise": [{ "Move": { "what": { "Bound": "found" }, "to": "Hand" } }]
                 }
               },
               { "Shuffle": {} }

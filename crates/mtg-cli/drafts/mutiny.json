@@ -1,0 +1,38 @@
+{
+  "oracle_id": "647b4cb4-569d-4938-b56c-31a70e68ee41",
+  "name": "Mutiny",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mutiny",
+      "oracle_fingerprint": "1823c63f23b525f398258f548956e11d",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }] } },
+              {
+                "what": {
+                  "Object": [
+                    { "Type": "Creature" },
+                    { "Not": { "Is": { "Target": 0 } } },
+                    { "ControlledBy": { "ControllerOf": { "Target": 0 } } }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "DealDamage": {
+                  "source": { "Target": 0 },
+                  "to": { "Target": 1 },
+                  "amount": { "Stat": { "of": { "Target": 0 }, "stat": "Power" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

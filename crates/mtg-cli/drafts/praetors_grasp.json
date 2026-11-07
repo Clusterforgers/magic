@@ -1,0 +1,39 @@
+{
+  "oracle_id": "6d56aeb1-0a50-46b6-abdb-cd6575a98dc3",
+  "name": "Praetor's Grasp",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Praetor's Grasp",
+      "oracle_fingerprint": "485e57979f20de24186ce6ce346d47d6",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              { "Search": { "of": { "Target": 0 }, "filter": [], "as": "found" } },
+              { "ExileHidden": { "what": { "Bound": "found" }, "sealed": true, "as": "exiled2" } },
+              { "Shuffle": { "who": { "Target": 0 } } },
+              {
+                "Rule": {
+                  "rule": {
+                    "MayCast": { "from": "Exile", "only": { "Bound": "exiled2" }, "play": true }
+                  },
+                  "duration": "Forever"
+                }
+              },
+              {
+                "Rule": {
+                  "rule": {
+                    "LookAtExiled": { "what": [{ "In": "Exile" }], "only": { "Bound": "exiled2" } }
+                  },
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

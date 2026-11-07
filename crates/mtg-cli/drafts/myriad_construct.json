@@ -1,7 +1,7 @@
 {
   "oracle_id": "f54111c8-9c20-4a73-a7c4-24d216e7de07",
   "name": "Myriad Construct",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Myriad Construct",
@@ -27,9 +27,31 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 124, "end": 278 }
+          "Triggered": {
+            "when": { "BecomesTarget": { "what": ["This"], "by": ["Spell"] } },
+            "effects": [
+              {
+                "Sacrifice": {
+                  "who": { "ControllerOf": "This" },
+                  "filter": [{ "Is": "This" }],
+                  "as": "sacrificed"
+                }
+              },
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Construct",
+                      "types": ["Artifact", "Creature"],
+                      "subtypes": ["Construct"],
+                      "power": 1,
+                      "toughness": 1
+                    }
+                  },
+                  "count": { "Stat": { "of": { "Bound": "sacrificed" }, "stat": "Power" } }
+                }
+              }
+            ]
           }
         }
       ]

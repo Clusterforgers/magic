@@ -1,0 +1,45 @@
+{
+  "oracle_id": "d37e8f75-c7cb-4270-bb2f-0125e972ed15",
+  "name": "Rampaging Yao Guai",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Rampaging Yao Guai",
+      "oracle_fingerprint": "0c682092ae177d1c1c69c1c74386ea9d",
+      "abilities": [
+        { "Keyword": "Vigilance" },
+        { "Keyword": "Trample" },
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "WithCounters": { "counter": "+1/+1", "count": "X" } }
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              {
+                "what": {
+                  "Together": {
+                    "what": {
+                      "Object": [{ "AnyOf": [{ "Type": "Artifact" }, { "Type": "Enchantment" }] }]
+                    },
+                    "rule": { "TotalManaValueAtMost": "X" }
+                  }
+                },
+                "bounds": {
+                  "min": 0,
+                  "max": {
+                    "Count": [{ "AnyOf": [{ "Type": "Enchantment" }, { "Type": "Artifact" }] }]
+                  }
+                }
+              }
+            ],
+            "effects": [{ "Destroy": { "what": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}
