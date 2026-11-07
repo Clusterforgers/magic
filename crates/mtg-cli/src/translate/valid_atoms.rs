@@ -32,6 +32,11 @@ pub fn atom(prop: &str) -> Option<Vec<Value>> {
         "blockingSource" => return one(json!({"Blocks": "This"})),
         "blockedBySource" => return one(json!({"BlockedBy": "This"})),
         "attackingYou" => return one(json!({"AttackingPlayer": "You"})),
+        "attackingYouOrYourPW" | "attackingYouOrYourPWLKI" => {
+            let you = json!({"AttackingPlayer": "You"});
+            return one(json!({"AnyOf": [you, {"AttackingPlaneswalkerOf": "You"}]}));
+        }
+        "attackingAlone" => return one(json!("AttackingAlone")),
         "IsMonstrous" => return one(json!("Monstrous")),
         "IsRenowned" => return one(json!("Renowned")),
         "IsPrepared" => return one(json!("Prepared")),

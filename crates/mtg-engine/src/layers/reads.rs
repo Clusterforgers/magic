@@ -256,6 +256,7 @@ fn reads_of_pred(pred: &Pred) -> Traits {
         | Pred::DamagedThisTurn
         | Pred::AttackedThisTurn
         | Pred::Attacking
+        | Pred::AttackingAlone
         | Pred::Blocking
         | Pred::Unblocked
         | Pred::In(_)
@@ -298,6 +299,7 @@ fn reads_of_pred(pred: &Pred) -> Traits {
         | Pred::TargetsPlayer(who)
         | Pred::OwnedBy(who)
         | Pred::AttackingPlayer(who)
+        | Pred::AttackingPlaneswalkerOf(who)
         | Pred::ExiledWith(who)
         | Pred::EncodedWith(who)
         | Pred::Crewed(who)

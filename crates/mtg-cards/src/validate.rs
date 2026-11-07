@@ -685,7 +685,10 @@ impl<'a> Walker<'a> {
     fn pred(&mut self, pred: &Pred) {
         match pred {
             Pred::Subtype(subtype) => self.known_subtype(subtype),
-            Pred::ControlledBy(r) | Pred::OwnedBy(r) | Pred::AttackingPlayer(r) => {
+            Pred::ControlledBy(r)
+            | Pred::OwnedBy(r)
+            | Pred::AttackingPlayer(r)
+            | Pred::AttackingPlaneswalkerOf(r) => {
                 self.reference(r, Kind::Player);
             }
             // The objects a share names are read with the object tested as `Candidate`.
@@ -800,6 +803,7 @@ impl<'a> Walker<'a> {
             | Pred::DamagedThisTurn
             | Pred::AttackedThisTurn
             | Pred::Attacking
+            | Pred::AttackingAlone
             | Pred::Blocking
             | Pred::Unblocked
             | Pred::HasCounter(_)

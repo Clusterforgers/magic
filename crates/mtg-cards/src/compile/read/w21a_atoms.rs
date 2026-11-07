@@ -241,6 +241,7 @@ pub(super) fn w21a_suffix_text(pred: &Pred, form: Form) -> Option<String> {
         Pred::GravedThisTurn => W21A_GRAVED.to_owned(),
         Pred::TargetsPlayer(Ref::You) => "that targets you".to_owned(),
         Pred::TargetsPlayer(Ref::Opponents) => "that targets an opponent".to_owned(),
+        Pred::AttackingAlone if !form.plural() => "that's attacking alone".to_owned(),
         Pred::Targeting(objects) if objects.0 == [Pred::This] => "that targets ~".to_owned(),
         Pred::Targeting(objects) => format!("that targets {}", w21a_a(&g13a_in_play(objects))?),
         Pred::AnyOf(any) => match any.as_slice() {
@@ -256,6 +257,10 @@ pub(super) fn w21a_suffix_text(pred: &Pred, form: Form) -> Option<String> {
                     w21a_a(&g13a_in_play(objects))?
                 )
             }
+            [
+                Pred::AttackingPlayer(Ref::You),
+                Pred::AttackingPlaneswalkerOf(Ref::You),
+            ] if !form.plural() => "that's attacking you or a planeswalker you control".to_owned(),
             _ => return None,
         },
         Pred::Not(inner) if **inner == Pred::HasAnyCounter => {

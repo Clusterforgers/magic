@@ -291,6 +291,11 @@ pub enum Pred {
     Attacking,
     /// Is attacking the player, not a planeswalker of theirs ("attacking that player").
     AttackingPlayer(Ref),
+    /// Is attacking a planeswalker one of the players controls ("attacking you or a planeswalker you control" is `AnyOf`
+    /// of this and `AttackingPlayer`).
+    AttackingPlaneswalkerOf(Ref),
+    /// Is the only creature attacking ("attacking alone", CR 506.5).
+    AttackingAlone,
     /// Is blocking.
     Blocking,
     /// Is an attacking creature that no creature was declared to block, once its defending player has declared blockers (CR 509.1h).

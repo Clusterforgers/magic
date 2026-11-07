@@ -1687,6 +1687,8 @@ impl<'a> Scope<'a> {
             | Pred::ArrivedFrom(_) => self.w21a_pred(pred, reference, seen)?,
             Pred::Attacking
             | Pred::AttackingPlayer(_)
+            | Pred::AttackingPlaneswalkerOf(_)
+            | Pred::AttackingAlone
             | Pred::Blocking
             | Pred::Unblocked
             | Pred::WasCast { .. }

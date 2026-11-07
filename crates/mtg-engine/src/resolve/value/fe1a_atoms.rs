@@ -40,6 +40,30 @@ impl Scope<'_> {
                         && matches!(a.target(), AttackTarget::Player(player) if attacked.contains(&player))
                 })
             }
+            Pred::AttackingPlaneswalkerOf(who) => {
+                let players = self.players(who)?;
+                let planeswalker = Selector(vec![Pred::Type(CardType::Planeswalker)]);
+                let mut held = false;
+                for a in self.state.combat().attackers() {
+                    let AttackTarget::Planeswalker(attacked) = a.target() else {
+                        continue;
+                    };
+                    let Some(object) = self.state.object(attacked) else {
+                        continue;
+                    };
+                    if a.object() == reference.id
+                        && players.contains(&object.controller())
+                        && self.selects(&planeswalker, object.reference())?
+                    {
+                        held = true;
+                    }
+                }
+                held
+            }
+            Pred::AttackingAlone => {
+                let attackers = self.state.combat().attackers();
+                attackers.len() == 1 && attackers.iter().all(|a| a.object() == reference.id)
+            }
             Pred::Blocking => self
                 .state
                 .combat()
