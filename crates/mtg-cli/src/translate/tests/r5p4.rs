@@ -97,8 +97,8 @@ fn the_most_life_lost_this_turn_reads_the_turn_tally(#[case] head: &str, #[case]
 }
 
 #[test]
-fn opponents_with_a_property_stay_a_gap() {
-    let script = "Name:S\nTypes:Sorcery\nA:SP$ Draw | NumCards$ X\nSVar:X:PlayerCountRegisteredOpponents$HasPropertyLostLifeThisTurn\n";
+fn opponents_with_a_property_the_table_lacks_stay_a_gap() {
+    let script = "Name:S\nTypes:Sorcery\nA:SP$ Draw | NumCards$ X\nSVar:X:PlayerCountRegisteredOpponents$HasPropertywithMoreLandsThanYou\n";
     assert_eq!(gaps(script).len(), 1);
 }
 

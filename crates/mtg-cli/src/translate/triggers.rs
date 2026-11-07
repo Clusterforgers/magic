@@ -635,7 +635,8 @@ pub(super) fn player_ref(word: Option<&str>) -> Tr<Value> {
         Some("Player.TriggeredDefendingPlayer" | "TriggeredDefendingPlayer") => {
             Ok(json!("Defending"))
         }
-        Some(other) => unmapped(format!("player:{other}")),
+        Some(other) => super::players_where::word(other)
+            .map_or_else(|| unmapped(format!("player:{other}")), Ok),
     }
 }
 

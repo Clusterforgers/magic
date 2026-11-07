@@ -1,5 +1,6 @@
 //! Effects that map one Forge verb to one engine node: keyword actions, player actions, counters, exchanges and coin flips.
 
+use mtg_cards::effect::MOST_PASSES;
 use serde_json::{Value, json};
 
 use super::amount::{amount, counter_kind};
@@ -13,13 +14,13 @@ const TARGETING: [&str; 4] = ["Defined", "ValidTgts", "TargetMin", "TargetMax"];
 /// The effects of a verb this module reads; `None` for any other API.
 pub fn effects(ctx: &mut Ctx, p: &Params, api: &str) -> Option<Tr<Vec<Value>>> {
     let node = match api {
-        "Explore" => object_verb(ctx, p, api, "Explore"),
+        "Explore" => return Some(explore(ctx, p)),
+        "Incubate" => return Some(incubate(ctx, p)),
         "BecomeMonarch" => player_verb(ctx, p, api, "BecomeMonarch"),
         "TakeInitiative" => player_verb(ctx, p, api, "TakeInitiative"),
         "RingTemptsYou" => player_verb(ctx, p, api, "RingTempts"),
         "Learn" => player_verb(ctx, p, api, "Learn"),
         "TimeTravel" => player_verb(ctx, p, api, "TimeTravel"),
-        "Incubate" => incubate(ctx, p),
         "Unattach" => object_verb(ctx, p, api, "Unattach"),
         "TapOrUntap" => object_verb(ctx, p, api, "TapOrUntap"),
         "Phases" => object_verb(ctx, p, api, "PhaseOut"),
@@ -52,11 +53,41 @@ fn object_verb(ctx: &mut Ctx, p: &Params, api: &str, variant: &str) -> Tr<Value>
     Ok(json!({ variant: {"what": what} }))
 }
 
-fn incubate(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
-    only(p, "Incubate", &["Amount", "Defined"])?;
+/// `Incubate`, `Times$` times over ("incubate 2 five times", "incubate 3 X times").
+fn incubate(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
+    only(p, "Incubate", &["Amount", "Defined", "Times"])?;
     let who = subject(ctx, p, "You", None)?;
     let count = amount(ctx, p.get("Amount").unwrap_or("1"))?;
-    Ok(json!({"Incubate": {"who": who, "count": count}}))
+    times(
+        ctx,
+        p.get("Times"),
+        json!({"Incubate": {"who": who, "count": count}}),
+    )
+}
+
+/// `Explore`, `Num$` times over ("it explores, then it explores again").
+fn explore(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
+    let mut read = TARGETING.to_vec();
+    read.push("Num");
+    only(p, "Explore", &read)?;
+    let what = subject(ctx, p, "Self", None)?;
+    times(ctx, p.get("Num"), json!({"Explore": {"what": what}}))
+}
+
+/// The node done `count` times, one after the other: a fixed count is that many copies, another amount a loop of at most
+/// `MOST_PASSES` passes that runs as many times as the amount is when it starts.
+fn times(ctx: &Ctx, count: Option<&str>, node: Value) -> Tr<Vec<Value>> {
+    let count = count.unwrap_or("1");
+    match count.parse::<u32>() {
+        Ok(n) if (1..=MOST_PASSES).contains(&n) => Ok(vec![node; n as usize]),
+        Ok(_) => unmapped("key:Times=out-of-range"),
+        Err(_) => Ok(vec![json!({"RepeatWhile": {
+            "condition": {"Compare": {"left": 0, "op": "Eq", "right": 0}},
+            "effects": [node],
+            "most": MOST_PASSES,
+            "times": amount(ctx, count)?,
+        }})]),
+    }
 }
 
 /// `SkipTurn`: each turn is one rule that the player skips a turn and ends with the turn it skips (CR 614.10).

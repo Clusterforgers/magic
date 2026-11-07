@@ -311,6 +311,7 @@ fn damage_all(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
             "DamageMap",
             "ValidTgts",
             "DamageSource",
+            "ReplaceDyingDefined",
         ],
     )?;
     if p.has("ValidTgts") && p.has("ValidPlayers") {
@@ -347,6 +348,7 @@ fn damage_all(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
             effect["DealDamage"]["source"] = source.clone();
         }
     }
+    effects.extend(dies_shield(ctx, p)?);
     Ok(effects)
 }
 
@@ -1565,6 +1567,9 @@ fn dies_shield(ctx: &mut Ctx, p: &Params) -> Tr<Option<Value>> {
     let Some(word) = p.get("ReplaceDyingDefined") else {
         return Ok(None);
     };
+    if word == super::damaged_way::DAMAGED_THIS_WAY {
+        return super::damaged_way::shield(ctx).map(Some);
+    }
     let kind = match word {
         "Targeted" | "ThisTargetedCard" | "ThisTargetedCard.Creature" if p.has("ValidTgts") => {
             ctx.last_target()?

@@ -54,7 +54,6 @@ fn a_verb_maps_to_its_node(#[case] line: &str, #[case] node: Value) {
 }
 
 #[rstest]
-#[case::explore_twice("Explore | Num$ 2", "key:Explore.Num")]
 #[case::phase_in_or_out(
     "Phases | Defined$ Self | PhaseInOrOut$ True",
     "key:Phases.PhaseInOrOut"

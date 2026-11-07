@@ -507,6 +507,11 @@ impl<'a> Walker<'a> {
                 self.expect(Kind::Player, want);
             }
             Ref::This | Ref::Attached | Ref::Granter => self.expect(Kind::Object, want),
+            Ref::PlayersWhere { who, test } => {
+                self.reference(who, Kind::Player);
+                self.condition(test);
+                self.expect(Kind::Player, want);
+            }
             Ref::Remembered { on, .. } => {
                 self.reference(on, Kind::Object);
                 self.expect(Kind::Either, want);
@@ -2447,7 +2452,8 @@ impl Walker<'_> {
             | Ref::TriggeringPlayer
             | Ref::ControllerOf(_)
             | Ref::OrController(_)
-            | Ref::OwnerOf(_) => Kind::Player,
+            | Ref::OwnerOf(_)
+            | Ref::PlayersWhere { .. } => Kind::Player,
             Ref::Affected
             | Ref::Candidate
             | Ref::This

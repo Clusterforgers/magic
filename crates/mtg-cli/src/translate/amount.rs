@@ -212,6 +212,16 @@ fn event_amount(ctx: &Ctx, expression: &str) -> Tr<Option<Value>> {
             if what == "HighestLifeLostThisTurn" {
                 return Ok(Some(json!({"Tallied": {"who": who, "what": "LifeLost"}})));
             }
+            // "The number of opponents who lost life this turn": the players of the group with the property.
+            if let Some(prop) = what.strip_prefix("HasProperty") {
+                if prop == "isMonarch" && who == "EachPlayer" {
+                    return Ok(Some(json!({"Players": "Monarch"})));
+                }
+                if let Some(test) = super::players_where::property(ctx, prop) {
+                    let group = super::players_where::players(&json!(who), &test?);
+                    return Ok(Some(json!({ "Players": group })));
+                }
+            }
             if let Some(found) = super::amount_more::highest(ctx, who, what) {
                 return found.map(Some);
             }

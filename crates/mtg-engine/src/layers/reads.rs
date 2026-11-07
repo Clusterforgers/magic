@@ -210,6 +210,7 @@ pub(crate) fn reads_of_ref(reference: &Ref) -> Traits {
         Ref::OwnerOf(inner) => reads_of_ref(inner),
         Ref::Arrived { of, .. } | Ref::Departed(of) => reads_of_ref(of),
         Ref::Each(selector) => reads_of_selector(selector),
+        Ref::PlayersWhere { who, test } => reads_of_ref(who).or(reads_of_condition(test)),
     }
 }
 

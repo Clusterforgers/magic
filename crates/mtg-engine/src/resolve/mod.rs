@@ -20,6 +20,8 @@ mod value_fill_tests;
 #[cfg(test)]
 mod value_general;
 #[cfg(test)]
+mod value_players_where_tests;
+#[cfg(test)]
 mod value_test_tests;
 
 use std::sync::Arc;

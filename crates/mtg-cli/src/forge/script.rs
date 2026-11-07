@@ -95,7 +95,8 @@ impl Params {
     }
 
     /// The pairs and one more.
-    fn with(mut self, key: &str, value: &str) -> Params {
+    #[must_use]
+    pub fn with(mut self, key: &str, value: &str) -> Params {
         self.pairs.push((key.to_owned(), value.to_owned()));
         self
     }

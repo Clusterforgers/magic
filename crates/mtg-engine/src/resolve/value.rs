@@ -447,6 +447,21 @@ impl<'a> Scope<'a> {
     }
 
     /// The most objects `of` names for any one of the players `who` names, each taken as the controller of the scope.
+    /// The players `who` names for whom `test` holds, each taken as the controller (`Ref::PlayersWhere`).
+    fn players_where(&self, who: &Ref, test: &Condition) -> Result<Vec<Target>, ResolveError> {
+        let mut found = Vec::new();
+        for player in self.players(who)? {
+            let each = Scope {
+                controller: player,
+                ..self.clone()
+            };
+            if each.holds(test)? {
+                found.push(Target::Player(player));
+            }
+        }
+        Ok(found)
+    }
+
     fn largest(&self, who: &Ref, of: &Selector) -> Result<i64, ResolveError> {
         let counted = Amount::Count(of.clone());
         let mut most = 0;
@@ -983,6 +998,7 @@ impl<'a> Scope<'a> {
             Ref::Remembered { on, slot } => self.remembered(on, slot)?,
             Ref::Arrived { of, zone } => self.arrived(of, *zone)?,
             Ref::Departed(of) => self.departed_of(of)?,
+            Ref::PlayersWhere { who, test } => self.players_where(who, test)?,
             Ref::ControllerOf(inner) => self.seats_of(inner, |seen| seen.controller)?,
             Ref::OwnerOf(inner) => self.seats_of(inner, |seen| seen.owner)?,
             Ref::OrController(inner) => self.players_or_controllers(inner)?,
