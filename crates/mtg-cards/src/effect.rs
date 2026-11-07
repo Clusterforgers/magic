@@ -293,6 +293,10 @@ pub enum ValueKind {
     Number(Amount, Amount),
     /// One of these words ("choose odd or even").
     Options(Vec<String>),
+    /// One of these card types ("choose a permanent type", "choose creature or land").
+    CardTypeOf(Vec<CardType>),
+    /// A creature type other than these ("choose a creature type other than Wall").
+    CreatureTypeExcept(Vec<String>),
 }
 
 /// One instruction of a spell or ability. Optional fields have defaults: `who` is the
@@ -443,8 +447,8 @@ pub enum Effect {
         #[serde(rename = "as")]
         bind: String,
     },
-    /// Cards of a public zone are picked at random, with the game's random source, and the pick is bound; fewer are
-    /// picked when the set holds fewer.
+    /// Cards of a public zone, or players ("choose an opponent at random"), are picked at random, with the game's
+    /// random source, and the pick is bound; fewer are picked when the set holds fewer.
     ChooseAtRandom {
         /// The objects picked from.
         from: Ref,
@@ -1531,6 +1535,10 @@ pub enum Effect {
         /// pick is public. Needs a fixed number of modes and no repeats.
         #[serde(default, skip_serializing_if = "is_false")]
         at_random: bool,
+        /// Each mode must target a different player ("Each mode must target a different player."): a player that a
+        /// mode chosen earlier targets is not offered to the later ones.
+        #[serde(default, skip_serializing_if = "is_false")]
+        different_players: bool,
         /// A mode this ability chose earlier in the turn is not offered ('choose one that hasn't been chosen this
         /// turn'); a spell has no earlier choice to keep.
         #[serde(default, skip_serializing_if = "is_false")]

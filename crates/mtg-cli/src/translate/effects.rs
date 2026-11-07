@@ -1065,6 +1065,9 @@ fn charm(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
             "MinCharmNum",
             "ChoiceRestriction",
             "CanRepeatModes",
+            "Random",
+            "Chooser",
+            "Announce",
         ],
     )?;
     let keyword = ctx.modal_keyword.take();
@@ -1075,10 +1078,15 @@ fn charm(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
     let outer = std::mem::take(&mut ctx.targets);
     let mut mode_costs = Vec::new();
     let mut modes = Vec::new();
+    // "Each mode must target a different player": each mode targets one player, and the engine offers a later mode
+    // none of the players an earlier one took.
+    let different_players = p
+        .get("AdditionalDescription")
+        .is_some_and(|text| text.contains("Each mode must target a different player"));
     for name in choices.split(',') {
         let part = ctx.sub(name)?;
         // The target of a later mode differs from the earlier modes' (Casey & Raph): the engine's targeting is per mode.
-        if part.get("TargetUnique") == Some("True") && !modes.is_empty() {
+        if part.get("TargetUnique") == Some("True") && !modes.is_empty() && !different_players {
             return unmapped("key:Charm.DifferentPlayerPerMode");
         }
         mode_costs.push(
@@ -1094,8 +1102,10 @@ fn charm(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
         modes.push(mode);
     }
     ctx.targets = outer;
-    // "Each mode must target a different player" is a rule across modes that the engine's targeting cannot enforce.
-    if p.get("CharmNum") == Some("MaxUniqueOpponents") {
+    if different_players && !modes.iter().all(e14c_one_player_target) {
+        return unmapped("key:Charm.DifferentPlayerPerMode");
+    }
+    if p.get("CharmNum") == Some("MaxUniqueOpponents") && !different_players {
         return unmapped("key:Charm.DifferentPlayerPerMode");
     }
     let max = p.get("CharmNum").unwrap_or("1");
@@ -1125,7 +1135,54 @@ fn charm(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
     if flag(p, "CanRepeatModes")? {
         modal["repeat"] = json!(true);
     }
+    e14c_charm_choice(p, &mut modal)?;
+    if different_players {
+        modal["different_players"] = json!(true);
+    }
     Ok(json!({ "Modal": modal }))
+}
+
+/// Whether the mode has one target specification, of one player or one opponent.
+fn e14c_one_player_target(mode: &Value) -> bool {
+    match mode
+        .get("targets")
+        .and_then(Value::as_array)
+        .map(Vec::as_slice)
+    {
+        Some([spec]) => {
+            matches!(
+                spec.get("what").and_then(Value::as_str),
+                Some("Player" | "Opponent")
+            ) && spec.get("bounds").is_none()
+        }
+        _ => false,
+    }
+}
+
+/// Who picks the modes of a `Charm` and how: `Random$ True` lets the game pick one mode, `Chooser$ Opponent` gives the
+/// choice to an opponent, and `Announce$ X` names the X of the mana cost, which the announcement asks after the modes.
+/// A number of modes that reads X is chosen before X is known and stays a gap.
+fn e14c_charm_choice(p: &Params, modal: &mut Value) -> Tr<()> {
+    if flag(p, "Random")? {
+        if modal.get("choose").is_some() || modal.get("repeat").is_some() {
+            return unmapped("key:Charm.Random-count");
+        }
+        modal["at_random"] = json!(true);
+    }
+    match p.get("Chooser") {
+        None => {}
+        Some("Opponent") => modal["who"] = json!("Opponents"),
+        Some(other) => return unmapped(format!("key:Charm.Chooser={other}")),
+    }
+    match p.get("Announce") {
+        None => {}
+        Some("X")
+            if !["CharmNum", "MinCharmNum"]
+                .iter()
+                .any(|key| p.get(key) == Some("X")) => {}
+        Some(_) => return unmapped("key:Charm.Announce"),
+    }
+    Ok(())
 }
 
 /// The cost a mode adds: mana, or the items of a cost.

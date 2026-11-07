@@ -557,7 +557,11 @@ amount: number, } } | { "CountersChanged": CountersChanged } | { "TokenCreated":
 /**
  * The cards picked.
  */
-cards: Array<ObjectId>, } } | { "CardConjured": CardConjured } | { "Sought": { 
+cards: Array<ObjectId>, } } | { "PlayersChosenAtRandom": { 
+/**
+ * The players picked.
+ */
+players: Array<PlayerId>, } } | { "CardConjured": CardConjured } | { "Sought": { 
 /**
  * Who seeks.
  */

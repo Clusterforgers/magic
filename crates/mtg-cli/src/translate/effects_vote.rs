@@ -12,10 +12,21 @@ struct Choice {
     part: Params,
 }
 
-/// The name a choice is bound to: its description in lower case, one word of letters.
+/// The name a choice is bound to: its description in lower case, words of letters joined by `_` ("Redhorn Pass" is
+/// `redhorn_pass`, which the vote shows as "redhorn pass"); at most three words, so a sentence stays a gap.
 fn name_of(part: &Params) -> Tr<String> {
-    let name = part.get("SpellDescription").unwrap_or("").to_lowercase();
-    if name.is_empty() || !name.chars().all(|c| c.is_ascii_lowercase()) {
+    let words: Vec<String> = part
+        .get("SpellDescription")
+        .unwrap_or("")
+        .split(' ')
+        .map(str::to_lowercase)
+        .collect();
+    let name = words.join("_");
+    if words.len() > 3
+        || words
+            .iter()
+            .any(|word| word.is_empty() || !word.chars().all(|c| c.is_ascii_lowercase()))
+    {
         return unmapped("key:Vote.Choices-name");
     }
     Ok(name)
@@ -27,6 +38,9 @@ fn votes(name: &str) -> Value {
 
 /// `Vote` of every player on the named `Choices$`: the winner runs, or each choice runs by its votes.
 pub fn vote(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
+    if p.has("VoteCard") {
+        return e14c_vote_card(ctx, p);
+    }
     only(
         p,
         "Vote",
@@ -72,6 +86,10 @@ pub fn vote(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
     let each = p.get("EachVote") == Some("True");
     let tied = p.get("VoteTiedAbility");
     match (store, each, tied) {
+        // A choice whose later lines run another choice (Truth or Consequences) would run that one under its own votes.
+        _ if e14c_chains_into_choice(ctx, &choices, &ids) => {
+            return unmapped("key:Vote.Choices-chained");
+        }
         (true, false, None) => {
             for choice in &choices {
                 ctx.vote_num = Some(choice.name.clone());
@@ -113,7 +131,97 @@ pub fn vote(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
                 "otherwise": otherwise,
             }}));
         }
+        // "Each choice with the most votes or tied for most votes": a choice runs when no other got more votes.
+        (false, false, None) if choices.len() >= 2 => {
+            effects.extend(e14c_most_votes(ctx, &choices)?);
+        }
         _ => return unmapped("key:Vote.shape"),
     }
+    Ok(effects)
+}
+
+/// Each choice runs when no other choice got more votes than it.
+fn e14c_most_votes(ctx: &mut Ctx, choices: &[Choice]) -> Tr<Vec<Value>> {
+    let mut effects = Vec::new();
+    for (index, choice) in choices.iter().enumerate() {
+        let most: Vec<Value> = choices
+            .iter()
+            .enumerate()
+            .filter(|(other, _)| *other != index)
+            .map(|(_, other)| {
+                json!({"Compare": {
+                    "left": votes(&choice.name), "op": "Ge", "right": votes(&other.name),
+                }})
+            })
+            .collect();
+        let steps = chain_at(ctx, &choice.part, false)?;
+        effects.push(json!({"If": {"condition": {"All": most}, "then": steps}}));
+    }
+    Ok(effects)
+}
+
+/// Whether the `SubAbility$` lines after some choice name another choice of the vote; the walk stops after a few lines.
+fn e14c_chains_into_choice(ctx: &mut Ctx, choices: &[Choice], ids: &[String]) -> bool {
+    choices.iter().any(|choice| {
+        let mut next = choice.part.get("SubAbility").map(str::to_owned);
+        for _ in 0..16 {
+            let Some(name) = next.take() else {
+                return false;
+            };
+            if ids.contains(&name) {
+                return true;
+            }
+            next = ctx
+                .sub(&name)
+                .ok()
+                .and_then(|part| part.get("SubAbility").map(str::to_owned));
+        }
+        false
+    })
+}
+
+/// The name the objects with the most votes are bound to.
+const E14C_VOTED: &str = "voted";
+
+/// `Vote` of every player on an object `VoteCard$` matches, on the battlefield or in the `Zone$` named: the objects with
+/// the most votes, all of them when tied, are what `VoteSubAbility$` reads as `Remembered`. A vote for up to one, or one
+/// whose tally is read per object, stays a gap.
+fn e14c_vote_card(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
+    only(
+        p,
+        "Vote",
+        &[
+            "Defined",
+            "VoteCard",
+            "VoteMessage",
+            "VoteSubAbility",
+            "Zone",
+            "Secretly",
+        ],
+    )?;
+    if p.get("Defined") != Some("Player") {
+        return unmapped("key:Vote.Defined");
+    }
+    let (Some(valid), Some(then)) = (p.get("VoteCard"), p.get("VoteSubAbility")) else {
+        return unmapped("key:Vote.VoteCard-shape");
+    };
+    // The prompt shown while voting; the engine words its own.
+    let _ = p.get("VoteMessage");
+    let mut of = super::valid::selector_any(ctx, valid)?;
+    match p.get("Zone") {
+        None | Some("Battlefield") => of.push(json!({"In": "Battlefield"})),
+        Some("Graveyard") => of.push(json!({"In": "Graveyard"})),
+        Some(other) => return unmapped(format!("key:Vote.Zone={other}")),
+    }
+    let mut vote = json!({"options": {"Of": {"Each": of}}, "as": E14C_VOTED});
+    if p.get("Secretly") == Some("True") {
+        vote["secret"] = json!(true);
+    }
+    let part = ctx.sub(then)?;
+    let outer = ctx.remembered.replace(json!({"Bound": E14C_VOTED}));
+    let steps = chain_at(ctx, &part, false);
+    ctx.remembered = outer;
+    let mut effects = vec![json!({ "Vote": vote })];
+    effects.extend(steps?);
     Ok(effects)
 }

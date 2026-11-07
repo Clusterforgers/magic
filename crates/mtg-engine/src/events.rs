@@ -582,6 +582,12 @@ pub enum Event {
         /// The cards picked.
         cards: Vec<ObjectId>,
     },
+    /// Players were picked at random with the next substream of the generator ("choose an opponent at random"): the
+    /// players picked, in the order they were drawn.
+    PlayersChosenAtRandom {
+        /// The players picked.
+        players: Vec<PlayerId>,
+    },
     /// A card was conjured into a zone (Alchemy).
     CardConjured(crate::conjure::CardConjured),
     /// A player seeks (Alchemy): `count` random cards of their library that match go to their hand, chosen with the
@@ -1173,6 +1179,7 @@ impl Event {
             | Event::HandLooked(_)
             | Event::CardsFound(_)
             | Event::ChosenAtRandom { .. }
+            | Event::PlayersChosenAtRandom { .. }
             | Event::Sought { .. }
             | Event::Revealed(_) => Vec::new(),
             Event::CountersChanged(changed) => changed

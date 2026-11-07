@@ -47,6 +47,7 @@ pub fn modal(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
             choose,
             repeat,
             at_random,
+            different_players: false,
             once_each_turn,
             once_ever,
             all_if,

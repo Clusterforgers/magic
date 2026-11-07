@@ -934,6 +934,7 @@ pub(super) fn alternatives(targets: &[TargetSpec], effects: &[Effect]) -> Vec<Ve
             repeat,
             modes,
             at_random,
+            different_players: false,
             once_each_turn,
             once_ever,
             all_if,

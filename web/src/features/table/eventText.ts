@@ -822,6 +822,12 @@ function describePublic(event: Event, n: EventNames, context?: EventContext): Lo
   if ('ChosenAtRandom' in event) {
     return line(`${event.ChosenAtRandom.cards.map((id) => n.card(id)).join(', ')} is picked at random`)
   }
+  if ('PlayersChosenAtRandom' in event) {
+    const players = event.PlayersChosenAtRandom.players.map((seat) => n.seat(seat)).join(', ')
+    return line(
+      `${players} ${event.PlayersChosenAtRandom.players.length === 1 ? 'is' : 'are'} picked at random`,
+    )
+  }
   if ('Entered' in event) {
     const { object, tapped, controller, chosen } = event.Entered
     const chose = chosen === undefined ? '' : chosenWords(chosen, n)

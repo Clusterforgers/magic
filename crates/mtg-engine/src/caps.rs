@@ -463,6 +463,7 @@ const RUNS: &[&str] = &[
     "Effect.Modal.Who",
     "Effect.Modal.ModeCosts",
     "Effect.Modal.ExtraModeCost",
+    "Effect.Modal.DifferentPlayers",
     "Effect.Planechase",
     "Effect.VillainousChoice",
     "Effect.Either",
@@ -1012,6 +1013,7 @@ mod tests {
     #[case::flipping_coins("Effect.FlipCoin", true)]
     #[case::modes_at_random("Effect.Modal.AtRandom", true)]
     #[case::modes_not_chosen_twice_in_a_turn("Effect.Modal.OnceEachTurn", true)]
+    #[case::e14c_modes_target_different_players("Effect.Modal.DifferentPlayers", true)]
     #[case::modes_not_chosen_twice_ever("Effect.Modal.OnceEver", true)]
     #[case::modes_with_costs("Effect.Modal.ModeCosts", true)]
     #[case::modes_with_an_extra_cost("Effect.Modal.ExtraModeCost", true)]
