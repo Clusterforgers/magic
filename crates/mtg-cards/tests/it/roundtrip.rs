@@ -1401,6 +1401,7 @@ fn ability() -> impl Strategy<Value = Ability> {
         )
             .prop_map(
                 |(applies_to, change, mana, per, condition)| Ability::CostModifier {
+                    targeting: None,
                     applies_to,
                     change,
                     mana,

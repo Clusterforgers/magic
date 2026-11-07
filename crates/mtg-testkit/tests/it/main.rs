@@ -194,6 +194,7 @@ mod e10b_sealed;
 mod e14e_copy_activated;
 mod e14e_copy_each_target;
 mod e14e_rather_cost;
+mod e14e_targeted_equip;
 mod e14e_until_next_turn;
 mod elimination;
 mod embalm;

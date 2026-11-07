@@ -11,6 +11,7 @@ use mtg_core::mana::ManaCost;
 
 use crate::abilities::AbilityRef;
 use crate::announce::c11a_reduced;
+use crate::object::ObjectRef;
 use crate::price::Price;
 use crate::resolve::Scope;
 use crate::state::{GameState, Tally};
@@ -18,12 +19,14 @@ use crate::state::{GameState, Tally};
 /// The most times one change applies: a count this large is more mana than any cost has.
 const C11A_MOST_TIMES: i64 = 100;
 
-/// The mana of `price` with the changes of the ability applied, activated by `player` from `source`.
+/// The mana of `price` with the changes of the ability applied, activated by `player` from `source`; `targeted` is what the
+/// activation targets once announced (`None` before).
 pub(crate) fn c11a_mana(
     state: &GameState,
     player: PlayerId,
     (source, address, rules): (ObjectId, AbilityRef, &Ability),
     price: &Price,
+    targeted: Option<&[ObjectRef]>,
 ) -> Option<ManaCost> {
     // A cost without mana still takes the mana a modifier adds ("activated abilities cost {2} more").
     let own = c11a_own(
@@ -33,7 +36,7 @@ pub(crate) fn c11a_mana(
         price,
         price.mana.clone().unwrap_or(ManaCost::ZERO),
     );
-    let total = crate::activation_kind::modified(state, source, address, rules, own);
+    let total = crate::activation_kind::modified(state, (source, address, rules), own, targeted);
     (price.mana.is_some() || total != ManaCost::ZERO).then_some(total)
 }
 
@@ -43,6 +46,7 @@ pub(crate) fn loyalty_mana(
     state: &GameState,
     player: PlayerId,
     (source, address, rules): (ObjectId, AbilityRef, &Ability),
+    targeted: Option<&[ObjectRef]>,
 ) -> Option<(ManaCost, Price)> {
     let price = Price::announced_in(
         &mtg_cards::cost::Cost(Vec::new()),
@@ -52,7 +56,8 @@ pub(crate) fn loyalty_mana(
         None,
     )
     .ok()?;
-    let total = crate::activation_kind::modified(state, source, address, rules, ManaCost::ZERO);
+    let total =
+        crate::activation_kind::modified(state, (source, address, rules), ManaCost::ZERO, targeted);
     (total != ManaCost::ZERO).then_some((total, price))
 }
 

@@ -1077,6 +1077,7 @@ fn cost_modifier(r: &mut Reader<'_>) -> Option<Ability> {
         (None, None) => r.attempt(cost_conditions::trailing),
     };
     Some(Ability::CostModifier {
+        targeting: None,
         applies_to,
         change,
         mana,
@@ -1326,6 +1327,7 @@ pub fn texts(ability: &Ability) -> Vec<String> {
             written
         }
         Ability::CostModifier {
+            targeting: None,
             applies_to,
             change,
             mana,

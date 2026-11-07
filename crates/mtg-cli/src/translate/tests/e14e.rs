@@ -166,3 +166,23 @@ fn the_neighbours_of_a_copy_for_each_target_stay_gaps(#[case] key: &str, #[case]
     let (_, gaps) = card("Creature", &format!("{ZADA} | {key}"), "x");
     assert!(gaps.iter().any(|g| g == gap), "{gaps:?}");
 }
+
+#[rstest]
+#[case::equip_that_targets_this(
+    "S:Mode$ ReduceCost | ValidTarget$ Card.Self | ValidSpell$ Activated.Equip | Activator$ You | Amount$ 3 | Description$ x",
+    r#""activating":"Equip","applies_to":[{"ControlledBy":"You"}],"change":"Reduce","mana":"{3}","targeting":["This"]"#
+)]
+#[case::its_own_equip_that_targets_a_colorless_creature(
+    "S:Mode$ ReduceCost | ValidTarget$ Creature.Colorless | ValidSpell$ Activated.Equip | Amount$ 2 | ValidCard$ Card.Self | Description$ x",
+    r#""targeting":[{"Type":"Creature"},"Colorless"]"#
+)]
+fn an_ability_cost_reads_the_target_of_the_ability(#[case] lines: &str, #[case] part: &str) {
+    let (json, gaps) = card(
+        "Creature",
+        lines,
+        "Equip abilities you activate that target this creature cost {3} less to activate.",
+    );
+    assert!(gaps.is_empty(), "{gaps:?}");
+    assert!(json.contains(part), "{json}");
+    assert!(!json.contains(r#"{"Targeting""#), "{json}");
+}

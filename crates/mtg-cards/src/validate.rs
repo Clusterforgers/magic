@@ -4145,8 +4145,20 @@ impl Walker<'_> {
                 mana,
                 per,
                 condition,
+                targeting,
+                activating,
                 ..
-            } => w.cost_modifier(applies_to, mana, per, condition.as_ref()),
+            } => {
+                w.cost_modifier(applies_to, mana, per, condition.as_ref());
+                if let Some(targeting) = targeting {
+                    if activating.is_none() {
+                        w.problem(
+                            "a spell's targets are read with Targeting in what it applies to",
+                        );
+                    }
+                    w.at("targeting", |w| w.selector(targeting));
+                }
+            }
             Ability::AdditionalCost { cost, required } => w.additional_cost(cost, *required),
             Ability::FreeCast { condition, cost } => {
                 w.w14c_free_cast(condition.as_ref(), cost.as_ref());

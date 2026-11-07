@@ -5,10 +5,43 @@ use super::super::article;
 use crate::ability::{Ability, CostChange};
 use crate::refs::{Pred, Ref};
 
+/// Adds the wording of a cost change for the equip abilities the controller activates that target the source: "Equip
+/// abilities you activate that target ~ cost {2} less to activate."
+fn add_equip(ability: &Ability, texts: &mut Vec<String>) {
+    let Ability::CostModifier {
+        targeting: Some(target),
+        applies_to,
+        change,
+        mana,
+        per,
+        condition: None,
+        activating: Some(crate::ability::ActivationKind::Equip),
+        least: 0,
+    } = ability
+    else {
+        return;
+    };
+    if applies_to.0.as_slice() != [Pred::ControlledBy(Ref::You)]
+        || target.0.as_slice() != [Pred::This]
+        || !per.is_one()
+    {
+        return;
+    }
+    let more = match change {
+        CostChange::Increase => "more",
+        CostChange::Reduce => "less",
+    };
+    texts.push(format!(
+        "Equip abilities you activate that target ~ cost {mana} {more} to activate."
+    ));
+}
+
 /// Adds the wordings of a cost change for the spells of the controller or the opponents that target the source or a
 /// permanent of a type.
 pub(super) fn add(ability: &Ability, texts: &mut Vec<String>) {
+    add_equip(ability, texts);
     let Ability::CostModifier {
+        targeting: None,
         applies_to,
         change,
         mana,

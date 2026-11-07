@@ -220,7 +220,7 @@ fn can_activate(
         return false;
     }
     if let Some(mana) =
-        crate::c11a_less::c11a_mana(state, player, (object.id(), address, rules), &price)
+        crate::c11a_less::c11a_mana(state, player, (object.id(), address, rules), &price, None)
     {
         let mana = &mana;
         let Some(seat) = state.player(player) else {
@@ -294,7 +294,7 @@ fn loyalty_mana_affordable(
     rules: &Ability,
 ) -> bool {
     let Some((mana, price)) =
-        crate::c11a_less::loyalty_mana(state, player, (object.id(), address, rules))
+        crate::c11a_less::loyalty_mana(state, player, (object.id(), address, rules), None)
     else {
         return true;
     };
