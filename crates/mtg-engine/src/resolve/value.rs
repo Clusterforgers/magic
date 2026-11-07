@@ -2435,6 +2435,7 @@ impl<'a> Scope<'a> {
             Condition::IsNight => self.state.day_night() == Some(DayNight::Night),
             Condition::NeitherDayNorNight => self.state.day_night().is_none(),
             Condition::YourTurn => self.state.turn().active() == self.controller,
+            Condition::Among(who) => self.players(who)?.contains(&self.controller),
             Condition::StartingPlayer(who) => {
                 let first = self.state.first_player();
                 let named = self.players(who)?;

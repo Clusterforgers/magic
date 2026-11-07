@@ -1167,6 +1167,10 @@ impl<'a> Walker<'a> {
                 self.uses("Condition", "StartingPlayer");
                 self.at("StartingPlayer", |w| w.reference(who, Kind::Player));
             }
+            Condition::Among(who) => {
+                self.uses("Condition", "Among");
+                self.at("Among", |w| w.reference(who, Kind::Player));
+            }
             Condition::ChosenWord { name, .. } => {
                 self.uses("Condition", "ChosenWord");
                 self.chosen_as(name);

@@ -1,6 +1,6 @@
 //! Goal: round 11 pack g11a reads players who control more, fewer or at least N more permanents of a type than the
 //! player who asks (`Ref::Asker`), as a count, a static's players and a trigger's player, a goad for the rest of the game or while the source
-//! stays, connive N and an optional scry, and leaves other words a gap by name.
+//! stays, connive N, an optional scry and each other opponent, and leaves other words a gap by name.
 #![allow(clippy::unwrap_used)]
 
 use rstest::rstest;
@@ -179,6 +179,30 @@ fn an_optional_scry_is_each_players_choice(#[case] keys: &str, #[case] effects: 
     let (json, found) = card("Sorcery", &format!("{SCRY}{keys}"), "");
     assert!(found.is_empty(), "{found:?}");
     assert!(json.contains(effects), "{json}");
+}
+
+const SPREAD: &str = "T:Mode$ DamageDone | ValidSource$ Card.Self | ValidTarget$ Opponent | CombatDamage$ True | Execute$ D\nSVar:D:DB$ DamageAll | ValidPlayers$ OppNonTriggeredTarget | NumDmg$ X\nSVar:X:TriggerCount$DamageAmount";
+
+#[test]
+fn each_other_opponent_is_every_opponent_but_the_one_dealt_damage() {
+    let (json, found) = card(
+        "Creature Elf",
+        SPREAD,
+        "Whenever Subject deals combat damage to an opponent, it deals that much damage to each other opponent.",
+    );
+    assert!(found.is_empty(), "{found:?}");
+    let to = r#""to":{"PlayersWhere":{"test":{"Not":{"Among":"Triggering"}},"who":"Opponents"}}"#;
+    assert!(json.contains(to), "{json}");
+}
+
+#[test]
+fn each_other_opponent_without_a_player_trigger_stays_a_gap() {
+    let (_, found) = card(
+        "Sorcery",
+        "A:SP$ DamageAll | ValidPlayers$ OppNonTriggeredTarget | NumDmg$ 2",
+        "",
+    );
+    assert_eq!(found, ["key:DamageAll.ValidPlayers=OppNonTriggeredTarget"]);
 }
 
 #[test]

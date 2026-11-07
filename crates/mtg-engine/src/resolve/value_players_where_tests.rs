@@ -1,4 +1,4 @@
-//! Goal: `Ref::PlayersWhere` names the players of its group for whom the condition holds with each taken as "you", at three seats, names nobody when it holds for none, and keeps `Ref::Asker` the player whose ability asks.
+//! Goal: `Ref::PlayersWhere` names the players of its group for whom the condition holds with each taken as "you", at three seats, names nobody when it holds for none, keeps `Ref::Asker` the player whose ability asks, and `Condition::Among` tells the player tested from the players a reference names.
 
 use std::sync::Arc;
 
@@ -81,6 +81,15 @@ const TWO_MORE_THAN_ASKER: &str = r#"{"Compare":{"left":{"Count":[{"Type":"Creat
 #[case::fewer_than_the_middle_seat(1, "Opponents", FEWER_THAN_ASKER, 1)]
 #[case::two_more_than_the_last_seat(2, "EachPlayer", TWO_MORE_THAN_ASKER, 1)]
 #[case::two_more_than_the_middle_seat(1, "EachPlayer", TWO_MORE_THAN_ASKER, 0)]
+#[case::every_player_but_the_asker(1, "EachPlayer", r#"{"Not":{"Among":"Asker"}}"#, 2)]
+#[case::the_opponents_but_the_active_player(
+    1,
+    "Opponents",
+    r#"{"Not":{"Among":"ActivePlayer"}}"#,
+    1
+)]
+#[case::the_active_player_among_them(2, "EachPlayer", r#"{"Among":"ActivePlayer"}"#, 1)]
+#[case::nobody_among_nobody(0, "EachPlayer", r#"{"Among":"Monarch"}"#, 0)]
 fn the_asker_stays_the_player_whose_ability_asks(
     #[case] seat: u64,
     #[case] who: &str,

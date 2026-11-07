@@ -3277,6 +3277,13 @@ impl Writer<'_> {
             Ref::You => Some("you".to_owned()),
             Ref::Triggering => Some("that player".to_owned()),
             Ref::Each(selector) => Some(format!("each {}", phrase_text(selector, Form::Each)?)),
+            // The opponents but the one the trigger is about.
+            Ref::PlayersWhere { who, test }
+                if **who == Ref::Opponents
+                    && **test == Condition::Not(Box::new(Condition::Among(Ref::Triggering))) =>
+            {
+                Some("each other opponent".to_owned())
+            }
             _ => None,
         }
     }

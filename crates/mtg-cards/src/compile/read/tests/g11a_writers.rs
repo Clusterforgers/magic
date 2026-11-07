@@ -98,3 +98,34 @@ fn g11a_connive_n_writes_back(#[case] json: &str, #[case] clause: &str) {
 fn g11a_connive_of_another_count_differs(#[case] json: &str, #[case] clause: &str) {
     assert!(!written(json, clause), "{clause}");
 }
+
+/// "Whenever ~ deals combat damage to an opponent, it deals that much damage to ..." with the players hit.
+fn spread(to: &str) -> String {
+    format!(
+        r#"{{"Triggered":{{"effects":[{{"DealDamage":{{"amount":"Triggering","to":{to}}}}}],"when":{{"DealsDamage":{{"combat":true,"source":["This"],"to":"Opponents"}}}}}}}}"#
+    )
+}
+
+fn others(who: &str, but: &str) -> String {
+    format!(r#"{{"PlayersWhere":{{"test":{{"Not":{{"Among":"{but}"}}}},"who":"{who}"}}}}"#)
+}
+
+const SPREAD: &str = "Whenever this creature deals combat damage to an opponent, it deals that much damage to each other opponent.";
+
+#[test]
+fn g11a_each_other_opponent_writes_back() {
+    let json = spread(&others("Opponents", "Triggering"));
+    assert!(
+        written(&json, SPREAD),
+        "{:?}",
+        written_variants(&ability(&json))
+    );
+}
+
+#[rstest]
+#[case::each_opponent(&spread(r#""Opponents""#))]
+#[case::other_players(&spread(&others("EachPlayer", "Triggering")))]
+#[case::but_you(&spread(&others("Opponents", "You")))]
+fn g11a_other_players_differ(#[case] json: &str) {
+    assert!(!written(json, SPREAD), "{json}");
+}
