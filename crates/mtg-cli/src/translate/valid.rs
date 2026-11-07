@@ -805,7 +805,7 @@ pub fn target_spec(ctx: &Ctx, params: &Params, zone: Option<&str>) -> Tr<Value> 
         what = json!({"Another": {"what": what, "earlier": earlier}});
     }
     if let Some(word) = params.get("TargetingPlayer") {
-        what = chosen_by(ctx, params, word, what)?;
+        what = chosen_by(ctx, params, word, &what)?;
     }
     let min = params.get("TargetMin");
     let max = params.get("TargetMax");
@@ -830,7 +830,7 @@ pub fn target_spec(ctx: &Ctx, params: &Params, zone: Option<&str>) -> Tr<Value> 
 /// `TargetingPlayer$`: "target creature of an opponent's choice", "... of that player's choice". The player who chooses
 /// is an opponent or a player of the triggering event; a player read from another target of the line is not known while
 /// the targets are chosen, and "they control" (`TargetingPlayerControls$`) is not read.
-fn chosen_by(ctx: &Ctx, params: &Params, word: &str, what: Value) -> Tr<Value> {
+fn chosen_by(ctx: &Ctx, params: &Params, word: &str, what: &Value) -> Tr<Value> {
     if params.has("TargetingPlayerControls") {
         return unmapped("key:TargetingPlayerControls");
     }

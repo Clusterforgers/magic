@@ -170,24 +170,7 @@ pub fn play(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
         Some("True") if p.get("ValidZone") == Some("Exile") || p.has("Defined") => true,
         Some(_) => return unmapped("key:Play.CopyCard"),
     };
-    let pool = match (p.get("Defined"), p.get("Valid"), p.get("ValidZone")) {
-        (Some(_), None, None) if !spell_filter.is_empty() => {
-            return unmapped("key:Play.Defined-with-ValidSA-filter");
-        }
-        (Some(word), None, None) => defined(ctx, word)?,
-        // "you may cast target card from your graveyard": the target is chosen as the ability is put on the stack.
-        (None, None, None) if p.has("ValidTgts") && spell_filter.is_empty() => {
-            subject(ctx, p, "", None)?
-        }
-        (None, Some(valid), Some(zone)) => {
-            let mut selector = selector_in(ctx, valid, Some(zone))?;
-            selector.extend(spell_filter);
-            json!({ "Each": selector })
-        }
-        (None, Some(_), None) => return unmapped("key:Play.no-ValidZone"),
-        (None, None, _) => return unmapped("key:Play.no-Defined"),
-        _ => return unmapped("key:Play.Defined-with-Valid"),
-    };
+    let pool = play_pool(ctx, p, spell_filter)?;
     let free = p.get("WithoutManaCost") == Some("True");
     let played = played_name(ctx, p, spell_only || copy, matches!(count, Count::One))?;
     let cast = |card: Value, ctx: &mut Ctx| -> Vec<Value> {
@@ -233,6 +216,31 @@ pub fn play(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
     let inner = cast(json!({ "Bound": each }), ctx);
     steps.push(json!({"RepeatEach": {"over": over, "as": each, "effects": inner}}));
     Ok(steps)
+}
+
+/// The cards a `Play` may cast: those `Defined$` names, its target, or those `Valid$` selects in `ValidZone$`, with the
+/// predicates of `ValidSA$`.
+fn play_pool(ctx: &mut Ctx, p: &Params, spell_filter: Vec<Value>) -> Tr<Value> {
+    Ok(
+        match (p.get("Defined"), p.get("Valid"), p.get("ValidZone")) {
+            (Some(_), None, None) if !spell_filter.is_empty() => {
+                return unmapped("key:Play.Defined-with-ValidSA-filter");
+            }
+            (Some(word), None, None) => defined(ctx, word)?,
+            // "you may cast target card from your graveyard": the target is chosen as the ability is put on the stack.
+            (None, None, None) if p.has("ValidTgts") && spell_filter.is_empty() => {
+                subject(ctx, p, "", None)?
+            }
+            (None, Some(valid), Some(zone)) => {
+                let mut selector = selector_in(ctx, valid, Some(zone))?;
+                selector.extend(spell_filter);
+                json!({ "Each": selector })
+            }
+            (None, Some(_), None) => return unmapped("key:Play.no-ValidZone"),
+            (None, None, _) => return unmapped("key:Play.no-Defined"),
+            _ => return unmapped("key:Play.Defined-with-Valid"),
+        },
+    )
 }
 
 /// `RememberPlayed$` of a `Play`: the name of the spell cast ("if you do"). A land played binds nothing and one name holds

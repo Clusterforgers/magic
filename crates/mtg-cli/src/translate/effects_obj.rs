@@ -979,6 +979,46 @@ fn animate_duration(ctx: &Ctx, p: &Params) -> Tr<&'static str> {
 }
 
 /// `Animate`: the object becomes something else for a while ("becomes a 4/4 Elemental creature with flying").
+/// The `Animate` keys other than colours, which a change of a spell on the stack does not read.
+const NOT_FOR_SPELLS: [&str; 17] = [
+    "Types",
+    "Power",
+    "Toughness",
+    "Keywords",
+    "RemoveKeywords",
+    "RemoveAllAbilities",
+    "Triggers",
+    "Abilities",
+    "staticAbilities",
+    "Replacements",
+    "RemoveCreatureTypes",
+    "RemoveCardTypes",
+    "RemoveLandTypes",
+    "AddAllCreatureTypes",
+    "ValidCards",
+    "HiddenKeywords",
+    "AtEOT",
+];
+
+/// Whether the line changes a target spell on the stack in more than its colours. An effect changes a spell like a
+/// permanent (CR 400.7a), but only colour changes of spells are read. (The header folded `TgtZone$` into the
+/// valid-string as `inZoneStack` by now.)
+fn spell_change_beyond_colors(p: &Params) -> bool {
+    [p.get("TgtZone"), p.get("ValidTgts")]
+        .into_iter()
+        .flatten()
+        .any(|text| text.contains("Stack"))
+        && NOT_FOR_SPELLS.iter().any(|key| p.has(key))
+}
+
+/// "Creatures target player controls": the group as it is now, of the permanents the target controls (CR 611.2c).
+fn of_target_player(ctx: &mut Ctx, p: &Params, valid: &str) -> Tr<Value> {
+    let player = subject(ctx, p, "", None)?;
+    let mut selector = selector_any(ctx, valid)?;
+    selector.push(json!({ "ControlledBy": player }));
+    Ok(json!({ "Each": selector }))
+}
+
 fn animate(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
     only(
         p,
@@ -1010,50 +1050,13 @@ fn animate(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
             "HiddenKeywords",
         ],
     )?;
-    // An effect changes a spell on the stack like a permanent (CR 400.7a), but only its colours are held there yet.
-    // (The header folded `TgtZone$` into the valid-string as `inZoneStack` by now.)
-    if [p.get("TgtZone"), p.get("ValidTgts")]
-        .into_iter()
-        .flatten()
-        .any(|text| text.contains("Stack"))
-        && [
-            "Types",
-            "Power",
-            "Toughness",
-            "Keywords",
-            "RemoveKeywords",
-            "RemoveAllAbilities",
-            "Triggers",
-            "Abilities",
-        ]
-        .into_iter()
-        .chain([
-            "staticAbilities",
-            "Replacements",
-            "RemoveCreatureTypes",
-            "RemoveCardTypes",
-            "RemoveLandTypes",
-        ])
-        .chain([
-            "AddAllCreatureTypes",
-            "ValidCards",
-            "HiddenKeywords",
-            "AtEOT",
-        ])
-        .any(|key| p.has(key))
-    {
+    if spell_change_beyond_colors(p) {
         return unmapped("key:Animate.TgtZone=Stack");
     }
     let duration = animate_duration(ctx, p)?;
     // `AnimateAll` names the objects by a valid-string.
     let affected = match p.get("ValidCards") {
-        // "creatures target player controls": the group as it is now, of the permanents the target controls (CR 611.2c).
-        Some(valid) if p.get("ValidTgts") == Some("Player") => {
-            let player = subject(ctx, p, "", None)?;
-            let mut selector = selector_any(ctx, valid)?;
-            selector.push(json!({ "ControlledBy": player }));
-            json!({ "Each": selector })
-        }
+        Some(valid) if p.get("ValidTgts") == Some("Player") => of_target_player(ctx, p, valid)?,
         Some(_)
             if p.get("ValidTgts")
                 .is_some_and(|valid| valid.contains("Player")) =>

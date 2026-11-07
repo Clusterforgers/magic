@@ -163,7 +163,7 @@ fn a_colorless_spell_is_countered_and_a_red_one_is_no_target(
             }
             driver.pass()?;
         }
-        assert!(driver.offered_abilities("Silencer")?.is_empty());
+        assert_eq!(driver.offered_abilities("Silencer")?, Vec::<usize>::new());
         return Ok(());
     }
     driver.begin_activation("Silencer")?;
