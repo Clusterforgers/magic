@@ -56,7 +56,7 @@ fn a_tie_goes_to_the_named_choice() {
 }
 
 #[rstest]
-#[case::no_rule("Vote | Defined$ Player | Choices$ DBA,DBB", "key:Vote.shape")]
+#[case::no_rule("Vote | Defined$ Player | Choices$ DBA", "key:Vote.shape")]
 #[case::count_unread(
     "Vote | Defined$ Player | Choices$ DBA,DBB | StoreVoteNum$ True",
     "key:Vote.StoreVoteNum-unread"

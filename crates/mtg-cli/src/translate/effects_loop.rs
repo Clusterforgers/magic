@@ -592,7 +592,10 @@ const E14C_CARD_TYPES: [&str; 9] = [
 /// A `ChooseType` limited by `ValidTypes$` (only these card types) or `InvalidTypes$` (every card type but these, or a
 /// creature type other than these); None when neither is given. A word that is no card type stays a gap.
 fn e14c_type_list(p: &Params, kind: &str) -> Tr<Option<Value>> {
-    let words = |key: &str| p.get(key).map(|list| list.split(',').map(str::trim).collect::<Vec<_>>());
+    let words = |key: &str| {
+        p.get(key)
+            .map(|list| list.split(',').map(str::trim).collect::<Vec<_>>())
+    };
     let known = |list: &[&str]| list.iter().all(|word| E14C_CARD_TYPES.contains(word));
     match (kind, words("ValidTypes"), words("InvalidTypes")) {
         (_, None, None) => Ok(None),

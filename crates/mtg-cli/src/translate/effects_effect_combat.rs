@@ -74,7 +74,9 @@ fn read(
             // this combat if able"): the pair of the one creature and that player.
             Some("ChosenPlayer") if subject == json!("This") => {
                 let players = super::valid::defined(ctx, "ChosenPlayer")?;
-                vec![rule(json!({"MustAttackPlayers": {"who": subject, "players": players}}))]
+                vec![rule(
+                    json!({"MustAttackPlayers": {"who": subject, "players": players}}),
+                )]
             }
             Some(other) => return unmapped(format!("key:Effect.static.MustAttack={other}")),
         },

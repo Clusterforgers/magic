@@ -1137,10 +1137,16 @@ fn charm(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
 
 /// Whether the mode has one target specification, of one player or one opponent.
 fn e14c_one_player_target(mode: &Value) -> bool {
-    match mode.get("targets").and_then(Value::as_array).map(Vec::as_slice) {
+    match mode
+        .get("targets")
+        .and_then(Value::as_array)
+        .map(Vec::as_slice)
+    {
         Some([spec]) => {
-            matches!(spec.get("what").and_then(Value::as_str), Some("Player" | "Opponent"))
-                && spec.get("bounds").is_none()
+            matches!(
+                spec.get("what").and_then(Value::as_str),
+                Some("Player" | "Opponent")
+            ) && spec.get("bounds").is_none()
         }
         _ => false,
     }

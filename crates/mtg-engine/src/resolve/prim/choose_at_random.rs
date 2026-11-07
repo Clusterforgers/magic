@@ -109,7 +109,7 @@ fn e14c_players(
 
 #[cfg(test)]
 mod tests {
-    //! Goal: a pick at random takes the count asked of the cards named from the game's seeded random source, the same cards for the same seed and every card for some seed, fewer when there are not so many and nothing for an empty set (which is no event and spends no substream), binds the pick in the order it was drawn, and refuses cards that a seat cannot see.
+    //! Goal: a pick at random takes the count asked of the cards named from the game's seeded random source, the same cards for the same seed and every card for some seed, fewer when there are not so many and nothing for an empty set (which is no event and spends no substream), binds the pick in the order it was drawn, refuses cards that a seat cannot see, and picks a player among players as a public event of players.
     use std::collections::BTreeSet;
 
     use mtg_core::ids::PlayerId;
@@ -278,11 +278,20 @@ mod tests {
         }
     }
 
-    #[test]
-    fn players_are_not_picked_at_random() {
-        assert!(matches!(
-            picks(&game(1, 2), &pick_json(r#""Opponents""#, "1")),
-            Err(ResolveError::Invalid(_))
-        ));
+    #[rstest]
+    #[case::two_seats(2)]
+    #[case::four_seats(4)]
+    fn an_opponent_is_picked_at_random_as_a_public_event(#[case] seats: usize) {
+        let Ok(Run::Done { events, bound, .. }) =
+            picks(&game(1, seats), &pick_json(r#""Opponents""#, "1"))
+        else {
+            panic!("the pick is done");
+        };
+        let [Event::PlayersChosenAtRandom { players }] = events.as_slice() else {
+            panic!("one pick of players: {events:?}");
+        };
+        assert_eq!(players.len(), 1);
+        assert_ne!(players[0], ME);
+        assert_eq!(bound[0].1, vec![Target::Player(players[0])]);
     }
 }

@@ -235,9 +235,9 @@ fn options(kind: &ValueKind) -> Vec<ChoiceOption> {
             .collect(),
         ValueKind::CreatureTypeExcept(left_out) => values::creature_types()
             .into_iter()
-            .filter(|option| {
-                !matches!(option, ChoiceOption::Label(name) if left_out.contains(name))
-            })
+            .filter(
+                |option| !matches!(option, ChoiceOption::Label(name) if left_out.contains(name)),
+            )
             .collect(),
         ValueKind::CardName(_) | ValueKind::Number(..) => Vec::new(),
     }
@@ -249,7 +249,10 @@ fn question(kind: &ValueKind) -> String {
         ValueKind::Color | ValueKind::Colors => "Choose a color.".to_owned(),
         ValueKind::CreatureType => "Choose a creature type.".to_owned(),
         ValueKind::CreatureTypeExcept(left_out) => {
-            format!("Choose a creature type other than {}.", left_out.join(" or "))
+            format!(
+                "Choose a creature type other than {}.",
+                left_out.join(" or ")
+            )
         }
         ValueKind::CardType => "Choose a card type.".to_owned(),
         ValueKind::CardTypeOf(kinds) => format!(
@@ -271,17 +274,18 @@ fn question(kind: &ValueKind) -> String {
 fn value(kind: &ValueKind, option: &ChoiceOption) -> Option<Chosen> {
     match (kind, option) {
         (ValueKind::Color, ChoiceOption::Color(color)) => Some(Chosen::Color(*color)),
-        (
-            ValueKind::CreatureType | ValueKind::CreatureTypeExcept(_),
-            ChoiceOption::Label(name),
-        ) => Some(Chosen::CreatureType(Subtype(name.clone()))),
+        (ValueKind::CreatureType | ValueKind::CreatureTypeExcept(_), ChoiceOption::Label(name)) => {
+            Some(Chosen::CreatureType(Subtype(name.clone())))
+        }
         (ValueKind::LandType, ChoiceOption::Label(name)) => {
             Some(Chosen::LandType(Subtype(name.clone())))
         }
-        (ValueKind::CardType | ValueKind::CardTypeOf(_), ChoiceOption::Label(name)) => values::CARD_TYPES
-            .into_iter()
-            .find(|card_type: &CardType| format!("{card_type:?}") == *name)
-            .map(Chosen::CardType),
+        (ValueKind::CardType | ValueKind::CardTypeOf(_), ChoiceOption::Label(name)) => {
+            values::CARD_TYPES
+                .into_iter()
+                .find(|card_type: &CardType| format!("{card_type:?}") == *name)
+                .map(Chosen::CardType)
+        }
         (ValueKind::Options(_), ChoiceOption::Label(word)) => Some(Chosen::Word(word.clone())),
         _ => None,
     }
@@ -350,6 +354,16 @@ mod tests {
     #[case::card_types(r#""CardType""#, 9, "Choose a card type.")]
     #[case::land_types(r#""LandType""#, 17, "Choose a land type.")]
     #[case::words(r#"{"Options":["odd","even"]}"#, 2, "Choose odd or even.")]
+    #[case::e14c_named_card_types(
+        r#"{"CardTypeOf":["Creature","Land"]}"#,
+        2,
+        "Choose creature or land."
+    )]
+    #[case::e14c_permanent_types(
+        r#"{"CardTypeOf":["Artifact","Battle","Creature","Enchantment","Land","Planeswalker"]}"#,
+        6,
+        "Choose artifact or battle or creature or enchantment or land or planeswalker."
+    )]
     fn the_player_is_asked_between_the_options_of_the_kind(
         #[case] json: &str,
         #[case] count: usize,
@@ -373,6 +387,16 @@ mod tests {
     #[case::a_land_type(r#""LandType""#, 0, Chosen::LandType(Subtype(LAND_TYPES[0].to_owned())))]
     #[case::a_card_type(r#""CardType""#, 2, Chosen::CardType(CardType::Creature))]
     #[case::a_word(r#"{"Options":["odd","even"]}"#, 1, Chosen::Word("even".to_owned()))]
+    #[case::e14c_a_named_card_type(
+        r#"{"CardTypeOf":["Creature","Land"]}"#,
+        1,
+        Chosen::CardType(CardType::Land)
+    )]
+    #[case::e14c_a_creature_type_but_wall(
+        r#"{"CreatureTypeExcept":["Wall"]}"#,
+        0,
+        Chosen::CreatureType(Subtype(mtg_cards::compile::creature_types()[0].to_owned()))
+    )]
     fn the_answer_is_remembered_as_the_value_of_its_option(
         #[case] json: &str,
         #[case] index: usize,
