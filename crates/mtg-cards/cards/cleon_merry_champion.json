@@ -12,11 +12,11 @@
           "Triggered": {
             "when": { "SpellCast": { "what": [{ "Targeting": ["This"] }], "by": "You" } },
             "effects": [
-              { "ExileTop": { "as": "exiled" } },
+              { "ExileTop": { "as": "impulse" } },
               {
                 "Rule": {
                   "rule": {
-                    "MayCast": { "from": "Exile", "only": { "Bound": "exiled" }, "play": true }
+                    "MayCast": { "from": "Exile", "only": { "Bound": "impulse" }, "play": true }
                   },
                   "duration": "UntilEndOfYourNextTurn"
                 }

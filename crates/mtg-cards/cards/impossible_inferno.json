@@ -22,13 +22,13 @@
                     }
                   },
                   "then": [
-                    { "ExileTop": { "as": "exiled" } },
+                    { "ExileTop": { "as": "impulse" } },
                     {
                       "Rule": {
                         "rule": {
                           "MayCast": {
                             "from": "Exile",
-                            "only": { "Bound": "exiled" },
+                            "only": { "Bound": "impulse" },
                             "play": true
                           }
                         },
