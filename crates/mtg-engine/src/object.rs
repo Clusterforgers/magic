@@ -144,6 +144,8 @@ impl FaceDown {
 }
 
 /// The designations of a permanent: marks the rules put on it that it keeps only while it stays on the battlefield.
+// Independent marks of the rules, not the states of one machine.
+#[allow(clippy::struct_excessive_bools)]
 #[derive(Debug, Clone, Copy, Default, PartialEq, Eq, Hash)]
 pub struct Designations {
     /// It has become monstrous (CR 701.37).

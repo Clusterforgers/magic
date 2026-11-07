@@ -1726,6 +1726,19 @@ impl<'a> Walker<'a> {
         self.keyword(keyword);
     }
 
+    /// What an enchant ability may enchant.
+    fn enchant(&mut self, selector: &Selector) {
+        self.selector(selector);
+        // An Aura is attached to a permanent; one that enchants a card in another zone waits for the cards that do.
+        if selector
+            .0
+            .iter()
+            .any(|pred| matches!(pred, Pred::In(zone) if !zone.is_battlefield()))
+        {
+            self.uses("Keyword", "Enchant.Elsewhere");
+        }
+    }
+
     fn keyword(&mut self, keyword: &Keyword) {
         self.uses("Keyword", &tag_of(keyword));
         match keyword {
@@ -1792,17 +1805,7 @@ impl<'a> Walker<'a> {
             Keyword::Crew(0) => self.problem("crew needs a power of at least 1"),
             Keyword::Backup { count, abilities } => self.backup(*count, abilities),
             Keyword::Saddle(0) => self.problem("saddle needs a power of at least 1"),
-            Keyword::Enchant(selector) => {
-                self.selector(selector);
-                // An Aura is attached to a permanent; one that enchants a card in another zone waits for the cards that do.
-                if selector
-                    .0
-                    .iter()
-                    .any(|pred| matches!(pred, Pred::In(zone) if !zone.is_battlefield()))
-                {
-                    self.uses("Keyword", "Enchant.Elsewhere");
-                }
-            }
+            Keyword::Enchant(selector) => self.enchant(selector),
             Keyword::Protection(quality)
             | Keyword::HexproofFrom(quality)
             | Keyword::Landwalk(quality)
