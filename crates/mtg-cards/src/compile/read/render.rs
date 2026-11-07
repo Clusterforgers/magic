@@ -47,6 +47,7 @@ mod player_events;
 mod populated;
 mod put_onto;
 mod r11w_batch;
+mod r11w_leaves;
 mod r7d;
 mod r9w_dread;
 mod r9w_manifest;
@@ -2353,7 +2354,8 @@ impl Writer<'_> {
             }
             Effect::DelayedTrigger {
                 this_turn: true, ..
-            } => super::w2g_next_cast::w2g_next_cast_text(effect)?,
+            } => super::w2g_next_cast::w2g_next_cast_text(effect)
+                .or_else(|| self.r11w_leaves_this_turn(effect))?,
             Effect::Scry { who: Ref::You, .. }
             | Effect::Draw { who: Ref::You, .. }
             | Effect::Mill { who: Ref::You, .. }

@@ -88,6 +88,10 @@ fn sacrifice_all(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
 /// `SacrificeAll` of the objects `word` names.
 fn sacrifice_named(ctx: &mut Ctx, p: &Params, word: &str) -> Tr<Value> {
     let object = defined(ctx, word)?;
+    // "Sacrifice ~": the ability's controller sacrifices the card, and only while they control it (CR 701.21a).
+    if object == json!("This") && p.get("Controller").is_none() {
+        return Ok(json!({"Sacrifice": {"filter": ["This"]}}));
+    }
     let who = match p.get("Controller") {
         None => json!({"ControllerOf": object}),
         Some("You") => json!("You"),

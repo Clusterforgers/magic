@@ -201,3 +201,36 @@ fn tokens_for_what_was_removed_read_back(
         written_variants(&ability(&json))
     );
 }
+
+const GUARD: &str = r#"{"Activated":{"condition":"InCombat","cost":["Tap"],"effects":[{"Continuous":{"affected":{"Target":0},"duration":"UntilEndOfTurn","mods":[{"ModifyPT":{"power":2,"toughness":2}}]}},{"DelayedTrigger":{"effects":[{"Sacrifice":{"filter":["This"]}}],"once":false,"this_turn":true,"when":{"ZoneChange":{"from":"Battlefield","what":[{"Is":{"Target":0}}]}}}}],"targets":[{"what":{"Object":[{"Type":"Creature"}]}}]}}"#;
+const GUARD_TEXT: &str = "{T}: Target creature gets +2/+2 until end of turn. When that creature leaves the battlefield this turn, sacrifice this creature. Activate only during combat.";
+const SACRIFICE: &str = r#"{"Sacrifice":{"filter":["This"]}}"#;
+
+#[rstest]
+#[case::guard(GUARD.to_owned(), true)]
+#[case::for_good(GUARD.replace(r#""this_turn":true"#, r#""this_turn":false"#), false)]
+#[case::from_the_graveyard(
+    GUARD.replace(r#""from":"Battlefield""#, r#""from":"Graveyard""#),
+    false
+)]
+#[case::the_target_sacrificed(
+    GUARD.replace(SACRIFICE, r#"{"Sacrifice":{"filter":[{"Is":{"Target":0}}]}}"#),
+    false
+)]
+#[case::an_opponent_sacrifices(
+    GUARD.replace(SACRIFICE, r#"{"Sacrifice":{"filter":["This"],"who":"Opponents"}}"#),
+    false
+)]
+#[case::this_leaving(GUARD.replace(r#""what":[{"Is":{"Target":0}}]"#, r#""what":["This"]"#), false)]
+#[case::an_artifact_target(
+    GUARD.replace(r#"{"Type":"Creature"}]}}]"#, r#"{"Type":"Artifact"}]}}]"#),
+    false
+)]
+fn the_target_leaving_this_turn_reads_back(#[case] json: String, #[case] same: bool) {
+    assert_eq!(
+        written(&json, GUARD_TEXT),
+        same,
+        "{json}: {:?}",
+        written_variants(&ability(&json))
+    );
+}
