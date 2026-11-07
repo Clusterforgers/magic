@@ -17,15 +17,14 @@
                     {
                       "Choose": {
                         "from": {
-                          "Each": [{ "Type": "Land" }, { "OwnedBy": "You" }, { "In": "Hand" }]
+                          "Each": [{ "In": "Hand" }, { "OwnedBy": "You" }, { "Type": "Land" }]
                         },
-                        "count": { "min": 0, "max": 1 },
-                        "as": "picked"
+                        "as": "card"
                       }
                     },
                     {
                       "Move": {
-                        "what": { "Bound": "picked" },
+                        "what": { "Bound": "card" },
                         "to": { "Battlefield": { "tapped": true } }
                       }
                     }

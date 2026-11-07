@@ -16,8 +16,8 @@
                   "Object": [
                     { "Type": "Creature" },
                     { "Compare": { "stat": "ManaValue", "op": "Le", "to": 1 } },
-                    { "OwnedBy": "You" },
-                    { "In": "Graveyard" }
+                    { "In": "Graveyard" },
+                    { "OwnedBy": "You" }
                   ]
                 }
               }

@@ -24,10 +24,10 @@
                     ]
                   },
                   "count": { "min": 0, "max": 1 },
-                  "as": "kept2"
+                  "as": "kept"
                 }
               },
-              { "Move": { "what": { "Bound": "kept2" }, "to": { "Battlefield": {} } } },
+              { "Move": { "what": { "Bound": "kept" }, "to": { "Battlefield": {} } } },
               {
                 "Move": {
                   "what": { "Bound": "top" },
@@ -65,7 +65,7 @@
         {
           "Static": {
             "affected": {
-              "Each": [{ "Type": "Creature" }, { "Type": "Land" }, { "ControlledBy": "You" }]
+              "Each": [{ "Type": "Land" }, { "Type": "Creature" }, { "ControlledBy": "You" }]
             },
             "mods": [{ "AddKeyword": "Vigilance" }]
           }
