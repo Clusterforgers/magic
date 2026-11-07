@@ -288,3 +288,30 @@ fn remove_counters(ctx: &Ctx, number: &str, what: &str) -> Tr<Value> {
     };
     Ok(json!({"RemoveCounters": {"counter": kind, "count": amount(ctx, number)?}}))
 }
+
+/// `Exiled` of an ability: the cards its cost exiled, which the engine names as the objects the cost picked. A cost that
+/// also picks others (a sacrifice, a discard) is a gap: `Paid` would name those too.
+pub fn exiled_paid(ctx: &Ctx, gap: &str) -> Tr<Value> {
+    let Some(text) = ctx.ability_cost.as_deref() else {
+        return unmapped(format!("{gap}:Exiled-without-a-cost"));
+    };
+    let words = parts(text);
+    let exiles = words.iter().any(|word| word.starts_with("Exile"));
+    let others = words.iter().any(|word| {
+        word.contains('<')
+            && !word.starts_with("Exile")
+            && ![
+                "Mana<",
+                "SubCounter<",
+                "AddCounter<",
+                "PayLife<",
+                "PayEnergy<",
+            ]
+            .iter()
+            .any(|head| word.starts_with(head))
+    });
+    if !exiles || others {
+        return unmapped(format!("{gap}:Exiled-beside-other-cost-picks"));
+    }
+    Ok(json!("Paid"))
+}

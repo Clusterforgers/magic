@@ -276,6 +276,15 @@ fn event_amount(ctx: &Ctx, expression: &str) -> Tr<Option<Value>> {
         "Enchanted" | "Equipped" => json!("Attached"),
         "OriginalHost" if ctx.granted => json!("Granter"),
         "Sacrificed" | "Discarded" => json!("Paid"),
+        "Exiled" => super::cost::exiled_paid(ctx, "amount")?,
+        "Imprinted" if what.starts_with("Valid ") => {
+            let filter = &what["Valid ".len()..];
+            return super::memory::matching_in(ctx, super::memory::Slot::Imprinted, filter)
+                .map(Some);
+        }
+        "Imprinted" if super::memory::stat_word(what).is_some() => {
+            return super::memory::total_in(ctx, super::memory::Slot::Imprinted, what).map(Some);
+        }
         // What the reflexive trigger of an `ImmediateTrigger` was told to remember (`RememberObjects$`).
         "TriggerRemembered" => match &ctx.delayed_remembered {
             Some(bound) => bound.clone(),

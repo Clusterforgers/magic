@@ -142,6 +142,7 @@ pub fn play(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
             "Amount",
             "Controller",
             "CopyCard",
+            "RememberPlayed",
         ],
     )?;
     if p.get("Optional") != Some("True") {
@@ -181,6 +182,14 @@ pub fn play(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
         _ => return unmapped("key:Play.Defined-with-Valid"),
     };
     let free = p.get("WithoutManaCost") == Some("True");
+    // `RememberPlayed$` names the spell cast ("if you do"); a land played binds nothing, so only spells may be asked for.
+    let played = match p.get("RememberPlayed") {
+        None => None,
+        Some("True") if (spell_only || copy) && !matches!(count, Count::All | Count::Some(_)) => {
+            Some(ctx.fresh("cast"))
+        }
+        Some(_) => return unmapped("key:Play.RememberPlayed"),
+    };
     let cast = |card: Value, ctx: &mut Ctx| -> Vec<Value> {
         let mut steps = Vec::new();
         let mut card = card;
@@ -195,6 +204,10 @@ pub fn play(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
         }
         if !spell_only {
             effect["play"] = json!(true);
+        }
+        if let Some(name) = &played {
+            effect["as"] = json!(name);
+            ctx.remembered = Some(json!({ "Bound": name }));
         }
         steps.push(json!({ "CastFromZone": effect }));
         steps

@@ -14,6 +14,7 @@ use crate::forge::script::Params;
 pub fn ability_line(ctx: &mut Ctx, body: &str) -> Tr<Vec<Value>> {
     ctx.reset();
     let p = Params::parse(body);
+    ctx.ability_cost = p.get("Cost").map(str::to_owned);
     if p.has("SP") {
         if ctx.is_aura() && p.get("SP") == Some("Attach") {
             return Ok(Vec::new());

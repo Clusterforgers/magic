@@ -218,17 +218,24 @@ pub fn stat_word(what: &str) -> Option<&'static str> {
 /// `Remembered$CardPower` and kin: the characteristic added up over everything the slot holds (a choice of any number of
 /// creatures has a total), looking in every zone like [`remembered_count`]. One target stays that object's own value.
 pub fn remembered_total(ctx: &Ctx, what: &str) -> Tr<Value> {
-    let (Some(held), Some(stat)) = (slot_ref(ctx, Slot::Remembered), stat_word(what)) else {
-        return unmapped("amount:Remembered-without-a-change");
+    total_in(ctx, Slot::Remembered, what)
+}
+
+/// [`remembered_total`] for either memory.
+pub fn total_in(ctx: &Ctx, slot: Slot, what: &str) -> Tr<Value> {
+    let (Some(held), Some(stat)) = (slot_ref(ctx, slot), stat_word(what)) else {
+        return unmapped(format!("amount:{}-without-a-change", slot.word()));
     };
-    let several = held.get("Bound").is_some() || held.get("Remembered").is_some();
+    let several = ["Bound", "Remembered", "Each"]
+        .iter()
+        .any(|key| held.get(key).is_some());
     if !several
         || held
             .get("Bound")
             .and_then(Value::as_str)
             .is_some_and(|n| ctx.counted.contains(n))
     {
-        return super::amount::targeted_amount("Remembered", what, &held);
+        return super::amount::targeted_amount(slot.word(), what, &held);
     }
     let zones: Vec<Value> = [
         "Battlefield",
@@ -255,10 +262,15 @@ pub fn mixes_the_player(ctx: &Ctx, held: &Value) -> bool {
 /// `Remembered$Amount`: how many objects the slot holds. They sit in the zone the step put them in (CR 400.7), which the
 /// selector does not know, so it looks in every zone.
 pub fn remembered_count(ctx: &Ctx) -> Tr<Value> {
-    let Some(held) = slot_ref_loose(ctx, Slot::Remembered) else {
-        return unmapped("amount:Remembered-without-a-change");
+    count_in(ctx, Slot::Remembered)
+}
+
+/// [`remembered_count`] for either memory.
+pub fn count_in(ctx: &Ctx, slot: Slot) -> Tr<Value> {
+    let Some(held) = slot_ref_loose(ctx, slot) else {
+        return unmapped(format!("amount:{}-without-a-change", slot.word()));
     };
-    if mixes_the_player(ctx, &held) {
+    if slot == Slot::Remembered && mixes_the_player(ctx, &held) {
         return unmapped("amount:Remembered-player-and-cards");
     }
     // A token a step moved is gone, so the engine keeps the number the step moved (CR 111.7, 400.7).
@@ -285,9 +297,23 @@ pub fn remembered_count(ctx: &Ctx) -> Tr<Value> {
 
 /// `Remembered$Valid <filter>`: how many of the objects the slot holds match the filter, as they are now.
 pub fn remembered_matching(ctx: &Ctx, filter: &str) -> Tr<Value> {
-    let Some(held) = slot_ref(ctx, Slot::Remembered) else {
-        return unmapped("amount:Remembered-without-a-change");
+    matching_in(ctx, Slot::Remembered, filter)
+}
+
+/// [`remembered_matching`] for either memory.
+pub fn matching_in(ctx: &Ctx, slot: Slot, filter: &str) -> Tr<Value> {
+    let Some(held) = slot_ref(ctx, slot) else {
+        return unmapped(format!("amount:{}-without-a-change", slot.word()));
     };
+    // In a pass over players Forge's set holds the player and the cards earlier steps remembered; ours holds the player.
+    if slot == Slot::Remembered
+        && ctx
+            .player_loop
+            .as_ref()
+            .is_some_and(|name| held == json!({ "Bound": name }))
+    {
+        return unmapped("amount:Remembered-player-and-cards");
+    }
     let mut selector = vec![
         json!({"Is": held}),
         json!({"AnyOf": ZONES.map(|zone| json!({"In": zone}))}),
@@ -387,6 +413,22 @@ const IMPRINT_AS: [(&str, &str, &str); 11] = [
     ("Reveal", "ImprintRevealed", "RememberRevealed"),
     ("Mill", "Imprint", "RememberMilled"),
 ];
+
+/// The objects a memory holds, as the base of a valid-string reads them (`Remembered.sameName`).
+pub fn held_objects(ctx: &Ctx, slot: Slot) -> Tr<Value> {
+    let held = match slot {
+        Slot::Remembered => ctx.pinned.clone().or_else(|| slot_ref(ctx, slot)),
+        Slot::Imprinted => slot_ref(ctx, slot),
+    };
+    // The player of a pass over players is no object.
+    let player = |held: &Value| {
+        ctx.player_loop
+            .as_ref()
+            .is_some_and(|name| held == &json!({ "Bound": name }))
+    };
+    held.filter(|held| !player(held))
+        .map_or_else(|| unmapped(format!("valid-base:{}", slot.word())), Ok)
+}
 
 /// The keys that remember the objects the line acts on (its target or `Defined$`), for verbs that cannot fail to act.
 const ACTED_ON: [(&str, &str); 5] = [

@@ -140,10 +140,19 @@ fn untap_up_to(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
 }
 
 /// `TapAll`, `UntapAll`: the verb on every object the valid-string names.
+/// `RememberTapped$` of a `TapAll` binds the permanents that became tapped.
 fn all_of(ctx: &mut Ctx, p: &Params, verb: &str) -> Tr<Value> {
-    only(p, verb, &["ValidCards", "ValidTgts"])?;
+    if verb == "Tap" {
+        only(p, verb, &["ValidCards", "ValidTgts", "RememberTapped"])?;
+    } else {
+        only(p, verb, &["ValidCards", "ValidTgts"])?;
+    }
     let valid = p.get("ValidCards").unwrap_or_default();
-    Ok(json!({ verb: {"what": {"Each": frame::all_matching(ctx, p, verb, valid)?}} }))
+    let mut effect = json!({ verb: {"what": {"Each": frame::all_matching(ctx, p, verb, valid)?}} });
+    if remember::wanted(p, &["RememberTapped"]) {
+        remember::bind_moved(ctx, &mut effect, verb, "tapped");
+    }
+    Ok(effect)
 }
 
 /// The indices of the last targets of the ability when a line that declares none reads `Defined$ Targeted` and each of

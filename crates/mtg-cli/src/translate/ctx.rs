@@ -122,6 +122,8 @@ pub struct Ctx<'a> {
     /// The bound names a condition or a "may" bound: later steps may count them or test that they hold something (an
     /// unbound name reads as empty), but not use the objects themselves.
     pub scoped: std::collections::BTreeSet<String>,
+    /// The `Cost$` of the ability line being translated, which `Exiled` reads (the cards its exile parts took).
+    pub ability_cost: Option<String>,
     /// The memories the card reads on a line other than the one that wrote them.
     pub memory: super::memory::Plan,
     /// The objects an `Effect` object remembers, which a trigger or static it carries reads as `IsRemembered`; kept across
@@ -199,6 +201,7 @@ impl<'a> Ctx<'a> {
             player_loop: None,
             imprinted: None,
             moved_from: BTreeMap::new(),
+            ability_cost: None,
             counted: std::collections::BTreeSet::new(),
             scoped: std::collections::BTreeSet::new(),
             in_cost: std::cell::Cell::new(false),
@@ -238,6 +241,7 @@ impl<'a> Ctx<'a> {
         self.damaged = None;
         self.imprinted = None;
         self.moved_from.clear();
+        self.ability_cost = None;
         self.counted.clear();
         self.scoped.clear();
         self.coming = None;
