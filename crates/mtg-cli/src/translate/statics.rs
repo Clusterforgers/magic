@@ -386,6 +386,13 @@ fn continuous(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
             mods.push(json!({"SetPT": {"power": power, "toughness": toughness}}));
         }
         (None, None) => {}
+        // "Enchanted creature has base power 0": the other half stays what it is (CR 613.4b).
+        (Some(power), None) if p.get("CharacteristicDefining").is_none() => {
+            mods.push(json!({"SetPower": stat(ctx, power)?}));
+        }
+        (None, Some(toughness)) if p.get("CharacteristicDefining").is_none() => {
+            mods.push(json!({"SetToughness": stat(ctx, toughness)?}));
+        }
         (power, toughness) => {
             let (power, toughness) = half_stats(ctx, p, power, toughness)?;
             mods.push(json!({"SetPT": {"power": power, "toughness": toughness}}));
@@ -654,6 +661,9 @@ fn added_types(ctx: &Ctx, text: &str, replacing: bool) -> Tr<Vec<Value>> {
             mods.push(json!("AddChosenSubtype"));
         } else if super::ctx::CARD_TYPES.contains(&word) {
             mods.push(json!({"AddType": word}));
+        } else if matches!(word, "Legendary" | "Snow") && !replacing {
+            // "Enchanted permanent is legendary", "Enchanted land is snow" (CR 205.4).
+            mods.push(json!({"AddSupertype": word}));
         } else if ctx.world.subtypes.contains(word) {
             subtypes.push(word);
         } else {
@@ -814,7 +824,8 @@ fn activation_kind(p: &Params) -> Tr<Option<&'static str>> {
         };
     }
     match spell {
-        None | Some("Spell.Bargain") => Ok(None),
+        None | Some("Spell.Bargain" | "Spell") => Ok(None),
+        Some("Activated.Loyalty") => Ok(Some("Loyalty")),
         Some("Activated.Equip") => Ok(Some("Equip")),
         Some("Activated.Cycling") => Ok(Some("Cycling")),
         Some("Activated.!ManaAbility") => Ok(Some("Any")),
@@ -849,8 +860,20 @@ fn cost_modifier(ctx: &Ctx, p: &Params, change: &str) -> Tr<Value> {
         CostKey::Mana(mana) => Some(mana),
         CostKey::None => None,
     };
+    if p.get("ValidSpell") == Some("Spell,Activated.!ManaAbility") && !p.has("Type") {
+        // "Spells your opponents cast cost {1} more to cast and abilities your opponents activate cost {1} more to
+        // activate unless they're mana abilities": one change of spells and one of abilities.
+        let rest = p.without(&["ValidSpell"]);
+        return Ok(json!([
+            cost_modifier(ctx, &rest.clone().with("Type", "Spell"), change)?,
+            cost_modifier(ctx, &rest.with("Type", "Ability"), change)?,
+        ]));
+    }
     let activating = activation_kind(p)?;
-    if activating.is_none() && p.get("Type") != Some("Spell") {
+    if activating.is_none()
+        && p.get("Type") != Some("Spell")
+        && !(p.get("ValidSpell") == Some("Spell") && !p.has("Type"))
+    {
         return unmapped("static:CostModifier-Type");
     }
     if !matches!(p.get("AffectedZone"), None | Some("Battlefield")) {
@@ -881,8 +904,12 @@ fn cost_modifier(ctx: &Ctx, p: &Params, change: &str) -> Tr<Value> {
                 selector.extend(selector_any(ctx, valid)?);
             }
             match p.get("Activator") {
-                None => {}
+                // Any player's spells.
+                None | Some("Player") => {}
                 Some("You") => selector.push(json!({"ControlledBy": "You"})),
+                Some("Player.EnchantedBy") => {
+                    selector.push(json!({"ControlledBy": "AttachedPlayer"}));
+                }
                 Some("Player.Opponent" | "Opponent") => {
                     selector.push(json!({"ControlledBy": "Opponents"}));
                 }
@@ -1070,14 +1097,24 @@ fn half_stats(
         return gap();
     };
     let fixed = |text: &str| text.parse::<u32>().ok().map(|n| json!(n));
+    // `1+*` prints the number the count adds (`Count$... /Plus.1`): the count is the whole half.
+    let star = |text: &str, set: &str| {
+        text == "*"
+            || text.strip_suffix("+*").is_some_and(|n| {
+                n.parse::<u32>().is_ok()
+                    && ctx
+                        .svar(set)
+                        .is_some_and(|count| count.ends_with(&format!("/Plus.{n}")))
+            })
+    };
     match (power, toughness) {
-        (Some(set), None) if left == "*" => {
+        (Some(set), None) if star(left, set) => {
             let Some(other) = fixed(right) else {
                 return gap();
             };
             Ok((amount(ctx, set)?, other))
         }
-        (None, Some(set)) if right == "*" => {
+        (None, Some(set)) if star(right, set) => {
             let Some(other) = fixed(left) else {
                 return gap();
             };

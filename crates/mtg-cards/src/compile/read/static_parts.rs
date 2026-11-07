@@ -7,6 +7,7 @@ use super::render::stats_text;
 use super::selectors::{Form, granted_text, keyword_text, phrase_text, type_name};
 use super::subtypes::plural_subtype;
 use crate::modify::Modification;
+use mtg_core::card::Supertype;
 use crate::value::Amount;
 
 /// The predicates of a static ability over a group (`plural`) or one object, in every wording; empty when a
@@ -86,6 +87,14 @@ fn single(modification: &Modification, _last: bool, plural: bool) -> Vec<String>
             )],
             _ => Vec::new(),
         },
+        Modification::SetPower(Amount::Fixed(power)) => {
+            vec![format!("{} base power {power}", verb(plural, "has", "have"))]
+        }
+        Modification::SetToughness(Amount::Fixed(toughness)) => {
+            vec![format!("{} base toughness {toughness}", verb(plural, "has", "have"))]
+        }
+        Modification::AddSupertype(Supertype::Legendary) => vec![format!("{is} legendary")],
+        Modification::AddSupertype(Supertype::Snow) => vec![format!("{is} snow")],
         Modification::AddType(card_type) => {
             let name = type_name(*card_type);
             if name.is_empty() {
