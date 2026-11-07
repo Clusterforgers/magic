@@ -321,6 +321,56 @@ fn guarded(condition: &str, then: &str) -> String {
     format!(r#"{{"Spell":{{"effects":[{{"If":{{"condition":{condition},"then":[{then}]}}}}]}}}}"#)
 }
 
+fn looked(top: u32, name: &str, count: &str, kind: &str, to: &str, rest: &str) -> String {
+    format!(
+        r#"{{"Triggered":{{"when":{{"ZoneChange":{{"to":"Battlefield","what":["This"]}}}},"effects":[{{"LookAtTop":{{"as":"top","count":{top}}}}},{{"Choose":{{"as":"{name}"{count},"from":{{"Each":[{{"In":"Library"}},{{"Is":{{"Bound":"top"}}}},{{"Type":"{kind}"}}]}}}}}},{{"Move":{{"to":{to},"what":{{"Bound":"{name}"}}}}}},{{"Move":{{"to":{rest},"what":{{"Bound":"top"}}}}}}]}}}}"#
+    )
+}
+
+const ROOT_BOTTOM: &str = r#"{"Library":{"order":"Random","place":"Bottom"}}"#;
+const ROOT_TOP: &str = r#"{"Library":{"order":"Random","place":"Top"}}"#;
+const LOOK_FIVE: &str = "When this creature enters, look at the top five cards of your library. You may put a creature card from among them onto the battlefield. Put the rest on the bottom of your library in a random order.";
+
+#[rstest]
+#[case::numbered_name(
+    looked(5, "kept2", OPTIONAL, "Creature", BF, ROOT_BOTTOM),
+    LOOK_FIVE,
+    true
+)]
+#[case::plain_name(
+    looked(5, "kept", OPTIONAL, "Creature", BF, ROOT_BOTTOM),
+    LOOK_FIVE,
+    true
+)]
+#[case::four_cards(
+    looked(4, "kept2", OPTIONAL, "Creature", BF, ROOT_BOTTOM),
+    LOOK_FIVE,
+    false
+)]
+#[case::a_land(
+    looked(5, "kept2", OPTIONAL, "Land", BF, ROOT_BOTTOM),
+    LOOK_FIVE,
+    false
+)]
+#[case::to_the_hand(
+    looked(5, "kept2", OPTIONAL, "Creature", r#""Hand""#, ROOT_BOTTOM),
+    LOOK_FIVE,
+    false
+)]
+#[case::rest_on_top(
+    looked(5, "kept2", OPTIONAL, "Creature", BF, ROOT_TOP),
+    LOOK_FIVE,
+    false
+)]
+#[case::forced(looked(5, "kept2", "", "Creature", BF, ROOT_BOTTOM), LOOK_FIVE, false)]
+fn w14_look_at_the_top_and_put_one_onto_the_battlefield(
+    #[case] json: String,
+    #[case] clause: &str,
+    #[case] reads: bool,
+) {
+    assert_eq!(written(&json, clause), reads, "{json}");
+}
+
 #[rstest]
 #[case::leading(
     guarded(r#"{"Compare":{"left":{"Count":[{"Type":"Creature"},{"ControlledBy":"You"}]},"op":"Ge","right":2}}"#, r#"{"Draw":{"count":1}}"#),

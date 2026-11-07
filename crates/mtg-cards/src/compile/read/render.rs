@@ -549,6 +549,13 @@ fn written_ordered(ability: &Ability) -> Vec<String> {
             }
         }
     }
+    if let Some(plain) = super::r5a_order::renamed(ability) {
+        for text in written_as_given(&plain) {
+            if !texts.contains(&text) {
+                texts.push(text);
+            }
+        }
+    }
     if let Some(ordered) = super::r5a_order::canonical(ability) {
         for text in written_as_given(&ordered) {
             if !texts.contains(&text) {
