@@ -260,7 +260,6 @@ fn counter_kinds_listed_with_commas_are_a_choice(#[case] kinds: &str, #[case] op
 }
 
 #[rstest]
-#[case::each_from_source("EachFromSource")]
 #[case::existing("ExistingCounter")]
 #[case::unknown("Wibble")]
 fn a_counter_rule_or_an_unknown_kind_is_a_gap(#[case] kind: &str) {

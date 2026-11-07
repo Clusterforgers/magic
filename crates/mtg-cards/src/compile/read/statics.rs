@@ -1235,6 +1235,28 @@ pub(super) fn statics(
     }
 }
 
+/// "Creatures your opponents control enter tapped", "Lands you control enter untapped": a group, not the permanent itself.
+fn group_enters(ability: &Ability) -> Option<String> {
+    let Ability::Replacement {
+        when: ReplaceWhen::Enters { what },
+        by,
+        condition: None,
+        from: ZoneKind::Battlefield,
+    } = ability
+    else {
+        return None;
+    };
+    let how = match by {
+        ReplaceBy::Tapped => "tapped",
+        ReplaceBy::Untapped => "untapped",
+        _ => return None,
+    };
+    if *what == Selector::this() {
+        return None;
+    }
+    phrase_text(what, Form::All).map(|group| format!("{group} enter {how}"))
+}
+
 /// Every wording of a static ability, a replacement of the entering or a rule the readers produce;
 /// empty for any other ability.
 pub fn texts(ability: &Ability) -> Vec<String> {
@@ -1243,6 +1265,7 @@ pub fn texts(ability: &Ability) -> Vec<String> {
     group.extend(super::w14c_alt_costs::w14c_alt_cost_texts(ability));
     group.extend(super::t15a_alt_costs::t15a_alt_cost_texts(ability));
     group.extend(super::w17c_cast_only::w17c_cast_only_texts(ability));
+    group.extend(group_enters(ability));
     let sentences = match ability {
         _ if !group.is_empty() => group,
         Ability::Replacement {
@@ -1251,15 +1274,6 @@ pub fn texts(ability: &Ability) -> Vec<String> {
             condition,
             from: ZoneKind::Battlefield,
         } if *what == Selector::this() => entering_texts(by, condition.as_ref()),
-        Ability::Replacement {
-            when: ReplaceWhen::Enters { what },
-            by: ReplaceBy::Tapped,
-            condition: None,
-            from: ZoneKind::Battlefield,
-        } => phrase_text(what, Form::All)
-            .map(|group| format!("{group} enter tapped"))
-            .into_iter()
-            .collect(),
         Ability::Replacement {
             when: ReplaceWhen::Enters { what },
             by:

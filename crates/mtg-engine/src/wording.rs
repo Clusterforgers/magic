@@ -239,6 +239,7 @@ fn kind_of(what: &Targetable) -> (String, String) {
             let (head, tail) = kind_of(what);
             (format!("other {head}"), tail)
         }
+        Targetable::ChosenBy { what, .. } => kind_of(what),
         Targetable::Either(kinds) => (
             kinds
                 .iter()

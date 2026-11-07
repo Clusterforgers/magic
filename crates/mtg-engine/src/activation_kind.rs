@@ -45,6 +45,12 @@ pub(crate) fn is_kind(wanted: ActivationKind, own: Option<ActivationKind>) -> bo
     }
 }
 
+#[cfg(test)]
+thread_local! {
+    /// How many times `modified_as` walked the battlefield on this thread: the work a test bounds.
+    pub(crate) static WALKS: std::cell::Cell<usize> = const { std::cell::Cell::new(0) };
+}
+
 /// The mana of an activation with the cost modifiers in play applied: the increases first, then the reductions, and no
 /// reduction takes the cost below the most `least` any applying reduction names.
 pub(crate) fn modified(
@@ -54,13 +60,34 @@ pub(crate) fn modified(
     rules: &Ability,
     mana: ManaCost,
 ) -> ManaCost {
+    modified_as(state, source, specific(state, address, rules), mana)
+}
+
+/// The mana of a mana ability of `source` with the cost modifiers of mana abilities and of every activated ability
+/// applied (CR 601.2f, 605.3a): "Enchanted creature's activated abilities cost {3} more to activate".
+pub(crate) fn mana_modified(state: &GameState, source: ObjectId, mana: ManaCost) -> ManaCost {
+    modified_as(state, source, Some(ActivationKind::Mana), mana)
+}
+
+/// The mana of an activation of an ability of the specific kind `own` with the cost modifiers in play applied.
+fn modified_as(
+    state: &GameState,
+    source: ObjectId,
+    own: Option<ActivationKind>,
+    mana: ManaCost,
+) -> ManaCost {
+    // No cost modifier exists in the game, so the walk over the battlefield would find none.
+    if !state.possible.costs {
+        return mana;
+    }
+    #[cfg(test)]
+    WALKS.with(|walks| walks.set(walks.get() + 1));
     let Some(target) = state
         .object(source)
         .map(crate::object::GameObject::reference)
     else {
         return mana;
     };
-    let own = specific(state, address, rules);
     let (mut more, mut less, mut floor) = (ManaCost::ZERO, ManaCost::ZERO, 0u32);
     for id in state.zone(Zone::Battlefield).iter().copied() {
         let Some(holder) = state.object(id) else {
