@@ -47,6 +47,7 @@ fn a_block_limit_of_another_shape_is_a_gap(#[case] line: &str, #[case] gap: &str
 #[case::walkers("Target$ Planeswalker.YouCtrl | Cost$ 1", json!({"attacked": "Planeswalkers", "mana": "{1}"}))]
 #[case::life("Target$ You,Planeswalker.YouCtrl | Cost$ PayLife<2>", json!({"attacked": "Both", "life": 2}))]
 #[case::phyrexian("Target$ You,Planeswalker.YouCtrl | Cost$ WP", json!({"attacked": "Both", "mana": "{W/P}"}))]
+#[case::everyone("Cost$ 2", json!({"attacked": "Both", "mana": "{2}", "who": "EachPlayer"}))]
 fn an_attack_tax_is_a_rule(#[case] words: &str, #[case] tax: Value) {
     let script = permanent(&format!(
         "Mode$ CantAttackUnless | ValidCard$ Creature | {words}"
@@ -67,7 +68,6 @@ fn an_attack_tax_is_a_rule(#[case] words: &str, #[case] tax: Value) {
     "ValidCard$ Card.Self | Target$ You | Cost$ 2",
     "key:Static.CantAttackUnless.ValidCard-of-itself"
 )]
-#[case::everyone("ValidCard$ Creature | Cost$ 2", "key:Static.CantAttackUnless.Target")]
 fn an_attack_tax_the_rule_cannot_say_is_a_gap(#[case] words: &str, #[case] gap: &str) {
     let script = permanent(&format!("Mode$ CantAttackUnless | {words}"));
     assert_eq!(gaps(&script), vec![gap.to_owned()]);

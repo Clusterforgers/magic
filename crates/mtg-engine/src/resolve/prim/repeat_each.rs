@@ -1,7 +1,7 @@
 //! `Effect::RepeatEach`: the body is done once for each player or object the effect names, with the name bound to the one
 //! the pass is for.
 
-use mtg_cards::effect::{Effect, bound_names};
+use mtg_cards::effect::{Effect, bound_names, gathered_names};
 
 use super::may::performed_name;
 use super::wrong_effect;
@@ -25,7 +25,7 @@ pub(super) fn repeat_at(cx: &Cx<'_>) -> Vec<usize> {
     at.to_vec()
 }
 
-/// The steps that free what the passes before bound: the names the body binds and `extra` that are held, and the answer
+/// The steps that free what the passes before bound: the names the body binds and `extra` that are held (but not a name an adding bind gathers into), and the answer
 /// of every "may" in the body, which binds whether it was accepted under its position, run again by every pass.
 pub(super) fn clear_pass(
     cx: &Cx<'_>,
@@ -33,12 +33,13 @@ pub(super) fn clear_pass(
     extra: &[String],
 ) -> Vec<(String, Vec<Target>)> {
     let held = cx.resolving.bindings();
+    let gathered = gathered_names(effects);
     let mut bound: Vec<(String, Vec<Target>)> = Vec::new();
     for name in bound_names(effects)
         .into_iter()
         .chain(extra.iter().cloned())
     {
-        if held.contains_key(&name) {
+        if held.contains_key(&name) && !gathered.contains(&name) {
             bound.push((format!("{CLEAR}{name}"), Vec::new()));
         }
     }

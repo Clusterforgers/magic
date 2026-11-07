@@ -253,7 +253,16 @@ fn flip_coin(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
 
 /// `Clash` of the controller with an opponent they choose: the win and the otherwise part.
 fn clash(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
-    only(p, "Clash", &["WinSubAbility", "OtherwiseSubAbility"])?;
+    only(
+        p,
+        "Clash",
+        &["WinSubAbility", "OtherwiseSubAbility", "ValidTgts"],
+    )?;
+    // "If you win, target creature gains double strike": the target is chosen as the ability is put on the stack, and
+    // the parts name it.
+    if p.has("ValidTgts") {
+        super::valid::subject(ctx, p, "", None)?;
+    }
     let mut node = json!({"Clash": {}});
     for (key, field) in [("WinSubAbility", "win"), ("OtherwiseSubAbility", "lose")] {
         if let Some(name) = p.get(key) {

@@ -26,15 +26,16 @@ fn made(cx: &Cx<'_>, name: &str) -> usize {
 }
 
 /// Begins a pass, at the effect itself and at the start of each next pass: the pass begins when fewer than `most` (and
-/// never more than [`MOST_PASSES`]) have been made and the condition holds in the state the passes before left; the
-/// counter is bound anew at the first entry, so a repeat inside another starts from nought each time. Otherwise the
-/// repeat is done and the resolution goes on.
+/// never more than [`MOST_PASSES`]) have been made and the condition holds in the state the passes before left (the
+/// first pass of an `at_least_once` repeat begins without it); the counter is bound anew at the first entry, so a repeat
+/// inside another starts from nought each time. Otherwise the repeat is done and the resolution goes on.
 pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
     let Effect::RepeatWhile {
         condition,
         effects,
         most,
         times,
+        at_least_once,
     } = effect
     else {
         return Err(wrong_effect("RepeatWhile"));
@@ -47,7 +48,8 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         bound_on_passes = bound_on_passes.min(wanted);
     }
     let mut bound = Vec::new();
-    if count >= bound_on_passes || !cx.scope.holds(condition)? {
+    let checked = count > 0 || !*at_least_once;
+    if count >= bound_on_passes || (checked && !cx.scope.holds(condition)?) {
         if cx.resolving.bindings().contains_key(&name) {
             bound.push((format!("{CLEAR}{name}"), Vec::new()));
         }

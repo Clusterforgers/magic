@@ -874,6 +874,10 @@ describe('events with more than one shape', () => {
       "Hill Giant can't attack Ana until end of turn",
     ],
     [
+      effect(objects(2), { AddSupertype: 'Legendary' }, 'UntilEndOfTurn'),
+      'Hill Giant becomes legendary too until end of turn',
+    ],
+    [
       effect(objects(2), { AddSubtype: 'Elf' }, 'UntilEndOfTurn'),
       'Hill Giant becomes Elf too until end of turn',
     ],

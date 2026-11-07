@@ -3,15 +3,18 @@
 //! A specification that allows no targets, or has none to offer and needs none, is passed over; one that cannot be met
 //! rewinds the announcement.
 
-use mtg_cards::refs::TargetSpec;
+use mtg_cards::refs::{TargetSpec, Targetable};
 use mtg_cards::value::CastWay;
+use mtg_core::ids::PlayerId;
 
 use super::{Ctx, Next, What, Work, total};
 use crate::attach;
 use crate::choose::{
     Choices, Target, announced_specs, asks, options_for, spec_bases, without_earlier,
 };
-use crate::decision::DecisionKind;
+use crate::decision::{Decision, DecisionKind};
+use crate::object::{GameObject, ObjectRef};
+use crate::resolve::Scope;
 
 /// The target specifications announced, in the order they are asked: an Aura spell's one, from its enchant ability
 /// (CR 303.4a), otherwise those of the rules or, for a modal ability, of the modes chosen.
@@ -113,7 +116,41 @@ pub(super) fn run(ctx: &Ctx<'_>, work: &mut Work<'_>) -> Option<Next> {
             continue;
         }
         options.triggered = ctx.triggered.is_some();
+        let chooser = chooser(ctx, &specs[index]);
+        if chooser != ctx.player {
+            // Another player chooses: backing out of the controller's spell or ability is not theirs to do.
+            options.can_cancel = false;
+            return Some(Next::Ask(Decision {
+                player: chooser,
+                kind: DecisionKind::ChooseTargets(options),
+            }));
+        }
         return Some(ctx.ask(DecisionKind::ChooseTargets(options)));
     }
     None
+}
+
+/// Who chooses the targets of `spec`: for "target creature of their choice" the first player it names, in turn order
+/// from the controller, who is still in the game; else the controller (CR 601.2c).
+fn chooser(ctx: &Ctx<'_>, spec: &TargetSpec) -> PlayerId {
+    let Targetable::ChosenBy { who, .. } = &spec.what else {
+        return ctx.player;
+    };
+    let origin = ctx.state.object(ctx.source).map_or(
+        ObjectRef {
+            id: ctx.source,
+            counter: 0,
+        },
+        GameObject::reference,
+    );
+    let scope = match ctx.cause() {
+        Some(cause) => Scope::triggered(ctx.state, ctx.player, origin, cause),
+        None => Scope::announcing(ctx.state, ctx.player, origin),
+    };
+    let named = scope.players(who).unwrap_or_default();
+    ctx.state
+        .turn_order_from(ctx.player)
+        .into_iter()
+        .find(|seat| named.contains(seat))
+        .unwrap_or(ctx.player)
 }

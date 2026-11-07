@@ -11,7 +11,7 @@ use crate::ability::Ability;
 use crate::cost::{Cost, CostItem};
 use crate::mana::ManaCostX;
 use crate::refs::{Pred, Ref, Selector, ZoneKind};
-use crate::value::Amount;
+use crate::value::{Amount, CounterKind};
 use mtg_core::card::Subtype;
 
 /// The parts of a cost, separated by commas: `{T}`, `{Q}`, a run of mana symbols, "Pay 2 life",
@@ -119,6 +119,9 @@ fn worded(r: &mut Reader<'_>) -> Option<CostItem> {
     }
     if r.word("mill") {
         return cards(r).map(CostItem::Mill);
+    }
+    if r.word("put") {
+        return blight(r);
     }
     r.need("sacrifice")?;
     if r.source() {
@@ -234,6 +237,14 @@ fn bounce(r: &mut Reader<'_>) -> Option<CostItem> {
 }
 
 /// "Remove a charge counter from ~": counters of the card itself.
+/// "Put a -1/-1 counter on a creature you control": blight 1 (CR 701.66), the payer picks the creature.
+fn blight(r: &mut Reader<'_>) -> Option<CostItem> {
+    let (counter, count) = super::w2f_any_counters::w2f_counters(r)?;
+    (counter == Some(CounterKind::MinusOneMinusOne) && count == Amount::one()).then_some(())?;
+    r.need("on a creature you control")?;
+    Some(CostItem::Blight(count))
+}
+
 fn remove(r: &mut Reader<'_>) -> Option<CostItem> {
     let (counter, count) = super::w2f_any_counters::w2f_counters(r)?;
     r.need("from")?;
@@ -388,6 +399,9 @@ fn item_text(item: &CostItem) -> Option<String> {
         }
         CostItem::PayEnergy(Amount::X) => "Pay X {E}".to_owned(),
         CostItem::Mill(count) => format!("Mill {}", cards_text(count)?),
+        CostItem::Blight(Amount::Fixed(1)) => {
+            "Put a -1/-1 counter on a creature you control".to_owned()
+        }
         CostItem::Sacrifice { filter, count } => sacrifice_text(filter, count)?,
         CostItem::Discard {
             count,

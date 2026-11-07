@@ -127,10 +127,10 @@ fn the_card_a_cost_exiled_is_read(#[case] cost: &str, #[case] expected: &str, #[
     "",
     "key:ChooseCard.RememberChosen-with-remembered"
 )]
-#[case::a_pick_in_a_pass_over_players(
+#[case::a_pick_in_a_pass_over_players_gathers(
     "A:SP$ RepeatEach | RepeatPlayers$ Player | RepeatSubAbility$ Pick\nSVar:Pick:DB$ ChooseCard | Defined$ You | Choices$ Card.RememberedPlayerCtrl | ChoiceZone$ Graveyard | RememberChosen$ True",
-    "",
-    "key:ChooseCard.RememberChosen-with-remembered"
+    r#""adds":true"#,
+    ""
 )]
 fn chosen_cards_add_up_in_the_memory(
     #[case] lines: &str,
