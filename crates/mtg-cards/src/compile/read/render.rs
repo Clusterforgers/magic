@@ -48,6 +48,7 @@ mod populated;
 mod put_onto;
 mod r11w_batch;
 mod r11w_leaves;
+mod r11w_returned_as;
 mod r7d;
 mod r9w_dread;
 mod r9w_manifest;
@@ -1184,6 +1185,7 @@ fn written(
             .or_else(|| writer.clashes(&effects[start..]))
             .or_else(|| writer.g10d_colors(&effects[start..]))
             .or_else(|| writer.r11w_removed_makes(&effects[start..]))
+            .or_else(|| writer.r11w_returned_as(&effects[start..]))
             .or_else(|| instead::pair(targets, &effects[start..], wording))
         {
             unsplit(mask, start, used)?;

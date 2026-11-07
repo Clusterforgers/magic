@@ -247,6 +247,25 @@ fn facts_of_the_turn_as_amounts_read_back(
     );
 }
 
+const RISE: &str = r#"{"Spell":{"effects":[{"Move":{"as":"moved","to":{"Battlefield":{"under":"You"}},"what":{"Target":0}}},{"Continuous":{"affected":{"Bound":"moved"},"duration":"Forever","mods":[{"AddSubtype":"Zombie"},{"AddColors":["Black"]}]}}],"targets":[{"what":{"Object":[{"Type":"Creature"},{"In":"Graveyard"}]}}]}}"#;
+const RISE_TEXT: &str = "Put target creature card from a graveyard onto the battlefield under your control. That creature is a black Zombie in addition to its other colors and types.";
+
+#[rstest]
+#[case::rise(RISE.to_owned(), true)]
+#[case::until_end_of_turn(RISE.replace(r#""Forever""#, r#""UntilEndOfTurn""#), false)]
+#[case::other_color(RISE.replace(r#"["Black"]"#, r#"["Blue"]"#), false)]
+#[case::colors_set(RISE.replace("AddColors", "SetColors"), false)]
+#[case::the_target_instead(RISE.replace(r#"{"Bound":"moved"},"duration""#, r#""This","duration""#), false)]
+#[case::to_the_hand(RISE.replace(r#"{"Battlefield":{"under":"You"}}"#, r#""Hand""#), false)]
+fn returned_as_a_zombie_reads_back(#[case] json: String, #[case] same: bool) {
+    assert_eq!(
+        written(&json, RISE_TEXT),
+        same,
+        "{json}: {:?}",
+        written_variants(&ability(&json))
+    );
+}
+
 const GUARD: &str = r#"{"Activated":{"condition":"InCombat","cost":["Tap"],"effects":[{"Continuous":{"affected":{"Target":0},"duration":"UntilEndOfTurn","mods":[{"ModifyPT":{"power":2,"toughness":2}}]}},{"DelayedTrigger":{"effects":[{"Sacrifice":{"filter":["This"]}}],"once":false,"this_turn":true,"when":{"ZoneChange":{"from":"Battlefield","what":[{"Is":{"Target":0}}]}}}}],"targets":[{"what":{"Object":[{"Type":"Creature"}]}}]}}"#;
 const GUARD_TEXT: &str = "{T}: Target creature gets +2/+2 until end of turn. When that creature leaves the battlefield this turn, sacrifice this creature. Activate only during combat.";
 const SACRIFICE: &str = r#"{"Sacrifice":{"filter":["This"]}}"#;
