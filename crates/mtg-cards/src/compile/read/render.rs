@@ -95,7 +95,7 @@ use super::counters;
 use super::create;
 use super::defining;
 use super::draws;
-use super::effects::{BACK, RETURNED, dead_card, other_dead_card, returns_itself};
+use super::effects::{dead_card, other_dead_card, returns_itself};
 use super::event_wordings;
 use super::exiled_kind;
 use super::flicker;
@@ -606,6 +606,7 @@ fn written_as_given(ability: &Ability) -> Vec<String> {
     r11w_batch::add_any_other(ability, &mut texts);
     super::r11w_tallies::add(&mut texts);
     super::g13a_wordings::add(&mut texts);
+    super::w14_trailing_if::add(&mut texts);
     texts
 }
 
@@ -1281,8 +1282,7 @@ fn put_back_text(choose: &Effect, moved: &Effect) -> Option<String> {
     else {
         return None;
     };
-    if bind != BACK || name != BACK || from.0 != [Pred::In(ZoneKind::Hand), Pred::OwnedBy(Ref::You)]
-    {
+    if bind != name || from.0 != [Pred::In(ZoneKind::Hand), Pred::OwnedBy(Ref::You)] {
         return None;
     }
     let Some(Amount::Fixed(most)) = &count.max else {
@@ -1326,7 +1326,15 @@ fn returned_text(choose: &Effect, moved: &Effect) -> Option<String> {
     else {
         return None;
     };
-    if bind != RETURNED || name != RETURNED {
+    if bind != name {
+        return None;
+    }
+    // Cards of another zone are returned in other words ("from your graveyard to your hand").
+    if from
+        .0
+        .iter()
+        .any(|pred| matches!(pred, Pred::In(zone) if *zone != ZoneKind::Battlefield))
+    {
         return None;
     }
     if *count == (Bounds::up_to(None)) {
@@ -1335,14 +1343,14 @@ fn returned_text(choose: &Effect, moved: &Effect) -> Option<String> {
             "you may return any number of {phrase} to their owner's hand"
         ));
     }
-    if !count.is_one() {
-        return None;
-    }
+    let may = hand_returns::may_choice(count)?;
     let phrase = phrase_text(from, Form::Subject)?;
-    Some(format!(
-        "return {} {phrase} to its owner's hand",
-        article(&phrase)
-    ))
+    let article = if phrase.starts_with("another ") {
+        String::new()
+    } else {
+        format!("{} ", article(&phrase))
+    };
+    Some(format!("{may}return {article}{phrase} to its owner's hand"))
 }
 
 /// The sentences with their capitals and periods; the first of a triggered ability follows the

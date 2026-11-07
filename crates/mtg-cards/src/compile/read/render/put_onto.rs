@@ -4,7 +4,7 @@
 
 use super::{Destination, Effect, Form, Writer, article, phrase_text};
 use crate::compile::read::counters;
-use crate::refs::{Pred, Ref, ZoneKind};
+use crate::refs::{Ref, ZoneKind};
 use crate::value::Amount;
 
 /// "put a land card from your hand onto the battlefield", "... onto the battlefield tapped", for the choice of one
@@ -33,19 +33,14 @@ pub(super) fn put_onto_text(choose: &Effect, moved: &Effect) -> Option<String> {
     else {
         return None;
     };
-    if bind != name
-        || !count.is_one()
-        || !counters.is_empty()
-        || !from
-            .0
-            .starts_with(&[Pred::In(ZoneKind::Hand), Pred::OwnedBy(Ref::You)])
-    {
+    if bind != name || !counters.is_empty() || !super::hand_returns::in_your(from, ZoneKind::Hand) {
         return None;
     }
+    let may = super::hand_returns::may_choice(count)?;
     let phrase = phrase_text(from, Form::Subject)?;
     let tapped = if *tapped { " tapped" } else { "" };
     Some(format!(
-        "put {} {phrase} onto the battlefield{tapped}",
+        "{may}put {} {phrase} onto the battlefield{tapped}",
         article(&phrase)
     ))
 }
@@ -94,14 +89,10 @@ pub(super) fn returned_to_battlefield_text(choose: &Effect, moved: &Effect) -> O
     else {
         return None;
     };
-    if bind != name
-        || !count.is_one()
-        || !from
-            .0
-            .starts_with(&[Pred::In(ZoneKind::Graveyard), Pred::OwnedBy(Ref::You)])
-    {
+    if bind != name || !super::hand_returns::in_your(from, ZoneKind::Graveyard) {
         return None;
     }
+    let may = super::hand_returns::may_choice(count)?;
     let phrase = phrase_text(from, Form::Subject)?;
     let tapped = if *tapped { " tapped" } else { "" };
     let with = match counters.as_slice() {
@@ -113,7 +104,7 @@ pub(super) fn returned_to_battlefield_text(choose: &Effect, moved: &Effect) -> O
         _ => return None,
     };
     Some(format!(
-        "return {} {phrase} to the battlefield{tapped}{with}",
+        "{may}return {} {phrase} to the battlefield{tapped}{with}",
         article(&phrase)
     ))
 }

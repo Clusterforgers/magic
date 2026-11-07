@@ -3,13 +3,29 @@
 //! your graveyard to your hand.").
 
 use super::{Destination, Effect, Form, Writer, article, phrase_text};
-use crate::refs::{Pred, Ref, Selector, ZoneKind};
+use crate::refs::{Bounds, Pred, Ref, Selector, ZoneKind};
+use crate::value::Amount;
+
+/// How a choice of one card is worded: nothing before the verb for exactly one ("return a land card"), "you may " for
+/// none or one ("you may return a land card"); any other count is not worded here.
+pub(super) fn may_choice(count: &Bounds) -> Option<&'static str> {
+    if count.is_one() {
+        Some("")
+    } else if *count == Bounds::up_to(Some(Amount::Fixed(1))) {
+        Some("you may ")
+    } else {
+        None
+    }
+}
 
 /// Whether the selector names cards of the graveyard of the player.
 fn from_your_graveyard(selector: &Selector) -> bool {
-    selector
-        .0
-        .starts_with(&[Pred::In(ZoneKind::Graveyard), Pred::OwnedBy(Ref::You)])
+    in_your(selector, ZoneKind::Graveyard)
+}
+
+/// Whether the selector names cards of the given zone of the player, wherever its words stand in the list.
+pub(super) fn in_your(selector: &Selector, zone: ZoneKind) -> bool {
+    selector.0.contains(&Pred::In(zone)) && selector.0.contains(&Pred::OwnedBy(Ref::You))
 }
 
 /// "return all legendary creature cards from your graveyard to your hand".
@@ -48,11 +64,15 @@ pub(super) fn one_text(choose: &Effect, moved: &Effect) -> Option<String> {
     else {
         return None;
     };
-    if bind != name || !count.is_one() || !from_your_graveyard(from) {
+    if bind != name || !from_your_graveyard(from) {
         return None;
     }
+    let may = may_choice(count)?;
     let phrase = phrase_text(from, Form::Subject)?;
-    Some(format!("return {} {phrase} to your hand", article(&phrase)))
+    Some(format!(
+        "{may}return {} {phrase} to your hand",
+        article(&phrase)
+    ))
 }
 
 impl Writer<'_> {
@@ -71,6 +91,7 @@ impl Writer<'_> {
                     return None;
                 };
                 let returned = one_text(choose, moved)?;
+                (!returned.starts_with("you may ")).then_some(())?;
                 Some((
                     format!("{}, then you may {returned}", self.effect(first)?),
                     2,
