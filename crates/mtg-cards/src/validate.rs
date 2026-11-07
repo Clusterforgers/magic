@@ -1543,6 +1543,31 @@ impl<'a> Walker<'a> {
         }
     }
 
+    /// A cost modifier, with the targets an ability cost change waits for: a selector, on the change of activated abilities
+    /// only.
+    fn e14e_cost_modifier(&mut self, modifier: &Ability) {
+        let Ability::CostModifier {
+            applies_to,
+            mana,
+            per,
+            condition,
+            targeting,
+            activating,
+            ..
+        } = modifier
+        else {
+            return;
+        };
+        self.cost_modifier(applies_to, mana, per, condition.as_ref());
+        let Some(targeting) = targeting else {
+            return;
+        };
+        if activating.is_none() {
+            self.problem("a spell's targets are read with Targeting in what it applies to");
+        }
+        self.at("targeting", |w| w.selector(targeting));
+    }
+
     /// What a cast pays rather than the mana cost: a permission cost whose counted amounts the engine counts for the card.
     fn rather_cost(&mut self, cost: &Cost) {
         let was = std::mem::replace(&mut self.rather_cost, true);
@@ -4140,25 +4165,7 @@ impl Walker<'_> {
                     w.at("condition", |w| w.condition(condition));
                 }
             }
-            Ability::CostModifier {
-                applies_to,
-                mana,
-                per,
-                condition,
-                targeting,
-                activating,
-                ..
-            } => {
-                w.cost_modifier(applies_to, mana, per, condition.as_ref());
-                if let Some(targeting) = targeting {
-                    if activating.is_none() {
-                        w.problem(
-                            "a spell's targets are read with Targeting in what it applies to",
-                        );
-                    }
-                    w.at("targeting", |w| w.selector(targeting));
-                }
-            }
+            modifier @ Ability::CostModifier { .. } => w.e14e_cost_modifier(modifier),
             Ability::AdditionalCost { cost, required } => w.additional_cost(cost, *required),
             Ability::FreeCast { condition, cost } => {
                 w.w14c_free_cast(condition.as_ref(), cost.as_ref());

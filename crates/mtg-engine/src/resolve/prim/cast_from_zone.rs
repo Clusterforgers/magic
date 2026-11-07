@@ -79,13 +79,7 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
             Ok(card.map_or_else(
                 || c11b_cast_done(cx, effect, false),
                 |card| {
-                    let alternative =
-                        ways::alternative_cost(state, card.id(), *way).or_else(|| {
-                            let cost = rather.as_ref()?;
-                            let way = ways::instead_way(state, player, card, cost, true)?;
-                            let words = ways::cost_words(way.mana.as_ref()?, &way.parts);
-                            Some((CastWay::Alternative, words))
-                        });
+                    let alternative = cost_named(state, player, card, &granted);
                     Run::Ask(question(
                         player,
                         card.card().name.as_str(),
@@ -133,6 +127,21 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         }
         _ => Err(unexpected("an answer that was not asked")),
     }
+}
+
+/// The way and the cost the question names: a madness or miracle cost, or the cost paid rather than the mana cost.
+fn cost_named(
+    state: &crate::state::GameState,
+    player: PlayerId,
+    card: &GameObject,
+    granted: &Granted,
+) -> Option<(CastWay, String)> {
+    ways::alternative_cost(state, card.id(), granted.way).or_else(|| {
+        let cost = granted.rather.as_ref()?;
+        let way = ways::instead_way(state, player, card, cost, true)?;
+        let words = ways::cost_words(way.mana.as_ref()?, &way.parts);
+        Some((CastWay::Alternative, words))
+    })
 }
 
 /// Whether the card is a land card, which is played and not cast.
