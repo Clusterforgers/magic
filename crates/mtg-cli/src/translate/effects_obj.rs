@@ -988,12 +988,37 @@ fn animate(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
             "HiddenKeywords",
         ],
     )?;
-    // Effects change permanents only (the layers read nothing else): "target spell becomes red" would change nothing.
+    // An effect changes a spell on the stack like a permanent (CR 400.7a), but only its colours are held there yet.
     // (The header folded `TgtZone$` into the valid-string as `inZoneStack` by now.)
     if [p.get("TgtZone"), p.get("ValidTgts")]
         .into_iter()
         .flatten()
         .any(|text| text.contains("Stack"))
+        && [
+            "Types",
+            "Power",
+            "Toughness",
+            "Keywords",
+            "RemoveKeywords",
+            "RemoveAllAbilities",
+            "Triggers",
+            "Abilities",
+        ]
+        .into_iter()
+        .chain([
+            "staticAbilities",
+            "Replacements",
+            "RemoveCreatureTypes",
+            "RemoveCardTypes",
+            "RemoveLandTypes",
+        ])
+        .chain([
+            "AddAllCreatureTypes",
+            "ValidCards",
+            "HiddenKeywords",
+            "AtEOT",
+        ])
+        .any(|key| p.has(key))
     {
         return unmapped("key:Animate.TgtZone=Stack");
     }

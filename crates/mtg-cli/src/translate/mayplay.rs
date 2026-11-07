@@ -3,7 +3,7 @@
 use serde_json::{Value, json};
 
 use super::ctx::{Ctx, Tr, check_keys, only, unmapped};
-use super::valid::{defined, selector_any, selector_in};
+use super::valid::{defined, selector_any, selector_in, subject};
 use crate::forge::script::Params;
 
 /// The keys of a `MayPlay` static line.
@@ -143,6 +143,9 @@ pub fn play(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
             "Controller",
             "CopyCard",
             "RememberPlayed",
+            "ValidTgts",
+            "TargetMin",
+            "TargetMax",
         ],
     )?;
     if p.get("Optional") != Some("True") {
@@ -172,6 +175,10 @@ pub fn play(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
             return unmapped("key:Play.Defined-with-ValidSA-filter");
         }
         (Some(word), None, None) => defined(ctx, word)?,
+        // "you may cast target card from your graveyard": the target is chosen as the ability is put on the stack.
+        (None, None, None) if p.has("ValidTgts") && spell_filter.is_empty() => {
+            subject(ctx, p, "", None)?
+        }
         (None, Some(valid), Some(zone)) => {
             let mut selector = selector_in(ctx, valid, Some(zone))?;
             selector.extend(spell_filter);
@@ -205,7 +212,7 @@ pub fn play(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
         steps.push(json!({ "CastFromZone": effect }));
         steps
     };
-    if matches!(count, Count::One) && p.has("Defined") {
+    if matches!(count, Count::One) && (p.has("Defined") || p.has("ValidTgts")) {
         return Ok(cast(pool, ctx));
     }
     let (over, mut steps) = match count {

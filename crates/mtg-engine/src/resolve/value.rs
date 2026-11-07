@@ -207,11 +207,13 @@ fn colors_among(mana: &[ManaType]) -> usize {
         .count()
 }
 
-/// The zone one alternative of "in this zone or that" names: `In`, or a conjunction written as not any of its negations
+/// The zone one alternative of "in this zone or that" names: `In`, a spell (the stack), or a conjunction written as not any of its negations
 /// that holds an `In` (the cards of each zone under their own control or ownership rule).
 fn alternative_zone(pred: &Pred) -> Option<ZoneKind> {
     match pred {
         Pred::In(kind) => Some(*kind),
+        // "target spell or permanent": the spell alternative is looked for on the stack.
+        Pred::Spell => Some(ZoneKind::Stack),
         Pred::Not(inner) => match &**inner {
             Pred::AnyOf(negated) => negated.iter().find_map(|each| match each {
                 Pred::Not(zone) => match &**zone {
