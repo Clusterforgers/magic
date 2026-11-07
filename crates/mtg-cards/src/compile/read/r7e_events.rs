@@ -17,8 +17,7 @@ use mtg_core::card::{CardType, Subtype};
 fn one_object(what: &Selector) -> bool {
     matches!(
         what.0.as_slice(),
-        [Pred::This]
-            | [Pred::Is(Ref::Attached)]
+        [Pred::This | Pred::Is(Ref::Attached)]
             | [Pred::Type(CardType::Creature), Pred::Is(Ref::Attached)]
     )
 }

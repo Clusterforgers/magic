@@ -233,7 +233,7 @@ fn keyword_cost_differs(report: &Report, rules: &mtg_cards::card::Card) -> bool 
         };
         let wanted = mana_parts(&printed);
         // The keywords of the face with the printed keyword's name: one of them must cost what the line prints.
-        let ruled: Vec<serde_json::Value> = rules
+        let keywords: Vec<serde_json::Value> = rules
             .faces
             .get(clause.face)
             .into_iter()
@@ -245,8 +245,8 @@ fn keyword_cost_differs(report: &Report, rules: &mtg_cards::card::Card) -> bool 
             .filter(|value| name(value).is_some() && name(value) == name(&printed))
             .collect();
         !wanted.is_empty()
-            && !ruled.is_empty()
-            && ruled.iter().all(|value| mana_parts(value) != wanted)
+            && !keywords.is_empty()
+            && keywords.iter().all(|value| mana_parts(value) != wanted)
     })
 }
 

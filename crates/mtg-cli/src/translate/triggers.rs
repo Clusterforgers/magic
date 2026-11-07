@@ -87,23 +87,7 @@ pub fn triggered(ctx: &mut Ctx, body: &str) -> Tr<Value> {
     {
         return unmapped("trigger:may-search-without-decider");
     }
-    // "When you cycle ~, you may put four +1/+1 counters ..." with no decider: the counters would be forced.
-    if p.get("OptionalDecider").is_none()
-        && p.get("TriggerDescription")
-            .is_some_and(|text| text.contains(", you may put ") && text.contains(" counter"))
-        && matches!(effects.as_slice(), [only] if only.get("PutCounters").is_some())
-    {
-        return unmapped("trigger:may-put-counters-without-decider");
-    }
-    // "Whenever a player kicks a spell" scripted for the spells you control: the script names fewer spells than the card.
-    if p.get("Mode") == Some("SpellCast")
-        && p.get("ValidCard")
-            .is_some_and(|valid| valid.starts_with("Card.YouCtrl"))
-        && p.get("TriggerDescription")
-            .is_some_and(|text| text.starts_with("Whenever a player"))
-    {
-        return unmapped("trigger:spell-you-control-printed-any-player");
-    }
+    printed_more(&p, &effects)?;
     match p.get("OptionalDecider") {
         None => {}
         Some("You" | "TriggeredCardController") if pays => {}
@@ -149,6 +133,27 @@ pub fn triggered(ctx: &mut Ctx, body: &str) -> Tr<Value> {
 /// The limit of a trigger. A limit on what resolves after a choice ("you may ... Do this only once each turn") is spent as
 /// the choice is done (`OncePerTurnDone`), so a declined "may" or an unpaid cost does not use it up; a choice later than the
 /// first step stays a gap.
+/// A script that does less than its printed trigger says is a gap: "you may put ... counters" with no decider (the
+/// counters would be forced), and "Whenever a player kicks a spell" scripted for the spells you control.
+fn printed_more(p: &Params, effects: &[Value]) -> Tr<()> {
+    if p.get("OptionalDecider").is_none()
+        && p.get("TriggerDescription")
+            .is_some_and(|text| text.contains(", you may put ") && text.contains(" counter"))
+        && matches!(effects, [only] if only.get("PutCounters").is_some())
+    {
+        return unmapped("trigger:may-put-counters-without-decider");
+    }
+    if p.get("Mode") == Some("SpellCast")
+        && p.get("ValidCard")
+            .is_some_and(|valid| valid.starts_with("Card.YouCtrl"))
+        && p.get("TriggerDescription")
+            .is_some_and(|text| text.starts_with("Whenever a player"))
+    {
+        return unmapped("trigger:spell-you-control-printed-any-player");
+    }
+    Ok(())
+}
+
 fn limit(p: &Params, effects: &[Value]) -> Tr<Option<Value>> {
     let rendered = json!(effects).to_string();
     let optional = p.get("OptionalDecider").is_some()

@@ -1348,8 +1348,8 @@ pub(super) fn happening(pattern: &TriggerPattern) -> Option<(Selector, String)> 
             source,
             &format!("deals {}", damage_text(*combat, to.as_ref())?),
         ),
-        TriggerPattern::Did { .. } => super::r7e_events::r7e_did_happening(pattern),
-        _ => None,
+        // An action of `Did`, or nothing.
+        _ => super::r7e_events::r7e_did_happening(pattern),
     }
 }
 
