@@ -194,7 +194,7 @@ pub(crate) struct Needs {
 
 /// What a resolution lets a player cast (CR 608.2g): the spell goes on the stack as part of the resolution, with no
 /// timing and no way back.
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub(crate) struct Granted {
     /// The mana cost is not paid (CR 118.9).
     pub(crate) free: bool,
@@ -202,6 +202,8 @@ pub(crate) struct Granted {
     pub(crate) way: Option<CastWay>,
     /// The card is cast transformed: its back face is the spell (CR 712.4).
     pub(crate) transformed: bool,
+    /// What it is cast for rather than its mana cost (CR 118.9), its amounts counted for the card.
+    pub(crate) rather: Option<mtg_cards::cost::Cost>,
 }
 
 impl Needs {
@@ -360,12 +362,14 @@ impl Pending {
         free: bool,
         way: Option<CastWay>,
         transformed: bool,
+        rather: Option<mtg_cards::cost::Cost>,
     ) -> Self {
         Pending {
             granted: Some(Granted {
                 free,
                 way,
                 transformed,
+                rather,
             }),
             ..Pending::new(player, What::Spell(spell))
         }
@@ -450,7 +454,7 @@ impl Pending {
             source: *card,
             ability: held.as_deref(),
             triggered: None,
-            granted: self.granted,
+            granted: self.granted.clone(),
             needs,
         };
         if price::affordable_set(&ctx, &self.choices, modes) {
@@ -698,7 +702,7 @@ pub(crate) fn announce(state: &GameState, pending: &mut Pending) -> Next {
     let faced;
     let state = match what {
         What::Spell(card) if faces::is_multi_face(state, *card) => {
-            if let Some(next) = face::run(state, *player, *card, *granted, choices, done) {
+            if let Some(next) = face::run(state, *player, *card, granted.clone(), choices, done) {
                 return next;
             }
             faced = state.with_face(*card, choices.face);
@@ -707,8 +711,8 @@ pub(crate) fn announce(state: &GameState, pending: &mut Pending) -> Next {
         _ => state,
     };
     let held = rules_of(state, what);
-    let needs: &Needs =
-        needs.get_or_insert_with(|| Needs::of(state, *player, what, held.as_deref(), *granted));
+    let needs: &Needs = needs
+        .get_or_insert_with(|| Needs::of(state, *player, what, held.as_deref(), granted.clone()));
     let ctx = Ctx {
         state,
         player: *player,
@@ -719,7 +723,7 @@ pub(crate) fn announce(state: &GameState, pending: &mut Pending) -> Next {
             What::Trigger(waiting) => Some(waiting),
             _ => None,
         },
-        granted: *granted,
+        granted: granted.clone(),
         needs,
     };
     let mut work = Work {

@@ -20,6 +20,7 @@ impl Writer<'_> {
                 duration: None,
             },
             Effect::DelayedTrigger {
+                until: None,
                 when:
                     TriggerPattern::StepBegins {
                         step: Step::End,
@@ -89,6 +90,7 @@ impl Writer<'_> {
                 rest_as: None,
             },
             Effect::DelayedTrigger {
+                until: None,
                 when:
                     TriggerPattern::StepBegins {
                         step: Step::End,

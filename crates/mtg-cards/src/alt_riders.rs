@@ -99,6 +99,7 @@ pub fn warp_riders() -> Vec<Ability> {
         },
         Effect::Rule {
             rule: GameRule::MayCast(CastPermission {
+                rather: None,
                 who: Ref::You,
                 what: Selector::default(),
                 from: Some(ZoneKind::Exile),
@@ -133,6 +134,7 @@ pub fn warp_riders() -> Vec<Ability> {
                 rest_as: None,
             },
             Effect::DelayedTrigger {
+                until: None,
                 when: TriggerPattern::StepBegins {
                     step: Step::End,
                     whose: Ref::EachPlayer,

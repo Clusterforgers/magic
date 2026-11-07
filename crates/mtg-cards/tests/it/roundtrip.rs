@@ -571,6 +571,7 @@ fn game_rule() -> impl Strategy<Value = GameRule> {
         )
             .prop_map(|(who, what, from, free, flash, only, play)| {
                 GameRule::MayCast(CastPermission {
+                    rather: None,
                     who,
                     what,
                     from,
@@ -1001,6 +1002,7 @@ fn leaf_effect() -> impl Strategy<Value = Effect> {
         )
             .prop_map(|(who, what, count, new_targets, except)| {
                 Effect::CopySpell {
+                    each_target: None,
                     who,
                     what,
                     count,
@@ -1166,6 +1168,7 @@ fn effect() -> impl Strategy<Value = Effect> {
             )
                 .prop_map(|(who, what, free, play, otherwise, way)| {
                     Effect::CastFromZone {
+                        rather: None,
                         who,
                         what,
                         free,
@@ -1190,6 +1193,7 @@ fn effect() -> impl Strategy<Value = Effect> {
             (bound_name(), amount()).prop_map(|(bind, amount)| Effect::Let { bind, amount }),
             (trigger_pattern(), any::<bool>(), list()).prop_map(|(when, once, effects)| {
                 Effect::DelayedTrigger {
+                    until: None,
                     when,
                     once,
                     this_turn: false,
@@ -1398,6 +1402,7 @@ fn ability() -> impl Strategy<Value = Ability> {
         )
             .prop_map(
                 |(applies_to, change, mana, per, condition)| Ability::CostModifier {
+                    targeting: None,
                     applies_to,
                     change,
                     mana,

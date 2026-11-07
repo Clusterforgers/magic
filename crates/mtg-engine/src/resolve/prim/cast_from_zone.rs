@@ -7,6 +7,7 @@ use mtg_core::ids::{ObjectId, PlayerId};
 
 use super::may::performed_name;
 use super::wrong_effect;
+use crate::announce::Granted;
 use crate::choose::{Choice, Target, YesNoOptions};
 use crate::decision::{Decision, DecisionKind};
 use crate::object::{GameObject, ObjectKind};
@@ -37,10 +38,17 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         play,
         way,
         transformed,
+        rather,
         ..
     } = effect
     else {
         return Err(wrong_effect("CastFromZone"));
+    };
+    let granted = Granted {
+        free: *free,
+        way: *way,
+        transformed: *transformed,
+        rather: rather.clone(),
     };
     let state = cx.state();
     let Some(player) = cx
@@ -62,7 +70,7 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
             card.zone() != crate::zones::Zone::Battlefield
                 && may_play_land_while_resolving(state, player, cx.resolving.object())
         } else {
-            ways::grantable(state, player, card.id(), (*free, *way, *transformed))
+            ways::grantable(state, player, card.id(), &granted)
         }
     };
     match (next, after) {
@@ -71,7 +79,7 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
             Ok(card.map_or_else(
                 || c11b_cast_done(cx, effect, false),
                 |card| {
-                    let alternative = ways::alternative_cost(state, card.id(), *way);
+                    let alternative = cost_named(state, player, card, &granted);
                     Run::Ask(question(
                         player,
                         card.card().name.as_str(),
@@ -109,6 +117,7 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
                 free: *free,
                 way: *way,
                 transformed: *transformed,
+                rather: rather.clone(),
             }))
         }
         (Some((first, Choice::YesNo(true))), Some((second, Choice::YesNo(cast))))
@@ -118,6 +127,21 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         }
         _ => Err(unexpected("an answer that was not asked")),
     }
+}
+
+/// The way and the cost the question names: a madness or miracle cost, or the cost paid rather than the mana cost.
+fn cost_named(
+    state: &crate::state::GameState,
+    player: PlayerId,
+    card: &GameObject,
+    granted: &Granted,
+) -> Option<(CastWay, String)> {
+    ways::alternative_cost(state, card.id(), granted.way).or_else(|| {
+        let cost = granted.rather.as_ref()?;
+        let way = ways::instead_way(state, player, card, cost, true)?;
+        let words = ways::cost_words(way.mana.as_ref()?, &way.parts);
+        Some((CastWay::Alternative, words))
+    })
 }
 
 /// Whether the card is a land card, which is played and not cast.

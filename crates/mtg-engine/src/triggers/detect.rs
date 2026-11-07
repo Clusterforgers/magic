@@ -261,11 +261,12 @@ enum Happened {
     Adapted { object: ObjectId, player: PlayerId },
     /// A player bolstered.
     Bolstered { player: PlayerId },
-    /// A player or object took an action (`TriggerPattern::Did`).
+    /// A player or object took an action (`TriggerPattern::Did`); `ability` is the ability an activation put on the stack.
     Did {
         action: Action,
         player: Option<PlayerId>,
         object: Option<ObjectId>,
+        ability: Option<ObjectId>,
     },
     /// Everything of one kind of state (before or after) that happened in the batch, for the patterns of events that
     /// happen together.
@@ -3267,6 +3268,7 @@ mod tests {
             when: pattern(r#"{"StepBegins":{"step":"End"}}"#),
             once,
             this_turn: false,
+            until: None,
             effects: gain(),
             targets: Vec::new(),
             bindings: vec![("kept".to_owned(), vec![Target::Player(FOE)])],

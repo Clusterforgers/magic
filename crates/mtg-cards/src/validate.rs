@@ -343,6 +343,8 @@ struct Walker<'a> {
     pays_objects: bool,
     /// The cost under the walk is that of an activated ability, whose counted amounts the engine counts as it is announced.
     activated_cost: bool,
+    /// The cost under the walk is paid rather than a mana cost, whose counted amounts the engine counts for the card cast.
+    rather_cost: bool,
     /// Whether a required additional cost of the card counts the X the caster announces, which the effects read.
     counts_x: bool,
     x_free: bool,
@@ -382,6 +384,7 @@ impl<'a> Walker<'a> {
             has_additional_cost: false,
             pays_objects: false,
             activated_cost: false,
+            rather_cost: false,
             counts_x: false,
             x_free: false,
             x_now: false,
@@ -1309,7 +1312,11 @@ impl<'a> Walker<'a> {
                     w.uses("Cost", "Untap.Elsewhere");
                 }
                 if !is_fixed(item) {
-                    let activated = if w.activated_cost { ".Activated" } else { "" };
+                    let activated = match (w.activated_cost, w.rather_cost) {
+                        (true, _) => ".Activated",
+                        (false, true) => ".Rather",
+                        (false, false) => "",
+                    };
                     w.uses("Cost", &format!("{}.Counted{activated}", tag_of(item)));
                 }
                 match item {
@@ -1531,6 +1538,12 @@ impl<'a> Walker<'a> {
         if let Some(cost) = &permission.additional {
             self.at("additional", |w| w.permission_cost(cost));
         }
+        if let Some(cost) = &permission.rather {
+            if permission.free {
+                self.problem("a cast for another cost is not free");
+            }
+            self.at("rather", |w| w.rather_cost(cost));
+        }
         if let Some(when) = &permission.when {
             self.at("when", |w| w.condition(when));
         }
@@ -1546,8 +1559,40 @@ impl<'a> Walker<'a> {
         }
     }
 
-    /// What a cast permission adds to the cost of a cast through it: paid by the caster as the spell is announced, so it
-    /// names a part, holds no X and nothing the spell itself would pay.
+    /// A cost modifier, with the targets an ability cost change waits for: a selector, on the change of activated abilities
+    /// only.
+    fn e14e_cost_modifier(&mut self, modifier: &Ability) {
+        let Ability::CostModifier {
+            applies_to,
+            mana,
+            per,
+            condition,
+            targeting,
+            activating,
+            ..
+        } = modifier
+        else {
+            return;
+        };
+        self.cost_modifier(applies_to, mana, per, condition.as_ref());
+        let Some(targeting) = targeting else {
+            return;
+        };
+        if activating.is_none() {
+            self.problem("a spell's targets are read with Targeting in what it applies to");
+        }
+        self.at("targeting", |w| w.selector(targeting));
+    }
+
+    /// What a cast pays rather than the mana cost: a permission cost whose counted amounts the engine counts for the card.
+    fn rather_cost(&mut self, cost: &Cost) {
+        let was = std::mem::replace(&mut self.rather_cost, true);
+        self.permission_cost(cost);
+        self.rather_cost = was;
+    }
+
+    /// What a cast permission adds to or pays instead of the cost of a cast through it: paid by the caster as the spell is
+    /// announced, so it names a part, holds no X and nothing the spell itself would pay.
     fn permission_cost(&mut self, cost: &Cost) {
         self.cost(cost);
         if cost.0.is_empty() {
@@ -3187,10 +3232,18 @@ impl Walker<'_> {
                 way,
                 bind,
                 otherwise,
+                rather,
+                free,
                 ..
             } => {
                 w.at("who", |w| w.reference(who, Kind::Player));
                 w.at("what", |w| w.reference(what, Kind::Object));
+                if let Some(cost) = rather {
+                    if *free || way.is_some() {
+                        w.problem("a card cast for another cost is not cast free or for a way of its own");
+                    }
+                    w.at("rather", |w| w.rather_cost(cost));
+                }
                 if let Some(way) = way
                     && !matches!(
                         way,
@@ -3510,11 +3563,18 @@ impl Walker<'_> {
                 what,
                 count,
                 except,
+                each_target,
                 ..
             } => {
                 w.at("what", |w| w.reference(what, Kind::Object));
                 w.at("count", |w| w.amount(count));
                 w.copy_exceptions_new_object(except);
+                if let Some(selector) = each_target {
+                    if !count.is_one() {
+                        w.problem("a copy for each other target is one copy for each, with no count of its own");
+                    }
+                    w.at("each_target", |w| w.selector(selector));
+                }
             }
             Effect::ChangeTargets { what, .. } => {
                 w.at("what", |w| w.reference(what, Kind::Object));
@@ -4140,13 +4200,7 @@ impl Walker<'_> {
                     w.at("condition", |w| w.condition(condition));
                 }
             }
-            Ability::CostModifier {
-                applies_to,
-                mana,
-                per,
-                condition,
-                ..
-            } => w.cost_modifier(applies_to, mana, per, condition.as_ref()),
+            modifier @ Ability::CostModifier { .. } => w.e14e_cost_modifier(modifier),
             Ability::AdditionalCost { cost, required } => w.additional_cost(cost, *required),
             Ability::FreeCast { condition, cost } => {
                 w.w14c_free_cast(condition.as_ref(), cost.as_ref());

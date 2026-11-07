@@ -7,7 +7,8 @@ use super::valid::{defined, selector_any, selector_in, subject};
 use crate::forge::script::Params;
 
 /// The keys of a `MayPlay` static line.
-const READ: [&str; 16] = [
+const READ: [&str; 17] = [
+    "MayPlayAltManaCost",
     "ValidAfterStack",
     "MayPlayIgnoreType",
     "MayPlayIgnoreColor",
@@ -29,6 +30,10 @@ const READ: [&str; 16] = [
 /// The `MayCast` rule of a static line. `only` names the objects it covers (what an `Effect` object remembers); without
 /// it the cards `Affected$` selects are covered.
 pub fn may_cast(ctx: &Ctx, p: &Params, only: Option<&Value>) -> Tr<Value> {
+    // "Pay {0} rather than pay its mana cost" waits for a reader of its own (As Foretold, Dragon's Smile).
+    if p.get("MayPlayAltManaCost") == Some("0") {
+        return unmapped("key:Static.MayPlay.MayPlayAltManaCost");
+    }
     check_keys(p, "Static.MayPlay", &READ, |_, _| false)?;
     if !after_stack_is_redundant(p) {
         return unmapped("key:Static.MayPlay.ValidAfterStack");
@@ -102,6 +107,12 @@ pub fn may_cast(ctx: &Ctx, p: &Params, only: Option<&Value>) -> Tr<Value> {
     if let Some(extra) = p.get("RaiseCost") {
         permission["additional"] = super::cost::cost(ctx, extra)?;
     }
+    if let Some(text) = p.get("MayPlayAltManaCost") {
+        if permission.get("free").is_some() {
+            return unmapped("key:Static.MayPlay.MayPlayAltManaCost");
+        }
+        permission["rather"] = rather_cost(ctx, text)?;
+    }
     match p.get("MayPlayLimit") {
         None => {}
         Some("1") => permission["once"] = json!(true),
@@ -129,6 +140,20 @@ pub fn may_cast(ctx: &Ctx, p: &Params, only: Option<&Value>) -> Tr<Value> {
         permission["play"] = json!(true);
     }
     Ok(json!({ "MayCast": permission }))
+}
+
+/// What a cast pays rather than the mana cost (`MayPlayAltManaCost$`, `PlayCost$`): life or energy equal to the mana value
+/// of the card cast (`This` in the cost), or a fixed cost; another cost the card has (its suspend cost) is a gap.
+pub fn rather_cost(ctx: &Ctx, text: &str) -> Tr<Value> {
+    let mana_value = json!({"Stat": {"of": "This", "stat": "ManaValue"}});
+    match text {
+        "PayLife<ConvertedManaCost>" => Ok(json!([{ "PayLife": mana_value }])),
+        "PayEnergy<ConvertedManaCost>" => Ok(json!([{ "PayEnergy": mana_value }])),
+        other if other.contains("ConvertedManaCost") || other.ends_with("Cost") => {
+            unmapped(format!("key:PlayCost={other}"))
+        }
+        other => super::cost::cost(ctx, other),
+    }
 }
 
 /// Whether `ValidAfterStack$` (the spell check after the cast) adds nothing to `Affected$`: every card alternative other
@@ -188,31 +213,31 @@ enum Count {
     All,
 }
 
+/// The keys of a `Play` line.
+const PLAY_KEYS: [&str; 17] = [
+    "Defined",
+    "Valid",
+    "ValidZone",
+    "Optional",
+    "WithoutManaCost",
+    "ValidSA",
+    "Amount",
+    "Controller",
+    "CopyCard",
+    "RememberPlayed",
+    "ValidTgts",
+    "TargetMin",
+    "TargetMax",
+    "ReplaceGraveyard",
+    "AllowRepeats",
+    "ReplaceGraveyardValid",
+    "PlayCost",
+];
+
 /// `Play`: the player may cast (or play) the cards `Defined$` names or `Valid$` selects in `ValidZone$`, up to `Amount$` of
 /// them, for free when `WithoutManaCost$` says so; `CopyCard$` casts a copy of each card in exile.
 pub fn play(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
-    only(
-        p,
-        "Play",
-        &[
-            "Defined",
-            "Valid",
-            "ValidZone",
-            "Optional",
-            "WithoutManaCost",
-            "ValidSA",
-            "Amount",
-            "Controller",
-            "CopyCard",
-            "RememberPlayed",
-            "ValidTgts",
-            "TargetMin",
-            "TargetMax",
-            "ReplaceGraveyard",
-            "AllowRepeats",
-            "ReplaceGraveyardValid",
-        ],
-    )?;
+    only(p, "Play", &PLAY_KEYS)?;
     if p.get("Optional") != Some("True") {
         return unmapped("key:Play.Optional");
     }
@@ -231,6 +256,11 @@ pub fn play(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
     };
     let pool = play_pool(ctx, p, spell_filter)?;
     let free = p.get("WithoutManaCost") == Some("True");
+    let rather = match p.get("PlayCost") {
+        None => None,
+        Some(_) if free => return unmapped("key:Play.PlayCost-free"),
+        Some(text) => Some(rather_cost(ctx, text)?),
+    };
     let exile = exile_instead(ctx, p, spell_only && !copy && matches!(count, Count::One))?;
     let exile_after = exile.is_some();
     let shield_only = exile.unwrap_or_default();
@@ -250,6 +280,9 @@ pub fn play(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
         let mut effect = json!({"who": who, "what": card});
         if free {
             effect["free"] = json!(true);
+        }
+        if let Some(cost) = &rather {
+            effect["rather"] = cost.clone();
         }
         if !spell_only {
             effect["play"] = json!(true);

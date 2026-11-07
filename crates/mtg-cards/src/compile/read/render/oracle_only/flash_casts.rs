@@ -17,6 +17,7 @@ pub(super) fn add(ability: &Ability, texts: &mut Vec<String>) {
         return;
     };
     let CastPermission {
+        rather,
         who,
         what,
         from,
@@ -39,6 +40,7 @@ pub(super) fn add(ability: &Ability, texts: &mut Vec<String>) {
         || *once
         || additional.is_some()
         || when.is_some()
+        || rather.is_some()
     {
         return;
     }

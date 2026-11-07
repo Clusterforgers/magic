@@ -66,16 +66,19 @@ fn copy_spell(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
             "Optional",
             "UnlessAI",
             "NonLegendary",
+            "CopyForEachCanTarget",
+            "ChooseOnlyOne",
         ],
     )?;
     let who = match p.get("Controller") {
         None | Some("You") => None,
         // The player who cast the spell the trigger is about.
-        Some("TriggeredCardController" | "TriggeredActivator")
-            if ctx
-                .trigger
-                .as_ref()
-                .is_some_and(|shape| shape.mode == "SpellCast") =>
+        Some(
+            "TriggeredCardController" | "TriggeredActivator" | "TriggeredSpellAbilityController",
+        ) if ctx
+            .trigger
+            .as_ref()
+            .is_some_and(|shape| shape.mode == "SpellCast") =>
         {
             Some(json!("TriggeringPlayer"))
         }
@@ -100,6 +103,13 @@ fn copy_spell(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
             .is_some_and(|shape| shape.mode == "SpellCast")
     {
         json!("Triggering")
+    } else if p.get("Defined") == Some("TriggeredSpellAbility")
+        && ctx
+            .trigger
+            .as_ref()
+            .is_some_and(|shape| shape.mode == "AbilityCast")
+    {
+        return copy_activated(ctx, p, who.is_some());
     } else if p.get("Defined") == Some("Parent") && ctx.trigger.is_none() {
         json!("This")
     } else if p.get("Defined") == Some("Targeted") && !p.has("ValidTgts") {
@@ -120,6 +130,9 @@ fn copy_spell(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
     if p.get("NonLegendary") == Some("True") {
         copy["except"] = json!([{"RemoveSupertype": "Legendary"}]);
     }
+    if let Some(each) = each_target(ctx, p)? {
+        copy["each_target"] = each;
+    }
     if let Some(color) = p.get("SetColor") {
         if !matches!(color, "White" | "Blue" | "Black" | "Red" | "Green") {
             return unmapped("key:CopySpellAbility.SetColor");
@@ -136,6 +149,62 @@ fn copy_spell(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
         may["who"] = who.clone();
     }
     Ok(json!({"May": may}))
+}
+
+/// `CopyForEachCanTarget$`: "copy that spell for each other creature it could target. Each copy targets a different one of
+/// those creatures." The selector of the objects; `None` without the key.
+fn each_target(ctx: &Ctx, p: &Params) -> Tr<Option<Value>> {
+    let Some(valid) = p.get("CopyForEachCanTarget") else {
+        if p.has("ChooseOnlyOne") {
+            return unmapped("key:CopySpellAbility.ChooseOnlyOne");
+        }
+        return Ok(None);
+    };
+    if p.has("Amount") || p.has("MayChooseTarget") {
+        return unmapped("key:CopySpellAbility.CopyForEachCanTarget-with-a-count");
+    }
+    // "The copy targets that token": only one is named, so only one is copied.
+    if p.get("ChooseOnlyOne") == Some("True") && valid != "Permanent.IsRemembered" {
+        return unmapped("key:CopySpellAbility.ChooseOnlyOne");
+    }
+    Ok(Some(json!(selector_any(ctx, valid)?)))
+}
+
+/// "Copy that ability" after an activation: the ability on the stack the activation put there (`Dealer`), never its source.
+/// The copy is the trigger controller's; another controller, a spell's words and a may are gaps.
+fn copy_activated(ctx: &mut Ctx, p: &Params, other_controller: bool) -> Tr<Value> {
+    if other_controller {
+        return unmapped("key:CopySpellAbility.Controller-of-an-ability");
+    }
+    for key in [
+        "NonLegendary",
+        "SetColor",
+        "Optional",
+        "ValidTgts",
+        "CopyForEachCanTarget",
+        "ChooseOnlyOne",
+    ] {
+        if p.has(key) {
+            return unmapped(format!("key:CopySpellAbility.{key}-of-an-ability"));
+        }
+    }
+    // Forge marks "copy that ability" optional where the card has no "may" (Illusionist's Bracers).
+    if !ctx
+        .oracle
+        .to_lowercase()
+        .replace("you may choose new targets", "")
+        .contains("may")
+    {
+        return unmapped("key:CopySpellAbility.of-an-ability-without-may");
+    }
+    let mut copy = json!({"what": "Dealer"});
+    if p.has("Amount") {
+        copy["count"] = amount(ctx, p.get("Amount").unwrap_or("1"))?;
+    }
+    if p.get("MayChooseTarget") == Some("True") {
+        copy["new_targets"] = json!(true);
+    }
+    Ok(json!({ "CopyAbility": copy }))
 }
 
 /// `ChoosePlayer`: the chooser picks one of the opponents or of all players; the later lines read it as `ChosenPlayer`.

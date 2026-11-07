@@ -960,6 +960,7 @@ fn itself_to_hand(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
             rest_as: None,
         },
         Effect::DelayedTrigger {
+            until: None,
             when: TriggerPattern::StepBegins {
                 step: Step::End,
                 whose: Ref::EachPlayer,

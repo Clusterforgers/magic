@@ -127,12 +127,6 @@ fn reads(#[case] types: &str, #[case] lines: &str, #[case] oracle: &str, #[case]
     "Exile a card from your hand. At the beginning of the next end step, if it remains exiled, draw a card.",
     "key:DelayedTrigger.IsPresent"
 )]
-#[case::copy_of_an_ability_of_the_trigger(
-    "Artifact",
-    "T:Mode$ AbilityCast | ValidActivatingPlayer$ You | ValidSA$ SpellAbility.!ManaAbility | TriggerZones$ Battlefield | Execute$ C | OptionalDecider$ You | TriggerDescription$ Whenever you activate an ability, if it isn't a mana ability, you may pay {2}. If you do, copy that ability.\nSVar:C:AB$ CopySpellAbility | Cost$ 2 | Defined$ TriggeredSpellAbility | MayChooseTarget$ True",
-    "Whenever you activate an ability, if it isn't a mana ability, you may pay {2}. If you do, copy that ability. You may choose new targets for the copy.",
-    "key:CopySpellAbility.Defined"
-)]
 #[case::another_players_look_at_their_cards(
     "Sorcery",
     "A:SP$ DigMultiple | Defined$ Player | DigNum$ 5 | Optional$ True | ChangeValid$ Land,Spell.!Aura | RestRandomOrder$ True | SpellDescription$ Each player looks at the top five cards of their library and may reveal a land card and/or an instant or sorcery card from among them.",

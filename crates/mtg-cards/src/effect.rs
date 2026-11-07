@@ -1112,6 +1112,10 @@ pub enum Effect {
         /// The alternative cost it is cast for (CR 118.9): `Madness` pays the madness cost of the card, `Suspend` pays nothing; the spell remembers it.
         #[serde(default, skip_serializing_if = "Option::is_none")]
         way: Option<CastWay>,
+        /// What it is cast for rather than its mana cost (CR 118.9): "by paying life equal to its mana value"; an amount in
+        /// it counts the card cast as `This`.
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        rather: Option<Cost>,
         /// The card is cast transformed: the spell is its back face (CR 712.4, 310.11b "cast it transformed").
         #[serde(default, skip_serializing_if = "is_false")]
         transformed: bool,
@@ -1395,6 +1399,11 @@ pub enum Effect {
         /// Changes the copy has ("except that the copy is red").
         #[serde(default, skip_serializing_if = "Vec::is_empty")]
         except: Vec<Modification>,
+        /// In place of `count`, one copy of a spell with a single target for each other object this selects that the spell
+        /// could target, each copy targeting a different one ("copy that spell for each other Golem that spell could
+        /// target").
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        each_target: Option<Selector>,
     },
     /// Copies activated and triggered abilities on the stack (CR 707.10): each copy is put on the stack above the ability,
     /// not activated and not triggered, with the choices of the original.
@@ -1474,6 +1483,9 @@ pub enum Effect {
         /// It waits only until the end of the turn it was set up in ("when you next cast a spell this turn").
         #[serde(default, skip_serializing_if = "is_false")]
         this_turn: bool,
+        /// It waits until this runs out instead ("until your next turn, whenever ..."), also when it triggers once.
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        until: Option<Duration>,
         /// What it does.
         effects: Vec<Effect>,
     },
@@ -1687,6 +1699,7 @@ fn exile_cast_bottom(filter: Selector, otherwise: Vec<Effect>) -> Vec<Effect> {
             exiled_as: EXILED.to_owned(),
         },
         Effect::CastFromZone {
+            rather: None,
             who: Ref::You,
             what: Ref::Bound(FOUND.to_owned()),
             free: true,
@@ -1762,6 +1775,7 @@ pub fn impulse(count: Amount, duration: Duration) -> Vec<Effect> {
         },
         Effect::Rule {
             rule: GameRule::MayCast(CastPermission {
+                rather: None,
                 who: Ref::You,
                 what: Selector::default(),
                 from: Some(ZoneKind::Exile),

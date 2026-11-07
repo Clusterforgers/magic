@@ -4,6 +4,7 @@
 
 use mtg_cards::ability::{Ability, ActivationKind, CostChange};
 use mtg_cards::keyword::Keyword;
+use mtg_cards::refs::Selector;
 use mtg_core::ids::ObjectId;
 use mtg_core::mana::ManaCost;
 
@@ -12,6 +13,7 @@ use crate::ability_reader::{
     abilities_of, definition_has_cost_modifier, is_cost_modifier, keyword_adding, may_hold,
 };
 use crate::characteristics::controller_of_object;
+use crate::object::ObjectRef;
 use crate::resolve::Scope;
 use crate::state::GameState;
 use crate::zones::Zone;
@@ -52,21 +54,50 @@ thread_local! {
 }
 
 /// The mana of an activation with the cost modifiers in play applied: the increases first, then the reductions, and no
-/// reduction takes the cost below the most `least` any applying reduction names.
+/// reduction takes the cost below the most `least` any applying reduction names. `targeted` is what the activation targets
+/// once announced; `None` before.
 pub(crate) fn modified(
     state: &GameState,
-    source: ObjectId,
-    address: AbilityRef,
-    rules: &Ability,
+    (source, address, rules): (ObjectId, AbilityRef, &Ability),
     mana: ManaCost,
+    targeted: Option<&[ObjectRef]>,
 ) -> ManaCost {
-    modified_as(state, source, specific(state, address, rules), mana)
+    modified_as(
+        state,
+        source,
+        specific(state, address, rules),
+        mana,
+        targeted,
+    )
+}
+
+/// Whether an activation that targets `targeted` (`None` before its targets are announced) has a target `selector` selects.
+/// Before the announcement the activation is judged at its cheapest, so it is offered whenever some target makes it
+/// affordable: a reduction (`reduces`) applies while some permanent matches, an increase does not apply.
+fn targets_one(
+    scope: &Scope<'_>,
+    selector: &Selector,
+    targeted: Option<&[ObjectRef]>,
+    reduces: bool,
+) -> bool {
+    let picks = |object: ObjectRef| scope.selects(selector, object).unwrap_or(false);
+    match targeted {
+        Some(targeted) => targeted.iter().copied().any(picks),
+        None if !reduces => false,
+        None => scope
+            .state
+            .zone(Zone::Battlefield)
+            .iter()
+            .filter_map(|id| scope.state.object(*id))
+            .map(crate::object::GameObject::reference)
+            .any(picks),
+    }
 }
 
 /// The mana of a mana ability of `source` with the cost modifiers of mana abilities and of every activated ability
 /// applied (CR 601.2f, 605.3a): "Enchanted creature's activated abilities cost {3} more to activate".
 pub(crate) fn mana_modified(state: &GameState, source: ObjectId, mana: ManaCost) -> ManaCost {
-    modified_as(state, source, Some(ActivationKind::Mana), mana)
+    modified_as(state, source, Some(ActivationKind::Mana), mana, Some(&[]))
 }
 
 /// The mana of an activation of an ability of the specific kind `own` with the cost modifiers in play applied.
@@ -75,6 +106,7 @@ fn modified_as(
     source: ObjectId,
     own: Option<ActivationKind>,
     mana: ManaCost,
+    targeted: Option<&[ObjectRef]>,
 ) -> ManaCost {
     // No cost modifier exists in the game, so the walk over the battlefield would find none.
     if !state.possible.costs {
@@ -114,6 +146,7 @@ fn modified_as(
                 condition,
                 activating: Some(kind),
                 least,
+                targeting,
             } = &*ability
             else {
                 continue;
@@ -126,6 +159,9 @@ fn modified_as(
                 || condition
                     .as_ref()
                     .is_some_and(|held| !scope.holds(held).unwrap_or(false))
+                || targeting.as_ref().is_some_and(|wanted| {
+                    !targets_one(&scope, wanted, targeted, *change == CostChange::Reduce)
+                })
             {
                 continue;
             }

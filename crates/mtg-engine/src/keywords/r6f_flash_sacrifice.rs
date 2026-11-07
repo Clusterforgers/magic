@@ -51,6 +51,7 @@ impl KeywordRules for FlashSacrifice {
                     rest_as: None,
                 },
                 Effect::DelayedTrigger {
+                    until: None,
                     when: TriggerPattern::StepBegins {
                         step: Step::Cleanup,
                         whose: Ref::EachPlayer,

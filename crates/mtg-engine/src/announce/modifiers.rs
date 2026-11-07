@@ -194,6 +194,7 @@ fn spell_cost_rules(state: &GameState, spell: ObjectId) -> Vec<Modifier> {
                 source,
                 controller: effect.controller,
                 ability: Arc::new(Ability::CostModifier {
+                    targeting: None,
                     applies_to: applies_to.clone(),
                     change: *change,
                     mana: mana.clone(),
@@ -236,6 +237,7 @@ fn next_spell_costs(state: &GameState, spell: ObjectId, caster: PlayerId) -> Vec
                 source: effect.source.unwrap_or(target),
                 controller: caster,
                 ability: Arc::new(Ability::CostModifier {
+                    targeting: None,
                     applies_to,
                     change: *change,
                     mana: mana.clone(),
@@ -293,6 +295,7 @@ pub(crate) fn modified(
     let (mut more, mut less, mut floor) = (ManaCost::ZERO, ManaCost::ZERO, 0u32);
     for modifier in gathered(state, spell, player) {
         let Ability::CostModifier {
+            targeting: None,
             applies_to,
             change,
             mana: unit,

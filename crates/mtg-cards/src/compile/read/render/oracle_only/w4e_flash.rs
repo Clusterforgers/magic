@@ -17,6 +17,7 @@ pub(super) fn wordings(ability: &Ability) -> Vec<String> {
         return Vec::new();
     };
     let CastPermission {
+        rather: None,
         who: Ref::You,
         what: Selector(preds),
         from: None,

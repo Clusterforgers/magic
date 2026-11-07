@@ -37,6 +37,7 @@ pub(super) fn add(ability: &Ability, texts: &mut Vec<String>) {
     };
     let [
         Effect::CastFromZone {
+            rather: None,
             who: Ref::You,
             what: Ref::Bound(cast),
             free: true,

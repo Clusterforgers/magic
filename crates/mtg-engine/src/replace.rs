@@ -2396,7 +2396,9 @@ impl Pass<'_> {
                 },
                 once: true,
                 this_turn: false,
+                until: None,
                 effects: vec![mtg_cards::effect::Effect::CastFromZone {
+                    rather: None,
                     who: Ref::You,
                     what: Ref::This,
                     free: true,

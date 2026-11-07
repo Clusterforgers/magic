@@ -79,10 +79,6 @@ fn an_activation_cost_modifier_names_its_kind(#[case] line: &str, #[case] modifi
 }
 
 #[rstest]
-#[case::target_of_the_ability(
-    "Mode$ ReduceCost | ValidTarget$ Card.Self | ValidSpell$ Activated.Equip | Activator$ You | Amount$ 2",
-    "key:Static.CostModifier.ValidTarget-of-an-ability"
-)]
 #[case::other_kind(
     "Mode$ ReduceCost | ValidCard$ Card | ValidSpell$ Activated.Boast | Activator$ You | Amount$ 1",
     "key:Static.CostModifier.ValidSpell=Activated.Boast"

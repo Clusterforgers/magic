@@ -136,6 +136,8 @@ const RUNS: &[&str] = &[
     "Cost.RemoveCountersAmong",
     "Cost.PayLife.Counted.Activated",
     "Cost.PayEnergy.Counted.Activated",
+    "Cost.PayLife.Counted.Rather",
+    "Cost.PayEnergy.Counted.Rather",
     "Cost.Mill.Counted.Activated",
     "Cost.RemoveCounters.Counted.Activated",
     "Cost.Sacrifice.Counted.Activated",

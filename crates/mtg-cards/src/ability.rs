@@ -264,6 +264,10 @@ pub enum Ability {
         /// to the cost of casting spells.
         #[serde(default, skip_serializing_if = "Option::is_none")]
         activating: Option<ActivationKind>,
+        /// Only an activation with a target this selects ("equip abilities that target this creature"), judged with the
+        /// targets announced; before they are, while some object in play matches. Abilities only.
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        targeting: Option<Selector>,
         /// A reduction never takes the cost below this much mana (the cost itself when it is already less).
         #[serde(default, skip_serializing_if = "is_zero")]
         least: u32,

@@ -161,6 +161,7 @@ pub fn token_copy(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
     effects.extend(gains);
     if let Some((verb, step)) = delay {
         effects.push(Effect::DelayedTrigger {
+            until: None,
             when: TriggerPattern::StepBegins {
                 step,
                 whose: Ref::EachPlayer,
@@ -448,6 +449,7 @@ fn populate_later(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
             duration: Duration::Forever,
         },
         Effect::DelayedTrigger {
+            until: None,
             when: TriggerPattern::StepBegins {
                 step: Step::End,
                 whose: Ref::EachPlayer,
@@ -1246,6 +1248,7 @@ pub(super) fn delay_text(created: &Effect, delayed: &Effect, plural: bool) -> Op
         return None;
     };
     let Effect::DelayedTrigger {
+        until: None,
         when:
             TriggerPattern::StepBegins {
                 step,

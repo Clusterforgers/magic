@@ -176,7 +176,7 @@ pub enum Progress {
 }
 
 /// A cast a resolution has a player make.
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct Cast {
     /// Who casts it.
     pub player: PlayerId,
@@ -188,6 +188,8 @@ pub struct Cast {
     pub way: Option<mtg_cards::value::CastWay>,
     /// The card is cast transformed.
     pub transformed: bool,
+    /// What it is cast for rather than its mana cost.
+    pub rather: Option<mtg_cards::cost::Cost>,
 }
 
 /// Where a step goes after its effect.
@@ -557,12 +559,14 @@ pub(crate) fn next(state: &GameState) -> flow::Progress {
             free,
             way,
             transformed,
+            rather,
         })) => flow::Progress::Put(Box::new(Pending::during_resolution(
             player,
             card,
             free,
             way,
             transformed,
+            rather,
         ))),
         Err(error) => flow::Progress::Fail(error),
     }
