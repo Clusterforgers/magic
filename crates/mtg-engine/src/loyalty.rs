@@ -319,6 +319,7 @@ mod tests {
                             deathtouch: false,
                             form: crate::combat::DamageForm::Normal,
                             toxic: 0,
+                            unpreventable: false,
                         };
                         apply_event(&mut game, &event).unwrap();
                         expected = (expected - i64::from(amount)).max(0);

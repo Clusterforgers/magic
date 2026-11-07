@@ -116,6 +116,8 @@ export interface PayTextInput {
   cancel: boolean
   /** True when the payment is the tax on an attack being declared; the words say 'attack' and "go back". */
   attack?: boolean
+  /** True when the payment is the tax on a block being declared; the words say 'block' and "go back". */
+  block?: boolean
   /** What the last click did, as a sentence; said before the status. */
   note: string
   /** Life paid and payable; left out for a cost with no Phyrexian symbol. */
@@ -133,29 +135,32 @@ export function payText({
   auto,
   cancel,
   attack = false,
+  block = false,
   note,
   life,
 }: PayTextInput): string {
   const lead = note === '' ? '' : `${note} `
+  const declaring = attack ? 'attack' : block ? 'block' : undefined
   const may = life?.may === true
   const paying = life !== undefined && life.paid > 0 ? `, paying ${life.paid} life (${life.after} left)` : ''
   if (covered) {
     return manaValue(cost) === 0
       ? `${spell} costs nothing. Confirm to cast it.`
-      : `${lead}The cost is covered${paying}. Confirm to ${attack ? 'attack' : `cast ${spell}`}.`
+      : `${lead}The cost is covered${paying}. Confirm to ${declaring ?? `cast ${spell}`}.`
   }
   const still = `Still to pay: ${costWords(owed)}.`
   const lifeChoice = may ? `, pay ${LIFE_PER_SYMBOL} life for a Phyrexian symbol` : ''
   if (chosen === 0) {
     // The game offers an automatic payment whenever the cost can be paid at all, unless that takes the last life.
     if (!canAdd || (!auto && !may)) {
-      const back = attack
-        ? ' Add the mana by hand in the Commands panel, or go back to choose other attackers.'
-        : ' Cancel to go back.'
-      return `You cannot pay ${costWords(cost)} for ${attack ? 'the attack' : spell} with the mana you have.${cancel ? back : ''}`
+      const back =
+        declaring !== undefined
+          ? ` Add the mana by hand in the Commands panel, or go back to choose other ${declaring}ers.`
+          : ' Cancel to go back.'
+      return `You cannot pay ${costWords(cost)} for ${declaring !== undefined ? `the ${declaring}` : spell} with the mana you have.${cancel ? back : ''}`
     }
     const automatic = auto ? ', or pay automatically' : ''
-    return `${lead}Pay ${costWords(cost)} for ${attack ? 'the attack' : spell}. Choose a land or other mana source to use its mana${lifeChoice}${automatic}.`
+    return `${lead}Pay ${costWords(cost)} for ${declaring !== undefined ? `the ${declaring}` : spell}. Choose a land or other mana source to use its mana${lifeChoice}${automatic}.`
   }
   if (!canAdd) {
     return `${lead}${still} Nothing left can pay it; remove a choice${cancel ? ' or cancel' : ''}.`

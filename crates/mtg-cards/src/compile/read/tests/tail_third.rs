@@ -328,6 +328,7 @@ fn one_creature_deals_damage_equal_to_its_power_to_another(#[case] text: &str) {
         effects,
         vec![Effect::DealDamage {
             excess: None,
+            unpreventable: false,
             source: Some(Ref::Target(0)),
             to: Ref::Target(1),
             amount: Amount::Stat {

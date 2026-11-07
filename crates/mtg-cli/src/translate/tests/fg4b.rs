@@ -150,13 +150,10 @@ fn play_extras_stay_gaps(#[case] line: &str, #[case] gap: &str) {
 
 #[rstest]
 #[case::goad_duration(
-    "SP$ Goad | ValidTgts$ Creature | Duration$ Permanent",
-    "key:Goad.Duration"
+    "SP$ Goad | ValidTgts$ Creature | Duration$ UntilUntaps",
+    "key:Goad.Duration=UntilUntaps"
 )]
-#[case::connive_count(
-    "SP$ Connive | Defined$ Self | ConniveNum$ X",
-    "key:Connive.ConniveNum"
-)]
+#[case::connive_count("SP$ Connive | Defined$ Self | ConniveNum$ X", "amount:X")]
 #[case::redistribute(
     "SP$ SetLife | Defined$ You | LifeAmount$ 1 | Redistribute$ True",
     "key:SetLife.Redistribute"

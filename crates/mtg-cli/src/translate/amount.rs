@@ -269,6 +269,15 @@ fn event_amount(ctx: &Ctx, expression: &str) -> Tr<Option<Value>> {
                 None => unmapped(format!("amount:{head}${what}")),
             };
         }
+        // "The number of players who control more lands than you": the players with the property.
+        _ if what == "Amount"
+            && let Some(test) = head
+                .strip_prefix("PlayerCountProperty")
+                .and_then(|word| super::players_where::property(ctx, word)) =>
+        {
+            let group = super::players_where::players(&json!("EachPlayer"), &test?);
+            return Ok(Some(json!({ "Players": group })));
+        }
         "PlayerCountRemembered" => {
             return super::amount_more::remembered_player(ctx, what).map(Some);
         }

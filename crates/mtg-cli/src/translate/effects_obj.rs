@@ -350,6 +350,17 @@ fn damage_all(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
         Some("Opponent" | "Player.Opponent") => {
             effects.push(json!({"DealDamage": {"to": "Opponents", "amount": amount}}));
         }
+        // "Each other opponent": the opponents but the player the trigger is about.
+        Some("OppNonTriggeredTarget")
+            if ctx.trigger.as_ref().is_some_and(|shape| shape.to_player) =>
+        {
+            let that = super::triggered::resolve(ctx.trigger.as_ref(), "TriggeredTarget")?;
+            let others = super::players_where::players(
+                &json!("Opponents"),
+                &json!({"Not": {"Among": that}}),
+            );
+            effects.push(json!({"DealDamage": {"to": others, "amount": amount}}));
+        }
         Some(other) => return unmapped(format!("key:DamageAll.ValidPlayers={other}")),
     }
     if let Some(source) = source {
@@ -610,10 +621,14 @@ fn prevent_damage(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
     )?;
     let by = match p.get("Amount") {
         Some("All") => json!("Prevent"),
-        Some(text) => match amount(ctx, text)?.as_u64() {
-            Some(number) => json!({ "PreventUpTo": number }),
-            None => return unmapped("key:PreventDamage.Amount-count"),
-        },
+        Some(text) => {
+            let counted = amount(ctx, text)?;
+            match counted.as_u64() {
+                Some(number) => json!({ "PreventUpTo": number }),
+                // "the next X damage": the count is taken as the shield begins.
+                None => json!({ "PreventCounted": counted }),
+            }
+        }
         None => return unmapped("key:PreventDamage.no-Amount"),
     };
     let to = subject(ctx, p, "", None)?;

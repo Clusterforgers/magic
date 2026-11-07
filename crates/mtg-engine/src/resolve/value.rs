@@ -114,6 +114,8 @@ pub struct Scope<'a> {
     pub(crate) candidate: std::cell::Cell<Option<ObjectRef>>,
     /// The player whose candidates an `Effect::Choose` is working out (`Ref::Chooser`).
     pub(crate) chooser: std::cell::Cell<Option<PlayerId>>,
+    /// The player whose ability asks the `PlayersWhere` test being worked out (`Ref::Asker`).
+    pub(crate) asker: Option<PlayerId>,
     /// The spell or ability that caused the events a trigger is being matched against (`TriggerPattern::Caused`).
     pub(crate) caused: Option<crate::triggers::CausedBy>,
     /// The permanent whose static ability gave the running ability to its source (`Ref::Granter`).
@@ -324,6 +326,7 @@ impl<'a> Scope<'a> {
             affected: None,
             candidate: std::cell::Cell::new(None),
             chooser: std::cell::Cell::new(None),
+            asker: None,
             caused: None,
             granter: None,
             as_was: false,
@@ -506,6 +509,7 @@ impl<'a> Scope<'a> {
         for player in self.players(who)? {
             let each = Scope {
                 controller: player,
+                asker: Some(self.controller),
                 ..self.clone()
             };
             if each.holds(test)? {
@@ -1008,6 +1012,7 @@ impl<'a> Scope<'a> {
             }
             // Nobody outside the candidates of a choice made by each player.
             Ref::Chooser => self.chooser.get().map(Target::Player).into_iter().collect(),
+            Ref::Asker => vec![Target::Player(self.asker.unwrap_or(self.controller))],
             Ref::Candidate => {
                 let object = self.candidate.get().ok_or_else(|| {
                     ResolveError::Invalid("there is no candidate object here".into())
@@ -2378,6 +2383,24 @@ impl<'a> Scope<'a> {
         }
     }
 
+    /// Whether "you" are one of the players `who` names (`Condition::Among`). The reference is the asking ability's: a
+    /// target is judged for the asker, not for the player a `PlayersWhere` tests.
+    fn among(&self, who: &Ref) -> Result<bool, ResolveError> {
+        let asking = Scope {
+            controller: self.asker.unwrap_or(self.controller),
+            asker: None,
+            ..self.clone()
+        };
+        Ok(asking.players(who)?.contains(&self.controller))
+    }
+
+    /// Whether the players `who` names (all of them, at least one) took the first turn (`Condition::StartingPlayer`).
+    fn started(&self, who: &Ref) -> Result<bool, ResolveError> {
+        let first = self.state.first_player();
+        let named = self.players(who)?;
+        Ok(!named.is_empty() && named.iter().all(|player| *player == first))
+    }
+
     /// Whether the turn is in a combat phase.
     fn in_combat(&self) -> bool {
         self.state.turn().step().phase() == crate::turn::Phase::Combat
@@ -2472,11 +2495,8 @@ impl<'a> Scope<'a> {
             Condition::IsNight => self.state.day_night() == Some(DayNight::Night),
             Condition::NeitherDayNorNight => self.state.day_night().is_none(),
             Condition::YourTurn => self.state.turn().active() == self.controller,
-            Condition::StartingPlayer(who) => {
-                let first = self.state.first_player();
-                let named = self.players(who)?;
-                !named.is_empty() && named.iter().all(|player| *player == first)
-            }
+            Condition::Among(who) => self.among(who)?,
+            Condition::StartingPlayer(who) => self.started(who)?,
             Condition::Step(named) => {
                 crate::triggers::step_matches(*named, self.state.turn().step())
             }

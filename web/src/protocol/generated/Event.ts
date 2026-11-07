@@ -375,7 +375,11 @@ form?: DamageForm,
 /**
  * The poison counters the player dealt this combat damage also gets, from the toxic of the source (CR 702.164).
  */
-toxic?: number, } } | "CombatEnded" | "DamageCleared" | { "RemovedFromCombat": { 
+toxic?: number, 
+/**
+ * The damage can't be prevented (CR 614.17): no prevention effect applies to it.
+ */
+unpreventable?: boolean, } } | "CombatEnded" | "DamageCleared" | { "RemovedFromCombat": { 
 /**
  * The creature.
  */

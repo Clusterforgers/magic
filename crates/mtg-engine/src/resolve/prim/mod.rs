@@ -91,11 +91,11 @@ mod remember;
 mod turn_up;
 // dk1b
 mod dk1c5_unlock;
+mod g12b_counters_of;
 #[cfg(test)]
 mod move_attached;
 mod move_to;
 mod multiply_counters;
-mod g12b_counters_of;
 mod myriad_copies;
 mod pay;
 mod phase_out;

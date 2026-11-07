@@ -95,6 +95,7 @@ fn draws_for_one() -> Arc<CardDefinition> {
         TriggerPattern::Drew {
             who: Ref::You,
             what: mtg_cards::refs::Selector::default(),
+            first_in_draw_step: None,
         },
         vec![gain_life(1)],
     )

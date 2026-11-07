@@ -509,7 +509,7 @@ fn api_line(ctx: &mut Ctx, p: &Params, api: &str) -> Tr<Vec<Value>> {
         "LoseLife" => one(life(ctx, p, "LoseLife")),
         "Discard" => discard(ctx, p),
         "Mill" => one(mill(ctx, p)),
-        "Scry" => one(count_verb(ctx, p, "Scry", "ScryNum")),
+        "Scry" => one(scry(ctx, p)),
         "Surveil" => one(count_verb(ctx, p, "Surveil", "Amount")),
         "Proliferate" => one(proliferate(p)),
         "Cleanup" => cleanup(p),
@@ -591,6 +591,7 @@ fn deal_damage(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
             "ExcessDamage",
             "ExcessDamageCondition",
             "ReplaceDyingDefined",
+            "NoPrevention",
         ],
     )?;
     super::effects_obj::damage_map(p)?;
@@ -610,6 +611,9 @@ fn deal_damage(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
         if let Some(name) = name {
             ctx.excess = Some(name);
         }
+    }
+    if flag(p, "NoPrevention")? {
+        effect["unpreventable"] = json!(true);
     }
     Ok(json!({ "DealDamage": effect }))
 }
@@ -947,6 +951,31 @@ fn mill(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
 }
 
 /// A verb of a player and a count: mill, scry, surveil.
+/// `Scry`; with `Optional$` the player may scry, and each of several players decides for themselves ("each opponent may
+/// scry 1").
+fn scry(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
+    let optional = match p.get("Optional") {
+        None => false,
+        Some("True") => true,
+        Some(other) => return unmapped(format!("key:Scry.Optional={other}")),
+    };
+    let node = count_verb(ctx, &p.without(&["Optional"]), "Scry", "ScryNum")?;
+    if !optional {
+        return Ok(node);
+    }
+    let who = node["Scry"]["who"].clone();
+    if who == json!("You") {
+        return Ok(json!({"May": {"effects": [node]}}));
+    }
+    let mut each = node;
+    each["Scry"]["who"] = json!({"Bound": "scrier"});
+    Ok(
+        json!({"RepeatEach": {"over": who, "as": "scrier", "effects": [
+            {"May": {"who": {"Bound": "scrier"}, "effects": [each]}}
+        ]}}),
+    )
+}
+
 fn count_verb(ctx: &mut Ctx, p: &Params, verb: &str, key: &str) -> Tr<Value> {
     only(
         p,

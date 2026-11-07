@@ -280,6 +280,8 @@ mod for_each;
 mod g10a_writers;
 mod g10b_writers;
 mod g10c_writers;
+mod g11b_writers;
+mod g11c_writers;
 mod g8c_writers;
 mod g8e_writers;
 mod g9a_writers;
@@ -1150,6 +1152,9 @@ mod r6b;
 mod r7b;
 // r9w
 mod r9w;
+// r11w
+mod r11w;
 // e10c
 mod e10c_writers;
 mod g10d_writers;
+mod g11a_writers;

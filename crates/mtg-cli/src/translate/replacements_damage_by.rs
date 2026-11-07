@@ -222,3 +222,42 @@ pub fn split_redirect(
     }
     Ok(json!({"RedirectUpTo": {"most": most, "to": to}}))
 }
+
+/// A shield that sends all the damage to what the `Effect` line remembered (its target, or the card chosen before it), by
+/// the same source: "all damage that would be dealt to ~ this turn is dealt to target creature instead", and with the
+/// effect object exiling itself "the next time damage would be dealt to ~ this turn, that damage is dealt to any target
+/// instead". None when the part is no such redirection.
+pub fn g11b_remembered_redirect(
+    ctx: &Ctx,
+    p: &Params,
+    name: &str,
+    remembered: Option<&Value>,
+) -> Tr<Option<Value>> {
+    let Some(part) = ctx.svar(name).map(Params::parse) else {
+        return Ok(None);
+    };
+    let redirects = part.get("DB") == Some("ReplaceEffect")
+        && part.get("VarName") == Some("Affected")
+        && part.get("VarValue") == Some("Remembered")
+        && p.get("DamageTarget") == Some("Remembered")
+        && p.get("PreventionEffect").is_none();
+    if !redirects {
+        return Ok(None);
+    }
+    let Some(to) = remembered else {
+        return unmapped("replacement:DamageDone-redirect-target");
+    };
+    keys(&part, &["VarName", "VarValue", "VarType", "SubAbility"])?;
+    if !matches!(part.get("VarType"), Some("Card" | "GameEntity")) {
+        return unmapped("replacement:DamageDone-redirect-VarType");
+    }
+    let mut by = json!({ "to": to });
+    if let Some(sub) = part.get("SubAbility") {
+        let ends = ctx.svar(sub).map(Params::parse);
+        if !ends.as_ref().is_some_and(exiles_the_effect) {
+            return unmapped("replacement:DamageDone-redirect-SubAbility");
+        }
+        by["next"] = json!(true);
+    }
+    Ok(Some(json!({ "Redirect": by })))
+}
