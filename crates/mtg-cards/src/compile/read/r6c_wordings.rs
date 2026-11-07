@@ -88,7 +88,6 @@ const WHOLE: &[fn(&str) -> Option<String>] = &[
     blocked_except_by,
     sum_constant_first,
     two_targets_each,
-    enchanted_creature,
     additional_bonus,
     colors_swapped,
     count_in_words,
@@ -231,14 +230,6 @@ fn colored_source(ability: &Ability) -> bool {
                 .iter()
                 .all(|pred| matches!(pred, Value::Object(map) if map.contains_key("Color")))
     })
-}
-
-/// An Aura's bonus reaches only a creature: "Enchanted creature gets +2/+1." is "As long as enchanted permanent is a
-/// creature, it gets +2/+1."
-fn enchanted_creature(text: &str) -> Option<String> {
-    let rest = text.strip_prefix("Enchanted creature ")?;
-    (rest.starts_with("gets ") || rest.starts_with("has "))
-        .then(|| format!("As long as enchanted permanent is a creature, it {rest}"))
 }
 
 /// "an additional" bonus is the bonus: "that creature gets +2/+2" is "that creature gets an additional +2/+2", and

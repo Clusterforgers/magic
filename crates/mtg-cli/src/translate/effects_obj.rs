@@ -1564,9 +1564,16 @@ fn dies_shield(ctx: &mut Ctx, p: &Params) -> Tr<Option<Value>> {
         }
         _ => return unmapped(format!("key:ReplaceDyingDefined={word}")),
     };
+    // A planeswalker target dies as well (CR 700.4): "if that creature or planeswalker would die this turn".
+    let dying = match p.get("ValidTgts") {
+        Some("Creature,Planeswalker") => {
+            json!({"AnyOf": [{"Type": "Creature"}, {"Type": "Planeswalker"}]})
+        }
+        _ => json!({"Type": "Creature"}),
+    };
     let shield = json!({"Shield": {
         "when": {"ZoneChange": {
-            "what": [{"Is": kind}, {"Type": "Creature"}], "from": "Battlefield", "to": "Graveyard"}},
+            "what": [{"Is": kind}, dying], "from": "Battlefield", "to": "Graveyard"}},
         "by": {"MoveTo": "Exile"},
         "duration": "UntilEndOfTurn"}});
     Ok(Some(shield))
