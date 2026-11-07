@@ -42,8 +42,13 @@ const RETURN: &str = "\nSVar:DBReturn:DB$ ChangeZone | Origin$ Graveyard | Desti
     true
 )]
 #[case::zone_named_twice(
-    "Up to one target creature gets -2/-2 until end of turn. Return a creature card from your graveyard to your hand. Exile your graveyard.",
+    "Up to one target creature gets -2/-2 until end of turn. Return a creature card from your graveyard to your hand. Then exile a card from your graveyard.",
     " | Optional$ True",
+    true
+)]
+#[case::zone_named_by_a_look(
+    "Target creature gets -2/-2 until end of turn. Look at your graveyard. You may return a creature card from it to your hand.",
+    "",
     true
 )]
 fn fix20_a_move_may_take_none_only_by_its_own_sentence(

@@ -766,7 +766,7 @@ fn allows_none_from(ctx: &Ctx, p: &Params, origin: &str) -> bool {
         .any(|words| text.contains(words))
 }
 
-/// The one sentence of the text that names the origin zone ("return a creature card from your graveyard"), reminder text
+/// The one sentence of the text that takes from the origin zone ("return a creature card from your graveyard"), reminder text
 /// left out: a "may" or "up to" of another sentence ("Up to one target creature gets -X/-X") is not this move's. `None`
 /// when no sentence or several name the zone.
 fn move_sentence(text: &str, origin: &str) -> Option<String> {
@@ -786,10 +786,11 @@ fn move_sentence(text: &str, origin: &str) -> Option<String> {
             _ => {}
         }
     }
-    let mut naming = plain
-        .split(['\n', '.'])
-        .map(str::trim)
-        .filter(|sentence| sentence.contains(word));
+    let mut naming = plain.split(['\n', '.']).map(str::trim).filter(|sentence| {
+        sentence
+            .split_once("from ")
+            .is_some_and(|(_, after)| after.contains(word))
+    });
     let sentence = naming.next()?;
     naming.next().is_none().then(|| format!(" {sentence} "))
 }

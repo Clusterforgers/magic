@@ -456,14 +456,15 @@ pub(super) fn add(ability: &Ability, texts: &mut Vec<String>) {
     // r5b
     r5b_flow::add(ability, texts);
     fix8_tap_or_untap::add(texts);
-    fix20_each_then::add(texts);
     add_latest(ability, texts);
 }
 
-/// Adds the wordings of fix pass 9 and of round 7 (r7c): a search of your library and/or graveyard.
+/// Adds the wordings of fix pass 9 and of round 7 (r7c), a search of your library and/or graveyard, and fix20's
+/// "each player ..., then ..." join.
 fn add_latest(ability: &Ability, texts: &mut Vec<String>) {
     fix9_wordings::add(ability, texts);
     r7c_searches::add(ability, texts);
+    fix20_each_then::add(texts);
 }
 
 /// Adds the wordings of continuous effects and static grants the stored local-model proposals hit (t17b): durations of
