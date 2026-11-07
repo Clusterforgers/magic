@@ -81,6 +81,7 @@ pub fn choose_card(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
             "ControlledByPlayer",
             "Reveal",
             "RememberChosen",
+            "ChooseEach",
         ],
     )?;
     // "Target opponent chooses a creature they control": the one player the line targets is the chooser, declared before the
@@ -115,6 +116,9 @@ pub fn choose_card(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
         }
         Some(other) => return unmapped(format!("key:ChooseCard.ControlledByPlayer={other}")),
         None => {}
+    }
+    if let Some(each) = p.get("ChooseEach") {
+        return choose_each(ctx, p, each, &filter, chooser);
     }
     let from = json!({"Each": filter});
     let bind = ctx.fresh("card");
@@ -156,6 +160,66 @@ pub fn choose_card(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
         .is_some_and(|title| title.to_lowercase().contains(" to reveal"));
     if p.get("Reveal") == Some("True") || titled {
         effects.push(json!({"Reveal": {"what": {"Bound": bind}}}));
+    }
+    Ok(effects)
+}
+
+/// `ChooseEach$ Artifact & Creature & Land`: the chooser picks one card of each kind, a card never counting for two kinds;
+/// the later lines read all the picks as the chosen cards.
+fn choose_each(
+    ctx: &mut Ctx,
+    p: &Params,
+    each: &str,
+    filter: &[Value],
+    chooser: Option<Value>,
+) -> Tr<Vec<Value>> {
+    if p.get("AtRandom") == Some("True") || !matches!(p.get("Amount"), None | Some("1")) {
+        return unmapped("key:ChooseCard.ChooseEach-shape");
+    }
+    let min = match (p.get("MinAmount"), p.get("Mandatory")) {
+        (Some("0"), _) | (None, None | Some("False")) => 0,
+        (None | Some("1"), Some("True")) => 1,
+        _ => return unmapped("key:ChooseCard.ChooseEach-shape"),
+    };
+    let who = match chooser {
+        Some(target) => target,
+        None => defined(ctx, p.get("Defined").unwrap_or("You"))?,
+    };
+    let picks = ctx.fresh("picks");
+    let mut effects = Vec::new();
+    let mut earlier: Vec<Value> = Vec::new();
+    for kind in each.split(" & ") {
+        let mut pool = filter.to_vec();
+        pool.extend(selector_any(ctx, kind)?);
+        pool.extend(earlier.iter().map(|name| json!({"Not": {"Is": name}})));
+        let bind = ctx.fresh("card");
+        effects.push(json!({"Choose": {
+            "who": who, "from": {"Each": pool}, "count": {"min": min, "max": 1}, "as": bind}}));
+        earlier.push(json!({ "Bound": bind }));
+    }
+    let any: Vec<Value> = earlier.iter().map(|name| json!({"Is": name})).collect();
+    let union = json!({"Each": [{"AnyOf": any}, chosen_zones()]});
+    // "For each player, you choose ...": the picks of each pass join the picks of the passes before.
+    if p.get("RememberChosen") == Some("True")
+        && let Some(into) = gathers(ctx, p)
+    {
+        effects.push(json!({"Bind": {"what": union, "as": into, "adds": true}}));
+        if p.get("Reveal") == Some("True") {
+            effects.push(json!({"Reveal": {"what": union}}));
+        }
+        ctx.remembered = Some(json!({ "Bound": into }));
+        return Ok(effects);
+    }
+    effects.push(json!({"Bind": {"what": union, "as": picks}}));
+    ctx.chosen_card = Some(picks.clone());
+    if p.get("Reveal") == Some("True") {
+        effects.push(json!({"Reveal": {"what": {"Bound": picks}}}));
+    }
+    if p.get("RememberChosen") == Some("True") {
+        if ctx.remembered.is_some() || ctx.player_loop.is_some() {
+            return unmapped("key:ChooseCard.ChooseEach-remembered");
+        }
+        ctx.remembered = Some(json!({ "Bound": picks }));
     }
     Ok(effects)
 }

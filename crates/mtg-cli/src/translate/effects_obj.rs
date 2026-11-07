@@ -41,6 +41,7 @@ pub fn effects(ctx: &mut Ctx, p: &Params, api: &str) -> Tr<Vec<Value>> {
         "Airbend" => airbend(ctx, p),
         "Fight" => one(fight(ctx, p)),
         "GainControl" => gain_control(ctx, p),
+        "GainControlVariant" => gain_control_to_owners(ctx, p),
         other => unmapped(format!("effect:{other}")),
     }
 }
@@ -1772,6 +1773,28 @@ fn fight(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
     let what = defined(ctx, p.get("Defined").unwrap_or_default())?;
     let with = subject(ctx, p, "", None)?;
     Ok(json!({"Fight": {"what": what, "with": with}}))
+}
+
+/// `GainControlVariant` with `ChangeController$ CardOwner` ("each player gains control of all creatures they own"): for
+/// each player, the matching objects the player owns come under their control for good.
+fn gain_control_to_owners(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
+    only(p, "GainControlVariant", &["AllValid", "ChangeController"])?;
+    let (Some(valid), Some("CardOwner")) = (p.get("AllValid"), p.get("ChangeController")) else {
+        return unmapped("key:GainControlVariant.ChangeController");
+    };
+    let owner = ctx.fresh("owner");
+    let held = json!({ "Bound": owner });
+    let mut group = selector_any(ctx, valid)?;
+    group.push(json!({"OwnedBy": held}));
+    Ok(vec![json!({"RepeatEach": {
+        "over": "EachPlayer",
+        "as": owner,
+        "effects": [{"Continuous": {
+            "affected": {"Each": group},
+            "mods": [{"SetController": held}],
+            "duration": "Forever",
+        }}],
+    }})])
 }
 
 fn gain_control(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
