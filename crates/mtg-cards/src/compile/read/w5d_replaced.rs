@@ -73,6 +73,7 @@ fn w5d_redirect(r: &mut Reader<'_>) -> Option<Ability> {
         },
         vec![Effect::DealDamage {
             excess: None,
+            unpreventable: false,
             source: Some(Ref::Dealer),
             to,
             amount: Amount::Triggering,
@@ -243,6 +244,7 @@ fn w5d_texts(when: &ReplaceWhen, effects: &[Effect]) -> Option<Vec<String>> {
                 source: Some(Ref::Dealer),
                 to,
                 amount: Amount::Triggering,
+                unpreventable: false,
              .. }],
         ) if source.is_empty() => {
             let to = match to {

@@ -188,6 +188,7 @@ mod tests {
                 deathtouch: false,
                 form: crate::combat::DamageForm::default(),
                 toxic: 0,
+                unpreventable: false,
             }],
         );
         assert!(

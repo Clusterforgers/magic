@@ -44,6 +44,7 @@ pub fn divided_creatures(most: i32) -> TargetSpec {
 fn share_damage() -> Effect {
     Effect::DealDamage {
         excess: None,
+        unpreventable: false,
         source: None,
         to: Ref::Target(0),
         amount: Amount::Divided,
@@ -85,6 +86,7 @@ pub fn even_bolt(name: &str, total: i32) -> Arc<CardDefinition> {
             }],
             effects: vec![Effect::DealDamage {
                 excess: None,
+                unpreventable: false,
                 source: None,
                 to: Ref::Target(0),
                 amount: Amount::EvenShare(Box::new(Amount::Fixed(total))),

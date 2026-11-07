@@ -591,6 +591,7 @@ fn deal_damage(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
             "ExcessDamage",
             "ExcessDamageCondition",
             "ReplaceDyingDefined",
+            "NoPrevention",
         ],
     )?;
     super::effects_obj::damage_map(p)?;
@@ -610,6 +611,9 @@ fn deal_damage(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
         if let Some(name) = name {
             ctx.excess = Some(name);
         }
+    }
+    if flag(p, "NoPrevention")? {
+        effect["unpreventable"] = json!(true);
     }
     Ok(json!({ "DealDamage": effect }))
 }

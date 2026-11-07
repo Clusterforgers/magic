@@ -28,6 +28,8 @@ mod flicker_targets;
 mod free_casts;
 mod from_graveyard;
 mod g10d_colors;
+mod g11b_redirect;
+mod g11b_unpreventable;
 mod g8e_prevent;
 mod graveyards;
 mod group_becomes;
@@ -128,6 +130,7 @@ use crate::refs::{Bounds, Pred, Ref, Selector, TargetSet, TargetSpec, Targetable
 use crate::spend::{ManaLasts, SpendOn};
 use crate::trigger::TriggerPattern;
 use crate::value::{Amount, Condition, CounterKind};
+use g11b_unpreventable::is as unpreventable;
 
 /// "draws a card for each card in your hand" is also "draws X cards, where X is the number of cards in your hand".
 fn where_x_draws(texts: &[String]) -> Vec<String> {
@@ -891,6 +894,9 @@ pub(super) fn capitalize(text: &str) -> String {
 pub(super) fn alternatives(targets: &[TargetSpec], effects: &[Effect]) -> Vec<Vec<String>> {
     if effects.is_empty() {
         return Vec::new();
+    }
+    if let Some(implied) = g11b_unpreventable::implied(effects) {
+        return alternatives(targets, &implied);
     }
     if targets.len() > 1 {
         return multi::alternatives(targets, effects);
@@ -2330,6 +2336,7 @@ impl Writer<'_> {
     /// An effect as a sentence without its first capital and its period.
     fn effect(&mut self, effect: &Effect) -> Option<String> {
         Some(match effect {
+            Effect::DealDamage { .. } if unpreventable(effect) => self.g11b_hard(effect)?,
             Effect::CopySpell { .. } | Effect::CopyAbility { .. } | Effect::BecomeCopy { .. } => {
                 self.copy_effect(effect)?
             }
@@ -3209,6 +3216,7 @@ impl Writer<'_> {
                 source: None,
                 to,
                 amount,
+                unpreventable: false,
                 ..
             } = effect
             else {

@@ -61,6 +61,7 @@ fn prevents_in_part(by: &ReplaceBy) -> bool {
     matches!(
         by,
         ReplaceBy::PreventUpTo(_)
+            | ReplaceBy::PreventCounted(_)
             | ReplaceBy::PreventHalf
             | ReplaceBy::PreventAllBut(_)
             | ReplaceBy::PreventNext
@@ -3220,7 +3221,10 @@ impl Walker<'_> {
                     w.at("as", |w| w.bind_moved(name));
                 }
             }
-            Effect::DealDamage { source, to, amount, excess } => {
+            Effect::DealDamage { source, to, amount, excess, unpreventable } => {
+                if *unpreventable {
+                    w.uses("Effect", "DealDamage.Unpreventable");
+                }
                 if let Some(source) = source {
                     w.at("source", |w| w.reference(source, Kind::Object));
                 }
@@ -3538,12 +3542,14 @@ impl Walker<'_> {
                         ReplaceBy::Prevent
                         | ReplaceBy::PreventNext
                         | ReplaceBy::PreventUpTo(_)
+                        | ReplaceBy::PreventCounted(_)
                         | ReplaceBy::PreventAnd(_)
                         | ReplaceBy::Multiply(_)
                         | ReplaceBy::Add(_)
                         | ReplaceBy::Instead(_)
                         | ReplaceBy::InsteadNext(_)
-                        | ReplaceBy::RedirectUpTo { .. },
+                        | ReplaceBy::RedirectUpTo { .. }
+                        | ReplaceBy::Redirect { .. },
                     )
                     // A death or a counter sent elsewhere, and a class of moves judged as each happens (`Rule::Replaces`).
                     | (
@@ -4435,11 +4441,27 @@ impl Walker<'_> {
         self.at("to", |w| w.reference(to, Kind::Either));
     }
 
+    /// The amount a shield counts as it begins, and the player or permanent a redirection of all the damage names; a
+    /// counted prevention of anything but damage is a problem `replace_by` names.
+    fn g11b_replace_by(&mut self, when: &ReplaceWhen, by: &ReplaceBy) {
+        match by {
+            ReplaceBy::PreventCounted(amount) if matches!(when, ReplaceWhen::Damage { .. }) => {
+                self.at("PreventCounted", |w| w.amount(amount));
+            }
+            ReplaceBy::Redirect { to, .. } => self.r6f_redirect(when, 1, to),
+            _ => {}
+        }
+    }
+
     /// A permanent's replacement is not a shield, so it cannot prevent just the next damage.
     fn not_next_damage(&mut self, by: &ReplaceBy) {
         if matches!(
             by,
-            ReplaceBy::PreventNext | ReplaceBy::InsteadNext(_) | ReplaceBy::RedirectUpTo { .. }
+            ReplaceBy::PreventNext
+                | ReplaceBy::InsteadNext(_)
+                | ReplaceBy::RedirectUpTo { .. }
+                | ReplaceBy::Redirect { .. }
+                | ReplaceBy::PreventCounted(_)
         ) {
             self.problem("only a shield changes the next damage");
         }
@@ -4447,6 +4469,7 @@ impl Walker<'_> {
 
     fn replace_by(&mut self, when: &ReplaceWhen, by: &ReplaceBy) {
         self.uses("ReplaceBy", &tag_of(by));
+        self.g11b_replace_by(when, by);
         let enters = matches!(when, ReplaceWhen::Enters { .. });
         let zone_move = matches!(
             when,

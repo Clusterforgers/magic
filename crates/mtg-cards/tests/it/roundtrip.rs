@@ -893,6 +893,7 @@ fn leaf_effect() -> impl Strategy<Value = Effect> {
         (proptest::option::of(reference()), reference(), amount()).prop_map(
             |(source, to, amount)| Effect::DealDamage {
                 excess: None,
+                unpreventable: false,
                 source,
                 to,
                 amount

@@ -809,6 +809,9 @@ pub enum ReplaceBy {
     /// Up to this much of the damage is prevented (CR 615). In a shield it is the total the shield prevents ("the next
     /// 3 damage"); in a static ability it is the most each event loses.
     PreventUpTo(u32),
+    /// Up to this many of the damage in all, counted as the shield begins ("prevent the next X damage", CR 611.2c); only
+    /// a shield uses it.
+    PreventCounted(Amount),
     /// Half of the damage is prevented, rounded up (CR 615): "prevent half that damage, rounded up"; only a static ability uses it.
     PreventHalf,
     /// These effects happen instead.
@@ -824,6 +827,16 @@ pub enum ReplaceBy {
         most: u32,
         /// The player or permanent the damage is dealt to instead.
         to: Ref,
+    },
+    /// All of the damage is dealt to `to` instead, by the same source (CR 614.9); only a shield uses it, which fixes `to`
+    /// as it begins ("all damage that would be dealt to ~ this turn is dealt to target creature instead"). With `next`,
+    /// only the next damage event it covers, and the shield ends ("the next time damage would be dealt to ~ this turn").
+    Redirect {
+        /// The player or permanent the damage is dealt to instead.
+        to: Ref,
+        /// Only the next damage event.
+        #[serde(default, skip_serializing_if = "is_false")]
+        next: bool,
     },
     /// All of the damage is prevented (CR 615) and these effects happen, reading the event as `Instead` does ("prevent
     /// that damage and put that many +1/+1 counters on it").

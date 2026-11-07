@@ -136,6 +136,7 @@ pub fn bite(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
     is_on_the_battlefield(r, &hit).then_some(())?;
     Some(vec![Effect::DealDamage {
         excess: None,
+        unpreventable: false,
         source: Some(dealer.clone()),
         to: hit,
         amount: Amount::Stat {
