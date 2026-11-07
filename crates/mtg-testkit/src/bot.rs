@@ -12,8 +12,8 @@ use mtg_engine::choose::{
 };
 use mtg_engine::combat::AttackTarget;
 use mtg_engine::decision::{
-    Answer, AttackOptions, DamageOptions, DecisionKind, MulliganChoice, PayChoice, PayOptions,
-    PriorityAction, PriorityOptions,
+    Answer, AttackOptions, BlockOptions, DamageOptions, DecisionKind, MulliganChoice, PayChoice,
+    PayOptions, PriorityAction, PriorityOptions,
 };
 use mtg_engine::error::IllegalAnswer;
 use mtg_engine::hash::StableHasher;
@@ -111,12 +111,44 @@ fn within_budget(picks: &[Pick<'_>], mana: u32) -> (Attack, bool) {
     (attack, taxed)
 }
 
+/// `blocks` without every block of its last creature that is not required to block, cut back to a declaration the
+/// rules accept (an attacker left with too few blockers loses them, else what the rules require). `None` once the
+/// declaration is what the rules require, which costs nothing (a requirement never makes a player pay, CR 509.1d).
+fn smaller_block(options: &BlockOptions, blocks: &[(ObjectId, ObjectId)]) -> Option<Block> {
+    let legal = options.legal_blocks();
+    if blocks == legal.as_slice() {
+        return None;
+    }
+    let (blocker, _) = blocks
+        .iter()
+        .rev()
+        .find(|(blocker, _)| !options.required.contains(blocker))?;
+    let mut smaller: Block = blocks
+        .iter()
+        .copied()
+        .filter(|(other, _)| other != blocker)
+        .collect();
+    for (attacker, needed) in &options.min_blockers {
+        if smaller.iter().filter(|(_, a)| a == attacker).count() < *needed {
+            smaller.retain(|(_, a)| a != attacker);
+        }
+    }
+    Some(if options.accepts(&smaller) {
+        smaller
+    } else {
+        legal
+    })
+}
+
+/// A block as the declaration lists it: each blocker and the attacker it blocks.
+type Block = Vec<(ObjectId, ObjectId)>;
+
 /// Applies a bot's `answer` to the `decision` it answers.
 ///
-/// An attack the engine refuses because its player cannot pay for it (CR 508.1h) is taken back one creature at a
-/// time, the creatures that are not required first, until the engine accepts it; so a game of bots never fails on the
-/// cost of attacking, whatever mana its budget (`AttackOptions::mana`) left out of account. The engine is untouched by
-/// a refusal.
+/// An attack or a block the engine refuses because its player cannot pay for it (CR 508.1h, 509.1d) is taken back
+/// one creature at a time, the creatures that are not required first, until the engine accepts it; so a game of bots
+/// never fails on the cost of attacking or blocking, whatever mana its attack budget (`AttackOptions::mana`) left out
+/// of account or its random block never counted. The engine is untouched by a refusal.
 pub fn apply_answer(
     engine: &mut Engine,
     decision: &Decision,
@@ -125,10 +157,17 @@ pub fn apply_answer(
     let mut answer = answer;
     loop {
         let refused = match engine.apply(answer.clone()) {
-            Err(error @ EngineError::Illegal(IllegalAnswer::AttackUnaffordable(_))) => error,
+            Err(
+                error @ EngineError::Illegal(
+                    IllegalAnswer::AttackUnaffordable(_) | IllegalAnswer::BlockUnaffordable(_),
+                ),
+            ) => error,
             result => return result,
         };
         let smaller = match (&decision.kind, &answer) {
+            (DecisionKind::DeclareBlockers(options), Answer::DeclareBlockers(blocks)) => {
+                smaller_block(options, blocks).map(Answer::DeclareBlockers)
+            }
             (DecisionKind::DeclareAttackers(options), Answer::DeclareAttackers(attackers)) => {
                 smaller_attack(options, attackers).map(Answer::DeclareAttackers)
             }
