@@ -223,7 +223,10 @@ fn destroy(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
     let mut effect = json!({"Destroy": {"what": what, "regenerate": regenerate}});
     // The target is remembered whether or not it is destroyed (a regenerated creature is still "that creature").
     let remembers = remember::wanted(p, &["RememberDestroyed", "RememberLKI", "RememberTargets"]);
-    if p.get("AlwaysRemember") == Some("True") && p.has("ValidTgts") {
+    // "Destroy up to three target permanents. For each of those permanents, ...": the targets, destroyed or not.
+    let those = p.get("RememberTargets") == Some("True")
+        && ctx.oracle.to_lowercase().contains("for each of those");
+    if (p.get("AlwaysRemember") == Some("True") || those) && p.has("ValidTgts") {
         ctx.remembered = Some(what);
         return Ok(effect);
     }
