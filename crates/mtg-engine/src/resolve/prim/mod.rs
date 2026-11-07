@@ -91,6 +91,7 @@ mod remember;
 mod turn_up;
 // dk1b
 mod dk1c5_unlock;
+mod g12b_counters_of;
 #[cfg(test)]
 mod move_attached;
 mod move_to;
@@ -218,6 +219,7 @@ fn dispatch(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         Effect::RemoveAllCounters { .. } => remove_counters::run_all(cx, effect),
         Effect::MoveCounters { .. } => move_counters::run(cx, effect),
         Effect::MultiplyCounters { .. } => multiply_counters::run(cx, effect),
+        Effect::PutCountersOf { .. } => g12b_counters_of::run(cx, effect),
         Effect::Tap { .. } => tap::run(cx, effect),
         Effect::Untap { .. } => untap::run(cx, effect),
         Effect::TapOrUntap { .. } => w5d_tap_or_untap::run(cx, effect),
@@ -329,7 +331,7 @@ mod tests {
         {"Counter":{"what":"This"}}, {"DealDamage":{"to":"You","amount":1}}, {"GainLife":{"amount":1}},
         {"LoseLife":{"amount":1}}, {"AddMana":{"mana":{"Fixed":["Green"]}}},
         {"PutCounters":{"on":"This","counter":"+1/+1"}}, {"RemoveCounters":{"from":"This","counter":"+1/+1"}},
-        {"MoveCounters":{"from":"This","to":"This","counter":"+1/+1"}}, {"MultiplyCounters":{"on":"This"}}, {"Tap":{"what":"This"}},
+        {"MoveCounters":{"from":"This","to":"This","counter":"+1/+1"}}, {"MultiplyCounters":{"on":"This"}}, {"PutCountersOf":{"on":"This","of":"This"}}, {"Tap":{"what":"This"}},
         {"Untap":{"what":"This"}}, {"TapOrUntap":{"what":"This"}}, {"PhaseOut":{"what":"This"}}, {"Attach":{"what":"This","to":"This"}}, {"Unattach":{"what":"This"}}, {"Pair":{"what":"This","with":"This"}}, {"MyriadCopies":{"of":"This"}}, {"Transform":{"what":"This"}}, {"Flip":{"what":"This"}}, {"Prepare":{"what":"This"}}, {"WinGame":{}}, {"LoseGame":{}}, {"DrawGame":{}}, {"SetLife":{"amount":20}}, {"ExchangeLife":{"with":"Opponents"}}, {"RemoveDamage":{"what":"This"}}, {"RepeatWhile":{"condition":"YourTurn","effects":[{"Draw":{}}],"most":3}}, {"SeparatePiles":{"what":"This","chooser":"Opponents","as":"pile_a","rest_as":"pile_b"}}, {"AddPhase":{"phases":["Combat","Main"]}},
         {"Surveil":{}}, {"Proliferate":{}}, {"Goad":{"what":"This"}}, {"Fight":{"what":"This","with":"This"}},
         {"BecomeMonarch":{}}, {"RingTempts":{}}, {"CreateEmblem":{"abilities":[]}}, {"BecomeDayNight":{"to":"Night"}}, {"Amass":{"subtype":"Orc","count":1}}, {"Incubate":{"count":1}}, {"Conjure":{"name":"Island","zone":"Hand"}}, {"Seek":{"filter":[]}}, {"Venture":{}}, {"TakeInitiative":{}}, {"Monstrosity":{"count":1}}, {"Renown":{"count":1}}, {"Exploit":{}}, {"BecomeLevel":{"level":2}},
@@ -371,7 +373,7 @@ mod tests {
     #[test]
     fn the_capabilities_name_exactly_the_effects_that_run() {
         let effects: Vec<Effect> = serde_json::from_str(EFFECTS).unwrap();
-        assert_eq!(effects.len(), 112, "one sample for each variant of Effect");
+        assert_eq!(effects.len(), 113, "one sample for each variant of Effect");
         let game = state(
             vec![vec![], vec![]],
             vec![vec![creature("Bear", 2, 2)], vec![]],
@@ -432,6 +434,7 @@ mod tests {
         "Effect.RemoveCounters",
         "Effect.MoveCounters",
         "Effect.MultiplyCounters",
+        "Effect.PutCountersOf",
         "Effect.Tap",
         "Effect.Untap",
         "Effect.TapOrUntap",

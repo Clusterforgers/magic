@@ -48,6 +48,10 @@ const EXILE: &str = "SVar:Exile:DB$ ChangeZone | Hidden$ True | Origin$ All | De
     "R:Event$ Moved | ValidCard$ Card.Self | Destination$ Graveyard | ReplaceWith$ Exile",
     r#"{"Replacement":{"by":{"MoveTo":"Exile"},"when":{"ZoneChange":{"to":"Graveyard","what":["This"]}}}}"#
 )]
+#[case::only_from_the_battlefield(
+    "R:Event$ Moved | ValidCard$ Card.Self | Origin$ Battlefield | Destination$ Graveyard | ReplaceWith$ Exile",
+    r#"{"Replacement":{"by":{"MoveTo":"Exile"},"when":{"ZoneChange":{"from":"Battlefield","to":"Graveyard","what":["This"]}}}}"#
+)]
 fn a_card_that_is_exiled_instead_of_going_to_a_graveyard(
     #[case] line: &str,
     #[case] expected: &str,
@@ -59,13 +63,13 @@ fn a_card_that_is_exiled_instead_of_going_to_a_graveyard(
 }
 
 #[rstest]
-#[case::only_from_the_battlefield(
-    "R:Event$ Moved | ValidCard$ Card.Self | Origin$ Battlefield | Destination$ Graveyard | ReplaceWith$ Exile",
+#[case::only_from_the_hand(
+    "R:Event$ Moved | ValidCard$ Card.Self | Origin$ Hand | Destination$ Graveyard | ReplaceWith$ Exile",
     "key:Replacement.Moved.Origin"
 )]
-#[case::shuffled_into_the_library_instead(
-    "R:Event$ Moved | ValidCard$ Card.Self | Destination$ Graveyard | ReplaceWith$ Shuffle\nSVar:Shuffle:DB$ ChangeZone | Hidden$ True | Origin$ All | Destination$ Library | Defined$ ReplacedCard | Reveal$ True | Shuffle$ True",
-    "key:Replacement.Reveal"
+#[case::second_from_the_top(
+    "R:Event$ Moved | ValidCard$ Card.Self | Destination$ Graveyard | ReplaceWith$ Shuffle\nSVar:Shuffle:DB$ ChangeZone | Hidden$ True | Origin$ All | Destination$ Library | Defined$ ReplacedCard | Reveal$ True | LibraryPosition$ 1",
+    "key:Replacement.LibraryPosition"
 )]
 fn a_move_to_a_graveyard_of_another_shape_stays_a_gap(#[case] line: &str, #[case] gap: &str) {
     let text = creature(&format!("{line}\n{EXILE}"));

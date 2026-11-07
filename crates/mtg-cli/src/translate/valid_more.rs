@@ -59,7 +59,10 @@ pub fn property(ctx: &Ctx, prop: &str) -> Tr<Option<Vec<Value>>> {
         "NamedCard" => {
             return match (&ctx.chosen, ctx.chosen_kind) {
                 (Some(name), None) => one(json!({"ChosenAs": name})),
-                _ => one(memory::entered_with(ctx, prop)?),
+                _ => match &ctx.effect_name {
+                    Some(name) => one(json!({"ChosenAs": name})),
+                    None => one(memory::entered_with(ctx, prop)?),
+                },
             };
         }
         "IsNotChosenType" => {

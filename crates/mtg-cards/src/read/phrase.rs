@@ -207,6 +207,11 @@ fn targetable(ctx: &Ctx, what: &Targetable, plural: bool) -> String {
             noun(&selector(ctx, what)),
             who(ctx, players)
         ),
+        Targetable::ChosenBy { who: chooser, what } => format!(
+            "{} chosen by {}",
+            targetable(ctx, what, plural),
+            who(ctx, chooser)
+        ),
     }
 }
 
