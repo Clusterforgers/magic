@@ -866,9 +866,10 @@ fn cost_modifier(ctx: &Ctx, p: &Params, change: &str) -> Tr<Value> {
         // "Spells your opponents cast cost {1} more to cast and abilities your opponents activate cost {1} more to
         // activate unless they're mana abilities": one change of spells and one of abilities.
         let rest = p.without(&["ValidSpell"]);
+        let ability = rest.clone().with("ValidSpell", "Activated.!ManaAbility");
         return Ok(json!([
-            cost_modifier(ctx, &rest.clone().with("Type", "Spell"), change)?,
-            cost_modifier(ctx, &rest.with("Type", "Ability"), change)?,
+            cost_modifier(ctx, &rest.with("Type", "Spell"), change)?,
+            cost_modifier(ctx, &ability.with("Type", "Ability"), change)?,
         ]));
     }
     let activating = activation_kind(p)?;
