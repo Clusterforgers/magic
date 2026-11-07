@@ -2242,12 +2242,17 @@ impl Walker<'_> {
             TriggerPattern::BecomesTarget { by, .. } => {
                 by.is_empty() || by.0 == [Pred::ControlledBy(Ref::You)]
             }
-            // Damage is counted for the object that is dealt it, from any source.
-            TriggerPattern::DealsDamage {
-                source,
-                to: Some(to),
-                combat: None,
-            } => source.is_empty() && !matches!(to, Ref::You | Ref::Opponents | Ref::EachPlayer),
+            // Damage is counted by batch for the object that is dealt it, from any source; only the first batch of a turn.
+            TriggerPattern::Batch(inner) => {
+                if nth != 1 {
+                    self.at("nth", |w| w.problem("only the first batch of damage is counted"));
+                }
+                matches!(&**inner, TriggerPattern::DealsDamage {
+                    source,
+                    to: Some(to),
+                    combat: None,
+                } if source.is_empty() && !matches!(to, Ref::You | Ref::Opponents | Ref::EachPlayer | Ref::Defending))
+            }
             _ => false,
         };
         if !counted {

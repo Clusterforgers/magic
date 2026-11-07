@@ -408,6 +408,19 @@ pub fn variants(ability: &Ability) -> Vec<String> {
     pronouns::they(ability, &mut texts);
     pronouns::of_the_group(ability, &mut texts);
     pronouns::that_creature_after_an_attach(ability, &mut texts);
+    // A trigger about the damage equipped creature is dealt says "it deals" for that creature (Blazing Sunsteel).
+    if matches!(
+        ability,
+        Ability::Triggered { when: when @ TriggerPattern::Batch(_), .. }
+            if super::triggers::event_creature(when) == Some(Ref::Attached)
+    ) {
+        let pronouns: Vec<String> = texts
+            .iter()
+            .filter(|text| text.contains(", equipped creature deals "))
+            .map(|text| text.replacen(", equipped creature deals ", ", it deals ", 1))
+            .collect();
+        texts.extend(pronouns);
+    }
     // A trigger about damage the source deals may say "it deals" for the source (Questing Beast).
     if matches!(
         ability,

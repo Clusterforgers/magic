@@ -188,8 +188,8 @@ fn names(list: &[&str]) -> BTreeSet<String> {
     &["Ability.Triggered", "Effect.Draw", "Trigger.BecomesTarget", "Trigger.Nth"]
 )]
 #[case::the_first_damage_to_an_object_in_a_turn(
-    r#"{"Triggered":{"when":{"Nth":{"event":{"DealsDamage":{"source":[],"to":"This"}},"nth":1}},"effects":[{"Draw":{}}]}}"#,
-    &["Ability.Triggered", "Effect.Draw", "Trigger.DealsDamage", "Trigger.Nth"]
+    r#"{"Triggered":{"when":{"Nth":{"event":{"Batch":{"DealsDamage":{"source":[],"to":"This"}}},"nth":1}},"effects":[{"Draw":{}}]}}"#,
+    &["Ability.Triggered", "Effect.Draw", "Trigger.Batch", "Trigger.DealsDamage", "Trigger.Nth"]
 )]
 #[case::the_first_life_lost_in_a_turn(
     r#"{"Triggered":{"when":{"Nth":{"event":{"LifeLost":{"who":"You"}},"nth":1}},"effects":[{"Draw":{}}]}}"#,

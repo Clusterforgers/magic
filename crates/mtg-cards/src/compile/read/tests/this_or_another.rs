@@ -1,4 +1,4 @@
-//! Goal: "Whenever ~ or another X you control enters, dies, attacks, deals combat damage to a player or is dealt damage" reads as an `AnyOf` of the card's own event and the same event of the other objects, one verb at a time, writes back as the card's own text, and every wording that is not that shape stays with the table.
+//! Goal: "Whenever ~ or another X you control enters, dies, attacks or deals combat damage to a player" reads as an `AnyOf` of the card's own event and the same event of the other objects, one verb at a time, writes back as the card's own text, and every wording that is not that shape stays with the table.
 use super::*;
 use crate::effect::Effect;
 
@@ -15,7 +15,6 @@ enum Verb {
     Attacks,
     CombatDamageToAPlayer,
     DamageToAnOpponent,
-    IsDealtDamage,
 }
 
 const THIS: &str = r#"["This"]"#;
@@ -34,14 +33,6 @@ fn event(verb: Verb, subject: &str) -> String {
         }
         Verb::DamageToAnOpponent => {
             format!(r#"{{"DealsDamage":{{"source":{subject},"to":"Opponents"}}}}"#)
-        }
-        Verb::IsDealtDamage => {
-            let to = if subject == THIS {
-                r#""This""#.to_owned()
-            } else {
-                format!(r#"{{"Each":{subject}}}"#)
-            };
-            format!(r#"{{"DealsDamage":{{"source":[],"to":{to}}}}}"#)
         }
     }
 }
@@ -149,11 +140,6 @@ const YOUR_CREATURE: &str = r#"[{"Type":"Creature"},"Other",{"ControlledBy":"You
 #[case::damage_to_an_opponent(
     "Whenever ~ or another creature you control deals damage to an opponent, draw a card.",
     &[Verb::DamageToAnOpponent],
-    YOUR_CREATURE
-)]
-#[case::is_dealt_damage(
-    "Whenever ~ or another creature you control is dealt damage, draw a card.",
-    &[Verb::IsDealtDamage],
     YOUR_CREATURE
 )]
 #[case::two_verbs_in_turn(
@@ -277,6 +263,8 @@ fn whole_clauses_of_cards_are_read(#[case] text: &str) {
     "Whenever ~ or another suspected creature you control dies, draw a card."
 )]
 #[case::paired("Whenever ~ or a creature it's paired with is dealt damage, draw a card.")]
+// The card is dealt damage once for each batch and another creature once for each source: no one event reads both.
+#[case::is_dealt_damage("Whenever ~ or another creature you control is dealt damage, draw a card.")]
 #[case::the_wrong_verb_form("Whenever ~ or another Elf you control enter, draw a card.")]
 #[case::no_verb("Whenever ~ or another creature you control, draw a card.")]
 #[case::a_plural_group("Whenever ~ or other Elves you control die, draw a card.")]
