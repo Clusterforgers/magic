@@ -92,7 +92,7 @@ fn a_numbered_kicker_the_card_does_not_have_stays_a_gap(
     #[case] kickers: &str,
     #[case] valid: &str,
 ) {
-    assert!(!kicked(kickers, valid).1.is_empty());
+    assert_ne!(kicked(kickers, valid).1, Vec::<String>::new());
 }
 
 #[rstest]
@@ -118,7 +118,7 @@ fn a_pump_of_a_player_that_is_no_player_keyword_stays_a_gap(#[case] keys: &str) 
         "Instant",
         &format!("A:SP$ Pump | {keys} | SpellDescription$ x"),
     );
-    assert!(!found.is_empty());
+    assert_ne!(found, Vec::<String>::new());
 }
 
 #[rstest]
@@ -144,7 +144,7 @@ fn a_decider_word_on_another_verb_stays_a_gap() {
         "Creature Elf",
         "PT:1/1\nT:Mode$ Attacks | ValidCard$ Card.Self | Execute$ D | TriggerDescription$ x\nSVar:D:DB$ GainLife | LifeAmount$ 1 | OptionalDecider$ True",
     );
-    assert!(!found.is_empty());
+    assert_ne!(found, Vec::<String>::new());
 }
 
 #[rstest]
@@ -176,7 +176,7 @@ fn a_check_of_the_source_with_a_count_stays_a_gap() {
         "Creature Elf",
         "PT:1/1\nT:Mode$ Phase | Phase$ Upkeep | ValidPlayer$ You | CheckSVar$ Count$ValidSelf Card.!IsPrepared | SVarCompare$ GE2 | TriggerZones$ Battlefield | Execute$ G | TriggerDescription$ x\nSVar:G:DB$ GainLife | LifeAmount$ 1",
     );
-    assert!(!found.is_empty());
+    assert_ne!(found, Vec::<String>::new());
 }
 
 #[test]

@@ -126,20 +126,8 @@ fn property(ctx: &Ctx, prop: &str) -> Tr<Vec<Value>> {
     {
         return one(json!({"Not": {"HasKeyword": keyword}}));
     }
-    // A keyword with a parameter (`withToxic`): has it at any value.
-    if let Some(word) = prop.strip_prefix("with")
-        && let Some(name) = mtg_cards::keyword::Keyword::NAMES
-            .iter()
-            .find(|name| name.eq_ignore_ascii_case(&spaced(word)))
-    {
-        return one(json!({"HasKeywordNamed": name}));
-    }
-    if let Some(word) = prop.strip_prefix("without")
-        && let Some(name) = mtg_cards::keyword::Keyword::NAMES
-            .iter()
-            .find(|name| name.eq_ignore_ascii_case(&spaced(word)))
-    {
-        return one(json!({"Not": {"HasKeywordNamed": name}}));
+    if let Some(pred) = keyword_named(prop) {
+        return one(pred);
     }
     if let Some(rest) = prop.strip_prefix("non")
         && ctx.world.subtypes.contains(&capitalize(rest))
@@ -151,6 +139,20 @@ fn property(ctx: &Ctx, prop: &str) -> Tr<Vec<Value>> {
     }
     super::filter::atom(ctx, ctx.scope.get(), prop)
         .unwrap_or_else(|| unmapped(format!("valid:{prop}")))
+}
+
+/// A keyword with a parameter (`withToxic`, `withoutForetell`): has it, or lacks it, at any value.
+fn keyword_named(prop: &str) -> Option<Value> {
+    let named = |word: &str| {
+        mtg_cards::keyword::Keyword::NAMES
+            .iter()
+            .find(|name| name.eq_ignore_ascii_case(&spaced(word)))
+    };
+    if let Some(name) = prop.strip_prefix("without").and_then(named) {
+        return Some(json!({"Not": {"HasKeywordNamed": name}}));
+    }
+    let name = prop.strip_prefix("with").and_then(named)?;
+    Some(json!({ "HasKeywordNamed": name }))
 }
 
 /// `FirstStrike` as `First Strike`.
