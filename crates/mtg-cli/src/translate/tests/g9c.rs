@@ -67,3 +67,39 @@ fn g9c_a_block_of_a_kind_reads_once_only_for_one_or_more(
     assert_eq!(gaps(&text), Vec::<String>::new());
     assert_eq!(abilities(&text)[0]["Triggered"]["when"], when);
 }
+
+const HUNT: &str = "Name:T\nManaCost:G\nTypes:Sorcery\nA:SP$ Pump | ValidTgts$ Creature | SubAbility$ DBMustBlock\nSVar:DBMustBlock:DB$ MustBlock | DefinedAttacker$ ParentTarget | ValidTgts$ Creature\n";
+const HOOK: &str = "Name:T\nTypes:Artifact Equipment\nT:Mode$ Attacks | ValidCard$ Creature.EquippedBy | Execute$ TrigBlock | TriggerZones$ Battlefield | TriggerDescription$ Whenever equipped creature attacks, target creature blocks it this combat if able.\nSVar:TrigBlock:DB$ MustBlock | ValidTgts$ Creature | DefinedAttacker$ TriggeredAttackerLKICopy | Duration$ UntilEndOfCombat\n";
+const LANDFALL: &str = "Name:T\nTypes:Creature\nPT:2/2\nT:Mode$ ChangesZone | Origin$ Any | Destination$ Battlefield | ValidCard$ Land.YouCtrl | Execute$ TrigBlock | TriggerZones$ Battlefield | TriggerDescription$ Whenever a land you control enters, target creature blocks CARDNAME this turn if able.\nSVar:TrigBlock:DB$ MustBlock | ValidTgts$ Creature\n";
+
+#[rstest]
+// The blocker is another target than the attacker, the first target.
+#[case::parent_target(HUNT, json!({"Target": 0}), json!({"Target": 1}))]
+#[case::the_attacker_of_the_trigger(HOOK, json!("Triggering"), json!({"Target": 0}))]
+// Without an attacker named, it is the source, whatever the trigger.
+#[case::the_source(LANDFALL, json!("This"), json!({"Target": 0}))]
+fn g9c_a_must_block_names_its_attacker(
+    #[case] text: &str,
+    #[case] attacker: Value,
+    #[case] who: Value,
+) {
+    assert_eq!(gaps(text), Vec::<String>::new());
+    let found = Value::Array(abilities(text)).to_string();
+    let rule = json!({"MustBlockAttacker": {"attacker": attacker, "who": who}}).to_string();
+    assert!(found.contains(&rule), "{found}");
+    if who == json!({"Target": 1}) {
+        assert!(found.contains(r#"{"Not":{"Is":{"Target":0}}}"#), "{found}");
+    }
+}
+
+#[test]
+fn g9c_a_must_block_of_another_attacker_word_is_a_gap() {
+    let text = HOOK.replace("TriggeredAttackerLKICopy", "Remembered");
+    assert!(
+        gaps(&text)
+            .iter()
+            .any(|gap| gap == "key:MustBlock.DefinedAttacker=Remembered"),
+        "{:?}",
+        gaps(&text)
+    );
+}
