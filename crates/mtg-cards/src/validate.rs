@@ -869,6 +869,14 @@ impl<'a> Walker<'a> {
         }
     }
 
+    /// The two amounts of a quotient or a difference, each a share when the whole is.
+    fn g13a_two(&mut self, sharing: bool, of: &Amount, by: &Amount) {
+        self.amounting = Amounting::of(sharing);
+        self.at("of", |w| w.amount(of));
+        self.amounting = Amounting::of(sharing);
+        self.at("by", |w| w.amount(by));
+    }
+
     fn amount(&mut self, amount: &Amount) {
         // Only the amount of damage or counters, or a sum or even share made of it, can be a recipient's share.
         let sharing = std::mem::take(&mut self.amounting) == Amounting::Shared;
@@ -904,10 +912,7 @@ impl<'a> Walker<'a> {
                 self.at("of", |w| w.amount(of));
             }
             Amount::Quotient { of, by, .. } | Amount::Difference(of, by) => {
-                self.amounting = Amounting::of(sharing);
-                self.at("of", |w| w.amount(of));
-                self.amounting = Amounting::of(sharing);
-                self.at("by", |w| w.amount(by));
+                self.g13a_two(sharing, of, by);
             }
             Amount::Divided => {
                 if !sharing {

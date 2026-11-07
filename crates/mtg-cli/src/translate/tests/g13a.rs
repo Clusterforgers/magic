@@ -159,7 +159,7 @@ fn g13a_a_spell_cast_by_its_targets_and_its_mana(#[case] keys: &str, #[case] par
 #[case::mana_from_a_bad_count("ValidSA$ Spell.ManaFromCreature_x")]
 fn g13a_mana_from_an_unread_kind_stays_a_gap(#[case] keys: &str) {
     let text = format!("Name:Subject\nTypes:Enchantment\n{}\n", cast_trigger(keys));
-    assert!(!gaps(&text).is_empty());
+    assert_ne!(gaps(&text), Vec::<String>::new());
 }
 
 #[rstest]
