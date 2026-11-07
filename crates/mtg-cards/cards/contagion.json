@@ -9,10 +9,7 @@
       "abilities": [
         {
           "FreeCast": {
-            "cost": [
-              { "PayLife": 1 },
-              { "ExileFromHand": { "filter": [{ "Color": "Black" }, "Other"] } }
-            ]
+            "cost": [{ "PayLife": 1 }, { "ExileFromHand": { "filter": [{ "Color": "Black" }] } }]
           }
         },
         {
