@@ -1,4 +1,4 @@
-//! Goal: the shapes the fix pass 6 found wrong are read to the rules the words say or stay named gaps: counters "you put" are caused by you, a colour change of a spell on the stack and mana counted by a source kind the reader does not know are gaps.
+//! Goal: the shapes the fix pass 6 found wrong are read to the rules the words say or stay named gaps: counters "you put" are caused by you, a change of a spell on the stack beyond its colours and mana counted by a source kind the reader does not know are gaps.
 use rstest::rstest;
 
 use super::{abilities, gaps};
@@ -26,15 +26,15 @@ fn counters_you_put_are_caused_by_you(#[case] description: &str, #[case] caused:
 }
 
 #[rstest]
-#[case::spell_or_permanent(
-    "SP$ Animate | Colors$ Red | OverwriteColors$ True | ValidTgts$ Card | TgtZone$ Stack,Battlefield | Duration$ Permanent",
+#[case::spell_gains_a_keyword(
+    "SP$ Animate | Keywords$ Flying | ValidTgts$ Card | TgtZone$ Stack,Battlefield | Duration$ Permanent",
     true
 )]
 #[case::permanent_only(
     "SP$ Animate | Colors$ Red | OverwriteColors$ True | ValidTgts$ Creature | Duration$ Permanent",
     false
 )]
-fn a_colour_change_of_a_spell_is_a_gap(#[case] line: &str, #[case] gap: bool) {
+fn a_change_of_a_spell_beyond_its_colours_is_a_gap(#[case] line: &str, #[case] gap: bool) {
     let text = format!("Name:T\nTypes:Instant\nA:{line}\n");
     let expected = if gap {
         vec!["key:Animate.TgtZone=Stack".to_owned()]

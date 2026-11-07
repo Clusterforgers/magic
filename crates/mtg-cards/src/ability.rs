@@ -120,9 +120,9 @@ pub enum ActivationKind {
     Equip,
     /// The cycling ability (CR 702.29).
     Cycling,
-    /// A mana ability (CR 605); only a prohibition names it.
+    /// A mana ability (CR 605).
     Mana,
-    /// Every activated ability, mana abilities included; only a prohibition names it.
+    /// Every activated ability, mana abilities included (CR 605.1a).
     Every,
 }
 

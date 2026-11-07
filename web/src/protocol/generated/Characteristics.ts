@@ -3,6 +3,7 @@ import type { AbilityDef } from "./AbilityDef";
 import type { CardTypes } from "./CardTypes";
 import type { ColorSet } from "./ColorSet";
 import type { Subtype } from "./Subtype";
+import type { Supertype } from "./Supertype";
 
 /**
  * The characteristics of an object right now; never stored, always recomputed.
@@ -16,6 +17,10 @@ types: CardTypes,
  * The subtypes effects gave it; the ones printed on the card are the card's.
  */
 subtypes?: Array<Subtype>, 
+/**
+ * The supertypes effects gave it; the ones printed on the card are the card's.
+ */
+supertypes?: Array<Supertype>, 
 /**
  * An effect replaced the creature types: the printed ones no longer count, only those in `subtypes` do.
  */

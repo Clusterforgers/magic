@@ -104,11 +104,29 @@ pub(crate) const fn works_from(ability: &Ability) -> Option<ZoneKind> {
     }
 }
 
+/// Whether the ability replaces its own object's move to a graveyard from anywhere ("If ~ would be put into a graveyard
+/// from anywhere, ..."): it works in every zone the object can leave for a graveyard, whatever zone it names (CR 113.6).
+pub(crate) fn works_anywhere(ability: &Ability) -> bool {
+    matches!(
+        ability,
+        Ability::Replacement {
+            when: mtg_cards::trigger::ReplaceWhen::ZoneChange {
+                what,
+                from: None,
+                to: Some(ZoneKind::Graveyard),
+            },
+            ..
+        } if what.0 == [mtg_cards::refs::Pred::This]
+    )
+}
+
 /// Whether a card with this definition prints an ability that works from a zone other than the battlefield, or a static
 /// ability that gives something to the cards of another zone ("Each creature card in your hand has cycling {1}{U}")
 /// (`GameState::possible`).
 pub(crate) fn definition_works_elsewhere(definition: &CardDefinition) -> bool {
-    let elsewhere = |rules: &Ability| works_from(rules).is_some_and(|from| !from.is_battlefield());
+    let elsewhere = |rules: &Ability| {
+        works_from(rules).is_some_and(|from| !from.is_battlefield()) || works_anywhere(rules)
+    };
     definition.rules.iter().any(|rules| match &**rules {
         Ability::Keyword(keyword) => keywords::rules(keyword)
             .adds_abilities(keyword)
@@ -179,6 +197,14 @@ pub(crate) fn definition_has_static(definition: &CardDefinition) -> bool {
             .iter()
             .any(|added| matches!(added, Ability::Static { .. })),
         _ => false,
+    })
+}
+
+/// Whether a card with this definition has a static ability that gives a supertype (CR 205.4).
+pub(crate) fn definition_gives_supertype(definition: &CardDefinition) -> bool {
+    definition.rules.iter().any(|rules| {
+        matches!(&**rules, Ability::Static { mods, .. }
+            if mods.iter().any(|given| matches!(given, WantedModification::AddSupertype(_))))
     })
 }
 
