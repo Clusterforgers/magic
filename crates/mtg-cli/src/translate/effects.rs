@@ -641,6 +641,38 @@ fn draw(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
             "RememberDrawn",
         ],
     )?;
+    // "You and target opponent each draw a card", "you and that player each draw two cards": you draw, then they do.
+    if let Some(word) = p.get("Defined")
+        && (word == "TargetedAndYou" || word.starts_with("You & "))
+    {
+        if p.has("RememberDrawn")
+            || p.has("Upto")
+            || p.has("ValidTgts") != (word == "TargetedAndYou")
+        {
+            return unmapped(format!("defined:{word}"));
+        }
+        // The other drawer is a player: a player target, or the player a trigger's damage was dealt to.
+        let other = match word.strip_prefix("You & ") {
+            Some("TriggeredTarget")
+                if ctx.trigger.as_ref().is_some_and(|shape| shape.to_player) =>
+            {
+                super::valid::defined(ctx, "TriggeredTarget")?
+            }
+            Some(_) => return unmapped(format!("defined:{word}")),
+            None => {
+                let spec = super::valid::target_spec(ctx, p, None)?;
+                if !matches!(spec["what"].as_str(), Some("Player" | "Opponent")) {
+                    return unmapped(format!("defined:{word}"));
+                }
+                ctx.target(spec)?
+            }
+        };
+        let count = amount(ctx, p.get("NumCards").unwrap_or("1"))?;
+        return Ok(vec![
+            json!({"Draw": {"who": "You", "count": count}}),
+            json!({"Draw": {"who": other, "count": count}}),
+        ]);
+    }
     let who = player(ctx, p)?;
     let count = amount(ctx, p.get("NumCards").unwrap_or("1"))?;
     // `AllReplaced` also counts draws a replacement effect changed; the cards are those that were drawn.

@@ -160,6 +160,12 @@ fn read_expression(ctx: &Ctx, expression: &str) -> Tr<Value> {
     if let Some(rest) = expression.strip_prefix("Count$") {
         return count_amount(ctx, rest);
     }
+    // The spell the card was cast as: the mana spent to cast it, which the permanent and its abilities read as well.
+    if let Some(rest) = expression.strip_prefix("CastSA>Count$")
+        && rest.starts_with("Adamant")
+    {
+        return count_amount(ctx, rest);
+    }
     if let Some(rest) = expression.strip_prefix("SVar$") {
         let (name, steps) = rest.split_once('/').unwrap_or((rest, ""));
         return apply_steps(ctx, amount(ctx, name)?, steps);
@@ -175,6 +181,21 @@ fn read_expression(ctx: &Ctx, expression: &str) -> Tr<Value> {
         return targeted_amount("ParentTargeted", rest, &ctx.parent()?);
     }
     unmapped(format!("amount:{}", head(expression)))
+}
+
+/// Whether the card's only cost that picks cards is revealing one from the hand ("As an additional cost to cast this
+/// spell, reveal a creature card from your hand"), so the cards the cost picked are the revealed one.
+fn revealed_alone(oracle: &str) -> bool {
+    let lower = oracle.to_lowercase();
+    let costs = lower.matches("as an additional cost").count();
+    costs == 1
+        && lower.contains("as an additional cost to cast this spell, reveal a ")
+        && lower.matches("reveal ").count() == 1
+        && !lower.contains("reveals")
+        && !lower.contains("sacrifice")
+        && !lower.contains("discard")
+        && !lower.contains("exile a")
+        && !lower.contains("{t}")
 }
 
 /// The part of an expression before its first `$`, space or dot, for naming a gap.
@@ -262,8 +283,8 @@ fn event_amount(ctx: &Ctx, expression: &str) -> Tr<Option<Value>> {
             let who = super::triggered::resolve(ctx.trigger.as_ref(), head)?;
             return super::amount_more::player_stat(head, what, &who).map(Some);
         }
-        "TriggeredPlayer" => {
-            let who = super::triggered::resolve(ctx.trigger.as_ref(), "TriggeredPlayer")?;
+        "TriggeredPlayer" | "TriggeredCardController" => {
+            let who = super::triggered::resolve(ctx.trigger.as_ref(), head)?;
             return match super::amount_more::player_amount("TargetedPlayer", what, &who) {
                 Some(found) => found.map(Some),
                 None => unmapped(format!("amount:{head}${what}")),
@@ -286,6 +307,8 @@ fn event_amount(ctx: &Ctx, expression: &str) -> Tr<Option<Value>> {
         "Enchanted" | "Equipped" => json!("Attached"),
         "OriginalHost" if ctx.granted => json!("Granter"),
         "Sacrificed" | "Discarded" => json!("Paid"),
+        // The card revealed from the hand as the cost, when the cost picks nothing else.
+        "Revealed" if revealed_alone(ctx.oracle) => json!("Paid"),
         // What the reflexive trigger of an `ImmediateTrigger` was told to remember (`RememberObjects$`).
         "TriggerRemembered" => match &ctx.delayed_remembered {
             Some(bound) => bound.clone(),

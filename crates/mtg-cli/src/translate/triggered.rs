@@ -114,6 +114,9 @@ const ONE_OBJECT: [&str; 7] = [
 /// Modes whose event holds a player and one object.
 const PLAYER_AND_OBJECT: [&str; 4] = ["Discarded", "Cycled", "Sacrificed", "SpellCast"];
 
+/// Modes whose event holds the player who controls the card the event is about.
+const CONTROLLER_ACTS: [&str; 4] = ["Discarded", "Cycled", "Sacrificed", "LandPlayed"];
+
 /// Modes whose event holds one player and no object.
 const ONE_PLAYER: [&str; 4] = ["LifeGained", "LifeLost", "Drawn", "Phase"];
 
@@ -161,8 +164,20 @@ pub fn resolve(shape: Option<&Shape>, word: &str) -> Tr<Value> {
     let mode = shape.mode.as_str();
     let did = holds(mode);
     // A mana ability's event names the player who tapped the permanent, who controls it.
-    if mode == "TapsForMana" && matches!(what, Word::Card) && controller {
+    if mode == "TapsForMana"
+        && (matches!(what, Word::Card) && controller || matches!(what, Word::Activator))
+    {
         return Ok(json!("Triggering"));
+    }
+    // Who controls the card is the player of the event: a drawn or discarded card is in its owner's hand, a cycled card
+    // too, and a player sacrifices and plays only what they control.
+    if matches!(what, Word::Card) && controller {
+        if mode == "Drawn" {
+            return Ok(json!("Triggering"));
+        }
+        if CONTROLLER_ACTS.contains(&mode) {
+            return Ok(json!("TriggeringPlayer"));
+        }
     }
     let reference = match what {
         Word::Owner if ONE_OBJECT.contains(&mode) => "Triggering",

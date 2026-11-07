@@ -658,6 +658,12 @@ fn head_wordings(head: Vec<String>, condition: Option<&Condition>) -> Vec<Vec<St
             .collect();
         others
     }));
+    // The spell of a cast is "it" or "that spell" ("if no mana was spent to cast that spell").
+    if let Some(spent) = condition.and_then(super::spent::amount_spent_text)
+        && let Some(spell) = spent.strip_suffix(" it")
+    {
+        heads.push(vec![head[0].clone(), format!("if {spell} that spell,")]);
+    }
     if head[0].contains("equipped creature") {
         heads.push(
             head.iter()

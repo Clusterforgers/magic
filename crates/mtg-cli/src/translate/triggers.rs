@@ -19,6 +19,36 @@ const COMMON: [&str; 7] = [
     "NoResolvingCheck",
 ];
 
+/// "Whenever you cast a spell, if at least four mana was spent to cast it": the amount of mana a cast spell's filter asks
+/// for (`Spell.ManaSpent GE4`) is the intervening condition the card prints, about the spell cast.
+fn spent_if(mut when: Value, intervening: Option<Value>) -> (Value, Option<Value>) {
+    let Some(what) = when
+        .pointer_mut("/SpellCast/what")
+        .and_then(Value::as_array_mut)
+    else {
+        return (when, intervening);
+    };
+    let spent = |pred: &Value| pred.pointer("/Compare/stat") == Some(&json!("ManaSpent"));
+    let found: Vec<Value> = what
+        .iter()
+        .filter(|pred| spent(pred))
+        .map(|pred| {
+            json!({"Compare": {
+                "left": {"Stat": {"of": "Triggering", "stat": "ManaSpent"}},
+                "op": pred["Compare"]["op"],
+                "right": pred["Compare"]["to"],
+            }})
+        })
+        .collect();
+    if found.is_empty() {
+        return (when, intervening);
+    }
+    // What is cast is a spell: the `Spell` the filter's own word adds says nothing more.
+    what.retain(|pred| !spent(pred) && *pred != json!("Spell"));
+    let condition = super::condition::single(intervening.into_iter().chain(found).collect());
+    (when, condition)
+}
+
 /// A trigger line as a `Triggered` ability.
 pub fn triggered(ctx: &mut Ctx, body: &str) -> Tr<Value> {
     ctx.reset();
@@ -37,6 +67,7 @@ pub fn triggered(ctx: &mut Ctx, body: &str) -> Tr<Value> {
     } else {
         (pattern(ctx, &p)?, intervening)
     };
+    let (when, intervening) = spent_if(when, intervening);
     let itself = is_about_itself(&when);
     ctx.trigger = Some(super::triggered::Shape {
         mode: p.get("Mode").unwrap_or_default().to_owned(),

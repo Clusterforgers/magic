@@ -952,6 +952,9 @@ pub fn condition(r: &mut Reader<'_>) -> Option<Condition> {
     if let Some(spent) = r.attempt(|r| super::spent::was_spent(r, false)) {
         return Some(spent);
     }
+    if let Some(spent) = r.attempt(super::spent::amount_spent) {
+        return Some(spent);
+    }
     if let Some(monarch) = monarch_condition(r) {
         return Some(monarch);
     }
@@ -1134,6 +1137,9 @@ pub fn condition_text(condition: &Condition) -> Option<String> {
         return Some(paid);
     }
     if let Some(spent) = super::spent::was_spent_text(condition, false) {
+        return Some(spent);
+    }
+    if let Some(spent) = super::spent::amount_spent_text(condition) {
         return Some(spent);
     }
     if let Some(monarch) = monarch_text(condition) {

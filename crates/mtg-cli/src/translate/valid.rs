@@ -186,6 +186,16 @@ pub(super) fn capitalize(word: &str) -> String {
 
 /// `powerGE4`, `toughnessLE2`, `cmcEQ3`.
 fn numeric_property(ctx: &Ctx, prop: &str) -> Tr<Option<Vec<Value>>> {
+    // `Spell.ManaSpent GE4`: the mana spent to cast the spell against a number. A named bound (`LTX`) is read against the
+    // card in some scripts and the spell in others, so only a number is read.
+    if let Some(rest) = prop.strip_prefix("ManaSpent ")
+        && let Some((op, bound)) = rest.get(..2).and_then(cmp).zip(rest.get(2..))
+        && let Ok(bound) = bound.parse::<u32>()
+    {
+        return Ok(Some(vec![
+            json!({"Compare": {"stat": "ManaSpent", "op": op, "to": bound}}),
+        ]));
+    }
     let Some((stat, rest)) = [
         ("power", "Power"),
         ("toughness", "Toughness"),
@@ -609,6 +619,15 @@ pub fn defined(ctx: &Ctx, word: &str) -> Tr<Value> {
     {
         let zones: Vec<&str> = zones.split(',').collect();
         return Ok(json!({"Each": super::count::zone_selector(ctx, &zones, spec)?}));
+    }
+    // `Targeted.Creature`: the target when it is a creature ("if it's a creature, it can't block this turn").
+    if let Some(kind) = word.trim().strip_prefix("Targeted.")
+        && matches!(
+            kind,
+            "Creature" | "Artifact" | "Enchantment" | "Land" | "Planeswalker"
+        )
+    {
+        return Ok(json!({"Each": [{"Is": ctx.last_target()?}, {"Type": kind}]}));
     }
     let controller = |inner: Value| Ok(json!({ "ControllerOf": inner }));
     match word.trim() {
