@@ -180,6 +180,21 @@ impl Counted<'_> {
         }
     }
 
+    /// Each kind there is with its number, in the order of the kinds.
+    pub(super) fn g12b_kinds(self) -> Vec<(CounterKind, u32)> {
+        let mut kinds: Vec<(CounterKind, u32)> = match self {
+            Counted::Live(permanent) => permanent
+                .counters()
+                .map(|(kind, n)| (kind.clone(), n))
+                .collect(),
+            Counted::Shot(held) => held.to_vec(),
+            Counted::Card(held) => held.iter().map(|(kind, n)| (kind.clone(), *n)).collect(),
+        };
+        kinds.retain(|(_, n)| *n > 0);
+        kinds.sort();
+        kinds
+    }
+
     /// How many counters there are of every kind together (CR 122.1).
     fn c10_any_total(self) -> u32 {
         match self {

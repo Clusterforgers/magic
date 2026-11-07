@@ -18,7 +18,7 @@ pub fn effects(ctx: &mut Ctx, p: &Params, api: &str) -> Tr<Vec<Value>> {
         "DestroyAll" => one(destroy_all(ctx, p)),
         "DamageAll" => damage_all(ctx, p),
         "DamageResolve" => damage_resolve(ctx, p),
-        "PutCounterAll" => one(put_counter_all(ctx, p)),
+        "PutCounterAll" => put_counter_all(ctx, p),
         "RemoveCounterAll" => one(remove_counter_all(ctx, p)),
         "AddOrRemoveCounter" => one(add_or_remove_counter(ctx, p)),
         "Counter" => counter(ctx, p),
@@ -372,21 +372,50 @@ fn damage_all(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
     Ok(effects)
 }
 
-/// `PutCounterAll`: counters on every object that matches.
-fn put_counter_all(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
+/// `PutCounterAll`: counters on every object that matches. `CounterType2$` is a second put after the first: its own
+/// number (`CounterNum2$`, else the first one) on the same objects, or on those `ValidCards2$` matches ("a +1/+1 counter on each
+/// creature you control and a loyalty counter on each other planeswalker you control").
+fn put_counter_all(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
     only(
         p,
         "PutCounterAll",
-        &["ValidCards", "CounterType", "CounterNum", "ValidTgts"],
+        &[
+            "ValidCards",
+            "CounterType",
+            "CounterNum",
+            "ValidTgts",
+            "CounterType2",
+            "CounterNum2",
+            "ValidCards2",
+        ],
     )?;
     let Some(kind) = p.get("CounterType").and_then(kind_word) else {
         return unmapped("key:PutCounterAll.CounterType");
     };
     let valid = p.get("ValidCards").unwrap_or_default();
     let count = amount(ctx, p.get("CounterNum").unwrap_or("1"))?;
-    Ok(
-        json!({"PutCounters": {"on": {"Each": frame::all_matching(ctx, p, "PutCounterAll", valid)?}, "counter": kind, "count": count}}),
-    )
+    let on = json!({"Each": frame::all_matching(ctx, p, "PutCounterAll", valid)?});
+    let mut effects = vec![json!({"PutCounters": {"on": on, "counter": kind, "count": count}})];
+    let Some(second) = p.get("CounterType2") else {
+        if p.has("CounterNum2") || p.has("ValidCards2") {
+            return unmapped("key:PutCounterAll.CounterType2");
+        }
+        return Ok(effects);
+    };
+    let Some(kind) = kind_word(second) else {
+        return unmapped("key:PutCounterAll.CounterType2");
+    };
+    let count = amount(
+        ctx,
+        p.get("CounterNum2").or(p.get("CounterNum")).unwrap_or("1"),
+    )?;
+    let on = match p.get("ValidCards2") {
+        None => on,
+        Some(_) if p.has("ValidTgts") => return unmapped("key:PutCounterAll.ValidCards2"),
+        Some(valid) => json!({"Each": super::valid::selector_any(ctx, valid)?}),
+    };
+    effects.push(json!({"PutCounters": {"on": on, "counter": kind, "count": count}}));
+    Ok(effects)
 }
 
 /// `AddOrRemoveCounter`: the controller puts counters of a kind on the object or takes them off ("put a plague counter on
@@ -1188,6 +1217,9 @@ fn put_counter(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
         );
         return put_counter(ctx, &Params::parse(&line));
     }
+    if let Some(done) = g12b_counters_of(ctx, p) {
+        return done;
+    }
     only(
         p,
         "PutCounter",
@@ -1202,6 +1234,8 @@ fn put_counter(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
             "CounterTypes",
             "DividedAsYouChoose",
             "CounterNumPerDefined",
+            "ChoiceAmount",
+            "MinChoiceAmount",
         ],
     )?;
     if let Some(name) = p.get("CounterNumPerDefined") {
@@ -1233,17 +1267,10 @@ fn put_counter(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
         }
         return Ok(effects);
     }
-    // `Choices$` is a pick made as the effect resolves, from the objects that match, with no targets.
     let on = match p.get("Choices") {
-        Some(_) if p.has("ValidTgts") || p.has("Defined") => {
-            return unmapped("key:PutCounter.Choices-with-a-target");
-        }
-        Some(valid) => {
-            let from = json!({"Each": selector_in(ctx, valid, None)?});
-            let bind = ctx.fresh("card");
-            effects.push(json!({"Choose": {
-                "who": "You", "from": from, "count": {"min": 1, "max": 1}, "as": bind}}));
-            json!({ "Bound": bind })
+        Some(valid) => g12b_pick(ctx, p, valid, &mut effects)?,
+        None if p.has("ChoiceAmount") || p.has("MinChoiceAmount") => {
+            return unmapped("key:PutCounter.ChoiceAmount");
         }
         None => subject(ctx, p, "Self", None)?,
     };
@@ -1262,6 +1289,74 @@ fn put_counter(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
         effects.push(either(puts)?);
     }
     Ok(effects)
+}
+
+/// `Choices$` is a pick made as the effect resolves, from the objects that match, with no targets; the pick is pushed
+/// and named. `ChoiceAmount$` is how many are picked, `MinChoiceAmount$` the fewest (else as many): "each of up to two
+/// Soldiers you control", "choose four nonenchantment permanents you don't control". `Defined$ ChosenCard` names the
+/// pick; a pick of a divided count stays a gap.
+fn g12b_pick(ctx: &mut Ctx, p: &Params, valid: &str, effects: &mut Vec<Value>) -> Tr<Value> {
+    if p.has("ValidTgts") || p.get("Defined").is_some_and(|word| word != "ChosenCard") {
+        return unmapped("key:PutCounter.Choices-with-a-target");
+    }
+    if (p.has("ChoiceAmount") || p.has("MinChoiceAmount")) && p.has("DividedAsYouChoose") {
+        return unmapped("key:PutCounter.ChoiceAmount");
+    }
+    let from = json!({"Each": selector_in(ctx, valid, None)?});
+    let bind = ctx.fresh("card");
+    let max = amount(ctx, p.get("ChoiceAmount").unwrap_or("1"))?;
+    let min = match p.get("MinChoiceAmount") {
+        Some(word) => amount(ctx, word)?,
+        None => max.clone(),
+    };
+    effects.push(json!({"Choose": {
+        "who": "You", "from": from, "count": {"min": min, "max": max}, "as": bind}}));
+    Ok(json!({ "Bound": bind }))
+}
+
+/// `CounterType$ EachFromSource | EachFromSource$ TriggeredCardLKICopy`: "put its counters on target creature you
+/// control", as many of each kind as the object held (as it last existed); `CounterType$ ExistingCounter |
+/// EachExistingCounter$ True | CounterNum$ 1`: "for each kind of counter on target permanent or player, give that
+/// permanent or player another counter of that kind". None for any other `PutCounter`.
+fn g12b_counters_of(ctx: &mut Ctx, p: &Params) -> Option<Tr<Vec<Value>>> {
+    const PLACES: [&str; 4] = ["Defined", "ValidTgts", "TargetMin", "TargetMax"];
+    let done = match p.get("CounterType")? {
+        "EachFromSource" => (|| {
+            let mut keys = vec!["CounterType", "EachFromSource"];
+            keys.extend(PLACES);
+            only(p, "PutCounter", &keys)?;
+            let Some(word) = p.get("EachFromSource") else {
+                return unmapped("key:PutCounter.EachFromSource");
+            };
+            let of = defined(ctx, word)?;
+            let on = g12b_place(ctx, p)?;
+            Ok(vec![json!({"PutCountersOf": {"on": on, "of": of}})])
+        })(),
+        "ExistingCounter" if p.get("EachExistingCounter") == Some("True") => (|| {
+            let mut keys = vec!["CounterType", "EachExistingCounter", "CounterNum"];
+            keys.extend(PLACES);
+            only(p, "PutCounter", &keys)?;
+            if p.get("CounterNum").unwrap_or("1") != "1" {
+                return unmapped("key:PutCounter.EachExistingCounter");
+            }
+            let on = g12b_place(ctx, p)?;
+            Ok(vec![
+                json!({"PutCountersOf": {"on": on, "of": on, "each": 1}}),
+            ])
+        })(),
+        _ => return None,
+    };
+    Some(done)
+}
+
+/// Where `PutCountersOf` puts: the target, or what `Defined$` names (`Defined$ Targeted` beside the target says the
+/// target again).
+fn g12b_place(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
+    if p.get("Defined") == Some("Targeted") && p.has("ValidTgts") {
+        subject(ctx, &p.without(&["Defined"]), "Self", None)
+    } else {
+        subject(ctx, p, "Self", None)
+    }
 }
 
 /// `CounterNumPerDefined$ X`: "put a number of +1/+1 counters on each other creature you control equal to that creature's

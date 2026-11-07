@@ -702,6 +702,7 @@ mod fg5s_play;
 mod fg5s_prevent;
 mod fg_digital;
 mod g10d;
+mod g12b;
 mod g8b;
 mod g8e;
 mod g9a;

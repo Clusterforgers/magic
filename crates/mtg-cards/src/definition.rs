@@ -460,7 +460,7 @@ impl CardDefinition {
         values
     }
 
-    /// Applies one exception of a copy effect to these copiable values (CR 707.9b): types and subtypes, a supertype taken away, a
+    /// Applies one exception of a copy effect to these copiable values (CR 707.9b): types, subtypes and creature types, a supertype taken away, a
     /// keyword or an ability, colours, a fixed power and toughness. False, with nothing changed, for any other
     /// modification.
     pub fn except(&mut self, modification: &Modification) -> bool {
@@ -478,6 +478,15 @@ impl CardDefinition {
                 // A creature type needs the type it is a type of (CR 205.3d).
                 if !self.is_type(CardType::Creature) && !self.is_type(CardType::Kindred) {
                     self.subtypes.retain(|subtype| !subtype.is_creature_type());
+                }
+            }
+            // "except it's a Zombie": the creature types are these alone; the other subtypes stay (CR 205.1b).
+            Modification::SetCreatureTypes(types) => {
+                self.subtypes.retain(|subtype| !subtype.is_creature_type());
+                for subtype in types {
+                    if !self.subtypes.contains(subtype) {
+                        self.subtypes.push(subtype.clone());
+                    }
                 }
             }
             Modification::RemoveSupertype(supertype) => {
@@ -621,6 +630,23 @@ mod tests {
             values.subtypes.iter().any(|subtype| subtype.0 == "Elf"),
             keeps_the_elf
         );
+    }
+
+    #[rstest]
+    #[case::a_zombie(vec!["Zombie"], &["Equipment", "Zombie"])]
+    #[case::two_types(vec!["Zombie", "Wizard"], &["Equipment", "Zombie", "Wizard"])]
+    #[case::no_creature_type(vec![], &["Equipment"])]
+    #[case::the_type_it_has(vec!["Elf"], &["Equipment", "Elf"])]
+    fn g12b_an_exception_of_creature_types_replaces_only_the_creature_types(
+        #[case] set: Vec<&str>,
+        #[case] subtypes: &[&str],
+    ) {
+        let mut values = legendary_elf().with_subtype("Equipment");
+        let set = set.into_iter().map(|s| Subtype(s.into())).collect();
+        assert!(values.except(&Modification::SetCreatureTypes(set)));
+        let found: Vec<&str> = values.subtypes.iter().map(|s| s.0.as_str()).collect();
+        assert_eq!(found, subtypes);
+        assert!(values.types.contains(&CardType::Creature));
     }
 
     #[rstest]

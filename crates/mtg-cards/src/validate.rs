@@ -3374,6 +3374,13 @@ impl Walker<'_> {
                     w.problem("a factor below two multiplies the counters by nothing");
                 }
             }
+            Effect::PutCountersOf { on, of, each } => {
+                w.at("on", |w| w.reference(on, Kind::Either));
+                w.at("of", |w| w.reference(of, Kind::Either));
+                if let Some(each) = each {
+                    w.at("each", |w| w.amount(each));
+                }
+            }
             Effect::MoveCounters {
                 from, to, count, ..
             } => {
