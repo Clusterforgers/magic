@@ -198,3 +198,27 @@ fn g8c_the_target_of_a_type_is_the_target_only_while_it_has_that_type(
     let wanted = json!({"Each": [{"Is": {"Target": 0}}, {"Type": kind}]}).to_string();
     assert!(effects.contains(&wanted), "{effects}");
 }
+
+#[rstest]
+#[case::entering_and_self("TriggeredCardLKICopy & Self", "", Some([json!("Triggering"), json!("This")]))]
+// A target beside the pair is no one put on each.
+#[case::with_a_target("TriggeredCardLKICopy & Self", " | ValidTgts$ Creature", None)]
+// A player has no counters put this way.
+#[case::a_player("TriggeredCardLKICopy & You", "", None)]
+fn g8c_a_counter_on_each_of_two_named_objects(
+    #[case] word: &str,
+    #[case] more: &str,
+    #[case] on: Option<[Value; 2]>,
+) {
+    let text = format!(
+        "Name:T\nTypes:Creature\nPT:1/1\nT:Mode$ ChangesZone | Destination$ Battlefield | ValidCard$ Creature.Other+YouCtrl | TriggerZones$ Battlefield | Execute$ TrigPut | TriggerDescription$ Whenever another creature you control enters, put a +1/+1 counter on that creature and a +1/+1 counter on CARDNAME.\nSVar:TrigPut:DB$ PutCounter | Defined$ {word} | CounterType$ P1P1{more}\n"
+    );
+    let Some(on) = on else {
+        assert!(!gaps(&text).is_empty());
+        return;
+    };
+    assert_eq!(gaps(&text), Vec::<String>::new());
+    let effects = &abilities(&text)[0]["Triggered"]["effects"];
+    assert_eq!(effects[0]["PutCounters"]["on"], on[0], "{effects}");
+    assert_eq!(effects[1]["PutCounters"]["on"], on[1], "{effects}");
+}

@@ -1112,6 +1112,21 @@ fn put_counter(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
             .unwrap_or_default(),
     )?;
     let mut effects = Vec::new();
+    // "Put a +1/+1 counter on that creature and a +1/+1 counter on this creature": one put on each, in the order named.
+    if let Some((first, second)) = p.get("Defined").and_then(|word| word.split_once(" & ")) {
+        let [kind] = kinds.as_slice() else {
+            return unmapped("key:PutCounter.Defined-pair-with-a-choice");
+        };
+        if p.has("ValidTgts") || p.has("Choices") || p.has("DividedAsYouChoose") {
+            return unmapped("key:PutCounter.Defined-pair");
+        }
+        let count = amount(ctx, p.get("CounterNum").unwrap_or("1"))?;
+        for word in [first, second] {
+            let on = super::valid::objects(defined(ctx, word)?)?;
+            effects.push(json!({"PutCounters": {"on": on, "counter": kind, "count": count}}));
+        }
+        return Ok(effects);
+    }
     // `Choices$` is a pick made as the effect resolves, from the objects that match, with no targets.
     let on = match p.get("Choices") {
         Some(_) if p.has("ValidTgts") || p.has("Defined") => {
