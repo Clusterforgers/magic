@@ -1,0 +1,26 @@
+{
+  "oracle_id": "84b3464c-412f-473f-b428-4a8bafd8718e",
+  "name": "Impetuous Lootmonger",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Impetuous Lootmonger",
+      "oracle_fingerprint": "9e94d9dff0f4803f744048a372c317cb",
+      "abilities": [
+        { "Keyword": "FirstStrike" },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 13, "end": 100 }
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "what": [{ "Not": { "OwnedBy": "You" } }], "by": "You" } },
+            "effects": [{ "CreateToken": { "token": { "Named": "treasure" }, "tapped": true } }]
+          }
+        }
+      ]
+    }
+  ]
+}

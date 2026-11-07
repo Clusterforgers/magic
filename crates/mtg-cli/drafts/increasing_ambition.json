@@ -14,7 +14,18 @@
                 "Search": {
                   "filter": [],
                   "count": {
-                    "min": 0,
+                    "min": {
+                      "When": {
+                        "condition": {
+                          "Matches": {
+                            "subject": "This",
+                            "selector": [{ "WasCast": { "from": "Graveyard" } }]
+                          }
+                        },
+                        "then": 2,
+                        "otherwise": 1
+                      }
+                    },
                     "max": {
                       "When": {
                         "condition": {

@@ -1,0 +1,27 @@
+{
+  "oracle_id": "a9efb84d-b19f-44b7-89a5-127c38b2ea6b",
+  "name": "Arius, Flyby Trawler",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Arius, Flyby Trawler",
+      "oracle_fingerprint": "a0d9da7ddbe352078de69e6d959bcf5d",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": "Trample" },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 16, "end": 119 }
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Batch": { "Discarded": { "by": "You" } } },
+            "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

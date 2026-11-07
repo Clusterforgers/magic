@@ -1,0 +1,30 @@
+{
+  "oracle_id": "1dabfade-79e5-44e2-afa6-b20498c6bb8b",
+  "name": "Vertigo",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Vertigo",
+      "oracle_fingerprint": "f263eac1b388891e91821c2a28f2c28f",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "HasKeyword": "Flying" }] } }
+            ],
+            "effects": [
+              { "DealDamage": { "to": { "Target": 0 }, "amount": 2 } },
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "RemoveKeyword": "Flying" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

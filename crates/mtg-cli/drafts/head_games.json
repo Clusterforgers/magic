@@ -22,7 +22,7 @@
                 "Search": {
                   "of": { "Target": 0 },
                   "filter": [],
-                  "count": { "min": 0, "max": { "Bound": "moved~moved" } },
+                  "count": { "min": { "Bound": "moved~moved" }, "max": { "Bound": "moved~moved" } },
                   "as": "found2"
                 }
               },

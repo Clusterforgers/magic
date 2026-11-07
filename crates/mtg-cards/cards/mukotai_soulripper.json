@@ -1,0 +1,45 @@
+{
+  "oracle_id": "060d109f-2969-4f9e-a723-535d662a571a",
+  "name": "Mukotai Soulripper",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mukotai Soulripper",
+      "oracle_fingerprint": "e0f0f38f4d0eb5cd062796d39f5026d1",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": [
+                    {
+                      "Sacrifice": {
+                        "filter": [
+                          { "AnyOf": [{ "Type": "Creature" }, { "Type": "Artifact" }] },
+                          "Other"
+                        ]
+                      }
+                    }
+                  ],
+                  "paid": [
+                    { "PutCounters": { "on": "This", "counter": "+1/+1" } },
+                    {
+                      "Continuous": {
+                        "affected": "This",
+                        "mods": [{ "AddKeyword": "Menace" }],
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Crew": 2 } }
+      ]
+    }
+  ]
+}

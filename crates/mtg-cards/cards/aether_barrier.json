@@ -1,0 +1,27 @@
+{
+  "oracle_id": "0fe602b7-9f88-4d3d-af24-7790df867ed5",
+  "name": "Aether Barrier",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Aether Barrier",
+      "oracle_fingerprint": "960f15a4dbc428801356d98554010df7",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "what": [{ "Type": "Creature" }] } },
+            "effects": [
+              {
+                "Pay": {
+                  "who": "Triggering",
+                  "cost": "{1}",
+                  "unpaid": [{ "Sacrifice": { "who": "Triggering", "filter": [] } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

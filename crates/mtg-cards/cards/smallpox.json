@@ -1,0 +1,23 @@
+{
+  "oracle_id": "7bd22c98-0782-447f-a5fa-4281585a3eab",
+  "name": "Smallpox",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Smallpox",
+      "oracle_fingerprint": "d08a95da9401df10aa45aac233961c39",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "LoseLife": { "who": "EachPlayer", "amount": 1 } },
+              { "Discard": { "who": "EachPlayer" } },
+              { "Sacrifice": { "who": "EachPlayer", "filter": [{ "Type": "Creature" }] } },
+              { "Sacrifice": { "who": "EachPlayer", "filter": [{ "Type": "Land" }] } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

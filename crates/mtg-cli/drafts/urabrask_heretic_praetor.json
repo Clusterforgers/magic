@@ -1,0 +1,36 @@
+{
+  "oracle_id": "3fe61a65-b1c0-4d15-b379-e4ce22c96941",
+  "name": "Urabrask, Heretic Praetor",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Urabrask, Heretic Praetor",
+      "oracle_fingerprint": "a6c20d35917e1944d027782d859a0fa3",
+      "abilities": [
+        { "Keyword": "Haste" },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [
+              { "ExileTop": { "as": "exiled" } },
+              {
+                "Rule": {
+                  "rule": {
+                    "MayCast": { "from": "Exile", "only": { "Bound": "exiled" }, "play": true }
+                  },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 102, "end": 271 }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,19 @@
+{
+  "oracle_id": "09cc0faa-71d7-428b-9fc4-5ba09e244e89",
+  "name": "Lagonna-Band Trailblazer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Lagonna-Band Trailblazer",
+      "oracle_fingerprint": "09ea82153d60fd2b88cc2bc0b6a2257e",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "what": [{ "Targeting": ["This"] }], "by": "You" } },
+            "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

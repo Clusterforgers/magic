@@ -55,7 +55,10 @@
                           "Shield": {
                             "when": {
                               "ZoneChange": {
-                                "what": [{ "Is": { "Target": 0 } }, { "Type": "Creature" }],
+                                "what": [
+                                  { "Is": { "Target": 0 } },
+                                  { "AnyOf": [{ "Type": "Creature" }, { "Type": "Planeswalker" }] }
+                                ],
                                 "from": "Battlefield",
                                 "to": "Graveyard"
                               }

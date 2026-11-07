@@ -1,0 +1,20 @@
+{
+  "oracle_id": "f9fd9b1c-4c00-4db7-bbfe-7fd5d8bb9258",
+  "name": "Fabled Hero",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Fabled Hero",
+      "oracle_fingerprint": "a07b027ce127f3ea04f7ee3eded2d320",
+      "abilities": [
+        { "Keyword": "DoubleStrike" },
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "what": [{ "Targeting": ["This"] }], "by": "You" } },
+            "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,43 @@
+{
+  "oracle_id": "6a521eed-0965-4fce-8a11-190dc2863da8",
+  "name": "Flame-Blessed Bolt",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Flame-Blessed Bolt",
+      "oracle_fingerprint": "b13c2f6f7e7a8bfacfa5915d7e08927f",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "AnyOf": [{ "Type": "Creature" }, { "Type": "Planeswalker" }] }]
+                }
+              }
+            ],
+            "effects": [
+              { "DealDamage": { "to": { "Target": 0 }, "amount": 2 } },
+              {
+                "Shield": {
+                  "when": {
+                    "ZoneChange": {
+                      "what": [
+                        { "Is": { "Target": 0 } },
+                        { "AnyOf": [{ "Type": "Creature" }, { "Type": "Planeswalker" }] }
+                      ],
+                      "from": "Battlefield",
+                      "to": "Graveyard"
+                    }
+                  },
+                  "by": { "MoveTo": "Exile" },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
