@@ -12,8 +12,14 @@ use crate::forge::script::Params;
 /// A `Counter` event line: the spell itself (from the stack) or the group of spells it names (from the battlefield).
 pub fn counter(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
     // "Spell mastery — if there are two or more instant and/or sorcery cards in your graveyard" (`IsPresent$`) is the condition.
-    let held = super::condition::condition(ctx, p)?;
-    let p = &super::condition::strip(p);
+    let counted = p.has("IsPresent");
+    let held = if counted {
+        super::condition::condition(ctx, p)?
+    } else {
+        None
+    };
+    let stripped = counted.then(|| super::condition::strip(p));
+    let p = stripped.as_ref().unwrap_or(p);
     let read = ["Event", "Layer", "ValidSA", "ValidCard", "ActiveZones"];
     check_keys(p, "Replacement.Counter", &read, |_, _| false)?;
     if p.get("Layer") != Some("CantHappen") {
