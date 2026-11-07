@@ -276,6 +276,8 @@ fn the_renderer_writes_the_hand_written_abilities_as_the_cards_text() {
         let by_hand = library.card(&printed.oracle_id).unwrap();
         let listed: Vec<(usize, &Ability)> = by_hand.abilities().collect();
         let mut skip_next = false;
+        // The first static of a pair was printed apart from the second, so the second needs its own line too.
+        let mut pair_apart = false;
         for (at, &(face, ability)) in listed.iter().enumerate() {
             if std::mem::take(&mut skip_next) {
                 continue;
@@ -287,7 +289,9 @@ fn the_renderer_writes_the_hand_written_abilities_as_the_cards_text() {
                 rendered += count;
                 continue;
             }
-            // Two statics under one condition are one sentence of the card.
+            // Two statics with one subject may be one sentence of the card; printed as two sentences (Air Bladder),
+            // each must be written as its own line below.
+            let own_line = std::mem::take(&mut pair_apart);
             if let Some(&(same, second)) = listed.get(at + 1) {
                 let pair = static_pair_texts(ability, second);
                 if same == face && !pair.is_empty() {
@@ -297,20 +301,24 @@ fn the_renderer_writes_the_hand_written_abilities_as_the_cards_text() {
                         .filter(|clause| clause.face == face && clause.kind == ClauseKind::Static)
                         .map(|clause| without_numerals(without_ability_word(&clause.text)))
                         .collect();
-                    assert!(
-                        lines
-                            .iter()
-                            .any(|text| pair.iter().any(|written| same_text(written, text))),
-                        "{}: none of {pair:?} is in {lines:?}",
-                        printed.name
-                    );
-                    skip_next = true;
-                    rendered += 2;
-                    continue;
+                    if lines
+                        .iter()
+                        .any(|text| pair.iter().any(|written| same_text(written, text)))
+                    {
+                        skip_next = true;
+                        rendered += 2;
+                        continue;
+                    }
+                    pair_apart = true;
                 }
             }
             let written = written_variants(ability);
             if written.is_empty() {
+                assert!(
+                    !own_line && !pair_apart,
+                    "{}: a static of a pair printed apart has no wording of its own: {ability:?}",
+                    printed.name
+                );
                 continue;
             }
             // The spell ability is the spell lines of the face, or its list of modes.
