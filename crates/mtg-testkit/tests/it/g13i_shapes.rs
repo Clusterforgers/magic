@@ -1,6 +1,6 @@
-//! Goal: three shapes the translator reads in round 13 play at tables of two, three and four seats: a replacement that
-//! waits for the tapped state of its source, a static that waits for the top card of the library, and a spell that makes
-//! every other creature a copy of a target until end of turn.
+//! Goal: four shapes the translator reads in round 13 play at tables of two, three and four seats: a replacement that
+//! waits for the tapped state of its source, a static that waits for the top card of the library, a cost reduction for
+//! the first instant or sorcery each turn, and a spell that makes every other creature a copy of a target until end of turn.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
 use std::sync::Arc;
@@ -100,6 +100,47 @@ fn a_static_reads_the_top_card_of_the_library(
     assert_eq!(
         (stats.power, stats.toughness),
         (Some(expected.0), Some(expected.1))
+    );
+    Ok(())
+}
+
+/// "The first instant or sorcery spell you cast each turn costs {3} less to cast."
+fn melek() -> Arc<CardDefinition> {
+    let kinds = r#"{"AnyOf":[{"Type":"Instant"},{"Type":"Sorcery"}]}"#;
+    Arc::new(CardDefinition::new("Reducer").with_type(CardType::Artifact).with_rules(ability(
+        &format!(
+            r#"{{"CostModifier":{{"applies_to":["Spell",{kinds},{{"ControlledBy":"You"}}],"change":"Reduce","condition":{{"Compare":{{"left":{{"Tally":{{"event":"SpellCast","filter":[{kinds}],"who":"You"}}}},"op":"Eq","right":0}}}},"mana":"{{3}}"}}}}"#
+        ),
+    )))
+}
+
+/// An instant that costs {3} and does nothing.
+fn pricey(name: &str) -> Arc<CardDefinition> {
+    Arc::new(
+        CardDefinition::new(name)
+            .with_type(CardType::Instant)
+            .with_mana_cost(cost(3, &[]))
+            .with_rules(ability(
+                r#"{"Spell":{"effects":[{"GainLife":{"amount":1}}]}}"#,
+            )),
+    )
+}
+
+#[rstest]
+fn only_the_first_instant_each_turn_costs_less(
+    #[values(2, 3, 4)] seats: usize,
+) -> Result<(), ScriptError> {
+    let mut driver = Driver::from_scenario(
+        Scenario::new(seats)
+            .hand(0, [pricey("First"), pricey("Second")])
+            .battlefield(0, [ready(melek())]),
+    )?;
+    // With no mana at all, the first spell is free and the second is out of reach.
+    driver.cast("First")?;
+    settle(&mut driver)?;
+    assert!(
+        driver.cast("Second").is_err(),
+        "the second spell costs {{3}}"
     );
     Ok(())
 }
