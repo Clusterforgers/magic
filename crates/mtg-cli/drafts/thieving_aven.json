@@ -1,0 +1,23 @@
+{
+  "oracle_id": "6676e0c5-ae42-47ae-8cb7-78c30db9fbcb",
+  "name": "Thieving Aven",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Thieving Aven",
+      "oracle_fingerprint": "32e3e1ba68e39fb24da3308e5de17c49",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Manual": { "reason": "you apply this clause by hand", "span": { "start": 7, "end": 95 } }
+        },
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "what": [{ "Not": { "OwnedBy": "You" } }], "by": "You" } },
+            "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

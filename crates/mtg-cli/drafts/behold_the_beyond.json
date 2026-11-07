@@ -11,7 +11,7 @@
           "Spell": {
             "effects": [
               { "Discard": { "count": { "Count": [{ "In": "Hand" }, { "OwnedBy": "You" }] } } },
-              { "Search": { "filter": [], "count": { "min": 0, "max": 3 }, "as": "found" } },
+              { "Search": { "filter": [], "count": { "min": 3, "max": 3 }, "as": "found" } },
               { "Move": { "what": { "Bound": "found" }, "to": "Hand" } },
               { "Shuffle": {} }
             ]

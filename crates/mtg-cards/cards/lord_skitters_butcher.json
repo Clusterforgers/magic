@@ -1,0 +1,72 @@
+{
+  "oracle_id": "467f756f-75db-4748-99d3-62651776adfe",
+  "name": "Lord Skitter's Butcher",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Lord Skitter's Butcher",
+      "oracle_fingerprint": "ed0eab9e5f81c173a92ed997a95fae3c",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Modal": {
+                  "modes": [
+                    {
+                      "effects": [
+                        {
+                          "CreateToken": {
+                            "token": {
+                              "Custom": {
+                                "name": "Rat",
+                                "colors": ["Black"],
+                                "types": ["Creature"],
+                                "subtypes": ["Rat"],
+                                "power": 1,
+                                "toughness": 1,
+                                "abilities": [
+                                  { "Static": { "affected": "This", "mods": ["CantBlock"] } }
+                                ]
+                              }
+                            }
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "effects": [
+                        {
+                          "Pay": {
+                            "cost": [
+                              { "Sacrifice": { "filter": [{ "Type": "Creature" }, "Other"] } }
+                            ],
+                            "paid": [{ "Scry": { "count": 2 } }, { "Draw": {} }]
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "effects": [
+                        {
+                          "Continuous": {
+                            "affected": {
+                              "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }]
+                            },
+                            "mods": [{ "AddKeyword": "Menace" }],
+                            "duration": "UntilEndOfTurn"
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

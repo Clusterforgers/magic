@@ -1,0 +1,42 @@
+{
+  "source": "forge",
+  "oracle_matches": true,
+  "lines": [
+    {
+      "face": 0,
+      "tag": "A",
+      "text": "You may have CARDNAME assign its combat damage this turn as though it weren't blocked.",
+      "abilities": [
+        0
+      ],
+      "gap": null
+    },
+    {
+      "face": 0,
+      "tag": "T",
+      "text": "At the beginning of your upkeep, sacrifice CARDNAME unless you put two cards from your graveyard on the bottom of your library.",
+      "abilities": [],
+      "gap": "cost:PutCardToLibFromGrave"
+    }
+  ],
+  "proof": {
+    "marks": [
+      {
+        "face": 0,
+        "span": {
+          "start": 0,
+          "end": 132
+        },
+        "mark": "ByHand"
+      },
+      {
+        "face": 0,
+        "span": {
+          "start": 133,
+          "end": 248
+        },
+        "mark": "Auto"
+      }
+    ]
+  }
+}

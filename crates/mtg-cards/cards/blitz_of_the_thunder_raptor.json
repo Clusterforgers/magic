@@ -1,0 +1,54 @@
+{
+  "oracle_id": "d2db3f9c-26fe-487b-bbb7-8bc6f33456f1",
+  "name": "Blitz of the Thunder-Raptor",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Blitz of the Thunder-Raptor",
+      "oracle_fingerprint": "b452ee10513e0144fe4081f847c3758d",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "AnyOf": [{ "Type": "Creature" }, { "Type": "Planeswalker" }] }]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "DealDamage": {
+                  "to": { "Target": 0 },
+                  "amount": {
+                    "Count": [
+                      { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] },
+                      { "OwnedBy": "You" },
+                      { "In": "Graveyard" }
+                    ]
+                  }
+                }
+              },
+              {
+                "Shield": {
+                  "when": {
+                    "ZoneChange": {
+                      "what": [
+                        { "Is": { "Target": 0 } },
+                        { "AnyOf": [{ "Type": "Creature" }, { "Type": "Planeswalker" }] }
+                      ],
+                      "from": "Battlefield",
+                      "to": "Graveyard"
+                    }
+                  },
+                  "by": { "MoveTo": "Exile" },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,59 @@
+{
+  "source": "forge",
+  "oracle_matches": true,
+  "lines": [
+    {
+      "face": 0,
+      "tag": "A",
+      "text": "Add {R}.",
+      "abilities": [
+        0
+      ],
+      "gap": null
+    },
+    {
+      "face": 0,
+      "tag": "A",
+      "text": "Add {R}{R}. Spend this mana only to cast instant and sorcery spells.",
+      "abilities": [
+        1
+      ],
+      "gap": null
+    },
+    {
+      "face": 0,
+      "tag": "T",
+      "text": "When this artifact enters, mill a card. You may play that card this turn. (To mill a card, put the top card of your library into your graveyard.)",
+      "abilities": [],
+      "gap": "zone:MayPlay.AffectedZone=Graveyard,Exile"
+    }
+  ],
+  "proof": {
+    "marks": [
+      {
+        "face": 0,
+        "span": {
+          "start": 0,
+          "end": 145
+        },
+        "mark": "ByHand"
+      },
+      {
+        "face": 0,
+        "span": {
+          "start": 146,
+          "end": 159
+        },
+        "mark": "Auto"
+      },
+      {
+        "face": 0,
+        "span": {
+          "start": 160,
+          "end": 233
+        },
+        "mark": "Auto"
+      }
+    ]
+  }
+}

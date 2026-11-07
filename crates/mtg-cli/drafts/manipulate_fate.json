@@ -10,7 +10,7 @@
         {
           "Spell": {
             "effects": [
-              { "Search": { "filter": [], "count": { "min": 0, "max": 3 }, "as": "found" } },
+              { "Search": { "filter": [], "count": { "min": 3, "max": 3 }, "as": "found" } },
               { "Exile": { "what": { "Bound": "found" } } },
               { "Shuffle": {} },
               { "Draw": {} }

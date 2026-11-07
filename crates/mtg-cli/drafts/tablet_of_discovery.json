@@ -1,0 +1,38 @@
+{
+  "oracle_id": "19cf5798-4600-4a66-b1c7-de77bde157d0",
+  "name": "Tablet of Discovery",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Tablet of Discovery",
+      "oracle_fingerprint": "60f37f46f536892f5a216495a12db34d",
+      "abilities": [
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 0, "end": 145 }
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Red"] } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [
+              {
+                "AddMana": {
+                  "mana": { "Fixed": ["Red", "Red"] },
+                  "only": [{ "Spell": { "types": ["Instant", "Sorcery"] } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

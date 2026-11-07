@@ -11,7 +11,7 @@
         {
           "Spell": {
             "effects": [
-              { "Search": { "filter": [], "count": { "min": 0, "max": "X" }, "as": "found" } },
+              { "Search": { "filter": [], "count": { "min": "X", "max": "X" }, "as": "found" } },
               { "Shuffle": {} },
               { "Move": { "what": { "Bound": "found" }, "to": { "Library": { "place": "Top" } } } }
             ]

@@ -17,7 +17,10 @@
         {
           "Static": {
             "affected": "Attached",
-            "mods": [{ "ModifyPT": { "power": 1, "toughness": 0 } }, { "AddKeyword": "Haste" }]
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 0 } }, { "AddKeyword": "Haste" }],
+            "condition": {
+              "Matches": { "subject": "Attached", "selector": [{ "Type": "Creature" }] }
+            }
           }
         },
         {
