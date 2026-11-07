@@ -11,6 +11,7 @@ use mtg_core::ids::{ObjectId, PlayerId};
 use crate::choose::Target;
 use crate::object::ObjectRef;
 use crate::resolve::Scope;
+use crate::snapshot::Snapshot;
 use crate::state::GameState;
 use crate::zones::Zone;
 
@@ -23,6 +24,8 @@ pub(crate) struct Record {
     pub(crate) player: Option<PlayerId>,
     /// The object that did it, when it is public.
     pub(crate) subject: Option<ObjectRef>,
+    /// The subject as it was when the record was made, which a filter judges (CR 608.2h).
+    pub(crate) shot: Option<Snapshot>,
     /// What it was done to, when that is a player or a public object.
     pub(crate) other: Option<Target>,
     /// How much: the damage dealt, the counters put; 1 for the rest.
@@ -56,11 +59,15 @@ impl GameState {
             Target::Object(object) => self.public_object(object.id).map(Target::Object),
             player @ Target::Player(_) => Some(player),
         });
+        let shot = self
+            .public_object(subject)
+            .and_then(|_| crate::snapshot::snapshot(self, subject));
         let subject = self.public_object(subject);
         self.tallies.records.push(Record {
             event,
             player,
             subject,
+            shot,
             other,
             amount,
         });
@@ -151,6 +158,15 @@ impl Scope<'_> {
         players: &[PlayerId],
         filter: &Selector,
     ) -> i64 {
+        let mut scope = self.clone();
+        scope.as_was = true;
+        scope.snapshots.extend(
+            self.state
+                .tallies
+                .records
+                .iter()
+                .filter_map(|record| record.shot.as_ref()),
+        );
         let mut total = 0i64;
         for record in &self.state.tallies.records {
             if record.event != event
@@ -162,8 +178,9 @@ impl Scope<'_> {
             }
             let selected = filter.is_empty()
                 || record
-                    .subject
-                    .is_some_and(|subject| self.selects(filter, subject).unwrap_or(false));
+                    .shot
+                    .as_ref()
+                    .is_some_and(|shot| scope.selects(filter, shot.reference()).unwrap_or(false));
             if selected {
                 total += if weighs(event) {
                     i64::from(record.amount)

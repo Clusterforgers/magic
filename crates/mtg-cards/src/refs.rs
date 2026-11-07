@@ -102,7 +102,8 @@ pub enum Ref {
     /// The opponent the gift was promised to as the spell the ability reads was cast (CR 702.174); nobody when none was promised or they have left the game.
     Promised,
     /// The defending player of the attacking creature that triggered the ability, else of the source: whoever it
-    /// attacks, or controls the planeswalker it attacks (CR 506.3); still named once the creature has left combat.
+    /// attacks, or controls the planeswalker it attacks (CR 506.3); still named once the creature has left combat. For
+    /// a source that is not attacking, every player but the active one during combat (CR 506.2, 802.2).
     Defending,
     /// The opponents of the controller that their creatures attacked this combat, directly or through a planeswalker
     /// ("each opponent you attacked this combat"); a creature that left combat still counts.

@@ -118,6 +118,9 @@ pub struct Scope<'a> {
     pub(crate) caused: Option<crate::triggers::CausedBy>,
     /// The permanent whose static ability gave the running ability to its source (`Ref::Granter`).
     pub(crate) granter: Option<ObjectId>,
+    /// Objects are judged as their snapshot in scope shows them, before the live object: a turn record's subject as it
+    /// was when the record was made (CR 608.2h).
+    pub(crate) as_was: bool,
 }
 
 /// The targets a spell being cast has chosen so far (CR 601.2c).
@@ -308,6 +311,7 @@ impl<'a> Scope<'a> {
             chooser: std::cell::Cell::new(None),
             caused: None,
             granter: None,
+            as_was: false,
         }
     }
 
@@ -666,7 +670,12 @@ impl<'a> Scope<'a> {
 
     pub(super) fn seen(&self, reference: ObjectRef) -> Option<Seen<'a>> {
         let live = self.state.object(reference.id);
-        if let Some(object) = live.filter(|o| o.counter() == reference.counter) {
+        let shot_first = self.as_was
+            && self
+                .snapshots
+                .iter()
+                .any(|s| s.id == reference.id && s.counter == reference.counter);
+        if let Some(object) = live.filter(|o| o.counter() == reference.counter && !shot_first) {
             let tapped = object
                 .permanent()
                 .map(crate::object::PermanentState::tapped);
@@ -1032,7 +1041,7 @@ impl<'a> Scope<'a> {
                 .map(Target::Player)
                 .into_iter()
                 .collect(),
-            Ref::Defending => self.defending().map(Target::Player).into_iter().collect(),
+            Ref::Defending => self.defending().into_iter().map(Target::Player).collect(),
             Ref::Attacked => self
                 .attacked_opponents()
                 .into_iter()
@@ -1137,13 +1146,31 @@ impl<'a> Scope<'a> {
         convoked.into_iter().map(Target::Object).collect()
     }
 
-    /// The player the attacking creature of the event, else the source, attacks or attacked when it left combat.
-    fn defending(&self) -> Option<PlayerId> {
+    /// The player the attacking creature of the event, else the source, attacks or attacked when it left combat;
+    /// for a source that is not attacking, the defending players of the combat (CR 506.2).
+    fn defending(&self) -> Vec<PlayerId> {
         let attacker = self
             .cause
             .and_then(|cause| cause.subjects.iter().find_map(|subject| subject.object()))
             .map_or(self.source.id, |object| object.id);
-        self.defending_of(attacker)
+        match self.defending_of(attacker) {
+            Some(player) => vec![player],
+            None => self.combat_defending(),
+        }
+    }
+
+    /// The defending players of the combat phase in progress: every player but the active one (CR 506.2, 802.2);
+    /// nobody outside a combat phase.
+    fn combat_defending(&self) -> Vec<PlayerId> {
+        if !self.in_combat() {
+            return Vec::new();
+        }
+        let active = self.state.turn().active();
+        self.state
+            .turn_order_from(active)
+            .into_iter()
+            .filter(|player| *player != active)
+            .collect()
     }
 
     /// The player the creature attacks, or planeswalker's controller, as the attacker (or one that has left combat) is.
