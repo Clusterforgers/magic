@@ -623,7 +623,9 @@ impl GameState {
                 .each_face()
                 .any(|face| face.supertypes.contains(&Supertype::Legendary))
         });
-        self.possible.legends = legends;
+        let supertypes = self.any_face(crate::ability_reader::definition_gives_supertype);
+        self.possible.supertypes = supertypes;
+        self.possible.legends = legends || supertypes;
         let costs = self.objects().any(|object| {
             object
                 .def

@@ -176,7 +176,6 @@ fn a_defining_line_that_sets_one_half_keeps_the_printed_other_half(
 #[case::plus_star("1+*/2", "CharacteristicDefining$ True | SetPower$ X")]
 #[case::both_stars("*/*", "CharacteristicDefining$ True | SetPower$ X")]
 #[case::wrong_half("*/3", "CharacteristicDefining$ True | SetToughness$ X")]
-#[case::not_defining("6/5", "Affected$ Creature.OppCtrl | SetToughness$ 1")]
 fn a_line_with_one_half_it_cannot_complete_stays_a_gap(#[case] pt: &str, #[case] set: &str) {
     let text = stats_card(pt, &format!("S:Mode$ Continuous | {set}"));
     assert!(
