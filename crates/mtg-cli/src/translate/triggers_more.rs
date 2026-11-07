@@ -39,6 +39,23 @@ fn recipient(ctx: &Ctx, valid: &str) -> Tr<Value> {
     })
 }
 
+/// Whether the trigger's description and the Oracle text both name an opponent as the player dealt damage, and the Oracle
+/// text names no player so (a description can keep an older wording: Deepfathom Skulker's says "an opponent").
+fn to_an_opponent(description: Option<&str>, oracle: &str) -> bool {
+    let opponent = |text: &str| {
+        let text = text.to_lowercase();
+        let named = [
+            "damage to an opponent",
+            "an opponent is dealt",
+            "damage to one or more opponents",
+        ]
+        .iter()
+        .any(|words| text.contains(words));
+        named && !text.contains("damage to a player") && !text.contains("a player is dealt")
+    };
+    opponent(description.unwrap_or_default()) && opponent(oracle)
+}
+
 /// `DamageDone` and `DamageDoneOnce`: a source deals damage to a recipient.
 pub fn damage(ctx: &Ctx, p: &Params, mode: &str) -> Tr<Value> {
     keys(
@@ -71,6 +88,12 @@ pub fn damage(ctx: &Ctx, p: &Params, mode: &str) -> Tr<Value> {
     // "To a player or a planeswalker": one pattern for each recipient, any of which triggers.
     let recipients: Vec<&str> = target.split(',').collect();
     if let [only] = recipients.as_slice() {
+        // Some scripts write `Player` where the text says "to an opponent" (Kediss, Emberclaw Familiar).
+        let only = if *only == "Player" && to_an_opponent(p.get("TriggerDescription"), ctx.oracle) {
+            "Opponent"
+        } else {
+            only
+        };
         pattern["to"] = recipient(ctx, only)?;
         return Ok(json!({ "DealsDamage": pattern }));
     }

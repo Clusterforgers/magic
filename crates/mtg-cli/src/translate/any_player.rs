@@ -163,3 +163,73 @@ pub fn narrows_target(oracle: &str, valid: &str) -> bool {
             WHOSE.iter().any(|word| window.contains(word))
         })
 }
+
+/// The words of a filter that already set the target apart from another object: the source, a triggering or chosen object.
+const SET_APART: [&str; 10] = [
+    "Other",
+    "Self",
+    "Triggered",
+    "Defined",
+    "Remembered",
+    "Targeted",
+    "Enchanted",
+    "Equipped",
+    "Attached",
+    "Chosen",
+];
+
+/// A target of a permanent's ability whose filter leaves the source in while every target phrase of the Oracle text says
+/// "other target" or "another target": no earlier target is there to be other than, so the target is other than the
+/// source (Soul of Emancipation's script reads any nonland permanent).
+pub fn omits_other(types: &str, oracle: &str, valid: &str) -> bool {
+    if valid.is_empty()
+        || types.contains("Instant")
+        || types.contains("Sorcery")
+        || SET_APART.iter().any(|word| valid.contains(word))
+    {
+        return false;
+    }
+    let text = without_reminders(&oracle.replace("\\n", "\n").to_lowercase());
+    let words: Vec<&str> = text.split_whitespace().collect();
+    let before: Vec<Option<&str>> = words
+        .iter()
+        .enumerate()
+        .filter(|(_, word)| **word == "target")
+        .map(|(at, _)| at.checked_sub(1).and_then(|at| words.get(at).copied()))
+        .collect();
+    !before.is_empty()
+        && before
+            .iter()
+            .all(|word| matches!(word, Some("other" | "another")))
+}
+
+/// Whether every "... with the same name" phrase of the Oracle text names creatures ("each other creature with the same
+/// name as that creature"): a script's `Targeted.sameName` names no type and would take any permanent.
+pub fn same_name_creatures(oracle: &str) -> bool {
+    let text = without_reminders(&oracle.replace("\\n", "\n").to_lowercase());
+    let phrases: Vec<&str> = text
+        .split(" with the same name")
+        .collect::<Vec<_>>()
+        .split_last()
+        .map(|(_, heads)| heads.to_vec())
+        .unwrap_or_default();
+    !phrases.is_empty()
+        && phrases.iter().all(|head| {
+            matches!(
+                head.split_whitespace().next_back(),
+                Some("creature" | "creatures")
+            )
+        })
+}
+
+/// The filter with `Other` added to each alternative.
+pub fn with_other(valid: &str) -> String {
+    valid
+        .split(',')
+        .map(|alternative| {
+            let join = if alternative.contains('.') { '+' } else { '.' };
+            format!("{alternative}{join}Other")
+        })
+        .collect::<Vec<_>>()
+        .join(",")
+}

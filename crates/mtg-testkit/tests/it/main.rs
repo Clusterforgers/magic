@@ -231,6 +231,7 @@ mod filter_lands;
 mod fix10_damage_once;
 mod fix11_reflexive_copy;
 mod fix12_combat_and_records;
+mod fix13_counters;
 mod fix7;
 mod flip;
 mod flip_fuzz;

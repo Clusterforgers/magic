@@ -275,6 +275,7 @@ mod exile_while;
 mod exiled_kind;
 mod fights;
 mod fix10;
+mod fix13_writers;
 mod flicker;
 mod for_each;
 mod g10a_writers;

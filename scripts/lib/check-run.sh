@@ -176,14 +176,14 @@ unit_failed() {
     echo "[$kind] $name exceeded $test_timeout minutes: a hung test; running for over 60 seconds when it was killed:"
     sed -n 's/.*test \([^ ]*\) has been running for over 60 seconds.*/  \1/p' "$log" | sort -u
   elif grep -q '^failures:$' "$log"; then
-    sed -n '/^failures:$/,$p' "$log" | head -n 80
+    sed -n '/^failures:$/,$p' "$log" | first 80
   else
     tail -n 40 "$log"
   fi
   kill_units
   if [[ -n "$(failed_tests "$log")" ]]; then
     echo "failed tests:"
-    failed_tests "$log" | head -n 50 | sed "s/^/  $name: /"
+    failed_tests "$log" | first 50 | sed "s/^/  $name: /"
   fi
   exit 1
 }
@@ -234,6 +234,10 @@ slow_warnings() {
     }' "$2"
 }
 
+# first <n>: the first n lines of stdin. It reads to the end: `head` closes the pipe early, and under pipefail a long
+# listing then ends the check with 141 (SIGPIPE) after every phase passed.
+first() { awk -v n="$1" 'NR <= n'; }
+
 # report_units: the slowest units and the tests over the limit that the slow list does not name.
 report_units() {
   local name warn=""
@@ -241,11 +245,11 @@ report_units() {
   for name in "${!unit_secs[@]}"; do
     [[ "${u_kind[$name]}" == web ]] || warn+=$(slow_warnings "$name" "${u_log[$name]}")$'\n'
   done
-  warn=$(printf '%s' "$warn" | sed '/^$/d' | awk '{ print $NF, $0 }' | sort -rn | head -n 20 | cut -d' ' -f2-)
+  warn=$(printf '%s' "$warn" | sed '/^$/d' | awk '{ print $NF, $0 }' | sort -rn | first 20 | cut -d' ' -f2-)
   if [[ -n "$warn" ]]; then
     echo "warning: tests over ${slow_limit}s that $slow_file does not name (add them or make them faster):"
     echo "$warn"
   fi
-  for name in "${!unit_secs[@]}"; do echo "${unit_secs[$name]} $name"; done | sort -rn | head -n 4 |
+  for name in "${!unit_secs[@]}"; do echo "${unit_secs[$name]} $name"; done | sort -rn | first 4 |
     awk '{ printf "%s%s %ss", (NR > 1 ? ", " : "slowest units: "), $2, $1 } END { print "" }'
 }

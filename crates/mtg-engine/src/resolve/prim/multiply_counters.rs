@@ -27,7 +27,10 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
             if counter.as_ref().is_some_and(|only| *only != kind) {
                 continue;
             }
-            let more = u64::from(held).saturating_mul(u64::from(factor.saturating_sub(1)));
+            // No more go on than a holder can hold (`counters::change` stops at `u32::MAX`): the event says what changed.
+            let more = u64::from(held)
+                .saturating_mul(u64::from(factor.saturating_sub(1)))
+                .min(u64::from(u32::MAX - held));
             let delta = i32::try_from(more).unwrap_or(i32::MAX);
             if delta > 0 {
                 events.push(Event::CountersChanged(CountersChanged {
@@ -60,6 +63,11 @@ mod tests {
     /// Seat 0 controls the Source, a Wolf with three +1/+1 counters and two charge counters, a Cat with one -1/-1 counter,
     /// holds a Spell and has two poison counters; seat 1 controls a Bear with four +1/+1 counters and an Ogre with none.
     fn game() -> GameState {
+        game_with(3)
+    }
+
+    /// The same game with the Wolf holding this many +1/+1 counters.
+    fn game_with(wolf: u32) -> GameState {
         let mut game = setup(
             vec![vec![creature("Spell", 1, 1)], vec![]],
             vec![
@@ -72,7 +80,7 @@ mod tests {
             ],
         );
         game.players[0].battlefield[1].counters = vec![
-            (CounterKind::PlusOnePlusOne, 3),
+            (CounterKind::PlusOnePlusOne, wolf),
             (CounterKind::Other("charge".into()), 2),
         ];
         game.players[0].battlefield[2].counters = vec![(CounterKind::MinusOneMinusOne, 1)];
@@ -177,6 +185,30 @@ mod tests {
         #[case] expected: Vec<(String, CounterKind, i32)>,
     ) {
         assert_eq!(proposed(&game(), &json), expected);
+    }
+
+    /// Near the largest count a holder holds, only the room left goes on, so the event says what changed.
+    #[rstest]
+    #[case::double_past_it(u32::MAX - 5, 2, 5)]
+    #[case::triple_far_past_it(u32::MAX / 2, 3, i32::MAX)]
+    #[case::full(u32::MAX, 2, 0)]
+    #[case::below_it(1_000, 2, 1_000)]
+    fn it_puts_no_more_on_than_the_holder_can_hold(
+        #[case] held: u32,
+        #[case] factor: u32,
+        #[case] delta: i32,
+    ) {
+        let game = game_with(held);
+        let json = format!(
+            r#"{{"MultiplyCounters":{{"on":{},"counter":"+1/+1","factor":{factor}}}}}"#,
+            each("Wolf")
+        );
+        let expected = if delta > 0 {
+            vec![plus("Wolf", delta)]
+        } else {
+            vec![]
+        };
+        assert_eq!(proposed(&game, &json), expected);
     }
 
     #[test]
