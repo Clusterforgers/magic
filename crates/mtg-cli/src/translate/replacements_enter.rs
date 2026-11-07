@@ -104,7 +104,6 @@ fn pay_or_graveyard(
     first: &Params,
     condition: Option<&Value>,
 ) -> Tr<Value> {
-    let shape = || unmapped("replacement:Moved-PayOrGraveyard-shape");
     if condition.is_some()
         || p.get("Destination") != Some("Battlefield")
         || p.has("Origin")
@@ -113,72 +112,99 @@ fn pay_or_graveyard(
         return shape();
     }
     let (cost, optional, count) = if first.get("DB") == Some("Sacrifice") {
-        check_keys(
-            first,
-            "Replacement",
-            &[
-                "DB",
-                "SacValid",
-                "Defined",
-                "RememberSacrificed",
-                "Amount",
-                "StrictAmount",
-                "SubAbility",
-            ],
-            |_, _| false,
-        )?;
-        let Ok(count) = first.get("Amount").unwrap_or("1").parse::<u32>() else {
-            return unmapped("replacement:Moved-PayOrGraveyard-amount");
-        };
-        if first.get("Defined") != Some("You")
-            || (count > 1 && first.get("StrictAmount") != Some("True"))
-        {
-            return shape();
-        }
-        let Some(valid) = first.get("SacValid") else {
-            return shape();
-        };
-        let mut sacrifice = json!({"filter": selector_any(ctx, valid)?});
-        if count > 1 {
-            sacrifice["count"] = json!(count);
-        }
-        (json!([{ "Sacrifice": sacrifice }]), false, count)
+        sacrificed(ctx, first)?
     } else {
-        check_keys(
-            first,
-            "Replacement",
-            &[
-                "DB",
-                "DiscardValid",
-                "Mode",
-                "RememberDiscarded",
-                "Optional",
-                "AILogic",
-                "SubAbility",
-            ],
-            |_, _| false,
-        )?;
-        let (Some(valid), Some("TgtChoose"), Some("True")) = (
-            first.get("DiscardValid"),
-            first.get("Mode"),
-            first.get("Optional"),
-        ) else {
-            return shape();
-        };
-        (
-            json!([{ "Discard": { "filter": selector_any(ctx, valid)? } }]),
-            true,
-            1,
-        )
+        discarded(ctx, first)?
     };
-    // The graveyard when fewer than the cost were taken, the battlefield when all were, then the cleanup.
+    let Some(next) = first.get("SubAbility") else {
+        return shape();
+    };
+    moves_on_count(ctx, next, count)?;
+    let mut by = json!({ "cost": cost });
+    if optional {
+        by["optional"] = json!(true);
+    }
+    Ok(json!({"Replacement": {
+        "when": {"Enters": {"what": ["This"]}},
+        "by": {"PayOrGraveyard": by}
+    }}))
+}
+
+fn shape<T>() -> Tr<T> {
+    unmapped("replacement:Moved-PayOrGraveyard-shape")
+}
+
+/// "Sacrifice two untapped lands": the cost, never optional, and how many it takes.
+fn sacrificed(ctx: &Ctx, first: &Params) -> Tr<(Value, bool, u32)> {
+    check_keys(
+        first,
+        "Replacement",
+        &[
+            "DB",
+            "SacValid",
+            "Defined",
+            "RememberSacrificed",
+            "Amount",
+            "StrictAmount",
+            "SubAbility",
+        ],
+        |_, _| false,
+    )?;
+    let Ok(count) = first.get("Amount").unwrap_or("1").parse::<u32>() else {
+        return unmapped("replacement:Moved-PayOrGraveyard-amount");
+    };
+    if first.get("Defined") != Some("You")
+        || (count > 1 && first.get("StrictAmount") != Some("True"))
+    {
+        return shape();
+    }
+    let Some(valid) = first.get("SacValid") else {
+        return shape();
+    };
+    let mut sacrifice = json!({"filter": selector_any(ctx, valid)?});
+    if count > 1 {
+        sacrifice["count"] = json!(count);
+    }
+    Ok((json!([{ "Sacrifice": sacrifice }]), false, count))
+}
+
+/// "You may discard a land card": the cost, optional, of one card.
+fn discarded(ctx: &Ctx, first: &Params) -> Tr<(Value, bool, u32)> {
+    check_keys(
+        first,
+        "Replacement",
+        &[
+            "DB",
+            "DiscardValid",
+            "Mode",
+            "RememberDiscarded",
+            "Optional",
+            "AILogic",
+            "SubAbility",
+        ],
+        |_, _| false,
+    )?;
+    let (Some(valid), Some("TgtChoose"), Some("True")) = (
+        first.get("DiscardValid"),
+        first.get("Mode"),
+        first.get("Optional"),
+    ) else {
+        return shape();
+    };
+    Ok((
+        json!([{ "Discard": { "filter": selector_any(ctx, valid)? } }]),
+        true,
+        1,
+    ))
+}
+
+/// The replaced card goes to the graveyard when fewer than `count` were taken and to the battlefield when all were, then
+/// the remembered objects are cleared.
+fn moves_on_count(ctx: &mut Ctx, next: &str, count: u32) -> Tr<()> {
     let (fewer, all) = if count == 1 {
         ("EQ0".to_owned(), "EQ1".to_owned())
     } else {
         (format!("LT{count}"), format!("GE{count}"))
-    };
-    let Some(next) = first.get("SubAbility") else {
-        return shape();
     };
     let grave = ctx.sub(next)?;
     let Some(next) = grave.get("SubAbility") else {
@@ -223,12 +249,5 @@ fn pay_or_graveyard(
             return shape();
         }
     }
-    let mut by = json!({ "cost": cost });
-    if optional {
-        by["optional"] = json!(true);
-    }
-    Ok(json!({"Replacement": {
-        "when": {"Enters": {"what": ["This"]}},
-        "by": {"PayOrGraveyard": by}
-    }}))
+    Ok(())
 }

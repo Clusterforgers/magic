@@ -34,6 +34,22 @@ use crate::spend::Spend;
 use crate::state::GameState;
 use crate::zones::Zone;
 
+/// The tap (`{T}`) and the untap (`{Q}`) of the source that `price` asks.
+fn turns(price: &Price, object: ObjectId) -> impl Iterator<Item = Event> {
+    let tap = price.tap.then_some(Event::PermanentTapped { object });
+    let untap = price.untap.then_some(Event::PermanentUntapped { object });
+    tap.into_iter().chain(untap)
+}
+
+/// The object a part of an activation's cost is paid from: the source, except that an ability an Equipment or Aura
+/// gives unattaches that Equipment or Aura ("{T}, Unattach Shuriken").
+fn paid_from(part: &Part, ability: AbilityRef) -> ObjectId {
+    match (part, ability.source.granter()) {
+        (Part::Unattach, Some(granter)) => granter,
+        _ => ability.object,
+    }
+}
+
 /// The events of activating an ability: the tap and the sacrifice, discard or exile of the source that its cost asks,
 /// the activation and the ability on the stack. The mana of its cost is paid around them by [`pay_answer`].
 ///
@@ -62,16 +78,7 @@ pub(crate) fn activation_events(
             .ok()?
             .at(choices.x.unwrap_or(0));
             shots = parts::photographed(state, &price.parts, choices.cost_picks());
-            if price.tap {
-                events.push(Event::PermanentTapped {
-                    object: ability.object,
-                });
-            }
-            if price.untap {
-                events.push(Event::PermanentUntapped {
-                    object: ability.object,
-                });
-            }
+            events.extend(turns(&price, ability.object));
             // The other parts of the cost, in the order it prints them, with the objects the player picked for them.
             let mut picks = choices.cost_picks().iter();
             let mut kinds = choices.cost_kinds().iter();
@@ -81,11 +88,7 @@ pub(crate) fn activation_events(
                 } else {
                     &[]
                 };
-                // An ability an Equipment or Aura gives unattaches that Equipment or Aura ("{T}, Unattach Shuriken").
-                let from = match (part, ability.source.granter()) {
-                    (Part::Unattach, Some(granter)) => granter,
-                    _ => ability.object,
-                };
+                let from = paid_from(part, ability);
                 events.extend(part.w2f_events(state, (player, from), picked, &mut kinds));
                 if let Part::Counters { counter, count } = part {
                     parts::after_removal(&mut before.counters, counter, *count);

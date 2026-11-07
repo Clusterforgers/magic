@@ -83,7 +83,7 @@ pub(super) fn next(
 /// Whether the parts that take no pick can be paid: the life, the counters and the cards they take are there.
 fn payable(state: &GameState, player: PlayerId, card: ObjectId, up: &TurnUp) -> bool {
     let barred = [card];
-    let payer = Payer {
+    let owes = Payer {
         state,
         player,
         source: card,
@@ -93,7 +93,7 @@ fn payable(state: &GameState, player: PlayerId, card: ObjectId, up: &TurnUp) -> 
     up.parts
         .iter()
         .filter(|part| !matches!(part, Part::Pick(_)))
-        .all(|part| part.payable(&payer, &[]).is_some())
+        .all(|part| part.payable(&owes, &[]).is_some())
 }
 
 /// The events of turning `card` face up: those of the parts of the cost with the objects picked for them, then the turn

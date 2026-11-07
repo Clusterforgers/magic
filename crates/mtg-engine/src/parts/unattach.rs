@@ -15,7 +15,7 @@ pub(super) fn payable(payer: &Payer<'_>) -> bool {
             .state
             .object(granter)
             .and_then(|object| object.permanent())
-            .and_then(|permanent| permanent.attached_to())
+            .and_then(crate::object::PermanentState::attached_to)
             .is_some_and(|host| host.id == payer.source);
     }
     payer

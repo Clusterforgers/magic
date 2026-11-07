@@ -16,7 +16,7 @@ fn land(pay: &str, fewer: &str, all: &str, to: &str) -> String {
     )
 }
 
-fn paying(by: Value) -> Value {
+fn paying(by: &Value) -> Value {
     json!({"Replacement": {"when": {"Enters": {"what": ["This"]}}, "by": {"PayOrGraveyard": by}}})
 }
 
@@ -25,9 +25,9 @@ const A_PLAINS: &str = "DB$ Sacrifice | SacValid$ Plains | Defined$ You | Rememb
 const A_LAND_CARD: &str = "DB$ Discard | DiscardValid$ Land | Mode$ TgtChoose | RememberDiscarded$ True | Optional$ True | AILogic$ Always";
 
 #[rstest]
-#[case::two_untapped_lands(TWO_LANDS, "LT2", "GE2", paying(json!({"cost": [{"Sacrifice": {"count": 2, "filter": [{"Type": "Land"}, "Untapped"]}}]})))]
-#[case::a_plains(A_PLAINS, "EQ0", "EQ1", paying(json!({"cost": [{"Sacrifice": {"filter": [{"Subtype": "Plains"}]}}]})))]
-#[case::a_land_card(A_LAND_CARD, "EQ0", "EQ1", paying(json!({"cost": [{"Discard": {"filter": [{"Type": "Land"}]}}], "optional": true})))]
+#[case::two_untapped_lands(TWO_LANDS, "LT2", "GE2", paying(&json!({"cost": [{"Sacrifice": {"count": 2, "filter": [{"Type": "Land"}, "Untapped"]}}]})))]
+#[case::a_plains(A_PLAINS, "EQ0", "EQ1", paying(&json!({"cost": [{"Sacrifice": {"filter": [{"Subtype": "Plains"}]}}]})))]
+#[case::a_land_card(A_LAND_CARD, "EQ0", "EQ1", paying(&json!({"cost": [{"Discard": {"filter": [{"Type": "Land"}]}}], "optional": true})))]
 fn a_permanent_paid_for_as_it_would_enter(
     #[case] pay: &str,
     #[case] fewer: &str,
