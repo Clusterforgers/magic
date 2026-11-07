@@ -207,17 +207,19 @@ fn colors_among(mana: &[ManaType]) -> usize {
         .count()
 }
 
-/// The zone one alternative of "in this zone or that" names: `In`, a spell (the stack), or a conjunction written as not any of its negations
-/// that holds an `In` (the cards of each zone under their own control or ownership rule).
+/// The zone one alternative of "in this zone or that" names: `In`, a spell or an ability (the stack), or a conjunction
+/// written as not any of its negations that holds one of them (the cards of each zone under their own control or
+/// ownership rule, "a colorless spell").
 fn alternative_zone(pred: &Pred) -> Option<ZoneKind> {
     match pred {
         Pred::In(kind) => Some(*kind),
         // "target spell or permanent": the spell alternative is looked for on the stack.
-        Pred::Spell => Some(ZoneKind::Stack),
+        Pred::Spell | Pred::Ability(_) => Some(ZoneKind::Stack),
         Pred::Not(inner) => match &**inner {
             Pred::AnyOf(negated) => negated.iter().find_map(|each| match each {
                 Pred::Not(zone) => match &**zone {
                     Pred::In(kind) => Some(*kind),
+                    Pred::Spell | Pred::Ability(_) => Some(ZoneKind::Stack),
                     _ => None,
                 },
                 _ => None,
@@ -228,11 +230,15 @@ fn alternative_zone(pred: &Pred) -> Option<ZoneKind> {
     }
 }
 
-/// Whether the predicate holds only for objects on the stack (a spell, an ability, or one of several that are).
+/// Whether the predicate holds only for objects on the stack (a spell, an ability, one of several that are, or all of
+/// several of which one is).
 fn on_the_stack(pred: &Pred) -> bool {
     match pred {
         Pred::Spell | Pred::Ability(_) => true,
         Pred::AnyOf(any) => !any.is_empty() && any.iter().all(on_the_stack),
+        Pred::Not(inner) => matches!(&**inner, Pred::AnyOf(negated) if negated.iter().any(|each| {
+            matches!(each, Pred::Not(kept) if on_the_stack(kept))
+        })),
         _ => false,
     }
 }
@@ -1399,6 +1405,8 @@ impl<'a> Scope<'a> {
                 ZoneKind::Outside => {}
             }
         }
+        // Two alternatives on the stack ("a spell or an ability") look there once.
+        zones.dedup();
         zones
     }
 

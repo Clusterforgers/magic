@@ -498,10 +498,21 @@ fn counter_selector(ctx: &Ctx, p: &Params) -> Tr<Vec<Value>> {
     for word in words.split(',') {
         let (base, suffix) = match word.split_once('.') {
             Some((base, suffix)) => (base, Some(suffix)),
+            // "target instant spell, sorcery spell, or triggered ability"
+            None if matches!(word, "Instant" | "Sorcery") => ("Spell", Some(word)),
             None => (word, None),
         };
         let kind = match base {
             "Spell" if suffix.is_none() => json!("Spell"),
+            // "a colorless spell", "an instant spell": the spell and the property as one alternative.
+            "Spell" => {
+                let mut preds = vec![json!("Spell")];
+                preds.extend(selector_any(
+                    ctx,
+                    &format!("Card.{}", suffix.unwrap_or_default()),
+                )?);
+                super::count::all_of(preds)
+            }
             "Activated" => json!({"Ability": "Activated"}),
             "Triggered" => json!({"Ability": "Triggered"}),
             _ => return gap(),
@@ -557,6 +568,8 @@ fn counter(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
             "Defined",
             "TargetValidTargeting",
             "RememberCountered",
+            "TargetMin",
+            "TargetMax",
         ],
     )?;
     // "If that spell is countered this way": the spells the step countered, as the cards they became.
@@ -597,7 +610,14 @@ fn counter(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
         });
     }
     let selector = counter_selector(ctx, p)?;
-    let what = ctx.target(json!({"what": {"Object": selector}}))?;
+    let mut spec = json!({"what": {"Object": selector}});
+    // "Counter up to one target spell": the target may be left out, and then nothing is countered.
+    match (p.get("TargetMin"), p.get("TargetMax")) {
+        (None, None) => {}
+        (Some("0"), Some("1")) => spec["bounds"] = json!({"min": 0, "max": 1}),
+        _ => return unmapped("key:Counter.TargetMin"),
+    }
+    let what = ctx.target(spec)?;
     let mut effects = Vec::new();
     if exiled {
         effects.push(json!({"Shield": {
@@ -1025,7 +1045,13 @@ fn animate(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
     let duration = animate_duration(ctx, p)?;
     // `AnimateAll` names the objects by a valid-string.
     let affected = match p.get("ValidCards") {
-        // "creatures target player controls": Forge narrows the group to the target's at run time, the selector would not.
+        // "creatures target player controls": the group as it is now, of the permanents the target controls (CR 611.2c).
+        Some(valid) if p.get("ValidTgts") == Some("Player") => {
+            let player = subject(ctx, p, "", None)?;
+            let mut selector = selector_any(ctx, valid)?;
+            selector.push(json!({ "ControlledBy": player }));
+            json!({ "Each": selector })
+        }
         Some(_)
             if p.get("ValidTgts")
                 .is_some_and(|valid| valid.contains("Player")) =>

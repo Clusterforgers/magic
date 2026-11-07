@@ -1472,6 +1472,9 @@ fn change_zone_all(ctx: &mut Ctx, p: &Params, origin: &str, destination: &str) -
             "UseAllOriginZones",
             "RandomOrder",
             "Duration",
+            // "Exile any number of target players' graveyards": the cards each of them owns.
+            "TargetMin",
+            "TargetMax",
         ],
     )?;
     // Every zone of the origin is emptied, which is what a move of all of them does anyway.

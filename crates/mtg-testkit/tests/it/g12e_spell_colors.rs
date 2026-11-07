@@ -127,3 +127,49 @@ fn an_instant_made_red_is_red_on_the_stack_only(
     );
     Ok(())
 }
+
+/// An artifact with "{T}: Counter target colorless spell".
+fn silencer() -> Arc<CardDefinition> {
+    let rules: Ability = serde_json::from_str(
+        r#"{"Activated":{"cost":["Tap"],"effects":[{"Counter":{"what":{"Target":0}}}],"targets":[{"what":{"Object":[{"Not":{"AnyOf":[{"Not":"Spell"},{"Not":"Colorless"}]}}]}}]}}"#,
+    )
+    .unwrap();
+    Arc::new(
+        CardDefinition::new("Silencer")
+            .with_type(CardType::Artifact)
+            .with_rules(rules),
+    )
+}
+
+#[rstest]
+fn a_colorless_spell_is_countered_and_a_red_one_is_no_target(
+    #[values(2, 3, 4)] seats: usize,
+    #[values(false, true)] made_red: bool,
+) -> Result<(), ScriptError> {
+    let mut driver = Driver::from_scenario(
+        Scenario::new(seats)
+            .hand(0, [free_creature("Bear", 2, 2)])
+            .battlefield(0, [ready(painter("Forever")), ready(silencer())]),
+    )?;
+    driver.cast("Bear")?;
+    let target = on_the_stack(&driver, "Bear");
+    if made_red {
+        driver.begin_activation("Painter")?;
+        driver.choose_targets(&[target])?;
+        // The seats pass until the Painter's ability has resolved and seat 0 has priority again.
+        for _ in 0..seats {
+            if driver.state().stack().len() == 1 {
+                break;
+            }
+            driver.pass()?;
+        }
+        assert!(driver.offered_abilities("Silencer")?.is_empty());
+        return Ok(());
+    }
+    driver.begin_activation("Silencer")?;
+    driver.choose_targets(&[target])?;
+    settle(&mut driver)?;
+    assert!(driver.id_of("Bear").is_err(), "the Bear was countered");
+    assert_eq!(driver.state().zone(Zone::Graveyard(pid(0))).len(), 1);
+    Ok(())
+}

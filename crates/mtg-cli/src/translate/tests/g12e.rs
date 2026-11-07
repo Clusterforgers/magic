@@ -46,6 +46,48 @@ fn card(types: &str, lines: &str, oracle: &str) -> (String, Vec<String>) {
     "Whenever you cast an instant spell, you may cast up to one target sorcery card from your graveyard.",
     r#""CastFromZone":{"what":{"Target":0}}"#
 )]
+#[case::counter_a_colorless_spell_or_a_trigger(
+    "Instant",
+    "A:SP$ Counter | TargetType$ Spell.Colorless,Triggered | ValidTgts$ Card,Emblem | SpellDescription$ Counter target triggered ability or colorless spell.",
+    "Counter target triggered ability or colorless spell.",
+    r#"{"AnyOf":[{"Not":{"AnyOf":[{"Not":"Spell"},{"Not":"Colorless"}]}},{"Ability":"Triggered"}]}"#
+)]
+#[case::counter_an_instant_spell(
+    "Instant",
+    "A:SP$ Counter | TargetType$ Instant,Sorcery,Triggered | ValidTgts$ Card,Emblem | SpellDescription$ Counter target instant spell, sorcery spell, or triggered ability.",
+    "Counter target instant spell, sorcery spell, or triggered ability.",
+    r#"{"Not":{"AnyOf":[{"Not":"Spell"},{"Not":{"Type":"Sorcery"}}]}}"#
+)]
+#[case::counter_up_to_one_spell(
+    "Instant",
+    "A:SP$ Counter | TargetType$ Spell | TargetMin$ 0 | TargetMax$ 1 | ValidTgts$ Creature | SpellDescription$ Counter up to one target creature spell.",
+    "Counter up to one target creature spell.",
+    r#""bounds":{"max":1,"min":0}"#
+)]
+#[case::lands_target_player_controls(
+    "Sorcery",
+    "A:SP$ AnimateAll | ValidTgts$ Player | ValidCards$ Land | Power$ 3 | Toughness$ 3 | Types$ Creature | SpellDescription$ All lands target player controls become 3/3 creatures until end of turn.",
+    "All lands target player controls become 3/3 creatures until end of turn.",
+    r#""affected":{"Each":[{"Type":"Land"},{"ControlledBy":{"Target":0}}]}"#
+)]
+#[case::graveyards_of_any_number_of_players(
+    "Sorcery",
+    "A:SP$ ChangeZoneAll | Origin$ Graveyard | Destination$ Exile | ValidTgts$ Player | TargetMin$ 0 | TargetMax$ 4 | ChangeType$ Card | SpellDescription$ Exile any number of target players' graveyards.",
+    "Exile any number of target players' graveyards.",
+    r#"{"OwnedBy":{"Target":0}}"#
+)]
+#[case::target_player_creates(
+    "Sorcery",
+    "A:SP$ Token | ValidTgts$ Player | TokenScript$ w_1_1_soldier | SpellDescription$ Target player creates a 1/1 white Soldier creature token.",
+    "Target player creates a 1/1 white Soldier creature token.",
+    r#""who":{"Target":0}"#
+)]
+#[case::tokens_counted_from_the_target(
+    "Sorcery",
+    "A:SP$ Token | ValidTgts$ Player | TokenOwner$ You | TokenAmount$ X | TokenScript$ w_1_1_soldier | SpellDescription$ Choose target player. Create a 1/1 white Soldier creature token for each card in that player's hand.\nSVar:X:Count$ValidHand Card.TargetedPlayerOwn",
+    "Choose target player. Create a 1/1 white Soldier creature token for each card in that player's hand.",
+    r#""targets":[{"what":"Player"}]"#
+)]
 fn target_slots_are_read(
     #[case] types: &str,
     #[case] lines: &str,
