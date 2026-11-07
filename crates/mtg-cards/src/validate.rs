@@ -4413,6 +4413,18 @@ impl Walker<'_> {
         self.at("to", |w| w.reference(to, Kind::Either));
     }
 
+    /// The amount a shield counts as it begins, and the player or permanent a redirection of all the damage names; a
+    /// counted prevention of anything but damage is a problem `replace_by` names.
+    fn g11b_replace_by(&mut self, when: &ReplaceWhen, by: &ReplaceBy) {
+        match by {
+            ReplaceBy::PreventCounted(amount) if matches!(when, ReplaceWhen::Damage { .. }) => {
+                self.at("PreventCounted", |w| w.amount(amount));
+            }
+            ReplaceBy::Redirect { to, .. } => self.r6f_redirect(when, 1, to),
+            _ => {}
+        }
+    }
+
     /// A permanent's replacement is not a shield, so it cannot prevent just the next damage.
     fn not_next_damage(&mut self, by: &ReplaceBy) {
         if matches!(
@@ -4429,6 +4441,7 @@ impl Walker<'_> {
 
     fn replace_by(&mut self, when: &ReplaceWhen, by: &ReplaceBy) {
         self.uses("ReplaceBy", &tag_of(by));
+        self.g11b_replace_by(when, by);
         let enters = matches!(when, ReplaceWhen::Enters { .. });
         let zone_move = matches!(
             when,
@@ -4445,9 +4458,6 @@ impl Walker<'_> {
                 self.problem("a zone change has no number to change");
             }
             ReplaceBy::PreventUpTo(0) => self.problem("preventing nothing changes nothing"),
-            ReplaceBy::PreventCounted(amount) if matches!(when, ReplaceWhen::Damage { .. }) => {
-                self.at("PreventCounted", |w| w.amount(amount));
-            }
             ReplaceBy::Prevent if zone_move => {
                 self.problem("a zone change or an entering is not prevented");
             }
@@ -4461,7 +4471,6 @@ impl Walker<'_> {
                 self.w5d_instead(when, effects);
             }
             ReplaceBy::RedirectUpTo { most, to } => self.r6f_redirect(when, *most, to),
-            ReplaceBy::Redirect { to, .. } => self.r6f_redirect(when, 1, to),
             ReplaceBy::PreventAnd(effects) => self.w9c_prevent_and(when, effects),
             ReplaceBy::Dredge(cards) => {
                 if !matches!(when, ReplaceWhen::Draw { .. }) {

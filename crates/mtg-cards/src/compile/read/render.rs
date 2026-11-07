@@ -130,6 +130,7 @@ use crate::refs::{Bounds, Pred, Ref, Selector, TargetSet, TargetSpec, Targetable
 use crate::spend::{ManaLasts, SpendOn};
 use crate::trigger::TriggerPattern;
 use crate::value::{Amount, Condition, CounterKind};
+use g11b_unpreventable::is as unpreventable;
 
 /// "draws a card for each card in your hand" is also "draws X cards, where X is the number of cards in your hand".
 fn where_x_draws(texts: &[String]) -> Vec<String> {
@@ -2334,10 +2335,8 @@ impl Writer<'_> {
 
     /// An effect as a sentence without its first capital and its period.
     fn effect(&mut self, effect: &Effect) -> Option<String> {
-        if let Some(text) = self.g11b_unpreventable(effect)? {
-            return Some(text);
-        }
         Some(match effect {
+            Effect::DealDamage { .. } if unpreventable(effect) => self.g11b_hard(effect)?,
             Effect::CopySpell { .. } | Effect::CopyAbility { .. } | Effect::BecomeCopy { .. } => {
                 self.copy_effect(effect)?
             }

@@ -5,22 +5,28 @@ use super::Writer;
 use crate::effect::Effect;
 use crate::modify::{Duration, GameRule};
 
-impl Writer<'_> {
-    /// "<the damage>. The damage can't be prevented" for damage that can't be prevented; none for any other effect.
-    pub(super) fn g11b_unpreventable(&mut self, effect: &Effect) -> Option<Option<String>> {
-        let Effect::DealDamage {
+/// Whether the effect is damage that can't be prevented.
+pub(super) fn is(effect: &Effect) -> bool {
+    matches!(
+        effect,
+        Effect::DealDamage {
             unpreventable: true,
             ..
-        } = effect
-        else {
-            return Some(None);
-        };
-        let mut plain = effect.clone();
-        if let Effect::DealDamage { unpreventable, .. } = &mut plain {
-            *unpreventable = false;
         }
+    )
+}
+
+impl Writer<'_> {
+    /// "<the damage>. The damage can't be prevented" for damage that can't be prevented, written as the same damage
+    /// without the flag.
+    pub(super) fn g11b_hard(&mut self, effect: &Effect) -> Option<String> {
+        let mut plain = effect.clone();
+        let Effect::DealDamage { unpreventable, .. } = &mut plain else {
+            return None;
+        };
+        *unpreventable = false;
         let dealt = self.effect(&plain)?;
-        Some(Some(format!("{dealt}. The damage can't be prevented")))
+        Some(format!("{dealt}. The damage can't be prevented"))
     }
 }
 
