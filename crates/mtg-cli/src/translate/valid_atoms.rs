@@ -29,6 +29,7 @@ pub fn atom(prop: &str) -> Option<Vec<Value>> {
         "attackedThisCombat" => return one(did("Attacked", None, true)),
         "dealtDamageThisTurn" => return one(did("Damaged", None, false)),
         "dealtDamageToYouThisTurn" => return one(did("Damaged", Some("You"), false)),
+        "dealtDamageToOppThisTurn" => return one(did("Damaged", Some("Opponents"), false)),
         "blockingSource" => return one(json!({"Blocks": "This"})),
         "blockedBySource" => return one(json!({"BlockedBy": "This"})),
         "attackingYou" => return one(json!({"AttackingPlayer": "You"})),

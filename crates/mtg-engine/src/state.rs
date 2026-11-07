@@ -141,6 +141,8 @@ pub(crate) enum Tally {
     PermanentsLeftUnder,
     /// A nonland permanent that left the battlefield for any zone (counted for the player who controlled it as it left).
     NonlandLeft,
+    /// A creature that left the battlefield for any zone (counted for the player who controlled it as it left).
+    CreaturesLeftUnder,
     /// A spell cast with warp (counted for its caster).
     Warped,
     /// A card put into a graveyard from the battlefield (counted for the card as it lies there).

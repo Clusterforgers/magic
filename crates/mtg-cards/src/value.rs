@@ -348,6 +348,9 @@ pub enum TurnTally {
     NonlandPermanentsLeft,
     /// The spells the player cast with warp this turn (void). Added up over the players.
     SpellsWarped,
+    /// The creatures that left the battlefield for any zone while the players read controlled them ("for each creature that
+    /// left the battlefield under your control this turn"). Added up over the players.
+    CreaturesLeftUnder,
 }
 
 /// A kind of event the game logs for the turn with the object it was about, which `Amount::Tally` filters and counts.
