@@ -201,7 +201,7 @@ fn a_prepare_card_becomes_prepared(#[case] extra: &str, #[case] what: serde_json
 }
 
 #[rstest]
-#[case::solved("Attributes$ Solved", "key:AlterAttribute.Attributes=Solved")]
+#[case::plotted("Attributes$ Plotted", "key:AlterAttribute.Attributes=Plotted")]
 #[case::unprepared(
     "Attributes$ Prepared | Activate$ False",
     "key:AlterAttribute.Activate"

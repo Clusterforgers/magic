@@ -42,9 +42,9 @@ fn a_look_line_maps(#[case] line: &str, #[case] rule: Value) {
     "Affected$ Creature.TopLibrary+YouCtrl+nonLand | AffectedZone$ Library | MayLookAt$ You",
     "static:MayLookAt-affected"
 )]
-#[case::while_solved(
-    "Affected$ Card.TopLibrary+YouCtrl | IsPresent$ Card.Self+IsSolved | AffectedZone$ Library | MayLookAt$ You",
-    "valid:IsSolved"
+#[case::while_plotted(
+    "Affected$ Card.TopLibrary+YouCtrl | IsPresent$ Card.Self+IsPlotted | AffectedZone$ Library | MayLookAt$ You",
+    "valid:IsPlotted"
 )]
 fn a_shape_that_does_not_map_is_a_named_gap(#[case] line: &str, #[case] gap: &str) {
     let script = card(line);
