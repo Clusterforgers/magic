@@ -779,6 +779,9 @@ fn protection(rest: &str) -> Option<Selector> {
         .strip_prefix("from ")?
         .trim_end_matches('.')
         .to_ascii_lowercase();
+    if word == "each color" {
+        return Some(each_color());
+    }
     quality(&word).or_else(|| mana_value_bound(&word))
 }
 

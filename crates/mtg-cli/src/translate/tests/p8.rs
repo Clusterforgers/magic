@@ -77,7 +77,10 @@ fn a_backup_keeps_its_number() {
     "K:Gift\nSVar:GiftAbility:DB$ Draw | GiftDescription$ a Rhystic Study",
     "keyword:Gift-kind"
 )]
-#[case::protection_everything("K:Protection from everything", "keyword:Protection from everything")]
+#[case::protection_your_colors(
+    "K:Protection from colorsYouCtrl",
+    "keyword:Protection from colorsYouCtrl"
+)]
 #[case::hexproof_from_activated("K:Hexproof:Activated:activated abilities", "keyword:Hexproof")]
 #[case::equip_planeswalker(
     "K:Equip:2:Planeswalker.YouCtrl:planeswalker",

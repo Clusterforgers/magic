@@ -23,7 +23,17 @@ pub(super) fn handles(when: &ReplaceWhen) -> bool {
 /// The wordings of a replacement of one of the events above, each without its capital and closing period.
 pub(super) fn sentences(when: &ReplaceWhen, by: &ReplaceBy) -> Vec<String> {
     match when {
-        ReplaceWhen::Damage { to, source, combat } => damage(to.as_ref(), source, *combat, by),
+        ReplaceWhen::Damage { to, source, combat } => {
+            let mut found = damage(to.as_ref(), source, *combat, by);
+            if *by == ReplaceBy::Prevent {
+                found.extend(super::g8e_attached::g8e_prevented(
+                    to.as_ref(),
+                    source,
+                    kind(*combat),
+                ));
+            }
+            found
+        }
         ReplaceWhen::TokenCreation { controller, what } if what.is_empty() => {
             tokens(controller, by)
         }
