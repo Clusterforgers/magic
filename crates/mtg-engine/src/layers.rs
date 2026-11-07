@@ -1546,6 +1546,8 @@ mod defining;
 #[cfg(test)]
 mod dependencies;
 #[cfg(test)]
+mod g9b_chosen;
+#[cfg(test)]
 mod keyword_counters;
 #[cfg(test)]
 mod lands;

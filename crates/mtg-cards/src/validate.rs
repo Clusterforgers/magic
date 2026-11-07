@@ -5577,6 +5577,14 @@ mod tests {
         r#"{"Rule":{"rule":{"CantBeCountered":{"Each":["Spell"]}},"from":"Stack"}}"#,
         "abilities[0].Rule.from: a rule works from the battlefield"
     )]
+    #[case::the_entered_type_in_an_effect(
+        r#"{"Spell":{"effects":[{"Continuous":{"affected":"This","mods":["AddChosenSubtype"],"duration":"UntilEndOfTurn"}}]}}"#,
+        "the choice the source made as it entered is read by its static ability only"
+    )]
+    #[case::the_entered_colour_in_an_effect(
+        r#"{"Spell":{"effects":[{"Continuous":{"affected":"This","mods":["SetChosenColor"],"duration":"UntilEndOfTurn"}}]}}"#,
+        "the choice the source made as it entered is read by its static ability only"
+    )]
     #[case::a_rule_is_not_granted(
         r#"{"Static":{"affected":"This","mods":[{"GrantAbility":{"Rule":{"rule":{"CantDraw":"You"}}}}]}}"#,
         "only an activated, a triggered or a static ability can be granted"
