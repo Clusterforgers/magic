@@ -1,5 +1,7 @@
 //! Opening procedure: first player, shuffles, opening hands and the London mulligan (CR 103).
 
+use std::sync::Arc;
+
 use mtg_cards::ability::Ability;
 use mtg_core::card::CardType;
 use mtg_core::ids::{ObjectId, PlayerId};
@@ -10,10 +12,12 @@ use crate::decision::{BottomOptions, Decision, DecisionKind, MulliganChoice, Mul
 use crate::error::{EngineError, IllegalAnswer};
 use crate::events::Event;
 use crate::flow::Progress;
-use crate::library::Scried;
+use crate::library::{Revealed, Scried};
 use crate::player::{MulliganStatus, Player};
 use crate::rng::GameRng;
+use crate::snapshot::snapshot;
 use crate::state::GameState;
+use crate::triggers::{DelayedCreated, DelayedId};
 use crate::turn::Step;
 use crate::wording;
 use crate::zones::Zone;
@@ -148,7 +152,7 @@ pub(crate) fn scry_answer(
     })]))
 }
 
-/// The cards in the hand of `player` that may begin the game on the battlefield (CR 103.6).
+/// The cards in the hand of `player` that may begin the game on the battlefield or be revealed (CR 103.6).
 pub(crate) fn opening_cards(state: &GameState, player: PlayerId) -> Vec<ObjectId> {
     state
         .zone(Zone::Hand(player))
@@ -157,9 +161,59 @@ pub(crate) fn opening_cards(state: &GameState, player: PlayerId) -> Vec<ObjectId
         .filter(|id| {
             crate::ability_reader::abilities_of(state, *id)
                 .iter()
-                .any(|(_, ability)| matches!(**ability, Ability::OpeningHand))
+                .any(|(_, ability)| {
+                    matches!(
+                        **ability,
+                        Ability::OpeningHand | Ability::OpeningReveal { .. }
+                    )
+                })
         })
         .collect()
+}
+
+/// The ability by which `card` is revealed from the opening hand, with its index, when it has no ability that puts it
+/// onto the battlefield.
+fn reveal_ability(state: &GameState, card: ObjectId) -> Option<(usize, Arc<Ability>)> {
+    let abilities = crate::ability_reader::abilities_of(state, card);
+    if abilities
+        .iter()
+        .any(|(_, ability)| matches!(**ability, Ability::OpeningHand))
+    {
+        return None;
+    }
+    abilities
+        .into_iter()
+        .find(|(_, ability)| matches!(**ability, Ability::OpeningReveal { .. }))
+        .map(|(address, ability)| (address.ability, ability))
+}
+
+/// The delayed trigger a card revealed from the opening hand sets up, controlled by its owner; `None` for a card with
+/// no such ability.
+fn revealed_trigger(
+    state: &GameState,
+    player: PlayerId,
+    card: ObjectId,
+    id: DelayedId,
+) -> Option<DelayedCreated> {
+    let (ability, rules) = reveal_ability(state, card)?;
+    let Ability::OpeningReveal { when, effects } = &*rules else {
+        return None;
+    };
+    let object = state.object(card)?;
+    Some(DelayedCreated {
+        id,
+        source: object.reference(),
+        snapshot: snapshot(state, card)?,
+        controller: player,
+        ability,
+        when: when.clone(),
+        once: true,
+        this_turn: false,
+        until: None,
+        effects: effects.clone(),
+        targets: Vec::new(),
+        bindings: Vec::new(),
+    })
 }
 
 /// The answer to a `ChooseCards` of the opening: the opening-hand question of a seat that is `Opening`, else the scry.
@@ -170,23 +224,44 @@ pub(crate) fn opening_choice(
     choice: &CardsChoice,
 ) -> Result<Outcome, EngineError> {
     if status(state, player) == Some(MulliganStatus::Opening) {
-        opening_answer(player, options, choice)
+        opening_answer(state, player, options, choice)
     } else {
         scry_answer(player, options, choice)
     }
 }
 
-/// The answer to the opening-hand question: the chosen cards are put onto the battlefield.
+/// The answer to the opening-hand question: the chosen cards that reveal are revealed and set up their delayed
+/// triggers, and the others are put onto the battlefield.
 pub(crate) fn opening_answer(
+    state: &GameState,
     player: PlayerId,
     options: &CardsOptions,
     choice: &CardsChoice,
 ) -> Result<Outcome, EngineError> {
     check_cards(options, &choice.0)?;
-    Ok(Outcome::Events(vec![Event::OpeningCardsPlayed {
+    let (revealed, onto_battlefield): (Vec<ObjectId>, Vec<ObjectId>) = choice
+        .0
+        .iter()
+        .partition(|card| reveal_ability(state, **card).is_some());
+    let mut events = Vec::new();
+    if !revealed.is_empty() {
+        events.push(Event::Revealed(Revealed {
+            player,
+            cards: revealed.clone(),
+        }));
+    }
+    let mut next = state.next_delayed;
+    for card in revealed {
+        if let Some(created) = revealed_trigger(state, player, card, DelayedId(next)) {
+            next += 1;
+            events.push(Event::DelayedTriggerCreated(Box::new(created)));
+        }
+    }
+    events.push(Event::OpeningCardsPlayed {
         player,
-        cards: choice.0.clone(),
-    }]))
+        cards: onto_battlefield,
+    });
+    Ok(Outcome::Events(events))
 }
 
 /// Whether `player` is asked about the cards that begin on the battlefield now: once every seat has a final hand
@@ -219,13 +294,21 @@ pub(crate) fn seat_decision(state: &GameState, player: PlayerId) -> Option<Decis
                 return None;
             }
             let from = opening_cards(state, player);
+            let text = if from
+                .iter()
+                .any(|card| reveal_ability(state, *card).is_some())
+            {
+                wording::OPENING_REVEAL
+            } else {
+                wording::OPENING_HAND
+            };
             DecisionKind::ChooseCards(CardsOptions {
                 one_per_name: false,
                 source: *from.first()?,
                 max: u32::try_from(from.len()).unwrap_or(u32::MAX),
                 from,
                 min: 0,
-                text: wording::OPENING_HAND.to_owned(),
+                text: text.to_owned(),
                 can_cancel: false,
             })
         }

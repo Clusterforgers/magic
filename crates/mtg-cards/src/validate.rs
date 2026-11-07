@@ -711,6 +711,7 @@ impl<'a> Walker<'a> {
             | Pred::SharesSubtype(r)
             | Pred::ExiledWith(r)
             | Pred::EncodedWith(r)
+            | Pred::HauntedBy(r)
             | Pred::Crewed(r)
             | Pred::Saddled(r)
             | Pred::DamagedBy(r)
@@ -805,6 +806,7 @@ impl<'a> Walker<'a> {
             | Pred::Renowned
             | Pred::Prepared
             | Pred::Suspected
+            | Pred::Solved
             | Pred::DoubleFaced
             | Pred::Transformed
             | Pred::Paired
@@ -2122,6 +2124,7 @@ impl<'a> Walker<'a> {
         match pattern {
             TriggerPattern::ZoneChange { what, .. }
             | TriggerPattern::ZoneChangeExcept { what, .. }
+            | TriggerPattern::ResolvedToGraveyard { what }
             | TriggerPattern::Attacks { what }
             | TriggerPattern::AttacksAlone { what } => {
                 self.at("what", |w| w.selector(what));
@@ -3133,6 +3136,7 @@ impl Walker<'_> {
             | Effect::Prepare { what }
             | Effect::Suspect { what }
             | Effect::Unsuspect { what }
+            | Effect::Solve { what }
             | Effect::Goad { what }
             | Effect::Explore { what }
             => w.at("what", |w| w.reference(what, Kind::Object)),
@@ -3152,7 +3156,7 @@ impl Walker<'_> {
             }
             Effect::Remember { what, .. } => w.at("what", |w| w.reference(what, Kind::Either)),
             Effect::RememberValue { value, .. } => w.at("value", |w| w.amount(value)),
-            Effect::Encode { what, on } => {
+            Effect::Encode { what, on } | Effect::Haunt { what, on } => {
                 w.at("what", |w| w.reference(what, Kind::Object));
                 w.at("on", |w| w.reference(on, Kind::Object));
             }
@@ -4126,6 +4130,8 @@ impl Walker<'_> {
         }
     }
 
+    // One arm for each kind of ability.
+    #[allow(clippy::too_many_lines)]
     fn ability(&mut self, ability: &Ability) {
         let tag = tag_of(ability);
         if !matches!(ability, Ability::Keyword(_)) {
@@ -4215,6 +4221,7 @@ impl Walker<'_> {
             alt @ Ability::AltCast { .. } => w.alt_cast(alt),
             Ability::CastOnly { condition } => w.w17c_cast_only(condition),
             Ability::OpeningHand => {}
+            Ability::OpeningReveal { when, effects } => w.opening_reveal(when, effects),
             Ability::Keyword(keyword) => w.keyword_ability(keyword),
             Ability::Manual { reason, span } => {
                 if reason.trim().is_empty() {
@@ -4380,6 +4387,7 @@ impl Walker<'_> {
             }),
             GameRule::TriggerAgain { .. }
             | GameRule::NoLegendRule(_)
+            | GameRule::NoLegendRuleFor(_)
             | GameRule::MaxHandSize { .. }
             | GameRule::HandSizeChange { .. }
             | GameRule::NextSpell { .. }
@@ -4406,6 +4414,7 @@ impl Walker<'_> {
                 self.scope = saved;
             }
             GameRule::NoLegendRule(who) => self.at(tag, |w| w.reference(who, Kind::Player)),
+            GameRule::NoLegendRuleFor(what) => self.at(tag, |w| w.selector(what)),
             GameRule::NextSpell { what, .. } => {
                 self.at(tag, |w| w.at("what", |w| w.selector(what)));
             }
@@ -4545,6 +4554,7 @@ impl Walker<'_> {
             ReplaceWhen::ZoneChange { what, .. }
             | ReplaceWhen::Destroyed { what }
             | ReplaceWhen::Countered { what }
+            | ReplaceWhen::TurnedFaceUp { what }
             | ReplaceWhen::Discarded { what }
             | ReplaceWhen::Enters { what } => {
                 self.at("what", |w| w.selector(what));
@@ -4664,6 +4674,15 @@ impl Walker<'_> {
 
     /// A morph, megamorph or disguise cost: turning face up pays its parts as a special action
     /// (`Keyword.TurnUp.Cost.Discard`).
+    /// A card revealed from the opening hand: the pattern and effects of the delayed trigger it sets up, as those of a
+    /// triggered ability.
+    fn opening_reveal(&mut self, when: &TriggerPattern, effects: &[Effect]) {
+        self.at("when", |w| w.trigger_pattern(when));
+        let saved = std::mem::replace(&mut self.scope.in_trigger, true);
+        self.effect_list("effects", effects, false);
+        self.scope.in_trigger = saved;
+    }
+
     fn turn_up_cost(&mut self, cost: &Cost) {
         self.at("cost", |w| w.cost(cost));
         self.parts_that_need_an_announcement("Keyword", "TurnUp.Cost", cost);
@@ -4691,6 +4710,12 @@ impl Walker<'_> {
         self.uses("ReplaceBy", &tag_of(by));
         self.g11b_replace_by(when, by);
         self.g12a_moves(when, by);
+        if let ReplaceWhen::TurnedFaceUp { what } = when
+            && (*what != Selector::this()
+                || !matches!(by, ReplaceBy::WithCounters { tapped: false, .. }))
+        {
+            self.problem("turning face up only puts counters on the permanent itself");
+        }
         let enters = matches!(when, ReplaceWhen::Enters { .. });
         let zone_move = matches!(
             when,
@@ -4722,8 +4747,8 @@ impl Walker<'_> {
             ReplaceBy::RedirectUpTo { most, to } => self.r6f_redirect(when, *most, to),
             ReplaceBy::PreventAnd(effects) => self.w9c_prevent_and(when, effects),
             ReplaceBy::WithCounters { count, .. } => {
-                if !enters {
-                    self.problem("`WithCounters` replaces an `Enters`");
+                if !enters && !matches!(when, ReplaceWhen::TurnedFaceUp { .. }) {
+                    self.problem("`WithCounters` replaces an `Enters` or a `TurnedFaceUp`");
                 }
                 self.at("count", |w| w.amount(count));
             }

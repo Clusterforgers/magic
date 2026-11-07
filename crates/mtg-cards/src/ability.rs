@@ -321,6 +321,15 @@ pub enum Ability {
     /// "If this card is in your opening hand, you may begin the game with it on the battlefield." (CR 103.6): the card
     /// is asked about once its owner has kept a hand.
     OpeningHand,
+    /// "You may reveal this card from your opening hand. If you do, at the beginning of the first upkeep, ..." (CR
+    /// 103.6): once its owner has kept a hand they may reveal it, which sets up a delayed triggered ability that waits
+    /// for `when`, triggers once and does `effects`.
+    OpeningReveal {
+        /// The event the delayed trigger waits for.
+        when: TriggerPattern,
+        /// What it does.
+        effects: Vec<Effect>,
+    },
     /// A keyword ability; the engine knows what it does.
     Keyword(Keyword),
     /// A clause of the oracle text the data does not model; the table resolves it by hand.

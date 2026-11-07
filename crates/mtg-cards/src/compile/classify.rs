@@ -87,7 +87,8 @@ pub fn classify(text: &str, spell: bool) -> ClauseKind {
     if !text.contains('\n') && keywords::is_keyword_line(head) {
         return ClauseKind::Keyword;
     }
-    if is_chapter(head) {
+    // A Case's "To solve — <condition>" is a triggered ability at its controller's end step (CR 719.2).
+    if is_chapter(head) || head.starts_with("To solve \u{2014} ") {
         return ClauseKind::Triggered;
     }
     let body = head
@@ -305,6 +306,10 @@ mod tests {
     #[case::when("When ~ enters, draw a card.", Triggered)]
     #[case::whenever("Whenever you cast a spell, you may draw a card.", Triggered)]
     #[case::at("At the beginning of your upkeep, you win the game.", Triggered)]
+    #[case::case_to_solve(
+        "To solve \u{2014} You control seven or more lands. (If unsolved, solve at the beginning of your end step.)",
+        Triggered
+    )]
     #[case::at_the_end("At the beginning of the next end step, sacrifice it.", Triggered)]
     #[case::at_least("At least two creatures must attack each combat if able.", Static)]
     #[case::ability_word(

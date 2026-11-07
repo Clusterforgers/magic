@@ -26,6 +26,10 @@ prepared?: boolean,
  */
 suspected?: boolean, 
 /**
+ * Whether the permanent is a solved Case (CR 719.3): its "Solved" abilities work. Left out while it is not.
+ */
+solved?: boolean, 
+/**
  * Whether a player exerted the permanent and it still holds back its untap (CR 701.43). Left out while it is not.
  */
 exerted?: boolean, 

@@ -372,6 +372,7 @@ export function statusChips(object: ObjectView, role: CombatRole | null): Status
   if (state?.exerted === true) add('identity', 'Exerted')
   if (state?.prepared === true) add('identity', 'Prepared')
   if (state?.suspected === true) add('identity', 'Suspected')
+  if (state?.solved === true) add('identity', 'Solved')
   if (state?.level !== undefined) add('identity', `Level ${state.level}`)
   return chips
 }

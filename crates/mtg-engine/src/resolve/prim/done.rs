@@ -65,6 +65,7 @@ fn reports(effect: &Effect) -> Reports {
         | Effect::Prepare { .. }
         | Effect::Suspect { .. }
         | Effect::Unsuspect { .. }
+        | Effect::Solve { .. }
         | Effect::Surveil { .. }
         | Effect::Proliferate { .. }
         | Effect::Goad { .. }
@@ -121,7 +122,7 @@ fn reports(effect: &Effect) -> Reports {
         Effect::Pay { .. } => Reports::Paid,
         Effect::May { .. } | Effect::CastFromZone { .. } => Reports::Itself,
         #[rustfmt::skip]
-        Effect::LookAtTop { .. } | Effect::Choose { .. } | Effect::ChooseAtRandom { .. } | Effect::Encode { .. }
+        Effect::LookAtTop { .. } | Effect::Choose { .. } | Effect::ChooseAtRandom { .. } | Effect::Encode { .. } | Effect::Haunt { .. }
         | Effect::Remember { .. } | Effect::Forget { .. } | Effect::RememberValue { .. } | Effect::DelayedTrigger { .. } | Effect::Reflexive { .. }
         | Effect::If { .. } | Effect::Modal { .. } | Effect::RepeatEach { .. } | Effect::Together { .. } | Effect::RollDice { .. }
         | Effect::FlipCoin { .. } | Effect::Clash { .. } | Effect::Vote { .. } | Effect::VillainousChoice { .. }

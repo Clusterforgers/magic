@@ -706,6 +706,11 @@ pub enum Event {
         /// The permanent.
         object: ObjectId,
     },
+    /// A Case on the battlefield became solved (CR 719.3): it stays solved until it leaves.
+    Solved {
+        /// The permanent.
+        object: ObjectId,
+    },
     /// A permanent became a copy of another object (CR 707.2), with the copiable values of the copy effect.
     BecameCopy(BecameCopy),
     /// A spell was copied (CR 707.10): the copy is put on the stack above it, not cast.
@@ -1082,6 +1087,11 @@ pub enum ZoneCause {
         /// The creature it is encoded on.
         by: ObjectRef,
     },
+    /// It was exiled haunting the creature `of` (haunt, CR 702.55a): it lies face up in exile linked to the creature.
+    Haunting {
+        /// The creature it haunts.
+        of: ObjectRef,
+    },
     /// It resolved as an Adventure (CR 715.4) and was exiled instead of going to its owner's graveyard: its controller may cast the card from exile.
     Adventure,
     /// It was countered (CR 701.6).
@@ -1240,6 +1250,7 @@ impl Event {
             | Event::Unprepared { object }
             | Event::Suspected { object }
             | Event::Unsuspected { object }
+            | Event::Solved { object }
             | Event::PermanentTapped { object }
             | Event::PermanentUntapped { object }
             | Event::PermanentPhasedOut { object, .. }

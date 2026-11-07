@@ -1251,6 +1251,22 @@ fn matching(pattern: &TriggerPattern, happened: &Happened, scope: &Scope<'_>) ->
             (named(left, *from) && named(entered, *to) && scope.selects(what, reference).ok()?)
                 .then(|| cause(state, vec![Target::Object(reference)]))
         }
+        // A resolved spell moves with no cause; a countered one with `Countered`.
+        (
+            TriggerPattern::ResolvedToGraveyard { what },
+            Happened::Moved {
+                object: moved,
+                from: Zone::Stack,
+                to: Zone::Graveyard(_),
+                cause: None,
+            },
+        ) => {
+            let reference = object(*moved)?;
+            scope
+                .selects(what, reference)
+                .ok()?
+                .then(|| cause(state, vec![Target::Object(reference)]))
+        }
         (
             TriggerPattern::ZoneChangeExcept {
                 what,

@@ -349,6 +349,7 @@ impl ObjectView {
             summoning_sick: summoning_sick(state, id),
             prepared: p.prepared(),
             suspected: p.suspected(),
+            solved: p.solved(),
             phased_out: object.zone() == Zone::PhasedOut,
             exerted: !p.exerted().is_empty(),
             level: subtypes

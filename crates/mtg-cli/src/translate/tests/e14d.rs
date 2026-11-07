@@ -89,9 +89,9 @@ fn suspect_reads_as_the_engine_designation(#[case] line: &str, #[case] expected:
     "AlterAttribute | Defined$ TriggeredNewCardLKICopy | Attributes$ Suspected",
     "key:AlterAttribute.Defined-after-a-move"
 )]
-#[case::solved(
-    "AlterAttribute | Defined$ Self | Attributes$ Solved",
-    "key:AlterAttribute.Attributes=Solved"
+#[case::plotted(
+    "AlterAttribute | Defined$ Self | Attributes$ Plotted",
+    "key:AlterAttribute.Attributes=Plotted"
 )]
 #[case::unprepared(
     "AlterAttribute | Defined$ Self | Attributes$ Prepared | Activate$ False",

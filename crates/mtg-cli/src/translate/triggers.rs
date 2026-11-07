@@ -558,6 +558,11 @@ fn prints_every_end_step(p: &Params) -> bool {
         .is_some_and(|text| text.to_lowercase().contains("beginning of the end step"))
 }
 
+/// The pattern of a `Mode$ Phase` line once its other keys are gone: "at the beginning of <step>".
+pub(super) fn step_pattern(p: &Params) -> Tr<Value> {
+    phase(p)
+}
+
 fn phase(p: &Params) -> Tr<Value> {
     keys(p, "Phase", &["Phase", "ValidPlayer", "PhaseCount"])?;
     // `Phase$ Main` with a count names the first or the second (postcombat) main phase.

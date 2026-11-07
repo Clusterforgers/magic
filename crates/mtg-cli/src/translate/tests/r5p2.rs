@@ -82,13 +82,16 @@ fn the_legend_rule_stops_for_the_players_the_line_names(#[case] valid: &str, #[c
 #[rstest]
 #[case::creatures("Creature.YouCtrl")]
 #[case::tokens("Permanent.token+YouCtrl")]
-#[case::named("Permanent.namedBrothers Yamazaki")]
-fn a_narrower_legend_rule_exemption_is_a_gap(#[case] valid: &str) {
+fn a_narrower_legend_rule_exemption_names_its_permanents(#[case] valid: &str) {
     let script = statik(&format!(
         "Mode$ IgnoreLegendRule | ValidCard$ {valid} | Description$ x"
     ));
-    assert_eq!(abilities(&script).len(), 0);
-    assert_eq!(gaps(&script), ["key:Static.IgnoreLegendRule.ValidCard"]);
+    assert_eq!(gaps(&script), Vec::<String>::new());
+    let found = abilities(&script);
+    assert!(
+        found[0]["Rule"]["rule"]["NoLegendRuleFor"].is_array(),
+        "{found:?}"
+    );
 }
 
 #[rstest]

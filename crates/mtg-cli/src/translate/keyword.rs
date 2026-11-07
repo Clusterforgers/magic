@@ -12,6 +12,7 @@ use crate::forge::script::Params;
 mod champion;
 mod equip;
 mod extra;
+mod haunt;
 mod more;
 mod tribute;
 
@@ -251,6 +252,10 @@ fn costed(ctx: &Ctx, name: &str, variant: &str, cost_text: &str, rest: Option<&s
     if rest.is_some_and(|text| text.contains("ReduceCost$")) {
         return unmapped(format!("keyword:{name}-with-reduction"));
     }
+    // "Encore {X}, where X is its mana value": the X is the card's number, not one its player announces.
+    if rest.is_some_and(|text| text.contains("XAlternative$")) {
+        return unmapped(format!("keyword:{name}-with-fixed-x"));
+    }
     // Only the graveyard abilities read the cost off the card they are given to; an optional cost of a spell being cast
     // (replicate) and an alternative cost of a hand spell (emerge) are read from the printed card.
     if cost_text.contains("CardManaCost") && !matches!(name, "Escape" | "Scavenge" | "Encore") {
@@ -344,6 +349,9 @@ pub fn keyword_abilities(ctx: &mut Ctx, body: &str) -> Vec<Tr<Value>> {
     if let Some(count) = body.strip_prefix("Tribute:") {
         return tribute::tribute(ctx, count);
     }
+    if let Some(name) = body.strip_prefix("Haunt:") {
+        return haunt::haunt(ctx, name);
+    }
     if let Some(types) = body.strip_prefix("Champion:") {
         return vec![champion::champion(ctx, types)];
     }
@@ -430,6 +438,9 @@ pub fn keyword_ability(ctx: &mut Ctx, body: &str) -> Tr<Value> {
     if let ["MayEffectFromOpeningHand", "FromHand"] = fields.as_slice() {
         return opening_hand(ctx);
     }
+    if let ["MayEffectFromOpeningHand", "RevealCard"] = fields.as_slice() {
+        return opening_reveal(ctx);
+    }
     let mut condition = None;
     let by = match fields.as_slice() {
         ["etbCounter", kind, count, rest @ ..] if rest.len() <= 2 => {
@@ -494,6 +505,55 @@ fn opening_hand(ctx: &Ctx) -> Tr<Value> {
         |_, _| false,
     )?;
     Ok(json!("OpeningHand"))
+}
+
+/// `MayEffectFromOpeningHand:RevealCard`: the card may be revealed from the opening hand, which sets up a trigger at the
+/// beginning of a step that happens once. The part reveals the card and makes an effect whose one trigger is that step
+/// (`Mode$ Phase`, `OneOff$ True`); any other shape, and an effect another player owns, stays a gap.
+fn opening_reveal(ctx: &mut Ctx) -> Tr<Value> {
+    ctx.reset();
+    let reveal = ctx.sub("RevealCard")?;
+    let shape = |reveal: &Params| {
+        reveal.get("DB") == Some("Reveal") && reveal.get("RevealDefined") == Some("Self")
+    };
+    if !shape(&reveal) {
+        return unmapped("keyword:MayEffectFromOpeningHand-shape");
+    }
+    super::ctx::check_keys(
+        &reveal,
+        "MayEffectFromOpeningHand",
+        &["DB", "RevealDefined", "SubAbility"],
+        |_, _| false,
+    )?;
+    let effect = ctx.sub(reveal.get("SubAbility").unwrap_or_default())?;
+    if effect.get("DB") != Some("Effect")
+        || matches!(effect.get("Duration"), Some(d) if d != "Permanent")
+    {
+        return unmapped("keyword:MayEffectFromOpeningHand-shape");
+    }
+    super::ctx::check_keys(
+        &effect,
+        "MayEffectFromOpeningHand",
+        &["DB", "Triggers", "Duration"],
+        |_, _| false,
+    )?;
+    let trigger = ctx.sub(effect.get("Triggers").unwrap_or_default())?;
+    if trigger.get("Mode") != Some("Phase") || trigger.get("OneOff") != Some("True") {
+        return unmapped("keyword:MayEffectFromOpeningHand-shape");
+    }
+    let step = super::triggers::step_pattern(&trigger.without(&[
+        "Mode",
+        "OneOff",
+        "Execute",
+        "TriggerZones",
+        "TriggerDescription",
+    ]))?;
+    let execute = ctx.sub(trigger.get("Execute").unwrap_or_default())?;
+    let effects = chain_at(ctx, &execute, false)?;
+    if !ctx.targets.is_empty() {
+        return unmapped("keyword:MayEffectFromOpeningHand-targets");
+    }
+    Ok(json!({"OpeningReveal": {"when": step, "effects": effects}}))
 }
 
 /// What the part named by an `ETBReplacement` makes the permanent's controller choose as it enters.

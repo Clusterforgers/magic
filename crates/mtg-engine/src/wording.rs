@@ -88,6 +88,7 @@ fn state_word(pred: &Pred) -> Option<&'static str> {
         Pred::Renowned => "renowned",
         Pred::Prepared => "prepared",
         Pred::Suspected => "suspected",
+        Pred::Solved => "solved",
         Pred::DoubleFaced => "double-faced",
         Pred::Transformed => "transformed",
         Pred::Paired => "paired",
@@ -650,6 +651,10 @@ fn clause(pattern: &TriggerPattern) -> (String, bool) {
             };
             (format!("{} {moves}", subject(what)), false)
         }
+        TriggerPattern::ResolvedToGraveyard { what } => (
+            format!("{} resolves and is put into a graveyard", subject(what)),
+            false,
+        ),
         TriggerPattern::Drew {
             who: by,
             what,
@@ -1092,6 +1097,10 @@ pub(crate) const SCRY: &str = "Put any number of the cards on the bottom of your
 
 /// The question about cards that may begin the game on the battlefield.
 pub(crate) const OPENING_HAND: &str = "Choose the cards to begin the game on the battlefield.";
+
+/// What the opening asks when a card of the hand may be revealed from it (CR 103.6).
+pub(crate) const OPENING_REVEAL: &str =
+    "Choose the cards to reveal from your opening hand or to begin the game on the battlefield.";
 
 /// What a surveil asks about the cards looked at.
 pub(crate) const SURVEIL: &str = "Put any number of the cards into your graveyard.";

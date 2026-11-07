@@ -42,7 +42,10 @@ pub(crate) fn groups(state: &GameState) -> Vec<Group> {
             continue;
         }
         let controller = controller_of_object(state, object);
-        if state.is_alive(controller) && !crate::rules::no_legend_rule(state, controller) {
+        if state.is_alive(controller)
+            && !crate::rules::no_legend_rule(state, controller)
+            && !crate::rules::no_legend_rule_for(state, id)
+        {
             found
                 .entry((controller, object.card().name.clone()))
                 .or_default()

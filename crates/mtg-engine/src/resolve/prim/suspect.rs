@@ -1,4 +1,5 @@
-//! `Effect::Suspect` and `Effect::Unsuspect`: creatures become suspected or stop being so (CR 701.60).
+//! `Effect::Suspect` and `Effect::Unsuspect`: creatures become suspected or stop being so (CR 701.60); `Effect::Solve`:
+//! Cases become solved (CR 719.3).
 
 use mtg_cards::effect::Effect;
 
@@ -12,6 +13,9 @@ use crate::zones::Zone;
 /// stops being so (one that is), in the order the reference lists them. Anything else is passed over: a player, an
 /// object in another zone or that changed zones since it was named, and a name that repeats.
 pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
+    if let Effect::Solve { what } = effect {
+        return solve(cx, what);
+    }
     let (what, suspect) = match effect {
         Effect::Suspect { what } => (what, true),
         Effect::Unsuspect { what } => (what, false),
@@ -37,6 +41,24 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
             } else {
                 Event::Unsuspected { object }
             }
+        })
+        .collect();
+    Ok(Run::events(events))
+}
+
+/// Each permanent the reference names that is still on the battlefield and not solved yet becomes solved (CR 719.3);
+/// anything else is passed over.
+fn solve(cx: &Cx<'_>, what: &mtg_cards::refs::Ref) -> Result<Run, ResolveError> {
+    let events = cx
+        .scope
+        .live_objects(what)?
+        .into_iter()
+        .filter(|object| {
+            object.zone() == Zone::Battlefield
+                && object.permanent().is_some_and(|held| !held.solved())
+        })
+        .map(|object| Event::Solved {
+            object: object.id(),
         })
         .collect();
     Ok(Run::events(events))

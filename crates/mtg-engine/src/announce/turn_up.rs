@@ -3,6 +3,9 @@
 //! a time as for an ability's cost, then pays the mana, and can be backed out of until it is paid; the events that follow
 //! the payment turn the permanent face up, and a megamorph gets its +1/+1 counter (CR 702.37b).
 
+use mtg_cards::ability::Ability;
+use mtg_cards::refs::Selector;
+use mtg_cards::trigger::{ReplaceBy, ReplaceWhen};
 use mtg_cards::value::CounterKind;
 use mtg_core::ids::{ObjectId, PlayerId};
 
@@ -127,5 +130,42 @@ pub(crate) fn events(
             delta: 1,
         }));
     }
+    events.extend(turned_up_counters(state, card));
     Some(events)
+}
+
+/// The counters `card` gets as it is turned face up, from the "As ~ is turned face up, put N counters on it" abilities
+/// of its face-up card (`ReplaceWhen::TurnedFaceUp`, CR 708.8), each counted as it turns. An amount the game cannot
+/// count, or none, puts nothing.
+pub(crate) fn turned_up_counters(state: &GameState, card: ObjectId) -> Vec<Event> {
+    let Some(object) = state.object(card) else {
+        return Vec::new();
+    };
+    let Some(controller) = controller_of(state, card) else {
+        return Vec::new();
+    };
+    let scope = crate::resolve::Scope::announcing(state, controller, object.reference());
+    // The card as printed: while it is face down, `card` is the face-down 2/2 it shows.
+    crate::ability_reader::printed_rules(&object.def)
+        .filter_map(|rules| match &**rules {
+            Ability::Replacement {
+                when: ReplaceWhen::TurnedFaceUp { what },
+                by:
+                    ReplaceBy::WithCounters {
+                        counter,
+                        count,
+                        tapped: false,
+                    },
+                ..
+            } if *what == Selector::this() => {
+                let delta = scope.amount(count).ok().filter(|n| *n > 0)?;
+                Some(Event::CountersChanged(CountersChanged {
+                    on: Target::Object(object.reference()),
+                    counter: counter.clone(),
+                    delta: i32::try_from(delta).ok()?,
+                }))
+            }
+            _ => None,
+        })
+        .collect()
 }

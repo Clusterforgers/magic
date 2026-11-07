@@ -1625,6 +1625,11 @@ impl<'a> Scope<'a> {
             Pred::Paired | Pred::PairedWith(_) => self.soulbond_pred(pred, reference)?,
             Pred::ExiledWith(named) => self.exiled_with(named, reference)?,
             Pred::EncodedWith(named) => self.encoded_with(named, reference)?,
+            Pred::HauntedBy(named) => self
+                .objects(named)?
+                .into_iter()
+                .filter_map(|card| self.state.object(card.id))
+                .any(|card| card.zone() == Zone::Exile && card.haunting() == Some(reference)),
             Pred::Crewed(named) => self.crewed_by(named, false, reference)?,
             Pred::Saddled(named) => self.crewed_by(named, true, reference)?,
             Pred::Type(card_type) => seen.chars.types.contains(*card_type),
@@ -1655,6 +1660,7 @@ impl<'a> Scope<'a> {
             Pred::Renowned => matches!(seen.counters, Counted::Live(held) if held.renowned()),
             Pred::Prepared => matches!(seen.counters, Counted::Live(held) if held.prepared()),
             Pred::Suspected => seen.suspected,
+            Pred::Solved => matches!(seen.counters, Counted::Live(held) if held.solved()),
             Pred::DoubleFaced => double_faced(seen, false),
             Pred::Transformed => double_faced(seen, true),
             Pred::EnteredThisTurn => state.object_tallied(reference, None, Tally::Entered) > 0,

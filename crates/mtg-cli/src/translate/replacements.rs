@@ -151,6 +151,7 @@ fn not_moved(ctx: &mut Ctx, p: &Params, event: &str, condition: Option<&Value>) 
         "GameLoss" => super::replacements_loss::game_loss(ctx, p, condition),
         "BeginTurn" => super::statics_rules::skip_extra_turns(p),
         "CreateToken" => super::replacements_token::create_token(ctx, p),
+        "TurnFaceUp" => super::e14f_turn_up::turn_up(ctx, p, condition),
         _ => unmapped(format!("replacement:{event}")),
     }
 }

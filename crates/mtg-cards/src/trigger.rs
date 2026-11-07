@@ -78,6 +78,12 @@ pub enum TriggerPattern {
         #[serde(default, skip_serializing_if = "Option::is_none")]
         to: Option<ZoneKind>,
     },
+    /// A spell matching the selector resolved and its card was put into a graveyard ("when this spell card is put into a
+    /// graveyard after resolving", haunt CR 702.55a); a countered spell is not.
+    ResolvedToGraveyard {
+        /// The spell.
+        what: Selector,
+    },
     /// A creature matching the selector attacks.
     Attacks {
         /// The attacker.
@@ -726,6 +732,13 @@ pub enum ReplaceWhen {
     /// effect counted, not of one that resolved, fizzled or could not be countered.
     Countered {
         /// The spell that would be countered.
+        what: Selector,
+    },
+    /// A face-down permanent matching the selector is turned face up ("As ~ is turned face up, put five +1/+1 counters
+    /// on it", CR 708.8): the counters are put on it as it turns, before any player can respond. Only `WithCounters`
+    /// on the permanent itself.
+    TurnedFaceUp {
+        /// The permanent turned face up.
         what: Selector,
     },
     /// Counters would be put on a permanent or a player, by an effect or as a permanent enters.

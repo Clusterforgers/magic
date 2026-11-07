@@ -88,11 +88,13 @@ const RUNS: &[&str] = &[
     "Trigger.W11cCrime",
     "Trigger.Surveilled",
     "Trigger.ZoneChangeExcept",
+    "Trigger.ResolvedToGraveyard",
     "Trigger.Batch",
     "Trigger.Nth",
     "Trigger.Caused",
     "Trigger.Did",
     "Ability.OpeningHand",
+    "Ability.OpeningReveal",
     "Amount.Triggering",
     "Amount.Players",
     "Amount.Greatest",
@@ -256,6 +258,7 @@ const RUNS: &[&str] = &[
     "Effect.Prepare",
     "Effect.Suspect",
     "Effect.Unsuspect",
+    "Effect.Solve",
     "Effect.WinGame",
     "Effect.LoseGame",
     "Effect.DrawGame",
@@ -360,6 +363,7 @@ const RUNS: &[&str] = &[
     "Rule.MaxHandSize",
     "Rule.HandSizeChange",
     "Rule.NoLegendRule",
+    "Rule.NoLegendRuleFor",
     "Rule.UntapDuring",
     "Rule.SkipDrawStep",
     "Rule.LookAtTopAnyTime",
@@ -601,6 +605,7 @@ const RUNS: &[&str] = &[
     "ReplaceWhen.Damage",
     "ReplaceWhen.ZoneChange",
     "ReplaceWhen.Countered",
+    "ReplaceWhen.TurnedFaceUp",
     "ReplaceWhen.CountersPut",
     "ReplaceWhen.LifeGain",
     "ReplaceWhen.Draw",
@@ -724,6 +729,7 @@ const RUNS: &[&str] = &[
     "Keyword.Freerunning",
     "Keyword.UmbraArmor",
     "Keyword.Cipher",
+    "Keyword.Haunt",
     "Keyword.Graft",
     "Keyword.Afflict",
     "Keyword.Replicate",
@@ -981,6 +987,7 @@ mod tests {
     #[case::a_set_maximum_hand_size("Rule.MaxHandSize", true)]
     #[case::a_changed_maximum_hand_size("Rule.HandSizeChange", true)]
     #[case::no_legend_rule("Rule.NoLegendRule", true)]
+    #[case::no_legend_rule_for_some("Rule.NoLegendRuleFor", true)]
     #[case::untapping_in_other_steps("Rule.UntapDuring", true)]
     #[case::no_draw_step("Rule.SkipDrawStep", true)]
     #[case::triggers_again("Rule.TriggerAgain", true)]
@@ -1219,11 +1226,13 @@ mod tests {
     #[case::w11c_crime_triggers("Trigger.W11cCrime", true)]
     #[case::surveil_triggers("Trigger.Surveilled", true)]
     #[case::zone_changes_from_elsewhere("Trigger.ZoneChangeExcept", true)]
+    #[case::resolved_to_graveyard("Trigger.ResolvedToGraveyard", true)]
     #[case::batch_triggers("Trigger.Batch", true)]
     #[case::nth_triggers("Trigger.Nth", true)]
     #[case::caused_triggers("Trigger.Caused", true)]
     #[case::r3p1_actions_taken_by_a_player("Trigger.Did", true)]
     #[case::r3p1_beginning_the_game_on_the_battlefield("Ability.OpeningHand", true)]
+    #[case::revealed_from_the_opening_hand("Ability.OpeningReveal", true)]
     #[case::r3p1_untapping_the_source_as_a_cost("Cost.Untap", true)]
     #[case::r5g_sacrificing_any_number("Effect.SacrificeUpTo", true)]
     #[case::event_amounts("Amount.Triggering", true)]
@@ -1361,6 +1370,7 @@ mod tests {
     #[case::freerunning("Keyword.Freerunning", true)]
     #[case::umbra_armor("Keyword.UmbraArmor", true)]
     #[case::cipher("Keyword.Cipher", true)]
+    #[case::haunt("Keyword.Haunt", true)]
     #[case::flash_sacrifice("Keyword.FlashSacrifice", true)]
     #[case::cast_off_sorcery_timing("Condition.CastOffSorceryTiming", true)]
     #[case::graft("Keyword.Graft", true)]
