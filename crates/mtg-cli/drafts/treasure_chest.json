@@ -59,7 +59,14 @@
                             ]
                           }
                         },
-                        { "Move": { "what": { "Bound": "found" }, "to": "Hand" } },
+                        {
+                          "Move": {
+                            "what": {
+                              "Each": [{ "Is": { "Bound": "found" } }, { "In": "Library" }]
+                            },
+                            "to": "Hand"
+                          }
+                        },
                         { "Shuffle": {} }
                       ]
                     }

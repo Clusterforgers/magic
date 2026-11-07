@@ -15,7 +15,6 @@
                   "from": {
                     "Each": [{ "Type": "Creature" }, { "OwnedBy": "You" }, { "In": "Graveyard" }]
                   },
-                  "count": { "min": 0, "max": 1 },
                   "as": "picked"
                 }
               },

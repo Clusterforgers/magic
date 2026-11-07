@@ -43,6 +43,7 @@ pub fn chain_at(ctx: &mut Ctx, p: &Params, top: bool) -> Tr<Vec<Value>> {
         (true, false) => &["Optional"],
     };
     let before = (ctx.remembered.clone(), ctx.imprinted.clone());
+    let arrived_before = ctx.arrived.clone();
     let excess = ctx.excess.clone();
     let mut effects =
         line_with_own_target(ctx, p, &own.without(&unless_keys).without(spent), coming)?;
@@ -77,9 +78,26 @@ pub fn chain_at(ctx: &mut Ctx, p: &Params, top: bool) -> Tr<Vec<Value>> {
     let was_open = ctx.damage_open;
     let opens = p.get("DamageMap") == Some("True") && !was_open && !p.has("RepeatSubAbility");
     ctx.damage_open = was_open || opens;
-    let rest = match p.get("SubAbility") {
-        Some(name) => ctx.sub(name).and_then(|next| chain_at(ctx, &next, false)),
-        None => Ok(Vec::new()),
+    let mut otherwise = Vec::new();
+    let pair = (condition.is_some() && !inside)
+        .then(|| otherwise_move(ctx, p))
+        .flatten();
+    let rest = match (pair, p.get("SubAbility")) {
+        (Some(next), _) => {
+            // The other branch runs instead of this line: no name of it has arrived on the battlefield there.
+            let arrived = std::mem::replace(&mut ctx.arrived, arrived_before);
+            let other = chain_at(ctx, &next.without(&["SubAbility"]), false);
+            ctx.arrived.extend(arrived);
+            other.and_then(|other| {
+                otherwise = other;
+                match next.get("SubAbility") {
+                    Some(name) => ctx.sub(name).and_then(|after| chain_at(ctx, &after, false)),
+                    None => Ok(Vec::new()),
+                }
+            })
+        }
+        (None, Some(name)) => ctx.sub(name).and_then(|next| chain_at(ctx, &next, false)),
+        (None, None) => Ok(Vec::new()),
     };
     ctx.damage_open = was_open;
     let mut rest = rest?;
@@ -103,7 +121,11 @@ pub fn chain_at(ctx: &mut Ctx, p: &Params, top: bool) -> Tr<Vec<Value>> {
         return unmapped("key:Unless.without-UnlessCost");
     }
     if let Some(condition) = condition {
-        effects = vec![json!({"If": {"condition": condition, "then": effects}})];
+        let mut branch = json!({"If": {"condition": condition, "then": effects}});
+        if !otherwise.is_empty() {
+            branch["If"]["otherwise"] = Value::Array(otherwise);
+        }
+        effects = vec![branch];
     }
     effects.extend(rest);
     let effects = super::any_player::pay_for_any(effects)?;
@@ -179,6 +201,33 @@ fn holds_what_was_taken(ctx: &Ctx, name: &str) -> bool {
             next.get("DB") == Some("Cleanup") && !next.has("SubAbility")
         }
     }
+}
+
+/// "Put it onto the battlefield if ...; otherwise, put it into your hand": a conditional move whose next part moves the same
+/// named objects from the same zone, unconditionally. That part is the `otherwise` of the condition, since the objects the
+/// first move puts onto the battlefield stay under their name (the engine binds it again to the permanents).
+fn otherwise_move(ctx: &Ctx, p: &Params) -> Option<Params> {
+    if api_of(p).ok()? != "ChangeZone" || p.has("Optional") || p.has("UnlessCost") {
+        return None;
+    }
+    let (defined, origin) = (p.get("Defined")?, p.get("Origin")?);
+    let next = Params::parse(ctx.svar(p.get("SubAbility")?)?);
+    let unconditional = next.iter().all(|(key, _)| !key.starts_with("Condition"));
+    let plain = [
+        "Optional",
+        "UnlessCost",
+        "ValidTgts",
+        "ChangeType",
+        "Hidden",
+    ]
+    .iter()
+    .all(|key| !next.has(key));
+    (next.get("DB") == Some("ChangeZone")
+        && next.get("Defined") == Some(defined)
+        && next.get("Origin") == Some(origin)
+        && unconditional
+        && plain)
+        .then_some(next)
 }
 
 /// The sacrifice or discard a payment is when it is the whole cost and the effects after it read what it took ("the
