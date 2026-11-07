@@ -294,7 +294,7 @@ type ForgeCase = (
     bool,
 );
 
-/// What each case drafts: whether the Mismatch becomes a draft, and whether the meta file records Forge as the source.
+/// What each case drafts: whether it becomes a draft (a Mismatch never does, since its rules read back as other text), and whether the meta file records Forge as the source.
 const FORGE_CASES: &[(&str, ForgeCase)] = &[
     (
         "mismatch with a matching Oracle text",
@@ -302,8 +302,8 @@ const FORGE_CASES: &[(&str, ForgeCase)] = &[
             "mismatch",
             Some(r#"{"source":"forge","oracle_matches":true}"#),
             None,
-            true,
-            true,
+            false,
+            false,
         ),
     ),
     (
@@ -312,8 +312,8 @@ const FORGE_CASES: &[(&str, ForgeCase)] = &[
             "mismatch",
             Some(r#"{"oracle_matches":true}"#),
             Some("forge"),
-            true,
-            true,
+            false,
+            false,
         ),
     ),
     (
@@ -373,7 +373,7 @@ const FORGE_CASES: &[(&str, ForgeCase)] = &[
 ];
 
 #[sqlx::test]
-async fn only_a_forge_translation_with_a_matching_text_is_drafted_when_it_mismatches(pool: PgPool) {
+async fn a_mismatch_is_never_drafted_and_only_an_unchecked_translation_may_pass(pool: PgPool) {
     let dir = tempfile::tempdir().unwrap();
     let stored = loaded(pool, dir.path()).await;
     for (name, (kind, meta_text, flag, drafted, forge)) in FORGE_CASES {

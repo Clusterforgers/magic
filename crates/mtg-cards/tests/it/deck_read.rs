@@ -72,6 +72,9 @@ fn bolt(id: u32) -> (Card, PrintedCard) {
     card.faces[0].name.clone_from(&name);
     shown.oracle_id = oracle_id(id);
     shown.name.clone_from(&name);
+    let text = shown.faces[0].oracle_text.replace("Lightning Bolt", &name);
+    card.faces[0].oracle_fingerprint = mtg_cards::support::oracle_fingerprint(&text);
+    shown.faces[0].oracle_text = text;
     shown.faces[0].name = name;
     (card, shown)
 }

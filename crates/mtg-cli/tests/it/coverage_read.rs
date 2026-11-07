@@ -238,7 +238,7 @@ async fn the_deck_list_has_the_cards_to_draft_most_played_first(pool: PgPool) {
     // with its first blocker.
     assert_eq!(rows.len(), 2, "{text}");
     assert_eq!(rows[0][..3], ["10", "waiting", "Pyroblast"], "{text}");
-    assert_eq!(rows[0][3], "modal:", "{text}");
+    assert_eq!(rows[0][3], "spell:", "{text}");
     assert_eq!((rows[1][0], rows[1][2]), ("30", "Jace,"), "{text}");
     assert!(
         !["waiting", "verified", "read"].contains(&rows[1][1]),
