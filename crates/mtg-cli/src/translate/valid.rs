@@ -674,6 +674,7 @@ pub fn spell_card(preds: &mut Vec<Value>) {
 }
 
 /// The reference a `Defined$` word stands for.
+#[allow(clippy::too_many_lines)]
 pub fn defined(ctx: &Ctx, word: &str) -> Tr<Value> {
     // "Destroy that creature and this": two objects named side by side are the objects either one stands for.
     if let Some((first, second)) = word.trim().split_once(" & ")

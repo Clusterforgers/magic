@@ -11,6 +11,7 @@ use super::valid::{defined, objects, selector_any, subject};
 use crate::forge::script::Params;
 
 /// The effects of an `Effect` line.
+#[allow(clippy::too_many_lines)]
 pub fn effects(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
     only(
         p,
@@ -265,6 +266,7 @@ fn remembered_play(ctx: &mut Ctx, part: &Params, who: &Value, owner: Option<&Val
 }
 
 /// One static of an `Effect` line about the objects it remembers.
+#[allow(clippy::too_many_lines)]
 fn remembered_static(
     ctx: &mut Ctx,
     name: &str,

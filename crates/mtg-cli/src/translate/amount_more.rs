@@ -230,9 +230,8 @@ pub fn player_amount(head: &str, what: &str, who: &Value) -> Option<Tr<Value>> {
         ("TargetedPlayer", "CardsInLibrary") => cards("Library"),
         ("TargetedPlayer", "CardsInGraveyard") => cards("Graveyard"),
         ("TargetedPlayer", "LifeTotal") => Ok(json!({"Life": who})),
-        ("TargetedPlayer", "DamageThisTurn") => tallied("DamageTaken"),
+        ("TargetedPlayer" | "PlayerCountPropertyYou", "DamageThisTurn") => tallied("DamageTaken"),
         ("PlayerCountPropertyYou", "CardsDiscardedThisTurn") => tallied("Discarded"),
-        ("PlayerCountPropertyYou", "DamageThisTurn") => tallied("DamageTaken"),
         ("PlayerCountPropertyYou", "LifeLostThisTurn") => tallied("LifeLost"),
         ("PlayerCountPropertyYou", "LandsPlayed") => tallied("LandsPlayed"),
         ("PlayerCountPropertyYou", "SacrificedThisTurn" | "SacrificedThisTurn Permanent") => {

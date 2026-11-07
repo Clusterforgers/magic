@@ -1,7 +1,7 @@
 //! Goal: round 14 pack t reads the player facts and trigger shapes of the tail: the opponents picked by their hands, creatures,
 //! attacks or discards, counts of what happened this turn, enchanted-player statics and triggers, the attacker named inside its
 //! own trigger, and lasting changes that wait on a counter.
-#![allow(clippy::unwrap_used)]
+#![allow(clippy::unwrap_used, clippy::needless_raw_string_hashes)]
 
 use rstest::rstest;
 
@@ -269,7 +269,7 @@ fn a_card_reads_without_a_gap_and_holds_its_fragment(
 #[test]
 fn a_rule_that_waits_on_a_shield_counter_stays_a_gap() {
     let text = "Name:Subject\nTypes:Creature Human\nT:Mode$ ChangesZone | Origin$ Any | Destination$ Battlefield | ValidCard$ Card.Self | Execute$ TrigPutCounter\nSVar:TrigPutCounter:DB$ PutCounter | ValidTgts$ Creature.YouDontCtrl | CounterType$ SHIELD | SubAbility$ DBEffect\nSVar:DBEffect:DB$ Effect | RememberObjects$ Targeted | StaticAbilities$ GainControl | ForgetOnMoved$ Battlefield | ForgetCounter$ SHIELD | Duration$ Permanent\nSVar:GainControl:Mode$ Continuous | Affected$ Card.IsRemembered | GainControl$ You\n";
-    assert!(!gaps(text).is_empty());
+    assert!(gaps(text).iter().any(|gap| gap.contains("shield")));
 }
 
 /// "If an opponent is the monarch" and "if you have the most life" gate a trigger as the Forge state words do.
