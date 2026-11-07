@@ -3316,6 +3316,12 @@ impl Walker<'_> {
                 when_spent,
             } => {
                 w.at("who", |w| w.reference(who, Kind::Player));
+                // Mana read from one player's game (their commander, their lands) is added for one player only.
+                if matches!(who, Ref::EachPlayer | Ref::Opponents)
+                    && let Some(tag) = fix19_per_player(mana)
+                {
+                    w.uses("Effect", &format!("AddMana.{tag}.Players"));
+                }
                 if only.iter().any(|on| matches!(on, SpendOn::Spell(f) | SpendOn::Ability(f) | SpendOn::Uncounterable(f) if f.types.iter().any(|t| f.without.contains(t)))) {
                     w.problem("a restriction names a card type it also excludes");
                 }
@@ -3661,6 +3667,15 @@ impl Walker<'_> {
                 w.x_free = saved;
                 w.at("times", |w| w.amount(times));
                 w.payment_of_the_source(cost);
+                // The source is lost once: the engine refuses a cost that loses it more than one time over.
+                if *times != Amount::one()
+                    && cost
+                        .0
+                        .iter()
+                        .any(|item| matches!(item, CostItem::SacrificeSelf | CostItem::ExileSelf))
+                {
+                    w.uses("Effect", "Pay.Times.SourceLeaves");
+                }
                 w.c11f_paid_x(cost, paid);
                 w.effect_list("unpaid", unpaid, false);
             }
@@ -4741,6 +4756,18 @@ fn announces_x(cost: &Cost) -> bool {
             .0
             .iter()
             .any(|item| matches!(item, CostItem::PayEnergy(Amount::X)))
+}
+
+/// The tag of mana read from one player's game (`CommanderIdentity`, `ProducedBy`), through `Instead` on either side.
+fn fix19_per_player(mana: &Produce) -> Option<&'static str> {
+    match mana {
+        Produce::CommanderIdentity(_) => Some("CommanderIdentity"),
+        Produce::ProducedBy { .. } => Some("ProducedBy"),
+        Produce::Instead { base, instead, .. } => {
+            fix19_per_player(base).or_else(|| fix19_per_player(instead))
+        }
+        _ => None,
+    }
 }
 
 /// Whether a cost has an `{X}` in its mana.

@@ -212,7 +212,11 @@ countered?: boolean,
 /**
  * A card named in another zone is covered as the spell it becomes when cast, one zone change on (CR 400.7).
  */
-cast?: boolean, } } | { "Replaces": { 
+cast?: boolean, 
+/**
+ * It covers any move from the battlefield ("if it would leave the battlefield"), not only one to a graveyard.
+ */
+leaves?: boolean, } } | { "Replaces": { 
 /**
  * The event it replaces.
  */

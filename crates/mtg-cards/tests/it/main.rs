@@ -16,6 +16,7 @@ mod deck_companion;
 mod deck_read;
 mod deck_report;
 mod deck_table;
+mod fix19_engine_shapes;
 mod fixture_real;
 mod forge_tier;
 mod generated;

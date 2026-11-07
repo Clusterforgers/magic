@@ -371,9 +371,18 @@ pub fn optional(p: &Params, label: &str, effects: Vec<Value>, who: &Value) -> Tr
 
 /// The one way a "may" is written: the player `who` decides whether to do all of `effects`. A player asked twice by two parts
 /// of one line (the trigger and the step it runs) is asked once: effects that already begin with that player's "may" take
-/// the rest into it.
+/// the rest into it, and a cast from a zone by that player, which asks on its own, is left unwrapped.
 pub fn ask(mut effects: Vec<Value>, who: &Value) -> Vec<Value> {
     let same_asker = |may: &Value| may.get("who").unwrap_or(&json!("You")) == who;
+    // A cast from a zone asks its player itself (CR 608.2g); the exile shield after it names nothing when nothing is cast.
+    let asks_itself = effects
+        .first()
+        .and_then(|step| step.get("CastFromZone"))
+        .is_some_and(same_asker)
+        && effects[1..].iter().all(|step| step.get("Shield").is_some());
+    if asks_itself {
+        return effects;
+    }
     let begins_with_may = effects
         .first()
         .and_then(|step| step.get("May"))
