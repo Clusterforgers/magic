@@ -1787,8 +1787,15 @@ pub fn second_target(r: &mut Reader<'_>) -> Option<Ref> {
     Some(Ref::Target(1))
 }
 
-/// One target of several kinds of objects: "target artifact, enchantment, or creature with power 4 or greater".
+/// One target of several kinds of objects ("target artifact, enchantment, or creature with power 4 or greater"), or of any
+/// permanent or player.
 fn either_objects(kinds: &[Targetable]) -> Option<String> {
+    // Any permanent or any player: the ones that can hold counters.
+    if let [Targetable::Object(any), Targetable::Player] = kinds
+        && any.0.is_empty()
+    {
+        return Some("target permanent or player".to_owned());
+    }
     let phrases: Vec<String> = kinds
         .iter()
         .map(|kind| match kind {
@@ -1851,7 +1858,9 @@ pub fn spec_text(spec: &TargetSpec) -> Option<String> {
                     None => format!("target {phrase}"),
                 }
             }
-            Targetable::Together { .. } | Targetable::PerPlayer { .. } => return None,
+            Targetable::Together { .. }
+            | Targetable::PerPlayer { .. }
+            | Targetable::ChosenBy { .. } => return None,
             Targetable::Another { what, .. } => return another_text(what),
         });
     }

@@ -57,6 +57,8 @@ pub struct Plan {
     pub imprinted: bool,
     /// What the source chose as it entered.
     pub entered: Entered,
+    /// No line of the face writes `Remembered`: Forge's memory stays empty, so a step that only hands it on hands on nothing.
+    pub unwritten: bool,
 }
 
 /// The choices a permanent's controller made as it entered.
@@ -118,7 +120,8 @@ pub fn plan(face: &Face) -> Plan {
             .flat_map(|line| group(face, line))
             .any(|part| writes(&part, slot))
     };
-    plan.remembered &= written(Slot::Remembered);
+    plan.unwritten = !written(Slot::Remembered);
+    plan.remembered &= !plan.unwritten;
     plan.imprinted &= written(Slot::Imprinted);
     entering(face, &mut plan);
     plan
@@ -272,6 +275,14 @@ pub fn count_in(ctx: &Ctx, slot: Slot) -> Tr<Value> {
     };
     if slot == Slot::Remembered && mixes_the_player(ctx, &held) {
         return unmapped("amount:Remembered-player-and-cards");
+    }
+    // A count kept as the name was bound, before its objects scattered.
+    if let Some(kept) = held
+        .get("Bound")
+        .and_then(Value::as_str)
+        .and_then(|name| ctx.kept_count.get(name))
+    {
+        return Ok(json!({ "Bound": kept }));
     }
     // A token a step moved is gone, so the engine keeps the number the step moved (CR 111.7, 400.7).
     if let Some(name) = held

@@ -398,6 +398,9 @@ pub fn remembered_of(ctx: &mut Ctx, line: &Params) -> Tr<Option<Value>> {
         }
         Some("Targeted") => Ok(Some(ctx.last_target()?)),
         Some("Self") => Ok(Some(json!("This"))),
+        // Nothing writes the memory ("choose a source" keeps a choice, not a memory): the effect remembers nothing, and a
+        // part that reads `IsRemembered` stays a gap for want of a recipient.
+        Some("Remembered") if ctx.memory.unwritten && ctx.remembered.is_none() => Ok(None),
         Some("Remembered" | "RememberedCard") => {
             Ok(Some(super::valid::defined(ctx, "Remembered")?))
         }

@@ -32,7 +32,7 @@ fn r7a_a_copy_with_a_later_step_is_a_gap(#[case] more: &str, #[case] gap: bool) 
 
 #[rstest]
 #[case::all_creatures("", false)]
-#[case::target_players(" | ValidTgts$ Player", true)]
+#[case::target_opponents(" | ValidTgts$ Player.Opponent", true)]
 fn r7a_b_animate_all_of_a_target_player_is_a_gap(#[case] target: &str, #[case] gap: bool) {
     let lines = format!(
         "A:SP$ AnimateAll | ValidCards$ Creature | Power$ 0 | Toughness$ 2 | RemoveAllAbilities$ True{target} | SpellDescription$ Until end of turn, creatures lose all abilities and have base power and toughness 0/2."
