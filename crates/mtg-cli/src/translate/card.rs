@@ -129,6 +129,7 @@ pub fn translate_face(world: &World, face: &Face) -> FaceOut {
     }
     for body in &face.abilities {
         let before = Before::of(&out);
+        ctx.printed = printed_text(body, "SpellDescription");
         take(&mut out, audited_one(|| ability_line(&mut ctx, body)));
         record(&mut out, "A", &[body], &before);
     }
@@ -143,9 +144,13 @@ pub fn translate_face(world: &World, face: &Face) -> FaceOut {
             continue;
         }
         let before = Before::of(&out);
+        ctx.printed = group
+            .first()
+            .and_then(|body| printed_text(body, "TriggerDescription"));
         take(&mut out, audited_one(|| merged_trigger(&mut ctx, &group)));
         record(&mut out, "T", &group, &before);
     }
+    ctx.printed = None;
     for (group, result) in static_abilities(&mut ctx, &face.statics) {
         let before = Before::of(&out);
         take(
@@ -163,6 +168,11 @@ pub fn translate_face(world: &World, face: &Face) -> FaceOut {
         record(&mut out, "R", &[body], &before);
     }
     out
+}
+
+/// The printed text a line keeps under `key`, lower case. Read outside the audit: it is no key a mapper promised.
+fn printed_text(body: &str, key: &str) -> Option<String> {
+    Params::parse(body).get(key).map(str::to_lowercase)
 }
 
 /// The result of one line, a gap when a mapper accepted a key of the line and never read it.

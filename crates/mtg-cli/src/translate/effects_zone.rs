@@ -210,6 +210,17 @@ fn hidden_origin(word: &str) -> bool {
     })
 }
 
+/// Whether a single card chosen from the zones of the word is taken when one is there: the player's own hand, or zones
+/// whose cards everyone sees (graveyard, exile, battlefield, command), where nothing can fail to be found (CR 701.23b).
+fn exact_origin(word: &str) -> bool {
+    word == "Command"
+        || zone_list(word).is_some_and(|zones| {
+            zones
+                .iter()
+                .all(|zone| matches!(*zone, "Hand" | "Graveyard" | "Exile" | "Battlefield"))
+        })
+}
+
 /// The zones of a list word (`Graveyard,Hand`), each a known zone once; `None` for any other word (`Stack`, `Command`,
 /// `All` have no zone here).
 fn zone_list(word: &str) -> Option<Vec<&str>> {
@@ -544,6 +555,20 @@ fn moved_objects(ctx: &mut Ctx, p: &Params, origin: &str) -> Tr<Vec<Value>> {
     }
 }
 
+/// A name an earlier step moved onto the battlefield, kept to the zone the line moves from (`Origin$`): the engine binds
+/// the name again to the permanent that arrived (CR 400.7), and "otherwise, put it into your hand" must not take it.
+fn still_in(ctx: &Ctx, what: Value, origin: &str) -> Value {
+    let arrived = what
+        .get("Bound")
+        .and_then(Value::as_str)
+        .is_some_and(|name| ctx.arrived.contains(name));
+    if arrived && zone_list(origin).is_some_and(|zones| zones.len() == 1) {
+        json!({"Each": [{"Is": what}, {"In": origin}]})
+    } else {
+        what
+    }
+}
+
 fn change_zone(ctx: &mut Ctx, p: &Params, origin: &str, destination: &str) -> Tr<Vec<Value>> {
     NAMED.admit(p)?;
     // "You may shuffle up to four target cards into your library": no shuffle when nothing was chosen, which is what a
@@ -580,7 +605,18 @@ fn change_zone(ctx: &mut Ctx, p: &Params, origin: &str, destination: &str) -> Tr
     {
         return unmapped("key:ChangeZone.Defined-with-memory");
     }
-    let whats = moved_objects(ctx, p, origin)?;
+    let whats: Vec<Value> = moved_objects(ctx, p, origin)?
+        .into_iter()
+        .map(|what| still_in(ctx, what, origin))
+        .collect();
+    if destination == "Battlefield" {
+        ctx.arrived.extend(
+            whats
+                .iter()
+                .filter_map(|what| what.get("Bound").and_then(Value::as_str))
+                .map(str::to_owned),
+        );
+    }
     let two_ways = p.has("DestinationAlternative");
     let keeps = p.has("Duration")
         || p.has("StaticEffect")
@@ -682,13 +718,18 @@ fn battlefield_owner(p: &Params, who: &Parties, filter: &mut Vec<Value>) -> Tr<(
     Ok(())
 }
 
-/// Whether the card's text lets the player choose nothing ("may", "up to", "any number").
-fn allows_none(ctx: &Ctx, p: &Params) -> bool {
+/// Whether the text of the pick lets the player choose none ("may", "up to", "any number", "unless you return"): the
+/// line's own description, else that of the printed ability it is part of, else the whole card. Another ability's "any
+/// number" does not make this pick optional.
+fn allows_none_from(ctx: &Ctx, p: &Params) -> bool {
     let text = p
         .get("SpellDescription")
-        .unwrap_or(ctx.oracle)
-        .to_lowercase();
-    text.contains(" may ") || text.contains("up to") || text.contains("any number")
+        .map(str::to_lowercase)
+        .or_else(|| ctx.printed.clone())
+        .unwrap_or_else(|| ctx.oracle.to_lowercase());
+    [" may ", "up to", "any number", "unless"]
+        .iter()
+        .any(|words| text.contains(words))
 }
 
 /// Whether the card's text takes the card from any graveyard ("from a graveyard") and never from "your graveyard".
@@ -746,12 +787,13 @@ fn choose_and_move(ctx: &mut Ctx, p: &Params, origin: &str, destination: &str) -
     }
     let mut count = frame::count(ctx, p, &PICKED)?;
     // "Target player puts a card from their hand on top of their library": a chosen single card is not optional unless the
-    // card says "may" or "up to" (Forge leaves the minimum off); the engine clamps it to the cards there are.
-    if origin == "Hand"
+    // card says "may" or "up to" (Forge leaves the minimum off); the engine clamps it to the cards there are. The same holds
+    // for a public zone: a player may fail to find only in a hidden zone (CR 701.23b).
+    if exact_origin(origin)
         && count.is_one
         && !frame::is_optional(p)
         && !p.has("Mandatory")
-        && !allows_none(ctx, p)
+        && !allows_none_from(ctx, p)
     {
         count.min = json!(1);
     }
@@ -1174,6 +1216,9 @@ pub fn dig(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
 
 /// Every card looked at is exiled: the impulse shape, face down for no player to look at when `hide` seals them.
 fn exile_top(ctx: &mut Ctx, p: &Params, who: &Value, count: &Value, hide: Hide) -> Value {
+    // A card exiled face up is seen by every player, so `Reveal$` adds nothing. It is read here, not left to whether the
+    // face-down test happened to look at it: the verdict must not hang on the order of those reads.
+    let _ = p.get("Reveal");
     let exiled = ctx.fresh("exiled");
     if p.get("RememberChanged") == Some("True") {
         ctx.remembered = Some(json!({ "Bound": exiled }));

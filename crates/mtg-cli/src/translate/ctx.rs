@@ -117,6 +117,9 @@ pub struct Ctx<'a> {
     /// For a name a step bound to what it moved, the reference the step named them by: they are other objects now (CR 400.7)
     /// and `RememberedController` is read on those named before the move.
     pub moved_from: BTreeMap<String, Value>,
+    /// The bound names a step of the resolution moved onto the battlefield: the engine binds such a name again to the
+    /// permanents that arrived, so a later move of the name takes them unless it keeps to the zone it moves from.
+    pub arrived: std::collections::BTreeSet<String>,
     /// The bound names whose step keeps how many objects it moved (`<name>~moved`), which survives a token that ceased to exist.
     pub counted: std::collections::BTreeSet<String>,
     /// The bound names a condition or a "may" bound: later steps may count them or test that they hold something (an
@@ -180,6 +183,8 @@ pub struct Ctx<'a> {
     pub trigger: Option<super::triggered::Shape>,
     /// The ability being translated is one a static ability gives (`AddAbility$`): `OriginalHost` is the card with that static.
     pub granted: bool,
+    /// The printed text of the ability line being translated (`SpellDescription$`, `TriggerDescription$`), lower case.
+    pub printed: Option<String>,
     binds: usize,
     depth: usize,
 }
@@ -203,6 +208,7 @@ impl<'a> Ctx<'a> {
             player_loop: None,
             imprinted: None,
             moved_from: BTreeMap::new(),
+            arrived: std::collections::BTreeSet::new(),
             ability_cost: None,
             trigger_amount: None,
             counted: std::collections::BTreeSet::new(),
@@ -229,6 +235,7 @@ impl<'a> Ctx<'a> {
             number: None,
             vote_num: None,
             granted: false,
+            printed: None,
             modal_keyword: None,
             extra_mode_cost: None,
             trigger: None,
@@ -244,6 +251,7 @@ impl<'a> Ctx<'a> {
         self.damaged = None;
         self.imprinted = None;
         self.moved_from.clear();
+        self.arrived.clear();
         self.ability_cost = None;
         self.counted.clear();
         self.scoped.clear();
@@ -279,11 +287,13 @@ impl<'a> Ctx<'a> {
             self.binds,
             self.depth,
         );
+        let arrived = std::mem::take(&mut self.arrived);
         let die = self.die_result.take();
         let excess = self.excess.take();
         let number = self.number.take();
         let out = run(self);
         self.die_result = die;
+        self.arrived = arrived;
         self.excess = excess;
         self.number = number;
         self.pinned = before;

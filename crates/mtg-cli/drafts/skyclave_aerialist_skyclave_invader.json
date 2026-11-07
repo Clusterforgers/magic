@@ -48,7 +48,12 @@
                   ]
                 }
               },
-              { "Move": { "what": { "Bound": "top" }, "to": "Hand" } }
+              {
+                "Move": {
+                  "what": { "Each": [{ "Is": { "Bound": "top" } }, { "In": "Library" }] },
+                  "to": "Hand"
+                }
+              }
             ]
           }
         }
