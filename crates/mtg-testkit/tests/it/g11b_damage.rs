@@ -1,6 +1,7 @@
 //! Goal: the damage pack g11b plays as printed at tables of two to four seats: damage that can't be prevented passes a
 //! prevention effect on the creature and kills it, the same damage without the flag is prevented, an unshielded creature
-//! dies either way, and a shield of the next X damage prevents the number it counted as it began.
+//! dies either way, a shield of the next X damage prevents the number it counted as it began, and a shield of the sources
+//! of a chosen colour keeps that colour after the resolution.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
 use std::sync::Arc;
@@ -8,9 +9,11 @@ use std::sync::Arc;
 use mtg_cards::CardDefinition;
 use mtg_cards::ability::Ability;
 use mtg_core::card::CardType;
-use mtg_engine::choose::{Target, TargetChoice};
+use mtg_core::color::Color;
+use mtg_engine::choose::{OptionChoice, Target, TargetChoice};
 use mtg_engine::decision::{Answer, DecisionKind};
 use mtg_engine::zones::Zone;
+use mtg_testkit::cards::cost;
 use mtg_testkit::trigger_cards::artifact_with;
 use mtg_testkit::{Driver, Scenario, ScriptError, ready};
 use rstest::rstest;
@@ -31,8 +34,8 @@ fn rig(name: &str, effects: &str, targets: &str) -> Arc<CardDefinition> {
     )
 }
 
-/// Activates `name`, aims at `aim`, and passes until the stack is empty.
-fn run(driver: &mut Driver, name: &str, aim: Target) -> Result<(), ScriptError> {
+/// Activates `name`, aims at `aim`, picks the option at `pick` when asked, and passes until the stack is empty.
+fn run(driver: &mut Driver, name: &str, aim: Target, pick: usize) -> Result<(), ScriptError> {
     driver.begin_activation(name)?;
     for _ in 0..40 {
         let decision = driver.decision()?.clone();
@@ -46,6 +49,7 @@ fn run(driver: &mut Driver, name: &str, aim: Target) -> Result<(), ScriptError> 
             DecisionKind::ChooseTargets(_) => {
                 Answer::ChooseTargets(TargetChoice::Targets(vec![aim]))
             }
+            DecisionKind::ChooseOption(_) => Answer::ChooseOption(OptionChoice(pick)),
             _ => Driver::passive_answer(&decision),
         };
         driver.answer(answer)?;
@@ -98,7 +102,7 @@ fn damage_that_cant_be_prevented_passes_the_prevention(
             .battlefield(owner, vec![ready(victim(shield))]),
     )?;
     let aim = driver.target_named("Victim")?;
-    run(&mut driver, "Bolt", aim)?;
+    run(&mut driver, "Bolt", aim, 0)?;
     let dead = names_in(&driver, Zone::Graveyard(pid(owner))).contains(&"Victim".to_owned());
     assert_eq!(dead, unpreventable || shield.is_none(), "{shield:?}");
     Ok(())
@@ -141,10 +145,49 @@ fn a_counted_shield_prevents_the_number_it_counts_as_it_begins(
             .battlefield(owner, vec![ready(victim(None))]),
     )?;
     let aim = driver.target_named("Victim")?;
-    run(&mut driver, "Medic", aim)?;
-    run(&mut driver, "Bolt", aim)?;
+    run(&mut driver, "Medic", aim, 0)?;
+    run(&mut driver, "Bolt", aim, 0)?;
     // 5 damage to a 4/4: two prevented save it.
     let dead = names_in(&driver, Zone::Graveyard(pid(owner))).contains(&"Victim".to_owned());
     assert_eq!(dead, unpreventable || clerics < 2, "{clerics} clerics");
+    Ok(())
+}
+
+/// Prevents all damage that sources of the color of your choice would deal this turn.
+const STRANDS: &str = r#"[{"ChooseValue":{"as":"chosen","kind":"Color"}},{"Shield":{"by":"Prevent","duration":"UntilEndOfTurn","when":{"Damage":{"source":[{"ChosenAs":"chosen"}]}}}}]"#;
+
+/// A red artifact that deals 4 damage to target creature for `{T}`.
+fn red_bolt() -> Arc<CardDefinition> {
+    let card = (*rig(
+        "Bolt",
+        r#"[{"DealDamage":{"amount":4,"to":{"Target":0}}}]"#,
+        CREATURE,
+    ))
+    .clone()
+    .with_mana_cost(cost(0, &[Color::Red]));
+    Arc::new(card)
+}
+
+/// Colors are offered white, blue, black, red and green.
+#[rstest]
+fn a_shield_keeps_the_color_chosen_as_it_began(
+    #[values(2, 3, 4)] seats: usize,
+    #[values((3, false), (4, true), (0, true))] case: (usize, bool),
+) -> Result<(), ScriptError> {
+    let (pick, dead) = case;
+    let owner = seats - 1;
+    let mut driver = Driver::from_scenario(
+        Scenario::new(seats)
+            .battlefield(
+                0,
+                vec![ready(rig("Strands", STRANDS, "[]")), ready(red_bolt())],
+            )
+            .battlefield(owner, vec![ready(victim(None))]),
+    )?;
+    let aim = driver.target_named("Victim")?;
+    run(&mut driver, "Strands", aim, pick)?;
+    run(&mut driver, "Bolt", aim, 0)?;
+    let died = names_in(&driver, Zone::Graveyard(pid(owner))).contains(&"Victim".to_owned());
+    assert_eq!(died, dead, "option {pick}");
     Ok(())
 }

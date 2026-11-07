@@ -1,6 +1,7 @@
 //! Goal: round 11 pack g11b reads the damage words of Forge scripts: damage that can't be prevented (`NoPrevention$`)
-//! keeps the flag on its damage, "prevent the next X damage" counts X as the shield begins (`PreventCounted`), and an unknown
-//! value, a redirection limit and a divided prevention stay gaps.
+//! keeps the flag on its damage, "prevent the next X damage" counts X as the shield begins (`PreventCounted`), a shield of
+//! sources of a chosen colour reads the choice and one for a target player or planeswalker the target, and an unknown
+//! value, a redirection limit, a divided prevention and a chosen card with a property stay gaps.
 #![allow(clippy::unwrap_used)]
 
 use rstest::rstest;
@@ -88,6 +89,27 @@ fn reads(types: &str, lines: &str, expected: &[&str], absent: &[&str], gap: &str
     &[],
     &[],
     "DividedAsYouChoose"
+)]
+#[case::sources_of_a_chosen_color(
+    "Instant",
+    "A:SP$ ChooseColor | Defined$ You | SubAbility$ DBEffect\nSVar:DBEffect:DB$ Effect | ReplacementEffects$ RPrevent\nSVar:RPrevent:Event$ DamageDone | Prevent$ True | ActiveZones$ Command | ValidSource$ Card.ChosenColor | Description$ Prevent all damage that sources of the chosen color would deal this turn.",
+    &[r#""source":[{"ChosenAs":"#],
+    &[],
+    ""
+)]
+#[case::a_chosen_card_source_stays_a_gap(
+    "Instant",
+    "A:SP$ ChooseCard | Choices$ Creature.withShadow | SubAbility$ DBEffect\nSVar:DBEffect:DB$ Effect | ReplacementEffects$ RPrevent\nSVar:RPrevent:Event$ DamageDone | ValidSource$ Card.ChosenCardStrict+withShadow | ValidTarget$ You | Prevent$ True | ActiveZones$ Command",
+    &[],
+    &[],
+    "shield-source"
+)]
+#[case::a_target_player_or_planeswalker(
+    "Creature",
+    "A:AB$ ChooseColor | Cost$ 1 | Defined$ You | SubAbility$ DBEffect\nSVar:DBEffect:DB$ Effect | ValidTgts$ Player,Planeswalker | ReplacementEffects$ RPrevent | RememberObjects$ Targeted\nSVar:RPrevent:Event$ DamageDone | Prevent$ True | ActiveZones$ Command | ValidTarget$ Player.IsRemembered,Planeswalker.IsRemembered | ValidSource$ Card.ChosenColor",
+    &[r#""to":{"Target":0}"#, r#""ChosenAs""#],
+    &[],
+    ""
 )]
 fn damage_words(
     #[case] types: &str,

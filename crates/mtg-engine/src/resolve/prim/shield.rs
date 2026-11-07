@@ -9,6 +9,7 @@ use mtg_core::ids::EffectId;
 use super::wrong_effect;
 use crate::choose::Target;
 use crate::events::Event;
+use crate::object::Chosen;
 use crate::object::GameObject;
 use crate::resolve::{Cx, ResolveError, Run};
 use crate::rules::{DamageShield, Rule, RuleEffect};
@@ -136,7 +137,14 @@ fn damage_shield(
         },
         _ => None,
     };
-    let (from, source) = c9_fight_fixed_sources(cx, source)?;
+    let chosen = Selector(
+        source
+            .0
+            .iter()
+            .map(|pred| g11b_chosen_fixed(cx, pred))
+            .collect(),
+    );
+    let (from, source) = c9_fight_fixed_sources(cx, &chosen)?;
     Ok(Some(DamageShield {
         to,
         source,
@@ -204,4 +212,32 @@ fn c9_fight_fixed_sources(
         });
     }
     Ok((fixed, Selector(rest)))
+}
+
+/// A source named by the value the resolution chose ("sources of the color of your choice") as that value: the shield
+/// judges its sources after the resolution and its choices are gone. A choice not made, or one that is no
+/// characteristic, stays as it is and matches nothing then.
+fn g11b_chosen_fixed(cx: &Cx<'_>, pred: &Pred) -> Pred {
+    match pred {
+        Pred::ChosenAs(name) => match cx.scope.chosen_value(name) {
+            Some(Chosen::Color(color)) => Pred::Color(*color),
+            Some(Chosen::Colors(colors)) => {
+                Pred::AnyOf(colors.iter().map(|color| Pred::Color(*color)).collect())
+            }
+            Some(Chosen::CreatureType(subtype) | Chosen::LandType(subtype)) => {
+                Pred::Subtype(subtype.clone())
+            }
+            Some(Chosen::CardType(kind)) => Pred::Type(*kind),
+            Some(Chosen::Name(name)) => Pred::Named(name.clone()),
+            _ => pred.clone(),
+        },
+        Pred::Not(inner) => Pred::Not(Box::new(g11b_chosen_fixed(cx, inner))),
+        Pred::AnyOf(parts) => Pred::AnyOf(
+            parts
+                .iter()
+                .map(|part| g11b_chosen_fixed(cx, part))
+                .collect(),
+        ),
+        _ => pred.clone(),
+    }
 }

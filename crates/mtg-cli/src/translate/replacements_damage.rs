@@ -31,6 +31,7 @@ fn is_remembered(word: &str) -> bool {
             "Card.IsRemembered"
                 | "Creature.IsRemembered"
                 | "Permanent.IsRemembered"
+                | "Planeswalker.IsRemembered"
                 | "Player.IsRemembered"
         )
     })
@@ -278,6 +279,19 @@ fn one_shield(
                 return unmapped("valid:ChosenCard-without-a-choice");
             };
             when.insert("source".into(), json!([{"Is": {"Bound": name}}]));
+        }
+        // A colour or type the ability chose: the shield fixes the value as it begins.
+        (Some(word), _)
+            if (word.contains("ChosenColor") || word.contains("ChosenType"))
+                && !word.contains("Remembered")
+                && !word.contains("ChosenCard") =>
+        {
+            match source_any(ctx, word) {
+                Ok(source) => {
+                    when.insert("source".into(), json!(source));
+                }
+                Err(_) => return unmapped("replacement:DamageDone-shield-source"),
+            }
         }
         (Some(word), _) if word.contains("Remembered") || word.contains("Chosen") => {
             return unmapped("replacement:DamageDone-shield-source");
