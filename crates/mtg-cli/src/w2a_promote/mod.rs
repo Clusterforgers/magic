@@ -12,7 +12,7 @@ use mtg_cards::compile::compile;
 use mtg_cards::load::{Library, canonical, slug, unwhole};
 use mtg_cards::proposal::partial::{LedgerLine, PartialProof};
 use mtg_cards::proposal::{Report, Verdict, check, check_exact, merge, refusal};
-use mtg_cards::support::{Caps, PrintedCard, Support, support};
+use mtg_cards::support::{Caps, PrintedCard, READBACK_DIFFERS, Support, support};
 use mtg_cards::{builtin, card::Card};
 use mtg_db::{Database, SOURCE_FORGE, SOURCE_SWEEP};
 
@@ -57,6 +57,8 @@ pub enum W2aSkip {
     /// A Forge translation with a gap whose proof is refused, by the name of the first refusal (`OracleDiffers`,
     /// `NoGain` or a `Refusal` of the proof).
     Unproved(&'static str),
+    /// A clause reads back as other text than the card, so the draft may play wrong (`readback:Differs`).
+    Differs,
     /// The draft fails the smoke gate.
     Smoke(SmokeKind),
 }
@@ -79,6 +81,7 @@ impl W2aSkip {
             W2aSkip::Unproved(name) => format!("not proved: {name}"),
             W2aSkip::NotRead => "the engine does not run it as a Read card".into(),
             W2aSkip::Smoke(kind) => format!("fails the smoke gate: {}", kind.word()),
+            W2aSkip::Differs => READBACK_DIFFERS.into(),
         }
     }
 }
