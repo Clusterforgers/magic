@@ -1,0 +1,25 @@
+{
+  "oracle_id": "02bd033c-684f-420d-b8d0-5e7ebf161af3",
+  "name": "Aggressive Crag",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Aggressive Crag",
+      "oracle_fingerprint": "66824efa8b1859689a006a4426b94d70",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "BeginCombat", "whose": "You" } },
+            "effects": [{ "Tap": { "what": "This" } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "OneOf": ["Red", "White"] } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

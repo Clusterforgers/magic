@@ -1,0 +1,47 @@
+{
+  "oracle_id": "efbe96b5-1f58-4818-a346-ea554813adbc",
+  "name": "Devouring Greed",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Devouring Greed",
+      "oracle_fingerprint": "d9a2cea65699a9f9653f31b1502ed781",
+      "abilities": [
+        {
+          "AdditionalCost": {
+            "cost": [{ "Sacrifice": { "filter": [{ "Subtype": "Spirit" }], "count": "X" } }],
+            "required": true
+          }
+        },
+        {
+          "Spell": {
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              {
+                "LoseLife": {
+                  "who": { "Target": 0 },
+                  "amount": {
+                    "Sum": [
+                      { "Times": { "by": 2, "of": { "CountOf": { "of": "Paid", "filter": [] } } } },
+                      2
+                    ]
+                  }
+                }
+              },
+              {
+                "GainLife": {
+                  "amount": {
+                    "Sum": [
+                      { "Times": { "by": 2, "of": { "CountOf": { "of": "Paid", "filter": [] } } } },
+                      2
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,52 @@
+{
+  "oracle_id": "f1eb4732-2d96-4398-bc0e-0560b4e3ea3a",
+  "name": "HONK!",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "HONK!",
+      "oracle_fingerprint": "205fb084337727b95a9a8bfb8ecbdf38",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Modal": {
+                  "modes": [
+                    {
+                      "targets": [
+                        {
+                          "what": {
+                            "Object": [
+                              { "AnyOf": [{ "Type": "Artifact" }, { "Type": "Enchantment" }] }
+                            ]
+                          }
+                        }
+                      ],
+                      "effects": [
+                        { "Destroy": { "what": { "Target": 0 } } },
+                        {
+                          "CreateToken": {
+                            "who": { "ControllerOf": { "Target": 0 } },
+                            "token": { "Named": "food" }
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+                      "effects": [
+                        { "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1" } },
+                        { "CreateToken": { "token": { "Named": "food" } } }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

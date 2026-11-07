@@ -1,0 +1,53 @@
+{
+  "oracle_id": "71f3168d-9eeb-4570-8437-a3ffc39667e9",
+  "name": "Riveteers Ascendancy",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Riveteers Ascendancy",
+      "oracle_fingerprint": "de3bf3cb83b454f68daf1b8536a14e90",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "Sacrificed": { "what": [{ "Type": "Creature" }, { "ControlledBy": "You" }] }
+            },
+            "limit": "OncePerTurnDone",
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Type": "Creature" },
+                    {
+                      "Compare": {
+                        "stat": "ManaValue",
+                        "op": "Lt",
+                        "to": { "Stat": { "of": "Triggering", "stat": "ManaValue" } }
+                      }
+                    },
+                    { "OwnedBy": "You" },
+                    { "In": "Graveyard" }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "Move": {
+                        "what": { "Target": 0 },
+                        "to": { "Battlefield": { "tapped": true } }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,54 @@
+{
+  "oracle_id": "a3acb58d-3fb1-4602-8575-d78b716b0ea5",
+  "name": "Choose Your Weapon",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Choose Your Weapon",
+      "oracle_fingerprint": "a0a2f6a98d81241e0d82ac2964f7c751",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Modal": {
+                  "modes": [
+                    {
+                      "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+                      "effects": [
+                        {
+                          "Continuous": {
+                            "affected": { "Target": 0 },
+                            "mods": [
+                              {
+                                "ModifyPT": {
+                                  "power": { "Stat": { "of": { "Target": 0 }, "stat": "Power" } },
+                                  "toughness": {
+                                    "Stat": { "of": { "Target": 0 }, "stat": "Toughness" }
+                                  }
+                                }
+                              }
+                            ],
+                            "duration": "UntilEndOfTurn"
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "targets": [
+                        {
+                          "what": { "Object": [{ "Type": "Creature" }, { "HasKeyword": "Flying" }] }
+                        }
+                      ],
+                      "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 5 } }]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

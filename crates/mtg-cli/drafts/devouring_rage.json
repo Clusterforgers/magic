@@ -1,0 +1,45 @@
+{
+  "oracle_id": "19a8c2d3-b06e-4a76-bb28-8928ce84186c",
+  "name": "Devouring Rage",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Devouring Rage",
+      "oracle_fingerprint": "cdb38dad7b11a94897761dd4fd4c731b",
+      "abilities": [
+        {
+          "AdditionalCost": {
+            "cost": [{ "Sacrifice": { "filter": [{ "Subtype": "Spirit" }], "count": "X" } }],
+            "required": true
+          }
+        },
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    {
+                      "ModifyPT": {
+                        "power": {
+                          "Times": {
+                            "by": 3,
+                            "of": { "Sum": [{ "CountOf": { "of": "Paid", "filter": [] } }, 1] }
+                          }
+                        },
+                        "toughness": 0
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

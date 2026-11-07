@@ -1,0 +1,28 @@
+{
+  "oracle_id": "f30e9371-2c12-496a-80e1-40c3408defed",
+  "name": "Spell Syphon",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Spell Syphon",
+      "oracle_fingerprint": "d1a24b68eab88628d970cf7db75a70e4",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": ["Spell"] } }],
+            "effects": [
+              {
+                "Pay": {
+                  "who": { "ControllerOf": { "Target": 0 } },
+                  "cost": "{1}",
+                  "times": { "Count": [{ "ControlledBy": "You" }, { "Color": "Blue" }] },
+                  "unpaid": [{ "Counter": { "what": { "Target": 0 } } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

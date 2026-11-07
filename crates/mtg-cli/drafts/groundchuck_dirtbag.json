@@ -1,0 +1,20 @@
+{
+  "oracle_id": "da344e46-6bdf-4032-8590-bac850d5713d",
+  "name": "Groundchuck & Dirtbag",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Groundchuck & Dirtbag",
+      "oracle_fingerprint": "61a15d8d3cfff65f5d46ca9d2b9f421b",
+      "abilities": [
+        { "Keyword": "Trample" },
+        {
+          "Triggered": {
+            "when": { "TappedForMana": { "what": [{ "Type": "Land" }], "by": "You" } },
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Green"] } } }]
+          }
+        }
+      ]
+    }
+  ]
+}
