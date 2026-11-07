@@ -179,6 +179,10 @@ fn the_ability_a_token_copy_gains_keeps_its_targets_apart() {
 
 #[rstest]
 #[case::chosen_permanent("Choices$ Enchantment.nonLegendary+YouCtrl", None)]
+#[case::a_target_and_a_defined_subject(
+    "ValidTgts$ Artifact | Defined$ Targeted",
+    Some("key:CopyPermanent.Defined-unread")
+)]
 #[case::chosen_among_a_subject(
     "Defined$ Remembered | Choices$ Card",
     Some("key:CopyPermanent.Choices-of-a-subject")

@@ -118,7 +118,10 @@ fn temporary_keywords(ctx: &Ctx, p: &Params) -> Tr<Option<Vec<Value>>> {
 /// names that the player chooses ("a copy of a nonlegendary enchantment you control"); a choice among a subject stays a
 /// gap. A step that chooses goes into `effects`.
 fn copied(ctx: &mut Ctx, p: &Params, effects: &mut Vec<Value>) -> Tr<Value> {
-    let subject_named = p.has("Defined") || p.has("ValidTgts");
+    // Looked up without reading them: the subject reads them, and a key it leaves unread stays a gap.
+    let subject_named = p
+        .iter()
+        .any(|(key, _)| key == "Defined" || key == "ValidTgts");
     if flag(p, "Populate")? {
         if subject_named {
             return unmapped("key:CopyPermanent.Populate-with-subject");
