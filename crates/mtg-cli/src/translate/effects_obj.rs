@@ -1039,7 +1039,7 @@ fn pump_all(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
         "PumpAll",
         &[
             "ValidTgts",
-            "ValidTgts",
+            "NumAtt",
             "Defined",
             "NumDef",
             "KW",

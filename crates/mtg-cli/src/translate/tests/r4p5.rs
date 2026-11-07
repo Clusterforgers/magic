@@ -41,10 +41,18 @@ fn draw_up_to_picks_a_number_then_draws_it() {
 }
 
 #[rstest]
-#[case::opponents("Opponent")]
-#[case::each("Player")]
-fn draw_up_to_for_a_group_is_a_gap(#[case] who: &str) {
-    assert_eq!(gaps(&upto(who)), ["key:Draw.Upto.group"]);
+#[case::opponents("Opponent", "Opponents")]
+#[case::each("Player", "EachPlayer")]
+fn draw_up_to_for_a_group_is_each_players_own_number(#[case] who: &str, #[case] over: &str) {
+    let script = upto(who);
+    assert!(gaps(&script).is_empty(), "{:?}", gaps(&script));
+    let found = abilities(&script);
+    let repeat = &found[0]["Spell"]["effects"][0]["RepeatEach"];
+    assert_eq!(repeat["over"], json!(over));
+    assert_eq!(
+        repeat["effects"][0]["ChooseValue"]["kind"],
+        json!({"Number": [0, 2]})
+    );
 }
 
 #[test]

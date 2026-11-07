@@ -325,3 +325,13 @@ fn clearing_the_chosen_color_is_nothing_to_do_after_the_ability_chose_one(
     );
     assert_eq!(found.is_empty(), read, "{found:?}");
 }
+
+#[test]
+fn a_flip_until_the_first_loss_is_a_repeating_flip() {
+    let (json, found) = card(
+        "Creature Goblin",
+        "T:Mode$ Phase | Phase$ BeginCombat | ValidPlayer$ You | TriggerZones$ Battlefield | Execute$ TrigFlip | TriggerDescription$ At the beginning of combat on your turn, flip a coin until you lose a flip.\nSVar:TrigFlip:DB$ FlipCoin | FlipUntilYouLose$ True",
+    );
+    assert!(found.is_empty(), "{found:?}");
+    assert!(json.contains(r#""FlipCoin":{"until":true}"#), "{json}");
+}

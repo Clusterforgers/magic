@@ -228,6 +228,7 @@ fn flip_coin(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
             "WinSubAbility",
             "LoseSubAbility",
             "NoCall",
+            "FlipUntilYouLose",
             "Defined",
             "ValidTgts",
         ],
@@ -242,6 +243,11 @@ fn flip_coin(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
     // With or without a call the flip is won with even odds, as the node says.
     let _ = p.get("NoCall");
     let mut node = json!({"FlipCoin": {}});
+    match p.get("FlipUntilYouLose") {
+        None => {}
+        Some("True") => node["FlipCoin"]["until"] = json!(true),
+        Some(_) => return unmapped("key:FlipCoin.FlipUntilYouLose"),
+    }
     for (key, field) in [("WinSubAbility", "win"), ("LoseSubAbility", "lose")] {
         if let Some(name) = p.get(key) {
             let part = ctx.sub(name)?;
