@@ -1504,6 +1504,9 @@ fn change_zone_all(ctx: &mut Ctx, p: &Params, origin: &str, destination: &str) -
             "UseAllOriginZones",
             "RandomOrder",
             "Duration",
+            // "Exile any number of target players' graveyards": the cards each of them owns.
+            "TargetMin",
+            "TargetMax",
         ],
     )?;
     // Every zone of the origin is emptied, which is what a move of all of them does anyway.
@@ -1520,7 +1523,12 @@ fn change_zone_all(ctx: &mut Ctx, p: &Params, origin: &str, destination: &str) -
         subject(ctx, p, "", None)?;
     }
     let mut filter = selector_in(ctx, p.get("ChangeType").unwrap_or("Card"), zone)?;
-    if p.has("ValidTgts") && !of_target {
+    let players = matches!(p.get("ValidTgts"), Some("Player" | "Opponent"));
+    if players && !of_target && origin == "Battlefield" {
+        // "Return all nonland permanents target player controls": the permanents of that player.
+        let controller = subject(ctx, p, "", None)?;
+        filter.push(json!({"ControlledBy": controller}));
+    } else if p.has("ValidTgts") && !of_target {
         // "Exile target player's graveyard": the cards of the zone that player owns.
         if !matches!(origin, "Graveyard" | "Hand" | "Exile" | "Library")
             || !matches!(p.get("ValidTgts"), Some("Player" | "Opponent"))

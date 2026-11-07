@@ -7,7 +7,7 @@ use super::ctx::{Ctx, Tr, only, unmapped};
 use super::frame::{self, Slot, Verb};
 use super::keyword::{keyword_list, keyword_value};
 use super::remember;
-use super::valid::{defined, objects, selector_any, selector_in, subject};
+use super::valid::{bound, defined, objects, selector_any, selector_in, subject};
 use crate::forge::script::Params;
 
 /// The effects of a verb on objects.
@@ -534,10 +534,21 @@ fn counter_selector(ctx: &Ctx, p: &Params) -> Tr<Vec<Value>> {
     for word in words.split(',') {
         let (base, suffix) = match word.split_once('.') {
             Some((base, suffix)) => (base, Some(suffix)),
+            // "target instant spell, sorcery spell, or triggered ability"
+            None if matches!(word, "Instant" | "Sorcery") => ("Spell", Some(word)),
             None => (word, None),
         };
         let kind = match base {
             "Spell" if suffix.is_none() => json!("Spell"),
+            // "a colorless spell", "an instant spell": the spell and the property as one alternative.
+            "Spell" => {
+                let mut preds = vec![json!("Spell")];
+                preds.extend(selector_any(
+                    ctx,
+                    &format!("Card.{}", suffix.unwrap_or_default()),
+                )?);
+                super::count::all_of(preds)
+            }
             "Activated" => json!({"Ability": "Activated"}),
             "Triggered" => json!({"Ability": "Triggered"}),
             _ => return gap(),
@@ -593,6 +604,8 @@ fn counter(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
             "Defined",
             "TargetValidTargeting",
             "RememberCountered",
+            "TargetMin",
+            "TargetMax",
         ],
     )?;
     // "If that spell is countered this way": the spells the step countered, as the cards they became.
@@ -633,7 +646,16 @@ fn counter(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
         });
     }
     let selector = counter_selector(ctx, p)?;
-    let what = ctx.target(json!({"what": {"Object": selector}}))?;
+    let mut spec = json!({"what": {"Object": selector}});
+    // "Counter up to two target spells", "counter target spell" only if kicked: each target chosen is countered.
+    match (p.get("TargetMin"), p.get("TargetMax")) {
+        (None, None) => {}
+        (Some(min), Some(max)) => {
+            spec["bounds"] = json!({"min": bound(ctx, min)?, "max": bound(ctx, max)?});
+        }
+        _ => return unmapped("key:Counter.TargetMin"),
+    }
+    let what = ctx.target(spec)?;
     let mut effects = Vec::new();
     if exiled {
         effects.push(json!({"Shield": {
@@ -993,6 +1015,46 @@ fn animate_duration(ctx: &Ctx, p: &Params) -> Tr<&'static str> {
 }
 
 /// `Animate`: the object becomes something else for a while ("becomes a 4/4 Elemental creature with flying").
+/// The `Animate` keys other than colours, which a change of a spell on the stack does not read.
+const NOT_FOR_SPELLS: [&str; 17] = [
+    "Types",
+    "Power",
+    "Toughness",
+    "Keywords",
+    "RemoveKeywords",
+    "RemoveAllAbilities",
+    "Triggers",
+    "Abilities",
+    "staticAbilities",
+    "Replacements",
+    "RemoveCreatureTypes",
+    "RemoveCardTypes",
+    "RemoveLandTypes",
+    "AddAllCreatureTypes",
+    "ValidCards",
+    "HiddenKeywords",
+    "AtEOT",
+];
+
+/// Whether the line changes a target spell on the stack in more than its colours. An effect changes a spell like a
+/// permanent (CR 400.7a), but only colour changes of spells are read. (The header folded `TgtZone$` into the
+/// valid-string as `inZoneStack` by now.)
+fn spell_change_beyond_colors(p: &Params) -> bool {
+    [p.get("TgtZone"), p.get("ValidTgts")]
+        .into_iter()
+        .flatten()
+        .any(|text| text.contains("Stack"))
+        && NOT_FOR_SPELLS.iter().any(|key| p.has(key))
+}
+
+/// "Creatures target player controls": the group as it is now, of the permanents the target controls (CR 611.2c).
+fn of_target_player(ctx: &mut Ctx, p: &Params, valid: &str) -> Tr<Value> {
+    let player = subject(ctx, p, "", None)?;
+    let mut selector = selector_any(ctx, valid)?;
+    selector.push(json!({ "ControlledBy": player }));
+    Ok(json!({ "Each": selector }))
+}
+
 fn animate(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
     only(
         p,
@@ -1024,19 +1086,13 @@ fn animate(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
             "HiddenKeywords",
         ],
     )?;
-    // Effects change permanents only (the layers read nothing else): "target spell becomes red" would change nothing.
-    // (The header folded `TgtZone$` into the valid-string as `inZoneStack` by now.)
-    if [p.get("TgtZone"), p.get("ValidTgts")]
-        .into_iter()
-        .flatten()
-        .any(|text| text.contains("Stack"))
-    {
+    if spell_change_beyond_colors(p) {
         return unmapped("key:Animate.TgtZone=Stack");
     }
     let duration = animate_duration(ctx, p)?;
     // `AnimateAll` names the objects by a valid-string.
     let affected = match p.get("ValidCards") {
-        // "creatures target player controls": Forge narrows the group to the target's at run time, the selector would not.
+        Some(valid) if p.get("ValidTgts") == Some("Player") => of_target_player(ctx, p, valid)?,
         Some(_)
             if p.get("ValidTgts")
                 .is_some_and(|valid| valid.contains("Player")) =>

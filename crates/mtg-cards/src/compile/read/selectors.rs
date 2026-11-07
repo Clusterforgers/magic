@@ -1858,7 +1858,9 @@ pub fn spec_text(spec: &TargetSpec) -> Option<String> {
                     None => format!("target {phrase}"),
                 }
             }
-            Targetable::Together { .. } | Targetable::PerPlayer { .. } => return None,
+            Targetable::Together { .. }
+            | Targetable::PerPlayer { .. }
+            | Targetable::ChosenBy { .. } => return None,
             Targetable::Another { what, .. } => return another_text(what),
         });
     }

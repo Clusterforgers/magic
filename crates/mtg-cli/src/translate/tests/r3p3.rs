@@ -90,7 +90,7 @@ fn a_zone_of_a_targeted_player_moves_whole(
 
 #[test]
 fn a_targeted_battlefield_sweep_stays_a_gap() {
-    let text = "Name:T\nTypes:Sorcery\nA:SP$ ChangeZoneAll | ValidTgts$ Player | Origin$ Battlefield | Destination$ Hand | ChangeType$ Creature\n";
+    let text = "Name:T\nTypes:Sorcery\nA:SP$ ChangeZoneAll | ValidTgts$ Creature | Origin$ Battlefield | Destination$ Hand | ChangeType$ Creature\n";
     assert_eq!(gaps(text), ["key:ChangeZoneAll.ValidTgts"]);
 }
 
