@@ -254,6 +254,8 @@ pub struct FaceOption {
 /// Options while paying for a spell.
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 #[cfg_attr(feature = "ts", derive(ts_rs::TS))]
+// Each flag is a separate fact of the wire form the client reads by name.
+#[allow(clippy::struct_excessive_bools)]
 pub struct PayOptions {
     /// The spell being cast.
     pub spell: ObjectId,

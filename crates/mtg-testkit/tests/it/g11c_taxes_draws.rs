@@ -166,7 +166,7 @@ fn a_creature_that_must_block_is_not_bound_when_blocking_costs(
     let DecisionKind::DeclareBlockers(options) = &driver.decision()?.kind else {
         unreachable!();
     };
-    assert!(options.required.is_empty());
+    assert_eq!(options.required, []);
     driver.block(&[])?;
     assert!(!declared(&driver));
     Ok(())

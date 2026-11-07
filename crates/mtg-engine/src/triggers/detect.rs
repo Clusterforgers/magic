@@ -1491,6 +1491,7 @@ fn matching_player_action(
 /// the player who tapped for mana alone, so that damage to "that player" hits no creature that dealt it or land that was
 /// tapped; the player and the card of a discard and of a cycling; the blocker and the attacker; the attachment and what
 /// it is attached to.
+#[allow(clippy::too_many_lines)]
 fn matching_event(
     pattern: &TriggerPattern,
     happened: &Happened,

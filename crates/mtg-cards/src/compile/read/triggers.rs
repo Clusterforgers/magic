@@ -571,21 +571,17 @@ fn draw_event(r: &mut Reader<'_>, by: Ref, whose: &str) -> Option<TriggerPattern
     }
     let they = if whose == "your" { "you" } else { "they" };
     // "your first card during each of your draw steps".
-    let first = r
-        .words(&format!(
-            "{whose} first card during each of {whose} draw steps"
+    let first = if r.words(&format!(
+        "{whose} first card during each of {whose} draw steps"
+    )) {
+        Some(true)
+    } else {
+        r.need("a card")?;
+        // "except the first one they draw in each of their draw steps".
+        r.words(&format!(
+            "except the first one {they} draw in each of {whose} draw steps"
         ))
-        .then_some(true);
-    let first = match first {
-        Some(first) => Some(first),
-        None => {
-            r.need("a card")?;
-            // "except the first one they draw in each of their draw steps".
-            r.words(&format!(
-                "except the first one {they} draw in each of {whose} draw steps"
-            ))
-            .then_some(false)
-        }
+        .then_some(false)
     };
     Some(TriggerPattern::Drew {
         who: by,

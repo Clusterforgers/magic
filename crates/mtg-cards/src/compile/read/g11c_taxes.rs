@@ -18,7 +18,7 @@ use mtg_core::card::CardType;
 /// and "its controller".
 fn one_creature(selector: &Selector) -> Vec<(&'static str, &'static str)> {
     match selector.0.as_slice() {
-        [Pred::This] | [Pred::Is(Ref::This)] => vec![("~", "you pay")],
+        [Pred::This | Pred::Is(Ref::This)] => vec![("~", "you pay")],
         [Pred::Is(Ref::Attached)] => vec![
             ("enchanted creature", "its controller pays"),
             ("equipped creature", "its controller pays"),
@@ -30,7 +30,7 @@ fn one_creature(selector: &Selector) -> Vec<(&'static str, &'static str)> {
 /// What one taxed creature costs: "{2}", "1 life", "{1} for each +1/+1 counter on it".
 fn prices(mana: &ManaCostX, life: u32, per: &Amount) -> Vec<String> {
     let no_mana = mana.rest().symbols().is_empty() && !mana.has_x();
-    if mana.has_x() || (life > 0) == !no_mana {
+    if mana.has_x() || (life > 0) != no_mana {
         return Vec::new();
     }
     match per {

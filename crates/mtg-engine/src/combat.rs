@@ -553,20 +553,10 @@ pub(crate) fn block_options(state: &GameState, player: PlayerId) -> BlockOptions
         .collect();
     let (mut must_be_blocked, forced) = name_requirements(state, &mut blockers);
     let cant_alone = cant_block_alone_of(state, &blockers);
-    // CR 509.1d: a requirement that a cost be paid to obey is none, so a block a tax reaches is never required.
-    let taxed = |option: &BlockerOption, attacker: ObjectId| {
-        option.can_block.contains(&attacker)
-            && crate::block_tax::taxed(state, option.object, attacker)
-    };
-    must_be_blocked.retain(|attacker| !blockers.iter().any(|option| taxed(option, *attacker)));
+    crate::block_tax::unbind_attackers(state, &blockers, &mut must_be_blocked);
     let required = blockers
         .iter()
-        .filter(|option| {
-            !option
-                .can_block
-                .iter()
-                .any(|attacker| taxed(option, *attacker))
-        })
+        .filter(|option| !crate::block_tax::costs_to_block(state, option))
         .map(|option| option.object)
         .filter(|object| {
             forced.contains(object)

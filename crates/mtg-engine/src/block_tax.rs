@@ -18,7 +18,7 @@ use serde::{Deserialize, Serialize};
 use crate::announce::Next;
 use crate::answers::Outcome;
 use crate::cast::payment_decision;
-use crate::decision::{Decision, DecisionKind, PayOptions};
+use crate::decision::{BlockerOption, Decision, DecisionKind, PayOptions};
 use crate::error::{EngineError, IllegalAnswer};
 use crate::events::Event;
 use crate::help::Offered;
@@ -104,8 +104,34 @@ fn in_force(
 }
 
 /// Whether blocking `attacker` with `blocker` costs anything.
-pub(crate) fn taxed(state: &GameState, blocker: ObjectId, attacker: ObjectId) -> bool {
+fn taxed(state: &GameState, blocker: ObjectId, attacker: ObjectId) -> bool {
     in_force(state, blocker, attacker).next().is_some()
+}
+
+/// Whether some block the option offers costs anything; such a creature is bound by no requirement (CR 509.1d).
+pub(crate) fn costs_to_block(state: &GameState, option: &BlockerOption) -> bool {
+    !block_taxes(state).is_empty()
+        && option
+            .can_block
+            .iter()
+            .any(|attacker| taxed(state, option.object, *attacker))
+}
+
+/// Drops from `attackers` those that must be blocked but some creature could block only by paying (CR 509.1d): a
+/// requirement a cost would have to be paid to obey is none.
+pub(crate) fn unbind_attackers(
+    state: &GameState,
+    blockers: &[BlockerOption],
+    attackers: &mut Vec<ObjectId>,
+) {
+    if block_taxes(state).is_empty() {
+        return;
+    }
+    attackers.retain(|attacker| {
+        !blockers.iter().any(|option| {
+            option.can_block.contains(attacker) && taxed(state, option.object, *attacker)
+        })
+    });
 }
 
 /// What each blocker of the declaration costs, in mana and life: every tax that taxes it and an attacker it blocks,
