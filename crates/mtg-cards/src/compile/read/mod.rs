@@ -77,6 +77,7 @@ mod dk1a_attached;
 mod dk1c5_rooms;
 mod dk1d_by_paying;
 mod draws;
+mod e10c_granted;
 mod effects;
 mod equip_options;
 mod evasion;

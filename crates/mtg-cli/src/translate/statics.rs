@@ -295,8 +295,9 @@ fn paired() -> Value {
 }
 
 /// The keys a continuous static line reads.
-const CONTINUOUS: [&str; 32] = [
+const CONTINUOUS: [&str; 33] = [
     "Goad",
+    "AddReplacementEffect",
     "CantHaveKeyword",
     "RemoveCardTypes",
     "RemoveLandTypes",
@@ -504,6 +505,18 @@ fn continuous(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
     }
     if let Some(names) = p.get("AddStaticAbility") {
         mods.extend(granted_statics(ctx, names)?);
+    }
+    if let Some(names) = p.get("AddReplacementEffect") {
+        for name in names.split('&').map(str::trim) {
+            let Some(text) = ctx.svar(name).map(str::to_owned) else {
+                return unmapped("key:Static.Continuous.AddReplacementEffect-not-a-part");
+            };
+            mods.extend(
+                given_replacement(ctx, &text)?
+                    .into_iter()
+                    .map(|ability| json!({"GrantAbility": ability})),
+            );
+        }
     }
     let rule = quirk.map(|quirk| {
         let mut rule = json!({"rule": {"Combat": {"who": affected, "quirk": quirk}}});
@@ -1074,8 +1087,57 @@ fn half_stats(
     }
 }
 
-/// `AddStaticAbility$`: the named `S:` parts as static abilities the affected objects gain. Only a static (not a rule or a
-/// cost modifier) and one that gives nothing in turn can be granted.
+/// Whether an ability's `from` is the battlefield, the zone a permanent's granted ability works from.
+fn on_battlefield(inner: &Value) -> bool {
+    inner
+        .get("from")
+        .is_none_or(|from| from.as_str() == Some("Battlefield"))
+}
+
+/// Whether a translated static line is a rule of the game or a cost modifier a permanent can be given (CR 613.1f): one
+/// that works from the battlefield, and a cost modifier about other spells than the one it is on.
+pub(super) fn grantable_rule(ability: &Value) -> bool {
+    if let Some(rule) = ability.get("Rule") {
+        return on_battlefield(rule);
+    }
+    ability.get("CostModifier").is_some_and(|modifier| {
+        !modifier
+            .get("applies_to")
+            .is_some_and(|applies| applies.to_string().contains("\"This\""))
+    })
+}
+
+/// A replacement part (`AddReplacementEffect$`, an animation's `Replacements$`) as the abilities the affected objects
+/// gain: each works from the battlefield and replaces something other than the object's own entering, which is over
+/// for an object already in play.
+pub(super) fn given_replacement(ctx: &mut Ctx, text: &str) -> Tr<Vec<Value>> {
+    let mut given = Vec::new();
+    for ability in super::replacements::replacement_lines(ctx, text)? {
+        // "You can't lose the game" reads as a rule of the game.
+        if grantable_rule(&ability) {
+            given.push(ability);
+            continue;
+        }
+        let Some(inner) = ability.get("Replacement") else {
+            return unmapped("key:GrantReplacement-kind");
+        };
+        if !on_battlefield(inner) {
+            return unmapped("key:GrantReplacement-zone");
+        }
+        if inner
+            .get("when")
+            .and_then(|when| when.get("Enters"))
+            .is_some()
+        {
+            return unmapped("key:GrantReplacement-enters");
+        }
+        given.push(ability);
+    }
+    Ok(given)
+}
+
+/// `AddStaticAbility$`: the named `S:` parts as abilities the affected objects gain: a rule of the game, a cost modifier,
+/// or a static ability that gives nothing in turn.
 pub(super) fn granted_statics(ctx: &mut Ctx, names: &str) -> Tr<Vec<Value>> {
     let mut mods = Vec::new();
     for name in names.split('&').map(str::trim) {
@@ -1090,6 +1152,10 @@ pub(super) fn granted_statics(ctx: &mut Ctx, names: &str) -> Tr<Vec<Value>> {
             return unmapped("key:Static.Continuous.AddStaticAbility-shape");
         }
         let ability = static_line(ctx, text)?;
+        if grantable_rule(&ability) {
+            mods.push(json!({"GrantAbility": ability}));
+            continue;
+        }
         let Some(inner) = ability.get("Static") else {
             return unmapped("key:Static.Continuous.AddStaticAbility-not-a-static");
         };

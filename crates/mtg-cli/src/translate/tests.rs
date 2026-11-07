@@ -744,6 +744,7 @@ fn the_end_step_without_your_is_every_players() {
 mod af1;
 mod allgaps;
 mod e10b;
+mod e10c;
 mod en4_counter;
 mod en4_cumulative;
 mod en4_look;

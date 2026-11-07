@@ -182,12 +182,48 @@ pub(crate) fn definition_has_static(definition: &CardDefinition) -> bool {
     })
 }
 
-/// Whether a card with this definition prints a rule of the game as an ability (`GameState::rules`).
+/// Whether a card with this definition prints a rule of the game as an ability or a static ability that grants one
+/// (`GameState::rules`).
 pub(crate) fn definition_has_rule(definition: &CardDefinition) -> bool {
     definition
         .rules
         .iter()
-        .any(|rules| matches!(**rules, Ability::Rule { .. }))
+        .any(|rules| is_rule(rules) || static_grants(rules, is_rule))
+}
+
+/// Whether `ability` is a static ability that grants an ability `kind` accepts (CR 613.1f).
+fn static_grants(ability: &Ability, kind: impl Fn(&Ability) -> bool) -> bool {
+    let Ability::Static { mods, .. } = ability else {
+        return false;
+    };
+    mods.iter()
+        .any(|given| matches!(given, WantedModification::GrantAbility(granted) if kind(granted)))
+}
+
+/// Whether the object `id` prints an ability `kind` accepts, or holds one an effect or a static ability gave it: the
+/// cheap check before its abilities are read for rules or cost modifiers.
+pub(crate) fn may_hold(
+    state: &GameState,
+    object: &GameObject,
+    printed: fn(&CardDefinition) -> bool,
+    kind: fn(&Ability) -> bool,
+) -> bool {
+    printed(object.card())
+        || state.layers().get(object.id()).is_some_and(|held| {
+            held.abilities
+                .iter()
+                .any(|held| !held.address.source.is_printed() && kind(&held.body))
+        })
+}
+
+/// Whether an ability is a rule of the game.
+pub(crate) const fn is_rule(ability: &Ability) -> bool {
+    matches!(ability, Ability::Rule { .. })
+}
+
+/// Whether an ability is a cost modifier.
+pub(crate) const fn is_cost_modifier(ability: &Ability) -> bool {
+    matches!(ability, Ability::CostModifier { .. })
 }
 
 /// Whether a card with this definition prints that counters remain on it as it changes zones (CR 122.2); the rule works
@@ -209,9 +245,11 @@ pub(crate) fn w17b_definition_keeps_counters(definition: &CardDefinition) -> boo
 pub(crate) fn definition_has_cost_modifier(definition: &CardDefinition) -> bool {
     let modifier = |rules: &Ability| match rules {
         Ability::CostModifier { .. } => true,
-        Ability::Static { mods, .. } => mods
-            .iter()
-            .any(|given| matches!(given, WantedModification::AddKeyword(Keyword::Affinity(_)))),
+        Ability::Static { mods, .. } => {
+            mods.iter()
+                .any(|given| matches!(given, WantedModification::AddKeyword(Keyword::Affinity(_))))
+                || static_grants(rules, is_cost_modifier)
+        }
         _ => false,
     };
     definition.rules.iter().any(|rules| match &**rules {

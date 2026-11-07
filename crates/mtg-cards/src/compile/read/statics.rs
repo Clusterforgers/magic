@@ -952,6 +952,7 @@ pub(super) fn given_text(mods: &[Modification]) -> Option<String> {
         {
             Some(format!("\"{}\"", render::ability(ability)?))
         }
+        [Modification::GrantAbility(_), ..] => super::e10c_granted::e10c_given_text(mods),
         [
             keyword @ Modification::AddKeyword(_),
             Modification::GrantAbility(ability),
@@ -1635,6 +1636,9 @@ fn rule_texts(rule: &GameRule, condition: Option<&Condition>, from: ZoneKind) ->
             ZoneKind::Battlefield,
         ) => super::w17b_statics::w17b_texts(rule),
         (GameRule::Combat { .. }, ZoneKind::Battlefield) => super::r7d_statics::combat_texts(rule),
+        (GameRule::UntapDuring { .. }, ZoneKind::Battlefield) => {
+            super::e10c_granted::e10c_untap_during_texts(rule)
+        }
         (GameRule::CanBeCommander, ZoneKind::Battlefield) => {
             vec!["~ can be your commander".to_owned()]
         }

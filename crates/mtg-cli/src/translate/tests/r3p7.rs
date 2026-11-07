@@ -332,8 +332,8 @@ fn a_granted_static_line_is_a_static_the_creatures_gain() {
 }
 
 #[rstest]
-#[case::a_rule(
-    "Mode$ CantGainLife | ValidPlayer$ You",
+#[case::a_rule_of_another_zone(
+    "Mode$ Continuous | Affected$ Card.Self | AffectedZone$ Graveyard | EffectZone$ Graveyard | MayPlay$ True",
     "key:Static.Continuous.AddStaticAbility-not-a-static"
 )]
 #[case::grants_in_turn(

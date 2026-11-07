@@ -18,10 +18,10 @@
                     {
                       "ModifyPT": {
                         "power": {
-                          "Count": [{ "Subtype": "Elf" }, { "ControlledBy": "You" }, "Other"]
+                          "Count": [{ "Subtype": "Elf" }, "Other", { "ControlledBy": "You" }]
                         },
                         "toughness": {
-                          "Count": [{ "Subtype": "Elf" }, { "ControlledBy": "You" }, "Other"]
+                          "Count": [{ "Subtype": "Elf" }, "Other", { "ControlledBy": "You" }]
                         }
                       }
                     }

@@ -1,5 +1,5 @@
-//! `Animate` abilities: the keywords and abilities an animate line takes away, and the triggered and activated abilities
-//! its `Triggers$` and `Abilities$` give to the object.
+//! `Animate` abilities: the keywords and abilities an animate line takes away, and the triggered, activated, static and
+//! replacement abilities its `Triggers$`, `Abilities$`, `staticAbilities$` and `Replacements$` give to the object.
 
 use serde_json::{Value, json};
 
@@ -22,6 +22,7 @@ pub fn abilities(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
         ("Triggers", Given::Trigger),
         ("Abilities", Given::Ability),
         ("staticAbilities", Given::Static),
+        ("Replacements", Given::Replacement),
     ] {
         let Some(names) = p.get(key) else { continue };
         for name in names.split(',').map(str::trim) {
@@ -32,6 +33,7 @@ pub fn abilities(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
                 Given::Trigger => Ok(vec![super::triggers::triggered(ctx, &text)?]),
                 Given::Ability => super::ability::ability_line(ctx, &text),
                 Given::Static => given_static(ctx, &text).map(|given| vec![given]),
+                Given::Replacement => super::statics::given_replacement(ctx, &text),
             })?;
             mods.extend(given.into_iter().map(|a| json!({"GrantAbility": a})));
         }
@@ -73,11 +75,16 @@ enum Given {
     Trigger,
     Ability,
     Static,
+    Replacement,
 }
 
-/// A static ability the object gains: only a `Static` that does not itself give abilities, the form the engine grants.
+/// A static ability the object gains: a rule of the game, a cost modifier, or a `Static` that does not itself give
+/// abilities, the forms the engine grants (CR 613.1f).
 fn given_static(ctx: &mut Ctx, text: &str) -> Tr<Value> {
     let given = super::statics::static_line(ctx, text)?;
+    if super::statics::grantable_rule(&given) {
+        return Ok(given);
+    }
     let Some(inner) = given.get("Static") else {
         return unmapped("key:Animate.staticAbilities-kind");
     };

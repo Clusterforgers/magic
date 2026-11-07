@@ -29,6 +29,9 @@ pub(super) fn combat_texts(rule: &GameRule) -> Vec<String> {
         CombatQuirk::BlockIgnoringShadow => {
             "~ can block creatures with shadow as though they didn't have shadow"
         }
+        CombatQuirk::AssignsAsUnblocked => {
+            "You may have ~ assign its combat damage as though it weren't blocked"
+        }
         _ => return Vec::new(),
     };
     vec![text.to_owned()]

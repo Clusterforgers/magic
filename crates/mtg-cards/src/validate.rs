@@ -1866,15 +1866,25 @@ impl<'a> Walker<'a> {
         }
     }
 
-    /// An ability a modification grants is checked as the ability it is, in a scope of its own. Only an activated, a
-    /// triggered or a static one can be granted: a keyword is `AddKeyword`, and the others work only as printed.
+    /// An ability a modification grants is checked as the ability it is, in a scope of its own. An activated, a
+    /// triggered, a static, a rule, a replacement or a cost-modifying ability can be granted (CR 613.1f): a keyword is
+    /// `AddKeyword`, and the others work only as printed. A granted rule or replacement works from the battlefield, where
+    /// the layers give it.
     fn granted(&mut self, granted: &Ability) {
-        if !matches!(
-            granted,
-            Ability::Activated { .. } | Ability::Triggered { .. } | Ability::Static { .. }
-        ) {
-            self.problem("only an activated, a triggered or a static ability can be granted (a keyword is `AddKeyword`)");
-            return;
+        match granted {
+            Ability::Activated { .. }
+            | Ability::Triggered { .. }
+            | Ability::Static { .. }
+            | Ability::CostModifier { .. } => {}
+            Ability::Rule { from, .. } | Ability::Replacement { from, .. } => {
+                if !from.is_battlefield() {
+                    self.problem("a granted rule or replacement works from the battlefield");
+                }
+            }
+            _ => {
+                self.problem("only an activated, a triggered, a static, a rule, a replacement or a cost-modifying ability can be granted (a keyword is `AddKeyword`)");
+                return;
+            }
         }
         // A given static ability is named by what gives it, so it cannot give abilities in turn, and a characteristic-defining
         // ability is printed on the card it defines (CR 604.3a).
@@ -5383,11 +5393,11 @@ mod tests {
     #[rstest]
     #[case::a_spell_is_not_granted(
         r#"{"Static":{"affected":"This","mods":[{"GrantAbility":{"Spell":{"effects":[{"Draw":{}}]}}}]}}"#,
-        "abilities[0].Static.mods[0]: only an activated, a triggered or a static ability can be granted"
+        "abilities[0].Static.mods[0]: only an activated, a triggered, a static, a rule, a replacement or a cost-modifying ability can be granted"
     )]
     #[case::a_keyword_is_not_granted_this_way(
         r#"{"Static":{"affected":"This","mods":[{"GrantAbility":{"Keyword":"Flying"}}]}}"#,
-        "abilities[0].Static.mods[0]: only an activated, a triggered or a static ability can be granted"
+        "abilities[0].Static.mods[0]: only an activated, a triggered, a static, a rule, a replacement or a cost-modifying ability can be granted"
     )]
     #[case::a_granted_static_cannot_grant_in_turn(
         r#"{"Static":{"affected":"This","mods":[{"GrantAbility":{"Static":{"affected":"This","mods":[{"GrantAbility":{"Activated":{"cost":["Tap"],"effects":[{"Draw":{}}]}}}]}}}]}}"#,
@@ -5614,9 +5624,9 @@ mod tests {
         r#"{"Spell":{"effects":[{"Continuous":{"affected":"This","mods":["SetChosenColor"],"duration":"UntilEndOfTurn"}}]}}"#,
         "the choice the source made as it entered is read by its static ability only"
     )]
-    #[case::a_rule_is_not_granted(
-        r#"{"Static":{"affected":"This","mods":[{"GrantAbility":{"Rule":{"rule":{"CantDraw":"You"}}}}]}}"#,
-        "only an activated, a triggered or a static ability can be granted"
+    #[case::a_granted_rule_works_from_the_battlefield(
+        r#"{"Static":{"affected":"This","mods":[{"GrantAbility":{"Rule":{"rule":{"CantBeCountered":"This"},"from":"Stack"}}}]}}"#,
+        "a granted rule or replacement works from the battlefield"
     )]
     fn a_bad_rule_zone_cost_or_state_is_named_where_it_is_wrong(
         #[case] json: &str,

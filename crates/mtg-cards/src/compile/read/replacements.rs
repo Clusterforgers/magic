@@ -327,13 +327,20 @@ fn zone_change(
         (None, Some(ZoneKind::Exile)) => vec!["be exiled".to_owned()],
         _ => Vec::new(),
     };
+    let mut thens = instead(by);
+    // A permanent that leaves goes to exile wherever it was going: "instead of putting it anywhere else".
+    if (from, to, by)
+        == (
+            Some(ZoneKind::Battlefield),
+            None,
+            &ReplaceBy::MoveTo(ZoneKind::Exile),
+        )
+    {
+        thens.push("exile it instead of putting it anywhere else");
+    }
     events
         .iter()
-        .flat_map(|event| {
-            instead(by)
-                .into_iter()
-                .map(move |then| (event.clone(), then))
-        })
+        .flat_map(|event| thens.iter().map(move |then| (event.clone(), *then)))
         .flat_map(|(event, then)| {
             subjects
                 .iter()
