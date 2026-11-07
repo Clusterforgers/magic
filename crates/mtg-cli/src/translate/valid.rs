@@ -755,11 +755,43 @@ pub fn target_spec(ctx: &Ctx, params: &Params, zone: Option<&str>) -> Tr<Value> 
     } else {
         valid
     };
+    let printed = ctx.printed.as_deref().unwrap_or_default();
+    let oracle = ctx.oracle.to_lowercase();
+    // A script that says "target player" where Oracle says "target opponent" (Dread Rider) follows Oracle.
+    let valid = if valid == "Player"
+        && printed.contains("target player ")
+        && !oracle.contains(printed)
+        && oracle.contains(&printed.replace("target player ", "target opponent "))
+    {
+        "Opponent"
+    } else {
+        valid
+    };
+    // "with mana value X or less" that the script does not check (Stir the Grave).
+    if printed.contains("mana value x or less") && !valid.contains("cmcLE") {
+        return unmapped("target:script-lacks-mana-value");
+    }
+    // A target "from your graveyard" the script takes from any graveyard (Hana Kami).
+    let own_graveyard = zone == Some("Graveyard")
+        && printed.contains("target ")
+        && printed.matches("graveyard").count() == 1
+        && printed.contains("from your graveyard")
+        && ![
+            "You", "Opp", "Defined", "Targeted", "Other", "Owner", "Ctrl",
+        ]
+        .iter()
+        .any(|word| valid.contains(word));
     // A target being chosen reads no other target of its line (`filter::Scope::Targeting`).
     let before = ctx.scope.replace(super::filter::Scope::Targeting);
     let what = target_what(ctx, valid, zone);
     ctx.scope.set(before);
     let mut what = what?;
+    if own_graveyard
+        && let Some(Value::Array(selector)) = what.get_mut("Object")
+        && !selector.iter().any(|pred| pred.get("OwnedBy").is_some())
+    {
+        selector.push(json!({"OwnedBy": "You"}));
+    }
     // Outside the battlefield the controller is the owner ("from your graveyard"), which the text states in its own words.
     if matches!(zone, None | Some("Battlefield"))
         && super::any_player::narrows_target(ctx.oracle, valid)
