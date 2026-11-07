@@ -769,10 +769,18 @@ fn draw(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
     match p.get("Upto") {
         None => Ok(vec![draw]),
         Some("True") => {
-            if matches!(who.as_str(), Some("Opponents" | "EachPlayer")) {
-                return unmapped("key:Draw.Upto.group");
-            }
             let bind = ctx.fresh("number");
+            if matches!(who.as_str(), Some("Opponents" | "EachPlayer")) {
+                // Each of the players picks their own number, in turn order.
+                let each = ctx.fresh("player");
+                let one = json!({ "Bound": each });
+                draw["Draw"]["who"] = one.clone();
+                draw["Draw"]["count"] = json!({"ChosenAs": bind});
+                let choose = json!({"ChooseValue": {"who": one, "kind": {"Number": [0, count]}, "as": bind}});
+                return Ok(vec![
+                    json!({"RepeatEach": {"over": who, "as": each, "effects": [choose, draw]}}),
+                ]);
+            }
             draw["Draw"]["count"] = json!({"ChosenAs": bind});
             Ok(vec![
                 json!({"ChooseValue": {"who": who, "kind": {"Number": [0, count]}, "as": bind}}),

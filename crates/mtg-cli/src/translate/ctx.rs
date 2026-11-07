@@ -46,6 +46,8 @@ impl World {
             subtypes.extend(known_subtypes(&face.types));
             names.insert(face.name.clone());
         }
+        // Creature types that no script's own type line names: a land becomes one.
+        subtypes.extend(ONLY_BECOMES.iter().map(|word| (*word).to_owned()));
         World {
             subtypes,
             tokens,
@@ -54,6 +56,9 @@ impl World {
         }
     }
 }
+
+/// Creature types a card only becomes ("becomes a 3/3 Llama creature"), so that no type line of the checkout names them.
+const ONLY_BECOMES: [&str; 2] = ["Blinkmoth", "Llama"];
 
 /// The card types a `Types:` line may start with.
 pub const CARD_TYPES: [&str; 11] = [

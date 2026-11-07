@@ -1,8 +1,8 @@
 //! The subtypes the card data names, to tell a real subtype from a word of a valid-string (`Opponent`, `Spell`).
 
-/// Every subtype of a type line in the Oracle data, sorted bytewise. Two types of tokens with no card of the
-/// type (`Blinkmoth`, `Caribou`, `Prism`) are added. `You` is left out: one planeswalker has it, and a
-/// valid-string that says `You` means the player.
+/// Every subtype of a type line in the Oracle data, sorted bytewise. Types with no card of the type are added: three
+/// of tokens (`Blinkmoth`, `Caribou`, `Prism`) and the `Llama` a land becomes. `You` is left out: one planeswalker has it,
+/// and a valid-string that says `You` means the player.
 pub const KNOWN_SUBTYPES: &[&str] = &[
     "Abian",
     "Abyss",
@@ -352,6 +352,7 @@ pub const KNOWN_SUBTYPES: &[&str] = &[
     "Licid",
     "Liliana",
     "Lizard",
+    "Llama",
     "Lobster",
     "Locus",
     "Lolth",

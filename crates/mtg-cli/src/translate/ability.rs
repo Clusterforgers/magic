@@ -115,6 +115,10 @@ fn spell(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
         "ThirdSVarCompare",
     ]);
     let effects = chain(ctx, p)?;
+    // A spell whose line does nothing (its abilities are all keywords, as on a cascade spell) has no spell ability to resolve.
+    if effects.is_empty() && ctx.targets.is_empty() && extra.is_none() && only.is_none() {
+        return Ok(Vec::new());
+    }
     let mut ability = json!({ "effects": effects });
     if !ctx.targets.is_empty() {
         ability["targets"] = Value::Array(ctx.targets.clone());

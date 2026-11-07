@@ -208,7 +208,7 @@ fn other_if_worded(ctx: &Ctx, verb: &str, number: &str, what: &str) -> Tr<String
             .iter()
             .any(|stem| matches!(stem.as_str(), "card" | "perm") || noun.starts_with(stem))
     };
-    let text = ctx.oracle.to_lowercase().replace("\\n", " ");
+    let text = worded_by_cost(ctx);
     let words: Vec<&str> = text
         .split(|c: char| !c.is_alphanumeric())
         .filter(|w| !w.is_empty())
@@ -261,6 +261,42 @@ fn other_if_worded(ctx: &Ctx, verb: &str, number: &str, what: &str) -> Tr<String
         })
         .collect::<Vec<_>>()
         .join(";"))
+}
+
+/// The lowercase Oracle text that words the ability being read: the lines whose cost opens with the mana of the script's
+/// cost (a card that words two abilities differently is then not ambiguous), the whole text when no line tells.
+fn worded_by_cost(ctx: &Ctx) -> String {
+    let all = ctx.oracle.to_lowercase();
+    let mana: Option<String> = ctx.ability_cost.as_deref().and_then(|cost| {
+        let mut symbols = String::new();
+        for token in cost.split_whitespace().filter(|t| !t.contains('<')) {
+            let plain = token.chars().all(|c| c.is_ascii_digit())
+                || matches!(token, "W" | "U" | "B" | "R" | "G" | "C");
+            if plain {
+                symbols.push_str(&format!("{{{}}}", token.to_lowercase()));
+            } else if token != "T" {
+                return None;
+            }
+        }
+        (!symbols.is_empty()).then_some(symbols)
+    });
+    let lines: Vec<&str> = all.split("\\n").collect();
+    let own: Vec<&str> = mana
+        .map(|mana| {
+            lines
+                .iter()
+                .copied()
+                .filter(|l| {
+                    l.strip_prefix(&mana)
+                        .is_some_and(|rest| rest.starts_with([',', ':']))
+                })
+                .collect()
+        })
+        .unwrap_or_default();
+    if own.is_empty() {
+        return all.replace("\\n", " ");
+    }
+    own.join(" ")
 }
 
 fn discard(ctx: &Ctx, number: &str, what: &str) -> Tr<Value> {

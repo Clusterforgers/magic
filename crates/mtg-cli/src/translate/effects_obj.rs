@@ -149,7 +149,9 @@ fn all_of(ctx: &mut Ctx, p: &Params, verb: &str) -> Tr<Value> {
     if verb == "Tap" {
         only(p, verb, &["ValidCards", "ValidTgts", "RememberTapped"])?;
     } else {
-        only(p, verb, &["ValidCards", "ValidTgts"])?;
+        // Who untaps (`ControllerUntaps$`) changes nothing: an untap makes no choice.
+        only(p, verb, &["ValidCards", "ValidTgts", "ControllerUntaps"])?;
+        let _ = p.has("ControllerUntaps");
     }
     let valid = p.get("ValidCards").unwrap_or_default();
     let mut effect = json!({ verb: {"what": {"Each": frame::all_matching(ctx, p, verb, valid)?}} });
@@ -777,29 +779,32 @@ fn hidden_effects(p: &Params, affected: &Value, duration: &str) -> Tr<Vec<Value>
         .map(|found| found.concat())
 }
 
+/// The keys a `Pump` line reads.
+const PUMP_KEYS: [&str; 16] = [
+    "NumAtt",
+    "NumDef",
+    "KW",
+    "KWChoice",
+    "Defined",
+    "ValidTgts",
+    "Duration",
+    "IsCurse",
+    "TargetMin",
+    "TargetMax",
+    "RememberObjects",
+    "PumpZone",
+    "AtEOT",
+    "ReplaceDyingDefined",
+    "CanBlockAmount",
+    "CanBlockAny",
+];
+
 fn pump(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
-    only(
-        p,
-        "Pump",
-        &[
-            "NumAtt",
-            "NumDef",
-            "KW",
-            "KWChoice",
-            "Defined",
-            "ValidTgts",
-            "Duration",
-            "IsCurse",
-            "TargetMin",
-            "TargetMax",
-            "RememberObjects",
-            "PumpZone",
-            "AtEOT",
-            "ReplaceDyingDefined",
-            "CanBlockAmount",
-            "CanBlockAny",
-        ],
-    )?;
+    only(p, "Pump", &PUMP_KEYS)?;
+    // A line with no parameter at all ("SP$ Pump" on a spell whose abilities are all keywords) does nothing when it resolves.
+    if !PUMP_KEYS.iter().any(|key| p.has(key)) {
+        return Ok(Vec::new());
+    }
     let duration = pump_duration(p)?;
     let subject = subject(ctx, p, "Self", None)?;
     if let Some(found) = player_keywords(p, &subject, duration) {
@@ -1077,6 +1082,7 @@ fn animate(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
             "RemoveCreatureTypes",
             "RemoveCardTypes",
             "RemoveLandTypes",
+            "RemoveTypes",
             "AddAllCreatureTypes",
             "ValidCards",
             "Duration",
@@ -1084,10 +1090,21 @@ fn animate(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
             "TargetMax",
             "AtEOT",
             "HiddenKeywords",
+            "LeaveBattlefield",
+            "sVars",
         ],
     )?;
     if spell_change_beyond_colors(p) {
         return unmapped("key:Animate.TgtZone=Stack");
+    }
+    // `sVars$ XMustAttack` only hints the computer player to attack with the creature.
+    if let Some(names) = p.get("sVars")
+        && !names.split(',').map(str::trim).all(|name| {
+            ctx.svar(name)
+                .is_some_and(|text| text.trim() == "SVar:MustAttack:True")
+        })
+    {
+        return unmapped("key:Animate.sVars");
     }
     let duration = animate_duration(ctx, p)?;
     // `AnimateAll` names the objects by a valid-string.
@@ -1146,8 +1163,22 @@ fn animate(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
     if mods.is_empty() {
         return unmapped("key:Animate.nothing");
     }
+    let rules = super::effects_animate::rule_effects(p, &affected, duration)?;
     let mut effects =
         vec![json!({"Continuous": {"affected": affected, "mods": mods, "duration": duration}})];
+    effects.extend(rules);
+    // "If it would leave the battlefield, exile it instead of putting it anywhere else": a replacement for that object.
+    match p.get("LeaveBattlefield") {
+        None => {}
+        Some("Exile") if duration == "Forever" && !p.has("ValidCards") => {
+            let what = json!([{"Is": affected}]);
+            effects.push(json!({"Shield": {
+                "when": {"ZoneChange": {"what": what, "from": "Battlefield"}},
+                "by": {"MoveTo": "Exile"},
+                "duration": "Forever"}}));
+        }
+        Some(_) => return unmapped("key:Animate.LeaveBattlefield"),
+    }
     if let Some(word) = p.get("AtEOT") {
         if p.has("ValidCards") {
             return unmapped("key:Animate.AtEOT-of-a-group");
@@ -1178,6 +1209,23 @@ pub fn color_names(colors: &str) -> Tr<Vec<&'static str>> {
 /// `RemoveCardTypes$` makes the card types the line names the only ones (it needs `Types$`), `RemoveLandTypes$` the basic
 /// land types it names the only land types, and `AddAllCreatureTypes$` adds every creature type.
 fn type_mods(ctx: &Ctx, p: &Params) -> Tr<Vec<Value>> {
+    let mut mods = type_mods_set(ctx, p)?;
+    // `RemoveTypes$ Artifact`: "isn't an artifact". Only card types go: taking a subtype away has no modification.
+    if let Some(removed) = p.get("RemoveTypes") {
+        if p.get("RemoveCardTypes") == Some("True") {
+            return unmapped("key:Animate.RemoveTypes");
+        }
+        for word in removed.split(',').map(str::trim) {
+            if !super::ctx::CARD_TYPES.contains(&word) {
+                return unmapped("key:Animate.RemoveTypes");
+            }
+            mods.push(json!({"RemoveType": word}));
+        }
+    }
+    Ok(mods)
+}
+
+fn type_mods_set(ctx: &Ctx, p: &Params) -> Tr<Vec<Value>> {
     const BASIC_LAND_TYPES: [&str; 5] = ["Plains", "Island", "Swamp", "Mountain", "Forest"];
     let (remove_cards, remove_lands) = (
         p.get("RemoveCardTypes") == Some("True"),
