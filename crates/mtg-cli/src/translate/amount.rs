@@ -477,10 +477,11 @@ fn count_base(ctx: &Ctx, base: &str) -> Tr<Value> {
             || unmapped("amount:TriggerRememberAmount"),
             |name| Ok(json!({ "Bound": name })),
         ),
-        "ChosenNumber" => ctx.chosen_number.as_ref().map_or_else(
-            || unmapped("amount:ChosenNumber-without-a-choice"),
-            |name| Ok(json!({"ChosenAs": name})),
-        ),
+        "ChosenNumber" => match (&ctx.set_number, &ctx.chosen_number) {
+            (Some(number), _) => Ok(number.clone()),
+            (None, Some(name)) => Ok(json!({"ChosenAs": name})),
+            (None, None) => unmapped("amount:ChosenNumber-without-a-choice"),
+        },
         "CardPower" => Ok(stat_of_this("Power")),
         "CardToughness" => Ok(stat_of_this("Toughness")),
         "CardManaCost" => Ok(stat_of_this("ManaValue")),

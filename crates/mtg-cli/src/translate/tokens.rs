@@ -60,14 +60,28 @@ fn token(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
     Ok(created)
 }
 
-/// A token line whose owner is its own target ("target opponent creates a 4/4 Horror").
+/// A token line whose owner is its own target ("target opponent creates a 4/4 Horror"); with no `TokenOwner$` Forge
+/// gives the tokens to the targeted player ("target player creates a 1/1 Squirrel").
 fn owner_targeted(p: &Params) -> bool {
     p.has("ValidTgts")
         && !p.has("AttachedTo")
-        && matches!(
-            p.get("TokenOwner"),
-            Some("Targeted" | "TargetedPlayer" | "ThisTargetedPlayer")
-        )
+        && match p.get("TokenOwner") {
+            Some("Targeted" | "TargetedPlayer" | "ThisTargetedPlayer") => true,
+            None => player_targets(p),
+            Some(_) => false,
+        }
+}
+
+/// A line whose tokens are yours and whose target players only the count reads ("create a token for each nonland card in
+/// that player's graveyard").
+fn counted_targets(p: &Params) -> bool {
+    p.get("TokenOwner") == Some("You") && !p.has("AttachedTo") && player_targets(p)
+}
+
+/// Whether the line targets players only: a target the count or the owner reads.
+fn player_targets(p: &Params) -> bool {
+    p.get("ValidTgts")
+        .is_some_and(|valid| matches!(valid, "Player" | "Opponent" | "Player.Opponent"))
 }
 
 fn token_create(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
@@ -164,12 +178,16 @@ fn token_of(ctx: &mut Ctx, p: &Params, script: &str) -> Tr<Vec<Value>> {
         }
         token = json!({"Sized": size});
     }
-    let count = amount(ctx, p.get("TokenAmount").unwrap_or("1"))?;
+    // The target comes first: the count may read it ("for each nonland card in that player's graveyard").
     let who = if owner_targeted(p) {
         super::valid::subject(ctx, p, "", None)?
+    } else if counted_targets(p) {
+        super::valid::subject(ctx, p, "", None)?;
+        json!("You")
     } else {
         defined(ctx, p.get("TokenOwner").unwrap_or("You"))?
     };
+    let count = amount(ctx, p.get("TokenAmount").unwrap_or("1"))?;
     if !flag(p, "TokenTapped")? && says_tapped_token(ctx.oracle, p.get("TokenScript").unwrap_or(""))
     {
         // The script makes them untapped where the card says "create a tapped ... token".
@@ -516,7 +534,7 @@ fn spend_filter(restriction: &str) -> Tr<Value> {
 /// on a creature through the state-based actions (CR 704.5y).
 fn attached(ctx: &mut Ctx, p: &Params, create: &mut Value) -> Tr<Option<Value>> {
     let Some(word) = p.get("AttachedTo") else {
-        if p.has("ValidTgts") && !owner_targeted(p) {
+        if p.has("ValidTgts") && !owner_targeted(p) && !counted_targets(p) {
             return unmapped("key:Token.ValidTgts");
         }
         return Ok(None);
