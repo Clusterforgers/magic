@@ -681,6 +681,10 @@ object: ObjectId, } } | { "Unsuspected": {
 /**
  * The permanent.
  */
+object: ObjectId, } } | { "Solved": { 
+/**
+ * The permanent.
+ */
 object: ObjectId, } } | { "BecameCopy": BecameCopy } | { "SpellCopied": SpellCopy } | { "CardCopied": CardCopy } | { "CopyCeased": { 
 /**
  * The copy.

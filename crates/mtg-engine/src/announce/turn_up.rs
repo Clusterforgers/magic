@@ -145,7 +145,8 @@ pub(crate) fn turned_up_counters(state: &GameState, card: ObjectId) -> Vec<Event
         return Vec::new();
     };
     let scope = crate::resolve::Scope::announcing(state, controller, object.reference());
-    crate::ability_reader::printed_rules(object.card())
+    // The card as printed: while it is face down, `card` is the face-down 2/2 it shows.
+    crate::ability_reader::printed_rules(&object.def)
         .filter_map(|rules| match &**rules {
             Ability::Replacement {
                 when: ReplaceWhen::TurnedFaceUp { what },

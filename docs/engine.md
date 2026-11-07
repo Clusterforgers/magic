@@ -158,6 +158,8 @@ The rules of the data are in [cards-dsl.md](cards-dsl.md) (Triggers, replacement
 - A trigger that triggers while others are going on the stack belongs to the next round (CR 603.3b). A trigger whose target specification has too few legal targets (CR 603.3d), or whose controller or source has left the game, is removed (`TriggerRemoved`). Nothing goes on the stack in the untap step.
 - Resolution: an ability object keeps its trigger's cause, source snapshot and (for a delayed one) the names it took. An intervening "if" is judged by `Scope::holds` when it triggers and again as it resolves. Delayed triggers are created by `DelayedTrigger` (`DelayedTriggerCreated`); their pattern may name what the resolution bound.
 - Events: `AbilityTriggered`, `TriggersOrdered`, `TriggerRemoved`, `DelayedTriggerCreated`, `DelayedTriggerExpired`; visibility in [protocol.md](protocol.md).
+- Haunt (CR 702.55): the keyword adds "when this dies" and "when this spell card is put into a graveyard after resolving" (`TriggerPattern::ResolvedToGraveyard`), each exiling the card haunting a target creature (`ZoneCause::Haunting`, `GameObject::haunting`); the card's own ability works from exile on `Pred::HauntedBy`, judged against the creature as it last was.
+- Opening hand (CR 103.6): the opening question lists cards with `Ability::OpeningHand` (onto the battlefield) and `Ability::OpeningReveal` (revealed; each sets up a one-time delayed trigger owned by its player).
 
 ## Combat and keywords
 
@@ -192,6 +194,7 @@ The rules of the data are in [cards-dsl.md](cards-dsl.md) (Triggers, replacement
 - Control: `controller_of` is the controller after layer 2; `GameObject::controller` is the one the object entered under.
 - Restrictions (`CantAttack`, `CantBlock`, `DoesntUntap`, `CantBeBlocked`, limits) have no layer and are read through `characteristics` (`cant_attack`, `cant_block`, ...), asked by `can_attack` and `block_options`.
 - Durations (`ContinuousEffect::is_active`): `UntilEndOfTurn` ends in the cleanup step in the batch that removes damage (CR 514.2), so a creature that a pump kept alive survives it. `Engine::add_continuous_effect` and `add_continuous_effect_from` register an effect with no card behind it, the hook the tests use.
+- Designations: a suspected permanent has menace and "can't block" from the base of layer 6 (`Held::suspect_cant_block`), so losing all abilities removes both (CR 701.60c); a solved Case (`Event::Solved`, CR 719.3) stays solved until it leaves. "As ~ is turned face up" counters (`ReplaceWhen::TurnedFaceUp`) are put on with the turn-up event (CR 708.8).
 - Counters in layer 7c: counters named for their numbers change power and toughness; keyword counters grant the keyword. A permanent with both a +1/+1 and a -1/-1 counter loses as many of each as it has of the kind it has fewer of (CR 704.5q).
 
 ## Copies
@@ -208,6 +211,7 @@ Rules that change how the game is played rather than the objects in it (`Effect:
 
 - `rules.rs` gathers the rules in force once for a state: the resolved `Effect::Rule`s that still last (`GameState.rule_effects`, logged by `RuleCreated` and ended by `RuleExpired`) and the static ones. A rule names players or objects through references that a static ability resolves whenever the state changes.
 - Each rule has one reader, asked by the one place that decides it (`must_attack` and `must_block` when the declaration is offered, attack taxes in `attack_tax.rs`, block taxes in `block_tax.rs`, cast permissions through `Rule::MayCast` and `rules::cast_permissions` (`spend_as` lets mana of any type or color pay: `ways.rs` prices the cast with `ManaCost::paid_by_any_mana`, or `paid_by_any_color`, which keeps `{C}`, for any color), prohibitions through `prohibit::forbidden`, land plays through `Rule::AdditionalLandPlays`, trigger doubling when a trigger has triggered). A new rule is a variant with its reader; a rule with no reader does nothing.
+- The legend rule stops for a player's permanents (`Rule::NoLegendRule`) or for the permanents a selector picks for the rule's controller (`Rule::NoLegendRuleFor`, `rules::no_legend_rule_for`).
 - Creature and permanent words are `CombatQuirk`s of `GameRule::Combat` (`combat_quirks.rs`): assigns no combat damage, assigns damage by toughness, may assign damage as though unblocked (CR 510.1c; `DamageOptions.unblocked`, answered with no damage to any blocker), may stay tapped (CR 502.3).
 - The untap step asks the active player one `ChooseCards` question (min 0, `steps::untap_events`) listing every tapped permanent that may stay tapped and would untap, whatever the hand; the answer is the permanents that stay tapped, the clock default untaps all, and no such permanent means no question.
 - `Duration::WhileSourceTapped` ends a continuous effect when its source untaps or leaves (CR 611.2b); the housekeeping that follows removes it at once.

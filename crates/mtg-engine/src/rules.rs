@@ -1876,7 +1876,7 @@ pub fn no_legend_rule(state: &GameState, player: PlayerId) -> bool {
 
 /// Whether a rule says the legend rule does not apply to the permanent `id`, judged for the rule's controller: the
 /// one place the state-based actions read these rules.
-pub(crate) fn no_legend_rule_for(state: &GameState, id: ObjectId) -> bool {
+pub fn no_legend_rule_for(state: &GameState, id: ObjectId) -> bool {
     let Some(object) = state.object(id) else {
         return false;
     };

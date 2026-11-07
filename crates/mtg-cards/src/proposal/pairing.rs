@@ -929,3 +929,52 @@ mod c11g_stripped_tests {
         );
     }
 }
+
+#[cfg(test)]
+mod e14f_tests {
+    //! Goal: a haunt creature's enters trigger and its trigger from exile on the haunted creature's death read as the one sentence "When ~ enters or the creature it haunts dies, ..." only when both do the same, and the trigger from exile alone reads as "When the creature ~ haunts dies".
+    use rstest::rstest;
+
+    use super::haunt_pair_texts;
+    use crate::ability::Ability;
+    use crate::compile::{same_text, written_variants};
+
+    const DESTROY: &str = r#""targets":[{"what":{"Object":[{"Type":"Enchantment"}]}}],"effects":[{"Destroy":{"what":{"Target":0}}}]"#;
+    const ENTERS: &str = r#"{"ZoneChange":{"what":["This"],"to":"Battlefield"}}"#;
+    const HAUNTED: &str =
+        r#"{"ZoneChange":{"what":[{"HauntedBy":"This"}],"from":"Battlefield","to":"Graveyard"}}"#;
+
+    fn triggered(when: &str, from: &str, body: &str) -> Ability {
+        serde_json::from_str(&format!(
+            r#"{{"Triggered":{{"when":{when},{from}{body}}}}}"#
+        ))
+        .unwrap_or_else(|error| panic!("{error}"))
+    }
+
+    #[rstest]
+    #[case::the_same(DESTROY, r#""from":"Exile","#, true)]
+    #[case::another_effect(r#""effects":[{"Draw":{}}]"#, r#""from":"Exile","#, false)]
+    #[case::not_from_exile(DESTROY, "", false)]
+    fn the_pair_is_one_sentence(#[case] second: &str, #[case] from: &str, #[case] same: bool) {
+        let enters = triggered(ENTERS, "", DESTROY);
+        let haunted = triggered(HAUNTED, from, second);
+        let found = haunt_pair_texts(&enters, &haunted);
+        let clause = "When ~ enters or the creature it haunts dies, destroy target enchantment.";
+        assert_eq!(
+            found.iter().any(|text| same_text(text, clause)),
+            same,
+            "{found:?}"
+        );
+    }
+
+    #[test]
+    fn the_trigger_from_exile_alone_names_the_haunted_creature() {
+        let haunted = triggered(HAUNTED, r#""from":"Exile","#, DESTROY);
+        let found = written_variants(&haunted);
+        let clause = "When the creature ~ haunts dies, destroy target enchantment.";
+        assert!(
+            found.iter().any(|text| same_text(text, clause)),
+            "{found:?}"
+        );
+    }
+}

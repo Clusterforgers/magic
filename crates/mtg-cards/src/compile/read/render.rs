@@ -783,6 +783,10 @@ fn mana_trigger_texts(ability: &Ability) -> Vec<String> {
 fn written_from(when: &TriggerPattern, effects: &[Effect]) -> ZoneKind {
     if cast_itself(when) {
         ZoneKind::Stack
+    } else if matches!(when, TriggerPattern::ZoneChange { what, .. } if what.0 == [Pred::HauntedBy(Ref::This)])
+    {
+        // "When the creature ~ haunts dies" works from exile (CR 702.55b).
+        ZoneKind::Exile
     } else if cycled_itself(when)
         || graveyard_itself(when)
         || returns_itself(effects)
