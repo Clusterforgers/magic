@@ -291,6 +291,11 @@ pub enum Pred {
     Attacking,
     /// Is attacking the player, not a planeswalker of theirs ("attacking that player").
     AttackingPlayer(Ref),
+    /// Is attacking a planeswalker one of the players controls ("attacking you or a planeswalker you control" is `AnyOf`
+    /// of this and `AttackingPlayer`).
+    AttackingPlaneswalkerOf(Ref),
+    /// Is the only creature attacking ("attacking alone", CR 506.5).
+    AttackingAlone,
     /// Is blocking.
     Blocking,
     /// Is an attacking creature that no creature was declared to block, once its defending player has declared blockers (CR 509.1h).
@@ -388,6 +393,14 @@ pub enum Pred {
     FaceDown,
     /// A spell or ability on the stack with a target that is one of the players the reference names ("spell that targets you").
     TargetsPlayer(Ref),
+    /// A spell on the stack with at least `least` mana from sources of the kind spent to cast it ("if mana from a Treasure
+    /// was spent to cast it", "if three or more mana from creatures was spent to cast it").
+    SpentFrom {
+        /// The kind of source.
+        from: crate::spend::SpendFilter,
+        /// The fewest mana from such sources.
+        least: u32,
+    },
     /// Is a card in a graveyard that was put there from the battlefield this turn ("creature cards in your graveyard that were
     /// put there from the battlefield this turn").
     GravedThisTurn,

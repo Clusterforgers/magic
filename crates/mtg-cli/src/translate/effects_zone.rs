@@ -896,12 +896,18 @@ fn search(ctx: &mut Ctx, p: &Params, destination: &str) -> Tr<Vec<Value>> {
     if p.get("Reorder").is_some_and(|word| word != "True") {
         return unmapped("key:ChangeZone.Search.Reorder");
     }
+    let change_type = p.get("ChangeType").unwrap_or("Card");
+    // "A Forest card and a Plains card" (`EACH Forest & Plains`): one search for each, a card found never found again.
+    let (change_type, others) = match change_type.strip_prefix("EACH ") {
+        Some(each) => g13a_each(ctx, p, each)?,
+        None => (change_type, Vec::new()),
+    };
     // "Permanent" in one alternative only (`Permanent.Snow,Legendary,Saga`) would be dropped from it: refuse the mixture
     // before the selector names another missing word.
-    super::valid::permanent_card(p.get("ChangeType").unwrap_or("Card"))?;
-    let mut filter = selector_any(ctx, p.get("ChangeType").unwrap_or("Card"))?;
+    super::valid::permanent_card(change_type)?;
+    let mut filter = selector_any(ctx, change_type)?;
     // A card in a library is a permanent card when it has a permanent type (a Kindred sorcery is not one).
-    super::valid::fix9_permanent_card(p.get("ChangeType").unwrap_or("Card"), &mut filter)?;
+    super::valid::fix9_permanent_card(change_type, &mut filter)?;
     let filter_is_open = filter.is_empty();
     let bind = ctx.fresh("found");
     let mut find = json!({"filter": filter, "as": bind});
@@ -949,7 +955,27 @@ fn search(ctx: &mut Ctx, p: &Params, destination: &str) -> Tr<Vec<Value>> {
     if p.has("NoShuffle") && p.get("RememberChanged") == Some("True") && had_memory {
         return unmapped("key:ChangeZone.Search.NoShuffle-twice");
     }
-    let search = json!({ "Search": find });
+    let mut searches = vec![json!({ "Search": find.clone() })];
+    let mut founds = vec![found.clone()];
+    for other in others {
+        if p.get("RememberChanged") == Some("True")
+            || destination == "Library"
+            || alternative.is_some()
+        {
+            return unmapped("key:ChangeZone.Search.EACH-shape");
+        }
+        let mut preds = other;
+        for earlier in &founds {
+            preds.push(json!({"Not": {"Is": earlier}}));
+        }
+        let bind = ctx.fresh("found");
+        let mut next = find.clone();
+        next["filter"] = json!(preds);
+        next["as"] = json!(bind);
+        searches.push(json!({ "Search": next }));
+        founds.push(json!({ "Bound": bind }));
+    }
+    let search = searches.remove(0);
     // "Search, reveal, then do something with those cards": the cards stay in the library and the steps after read them.
     let stays = destination == "Library"
         && alternative.is_none()
@@ -963,7 +989,12 @@ fn search(ctx: &mut Ctx, p: &Params, destination: &str) -> Tr<Vec<Value>> {
     if places.second.is_some() && p.get("RememberChanged") == Some("True") {
         return unmapped("key:ChangeZone.Search.DestinationAlternative-with-memory");
     }
-    let put = frame::place(ctx, &found, places);
+    let mut put = frame::place(ctx, &found, places);
+    // Each card of a search for one of each goes the same way.
+    for found in founds.iter().skip(1) {
+        let places = frame::places(ctx, p, destination, true)?;
+        put.extend(frame::place(ctx, found, places));
+    }
     // Searching only another zone leaves the library as it was: "if you search your library this way, shuffle".
     let shuffle = if alternative.is_some() {
         json!({"If": {"condition": {"Searched": {"zone": "Library"}}, "then": [{"Shuffle": {}}]}})
@@ -976,6 +1007,7 @@ fn search(ctx: &mut Ctx, p: &Params, destination: &str) -> Tr<Vec<Value>> {
         json!({"Shuffle": {"who": seat.acts.clone()}})
     };
     let mut effects = vec![search];
+    effects.extend(searches);
     match (destination, shuffles) {
         // The shuffle comes first when the card goes back on top: "then shuffle and put that card on top".
         ("Library", _) => {
@@ -995,6 +1027,27 @@ fn search(ctx: &mut Ctx, p: &Params, destination: &str) -> Tr<Vec<Value>> {
         }
         None => effects,
     })
+}
+
+/// The alternatives of `EACH A & B & C`, one card of each: the first, read by the search as its type, and the filters
+/// of the others. Each finds one card, so a count or "different names" is a gap.
+fn g13a_each<'a>(ctx: &Ctx, p: &Params, each: &'a str) -> Tr<(&'a str, Vec<Vec<Value>>)> {
+    let shape = p.get("ChangeNum").is_none_or(|n| n == "1") && !p.has("DifferentNames");
+    let mut alternatives = each.split(" & ").map(str::trim);
+    let (Some(first), true) = (alternatives.next(), shape) else {
+        return unmapped("key:ChangeZone.Search.EACH-shape");
+    };
+    let mut others = Vec::new();
+    for alternative in alternatives {
+        super::valid::permanent_card(alternative)?;
+        let mut filter = selector_any(ctx, alternative)?;
+        super::valid::fix9_permanent_card(alternative, &mut filter)?;
+        others.push(filter);
+    }
+    if others.is_empty() {
+        return unmapped("key:ChangeZone.Search.EACH-shape");
+    }
+    Ok((first, others))
 }
 
 /// Whether the printed description of a search says the cards are revealed.

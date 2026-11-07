@@ -40,6 +40,13 @@ impl Scope<'_> {
                         && matches!(a.target(), AttackTarget::Player(player) if attacked.contains(&player))
                 })
             }
+            Pred::AttackingPlaneswalkerOf(who) => {
+                self.g13a_attacking_planeswalker_of(who, reference)?
+            }
+            Pred::AttackingAlone => {
+                let attackers = self.state.combat().attackers();
+                attackers.len() == 1 && attackers.iter().all(|a| a.object() == reference.id)
+            }
             Pred::Blocking => self
                 .state
                 .combat()
@@ -169,6 +176,31 @@ impl Scope<'_> {
             };
             if self.selects(&creature, object.reference())? {
                 return Ok(*id == reference.id);
+            }
+        }
+        Ok(false)
+    }
+
+    /// Whether the creature attacks a planeswalker one of the players the reference names controls.
+    fn g13a_attacking_planeswalker_of(
+        &self,
+        who: &Ref,
+        reference: ObjectRef,
+    ) -> Result<bool, ResolveError> {
+        let players = self.players(who)?;
+        let planeswalker = Selector(vec![Pred::Type(CardType::Planeswalker)]);
+        for a in self.state.combat().attackers() {
+            let AttackTarget::Planeswalker(attacked) = a.target() else {
+                continue;
+            };
+            let Some(object) = self.state.object(attacked) else {
+                continue;
+            };
+            if a.object() == reference.id
+                && players.contains(&object.controller())
+                && self.selects(&planeswalker, object.reference())?
+            {
+                return Ok(true);
             }
         }
         Ok(false)

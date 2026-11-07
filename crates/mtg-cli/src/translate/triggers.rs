@@ -754,16 +754,41 @@ fn spell_cast(ctx: &Ctx, p: &Params) -> Tr<Value> {
     }
     // "Whenever you cast a spell that targets a creature you control": one of its targets matches.
     if let Some(valid) = p.get("TargetsValid") {
-        let targeted = selector_any(ctx, valid)?;
+        let targeting = g13a_targeting(ctx, valid)?;
         match pattern.get_mut("what").and_then(Value::as_array_mut) {
-            Some(what) => what.push(json!({ "Targeting": targeted })),
-            None => pattern["what"] = json!([{ "Targeting": targeted }]),
+            Some(what) => what.push(targeting),
+            None => pattern["what"] = json!([targeting]),
         }
     }
     if by != "You" {
         super::triggers_g9a::g9a_caster_graveyard(&mut pattern);
     }
     super::triggers_more::nth_spell(p, json!({ "SpellCast": pattern }))
+}
+
+/// What a spell that triggers by its targets targets (`TargetsValid$`): objects that match, and the players of `You`,
+/// `Opponent` and `Player` among the alternatives ("a spell that targets an opponent or a creature an opponent controls").
+fn g13a_targeting(ctx: &Ctx, valid: &str) -> Tr<Value> {
+    let mut players = Vec::new();
+    let mut objects = Vec::new();
+    for alternative in valid.split(',').map(str::trim) {
+        match alternative {
+            "You" => players.push(json!({"TargetsPlayer": "You"})),
+            "Opponent" => players.push(json!({"TargetsPlayer": "Opponents"})),
+            "Player" => players.push(json!({"TargetsPlayer": "EachPlayer"})),
+            object => objects.push(object),
+        }
+    }
+    if players.is_empty() {
+        return Ok(json!({ "Targeting": selector_any(ctx, valid)? }));
+    }
+    if !objects.is_empty() {
+        players.push(json!({ "Targeting": selector_any(ctx, &objects.join(","))? }));
+    }
+    Ok(match <[Value; 1]>::try_from(players) {
+        Ok([only]) => only,
+        Err(several) => json!({ "AnyOf": several }),
+    })
 }
 
 /// A permanent is sacrificed, by a player.

@@ -103,6 +103,9 @@ fn builds_on_x(amount: &Amount) -> bool {
         Amount::Times { of, .. } | Amount::Half { of, .. } | Amount::EvenShare(of) => {
             builds_on_x(of)
         }
+        Amount::Quotient { of, by, .. } | Amount::Difference(of, by) => {
+            builds_on_x(of) || builds_on_x(by)
+        }
         _ => false,
     }
 }

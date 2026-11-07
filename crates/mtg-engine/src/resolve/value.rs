@@ -1697,11 +1697,14 @@ impl<'a> Scope<'a> {
             Pred::Modified
             | Pred::RingBearer
             | Pred::FaceDown
+            | Pred::SpentFrom { .. }
             | Pred::TargetsPlayer(_)
             | Pred::GravedThisTurn
             | Pred::ArrivedFrom(_) => self.w21a_pred(pred, reference, seen)?,
             Pred::Attacking
             | Pred::AttackingPlayer(_)
+            | Pred::AttackingPlaneswalkerOf(_)
+            | Pred::AttackingAlone
             | Pred::Blocking
             | Pred::Unblocked
             | Pred::WasCast { .. }
@@ -1859,6 +1862,17 @@ impl<'a> Scope<'a> {
             Amount::Half { of, up } => {
                 let whole = self.amount_of(of, share)?.max(0);
                 if *up { (whole + 1) / 2 } else { whole / 2 }
+            }
+            Amount::Quotient { of, by, up } => {
+                let whole = self.amount_of(of, share)?.max(0);
+                match self.amount_of(by, share)? {
+                    by if by <= 0 => 0,
+                    by if *up => (whole + by - 1) / by,
+                    by => whole / by,
+                }
+            }
+            Amount::Difference(left, right) => {
+                (self.amount_of(left, share)? - self.amount_of(right, share)?).abs()
             }
             Amount::Divided => {
                 let share = share.ok_or(ResolveError::Unsupported(OUTSIDE_A_DIVISION))?;

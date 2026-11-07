@@ -60,6 +60,18 @@ impl Scope<'_> {
                         .object_tallied(reference, None, Tally::W21aGraved)
                         > 0
             }
+            Pred::SpentFrom { from, least } => {
+                seen.zone == Zone::Stack
+                    && seen.card.is_some_and(|card| {
+                        let spent: u32 = card
+                            .mana_spent_from()
+                            .iter()
+                            .filter(|source| from.holds(&source.traits))
+                            .map(|source| source.count)
+                            .sum();
+                        spent >= *least
+                    })
+            }
             Pred::ArrivedFrom(origin) => {
                 self.state
                     .object_tallied(reference, None, Tally::ArrivedFrom(*origin))

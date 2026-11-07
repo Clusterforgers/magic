@@ -460,6 +460,8 @@ pub fn named(name: &str) -> Tr<Value> {
         "NoOpponentHasMoreLifeThanAttacked" => {
             json!({"Compare": {"left": {"Life": "Against"}, "op": "Ge", "right": {"HighestLife": "Opponents"}}})
         }
+        // Fateful hour: you have 5 or less life.
+        "FatefulHour" => json!({"Compare": {"left": {"Life": "You"}, "op": "Le", "right": 5}}),
         "Metalcraft" => {
             let artifacts = vec![json!({"Type": "Artifact"}), json!({"ControlledBy": "You"})];
             json!({"Compare": {"left": {"Count": artifacts}, "op": "Ge", "right": 3}})
