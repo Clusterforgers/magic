@@ -10,10 +10,15 @@ use crate::effect::Effect;
 use crate::refs::{Pred, Ref};
 
 /// The ways every ability names the card at the start of a sentence: `(written with ~, written with the pronoun)`.
-const SENTENCE: [(&str, &str); 2] = [(". ~ gets ", ". It gets "), (". ~ gains ", ". It gains ")];
+const SENTENCE: [(&str, &str); 3] = [
+    (". ~ gets ", ". It gets "),
+    (". ~ gains ", ". It gains "),
+    (" put its counters on ", " put those counters on "),
+];
 
 /// The ways a trigger about the card itself names the card: `(written with ~, written with the pronoun)`.
-const OF_THE_EVENT: [(&str, &str); 9] = [
+const OF_THE_EVENT: [(&str, &str); 10] = [
+    (" put ~'s counters on ", " put its counters on "),
     (", ~ fights ", ", it fights "),
     (", attach ~ to ", ", attach it to "),
     (

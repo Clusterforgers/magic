@@ -29,6 +29,8 @@ impl Traits {
     pub(crate) const RULES: Traits = Traits(1 << 7);
     /// Whether it is goaded (CR 701.15), which a selector of goaded creatures reads.
     pub(crate) const GOADED: Traits = Traits(1 << 8);
+    /// The supertypes effects gave it (CR 205.4).
+    pub(crate) const SUPERTYPES: Traits = Traits(1 << 9);
 
     /// Both sets together.
     pub(crate) const fn or(self, other: Traits) -> Traits {
@@ -47,6 +49,7 @@ pub(crate) fn writes(modification: &Modification) -> Traits {
         Modification::AddType(_) | Modification::RemoveType(_) | Modification::SetTypes(_) => {
             Traits::TYPES.or(Traits::SUBTYPES)
         }
+        Modification::AddSupertype(_) => Traits::SUPERTYPES,
         Modification::AddSubtype(_)
         | Modification::SetCreatureTypes(_)
         | Modification::AddAllCreatureTypes => Traits::SUBTYPES,
@@ -113,7 +116,6 @@ pub(crate) fn writes_of_wanted(wanted: &Wanted) -> Traits {
         Wanted::GrantAbility(_)
         | Wanted::GainAbilitiesOf(_)
         | Wanted::RemoveSupertype(_)
-        | Wanted::AddSupertype(_)
         | Wanted::SetName(_)
         | Wanted::ThisAbility
         | Wanted::CantAttack
@@ -128,6 +130,7 @@ pub(crate) fn writes_of_wanted(wanted: &Wanted) -> Traits {
         | Wanted::MaxBlockers(_)
         | Wanted::BlocksAdditional(_) => Traits::NONE,
         Wanted::Goaded => Traits::GOADED,
+        Wanted::AddSupertype(_) => Traits::SUPERTYPES,
     }
 }
 
@@ -231,9 +234,9 @@ pub(crate) fn reads_of_selector(selector: &Selector) -> Traits {
 
 fn reads_of_pred(pred: &Pred) -> Traits {
     match pred {
+        Pred::Supertype(_) => Traits::SUPERTYPES,
         Pred::This
         | Pred::Other
-        | Pred::Supertype(_)
         | Pred::Token
         | Pred::Commander
         | Pred::Spell

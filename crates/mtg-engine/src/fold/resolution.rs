@@ -106,6 +106,7 @@ pub(super) fn apply(state: &mut GameState, event: &Event) -> Result<(), EngineEr
                 }
                 if let Some(old) = resolving.bindings.insert(name.clone(), targets.clone())
                     && !renews(&old, targets)
+                    && !grows(&old, targets)
                 {
                     return Err(invalid(format!("`{name}` was bound twice")));
                 }
@@ -117,6 +118,11 @@ pub(super) fn apply(state: &mut GameState, event: &Event) -> Result<(), EngineEr
         Event::ResolutionEnded { object, outcome } => end(state, *object, *outcome),
         other => Err(invalid(format!("not a resolution event: {other:?}"))),
     }
+}
+
+/// Whether `new` is `old` with more after it: an adding bind (`Effect::Bind` with `adds`) grows its name.
+fn grows(old: &[Target], new: &[Target]) -> bool {
+    new.len() > old.len() && new.starts_with(old)
 }
 
 /// Whether `new` names the same things as `old` with the objects that have moved on since: the only way a name is bound

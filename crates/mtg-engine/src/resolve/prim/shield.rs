@@ -130,9 +130,12 @@ fn damage_shield(
         ReplaceBy::PreventAnd(then) => (None, then.clone()),
         _ => (None, Vec::new()),
     };
-    let to = match to {
-        None => None,
-        Some(named) => Some(cx.scope.refs(named)?),
+    // A kind of object ("creatures you control") is judged as each damage event is replaced (CR 611.2c, 614.6); a
+    // player, a target or a bound object is fixed now.
+    let (to, each) = match to {
+        None => (None, None),
+        Some(Ref::Each(kind)) if judged_per_event(kind) => (None, Some(kind.clone())),
+        Some(named) => (Some(cx.scope.refs(named)?), None),
     };
     // The new recipient of redirected damage is fixed as the shield begins (CR 611.2c); naming none, it redirects nothing.
     let redirect = match by {
@@ -154,6 +157,7 @@ fn damage_shield(
     let (from, source) = c9_fight_fixed_sources(cx, &chosen)?;
     Ok(Some(DamageShield {
         to,
+        each,
         source,
         from,
         combat,
@@ -170,6 +174,40 @@ fn names_objects(what: &Selector) -> bool {
     what.0
         .iter()
         .any(|pred| matches!(pred, Pred::Is(_) | Pred::SameCard(_) | Pred::DamagedBy(_)))
+}
+
+/// Whether a kind of protected object reads the same after the resolution: its words name no target, binding or
+/// choice of the resolution, only characteristics, status and players the shield's controller can name later.
+fn judged_per_event(kind: &Selector) -> bool {
+    fn player(named: &Ref) -> bool {
+        matches!(named, Ref::You | Ref::Opponents | Ref::EachPlayer)
+    }
+    fn plain(pred: &Pred) -> bool {
+        match pred {
+            Pred::Type(_)
+            | Pred::Supertype(_)
+            | Pred::Subtype(_)
+            | Pred::Color(_)
+            | Pred::Colorless
+            | Pred::Token
+            | Pred::Commander
+            | Pred::Other
+            | Pred::Tapped
+            | Pred::Untapped
+            | Pred::Attacking
+            | Pred::Blocking
+            | Pred::Unblocked
+            | Pred::HasKeyword(_)
+            | Pred::HasCounter(_)
+            | Pred::HasAnyCounter
+            | Pred::Named(_) => true,
+            Pred::ControlledBy(named) | Pred::OwnedBy(named) => player(named),
+            Pred::Not(inner) => plain(inner),
+            Pred::AnyOf(parts) => parts.iter().all(plain),
+            _ => false,
+        }
+    }
+    !kind.is_empty() && kind.0.iter().all(plain)
 }
 
 /// Whether the shield replaces a class of zone changes or entries, judged when each happens.
