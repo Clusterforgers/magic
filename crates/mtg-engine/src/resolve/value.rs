@@ -880,7 +880,8 @@ impl<'a> Scope<'a> {
         };
         let mut what = &spec.what;
         while let Targetable::Together { what: inner, .. }
-        | Targetable::Another { what: inner, .. } = what
+        | Targetable::Another { what: inner, .. }
+        | Targetable::ChosenBy { what: inner, .. } = what
         {
             what = inner;
         }
@@ -891,7 +892,9 @@ impl<'a> Scope<'a> {
             )),
             Targetable::Player => self.refs(&Ref::EachPlayer),
             Targetable::Opponent => self.refs(&Ref::Opponents),
-            Targetable::Together { .. } | Targetable::Another { .. } => {
+            Targetable::Together { .. }
+            | Targetable::Another { .. }
+            | Targetable::ChosenBy { .. } => {
                 Err(ResolveError::Unsupported("overload of a nested target"))
             }
             Targetable::AnyTarget | Targetable::Either(_) => Err(ResolveError::Unsupported(

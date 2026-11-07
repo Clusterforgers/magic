@@ -804,6 +804,9 @@ pub fn target_spec(ctx: &Ctx, params: &Params, zone: Option<&str>) -> Tr<Value> 
             .collect();
         what = json!({"Another": {"what": what, "earlier": earlier}});
     }
+    if let Some(word) = params.get("TargetingPlayer") {
+        what = chosen_by(ctx, params, word, what)?;
+    }
     let min = params.get("TargetMin");
     let max = params.get("TargetMax");
     let mut spec = json!({ "what": what });
@@ -822,6 +825,26 @@ pub fn target_spec(ctx: &Ctx, params: &Params, zone: Option<&str>) -> Tr<Value> 
         spec["divide"] = amount(ctx, total)?;
     }
     Ok(spec)
+}
+
+/// `TargetingPlayer$`: "target creature of an opponent's choice", "... of that player's choice". The player who chooses
+/// is an opponent or a player of the triggering event; a player read from another target of the line is not known while
+/// the targets are chosen, and "they control" (`TargetingPlayerControls$`) is not read.
+fn chosen_by(ctx: &Ctx, params: &Params, word: &str, what: Value) -> Tr<Value> {
+    if params.has("TargetingPlayerControls") {
+        return unmapped("key:TargetingPlayerControls");
+    }
+    let known = matches!(word, "Opponent" | "Player.Opponent")
+        || (ctx.trigger.is_some()
+            && matches!(
+                word,
+                "TriggeredPlayer" | "TriggeredCardController" | "TriggeredDefendingPlayer"
+            ));
+    if !known {
+        return unmapped(format!("key:TargetingPlayer={word}"));
+    }
+    let who = defined(ctx, word)?;
+    Ok(json!({"ChosenBy": {"who": who, "what": what}}))
 }
 
 /// `TargetsWithDefinedController$`: the targets are objects that one player controls (owns, outside the battlefield).
@@ -859,7 +882,8 @@ pub fn parent_is_one_object(ctx: &Ctx) -> bool {
         .is_some_and(|spec| spec["what"].get("Object").is_some() && spec.get("bounds").is_none())
 }
 
-fn bound(ctx: &Ctx, text: &str) -> Tr<Value> {
+/// One end of the target bounds of a line: a count, or `Any` for no most.
+pub fn bound(ctx: &Ctx, text: &str) -> Tr<Value> {
     if text == "Any" {
         return Ok(Value::Null);
     }

@@ -654,6 +654,7 @@ mod g11a_players;
 mod g11b_damage;
 mod g11c_taxes_draws;
 mod g12e_spell_colors;
+mod g12e_target_chooser;
 mod g9c_shadow;
 mod mana_any_shape;
 mod mana_ban;

@@ -448,7 +448,8 @@ pub fn is_hint(key: &str) -> bool {
 }
 
 /// The keys that restrict the targets of a line, which `target_spec` reads.
-pub const SET_KEYS: [&str; 7] = [
+pub const SET_KEYS: [&str; 8] = [
+    "TargetingPlayer",
     "TargetsWithDefinedController",
     "TargetsWithSameController",
     "TargetsWithDifferentControllers",

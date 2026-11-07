@@ -1,5 +1,7 @@
 //! Goal: round 12 pack g12e reads target slots of verbs: a colour change of a target spell or permanent, a copy of up to
-//! one target, a cast of a target card and a choice made by the targeted player, and leaves the other shapes a gap by name.
+//! one target, a cast of a target card, a choice made by the targeted player, counters of typed spells and of up to one,
+//! the permanents and graveyards of target players, the target players of tokens, and a target another player chooses,
+//! and leaves the other shapes a gap by name.
 #![allow(clippy::unwrap_used)]
 
 use rstest::rstest;
@@ -88,6 +90,36 @@ fn card(types: &str, lines: &str, oracle: &str) -> (String, Vec<String>) {
     "Choose target player. Create a 1/1 white Soldier creature token for each card in that player's hand.",
     r#""targets":[{"what":"Player"}]"#
 )]
+#[case::counter_up_to_two_spells(
+    "Instant",
+    "A:SP$ Counter | TargetType$ Spell | ValidTgts$ Card | TargetMin$ 0 | TargetMax$ 2 | SpellDescription$ Counter up to two target spells.",
+    "Counter up to two target spells.",
+    r#""bounds":{"max":2,"min":0}"#
+)]
+#[case::permanents_target_player_controls(
+    "Sorcery",
+    "A:SP$ ChangeZoneAll | ValidTgts$ Player | ChangeType$ Permanent.nonLand | Origin$ Battlefield | Destination$ Hand | SpellDescription$ Return all nonland permanents target player controls to their owner's hand.",
+    "Return all nonland permanents target player controls to their owner's hand.",
+    r#"{"ControlledBy":{"Target":0}}"#
+)]
+#[case::clash_then_the_target(
+    "Creature",
+    "T:Mode$ Attacks | ValidCard$ Card.Self | Execute$ C | TriggerDescription$ Whenever CARDNAME attacks, clash with an opponent. If you win, target creature gains double strike until end of turn.\nSVar:C:DB$ Clash | ValidTgts$ Creature | WinSubAbility$ P\nSVar:P:DB$ Pump | Defined$ Targeted | KW$ Double Strike",
+    "Whenever Subject attacks, clash with an opponent. If you win, target creature gains double strike until end of turn.",
+    r#""win":[{"Continuous":{"affected":{"Target":0}"#
+)]
+#[case::target_of_an_opponents_choice(
+    "Creature",
+    "A:AB$ Destroy | Cost$ T | ValidTgts$ Creature | TargetingPlayer$ Player.Opponent | SpellDescription$ Destroy target creature of an opponent's choice.",
+    "{T}: Destroy target creature of an opponent's choice.",
+    r#"{"ChosenBy":{"what":{"Object":[{"Type":"Creature"}]},"who":"Opponents"}}"#
+)]
+#[case::target_of_the_upkeep_players_choice(
+    "Enchantment",
+    "T:Mode$ Phase | Phase$ Upkeep | TriggerZones$ Battlefield | Execute$ D | TriggerDescription$ At the beginning of each player's upkeep, destroy target creature that player controls of their choice.\nSVar:D:DB$ Destroy | ValidTgts$ Creature.ActivePlayerCtrl | TargetingPlayer$ TriggeredPlayer",
+    "At the beginning of each player's upkeep, destroy target creature that player controls of their choice.",
+    r#""who":"Triggering""#
+)]
 fn target_slots_are_read(
     #[case] types: &str,
     #[case] lines: &str,
@@ -117,6 +149,18 @@ fn target_slots_are_read(
     "A:SP$ GenericChoice | ValidTgts$ Creature | Choices$ D,L | SpellDescription$ Target creature's controller chooses.\nSVar:D:DB$ Draw | Defined$ You | NumCards$ 3 | SpellDescription$ You draw three cards.\nSVar:L:DB$ GainLife | Defined$ You | LifeAmount$ 3 | SpellDescription$ You gain 3 life.",
     "Target creature's controller chooses.",
     "key:GenericChoice.ValidTgts-chooser"
+)]
+#[case::chosen_by_the_controller_of_another_target(
+    "Creature",
+    "A:AB$ Pump | Cost$ T | ValidTgts$ Creature | TargetingPlayer$ ParentTargetedController | NumAtt$ -1 | SpellDescription$ Target creature of that player's choice gets -1/-0 until end of turn.",
+    "{T}: Target creature of that player's choice gets -1/-0 until end of turn.",
+    "key:TargetingPlayer=ParentTargetedController"
+)]
+#[case::chosen_among_the_choosers_creatures(
+    "Creature",
+    "A:AB$ Tap | Cost$ T | TargetingPlayer$ Player.Opponent | TargetingPlayerControls$ True | ValidTgts$ Creature | SpellDescription$ Tap target creature of an opponent's choice they control.",
+    "{T}: Tap target creature of an opponent's choice they control.",
+    "key:Tap.TargetingPlayerControls"
 )]
 fn other_target_slots_stay_gaps(
     #[case] types: &str,

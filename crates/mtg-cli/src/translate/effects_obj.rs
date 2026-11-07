@@ -7,7 +7,7 @@ use super::ctx::{Ctx, Tr, only, unmapped};
 use super::frame::{self, Slot, Verb};
 use super::keyword::{keyword_list, keyword_value};
 use super::remember;
-use super::valid::{defined, objects, selector_any, selector_in, subject};
+use super::valid::{bound, defined, objects, selector_any, selector_in, subject};
 use crate::forge::script::Params;
 
 /// The effects of a verb on objects.
@@ -611,10 +611,12 @@ fn counter(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
     }
     let selector = counter_selector(ctx, p)?;
     let mut spec = json!({"what": {"Object": selector}});
-    // "Counter up to one target spell": the target may be left out, and then nothing is countered.
+    // "Counter up to two target spells", "counter target spell" only if kicked: each target chosen is countered.
     match (p.get("TargetMin"), p.get("TargetMax")) {
         (None, None) => {}
-        (Some("0"), Some("1")) => spec["bounds"] = json!({"min": 0, "max": 1}),
+        (Some(min), Some(max)) => {
+            spec["bounds"] = json!({"min": bound(ctx, min)?, "max": bound(ctx, max)?});
+        }
         _ => return unmapped("key:Counter.TargetMin"),
     }
     let what = ctx.target(spec)?;

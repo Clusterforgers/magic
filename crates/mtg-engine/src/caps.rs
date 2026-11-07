@@ -448,6 +448,7 @@ const RUNS: &[&str] = &[
     "Target.Together",
     "Target.TotalManaValue",
     "Target.Another",
+    "Target.ChosenBy",
     "Effect.FlipCoin",
     "Effect.Clash",
     "Effect.Modal.AtRandom",
@@ -1002,6 +1003,7 @@ mod tests {
     #[case::rolling_dice("Effect.RollDice", true)]
     #[case::targets_for_each_player("Target.PerPlayer", true)]
     #[case::targets_that_share_a_property("Target.Together", true)]
+    #[case::targets_another_player_chooses("Target.ChosenBy", true)]
     #[case::flipping_coins("Effect.FlipCoin", true)]
     #[case::modes_at_random("Effect.Modal.AtRandom", true)]
     #[case::modes_not_chosen_twice_in_a_turn("Effect.Modal.OnceEachTurn", true)]
