@@ -620,7 +620,11 @@ fn attacks_at(word: &str, what: &[Value]) -> Tr<Value> {
     let Some(player) = parts.next() else {
         return gap();
     };
-    let Ok(at) = player_ref(Some(player)) else {
+    let Ok(at) = (if player == "Player.withMostLife" {
+        Ok(json!("MostLife"))
+    } else {
+        player_ref(Some(player))
+    }) else {
         return gap();
     };
     let variant = match (parts.next(), parts.next(), &at) {
@@ -751,7 +755,6 @@ pub(super) fn player_ref(word: Option<&str>) -> Tr<Value> {
         Some("Opponent" | "Player.Opponent" | "Player.Other") => Ok(json!("Opponents")),
         Some("Player.EnchantedBy") => Ok(json!("AttachedPlayer")),
         Some("Player.isMonarch") => Ok(json!("Monarch")),
-        Some("Player.withMostLife") => Ok(json!("MostLife")),
         Some("Player.EnchantedController") => Ok(json!({"ControllerOf": "Attached"})),
         Some("Player.Chosen") => Ok(json!("Chosen")),
         Some("Player.TriggeredDefendingPlayer" | "TriggeredDefendingPlayer") => {

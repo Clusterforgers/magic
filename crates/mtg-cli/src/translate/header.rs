@@ -285,9 +285,6 @@ pub fn trigger_state(ctx: &Ctx, p: &Params) -> Tr<Vec<Value>> {
             "Opponent.isMonarch" => json!({"Monarch": "Opponents"}),
             "You.committedCrimeThisTurn" => json!({"Compare": {
                 "left": {"Tallied": {"who": "You", "what": "Crimes"}}, "op": "Ge", "right": 1}}),
-            // The most life, or tied for it.
-            "You.withMostLife" => json!({"Compare": {
-                "left": {"Life": "You"}, "op": "Ge", "right": {"HighestLife": "EachPlayer"}}}),
             other => return unmapped(format!("key:Trigger.CheckDefinedPlayer={other}")),
         });
     }

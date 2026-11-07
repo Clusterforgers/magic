@@ -275,7 +275,6 @@ fn a_rule_that_waits_on_a_shield_counter_stays_a_gap() {
 /// "If an opponent is the monarch" and "if you have the most life" gate a trigger as the Forge state words do.
 #[rstest]
 #[case::opponent_monarch("Opponent.isMonarch", r#""Monarch":"Opponents""#)]
-#[case::most_life("You.withMostLife", r#""HighestLife":"EachPlayer""#)]
 fn a_state_word_of_a_player_gates_the_trigger(#[case] word: &str, #[case] fragment: &str) {
     let text = format!(
         "Name:Subject\nTypes:Creature Human\nT:Mode$ Phase | Phase$ Upkeep | ValidPlayer$ You | TriggerZones$ Battlefield | CheckDefinedPlayer$ {word} | Execute$ TrigDraw\nSVar:TrigDraw:DB$ Draw | NumCards$ 1\n"
