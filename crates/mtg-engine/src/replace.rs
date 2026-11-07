@@ -452,7 +452,15 @@ fn gather(state: &GameState) -> Vec<Source> {
         let listed: Vec<(AbilityRef, Arc<Ability>)> = if zone == Zone::Battlefield {
             abilities_of(state, object.id())
         } else if state.possible.elsewhere {
+            let anywhere = crate::ability_reader::printed(object)
+                .filter(|(_, rules)| {
+                    crate::ability_reader::works_anywhere(rules) && zone != Zone::PhasedOut
+                })
+                .filter(|(_, rules)| {
+                    crate::ability_reader::works_from(rules) != Some(zone_kind(zone))
+                });
             working_here(object)
+                .chain(anywhere)
                 .map(|(address, rules)| (address, Arc::clone(rules)))
                 .chain(provided_here(state, object))
                 .collect()
@@ -460,7 +468,13 @@ fn gather(state: &GameState) -> Vec<Source> {
             continue;
         };
         for (address, rules) in listed {
-            if matches!(&*rules, Ability::Replacement { from, .. } if *from == zone_kind(zone)) {
+            let applies = match &*rules {
+                Ability::Replacement { from, .. } => {
+                    *from == zone_kind(zone) || crate::ability_reader::works_anywhere(&rules)
+                }
+                _ => false,
+            };
+            if applies {
                 found.push(Source {
                     address,
                     ability: Arc::clone(&rules),
@@ -632,7 +646,12 @@ fn applies_to(by: &ReplaceBy, unit: &Unit) -> bool {
             matches!(unit, Unit::Move { .. })
                 && matches!(kind, ZoneKind::Exile | ZoneKind::Graveyard | ZoneKind::Hand)
         }
+        ReplaceBy::IntoLibrary { place, .. } => {
+            matches!(unit, Unit::Move { .. })
+                && !matches!(place, mtg_cards::effect::Place::Below(_))
+        }
         ReplaceBy::Tapped
+        | ReplaceBy::Untapped
         | ReplaceBy::WithCounters { .. }
         | ReplaceBy::WithCountersAnd { .. }
         | ReplaceBy::Tribute(_)
@@ -652,6 +671,28 @@ fn applies_to(by: &ReplaceBy, unit: &Unit) -> bool {
             matches!(unit, Unit::Damage { .. })
         }
     }
+}
+
+/// Whether the effect changes a part of the entering of its own: entering tapped or untapped, a choice made as it
+/// enters and the counters it enters with, so the order is not a choice (a Thriving land is tapped and asks for a color).
+const fn enters_apart(action: &Action) -> bool {
+    matches!(
+        action,
+        Action::Replace(
+            ReplaceBy::Tapped
+                | ReplaceBy::Untapped
+                | ReplaceBy::Choose(_)
+                | ReplaceBy::WithCounters { .. }
+                | ReplaceBy::WithCountersAnd { .. }
+                | ReplaceBy::Tribute(_)
+                | ReplaceBy::Amplify(_)
+                | ReplaceBy::MayWithCounters { .. }
+                | ReplaceBy::Devour { .. }
+                | ReplaceBy::Riot
+                | ReplaceBy::DayIfNeither
+                | ReplaceBy::EntersPrepared
+        )
+    )
 }
 
 /// What an effect does to the event.
@@ -1645,30 +1686,15 @@ impl Pass<'_> {
                 let alike = pool
                     .iter()
                     .all(|c| matches!(c.action, Action::Replace(ReplaceBy::Prevent)));
-                // Entering tapped, a choice made as it enters and the counters it enters with each change a part of the
-                // entering of their own, so the order is not a choice (a Thriving land is tapped and asks for a color).
-                let apart = pool.iter().all(|c| {
-                    matches!(
-                        c.action,
-                        Action::Replace(
-                            ReplaceBy::Tapped
-                                | ReplaceBy::Choose(_)
-                                | ReplaceBy::WithCounters { .. }
-                                | ReplaceBy::WithCountersAnd { .. }
-                                | ReplaceBy::Tribute(_)
-                                | ReplaceBy::Amplify(_)
-                                | ReplaceBy::MayWithCounters { .. }
-                                | ReplaceBy::Devour { .. }
-                                | ReplaceBy::Riot
-                                | ReplaceBy::DayIfNeither
-                                | ReplaceBy::EntersPrepared
-                        )
-                    )
-                });
+                let apart = pool.iter().all(|c| enters_apart(&c.action));
+                // Entering untapped comes last: its controller orders it after an effect that would tap the permanent,
+                // the order they choose (CR 616.1).
+                let last =
+                    |c: &&&Candidate| !matches!(c.action, Action::Replace(ReplaceBy::Untapped));
                 if let [only, ..] = pool.as_slice()
                     && (pool.len() == 1 || alike || apart)
                 {
-                    (*only).clone()
+                    (*pool.iter().find(last).unwrap_or(only)).clone()
                 } else {
                     let unit = self.unit(&self.slots[at].item);
                     let player = self.affected(&unit);
@@ -1869,6 +1895,7 @@ impl Pass<'_> {
             }
         }
         w13a_moved::w13a_without_counters_on_moved(self.state, &mut events);
+        g12a_library::g12a_order_shuffles(self.state, &mut events);
         events.extend(used);
         events
     }
@@ -1956,6 +1983,9 @@ impl Pass<'_> {
                 if destination != *to {
                     self.redirect(at, *object, *from, destination, &applied);
                 }
+            }
+            (ReplaceBy::IntoLibrary { place, reveal }, Unit::Move { object, from, .. }) => {
+                self.g12a_into_library(at, (*object, *from), (*place, *reveal), &applied);
             }
             (ReplaceBy::Dredge(cards), Unit::Draw { .. }) => self.dredge(at, candidate, *cards),
             (ReplaceBy::UmbraArmor, Unit::Move { object, .. }) => {
@@ -2510,14 +2540,16 @@ impl Pass<'_> {
         applied: Vec<Origin>,
     ) -> Result<Applied, EngineError> {
         let source = candidate.object.id;
-        let tapped = |step: &mut Pass<'_>, at: usize| {
+        let set_tapped = |step: &mut Pass<'_>, at: usize, to: bool| {
             let entered = step.entered_at(at, object, controller);
             if let Item::One(Event::Entered { tapped, .. }) = &mut step.slots[entered].item {
-                *tapped = true;
+                *tapped = to;
             }
         };
+        let tapped = |step: &mut Pass<'_>, at: usize| set_tapped(step, at, true);
         match by {
             ReplaceBy::Tapped => tapped(self, at),
+            ReplaceBy::Untapped => set_tapped(self, at, false),
             ReplaceBy::WithCounters {
                 counter,
                 count,
@@ -3190,6 +3222,7 @@ fn zone_word(zone: Zone) -> &'static str {
 }
 
 mod day;
+mod g12a_library;
 
 mod prepared;
 

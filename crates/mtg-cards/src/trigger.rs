@@ -4,7 +4,7 @@ use mtg_core::color::Color;
 use serde::{Deserialize, Serialize};
 
 use crate::did::Action;
-use crate::effect::{Effect, is_false};
+use crate::effect::{Effect, Place, is_false};
 use crate::modify::Modification;
 use crate::refs::{Ref, Selector, ZoneKind};
 use crate::value::{Amount, Condition, CounterKind, DayNight};
@@ -852,8 +852,20 @@ pub enum ReplaceBy {
     /// The object goes to this zone instead ("exile it instead"); a card in a graveyard, a hand, the stack or exile
     /// goes to its owner's zone.
     MoveTo(ZoneKind),
+    /// The object is put into its owner's library instead, at this place ("reveal it and shuffle it into its owner's library
+    /// instead", "put it on top of its owner's library instead"); a reveal shows it to every player first.
+    IntoLibrary {
+        /// On top, on the bottom or shuffled in.
+        place: Place,
+        /// It is revealed as it moves.
+        #[serde(default, skip_serializing_if = "is_false")]
+        reveal: bool,
+    },
     /// The permanent enters tapped (CR 614.1c).
     Tapped,
+    /// The permanent enters untapped (CR 614.1c), also when another effect would have it enter tapped and is applied
+    /// first ("Lands you control enter untapped").
+    Untapped,
     /// The permanent enters with this many counters of the kind on it (CR 614.1c); they are put by an event of
     /// their own that other replacement effects can change.
     WithCounters {

@@ -3554,7 +3554,7 @@ impl Walker<'_> {
                     // A death or a counter sent elsewhere, and a class of moves judged as each happens (`Rule::Replaces`).
                     | (
                         ReplaceWhen::ZoneChange { .. } | ReplaceWhen::Countered { .. },
-                        ReplaceBy::MoveTo(_),
+                        ReplaceBy::MoveTo(_) | ReplaceBy::IntoLibrary { .. },
                     )
                     | (ReplaceWhen::Enters { .. }, ReplaceBy::Tapped) => {}
                     _ => w.uses("Effect", &format!("Shield.{}", tag_of(when))),
@@ -4467,9 +4467,41 @@ impl Walker<'_> {
         }
     }
 
+    /// A dredge replaces a draw of at least one card; a move elsewhere or into the library replaces a move.
+    fn g12a_moves(&mut self, when: &ReplaceWhen, by: &ReplaceBy) {
+        match by {
+            ReplaceBy::Dredge(cards) => {
+                if !matches!(when, ReplaceWhen::Draw { .. }) {
+                    self.problem("`Dredge` replaces a `Draw`");
+                }
+                if *cards == 0 {
+                    self.problem("dredging no cards is drawing");
+                }
+            }
+            ReplaceBy::IntoLibrary { place, .. }
+                if !matches!(when, ReplaceWhen::ZoneChange { .. })
+                    || matches!(place, crate::effect::Place::Below(_)) =>
+            {
+                self.problem("`IntoLibrary` replaces a `ZoneChange`, on top, bottom or shuffled");
+            }
+            ReplaceBy::MoveTo(_)
+                if !matches!(
+                    when,
+                    ReplaceWhen::ZoneChange { .. }
+                        | ReplaceWhen::Discarded { .. }
+                        | ReplaceWhen::Countered { .. }
+                ) =>
+            {
+                self.problem("`MoveTo` replaces a `ZoneChange` or a `Discarded`");
+            }
+            _ => {}
+        }
+    }
+
     fn replace_by(&mut self, when: &ReplaceWhen, by: &ReplaceBy) {
         self.uses("ReplaceBy", &tag_of(by));
         self.g11b_replace_by(when, by);
+        self.g12a_moves(when, by);
         let enters = matches!(when, ReplaceWhen::Enters { .. });
         let zone_move = matches!(
             when,
@@ -4500,24 +4532,6 @@ impl Walker<'_> {
             }
             ReplaceBy::RedirectUpTo { most, to } => self.r6f_redirect(when, *most, to),
             ReplaceBy::PreventAnd(effects) => self.w9c_prevent_and(when, effects),
-            ReplaceBy::Dredge(cards) => {
-                if !matches!(when, ReplaceWhen::Draw { .. }) {
-                    self.problem("`Dredge` replaces a `Draw`");
-                }
-                if *cards == 0 {
-                    self.problem("dredging no cards is drawing");
-                }
-            }
-            ReplaceBy::MoveTo(_)
-                if !matches!(
-                    when,
-                    ReplaceWhen::ZoneChange { .. }
-                        | ReplaceWhen::Discarded { .. }
-                        | ReplaceWhen::Countered { .. }
-                ) =>
-            {
-                self.problem("`MoveTo` replaces a `ZoneChange` or a `Discarded`");
-            }
             ReplaceBy::WithCounters { count, .. } => {
                 if !enters {
                     self.problem("`WithCounters` replaces an `Enters`");
@@ -4528,6 +4542,7 @@ impl Walker<'_> {
                 count, mods: given, ..
             } => self.enters_with_changes(enters, count, given),
             ReplaceBy::Tapped
+            | ReplaceBy::Untapped
             | ReplaceBy::Choose(_)
             | ReplaceBy::PayLifeOrTapped(_)
             | ReplaceBy::TappedForCounters { .. }

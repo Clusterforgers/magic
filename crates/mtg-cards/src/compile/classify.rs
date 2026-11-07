@@ -45,12 +45,13 @@ const COST_WORDS: [&str; 17] = [
 ];
 
 /// Lines of a spell that are rules about the spell itself rather than what it does.
-const SPELL_RULES: [&str; 5] = [
+const SPELL_RULES: [&str; 6] = [
     "This spell ",
     "~ costs ",
     "~ can't be countered",
     "As an additional cost",
     "Cast this spell only ",
+    "If ~ would be put into a graveyard from anywhere, ",
 ];
 
 /// Whether a line of a spell is a rule about the spell itself: one of `SPELL_RULES`, or the cast "If you control a commander, you
@@ -398,6 +399,11 @@ mod tests {
     )]
     #[case::cost_with_name("~ costs {1} less to cast.", true, Static)]
     #[case::uncounterable("~ can't be countered.", true, Static)]
+    #[case::to_graveyard_instead(
+        "If ~ would be put into a graveyard from anywhere, reveal ~ and shuffle it into its owner's library instead.",
+        true,
+        Static
+    )]
     #[case::additional_cost(
         "As an additional cost to cast this spell, discard a card.",
         true,
