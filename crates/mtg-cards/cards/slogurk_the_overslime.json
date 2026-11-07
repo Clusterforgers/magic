@@ -1,0 +1,45 @@
+{
+  "oracle_id": "cee836f1-87a4-43db-a6ea-55575a4ce781",
+  "name": "Slogurk, the Overslime",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Slogurk, the Overslime",
+      "oracle_fingerprint": "97c52ef3533991777f980b3426d88a2d",
+      "abilities": [
+        { "Keyword": "Trample" },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Land" }, { "Not": "Token" }, { "OwnedBy": "You" }],
+                "to": "Graveyard"
+              }
+            },
+            "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "RemoveCounters": { "counter": "+1/+1", "count": 3 } }],
+            "effects": [{ "Move": { "what": "This", "to": "Hand" } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield" } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "Type": "Land" }, { "In": "Graveyard" }, { "OwnedBy": "You" }]
+                },
+                "bounds": { "min": 0, "max": 3 }
+              }
+            ],
+            "effects": [{ "Move": { "what": { "Target": 0 }, "to": "Hand" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

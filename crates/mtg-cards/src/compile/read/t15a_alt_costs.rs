@@ -46,7 +46,15 @@ pub(super) fn t15a_alt_cost_texts(ability: &Ability) -> Vec<String> {
     };
     let said: Option<Vec<String>> = [first, second]
         .into_iter()
-        .map(|item| costs::text(&Cost(vec![item.clone()])).map(|text| costs::lowered(&text)))
+        .map(|item| {
+            let text = costs::lowered(&costs::text(&Cost(vec![item.clone()]))?);
+            // Mana is paid: "You may pay {1} and return a basic land you control to its owner's hand".
+            Some(if matches!(item, CostItem::Mana(_)) {
+                format!("pay {text}")
+            } else {
+                text
+            })
+        })
         .collect();
     match said.as_deref() {
         Some([first, second]) => {
