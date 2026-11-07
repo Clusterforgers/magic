@@ -132,7 +132,7 @@ use crate::modify::{Duration, Modification};
 use crate::refs::{Bounds, Pred, Ref, Selector, TargetSet, TargetSpec, Targetable, ZoneKind};
 use crate::spend::{ManaLasts, SpendOn};
 use crate::trigger::TriggerPattern;
-use crate::value::{Amount, Condition, CounterKind};
+use crate::value::{Amount, Condition, CounterKind, StatKind};
 use g11b_unpreventable::is as unpreventable;
 
 /// "draws a card for each card in your hand" is also "draws X cards, where X is the number of cards in your hand".
@@ -599,6 +599,7 @@ fn written_as_given(ability: &Ability) -> Vec<String> {
     super::r7b_wordings::add(ability, &mut texts);
     r11w_batch::add_any_other(ability, &mut texts);
     super::r11w_tallies::add(&mut texts);
+    super::g13a_wordings::add(&mut texts);
     texts
 }
 
@@ -3097,6 +3098,23 @@ impl Writer<'_> {
                 who: Ref::Target(0),
                 what: crate::value::TurnTally::DamageTaken,
             } => "life equal to the damage already dealt to that player this turn".to_owned(),
+            Amount::Difference(power, toughness) => {
+                let (
+                    Amount::Stat {
+                        of: Ref::Triggering,
+                        stat: StatKind::Power,
+                    },
+                    Amount::Stat {
+                        of: Ref::Triggering,
+                        stat: StatKind::Toughness,
+                    },
+                ) = (power.as_ref(), toughness.as_ref())
+                else {
+                    return None;
+                };
+                "life equal to the difference between that creature's power and its toughness"
+                    .to_owned()
+            }
             Amount::Half { of, up } => {
                 let Amount::Life(whose) = of.as_ref() else {
                     return None;

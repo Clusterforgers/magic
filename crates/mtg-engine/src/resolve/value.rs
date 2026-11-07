@@ -1844,6 +1844,17 @@ impl<'a> Scope<'a> {
                 let whole = self.amount_of(of, share)?.max(0);
                 if *up { (whole + 1) / 2 } else { whole / 2 }
             }
+            Amount::Quotient { of, by, up } => {
+                let whole = self.amount_of(of, share)?.max(0);
+                match self.amount_of(by, share)? {
+                    by if by <= 0 => 0,
+                    by if *up => (whole + by - 1) / by,
+                    by => whole / by,
+                }
+            }
+            Amount::Difference(left, right) => {
+                (self.amount_of(left, share)? - self.amount_of(right, share)?).abs()
+            }
             Amount::Divided => {
                 let share = share.ok_or(ResolveError::Unsupported(OUTSIDE_A_DIVISION))?;
                 self.divided_share(share.recipient)

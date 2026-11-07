@@ -422,10 +422,39 @@ pub(super) fn apply_steps(ctx: &Ctx, mut value: Value, steps: &str) -> Tr<Value>
             None if step == "Thrice" => times(&value, 3),
             None if step == "HalfUp" => json!({"Half": {"of": value, "up": true}}),
             None if step == "HalfDown" => json!({"Half": {"of": value, "up": false}}),
+            None if step == "ThirdUp" => quotient(value, json!(3), true),
+            None if step == "ThirdDown" => quotient(value, json!(3), false),
+            Some(("DivideEvenlyUp", by)) => quotient(value, amount(ctx, by)?, true),
+            Some(("DivideEvenlyDown", by)) => quotient(value, amount(ctx, by)?, false),
+            None if step == "Abs" => difference(value)?,
             _ => return unmapped(format!("amount:Count/{}", head(step))),
         };
     }
     Ok(value)
+}
+
+/// The amount divided by the divisor, rounded up or down.
+fn quotient(value: Value, by: Value, up: bool) -> Value {
+    json!({"Quotient": {"of": value, "by": by, "up": up}})
+}
+
+/// `/Abs` of a subtraction (`A/Minus.B`): how far apart the two are. Any other absolute value is a gap.
+fn difference(value: Value) -> Tr<Value> {
+    let Some([left, right]) = value
+        .get("Sum")
+        .and_then(Value::as_array)
+        .and_then(|parts| <&[Value; 2]>::try_from(parts.as_slice()).ok())
+    else {
+        return unmapped("amount:Count/Abs");
+    };
+    let right = match right {
+        Value::Number(n) => json!(n.as_i64().map_or(0, |n| -n)),
+        other => match other.get("Times") {
+            Some(times) if times.get("by") == Some(&json!(-1)) => times["of"].clone(),
+            _ => return unmapped("amount:Count/Abs"),
+        },
+    };
+    Ok(json!({"Difference": [left, right]}))
 }
 
 /// The amount held to the bound: `LimitMax` (`Gt`) caps it, `LimitMin` (`Lt`) raises it.

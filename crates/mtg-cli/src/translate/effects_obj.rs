@@ -724,11 +724,14 @@ fn pump_duration(p: &Params) -> Tr<&'static str> {
     unmapped("keyword:HIDDEN-doesnt-untap-shape")
 }
 
-/// A pump amount: `Double` adds the object's own value as the effect begins, so it needs one object to read.
+/// A pump amount: `Double` adds the object's own value as the effect begins and `Triple` twice that, so it needs one
+/// object to read.
 fn pump_amount(ctx: &Ctx, text: &str, single: Option<&Value>, stat: &str) -> Tr<Value> {
-    if text != "Double" {
-        return amount(ctx, text);
-    }
+    let factor = match text {
+        "Double" => 1,
+        "Triple" => 2,
+        _ => return amount(ctx, text),
+    };
     match single {
         Some(of)
             if of == "This"
@@ -736,7 +739,12 @@ fn pump_amount(ctx: &Ctx, text: &str, single: Option<&Value>, stat: &str) -> Tr<
                 || of.get("Target").is_some()
                 || of.get("Bound").is_some() =>
         {
-            Ok(json!({"Stat": {"of": of, "stat": stat}}))
+            let own = json!({"Stat": {"of": of, "stat": stat}});
+            Ok(if factor == 1 {
+                own
+            } else {
+                json!({"Times": {"by": factor, "of": own}})
+            })
         }
         _ => unmapped("amount:Double-of-several"),
     }

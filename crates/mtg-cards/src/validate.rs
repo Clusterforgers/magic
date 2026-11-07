@@ -897,6 +897,12 @@ impl<'a> Walker<'a> {
                 self.amounting = Amounting::of(sharing);
                 self.at("of", |w| w.amount(of));
             }
+            Amount::Quotient { of, by, .. } | Amount::Difference(of, by) => {
+                self.amounting = Amounting::of(sharing);
+                self.at("of", |w| w.amount(of));
+                self.amounting = Amounting::of(sharing);
+                self.at("by", |w| w.amount(by));
+            }
             Amount::Divided => {
                 if !sharing {
                     self.uses("Amount", "Divided.Elsewhere");
@@ -1038,6 +1044,8 @@ impl<'a> Walker<'a> {
             | Amount::AnyCounters(_)
             | Amount::Sum(_)
             | Amount::Product(_)
+            | Amount::Quotient { .. }
+            | Amount::Difference(..)
             | Amount::Times { .. }
             | Amount::Half { .. }
             | Amount::Divided

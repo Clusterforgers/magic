@@ -634,6 +634,18 @@ pub enum Amount {
     },
     /// The product of the amounts: "X times the number of ...".
     Product(Vec<Amount>),
+    /// The amount divided by another, rounded up or down; zero when the divisor is zero or less: "a third of their
+    /// life, rounded up", "X divided evenly, rounded down, among the creatures".
+    Quotient {
+        /// The amount divided.
+        of: Box<Amount>,
+        /// What it is divided by.
+        by: Box<Amount>,
+        /// Rounded up; else down.
+        up: bool,
+    },
+    /// How far apart the two amounts are, never negative: "the difference between its power and toughness".
+    Difference(Box<Amount>, Box<Amount>),
 }
 
 impl Amount {
@@ -784,6 +796,12 @@ enum Tagged {
         filter: Selector,
     },
     Product(Vec<Amount>),
+    Quotient {
+        of: Box<Amount>,
+        by: Box<Amount>,
+        up: bool,
+    },
+    Difference(Box<Amount>, Box<Amount>),
 }
 
 /// The tagged forms of [`Amount`] by reference, written by serde.
@@ -903,6 +921,12 @@ enum TaggedRef<'a> {
         filter: &'a Selector,
     },
     Product(&'a [Amount]),
+    Quotient {
+        of: &'a Amount,
+        by: &'a Amount,
+        up: bool,
+    },
+    Difference(&'a Amount, &'a Amount),
 }
 
 impl From<Tagged> for Amount {
@@ -976,6 +1000,8 @@ impl From<Tagged> for Amount {
             Tagged::ChosenAs(name) => Amount::ChosenAs(name),
             Tagged::CountOf { of, filter } => Amount::CountOf { of, filter },
             Tagged::Product(parts) => Amount::Product(parts),
+            Tagged::Quotient { of, by, up } => Amount::Quotient { of, by, up },
+            Tagged::Difference(left, right) => Amount::Difference(left, right),
         }
     }
 }
@@ -1086,6 +1112,12 @@ impl Serialize for Amount {
                 TaggedRef::CountOf { of, filter }.serialize(serializer)
             }
             Amount::Product(parts) => TaggedRef::Product(parts).serialize(serializer),
+            Amount::Quotient { of, by, up } => {
+                TaggedRef::Quotient { of, by, up: *up }.serialize(serializer)
+            }
+            Amount::Difference(left, right) => {
+                TaggedRef::Difference(left, right).serialize(serializer)
+            }
         }
     }
 }

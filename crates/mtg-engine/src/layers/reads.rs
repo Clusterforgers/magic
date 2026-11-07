@@ -390,6 +390,9 @@ pub(crate) fn reads_of_amount(amount: &Amount) -> Traits {
         Amount::CountOf { of, filter } => reads_of_ref(of).or(reads_of_selector(filter)),
         Amount::EvenShare(total) => reads_of_amount(total),
         Amount::Times { of, .. } | Amount::Half { of, .. } => reads_of_amount(of),
+        Amount::Quotient { of, by, .. } | Amount::Difference(of, by) => {
+            reads_of_amount(of).or(reads_of_amount(by))
+        }
         Amount::Devotion(_) => Traits::CONTROL,
         Amount::Greatest { of, stat }
         | Amount::Total { of, stat }
