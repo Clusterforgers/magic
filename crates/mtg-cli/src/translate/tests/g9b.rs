@@ -132,7 +132,7 @@ fn a_copy_that_becomes_one_keeps_its_ability_and_needs_no_parts() {
 #[rstest]
 #[case::cant_block("CARDNAME can't block.", Some(json!(["CantBlock"])))]
 #[case::cant_attack_or_block("CARDNAME can't attack or block.", Some(json!(["CantAttack", "CantBlock"])))]
-#[case::must_be_blocked("CARDNAME must be blocked if able.", None)]
+#[case::another_hidden_word("CARDNAME has no maximum hand size.", None)]
 fn an_animation_restricts_combat(#[case] word: &str, #[case] mods: Option<Value>) {
     let script = format!(
         "Name:T\nTypes:Instant\nA:SP$ Animate | ValidTgts$ Creature | HiddenKeywords$ {word}\n"

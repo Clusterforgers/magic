@@ -45,6 +45,11 @@ pub fn gate_conditions(ctx: &Ctx, p: &Params) -> Tr<Vec<Value>> {
         Some(other) => return unmapped(format!("condition:PlayerTurn={other}")),
     }
     if let Some(text) = p.get("ConditionManaSpent") {
+        // A "may" with a target of its own, chosen as the spell is cast before the mana is spent: whether the spell chooses
+        // the target at all is not something the line decides.
+        if p.has("ValidTgts") && p.has("Optional") {
+            return unmapped("condition:ManaSpent-with-a-target");
+        }
         let mut spent = Vec::new();
         for letter in text.split_whitespace() {
             let Some(kind) = mana_type(letter) else {

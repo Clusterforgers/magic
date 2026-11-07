@@ -13,7 +13,7 @@ pub fn effects(ctx: &mut Ctx, p: &Params, api: &str) -> Tr<Vec<Value>> {
     let effect = match api {
         "Token" => return token(ctx, p),
         "Investigate" => {
-            only(p, "Investigate", &["Num", "Defined"])?;
+            only(p, "Investigate", &["Num", "Defined", "Optional"])?;
             let mut create = json!({"token": {"Named": "clue"}});
             if let Some(num) = p.get("Num") {
                 create["count"] = amount(ctx, num)?;
@@ -21,9 +21,17 @@ pub fn effects(ctx: &mut Ctx, p: &Params, api: &str) -> Tr<Vec<Value>> {
             if let Some(who) = p.get("Defined") {
                 create["who"] = defined(ctx, who)?;
             }
-            json!({"CreateToken": create})
+            let who = create.get("who").cloned().unwrap_or_else(|| json!("You"));
+            return super::frame::optional(
+                p,
+                "Investigate",
+                vec![json!({"CreateToken": create})],
+                &who,
+            );
         }
         "ManaReflected" => reflected(ctx, p)?,
+        // Forge pays no cost of a sub-ability line (`DB$`): a `Cost$` there repeats the cost of the ability it belongs to.
+        _ if p.has("DB") && p.has("Cost") => return unmapped("key:Mana.Cost-on-a-sub-ability"),
         _ => mana(ctx, p)?,
     };
     Ok(vec![effect])

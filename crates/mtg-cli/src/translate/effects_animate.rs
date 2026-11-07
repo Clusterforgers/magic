@@ -58,10 +58,29 @@ pub fn restrictions(p: &Params) -> Tr<Vec<Value>> {
             "CARDNAME can't attack or block" => {
                 mods.extend([json!("CantAttack"), json!("CantBlock")]);
             }
+            // A rule of combat, not a change to the object: the animate runs it beside the change.
+            word if super::statics_combat::is_rule_word(word) => {}
             _ => return unmapped("key:Animate.HiddenKeywords"),
         }
     }
     Ok(mods)
+}
+
+/// The hidden keywords of an `Animate` line that are rules of combat ("CARDNAME must be blocked if able."), as the rule
+/// effects for the objects `affected` names.
+pub fn rule_effects(p: &Params, affected: &Value, duration: &str) -> Tr<Vec<Value>> {
+    let Some(words) = p.get("HiddenKeywords") else {
+        return Ok(Vec::new());
+    };
+    let mut rules = Vec::new();
+    for word in words.split('&').map(str::trim) {
+        if super::statics_combat::is_rule_word(word) {
+            rules.extend(super::statics_combat::hidden_effect(
+                word, affected, duration,
+            )?);
+        }
+    }
+    Ok(rules)
 }
 
 /// The static a `Mode$` word of an animation stands for; `None` until a word is read.

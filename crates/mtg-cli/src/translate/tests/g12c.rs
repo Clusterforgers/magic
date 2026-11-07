@@ -106,7 +106,7 @@ const PERMANENT: &str = "Name:T\nTypes:Artifact\n";
     "RaiseCost | ValidCard$ Card | Activator$ Opponent | ValidSpell$ Spell,Activated.!ManaAbility | Amount$ 1",
     json!([
         {"CostModifier": {"applies_to": ["Spell", {"ControlledBy": "Opponents"}], "change": "Increase", "mana": "{1}"}},
-        {"CostModifier": {"activating": "Any", "applies_to": [{"ControlledBy": "Opponents"}], "change": "Increase", "mana": "{1}"}}
+        {"CostModifier": {"activating": "Every", "applies_to": [{"ControlledBy": "Opponents"}], "change": "Increase", "mana": "{1}"}}
     ])
 )]
 fn a_cost_modifier_line_is_the_modifier_it_states(#[case] line: &str, #[case] expected: Value) {
