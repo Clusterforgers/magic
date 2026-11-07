@@ -301,10 +301,12 @@ fn tapped_with_counters(ctx: &mut Ctx, part: &Params, api: &str, next: &str) -> 
         ("PutCounter", Some("Tap")) => (&other, part),
         _ => return unmapped("replacement:Moved-not-an-entering-effect"),
     };
-    if other.get("Defined") != Some("Self")
-        || other.get("ETB") != Some("True")
-        || other.has("SubAbility")
-    {
+    // A `PutCounter` without `Defined$` puts the counters on the card itself.
+    let itself = match other.get("DB") {
+        Some("PutCounter") => matches!(other.get("Defined"), None | Some("Self")),
+        _ => other.get("Defined") == Some("Self"),
+    };
+    if !itself || other.get("ETB") != Some("True") || other.has("SubAbility") {
         return unmapped("replacement:Moved-not-an-entering-effect");
     }
     only_keys(tap, &["DB", "Defined", "ETB", "SubAbility"])?;

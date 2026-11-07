@@ -155,3 +155,24 @@ fn a_counter_choice_of_another_shape_stays_a_gap(#[case] extra: &str) {
     );
     assert!(!gaps(&text).is_empty());
 }
+
+#[rstest]
+#[case::counters_on_itself_unnamed("", true)]
+#[case::counters_on_itself_named(" | Defined$ Self", true)]
+#[case::counters_elsewhere(" | Defined$ Enchanted", false)]
+fn tapped_and_with_counters(#[case] defined: &str, #[case] read: bool) {
+    let text = format!(
+        "Name:T\nTypes:Artifact\nR:Event$ Moved | ValidCard$ Card.Self | Destination$ Battlefield | ReplaceWith$ EntersTapped | ReplacementResult$ Updated\nSVar:EntersTapped:DB$ Tap | Defined$ Self | ETB$ True | SubAbility$ DBAddCounter\nSVar:DBAddCounter:DB$ PutCounter | ETB$ True | CounterType$ COIN | CounterNum$ 3{defined}\n"
+    );
+    if read {
+        assert_eq!(gaps(&text), Vec::<String>::new());
+        assert_eq!(
+            abilities(&text)[0],
+            enters(
+                json!({"WithCounters": {"counter": {"Other": "coin"}, "count": 3, "tapped": true}})
+            )
+        );
+    } else {
+        assert!(!gaps(&text).is_empty());
+    }
+}
