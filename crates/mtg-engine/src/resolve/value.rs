@@ -2341,6 +2341,24 @@ impl<'a> Scope<'a> {
         }
     }
 
+    /// Whether "you" are one of the players `who` names (`Condition::Among`). The reference is the asking ability's: a
+    /// target is judged for the asker, not for the player a `PlayersWhere` tests.
+    fn among(&self, who: &Ref) -> Result<bool, ResolveError> {
+        let asking = Scope {
+            controller: self.asker.unwrap_or(self.controller),
+            asker: None,
+            ..self.clone()
+        };
+        Ok(asking.players(who)?.contains(&self.controller))
+    }
+
+    /// Whether the players `who` names (all of them, at least one) took the first turn (`Condition::StartingPlayer`).
+    fn started(&self, who: &Ref) -> Result<bool, ResolveError> {
+        let first = self.state.first_player();
+        let named = self.players(who)?;
+        Ok(!named.is_empty() && named.iter().all(|player| *player == first))
+    }
+
     /// Whether the turn is in a combat phase.
     fn in_combat(&self) -> bool {
         self.state.turn().step().phase() == crate::turn::Phase::Combat
@@ -2435,20 +2453,8 @@ impl<'a> Scope<'a> {
             Condition::IsNight => self.state.day_night() == Some(DayNight::Night),
             Condition::NeitherDayNorNight => self.state.day_night().is_none(),
             Condition::YourTurn => self.state.turn().active() == self.controller,
-            // The reference is the asking ability's: a target is judged for the asker, not the player tested.
-            Condition::Among(who) => {
-                let asking = Scope {
-                    controller: self.asker.unwrap_or(self.controller),
-                    asker: None,
-                    ..self.clone()
-                };
-                asking.players(who)?.contains(&self.controller)
-            }
-            Condition::StartingPlayer(who) => {
-                let first = self.state.first_player();
-                let named = self.players(who)?;
-                !named.is_empty() && named.iter().all(|player| *player == first)
-            }
+            Condition::Among(who) => self.among(who)?,
+            Condition::StartingPlayer(who) => self.started(who)?,
             Condition::Step(named) => {
                 crate::triggers::step_matches(*named, self.state.turn().step())
             }

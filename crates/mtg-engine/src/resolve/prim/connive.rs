@@ -50,8 +50,8 @@ fn connivances(cx: &Cx<'_>, conniving: &[Actor], count: usize) -> Result<Vec<Eve
             player,
         });
         // Past an empty library one more draw is all that matters (CR 704.5b).
-        let draws = count.min(state.zone(Zone::Library(player)).len() + 1);
-        for _ in 0..draws {
+        let times = count.min(state.zone(Zone::Library(player)).len() + 1);
+        for _ in 0..times {
             let nth = attempts.iter().filter(|who| **who == player).count() + 1;
             attempts.push(player);
             if let Some(event) = draw(state, player, nth).into_iter().nth(nth - 1) {

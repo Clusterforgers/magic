@@ -2723,11 +2723,7 @@ impl Writer<'_> {
             Effect::Connive {
                 what: what @ (Ref::This | Ref::Target(0) | Ref::Convoked),
                 count,
-            } => match count {
-                Amount::Fixed(1) => format!("{} connives", self.object(what)?),
-                Amount::X => format!("{} connives X", self.object(what)?),
-                _ => return None,
-            },
+            } => format!("{} connives{}", self.object(what)?, connive_count(count)?),
             Effect::PhaseOut {
                 what,
                 duration,
@@ -3442,4 +3438,13 @@ pub(super) fn while_held(when: &TriggerPattern) -> bool {
         when,
         TriggerPattern::DealsDamage { .. } | TriggerPattern::Batch(_) | TriggerPattern::AnyOf(_)
     )
+}
+
+/// The count after "connives": nothing for one, " X" for X (the where-X writer adds what X is).
+fn connive_count(count: &Amount) -> Option<&'static str> {
+    match count {
+        Amount::Fixed(1) => Some(""),
+        Amount::X => Some(" X"),
+        _ => None,
+    }
 }
