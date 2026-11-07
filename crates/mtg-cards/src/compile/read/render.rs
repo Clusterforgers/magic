@@ -541,6 +541,23 @@ fn written_anew(ability: &Ability) -> Vec<String> {
             }
         }
     }
+    // A table of one row printed inline; the twin has no table left, so this recurses once.
+    if let Some(inline) = super::fix23_dice::fix23_inline_roll(ability) {
+        for text in written_variants(&inline) {
+            if !texts.contains(&text) {
+                texts.push(text);
+            }
+        }
+    }
+    let six_sided: Vec<String> = texts
+        .iter()
+        .filter_map(|text| super::fix23_dice::fix23_six_sided(text))
+        .collect();
+    for text in six_sided {
+        if !texts.contains(&text) {
+            texts.push(text);
+        }
+    }
     texts
 }
 
