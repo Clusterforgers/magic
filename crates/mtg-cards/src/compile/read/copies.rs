@@ -711,6 +711,13 @@ fn is(r: &mut Reader<'_>, mods: &mut Vec<Modification>) -> Option<()> {
     }
     (r.word("a") || r.word("an")).then_some(())?;
     let size = power_toughness(r);
+    // "a 4/4 black Zombie": the size, the colors and the creature types, which replace the others.
+    if let Some(sized) = size.clone()
+        && let Some(found) = r.attempt(|r| super::g12b_copy_kinds::g12b_kinds(r, sized.clone()))
+    {
+        mods.extend(found);
+        return Some(());
+    }
     let mut kinds = Vec::new();
     loop {
         if let Some(name) = subtype(r) {
@@ -892,6 +899,14 @@ fn exception_parts(mods: &[Modification], subject: Subject, terse: bool) -> Opti
     let mut parts: Vec<String> = Vec::new();
     let mut rest = mods;
     while let Some(first) = rest.first() {
+        if let Some((run, text)) = super::g12b_copy_kinds::g12b_kinds_text(rest) {
+            if subject == Subject::They {
+                return None;
+            }
+            parts.push(format!("{} {text}", subject.is()));
+            rest = &rest[run..];
+            continue;
+        }
         // Keywords in a row are one phrase, and so are types and subtypes with the size before them.
         let run = match first {
             // "it has flying and this ability" is one phrase with the keywords before it.

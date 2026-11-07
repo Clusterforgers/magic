@@ -61,3 +61,47 @@ fn g12b_counters_of_read_back(#[case] text: &str) {
     let json = serde_json::to_string(&golden(text, ClauseKind::Triggered, false)).unwrap();
     assert!(json.contains("PutCountersOf"), "{text}: {json}");
 }
+
+fn frog(except: &str) -> String {
+    format!(
+        r#"{{"Spell":{{"effects":[{{"CreateToken":{{"token":{{"CopyOf":{{"except":{except},"of":{{"Target":0}}}}}}}}}}],"targets":[{{"what":{{"Object":[{{"Type":"Creature"}}]}}}}]}}}}"#
+    )
+}
+
+const FROG: &str = "Create a token that's a copy of target creature, except it's a 1/1 green Frog.";
+const INSECT: &str =
+    "Create a token that's a copy of target creature, except it's a 1/1 black and green Insect.";
+const FROG_TOO: &str = "Create a token that's a copy of target creature, except it's a 1/1 green Frog in addition to its other types.";
+const SET_FROG: &str = r#"[{"SetPT":{"power":1,"toughness":1}},{"SetColors":["Green"]},{"SetCreatureTypes":["Frog"]}]"#;
+const SET_INSECT: &str = r#"[{"SetPT":{"power":1,"toughness":1}},{"SetColors":["Black","Green"]},{"SetCreatureTypes":["Insect"]}]"#;
+
+#[rstest]
+#[case::a_frog(SET_FROG, FROG, true)]
+#[case::two_colors(SET_INSECT, INSECT, true)]
+#[case::another_size(r#"[{"SetPT":{"power":2,"toughness":2}},{"SetColors":["Green"]},{"SetCreatureTypes":["Frog"]}]"#, FROG, false)]
+#[case::another_color(
+    r#"[{"SetPT":{"power":1,"toughness":1}},{"SetColors":["Blue"]},{"SetCreatureTypes":["Frog"]}]"#,
+    FROG,
+    false
+)]
+#[case::a_frog_added_is_not_only_a_frog(
+    r#"[{"SetPT":{"power":1,"toughness":1}},{"SetColors":["Green"]},{"AddSubtype":"Frog"}]"#,
+    FROG,
+    false
+)]
+#[case::only_a_frog_is_not_a_frog_added(SET_FROG, FROG_TOO, false)]
+fn g12b_copy_creature_types_write_as_printed(
+    #[case] except: &str,
+    #[case] text: &str,
+    #[case] reads: bool,
+) {
+    let found = written_variants(&ability(&frog(except)));
+    assert_eq!(found.iter().any(|w| same_text(w, text)), reads, "{found:?}");
+}
+
+#[rstest]
+#[case::a_frog(FROG, SET_FROG)]
+#[case::two_colors(INSECT, SET_INSECT)]
+fn g12b_copy_creature_types_read_back(#[case] text: &str, #[case] except: &str) {
+    reads_as(text, ClauseKind::Spell, false, &frog(except));
+}
