@@ -179,6 +179,15 @@ fn copy_activated(ctx: &mut Ctx, p: &Params, other_controller: bool) -> Tr<Value
             return unmapped(format!("key:CopySpellAbility.{key}-of-an-ability"));
         }
     }
+    // Forge marks "copy that ability" optional where the card has no "may" (Illusionist's Bracers).
+    if !ctx
+        .oracle
+        .to_lowercase()
+        .replace("you may choose new targets", "")
+        .contains("may")
+    {
+        return unmapped("key:CopySpellAbility.of-an-ability-without-may");
+    }
     let mut copy = json!({"what": "Dealer"});
     if p.has("Amount") {
         copy["count"] = amount(ctx, p.get("Amount").unwrap_or("1"))?;

@@ -37,6 +37,10 @@ fn an_activated_ability_is_copied(#[case] lines: &str, #[case] part: &str) {
 #[rstest]
 #[case::another_controller("Controller$ Opponent", "key:CopySpellAbility.Controller")]
 #[case::optional("Optional$ True", "key:CopySpellAbility.Optional-of-an-ability")]
+#[case::a_must_forge_reads_as_may(
+    "MayChooseTarget$ True",
+    "key:CopySpellAbility.of-an-ability-without-may"
+)]
 fn the_neighbours_of_a_copied_ability_stay_gaps(#[case] key: &str, #[case] gap: &str) {
     let lines = format!(
         "T:Mode$ AbilityCast | ValidActivatingPlayer$ You | ValidSA$ SpellAbility.!ManaAbility | TriggerZones$ Battlefield | Execute$ TrigCopy | TriggerDescription$ x\nSVar:TrigCopy:DB$ CopySpellAbility | Defined$ TriggeredSpellAbility | {key}"
