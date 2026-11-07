@@ -55,6 +55,7 @@ fn later(effects: &[Effect]) -> Option<(String, usize)> {
             duration: Duration::Forever,
         },
         Effect::DelayedTrigger {
+            until: None,
             when:
                 TriggerPattern::StepBegins {
                     step: Step::End,

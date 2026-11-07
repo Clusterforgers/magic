@@ -192,6 +192,7 @@ mod dredge;
 mod dredge_fuzz;
 mod e10b_sealed;
 mod e14e_copy_activated;
+mod e14e_until_next_turn;
 mod elimination;
 mod embalm;
 mod en3_source;

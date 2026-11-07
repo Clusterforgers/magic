@@ -133,6 +133,7 @@ pub fn warp_riders() -> Vec<Ability> {
                 rest_as: None,
             },
             Effect::DelayedTrigger {
+                until: None,
                 when: TriggerPattern::StepBegins {
                     step: Step::End,
                     whose: Ref::EachPlayer,

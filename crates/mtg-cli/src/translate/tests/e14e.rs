@@ -48,3 +48,35 @@ fn the_neighbours_of_a_copied_ability_stay_gaps(#[case] key: &str, #[case] gap: 
     );
     assert!(gaps.iter().any(|g| g.starts_with(gap)), "{gaps:?}");
 }
+
+#[rstest]
+#[case::until_your_next_turn("UntilYourNextTurn", r#""once":false,"until":"UntilYourNextTurn""#)]
+#[case::for_the_rest_of_the_game("Permanent", r#""once":false,"until":"Forever""#)]
+#[case::this_turn("EOT", r#""once":false,"this_turn":true"#)]
+fn a_trigger_of_an_effect_lasts_its_duration(#[case] duration: &str, #[case] part: &str) {
+    let lines = format!(
+        "A:SP$ Effect | Triggers$ TrigTaps | Duration$ {duration}\nSVar:TrigTaps:Mode$ Taps | ValidCard$ Creature | Execute$ TrigDestroy | TriggerDescription$ x\nSVar:TrigDestroy:DB$ Destroy | Defined$ TriggeredCard"
+    );
+    let (json, gaps) = card(
+        "Sorcery",
+        &lines,
+        "Until your next turn, whenever a creature becomes tapped, destroy it.",
+    );
+    assert!(gaps.is_empty(), "{gaps:?}");
+    assert!(json.contains(part), "{json}");
+}
+
+#[test]
+fn damage_of_either_creature_until_your_next_turn_stays_a_gap() {
+    let lines = "A:SP$ Effect | ValidTgts$ Creature | TargetMin$ 0 | TargetMax$ 2 | Triggers$ TrigDamage | RememberObjects$ Targeted | Duration$ UntilYourNextTurn\nSVar:TrigDamage:Mode$ DamageDealtOnce | CombatDamage$ True | ValidSource$ Creature.IsRemembered | Execute$ TrigDraw | TriggerDescription$ x\nSVar:TrigDraw:DB$ Draw | NumCards$ 1";
+    let (_, gaps) = card(
+        "Sorcery",
+        lines,
+        "Choose up to two target creatures. Until your next turn, whenever either of those creatures deals combat damage, you draw a card.",
+    );
+    assert!(
+        gaps.iter()
+            .any(|g| g == "trigger:DamageDealtOnce-for-each-source"),
+        "{gaps:?}"
+    );
+}

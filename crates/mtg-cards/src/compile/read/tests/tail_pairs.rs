@@ -96,6 +96,7 @@ fn a_card_returns_to_its_owners_hand_at_the_next_end_step(#[case] text: &str, #[
     let [
         Effect::Choose { from, bind, .. },
         Effect::DelayedTrigger {
+            until: None,
             when,
             once: true,
             this_turn: false,

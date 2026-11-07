@@ -1439,6 +1439,9 @@ pub enum Effect {
         /// It waits only until the end of the turn it was set up in ("when you next cast a spell this turn").
         #[serde(default, skip_serializing_if = "is_false")]
         this_turn: bool,
+        /// It waits until this runs out instead ("until your next turn, whenever ..."), also when it triggers once.
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        until: Option<Duration>,
         /// What it does.
         effects: Vec<Effect>,
     },

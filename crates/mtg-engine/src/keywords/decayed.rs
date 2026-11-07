@@ -44,6 +44,7 @@ impl KeywordRules for Decayed {
             from: ZoneKind::Battlefield,
             targets: Vec::new(),
             effects: vec![Effect::DelayedTrigger {
+                until: None,
                 when: TriggerPattern::StepBegins {
                     step: Step::EndCombat,
                     whose: Ref::EachPlayer,
@@ -86,6 +87,7 @@ mod tests {
         assert_eq!(*what, Selector::this());
         let [
             Effect::DelayedTrigger {
+                until: None,
                 when:
                     TriggerPattern::StepBegins {
                         step: Step::EndCombat,

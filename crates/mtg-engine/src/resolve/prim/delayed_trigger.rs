@@ -76,6 +76,7 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         when,
         once,
         this_turn,
+        until,
         effects,
     } = effect
     else {
@@ -99,6 +100,7 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
             when,
             once: *once,
             this_turn: *this_turn,
+            until: until.clone(),
             effects: fixed_target_stats(cx, effects)?,
             targets: Vec::new(),
             bindings,

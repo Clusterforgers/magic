@@ -1190,6 +1190,7 @@ fn effect() -> impl Strategy<Value = Effect> {
             (bound_name(), amount()).prop_map(|(bind, amount)| Effect::Let { bind, amount }),
             (trigger_pattern(), any::<bool>(), list()).prop_map(|(when, once, effects)| {
                 Effect::DelayedTrigger {
+                    until: None,
                     when,
                     once,
                     this_turn: false,

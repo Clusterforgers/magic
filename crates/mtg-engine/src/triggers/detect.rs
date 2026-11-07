@@ -3268,6 +3268,7 @@ mod tests {
             when: pattern(r#"{"StepBegins":{"step":"End"}}"#),
             once,
             this_turn: false,
+            until: None,
             effects: gain(),
             targets: Vec::new(),
             bindings: vec![("kept".to_owned(), vec![Target::Player(FOE)])],
