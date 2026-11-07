@@ -1,0 +1,52 @@
+{
+  "oracle_id": "f898bf43-6a9c-46eb-b805-63cb12bab273",
+  "name": "Cloakwood Hermit",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Cloakwood Hermit",
+      "oracle_fingerprint": "daaaf547e1737424b0abf47fa481280b",
+      "abilities": [
+        {
+          "Static": {
+            "affected": { "Each": [{ "Type": "Creature" }, "Commander", { "OwnedBy": "You" }] },
+            "mods": [
+              {
+                "GrantAbility": {
+                  "Triggered": {
+                    "when": { "StepBegins": { "step": "End", "whose": "You" } },
+                    "if": {
+                      "Compare": {
+                        "left": { "Tallied": { "who": "You", "what": "CreatureCardsGraved" } },
+                        "op": "Ge",
+                        "right": 1
+                      }
+                    },
+                    "effects": [
+                      {
+                        "CreateToken": {
+                          "token": {
+                            "Custom": {
+                              "name": "Squirrel",
+                              "colors": ["Green"],
+                              "types": ["Creature"],
+                              "subtypes": ["Squirrel"],
+                              "power": 1,
+                              "toughness": 1
+                            }
+                          },
+                          "count": 2,
+                          "tapped": true
+                        }
+                      }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,34 @@
+{
+  "oracle_id": "40c3007a-be6c-4400-9139-12b9ca098ac4",
+  "name": "Shyft",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Shyft",
+      "oracle_fingerprint": "3177e39cfb2f3dd4b758c3f9296325ba",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    { "ChooseValue": { "kind": "Colors", "as": "chosen" } },
+                    {
+                      "Continuous": {
+                        "affected": "This",
+                        "mods": [{ "SetColorsChosen": "chosen" }],
+                        "duration": "Forever"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,60 @@
+{
+  "oracle_id": "b8780f7b-3093-4509-9cb9-afa9c5f218fa",
+  "name": "Stomping Slabs",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Stomping Slabs",
+      "oracle_fingerprint": "dd115732ebde6bc0a796790c13ad36c6",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [
+              { "LookAtTop": { "count": 7, "as": "top" } },
+              {
+                "Choose": {
+                  "from": { "Bound": "top" },
+                  "count": { "min": 0, "max": 0 },
+                  "as": "kept2",
+                  "rest_as": "rest3"
+                }
+              },
+              { "Reveal": { "what": { "Bound": "top" } } },
+              { "Move": { "what": { "Bound": "kept2" }, "to": "Hand", "as": "revealed4" } },
+              {
+                "Move": {
+                  "what": { "Bound": "rest3" },
+                  "to": { "Library": { "place": "Bottom", "order": "Chosen" } },
+                  "as": "revealed5"
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": {
+                        "Each": [
+                          {
+                            "AnyOf": [
+                              { "Is": { "Bound": "revealed4" } },
+                              { "Is": { "Bound": "revealed5" } }
+                            ]
+                          }
+                        ]
+                      },
+                      "selector": [{ "Named": "Stomping Slabs" }],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 7 } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -68,7 +68,9 @@
                                 "then": [
                                   {
                                     "Move": {
-                                      "what": { "Bound": "card" },
+                                      "what": {
+                                        "Each": [{ "Is": { "Bound": "card" } }, { "In": "Hand" }]
+                                      },
                                       "to": { "Battlefield": {} }
                                     }
                                   }

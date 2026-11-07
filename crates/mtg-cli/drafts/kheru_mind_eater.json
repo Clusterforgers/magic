@@ -1,0 +1,41 @@
+{
+  "oracle_id": "dfea918b-5702-4c12-ba36-e6aa4ace09c7",
+  "name": "Kheru Mind-Eater",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Kheru Mind-Eater",
+      "oracle_fingerprint": "4f23deb127ed02634c914cdf4dffac1b",
+      "abilities": [
+        { "Keyword": "Menace" },
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": ["This"], "to": "EachPlayer", "combat": true } },
+            "effects": [
+              {
+                "Choose": {
+                  "who": "Triggering",
+                  "from": { "Each": [{ "In": "Hand" }, { "OwnedBy": "Triggering" }] },
+                  "as": "picked"
+                }
+              },
+              { "ExileHidden": { "what": { "Bound": "picked" }, "sealed": true } }
+            ]
+          }
+        },
+        {
+          "Rule": {
+            "rule": {
+              "MayCast": { "what": [{ "ExiledWith": "This" }], "from": "Exile", "play": true }
+            }
+          }
+        },
+        {
+          "Rule": {
+            "rule": { "LookAtExiled": { "what": [{ "ExiledWith": "This" }, { "In": "Exile" }] } }
+          }
+        }
+      ]
+    }
+  ]
+}

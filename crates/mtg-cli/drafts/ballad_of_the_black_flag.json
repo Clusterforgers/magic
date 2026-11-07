@@ -1,0 +1,129 @@
+{
+  "oracle_id": "e8e15ab4-e4c7-4faf-b469-288451ddee02",
+  "name": "Ballad of the Black Flag",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ballad of the Black Flag",
+      "oracle_fingerprint": "952c69f61d2e7614cf8382a681655c5b",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 1 } },
+            "effects": [
+              { "Mill": { "count": 3, "as": "milled" } },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      {
+                        "AnyOf": [
+                          { "Supertype": "Legendary" },
+                          { "Type": "Artifact" },
+                          { "Subtype": "Saga" }
+                        ]
+                      },
+                      { "OwnedBy": "You" },
+                      { "Is": { "Bound": "milled" } },
+                      { "AnyOf": [{ "In": "Graveyard" }, { "In": "Exile" }] }
+                    ]
+                  },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "picked2"
+                }
+              },
+              { "Move": { "what": { "Bound": "picked2" }, "to": "Hand" } }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 2 } },
+            "effects": [
+              { "Mill": { "count": 3, "as": "milled" } },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      {
+                        "AnyOf": [
+                          { "Supertype": "Legendary" },
+                          { "Type": "Artifact" },
+                          { "Subtype": "Saga" }
+                        ]
+                      },
+                      { "OwnedBy": "You" },
+                      { "Is": { "Bound": "milled" } },
+                      { "AnyOf": [{ "In": "Graveyard" }, { "In": "Exile" }] }
+                    ]
+                  },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "picked2"
+                }
+              },
+              { "Move": { "what": { "Bound": "picked2" }, "to": "Hand" } }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 3 } },
+            "effects": [
+              { "Mill": { "count": 3, "as": "milled" } },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      {
+                        "AnyOf": [
+                          { "Supertype": "Legendary" },
+                          { "Type": "Artifact" },
+                          { "Subtype": "Saga" }
+                        ]
+                      },
+                      { "OwnedBy": "You" },
+                      { "Is": { "Bound": "milled" } },
+                      { "AnyOf": [{ "In": "Graveyard" }, { "In": "Exile" }] }
+                    ]
+                  },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "picked2"
+                }
+              },
+              { "Move": { "what": { "Bound": "picked2" }, "to": "Hand" } }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 4 } },
+            "effects": [
+              {
+                "Rule": {
+                  "rule": {
+                    "SpellCost": {
+                      "applies_to": [
+                        "Spell",
+                        {
+                          "AnyOf": [
+                            { "Supertype": "Legendary" },
+                            { "Type": "Artifact" },
+                            { "Subtype": "Saga" }
+                          ]
+                        },
+                        { "ControlledBy": "You" }
+                      ],
+                      "change": "Reduce",
+                      "mana": "{2}"
+                    }
+                  },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

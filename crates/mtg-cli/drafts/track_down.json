@@ -1,0 +1,59 @@
+{
+  "oracle_id": "8f28b65b-4b73-4080-9cdc-d236ad99f39c",
+  "name": "Track Down",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Track Down",
+      "oracle_fingerprint": "ab72fcb4cf580602040172e44b0df85b",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "Scry": { "count": 3 } },
+              { "LookAtTop": { "as": "top" } },
+              { "Choose": { "from": { "Bound": "top" }, "as": "kept2", "rest_as": "rest3" } },
+              { "Reveal": { "what": { "Bound": "top" } } },
+              {
+                "Move": {
+                  "what": { "Bound": "kept2" },
+                  "to": { "Library": { "place": "Top" } },
+                  "as": "revealed4"
+                }
+              },
+              {
+                "Move": {
+                  "what": { "Bound": "rest3" },
+                  "to": { "Library": { "place": "Bottom", "order": "Chosen" } },
+                  "as": "revealed5"
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": {
+                        "Each": [
+                          {
+                            "AnyOf": [
+                              { "Is": { "Bound": "revealed4" } },
+                              { "Is": { "Bound": "revealed5" } }
+                            ]
+                          }
+                        ]
+                      },
+                      "selector": [{ "AnyOf": [{ "Type": "Creature" }, { "Type": "Land" }] }],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [{ "Draw": {} }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

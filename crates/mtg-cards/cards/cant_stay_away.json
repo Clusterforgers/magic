@@ -1,0 +1,55 @@
+{
+  "oracle_id": "69ae219e-bf97-4626-9b16-7901f51f0343",
+  "name": "Can't Stay Away",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Can't Stay Away",
+      "oracle_fingerprint": "90d81fbd57f8d8e5ffdcbe23596ce384",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Type": "Creature" },
+                    { "OwnedBy": "You" },
+                    { "Compare": { "stat": "ManaValue", "op": "Le", "to": 3 } },
+                    { "In": "Graveyard" }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              { "Move": { "what": { "Target": 0 }, "to": { "Battlefield": {} } } },
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    {
+                      "GrantAbility": {
+                        "Replacement": {
+                          "when": {
+                            "ZoneChange": {
+                              "what": ["This"],
+                              "from": "Battlefield",
+                              "to": "Graveyard"
+                            }
+                          },
+                          "by": { "MoveTo": "Exile" }
+                        }
+                      }
+                    }
+                  ],
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Flashback": "{3}{W}{B}" } }
+      ]
+    }
+  ]
+}

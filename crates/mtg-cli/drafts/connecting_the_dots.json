@@ -1,0 +1,36 @@
+{
+  "oracle_id": "a29e2c70-8909-465b-9cec-1a7037250313",
+  "name": "Connecting the Dots",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Connecting the Dots",
+      "oracle_fingerprint": "87d7f731989798c292d4eb5cd9f9103d",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } },
+            "effects": [{ "ExileTop": { "as": "exiled", "sealed": true } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [
+              { "Mana": "{1}{R}" },
+              { "Discard": { "count": { "Count": [{ "In": "Hand" }, { "OwnedBy": "You" }] } } },
+              "SacrificeSelf"
+            ],
+            "effects": [
+              {
+                "Move": {
+                  "what": { "Each": [{ "ExiledWith": "This" }, { "In": "Exile" }] },
+                  "to": "Hand"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

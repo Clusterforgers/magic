@@ -1,0 +1,77 @@
+{
+  "oracle_id": "1f139012-fa71-4f5f-8c57-6847bff95678",
+  "name": "Grishnákh, Brash Instigator",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Grishnákh, Brash Instigator",
+      "oracle_fingerprint": "9ad3d87489241aa3943a0f108fd908e8",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              { "Amass": { "subtype": "Orc", "count": 2, "as": "amassed" } },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Bound": "amassed" },
+                      "selector": [],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [
+                    { "Bind": { "what": { "Bound": "amassed" }, "as": "when2" } },
+                    {
+                      "Reflexive": {
+                        "targets": [
+                          {
+                            "what": {
+                              "Object": [
+                                { "Type": "Creature" },
+                                { "Not": { "Supertype": "Legendary" } },
+                                {
+                                  "Compare": {
+                                    "stat": "Power",
+                                    "op": "Le",
+                                    "to": {
+                                      "Stat": { "of": { "Bound": "when2" }, "stat": "Power" }
+                                    }
+                                  }
+                                },
+                                { "ControlledBy": "Opponents" }
+                              ]
+                            }
+                          }
+                        ],
+                        "effects": [
+                          {
+                            "Continuous": {
+                              "affected": { "Target": 0 },
+                              "mods": [{ "SetController": "You" }],
+                              "duration": "UntilEndOfTurn"
+                            }
+                          },
+                          { "Untap": { "what": { "Target": 0 } } },
+                          {
+                            "Continuous": {
+                              "affected": { "Target": 0 },
+                              "mods": [{ "AddKeyword": "Haste" }],
+                              "duration": "UntilEndOfTurn"
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

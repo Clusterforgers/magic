@@ -1,0 +1,181 @@
+{
+  "oracle_id": "ba9cd7bc-846f-4b5c-a1dc-9763a60dafc9",
+  "name": "Nissa's Revelation",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Nissa's Revelation",
+      "oracle_fingerprint": "8fde0776bfbbe7c87ec2985e6afb9da4",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "Scry": { "count": 5 } },
+              { "LookAtTop": { "as": "top" } },
+              { "Choose": { "from": { "Bound": "top" }, "as": "kept2", "rest_as": "rest3" } },
+              { "Reveal": { "what": { "Bound": "top" } } },
+              {
+                "Move": {
+                  "what": { "Bound": "kept2" },
+                  "to": { "Library": { "place": "Top" } },
+                  "as": "revealed4"
+                }
+              },
+              {
+                "Move": {
+                  "what": { "Bound": "rest3" },
+                  "to": { "Library": { "place": "Bottom", "order": "Chosen" } },
+                  "as": "revealed5"
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": {
+                        "Count": [
+                          {
+                            "Is": {
+                              "Each": [
+                                {
+                                  "AnyOf": [
+                                    { "Is": { "Bound": "revealed4" } },
+                                    { "Is": { "Bound": "revealed5" } }
+                                  ]
+                                }
+                              ]
+                            }
+                          },
+                          {
+                            "AnyOf": [
+                              { "In": "Battlefield" },
+                              { "In": "Hand" },
+                              { "In": "Library" },
+                              { "In": "Graveyard" },
+                              { "In": "Exile" },
+                              { "In": "Stack" }
+                            ]
+                          },
+                          { "Type": "Creature" }
+                        ]
+                      },
+                      "op": "Eq",
+                      "right": 1
+                    }
+                  },
+                  "then": [
+                    {
+                      "Draw": {
+                        "count": {
+                          "Total": {
+                            "of": [
+                              {
+                                "Is": {
+                                  "Each": [
+                                    {
+                                      "AnyOf": [
+                                        { "Is": { "Bound": "revealed4" } },
+                                        { "Is": { "Bound": "revealed5" } }
+                                      ]
+                                    }
+                                  ]
+                                }
+                              },
+                              {
+                                "AnyOf": [
+                                  { "In": "Battlefield" },
+                                  { "In": "Hand" },
+                                  { "In": "Library" },
+                                  { "In": "Graveyard" },
+                                  { "In": "Exile" },
+                                  { "In": "Stack" }
+                                ]
+                              }
+                            ],
+                            "stat": "Power"
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": {
+                        "Count": [
+                          {
+                            "Is": {
+                              "Each": [
+                                {
+                                  "AnyOf": [
+                                    { "Is": { "Bound": "revealed4" } },
+                                    { "Is": { "Bound": "revealed5" } }
+                                  ]
+                                }
+                              ]
+                            }
+                          },
+                          {
+                            "AnyOf": [
+                              { "In": "Battlefield" },
+                              { "In": "Hand" },
+                              { "In": "Library" },
+                              { "In": "Graveyard" },
+                              { "In": "Exile" },
+                              { "In": "Stack" }
+                            ]
+                          },
+                          { "Type": "Creature" }
+                        ]
+                      },
+                      "op": "Eq",
+                      "right": 1
+                    }
+                  },
+                  "then": [
+                    {
+                      "GainLife": {
+                        "amount": {
+                          "Total": {
+                            "of": [
+                              {
+                                "Is": {
+                                  "Each": [
+                                    {
+                                      "AnyOf": [
+                                        { "Is": { "Bound": "revealed4" } },
+                                        { "Is": { "Bound": "revealed5" } }
+                                      ]
+                                    }
+                                  ]
+                                }
+                              },
+                              {
+                                "AnyOf": [
+                                  { "In": "Battlefield" },
+                                  { "In": "Hand" },
+                                  { "In": "Library" },
+                                  { "In": "Graveyard" },
+                                  { "In": "Exile" },
+                                  { "In": "Stack" }
+                                ]
+                              }
+                            ],
+                            "stat": "Toughness"
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

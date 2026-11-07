@@ -1,0 +1,31 @@
+{
+  "oracle_id": "30a9ad0e-1b23-41ce-bacc-3b27f78ef628",
+  "name": "Boulder Dash",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Boulder Dash",
+      "oracle_fingerprint": "efea8f43d699ec7a134e4b0fde54e5bc",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": "AnyTarget" },
+              { "what": { "Another": { "what": "AnyTarget", "earlier": [0] } } }
+            ],
+            "effects": [
+              {
+                "Together": {
+                  "effects": [
+                    { "DealDamage": { "to": { "Target": 0 }, "amount": 2 } },
+                    { "DealDamage": { "to": { "Target": 1 }, "amount": 1 } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

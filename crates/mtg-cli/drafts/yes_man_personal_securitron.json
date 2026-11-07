@@ -1,16 +1,48 @@
 {
   "oracle_id": "16b8eab0-ccbd-4dbf-9998-82a4d85d0f77",
   "name": "Yes Man, Personal Securitron",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Yes Man, Personal Securitron",
       "oracle_fingerprint": "c9db3d467f97aa186cd3c9775f2f1725",
       "abilities": [
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 0, "end": 147 }
+          "Activated": {
+            "cost": ["Tap"],
+            "condition": "YourTurn",
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "SetController": { "Target": 0 } }],
+                  "duration": "Forever"
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": "This",
+                      "selector": [{ "ControlledBy": { "Target": 0 } }],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [
+                    {
+                      "Reflexive": {
+                        "effects": [
+                          { "Draw": { "count": 2 } },
+                          { "PutCounters": { "on": "This", "counter": { "Other": "quest" } } }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
           }
         },
         {

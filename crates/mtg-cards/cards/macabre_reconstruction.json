@@ -1,0 +1,40 @@
+{
+  "oracle_id": "04633ecd-eac0-426a-83a5-8e88262fca30",
+  "name": "Macabre Reconstruction",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Macabre Reconstruction",
+      "oracle_fingerprint": "5c26588d8de35676393818a5726745bb",
+      "abilities": [
+        {
+          "CostModifier": {
+            "applies_to": ["This"],
+            "change": "Reduce",
+            "mana": "{2}",
+            "condition": {
+              "Compare": {
+                "left": { "Tallied": { "who": "You", "what": "CreatureCardsGraved" } },
+                "op": "Ge",
+                "right": 1
+              }
+            }
+          }
+        },
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "Type": "Creature" }, { "In": "Graveyard" }, { "OwnedBy": "You" }]
+                },
+                "bounds": { "min": 0, "max": 2 }
+              }
+            ],
+            "effects": [{ "Move": { "what": { "Target": 0 }, "to": "Hand" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

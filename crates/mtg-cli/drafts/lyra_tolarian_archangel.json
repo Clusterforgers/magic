@@ -1,7 +1,7 @@
 {
   "oracle_id": "d9060fff-0b65-4b3d-930d-6e36315b802c",
   "name": "Lyra, Tolarian Archangel",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Lyra, Tolarian Archangel",
@@ -38,9 +38,20 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 141, "end": 233 }
+          "Activated": {
+            "cost": "{3}{U}{U}",
+            "effects": [
+              {
+                "DelayedTrigger": {
+                  "when": {
+                    "DealsDamage": { "source": ["This"], "to": "EachPlayer", "combat": true }
+                  },
+                  "once": false,
+                  "this_turn": true,
+                  "effects": [{ "Draw": { "count": 2 } }]
+                }
+              }
+            ]
           }
         }
       ]

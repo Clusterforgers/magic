@@ -1,0 +1,29 @@
+{
+  "oracle_id": "c4660b3c-a234-4a3e-83e7-e2fa9d556685",
+  "name": "Lethal Scheme",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Lethal Scheme",
+      "oracle_fingerprint": "47b0a4b6da9f6aaa0a66cd2fffb31830",
+      "abilities": [
+        { "Keyword": "Convoke" },
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "AnyOf": [{ "Type": "Creature" }, { "Type": "Planeswalker" }] }]
+                }
+              }
+            ],
+            "effects": [
+              { "Destroy": { "what": { "Target": 0 } } },
+              { "Connive": { "what": "Convoked" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

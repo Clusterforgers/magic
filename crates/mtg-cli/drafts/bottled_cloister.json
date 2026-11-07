@@ -1,0 +1,49 @@
+{
+  "oracle_id": "1fd5e5e7-f23d-4891-86c4-268195ea09fc",
+  "name": "Bottled Cloister",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Bottled Cloister",
+      "oracle_fingerprint": "7cd45ba5ba74bb17d7682f3771eb465d",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "Opponents" } },
+            "effects": [
+              {
+                "ExileHidden": {
+                  "what": { "Each": [{ "OwnedBy": "You" }, { "In": "Hand" }] },
+                  "sealed": true,
+                  "as": "exiled"
+                }
+              },
+              { "Remember": { "what": { "Bound": "exiled" }, "slot": "remembered" } }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [
+              {
+                "Move": {
+                  "what": {
+                    "Each": [
+                      { "Is": { "Remembered": { "on": "This", "slot": "remembered" } } },
+                      { "OwnedBy": "You" },
+                      { "In": "Exile" }
+                    ]
+                  },
+                  "to": "Hand"
+                }
+              },
+              { "Draw": {} },
+              { "Forget": { "slot": "remembered" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

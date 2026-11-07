@@ -1,0 +1,51 @@
+{
+  "oracle_id": "a4374baa-a846-4b34-afbf-6bb7feb4648c",
+  "name": "Electric Seaweed",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Electric Seaweed",
+      "oracle_fingerprint": "47f545283b0a2da146671947566b19e6",
+      "abilities": [
+        { "Keyword": "Defender" },
+        { "Keyword": "Haste" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "DelayedTrigger": {
+                  "when": {
+                    "ZoneChange": {
+                      "what": [{ "Type": "Creature" }, { "Not": { "Is": "This" } }],
+                      "from": "Battlefield",
+                      "to": "Graveyard"
+                    }
+                  },
+                  "once": false,
+                  "this_turn": true,
+                  "effects": [
+                    {
+                      "DealDamage": {
+                        "source": "This",
+                        "to": { "Each": [{ "Type": "Creature" }, { "Not": { "Subtype": "Wall" } }] },
+                        "amount": 1
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 1 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

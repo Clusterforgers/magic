@@ -1,0 +1,72 @@
+{
+  "oracle_id": "8c7723a5-04c7-4241-b0ba-6a821449ca43",
+  "name": "Phantasmal Mount",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Phantasmal Mount",
+      "oracle_fingerprint": "346679be2f778e8faf2305d01083aecf",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Type": "Creature" },
+                    { "ControlledBy": "You" },
+                    { "Compare": { "stat": "Toughness", "op": "Le", "to": 2 } }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    { "ModifyPT": { "power": 1, "toughness": 1 } },
+                    { "AddKeyword": "Flying" }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "DelayedTrigger": {
+                  "when": {
+                    "ZoneChange": { "what": [{ "Is": { "Target": 0 } }], "from": "Battlefield" }
+                  },
+                  "this_turn": true,
+                  "effects": [
+                    {
+                      "Sacrifice": {
+                        "who": { "ControllerOf": "This" },
+                        "filter": [{ "Is": "This" }]
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "DelayedTrigger": {
+                  "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield" } },
+                  "this_turn": true,
+                  "effects": [
+                    {
+                      "Sacrifice": {
+                        "who": { "ControllerOf": { "Target": 0 } },
+                        "filter": [{ "Is": { "Target": 0 } }]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

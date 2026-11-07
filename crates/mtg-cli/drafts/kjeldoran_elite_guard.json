@@ -1,0 +1,46 @@
+{
+  "oracle_id": "a1f6df2a-fc97-44d4-a0d1-902d8df94002",
+  "name": "Kjeldoran Elite Guard",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Kjeldoran Elite Guard",
+      "oracle_fingerprint": "667cb7a728d436088ce06e2984fe95b1",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "condition": "InCombat",
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "ModifyPT": { "power": 2, "toughness": 2 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "DelayedTrigger": {
+                  "when": {
+                    "ZoneChange": { "what": [{ "Is": { "Target": 0 } }], "from": "Battlefield" }
+                  },
+                  "once": false,
+                  "this_turn": true,
+                  "effects": [
+                    {
+                      "Sacrifice": {
+                        "who": { "ControllerOf": "This" },
+                        "filter": [{ "Is": "This" }]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

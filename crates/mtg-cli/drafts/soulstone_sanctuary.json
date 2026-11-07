@@ -1,0 +1,38 @@
+{
+  "oracle_id": "3c0f99b8-0222-4fac-932a-eb5d77826564",
+  "name": "Soulstone Sanctuary",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Soulstone Sanctuary",
+      "oracle_fingerprint": "cc4830084d1b8f77c029d9b6aa2e19f0",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Colorless"] } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{4}",
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [
+                    { "SetPT": { "power": 3, "toughness": 3 } },
+                    "AddAllCreatureTypes",
+                    { "AddType": "Creature" },
+                    { "AddKeyword": "Vigilance" }
+                  ],
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

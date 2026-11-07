@@ -1,0 +1,42 @@
+{
+  "oracle_id": "d547275a-bc31-4c05-9db3-27b5efe47bb1",
+  "name": "Magus of the Jar",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Magus of the Jar",
+      "oracle_fingerprint": "051bf26bdac21f4cb1f8f57e973267c9",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap", "SacrificeSelf"],
+            "effects": [
+              {
+                "ExileHidden": {
+                  "what": { "Each": [{ "In": "Hand" }] },
+                  "sealed": true,
+                  "as": "exiled"
+                }
+              },
+              { "Draw": { "who": "EachPlayer", "count": 7 } },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "End" } },
+                  "effects": [
+                    {
+                      "Discard": {
+                        "who": "EachPlayer",
+                        "count": { "Count": [{ "In": "Hand" }, { "OwnedBy": "EachPlayer" }] }
+                      }
+                    },
+                    { "Move": { "what": { "Bound": "exiled" }, "to": "Hand" } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

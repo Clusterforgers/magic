@@ -1,0 +1,35 @@
+{
+  "oracle_id": "9cf12838-64fe-49c9-9181-e0f6118c0bf6",
+  "name": "Ignorant Bliss",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ignorant Bliss",
+      "oracle_fingerprint": "0df86c7ffbcdcaa30512f6906f0762e0",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "ExileHidden": {
+                  "what": { "Each": [{ "OwnedBy": "You" }, { "In": "Hand" }] },
+                  "sealed": true,
+                  "as": "exiled"
+                }
+              },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "End" } },
+                  "effects": [
+                    { "Move": { "what": { "Bound": "exiled" }, "to": "Hand" } },
+                    { "Draw": {} }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

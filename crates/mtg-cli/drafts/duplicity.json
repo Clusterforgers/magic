@@ -1,0 +1,76 @@
+{
+  "oracle_id": "01072a45-ab1c-4d19-b493-76cf4aae351e",
+  "name": "Duplicity",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Duplicity",
+      "oracle_fingerprint": "e9fccd17be8f4fda85ac1b0c8fe50645",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "ExileTop": { "count": 5, "as": "exiled", "sealed": true } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "ExileHidden": {
+                        "what": { "Each": [{ "OwnedBy": "You" }, { "In": "Hand" }] },
+                        "sealed": true,
+                        "as": "exiled"
+                      }
+                    },
+                    {
+                      "Move": {
+                        "what": {
+                          "Each": [
+                            { "OwnedBy": "You" },
+                            { "ExiledWith": "This" },
+                            { "Not": { "Is": { "Bound": "exiled" } } },
+                            { "In": "Exile" }
+                          ]
+                        },
+                        "to": "Hand"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "effects": [{ "Discard": {} }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                { "ZoneChange": { "what": ["This"], "from": "Battlefield" } },
+                { "Did": { "action": "ChangedController", "what": ["This"] } }
+              ]
+            },
+            "effects": [
+              {
+                "Move": {
+                  "what": { "Each": [{ "ExiledWith": "This" }, { "In": "Exile" }] },
+                  "to": "Graveyard"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

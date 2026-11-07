@@ -1,0 +1,46 @@
+{
+  "oracle_id": "2ce2a091-95b6-45e5-9097-77fea411162e",
+  "name": "Fire Nation Turret",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Fire Nation Turret",
+      "oracle_fingerprint": "0fb3d8421b89d1de7f930ec50c4634bf",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "BeginCombat", "whose": "You" } },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }] }, "bounds": { "min": 0, "max": 1 } }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    { "ModifyPT": { "power": 2, "toughness": 0 } },
+                    { "AddKeyword": { "Macro": { "name": "firebending", "amount": 2 } } }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{R}",
+            "effects": [{ "PutCounters": { "on": "This", "counter": "charge" } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "RemoveCounters": { "counter": "charge", "count": 50 } }],
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 50 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

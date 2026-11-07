@@ -53,7 +53,14 @@
                       "right": 0
                     }
                   },
-                  "then": [{ "Move": { "what": { "Bound": "card2" }, "to": "Hand" } }]
+                  "then": [
+                    {
+                      "Move": {
+                        "what": { "Each": [{ "Is": { "Bound": "card2" } }, { "In": "Library" }] },
+                        "to": "Hand"
+                      }
+                    }
+                  ]
                 }
               },
               {

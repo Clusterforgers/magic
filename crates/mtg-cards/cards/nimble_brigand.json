@@ -1,0 +1,44 @@
+{
+  "oracle_id": "8b153452-b4f2-4310-99e2-c729f28be6b9",
+  "name": "Nimble Brigand",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Nimble Brigand",
+      "oracle_fingerprint": "03d82c0f5786e8130a696bb50e75c2a7",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "This",
+            "mods": ["CantBeBlocked"],
+            "condition": {
+              "Compare": {
+                "left": {
+                  "When": {
+                    "condition": {
+                      "Compare": {
+                        "left": { "Tallied": { "who": "You", "what": "Crimes" } },
+                        "op": "Ge",
+                        "right": 1
+                      }
+                    },
+                    "then": 1,
+                    "otherwise": 0
+                  }
+                },
+                "op": "Ge",
+                "right": 1
+              }
+            }
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": ["This"], "to": "EachPlayer", "combat": true } },
+            "effects": [{ "Draw": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}
