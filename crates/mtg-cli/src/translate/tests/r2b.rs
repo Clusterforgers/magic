@@ -67,8 +67,8 @@ fn a_property_of_the_turns_log_is_a_did_this_turn_predicate(
 
 #[rstest]
 #[case::any_kind_of_counter("Any You Creature", true)]
-#[case::a_kind_of_counter("P1P1 You Creature", false)]
-fn counters_put_this_turn_count_only_without_a_kind(#[case] words: &str, #[case] read: bool) {
+#[case::another_kind_of_counter("OIL You Creature", false)]
+fn counters_put_this_turn_count_any_kind(#[case] words: &str, #[case] read: bool) {
     let script = format!(
         "Name:T\nTypes:Creature Human\nPT:1/1\nS:Mode$ Continuous | Affected$ Card.Self | AddPower$ X\nSVar:X:Count$CountersAddedThisTurn {words}\n"
     );
