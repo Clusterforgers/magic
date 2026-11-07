@@ -52,6 +52,16 @@ pub fn canonical(ability: &Ability) -> Option<Ability> {
     serde_json::from_value(value).ok()
 }
 
+/// The ability with only its numbered bindings renamed, its selectors left in the order they have: a writer that reads a
+/// zone before the other words of a selector needs the order as given.
+pub fn renamed(ability: &Ability) -> Option<Ability> {
+    let mut value = serde_json::to_value(ability).ok()?;
+    if !rename(&mut value) {
+        return None;
+    }
+    serde_json::from_value(value).ok()
+}
+
 /// Every string of the value, with whether it sits under a key of [`NAMES`].
 fn strings<'a>(value: &'a Value, named: bool, out: &mut Vec<(&'a str, bool)>) {
     match value {
