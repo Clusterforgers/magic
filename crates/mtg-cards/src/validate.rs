@@ -3156,10 +3156,15 @@ impl Walker<'_> {
                     w.bind(name, Kind::Object);
                 }
             }
-            Effect::Bind { what, bind } => {
+            Effect::Bind { what, bind, adds } => {
                 w.at("what", |w| w.reference(what, Kind::Either));
                 let kind = w.kind_of(what);
-                w.at("as", |w| w.bind(bind, kind));
+                // What an adding bind gathered over the passes of a repeat is read after it.
+                if *adds {
+                    w.at("as", |w| w.bind_kept(bind, kind));
+                } else {
+                    w.at("as", |w| w.bind(bind, kind));
+                }
             }
             Effect::Let { bind, amount } => {
                 w.at("amount", |w| w.amount(amount));
@@ -6370,6 +6375,14 @@ mod tests {
     #[case::the_same_name_in_two_branches(
         r#"{"Spell":{"effects":[{"If":{"condition":"YourTurn","then":[{"Sacrifice":{"filter":["This"],"as":"gone"}}],"otherwise":[{"Sacrifice":{"filter":["This"],"as":"gone"}}]}}]}}"#,
         &[]
+    )]
+    #[case::picks_gathered_over_a_repeat(
+        r#"{"Spell":{"effects":[{"RepeatEach":{"over":"EachPlayer","as":"each","effects":[{"Choose":{"who":{"Bound":"each"},"from":{"Each":[{"Type":"Creature"}]},"as":"pick"}},{"Bind":{"what":{"Bound":"pick"},"as":"picks","adds":true}}]}},{"Destroy":{"what":{"Bound":"picks"}}}]}}"#,
+        &[]
+    )]
+    #[case::a_plain_bind_stays_in_its_pass(
+        r#"{"Spell":{"effects":[{"RepeatEach":{"over":"EachPlayer","as":"each","effects":[{"Choose":{"who":{"Bound":"each"},"from":{"Each":[{"Type":"Creature"}]},"as":"pick"}},{"Bind":{"what":{"Bound":"pick"},"as":"picks"}}]}},{"Destroy":{"what":{"Bound":"picks"}}}]}}"#,
+        &["faces[0].abilities[0].Spell.effects[1].Destroy.what: `picks` is not bound by an earlier step"]
     )]
     fn r1g_taken_names_outlive_their_branch(#[case] ability: &str, #[case] expected: &[&str]) {
         assert_eq!(problems(ability), expected, "{ability}");

@@ -555,6 +555,33 @@ fn moved_objects(ctx: &mut Ctx, p: &Params, origin: &str) -> Tr<Vec<Value>> {
     }
 }
 
+/// "If ..., exile it, then return it": a move from one named zone of what a step inside a condition or a "may" moved reads
+/// that step's name. When the step did not run, the name is unbound and the move moves nothing, as Forge's memory stays
+/// empty then.
+fn return_scoped<T>(ctx: &mut Ctx, p: &Params, run: impl FnOnce(&mut Ctx) -> Tr<T>) -> Tr<T> {
+    let name = ctx
+        .remembered
+        .as_ref()
+        .and_then(|held| held.get("Bound"))
+        .and_then(Value::as_str)
+        .map(str::to_owned);
+    let one_zone = p
+        .get("Origin")
+        .is_some_and(|zone| zone != "Any" && !zone.contains(','));
+    let Some(name) = name.filter(|name| {
+        one_zone
+            && p.get("Defined") == Some("Remembered")
+            && !p.has("ValidTgts")
+            && ctx.scoped.contains(name)
+    }) else {
+        return run(ctx);
+    };
+    ctx.scoped.remove(&name);
+    let out = run(ctx);
+    ctx.scoped.insert(name);
+    out
+}
+
 /// A name an earlier step moved onto the battlefield, kept to the zone the line moves from (`Origin$`): the engine binds
 /// the name again to the permanent that arrived (CR 400.7), and "otherwise, put it into your hand" must not take it.
 fn still_in(ctx: &Ctx, what: Value, origin: &str) -> Value {
@@ -605,7 +632,7 @@ fn change_zone(ctx: &mut Ctx, p: &Params, origin: &str, destination: &str) -> Tr
     {
         return unmapped("key:ChangeZone.Defined-with-memory");
     }
-    let whats: Vec<Value> = moved_objects(ctx, p, origin)?
+    let whats: Vec<Value> = return_scoped(ctx, p, |ctx| moved_objects(ctx, p, origin))?
         .into_iter()
         .map(|what| still_in(ctx, what, origin))
         .collect();
@@ -1384,6 +1411,24 @@ fn revealed_to(p: &Params) -> Tr<Goes> {
     )
 }
 
+/// Whether "the cards revealed" of a `DigUntil` whose found card goes elsewhere are all of them, the found one included
+/// ("damage equal to the number of cards revealed this way"), or only the rest ("exile all other cards revealed this way,
+/// and you lose 1 life for each of the exiled cards"), as the Oracle text says. All of them only when the card reads the
+/// memory just as a count, which is kept before the cards move; a wording that says neither is a gap.
+fn every_revealed(ctx: &Ctx) -> Tr<bool> {
+    let oracle = ctx.oracle.to_lowercase();
+    if oracle.contains("other cards revealed") || oracle.contains("exiled cards") {
+        return Ok(false);
+    }
+    let counts_only = ctx.svars.values().all(|text| {
+        !text.contains("Remembered") || text == "Remembered$Amount" || text.contains("Cleanup")
+    });
+    if oracle.contains("number of cards revealed this way") && counts_only {
+        return Ok(true);
+    }
+    unmapped("key:DigUntil.RememberRevealed-with-a-found-destination")
+}
+
 /// `DigUntil`: reveal cards until some match, the match goes to one place and the revealed cards to another.
 pub fn dig_until(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
     only(
@@ -1413,9 +1458,7 @@ pub fn dig_until(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
     if remembers && p.get("RememberFound") == Some("True") {
         return unmapped("key:DigUntil.RememberRevealed-with-RememberFound");
     }
-    if remembers && p.has("FoundDestination") {
-        return unmapped("key:DigUntil.RememberRevealed-with-a-found-destination");
-    }
+    let all_seen = remembers && p.has("FoundDestination") && every_revealed(ctx)?;
     let who = subject(ctx, p, "You", None)?;
     let found = ctx.fresh("found");
     let revealed = ctx.fresh("revealed");
@@ -1456,6 +1499,12 @@ pub fn dig_until(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
     }
     let who = find["who"].clone();
     let mut effects = vec![json!({ "RevealUntil": find })];
+    if all_seen {
+        // Counted while every revealed card is still in the library, before the found one goes elsewhere.
+        let seen = ctx.fresh("seen");
+        effects.push(json!({"Let": {"as": seen, "amount": {"Count": [{"Is": {"Bound": revealed}}, {"In": "Library"}]}}}));
+        ctx.kept_count.insert(revealed.clone(), seen);
+    }
     if let Some(found_to) = found_to {
         let found_move = moves(&json!({"Bound": found}), found_to);
         if optional {
@@ -1465,7 +1514,9 @@ pub fn dig_until(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
         }
     }
     let mut rest = moves(&json!({"Bound": revealed}), rest_to);
-    if remembers {
+    if all_seen {
+        ctx.remembered = Some(json!({ "Bound": revealed }));
+    } else if remembers {
         // The cards as they are after the move, which the lines after it count.
         let verb = if rest.get("Exile").is_some() {
             "Exile"

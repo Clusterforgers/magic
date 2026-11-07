@@ -1501,6 +1501,10 @@ pub enum Effect {
         /// The name they are kept under.
         #[serde(rename = "as")]
         bind: String,
+        /// Adds them to what the name holds, and a repeat around the step keeps the name across its passes: "for each
+        /// player, choose a card in their graveyard; put those cards onto the battlefield" names every pick.
+        #[serde(default, skip_serializing_if = "is_false")]
+        adds: bool,
     },
     /// Fixes the amount as it is when this step runs and keeps it under the name, so `Amount::Bound` reads the same number
     /// in the steps after it however the game changes ("X is the number of cards in your hand", "that many").
@@ -1569,6 +1573,30 @@ pub fn bound_names(effects: &[Effect]) -> Vec<String> {
     }
     names.sort();
     names.dedup();
+    names
+}
+
+/// The names an adding `Bind` in `effects` gathers into, which a repeat keeps across its passes.
+pub fn gathered_names(effects: &[Effect]) -> Vec<String> {
+    fn walk(value: &serde_json::Value, names: &mut Vec<String>) {
+        match value {
+            serde_json::Value::Object(fields) => {
+                if let Some(bind) = fields.get("Bind")
+                    && bind.get("adds") == Some(&serde_json::Value::Bool(true))
+                    && let Some(name) = bind.get("as").and_then(serde_json::Value::as_str)
+                {
+                    names.push(name.to_owned());
+                }
+                fields.values().for_each(|inner| walk(inner, names));
+            }
+            serde_json::Value::Array(items) => items.iter().for_each(|item| walk(item, names)),
+            _ => {}
+        }
+    }
+    let mut names = Vec::new();
+    if let Ok(value) = serde_json::to_value(effects) {
+        walk(&value, &mut names);
+    }
     names
 }
 
@@ -1833,6 +1861,10 @@ mod tests {
     #[case::repeat_for_each_opponent(
         Effect::RepeatEach { over: Ref::Opponents, bind: "foe".to_owned(), effects: vec![Effect::Draw { bind: None, who: Ref::Bound("foe".to_owned()), count: Amount::one() }] },
         r#"{"RepeatEach":{"over":"Opponents","as":"foe","effects":[{"Draw":{"who":{"Bound":"foe"}}}]}}"#
+    )]
+    #[case::a_bind_that_adds(
+        Effect::Bind { what: Ref::Bound("pick".to_owned()), bind: "picks".to_owned(), adds: true },
+        r#"{"Bind":{"what":{"Bound":"pick"},"as":"picks","adds":true}}"#
     )]
     #[case::roll_a_die_with_a_table(
         Effect::RollDice { who: Ref::You, sides: 20, dice: 1, choose: false, plus: Amount::Fixed(2), results: vec![DieRow { from: 1, to: Some(9), effects: vec![Effect::Shuffle { who: Ref::You }] }, DieRow { from: 10, to: None, effects: vec![Effect::Shuffle { who: Ref::You }] }] },

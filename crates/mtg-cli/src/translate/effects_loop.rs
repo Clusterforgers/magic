@@ -37,6 +37,19 @@ fn add_chosen(ctx: &Ctx, held: &Value, before: Option<&str>, bind: &str) -> Tr<V
     Ok(json!({"Each": [{"AnyOf": picks}, chosen_zones()]}))
 }
 
+/// The name the picks of a `ChooseCard` gather into when it ends the pass of a repeat over players and remembers its pick
+/// beside the player of the pass: the repeat names every pick after it. A pick some later step of the pass reads stays a gap.
+fn gathers(ctx: &mut Ctx, p: &Params) -> Option<String> {
+    let player = ctx.player_loop.as_ref()?;
+    if ctx.remembered != Some(json!({ "Bound": player })) || p.has("SubAbility") {
+        return None;
+    }
+    if ctx.gathered.is_none() {
+        ctx.gathered = Some(ctx.fresh("picks"));
+    }
+    ctx.gathered.clone()
+}
+
 /// Every zone a pick of [`add_chosen`] can be in by the time a later line reads it.
 fn chosen_zones() -> Value {
     let zones = [
@@ -124,13 +137,19 @@ pub fn choose_card(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
         json!({"Choose": {"who": who, "from": from, "count": {"min": min, "max": count}, "as": bind}})
     };
     let before = ctx.chosen_card.replace(bind.clone());
-    if p.get("RememberChosen") == Some("True") {
+    let mut effects = vec![effect];
+    if p.get("RememberChosen") == Some("True")
+        && let Some(into) = gathers(ctx, p)
+    {
+        // "For each player, choose a card ...": the pick of each pass joins the picks of the passes before.
+        effects.push(json!({"Bind": {"what": {"Bound": bind}, "as": into, "adds": true}}));
+        ctx.remembered = Some(json!({ "Bound": into }));
+    } else if p.get("RememberChosen") == Some("True") {
         ctx.remembered = Some(match ctx.remembered.take() {
             None => json!({ "Bound": bind }),
             Some(held) => add_chosen(ctx, &held, before.as_deref(), &bind)?,
         });
     }
-    let mut effects = vec![effect];
     // A title that says "to reveal" is the Oracle wording of a choice shown to the table, with or without `Reveal$`.
     let titled = p
         .get("ChoiceTitle")
@@ -199,10 +218,38 @@ pub fn repeat_each(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
     if p.has("RepeatPlayers") && !imprint {
         ctx.player_loop = Some(bind.clone());
     }
+    let outer_gathered = ctx.gathered.take();
     let effects = chain_at(ctx, &part, false);
     ctx.player_loop = outer_loop;
     ctx.moved_from.remove(&bind);
+    let gathered =
+        std::mem::replace(&mut ctx.gathered, outer_gathered).map(|name| json!({ "Bound": name }));
+    let into = gathered.as_ref().map(|picks| {
+        (
+            ctx.remembered.as_ref() == Some(picks),
+            ctx.imprinted.as_ref() == Some(picks),
+        )
+    });
     (ctx.remembered, ctx.imprinted) = (outer, outer_imprinted);
+    // The picks the passes gathered are what the slot holds after the repeat; one that held something before stays a gap.
+    // "Each opponent chooses two cards in their graveyard and exiles the rest": Forge reads "the rest" as every card not
+    // picked, the graveyard of a player who picked nothing included, so picks of some players read as the rest are a gap.
+    let some_players = p.get("RepeatPlayers") != Some("Player");
+    if into.is_some()
+        && some_players
+        && ctx
+            .svars
+            .values()
+            .any(|text| text.contains("!IsRemembered"))
+    {
+        return unmapped("key:ChooseCard.RememberChosen-of-some-players-read-as-the-rest");
+    }
+    match into {
+        Some((true, false)) if ctx.remembered.is_none() => ctx.remembered = gathered,
+        Some((false, true)) if ctx.imprinted.is_none() => ctx.imprinted = gathered,
+        Some(_) => return unmapped("key:ChooseCard.RememberChosen-with-remembered"),
+        None => {}
+    }
     let repeat = json!({"RepeatEach": {"over": over, "as": bind, "effects": effects?}});
     Ok(vec![if together {
         json!({"Together": {"effects": [repeat]}})
@@ -261,7 +308,14 @@ pub fn immediate_trigger(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
     let mut out = Vec::new();
     let mut bound = None;
     if let Some(word) = p.get("RememberObjects") {
+        let loose = super::memory::slot_ref_loose(ctx, super::memory::Slot::Remembered)
+            .filter(|held| super::memory::is_scoped(ctx, held));
         let what = match word {
+            // "You may discard a card. When you do, ...": the trigger names what the step inside the "may" bound, which
+            // holds nothing when that step did not run.
+            "Remembered" | "RememberedCard" | "RememberedLKI" if loose.is_some() => {
+                loose.unwrap_or_default()
+            }
             // A target an earlier step moved is another object now (CR 400.7), so `Targeted` stays a gap.
             "Remembered" | "RememberedCard" | "RememberedLKI" | "ChosenCard" | "ChosenPlayer" => {
                 defined(ctx, word)?

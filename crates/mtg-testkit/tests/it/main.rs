@@ -666,6 +666,7 @@ mod g12a_library;
 mod g12a_untapped;
 mod g12e_spell_colors;
 mod g12e_target_chooser;
+mod g12f_memory;
 mod g9c_shadow;
 mod mana_any_shape;
 mod mana_ban;

@@ -3048,6 +3048,7 @@ impl Writer<'_> {
         prevention::effect_text(effect)
             .or_else(|| lands::effect_text(effect))
             .or_else(|| super::attack_tax::effect_text(effect))
+            .or_else(|| super::g12f_taxes::g12f_x_tax_text(effect))
             .or_else(|| super::w14a_limits::w14a_block_limit_each_text(effect))
             .or_else(|| super::g10d_spell_costs::g10d_spell_cost_text(effect))
             .or_else(|| super::w14a_wanderer::w14a_keep_one_text(effect))

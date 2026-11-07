@@ -1135,9 +1135,12 @@ fn delayed(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
         out.push(json!({"Bind": {"what": who, "as": name}}));
         ctx.delayed_remembered = Some(json!({ "Bound": name }));
     }
-    // A target the event waits for is the object the event is about when it fires.
-    if matches!(p.get("RememberObjects"), Some("Targeted" | "ParentTarget"))
-        && p.get("Mode") == Some("ChangesZone")
+    // A target (or the source: "when ~ dies this turn, return it") the event waits for is the object the event is about
+    // when it fires.
+    if matches!(
+        p.get("RememberObjects"),
+        Some("Targeted" | "ParentTarget" | "Self")
+    ) && p.get("Mode") == Some("ChangesZone")
     {
         ctx.delayed_remembered = Some(json!("Triggering"));
     }
