@@ -31,6 +31,7 @@ pub(super) fn add(ability: &Ability, texts: &mut Vec<String>) {
         found.extend(your_turn_last(text));
         found.extend(may_have(text));
         found.extend(phrases(text));
+        found.extend(super::r7a_more::rewrites(text));
         // The triggered abilities have these rows in `r6a_wordings` already.
         if !matches!(ability, Ability::Triggered { .. }) {
             found.extend(super::r6a_wordings::controller_first(text));
@@ -190,6 +191,10 @@ fn cost_if(text: &str) -> Vec<String> {
         && life.parse::<u32>().is_ok()
     {
         conditions.push(format!("your life total is {life} or less"));
+    }
+    // The one additional cost a card has: a gift promised, or a Bargain paid.
+    if condition == "the gift was promised" {
+        conditions.push("it's bargained".to_owned());
     }
     conditions
         .into_iter()
