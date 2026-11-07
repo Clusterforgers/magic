@@ -733,6 +733,17 @@ pub enum Effect {
         #[serde(default = "two", skip_serializing_if = "is_two")]
         factor: u32,
     },
+    /// Puts on an object or player counters of each kind another holds or held as it left ("put its counters on target
+    /// creature you control", "for each kind of counter on target permanent, give it another counter of that kind").
+    PutCountersOf {
+        /// Where they go.
+        on: Ref,
+        /// Whose kinds are read, as it last existed when it has left.
+        of: Ref,
+        /// How many of each kind; as many as `of` holds of the kind when absent.
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        each: Option<Amount>,
+    },
     /// Taps permanents.
     Tap {
         /// What is tapped.
@@ -1158,7 +1169,8 @@ pub enum Effect {
         /// The creatures.
         what: Ref,
     },
-    /// Does `effects` again and again while `condition` holds, read before each pass, and at most `most` times.
+    /// Does `effects` again and again while `condition` holds, read before each pass (after the first with
+    /// `at_least_once`), and at most `most` times.
     RepeatWhile {
         /// What must hold for a pass to begin.
         condition: Condition,
@@ -1169,6 +1181,9 @@ pub enum Effect {
         /// A second bound, an amount read before each pass ("X times"); no bound but `most` when absent.
         #[serde(default, skip_serializing_if = "Option::is_none")]
         times: Option<Amount>,
+        /// The first pass begins without reading `condition`: the body is done at least once (a do-while).
+        #[serde(default, skip_serializing_if = "std::ops::Not::not")]
+        at_least_once: bool,
     },
     /// `who` separates the objects `what` names into two piles (CR 700.3), then `chooser` chooses one pile: that pile is
     /// bound as `chosen_as`, the other as `rest_as`.
@@ -1486,6 +1501,10 @@ pub enum Effect {
         /// The name they are kept under.
         #[serde(rename = "as")]
         bind: String,
+        /// Adds them to what the name holds, and a repeat around the step keeps the name across its passes: "for each
+        /// player, choose a card in their graveyard; put those cards onto the battlefield" names every pick.
+        #[serde(default, skip_serializing_if = "is_false")]
+        adds: bool,
     },
     /// Fixes the amount as it is when this step runs and keeps it under the name, so `Amount::Bound` reads the same number
     /// in the steps after it however the game changes ("X is the number of cards in your hand", "that many").
@@ -1554,6 +1573,30 @@ pub fn bound_names(effects: &[Effect]) -> Vec<String> {
     }
     names.sort();
     names.dedup();
+    names
+}
+
+/// The names an adding `Bind` in `effects` gathers into, which a repeat keeps across its passes.
+pub fn gathered_names(effects: &[Effect]) -> Vec<String> {
+    fn walk(value: &serde_json::Value, names: &mut Vec<String>) {
+        match value {
+            serde_json::Value::Object(fields) => {
+                if let Some(bind) = fields.get("Bind")
+                    && bind.get("adds") == Some(&serde_json::Value::Bool(true))
+                    && let Some(name) = bind.get("as").and_then(serde_json::Value::as_str)
+                {
+                    names.push(name.to_owned());
+                }
+                fields.values().for_each(|inner| walk(inner, names));
+            }
+            serde_json::Value::Array(items) => items.iter().for_each(|item| walk(item, names)),
+            _ => {}
+        }
+    }
+    let mut names = Vec::new();
+    if let Ok(value) = serde_json::to_value(effects) {
+        walk(&value, &mut names);
+    }
     names
 }
 
@@ -1819,6 +1862,10 @@ mod tests {
         Effect::RepeatEach { over: Ref::Opponents, bind: "foe".to_owned(), effects: vec![Effect::Draw { bind: None, who: Ref::Bound("foe".to_owned()), count: Amount::one() }] },
         r#"{"RepeatEach":{"over":"Opponents","as":"foe","effects":[{"Draw":{"who":{"Bound":"foe"}}}]}}"#
     )]
+    #[case::a_bind_that_adds(
+        Effect::Bind { what: Ref::Bound("pick".to_owned()), bind: "picks".to_owned(), adds: true },
+        r#"{"Bind":{"what":{"Bound":"pick"},"as":"picks","adds":true}}"#
+    )]
     #[case::roll_a_die_with_a_table(
         Effect::RollDice { who: Ref::You, sides: 20, dice: 1, choose: false, plus: Amount::Fixed(2), results: vec![DieRow { from: 1, to: Some(9), effects: vec![Effect::Shuffle { who: Ref::You }] }, DieRow { from: 10, to: None, effects: vec![Effect::Shuffle { who: Ref::You }] }] },
         r#"{"RollDice":{"sides":20,"plus":2,"results":[{"from":1,"to":9,"effects":[{"Shuffle":{}}]},{"from":10,"effects":[{"Shuffle":{}}]}]}}"#
@@ -1841,7 +1888,7 @@ mod tests {
     #[case::exchange_life(Effect::ExchangeLife { who: Ref::You, with: Ref::Opponents }, r#"{"ExchangeLife":{"with":"Opponents"}}"#)]
     #[case::remove_damage(Effect::RemoveDamage { what: Ref::This }, r#"{"RemoveDamage":{"what":"This"}}"#)]
     #[case::repeat_while(
-        Effect::RepeatWhile { condition: Condition::YourTurn, effects: vec![Effect::Draw { bind: None, who: Ref::You, count: Amount::one() }], most: 3, times: None },
+        Effect::RepeatWhile { condition: Condition::YourTurn, effects: vec![Effect::Draw { bind: None, who: Ref::You, count: Amount::one() }], most: 3, times: None, at_least_once: false },
         r#"{"RepeatWhile":{"condition":"YourTurn","effects":[{"Draw":{}}],"most":3}}"#
     )]
     #[case::separate_piles(

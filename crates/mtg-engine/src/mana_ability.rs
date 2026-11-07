@@ -364,13 +364,14 @@ fn rule_mana(state: &GameState, player: PlayerId, id: ObjectId, printed: usize) 
         );
         only.extend(crate::spend::snow_rider(state, id));
         let once = shape.once;
+        let cost = crate::activation_kind::mana_modified(state, id, shape.mana.clone());
         // Every use takes others, so what limits the uses is what the cost takes.
         let repeat = !tap
             && !sacrifice
             && !once
             && !takes.is_empty()
             && shape.pays.is_empty()
-            && shape.mana.symbols().is_empty()
+            && cost.symbols().is_empty()
             && shape.condition.is_none()
             && shape.times.is_one();
         let options = additions
@@ -399,7 +400,7 @@ fn rule_mana(state: &GameState, player: PlayerId, id: ObjectId, printed: usize) 
                     } else {
                         0
                     },
-                    cost: shape.mana.clone(),
+                    cost: cost.clone(),
                     takes: counted_to(&takes, &counted_takes, made.len()),
                     repeat,
                 })
@@ -467,6 +468,8 @@ pub(crate) fn options(state: &GameState, player: PlayerId) -> Vec<ManaOption> {
         let sick = chars.is_creature() && keywords::summoning_sick(state, id);
         let can_tap = !perm.tapped() && !sick;
         if can_tap {
+            let tax =
+                crate::activation_kind::mana_modified(state, id, mtg_core::mana::ManaCost::ZERO);
             for (ability, def) in chars.abilities.iter().enumerate() {
                 let AbilityDef::Mana(mana) = def;
                 let mut option = ManaOption::new(
@@ -477,6 +480,7 @@ pub(crate) fn options(state: &GameState, player: PlayerId) -> Vec<ManaOption> {
                     mana.produces,
                 );
                 option.only.extend(crate::spend::snow_rider(state, id));
+                option.cost = tax.clone();
                 found.push(option);
             }
         }

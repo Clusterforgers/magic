@@ -2,7 +2,7 @@
 
 use mtg_cards::AbilityDef;
 use mtg_cards::modify::Attacked;
-use mtg_core::card::{CardType, CardTypes, Subtype};
+use mtg_core::card::{CardType, CardTypes, Subtype, Supertype};
 use mtg_core::color::ColorSet;
 use mtg_core::ids::{ObjectId, PlayerId};
 use serde::{Deserialize, Serialize};
@@ -25,6 +25,10 @@ pub struct Characteristics {
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     #[cfg_attr(feature = "ts", ts(as = "Option<Vec<Subtype>>", optional))]
     pub subtypes: Vec<Subtype>,
+    /// The supertypes effects gave it; the ones printed on the card are the card's.
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[cfg_attr(feature = "ts", ts(as = "Option<Vec<Supertype>>", optional))]
+    pub supertypes: Vec<Supertype>,
     /// An effect replaced the creature types: the printed ones no longer count, only those in `subtypes` do.
     #[serde(default, skip_serializing_if = "std::ops::Not::not")]
     #[cfg_attr(feature = "ts", ts(as = "Option<bool>", optional))]
@@ -71,6 +75,7 @@ impl Characteristics {
         Characteristics {
             types: CardTypes::default(),
             subtypes: Vec::new(),
+            supertypes: Vec::new(),
             creature_types_set: false,
             land_types_set: false,
             all_creature_types: false,
@@ -91,6 +96,16 @@ impl Characteristics {
 /// those its characteristic-defining abilities define (CR 604.3). An ability on the stack has none.
 pub fn characteristics(state: &GameState, id: ObjectId) -> Option<Characteristics> {
     seen_as(state, id).map(|(chars, _)| chars)
+}
+
+/// Whether the object `id` has `supertype`: printed on its card or given by an effect (CR 205.4).
+pub(crate) fn has_supertype(state: &GameState, id: ObjectId, supertype: Supertype) -> bool {
+    state
+        .object(id)
+        .is_some_and(|object| object.card().supertypes.contains(&supertype))
+        || (state.possible.supertypes
+            && characteristics(state, id)
+                .is_some_and(|chars| chars.supertypes.contains(&supertype)))
 }
 
 /// The characteristics and the controller of `id` from one reading of the layers: what the value evaluator and the
@@ -338,6 +353,7 @@ pub(crate) fn base(object: &GameObject) -> Characteristics {
         } else {
             Vec::new()
         },
+        supertypes: Vec::new(),
         creature_types_set: false,
         land_types_set: false,
         all_creature_types: false,

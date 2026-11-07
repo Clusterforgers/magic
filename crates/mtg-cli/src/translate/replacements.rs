@@ -48,39 +48,13 @@ fn single(ctx: &mut Ctx, body: &str) -> Tr<Value> {
         if line_condition.is_some() {
             return unmapped("key:Replacement.two-conditions");
         }
+        if animates(ctx, &p) {
+            return kicked_with_changes(ctx, &p);
+        }
         line_condition = Some(json!("Kicked"));
     }
-    if matches!(event, "Counter" | "Draw" | "GainLife" | "AddCounter") {
-        if line_condition.is_some() {
-            return unmapped(format!("key:Replacement.{event}.condition"));
-        }
-        return match event {
-            "Counter" => super::replacements_counter::counter(ctx, &p),
-            "Draw" => super::replacements_counter::draw(ctx, &p),
-            "GainLife" => super::replacements_counter::gain_life(ctx, &p),
-            _ => super::replacements_counter::add_counter(ctx, &p),
-        };
-    }
-    if event == "ProduceMana" {
-        return super::replacements_mana::produce_mana(ctx, &p, line_condition.as_ref());
-    }
-    if event == "Untap" {
-        return doesnt_untap(ctx, &p);
-    }
-    if event == "BeginPhase" {
-        return super::replacements_phase::skip_step(&p, line_condition.as_ref());
-    }
-    if event == "GameLoss" {
-        return super::replacements_loss::game_loss(ctx, &p, line_condition.as_ref());
-    }
-    if event == "CreateToken" {
-        if line_condition.is_some() {
-            return unmapped("key:Replacement.CreateToken.condition");
-        }
-        return super::replacements_token::create_token(ctx, &p);
-    }
     if event != "Moved" {
-        return unmapped(format!("replacement:{event}"));
+        return not_moved(ctx, &p, event, line_condition.as_ref());
     }
     let read = [
         "Event",
@@ -139,6 +113,63 @@ fn single(ctx: &mut Ctx, body: &str) -> Tr<Value> {
         _ => return unmapped("key:Replacement.two-conditions"),
     }
     Ok(json!({ "Replacement": ability }))
+}
+
+/// A replacement line of an event other than a zone move.
+fn not_moved(ctx: &mut Ctx, p: &Params, event: &str, condition: Option<&Value>) -> Tr<Value> {
+    match event {
+        "Counter" | "Draw" | "GainLife" | "AddCounter" | "CreateToken" if condition.is_some() => {
+            unmapped(format!("key:Replacement.{event}.condition"))
+        }
+        "Counter" => super::replacements_counter::counter(ctx, p),
+        "Draw" => super::replacements_counter::draw(ctx, p),
+        "GainLife" => super::replacements_counter::gain_life(ctx, p),
+        "AddCounter" => super::replacements_counter::add_counter(ctx, p),
+        "ProduceMana" => super::replacements_mana::produce_mana(ctx, p, condition),
+        "Untap" => doesnt_untap(ctx, p),
+        "BeginPhase" => super::replacements_phase::skip_step(p, condition),
+        "GameLoss" => super::replacements_loss::game_loss(ctx, p, condition),
+        "CreateToken" => super::replacements_token::create_token(ctx, p),
+        _ => unmapped(format!("replacement:{event}")),
+    }
+}
+
+/// Whether the chain the line replaces with gives the permanent something for good (`Animate`), read as the
+/// `ETBReplacement` keyword reads it.
+fn animates(ctx: &Ctx, p: &Params) -> bool {
+    let mut next = p.get("ReplaceWith").map(str::to_owned);
+    for _ in 0..4 {
+        let Some(name) = next.take() else {
+            return false;
+        };
+        let Some(part) = ctx.svar(&name).map(Params::parse) else {
+            return false;
+        };
+        if part.get("DB") == Some("Animate") {
+            return true;
+        }
+        next = part.get("SubAbility").map(str::to_owned);
+    }
+    false
+}
+
+/// "If it was kicked, it enters with two +1/+1 counters on it and with haste" as an `R:` line: the counters and the
+/// changes of the chain, as the `ETBReplacement` keyword reads them.
+fn kicked_with_changes(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
+    let read = [
+        "Event",
+        "ValidCard",
+        "Destination",
+        "ReplaceWith",
+        "ReplacementResult",
+    ];
+    check_keys(p, "Replacement.Moved", &read, |_, _| false)?;
+    if p.get("Destination") != Some("Battlefield") || p.get("ReplacementResult") != Some("Updated")
+    {
+        return unmapped("replacement:Moved-shape");
+    }
+    let name = p.get("ReplaceWith").unwrap_or_default().to_owned();
+    super::enters_with::self_enters(ctx, &name, "Card.Self+kicked")
 }
 
 /// "Doesn't untap during its controller's untap step": the untap that can't happen.

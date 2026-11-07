@@ -6,7 +6,7 @@ use mtg_cards::ability::Ability;
 use mtg_cards::keyword::Keyword;
 pub use mtg_cards::modify::Duration;
 use mtg_cards::value::CounterKind;
-use mtg_core::card::{CardType, CardTypes, Subtype};
+use mtg_core::card::{CardType, CardTypes, Subtype, Supertype};
 use mtg_core::color::ColorSet;
 use mtg_core::ids::{EffectId, ObjectId, PlayerId};
 use serde::{Deserialize, Serialize};
@@ -107,6 +107,8 @@ pub enum Modification {
     RemoveType(CardType),
     /// Makes these the card types (layer 4); the creature types go when it is no longer a creature.
     SetTypes(CardTypes),
+    /// Adds a supertype (layer 4): "enchanted permanent is legendary".
+    AddSupertype(Supertype),
     /// Adds a subtype (layer 4).
     AddSubtype(Subtype),
     /// Replaces the creature types with these (layer 4); the other subtypes stay (CR 205.1b).
@@ -223,6 +225,7 @@ impl Modification {
             Modification::AddType(_)
             | Modification::RemoveType(_)
             | Modification::SetTypes(_)
+            | Modification::AddSupertype(_)
             | Modification::AddSubtype(_)
             | Modification::SetCreatureTypes(_)
             | Modification::SetLandTypes(_)
@@ -265,6 +268,11 @@ impl Modification {
                     chars.subtypes.retain(|subtype| !subtype.is_creature_type());
                     chars.all_creature_types = false;
                     chars.creature_types_set = true;
+                }
+            }
+            Modification::AddSupertype(supertype) => {
+                if !chars.supertypes.contains(supertype) {
+                    chars.supertypes.push(*supertype);
                 }
             }
             Modification::AddSubtype(subtype) => {

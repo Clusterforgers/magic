@@ -1505,6 +1505,19 @@ fn c10_vp_planar_text(effect: &Effect) -> Option<String> {
     )
 }
 
+/// Whether the effect puts, removes, moves or multiplies counters: the writer words them together.
+fn is_counters(effect: &Effect) -> bool {
+    matches!(
+        effect,
+        Effect::PutCounters { .. }
+            | Effect::RemoveCounters { .. }
+            | Effect::RemoveAllCounters { .. }
+            | Effect::MoveCounters { .. }
+            | Effect::MultiplyCounters { .. }
+            | Effect::PutCountersOf { .. }
+    )
+}
+
 /// Whether the effect is written as a verb with "you" understood ("draw a card"), which "you may" can precede.
 fn is_imperative(effect: &Effect) -> bool {
     !gets_energy(effect)
@@ -1541,6 +1554,7 @@ fn is_imperative(effect: &Effect) -> bool {
                 | Effect::RemoveAllCounters { .. }
                 | Effect::MoveCounters { .. }
                 | Effect::MultiplyCounters { .. }
+                | Effect::PutCountersOf { .. }
                 | Effect::Transform { .. }
                 | Effect::Flip { .. }
                 | Effect::TurnFaceUp { .. }
@@ -1972,6 +1986,32 @@ impl Writer<'_> {
         }
     }
 
+    /// "put its counters on target creature you control"; "for each kind of counter on target permanent or player, give
+    /// that permanent or player another counter of that kind".
+    fn g12b_counters_of(&mut self, on: &Ref, of: &Ref, each: Option<&Amount>) -> Option<String> {
+        match (each, on, of) {
+            (None, on, of) => {
+                let whose = match of {
+                    Ref::This => "~'s",
+                    Ref::Triggering => "its",
+                    _ => return None,
+                };
+                Some(format!(
+                    "put {whose} counters on {}",
+                    self.counter_place(on, false)?
+                ))
+            }
+            (Some(Amount::Fixed(1)), Ref::Target(0), Ref::Target(0)) if self.single(on) => {
+                let target = self.name_target()?;
+                let noun = target.strip_prefix("target ")?.to_owned();
+                Some(format!(
+                    "for each kind of counter on {target}, give that {noun} another counter of that kind"
+                ))
+            }
+            _ => None,
+        }
+    }
+
     /// "put a +1/+1 counter on ~", "remove two charge counters from target permanent", "move a
     /// +1/+1 counter from target creature onto ~".
     fn counters(&mut self, effect: &Effect) -> Option<String> {
@@ -2044,6 +2084,9 @@ impl Writer<'_> {
                         )
                     }
                 }
+            }
+            Effect::PutCountersOf { on, of, each } => {
+                self.g12b_counters_of(on, of, each.as_ref())?
             }
             Effect::MoveCounters {
                 from,
@@ -2408,11 +2451,7 @@ impl Writer<'_> {
             } if super::w7b_player_counters::w7b_player_kind(counter) => {
                 super::w7b_player_counters::w7b_player_gets(effect)?
             }
-            Effect::PutCounters { .. }
-            | Effect::RemoveCounters { .. }
-            | Effect::RemoveAllCounters { .. }
-            | Effect::MoveCounters { .. }
-            | Effect::MultiplyCounters { .. } => self.counters(effect)?,
+            effect if is_counters(effect) => self.counters(effect)?,
             Effect::CreateToken { .. } => self.created(effect)?,
             Effect::DealDamage {
                 amount: Amount::Divided,
@@ -3009,6 +3048,7 @@ impl Writer<'_> {
         prevention::effect_text(effect)
             .or_else(|| lands::effect_text(effect))
             .or_else(|| super::attack_tax::effect_text(effect))
+            .or_else(|| super::g12f_taxes::g12f_x_tax_text(effect))
             .or_else(|| super::w14a_limits::w14a_block_limit_each_text(effect))
             .or_else(|| super::g10d_spell_costs::g10d_spell_cost_text(effect))
             .or_else(|| super::w14a_wanderer::w14a_keep_one_text(effect))

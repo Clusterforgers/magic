@@ -149,7 +149,12 @@ fn clone(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
     if p.has("ChoiceZone") {
         return unmapped("key:Clone.ChoiceZone");
     }
-    if p.has("TargetMin") || p.has("TargetMax") {
+    // "a copy of up to one target": with no target the effect copies nothing, which the engine reads as no change.
+    let up_to_one = p.get("TargetMin") == Some("0")
+        && p.get("TargetMax") == Some("1")
+        && p.has("ValidTgts")
+        && !p.has("Choices");
+    if (p.has("TargetMin") || p.has("TargetMax")) && !up_to_one {
         return unmapped("key:Clone.TargetMin");
     }
     let duration = match p.get("Duration") {
