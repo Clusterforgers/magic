@@ -1772,10 +1772,12 @@ impl<'a> Walker<'a> {
                 self.at("cost", |w| w.cost(cost));
                 self.parts_a_spell_cost_does_not_pay("Keyword", "Cost", cost, false);
             }
+            Keyword::Morph(cost) | Keyword::Megamorph(cost) | Keyword::Disguise(cost) => {
+                self.at("cost", |w| w.cost(cost));
+                // Turning face up pays its parts as a special action (`Keyword.TurnUp.Cost.Discard`).
+                self.parts_that_need_an_announcement("Keyword", "TurnUp.Cost", cost);
+            }
             Keyword::Multikicker(cost)
-            | Keyword::Morph(cost)
-            | Keyword::Megamorph(cost)
-            | Keyword::Disguise(cost)
             | Keyword::Overload(cost)
             | Keyword::Mutate(cost)
             | Keyword::Encore(cost)
@@ -4639,6 +4641,25 @@ impl Walker<'_> {
                 self.problem("entering tapped for no counters is a plain choice");
             }
             ReplaceBy::RevealOrTapped(of) => self.at("of", |w| w.selector(of)),
+            ReplaceBy::PayOrGraveyard { cost, .. } => {
+                if !enters {
+                    self.problem("only an `Enters` event is paid for or put into a graveyard");
+                }
+                let one_pick = matches!(
+                    &cost.0[..],
+                    [CostItem::Sacrifice {
+                        count: Amount::Fixed(1..),
+                        ..
+                    } | CostItem::Discard {
+                        count: Amount::Fixed(1..),
+                        ..
+                    }]
+                );
+                if !one_pick {
+                    self.problem("an entering is paid for with one sacrifice or one discard");
+                }
+                self.at("cost", |w| w.cost(cost));
+            }
             ReplaceBy::UmbraArmor if !matches!(when, ReplaceWhen::Destroyed { .. }) => {
                 self.problem("`UmbraArmor` replaces a `Destroyed`");
             }

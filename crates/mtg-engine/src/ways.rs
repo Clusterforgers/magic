@@ -907,12 +907,18 @@ pub(crate) fn can_turn_up(
     sources: &[ManaOption],
     life: i32,
 ) -> bool {
-    let Some((cost, _)) = face_down::turn_up_cost(state, id) else {
+    let Some(up) = face_down::turn_up(state, id) else {
         return false;
     };
+    // The parts beyond mana take what the player has, never the permanent being turned up.
+    let parts_paid = up.parts.is_empty()
+        || crate::price::Price::casting(up.parts)
+            .claimed(state, player, id)
+            .is_some();
     controller_of(state, id) == Some(player)
+        && parts_paid
         && can_afford(
-            &cost,
+            &up.mana,
             pool,
             &for_card(state, sources, id),
             life,

@@ -471,6 +471,12 @@ pub(super) fn apply(state: &mut GameState, event: &Event) -> Result<(), EngineEr
             if *cause == ZoneCause::Milled {
                 w13b_tally_milled(state, *object);
             }
+            if *cause == ZoneCause::LandPlayed
+                && let Some(owner) = state.objects.get(object).map(GameObject::owner)
+            {
+                state.turn.lands_played += 1;
+                state.tally(owner, Tally::LandsPlayed);
+            }
             if *cause == ZoneCause::Plotted {
                 mark_plotted(state, *object);
             }

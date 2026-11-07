@@ -914,6 +914,16 @@ pub enum ReplaceBy {
     },
     /// As the permanent enters, its controller may reveal a card from their hand that the selector names; if they don't (or can't) it enters tapped.
     RevealOrTapped(Selector),
+    /// As the permanent would enter, its controller pays the cost (a sacrifice or a discard); if they don't (or can't),
+    /// it is put into its owner's graveyard instead ("If ~ would enter, sacrifice two untapped lands instead. If you do,
+    /// put ~ onto the battlefield. If you don't, put it into its owner's graveyard").
+    PayOrGraveyard {
+        /// What is paid.
+        cost: crate::cost::Cost,
+        /// The controller may decline ("you may discard a land card instead").
+        #[serde(default, skip_serializing_if = "is_false")]
+        optional: bool,
+    },
     /// Umbra armor (CR 702.89): all damage is removed from the permanent instead, and the object with the ability is destroyed.
     UmbraArmor,
     /// As the permanent enters, its controller may have it enter as a copy of a permanent on the battlefield or a card

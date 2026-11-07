@@ -526,8 +526,9 @@ fn announcement(
         Some(Pending {
             what: What::Spell(card),
             special: Some(Special::TurnFaceUp),
+            choices,
             ..
-        }) => turn_up::events(state, *card).ok_or_else(unexpected),
+        }) => turn_up::events(state, player, *card, choices).ok_or_else(unexpected),
         Some(
             pending @ Pending {
                 what: What::Spell(spell),
