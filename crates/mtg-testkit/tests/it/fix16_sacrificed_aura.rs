@@ -127,7 +127,7 @@ fn a_creature_that_left_is_not_named(#[values(2, 3, 4)] seats: usize) -> Result<
         names(driver.state(), Zone::Hand(pid(0))),
         vec!["Mine".to_owned()]
     );
-    assert!(driver.state().effects().is_empty());
+    assert_eq!(driver.state().effects(), []);
     Ok(())
 }
 
