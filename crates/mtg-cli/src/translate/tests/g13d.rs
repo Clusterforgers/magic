@@ -136,7 +136,7 @@ fn attacking_the_player_of_one_attacker_stays_a_gap() {
         "T:Mode$ Attacks | ValidCard$ Creature | Execute$ Hit\n\
          SVar:Hit:DB$ Pump | ValidTgts$ Creature.attacking TriggeredAttackedTarget | KW$ Haste",
     );
-    assert!(!gaps(&script).is_empty());
+    assert_ne!(gaps(&script), Vec::<String>::new());
 }
 
 fn rule(script: &str) -> Value {

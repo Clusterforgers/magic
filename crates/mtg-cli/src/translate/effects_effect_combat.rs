@@ -82,7 +82,7 @@ fn read(
             held(json!(["CantAttack", "CantBlock"])),
             rule(
                 json!({"Cant": {"who": "EachPlayer", "action": {"ActivateKind": {
-                "kind": "Every", "sources": sources(&subject)?}}}}),
+                "kind": "Every", "sources": sources(&subject)}}}}),
             ),
         ],
         "CanAttackDefender" => vec![rule(
@@ -123,9 +123,9 @@ fn subject(ctx: &mut Ctx, valid: Option<&str>, who: &Value) -> Tr<Value> {
 }
 
 /// The sources of a "can't be activated" rule about the subject.
-fn sources(subject: &Value) -> Tr<Value> {
+fn sources(subject: &Value) -> Value {
     match subject.get("Each") {
-        Some(selector) => Ok(selector.clone()),
-        None => Ok(json!([{ "Is": subject }])),
+        Some(selector) => selector.clone(),
+        None => json!([{ "Is": subject }]),
     }
 }
