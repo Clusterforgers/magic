@@ -1,0 +1,27 @@
+{
+  "oracle_id": "306fd9d2-5ded-4857-90f4-e62d73c6aed2",
+  "name": "Hipparion",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Hipparion",
+      "oracle_fingerprint": "ddbd7db4c14f2e724d83c053db3fcbc6",
+      "abilities": [
+        {
+          "Rule": {
+            "rule": {
+              "BlockTax": {
+                "blockers": ["This"],
+                "attackers": [
+                  { "Type": "Creature" },
+                  { "Compare": { "stat": "Power", "op": "Ge", "to": 3 } }
+                ],
+                "mana": "{1}"
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

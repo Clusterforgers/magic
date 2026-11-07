@@ -1,0 +1,40 @@
+{
+  "oracle_id": "9b40faad-1b96-4461-89d8-9a207b58e832",
+  "name": "Voice of Many",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Voice of Many",
+      "oracle_fingerprint": "3a194b930967923106e4c8cfdbffd5d8",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Draw": {
+                  "count": {
+                    "Players": {
+                      "PlayersWhere": {
+                        "who": "Opponents",
+                        "test": {
+                          "Compare": {
+                            "left": { "Count": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                            "op": "Lt",
+                            "right": {
+                              "Count": [{ "Type": "Creature" }, { "ControlledBy": "Asker" }]
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

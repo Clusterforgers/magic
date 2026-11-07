@@ -1,0 +1,99 @@
+{
+  "oracle_id": "c3ea1497-63ac-46bb-95e9-d98b93a880b3",
+  "name": "Ward of Bones",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ward of Bones",
+      "oracle_fingerprint": "ffad852fea625d216bf7187f3f0e9efa",
+      "abilities": [
+        {
+          "Rule": {
+            "rule": {
+              "Cant": {
+                "who": {
+                  "PlayersWhere": {
+                    "who": "Opponents",
+                    "test": {
+                      "Compare": {
+                        "left": { "Count": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                        "op": "Gt",
+                        "right": { "Count": [{ "Type": "Creature" }, { "ControlledBy": "Asker" }] }
+                      }
+                    }
+                  }
+                },
+                "action": { "Cast": { "filter": [{ "Type": "Creature" }] } }
+              }
+            }
+          }
+        },
+        {
+          "Rule": {
+            "rule": {
+              "Cant": {
+                "who": {
+                  "PlayersWhere": {
+                    "who": "Opponents",
+                    "test": {
+                      "Compare": {
+                        "left": { "Count": [{ "Type": "Artifact" }, { "ControlledBy": "You" }] },
+                        "op": "Gt",
+                        "right": { "Count": [{ "Type": "Artifact" }, { "ControlledBy": "Asker" }] }
+                      }
+                    }
+                  }
+                },
+                "action": { "Cast": { "filter": [{ "Type": "Artifact" }] } }
+              }
+            }
+          }
+        },
+        {
+          "Rule": {
+            "rule": {
+              "Cant": {
+                "who": {
+                  "PlayersWhere": {
+                    "who": "Opponents",
+                    "test": {
+                      "Compare": {
+                        "left": { "Count": [{ "Type": "Enchantment" }, { "ControlledBy": "You" }] },
+                        "op": "Gt",
+                        "right": {
+                          "Count": [{ "Type": "Enchantment" }, { "ControlledBy": "Asker" }]
+                        }
+                      }
+                    }
+                  }
+                },
+                "action": { "Cast": { "filter": [{ "Type": "Enchantment" }] } }
+              }
+            }
+          }
+        },
+        {
+          "Rule": {
+            "rule": {
+              "Cant": {
+                "who": {
+                  "PlayersWhere": {
+                    "who": "Opponents",
+                    "test": {
+                      "Compare": {
+                        "left": { "Count": [{ "Type": "Land" }, { "ControlledBy": "You" }] },
+                        "op": "Gt",
+                        "right": { "Count": [{ "Type": "Land" }, { "ControlledBy": "Asker" }] }
+                      }
+                    }
+                  }
+                },
+                "action": "PlayLand"
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

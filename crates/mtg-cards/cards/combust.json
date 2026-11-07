@@ -1,0 +1,31 @@
+{
+  "oracle_id": "f1ba56e3-3d09-4610-88e7-8681b5736105",
+  "name": "Combust",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Combust",
+      "oracle_fingerprint": "3fc69d8d3885dd85f04eb5d59637e999",
+      "abilities": [
+        { "Rule": { "rule": { "CantBeCountered": "This" }, "from": "Stack" } },
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Type": "Creature" },
+                    { "AnyOf": [{ "Color": "White" }, { "Color": "Blue" }] }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              { "DealDamage": { "to": { "Target": 0 }, "amount": 5, "unpreventable": true } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

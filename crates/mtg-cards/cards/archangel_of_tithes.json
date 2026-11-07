@@ -1,0 +1,30 @@
+{
+  "oracle_id": "ff5caed4-0276-476d-8fae-edae2536df7f",
+  "name": "Archangel of Tithes",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Archangel of Tithes",
+      "oracle_fingerprint": "24d9efdf516adb8005f80e9e0d323759",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Rule": {
+            "rule": { "AttackTax": { "attacked": "Both", "mana": "{1}" } },
+            "condition": {
+              "Compare": { "left": { "Count": ["This", "Untapped"] }, "op": "Ge", "right": 1 }
+            }
+          }
+        },
+        {
+          "Rule": {
+            "rule": { "BlockTax": { "mana": "{1}" } },
+            "condition": {
+              "Compare": { "left": { "Count": ["This", "Attacking"] }, "op": "Ge", "right": 1 }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

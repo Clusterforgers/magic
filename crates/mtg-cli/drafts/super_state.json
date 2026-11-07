@@ -1,0 +1,51 @@
+{
+  "oracle_id": "ab2dfe99-bd77-44d7-92be-81643ea901f0",
+  "name": "Super State",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Super State",
+      "oracle_fingerprint": "105507e6035525423a8cab793b008be0",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [
+              { "SetPT": { "power": 9, "toughness": 9 } },
+              { "AddKeyword": "Flying" },
+              { "AddKeyword": "FirstStrike" },
+              { "AddKeyword": "Trample" },
+              { "AddKeyword": "Haste" }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "DealsDamage": {
+                "source": [{ "Type": "Creature" }, { "Is": "Attached" }],
+                "to": "Opponents",
+                "combat": true
+              }
+            },
+            "effects": [
+              {
+                "DealDamage": {
+                  "source": "Dealer",
+                  "to": {
+                    "PlayersWhere": {
+                      "who": "Opponents",
+                      "test": { "Not": { "Among": "Triggering" } }
+                    }
+                  },
+                  "amount": "Triggering"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

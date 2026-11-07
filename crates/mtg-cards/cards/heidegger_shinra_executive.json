@@ -1,0 +1,74 @@
+{
+  "oracle_id": "215024ba-811e-4011-bbc8-8dd14a34f973",
+  "name": "Heidegger, Shinra Executive",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Heidegger, Shinra Executive",
+      "oracle_fingerprint": "96f38727d9b7995d44e2e2c07278664f",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "BeginCombat", "whose": "You" } },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    {
+                      "ModifyPT": {
+                        "power": { "Count": [{ "Subtype": "Soldier" }, { "ControlledBy": "You" }] },
+                        "toughness": 0
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Soldier",
+                      "colors": ["White"],
+                      "types": ["Creature"],
+                      "subtypes": ["Soldier"],
+                      "power": 1,
+                      "toughness": 1
+                    }
+                  },
+                  "count": {
+                    "Players": {
+                      "PlayersWhere": {
+                        "who": "Opponents",
+                        "test": {
+                          "Compare": {
+                            "left": { "Count": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                            "op": "Gt",
+                            "right": {
+                              "Count": [{ "Type": "Creature" }, { "ControlledBy": "Asker" }]
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
