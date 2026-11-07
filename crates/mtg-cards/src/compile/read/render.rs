@@ -1156,8 +1156,7 @@ fn written(
                 writer
                     .damage_group(group)
                     .or_else(|| writer.mana_group(group))
-                    .or_else(|| writer.compound(group))
-                    .or_else(|| writer.r7d_changed_and_ruled(group))?,
+                    .or_else(|| writer.compound(group))?,
             ),
         }
         start = end;
@@ -2992,6 +2991,9 @@ impl Writer<'_> {
     /// Several effects as one sentence, one clause for each run of effects of one player: "target opponent discards a
     /// card and loses 3 life", "you create a Wolf token and that player mills ten cards".
     fn compound(&mut self, group: &[Effect]) -> Option<String> {
+        if let Some(text) = self.r7d_changed_and_ruled(group) {
+            return Some(text);
+        }
         let mut clauses = Vec::new();
         let mut rest = group;
         while let Some(first) = rest.first() {

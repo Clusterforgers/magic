@@ -120,7 +120,7 @@ impl Writer<'_> {
     }
 }
 
-/// The words of a change that lasts while the source stays tapped (Duration::WhileSourceTapped).
+/// The words of a change that lasts while the source stays tapped (`Duration::WhileSourceTapped`).
 pub(in super::super) const WHILE_TAPPED: &str = "for as long as ~ remains tapped";
 
 impl Writer<'_> {
