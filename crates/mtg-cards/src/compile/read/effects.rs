@@ -1636,6 +1636,8 @@ fn produced(r: &mut Reader<'_>, counted: &mut Option<Amount>) -> Option<Produce>
             Produce::Fixed(vec![mana])
         } else if let Some(combination) = r.attempt(combination) {
             combination
+        } else if r.words("two mana of different colors") {
+            Produce::two_different_colors()
         } else if let Some(count) = r.attempt(several_of_one_color) {
             Produce::AnyColor(count)
         } else if r.words("one mana of the chosen color") {

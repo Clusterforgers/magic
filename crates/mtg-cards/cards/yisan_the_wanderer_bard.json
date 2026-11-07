@@ -27,10 +27,10 @@
                       }
                     }
                   ],
-                  "as": "found"
+                  "as": "card"
                 }
               },
-              { "Move": { "what": { "Bound": "found" }, "to": { "Battlefield": {} } } },
+              { "Move": { "what": { "Bound": "card" }, "to": { "Battlefield": {} } } },
               { "Shuffle": {} }
             ]
           }

@@ -121,7 +121,7 @@ fn worded(r: &mut Reader<'_>) -> Option<CostItem> {
         return cards(r).map(CostItem::Mill);
     }
     if r.word("put") {
-        return blight(r);
+        return r.attempt(blight).or_else(|| put_on_source(r));
     }
     r.need("sacrifice")?;
     if r.source() {
@@ -253,6 +253,22 @@ fn blight(r: &mut Reader<'_>) -> Option<CostItem> {
     (counter == Some(CounterKind::MinusOneMinusOne) && count == Amount::one()).then_some(())?;
     r.need("on a creature you control")?;
     Some(CostItem::Blight(count))
+}
+
+/// "Put a -0/-1 counter on this creature": counters of a kind put on the source.
+fn put_on_source(r: &mut Reader<'_>) -> Option<CostItem> {
+    let number = super::amounts::number_word(r.take_word()?)?;
+    let counter = r
+        .attempt(super::counters::sized)
+        .or_else(|| r.attempt(super::counters::kind))?;
+    r.word(if number == 1 { "counter" } else { "counters" })
+        .then_some(())?;
+    r.need("on")?;
+    r.source().then_some(())?;
+    Some(CostItem::PutCounters {
+        counter,
+        count: Amount::Fixed(i32::try_from(number).ok()?),
+    })
 }
 
 fn remove(r: &mut Reader<'_>) -> Option<CostItem> {
@@ -409,6 +425,10 @@ fn item_text(item: &CostItem) -> Option<String> {
         }
         CostItem::PayEnergy(Amount::X) => "Pay X {E}".to_owned(),
         CostItem::Mill(count) => format!("Mill {}", cards_text(count)?),
+        CostItem::Exert => "Exert ~".to_owned(),
+        CostItem::PutCounters { counter, count } => {
+            format!("Put {} on ~", w2f_text(Some(counter), count)?)
+        }
         CostItem::Blight(Amount::Fixed(1)) => {
             "Put a -1/-1 counter on a creature you control".to_owned()
         }

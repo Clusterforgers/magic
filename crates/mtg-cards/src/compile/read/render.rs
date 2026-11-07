@@ -1754,6 +1754,7 @@ fn mana_text(mana: &Produce) -> Option<String> {
                 [] => return None,
             }
         }
+        _ if *mana == Produce::two_different_colors() => "two mana of different colors".to_owned(),
         Produce::OneOfLists(lists) if lists.len() > 1 => {
             let texts: Vec<String> = lists.iter().map(|list| symbols_text(list)).collect();
             match texts.as_slice() {
@@ -1788,7 +1789,9 @@ fn restriction_texts(timing: Timing, limit: Option<Limit>) -> Vec<String> {
         (timing, Some(Limit::TimesPerTurn(most))) => {
             let times = match most {
                 2 => "twice".to_owned(),
-                n => format!("{n} times"),
+                // "Activate no more than three times each turn."
+                n => count_word(n)
+                    .map_or_else(|| format!("{n} times"), |word| format!("{word} times")),
             };
             let lead = match timing {
                 Timing::Sorcery => "Activate only as a sorcery and no more than",

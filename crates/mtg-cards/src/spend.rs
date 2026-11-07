@@ -67,6 +67,16 @@ pub enum SpendFact {
     SharesCommanderType,
     /// The source of the ability is on the battlefield ("abilities of artifacts on the battlefield").
     OnBattlefield,
+    /// It has no color ("colorless spells").
+    Colorless,
+    /// It is cast from exile ("spells from exile").
+    FromExile,
+    /// It is cast from anywhere other than its caster's hand ("a spell from anywhere other than your hand").
+    NotFromHand,
+    /// It has devoid ("a spell with devoid").
+    Devoid,
+    /// It has flashback ("spells with flashback").
+    Flashback,
 }
 
 #[allow(clippy::trivially_copy_pass_by_ref)]
@@ -141,6 +151,22 @@ pub struct SpendTraits {
     #[serde(default, skip_serializing_if = "is_false")]
     #[cfg_attr(feature = "ts", ts(as = "Option<bool>", optional))]
     pub on_battlefield: bool,
+    /// It is cast from exile.
+    #[serde(default, skip_serializing_if = "is_false")]
+    #[cfg_attr(feature = "ts", ts(as = "Option<bool>", optional))]
+    pub from_exile: bool,
+    /// It is cast from a zone other than its caster's hand.
+    #[serde(default, skip_serializing_if = "is_false")]
+    #[cfg_attr(feature = "ts", ts(as = "Option<bool>", optional))]
+    pub not_from_hand: bool,
+    /// It has devoid.
+    #[serde(default, skip_serializing_if = "is_false")]
+    #[cfg_attr(feature = "ts", ts(as = "Option<bool>", optional))]
+    pub devoid: bool,
+    /// It has flashback.
+    #[serde(default, skip_serializing_if = "is_false")]
+    #[cfg_attr(feature = "ts", ts(as = "Option<bool>", optional))]
+    pub flashback: bool,
 }
 
 impl SpendFilter {
@@ -187,6 +213,11 @@ impl SpendFilter {
                 SpendFact::FromYourGraveyard => traits.from_graveyard && !traits.not_owned,
                 SpendFact::SharesCommanderType => traits.shares_commander_type,
                 SpendFact::OnBattlefield => traits.on_battlefield,
+                SpendFact::Colorless => traits.colors == 0,
+                SpendFact::FromExile => traits.from_exile,
+                SpendFact::NotFromHand => traits.not_from_hand,
+                SpendFact::Devoid => traits.devoid,
+                SpendFact::Flashback => traits.flashback,
             })
     }
 }
@@ -222,6 +253,8 @@ pub enum SpendOn {
     Spell(SpendFilter),
     /// Activating an ability whose source is of the kind; a mana ability is not paid for, so none counts.
     Ability(SpendFilter),
+    /// Paying a cost that is neither a spell's nor an ability's ("unless its controller pays {2}", a ward cost).
+    OtherCosts,
     /// Paying a cost that has {X} in it, of a spell or of an ability.
     CostWithX,
     /// Not a restriction: the mana may be spent on anything, and spending it on a spell of the kind sets off the effects
@@ -303,6 +336,7 @@ impl SpendOn {
             SpendOn::Spell(filter) => SpendOn::Spell(filter.resolved(chosen)?),
             SpendOn::Ability(filter) => SpendOn::Ability(filter.resolved(chosen)?),
             SpendOn::CostWithX => SpendOn::CostWithX,
+            SpendOn::OtherCosts => SpendOn::OtherCosts,
             SpendOn::When(rider) => rider.entry(chosen, rider.source)?,
             SpendOn::Uncounterable(filter) => SpendOn::Uncounterable(filter.resolved(chosen)?),
             SpendOn::Snow => SpendOn::Snow,

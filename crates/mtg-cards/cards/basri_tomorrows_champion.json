@@ -32,7 +32,8 @@
         { "Keyword": { "Cycling": "{2}{W}" } },
         {
           "Triggered": {
-            "when": { "Cycled": { "what": ["This"] } },
+            "when": { "Cycled": { "what": ["This"], "by": "You" } },
+            "from": "Graveyard",
             "effects": [
               {
                 "Continuous": {

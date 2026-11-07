@@ -20,6 +20,8 @@ mod cast;
 mod combat_quirks;
 mod commanders;
 mod damage;
+#[cfg(test)]
+mod e14a_spend_facts;
 mod encoded;
 mod exile_return;
 mod face_down;

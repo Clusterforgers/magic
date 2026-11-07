@@ -749,6 +749,7 @@ mod allgaps;
 mod e10a;
 mod e10b;
 mod e10c;
+mod e14a;
 mod e14b;
 mod e14c;
 mod en4_counter;

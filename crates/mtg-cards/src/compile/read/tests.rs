@@ -262,6 +262,8 @@ mod dk1c5_rooms;
 mod draws;
 mod e10a_writers;
 mod e10b_writers;
+mod e14a_mana_writers;
+mod e14a_spend_facts;
 mod e14b_writers;
 mod e14d_writers;
 mod each_pump;

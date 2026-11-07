@@ -1,6 +1,7 @@
 Abbot of Keral Keep
 Aberrant
 Abomination, World Ravager
+Aboroth
 Abundant Growth
 Abzan Advantage
 Abzan Battle Priest
@@ -161,6 +162,7 @@ Blood Seeker
 Blood for the Blood God!
 Bloodbraid Elf
 Bloodghast
+Bloodletter Quill
 Bloodline Pretender
 Bloom Hulk
 Body Count
@@ -256,6 +258,7 @@ Chittering Witch
 Chomping Kavu
 Chromanticore
 Chromatic Lantern
+Cinderhaze Wretch
 Circle of Dreams Druid
 Circuitous Route
 Citadel Gate
@@ -385,6 +388,7 @@ Desert
 Desperate Ravings
 Determined Iteration
 Devastation Tide
+Devoted Druid
 Dimir Infiltrator
 Dina, Soul Steeper
 Dire Fleet Interloper
@@ -1148,6 +1152,7 @@ Proven Combatant
 Psychic Impetus
 Psychosis Crawler
 Pteramander
+Purple Dragon Punks
 Putrid Goblin
 Pygmy Kavu
 Pygmy Troll
@@ -1337,6 +1342,7 @@ Silversmote Ghoul
 Silverwing Squadron
 Sinister Sabotage
 Sinister Starfish
+Sinking Feeling
 Sinuous Vermin
 Siren Lookout
 Sister Repentia
@@ -1731,6 +1737,7 @@ Wrexial, the Risen Deep
 Writ of Return
 Wurmwall Sweeper
 Wyrm's Crossing Patrol
+Yisan, the Wanderer Bard
 Young Wolf
 Zanikev Locust
 Zealous Conscripts
