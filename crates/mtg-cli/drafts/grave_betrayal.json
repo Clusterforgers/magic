@@ -1,0 +1,53 @@
+{
+  "oracle_id": "892c8fd1-9553-4ced-84ec-9fc35c314c76",
+  "name": "Grave Betrayal",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Grave Betrayal",
+      "oracle_fingerprint": "102b0167ca286655a10faf700eea75ba",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Creature" }, { "Not": { "ControlledBy": "You" } }],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "effects": [
+              {
+                "Bind": {
+                  "what": { "Arrived": { "of": "Triggering", "zone": "Graveyard" } },
+                  "as": "event"
+                }
+              },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "End" } },
+                  "effects": [
+                    {
+                      "Move": {
+                        "what": { "Bound": "event" },
+                        "to": { "Battlefield": { "under": "You", "counters": [["+1/+1", 1]] } },
+                        "as": "moved2"
+                      }
+                    },
+                    {
+                      "Continuous": {
+                        "affected": { "Bound": "moved2" },
+                        "mods": [{ "AddSubtype": "Zombie" }, { "AddColors": ["Black"] }],
+                        "duration": "Forever"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

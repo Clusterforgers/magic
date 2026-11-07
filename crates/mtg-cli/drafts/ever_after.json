@@ -1,0 +1,36 @@
+{
+  "oracle_id": "86be501c-6f05-4ce0-adb0-7adb135bfb93",
+  "name": "Ever After",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ever After",
+      "oracle_fingerprint": "f6f606fe12e8b61a3a0ab1db66c27e53",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "Type": "Creature" }, { "OwnedBy": "You" }, { "In": "Graveyard" }]
+                },
+                "bounds": { "min": 0, "max": 2 }
+              }
+            ],
+            "effects": [
+              { "Move": { "what": { "Target": 0 }, "to": { "Battlefield": {} }, "as": "moved" } },
+              {
+                "Continuous": {
+                  "affected": { "Bound": "moved" },
+                  "mods": [{ "AddSubtype": "Zombie" }, { "AddColors": ["Black"] }],
+                  "duration": "Forever"
+                }
+              },
+              { "Move": { "what": "This", "to": { "Library": { "place": "Bottom" } } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

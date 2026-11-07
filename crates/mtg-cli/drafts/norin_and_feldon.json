@@ -1,0 +1,57 @@
+{
+  "oracle_id": "9f47b337-ef45-4936-9dfa-b64289e5f422",
+  "name": "Norin and Feldon",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Norin and Feldon",
+      "oracle_fingerprint": "611ab2b9d1bd7c5bc7b2dddcd613150f",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{2}{R}" }, "Tap"],
+            "timing": "Sorcery",
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "Type": "Creature" }, { "OwnedBy": "You" }, { "In": "Graveyard" }]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "CopyOf": {
+                      "of": { "Target": 0 },
+                      "except": [
+                        { "AddType": "Artifact" },
+                        { "AddKeyword": "Haste" },
+                        {
+                          "GrantAbility": {
+                            "Triggered": {
+                              "when": { "SpellCast": {} },
+                              "effects": [{ "Exile": { "what": "This" } }]
+                            }
+                          }
+                        },
+                        {
+                          "GrantAbility": {
+                            "Triggered": {
+                              "when": { "Attacks": { "what": [{ "Type": "Creature" }] } },
+                              "effects": [{ "Exile": { "what": "This" } }]
+                            }
+                          }
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,50 @@
+{
+  "oracle_id": "b48a149c-aead-43b2-a99e-c964d6d28aa0",
+  "name": "Necromantic Selection",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Necromantic Selection",
+      "oracle_fingerprint": "70d001f58c678e2b391c1bfcb380d384",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "Destroy": { "what": { "Each": [{ "Type": "Creature" }] }, "as": "destroyed" } },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "Type": "Creature" },
+                      { "Not": "Token" },
+                      { "Is": { "Bound": "destroyed" } },
+                      { "In": "Graveyard" },
+                      { "OwnedBy": "You" }
+                    ]
+                  },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "picked2"
+                }
+              },
+              {
+                "Move": {
+                  "what": { "Bound": "picked2" },
+                  "to": { "Battlefield": { "under": "You" } },
+                  "as": "moved3"
+                }
+              },
+              {
+                "Continuous": {
+                  "affected": { "Bound": "moved3" },
+                  "mods": [{ "AddSubtype": "Zombie" }, { "AddColors": ["Black"] }],
+                  "duration": "Forever"
+                }
+              },
+              { "Exile": { "what": "This" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

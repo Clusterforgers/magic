@@ -1,0 +1,33 @@
+{
+  "oracle_id": "29b0f3bd-d9bd-4c54-b4c3-9c2e01720e34",
+  "name": "Hunt Down",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Hunt Down",
+      "oracle_fingerprint": "8e8867981fe019a74e32bbb8d42c010b",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }] } },
+              {
+                "what": { "Object": [{ "Type": "Creature" }, { "Not": { "Is": { "Target": 0 } } }] }
+              }
+            ],
+            "effects": [
+              {
+                "Rule": {
+                  "rule": {
+                    "MustBlockAttacker": { "who": { "Target": 1 }, "attacker": { "Target": 0 } }
+                  },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

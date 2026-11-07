@@ -1,0 +1,41 @@
+{
+  "oracle_id": "38e9ad30-4bbf-4b58-8bb2-47520ce351a3",
+  "name": "Goblin Snowman",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Goblin Snowman",
+      "oracle_fingerprint": "f77efa7e114f50b40ea5258a7ad64923",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Blocks": { "what": ["This"] } },
+            "effects": [
+              {
+                "Shield": {
+                  "when": { "Damage": { "to": "This", "combat": true } },
+                  "by": "Prevent",
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "Shield": {
+                  "when": { "Damage": { "source": [{ "Is": "This" }], "combat": true } },
+                  "by": "Prevent",
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }, { "BlockedBy": "This" }] } }],
+            "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 1 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

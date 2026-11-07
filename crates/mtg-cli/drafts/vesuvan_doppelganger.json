@@ -1,0 +1,50 @@
+{
+  "oracle_id": "aeaccab9-3e2c-4a40-a483-52c4972b2014",
+  "name": "Vesuvan Doppelganger",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Vesuvan Doppelganger",
+      "oracle_fingerprint": "b864136cba1f586ab12c57d92b2d9f77",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": {
+              "AsCopy": {
+                "of": [{ "Type": "Creature" }, "Other"],
+                "except": [
+                  { "SetColors": ["Blue"] },
+                  {
+                    "GrantAbility": {
+                      "Triggered": {
+                        "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+                        "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+                        "effects": [
+                          {
+                            "May": {
+                              "effects": [
+                                {
+                                  "BecomeCopy": {
+                                    "what": "This",
+                                    "of": { "Target": 0 },
+                                    "except": [{ "SetColors": ["Blue"] }, "ThisAbility"],
+                                    "duration": "Forever"
+                                  }
+                                }
+                              ]
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

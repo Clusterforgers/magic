@@ -1,0 +1,93 @@
+{
+  "source": "forge",
+  "oracle_matches": true,
+  "lines": [
+    {
+      "face": 0,
+      "tag": "A",
+      "text": "Untap CARDNAME.",
+      "abilities": [
+        0
+      ],
+      "gap": null
+    },
+    {
+      "face": 0,
+      "tag": "A",
+      "text": "Target creature blocks CARDNAME this turn if able.",
+      "abilities": [
+        1
+      ],
+      "gap": null
+    },
+    {
+      "face": 0,
+      "tag": "A",
+      "text": "Change the target of target spell that targets only CARDNAME.",
+      "abilities": [],
+      "gap": "key:ChangeTargets.Another-without-single-target"
+    },
+    {
+      "face": 0,
+      "tag": "A",
+      "text": "CARDNAME gets +1/-1 until end of turn.",
+      "abilities": [
+        2
+      ],
+      "gap": null
+    },
+    {
+      "face": 0,
+      "tag": "A",
+      "text": "CARDNAME gets -1/+1 until end of turn.",
+      "abilities": [
+        3
+      ],
+      "gap": null
+    }
+  ],
+  "proof": {
+    "marks": [
+      {
+        "face": 0,
+        "span": {
+          "start": 0,
+          "end": 25
+        },
+        "mark": "Auto"
+      },
+      {
+        "face": 0,
+        "span": {
+          "start": 26,
+          "end": 86
+        },
+        "mark": "Auto"
+      },
+      {
+        "face": 0,
+        "span": {
+          "start": 87,
+          "end": 158
+        },
+        "mark": "ByHand"
+      },
+      {
+        "face": 0,
+        "span": {
+          "start": 159,
+          "end": 207
+        },
+        "mark": "Auto"
+      },
+      {
+        "face": 0,
+        "span": {
+          "start": 208,
+          "end": 256
+        },
+        "mark": "Auto"
+      }
+    ]
+  }
+}

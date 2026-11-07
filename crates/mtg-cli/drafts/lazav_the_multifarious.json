@@ -1,0 +1,50 @@
+{
+  "oracle_id": "c14bcef2-6d49-4430-86d0-e5a87ba442d9",
+  "name": "Lazav, the Multifarious",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Lazav, the Multifarious",
+      "oracle_fingerprint": "8f0aef7bc9cfb0dec39cff80211c6d4c",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "Surveil": {} }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{X}",
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Type": "Creature" },
+                    { "OwnedBy": "You" },
+                    { "Compare": { "stat": "ManaValue", "op": "Eq", "to": "X" } },
+                    { "In": "Graveyard" }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "BecomeCopy": {
+                  "what": "This",
+                  "of": { "Target": 0 },
+                  "except": [
+                    { "SetName": "Lazav, the Multifarious" },
+                    { "AddSupertype": "Legendary" },
+                    "ThisAbility"
+                  ],
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -22,7 +22,14 @@
                 "what": [
                   "Spell",
                   { "AnyOf": [{ "Type": "Creature" }, { "Type": "Planeswalker" }] },
-                  { "SharesName": { "Each": [{ "In": "Graveyard" }, { "OwnedBy": "You" }] } }
+                  {
+                    "SharesName": {
+                      "Each": [
+                        { "In": "Graveyard" },
+                        { "OwnedBy": { "ControllerOf": "Candidate" } }
+                      ]
+                    }
+                  }
                 ],
                 "by": "Opponents"
               }

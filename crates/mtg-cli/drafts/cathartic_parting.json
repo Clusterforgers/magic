@@ -1,0 +1,35 @@
+{
+  "oracle_id": "0ea80bd9-ab7e-4a8f-85b0-167fe7fae43a",
+  "name": "Cathartic Parting",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Cathartic Parting",
+      "oracle_fingerprint": "3eb2caa28a63300197df2db99d86cba7",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "AnyOf": [{ "Type": "Artifact" }, { "Type": "Enchantment" }] },
+                    { "ControlledBy": "Opponents" }
+                  ]
+                }
+              },
+              {
+                "what": { "Object": [{ "OwnedBy": "You" }, { "In": "Graveyard" }] },
+                "bounds": { "min": 0, "max": 4 }
+              }
+            ],
+            "effects": [
+              { "Move": { "what": { "Target": 0 }, "to": { "Library": { "place": "Shuffled" } } } },
+              { "Move": { "what": { "Target": 1 }, "to": { "Library": { "place": "Shuffled" } } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

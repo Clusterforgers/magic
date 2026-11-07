@@ -1,0 +1,41 @@
+{
+  "oracle_id": "0129ffe2-389f-4e05-8a04-96461bac39a5",
+  "name": "Greasefang, Okiba Boss",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Greasefang, Okiba Boss",
+      "oracle_fingerprint": "b69de435a0b2ffad711a79c1589ab93f",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "BeginCombat", "whose": "You" } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "Subtype": "Vehicle" }, { "OwnedBy": "You" }, { "In": "Graveyard" }]
+                }
+              }
+            ],
+            "effects": [
+              { "Move": { "what": { "Target": 0 }, "to": { "Battlefield": {} }, "as": "moved" } },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "End" } },
+                  "effects": [{ "Move": { "what": { "Bound": "moved" }, "to": "Hand" } }]
+                }
+              },
+              {
+                "Continuous": {
+                  "affected": { "Bound": "moved" },
+                  "mods": [{ "AddKeyword": "Haste" }],
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

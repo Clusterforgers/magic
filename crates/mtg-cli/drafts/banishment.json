@@ -1,0 +1,52 @@
+{
+  "oracle_id": "9c9b3bf7-afb7-4e9b-bdbc-e2b4d5ba477f",
+  "name": "Banishment",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Banishment",
+      "oracle_fingerprint": "87819850c121d2c08e6a5fd77021d523",
+      "abilities": [
+        { "Keyword": "Flash" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "Not": { "Type": "Land" } }, { "ControlledBy": "Opponents" }]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "Exile": {
+                  "what": {
+                    "Each": [
+                      {
+                        "AnyOf": [
+                          { "Is": { "Target": 0 } },
+                          {
+                            "Not": {
+                              "AnyOf": [
+                                { "Not": { "Not": { "Type": "Land" } } },
+                                { "Not": { "Not": { "Is": { "Target": 0 } } } },
+                                { "Not": { "SharesName": { "Target": 0 } } },
+                                { "Not": { "ControlledBy": "Opponents" } }
+                              ]
+                            }
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  "duration": "WhileSourceOnBattlefield"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

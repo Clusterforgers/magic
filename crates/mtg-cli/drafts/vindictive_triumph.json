@@ -1,0 +1,54 @@
+{
+  "oracle_id": "d6b478d1-5015-49ba-b1aa-cbc2b08107a6",
+  "name": "Vindictive Triumph",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Vindictive Triumph",
+      "oracle_fingerprint": "d7eabbff8cdbd878f82ee3466c4707b7",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "AnyOf": [{ "Type": "Creature" }, { "Type": "Planeswalker" }] }]
+                }
+              }
+            ],
+            "effects": [
+              { "Exile": { "what": { "Target": 0 }, "as": "exiled" } },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Target": 0 },
+                      "selector": [{ "Compare": { "stat": "ManaValue", "op": "Le", "to": 3 } }],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [
+                    {
+                      "Move": {
+                        "what": { "Bound": "exiled" },
+                        "to": { "Battlefield": { "tapped": true, "under": "You" } },
+                        "as": "moved2"
+                      }
+                    },
+                    {
+                      "DelayedTrigger": {
+                        "when": { "StepBegins": { "step": "End" } },
+                        "effects": [{ "Exile": { "what": { "Bound": "moved2" } } }]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

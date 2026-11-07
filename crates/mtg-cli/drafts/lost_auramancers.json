@@ -1,0 +1,41 @@
+{
+  "oracle_id": "9adf1568-248a-4a41-807e-2d7bc6f4f84d",
+  "name": "Lost Auramancers",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Lost Auramancers",
+      "oracle_fingerprint": "ff00a382442c9c3b92fe3a34bb8a87d7",
+      "abilities": [
+        { "Keyword": { "Vanishing": 3 } },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": ["This", { "Not": { "HasCounter": { "Other": "time" } } }],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "Search": {
+                        "filter": [{ "Type": "Enchantment" }, { "OwnedBy": "You" }],
+                        "as": "found"
+                      }
+                    },
+                    { "Move": { "what": { "Bound": "found" }, "to": { "Battlefield": {} } } },
+                    { "Shuffle": {} }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

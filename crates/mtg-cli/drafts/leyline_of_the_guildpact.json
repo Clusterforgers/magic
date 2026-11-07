@@ -1,0 +1,32 @@
+{
+  "oracle_id": "6b2e6a51-b9e6-4848-b7d7-98f02f2b897f",
+  "name": "Leyline of the Guildpact",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Leyline of the Guildpact",
+      "oracle_fingerprint": "10341bd9e9bc5343b437f7403b1a13c6",
+      "abilities": [
+        "OpeningHand",
+        {
+          "Static": {
+            "affected": { "Each": [{ "Not": { "Type": "Land" } }, { "ControlledBy": "You" }] },
+            "mods": [{ "SetColors": ["White", "Blue", "Black", "Red", "Green"] }]
+          }
+        },
+        {
+          "Static": {
+            "affected": { "Each": [{ "Type": "Land" }, { "ControlledBy": "You" }] },
+            "mods": [
+              { "AddSubtype": "Plains" },
+              { "AddSubtype": "Island" },
+              { "AddSubtype": "Swamp" },
+              { "AddSubtype": "Mountain" },
+              { "AddSubtype": "Forest" }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

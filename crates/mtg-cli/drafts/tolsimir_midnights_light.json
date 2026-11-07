@@ -1,0 +1,66 @@
+{
+  "oracle_id": "0e9c7380-7584-43e6-8c31-5d1bb1685fe0",
+  "name": "Tolsimir, Midnight's Light",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Tolsimir, Midnight's Light",
+      "oracle_fingerprint": "7aa0228a856e4193846303de22305772",
+      "abilities": [
+        { "Keyword": "Lifelink" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Voja Fenstalker",
+                      "colors": ["White", "Green"],
+                      "supertypes": ["Legendary"],
+                      "types": ["Creature"],
+                      "subtypes": ["Wolf"],
+                      "power": 5,
+                      "toughness": 5,
+                      "abilities": [{ "Keyword": "Trample" }]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": [{ "Subtype": "Wolf" }, { "ControlledBy": "You" }] } },
+            "if": {
+              "AtTrigger": {
+                "Compare": {
+                  "left": {
+                    "Count": ["This", { "DidThisTurn": { "event": "Attacked", "combat": true } }]
+                  },
+                  "op": "Ge",
+                  "right": 1
+                }
+              }
+            },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }] } }
+            ],
+            "effects": [
+              {
+                "Rule": {
+                  "rule": {
+                    "MustBlockAttacker": { "who": { "Target": 0 }, "attacker": "Triggering" }
+                  },
+                  "duration": "UntilEndOfCombat"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

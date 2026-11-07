@@ -1,0 +1,25 @@
+{
+  "oracle_id": "79b48704-480d-4905-b87a-40b127894670",
+  "name": "Archetype of Courage",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Archetype of Courage",
+      "oracle_fingerprint": "cea2f8cd33b355d0b5cc07e31807593e",
+      "abilities": [
+        {
+          "Static": {
+            "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+            "mods": [{ "AddKeyword": "FirstStrike" }]
+          }
+        },
+        {
+          "Static": {
+            "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }] },
+            "mods": [{ "LockKeyword": "FirstStrike" }]
+          }
+        }
+      ]
+    }
+  ]
+}

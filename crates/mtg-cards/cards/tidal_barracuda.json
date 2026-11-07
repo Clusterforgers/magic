@@ -1,0 +1,15 @@
+{
+  "oracle_id": "edfc0a46-414e-467d-9f27-e42d08ec127a",
+  "name": "Tidal Barracuda",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Tidal Barracuda",
+      "oracle_fingerprint": "1503fd95a15dacc1dab413294f26d6a5",
+      "abilities": [
+        { "Rule": { "rule": { "MayCast": { "who": "EachPlayer", "flash": true } } } },
+        { "Rule": { "rule": { "CantCastSpells": { "who": "Opponents", "your_turn": true } } } }
+      ]
+    }
+  ]
+}

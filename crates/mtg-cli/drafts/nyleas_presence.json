@@ -1,0 +1,33 @@
+{
+  "oracle_id": "93fe5eed-520f-467a-8e27-6f40eaa727e8",
+  "name": "Nylea's Presence",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Nylea's Presence",
+      "oracle_fingerprint": "135598761bdce729ac37fca4b8ab1192",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Land" }] } },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "Draw": {} }]
+          }
+        },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [
+              { "AddSubtype": "Plains" },
+              { "AddSubtype": "Island" },
+              { "AddSubtype": "Swamp" },
+              { "AddSubtype": "Mountain" },
+              { "AddSubtype": "Forest" }
+            ],
+            "condition": { "Matches": { "subject": "Attached", "selector": [{ "Type": "Land" }] } }
+          }
+        }
+      ]
+    }
+  ]
+}
