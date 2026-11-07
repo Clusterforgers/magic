@@ -450,6 +450,7 @@ fn changes_zone(ctx: &Ctx, p: &Params) -> Tr<Value> {
     // "Enters from your graveyard": Forge names the zone alone, Oracle its owner too.
     let yours = json!({"OwnedBy": "You"});
     if origins == [Some("Graveyard")]
+        && destinations == [Some("Battlefield")]
         && !p.get("ValidCard").is_some_and(|v| v.contains("Own"))
         && p.get("TriggerDescription")
             .is_some_and(|d| d.contains("from your graveyard"))
