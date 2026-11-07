@@ -62,11 +62,14 @@ fn each_one(text: &str) -> Vec<String> {
         };
         let mut said: Vec<String> = words.iter().map(|word| (*word).to_owned()).collect();
         said[noun_at] = one;
+        // One object at a time has one owner: "each creature ... to its owner's hand".
+        let said = said
+            .join(" ")
+            .replacen(" to their owners' ", " to its owner's ", 1);
         out.push(format!(
-            "{}{}each {}",
+            "{}{}each {said}",
             &text[..at],
             &verb[..verb.len() - "all ".len()],
-            said.join(" ")
         ));
     }
     out

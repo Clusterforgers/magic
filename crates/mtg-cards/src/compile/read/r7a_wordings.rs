@@ -11,8 +11,15 @@ use crate::ability::Ability;
 /// The most wordings the rows add to one ability: a long text could otherwise multiply them.
 const LIMIT: usize = 48;
 
+/// The most wordings a static may have for the rows to add to them.
+const MOST_GIVEN: usize = 64;
+
 /// Adds the Oracle wordings of each row to the wordings of the ability, one pass over the given wordings.
 pub(super) fn add(ability: &Ability, texts: &mut Vec<String>) {
+    // The rows are for the short wordings of one rule; a static of many joined parts has enough wordings already.
+    if matches!(ability, Ability::Static { .. }) && texts.len() > MOST_GIVEN {
+        return;
+    }
     let json = serde_json::to_string(ability).unwrap_or_default();
     let cant = matches!(ability, Ability::Static { .. })
         && (json.contains("\"CantAttack\"") || json.contains("\"CantBlock\""));
