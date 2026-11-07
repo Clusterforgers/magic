@@ -29,6 +29,18 @@ pub(super) fn said(amount: &Amount) -> Option<String> {
     )
 }
 
+/// "tokens with \"This token can't block,\" where X is ...": the comma of the where clause inside the closing quote,
+/// beside the period of the quoted ability before it.
+pub(super) fn add(texts: &mut Vec<String>) {
+    const QUOTED: &str = ".\", where X is ";
+    let found: Vec<String> = texts
+        .iter()
+        .filter(|text| text.contains(QUOTED))
+        .map(|text| text.replace(QUOTED, ",\" where X is "))
+        .collect();
+    texts.extend(found);
+}
+
 /// What "for each" counts, when a row has it.
 pub(super) fn each(amount: &Amount) -> Option<String> {
     let Amount::Tally {

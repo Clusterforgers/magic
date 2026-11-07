@@ -265,6 +265,16 @@ const COLONY_TEXT: &str = "When this creature dies, create X 1/1 black Rat creat
 )]
 #[case::colony(COLONY.replace("WHAT", "DamageDealtTo"), COLONY_TEXT, true)]
 #[case::colony_cards_graved(COLONY.replace("WHAT", "CardsGraved"), COLONY_TEXT, false)]
+#[case::colony_quoted(
+    COLONY.replace("WHAT", "DamageDealtTo").replace(r#""colors":["Black"]"#, r#""abilities":[{"Static":{"affected":"This","mods":["CantBlock"]}}],"colors":["Black"]"#),
+    "When this creature dies, create X 1/1 black Rat creature tokens with \"This token can't block,\" where X is the amount of damage dealt to it this turn.",
+    true
+)]
+#[case::colony_quoted_can_attack(
+    COLONY.replace("WHAT", "DamageDealtTo").replace(r#""colors":["Black"]"#, r#""abilities":[{"Static":{"affected":"This","mods":["CantAttack"]}}],"colors":["Black"]"#),
+    "When this creature dies, create X 1/1 black Rat creature tokens with \"This token can't block,\" where X is the amount of damage dealt to it this turn.",
+    false
+)]
 fn facts_of_the_turn_as_amounts_read_back(
     #[case] json: String,
     #[case] clause: &str,

@@ -595,6 +595,7 @@ fn written_as_given(ability: &Ability) -> Vec<String> {
     }
     super::r7b_wordings::add(ability, &mut texts);
     r11w_batch::add_any_other(ability, &mut texts);
+    super::r11w_tallies::add(&mut texts);
     texts
 }
 
