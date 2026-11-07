@@ -33,7 +33,7 @@ fn a_search_for_a_kind_into_a_hidden_zone_is_revealed(#[case] tail: &str, #[case
 }
 
 #[rstest]
-#[case::no_decider("", true)]
+#[case::no_decider_opening_the_effect("", false)]
 #[case::decider(" | OptionalDecider$ You", false)]
 fn a_printed_may_search_needs_a_decider(#[case] decider: &str, #[case] gap: bool) {
     let (_, found) = card(

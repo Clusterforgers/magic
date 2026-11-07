@@ -90,6 +90,7 @@ pub mod triggers;
 mod triggers_batch;
 mod triggers_caused;
 pub mod triggers_did;
+mod triggers_g9a;
 pub mod triggers_more;
 pub mod triggers_r2f;
 pub mod triggers_r4;

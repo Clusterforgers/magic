@@ -1331,6 +1331,9 @@ fn trigger_head(when: &TriggerPattern, condition: Option<&Condition>) -> Option<
     {
         return Some(vec![format!("{} while saddled,", pattern_text(when)?)]);
     }
+    if let Some(head) = super::g9a_blocks::g9a_one_or_more_head(when, condition) {
+        return Some(vec![head]);
+    }
     let event = player_events::text(when).or_else(|| pattern_text(when))?;
     let mut parts = vec![format!("{event},")];
     if let Some(condition) = condition {

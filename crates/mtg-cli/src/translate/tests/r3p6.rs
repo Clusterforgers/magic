@@ -123,7 +123,7 @@ fn an_unknown_spell_ability_word_stays_a_gap() {
 #[rstest]
 #[case::blocks_a_creature("ValidCard$ Creature | ValidBlocker$ Card.Self", true)]
 #[case::enchanted_blocker("ValidCard$ Creature | ValidBlocker$ Creature.EnchantedBy", true)]
-#[case::any_creature_blocks("ValidCard$ Card.Self | ValidBlocker$ Creature", false)]
+#[case::green_creature_blocks("ValidCard$ Card.Self | ValidBlocker$ Creature.Green", false)]
 #[case::white_creature_blocks("ValidCard$ Card.Self | ValidBlocker$ Creature.White", false)]
 fn a_blocked_trigger_reads_a_single_blocker_only(#[case] words: &str, #[case] reads: bool) {
     let (json, gaps) = creature(&trigger(&format!("AttackerBlocked | {words}")));

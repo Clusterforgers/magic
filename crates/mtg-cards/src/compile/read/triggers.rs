@@ -1463,6 +1463,9 @@ fn player_attack_text(pattern: &TriggerPattern) -> Option<String> {
 pub fn pattern_text(pattern: &TriggerPattern) -> Option<String> {
     match pattern {
         TriggerPattern::Exerted { what } => super::w9d_exert::w9d_event_text(what),
+        TriggerPattern::BecomesBlocked { by, .. } if !by.0.is_empty() => {
+            super::g9a_blocks::g9a_pair_text(pattern)
+        }
         TriggerPattern::StepBegins { step, whose } => {
             Some(format!("At the beginning of {}", step_text(*step, whose)?))
         }
