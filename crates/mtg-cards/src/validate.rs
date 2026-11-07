@@ -4513,7 +4513,9 @@ impl Walker<'_> {
                     self.problem("`IntoLibrary` replaces a `ZoneChange`");
                 }
                 if matches!(place, crate::effect::Place::Below(_)) {
-                    self.problem("`IntoLibrary` puts a card on top, on the bottom or shuffles it in");
+                    self.problem(
+                        "`IntoLibrary` puts a card on top, on the bottom or shuffles it in",
+                    );
                 }
             }
             ReplaceBy::MoveTo(_)

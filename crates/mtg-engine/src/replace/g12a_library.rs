@@ -20,7 +20,11 @@ impl Pass<'_> {
         (place, reveal): (Place, bool),
         applied: &[Origin],
     ) {
-        let Some(owner) = self.state.object(object).map(crate::object::GameObject::owner) else {
+        let Some(owner) = self
+            .state
+            .object(object)
+            .map(crate::object::GameObject::owner)
+        else {
             self.slots[at].applied = applied.to_vec();
             return;
         };
@@ -56,7 +60,8 @@ impl Pass<'_> {
             Place::Top | Place::Below(_) => None,
         };
         if let Some(event) = follow {
-            self.slots.insert(after.min(self.slots.len()), frozen(event));
+            self.slots
+                .insert(after.min(self.slots.len()), frozen(event));
         }
         if reveal && matches!(from, Zone::Hand(_) | Zone::Library(_)) {
             self.slots.insert(
@@ -73,7 +78,8 @@ impl Pass<'_> {
 /// Draws the order of each shuffle the batch left open (an empty order) from the library as the events before it leave
 /// it; a batch that does not fold drops them, so the card stays on top unshuffled rather than stopping the game.
 pub(super) fn g12a_order_shuffles(state: &GameState, events: &mut Vec<Event>) {
-    let open = |event: &Event| matches!(event, Event::LibraryShuffled { order, .. } if order.is_empty());
+    let open =
+        |event: &Event| matches!(event, Event::LibraryShuffled { order, .. } if order.is_empty());
     if !events.iter().any(open) {
         return;
     }

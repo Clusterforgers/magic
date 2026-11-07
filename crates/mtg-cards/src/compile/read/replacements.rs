@@ -308,7 +308,11 @@ fn into_library(what: &Selector, by: &ReplaceBy) -> Vec<String> {
         crate::effect::Place::Below(_) => return Vec::new(),
     };
     // The card itself is named again by its name or by "it"; a reveal names it first and "it" after.
-    let names: &[&str] = if what.0 == [Pred::This] { &["~", "it"] } else { &["it"] };
+    let names: &[&str] = if what.0 == [Pred::This] {
+        &["~", "it"]
+    } else {
+        &["it"]
+    };
     names
         .iter()
         .map(|named| {

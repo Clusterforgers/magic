@@ -647,7 +647,8 @@ fn applies_to(by: &ReplaceBy, unit: &Unit) -> bool {
                 && matches!(kind, ZoneKind::Exile | ZoneKind::Graveyard | ZoneKind::Hand)
         }
         ReplaceBy::IntoLibrary { place, .. } => {
-            matches!(unit, Unit::Move { .. }) && !matches!(place, mtg_cards::effect::Place::Below(_))
+            matches!(unit, Unit::Move { .. })
+                && !matches!(place, mtg_cards::effect::Place::Below(_))
         }
         ReplaceBy::Tapped
         | ReplaceBy::WithCounters { .. }

@@ -193,10 +193,14 @@ fn a_creature_that_would_die_goes_on_top_or_bottom(
 }
 
 #[rstest]
-fn an_instant_that_resolves_is_shuffled_in(#[values(2, 3, 4)] seats: usize) -> Result<(), ScriptError> {
+fn an_instant_that_resolves_is_shuffled_in(
+    #[values(2, 3, 4)] seats: usize,
+) -> Result<(), ScriptError> {
     let card = (*instant("Fate", 0, &[]))
         .clone()
-        .with_rules(ability(r#"{"Spell":{"effects":[{"GainLife":{"amount":1}}]}}"#))
+        .with_rules(ability(
+            r#"{"Spell":{"effects":[{"GainLife":{"amount":1}}]}}"#,
+        ))
         .with_rules(ability(SHUFFLED));
     let scenario = Scenario::new(seats)
         .hand(0, vec![Arc::new(card)])

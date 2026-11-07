@@ -138,7 +138,11 @@ fn exiled_instead(p: &Params, part: &Params, what: &[Value]) -> Tr<Value> {
         pattern["from"] = json!("Battlefield");
     }
     let library = part.get("Destination") == Some("Library");
-    if !library && ["Reveal", "Shuffle", "LibraryPosition"].iter().any(|key| part.has(key)) {
+    if !library
+        && ["Reveal", "Shuffle", "LibraryPosition"]
+            .iter()
+            .any(|key| part.has(key))
+    {
         return unmapped("replacement:Moved-not-an-exile");
     }
     let to = match part.get("Destination") {
