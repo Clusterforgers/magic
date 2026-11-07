@@ -36,7 +36,7 @@ pub(crate) fn groups(state: &GameState) -> Vec<Group> {
         let Some(object) = state.object(id) else {
             continue;
         };
-        if !object.card().supertypes.contains(&Supertype::Legendary)
+        if !crate::characteristics::has_supertype(state, id, Supertype::Legendary)
             && !crate::ring::is_legendary_bearer(state, id)
         {
             continue;

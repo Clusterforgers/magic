@@ -517,6 +517,14 @@ pub enum Targetable {
         /// The indices of the earlier specifications whose targets are left out.
         earlier: Vec<u8>,
     },
+    /// "Target creature of their choice": what `what` allows, chosen by the first player `who` names in turn order from
+    /// the controller, though the spell or ability of the controller targets it.
+    ChosenBy {
+        /// Who chooses.
+        who: Ref,
+        /// What may be chosen.
+        what: Box<Targetable>,
+    },
 }
 
 impl Targetable {

@@ -711,6 +711,13 @@ fn is(r: &mut Reader<'_>, mods: &mut Vec<Modification>) -> Option<()> {
     }
     (r.word("a") || r.word("an")).then_some(())?;
     let size = power_toughness(r);
+    // "a 4/4 black Zombie": the size, the colors and the creature types, which replace the others.
+    if let Some(sized) = size.clone()
+        && let Some(found) = r.attempt(|r| super::g12b_copy_kinds::g12b_kinds(r, sized.clone()))
+    {
+        mods.extend(found);
+        return Some(());
+    }
     let mut kinds = Vec::new();
     loop {
         if let Some(name) = subtype(r) {
@@ -881,8 +888,22 @@ fn listed_text(parts: &[String], subject: Subject) -> Option<String> {
     Some(format!("{text}, and {last}"))
 }
 
-/// The parts of the exceptions, one for each change; a type alone is "it's an artifact" with `terse`.
+/// The parts of the exceptions, one for each change; a type alone is "it's an artifact" with `terse`. A size, colors and
+/// creature types at the head are one part: "it's a 4/4 black Zombie".
 fn exception_parts(mods: &[Modification], subject: Subject, terse: bool) -> Option<Vec<String>> {
+    let Some((run, text)) = super::g12b_copy_kinds::g12b_kinds_text(mods) else {
+        return plain_parts(mods, subject, terse);
+    };
+    (subject != Subject::They).then_some(())?;
+    let mut parts = vec![format!("{} {text}", subject.is())];
+    if run < mods.len() {
+        parts.extend(plain_parts(&mods[run..], subject, terse)?);
+    }
+    Some(parts)
+}
+
+/// The parts of the exceptions, one for each change, with no head of creature types.
+fn plain_parts(mods: &[Modification], subject: Subject, terse: bool) -> Option<Vec<String>> {
     let is_kind = |found: &Modification| {
         matches!(
             found,

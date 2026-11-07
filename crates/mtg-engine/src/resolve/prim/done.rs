@@ -50,6 +50,7 @@ fn reports(effect: &Effect) -> Reports {
         | Effect::RemoveAllCounters { .. }
         | Effect::MoveCounters { .. }
         | Effect::MultiplyCounters { .. }
+        | Effect::PutCountersOf { .. }
         | Effect::Tap { .. }
         | Effect::Untap { .. }
         | Effect::TapOrUntap { .. }

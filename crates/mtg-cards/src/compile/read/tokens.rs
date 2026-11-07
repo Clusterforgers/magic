@@ -253,7 +253,7 @@ fn word_or_number(run: &str, opens: bool) -> Token {
     // The verbs of a cost follow a comma: "{T}, Pay 1 life, Sacrifice ~".
     let cost_verb = matches!(
         run,
-        "Pay" | "Sacrifice" | "Discard" | "Tap" | "Exile" | "Return" | "Remove" | "Mill"
+        "Pay" | "Sacrifice" | "Discard" | "Tap" | "Exile" | "Return" | "Remove" | "Mill" | "Put"
     );
     // A run of capitals ("AV Bead") is a name even where it opens a sentence.
     // So is a word with a capital inside it ("RadAway").

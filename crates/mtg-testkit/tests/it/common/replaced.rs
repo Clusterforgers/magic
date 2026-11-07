@@ -111,6 +111,7 @@ impl Board {
             let rule = match *shield {
                 Shield::ToDefender(left) => Rule::PreventDamage(Box::new(DamageShield {
                     to: Some(vec![Target::Player(pid(1))]),
+                    each: None,
                     source: Selector::default(),
                     from: None,
                     combat: None,
@@ -122,6 +123,7 @@ impl Board {
                 })),
                 Shield::Fog => Rule::PreventDamage(Box::new(DamageShield {
                     to: None,
+                    each: None,
                     source: Selector::default(),
                     from: None,
                     combat: Some(true),

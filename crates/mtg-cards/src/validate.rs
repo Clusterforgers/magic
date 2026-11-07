@@ -208,9 +208,9 @@ fn kind_of_targetable(what: &Targetable) -> Kind {
     match what {
         Targetable::Player | Targetable::Opponent => Kind::Player,
         Targetable::Object(_) | Targetable::PerPlayer { .. } => Kind::Object,
-        Targetable::Together { what, .. } | Targetable::Another { what, .. } => {
-            kind_of_targetable(what)
-        }
+        Targetable::Together { what, .. }
+        | Targetable::Another { what, .. }
+        | Targetable::ChosenBy { what, .. } => kind_of_targetable(what),
         Targetable::AnyTarget | Targetable::Either(_) => Kind::Either,
     }
 }
@@ -1230,7 +1230,8 @@ impl<'a> Walker<'a> {
         (self.x_free, self.x_now) = (saved, saved_now);
     }
 
-    /// The cost of an `Effect::Pay`: life of a counted amount ("pay that much life") is counted as the effect
+    /// The cost of an `Effect::Pay`: life of a counted amount ("pay that much life") and a counted draw the controller
+    /// makes ("you may draw cards equal to its power") are counted as the effect
     /// resolves (`Effect.Pay.Counted`), and so is a counted discard the controller pays ("you may discard your hand") or
     /// one only a condition counts ("discard two cards if you're the monarch"): the count is the controller's, so a
     /// count another payer would read differently ("unless its controller discards their hand") stays unpaid. Every other
@@ -1242,6 +1243,7 @@ impl<'a> Walker<'a> {
             .enumerate()
             .filter_map(|(i, item)| match item {
                 CostItem::PayLife(amount) if !is_fixed(item) => Some((i, amount)),
+                CostItem::Draw(amount) if !is_fixed(item) && *who == Ref::You => Some((i, amount)),
                 CostItem::Discard { count, .. }
                     if !is_fixed(item) && (*who == Ref::You || r5g_fixed_by_condition(count)) =>
                 {
@@ -1256,7 +1258,9 @@ impl<'a> Walker<'a> {
         let mut fixed = cost.clone();
         for (i, _) in &counted {
             match &mut fixed.0[*i] {
-                CostItem::Discard { count, .. } => *count = Amount::Fixed(1),
+                CostItem::Discard { count, .. } | CostItem::Draw(count) => {
+                    *count = Amount::Fixed(1);
+                }
                 item => *item = CostItem::PayLife(Amount::Fixed(0)),
             }
         }
@@ -1992,10 +1996,10 @@ impl<'a> Walker<'a> {
                 if matches!(
                     modification,
                     Modification::RemoveSupertype(_)
-                        | Modification::AddSupertype(_)
                         | Modification::SetName(_)
                         | Modification::ThisAbility
-                ) {
+                ) || matches!(modification, Modification::AddSupertype(_)) && !w.scope.in_static
+                {
                     w.problem("a supertype, a name or this ability changes only the copiable values of a copy (`except`)");
                 }
             });
@@ -2365,6 +2369,11 @@ impl Walker<'_> {
                 }
                 self.at("what", |w| w.targetable(what));
             }
+            Targetable::ChosenBy { who, what } => {
+                self.uses("Target", "ChosenBy");
+                self.at("who", |w| w.reference(who, Kind::Player));
+                self.at("what", |w| w.targetable(what));
+            }
             Targetable::AnyTarget | Targetable::Player | Targetable::Opponent => {}
         }
     }
@@ -2556,9 +2565,18 @@ impl Walker<'_> {
         self.effect_list_with("effects", effects, false, Some((bind, kind)));
     }
 
-    /// `RepeatWhile`: a condition read before each pass and a body of at least one effect, with a bound on the passes.
-    fn repeat_while(&mut self, condition: &Condition, effects: &[Effect], most: u32) {
-        self.at("condition", |w| w.condition(condition));
+    /// `RepeatWhile`: a condition read before each pass (after it, seeing what the pass bound, with `at_least_once`) and
+    /// a body of at least one effect, with a bound on the passes.
+    fn repeat_while(
+        &mut self,
+        condition: &Condition,
+        effects: &[Effect],
+        most: u32,
+        at_least_once: bool,
+    ) {
+        if !at_least_once {
+            self.at("condition", |w| w.condition(condition));
+        }
         if effects.is_empty() {
             self.problem("a repeat with nothing to do");
         }
@@ -2568,7 +2586,13 @@ impl Walker<'_> {
                 crate::effect::MOST_PASSES
             ));
         }
-        self.effect_list("effects", effects, false);
+        if at_least_once {
+            self.effect_list_open("effects", effects, false, None);
+            self.at("condition", |w| w.condition(condition));
+            self.scope.names.pop();
+        } else {
+            self.effect_list("effects", effects, false);
+        }
     }
 
     /// `RollDice`: a die of at least two faces and rows that each hold a range of totals; several dice only for a choice
@@ -2656,6 +2680,18 @@ impl Walker<'_> {
         top: bool,
         pass: Option<(&str, Kind)>,
     ) {
+        self.effect_list_open(field, list, top, pass);
+        self.scope.names.pop();
+    }
+
+    /// [`Self::effect_list_with`] with the scope of the names the list binds left open, for what reads them after it.
+    fn effect_list_open(
+        &mut self,
+        field: &str,
+        list: &[Effect],
+        top: bool,
+        pass: Option<(&str, Kind)>,
+    ) {
         self.scope.names.push(BTreeMap::new());
         if let Some((name, kind)) = pass {
             self.at("as", |w| w.bind(name, kind));
@@ -2679,7 +2715,6 @@ impl Walker<'_> {
             self.at(format!("{field}[{i}]"), |w| w.effect(effect, only));
         }
         (self.after, self.after_may) = saved;
-        self.scope.names.pop();
     }
 
     /// The rider of mana that sets something off when it is spent to cast a spell: the player's own mana, a kind of spell
@@ -3121,10 +3156,15 @@ impl Walker<'_> {
                     w.bind(name, Kind::Object);
                 }
             }
-            Effect::Bind { what, bind } => {
+            Effect::Bind { what, bind, adds } => {
                 w.at("what", |w| w.reference(what, Kind::Either));
                 let kind = w.kind_of(what);
-                w.at("as", |w| w.bind(bind, kind));
+                // What an adding bind gathered over the passes of a repeat is read after it.
+                if *adds {
+                    w.at("as", |w| w.bind_kept(bind, kind));
+                } else {
+                    w.at("as", |w| w.bind(bind, kind));
+                }
             }
             Effect::Let { bind, amount } => {
                 w.at("amount", |w| w.amount(amount));
@@ -3303,8 +3343,9 @@ impl Walker<'_> {
                 effects,
                 most,
                 times,
+                at_least_once,
             } => {
-                w.repeat_while(condition, effects, *most);
+                w.repeat_while(condition, effects, *most, *at_least_once);
                 if let Some(times) = times {
                     w.at("times", |w| w.amount(times));
                 }
@@ -3372,6 +3413,13 @@ impl Walker<'_> {
                 w.at("on", |w| w.reference(on, Kind::Either));
                 if *factor < 2 {
                     w.problem("a factor below two multiplies the counters by nothing");
+                }
+            }
+            Effect::PutCountersOf { on, of, each } => {
+                w.at("on", |w| w.reference(on, Kind::Either));
+                w.at("of", |w| w.reference(of, Kind::Either));
+                if let Some(each) = each {
+                    w.at("each", |w| w.amount(each));
                 }
             }
             Effect::MoveCounters {
@@ -3554,7 +3602,7 @@ impl Walker<'_> {
                     // A death or a counter sent elsewhere, and a class of moves judged as each happens (`Rule::Replaces`).
                     | (
                         ReplaceWhen::ZoneChange { .. } | ReplaceWhen::Countered { .. },
-                        ReplaceBy::MoveTo(_),
+                        ReplaceBy::MoveTo(_) | ReplaceBy::IntoLibrary { .. },
                     )
                     | (ReplaceWhen::Enters { .. }, ReplaceBy::Tapped) => {}
                     _ => w.uses("Effect", &format!("Shield.{}", tag_of(when))),
@@ -4467,9 +4515,41 @@ impl Walker<'_> {
         }
     }
 
+    /// A dredge replaces a draw of at least one card; a move elsewhere or into the library replaces a move.
+    fn g12a_moves(&mut self, when: &ReplaceWhen, by: &ReplaceBy) {
+        match by {
+            ReplaceBy::Dredge(cards) => {
+                if !matches!(when, ReplaceWhen::Draw { .. }) {
+                    self.problem("`Dredge` replaces a `Draw`");
+                }
+                if *cards == 0 {
+                    self.problem("dredging no cards is drawing");
+                }
+            }
+            ReplaceBy::IntoLibrary { place, .. }
+                if !matches!(when, ReplaceWhen::ZoneChange { .. })
+                    || matches!(place, crate::effect::Place::Below(_)) =>
+            {
+                self.problem("`IntoLibrary` replaces a `ZoneChange`, on top, bottom or shuffled");
+            }
+            ReplaceBy::MoveTo(_)
+                if !matches!(
+                    when,
+                    ReplaceWhen::ZoneChange { .. }
+                        | ReplaceWhen::Discarded { .. }
+                        | ReplaceWhen::Countered { .. }
+                ) =>
+            {
+                self.problem("`MoveTo` replaces a `ZoneChange` or a `Discarded`");
+            }
+            _ => {}
+        }
+    }
+
     fn replace_by(&mut self, when: &ReplaceWhen, by: &ReplaceBy) {
         self.uses("ReplaceBy", &tag_of(by));
         self.g11b_replace_by(when, by);
+        self.g12a_moves(when, by);
         let enters = matches!(when, ReplaceWhen::Enters { .. });
         let zone_move = matches!(
             when,
@@ -4500,24 +4580,6 @@ impl Walker<'_> {
             }
             ReplaceBy::RedirectUpTo { most, to } => self.r6f_redirect(when, *most, to),
             ReplaceBy::PreventAnd(effects) => self.w9c_prevent_and(when, effects),
-            ReplaceBy::Dredge(cards) => {
-                if !matches!(when, ReplaceWhen::Draw { .. }) {
-                    self.problem("`Dredge` replaces a `Draw`");
-                }
-                if *cards == 0 {
-                    self.problem("dredging no cards is drawing");
-                }
-            }
-            ReplaceBy::MoveTo(_)
-                if !matches!(
-                    when,
-                    ReplaceWhen::ZoneChange { .. }
-                        | ReplaceWhen::Discarded { .. }
-                        | ReplaceWhen::Countered { .. }
-                ) =>
-            {
-                self.problem("`MoveTo` replaces a `ZoneChange` or a `Discarded`");
-            }
             ReplaceBy::WithCounters { count, .. } => {
                 if !enters {
                     self.problem("`WithCounters` replaces an `Enters`");
@@ -4528,6 +4590,7 @@ impl Walker<'_> {
                 count, mods: given, ..
             } => self.enters_with_changes(enters, count, given),
             ReplaceBy::Tapped
+            | ReplaceBy::Untapped
             | ReplaceBy::Choose(_)
             | ReplaceBy::PayLifeOrTapped(_)
             | ReplaceBy::TappedForCounters { .. }
@@ -6312,6 +6375,14 @@ mod tests {
     #[case::the_same_name_in_two_branches(
         r#"{"Spell":{"effects":[{"If":{"condition":"YourTurn","then":[{"Sacrifice":{"filter":["This"],"as":"gone"}}],"otherwise":[{"Sacrifice":{"filter":["This"],"as":"gone"}}]}}]}}"#,
         &[]
+    )]
+    #[case::picks_gathered_over_a_repeat(
+        r#"{"Spell":{"effects":[{"RepeatEach":{"over":"EachPlayer","as":"each","effects":[{"Choose":{"who":{"Bound":"each"},"from":{"Each":[{"Type":"Creature"}]},"as":"pick"}},{"Bind":{"what":{"Bound":"pick"},"as":"picks","adds":true}}]}},{"Destroy":{"what":{"Bound":"picks"}}}]}}"#,
+        &[]
+    )]
+    #[case::a_plain_bind_stays_in_its_pass(
+        r#"{"Spell":{"effects":[{"RepeatEach":{"over":"EachPlayer","as":"each","effects":[{"Choose":{"who":{"Bound":"each"},"from":{"Each":[{"Type":"Creature"}]},"as":"pick"}},{"Bind":{"what":{"Bound":"pick"},"as":"picks"}}]}},{"Destroy":{"what":{"Bound":"picks"}}}]}}"#,
+        &["faces[0].abilities[0].Spell.effects[1].Destroy.what: `picks` is not bound by an earlier step"]
     )]
     fn r1g_taken_names_outlive_their_branch(#[case] ability: &str, #[case] expected: &[&str]) {
         assert_eq!(problems(ability), expected, "{ability}");

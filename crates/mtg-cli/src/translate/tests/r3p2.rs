@@ -169,10 +169,10 @@ fn a_target_of_a_flip_or_choice_is_read_by_its_parts(#[case] head: &str, #[case]
     );
 }
 
-/// The target of a choice may be the chooser in Forge; without `Defined$ You` that is not read.
+/// The target of a choice is the chooser in Forge; a target that is no player cannot choose, so it is not read.
 #[test]
 fn a_choice_by_its_target_is_a_gap() {
-    let script = "Name:T\nTypes:Sorcery\nA:SP$ GenericChoice | ValidTgts$ Opponent | Choices$ Win,Lose\nSVar:Win:DB$ Draw\nSVar:Lose:DB$ Draw\n";
+    let script = "Name:T\nTypes:Sorcery\nA:SP$ GenericChoice | ValidTgts$ Creature | Choices$ Win,Lose\nSVar:Win:DB$ Draw\nSVar:Lose:DB$ Draw\n";
     assert_eq!(gaps(script), ["key:GenericChoice.ValidTgts-chooser"]);
 }
 
