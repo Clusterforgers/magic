@@ -432,6 +432,14 @@ fn continuous(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
             "CARDNAME can't attack or block" => {
                 mods.extend([json!("CantAttack"), json!("CantBlock")]);
             }
+            // The static line keeps the permanent tapped for as long as it applies ("enchanted creature doesn't untap").
+            "This card doesn't untap during your next untap step"
+                if ctx
+                    .oracle
+                    .contains("doesn't untap during its controller's untap step") =>
+            {
+                mods.push(json!("DoesntUntap"));
+            }
             other => match combat_quirk(other) {
                 Some(found) => quirk = Some(found),
                 None => return unmapped("key:Static.Continuous.AddHiddenKeyword"),
@@ -656,6 +664,11 @@ fn added_types(ctx: &Ctx, text: &str, replacing: bool) -> Tr<Vec<Value>> {
     for word in text.split('&').map(str::trim) {
         if word == "AllBasicLandType" && !replacing {
             mods.extend(BASIC_LAND_TYPES.map(|name| json!({ "AddSubtype": name })));
+        } else if word == "AllNonBasicLandType" && !replacing {
+            let others = mtg_core::card::LAND_TYPES
+                .iter()
+                .filter(|name| !BASIC_LAND_TYPES.contains(name));
+            mods.extend(others.map(|name| json!({ "AddSubtype": name })));
         } else if word == "ChosenType" && !replacing && ctx.memory.entered.subtype {
             // The creature type the card's controller chose as it entered.
             mods.push(json!("AddChosenSubtype"));
@@ -827,6 +840,7 @@ fn activation_kind(p: &Params) -> Tr<Option<&'static str>> {
     }
     match spell {
         None | Some("Spell.Bargain" | "Spell") => Ok(None),
+        Some(_) if spell_kinds(p).is_some() => Ok(None),
         Some("Activated.Loyalty") => Ok(Some("Loyalty")),
         Some("Activated.Equip") => Ok(Some("Equip")),
         Some("Activated.Cycling") => Ok(Some("Cycling")),
@@ -835,28 +849,57 @@ fn activation_kind(p: &Params) -> Tr<Option<&'static str>> {
     }
 }
 
+/// The card types a `ValidSpell$ Spell.Instant,Spell.Sorcery` of "the first instant or sorcery spell you cast each turn"
+/// names, as a valid-string; `None` for any other spell word.
+fn spell_kinds(p: &Params) -> Option<String> {
+    const TYPES: [&str; 7] = [
+        "Instant",
+        "Sorcery",
+        "Creature",
+        "Artifact",
+        "Enchantment",
+        "Planeswalker",
+        "Land",
+    ];
+    if p.get("OnlyFirstSpell") != Some("True") || p.has("ValidCard") {
+        return None;
+    }
+    let words: Vec<&str> = p
+        .get("ValidSpell")?
+        .split(',')
+        .map(|word| word.strip_prefix("Spell.").unwrap_or("?"))
+        .collect();
+    words
+        .iter()
+        .all(|word| TYPES.contains(word))
+        .then(|| words.join(","))
+}
+
+/// The keys a `ReduceCost` or `RaiseCost` line may have.
+const COST_MODIFIER: [&str; 18] = [
+    "ValidCard",
+    "ValidTarget",
+    "ValidSpell",
+    "Color",
+    "Type",
+    "Activator",
+    "Amount",
+    "EffectZone",
+    "AffectedZone",
+    "MinMana",
+    "Relative",
+    "OnlyFirstSpell",
+    "Condition",
+    "Cost",
+    "Phases",
+    "PlayerTurn",
+    "CheckSVar",
+    "SVarCompare",
+];
+
 /// `ReduceCost` and `RaiseCost` of spells and of activated abilities.
 fn cost_modifier(ctx: &Ctx, p: &Params, change: &str) -> Tr<Value> {
-    keys(
-        p,
-        "CostModifier",
-        &[
-            "ValidCard",
-            "ValidTarget",
-            "ValidSpell",
-            "Color",
-            "Type",
-            "Activator",
-            "Amount",
-            "EffectZone",
-            "AffectedZone",
-            "MinMana",
-            "Relative",
-            "OnlyFirstSpell",
-            "Condition",
-            "Cost",
-        ],
-    )?;
+    keys(p, "CostModifier", &COST_MODIFIER)?;
     let mana_cost = match cost_key(ctx, p, change)? {
         CostKey::Own(ability) => return Ok(ability),
         CostKey::Mana(mana) => Some(mana),
@@ -889,7 +932,8 @@ fn cost_modifier(ctx: &Ctx, p: &Params, change: &str) -> Tr<Value> {
     if activating.is_some() && p.has("ValidTarget") {
         return unmapped("key:Static.CostModifier.ValidTarget-of-an-ability");
     }
-    let mut applies = match p.get("ValidCard").unwrap_or("Card") {
+    let kind = spell_kinds(p);
+    let mut applies = match p.get("ValidCard").or(kind.as_deref()).unwrap_or("Card") {
         "Card.Self" => {
             if p.has("Activator") && activating.is_none() {
                 return unmapped("static:CostModifier-self-with-Activator");
@@ -957,12 +1001,23 @@ fn cost_conditions(ctx: &Ctx, p: &Params, activating: bool) -> Tr<Vec<Value>> {
     if let Some(name) = p.get("Condition") {
         conditions.push(super::condition::named(name)?);
     }
+    match p.get("PlayerTurn") {
+        None => {}
+        Some("You") => conditions.push(json!("YourTurn")),
+        Some(other) => return unmapped(format!("key:Static.CostModifier.PlayerTurn={other}")),
+    }
+    if let Some(phases) = p.get("Phases") {
+        conditions.push(super::header::in_phases(phases)?);
+    }
+    conditions.extend(super::condition::check_svar(ctx, p)?);
     if p.get("OnlyFirstSpell") == Some("True") {
         // "The first spell of that kind you cast each turn": none of that kind was cast before.
-        if activating || p.get("ValidCard").is_none() || p.get("Activator") != Some("You") {
+        let kind = spell_kinds(p);
+        let valid = p.get("ValidCard").or(kind.as_deref());
+        if activating || valid.is_none() || p.get("Activator") != Some("You") {
             return unmapped("key:Static.CostModifier.OnlyFirstSpell-shape");
         }
-        let filter = selector_any(ctx, p.get("ValidCard").unwrap_or_default())?;
+        let filter = selector_any(ctx, valid.unwrap_or_default())?;
         conditions.push(json!({"Compare": {
             "left": {"Tally": {"event": "SpellCast", "who": "You", "filter": filter}},
             "op": "Eq", "right": 0}}));
@@ -1058,6 +1113,15 @@ fn modifier(
     let symbol = match p.get("Color") {
         None => "{1}".to_owned(),
         Some(color @ ("W" | "U" | "B" | "R" | "G")) => format!("{{{color}}}"),
+        // A printed mana cost ("{2}{U}{U} less"): the words are the whole amount, taken once.
+        Some(words) if amount == "1" && words.contains(' ') => {
+            let Value::String(mana) = cost(ctx, words)? else {
+                return unmapped("key:Static.CostModifier.Color-mana");
+            };
+            return Ok(
+                json!({"CostModifier": {"applies_to": applies, "change": change, "mana": mana}}),
+            );
+        }
         Some(other) => return unmapped(format!("key:Static.CostModifier.Color={other}")),
     };
     // A number or coloured symbols are the mana; a count (an `SVar`) is how many times {1} applies.

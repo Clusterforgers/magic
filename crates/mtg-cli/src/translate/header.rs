@@ -100,7 +100,7 @@ fn phase_index(word: &str) -> Option<usize> {
 
 /// The condition that the turn is in one of the phases `ActivationPhases$` lists (`Upkeep`, `BeginCombat->EndCombat`, or
 /// several joined with commas); any turn, as the word says nothing of whose it is.
-fn in_phases(text: &str) -> Tr<Value> {
+pub(super) fn in_phases(text: &str) -> Tr<Value> {
     let mut steps: Vec<usize> = Vec::new();
     let mut whole_combat = false;
     for part in text.split(',') {
