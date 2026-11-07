@@ -1262,6 +1262,15 @@ pub fn texts(ability: &Ability) -> Vec<String> {
             .collect(),
         Ability::Replacement {
             when: ReplaceWhen::Enters { what },
+            by: ReplaceBy::Untapped,
+            condition: None,
+            from: ZoneKind::Battlefield,
+        } if *what != Selector::this() => phrase_text(what, Form::All)
+            .map(|group| format!("{group} enter untapped"))
+            .into_iter()
+            .collect(),
+        Ability::Replacement {
+            when: ReplaceWhen::Enters { what },
             by:
                 ReplaceBy::WithCounters {
                     counter,

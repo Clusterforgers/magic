@@ -651,6 +651,7 @@ fn applies_to(by: &ReplaceBy, unit: &Unit) -> bool {
                 && !matches!(place, mtg_cards::effect::Place::Below(_))
         }
         ReplaceBy::Tapped
+        | ReplaceBy::Untapped
         | ReplaceBy::WithCounters { .. }
         | ReplaceBy::WithCountersAnd { .. }
         | ReplaceBy::Tribute(_)
@@ -1670,6 +1671,7 @@ impl Pass<'_> {
                         c.action,
                         Action::Replace(
                             ReplaceBy::Tapped
+                                | ReplaceBy::Untapped
                                 | ReplaceBy::Choose(_)
                                 | ReplaceBy::WithCounters { .. }
                                 | ReplaceBy::WithCountersAnd { .. }
@@ -1683,10 +1685,14 @@ impl Pass<'_> {
                         )
                     )
                 });
+                // Entering untapped comes last: its controller orders it after an effect that would tap the permanent,
+                // the order they choose (CR 616.1).
+                let last =
+                    |c: &&&Candidate| !matches!(c.action, Action::Replace(ReplaceBy::Untapped));
                 if let [only, ..] = pool.as_slice()
                     && (pool.len() == 1 || alike || apart)
                 {
-                    (*only).clone()
+                    (*pool.iter().find(last).unwrap_or(only)).clone()
                 } else {
                     let unit = self.unit(&self.slots[at].item);
                     let player = self.affected(&unit);
@@ -2540,6 +2546,12 @@ impl Pass<'_> {
         };
         match by {
             ReplaceBy::Tapped => tapped(self, at),
+            ReplaceBy::Untapped => {
+                let entered = self.entered_at(at, object, controller);
+                if let Item::One(Event::Entered { tapped, .. }) = &mut self.slots[entered].item {
+                    *tapped = false;
+                }
+            }
             ReplaceBy::WithCounters {
                 counter,
                 count,

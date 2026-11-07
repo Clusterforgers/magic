@@ -94,19 +94,22 @@ fn exiled_and(ctx: &mut Ctx, p: &Params, part: &Params, what: &[Value]) -> Tr<Va
     Ok(json!({"Replacement": {"when": {"ZoneChange": pattern}, "by": {"Instead": effects}}}))
 }
 
-/// "Creatures your opponents control enter tapped": the entering permanent is tapped.
+/// "Creatures your opponents control enter tapped", "Lands you control enter untapped": the entering permanent is tapped
+/// or untapped.
 fn enter_tapped(p: &Params, part: &Params, what: &[Value]) -> Tr<Value> {
     if p.has("Origin") {
         return unmapped("key:Replacement.Moved.Origin");
     }
     check_keys(part, "Replacement", &["DB", "Defined", "ETB"], |_, _| false)?;
-    if part.get("DB") != Some("Tap")
-        || part.get("Defined") != Some("ReplacedCard")
-        || part.get("ETB") != Some("True")
-    {
+    let by = match part.get("DB") {
+        Some("Tap") => "Tapped",
+        Some("Untap") => "Untapped",
+        _ => return unmapped("replacement:Moved-not-an-entering-effect"),
+    };
+    if part.get("Defined") != Some("ReplacedCard") || part.get("ETB") != Some("True") {
         return unmapped("replacement:Moved-not-an-entering-effect");
     }
-    Ok(json!({"Replacement": {"when": {"Enters": {"what": what}}, "by": "Tapped"}}))
+    Ok(json!({"Replacement": {"when": {"Enters": {"what": what}}, "by": by}}))
 }
 
 /// "If a card would be put into a graveyard, exile it instead": from the battlefield when `Origin$` says so, from anywhere

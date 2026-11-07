@@ -863,6 +863,9 @@ pub enum ReplaceBy {
     },
     /// The permanent enters tapped (CR 614.1c).
     Tapped,
+    /// The permanent enters untapped (CR 614.1c), also when another effect would have it enter tapped and is applied
+    /// first ("Lands you control enter untapped").
+    Untapped,
     /// The permanent enters with this many counters of the kind on it (CR 614.1c); they are put by an event of
     /// their own that other replacement effects can change.
     WithCounters {

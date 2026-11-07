@@ -4538,6 +4538,7 @@ impl Walker<'_> {
                 count, mods: given, ..
             } => self.enters_with_changes(enters, count, given),
             ReplaceBy::Tapped
+            | ReplaceBy::Untapped
             | ReplaceBy::Choose(_)
             | ReplaceBy::PayLifeOrTapped(_)
             | ReplaceBy::TappedForCounters { .. }

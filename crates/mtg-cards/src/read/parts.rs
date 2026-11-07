@@ -488,6 +488,7 @@ pub(super) fn replace_by(ctx: &Ctx, by: &ReplaceBy, depth: u8, out: &mut Vec<Ste
             ),
         )),
         ReplaceBy::Tapped => out.push(Step::new(depth, "it enters tapped")),
+        ReplaceBy::Untapped => out.push(Step::new(depth, "it enters untapped")),
         ReplaceBy::Multiply(factor) => {
             out.push(Step::new(depth, format!("{factor} times as many")));
         }

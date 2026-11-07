@@ -60,3 +60,28 @@ fn g12a_a_dying_card_goes_on_top_or_bottom(
         reads
     );
 }
+
+fn enters(by: &str, what: &str) -> String {
+    format!(r#"{{"Replacement":{{"by":"{by}","when":{{"Enters":{{"what":{what}}}}}}}}}"#)
+}
+
+const LANDS: &str = r#"[{"Type":"Land"},{"ControlledBy":"You"}]"#;
+
+#[rstest]
+#[case::untapped(enters("Untapped", LANDS), true)]
+#[case::tapped(enters("Tapped", LANDS), false)]
+#[case::opponents_lands(
+    enters("Untapped", r#"[{"Type":"Land"},{"ControlledBy":"Opponents"}]"#),
+    false
+)]
+#[case::creatures(
+    enters("Untapped", r#"[{"Type":"Creature"},{"ControlledBy":"You"}]"#),
+    false
+)]
+fn g12a_lands_you_control_enter_untapped(#[case] json: String, #[case] reads: bool) {
+    assert_eq!(
+        written(&json, "Lands you control enter untapped."),
+        reads,
+        "{json}"
+    );
+}

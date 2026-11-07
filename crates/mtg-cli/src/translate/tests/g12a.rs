@@ -92,3 +92,14 @@ fn g12a_a_kicked_permanent_enters_with_counters_and_a_change(
         assert!(!gaps.is_empty(), "{json}");
     }
 }
+
+#[rstest]
+#[case::untapped("Untap", r#"{"Replacement":{"by":"Untapped","when":{"Enters":{"what":[{"Type":"Land"},{"ControlledBy":"You"}]}}}}"#)]
+#[case::tapped("Tap", r#"{"Replacement":{"by":"Tapped","when":{"Enters":{"what":[{"Type":"Land"},{"ControlledBy":"You"}]}}}}"#)]
+fn g12a_lands_you_control_enter_untapped_or_tapped(#[case] verb: &str, #[case] expected: &str) {
+    let (json, gaps) = card(&format!(
+        "R:Event$ Moved | ValidCard$ Land.YouCtrl | Destination$ Battlefield | ReplaceWith$ E | ReplacementResult$ Updated | ActiveZones$ Battlefield\nSVar:E:DB$ {verb} | ETB$ True | Defined$ ReplacedCard"
+    ));
+    assert!(gaps.is_empty(), "{gaps:?}");
+    assert!(json.contains(expected), "{json}");
+}
