@@ -182,3 +182,24 @@ fn a_minus_counter_on_your_creature_is_blight(#[case] cost: &str, #[case] read: 
 fn a_draw_cost_of_nought_is_a_gap() {
     assert_eq!(gaps(&draw_cost("0")), ["cost:counted-draw-or-discard"]);
 }
+
+/// "Untap up to N lands": the controller picks, or the player `Defined$` names ("that player untaps a land").
+#[rstest]
+#[case::yours("Defined$ You", None)]
+#[case::unsaid("", None)]
+#[case::opponent("Defined$ Opponent", Some(json!("Opponents")))]
+fn the_player_defined_picks_what_untaps(#[case] defined: &str, #[case] who: Option<Value>) {
+    let found = effects(&spell(
+        &format!("Untap | UntapUpTo$ True | UntapType$ Land | Amount$ 2 | {defined}"),
+        "",
+    ));
+    let mut choose = json!({"Choose": {"as": "untap", "count": {"max": 2, "min": 0},
+        "from": {"Each": [{"Type": "Land"}]}}});
+    if let Some(who) = who {
+        choose["Choose"]["who"] = who;
+    }
+    assert_eq!(
+        found,
+        json!([choose, {"Untap": {"what": {"Bound": "untap"}}}])
+    );
+}
