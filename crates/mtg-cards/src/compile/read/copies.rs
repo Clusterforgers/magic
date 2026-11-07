@@ -888,8 +888,22 @@ fn listed_text(parts: &[String], subject: Subject) -> Option<String> {
     Some(format!("{text}, and {last}"))
 }
 
-/// The parts of the exceptions, one for each change; a type alone is "it's an artifact" with `terse`.
+/// The parts of the exceptions, one for each change; a type alone is "it's an artifact" with `terse`. A size, colors and
+/// creature types at the head are one part: "it's a 4/4 black Zombie".
 fn exception_parts(mods: &[Modification], subject: Subject, terse: bool) -> Option<Vec<String>> {
+    let Some((run, text)) = super::g12b_copy_kinds::g12b_kinds_text(mods) else {
+        return plain_parts(mods, subject, terse);
+    };
+    (subject != Subject::They).then_some(())?;
+    let mut parts = vec![format!("{} {text}", subject.is())];
+    if run < mods.len() {
+        parts.extend(plain_parts(&mods[run..], subject, terse)?);
+    }
+    Some(parts)
+}
+
+/// The parts of the exceptions, one for each change, with no head of creature types.
+fn plain_parts(mods: &[Modification], subject: Subject, terse: bool) -> Option<Vec<String>> {
     let is_kind = |found: &Modification| {
         matches!(
             found,
@@ -899,14 +913,6 @@ fn exception_parts(mods: &[Modification], subject: Subject, terse: bool) -> Opti
     let mut parts: Vec<String> = Vec::new();
     let mut rest = mods;
     while let Some(first) = rest.first() {
-        if let Some((run, text)) = super::g12b_copy_kinds::g12b_kinds_text(rest) {
-            if subject == Subject::They {
-                return None;
-            }
-            parts.push(format!("{} {text}", subject.is()));
-            rest = &rest[run..];
-            continue;
-        }
         // Keywords in a row are one phrase, and so are types and subtypes with the size before them.
         let run = match first {
             // "it has flying and this ability" is one phrase with the keywords before it.

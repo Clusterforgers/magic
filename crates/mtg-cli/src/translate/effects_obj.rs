@@ -1267,31 +1267,10 @@ fn put_counter(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
         }
         return Ok(effects);
     }
-    // `Choices$` is a pick made as the effect resolves, from the objects that match, with no targets.
-    // `ChoiceAmount$` is how many are picked, `MinChoiceAmount$` the fewest (else as many): "each of up to two Soldiers
-    // you control", "choose four nonenchantment permanents you don't control". `Defined$ ChosenCard` names the pick.
-    if (p.has("ChoiceAmount") || p.has("MinChoiceAmount"))
-        && (!p.has("Choices") || p.has("DividedAsYouChoose"))
-    {
-        return unmapped("key:PutCounter.ChoiceAmount");
-    }
     let on = match p.get("Choices") {
-        Some(_)
-            if p.has("ValidTgts") || p.get("Defined").is_some_and(|word| word != "ChosenCard") =>
-        {
-            return unmapped("key:PutCounter.Choices-with-a-target");
-        }
-        Some(valid) => {
-            let from = json!({"Each": selector_in(ctx, valid, None)?});
-            let bind = ctx.fresh("card");
-            let max = amount(ctx, p.get("ChoiceAmount").unwrap_or("1"))?;
-            let min = match p.get("MinChoiceAmount") {
-                Some(word) => amount(ctx, word)?,
-                None => max.clone(),
-            };
-            effects.push(json!({"Choose": {
-                "who": "You", "from": from, "count": {"min": min, "max": max}, "as": bind}}));
-            json!({ "Bound": bind })
+        Some(valid) => g12b_pick(ctx, p, valid, &mut effects)?,
+        None if p.has("ChoiceAmount") || p.has("MinChoiceAmount") => {
+            return unmapped("key:PutCounter.ChoiceAmount");
         }
         None => subject(ctx, p, "Self", None)?,
     };
@@ -1310,6 +1289,29 @@ fn put_counter(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
         effects.push(either(puts)?);
     }
     Ok(effects)
+}
+
+/// `Choices$` is a pick made as the effect resolves, from the objects that match, with no targets; the pick is pushed
+/// and named. `ChoiceAmount$` is how many are picked, `MinChoiceAmount$` the fewest (else as many): "each of up to two
+/// Soldiers you control", "choose four nonenchantment permanents you don't control". `Defined$ ChosenCard` names the
+/// pick; a pick of a divided count stays a gap.
+fn g12b_pick(ctx: &mut Ctx, p: &Params, valid: &str, effects: &mut Vec<Value>) -> Tr<Value> {
+    if p.has("ValidTgts") || p.get("Defined").is_some_and(|word| word != "ChosenCard") {
+        return unmapped("key:PutCounter.Choices-with-a-target");
+    }
+    if (p.has("ChoiceAmount") || p.has("MinChoiceAmount")) && p.has("DividedAsYouChoose") {
+        return unmapped("key:PutCounter.ChoiceAmount");
+    }
+    let from = json!({"Each": selector_in(ctx, valid, None)?});
+    let bind = ctx.fresh("card");
+    let max = amount(ctx, p.get("ChoiceAmount").unwrap_or("1"))?;
+    let min = match p.get("MinChoiceAmount") {
+        Some(word) => amount(ctx, word)?,
+        None => max.clone(),
+    };
+    effects.push(json!({"Choose": {
+        "who": "You", "from": from, "count": {"min": min, "max": max}, "as": bind}}));
+    Ok(json!({ "Bound": bind }))
 }
 
 /// `CounterType$ EachFromSource | EachFromSource$ TriggeredCardLKICopy`: "put its counters on target creature you
