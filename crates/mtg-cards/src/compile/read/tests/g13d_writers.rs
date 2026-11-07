@@ -16,12 +16,13 @@ fn attacks(what: &str, at_least: u32) -> String {
 
 const AT_YOU: &str =
     "Whenever an opponent attacks you and/or one or more planeswalkers you control, draw a card.";
+const AT_YOU_IF: &str = "Whenever an opponent attacks, if they attacked you and/or a planeswalker you control, draw a card.";
 const AT_THEM: &str = "Whenever one or more of your opponents are attacked, draw a card.";
 
 #[rstest]
 #[case::at_you_and_yours(
     attacks(r#"[{"Type":"Creature"},{"AttackingPlayerOrPlaneswalker":"You"}]"#, 1),
-    AT_YOU,
+    AT_YOU_IF,
     true
 )]
 #[case::by_an_opponent(
@@ -36,7 +37,7 @@ const AT_THEM: &str = "Whenever one or more of your opponents are attacked, draw
 )]
 #[case::two_attackers(
     attacks(r#"[{"Type":"Creature"},{"AttackingPlayerOrPlaneswalker":"You"}]"#, 2),
-    AT_YOU,
+    AT_YOU_IF,
     false
 )]
 #[case::at_opponents_and_theirs(
