@@ -198,7 +198,8 @@ fn exceptions(ctx: &Ctx, p: &Params) -> Tr<Vec<Value>> {
 /// step. Other words stay gaps.
 pub fn at_eot(word: &str, bound: &Value) -> Tr<Value> {
     let (step, whose, verb) = match word {
-        "Sacrifice" | "SacrificeCtrl" => ("End", "EachPlayer", "Sacrifice"),
+        "Sacrifice" => ("End", "EachPlayer", "Sacrifice"),
+        "SacrificeCtrl" => ("End", "EachPlayer", "SacrificeCtrl"),
         "Exile" => ("End", "EachPlayer", "Exile"),
         "Destroy" => ("End", "EachPlayer", "Destroy"),
         "Hand" => ("End", "EachPlayer", "Hand"),
@@ -210,7 +211,11 @@ pub fn at_eot(word: &str, bound: &Value) -> Tr<Value> {
         other => return unmapped(format!("key:AtEOT={other}")),
     };
     let effect = match verb {
+        // "Sacrifice it": the delayed trigger's controller sacrifices it, and only while they control it (CR 701.21a,
+        // 603.7d), as `SacrificeAll` of the source does; "its controller sacrifices it" is whoever controls it then.
         "Sacrifice" => json!({"Sacrifice": {
+            "filter": [{"Is": bound}], "count": {"Count": [{"Is": bound}]}}}),
+        "SacrificeCtrl" => json!({"Sacrifice": {
             "who": {"ControllerOf": bound}, "filter": [{"Is": bound}],
             "count": {"Count": [{"Is": bound}]}}}),
         "Exile" => json!({"Exile": {"what": bound}}),

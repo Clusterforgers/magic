@@ -9,7 +9,8 @@ fn writes(json: &str, clause: &str) -> bool {
 }
 
 /// The condition the translator writes for "if ~ is blue".
-const BLUE: &str = r#"{"Compare":{"left":{"Count":["This",{"Color":"Blue"}]},"op":"Ge","right":1}}"#;
+const BLUE: &str =
+    r#"{"Compare":{"left":{"Count":["This",{"Color":"Blue"}]},"op":"Ge","right":1}}"#;
 /// The condition the reader reads for it.
 const IS_BLUE: &str = r#"{"Matches":{"subject":"This","selector":[{"Color":"Blue"}]}}"#;
 

@@ -343,6 +343,14 @@ pub fn selector(ctx: &Ctx, spec: &str) -> Tr<Vec<Value>> {
         }
     }
     gaps.finish()?;
+    // `Targeted.sameName` names no type: the Oracle text's "each other creature with the same name" does.
+    let shares_name = preds.iter().any(|pred| pred.get("SharesName").is_some());
+    if shares_name
+        && !preds.iter().any(|pred| pred.get("Type").is_some())
+        && super::any_player::same_name_creatures(ctx.oracle)
+    {
+        preds.push(json!({"Type": "Creature"}));
+    }
     // "Pirates" and "Elves" name the creatures of the type, "Pirate creatures" says it: the type word is left out beside a
     // creature type unless Forge's rendering of the text has it.
     let says_creature = |name: &str| ctx.oracle.contains(&format!("{name} creature"));
@@ -738,6 +746,15 @@ pub fn objects(reference: Value) -> Tr<Value> {
 /// The target specification `ValidTgts$` and its bounds stand for, as the DSL writes it.
 pub fn target_spec(ctx: &Ctx, params: &Params, zone: Option<&str>) -> Tr<Value> {
     let valid = params.get("ValidTgts").unwrap_or_default();
+    let other;
+    let valid = if matches!(zone, None | Some("Battlefield"))
+        && super::any_player::omits_other(ctx.types, ctx.oracle, valid)
+    {
+        other = super::any_player::with_other(valid);
+        other.as_str()
+    } else {
+        valid
+    };
     // A target being chosen reads no other target of its line (`filter::Scope::Targeting`).
     let before = ctx.scope.replace(super::filter::Scope::Targeting);
     let what = target_what(ctx, valid, zone);

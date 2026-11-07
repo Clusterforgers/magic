@@ -1329,7 +1329,8 @@ impl InvariantChecker {
             Target::Player(player) => self.expected_player_counters.entry(player).or_default(),
         };
         let slot = held.entry(changed.counter.clone()).or_default();
-        *slot += i64::from(changed.delta);
+        // The engine holds at most `u32::MAX` of a kind: counters put past it stop there (`counters::change`).
+        *slot = (*slot + i64::from(changed.delta)).min(i64::from(u32::MAX));
         if *slot < 0 {
             return Err(Violation::Counters(format!(
                 "{:?} would hold {slot} {:?} counters",
