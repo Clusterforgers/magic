@@ -1385,15 +1385,22 @@ fn entering_texts(by: &ReplaceBy, condition: Option<&Condition>) -> Vec<String> 
             },
             None,
         ) => {
-            let tapped = if *tapped { " tapped" } else { "" };
+            // "enters tapped with two charge counters" and "enters tapped and with three coin counters".
+            let ways: &[&str] = if *tapped {
+                &[" tapped", " tapped and"]
+            } else {
+                &[""]
+            };
             // A counted number is X, named at the end of the sentence.
             let (shown, tail) = match defining::value_text(count) {
                 Some(said) => (Amount::X, format!(", where X is {said}")),
                 None => (count.clone(), String::new()),
             };
-            counters::entering_text(counter, &shown)
-                .map(|counters| format!("~ enters{tapped} with {counters} on it{tail}"))
-                .into_iter()
+            let Some(counters) = counters::entering_text(counter, &shown) else {
+                return Vec::new();
+            };
+            ways.iter()
+                .map(|way| format!("~ enters{way} with {counters} on it{tail}"))
                 .collect()
         }
         (
