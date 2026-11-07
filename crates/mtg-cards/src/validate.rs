@@ -2568,7 +2568,7 @@ impl Walker<'_> {
             != (spec.power.is_some() && spec.toughness.is_some())
         {
             self.problem(
-                "a creature or Vehicle token needs power and toughness, any other token none",
+                "a creature token needs power and toughness (a Vehicle token too), any other token none",
             );
         }
         let saved = std::mem::take(&mut self.scope);
