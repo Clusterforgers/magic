@@ -13,7 +13,7 @@ pub(super) fn normal(text: &str) -> String {
     if let Some(any) = any_number(&text) {
         text = any;
     }
-    text
+    super::w15_wordings::normal(&text)
 }
 
 /// "Until end of turn, whenever you cast a spell, copy it." as "Whenever you cast a spell this turn, copy it.": the
