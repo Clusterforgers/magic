@@ -78,8 +78,8 @@ fn the_tax_is_paid_from_other_mana(#[values(2, 3, 4)] seats: usize) -> Result<()
             driver
                 .state()
                 .object(**id)
-                .and_then(|o| o.permanent())
-                .is_some_and(|p| p.tapped())
+                .and_then(mtg_engine::object::GameObject::permanent)
+                .is_some_and(mtg_engine::object::PermanentState::tapped)
         })
         .count();
     assert_eq!(tapped, 4);
