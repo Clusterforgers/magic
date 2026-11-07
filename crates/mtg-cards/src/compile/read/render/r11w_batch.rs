@@ -8,6 +8,7 @@ use super::{
     Ability, Amount, Effect, Form, Pred, Ref, Selector, Targetable, Writer, ZoneKind, phrase_text,
     points_text,
 };
+use crate::trigger::ReplaceWhen;
 use mtg_core::card::CardType;
 
 /// The effects with each batch replaced by its steps, or `None` when there is no batch.
@@ -19,11 +20,37 @@ pub(super) fn flat(effects: &[Effect]) -> Option<Vec<Effect>> {
             effects
                 .iter()
                 .flat_map(|effect| match effect {
-                    Effect::Together { effects } => effects.clone(),
+                    Effect::Together { effects } => shields_last(effects),
                     other => vec![other.clone()],
                 })
                 .collect()
         })
+}
+
+/// Whether the step is a shield of a move (a death made an exile), which nothing in a batch of damage can meet.
+fn moved_shield(step: &Effect) -> bool {
+    matches!(
+        step,
+        Effect::Shield {
+            when: ReplaceWhen::ZoneChange { .. },
+            ..
+        }
+    )
+}
+
+/// The steps of a batch of damage, with a shield among them read after the damage: the batch deals all of it before
+/// anything can die, so the shield holds for each death either way ("... and 2 damage to that creature's controller.
+/// If that creature would die this turn, exile it instead.").
+fn shields_last(steps: &[Effect]) -> Vec<Effect> {
+    let damage_and_shields = steps
+        .iter()
+        .all(|step| matches!(step, Effect::DealDamage { .. }) || moved_shield(step));
+    if !damage_and_shields {
+        return steps.to_vec();
+    }
+    let (shields, damage): (Vec<Effect>, Vec<Effect>) =
+        steps.iter().cloned().partition(moved_shield);
+    damage.into_iter().chain(shields).collect()
 }
 
 /// The ability with each batch among its effects replaced by its steps, so the writers of whole abilities see them.
@@ -294,6 +321,20 @@ pub(super) fn add_players(texts: &mut Vec<String>) {
         .filter(|text| text.contains(" damage to each opponent equal to ") && text.contains(THAT))
         .map(|text| text.replace(THAT, " that opponent controls"))
         .collect();
+    // "creatures that player controls with flying": the keyword after the controller.
+    let flying: Vec<String> = texts
+        .iter()
+        .filter(|text| text.contains(" damage to each player equal to "))
+        .filter_map(|text| {
+            text.contains(" with flying that player controls").then(|| {
+                text.replace(
+                    " with flying that player controls",
+                    " that player controls with flying",
+                )
+            })
+        })
+        .collect();
     texts.extend(they);
     texts.extend(opponent);
+    texts.extend(flying);
 }

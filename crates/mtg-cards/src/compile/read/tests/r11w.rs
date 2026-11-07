@@ -97,6 +97,37 @@ fn damage_in_one_batch_reads_back(#[case] json: String, #[case] clause: &str, #[
     );
 }
 
+const ACCURSED: &str = r#"{"Spell":{"effects":[{"Together":{"effects":[{"DealDamage":{"amount":5,"to":{"Target":0}}},{"Shield":{"by":{"MoveTo":"Exile"},"duration":"UntilEndOfTurn","when":{"ZoneChange":{"from":"Battlefield","to":"Graveyard","what":[{"Is":{"Target":0}},{"Type":"Creature"}]}}}},{"DealDamage":{"amount":2,"to":{"ControllerOf":{"Target":0}}}}]}}],"targets":[{"what":{"Object":[{"Type":"Creature"}]}}]}}"#;
+const ACCURSED_TEXT: &str = "~ deals 5 damage to target creature and 2 damage to that creature's controller. If that creature would die this turn, exile it instead.";
+
+#[rstest]
+#[case::accursed(ACCURSED.to_owned(), ACCURSED_TEXT, true)]
+#[case::accursed_for_good(ACCURSED.replace(r#""UntilEndOfTurn""#, r#""Forever""#), ACCURSED_TEXT, false)]
+#[case::accursed_to_hand(ACCURSED.replace(r#""MoveTo":"Exile""#, r#""MoveTo":"Hand""#), ACCURSED_TEXT, false)]
+#[case::accursed_other_amount(ACCURSED.replace(r#""amount":2"#, r#""amount":3"#), ACCURSED_TEXT, false)]
+#[case::wing_storm(
+    each_player("EachPlayer", r#"{"Times":{"by":2,"of":{"Count":[{"Type":"Creature"},{"HasKeyword":"Flying"},{"ControlledBy":{"Bound":"each"}}]}}}"#),
+    "~ deals damage to each player equal to twice the number of creatures that player controls with flying.",
+    true
+)]
+#[case::wing_storm_reach(
+    each_player("EachPlayer", r#"{"Times":{"by":2,"of":{"Count":[{"Type":"Creature"},{"HasKeyword":"Reach"},{"ControlledBy":{"Bound":"each"}}]}}}"#),
+    "~ deals damage to each player equal to twice the number of creatures that player controls with flying.",
+    false
+)]
+fn a_death_shield_in_a_batch_reads_after_the_damage(
+    #[case] json: String,
+    #[case] clause: &str,
+    #[case] same: bool,
+) {
+    assert_eq!(
+        written(&json, clause),
+        same,
+        "{json}: {:?}",
+        written_variants(&ability(&json))
+    );
+}
+
 /// A spell that deals each player of `over` the amount.
 fn each_player(over: &str, amount: &str) -> String {
     format!(

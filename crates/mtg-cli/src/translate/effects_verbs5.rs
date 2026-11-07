@@ -88,8 +88,10 @@ fn sacrifice_all(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
 /// `SacrificeAll` of the objects `word` names.
 fn sacrifice_named(ctx: &mut Ctx, p: &Params, word: &str) -> Tr<Value> {
     let object = defined(ctx, word)?;
-    // "Sacrifice ~": the ability's controller sacrifices the card, and only while they control it (CR 701.21a).
-    if object == json!("This") && p.get("Controller").is_none() {
+    // "Sacrifice ~" in a trigger: the trigger's controller sacrifices the card, and only while they control it (CR
+    // 701.21a). An activated ability may be activated by another player, whose sacrifice it is not.
+    let triggered = ctx.effect_source || ctx.trigger.is_some();
+    if object == json!("This") && p.get("Controller").is_none() && triggered {
         return Ok(json!({"Sacrifice": {"filter": ["This"]}}));
     }
     let who = match p.get("Controller") {

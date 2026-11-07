@@ -1,6 +1,6 @@
 //! Goal: "sacrifice ~" read from a SacrificeAll of the card itself (Self, or EffectSource in an effect's delayed trigger)
-//! is sacrificed by the ability's controller (CR 701.21a), while a SacrificeAll of other named objects stays with their
-//! controllers.
+//! in a trigger is sacrificed by the trigger's controller (CR 701.21a), while one in an activated ability and a
+//! SacrificeAll of other named objects stay with their controllers.
 #![allow(clippy::unwrap_used)]
 
 use rstest::rstest;
@@ -18,6 +18,10 @@ fn upkeep(defined: &str) -> String {
 #[rstest]
 #[case::delayed_effect_source(GUARD.to_owned(), r#"{"Sacrifice":{"filter":["This"]}}"#)]
 #[case::self_in_a_trigger(upkeep("Self"), r#"{"Sacrifice":{"filter":["This"]}}"#)]
+#[case::activated_by_an_opponent(
+    "Name:Subject\nTypes:Enchantment\nA:AB$ SacrificeAll | Cost$ Discard<2/Card> | Activator$ Player.Opponent | Defined$ Self | SubAbility$ D | SpellDescription$ CARDNAME's controller sacrifices it, then draws two cards. Only your opponents may activate this ability.\nSVar:D:DB$ Draw | NumCards$ 2 | Defined$ You\nOracle:Discard two cards: Subject's controller sacrifices it, then draws two cards. Only your opponents may activate this ability.\n".to_owned(),
+    r#"{"Sacrifice":{"filter":[{"Is":"This"}],"who":{"ControllerOf":"This"}}}"#
+)]
 #[case::enchanted_stays_with_its_controller(
     upkeep("Enchanted"),
     r#"{"Sacrifice":{"filter":[{"Is":"Attached"}],"who":{"ControllerOf":"Attached"}}}"#
