@@ -1067,15 +1067,7 @@ fn r5a_reveals_taken(oracle: &str) -> bool {
 /// reveal a creature card from among them and put it into your hand; put the rest on the bottom in any order").
 pub fn dig(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
     only(p, "Dig", &DIG_KEYS)?;
-    // "The cards revealed this way": every card dug, as each is after its move.
-    let revealing = p.get("RememberRevealed") == Some("True");
-    if revealing
-        && (p.get("Reveal") != Some("True")
-            || p.get("RememberChanged") == Some("True")
-            || face_down(p)? != Hide::No)
-    {
-        return unmapped("key:Dig.RememberRevealed-shape");
-    }
+    let revealing = revealing(p)?;
     if p.get("NoReveal") == Some("True") && p.get("Reveal") == Some("True") {
         return unmapped("key:Dig.NoReveal-with-Reveal");
     }
@@ -1174,28 +1166,47 @@ pub fn dig(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
         };
         remember::bind_moved(ctx, &mut put, verb, stem);
     }
-    let mut names = Vec::new();
-    if revealing {
-        names.push(bind_revealed(ctx, &mut put));
-    }
-    effects.push(put);
     // Taking all of the cards that match "Card" leaves no rest; a move of the old ids would only chase cards already gone.
-    if !(matches!(take, Take::All) && matches!(filter, None | Some("Card"))) {
-        let mut rest = moves(&rest_ref, rest_to);
-        if revealing {
-            names.push(bind_revealed(ctx, &mut rest));
-        }
-        effects.push(rest);
-    }
-    if revealing {
-        ctx.remembered = Some(match names.as_slice() {
-            [one] => json!({ "Bound": one }),
-            _ => {
-                json!({"Each": [{"AnyOf": names.iter().map(|n| json!({"Is": {"Bound": n}})).collect::<Vec<_>>()}]})
-            }
-        });
-    }
+    let all_taken = matches!(take, Take::All) && matches!(filter, None | Some("Card"));
+    let rest = (!all_taken).then(|| moves(&rest_ref, rest_to));
+    effects.extend(remember_revealed(ctx, revealing, put, rest));
     Ok(effects)
+}
+
+/// `RememberRevealed$` of a `Dig`: "the cards revealed this way", every card dug, as each is after its move. Only a dig that
+/// reveals face up and remembers nothing else is read.
+fn revealing(p: &Params) -> Tr<bool> {
+    let revealing = p.get("RememberRevealed") == Some("True");
+    if revealing
+        && (p.get("Reveal") != Some("True")
+            || p.get("RememberChanged") == Some("True")
+            || face_down(p)? != Hide::No)
+    {
+        return unmapped("key:Dig.RememberRevealed-shape");
+    }
+    Ok(revealing)
+}
+
+/// The moves of a `Dig`; when it remembers what it revealed, each names what it moved and `Remembered` stands for all.
+fn remember_revealed(
+    ctx: &mut Ctx,
+    revealing: bool,
+    put: Value,
+    rest: Option<Value>,
+) -> Vec<Value> {
+    let mut steps: Vec<Value> = std::iter::once(put).chain(rest).collect();
+    if !revealing {
+        return steps;
+    }
+    let names: Vec<Value> = steps
+        .iter_mut()
+        .map(|step| json!({"Is": {"Bound": bind_revealed(ctx, step)}}))
+        .collect();
+    ctx.remembered = Some(match names.as_slice() {
+        [one] => one["Is"].clone(),
+        _ => json!({"Each": [{"AnyOf": names}]}),
+    });
+    steps
 }
 
 /// Names the cards a move of a `Dig` moved, as they become, and returns the name.

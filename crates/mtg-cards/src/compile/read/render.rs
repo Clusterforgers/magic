@@ -1793,6 +1793,15 @@ fn at_random(random: bool) -> &'static str {
     if random { " at random" } else { "" }
 }
 
+/// "amass Orcs 2".
+fn amass_text(subtype: &mtg_core::card::Subtype, count: &Amount) -> Option<String> {
+    Some(format!(
+        "amass {} {}",
+        plural_subtype(&subtype.0),
+        points_text(count)?
+    ))
+}
+
 /// Writes effects in order, remembering whether the clause's target has been named yet.
 struct Writer<'a> {
     targets: &'a [TargetSpec],
@@ -2697,11 +2706,7 @@ impl Writer<'_> {
                 subtype,
                 count,
                 bind: None,
-            } => format!(
-                "amass {} {}",
-                plural_subtype(&subtype.0),
-                points_text(count)?
-            ),
+            } => amass_text(subtype, count)?,
             Effect::Explore {
                 what: what @ (Ref::This | Ref::Target(0)),
             } => format!("{} explores", self.object(what)?),
