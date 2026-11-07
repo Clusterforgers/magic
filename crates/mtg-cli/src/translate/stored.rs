@@ -4,7 +4,9 @@
 use std::collections::{BTreeMap, BTreeSet};
 use std::fmt::Write as _;
 
+use mtg_cards::ability::Ability;
 use mtg_cards::builtin;
+use mtg_cards::compile::read_keyword;
 use mtg_cards::coverage::analyze_with;
 use mtg_cards::generated::{Generation, generate};
 use mtg_cards::load::{Library, slug, unwhole};
@@ -209,7 +211,59 @@ pub fn refusal(report: &Report, caps: &Caps) -> Option<String> {
             format!("{:?}", record.support).to_lowercase()
         ));
     }
+    if keyword_cost_differs(report, rules) {
+        return Some("offer:keyword-cost-differs".to_owned());
+    }
     unwhole(rules).map(|_| "offer:unwhole".to_owned())
+}
+
+/// Whether a keyword of the rules has another mana cost than the same keyword printed on its line (a Forge script
+/// whose escape costs {3}{B} where the card prints {3}{B}{B}): the rule plays at another price, whatever the wording.
+fn keyword_cost_differs(report: &Report, rules: &mtg_cards::card::Card) -> bool {
+    report.clauses.iter().any(|clause| {
+        let ClauseState::Differs { ability, .. } = clause.state else {
+            return false;
+        };
+        let Some(Ability::Keyword(ruled)) = rules
+            .faces
+            .get(clause.face)
+            .and_then(|face| face.abilities.get(ability))
+        else {
+            return false;
+        };
+        let Some(printed) = read_keyword(&clause.text) else {
+            return false;
+        };
+        let (ruled, printed) = (serde_json::to_value(ruled), serde_json::to_value(printed));
+        let (Ok(ruled), Ok(printed)) = (ruled, printed) else {
+            return false;
+        };
+        let name = |value: &serde_json::Value| {
+            value.as_object().and_then(|map| map.keys().next().cloned())
+        };
+        let (wanted, found) = (mana_parts(&printed), mana_parts(&ruled));
+        name(&ruled) == name(&printed) && !wanted.is_empty() && wanted != found
+    })
+}
+
+/// The mana costs a keyword value holds, in order.
+fn mana_parts(value: &serde_json::Value) -> Vec<String> {
+    let mut found = Vec::new();
+    let mut stack = vec![value];
+    while let Some(next) = stack.pop() {
+        match next {
+            serde_json::Value::Object(map) => {
+                if let Some(serde_json::Value::String(mana)) = map.get("Mana") {
+                    found.push(mana.clone());
+                }
+                stack.extend(map.values());
+            }
+            serde_json::Value::Array(list) => stack.extend(list),
+            _ => {}
+        }
+    }
+    found.sort();
+    found
 }
 
 /// A message as a gap name: one line without the separators of the cards file, with quoted text and numbers folded so

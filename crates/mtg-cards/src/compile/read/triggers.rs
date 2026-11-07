@@ -1522,9 +1522,9 @@ pub fn pattern_text(pattern: &TriggerPattern) -> Option<String> {
             counter_text(what, counter.as_ref(), "removed from")
         }
         TriggerPattern::Nth { event, nth } => nth_text(event, *nth),
-        TriggerPattern::Batch(inner) => {
-            super::r7e_events::r7e_one_object_damage(inner).or_else(|| batch_text(inner))
-        }
+        TriggerPattern::Batch(inner) => super::r7e_events::r7e_one_object_damage(inner)
+            .or_else(|| batch_text(inner))
+            .or_else(|| super::r7e_events::r7e_player_batch(inner)),
         TriggerPattern::GroupAttacks { what, at_least } => {
             let count = if *at_least == 1 {
                 "one"

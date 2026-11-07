@@ -680,8 +680,10 @@ fn search(ctx: &mut Ctx, p: &Params, destination: &str) -> Tr<Vec<Value>> {
         find["also"] = json!(also);
     }
     let count = frame::count(ctx, p, &SEARCHED)?;
+    // Only cards of a stated quality may stay hidden (CR 701.23b): "search your library for three cards" finds three.
     if !count.is_one {
-        find["count"] = json!({"min": 0, "max": count.max});
+        let min = if filter_is_open { count.min } else { json!(0) };
+        find["count"] = json!({"min": min, "max": count.max});
     }
     match p.get("DifferentNames") {
         None => {}

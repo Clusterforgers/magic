@@ -195,6 +195,15 @@ fn refinement(ctx: &Ctx, p: &Params, subject: &Value) -> Tr<Option<Value>> {
     let (Some(_), Some(valid)) = (p.get("AffectedDefined"), p.get("Affected")) else {
         return Ok(None);
     };
+    // "As long as enchanted permanent is a creature, it has lifelink": an Aura that may enchant a noncreature grants the
+    // keyword to a creature alone, and a keyword such as lifelink works on any source.
+    if valid == "Creature"
+        && p.get("AffectedDefined") == Some("Enchanted")
+        && p.has("AddKeyword")
+        && enchants_a_noncreature(ctx)
+    {
+        return unmapped("key:Static.Continuous.creature-of-an-enchanted-permanent");
+    }
     if matches!(valid, "Creature" | "Card" | "Permanent") {
         return Ok(None);
     }
@@ -205,6 +214,16 @@ fn refinement(ctx: &Ctx, p: &Params, subject: &Value) -> Tr<Option<Value>> {
     Ok(Some(
         json!({"Matches": {"subject": subject, "selector": selector}}),
     ))
+}
+
+/// Whether the face's `K:Enchant:` line lets the Aura enchant something other than a creature ("Enchant permanent").
+fn enchants_a_noncreature(ctx: &Ctx) -> bool {
+    ctx.keywords.iter().any(|keyword| {
+        keyword.strip_prefix("Enchant:").is_some_and(|rest| {
+            let kinds = rest.split(':').next().unwrap_or_default();
+            kinds.split(',').any(|kind| !kind.starts_with("Creature"))
+        })
+    })
 }
 
 /// The objects of a valid-string in the zone `AffectedZone$` names: a single zone other than the battlefield, whose cards

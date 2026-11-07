@@ -87,6 +87,15 @@ pub fn triggered(ctx: &mut Ctx, body: &str) -> Tr<Value> {
     {
         return unmapped("trigger:may-search-without-decider");
     }
+    // "Whenever a player kicks a spell" scripted for the spells you control: the script names fewer spells than the card.
+    if p.get("Mode") == Some("SpellCast")
+        && p.get("ValidCard")
+            .is_some_and(|valid| valid.starts_with("Card.YouCtrl"))
+        && p.get("TriggerDescription")
+            .is_some_and(|text| text.starts_with("Whenever a player"))
+    {
+        return unmapped("trigger:spell-you-control-printed-any-player");
+    }
     match p.get("OptionalDecider") {
         None => {}
         Some("You" | "TriggeredCardController") if pays => {}

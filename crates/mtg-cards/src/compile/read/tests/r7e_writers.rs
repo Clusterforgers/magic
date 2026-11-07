@@ -127,6 +127,22 @@ fn draws(when: &str) -> String {
     r#"{"SpellCast":{"by":"You","what":[{"AnyOf":[{"Type":"Instant"},{"Type":"Sorcery"}]},{"Targeting":[{"Type":"Creature"},{"In":"Battlefield"}]}]}}"#,
     "Whenever you cast an instant or sorcery spell that targets a creature, draw a card."
 )]
+#[case::you_discard(
+    r#"{"Batch":{"Discarded":{"by":"You"}}}"#,
+    "Whenever you discard one or more cards, draw a card."
+)]
+#[case::you_discard_lands(
+    r#"{"Batch":{"Discarded":{"by":"You","what":[{"Type":"Land"}]}}}"#,
+    "Whenever you discard one or more land cards, draw a card."
+)]
+#[case::a_player_discards(
+    r#"{"Batch":{"Discarded":{}}}"#,
+    "Whenever a player discards one or more cards, draw a card."
+)]
+#[case::camellia(
+    r#"{"Batch":{"Sacrificed":{"by":"You","what":[{"Subtype":"Food"}]}}}"#,
+    "Whenever you sacrifice one or more Foods, draw a card."
+)]
 #[case::cast_and_attacks(
     r#"{"AnyOf":[{"SpellCast":{"what":["This"]}},{"Attacks":{"what":["This"]}}]}"#,
     "When you cast ~ and whenever ~ attacks, draw a card."
@@ -255,6 +271,19 @@ fn the_event_is_written_as_the_card_words_it(#[case] when: &str, #[case] text: &
     r#"{"SpellCast":{"by":"You","what":[{"ControlledBy":"You"},{"Targeting":[{"Type":"Creature"},{"In":"Battlefield"}]}]}}"#,
     "Whenever you cast a spell that targets a creature you control, draw a card."
 )]
+// The batch triggers once for each player, not once for all of them.
+#[case::players_discard(
+    r#"{"Batch":{"Discarded":{}}}"#,
+    "Whenever one or more players discard one or more cards, draw a card."
+)]
+#[case::opponent_discards(
+    r#"{"Batch":{"Discarded":{"by":"Opponents"}}}"#,
+    "Whenever you discard one or more cards, draw a card."
+)]
+#[case::creature_cards(
+    r#"{"Batch":{"Discarded":{"by":"You","what":[{"Type":"Creature"}]}}}"#,
+    "Whenever you discard one or more land cards, draw a card."
+)]
 #[case::opponent_casts_spell(
     r#"{"AnyOf":[{"SpellCast":{"by":"Opponents"}},{"Did":{"action":"PlayedLand","what":[{"Type":"Land"},{"ControlledBy":"You"}]}}]}"#,
     "Whenever you play a card, draw a card."
@@ -309,5 +338,43 @@ fn the_card_of_its_own_event_is_it(
         writes(&json, text),
         "{text}: {:?}",
         written_variants(&ability(&json))
+    );
+}
+
+const ANY_PLAYER_PAYS: &str =
+    r#"{"Spell":{"effects":[{"Pay":{"who":"EachPlayer","cost":"{2}","unpaid":[{"Draw":{}}]}}]}}"#;
+const YOUR_GRAVEYARD: &str = r#"{"Replacement":{"by":{"MoveTo":"Exile"},"when":{"ZoneChange":{"to":"Graveyard","what":[{"OwnedBy":"You"}]}}}}"#;
+const OPPONENTS_GRAVEYARD: &str = r#"{"Replacement":{"by":{"MoveTo":"Exile"},"when":{"ZoneChange":{"to":"Graveyard","what":[{"OwnedBy":"Opponents"}]}}}}"#;
+
+/// The players are asked in turn until one pays (Soul Strings), and what you own takes in your tokens (Festival of
+/// Embers).
+#[rstest]
+#[case::any_player_pays(ANY_PLAYER_PAYS, "Draw a card unless any player pays {2}.", true)]
+#[case::not_each_player(ANY_PLAYER_PAYS, "Draw a card unless each player pays {2}.", false)]
+#[case::card_or_token(
+    YOUR_GRAVEYARD,
+    "If a card or token would be put into your graveyard from anywhere, exile it instead.",
+    true
+)]
+#[case::a_card(
+    YOUR_GRAVEYARD,
+    "If a card would be put into your graveyard from anywhere, exile it instead.",
+    true
+)]
+#[case::not_an_opponents(
+    OPPONENTS_GRAVEYARD,
+    "If a card or token would be put into your graveyard from anywhere, exile it instead.",
+    false
+)]
+fn the_players_and_the_objects_are_worded_as_the_card_says(
+    #[case] json: &str,
+    #[case] text: &str,
+    #[case] written: bool,
+) {
+    assert_eq!(
+        writes(json, text),
+        written,
+        "{text}: {:?}",
+        written_variants(&ability(json))
     );
 }

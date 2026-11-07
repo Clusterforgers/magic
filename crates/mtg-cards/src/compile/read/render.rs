@@ -2720,7 +2720,12 @@ impl Writer<'_> {
         match (paid, unpaid) {
             ([], [inner]) => {
                 let happens = self.effect(inner)?;
-                let payer = self.player(who)?;
+                // The players are asked in turn until one pays: "unless any player pays".
+                let payer = if *who == Ref::EachPlayer {
+                    "any player".to_owned()
+                } else {
+                    self.player(who)?
+                };
                 let unless = payments::unless_text(&payer, who, cost)
                     .or_else(|| payments::unless_sacrifice_text(who, cost))?;
                 Some(format!("{happens} {unless}"))

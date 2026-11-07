@@ -74,6 +74,30 @@ pub(super) fn r7e_one_object_damage(inner: &TriggerPattern) -> Option<String> {
     Some(format!("Whenever {dealer} deals {}{to}", kind(*combat)))
 }
 
+/// "Whenever you discard one or more cards", "Whenever a player discards one or more cards", "Whenever you sacrifice
+/// one or more Foods": a batch of one player's discards or sacrifices, which triggers once for each player.
+pub(super) fn r7e_player_batch(inner: &TriggerPattern) -> Option<String> {
+    match inner {
+        TriggerPattern::Discarded { what, by } => {
+            let cards = match what.0.as_slice() {
+                [] => "cards".to_owned(),
+                [Pred::Type(_)] => format!("{} cards", phrase_text(what, Form::Subject)?),
+                _ => return None,
+            };
+            Some(format!(
+                "Whenever {} one or more {cards}",
+                player_verb(by, "discard")?
+            ))
+        }
+        TriggerPattern::Sacrificed { what, by } if !what.is_empty() => Some(format!(
+            "Whenever {} one or more {}",
+            player_verb(by, "sacrifice")?,
+            phrase_text(what, Form::All)?
+        )),
+        _ => None,
+    }
+}
+
 /// The dedicated pattern an action of an object stands for: the engine finds both on the same event.
 fn as_pattern(action: Action, what: &Selector) -> Option<TriggerPattern> {
     let what = what.clone();
