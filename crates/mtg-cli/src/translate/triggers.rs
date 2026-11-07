@@ -640,8 +640,25 @@ fn attackers_declared(ctx: &Ctx, p: &Params) -> Tr<Value> {
     keys(
         p,
         "AttackersDeclared",
-        &["AttackingPlayer", "ValidAttackers", "ValidAttackersAmount"],
+        &[
+            "AttackingPlayer",
+            "ValidAttackers",
+            "ValidAttackersAmount",
+            "AttackedTarget",
+        ],
     )?;
+    // "Whenever an opponent attacks you and/or one or more planeswalkers you control", "whenever one or more of your
+    // opponents are attacked": once for the declaration, with the attackers of those players (and planeswalkers).
+    let attacked = match p.get("AttackedTarget") {
+        None => None,
+        Some("You,Planeswalker.YouCtrl") => Some(json!({"AttackingPlayerOrPlaneswalker": "You"})),
+        Some("Opponent") => Some(json!({"AttackingPlayer": "Opponents"})),
+        Some(other) => {
+            return unmapped(format!(
+                "key:Trigger.AttackersDeclared.AttackedTarget={other}"
+            ));
+        }
+    };
     let word = p.get("AttackingPlayer");
     let Ok(by) = player_ref(word) else {
         return unmapped(format!(
@@ -655,6 +672,7 @@ fn attackers_declared(ctx: &Ctx, p: &Params) -> Tr<Value> {
     if by != "EachPlayer" && !what.contains(&own) {
         what.push(own);
     }
+    what.extend(attacked);
     let mut pattern = json!({ "what": what });
     match p.get("ValidAttackersAmount") {
         None => {}

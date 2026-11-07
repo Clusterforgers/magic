@@ -226,3 +226,34 @@ fn a_visible_keyword_of_a_pump_is_the_restriction(#[case] keyword: &str, #[case]
     assert_eq!(gaps(&script), Vec::<String>::new());
     assert_eq!(effects(&script)[0]["Continuous"]["mods"], mods);
 }
+
+#[rstest]
+#[case::you_and_your_planeswalkers(
+    "AttackingPlayer$ Player.Opponent | AttackedTarget$ You,Planeswalker.YouCtrl",
+    json!([{"Type": "Creature"}, {"ControlledBy": "Opponents"}, {"AttackingPlayerOrPlaneswalker": "You"}])
+)]
+#[case::your_opponents(
+    "ValidAttackers$ Creature | AttackedTarget$ Opponent",
+    json!([{"Type": "Creature"}, {"AttackingPlayer": "Opponents"}])
+)]
+fn attackers_declared_at_some_players_are_one_group(#[case] keys: &str, #[case] what: Value) {
+    let script = creature(&format!(
+        "T:Mode$ AttackersDeclared | {keys} | TriggerZones$ Battlefield | Execute$ Draw\nSVar:Draw:DB$ Draw"
+    ));
+    assert_eq!(gaps(&script), Vec::<String>::new());
+    assert_eq!(
+        abilities(&script)[0]["Triggered"]["when"],
+        json!({"GroupAttacks": {"what": what}})
+    );
+}
+
+#[test]
+fn attackers_declared_at_another_player_word_stay_a_gap() {
+    let script = creature(
+        "T:Mode$ AttackersDeclared | AttackedTarget$ Player.IsPoisoned | Execute$ Draw\nSVar:Draw:DB$ Draw",
+    );
+    assert_eq!(
+        gaps(&script),
+        vec!["key:Trigger.AttackersDeclared.AttackedTarget=Player.IsPoisoned".to_owned()]
+    );
+}

@@ -257,8 +257,6 @@ fn attackers_at_one_player_are_the_group_at_that_player(#[case] keys: &str, #[ca
 
 #[rstest]
 #[case::any_player("AttackedTarget$ Player")]
-#[case::opponents("AttackedTarget$ Opponent")]
-#[case::player_or_walker("AttackedTarget$ You,Planeswalker.YouCtrl")]
 fn several_attacked_players_stay_a_gap(#[case] keys: &str) {
     let text = trigger(&format!(
         "AttackersDeclared | AttackingPlayer$ Player | {keys}"

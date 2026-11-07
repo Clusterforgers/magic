@@ -291,6 +291,9 @@ pub enum Pred {
     Attacking,
     /// Is attacking the player, not a planeswalker of theirs ("attacking that player").
     AttackingPlayer(Ref),
+    /// Is attacking the player or a planeswalker they control ("whenever an opponent attacks you and/or a planeswalker you
+    /// control").
+    AttackingPlayerOrPlaneswalker(Ref),
     /// Is blocking.
     Blocking,
     /// Is an attacking creature that no creature was declared to block, once its defending player has declared blockers (CR 509.1h).

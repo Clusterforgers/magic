@@ -40,6 +40,24 @@ impl Scope<'_> {
                         && matches!(a.target(), AttackTarget::Player(player) if attacked.contains(&player))
                 })
             }
+            Pred::AttackingPlayerOrPlaneswalker(who) => {
+                let attacked = self.players(who)?;
+                self.state.combat().attackers().iter().any(|a| {
+                    a.object() == reference.id
+                        && match a.target() {
+                            AttackTarget::Player(player) => attacked.contains(&player),
+                            // A battle is attacked through its protector, not its controller (CR 506.2).
+                            AttackTarget::Planeswalker(walker) => {
+                                crate::characteristics::characteristics(self.state, walker)
+                                    .is_some_and(|chars| {
+                                        chars.types.contains(mtg_core::card::CardType::Planeswalker)
+                                    })
+                                    && crate::characteristics::controller_of(self.state, walker)
+                                        .is_some_and(|owner| attacked.contains(&owner))
+                            }
+                        }
+                })
+            }
             Pred::Blocking => self
                 .state
                 .combat()

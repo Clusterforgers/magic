@@ -1610,6 +1610,9 @@ pub fn pattern_text(pattern: &TriggerPattern) -> Option<String> {
             .or_else(|| batch_text(inner))
             .or_else(|| super::r7e_events::r7e_player_batch(inner)),
         TriggerPattern::GroupAttacks { what, at_least } => {
+            if let Some(text) = super::g13d_attacked::g13d_attacked_text(&what.0, *at_least) {
+                return Some(text);
+            }
             let count = if *at_least == 1 {
                 "one"
             } else {

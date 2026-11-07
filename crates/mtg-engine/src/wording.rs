@@ -124,6 +124,9 @@ pub(crate) fn phrase(selector: &Selector) -> (String, String) {
                 tail.push("attacking enchanted player".to_owned());
             }
             Pred::AttackingPlayer(Ref::You) => tail.push("attacking you".to_owned()),
+            Pred::AttackingPlayerOrPlaneswalker(Ref::You) => {
+                tail.push("attacking you or a planeswalker you control".to_owned());
+            }
             Pred::Blocking => adjectives.push("blocking".to_owned()),
             Pred::Unblocked => adjectives.push("unblocked".to_owned()),
             Pred::ControlledBy(Ref::You) => tail.push("you control".to_owned()),
