@@ -30,9 +30,7 @@
         {
           "Static": {
             "affected": "This",
-            "mods": [
-              { "CantBeBlockedBy": [{ "Not": { "Color": "Blue" } }] }
-            ]
+            "mods": [{ "CantBeBlockedBy": [{ "Not": { "Color": "Blue" } }] }]
           }
         },
         {
