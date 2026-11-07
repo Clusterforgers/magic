@@ -1173,6 +1173,9 @@ fn put_counter(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
         );
         return put_counter(ctx, &Params::parse(&line));
     }
+    if let Some(done) = g12b_counters_of(ctx, p) {
+        return done;
+    }
     only(
         p,
         "PutCounter",
@@ -1247,6 +1250,51 @@ fn put_counter(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
         effects.push(either(puts)?);
     }
     Ok(effects)
+}
+
+/// `CounterType$ EachFromSource | EachFromSource$ TriggeredCardLKICopy`: "put its counters on target creature you
+/// control", as many of each kind as the object held (as it last existed); `CounterType$ ExistingCounter |
+/// EachExistingCounter$ True | CounterNum$ 1`: "for each kind of counter on target permanent or player, give that
+/// permanent or player another counter of that kind". None for any other `PutCounter`.
+fn g12b_counters_of(ctx: &mut Ctx, p: &Params) -> Option<Tr<Vec<Value>>> {
+    const PLACES: [&str; 4] = ["Defined", "ValidTgts", "TargetMin", "TargetMax"];
+    let done = match p.get("CounterType")? {
+        "EachFromSource" => (|| {
+            let mut keys = vec!["CounterType", "EachFromSource"];
+            keys.extend(PLACES);
+            only(p, "PutCounter", &keys)?;
+            let Some(word) = p.get("EachFromSource") else {
+                return unmapped("key:PutCounter.EachFromSource");
+            };
+            let of = defined(ctx, word)?;
+            let on = g12b_place(ctx, p)?;
+            Ok(vec![json!({"PutCountersOf": {"on": on, "of": of}})])
+        })(),
+        "ExistingCounter" if p.get("EachExistingCounter") == Some("True") => (|| {
+            let mut keys = vec!["CounterType", "EachExistingCounter", "CounterNum"];
+            keys.extend(PLACES);
+            only(p, "PutCounter", &keys)?;
+            if p.get("CounterNum").unwrap_or("1") != "1" {
+                return unmapped("key:PutCounter.EachExistingCounter");
+            }
+            let on = g12b_place(ctx, p)?;
+            Ok(vec![
+                json!({"PutCountersOf": {"on": on, "of": on, "each": 1}}),
+            ])
+        })(),
+        _ => return None,
+    };
+    Some(done)
+}
+
+/// Where `PutCountersOf` puts: the target, or what `Defined$` names (`Defined$ Targeted` beside the target says the
+/// target again).
+fn g12b_place(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
+    if p.get("Defined") == Some("Targeted") && p.has("ValidTgts") {
+        subject(ctx, &p.without(&["Defined"]), "Self", None)
+    } else {
+        subject(ctx, p, "Self", None)
+    }
 }
 
 /// `CounterNumPerDefined$ X`: "put a number of +1/+1 counters on each other creature you control equal to that creature's

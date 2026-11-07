@@ -234,6 +234,7 @@ const RUNS: &[&str] = &[
     "Effect.RemoveAllCounters",
     "Effect.MoveCounters",
     "Effect.MultiplyCounters",
+    "Effect.PutCountersOf",
     "Effect.Tap",
     "Effect.Untap",
     "Effect.TapOrUntap",

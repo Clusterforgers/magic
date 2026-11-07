@@ -730,6 +730,17 @@ pub enum Effect {
         #[serde(default = "two", skip_serializing_if = "is_two")]
         factor: u32,
     },
+    /// Puts on an object or player counters of each kind another holds or held as it left ("put its counters on target
+    /// creature you control", "for each kind of counter on target permanent, give it another counter of that kind").
+    PutCountersOf {
+        /// Where they go.
+        on: Ref,
+        /// Whose kinds are read, as it last existed when it has left.
+        of: Ref,
+        /// How many of each kind; as many as `of` holds of the kind when absent.
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        each: Option<Amount>,
+    },
     /// Taps permanents.
     Tap {
         /// What is tapped.
