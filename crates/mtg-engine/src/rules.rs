@@ -833,8 +833,6 @@ impl RulesInForce {
             }
             Rule::BlockLimitEach { most, who } => self.w14a_limit_blocks(*most, who),
             Rule::CantBeCountered(named) => self.uncounterable.extend(ids(named)),
-            // Read where the spell resolves (`spend_rider::entering`), not from the table.
-            Rule::EntersWith { .. } => {}
             Rule::CantBeRegenerated(named) => self.unregenerable.extend(ids(named)),
             Rule::CantGainLife(players) => self.no_life_gain.extend(players),
             Rule::NoLifeLossFromDamage(players) => self.no_damage_loss.extend(players),
@@ -964,8 +962,10 @@ impl RulesInForce {
             Rule::Cant { who, action } => self.cants.push(crate::prohibit::Banned::new(
                 who, action, controller, source,
             )),
-            // Shields are read by the replacement step, and spell costs by the cost step, from the rule changes themselves.
-            Rule::SpellCost { .. }
+            // Shields are read by the replacement step, spell costs by the cost step and the bonuses of a spell's mana
+            // where it resolves (`spend_rider::entering`), from the rule changes themselves.
+            Rule::EntersWith { .. }
+            | Rule::SpellCost { .. }
             | Rule::PreventDamage(_)
             | Rule::Regenerate(_)
             | Rule::DiesInstead { .. }
