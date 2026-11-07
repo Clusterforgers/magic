@@ -33,10 +33,11 @@ pub fn effects(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
             "ForgetCounter",
             "ForgetOnCast",
             "EffectOwner",
+            "SetChosenNumber",
         ],
     )?;
-    if p.has("ForgetOnCast") {
-        return super::effects_next_spell::effects(ctx, p);
+    if let Some(out) = fixed_as_it_begins(ctx, p) {
+        return out;
     }
     // The Forge effect object ends when what it remembers changes zones; our references to remembered objects drop out the
     // same way, so the keys only matter beside `RememberObjects`.
@@ -114,6 +115,36 @@ pub fn effects(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
         return super::effects_ambient::continuous_statics(ctx, p);
     }
     remembered_statics(ctx, p, owner.as_ref(), None)
+}
+
+/// An `Effect` line whose parts read a value of the ability that made it, translated with that value held: the number
+/// `SetChosenNumber$` fixes (CR 611.2c), or the card name the ability chose ("choose a card name; until your next turn,
+/// spells with the chosen name can't be cast"), which the engine fixes as the rule begins; or a line about the next spell
+/// cast (`ForgetOnCast$`). `None` for any other line.
+fn fixed_as_it_begins(ctx: &mut Ctx, p: &Params) -> Option<Tr<Vec<Value>>> {
+    if let Some(word) = p.get("SetChosenNumber") {
+        let number = match amount(ctx, word) {
+            Ok(number) => number,
+            Err(gap) => return Some(Err(gap)),
+        };
+        let before = ctx.set_number.replace(number);
+        let out = effects(ctx, &p.without(&["SetChosenNumber"]));
+        ctx.set_number = before;
+        return Some(out);
+    }
+    if ctx.effect_name.is_none()
+        && !p.has("Triggers")
+        && !p.has("ReplacementEffects")
+        && let (Some(name), None) = (ctx.chosen.clone(), ctx.chosen_kind)
+    {
+        ctx.effect_name = Some(name);
+        let out = effects(ctx, p);
+        ctx.effect_name = None;
+        return Some(out);
+    }
+    // "The next spell you cast": the effect ends when that spell is cast.
+    p.has("ForgetOnCast")
+        .then(|| super::effects_next_spell::effects(ctx, p))
 }
 
 /// The statics of an `Effect` line about the objects it remembers.
@@ -228,7 +259,11 @@ fn remembered_static(
         return unmapped("key:Effect.EffectOwner");
     }
     // A prohibition on the remembered players ("target player cannot cast spells this turn").
-    if let Some(found) = super::statics_cant::rule_for(ctx, &part, Some(who)) {
+    // "Its activated abilities can't be activated this turn": `Card.IsRemembered` names the remembered objects.
+    let before = ctx.pinned.replace(who.clone());
+    let found = super::statics_cant::rule_for(ctx, &part, Some(who));
+    ctx.pinned = before;
+    if let Some(found) = found {
         let mut rule = found?;
         rule["Rule"]["duration"] = duration.clone();
         return Ok(vec![rule]);

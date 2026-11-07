@@ -25,19 +25,11 @@ fn a_counted_repeat_is_a_bounded_loop(#[case] line: &str, #[case] bound: serde_j
     assert_eq!(found[0]["Spell"]["effects"], json!([{"RepeatWhile": want}]));
 }
 
-/// Any other end of a repeat, or none, stays a gap named after the key.
+/// A player's choice to go on, or no end, stays a gap named after the key (a check is read in `g12d`).
 #[rstest]
 #[case::optional(
     "RepeatSubAbility$ Body | RepeatOptional$ True",
     "key:Repeat.RepeatOptional"
-)]
-#[case::check(
-    "RepeatSubAbility$ Body | RepeatCheckSVar$ X | RepeatSVarCompare$ EQ0",
-    "key:Repeat.RepeatCheckSVar"
-)]
-#[case::present(
-    "RepeatSubAbility$ Body | RepeatPresent$ Card | RepeatDefined$ Remembered",
-    "key:Repeat.RepeatPresent"
 )]
 #[case::no_end("RepeatSubAbility$ Body", "key:Repeat.no-MaxRepeat")]
 #[case::zero(
