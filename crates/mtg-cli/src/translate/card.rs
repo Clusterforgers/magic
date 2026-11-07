@@ -424,9 +424,14 @@ fn has_unused_target(value: &Value) -> bool {
                     .map(|(_, inner)| inner.to_string())
                     .collect();
                 // A later target's filter reads an earlier one: "target player shuffles up to three target cards
-                // from their graveyard".
+                // from their graveyard". "Another target" leaving it out is no use of it.
                 let later = |at: usize| -> String {
-                    targets.iter().skip(at + 1).map(Value::to_string).collect()
+                    let another = format!("{{\"Not\":{{\"Is\":{{\"Target\":{at}}}}}}}");
+                    targets
+                        .iter()
+                        .skip(at + 1)
+                        .map(|spec| spec.to_string().replace(&another, ""))
+                        .collect()
                 };
                 let unused = (0..targets.len()).any(|at| {
                     let name = format!("{{\"Target\":{at}}}");

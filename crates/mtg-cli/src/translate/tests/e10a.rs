@@ -102,6 +102,19 @@ fn another_target_after_a_player_leaves_out_the_earlier_target(
     assert_eq!(found[1]["what"], what, "{:?}", gaps(&script));
 }
 
+#[test]
+fn a_target_only_another_target_leaves_out_is_still_unused() {
+    let script = spell(&[
+        "Pump | ValidTgts$ Creature.YouCtrl | SubAbility$ S1",
+        "DealDamage | ValidTgts$ Creature.YouCtrl | TargetUnique$ True | NumDmg$ 1",
+    ]);
+    assert!(
+        gaps(&script).iter().any(|found| found == "targets:unused"),
+        "{:?}",
+        gaps(&script)
+    );
+}
+
 #[rstest]
 #[case::fixed("3", json!(3))]
 #[case::paid("X", json!("X"))]
