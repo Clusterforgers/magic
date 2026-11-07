@@ -7,7 +7,8 @@ use super::valid::{defined, selector_any, selector_in, subject};
 use crate::forge::script::Params;
 
 /// The keys of a `MayPlay` static line.
-const READ: [&str; 15] = [
+const READ: [&str; 16] = [
+    "ValidAfterStack",
     "MayPlayIgnoreType",
     "MayPlayIgnoreColor",
     "RaiseCost",
@@ -29,8 +30,19 @@ const READ: [&str; 15] = [
 /// it the cards `Affected$` selects are covered.
 pub fn may_cast(ctx: &Ctx, p: &Params, only: Option<&Value>) -> Tr<Value> {
     check_keys(p, "Static.MayPlay", &READ, |_, _| false)?;
+    if !after_stack_is_redundant(p) {
+        return unmapped("key:Static.MayPlay.ValidAfterStack");
+    }
     let from = match p.get("AffectedZone") {
         Some(zone @ ("Graveyard" | "Exile" | "Library" | "Hand")) => zone,
+        // A card milled to a graveyard or exiled is cast from the zone it was put in (the other zone names a card that
+        // an effect moved there instead, or the spell once it is on the stack), and `only` fixes which card.
+        Some("Graveyard,Exile")
+            if only.is_some() && p.get("Affected") == Some("Card.IsRemembered") =>
+        {
+            "Graveyard"
+        }
+        Some("Exile,Stack") if only.is_some() => "Exile",
         Some(other) => return unmapped(format!("zone:MayPlay.AffectedZone={other}")),
         None => return unmapped("key:Static.MayPlay.no-AffectedZone"),
     };
@@ -117,6 +129,31 @@ pub fn may_cast(ctx: &Ctx, p: &Params, only: Option<&Value>) -> Tr<Value> {
         permission["play"] = json!(true);
     }
     Ok(json!({ "MayCast": permission }))
+}
+
+/// Whether `ValidAfterStack$` (the spell check after the cast) adds nothing to `Affected$`: every card alternative other
+/// than a land already names each of its words ("Spell.Insect" beside "Insect.YouOwn").
+fn after_stack_is_redundant(p: &Params) -> bool {
+    let Some(after) = p.get("ValidAfterStack") else {
+        return true;
+    };
+    // A condition or a limit beside the check is a permission the plain wording does not read.
+    let Some(props) = after
+        .strip_prefix("Spell.")
+        .filter(|_| !p.has("Condition") && !p.has("MayPlayLimit"))
+    else {
+        return false;
+    };
+    let words = |text: &str| -> Vec<String> { text.split(['.', '+']).map(str::to_owned).collect() };
+    let need = words(props);
+    p.get("Affected")
+        .unwrap_or_default()
+        .split(',')
+        .all(|alternative| {
+            let have = words(alternative);
+            have.first().is_some_and(|first| first == "Land")
+                || need.iter().all(|word| have.contains(word))
+        })
 }
 
 /// How many of the cards a `Play` casts.

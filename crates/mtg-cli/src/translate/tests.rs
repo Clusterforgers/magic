@@ -787,6 +787,8 @@ mod g13c;
 mod g13d;
 mod g13e;
 mod g13f;
+mod g13g;
+mod g13g_forms;
 mod g8a;
 mod g8c;
 mod g8d;
