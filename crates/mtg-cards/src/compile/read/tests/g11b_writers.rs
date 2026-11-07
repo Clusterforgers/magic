@@ -1,7 +1,8 @@
 //! Goal: damage that can't be prevented reads back with "The damage can't be prevented." and, after "Damage can't be
 //! prevented this turn.", without it; plain damage with the sentence, the flag without it, and a rule for combat damage
 //! only that does not cover the damage do not read back; a shield of the next X damage reads back with its X and its
-//! count, and another count, a number or another recipient does not.
+//! count, and another count, a number or another recipient does not; a redirection reads back as the next time or as all
+//! of it, and the other one, another recipient or a part does not.
 use super::*;
 
 fn written(json: &str, clause: &str) -> bool {
@@ -91,4 +92,45 @@ fn another_counted_shield_does_not_read_back(
     #[case] clause: &str,
 ) {
     assert!(!written(&counted(amount, to), clause));
+}
+
+fn redirect(by: &str, dealt: &str) -> String {
+    format!(
+        r#"{{"Activated":{{"cost":["Tap"],"effects":[{{"Shield":{{"by":{by},"duration":"UntilEndOfTurn","when":{{"Damage":{{"to":{dealt}}}}}}}}}],"targets":[{{"what":"AnyTarget"}}]}}}}"#
+    )
+}
+
+const NEXT: &str = r#"{"Redirect":{"to":{"Target":0},"next":true}}"#;
+const ALL: &str = r#"{"Redirect":{"to":{"Target":0}}}"#;
+const NEXT_TEXT: &str = "{T}: The next time damage would be dealt to ~ this turn, that damage is dealt to any target instead.";
+const ALL_TEXT: &str =
+    "{T}: All damage that would be dealt to ~ this turn is dealt to any target instead.";
+
+#[rstest]
+#[case::the_next_time(NEXT, NEXT_TEXT)]
+#[case::all_of_it(ALL, ALL_TEXT)]
+fn a_redirection_reads_back(#[case] by: &str, #[case] clause: &str) {
+    let json = redirect(by, r#""This""#);
+    assert!(
+        written(&json, clause),
+        "{:?}",
+        written_variants(&ability(&json))
+    );
+}
+
+#[rstest]
+#[case::all_as_the_next_time(ALL, r#""This""#, NEXT_TEXT)]
+#[case::the_next_time_as_all(NEXT, r#""This""#, ALL_TEXT)]
+#[case::another_recipient(NEXT, r#""You""#, NEXT_TEXT)]
+#[case::a_part_of_it(
+    NEXT,
+    r#""This""#,
+    "{T}: The next 2 damage that would be dealt to ~ this turn is dealt to any target instead."
+)]
+fn another_redirection_does_not_read_back(
+    #[case] by: &str,
+    #[case] dealt: &str,
+    #[case] clause: &str,
+) {
+    assert!(!written(&redirect(by, dealt), clause));
 }

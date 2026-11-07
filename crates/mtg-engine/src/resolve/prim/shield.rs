@@ -83,7 +83,8 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         | ReplaceBy::Add(_)
         | ReplaceBy::Instead(_)
         | ReplaceBy::InsteadNext(_)
-        | ReplaceBy::RedirectUpTo { .. },
+        | ReplaceBy::RedirectUpTo { .. }
+        | ReplaceBy::Redirect { .. },
     ) = (when, by)
     else {
         return Err(ResolveError::Unsupported("Effect.Shield"));
@@ -105,12 +106,16 @@ fn damage_shield(
     (to, source, combat): (Option<&Ref>, &Selector, Option<bool>),
     by: &ReplaceBy,
 ) -> Result<Option<DamageShield>, ResolveError> {
-    let once = matches!(by, ReplaceBy::PreventNext | ReplaceBy::InsteadNext(_));
+    let once = matches!(
+        by,
+        ReplaceBy::PreventNext | ReplaceBy::InsteadNext(_) | ReplaceBy::Redirect { next: true, .. }
+    );
     let instead = match by {
         ReplaceBy::Multiply(_)
         | ReplaceBy::Add(_)
         | ReplaceBy::Instead(_)
-        | ReplaceBy::RedirectUpTo { .. } => Some(by.clone()),
+        | ReplaceBy::RedirectUpTo { .. }
+        | ReplaceBy::Redirect { .. } => Some(by.clone()),
         ReplaceBy::InsteadNext(effects) => Some(ReplaceBy::Instead(effects.clone())),
         _ => None,
     };
@@ -131,10 +136,12 @@ fn damage_shield(
     };
     // The new recipient of redirected damage is fixed as the shield begins (CR 611.2c); naming none, it redirects nothing.
     let redirect = match by {
-        ReplaceBy::RedirectUpTo { to: named, .. } => match cx.scope.refs(named)?.first() {
-            Some(target) => Some(*target),
-            None => return Ok(None),
-        },
+        ReplaceBy::RedirectUpTo { to: named, .. } | ReplaceBy::Redirect { to: named, .. } => {
+            match cx.scope.refs(named)?.first() {
+                Some(target) => Some(*target),
+                None => return Ok(None),
+            }
+        }
         _ => None,
     };
     let chosen = Selector(

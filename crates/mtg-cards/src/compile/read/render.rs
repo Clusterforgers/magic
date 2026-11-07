@@ -28,6 +28,7 @@ mod flicker_targets;
 mod free_casts;
 mod from_graveyard;
 mod g10d_colors;
+mod g11b_redirect;
 mod g11b_unpreventable;
 mod g8e_prevent;
 mod graveyards;

@@ -3539,7 +3539,8 @@ impl Walker<'_> {
                         | ReplaceBy::Add(_)
                         | ReplaceBy::Instead(_)
                         | ReplaceBy::InsteadNext(_)
-                        | ReplaceBy::RedirectUpTo { .. },
+                        | ReplaceBy::RedirectUpTo { .. }
+                        | ReplaceBy::Redirect { .. },
                     )
                     // A death or a counter sent elsewhere, and a class of moves judged as each happens (`Rule::Replaces`).
                     | (
@@ -4419,6 +4420,7 @@ impl Walker<'_> {
             ReplaceBy::PreventNext
                 | ReplaceBy::InsteadNext(_)
                 | ReplaceBy::RedirectUpTo { .. }
+                | ReplaceBy::Redirect { .. }
                 | ReplaceBy::PreventCounted(_)
         ) {
             self.problem("only a shield changes the next damage");
@@ -4459,6 +4461,7 @@ impl Walker<'_> {
                 self.w5d_instead(when, effects);
             }
             ReplaceBy::RedirectUpTo { most, to } => self.r6f_redirect(when, *most, to),
+            ReplaceBy::Redirect { to, .. } => self.r6f_redirect(when, 1, to),
             ReplaceBy::PreventAnd(effects) => self.w9c_prevent_and(when, effects),
             ReplaceBy::Dredge(cards) => {
                 if !matches!(when, ReplaceWhen::Draw { .. }) {

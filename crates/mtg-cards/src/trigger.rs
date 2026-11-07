@@ -824,6 +824,16 @@ pub enum ReplaceBy {
         /// The player or permanent the damage is dealt to instead.
         to: Ref,
     },
+    /// All of the damage is dealt to `to` instead, by the same source (CR 614.9); only a shield uses it, which fixes `to`
+    /// as it begins ("all damage that would be dealt to ~ this turn is dealt to target creature instead"). With `next`,
+    /// only the next damage event it covers, and the shield ends ("the next time damage would be dealt to ~ this turn").
+    Redirect {
+        /// The player or permanent the damage is dealt to instead.
+        to: Ref,
+        /// Only the next damage event.
+        #[serde(default, skip_serializing_if = "is_false")]
+        next: bool,
+    },
     /// All of the damage is prevented (CR 615) and these effects happen, reading the event as `Instead` does ("prevent
     /// that damage and put that many +1/+1 counters on it").
     PreventAnd(Vec<Effect>),

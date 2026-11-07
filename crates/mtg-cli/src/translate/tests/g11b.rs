@@ -1,7 +1,8 @@
 //! Goal: round 11 pack g11b reads the damage words of Forge scripts: damage that can't be prevented (`NoPrevention$`)
 //! keeps the flag on its damage, "prevent the next X damage" counts X as the shield begins (`PreventCounted`), a shield of
-//! sources of a chosen colour reads the choice and one for a target player or planeswalker the target, and an unknown
-//! value, a redirection limit, a divided prevention and a chosen card with a property stay gaps.
+//! sources of a chosen colour reads the choice and one for a target player or planeswalker the target, a
+//! redirection to the remembered target is all of the damage or, with the effect exiling itself, the next time, and an
+//! unknown value, a redirection limit, a divided prevention and a chosen card with a property stay gaps.
 #![allow(clippy::unwrap_used)]
 
 use rstest::rstest;
@@ -110,6 +111,34 @@ fn reads(types: &str, lines: &str, expected: &[&str], absent: &[&str], gap: &str
     &[r#""to":{"Target":0}"#, r#""ChosenAs""#],
     &[],
     ""
+)]
+#[case::the_next_time_to_the_target(
+    "Creature",
+    "A:AB$ Effect | Cost$ 1 | ValidTgts$ Any | ReplacementEffects$ R | RememberObjects$ Targeted | ExileOnMoved$ Battlefield\nSVar:R:Event$ DamageDone | ValidTarget$ Creature.EffectSource | ReplaceWith$ D | DamageTarget$ Remembered\nSVar:D:DB$ ReplaceEffect | VarName$ Affected | VarValue$ Remembered | VarType$ GameEntity | SubAbility$ E\nSVar:E:DB$ ChangeZone | Defined$ Self | Origin$ Command | Destination$ Exile",
+    &[r#"{"Redirect":{"next":true,"to":{"Target":0}}}"#, r#""to":"This""#],
+    &[],
+    ""
+)]
+#[case::all_of_it_to_the_target(
+    "Creature",
+    "A:AB$ Effect | Cost$ 1 | ValidTgts$ Creature | ReplacementEffects$ R | RememberObjects$ Targeted\nSVar:R:Event$ DamageDone | ValidTarget$ Creature.EffectSource | ReplaceWith$ D | DamageTarget$ Remembered\nSVar:D:DB$ ReplaceEffect | VarName$ Affected | VarValue$ Remembered | VarType$ Card",
+    &[r#"{"Redirect":{"to":{"Target":0}}}"#],
+    &["next"],
+    ""
+)]
+#[case::another_owner_stays_a_gap(
+    "Creature",
+    "A:AB$ Effect | Cost$ 1 | ValidTgts$ Creature | EffectOwner$ TargetedController | ReplacementEffects$ R | RememberObjects$ Targeted\nSVar:R:Event$ DamageDone | ValidTarget$ Creature.EffectSource | ReplaceWith$ D | DamageTarget$ Remembered\nSVar:D:DB$ ReplaceEffect | VarName$ Affected | VarValue$ Remembered | VarType$ Card",
+    &[],
+    &[],
+    "EffectOwner"
+)]
+#[case::a_player_variable_stays_a_gap(
+    "Creature",
+    "A:AB$ Effect | Cost$ 1 | ValidTgts$ Creature | ReplacementEffects$ R | RememberObjects$ Targeted\nSVar:R:Event$ DamageDone | ValidTarget$ Creature.EffectSource | ReplaceWith$ D | DamageTarget$ Remembered\nSVar:D:DB$ ReplaceEffect | VarName$ Affected | VarValue$ Remembered | VarType$ Player",
+    &[],
+    &[],
+    "redirect-VarType"
 )]
 fn damage_words(
     #[case] types: &str,

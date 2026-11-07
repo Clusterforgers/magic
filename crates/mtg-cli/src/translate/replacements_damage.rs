@@ -327,8 +327,20 @@ fn one_shield(
             )?
         }
         Some(name) => {
-            let you = p.get("ValidTarget") == Some("You");
-            super::replacements_damage_by::by(ctx, &p, name, you, true)?
+            let recipient_remembered = p.get("ValidTarget").is_some_and(is_remembered);
+            let redirect = super::replacements_damage_by::g11b_remembered_redirect(
+                ctx,
+                &p,
+                name,
+                remembered.filter(|_| !recipient_remembered && !line.has("EffectOwner")),
+            )?;
+            match redirect {
+                Some(by) => by,
+                None => {
+                    let you = p.get("ValidTarget") == Some("You");
+                    super::replacements_damage_by::by(ctx, &p, name, you, true)?
+                }
+            }
         }
     };
     let mut shields = Vec::new();

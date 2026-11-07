@@ -648,7 +648,7 @@ fn applies_to(by: &ReplaceBy, unit: &Unit) -> bool {
         | ReplaceBy::Riot
         | ReplaceBy::AsCopy { .. } => matches!(unit, Unit::Enter { .. }),
         ReplaceBy::Instead(_) => !matches!(unit, Unit::Other),
-        ReplaceBy::InsteadNext(_) | ReplaceBy::RedirectUpTo { .. } => {
+        ReplaceBy::InsteadNext(_) | ReplaceBy::RedirectUpTo { .. } | ReplaceBy::Redirect { .. } => {
             matches!(unit, Unit::Damage { .. })
         }
     }
@@ -1911,6 +1911,10 @@ impl Pass<'_> {
             }
             (ReplaceBy::RedirectUpTo { most, .. }, Unit::Damage { .. }) => {
                 self.r6f_redirect_up_to(at, candidate, *most, applied);
+            }
+            (ReplaceBy::Redirect { .. }, Unit::Damage { .. }) => {
+                self.end_once_shield(candidate);
+                self.r6f_redirect_up_to(at, candidate, u32::MAX, applied);
             }
             (ReplaceBy::Multiply(_) | ReplaceBy::Add(_), _) => {
                 self.scale(at, by, &applied);

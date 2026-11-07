@@ -589,6 +589,7 @@ const RUNS: &[&str] = &[
     "ReplaceBy.Instead",
     "ReplaceBy.InsteadNext",
     "ReplaceBy.RedirectUpTo",
+    "ReplaceBy.Redirect",
     "ReplaceBy.PreventAnd",
     "ReplaceBy.PreventAllBut",
     "ReplaceBy.Tapped",

@@ -1,7 +1,8 @@
 //! Goal: the damage pack g11b plays as printed at tables of two to four seats: damage that can't be prevented passes a
 //! prevention effect on the creature and kills it, the same damage without the flag is prevented, an unshielded creature
-//! dies either way, a shield of the next X damage prevents the number it counted as it began, and a shield of the sources
-//! of a chosen colour keeps that colour after the resolution.
+//! dies either way, a shield of the next X damage prevents the number it counted as it began, a shield of the sources
+//! of a chosen colour keeps that colour after the resolution, and a redirection sends all of the damage, or the next
+//! damage only, to the target fixed as it began.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
 use std::sync::Arc;
@@ -189,5 +190,56 @@ fn a_shield_keeps_the_color_chosen_as_it_began(
     run(&mut driver, "Bolt", aim, 0)?;
     let died = names_in(&driver, Zone::Graveyard(pid(owner))).contains(&"Victim".to_owned());
     assert_eq!(died, dead, "option {pick}");
+    Ok(())
+}
+
+/// A 3/3 creature with "{T}: damage that would be dealt to it this turn is dealt to target creature instead", the next
+/// time only when `next`.
+fn treefolk(next: bool) -> Arc<CardDefinition> {
+    let by = if next {
+        r#"{"Redirect":{"to":{"Target":0},"next":true}}"#
+    } else {
+        r#"{"Redirect":{"to":{"Target":0}}}"#
+    };
+    let shield = format!(
+        r#"{{"Activated":{{"cost":["Tap"],"effects":[{{"Shield":{{"by":{by},"duration":"UntilEndOfTurn","when":{{"Damage":{{"to":"This"}}}}}}}}],"targets":{CREATURE}}}}}"#
+    );
+    Arc::new(
+        CardDefinition::new("Treefolk")
+            .with_type(CardType::Creature)
+            .with_power_toughness(3, 3)
+            .with_rules(ability(&shield)),
+    )
+}
+
+#[rstest]
+fn a_redirection_sends_the_damage_to_the_target_fixed_as_it_began(
+    #[values(2, 3, 4)] seats: usize,
+    #[values(true, false)] next: bool,
+) -> Result<(), ScriptError> {
+    let owner = seats - 1;
+    let two = r#"[{"DealDamage":{"amount":2,"to":{"Target":0}}}]"#;
+    let mut driver = Driver::from_scenario(
+        Scenario::new(seats)
+            .battlefield(
+                0,
+                vec![
+                    ready(treefolk(next)),
+                    ready(rig("Bolt", two, CREATURE)),
+                    ready(rig("Shock", two, CREATURE)),
+                ],
+            )
+            .battlefield(owner, vec![ready(victim(None))]),
+    )?;
+    let victim = driver.target_named("Victim")?;
+    let me = driver.target_named("Treefolk")?;
+    run(&mut driver, "Treefolk", victim, 0)?;
+    run(&mut driver, "Bolt", me, 0)?;
+    run(&mut driver, "Shock", me, 0)?;
+    // Two hits of 2: the 4/4 dies when both are sent to it, and survives the one a "next time" shield sends.
+    let died = names_in(&driver, Zone::Graveyard(pid(owner))).contains(&"Victim".to_owned());
+    assert_eq!(died, !next);
+    let mine = names_in(&driver, Zone::Graveyard(pid(0)));
+    assert!(!mine.contains(&"Treefolk".to_owned()), "{mine:?}");
     Ok(())
 }
