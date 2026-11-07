@@ -11,11 +11,11 @@ fn behind(text: &str) -> Vec<String> {
 
 #[rstest]
 #[case::two_unread_counter_keys(
-    "Name:T\nTypes:Sorcery\nA:SP$ PutCounter | Choices$ Creature.YouCtrl | CounterType$ P1P1 | CounterNum$ 1 | ChoiceAmount$ 1 | MinChoiceAmount$ 1\n",
-    "key:PutCounter.MinChoiceAmount"
+    "Name:T\nTypes:Sorcery\nA:SP$ PutCounter | Choices$ Creature.YouCtrl | CounterType$ P1P1 | CounterNum$ 1 | UpTo$ True | MaxFromEffect$ 2\n",
+    "key:PutCounter.MaxFromEffect"
 )]
 #[case::one_in_the_line_one_in_its_sub_ability(
-    "Name:T\nTypes:Sorcery\nA:SP$ PutCounter | Choices$ Creature.YouCtrl | CounterType$ P1P1 | CounterNum$ 1 | ChoiceAmount$ 1 | SubAbility$ B\nSVar:B:DB$ Pump | Defined$ You | KW$ Flying | Duration$ Perpetual\n",
+    "Name:T\nTypes:Sorcery\nA:SP$ PutCounter | Choices$ Creature.YouCtrl | CounterType$ P1P1 | CounterNum$ 1 | UpTo$ True | SubAbility$ B\nSVar:B:DB$ Pump | Defined$ You | KW$ Flying | Duration$ Perpetual\n",
     "duration:Perpetual"
 )]
 fn a_second_gap_is_listed(#[case] script: &str, #[case] second: &str) {

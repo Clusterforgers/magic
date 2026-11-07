@@ -67,7 +67,7 @@ fn artifact(line: &str) -> String {
 )]
 #[case::creatures_with_a_floor(
     "Mode$ ReduceCost | ValidCard$ Creature.YouCtrl | Type$ Ability | Amount$ 2 | MinMana$ 1 | AffectedZone$ Battlefield",
-    json!({"applies_to": [{"Type": "Creature"}, {"ControlledBy": "You"}], "change": "Reduce", "mana": "{2}", "activating": "Any", "least": 1})
+    json!({"applies_to": [{"Type": "Creature"}, {"ControlledBy": "You"}], "change": "Reduce", "mana": "{2}", "activating": "Every", "least": 1})
 )]
 #[case::on_your_turn(
     "Mode$ ReduceCost | ValidCard$ Card | ValidSpell$ Activated.Equip | Activator$ You | Amount$ 1 | Condition$ PlayerTurn",

@@ -54,13 +54,28 @@ pub(crate) fn modified(
     rules: &Ability,
     mana: ManaCost,
 ) -> ManaCost {
+    modified_as(state, source, specific(state, address, rules), mana)
+}
+
+/// The mana of a mana ability of `source` with the cost modifiers of mana abilities and of every activated ability
+/// applied (CR 601.2f, 605.3a): "Enchanted creature's activated abilities cost {3} more to activate".
+pub(crate) fn mana_modified(state: &GameState, source: ObjectId, mana: ManaCost) -> ManaCost {
+    modified_as(state, source, Some(ActivationKind::Mana), mana)
+}
+
+/// The mana of an activation of an ability of the specific kind `own` with the cost modifiers in play applied.
+fn modified_as(
+    state: &GameState,
+    source: ObjectId,
+    own: Option<ActivationKind>,
+    mana: ManaCost,
+) -> ManaCost {
     let Some(target) = state
         .object(source)
         .map(crate::object::GameObject::reference)
     else {
         return mana;
     };
-    let own = specific(state, address, rules);
     let (mut more, mut less, mut floor) = (ManaCost::ZERO, ManaCost::ZERO, 0u32);
     for id in state.zone(Zone::Battlefield).iter().copied() {
         let Some(holder) = state.object(id) else {

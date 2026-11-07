@@ -10,6 +10,11 @@ export type DamageShield = {
  */
 to: Array<Target> | null, 
 /**
+ * The kind of object it protects ("creatures you control"), judged when the damage would be dealt (CR 611.2c);
+ * no limit when absent.
+ */
+each?: unknown, 
+/**
  * The sources of the damage it prevents, judged when the damage would be dealt; any source when empty.
  */
 source: unknown, 
