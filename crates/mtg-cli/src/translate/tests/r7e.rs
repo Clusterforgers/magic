@@ -62,6 +62,7 @@ fn a_search_for_any_cards_finds_as_many_as_it_names(
 #[case::artifact_or_creature("Artifact,Creature", true)]
 #[case::a_creature_aura("Creature", false)]
 #[case::your_creature("Creature.YouCtrl", false)]
+#[case::aerial_modification("Creature,Vehicle", false)]
 fn a_keyword_for_the_creature_an_aura_of_any_permanent_enchants_is_a_gap(
     #[case] enchant: &str,
     #[case] gapped: bool,

@@ -221,28 +221,32 @@ pub fn refusal(report: &Report, caps: &Caps) -> Option<String> {
 /// whose escape costs {3}{B} where the card prints {3}{B}{B}): the rule plays at another price, whatever the wording.
 fn keyword_cost_differs(report: &Report, rules: &mtg_cards::card::Card) -> bool {
     report.clauses.iter().any(|clause| {
-        let ClauseState::Differs { ability, .. } = clause.state else {
+        if !matches!(clause.state, ClauseState::Differs { .. }) {
             return false;
-        };
-        let Some(Ability::Keyword(ruled)) = rules
-            .faces
-            .get(clause.face)
-            .and_then(|face| face.abilities.get(ability))
+        }
+        let Some(printed) = read_keyword(&clause.text).and_then(|k| serde_json::to_value(k).ok())
         else {
-            return false;
-        };
-        let Some(printed) = read_keyword(&clause.text) else {
-            return false;
-        };
-        let (ruled, printed) = (serde_json::to_value(ruled), serde_json::to_value(printed));
-        let (Ok(ruled), Ok(printed)) = (ruled, printed) else {
             return false;
         };
         let name = |value: &serde_json::Value| {
             value.as_object().and_then(|map| map.keys().next().cloned())
         };
-        let (wanted, found) = (mana_parts(&printed), mana_parts(&ruled));
-        name(&ruled) == name(&printed) && !wanted.is_empty() && wanted != found
+        let wanted = mana_parts(&printed);
+        // The keywords of the face with the printed keyword's name: one of them must cost what the line prints.
+        let ruled: Vec<serde_json::Value> = rules
+            .faces
+            .get(clause.face)
+            .into_iter()
+            .flat_map(|face| &face.abilities)
+            .filter_map(|ability| match ability {
+                Ability::Keyword(keyword) => serde_json::to_value(keyword).ok(),
+                _ => None,
+            })
+            .filter(|value| name(value).is_some() && name(value) == name(&printed))
+            .collect();
+        !wanted.is_empty()
+            && !ruled.is_empty()
+            && ruled.iter().all(|value| mana_parts(value) != wanted)
     })
 }
 

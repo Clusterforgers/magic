@@ -216,12 +216,15 @@ fn refinement(ctx: &Ctx, p: &Params, subject: &Value) -> Tr<Option<Value>> {
     ))
 }
 
-/// Whether the face's `K:Enchant:` line lets the Aura enchant something other than a creature ("Enchant permanent").
+/// Whether the face's `K:Enchant:` line lets the Aura enchant something other than a creature ("Enchant permanent"); a
+/// Vehicle counts as a creature, as the Auras that enchant one make it a creature.
 fn enchants_a_noncreature(ctx: &Ctx) -> bool {
     ctx.keywords.iter().any(|keyword| {
         keyword.strip_prefix("Enchant:").is_some_and(|rest| {
             let kinds = rest.split(':').next().unwrap_or_default();
-            kinds.split(',').any(|kind| !kind.starts_with("Creature"))
+            kinds
+                .split(',')
+                .any(|kind| !kind.starts_with("Creature") && kind != "Vehicle")
         })
     })
 }
