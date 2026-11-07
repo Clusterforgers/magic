@@ -87,6 +87,14 @@ pub fn triggered(ctx: &mut Ctx, body: &str) -> Tr<Value> {
     {
         return unmapped("trigger:may-search-without-decider");
     }
+    // "When you cycle ~, you may put four +1/+1 counters ..." with no decider: the counters would be forced.
+    if p.get("OptionalDecider").is_none()
+        && p.get("TriggerDescription")
+            .is_some_and(|text| text.contains(", you may put ") && text.contains(" counter"))
+        && matches!(effects.as_slice(), [only] if only.get("PutCounters").is_some())
+    {
+        return unmapped("trigger:may-put-counters-without-decider");
+    }
     // "Whenever a player kicks a spell" scripted for the spells you control: the script names fewer spells than the card.
     if p.get("Mode") == Some("SpellCast")
         && p.get("ValidCard")

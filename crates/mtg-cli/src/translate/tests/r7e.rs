@@ -41,6 +41,37 @@ fn a_cast_trigger_for_your_spells_printed_for_any_player_is_a_gap(
 }
 
 #[rstest]
+#[case::decree_of_savagery(
+    "Mode$ Cycled | ValidCard$ Card.Self | Execute$ TrigDraw | TriggerDescription$ When you cycle CARDNAME, you may put a +1/+1 counter on it.",
+    true
+)]
+#[case::with_a_decider(
+    "Mode$ Cycled | ValidCard$ Card.Self | OptionalDecider$ You | Execute$ TrigDraw | TriggerDescription$ When you cycle CARDNAME, you may put a +1/+1 counter on it.",
+    false
+)]
+#[case::forced(
+    "Mode$ Cycled | ValidCard$ Card.Self | Execute$ TrigDraw | TriggerDescription$ When you cycle CARDNAME, put a +1/+1 counter on it.",
+    false
+)]
+fn a_printed_may_with_no_choice_in_the_script_is_a_gap(
+    #[case] trigger: &str,
+    #[case] gapped: bool,
+) {
+    let text = format!(
+        "Name:Subject\nTypes:Creature\nPT:1/1\nT:{}\nSVar:TrigPut:DB$ PutCounter | Defined$ Self | CounterType$ P1P1 | CounterNum$ 1\n",
+        trigger.replace("TrigDraw", "TrigPut")
+    );
+    let (json, found) = (
+        serde_json::to_string(&abilities(&text)).unwrap(),
+        gaps(&text),
+    );
+    let named = found
+        .iter()
+        .any(|gap| gap.contains("may-put-counters-without-decider"));
+    assert_eq!(named, gapped, "{found:?} {json}");
+}
+
+#[rstest]
 #[case::behold_the_beyond("Card", "Mandatory$ True | ", r#""min":3"#)]
 #[case::a_stated_quality("Creature", "Mandatory$ True | ", r#""min":0"#)]
 #[case::up_to("Card", "", r#""min":0"#)]
