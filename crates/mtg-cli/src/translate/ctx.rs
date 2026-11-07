@@ -443,7 +443,8 @@ const COMMON: [&str; 11] = [
 /// Whether a key is only text for people or a hint for Forge's computer player.
 pub fn is_hint(key: &str) -> bool {
     const SUFFIXES: [&str; 4] = ["Description", "Desc", "Prompt", "Title"];
-    const EXACT: [&str; 12] = [
+    const EXACT: [&str; 14] = [
+        "PromptToSkipOptionalAbility",
         "Image",
         "AILogic",
         "AIPreference",
@@ -456,6 +457,7 @@ pub fn is_hint(key: &str) -> bool {
         "Secondary",
         "IsCurse",
         "TriggerDescription",
+        "LockInText",
     ];
     EXACT.contains(&key)
         || SUFFIXES.iter().any(|suffix| key.ends_with(suffix))

@@ -1061,7 +1061,7 @@ fn modifier(
         Some(other) => return unmapped(format!("key:Static.CostModifier.Color={other}")),
     };
     // A number or coloured symbols are the mana; a count (an `SVar`) is how many times {1} applies.
-    if ctx.svar(amount).is_some() {
+    if ctx.svar(amount).is_some() || amount.starts_with("Count$") {
         let per = super::amount::amount(ctx, amount)?;
         return Ok(
             json!({"CostModifier": {"applies_to": applies, "change": change, "mana": symbol, "per": per}}),

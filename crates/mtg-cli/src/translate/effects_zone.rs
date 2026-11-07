@@ -608,10 +608,16 @@ fn change_zone(ctx: &mut Ctx, p: &Params, origin: &str, destination: &str) -> Tr
     {
         return unmapped("key:ChangeZone.ShuffleNonMandatory");
     }
-    // A target is one object: `ChangeNum$ 1` says so again; any other count, or one beside target bounds, is not read.
+    // A target is one object: `ChangeNum$ 1` says so again, and so does it of the one card an event names; any other count,
+    // or one beside target bounds, is not read.
+    let one_named = !p.has("ValidTgts")
+        && matches!(
+            p.get("Defined"),
+            Some("TriggeredCard" | "TriggeredNewCardLKICopy")
+        );
     if p.has("ChangeNum")
         && (p.get("ChangeNum") != Some("1")
-            || !p.has("ValidTgts")
+            || !(p.has("ValidTgts") || one_named)
             || p.has("TargetMax")
             || p.has("TargetMin"))
     {
@@ -1061,7 +1067,11 @@ fn zone_owner(ctx: &Ctx, word: &str) -> Tr<Value> {
 }
 
 /// The keys of a `Dig` line that are read.
-const DIG_KEYS: [&str; 22] = [
+const DIG_KEYS: [&str; 26] = [
+    "ChangeType",
+    "Choser",
+    "NoLooking",
+    "Attacking",
     "DigNum",
     "RememberRevealed",
     "ChangeNum",
@@ -1142,6 +1152,15 @@ pub fn dig(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
     }
     let hide = face_down(p)?;
     let hidden = hide != Hide::No;
+    // `ChangeType$ Card` is `ChangeValid$ Card` written with the other key: any card, as a dig without a filter.
+    if p.get("ChangeType").is_some_and(|kind| kind != "Card") {
+        return unmapped("key:Dig.ChangeType");
+    }
+    // Only whether the script shows the cards to the player: the dig below looks at them either way.
+    let _ = p.get("NoLooking");
+    // The script of an attacking dig may reveal where the printed text only looks.
+    let reveals = p.get("Reveal") == Some("True")
+        && !(p.has("Attacking") && !ctx.oracle.to_lowercase().contains("reveal"));
     let who = subject(ctx, p, "You", None)?;
     let count = amount(ctx, p.get("DigNum").unwrap_or("1"))?;
     // "Exile the top card of your library face down": nobody looks at it, the exiler neither.
@@ -1156,7 +1175,14 @@ pub fn dig(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
     let kept = ctx.fresh("kept");
     let rest = ctx.fresh("rest");
     let from_top = json!({ "Bound": top });
-    let take = Take::of(ctx, p)?;
+    let mut take = Take::of(ctx, p)?;
+    // One card looked at: "all of them, if you may" is taking up to one.
+    if matches!(take, Take::All)
+        && p.get("Optional") == Some("True")
+        && p.get("DigNum").is_none_or(|n| n == "1")
+    {
+        take = Take::Count(1);
+    }
     let filter = p.get("ChangeValid");
     let may =
         p.get("Optional") == Some("True") || (filter.is_some() && sentence_allows_none(ctx.oracle));
@@ -1207,6 +1233,10 @@ pub fn dig(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
     let moved = if matches!(take, Take::All) {
         matching
     } else {
+        if let Some((pick, chooser)) = dig_chooser(ctx, p, &who)? {
+            effects.extend(pick);
+            choose["who"] = chooser;
+        }
         effects.push(json!({ "Choose": choose }));
         json!({ "Bound": kept })
     };
@@ -1214,13 +1244,13 @@ pub fn dig(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
     if filter.is_some()
         && !hidden
         && matches!(&to, Goes::To(zone) if *zone == json!("Hand"))
-        && p.get("Reveal") != Some("True")
+        && !reveals
         && p.get("NoReveal") != Some("True")
         && r5a_reveals_taken(ctx.oracle)
     {
         effects.push(json!({"Reveal": {"what": moved.clone()}}));
     }
-    if p.get("Reveal") == Some("True") {
+    if reveals {
         // "Reveal the top X cards" shows every card dug, not only the ones taken.
         effects.push(json!({"Reveal": {"what": from_top}}));
     }
@@ -1239,7 +1269,42 @@ pub fn dig(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
     let all_taken = matches!(take, Take::All) && matches!(filter, None | Some("Card"));
     let rest = (!all_taken).then(|| moves(&rest_ref, rest_to));
     effects.extend(remember_revealed(ctx, revealing, put, rest));
+    // "Onto the battlefield tapped and attacking": the card taken joins the attack (CR 508.4).
+    if p.has("Attacking") {
+        if hidden
+            || !matches!(take, Take::Count(1))
+            || p.get("DestinationZone") != Some("Battlefield")
+        {
+            return unmapped("key:Dig.Attacking-shape");
+        }
+        super::frame::enters_attacking(ctx, p, &mut effects)?;
+        // What the later lines call "it" is the permanent that entered, not the card it was in the library (CR 400.7).
+        if p.get("RememberChanged") == Some("True") {
+            let moved = effects
+                .iter()
+                .find_map(|step| step.get("Move")?.get("as")?.as_str().map(str::to_owned));
+            ctx.remembered = moved.map(|name| json!({ "Bound": name }));
+        }
+    }
     Ok(effects)
+}
+
+/// `Choser$` of a `Dig`: the player who picks among the cards looked at, with the step that names them when it is "an
+/// opponent" (the controller picks which one on resolution); `None` when it is the player the dig is for.
+fn dig_chooser(ctx: &mut Ctx, p: &Params, who: &Value) -> Tr<Option<(Vec<Value>, Value)>> {
+    let Some(word) = p.get("Choser") else {
+        return Ok(None);
+    };
+    match word {
+        "Player.Opponent" | "Opponent" if *who == json!("You") => {
+            let opponent = ctx.fresh("opponent");
+            let pick = json!({"Choose": {"who": "You", "from": "Opponents", "as": opponent}});
+            Ok(Some((vec![pick], json!({ "Bound": opponent }))))
+        }
+        "Targeted" if p.has("ValidTgts") => Ok(Some((Vec::new(), who.clone()))),
+        word if p.get("Defined") == Some(word) => Ok(Some((Vec::new(), who.clone()))),
+        _ => unmapped("key:Dig.Choser"),
+    }
 }
 
 /// `RememberRevealed$` of a `Dig`: "the cards revealed this way", every card dug, as each is after its move. Only a dig that
@@ -1296,6 +1361,8 @@ fn exile_top(ctx: &mut Ctx, p: &Params, who: &Value, count: &Value, hide: Hide) 
     // A card exiled face up is seen by every player, so `Reveal$` adds nothing. It is read here, not left to whether the
     // face-down test happened to look at it: the verdict must not hang on the order of those reads.
     let _ = p.get("Reveal");
+    // Nothing is left to put back, so how the rest is ordered says nothing.
+    let _ = p.get("SkipReorder");
     let exiled = ctx.fresh("exiled");
     if p.get("RememberChanged") == Some("True") {
         ctx.remembered = Some(json!({ "Bound": exiled }));
@@ -1450,6 +1517,8 @@ pub fn dig_until(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
             "RememberRevealed",
             "ValidDescription",
             "OptionalFoundMove",
+            "Attacking",
+            "Optional",
         ],
     )?;
     // Forge remembers every card revealed, the one found included; where the found card goes elsewhere, "the cards
@@ -1526,13 +1595,30 @@ pub fn dig_until(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
         super::remember::bind_moved(ctx, &mut rest, verb, "revealed");
     }
     effects.push(rest);
+    if p.has("Attacking") {
+        // The one card found joins the attack (CR 508.4); a count or a found card with no move is not that shape.
+        if find.get("count").is_some()
+            || optional
+            || p.get("FoundDestination") != Some("Battlefield")
+        {
+            return unmapped("key:DigUntil.Attacking-shape");
+        }
+        super::frame::enters_attacking(ctx, p, &mut effects)?;
+    }
     if p.get("Shuffle") == Some("True") {
         // The player whose library was revealed shuffles it.
         let mut shuffle = json!({"Shuffle": {}});
         if who != json!("You") {
-            shuffle["Shuffle"]["who"] = who;
+            shuffle["Shuffle"]["who"] = who.clone();
         }
         effects.push(shuffle);
+    }
+    // "You may reveal cards ...": declining does none of it, the shuffle included.
+    if p.get("Optional") == Some("True") {
+        if optional {
+            return unmapped("key:DigUntil.Optional-with-OptionalFoundMove");
+        }
+        return Ok(super::frame::ask(effects, &who));
     }
     Ok(effects)
 }
