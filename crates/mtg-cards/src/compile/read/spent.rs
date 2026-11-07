@@ -142,7 +142,8 @@ fn spent_on_the_cast() -> Amount {
 pub fn sacrifice_unless(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
     let sacrifice = effects::sacrifice_itself(r)?;
     r.need("unless")?;
-    let spent = was_spent(r, false)?;
+    // Only one symbol, as the cards that sacrifice themselves print it.
+    let spent = was_spent(r, false).filter(|spent| matches!(spent, Condition::ManaSpent(_)))?;
     Some(vec![Effect::If {
         condition: Condition::Not(Box::new(spent)),
         then: vec![sacrifice],
