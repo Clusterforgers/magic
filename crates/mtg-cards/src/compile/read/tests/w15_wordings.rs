@@ -230,3 +230,272 @@ fn w15_damage_divided_among_up_to_x(#[case] left: &str, #[case] right: &str, #[c
 fn w15_also_deals(#[case] left: &str, #[case] right: &str, #[case] same: bool) {
     assert_eq!(same_text(left, right), same, "{right}");
 }
+
+#[rstest]
+#[case::lesser(
+    "Whenever a nontoken creature you control dies, mill two cards. Then return a creature card with lesser mana value than the creature that died from your graveyard to your hand.",
+    "Whenever a nontoken creature you control dies, mill two cards. Then return a creature card with mana value less than that creature's mana value from your graveyard to your hand.",
+    true
+)]
+#[case::lesser_sacrificed(
+    "Whenever you sacrifice a creature, return target creature card with lesser mana value from your graveyard to the battlefield.",
+    "Whenever you sacrifice a creature, return target creature card with mana value less than that creature's mana value from your graveyard to the battlefield.",
+    true
+)]
+#[case::greater(
+    "Whenever you sacrifice a creature, return target creature card with lesser mana value from your graveyard to the battlefield.",
+    "Whenever you sacrifice a creature, return target creature card with mana value greater than that creature's mana value from your graveyard to the battlefield.",
+    false
+)]
+#[case::other_zone(
+    "Whenever you sacrifice a creature, return target creature card with lesser mana value from your graveyard to the battlefield.",
+    "Whenever you sacrifice a creature, return target creature card with mana value less than that creature's mana value from your hand to the battlefield.",
+    false
+)]
+fn w15_lesser_mana_value(#[case] left: &str, #[case] right: &str, #[case] same: bool) {
+    assert_eq!(same_text(left, right), same, "{right}");
+}
+
+#[rstest]
+#[case::for_each(
+    "Draw a card. Until end of turn, target creature gains trample and gets +1/+0 for each card you've drawn this turn.",
+    "Draw a card. Until end of turn, target creature gains trample and gets +X/+0, where X is the number of cards you've drawn this turn.",
+    true
+)]
+#[case::both(
+    "~ gets +1/+1 for each creature you control.",
+    "~ gets +X/+X, where X is the number of creatures you control.",
+    true
+)]
+#[case::toughness(
+    "~ gets +0/+1 for each creature you control.",
+    "~ gets +0/+X, where X is the number of creatures you control.",
+    true
+)]
+#[case::other_stat(
+    "~ gets +1/+0 for each creature you control.",
+    "~ gets +0/+X, where X is the number of creatures you control.",
+    false
+)]
+#[case::other_pool(
+    "~ gets +1/+0 for each creature you control.",
+    "~ gets +X/+0, where X is the number of lands you control.",
+    false
+)]
+#[case::two_for_each(
+    "~ gets +2/+0 for each creature you control.",
+    "~ gets +X/+0, where X is the number of creatures you control.",
+    false
+)]
+fn w15_for_each_and_where_x(#[case] left: &str, #[case] right: &str, #[case] same: bool) {
+    assert_eq!(same_text(left, right), same, "{right}");
+}
+
+#[rstest]
+#[case::or_and_or(
+    "When this creature enters, each opponent may put an artifact or enchantment card from their hand onto the battlefield.",
+    "When ~ enters, each opponent may put an enchantment and/or artifact card from their hand onto the battlefield.",
+    true
+)]
+#[case::in_the_order_of_the_names(
+    "Put an Equipment or Aura card into your hand.",
+    "Put an Aura or Equipment card into your hand.",
+    true
+)]
+#[case::other_kind(
+    "When this creature enters, each opponent may put an artifact or enchantment card from their hand onto the battlefield.",
+    "When ~ enters, each opponent may put a land and/or artifact card from their hand onto the battlefield.",
+    false
+)]
+#[case::one_kind(
+    "When this creature enters, each opponent may put an artifact or enchantment card from their hand onto the battlefield.",
+    "When ~ enters, each opponent may put an artifact card from their hand onto the battlefield.",
+    false
+)]
+#[case::other_zone(
+    "When this creature enters, each opponent may put an artifact or enchantment card from their hand onto the battlefield.",
+    "When ~ enters, each opponent may put an enchantment and/or artifact card from their graveyard onto the battlefield.",
+    false
+)]
+fn w15_either_kind(#[case] left: &str, #[case] right: &str, #[case] same: bool) {
+    assert_eq!(same_text(left, right), same, "{right}");
+}
+
+#[rstest]
+#[case::ticket(
+    "{G}, {T}: You get {TK}.",
+    "{G}, {T}: You get a ticket counter.",
+    true
+)]
+#[case::two_tickets(
+    "{G}, {T}: You get {TK}{TK}.",
+    "{G}, {T}: You get a ticket counter.",
+    false
+)]
+#[case::each_other_player(
+    "When this creature enters, each other player may return a creature card from their graveyard to the battlefield.",
+    "When ~ enters, each opponent may return a creature card from their graveyard to the battlefield.",
+    true
+)]
+#[case::each_player(
+    "When this creature enters, each player may return a creature card from their graveyard to the battlefield.",
+    "When ~ enters, each opponent may return a creature card from their graveyard to the battlefield.",
+    false
+)]
+#[case::combat_step(
+    "At the beginning of your combat step, tap ~.",
+    "At the beginning of combat on your turn, tap ~.",
+    true
+)]
+#[case::each_combat(
+    "At the beginning of each combat, tap ~.",
+    "At the beginning of combat on your turn, tap ~.",
+    false
+)]
+#[case::plural_name(
+    "When ~ enter, draw a card.",
+    "When ~ enters, draw a card.",
+    true
+)]
+fn w15_same_words(#[case] left: &str, #[case] right: &str, #[case] same: bool) {
+    assert_eq!(same_text(left, right), same, "{right}");
+}
+
+#[rstest]
+#[case::either_order(
+    "As an additional cost to cast this spell, pay {4} or sacrifice an artifact or creature.",
+    "As an additional cost to cast ~, sacrifice an artifact or creature or pay {4}.",
+    true
+)]
+#[case::other_mana(
+    "As an additional cost to cast this spell, pay {4} or sacrifice an artifact or creature.",
+    "As an additional cost to cast ~, sacrifice an artifact or creature or pay {3}.",
+    false
+)]
+#[case::other_kind(
+    "As an additional cost to cast this spell, pay {4} or sacrifice an artifact or creature.",
+    "As an additional cost to cast ~, sacrifice a land or pay {4}.",
+    false
+)]
+#[case::and_for_or(
+    "As an additional cost to cast this spell, pay {4} or sacrifice an artifact or creature.",
+    "As an additional cost to cast ~, sacrifice an artifact or creature and pay {4}.",
+    false
+)]
+fn w15_costs_in_either_order(#[case] left: &str, #[case] right: &str, #[case] same: bool) {
+    assert_eq!(same_text(left, right), same, "{right}");
+}
+
+#[rstest]
+#[case::blocks_a_permanent(
+    "Whenever this creature blocks a creature, that creature doesn't untap during its controller's next untap step.",
+    "Whenever ~ blocks a permanent, that creature doesn't untap during its controller's next untap step.",
+    true
+)]
+#[case::blocks_a_land(
+    "Whenever this creature blocks a creature, that creature doesn't untap during its controller's next untap step.",
+    "Whenever ~ blocks a land, that creature doesn't untap during its controller's next untap step.",
+    false
+)]
+#[case::blocks_or_attacks(
+    "Whenever this creature blocks a creature, that creature doesn't untap during its controller's next untap step.",
+    "Whenever ~ attacks a permanent, that creature doesn't untap during its controller's next untap step.",
+    false
+)]
+fn w15_blocks_a_permanent(#[case] left: &str, #[case] right: &str, #[case] same: bool) {
+    assert_eq!(same_text(left, right), same, "{right}");
+}
+
+#[rstest]
+#[case::one_or_more(
+    "When this creature dies, if there's a Lesson card in your graveyard, draw a card.",
+    "When ~ dies, if there are 1 or more Lesson cards in your graveyard, draw a card.",
+    true
+)]
+#[case::an_aura(
+    "~ gets +1/+1 as long as there's an Aura card in your graveyard.",
+    "~ gets +1/+1 as long as there are 1 or more Aura cards in your graveyard.",
+    true
+)]
+#[case::two_or_more(
+    "~ gets +1/+1 as long as there's a Lesson card in your graveyard.",
+    "~ gets +1/+1 as long as there are 2 or more Lesson cards in your graveyard.",
+    false
+)]
+#[case::other_zone(
+    "~ gets +1/+1 as long as there's a Lesson card in your graveyard.",
+    "~ gets +1/+1 as long as there are 1 or more Lesson cards in your hand.",
+    false
+)]
+#[case::other_kind(
+    "~ gets +1/+1 as long as there's a Lesson card in your graveyard.",
+    "~ gets +1/+1 as long as there are 1 or more Aura cards in your graveyard.",
+    false
+)]
+fn w15_one_or_more(#[case] left: &str, #[case] right: &str, #[case] same: bool) {
+    assert_eq!(same_text(left, right), same, "{right}");
+}
+
+#[rstest]
+#[case::may_reveal(
+    "When this creature enters, look at the top four cards of your library. You may reveal a noncreature, nonland card from among them and put it into your hand. Put the rest on the bottom of your library in a random order.",
+    "When ~ enters, look at the top four cards of your library and may reveal a noncreature nonland card from among them and put it into your hand. Then put the rest of those cards on the bottom in a random order.",
+    true
+)]
+#[case::other_count(
+    "When this creature enters, look at the top four cards of your library. You may reveal a noncreature, nonland card from among them and put it into your hand. Put the rest on the bottom of your library in a random order.",
+    "When ~ enters, look at the top five cards of your library and may reveal a noncreature nonland card from among them and put it into your hand. Then put the rest of those cards on the bottom in a random order.",
+    false
+)]
+#[case::other_kind(
+    "When this creature enters, look at the top four cards of your library. You may reveal a noncreature, nonland card from among them and put it into your hand. Put the rest on the bottom of your library in a random order.",
+    "When ~ enters, look at the top four cards of your library and may reveal a noncreature card from among them and put it into your hand. Then put the rest of those cards on the bottom in a random order.",
+    false
+)]
+#[case::rest_on_top(
+    "When this creature enters, look at the top four cards of your library. You may reveal a noncreature, nonland card from among them and put it into your hand. Put the rest on the bottom of your library in a random order.",
+    "When ~ enters, look at the top four cards of your library and may reveal a noncreature nonland card from among them and put it into your hand. Then put the rest of those cards on top in a random order.",
+    false
+)]
+#[case::forced(
+    "When this creature enters, look at the top four cards of your library. You may reveal a noncreature, nonland card from among them and put it into your hand. Put the rest on the bottom of your library in a random order.",
+    "When ~ enters, look at the top four cards of your library. Reveal a noncreature nonland card from among them and put it into your hand. Then put the rest of those cards on the bottom in a random order.",
+    false
+)]
+fn w15_look_and_may_reveal(#[case] left: &str, #[case] right: &str, #[case] same: bool) {
+    assert_eq!(same_text(left, right), same, "{right}");
+}
+
+#[rstest]
+#[case::mode_name(
+    "Choose one — / • Two-Weapon Fighting — Double target creature's power and toughness until end of turn. / • Archery — This spell deals 5 damage to target creature with flying.",
+    "Choose one — / • Double target creature's power and toughness until end of turn. / • ~ deals 5 damage to target creature with flying.",
+    true
+)]
+#[case::quoted_ability_word(
+    "II — This Saga gains \"Landfall — Whenever a land you control enters, create a 1/1 green Elf creature token.\"",
+    "II — ~ gains \"Whenever a land you control enters, create a 1/1 green Elf creature token.\"",
+    true
+)]
+#[case::other_effect_in_a_mode(
+    "Choose one — / • Archery — This spell deals 5 damage to target creature with flying.",
+    "Choose one — / • ~ deals 4 damage to target creature with flying.",
+    false
+)]
+#[case::other_event_in_a_quote(
+    "II — This Saga gains \"Landfall — Whenever a land you control enters, create a 1/1 green Elf creature token.\"",
+    "II — ~ gains \"Whenever a creature you control enters, create a 1/1 green Elf creature token.\"",
+    false
+)]
+#[case::a_clause_is_not_a_name(
+    "• Destroy target artifact. — Draw a card.",
+    "• Draw a card.",
+    false
+)]
+fn w15_names_of_modes_and_quoted_abilities(
+    #[case] left: &str,
+    #[case] right: &str,
+    #[case] same: bool,
+) {
+    assert_eq!(same_text(left, right), same, "{right}");
+}

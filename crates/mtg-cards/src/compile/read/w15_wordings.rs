@@ -1,7 +1,7 @@
 //! Wordings of one meaning that the oracle text and the writers say differently (w15 win-back of `Differs` clauses):
 //! "also deals", a toll counted as "{X}, where X is the number of", "any number" of sacrificed creatures, the other card
 //! of two looked at, the top card revealed and sorted by "If it's a ..., Otherwise", a pair of types in a count, and a
-//! copy of "any other" card in a graveyard. Both sides of a comparison are normalized, so a rule of another meaning
+//! copy of "any other" card in a graveyard, and the names of modes and quoted abilities. Both sides of a comparison are normalized, so a rule of another meaning
 //! still differs.
 
 /// The text with each of the wordings below written one way.
@@ -15,6 +15,16 @@ pub(super) fn normal(text: &str) -> String {
         any_other_in_a_graveyard,
         divided_among,
         attached_pair,
+        flavor_names,
+        blocks_a_permanent,
+        same_words,
+        costs_in_order,
+        lesser_value,
+        for_each_count,
+        either_kind,
+        there_is_one,
+        there_is_an,
+        look_and_may_reveal,
     ] {
         if let Some(changed) = step(&text) {
             text = changed;
@@ -24,8 +34,8 @@ pub(super) fn normal(text: &str) -> String {
 }
 
 /// The words that end the noun a count is of ("the number of cards in your hand").
-const NOUN_ENDS: [&str; 8] = [
-    " among ", " in ", " you ", " your ", " that ", " on ", " with ", " of ",
+const NOUN_ENDS: [&str; 9] = [
+    " among ", " in ", " you ", " you've ", " your ", " that ", " on ", " with ", " of ",
 ];
 
 /// "pays {X}, where X is the number of cards in your hand" as "pays {1} for each card in your hand".
@@ -179,4 +189,185 @@ fn attached_pair(text: &str) -> Option<String> {
         &text[..at],
         &text[end..]
     ))
+}
+
+/// Words of one meaning: a ticket counter is {TK}, a player who is not the controller is an opponent, and the combat step
+/// of your turn is the beginning of combat on your turn.
+fn same_words(text: &str) -> Option<String> {
+    const PAIRS: [(&str, &str); 4] = [
+        ("{TK}", "a ticket counter"),
+        ("each other player", "each opponent"),
+        (
+            "beginning of your combat step",
+            "beginning of combat on your turn",
+        ),
+        ("~ enter,", "~ enters,"),
+    ];
+    let mut changed = text.to_owned();
+    for (from, to) in PAIRS {
+        changed = changed.replace(from, to);
+    }
+    (changed != text).then_some(changed)
+}
+
+/// "As an additional cost to cast this spell, pay {4} or sacrifice an artifact or creature." as "..., sacrifice an artifact
+/// or creature or pay {4}.": the two costs are alternatives in either order.
+fn costs_in_order(text: &str) -> Option<String> {
+    const COST: &str = "As an additional cost to cast ";
+    let at = text.find(COST)?;
+    let comma = text[at..].find(", ")? + at + 2;
+    let rest = text[comma..].strip_prefix("pay {")?;
+    let close = rest.find("} or sacrifice ")?;
+    let mana = &rest[..close];
+    let after = &rest[close + "} or sacrifice ".len()..];
+    let end = after.find('.').unwrap_or(after.len());
+    Some(format!(
+        "{}sacrifice {} or pay {{{mana}}}{}",
+        &text[..comma],
+        &after[..end],
+        &after[end..]
+    ))
+}
+
+/// "lesser mana value than the creature that died" as "mana value less than that creature's mana value".
+fn lesser_value(text: &str) -> Option<String> {
+    const THAN: &str = " with lesser mana value than the creature that died";
+    const LESS: &str = " with mana value less than that creature's mana value";
+    let changed = text
+        .replace(THAN, LESS)
+        .replace(" with lesser mana value", LESS);
+    (changed != text).then_some(changed)
+}
+
+/// "gets +1/+0 for each card you've drawn this turn" as "gets +X/+0, where X is the number of cards you've drawn this
+/// turn": the number counted once for each.
+fn for_each_count(text: &str) -> Option<String> {
+    const WHERE: &str = ", where X is the number of ";
+    const SHAPES: [(&str, &str); 3] = [("+X/+0", "+1/+0"), ("+0/+X", "+0/+1"), ("+X/+X", "+1/+1")];
+    for (counted, each) in SHAPES {
+        let head = format!("{counted}{WHERE}");
+        let Some(at) = text.find(&head) else {
+            continue;
+        };
+        let after = at + head.len();
+        let end = text[after..]
+            .find(['.', ',', '"', '\n'])
+            .map_or(text.len(), |end| end + after);
+        let things = &text[after..end];
+        let noun_end = NOUN_ENDS
+            .iter()
+            .filter_map(|word| things.find(word))
+            .min()
+            .unwrap_or(things.len());
+        return Some(format!(
+            "{}{each} for each {}{}{}",
+            &text[..at],
+            singular(&things[..noun_end]),
+            &things[noun_end..],
+            &text[end..]
+        ));
+    }
+    None
+}
+
+/// "or" and "and/or" between two kinds said one way, in the order of their names: "an artifact or enchantment card"
+/// and "an enchantment and/or artifact card" choose one card of either kind.
+fn either_kind(text: &str) -> Option<String> {
+    const NOUNS: [&str; 6] = ["card", "cards", "creature", "creatures", "permanent", "permanents"];
+    let words: Vec<&str> = text.split(' ').collect();
+    let mut out: Vec<String> = Vec::with_capacity(words.len());
+    let mut at = 0;
+    let mut changed = false;
+    while at < words.len() {
+        if let [first, joint, second, noun] = words[at..].get(..4).unwrap_or_default()
+            && matches!(*joint, "or" | "and/or")
+            && NOUNS.contains(noun)
+            && ![first, second].iter().any(|word| word.contains(['.', ',', ':', '"']))
+        {
+            let (low, high) = if first.to_lowercase() <= second.to_lowercase() {
+                (first, second)
+            } else {
+                (second, first)
+            };
+            out.extend([(*low).to_owned(), "or".to_owned(), (*high).to_owned()]);
+            changed = true;
+            at += 3;
+        } else {
+            out.push(words[at].to_owned());
+            at += 1;
+        }
+    }
+    changed.then(|| out.join(" "))
+}
+
+/// "blocks a permanent" as "blocks a creature": only a creature can be blocked.
+fn blocks_a_permanent(text: &str) -> Option<String> {
+    text.contains(" blocks a permanent")
+        .then(|| text.replace(" blocks a permanent", " blocks a creature"))
+}
+
+/// A count of one or more as "there's a": "if there are 1 or more Lesson cards in your graveyard" as "if there's a
+/// Lesson card in your graveyard".
+fn there_is_one(text: &str) -> Option<String> {
+    const MANY: &str = "there are 1 or more ";
+    let at = text.find(MANY)?;
+    let after = at + MANY.len();
+    let end = [" in ", " among ", " you control", " on "]
+        .iter()
+        .filter_map(|word| text[after..].find(word))
+        .min()?
+        + after;
+    Some(format!(
+        "{}there's a {}{}",
+        &text[..at],
+        singular(&text[after..end]),
+        &text[end..]
+    ))
+}
+
+/// "there's an Aura card" as "there's a Aura card": the article follows the vowel, not the rules.
+fn there_is_an(text: &str) -> Option<String> {
+    text.contains("there's an ")
+        .then(|| text.replace("there's an ", "there's a "))
+}
+
+/// "look at the top four cards of your library and may reveal ..." as "... library. You may reveal ...", and the rest of
+/// those cards put back "on the bottom" as "on the bottom of your library".
+fn look_and_may_reveal(text: &str) -> Option<String> {
+    let mut changed = text.to_owned();
+    if let Some(at) = changed.find(" cards of your library and may reveal ") {
+        let at = at + " cards of your library".len();
+        changed = format!("{}. You may reveal {}", &changed[..at], &changed[at + " and may reveal ".len()..]);
+    }
+    changed = changed
+        .replace(
+            ". Then put the rest of those cards on the bottom in a random order",
+            ". Put the rest on the bottom of your library in a random order",
+        )
+        .replace("noncreature, nonland card", "noncreature nonland card");
+    (changed != text).then_some(changed)
+}
+
+/// The text without the names that open a mode ("• Archery — ") or a quoted ability ("gains "Landfall — Whenever ..."")
+/// and carry no rules: an ability word is flavor.
+fn flavor_names(text: &str) -> Option<String> {
+    let mut out = String::with_capacity(text.len());
+    let mut rest = text;
+    let mut changed = false;
+    while let Some(at) = rest.find(['"', '•']) {
+        let marker = if rest[at..].starts_with('"') {
+            "\""
+        } else {
+            "• "
+        };
+        let after = (at + marker.len()).min(rest.len());
+        out.push_str(&rest[..after]);
+        rest = &rest[after..];
+        if let Some(len) = super::super::classify::ability_word_len(rest) {
+            rest = &rest[len..];
+            changed = true;
+        }
+    }
+    out.push_str(rest);
+    changed.then_some(out)
 }
