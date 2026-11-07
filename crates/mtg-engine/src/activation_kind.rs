@@ -45,6 +45,12 @@ pub(crate) fn is_kind(wanted: ActivationKind, own: Option<ActivationKind>) -> bo
     }
 }
 
+#[cfg(test)]
+thread_local! {
+    /// How many times `modified_as` walked the battlefield on this thread: the work a test bounds.
+    pub(crate) static WALKS: std::cell::Cell<usize> = const { std::cell::Cell::new(0) };
+}
+
 /// The mana of an activation with the cost modifiers in play applied: the increases first, then the reductions, and no
 /// reduction takes the cost below the most `least` any applying reduction names.
 pub(crate) fn modified(
@@ -70,6 +76,12 @@ fn modified_as(
     own: Option<ActivationKind>,
     mana: ManaCost,
 ) -> ManaCost {
+    // No cost modifier exists in the game, so the walk over the battlefield would find none.
+    if !state.possible.costs {
+        return mana;
+    }
+    #[cfg(test)]
+    WALKS.with(|walks| walks.set(walks.get() + 1));
     let Some(target) = state
         .object(source)
         .map(crate::object::GameObject::reference)
