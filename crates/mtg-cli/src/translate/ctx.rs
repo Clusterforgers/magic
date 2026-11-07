@@ -124,6 +124,8 @@ pub struct Ctx<'a> {
     pub scoped: std::collections::BTreeSet<String>,
     /// The `Cost$` of the ability line being translated, which `Exiled` reads (the cards its exile parts took).
     pub ability_cost: Option<String>,
+    /// The name a reflexive trigger reads as `TriggerRememberAmount`: the number its setup kept (`RememberSVarAmount$`).
+    pub trigger_amount: Option<String>,
     /// The memories the card reads on a line other than the one that wrote them.
     pub memory: super::memory::Plan,
     /// The objects an `Effect` object remembers, which a trigger or static it carries reads as `IsRemembered`; kept across
@@ -202,6 +204,7 @@ impl<'a> Ctx<'a> {
             imprinted: None,
             moved_from: BTreeMap::new(),
             ability_cost: None,
+            trigger_amount: None,
             counted: std::collections::BTreeSet::new(),
             scoped: std::collections::BTreeSet::new(),
             in_cost: std::cell::Cell::new(false),

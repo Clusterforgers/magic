@@ -419,6 +419,10 @@ fn count_base(ctx: &Ctx, base: &str) -> Tr<Value> {
         "xPaid" => Ok(json!("X")),
         // The same number as `Remembered$Amount`.
         "RememberedSize" => super::memory::remembered_count(ctx),
+        "TriggerRememberAmount" => ctx.trigger_amount.as_ref().map_or_else(
+            || unmapped("amount:TriggerRememberAmount"),
+            |name| Ok(json!({ "Bound": name })),
+        ),
         "ChosenNumber" => ctx.chosen_number.as_ref().map_or_else(
             || unmapped("amount:ChosenNumber-without-a-choice"),
             |name| Ok(json!({"ChosenAs": name})),

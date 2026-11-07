@@ -247,7 +247,12 @@ pub fn immediate_trigger(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
     only(
         p,
         "ImmediateTrigger",
-        &["Execute", "UnlessSwitched", "RememberObjects"],
+        &[
+            "Execute",
+            "UnlessSwitched",
+            "RememberObjects",
+            "RememberSVarAmount",
+        ],
     )?;
     let Some(name) = p.get("Execute") else {
         return unmapped("key:ImmediateTrigger.no-Execute");
@@ -268,6 +273,15 @@ pub fn immediate_trigger(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
         out.push(json!({"Bind": {"what": what, "as": bind}}));
         bound = Some(json!({ "Bound": bind }));
     }
+    // `RememberSVarAmount$`: the number as the trigger is set up, which its steps read as `TriggerRememberAmount`.
+    let mut kept = None;
+    if let Some(word) = p.get("RememberSVarAmount") {
+        let value = amount(ctx, word)?;
+        let bind = ctx.fresh("number");
+        out.push(json!({"Let": {"as": bind, "amount": value}}));
+        kept = Some(bind);
+    }
+    let outer_amount = std::mem::replace(&mut ctx.trigger_amount, kept);
     let outer_delayed = std::mem::replace(&mut ctx.delayed_remembered, bound);
     let outer = std::mem::take(&mut ctx.targets);
     let parent = ctx.parent_target.take();
@@ -275,6 +289,7 @@ pub fn immediate_trigger(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
     let targets = std::mem::replace(&mut ctx.targets, outer);
     ctx.parent_target = parent;
     ctx.delayed_remembered = outer_delayed;
+    ctx.trigger_amount = outer_amount;
     let mut reflexive = json!({"Reflexive": {"effects": effects?}});
     if !targets.is_empty() {
         reflexive["Reflexive"]["targets"] = Value::Array(targets);
