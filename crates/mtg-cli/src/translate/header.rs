@@ -306,7 +306,7 @@ pub fn trigger_gates(p: &Params) -> Tr<Vec<Value>> {
 
 /// The line with some pairs replaced by new values and some dropped; the order of the keys stays.
 fn rebuilt(p: &Params, replace: &[(&str, String)], drop: &[&str]) -> Params {
-    let body: Vec<String> = p
+    let mut body: Vec<String> = p
         .iter()
         .filter(|(key, _)| !drop.contains(key))
         .map(|(key, value)| {
@@ -317,6 +317,12 @@ fn rebuilt(p: &Params, replace: &[(&str, String)], drop: &[&str]) -> Params {
             format!("{key}$ {value}")
         })
         .collect();
+    // A replacement for a key the line does not have is added to it.
+    for (name, new) in replace {
+        if peek(p, name).is_none() {
+            body.push(format!("{name}$ {new}"));
+        }
+    }
     Params::parse(&body.join(" | "))
 }
 

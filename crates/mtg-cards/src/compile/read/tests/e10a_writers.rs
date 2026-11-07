@@ -18,7 +18,8 @@ fn patch(bounds: &str, most: &str) -> String {
 }
 
 const UP_TO_THREE: &str = r#"{"min":0,"max":3}"#;
-const ANY: &str = r#"{"min":0,"max":{"Count":[{"Type":"Creature"},{"OwnedBy":"You"},{"In":"Graveyard"}]}}"#;
+const ANY: &str =
+    r#"{"min":0,"max":{"Count":[{"Type":"Creature"},{"OwnedBy":"You"},{"In":"Graveyard"}]}}"#;
 const ANY_OTHER: &str = r#"{"min":0,"max":{"Count":[{"Type":"Creature"},{"In":"Graveyard"}]}}"#;
 const RETURN_THREE: &str = "Return up to three target creature cards with total mana value 3 or less from your graveyard to the battlefield.";
 
@@ -35,11 +36,7 @@ const RETURN_THREE: &str = "Return up to three target creature cards with total 
     true
 )]
 #[case::another_most(patch(UP_TO_THREE, "4"), RETURN_THREE, false)]
-#[case::another_count(
-    patch(r#"{"min":0,"max":2}"#, "3"),
-    RETURN_THREE,
-    false
-)]
+#[case::another_count(patch(r#"{"min":0,"max":2}"#, "3"), RETURN_THREE, false)]
 #[case::count_of_another_set(
     patch(ANY_OTHER, "8"),
     "Return any number of target creature cards with total mana value 8 or less from your graveyard to the battlefield.",

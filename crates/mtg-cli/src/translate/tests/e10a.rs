@@ -42,7 +42,10 @@ fn a_later_target_reads_the_earlier_one(
 ) {
     let script = spell(&[first, second]);
     let found = targets(&script);
-    let preds = found[1]["what"]["Object"].as_array().cloned().unwrap_or_default();
+    let preds = found[1]["what"]["Object"]
+        .as_array()
+        .cloned()
+        .unwrap_or_default();
     assert!(preds.contains(&pred), "{found} {:?}", gaps(&script));
 }
 
@@ -72,9 +75,16 @@ fn a_parent_that_is_not_one_of_its_kind_stays_a_gap(
     #[case] second: &str,
     #[case] gap: &str,
 ) {
-    let lines: Vec<&str> = [first, second].into_iter().filter(|l| !l.is_empty()).collect();
+    let lines: Vec<&str> = [first, second]
+        .into_iter()
+        .filter(|l| !l.is_empty())
+        .collect();
     let script = spell(&lines);
-    assert!(gaps(&script).iter().any(|found| found == gap), "{:?}", gaps(&script));
+    assert!(
+        gaps(&script).iter().any(|found| found == gap),
+        "{:?}",
+        gaps(&script)
+    );
 }
 
 #[rstest]
