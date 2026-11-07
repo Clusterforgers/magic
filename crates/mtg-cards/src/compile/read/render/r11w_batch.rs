@@ -324,14 +324,15 @@ pub(super) fn add_players(texts: &mut Vec<String>) {
     // "creatures that player controls with flying": the keyword after the controller.
     let flying: Vec<String> = texts
         .iter()
-        .filter(|text| text.contains(" damage to each player equal to "))
-        .filter_map(|text| {
-            text.contains(" with flying that player controls").then(|| {
-                text.replace(
-                    " with flying that player controls",
-                    " that player controls with flying",
-                )
-            })
+        .filter(|text| {
+            text.contains(" damage to each player equal to ")
+                && text.contains(" with flying that player controls")
+        })
+        .map(|text| {
+            text.replace(
+                " with flying that player controls",
+                " that player controls with flying",
+            )
         })
         .collect();
     texts.extend(they);

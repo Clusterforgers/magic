@@ -1,6 +1,6 @@
-//! Goal: "sacrifice ~" read from a SacrificeAll of the card itself (Self, or EffectSource in an effect's delayed trigger)
-//! in a trigger is sacrificed by the trigger's controller (CR 701.21a), while one in an activated ability and a
-//! SacrificeAll of other named objects stay with their controllers.
+//! Goal: "sacrifice ~" read from a `SacrificeAll` of the card itself (`Self`, or `EffectSource` in an effect's
+//! delayed trigger) in a trigger is sacrificed by the trigger's controller (CR 701.21a), while one in an activated
+//! ability and a `SacrificeAll` of other named objects stay with their controllers.
 #![allow(clippy::unwrap_used)]
 
 use rstest::rstest;
