@@ -183,6 +183,26 @@ pub enum Produce {
     },
 }
 
+impl Produce {
+    /// "Two mana of different colors": one list for each pair of distinct colors, in WUBRG order.
+    pub fn two_different_colors() -> Self {
+        let colors = [
+            ManaType::White,
+            ManaType::Blue,
+            ManaType::Black,
+            ManaType::Red,
+            ManaType::Green,
+        ];
+        let mut lists = Vec::new();
+        for (at, first) in colors.iter().enumerate() {
+            for second in &colors[at + 1..] {
+                lists.push(vec![*first, *second]);
+            }
+        }
+        Produce::OneOfLists(lists)
+    }
+}
+
 /// What a created token is.
 #[derive(Debug, Clone, PartialEq, Eq, Hash, Serialize, Deserialize)]
 #[serde(deny_unknown_fields)]

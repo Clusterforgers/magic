@@ -52,6 +52,11 @@ const FACTS: Record<SpendFact, string> = {
   FromYourGraveyard: 'cast from your graveyard',
   SharesCommanderType: 'that shares a creature type with your commander',
   OnBattlefield: 'on the battlefield',
+  Colorless: 'that is colorless',
+  FromExile: 'cast from exile',
+  NotFromHand: 'cast from anywhere other than your hand',
+  Devoid: 'with devoid',
+  Flashback: 'with flashback',
 }
 
 const lower = (text: string): string => text.toLowerCase()

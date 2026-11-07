@@ -51,4 +51,20 @@ shares_commander_type?: boolean,
 /**
  * The source of the ability is on the battlefield.
  */
-on_battlefield?: boolean, };
+on_battlefield?: boolean, 
+/**
+ * It is cast from exile.
+ */
+from_exile?: boolean, 
+/**
+ * It is cast from a zone other than its caster's hand.
+ */
+not_from_hand?: boolean, 
+/**
+ * It has devoid.
+ */
+devoid?: boolean, 
+/**
+ * It has flashback.
+ */
+flashback?: boolean, };

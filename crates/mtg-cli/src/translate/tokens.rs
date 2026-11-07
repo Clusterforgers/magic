@@ -371,6 +371,7 @@ fn mana(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
             _ => return unmapped("key:Mana.Produced=Chosen"),
         },
         ["Combo", "ColorIdentity"] if times == "1" => json!({"mana": {"CommanderIdentity": 1}}),
+        ["Combo", "AnyDifferent"] => two_different(p, times)?,
         ["Combo", color, "Chosen"] if times == "1" && mana_type(color).is_some() => {
             json!({"mana": {"OrChosenColor": mana_type(color)}})
         }
@@ -445,6 +446,18 @@ fn mana(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
         (true, true) => return unmapped("key:Mana.PersistentMana+CombatMana"),
     }
     Ok(json!({ "AddMana": effect }))
+}
+
+/// "Two mana of different colors"; a script that leaves the amount out says two in its description.
+fn two_different(p: &Params, times: &str) -> Tr<Value> {
+    let two = times == "2"
+        || (!p.has("Amount")
+            && p.get("SpellDescription")
+                .is_some_and(|text| text.contains("two mana of different colors")));
+    match serde_json::to_value(mtg_cards::effect::Produce::two_different_colors()) {
+        Ok(mana) if two => Ok(json!({ "mana": mana })),
+        _ => unmapped("key:Mana.Produced=AnyDifferent"),
+    }
 }
 
 /// Each of `times` mana picks its own type among the listed ones.

@@ -78,6 +78,18 @@ impl Spend {
                 Zone::Stack => object.cast_from_graveyard(),
                 _ => false,
             };
+            traits.from_exile = match object.zone() {
+                Zone::Exile => true,
+                Zone::Stack => object
+                    .cast_record()
+                    .is_some_and(|(zone, _)| zone == mtg_cards::refs::ZoneKind::Exile),
+                _ => false,
+            };
+            traits.not_from_hand = match object.zone() {
+                Zone::Hand(_) => false,
+                Zone::Stack => !object.cast_from_hand(),
+                _ => true,
+            };
         }
         Spend {
             kind: SpendKind::Spell,
@@ -181,6 +193,7 @@ pub(crate) fn traits_of(state: &GameState, id: ObjectId) -> SpendTraits {
             subtypes.push(subtype);
         }
     }
+    let keywords = crate::keywords::keywords_of(state, id);
     SpendTraits {
         types: chars.types,
         supertypes: card.supertypes.iter().copied().collect(),
@@ -189,6 +202,10 @@ pub(crate) fn traits_of(state: &GameState, id: ObjectId) -> SpendTraits {
         color_set: chars.colors,
         value: object.mana_value(),
         x_in_cost: card.x_in_cost > 0,
+        devoid: keywords.contains(&&mtg_cards::keyword::Keyword::Devoid),
+        flashback: keywords
+            .iter()
+            .any(|keyword| matches!(keyword, mtg_cards::keyword::Keyword::Flashback(_))),
         ..SpendTraits::default()
     }
 }

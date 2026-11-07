@@ -2791,7 +2791,10 @@ impl Walker<'_> {
             Produce::OneOfLists(lists) if lists.len() < 2 => {
                 self.problem("a choice of mana needs at least two lists");
             }
-            Produce::OneOfLists(lists) if lists.len() > MANA_WAYS => {
+            // "Two mana of different colors" is ten lists, which the engine keeps as ten sources (`MANA_COMBINATIONS`).
+            Produce::OneOfLists(lists)
+                if lists.len() > MANA_WAYS && *mana != Produce::two_different_colors() =>
+            {
                 self.problem("a choice of mana has at most six lists");
             }
             Produce::OneOfLists(lists) if lists.iter().any(Vec::is_empty) => {

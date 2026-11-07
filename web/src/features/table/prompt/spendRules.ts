@@ -49,10 +49,22 @@ export function filterHolds(filter: SpendFilter, traits: SpendTraits): boolean {
           return traits.not_owned === true
         case 'FromGraveyard':
           return traits.from_graveyard === true
+        case 'FromYourGraveyard':
+          return traits.from_graveyard === true && traits.not_owned !== true
         case 'SharesCommanderType':
           return traits.shares_commander_type === true
         case 'OnBattlefield':
           return traits.on_battlefield === true
+        case 'Colorless':
+          return traits.colors === 0
+        case 'FromExile':
+          return traits.from_exile === true
+        case 'NotFromHand':
+          return traits.not_from_hand === true
+        case 'Devoid':
+          return traits.devoid === true
+        case 'Flashback':
+          return traits.flashback === true
       }
     })
   )

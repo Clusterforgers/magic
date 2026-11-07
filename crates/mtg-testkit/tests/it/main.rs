@@ -191,6 +191,8 @@ mod divided_resolution;
 mod dredge;
 mod dredge_fuzz;
 mod e10b_sealed;
+mod e14a_mana_shapes;
+mod e14a_spend_facts;
 mod elimination;
 mod embalm;
 mod en3_source;
