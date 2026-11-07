@@ -3121,7 +3121,7 @@ impl Walker<'_> {
                     w.bind(name, Kind::Object);
                 }
             }
-            Effect::Bind { what, bind } => {
+            Effect::Bind { what, bind, .. } => {
                 w.at("what", |w| w.reference(what, Kind::Either));
                 let kind = w.kind_of(what);
                 w.at("as", |w| w.bind(bind, kind));

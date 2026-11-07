@@ -276,6 +276,14 @@ pub fn count_in(ctx: &Ctx, slot: Slot) -> Tr<Value> {
     if slot == Slot::Remembered && mixes_the_player(ctx, &held) {
         return unmapped("amount:Remembered-player-and-cards");
     }
+    // A count kept as the name was bound, before its objects scattered.
+    if let Some(kept) = held
+        .get("Bound")
+        .and_then(Value::as_str)
+        .and_then(|name| ctx.kept_count.get(name))
+    {
+        return Ok(json!({ "Bound": kept }));
+    }
     // A token a step moved is gone, so the engine keeps the number the step moved (CR 111.7, 400.7).
     if let Some(name) = held
         .get("Bound")
