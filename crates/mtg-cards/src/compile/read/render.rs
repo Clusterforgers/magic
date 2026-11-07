@@ -27,6 +27,7 @@ mod exiled_until;
 mod flicker_targets;
 mod free_casts;
 mod from_graveyard;
+mod g8e_prevent;
 mod graveyards;
 mod group_becomes;
 mod hand_returns;
@@ -551,6 +552,7 @@ fn written_as_given(ability: &Ability) -> Vec<String> {
     super::r5a_wordings::add(&mut texts);
     super::r6a_wordings::add(ability, &mut texts);
     super::r6c_wordings::add(ability, &mut texts);
+    g8e_prevent::g8e_wordings(&mut texts);
     super::r6b_wordings::add(ability, &mut texts);
     super::r7a_wordings::add(ability, &mut texts);
     super::r7d_statics::wordings(&mut texts);
@@ -2806,6 +2808,7 @@ impl Writer<'_> {
     /// Two steps that are one sentence, which no joint splits: an explore twice, or a mill and the change it counts.
     fn then_steps(&mut self, effects: &[Effect]) -> Option<(String, usize)> {
         self.explore_twice(effects)
+            .or_else(|| self.g8e_shield_pair(effects))
             .or_else(|| self.mill_then_change(effects))
             .or_else(|| self.move_instead(effects))
             .or_else(|| self.either_way(effects))
@@ -2907,6 +2910,9 @@ impl Writer<'_> {
         if super::w9c_replaced::w9c_is_shield(effect) {
             let lead = self.name_target();
             return Some(super::w9c_replaced::w9c_shield_text(lead));
+        }
+        if let Some(text) = self.g8e_shield(effect) {
+            return Some(text);
         }
         if let Some(named) = prevention::c9_fight_named_source(effect) {
             let source = self.object(named)?;

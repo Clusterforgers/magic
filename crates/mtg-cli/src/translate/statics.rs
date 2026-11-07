@@ -6,7 +6,8 @@ use super::amount::amount;
 use super::condition::{condition, strip};
 use super::cost::cost;
 use super::ctx::{Ctx, Tr, check_keys, unmapped};
-use super::keyword::keyword_list;
+use super::keyword::keyword_value;
+use super::keyword_prevent::{Prevention, prevention};
 use super::valid::{defined, selector_any, selector_in};
 use crate::forge::script::Params;
 
@@ -358,6 +359,8 @@ fn continuous(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
     let mut mods = Vec::new();
     // A hidden keyword that is a rule of combat (`CARDNAME must be blocked if able.`) is a rule beside the modifications.
     let mut quirk: Option<Value> = None;
+    // A prevention keyword (`Prevent all damage that would be dealt by CARDNAME.`) is a replacement of this permanent.
+    let mut prevented = Vec::new();
     if p.has("AddPower") || p.has("AddToughness") {
         let power = stat(ctx, p.get("AddPower").unwrap_or("0"))?;
         let toughness = stat(ctx, p.get("AddToughness").unwrap_or("0"))?;
@@ -380,7 +383,17 @@ fn continuous(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
     ] {
         if let Some(keywords) = p.get(key) {
             ctx.own_cost_ok.set(variant == "AddKeyword");
-            let found = keyword_list(ctx, keywords);
+            let mut words: Vec<&str> = keywords.split('&').collect();
+            if variant == "AddKeyword" {
+                words.retain(|word| match prevention(word) {
+                    Some(found) => {
+                        prevented.push(found);
+                        false
+                    }
+                    None => true,
+                });
+            }
+            let found: Tr<Vec<Value>> = words.iter().map(|word| keyword_value(ctx, word)).collect();
             ctx.own_cost_ok.set(false);
             for keyword in found? {
                 mods.push(json!({ variant: keyword }));
@@ -480,6 +493,14 @@ fn continuous(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
         }
         json!({ "Rule": rule })
     });
+    let replacements = prevented_replacements(p, &affected, refinement.is_some(), &prevented)?;
+    if mods.is_empty() && !replacements.is_empty() {
+        return Ok(match rule {
+            Some(rule) => Value::Array([vec![rule], replacements].concat()),
+            None if replacements.len() == 1 => replacements.into_iter().next().unwrap_or_default(),
+            None => Value::Array(replacements),
+        });
+    }
     if mods.is_empty() {
         return rule.map_or_else(|| unmapped("static:Continuous-nothing"), Ok);
     }
@@ -518,10 +539,42 @@ fn continuous(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
         ability["defining"] = json!(true);
     }
     let ability = json!({ "Static": ability });
-    Ok(match rule {
-        Some(rule) => json!([ability, rule]),
-        None => ability,
+    let mut all = vec![ability];
+    all.extend(rule);
+    all.extend(replacements);
+    Ok(match all.len() {
+        1 => all.remove(0),
+        _ => Value::Array(all),
     })
+}
+
+/// The replacements of the prevention keywords a continuous line gives: the permanent with the line prevents the damage
+/// dealt to and by the objects it affects (CR 615). A line with a refinement, from another zone or for players stays a gap.
+fn prevented_replacements(
+    p: &Params,
+    affected: &Value,
+    refined: bool,
+    prevented: &[Prevention],
+) -> Tr<Vec<Value>> {
+    if prevented.is_empty() {
+        return Ok(Vec::new());
+    }
+    if refined
+        || !matches!(p.get("EffectZone"), None | Some("Battlefield"))
+        || p.has("CharacteristicDefining")
+        || affected.is_string() && affected != "Attached" && affected != "This"
+    {
+        return unmapped("key:Static.Continuous.prevention-shape");
+    }
+    // Damage dealt to and dealt by the object is one clause the two replacements would split.
+    if prevented.iter().any(|found| found.to && found.by) {
+        return unmapped("key:Static.Continuous.prevention-to-and-by");
+    }
+    Ok(prevented
+        .iter()
+        .flat_map(|found| found.events_of(affected))
+        .map(|when| json!({"Replacement": {"when": when, "by": "Prevent"}}))
+        .collect())
 }
 
 /// The combat rule a hidden keyword in words stands for (`MustBeBlocked`, `CantAttackAlone`).

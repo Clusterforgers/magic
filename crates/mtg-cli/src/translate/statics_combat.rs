@@ -3,6 +3,7 @@
 use serde_json::{Value, json};
 
 use super::ctx::{Ctx, Tr, check_keys, unmapped};
+use super::keyword_prevent::prevention;
 use super::valid::selector_any;
 use crate::forge::script::Params;
 
@@ -123,7 +124,6 @@ fn no_prevention(ctx: &Ctx, p: &Params) -> Tr<Value> {
 }
 
 const BLOCKED_BY_ALL: &str = "All creatures able to block CARDNAME do so";
-const PREVENT_ALL: &str = "Prevent all damage that would be dealt to CARDNAME";
 
 fn rule_word(word: &str) -> &str {
     let word = word.trim_end_matches('.');
@@ -133,27 +133,35 @@ fn rule_word(word: &str) -> &str {
 /// Whether a keyword of a pump line is a rule about the object and no change to it.
 pub fn is_rule_word(word: &str) -> bool {
     let word = rule_word(word);
-    word == "CARDNAME must be blocked if able" || word == BLOCKED_BY_ALL || word == PREVENT_ALL
+    word == "CARDNAME must be blocked if able"
+        || word == BLOCKED_BY_ALL
+        || prevention(word).is_some()
 }
 
-/// The effect of a keyword of a pump line that `is_rule_word`, for the objects `affected` names, for the duration: the
-/// attackers must be blocked (CR 509.1c) or all damage to them is prevented this turn (CR 615).
-pub fn hidden_effect(word: &str, affected: &Value, duration: &str) -> Tr<Value> {
+/// The effects of a keyword of a pump line that `is_rule_word`, for the objects `affected` names, for the duration: the
+/// attackers must be blocked (CR 509.1c), or the damage dealt to them, by them or both this turn is prevented (CR 615),
+/// by them as they are as the effect resolves.
+pub fn hidden_effect(word: &str, affected: &Value, duration: &str) -> Tr<Vec<Value>> {
     let word = rule_word(word);
     let combat = |quirk: Value| json!({"Rule": {"rule": {"Combat": {"who": affected, "quirk": quirk}}, "duration": duration}});
     if word == "CARDNAME must be blocked if able" {
-        return Ok(combat(json!({"MustBeBlocked": "AtLeastOne"})));
+        return Ok(vec![combat(json!({"MustBeBlocked": "AtLeastOne"}))]);
     }
     if word == BLOCKED_BY_ALL {
-        return Ok(combat(json!({"MustBeBlocked": "Every"})));
+        return Ok(vec![combat(json!({"MustBeBlocked": "Every"}))]);
     }
+    let Some(prevented) = prevention(word) else {
+        return unmapped("keyword:Pump-rule-word");
+    };
     // A shield lasts the turn; a longer prevention is another rule.
     if duration != "UntilEndOfTurn" {
         return unmapped("keyword:Prevent-all-damage-for-longer");
     }
-    Ok(
-        json!({"Shield": {"when": {"Damage": {"to": affected}}, "by": "Prevent", "duration": duration}}),
-    )
+    Ok(prevented
+        .events_of(affected)
+        .into_iter()
+        .map(|when| json!({"Shield": {"when": when, "by": "Prevent", "duration": duration}}))
+        .collect())
 }
 
 /// `CanBlockAmount$` and `CanBlockAny$`: the creature blocks more attackers each combat (CR 509.1a). "Any number" is more

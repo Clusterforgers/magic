@@ -685,7 +685,8 @@ fn hidden_effects(p: &Params, affected: &Value, duration: &str) -> Tr<Vec<Value>
         .flat_map(|keywords| keywords.split('&').map(str::trim))
         .filter(|word| super::statics_combat::is_rule_word(word))
         .map(|word| super::statics_combat::hidden_effect(word, affected, duration))
-        .collect()
+        .collect::<Tr<Vec<Vec<Value>>>>()
+        .map(|found| found.concat())
 }
 
 fn pump(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {

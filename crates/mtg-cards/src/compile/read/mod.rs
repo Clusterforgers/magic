@@ -84,6 +84,7 @@ mod event_wordings;
 mod exiled_kind;
 mod facts;
 mod flicker;
+mod g8e_attached;
 mod group_copies;
 mod group_phrases;
 mod group_pump;
