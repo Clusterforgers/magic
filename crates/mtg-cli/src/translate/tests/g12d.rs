@@ -155,6 +155,29 @@ fn a_counted_draw_cost_is_paid_as_it_resolves(#[case] count: &str, #[case] drawn
     assert!(text.contains(&want.to_string()), "{text}");
 }
 
+/// "Put a -1/-1 counter on a creature you control" as a cost is blight; another counter or another creature stays a gap.
+#[rstest]
+#[case::blight("AddCounter<1/M1M1/Creature.YouCtrl/a creature you control>", Some(json!([{"Blight": 1}, "Tap"])))]
+#[case::two("AddCounter<2/M1M1/Creature.YouCtrl>", Some(json!([{"Blight": 2}, "Tap"])))]
+#[case::plus_counter("AddCounter<1/P1P1/Creature.YouCtrl/a creature you control>", None)]
+#[case::their_creature(
+    "AddCounter<1/M1M1/Creature.OppCtrl/a creature an opponent controls>",
+    None
+)]
+fn a_minus_counter_on_your_creature_is_blight(#[case] cost: &str, #[case] read: Option<Value>) {
+    let script =
+        format!("Name:T\nTypes:Creature\nPT:2/2\nA:AB$ Draw | Cost$ {cost} T | NumCards$ 1\n");
+    match read {
+        Some(cost) => assert_eq!(
+            abilities(&script)[0]["Activated"]["cost"],
+            cost,
+            "{:?}",
+            gaps(&script)
+        ),
+        None => assert_eq!(gaps(&script), ["cost:AddCounter"]),
+    }
+}
+
 #[test]
 fn a_draw_cost_of_nought_is_a_gap() {
     assert_eq!(gaps(&draw_cost("0")), ["cost:counted-draw-or-discard"]);

@@ -48,6 +48,14 @@ pub fn item(ctx: &Ctx, head: &str, fields: &[&str]) -> Option<Tr<Value>> {
         "ExiledMoveToGrave" => filtered(ctx, "ExiledToGraveyard", number, what),
         "untapYType" => filtered(ctx, "UntapPermanents", number, what),
         "AddCounter" if fields.len() == 2 => put_counters(ctx, number, what),
+        // "Put a -1/-1 counter on a creature you control" is what blight does (CR 701.66): the payer picks the creature.
+        "AddCounter"
+            if matches!(fields.len(), 3 | 4)
+                && what == "M1M1"
+                && fields[2] == "Creature.YouCtrl" =>
+        {
+            amount(ctx, number).map(|n| json!({ "Blight": n }))
+        }
         "SubCounter" if fields.len() >= 3 => remove_from(ctx, number, what, fields[2]),
         "RemoveAnyCounter" => remove_among(ctx, number, what, fields.get(2).copied()),
         _ => return None,
