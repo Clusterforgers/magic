@@ -5,7 +5,7 @@ use mtg_core::color::Color;
 use serde::{Deserialize, Serialize};
 
 use crate::keyword::Keyword;
-use crate::value::{Amount, CastWay, Cmp, CounterKind, StatKind};
+use crate::value::{Amount, CastWay, Cmp, Condition, CounterKind, StatKind};
 
 /// The slot of `Ref::Remembered` that holds what the source exiled (`Pred::ExiledWith` reads it).
 pub const EXILED_SLOT: &str = "exiled";
@@ -152,6 +152,14 @@ pub enum Ref {
     Departed(Box<Ref>),
     /// Every object matching the selector when the effect runs.
     Each(Selector),
+    /// The players `who` names for whom the condition holds, each taken as "you" ("each opponent who lost life this turn",
+    /// "a player with seven or more cards in their graveyard"); nobody when it holds for none.
+    PlayersWhere {
+        /// The players tested.
+        who: Box<Ref>,
+        /// What must hold, written for "you".
+        test: Box<Condition>,
+    },
 }
 
 impl Ref {

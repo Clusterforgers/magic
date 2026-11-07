@@ -419,6 +419,9 @@ pub fn line(
     if let Some(word) = p.get("ImprintCards") {
         return imprint_cards(ctx, p, api, word, run);
     }
+    if let Some(rest) = super::damaged_way::split(ctx, p, api) {
+        return line(ctx, &rest, api, run);
+    }
     if let Some((rest, kind)) = super::number::split(p, api) {
         let effects = line(ctx, &rest, api, run)?;
         return super::number::apply(ctx, kind, effects);
