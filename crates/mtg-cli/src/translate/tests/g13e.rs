@@ -130,3 +130,198 @@ fn a_sub_ability_variable_that_is_not_a_hint_is_a_gap() {
     );
     assert_eq!(found, vec!["key:Animate.sVars".to_owned()]);
 }
+
+#[rstest]
+#[case::hexproof_from_the_color(
+    "ChooseColor",
+    "Hexproof:ChosenColor",
+    "ChosenColor",
+    r#""HexproofFrom":[{"ChosenAs":"chosen"}]"#
+)]
+#[case::landwalk_of_the_land_type(
+    "ChooseType | Type$ Land",
+    "Landwalk:ChosenType",
+    "ChosenType",
+    r#""Landwalk":[{"ChosenAs":"chosen"}]"#
+)]
+fn a_keyword_of_the_choice_the_ability_made_is_read_by_name(
+    #[case] choose: &str,
+    #[case] keyword: &str,
+    #[case] defined: &str,
+    #[case] expected: &str,
+) {
+    let (json, found) = card(
+        "Creature Lizard",
+        &format!(
+            "A:AB$ {choose} | Cost$ 1 | Defined$ You | SubAbility$ DBPump\nSVar:DBPump:DB$ Pump | Defined$ Self | KW$ {keyword} | DefinedKW$ {defined}"
+        ),
+    );
+    assert!(found.is_empty(), "{found:?}");
+    assert!(json.contains(expected), "{json}");
+}
+
+#[test]
+fn a_defined_keyword_with_nothing_chosen_is_a_gap() {
+    let (_, found) = card(
+        "Creature Lizard",
+        "A:AB$ Pump | Cost$ 1 | Defined$ Self | KW$ Hexproof:ChosenColor | DefinedKW$ ChosenColor",
+    );
+    assert!(!found.is_empty());
+}
+
+#[test]
+fn radiance_reaches_the_target_and_the_creatures_sharing_a_color_with_it() {
+    let (json, found) = card(
+        "Instant",
+        "A:SP$ Pump | ValidTgts$ Creature | Radiance$ True | NumAtt$ +1 | NumDef$ +1",
+    );
+    assert!(found.is_empty(), "{found:?}");
+    assert!(
+        json.contains(r#"{"Is":{"Target":0}},{"SharesColor":{"Target":0}}"#),
+        "{json}"
+    );
+}
+
+#[test]
+fn a_pump_valid_for_the_card_itself_is_the_default_subject() {
+    let (json, found) = card(
+        "Creature Horse",
+        "A:AB$ Pump | Cost$ 1 R | ValidCard$ Card.Self | NumAtt$ +1",
+    );
+    assert!(found.is_empty(), "{found:?}");
+    assert!(json.contains(r#""affected":"This""#), "{json}");
+}
+
+#[test]
+fn energy_paid_after_a_chosen_number_is_paid_that_many_times() {
+    let (json, found) = card(
+        "Sorcery",
+        "A:SP$ PutCounter | Defined$ You | CounterType$ ENERGY | SubAbility$ DBChoose\nSVar:DBChoose:DB$ ChooseNumber | Max$ Count$YourCountersEnergy | SubAbility$ DBDraw\nSVar:DBDraw:DB$ Draw | ConditionCheckSVar$ X | UnlessCost$ Mandatory PayEnergy<X> | UnlessPayer$ You | UnlessSwitched$ True | NumCards$ X\nSVar:X:Count$ChosenNumber",
+    );
+    assert!(found.is_empty(), "{found:?}");
+    assert!(json.contains(r#""times":{"ChosenAs":"number"}"#), "{json}");
+}
+
+#[test]
+fn a_mandatory_payment_that_is_not_switched_is_still_a_gap() {
+    let (_, found) = card(
+        "Creature Elephant",
+        "T:Mode$ ChangesZone | Origin$ Any | Destination$ Battlefield | ValidCard$ Card.Self | Execute$ Check | TriggerDescription$ When this enters, pay {E}{E}.\nSVar:Check:DB$ Pump | UnlessCost$ Mandatory PayEnergy<2> | UnlessPayer$ You",
+    );
+    assert!(!found.is_empty());
+}
+
+#[rstest]
+#[case::at_least_four("Spell.Creature+cmcGE4", r#""min_value":4"#)]
+#[case::at_least_six("Spell.cmcGE6", r#""min_value":6"#)]
+fn mana_spent_only_on_spells_of_a_least_mana_value_is_read(
+    #[case] restriction: &str,
+    #[case] expected: &str,
+) {
+    let (json, found) = card(
+        "Artifact",
+        &format!("A:AB$ Mana | Cost$ T | Produced$ Any | RestrictValid$ {restriction}"),
+    );
+    assert!(found.is_empty(), "{found:?}");
+    assert!(json.contains(expected), "{json}");
+}
+
+#[test]
+fn a_may_shuffle_of_the_targeted_library_is_a_may() {
+    let (json, found) = card(
+        "Sorcery",
+        "A:SP$ PeekAndReveal | ValidTgts$ Player | PeekAmount$ 5 | NoReveal$ True | SubAbility$ DBShuffle\nSVar:DBShuffle:DB$ Shuffle | Defined$ Targeted | Optional$ True",
+    );
+    assert!(found.is_empty(), "{found:?}");
+    assert!(json.contains(r#"{"May":{"effects":[{"Shuffle""#), "{json}");
+}
+
+#[rstest]
+#[case::the_mode_of_choosing("Mode$ TgtChoose", true)]
+#[case::the_milled_cards_shown("ShowMilledCards$ True", true)]
+#[case::another_mode("Mode$ Random", false)]
+fn a_mill_with_a_hint_beside_it_is_the_same_mill(#[case] extra: &str, #[case] read: bool) {
+    let (json, found) = card(
+        "Sorcery",
+        &format!("A:SP$ Mill | Defined$ Player.Opponent | NumCards$ 1 | {extra}"),
+    );
+    assert_eq!(found.is_empty(), read, "{found:?}");
+    assert_eq!(json.contains("Mill"), read, "{json}");
+}
+
+#[test]
+fn creatures_of_the_targeted_player_that_the_card_names_again_are_pumped_by_defined() {
+    let (json, found) = card(
+        "Sorcery",
+        "A:SP$ TapAll | ValidTgts$ Player | ValidCards$ Creature | SubAbility$ DBPumpAll\nSVar:DBPumpAll:DB$ PumpAll | Defined$ Targeted | ValidCards$ Creature | KW$ HIDDEN This card doesn't untap during your next untap step. | Duration$ Permanent\nOracle:Tap all creatures target player controls. Those creatures don't untap during that player's next untap step.",
+    );
+    assert!(found.is_empty(), "{found:?}");
+    assert!(json.contains("NextUntapStep"), "{json}");
+}
+
+#[test]
+fn all_colors_is_the_five() {
+    let (json, found) = card(
+        "Artifact Creature Shapeshifter",
+        "A:AB$ Animate | Cost$ 1 | Defined$ Self | Colors$ All",
+    );
+    assert!(found.is_empty(), "{found:?}");
+    assert!(
+        json.contains(r#""SetColors":["White","Blue","Black","Red","Green"]"#),
+        "{json}"
+    );
+}
+
+#[test]
+fn a_pump_that_is_optional_is_a_may_and_two_of_them_stay_two() {
+    let (json, found) = card(
+        "Creature Elf",
+        "T:Mode$ ChangesZone | Origin$ Any | Destination$ Battlefield | ValidCard$ Card.Self | Execute$ TrigPump | TriggerDescription$ When this enters, you may have Allies you control gain lifelink until end of turn, and you may put a +1/+1 counter on it.\nSVar:TrigPump:DB$ Pump | Defined$ Valid Creature.YouCtrl | KW$ Lifelink | Optional$ True | SubAbility$ DBCounter\nSVar:DBCounter:DB$ PutCounter | Defined$ Self | CounterType$ P1P1 | CounterNum$ 1 | Optional$ True",
+    );
+    assert!(found.is_empty(), "{found:?}");
+    assert_eq!(json.matches(r#""May""#).count(), 2, "{json}");
+}
+
+#[test]
+fn a_mana_line_of_a_sub_ability_repeats_the_cost_of_its_ability_and_is_not_paid_again() {
+    let (_, found) = card(
+        "Creature Elemental",
+        "A:AB$ ChooseColor | Cost$ 1 | Defined$ You | SubAbility$ DBMana\nSVar:DBMana:DB$ Mana | Cost$ 1 | Produced$ Chosen",
+    );
+    assert_eq!(found, vec!["key:Mana.Cost-on-a-sub-ability".to_owned()]);
+}
+
+#[test]
+fn a_may_with_a_target_chosen_before_the_mana_is_spent_is_a_gap() {
+    let (_, found) = card(
+        "Instant",
+        "A:SP$ Pump | ValidTgts$ Creature | Optional$ True | NumAtt$ -3 | NumDef$ -3 | ConditionManaSpent$ B",
+    );
+    assert_eq!(found, vec!["condition:ManaSpent-with-a-target".to_owned()]);
+}
+
+#[test]
+fn a_remembered_card_that_is_in_exile_gates_the_steps_after_its_move() {
+    let (json, found) = card(
+        "Creature Human",
+        "T:Mode$ ChangesZone | Origin$ Any | Destination$ Battlefield | ValidCard$ Card.Self | Execute$ TrigChange\nSVar:TrigChange:DB$ ChangeZone | Origin$ Graveyard | Destination$ Exile | ValidTgts$ Creature | TargetMin$ 0 | TargetMax$ 1 | SubAbility$ DBDig | RememberChanged$ True\nSVar:DBDig:DB$ Dig | ConditionDefined$ Remembered | ConditionPresent$ Card | ConditionZone$ Exile | DigNum$ 3 | DestinationZone2$ Graveyard | SubAbility$ DBCleanup\nSVar:DBCleanup:DB$ Cleanup | ClearRemembered$ True",
+    );
+    assert!(found.is_empty(), "{found:?}");
+    assert!(json.contains(r#""selector":[{"In":"Exile"}]"#), "{json}");
+}
+
+#[rstest]
+#[case::after_choosing_a_color("ChooseColor", true)]
+#[case::with_no_color_chosen("ChooseType | Type$ Land", false)]
+fn clearing_the_chosen_color_is_nothing_to_do_after_the_ability_chose_one(
+    #[case] choose: &str,
+    #[case] read: bool,
+) {
+    let (_, found) = card(
+        "Creature Lizard",
+        &format!(
+            "A:AB$ {choose} | Cost$ 1 | Defined$ You | SubAbility$ DBCleanup\nSVar:DBCleanup:DB$ Cleanup | ClearChosenColor$ True"
+        ),
+    );
+    assert_eq!(found.is_empty(), read, "{found:?}");
+}

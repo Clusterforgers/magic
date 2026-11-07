@@ -813,7 +813,9 @@ fn hidden_effects(p: &Params, affected: &Value, duration: &str) -> Tr<Vec<Value>
 }
 
 /// The keys a `Pump` line reads.
-const PUMP_KEYS: [&str; 19] = [
+const PUMP_KEYS: [&str; 21] = [
+    "OptionQuestion",
+    "Optional",
     "Radiance",
     "ValidCard",
     "DefinedKW",
@@ -930,7 +932,9 @@ fn pump(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
         effects.push(pump_at_eot(ctx, word, &affected)?);
     }
     effects.extend(dies_shield(ctx, p)?);
-    Ok(effects)
+    // The question text asked of the player belongs to the "may" the line already carries.
+    let _ = p.has("OptionQuestion");
+    super::frame::optional(p, "Pump", effects, &json!("You"))
 }
 
 /// "You gain hexproof until end of turn": a pump of players that only gives keywords a player can have (hexproof, shroud) is
@@ -1035,7 +1039,8 @@ fn pump_all(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
         "PumpAll",
         &[
             "ValidTgts",
-            "NumAtt",
+            "ValidTgts",
+            "Defined",
             "NumDef",
             "KW",
             "ValidCards",
@@ -1045,7 +1050,24 @@ fn pump_all(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
     )?;
     let duration = pump_duration(p)?;
     let valid = p.get("ValidCards").unwrap_or_default();
-    let affected = json!({"Each": group_of_player(ctx, p, valid)?});
+    let group = match p.get("Defined") {
+        None => group_of_player(ctx, p, valid)?,
+        // The creatures of the player an earlier line targeted.
+        // Only when the card says those very creatures ("Those creatures don't untap"): the line's group is what it names.
+        Some("Targeted")
+            if !p.has("ValidTgts")
+                && ctx.oracle.to_lowercase().contains(&format!(
+                    "those {}s ",
+                    valid.split('.').next().unwrap_or_default().to_lowercase()
+                )) =>
+        {
+            let mut preds = selector_any(ctx, valid)?;
+            preds.push(json!({"ControlledBy": ctx.player_target()?}));
+            preds
+        }
+        Some(_) => return unmapped("key:PumpAll.Defined"),
+    };
+    let affected = json!({"Each": group});
     let mods = pump_mods(ctx, p, None)?;
     let rules = hidden_effects(p, &affected, duration)?;
     if mods.is_empty() && rules.is_empty() {
@@ -1246,6 +1268,9 @@ fn animate(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
 
 /// Colours as the DSL names them; `Colorless` names none, so setting it gives the empty set (CR 105.2c).
 pub fn color_names(colors: &str) -> Tr<Vec<&'static str>> {
+    if colors.trim() == "All" {
+        return Ok(vec!["White", "Blue", "Black", "Red", "Green"]);
+    }
     colors
         .split(',')
         .filter(|word| word.trim() != "Colorless")
