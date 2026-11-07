@@ -1230,7 +1230,8 @@ impl<'a> Walker<'a> {
         (self.x_free, self.x_now) = (saved, saved_now);
     }
 
-    /// The cost of an `Effect::Pay`: life of a counted amount ("pay that much life") is counted as the effect
+    /// The cost of an `Effect::Pay`: life of a counted amount ("pay that much life") and a counted draw the controller
+    /// makes ("you may draw cards equal to its power") are counted as the effect
     /// resolves (`Effect.Pay.Counted`), and so is a counted discard the controller pays ("you may discard your hand") or
     /// one only a condition counts ("discard two cards if you're the monarch"): the count is the controller's, so a
     /// count another payer would read differently ("unless its controller discards their hand") stays unpaid. Every other
@@ -1242,6 +1243,7 @@ impl<'a> Walker<'a> {
             .enumerate()
             .filter_map(|(i, item)| match item {
                 CostItem::PayLife(amount) if !is_fixed(item) => Some((i, amount)),
+                CostItem::Draw(amount) if !is_fixed(item) && *who == Ref::You => Some((i, amount)),
                 CostItem::Discard { count, .. }
                     if !is_fixed(item) && (*who == Ref::You || r5g_fixed_by_condition(count)) =>
                 {
@@ -1257,6 +1259,7 @@ impl<'a> Walker<'a> {
         for (i, _) in &counted {
             match &mut fixed.0[*i] {
                 CostItem::Discard { count, .. } => *count = Amount::Fixed(1),
+                CostItem::Draw(count) => *count = Amount::Fixed(1),
                 item => *item = CostItem::PayLife(Amount::Fixed(0)),
             }
         }

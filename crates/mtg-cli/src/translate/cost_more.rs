@@ -25,7 +25,7 @@ pub fn item(ctx: &Ctx, head: &str, fields: &[&str]) -> Option<Tr<Value>> {
     Some(match head {
         "Exert" if on_self && number == "1" => Ok(json!("Exert")),
         "Blight" => amount(ctx, number).map(|n| json!({ "Blight": n })),
-        "Draw" if what == "You" => fixed(number).map(|n| json!({ "Draw": n })),
+        "Draw" if what == "You" => counted(ctx, number).map(|n| json!({ "Draw": n })),
         "DamageYou" => amount(ctx, number).map(|n| json!({ "DamageToYou": n })),
         "ExileFromTop" if what == "Card" => amount(ctx, number).map(|n| json!({ "ExileTop": n })),
         "CollectEvidence" => match number.parse::<u32>() {
@@ -55,8 +55,8 @@ pub fn item(ctx: &Ctx, head: &str, fields: &[&str]) -> Option<Tr<Value>> {
 }
 
 /// Discarding cards at random: the engine picks them from the hand with its random source.
-pub fn random(number: &str) -> Tr<Value> {
-    fixed(number).map(|n| json!({ "DiscardRandom": n }))
+pub fn random(ctx: &Ctx, number: &str) -> Tr<Value> {
+    counted(ctx, number).map(|n| json!({ "DiscardRandom": n }))
 }
 
 /// `Cost$ Mandatory Sac<1/CARDNAME>`: the source is sacrificed without a choice, and the effects follow if it was
@@ -74,11 +74,13 @@ pub fn mandatory(cost: &str, effects: &[Value]) -> Tr<Vec<Value>> {
     ])
 }
 
-/// A fixed count: a counted draw or discard is paid by the engine only for a number.
-fn fixed(number: &str) -> Tr<u32> {
+/// The count of a draw or a discard: a number of at least one, or an amount the engine counts where it can (a cost paid
+/// as an effect or of an activated ability) and names as a counted part elsewhere.
+fn counted(ctx: &Ctx, number: &str) -> Tr<Value> {
     match number.parse::<u32>() {
-        Ok(n) if n > 0 => Ok(n),
-        _ => unmapped("cost:counted-draw-or-discard"),
+        Ok(n) if n > 0 => Ok(json!(n)),
+        Ok(_) => unmapped("cost:counted-draw-or-discard"),
+        Err(_) => amount(ctx, number),
     }
 }
 
