@@ -236,6 +236,7 @@ fn a_losing_players_spells_leave_the_stack_with_them() -> Result<(), ScriptError
             deathtouch: false,
             form: mtg_engine::combat::DamageForm::default(),
             toxic: 0,
+            unpreventable: false,
         },
     ];
     let mut log: Vec<Event> = probe.events().to_vec();

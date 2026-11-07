@@ -233,6 +233,7 @@ mod tests {
             deathtouch: false,
             form: DamageForm::default(),
             toxic: 0,
+            unpreventable: false,
         }
     }
 

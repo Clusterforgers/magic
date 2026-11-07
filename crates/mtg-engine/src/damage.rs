@@ -412,6 +412,7 @@ fn deal(
         } else {
             0
         },
+        unpreventable: false,
     }];
     let controller = dealer
         .controller
@@ -861,6 +862,7 @@ mod tests {
                     deathtouch: event_says,
                     form: crate::combat::DamageForm::Normal,
                     toxic: 0,
+                    unpreventable: false,
                 },
             )
             .unwrap();
@@ -1014,6 +1016,7 @@ mod tests {
                 deathtouch: false,
                 form,
                 toxic: 0,
+                unpreventable: false,
             };
             apply_event(&mut game, &event).unwrap();
             assert_eq!(game.player(FOE).unwrap().life(), life);

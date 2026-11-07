@@ -211,6 +211,7 @@ const RUNS: &[&str] = &[
     "Effect.Counter",
     "Effect.DealDamage",
     "Effect.DealDamage.Excess",
+    "Effect.DealDamage.Unpreventable",
     "Effect.GainLife",
     "Effect.LoseLife",
     "Effect.AddMana",

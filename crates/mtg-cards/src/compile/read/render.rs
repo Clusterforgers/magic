@@ -28,6 +28,7 @@ mod flicker_targets;
 mod free_casts;
 mod from_graveyard;
 mod g10d_colors;
+mod g11b_unpreventable;
 mod g8e_prevent;
 mod graveyards;
 mod group_becomes;
@@ -891,6 +892,9 @@ pub(super) fn capitalize(text: &str) -> String {
 pub(super) fn alternatives(targets: &[TargetSpec], effects: &[Effect]) -> Vec<Vec<String>> {
     if effects.is_empty() {
         return Vec::new();
+    }
+    if let Some(implied) = g11b_unpreventable::implied(effects) {
+        return alternatives(targets, &implied);
     }
     if targets.len() > 1 {
         return multi::alternatives(targets, effects);
@@ -2329,6 +2333,9 @@ impl Writer<'_> {
 
     /// An effect as a sentence without its first capital and its period.
     fn effect(&mut self, effect: &Effect) -> Option<String> {
+        if let Some(text) = self.g11b_unpreventable(effect)? {
+            return Some(text);
+        }
         Some(match effect {
             Effect::CopySpell { .. } | Effect::CopyAbility { .. } | Effect::BecomeCopy { .. } => {
                 self.copy_effect(effect)?
@@ -3208,6 +3215,7 @@ impl Writer<'_> {
                 source: None,
                 to,
                 amount,
+                unpreventable: false,
                 ..
             } = effect
             else {

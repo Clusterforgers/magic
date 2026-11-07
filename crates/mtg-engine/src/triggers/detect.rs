@@ -3080,6 +3080,7 @@ mod tests {
                     }],
                     effects: vec![Effect::DealDamage {
                         excess: None,
+                        unpreventable: false,
                         source: None,
                         to: Ref::Target(0),
                         amount: Amount::Fixed(1),

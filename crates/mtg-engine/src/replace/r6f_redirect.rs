@@ -59,6 +59,7 @@ impl Pass<'_> {
             deathtouch,
             form,
             toxic,
+            unpreventable,
         }) = self.slots[at].item.clone()
         else {
             self.slots[at].applied = applied;
@@ -88,6 +89,7 @@ impl Pass<'_> {
                 deathtouch,
                 form,
                 toxic,
+                unpreventable,
             }),
             applied: applied.clone(),
             frozen: false,

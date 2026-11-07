@@ -375,6 +375,10 @@ pub enum Event {
         #[serde(default, skip_serializing_if = "is_zero")]
         #[cfg_attr(feature = "ts", ts(as = "Option<u32>", optional))]
         toxic: u32,
+        /// The damage can't be prevented (CR 614.17): no prevention effect applies to it.
+        #[serde(default, skip_serializing_if = "is_false")]
+        #[cfg_attr(feature = "ts", ts(as = "Option<bool>", optional))]
+        unpreventable: bool,
     },
     /// Combat ended and its state was cleared.
     CombatEnded,
@@ -1317,6 +1321,7 @@ mod tests {
             deathtouch: false,
             form: crate::combat::DamageForm::Normal,
             toxic: 0,
+            unpreventable: false,
         };
         let json = r#"{"DamageDealt":{"source":4,"target":{"Player":1},"amount":3}}"#;
         assert_eq!(serde_json::to_string(&plain).unwrap(), json);
@@ -1353,6 +1358,7 @@ mod tests {
             deathtouch: true,
             form: crate::combat::DamageForm::Normal,
             toxic: 0,
+            unpreventable: false,
         };
         let json = serde_json::to_string(&touched).unwrap();
         assert_eq!(

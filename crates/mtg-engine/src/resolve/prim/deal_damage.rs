@@ -6,6 +6,7 @@ use super::wrong_effect;
 use crate::choose::Target;
 use crate::combat::DamageTarget;
 use crate::damage::{self, Dealer};
+use crate::events::Event;
 use crate::resolve::{Cx, LET, Next, ResolveError, Run};
 
 /// The source deals each recipient still there to take it its amount; damage of nothing is no event.
@@ -25,6 +26,7 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         to,
         amount,
         excess,
+        unpreventable,
     } = effect
     else {
         return Err(wrong_effect("DealDamage"));
@@ -63,7 +65,9 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
             && let Some(lethal) = damage::lethal_for_excess(cx.state(), id, dealer.has_deathtouch())
         {
             // Damage that protection prevents is not dealt, so none of it is beyond lethal (CR 120.10).
-            let over = if crate::replace::protection_of(cx.state(), source.id, target).is_some() {
+            let over = if !unpreventable
+                && crate::replace::protection_of(cx.state(), source.id, target).is_some()
+            {
                 0
             } else {
                 amount.saturating_sub(lethal)
@@ -96,6 +100,13 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         }
         if let Some(name) = &excess.bind {
             bound.push((format!("{LET}{beyond}:{name}"), Vec::new()));
+        }
+    }
+    if *unpreventable {
+        for event in &mut events {
+            if let Event::DamageDealt { unpreventable, .. } = event {
+                *unpreventable = true;
+            }
         }
     }
     Ok(Run::Done {

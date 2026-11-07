@@ -132,6 +132,7 @@ pub(super) fn damage(state: &GameState, source: &str, to: DamageTarget) -> Event
         deathtouch: false,
         form: crate::combat::DamageForm::Normal,
         toxic: 0,
+        unpreventable: false,
     }
 }
 

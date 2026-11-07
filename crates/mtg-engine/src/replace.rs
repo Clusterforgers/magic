@@ -972,6 +972,12 @@ impl Pass<'_> {
         // for umbra armor, which is the other way to save it (CR 616.1).
         let regeneration = self.regeneration_candidate(&slot.item);
         let unpreventable = matches!(
+            slot.item,
+            Item::One(Event::DamageDealt {
+                unpreventable: true,
+                ..
+            })
+        ) || matches!(
             unit,
             Unit::Damage { source, .. } if damage_cant_be_prevented(self.state, source, self.combat_damage())
         );
@@ -2089,6 +2095,7 @@ impl Pass<'_> {
             deathtouch,
             form,
             toxic,
+            unpreventable,
         }) = self.slots[at].item.clone()
         else {
             self.slots[at].applied = applied;
@@ -2133,6 +2140,7 @@ impl Pass<'_> {
                     deathtouch,
                     form,
                     toxic,
+                    unpreventable,
                 }),
                 applied,
                 frozen: false,
@@ -2233,6 +2241,7 @@ impl Pass<'_> {
                 deathtouch,
                 form,
                 toxic,
+                unpreventable,
             }) => {
                 let now = more(amount);
                 self.follow_lifelink(at, source, amount, now);
@@ -2243,6 +2252,7 @@ impl Pass<'_> {
                     deathtouch,
                     form,
                     toxic,
+                    unpreventable,
                 })]
             }
             Item::One(Event::CountersChanged(CountersChanged { on, counter, delta })) => {

@@ -39,6 +39,7 @@ fn zap() -> Arc<CardDefinition> {
                 }],
                 effects: vec![Effect::DealDamage {
                     excess: None,
+                    unpreventable: false,
                     source: None,
                     to: Ref::Target(0),
                     amount: Amount::Fixed(1),
@@ -1099,6 +1100,7 @@ fn damage(source: ObjectId, to: ObjectId, amount: u32, deathtouch: bool) -> Even
         deathtouch,
         form: crate::combat::DamageForm::Normal,
         toxic: 0,
+        unpreventable: false,
     }
 }
 

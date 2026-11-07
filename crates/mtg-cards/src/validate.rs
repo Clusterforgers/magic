@@ -3211,7 +3211,10 @@ impl Walker<'_> {
                     w.at("as", |w| w.bind_moved(name));
                 }
             }
-            Effect::DealDamage { source, to, amount, excess } => {
+            Effect::DealDamage { source, to, amount, excess, unpreventable } => {
+                if *unpreventable {
+                    w.uses("Effect", "DealDamage.Unpreventable");
+                }
                 if let Some(source) = source {
                     w.at("source", |w| w.reference(source, Kind::Object));
                 }

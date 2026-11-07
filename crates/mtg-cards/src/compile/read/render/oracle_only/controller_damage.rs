@@ -14,11 +14,16 @@ fn swapped(effects: &[Effect]) -> (Vec<Effect>, bool) {
     for effect in effects {
         out.push(match effect {
             Effect::DealDamage {
-                source, to, amount, ..
+                source,
+                to,
+                amount,
+                unpreventable: false,
+                ..
             } if *to == Ref::ControllerOf(Box::new(Ref::Target(0))) => {
                 found = true;
                 Effect::DealDamage {
                     excess: None,
+                    unpreventable: false,
                     source: source.clone(),
                     to: Ref::Triggering,
                     amount: amount.clone(),
