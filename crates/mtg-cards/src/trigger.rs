@@ -734,6 +734,13 @@ pub enum ReplaceWhen {
         /// The spell that would be countered.
         what: Selector,
     },
+    /// A face-down permanent matching the selector is turned face up ("As ~ is turned face up, put five +1/+1 counters
+    /// on it", CR 708.8): the counters are put on it as it turns, before any player can respond. Only `WithCounters`
+    /// on the permanent itself.
+    TurnedFaceUp {
+        /// The permanent turned face up.
+        what: Selector,
+    },
     /// Counters would be put on a permanent or a player, by an effect or as a permanent enters.
     CountersPut {
         /// What receives them; any permanent or player when absent.

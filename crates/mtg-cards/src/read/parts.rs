@@ -319,6 +319,10 @@ pub(super) fn rule(ctx: &Ctx, rule: &GameRule) -> String {
             "the legend rule does not apply to {}",
             phrase::who(ctx, who)
         ),
+        GameRule::NoLegendRuleFor(what) => format!(
+            "the legend rule does not apply to {}",
+            phrase::selector(ctx, what)
+        ),
         GameRule::UntapDuring { what, whose } => format!(
             "untap {} during the untap step of {}",
             phrase::selectors(ctx, what),

@@ -358,6 +358,7 @@ const RUNS: &[&str] = &[
     "Rule.MaxHandSize",
     "Rule.HandSizeChange",
     "Rule.NoLegendRule",
+    "Rule.NoLegendRuleFor",
     "Rule.UntapDuring",
     "Rule.SkipDrawStep",
     "Rule.LookAtTopAnyTime",
@@ -599,6 +600,7 @@ const RUNS: &[&str] = &[
     "ReplaceWhen.Damage",
     "ReplaceWhen.ZoneChange",
     "ReplaceWhen.Countered",
+    "ReplaceWhen.TurnedFaceUp",
     "ReplaceWhen.CountersPut",
     "ReplaceWhen.LifeGain",
     "ReplaceWhen.Draw",
@@ -980,6 +982,7 @@ mod tests {
     #[case::a_set_maximum_hand_size("Rule.MaxHandSize", true)]
     #[case::a_changed_maximum_hand_size("Rule.HandSizeChange", true)]
     #[case::no_legend_rule("Rule.NoLegendRule", true)]
+    #[case::no_legend_rule_for_some("Rule.NoLegendRuleFor", true)]
     #[case::untapping_in_other_steps("Rule.UntapDuring", true)]
     #[case::no_draw_step("Rule.SkipDrawStep", true)]
     #[case::triggers_again("Rule.TriggerAgain", true)]

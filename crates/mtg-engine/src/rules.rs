@@ -150,6 +150,9 @@ pub enum Rule {
     HandSizeChange(Vec<(PlayerId, i64)>),
     /// The legend rule does not apply to the players' permanents (CR 704.5j).
     NoLegendRule(Vec<PlayerId>),
+    /// The legend rule does not apply to the permanents the selector picks, judged for the rule's controller (CR
+    /// 704.5j).
+    NoLegendRuleFor(#[cfg_attr(feature = "ts", ts(type = "unknown"))] Selector),
     /// The permanents the selector picks that the rule's controller controls untap during the untap steps of the players
     /// (CR 502.3).
     UntapDuring {
@@ -538,6 +541,7 @@ pub(crate) struct RulesInForce {
     max_hand: BTreeMap<PlayerId, u32>,
     hand_change: BTreeMap<PlayerId, i64>,
     no_legend: BTreeSet<PlayerId>,
+    no_legend_for: Vec<NoLegendFor>,
     untap_during: Vec<UntapDuring>,
     unpreventable: Vec<Unpreventable>,
     casts: Vec<Cast>,
@@ -663,6 +667,17 @@ impl Cast {
     }
 }
 
+/// Permanents the legend rule does not apply to: whose rule it is and which permanents.
+#[derive(Debug, Clone)]
+pub(crate) struct NoLegendFor {
+    /// The player the selector is judged for.
+    pub(crate) controller: PlayerId,
+    /// The object that has the rule.
+    pub(crate) source: ObjectRef,
+    /// The permanents.
+    pub(crate) what: Selector,
+}
+
 /// Permanents that untap in other untap steps: whose rule it is, which permanents, and whose steps.
 #[derive(Debug, Clone)]
 pub(crate) struct UntapDuring {
@@ -736,6 +751,15 @@ impl RulesInForce {
                         source,
                         from: from.clone(),
                         cause: cause.as_deref().cloned(),
+                    });
+                }
+            }
+            Rule::NoLegendRuleFor(what) => {
+                if let Some(source) = source {
+                    self.no_legend_for.push(NoLegendFor {
+                        controller,
+                        source,
+                        what: what.clone(),
                     });
                 }
             }
@@ -853,6 +877,7 @@ impl RulesInForce {
             Rule::MaxHandSize(_)
             | Rule::HandSizeChange(_)
             | Rule::NoLegendRule(_)
+            | Rule::NoLegendRuleFor(_)
             | Rule::UntapDuring { .. } => {
                 self.put_option(rule, controller, source);
             }
@@ -1162,6 +1187,7 @@ pub(crate) fn lower_rule(scope: &Scope<'_>, wanted: &GameRule) -> Result<Rule, R
         GameRule::MaxHandSize { .. }
         | GameRule::HandSizeChange { .. }
         | GameRule::NoLegendRule(_)
+        | GameRule::NoLegendRuleFor(_)
         | GameRule::UntapDuring { .. } => lower_option(scope, wanted)?,
         GameRule::LookAtTopAnyTime(who) => Rule::LookAtTop(scope.players(who)?),
         GameRule::LookAtExiled { who, what, only } => Rule::LookAtExiled {
@@ -1228,6 +1254,7 @@ fn lower_option(scope: &Scope<'_>, wanted: &GameRule) -> Result<Rule, ResolveErr
             )
         }
         GameRule::NoLegendRule(who) => Rule::NoLegendRule(scope.players(who)?),
+        GameRule::NoLegendRuleFor(what) => Rule::NoLegendRuleFor(what.clone()),
         GameRule::UntapDuring { what, whose } => Rule::UntapDuring {
             what: what.clone(),
             whose: scope.players(whose)?,
@@ -1282,6 +1309,7 @@ pub(crate) fn names_nothing(rule: &Rule) -> bool {
         Rule::MaxHandSize(sizes) => sizes.is_empty(),
         Rule::HandSizeChange(changes) => changes.is_empty(),
         Rule::UntapDuring { whose, .. } => whose.is_empty(),
+        Rule::NoLegendRuleFor(_) => false,
         Rule::AttackLimitAt { at, .. } => at.is_empty(),
         Rule::AdditionalLandPlays(plays) => plays.iter().all(|(_, count)| *count == 0),
         Rule::LookAtExiled { who, only, .. } | Rule::MayCast { who, only, .. } => {
@@ -1425,6 +1453,7 @@ static NONE: RulesInForce = RulesInForce {
     max_hand: BTreeMap::new(),
     hand_change: BTreeMap::new(),
     no_legend: BTreeSet::new(),
+    no_legend_for: Vec::new(),
     untap_during: Vec::new(),
     unpreventable: Vec::new(),
     casts: Vec::new(),
@@ -1843,6 +1872,19 @@ pub(crate) fn max_hand_size(state: &GameState, player: PlayerId, base: usize) ->
 /// read this rule.
 pub fn no_legend_rule(state: &GameState, player: PlayerId) -> bool {
     state.rules().no_legend.contains(&player)
+}
+
+/// Whether a rule says the legend rule does not apply to the permanent `id`, judged for the rule's controller: the
+/// one place the state-based actions read these rules.
+pub(crate) fn no_legend_rule_for(state: &GameState, id: ObjectId) -> bool {
+    let Some(object) = state.object(id) else {
+        return false;
+    };
+    state.rules().no_legend_for.iter().any(|rule| {
+        Scope::announcing(state, rule.controller, rule.source)
+            .selects(&rule.what, object.reference())
+            .unwrap_or(false)
+    })
 }
 
 /// The permanents that untap during the untap step of `active` besides its own: those each rule in force selects among

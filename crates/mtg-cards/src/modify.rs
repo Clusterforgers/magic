@@ -653,6 +653,9 @@ pub enum GameRule {
     },
     /// The legend rule (CR 704.5j) does not apply to the legendary permanents of the players.
     NoLegendRule(Ref),
+    /// The legend rule (CR 704.5j) does not apply to the permanents the selector picks, judged for the rule's controller:
+    /// "the legend rule doesn't apply to tokens you control".
+    NoLegendRuleFor(Selector),
     /// The permanents the selector picks that the rule's controller controls untap during the untap step of each of the
     /// players (CR 502.3): "untap all creatures you control during each other player's untap step".
     UntapDuring {

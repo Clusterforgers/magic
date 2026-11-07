@@ -4326,6 +4326,7 @@ impl Walker<'_> {
             }),
             GameRule::TriggerAgain { .. }
             | GameRule::NoLegendRule(_)
+            | GameRule::NoLegendRuleFor(_)
             | GameRule::MaxHandSize { .. }
             | GameRule::HandSizeChange { .. }
             | GameRule::NextSpell { .. }
@@ -4352,6 +4353,7 @@ impl Walker<'_> {
                 self.scope = saved;
             }
             GameRule::NoLegendRule(who) => self.at(tag, |w| w.reference(who, Kind::Player)),
+            GameRule::NoLegendRuleFor(what) => self.at(tag, |w| w.selector(what)),
             GameRule::NextSpell { what, .. } => {
                 self.at(tag, |w| w.at("what", |w| w.selector(what)));
             }
@@ -4491,6 +4493,7 @@ impl Walker<'_> {
             ReplaceWhen::ZoneChange { what, .. }
             | ReplaceWhen::Destroyed { what }
             | ReplaceWhen::Countered { what }
+            | ReplaceWhen::TurnedFaceUp { what }
             | ReplaceWhen::Discarded { what }
             | ReplaceWhen::Enters { what } => {
                 self.at("what", |w| w.selector(what));
@@ -4637,6 +4640,12 @@ impl Walker<'_> {
         self.uses("ReplaceBy", &tag_of(by));
         self.g11b_replace_by(when, by);
         self.g12a_moves(when, by);
+        if let ReplaceWhen::TurnedFaceUp { what } = when
+            && (*what != Selector::this()
+                || !matches!(by, ReplaceBy::WithCounters { tapped: false, .. }))
+        {
+            self.problem("turning face up only puts counters on the permanent itself");
+        }
         let enters = matches!(when, ReplaceWhen::Enters { .. });
         let zone_move = matches!(
             when,
@@ -4668,8 +4677,8 @@ impl Walker<'_> {
             ReplaceBy::RedirectUpTo { most, to } => self.r6f_redirect(when, *most, to),
             ReplaceBy::PreventAnd(effects) => self.w9c_prevent_and(when, effects),
             ReplaceBy::WithCounters { count, .. } => {
-                if !enters {
-                    self.problem("`WithCounters` replaces an `Enters`");
+                if !enters && !matches!(when, ReplaceWhen::TurnedFaceUp { .. }) {
+                    self.problem("`WithCounters` replaces an `Enters` or a `TurnedFaceUp`");
                 }
                 self.at("count", |w| w.amount(count));
             }

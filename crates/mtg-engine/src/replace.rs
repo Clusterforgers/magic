@@ -601,6 +601,7 @@ fn is_self(when: &ReplaceWhen) -> bool {
         | ReplaceWhen::ZoneChange { what, .. }
         | ReplaceWhen::Destroyed { what }
         | ReplaceWhen::Countered { what }
+        | ReplaceWhen::TurnedFaceUp { what }
         | ReplaceWhen::Discarded { what } => only_this(what),
         ReplaceWhen::Damage { to, .. } | ReplaceWhen::CountersPut { on: to, .. } => {
             matches!(to, Some(Ref::This))
