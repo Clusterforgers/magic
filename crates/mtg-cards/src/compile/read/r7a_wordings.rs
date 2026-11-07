@@ -63,7 +63,6 @@ fn cant_unless(text: &str) -> Vec<String> {
     let parts = body
         .strip_prefix("As long as you control ")
         .and_then(|rest| rest.split_once(", ~ "))
-        .map(|(held, cant)| (held, cant))
         .or_else(|| {
             let rest = body.strip_prefix("~ ")?;
             let (cant, held) = rest.split_once(" as long as you control ")?;
@@ -217,7 +216,7 @@ fn mana_colors(text: &str) -> Vec<String> {
     };
     let list = &rest[..end];
     let symbols: Vec<&str> = list
-        .split(|c| c == ',' || c == ' ')
+        .split([',', ' '])
         .filter(|word| !word.is_empty() && *word != "or")
         .collect();
     let joined = |order: &[&str]| match order {
@@ -354,9 +353,8 @@ fn changes_swapped(text: &str) -> Vec<String> {
             gets
         ));
     }
-    const WALL: &str = " and is a ";
     if let Some(at) = text.find(" has ")
-        && let Some((keyword, tail)) = text[at + " has ".len()..].split_once(WALL)
+        && let Some((keyword, tail)) = text[at + " has ".len()..].split_once(" and is a ")
         && keyword.chars().all(|c| c.is_ascii_lowercase())
         && let Some((kind, after)) = tail.split_once(" in addition to its other creature types")
         && !kind.contains(' ')

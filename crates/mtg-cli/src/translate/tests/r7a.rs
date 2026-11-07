@@ -1,4 +1,4 @@
-//! Goal: round 7 Differs faults stay closed: an enters-as-a-copy replacement with a later step (Spark Double's extra counter) is a gap, and an AnimateAll over the creatures of a target player is a gap, while the shapes without them still translate.
+//! Goal: round 7 Differs faults stay closed: an enters-as-a-copy replacement with a later step (Spark Double's extra counter) is a gap, and an `AnimateAll` over the creatures of a target player is a gap, while the shapes without them still translate.
 #![allow(clippy::unwrap_used)]
 
 use rstest::rstest;
