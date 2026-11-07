@@ -164,6 +164,46 @@ fn an_attack_a_block_and_the_combat_they_belong_to_are_told_apart() {
     assert_eq!(total(&game, TallyEvent::Blocked, Ref::Opponents, vec![]), 1);
 }
 
+/// "Each creature that attacked this turn": a creature that attacks in an extra combat counts once, two creatures twice.
+#[rstest]
+#[case::one_creature_one_combat(&["Bear"], 1, 1, 1)]
+#[case::one_creature_two_combats(&["Bear"], 2, 1, 1)]
+#[case::two_creatures_two_combats(&["Bear", "Ogre"], 2, 2, 2)]
+fn a_creature_that_attacked_and_blocked_counts_once_however_many_combats(
+    #[case] attackers: &[&str],
+    #[case] combats: usize,
+    #[case] attacked: i64,
+    #[case] blocked: i64,
+) {
+    let mut game = table();
+    for _ in 0..combats {
+        let attack = Event::AttackersDeclared {
+            player: ME,
+            attackers: attackers
+                .iter()
+                .map(|name| (id(&game, name), AttackTarget::Player(FOE)))
+                .collect(),
+        };
+        let block = Event::BlockersDeclared {
+            player: FOE,
+            blocks: attackers
+                .iter()
+                .map(|name| (id(&game, name), id(&game, "Bear")))
+                .collect(),
+        };
+        let begin = Event::StepBegan {
+            step: Step::BeginCombat,
+        };
+        fold(&mut game, &[begin, attack, block, Event::CombatEnded]);
+    }
+    let each = Ref::EachPlayer;
+    assert_eq!(
+        total(&game, TallyEvent::Attacked, each.clone(), vec![]),
+        attacked
+    );
+    assert_eq!(total(&game, TallyEvent::Blocked, each, vec![]), blocked);
+}
+
 fn watcher() -> Arc<CardDefinition> {
     Arc::new(
         CardDefinition::new("Watcher")
