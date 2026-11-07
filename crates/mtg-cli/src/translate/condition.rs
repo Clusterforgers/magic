@@ -348,9 +348,16 @@ pub fn prefixed(ctx: &Ctx, p: &Params) -> Tr<(Option<Value>, Params)> {
         let keys: Vec<&str> = PREFIXED.iter().map(|(from, _)| *from).collect();
         return Ok((None, p.without(&keys)));
     }
+    // "If a black card was milled this way" is at least one: Forge writes `EQ1`, which two black cards would fail.
+    let at_least = p.has("ConditionPresent") && says_a_was(ctx.oracle);
     let mut renamed: Vec<String> = PREFIXED
         .iter()
-        .filter_map(|(from, to)| p.get(from).map(|value| format!("{to}$ {value}")))
+        .filter_map(|(from, to)| {
+            p.get(from).map(|value| match (*from, value) {
+                ("ConditionCompare", "EQ1") if at_least => format!("{to}$ GE1"),
+                _ => format!("{to}$ {value}"),
+            })
+        })
         .collect();
     // "If none is present": the same clause compared with zero.
     if let Some(valid) = p.get("ConditionNotPresent") {
@@ -366,6 +373,19 @@ pub fn prefixed(ctx: &Ctx, p: &Params) -> Tr<(Option<Value>, Params)> {
         .collect();
     all.extend(super::header::gate_conditions(ctx, p)?);
     Ok((single(all), p.without(&keys)))
+}
+
+/// Whether a sentence of the Oracle text asks whether "a" card or permanent was acted on this way ("if a black card was
+/// milled this way"), with no "exactly" or "only" that would make the count exact.
+fn says_a_was(oracle: &str) -> bool {
+    oracle.split(['.', '\n']).any(|sentence| {
+        let s = sentence.to_lowercase();
+        (s.contains("if a ") || s.contains("if an "))
+            && (s.contains(" was ") || s.contains(" were "))
+            && s.contains("this way")
+            && !s.contains("exactly")
+            && !s.contains("only")
+    })
 }
 
 /// A condition under which a permanent enters tapped, as the DSL states it: "unless it holds" (`Not(Compare Ge n)`) for

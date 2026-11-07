@@ -15,6 +15,7 @@ pub mod block_tax;
 mod c10_xp_copy_ends;
 mod c11a_less;
 mod c7_untap;
+mod cant_named;
 mod cast;
 mod combat_quirks;
 mod commanders;

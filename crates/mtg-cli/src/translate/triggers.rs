@@ -445,8 +445,18 @@ fn changes_zone(ctx: &Ctx, p: &Params) -> Tr<Value> {
         (None, _) | (Some("TriggeredCardController"), Some("Battlefield")) => {}
         _ => return unmapped("key:Trigger.ChangesZone.TriggerController"),
     }
-    let what = selector_any(ctx, p.get("ValidCard").unwrap_or("Card"))?;
+    let mut what = selector_any(ctx, p.get("ValidCard").unwrap_or("Card"))?;
     let (origins, destinations) = (zone_list(p, "Origin")?, zone_list(p, "Destination")?);
+    // "Enters from your graveyard": Forge names the zone alone, Oracle its owner too.
+    let yours = json!({"OwnedBy": "You"});
+    if origins == [Some("Graveyard")]
+        && !p.get("ValidCard").is_some_and(|v| v.contains("Own"))
+        && p.get("TriggerDescription")
+            .is_some_and(|d| d.contains("from your graveyard"))
+        && !what.contains(&yours)
+    {
+        what.push(yours);
+    }
     // Every zone but the battlefield, to one: "put into a graveyard from anywhere other than the battlefield".
     if let ([_, _, ..], [Some(to)]) = (origins.as_slice(), destinations.as_slice())
         && origins.len() == 5
