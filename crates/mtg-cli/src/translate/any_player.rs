@@ -89,6 +89,58 @@ const WHOSE: [&str; 12] = [
     "each player",
 ];
 
+/// A target filter with no controller where every target phrase of the Oracle text says "you control" ("Target creature
+/// you control becomes ..." over `ValidTgts$ Creature`): the script would let the card target what it can't.
+pub fn widens_target(oracle: &str, valid: &str) -> bool {
+    if valid.is_empty()
+        || ["Ctrl", "Control", "Own"]
+            .iter()
+            .any(|word| valid.contains(word))
+    {
+        return false;
+    }
+    // One plain type ("Creature", "Permanent"), as the target phrases name it.
+    let noun = valid.to_lowercase();
+    if !noun.chars().all(char::is_alphabetic) {
+        return false;
+    }
+    let text = without_reminders(&oracle.replace("\\n", "\n").to_lowercase());
+    let phrases: Vec<Vec<&str>> = text
+        .split("target ")
+        .skip(1)
+        .map(|phrase| phrase.split_whitespace().take(3).collect())
+        .filter(|words: &Vec<&str>| {
+            words
+                .first()
+                .is_some_and(|first| first.trim_end_matches([',', '.', ':', ';']) == noun)
+        })
+        .collect();
+    // Each phrase of that type is "target <type> you control": the controller belongs to the target, not to a later
+    // clause ("for as long as you control ~", "where X is the number of Gates you control").
+    !phrases.is_empty()
+        && phrases.iter().all(|words| {
+            matches!(words.as_slice(), [_, "you", control] if control.trim_end_matches([',', '.']) == "control")
+        })
+}
+
+/// The text without its reminder text in parentheses.
+fn without_reminders(text: &str) -> String {
+    let mut depth = 0usize;
+    text.chars()
+        .filter(|c| {
+            match c {
+                '(' => depth += 1,
+                ')' => {
+                    depth = depth.saturating_sub(1);
+                    return false;
+                }
+                _ => {}
+            }
+            depth == 0
+        })
+        .collect()
+}
+
 /// A target filter with a controller (`YouCtrl`, `OppCtrl`) that no target phrase of the Oracle text states: the script
 /// narrows the target as a hint for its AI, so the card would not play as printed.
 pub fn narrows_target(oracle: &str, valid: &str) -> bool {

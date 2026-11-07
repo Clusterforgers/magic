@@ -355,6 +355,7 @@ const RUNS: &[&str] = &[
     "Rule.AdditionalLandPlays",
     "Rule.TriggerAgain",
     "Rule.NextSpell",
+    "Rule.SpellCost",
     "Rule.DamageCantBePrevented",
     "Rule.GraveyardCardsUntargetable",
     "Rule.CantLoseGame",

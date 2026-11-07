@@ -243,6 +243,9 @@ pub(crate) fn lower(scope: &Scope<'_>, wanted: &Wanted) -> Result<Modification, 
             Some(Chosen::Color(color)) => {
                 Modification::SetColors(std::iter::once(*color).collect())
             }
+            Some(Chosen::Colors(colors)) => {
+                Modification::SetColors(colors.iter().copied().collect())
+            }
             _ => return Err(ResolveError::Invalid("no color was chosen".into())),
         },
         Wanted::SetLandTypesChosen(name) => match scope.chosen_value(name) {

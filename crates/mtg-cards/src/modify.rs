@@ -665,6 +665,16 @@ pub enum GameRule {
         /// What the spell gets.
         benefit: SpellBenefit,
     },
+    /// The spells `applies_to` selects cost `mana` more or less to cast while the rule lasts (CR 601.2f): "spells your
+    /// opponents cast cost {1} more to cast until your next turn"; "you" in the selector is the rule's controller.
+    SpellCost {
+        /// The spells, with `Spell` first, as a cost modifier names them.
+        applies_to: Selector,
+        /// More or less.
+        change: crate::ability::CostChange,
+        /// The mana added or removed.
+        mana: ManaCostX,
+    },
     /// A triggered ability of a permanent the rule's controller controls triggers an additional time when the event
     /// `cause` describes makes it trigger ("if a creature dying causes a triggered ability ... to trigger"), or any event
     /// when it names none.

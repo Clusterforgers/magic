@@ -58,6 +58,9 @@ fn choice(
     if let ValueKind::CardName(filter) = kind {
         return name(cx, player, filter);
     }
+    if *kind == ValueKind::Colors {
+        return colors(cx, player);
+    }
     let options = options(kind);
     let chooser = OptionChooser {
         player,
@@ -148,9 +151,74 @@ fn name(
     }
 }
 
+/// The option that ends a choice of colours with the ones chosen so far.
+const NO_MORE_COLORS: &str = "No more colors";
+
+/// The options of the next question of a choice of colours: no more (once one is chosen, first, so the default answer
+/// stops) and the colours not chosen yet.
+fn color_options(chosen: &[Color]) -> Vec<ChoiceOption> {
+    let stop = (!chosen.is_empty()).then(|| ChoiceOption::Label(NO_MORE_COLORS.to_owned()));
+    stop.into_iter()
+        .chain(
+            Color::ALL
+                .iter()
+                .filter(|color| !chosen.contains(color))
+                .copied()
+                .map(ChoiceOption::Color),
+        )
+        .collect()
+}
+
+/// One or more colours, one question at a time: each answer adds a colour not chosen yet until the player stops or every
+/// colour is chosen. The answers are read back from the journal in order.
+fn colors(cx: &Cx<'_>, player: PlayerId) -> Result<Result<Option<Chosen>, Decision>, ResolveError> {
+    let mut chosen: Vec<Color> = Vec::new();
+    let mut answers = cx.journal().iter();
+    while chosen.len() < Color::ALL.len() {
+        let options = color_options(&chosen);
+        let Some(answer) = answers.next() else {
+            return Ok(Err(Decision {
+                player,
+                kind: DecisionKind::ChooseOption(crate::choose::OptionOptions {
+                    source: cx.scope.source.id,
+                    options,
+                    text: if chosen.is_empty() {
+                        "Choose a color.".to_owned()
+                    } else {
+                        "Choose another color, or no more.".to_owned()
+                    },
+                }),
+            }));
+        };
+        match answer {
+            (who, Choice::Option(index)) if *who == player => match options.get(*index) {
+                Some(ChoiceOption::Color(color)) => chosen.push(*color),
+                Some(ChoiceOption::Label(_)) => break,
+                _ => {
+                    return Err(ResolveError::Invalid(format!(
+                        "{index} is no option of the choice of colors"
+                    )));
+                }
+            },
+            other => {
+                return Err(ResolveError::Invalid(format!(
+                    "{other:?} is no color chosen by {player:?}"
+                )));
+            }
+        }
+    }
+    if answers.next().is_some() {
+        return Err(ResolveError::Invalid(
+            "an answer was given to a choice of colors that was not asked".into(),
+        ));
+    }
+    Ok(Ok(Some(Chosen::Colors(chosen))))
+}
+
 /// What the player chooses between.
 fn options(kind: &ValueKind) -> Vec<ChoiceOption> {
     match kind {
+        ValueKind::Colors => color_options(&[]),
         ValueKind::Color => Color::ALL
             .iter()
             .copied()
@@ -167,7 +235,7 @@ fn options(kind: &ValueKind) -> Vec<ChoiceOption> {
 /// The question in the words of a card.
 fn question(kind: &ValueKind) -> String {
     match kind {
-        ValueKind::Color => "Choose a color.".to_owned(),
+        ValueKind::Color | ValueKind::Colors => "Choose a color.".to_owned(),
         ValueKind::CreatureType => "Choose a creature type.".to_owned(),
         ValueKind::CardType => "Choose a card type.".to_owned(),
         ValueKind::LandType => "Choose a land type.".to_owned(),
