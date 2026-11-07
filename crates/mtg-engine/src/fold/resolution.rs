@@ -267,6 +267,21 @@ fn begin(state: &mut GameState, id: ObjectId) -> Result<(), EngineError> {
     // A delayed trigger starts with the names the resolution that set it up had bound.
     if let Some(ability) = state.objects.get(&id).and_then(|o| o.ability()) {
         resolving.bindings.clone_from(ability.bindings());
+        // The numbers the setup kept come as `~let:<number>:<name>` names: they are kept numbers again.
+        let kept: Vec<String> = resolving
+            .bindings
+            .keys()
+            .filter(|name| name.starts_with(crate::resolve::LET))
+            .cloned()
+            .collect();
+        for name in kept {
+            resolving.bindings.remove(&name);
+            let parsed = name
+                .strip_prefix(crate::resolve::LET)
+                .and_then(|rest| rest.split_once(':'))
+                .and_then(|(value, kept)| Some((kept.to_owned(), value.parse::<i64>().ok()?)));
+            resolving.lets.extend(parsed);
+        }
     }
     let counted = state
         .objects

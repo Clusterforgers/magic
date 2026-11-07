@@ -9,6 +9,48 @@ use super::effects::chain_at;
 use super::valid::{defined, selector_any, selector_in, subject};
 use crate::forge::script::Params;
 
+/// What `Remembered` holds once a `ChooseCard` adds its pick to what earlier picks of the chain remembered ("choose a
+/// creature card with mana value 1, then do the same for 2 and 3"): every pick, wherever it is now. Only picks of
+/// `ChooseCard` lines that follow each other add up; anything else held (a loop's object or player, a pass of a loop that
+/// would add up over passes) keeps the line a gap.
+fn add_chosen(ctx: &Ctx, held: &Value, before: Option<&str>, bind: &str) -> Tr<Value> {
+    let gap = || unmapped("key:ChooseCard.RememberChosen-with-remembered");
+    let pick = json!({"Is": {"Bound": bind}});
+    let picks = match (held, before) {
+        (Value::Object(map), Some(name))
+            if map.get("Bound").and_then(Value::as_str) == Some(name) =>
+        {
+            vec![json!({ "Is": held }), pick]
+        }
+        _ => match held.pointer("/Each/0/AnyOf").and_then(Value::as_array) {
+            Some(earlier) if held.pointer("/Each/1") == Some(&chosen_zones()) => {
+                let mut all = earlier.clone();
+                all.push(pick);
+                all
+            }
+            _ => return gap(),
+        },
+    };
+    if ctx.player_loop.is_some() || super::memory::is_scoped(ctx, held) {
+        return gap();
+    }
+    Ok(json!({"Each": [{"AnyOf": picks}, chosen_zones()]}))
+}
+
+/// Every zone a pick of [`add_chosen`] can be in by the time a later line reads it.
+fn chosen_zones() -> Value {
+    let zones = [
+        "Battlefield",
+        "Hand",
+        "Library",
+        "Graveyard",
+        "Exile",
+        "Stack",
+    ]
+    .map(|zone| json!({ "In": zone }));
+    json!({ "AnyOf": zones })
+}
+
 /// `ChooseCard`: the chooser picks cards that match, optionally or at random; the later lines read them as `ChosenCard`.
 pub fn choose_card(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
     only(
@@ -81,13 +123,12 @@ pub fn choose_card(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
         };
         json!({"Choose": {"who": who, "from": from, "count": {"min": min, "max": count}, "as": bind}})
     };
-    ctx.chosen_card = Some(bind.clone());
+    let before = ctx.chosen_card.replace(bind.clone());
     if p.get("RememberChosen") == Some("True") {
-        // A pass of a loop binds its names anew, so what it remembers cannot outlive the pass or add up over passes.
-        if ctx.remembered.is_some() {
-            return unmapped("key:ChooseCard.RememberChosen-with-remembered");
-        }
-        ctx.remembered = Some(json!({ "Bound": bind }));
+        ctx.remembered = Some(match ctx.remembered.take() {
+            None => json!({ "Bound": bind }),
+            Some(held) => add_chosen(ctx, &held, before.as_deref(), &bind)?,
+        });
     }
     let mut effects = vec![effect];
     // A title that says "to reveal" is the Oracle wording of a choice shown to the table, with or without `Reveal$`.
@@ -124,7 +165,11 @@ pub fn repeat_each(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
     let mut before_move = None;
     let over = match (p.get("RepeatPlayers"), p.get("RepeatCards")) {
         (None, None) if p.has("DefinedCards") => defined_cards(ctx, p, &bind, &mut before_move)?,
-        (None, Some(valid)) => json!({"Each": selector_in(ctx, valid, p.get("Zone"))?}),
+        (None, Some(valid)) => {
+            // A pass names the object where it was found, so its controller is read from it, as it last was once it moved.
+            before_move = Some(json!({ "Bound": bind }));
+            json!({"Each": selector_in(ctx, valid, p.get("Zone"))?})
+        }
         (Some(_), Some(_)) => return unmapped("key:RepeatEach.RepeatPlayers+RepeatCards"),
         (players, None) => match players {
             Some("Player") => json!("EachPlayer"),
@@ -202,7 +247,12 @@ pub fn immediate_trigger(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
     only(
         p,
         "ImmediateTrigger",
-        &["Execute", "UnlessSwitched", "RememberObjects"],
+        &[
+            "Execute",
+            "UnlessSwitched",
+            "RememberObjects",
+            "RememberSVarAmount",
+        ],
     )?;
     let Some(name) = p.get("Execute") else {
         return unmapped("key:ImmediateTrigger.no-Execute");
@@ -223,6 +273,15 @@ pub fn immediate_trigger(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
         out.push(json!({"Bind": {"what": what, "as": bind}}));
         bound = Some(json!({ "Bound": bind }));
     }
+    // `RememberSVarAmount$`: the number as the trigger is set up, which its steps read as `TriggerRememberAmount`.
+    let mut kept = None;
+    if let Some(word) = p.get("RememberSVarAmount") {
+        let value = amount(ctx, word)?;
+        let bind = ctx.fresh("number");
+        out.push(json!({"Let": {"as": bind, "amount": value}}));
+        kept = Some(bind);
+    }
+    let outer_amount = std::mem::replace(&mut ctx.trigger_amount, kept);
     let outer_delayed = std::mem::replace(&mut ctx.delayed_remembered, bound);
     let outer = std::mem::take(&mut ctx.targets);
     let parent = ctx.parent_target.take();
@@ -230,6 +289,14 @@ pub fn immediate_trigger(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
     let targets = std::mem::replace(&mut ctx.targets, outer);
     ctx.parent_target = parent;
     ctx.delayed_remembered = outer_delayed;
+    // The targets are chosen as the trigger goes on the stack, before its resolution holds the kept number.
+    if let Some(name) = std::mem::replace(&mut ctx.trigger_amount, outer_amount)
+        && Value::Array(targets.clone())
+            .to_string()
+            .contains(&json!({ "Bound": name }).to_string())
+    {
+        return unmapped("key:ImmediateTrigger.RememberSVarAmount-in-a-target");
+    }
     let mut reflexive = json!({"Reflexive": {"effects": effects?}});
     if !targets.is_empty() {
         reflexive["Reflexive"]["targets"] = Value::Array(targets);

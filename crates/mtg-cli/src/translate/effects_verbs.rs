@@ -124,13 +124,25 @@ fn add_turn(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
 
 /// `Manifest` and `Cloak` of the top cards of a library; a named card (`Remembered`) is a gap.
 fn manifest(ctx: &mut Ctx, p: &Params, variant: &str) -> Tr<Value> {
-    only(p, variant, &["Amount", "Defined", "DefinedPlayer"])?;
+    let remember = format!("Remember{variant}ed");
+    only(
+        p,
+        variant,
+        &["Amount", "Defined", "DefinedPlayer", remember.as_str()],
+    )?;
     if !matches!(p.get("Defined"), None | Some("TopOfLibrary")) {
         return unmapped(format!("key:{variant}.Defined"));
     }
     let who = defined(ctx, p.get("DefinedPlayer").unwrap_or("You"))?;
     let count = amount(ctx, p.get("Amount").unwrap_or("1"))?;
-    Ok(json!({ variant: {"who": who, "count": count} }))
+    let mut effect = json!({ variant: {"who": who, "count": count} });
+    // `RememberManifested$`: the face-down permanents, as the objects they became on the battlefield.
+    if p.get(&remember) == Some("True") {
+        let name = ctx.fresh(&variant.to_lowercase());
+        effect[variant]["as"] = json!(name);
+        ctx.remembered = Some(json!({ "Bound": name }));
+    }
+    Ok(effect)
 }
 
 fn multiply_counter(ctx: &mut Ctx, p: &Params) -> Tr<Value> {

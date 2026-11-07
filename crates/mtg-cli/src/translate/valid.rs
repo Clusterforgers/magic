@@ -40,6 +40,23 @@ fn remembered_player_controls(ctx: &Ctx) -> Tr<Vec<Value>> {
     }
 }
 
+/// `RememberedPlayerOwn`: owned by the remembered player, which must be a player: the one of a pass over players, or a
+/// word that names players.
+fn remembered_player_owns(ctx: &Ctx) -> Tr<Vec<Value>> {
+    let held = super::memory::slot_ref(ctx, super::memory::Slot::Remembered);
+    let pass = |held: &Value| {
+        ctx.player_loop
+            .as_ref()
+            .is_some_and(|name| held == &json!({ "Bound": name }))
+    };
+    match held {
+        Some(who) if pass(&who) || super::valid_atoms::is_player(&who) => {
+            Ok(vec![json!({"OwnedBy": who})])
+        }
+        _ => unmapped("valid:RememberedPlayerOwn"),
+    }
+}
+
 /// The predicates a property of a valid-string stands for.
 fn property(ctx: &Ctx, prop: &str) -> Tr<Vec<Value>> {
     let one = |value: Value| Ok(vec![value]);
@@ -74,6 +91,7 @@ fn property(ctx: &Ctx, prop: &str) -> Tr<Vec<Value>> {
         "IsGoaded" | "Goaded" => return one(json!("Goaded")),
         "HasCounters" => return one(json!("HasAnyCounter")),
         "hasXCost" => return one(json!("XInCost")),
+        "RememberedPlayerOwn" => return remembered_player_owns(ctx),
         "RememberedPlayerCtrl" => {
             return remembered_player_controls(ctx);
         }
@@ -295,7 +313,9 @@ pub fn selector(ctx: &Ctx, spec: &str) -> Tr<Vec<Value>> {
     // Every unknown word of the alternative is reported, not only the first.
     let mut gaps = super::filter::Unknowns::default();
     let (mut preds, props) = if matches!(head, "Targeted" | "TargetedCard") {
-        targeted_base(ctx, props)?
+        targeted_base(&objects(ctx.last_target()?)?, props)
+    } else if let Some(slot) = memory_head(head) {
+        targeted_base(&objects(super::memory::held_objects(ctx, slot)?)?, props)
     } else {
         (gaps.take(base(ctx, head)), split_properties(props))
     };
@@ -646,6 +666,7 @@ pub fn defined(ctx: &Ctx, word: &str) -> Tr<Value> {
         "Player" => Ok(json!("EachPlayer")),
         "Self" | "Card.Self" => Ok(json!("This")),
         "Sacrificed" | "Discarded" => Ok(json!("Paid")),
+        "Exiled" => super::cost::exiled_paid(ctx, "defined"),
         // The cards this permanent exiled and that are still in exile.
         "ExiledWith" => Ok(json!({"Each": [{"ExiledWith": "This"}, {"In": "Exile"}]})),
         "TopOfLibrary" => {
@@ -666,6 +687,7 @@ pub fn defined(ctx: &Ctx, word: &str) -> Tr<Value> {
             |name| Ok(json!({"Bound": name})),
         ),
         "ChosenPlayer" => chosen_player(ctx, "defined:ChosenCard-without-a-choice"),
+        "Player.Chosen" => chosen_player(ctx, "defined:Player.Chosen"),
         "RememberedController" => super::memory::remembered_controller(ctx),
         "ImprintedController" => super::memory::imprinted_controller(ctx),
         "DelayTriggerRemembered" | "DelayTriggerRememberedLKI" | "DelayedTriggerRemembered"
@@ -875,10 +897,19 @@ pub fn subject(ctx: &mut Ctx, params: &Params, default: &str, zone: Option<&str>
     defined(ctx, word)
 }
 
-/// The base `Targeted` of a valid-string: the chosen target itself, the cards that share its name (`sameName`, which leaves
-/// the target out beside `Other`) or what is attached to it (`Attached`); the properties left apply to those objects.
-fn targeted_base(ctx: &Ctx, props: &str) -> Tr<(Vec<Value>, Vec<String>)> {
-    let target = objects(ctx.last_target()?)?;
+/// The memory a base word of a valid-string reads (`Remembered.sameName`, `Imprinted.Creature`).
+fn memory_head(head: &str) -> Option<super::memory::Slot> {
+    match head {
+        "Remembered" | "RememberedCard" => Some(super::memory::Slot::Remembered),
+        "Imprinted" => Some(super::memory::Slot::Imprinted),
+        _ => None,
+    }
+}
+
+/// The base `Targeted` (or a memory) of a valid-string: the objects themselves, the cards that share a name with one of
+/// them (`sameName`, which leaves them out beside `Other`) or what is attached to them (`Attached`); the properties left
+/// apply to those objects.
+fn targeted_base(target: &Value, props: &str) -> (Vec<Value>, Vec<String>) {
     let mut rest = split_properties(props);
     let mut take = |word: &str| {
         let found = rest.iter().any(|prop| prop == word);
@@ -904,13 +935,18 @@ fn targeted_base(ctx: &Ctx, props: &str) -> Tr<(Vec<Value>, Vec<String>)> {
             preds.push(json!("Other"));
         }
     }
-    Ok((preds, rest))
+    (preds, rest)
 }
 
 /// The player the line or the source chose: a name an earlier step bound, else the one the source chose as it entered.
 pub(super) fn chosen_player(ctx: &Ctx, gap: &str) -> Tr<Value> {
+    // `ChoosePlayer` binds `player…`; a card or a source chosen later is no player.
     if let Some(name) = &ctx.chosen_card {
-        return Ok(json!({"Bound": name}));
+        return if name.starts_with("player") {
+            Ok(json!({"Bound": name}))
+        } else {
+            unmapped(gap)
+        };
     }
     if ctx.memory.entered.player {
         return Ok(json!("Chosen"));

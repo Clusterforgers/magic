@@ -309,6 +309,15 @@ fn event_amount(ctx: &Ctx, expression: &str) -> Tr<Option<Value>> {
         "Sacrificed" | "Discarded" => json!("Paid"),
         // The card revealed from the hand as the cost, when the cost picks nothing else.
         "Revealed" if revealed_alone(ctx.oracle) => json!("Paid"),
+        "Exiled" => super::cost::exiled_paid(ctx, "amount")?,
+        "Imprinted" if what.starts_with("Valid ") => {
+            let filter = &what["Valid ".len()..];
+            return super::memory::matching_in(ctx, super::memory::Slot::Imprinted, filter)
+                .map(Some);
+        }
+        "Imprinted" if super::memory::stat_word(what).is_some() => {
+            return super::memory::total_in(ctx, super::memory::Slot::Imprinted, what).map(Some);
+        }
         // What the reflexive trigger of an `ImmediateTrigger` was told to remember (`RememberObjects$`).
         "TriggerRemembered" => match &ctx.delayed_remembered {
             Some(bound) => bound.clone(),
@@ -443,6 +452,10 @@ fn count_base(ctx: &Ctx, base: &str) -> Tr<Value> {
         "xPaid" => Ok(json!("X")),
         // The same number as `Remembered$Amount`.
         "RememberedSize" => super::memory::remembered_count(ctx),
+        "TriggerRememberAmount" => ctx.trigger_amount.as_ref().map_or_else(
+            || unmapped("amount:TriggerRememberAmount"),
+            |name| Ok(json!({ "Bound": name })),
+        ),
         "ChosenNumber" => ctx.chosen_number.as_ref().map_or_else(
             || unmapped("amount:ChosenNumber-without-a-choice"),
             |name| Ok(json!({"ChosenAs": name})),
