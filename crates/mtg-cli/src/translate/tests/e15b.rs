@@ -1,4 +1,4 @@
-//! Goal: round 15 pack e15b reads the card's own entering changes: "it becomes day as ~ enters" (`DayTime$ Neither`), a reveal of one of two land types or it enters tapped (`Reveal<1/Island;Mountain/...>`), and the choice of a card type, a listed card type or a (basic) land type that later lines read as the chosen type; another shape stays a gap.
+//! Goal: round 15 pack e15b reads the card's own entering changes: "it becomes day as ~ enters" (`DayTime$ Neither`), a reveal of one of two land types or it enters tapped (`Reveal<1/Island;Mountain/...>`), and the choice of a card type, a listed card type or a (basic) land type that later lines read as the chosen type, and a counter of a kind chosen as it enters; another shape stays a gap.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
 use rstest::rstest;
@@ -123,4 +123,35 @@ fn landwalk_of_the_chosen_type(#[case] choose: &str, #[case] read: bool) {
     } else {
         assert!(!gaps(&text).is_empty());
     }
+}
+
+#[rstest]
+#[case::two_kinds("Deathtouch,Lifelink", Some(json!([{"Other": "deathtouch"}, {"Other": "lifelink"}])))]
+#[case::first_strike("Flying,First Strike", Some(json!([{"Other": "flying"}, {"Other": "first strike"}])))]
+#[case::one_kind("Deathtouch", None)]
+#[case::an_unknown_kind("Deathtouch,Wibble", None)]
+fn a_counter_of_a_kind_chosen_as_it_enters(#[case] kinds: &str, #[case] read: Option<Value>) {
+    let text = format!(
+        "Name:T\nTypes:Creature Elf\nPT:1/1\nK:ETBReplacement:Other:CounterChoice\nSVar:CounterChoice:DB$ PutCounter | ETB$ True | CounterType$ {kinds}\n"
+    );
+    match read {
+        Some(kinds) => {
+            assert_eq!(gaps(&text), Vec::<String>::new());
+            assert_eq!(
+                abilities(&text)[0],
+                enters(json!({ "WithCounterOf": kinds }))
+            );
+        }
+        None => assert!(!gaps(&text).is_empty()),
+    }
+}
+
+#[rstest]
+#[case::two_of_three("ChooseDifferent$ 2")]
+#[case::two_counters("CounterNum$ 2")]
+fn a_counter_choice_of_another_shape_stays_a_gap(#[case] extra: &str) {
+    let text = format!(
+        "Name:T\nTypes:Creature Elf\nPT:1/1\nK:ETBReplacement:Other:CounterChoice\nSVar:CounterChoice:DB$ PutCounter | ETB$ True | CounterType$ Menace,Deathtouch,Lifelink | {extra}\n"
+    );
+    assert!(!gaps(&text).is_empty());
 }

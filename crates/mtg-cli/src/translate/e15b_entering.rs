@@ -105,6 +105,34 @@ fn card_types_of(keep: impl Fn(&str) -> bool) -> Value {
     json!({ "CardTypeOf": set })
 }
 
+/// The `ETBReplacement` part `DB$ PutCounter | CounterType$ Deathtouch,Lifelink`: "enters with your choice of a
+/// deathtouch counter or a lifelink counter on it". One counter, of two or more kinds; any other shape stays a gap.
+pub fn counter_of(part: &Params) -> Tr<Value> {
+    check_keys(
+        part,
+        "ETBReplacement",
+        &["DB", "ETB", "CounterType"],
+        |_, _| false,
+    )?;
+    let names: Vec<&str> = part
+        .get("CounterType")
+        .unwrap_or_default()
+        .split(',')
+        .map(str::trim)
+        .collect();
+    if part.get("ETB") != Some("True") || names.len() < 2 {
+        return unmapped("keyword:ETBReplacement-PutCounter");
+    }
+    let kinds = names
+        .iter()
+        .map(|name| super::amount::counter_kind(name))
+        .collect::<Option<Vec<Value>>>();
+    match kinds {
+        Some(kinds) => Ok(json!({ "WithCounterOf": kinds })),
+        None => unmapped("keyword:ETBReplacement-counter-kind"),
+    }
+}
+
 /// What a `ChooseType` part of an entering choice makes the card remember: a creature type, a land type or a card type.
 pub fn chosen_kind(part: &Params) -> Option<&'static str> {
     match part.get("Type")? {

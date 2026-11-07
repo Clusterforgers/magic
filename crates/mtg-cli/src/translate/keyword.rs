@@ -589,6 +589,7 @@ fn choice(ctx: &Ctx, name: &str) -> Tr<Value> {
             Ok(json!({"Choose": "CreatureType"}))
         }
         (Some("ChooseType"), _, None) => super::e15b_entering::type_choice(&part),
+        (Some("PutCounter"), None, None) => super::e15b_entering::counter_of(&part),
         (Some("ChoosePlayer"), None, Some(choices)) => {
             hints_only(&["DB", "Defined", "Choices"])?;
             match choices {

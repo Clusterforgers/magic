@@ -1,4 +1,4 @@
-//! Goal: a permanent that chooses a basic land type or one of a list of card types as it enters offers exactly those, and its static abilities read the type it chose ("lands you control are the chosen type in addition", "each creature of the chosen type has flying", "enchanted land is the chosen type") at 2, 3 and 4 seats.
+//! Goal: a permanent that chooses a basic land type, one of a list of card types or the kind of a counter as it enters offers exactly those; its static abilities read the type it chose ("lands you control are the chosen type in addition", "each creature of the chosen type has flying", "enchanted land is the chosen type") and it enters with one counter of the kind chosen, at 2, 3 and 4 seats.
 
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
@@ -12,6 +12,7 @@ use mtg_engine::characteristics::characteristics;
 use mtg_engine::choose::{ChoiceOption, OptionChoice};
 use mtg_engine::decision::{Answer, DecisionKind};
 use mtg_engine::keywords::has_keyword;
+use mtg_testkit::cards::cost;
 use mtg_testkit::{Driver, Scenario, ready};
 use rstest::rstest;
 use serde_json::{Value, json};
@@ -138,4 +139,70 @@ fn a_card_type_from_a_list_is_read_by_the_group(
     };
     assert_eq!(flies("Bear"), bear_flies);
     assert_eq!(flies("Relic"), relic_flies);
+}
+
+/// A creature that enters with a deathtouch or a lifelink counter of its controller's choice.
+fn nipper() -> Arc<CardDefinition> {
+    let rule: Ability = serde_json::from_value(json!({"Replacement": {
+        "when": {"Enters": {"what": ["This"]}},
+        "by": {"WithCounterOf": [{"Other": "deathtouch"}, {"Other": "lifelink"}]}}}))
+    .unwrap();
+    Arc::new(
+        CardDefinition::new("Nipper")
+            .with_type(CardType::Creature)
+            .with_mana_cost(cost(0, &[]))
+            .with_power_toughness(1, 1)
+            .with_rules(rule),
+    )
+}
+
+#[rstest]
+#[case::deathtouch(0, Keyword::Deathtouch, Keyword::Lifelink)]
+#[case::lifelink(1, Keyword::Lifelink, Keyword::Deathtouch)]
+fn a_counter_of_the_kind_chosen_as_it_enters(
+    #[values(2, 3, 4)] seats: usize,
+    #[case] pick: usize,
+    #[case] has: Keyword,
+    #[case] lacks: Keyword,
+) {
+    let scenario = Scenario::new(seats).hand(0, vec![nipper()]);
+    let mut driver = Driver::from_scenario(scenario).unwrap();
+    driver.cast("Nipper").unwrap();
+    let mut asked = Vec::new();
+    for _ in 0..8 {
+        let decision = driver.decision().unwrap().clone();
+        match &decision.kind {
+            DecisionKind::ChooseOption(options) => {
+                asked = options.options.clone();
+                driver
+                    .answer(Answer::ChooseOption(OptionChoice(pick)))
+                    .unwrap();
+                continue;
+            }
+            _ if driver.id_of("Nipper").is_ok() => break,
+            _ => {
+                driver.pass().unwrap();
+            }
+        }
+    }
+    assert_eq!(
+        asked,
+        [
+            ChoiceOption::Label("deathtouch counter".to_owned()),
+            ChoiceOption::Label("lifelink counter".to_owned())
+        ]
+    );
+    let id = driver.id_of("Nipper").unwrap();
+    let counters: u32 = driver
+        .state()
+        .object(id)
+        .unwrap()
+        .permanent()
+        .unwrap()
+        .counters()
+        .map(|(_, n)| n)
+        .sum();
+    assert_eq!(counters, 1);
+    assert!(has_keyword(driver.state(), id, &has));
+    assert!(!has_keyword(driver.state(), id, &lacks));
 }

@@ -667,6 +667,7 @@ fn applies_to(by: &ReplaceBy, unit: &Unit) -> bool {
         | ReplaceBy::DayIfNeither
         | ReplaceBy::EntersPrepared
         | ReplaceBy::Riot
+        | ReplaceBy::WithCounterOf(_)
         | ReplaceBy::AsCopy { .. } => matches!(unit, Unit::Enter { .. }),
         ReplaceBy::Instead(_) => !matches!(unit, Unit::Other),
         ReplaceBy::InsteadNext(_) | ReplaceBy::RedirectUpTo { .. } | ReplaceBy::Redirect { .. } => {
@@ -692,6 +693,7 @@ const fn enters_apart(action: &Action) -> bool {
                 | ReplaceBy::Devour { .. }
                 | ReplaceBy::Riot
                 | ReplaceBy::DayIfNeither
+                | ReplaceBy::WithCounterOf(_)
                 | ReplaceBy::EntersPrepared
         )
     )
@@ -2030,6 +2032,9 @@ impl Pass<'_> {
         match by {
             ReplaceBy::Devour { .. } => self.devour(at, candidate, by, object, controller, applied),
             ReplaceBy::Riot => self.riot(at, object, controller, applied),
+            ReplaceBy::WithCounterOf(kinds) => {
+                self.e15b_counter_of(at, (object, controller), kinds, applied)
+            }
             ReplaceBy::Amplify(per) => {
                 self.amplify(at, candidate, (object, controller), *per, applied)
             }
@@ -3264,6 +3269,7 @@ mod reveal;
 
 mod amplify;
 mod changes;
+mod e15b_counter_of;
 mod riot;
 mod tribute;
 

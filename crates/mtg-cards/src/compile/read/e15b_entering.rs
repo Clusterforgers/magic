@@ -5,6 +5,7 @@ use mtg_core::card::{CardType, CardTypes};
 
 use super::tokens::Reader;
 use crate::trigger::EntersChoice;
+use crate::value::{Amount, CounterKind};
 
 /// Every card type, in the order the rules list them (CR 205.2a).
 const CARD_TYPES: [CardType; 9] = [
@@ -53,6 +54,27 @@ fn type_list_texts(set: CardTypes) -> Vec<String> {
         texts.push(format!("a card type other than {}", or_list(&left)));
     }
     texts
+}
+
+/// "~ enters with your choice of a deathtouch counter or a lifelink counter on it"; empty for fewer than two kinds.
+pub(super) fn counter_of_texts(kinds: &[CounterKind]) -> Vec<String> {
+    let Some(each) = kinds
+        .iter()
+        .map(|kind| super::counters::text(kind, &Amount::one()))
+        .collect::<Option<Vec<String>>>()
+    else {
+        return Vec::new();
+    };
+    // A choice between two is the same in either order.
+    let lists = match each.as_slice() {
+        [one, two] => vec![format!("{one} or {two}"), format!("{two} or {one}")],
+        [rest @ .., last] if !rest.is_empty() => vec![format!("{}, or {last}", rest.join(", "))],
+        _ => return Vec::new(),
+    };
+    lists
+        .into_iter()
+        .map(|list| format!("~ enters with your choice of {list} on it"))
+        .collect()
 }
 
 /// "Spells you cast of the chosen type" beside "Spells of the chosen type you cast".
@@ -142,5 +164,30 @@ mod tests {
     #[case::opponents("Spells of the chosen type your opponents cast", None)]
     fn cast_before(#[case] subject: &str, #[case] moved: Option<&str>) {
         assert_eq!(cast_before_chosen(subject).as_deref(), moved);
+    }
+
+    fn kinds(names: &[&str]) -> Vec<CounterKind> {
+        names
+            .iter()
+            .map(|name| CounterKind::Other((*name).to_owned()))
+            .collect()
+    }
+
+    const TWO: &str =
+        "~ enters with your choice of a deathtouch counter or a lifelink counter on it";
+
+    #[rstest]
+    #[case::two(&["deathtouch", "lifelink"], TWO, true)]
+    #[case::three(
+        &["menace", "deathtouch", "lifelink"],
+        "~ enters with your choice of a menace counter, a deathtouch counter, or a lifelink counter on it",
+        true
+    )]
+    #[case::other_kind(&["deathtouch", "menace"], TWO, false)]
+    #[case::either_order_of_two(&["lifelink", "deathtouch"], TWO, true)]
+    #[case::one_kind_only(&["deathtouch"], "~ enters with a deathtouch counter on it", false)]
+    fn a_counter_of_a_chosen_kind(#[case] names: &[&str], #[case] text: &str, #[case] read: bool) {
+        let said = counter_of_texts(&kinds(names));
+        assert_eq!(said.iter().any(|said| said == text), read, "{said:?}");
     }
 }
