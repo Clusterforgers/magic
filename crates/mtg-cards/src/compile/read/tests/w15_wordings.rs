@@ -1,4 +1,4 @@
-//! Goal: the w15 wordings (a toll counted by "{X}, where X is the number of", "sacrifice any number", the other card of two looked at, the top card revealed and sorted, a pair of types counted, "any other" card in a graveyard, damage divided among up to X targets, "also deals") read as the text they mean, and a text of another meaning never reads as the clause.
+//! Goal: the w15 wordings (a toll counted by "{X}, where X is the number of", "sacrifice any number", the other card of two looked at, the top card revealed and sorted, a pair of types counted, damage divided among up to X targets, "also deals", names of modes and quoted abilities, support, blight and adamant) read as the text they mean, and a text of another meaning never reads as the clause.
 use super::*;
 
 #[rstest]
@@ -173,26 +173,6 @@ fn w15_reveal_the_top_card(#[case] left: &str, #[case] right: &str, #[case] same
     false
 )]
 fn w15_a_pair_of_types_counted(#[case] left: &str, #[case] right: &str, #[case] same: bool) {
-    assert_eq!(same_text(left, right), same, "{right}");
-}
-
-#[rstest]
-#[case::in_a_graveyard(
-    "You may have this creature enter as a copy of any creature card in a graveyard.",
-    "You may have ~ enter as a copy of any other creature card in a graveyard.",
-    true
-)]
-#[case::on_the_battlefield(
-    "You may have this creature enter as a copy of any creature on the battlefield.",
-    "You may have ~ enter as a copy of any other creature on the battlefield.",
-    false
-)]
-#[case::other_kind(
-    "You may have this creature enter as a copy of any creature card in a graveyard.",
-    "You may have ~ enter as a copy of any other land card in a graveyard.",
-    false
-)]
-fn w15_a_copy_of_any_other_card(#[case] left: &str, #[case] right: &str, #[case] same: bool) {
     assert_eq!(same_text(left, right), same, "{right}");
 }
 
@@ -563,6 +543,11 @@ fn w15_look_and_may_reveal(#[case] left: &str, #[case] right: &str, #[case] same
     "Choose one — / • Two-Weapon Fighting — Double target creature's power and toughness until end of turn. / • Archery — This spell deals 5 damage to target creature with flying.",
     "Choose one — / • Double target creature's power and toughness until end of turn. / • ~ deals 5 damage to target creature with flying.",
     true
+)]
+#[case::a_mode_the_data_leaves_unnamed(
+    "Choose one — / • Two-Weapon Fighting — Double target creature's power and toughness until end of turn. / • This spell deals 5 damage to target creature with flying.",
+    "Choose one — / • Double target creature's power and toughness until end of turn. / • ~ deals 5 damage to target creature with flying.",
+    false
 )]
 #[case::quoted_ability_word(
     "II — This Saga gains \"Landfall — Whenever a land you control enters, create a 1/1 green Elf creature token.\"",

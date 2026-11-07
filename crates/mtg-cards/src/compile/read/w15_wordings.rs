@@ -1,8 +1,8 @@
 //! Wordings of one meaning that the oracle text and the writers say differently (w15 win-back of `Differs` clauses):
 //! "also deals", a toll counted as "{X}, where X is the number of", "any number" of sacrificed creatures, the other card
-//! of two looked at, the top card revealed and sorted by "If it's a ..., Otherwise", a pair of types in a count, and a
-//! copy of "any other" card in a graveyard, and the names of modes and quoted abilities. Both sides of a comparison are normalized, so a rule of another meaning
-//! still differs.
+//! of two looked at, the top card revealed and sorted by "If it's a ..., Otherwise", a pair of types in a count, the names
+//! of modes (when every mode has one) and of quoted abilities, support, blight and adamant. Both sides of a comparison are
+//! normalized, so a rule of another meaning still differs.
 
 /// The text with each of the wordings below written one way.
 pub(super) fn normal(text: &str) -> String {
@@ -12,7 +12,6 @@ pub(super) fn normal(text: &str) -> String {
         sacrifice_any_number,
         the_other_card,
         reveal_one,
-        any_other_in_a_graveyard,
         divided_among,
         attached_pair,
         flavor_names,
@@ -142,21 +141,6 @@ fn reveal_sorted(rest: &str) -> Option<String> {
     Some(format!(
         ". Then put all {kind} cards revealed this way {kept} and the rest {rest}"
     ))
-}
-
-/// "enter as a copy of any other creature card in a graveyard" as "any creature card": the card that copies is not in
-/// the graveyard it looks at.
-fn any_other_in_a_graveyard(text: &str) -> Option<String> {
-    const HEAD: &str = "enter as a copy of any other ";
-    let at = text.find(HEAD)? + HEAD.len();
-    let end = text[at..].find(['.', ','])? + at;
-    text[at..end].ends_with(" card in a graveyard").then(|| {
-        format!(
-            "{}enter as a copy of any {}",
-            &text[..at - HEAD.len()],
-            &text[at..]
-        )
-    })
 }
 
 /// "deals X damage divided as you choose among up to X targets" as "among any number of targets": each target takes at
@@ -388,9 +372,20 @@ fn either_kind(text: &str) -> Option<String> {
     let mut at = 0;
     let mut changed = false;
     while at < words.len() {
+        // A kind follows "a", "an" or "target": "this creature or another creature" is no pair of kinds.
         if let [first, joint, second, noun] = words[at..].get(..4).unwrap_or_default()
             && matches!(*joint, "or" | "and/or")
             && NOUNS.contains(noun)
+            && at
+                .checked_sub(1)
+                .and_then(|before| words.get(before))
+                .is_some_and(|before| matches!(*before, "a" | "an" | "target"))
+            && ![first, second].iter().any(|word| {
+                matches!(
+                    **word,
+                    "another" | "other" | "this" | "that" | "equipped" | "enchanted"
+                )
+            })
             && ![first, second]
                 .iter()
                 .any(|word| word.contains(['.', ',', ':', '"']))
@@ -464,21 +459,26 @@ fn look_and_may_reveal(text: &str) -> Option<String> {
 }
 
 /// The text without the names that open a mode ("• Archery — ") or a quoted ability ("gains "Landfall — Whenever ..."")
-/// and carry no rules: an ability word is flavor.
+/// and carry no rules: an ability word is flavor. The names of modes go only where every mode has one: a list with one
+/// name missing is a list whose data lacks it.
 fn flavor_names(text: &str) -> Option<String> {
     let mut out = String::with_capacity(text.len());
     let mut rest = text;
     let mut changed = false;
+    let named = text.split("• ").skip(1).collect::<Vec<_>>();
+    let every_mode_named = !named.is_empty()
+        && named
+            .iter()
+            .all(|mode| super::super::classify::ability_word_len(mode).is_some());
     while let Some(at) = rest.find(['"', '•']) {
-        let marker = if rest[at..].starts_with('"') {
-            "\""
-        } else {
-            "• "
-        };
+        let quoted = rest[at..].starts_with('"');
+        let marker = if quoted { "\"" } else { "• " };
         let after = (at + marker.len()).min(rest.len());
         out.push_str(&rest[..after]);
         rest = &rest[after..];
-        if let Some(len) = super::super::classify::ability_word_len(rest) {
+        if (quoted || every_mode_named)
+            && let Some(len) = super::super::classify::ability_word_len(rest)
+        {
             rest = &rest[len..];
             changed = true;
         }
