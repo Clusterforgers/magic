@@ -81,6 +81,12 @@ pub enum Modification {
     /// Makes the creature type the resolution chose under this name the only creature type (layer 4): "becomes the
     /// creature type of your choice". Only an effect of a spell or ability has it.
     SetCreatureTypesChosen(String),
+    /// Adds the creature type the source chose as it entered (layer 4): "is the chosen type in addition to its
+    /// other types". Only a static ability has it; with no type chosen it changes nothing.
+    AddChosenSubtype,
+    /// Makes the colour the source chose as it entered the only colour (layer 5): "is the chosen color". Only a static
+    /// ability has it; with no colour chosen it changes nothing.
+    SetChosenColor,
     /// Adds a keyword ability (layer 6).
     AddKeyword(Keyword),
     /// Adds protection from a colour the controller chooses as the effect begins (layer 6): "protection from the
@@ -162,10 +168,12 @@ impl Modification {
             | Modification::SetLandTypes(_)
             | Modification::SetLandTypesChosen(_)
             | Modification::SetCreatureTypesChosen(_)
+            | Modification::AddChosenSubtype
             | Modification::AddAllCreatureTypes => Some("4"),
             Modification::SetColors(_)
             | Modification::AddColors(_)
-            | Modification::SetColorsChosen(_) => Some("5"),
+            | Modification::SetColorsChosen(_)
+            | Modification::SetChosenColor => Some("5"),
             Modification::AddKeyword(_)
             | Modification::AddProtectionFromChosenColor
             | Modification::AddProtectionFromChosenCardType
@@ -756,6 +764,8 @@ mod tests {
     #[case(Modification::LoseAbilities, Some("6"))]
     #[case(Modification::AddSubtype(Subtype("Elf".into())), Some("4"))]
     #[case(Modification::SetColors(vec![Color::Blue]), Some("5"))]
+    #[case(Modification::AddChosenSubtype, Some("4"))]
+    #[case(Modification::SetChosenColor, Some("5"))]
     #[case(Modification::AddKeyword(Keyword::Flying), Some("6"))]
     #[case(Modification::RemoveKeyword(Keyword::Flying), Some("6"))]
     #[case(Modification::LockKeyword(Keyword::Flying), Some("6"))]

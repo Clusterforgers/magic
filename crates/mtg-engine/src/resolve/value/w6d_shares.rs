@@ -9,6 +9,7 @@ use mtg_core::card::CardType;
 use super::{ResolveError, Scope, Seen};
 use crate::characteristics::{goaded_by, goaders};
 use crate::object::GameObject;
+use crate::object::ObjectRef;
 
 /// Every card type, in the order of the comprehensive rules.
 const W6D_TYPES: [CardType; 9] = [
@@ -32,7 +33,20 @@ fn w6d_name<'s>(seen: &Seen<'s>) -> Option<&'s str> {
 
 impl Scope<'_> {
     /// Whether a predicate of this module holds for the object; false for any other predicate.
-    pub(super) fn w6d_pred(&self, pred: &Pred, seen: &Seen<'_>) -> Result<bool, ResolveError> {
+    pub(super) fn w6d_pred(
+        &self,
+        pred: &Pred,
+        reference: ObjectRef,
+        seen: &Seen<'_>,
+    ) -> Result<bool, ResolveError> {
+        // The objects a share names are read with the tested object as `Ref::Candidate`: "a card in its controller's graveyard".
+        let before = self.candidate.replace(Some(reference));
+        let held = self.g9a_w6d_pred(pred, seen);
+        self.candidate.set(before);
+        held
+    }
+
+    fn g9a_w6d_pred(&self, pred: &Pred, seen: &Seen<'_>) -> Result<bool, ResolveError> {
         Ok(match pred {
             Pred::SharesName(named) => self.w6d_shares_name(named, seen)?,
             Pred::SharesType(named) => self.w6d_shares_type(named, seen)?,

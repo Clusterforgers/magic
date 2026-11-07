@@ -23,10 +23,11 @@ fn trigger(line: &str, description: &str) -> String {
     "Whenever CARDNAME blocks, it gets +1/+0.",
     Some(json!({"Blocks": {"what": ["This"]}}))
 )]
+// One trigger for each black attacker it blocks: the pair line of `triggers_g9a`.
 #[case::blocks_a_kind_each(
     "Blocks | ValidCard$ Card.Self | ValidBlocked$ Creature.Black",
     "Whenever CARDNAME blocks a black creature, it gets +1/+0.",
-    None
+    Some(json!({"BecomesBlocked": {"what": [{"Type": "Creature"}, {"Color": "Black"}], "by": ["This"]}}))
 )]
 #[case::blocked_by_one_or_more(
     "AttackerBlocked | ValidCard$ Card.Self | ValidBlocker$ Creature.Colorless",

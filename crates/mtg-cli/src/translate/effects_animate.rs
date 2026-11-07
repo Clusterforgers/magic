@@ -39,6 +39,29 @@ pub fn abilities(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
     Ok(mods)
 }
 
+/// `HiddenKeywords$` of an `Animate` line: the combat restrictions in words ("CARDNAME can't attack or block."). Any other
+/// hidden keyword (a requirement such as "must be blocked if able") stays a gap.
+pub fn restrictions(p: &Params) -> Tr<Vec<Value>> {
+    let Some(words) = p.get("HiddenKeywords") else {
+        return Ok(Vec::new());
+    };
+    let mut mods = Vec::new();
+    for word in words
+        .split('&')
+        .map(|word| word.trim().trim_end_matches('.'))
+    {
+        match word {
+            "CARDNAME can't block" => mods.push(json!("CantBlock")),
+            "CARDNAME can't attack" => mods.push(json!("CantAttack")),
+            "CARDNAME can't attack or block" => {
+                mods.extend([json!("CantAttack"), json!("CantBlock")]);
+            }
+            _ => return unmapped("key:Animate.HiddenKeywords"),
+        }
+    }
+    Ok(mods)
+}
+
 /// The static a `Mode$` word of an animation stands for; `None` until a word is read.
 pub fn animate_words(_ctx: &mut Ctx, _p: &Params) -> Option<Tr<Value>> {
     None

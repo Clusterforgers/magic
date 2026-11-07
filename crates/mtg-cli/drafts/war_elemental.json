@@ -1,0 +1,53 @@
+{
+  "oracle_id": "07947d01-ebb1-46b7-9bdd-ea00e034805b",
+  "name": "War Elemental",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "War Elemental",
+      "oracle_fingerprint": "8934388e8b43958f447f29325f8afc75",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": {
+                        "Players": {
+                          "PlayersWhere": {
+                            "who": "Opponents",
+                            "test": {
+                              "Compare": {
+                                "left": { "Tallied": { "who": "You", "what": "DamageTaken" } },
+                                "op": "Ge",
+                                "right": 1
+                              }
+                            }
+                          }
+                        }
+                      },
+                      "op": "Eq",
+                      "right": 0
+                    }
+                  },
+                  "then": [{ "Sacrifice": { "filter": ["This"] } }]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Batch": { "DealsDamage": { "source": [], "to": "Opponents" } } },
+            "effects": [
+              { "PutCounters": { "on": "This", "counter": "+1/+1", "count": "Triggering" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

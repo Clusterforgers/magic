@@ -1,0 +1,66 @@
+{
+  "oracle_id": "0eeb9a62-1b36-42f5-8820-3331fa5ca3a6",
+  "name": "Wurmquake",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Wurmquake",
+      "oracle_fingerprint": "395d8a8109986422bf0dc1a11c465811",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Sized": {
+                      "size": { "ManaSpent": { "of": null } },
+                      "token": {
+                        "name": "Phyrexian Wurm",
+                        "colors": ["Green"],
+                        "types": ["Creature"],
+                        "subtypes": ["Phyrexian", "Wurm"],
+                        "abilities": [{ "Keyword": "Trample" }, { "Keyword": { "Toxic": 1 } }]
+                      }
+                    }
+                  }
+                }
+              },
+              {
+                "CreateToken": {
+                  "token": {
+                    "Sized": {
+                      "size": { "ManaSpent": { "of": null } },
+                      "token": {
+                        "name": "Phyrexian Wurm",
+                        "colors": ["Green"],
+                        "types": ["Creature"],
+                        "subtypes": ["Phyrexian", "Wurm"],
+                        "abilities": [{ "Keyword": "Trample" }, { "Keyword": { "Toxic": 1 } }]
+                      }
+                    }
+                  },
+                  "count": {
+                    "Players": {
+                      "PlayersWhere": {
+                        "who": "Opponents",
+                        "test": {
+                          "Compare": {
+                            "left": { "Counters": { "on": "You", "counter": "poison" } },
+                            "op": "Ge",
+                            "right": 3
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Flashback": "{8}{G}{G}" } }
+      ]
+    }
+  ]
+}

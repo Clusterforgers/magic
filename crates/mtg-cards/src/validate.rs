@@ -681,11 +681,14 @@ impl<'a> Walker<'a> {
             Pred::ControlledBy(r) | Pred::OwnedBy(r) | Pred::AttackingPlayer(r) => {
                 self.reference(r, Kind::Player);
             }
+            // The objects a share names are read with the object tested as `Candidate`.
+            Pred::SharesName(r) | Pred::SharesType(r) | Pred::SharesColor(r) => {
+                self.scope.tests += 1;
+                self.reference(r, Kind::Object);
+                self.scope.tests -= 1;
+            }
             Pred::Is(r)
             | Pred::SharesSubtype(r)
-            | Pred::SharesName(r)
-            | Pred::SharesType(r)
-            | Pred::SharesColor(r)
             | Pred::ExiledWith(r)
             | Pred::EncodedWith(r)
             | Pred::Crewed(r)
@@ -1826,6 +1829,13 @@ impl<'a> Walker<'a> {
                     self.problem("a limit on blockers needs a count of at least one");
                 }
             }
+            Modification::AddChosenSubtype | Modification::SetChosenColor => {
+                if !self.scope.in_static {
+                    self.problem(
+                        "the choice the source made as it entered is read by its static ability only",
+                    );
+                }
+            }
             Modification::SwitchPT
             | Modification::AddType(_)
             | Modification::RemoveType(_)
@@ -2245,12 +2255,17 @@ impl Walker<'_> {
             TriggerPattern::BecomesTarget { by, .. } => {
                 by.is_empty() || by.0 == [Pred::ControlledBy(Ref::You)]
             }
-            // Damage is counted for the object that is dealt it, from any source.
-            TriggerPattern::DealsDamage {
-                source,
-                to: Some(to),
-                combat: None,
-            } => source.is_empty() && !matches!(to, Ref::You | Ref::Opponents | Ref::EachPlayer),
+            // Damage is counted by batch for the object that is dealt it, from any source; only the first batch of a turn.
+            TriggerPattern::Batch(inner) => {
+                if nth != 1 {
+                    self.at("nth", |w| w.problem("only the first batch of damage is counted"));
+                }
+                matches!(&**inner, TriggerPattern::DealsDamage {
+                    source,
+                    to: Some(to),
+                    combat: None,
+                } if source.is_empty() && !matches!(to, Ref::You | Ref::Opponents | Ref::EachPlayer | Ref::Defending))
+            }
             _ => false,
         };
         if !counted {
@@ -5572,6 +5587,14 @@ mod tests {
     #[case::from_the_stack_for_another_spell(
         r#"{"Rule":{"rule":{"CantBeCountered":{"Each":["Spell"]}},"from":"Stack"}}"#,
         "abilities[0].Rule.from: a rule works from the battlefield"
+    )]
+    #[case::the_entered_type_in_an_effect(
+        r#"{"Spell":{"effects":[{"Continuous":{"affected":"This","mods":["AddChosenSubtype"],"duration":"UntilEndOfTurn"}}]}}"#,
+        "the choice the source made as it entered is read by its static ability only"
+    )]
+    #[case::the_entered_colour_in_an_effect(
+        r#"{"Spell":{"effects":[{"Continuous":{"affected":"This","mods":["SetChosenColor"],"duration":"UntilEndOfTurn"}}]}}"#,
+        "the choice the source made as it entered is read by its static ability only"
     )]
     #[case::a_rule_is_not_granted(
         r#"{"Static":{"affected":"This","mods":[{"GrantAbility":{"Rule":{"rule":{"CantDraw":"You"}}}}]}}"#,

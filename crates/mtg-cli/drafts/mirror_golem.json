@@ -1,0 +1,281 @@
+{
+  "oracle_id": "3460e86f-c182-4ca9-bd90-7949b0759c98",
+  "name": "Mirror Golem",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mirror Golem",
+      "oracle_fingerprint": "5811cde5ab92e43e3e2663d3c349c0c0",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [{ "what": { "Object": [{ "In": "Graveyard" }] } }],
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    { "Exile": { "what": { "Target": 0 }, "as": "exiled" } },
+                    { "Remember": { "what": { "Bound": "exiled" }, "slot": "imprinted" } }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "AddKeyword": { "Protection": [{ "Type": "Creature" }] } }],
+            "condition": {
+              "Compare": {
+                "left": {
+                  "Count": [
+                    { "Is": { "Remembered": { "on": "This", "slot": "imprinted" } } },
+                    {
+                      "AnyOf": [
+                        { "In": "Battlefield" },
+                        { "In": "Hand" },
+                        { "In": "Library" },
+                        { "In": "Graveyard" },
+                        { "In": "Exile" },
+                        { "In": "Stack" }
+                      ]
+                    },
+                    { "Type": "Creature" }
+                  ]
+                },
+                "op": "Ge",
+                "right": 1
+              }
+            }
+          }
+        },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "AddKeyword": { "Protection": [{ "Type": "Land" }] } }],
+            "condition": {
+              "Compare": {
+                "left": {
+                  "Count": [
+                    { "Is": { "Remembered": { "on": "This", "slot": "imprinted" } } },
+                    {
+                      "AnyOf": [
+                        { "In": "Battlefield" },
+                        { "In": "Hand" },
+                        { "In": "Library" },
+                        { "In": "Graveyard" },
+                        { "In": "Exile" },
+                        { "In": "Stack" }
+                      ]
+                    },
+                    { "Type": "Land" }
+                  ]
+                },
+                "op": "Ge",
+                "right": 1
+              }
+            }
+          }
+        },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "AddKeyword": { "Protection": [{ "Type": "Enchantment" }] } }],
+            "condition": {
+              "Compare": {
+                "left": {
+                  "Count": [
+                    { "Is": { "Remembered": { "on": "This", "slot": "imprinted" } } },
+                    {
+                      "AnyOf": [
+                        { "In": "Battlefield" },
+                        { "In": "Hand" },
+                        { "In": "Library" },
+                        { "In": "Graveyard" },
+                        { "In": "Exile" },
+                        { "In": "Stack" }
+                      ]
+                    },
+                    { "Type": "Enchantment" }
+                  ]
+                },
+                "op": "Ge",
+                "right": 1
+              }
+            }
+          }
+        },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "AddKeyword": { "Protection": [{ "Type": "Artifact" }] } }],
+            "condition": {
+              "Compare": {
+                "left": {
+                  "Count": [
+                    { "Is": { "Remembered": { "on": "This", "slot": "imprinted" } } },
+                    {
+                      "AnyOf": [
+                        { "In": "Battlefield" },
+                        { "In": "Hand" },
+                        { "In": "Library" },
+                        { "In": "Graveyard" },
+                        { "In": "Exile" },
+                        { "In": "Stack" }
+                      ]
+                    },
+                    { "Type": "Artifact" }
+                  ]
+                },
+                "op": "Ge",
+                "right": 1
+              }
+            }
+          }
+        },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "AddKeyword": { "Protection": [{ "Type": "Instant" }] } }],
+            "condition": {
+              "Compare": {
+                "left": {
+                  "Count": [
+                    { "Is": { "Remembered": { "on": "This", "slot": "imprinted" } } },
+                    {
+                      "AnyOf": [
+                        { "In": "Battlefield" },
+                        { "In": "Hand" },
+                        { "In": "Library" },
+                        { "In": "Graveyard" },
+                        { "In": "Exile" },
+                        { "In": "Stack" }
+                      ]
+                    },
+                    { "Type": "Instant" }
+                  ]
+                },
+                "op": "Ge",
+                "right": 1
+              }
+            }
+          }
+        },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "AddKeyword": { "Protection": [{ "Type": "Sorcery" }] } }],
+            "condition": {
+              "Compare": {
+                "left": {
+                  "Count": [
+                    { "Is": { "Remembered": { "on": "This", "slot": "imprinted" } } },
+                    {
+                      "AnyOf": [
+                        { "In": "Battlefield" },
+                        { "In": "Hand" },
+                        { "In": "Library" },
+                        { "In": "Graveyard" },
+                        { "In": "Exile" },
+                        { "In": "Stack" }
+                      ]
+                    },
+                    { "Type": "Sorcery" }
+                  ]
+                },
+                "op": "Ge",
+                "right": 1
+              }
+            }
+          }
+        },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "AddKeyword": { "Protection": [{ "Type": "Planeswalker" }] } }],
+            "condition": {
+              "Compare": {
+                "left": {
+                  "Count": [
+                    { "Is": { "Remembered": { "on": "This", "slot": "imprinted" } } },
+                    {
+                      "AnyOf": [
+                        { "In": "Battlefield" },
+                        { "In": "Hand" },
+                        { "In": "Library" },
+                        { "In": "Graveyard" },
+                        { "In": "Exile" },
+                        { "In": "Stack" }
+                      ]
+                    },
+                    { "Type": "Planeswalker" }
+                  ]
+                },
+                "op": "Ge",
+                "right": 1
+              }
+            }
+          }
+        },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "AddKeyword": { "Protection": [{ "Type": "Kindred" }] } }],
+            "condition": {
+              "Compare": {
+                "left": {
+                  "Count": [
+                    { "Is": { "Remembered": { "on": "This", "slot": "imprinted" } } },
+                    {
+                      "AnyOf": [
+                        { "In": "Battlefield" },
+                        { "In": "Hand" },
+                        { "In": "Library" },
+                        { "In": "Graveyard" },
+                        { "In": "Exile" },
+                        { "In": "Stack" }
+                      ]
+                    },
+                    { "Type": "Kindred" }
+                  ]
+                },
+                "op": "Ge",
+                "right": 1
+              }
+            }
+          }
+        },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "AddKeyword": { "Protection": [{ "Type": "Battle" }] } }],
+            "condition": {
+              "Compare": {
+                "left": {
+                  "Count": [
+                    { "Is": { "Remembered": { "on": "This", "slot": "imprinted" } } },
+                    {
+                      "AnyOf": [
+                        { "In": "Battlefield" },
+                        { "In": "Hand" },
+                        { "In": "Library" },
+                        { "In": "Graveyard" },
+                        { "In": "Exile" },
+                        { "In": "Stack" }
+                      ]
+                    },
+                    { "Type": "Battle" }
+                  ]
+                },
+                "op": "Ge",
+                "right": 1
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

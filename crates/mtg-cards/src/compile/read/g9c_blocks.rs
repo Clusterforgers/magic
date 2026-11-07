@@ -1,12 +1,11 @@
-//! g9c: blocks of a kind, read and written: "~ blocks one or more black creatures", "~ becomes blocked by an artifact
-//! creature", "~ becomes blocked by one or more colorless creatures", "~ blocks or becomes blocked by one or more Orcs".
+//! g9c: blocks of a kind, read and written: "~ blocks one or more black creatures", "~ becomes blocked by one or more
+//! colorless creatures", "~ blocks or becomes blocked by one or more Orcs", once; "becomes blocked by an artifact creature"
+//! is read here, once for each pair, and written by `g9a_blocks`.
 
 use super::selectors::{Form, phrase, phrase_text};
 use super::tokens::Reader;
-use super::triggers::article;
-use crate::refs::{Pred, Selector};
+use crate::refs::Selector;
 use crate::trigger::TriggerPattern;
-use mtg_core::card::CardType;
 
 /// After "blocks": the block, of one or more attackers of a kind when the words name one.
 pub(super) fn g9c_blocks(r: &mut Reader<'_>, what: &Selector) -> TriggerPattern {
@@ -68,7 +67,18 @@ pub(super) fn g9c_happening(pattern: &TriggerPattern) -> Option<(Selector, Strin
         TriggerPattern::BecomesBlocked { what, by, .. } if by.0.is_empty() => {
             (what, "becomes blocked".to_owned())
         }
-        TriggerPattern::BecomesBlocked { what, by, once } => (what, g9c_blocked_verb(by, *once)?),
+        // A blocker of a kind once for each pair is `g9a_blocks`.
+        TriggerPattern::BecomesBlocked {
+            what,
+            by,
+            once: true,
+        } => (
+            what,
+            format!(
+                "becomes blocked by one or more {}",
+                phrase_text(by, Form::All)?
+            ),
+        ),
         _ => return None,
     };
     Some((what.clone(), verb))
@@ -80,19 +90,6 @@ fn g9c_blocks_verb(blocking: &Selector) -> Option<String> {
         "blocks one or more {}",
         phrase_text(blocking, Form::All)?
     ))
-}
-
-/// The verb of a block by a kind: "becomes blocked by an artifact creature", "becomes blocked by one or more Orcs".
-fn g9c_blocked_verb(by: &Selector, once: bool) -> Option<String> {
-    if once {
-        return Some(format!(
-            "becomes blocked by one or more {}",
-            phrase_text(by, Form::All)?
-        ));
-    }
-    let kind = phrase_text(by, Form::Subject)
-        .or_else(|| phrase_text(&creature_last(by), Form::Subject))?;
-    Some(format!("becomes blocked by {} {kind}", article(&kind)))
 }
 
 /// "Whenever ~ blocks or becomes blocked" and "Whenever ~ blocks or becomes blocked by one or more Orcs": one kind,
@@ -124,23 +121,4 @@ pub(super) fn g9c_shared_text(patterns: &[TriggerPattern]) -> Option<String> {
         "Whenever {} blocks or becomes blocked{kind}",
         super::triggers::subject_text(what)?
     ))
-}
-
-/// The selector with its creature type after the other card types: Forge's "Creature.Artifact" is "artifact creature".
-fn creature_last(what: &Selector) -> Selector {
-    let creature = Pred::Type(CardType::Creature);
-    let mut preds: Vec<Pred> = what
-        .0
-        .iter()
-        .filter(|pred| **pred != creature)
-        .cloned()
-        .collect();
-    if preds.len() < what.0.len() {
-        let after = preds
-            .iter()
-            .rposition(|pred| matches!(pred, Pred::Type(_)))
-            .map_or(0, |at| at + 1);
-        preds.insert(after, creature);
-    }
-    Selector(preds)
 }

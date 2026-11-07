@@ -123,15 +123,16 @@ fn an_unknown_spell_ability_word_stays_a_gap() {
 #[rstest]
 #[case::blocks_a_creature("ValidCard$ Creature | ValidBlocker$ Card.Self", true)]
 #[case::enchanted_blocker("ValidCard$ Creature | ValidBlocker$ Creature.EnchantedBy", true)]
-// Every blocker is a creature: no filter.
-#[case::any_creature_blocks("ValidCard$ Card.Self | ValidBlocker$ Creature", false)]
-// "Becomes blocked by a white creature" happens for each such blocker (g9c reads "one or more" as once).
-#[case::white_creature_blocks("ValidCard$ Card.Self | ValidBlocker$ Creature.White", true)]
-fn a_blocked_trigger_reads_its_blocker_filter(#[case] words: &str, #[case] by: bool) {
+#[case::green_creature_blocks("ValidCard$ Card.Self | ValidBlocker$ Creature.Green", false)]
+#[case::white_creature_blocks("ValidCard$ Card.Self | ValidBlocker$ Creature.White", false)]
+fn a_blocked_trigger_reads_a_single_blocker_only(#[case] words: &str, #[case] reads: bool) {
     let (json, gaps) = creature(&trigger(&format!("AttackerBlocked | {words}")));
-    assert!(gaps.is_empty(), "gaps: {gaps:?}");
-    assert_eq!(json.contains(r#""by":"#), by, "{json}");
-    assert!(!json.contains(r#""once""#), "{json}");
+    if reads {
+        assert!(gaps.is_empty(), "gaps: {gaps:?}");
+        assert!(json.contains(r#""by":"#), "{json}");
+    } else {
+        assert_eq!(gaps, ["key:Trigger.BecomesBlocked.ValidBlocker"]);
+    }
 }
 
 #[rstest]

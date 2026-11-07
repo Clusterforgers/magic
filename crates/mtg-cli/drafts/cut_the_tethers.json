@@ -1,0 +1,34 @@
+{
+  "oracle_id": "9af9b8de-eff6-48da-979b-4125e7965a11",
+  "name": "Cut the Tethers",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Cut the Tethers",
+      "oracle_fingerprint": "ae368ff8725a569ef5fa69104324781b",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "RepeatEach": {
+                  "over": { "Each": [{ "Subtype": "Spirit" }] },
+                  "as": "each",
+                  "effects": [
+                    {
+                      "Pay": {
+                        "who": { "ControllerOf": { "Bound": "each" } },
+                        "cost": "{3}",
+                        "unpaid": [{ "Move": { "what": { "Bound": "each" }, "to": "Hand" } }]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

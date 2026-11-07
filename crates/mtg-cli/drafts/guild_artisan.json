@@ -1,0 +1,35 @@
+{
+  "oracle_id": "aceac269-5100-428a-a4a3-bac57031e30b",
+  "name": "Guild Artisan",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Guild Artisan",
+      "oracle_fingerprint": "84224f875eefbb9eead9a0eefa3d9eec",
+      "abilities": [
+        {
+          "Static": {
+            "affected": { "Each": [{ "Type": "Creature" }, "Commander", { "OwnedBy": "You" }] },
+            "mods": [
+              {
+                "GrantAbility": {
+                  "Triggered": {
+                    "when": { "AttacksPlayer": { "what": ["This"], "at": "EachPlayer" } },
+                    "if": {
+                      "Compare": {
+                        "left": { "Life": "Against" },
+                        "op": "Ge",
+                        "right": { "HighestLife": "Opponents" }
+                      }
+                    },
+                    "effects": [{ "CreateToken": { "token": { "Named": "treasure" }, "count": 2 } }]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

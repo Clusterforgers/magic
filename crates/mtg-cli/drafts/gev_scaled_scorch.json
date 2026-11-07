@@ -1,0 +1,47 @@
+{
+  "oracle_id": "77b832a8-a3af-44fe-bc67-72510d292667",
+  "name": "Gev, Scaled Scorch",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Gev, Scaled Scorch",
+      "oracle_fingerprint": "bcf4f7f06785c6b7f7fe30094afe8162",
+      "abilities": [
+        { "Keyword": { "Ward": [{ "PayLife": 2 }] } },
+        {
+          "Replacement": {
+            "when": {
+              "Enters": { "what": [{ "Type": "Creature" }, { "ControlledBy": "You" }, "Other"] }
+            },
+            "by": {
+              "WithCounters": {
+                "counter": "+1/+1",
+                "count": {
+                  "Players": {
+                    "PlayersWhere": {
+                      "who": "Opponents",
+                      "test": {
+                        "Compare": {
+                          "left": { "Tallied": { "who": "You", "what": "LifeLost" } },
+                          "op": "Ge",
+                          "right": 1
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "what": [{ "Subtype": "Lizard" }], "by": "You" } },
+            "targets": [{ "what": "Opponent" }],
+            "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 1 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

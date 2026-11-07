@@ -1,0 +1,28 @@
+{
+  "oracle_id": "8f064160-3afe-408a-85b4-b335eae8571c",
+  "name": "Oketra's Avenger",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Oketra's Avenger",
+      "oracle_fingerprint": "7df08a0c3668f532fa869bf26a57bb2b",
+      "abilities": [
+        { "Keyword": { "Exert": {} } },
+        {
+          "Triggered": {
+            "when": { "Did": { "action": "Exerted", "what": ["This"] } },
+            "effects": [
+              {
+                "Shield": {
+                  "when": { "Damage": { "to": "This", "combat": true } },
+                  "by": "Prevent",
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

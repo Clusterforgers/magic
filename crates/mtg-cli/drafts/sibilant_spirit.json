@@ -1,0 +1,22 @@
+{
+  "oracle_id": "9798d307-a44a-4f44-94c7-03e499b94962",
+  "name": "Sibilant Spirit",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sibilant Spirit",
+      "oracle_fingerprint": "a117b71ef3626b92547824764bdd6bf2",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [
+              { "May": { "who": "Defending", "effects": [{ "Draw": { "who": "Defending" } }] } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

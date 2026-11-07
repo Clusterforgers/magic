@@ -1,0 +1,40 @@
+{
+  "oracle_id": "ed3d113d-f2c3-4ef3-8bdd-ed4824a22ab0",
+  "name": "Underworld Fires",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Underworld Fires",
+      "oracle_fingerprint": "a55a052e9ac6ba67ed6ee96de22fbac6",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "DealDamage": {
+                  "to": {
+                    "Each": [{ "AnyOf": [{ "Type": "Creature" }, { "Type": "Planeswalker" }] }]
+                  },
+                  "amount": 1
+                }
+              },
+              {
+                "Shield": {
+                  "when": {
+                    "ZoneChange": {
+                      "what": [{ "DamagedBy": "This" }],
+                      "from": "Battlefield",
+                      "to": "Graveyard"
+                    }
+                  },
+                  "by": { "MoveTo": "Exile" },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

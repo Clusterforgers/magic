@@ -1,0 +1,48 @@
+{
+  "oracle_id": "e4383685-04e2-4516-b089-863c8d309250",
+  "name": "Wolfcaller's Howl",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Wolfcaller's Howl",
+      "oracle_fingerprint": "5092983a748b1c9f18853c66d42079c2",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Wolf",
+                      "colors": ["Green"],
+                      "types": ["Creature"],
+                      "subtypes": ["Wolf"],
+                      "power": 2,
+                      "toughness": 2
+                    }
+                  },
+                  "count": {
+                    "Players": {
+                      "PlayersWhere": {
+                        "who": "Opponents",
+                        "test": {
+                          "Compare": {
+                            "left": { "Count": [{ "OwnedBy": "You" }, { "In": "Hand" }] },
+                            "op": "Ge",
+                            "right": 4
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

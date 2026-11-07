@@ -227,6 +227,7 @@ mod fight;
 mod fight_fuzz;
 mod fight_targets;
 mod filter_lands;
+mod fix10_damage_once;
 mod fix7;
 mod flip;
 mod flip_fuzz;
@@ -629,6 +630,7 @@ mod dk1c5_rooms;
 mod dk1e_announcing;
 mod dk1e_deck;
 // t20c
+mod g9a_caster_graveyard;
 mod t20c_pay_cards;
 
 // dk1f

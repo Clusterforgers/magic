@@ -1958,46 +1958,94 @@ fn causes(pattern: &TriggerPattern, happened: &Happened, scope: &Scope<'_>) -> V
             }
         }
         (TriggerPattern::Batch(inner), Happened::Batch(members)) => {
-            let mut groups: Vec<(Vec<Target>, Cause)> = Vec::new();
-            for member in members {
-                let Some(found) = matching(inner, member, scope) else {
-                    continue;
-                };
-                let players: Vec<Target> = found
-                    .subjects
-                    .iter()
-                    .filter(|subject| matches!(subject, Target::Player(_)))
-                    .copied()
-                    .collect();
-                // The damage dealt together is one amount ("that damage"); any other batch counts its events.
-                let weight = if matches!(**inner, TriggerPattern::DealsDamage { .. }) {
-                    found.amount
-                } else {
-                    1
-                };
-                let at = groups.iter().position(|(key, _)| *key == players);
-                let at = at.unwrap_or_else(|| {
-                    groups.push((players, Cause::default()));
-                    groups.len() - 1
-                });
-                let group = &mut groups[at].1;
-                for subject in found.subjects {
-                    if !group.subjects.contains(&subject) {
-                        group.subjects.push(subject);
-                    }
-                }
-                for shot in found.snapshots {
-                    if !group.snapshots.contains(&shot) {
-                        group.snapshots.push(shot);
-                    }
-                }
-                group.amount = group.amount.saturating_add(weight);
-            }
-            groups.into_iter().map(|(_, cause)| cause).collect()
+            batch_causes(inner, members.iter(), scope)
+        }
+        // The first damage of a turn to an object is the batch that holds the first event to it.
+        (TriggerPattern::Nth { event, nth: 1 }, Happened::Batch(members))
+            if matches!(&**event, TriggerPattern::Batch(inner)
+                if matches!(**inner, TriggerPattern::DealsDamage { .. })) =>
+        {
+            let TriggerPattern::Batch(inner) = &**event else {
+                return Vec::new();
+            };
+            let first: Vec<ObjectId> = members
+                .iter()
+                .filter_map(|member| match member {
+                    Happened::Damaged {
+                        to: DamageTarget::Object(hit),
+                        nth: 1,
+                        ..
+                    } => Some(*hit),
+                    _ => None,
+                })
+                .collect();
+            let firsts = members.iter().filter(|member| {
+                matches!(member, Happened::Damaged { to: DamageTarget::Object(hit), .. }
+                    if first.contains(hit))
+            });
+            batch_causes(inner, firsts, scope)
         }
         (TriggerPattern::Batch(_), _) | (_, Happened::Batch(_)) => Vec::new(),
         _ => matching(pattern, happened, scope).into_iter().collect(),
     }
+}
+
+/// Whether a damage pattern's recipient names players, so that its batch triggers once for each player dealt damage.
+const fn names_players(to: Option<&Ref>) -> bool {
+    matches!(
+        to,
+        Some(Ref::EachPlayer | Ref::Opponents | Ref::You | Ref::Defending)
+    )
+}
+
+/// The causes of the `members` of a batch that `inner` finds: one for each player they are about (or one in all when
+/// they are about none). Damage is grouped by player only when `inner` names players as its recipients: damage to a
+/// blocker and to a player at once is one batch for "Whenever ~ deals combat damage" (CR 603.2c).
+fn batch_causes<'a>(
+    inner: &TriggerPattern,
+    members: impl Iterator<Item = &'a Happened>,
+    scope: &Scope<'_>,
+) -> Vec<Cause> {
+    let damage = match inner {
+        TriggerPattern::DealsDamage { to, .. } => Some(names_players(to.as_ref())),
+        _ => None,
+    };
+    let mut groups: Vec<(Vec<Target>, Cause)> = Vec::new();
+    for member in members {
+        let Some(found) = matching(inner, member, scope) else {
+            continue;
+        };
+        let players: Vec<Target> = if damage == Some(false) {
+            Vec::new()
+        } else {
+            found
+                .subjects
+                .iter()
+                .filter(|subject| matches!(subject, Target::Player(_)))
+                .copied()
+                .collect()
+        };
+        // The damage dealt together is one amount ("that damage"); any other batch counts its events.
+        let weight = if damage.is_some() { found.amount } else { 1 };
+        let at = groups.iter().position(|(key, _)| *key == players);
+        let at = at.unwrap_or_else(|| {
+            groups.push((players, Cause::default()));
+            groups.len() - 1
+        });
+        let group = &mut groups[at].1;
+        for subject in found.subjects {
+            if !group.subjects.contains(&subject) {
+                group.subjects.push(subject);
+            }
+        }
+        for shot in found.snapshots {
+            if !group.snapshots.contains(&shot) {
+                group.snapshots.push(shot);
+            }
+        }
+        group.amount = group.amount.saturating_add(weight);
+    }
+    groups.into_iter().map(|(_, cause)| cause).collect()
 }
 
 /// Who controls the triggered abilities of `object`: its controller, except that a card in exile encoded on a creature

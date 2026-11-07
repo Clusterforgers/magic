@@ -1,0 +1,45 @@
+{
+  "oracle_id": "89c3c81b-8960-4f79-b2ec-f13560058071",
+  "name": "The Master of Lake-town",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "The Master of Lake-town",
+      "oracle_fingerprint": "39d0d7f5cc9c8218d018d86c72789cf0",
+      "abilities": [
+        { "Keyword": "Deathtouch" },
+        {
+          "Triggered": {
+            "when": { "LifeLost": {} },
+            "effects": [{ "Mill": { "who": "Triggering", "count": "Triggering" } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } },
+            "effects": [
+              {
+                "Draw": {
+                  "count": {
+                    "Players": {
+                      "PlayersWhere": {
+                        "who": "EachPlayer",
+                        "test": {
+                          "Compare": {
+                            "left": { "Count": [{ "OwnedBy": "You" }, { "In": "Graveyard" }] },
+                            "op": "Ge",
+                            "right": 7
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

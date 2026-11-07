@@ -142,6 +142,7 @@ mod flash_casts;
 mod flash_permission;
 mod flash_rule;
 mod for_each_card;
+mod g9d_may_shuffle;
 mod goaded;
 mod graveyard_cards;
 mod graveyard_shuffle;
@@ -829,6 +830,7 @@ fn add_more(ability: &Ability, texts: &mut Vec<String>) {
     other_than::add(ability, texts);
     pump_untap::add(ability, texts);
     put_back_order::add(ability, texts);
+    g9d_may_shuffle::add(ability, texts);
     put_graveyard::add(ability, texts);
     search_put::add(texts);
     sized_condition::add(ability, texts);

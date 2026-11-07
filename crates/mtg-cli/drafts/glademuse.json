@@ -1,0 +1,23 @@
+{
+  "oracle_id": "028f2c1d-9c1d-4ac3-adf4-644b5166502b",
+  "name": "Glademuse",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Glademuse",
+      "oracle_fingerprint": "0860337c276109dbd57342a5fee7ef31",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "SpellCast": {
+                "by": { "PlayersWhere": { "who": "EachPlayer", "test": { "Not": "YourTurn" } } }
+              }
+            },
+            "effects": [{ "Draw": { "who": "Triggering" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

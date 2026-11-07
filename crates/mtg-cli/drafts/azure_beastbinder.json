@@ -1,0 +1,65 @@
+{
+  "oracle_id": "7bb51602-60e8-4730-b11c-2870d6b42e20",
+  "name": "Azure Beastbinder",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Azure Beastbinder",
+      "oracle_fingerprint": "8e830cf22ec012fa2c8be352be11e364",
+      "abilities": [
+        { "Keyword": "Vigilance" },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              {
+                "CantBeBlockedBy": [
+                  { "Type": "Creature" },
+                  { "Compare": { "stat": "Power", "op": "Ge", "to": 2 } }
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    {
+                      "AnyOf": [
+                        { "Type": "Artifact" },
+                        { "Type": "Creature" },
+                        { "Type": "Planeswalker" }
+                      ]
+                    },
+                    { "ControlledBy": "Opponents" }
+                  ]
+                },
+                "bounds": { "min": 0, "max": 1 }
+              }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": ["LoseAbilities"],
+                  "duration": "UntilYourNextTurn"
+                }
+              },
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Is": { "Target": 0 } }, { "Type": "Creature" }] },
+                  "mods": [{ "SetPT": { "power": 2, "toughness": 2 } }],
+                  "duration": "UntilYourNextTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,98 @@
+{
+  "oracle_id": "afacc200-16ff-40f3-9d43-268438131d24",
+  "name": "Kellan, the Kid",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Kellan, the Kid",
+      "oracle_fingerprint": "8de68652244ebb39c95de38584986ab7",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": "Lifelink" },
+        {
+          "Triggered": {
+            "when": {
+              "SpellCast": {
+                "what": [
+                  {
+                    "AnyOf": [
+                      { "Not": { "WasCast": { "from": "Hand" } } },
+                      { "Not": { "OwnedBy": "You" } }
+                    ]
+                  }
+                ],
+                "by": "You"
+              }
+            },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "Choose": {
+                        "from": {
+                          "Each": [
+                            { "OwnedBy": "You" },
+                            {
+                              "Compare": {
+                                "stat": "ManaValue",
+                                "op": "Le",
+                                "to": { "Stat": { "of": "Triggering", "stat": "ManaValue" } }
+                              }
+                            },
+                            {
+                              "AnyOf": [
+                                { "Type": "Artifact" },
+                                { "Type": "Battle" },
+                                { "Type": "Creature" },
+                                { "Type": "Enchantment" },
+                                { "Type": "Land" },
+                                { "Type": "Planeswalker" }
+                              ]
+                            },
+                            { "In": "Hand" }
+                          ]
+                        },
+                        "count": { "min": 0, "max": 1 },
+                        "as": "picked2"
+                      }
+                    },
+                    {
+                      "CastFromZone": { "what": { "Bound": "picked2" }, "free": true, "as": "cast" }
+                    },
+                    {
+                      "If": {
+                        "condition": {
+                          "CountOf": {
+                            "subject": { "Bound": "cast" },
+                            "selector": [],
+                            "op": "Eq",
+                            "right": 0
+                          }
+                        },
+                        "then": [
+                          {
+                            "Choose": {
+                              "from": {
+                                "Each": [{ "Type": "Land" }, { "OwnedBy": "You" }, { "In": "Hand" }]
+                              },
+                              "count": { "min": 0, "max": 1 },
+                              "as": "picked3"
+                            }
+                          },
+                          {
+                            "Move": { "what": { "Bound": "picked3" }, "to": { "Battlefield": {} } }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

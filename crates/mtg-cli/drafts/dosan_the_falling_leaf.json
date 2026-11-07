@@ -1,0 +1,23 @@
+{
+  "oracle_id": "70e4025f-41de-4b47-a590-3c922dc1e209",
+  "name": "Dosan the Falling Leaf",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dosan the Falling Leaf",
+      "oracle_fingerprint": "fd3fa04ac47974f4834c680626e1a216",
+      "abilities": [
+        {
+          "Rule": {
+            "rule": {
+              "Cant": {
+                "who": { "PlayersWhere": { "who": "EachPlayer", "test": { "Not": "YourTurn" } } },
+                "action": { "Cast": {} }
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

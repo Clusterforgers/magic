@@ -154,8 +154,8 @@ fn the_top_of_a_library_is_put_back_in_a_chosen_order(
 }
 
 #[rstest]
-#[case::shuffle(
-    "Defined$ You | NumCards$ 3 | MayShuffle$ True",
+#[case::shuffle_word(
+    "Defined$ You | NumCards$ 3 | MayShuffle$ Sometimes",
     "key:RearrangeTopOfLibrary.MayShuffle"
 )]
 #[case::other_orderer(

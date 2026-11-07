@@ -21,7 +21,7 @@
         },
         {
           "Triggered": {
-            "when": { "DealsDamage": { "source": [], "to": "This" } },
+            "when": { "Batch": { "DealsDamage": { "source": [], "to": "This" } } },
             "targets": [
               {
                 "what": { "Object": [{ "Type": "Creature" }, { "Not": { "ControlledBy": "You" } }] },

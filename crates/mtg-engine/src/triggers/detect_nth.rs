@@ -1,4 +1,4 @@
-//! Goal: the first (or nth) time in a turn that an object attacks, becomes a target or is dealt damage triggers once for that object alone, whoever else attacked, was targeted or was hurt before; a target counts by what its controller or anyone controls, a spell and an ability alike; the count starts again with each turn and for a permanent that changed zones, counts the events of one batch in order and is the same at two, three and four seats.
+//! Goal: the first (or nth) time in a turn that an object attacks, becomes a target or is dealt damage triggers once for that object alone, whoever else attacked, was targeted or was hurt before; a target counts by what its controller or anyone controls, a spell and an ability alike; the count starts again with each turn and for a permanent that changed zones, counts the events of one batch in order, counts the damage of one batch as one time with all its damage, and is the same at two, three and four seats.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
 use std::sync::Arc;
@@ -472,4 +472,40 @@ fn damage_in_a_new_turn_is_the_first_again() {
     };
     let next = fold(&first, &[turn]);
     assert_eq!(fired(&next, &[again]), 1);
+}
+
+const FIRST_BATCH: &str =
+    r#"{"Nth":{"event":{"Batch":{"DealsDamage":{"source":[],"to":"This"}}},"nth":1}}"#;
+
+/// The damage of one batch to the Watcher is one time (CR 603.2c): the first batch of the turn triggers once, with all of
+/// its damage to the Watcher, and a later batch does not.
+#[rstest]
+#[case::one_source(&[("Guest 1", "Watcher", 2)], 1)]
+#[case::two_sources_at_once(&[("Guest 1", "Watcher", 2), ("Pinger 1", "Watcher", 3)], 1)]
+#[case::to_another_creature(&[("Guest 1", "Bear", 2)], 0)]
+#[case::damage_of_nothing(&[("Guest 1", "Watcher", 0)], 0)]
+fn the_first_batch_of_damage_triggers_once(
+    #[case] hits: &[(&str, &str, u32)],
+    #[case] expected: usize,
+    #[values(2, 3, 4)] seats: usize,
+) {
+    let pre = table(seats, FIRST_BATCH);
+    let batch: Vec<Event> = hits
+        .iter()
+        .map(|(source, at, amount)| hurt(&pre, source, to(&pre, at), *amount))
+        .collect();
+    let after = fold(&pre, &batch);
+    let found = super::detect(&pre, &batch, &after);
+    assert_eq!(found.len(), expected);
+    let total: u32 = hits
+        .iter()
+        .filter(|(_, at, _)| *at == "Watcher")
+        .map(|(_, _, amount)| amount)
+        .sum();
+    if let Some(first) = found.first() {
+        assert_eq!(first.cause.amount, total, "all the damage of the batch");
+    }
+    // A later batch is the first only when no damage came to the Watcher before.
+    let again = hurt(&after, "Guest 1", to(&after, "Watcher"), 1);
+    assert_eq!(fired(&after, &[again]), 1 - expected);
 }

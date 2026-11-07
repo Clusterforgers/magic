@@ -1,0 +1,79 @@
+{
+  "oracle_id": "042c01ec-9f1f-432b-bea9-d64d822cd91e",
+  "name": "The Emperor of Palamecia // The Lord Master of Hell",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "The Emperor of Palamecia",
+      "oracle_fingerprint": "9491e298d6883a2b39f995e8c1f09935",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [
+              {
+                "AddMana": {
+                  "mana": { "OneOf": ["Blue", "Red"] },
+                  "only": [{ "Spell": { "without": ["Creature"] } }]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "what": [{ "Not": { "Type": "Creature" } }], "by": "You" } },
+            "if": {
+              "Compare": {
+                "left": { "Stat": { "of": "Triggering", "stat": "ManaSpent" } },
+                "op": "Ge",
+                "right": 4
+              }
+            },
+            "effects": [
+              { "PutCounters": { "on": "This", "counter": "+1/+1" } },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "Counters": { "on": "This", "counter": "+1/+1" } },
+                      "op": "Ge",
+                      "right": 3
+                    }
+                  },
+                  "then": [{ "Transform": { "what": "This" } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "The Lord Master of Hell",
+      "oracle_fingerprint": "af9fbee90a93f75234fc7e987a6736d7",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [
+              {
+                "DealDamage": {
+                  "to": "Opponents",
+                  "amount": {
+                    "Count": [
+                      { "Not": { "Type": "Creature" } },
+                      { "Not": { "Type": "Land" } },
+                      { "In": "Graveyard" },
+                      { "OwnedBy": "You" }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,73 @@
+{
+  "oracle_id": "a7b45840-505d-4b7d-a084-549be08b0c20",
+  "name": "In Search of Greatness",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "In Search of Greatness",
+      "oracle_fingerprint": "241603d4e211b508c50d5ca6dacc817b",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "OwnedBy": "You" },
+                      {
+                        "AnyOf": [
+                          { "Type": "Artifact" },
+                          { "Type": "Battle" },
+                          { "Type": "Creature" },
+                          { "Type": "Enchantment" },
+                          { "Type": "Land" },
+                          { "Type": "Planeswalker" }
+                        ]
+                      },
+                      { "In": "Hand" },
+                      {
+                        "Compare": {
+                          "stat": "ManaValue",
+                          "op": "Eq",
+                          "to": {
+                            "Sum": [
+                              {
+                                "Greatest": {
+                                  "of": [{ "ControlledBy": "You" }, "Other"],
+                                  "stat": "ManaValue"
+                                }
+                              },
+                              1
+                            ]
+                          }
+                        }
+                      }
+                    ]
+                  },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "picked2"
+                }
+              },
+              { "CastFromZone": { "what": { "Bound": "picked2" }, "free": true, "as": "cast" } },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Bound": "cast" },
+                      "selector": [],
+                      "op": "Eq",
+                      "right": 0
+                    }
+                  },
+                  "then": [{ "Scry": {} }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -63,6 +63,7 @@ pub fn triggered(ctx: &mut Ctx, body: &str) -> Tr<Value> {
     let (p, intervening) = event_amount(p, intervening)?;
     let (p, intervening) = defender_poisoned(p, intervening);
     let (p, intervening) = kicked_with(ctx, p, intervening)?;
+    let (p, intervening) = super::triggers_g9a::g9a_block_filter(p, intervening)?;
     let (when, intervening) = if p.get("Mode") == Some("Always") {
         state_when(ctx, &p, &all)?
     } else {
@@ -115,15 +116,7 @@ pub fn triggered(ctx: &mut Ctx, body: &str) -> Tr<Value> {
     let printed = p.get("TriggerDescription");
     effects = super::r6a::printed(printed, (decider, pays), itself, effects, &ctx.targets)?;
     printed_more(&p, &effects)?;
-    match p.get("OptionalDecider") {
-        None => {}
-        Some("You" | "TriggeredCardController") if pays => {}
-        Some("You") => effects = super::frame::ask(effects, &json!("You")),
-        Some("TriggeredCardController") if itself => {
-            effects = super::frame::ask(effects, &json!("You"));
-        }
-        Some(other) => return unmapped(format!("key:Trigger.OptionalDecider={other}")),
-    }
+    effects = decided(ctx, &p, &when, (pays, itself), effects)?;
     if let Some(found) = &intervening
         && when.get("SpellCast").is_some()
         && counts_the_cast_exactly(found)
@@ -746,6 +739,9 @@ fn spell_cast(ctx: &Ctx, p: &Params) -> Tr<Value> {
             None => pattern["what"] = json!([{ "Targeting": targeted }]),
         }
     }
+    if by != "You" {
+        super::triggers_g9a::g9a_caster_graveyard(&mut pattern);
+    }
     super::triggers_more::nth_spell(p, json!({ "SpellCast": pattern }))
 }
 
@@ -819,38 +815,28 @@ fn attacker_blocked(ctx: &Ctx, p: &Params) -> Tr<Value> {
     keys(p, "BecomesBlocked", &["ValidCard", "ValidBlocker"])?;
     let what = selector_any(ctx, p.get("ValidCard").unwrap_or("Card"))?;
     let mut node = json!({ "what": what });
-    // Every blocker is a creature: the filter of any creature is no filter.
-    if let Some(valid) = p.get("ValidBlocker").filter(|valid| *valid != "Creature") {
-        let one = matches!(
-            valid,
-            "Card.Self"
-                | "Card.EquippedBy"
-                | "Card.AttachedBy"
-                | "Creature.AttachedBy"
-                | "Creature.EquippedBy"
-                | "Creature.EnchantedBy"
-        );
+    if let Some(valid) = p.get("ValidBlocker") {
+        // "By one or more Orcs" happens once; "by an artifact creature" is the pair line `triggers_g9a` made.
+        let one = attached_or_self(valid);
+        if !one && !one_or_more(p) {
+            return unmapped("key:Trigger.BecomesBlocked.ValidBlocker");
+        }
         node["by"] = json!(selector_any(ctx, valid)?);
-        // "by one or more Orcs" happens once; "by an artifact creature" once for each such blocker (CR 509.3d).
-        if !one && one_or_more(p) {
+        if !one {
             node["once"] = json!(true);
         }
     }
     Ok(json!({ "BecomesBlocked": node }))
 }
 
-/// `Blocks` with `ValidBlocked$`: a block of one or more attackers of a kind, once for each blocker; any creature is
-/// no kind.
+/// `Blocks` with `ValidBlocked$` left by `triggers_g9a`: a block of one or more attackers of a kind, once for each
+/// blocker.
 fn blocks(ctx: &Ctx, p: &Params) -> Tr<Value> {
     keys(p, "Blocks", &["ValidCard", "ValidBlocked"])?;
-    // Any creature blocking the card is the card becoming blocked, once however many block it (CR 509.3c).
-    if p.get("ValidBlocked") == Some("Card.Self") && p.get("ValidCard") == Some("Creature") {
-        return Ok(json!({ "BecomesBlocked": { "what": ["This"] } }));
-    }
     let what = selector_any(ctx, p.get("ValidCard").unwrap_or("Card"))?;
     let mut node = json!({ "what": what });
     match p.get("ValidBlocked") {
-        None | Some("Creature") => {}
+        None => {}
         Some(valid) if one_or_more(p) => node["blocking"] = json!(selector_any(ctx, valid)?),
         Some(_) => return unmapped("key:Trigger.Blocks.ValidBlocked"),
     }
@@ -862,6 +848,68 @@ fn one_or_more(p: &Params) -> bool {
     p.get("TriggerDescription").is_some_and(|text| {
         text.contains("blocked by one or more") || text.contains("blocks one or more")
     })
+}
+
+/// The effects with the line's optional decider asked: you, or the player of the event ("that creature's controller
+/// may draw a card"); a decider beside a cost to pay is the payment.
+fn decided(
+    ctx: &Ctx,
+    p: &Params,
+    when: &Value,
+    (pays, itself): (bool, bool),
+    effects: Vec<Value>,
+) -> Tr<Vec<Value>> {
+    let you = json!("You");
+    Ok(match p.get("OptionalDecider") {
+        None => effects,
+        Some("You" | "TriggeredCardController") if pays => effects,
+        Some("You") => super::frame::ask(effects, &you),
+        // The card's own trigger, also with a condition on it ("When ~ dies, if it had no counters"): you decide.
+        Some("TriggeredCardController") if itself || g9a_about_this(when) => {
+            super::frame::ask(effects, &you)
+        }
+        Some(word) if !pays && g9a_player_word(word) => {
+            let who = super::triggered::resolve(ctx.trigger.as_ref(), word)
+                .map_err(|_| super::ctx::Unmapped(format!("key:Trigger.OptionalDecider={word}")))?;
+            super::frame::ask(effects, &who)
+        }
+        Some(other) => return unmapped(format!("key:Trigger.OptionalDecider={other}")),
+    })
+}
+
+/// Whether the pattern's object is the card itself, with or without more words about it.
+fn g9a_about_this(when: &Value) -> bool {
+    when.as_object()
+        .and_then(|map| map.values().next())
+        .and_then(|inner| inner.get("what"))
+        .and_then(Value::as_array)
+        .is_some_and(|what| what.contains(&json!("This")))
+}
+
+/// Whether a `Triggered*` word of an optional decider names a player of the event.
+fn g9a_player_word(word: &str) -> bool {
+    matches!(
+        word,
+        "TriggeredCardController"
+            | "TriggeredSourceController"
+            | "TriggeredPlayer"
+            | "TriggeredActivator"
+            | "TriggeredAttackingPlayer"
+            | "TriggeredCardOwner"
+    )
+}
+
+/// Whether a blocker word is one object: the card or what it is attached to.
+pub(super) fn attached_or_self(valid: &str) -> bool {
+    matches!(
+        valid,
+        "Card.Self"
+            | "Card.EquippedBy"
+            | "Card.AttachedBy"
+            | "Creature.AttachedBy"
+            | "Creature.EquippedBy"
+            | "Creature.EnchantedBy"
+    )
 }
 
 /// Whether the condition compares the turn's count of spells cast for equality or an upper bound: true when it was

@@ -1,0 +1,32 @@
+{
+  "oracle_id": "4514777d-0589-4631-978b-ff244167c176",
+  "name": "Vexing Bauble",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Vexing Bauble",
+      "oracle_fingerprint": "9c7bc679ddfd6d7e5bfddcbf423a7cec",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "SpellCast": {} },
+            "if": {
+              "Compare": {
+                "left": { "Stat": { "of": "Triggering", "stat": "ManaSpent" } },
+                "op": "Eq",
+                "right": 0
+              }
+            },
+            "effects": [{ "Counter": { "what": "Triggering" } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{1}" }, "Tap", "SacrificeSelf"],
+            "effects": [{ "Draw": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

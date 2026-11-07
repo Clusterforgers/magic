@@ -27,22 +27,12 @@
               {
                 "If": {
                   "condition": {
-                    "Compare": {
-                      "left": {
-                        "When": {
-                          "condition": {
-                            "Compare": {
-                              "left": { "ManaSpent": { "of": "Green" } },
-                              "op": "Ge",
-                              "right": 3
-                            }
-                          },
-                          "then": 1,
-                          "otherwise": 0
-                        }
-                      },
-                      "op": "Eq",
-                      "right": 0
+                    "Not": {
+                      "Compare": {
+                        "left": { "ManaSpent": { "of": "Green" } },
+                        "op": "Ge",
+                        "right": 3
+                      }
                     }
                   },
                   "then": [
@@ -54,21 +44,9 @@
                 "If": {
                   "condition": {
                     "Compare": {
-                      "left": {
-                        "When": {
-                          "condition": {
-                            "Compare": {
-                              "left": { "ManaSpent": { "of": "Green" } },
-                              "op": "Ge",
-                              "right": 3
-                            }
-                          },
-                          "then": 1,
-                          "otherwise": 0
-                        }
-                      },
+                      "left": { "ManaSpent": { "of": "Green" } },
                       "op": "Ge",
-                      "right": 1
+                      "right": 3
                     }
                   },
                   "then": [{ "Move": { "what": { "Target": 1 }, "to": "Hand" } }]

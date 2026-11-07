@@ -1,0 +1,51 @@
+{
+  "oracle_id": "fa9a6083-75ab-41ae-b607-39d21d9a3d3a",
+  "name": "Kaervek, the Punisher",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Kaervek, the Punisher",
+      "oracle_fingerprint": "9340b3f9839212da8e7463b3df92e78d",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "W11cCrime": { "who": "You" } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "Color": "Black" }, { "OwnedBy": "You" }, { "In": "Graveyard" }]
+                },
+                "bounds": { "min": 0, "max": 1 }
+              }
+            ],
+            "effects": [
+              { "Exile": { "what": { "Target": 0 }, "as": "exiled" } },
+              {
+                "Choose": {
+                  "from": { "Each": [{ "Is": { "Bound": "exiled" } }, { "In": "Exile" }] },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "picked3"
+                }
+              },
+              { "CopyCard": { "what": { "Bound": "picked3" }, "as": "copy4" } },
+              { "CastFromZone": { "what": { "Bound": "copy4" }, "as": "cast2" } },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Bound": "cast2" },
+                      "selector": [],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [{ "LoseLife": { "amount": 2 } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

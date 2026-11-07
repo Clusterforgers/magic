@@ -1,0 +1,35 @@
+{
+  "oracle_id": "82e61db8-4625-488f-8a5f-66ace9bbf34a",
+  "name": "Red Sun's Zenith",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Red Sun's Zenith",
+      "oracle_fingerprint": "a0d8609c8bc78c9c1518a45a6374795b",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [
+              { "DealDamage": { "to": { "Target": 0 }, "amount": "X" } },
+              {
+                "Shield": {
+                  "when": {
+                    "ZoneChange": {
+                      "what": [{ "Type": "Creature" }, { "DamagedBy": "This" }],
+                      "from": "Battlefield",
+                      "to": "Graveyard"
+                    }
+                  },
+                  "by": { "MoveTo": "Exile" },
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              { "Move": { "what": "This", "to": { "Library": { "place": "Shuffled" } } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

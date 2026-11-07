@@ -1,0 +1,33 @@
+{
+  "oracle_id": "2f4360f6-9ac7-499f-b0a5-769550ea15ba",
+  "name": "Vision, Synthezoid Avenger",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Vision, Synthezoid Avenger",
+      "oracle_fingerprint": "c167dff0bb25a71b5643cf0693b9bfc1",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": {
+              "SpellCast": {
+                "by": { "PlayersWhere": { "who": "EachPlayer", "test": { "Not": "YourTurn" } } }
+              }
+            },
+            "effects": [
+              {
+                "Modal": {
+                  "modes": [
+                    { "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }] },
+                    { "effects": [{ "PhaseOut": { "what": "This" } }] }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

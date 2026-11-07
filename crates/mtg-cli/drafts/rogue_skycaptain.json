@@ -1,0 +1,50 @@
+{
+  "oracle_id": "e600136a-8b4f-4725-a29e-021e0cfc7d0a",
+  "name": "Rogue Skycaptain",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Rogue Skycaptain",
+      "oracle_fingerprint": "ecebd731c10573af203fbda2070ff97a",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [
+              { "PutCounters": { "on": "This", "counter": { "Other": "wage" } } },
+              {
+                "Pay": {
+                  "cost": "{1}",
+                  "times": {
+                    "Times": {
+                      "by": 2,
+                      "of": { "Counters": { "on": "This", "counter": { "Other": "wage" } } }
+                    }
+                  },
+                  "unpaid": [
+                    {
+                      "RemoveCounters": {
+                        "from": "This",
+                        "counter": { "Other": "wage" },
+                        "count": { "Counters": { "on": "This", "counter": { "Other": "wage" } } }
+                      }
+                    },
+                    { "Choose": { "from": "Opponents", "as": "player" } },
+                    {
+                      "Continuous": {
+                        "affected": "This",
+                        "mods": [{ "SetController": { "Bound": "player" } }],
+                        "duration": "Forever"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

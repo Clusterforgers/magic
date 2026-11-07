@@ -912,6 +912,20 @@ fn pump_all(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
     Ok(effects)
 }
 
+/// How long an animation lasts. Forge ends "for as long as you control ~" when the host leaves; it also ends when another
+/// player gains control of it (CR 611.2b). A card that says both that and "remains on the battlefield" stays a gap.
+fn animate_duration(ctx: &Ctx, p: &Params) -> Tr<&'static str> {
+    let duration = duration(p.get("Duration"))?;
+    let oracle = ctx.oracle.to_lowercase();
+    if duration != "WhileSourceOnBattlefield" || !oracle.contains("for as long as you control") {
+        return Ok(duration);
+    }
+    if oracle.contains("remains on the battlefield") {
+        return unmapped("key:Animate.Duration-while-you-control-or-remains");
+    }
+    Ok("WhileYouControlSource")
+}
+
 /// `Animate`: the object becomes something else for a while ("becomes a 4/4 Elemental creature with flying").
 fn animate(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
     only(
@@ -940,6 +954,7 @@ fn animate(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
             "TargetMin",
             "TargetMax",
             "AtEOT",
+            "HiddenKeywords",
         ],
     )?;
     // Effects change permanents only (the layers read nothing else): "target spell becomes red" would change nothing.
@@ -951,7 +966,7 @@ fn animate(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
     {
         return unmapped("key:Animate.TgtZone=Stack");
     }
-    let duration = duration(p.get("Duration"))?;
+    let duration = animate_duration(ctx, p)?;
     // `AnimateAll` names the objects by a valid-string.
     let affected = match p.get("ValidCards") {
         // "creatures target player controls": Forge narrows the group to the target's at run time, the selector would not.
@@ -1004,6 +1019,7 @@ fn animate(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
         }
     }
     mods.extend(super::effects_animate::abilities(ctx, p)?);
+    mods.extend(super::effects_animate::restrictions(p)?);
     if mods.is_empty() {
         return unmapped("key:Animate.nothing");
     }
@@ -1154,8 +1170,12 @@ fn put_counter(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
             "TargetMax",
             "CounterTypes",
             "DividedAsYouChoose",
+            "CounterNumPerDefined",
         ],
     )?;
+    if let Some(name) = p.get("CounterNumPerDefined") {
+        return per_object_counters(ctx, p, name);
+    }
     // `CounterTypes$` is every kind in the list at once ("a flying counter and a lifelink counter"); `CounterType$` a list is a choice.
     let all_kinds = p.has("CounterTypes");
     if all_kinds && (p.has("CounterType") || p.has("DividedAsYouChoose")) {
@@ -1211,6 +1231,76 @@ fn put_counter(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
         effects.push(either(puts)?);
     }
     Ok(effects)
+}
+
+/// `CounterNumPerDefined$ X`: "put a number of +1/+1 counters on each other creature you control equal to that creature's
+/// toughness". Each object named gets its own number, read of that object: a loop over them, fixed as it begins, in which
+/// the card the count reads (`Count$Card...`) is the object of the pass. One kind and a count of the card alone are read;
+/// anything else stays a gap.
+fn per_object_counters(ctx: &mut Ctx, p: &Params, name: &str) -> Tr<Vec<Value>> {
+    if p.has("Choices")
+        || p.has("CounterNum")
+        || p.has("DividedAsYouChoose")
+        || p.has("CounterTypes")
+    {
+        return unmapped("key:PutCounter.CounterNumPerDefined");
+    }
+    let Some(kind) = p.get("CounterType").and_then(kind_word) else {
+        return unmapped("key:PutCounter.CounterType");
+    };
+    let script = ctx.svar(name).unwrap_or_default().to_owned();
+    let card_only = script
+        .split(['/', '.'])
+        .filter(|part| part.starts_with("Count$"))
+        .all(|part| {
+            matches!(
+                part,
+                "Count$CardToughness"
+                    | "Count$CardPower"
+                    | "Count$CardBasePower"
+                    | "Count$CardNumColors"
+            )
+        });
+    if !script.starts_with("Count$Card") || !card_only {
+        return unmapped("key:PutCounter.CounterNumPerDefined");
+    }
+    // `Defined$ Targeted` beside the target says the target again.
+    let over = if p.get("Defined") == Some("Targeted") && p.has("ValidTgts") {
+        subject(ctx, &p.without(&["Defined"]), "Self", None)?
+    } else {
+        subject(ctx, p, "Self", None)?
+    };
+    let count = amount(ctx, name)?;
+    let each = ctx.fresh("each");
+    let count = g9d_of_each(count, &json!({ "Bound": each }));
+    Ok(vec![
+        json!({"RepeatEach": {"over": over, "as": each, "effects": [
+        {"PutCounters": {"on": {"Bound": each}, "counter": kind, "count": count}}]}}),
+    ])
+}
+
+/// The count with every object it reads of the source (`This`) read of `each` instead.
+fn g9d_of_each(count: Value, each: &Value) -> Value {
+    match count {
+        Value::Object(map) => Value::Object(
+            map.into_iter()
+                .map(|(key, value)| {
+                    if key == "of" && value == json!("This") {
+                        (key, each.clone())
+                    } else {
+                        (key, g9d_of_each(value, each))
+                    }
+                })
+                .collect(),
+        ),
+        Value::Array(items) => Value::Array(
+            items
+                .into_iter()
+                .map(|item| g9d_of_each(item, each))
+                .collect(),
+        ),
+        other => other,
+    }
 }
 
 /// The kinds a `CounterType$` lists: one is the counter put, several are the controller's choice of one.

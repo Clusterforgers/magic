@@ -624,8 +624,12 @@ fn layer_of(wanted: &Wanted, defining: bool) -> Option<Layer> {
         | Wanted::SetLandTypes(_)
         | Wanted::SetLandTypesChosen(_)
         | Wanted::SetCreatureTypesChosen(_)
+        | Wanted::AddChosenSubtype
         | Wanted::AddAllCreatureTypes => Layer::Type,
-        Wanted::SetColors(_) | Wanted::AddColors(_) | Wanted::SetColorsChosen(_) => Layer::Color,
+        Wanted::SetColors(_)
+        | Wanted::AddColors(_)
+        | Wanted::SetColorsChosen(_)
+        | Wanted::SetChosenColor => Layer::Color,
         Wanted::AddKeyword(_)
         | Wanted::AddProtectionFromChosenColor
         | Wanted::AddProtectionFromChosenCardType
@@ -1541,6 +1545,8 @@ mod deck_auras;
 mod defining;
 #[cfg(test)]
 mod dependencies;
+#[cfg(test)]
+mod g9b_chosen;
 #[cfg(test)]
 mod keyword_counters;
 #[cfg(test)]

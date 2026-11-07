@@ -14,7 +14,7 @@ use crate::trigger::TriggerPattern;
 use mtg_core::card::{CardType, Subtype};
 
 /// Whether the selector names one object: the card itself, or the creature an Aura or Equipment is attached to.
-fn one_object(what: &Selector) -> bool {
+pub(super) fn one_object(what: &Selector) -> bool {
     matches!(
         what.0.as_slice(),
         [Pred::This | Pred::Is(Ref::Attached)]
@@ -71,6 +71,52 @@ pub(super) fn r7e_one_object_damage(inner: &TriggerPattern) -> Option<String> {
         Some(_) => return None,
     };
     Some(format!("Whenever {dealer} deals {}{to}", kind(*combat)))
+}
+
+/// "Whenever a source deals damage to ~": the damage each source deals one object, which triggers once for each source
+/// (Phyrexian Obliterator); the singular "is dealt damage" is the batch.
+pub(super) fn fix10_each_source(pattern: &TriggerPattern) -> Option<String> {
+    let TriggerPattern::DealsDamage {
+        source,
+        to: Some(to),
+        combat: None,
+    } = pattern
+    else {
+        return None;
+    };
+    if !source.is_empty() {
+        return None;
+    }
+    Some(format!(
+        "Whenever a source deals damage to {}",
+        one_subject(&damaged(to)?)?
+    ))
+}
+
+/// The one object a recipient names: the card itself or the creature attached to.
+fn damaged(to: &Ref) -> Option<Selector> {
+    match to {
+        Ref::This => Some(Selector::this()),
+        Ref::Attached => Some(Selector(vec![Pred::Is(Ref::Attached)])),
+        Ref::Each(what) if one_object(what) => Some(what.clone()),
+        _ => None,
+    }
+}
+
+/// Whether the pattern is one event of the damage one object is dealt (from each source) or deals with no recipient
+/// named (to each recipient): the singular wording is the batch's, so the event has only `fix10_each_source`'s words.
+pub(super) fn fix10_one_object_event(pattern: &TriggerPattern) -> bool {
+    match pattern {
+        TriggerPattern::DealsDamage {
+            source, to: None, ..
+        } => one_object(source),
+        TriggerPattern::DealsDamage {
+            source,
+            to: Some(to),
+            ..
+        } => source.is_empty() && damaged(to).is_some(),
+        _ => false,
+    }
 }
 
 /// "Whenever you discard one or more cards", "Whenever a player discards one or more cards", "Whenever you sacrifice

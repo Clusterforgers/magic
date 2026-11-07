@@ -1,0 +1,58 @@
+{
+  "oracle_id": "9b10e0f7-9414-4769-85d7-c1cd1c74a9a6",
+  "name": "Glissa, Herald of Predation",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Glissa, Herald of Predation",
+      "oracle_fingerprint": "846d09775b3a1030b75ae892eb370a78",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "BeginCombat", "whose": "You" } },
+            "effects": [
+              {
+                "Modal": {
+                  "modes": [
+                    { "effects": [{ "Incubate": { "count": 2 } }, { "Incubate": { "count": 2 } }] },
+                    {
+                      "effects": [
+                        {
+                          "Transform": {
+                            "what": {
+                              "Each": [
+                                { "Subtype": "Incubator" },
+                                "Token",
+                                { "ControlledBy": "You" }
+                              ]
+                            }
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "effects": [
+                        {
+                          "Continuous": {
+                            "affected": {
+                              "Each": [{ "Subtype": "Phyrexian" }, { "ControlledBy": "You" }]
+                            },
+                            "mods": [
+                              { "AddKeyword": "FirstStrike" },
+                              { "AddKeyword": "Deathtouch" }
+                            ],
+                            "duration": "UntilEndOfTurn"
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

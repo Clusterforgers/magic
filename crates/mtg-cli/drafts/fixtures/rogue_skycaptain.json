@@ -1,0 +1,132 @@
+{
+  "object": "card",
+  "id": "2d449a05-c0b9-4532-a67d-21d3d3baea59",
+  "oracle_id": "e600136a-8b4f-4725-a29e-021e0cfc7d0a",
+  "multiverse_ids": [
+    184571
+  ],
+  "mtgo_id": 30718,
+  "mtgo_foil_id": 30719,
+  "name": "Rogue Skycaptain",
+  "lang": "en",
+  "released_at": "2008-09-22",
+  "uri": "https://api.scryfall.com/cards/2d449a05-c0b9-4532-a67d-21d3d3baea59",
+  "scryfall_uri": "https://scryfall.com/card/me2/149/rogue-skycaptain?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T11:36:49Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/2/d/2d449a05-c0b9-4532-a67d-21d3d3baea59.jpg?1783942609",
+    "normal": "https://cards.scryfall.io/normal/front/2/d/2d449a05-c0b9-4532-a67d-21d3d3baea59.jpg?1783942609",
+    "large": "https://cards.scryfall.io/large/front/2/d/2d449a05-c0b9-4532-a67d-21d3d3baea59.jpg?1783942609",
+    "png": "https://cards.scryfall.io/png/front/2/d/2d449a05-c0b9-4532-a67d-21d3d3baea59.png?1783942609",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/2/d/2d449a05-c0b9-4532-a67d-21d3d3baea59.jpg?1783942609",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/2/d/2d449a05-c0b9-4532-a67d-21d3d3baea59.jpg?1783942609",
+    "thumb": "https://cards.scryfall.io/thumb/front/2/d/2d449a05-c0b9-4532-a67d-21d3d3baea59.webp?1783942609",
+    "grid": "https://cards.scryfall.io/grid/front/2/d/2d449a05-c0b9-4532-a67d-21d3d3baea59.webp?1783942609",
+    "display": "https://cards.scryfall.io/display/front/2/d/2d449a05-c0b9-4532-a67d-21d3d3baea59.webp?1783942609",
+    "art": "https://cards.scryfall.io/art/front/2/d/2d449a05-c0b9-4532-a67d-21d3d3baea59.webp?1783942609",
+    "crop": "https://cards.scryfall.io/crop/front/2/d/2d449a05-c0b9-4532-a67d-21d3d3baea59.webp?1783942609",
+    "jpeg": "https://cards.scryfall.io/normal/front/2/d/2d449a05-c0b9-4532-a67d-21d3d3baea59.jpg?1783942609"
+  },
+  "mana_cost": "{2}{R}",
+  "cmc": 3.0,
+  "type_line": "Creature — Human Rogue Mercenary",
+  "oracle_text": "Flying\nAt the beginning of your upkeep, put a wage counter on this creature. You may pay {2} for each wage counter on it. If you don't, remove all wage counters from this creature and an opponent gains control of it.",
+  "power": "3",
+  "toughness": "4",
+  "colors": [
+    "R"
+  ],
+  "color_identity": [
+    "R"
+  ],
+  "keywords": [
+    "Flying"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "legal",
+    "predh": "legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "mtgo"
+  ],
+  "reserved": true,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": true,
+  "variation": false,
+  "set_id": "7d51a13b-dcd2-4ec2-b3a7-c89288e00b4e",
+  "set": "me2",
+  "set_name": "Masters Edition II",
+  "set_type": "masters",
+  "set_uri": "https://api.scryfall.com/sets/7d51a13b-dcd2-4ec2-b3a7-c89288e00b4e",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Ame2&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/me2?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/2d449a05-c0b9-4532-a67d-21d3d3baea59/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Ae600136a-8b4f-4725-a29e-021e0cfc7d0a&unique=prints",
+  "collector_number": "149",
+  "digital": true,
+  "rarity": "rare",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Randy Asplund-Faith",
+  "artist_ids": [
+    "d2da8270-bbdb-4c49-b84d-bf5a380e8a78"
+  ],
+  "illustration_id": "8944a200-5398-448d-85d9-43ac348f3b46",
+  "border_color": "black",
+  "frame": "1997",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 27776,
+  "prices": {
+    "usd": null,
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": null,
+    "eur_foil": null,
+    "tix": "0.02"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=184571&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DRogue%2BSkycaptain",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DRogue%2BSkycaptain",
+    "edhrec": "https://edhrec.com/route/?cc=Rogue+Skycaptain"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fmagic%2Fproduct%3FproductLineName%3Dmagic%26q%3DRogue%2BSkycaptain%26view%3Dgrid",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products/Search?referrer=scryfall&searchString=Rogue+Skycaptain&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/30718?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}
