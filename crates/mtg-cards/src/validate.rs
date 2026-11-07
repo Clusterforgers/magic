@@ -3701,6 +3701,7 @@ impl Walker<'_> {
                 modes,
                 repeat,
                 at_random,
+                different_players,
                 once_each_turn,
                 once_ever,
                 all_if,
@@ -3708,6 +3709,12 @@ impl Walker<'_> {
                 extra_mode_cost,
             } => {
                 w.modal(choose, modes, *repeat, only_effect);
+                if *different_players {
+                    w.uses("Effect", "Modal.DifferentPlayers");
+                    if *repeat {
+                        w.problem("a mode chosen twice cannot target a different player each time");
+                    }
+                }
                 if !who.is_you() {
                     w.uses("Effect", "Modal.Who");
                     w.at("who", |w| w.reference(who, Kind::Player));

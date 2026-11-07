@@ -126,6 +126,7 @@ pub fn split_charm(name: &str) -> Arc<CardDefinition> {
                 },
                 repeat: false,
                 at_random: false,
+                different_players: false,
                 once_each_turn: false,
                 once_ever: false,
                 all_if: None,

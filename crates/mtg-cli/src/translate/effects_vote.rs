@@ -12,10 +12,21 @@ struct Choice {
     part: Params,
 }
 
-/// The name a choice is bound to: its description in lower case, one word of letters.
+/// The name a choice is bound to: its description in lower case, words of letters joined by `_` ("Redhorn Pass" is
+/// `redhorn_pass`, which the vote shows as "redhorn pass"); at most three words, so a sentence stays a gap.
 fn name_of(part: &Params) -> Tr<String> {
-    let name = part.get("SpellDescription").unwrap_or("").to_lowercase();
-    if name.is_empty() || !name.chars().all(|c| c.is_ascii_lowercase()) {
+    let words: Vec<String> = part
+        .get("SpellDescription")
+        .unwrap_or("")
+        .split(' ')
+        .map(str::to_lowercase)
+        .collect();
+    let name = words.join("_");
+    if words.len() > 3
+        || words
+            .iter()
+            .any(|word| word.is_empty() || !word.chars().all(|c| c.is_ascii_lowercase()))
+    {
         return unmapped("key:Vote.Choices-name");
     }
     Ok(name)
@@ -115,6 +126,23 @@ pub fn vote(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
                 "then": more,
                 "otherwise": otherwise,
             }}));
+        }
+        // "Each choice with the most votes or tied for most votes": a choice runs when no other got more votes.
+        (false, false, None) if choices.len() >= 2 => {
+            for (index, choice) in choices.iter().enumerate() {
+                let most: Vec<Value> = choices
+                    .iter()
+                    .enumerate()
+                    .filter(|(other, _)| *other != index)
+                    .map(|(_, other)| {
+                        json!({"Compare": {
+                            "left": votes(&choice.name), "op": "Ge", "right": votes(&other.name),
+                        }})
+                    })
+                    .collect();
+                let steps = chain_at(ctx, &choice.part, false)?;
+                effects.push(json!({"If": {"condition": {"All": most}, "then": steps}}));
+            }
         }
         _ => return unmapped("key:Vote.shape"),
     }

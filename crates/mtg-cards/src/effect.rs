@@ -1535,6 +1535,10 @@ pub enum Effect {
         /// pick is public. Needs a fixed number of modes and no repeats.
         #[serde(default, skip_serializing_if = "is_false")]
         at_random: bool,
+        /// Each mode must target a different player ("Each mode must target a different player."): a player that a
+        /// mode chosen earlier targets is not offered to the later ones.
+        #[serde(default, skip_serializing_if = "is_false")]
+        different_players: bool,
         /// A mode this ability chose earlier in the turn is not offered ('choose one that hasn't been chosen this
         /// turn'); a spell has no earlier choice to keep.
         #[serde(default, skip_serializing_if = "is_false")]

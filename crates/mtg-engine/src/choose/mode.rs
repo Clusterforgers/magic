@@ -119,6 +119,8 @@ pub(crate) struct Modal<'a> {
     pub(crate) modes: &'a [Mode],
     /// The game picks the modes at random.
     pub(crate) at_random: bool,
+    /// A player a mode chosen earlier targets is not offered to the later ones.
+    pub(crate) different_players: bool,
     /// Which modes this ability chose before are not offered.
     pub(crate) once: C11dOnce,
     /// Every mode may be chosen when this holds as the ability is announced.
@@ -165,6 +167,7 @@ pub(crate) fn modal_of(rules: &Ability) -> Option<Modal<'_>> {
                 repeat,
                 modes,
                 at_random,
+                different_players,
                 once_each_turn,
                 once_ever,
                 all_if,
@@ -177,6 +180,7 @@ pub(crate) fn modal_of(rules: &Ability) -> Option<Modal<'_>> {
             repeat: *repeat,
             modes,
             at_random: *at_random,
+            different_players: *different_players,
             once: C11dOnce::c11d_of(*once_each_turn, *once_ever),
             all_if: all_if.as_ref(),
             mode_costs,
