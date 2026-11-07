@@ -11,7 +11,7 @@ use mtg_cards::coverage::analyze_with;
 use mtg_cards::generated::{Generation, generate};
 use mtg_cards::load::{Library, slug, unwhole};
 use mtg_cards::proposal::{ClauseState, Report, check_exact};
-use mtg_cards::support::{Caps, PrintedCard, Support, support};
+use mtg_cards::support::{Caps, PrintedCard, READBACK_DIFFERS, Support, support};
 use mtg_cards::validate::used_primitives;
 use mtg_db::Database;
 
@@ -199,7 +199,8 @@ pub struct Offer {
 
 /// Why the exact check refuses a whole translation, as a gap name: the first problem (`offer:invalid:`), a printed
 /// clause no ability stands for (`offer:open:` and its kind), the primitives the engine does not run (`offer:engine:`),
-/// or another state than `Verified`; `None` when the rules are whole and `Verified`.
+/// another state than `Verified`, or a clause read back as other text (`offer:readback:Differs`, so a card that may play
+/// wrong never plays automatically); `None` when the rules are whole, `Verified` and read back as the card.
 pub fn refusal(report: &Report, caps: &Caps) -> Option<String> {
     if let Some(problem) = report.problems.first() {
         return Some(format!("offer:invalid:{}", shape(&problem.message)));
@@ -230,6 +231,13 @@ pub fn refusal(report: &Report, caps: &Caps) -> Option<String> {
     }
     if keyword_cost_differs(report, rules) {
         return Some("offer:keyword-cost-differs".to_owned());
+    }
+    if report
+        .clauses
+        .iter()
+        .any(|clause| matches!(clause.state, ClauseState::Differs { .. }))
+    {
+        return Some(format!("offer:{READBACK_DIFFERS}"));
     }
     unwhole(rules).map(|_| "offer:unwhole".to_owned())
 }

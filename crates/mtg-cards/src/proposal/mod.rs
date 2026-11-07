@@ -154,6 +154,17 @@ impl Report {
     }
 }
 
+/// The clauses of the printed text that rules already made (a rules file, a compiled row, a draft) are written back as
+/// other text: the read-back verdict `Differs`, which keeps a card from playing automatically.
+pub fn differing(rules: &Card, printed: &PrintedCard) -> Vec<ClauseReport> {
+    let clauses = compile(printed).clauses;
+    pairing::pair_card(rules, &clauses, printed)
+        .clauses
+        .into_iter()
+        .filter(|clause| matches!(clause.state, ClauseState::Differs { .. }))
+        .collect()
+}
+
 /// Checks the JSON of a proposed rules file against an imported card.
 ///
 /// The file may leave out what the card gives: the oracle id, the names, the status and the
