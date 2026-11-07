@@ -795,6 +795,7 @@ impl<'a> Walker<'a> {
             | Pred::Monstrous
             | Pred::Renowned
             | Pred::Prepared
+            | Pred::Suspected
             | Pred::DoubleFaced
             | Pred::Transformed
             | Pred::Paired
@@ -1807,6 +1808,10 @@ impl<'a> Walker<'a> {
             | Keyword::Landwalk(quality)
             | Keyword::Affinity(quality) => {
                 self.selector(quality);
+            }
+            Keyword::ProtectionSparing { from, spares } => {
+                self.selector(from);
+                self.selector(spares);
             }
             // The cost is paid as the cost of the activated ability the keyword adds.
             Keyword::Typecycling { find, cost } => self.cost_and("find", cost, find),
@@ -3056,6 +3061,8 @@ impl Walker<'_> {
             | Effect::Flip { what }
             | Effect::TurnFaceUp { what }
             | Effect::Prepare { what }
+            | Effect::Suspect { what }
+            | Effect::Unsuspect { what }
             | Effect::Goad { what }
             | Effect::Explore { what }
             => w.at("what", |w| w.reference(what, Kind::Object)),

@@ -63,6 +63,8 @@ fn reports(effect: &Effect) -> Reports {
         | Effect::Flip { .. }
         | Effect::TurnFaceUp { .. }
         | Effect::Prepare { .. }
+        | Effect::Suspect { .. }
+        | Effect::Unsuspect { .. }
         | Effect::Surveil { .. }
         | Effect::Proliferate { .. }
         | Effect::Goad { .. }

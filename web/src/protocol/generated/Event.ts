@@ -669,6 +669,14 @@ object: ObjectId, } } | { "Unprepared": {
 /**
  * The permanent.
  */
+object: ObjectId, } } | { "Suspected": { 
+/**
+ * The permanent.
+ */
+object: ObjectId, } } | { "Unsuspected": { 
+/**
+ * The permanent.
+ */
 object: ObjectId, } } | { "BecameCopy": BecameCopy } | { "SpellCopied": SpellCopy } | { "CardCopied": CardCopy } | { "CopyCeased": { 
 /**
  * The copy.

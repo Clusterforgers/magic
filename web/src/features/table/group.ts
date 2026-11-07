@@ -100,6 +100,7 @@ function faceOf(permanent: Groupable): string {
     permanent.face_down === true,
     (permanent.merged ?? []).map((part) => part.id),
     state?.prepared === true,
+    state?.suspected === true,
     state?.level ?? null,
     state?.phased_out === true,
   ])

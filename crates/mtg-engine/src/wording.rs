@@ -103,6 +103,7 @@ pub(crate) fn phrase(selector: &Selector) -> (String, String) {
             Pred::Monstrous => adjectives.push("monstrous".to_owned()),
             Pred::Renowned => adjectives.push("renowned".to_owned()),
             Pred::Prepared => adjectives.push("prepared".to_owned()),
+            Pred::Suspected => adjectives.push("suspected".to_owned()),
             Pred::DoubleFaced => adjectives.push("double-faced".to_owned()),
             Pred::Transformed => adjectives.push("transformed".to_owned()),
             Pred::Paired => adjectives.push("paired".to_owned()),

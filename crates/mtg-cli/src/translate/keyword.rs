@@ -184,15 +184,36 @@ pub fn keyword_value(ctx: &Ctx, text: &str) -> Tr<Value> {
         return Ok(json!({ variant: number }));
     }
     let second = fields.next();
-    // A protection that spares a source ("This effect doesn't remove this Aura", `Card.CardUID_HostCardUID`) has no
-    // exception in the keyword: dropping it would knock the Aura off.
-    if name == "Protection" && fields.next().is_some() {
-        return unmapped("keyword:Protection-with-exception");
+    // A protection that spares attachments ("This effect doesn't remove this Aura", `Card.CardUID_HostCardUID`).
+    if name == "Protection"
+        && let Some(exception) = fields.next()
+    {
+        let (Some(valid), Some(spares)) = (first, spared(exception, fields.next())) else {
+            return unmapped("keyword:Protection-with-exception");
+        };
+        return Ok(
+            json!({"ProtectionSparing": {"from": selector_any(ctx, valid)?, "spares": spares}}),
+        );
     }
     if mtg_cards::macros::is_keyword(name) {
         return macro_keyword(name, first, second, fields.next());
     }
     other_keyword(ctx, name, first, second)
+}
+
+/// The attachments a protection's exception leaves attached, judged for the permanent that gives the keyword: itself,
+/// Auras, or the Auras and Equipment its controller controls. Any other exception is not read.
+fn spared(exception: &str, rest: Option<&str>) -> Option<Value> {
+    const YOURS: &str = "Aura.ControlledBy Player.PlayerUID_HostCardControllerUID,Equipment.ControlledBy Player.PlayerUID_HostCardControllerUID";
+    match (exception, rest) {
+        ("Card.CardUID_HostCardUID", None) => Some(json!(["This"])),
+        ("Aura", None) => Some(json!([{"Subtype": "Aura"}])),
+        (YOURS, Some("SBA")) => Some(json!([
+            {"AnyOf": [{"Subtype": "Aura"}, {"Subtype": "Equipment"}]},
+            {"ControlledBy": "You"}
+        ])),
+        _ => None,
+    }
 }
 
 /// A keyword of the macro table (`mtg_cards::macros`): its number when it prints one. A number that is not a plain

@@ -1639,6 +1639,7 @@ impl<'a> Scope<'a> {
             Pred::Monstrous => matches!(seen.counters, Counted::Live(held) if held.monstrous()),
             Pred::Renowned => matches!(seen.counters, Counted::Live(held) if held.renowned()),
             Pred::Prepared => matches!(seen.counters, Counted::Live(held) if held.prepared()),
+            Pred::Suspected => matches!(seen.counters, Counted::Live(held) if held.suspected()),
             Pred::DoubleFaced => double_faced(seen, false),
             Pred::Transformed => double_faced(seen, true),
             Pred::EnteredThisTurn => state.object_tallied(reference, None, Tally::Entered) > 0,

@@ -166,3 +166,17 @@ pub fn goad(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
     }
     is_on_the_battlefield(r, &what).then_some(vec![Effect::Goad { what }])
 }
+
+/// "Suspect it.", "suspect target creature", "suspect enchanted creature" (CR 701.60): the creatures become suspected
+/// (`Effect::Suspect`).
+pub fn suspect(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
+    r.need("suspect")?;
+    let what = match r.it.clone() {
+        Some(it) if r.word("it") => it,
+        _ => object(r)?,
+    };
+    if matches!(what, Ref::Target(_)) {
+        r.it = Some(what.clone());
+    }
+    is_on_the_battlefield(r, &what).then_some(vec![Effect::Suspect { what }])
+}

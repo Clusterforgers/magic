@@ -531,6 +531,16 @@ fn written_anew(ability: &Ability) -> Vec<String> {
             }
         }
     }
+    // Protection with an exception reads as plain protection and the exception's sentence; the plain twin has no
+    // exception left, so this recurses once.
+    if let Some((plain, sentence)) = super::e14d_sparing::e14d_plain(ability) {
+        for text in written_variants(&plain) {
+            let text = format!("{}. {sentence}", text.trim_end_matches('.'));
+            if !texts.contains(&text) {
+                texts.push(text);
+            }
+        }
+    }
     texts
 }
 
@@ -1551,6 +1561,7 @@ fn is_imperative(effect: &Effect) -> bool {
                 | Effect::Untap { .. }
                 | Effect::TapOrUntap { .. }
                 | Effect::Goad { .. }
+                | Effect::Suspect { .. }
                 | Effect::RemoveFromCombat { .. }
                 | Effect::Regenerate { .. }
                 | Effect::Counter { .. }
@@ -2370,6 +2381,8 @@ impl Writer<'_> {
             Effect::TapOrUntap { what } => format!("tap or untap {}", self.object(what)?),
             Effect::Goad { what } if self.named && self.single(what) => "goad it".to_owned(),
             Effect::Goad { what } => format!("goad {}", self.object(what)?),
+            Effect::Suspect { what } if self.named && self.single(what) => "suspect it".to_owned(),
+            Effect::Suspect { what } => format!("suspect {}", self.object(what)?),
             Effect::Fight {
                 what: Ref::Triggering,
                 with,
@@ -2482,6 +2495,7 @@ impl Writer<'_> {
             | Effect::Untap { .. }
             | Effect::TapOrUntap { .. }
             | Effect::Goad { .. }
+            | Effect::Suspect { .. }
             | Effect::Fight { .. }
             | Effect::Regenerate { .. }
             | Effect::Counter { .. } => self.on_objects(effect)?,

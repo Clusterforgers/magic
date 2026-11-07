@@ -311,6 +311,7 @@ pub(crate) fn definition_has_protection(definition: &CardDefinition) -> bool {
     definition.rules.iter().any(|rules| {
         let used = mtg_cards::validate::used_primitives(rules);
         used.contains("Keyword.Protection")
+            || used.contains("Keyword.ProtectionSparing")
             || used.contains("Mod.AddProtectionFromChosenColor")
             || used.contains("Mod.AddProtectionFromChosenCardType")
     })

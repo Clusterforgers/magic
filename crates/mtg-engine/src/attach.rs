@@ -8,8 +8,10 @@ use mtg_cards::refs::{Bounds, Pred, Selector, TargetSpec, Targetable};
 use mtg_core::card::{CardType, Subtype};
 use mtg_core::ids::{ObjectId, PlayerId};
 
+use crate::abilities::Grant;
 use crate::characteristics::{characteristics, controller_of_object};
 use crate::choose::{Target, legal_targets, options_for};
+use crate::effects::Modification;
 use crate::error::EngineError;
 use crate::events::{Event, ZoneCause};
 use crate::fold::invalid;
@@ -171,8 +173,56 @@ pub(crate) fn legal_player_host(state: &GameState, attachment: ObjectId, player:
 
 /// Whether a keyword of `host` (protection) keeps `attachment` from being attached to it (CR 702.16c).
 fn protects_host(state: &GameState, attachment: ObjectId, host: ObjectId) -> bool {
-    keywords::Source::live(state, attachment)
-        .is_some_and(|source| keywords::protected_from(state, Holder::Object(host), source))
+    let Some(source) = keywords::Source::live(state, attachment) else {
+        return false;
+    };
+    keywords_of(state, host).into_iter().any(|keyword| {
+        keywords::rules(keyword).protects_from(state, keyword, Holder::Object(host), source)
+            && !spares(state, keyword, attachment, host)
+    })
+}
+
+/// Whether a protection with an exception ("This effect doesn't remove this Aura") leaves `attachment` on `host`: the
+/// exception is judged for each permanent whose static ability or effect gave the keyword, or for the host when it is
+/// printed on it.
+fn spares(state: &GameState, keyword: &Keyword, attachment: ObjectId, host: ObjectId) -> bool {
+    let Keyword::ProtectionSparing { spares, .. } = keyword else {
+        return false;
+    };
+    let Some(object) = state.object(attachment) else {
+        return false;
+    };
+    let mut granters: Vec<ObjectId> = state
+        .layers()
+        .get(host)
+        .map(|held| {
+            held.applied
+                .iter()
+                .filter(|applied| {
+                    matches!(&applied.modification, Modification::AddKeyword(given) if given == keyword)
+                })
+                .filter_map(|applied| match applied.origin {
+                    Grant::Static { source, .. } => Some(source),
+                    Grant::Effect(id) => state
+                        .effects()
+                        .iter()
+                        .find(|effect| effect.id == id)
+                        .and_then(|effect| effect.source)
+                        .map(|source| source.id),
+                    Grant::Borrowed { .. } => None,
+                })
+                .collect()
+        })
+        .unwrap_or_default();
+    if granters.is_empty() {
+        granters.push(host);
+    }
+    granters.into_iter().any(|granter| {
+        state.object(granter).is_some_and(|by| {
+            let scope = Scope::announcing(state, controller_of_object(state, by), by.reference());
+            scope.selects(spares, object.reference()).unwrap_or(false)
+        })
+    })
 }
 
 /// Whether `id` has reconfigure, so it may equip a creature while it is a creature itself (CR 301.5c).

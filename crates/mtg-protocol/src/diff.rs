@@ -72,6 +72,7 @@ mod tests {
                 damage: 0,
                 summoning_sick: false,
                 prepared: false,
+                suspected: false,
                 phased_out: false,
                 exerted: false,
                 level: None,

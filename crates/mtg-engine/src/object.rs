@@ -152,6 +152,8 @@ pub struct Designations {
     pub(crate) renowned: bool,
     /// It is prepared: its controller may cast a copy of its spell face.
     pub(crate) prepared: bool,
+    /// It is suspected (CR 701.60): it has menace and can't block.
+    pub(crate) suspected: bool,
     /// The level a Class has reached (CR 716.2); 0 until a level ability resolves, which reads as level 1.
     pub(crate) level: u32,
     /// How many permanents it devoured as it entered (CR 702.82).
@@ -344,6 +346,11 @@ impl PermanentState {
     /// Whether the permanent is prepared; a permanent that leaves the battlefield is a new object and is not.
     pub const fn prepared(&self) -> bool {
         self.designations.prepared
+    }
+
+    /// Whether the permanent is suspected (CR 701.60); a permanent that leaves the battlefield is a new object and is not.
+    pub const fn suspected(&self) -> bool {
+        self.designations.suspected
     }
 
     /// The level of a Class (CR 716.2): 1 as it enters, higher once its level abilities resolve; a permanent that

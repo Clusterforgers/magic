@@ -79,6 +79,7 @@ mod dk1d_by_paying;
 mod draws;
 mod e10a_targets;
 mod e10c_granted;
+mod e14d_sparing;
 mod effects;
 mod equip_options;
 mod evasion;

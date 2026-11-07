@@ -1685,11 +1685,12 @@ mod tests {
 
     /// The keywords a sentence names, read by the static templates and not by the keyword table ("You may exert ~ as it
     /// attacks.").
-    const W9D_SENTENCES: [&str; 4] = [
+    const W9D_SENTENCES: [&str; 5] = [
         "Exert",
         "Macro",
         "Hexproof from",
         "Flash, sacrificed at cleanup",
+        "Protection sparing",
     ];
 
     #[test]
