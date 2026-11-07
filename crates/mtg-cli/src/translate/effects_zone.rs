@@ -754,15 +754,68 @@ fn battlefield_owner(p: &Params, who: &Parties, filter: &mut Vec<Value>) -> Tr<(
 /// Whether the text of the pick lets the player choose none ("may", "up to", "any number", "unless you return"): the
 /// line's own description, else that of the printed ability it is part of, else the whole card. Another ability's "any
 /// number" does not make this pick optional.
-fn allows_none_from(ctx: &Ctx, p: &Params) -> bool {
+fn allows_none_from(ctx: &Ctx, p: &Params, origin: &str) -> bool {
     let text = p
         .get("SpellDescription")
         .map(str::to_lowercase)
         .or_else(|| ctx.printed.clone())
         .unwrap_or_else(|| ctx.oracle.to_lowercase());
+    let text = move_sentence(&text, origin).unwrap_or(text);
     [" may ", "up to", "any number", "unless"]
         .iter()
         .any(|words| text.contains(words))
+}
+
+/// The one sentence of the text that takes from the origin zone ("return a creature card from your graveyard"), reminder text
+/// left out: a "may" or "up to" of another sentence ("Up to one target creature gets -X/-X") is not this move's. `None`
+/// when no sentence or several name the zone.
+fn move_sentence(text: &str, origin: &str) -> Option<String> {
+    let word = match origin {
+        "Graveyard" => "graveyard",
+        "Hand" => "hand",
+        "Exile" => "exile",
+        _ => return None,
+    };
+    let mut plain = String::new();
+    let mut depth = 0usize;
+    for c in text.replace("\\n", "\n").chars() {
+        match c {
+            '(' => depth += 1,
+            ')' => depth = depth.saturating_sub(1),
+            _ if depth == 0 => plain.push(c),
+            _ => {}
+        }
+    }
+    let mut naming = plain.split(['\n', '.']).map(str::trim).filter(|sentence| {
+        sentence
+            .split_once("from ")
+            .is_some_and(|(_, after)| after.contains(word))
+    });
+    let sentence = naming.next()?;
+    naming.next().is_none().then(|| format!(" {sentence} "))
+}
+
+/// Whether the line's printed text puts the cards "in any order".
+fn allows_any_order(ctx: &Ctx, p: &Params) -> bool {
+    p.get("SpellDescription")
+        .or_else(|| p.get("StackDescription"))
+        .map(str::to_lowercase)
+        .or_else(|| ctx.printed.clone())
+        .is_some_and(|text| text.contains("in any order"))
+}
+
+/// Forge's `Optional$ True` on a move whose own sentence of the text carries no "may", "up to" or "unless" ("Then return
+/// a creature or Vehicle card from your graveyard to your hand"): the card says the move is made, so it is not optional.
+fn optional_by_text(ctx: &Ctx, p: &Params, origin: &str) -> bool {
+    if !frame::is_optional(p) {
+        return false;
+    }
+    let text = p
+        .get("SpellDescription")
+        .map(str::to_lowercase)
+        .or_else(|| ctx.printed.clone())
+        .unwrap_or_else(|| ctx.oracle.to_lowercase());
+    move_sentence(&text, origin).is_none() || allows_none_from(ctx, p, origin)
 }
 
 /// Whether the card's text takes the card from any graveyard ("from a graveyard") and never from "your graveyard".
@@ -824,9 +877,9 @@ fn choose_and_move(ctx: &mut Ctx, p: &Params, origin: &str, destination: &str) -
     // for a public zone: a player may fail to find only in a hidden zone (CR 701.23b).
     if exact_origin(origin)
         && count.is_one
-        && !frame::is_optional(p)
+        && !optional_by_text(ctx, p, origin)
         && !p.has("Mandatory")
-        && !allows_none_from(ctx, p)
+        && !allows_none_from(ctx, p, origin)
     {
         count.min = json!(1);
     }
@@ -846,6 +899,17 @@ fn choose_and_move(ctx: &mut Ctx, p: &Params, origin: &str, destination: &str) -
         return unmapped("key:ChangeZone.Choose.DestinationAlternative-with-memory");
     }
     let mut moved = frame::place(ctx, &chosen, places);
+    // "Put two cards from your hand on top of your library in any order": the player who puts them orders them (CR 401.4).
+    if !count.is_one
+        && owner == json!("You")
+        && (p.get("Reorder") == Some("True") || allows_any_order(ctx, p))
+        && let Some(library) = moved
+            .first_mut()
+            .and_then(|step| step.pointer_mut("/Move/to/Library"))
+        && library.get("order").is_none()
+    {
+        library["order"] = json!("Chosen");
+    }
     match p.get("Duration") {
         None => {}
         // "Exile any number of creatures you control until ~ leaves the battlefield": each returns when the source goes.
@@ -1213,8 +1277,9 @@ pub fn dig(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
     // Only whether the script shows the cards to the player: the dig below looks at them either way.
     let _ = p.get("NoLooking");
     // The script of an attacking dig may reveal where the printed text only looks.
-    let reveals = p.get("Reveal") == Some("True")
-        && (!p.has("Attacking") || ctx.oracle.to_lowercase().contains("reveal"));
+    let reveals = (p.get("Reveal") == Some("True")
+        && (!p.has("Attacking") || ctx.oracle.to_lowercase().contains("reveal")))
+        || (!hidden && p.get("NoReveal") != Some("True") && prints_reveal_top(ctx, p));
     let who = subject(ctx, p, "You", None)?;
     let count = amount(ctx, p.get("DigNum").unwrap_or("1"))?;
     // "Exile the top card of your library face down": nobody looks at it, the exiler neither.
@@ -1269,7 +1334,14 @@ pub fn dig(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
         }
         Take::Count(_) | Take::All => {}
     }
-    let (to, rest_to) = dig_places(p)?;
+    let (to, mut rest_to) = dig_places(p)?;
+    if prints_random_order(ctx, p)
+        && let Goes::To(place) = &mut rest_to
+        && let Some(order) = place.pointer_mut("/Library/order")
+        && *order == json!("Chosen")
+    {
+        *order = json!("Random");
+    }
     let to = match hide {
         Hide::No => to,
         Hide::Held => Goes::Hidden,
@@ -1341,6 +1413,34 @@ pub fn dig(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
         }
     }
     Ok(effects)
+}
+
+/// Whether the printed text of the line reveals the top cards ("reveal the top six cards of your library") where the
+/// script leaves `Reveal$` off: revealed cards are shown to every player (CR 701.20a). A text that also looks at the top
+/// cards is left to the script.
+fn prints_reveal_top(ctx: &Ctx, p: &Params) -> bool {
+    let Some(text) = p
+        .get("SpellDescription")
+        .map(str::to_lowercase)
+        .or_else(|| ctx.printed.clone())
+    else {
+        return false;
+    };
+    text.contains("reveal the top")
+        && !text.contains("may reveal the top")
+        && !text.contains("look at the top")
+}
+
+/// Whether the text puts the rest "in a random order" where the script leaves `RestRandomOrder$` off: the line's printed
+/// text, or the Oracle text when it puts cards on the bottom once (a script's older wording says "any order").
+fn prints_random_order(ctx: &Ctx, p: &Params) -> bool {
+    let random = |text: &str| text.contains("in a random order") && !text.contains("any order");
+    let oracle = ctx.oracle.to_lowercase();
+    p.get("SpellDescription")
+        .map(str::to_lowercase)
+        .or_else(|| ctx.printed.clone())
+        .is_some_and(|text| random(&text))
+        || (random(&oracle) && oracle.matches("on the bottom").count() == 1)
 }
 
 /// `Choser$` of a `Dig`: the player who picks among the cards looked at, with the step that names them when it is "an
