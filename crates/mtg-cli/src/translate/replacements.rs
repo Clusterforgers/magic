@@ -44,6 +44,9 @@ fn single(ctx: &mut Ctx, body: &str) -> Tr<Value> {
     let event = p.get("Event").unwrap_or_default();
     // "If it was kicked, it enters with ...": the card itself, and the replacement applies only to a kicked spell.
     let kicked_self = event == "Moved" && p.get("ValidCard") == Some("Card.Self+kicked");
+    if kicked_self && line_condition.is_none() && animates(ctx, &p) {
+        return kicked_with_changes(ctx, &p);
+    }
     if kicked_self {
         if line_condition.is_some() {
             return unmapped("key:Replacement.two-conditions");
@@ -139,6 +142,44 @@ fn single(ctx: &mut Ctx, body: &str) -> Tr<Value> {
         _ => return unmapped("key:Replacement.two-conditions"),
     }
     Ok(json!({ "Replacement": ability }))
+}
+
+/// Whether the chain the line replaces with gives the permanent something for good (`Animate`), read as the
+/// `ETBReplacement` keyword reads it.
+fn animates(ctx: &Ctx, p: &Params) -> bool {
+    let mut next = p.get("ReplaceWith").map(str::to_owned);
+    for _ in 0..4 {
+        let Some(name) = next.take() else {
+            return false;
+        };
+        let Some(part) = ctx.svar(&name).map(Params::parse) else {
+            return false;
+        };
+        if part.get("DB") == Some("Animate") {
+            return true;
+        }
+        next = part.get("SubAbility").map(str::to_owned);
+    }
+    false
+}
+
+/// "If it was kicked, it enters with two +1/+1 counters on it and with haste" as an `R:` line: the counters and the
+/// changes of the chain, as the `ETBReplacement` keyword reads them.
+fn kicked_with_changes(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
+    let read = [
+        "Event",
+        "ValidCard",
+        "Destination",
+        "ReplaceWith",
+        "ReplacementResult",
+    ];
+    check_keys(p, "Replacement.Moved", &read, |_, _| false)?;
+    if p.get("Destination") != Some("Battlefield") || p.get("ReplacementResult") != Some("Updated")
+    {
+        return unmapped("replacement:Moved-shape");
+    }
+    let name = p.get("ReplaceWith").unwrap_or_default().to_owned();
+    super::enters_with::self_enters(ctx, &name, "Card.Self+kicked")
 }
 
 /// "Doesn't untap during its controller's untap step": the untap that can't happen.
