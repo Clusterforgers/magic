@@ -170,6 +170,10 @@ fn chosen_in(scope: &Scope<'_>, keyword: &Keyword) -> Keyword {
         (Keyword::Protection(quality), _) => {
             Keyword::Protection(PickSelector(quality.0.iter().map(fixed).collect()))
         }
+        (Keyword::ProtectionSparing { from, spares }, _) => Keyword::ProtectionSparing {
+            from: PickSelector(from.0.iter().map(fixed).collect()),
+            spares: spares.clone(),
+        },
         // The land type is the one the landwalk names.
         (Keyword::Landwalk(land), Chosen::LandType(subtype)) => Keyword::Landwalk(PickSelector(
             land.0

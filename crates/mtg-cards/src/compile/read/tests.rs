@@ -263,6 +263,7 @@ mod draws;
 mod e10a_writers;
 mod e10b_writers;
 mod e14b_writers;
+mod e14d_writers;
 mod each_pump;
 mod effect_writers;
 mod enchanted_player;

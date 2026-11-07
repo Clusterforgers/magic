@@ -828,6 +828,17 @@ pub enum Effect {
         /// What becomes prepared.
         what: Ref,
     },
+    /// Suspects creatures on the battlefield (CR 701.60): while one is suspected, it has menace and can't block. One that
+    /// is suspected already, is no creature or is not on the battlefield is passed over.
+    Suspect {
+        /// What becomes suspected.
+        what: Ref,
+    },
+    /// Makes suspected permanents no longer suspected (CR 701.60d).
+    Unsuspect {
+        /// What stops being suspected.
+        what: Ref,
+    },
     /// The player surveils (CR 701.25): looks at the top cards of their library and puts any into the graveyard.
     Surveil {
         /// Who surveils.

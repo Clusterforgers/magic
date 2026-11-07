@@ -279,6 +279,8 @@ pub enum Pred {
     Renowned,
     /// Is prepared: a permanent on the battlefield whose controller may cast a copy of the spell face of its card.
     Prepared,
+    /// Is suspected (CR 701.60): a permanent on the battlefield that has been suspected and is not yet no longer suspected.
+    Suspected,
     /// Is a double-faced card (CR 712.1): a transforming or a modal double-faced card in any zone; a permanent that is a copy of one is not.
     DoubleFaced,
     /// Is transformed (CR 701.28): a transforming double-faced permanent with its back face up; a copy of one is not.

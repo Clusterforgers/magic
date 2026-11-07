@@ -28,7 +28,7 @@ fn r6b_a_permanent_card_searched_keeps_the_permanent_types(
 }
 
 #[rstest]
-#[case::spares_the_aura("Protection:Card.Black:black:Card.CardUID_HostCardUID", true)]
+#[case::spares_what_is_not_read("Protection:Card.Black:black:Card.Creature", true)]
 #[case::plain("Protection:Card.Black:black", false)]
 fn r6b_a_protection_that_spares_a_source_is_a_gap(#[case] keyword: &str, #[case] gap: bool) {
     let script = format!(

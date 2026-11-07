@@ -179,6 +179,8 @@ fn fold_event(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
         ended @ Event::CopyEnded { .. } => crate::copies::fold_ended(state, ended),
         Event::Prepared { object } => set_prepared(state, *object, true),
         Event::Unprepared { object } => set_prepared(state, *object, false),
+        Event::Suspected { object } => set_suspected(state, *object, true),
+        Event::Unsuspected { object } => set_suspected(state, *object, false),
         Event::Crewed { .. } => tally_crewed(state, event),
         // The change follows as events of its own; the action restarts the round, so the other seats see it, and a look
         // by hand records what the seat learned.
@@ -544,7 +546,10 @@ fn create_effect(
     state.next_timestamp = state.next_timestamp.max(effect.timestamp + 1);
     if matches!(
         &effect.modification,
-        Modification::AddKeyword(mtg_cards::keyword::Keyword::Protection(_))
+        Modification::AddKeyword(
+            mtg_cards::keyword::Keyword::Protection(_)
+                | mtg_cards::keyword::Keyword::ProtectionSparing { .. }
+        )
     ) {
         state.possible.protection = true;
     }
@@ -781,6 +786,24 @@ fn set_prepared(state: &mut GameState, id: ObjectId, prepared: bool) -> Result<(
         )));
     }
     perm.designations.prepared = prepared;
+    Ok(())
+}
+
+/// A permanent becomes suspected or stops being so: it was not (or was), and it is a permanent.
+fn set_suspected(state: &mut GameState, id: ObjectId, suspected: bool) -> Result<(), EngineError> {
+    let perm = state
+        .objects
+        .get_mut(&id)
+        .and_then(|object| object.permanent.as_mut())
+        .ok_or_else(|| invalid(format!("{id:?} is not a permanent")))?;
+    if perm.designations.suspected == suspected {
+        return Err(invalid(format!(
+            "{id:?} is {}suspected already",
+            if suspected { "" } else { "un" }
+        )));
+    }
+    perm.designations.suspected = suspected;
+    state.possible.suspected |= suspected;
     Ok(())
 }
 

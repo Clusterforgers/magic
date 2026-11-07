@@ -66,6 +66,8 @@ pub(crate) struct Possible {
     /// A +1/+1, -1/-1 or keyword counter has been on a permanent, so the layers work out its power, toughness and keywords
     /// (CR 613.4c, 122.1b).
     pub(crate) counters: bool,
+    /// A permanent has been suspected, so the layers give it menace (CR 701.60c).
+    pub(crate) suspected: bool,
     /// Some card is an Aura, an Equipment or a Fortification, or a permanent starts attached.
     pub(crate) attachments: bool,
     /// Some card has a replacement effect, printed, given or added by a keyword, or a token made has one.

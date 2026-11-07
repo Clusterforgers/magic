@@ -118,6 +118,7 @@ mod seek;
 mod shield;
 mod shuffle;
 mod surveil;
+mod suspect;
 mod tap;
 #[cfg(test)]
 mod tap_bound_tests;
@@ -232,6 +233,7 @@ fn dispatch(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         Effect::Flip { .. } => flip::run(cx, effect),
         Effect::TurnFaceUp { .. } => turn_up::run(cx, effect),
         Effect::Prepare { .. } => prepare::run(cx, effect),
+        Effect::Suspect { .. } | Effect::Unsuspect { .. } => suspect::run(cx, effect),
         Effect::Surveil { .. } => surveil::run(cx, effect),
         Effect::Proliferate { .. } => proliferate::run(cx, effect),
         Effect::Goad { .. } => goad::run(cx, effect),

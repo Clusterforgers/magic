@@ -74,6 +74,8 @@ const PUBLIC: Record<VariantName<Event>, [Event, string]> = {
   Flipped: [{ Flipped: { object: 3 } }, 'Forest flips'],
   Prepared: [{ Prepared: { object: 3 } }, 'Forest becomes prepared'],
   Unprepared: [{ Unprepared: { object: 3 } }, 'Forest is no longer prepared'],
+  Suspected: [{ Suspected: { object: 3 } }, 'Forest becomes suspected'],
+  Unsuspected: [{ Unsuspected: { object: 3 } }, 'Forest is no longer suspected'],
   BecameCopy: [
     { BecameCopy: { object: 3, of: { id: 5, counter: 0 } } },
     'Forest becomes a copy of Serra Angel',

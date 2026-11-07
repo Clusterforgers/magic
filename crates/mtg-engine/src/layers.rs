@@ -194,6 +194,15 @@ impl Held {
                 ));
             }
         }
+        // A suspected permanent has menace as long as it is suspected (CR 701.60c); its "can't block" is read by
+        // `characteristics::cant_block`.
+        if object
+            .permanent()
+            .is_some_and(crate::object::PermanentState::suspected)
+            && !keywords.contains(&Keyword::Menace)
+        {
+            keywords.push(Keyword::Menace);
+        }
         let chars = base(object);
         Held {
             id,
@@ -443,7 +452,8 @@ impl GameState {
         let nothing_to_derive = self.effects.is_empty()
             && self.ring.is_empty()
             && !self.statics_possible
-            && !self.possible.counters;
+            && !self.possible.counters
+            && !self.possible.suspected;
         if nothing_to_derive || COMPUTING.with(Cell::get) {
             return &EMPTY;
         }
@@ -780,7 +790,13 @@ fn compute_with(state: &GameState, registered: &[&ContinuousEffect]) -> Layers {
             .any(|permanent| {
                 power_toughness_from_counters(permanent) != (0, 0) || has_keyword_counter(permanent)
             });
-    if registered.is_empty() && !statics_in_play && !counters_in_play {
+    let suspected_in_play = state.possible.suspected
+        && state
+            .zone(Zone::Battlefield)
+            .iter()
+            .filter_map(|id| state.object(*id)?.permanent())
+            .any(crate::object::PermanentState::suspected);
+    if registered.is_empty() && !statics_in_play && !counters_in_play && !suspected_in_play {
         return Layers {
             held: BTreeMap::new(),
             players: BTreeMap::new(),

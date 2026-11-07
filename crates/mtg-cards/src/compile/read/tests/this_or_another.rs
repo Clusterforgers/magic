@@ -260,7 +260,7 @@ fn whole_clauses_of_cards_are_read(#[case] text: &str) {
 )]
 #[case::a_name_is_not_a_subtype("Whenever ~ or another Commander you control dies, draw a card.")]
 #[case::an_unknown_adjective(
-    "Whenever ~ or another suspected creature you control dies, draw a card."
+    "Whenever ~ or another bewildered creature you control dies, draw a card."
 )]
 #[case::paired("Whenever ~ or a creature it's paired with is dealt damage, draw a card.")]
 // The card is dealt damage once for each batch and another creature once for each source: no one event reads both.

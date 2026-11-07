@@ -696,6 +696,16 @@ pub enum Event {
         /// The permanent.
         object: ObjectId,
     },
+    /// A creature on the battlefield became suspected (CR 701.60): while it is, it has menace and can't block.
+    Suspected {
+        /// The permanent.
+        object: ObjectId,
+    },
+    /// A permanent stopped being suspected (CR 701.60d).
+    Unsuspected {
+        /// The permanent.
+        object: ObjectId,
+    },
     /// A permanent became a copy of another object (CR 707.2), with the copiable values of the copy effect.
     BecameCopy(BecameCopy),
     /// A spell was copied (CR 707.10): the copy is put on the stack above it, not cast.
@@ -1228,6 +1238,8 @@ impl Event {
             | Event::Flipped { object }
             | Event::Prepared { object }
             | Event::Unprepared { object }
+            | Event::Suspected { object }
+            | Event::Unsuspected { object }
             | Event::PermanentTapped { object }
             | Event::PermanentUntapped { object }
             | Event::PermanentPhasedOut { object, .. }

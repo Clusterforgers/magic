@@ -843,6 +843,8 @@ function describePublic(event: Event, n: EventNames, context?: EventContext): Lo
   if ('Flipped' in event) return line(`${n.card(event.Flipped.object)} flips`)
   if ('Prepared' in event) return line(`${n.card(event.Prepared.object)} becomes prepared`)
   if ('Unprepared' in event) return line(`${n.card(event.Unprepared.object)} is no longer prepared`)
+  if ('Suspected' in event) return line(`${n.card(event.Suspected.object)} becomes suspected`)
+  if ('Unsuspected' in event) return line(`${n.card(event.Unsuspected.object)} is no longer suspected`)
   if ('BecameCopy' in event) {
     const { object, of } = event.BecameCopy
     return line(`${n.card(object)} becomes a copy of ${n.card(of.id)}`)

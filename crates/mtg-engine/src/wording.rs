@@ -79,6 +79,22 @@ fn zone_phrase(kind: ZoneKind, yours: bool) -> String {
     format!("in {} {place}", if yours { "your" } else { owner })
 }
 
+/// The adjective of a state or designation a permanent is in ("tapped", "suspected").
+fn state_word(pred: &Pred) -> Option<&'static str> {
+    Some(match pred {
+        Pred::Tapped => "tapped",
+        Pred::Untapped => "untapped",
+        Pred::Monstrous => "monstrous",
+        Pred::Renowned => "renowned",
+        Pred::Prepared => "prepared",
+        Pred::Suspected => "suspected",
+        Pred::DoubleFaced => "double-faced",
+        Pred::Transformed => "transformed",
+        Pred::Paired => "paired",
+        _ => return None,
+    })
+}
+
 /// A noun phrase for what a selector matches, split into the part that is pluralised and the part after it:
 /// ("tapped creature", "you control").
 pub(crate) fn phrase(selector: &Selector) -> (String, String) {
@@ -98,14 +114,9 @@ pub(crate) fn phrase(selector: &Selector) -> (String, String) {
             Pred::Spell => nouns.push("spell".to_owned()),
             Pred::Ability(AbilityKind::Activated) => nouns.push("activated ability".to_owned()),
             Pred::Ability(AbilityKind::Triggered) => nouns.push("triggered ability".to_owned()),
-            Pred::Tapped => adjectives.push("tapped".to_owned()),
-            Pred::Untapped => adjectives.push("untapped".to_owned()),
-            Pred::Monstrous => adjectives.push("monstrous".to_owned()),
-            Pred::Renowned => adjectives.push("renowned".to_owned()),
-            Pred::Prepared => adjectives.push("prepared".to_owned()),
-            Pred::DoubleFaced => adjectives.push("double-faced".to_owned()),
-            Pred::Transformed => adjectives.push("transformed".to_owned()),
-            Pred::Paired => adjectives.push("paired".to_owned()),
+            state if state_word(state).is_some() => {
+                adjectives.extend(state_word(state).map(str::to_owned));
+            }
             Pred::Not(inner) if matches!(**inner, Pred::Paired) => {
                 adjectives.push("unpaired".to_owned());
             }

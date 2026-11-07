@@ -2103,28 +2103,38 @@ fn protection(ctx: &mut Ctx, p: &Params, api: &str) -> Tr<Vec<Value>> {
     ])
 }
 
-/// `AlterAttribute`: a prepare card becomes prepared. The other attributes (suspected, solved, plotted, saddled) and the
-/// removal of one (`Activate$ False`) stay gaps named after the value.
+/// `AlterAttribute`: a prepare card becomes prepared, a creature becomes suspected or no longer suspected
+/// (`Activate$ False`). The other attributes (solved, plotted, saddled) and unpreparing stay gaps named after the value.
 fn alter_attribute(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
     only(
         p,
         "AlterAttribute",
         &["Attributes", "Defined", "ValidTgts", "Activate"],
     )?;
-    match p.get("Attributes") {
-        Some("Prepared") => {}
-        other => {
+    let on = matches!(p.get("Activate"), None | Some("True"));
+    let verb = match (p.get("Attributes"), on) {
+        (Some("Prepared"), true) => "Prepare",
+        (Some("Suspected"), true) => "Suspect",
+        (Some("Suspected"), false) => "Unsuspect",
+        (Some("Prepared"), false) => return unmapped("key:AlterAttribute.Activate"),
+        (other, _) => {
             return unmapped(format!(
                 "key:AlterAttribute.Attributes={}",
                 other.unwrap_or_default()
             ));
         }
-    }
-    if !matches!(p.get("Activate"), None | Some("True")) {
+    };
+    if !matches!(p.get("Activate"), None | Some("True" | "False")) {
         return unmapped("key:AlterAttribute.Activate");
     }
+    // The object a moved card became is a new object (CR 400.7) that no reference here names.
+    if p.get("Defined")
+        .is_some_and(|word| word.contains("NewCard"))
+    {
+        return unmapped("key:AlterAttribute.Defined-after-a-move");
+    }
     let what = subject(ctx, p, "Self", None)?;
-    Ok(vec![json!({"Prepare": {"what": what}})])
+    Ok(vec![json!({ verb: {"what": what} })])
 }
 
 /// The objects a group line (`PumpAll`, `GainControl` with `AllValid$`) acts on. A `ValidTgts$` that names a player is the

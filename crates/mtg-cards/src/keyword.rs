@@ -50,6 +50,15 @@ pub enum Keyword {
     /// Protection from a quality (CR 702.16): the sources the selector matches can't damage, enchant, equip, block or
     /// target the holder. The empty selector is protection from everything.
     Protection(Selector),
+    /// Protection from `from` that doesn't remove the Auras and Equipment `spares` matches ("This effect doesn't remove
+    /// this Aura"): `spares` is judged for the permanent whose static ability gives the keyword, so `This` is that Aura
+    /// and `You` its controller.
+    ProtectionSparing {
+        /// The quality protected from.
+        from: Selector,
+        /// The attachments it leaves attached.
+        spares: Selector,
+    },
     /// Prowess.
     Prowess,
     /// Convoke.
@@ -420,6 +429,7 @@ impl Keyword {
         "Shroud",
         "Hexproof from",
         "Protection",
+        "Protection sparing",
         "Prowess",
         "Convoke",
         "Delve",
@@ -557,9 +567,11 @@ impl Keyword {
         "Macro",
     ];
 
-    /// The name a player reads: `name`, except that a macro keyword shows its own table name (`Bushido`), never `Macro`.
+    /// The name a player reads: `name`, except that a macro keyword shows its own table name (`Bushido`), never `Macro`,
+    /// and protection with an exception shows as `Protection`.
     pub fn shown_name(&self) -> String {
         match self {
+            Keyword::ProtectionSparing { .. } => "Protection".to_owned(),
             Keyword::Macro { name, .. } => {
                 let mut chars = name.chars();
                 chars
@@ -591,6 +603,7 @@ impl Keyword {
             Keyword::Shroud => "Shroud",
             Keyword::HexproofFrom(_) => "Hexproof from",
             Keyword::Protection(_) => "Protection",
+            Keyword::ProtectionSparing { .. } => "Protection sparing",
             Keyword::Prowess => "Prowess",
             Keyword::Convoke => "Convoke",
             Keyword::Delve => "Delve",
@@ -824,6 +837,10 @@ mod tests {
             Keyword::Shroud,
             Keyword::HexproofFrom(Selector::default()),
             Keyword::Protection(Selector::default()),
+            Keyword::ProtectionSparing {
+                from: Selector::default(),
+                spares: Selector::default(),
+            },
             Keyword::Prowess,
             Keyword::Convoke,
             Keyword::Delve,
