@@ -250,7 +250,7 @@ export function Builder({ view, api, cards, fixMarks }: BuilderProps) {
   }
 
   return (
-    <PageShell width="wide" className="flex flex-col gap-3 py-4 sm:h-[calc(100dvh-3.5rem-1px)] sm:py-4">
+    <PageShell width="wider" className="flex flex-col gap-3 py-4 sm:h-[calc(100dvh-3.5rem-1px)] sm:py-4">
       <h1 className="sr-only">Edit {stored.view.name}</h1>
       <ViewSwitch shown={shown} onChange={setShown} count={totalOf(draft)} />
       {refusal === null ? null : (
@@ -279,6 +279,7 @@ export function Builder({ view, api, cards, fixMarks }: BuilderProps) {
         <DeckPane
           draft={draft}
           deckId={stored.view.id}
+          cardsApi={cards}
           state={stored.view.state}
           check={check}
           dirty={dirty}
