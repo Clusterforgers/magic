@@ -1,0 +1,46 @@
+{
+  "oracle_id": "f966ae40-4717-4f41-9437-0e38b01a8be9",
+  "name": "Donald Blake, Guise of Thor",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Donald Blake, Guise of Thor",
+      "oracle_fingerprint": "082dae0d84600d54e8f742ca30e10b75",
+      "abilities": [
+        { "Keyword": "Lifelink" },
+        {
+          "Activated": {
+            "cost": [
+              { "Mana": "{4}{W}{W}" },
+              {
+                "Changed": {
+                  "change": "Reduce",
+                  "mana": "{1}{W}",
+                  "condition": {
+                    "Compare": {
+                      "left": { "Count": ["This", "EnteredThisTurn"] },
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  }
+                }
+              }
+            ],
+            "limit": "OncePerGame",
+            "effects": [
+              { "PutCounters": { "on": { "Each": ["This"] }, "counter": "+1/+1", "count": 2 } },
+              { "PutCounters": { "on": { "Each": ["This"] }, "counter": { "Other": "flying" } } },
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "SetCreatureTypes": ["God", "Warrior", "Hero"] }],
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

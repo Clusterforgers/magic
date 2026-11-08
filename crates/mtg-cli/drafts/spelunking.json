@@ -1,0 +1,54 @@
+{
+  "oracle_id": "2962fe4c-bf48-454b-8a6b-0f8253352ae8",
+  "name": "Spelunking",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Spelunking",
+      "oracle_fingerprint": "c4f54404f07f1db019d6ade726300d0f",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              { "Draw": {} },
+              {
+                "Choose": {
+                  "from": { "Each": [{ "Type": "Land" }, { "In": "Hand" }, { "OwnedBy": "You" }] },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "picked"
+                }
+              },
+              {
+                "Move": {
+                  "what": { "Bound": "picked" },
+                  "to": { "Battlefield": {} },
+                  "as": "moved2"
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Bound": "moved2" },
+                      "selector": [{ "Subtype": "Cave" }],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [{ "GainLife": { "amount": 4 } }]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": [{ "Type": "Land" }, { "ControlledBy": "You" }] } },
+            "by": "Untapped"
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,27 @@
+{
+  "oracle_id": "4bda947d-493f-47a0-b0d2-516a6ef6b2c0",
+  "name": "Gilanra, Caller of Wirewood",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Gilanra, Caller of Wirewood",
+      "oracle_fingerprint": "0d066c7034dd1318c950b3fd6fc7f5c3",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [
+              {
+                "AddMana": {
+                  "mana": { "Fixed": ["Green"] },
+                  "only": [{ "When": { "spell": { "min_value": 6 }, "effects": [{ "Draw": {} }] } }]
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": "Partner" }
+      ]
+    }
+  ]
+}

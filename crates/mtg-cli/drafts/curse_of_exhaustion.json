@@ -1,0 +1,21 @@
+{
+  "oracle_id": "6659fae5-09d9-4095-8de3-643afd6ad3be",
+  "name": "Curse of Exhaustion",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Curse of Exhaustion",
+      "oracle_fingerprint": "775f17c52bf5ebc01286c21704151e6c",
+      "abilities": [
+        { "Keyword": { "EnchantPlayer": {} } },
+        {
+          "Rule": {
+            "rule": {
+              "Cant": { "who": "AttachedPlayer", "action": { "Cast": { "more_than": 1 } } }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

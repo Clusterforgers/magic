@@ -1,0 +1,29 @@
+{
+  "oracle_id": "54421e69-d79e-4c2e-8ce6-96994d168835",
+  "name": "Cinder Strike",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Cinder Strike",
+      "oracle_fingerprint": "34c8268c7f23f3bc45a6627671c682a3",
+      "abilities": [
+        { "AdditionalCost": { "cost": [{ "Blight": 1 }] } },
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "DealDamage": {
+                  "to": { "Target": 0 },
+                  "amount": {
+                    "When": { "condition": "AdditionalCostPaid", "then": 4, "otherwise": 2 }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

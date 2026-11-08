@@ -1,0 +1,36 @@
+{
+  "oracle_id": "56c8b610-0753-45ce-b1cc-6a5e58538286",
+  "name": "Ordruun Mentor",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ordruun Mentor",
+      "oracle_fingerprint": "1cc9cb0ca217ae586aa0e6846446fa7a",
+      "abilities": [
+        { "Keyword": "Mentor" },
+        {
+          "Triggered": {
+            "when": {
+              "GroupAttacksAt": {
+                "what": [{ "Type": "Creature" }, { "ControlledBy": "You" }],
+                "at": "EachPlayer"
+              }
+            },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "AttackingPlayer": "Against" }] } }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "AddKeyword": "FirstStrike" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

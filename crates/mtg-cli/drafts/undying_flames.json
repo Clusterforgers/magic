@@ -1,0 +1,53 @@
+{
+  "oracle_id": "5db128ed-69c0-41f3-b8b4-fb7cefdb236c",
+  "name": "Undying Flames",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Undying Flames",
+      "oracle_fingerprint": "1fe473ffa1fedbbd830938887d82f5c2",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [
+              {
+                "RevealUntil": {
+                  "filter": [{ "Not": { "Type": "Land" } }],
+                  "as": "found",
+                  "revealed_as": "revealed2"
+                }
+              },
+              { "Exile": { "what": { "Bound": "found" }, "as": "found_exiled" } },
+              { "Exile": { "what": { "Bound": "revealed2" } } },
+              {
+                "DealDamage": {
+                  "to": { "Target": 0 },
+                  "amount": {
+                    "Total": {
+                      "of": [
+                        { "Is": { "Bound": "found_exiled" } },
+                        {
+                          "AnyOf": [
+                            { "In": "Battlefield" },
+                            { "In": "Hand" },
+                            { "In": "Library" },
+                            { "In": "Graveyard" },
+                            { "In": "Exile" },
+                            { "In": "Stack" }
+                          ]
+                        }
+                      ],
+                      "stat": "ManaValue"
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": "Epic" }
+      ]
+    }
+  ]
+}

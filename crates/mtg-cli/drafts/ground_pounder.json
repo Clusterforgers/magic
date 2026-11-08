@@ -1,0 +1,52 @@
+{
+  "oracle_id": "6cde5aa5-729f-40d3-a4c7-3516f9dbf7f5",
+  "name": "Ground Pounder",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Ground Pounder",
+      "oracle_fingerprint": "a1af9353f595eb0eaa7ff3ded6235cc0",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{3}{G}",
+            "effects": [
+              {
+                "RollDice": {
+                  "sides": 6,
+                  "results": [
+                    {
+                      "from": 1,
+                      "effects": [
+                        {
+                          "Continuous": {
+                            "affected": "This",
+                            "mods": [
+                              {
+                                "ModifyPT": {
+                                  "power": { "DieResult": "Only" },
+                                  "toughness": { "DieResult": "Only" }
+                                }
+                              }
+                            ],
+                            "duration": "UntilEndOfTurn"
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 97, "end": 185 }
+          }
+        }
+      ]
+    }
+  ]
+}

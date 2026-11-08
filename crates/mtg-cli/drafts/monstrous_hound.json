@@ -1,0 +1,56 @@
+{
+  "oracle_id": "97589fbb-3bd9-49c9-b8d8-bdc895a7f1e6",
+  "name": "Monstrous Hound",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Monstrous Hound",
+      "oracle_fingerprint": "9db72676b6c50c1cc6559fa6fd38f790",
+      "abilities": [
+        {
+          "Rule": {
+            "rule": {
+              "Cant": {
+                "who": "This",
+                "action": {
+                  "Attack": {
+                    "unless": {
+                      "Compare": {
+                        "left": { "Count": [{ "Type": "Land" }, { "ControlledBy": "You" }] },
+                        "op": "Lt",
+                        "right": {
+                          "Count": [
+                            { "Type": "Land" },
+                            { "ControlledBy": { "ControllerOf": "This" } }
+                          ]
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": ["CantBlock"],
+            "condition": {
+              "All": [
+                {
+                  "Compare": {
+                    "left": { "Count": [{ "Type": "Land" }, { "ControlledBy": "ActivePlayer" }] },
+                    "op": "Ge",
+                    "right": { "Count": [{ "Type": "Land" }, { "ControlledBy": "You" }] }
+                  }
+                },
+                { "Not": "YourTurn" }
+              ]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

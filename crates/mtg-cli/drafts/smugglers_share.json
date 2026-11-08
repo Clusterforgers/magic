@@ -1,0 +1,63 @@
+{
+  "oracle_id": "17b29350-4f37-4552-8192-4856b15345f9",
+  "name": "Smuggler's Share",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Smuggler's Share",
+      "oracle_fingerprint": "288e7995949843dffc018f94a6992cd3",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End" } },
+            "effects": [
+              {
+                "Draw": {
+                  "count": {
+                    "Players": {
+                      "PlayersWhere": {
+                        "who": "Opponents",
+                        "test": {
+                          "Compare": {
+                            "left": { "Tallied": { "who": "You", "what": "Drawn" } },
+                            "op": "Ge",
+                            "right": 2
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              },
+              {
+                "CreateToken": {
+                  "token": { "Named": "treasure" },
+                  "count": {
+                    "Players": {
+                      "PlayersWhere": {
+                        "who": "Opponents",
+                        "test": {
+                          "Compare": {
+                            "left": {
+                              "Tally": {
+                                "event": "Entered",
+                                "who": "EachPlayer",
+                                "filter": [{ "Type": "Land" }, { "ControlledBy": "You" }]
+                              }
+                            },
+                            "op": "Ge",
+                            "right": 2
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

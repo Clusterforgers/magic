@@ -1,0 +1,133 @@
+{
+  "object": "card",
+  "id": "285beca0-4876-426f-a4b4-ecefe79ad55d",
+  "oracle_id": "c51fc4f2-76a6-4337-ab8f-1b3e84f82019",
+  "multiverse_ids": [
+    175034
+  ],
+  "mtgo_id": 31717,
+  "mtgo_foil_id": 31718,
+  "tcgplayer_id": 28605,
+  "cardmarket_id": 20734,
+  "name": "Shard Convergence",
+  "lang": "en",
+  "released_at": "2009-02-06",
+  "uri": "https://api.scryfall.com/cards/285beca0-4876-426f-a4b4-ecefe79ad55d",
+  "scryfall_uri": "https://scryfall.com/card/con/91/shard-convergence?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T11:34:32Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/2/8/285beca0-4876-426f-a4b4-ecefe79ad55d.jpg?1783942472",
+    "normal": "https://cards.scryfall.io/normal/front/2/8/285beca0-4876-426f-a4b4-ecefe79ad55d.jpg?1783942472",
+    "large": "https://cards.scryfall.io/large/front/2/8/285beca0-4876-426f-a4b4-ecefe79ad55d.jpg?1783942472",
+    "png": "https://cards.scryfall.io/png/front/2/8/285beca0-4876-426f-a4b4-ecefe79ad55d.png?1783942472",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/2/8/285beca0-4876-426f-a4b4-ecefe79ad55d.jpg?1783942472",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/2/8/285beca0-4876-426f-a4b4-ecefe79ad55d.jpg?1783942472",
+    "thumb": "https://cards.scryfall.io/thumb/front/2/8/285beca0-4876-426f-a4b4-ecefe79ad55d.webp?1783942472",
+    "grid": "https://cards.scryfall.io/grid/front/2/8/285beca0-4876-426f-a4b4-ecefe79ad55d.webp?1783942472",
+    "display": "https://cards.scryfall.io/display/front/2/8/285beca0-4876-426f-a4b4-ecefe79ad55d.webp?1783942472",
+    "art": "https://cards.scryfall.io/art/front/2/8/285beca0-4876-426f-a4b4-ecefe79ad55d.webp?1783942472",
+    "crop": "https://cards.scryfall.io/crop/front/2/8/285beca0-4876-426f-a4b4-ecefe79ad55d.webp?1783942472",
+    "jpeg": "https://cards.scryfall.io/normal/front/2/8/285beca0-4876-426f-a4b4-ecefe79ad55d.jpg?1783942472"
+  },
+  "mana_cost": "{3}{G}",
+  "cmc": 4.0,
+  "type_line": "Sorcery",
+  "oracle_text": "Search your library for a Plains card, an Island card, a Swamp card, and a Mountain card. Reveal those cards, put them into your hand, then shuffle.",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "76b2db58-904c-4e49-8580-9f62f7b3cca4",
+  "set": "con",
+  "set_name": "Conflux",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/76b2db58-904c-4e49-8580-9f62f7b3cca4",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Acon&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/con?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/285beca0-4876-426f-a4b4-ecefe79ad55d/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Ac51fc4f2-76a6-4337-ab8f-1b3e84f82019&unique=prints",
+  "collector_number": "91",
+  "digital": false,
+  "rarity": "uncommon",
+  "flavor_text": "Alara is broken no more.",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Vance Kovacs",
+  "artist_ids": [
+    "b5516011-4722-4fc8-8542-102cecc52b71"
+  ],
+  "illustration_id": "6f14f50d-71bc-415c-8e2e-fc54eca869e3",
+  "border_color": "black",
+  "frame": "2003",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 19244,
+  "penny_rank": 17911,
+  "prices": {
+    "usd": "0.29",
+    "usd_foil": "3.05",
+    "usd_etched": null,
+    "eur": "0.22",
+    "eur_foil": "1.00",
+    "tix": "0.03"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=175034&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DShard%2BConvergence",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DShard%2BConvergence",
+    "edhrec": "https://edhrec.com/route/?cc=Shard+Convergence"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F28605%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=20734&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/31717?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

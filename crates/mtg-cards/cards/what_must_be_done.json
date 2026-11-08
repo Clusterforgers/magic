@@ -1,0 +1,94 @@
+{
+  "oracle_id": "bd0df0a8-c2ec-4d1f-9ada-cc91f7a20e1a",
+  "name": "What Must Be Done",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "What Must Be Done",
+      "oracle_fingerprint": "270a528cdb457d3e68f242fa12950c03",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Modal": {
+                  "modes": [
+                    {
+                      "label": "Let the World Burn",
+                      "effects": [
+                        {
+                          "Destroy": {
+                            "what": {
+                              "Each": [
+                                { "AnyOf": [{ "Type": "Artifact" }, { "Type": "Creature" }] }
+                              ]
+                            }
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "label": "Release Juno",
+                      "targets": [
+                        {
+                          "what": {
+                            "Object": [
+                              {
+                                "AnyOf": [
+                                  { "Type": "Artifact" },
+                                  { "Supertype": "Legendary" },
+                                  { "Subtype": "Saga" }
+                                ]
+                              },
+                              { "OwnedBy": "You" },
+                              {
+                                "AnyOf": [
+                                  { "Type": "Artifact" },
+                                  { "Type": "Battle" },
+                                  { "Type": "Creature" },
+                                  { "Type": "Enchantment" },
+                                  { "Type": "Land" },
+                                  { "Type": "Planeswalker" }
+                                ]
+                              },
+                              { "In": "Graveyard" }
+                            ]
+                          }
+                        }
+                      ],
+                      "effects": [
+                        {
+                          "If": {
+                            "condition": {
+                              "CountOf": {
+                                "subject": { "Target": 0 },
+                                "selector": [{ "Type": "Creature" }],
+                                "op": "Ge",
+                                "right": 1
+                              }
+                            },
+                            "then": [
+                              {
+                                "Move": {
+                                  "what": { "Target": 0 },
+                                  "to": { "Battlefield": { "counters": [["+1/+1", 2]] } }
+                                }
+                              }
+                            ],
+                            "otherwise": [
+                              { "Move": { "what": { "Target": 0 }, "to": { "Battlefield": {} } } }
+                            ]
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

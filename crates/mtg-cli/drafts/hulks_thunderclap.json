@@ -1,0 +1,59 @@
+{
+  "oracle_id": "e377059d-a918-462f-920a-6b062bd5fcfd",
+  "name": "Hulk's Thunderclap",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Hulk's Thunderclap",
+      "oracle_fingerprint": "e8f3a2a744e13e836e9f767fd4e523ae",
+      "abilities": [
+        {
+          "AdditionalCost": {
+            "cost": [{ "Behold": { "filter": [{ "Type": "Creature" }, { "Subtype": "Gamma" }] } }]
+          }
+        },
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } },
+              {
+                "what": { "Object": [{ "Type": "Creature" }, { "Not": { "Is": { "Target": 0 } } }] }
+              },
+              {
+                "what": {
+                  "Object": [
+                    { "AnyOf": [{ "Type": "Artifact" }, { "Type": "Enchantment" }] },
+                    { "Not": { "Type": "Creature" } }
+                  ]
+                },
+                "bounds": {
+                  "min": {
+                    "When": { "condition": "AdditionalCostPaid", "then": 1, "otherwise": 0 }
+                  },
+                  "max": {
+                    "When": { "condition": "AdditionalCostPaid", "then": 1, "otherwise": 0 }
+                  }
+                }
+              }
+            ],
+            "effects": [
+              {
+                "DealDamage": {
+                  "source": { "Target": 0 },
+                  "to": { "Target": 1 },
+                  "amount": { "Stat": { "of": { "Target": 0 }, "stat": "Power" } }
+                }
+              },
+              {
+                "If": {
+                  "condition": "AdditionalCostPaid",
+                  "then": [{ "Destroy": { "what": { "Target": 2 } } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

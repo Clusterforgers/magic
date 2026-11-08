@@ -1,0 +1,34 @@
+{
+  "oracle_id": "b526962e-be8a-4803-b038-57869bb96751",
+  "name": "Soldevi Digger",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Soldevi Digger",
+      "oracle_fingerprint": "bae57e2b203a29dba68968bea50fae05",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{2}",
+            "effects": [
+              {
+                "Choose": {
+                  "from": {
+                    "Each": ["TopOfGraveyard", { "OwnedBy": "You" }, { "In": "Graveyard" }]
+                  },
+                  "as": "picked"
+                }
+              },
+              {
+                "Move": {
+                  "what": { "Bound": "picked" },
+                  "to": { "Library": { "place": "Bottom" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

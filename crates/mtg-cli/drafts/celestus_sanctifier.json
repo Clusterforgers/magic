@@ -1,0 +1,30 @@
+{
+  "oracle_id": "6885aa03-fbfe-4c2e-a785-0865788574b4",
+  "name": "Celestus Sanctifier",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Celestus Sanctifier",
+      "oracle_fingerprint": "bc7cad3af4260b9755f6cfdc7d642db3",
+      "abilities": [
+        { "Replacement": { "when": { "Enters": { "what": ["This"] } }, "by": "DayIfNeither" } },
+        {
+          "Triggered": {
+            "when": { "DayNightChanges": {} },
+            "effects": [
+              { "LookAtTop": { "count": 2, "as": "top" } },
+              { "Choose": { "from": { "Bound": "top" }, "as": "kept2", "rest_as": "rest3" } },
+              { "Move": { "what": { "Bound": "kept2" }, "to": "Graveyard" } },
+              {
+                "Move": {
+                  "what": { "Bound": "rest3" },
+                  "to": { "Library": { "place": "Top", "order": "Chosen" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,77 @@
+{
+  "oracle_id": "58afb897-4d57-4b53-a5c3-b532cb3d5180",
+  "name": "Golden Guardian // Gold-Forge Garrison",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Golden Guardian",
+      "oracle_fingerprint": "5d25a195c3aa0bd712ded58fce0d26d6",
+      "abilities": [
+        { "Keyword": "Defender" },
+        {
+          "Activated": {
+            "cost": "{2}",
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }, "Other"] } }
+            ],
+            "effects": [
+              { "Fight": { "what": "This", "with": { "Target": 0 } } },
+              {
+                "DelayedTrigger": {
+                  "when": {
+                    "ZoneChange": {
+                      "what": [{ "Is": "This" }],
+                      "from": "Battlefield",
+                      "to": "Graveyard"
+                    }
+                  },
+                  "this_turn": true,
+                  "effects": [
+                    {
+                      "Move": {
+                        "what": "Triggering",
+                        "to": { "Battlefield": { "under": "You", "transformed": true } }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Gold-Forge Garrison",
+      "oracle_fingerprint": "3b0be4eddbed20734c4adbecda2f1e33",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "AnyColor": 2 } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{4}" }, "Tap"],
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Golem",
+                      "types": ["Artifact", "Creature"],
+                      "subtypes": ["Golem"],
+                      "power": 4,
+                      "toughness": 4
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

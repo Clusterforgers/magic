@@ -1,0 +1,40 @@
+{
+  "oracle_id": "3bbad38b-7d88-4ff2-9fd3-5081536e7c56",
+  "name": "Page, Loose Leaf",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Page, Loose Leaf",
+      "oracle_fingerprint": "4a336aafe6a8b8a8686686bd56743a33",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Colorless"] } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Discard": { "filter": [{ "Named": "Page, Loose Leaf" }] } }],
+            "effects": [
+              {
+                "RevealUntil": {
+                  "filter": [{ "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] }],
+                  "as": "found",
+                  "revealed_as": "revealed2"
+                }
+              },
+              { "Move": { "what": { "Bound": "found" }, "to": "Hand" } },
+              {
+                "Move": {
+                  "what": { "Bound": "revealed2" },
+                  "to": { "Library": { "place": "Bottom", "order": "Random" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,51 @@
+{
+  "oracle_id": "a85b845c-a196-43db-b740-6ce191345097",
+  "name": "Liege of the Tangle",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Liege of the Tangle",
+      "oracle_fingerprint": "b2b15ae795afaacb511460d7cb087b27",
+      "abilities": [
+        { "Keyword": "Trample" },
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": ["This"], "to": "EachPlayer", "combat": true } },
+            "targets": [
+              {
+                "what": { "Object": [{ "Type": "Land" }, { "ControlledBy": "You" }] },
+                "bounds": {
+                  "min": 0,
+                  "max": { "Count": [{ "Type": "Land" }, { "ControlledBy": "You" }] }
+                }
+              }
+            ],
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "PutCounters": { "on": { "Target": 0 }, "counter": { "Other": "awakening" } }
+                    },
+                    {
+                      "Continuous": {
+                        "affected": { "Target": 0 },
+                        "mods": [
+                          { "SetPT": { "power": 8, "toughness": 8 } },
+                          { "AddType": "Creature" },
+                          { "SetCreatureTypes": ["Elemental"] },
+                          { "SetColors": ["Green"] }
+                        ],
+                        "duration": { "WhileHasCounter": { "Other": "awakening" } }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

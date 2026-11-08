@@ -75,6 +75,7 @@
                         "rest_as": "rest6"
                       }
                     },
+                    { "Reveal": { "what": { "Bound": "top4" } } },
                     {
                       "Move": {
                         "what": { "Bound": "kept5" },

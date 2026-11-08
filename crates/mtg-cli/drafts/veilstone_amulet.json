@@ -1,0 +1,31 @@
+{
+  "oracle_id": "55e21534-ec3e-46e1-8faf-59f0c3d48128",
+  "name": "Veilstone Amulet",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Veilstone Amulet",
+      "oracle_fingerprint": "06f76f56a18d5cc9bbea95a00fc421fb",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "by": "You" } },
+            "effects": [
+              {
+                "Rule": {
+                  "rule": {
+                    "Cant": {
+                      "who": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                      "action": { "BeTargeted": [{ "ControlledBy": "Opponents" }] }
+                    }
+                  },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

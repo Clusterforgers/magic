@@ -14,18 +14,14 @@
               {
                 "Continuous": {
                   "affected": { "Target": 0 },
-                  "mods": [{ "ModifyPT": { "power": 1, "toughness": 0 } }],
+                  "mods": [
+                    { "SetColors": ["Green"] },
+                    { "ModifyPT": { "power": 1, "toughness": 0 } }
+                  ],
                   "duration": "UntilEndOfTurn"
                 }
               },
-              { "Draw": {} },
-              {
-                "Continuous": {
-                  "affected": { "Target": 0 },
-                  "mods": [{ "SetColors": ["Green"] }],
-                  "duration": "UntilEndOfTurn"
-                }
-              }
+              { "Draw": {} }
             ]
           }
         }

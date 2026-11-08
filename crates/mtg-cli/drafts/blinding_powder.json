@@ -1,0 +1,37 @@
+{
+  "oracle_id": "75e13f7f-aded-405c-97ce-124fa0cb1929",
+  "name": "Blinding Powder",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Blinding Powder",
+      "oracle_fingerprint": "36008fe4fb49abc6ad797c7f99777195",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [
+              {
+                "GrantAbility": {
+                  "Activated": {
+                    "cost": ["Unattach"],
+                    "effects": [
+                      {
+                        "Shield": {
+                          "when": { "Damage": { "to": "This", "combat": true } },
+                          "by": "Prevent",
+                          "duration": "UntilEndOfTurn"
+                        }
+                      }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Equip": "{2}" } }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,49 @@
+{
+  "oracle_id": "843af5d3-447e-40e4-a562-f5a7ed09ca3e",
+  "name": "Draconic Roar",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Draconic Roar",
+      "oracle_fingerprint": "fa6d8527a97b11683dc89eb284b3dc7e",
+      "abilities": [
+        {
+          "AdditionalCost": {
+            "cost": [{ "RevealFromHand": { "filter": [{ "Subtype": "Dragon" }] } }]
+          }
+        },
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              { "DealDamage": { "to": { "Target": 0 }, "amount": 3 } },
+              {
+                "If": {
+                  "condition": {
+                    "Any": [
+                      "AdditionalCostPaid",
+                      {
+                        "AsCast": {
+                          "Compare": {
+                            "left": {
+                              "Count": [{ "Subtype": "Dragon" }, { "ControlledBy": "You" }]
+                            },
+                            "op": "Ge",
+                            "right": 1
+                          }
+                        }
+                      }
+                    ]
+                  },
+                  "then": [
+                    { "DealDamage": { "to": { "ControllerOf": { "Target": 0 } }, "amount": 3 } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

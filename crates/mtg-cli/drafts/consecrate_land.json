@@ -8,13 +8,7 @@
       "oracle_fingerprint": "aaf70c5d5a3bd5fa708bc0b9247b7ccd",
       "abilities": [
         { "Keyword": { "Enchant": [{ "Type": "Land" }] } },
-        {
-          "Static": {
-            "affected": "Attached",
-            "mods": [{ "AddKeyword": "Indestructible" }],
-            "condition": { "Matches": { "subject": "Attached", "selector": [{ "Type": "Land" }] } }
-          }
-        },
+        { "Static": { "affected": "Attached", "mods": [{ "AddKeyword": "Indestructible" }] } },
         {
           "Rule": {
             "rule": {

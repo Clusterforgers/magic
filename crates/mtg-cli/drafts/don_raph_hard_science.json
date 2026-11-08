@@ -1,0 +1,32 @@
+{
+  "oracle_id": "01758a4a-ac29-47ad-8e88-158374f1ae4c",
+  "name": "Don & Raph, Hard Science",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Don & Raph, Hard Science",
+      "oracle_fingerprint": "755b01b06e5091db2a5dbe0af0ff4cfa",
+      "abilities": [
+        { "Keyword": "Menace" },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [
+              {
+                "Rule": {
+                  "rule": {
+                    "NextSpell": {
+                      "what": [{ "Not": { "Type": "Creature" } }],
+                      "benefit": { "Keyword": { "Affinity": [{ "Type": "Artifact" }] } }
+                    }
+                  },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

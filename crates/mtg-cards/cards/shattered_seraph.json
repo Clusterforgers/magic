@@ -1,0 +1,58 @@
+{
+  "oracle_id": "92eae6af-b915-4eb8-93c4-527f732bb712",
+  "name": "Shattered Seraph",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Shattered Seraph",
+      "oracle_fingerprint": "d8ad8851771af8567f02a3bed9528972",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "GainLife": { "amount": 3 } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{2}" }, "ExileSelf"],
+            "from": "Hand",
+            "targets": [{ "what": { "Object": [{ "Type": "Land" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    {
+                      "GrantAbility": {
+                        "Activated": {
+                          "cost": ["Tap"],
+                          "effects": [
+                            { "AddMana": { "mana": { "OneOf": ["White", "Blue", "Black"] } } }
+                          ]
+                        }
+                      }
+                    }
+                  ],
+                  "duration": "UntilCastFromExile"
+                }
+              },
+              {
+                "Rule": {
+                  "rule": {
+                    "MayCast": {
+                      "from": "Exile",
+                      "only": { "Arrived": { "of": "This", "zone": "Exile" } }
+                    }
+                  },
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

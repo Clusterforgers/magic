@@ -1,0 +1,64 @@
+{
+  "oracle_id": "ddf461b9-a205-4dc7-a9c3-c047b1ff709f",
+  "name": "Aang's Journey",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Aang's Journey",
+      "oracle_fingerprint": "9da8bd1fb3734a0a412ccbe0a7229871",
+      "abilities": [
+        { "Keyword": { "Kicker": "{2}" } },
+        {
+          "Spell": {
+            "effects": [
+              {
+                "If": {
+                  "condition": { "Compare": { "left": "Kicks", "op": "Eq", "right": 0 } },
+                  "then": [
+                    {
+                      "Search": {
+                        "filter": [{ "Type": "Land" }, { "Supertype": "Basic" }],
+                        "reveal": true,
+                        "as": "found"
+                      }
+                    },
+                    { "Move": { "what": { "Bound": "found" }, "to": "Hand" } },
+                    { "Shuffle": {} }
+                  ]
+                }
+              },
+              {
+                "If": {
+                  "condition": { "Compare": { "left": "Kicks", "op": "Eq", "right": 1 } },
+                  "then": [
+                    {
+                      "Search": {
+                        "filter": [{ "Type": "Land" }, { "Supertype": "Basic" }],
+                        "reveal": true,
+                        "as": "found2"
+                      }
+                    },
+                    {
+                      "Search": {
+                        "filter": [
+                          { "Subtype": "Shrine" },
+                          { "Not": { "Is": { "Bound": "found2" } } }
+                        ],
+                        "reveal": true,
+                        "as": "found3"
+                      }
+                    },
+                    { "Move": { "what": { "Bound": "found2" }, "to": "Hand" } },
+                    { "Move": { "what": { "Bound": "found3" }, "to": "Hand" } },
+                    { "Shuffle": {} }
+                  ]
+                }
+              },
+              { "GainLife": { "amount": 2 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

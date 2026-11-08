@@ -1,0 +1,141 @@
+{
+  "object": "card",
+  "id": "00d2ac03-a0ef-4f03-bb99-3514305b6d1f",
+  "oracle_id": "72eabfcc-61b6-4a07-9a9c-b40a9c05cf66",
+  "multiverse_ids": [],
+  "resource_id": "202CF87967BD86428E40FC8DFAF8F722BA1736CCB2E43AD9E19951D7A927B052",
+  "mtgo_id": 151867,
+  "arena_id": 105719,
+  "tcgplayer_id": 697334,
+  "cardmarket_id": 892151,
+  "name": "Whirlwind, Killer Cyclone",
+  "lang": "en",
+  "released_at": "2026-06-26",
+  "uri": "https://api.scryfall.com/cards/00d2ac03-a0ef-4f03-bb99-3514305b6d1f",
+  "scryfall_uri": "https://scryfall.com/card/msc/709/whirlwind-killer-cyclone?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T00:37:22Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/0/0/00d2ac03-a0ef-4f03-bb99-3514305b6d1f.jpg?1783903042",
+    "normal": "https://cards.scryfall.io/normal/front/0/0/00d2ac03-a0ef-4f03-bb99-3514305b6d1f.jpg?1783903042",
+    "large": "https://cards.scryfall.io/large/front/0/0/00d2ac03-a0ef-4f03-bb99-3514305b6d1f.jpg?1783903042",
+    "png": "https://cards.scryfall.io/png/front/0/0/00d2ac03-a0ef-4f03-bb99-3514305b6d1f.png?1783903042",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/0/0/00d2ac03-a0ef-4f03-bb99-3514305b6d1f.jpg?1783903042",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/0/0/00d2ac03-a0ef-4f03-bb99-3514305b6d1f.jpg?1783903042",
+    "thumb": "https://cards.scryfall.io/thumb/front/0/0/00d2ac03-a0ef-4f03-bb99-3514305b6d1f.webp?1783903042",
+    "grid": "https://cards.scryfall.io/grid/front/0/0/00d2ac03-a0ef-4f03-bb99-3514305b6d1f.webp?1783903042",
+    "display": "https://cards.scryfall.io/display/front/0/0/00d2ac03-a0ef-4f03-bb99-3514305b6d1f.webp?1783903042",
+    "art": "https://cards.scryfall.io/art/front/0/0/00d2ac03-a0ef-4f03-bb99-3514305b6d1f.webp?1783903042",
+    "crop": "https://cards.scryfall.io/crop/front/0/0/00d2ac03-a0ef-4f03-bb99-3514305b6d1f.webp?1783903042",
+    "jpeg": "https://cards.scryfall.io/normal/front/0/0/00d2ac03-a0ef-4f03-bb99-3514305b6d1f.jpg?1783903042"
+  },
+  "mana_cost": "{2}{R}",
+  "cmc": 3.0,
+  "type_line": "Legendary Creature — Mutant Villain",
+  "oracle_text": "Haste\nWhenever one or more creatures you control that entered this turn attack a player, target creature that player controls can't block this turn.",
+  "power": "2",
+  "toughness": "3",
+  "colors": [
+    "R"
+  ],
+  "color_identity": [
+    "R"
+  ],
+  "keywords": [
+    "Haste"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo",
+    "arena"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "9d739461-c5ac-43a1-af41-3d5a585b5c8d",
+  "set": "msc",
+  "set_name": "Marvel Super Heroes Commander",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/9d739461-c5ac-43a1-af41-3d5a585b5c8d",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Amsc&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/msc?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/00d2ac03-a0ef-4f03-bb99-3514305b6d1f/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A72eabfcc-61b6-4a07-9a9c-b40a9c05cf66&unique=prints",
+  "collector_number": "709",
+  "digital": false,
+  "rarity": "uncommon",
+  "flavor_text": "\"The wind is unstoppable. Just like me!\"",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Ben Harvey",
+  "artist_ids": [
+    "3b6a4f81-03e8-44a1-8e54-3c4038044954"
+  ],
+  "illustration_id": "0b79a09f-c086-4e7d-8f39-2d8df084317a",
+  "border_color": "black",
+  "frame": "2015",
+  "frame_effects": [
+    "legendary"
+  ],
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "promo_types": [
+    "universesbeyond"
+  ],
+  "edhrec_rank": 27857,
+  "prices": {
+    "usd": "0.24",
+    "usd_foil": "0.39",
+    "usd_etched": null,
+    "eur": "0.18",
+    "eur_foil": "0.32",
+    "tix": "0.06"
+  },
+  "related_uris": {
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DWhirlwind%252C%2BKiller%2BCyclone",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DWhirlwind%252C%2BKiller%2BCyclone",
+    "edhrec": "https://edhrec.com/route/?cc=Whirlwind%2C+Killer+Cyclone"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F697334%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=892151&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/151867?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

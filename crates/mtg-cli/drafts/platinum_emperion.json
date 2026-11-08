@@ -1,0 +1,12 @@
+{
+  "oracle_id": "bcd2f70c-36c2-44b2-9d4b-1000e9bb62b6",
+  "name": "Platinum Emperion",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Platinum Emperion",
+      "oracle_fingerprint": "e45fc1918decb0b05ec29ec3b46b34ea",
+      "abilities": [{ "Rule": { "rule": { "LifeTotalCantChange": "You" } } }]
+    }
+  ]
+}

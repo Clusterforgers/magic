@@ -1,0 +1,29 @@
+{
+  "oracle_id": "5fcbb5d3-71d1-4946-b806-ba6376338eba",
+  "name": "Horrid Shadowspinner",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Horrid Shadowspinner",
+      "oracle_fingerprint": "c92b1abfc693a70188fde63be7543ae0",
+      "abilities": [
+        { "Keyword": "Lifelink" },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": [{ "Draw": { "Stat": { "of": "This", "stat": "Power" } } }],
+                  "paid": [
+                    { "Discard": { "count": { "Stat": { "of": "This", "stat": "Power" } } } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

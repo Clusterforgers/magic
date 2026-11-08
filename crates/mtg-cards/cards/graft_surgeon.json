@@ -1,0 +1,31 @@
+{
+  "oracle_id": "fe7938ce-6289-4bf8-a8f5-85ecccbb7f86",
+  "name": "Graft Surgeon",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Graft Surgeon",
+      "oracle_fingerprint": "dd756740db7f05c08665f7013142d02c",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "WithCounters": { "counter": "+1/+1", "count": 1 } }
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } },
+            "targets": [
+              {
+                "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                "bounds": { "min": 0, "max": 1 }
+              }
+            ],
+            "effects": [{ "PutCountersOf": { "on": { "Target": 0 }, "of": "This" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

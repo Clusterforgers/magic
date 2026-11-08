@@ -1,0 +1,33 @@
+{
+  "oracle_id": "f2649e48-4252-43f3-bd1e-c4c6fcb0aa3a",
+  "name": "Razor Boomerang",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Razor Boomerang",
+      "oracle_fingerprint": "91f300826e248fce3fecd71490a10f3e",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [
+              {
+                "GrantAbility": {
+                  "Activated": {
+                    "cost": ["Tap", "Unattach"],
+                    "targets": [{ "what": "AnyTarget" }],
+                    "effects": [
+                      { "DealDamage": { "source": "Granter", "to": { "Target": 0 }, "amount": 1 } },
+                      { "Move": { "what": "Granter", "to": "Hand" } }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Equip": "{2}" } }
+      ]
+    }
+  ]
+}

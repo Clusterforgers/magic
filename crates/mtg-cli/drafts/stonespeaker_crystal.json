@@ -1,0 +1,35 @@
+{
+  "oracle_id": "a494fcee-6885-434c-aad5-6f83640c4472",
+  "name": "Stonespeaker Crystal",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Stonespeaker Crystal",
+      "oracle_fingerprint": "0213221b569bdb85f6999957723a3c1f",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Colorless", "Colorless"] } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{2}" }, "Tap", "SacrificeSelf"],
+            "targets": [
+              { "what": "Player", "bounds": { "min": 0, "max": { "Players": "EachPlayer" } } }
+            ],
+            "effects": [
+              {
+                "Exile": {
+                  "what": { "Each": [{ "In": "Graveyard" }, { "OwnedBy": { "Target": 0 } }] }
+                }
+              },
+              { "Draw": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

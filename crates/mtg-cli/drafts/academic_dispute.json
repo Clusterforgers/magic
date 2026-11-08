@@ -1,0 +1,35 @@
+{
+  "oracle_id": "b22de128-6dad-4e15-a547-1c9ca08df5ff",
+  "name": "Academic Dispute",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Academic Dispute",
+      "oracle_fingerprint": "da4b53cc8135cd382ebb1727d8dada72",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              { "Rule": { "rule": { "MustBlock": { "Target": 0 } }, "duration": "UntilEndOfTurn" } },
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "Continuous": {
+                        "affected": { "Target": 0 },
+                        "mods": [{ "AddKeyword": "Reach" }],
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              },
+              { "Learn": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

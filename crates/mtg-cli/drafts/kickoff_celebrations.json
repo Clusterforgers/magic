@@ -1,0 +1,51 @@
+{
+  "oracle_id": "94868faf-9e88-4221-8db6-3ad10aa02da5",
+  "name": "Kickoff Celebrations",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Kickoff Celebrations",
+      "oracle_fingerprint": "f5663ab7d0051b1999802df0128a45cc",
+      "abilities": [
+        { "Keyword": "StartYourEngines" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              { "Pay": { "cost": [{ "Discard": {} }], "paid": [{ "Draw": { "count": 2 } }] } }
+            ]
+          }
+        },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              {
+                "GrantAbility": {
+                  "Activated": {
+                    "cost": ["SacrificeSelf"],
+                    "effects": [
+                      {
+                        "Continuous": {
+                          "affected": {
+                            "Each": [
+                              { "AnyOf": [{ "Type": "Creature" }, { "Subtype": "Vehicle" }] },
+                              { "ControlledBy": "You" }
+                            ]
+                          },
+                          "mods": [{ "AddKeyword": "Haste" }],
+                          "duration": "UntilEndOfTurn"
+                        }
+                      }
+                    ]
+                  }
+                }
+              }
+            ],
+            "condition": { "MaxSpeed": "You" }
+          }
+        }
+      ]
+    }
+  ]
+}

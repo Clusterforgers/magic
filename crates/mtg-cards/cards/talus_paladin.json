@@ -1,0 +1,54 @@
+{
+  "oracle_id": "98914c0e-967f-4c8b-bd74-e2ce15c7fe95",
+  "name": "Talus Paladin",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Talus Paladin",
+      "oracle_fingerprint": "56295ae9b15fac77db0df25e545d9177",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [
+                  {
+                    "AnyOf": [
+                      "This",
+                      {
+                        "Not": {
+                          "AnyOf": [
+                            { "Not": { "Subtype": "Ally" } },
+                            { "Not": "Other" },
+                            { "Not": { "ControlledBy": "You" } }
+                          ]
+                        }
+                      }
+                    ]
+                  }
+                ],
+                "to": "Battlefield"
+              }
+            },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "Continuous": {
+                        "affected": { "Each": [{ "Subtype": "Ally" }, { "ControlledBy": "You" }] },
+                        "mods": [{ "AddKeyword": "Lifelink" }],
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              },
+              { "May": { "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }] } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

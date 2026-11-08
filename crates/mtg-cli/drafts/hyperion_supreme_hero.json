@@ -1,0 +1,24 @@
+{
+  "oracle_id": "4f4a5966-3713-45c7-acc2-9ddb4ff73eab",
+  "name": "Hyperion, Supreme Hero",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Hyperion, Supreme Hero",
+      "oracle_fingerprint": "47d7c3f0ad12cd960a3c549b59fb9790",
+      "abilities": [
+        { "Keyword": "Flash" },
+        { "Keyword": "Flying" },
+        { "Replacement": { "when": { "Damage": { "to": "You" } }, "by": { "PreventAllBut": 1 } } },
+        {
+          "Replacement": {
+            "when": {
+              "Damage": { "to": { "Each": [{ "Subtype": "Hero" }, { "ControlledBy": "You" }] } }
+            },
+            "by": { "PreventAllBut": 1 }
+          }
+        }
+      ]
+    }
+  ]
+}

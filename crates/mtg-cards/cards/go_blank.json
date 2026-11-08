@@ -1,0 +1,26 @@
+{
+  "oracle_id": "60186579-285b-4034-a782-431f79df5b07",
+  "name": "Go Blank",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Go Blank",
+      "oracle_fingerprint": "8e520ed9d9b87ed394a5b2ec958131a8",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              { "Discard": { "who": { "Target": 0 }, "count": 2 } },
+              {
+                "Exile": {
+                  "what": { "Each": [{ "In": "Graveyard" }, { "OwnedBy": { "Target": 0 } }] }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

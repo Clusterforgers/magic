@@ -1,0 +1,34 @@
+{
+  "oracle_id": "11dfe74c-bc8e-4d58-b526-41ea5b409135",
+  "name": "Meletis Charlatan",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Meletis Charlatan",
+      "oracle_fingerprint": "250f9b216c4386939c97fd2eb7dce762",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{2}{U}" }, "Tap"],
+            "targets": [
+              {
+                "what": {
+                  "Object": ["Spell", { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] }]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "CopySpell": {
+                  "what": { "Target": 0 },
+                  "who": { "ControllerOf": { "Target": 0 } },
+                  "new_targets": true
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

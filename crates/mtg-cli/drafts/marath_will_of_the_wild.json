@@ -1,0 +1,69 @@
+{
+  "oracle_id": "fae87115-8749-4d25-a594-7139dd01a034",
+  "name": "Marath, Will of the Wild",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Marath, Will of the Wild",
+      "oracle_fingerprint": "3d121e1790e8e11d99080a46d9ef5268",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": {
+              "WithCounters": { "counter": "+1/+1", "count": { "ManaSpent": { "of": null } } }
+            }
+          }
+        },
+        {
+          "Activated": {
+            "cost": [
+              { "Mana": "{X}" },
+              { "XAtLeast": 1 },
+              { "RemoveCounters": { "counter": "+1/+1", "count": "X" } }
+            ],
+            "effects": [
+              {
+                "Modal": {
+                  "modes": [
+                    {
+                      "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+                      "effects": [
+                        {
+                          "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1", "count": "X" }
+                        }
+                      ]
+                    },
+                    {
+                      "targets": [{ "what": "AnyTarget" }],
+                      "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": "X" } }]
+                    },
+                    {
+                      "effects": [
+                        {
+                          "CreateToken": {
+                            "token": {
+                              "Sized": {
+                                "size": "X",
+                                "token": {
+                                  "name": "Elemental",
+                                  "colors": ["Green"],
+                                  "types": ["Creature"],
+                                  "subtypes": ["Elemental"]
+                                }
+                              }
+                            }
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

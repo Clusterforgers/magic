@@ -15,7 +15,6 @@
               "AsCopy": {
                 "of": [
                   { "Type": "Creature" },
-                  "Other",
                   {
                     "Compare": {
                       "stat": "ManaValue",

@@ -1,0 +1,34 @@
+{
+  "oracle_id": "fb88fb3d-6a85-4bb1-b316-7f759b45a0fa",
+  "name": "The Chain Veil",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "The Chain Veil",
+      "oracle_fingerprint": "42d225e26aeac3aa1616c3e0fdb9d4ab",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "if": {
+              "Compare": {
+                "left": {
+                  "Tally": { "event": { "KindActivated": "Loyalty" }, "who": "You", "filter": [] }
+                },
+                "op": "Eq",
+                "right": 0
+              }
+            },
+            "effects": [{ "LoseLife": { "amount": 2 } }]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 122, "end": 298 }
+          }
+        }
+      ]
+    }
+  ]
+}

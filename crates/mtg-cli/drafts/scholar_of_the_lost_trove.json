@@ -1,0 +1,56 @@
+{
+  "oracle_id": "5f1e9098-f554-4505-974b-cef4b4b7b23d",
+  "name": "Scholar of the Lost Trove",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Scholar of the Lost Trove",
+      "oracle_fingerprint": "23fde52eb2ed1f2024ca723ece050065",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    {
+                      "AnyOf": [
+                        { "Type": "Instant" },
+                        { "Type": "Sorcery" },
+                        { "Type": "Artifact" }
+                      ]
+                    },
+                    { "OwnedBy": "You" },
+                    { "In": "Graveyard" }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              { "CastFromZone": { "what": { "Target": 0 }, "free": true, "as": "cast" } },
+              {
+                "Shield": {
+                  "when": {
+                    "ZoneChange": {
+                      "what": [
+                        { "In": "Stack" },
+                        { "Is": { "Bound": "cast" } },
+                        { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] }
+                      ],
+                      "from": "Stack",
+                      "to": "Graveyard"
+                    }
+                  },
+                  "by": { "MoveTo": "Exile" },
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

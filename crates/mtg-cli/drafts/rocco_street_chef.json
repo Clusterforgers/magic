@@ -1,7 +1,7 @@
 {
   "oracle_id": "071f5b4b-6a1e-4dc3-9c08-b79713191811",
   "name": "Rocco, Street Chef",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Rocco, Street Chef",
@@ -29,9 +29,23 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 163, "end": 376 }
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                { "SpellCast": { "what": [{ "WasCast": { "from": "Exile" } }] } },
+                {
+                  "Did": {
+                    "action": "PlayedLand",
+                    "what": [{ "Type": "Land" }, { "ArrivedFrom": "Exile" }]
+                  }
+                }
+              ]
+            },
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              { "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1" } },
+              { "CreateToken": { "token": { "Named": "food" } } }
+            ]
           }
         }
       ]

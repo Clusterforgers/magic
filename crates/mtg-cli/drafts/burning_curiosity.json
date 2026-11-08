@@ -1,0 +1,36 @@
+{
+  "oracle_id": "7f420633-901d-47f9-ae0f-0f5b0ea8359c",
+  "name": "Burning Curiosity",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Burning Curiosity",
+      "oracle_fingerprint": "2eefc2533db41d2a3322d29758c82135",
+      "abilities": [
+        { "AdditionalCost": { "cost": [{ "Blight": 1 }] } },
+        {
+          "Spell": {
+            "effects": [
+              {
+                "ExileTop": {
+                  "count": {
+                    "When": { "condition": "AdditionalCostPaid", "then": 3, "otherwise": 2 }
+                  },
+                  "as": "exiled"
+                }
+              },
+              {
+                "Rule": {
+                  "rule": {
+                    "MayCast": { "from": "Exile", "only": { "Bound": "exiled" }, "play": true }
+                  },
+                  "duration": "UntilEndOfYourNextTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

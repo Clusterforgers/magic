@@ -1,0 +1,55 @@
+{
+  "oracle_id": "2e00ccc9-6d5f-4de3-bbec-48b49d363244",
+  "name": "Preston, the Vanisher",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Preston, the Vanisher",
+      "oracle_fingerprint": "57f6014a11246d432271f694f4bdc5f9",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [
+                  { "Type": "Creature" },
+                  "Other",
+                  { "Not": "Token" },
+                  { "Not": { "WasCast": {} } },
+                  { "ControlledBy": "You" }
+                ],
+                "to": "Battlefield"
+              }
+            },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "CopyOf": {
+                      "of": "Triggering",
+                      "except": [
+                        { "SetPT": { "power": 0, "toughness": 1 } },
+                        { "SetColors": ["White"] },
+                        { "SetCreatureTypes": ["Illusion"] }
+                      ]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [
+              { "Mana": "{1}{W}" },
+              { "Sacrifice": { "filter": [{ "Subtype": "Illusion" }], "count": 5 } }
+            ],
+            "targets": [{ "what": { "Object": [{ "Not": { "Type": "Land" } }] } }],
+            "effects": [{ "Exile": { "what": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

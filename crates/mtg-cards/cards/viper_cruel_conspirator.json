@@ -1,0 +1,58 @@
+{
+  "oracle_id": "6824a6ed-37d0-4db5-b2d4-9c737d0c49f9",
+  "name": "Viper, Cruel Conspirator",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Viper, Cruel Conspirator",
+      "oracle_fingerprint": "3bf7b6c2206f3585db9e4145acbe27e5",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{B}",
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }, "AttackingAlone"] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{B}",
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }, "AttackingAlone"] } }],
+            "effects": [
+              {
+                "Either": {
+                  "first": [
+                    {
+                      "Continuous": {
+                        "affected": { "Target": 0 },
+                        "mods": [{ "AddKeyword": "Deathtouch" }],
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ],
+                  "second": [
+                    {
+                      "Continuous": {
+                        "affected": { "Target": 0 },
+                        "mods": [{ "AddKeyword": "Lifelink" }],
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

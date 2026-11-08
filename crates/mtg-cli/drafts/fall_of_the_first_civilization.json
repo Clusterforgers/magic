@@ -1,0 +1,71 @@
+{
+  "oracle_id": "dd0494f5-58bf-46ae-ad69-90b063f6f660",
+  "name": "Fall of the First Civilization",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Fall of the First Civilization",
+      "oracle_fingerprint": "6a2f0fa3e3d156fcb7401676ebeacc0a",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 1 } },
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              { "Draw": { "count": 2 } },
+              { "Draw": { "who": { "Target": 0 }, "count": 2 } }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 2 } },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Artifact" }, { "ControlledBy": "Opponents" }] } }
+            ],
+            "effects": [{ "Exile": { "what": { "Target": 0 } } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 3 } },
+            "effects": [
+              {
+                "RepeatEach": {
+                  "over": "EachPlayer",
+                  "as": "each",
+                  "effects": [
+                    {
+                      "Choose": {
+                        "who": { "Bound": "each" },
+                        "from": {
+                          "Each": [
+                            { "Not": { "Type": "Land" } },
+                            { "ControlledBy": { "Bound": "each" } }
+                          ]
+                        },
+                        "count": { "min": 3, "max": 3 },
+                        "as": "card2"
+                      }
+                    },
+                    { "Bind": { "what": { "Bound": "card2" }, "as": "picks3", "adds": true } }
+                  ]
+                }
+              },
+              {
+                "Destroy": {
+                  "what": {
+                    "Each": [
+                      { "Not": { "Type": "Land" } },
+                      { "Not": { "Is": { "Bound": "picks3" } } }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

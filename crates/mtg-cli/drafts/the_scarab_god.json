@@ -1,0 +1,75 @@
+{
+  "oracle_id": "c75e55f2-fd6c-4816-9d96-21eeb8369aff",
+  "name": "The Scarab God",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "The Scarab God",
+      "oracle_fingerprint": "15afcb43721c7f5b757e4fb409557b7f",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [
+              {
+                "LoseLife": {
+                  "who": "Opponents",
+                  "amount": { "Count": [{ "Subtype": "Zombie" }, { "ControlledBy": "You" }] }
+                }
+              },
+              {
+                "Scry": {
+                  "count": { "Count": [{ "Subtype": "Zombie" }, { "ControlledBy": "You" }] }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{2}{U}{B}",
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }, { "In": "Graveyard" }] } }],
+            "effects": [
+              { "Exile": { "what": { "Target": 0 }, "as": "exiled" } },
+              { "Remember": { "what": { "Bound": "exiled" }, "slot": "remembered" } },
+              {
+                "CreateToken": {
+                  "token": {
+                    "CopyOf": {
+                      "of": { "Bound": "exiled" },
+                      "except": [
+                        { "SetPT": { "power": 4, "toughness": 4 } },
+                        { "SetColors": ["Black"] },
+                        { "SetCreatureTypes": ["Zombie"] }
+                      ]
+                    }
+                  }
+                }
+              },
+              { "Forget": { "slot": "remembered" } }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } },
+            "effects": [
+              {
+                "Bind": {
+                  "what": { "Arrived": { "of": "This", "zone": "Graveyard" } },
+                  "as": "event"
+                }
+              },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "End" } },
+                  "effects": [{ "Move": { "what": { "Bound": "event" }, "to": "Hand" } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

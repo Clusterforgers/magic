@@ -1,0 +1,52 @@
+{
+  "oracle_id": "a20093c6-b8b4-4051-808f-febd030f7fe4",
+  "name": "Riftmarked Knight",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Riftmarked Knight",
+      "oracle_fingerprint": "bba3fc992a6e306ddcbfeb74df3c7435",
+      "abilities": [
+        { "Keyword": { "Protection": [{ "Color": "Black" }] } },
+        { "Keyword": { "Macro": { "name": "flanking", "amount": 0 } } },
+        { "Keyword": { "Suspend": { "time": 3, "cost": "{1}{W}{W}" } } },
+        {
+          "Triggered": {
+            "when": { "CountersRemoved": { "what": ["This"], "counter": { "Other": "time" } } },
+            "if": {
+              "AtTrigger": {
+                "Compare": {
+                  "left": { "Counters": { "on": "This", "counter": { "Other": "time" } } },
+                  "op": "Eq",
+                  "right": 0
+                }
+              }
+            },
+            "from": "Exile",
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Knight",
+                      "colors": ["Black"],
+                      "types": ["Creature"],
+                      "subtypes": ["Knight"],
+                      "power": 2,
+                      "toughness": 2,
+                      "abilities": [
+                        { "Keyword": { "Macro": { "name": "flanking", "amount": 0 } } },
+                        { "Keyword": { "Protection": [{ "Color": "White" }] } },
+                        { "Keyword": "Haste" }
+                      ]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

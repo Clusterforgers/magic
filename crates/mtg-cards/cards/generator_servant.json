@@ -1,0 +1,34 @@
+{
+  "oracle_id": "68ac061a-e4a3-46df-9169-62f6a8481584",
+  "name": "Generator Servant",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Generator Servant",
+      "oracle_fingerprint": "d4c6c4652c29f407ad7ef234523c3429",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap", "SacrificeSelf"],
+            "effects": [
+              {
+                "AddMana": {
+                  "mana": { "Fixed": ["Colorless", "Colorless"] },
+                  "only": [
+                    {
+                      "Enters": {
+                        "spell": { "types": ["Creature"] },
+                        "keyword": "Haste",
+                        "this_turn": true
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,45 @@
+{
+  "oracle_id": "14a19102-00ed-4425-8837-1d05bc7ad8ba",
+  "name": "Seraphic Greatsword",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Seraphic Greatsword",
+      "oracle_fingerprint": "2e6e332c853a16485789464edb87454b",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "ModifyPT": { "power": 2, "toughness": 2 } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "AttacksPlayer": { "what": [{ "Is": "Attached" }], "at": "MostLife" } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Angel",
+                      "colors": ["White"],
+                      "types": ["Creature"],
+                      "subtypes": ["Angel"],
+                      "power": 4,
+                      "toughness": 4,
+                      "abilities": [{ "Keyword": "Flying" }]
+                    }
+                  },
+                  "tapped": true,
+                  "attacking": true,
+                  "against": "Defending"
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Equip": "{4}" } }
+      ]
+    }
+  ]
+}

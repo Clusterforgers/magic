@@ -1,0 +1,56 @@
+{
+  "oracle_id": "228fe7f0-54ad-411b-bedb-65a1bc2a099b",
+  "name": "Oath of the Grey Host",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Oath of the Grey Host",
+      "oracle_fingerprint": "ac2a9d074f529217f815e44cea6a438b",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 1 } },
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              { "CreateToken": { "token": { "Named": "food" } } },
+              { "CreateToken": { "who": { "Target": 0 }, "token": { "Named": "food" } } }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 2 } },
+            "effects": [
+              { "LoseLife": { "who": "Opponents", "amount": 3 } },
+              { "CreateToken": { "token": { "Named": "treasure" } } }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 3 } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Spirit",
+                      "colors": ["White"],
+                      "types": ["Creature"],
+                      "subtypes": ["Spirit"],
+                      "power": 1,
+                      "toughness": 1,
+                      "abilities": [{ "Keyword": "Flying" }]
+                    }
+                  },
+                  "count": 3,
+                  "tapped": true
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

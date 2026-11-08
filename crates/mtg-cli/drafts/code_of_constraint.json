@@ -1,0 +1,74 @@
+{
+  "oracle_id": "b2f83483-24a4-45db-a04e-42ff732ca98a",
+  "name": "Code of Constraint",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Code of Constraint",
+      "oracle_fingerprint": "4dc211d7c8c4276911268964c9c536a2",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "ModifyPT": { "power": -4, "toughness": 0 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              { "Draw": {} },
+              {
+                "If": {
+                  "condition": {
+                    "All": [
+                      {
+                        "CountOf": {
+                          "subject": "This",
+                          "selector": [{ "WasCast": {} }],
+                          "op": "Ge",
+                          "right": 1
+                        }
+                      },
+                      { "Any": [{ "Step": "Main1" }, { "Step": "Main2" }] },
+                      "YourTurn"
+                    ]
+                  },
+                  "then": [{ "Tap": { "what": { "Target": 0 } } }]
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "All": [
+                      {
+                        "CountOf": {
+                          "subject": "This",
+                          "selector": [{ "WasCast": {} }],
+                          "op": "Ge",
+                          "right": 1
+                        }
+                      },
+                      { "Any": [{ "Step": "Main1" }, { "Step": "Main2" }] },
+                      "YourTurn"
+                    ]
+                  },
+                  "then": [
+                    {
+                      "Continuous": {
+                        "affected": { "Target": 0 },
+                        "mods": ["DoesntUntap"],
+                        "duration": "NextUntapStep"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

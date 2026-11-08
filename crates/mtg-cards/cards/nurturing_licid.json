@@ -1,0 +1,35 @@
+{
+  "oracle_id": "537a7af1-2b7e-4828-b645-7e34e86058d5",
+  "name": "Nurturing Licid",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Nurturing Licid",
+      "oracle_fingerprint": "33f5ad7be692378878cdf9fd0fee7dde",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{G}" }, "Tap"],
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [
+                    { "AddSubtype": "Aura" },
+                    { "SetTypes": ["Enchantment"] },
+                    { "AddKeyword": { "Enchant": [{ "Type": "Creature" }] } },
+                    "LoseThisAbility"
+                  ],
+                  "duration": { "UntilPaid": "{G}" }
+                }
+              },
+              { "Attach": { "what": "This", "to": { "Target": 0 } } }
+            ]
+          }
+        },
+        { "Activated": { "cost": "{G}", "effects": [{ "Regenerate": { "what": "Attached" } }] } }
+      ]
+    }
+  ]
+}

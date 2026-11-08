@@ -1,7 +1,7 @@
 {
   "oracle_id": "2bace3ea-7d28-4a1c-857a-d3c3a1c11b59",
   "name": "Wan Shi Tong, Librarian",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Wan Shi Tong, Librarian",
@@ -20,9 +20,9 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 117, "end": 214 }
+          "Triggered": {
+            "when": { "Did": { "action": "SearchedOwnLibrary", "who": "Opponents" } },
+            "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }, { "Draw": {} }]
           }
         }
       ]

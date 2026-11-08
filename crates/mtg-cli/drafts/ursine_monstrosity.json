@@ -1,0 +1,46 @@
+{
+  "oracle_id": "647feda9-2876-4430-902f-10dc1f4f99a9",
+  "name": "Ursine Monstrosity",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ursine Monstrosity",
+      "oracle_fingerprint": "f4d06436a7ca70bcfde69d2b5cbedddf",
+      "abilities": [
+        { "Keyword": "Trample" },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "BeginCombat", "whose": "You" } },
+            "effects": [
+              { "Mill": {} },
+              { "ChooseAtRandom": { "from": "Opponents", "as": "player" } },
+              {
+                "Rule": {
+                  "rule": {
+                    "MustAttackPlayers": { "who": "This", "players": { "Bound": "player" } }
+                  },
+                  "duration": "UntilEndOfCombat"
+                }
+              },
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [
+                    {
+                      "ModifyPT": {
+                        "power": { "CardTypes": [{ "OwnedBy": "You" }, { "In": "Graveyard" }] },
+                        "toughness": { "CardTypes": [{ "OwnedBy": "You" }, { "In": "Graveyard" }] }
+                      }
+                    },
+                    { "AddKeyword": "Indestructible" }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

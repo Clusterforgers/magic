@@ -1,0 +1,59 @@
+{
+  "oracle_id": "78d710ea-fbf5-4855-b874-b53478bf4a87",
+  "name": "Thran Spider",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Thran Spider",
+      "oracle_fingerprint": "7be13ae43f8d42fc9ab7059dc31d92b8",
+      "abilities": [
+        { "Keyword": "Reach" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              { "CreateToken": { "token": { "Named": "powerstone" }, "tapped": true } },
+              {
+                "CreateToken": {
+                  "who": { "Target": 0 },
+                  "token": { "Named": "powerstone" },
+                  "tapped": true
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{7}",
+            "effects": [
+              { "LookAtTop": { "count": 4, "as": "top" } },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "In": "Library" },
+                      { "Is": { "Bound": "top" } },
+                      { "Type": "Artifact" }
+                    ]
+                  },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "kept"
+                }
+              },
+              { "Reveal": { "what": { "Bound": "kept" } } },
+              { "Move": { "what": { "Bound": "kept" }, "to": "Hand" } },
+              {
+                "Move": {
+                  "what": { "Bound": "top" },
+                  "to": { "Library": { "place": "Bottom", "order": "Random" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

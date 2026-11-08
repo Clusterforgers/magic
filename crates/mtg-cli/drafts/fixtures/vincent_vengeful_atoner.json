@@ -1,0 +1,142 @@
+{
+  "object": "card",
+  "id": "9e53d0b2-eeb0-4d54-86e5-723e05aaf6da",
+  "oracle_id": "b8961205-87fa-4cce-aba9-84fa2f91a67f",
+  "multiverse_ids": [],
+  "resource_id": "BC5FF3338707A184B287E3EA719721E1ED8FFA1F7C71EB89CC55BC4432AF7ED3",
+  "mtgo_id": 140119,
+  "tcgplayer_id": 631107,
+  "cardmarket_id": 824627,
+  "name": "Vincent, Vengeful Atoner",
+  "lang": "en",
+  "released_at": "2025-06-13",
+  "uri": "https://api.scryfall.com/cards/9e53d0b2-eeb0-4d54-86e5-723e05aaf6da",
+  "scryfall_uri": "https://scryfall.com/card/fic/64/vincent-vengeful-atoner?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T01:32:33Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/9/e/9e53d0b2-eeb0-4d54-86e5-723e05aaf6da.jpg?1783906353",
+    "normal": "https://cards.scryfall.io/normal/front/9/e/9e53d0b2-eeb0-4d54-86e5-723e05aaf6da.jpg?1783906353",
+    "large": "https://cards.scryfall.io/large/front/9/e/9e53d0b2-eeb0-4d54-86e5-723e05aaf6da.jpg?1783906353",
+    "png": "https://cards.scryfall.io/png/front/9/e/9e53d0b2-eeb0-4d54-86e5-723e05aaf6da.png?1783906353",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/9/e/9e53d0b2-eeb0-4d54-86e5-723e05aaf6da.jpg?1783906353",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/9/e/9e53d0b2-eeb0-4d54-86e5-723e05aaf6da.jpg?1783906353",
+    "thumb": "https://cards.scryfall.io/thumb/front/9/e/9e53d0b2-eeb0-4d54-86e5-723e05aaf6da.webp?1783906353",
+    "grid": "https://cards.scryfall.io/grid/front/9/e/9e53d0b2-eeb0-4d54-86e5-723e05aaf6da.webp?1783906353",
+    "display": "https://cards.scryfall.io/display/front/9/e/9e53d0b2-eeb0-4d54-86e5-723e05aaf6da.webp?1783906353",
+    "art": "https://cards.scryfall.io/art/front/9/e/9e53d0b2-eeb0-4d54-86e5-723e05aaf6da.webp?1783906353",
+    "crop": "https://cards.scryfall.io/crop/front/9/e/9e53d0b2-eeb0-4d54-86e5-723e05aaf6da.webp?1783906353",
+    "jpeg": "https://cards.scryfall.io/normal/front/9/e/9e53d0b2-eeb0-4d54-86e5-723e05aaf6da.jpg?1783906353"
+  },
+  "mana_cost": "{2}{R}",
+  "cmc": 3.0,
+  "type_line": "Legendary Creature — Assassin",
+  "oracle_text": "Menace\nWhenever one or more creatures you control deal combat damage to a player, put a +1/+1 counter on Vincent.\nChaos — Whenever Vincent deals combat damage to an opponent, it deals that much damage to each other opponent if Vincent's power is 7 or greater.",
+  "power": "3",
+  "toughness": "3",
+  "colors": [
+    "R"
+  ],
+  "color_identity": [
+    "R"
+  ],
+  "keywords": [
+    "Chaos",
+    "Menace"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "30659956-4558-4cbf-a65f-34cd00c89579",
+  "set": "fic",
+  "set_name": "Final Fantasy Commander",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/30659956-4558-4cbf-a65f-34cd00c89579",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Afic&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/fic?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/9e53d0b2-eeb0-4d54-86e5-723e05aaf6da/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Ab8961205-87fa-4cce-aba9-84fa2f91a67f&unique=prints",
+  "collector_number": "64",
+  "digital": false,
+  "rarity": "rare",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Lius Lasahido",
+  "artist_ids": [
+    "0a0e9093-ce44-4a69-93a7-09b63e7c330d"
+  ],
+  "illustration_id": "4e0e7a49-28b7-4eb7-8f76-c01dec397d23",
+  "border_color": "black",
+  "frame": "2015",
+  "frame_effects": [
+    "legendary"
+  ],
+  "security_stamp": "triangle",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "promo_types": [
+    "surgefoil",
+    "universesbeyond",
+    "ffvii"
+  ],
+  "edhrec_rank": 4042,
+  "prices": {
+    "usd": "0.32",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "0.31",
+    "eur_foil": null,
+    "tix": "1.92"
+  },
+  "related_uris": {
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DVincent%252C%2BVengeful%2BAtoner",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DVincent%252C%2BVengeful%2BAtoner",
+    "edhrec": "https://edhrec.com/route/?cc=Vincent%2C+Vengeful+Atoner"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F631107%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=824627&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/140119?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

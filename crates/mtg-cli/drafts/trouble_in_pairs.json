@@ -1,0 +1,36 @@
+{
+  "oracle_id": "f349f58b-8cc8-45e4-9565-2b46fdf976c9",
+  "name": "Trouble in Pairs",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Trouble in Pairs",
+      "oracle_fingerprint": "8f512fdcb7a94316d96d81b89a8cb666",
+      "abilities": [
+        { "Rule": { "rule": { "SkipExtraTurns": "Opponents" } } },
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                {
+                  "GroupAttacksAt": {
+                    "what": [
+                      { "Type": "Creature" },
+                      { "AttackingPlayer": "You" },
+                      { "ControlledBy": "Opponents" }
+                    ],
+                    "at": "You",
+                    "at_least": 2
+                  }
+                },
+                { "Nth": { "event": { "SpellCast": { "by": "Opponents" } }, "nth": 2 } },
+                { "Nth": { "event": { "Drew": { "who": "Opponents" } }, "nth": 2 } }
+              ]
+            },
+            "effects": [{ "Draw": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

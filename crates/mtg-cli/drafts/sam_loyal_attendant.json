@@ -19,7 +19,7 @@
             "applies_to": [{ "Subtype": "Food" }, { "ControlledBy": "You" }],
             "change": "Reduce",
             "mana": "{1}",
-            "activating": "Any"
+            "activating": "Every"
           }
         }
       ]

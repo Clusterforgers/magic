@@ -1,0 +1,78 @@
+{
+  "oracle_id": "8d4e0866-d8f5-4eb6-a0fd-3fa9d4b9cf4a",
+  "name": "Waste Management",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Waste Management",
+      "oracle_fingerprint": "38bc88be5f1a1f4d16ab6d06beef7b83",
+      "abilities": [
+        { "Keyword": { "Kicker": "{3}{B}" } },
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Together": {
+                    "what": { "Object": [{ "In": "Graveyard" }] },
+                    "rule": "SameController"
+                  }
+                },
+                "bounds": {
+                  "min": 0,
+                  "max": { "When": { "condition": "Kicked", "then": 0, "otherwise": 2 } }
+                }
+              },
+              {
+                "what": "Player",
+                "bounds": {
+                  "min": { "When": { "condition": "Kicked", "then": 1, "otherwise": 0 } },
+                  "max": { "When": { "condition": "Kicked", "then": 1, "otherwise": 0 } }
+                }
+              }
+            ],
+            "effects": [
+              { "Exile": { "what": { "Target": 0 }, "as": "exiled" } },
+              {
+                "Exile": {
+                  "what": { "Each": [{ "In": "Graveyard" }, { "OwnedBy": { "Target": 1 } }] },
+                  "as": "exiled2"
+                }
+              },
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Rogue",
+                      "colors": ["Black"],
+                      "types": ["Creature"],
+                      "subtypes": ["Rogue"],
+                      "power": 2,
+                      "toughness": 2
+                    }
+                  },
+                  "count": {
+                    "Count": [
+                      { "Is": { "Bound": "exiled2" } },
+                      {
+                        "AnyOf": [
+                          { "In": "Battlefield" },
+                          { "In": "Hand" },
+                          { "In": "Library" },
+                          { "In": "Graveyard" },
+                          { "In": "Exile" },
+                          { "In": "Stack" }
+                        ]
+                      },
+                      { "Type": "Creature" }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

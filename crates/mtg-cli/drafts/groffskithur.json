@@ -11,7 +11,15 @@
           "Triggered": {
             "when": { "BecomesBlocked": { "what": ["This"] } },
             "targets": [
-              { "what": { "Object": [{ "Named": "Groffskithur" }, { "In": "Graveyard" }] } }
+              {
+                "what": {
+                  "Object": [
+                    { "Named": "Groffskithur" },
+                    { "In": "Graveyard" },
+                    { "OwnedBy": "You" }
+                  ]
+                }
+              }
             ],
             "effects": [
               { "May": { "effects": [{ "Move": { "what": { "Target": 0 }, "to": "Hand" } }] } }

@@ -1,0 +1,16 @@
+{
+  "oracle_id": "201a4455-1b6b-4e13-a0d5-4cf2116e1673",
+  "name": "In Bolas's Clutches",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "In Bolas's Clutches",
+      "oracle_fingerprint": "6105b8f89a460286f5358e3049872e88",
+      "abilities": [
+        { "Keyword": { "Enchant": [] } },
+        { "Static": { "affected": "Attached", "mods": [{ "SetController": "You" }] } },
+        { "Static": { "affected": "Attached", "mods": [{ "AddSupertype": "Legendary" }] } }
+      ]
+    }
+  ]
+}

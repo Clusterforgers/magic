@@ -1,0 +1,48 @@
+{
+  "oracle_id": "7dbf9e96-e61f-43db-8767-63a351cf4ef8",
+  "name": "Alirios, Enraptured",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Alirios, Enraptured",
+      "oracle_fingerprint": "b62dd61ad703a8a70c14a903c5b6a221",
+      "abilities": [
+        { "Replacement": { "when": { "Enters": { "what": ["This"] } }, "by": "Tapped" } },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": ["DoesntUntap"],
+            "condition": {
+              "Compare": {
+                "left": { "Count": [{ "Subtype": "Reflection" }, { "ControlledBy": "You" }] },
+                "op": "Ge",
+                "right": 1
+              }
+            }
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Reflection",
+                      "colors": ["Blue"],
+                      "types": ["Creature"],
+                      "subtypes": ["Reflection"],
+                      "power": 3,
+                      "toughness": 2
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

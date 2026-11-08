@@ -1,0 +1,25 @@
+{
+  "oracle_id": "947bd180-ee95-4db4-b5d9-432428018eb8",
+  "name": "Brand of Ill Omen",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Brand of Ill Omen",
+      "oracle_fingerprint": "ec3d4b279d746bece89cf05b9a8b00d2",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        { "Keyword": { "CumulativeUpkeep": "{R}" } },
+        {
+          "Rule": {
+            "rule": {
+              "Cant": {
+                "who": { "ControllerOf": "Attached" },
+                "action": { "Cast": { "filter": [{ "Type": "Creature" }] } }
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

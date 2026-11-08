@@ -1,0 +1,38 @@
+{
+  "oracle_id": "ea96fe35-88ed-432b-a495-08e787d23d0b",
+  "name": "Piercing Exhale",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Piercing Exhale",
+      "oracle_fingerprint": "564b7f87712d6c9abe8f457c8de5f5a8",
+      "abilities": [
+        { "AdditionalCost": { "cost": [{ "Behold": { "filter": [{ "Subtype": "Dragon" }] } }] } },
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } },
+              {
+                "what": {
+                  "Object": [{ "AnyOf": [{ "Type": "Creature" }, { "Type": "Planeswalker" }] }]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "DealDamage": {
+                  "source": { "Target": 0 },
+                  "to": { "Target": 1 },
+                  "amount": { "Stat": { "of": { "Target": 0 }, "stat": "Power" } }
+                }
+              },
+              {
+                "If": { "condition": "AdditionalCostPaid", "then": [{ "Surveil": { "count": 2 } }] }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

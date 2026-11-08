@@ -1,0 +1,50 @@
+{
+  "oracle_id": "795bc0b0-4b0a-49d6-ac8e-a52a10a93be8",
+  "name": "Evendo Brushrazer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Evendo Brushrazer",
+      "oracle_fingerprint": "25dc430718b40739a35ba9ca749aae6f",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Sacrificed": { "what": [{ "Not": "Token" }], "by": "You" } },
+            "effects": [{ "ExileTop": { "as": "exiled" } }]
+          }
+        },
+        {
+          "Rule": {
+            "rule": {
+              "MayCast": { "what": [{ "ExiledWith": "This" }], "from": "Exile", "play": true }
+            },
+            "condition": {
+              "All": [
+                {
+                  "Compare": {
+                    "left": {
+                      "Tally": {
+                        "event": "Sacrificed",
+                        "who": "You",
+                        "filter": [{ "Not": "Token" }]
+                      }
+                    },
+                    "op": "Ge",
+                    "right": 1
+                  }
+                },
+                "YourTurn"
+              ]
+            }
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap", { "Sacrifice": { "filter": [{ "Type": "Land" }] } }],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Red", "Red"] } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,31 @@
+{
+  "oracle_id": "a30241b4-5e92-44cd-b19b-7d6d59e95ada",
+  "name": "Keeper of Progenitus",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Keeper of Progenitus",
+      "oracle_fingerprint": "d478a74e2f4f7580abae92b278f7cb46",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "TappedForMana": {
+                "what": [
+                  {
+                    "AnyOf": [
+                      { "Subtype": "Mountain" },
+                      { "Subtype": "Forest" },
+                      { "Subtype": "Plains" }
+                    ]
+                  }
+                ]
+              }
+            },
+            "effects": [{ "AddMana": { "who": "Triggering", "mana": "OfTapped" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

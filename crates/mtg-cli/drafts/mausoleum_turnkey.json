@@ -1,0 +1,35 @@
+{
+  "oracle_id": "d4a61685-7149-4d14-bc17-85b060945687",
+  "name": "Mausoleum Turnkey",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mausoleum Turnkey",
+      "oracle_fingerprint": "75f38deed5a984cb67f4c18628cfb8ba",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              {
+                "what": {
+                  "ChosenBy": {
+                    "who": "Opponents",
+                    "what": {
+                      "Object": [
+                        { "Type": "Creature" },
+                        { "OwnedBy": "You" },
+                        { "In": "Graveyard" }
+                      ]
+                    }
+                  }
+                }
+              }
+            ],
+            "effects": [{ "Move": { "what": { "Target": 0 }, "to": "Hand" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

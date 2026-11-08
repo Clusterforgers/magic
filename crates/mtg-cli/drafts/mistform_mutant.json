@@ -1,0 +1,29 @@
+{
+  "oracle_id": "0f4350e2-48c7-4d2b-9384-4864232756ad",
+  "name": "Mistform Mutant",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mistform Mutant",
+      "oracle_fingerprint": "ced83dbdd30403641e0a311fa8ed4817",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{1}{U}",
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              { "ChooseValue": { "kind": { "CreatureTypeExcept": ["Wall"] }, "as": "chosen" } },
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "SetCreatureTypesChosen": "chosen" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

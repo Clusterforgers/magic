@@ -1,0 +1,49 @@
+{
+  "oracle_id": "8869df0c-fe84-4964-8d38-a8ecefa9c252",
+  "name": "Experimental Lab // Staff Room",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Experimental Lab",
+      "oracle_fingerprint": "2006ba4f2dd3ffc49fa049ab66e6e805",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "DoorUnlocked": { "who": "You", "door": 0 } },
+            "effects": [
+              { "LookAtTop": { "count": 2, "as": "looked" } },
+              { "Choose": { "from": { "Bound": "looked" }, "as": "kept2", "rest_as": "rest3" } },
+              { "Move": { "what": { "Bound": "rest3" }, "to": "Graveyard" } },
+              { "Manifest": { "as": "manifested4" } },
+              {
+                "PutCounters": {
+                  "on": { "Each": [{ "Is": { "Bound": "manifested4" } }] },
+                  "counter": "+1/+1",
+                  "count": 2
+                }
+              },
+              {
+                "PutCounters": {
+                  "on": { "Each": [{ "Is": { "Bound": "manifested4" } }] },
+                  "counter": { "Other": "trample" }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Staff Room",
+      "oracle_fingerprint": "8b02d374d3b3ccea69ecb49878de6c42",
+      "abilities": [
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 0, "end": 121 }
+          }
+        }
+      ]
+    }
+  ]
+}

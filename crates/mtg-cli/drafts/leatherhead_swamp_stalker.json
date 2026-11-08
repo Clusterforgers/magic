@@ -1,7 +1,7 @@
 {
   "oracle_id": "ee9b606a-a1fe-43c8-84d0-9bf7b012cc75",
   "name": "Leatherhead, Swamp Stalker",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Leatherhead, Swamp Stalker",
@@ -15,9 +15,33 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 59, "end": 221 }
+          "Triggered": {
+            "when": { "DealsDamage": { "source": ["This"], "to": "EachPlayer", "combat": true } },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": [{ "RemoveCounters": {} }],
+                  "paid": [
+                    { "Bind": { "what": "Triggering", "as": "when" } },
+                    {
+                      "Reflexive": {
+                        "targets": [
+                          {
+                            "what": {
+                              "Object": [
+                                { "AnyOf": [{ "Type": "Artifact" }, { "Type": "Enchantment" }] },
+                                { "ControlledBy": { "Bound": "when" } }
+                              ]
+                            }
+                          }
+                        ],
+                        "effects": [{ "Destroy": { "what": { "Target": 0 } } }]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
           }
         }
       ]

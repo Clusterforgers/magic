@@ -1,0 +1,27 @@
+{
+  "oracle_id": "2d4e0e0f-7167-40a4-ad76-2d5b45223eaa",
+  "name": "Standardize",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Standardize",
+      "oracle_fingerprint": "9b0fb54a774e0f352e87e1a31afc8d38",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "ChooseValue": { "kind": { "CreatureTypeExcept": ["Wall"] }, "as": "chosen" } },
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Type": "Creature" }] },
+                  "mods": [{ "SetCreatureTypesChosen": "chosen" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

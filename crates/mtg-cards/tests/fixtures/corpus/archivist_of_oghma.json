@@ -1,0 +1,141 @@
+{
+  "object": "card",
+  "id": "f6589e02-8c84-4069-88d1-ebcc8520cae1",
+  "oracle_id": "08b13e1f-27ca-40a8-b5ed-88ac933d24bf",
+  "multiverse_ids": [
+    562887
+  ],
+  "mtgo_id": 99996,
+  "tcgplayer_id": 272914,
+  "cardmarket_id": 660706,
+  "name": "Archivist of Oghma",
+  "lang": "en",
+  "released_at": "2022-06-10",
+  "uri": "https://api.scryfall.com/cards/f6589e02-8c84-4069-88d1-ebcc8520cae1",
+  "scryfall_uri": "https://scryfall.com/card/clb/4/archivist-of-oghma?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T06:07:03Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/f/6/f6589e02-8c84-4069-88d1-ebcc8520cae1.jpg?1783922823",
+    "normal": "https://cards.scryfall.io/normal/front/f/6/f6589e02-8c84-4069-88d1-ebcc8520cae1.jpg?1783922823",
+    "large": "https://cards.scryfall.io/large/front/f/6/f6589e02-8c84-4069-88d1-ebcc8520cae1.jpg?1783922823",
+    "png": "https://cards.scryfall.io/png/front/f/6/f6589e02-8c84-4069-88d1-ebcc8520cae1.png?1783922823",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/f/6/f6589e02-8c84-4069-88d1-ebcc8520cae1.jpg?1783922823",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/f/6/f6589e02-8c84-4069-88d1-ebcc8520cae1.jpg?1783922823",
+    "thumb": "https://cards.scryfall.io/thumb/front/f/6/f6589e02-8c84-4069-88d1-ebcc8520cae1.webp?1783922823",
+    "grid": "https://cards.scryfall.io/grid/front/f/6/f6589e02-8c84-4069-88d1-ebcc8520cae1.webp?1783922823",
+    "display": "https://cards.scryfall.io/display/front/f/6/f6589e02-8c84-4069-88d1-ebcc8520cae1.webp?1783922823",
+    "art": "https://cards.scryfall.io/art/front/f/6/f6589e02-8c84-4069-88d1-ebcc8520cae1.webp?1783922823",
+    "crop": "https://cards.scryfall.io/crop/front/f/6/f6589e02-8c84-4069-88d1-ebcc8520cae1.webp?1783922823",
+    "jpeg": "https://cards.scryfall.io/normal/front/f/6/f6589e02-8c84-4069-88d1-ebcc8520cae1.jpg?1783922823"
+  },
+  "mana_cost": "{1}{W}",
+  "cmc": 2.0,
+  "type_line": "Creature — Halfling Cleric",
+  "oracle_text": "Flash\nWhenever an opponent searches their library, you gain 1 life and draw a card.",
+  "power": "2",
+  "toughness": "2",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": [
+    "Flash"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "5e4c3fe8-fd57-4b20-ad56-c03790a16cea",
+  "set": "clb",
+  "set_name": "Commander Legends: Battle for Baldur's Gate",
+  "set_type": "draft_innovation",
+  "set_uri": "https://api.scryfall.com/sets/5e4c3fe8-fd57-4b20-ad56-c03790a16cea",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Aclb&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/clb?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/f6589e02-8c84-4069-88d1-ebcc8520cae1/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A08b13e1f-27ca-40a8-b5ed-88ac933d24bf&unique=prints",
+  "collector_number": "4",
+  "digital": false,
+  "rarity": "rare",
+  "flavor_text": "\"Knowledge is the greatest tool of the mortal mind, outweighing anything made by mortal hands. Before anything else can exist, the idea must exist.\"",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Stella Spente",
+  "artist_ids": [
+    "6ca6dae9-715e-4e57-b7b9-7eed475fa14a"
+  ],
+  "illustration_id": "f13cd29f-ffc5-44b0-a962-3199ea5f6ce1",
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 699,
+  "preview": {
+    "source": "Magic Noobz",
+    "source_uri": "https://www.youtube.com/watch?v=hXX5Ycmr0WQ",
+    "previewed_at": "2022-05-20"
+  },
+  "prices": {
+    "usd": "6.47",
+    "usd_foil": "7.67",
+    "usd_etched": null,
+    "eur": "7.48",
+    "eur_foil": "9.23",
+    "tix": "10.27"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=562887&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DArchivist%2Bof%2BOghma",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DArchivist%2Bof%2BOghma",
+    "edhrec": "https://edhrec.com/route/?cc=Archivist+of+Oghma"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F272914%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=660706&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/99996?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

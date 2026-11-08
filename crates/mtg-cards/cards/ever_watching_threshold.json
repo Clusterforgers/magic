@@ -1,0 +1,23 @@
+{
+  "oracle_id": "c6639b52-b51d-46e7-a83c-c4621b1cecaa",
+  "name": "Ever-Watching Threshold",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ever-Watching Threshold",
+      "oracle_fingerprint": "01ca345f482601faaa48fd655bc09d50",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "GroupAttacks": {
+                "what": [{ "Type": "Creature" }, { "AttackingPlayerOrPlaneswalker": "You" }]
+              }
+            },
+            "effects": [{ "Draw": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

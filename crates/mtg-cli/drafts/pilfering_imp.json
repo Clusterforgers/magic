@@ -12,7 +12,7 @@
           "Activated": {
             "cost": [{ "Mana": "{1}{B}" }, "Tap", "SacrificeSelf"],
             "timing": "Sorcery",
-            "targets": [{ "what": "Player" }],
+            "targets": [{ "what": "Opponent" }],
             "effects": [
               {
                 "Reveal": { "what": { "Each": [{ "OwnedBy": { "Target": 0 } }, { "In": "Hand" }] } }

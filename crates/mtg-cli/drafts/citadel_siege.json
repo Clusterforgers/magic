@@ -1,0 +1,41 @@
+{
+  "oracle_id": "40f66e21-5b60-4e42-927d-65397e7ad544",
+  "name": "Citadel Siege",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Citadel Siege",
+      "oracle_fingerprint": "1ef0462e867e15449f3bd5c774170086",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "ChooseWord": ["Khans", "Dragons"] }
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "BeginCombat", "whose": "You" } },
+            "if": { "EnteredAs": "Khans" },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } }
+            ],
+            "effects": [
+              { "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1", "count": 2 } }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "BeginCombat", "whose": "Opponents" } },
+            "if": { "EnteredAs": "Dragons" },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "ActivePlayer" }] } }
+            ],
+            "effects": [{ "Tap": { "what": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

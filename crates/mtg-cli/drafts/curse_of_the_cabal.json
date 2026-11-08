@@ -1,0 +1,68 @@
+{
+  "oracle_id": "cafede0d-aa14-4266-b619-321ac756262d",
+  "name": "Curse of the Cabal",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Curse of the Cabal",
+      "oracle_fingerprint": "8a305252c3147fa3f4e62b890deaba32",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              {
+                "Sacrifice": {
+                  "who": { "Target": 0 },
+                  "filter": [],
+                  "count": {
+                    "Half": {
+                      "of": {
+                        "Largest": { "who": { "Target": 0 }, "of": [{ "ControlledBy": "You" }] }
+                      },
+                      "up": false
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Suspend": { "time": 2, "cost": "{2}{B}{B}" } } },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep" } },
+            "if": {
+              "Compare": {
+                "left": { "Count": ["Suspended", "This", { "In": "Exile" }] },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "from": "Exile",
+            "effects": [
+              {
+                "May": {
+                  "who": "Triggering",
+                  "effects": [
+                    { "Sacrifice": { "who": "Triggering", "filter": [], "as": "sacrificed" } }
+                  ]
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": { "left": { "Bound": "sacrificed~moved" }, "op": "Gt", "right": 0 }
+                  },
+                  "then": [
+                    { "PutCounters": { "on": "This", "counter": { "Other": "time" }, "count": 2 } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

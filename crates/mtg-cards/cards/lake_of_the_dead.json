@@ -1,0 +1,37 @@
+{
+  "oracle_id": "bdf476e5-1d57-4b17-b45b-d52fd75aadeb",
+  "name": "Lake of the Dead",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Lake of the Dead",
+      "oracle_fingerprint": "7fb9ab77dbaf60d2f80a82806e6bd9cc",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": {
+              "PayOrGraveyard": {
+                "cost": [{ "Sacrifice": { "filter": [{ "Subtype": "Swamp" }] } }]
+              }
+            }
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Black"] } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap", { "Sacrifice": { "filter": [{ "Subtype": "Swamp" }] } }],
+            "effects": [
+              { "AddMana": { "mana": { "Fixed": ["Black", "Black", "Black", "Black"] } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

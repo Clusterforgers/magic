@@ -48,8 +48,7 @@
                         "once": true,
                         "additional": [{ "Sacrifice": { "filter": [{ "Type": "Land" }] } }]
                       }
-                    },
-                    "condition": "YourTurn"
+                    }
                   }
                 }
               }

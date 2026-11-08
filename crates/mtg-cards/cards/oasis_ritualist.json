@@ -1,0 +1,25 @@
+{
+  "oracle_id": "de89ef8f-ef6a-4f95-9c38-5debc06e1d74",
+  "name": "Oasis Ritualist",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Oasis Ritualist",
+      "oracle_fingerprint": "b4dff28b6cf320966cc0a98782447214",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "AnyColor": 1 } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap", "Exert"],
+            "effects": [{ "AddMana": { "mana": { "AnyColor": 2 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

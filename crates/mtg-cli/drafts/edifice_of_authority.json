@@ -1,7 +1,7 @@
 {
   "oracle_id": "7c16707e-24da-4a7e-9d24-d3731987f675",
   "name": "Edifice of Authority",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Edifice of Authority",
@@ -24,9 +24,38 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 88, "end": 279 }
+          "Activated": {
+            "cost": [{ "Mana": "{1}" }, "Tap"],
+            "condition": {
+              "Compare": {
+                "left": { "Counters": { "on": "This", "counter": { "Other": "brick" } } },
+                "op": "Ge",
+                "right": 3
+              }
+            },
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": ["CantAttack", "CantBlock"],
+                  "duration": "UntilYourNextTurn"
+                }
+              },
+              {
+                "Rule": {
+                  "rule": {
+                    "Cant": {
+                      "who": "EachPlayer",
+                      "action": {
+                        "ActivateKind": { "kind": "Every", "sources": [{ "Is": { "Target": 0 } }] }
+                      }
+                    }
+                  },
+                  "duration": "UntilYourNextTurn"
+                }
+              }
+            ]
           }
         }
       ]

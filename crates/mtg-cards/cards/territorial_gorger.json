@@ -1,0 +1,30 @@
+{
+  "oracle_id": "fcf9c013-7a79-42b1-8aee-6d40ff475fbf",
+  "name": "Territorial Gorger",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Territorial Gorger",
+      "oracle_fingerprint": "62de491ffa6d2b6b26bebccc660d1422",
+      "abilities": [
+        { "Keyword": "Trample" },
+        {
+          "Triggered": {
+            "when": {
+              "Batch": { "PlayerCountersPut": { "who": "You", "counter": { "Other": "energy" } } }
+            },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "ModifyPT": { "power": 2, "toughness": 2 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

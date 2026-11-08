@@ -1,0 +1,39 @@
+{
+  "oracle_id": "ace6403d-9fac-4d0f-a6ea-eb2ff3da259d",
+  "name": "Guildmages' Forum",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Guildmages' Forum",
+      "oracle_fingerprint": "fba17527cb91bef48570c5a4aa07f3c5",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Colorless"] } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{1}" }, "Tap"],
+            "effects": [
+              {
+                "AddMana": {
+                  "mana": { "AnyColor": 1 },
+                  "only": [
+                    {
+                      "Enters": {
+                        "spell": { "types": ["Creature"], "multicolored": true },
+                        "counters": 1
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

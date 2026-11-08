@@ -1,0 +1,22 @@
+{
+  "oracle_id": "e80772e2-8623-4094-81a2-70828b2b151c",
+  "name": "Blightsteel Colossus",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Blightsteel Colossus",
+      "oracle_fingerprint": "9c5935196636b8dbc1803562fed8676d",
+      "abilities": [
+        { "Keyword": "Trample" },
+        { "Keyword": "Infect" },
+        { "Keyword": "Indestructible" },
+        {
+          "Replacement": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Graveyard" } },
+            "by": { "IntoLibrary": { "place": "Shuffled", "reveal": true } }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,51 @@
+{
+  "oracle_id": "87966759-206a-4a2d-bf78-86f727c29972",
+  "name": "Nahiri, Forged in Fury",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Nahiri, Forged in Fury",
+      "oracle_fingerprint": "1bb3c55ac8e2118b047c671baef611dc",
+      "abilities": [
+        { "Keyword": { "Affinity": [{ "Subtype": "Equipment" }] } },
+        {
+          "Triggered": {
+            "when": {
+              "Attacks": {
+                "what": [
+                  { "Type": "Creature" },
+                  { "HasAttached": [{ "Subtype": "Equipment" }] },
+                  { "ControlledBy": "You" }
+                ]
+              }
+            },
+            "effects": [
+              { "ExileTop": { "as": "exiled" } },
+              {
+                "Rule": {
+                  "rule": {
+                    "MayCast": { "from": "Exile", "only": { "Bound": "exiled" }, "play": true }
+                  },
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "Rule": {
+                  "rule": {
+                    "MayCast": {
+                      "what": [{ "Subtype": "Equipment" }],
+                      "from": "Exile",
+                      "free": true,
+                      "only": { "Bound": "exiled" }
+                    }
+                  },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

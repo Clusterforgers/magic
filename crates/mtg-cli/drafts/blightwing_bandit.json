@@ -1,0 +1,38 @@
+{
+  "oracle_id": "770894c0-01e7-4c1e-bcfb-989eee221dd2",
+  "name": "Blightwing Bandit",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Blightwing Bandit",
+      "oracle_fingerprint": "a43967031cabafb9e2299753da213526",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": "Deathtouch" },
+        {
+          "Triggered": {
+            "when": { "Nth": { "event": { "SpellCast": { "by": "You" } }, "nth": 1 } },
+            "if": { "AtTrigger": { "Not": "YourTurn" } },
+            "effects": [
+              { "LookAtTop": { "who": "ActivePlayer", "as": "top" } },
+              { "ExileHidden": { "what": { "Bound": "top" }, "held": true, "as": "exiled4" } },
+              {
+                "Rule": {
+                  "rule": {
+                    "MayCast": {
+                      "from": "Exile",
+                      "only": { "Bound": "exiled4" },
+                      "play": true,
+                      "spend_as": "AnyType"
+                    }
+                  },
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

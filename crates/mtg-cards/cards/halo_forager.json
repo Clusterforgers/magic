@@ -1,0 +1,61 @@
+{
+  "oracle_id": "210d1077-6e60-4f06-a8a4-10b842979ac5",
+  "name": "Halo Forager",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Halo Forager",
+      "oracle_fingerprint": "f017f4ea77579a3e87d9a2cae43ef880",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": "{X}",
+                  "paid": [
+                    {
+                      "Reflexive": {
+                        "targets": [
+                          {
+                            "what": {
+                              "Object": [
+                                { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] },
+                                { "Compare": { "stat": "ManaValue", "op": "Eq", "to": "X" } },
+                                { "In": "Graveyard" }
+                              ]
+                            }
+                          }
+                        ],
+                        "effects": [
+                          {
+                            "CastFromZone": { "what": { "Target": 0 }, "free": true, "as": "cast" }
+                          },
+                          {
+                            "Shield": {
+                              "when": {
+                                "ZoneChange": {
+                                  "what": [{ "In": "Stack" }, { "Is": { "Bound": "cast" } }],
+                                  "from": "Stack",
+                                  "to": "Graveyard"
+                                }
+                              },
+                              "by": { "MoveTo": "Exile" },
+                              "duration": "Forever"
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

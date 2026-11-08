@@ -1,0 +1,32 @@
+{
+  "oracle_id": "5554d422-6513-4c7e-866d-9d5f0403fc80",
+  "name": "Psychic Transfer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Psychic Transfer",
+      "oracle_fingerprint": "240cfbb9e44333dea323290a07d7ac52",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "Difference": [{ "Life": "You" }, { "Life": { "Target": 0 } }] },
+                      "op": "Le",
+                      "right": 5
+                    }
+                  },
+                  "then": [{ "ExchangeLife": { "with": { "Target": 0 } } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

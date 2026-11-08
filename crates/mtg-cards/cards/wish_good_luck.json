@@ -1,0 +1,35 @@
+{
+  "oracle_id": "31f8dd0d-2495-4c37-a103-96f21164bda8",
+  "name": "Wish Good Luck",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Wish Good Luck",
+      "oracle_fingerprint": "b545db0233ef802997605215d3eace45",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "CreateToken": { "token": { "Named": "food" } } },
+              { "CreateToken": { "token": { "Named": "treasure" }, "tapped": true } },
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Vehicle",
+                      "types": ["Artifact"],
+                      "subtypes": ["Vehicle"],
+                      "power": 3,
+                      "toughness": 2,
+                      "abilities": [{ "Keyword": { "Crew": 1 } }]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

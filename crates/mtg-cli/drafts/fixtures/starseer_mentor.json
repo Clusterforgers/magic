@@ -1,0 +1,146 @@
+{
+  "object": "card",
+  "id": "6b2f6dc5-9fe8-49c1-b24c-1d99ce1da619",
+  "oracle_id": "12a165c4-229b-458b-8fc7-c1b7cba35a8e",
+  "multiverse_ids": [
+    669147
+  ],
+  "mtgo_id": 129711,
+  "arena_id": 91769,
+  "tcgplayer_id": 558354,
+  "cardmarket_id": 777702,
+  "name": "Starseer Mentor",
+  "lang": "en",
+  "released_at": "2024-08-02",
+  "uri": "https://api.scryfall.com/cards/6b2f6dc5-9fe8-49c1-b24c-1d99ce1da619",
+  "scryfall_uri": "https://scryfall.com/card/blb/233/starseer-mentor?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T02:46:31Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/6/b/6b2f6dc5-9fe8-49c1-b24c-1d99ce1da619.jpg?1783910791",
+    "normal": "https://cards.scryfall.io/normal/front/6/b/6b2f6dc5-9fe8-49c1-b24c-1d99ce1da619.jpg?1783910791",
+    "large": "https://cards.scryfall.io/large/front/6/b/6b2f6dc5-9fe8-49c1-b24c-1d99ce1da619.jpg?1783910791",
+    "png": "https://cards.scryfall.io/png/front/6/b/6b2f6dc5-9fe8-49c1-b24c-1d99ce1da619.png?1783910791",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/6/b/6b2f6dc5-9fe8-49c1-b24c-1d99ce1da619.jpg?1783910791",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/6/b/6b2f6dc5-9fe8-49c1-b24c-1d99ce1da619.jpg?1783910791",
+    "thumb": "https://cards.scryfall.io/thumb/front/6/b/6b2f6dc5-9fe8-49c1-b24c-1d99ce1da619.webp?1783910791",
+    "grid": "https://cards.scryfall.io/grid/front/6/b/6b2f6dc5-9fe8-49c1-b24c-1d99ce1da619.webp?1783910791",
+    "display": "https://cards.scryfall.io/display/front/6/b/6b2f6dc5-9fe8-49c1-b24c-1d99ce1da619.webp?1783910791",
+    "art": "https://cards.scryfall.io/art/front/6/b/6b2f6dc5-9fe8-49c1-b24c-1d99ce1da619.webp?1783910791",
+    "crop": "https://cards.scryfall.io/crop/front/6/b/6b2f6dc5-9fe8-49c1-b24c-1d99ce1da619.webp?1783910791",
+    "jpeg": "https://cards.scryfall.io/normal/front/6/b/6b2f6dc5-9fe8-49c1-b24c-1d99ce1da619.jpg?1783910791"
+  },
+  "mana_cost": "{3}{W}{B}",
+  "cmc": 5.0,
+  "type_line": "Creature — Bat Warlock",
+  "oracle_text": "Flying, vigilance\nAt the beginning of your end step, if you gained or lost life this turn, target opponent loses 3 life unless they sacrifice a nonland permanent of their choice or discard a card.",
+  "power": "3",
+  "toughness": "5",
+  "colors": [
+    "B",
+    "W"
+  ],
+  "color_identity": [
+    "B",
+    "W"
+  ],
+  "keywords": [
+    "Flying",
+    "Vigilance"
+  ],
+  "legalities": {
+    "standard": "legal",
+    "future": "legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "mtgo",
+    "arena"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "a2f58272-bba6-439d-871e-7a46686ac018",
+  "set": "blb",
+  "set_name": "Bloomburrow",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/a2f58272-bba6-439d-871e-7a46686ac018",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Ablb&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/blb?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/6b2f6dc5-9fe8-49c1-b24c-1d99ce1da619/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A12a165c4-229b-458b-8fc7-c1b7cba35a8e&unique=prints",
+  "collector_number": "233",
+  "digital": false,
+  "rarity": "uncommon",
+  "flavor_text": "\"Each star is given a name befitting its grandeur. This one is called Aurax, the Night-Eater. That one is called Blinky.\"",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Taras Susak",
+  "artist_ids": [
+    "db356418-19f5-448f-b5a9-68b9afce3d72"
+  ],
+  "illustration_id": "b42c5139-5a86-4638-8ddd-7cca1d93cd1a",
+  "border_color": "black",
+  "frame": "2015",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 11261,
+  "penny_rank": 9043,
+  "preview": {
+    "source": "Wizards of the Coast",
+    "source_uri": "https://magic.wizards.com/en/products/bloomburrow/card-image-gallery",
+    "previewed_at": "2024-07-09"
+  },
+  "prices": {
+    "usd": "0.24",
+    "usd_foil": "0.34",
+    "usd_etched": null,
+    "eur": "0.12",
+    "eur_foil": "0.22",
+    "tix": "0.03"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=669147&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DStarseer%2BMentor",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DStarseer%2BMentor",
+    "edhrec": "https://edhrec.com/route/?cc=Starseer+Mentor"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F558354%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=777702&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/129711?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

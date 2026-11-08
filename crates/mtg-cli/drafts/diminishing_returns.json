@@ -1,0 +1,44 @@
+{
+  "oracle_id": "f9b02a7c-c122-4282-90e2-81fcfa663193",
+  "name": "Diminishing Returns",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Diminishing Returns",
+      "oracle_fingerprint": "7f010c995f1838dff6288f6e063a1a69",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Move": {
+                  "what": { "Each": [{ "AnyOf": [{ "In": "Graveyard" }, { "In": "Hand" }] }] },
+                  "to": { "Library": { "place": "Shuffled" } }
+                }
+              },
+              { "ExileTop": { "count": 10, "as": "exiled" } },
+              {
+                "RepeatEach": {
+                  "over": "EachPlayer",
+                  "as": "player3",
+                  "effects": [
+                    {
+                      "ChooseValue": {
+                        "who": { "Bound": "player3" },
+                        "kind": { "Number": [0, 7] },
+                        "as": "number2"
+                      }
+                    },
+                    {
+                      "Draw": { "who": { "Bound": "player3" }, "count": { "ChosenAs": "number2" } }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

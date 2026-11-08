@@ -1,0 +1,42 @@
+{
+  "oracle_id": "20535126-f811-4386-bdce-d73f30691724",
+  "name": "Smaug, Wicked Worm",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Smaug, Wicked Worm",
+      "oracle_fingerprint": "de1bd0904098a897dece6bbf3f033e47",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": { "Named": "treasure" },
+                  "count": { "Count": [{ "Type": "Artifact" }, { "ControlledBy": "Opponents" }] },
+                  "tapped": true
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "SpellCast": {
+                "what": [
+                  "Spell",
+                  { "SpentFrom": { "from": { "subtypes": ["Treasure"] }, "least": 1 } }
+                ],
+                "by": "You"
+              }
+            },
+            "effects": [{ "Draw": {} }, { "LoseLife": { "amount": 1 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

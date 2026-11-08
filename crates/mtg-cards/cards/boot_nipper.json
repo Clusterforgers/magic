@@ -1,0 +1,19 @@
+{
+  "oracle_id": "e6337404-2978-47a8-a5ae-4a70add2df69",
+  "name": "Boot Nipper",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Boot Nipper",
+      "oracle_fingerprint": "21d865c7668443d601c3eebe8667851d",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "WithCounterOf": [{ "Other": "deathtouch" }, { "Other": "lifelink" }] }
+          }
+        }
+      ]
+    }
+  ]
+}

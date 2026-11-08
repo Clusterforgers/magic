@@ -1,0 +1,35 @@
+{
+  "oracle_id": "3425598f-d51c-4f92-8fda-42e96e4c537a",
+  "name": "Gate Smasher",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Gate Smasher",
+      "oracle_fingerprint": "682cd971fed6f57bd3883b8633368cef",
+      "abilities": [
+        {
+          "Rule": {
+            "rule": {
+              "Cant": {
+                "who": {
+                  "Each": [
+                    { "Type": "Creature" },
+                    { "Compare": { "stat": "Toughness", "op": "Lt", "to": 4 } }
+                  ]
+                },
+                "action": { "BeAttachedBy": ["This"] }
+              }
+            }
+          }
+        },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "ModifyPT": { "power": 3, "toughness": 0 } }, { "AddKeyword": "Trample" }]
+          }
+        },
+        { "Keyword": { "Equip": "{3}" } }
+      ]
+    }
+  ]
+}

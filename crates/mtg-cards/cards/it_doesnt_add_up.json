@@ -1,0 +1,28 @@
+{
+  "oracle_id": "dcfc8c59-d032-414d-9da6-125ebcb1366c",
+  "name": "It Doesn't Add Up",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "It Doesn't Add Up",
+      "oracle_fingerprint": "6bc82045769e551da637a58551921cf3",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "Type": "Creature" }, { "OwnedBy": "You" }, { "In": "Graveyard" }]
+                }
+              }
+            ],
+            "effects": [
+              { "Move": { "what": { "Target": 0 }, "to": { "Battlefield": {} } } },
+              { "Suspect": { "what": { "Target": 0 } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

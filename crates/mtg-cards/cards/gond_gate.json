@@ -1,0 +1,42 @@
+{
+  "oracle_id": "4306938b-c0db-4e63-a4fb-61628e5ff41f",
+  "name": "Gond Gate",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Gond Gate",
+      "oracle_fingerprint": "e949d395dac068a6a3601da10ce35608",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": [{ "Subtype": "Gate" }, { "ControlledBy": "You" }] } },
+            "by": "Untapped"
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Colorless"] } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [
+              {
+                "AddMana": {
+                  "mana": {
+                    "ProducedBy": {
+                      "among": [{ "Subtype": "Gate" }, { "ControlledBy": "You" }],
+                      "count": 1
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

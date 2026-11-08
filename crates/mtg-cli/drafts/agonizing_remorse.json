@@ -1,0 +1,49 @@
+{
+  "oracle_id": "1267dfda-eb1a-4963-9fe3-fa619d924d7a",
+  "name": "Agonizing Remorse",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Agonizing Remorse",
+      "oracle_fingerprint": "1572153ddb71b9dc30c71f8e44049f83",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              {
+                "Reveal": { "what": { "Each": [{ "OwnedBy": { "Target": 0 } }, { "In": "Hand" }] } }
+              },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      {
+                        "AnyOf": [
+                          {
+                            "Not": {
+                              "AnyOf": [
+                                { "Not": { "Not": { "Type": "Land" } } },
+                                { "Not": { "In": "Hand" } }
+                              ]
+                            }
+                          },
+                          { "In": "Graveyard" }
+                        ]
+                      },
+                      { "AnyOf": [{ "In": "Hand" }, { "In": "Graveyard" }] },
+                      { "OwnedBy": { "Target": 0 } }
+                    ]
+                  },
+                  "as": "picked"
+                }
+              },
+              { "Exile": { "what": { "Bound": "picked" } } },
+              { "LoseLife": { "amount": 1 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

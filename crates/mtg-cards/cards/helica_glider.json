@@ -1,0 +1,19 @@
+{
+  "oracle_id": "8bcdb107-3827-4280-9e5e-7f1e771ef0c5",
+  "name": "Helica Glider",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Helica Glider",
+      "oracle_fingerprint": "260af5e23feab83803590f5a836bab1d",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "WithCounterOf": [{ "Other": "flying" }, { "Other": "first strike" }] }
+          }
+        }
+      ]
+    }
+  ]
+}

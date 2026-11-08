@@ -43,8 +43,7 @@
                 "play": true,
                 "once": true
               }
-            },
-            "condition": "YourTurn"
+            }
           }
         }
       ]

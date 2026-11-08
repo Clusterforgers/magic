@@ -1,0 +1,39 @@
+{
+  "oracle_id": "4a220e0c-e463-4264-9a96-658cf842b82e",
+  "name": "Champion of the Clachan",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Champion of the Clachan",
+      "oracle_fingerprint": "34e152c78d490582a77c96dd4aab8742",
+      "abilities": [
+        { "Keyword": "Flash" },
+        {
+          "AdditionalCost": {
+            "cost": [{ "Behold": { "filter": [{ "Subtype": "Kithkin" }], "exile": true } }],
+            "required": true
+          }
+        },
+        {
+          "Static": {
+            "affected": { "Each": [{ "Subtype": "Kithkin" }, "Other", { "ControlledBy": "You" }] },
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield" } },
+            "effects": [
+              {
+                "Move": {
+                  "what": { "Each": [{ "ExiledWith": "This" }, { "In": "Exile" }] },
+                  "to": "Hand"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

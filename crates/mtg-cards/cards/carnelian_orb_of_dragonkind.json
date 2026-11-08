@@ -1,0 +1,34 @@
+{
+  "oracle_id": "651c967c-8f71-4eb5-b22f-545e55ea050e",
+  "name": "Carnelian Orb of Dragonkind",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Carnelian Orb of Dragonkind",
+      "oracle_fingerprint": "e85d7a0067783a107b94524ebe531318",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [
+              {
+                "AddMana": {
+                  "mana": { "Fixed": ["Red"] },
+                  "only": [
+                    {
+                      "Enters": {
+                        "spell": { "types": ["Creature"], "subtypes": ["Dragon"] },
+                        "keyword": "Haste",
+                        "this_turn": true
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

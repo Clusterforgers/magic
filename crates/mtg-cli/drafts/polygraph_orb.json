@@ -1,7 +1,7 @@
 {
   "oracle_id": "bb039957-9e88-48cf-b41c-38d42eb87251",
   "name": "Polygraph Orb",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Polygraph Orb",
@@ -27,9 +27,47 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 153, "end": 354 }
+          "Activated": {
+            "cost": [{ "Mana": "{2}" }, "Tap", { "CollectEvidence": 3 }],
+            "effects": [
+              {
+                "RepeatEach": {
+                  "over": "Opponents",
+                  "as": "each",
+                  "effects": [
+                    {
+                      "OneOf": {
+                        "who": { "Bound": "each" },
+                        "options": [
+                          [
+                            {
+                              "Pay": {
+                                "who": { "Bound": "each" },
+                                "cost": [{ "Sacrifice": { "filter": [{ "Type": "Creature" }] } }],
+                                "unpaid": [
+                                  { "LoseLife": { "who": { "Bound": "each" }, "amount": 3 } }
+                                ]
+                              }
+                            }
+                          ],
+                          [
+                            {
+                              "Pay": {
+                                "who": { "Bound": "each" },
+                                "cost": [{ "Discard": {} }],
+                                "unpaid": [
+                                  { "LoseLife": { "who": { "Bound": "each" }, "amount": 3 } }
+                                ]
+                              }
+                            }
+                          ]
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
           }
         }
       ]

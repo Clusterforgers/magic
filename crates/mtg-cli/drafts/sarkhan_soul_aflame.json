@@ -1,0 +1,49 @@
+{
+  "oracle_id": "bbcae463-ba05-4cfe-9c25-13f2e64698c7",
+  "name": "Sarkhan, Soul Aflame",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sarkhan, Soul Aflame",
+      "oracle_fingerprint": "3045c367a287a807b903836cc1c5d6d0",
+      "abilities": [
+        {
+          "CostModifier": {
+            "applies_to": ["Spell", { "Subtype": "Dragon" }, { "ControlledBy": "You" }],
+            "change": "Reduce",
+            "mana": "{1}"
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Subtype": "Dragon" }, { "ControlledBy": "You" }],
+                "to": "Battlefield"
+              }
+            },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "BecomeCopy": {
+                        "what": "This",
+                        "of": "Triggering",
+                        "except": [
+                          { "SetName": "Sarkhan, Soul Aflame" },
+                          { "AddSupertype": "Legendary" }
+                        ],
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

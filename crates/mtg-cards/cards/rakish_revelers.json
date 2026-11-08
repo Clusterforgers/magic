@@ -1,0 +1,72 @@
+{
+  "oracle_id": "7db1402e-a434-45d2-9d21-9e0faeeaff10",
+  "name": "Rakish Revelers",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Rakish Revelers",
+      "oracle_fingerprint": "09bb14d00a4e817f99bb9a3bac37534b",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Citizen",
+                      "colors": ["Green", "White"],
+                      "types": ["Creature"],
+                      "subtypes": ["Citizen"],
+                      "power": 1,
+                      "toughness": 1
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{2}" }, "ExileSelf"],
+            "from": "Hand",
+            "targets": [{ "what": { "Object": [{ "Type": "Land" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    {
+                      "GrantAbility": {
+                        "Activated": {
+                          "cost": ["Tap"],
+                          "effects": [
+                            { "AddMana": { "mana": { "OneOf": ["Red", "Green", "White"] } } }
+                          ]
+                        }
+                      }
+                    }
+                  ],
+                  "duration": "UntilCastFromExile"
+                }
+              },
+              {
+                "Rule": {
+                  "rule": {
+                    "MayCast": {
+                      "from": "Exile",
+                      "only": { "Arrived": { "of": "This", "zone": "Exile" } }
+                    }
+                  },
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

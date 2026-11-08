@@ -1,0 +1,50 @@
+{
+  "oracle_id": "8de50bda-1ef6-4ccf-9efc-fab10b7eb2e5",
+  "name": "Fervent Champion",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Fervent Champion",
+      "oracle_fingerprint": "1603e92ece1e4934f5a447771614e540",
+      "abilities": [
+        { "Keyword": "FirstStrike" },
+        { "Keyword": "Haste" },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Subtype": "Knight" },
+                    "Attacking",
+                    "Other",
+                    { "ControlledBy": "You" }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "ModifyPT": { "power": 1, "toughness": 0 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "CostModifier": {
+            "applies_to": [{ "ControlledBy": "You" }],
+            "change": "Reduce",
+            "mana": "{3}",
+            "activating": "Equip",
+            "targeting": ["This"]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,30 @@
+{
+  "oracle_id": "0e49ee63-a293-4b33-98cc-ebdcc2c64e82",
+  "name": "Skoa, Embermage",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Skoa, Embermage",
+      "oracle_fingerprint": "6af2ad9ca073fb239f11c4d604b137d4",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 4 } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [
+              { "Discard": { "filter": [{ "Named": "Skoa, Embermage" }] } },
+              { "Sacrifice": { "filter": [{ "Subtype": "Mountain" }], "count": 2 } }
+            ],
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 4 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

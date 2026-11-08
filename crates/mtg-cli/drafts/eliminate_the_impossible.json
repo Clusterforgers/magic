@@ -1,0 +1,34 @@
+{
+  "oracle_id": "c78d4cec-6764-4cce-96d2-a2d85a57b218",
+  "name": "Eliminate the Impossible",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Eliminate the Impossible",
+      "oracle_fingerprint": "1e68764f3634c4cfe85f5e76df90c7a1",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "CreateToken": { "token": { "Named": "clue" } } },
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }] },
+                  "mods": [{ "ModifyPT": { "power": -2, "toughness": 0 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "Unsuspect": {
+                  "what": {
+                    "Each": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }, "Suspected"]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

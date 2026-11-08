@@ -1,0 +1,79 @@
+{
+  "oracle_id": "85ac3efc-5e19-4661-b52f-116f57e39581",
+  "name": "Behind the Mask",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Behind the Mask",
+      "oracle_fingerprint": "31a7ecbc69a0542c1094c51835503c3f",
+      "abilities": [
+        { "AdditionalCost": { "cost": [{ "CollectEvidence": 6 }] } },
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "AnyOf": [{ "Type": "Artifact" }, { "Type": "Creature" }] }]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    {
+                      "SetPT": {
+                        "power": {
+                          "When": {
+                            "condition": {
+                              "Compare": {
+                                "left": {
+                                  "When": {
+                                    "condition": "AdditionalCostPaid",
+                                    "then": 1,
+                                    "otherwise": 0
+                                  }
+                                },
+                                "op": "Ge",
+                                "right": 1
+                              }
+                            },
+                            "then": 1,
+                            "otherwise": 4
+                          }
+                        },
+                        "toughness": {
+                          "When": {
+                            "condition": {
+                              "Compare": {
+                                "left": {
+                                  "When": {
+                                    "condition": "AdditionalCostPaid",
+                                    "then": 1,
+                                    "otherwise": 0
+                                  }
+                                },
+                                "op": "Ge",
+                                "right": 1
+                              }
+                            },
+                            "then": 1,
+                            "otherwise": 3
+                          }
+                        }
+                      }
+                    },
+                    { "AddType": "Artifact" },
+                    { "AddType": "Creature" }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

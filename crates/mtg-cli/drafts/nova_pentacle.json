@@ -1,0 +1,44 @@
+{
+  "oracle_id": "db121503-8a34-498a-829c-72c33798369b",
+  "name": "Nova Pentacle",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Nova Pentacle",
+      "oracle_fingerprint": "0c1c716f7bc2c0f0d414e5b22b1d4f63",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{3}" }, "Tap"],
+            "targets": [
+              {
+                "what": {
+                  "ChosenBy": { "who": "Opponents", "what": { "Object": [{ "Type": "Creature" }] } }
+                }
+              }
+            ],
+            "effects": [
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "AnyOf": [{ "In": "Battlefield" }, { "In": "Stack" }, { "In": "Command" }] }
+                    ]
+                  },
+                  "as": "source"
+                }
+              },
+              {
+                "Shield": {
+                  "when": { "Damage": { "to": "You", "source": [{ "Is": { "Bound": "source" } }] } },
+                  "by": { "Redirect": { "to": { "Target": 0 }, "next": true } },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

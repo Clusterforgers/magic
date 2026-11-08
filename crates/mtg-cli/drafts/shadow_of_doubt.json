@@ -1,0 +1,21 @@
+{
+  "oracle_id": "b4b724bb-4c1c-4002-8eb8-bc8dd3f88e62",
+  "name": "Shadow of Doubt",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Shadow of Doubt",
+      "oracle_fingerprint": "ab30b93c305384422d5a394977d96513",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "Rule": { "rule": { "CantSearch": "EachPlayer" }, "duration": "UntilEndOfTurn" } },
+              { "Draw": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

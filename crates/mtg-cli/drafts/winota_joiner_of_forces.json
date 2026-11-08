@@ -1,0 +1,64 @@
+{
+  "oracle_id": "02598a35-1b11-4abe-89cd-fc44c8c36c15",
+  "name": "Winota, Joiner of Forces",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Winota, Joiner of Forces",
+      "oracle_fingerprint": "f557c8c17ff4b30f53344d4184faaf26",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "Attacks": {
+                "what": [
+                  { "Type": "Creature" },
+                  { "Not": { "Subtype": "Human" } },
+                  { "ControlledBy": "You" }
+                ]
+              }
+            },
+            "effects": [
+              { "LookAtTop": { "count": 6, "as": "top" } },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "In": "Library" },
+                      { "Is": { "Bound": "top" } },
+                      { "Type": "Creature" },
+                      { "Subtype": "Human" }
+                    ]
+                  },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "kept2"
+                }
+              },
+              {
+                "Move": {
+                  "what": { "Bound": "kept2" },
+                  "to": { "Battlefield": { "tapped": true } },
+                  "as": "moved4"
+                }
+              },
+              {
+                "Move": {
+                  "what": { "Bound": "top" },
+                  "to": { "Library": { "place": "Bottom", "order": "Random" } }
+                }
+              },
+              { "JoinAttack": { "what": { "Bound": "moved4" } } },
+              {
+                "Continuous": {
+                  "affected": { "Bound": "moved4" },
+                  "mods": [{ "AddKeyword": "Indestructible" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

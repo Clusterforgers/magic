@@ -1,0 +1,35 @@
+{
+  "oracle_id": "3d18cd9b-6013-48d7-9269-4787e7585a51",
+  "name": "Person of Interest",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Person of Interest",
+      "oracle_fingerprint": "2666c84f4e1eceadf39311010de5405d",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              { "Suspect": { "what": "This" } },
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Detective",
+                      "colors": ["White", "Blue"],
+                      "types": ["Creature"],
+                      "subtypes": ["Detective"],
+                      "power": 2,
+                      "toughness": 2
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

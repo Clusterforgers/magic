@@ -1,0 +1,22 @@
+{
+  "oracle_id": "129476ae-9dab-4e04-8e8e-f249afd56ff9",
+  "name": "Maha, Its Feathers Night",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Maha, Its Feathers Night",
+      "oracle_fingerprint": "02719ac2b0d341b2c15f016972a69b4b",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": "Trample" },
+        { "Keyword": { "Ward": [{ "Discard": {} }] } },
+        {
+          "Static": {
+            "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }] },
+            "mods": [{ "SetToughness": 1 }]
+          }
+        }
+      ]
+    }
+  ]
+}

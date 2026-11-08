@@ -1,0 +1,21 @@
+{
+  "oracle_id": "5ed0c7cc-9969-4387-90f8-3084dd18026b",
+  "name": "Fluctuator",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Fluctuator",
+      "oracle_fingerprint": "265e393aed8c2a4dd89db92ccda0f894",
+      "abilities": [
+        {
+          "CostModifier": {
+            "applies_to": [{ "ControlledBy": "You" }],
+            "change": "Reduce",
+            "mana": "{2}",
+            "activating": "Cycling"
+          }
+        }
+      ]
+    }
+  ]
+}

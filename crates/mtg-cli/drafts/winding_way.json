@@ -1,0 +1,35 @@
+{
+  "oracle_id": "4e48e76c-8756-4378-a722-2e2929feb74f",
+  "name": "Winding Way",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Winding Way",
+      "oracle_fingerprint": "b3bc0dd0881ca0c2c080eb163752f1bb",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "ChooseValue": { "kind": { "CardTypeOf": ["Creature", "Land"] }, "as": "chosen" } },
+              { "LookAtTop": { "count": 4, "as": "top2" } },
+              { "Reveal": { "what": { "Bound": "top2" } } },
+              {
+                "Move": {
+                  "what": {
+                    "Each": [
+                      { "In": "Library" },
+                      { "Is": { "Bound": "top2" } },
+                      { "ChosenAs": "chosen" }
+                    ]
+                  },
+                  "to": "Hand"
+                }
+              },
+              { "Move": { "what": { "Bound": "top2" }, "to": "Graveyard" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

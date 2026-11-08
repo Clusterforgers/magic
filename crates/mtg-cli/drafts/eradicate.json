@@ -1,0 +1,74 @@
+{
+  "oracle_id": "782ff740-ff43-4c07-af0b-433cb9770661",
+  "name": "Eradicate",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Eradicate",
+      "oracle_fingerprint": "0d38d53d1fa109d22ae894a23339dd39",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "Not": { "Color": "Black" } }] } }
+            ],
+            "effects": [
+              { "Exile": { "what": { "Target": 0 }, "as": "exiled" } },
+              {
+                "Exile": {
+                  "what": {
+                    "Each": [
+                      { "SharesName": { "Bound": "exiled" } },
+                      { "In": "Graveyard" },
+                      { "OwnedBy": { "ControllerOf": { "Target": 0 } } }
+                    ]
+                  }
+                }
+              },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "SharesName": { "Bound": "exiled" } },
+                      { "In": "Hand" },
+                      { "OwnedBy": { "ControllerOf": { "Target": 0 } } }
+                    ]
+                  },
+                  "count": {
+                    "min": 0,
+                    "max": {
+                      "Count": [
+                        { "In": "Hand" },
+                        { "OwnedBy": { "ControllerOf": { "Target": 0 } } }
+                      ]
+                    }
+                  },
+                  "as": "picked2"
+                }
+              },
+              { "Exile": { "what": { "Bound": "picked2" } } },
+              {
+                "Search": {
+                  "of": { "ControllerOf": { "Target": 0 } },
+                  "filter": [{ "SharesName": { "Bound": "exiled" } }],
+                  "count": {
+                    "min": 0,
+                    "max": {
+                      "Count": [
+                        { "In": "Library" },
+                        { "OwnedBy": { "ControllerOf": { "Target": 0 } } }
+                      ]
+                    }
+                  },
+                  "as": "found3"
+                }
+              },
+              { "Exile": { "what": { "Bound": "found3" } } },
+              { "Shuffle": { "who": { "ControllerOf": { "Target": 0 } } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

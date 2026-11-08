@@ -1,0 +1,27 @@
+{
+  "oracle_id": "32fe7ac4-86f5-44af-9f73-ee8f6a9ce2ba",
+  "name": "Hall of the Bandit Lord",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Hall of the Bandit Lord",
+      "oracle_fingerprint": "9fc200011488d381b78f988232a3bd46",
+      "abilities": [
+        { "Replacement": { "when": { "Enters": { "what": ["This"] } }, "by": "Tapped" } },
+        {
+          "Activated": {
+            "cost": ["Tap", { "PayLife": 3 }],
+            "effects": [
+              {
+                "AddMana": {
+                  "mana": { "Fixed": ["Colorless"] },
+                  "only": [{ "Enters": { "spell": { "types": ["Creature"] }, "keyword": "Haste" } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

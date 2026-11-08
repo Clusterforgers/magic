@@ -1,0 +1,51 @@
+{
+  "oracle_id": "ba557e19-a409-4c02-a9ac-a8fb77762e43",
+  "name": "Kutzil's Flanker",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Kutzil's Flanker",
+      "oracle_fingerprint": "fb87fe889072ce9b15ff46be2cf2f5d6",
+      "abilities": [
+        { "Keyword": "Flash" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Modal": {
+                  "modes": [
+                    {
+                      "effects": [
+                        {
+                          "PutCounters": {
+                            "on": "This",
+                            "counter": "+1/+1",
+                            "count": { "Tallied": { "who": "You", "what": "CreaturesLeftUnder" } }
+                          }
+                        }
+                      ]
+                    },
+                    { "effects": [{ "GainLife": { "amount": 2 } }, { "Scry": { "count": 2 } }] },
+                    {
+                      "targets": [{ "what": "Player" }],
+                      "effects": [
+                        {
+                          "Exile": {
+                            "what": {
+                              "Each": [{ "In": "Graveyard" }, { "OwnedBy": { "Target": 0 } }]
+                            }
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

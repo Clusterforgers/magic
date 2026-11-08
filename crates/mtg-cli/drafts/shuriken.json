@@ -1,0 +1,53 @@
+{
+  "oracle_id": "c6e92e21-d3e7-4982-b9f3-af56d4014c07",
+  "name": "Shuriken",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Shuriken",
+      "oracle_fingerprint": "e2349654a03da7f3b5833353568b84ef",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [
+              {
+                "GrantAbility": {
+                  "Activated": {
+                    "cost": ["Tap", "Unattach"],
+                    "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+                    "effects": [
+                      { "DealDamage": { "source": "Granter", "to": { "Target": 0 }, "amount": 2 } },
+                      {
+                        "If": {
+                          "condition": {
+                            "CountOf": {
+                              "subject": "This",
+                              "selector": [{ "Subtype": "Ninja" }],
+                              "op": "Eq",
+                              "right": 0
+                            }
+                          },
+                          "then": [
+                            {
+                              "Continuous": {
+                                "affected": "Granter",
+                                "mods": [{ "SetController": { "ControllerOf": { "Target": 0 } } }],
+                                "duration": "Forever"
+                              }
+                            }
+                          ]
+                        }
+                      }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Equip": "{2}" } }
+      ]
+    }
+  ]
+}

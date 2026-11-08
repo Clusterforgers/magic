@@ -16,8 +16,7 @@
                 "once": true,
                 "additional": [{ "ExileFromGraveyard": { "filter": [], "count": 3 } }]
               }
-            },
-            "condition": "YourTurn"
+            }
           }
         },
         {

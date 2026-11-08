@@ -14,6 +14,7 @@
                 "Modal": {
                   "modes": [
                     {
+                      "label": "Run and Hide",
                       "effects": [
                         {
                           "Shield": {
@@ -39,6 +40,7 @@
                       ]
                     },
                     {
+                      "label": "Gather Your Courage",
                       "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
                       "effects": [
                         {

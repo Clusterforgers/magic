@@ -1,0 +1,33 @@
+{
+  "oracle_id": "4d1885d1-212e-47ae-865f-e6dc4148ddf2",
+  "name": "Repeat Offender",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Repeat Offender",
+      "oracle_fingerprint": "0533e2c4ce3e1640238bb19007cbbef5",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{2}{B}",
+            "effects": [
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "Count": ["This", "Suspected"] },
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }],
+                  "otherwise": [{ "Suspect": { "what": "This" } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

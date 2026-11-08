@@ -1,0 +1,36 @@
+{
+  "oracle_id": "029d08cb-da4d-4f4e-b667-62712af63260",
+  "name": "Chain of Plasma",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Chain of Plasma",
+      "oracle_fingerprint": "d1fb3dcd5d29c34841dffd92196e4754",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [
+              { "DealDamage": { "to": { "Target": 0 }, "amount": 3 } },
+              {
+                "Pay": {
+                  "who": { "OrController": { "Target": 0 } },
+                  "cost": [{ "Discard": {} }],
+                  "paid": [
+                    {
+                      "CopySpell": {
+                        "what": "This",
+                        "who": { "OrController": { "Target": 0 } },
+                        "new_targets": true
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

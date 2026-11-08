@@ -1,0 +1,31 @@
+{
+  "oracle_id": "52bd4331-67b6-4eb8-9566-e00359889fc6",
+  "name": "Soul Snare",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Soul Snare",
+      "oracle_fingerprint": "8327bbcc7e4266d616ee8157dbaf4920",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{W}" }, "SacrificeSelf"],
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Type": "Creature" },
+                    {
+                      "AnyOf": [{ "AttackingPlayer": "You" }, { "AttackingPlaneswalkerOf": "You" }]
+                    }
+                  ]
+                }
+              }
+            ],
+            "effects": [{ "Exile": { "what": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

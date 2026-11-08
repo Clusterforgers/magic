@@ -1,0 +1,31 @@
+{
+  "oracle_id": "9ebd9ceb-05a4-4387-b63e-4c62ead2b98b",
+  "name": "Heartseeker",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Heartseeker",
+      "oracle_fingerprint": "cb6fe5011823efb2f3907f771098d24c",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [
+              { "ModifyPT": { "power": 2, "toughness": 1 } },
+              {
+                "GrantAbility": {
+                  "Activated": {
+                    "cost": ["Tap", "Unattach"],
+                    "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+                    "effects": [{ "Destroy": { "what": { "Target": 0 } } }]
+                  }
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Equip": "{5}" } }
+      ]
+    }
+  ]
+}

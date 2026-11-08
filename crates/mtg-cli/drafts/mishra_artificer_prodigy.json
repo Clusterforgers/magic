@@ -1,0 +1,40 @@
+{
+  "oracle_id": "b38adaac-3714-4348-9fec-cb2e2ad518b1",
+  "name": "Mishra, Artificer Prodigy",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mishra, Artificer Prodigy",
+      "oracle_fingerprint": "51a3638b137c55ac39f6d73ea389b303",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "what": [{ "Type": "Artifact" }], "by": "You" } },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "Search": {
+                        "also": ["Graveyard", "Hand"],
+                        "filter": [{ "SharesName": "Triggering" }, { "OwnedBy": "You" }],
+                        "as": "found"
+                      }
+                    },
+                    { "Move": { "what": { "Bound": "found" }, "to": { "Battlefield": {} } } },
+                    {
+                      "If": {
+                        "condition": { "Searched": { "zone": "Library" } },
+                        "then": [{ "Shuffle": {} }]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

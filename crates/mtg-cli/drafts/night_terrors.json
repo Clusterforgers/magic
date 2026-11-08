@@ -1,0 +1,36 @@
+{
+  "oracle_id": "6d720de8-b7b7-478f-ab1a-3487ce76aa00",
+  "name": "Night Terrors",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Night Terrors",
+      "oracle_fingerprint": "495ac8088cfd81ba2262b4318780d6ce",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              {
+                "Reveal": { "what": { "Each": [{ "OwnedBy": { "Target": 0 } }, { "In": "Hand" }] } }
+              },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "Not": { "Type": "Land" } },
+                      { "In": "Hand" },
+                      { "OwnedBy": { "Target": 0 } }
+                    ]
+                  },
+                  "as": "picked"
+                }
+              },
+              { "Exile": { "what": { "Bound": "picked" } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

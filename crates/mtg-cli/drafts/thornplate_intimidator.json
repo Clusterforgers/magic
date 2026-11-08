@@ -1,0 +1,47 @@
+{
+  "oracle_id": "33b6555e-035d-4241-a341-a9b9139ca6f0",
+  "name": "Thornplate Intimidator",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Thornplate Intimidator",
+      "oracle_fingerprint": "73bc72b107c248d9b8931c8ae3ef5303",
+      "abilities": [
+        { "Keyword": { "Offspring": "{3}" } },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              {
+                "OneOf": {
+                  "who": { "Target": 0 },
+                  "options": [
+                    [
+                      {
+                        "Pay": {
+                          "who": { "Target": 0 },
+                          "cost": [{ "Sacrifice": { "filter": [{ "Not": { "Type": "Land" } }] } }],
+                          "unpaid": [{ "LoseLife": { "who": { "Target": 0 }, "amount": 3 } }]
+                        }
+                      }
+                    ],
+                    [
+                      {
+                        "Pay": {
+                          "who": { "Target": 0 },
+                          "cost": [{ "Discard": {} }],
+                          "unpaid": [{ "LoseLife": { "who": { "Target": 0 }, "amount": 3 } }]
+                        }
+                      }
+                    ]
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

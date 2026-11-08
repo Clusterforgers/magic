@@ -1,0 +1,35 @@
+{
+  "oracle_id": "5641c831-5254-4ef2-ba48-328d86007479",
+  "name": "O-Naginata",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "O-Naginata",
+      "oracle_fingerprint": "caf28d7e96549b2a33a3ca195cc6a34c",
+      "abilities": [
+        {
+          "Rule": {
+            "rule": {
+              "Cant": {
+                "who": {
+                  "Each": [
+                    { "Type": "Creature" },
+                    { "Compare": { "stat": "Power", "op": "Lt", "to": 3 } }
+                  ]
+                },
+                "action": { "BeAttachedBy": ["This"] }
+              }
+            }
+          }
+        },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "ModifyPT": { "power": 3, "toughness": 0 } }, { "AddKeyword": "Trample" }]
+          }
+        },
+        { "Keyword": { "Equip": "{2}" } }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,159 @@
+{
+  "object": "card",
+  "id": "75ec8548-5790-4eac-8780-cdd126438192",
+  "oracle_id": "b7d05d00-1e69-4d11-bff0-c1ca2026aad6",
+  "multiverse_ids": [
+    380469
+  ],
+  "mtgo_id": 52116,
+  "mtgo_foil_id": 52117,
+  "tcgplayer_id": 82239,
+  "cardmarket_id": 266635,
+  "name": "Pharika, God of Affliction",
+  "lang": "en",
+  "released_at": "2014-05-02",
+  "uri": "https://api.scryfall.com/cards/75ec8548-5790-4eac-8780-cdd126438192",
+  "scryfall_uri": "https://scryfall.com/card/jou/154/pharika-god-of-affliction?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T10:43:22Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/7/5/75ec8548-5790-4eac-8780-cdd126438192.jpg?1783939402",
+    "normal": "https://cards.scryfall.io/normal/front/7/5/75ec8548-5790-4eac-8780-cdd126438192.jpg?1783939402",
+    "large": "https://cards.scryfall.io/large/front/7/5/75ec8548-5790-4eac-8780-cdd126438192.jpg?1783939402",
+    "png": "https://cards.scryfall.io/png/front/7/5/75ec8548-5790-4eac-8780-cdd126438192.png?1783939402",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/7/5/75ec8548-5790-4eac-8780-cdd126438192.jpg?1783939402",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/7/5/75ec8548-5790-4eac-8780-cdd126438192.jpg?1783939402",
+    "thumb": "https://cards.scryfall.io/thumb/front/7/5/75ec8548-5790-4eac-8780-cdd126438192.webp?1783939402",
+    "grid": "https://cards.scryfall.io/grid/front/7/5/75ec8548-5790-4eac-8780-cdd126438192.webp?1783939402",
+    "display": "https://cards.scryfall.io/display/front/7/5/75ec8548-5790-4eac-8780-cdd126438192.webp?1783939402",
+    "art": "https://cards.scryfall.io/art/front/7/5/75ec8548-5790-4eac-8780-cdd126438192.webp?1783939402",
+    "crop": "https://cards.scryfall.io/crop/front/7/5/75ec8548-5790-4eac-8780-cdd126438192.webp?1783939402",
+    "jpeg": "https://cards.scryfall.io/normal/front/7/5/75ec8548-5790-4eac-8780-cdd126438192.jpg?1783939402"
+  },
+  "mana_cost": "{1}{B}{G}",
+  "cmc": 3.0,
+  "type_line": "Legendary Enchantment Creature — God",
+  "oracle_text": "Indestructible\nAs long as your devotion to black and green is less than seven, Pharika isn't a creature.\n{B}{G}: Exile target creature card from a graveyard. Its owner creates a 1/1 black and green Snake enchantment creature token with deathtouch.",
+  "power": "5",
+  "toughness": "5",
+  "colors": [
+    "B",
+    "G"
+  ],
+  "color_identity": [
+    "B",
+    "G"
+  ],
+  "keywords": [
+    "Indestructible"
+  ],
+  "all_parts": [
+    {
+      "object": "related_card",
+      "id": "5910a7f2-71a7-4e85-8feb-4a0da228eb15",
+      "component": "token",
+      "name": "Snake",
+      "type_line": "Token Enchantment Creature — Snake",
+      "uri": "https://api.scryfall.com/cards/5910a7f2-71a7-4e85-8feb-4a0da228eb15"
+    },
+    {
+      "object": "related_card",
+      "id": "75ec8548-5790-4eac-8780-cdd126438192",
+      "component": "combo_piece",
+      "name": "Pharika, God of Affliction",
+      "type_line": "Legendary Enchantment Creature — God",
+      "uri": "https://api.scryfall.com/cards/75ec8548-5790-4eac-8780-cdd126438192"
+    }
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "204d2dca-1887-4721-9558-164aa7bbeb4f",
+  "set": "jou",
+  "set_name": "Journey into Nyx",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/204d2dca-1887-4721-9558-164aa7bbeb4f",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Ajou&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/jou?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/75ec8548-5790-4eac-8780-cdd126438192/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Ab7d05d00-1e69-4d11-bff0-c1ca2026aad6&unique=prints",
+  "collector_number": "154",
+  "digital": false,
+  "rarity": "mythic",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Peter Mohrbacher",
+  "artist_ids": [
+    "c8f27311-46a5-4eaf-9b2e-d660ed1db649"
+  ],
+  "illustration_id": "54a66ff2-b48e-4e28-aadd-b8fe43460718",
+  "border_color": "black",
+  "frame": "2003",
+  "frame_effects": [
+    "enchantment"
+  ],
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 9666,
+  "penny_rank": 12924,
+  "prices": {
+    "usd": "4.58",
+    "usd_foil": "11.21",
+    "usd_etched": null,
+    "eur": "2.29",
+    "eur_foil": "7.98",
+    "tix": "0.02"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=380469&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DPharika%252C%2BGod%2Bof%2BAffliction",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DPharika%252C%2BGod%2Bof%2BAffliction",
+    "edhrec": "https://edhrec.com/route/?cc=Pharika%2C+God+of+Affliction"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F82239%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=266635&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/52116?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

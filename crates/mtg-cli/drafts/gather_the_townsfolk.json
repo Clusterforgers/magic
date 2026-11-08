@@ -1,0 +1,42 @@
+{
+  "oracle_id": "ff45677d-977e-4ef5-859c-52393ed71a6c",
+  "name": "Gather the Townsfolk",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Gather the Townsfolk",
+      "oracle_fingerprint": "7455d1429bc2ea05f037187446328b55",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Human",
+                      "colors": ["White"],
+                      "types": ["Creature"],
+                      "subtypes": ["Human"],
+                      "power": 1,
+                      "toughness": 1
+                    }
+                  },
+                  "count": {
+                    "When": {
+                      "condition": {
+                        "Compare": { "left": { "Life": "You" }, "op": "Le", "right": 5 }
+                      },
+                      "then": 5,
+                      "otherwise": 2
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,76 @@
+{
+  "source": "forge",
+  "oracle_matches": true,
+  "lines": [
+    {
+      "face": 0,
+      "tag": "K",
+      "text": "Enchant:Creature",
+      "abilities": [
+        0
+      ],
+      "gap": null
+    },
+    {
+      "face": 0,
+      "tag": "K",
+      "text": "etbCounter:NET:3",
+      "abilities": [
+        1
+      ],
+      "gap": null
+    },
+    {
+      "face": 0,
+      "tag": "A",
+      "text": "Remove a net counter from this Aura. Only the controller of the enchanted creature may activate this ability.",
+      "abilities": [],
+      "gap": "key:AB.Activator=Player.EnchantedController"
+    },
+    {
+      "face": 0,
+      "tag": "R",
+      "text": "Enchanted creature doesn't untap during its controller's untap step if this Aura has a net counter on it.",
+      "abilities": [
+        2
+      ],
+      "gap": null
+    }
+  ],
+  "proof": {
+    "marks": [
+      {
+        "face": 0,
+        "span": {
+          "start": 0,
+          "end": 16
+        },
+        "mark": "Auto"
+      },
+      {
+        "face": 0,
+        "span": {
+          "start": 17,
+          "end": 64
+        },
+        "mark": "Auto"
+      },
+      {
+        "face": 0,
+        "span": {
+          "start": 65,
+          "end": 170
+        },
+        "mark": "Auto"
+      },
+      {
+        "face": 0,
+        "span": {
+          "start": 171,
+          "end": 316
+        },
+        "mark": "ByHand"
+      }
+    ]
+  }
+}

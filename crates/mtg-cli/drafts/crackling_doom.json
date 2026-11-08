@@ -1,0 +1,58 @@
+{
+  "oracle_id": "ee81f37b-2a81-46d7-8d2f-9091123846c4",
+  "name": "Crackling Doom",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Crackling Doom",
+      "oracle_fingerprint": "57484c40602dc372caf7196a1e338dff",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "DealDamage": { "to": "Opponents", "amount": 2 } },
+              {
+                "RepeatEach": {
+                  "over": "Opponents",
+                  "as": "each",
+                  "effects": [
+                    {
+                      "Choose": {
+                        "who": { "Bound": "each" },
+                        "from": {
+                          "Each": [
+                            { "Type": "Creature" },
+                            { "ControlledBy": { "Bound": "each" } },
+                            {
+                              "GreatestAmong": {
+                                "stat": "Power",
+                                "group": [
+                                  { "Type": "Creature" },
+                                  { "ControlledBy": { "Bound": "each" } }
+                                ]
+                              }
+                            }
+                          ]
+                        },
+                        "as": "card2"
+                      }
+                    },
+                    { "Bind": { "what": { "Bound": "card2" }, "as": "picks3", "adds": true } },
+                    { "Reveal": { "what": { "Bound": "card2" } } }
+                  ]
+                }
+              },
+              {
+                "Sacrifice": {
+                  "who": "EachPlayer",
+                  "filter": [{ "Is": { "Bound": "picks3" } }],
+                  "count": { "Count": [{ "Is": { "Bound": "picks3" } }] }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

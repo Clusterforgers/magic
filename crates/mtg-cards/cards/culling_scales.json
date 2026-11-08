@@ -1,0 +1,34 @@
+{
+  "oracle_id": "ec4f2266-3e8e-4194-8f06-d95ebc543661",
+  "name": "Culling Scales",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Culling Scales",
+      "oracle_fingerprint": "0722332416c155da70a4654d1011299b",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Not": { "Type": "Land" } },
+                    {
+                      "LeastAmong": {
+                        "stat": "ManaValue",
+                        "group": [{ "Not": { "Type": "Land" } }]
+                      }
+                    }
+                  ]
+                }
+              }
+            ],
+            "effects": [{ "Destroy": { "what": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

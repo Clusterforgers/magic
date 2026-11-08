@@ -1,0 +1,21 @@
+{
+  "oracle_id": "ca588f4e-4d2f-4aae-84de-be9862e13f1c",
+  "name": "Dragon's Eye Savants",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dragon's Eye Savants",
+      "oracle_fingerprint": "9bb5fccbce7ee4b38630e076472103cd",
+      "abilities": [
+        { "Keyword": { "Morph": [{ "RevealFromHand": { "filter": [{ "Color": "Blue" }] } }] } },
+        {
+          "Triggered": {
+            "when": { "TurnedFaceUp": { "what": ["This"] } },
+            "targets": [{ "what": "Opponent" }],
+            "effects": [{ "LookAtHand": { "of": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

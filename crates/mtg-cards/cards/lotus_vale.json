@@ -1,0 +1,31 @@
+{
+  "oracle_id": "01fc5bb3-ebd7-4ab4-8aef-2ece1e1d9b7c",
+  "name": "Lotus Vale",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Lotus Vale",
+      "oracle_fingerprint": "51ae6a7d1a0a81a1988b99c83df97bfc",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": {
+              "PayOrGraveyard": {
+                "cost": [
+                  { "Sacrifice": { "filter": [{ "Type": "Land" }, "Untapped"], "count": 2 } }
+                ]
+              }
+            }
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "AnyColor": 3 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

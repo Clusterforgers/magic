@@ -1,0 +1,44 @@
+{
+  "oracle_id": "8f36e0db-eea7-4c97-98ce-4bc2d8c7f734",
+  "name": "Rumbling Ruin",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Rumbling Ruin",
+      "oracle_fingerprint": "e2c0e2f41e29ab991224f58ddd6f71ce",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": {
+                    "Each": [
+                      { "Type": "Creature" },
+                      { "ControlledBy": "Opponents" },
+                      {
+                        "Compare": {
+                          "stat": "Power",
+                          "op": "Le",
+                          "to": {
+                            "Counters": {
+                              "on": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                              "counter": "+1/+1"
+                            }
+                          }
+                        }
+                      }
+                    ]
+                  },
+                  "mods": ["CantBlock"],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

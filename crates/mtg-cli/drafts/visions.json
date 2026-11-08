@@ -1,0 +1,22 @@
+{
+  "oracle_id": "448fa4e3-7269-446b-8089-675bc1bff5f9",
+  "name": "Visions",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Visions",
+      "oracle_fingerprint": "4e998c4148b8a12d5e0f4c2b6bd40873",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              { "LookAtTop": { "who": { "Target": 0 }, "count": 5, "as": "top" } },
+              { "May": { "effects": [{ "Shuffle": { "who": { "Target": 0 } } }] } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,57 @@
+{
+  "oracle_id": "fa4755c2-e573-45c3-bd6a-61b2b35fbd24",
+  "name": "Flame Discharge",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Flame Discharge",
+      "oracle_fingerprint": "e956d30b6434116b54d17ffc3e36423b",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "AnyOf": [{ "Type": "Creature" }, { "Type": "Planeswalker" }] }]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "DealDamage": {
+                  "to": { "Target": 0 },
+                  "amount": {
+                    "Sum": [
+                      "X",
+                      {
+                        "When": {
+                          "condition": {
+                            "Compare": {
+                              "left": {
+                                "CountedAsCast": {
+                                  "Count": [
+                                    { "Type": "Creature" },
+                                    "Modified",
+                                    { "ControlledBy": "You" }
+                                  ]
+                                }
+                              },
+                              "op": "Ge",
+                              "right": 1
+                            }
+                          },
+                          "then": 2,
+                          "otherwise": 0
+                        }
+                      }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

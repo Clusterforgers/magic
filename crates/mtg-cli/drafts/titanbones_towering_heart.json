@@ -1,0 +1,26 @@
+{
+  "oracle_id": "510bccb1-61cd-49f1-a54a-80352653d1e3",
+  "name": "Titanbones, Towering Heart",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Titanbones, Towering Heart",
+      "oracle_fingerprint": "465ef7e1ad749ce95489ea51f786ee54",
+      "abilities": [
+        { "Keyword": "Reach" },
+        {
+          "Triggered": {
+            "when": { "LifeGained": { "who": "You" } },
+            "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1", "count": 2 } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Discarded": { "what": ["This"] } },
+            "effects": [{ "GainLife": { "amount": 3 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

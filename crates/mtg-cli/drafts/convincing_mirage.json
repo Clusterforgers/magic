@@ -1,0 +1,23 @@
+{
+  "oracle_id": "685c4665-e04c-4012-aa5b-888a042c2a21",
+  "name": "Convincing Mirage",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Convincing Mirage",
+      "oracle_fingerprint": "abb28f430f717dc7db6a003ffca957b5",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Land" }] } },
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "Choose": "BasicLandType" }
+          }
+        },
+        {
+          "Static": { "affected": "Attached", "mods": [{ "SetLandTypes": [] }, "AddChosenSubtype"] }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,36 @@
+{
+  "oracle_id": "3b8eb602-01e8-432e-8dfc-8fdb62c3aa43",
+  "name": "Mocking Doppelganger",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mocking Doppelganger",
+      "oracle_fingerprint": "9a336f417eb2f8e3f075679bba82bc01",
+      "abilities": [
+        { "Keyword": "Flash" },
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": {
+              "AsCopy": {
+                "of": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }],
+                "except": [
+                  {
+                    "GrantAbility": {
+                      "Static": {
+                        "affected": {
+                          "Each": [{ "Type": "Creature" }, { "SharesName": "This" }, "Other"]
+                        },
+                        "mods": ["Goaded"]
+                      }
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

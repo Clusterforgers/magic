@@ -1,0 +1,21 @@
+{
+  "oracle_id": "7101f0ab-89ce-4b13-a5a8-4cabd6c8670d",
+  "name": "Frozen Solid",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Frozen Solid",
+      "oracle_fingerprint": "6fb5a4d90e00c5faf264a0f4eb65b4b8",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        { "Static": { "affected": "Attached", "mods": ["DoesntUntap"] } },
+        {
+          "Triggered": {
+            "when": { "Batch": { "DealsDamage": { "source": [], "to": "Attached" } } },
+            "effects": [{ "Destroy": { "what": "Triggering" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

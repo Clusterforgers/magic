@@ -1,0 +1,29 @@
+{
+  "oracle_id": "e245a736-5f65-4159-8e39-e279e1f8794f",
+  "name": "Chant of Vitu-Ghazi",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Chant of Vitu-Ghazi",
+      "oracle_fingerprint": "4f2b5cc495dd207513e095d5377655e8",
+      "abilities": [
+        { "Keyword": "Convoke" },
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Shield": {
+                  "when": {
+                    "Damage": { "source": [{ "Type": "Creature" }, { "In": "Battlefield" }] }
+                  },
+                  "by": { "PreventAnd": [{ "GainLife": { "amount": "Triggering" } }] },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

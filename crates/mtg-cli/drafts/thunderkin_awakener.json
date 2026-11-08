@@ -44,7 +44,6 @@
                   "effects": [
                     {
                       "Sacrifice": {
-                        "who": { "ControllerOf": { "Bound": "moved" } },
                         "filter": [{ "Is": { "Bound": "moved" } }],
                         "count": { "Count": [{ "Is": { "Bound": "moved" } }] }
                       }

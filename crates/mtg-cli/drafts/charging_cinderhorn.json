@@ -1,0 +1,35 @@
+{
+  "oracle_id": "397e0d30-a3bf-4b33-98b6-b880f8de5cbb",
+  "name": "Charging Cinderhorn",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Charging Cinderhorn",
+      "oracle_fingerprint": "561960718f30abeac6383d4991ff06f2",
+      "abilities": [
+        { "Keyword": "Haste" },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End" } },
+            "if": {
+              "Compare": {
+                "left": { "Tally": { "event": "Attacked", "who": "EachPlayer", "filter": [] } },
+                "op": "Eq",
+                "right": 0
+              }
+            },
+            "effects": [
+              { "PutCounters": { "on": "This", "counter": { "Other": "fury" } } },
+              {
+                "DealDamage": {
+                  "to": "Triggering",
+                  "amount": { "Counters": { "on": "This", "counter": { "Other": "fury" } } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

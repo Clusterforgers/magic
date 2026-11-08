@@ -1,0 +1,28 @@
+{
+  "oracle_id": "4d97b9d1-1138-40da-b593-8065ea6ed7b3",
+  "name": "Grievous Wound",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Grievous Wound",
+      "oracle_fingerprint": "025ec9cc626ac78699f2d7d43cf58143",
+      "abilities": [
+        { "Keyword": { "EnchantPlayer": {} } },
+        { "Rule": { "rule": { "CantGainLife": "AttachedPlayer" } } },
+        {
+          "Triggered": {
+            "when": { "Batch": { "DealsDamage": { "source": [], "to": "AttachedPlayer" } } },
+            "effects": [
+              {
+                "LoseLife": {
+                  "who": "Triggering",
+                  "amount": { "Half": { "of": { "Life": "Triggering" }, "up": true } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

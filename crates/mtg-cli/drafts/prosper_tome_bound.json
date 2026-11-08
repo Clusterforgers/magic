@@ -1,0 +1,55 @@
+{
+  "oracle_id": "1e9b0fd6-5aae-401a-8df5-d94ce6442696",
+  "name": "Prosper, Tome-Bound",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Prosper, Tome-Bound",
+      "oracle_fingerprint": "7b127fb03d2dec7efe0c4ff008462f3d",
+      "abilities": [
+        { "Keyword": "Deathtouch" },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "effects": [
+              { "ExileTop": { "as": "exiled" } },
+              {
+                "Rule": {
+                  "rule": {
+                    "MayCast": { "from": "Exile", "only": { "Bound": "exiled" }, "play": true }
+                  },
+                  "duration": "UntilEndOfYourNextTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                {
+                  "SpellCast": {
+                    "what": [{ "WasCast": { "from": "Exile" } }, { "Not": "Token" }],
+                    "by": "You"
+                  }
+                },
+                {
+                  "Did": {
+                    "action": "PlayedLand",
+                    "what": [
+                      { "Type": "Land" },
+                      { "ControlledBy": "You" },
+                      { "ArrivedFrom": "Exile" }
+                    ]
+                  }
+                }
+              ]
+            },
+            "effects": [{ "CreateToken": { "token": { "Named": "treasure" } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,62 @@
+{
+  "oracle_id": "41b2ea88-b3b9-44f0-8886-7b2f37b22ebf",
+  "name": "Check for Traps",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Check for Traps",
+      "oracle_fingerprint": "e54b332957c0c0d6a607721e13f96ab0",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              {
+                "Reveal": { "what": { "Each": [{ "OwnedBy": { "Target": 0 } }, { "In": "Hand" }] } }
+              },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "Not": { "Type": "Land" } },
+                      { "In": "Hand" },
+                      { "OwnedBy": { "Target": 0 } }
+                    ]
+                  },
+                  "as": "picked"
+                }
+              },
+              { "Exile": { "what": { "Bound": "picked" }, "as": "exiled2" } },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Bound": "exiled2" },
+                      "selector": [{ "AnyOf": [{ "Type": "Instant" }, { "HasKeyword": "Flash" }] }],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [{ "LoseLife": { "who": { "Target": 0 }, "amount": 1 } }]
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Bound": "exiled2" },
+                      "selector": [{ "AnyOf": [{ "Type": "Instant" }, { "HasKeyword": "Flash" }] }],
+                      "op": "Eq",
+                      "right": 0
+                    }
+                  },
+                  "then": [{ "LoseLife": { "amount": 1 } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

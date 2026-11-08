@@ -1,0 +1,137 @@
+{
+  "object": "card",
+  "id": "ede2b911-8eec-4993-ab1c-59b55dfb11b4",
+  "oracle_id": "fcd281e3-f336-449f-a887-4b98dc14dfe7",
+  "multiverse_ids": [
+    447293
+  ],
+  "mtgo_id": 68475,
+  "arena_id": 67994,
+  "tcgplayer_id": 169275,
+  "cardmarket_id": 360187,
+  "name": "Siegebreaker Giant",
+  "lang": "en",
+  "released_at": "2018-07-13",
+  "uri": "https://api.scryfall.com/cards/ede2b911-8eec-4993-ab1c-59b55dfb11b4",
+  "scryfall_uri": "https://scryfall.com/card/m19/157/siegebreaker-giant?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T09:22:25Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/e/d/ede2b911-8eec-4993-ab1c-59b55dfb11b4.jpg?1783934545",
+    "normal": "https://cards.scryfall.io/normal/front/e/d/ede2b911-8eec-4993-ab1c-59b55dfb11b4.jpg?1783934545",
+    "large": "https://cards.scryfall.io/large/front/e/d/ede2b911-8eec-4993-ab1c-59b55dfb11b4.jpg?1783934545",
+    "png": "https://cards.scryfall.io/png/front/e/d/ede2b911-8eec-4993-ab1c-59b55dfb11b4.png?1783934545",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/e/d/ede2b911-8eec-4993-ab1c-59b55dfb11b4.jpg?1783934545",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/e/d/ede2b911-8eec-4993-ab1c-59b55dfb11b4.jpg?1783934545",
+    "thumb": "https://cards.scryfall.io/thumb/front/e/d/ede2b911-8eec-4993-ab1c-59b55dfb11b4.webp?1783934545",
+    "grid": "https://cards.scryfall.io/grid/front/e/d/ede2b911-8eec-4993-ab1c-59b55dfb11b4.webp?1783934545",
+    "display": "https://cards.scryfall.io/display/front/e/d/ede2b911-8eec-4993-ab1c-59b55dfb11b4.webp?1783934545",
+    "art": "https://cards.scryfall.io/art/front/e/d/ede2b911-8eec-4993-ab1c-59b55dfb11b4.webp?1783934545",
+    "crop": "https://cards.scryfall.io/crop/front/e/d/ede2b911-8eec-4993-ab1c-59b55dfb11b4.webp?1783934545",
+    "jpeg": "https://cards.scryfall.io/normal/front/e/d/ede2b911-8eec-4993-ab1c-59b55dfb11b4.jpg?1783934545"
+  },
+  "mana_cost": "{3}{R}{R}",
+  "cmc": 5.0,
+  "type_line": "Creature — Giant Warrior",
+  "oracle_text": "Trample (This creature can deal excess combat damage to the player or planeswalker it's attacking.)\n{3}{R}: Target creature can't block this turn.",
+  "power": "6",
+  "toughness": "3",
+  "colors": [
+    "R"
+  ],
+  "color_identity": [
+    "R"
+  ],
+  "keywords": [
+    "Trample"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "arena",
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "2f5f2509-56db-414d-9a7e-6e312ec3760c",
+  "set": "m19",
+  "set_name": "Core Set 2019",
+  "set_type": "core",
+  "set_uri": "https://api.scryfall.com/sets/2f5f2509-56db-414d-9a7e-6e312ec3760c",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Am19&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/m19?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/ede2b911-8eec-4993-ab1c-59b55dfb11b4/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Afcd281e3-f336-449f-a887-4b98dc14dfe7&unique=prints",
+  "collector_number": "157",
+  "digital": false,
+  "rarity": "uncommon",
+  "flavor_text": "No rampart can withstand the fury of a giant.",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Even Amundsen",
+  "artist_ids": [
+    "127faa6a-6c02-49a0-beba-ae76d06dd153"
+  ],
+  "illustration_id": "d4be2317-971e-4f62-a0d6-6907e4992038",
+  "border_color": "black",
+  "frame": "2015",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 27008,
+  "prices": {
+    "usd": "0.09",
+    "usd_foil": "0.57",
+    "usd_etched": null,
+    "eur": "0.03",
+    "eur_foil": "0.14",
+    "tix": "0.05"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=447293&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DSiegebreaker%2BGiant",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DSiegebreaker%2BGiant",
+    "edhrec": "https://edhrec.com/route/?cc=Siegebreaker+Giant"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F169275%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=360187&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/68475?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

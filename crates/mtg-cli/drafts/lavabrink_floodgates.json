@@ -1,0 +1,80 @@
+{
+  "oracle_id": "bd4df73c-bbd5-47fd-a961-19f3a3c59381",
+  "name": "Lavabrink Floodgates",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Lavabrink Floodgates",
+      "oracle_fingerprint": "aca69294587e34ae0aad1303a9782676",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Red", "Red"] } } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep" } },
+            "effects": [
+              {
+                "OneOf": {
+                  "who": "Triggering",
+                  "options": [
+                    [{ "PutCounters": { "on": "This", "counter": { "Other": "doom" } } }],
+                    [{ "RemoveCounters": { "from": "This", "counter": { "Other": "doom" } } }],
+                    []
+                  ]
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": {
+                        "Count": [
+                          "This",
+                          { "CounterCount": { "kind": { "Other": "doom" }, "op": "Ge", "to": 3 } }
+                        ]
+                      },
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [{ "Sacrifice": { "filter": ["This"], "as": "sacrificed" } }]
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Bound": "sacrificed" },
+                      "selector": [],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [
+                    { "Bind": { "what": { "Bound": "sacrificed" }, "as": "when2" } },
+                    {
+                      "Reflexive": {
+                        "effects": [
+                          {
+                            "DealDamage": {
+                              "to": { "Each": [{ "Type": "Creature" }] },
+                              "amount": 6
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

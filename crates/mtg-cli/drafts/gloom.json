@@ -19,7 +19,7 @@
             "applies_to": [{ "Type": "Enchantment" }, { "Color": "White" }],
             "change": "Increase",
             "mana": "{3}",
-            "activating": "Any"
+            "activating": "Every"
           }
         }
       ]

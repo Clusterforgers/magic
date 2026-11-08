@@ -1,0 +1,41 @@
+{
+  "oracle_id": "10a52a73-157f-475e-975a-eb00c80573d4",
+  "name": "Unerring Sling",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Unerring Sling",
+      "oracle_fingerprint": "50cbebc9eb4542c77be5b0e20bf5b259",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [
+              { "Mana": "{3}" },
+              "Tap",
+              { "TapPermanents": { "filter": [{ "Type": "Creature" }] } }
+            ],
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Type": "Creature" },
+                    { "AnyOf": ["Attacking", "Blocking"] },
+                    { "HasKeyword": "Flying" }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "DealDamage": {
+                  "to": { "Target": 0 },
+                  "amount": { "Stat": { "of": "Paid", "stat": "Power" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

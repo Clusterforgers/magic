@@ -1,0 +1,32 @@
+{
+  "oracle_id": "b1c346a4-fc9b-474a-9d51-cac168e363fa",
+  "name": "Maelstrom Nexus",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Maelstrom Nexus",
+      "oracle_fingerprint": "76ece11b4c66996bd9fc9980cd3e184f",
+      "abilities": [
+        {
+          "Static": {
+            "affected": { "Each": [{ "ControlledBy": "You" }, { "In": "Stack" }] },
+            "mods": [{ "AddKeyword": "Cascade" }],
+            "condition": {
+              "Compare": {
+                "left": {
+                  "Tally": {
+                    "event": "SpellCast",
+                    "who": "EachPlayer",
+                    "filter": [{ "ControlledBy": "You" }, { "Not": { "Is": "Affected" } }]
+                  }
+                },
+                "op": "Eq",
+                "right": 0
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

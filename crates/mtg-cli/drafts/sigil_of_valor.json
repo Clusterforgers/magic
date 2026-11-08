@@ -1,0 +1,47 @@
+{
+  "oracle_id": "b9447f25-f285-4b62-8976-4a49363dfdd7",
+  "name": "Sigil of Valor",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sigil of Valor",
+      "oracle_fingerprint": "af6b4ffc4b473ef8503551d2b99dd28d",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "AttacksAlone": { "what": [{ "Is": "Attached" }] } },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "Triggering",
+                  "mods": [
+                    {
+                      "ModifyPT": {
+                        "power": {
+                          "Count": [
+                            { "Type": "Creature" },
+                            { "ControlledBy": "You" },
+                            { "Not": { "Is": "Triggering" } }
+                          ]
+                        },
+                        "toughness": {
+                          "Count": [
+                            { "Type": "Creature" },
+                            { "ControlledBy": "You" },
+                            { "Not": { "Is": "Triggering" } }
+                          ]
+                        }
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Equip": "{1}" } }
+      ]
+    }
+  ]
+}

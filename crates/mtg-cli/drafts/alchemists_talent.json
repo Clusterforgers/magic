@@ -1,0 +1,75 @@
+{
+  "oracle_id": "5a2dfff5-9dba-42f5-bcca-918c16f23807",
+  "name": "Alchemist's Talent",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Alchemist's Talent",
+      "oracle_fingerprint": "0a2f1d8e39f7822c7a72f643032828c8",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              { "CreateToken": { "token": { "Named": "treasure" }, "count": 2, "tapped": true } }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{1}{R}",
+            "timing": "Sorcery",
+            "condition": { "Level": { "of": "This", "op": "Eq", "level": 1 } },
+            "effects": [{ "BecomeLevel": { "level": 2 } }]
+          }
+        },
+        {
+          "Static": {
+            "affected": { "Each": [{ "Subtype": "Treasure" }, { "ControlledBy": "You" }] },
+            "mods": [
+              {
+                "GrantAbility": {
+                  "Activated": {
+                    "cost": ["Tap", "SacrificeSelf"],
+                    "effects": [{ "AddMana": { "mana": { "AnyColor": 2 } } }]
+                  }
+                }
+              }
+            ],
+            "condition": { "Level": { "of": "This", "op": "Ge", "level": 2 } }
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{4}{R}",
+            "timing": "Sorcery",
+            "condition": { "Level": { "of": "This", "op": "Eq", "level": 2 } },
+            "effects": [{ "BecomeLevel": { "level": 3 } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "SpellCast": {
+                "what": [
+                  "Spell",
+                  { "SpentFrom": { "from": { "subtypes": ["Treasure"] }, "least": 1 } }
+                ],
+                "by": "You"
+              }
+            },
+            "if": { "Level": { "of": "This", "op": "Ge", "level": 3 } },
+            "effects": [
+              {
+                "DealDamage": {
+                  "to": "Opponents",
+                  "amount": { "Stat": { "of": "Triggering", "stat": "ManaValue" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

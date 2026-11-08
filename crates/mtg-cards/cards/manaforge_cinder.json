@@ -1,0 +1,20 @@
+{
+  "oracle_id": "3c9535a2-7995-42de-a56f-0a445f2dd697",
+  "name": "Manaforge Cinder",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Manaforge Cinder",
+      "oracle_fingerprint": "b9fa0f976a71f9890b32ad7a764e214c",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{1}",
+            "limit": { "TimesPerTurn": 3 },
+            "effects": [{ "AddMana": { "mana": { "OneOf": ["Black", "Red"] } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

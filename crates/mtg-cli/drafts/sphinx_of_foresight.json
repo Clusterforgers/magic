@@ -1,0 +1,26 @@
+{
+  "oracle_id": "d1108bd1-87b2-4795-9690-54ff4504e04f",
+  "name": "Sphinx of Foresight",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sphinx of Foresight",
+      "oracle_fingerprint": "eab8e2166aeac0200b47830c2b8cec88",
+      "abilities": [
+        {
+          "OpeningReveal": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [{ "Scry": { "count": 3 } }]
+          }
+        },
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [{ "Scry": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

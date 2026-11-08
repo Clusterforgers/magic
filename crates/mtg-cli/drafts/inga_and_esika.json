@@ -1,0 +1,51 @@
+{
+  "oracle_id": "3431ee42-c34a-4972-9488-41b83ba5f943",
+  "name": "Inga and Esika",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Inga and Esika",
+      "oracle_fingerprint": "f96604dfcc7a2e2cbc02d41c01aad5fe",
+      "abilities": [
+        {
+          "Static": {
+            "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+            "mods": [
+              { "AddKeyword": "Vigilance" },
+              {
+                "GrantAbility": {
+                  "Activated": {
+                    "cost": ["Tap"],
+                    "effects": [
+                      {
+                        "AddMana": {
+                          "mana": { "AnyColor": 1 },
+                          "only": [{ "Spell": { "types": ["Creature"] } }]
+                        }
+                      }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "SpellCast": {
+                "what": [
+                  { "Type": "Creature" },
+                  "Spell",
+                  { "SpentFrom": { "from": { "types": ["Creature"] }, "least": 3 } }
+                ],
+                "by": "You"
+              }
+            },
+            "effects": [{ "Draw": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

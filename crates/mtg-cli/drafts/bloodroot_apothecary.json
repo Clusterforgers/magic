@@ -1,0 +1,37 @@
+{
+  "oracle_id": "09ecb8df-2a17-4e5a-814c-474bce54794d",
+  "name": "Bloodroot Apothecary",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Bloodroot Apothecary",
+      "oracle_fingerprint": "6f810ce9d952215ac7660b0349259633",
+      "abilities": [
+        { "Keyword": { "Toxic": 2 } },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              { "CreateToken": { "token": { "Named": "treasure" } } },
+              { "CreateToken": { "who": { "Target": 0 }, "token": { "Named": "treasure" } } }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "Sacrificed": {
+                "what": ["Token", { "Not": { "Type": "Creature" } }],
+                "by": "Opponents"
+              }
+            },
+            "effects": [
+              { "PutCounters": { "on": "TriggeringPlayer", "counter": "poison", "count": 2 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
