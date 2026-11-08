@@ -106,6 +106,11 @@ const SPELLS_YOURS: &str =
 )]
 #[case::landwalk(r#"{"Static":{"affected":"Attached","mods":[{"ModifyPT":{"power":2,"toughness":0}},{"AddKeyword":{"Landwalk":[{"Type":"Land"},{"Type":"Artifact"}]}}]}}"#, "Equipped creature gets +2/+0 and has artifact landwalk.")]
 #[case::blockers(r#"{"Static":{"affected":{"Each":[{"Type":"Creature"},{"AnyOf":[{"BlockedBy":"This"},{"Blocks":"This"}]}]},"mods":[{"AddKeyword":"Lifelink"}]}}"#, "Creatures blocking or blocked by this creature have lifelink.")]
+#[case::human(r#"{"Static":{"affected":{"Each":[{"Subtype":"Human"},{"Is":"Attached"}]},"mods":[{"AddKeyword":"Trample"}]}}"#, "As long as enchanted creature is a Human, it has trample.")]
+#[case::human_or_angel(r#"{"Static":{"affected":{"Each":[{"Is":"Attached"},{"AnyOf":[{"Subtype":"Human"},{"Subtype":"Angel"}]}]},"mods":[{"AddKeyword":"Vigilance"}]}}"#, "As long as equipped creature is a Human or an Angel, it has vigilance.")]
+#[case::untapped(r#"{"Static":{"affected":"Attached","condition":{"Matches":{"selector":[{"Type":"Creature"},"Untapped"],"subject":"Attached"}},"mods":[{"AddKeyword":"Shroud"}]}}"#, "Enchanted creature has shroud as long as it's untapped.")]
+#[case::two_equipment(r#"{"Static":{"affected":"Attached","condition":{"Compare":{"left":{"Count":[{"Subtype":"Equipment"},{"AttachedTo":{"Each":[{"Type":"Creature"},{"Is":"Attached"}]}}]},"op":"Ge","right":2}},"mods":[{"AddKeyword":"DoubleStrike"}]}}"#, "Equipped creature has double strike as long as two or more Equipment are attached to it.")]
+#[case::enchanted_host(r#"{"Static":{"affected":{"Each":[{"Type":"Creature"},{"ControlledBy":"You"}]},"condition":{"Compare":{"left":{"Count":["This",{"HasAttached":[{"Subtype":"Aura"}]}]},"op":"Ge","right":1}},"mods":[{"AddKeyword":"Vigilance"}]}}"#, "Creatures you control have vigilance as long as this creature is enchanted.")]
 fn a_group_is_given_a_keyword_with_a_number_or_a_cost(#[case] json: &str, #[case] clause: &str) {
     assert!(
         written(json, clause),
@@ -138,6 +143,11 @@ fn a_group_is_given_a_keyword_with_a_number_or_a_cost(#[case] json: &str, #[case
 #[case::ward_amount(r#"{"Static":{"affected":{"Each":[{"Subtype":"Warlock"},{"ControlledBy":"You"}]},"mods":[{"AddKeyword":{"Ward":[{"PayLife":2}]}}]}}"#, "Warlocks you control have \"Ward—Pay 3 life.\"")]
 #[case::afflict_number(r#"{"Static":{"affected":{"Each":[{"Type":"Creature"},{"Type":"Artifact"},{"ControlledBy":"You"}]},"mods":[{"AddKeyword":{"Afflict":3}}]}}"#, "Artifact creatures you control have afflict 2.")]
 #[case::blockers_other_keyword(r#"{"Static":{"affected":{"Each":[{"Type":"Creature"},{"AnyOf":[{"BlockedBy":"This"},{"Blocks":"This"}]}]},"mods":[{"AddKeyword":"Lifelink"}]}}"#, "Creatures blocking or blocked by this creature have deathtouch.")]
+#[case::human_angel(r#"{"Static":{"affected":{"Each":[{"Subtype":"Human"},{"Is":"Attached"}]},"mods":[{"AddKeyword":"Trample"}]}}"#, "As long as enchanted creature is a Human or an Angel, it has trample.")]
+#[case::human_keyword(r#"{"Static":{"affected":{"Each":[{"Subtype":"Human"},{"Is":"Attached"}]},"mods":[{"AddKeyword":"Trample"}]}}"#, "As long as enchanted creature is a Human, it has flying.")]
+#[case::tapped(r#"{"Static":{"affected":"Attached","condition":{"Matches":{"selector":[{"Type":"Creature"},"Untapped"],"subject":"Attached"}},"mods":[{"AddKeyword":"Shroud"}]}}"#, "Enchanted creature has shroud as long as it's tapped.")]
+#[case::three_equipment(r#"{"Static":{"affected":"Attached","condition":{"Compare":{"left":{"Count":[{"Subtype":"Equipment"},{"AttachedTo":{"Each":[{"Type":"Creature"},{"Is":"Attached"}]}}]},"op":"Ge","right":2}},"mods":[{"AddKeyword":"DoubleStrike"}]}}"#, "Equipped creature has double strike as long as three or more Equipment are attached to it.")]
+#[case::auras(r#"{"Static":{"affected":{"Each":[{"Type":"Creature"},{"ControlledBy":"You"}]},"condition":{"Compare":{"left":{"Count":["This",{"HasAttached":[{"Subtype":"Aura"}]}]},"op":"Ge","right":1}},"mods":[{"AddKeyword":"Vigilance"}]}}"#, "Creatures you control have vigilance as long as this creature is equipped.")]
 fn near_misses_do_not_read_back(#[case] json: &str, #[case] clause: &str) {
     assert!(!written(json, clause), "{clause}");
 }

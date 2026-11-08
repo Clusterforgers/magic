@@ -85,6 +85,13 @@ fn phrases(condition: &Value) -> Option<(String, String)> {
         return said("it entered this turn", "~ entered this turn");
     }
     let compare = condition.get("Compare")?;
+    let enchanted = json!(["This", {"HasAttached": [{"Subtype": "Aura"}]}]);
+    if compare.pointer("/left/Count") == Some(&enchanted)
+        && compare.get("op")? == "Ge"
+        && *compare.get("right")? == 1
+    {
+        return said("~ is enchanted", "~ is enchanted");
+    }
     if compare.get("op")? == "Ge" {
         let many = word(compare.get("right")?);
         let left = compare.get("left")?;

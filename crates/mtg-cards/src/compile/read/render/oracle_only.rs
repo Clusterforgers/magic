@@ -267,6 +267,7 @@ mod w16a_state_trigger;
 mod w16a_static_and;
 mod w20_exile_x;
 mod w20_fishing;
+mod w21_attached;
 mod w21_conditions;
 mod w21_controls;
 mod w21_words;
@@ -605,6 +606,7 @@ fn add_w4c(ability: &Ability, texts: &mut Vec<String>) {
 fn add_w4b(ability: &Ability, texts: &mut Vec<String>) {
     w4b_conditions::add(ability, texts);
     w21_conditions::add(ability, texts);
+    w21_attached::add(ability, texts);
     w4b_grants::add(ability, texts);
     w4b_pumps::add(ability, texts);
     w4b_becomes::add(ability, texts);
