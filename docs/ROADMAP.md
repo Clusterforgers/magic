@@ -48,7 +48,6 @@ Items that touch the running game come first; the play-session findings (pf) lea
 
 - [ ] (pf23b) An affordability check can count one hand card twice, as a Spirit Guide and as the card a Cadaverous Bloom-style cost exiles (the payment itself is right)
 
-- [ ] (ad1c) The Accounts page in the layout gate at the six sizes in both themes (a dev route that stands for it) and an e2e spec of the admin flow on the Postgres server: sign-in, make an account, the friend signs in, the closed sign-up page (`docs/web.md`)
 - [ ] (d1c) A copy of the nightly database dumps off queen (a Longhorn backup target or a scheduled copy to another machine), so losing queen does not lose the accounts and decks (`docs/deploy.md`)
 - [ ] (d1b) The release script's steps as a GitHub Actions workflow on a published release, so a release needs no dev machine (`docs/deploy.md`)
 - [ ] (v92m) Duel walk by hand of a counterspell, a combat trick and a sacrifice, and of the timer bank as the other seat sees it (needs a seat that has earned an extension)

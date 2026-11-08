@@ -285,6 +285,16 @@ const STOPS: readonly Stop[] = [
       await expect(page.locator('[data-slot="read-dialog"] [data-slot="read-card"]')).toBeVisible()
     },
   },
+  {
+    name: 'The Accounts page (dev), thirty friends with long names',
+    fitsFrom: Infinity,
+    actions: { 'Make account': 'text:Make account' },
+    async open(page) {
+      await page.goto(`${DEV_WEB_URL}/dev/accounts?many=1&names=long`)
+      await expect(page.getByRole('heading', { level: 1, name: 'Accounts' })).toBeVisible()
+      await expect(page.getByText(`friend_29_`.padEnd(32, 'x'))).toBeVisible()
+    },
+  },
 ]
 
 for (const theme of THEMES) {
